@@ -8,3 +8,5 @@ node_modules/
 .venv/
 __pycache__/
 *.pyc
+apps/admin/.svelte-kit/
+apps/admin/build/

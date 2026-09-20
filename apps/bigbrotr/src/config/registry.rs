@@ -757,6 +757,22 @@ pub fn keys() -> Vec<Key> {
         true
     );
     add!("api.public", Bool, false, "restart", "read", true);
+    add!(
+        "administration.assets.directory",
+        Path,
+        Value::Null,
+        "restart",
+        "control",
+        true
+    );
+    add!(
+        "administration.assets.base_path",
+        Enum(&["/", "/control/"]),
+        "/",
+        "restart",
+        "control",
+        true
+    );
     for feature in ["archive_relay", "dvm", "nip85", "nip66", "mcp", "contextvm"] {
         add!(
             format!("{feature}.enabled"),

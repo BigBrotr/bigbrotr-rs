@@ -118,6 +118,43 @@ labels them `builder-supplied`. They are assertions by the builder, not proof of
 authenticity. The eventual signed release manifest and independent acceptance own
 that stronger guarantee. Never use a copied version string as release evidence.
 
+## Private browser consumer
+
+Rust compilation does not run pnpm or generate frontend assets. The initial
+private SvelteKit panel and shared session client are separate private workspace
+packages. Use Node26.4.0 and pnpm9.15.9, then run from the repository root:
+
+```sh
+pnpm install --frozen-lockfile --ignore-scripts --strict-peer-dependencies
+pnpm contracts:check
+pnpm check:client
+pnpm test:client
+pnpm --filter @bigbrotr/admin check
+pnpm --filter @bigbrotr/admin test:unit
+pnpm --filter @bigbrotr/admin build
+```
+
+The last command emits `apps/admin/build` and a closed version1 asset manifest.
+`BIGBROTR_ADMIN_BASE=/control` builds the selected subpath variant; omitted builds
+`/`. `BIGBROTR_BUILD_REVISION` accepts the exact40-character lowercase Git commit
+for build attribution; omitted uses the explicit development marker, never a
+clock-derived ID. Attribution and content hashes do not authenticate a release.
+The packager refuses symlinks, unknown file types and limits before publishing
+the manifest. The [Control runtime](../user/control-runtime.md) verifies and serves
+it from `administration.assets.directory`; no Node production server is needed.
+
+The OpenAPI3.1 [session subset](../../contracts/management/v1/openapi.yaml) owns
+wire types and runtime schemas. After an intentional contract edit, run
+`pnpm contracts:generate` and review the generated client diff. Standalone Ajv
+validators ship without a runtime compiler or eval. Relative URLs, same-origin
+credentials, streaming response limits and explicit timeout/cancellation remain
+in the handwritten client transport. Session models are not action capabilities.
+
+These checks establish local build/client behavior. Real production CSP,
+Chromium/Firefox/WebKit, Rust/PostgreSQL and installed root/subpath journeys still
+require their own recorded execution. Native browser and complete frontend CI/
+release assembly are not implied by a local build.
+
 ## Native targets and limitations
 
 Mac development uses the actual local architecture. CI defines native Linux amd64

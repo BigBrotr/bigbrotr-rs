@@ -1,0 +1,183 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "tasks": [
+    "P08-T02",
+    "P09-T01",
+    "P09-T07"
+  ],
+  "status": "PASS_WITH_EXPLICIT_SCOPE",
+  "source": {
+    "base_revision": "b98426146c68caffcbf6822bdb956d1a8abbd30d",
+    "state": "root-owned uncommitted candidate at execution; changed source hashes below",
+    "changed_files_sha256": {
+      "apps/admin/package.json": "e7ad9ad7cea93fecb7c08247474cd59cfd557f1127977483b2208e8350521397",
+      "apps/admin/src/app.html": "5a88865ffd77ba4c62acacb17366466527094e15afc98228d300f8dd3dbaaae6",
+      "apps/admin/src/lib/messages.ts": "97aec40dbd63a3741f273f6769758ea167c7cd610c45f9ef7a4d67c4e9b9e22c",
+      "apps/admin/src/lib/session.ts": "9b37c822a340fce6e388f1b758f33dc58ecc2a99ae0b55efb49ec5584390d748",
+      "apps/admin/src/routes/+layout.ts": "c99ecc4f19c0da816a224ef18de036f3d7ae1ab03b2692441bc52887d3881513",
+      "apps/admin/src/routes/+page.svelte": "f608412e52836d4a2cc72be9f9b1d90cd81ed8322e1b75ff65a7b1e4a865717f",
+      "apps/admin/src/routes/style.css": "c21ff99a819c523a1d4825fb025d56c680d91f705162588568b4476a7d0561fb",
+      "apps/admin/static/favicon.svg": "f703ba814c6a3b7cab2f1e95e9af14d21d8b80fe042c375e58206bee245feeb4",
+      "apps/admin/svelte.config.js": "13d7925a94618f91bec8c71c56cd6561360ab49393c309c56b069ad3ef771863",
+      "apps/admin/tests/unit/session.test.ts": "534f08255ef18971ac69c9b962713fb96543060476cb846b2fe6c2ce7b06807e",
+      "apps/admin/tsconfig.json": "c3723cd70c21e742b876672698538061d26b282256e18c7b23c57089475fea25",
+      "apps/admin/vite.config.ts": "1e849563c7b7403a43680ae811628bef59bf4b008af9f2f76d8968c5101ddf5f",
+      "apps/bigbrotr/src/config/policy.rs": "a8d54062c873e5f13a5bbc96ec13c1700e40fc04b1cfcf4860fe8e090271dd4d",
+      "apps/bigbrotr/src/config/registry.rs": "1fb6c9874674eb6bde27cbe10fd889895fe2961e251bb9f6174d815f6c396d12",
+      "apps/bigbrotr/src/interfaces/management/assets.rs": "b3d4f85eae9ffd3afa1e723e54b4c8370123b2a2d9cacb9d02a46bdd5fc5ed31",
+      "apps/bigbrotr/src/interfaces/management/assets/tests.rs": "8263935021b8ae32f2bfe72a32b9a0744b767b3585fea2ed273308a8d1194b05",
+      "apps/bigbrotr/src/interfaces/management/mod.rs": "288144f83e85416cefdedb72c30a215a4e5321de7f66858e7285df79773f2250",
+      "apps/bigbrotr/src/interfaces/management/tests.rs": "dd14e45659f4ea64064837d9bccb957e2a762d80222399361b3ea86b835ed51c",
+      "apps/bigbrotr/src/interfaces/management/transport.rs": "33fc5eb9e1a0258744c2769c541f425f3e4d806674da2544163d323af47a0874",
+      "apps/bigbrotr/src/interfaces/serve.rs": "1abc5162ca9a571e43f902e9c5da41fdc5c1e0740abe2afd9096751ab2f3da8a",
+      "apps/bigbrotr/tests/config_entrypoint.rs": "11c40b5d7f382678805f8b3f10993c421c2c0a6549cc749e16b6082f9486908c",
+      "contracts/config/schema.json": "19fbf07b29c8aea7b7f0eecb3e424df7b282728d1be17964105db3977d1cda74",
+      "contracts/management/v1/openapi.yaml": "298060e0e6df84b3f57e4f37176736f9e4bb7bd36c2e9dfb7867d8765154f007",
+      "package.json": "c6276698f489569985d76b3d60ae901726943a5d7022a8292ee4d550e8bbb60f",
+      "packages/api-client/package.json": "f065330ffc1cfe1235ab152d9b7717673ef9058f1a6da2dd7dffe384f2c2e464",
+      "packages/api-client/src/generated/management.d.ts": "d568b109176deb41bbe2ceb77ad00808487a4fa125af76baa981c2c0d52798d4",
+      "packages/api-client/src/generated/validators.d.ts": "44225624b919db4f8eee7603216e0e9ccad96fbabfb7e005a907786b6d8c389b",
+      "packages/api-client/src/generated/validators.js": "7c23955cc551b7ba46e0fc5b12460de1ee81e4ee5e4ffba5ea087142ef82873f",
+      "packages/api-client/src/management.ts": "432c3cb708d1b3127aa776cff509b98d2f709c29a0c0732da521f7415067207f",
+      "packages/api-client/tests/management.test.ts": "22fccd9e2571c6762a4e8654b3b56ac6350877be40f65571b10fe889db5b5955",
+      "packages/api-client/tsconfig.json": "7cbf482c80fe42fc845df7b8e502b9af97514df81f6095d7be7de05889bf52c7",
+      "pnpm-lock.yaml": "914d6a5fff40797d2ab5453a30887c4231ebb291d236d486501486b4ce9e0c55",
+      "pnpm-workspace.yaml": "b7a4c9db6003841ed5e75fa8ac1f7379675ba0c9493c658a3309c793a0afeaef",
+      "tools/frontend/admin-assets.mjs": "a7c256af2f616db795ac40700183f35db86a018f42d4230787e2707a5d50c1e4",
+      "tools/frontend/management-contract.mjs": "b6456bdaf2f6689a07497009f6bcdbb5b9f8a270aefe79fab1cec875a31c6ca1"
+    }
+  },
+  "environment": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "rust": "1.98.1",
+    "node": "v26.4.0",
+    "pnpm": "9.15.9",
+    "native_toolchain": "tools.build.native_toolchain with2jobs; retained explicit packaged-mac archive bundle; no ambient native library substitution"
+  },
+  "scope": "Initial generated same-origin session client, thin private page, bounded static manifest loader and actual TCP delivery on Mac. No browser or native Linux product qualification.",
+  "checks": {
+    "client": {
+      "passed": 10,
+      "fixture": "controlled fetch/Response streams; stalled body cancelled at6001.77ms observed"
+    },
+    "session_model": {
+      "passed": 8,
+      "fixture": "controlled two-model invalidation, late completions, unknown mutations and local expiry"
+    },
+    "typescript_svelte": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "config_cli": {
+      "passed": 25,
+      "includes": "offline absent asset directory, exact mounts, generated schema/reference equality"
+    },
+    "policy": {
+      "passed": 6,
+      "includes": "new deployment roots leave prior bytes/digest unchanged and rebind on restore"
+    },
+    "rust_management": {
+      "passed": 17,
+      "includes": "closed manifest, size/count/duplicate limits, low-capacity retry, integrity/missing-file refusal, root/ancestor/leaf/manifest symlink and actual FIFO, shared Bytes lifetime, root/subpath actual TCP headers/refusals, mutation-independent assets and delivery revocation with zero bytes; final405 carries Allow:GET,HEAD and the revocation oracle accepts reset at send or read only with zero response bytes"
+    },
+    "scoped_clippy": "PASS bin and tests",
+    "binary_build": "PASS",
+    "bundles": [
+      {
+        "base": "/",
+        "files": 13,
+        "bytes": 128471,
+        "manifest_sha256": "af02d47c2940a02c4c532d66831f4bc60813e506657a4f74cd45526532a5ad46",
+        "all_file_hashes_verified": true,
+        "browser": "NOT_RUN"
+      },
+      {
+        "base": "/control/",
+        "files": 13,
+        "bytes": 128505,
+        "manifest_sha256": "9481850c49cd92e136a646b0cf61848de38b99baae1a8ca1978d23de844e8ef7",
+        "all_file_hashes_verified": true,
+        "browser": "NOT_RUN"
+      }
+    ]
+  },
+  "failures_preserved": [
+    "Initial ambient Cargo build explicitly cancelled; controlled native archive build then failed with errno28 before tests. Removed only verified inactive owned Mac incremental cache; retry reached missing-API compilation RED.",
+    "First loader implementation failed compile on private observation visibility and unsupported SHA output LowerHex. Corrected; no runtime counterexample claimed for compilation failures.",
+    "First integrated actual TCP revocation test used an exchange helper requiring FIN; OS reset made it FAIL. Final negative accepts FIN or reset only within1s and requires exactly zero bytes.",
+    "Initial client error schema did not correlate error status/code/message/retry enums. Discriminating model test failed; exact oneOf pairs now reject mismatches.",
+    "Read-only AI review found terminal/teardown invalidation and idle-pagehide problems. Separate runtime RED regressions preceded fixes. GET form fallback and missing-startup recovery were corrected statically; browser proof remains NOT_RUN."
+  ],
+  "review": {
+    "kind": "independent read-only AI source review plus integrating owner diff review",
+    "checked": "loader/descriptor walk/transport/Control lifecycle and caller budgets, policy roots, Bytes1.12.1 owner semantics and Hyper1.11.1 vectored queue path; frontend client/state/CSP source",
+    "remaining": "actual large blocked static response, browser CSP/cookies/subpath/keyboard/missing-script, native Node/browser dependency closure and complete frontend CI/release assembly"
+  },
+  "resource_cleanup": {
+    "scope": "three individually inventoried stopped prior Tux labs; no current seed cache or database removed",
+    "removed_generated_logical_bytes": 6490587624,
+    "preserved_containers": 426,
+    "unrelated_running": 8,
+    "free_after_bytes": 28275548160,
+    "retired_partial_caches": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-5a4e0d1/out/build/target",
+      "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-faults-661b54b/out/build/target",
+      "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-c98398b/out/build/target"
+    ],
+    "retained": "source, executable/shared artifacts with verified hashes, captures, synthetic private fixtures, databases and native bundles"
+  },
+  "not_run": [
+    "Chromium",
+    "Firefox",
+    "WebKit",
+    "actual private page with Rust/PostgreSQL",
+    "large blocked static response",
+    "Linux target qualification",
+    "full P08/P09/M1 and release journeys"
+  ],
+  "raw_evidence": {
+    "root": ".research/implementation/private-panel",
+    "sha256": {
+      "assets-red-retry/result.json": "d482d2985f4441011deac3e9319f5deed6d6920673b2e9d54aca0dff77b5a75e",
+      "assets-red-retry/assets.log": "f5c803cb23271218c6076ce8eff1628e3fca4fb2525a8e59ac159b26686fa3fc",
+      "assets-green/result.json": "08197fcf2ff418253f65e97ea7923ffbe4b195571793737d3d1ba94ec19e0cef",
+      "assets-green/assets.log": "d80381ae761819962183d1ad155a21820d31a79dad77e7d476ebbc64203b8a7c",
+      "assets-integrated/result.json": "f06c8e27a113ff8ae4f38aa0117d852024872639c953e6707e8b22f7293c5b63",
+      "assets-integrated/assets.log": "cb8bdda0b49bbd5dce099d48c33b567c6e8ce72a1286e274f25017a0d0ba8c10",
+      "assets-final-mac/result.json": "e4b917911774ada6435d3ca3ddb23b1cd999e74274d65a5bc3d6ad26a59ae45b",
+      "assets-final-mac/config.log": "4684ba59903bdf67515a43104145a63b825d0cd82ad632729ef6c0b73615157c",
+      "assets-final-mac/policy.log": "b4dfbd08cb6ea2ef75af6c684e21d08a40f159c3ef739bc4f12846996a77edb0",
+      "assets-final-mac/clippy.log": "1627caf0f09d6731463ec9e03b6e7baef91713ed59c0aa028e19b6aa7bbc49fb",
+      "assets-final-mac/assets.log": "f7ea093852e3be8860273efa4b2ff3a7508ecdc41ff177df12e7e3cdb32a68aa",
+      "client-deadline.log": "41dd0fa9c3530d642c54943e7358bf47f05e5c80176b78f2daea43940f6a52c5",
+      "session-terminal-red.log": "510b1bf2ced2075140a366e1020e2c17f9ad2101865bedb8890643939112dfbe",
+      "session-dispose-red.log": "f263c239ad1958e248245b85958c5e5a84b87d6111eac625bb2aec8cae7302e7",
+      "session-suspend-runtime-red.log": "c33cdf539a949c5e5e3ad768e8ab9d904cc4856009bbcdffcf225433425f6ffb",
+      "session-suspend-green.log": "e3f47e9d887e661a453587094ea47c208af266d6fbae862d690c7b0aef6c323d",
+      "admin-suspend-check.log": "6a9974b5ef90112381963a8b6cf620e435abd870775204db3977935dd1201fed",
+      "bundle-suspend-check.json": "c09626e7ce83d8955959c320f26191df87c1ff710ed0bc61c6a4dbf367d8380a",
+      "bundle-suspend-root.log": "272e2fa8ecef13eb3be1d5e8b4f704b627d17afda47ba1eee7e187a872a76205",
+      "bundle-suspend-control.log": "661ac475bacfb15697bf847ed11f10c615ef928d5e71471e4b85dc30ac16b31e",
+      "cache-recovery.json": "e7d6d3a17e55ed35dbf4b686ed25acdd279cfb47c00fbb7687affba906b3bdcd",
+      "tux-cache-retirement.json": "f67581b2b2ae4a673c85763fc09f2b197dd9e792d6ab454c53cc28d54f974501",
+      "tux-cache-retirement-metadata.json": "875aabbac4d1efaa3646ad8eb80531dde92a7b3892ade0a97344f8dacee91617",
+      "handoff-check.json": "1cfd38f7df011e7e987684045934d574857810efa1c9f3491681ef1099e69508",
+      "assets-http-final-mac/result.json": "9d7f6fd780dab1925732f763462d73aa55c910d3f7e6395866b59992188acbfb",
+      "assets-http-final-mac/http.log": "ec5ea4fb553631e5ce820f76a81f93d37abf97b8a9b9f51914edf410e50835e5",
+      "assets-http-final-mac/clippy.log": "645817e5bf73963bd34cad6c77294ecb89d51d3308523f11a95a4062270c73ea",
+      "assets-http-final-mac/build.log": "1f00c88fa8a3cfb754eaa6a2e3b839cad6804e110596eccbc492205e00c0abc2",
+      "contracts-final.log": "40b5ca77497ed6b57f463cbfc0365bd1d2fdf38d6d7dfdcf6c1b50c8cdd38a78",
+      "client-types-final.log": "dd6b40baaafcd00d81ce1cf09226f2e2aac530a7a7c745943d6807856a056109"
+    }
+  },
+  "artifacts": {
+    "mac_debug_binary": {
+      "bytes": 49317624,
+      "sha256": "266e3c620bc3e3da3f73512fd7bab584667c60335e166b2cfcb2b762579a2c7a",
+      "build_attribution": "ordinary Cargo unrecorded-source build; exact dirty source hashes bind this local scope"
+    },
+    "cargo_lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "pnpm_lock_sha256": "914d6a5fff40797d2ab5453a30887c4231ebb291d236d486501486b4ce9e0c55"
+  }
+}

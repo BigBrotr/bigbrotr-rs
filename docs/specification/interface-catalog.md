@@ -1,7 +1,7 @@
 # Interface catalog and stable resource names
 
-Status: selected interfaces to implement. No endpoint, binary or browser product
-exists yet. P06 owns public reads/protocols, P08 private operations/artifacts,
+Status: selected interfaces under implementation; availability is explicit for
+the initial subset below. P06 owns public reads/protocols, P08 private operations/artifacts,
 P09 browser clients, and P10 the website. Existing typed policy, budget, snapshot,
 error and idempotency contracts apply; a route name does not waive them.
 
@@ -134,6 +134,39 @@ complete the workflows promised by P08/P09:
 | `GET /management/v1/artifacts` and `/artifacts/{artifact_id}`; `POST /artifacts/{artifact_id}/publish` or `/withdraw` under the same prefix | Private verified-artifact discovery/publication; CLI artifact publish/withdraw; independent action grants |
 | `GET /management/v1/storage`; `GET /management/v1/diagnostics/preview` | Resource/protection state and redacted diagnostic selection; bundle generation is a finite job |
 | `GET /management/v1/publishing`; `GET /management/v1/audit` | Exact destination obligations and attributable private audit |
+
+The implemented initial subset is described by the versioned [private session
+OpenAPI contract](../../contracts/management/v1/openapi.yaml): login, current-session
+logout and self inspection in the trusted-host loopback HTTP profile. Its
+`bigbrotr-session/1` response carries exact decimal-string revisions/microseconds,
+closed stored action names and `authority=observation-only`. Stored grants are not
+reusable action capabilities. Cookie/CSRF secrets never appear in the JSON body.
+GET self inspection counts as user activity, so the browser must not poll it to
+keep an unattended session alive. Full grant/reauthentication/audit and remote-TLS
+routes remain separate required implementation. Generated types and runtime
+validators cover this actual subset; they do not advertise the whole table above.
+
+The initial private static bundle has a closed JSON manifest
+`bigbrotr-private-assets/1`: exactly `format`, `base_path` and `files`, with each
+file containing `path`, unsigned `bytes` and lowercase hex64 `sha256` over the
+exact file bytes. Base is `/` or `/control/`. A nonempty list has at most128 unique
+paths, requires `index.html`, excludes the manifest itself and permits only
+HTML, JS, CSS, JSON and SVG. Paths are at most256 ASCII bytes; slash-separated
+components begin with a letter, digit, underscore or hyphen and continue with
+those characters or dots. File/total/manifest limits are2MiB/16MiB/64KiB inclusive.
+The digest establishes integrity under a trusted deployment directory, not
+publisher authentication. There is no mutable asset generation or cache promotion
+from an HTTP request. Future incompatible bundle formats must be explicitly
+rejected or migrated; no silent reinterpretation is permitted.
+
+Static GET/HEAD uses the private listener's same literal Host/Origin boundary,
+connection budget, deadline and delivery gate. Exact known paths resolve from
+verified held bytes; unknown paths return404 and queries are refused. Root maps
+to `index.html`, with no SPA catch-all. `Cache-Control:no-store`, nosniff,
+same-origin resource policy and frame denial accompany successful assets. Generated
+HTML supplies script/style CSP hashes; the Rust header additionally enforces
+`frame-ancestors 'none'`, which browsers ignore in CSP meta. No static response
+issues cookies or turns session observations into action/data authority.
 
 Setup/reset credentials use a 15-minute maximum lifetime, hash-only storage,
 single atomic consumption, bounded guesses and protected one-time display.

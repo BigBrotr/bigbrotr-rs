@@ -119,6 +119,18 @@ allowance plus protected-connection preparation, retained through output. This
 allowance is not measured peak RSS or an engine query-cost guarantee. Physical
 SQL scan/MVCC cost and peak memory remain workload qualification work.
 
+## Private static deployment roots
+
+`administration.assets.directory` defaults to null and selects an optional verified
+private panel bundle for `serve`. `administration.assets.base_path` defaults to
+`/`; its only other initial value is `/control/`. Both are restart-only deployment
+roots, excluded from accepted policy bytes/digests. Existing policy documents
+therefore need no migration or implicit default fill. Offline validation checks
+syntax without reading assets; persistent startup checks the explicit manifest
+before any Control claim, regardless of later accepted listener enablement.
+Finite commands do not load it. [Control runtime](../user/control-runtime.md)
+defines the initial bundle limits, lifetime and current session-only scope.
+
 ## Explicit catalog inspection
 
 A selected local Archive requires `archive.catalog_id`, the expected nonzero
@@ -226,8 +238,14 @@ renews the scheduling row only at that heartbeat. Acquisition, polling, release
 and cancellation keep one connection/driver and its conservative 512 MiB policy
 preparation grant until terminal join. Managed or declarative file drift is not
 activation. All other selected roles refuse before credential I/O. Accepted
-`administration.enabled=true` is refused: the missing Control administration
-listener cannot be silently ignored.
+`administration.enabled=true` selects the bounded trusted-host loopback private
+session listener after migration0806 and its actual SQL privileges are verified.
+It implements login/self/logout, not the remaining management actions. Its
+connections, requests and one owned password worker share the application budget;
+actual socket writes remain gated by Control authority. The [private administration
+contract](../product/private-administration.md#initial-authentication-and-action-permissions)
+and [HTTP evidence](../implementation/evidence/p08-browser-http-native-20260920.json)
+define this implemented boundary and its remaining browser/release gates.
 
 Control lifecycle output is advisory. A process-owned diagnostic thread writes
 directly to duplicated stdout/stderr descriptors without acquiring Rust stdio

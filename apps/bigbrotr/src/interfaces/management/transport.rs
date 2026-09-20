@@ -1,15 +1,15 @@
 //! Owned HTTP1 connections. The Control supervisor consumes bounded commands;
 //! HTTP tasks never borrow its connection, policy tracker or archive custody.
 use super::{
-    BrowserBoundary,
+    Assets, BrowserBoundary,
     boundary::single,
     delivery::{DeliveryGate, GuardedSocket},
 };
 use axum::{
     Extension, Json, Router,
-    body::to_bytes,
+    body::{Body, to_bytes},
     extract::{Request, State},
-    http::{HeaderMap, HeaderValue, StatusCode, header},
+    http::{HeaderMap, HeaderValue, Method, StatusCode, header},
     response::{IntoResponse, Response},
     routing::{delete, get, post},
 };
@@ -27,6 +27,7 @@ use serde_json::json;
 use std::{
     io,
     net::{IpAddr, SocketAddr},
+    sync::Arc,
     time::Duration,
 };
 use tokio::{
@@ -89,6 +90,7 @@ struct Shared {
     boundary: BrowserBoundary,
     budget: ResourceBudget,
     commands: mpsc::Sender<Command>,
+    assets: Option<Arc<Assets>>,
 }
 #[derive(Clone, Copy)]
 struct Connection {
@@ -106,15 +108,17 @@ impl Server {
         address: SocketAddr,
         budget: ResourceBudget,
         delivery: DeliveryGate,
+        assets: Option<Assets>,
     ) -> io::Result<Self> {
         BrowserBoundary::loopback(address).map_err(io::Error::other)?;
         let listener = TcpListener::bind(address).await?;
-        Self::from_listener(listener, budget, delivery)
+        Self::from_listener(listener, budget, delivery, assets)
     }
     pub(super) fn from_listener(
         listener: TcpListener,
         budget: ResourceBudget,
         delivery: DeliveryGate,
+        assets: Option<Assets>,
     ) -> io::Result<Self> {
         let boundary =
             BrowserBoundary::loopback(listener.local_addr()?).map_err(io::Error::other)?;
@@ -124,11 +128,13 @@ impl Server {
             boundary,
             budget,
             commands: sender,
+            assets: assets.map(Arc::new),
         };
         let router = Router::new()
             .route("/management/v1/sessions", post(login))
             .route("/management/v1/sessions/current", delete(logout))
             .route("/management/v1/me", get(me))
+            .fallback(static_asset)
             .with_state(state.clone());
         let task = tokio::spawn(serve(listener, router, state.budget, stopped, delivery));
         Ok(Self {
@@ -219,6 +225,54 @@ fn begin(shared: &Shared, request: &Request) -> Result<OwnedPermit, StatusCode> 
         .budget
         .try_acquire(ResourceRequest::data(REQUEST_BYTES, 1, 0).expect("fixed request reservation"))
         .map_err(|_| StatusCode::TOO_MANY_REQUESTS)
+}
+
+async fn static_asset(State(shared): State<Shared>, request: Request) -> Response {
+    let _grant = match begin(&shared, &request) {
+        Ok(grant) => grant,
+        Err(status) => return error(status),
+    };
+    if !matches!(*request.method(), Method::GET | Method::HEAD) {
+        return protect(
+            (
+                StatusCode::METHOD_NOT_ALLOWED,
+                [(header::ALLOW, "GET, HEAD")],
+            )
+                .into_response(),
+        );
+    }
+    let Some(asset) = shared
+        .assets
+        .as_ref()
+        .and_then(|assets| assets.lookup(request.uri().path()))
+    else {
+        return protect((StatusCode::NOT_FOUND, "Private asset unavailable.").into_response());
+    };
+    let body = if request.method() == Method::HEAD {
+        Body::empty()
+    } else {
+        Body::from(asset.body.clone())
+    };
+    let mut response = Response::new(body);
+    let headers = response.headers_mut();
+    headers.insert(header::CONTENT_TYPE, HeaderValue::from_static(asset.mime));
+    headers.insert(header::CONTENT_LENGTH, HeaderValue::from(asset.body.len()));
+    for (name, value) in [
+        ("cache-control", "no-store"),
+        ("x-content-type-options", "nosniff"),
+        ("x-frame-options", "DENY"),
+        ("referrer-policy", "no-referrer"),
+        ("cross-origin-resource-policy", "same-origin"),
+        // The build supplies script/style hashes in HTML meta. frame-ancestors
+        // is ignored in meta and must additionally be enforced by this header.
+        (
+            "content-security-policy",
+            "frame-ancestors 'none'; base-uri 'none'; object-src 'none'",
+        ),
+    ] {
+        headers.insert(name, HeaderValue::from_static(value));
+    }
+    response
 }
 async fn login(
     State(shared): State<Shared>,

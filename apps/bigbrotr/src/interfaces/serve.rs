@@ -156,6 +156,7 @@ struct ArchiveRun {
     receipt: Option<(archive_receipt::Options, ResourceBudget)>,
     initialization_budget: Option<ResourceBudget>,
     management_budget: Option<ResourceBudget>,
+    management_assets: Option<management::Assets>,
 }
 
 fn run(
@@ -202,6 +203,13 @@ fn run(
     let management_budget = matches!(operation, Operation::Serve)
         .then(|| management::budget(&root))
         .transpose()?;
+    // Explicitly configured bundles are startup prerequisites even when the
+    // later accepted policy disables the listener. Never read disk under lease.
+    let management_assets = management_budget
+        .as_ref()
+        .map(|budget| management::prepare_assets(&root, budget))
+        .transpose()?
+        .flatten();
     let shared_budget = receipt
         .as_ref()
         .map(|(_, budget)| budget)
@@ -247,7 +255,7 @@ fn run(
         let driver = if let Some(custody) = &coordinator {
             tokio::spawn(custody.retain_connection(driver).map_err(|e| (4, format!("cannot retain archive coordinator custody: {e:?}")))?)
         } else { tokio::spawn(driver) };
-        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, initialization_budget, management_budget }, operation).await;
+        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, initialization_budget, management_budget, management_assets }, operation).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
         // the join. Dropping the request/session alone does not free its grant.
         postgres_command::join(driver).await;
@@ -479,6 +487,10 @@ async fn supervise(
         ));
     }
     let accepted = accepted.ok_or_else(|| (3, "accepted runtime policy unavailable".into()))?;
+    let asset_observation = archive
+        .management_assets
+        .as_ref()
+        .map(management::Assets::observation);
     let mut management = if accepted.flag("administration.enabled") {
         tokio::select! {
             biased;
@@ -499,15 +511,18 @@ async fn supervise(
                 lease
                     .delivery_window(lease.known_epoch())
                     .map_err(|e| (4, e.to_string()))?,
+                archive.management_assets,
             )
             .await?,
         )
     } else {
+        drop(archive.management_assets);
         None
     };
     let listeners = if management.is_some() {
         json!([{"kind":"private-session-http", "host":accepted.text("administration.listen.host"),
-            "port":accepted.number("administration.listen.port"), "profile":"trusted-host-loopback"}])
+            "port":accepted.number("administration.listen.port"), "profile":"trusted-host-loopback",
+            "private_assets":asset_observation}])
     } else {
         json!([])
     };

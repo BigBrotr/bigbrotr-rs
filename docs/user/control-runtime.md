@@ -7,11 +7,13 @@ bigbrotr serve --file /etc/bigbrotr/root.toml --roles control
 ```
 
 Use an existing validated root with Control assigned locally, protected application
-credentials, migration 0007 (0010 when Archive is assigned locally), accepted initial configuration and the explicitly
-activated first security revision with `administration.enabled=false`. For this
-initial backend-only slice, set that value in a fresh candidate **before**
-initialization/activation; the default recipes enable administration and must be
-refused until its listener is implemented. Editing an already accepted managed
+credentials, the current explicit Control migrations, accepted initial
+configuration and an activated security revision. Accepted
+`administration.enabled=true` additionally requires migration0806 and the browser
+session SQL privileges, then binds the configured loopback private listener.
+Its initial routes provide login, self inspection and logout; they grant no data
+read or management-command authority. `administration.enabled=false` starts no
+listener. Editing an already accepted managed
 seed does not disable administration. Follow the explicit migration/initialization
 commands in [development build](../development/build.md) and the separate
 [owner enrollment guide](administration/enrollment.md). `serve` does not initialize,
@@ -45,9 +47,44 @@ scope; neither result enables Archive dispatch.
 
 Omitting `--roles` uses the root's explicit assignment. This initial slice refuses
 any selected role other than Control before opening credentials. Selecting a
-subset never starts the omitted roles. It opens no listener or native store and
-makes no acquisition, publication or read-service readiness claim. The complete
+subset never starts the omitted roles. It opens no native store and makes no
+acquisition, publication or data-read readiness claim. The complete
 product and the ordinary Compose installation remain in development.
+
+To serve the initial private panel from that same listener, build the
+[static bundle](../development/build.md#private-browser-consumer) and set deployment
+roots before starting Control:
+
+```toml
+[administration.assets]
+directory = "/opt/bigbrotr/private-panel"
+base_path = "/"
+```
+
+The directory must be absolute with no symlink in any path component. The default
+null directory leaves the three session API routes available without a panel.
+A bundle built for `/control` instead requires `base_path="/control/"` and is
+opened at `/control/` (including its trailing slash). Static and API requests use
+the configured literal loopback IP and port; `localhost` aliases are refused.
+This HTTP profile assumes trusted services on the same host: browser cookies are
+host-scoped, not isolated by port. Remote TLS remains a separate implementation gate.
+
+An explicitly configured bundle is verified before connecting to Control, even
+if accepted policy subsequently disables the listener. Missing, mismatched or
+oversized assets fail startup. All bytes stay in a shared 20MiB process-budget
+reservation; per-file limits are2MiB, the bundle is at most16MiB/128files and its
+manifest at most64KiB. The ordinary login must still fit the remaining envelope.
+Restart explicitly to install another bundle; changing files beneath a running
+process does not change its verified bytes. The private `idle` record reports
+base path, counts and manifest digest, never the host directory. It is an
+integrity observation, not release authentication.
+
+The panel supports one observed session, explicit refresh and logout. It does not
+poll to keep idle sessions alive. A timeout during login/logout displays an
+unconfirmed outcome; inspect the current session or explicitly retry the intended
+action. Local expiry and changes in another tab clear prior observations. A
+static loading/reload notice remains available if the startup script fails.
+The full administration workflows remain under implementation.
 
 The accepted PostgreSQL configuration/security documents remain authoritative;
 changes to a managed seed or staged declarative file do not activate themselves.

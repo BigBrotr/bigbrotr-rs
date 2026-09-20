@@ -594,6 +594,40 @@ fn generated_consumers_match_registry_and_examples_validate_outside_checkout() {
 }
 
 #[test]
+fn private_asset_roots_validate_offline_without_opening_a_bundle() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    let base = example(path, "archive-only");
+    for mount in ["/", "/control/"] {
+        let input = format!(
+            "{base}\n[administration.assets]\ndirectory='/nonexistent/bigbrotr/private-assets'\nbase_path='{mount}'\n"
+        );
+        fs::write(path.join("input.toml"), &input).unwrap();
+        let show = success(run(path, &["config", "show", "--file", "input.toml"]));
+        assert_eq!(
+            show["settings"]["administration.assets.base_path"]["value"],
+            mount
+        );
+        assert_eq!(
+            show["settings"]["administration.assets.directory"]["value"],
+            "/nonexistent/bigbrotr/private-assets"
+        );
+    }
+    for fields in [
+        "directory='relative/path'",
+        "directory='/valid/../invalid'",
+        "base_path='/control'",
+        "base_path='/other/'",
+    ] {
+        let error = invalid_error(
+            path,
+            &format!("{base}\n[administration.assets]\n{fields}\n"),
+        );
+        assert!(error.contains("administration.assets."));
+    }
+}
+
+#[test]
 fn monitor_stored_checks_follow_selected_checks_and_refuse_incompatible_sets() {
     let directory = tempfile::tempdir().unwrap();
     let path = directory.path();

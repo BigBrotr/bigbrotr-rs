@@ -5,6 +5,30 @@
     "administration": {
       "additionalProperties": false,
       "properties": {
+        "assets": {
+          "additionalProperties": false,
+          "properties": {
+            "base_path": {
+              "default": "/",
+              "enum": [
+                "/",
+                "/control/"
+              ],
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "directory": {
+              "format": "bigbrotr-absolute-path",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            }
+          },
+          "type": "object"
+        },
         "enabled": {
           "default": true,
           "type": "boolean",

@@ -1,0 +1,434 @@
+// Generated from contracts/management/v1/openapi.yaml. Do not edit.
+export interface paths {
+    "/management/v1/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sign in locally
+         * @description Exact same-origin Origin required. Session and CSRF secrets appear only in separate Set-Cookie headers. Unknown completion may have committed; an explicit new login is a new attempt, never an automatic retry. Body max8192bytes; password max1024 UTF-8 bytes.
+         */
+        post: operations["createSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/management/v1/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Inspect this session
+         * @description Touches idle expiry for actual user activity. Do not poll in the background to keep an unattended session alive. Missing Origin accepted for GET; any supplied Origin must match exactly. Observation alone grants no command or data authority.
+         */
+        get: operations["inspectSession"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/management/v1/sessions/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Sign out
+         * @description Requires exact Origin and X-CSRF-Token bound to this cookie. Confirmed204 clears both cookies; an unknown outcome sends no clearing response. Retrying with the same original pair confirms its revocation. No global data-stream drain is implied.
+         */
+        delete: operations["deleteSession"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+}
+export type webhooks = Record<string, never>;
+export interface components {
+    schemas: {
+        LoginInput: {
+            username: string;
+            /** @description Exact password, at most1024 UTF-8 bytes and no control characters. Never trim or normalize. */
+            password: string;
+        };
+        SessionObservation: {
+            /** @constant */
+            format: "bigbrotr-session/1";
+            principal_id: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            credential_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            grant_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            policy_revision: string;
+            /** @description Positive Unix microseconds, maximum9223372036854775807. A server observation, not a renewable client-side authority lease. */
+            expires_at_us: string;
+            /** @description Positive Unix microseconds, maximum9223372036854775807. A server observation, not a renewable client-side authority lease. */
+            idle_expires_at_us: string;
+            stored_actions: ("audit.read" | "budgets.change" | "data.read" | "policy.change" | "principals.manage" | "roles.control" | "status.read")[];
+            /** @constant */
+            authority: "observation-only";
+        };
+        ApiError: {
+            error: {
+                /** @enum {integer} */
+                status: 400 | 401 | 403 | 413 | 415 | 429 | 503;
+                /** @enum {string} */
+                code: "invalid_request" | "authentication_denied" | "browser_boundary_denied" | "request_too_large" | "unsupported_media_type" | "capacity_or_rate_limited" | "authority_unavailable";
+                /** @enum {string} */
+                message: "Invalid request." | "Authentication required or denied." | "Browser request boundary refused." | "Request exceeds its byte limit." | "JSON content type required." | "Request capacity or attempt limit reached." | "Current authority or dependency unavailable.";
+                /** @enum {string} */
+                retry_class: "authenticate" | "check_state" | "correct_request" | "retry_later";
+                correlation_id: string | null;
+            } & ({
+                /** @constant */
+                status?: 400;
+                /** @constant */
+                code?: "invalid_request";
+                /** @constant */
+                message?: "Invalid request.";
+                /** @constant */
+                retry_class?: "correct_request";
+            } | {
+                /** @constant */
+                status?: 401;
+                /** @constant */
+                code?: "authentication_denied";
+                /** @constant */
+                message?: "Authentication required or denied.";
+                /** @constant */
+                retry_class?: "authenticate";
+            } | {
+                /** @constant */
+                status?: 403;
+                /** @constant */
+                code?: "browser_boundary_denied";
+                /** @constant */
+                message?: "Browser request boundary refused.";
+                /** @constant */
+                retry_class?: "correct_request";
+            } | {
+                /** @constant */
+                status?: 413;
+                /** @constant */
+                code?: "request_too_large";
+                /** @constant */
+                message?: "Request exceeds its byte limit.";
+                /** @constant */
+                retry_class?: "correct_request";
+            } | {
+                /** @constant */
+                status?: 415;
+                /** @constant */
+                code?: "unsupported_media_type";
+                /** @constant */
+                message?: "JSON content type required.";
+                /** @constant */
+                retry_class?: "correct_request";
+            } | {
+                /** @constant */
+                status?: 429;
+                /** @constant */
+                code?: "capacity_or_rate_limited";
+                /** @constant */
+                message?: "Request capacity or attempt limit reached.";
+                /** @constant */
+                retry_class?: "retry_later";
+            } | {
+                /** @constant */
+                status?: 503;
+                /** @constant */
+                code?: "authority_unavailable";
+                /** @constant */
+                message?: "Current authority or dependency unavailable.";
+                /** @constant */
+                retry_class?: "check_state";
+            });
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
+}
+export type $defs = Record<string, never>;
+export interface operations {
+    createSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginInput"];
+            };
+        };
+        responses: {
+            /** @description New session; HttpOnly session cookie and readable CSRF cookie */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionObservation"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Body byte limit */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description JSON required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    inspectSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current session observation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionObservation"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Body byte limit */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description JSON required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    deleteSession: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Confirmed revocation; two cookie clearing headers and no body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Body byte limit */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description JSON required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+}

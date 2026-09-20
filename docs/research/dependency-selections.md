@@ -675,3 +675,49 @@ and retained memfds; it is not an RSS certificate.
 at `50d9496` passes 25 initializer/receipt TLS/mTLS cases, including server clientcert
 validation, SCRAM-only acceptance and blocked native-query cancellation. Signed
 mTLS publication and broader service/release gates remain open.
+
+### Initial private browser consumer candidate
+
+P08-T02/P09-T01/T07 now introduce the first actual session consumer, with a
+separate private `@bigbrotr/admin` SvelteKit static build and a small generated
+`@bigbrotr/api-client`. There is no deployed Node server, browser database access,
+external font/media request or automatic mutation retry. Rust-only compilation
+remains independent of pnpm. This is an implementation candidate, not completion
+of either browser application or native browser qualification.
+
+Exact initial direct versions are Svelte5.57.1, Kit2.70.3,
+`@sveltejs/adapter-static`3.0.10, `@sveltejs/vite-plugin-svelte`7.3.0,
+Vite8.3.0, svelte-check4.7.6, TypeScript5.9.3, openapi-typescript7.13.0,
+Ajv8.20.0 and `@types/node`26.4.0. The tested local tools are Node26.4.0 and
+pnpm9.15.9. The checked lockfile owns transitive resolutions. TypeScript7 was
+not selected: the actual generator peer constraint is5.x. Install uses strict
+peers and ignored lifecycle scripts; build and generation are explicit commands.
+
+Official registry archives for the initial ten researched candidates, including
+Playwright1.63.0 (not yet installed/qualified), have verified SHA512 registry
+integrities and independently recorded SHA256 digests. Metadata and sources are
+under the inventoried `.research/implementation/private-panel/dependencies`.
+Scoped source inspection covers adapter-static3.0.10 `index.js`, Kit2.70.3
+`src/runtime/server/page/csp.js`, openapi-typescript7.13.0 `dist/index.mjs`,
+Ajv8.20.0 `dist/standalone/index.js` and matching package/peer declarations.
+The [static adapter](https://svelte.dev/docs/kit/adapter-static) emits an explicit
+static output with strict route coverage. Kit's [CSP configuration](https://svelte.dev/docs/kit/configuration#csp)
+adds hashes for prerendered bootstrap code; `frame-ancestors` is excluded from
+meta delivery and must be a Rust response header. Development-server CSP is not
+production evidence. [OpenAPI TypeScript](https://openapi-ts.dev/introduction)
+generates wire types; build-time standalone Ajv output supplies closed runtime
+response validation without shipping schema compilation or requiring eval.
+
+The initial Mac pnpm license inventory reports MIT, Apache-2.0, BSD-3-Clause,
+ISC, Python-2.0 (`argparse`2.0.1), MPL-2.0 (`lightningcss`1.33.0 and its exact
+Darwin arm64 binary), and MIT-or-CC0 (`type-fest`4.41.0, MIT selected). Lightning
+CSS is a build tool, not an imported browser runtime. This metadata inventory
+is not a complete packaged license/SBOM qualification; retain upstream notices
+and inspect the actual Linux tool/bundle dependency closure before distribution.
+No Cargo license policy exception or existing Cargo resolution changed.
+
+The next native browser candidate uses matching isolated Playwright browser
+builds, following the [browser installation contract](https://playwright.dev/docs/browsers).
+Do not overwrite installed branded browsers or treat WebKit on Linux as Safari
+on Apple hardware. Real Chromium/Firefox/WebKit session, CSP, cookie, second-port,
+missing-asset and cancellation journeys against Rust/PostgreSQL remain required.

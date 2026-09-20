@@ -1,6 +1,6 @@
 # Phase 09 — Public dashboard and private administration specification
 
-Status: **planning only; all files, commands and acceptance below are proposed, not executed**. Implement only after the owner opens the implementation stage. This completes historical dashboard phase 9 and the selected private administration scope; it does not include the independent project website in [phase 10](10-website.md).
+Status: **implementation in progress; no P09 task is complete**. Unchecked acceptance remains planned. The owner opened implementation on 2026-09-17. This completes historical dashboard phase 9 and the selected private administration scope; it does not include the independent project website in [phase 10](10-website.md).
 
 **Goal:** make the archive's actual evidence useful to readers and its configuration, work and recovery understandable to operators through separate accessible browser applications.
 
@@ -48,6 +48,20 @@ Back/forward/reconnect cannot redisplay an expired ordinary answer as current;
 invalidate/mark it and re-admit the query. Explicitly authorized historical or
 dated stale analysis has its separately declared presentation semantics. P09-T01
 tests expiry without new ingestion, delayed responses and history navigation.
+
+### Initial private session consumer (2026-09-20, in progress)
+
+The first concrete consumer is `@bigbrotr/admin` and its generated session-only
+client, backed by the three existing P08-T02 HTTP routes. The optional Rust static
+loader verifies closed manifests and retains bounded immutable bytes for root
+and `/control/` delivery. [Local evidence](evidence/p09-private-panel-local-20260920.json)
+records Mac10 client/8 model/25 config/6 policy/17 management tests, strict type
+checks, build/Clippy and both bundles. Actual TCP cases cover headers, exact mounts,
+refusals and zero-byte delivery after revocation; these are not browser evidence.
+Independent AI review corrections have discriminating runtime regressions for
+cross-tab lifecycle. Real browser/Rust/PostgreSQL, public application separation,
+large blocked response, full accessible primitives and shared frontend CI/release
+assembly remain required. No task step or browser journey is marked complete.
 
 ## P09-T02 — Public navigation, capabilities and first useful data
 

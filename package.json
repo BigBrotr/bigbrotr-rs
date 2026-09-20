@@ -1,0 +1,20 @@
+{
+  "name": "bigbrotr-workspace",
+  "private": true,
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": "26.4.0"
+  },
+  "scripts": {
+    "contracts:generate": "node tools/frontend/management-contract.mjs",
+    "contracts:check": "node tools/frontend/management-contract.mjs --check",
+    "test:client": "node --test packages/api-client/tests/*.test.ts",
+    "check:client": "tsc --project packages/api-client/tsconfig.json"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3",
+    "@types/node": "26.4.0"
+  }
+}

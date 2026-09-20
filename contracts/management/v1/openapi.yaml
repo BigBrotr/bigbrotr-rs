@@ -1,0 +1,632 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "BigBrotr private session API",
+    "version": "0.1.0-dev",
+    "description": "Implemented initial trusted-host loopback session slice. This is not the complete management API or a release-readiness claim. Cookies are host-scoped, not port-isolated; every service on the host must be trusted. No remote TLS profile is implemented."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Only this private origin; the client cannot select another origin."
+    }
+  ],
+  "security": [
+    {
+      "localSession": []
+    }
+  ],
+  "paths": {
+    "/management/v1/sessions": {
+      "post": {
+        "operationId": "createSession",
+        "summary": "Sign in locally",
+        "security": [],
+        "description": "Exact same-origin Origin required. Session and CSRF secrets appear only in separate Set-Cookie headers. Unknown completion may have committed; an explicit new login is a new attempt, never an automatic retry. Body max8192bytes; password max1024 UTF-8 bytes.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New session; HttpOnly session cookie and readable CSRF cookie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionObservation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/v1/me": {
+      "get": {
+        "operationId": "inspectSession",
+        "summary": "Inspect this session",
+        "description": "Touches idle expiry for actual user activity. Do not poll in the background to keep an unattended session alive. Missing Origin accepted for GET; any supplied Origin must match exactly. Observation alone grants no command or data authority.",
+        "responses": {
+          "200": {
+            "description": "Current session observation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionObservation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/v1/sessions/current": {
+      "delete": {
+        "operationId": "deleteSession",
+        "summary": "Sign out",
+        "description": "Requires exact Origin and X-CSRF-Token bound to this cookie. Confirmed204 clears both cookies; an unknown outcome sends no clearing response. Retrying with the same original pair confirms its revocation. No global data-stream drain is implied.",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Confirmed revocation; two cookie clearing headers and no body"
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "pattern": "^[a-z0-9._-]{1,64}$"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 1024,
+            "writeOnly": true,
+            "description": "Exact password, at most1024 UTF-8 bytes and no control characters. Never trim or normalize."
+          }
+        }
+      },
+      "SessionObservation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format",
+          "principal_id",
+          "credential_revision",
+          "grant_revision",
+          "policy_revision",
+          "expires_at_us",
+          "idle_expires_at_us",
+          "stored_actions",
+          "authority"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "bigbrotr-session/1"
+          },
+          "principal_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "credential_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "grant_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "policy_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "expires_at_us": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Positive Unix microseconds, maximum9223372036854775807. A server observation, not a renewable client-side authority lease."
+          },
+          "idle_expires_at_us": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Positive Unix microseconds, maximum9223372036854775807. A server observation, not a renewable client-side authority lease."
+          },
+          "stored_actions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "audit.read",
+                "budgets.change",
+                "data.read",
+                "policy.change",
+                "principals.manage",
+                "roles.control",
+                "status.read"
+              ]
+            },
+            "maxItems": 7,
+            "uniqueItems": true
+          },
+          "authority": {
+            "type": "string",
+            "const": "observation-only"
+          }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "status",
+              "code",
+              "message",
+              "retry_class",
+              "correlation_id"
+            ],
+            "properties": {
+              "status": {
+                "type": "integer",
+                "enum": [
+                  400,
+                  401,
+                  403,
+                  413,
+                  415,
+                  429,
+                  503
+                ]
+              },
+              "code": {
+                "type": "string",
+                "enum": [
+                  "invalid_request",
+                  "authentication_denied",
+                  "browser_boundary_denied",
+                  "request_too_large",
+                  "unsupported_media_type",
+                  "capacity_or_rate_limited",
+                  "authority_unavailable"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "enum": [
+                  "Invalid request.",
+                  "Authentication required or denied.",
+                  "Browser request boundary refused.",
+                  "Request exceeds its byte limit.",
+                  "JSON content type required.",
+                  "Request capacity or attempt limit reached.",
+                  "Current authority or dependency unavailable."
+                ]
+              },
+              "retry_class": {
+                "type": "string",
+                "enum": [
+                  "authenticate",
+                  "check_state",
+                  "correct_request",
+                  "retry_later"
+                ]
+              },
+              "correlation_id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{32}$",
+                    "not": {
+                      "const": "00000000000000000000000000000000"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "oneOf": [
+              {
+                "properties": {
+                  "status": {
+                    "const": 400
+                  },
+                  "code": {
+                    "const": "invalid_request"
+                  },
+                  "message": {
+                    "const": "Invalid request."
+                  },
+                  "retry_class": {
+                    "const": "correct_request"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 401
+                  },
+                  "code": {
+                    "const": "authentication_denied"
+                  },
+                  "message": {
+                    "const": "Authentication required or denied."
+                  },
+                  "retry_class": {
+                    "const": "authenticate"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 403
+                  },
+                  "code": {
+                    "const": "browser_boundary_denied"
+                  },
+                  "message": {
+                    "const": "Browser request boundary refused."
+                  },
+                  "retry_class": {
+                    "const": "correct_request"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 413
+                  },
+                  "code": {
+                    "const": "request_too_large"
+                  },
+                  "message": {
+                    "const": "Request exceeds its byte limit."
+                  },
+                  "retry_class": {
+                    "const": "correct_request"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 415
+                  },
+                  "code": {
+                    "const": "unsupported_media_type"
+                  },
+                  "message": {
+                    "const": "JSON content type required."
+                  },
+                  "retry_class": {
+                    "const": "correct_request"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 429
+                  },
+                  "code": {
+                    "const": "capacity_or_rate_limited"
+                  },
+                  "message": {
+                    "const": "Request capacity or attempt limit reached."
+                  },
+                  "retry_class": {
+                    "const": "retry_later"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 503
+                  },
+                  "code": {
+                    "const": "authority_unavailable"
+                  },
+                  "message": {
+                    "const": "Current authority or dependency unavailable."
+                  },
+                  "retry_class": {
+                    "const": "check_state"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "localSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "BigBrotrLocalSession",
+        "description": "Opaque hash-backed server session. HttpOnly; SameSite=Strict; Path=/; Max-Age28800; noSecure only in the selected trusted-host loopback HTTP mode. BigBrotrLocalCsrf is separately readable and must be copied explicitly to the logout header."
+      }
+    }
+  }
+}

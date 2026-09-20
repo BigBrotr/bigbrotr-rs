@@ -17317,5 +17317,39 @@
       "evidence": "docs/implementation/evidence/p08-browser-http-commits-native-20260920.json",
       "capture_sha256": "abf01906850e98699635e2248d7755b803eac36c1ee70996dc993c37cad5c815"
     }
+  },
+  "implementation_private_panel_20260920": {
+    "local_root": ".research/implementation/private-panel",
+    "owner": "root implementer",
+    "state": "Local frontend, loader and actual TCP checks PASS; no browser or remote lab started; all owned local jobs terminal",
+    "source_base": "b98426146c68caffcbf6822bdb956d1a8abbd30d",
+    "dependency_manifest": ".research/implementation/private-panel/dependencies/selected-candidates.json",
+    "contents": "Official registry metadata/verified archives/sources; local client and bundle checks; controlled native logs including failures and cache recovery; generated bundles are artifacts, not source authority.",
+    "observations": "10client/8model/25config/6policy/17management tests PASS; Svelte/TS0errors/0warnings; bin build and bin/tests Clippy PASS. Corrected TCP FIN/reset negative requires zero bytes. Root/control latest bundles13files128471/128505bytes. Browser and large blocked static response NOT_RUN.",
+    "cache_recovery": {
+      "record": ".research/implementation/private-panel/cache-recovery.json",
+      "removed": ".research/targets/product/debug/incremental",
+      "kilobytes": 8672696,
+      "retained": "Source, native/linked artifacts, dependency archives, bundles and evidence; no unrelated directory removed.",
+      "reason": "ar/ranlib errno28 before asset tests; fresh result remains FAIL, not a test counterexample"
+    },
+    "evidence": "docs/implementation/evidence/p09-private-panel-local-20260920.json",
+    "tux_cache_retirement": {
+      "receipts": [
+        ".research/implementation/private-panel/tux-cache-retirement.json",
+        ".research/implementation/private-panel/tux-cache-retirement-metadata.json"
+      ],
+      "status": "PASS",
+      "removed_generated_logical_bytes": 6490587624,
+      "containers_unchanged": 426,
+      "unrelated_running": 8,
+      "free_after_bytes": 28275548160,
+      "partial_caches_do_not_reuse": [
+        "browser-http-5a4e0d1",
+        "browser-http-faults-661b54b",
+        "browser-http-commits-c98398b"
+      ],
+      "preserved": "Actual executable/shared artifact hashes, sources, receipts, native bundles, fixtures and databases. Qualified e65116b cache intact."
+    }
   }
 }

@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac during the native private-session HTTP fault qualification follow-up;
+Observed 2026-09-20 on Mac while connecting the first private browser consumer;
 previous owned labs remain stopped/retained. Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and resources before continuing.
 
@@ -21,15 +21,54 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main is tested unpublished candidate`e65116b0981d3f9e0a42e84f79911c13e72a36ae`,
-tree`17eee4d781f9ad1f4bece060b9c15820f3eb2076`; origin/main/remote last verified
-at pushed48da158. Native945-file source matches Mac Git archive. Product remains
-5a4e0d1; the candidate only corrects the COMMIT fixture endpoint. Its predecessor
-c98398b remains recorded FAIL before readiness; no history rewritten. Root-owned
-dirty work records qualification only: report, checkpoint, inventory, P08 and
-fixture README. No parallel writer/merge/rebase. Independent read-only review
-completed; all tests terminal and owned labs stopped/retained. Review evidence,
-commit/push verified slice, then connect the first actual private browser consumer.
+Local main/HEAD/origin remain pushed `b98426146c68caffcbf6822bdb956d1a8abbd30d`;
+a local candidate is being prepared, not yet committed/pushed. Root owns all dirty
+frontend packages/locks/contracts/tools, Rust asset/config/listener changes and
+related generated docs/evidence. No parallel writer/merge/rebase. Private local
+session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
+unchanged history. Full candidate state is listed by Git, not this summary.
+
+[Local private-panel evidence](evidence/p09-private-panel-local-20260920.json)
+binds35 changed source hashes and30 raw files. Mac Node26.4.0/pnpm9.15.9,
+Rust1.98.1:10 client/8 model/25 config CLI/6 policy/17 management tests PASS;
+Svelte/TS0errors/0warnings, actual binary build and scoped bin/tests Clippy PASS.
+Latest native runs private-panel/assets-final-mac and assets-http-final-mac
+completed exit0; no compiler,
+browser or product process is owned/running. Root and/control bundles contain13
+files (128471/128505bytes), independently hash-verified in bundle-suspend-check.json.
+Their manifestSHA256 values begin af02d47c and9481850c. Earlier bundle-* artifacts
+remain historical and predate the suspend correction. No browser has launched.
+
+The candidate implements a generated closed same-origin session client and thin
+login/self/logout panel, with bounded streaming/timeout, exact decimal integers,
+no mutation retry and one in-memory observation. Discriminating runtime REDs
+preceded terminal/teardown and idle-pagehide invalidation corrections. Closing
+an idle tab no longer cancels another tab's login. Form is POST and a static
+loading/reload notice survives unavailable bootstrap; browser proof NOT_RUN.
+
+The Rust listener now optionally preloads a closed SHA256 bundle before Control:
+20MiB shared lifetime reservation, no-follow descriptor walk,128files/16MiB total,
+2MiB each/64KiB manifest, exactroot/control mounts, no request-driven disk IO.
+Two restart-only deployment roots preserve existing policy bytes/digest. Tests
+cover literal payload, corrupt/missing retry, capacity, root/ancestor/leaf/manifest
+symlinks, actual FIFO, duplicate/count/aggregate bounds, shared Bytes custody,
+actual TCP headers/refusals and revocation with zero bytes. Read-only AI review
+found no further concrete bypass; actual large blocked-response and browser CSP/
+cookie/subpath/keyboard/missing-asset behavior remain unqualified.
+
+Preserved failures: cancelled ambient Cargo build; controlled native errno28
+before tests; subsequent missing-API compilation RED; three initial Rust API/
+visibility compile errors; first revocation test helper incorrectly required FIN
+and rejected OS reset. Corrected test accepts FIN/reset within1s only with zero
+bytes. All logs retained under private-panel. The Mac cache-recovery record covers
+only8672696KiB of verified inactive owned incremental data; no source/evidence or
+linked/native artifact was removed.
+
+Next bounded action: review/stage this coherent candidate, commit locally, then
+add/run an exact-Git native browser fixture using actual Rust/PostgreSQL and both
+production bundles. Tux host Node is absent; provision pinned tools/browser engines
+inside a new isolated lab, not globally. Native engine/browser evidence and
+frontend shared CI assembly remain required; no P09 task or M1 completion.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -80,6 +119,18 @@ holder files/413 preexisting lifecycle records. Main capture SHA256:
 `e16a91c279e51cbf6d3710efa226ecbc0a5712a66614ed657cc870d060ae2de7`.
 
 ## Resources
+
+Tux space was21.8GB before the private-panel preflight. Two scoped cache retirements
+removed6,490,587,624 logical bytes (.o/.a then .rlib/.rmeta) only from the stopped
+browser-http-5a4e0d1, browser-http-faults-661b54b and failed browser-http-commits-c98398b
+Cargo targets. Their remaining partial caches must not be reused. Executable/shared
+artifact hashes, sources, receipts, native bundles, synthetic fixtures and databases
+are retained. Both audits PASS: all426 container lifecycle/mount records unchanged,
+8unrelated workloads still running; final free28,275,548,160bytes. Qualifiede65116b
+cache remains intact for copying into a new lab. Raw scripts/receipts are under
+private-panel/tux-cache-retirement*, with remote receipts in the owned runs root.
+No new remote lab/process/network was created and no cleanup is pending.
+
 
 Qualified COMMIT lab `/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-e65116b`
 is stopped/retained, owner`a8097700cc8d5106d17363121a470c2b`,
@@ -287,17 +338,19 @@ Read-only review corrected secret-printing assert, proxy guard before READY,
 specific revocation/other-row oracles and transient crash-observation deadlines.
 No product failure was found in these executed schedules.
 
-Next bounded action after evidence commit/push: connect a thin real private browser
-login/self/logout consumer and its versioned generated HTTP contract, then run
-actual Chromium/Firefox/WebKit cookie/CSRF and same-host second-port controls.
-P08-T02 and P09-T01/T07 own this work; no alternate UI stack or diagnostic CLI.
-No browser MCP was discovered. Mac has Node/pnpm and Chrome/Firefox/Safari; no
-browser was launched. Playwright's official browser/library docs were inspected:
-versions need matching browser builds; branded browser installation can overwrite
-a user's installation, so use isolated pinned bundles. No exact frontend/browser
-version selected or downloaded yet. P09 selects SvelteKit/TypeScript/static apps,
-generated API types, bounded fetch, explicit identity invalidation and accessible
-forms. contracts/management does not yet exist; define only actual routes first.
+The local client, panel and bounded static listener now have scoped evidence above.
+Next qualify production bundles against actual
+Chromium/Firefox/WebKit and Rust/PG, including cookie/CSRF and same-host second-port
+controls. P08-T02 and P09-T01/T07 own this work; no alternate UI stack or diagnostic
+CLI. No browser has been launched. Initial frontend candidate metadata, ten
+SHA512-verified npm archives and source inspection are retained under
+.research/implementation/private-panel/dependencies and inventoried. Selected
+Svelte5.57.1/Kit2.70.3/static3.0.10/Vite8.3.0/TS5.9.3, Playwright1.63.0 candidates
+are not release-qualified. Latest TS7 was deliberately excluded by actual peer
+requirements. No matching browser engine has been downloaded yet. The first
+OpenAPI3.1 contract describes only the three existing session routes; standalone
+Ajv validation and generated TS avoid runtime schema compilation/eval. No P09
+step is complete. Static assets, browser tests, audit and actual data access remain.
 Do not mock the API or bypass CSP merely to label a browser case PASS. Cookies
 remain host-scoped, not port-isolated; local profile assumes trusted same-host services.
 Continue login audit, reauthentication, scope-qualified grants and actual pinned

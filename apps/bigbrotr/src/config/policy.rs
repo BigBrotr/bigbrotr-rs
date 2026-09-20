@@ -365,4 +365,29 @@ mod tests {
             bits
         );
     }
+
+    #[test]
+    fn private_asset_deployment_roots_preserve_existing_policy_identity() {
+        let seed = PolicySeed::from_resolved(&root()).unwrap();
+        let mut changed = root();
+        changed.values.insert(
+            "administration.assets.directory".into(),
+            json!("/nonexistent/private-assets"),
+        );
+        changed
+            .values
+            .insert("administration.assets.base_path".into(), json!("/control/"));
+        let candidate = PolicySeed::from_resolved(&changed).unwrap();
+        assert_eq!(candidate.document(), seed.document());
+        assert_eq!(candidate.digest(), seed.digest());
+        let accepted = PolicySeed::restore(seed.document(), seed.digest(), changed).unwrap();
+        assert_eq!(
+            accepted.text("administration.assets.base_path"),
+            Some("/control/")
+        );
+        assert_eq!(
+            accepted.text("administration.assets.directory"),
+            Some("/nonexistent/private-assets")
+        );
+    }
 }

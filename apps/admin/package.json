@@ -1,0 +1,23 @@
+{
+  "name": "@bigbrotr/admin",
+  "version": "0.1.0-dev",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "build": "vite build && node ../../tools/frontend/admin-assets.mjs",
+    "test:unit": "node --test tests/unit/*.test.ts"
+  },
+  "dependencies": {
+    "@bigbrotr/api-client": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "3.0.10",
+    "@sveltejs/kit": "2.70.3",
+    "@sveltejs/vite-plugin-svelte": "7.3.0",
+    "svelte": "5.57.1",
+    "svelte-check": "4.7.6",
+    "typescript": "5.9.3",
+    "vite": "8.3.0"
+  }
+}

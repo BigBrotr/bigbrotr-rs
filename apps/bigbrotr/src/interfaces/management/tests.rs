@@ -124,11 +124,120 @@ async fn server() -> (transport::Server, SocketAddr, ResourceBudget) {
             listener,
             budget.clone(),
             delivery_gate(Duration::from_secs(5)),
+            None,
         )
         .unwrap(),
         address,
         budget,
     )
+}
+
+#[tokio::test]
+async fn actual_static_http_preserves_mount_headers_authority_and_held_bytes() {
+    for base in ["/", "/control/"] {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path().canonicalize().unwrap();
+        std::fs::write(root.join("index.html"), b"hello").unwrap();
+        std::fs::write(root.join("manifest.json"), format!(r#"{{"format":"bigbrotr-private-assets/1","base_path":"{base}","files":[{{"path":"index.html","bytes":5,"sha256":"2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"}}]}}"#)).unwrap();
+        let budget = ResourceBudget::new(
+            ProcessEnvelope::new(
+                64 << 20,
+                1 << 20,
+                ResourceLimits::new(32 << 20, 35, 0, 1 << 20),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let assets = Assets::load(&root, base, &budget).unwrap();
+        // Startup verified and retained the bytes. Later disk changes cannot
+        // replace an admitted executable asset or silently require new IO.
+        std::fs::write(root.join("index.html"), b"tampered").unwrap();
+        std::fs::remove_file(root.join("manifest.json")).unwrap();
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let gate = delivery_gate(Duration::from_secs(5));
+        let mut server =
+            transport::Server::from_listener(listener, budget.clone(), gate.clone(), Some(assets))
+                .unwrap();
+        let request = |method: &str, path: &str, extra: &str| {
+            format!("{method} {path} HTTP/1.1\r\nHost: {address}\r\n{extra}\r\n")
+        };
+        for method in ["GET", "HEAD"] {
+            let response = exchange(address, request(method, base, "")).await;
+            let (headers, body) = response.split_once("\r\n\r\n").unwrap();
+            assert!(headers.starts_with("HTTP/1.1 200 "));
+            assert!(headers.contains("content-type: text/html; charset=utf-8\r\n"));
+            assert!(headers.contains("content-length: 5\r\n"));
+            assert!(headers.contains("cache-control: no-store\r\n"));
+            assert!(headers.contains("content-security-policy: frame-ancestors 'none'; base-uri 'none'; object-src 'none'\r\n"));
+            assert!(headers.contains("x-content-type-options: nosniff\r\n"));
+            assert!(!headers.contains("set-cookie:"));
+            assert_eq!(body, if method == "GET" { "hello" } else { "" });
+        }
+        for (method, path, extra, status) in [
+            ("GET", format!("{base}manifest.json"), String::new(), 404),
+            ("GET", format!("{base}missing.js"), String::new(), 404),
+            ("GET", format!("{base}../index.html"), String::new(), 404),
+            ("GET", format!("{base}%69ndex.html"), String::new(), 404),
+            ("GET", format!("{base}?token=private"), String::new(), 400),
+            (
+                "GET",
+                base.into(),
+                "Origin: http://127.0.0.1:1\r\n".into(),
+                403,
+            ),
+            (
+                "POST",
+                base.into(),
+                format!("Origin: http://{address}\r\n"),
+                405,
+            ),
+            ("GET", "/management/v1/me".into(), String::new(), 401),
+        ] {
+            let response = exchange(address, request(method, &path, &extra)).await;
+            assert!(
+                response.starts_with(&format!("HTTP/1.1 {status} ")),
+                "{path}: {response}"
+            );
+            assert!(!response.contains("hello"));
+            if status == 405 {
+                assert!(response.contains("allow: GET, HEAD\r\n"));
+            }
+        }
+        if base != "/" {
+            for path in ["/", "/control", "/index.html"] {
+                assert!(
+                    exchange(address, request("GET", path, ""))
+                        .await
+                        .starts_with("HTTP/1.1 404 ")
+                );
+            }
+        }
+        assert!(server.commands.try_recv().is_err());
+        gate.revoke();
+        let mut socket = TcpStream::connect(address).await.unwrap();
+        let sent = socket.write_all(request("GET", base, "").as_bytes()).await;
+        assert!(
+            sent.is_ok()
+                || sent.is_err_and(|e| matches!(
+                    e.kind(),
+                    std::io::ErrorKind::ConnectionReset | std::io::ErrorKind::BrokenPipe
+                ))
+        );
+        let mut denied = Vec::new();
+        let closed = tokio::time::timeout(Duration::from_secs(1), socket.read_to_end(&mut denied))
+            .await
+            .unwrap();
+        // A gate denied before the request is read may close with RST rather
+        // than FIN. Neither outcome may expose headers or admitted asset bytes.
+        assert!(
+            closed.is_ok()
+                || closed.is_err_and(|e| e.kind() == std::io::ErrorKind::ConnectionReset)
+        );
+        assert!(denied.is_empty());
+        server.stop().await.unwrap();
+        assert_eq!(budget.snapshot().active_permits(), 0);
+    }
 }
 
 fn delivery_gate(ttl: Duration) -> DeliveryGate {
@@ -517,7 +626,7 @@ async fn management_stop_cannot_finish_or_release_grants_before_blocking_worker_
     let address = listener.local_addr().unwrap();
     let delivery = delivery_gate(Duration::from_secs(5));
     let server =
-        transport::Server::from_listener(listener, budget.clone(), delivery.clone()).unwrap();
+        transport::Server::from_listener(listener, budget.clone(), delivery.clone(), None).unwrap();
     let mut management = Management {
         server,
         hashes: JoinSet::new(),

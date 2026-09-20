@@ -1,7 +1,9 @@
 //! Private browser transport; domain operations remain owned by Control.
+mod assets;
 mod boundary;
 mod delivery;
 mod transport;
+pub(super) use assets::Assets;
 use bigbrotr::runtime::policy_authority::DeliveryWindow;
 use bigbrotr::{
     management::{
@@ -45,9 +47,9 @@ pub(super) struct Management {
 
 pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
     let n = |name: &str| root.number(&format!("runtime.processes.application.{name}"));
-    // One Control, one hash, and separate connection/request ownership. The
-    // admission ceilings are counts, never an additional memory allowance.
-    let items = 2 + transport::CONNECTIONS as u64 + transport::QUEUE as u64;
+    // One Control, one hash, one optional asset bundle, and separate connection/
+    // request ownership. Counts never supply an additional memory allowance.
+    let items = 3 + transport::CONNECTIONS as u64 + transport::QUEUE as u64;
     let envelope = ProcessEnvelope::new(
         n("memory_max_bytes"),
         n("baseline_bytes"),
@@ -63,11 +65,29 @@ pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
     Ok(ResourceBudget::new(envelope))
 }
 
+pub(super) fn prepare_assets(
+    root: &crate::config::Resolved,
+    budget: &ResourceBudget,
+) -> Result<Option<Assets>> {
+    root.text("administration.assets.directory")
+        .map(|directory| {
+            Assets::load(
+                std::path::Path::new(directory),
+                root.text("administration.assets.base_path")
+                    .expect("registered asset mount"),
+                budget,
+            )
+            .map_err(|error| (3, format!("private asset bundle refused: {error:?}")))
+        })
+        .transpose()
+}
+
 impl Management {
     pub async fn start(
         root: &crate::config::Resolved,
         budget: ResourceBudget,
         window: DeliveryWindow,
+        assets: Option<Assets>,
     ) -> Result<Self> {
         let address = SocketAddr::new(
             root.text("administration.listen.host")
@@ -96,7 +116,7 @@ impl Management {
             })?;
         drop(capacity);
         let delivery = DeliveryGate::new(window);
-        let server = Server::bind(address, budget.clone(), delivery.clone())
+        let server = Server::bind(address, budget.clone(), delivery.clone(), assets)
             .await
             .map_err(|_| (1, "private management listener unavailable".into()))?;
         Ok(Self {
