@@ -14655,7 +14655,33 @@
       "process_fixture_source": "05fb02d2d7e690ef8996123d94297ba06cd74c04",
       "preexisting_containers_unchanged": 380,
       "unrelated_running_at_terminal": 8,
-      "bigbrotr_running_at_terminal": 0
+      "bigbrotr_running_at_terminal": 0,
+      "network_lifecycle": "Empty owned network803f48ec removed after fresh labels/endpoints/stopped-container checks by outcomes lab launch; data and containers retained."
+    },
+    "producer_recovery_outcomes": {
+      "source": "d2959da61a54a89b6b4e1b4806aa3a819bdff778",
+      "tree": "45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0",
+      "fixture_source": "efeb4e0fc5254b856746d12d12c28cb929371080",
+      "fixture_tree": "4492192945a87e4c829b03a42c5aae04fc90e565",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-outcomes-efeb4e0",
+      "owner": "a67872467ee5c98ff518edf34bdb9182",
+      "container": "bigbrotr-implementation-recovery-outcomes-efeb4e0",
+      "postgres": "bigbrotr-implementation-recovery-outcomes-efeb4e0-pg",
+      "network": "bigbrotr-implementation-recovery-outcomes-efeb4e0",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "native fixture build and Clippy PASS; first connected rejection case in progress",
+      "source_files": 864,
+      "started_at": "2026-09-20T00:25:45.501083+00:00",
+      "network_id": "6d34130343922a501d5e9cfe74c52aeff9116601f69edfac49a5e41325fac4d8",
+      "postgres_id": "4f091c5fbd6bc6bdfc56eebbeac157244400e0c043dd22333bda2dc078554d44",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "c4a8f9fe7466655632e16a67201efd9abedeae6d236a76505a4707a9c287ec9d",
+      "local_raw": ".research/implementation/producer-recovery/outcomes",
+      "purpose": "Connected Rejected and AlreadyDurable recovery; product byte-equivalent to d2959da",
+      "artifact_sha256": "8035de8de63d44e7fce602e9e0e7a5956550f78660999c82775bcce6469c5825",
+      "limits": "runner2CPU/6GiB/512PIDs,PG1CPU/1GiB/128PIDs;internal network,nohostports,readonlysource,512MiBtmpfs",
+      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-d2959da/out/build"
     }
   },
   "implementation_monitor_corrections_20260918": {

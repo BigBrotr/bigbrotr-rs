@@ -23,6 +23,9 @@ def inputs(scenario):
 
 
 def native(scenario, closed):
+    if scenario == 'missing-detail':
+        key = b'\x01\x30'+bytes([66])*16+(1).to_bytes(8, 'big')+(2).to_bytes(8, 'big')
+        return [r for r in expected_native(False, closed) if (r[0], r[1]) != ('receipts', key)]
     if scenario not in ['already', 'rejected']:
         return expected_native(False, closed)
     dataset, slot = bytes([1])*16, bytes([66])*16

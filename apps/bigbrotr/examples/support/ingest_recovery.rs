@@ -33,7 +33,18 @@ pub async fn run(
 ) {
     let before = crate::ingest_snapshot::state(observer, path).await;
     emit(serde_json::json!({"event":"recovery-before", "state":before}));
+    let request_sequence = if mode == "event-recovery-missing-reservation" {
+        3
+    } else {
+        2
+    };
     let expected = match mode {
+        "event-recovery-missing-detail" | "event-recovery-missing-reservation" => Some(
+            ProducerResolveError::Native(ProducerRecoveryError::Unresolved),
+        ),
+        "event-recovery-copy-conflict" => {
+            Some(ProducerResolveError::Outcome(OutcomeError::Conflict))
+        }
         "event-recovery-pg-only" => Some(ProducerResolveError::Native(
             ProducerRecoveryError::ProducerOpen,
         )),
@@ -58,11 +69,24 @@ pub async fn run(
         "event-recovery-normal" | "event-recovery-already" | "event-recovery-rejected" => None,
         _ => panic!("unknown recovery fixture"),
     };
+    if mode == "event-recovery-missing-reservation" {
+        emit(
+            serde_json::json!({"event":"recovery-unreserved-request", "request":request_sequence}),
+        );
+    }
     if let Some(expected) = expected {
-        let error = resolve(&mut current, &recovery, spec, path, budget, 2, mode)
-            .await
-            .err()
-            .expect("required refusal");
+        let error = resolve(
+            &mut current,
+            &recovery,
+            spec,
+            path,
+            budget,
+            request_sequence,
+            mode,
+        )
+        .await
+        .err()
+        .expect("required refusal");
         assert_eq!(error, expected);
         // Pre-begin cancellation leaves the session usable. Every other selected
         // refusal happens after begin_operation and must require a fresh claim.
@@ -73,7 +97,7 @@ pub async fn run(
                 spec,
                 path,
                 budget,
-                2,
+                request_sequence,
                 "event-recovery-normal",
             )
             .await;
@@ -99,6 +123,9 @@ pub async fn run(
                 | "event-recovery-input-size"
                 | "event-recovery-input-digest"
                 | "event-recovery-input-manifest"
+                | "event-recovery-missing-detail"
+                | "event-recovery-missing-reservation"
+                | "event-recovery-copy-conflict"
         ) {
             return;
         }

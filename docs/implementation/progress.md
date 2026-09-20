@@ -29,7 +29,7 @@ The native directory is never copied. This is not mid-FFI or power-loss evidence
 
 ## Git and integration state
 
-Mac main HEAD 9254b5ed20d67891de6a4f72d9931bbe1b949294 is unpublished. Product
+Mac main HEAD efeb4e0fc5254b856746d12d12c28cb929371080 is unpublished. Product
 candidate d2959da61a54a89b6b4e1b4806aa3a819bdff778, tree
 45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0, remains byte-identical in library,
 dependencies and migrations1..14. Fixture3135497 added finite fault cases;
@@ -37,16 +37,13 @@ observer2580fb2 fixed checks; observer3497cf5 injected manifest corruption after
 ordinary guards. Last read-only private origin/main verification:
 8931a0f611b718cfac845cda39211e9e8da59d8c. No merge/rebase or unexpected writer.
 
-The process fixture is committed; product/dependencies remain unchanged. Root now
-owns only the connected Rejected/AlreadyDurable fixture and its independent
-observer plus this checkpoint. No unexpected writer. The new fixture compiles
-and scoped Mac Clippy passes. Its first build refused a u32/u64 bound mismatch,
-corrected with an explicit widening conversion; no native run used that source.
-The updated offline observer accepts all13 prior captures and refuses131 altered
-controls. New class engine cases are NOT_RUN. Independent AI review is in progress.
-Mac scoped fixture Clippy and Python syntax PASS; actual supervisor cleanup test
-PASS (1 test). Native process-fixture build/Clippy also PASS. Source863files match
-Mac Git; artifact a2f1b969b5c6966a8e8a2224c5ae2e37221b941ed75b02f285b56a507668d40a.
+The process fixture and connected Rejected/AlreadyDurable fixture are committed.
+Root now owns finite missing-detail, unreserved-request3 and conflicting-copy
+fixture/observer plus this checkpoint/inventory. Product/dependencies unchanged.
+Mac scoped fixture Clippy PASS;16 earlier captured cases still pass the updated
+observer. The three new refusal engine cases are NOT_RUN. No unexpected writer.
+An initial outcome-class fixture compile refused a u32/u64 mismatch; explicit
+widening corrected it before any native run.
 
 The separate compatibility worktree .research/worktrees/producer-closing-old-writer
 is clean at f899896b1207f5e71c4e39d9ab7814b293814735, branch
@@ -189,24 +186,53 @@ Old closing containers/data remain stopped; only its exact empty owned network
 5aecbf2d was retired by the recovery launch after fresh label/endpoint checks.
 No global cleanup. See producer_recovery in the [inventory](../research/laboratory-inventory.json).
 
+## Current connected class evidence and active lab
+
+Fixture efeb4e0 is built and Clippy checked on actual Linuxamd64. Product bytes
+remain d2959da; artifact8035de8de63d44e7fce602e9e0e7a5956550f78660999c82775bcce6469c5825.
+Actual reject1,already1,normal1 PASS:17/27/26native rows,37tables each,2/3/2exact
+original inputs and zero clients after each case. Rejected keeps Signature/code4
+and no new scientific event facts; AlreadyDurable recovers[3,3,2,1], preserves
+original copies/xmin779/781 and creates only copy3/xmin787 under Control2.
+Rejected recovers[2,2,1], preserves bootstrapxmin759, inserts rejectionxmin765.
+Native sequences19→20,31→32,29→30 advance only for closing; stable across recovery.
+These are new Control in the same process; held1 remains separate fresh-process
+NewFacts evidence. Independent AI read-only review checked both classes/all37tables,
+SQL seed/backend identities, original bytes and all22 captured file hashes.
+
+Mac ignored outcomes/collected beneath .research/implementation/producer-recovery
+contains22verified files; detached outcomes-evidence-identity.json, tarSHA
+ e989ae67b0d419cfc4beef9993addec128f52529f58cac3a3565c05def910e45.
+All864source files independently match Git efeb4e0. Offline new class controls
+refused14+13alterations, ordinary10; prior13cases/131controls still pass. These are
+offline checks, not engine reruns. First local extraction helper refused unsupported
+Python tar filter before extracting; explicit regular-file/path/allowlist checking
+completed extraction. No product failure inferred.
+
+New Tux lab /home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-outcomes-efeb4e0
+owner a67872467ee5c98ff518edf34bdb9182; runner
+c4a8f9fe7466655632e16a67201efd9abedeae6d236a76505a4707a9c287ec9d;
+PG4f091c5fbd6bc6bdfc56eebbeac157244400e0c043dd22333bda2dc078554d44;
+network6d34130343922a501d5e9cfe74c52aeff9116601f69edfac49a5e41325fac4d8.
+Same pinned images/limits as prior lab. Exact Git export/source readonly; baseline
+out/build cache, native-tests and archive-worker copied into new owned output.
+Previous data/containers retained; only verified empty prior network803f48ec retired.
+Current audit-outcomes.json confirms idle runner,0PGclients; containers remain
+running for the three refusal cases. No terminal audit yet. Root owns joining new
+build/case sessions and stopping these exact resources after qualification.
+
 ## Next action and remaining gates
 
-Implement the remaining connected outcome-class cases: Rejected original and
-AlreadyDurable request3, preserving the original decision and exact PG copy under
-new Control. Reuse the independent existing_outcome.py and original-input CBOR
-oracles; event_oracle.py covers the base26rows. Native recovery tests already cover
-these classes, but those are not their connected PostgreSQL journey. Before new
-fixture code, finish reading ingest_event.rs and the rejection codec/oracle;
-then export the new finite client/oracle candidate into a separately inventoried
-native lab using the stopped current out/build cache. Relevant source/oracle reads
-are now complete. Tux read-only resumption confirmed both previous owned containers
-stopped/noOOM with matching labels; eight unrelated workloads remain active.
-
-Also qualify conflicting existing copied outcomes and missing detail/reservation
-without manufacturing noncommit. Finish the scoped evidence report and private
-publication after these bounded cases. No P02/M1 checkbox advances yet. Never
-infer full drain, ACK/retirement, source closure or successor authority from
-positive recovery. Archive fallback and causally closed restore remain required.
+Commit/export/build the bounded refusal fixture in the current idle lab's separate
+out/recovery-probe-refusals directory. Keep both earlier artifact identities intact.
+Run missing native receipt2 after deliberate exclusive synchronized deletion,
+unreserved request3 (no deleted PG metadata), and an existing SQL copy whose bytes
+are deliberately corrupted after ordinary guards with a matching checksum.
+Compare the injected change explicitly, require Unresolved/Conflict and exact
+remaining state; never translate missing data into a noncommit or new request.
+Then finish the scoped positive-recovery evidence report/review/private publication.
+No P02/M1 checkbox advances yet. Full drain, ACK/retirement, source closure,
+successor authority, archive fallback and causally closed restore remain required.
 
 Published prior [closing](evidence/p02-producer-closing-native-20260920.json),
 [certification](evidence/p02-certification-native-20260919.json) and

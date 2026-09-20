@@ -21,14 +21,15 @@ from recovery_outcomes import inputs as expected_originals, native as expected_c
 
 SCENARIOS = ['normal', 'pg-only', 'input-size', 'input-digest', 'input-manifest',
              'resource', 'cancelled', 'policy', 'expired', 'rollback', 'late-sql',
-             'before-forward', 'after-complete', 'already', 'rejected']
+             'before-forward', 'after-complete', 'already', 'rejected', 'missing-detail', 'missing-reservation', 'copy-conflict']
 SUCCESSES = ['normal', 'already', 'rejected']
-PERMANENT = ['pg-only', 'input-size', 'input-digest', 'input-manifest']
+PERMANENT = ['pg-only', 'input-size', 'input-digest', 'input-manifest', 'missing-detail', 'missing-reservation', 'copy-conflict']
 ERRORS = dict(zip(SCENARIOS[1:13], [
     'Native(ProducerOpen)', 'Outcome(Conflict)', 'Native(Input(Codec(DigestMismatch)))',
     'Reservation(Conflict)', 'Native(Input(Codec(InputLimit)))',
     'Native(Native(AuthorityUnavailable))', 'Control(InvalidPolicy)', 'Control(Unavailable)',
     'Outcome(Backend)', 'DeliveryUnknown', 'CommitUnknown', 'CommitUnknown']))
+ERRORS.update({'missing-detail':'Native(Unresolved)', 'missing-reservation':'Native(Unresolved)', 'copy-conflict':'Outcome(Conflict)'})
 
 
 def check_inputs(control, files, wanted, scenario):
@@ -74,7 +75,20 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
     assert before['sequence'] == closing['sequence']+int(scenario != 'pg-only')
     issued = 3 if scenario == 'already' else 2
     before_rows = sorted(bt['producer_outcomes'], key=lambda r:r['request_sequence'])
-    assert [r['request_sequence'] for r in before_rows] == list(range(1, issued))
+    before_count = 2 if scenario == 'copy-conflict' else issued-1
+    assert [r['request_sequence'] for r in before_rows] == list(range(1, before_count+1))
+    corruption = [m for m in messages if m['event'].startswith('recovery-corruption-')]
+    if scenario == 'missing-detail':
+        assert [m['event'] for m in corruption] == ['recovery-corruption-before', 'recovery-corruption-after']
+        old, new = [m['state'] for m in corruption]
+        old_tables = check_state(old, expected_case('normal', False), names, originals)
+        new_tables = check_state(new, expected_case(scenario, False), names, originals)
+        assert old_tables == new_tables and new['sequence'] == old['sequence']+1
+        assert new['sequence'] == closing['sequence'] and new['native_sha256'] == closing['native_sha256']
+    else:
+        assert not corruption
+    unreserved = [m for m in messages if m['event']=='recovery-unreserved-request']
+    assert unreserved == ([dict(event='recovery-unreserved-request', request=3)] if scenario == 'missing-reservation' else [])
     original_owner = next(r for r in ct['owner_epochs'] if r['role'] == 'control' and r['epoch'] == 1)
     assert seed_failure['control_backend_pid'] == original_owner['control_backend_pid']
     assert seed_failure['control_backend_start'] == original_owner['control_backend_start']
@@ -83,10 +97,16 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
     guard = scenario in ['input-digest', 'input-manifest']
     error = 'outcome copy requires its exact retained reservation' if guard else 'fixture rollback of original event outcome copy'
     function = 'guard_producer_outcome()' if guard else 'public.fixture_abort_original_copy()'
-    assert sum('ERROR:  '+error in line for line in failure) == 1
-    assert any('function '+function in line and ' at RAISE' in line for line in failure)
-    assert any('STATEMENT:  INSERT INTO control.producer_outcomes(' in line for line in failure)
-    assert len([m for m in messages if m['event'] == 'recovery-seed-copy-rolled-back']) == 1
+    if scenario == 'copy-conflict':
+        assert sum('WARNING:  fixture corrupted original outcome bytes' in line for line in failure) == 1
+        assert any('function public.fixture_corrupt_outcome()' in line for line in failure)
+        assert len([m for m in messages if m['event'] == 'recovery-seed-copy-corrupted']) == 1
+        assert not any(m['event'] == 'recovery-seed-copy-rolled-back' for m in messages)
+    else:
+        assert sum('ERROR:  '+error in line for line in failure) == 1
+        assert any('function '+function in line and ' at RAISE' in line for line in failure)
+        assert any('STATEMENT:  INSERT INTO control.producer_outcomes(' in line for line in failure)
+        assert len([m for m in messages if m['event'] == 'recovery-seed-copy-rolled-back']) == 1
     permanent, replaced = scenario in PERMANENT, scenario not in SUCCESSES and scenario not in PERMANENT
     refused = [m for m in messages if m['event'] == 'recovery-refused']
     assert refused == ([] if scenario in SUCCESSES else [dict(event='recovery-refused',
@@ -113,12 +133,14 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
         if name == 'producer_outcomes' or replaced and name in ['owner_epochs', 'role_instances']: continue
         assert bt[name] == at[name], name
     rows = sorted(at['producer_outcomes'], key=lambda r:r['request_sequence'])
-    assert len(rows) == (1 if permanent else issued) and rows[:issued-1] == before_rows
+    assert len(rows) == (before_count if permanent else issued) and rows[:before_count] == before_rows
     if scenario == 'after-complete': assert mt['producer_outcomes'] == at['producer_outcomes']
     native = {(cf, k):v for cf, k, v in wanted}
     for n, row in enumerate(rows, 1):
         value = native['receipts', b'\x01\x30'+bytes([66])*16+(1).to_bytes(8, 'big')+n.to_bytes(8, 'big')]
-        recorder = 1 if n < issued else 3 if replaced and scenario != 'after-complete' else 2
+        if scenario == 'copy-conflict' and n == 2:
+            value = bytes([value[0] ^ 1])+value[1:]
+        recorder = 1 if n <= before_count else 3 if replaced and scenario != 'after-complete' else 2
         kind = 3 if scenario == 'rejected' and n == 2 else 2 if n == 3 else 1
         assert row['outcome_kind'] == kind and row['policy_epoch'] == 1
         assert row['outcome_bytes'] == '\\x'+value.hex() and row['outcome_sha256'] == '\\x'+sha(value)
@@ -152,14 +174,14 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
                 sequence=after['sequence'], resolved=[m['request'] for m in resolved])
 
 
-def main(root, tag, scenario, fixture_build):
+def main(root, tag, scenario, fixture_build, fixture_directory='recovery-probe'):
     resources = json.loads((root/'resources.json').read_text())
     revision = command('git', '-C', str(SOURCE), 'rev-parse', 'HEAD')
     assert not command('git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all')
     exceptions = [':!apps/bigbrotr/examples/ingest_bootstrap_probe.rs', ':!apps/bigbrotr/examples/support/ingest_closing.rs', ':!apps/bigbrotr/examples/support/ingest_recovery.rs', ':!apps/bigbrotr/examples/support/ingest_recovery_process.rs'] if fixture_build else []
     assert not command('git', '-C', str(SOURCE), 'diff', resources['source'], revision, '--',
                        'apps', 'crates', 'migrations', 'Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', 'tools', *exceptions)
-    location = 'out/recovery-probe' if fixture_build else 'out/native-tests'
+    location = 'out/'+fixture_directory if fixture_build else 'out/native-tests'
     ready = json.loads((root/location/'ready.json').read_text())
     assert ready['status'] == 'READY' and ready['baseline_product' if fixture_build else 'source'] == resources['source']
     if fixture_build:
@@ -204,7 +226,14 @@ def main(root, tag, scenario, fixture_build):
     setup = run('setup', ['setup-14', db, '/secrets/postgres', 'unused'])
     assert setup['exit'] == 0 and not setup['stderr']
     failed_request = 3 if scenario == 'already' else 2
-    sql(db, "CREATE FUNCTION public.fixture_abort_original_copy() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture rollback of original event outcome copy'; END $$; CREATE TRIGGER zz_fixture_abort_original_copy AFTER INSERT ON control.producer_outcomes FOR EACH ROW WHEN (NEW.recorder_epoch=1 AND NEW.request_sequence="+str(failed_request)+") EXECUTE FUNCTION public.fixture_abort_original_copy();")
+    if scenario == 'copy-conflict':
+        # Privileged lab corruption after ordinary guards, with a valid checksum.
+        # SQL cannot attest native semantics; an identical recovery must refuse.
+        sql(db, "CREATE FUNCTION public.fixture_corrupt_outcome() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN NEW.outcome_bytes:=set_byte(NEW.outcome_bytes,0,get_byte(NEW.outcome_bytes,0)#1); NEW.outcome_sha256:=sha256(NEW.outcome_bytes); RAISE WARNING 'fixture corrupted original outcome bytes'; RETURN NEW; END $$; CREATE TRIGGER zz_fixture_corrupt_outcome BEFORE INSERT ON control.producer_outcomes FOR EACH ROW WHEN (NEW.recorder_epoch=1 AND NEW.request_sequence=2) EXECUTE FUNCTION public.fixture_corrupt_outcome();")
+        guards = report['outcome_guards'] = json.loads(sql(db, "SELECT jsonb_agg(jsonb_build_object('name',tgname,'enabled',tgenabled) ORDER BY tgname) FROM pg_trigger WHERE tgrelid='control.producer_outcomes'::regclass AND NOT tgisinternal AND (tgtype & 7)=7"))
+        assert guards == [dict(name=name, enabled='O') for name in ['producer_outcome_guard', 'zz_fixture_corrupt_outcome']]
+    else:
+        sql(db, "CREATE FUNCTION public.fixture_abort_original_copy() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture rollback of original event outcome copy'; END $$; CREATE TRIGGER zz_fixture_abort_original_copy AFTER INSERT ON control.producer_outcomes FOR EACH ROW WHEN (NEW.recorder_epoch=1 AND NEW.request_sequence="+str(failed_request)+") EXECUTE FUNCTION public.fixture_abort_original_copy();")
     if scenario in ['input-size', 'input-digest', 'input-manifest']:
         field = {'input-size':'input_bytes', 'input-digest':'request_digest', 'input-manifest':'manifest_sha256'}[scenario]
         value = 'NEW.input_bytes+1' if scenario == 'input-size' else f'set_byte(NEW.{field},0,get_byte(NEW.{field},0)#1)'
@@ -280,5 +309,6 @@ if __name__ == '__main__':
     parser.add_argument('--run-tag', required=True)
     parser.add_argument('--scenario', choices=SCENARIOS, default='normal')
     parser.add_argument('--fixture-build', action='store_true')
+    parser.add_argument('--fixture-directory', choices=['recovery-probe', 'recovery-probe-refusals'], default='recovery-probe')
     args = parser.parse_args()
-    main(args.root.resolve(strict=True), args.run_tag, args.scenario, args.fixture_build)
+    main(args.root.resolve(strict=True), args.run_tag, args.scenario, args.fixture_build, args.fixture_directory)
