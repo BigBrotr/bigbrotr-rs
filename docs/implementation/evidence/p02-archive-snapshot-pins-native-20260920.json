@@ -1,0 +1,212 @@
+{
+  "format": "bigbrotr-snapshot-pin-evidence/1",
+  "status": "PASS",
+  "scope": "Native snapshot pin registration, exact source retention, original retry and explicit original-holder release only; no live delivery or recovery-release qualification",
+  "source": {
+    "revision": "27150f253f0fbcb72e2d25a9ebd082493acb8eba",
+    "tree": "e6888308cde125b0543338fef721b7978903c37e",
+    "files": 913,
+    "manifest": {
+      "path": ".research/implementation/archive-pin-ledger/capture/out/build/source-manifest.json",
+      "bytes": 112938,
+      "sha256": "2fcab2da9aa2654355b28b411387384baac64bc12fedc71f94f8dcecc92b4f80"
+    },
+    "fixture": "583f0852f8bae090b3e222d9d653701b386a6f30",
+    "oracle": "e828eb6bb1b93c8d2a2cf88a651ac4ca1ff63573",
+    "production_unchanged_in_fixture": true
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "Runner2CPU/6GiB/512PIDs; PG1CPU/1GiB/128PIDs; internal network, no host ports; trusted exact source"
+  },
+  "dependencies": {
+    "cargo_lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "toolchain_sha256": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+    "release_selection_sha256": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0",
+    "migration17_sha256": "99803d4b76d35ea9b1b9619cb3b570ba62ea7a198af5345f0cb8378135ed5e37"
+  },
+  "artifacts": {
+    "control": "8c668d98af16238585550887d709599533b869d44b60df913dc8d47310498721",
+    "worker": "b7049b1013846bf53d373defa6230a9483d84e4bf844c5956f48795701aad389",
+    "publisher": "196d1274f10e93a3b3cfb34c26370c6d283fc845ff88ca9f3bb676747af6be5c",
+    "reader": "937e78a3b291015c91dcf5b1623aacca1fdd4a8bfd231f98b155059a260b9989",
+    "fault_fixture": "5ea97592a87639bf67ae3e52ada07023b971845748170ef7448a67a29f67ceb1"
+  },
+  "build": {
+    "installed": {
+      "path": ".research/implementation/archive-pin-ledger/capture/out/native-tests/result.json",
+      "bytes": 2800,
+      "sha256": "a33235c2f124e9e7ca067f04a87a42bebc5918273c270e7542a5ba65ecca0c8a"
+    },
+    "schema_and_fixture": {
+      "path": ".research/implementation/archive-pin-ledger/capture/out/native-tests/checks/result.json",
+      "bytes": 4455,
+      "sha256": "863f8b3c4f3ad1ac567adb47ccaf6faf2934dde4b7626fa26dad5b927cbf831a"
+    },
+    "fixture_fault": {
+      "path": ".research/implementation/archive-pin-ledger/capture/out/pin-fault-build/checks/result.json",
+      "bytes": 3345,
+      "sha256": "6b5e36201fbfefdd4505f2c55a3fbd0ee3605d179a019421fb832767fced591a"
+    },
+    "readiness": {
+      "path": ".research/implementation/archive-pin-ledger/capture/out/native-tests/ready.json",
+      "bytes": 5381,
+      "sha256": "9ff078899c52703d4ce7772f07c27a7663cbfbfec01a5794d1afac03fa4400d8"
+    },
+    "fault_readiness": {
+      "path": ".research/implementation/archive-pin-ledger/capture/out/pin-fault-build/ready.json",
+      "bytes": 2584,
+      "sha256": "b7a5b0975e7f4384b1083ec296c57c2ad0a9e5ea47a120829873cd2961161233"
+    },
+    "mac": {
+      "path": ".research/implementation/archive-snapshot-pin/pin-api-green2/result.json",
+      "bytes": 981,
+      "sha256": "42b9805870f6eb3cc71f47bc627e2293f156a30fd0579ce9a05e8d1f9496c961"
+    },
+    "mac_fault_fixture": {
+      "path": ".research/implementation/archive-pin-ledger/pin-fault-green/result.json",
+      "bytes": 974,
+      "sha256": "e9b6af848f00ad7795eb08e42913333ff91abcb5a75ca0d3a2b9eb448eb7089a"
+    }
+  },
+  "native": {
+    "signed_cut_cases": 2,
+    "evidence": {
+      "path": ".research/implementation/archive-pin-ledger/capture/cut-cases.json",
+      "bytes": 642479,
+      "sha256": "993233e64b51607651b9e63b8c39ae743baf88b30cc95c890a60079151f9b379"
+    },
+    "observed": [
+      "Normal snapshot3 and history snapshot3->4 retain full independent signed/fact/digest expectations.",
+      "History pins exact frontier1/snapshot3 and positive source prefix[1,10], rechecks catalog after native work, joins, then atomically releases lease/claim.",
+      "Independent raw PostgreSQL rows/xmin before/after both acquisition retries and release prove no extension, rewrite or resurrection."
+    ]
+  },
+  "sql": {
+    "evidence": {
+      "path": ".research/implementation/archive-pin-ledger/capture/pin-schema-cases-qualified.json",
+      "bytes": 35303,
+      "sha256": "e1f137ebcd673833cbf7b1d4f07543aefe2fc80165c2815fd8c63cc5d9e34cd0"
+    },
+    "groups": 3,
+    "new_pin_cases": 14,
+    "observed": [
+      "Actual installed migration ledger and every SQL checksum match exact sources.",
+      "Empty-cut binding with retired original Archive publisher succeeds; missing binding, wrong holder/frontier, history mutation/TRUNCATE, protocol rewrite, stale CAS, resurrection and expired Control refuse. Live SQL CAS renewal succeeds.",
+      "Schema16->17 preserves the original legacy lease values and xmin; NULL protocol cannot be adopted.",
+      "Independent final database and intermediate native row/xmin states match literal dataset, issuer role/incarnation, topology, frontier1/snapshot3 and exact claim[1,10]."
+    ]
+  },
+  "faults": {
+    "evidence": {
+      "path": ".research/implementation/archive-pin-ledger/capture/pin-fault-cases.json",
+      "bytes": 377320,
+      "sha256": "cee1647edcc6dc3f95d438f2c7acc659eaeeb0b9a41d83ae412365b31133a0e1"
+    },
+    "cases": 22,
+    "observed": [
+      "Deliberately omit or change the claim INSERT in the real authenticated transaction, preserving schema/triggers/types. Missing positive prefix refuses at COMMIT; wrong prefix/purpose refuse before COMMIT. Exact SQL messages and unchanged rows/xmin discriminate the guards.",
+      "COMMIT before-forward/after-complete/held counters identify the tested loss boundary. Actual lookup and retry resolve original retained rows; absence is not a product noncommit certificate.",
+      "Manager loss before final verify rolls back. Loss during held COMMIT can retain the original pin, but postcommit verify returns Unavailable and poisons the session.",
+      "Maintenance-first blocks the Control pin; pin-first blocks maintenance until commit, then its fresh READ COMMITTED scan sees both lease and claim.",
+      "Held COMMIT crosses a500ms PG lease deadline and refuses. Expired acquisition retry is anchored to PostgreSQL clock and returns unchanged historical metadata.",
+      "Cancelled blocked registration leaves no pin after the blocker is released and both drivers join. It does not qualify joining behind a permanent blocker.",
+      "A different Control holder cannot release the original pin. Seven original active lease/binding/claim triples remain intentionally retained in the stopped laboratory."
+    ],
+    "native_metadata_unchanged": true,
+    "native_parquet_files_unchanged": 8,
+    "expired_retry_clock": {
+      "now_us": 1789891952175511,
+      "expires_at_us": 1789891951610934,
+      "state": "active"
+    },
+    "elapsed_ms": {
+      "omit-pin-claim": 9,
+      "wrong-pin-prefix": 8,
+      "wrong-pin-purpose": 8,
+      "manager-before": 226,
+      "manager-before-retry": 8,
+      "commit-before": 9,
+      "commit-before-retry": 9,
+      "commit-after": 11,
+      "commit-after-retry": 2,
+      "manager-after": 181,
+      "manager-after-retry": 2,
+      "maintenance-first": 46,
+      "maintenance-second": 87,
+      "expired-before-commit": 711,
+      "cancel-blocked": 88,
+      "short": 9,
+      "expired-retry": 2
+    },
+    "measurement_scope": "Small fixture durations include deliberately blocked waits; no capacity or general latency claim"
+  },
+  "failures": [
+    {
+      "scope": "initial SQL report parsing",
+      "status": "INCOMPLETE",
+      "evidence": {
+        "path": ".research/implementation/archive-pin-ledger/capture/pin-schema-cases.json",
+        "bytes": 15265,
+        "sha256": "f9eb23a1885b8a962023a2dd789c2b4fcfdd577ded62f1f3c39921d118312046"
+      },
+      "error": {
+        "path": ".research/implementation/archive-pin-ledger/pin-schema.log",
+        "bytes": 832,
+        "sha256": "144a0acf9e2f54e123f142d21867babdc08556db76ee9b6873b923b857fce376"
+      },
+      "meaning": "SQL reaches the final constraints report; Python line-based parsing fails on multiline composite json_agg. Legacy/oracle groups did not execute. Corrected parser uses complete JSON decoding, new databases and namespace qualified; original outcome retained."
+    },
+    {
+      "scope": "early native readiness check",
+      "status": "NOT_RUN",
+      "meaning": "Explicit ready.json precondition returned false before starting event cases. After READY a fresh invocation completed both cases."
+    }
+  ],
+  "review": {
+    "kind": "independent read-only AI plus integrating owner",
+    "disposition": "Review corrected original fixture grant/count, anchored raw holder identities, added discriminating missing-positive-claim controls, exact proxy counters and actual PostgreSQL expiry observation. No new product defect found in this scoped adapter; reviewer ran no engines."
+  },
+  "closure": {
+    "audit": {
+      "path": ".research/implementation/archive-pin-ledger/capture/terminal-audit.json",
+      "bytes": 10597,
+      "sha256": "fc5ad14653292b10e0a7b25376483e3caba96df8b1cae8b4a0eb25f4f6803f90"
+    },
+    "resources": {
+      "path": ".research/implementation/archive-pin-ledger/capture/resources.json",
+      "bytes": 1339,
+      "sha256": "b95ac69565544e342534122031143a9653235a529e4ba4913dbc3b05f78c84f3"
+    },
+    "state": "stopped-retained",
+    "preexisting_preserved": 407,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "remaining_pg_clients": 0,
+    "network": "Empty owned network removed; containers, source, artifacts, seven retained pin obligations and data remain"
+  },
+  "capture": {
+    "identity": {
+      "path": ".research/implementation/archive-pin-ledger/evidence-identity.json",
+      "bytes": 4044,
+      "sha256": "a1a430aef421d3ce4be2eefebf4bb81b632b6ba08b5bb36394722ca97bc589d2"
+    },
+    "sha256": "27f9bc105e1c6643b34e75431e32bfaf90467b8c19d9e224c5194888827a6f0d",
+    "files": 26
+  },
+  "offline": {
+    "path": ".research/implementation/archive-pin-ledger/offline-verification.json",
+    "bytes": 355,
+    "sha256": "081943086039939b113ef6a6e700dca7f8edb3d1a35d8c064384b56a83f8049b"
+  },
+  "remaining": [
+    "Typed live renewal, principal/action/scope authorization, bounded interrupted delivery and actual served read/export/restart.",
+    "Positive-exclusion old-Control recovery release; expiry alone is never sufficient.",
+    "Legacy positive claims, multi-stream/zero mixtures, broader consumer purposes, concurrent actual compaction/reclamation, schema restore/upgrade and mixed/aged load.",
+    "No host/power-loss, arm64, installation or release qualification. P02-T07 and M1 remain open."
+  ]
+}

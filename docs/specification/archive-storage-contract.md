@@ -1125,19 +1125,31 @@ this order. The adapter keeps clock/completeness checks deferred through COMMIT
 and rechecks the catalog capture afterward. Forcing constraints early is not a
 proof of commit-time validity. Native work and delivery require separate live
 authority checks and retained custody through actual termination.
+This ordering uses PostgreSQL16's [per-statement READ COMMITTED snapshots](https://www.postgresql.org/docs/16/transaction-iso.html#XACT-READ-COMMITTED)
+and its [explicit constraint timing](https://www.postgresql.org/docs/16/sql-set-constraints.html).
+The maintenance scan must be a new statement after acquiring the stable lock;
+switching deferred constraints to IMMEDIATE runs pending checks at that point.
 
 Release atomically transitions the original holder's lease and every claim after
 its consumers have joined. No Drop, timeout or expiry releases obligations. A new
 Control holder cannot release the old holder's pin through this API; recovery
 needs positive exclusion of its consumers, including concurrent work under the
 same local coordinator. That recovery transition, renewal, both maintenance lock
-orders and actual authorized delivery remain qualification gates.
+orders during actual reclamation and authorized delivery remain qualification gates.
 
 [Historical capture evidence](../implementation/evidence/p02-archive-historical-capture-native-20260920.json)
 at `a670f03` qualifies exact old snapshot3 under head4, missing-snapshot refusal
-and refusal to publish an old observation as the latest frontier. It does not
-qualify migration0017 or the new persistent adapter. Their native fixtures are
-pending; no protected read/export or retention task is complete.
+and refusal to publish an old observation as the latest frontier.
+[Native pin evidence](../implementation/evidence/p02-archive-snapshot-pins-native-20260920.json)
+at `27150f2` qualifies two signed cuts with exact pin registration, unchanged retry
+and atomic original-holder release. Fixture `583f085` and oracle `e828eb6` add14
+SQL cases, unchanged legacy upgrade, independent three-table/xmin checks and22
+fault cases. Controlled claim omission refuses at COMMIT. Both maintenance lock
+orders observe real blocking and a fresh scan. Manager loss at COMMIT may retain
+a historical result, but postcommit verification refuses its use. Seven expired
+or orphaned obligations remain retained; another Control cannot release them.
+The initial multiline JSON parser failure is preserved. No live delivery,
+old-holder recovery, actual compaction or protected read/export is qualified.
 
 ## File formation, reads and cost
 

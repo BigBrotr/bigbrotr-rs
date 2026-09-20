@@ -767,8 +767,13 @@ cannot reclaim required evidence, pending data or readable generations.
   qualifies exact retained snapshot3 under head4 in two signed cut journeys.
   The new migration0017 and Control pin adapter bind this selection to the original
   frontier, current holder and atomic positive claims, resolve identical retries
-  without renewal and release after joined consumption. Native pin qualification
-  is pending. Typed renewal, old-holder recovery, maintenance lock schedules,
+  without renewal and release after joined consumption.
+  [Native pin qualification](evidence/p02-archive-snapshot-pins-native-20260920.json)
+  at `27150f2` passes two signed cuts,14 SQL constraints, unchanged legacy upgrade
+  and independent row/xmin checks. Fixture `583f085`/oracle `e828eb6` passes22 fault
+  cases, including both lock orders, omitted positive claim, expiry and lost COMMIT
+  replies. Original parser failure remains recorded. Typed renewal, old-holder
+  recovery, actual concurrent reclamation,
   other consumer purposes and actual authorized read/export remain required.
 - [ ] **Step 2:** Reclaim pending payload only after committed archive and safety policy;
   preserve identity/receipt metadata for its correctness horizon.

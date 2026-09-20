@@ -15174,7 +15174,7 @@
       "network": "bigbrotr-implementation-archive-pin-ledger-27150f2",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "running",
+      "state": "stopped-retained",
       "source_files": 913,
       "started_at": "2026-09-20T07:58:53.820452+00:00",
       "network_id": "063ccdd077c2af186d18ccc4afdd3269674988eb15f2d56e8de51fc7dae0b299",
@@ -15184,8 +15184,15 @@
       "container_id": "ab1b9197451d6fa5f94017a4cccc616c5fb603a16c827bf60cd030ca41c03288",
       "local_raw": ".research/implementation/archive-pin-ledger",
       "purpose": "Actual historical snapshot pin registration, retry and release with independent SQL state oracle",
-      "qualification": "Native27150f2 build/16 schema tests/Clippy and two signed cut journeys PASS. Harness583f085 passes14 pin SQL constraints plus unchanged legacy upgrade and independent native row/xmin oracle. Initial multiline report parser failure retained. Fixture-only fault build READY; fault matrix pending.",
-      "limits": "Runner2CPU/6GiB/512PIDs; PG1CPU/1GiB/128PIDs; internal network/no host ports; trusted exact source"
+      "qualification": "PASS scoped registration/retry/original-holder release:2 signed cuts,14 pin SQL constraints,legacy preservation/native row oracle,22 faults. Initial parser failure retained; old-holder recovery/live delivery unqualified.",
+      "limits": "Runner2CPU/6GiB/512PIDs; PG1CPU/1GiB/128PIDs; internal network/no host ports; trusted exact source",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "capture_sha256": "27f9bc105e1c6643b34e75431e32bfaf90467b8c19d9e224c5194888827a6f0d",
+      "preexisting_preserved": 407,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "remaining_pg_clients": 0
     }
   },
   "implementation_monitor_corrections_20260918": {
