@@ -20,15 +20,14 @@ the backlog; do not create another plan or diagnostic public command.
 
 ## Git and ownership
 
-Main HEAD and freshly checked private origin/main are
-988bc4a7f694d878736c825cba1f34e2220c4335, with a clean working tree before this
-checkpoint update. The four qualified commits were pushed normally after fetch;
+Private origin/main was freshly checked at988bc4a7f694d878736c825cba1f34e2220c4335.
+Local HEAD is unpublished test candidate9aa86b970d02240aaf202ce9f7f11732a995a996. The four qualified commits were pushed normally after fetch;
 no remote work required reconciliation. Product candidate
 354de750ffbcda93e7784bfaaf17b801522caf0f has tree
 968bbf5ed67e5e1c2f87db3e1dddac7b1b9a1f1f. Follow-ups b4c3a2e and2e0d50d only
 correct practical fixtures/checkpoints. Qualification988bc4a records the scoped
-results and preserved failures. Current root-owned work starts the connected
-frontier/pin consumer. No parallel writer or merge/rebase. Offline capture audit
+results and preserved failures. Current root-owned dirty work adds0016/native frontier adapter, connected signed
+fixture/oracle/build selection, owning contracts, inventory and this checkpoint. No parallel writer or merge/rebase. Offline capture audit
 was rerun after resumption and passes all37 file hashes and recorded outcomes;
 the stopped Tux resources below are dated terminal observations, not a new run.
 
@@ -83,6 +82,37 @@ synchronous orphan scan was removed: exclusive original publisher paths provide
 the actual no-adoption boundary without blocking the supervisor. The native
 collision test passes. These development logs are under the ignored cut root;
 compilation failures are not semantic RED evidence.
+
+## Current frontier candidate (not qualified)
+
+0016 and ControlSession now assemble an actual Archive owner, immutable native
+snapshot/operation binding, selected original input IDs and complete common
+frontier/head. RetainedInputs handles, exact intents, sealed topology and ordered
+source locks precede publication; zero bounds stay explicit. Historical lookup is
+separate from latest capture and grants no pin. No pin/reclamation/served consumer
+is implemented. An independent read-only AI review found lease-expiry checks, SQL
+adoption of old Archive owner rows and UPDATE-only promotion of historical unbound
+frontiers; candidate code addresses them, but discriminating engine cases remain
+required. Authoritative source handoff and pin/GC races remain next gates.
+
+Actual PostgreSQL16.15 RED on exact9aa86b9: schema15 accepts an empty unbound Archive
+frontier. tests/fixtures/storage/archive-frontier-unbound.sql expects atomic23514
+and fails for that missing guarantee. Ignored archive-frontier/red.json records it.
+The first SQL harness attempt failed at migration8 because its LOCK TABLE was
+outside a transaction; that DB is retained. A fresh DB with transaction-wrapped
+DDL produced the semantic RED. This is direct SQL, not CLI or native qualification.
+Mac16 schema tests and scoped library/example Clippy pass on the final candidate,
+including historical lookup/prefix fixture changes. Artifact/link checks pass
+structurally; they do not execute SQL or establish native correctness.
+No Linux GREEN yet. Next: finish candidate checks/review, commit exact source and
+run the connected native normal/history cuts plus discriminating SQL/fault cases.
+
+RED lab /home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-9aa86b9,
+owner3bbfe3c27264f3024826a210cd758f72, PG
+ce8cce0126368f9595963cd153b44eb7eb45543057b198ff38d80ad43a9814d0 is freshly
+stopped/Pid0/noOOM/exit0. Networknone, no host ports, read-only root,1CPU/1GiB/128PIDs.
+Retain its source/data/failures; no active experiment. Inventory frontier_candidate
+and ignored .research/implementation/archive-frontier own the resources/scripts.
 
 ## Owned resources and evidence
 

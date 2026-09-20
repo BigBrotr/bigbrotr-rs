@@ -14,8 +14,11 @@ use tokio_postgres::{Client, Row, Transaction};
 
 #[path = "archive_coordinator.rs"]
 mod archive_coordinator;
+#[path = "archive_frontier.rs"]
+mod archive_frontier;
 #[path = "archive_persistence.rs"]
 mod archive_persistence;
+pub use archive_frontier::ArchiveFrontierReceipt;
 #[path = "initial_batch.rs"]
 mod initial_batch;
 #[path = "producer_closing.rs"]

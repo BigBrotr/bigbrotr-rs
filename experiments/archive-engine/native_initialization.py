@@ -20,8 +20,9 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'])
-archive_cut = sys.argv[1:] == ['--archive-cut']
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'])
+archive_frontier = sys.argv[1:] == ['--archive-frontier']
+archive_cut = archive_frontier or sys.argv[1:] == ['--archive-cut']
 archive_membership = sys.argv[1:] == ['--archive-membership']
 publication_sync = sys.argv[1:] == ['--publication-sync']
 archive_event = publication_sync or sys.argv[1:] == ['--archive-event']
@@ -137,6 +138,9 @@ if input_bindings:
     checks = [checks[0],
         ('binding-tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--test', 'import_input_bindings', '--test', 'control_schema']),
         ('binding-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--lib', '--test', 'import_input_bindings', '--example', 'ingest_bootstrap_probe', '--', '-D', 'warnings'])]
+if archive_frontier:
+    identity.update(scope='actual native cut to immutable fenced Archive frontier; pin/served-read qualification remains open')
+    checks = [checks[0], checks[1], checks[-1]]
 if certification:
     identity.update(scope='native producer closing and historical target under current Control' if producer_closing else 'initial existing-effect native read and connected Control consumer')
     if producer_recovery:

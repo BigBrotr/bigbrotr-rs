@@ -57,6 +57,10 @@
     {
       "version": 15,
       "name": "0015_archive_persistence.sql"
+    },
+    {
+      "version": 16,
+      "name": "0016_archive_frontiers.sql"
     }
   ],
   "reserved": [

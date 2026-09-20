@@ -1060,6 +1060,29 @@ bind a real Archive consumer frontier and native snapshot atomically, retain its
 lease and positive source claims (zero streams retain the native pin), and resolve
 lost replies using the same immutable identity. Complete M1 is still open.
 
+### Native frontier binding candidate
+
+The P02-T04/T07 frontier adapter adds explicit Control migration0016. It extends
+the existing consumer ledger with immutable native snapshot/count/request bindings
+and selected attempt identities, rather than introducing another acceptance log.
+Before publication it compares actual retained complete input handles, original
+Control intents with protocol1, the exact sealed topology and authoritative source
+closure, then consumes a joined CapturedCut under the same local/catalog barrier.
+Source locks are ordered and the short Control transaction uses READ COMMITTED.
+The logical Archive owner has its own role/epoch and immutable attribution to the
+actual current Control issuer; both scheduling leases must remain unexpired.
+Positive storage exclusion, never lease age, permits replacing the old owner.
+
+Historical owner rows cannot acquire the new protocol retrospectively. Historical
+unbound frontiers remain inspectable but cannot become a new head. New frontier,
+native binding, selected inputs, complete bounds (including zero) and head commit
+together. An identical operation preserves original attribution; a separate
+historical result lookup resolves the fixed identity after latest native snapshot
+advances, without rereading latest as the old snapshot. The receipt grants no
+principal authorization, read lease, source ACK or pending reclamation. Native pin
+registration and the served read/export consumer remain the next connected step;
+this candidate has no complete frontier/pin qualification yet.
+
 ## File formation, reads and cost
 
 Maintain the existing ZSTD3/bounded batch starting policy and disabled scientific

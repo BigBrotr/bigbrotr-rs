@@ -15006,6 +15006,35 @@
       "bigbrotr_running": 0,
       "cli_harness_revision": "b4c3a2e",
       "protocol_fixture_revision": "2e0d50d"
+    },
+    "frontier_candidate": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-9aa86b9",
+      "source": "9aa86b970d02240aaf202ce9f7f11732a995a996",
+      "tree": "0b37526caef0dcfbb1129b72662808663cb03fc3",
+      "owner": "3bbfe3c27264f3024826a210cd758f72",
+      "postgres": "bigbrotr-implementation-archive-frontier-9aa86b9-pg",
+      "image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "started_at": "2026-09-20T05:41:22.789615+00:00",
+      "postgres_id": "ce8cce0126368f9595963cd153b44eb7eb45543057b198ff38d80ad43a9814d0",
+      "local_raw": ".research/implementation/archive-frontier",
+      "purpose": "P02-T04/T07 native frontier and pin bridge: current SQL-only RED",
+      "limits": "PG1CPU/1GiB/128PIDs; no network or host ports; read-only root; owned retained data",
+      "red": "RED_REPRODUCED: unbound empty Archive frontier accepted on15; no native/publication guarantee claimed",
+      "first_run": "Harness failed at migration8 LOCK TABLE outside transaction; isolated failed DB retained; fresh transaction-wrapped retry produced semantic RED",
+      "terminal_state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-20T05:41:22.890066481Z",
+        "FinishedAt": "2026-09-20T05:56:55.141318636Z"
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

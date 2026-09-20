@@ -40,18 +40,19 @@ def cut_digest(read):
     return hashlib.sha256(body).hexdigest()
 
 
-def cut_expectation(mode):
+def cut_expectation(mode, prefix=False):
     """Independent literal wire recipe; does not import a product encoder."""
-    receipts = [r for r in input_expectations(mode) if r['publication_ordinal'] in (2, 3, 5)]
-    snapshot, count = (4, 12) if mode == 'history' else (3, 10)
+    receipts = [r for r in input_expectations(mode) if r['publication_ordinal'] in ((2, 3) if prefix else (2, 3, 5))]
+    snapshot, count = (4, 12) if mode == 'history' and not prefix else (3, 10)
     read = dict(dataset_id='01'*16, topology_generation='0',
                 bounds=[dict(shard_id=0, owner_epoch=1, complete_through=count)],
                 receipts=receipts, snapshot_id=snapshot)
     observation = dict(format='bigbrotr-native-cut/1', snapshot_id=snapshot,
                        request_digest=cut_digest(read),
-                       family_counts=[6, 1, 1, 2, 2] if mode == 'history' else [6, 1, 1, 1, 1])
-    return dict(event='captured-cut', observation=observation, read=read,
-                frontier='not-implemented', pin='not-implemented')
+                       family_counts=[6, 1, 1, 2, 2] if mode == 'history' and not prefix else [6, 1, 1, 1, 1])
+    return dict(event='captured-prefix' if prefix else 'captured-cut', observation=observation, read=read,
+                frontier=dict(operation_id=('f0' if prefix else 'f1')*16, revision=2 if mode=='history' and not prefix else 1, snapshot_id=snapshot,
+                              request_digest=cut_digest(read)), pin='not-implemented')
 
 
 def main(root, capture_cut=False):
@@ -66,7 +67,7 @@ def main(root, capture_cut=False):
     runner, pg = resources['container_id'], resources['postgres_id']
     for identity in [runner, pg]:
         c = json.loads(command('docker', 'inspect', identity))[0]
-        assert c['Config']['Labels']['org.bigbrotr.publication'] == resources['owner']
+        assert c['Config']['Labels'][resources.get('owner_label', 'org.bigbrotr.publication')] == resources['owner']
         assert c['State']['Running'] and not c['State']['OOMKilled']
     out = root/'out/native-tests'
     ready = json.loads((out/'ready.json').read_text())
@@ -167,7 +168,7 @@ def main(root, capture_cut=False):
                 assert [v['expected'] for v in values if v['event']=='inputs-reopened'] == input_expectations(mode)
                 # This slice consumes installed initialization/retained inputs;
                 # its dedicated mode omits previously qualified ACL fault races.
-                check(mode, [v for v in values if v['event'] not in ('inputs-reopened', 'captured-cut')], json.loads(reader['stdout']))
+                check(mode, [v for v in values if v['event'] not in ('inputs-reopened', 'captured-cut', 'captured-prefix', 'historical-frontier')], json.loads(reader['stdout']))
             request = identity(value, records, mode)
             before, original_files = metadata(db), files(mode)
             result[mode+'_metadata_before'] = before
@@ -176,6 +177,14 @@ def main(root, capture_cut=False):
             if capture_cut:
                 captured = [v for v in values if v['event'] == 'captured-cut']
                 assert captured == [cut_expectation(mode)], 'independent complete cut and request digest'
+                prefixes = [v for v in values if v['event'] == 'captured-prefix']
+                historical = [v for v in values if v['event'] == 'historical-frontier']
+                if mode == 'history':
+                    prefix = cut_expectation(mode, True)
+                    assert prefixes == [prefix], 'independent earlier cut'
+                    assert historical == [dict(event='historical-frontier', **prefix['frontier'], family_counts=prefix['observation']['family_counts'])], 'old identity after latest snapshot advances'
+                else:
+                    assert prefixes == historical == []
                 marker = json.loads(sql('bbpub_control_'+mode,
                     "SELECT row_to_json(t) FROM (SELECT encode(dataset_id,'hex') AS dataset, encode(catalog_id,'hex') AS catalog, protocol_version, protection_class, baseline_snapshot FROM control.archive_persistence)t;"))
                 assert marker == dict(dataset='01'*16, catalog='5a'*16, protocol_version=1,
@@ -184,8 +193,26 @@ def main(root, capture_cut=False):
                     "SELECT json_agg(persistence_protocol ORDER BY ordinal) FROM control.archive_attempts;"))
                 assert protocols == [1]*(5 if mode == 'history' else 4)
                 assert int(sql(db, 'SELECT max(snapshot_id) FROM ducklake_snapshot;')) == (4 if mode == 'history' else 3)
+                # Independent durable projection: compare fixed source bounds,
+                # complete input identities, native snapshot and real logical
+                # Archive owner. No product decoder constructs this expectation.
+                frontier = json.loads(sql('bbpub_control_'+mode, """SELECT json_build_object(
+                    'binding',(SELECT json_agg(json_build_array(encode(operation_id,'hex'),encode(consumer_id,'hex'),frontier_revision,topology_generation,snapshot_id,encode(request_digest,'hex'),dictionary_count,payload_count,eligibility_count,receive_count,provenance_count) ORDER BY frontier_revision) FROM control.archive_frontier_snapshots),
+                    'head',(SELECT json_build_array(consumer_role,current_revision,current_topology_generation) FROM control.consumers),
+                    'bounds',(SELECT json_agg(json_build_array(frontier_revision,shard_id,owner_epoch,last_complete_sequence,attestation_kind,encode(attestation_digest,'hex')) ORDER BY frontier_revision,shard_id,owner_epoch) FROM control.consumer_frontiers),
+                    'batches',(SELECT json_agg(json_build_array(i.frontier_revision,encode(i.attempt_id,'hex')) ORDER BY i.frontier_revision,a.ordinal) FROM control.archive_frontier_batches i JOIN control.archive_attempts a USING(attempt_id)),
+                    'owner',(SELECT json_build_array(o.role,o.epoch,o.state,o.process_incarnation=a.owner_incarnation,c.role,c.resource_id=a.issuer_resource,c.process_incarnation=a.issuer_incarnation) FROM control.archive_owner_sessions a JOIN control.owner_epochs o ON o.resource_id=a.catalog_id AND o.epoch=a.owner_epoch JOIN control.owner_epochs c ON c.resource_id=a.issuer_resource AND c.epoch=a.issuer_epoch));"""))
+                expected_cut = cut_expectation(mode)
+                expected_cuts = ([cut_expectation(mode, True)] if mode=='history' else []) + [expected_cut]
+                assert frontier == dict(
+                    binding=[[c['frontier']['operation_id'],'5a'*16,c['frontier']['revision'],0,c['observation']['snapshot_id'],c['observation']['request_digest'],*c['observation']['family_counts']] for c in expected_cuts],
+                    head=['archive',len(expected_cuts),0],
+                    bounds=[[c['frontier']['revision'],0,1,c['read']['bounds'][0]['complete_through'],'archive-batch',c['read']['receipts'][-1]['batch_digest']] for c in expected_cuts],
+                    batches=[[c['frontier']['revision'],bytes(r['attempt_id']).hex()] for c in expected_cuts for r in c['read']['receipts']],
+                    owner=['archive',1,'active',True,'control',True,True]), 'independent durable frontier binding'
                 result['cases'].append(dict(name=mode+'-captured-cut', status='PASS',
-                    cut=captured[0], persistence=marker, attempt_protocols=protocols))
+                    cut=captured[0], persistence=marker, attempt_protocols=protocols, frontier=frontier,
+                    prefixes=prefixes, historical=historical))
                 save()
                 continue
             run_case(mode+'-complete', request, value)

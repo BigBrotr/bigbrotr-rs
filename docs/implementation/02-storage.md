@@ -333,6 +333,14 @@ final verify/during COMMIT and identical retry are exercised. Both failed initia
 TRUNCATE fixtures remain recorded. The actual Archive frontier/snapshot/lease
 binding and populated 10/14 history recovery remain open. No task checkbox closes.
 
+The next connected candidate consumes that observed cut in the existing Control
+owner: additive0016 binds the actual Archive owner, complete frontier, selected
+original input identities and native snapshot atomically. Identical retries preserve
+attribution; historical result resolution is independent of latest native snapshot.
+The signed fixture now exercises this consumer. Native frontier qualification,
+source handoff, actual pins and served read/export remain open; do not treat the
+SQL-only unbound-empty-cut RED or Mac schema/Clippy checks as their completion.
+
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,
 `contracts/archive/v1/batch.json`, `packaging/archive-worker/`,
