@@ -17245,6 +17245,30 @@
     "network_state": "removed after owner/no-endpoint audit; containers and data retained",
     "terminal_audit": "terminal-audit.json",
     "evidence": "docs/implementation/evidence/p08-browser-http-native-20260920.json",
-    "capture_sha256": "c894483fe869bd59a43c4775e79bc70c688ff8e2e3adef3b1a9447db33310842"
+    "capture_sha256": "c894483fe869bd59a43c4775e79bc70c688ff8e2e3adef3b1a9447db33310842",
+    "fault_qualification": {
+      "source": "661b54be3fbe5652053b66ebffb3e962f4363cd7",
+      "tree": "08a3f74bff0c5285fc5e2591af745e038fd28806",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-faults-661b54b",
+      "owner": "89670549e4d93cd1cb2b6769427ab84e",
+      "container": "bigbrotr-implementation-browser-http-faults-661b54b",
+      "postgres": "bigbrotr-implementation-browser-http-faults-661b54b-pg",
+      "network": "bigbrotr-implementation-browser-http-faults-661b54b",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 941,
+      "started_at": "2026-09-20T11:19:27.140533+00:00",
+      "network_id": "d17947ab06bcf9ba1bea794877886973ba2330e152b90e1bf8068b546b4e1295",
+      "postgres_id": "d54fec0ced9cd709c28a3c0137cc5727313326a2b1f6841f283848339796b47d",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "df636a2d647e6c5767c545998a8cb34b9e01fc60f5882aa9c24ef84e1860931b",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/management-http/fault-native",
+      "observation": "Three actual executable/PG cases plus one controlled owned-worker join PASS. Independent SQL/audit PASS;21capture/941source hashes verified on Mac. Both containers stopped/PID0/noOOM,420previous resources unchanged,8unrelated running,owned empty network removed.",
+      "evidence": "docs/implementation/evidence/p08-browser-http-faults-native-20260920.json",
+      "capture_sha256": "22304a2d8bd3cf474e65abc82106ad824fd7ff21c7ae341c90fec0b23a53699c"
+    }
   }
 }

@@ -1,0 +1,312 @@
+{
+  "format": "bigbrotr-browser-http-faults-native/1",
+  "status": "PASS",
+  "scope": "Native private login hash residency, signal/parent loss and successor; separate controlled worker join regression. No complete session, P08-T02, M1 or release claim.",
+  "source": "661b54be3fbe5652053b66ebffb3e962f4363cd7",
+  "tree": "08a3f74bff0c5285fc5e2591af745e038fd28806",
+  "source_files": 941,
+  "product_unchanged_from": "5a4e0d13b51f51d06f50252bf7644b68a83b5be5",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "runner": "2CPU/6GiB/512PIDs",
+    "postgres_limits": "1CPU/1GiB/128PIDs",
+    "network": "internal isolated network/shared namespace; no host-published ports",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "dependencies": {
+    "Cargo.lock": {
+      "path": "Cargo.lock",
+      "sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "bytes": 75668
+    },
+    "contracts/release/dependencies.json": {
+      "path": "contracts/release/dependencies.json",
+      "sha256": "14bb6d43630ff5ad0eeaec28236ca138224d5e97603200f456536abbaa2c94c6",
+      "bytes": 17254
+    },
+    "migrations/postgres/0806_browser_sessions.sql": {
+      "path": "migrations/postgres/0806_browser_sessions.sql",
+      "sha256": "3017bf28531655765ec9e09d10b1512532e8060681dac377e753119050e0b694",
+      "bytes": 8019
+    }
+  },
+  "artifacts": {
+    "bigbrotr": "e101e6c9d8077d3dfae3851e9598b64bf8d399d569f5e58d9fd77c8aeac71ecb",
+    "examples/browser_http_probe": "73277da55e6f8ac01826c72d29c6244c39c2b8ec7005d84f39ea48b8b36f37dc"
+  },
+  "native": {
+    "checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "browser_http_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 32.16035621892661
+      },
+      {
+        "name": "owned-worker-join",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "interfaces::management::tests::management_stop_cannot_finish_or_release_grants_before_blocking_worker_joins"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 10.830126310233027
+      },
+      {
+        "name": "fixture-clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "browser_http_probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.217015649192035
+      },
+      {
+        "name": "native-http-faults",
+        "command": [
+          "/out/build/target/release/examples/browser_http_probe",
+          "/out/build/target/release/bigbrotr",
+          "/out/http-fixture",
+          "--faults-only"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 1.3665937390178442
+      }
+    ],
+    "cases": [
+      {
+        "case": "hash-signal",
+        "detail": {
+          "baseline_rss_kib": 7452,
+          "observed_rss_kib": 42892,
+          "remaining_control_backends": 0,
+          "session_rows": 0,
+          "signal_to_cleanup_ms": 82,
+          "signal_to_terminal_observed_ms": 80
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "hash-parent-loss",
+        "detail": {
+          "baseline_rss_kib": 7588,
+          "observed_rss_kib": 46312,
+          "remaining_control_backends": 0,
+          "session_rows": 0,
+          "signal_to_cleanup_ms": 2,
+          "signal_to_terminal_observed_ms": 1
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "explicit-successor-login-after-hash-parent-loss",
+        "detail": {
+          "sessions": 1
+        },
+        "status": "PASS"
+      }
+    ]
+  },
+  "mac": {
+    "owned_worker_join": "PASS; one controlled blocking worker, actual Management::stop and TCP client",
+    "clippy": "PASS; bin/probe/tests",
+    "final_probe": "PASS; build and scoped Clippy after review corrections"
+  },
+  "oracles": [
+    "Fresh actual CLI migrate18/initialize/activate/enroll/migrate806 and serve with actual PostgreSQL.",
+    "Observe at least32MiB VmRSS growth after login, SIGSTOP the owned Control process, observe stopped state and retained growth; independently require zero sessions and two charged buckets before TERM/CONT or SIGKILL.",
+    "TERM: actual zero exit, closed listener and committed owner release. KILL: actual signal9 status and closed listener. Both clients close without issuance bytes, join, then independent SQL observes zero sessions and no Control backends.",
+    "Successor login returns201, self200 and independent count exactly one stored session. Its stop has committed release.",
+    "Separate actual Management::stop regression holds an owned blocking closure. TCP closes but stop remains pending with two request/hash permits. Releasing the closure permits join and zero permits. This is the discriminator for join, separate from native RSS observation.",
+    "Exact source SHA maps compare with qualified5a4e0d1 except an explicit fixture/docs allowlist; the only changed Rust module outside the probe is cfg(test). No production source/lock/build tool change allowed."
+  ],
+  "review": {
+    "mode": "Independent read-only AI review and root execution/diff review",
+    "corrections": [
+      "Capture signal-to-terminal observation before TCP join and SQL checks; report total cleanup separately.",
+      "Successor success now requires actual persistent count, not an asserted report literal."
+    ],
+    "limits": [
+      "RSS is consistent with hash allocation but does not trace the exact Argon2 instruction.",
+      "Process exit/RSS alone cannot prove the worker joined before owner release; the distinct controlled closure test exercises that ordering.",
+      "Signal times are single-run poll observations, not universal latency bounds.",
+      "Failure paths before explicit client join may leave the fixture thread detached until its finite socket timeout/process exit; no failed-path join claim.",
+      "No deliberately mutated no-join implementation was executed; no runtime RED claim."
+    ]
+  },
+  "not_run": [
+    "Ambiguous issuance/logout COMMIT and PostgreSQL crash with retained live cookie",
+    "Actual browser cookie enforcement and same-host second-port control",
+    "General login audit, reauthentication, scoped grants, live delivery drain, public router separation and remote TLS",
+    "Hash CPU exhaustion/OS suspend, mixed/aged capacity, full product/installation/release and Linux arm64"
+  ],
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-faults-661b54b",
+    "owner": "89670549e4d93cd1cb2b6769427ab84e",
+    "state": "stopped-retained",
+    "runner": "df636a2d647e6c5767c545998a8cb34b9e01fc60f5882aa9c24ef84e1860931b",
+    "postgres": "d54fec0ced9cd709c28a3c0137cc5727313326a2b1f6841f283848339796b47d",
+    "remaining_pg_clients": [],
+    "independent_sql": {
+      "sessions": 1,
+      "live": 1,
+      "revoked": 0,
+      "bindings": true,
+      "account": true,
+      "grants": 7,
+      "no_active_control": true,
+      "bounded_counters": true,
+      "migration": 1,
+      "heads": [
+        "1",
+        "1"
+      ],
+      "probe_marker_removed": true
+    },
+    "preexisting_preserved": 420,
+    "unrelated_running": 8,
+    "network": "Owned empty network removed; stopped containers/data retained",
+    "capture_sha256": "22304a2d8bd3cf474e65abc82106ad824fd7ff21c7ae341c90fec0b23a53699c",
+    "offline_verification": "All21 capture entries and941 exact Git source hashes verified on Mac; all420 previous lifecycle/image/mount/network records preserved"
+  },
+  "evidence": [
+    {
+      "path": ".research/implementation/management-http/fault-native/evidence-identity.json",
+      "sha256": "eb0839a1910f6c817640c625e7947c2dd747790a2c00e72345b328253107fad0",
+      "bytes": 3328
+    },
+    {
+      "path": ".research/implementation/management-http/fault-native/offline-verification.json",
+      "sha256": "e18defe57937cfaef480730b224ebed0a07a688a9a4ca3901d379fb8f0f03390",
+      "bytes": 258
+    },
+    {
+      "path": ".research/implementation/management-http/fault-native/capture/resources.json",
+      "sha256": "68f030cacd168e19edee5150de8dad4c7666105baff4b447124ca9fa60a35256",
+      "bytes": 1304
+    },
+    {
+      "path": ".research/implementation/management-http/fault-native/capture/terminal-audit.json",
+      "sha256": "d574bbab84dab1d7746c08e7e86a28e1fc6d0a0ad27902fa3ac8540ce6883d4b",
+      "bytes": 10599
+    },
+    {
+      "path": ".research/implementation/management-http/fault-native/capture/out/build/source-manifest.json",
+      "sha256": "69fb6c671661b3882ef848cc2a565b0cab2a9ae914432b394bdb6b461f5f9991",
+      "bytes": 116538
+    },
+    {
+      "path": ".research/implementation/management-http/fault-native/capture/out/build/baseline-source-manifest.json",
+      "sha256": "b524160f833851ff52259f46b74920fffd11ea272fa3793308c3e6766e5e5598",
+      "bytes": 116396
+    },
+    {
+      "path": ".research/implementation/management-http/fault-native/capture/out/native-tests/http-result.json",
+      "sha256": "8cd4d75fe40a32ce92138e97cae3111e65e2a7d5c8ae778d59916be5c4633cab",
+      "bytes": 4356
+    },
+    {
+      "path": ".research/implementation/management-http/fault-native/capture/out/native-tests/native-http-faults.log",
+      "sha256": "6041491a2904ea0354bc6a56c2b6bdc14b58b74b420f9fbf528a41df580e1423",
+      "bytes": 520
+    },
+    {
+      "path": ".research/implementation/management-http/fault-native/capture/out/native-tests/owned-worker-join.log",
+      "sha256": "5460ddb10fed6e191e854bf49d9c52d598a605f6f8ac0672370c4179607d1dc6",
+      "bytes": 457
+    },
+    {
+      "path": ".research/implementation/management-http/owned-hash-join/result.json",
+      "sha256": "48539b746a7d0133a78bdd44ef8bb1f4b6428d6934086351938599afb6fc7532",
+      "bytes": 1130
+    },
+    {
+      "path": ".research/implementation/management-http/fault-fixture-reviewed/result.json",
+      "sha256": "43301676f3a09571dc75ce9bc75c59f762a8635b2671f4adc7d7574053239d30",
+      "bytes": 1002
+    }
+  ]
+}

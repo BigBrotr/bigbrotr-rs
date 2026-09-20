@@ -42,6 +42,8 @@ confirms the growth remains resident and no session has been issued, then queues
 TERM/CONT or kills the parent. It observes client closure, process/backend
 termination, no issuance and a successful explicit successor login. This Linux
 measurement does not identify an exact instruction inside Argon2 or establish a
-universal shutdown bound. Native execution/evidence is still required. The driver
+universal shutdown bound. [Native fault evidence](../../docs/implementation/evidence/p08-browser-http-faults-native-20260920.json)
+records three cases at661b54b plus the separate actual Management::stop join
+discriminator; failed fixture paths do not establish a TCP thread join. The driver
 compares all source hashes against the qualified baseline except the explicit
 fixture/docs allowlist; no modified product implementation can pass that check.

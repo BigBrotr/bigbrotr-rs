@@ -150,8 +150,11 @@ execution evidence. No T02 step is closed by these partial routes.
 ten actual executable/PG cases at5a4e0d1,15 clock and11 interface tests. Four TCP
 clients completed4094 self requests in12.011s without postponing Control renewal.
 The slow-client marker, session/xmin comparisons and independent terminal SQL
-qualify their named schedules only. Browser, active-hash shutdown, ambiguous
-COMMIT, general audit/grants and remote TLS remain required.
+qualify their named schedules only. [Hash lifecycle evidence](evidence/p08-browser-http-faults-native-20260920.json)
+at661b54b adds actual TERM/CONT and SIGKILL during observed hash-sized RSS growth,
+no issuance and successor login, plus a distinct controlled worker join test.
+It does not trace an exact Argon2 instruction or qualify a universal shutdown bound.
+Browser, ambiguous COMMIT, general audit/grants and remote TLS remain required.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 

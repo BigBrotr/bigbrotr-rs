@@ -21,17 +21,15 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main, origin/main and remote refs/heads/main are freshly verified at pushed
-`8974fb85598fb4cf896dee2714ba7c0072d602dd`. Product/fixture candidate
-`5a4e0d13b51f51d06f50252bf7644b68a83b5be5`, tree
-`140784712b5a2b6b7c015e1b088bbb64397e0139`, retains its exact940-file identity
-in the HTTP report.8974fb8 adds qualification/docs only. Current root-owned dirty files are browser_http_probe.rs, management/tests.rs,
-experiments/browser-sessions/{http_native.py,README.md} and this checkpoint.
-They add fault fixtures and a cfg(test) join discriminator; no production change
-after the tested source. No parallel writer/merge/rebase. Root sole integrator;
-read-only catalog_guard_review reviewed this follow-up. All local tests terminal;
-no new remote lab yet. Fresh SSH confirms prior HTTP containers stopped/PID0/noOOM
-and eight unrelated workloads running. No browser/API readiness or product completion claim.
+Local main is clean tested candidate `661b54be3fbe5652053b66ebffb3e962f4363cd7`,
+tree`08a3f74bff0c5285fc5e2591af745e038fd28806`. origin/main and remote main last
+verified at pushed8974fb8. Native941-file source export matches Mac Git archive.
+Product remains5a4e0d1; this candidate adds fixtures and a cfg(test) join test only.
+Root-owned dirty work records qualification: report, checkpoint, inventory, P08
+and fixture README. No parallel writer/merge/rebase. Independent read-only
+catalog_guard_review completed this follow-up. All tests terminal; all owned
+labs stopped/retained. Review evidence/docs, commit and push the verified slice.
+No browser/API readiness or product completion claim.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -82,6 +80,19 @@ holder files/413 preexisting lifecycle records. Main capture SHA256:
 `e16a91c279e51cbf6d3710efa226ecbc0a5712a66614ed657cc870d060ae2de7`.
 
 ## Resources
+
+Fault lab `/home/tux/bigbrotr-implementation-20260917/runs/browser-http-faults-661b54b`
+is stopped/retained. Owner`89670549e4d93cd1cb2b6769427ab84e`,
+runner`df636a2d647e6c5767c545998a8cb34b9e01fc60f5882aa9c24ef84e1860931b`,
+PG`d54fec0ced9cd709c28a3c0137cc5727313326a2b1f6841f283848339796b47d`:
+both stopped/PID0/noOOM, zero PG clients and active Control, one live session,
+config1/policy1. Owned empty network removed;420previous records unchanged,
+8unrelated workloads remain. All21capture files/941source hashes verified on Mac.
+Capture SHA256`22304a2d8bd3cf474e65abc82106ad824fd7ff21c7ae341c90fec0b23a53699c`.
+Raw `.research/implementation/management-http/fault-native`; inventory nested
+under`implementation_browser_http_20260920.fault_qualification`. Original local
+resources.json is stale launch state; capture/resources.json is terminal. Retain
+secret-bearing out/http-fixture remotely; never copy wholesale or reuse output.
 
 HTTP lab `/home/tux/bigbrotr-implementation-20260917/runs/browser-http-5a4e0d1`
 is stopped/retained. Owner`a6a3064d79d5392e9fe7ceeeae248386`, source5a4e0d1,
@@ -215,20 +226,26 @@ source/artifact/dependency identities. Exact axum0.8.9,hyper1.11.1,hyper-util0.1
 have defaults disabled;15 new packages, no old version/checksum change. Official
 archives were verified; raw Axum serve would detach unbounded connection tasks.
 
-Next bounded action: commit the reviewed fixture candidate and run native
-active-hash shutdown/parent-loss qualification through the actual executable in a
-fresh exact-Git Tux lab, then ambiguous COMMIT/PG crash with live cookies and actual
-browser cookie/CSRF checks. The new fixture observes hash-sized resident growth,
-TERM/CONT or SIGKILL, no issuance and successor login. It does not trace an exact
-Argon2 instruction. A separate actual Management::stop test holds a controlled
-blocking worker: HTTP closes while stop stays pending and request/hash grants
-remain, then release permits join and zero grants. That test and scoped Clippy
-passed on Mac in .research/implementation/management-http/owned-hash-join; the
-probe build/Clippy passed in fault-fixture-first. No runtime RED is claimed. Review
-corrected the signal metric to capture terminal observation before SQL/client
-cleanup, and added an actual persistent count for successor issuance. Native
-cases are NOT_RUN. Ignored fault-native launch/transfer scripts are prepared;
-no resources created. Failed fixture assertions do not prove the TCP thread join.
+[Hash lifecycle evidence](evidence/p08-browser-http-faults-native-20260920.json)
+qualifies candidate661b54b without production change from5a4e0d1. Native build,
+one controlled join regression, scoped Clippy and three actual executable cases
+PASS. Mac join test and bin/probe/tests Clippy PASS; reviewed probe build/Clippy
+PASS. Real login produced VmRSS growth7452->42892KiB (TERM) and7588->46312KiB
+(KILL); SIGSTOP confirmed retained growth, zero sessions and two charged buckets.
+TERM/CONT observed exit0/committed release after80ms (cleanup82ms); SIGKILL
+observed signal9 after1ms (cleanup2ms). Both yielded no issuance/Control backend.
+An explicit successor login/self succeeds with exactly one stored live session.
+RSS is not an exact Argon2 instruction trace or proof of join. The distinct actual
+Management::stop regression holds a controlled blocking closure: closed HTTP,
+stop still pending/two permits, release then joined/zero permits. No mutated
+no-join runtime RED or universal latency bound is claimed. Independent review
+corrected the timestamp boundary and successor count; failed-path client join
+is not claimed. Terminal SQL/audit/source/capture verification PASS.
+
+Next bounded action after evidence commit/push: ambiguous issuance/logout COMMIT
+and actual PostgreSQL crash with retained cookies through the real executable,
+then actual browser cookie/CSRF checks. Reuse the existing bounded wire fault
+proxy and require independent persisted outcomes; no product fault hooks.
 Tool discovery found no browser MCP capability; inspect selected browser tooling
 and use an isolated actual client rather than treating raw TCP as a browser. Continue login audit, reauthentication and scope-qualified grants needed
 by the real private history reader. P08-T02 owns these steps; no parallel plan or
