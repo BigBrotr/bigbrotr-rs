@@ -17321,7 +17321,7 @@
   "implementation_private_panel_20260920": {
     "local_root": ".research/implementation/private-panel",
     "owner": "root implementer",
-    "state": "First browser matrix FAIL/stopped-retained; bounded diagnostic follow-up pending",
+    "state": "Browser failure causes confirmed; product/header and form-oracle correction pending complete native qualification",
     "source_base": "b98426146c68caffcbf6822bdb956d1a8abbd30d",
     "dependency_manifest": ".research/implementation/private-panel/dependencies/selected-candidates.json",
     "contents": "Official registry metadata/verified archives/sources; local client and bundle checks; controlled native logs including failures and cache recovery; generated bundles are artifacts, not source authority.",
@@ -17434,6 +17434,56 @@
       "evidence": "docs/implementation/evidence/p09-private-panel-browser-failures-20260920.json",
       "capture_sha256": "a20a2488b8f63f5215f3f3e97ca44911d3bd25c00df974d60b59fa7a552d7248",
       "observation": "6 actual browser/mount combinations FAIL; prerequisites PASS. All10ownedcontainers stoppedPID0/noOOM;427priorpreserved,8unrelatedrunning;emptyownednetworkremoved;zeroPGclients.95capturefiles/979sourcehashesverified. Preserve failures and private fixture data."
+    },
+    "browser_diagnostics": {
+      "source": "50185d35785fab0868159787ee06a019bae02dfd",
+      "tree": "8ec8a86dcd9769e0644507b6909f5bb6ad0070a8",
+      "owner": "17c178017bcbb3dabbed08bce9555d58",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-diagnostics-50185d3",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "environment",
+          "id": "654187b2213f386d9c7b50db3596ccdfe2a6fa79c9a92daef5d58b260e28ca50"
+        },
+        {
+          "name": "rust",
+          "id": "fd7550f1d2cac4338c75f635d5d39651e765cc3edd05089326bca1c3c6781181"
+        },
+        {
+          "name": "frontend",
+          "id": "55b42d7da2fea338f40bd1cb7dea340e66e8742f3b390e5102413df80ea85349"
+        },
+        {
+          "name": "postgres",
+          "id": "eb840d569655ec6a1f8bf79ad46555a2057dc10819390a1cb85e3243f9aa5ee8"
+        },
+        {
+          "name": "chromium-root",
+          "id": "251f94495e5644654562345a54ff418bc9f3b3360ca98eea5d41fd3a5e75fdc9"
+        },
+        {
+          "name": "firefox-root",
+          "id": "f9ff04e6af7fa1df2ead1ff18b72684b113082fdf4371620abbb768800a3fb3d"
+        },
+        {
+          "name": "webkit-root",
+          "id": "53f52f87d78a47f22b24d8b64902e331372bd93a1649a96c5c7941722c59cc59"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "started_at": "2026-09-20T13:26:30.137052+00:00",
+      "network_id": "e26969464d27c683c0a0c4147f52683df1821a91c9a636ad122231c109d1f0ec",
+      "postgres_id": "eb840d569655ec6a1f8bf79ad46555a2057dc10819390a1cb85e3243f9aa5ee8",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/private-panel/native-diagnostics",
+      "evidence": "docs/implementation/evidence/p09-private-panel-browser-diagnostics-20260920.json",
+      "capture_sha256": "5b170aa3a3b5c58d5fd37e07fdc18bf042d9cc83779631b61c37018a682fbcce",
+      "observation": "ConfirmedFF/WebKitOrigin:null403 and ChromiumCORS wire403withoutPlaywrightResponse.3rootcasesFAIL.7containersstoppedPID0/noOOM;437priorpreserved,8unrelatedrunning,zeroPGclients;emptyownednetworkremoved.68capturefiles/980sourcehashesverified."
     }
   }
 }

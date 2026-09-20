@@ -38,10 +38,13 @@ durable state and unrelated host resources before calling the run qualified.
 
 Failure diagnostics retain bounded management method/path/status and classify
 Origin as expected/null/missing/foreign; they never retain header values or bodies.
-Chromium's selected cross-origin POST additionally records the CDP wire status:
-a CORS failure can suppress Playwright's normal Response event. That observation
-does not turn a timeout into a passed case. Failure locations and fixed notice
-categories distinguish denied requests from the fixture's own assertions.
+Chromium's selected cross-origin fetch additionally requires CDP wire status403:
+a CORS failure can suppress Playwright's normal Response event. All engines also
+submit an actual cross-origin HTML form and require its observable403 and exact
+foreign Origin. Both attempts are inside the independent unchanged-SQL boundary.
+A rejected fetch or timeout alone is never a passed status oracle. Failure
+locations and fixed notice categories distinguish denied requests from the
+fixture's own assertions.
 
 Browser versions come from the exact npm package's `browsers.json`: Chromium
 revision1243, Firefox1543 and WebKit2359. The pinned official Noble image provides
@@ -50,7 +53,11 @@ npm dependency package or selected Node version. Reference upstream
 [Docker guidance](https://playwright.dev/docs/docker) and
 [exact browser registry](https://github.com/microsoft/playwright/blob/1b025d7e20a026371cd5f98ba0cdce48892737c8/packages/playwright-core/browsers.json).
 
-These cases are initially NOT_RUN. Actual reports must bind source/tree, lockfiles,
+The [initial native matrix](../../docs/implementation/evidence/p09-private-panel-browser-failures-20260920.json)
+failed. [Discriminating diagnostics](../../docs/implementation/evidence/p09-private-panel-browser-diagnostics-20260920.json)
+confirmed the document referrer-policy defect in Firefox/WebKit and the distinct
+Chromium CORS observation error. The corrected matrix still requires execution.
+Actual reports must bind source/tree, lockfiles,
 native/browser executables, image digests, bundle hashes, resource limits and
 terminal inventory. Compile/syntax checks do not execute browser journeys. Remote
 TLS, large blocked static response, real expiry/late reply races, broad accessibility,

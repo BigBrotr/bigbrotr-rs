@@ -261,7 +261,10 @@ async fn static_asset(State(shared): State<Shared>, request: Request) -> Respons
         ("cache-control", "no-store"),
         ("x-content-type-options", "nosniff"),
         ("x-frame-options", "DENY"),
-        ("referrer-policy", "no-referrer"),
+        // Fetch serializes Origin as null for same-origin POST/DELETE under
+        // no-referrer. Keep usable same-origin commands without cross-origin
+        // referrer disclosure; the HTML meta must agree with this policy.
+        ("referrer-policy", "same-origin"),
         ("cross-origin-resource-policy", "same-origin"),
         // The build supplies script/style hashes in HTML meta. frame-ancestors
         // is ignored in meta and must additionally be enforced by this header.

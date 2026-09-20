@@ -21,12 +21,12 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is `8c19aa996f92098790017fd7615133dc677a7fc2`,
-fixture4593e37 and product6a85696 unchanged. Three commits remain unpublished;
-origin remains `b98426146c68caffcbf6822bdb956d1a8abbd30d`. Root is recording actual
-browser failures and adding bounded sanitized request diagnostics. Only
-browser.mjs, experiment README, evidence/inventory/checkpoint are dirty; no product
-modification. No parallel writer/merge/rebase. Private local
+Local main/HEAD is `50185d35785fab0868159787ee06a019bae02dfd`;
+four unpublished commits follow origin`b98426146c68caffcbf6822bdb956d1a8abbd30d`.
+Root owns the referrer-policy correction: app.html, Rust transport and its TCP
+regression, browser fixture/README, interface contract, diagnostics evidence,
+inventory and this checkpoint. No other dirty work, parallel writer or merge/rebase.
+Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
 
@@ -103,16 +103,32 @@ Raw private-panel/native-platform; remote runs/private-panel-platform-8c19aa9,
 owner0fea57f8c203cf946e73dec27de263a6. Retain failed data/active owner rows; process
 termination is not a graceful Control release. No owned job is running.
 
-Next bounded action: commit bounded diagnostics and run only root mount in three
-fresh browser containers/databases to identify these failures, then fix confirmed
-causes and repeat the full matrix. Candidate product remains6a85696. Native
-orchestration is prepared under ignored private-panel/native-diagnostics. Read-only
-AI source review suggests two distinct mechanisms, not yet measured: no-referrer
-(header AND HTML meta) yields Origin:null for same-origin POST per Fetch, correctly
-refused by Boundary; Chromium CORS403 can omit Playwright Response, making the
-fixture time out. New diagnostics classify Origin/status/notice and selected CDP
-wire status without headers/bodies. Do not accept Origin:null or count a timeout
-as PASS. Large blocked response, frontend shared CI and wider P09/M1 remain open.
+[Discriminating diagnostics](evidence/p09-private-panel-browser-diagnostics-20260920.json)
+at50185d3 confirm both causes: Firefox/WebKit actual wrong-password POST has
+Origin:null and403; Chromium cross-origin fetch has CDP403 but no Playwright
+Response. All three root cases remain FAIL; no bucket-state snapshot was taken
+for the Firefox/WebKit refusals.68capture/980source hashes verified on Mac.
+Sevenowned containers stopped/PID0/noOOM,437prior preserved,8unrelated running,
+zero PG clients; empty owned network removed. Raw private-panel/native-diagnostics,
+remote runs/private-panel-diagnostics-50185d3, owner is in resources.json/inventory.
+No remote/local job remains active. Last observed Tux free13,149,523,968bytes.
+
+The correction changes both private HTML meta and Rust header to same-origin,
+preserving exact Origin and CSRF refusal and suppressing cross-origin referrers.
+Mac actual TCP assertion failed RED before the fix; referrer-green has17management
+PASS, scopedClippyPASS and JSsyntaxPASS. Both rebuilt local bundles have13files
+128471/128505bytes, checked by bundle-referrer-check.json. Native correction remains
+NOT_RUN. The fixture retains cross-origin fetch (Chromium requires CDP403), adds
+actual HTML text/plain POST with observed403/exactforeignOrigin on every engine,
+and compares unchanged SQL rows/xmin across both attempts. No generic rejected
+fetch or timeout can satisfy that status oracle. Matching response+rebuilt bundle
+must deploy together; API/persistent format unchanged.
+
+Next bounded action: commit this correction and execute the complete six-case
+native matrix in fresh private-panel/native-referrer resources. Preserve all failed
+labs and private data; do not reuse output roots. Exact-source build/PG/browser
+fixtures and source/artifact bindings remain required. Large blocked response,
+forced detached-browser cleanup, frontend shared CI and wider P09/M1 remain open.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on

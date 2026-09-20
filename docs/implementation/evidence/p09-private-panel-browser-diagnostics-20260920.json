@@ -1,0 +1,667 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "tasks": [
+    "P08-T02",
+    "P09-T01",
+    "P09-T07"
+  ],
+  "status": "CONFIRMED_FAILURES",
+  "source": {
+    "revision": "50185d35785fab0868159787ee06a019bae02dfd",
+    "tree": "8ec8a86dcd9769e0644507b6909f5bb6ad0070a8",
+    "clean": true,
+    "files_verified": 980
+  },
+  "environment": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "node": "26.4.0",
+    "playwright": "1.63.0"
+  },
+  "observations": {
+    "firefox_webkit": "Each first valid wrong-password POST has observed Origin:null and actual403; UI shows browser-request-refused. Invalid short password sent no POST. This confirms product no-referrer conflicts with same-origin command Origin checks.",
+    "chromium": "Cross-origin fetch has CDP wire status403 but Playwright emits requestfailed without Response. Original waitForResponse timed out. allHeaders omits Origin for this failed CORS request; omission does not establish what went onto the wire."
+  },
+  "browser_reports": {
+    "webkit-root": {
+      "format": "bigbrotr-private-panel-browser/1",
+      "status": "FAIL",
+      "browser": "webkit",
+      "base": "/",
+      "cases": [
+        {
+          "name": "initial-load-and-keyboard",
+          "status": "PASS",
+          "milliseconds": 94
+        }
+      ],
+      "version": "26.6",
+      "executable": "/ms-playwright/webkit-2359/pw_run.sh",
+      "launchedExecutables": [
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser",
+          "sha256": "7c71efed38fb0d916f5edb7db9a98cdf218642dd8dce02375730eb9ad5510751"
+        },
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/WPENetworkProcess",
+          "sha256": "9a3d142a2b4f9869dc8de529d561db7ce4244c1da8442d9e9a48442c06be05d0"
+        },
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/WPEWebProcess",
+          "sha256": "70683ba57c05ce81d43601e1c89701e7016c76136ae810b000cd786085091b4a"
+        }
+      ],
+      "failure": {
+        "stage": "invalid-and-wrong-password",
+        "kind": "ExpectError",
+        "location": {
+          "line": 122,
+          "column": 51
+        },
+        "notice": "browser request was refused"
+      },
+      "teardown": [
+        {
+          "name": "context",
+          "status": "PASS"
+        },
+        {
+          "name": "browser",
+          "status": "PASS"
+        }
+      ],
+      "http": [
+        {
+          "path": "/management/v1/me",
+          "method": "GET",
+          "event": "request",
+          "origin": "missing",
+          "contentType": "other-or-missing"
+        },
+        {
+          "path": "/management/v1/me",
+          "method": "GET",
+          "event": "response",
+          "status": 401,
+          "origin": "missing",
+          "contentType": "other-or-missing"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "event": "request",
+          "origin": "null",
+          "contentType": "application/json"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "event": "response",
+          "status": 403,
+          "origin": "null",
+          "contentType": "application/json"
+        }
+      ]
+    },
+    "chromium-root": {
+      "format": "bigbrotr-private-panel-browser/1",
+      "status": "FAIL",
+      "browser": "chromium",
+      "base": "/",
+      "cases": [
+        {
+          "name": "initial-load-and-keyboard",
+          "status": "PASS",
+          "milliseconds": 83
+        },
+        {
+          "name": "invalid-and-wrong-password",
+          "status": "PASS",
+          "milliseconds": 154
+        },
+        {
+          "name": "login-cookie-boundaries",
+          "status": "PASS",
+          "milliseconds": 128
+        }
+      ],
+      "version": "153.0.8010.12",
+      "executable": "/ms-playwright/chromium-1243/chrome-linux64/chrome",
+      "launchedExecutables": [
+        {
+          "path": "/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+          "sha256": "ded93a9c9a53a1ae040f08124badcca95c938e9d5015ff340c3b5538c41bf39e"
+        }
+      ],
+      "foreignWireStatuses": [
+        403
+      ],
+      "failure": {
+        "stage": "explicit-csrf-and-foreign-origin",
+        "kind": "TimeoutError2",
+        "location": {
+          "line": 178,
+          "column": 26
+        },
+        "inspection": "unavailable"
+      },
+      "teardown": [
+        {
+          "name": "context",
+          "status": "PASS"
+        },
+        {
+          "name": "browser",
+          "status": "PASS"
+        }
+      ],
+      "http": [
+        {
+          "path": "/management/v1/me",
+          "method": "GET",
+          "event": "request",
+          "origin": "missing",
+          "contentType": "other-or-missing"
+        },
+        {
+          "path": "/management/v1/me",
+          "method": "GET",
+          "event": "response",
+          "status": 401,
+          "origin": "missing",
+          "contentType": "other-or-missing"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "event": "request",
+          "origin": "expected",
+          "contentType": "application/json"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "event": "response",
+          "status": 401,
+          "origin": "expected",
+          "contentType": "application/json"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "event": "request",
+          "origin": "expected",
+          "contentType": "application/json"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "event": "response",
+          "status": 201,
+          "origin": "expected",
+          "contentType": "application/json"
+        },
+        {
+          "path": "/management/v1/sessions/current",
+          "method": "DELETE",
+          "event": "request",
+          "origin": "expected",
+          "contentType": "other-or-missing"
+        },
+        {
+          "path": "/management/v1/sessions/current",
+          "method": "DELETE",
+          "event": "response",
+          "status": 403,
+          "origin": "expected",
+          "contentType": "other-or-missing"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "event": "request",
+          "origin": "missing",
+          "contentType": "text/plain"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "event": "failed",
+          "origin": "missing",
+          "contentType": "text/plain"
+        }
+      ]
+    },
+    "firefox-root": {
+      "format": "bigbrotr-private-panel-browser/1",
+      "status": "FAIL",
+      "browser": "firefox",
+      "base": "/",
+      "cases": [
+        {
+          "name": "initial-load-and-keyboard",
+          "status": "PASS",
+          "milliseconds": 272
+        }
+      ],
+      "version": "155.0",
+      "executable": "/ms-playwright/firefox-1543/firefox/firefox",
+      "launchedExecutables": [
+        {
+          "path": "/ms-playwright/firefox-1543/firefox/firefox",
+          "sha256": "062272ac4d851eade5b75db2dc7c14569d96cb3ca38f949337cdc1b74367e35b"
+        }
+      ],
+      "failure": {
+        "stage": "invalid-and-wrong-password",
+        "kind": "ExpectError",
+        "location": {
+          "line": 122,
+          "column": 51
+        },
+        "notice": "browser request was refused"
+      },
+      "teardown": [
+        {
+          "name": "context",
+          "status": "PASS"
+        },
+        {
+          "name": "browser",
+          "status": "PASS"
+        }
+      ],
+      "http": [
+        {
+          "path": "/management/v1/me",
+          "method": "GET",
+          "event": "request",
+          "origin": "missing",
+          "contentType": "other-or-missing"
+        },
+        {
+          "path": "/management/v1/me",
+          "method": "GET",
+          "event": "response",
+          "status": 401,
+          "origin": "missing",
+          "contentType": "other-or-missing"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "event": "request",
+          "origin": "null",
+          "contentType": "application/json"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "event": "response",
+          "status": 403,
+          "origin": "null",
+          "contentType": "application/json"
+        }
+      ]
+    }
+  },
+  "resolution": {
+    "product": "Use same-origin Referrer-Policy consistently in Rust response and HTML meta; preserve refusal of missing/null/foreign Origin and CSRF requirements. Full corrected native matrix remains required.",
+    "fixture": "Keep cross-origin fetch; require Chromium CDP403. Additionally submit actual text/plain HTML POST from the other origin; require navigation403 and observed exact foreign Origin in all engines, then require unchanged SQL rows/xmin across both requests."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-diagnostics-50185d3",
+    "owner": "17c178017bcbb3dabbed08bce9555d58",
+    "state": "stopped-retained; all7containersPID0/noOOM; owned empty network removed",
+    "prior_containers_preserved": 437,
+    "unrelated_running": 8,
+    "remaining_pg_clients": []
+  },
+  "raw": {
+    "root": ".research/implementation/private-panel/native-diagnostics",
+    "capture_sha256": "5b170aa3a3b5c58d5fd37e07fdc18bf042d9cc83779631b61c37018a682fbcce",
+    "files": {
+      "browser-config.json": {
+        "bytes": 6711,
+        "sha256": "2c1f4e0fd6450f43ddb46d60c2a6df30855a8588e165b1f2559fb0eda8d7ff35"
+      },
+      "browser-image-pull.log": {
+        "bytes": 440,
+        "sha256": "47c69d5d79d7d21ec4d0905e5a7443386ac1fe7f64d03e88e7a5be5b4343033a"
+      },
+      "browser-image.json": {
+        "bytes": 1818,
+        "sha256": "b4ae0f75fba6338f9684ae468dd5946f52196b8a364b32ab438a2171828aea2a"
+      },
+      "browser-manifest.json": {
+        "bytes": 1644,
+        "sha256": "bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7"
+      },
+      "chromium-root.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      },
+      "collect.py": {
+        "bytes": 2460,
+        "sha256": "16ce6d5f9369185d3908b274de163f909c7f63c2fcf3e14de227cdecf232662d"
+      },
+      "elf-needed.txt": {
+        "bytes": 3072,
+        "sha256": "5d0f459454e259afd9a588d3bb1e4bbfa77b44c3b5f9179cc33009e59d376033"
+      },
+      "environment.container.log": {
+        "bytes": 66,
+        "sha256": "9f2f87b76cb863e2356cc4381418b2e634ae9e106c122c0b630f7d206787a0ac"
+      },
+      "firefox-root.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      },
+      "frontend.container.log": {
+        "bytes": 314,
+        "sha256": "7fc9b24581805256ff680ceb8c8a658c609a4e48b1a86572f5638b5225f8251b"
+      },
+      "launch.py": {
+        "bytes": 18285,
+        "sha256": "98bc8fd9a373dada2ebd05d9617de1e7e53962794a94cb76e85bcc66de09a079"
+      },
+      "orchestrator.log": {
+        "bytes": 810,
+        "sha256": "f32a624b4b33d54b322bf46b105ddf623e2c8ff1cb3a813f2b3b3ed3e9bd2c20"
+      },
+      "out/build/source-manifest.json": {
+        "bytes": 121062,
+        "sha256": "106159ccb8231226e1d49b162c713cd8a7f7ac34b888db7f675aa50df7f60db4"
+      },
+      "out/cases/chromium-root/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/chromium-root/checks/result.json": {
+        "bytes": 1514,
+        "sha256": "c08995c51fbed310898860e0b5deb6f0ee3ebaa8db738cae59aa087a2b6a9bb1"
+      },
+      "out/cases/chromium-root/fixture/browser-report.json": {
+        "bytes": 2972,
+        "sha256": "96a53545aa2f4d4aed76282a295018b0922f05b855bdd4779523da290c4edebe"
+      },
+      "out/cases/chromium-root/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-root/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-root/fixture/failure.png": {
+        "bytes": 85589,
+        "sha256": "09a2c68adb02911fb45f79ac4a74168c53f1ff42b56efa9554e19b1b17c69e2f"
+      },
+      "out/cases/chromium-root/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-root/fixture/panel-initial.stdout": {
+        "bytes": 773,
+        "sha256": "e5170559c268b1e258a19fba0f4ae2f6f1cde42896148c21ff5a84e621eab583"
+      },
+      "out/cases/chromium-root/fixture/signed-out-mobile.png": {
+        "bytes": 32258,
+        "sha256": "d72565568a263a94583b24b915b20ac9348d2e2ae8c715a26b776ac1bbf54e11"
+      },
+      "out/cases/chromium-root/native-result.json": {
+        "bytes": 1593,
+        "sha256": "a66f77b46a94a6b78061e346d6d0c0b34cc6e9614bdb1396bd7c83ba3072869f"
+      },
+      "out/cases/firefox-root/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "968c54337a62ae701cb28a9ec51f055ecd7efed1170c6097a40bf0b32ba70e7b"
+      },
+      "out/cases/firefox-root/checks/result.json": {
+        "bytes": 1512,
+        "sha256": "8e3c6427107f31f88f9b1308f2e03d8b5aa539c4f8181b0ab414379eeda965a3"
+      },
+      "out/cases/firefox-root/fixture/browser-report.json": {
+        "bytes": 1569,
+        "sha256": "6c018b75aaff2343940cd3b13bf2632949d0db28510a67e7ba4a827988630221"
+      },
+      "out/cases/firefox-root/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-root/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-root/fixture/failure.png": {
+        "bytes": 76169,
+        "sha256": "2cf47762f939a96f75c479a86a91d4b9485a90e321c4713997fe8d64858c2aba"
+      },
+      "out/cases/firefox-root/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-root/fixture/panel-initial.stdout": {
+        "bytes": 773,
+        "sha256": "85d401663d9795a794c07112f2e88d941911d7a00dd1ec8f85e36ddef71f8432"
+      },
+      "out/cases/firefox-root/fixture/signed-out-mobile.png": {
+        "bytes": 37127,
+        "sha256": "1d5a60ff2d6d854dd6a20cc0c9b01f3a17db64db0d258ce29a056a737a25c4f2"
+      },
+      "out/cases/firefox-root/native-result.json": {
+        "bytes": 1591,
+        "sha256": "20f27ba7eae1340c2772b586adbae33d7530a367eba2ed41e17e8864369c1507"
+      },
+      "out/cases/webkit-root/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/webkit-root/checks/result.json": {
+        "bytes": 1510,
+        "sha256": "0cf86c0c1127f8410fe2b96978a74019c211d26b76f427cee2590d99f92e7479"
+      },
+      "out/cases/webkit-root/fixture/browser-report.json": {
+        "bytes": 1926,
+        "sha256": "87b507f7be72ef467e63c9c3badaec66d761d2845c64b290804749995a8f767f"
+      },
+      "out/cases/webkit-root/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-root/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-root/fixture/failure.png": {
+        "bytes": 65635,
+        "sha256": "0967a25c73e78ff5d5466bba068574ace03dc53439f9251845fef93d3b0ed9db"
+      },
+      "out/cases/webkit-root/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-root/fixture/panel-initial.stdout": {
+        "bytes": 773,
+        "sha256": "a89984e6eda102a79103499f780c651540ed972f47e122720f18df5fc321f68b"
+      },
+      "out/cases/webkit-root/fixture/signed-out-mobile.png": {
+        "bytes": 35524,
+        "sha256": "d60d98cec30e41201495dfd7093a77805977a762466c114bb5dd2a2920ae5ec4"
+      },
+      "out/cases/webkit-root/native-result.json": {
+        "bytes": 1589,
+        "sha256": "6c5a806af67e6c21ef29340554fb3479c71d4259db30e88d30d41f2e774c8d25"
+      },
+      "out/frontend-checks/admin-types.log": {
+        "bytes": 280,
+        "sha256": "37ca03cf49ddd89c35e54d6f692c52f7eb8c9bec51aef8f6fd2ee3d60b4ba642"
+      },
+      "out/frontend-checks/admin-unit.log": {
+        "bytes": 974,
+        "sha256": "c210a819e14bf9ab43382f1aea0363e06f2313d33d47bcbb92ed5de475216be8"
+      },
+      "out/frontend-checks/client-types.log": {
+        "bytes": 108,
+        "sha256": "8ae72dcf889df81bfde3d3c59d4846c89b886a6a37dc4d3b83f832d892aaed37"
+      },
+      "out/frontend-checks/client.log": {
+        "bytes": 1156,
+        "sha256": "437c89eca372023504c610e9ee022eed53ad06c5e2b908fc3c6f44721eb49990"
+      },
+      "out/frontend-checks/contracts.log": {
+        "bytes": 115,
+        "sha256": "d4205e5a960af071afcd9d65c48902c7380b105c6e55908064ba516b509b915d"
+      },
+      "out/frontend-checks/install.log": {
+        "bytes": 751,
+        "sha256": "209f129967f254620c7c027fe5cb6018f49274e5a60de59a7de914f0be079829"
+      },
+      "out/frontend-checks/result.json": {
+        "bytes": 2457,
+        "sha256": "6d1c7a1860f4a53854783e4523af50d73462c62c80def3f3151fc5147e2f854d"
+      },
+      "out/frontend-control/build.log": {
+        "bytes": 3747,
+        "sha256": "7b044650a8b3ada505419ae90dc555f4cde9a63ef1ffae36726ec7969f8d4883"
+      },
+      "out/frontend-control/result.json": {
+        "bytes": 943,
+        "sha256": "09de131095bf5895d98019f754abd366b94a7cc6b2bd50cdf2e96b6190264c6f"
+      },
+      "out/frontend-result.json": {
+        "bytes": 2857,
+        "sha256": "9f9805347f6f99feb5fdfbfb84b53f512061343c9a2af41ba7ae2a7470cd91ce"
+      },
+      "out/frontend-root/build.log": {
+        "bytes": 3747,
+        "sha256": "a478773726bbf574bcb6296923d2cc8338771668450c3755631133ae7ba39d82"
+      },
+      "out/frontend-root/result.json": {
+        "bytes": 944,
+        "sha256": "3d35519671e710d8ec8700a367122ac4359554eae1204cfcab88cf9b1d7157b4"
+      },
+      "out/rust-checks/build.log": {
+        "bytes": 298,
+        "sha256": "5654d867e90ada79ad4af55975aec05e8396757be19e2484261d091f16c006a6"
+      },
+      "out/rust-checks/clippy.log": {
+        "bytes": 297,
+        "sha256": "bfd71e93b47ff7e37d9a4d79b44671cd24b334c409f054ceb87e948df325d1a9"
+      },
+      "out/rust-checks/management.log": {
+        "bytes": 2247,
+        "sha256": "48e6e8f9dc55f9f2d9f0e874cd79210008045b66f0b4b95826b35151ac89dcbd"
+      },
+      "out/rust-checks/result.json": {
+        "bytes": 3705,
+        "sha256": "b108897a8f13ced1169aec4505a20e8844d4c1c3dd41c58fc7f64d9fd0013621"
+      },
+      "out/rust-result.json": {
+        "bytes": 3941,
+        "sha256": "a35e8aa9ab284bfccdda2ba01fe4b6240e7fbbef4979f6b524f6771832234e83"
+      },
+      "preflight.json": {
+        "bytes": 3639894,
+        "sha256": "c6a1aa47bf281cef61813a7cfd1f29522bbdebb0be32acbef7b9dd1225d958ea"
+      },
+      "resources.json": {
+        "bytes": 1948,
+        "sha256": "55acda0a8d44a4fc9d44efbfa9bc63e76528962122f060c52c69eabe03bd6523"
+      },
+      "running-audit.json": {
+        "bytes": 12653,
+        "sha256": "e801521c98ad2ad5ee1d64df9237d3d0aa78571568ac69bb75d222ed07cf3f57"
+      },
+      "rust.container.log": {
+        "bytes": 111,
+        "sha256": "5e22aebdf07588fd4a31c2d0c516aad9b11630aa75f559179b86cd75c1e8cc3f"
+      },
+      "terminal-audit.json": {
+        "bytes": 26002,
+        "sha256": "29face2fba0538147da21fee657d8789a0c735e342aba124c84cfd4e26b2f382"
+      },
+      "terminal-inventory.json": {
+        "bytes": 815180,
+        "sha256": "017b33d2b14973cf2aa783e97a1aa63d541a0f2c9268e97eaaab8041dced19b2"
+      },
+      "tool-inputs.json": {
+        "bytes": 376,
+        "sha256": "652c4b0b906225c4d9ea5653b60d6cbb8828340c18a11f64a47bbabd120f5209"
+      },
+      "webkit-root.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      }
+    }
+  },
+  "limitations": [
+    "This is the discriminating failed root-mount diagnostic, not full acceptance.",
+    "No exact packet capture or login-bucket SQL snapshot was taken for the Firefox/WebKit refusal.",
+    "No successful restart/logout/missing-bootstrap journey, general browser orphan collection fault or product release is claimed."
+  ],
+  "local_correction_checks": {
+    "state": "root-owned correction after50185d3; native fixed matrix NOT_RUN",
+    "source_files_sha256": {
+      "apps/admin/src/app.html": "0b047363e59b776bbd320d9d447c9a81456533944c590881422a61371a5e4fd3",
+      "apps/bigbrotr/src/interfaces/management/transport.rs": "bba476f1480cec0fc5aabf2bfb6ef28ea82de883410a15cb11995ba894749e60",
+      "apps/bigbrotr/src/interfaces/management/tests.rs": "f28bee4035f8ca0e893e8fc6372d594c5a3a1b18f683793f9e2ca5e86bf846cf",
+      "experiments/private-panel/browser.mjs": "006631bac7ce7b91acf5811e7067ca132031fc6a74df89efb59c930f54d1365a",
+      "docs/specification/interface-catalog.md": "1a04fbb2cea4525d9d502a7c55a58b0b50cb00d2d39c4e17c1b7334534b3fdb5"
+    },
+    "rust_red": "One executed actual TCP test FAIL on old referrer header, not a compilation error",
+    "rust_green": "17management tests PASS, bin/probeClippyPASS, browserJSsyntaxPASS",
+    "bundles": {
+      "root": {
+        "status": "PASS",
+        "files": 13,
+        "bytes": 128471,
+        "manifest_sha256": "931f5123a996242680e594a37359db8a31bbeb15c33678f2df51cfb6f2b9fc92"
+      },
+      "control": {
+        "status": "PASS",
+        "files": 13,
+        "bytes": 128505,
+        "manifest_sha256": "a3ef59103c6c6965b59bbf5d37621af2a63333e8767bd530a9c484b4abb05eb3"
+      }
+    },
+    "raw_files": {
+      "referrer-red/result.json": {
+        "bytes": 625,
+        "sha256": "d6a6a3e7f0ef58109369b70ccdd56d6d0e5be412b583dd9d2eb7c079516cc180"
+      },
+      "referrer-red/http-referrer.log": {
+        "bytes": 1151,
+        "sha256": "786bbbb53e6953415629fb615771f06cebccee6f217b725ae8174466ce08100b"
+      },
+      "referrer-green/result.json": {
+        "bytes": 1255,
+        "sha256": "4acda6188892e18765d4f2647096043ce736fdee46e51f4cd5fe782937572acc"
+      },
+      "referrer-green/management.log": {
+        "bytes": 2299,
+        "sha256": "8a8b2a3cadaa11d0354ed7f517843cb7a2cd6bad8a638b4022e369a631ff3863"
+      },
+      "referrer-green/clippy.log": {
+        "bytes": 175,
+        "sha256": "713288ca9320ed4dff8d21b12e18f2d84ed6a3331b7660f80d097e6c7f834f55"
+      },
+      "referrer-green/browser-syntax.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "bundle-referrer-check.json": {
+        "bytes": 340,
+        "sha256": "c20a48b631250af197819be2a018f325c5375a56931924a4ff6e2013f2bde183"
+      },
+      "bundle-referrer-root.log": {
+        "bytes": 3719,
+        "sha256": "ec0c06cfde75def1436a2822e61a5a4ea67544dae041548c1eedc33719ba12e9"
+      },
+      "bundle-referrer-control.log": {
+        "bytes": 3719,
+        "sha256": "943fe4b63860c3d1afb7603c6f6c75d6985cf4ea8b9270ba58bc6396e592f87f"
+      }
+    }
+  }
+}

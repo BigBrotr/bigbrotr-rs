@@ -171,6 +171,7 @@ async fn actual_static_http_preserves_mount_headers_authority_and_held_bytes() {
             assert!(headers.contains("cache-control: no-store\r\n"));
             assert!(headers.contains("content-security-policy: frame-ancestors 'none'; base-uri 'none'; object-src 'none'\r\n"));
             assert!(headers.contains("x-content-type-options: nosniff\r\n"));
+            assert!(headers.contains("referrer-policy: same-origin\r\n"));
             assert!(!headers.contains("set-cookie:"));
             assert_eq!(body, if method == "GET" { "hello" } else { "" });
         }

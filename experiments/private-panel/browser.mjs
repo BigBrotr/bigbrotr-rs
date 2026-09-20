@@ -102,6 +102,8 @@ try {
     const response = await page.goto(origin + base);
     assert.equal(response.status(), 200);
     assert.match(response.headers()['content-security-policy'], /frame-ancestors 'none'/);
+    assert.equal(response.headers()['referrer-policy'], 'same-origin');
+    await expect(page.locator('meta[name="referrer"]')).toHaveAttribute('content', 'same-origin');
     await expect(signIn).toBeEnabled();
     await expect(page.locator('#startup-recovery')).toBeHidden();
     await page.keyboard.press('Tab');
@@ -153,8 +155,8 @@ try {
     let hostCookies = false;
     foreign = createServer((request, response) => {
       hostCookies = /BigBrotrLocalSession=/.test(request.headers.cookie ?? '') && /BigBrotrLocalCsrf=/.test(request.headers.cookie ?? '');
-      response.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-store' });
-      response.end('<!doctype html><title>Isolated second-port control</title>');
+      response.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-store', 'Referrer-Policy': 'strict-origin-when-cross-origin' });
+      response.end('<!doctype html><title>Isolated second-port control</title><form method="POST" enctype="text/plain" action="http://127.0.0.1:8081/management/v1/sessions"><input name="probe" value="boundary"><button type="submit">Attempt command</button></form>');
     });
     await new Promise(resolve => foreign.listen(0, '127.0.0.1', resolve));
     const other = await context.newPage();
@@ -175,9 +177,15 @@ try {
     }
     await other.goto(`http://127.0.0.1:${foreign.address().port}/`);
     assert.equal(hostCookies, true, 'host cookies are not port-isolated');
-    const denied = other.waitForResponse(response => response.url() === origin + '/management/v1/sessions', { timeout: 5000 });
     await other.evaluate(async url => { await fetch(url, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'text/plain' }, body: '{}' }).catch(() => {}); }, origin + '/management/v1/sessions');
-    assert.equal((await denied).status(), 403);
+    if (engine === 'chromium') await expect.poll(() => report.foreignWireStatuses).toEqual([403]);
+    // A top-level form navigation exposes the actual refused HTTP response in
+    // every engine. A rejected CORS fetch alone cannot establish its wire status.
+    const denied = other.waitForResponse(response => response.url() === origin + '/management/v1/sessions' && response.request().isNavigationRequest(), { timeout: 5000 });
+    await other.getByRole('button', { name: 'Attempt command', exact: true }).click();
+    const refused = await denied;
+    assert.equal(refused.status(), 403);
+    assert.equal((await refused.request().allHeaders()).origin, `http://127.0.0.1:${foreign.address().port}`);
     await other.close();
     await new Promise(resolve => foreign.close(resolve));
     foreign = undefined;

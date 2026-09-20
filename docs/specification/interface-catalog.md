@@ -168,6 +168,15 @@ HTML supplies script/style CSP hashes; the Rust header additionally enforces
 `frame-ancestors 'none'`, which browsers ignore in CSP meta. No static response
 issues cookies or turns session observations into action/data authority.
 
+Private HTML and its HTTP response both select `Referrer-Policy:same-origin`.
+This permits referrers only inside the private origin. It also preserves the
+browser's usable Origin on same-origin POST/DELETE: Fetch's
+[Origin algorithm](https://fetch.spec.whatwg.org/#append-a-request-origin-header)
+serializes it as `null` under `no-referrer` for this client mode. Missing, null and
+foreign Origin remain refused; Referer is never an authorization fallback. This
+header/meta correction changes no API schema or persistent state, but requires
+deploying the matching Rust response and rebuilt private bundle together.
+
 Setup/reset credentials use a 15-minute maximum lifetime, hash-only storage,
 single atomic consumption, bounded guesses and protected one-time display.
 Bind each setup/reset challenge to the principal credential/security revision;
