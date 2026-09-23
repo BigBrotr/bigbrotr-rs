@@ -45,9 +45,9 @@ def main(root):
         sql('bbpub_control_normal','GRANT CONNECT ON DATABASE bbpub_control_normal TO bigbrotr_control;')
         publisher=result['publisher']={}
         execute(binary+['/out/native-tests/archive-publication-probe','normal','5432','--scope-grants'],180,publisher);save()
-        assert publisher['exit']==0 and not publisher['stderr'] and not publisher['overflow']
         values=[json.loads(line) for line in publisher['stdout'].splitlines()]
         result['cases']=[v for v in values if 'case' in v];save()
+        assert publisher['exit']==0 and not publisher['stderr'] and not publisher['overflow']
         assert len(result['cases'])==5 and len({v['case'] for v in result['cases']})==5
         assert all(v['status']=='PASS' for v in result['cases'])
         values=[v for v in values if 'event' in v]

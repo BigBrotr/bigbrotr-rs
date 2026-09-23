@@ -19,8 +19,8 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Last observed main/HEAD `4e6bfb1ef62394a466aaa5a700a7c4c937116f4a`, unpublished
-candidate two commits ahead of origin/main `9f7fabd`. No merge/rebase or another
+Last observed main/HEAD `898b7ac63996fc7df80143ddf7d0b757b0935286`, unpublished
+candidate three commits ahead of origin/main `9f7fabd`. No merge/rebase or another
 writer. Candidate product inputs are:
 additive0810/catalog, scope-grant Control adapter/receipt, shared session helper,
 actual signed-publication/password/native-allocation fixture and runner, schema
@@ -105,9 +105,26 @@ GRANT separately and asserts the privilege persists after the lock-test rollback
 No applied SQL changes. Local focused Clippy passes. Both owned containers stopped/
 PID0/noOOM, owned network removed,502prior records preserved, eight unrelated
 running.23capture/1027source/four actual ELF hashes verified; raw grants-native-fixed.
-No active lab or cleanup debt. Root owns the narrow fixture/checkpoint/report diff.
-Next bounded action: commit this test transaction correction and qualify a fresh
-exactGit candidate through actual acceptance/readback and terminal custody.
+The correction is committed. Root owns only checkpoint/inventory updates.
+898b7ac has finished **FAIL** at the deferred fixture marker's missing public
+schema USAGE; its first two cases pass, including unchanged-row CSRF/native refusal
+and a released-pin historical receipt. The narrow test-only correction explicitly
+grants namespace USAGE, keeping the expected Denied result and marker assertion.
+[Third RED](evidence/p08-scoped-grants-delay-privilege-red-20260923.json) retains it.
+Build,20schema/3command,2transport and Clippy pass; native final expiry/acceptance/
+readback remain pending. Both containers exited/PID0/noOOM, owned network removed,
+504prior records unchanged;23capture/1028source/four actual ELF hashes verified.
+No live lab or cleanup debt. Root owns fixture/harness/checkpoint/report updates.
+Next bounded action: commit the marker privilege correction, then run the exact
+candidate in a fresh isolated lab through all five cases and independent readback.
+
+Read-only AI review re-read complete810/adapter and found no additional concrete
+counterexample. It recommended a fixture-only BEFORE audit trigger on the real
+Control backend, installed after the delayed-expiry case, using seven exception
+subtransactions (complete positive plus six omissions), exact phase/SQLSTATE/message,
+only the four scope constraint triggers and full state/xmin rollback assertions.
+OfficialPG16.15 AfterTriggerEndSubXact restores both queued deferred events and
+constraint mode. This matrix is proposed, not executed; no reviewer writes/resources.
 
 Candidate0810 enforces common actor/key identity, exact digest/audit, unique target
 result revision and scope generation, same-session proof consumption, and retained

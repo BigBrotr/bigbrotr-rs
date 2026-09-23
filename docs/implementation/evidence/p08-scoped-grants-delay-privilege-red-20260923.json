@@ -1,0 +1,198 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02",
+  "status": "FAIL",
+  "date": "2026-09-23",
+  "scope": "Scoped-grant native fixture failed at its deferred delay marker schema privilege; two earlier cases pass",
+  "source": {
+    "revision": "898b7ac63996fc7df80143ddf7d0b757b0935286",
+    "tree": "07e4dedb1934062a9113bb246a9926b94f1cfca7",
+    "source_files": 1028,
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "migration_810_sha256": "f1c3e00492ff7aceda38a9a1b87a392f5c873c7847f8ac9eda2b619c39987ebe"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "checks": [
+    {
+      "name": "fixture",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 74.44289518520236
+    },
+    {
+      "name": "scope-schema-command",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "control_schema",
+        "--test",
+        "management_grants"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 33.37284279288724
+    },
+    {
+      "name": "reauthentication-transport",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "interfaces::management::tests::reauthentication"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 11.984232681803405
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--lib",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe",
+        "--bin",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr-archive-worker",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.2697677221149206
+    }
+  ],
+  "finding": {
+    "expected": "Observed delayed COMMIT crosses pin expiry and returns Denied with all acceptance state rolled back.",
+    "observed": "COMMIT failed42501 at nextval(public.scope_delay_marker): fixture role lacked USAGE on public schema. Adapter returned Backend, correctly refusing to label an unrelated SQL error expiry.",
+    "cause": "Isolated lab revokes PUBLIC schema privileges; granting sequence USAGE does not supply namespace USAGE.",
+    "correction": "Explicit fixture-only USAGE on schema public; retain exact expiry result and nontransactional entry marker. Preserve completed case records before checking process exit.",
+    "product_changes": "None; applied810 and typed adapter unchanged."
+  },
+  "executed_before_failure": [
+    "Build,20schema/3command tests,2HTTP transport tests and Clippy",
+    "Explicit migration810 and SQL u64 literal/rounded-expression controls",
+    "Missing privilege42501, committed column privilege, immutable UPDATE23514 with unchanged full state",
+    "Signed publication/captured cut, real password login/proof issuance",
+    "scope-grant-csrf-and-missing-native-evidence-refuse-without-durable-effects",
+    "scope-grant-historical-active-receipt-cannot-reuse-a-released-pin"
+  ],
+  "not_run": [
+    "Successful observed deferred-expiry case",
+    "Remaining fresh enable/revoke/retry cases",
+    "Independent signed six-family readback and final durable SQL",
+    "Omission/concurrency/COMMIT-loss matrix and private HTTP grant/history/drain"
+  ],
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/scope-grants-898b7ac",
+    "owner": "bc65c461df618d9ecfd8088b2ad75854",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "feb98b1d3004242a1130d22525c228855fae59201ab06074c34f98a5af2e1898"
+      },
+      {
+        "name": "rust-scope-grants",
+        "id": "419b51dace1ca3a43c78c1268fcca1d0d7e30b3ce62c3da8195482dfc5a4cc83"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preserved": 504,
+    "unrelated_running": 8,
+    "errors": [],
+    "free_bytes": 52562903040,
+    "note": "Both owned containers freshly observed exited/PID0/noOOM; no post-failure PostgreSQL restart or graceful Control release claimed."
+  },
+  "artifacts": {
+    "control": "b86208614bbd718b8a640dd5a2a77926d9b6425e32624444d90e04512a2ec278",
+    "worker": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a",
+    "publisher": "b892b8b27a8a608cc5d8052e6678aa26b00dca24912bec8d717a423ec8b0262a",
+    "reader": "25822b7fd24cd7141299d80d6cd0fcc2a0997ec48cc9664b3fccc3f87190e8fa"
+  },
+  "capture": {
+    "path": ".research/implementation/scoped-grants/grants-native-provisioned",
+    "files": 23,
+    "sha256": "d445bf944ae9bb676ea9b1fec0530ef955eadab1d09f2a55f2f0f729c5b261fb",
+    "verification": "PASS:23 capture/1028 source hashes checked against Mac Git archive; four actual ELF hashes independently verified;504 prior container records freshly unchanged."
+  },
+  "cases": [
+    {
+      "case": "scope-grant-csrf-and-missing-native-evidence-refuse-without-durable-effects",
+      "status": "PASS"
+    },
+    {
+      "case": "scope-grant-historical-active-receipt-cannot-reuse-a-released-pin",
+      "status": "PASS"
+    }
+  ]
+}

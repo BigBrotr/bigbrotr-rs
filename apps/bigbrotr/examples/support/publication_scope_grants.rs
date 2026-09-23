@@ -262,7 +262,7 @@ pub async fn run(
         )
         .await
         .unwrap();
-    admin.batch_execute("CREATE SEQUENCE public.scope_delay_marker; CREATE FUNCTION public.delay_scope_commit() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN PERFORM nextval('public.scope_delay_marker'); PERFORM pg_sleep(1.3); RETURN NULL; END $$; CREATE CONSTRAINT TRIGGER a_scope_delay AFTER INSERT ON control.management_audit DEFERRABLE INITIALLY DEFERRED FOR EACH ROW WHEN (NEW.action='scope-grant.change') EXECUTE FUNCTION public.delay_scope_commit(); GRANT USAGE ON SEQUENCE public.scope_delay_marker TO bigbrotr_control").await.unwrap();
+    admin.batch_execute("CREATE SEQUENCE public.scope_delay_marker; CREATE FUNCTION public.delay_scope_commit() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN PERFORM nextval('public.scope_delay_marker'); PERFORM pg_sleep(1.3); RETURN NULL; END $$; CREATE CONSTRAINT TRIGGER a_scope_delay AFTER INSERT ON control.management_audit DEFERRABLE INITIALLY DEFERRED FOR EACH ROW WHEN (NEW.action='scope-grant.change') EXECUTE FUNCTION public.delay_scope_commit(); GRANT USAGE ON SCHEMA public TO bigbrotr_control; GRANT USAGE ON SEQUENCE public.scope_delay_marker TO bigbrotr_control").await.unwrap();
     let attempted = Cell::new(false);
     assert_eq!(
         owner
