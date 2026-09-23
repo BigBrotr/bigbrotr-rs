@@ -423,8 +423,11 @@ or construction from a path/descriptor. `Preparation::read_visibility` consumes 
 capture and mutable initialization state remain on the Control thread. Recovery-only
 custody still refuses derivation after coordinator rewrapping. Event/cut adapters
 use the same handoff internally without changing their caller authority contract.
-Local descriptor/thread/child tests pass; Linux qualification of this new owned
-handoff is pending. This does not yet implement the supervised private HTTP reader.
+[Native owned-reader qualification](../implementation/evidence/p02-owned-reader-custody-native-20260923.json)
+atc5d76a1 passes17 Linux custody tests, five native/two protocol tests and33
+actual signed visibility/read/refusal/restart cases. The decoded native result
+keeps the lock after coordinator destruction until its consumer drops it. This
+does not yet implement the supervised private HTTP reader.
 
 `Preparation::inspect_cut` and `read_event` require the actual `LocalCoordinator`,
 whose validated binding supplies catalog identity. Both native children inherit a

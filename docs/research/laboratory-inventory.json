@@ -18407,5 +18407,41 @@
       "capture_sha256": "98649e398d65852cf8971249977fc92ddd43321be1842c615f3acb01e74b1473"
     },
     "observation": "Both labs stopped/retained; original INCOMPLETE audit preserved. Checked run includes independent SQL,35 capture/1036 source/two ELF/five dependency asset hashes.512 prior records preserved; eight unrelated workloads running;38054350848bytes free. No active job or cleanup debt."
+  },
+  "implementation_owned_reader_20260923": {
+    "local_root": ".research/implementation/owned-reader",
+    "native": {
+      "source": "c5d76a1bdc408898f3575ebbb4644284120bda30",
+      "tree": "6f4a163ff5aba2dc30d15a3cc23f667d910268d3",
+      "owner": "cc0187f04ef5e9c7fdd0ec399284c224",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-owned-reader-c5d76a1",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "dfed028d176c490a2d268fe14e6587fbbe05d7196b80ec2c5cc2f9b35ab00d44"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "672ea03995ba757d7aa4368deb6251b872fec385f92dad06d575503b752db69b"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T16:36:19.211305+00:00",
+      "network_id": "6f46a7a63fd65745defb0c6e7bfb9a6adece98b2397f569fda2fce11beb59ae1",
+      "postgres_id": "dfed028d176c490a2d268fe14e6587fbbe05d7196b80ec2c5cc2f9b35ab00d44",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "672ea03995ba757d7aa4368deb6251b872fec385f92dad06d575503b752db69b",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "report": "docs/implementation/evidence/p02-owned-reader-custody-native-20260923.json",
+      "status": "PASS-scoped",
+      "capture_sha256": "e597ff73f616ad2549dbcf588bd6fb6eaf18f03233d2b279c415d929b7b207d0"
+    },
+    "observation": "Stopped/retained,58 capture/1037 source/five actual ELF/five dependency assets verified.514 prior records unchanged, eight unrelated running,34368692224bytes free. PG restart-loop final container exit137/noOOM; native runner exit0. No active job/cleanup debt."
   }
 }

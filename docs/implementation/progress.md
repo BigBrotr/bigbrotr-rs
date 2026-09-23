@@ -19,8 +19,8 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD and origin/main at8f48d91 after pushing6d3f1b0 and its scoped
-qualification. No merge/rebase or other writer. Root owns the new ReaderCustody
+Verified main/HEAD c5d76a1; origin/main8f48d91. Candidate owned-reader commit
+is not pushed; prior HTTP qualification is pushed. No merge/rebase or other writer. Root owns the new ReaderCustody
 implementation, actual visibility fixture caller, scoped native check and docs.
 Private repository/name verified through gh repo view. No dependencies changed.
 
@@ -39,20 +39,27 @@ A fresh isolated checked run at the SAME source revision passed and was captured
 all35 capture/1036 source/two ELF/five native dependency asset hashes verified.
 Local raw logs and both captures: `.research/implementation/private-grants/`.
 
-Owned ReaderCustody now derives only from ordinary LocalCoordinator, moves to
-blocking work and stays in ArchivedVisibility until consumption. Event/cut use
-the same private handoff.17 local initialization/custody tests and all-example
-Clippy pass; missing-API RED is retained under `.research/implementation/owned-reader/`.
-The actual visibility probe now moves custody into a joined worker thread and
-checks result-held flock after dropping the coordinator. Read-only independent AI review found no concrete new counterexample within
-these nine code files; Linux and Tokio/Control supervision remain unqualified.
-No new lab started yet.
+[Owned-reader qualification](evidence/p02-owned-reader-custody-native-20260923.json)
+atc5d76a1/tree6f4a163ff5aba2dc30d15a3cc23f667d910268d3 passes17 Linux custody,
+five native/two protocol tests and33 actual signed visibility/refusal/PG restart
+cases. Root reviewed the diff and independent AI review found no concrete defect.
+All58 capture/1037 source/five actual ELF/five dependency asset hashes verified.
+No Tokio/HTTP native-reader supervision or grant success is implied.
 
-Next bounded action: review/commit the owned reader candidate and run existing
-actual signed visibility scenarios plus17 custody tests in a fresh Tux lab. Then
-wire this owned value into Control HTTP with explicit reader selection, one shared
-resource budget, continued renewal/cancellation and catalog/pin cleanup. Proceed
-to the existing event_history protocol; no diagnostic CLI substitution or task closure.
+Root has separate uncommitted next-consumer edits in snapshot_leases.rs,
+control_owner.rs, publication_scope_grants.rs, config/{registry,resolve}.rs and
+interfaces/serve.rs. Bounded immutable ArchiveReadSelection lookup compiles; its
+literal real-PG fixture is not run. Explicit archive.reader.enabled defaults false,
+requires local Control/Archive and paired separate read credentials, preserves
+accepted policy bytes and does no offline I/O; local RED/GREEN test passes.
+Generated config schema/reference and full consumer wiring are still pending.
+These edits are NOT part of the c5d76a1 native source or its qualification.
+
+Next bounded action: commit/push the owned-reader evidence only, then integrate
+pending native grant work into the Control supervisor. Preserve explicit reader
+selection, one shared resource budget, absolute renewal deadlines, joined blocking
+work and retained manager driver/capture/pin cleanup. Then exercise actual HTTP
+success/refusal/restart/cancellation before event_history. No task/M1 closure.
 
 ## Scoped grant result
 
@@ -124,17 +131,21 @@ Concurrent cap admission/full reauth COMMIT-loss remain open. Startup/reauth req
 
 ## Laboratory custody
 
-No active lab or cleanup debt. Freshly collected checked run:
-`/home/tux/bigbrotr-implementation-20260917/runs/private-grants-6d3f1b0-checked`, owner
-`d898c112938fc5ec1182e6fa72951794`, label`org.bigbrotr.private-grants`, PG
-`2d221e43ecd9ac75ce44a3cb6da8c13b4ba05ed9d5e7ac10bb396888cb4eff88`, runner
-`89f947d75b161ae9d819eb793bc0c018016371e6ce27bf77c3da38dcb457d9a6`.
-Both exited0/PID0/noOOM, owned network removed.512prior container records preserved,
-eight unrelated running,38,054,350,848bytes free. CaptureSHA256
-`98649e398d65852cf8971249977fc92ddd43321be1842c615f3acb01e74b1473`.
-First incomplete6d3f1b0 lab owner48895aad293e432d031633c2526a961f is separately
-stopped/retained with its original audit. Full identities/lifecycle are in the
-[lab inventory](../research/laboratory-inventory.json) implementation_private_grants_20260923.
+No active lab or cleanup debt. Latest stopped/retained run:
+`/home/tux/bigbrotr-implementation-20260917/runs/archive-owned-reader-c5d76a1`,
+ownercc0187f04ef5e9c7fdd0ec399284c224, labelorg.bigbrotr.archive-visibility.
+PGdfed028d176c490a2d268fe14e6587fbbe05d7196b80ec2c5cc2f9b35ab00d44 and
+runner672ea03995ba757d7aa4368deb6251b872fec385f92dad06d575503b752db69b.
+Both stopped/PID0/noOOM; runner0, restart-loopPG137 after stop deadline, network
+removed.514 prior records preserved, eight unrelated running,34,368,692,224bytes
+free. CaptureSHA256`e597ff73f616ad2549dbcf588bd6fb6eaf18f03233d2b279c415d929b7b207d0`.
+Full identities in [lab inventory](../research/laboratory-inventory.json)
+implementation_owned_reader_20260923. Raw `.research/implementation/owned-reader/native/`.
+
+Private HTTP checked6d3f1b0 ownerd898c112938fc5ec1182e6fa72951794 and first
+incomplete48895aad293e432d031633c2526a961f remain separately stopped/retained.
+Checked captureSHA256`98649e398d65852cf8971249977fc92ddd43321be1842c615f3acb01e74b1473`;
+first original INCOMPLETE audit is preserved. Inventory implementation_private_grants_20260923.
 
 Scoped4b9511d lab owner47b49309bc046bf488d11bd72bafe34d remains stopped/retained,
 unchanged by both new inventories. Its raw grants-native-final-checks capture has

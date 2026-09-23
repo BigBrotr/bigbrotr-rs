@@ -1,0 +1,1052 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T07 and P08-T02 native-reader prerequisite",
+  "date": "2026-09-23",
+  "status": "PASS",
+  "scope": "Owned close-only reader custody across blocking work, native child and consumed visibility result; not supervised HTTP grant qualification",
+  "source": {
+    "revision": "c5d76a1bdc408898f3575ebbb4644284120bda30",
+    "tree": "6f4a163ff5aba2dc30d15a3cc23f667d910268d3",
+    "source_files": 1037,
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "harness_sha256": "212d7f2017152b7ebad11ae3130e4dfdfa878634bff51ff9b0323185454d23f1",
+    "oracle_sha256": "7ad4381bdc691d45245232d7cbdebeed039c6de0c182bcdc193b3479678917a4"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner": "2CPU/6GiB/512PIDs; internal network, readonly exact Git source, no host ports/socket/release keys",
+    "postgres": "2CPU/1GiB/128PIDs; actual fsync/full_page_writes on",
+    "cache": "Copied verified intact b5ff8ab cache; no retired state reused"
+  },
+  "checks": [
+    {
+      "name": "fixture",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 74.46508745290339
+    },
+    {
+      "name": "owned-reader-custody",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "storage::archive::initialization::tests",
+        "--",
+        "--test-threads=1"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 15.5385910901241
+    },
+    {
+      "name": "native-visibility",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--lib",
+        "visibility_tests::",
+        "--",
+        "--nocapture"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 45.555194936692715
+    },
+    {
+      "name": "protocol-visibility",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr-protocol",
+        "--test",
+        "archive_visibility"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.7219644389115274
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--lib",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe",
+        "--bin",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr-archive-worker",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.3201979300938547
+    }
+  ],
+  "cases": [
+    {
+      "name": "complete",
+      "status": "PASS",
+      "input_sha256": "2f834472567e1f76b7d94e23425ef327e3f3636fd711a0ae63d5a3b87dc3c1df",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 448,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "prefix-0",
+      "status": "PASS",
+      "input_sha256": "9a410f74bb6399e71aeb123f505fec50aa4ee5ed43dad2801df85d513cbd9472",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 370,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "prefix-1",
+      "status": "PASS",
+      "input_sha256": "369d1cc5b66d79985089276dad2b83fa5758ce956d29a3353d2bb3283367e46a",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 426,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "prefix-5",
+      "status": "PASS",
+      "input_sha256": "7d922e165bdbb626d13b5973fce666b37f55d5bc20fd83ecf67659ecd71f1a0c",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 418,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "prefix-10",
+      "status": "PASS",
+      "input_sha256": "2f834472567e1f76b7d94e23425ef327e3f3636fd711a0ae63d5a3b87dc3c1df",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 420,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "missing-stream",
+      "status": "PASS",
+      "input_sha256": "c68422bf670aa5d1b821bca90e1280993a21098e101e5cb3b8243db00e7fe1c2",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 381,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "foreign-epoch",
+      "status": "PASS",
+      "input_sha256": "6e95f65f17720d466d5c141c478cb1bc65dc9b4746518827263820e611aadba7",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 392,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "foreign-shard",
+      "status": "PASS",
+      "input_sha256": "fa1f45fff8f7181e79bcf498b28444549a2e5a7f66a0c421b12cb128b0e01f44",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 344,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "unrelated-zero",
+      "status": "PASS",
+      "input_sha256": "06fbf6f871e1cc100cd6d398c06bd0a92dbcfe079cb7c1c4036eedb8bc3afeb7",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 431,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "unallocated",
+      "status": "PASS",
+      "input_sha256": "3d41db672a373557876567221aaeb3ae8973b4a577916b5c4630d6491c5a77ea",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 373,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "domain",
+      "status": "PASS",
+      "input_sha256": "8596023c099307c9284ea9490fe818d33a1caeefce5dcd9fe82c09cf53354f5b",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 411,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "scope-kind",
+      "status": "PASS",
+      "input_sha256": "449b2ee2960f446e091e5199e09c30cf1ff66c93e619149d81bbede2d768e758",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 7,
+        "result": {
+          "error": "InvalidInput",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "scope-dataset",
+      "status": "PASS",
+      "input_sha256": "e5871c3840bd445d8a9140433bb7184a03c95394ff39dfaa49abf6f9a0246219",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 6,
+        "result": {
+          "error": "InvalidInput",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "wrong-catalog",
+      "status": "PASS",
+      "input_sha256": "c7d83cc03e0a4df6994349f56441ff62391192598f34d7b9d0ba74f63aaecc6c",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 0,
+        "result": {
+          "error": "Preparation(Custody(Identity))",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "unavailable-database",
+      "status": "PASS",
+      "input_sha256": "5a9f41d4738378d387243eb97d5814b958d3c3e217fc993d7b5648167af292ba",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 358,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "short-reservation",
+      "status": "PASS",
+      "input_sha256": "7d821e9b8e4365c6f13c6fd97f4298430a5ec6024c7cd213758621bf9c18630f",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 6,
+        "result": {
+          "error": "ResourceLimit",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "snapshot-0",
+      "status": "PASS",
+      "input_sha256": "7da81bae098b9f8047ffdfcd81ecd0d7c878c821987e566d981eba90552cf16c",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 353,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "snapshot-1",
+      "status": "PASS",
+      "input_sha256": "fcf6cf8e7200fdf1b619dea3f39675c7544383c3cdc614590bd1b3aa1d367379",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 401,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "snapshot-2",
+      "status": "PASS",
+      "input_sha256": "c17d399d3e8197a9e3d675e153e7b3903681df29c5b062784eb0f225799de92c",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 397,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "2",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "snapshot-3",
+      "status": "PASS",
+      "input_sha256": "2f834472567e1f76b7d94e23425ef327e3f3636fd711a0ae63d5a3b87dc3c1df",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 429,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "snapshot-4",
+      "status": "PASS",
+      "input_sha256": "f548fdd79dbe7dac65bcd820918056c877798e2d8137ebeb7f673056a0f2822a",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 409,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "snapshot-9223372036854775808",
+      "status": "PASS",
+      "input_sha256": "c3eb71d9d5303f0584114fc65bc781382aecb5e257158dfb7a5ba74176af1b29",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 6,
+        "result": {
+          "error": "InvalidInput",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "missing-dictionary",
+      "status": "PASS",
+      "input_sha256": "2f834472567e1f76b7d94e23425ef327e3f3636fd711a0ae63d5a3b87dc3c1df",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 375,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "missing-dictionary-restored",
+      "status": "PASS",
+      "input_sha256": "2f834472567e1f76b7d94e23425ef327e3f3636fd711a0ae63d5a3b87dc3c1df",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 432,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "corrupt-dictionary",
+      "status": "PASS",
+      "input_sha256": "2f834472567e1f76b7d94e23425ef327e3f3636fd711a0ae63d5a3b87dc3c1df",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 384,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "corrupt-dictionary-restored",
+      "status": "PASS",
+      "input_sha256": "2f834472567e1f76b7d94e23425ef327e3f3636fd711a0ae63d5a3b87dc3c1df",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 446,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "pg-restarted",
+      "status": "PASS",
+      "input_sha256": "2f834472567e1f76b7d94e23425ef327e3f3636fd711a0ae63d5a3b87dc3c1df",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 422,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "visibility-repeat",
+      "status": "PASS",
+      "input_sha256": "f303a7d1e07de80970dd7430a96a0c1cf22518ad3b2a4723a8d7204ed5bf1538",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 396,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "4",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "visibility-repeat-excluded",
+      "status": "PASS",
+      "input_sha256": "f548fdd79dbe7dac65bcd820918056c877798e2d8137ebeb7f673056a0f2822a",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 413,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "4",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "visibility-conflict",
+      "status": "PASS",
+      "input_sha256": "35f82a7273256803ef3d35bad3d00acc66a4c1f3c8f7e7c648428e1bd6d00cc3",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 373,
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        }
+      }
+    },
+    {
+      "name": "visibility-conflict-excluded",
+      "status": "PASS",
+      "input_sha256": "f2e3e13b7461bd232716f7bed5e8935d6abbe8cb94b1c5cb505be3435e3237cf",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 411,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "5",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "equal-historical-under-conflicting-head",
+      "status": "PASS",
+      "input_sha256": "f303a7d1e07de80970dd7430a96a0c1cf22518ad3b2a4723a8d7204ed5bf1538",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 419,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "4",
+          "status": "observed"
+        }
+      }
+    },
+    {
+      "name": "original-historical-under-conflicting-head",
+      "status": "PASS",
+      "input_sha256": "2f834472567e1f76b7d94e23425ef327e3f3636fd711a0ae63d5a3b87dc3c1df",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 403,
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        }
+      }
+    }
+  ],
+  "observations": {
+    "custody": "17 actual Linux filesystem/thread/child tests. Ordinary coordinator drops before owned thread; flock remains occupied during work and after join until returned custody drops. Recovery-only derivation and rewrap refuse; no-inherit child is the negative control.",
+    "native_consumer": "Actual archive_event_probe moves only ReaderCustody into a joined blocking thread. Successful ArchivedVisibility retains lock after coordinator destruction and budget until consumer drop, then ordinary acquisition succeeds.",
+    "oracle": "Separately implemented six-family signed fixture readback, repeated equal allocation and conflicting allocation under later snapshots.",
+    "durability": "Original eight Parquet hashes and catalog metadata preserved through refused/successful reads and actual PostgreSQL SIGQUIT/restart. Two quiescent fixture-only dictionary files retained; original guard state unchanged.",
+    "restart": {
+      "before": "2026-09-23 16:36:23.617136+00",
+      "after": "2026-09-23 16:40:07.322587+00",
+      "signal": "SIGQUIT",
+      "attempts": [
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 0,
+          "start": "2026-09-23 16:40:07.322587+00"
+        }
+      ]
+    },
+    "scope": "Terminal remote_exclusion=UNKNOWN fields are not writer fencing claims. Linux tests do not certify Tokio renewal, pin cleanup, native COMMIT or restrictive delivery drain."
+  },
+  "durable_terminal": {
+    "bbpub_normal": {
+      "backends": 0
+    },
+    "bbpub_control_normal": {
+      "backends": 0
+    }
+  },
+  "artifacts": {
+    "control": "519e6f451952f01a7f8fb65e12cb81a55f3d9488781dad5d5c34330e90f7e36f",
+    "worker": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a",
+    "event_reader": "1e001a03888f1eaadbaf64908c9c83f160118839dc20b7ed421ba38261d9b1ed",
+    "publisher": "d0c6ffb77b481887f57a6d9ddbf2fcf92beb23806f749b820fa2461a0a65103f",
+    "reader": "25822b7fd24cd7141299d80d6cd0fcc2a0997ec48cc9664b3fccc3f87190e8fa"
+  },
+  "native_assets": {
+    "bigbrotr-archive-worker": {
+      "bytes": 14344128,
+      "sha256": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a"
+    },
+    "extensions/ducklake.duckdb_extension": {
+      "bytes": 36436086,
+      "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+    },
+    "extensions/httpfs.duckdb_extension": {
+      "bytes": 21570542,
+      "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+    },
+    "extensions/postgres_scanner.duckdb_extension": {
+      "bytes": 41696558,
+      "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+    },
+    "lib/duckdb.h": {
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "lib/libduckdb.so": {
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "parquet_files": {
+    "main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": {
+      "bytes": 1902,
+      "sha256": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e"
+    },
+    "main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 1902,
+      "sha256": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70"
+    },
+    "main/dictionaries/ducklake-01a0cf23-992c-7ff6-b6de-f9ef83fa6aa2.parquet": {
+      "bytes": 6460,
+      "sha256": "861949997e63b1ae8f28a291a2e402e017da7bd9de4c13e838cf9c91ddf7ee4a"
+    },
+    "main/dictionaries/ducklake-01a0cf23-9ea5-7b44-94e6-98bba17eddee.parquet": {
+      "bytes": 6465,
+      "sha256": "292fae057b1d3397ddf906da8b635c5ae31f3bb2e9093c3ca3db76da5a22e04e"
+    },
+    "main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": {
+      "bytes": 10655,
+      "sha256": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076"
+    },
+    "main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 6750,
+      "sha256": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be"
+    },
+    "main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 3855,
+      "sha256": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35"
+    },
+    "main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 4732,
+      "sha256": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05"
+    },
+    "main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 4011,
+      "sha256": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937"
+    },
+    "main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 6790,
+      "sha256": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+    }
+  },
+  "capture": {
+    "path": ".research/implementation/owned-reader/native",
+    "files": 58,
+    "sha256": "e597ff73f616ad2549dbcf588bd6fb6eaf18f03233d2b279c415d929b7b207d0",
+    "verification": "All58 capture/1037 source hashes match Mac Git archive; five actual ELF hashes independently compared and five dependency assets match registry bytes/hash. Owned containers freshly inspected stopped/PID0 and owned network absent."
+  },
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-owned-reader-c5d76a1",
+    "owner": "cc0187f04ef5e9c7fdd0ec399284c224",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "dfed028d176c490a2d268fe14e6587fbbe05d7196b80ec2c5cc2f9b35ab00d44"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "672ea03995ba757d7aa4368deb6251b872fec385f92dad06d575503b752db69b"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preserved": 514,
+    "unrelated_running": 8,
+    "free_bytes": 34368692224,
+    "errors": [],
+    "postgres_exit": 137,
+    "note": "Restart-loop PG container required stop deadline SIGKILL; PID0/noOOM and no active backend observed before cleanup. Not a graceful final PostgreSQL shutdown claim."
+  },
+  "review": {
+    "kind": "Read-only AI and integrating-owner diff review",
+    "finding": "No concrete new defect found in nine changed Rust files and ownership boundaries; reviewer ran no tests."
+  },
+  "exclusions": [
+    "No enabled HTTP native reader, successful HTTP grant or history consumer",
+    "No Tokio supervisor signal/renewal/abandoned-client schedule for this owned reader",
+    "No pin or data-action authorization from custody alone",
+    "No full event/cut regression matrix, aged/mixed load, capacity, complete release or Linux arm64 qualification"
+  ]
+}
