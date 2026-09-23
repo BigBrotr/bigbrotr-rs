@@ -298,21 +298,22 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                     elif variant == 'wrong-catalog': bad['catalog_id'] = '5b'*16
                     else: bad['database'] = 'absent'
                     run_case(variant, bad, None, absent=query_lookup and variant in ['scope', 'event-id', 'missing'])
-                body_files = [name for name in original_files if '/events/' in name]
-                assert len(body_files) == 1
-                path = root/f'out/signed_{mode}/kind=7'/body_files[0]
-                original = path.read_bytes()
-                for fault in ['missing-file', 'corrupt-footer']:
-                    retained = path.with_suffix('.retained')
-                    path.rename(retained)
-                    try:
-                        if fault == 'corrupt-footer': path.write_bytes(original[:-4]+b'FAIL')
-                        run_case(fault, request, None)
-                    finally:
-                        if path.exists(): path.unlink()
-                        retained.rename(path)
-                    assert path.read_bytes() == original
-                    run_case(fault+'-restored', request, value)
+                for family in ['events', *(['event_eligibility_facts'] if query_lookup else [])]:
+                    required_files = [name for name in original_files if '/'+family+'/' in name]
+                    assert len(required_files) == 1
+                    path = root/f'out/signed_{mode}/kind=7'/required_files[0]
+                    original = path.read_bytes()
+                    for fault in ['missing-file', 'corrupt-footer']:
+                        retained = path.with_suffix('.retained')
+                        path.rename(retained)
+                        try:
+                            if fault == 'corrupt-footer': path.write_bytes(original[:-4]+b'FAIL')
+                            run_case(family+'-'+fault, request, None)
+                        finally:
+                            if path.exists(): path.unlink()
+                            retained.rename(path)
+                        assert path.read_bytes() == original
+                        run_case(family+'-'+fault+'-restored', request, value)
                 for action in (['negative-no-custody', 'cancel', 'deadline', 'parent-death'] if reader_custody else ['cancel', 'deadline', *(['absent-deadline'] if query_lookup else [])]):
                     cancellation = action in ['cancel', 'negative-no-custody']
                     executable = '/out/native-tests/baseline-event-probe' if action == 'negative-no-custody' else '/out/native-tests/archive-event-probe'
