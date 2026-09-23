@@ -29,7 +29,7 @@ def cli(*args):
     return json.loads(result.stdout)
 
 
-def prepare(mode='normal'):
+def prepare(mode='normal', migration_target='812'):
     assert mode in ('normal', 'large')
     ROOT.mkdir(mode=0o700)
     (ROOT / 'scratch').mkdir(mode=0o700)
@@ -74,7 +74,7 @@ read_user="bigbrotr_receipt_reader"
 read_password_ref="file:{ROOT}/bigbrotr_receipt_reader"
 ''')
     cli('config', 'validate')
-    cli('migrate', 'apply', '--target', '811', '--user', 'postgres', '--password-ref', f'file:{ROOT}/postgres')
+    cli('migrate', 'apply', '--target', migration_target, '--user', 'postgres', '--password-ref', f'file:{ROOT}/postgres')
 
 
 def enroll():
@@ -271,4 +271,4 @@ def exercise(history=False):
 
 
 if __name__ == '__main__':
-    {'prepare':prepare,'prepare-large':lambda:prepare('large'),'enroll':enroll,'exercise':exercise,'exercise-history':lambda:exercise(True)}[sys.argv[1]]()
+    {'prepare':prepare,'prepare-811':lambda:prepare(migration_target='811'),'prepare-large':lambda:prepare('large'),'enroll':enroll,'exercise':exercise,'exercise-history':lambda:exercise(True)}[sys.argv[1]]()

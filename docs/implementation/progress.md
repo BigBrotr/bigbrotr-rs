@@ -15,18 +15,28 @@ Active P08-T03/T04 prerequisites for standalone export/restart, consuming the
 P08-T02 private authority and P06-T01/T02 real signed history/pinned-reader slices.
 The current bounded history-body qualification is complete, not the full tasks.
 Root is sole writer;
-read-only AI reviewer catalog_guard_review is idle and owns no files/resources.
+read-only AI reviewer catalog_guard_review is reviewing this permission boundary
+and owns no files/resources.
 No P02/P06/P08 task or M1 milestone is complete; all later selected work remains.
 
 ## Git and review boundary
 
-Last observed main/HEAD86443beecea8720538c32d413f6557de6cc22fe1, origin/main89e73c9,
-ahead two exact candidates. Root owns body evidence/inventory, history user-doc
-links and this checkpoint. Product source remains unchanged from32dd58d; no dependency/
-migration changes or other writer. AI found one extra parenthesis in fixture SQL;
-actual050f71a reproduced it,86443be corrects it. No second static finding; no tests
-or SSH by reviewer. Current exact candidate native run PASS-scoped; capture review found
-no discrepancy. Both labs stopped, networks removed; no cleanup debt.
+Last verified main/HEAD and origin/main01752916dceda8563650bec95bc6a2985dd3b6a3,
+clean at resumption. Root now owns the additive0812 export-scope permission slice:
+model/SQL/adapter, independent vectors and HTTP/engine regression fixtures, plus
+owning docs and this checkpoint. Existing published migrations remain unchanged.
+The first new golden/action-separation tests ran RED: export was refused by the
+old closed enum. Subsequent Mac38binary/21schema/4grant tests and scoped Clippy
+PASS; fmt and artifact checks172Markdown/246JSON/errors[] pass. Root reviewed
+the full diff; independent read-only AI review requested and pending. Logs and
+launch/capture scripts are under .research/implementation/export-grants/.
+Next form an unpublished exact candidate and run the explicit812 upgrade plus
+actual HTTP action-separation/restart fixture on fresh isolated Tux PostgreSQL.
+Native execution is NOT_RUN; no new remote resources created yet.
+No export job acceptance or delivery is implemented yet. This necessary P08-T02
+permission prerequisite feeds the active P08-T03/T04 job slice; no second plan.
+Tux freshly observed540 retained containers/eight unrelated running, no BigBrotr
+process/lab, free203,556,044,800bytes. Existing evidence capture paths remain.
 
 4d81357 integrates model/protocol read modules, initial schemas/OpenAPI and docs,
 management history transport/delivery, serve history/native supervision, nonrenewable
@@ -123,16 +133,16 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: review/commit/push body evidence and inventory; then implement
-the first P08-T03/T04 private export job acceptance and actual standalone export.
-Reuse control.jobs, its immutable complete bounds and native snapshot pins;
-export needs its separate grant and approved destination. Existing history.read
-or initial administrator permissions do not authorize it. Persist idempotent job,
-source cut/pins and command before replying; retained paused/cancelled obligations
-must survive restart. Read full owning files/callers before edits. The relevant
-contracts are08-operations.md P08-T03/T04, operations-contract.md durable boundary,
-identity-and-encoding.md export closure, import-formats.md and exporter section of
-derived-read-publication.md. No export implementation or task/M1 closure yet.
+Next bounded action: finish and qualify explicit export/private-export grants
+through the existing reauthentication/command route, preserving current history
+semantics and independent per-action generations. Then accept the first private
+export job with its command, complete immutable source cut and retention pins in
+one transaction before replying; implement actual standalone export/restart.
+Reuse control.jobs and existing native custody. Destination approval and dataset
+permission remain additional requirements, not implied by a scope grant.
+Relevant owning contracts are P08-T03/T04, operations-contract.md durable boundary,
+identity-and-encoding.md export closure, import-formats.md and Exporter section of
+derived-read-publication.md. No task or M1 closure yet.
 
 Stopped root /home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be,
 ownerf61ac9d8311ca2e3bdfd09d2a67a16fa, label org.bigbrotr.archive-visibility;

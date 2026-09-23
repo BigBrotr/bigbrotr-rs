@@ -79,7 +79,7 @@ pub async fn prepare(control: &str) {
     );
     let before = state(&admin).await;
     let credentials: String = admin.query_one("SELECT jsonb_agg(to_jsonb(c) ORDER BY principal_id)::text FROM control.local_credentials c", &[]).await.unwrap().get(0);
-    migration_runner::run(&mut admin, 811, true, &Cell::new(false))
+    migration_runner::run(&mut admin, 812, true, &Cell::new(false))
         .await
         .unwrap();
     assert_eq!(state(&admin).await, before);

@@ -594,7 +594,7 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
         )
         .await
         .unwrap();
-    // The following refusals must isolate privileges, not a missing811 schema.
+    // The following refusals must isolate privileges, not a missing812 schema.
     grants::upgrade(&binary, &config, &home, &admin, false).await;
     admin
         .batch_execute("REVOKE DELETE ON control.browser_sessions FROM bigbrotr_control")

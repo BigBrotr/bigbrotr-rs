@@ -91,55 +91,58 @@ async fn grant_route_rejects_missing_session_csrf_and_ambiguous_inputs_before_qu
 #[tokio::test]
 async fn grant_route_preserves_exact_command_and_only_reports_acceptance() {
     let (mut server, address, budget) = server().await;
-    let body = input();
-    let principal = body["command"]["principal_id"].as_str().unwrap();
-    for created in [true, false] {
-        let client = tokio::spawn(exchange(
-            address,
-            request(address, principal, &authenticated(), &body.to_string()),
-        ));
-        let received = server.commands.recv().await.unwrap();
-        let transport::Operation::Grant {
-            session,
-            csrf,
-            key,
-            command,
-            proof,
-        } = received.operation
-        else {
-            panic!("wrong queued operation");
-        };
-        assert_eq!(session.expose_hex().as_str(), "11".repeat(32));
-        assert_eq!(csrf.expose_hex().as_str(), "22".repeat(32));
-        assert_eq!(key.to_string(), "04".repeat(16));
-        assert_eq!(proof.to_string(), "09".repeat(16));
-        assert_eq!(serde_json::to_value(&command).unwrap(), body["command"]);
-        received.completion.finish(Ok(transport::Reply::Grant(
-            bigbrotr::management::grants::GrantReceipt {
-                command_key: key,
-                principal_id: command.principal_id,
-                scope: command.scope,
-                enabled: command.enabled,
-                scope_generation: "2".to_string().try_into().unwrap(),
-                account_grant_revision: "18446744073709551615".to_string().try_into().unwrap(),
-                accepted_at_us: 9_223_372_036_854_775_807,
-                created,
-            },
-        )));
-        let response = client.await.unwrap();
-        let (headers, returned) = response.split_once("\r\n\r\n").unwrap();
-        assert!(headers.starts_with("HTTP/1.1 200 "));
-        assert!(headers.contains("cache-control: no-store\r\n"));
-        assert!(!headers.contains("set-cookie:"));
-        let returned: serde_json::Value = serde_json::from_str(returned).unwrap();
-        assert_eq!(
-            returned,
-            serde_json::json!({"format":"bigbrotr-scope-grant/1",
+    for action in ["history.read", "export", "private-export"] {
+        let mut body = input();
+        body["command"]["action"] = action.into();
+        let principal = body["command"]["principal_id"].as_str().unwrap();
+        for created in [true, false] {
+            let client = tokio::spawn(exchange(
+                address,
+                request(address, principal, &authenticated(), &body.to_string()),
+            ));
+            let received = server.commands.recv().await.unwrap();
+            let transport::Operation::Grant {
+                session,
+                csrf,
+                key,
+                command,
+                proof,
+            } = received.operation
+            else {
+                panic!("wrong queued operation");
+            };
+            assert_eq!(session.expose_hex().as_str(), "11".repeat(32));
+            assert_eq!(csrf.expose_hex().as_str(), "22".repeat(32));
+            assert_eq!(key.to_string(), "04".repeat(16));
+            assert_eq!(proof.to_string(), "09".repeat(16));
+            assert_eq!(serde_json::to_value(&command).unwrap(), body["command"]);
+            received.completion.finish(Ok(transport::Reply::Grant(
+                bigbrotr::management::grants::GrantReceipt {
+                    command_key: key,
+                    principal_id: command.principal_id,
+                    scope: command.scope,
+                    enabled: command.enabled,
+                    scope_generation: "2".to_string().try_into().unwrap(),
+                    account_grant_revision: "18446744073709551615".to_string().try_into().unwrap(),
+                    accepted_at_us: 9_223_372_036_854_775_807,
+                    created,
+                },
+            )));
+            let response = client.await.unwrap();
+            let (headers, returned) = response.split_once("\r\n\r\n").unwrap();
+            assert!(headers.starts_with("HTTP/1.1 200 "));
+            assert!(headers.contains("cache-control: no-store\r\n"));
+            assert!(!headers.contains("set-cookie:"));
+            let returned: serde_json::Value = serde_json::from_str(returned).unwrap();
+            assert_eq!(
+                returned,
+                serde_json::json!({"format":"bigbrotr-scope-grant/1",
             "command_key":"04".repeat(16),"principal_id":principal,"scope":body["command"]["scope"],
             "enabled":body["command"]["enabled"],"scope_generation":"2",
             "account_grant_revision":"18446744073709551615","accepted_at_us":"9223372036854775807",
             "created":created,"application":"unobserved","authority":"acceptance-only"})
-        );
+            );
+        }
     }
     server.stop().await.unwrap();
     assert_eq!(budget.snapshot().active_permits(), 0);

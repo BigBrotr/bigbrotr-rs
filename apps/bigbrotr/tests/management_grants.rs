@@ -119,3 +119,31 @@ fn proof_fingerprint_cannot_be_reused_for_another_actor_key_or_grant_change() {
         );
     }
 }
+
+#[test]
+fn scoped_export_actions_have_distinct_command_authority() {
+    let vector = vectors()["vectors"][0].clone();
+    let dataset = vector["dataset"].as_str().unwrap().parse().unwrap();
+    let actor = vector["actor"].as_str().unwrap().parse().unwrap();
+    let key = vector["command_key"].as_str().unwrap().parse().unwrap();
+    let mut digests = std::collections::BTreeSet::new();
+    for action in ["history.read", "export", "private-export"] {
+        let mut value = vector["command"].clone();
+        value["action"] = action.into();
+        let command: GrantCommand = serde_json::from_value(value).unwrap();
+        assert_eq!(command.action.as_str(), action);
+        assert!(digests.insert(command.digest(dataset, actor, key).unwrap().to_string()));
+    }
+    // None of the data actions permits publication, signing or generic job control.
+    for action in [
+        "artifact.publish",
+        "artifact.withdraw",
+        "sign",
+        "roles.control",
+        "export.all",
+    ] {
+        let mut value = vector["command"].clone();
+        value["action"] = action.into();
+        assert!(serde_json::from_value::<GrantCommand>(value).is_err());
+    }
+}

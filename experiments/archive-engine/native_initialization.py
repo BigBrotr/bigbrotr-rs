@@ -20,10 +20,11 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'], ['--private-grant-http'], ['--event-query'], ['--private-history'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'], ['--private-grant-http'], ['--event-query'], ['--private-history'], ['--export-grants'])
+export_grants = sys.argv[1:] == ['--export-grants']
 private_history = sys.argv[1:] == ['--private-history']
 event_query = sys.argv[1:] == ['--event-query']
-private_grant_http = private_history or sys.argv[1:] == ['--private-grant-http']
+private_grant_http = export_grants or private_history or sys.argv[1:] == ['--private-grant-http']
 scope_grants = sys.argv[1:] == ['--scope-grants']
 archive_visibility = sys.argv[1:] == ['--archive-visibility']
 pin_recovery = sys.argv[1:] == ['--pin-recovery']
@@ -148,6 +149,11 @@ if private_history:
         ('read-codec', ['cargo','test','--locked','--release','-p','bigbrotr-protocol','--lib','read::tests']),
         ('action-window', ['cargo','test','--locked','--release','-p','bigbrotr','--lib','runtime::policy_authority']),
         ('worker-process', ['cargo','test','--locked','--release','-p','bigbrotr','--lib','storage::archive::process']),
+        checks[-1]]
+if export_grants:
+    identity.update(scope='explicit export/private-export scope grants; real HTTP action separation, no export job')
+    checks = [checks[0],
+        ('export-grant-consumer', ['cargo','test','--locked','--release','-p','bigbrotr','--bin','bigbrotr','--test','management_grants','--test','control_schema']),
         checks[-1]]
 if import_source:
     identity.update(scope='captured JSONL source and existing connected signed-admission consumer')

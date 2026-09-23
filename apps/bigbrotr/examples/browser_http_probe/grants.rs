@@ -19,7 +19,7 @@ pub(super) async fn upgrade(
                 .contains("Prerequisite")
         );
         case(
-            "http-grant-requires-explicit-811-before-binding",
+            "http-grant-requires-explicit-812-before-binding",
             json!({"exit":3}),
         );
     }
@@ -30,7 +30,7 @@ pub(super) async fn upgrade(
             "migrate",
             "apply",
             "--target",
-            "811",
+            "812",
             "--user",
             "postgres",
             "--password-ref",

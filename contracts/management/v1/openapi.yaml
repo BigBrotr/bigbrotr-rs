@@ -470,8 +470,8 @@
     "/management/v1/principals/{principal_id}/grants": {
       "put": {
         "operationId": "changeScopeGrant",
-        "summary": "Accept one scoped history grant change",
-        "description": "Exact Origin, current session, CSRF and Idempotency-Key required. Fresh acceptance needs the original session bound to the proof; a historical receipt retry permits a new live session of the same actor. Path principal must equal command target. Body max8192bytes. Requires explicit migration0811 and application SQL privileges. Revocation and historical retries do not depend on Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate reader credentials and the installed worker bundle. A known native prerequisite refusal preserves the proof and keeps Control available. Native HTTP execution remains under qualification. This is not complete grant/private-history qualification. A lost response is resolved by an identical command retry; never substitute a new key. Acceptance does not establish applied restrictive drain.",
+        "summary": "Accept one scoped data grant change",
+        "description": "Exact Origin, current session, CSRF and Idempotency-Key required. Fresh acceptance needs the original session bound to the proof; a historical receipt retry permits a new live session of the same actor. Path principal must equal command target. Body max8192bytes. Requires explicit migration0812 and application SQL privileges. Revocation and historical retries do not depend on Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate reader credentials and the installed worker bundle. A known native prerequisite refusal preserves the proof and keeps Control available. Native HTTP execution remains under qualification. This is not complete grant/private-history qualification. A lost response is resolved by an identical command retry; never substitute a new key. Acceptance does not establish applied restrictive drain.",
         "parameters": [
           {
             "name": "principal_id",
@@ -973,7 +973,7 @@
           },
           "action": {
             "type": "string",
-            "const": "history.read"
+            "enum": ["history.read", "export", "private-export"]
           },
           "scope": {
             "type": "object",

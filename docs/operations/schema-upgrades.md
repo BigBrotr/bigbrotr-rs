@@ -45,7 +45,7 @@ require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
 
-An omitted target selects the latest embedded migration, currently 16. An explicit
+An omitted target selects the latest embedded migration, currently 812. An explicit
 target 1 preserves the initial control-only boundary for its historical fixtures.
 Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
 had no source registry, so their exact source authority cannot be inferred.
@@ -354,3 +354,12 @@ connection and requires an explicit sealed topology. The guarded catalog and
 actual publication remain separate unimplemented boundaries; this migration
 cannot authorize an archive worker by itself. The [native issuance evidence](../implementation/evidence/p02-archive-attempts-native-20260918.json)
 records the scoped PG16.15/Linux amd64 cases; wire COMMIT faults remain unexecuted.
+
+Migration0812 adds the explicit scoped `export` and `private-export` actions to
+0810's grant command. It preserves0811's deferred checks, historical digests,
+per-action generations, proofs and the initial administrator bundle; no stored
+rows are converted or backfilled. The updated private listener requires812
+before binding. Apply it explicitly with the migration credential; startup never
+migrates. Older binaries refuse the unknown migration rather than silently
+misinterpreting export authority. Export jobs and destination approval have their
+own acceptance boundary; this schema extension does not dispatch work.

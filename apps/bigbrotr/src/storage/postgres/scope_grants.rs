@@ -35,7 +35,7 @@ impl ControlSession {
     pub async fn require_scope_grants(&mut self) -> Result<(), SessionError> {
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 811)
+        let tx = application_transaction(&mut self.client, 812)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -67,7 +67,7 @@ impl ControlSession {
         command.validate(self.request.dataset)?;
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 811)
+        let tx = application_transaction(&mut self.client, 812)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -167,7 +167,7 @@ async fn accept_in_transaction(
         .get()
         .checked_add(1)
         .ok_or(SessionError::Capacity)?;
-    let row=tx.query_opt("SELECT enabled,left(generation::text,21) FROM control.scope_grants WHERE dataset_id=$1::bytea AND principal_id=$2::bytea AND action='history.read' AND dictionary_kind=4 AND allocation_domain=$3::bytea AND ordinal=$4::text::numeric", &[&&dataset_id.as_bytes()[..],&&command.principal_id.as_bytes()[..],&&command.scope.allocation_domain.as_bytes()[..],&command.scope.ordinal.get().to_string()]).await.map_err(backend)?;
+    let row=tx.query_opt("SELECT enabled,left(generation::text,21) FROM control.scope_grants WHERE dataset_id=$1::bytea AND principal_id=$2::bytea AND action=$5::text AND dictionary_kind=4 AND allocation_domain=$3::bytea AND ordinal=$4::text::numeric", &[&&dataset_id.as_bytes()[..],&&command.principal_id.as_bytes()[..],&&command.scope.allocation_domain.as_bytes()[..],&command.scope.ordinal.get().to_string(),&command.action.as_str()]).await.map_err(backend)?;
     let generation = match row {
         Some(row) => {
             if row.try_get::<_, bool>(0).map_err(metadata)? == command.enabled {
@@ -214,7 +214,7 @@ async fn accept_in_transaction(
         .as_ref()
         .map(|a| a.frontier_revision.get().to_string());
     let pin = allocation.map(|a| &a.pin.lease_id[..]);
-    let changed=tx.execute("INSERT INTO control.scope_grant_changes(actor_id,request_key,dataset_id,principal_id,action,dictionary_kind,allocation_domain,ordinal,enabled,scope_generation,expected_grant_revision,resulting_grant_revision,proof_id,session_id,actor_credential_revision,actor_authentication_revision,actor_grant_revision,proof_expires_at_us,catalog_id,frontier_revision,pin_lease_id) VALUES($1::bytea,$2::bytea,$3::bytea,$4::bytea,'history.read',4,$5::bytea,$6::text::numeric,$7::boolean,$8::text::numeric,$9::text::numeric,$10::text::numeric,$11::bytea,$12::bytea,$13::text::numeric,$14::text::numeric,$15::text::numeric,$16::bigint,$17::bytea,$18::text::numeric,$19::bytea)", &[&actor,&request_key,&dataset,&&command.principal_id.as_bytes()[..],&&command.scope.allocation_domain.as_bytes()[..],&command.scope.ordinal.get().to_string(),&command.enabled,&generation.to_string(),&command.expected_grant_revision.get().to_string(),&next_account.to_string(),&&proof.as_bytes()[..],&&current.id[..],&revision(&current.account,1)?.to_string(),&revision(&current.account,2)?.to_string(),&revision(&current.account,3)?.to_string(),&proof_expires,&catalog,&frontier,&pin]).await.map_err(backend)?;
+    let changed=tx.execute("INSERT INTO control.scope_grant_changes(actor_id,request_key,dataset_id,principal_id,action,dictionary_kind,allocation_domain,ordinal,enabled,scope_generation,expected_grant_revision,resulting_grant_revision,proof_id,session_id,actor_credential_revision,actor_authentication_revision,actor_grant_revision,proof_expires_at_us,catalog_id,frontier_revision,pin_lease_id) VALUES($1::bytea,$2::bytea,$3::bytea,$4::bytea,$20::text,4,$5::bytea,$6::text::numeric,$7::boolean,$8::text::numeric,$9::text::numeric,$10::text::numeric,$11::bytea,$12::bytea,$13::text::numeric,$14::text::numeric,$15::text::numeric,$16::bigint,$17::bytea,$18::text::numeric,$19::bytea)", &[&actor,&request_key,&dataset,&&command.principal_id.as_bytes()[..],&&command.scope.allocation_domain.as_bytes()[..],&command.scope.ordinal.get().to_string(),&command.enabled,&generation.to_string(),&command.expected_grant_revision.get().to_string(),&next_account.to_string(),&&proof.as_bytes()[..],&&current.id[..],&revision(&current.account,1)?.to_string(),&revision(&current.account,2)?.to_string(),&revision(&current.account,3)?.to_string(),&proof_expires,&catalog,&frontier,&pin,&command.action.as_str()]).await.map_err(backend)?;
     if changed == 0 {
         return Err(SessionError::Denied);
     }
@@ -223,7 +223,7 @@ async fn accept_in_transaction(
     if generation == 1 {
         one(tx.execute("INSERT INTO control.scope_grants SELECT dataset_id,principal_id,action,dictionary_kind,allocation_domain,ordinal,enabled,scope_generation,actor_id,request_key FROM control.scope_grant_changes WHERE actor_id=$1::bytea AND request_key=$2::bytea", &[&actor,&request_key]).await.map_err(backend)?)?;
     } else {
-        one(tx.execute("UPDATE control.scope_grants SET enabled=$5::boolean,generation=$6::text::numeric,actor_id=$7::bytea,request_key=$8::bytea WHERE dataset_id=$1::bytea AND principal_id=$2::bytea AND action='history.read' AND dictionary_kind=4 AND allocation_domain=$3::bytea AND ordinal=$4::text::numeric", &[&dataset,&&command.principal_id.as_bytes()[..],&&command.scope.allocation_domain.as_bytes()[..],&command.scope.ordinal.get().to_string(),&command.enabled,&generation.to_string(),&actor,&request_key]).await.map_err(backend)?)?;
+        one(tx.execute("UPDATE control.scope_grants SET enabled=$5::boolean,generation=$6::text::numeric,actor_id=$7::bytea,request_key=$8::bytea WHERE dataset_id=$1::bytea AND principal_id=$2::bytea AND action=$9::text AND dictionary_kind=4 AND allocation_domain=$3::bytea AND ordinal=$4::text::numeric", &[&dataset,&&command.principal_id.as_bytes()[..],&&command.scope.allocation_domain.as_bytes()[..],&command.scope.ordinal.get().to_string(),&command.enabled,&generation.to_string(),&actor,&request_key,&command.action.as_str()]).await.map_err(backend)?)?;
     }
     one(tx
         .execute(

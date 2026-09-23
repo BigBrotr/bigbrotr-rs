@@ -211,8 +211,8 @@ capacity admission. Audit rows remain retained until that maintenance path exist
 | Manage users/administrator grants | Administrator/owner grant | Reauthentication for privilege changes; no privilege escalation through config |
 | Execute arbitrary shell commands | No web permission | Not a management feature |
 
-The first scoped grant command changes one `history.read` grant for a complete
-visibility QualifiedRef. It carries the target principal, desired enabled flag,
+The scoped grant command changes one `history.read`, `export` or `private-export`
+grant for a complete visibility QualifiedRef. It carries the target principal, desired enabled flag,
 expected configuration/security/account-grant revisions, and an allocation
 selection `(catalog_id, frontier_revision)` when enabling. Disabling carries no
 allocation selection: an unavailable archive must not prevent revocation of an
@@ -263,7 +263,8 @@ affected workers and delivery have actually drained.
 The command fingerprint uses SHA256 over ASCII
 `bigbrotr/scope-grant-change/1` plus NUL, dataset16, authenticated actor16,
 command-key16, target-principal16, scope `(dataset16,kind u16,domain16,ordinal u64)`,
-action byte1 for `history.read`, enabled byte0/1, then expected configuration,
+action byte1 for `history.read`, byte2 for `export`, or byte3 for `private-export`,
+enabled byte0/1, then expected configuration,
 security and account-grant revisions as u64. Finish with allocation-present
 byte0/1, and when present catalog16/frontier-revision u64. Integers are big endian;
 JSON metadata uses canonical positive decimal strings and nonzero lowercase hex
@@ -350,7 +351,13 @@ or enables its first generation. Repeated desired state under a *new* key is a
 conflict; revoking an unknown scope creates no tombstone. Accepted commands advance
 the target account revision exactly once and the specific scope generation by one.
 Disabled rows retain their generation, preventing revoke/re-enable ABA. The original
-seven dataset grants remain separate.
+seven dataset grants remain separate. Additive 0812 expands only the closed action
+allowlist and action-byte encoding. It does not reinterpret old command digests,
+add default grants or change 0811's final atomic/expiry checks. Generations are
+independent per action and exact scope. Export permissions never imply
+`history.read`, artifact publication or signing. They remain only policy inputs:
+export job acceptance must also validate the selected source generation, dataset
+permission and approved destination. Recording a grant does not create an export.
 
 Each acceptance atomically retains the command, immutable detail, exact audit and
 current grant, advances the account CAS, and consumes the same-session proof. The
@@ -371,7 +378,7 @@ retention claims and actual Control holder under the shared pin lock, sampling
 the clock after waits and again at its final constraint check. Revocation needs no
 Archive dependency. The grant route reports only immutable acceptance with
 `application=unobserved` and `authority=acceptance-only`, including historical
-retries; no receipt means applied drain. Listener startup now requires explicit811,
+retries; no receipt means applied drain. Listener startup now requires explicit812,
 the command/detail/current-grant table privileges, proof-column UPDATE for row
 locks and the two invoker helper EXECUTE privileges. A selected native reader
 also checks its actual Control observation/pin/helper privileges before binding,

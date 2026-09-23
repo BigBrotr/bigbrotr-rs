@@ -38,16 +38,24 @@ impl From<Revision> for String {
 pub enum ScopeAction {
     #[serde(rename = "history.read")]
     HistoryRead,
+    #[serde(rename = "export")]
+    Export,
+    #[serde(rename = "private-export")]
+    PrivateExport,
 }
 impl ScopeAction {
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::HistoryRead => "history.read",
+            Self::Export => "export",
+            Self::PrivateExport => "private-export",
         }
     }
     const fn code(self) -> u8 {
         match self {
             Self::HistoryRead => 1,
+            Self::Export => 2,
+            Self::PrivateExport => 3,
         }
     }
 }
