@@ -1,0 +1,232 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T01/T02 post-native catalog capture",
+  "date": "2026-09-23",
+  "status": "PASS-scoped",
+  "source": {
+    "revision": "b5c862ac7c50700cf532517994dff3f3224f6eab",
+    "tree": "6362d1eedbacf5ec4e9c190ae79082879f8a41b8"
+  },
+  "product_equivalence": "Product source unchanged from32dd58d; candidate adds proxy/client and two practical cases. Exact source rebuilt and original baseline/fault scenarios executed.",
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner": "2CPU/6GiB/512PIDs",
+    "postgres": "2CPU/1GiB/128PIDs"
+  },
+  "checks": {
+    "linux": "12native/38binary/25configuration/3grant/2codec/16policy/12process and scoped Clippy PASS",
+    "baseline_http": 18,
+    "grant_faults": 2,
+    "held_grant_cleanup": 1,
+    "history_faults": 3,
+    "new_capture_cases": 2
+  },
+  "cases": [
+    {
+      "case": "http-history-capture-pass",
+      "status": "PASS",
+      "process": {
+        "pid": 20761,
+        "state": "S",
+        "start_ticks": 357533281,
+        "children": []
+      },
+      "manager": [
+        {
+          "pid": 1272,
+          "backend_start": "2026-09-23T19:51:18.737153+00:00",
+          "state": "idle in transaction",
+          "transaction": true
+        }
+      ],
+      "retained_at_barrier": {
+        "active_pins": 1,
+        "active_claims": 1,
+        "proofs": 1,
+        "commands": 3,
+        "active_control": 1
+      },
+      "pin": [
+        {
+          "lease_id": "e666efe82f3241f31d7dece88637ef78",
+          "revision": 1,
+          "snapshot": 3,
+          "remaining_us": 4063979
+        }
+      ],
+      "completion_ms": 110.513,
+      "client_terminal": {
+        "event": "terminal",
+        "mode": "capture-pass",
+        "response": {
+          "status": 200,
+          "signed_event_verified": true,
+          "bytes": 1016
+        },
+        "parent_exit": 0,
+        "completion_ms": 97.545,
+        "request_ms": 1085.42,
+        "scratch_entries": 0
+      },
+      "durable_after": {
+        "active_pins": 0,
+        "active_claims": 0,
+        "proofs": 1,
+        "commands": 3,
+        "active_control": 0
+      },
+      "terminal_backends": {
+        "bbpub_normal": 0,
+        "bbpub_control_normal": 0
+      },
+      "cleanup_errors": [],
+      "post_native_verification": {
+        "reader_queries": 69,
+        "capture_verify_requests": 1,
+        "backend_pid": 1272,
+        "stage": "capture-verify"
+      },
+      "files_unchanged": true
+    },
+    {
+      "case": "http-history-manager-loss",
+      "status": "PASS",
+      "process": {
+        "pid": 20880,
+        "state": "S",
+        "start_ticks": 357533446,
+        "children": []
+      },
+      "manager": [
+        {
+          "pid": 1332,
+          "backend_start": "2026-09-23T19:51:20.387514+00:00",
+          "state": "idle in transaction",
+          "transaction": true
+        }
+      ],
+      "retained_at_barrier": {
+        "active_pins": 1,
+        "active_claims": 1,
+        "proofs": 1,
+        "commands": 3,
+        "active_control": 1
+      },
+      "pin": [
+        {
+          "lease_id": "8265b2fe08717112475d533a57354b8a",
+          "revision": 1,
+          "snapshot": 3,
+          "remaining_us": 4110264
+        }
+      ],
+      "completion_ms": 304.504,
+      "client_terminal": {
+        "event": "terminal",
+        "mode": "manager-loss",
+        "response": {
+          "status": 503,
+          "bytes": 192
+        },
+        "parent_exit": 4,
+        "completion_ms": 0.122,
+        "request_ms": 1225.465,
+        "scratch_entries": 0
+      },
+      "durable_after": {
+        "active_pins": 0,
+        "active_claims": 0,
+        "proofs": 1,
+        "commands": 3,
+        "active_control": 1
+      },
+      "terminal_backends": {
+        "bbpub_normal": 0,
+        "bbpub_control_normal": 0
+      },
+      "cleanup_errors": [],
+      "post_native_verification": {
+        "reader_queries": 69,
+        "capture_verify_requests": 1,
+        "backend_pid": 1332,
+        "stage": "capture-verify"
+      },
+      "files_unchanged": true,
+      "manager_termination": "confirmed-absent"
+    }
+  ],
+  "files": {
+    "signed_normal/kind=7/main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e",
+    "signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70",
+    "signed_normal/kind=7/main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076",
+    "signed_normal/kind=7/main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be",
+    "signed_normal/kind=7/main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35",
+    "signed_normal/kind=7/main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05",
+    "signed_normal/kind=7/main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937",
+    "signed_normal/kind=7/main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+  },
+  "artifacts": {
+    "control": "76c870606ce9a7c539dd40b140d2a934d0cf2110286e6c222274891f082944ca",
+    "worker": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6",
+    "event_reader": "49b2ecaf2f30e98d6b2fc3d9a92afd3ff689cdbcd08ba02b091a33acd6bb4b3c",
+    "publisher": "1cd82350634760db238478110bdcfaec15b60107ad562ca9076fa454d133f1c5",
+    "reader": "5585760ef9a6d61e8d86c51396f863e86c1c9477e9f80167d1fc480fe886eed7"
+  },
+  "capture": {
+    "local_root": ".research/implementation/history-capture/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/history-capture-b5c862a",
+    "sha256": "be68e4f6229b27b5224149b07cfcb8b891506dbcf6a57ad04eeecd94ee4791b3",
+    "verified": {
+      "capture_files": 66,
+      "source_files": 1069,
+      "elfs": 5,
+      "dependencies": 5,
+      "capture_sha": "be68e4f6229b27b5224149b07cfcb8b891506dbcf6a57ad04eeecd94ee4791b3",
+      "preexisting": 534,
+      "unrelated": 8,
+      "free_bytes": 7276818432
+    }
+  },
+  "cleanup": {
+    "owner": "ae079c92a38967076654df442fed64b7",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "e8633a3f58a3d2988fef86abcb058cdf911a2b321ecf9615be9f0bf9ae8a20ff"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "e34c6be7e6526cb730c2dac5c451f427a9055ff297647b4be5d312fa392dd2a9"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preexisting": 534,
+    "preexisting_preserved": true,
+    "unrelated_running": 8,
+    "free_bytes": 7276818432,
+    "terminal_backends": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    }
+  },
+  "review": "Independent read-only AI and root inspected sources and evidence. AI caught the truncated200 positive false PASS; explicit complete signed-event marker fixes it. AI independently rehashed66capture files/1069source files and inspected both observations; no product tests/SSH by reviewer.",
+  "interpretation": "Both cases hold the final capture verification Bind after successful native read and positive child termination. Actual manager transaction, pin1/claim1/snapshot3 and >4seconds residual pin were independently observed. Release returns complete signed200; actual manager termination returns503 with parent exit4 and pin/claim0. Control active-state row intentionally remains after fail-stop; no clean Control release/recovery claimed.",
+  "exclusions": [
+    "No loss during an already-started HTTP body, shortened action/pin lifetime, restrictive rollout, blocked full history-body or repeated/aged load qualification",
+    "No recovery of the retained failed Control lifetime",
+    "No standalone export/M1/task completion, full resource/error profile, release or Linux arm64 claim"
+  ],
+  "dependency_evidence": [
+    "https://www.postgresql.org/docs/16/protocol-flow.html",
+    "https://www.postgresql.org/docs/16/functions-admin.html"
+  ]
+}

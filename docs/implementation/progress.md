@@ -19,12 +19,12 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Last observed main/HEAD and origin/main
-`daead51d53aac5e9e6e41a32cfad3907fd6a1465`, clean after the evidence push.
-Remote private/name verified with gh. Root now owns only the post-native capture
-fixture/proxy/client changes and this checkpoint. No product/migration/dependency
-changes, merge/rebase or other writer.32dd58d remains the latest tested product
-source; the next exact candidate adds practical cases, currently NOT_RUN.
+Last observed main/HEAD `b5c862ac7c50700cf532517994dff3f3224f6eab`,
+origin/main `daead51d53aac5e9e6e41a32cfad3907fd6a1465`, ahead one candidate.
+Root owns post-native capture evidence, this checkpoint, history user-doc link
+and inventory/retirement updates. No other writer or product edits, dependency/
+migration changes, merge or rebase. Next commit records the qualified candidate
+and verified cache maintenance, then push main only. Research branches stay local.
 
 4d81357 integrates model/protocol read modules, initial schemas/OpenAPI and docs,
 management history transport/delivery, serve history/native supervision, nonrenewable
@@ -72,8 +72,8 @@ inferred.25capture/1061source/five ELF/five assets verified.
 
 Important remaining gates:
 
-- Actual CatalogManager loss before delivery; blocked full history response with
-  durable pin; shortened native pin/authorization schedules; restrictive rollout.
+- CatalogManager loss during delivery; blocked full history response with durable
+  pin; shortened native pin/authorization schedules; restrictive rollout.
 - Interrupted Control renewal/acceptance COMMIT, native success/signal race,
   scope-command ambiguity/reacquisition, distinct old-holder pins, multistream/
   zero bounds, multiple actors/scopes/concurrent CAS and generation exhaustion.
@@ -98,19 +98,60 @@ cannot extend a bound action/pin window. Pin release follows positive native
 join and actual HTTP terminal; unknown outcomes retain obligations/fail stop.
 CatalogCapture is verified after native work before sending the body.
 
-Next bounded action: run the new paired post-native capture cases on an isolated
-exact-Git Tux candidate. Hold only the final verification Bind, independently
-observe actual manager transaction, child absence and retained pin/claim, then
-release for signed200 or terminate that exact CatalogManager backend and require
-no200/fail-stop with honest retained Control state. Source:
-experiments/archive-engine/private_history_capture_cases.py; launch/transfer
-scripts under `.research/implementation/history-capture/`. Static AI review caught
-a truncated200 positive false PASS; complete event comparison now has an explicit
-success marker that exception paths cannot set. Practical cases remain NOT_RUN.
-No experiment is active and no owned cleanup remains. Continue blocked-body/
-short-lifetime schedules, then standalone export/restart; no task/M1 closure.
+[Post-native capture qualification](evidence/p06-history-capture-native-20260923.json)
+at b5c862ac7c50700cf532517994dff3f3224f6eab/tree6362d1e is PASS-scoped.
+Paired final verification Bind: positive signed200/1016bytes; actual manager
+termination503/192bytes, exit4 with precise rollback-unresolved error, pin/claim0
+and retained active-state Control20. Both databases backend0/eightParquet unchanged.
+Both entered with parent alive/no children and pin/claim1/snapshot3/>4s residual.
+No manager-loss-during-body or recovery claim.66capture/1069source/fiveELF/five
+assets verified; independent read-only AI found no discrepancy and ran no tests.
+
+Next bounded action: review/commit/push the capture evidence and inventory; then
+resume blocked history-body/short-lifetime cases using the existing signed large
+fixture, followed by standalone export/restart. No task/M1 closure. No active
+product lab, maintenance process or cleanup debt.
+
+Owner-requested first cache maintenance is PASS-reconciled in inventory key
+implementation_cache_retirement_20260923.142 explicit out/build/{target,cargo-home}
+directories from71 concluded runs removed. All59,494 source files,897 retained
+artifact files and71 original archives rehashed;536 container identities/images/
+lifecycles/mounts/networks/restart policies preserved, eight unrelated running.
+Free space7,270,416,384 ->207,661,162,496bytes; concurrent writes may contribute.
+Original retirement.json remains INCOMPLETE: its final comparator included rolling
+Health metadata and did not retain the exact in-memory diff. Independent original
+terminal capture comparison now passes; three unrelated health records changed,
+current health statuses unchanged. Preserve both original and reconciliation.
+
+Protected complete caches: private-history-32dd58d and history-capture-b5c862a;
+installed-publication-61271e2 remains intact as the native asset dependency.
+The retired71 caches include b5ff8ab/4738731/a334ac8/c5d76a1/882654e/8e8cfa0/
+932902f/0d95a6a: no reuse as build inputs. Retained source/data/artifacts remain valid.
+installed-binding-53707a2 and producer-recovery-outcomes-efeb4e0 did not satisfy
+this conservative audit and were skipped. Other unexamined cache profiles remain
+for later assessment, not automatically reusable. No dataset, backup, archive,
+catalog, index, historical container or volume deleted. No whole lab deletion.
+
+Raw scripts/receipts local `.research/implementation/cache-retirement-20260923/`,
+remote `/home/tux/bigbrotr-implementation-20260917/cache-retirement-20260923/`.
+Initial confined /proc observations refused deletion and are preserved remotely;
+complete temporary metadata-only census had zero unreadable processes and zero
+run references, then the no-network/no-host-mount helper removed itself. No host
+security settings changed. Inspect free space before every subsequent lab and
+retire superseded caches regularly after preserving exact evidence/artifacts.
 
 ## Laboratory custody
+
+Stopped current root `/home/tux/bigbrotr-implementation-20260917/runs/history-capture-b5c862a`,
+owner ae079c92a38967076654df442fed64b7, label org.bigbrotr.archive-visibility.
+Runner e34c6be7e6526cb730c2dac5c451f427a9055ff297647b4be5d312fa392dd2a9,
+PG e8633a3f58a3d2988fef86abcb058cdf911a2b321ecf9615be9f0bf9ae8a20ff:
+PID0/noOOM, runner0/PGwrapper137; owned network removed.534 prior records unchanged,
+eight unrelated running. CaptureSHA256
+`be68e4f6229b27b5224149b07cfcb8b891506dbcf6a57ad04eeecd94ee4791b3`.
+Source and complete cache retained. Original Control20 remains active-state;
+do not restart/relabel it recovered. No active product lab or cleanup debt.
+Scripts/capture under `.research/implementation/history-capture/`.
 
 All dated statuses below were audited at terminal capture; inspect ownership and
 actual state again before reuse/cleanup. Full container/network/image identities
@@ -129,7 +170,7 @@ PG16.15, runner2CPU/6GiB/512PIDs and PG2CPU/1GiB/128PIDs are fixture limits only
   owner33c287e40bd71a2c73ae47da7c9d35d2; inventory
   implementation_history_disconnect_negative_20260923. Stopped/PID0/noOOM,
   runner0/PGwrapper137, network removed,532 prior records unchanged/eight unrelated
-  running. Complete build cache retained; retained Control row is intentionally
+  running. Compiler cache now retired; retained Control row is intentionally
   unrecovered. CaptureSHA256
   `3155585329eab9690aa3f5c784b0d2c3ac6bb57fc71f022dd2c3fbfb4349b215`.
   Local `.research/implementation/history-disconnect-negative/`.
@@ -158,8 +199,8 @@ worktree transfer succeeded. Preserve historical intentionally dirty
 Older retained lab roots, credentials/data obligations and original incomplete
 outcomes remain owned by their inventory records/evidence below. In particular,
 7ea08a6/1b9f710/51d35ae/e65116b/591c75f and other recorded retired caches are
-PARTIAL, never complete build inputs. b5ff8ab and4738731 were complete at their
-last audit. Native assets from installed-publication-61271e2 are retained read-only
+PARTIAL, never complete build inputs. b5ff8ab and4738731 caches are now retired by
+the maintenance above. Native assets from installed-publication-61271e2 are retained read-only
 and require fresh checksum verification. Do not reuse retired preimplementation
 resources. Prefer verified stopped32dd58d cache for next run; inventory host first.
 

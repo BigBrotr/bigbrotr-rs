@@ -18881,5 +18881,395 @@
         "result_sha256": "f84555493a18de7518022f14628a5b73d5018d6d432e2de2738ed8ff17d46e54"
       }
     }
+  },
+  "implementation_history_capture_20260923": {
+    "local_root": ".research/implementation/history-capture",
+    "native": {
+      "source": "b5c862ac7c50700cf532517994dff3f3224f6eab",
+      "tree": "6362d1eedbacf5ec4e9c190ae79082879f8a41b8",
+      "owner": "ae079c92a38967076654df442fed64b7",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/history-capture-b5c862a",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "e8633a3f58a3d2988fef86abcb058cdf911a2b321ecf9615be9f0bf9ae8a20ff"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "e34c6be7e6526cb730c2dac5c451f427a9055ff297647b4be5d312fa392dd2a9"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T19:46:01.130387+00:00",
+      "network_id": "5ac834452020f86299c2253b2cce7007f3e8ee3c668df282a15fb747b8735cbe",
+      "postgres_id": "e8633a3f58a3d2988fef86abcb058cdf911a2b321ecf9615be9f0bf9ae8a20ff",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "e34c6be7e6526cb730c2dac5c451f427a9055ff297647b4be5d312fa392dd2a9",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "report": "docs/implementation/evidence/p06-history-capture-native-20260923.json",
+      "capture_sha256": "be68e4f6229b27b5224149b07cfcb8b891506dbcf6a57ad04eeecd94ee4791b3"
+    },
+    "observation": "Stopped/retained; paired post-native capture positive200 and actual manager-loss503/fail-stop4 pass. Pin/claim0, Control1 retained after fail-stop, both databases backend0.66capture/1069source/fiveELF/fivenativeassets verified.534prior containers unchanged/eightunrelatedrunning. No cleanup debt."
+  },
+  "implementation_cache_retirement_20260923": {
+    "local_root": ".research/implementation/cache-retirement-20260923",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/cache-retirement-20260923",
+    "mandate": "Owner-authorized first cache-only maintenance; qualification/object-storage datasets, all data/catalogs/indexes/backups and historical containers/volumes preserved.",
+    "status": "PASS-reconciled",
+    "observation": {
+      "format": "bigbrotr-cache-retirement-reconciliation/1",
+      "status": "PASS",
+      "original_status": "INCOMPLETE",
+      "original_sha256": "19d45f09ce3d5f8bfcb62cdb11b1c402c6a7f7bf3acfc9ee09df0a6e6e58ad42",
+      "audit_sha256": "a4b1abf2be0bda0ba41e6dcfd93e627aaf0453105e30a2b9947fa491a3f9f35a",
+      "observed_at": "2026-09-23T20:02:04.222992+00:00",
+      "paths_removed": 142,
+      "runs": 71,
+      "cache_bytes_observed": 200390811648,
+      "source_files_rehashed": 59494,
+      "artifact_files_rehashed": 897,
+      "containers_preserved": 536,
+      "unrelated_running": 8,
+      "background_health_records_changed": 3,
+      "free_before": 7270416384,
+      "free_after": 207661162496,
+      "protected": {
+        "private-history-32dd58d": "immediate baseline cache",
+        "history-capture-b5c862a": "current exact candidate/cache",
+        "installed-publication-61271e2": "mounted native asset dependency"
+      },
+      "explanation": "Original final comparator included rolling Docker Health records and did not retain its in-memory before/after objects; the exact original mismatch is not reconstructed. Independent pre-deletion terminal capture now matches all536 container identities/images/lifecycle/mounts/networks/restart policies. Current health statuses equal the earlier inventory; rolling health records changed. All142 explicit cache paths absent;71 source sets, original archives and copied artifacts rehashed. No historical container/volume or data lifecycle was changed."
+    },
+    "original_receipt": {
+      "status": "INCOMPLETE",
+      "sha256": "19d45f09ce3d5f8bfcb62cdb11b1c402c6a7f7bf3acfc9ee09df0a6e6e58ad42",
+      "reason": "Final comparator included rolling Docker Health metadata; original in-memory mismatch is not available. Separate stable before/after comparison and renewed identity checks pass."
+    },
+    "evidence": {
+      "inventory.py": "6462231dabf8968da4787eaacdec2b6146f0c17e9ec29054b9cb973b17a40ebc",
+      "audit.py": "303a974c553aa133d7f47afe62f70dd23652459d2443cb4b44e8335fe33cb4a9",
+      "retire.py": "90657b43d5c501d33d0ad330c1370d2189de6753a220fd3b7efe23a0746e261b",
+      "reconcile.py": "8850fed77e756646fcdc043e32b922732abd2182077a00531c8cb296982dc37f",
+      "inventory-before.json": "872bd587ceaf9c601a2e535c20b151d47ba38adc8dba0548d4583547cc57efcc",
+      "candidates.json": "5f15ce7e712980be15b9c8066b35310392e85a8c677228cfaffbdb049c28c5c4",
+      "audit.json": "a4b1abf2be0bda0ba41e6dcfd93e627aaf0453105e30a2b9947fa491a3f9f35a",
+      "process-observation.json": "daf640593f1a4a43a3de07f3583f786a9e067ea405021fba2e75c63fcd42b3c1",
+      "retirement.json": "19d45f09ce3d5f8bfcb62cdb11b1c402c6a7f7bf3acfc9ee09df0a6e6e58ad42",
+      "reconciliation.json": "cbeea48d61dfcbbb6e3213471f60eb39ab54d757fc00fd9afd1a9c2ca23c3bb7"
+    },
+    "retirement": {
+      "base": "/home/tux/bigbrotr-implementation-20260917/runs",
+      "relative_cache_paths": [
+        "out/build/target",
+        "out/build/cargo-home"
+      ],
+      "runs": {
+        "archive-cut-354de75": {
+          "source": "354de750ffbcda93e7784bfaaf17b801522caf0f",
+          "capture_sha256": "7ca216e23e647b9b77326c20412c167045e93c391b63b0f045b807982ae48f82"
+        },
+        "archive-event-3f29952": {
+          "source": "3f2995211bc8ea02b09e12e019d6e5d01bb55d9a",
+          "capture_sha256": "95192130f2313c62d4bf36dc0b11e5a20566cdaf7356996d86db24ead6deae69"
+        },
+        "archive-event-730daa2": {
+          "source": "730daa23dcdaa1ffe0b015bfb6feb7e382815fbc",
+          "capture_sha256": "9df323590045588cbab31eba650af3b0fcae31c85faa7a8e6f4fa6ef68a9c3d2"
+        },
+        "archive-event-query-eceab88": {
+          "source": "eceab88b31a318203b0a104e4f0c02e48c0bf8b0",
+          "capture_sha256": "e16a91c279e51cbf6d3710efa226ecbc0a5712a66614ed657cc870d060ae2de7"
+        },
+        "archive-frontier-e64ee85": {
+          "source": "e64ee8545436adf78ef4faf4cd46d188fb211660",
+          "capture_sha256": "82aa475ef3f60cfa4df2a6f2c69cd46a80a63cfdf5106cc94458cfd8ee83174b"
+        },
+        "archive-frontier-e64ee85-provisioned": {
+          "source": "e64ee8545436adf78ef4faf4cd46d188fb211660",
+          "capture_sha256": "11b9a56737f3e6778a775ded0098cfee9cf6675eceaf03828e3bf73ab54e001b"
+        },
+        "archive-membership-3369091": {
+          "source": "3369091e572fc6344ccc3e363fc1f31ff4b44d42",
+          "capture_sha256": "b0c618cb5dc3d760dd7897c63e3c5968632078c8c4b2a753443ccd66ce7024d0"
+        },
+        "archive-owned-reader-c5d76a1": {
+          "source": "c5d76a1bdc408898f3575ebbb4644284120bda30",
+          "capture_sha256": "e597ff73f616ad2549dbcf588bd6fb6eaf18f03233d2b279c415d929b7b207d0"
+        },
+        "archive-pin-ledger-27150f2": {
+          "source": "27150f253f0fbcb72e2d25a9ebd082493acb8eba",
+          "capture_sha256": "27f9bc105e1c6643b34e75431e32bfaf90467b8c19d9e224c5194888827a6f0d"
+        },
+        "archive-pin-recovery-51d35ae": {
+          "source": "51d35aea1c44a0a884ed9595114de7da89a83ebd",
+          "capture_sha256": "bf7c99a402d9d88f1eaa02b001c0172c91652136a3438234e075aa0d7977e98d"
+        },
+        "archive-reader-custody-5ba3051": {
+          "source": "5ba30517244de213d68d68fbcf465ddf9465156c",
+          "capture_sha256": "dd54c04084b8d49bae15fb9f1a1b53a0b1cb30f4f62dd4cf453de7b15fe40ca0"
+        },
+        "archive-snapshot-e1852b8": {
+          "source": "e1852b8819b657ca2ec919dab2feff3716225056",
+          "capture_sha256": "33dd24a24a8298a6cfffeddac16a3f76eac469b2e041f4c87e67a2914330bb24"
+        },
+        "archive-snapshot-pin-a670f03": {
+          "source": "a670f03227866efaa98e05567339e6977f875ef5",
+          "capture_sha256": "b216a68f71bdea66f262c7a1d6944caf754325e318c24cdf089bae329a41ed37"
+        },
+        "archive-sync-b9ddd74": {
+          "source": "b9ddd74782738e7a2c49f32b188cc244a653e736",
+          "capture_sha256": "92b2148a238e0d1c2ad242709ad015f74cee8e78ef164225349cb3d69af44a97"
+        },
+        "archive-visibility-4738731": {
+          "source": "473873101db0cd59c087f2b9d65174cab3a79f9b",
+          "capture_sha256": "c6f5770c64b2f9ca094135a7d3eea1935465e11f311631e8aec190e692b6cb46"
+        },
+        "archive-visibility-b5ff8ab": {
+          "source": "b5ff8abe4e4224604b2c1960232359d71e17ffa5",
+          "capture_sha256": "004bca743e587c92078b4bbcef69c8b613a7b7fe1385ba756020a1a8249de7ab"
+        },
+        "catalog-auth-e98f484": {
+          "source": "e98f4847453a6909766602701eec5d174ad65ebf",
+          "capture_sha256": "1600c55da1376435a0ef0a9646e9623bfa27487e7be4465cbb45ff1289d55b45"
+        },
+        "catalog-cli-3e87a53": {
+          "source": "3e87a53087a445141e9079f40cdc902dd5add322",
+          "capture_sha256": "71abad6178574a2d8d4b1d4afacd4391f64c84d9cfaed2d1f1dc39cbba95db20"
+        },
+        "catalog-cli-5262c84": {
+          "source": "5262c84b7ea075172d1449d9eee2ed5d114889e3",
+          "capture_sha256": "f602cb9708c01f1ba642806c29790a31aba27150c0293d4c2476590cc8341373"
+        },
+        "catalog-install-4404a16": {
+          "source": "4404a1630300a75453280744cefa9f7cf0973ebe",
+          "capture_sha256": "2e3ed2a2d4d5b94156f16f40776a6e723dafecadabf6fa3b02ee7dec846c329c"
+        },
+        "catalog-install-9f02f43": {
+          "source": "9f02f437678a5ffaff9e2bc9c3f5ec7ffb7fc14e",
+          "capture_sha256": "cf9fe66a27e786e6d094ff2b74fd5875698f865e1461743edfe7b2670c1eb694"
+        },
+        "catalog-install-d21eacc": {
+          "source": "d21eaccba745490fd6211fab61a718d2653fe450",
+          "capture_sha256": "19951df7132b7bc83c47ee23cfa39cc8ed638e42dc79b9f788340c81e2122ae6"
+        },
+        "catalog-install-df4a598": {
+          "source": "df4a598bd457fb4670d41f7db719e733aace7a7f",
+          "capture_sha256": "a87663f43a81e07ccfd0f423f3116f3edc69c1b6b3034967627e5790d465a0b2"
+        },
+        "certification-2f9ba08": {
+          "source": "2f9ba08cdbbd3b5b924600780424bfc41cb40571",
+          "capture_sha256": "03a8faf6519c4059950323532113376903bb6712e5d59b3d20afc5dc76211048"
+        },
+        "coordinator-cli-5050999": {
+          "source": "50509993b8b9c7bb8661fb8c1aaacf5f389426fc",
+          "capture_sha256": "492ba7f093a1b18bb4b87d91587f34c6667901ed802ea1fecaeedf2360564b19"
+        },
+        "coordinator-faults-d355c5b": {
+          "source": "d355c5b3da4babcf5dc4f6219222e786b52915c9",
+          "capture_sha256": "e9f22c3ed04a58dd967ea5b30e1a48207501437fbf260eb58a831560aed520de"
+        },
+        "coordinator-protocol-b203a41": {
+          "source": "b203a41fdde08a7464beaa904bac107187b564ab",
+          "capture_sha256": "107d7a83b301c8ecd25265c42f3d13a17cad906f469349b963e8c5f78df6ca9b"
+        },
+        "coordinator-state-952fd9a": {
+          "source": "952fd9a81664e70e97104298978c261b06efcd59",
+          "capture_sha256": "31224db0db7e5585c2f76e6e2547ac54a25b302b72d48bf902e540473ecea6fd"
+        },
+        "database-reservation-543fafd": {
+          "source": "543fafd5395be58b74bc3f96837b38503f846488",
+          "capture_sha256": "3288c2548998dc9b0f0e11908d95a711e109de200e8dd3176b150a2392bcc875"
+        },
+        "database-reservation-7139911": {
+          "source": "71399117eec55a3abae671f131d8fed43dace887",
+          "capture_sha256": "782b4e7cbc7b0db3cc3751229ae2c0464e6065d08d2cad2ee3ab11b19d7dbee2"
+        },
+        "database-reservation-bb8be6d": {
+          "source": "bb8be6d3e8633f564744286596501a1c2331ceb4",
+          "capture_sha256": "d8aadff775147bd4b8ec13af3eb3697fcab652e15ff94a75ce836f1591180352"
+        },
+        "database-reservation-cfadb48": {
+          "source": "cfadb48a7260e457228b4da96ddcc5b4e6c4dac7",
+          "capture_sha256": "a9499675c4161e0539c8d7c79348dadcf60a34227fec73dd551b98d174477f60"
+        },
+        "event-query-absence-882654e": {
+          "source": "882654e9b46f8b9e4b43a636875971151ccaaba0",
+          "capture_sha256": "31e1b41b059fda4148f13a57fd5461b9db88f75c8bbef7e43b5ab49994e8fe29"
+        },
+        "history-disconnect-negative-a334ac8": {
+          "source": "a334ac8c01030fa5d1fd2b18dc12ad85fc7b12f4",
+          "capture_sha256": "3155585329eab9690aa3f5c784b0d2c3ac6bb57fc71f022dd2c3fbfb4349b215"
+        },
+        "import-checkpoints-215f502": {
+          "source": "215f502bc33a634e758355edb2ca420be1a1f9f6",
+          "capture_sha256": "604b22b54e8cf3b8a228684d4a3d170622d7aeadf8b2520947aee13e0a17447d"
+        },
+        "import-checkpoints-730e50e": {
+          "source": "730e50ee08ef8bb96609ee964ee8ce593938045a",
+          "capture_sha256": "279bbde25d47209e02b03cc13213e7c28f4429761bfbf62d7dab6cff66f59957"
+        },
+        "import-checkpoints-cb7905f": {
+          "source": "cb7905fe6a98380b8875acdee8f11ddd3f8809cc",
+          "capture_sha256": "251eeaa5ac0d7d3e1d01993285c302aeee6f3b447aeab7f82e1d05535fe43cd0"
+        },
+        "import-source-d376771": {
+          "source": "d376771c69dd48c88d2defeb128a42e58de53390",
+          "capture_sha256": "5f5f8e14b963ad7c9b901fbbad61a87805e1da4d915fd335f3b909a53d33dc1a"
+        },
+        "initialization-cli-6265286": {
+          "source": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+          "capture_sha256": "3271b6f508bc3f87353981d87ad4819805c5d14bd3e4315d484c41a2be955db0"
+        },
+        "initialization-cli-a1c0921": {
+          "source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+          "capture_sha256": "33d49f7a17374ad4651584518ab9aeb4ec99beb46fb87118ad535fc4691574cb"
+        },
+        "initialization-custody-105a543": {
+          "source": "105a54323e92d259200205d20585c2278ab1a9d9",
+          "capture_sha256": "d58779e39e11d2156ec09623c2cc08d228af17da1b7c1de5aaaa0d0335afeb5e"
+        },
+        "initialization-custody-3efde78": {
+          "source": "3efde78c11e72eae14af367add420f51faaf70fa",
+          "capture_sha256": "4f54f9abccdbe7a3891dfc7fce91d5377c7d901f06ea37efd7d2c3c156870dad"
+        },
+        "initialization-drain-78e7734": {
+          "source": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+          "capture_sha256": "64362dbc89551372e770eaca30fcd7ae79ce71532db36cd341fb9b99346f0d0c"
+        },
+        "initialization-late-3ad4c64": {
+          "source": "3ad4c6498af1ad1ac45ae9350438c056197eae73",
+          "capture_sha256": "95d089b853ab515f6a74305703d3b6fba72ce7c4269da5f957c00bf844786a6c"
+        },
+        "initialization-recovery-2bd2bdb": {
+          "source": "2bd2bdb8f11395a0c1c329912961bea4b6af6dbc",
+          "capture_sha256": "192e888690ce160c8aba61ab94a1d43997d023717aaa03f8be4e268d1bcce7a4"
+        },
+        "initialization-recovery-660df73": {
+          "source": "660df73aa24c63122054c00750fdc62486d38e12",
+          "capture_sha256": "d5c71b2c93d8d818053b13843b6d81f1395b5a6f0b09fa0ae1afcc4ec84c0895"
+        },
+        "initialization-recovery-decf4a9": {
+          "source": "decf4a9aea687a8ee658aed4002b1c52ba584048",
+          "capture_sha256": "4d2bc5316276f0b2347d018f69a74e29eb885a409a0c2f713b52fdc2458b6229"
+        },
+        "input-bindings-8b0660e": {
+          "source": "8b0660e580a61503686abab6a02944258e995bb0",
+          "capture_sha256": "f049c87b72bd5f9b8002ce415381dd8511f863c20ed69aa1a875759136f760d6"
+        },
+        "installed-publication-dbb3aea": {
+          "source": "dbb3aea17dd05ee00eb212ec2c652f1930497bfd",
+          "capture_sha256": "9c95ace767cd89687c372ad2f1e1769af20a3c60b63368b0d36e46c2e3c0d886"
+        },
+        "intent-inventory-a010c15": {
+          "source": "a010c153871569059a333633e4108ba08024f626",
+          "capture_sha256": "f4e785e4e4ec8065c5cffaf8290602011b54cc6160190280f94f2a2820a211b7"
+        },
+        "native-grant-cleanup-8e8cfa0": {
+          "source": "8e8cfa0aadd25f638f6c365315f2cd9e05936f9c",
+          "capture_sha256": "c02c5ea276c69b0bd9acf2dae19c5a931c3bca2316ec95b31e5943f8d8264b95"
+        },
+        "native-grant-signal-fixed-932902f": {
+          "source": "932902faef5dcc747a564d90f4f6ec801b4975fc",
+          "capture_sha256": "74ce94aaa77a36d7fe351395264b4730c4d0f3e25b4d6e0449df95625cd540b3"
+        },
+        "native-mtls-50d9496": {
+          "source": "50d94961c0d931715abd098bf1118018eb2101e2",
+          "capture_sha256": "ee6403ce580eaf54db602b49e4677153fbcb71a8c972615d4fcec7b4d33e58fc"
+        },
+        "private-native-grants-0d95a6a": {
+          "source": "0d95a6a3fe5e43528b4ae3dabbee2bc9769267aa",
+          "capture_sha256": "cef73ca087e66915ff1ade49775862a846b4bc43355c111b93fbb3f2dd19e061"
+        },
+        "producer-closing-0f6e366": {
+          "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+          "capture_sha256": "f4439e720fa4c7bb2d1db6e64fadf6c26fd2e92e5fee5dd8adcc6518a5f2c2b2"
+        },
+        "producer-inputs-a1da96a": {
+          "source": "a1da96a09ee73722d26003dedf793317b7bdf7e1",
+          "capture_sha256": "86ef372190f0a152caa3391c637dcd2ed851b80d38a64f467516a0c35ff1c73e"
+        },
+        "producer-ledger-4296320": {
+          "source": "4296320d0e5e42ebe6c428bea918b80936eac7eb",
+          "capture_sha256": "e17776c33a299d1542a12031081ae90cb0f780fa2ad2fa27c7278b75770a3e34"
+        },
+        "producer-ledger-57cce75": {
+          "source": "57cce756a4ad47199d862c8e47fd345fd5eee9c3",
+          "capture_sha256": "a8c3f827307457b7ea55f5cd5e4eebccaee6c7b41b21626658f49937383542d6"
+        },
+        "producer-ledger-dddefd5": {
+          "source": "dddefd55be48cac7613a5ee460067da5e1acabaf",
+          "capture_sha256": "60733b09e61f2aba27e65d00a20a163a7028c8b97de74029d9ed22a6e839d493"
+        },
+        "producer-outcomes-9537667": {
+          "source": "9537667dd140baac68ca79ecb56ea7c6ecce081f",
+          "capture_sha256": "0cbc20128386e6235a31639e069d2efcc01430b6dbb647a50f1e315b600d5802"
+        },
+        "producer-recovery-d2959da": {
+          "source": "d2959da61a54a89b6b4e1b4806aa3a819bdff778",
+          "capture_sha256": "f13285843fbf722c8111db59f0fb865dc2b600aac9a80fa51be8508c93e0ef3c"
+        },
+        "receipt-cli-4706373": {
+          "source": "4706373a34e0754b2dd48bf77b77a7a6bdeb1734",
+          "capture_sha256": "e67cc1150a1121641f2e59e724afc73596e90d6fac15beaef4b6459b42f10a95"
+        },
+        "receipt-cli-55ac491": {
+          "source": "55ac4917d40e9669ebddcfbb883ee4d844f54bb6",
+          "capture_sha256": "906dfa20562a33d5053c70890916838ab6f64b44eb3f04ec996e44aa8f97ec34"
+        },
+        "receipt-cli-d78bcc5": {
+          "source": "d78bcc5bbf660fc0a7bca8807508a6c357e619d5",
+          "capture_sha256": "02ac209a51b5bb0f56457b4a77087f9019bde0aad40d3495c27e1fcabfe80bef"
+        },
+        "receipt-cli-e5585da": {
+          "source": "e5585dadb6970f421cb10bda5d7966fd54a41368",
+          "capture_sha256": "87f944138a5ffc717fc038a22d5f8cb239d43561a1d87f20eafea38324c8a0fe"
+        },
+        "retained-inputs-d442125": {
+          "source": "d44212572d4a8d0510d737caf151b0d4af7456a2",
+          "capture_sha256": "dca60bb305073119c20f40615fec88b03e147583e461431c171b4cfb30fa1c55"
+        },
+        "scope-grants-4b9511d": {
+          "source": "4b9511d06356a3d2c4ceda100c498d6665221a9d",
+          "capture_sha256": "5f133ad3760b9d39839e7503f47730bc8477e59943d00049188e6cbe57d680a9"
+        },
+        "scope-grants-4e6bfb1": {
+          "source": "4e6bfb1ef62394a466aaa5a700a7c4c937116f4a",
+          "capture_sha256": "d0cbed415150a12b47bd95fe96fb79b9fc5dc57df651c02cc592b509f38dbd32"
+        },
+        "scope-grants-6099495": {
+          "source": "6099495098eee3c7ff61103ebe82dd5d87cb41ba",
+          "capture_sha256": "a33e24bea6762102a6c441c58052c5aa2c541551db89caaf6007bf90ea486ff5"
+        },
+        "scope-grants-6709e68": {
+          "source": "6709e68ece54b585d2f4fb844676a59b2a9a2f38",
+          "capture_sha256": "2e3d429a16698a791a5ac6504ce9ba45ab1974f0d8479571d654c91ea53e5617"
+        },
+        "scope-grants-898b7ac": {
+          "source": "898b7ac63996fc7df80143ddf7d0b757b0935286",
+          "capture_sha256": "d445bf944ae9bb676ea9b1fec0530ef955eadab1d09f2a55f2f0f729c5b261fb"
+        }
+      },
+      "lifecycle": "Both named compiler cache directories removed from each explicit run. This supersedes historical cache-availability observations only; original source, artifacts, scientific/PG states and evidence outcomes are unchanged."
+    },
+    "skipped": [
+      {
+        "root": "installed-binding-53707a2",
+        "reason": "Conservative identity/availability audit did not establish every prerequisite; no deletion"
+      },
+      {
+        "root": "producer-recovery-outcomes-efeb4e0",
+        "reason": "Conservative identity/availability audit did not establish every prerequisite; no deletion"
+      }
+    ],
+    "other_caches": "Retained without deletion where this first audit lacked the selected native-ready/evidence-archive profile. Future retirement requires separate identity checks; these are not endorsed as reusable caches.",
+    "containers": "Assessed after cache retirement: leave536 historical/current records and every volume unchanged; cache removal supplies sufficient immediate headroom.",
+    "capacity": "Free-space observations include possible unrelated concurrent writes; allocated cache bytes are not a universal reclaim estimate."
   }
 }

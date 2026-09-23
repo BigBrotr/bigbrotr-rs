@@ -7,7 +7,9 @@ and [QueryPage](../../../contracts/read/v1/response.schema.json), mounted at
 The [OpenAPI profile](../../../contracts/read/v1/openapi.yaml) describes this subset.
 [Native qualification](../../implementation/evidence/p06-private-history-native-20260923.json)
 records the tiny signed workload, actual limits, restart and cancellation evidence;
-it does not close the remaining guarantees listed below.
+[Post-native catalog loss](../../implementation/evidence/p06-history-capture-native-20260923.json)
+also verifies refusal before delivery after the actual manager backend is lost.
+These cases do not close the remaining guarantees listed below.
 
 Use a live local browser session and its explicit `X-CSRF-Token`. POST also needs
 the exact same-origin `Origin` and JSON content type. Grant `history.read` for the
