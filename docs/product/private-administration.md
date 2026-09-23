@@ -238,7 +238,11 @@ panic, join timeout or expired authority retain the fail-stop/recovery outcome.
 The [signal RED](../implementation/evidence/p08-native-grant-signal-red-20260923.json)
 executes the original failure; [native cancellation qualification](../implementation/evidence/p08-native-grant-cancellation-20260923.json)
 at932902f passes deadline and SIGTERM during an actual blocked native query.
-The first signal during catalog rollback remains a separate practical gate.
+[Catalog rollback qualification](../implementation/evidence/p08-native-grant-cleanup-20260923.json)
+at8e8cfa0 exercises first SIGTERM during rollback after acceptance: Control polls
+continue while HTTP stays closed, followed by graceful release and an unchanged
+historical retry. Interrupted Control renewal and uncertain accepting COMMIT
+outcomes still require their separate recovery evidence.
 
 Reauthentication binds the same live session, actor and exact command key/digest.
 The proof is a server-side identifier requiring the original session and CSRF,

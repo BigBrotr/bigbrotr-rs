@@ -242,7 +242,12 @@ supervisor correction distinguishes joined cancellation from unknown Control/nat
 outcomes. [Native GREEN](evidence/p08-native-grant-cancellation-20260923.json)
 at932902f passes the unchanged deadline/signal oracles, with pin0/Control0 and
 no new grant command. Full history/drain and further signal/COMMIT interleavings
-remain open, including the first signal during catalog rollback.
+remain open. [Catalog cleanup qualification](evidence/p08-native-grant-cleanup-20260923.json)
+at8e8cfa0 now holds the actual rollback through first SIGTERM and three completed
+Control polls beyond the original5s policy lifetime. HTTP closes before its own
+deadline, graceful release follows actual rollback, and restart retry preserves
+all command/audit/grant/proof/account/pin rows and xmin. This does not qualify
+interrupted Control renewal or an ambiguous accepting COMMIT.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 

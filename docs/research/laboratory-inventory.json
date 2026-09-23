@@ -18514,7 +18514,32 @@
       "report": "docs/implementation/evidence/p08-native-grant-deadline-incomplete-20260923.json",
       "capture_sha256": "6b94b5635ed37d15198eb1437b2e397f1a3abe558c683c641a7f3b6f1f88e243"
     },
-    "observation": "Stopped/retained; no active lab. Actual deadline PASS, signal prerequisite failed before native submission.34 capture/1044 source/five ELF/five asset hashes verified.518 prior containers unchanged,8 unrelated running; owned network removed. Original failed state preserved."
+    "observation": "Stopped/retained; no active lab. Actual deadline PASS, signal prerequisite failed before native submission.34 capture/1044 source/five ELF/five asset hashes verified.518 prior containers unchanged,8 unrelated running; owned network removed. Original failed state preserved.",
+    "cache_retirement": {
+      "status": "retired-disposable-copies-only",
+      "record": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-grant-faults-7ea08a6",
+        "owner": "675651179f5edf13c92278087c141769",
+        "source": "7ea08a63d410ff3373fc1544e57b646ad6993422",
+        "capture_sha256": "6b94b5635ed37d15198eb1437b2e397f1a3abe558c683c641a7f3b6f1f88e243",
+        "retained_scientific_files": 45,
+        "retired": [
+          "out/build/target",
+          "out/build/cargo-home"
+        ],
+        "free_before": 19292053504,
+        "status": "PASS",
+        "first_attempt": {
+          "record_sha256": "1a522f6133c0fbd064188b2bf893c07b1da1e24e854b579f8630fd7a10a05ca1",
+          "failure": "Unsorted Docker Mounts arrays caused post-retirement assertion; exact lifecycle and destination-sorted mounts compare unchanged against the next lab preflight. Original INCOMPLETE record retained."
+        },
+        "retained_scientific_sha256": "823303aeef3984eff2958a25ad6417841152f43ffe70436bb678489400c67bde",
+        "free_after": 19291336704,
+        "retained": "Original Git/source export, native artifacts/dependencies, signed archive/state, PostgreSQL data and capture retained. Only copied Cargo compiler/download caches retired; never reuse this partial build root."
+      },
+      "report": "docs/implementation/evidence/p08-native-grant-cache-retirement-20260923.json",
+      "warning": "Partial build root is not a compiler cache input; actual artifacts/source/data/capture retained."
+    }
   },
   "implementation_native_grant_signal_red_20260923": {
     "local_root": ".research/implementation/native-grant-signal-red",
@@ -18550,7 +18575,28 @@
       "report": "docs/implementation/evidence/p08-native-grant-signal-red-20260923.json",
       "capture_sha256": "1181be524238399948cfccf56b3eb9d2c28e272a469f09ac5f5f876a04543cd3"
     },
-    "observation": "Stopped/retained. Actual SIGTERM assertion fails exit4 versus graceful0, pin1/Control1 retained. Deadline PASS; SQL password counters3/4/5.34 capture/1045 source/five ELF/five native asset hashes verified; private auth excluded/canary-scanned.520 prior records unchanged,8 unrelated running; no cleanup debt."
+    "observation": "Stopped/retained. Actual SIGTERM assertion fails exit4 versus graceful0, pin1/Control1 retained. Deadline PASS; SQL password counters3/4/5.34 capture/1045 source/five ELF/five native asset hashes verified; private auth excluded/canary-scanned.520 prior records unchanged,8 unrelated running; no cleanup debt.",
+    "cache_retirement": {
+      "status": "retired-disposable-copies-only",
+      "record": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-grant-signal-red-1b9f710",
+        "owner": "d6d655daccc9d917fb6b3c612c1ff871",
+        "source": "1b9f710f17750de8527f5dbcd8bdfb9e0a2668a9",
+        "capture_sha256": "1181be524238399948cfccf56b3eb9d2c28e272a469f09ac5f5f876a04543cd3",
+        "retained_scientific_files": 45,
+        "retired": [
+          "out/build/target",
+          "out/build/cargo-home"
+        ],
+        "free_before": 19291291648,
+        "status": "PASS",
+        "retained_scientific_sha256": "281353ce76b4d8c089ed4c3ce88a57df684449b1b30ad152c5dc09a3cd322df6",
+        "free_after": 22588928000,
+        "retained": "Original Git/source export, native artifacts/dependencies, signed archive/state, PostgreSQL data and capture retained. Only copied Cargo compiler/download caches retired; never reuse this partial build root."
+      },
+      "report": "docs/implementation/evidence/p08-native-grant-cache-retirement-20260923.json",
+      "warning": "Partial build root is not a compiler cache input; actual artifacts/source/data/capture retained."
+    }
   },
   "implementation_native_grant_signal_fixed_20260923": {
     "local_root": ".research/implementation/native-grant-signal-fixed",
@@ -18587,5 +18633,41 @@
       "capture_sha256": "74ce94aaa77a36d7fe351395264b4730c4d0f3e25b4d6e0449df95625cd540b3"
     },
     "observation": "Stopped/retained; actual deadline and signal PASS.34 capture/1046 source/five ELF/five native asset hashes verified.522 prior records unchanged,8 unrelated running; owned network removed. No active job or cleanup debt."
+  },
+  "implementation_native_grant_cleanup_20260923": {
+    "local_root": ".research/implementation/native-grant-cleanup",
+    "native": {
+      "source": "8e8cfa0aadd25f638f6c365315f2cd9e05936f9c",
+      "tree": "ae87c7744819a58efcb8cf440cefe757b32a21a5",
+      "owner": "8aa93a0b51edb38d2df0e90ab82da308",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-grant-cleanup-8e8cfa0",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "c80a0a5954f8e49e0dfa9652ec6e9f81d9d7567d43ddbcacdd91f21977a7c0f4"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "579a8602a307a43d1730719f8fa6db85f2cee6db3e7e93245d8168dd357a7408"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T17:46:40.279154+00:00",
+      "network_id": "4eb1fc398850127ba9efba191af153a00db9ebf2a016255c2fb9b0b08fcec188",
+      "postgres_id": "c80a0a5954f8e49e0dfa9652ec6e9f81d9d7567d43ddbcacdd91f21977a7c0f4",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "579a8602a307a43d1730719f8fa6db85f2cee6db3e7e93245d8168dd357a7408",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "report": "docs/implementation/evidence/p08-native-grant-cleanup-20260923.json",
+      "capture_sha256": "c02c5ea276c69b0bd9acf2dae19c5a931c3bca2316ec95b31e5943f8d8264b95"
+    },
+    "observation": "Stopped/retained. First signal during actual capture rollback PASS, six-second held cleanup spans three completed Control polls, exact retry rows/xmin unchanged.40 capture/1048 source/five ELF/five asset hashes verified.524 prior records unchanged,8 unrelated running; owned network removed. No active job/cleanup debt."
   }
 }

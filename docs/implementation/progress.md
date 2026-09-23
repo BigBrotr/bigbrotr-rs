@@ -19,7 +19,8 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD and origin/main6dcd482. Native cancellation correction and
+Verified main/HEAD8e8cfa0, origin/main6dcd482. New fixture candidate unpublished.
+Native cancellation correction and
 qualification are pushed. Root owns later cleanup-fixture/checkpoint edits. Native HTTP implementation and
 qualification evidence are pushed. Owned-reader code and native
 qualification evidence are pushed. No merge/rebase or other writer.
@@ -91,29 +92,36 @@ activePin0/Control0/proofs2/commands2/scratch0. Independent terminal PG backends
 Observed40.184ms after host TERM/observe is one fixture timing, not universal bound.
 Mac and Linux34binary/25configuration/3CLI tests plus scoped Clippy pass. No
 migration/dependency change. Failed initial Mac target-name invocation is retained.
-No active lab; root owns the qualification docs/inventory checkpoint edits.
+All listed labs are stopped/retained; root owns qualification/checkpoint/inventory edits.
 
 The correction records consumed stop, collects known native termination before
 pin cleanup and exits outer supervision before delivery/new admission. Unknown
 native/Control outcomes, expired lease and cancelled Control reads remain fatal.
 First signal during capture rollback continues the same future/deadline and skips
-renewal of the already revoked DeliveryGate; that interleaving is still NOT_RUN.
+renewal of the already revoked DeliveryGate; the new practical evidence below
+qualifies this schedule.
 Integrating-owner full diff and independent read-only AI review found no further
 concrete issue. AI ran no tests.
 
-Next bounded action: native first-signal-during-capture-rollback fixture. Hold only
-CatalogManager's exact rollback after authenticated native reader activity; before
-TERM require command3/proof1/pin0/Control idle. Keep parent/manager alive for6s,
-observe completed Control polls under the same backend identity, require actual
-HTTP EOF (not client timeout), then release rollback and require graceful0. Reuse
-stored d2 proof/session without a sixth password attempt; restart exact retry must
-preserve receipt/rows/xmin. New private_grant_cleanup_cases.py, proxy mode hold-capture-rollback and client
-cleanup mode implement this fixture. Sources parse and artifact/link checks pass;
-actual execution is NOT_RUN. Independent AI review corrected the fixture to
-include all pin rows/xmin, count zombies as children, collect cleanup paths
-independently and prove pending HTTP then EOF before the natural5s deadline.
-No product source changes after qualified932902f.
-No P02/P06/P08 step or M1 closure; history/export follow this boundary.
+[Catalog cleanup qualification](evidence/p08-native-grant-cleanup-20260923.json)
+at8e8cfa0 is PASS with unchanged product932902f. First TERM at held CatalogManager
+rollback after acceptance closes HTTP at1930.231ms from PUT, before5s natural
+expiry. Actual parent remains alive/no children (including zombies);6268.754ms
+hold spans three completed Control COMMIT polls. Graceful0/owner release follows
+rollback. Exact d2 retry returns original receipt, created=false/account4/scope3;
+d2 consumed/d1 retained. Nine complete tables including all pin/claim rows preserve
+rows+xmin. Final Control0/pin0/proof1/commands3/backends0/scratch0. Eight baseline
+and two native fault cases repeat PASS; Linux34binary/25config/3CLI/Clippy PASS.
+The independent AI fixture review corrected missing pin rows, zombie visibility,
+cleanup error collection and EOF-versus-natural-timeout ambiguity before execution.
+
+Next bounded action: P06-T01/T02 actual private event_history consumer. Read current
+read-view/interface contracts and event query/native wire owners, define shared
+QueryRequest/QueryPage codec plus per-action principal/cut/pin ownership. Preserve
+verified absent versus unavailable/corrupt outcomes before an empty page. Wire the
+actual private route, no diagnostic substitute, then standalone export/restart.
+Interrupted Control renewal/acceptance COMMIT, native success/signal race and
+full restrictive drain remain explicit later practical gates. No task/M1 closure.
 
 ## Scoped grant result
 
@@ -184,6 +192,27 @@ Concurrent cap admission/full reauth COMMIT-loss remain open. Startup/reauth req
 809; new scope acceptance requires811.
 
 ## Laboratory custody
+
+[Scoped cache retirement](evidence/p08-native-grant-cache-retirement-20260923.json)
+removed only out/build/{target,cargo-home} from stopped7ea08a6 and1b9f710.
+Source, actual artifacts, original eight Parquet hashes and evidence archives
+reverified;45 scientific files per run retained. These two build roots are now
+partial and must not be used as cache inputs; b5ff8ab stays intact. Original
+INCOMPLETE audit (unordered Docker Mounts comparison) is retained; separate
+canonical comparison/reconciliation PASS. Latest free22,588,928,000bytes while
+new compilation runs; not a reclaimed-byte measurement. No cleanup debt.
+
+Stopped/retained cleanup lab:
+`/home/tux/bigbrotr-implementation-20260917/runs/native-grant-cleanup-8e8cfa0`,
+owner8aa93a0b51edb38d2df0e90ab82da308, labelorg.bigbrotr.archive-visibility.
+PGc80a0a5954f8e49e0dfa9652ec6e9f81d9d7567d43ddbcacdd91f21977a7c0f4 and
+runner579a8602a307a43d1730719f8fa6db85f2cee6db3e7e93245d8168dd357a7408:
+stopped/PID0/noOOM, runner0/restart-loopPG137; owned network removed.524 prior
+records unchanged,8 unrelated running,22,490,718,208bytes free.40 capture/1048
+source/five ELF/five native asset hashes verified; captureSHA256
+`c02c5ea276c69b0bd9acf2dae19c5a931c3bca2316ec95b31e5943f8d8264b95`.
+Inventory implementation_native_grant_cleanup_20260923; local
+`.research/implementation/native-grant-cleanup/capture`. No active lab/cleanup debt.
 
 Stopped/retained corrected lab:
 `/home/tux/bigbrotr-implementation-20260917/runs/native-grant-signal-fixed-932902f`,

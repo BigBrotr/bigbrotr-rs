@@ -1,0 +1,51 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "Laboratory lifecycle; P08-T02 native qualification continuity",
+  "date": "2026-09-23",
+  "status": "PASS",
+  "scope": "Retire only disposable compiler/download cache copies from two stopped owned runs, preserving original data/artifacts/evidence",
+  "scripts": {
+    "retire.py": "c1b2c869d6c0f3ca6cab36ac69b49059260cd3773d779825e3bdfeeae50923b0",
+    "reconcile.py": "1be916076adc775c461ebcb4875949123a133311d5cfa24d38d2053778e9588a"
+  },
+  "records": [
+    {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-grant-faults-7ea08a6",
+      "owner": "675651179f5edf13c92278087c141769",
+      "source": "7ea08a63d410ff3373fc1544e57b646ad6993422",
+      "capture_sha256": "6b94b5635ed37d15198eb1437b2e397f1a3abe558c683c641a7f3b6f1f88e243",
+      "retained_scientific_files": 45,
+      "retired": [
+        "out/build/target",
+        "out/build/cargo-home"
+      ],
+      "free_before": 19292053504,
+      "status": "PASS",
+      "first_attempt": {
+        "record_sha256": "1a522f6133c0fbd064188b2bf893c07b1da1e24e854b579f8630fd7a10a05ca1",
+        "failure": "Unsorted Docker Mounts arrays caused post-retirement assertion; exact lifecycle and destination-sorted mounts compare unchanged against the next lab preflight. Original INCOMPLETE record retained."
+      },
+      "retained_scientific_sha256": "823303aeef3984eff2958a25ad6417841152f43ffe70436bb678489400c67bde",
+      "free_after": 19291336704,
+      "retained": "Original Git/source export, native artifacts/dependencies, signed archive/state, PostgreSQL data and capture retained. Only copied Cargo compiler/download caches retired; never reuse this partial build root."
+    },
+    {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-grant-signal-red-1b9f710",
+      "owner": "d6d655daccc9d917fb6b3c612c1ff871",
+      "source": "1b9f710f17750de8527f5dbcd8bdfb9e0a2668a9",
+      "capture_sha256": "1181be524238399948cfccf56b3eb9d2c28e272a469f09ac5f5f876a04543cd3",
+      "retained_scientific_files": 45,
+      "retired": [
+        "out/build/target",
+        "out/build/cargo-home"
+      ],
+      "free_before": 19291291648,
+      "status": "PASS",
+      "retained_scientific_sha256": "281353ce76b4d8c089ed4c3ce88a57df684449b1b30ad152c5dc09a3cd322df6",
+      "free_after": 22588928000,
+      "retained": "Original Git/source export, native artifacts/dependencies, signed archive/state, PostgreSQL data and capture retained. Only copied Cargo compiler/download caches retired; never reuse this partial build root."
+    }
+  ],
+  "verification": "Before mutation inventory containers/processes/ports/volumes/networks; verified exact owner labels/stopped PID0, completed orchestrator, source manifest and actual five artifacts. After mutation source manifest, five artifacts, eight original qualified Parquet files and original evidence.tar hashes match; retained scientific files compared. PG data directories were outside the selected deletion paths. Current experiment/cache input b5ff8ab untouched.",
+  "limitation": "First audit failed after deletion because raw Docker Mounts arrays had differing order. Original INCOMPLETE record remains; read-only comparison against the active next lab preflight proves identical lifecycle and destination-sorted mounts/networks. A separate reconciliation record passes; this is not a rewritten original result. Free disk changed concurrently with active compilation, not a precise reclaimed-byte measurement."
+}
