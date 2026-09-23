@@ -3,6 +3,8 @@
 mod commit;
 #[path = "browser_http_probe/panel.rs"]
 mod panel;
+#[path = "browser_http_probe/reauthentication.rs"]
+mod reauthentication;
 use serde_json::{Value, json};
 use std::{
     fs::{self, File},
@@ -488,7 +490,7 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
                 "migrate",
                 "apply",
                 "--target",
-                "808",
+                "809",
                 "--user",
                 "postgres",
                 "--password-ref",
@@ -496,7 +498,11 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
             ],
         );
         admin.batch_execute("GRANT SELECT,INSERT,UPDATE ON control.browser_sessions,control.login_buckets TO bigbrotr_control; GRANT SELECT,INSERT,DELETE ON control.reauthentication_proofs TO bigbrotr_control; GRANT DELETE ON control.browser_sessions TO bigbrotr_control").await.unwrap();
-        if mode == "faults" {
+        if mode == "reauthentication" {
+            reauthentication::run(&binary, &config, &home, &admin, &principal).await;
+            drop(admin);
+            driver.await.unwrap().unwrap();
+        } else if mode == "faults" {
             faults(&binary, &config, &home, &admin).await;
             drop(admin);
             driver.await.unwrap().unwrap();
@@ -568,7 +574,7 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
             "migrate",
             "apply",
             "--target",
-            "808",
+            "809",
             "--user",
             "postgres",
             "--password-ref",
@@ -910,6 +916,7 @@ fn main() {
         Some("--faults-only") => "faults",
         Some("--commits-only") => "commits",
         Some("--audit-commits-only") => "audit-commits",
+        Some("--reauthentication-only") => "reauthentication",
         Some("--panel") => {
             panel = Some(panel::Options::parse(&mut args));
             "panel"

@@ -30,7 +30,7 @@ impl ControlSession {
     pub async fn require_browser_sessions(&mut self) -> Result<(), SessionError> {
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 808)
+        let tx = application_transaction(&mut self.client, 809)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)

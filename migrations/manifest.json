@@ -81,6 +81,10 @@
     {
       "version": 808,
       "name": "0808_browser_reauthentication.sql"
+    },
+    {
+      "version": 809,
+      "name": "0809_reauthentication_expiry.sql"
     }
   ],
   "reserved": [

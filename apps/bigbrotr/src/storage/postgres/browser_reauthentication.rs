@@ -27,7 +27,7 @@ impl ControlSession {
         command.validate(self.request.dataset)?;
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 808)
+        let tx = application_transaction(&mut self.client, 809)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -95,7 +95,7 @@ impl ControlSession {
         let account = challenge.account.ok_or(SessionError::Denied)?;
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 808)
+        let tx = application_transaction(&mut self.client, 809)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -197,8 +197,14 @@ async fn issue_proof(
         .checked_add(300_000_000)
         .ok_or(SessionError::InvalidMetadata)?
         .min(current.expires);
-    tx.execute("INSERT INTO control.reauthentication_proofs(proof_id,dataset_id,actor_id,session_id,request_key,request_digest,config_revision,policy_revision,credential_revision,authentication_revision,grant_revision,issued_at_us,expires_at_us) VALUES($1::bytea,$2::bytea,$3::bytea,$4::bytea,$5::bytea,$6::bytea,$7::text::numeric,$8::text::numeric,$9::text::numeric,$10::text::numeric,$11::text::numeric,$12::bigint,$13::bigint)",
+    let changed = tx.execute("INSERT INTO control.reauthentication_proofs(proof_id,dataset_id,actor_id,session_id,request_key,request_digest,config_revision,policy_revision,credential_revision,authentication_revision,grant_revision,issued_at_us,expires_at_us) VALUES($1::bytea,$2::bytea,$3::bytea,$4::bytea,$5::bytea,$6::bytea,$7::text::numeric,$8::text::numeric,$9::text::numeric,$10::text::numeric,$11::text::numeric,$12::bigint,$13::bigint)",
         &[&&id.as_bytes()[..], &&dataset.as_bytes()[..], &&actor.as_bytes()[..], &&current.id[..], &&binding.key.as_bytes()[..], &&binding.digest.as_bytes()[..], &binding.config_revision.to_string(), &binding.policy_revision.to_string(), &revision(&current.account,1)?.to_string(), &revision(&current.account,2)?.to_string(), &binding.grant_revision.to_string(), &time, &expires]).await.map_err(backend)?;
+    if changed == 0 {
+        return Err(SessionError::Denied);
+    }
+    if changed != 1 {
+        return Err(SessionError::InvalidMetadata);
+    }
     let audit: [u8; 16] = random().map_err(|_| SessionError::Unavailable)?;
     tx.execute("INSERT INTO control.management_audit(audit_id,dataset_id,actor_id,action,outcome,created_at_us,config_revision,subject_id,policy_revision) VALUES($1::bytea,$2::bytea,$3::bytea,'browser.session.reauthenticate','accepted',$4::bigint,$5::text::numeric,$6::bytea,$7::text::numeric)",
         &[&&audit[..], &&dataset.as_bytes()[..], &&actor.as_bytes()[..], &time, &binding.config_revision.to_string(), &&id.as_bytes()[..], &binding.policy_revision.to_string()]).await.map_err(backend)?;

@@ -33,11 +33,12 @@ env.update(CARGO_HOME=str(build / 'cargo-home'), CARGO_TARGET_DIR=str(build / 't
 binary = str(build / 'target/release/bigbrotr')
 probe = str(build / 'target/release/examples/browser_http_probe')
 checks = [
-    ('build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr', '--example', 'browser_sessions_probe']),
+    ('build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr', '--example', 'browser_sessions_probe', '--example', 'browser_http_probe']),
     ('schema-command', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--test', 'control_schema', '--test', 'management_grants']),
     ('http-transport', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr', 'interfaces::management::tests::reauthentication']),
-    ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--lib', '--bin', 'bigbrotr', '--example', 'browser_sessions_probe', '--tests', '--', '-D', 'warnings']),
+    ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--lib', '--bin', 'bigbrotr', '--example', 'browser_sessions_probe', '--example', 'browser_http_probe', '--tests', '--', '-D', 'warnings']),
     ('native-reauthentication', [str(build / 'target/release/examples/browser_sessions_probe'), 'sessions', '--reauthentication']),
+    ('native-http-reauthentication', [probe, binary, '/out/http-fixture', '--reauthentication-only']),
 ]
 
 identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolchain=native,
@@ -45,7 +46,7 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
                 scope='Session-command reauthentication; grant consumption and history access remain unimplemented')
 result = execute(checks, out, source, env, identity, 1800)
 result['cases'] = {}
-for name, count in [('native-reauthentication', 11)]:
+for name, count in [('native-reauthentication', 11), ('native-http-reauthentication', 3)]:
     path = out / (name + '.log')
     cases = []
     if path.exists():
@@ -60,7 +61,7 @@ for name, count in [('native-reauthentication', 11)]:
         result['status'] = 'FAIL'
 result.update(source_unchanged=files() == manifest['files_sha256'],
               artifacts={name: file_hash(build / 'target/release' / name)
-                         for name in ['bigbrotr', 'examples/browser_sessions_probe']
+                         for name in ['bigbrotr', 'examples/browser_sessions_probe', 'examples/browser_http_probe']
                          if (build / 'target/release' / name).is_file()})
 (out / 'reauthentication-result.json').write_text(json.dumps(result, indent=2) + '\n')
 raise SystemExit(0 if result['status'] == 'PASS' and result['source_unchanged'] else 1)

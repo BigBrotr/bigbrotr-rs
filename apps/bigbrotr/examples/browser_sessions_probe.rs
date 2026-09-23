@@ -222,7 +222,7 @@ async fn run(mut config: Config, reauth: bool) {
         assert_eq!(error.code().unwrap().code(), code);
     }
     case("audit-upgrade-preserves-legacy-shapes-and-refuses-null-or-mixed-revisions");
-    migration_runner::run(&mut admin, 808, true, &Cell::new(false))
+    migration_runner::run(&mut admin, 809, true, &Cell::new(false))
         .await
         .unwrap();
     admin.batch_execute("GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control").await.unwrap();

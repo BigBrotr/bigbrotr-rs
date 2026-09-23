@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn reauthentication_expiry_correction_does_not_rewrite_the_applied_proof_schema() {
+    let applied: Vec<_> = plan(&[], 808)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    assert_eq!(
+        migrations::require_applied(&applied, 809),
+        Err(MigrationError::MissingPrerequisite(809))
+    );
+    let next = plan(&applied, 809).unwrap();
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0809_reauthentication_expiry.sql");
+    assert!(migrations::require_applied(&applied, 808).is_ok());
+}
+
+#[test]
 fn reauthentication_requires_explicit_upgrade_preserving_existing_sessions() {
     let applied: Vec<_> = plan(&[], 807)
         .unwrap()

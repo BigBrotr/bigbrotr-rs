@@ -204,7 +204,7 @@ audit, retention/capacity maintenance, reauth,
 grant CAS and restrictive application remain required; no T02 step is complete.
 
 The next integrated slice uses additive0808 for bounded same-session/command
-reauthentication and its exact issuance audit, followed by809 for durable scope
+reauthentication and its exact issuance audit, followed by810 for durable scope
 grants and atomic proof consumption. Separating their lifecycles does not complete
 T02 or authorize a grant from a proof alone. The actual listener shares the login
 hash worker and persistent attempt limits. Qualification must exercise exact

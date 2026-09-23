@@ -230,7 +230,7 @@ The initial808 profile retains at most32 proofs per account. A verified identica
 retry within the same session returns its original proof without extending expiry
 or repeating audit. A changed command under that live key conflicts. Expired
 proofs are removed under the account lock; their audit remains. Proof identifiers
-are references, not bearer credentials. The subsequent809 grant transaction must
+are references, not bearer credentials. The subsequent810 grant transaction must
 check the common accepted-command ledger before consuming a proof, preserve
 per-scope generation tombstones, and retain pending restrictive application until
 affected workers and delivery have actually drained.

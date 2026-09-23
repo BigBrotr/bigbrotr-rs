@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-09-20T01:18:44.526544+00:00",
+  "updated_at": "2026-09-23",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -18133,6 +18133,41 @@
       "preexisting_preserved": 494,
       "unrelated_running": 8,
       "free_terminal": 70775050240
+    }
+  },
+  "implementation_reauthentication_20260923": {
+    "local_root": ".research/implementation/scoped-grants",
+    "native_red": {
+      "source": "f83ac99fd218717d0db11160afb86bc5fc5e328c",
+      "tree": "cd1a4c2fcad3e0fdc4dbe2d7c7d59680c0b6265f",
+      "owner": "9e12ab992a9c82f6da602de1c7ac0609",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-f83ac99",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "0a26f539a3e562aa7a2cfc982ea62bf5a24ed2162f3d4c60c3195fba26191bca"
+        },
+        {
+          "name": "rust-audit",
+          "id": "7405265c1f7b85411d50671a76360025bd71a816ad13597b5ef9a33f7a1514c1"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.reauthentication",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T14:49:44.989279+00:00",
+      "network_id": "ae76dc6400a75cdc662d6b880c5d7530dd101fe9fc46bf0f653bc2fa6aa7debb",
+      "postgres_id": "0a26f539a3e562aa7a2cfc982ea62bf5a24ed2162f3d4c60c3195fba26191bca",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "observed": "2026-09-23T14:50Z",
+      "observation": "Native FAIL at expected expiry-at-INSERT counterexample; containers freshly exited/PID0/noOOM, network removed,496prior records unchanged/eight unrelated running.",
+      "boundaries": "2CPU/6GiB/512PIDs runner; 2CPU/1GiB/128PIDs PostgreSQL; internal network without host ports; no release keys; immutable Git export.",
+      "cache": "Verified stopped owned b5ff8ab cache copied; no historical environment restarted.",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json",
+      "evidence": "docs/implementation/evidence/p08-reauthentication-expiry-red-20260923.json",
+      "capture_sha256": "42ae13c1faa432bad267b26e6aa326ae6725f1d4f3b408ca617f21beeb2cc5e8"
     }
   }
 }

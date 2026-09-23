@@ -1,0 +1,144 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02",
+  "status": "FAIL",
+  "date": "2026-09-23",
+  "scope": "Executed initial reauthentication candidate counterexample, not grant/history/product qualification",
+  "source": {
+    "revision": "f83ac99fd218717d0db11160afb86bc5fc5e328c",
+    "tree": "cd1a4c2fcad3e0fdc4dbe2d7c7d59680c0b6265f",
+    "source_files": 1018,
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "checks": [
+    {
+      "name": "build",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 33.51403739117086
+    },
+    {
+      "name": "schema-command",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 7.126568906009197
+    },
+    {
+      "name": "http-transport",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 11.984441328793764
+    },
+    {
+      "name": "clippy",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 4.370875145774335
+    },
+    {
+      "name": "native-reauthentication",
+      "status": "FAIL",
+      "exit_code": 101,
+      "seconds": 5.0793710220605135
+    }
+  ],
+  "cases": {
+    "native-reauthentication": [
+      {
+        "case": "audit-upgrade-preserves-legacy-shapes-and-refuses-null-or-mixed-revisions",
+        "status": "PASS"
+      },
+      {
+        "case": "additive-upgrade-preserves-password-and-seven-grants",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-wrong-csrf-and-missing-action-charge-no-password-attempt",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-wrong-password-charges-both-buckets-and-keeps-control-usable",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-proof-exact-audit-bounded-lifetime-and-idempotent-content-binding",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-grant-change-and-logout-during-hash-invalidate-proof-issuance",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-credential-reset-and-reactivation-cannot-revive-password-work",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-reads-expiry-after-account-lock-wait",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-schema-refuses-mutation-live-delete-orphan-effects-and-mixed-audit-policy",
+        "status": "PASS"
+      }
+    ]
+  },
+  "finding": {
+    "expected": "Delayed INSERT crossing idle expiry returns Denied, inserts neither proof nor audit and keeps Control usable.",
+    "observed": "Actual assertion failed at ordinary expiry at INSERT must not poison Control. Prior nine cases passed; capacity/cleanup case was not reached.",
+    "cause": "808 BEFORE INSERT guard raises23514 for crossed expiry; adapter maps SQL errors to Backend. Control remains unavailable after begin_operation.",
+    "proposed_correction": "Additive809 suppresses an otherwise valid expired INSERT; adapter checks affected rows before audit. Preserve808 checksum."
+  },
+  "durable_terminal": {
+    "sessions": {
+      "proofs": 2,
+      "proof_audits": 2,
+      "grants": 7,
+      "active_control": 1,
+      "backends": 0
+    }
+  },
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-f83ac99",
+    "owner": "9e12ab992a9c82f6da602de1c7ac0609",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "0a26f539a3e562aa7a2cfc982ea62bf5a24ed2162f3d4c60c3195fba26191bca"
+      },
+      {
+        "name": "rust-audit",
+        "id": "7405265c1f7b85411d50671a76360025bd71a816ad13597b5ef9a33f7a1514c1"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preserved": 496,
+    "unrelated_running": 8,
+    "errors": [],
+    "free_bytes": 67196719104,
+    "note": "The failed assertion ended the process without graceful owner release: one scheduling row remains active, with zero actual Control backends. Retained isolated data is not a live owner."
+  },
+  "artifacts": {
+    "bigbrotr": "8e1f5e36b73fbf001f903b9155bda84bb3a305d49b6d5bd51fd9b1983cf79ae2",
+    "examples/browser_sessions_probe": "12eae7fdff5c29c406ed9d993a8eb9bdc72668a7586b3bd811537ce5a918706a"
+  },
+  "capture": {
+    "path": ".research/implementation/scoped-grants/reauth-native-red",
+    "files": 18,
+    "sha256": "42ae13c1faa432bad267b26e6aa326ae6725f1d4f3b408ca617f21beeb2cc5e8",
+    "verification": "PASS"
+  },
+  "exclusions": [
+    "No HTTP+PostgreSQL reauthentication execution in this candidate",
+    "No successful expiry correction or cap cleanup evidence",
+    "No grant consumption, restrictive drain, certified history read/export or release qualification",
+    "No Linux arm64 evidence"
+  ]
+}

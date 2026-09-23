@@ -384,3 +384,23 @@ the audit table plus indexes; this small fixture does not qualify a large audit
 history's disk requirement or duration. Stop old clients before migration; the
 heap rewrite is not MVCC-safe for an older snapshot. Applied migration checksums
 remain fixed.
+
+
+0808 adds at most32 immutable temporary reauthentication proofs per account,
+bound to the live session, exact command key/digest and credential/authentication/
+grant/configuration/security revisions. Same-session proof references are not
+bearer credentials. Issuance and exact audit commit together; both directions
+require matching actor, subject, policy/configuration and timestamp. Cleanup locks
+the account first and removes only expired proofs, retaining their audit. A future
+scoped grant migration adds explicit consumption with durable command history.
+Existing sessions, grants and policy documents are unchanged.
+
+The first native candidate exposed expiry during proof INSERT being classified
+as a fatal backend failure. Additive0809 preserves808's applied checksum and all
+rows, suppresses an otherwise valid but now-expired INSERT, and requires the Rust
+consumer to observe exactly one affected row before appending audit. Zero rows
+mean ordinary denial. PostgreSQL16 documents the row suppression in
+[BEFORE trigger return semantics](https://www.postgresql.org/docs/16/plpgsql-trigger.html).
+This correction requires explicit809 before private startup/reauthentication;
+its successful engine qualification is still pending. No proof alone activates
+a grant or closes the remaining P08-T02/P06 history acceptance.

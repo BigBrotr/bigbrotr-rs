@@ -9,7 +9,7 @@ bigbrotr serve --file /etc/bigbrotr/root.toml --roles control
 Use an existing validated root with Control assigned locally, protected application
 credentials, the current explicit Control migrations, accepted initial
 configuration and an activated security revision. Accepted
-`administration.enabled=true` additionally requires migration0808, the browser
+`administration.enabled=true` additionally requires migration0809, the browser
 session SQL privileges, SELECT/INSERT/DELETE on control.reauthentication_proofs
 and SELECT/INSERT on control.management_audit, then binds the
 configured loopback private listener.
