@@ -19,17 +19,13 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Last observed main/HEAD `ac86c16964a85b3fefd1d4dd2040ecf04b9ae9cd`, two unpublished
-commits ahead of origin/main `17f464da0cd11f12d012ed2e341d49afc1529b27`.
-No merge/rebase or another writer. Candidate f83ac99 and corrective ac86c16 add
-command inputs/golden fixtures, identifiers, actual reauthentication HTTP/Control,
-additive808/809, OpenAPI/generated types and practical fixtures. Dependencies are
-unchanged. Native qualification of ac86c16 is now captured and verified.
-
-Root-owned follow-up changes only this checkpoint, the lab inventory, storage
-contract qualification text and the successful evidence report. Product bytes
-remain those tested at ac86c16. No810 scoped grant migration or grant acceptance/
-live-pin/history consumer exists yet. No grant is created by a proof.
+Last observed main/HEAD `9f7fabd`, matching origin/main after the verified
+reauthentication implementation and evidence were pushed. No merge/rebase or
+another writer. All current dirty files belong to root's next integrated slice:
+additive0810/catalog, scope-grant Control adapter/receipt, shared session helper,
+actual signed-publication/password/native-allocation fixture and runner, schema
+upgrade test, and owning private-admin/storage contracts. No grant HTTP route or
+private history read is advertised. No dependencies changed.
 
 The command binds dataset/actor/key/target/full VisibilityScope QualifiedRef,
 expected config/policy/account-grant revisions, and allocation catalog/frontier
@@ -87,10 +83,32 @@ Local `.research/implementation/scoped-grants/` evidence:
 - reauth-expiry-fix and reauth-fix-reviewed: scoped builds/Clippy and final19schema
   tests PASS. The fixed engine behavior is not established by these local checks.
 
-Next bounded action: review/commit the evidence-only follow-up and fetch/push the
-verified coherent main history, then implement810 atomic scope-grant acceptance
-with the invariants below. Its real native consumers and private history must
-follow; do not turn a SQL-only fixture into completed management acceptance.
+Next bounded action: finish reviewed local checks, commit this unqualified slice
+as an unpublished exact-Git candidate, transfer with
+`.research/implementation/scoped-grants/grants-native/transfer.py` and run the
+real signed Rocks/archive -> certified pin -> password -> grant/revoke scenario.
+The lab preflight preserves unrelated resources and copies intact b5ff8ab cache.
+No live grant lab has been launched yet. Record actual SQL/source/artifacts and
+fix failures without weakening independent readback.
+
+Dirty0810 enforces common actor/key identity, exact digest/audit, unique target
+result revision and scope generation, same-session proof consumption, and retained
+revocation tombstones. Enable consumes actual ArchivedVisibility with complete
+bounds under the live pin/catalog barrier; revoke omits Archive. Historical retry
+requires live session/CSRF, resolves first and never reapplies. Two read-only AI
+review findings prompted per-target historical CAS uniqueness and explicit final
+session/pin checks; another found rounded numeric division unsuitable for u64
+encoding. The draft uses div/mod and includes the old-expression native negative
+control, not yet executed. Review also separated explicit deferred expiry (BB001,
+known rollback/Denied and reusable Control) from lost-COMMIT transport; a persisted
+sequence marker exercises that delayed final check. Old-holder pins are checked
+before invoking the current-holder helper; the distinct old-holder schedule still
+needs execution. Local schema-upgrade RED observed UnknownTarget810;
+subsequent20schema/3command tests and focused Clippy pass after the helper
+extraction. Two fixture compile errors and initial Clippy diagnostic remain in raw
+logs; no engine evidence is claimed from compilation. Omission/concurrency/expiry/
+COMMIT-loss/full legacy-upgrade cases and the private HTTP/history/drain consumer
+remain required; the initial five native fixture cases cannot close them.
 
 ## Laboratory custody
 

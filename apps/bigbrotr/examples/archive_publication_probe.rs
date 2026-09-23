@@ -53,6 +53,8 @@ mod publication_inputs;
 mod publication_pin_recovery;
 #[path = "support/publication_protocol.rs"]
 mod publication_protocol;
+#[path = "support/publication_scope_grants.rs"]
+mod publication_scope_grants;
 const MIB: u64 = 1024 * 1024;
 fn dataset() -> DatasetId {
     [1; 16].try_into().unwrap()
@@ -264,7 +266,14 @@ async fn native_state(client: &Client) -> (i64, i64) {
     let row=client.query_one("SELECT (SELECT count(*) FROM public.ducklake_snapshot),(SELECT count(*) FROM public.ducklake_data_file)",&[]).await.unwrap();
     (row.get(0), row.get(1))
 }
-async fn run(mode: &str, port: u16, installed: bool, event_read: bool, capture_cut: bool) {
+async fn run(
+    mode: &str,
+    port: u16,
+    installed: bool,
+    event_read: bool,
+    capture_cut: bool,
+    scope_grants: bool,
+) {
     assert!(!installed || !mode.starts_with("custody_"));
     let manager_login = if installed {
         "CatalogManager"
@@ -375,6 +384,9 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool, capture_c
         fs::write(home.join("runtime-manager.json"), serde_json::to_vec(&serde_json::json!({"current_user":row.get::<_, String>(0),"session_user":row.get::<_, String>(1),"superuser":false,"createrole":true,"inherit":false})).unwrap()).unwrap();
     }
     initialize_control(&control, installed).await;
+    if scope_grants {
+        publication_scope_grants::prepare(&control).await;
+    }
     let (client, connection) = connection(&control, "bigbrotr_control", 5432).await;
     let driver = if let Some(coordinator) = &coordinator {
         tokio::spawn(coordinator.retain_connection(connection).unwrap())
@@ -789,6 +801,20 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool, capture_c
         )
         .await;
     }
+    if scope_grants {
+        publication_scope_grants::run(
+            &mut owner,
+            &mut admin,
+            coordinator.as_ref().unwrap(),
+            &installation,
+            &home,
+            &worker_budget,
+            &database,
+            &reader_password,
+            &cancel,
+        )
+        .await;
+    }
     drop(committed_inputs);
     drop(store);
     let after = ingest::logical_state(&path);
@@ -812,7 +838,7 @@ fn main() {
                 && (matches!(args[2].as_str(), "resolve" | "frontier" | "pin")
                     || matches!(
                         args[3].as_str(),
-                        "--installed" | "--event-read" | "--capture-cut"
+                        "--installed" | "--event-read" | "--capture-cut" | "--scope-grants"
                     )
                     || args[1] == "protocol")
     );
@@ -878,10 +904,15 @@ fn main() {
                     &args[1],
                     args[2].parse().unwrap(),
                     args.get(3).is_some_and(|s| {
-                        matches!(s.as_str(), "--installed" | "--event-read" | "--capture-cut")
+                        matches!(
+                            s.as_str(),
+                            "--installed" | "--event-read" | "--capture-cut" | "--scope-grants"
+                        )
                     }),
                     args.get(3).is_some_and(|s| s == "--event-read"),
-                    args.get(3).is_some_and(|s| s == "--capture-cut"),
+                    args.get(3)
+                        .is_some_and(|s| matches!(s.as_str(), "--capture-cut" | "--scope-grants")),
+                    args.get(3).is_some_and(|s| s == "--scope-grants"),
                 ),
             )
             .await

@@ -20,7 +20,8 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'])
+scope_grants = sys.argv[1:] == ['--scope-grants']
 archive_visibility = sys.argv[1:] == ['--archive-visibility']
 pin_recovery = sys.argv[1:] == ['--pin-recovery']
 reader_custody = sys.argv[1:] == ['--reader-custody']
@@ -28,7 +29,7 @@ archive_frontier = pin_recovery or sys.argv[1:] == ['--archive-frontier']
 archive_cut = archive_frontier or sys.argv[1:] == ['--archive-cut']
 archive_membership = sys.argv[1:] == ['--archive-membership']
 publication_sync = sys.argv[1:] == ['--publication-sync']
-archive_event = archive_visibility or reader_custody or publication_sync or sys.argv[1:] == ['--archive-event']
+archive_event = scope_grants or archive_visibility or reader_custody or publication_sync or sys.argv[1:] == ['--archive-event']
 producer_recovery = sys.argv[1:] == ['--producer-recovery']
 producer_closing = producer_recovery or sys.argv[1:] == ['--producer-closing']
 certification = producer_closing or sys.argv[1:] == ['--certification']
@@ -117,6 +118,12 @@ if archive_visibility:
     checks = [checks[0],
         ('native-visibility', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'visibility_tests::', '--', '--nocapture']),
         ('protocol-visibility', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-protocol', '--test', 'archive_visibility']),
+        checks[-1]]
+if scope_grants:
+    identity.update(scope='actual password and native certified allocation to atomic scope grant/revoke; no private HTTP read qualification')
+    checks = [checks[0],
+        ('scope-schema-command', ['cargo','test','--locked','--release','-p','bigbrotr','--test','control_schema','--test','management_grants']),
+        ('reauthentication-transport', ['cargo','test','--locked','--release','-p','bigbrotr','--bin','bigbrotr','interfaces::management::tests::reauthentication']),
         checks[-1]]
 if import_source:
     identity.update(scope='captured JSONL source and existing connected signed-admission consumer')

@@ -406,3 +406,29 @@ the [native adapter and executable HTTP evidence](../implementation/evidence/p08
 qualifies the ordinary expiry refusal and graceful restart. Ambiguous proof COMMIT
 and concurrent capacity admission remain unqualified. No proof alone activates a
 grant or closes the remaining P08-T02/P06 history acceptance.
+
+0810, currently under native qualification, extends the existing command ledger
+with immutable `scope_grant_changes` and mutable `scope_grants` state. Its closed
+legacy/new shapes preserve initial activation's policy1 and partial uniqueness.
+Commands, detail, exact policy/config/time audit, account CAS, per-scope generation
+and same-session proof consumption must commit together. Permanent uniqueness of
+target result revisions and scope generations prevents duplicate CAS inside one
+transaction; disabled scope rows cannot be deleted. Historical commands do not
+reference mutable current grant revisions through a foreign key.
+
+New acceptance verifies the actual proof before deletion, and final constraint
+checks revalidate session/generations, authorization and (for enablement) the live
+pin and complete claims. Scope changes are acceptance records, not applied-drain
+receipts. No existing grants, sessions, proofs or audit rows are backfilled.
+The command's u64 encoding uses PostgreSQL16
+[integer quotient `div`](https://www.postgresql.org/docs/16/functions-math.html)
+and remainder, preserving unsigned values above bigint's maximum; truncating an
+already rounded numeric division is not an equivalent encoder. The native fixture
+contains the original rounded-expression negative control. Execution evidence is
+still required before this schema or adapter is qualified.
+
+A final grant-expiry refusal uses private SQLSTATE `BB001`: an explicit server
+COMMIT rejection proves rollback and maps to ordinary denial; transport loss
+remains `CommitUnknown`. Other reported SQL failures poison the adapter as backend
+failures. This distinction requires the observed delayed-constraint regression;
+no generic SQL exception is treated as success or an expired proof.

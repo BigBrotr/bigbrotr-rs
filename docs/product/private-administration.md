@@ -315,3 +315,33 @@ without activating policy or turning stored actions into live authority. It
 creates no audit row or login attempt state. Remote login, rate limits, session
 transactions, rejected-request audit and the restrictive activation barrier remain
 required separate consumers; this command must not be exposed as a remote route.
+
+### Scope-grant acceptance under qualification
+
+The additive0810 adapter extends the common `(actor_id, request_key)` command
+ledger with `scope-grant.change`. A fresh command flips one existing scope's state
+or enables its first generation. Repeated desired state under a *new* key is a
+conflict; revoking an unknown scope creates no tombstone. Accepted commands advance
+the target account revision exactly once and the specific scope generation by one.
+Disabled rows retain their generation, preventing revoke/re-enable ABA. The original
+seven dataset grants remain separate.
+
+Each acceptance atomically retains the command, immutable detail, exact audit and
+current grant, advances the account CAS, and consumes the same-session proof. The
+SQL boundary recomputes the fixed-width command fingerprint. Actor and target
+account locks use principal-ID order. A self-grant validates the proof's old account
+revision and its own exact increment separately. Each target revision and each
+scope generation is unique in permanent command history, including two commands
+attempted in one transaction.
+
+A historical retry still requires a currently valid session and matching CSRF.
+It resolves the authenticated actor/key/digest before a new proof, permission,
+CAS or Archive lookup; it returns only the original acceptance. It cannot reapply
+an old enable after revocation or assert that restrictive work has drained.
+Enablement requires actual joined native allocation evidence matching the retained
+catalog barrier, snapshot, topology and every certified source bound, including
+zero. The accepting transaction checks the active protocol1 pin, complete positive
+retention claims and actual Control holder under the shared pin lock, sampling
+the clock after waits and again at its final constraint check. Revocation needs no
+Archive dependency. Public grant routes, restrictive drain and private history
+remain unavailable until their full consumers and practical acceptance exist.

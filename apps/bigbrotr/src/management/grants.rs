@@ -121,3 +121,17 @@ impl GrantCommand {
         Ok(Digest256::from_bytes(hash.finalize().into()))
     }
 }
+
+/// Immutable command result. It records acceptance, never completed restrictive
+/// drain or reusable authorization to read. Retries return this original result.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct GrantReceipt {
+    pub command_key: CommandKey,
+    pub principal_id: PrincipalId,
+    pub scope: QualifiedRef,
+    pub enabled: bool,
+    pub scope_generation: Revision,
+    pub account_grant_revision: Revision,
+    pub accepted_at_us: i64,
+    pub created: bool,
+}

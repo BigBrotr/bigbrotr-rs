@@ -128,12 +128,12 @@ impl ControlSession {
     }
 }
 
-struct CommandSession {
-    principal: PrincipalId,
-    account: Row,
-    id: [u8; 16],
+pub(super) struct CommandSession {
+    pub(super) principal: PrincipalId,
+    pub(super) account: Row,
+    pub(super) id: [u8; 16],
     username: String,
-    expires: i64,
+    pub(super) expires: i64,
 }
 async fn command_session(
     tx: &Transaction<'_>,
@@ -141,8 +141,27 @@ async fn command_session(
     token: &[u8; 32],
     csrf: &[u8; 32],
 ) -> Result<CommandSession, SessionError> {
+    let current = authenticated_session(tx, dataset, token, csrf, None).await?;
+    require_manager(tx, dataset, current.principal).await?;
+    Ok(current)
+}
+
+/// Authentication precedes historical command resolution. Fresh permission and
+/// proof checks follow it, so a retry cannot reapply a superseded grant.
+pub(super) async fn authenticated_session(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    token: &[u8; 32],
+    csrf: &[u8; 32],
+    target: Option<PrincipalId>,
+) -> Result<CommandSession, SessionError> {
     let row = tx.query_opt("SELECT substring(principal_id FROM 1 FOR 17) FROM control.browser_sessions WHERE dataset_id=$1::bytea AND token_digest=$2::bytea", &[&&dataset.as_bytes()[..], &&token[..]]).await.map_err(backend)?.ok_or(SessionError::Denied)?;
     let actor = principal(&row, 0)?;
+    if let Some(target) = target {
+        // Acquire both before any session/proof row, including self-target.
+        tx.query("SELECT principal_id FROM control.local_accounts WHERE dataset_id=$1::bytea AND principal_id IN ($2::bytea,$3::bytea) ORDER BY principal_id FOR UPDATE",
+            &[&&dataset.as_bytes()[..], &&actor.as_bytes()[..], &&target.as_bytes()[..]]).await.map_err(backend)?;
+    }
     let account = lock_account(tx, dataset, actor).await?;
     let row = tx.query_opt("SELECT substring(s.session_id FROM 1 FOR 17),left(s.credential_revision::text,21),left(s.authentication_revision::text,21),s.csrf_digest=$3::bytea,s.revoked_at_us IS NULL,s.last_seen_at_us,LEAST(s.expires_at_us,s.idle_expires_at_us),left(a.username,65) FROM control.browser_sessions s JOIN control.local_accounts a USING(dataset_id,principal_id) WHERE s.dataset_id=$1::bytea AND s.token_digest=$2::bytea FOR UPDATE OF s",
         &[&&dataset.as_bytes()[..], &&token[..], &&csrf[..]]).await.map_err(backend)?.ok_or(SessionError::Denied)?;
@@ -158,10 +177,6 @@ async fn command_session(
     {
         return Err(SessionError::Denied);
     }
-    let permitted: bool = tx.query_one("SELECT EXISTS(SELECT 1 FROM control.principal_grants WHERE dataset_id=$1::bytea AND principal_id=$2::bytea AND action='principals.manage' AND resource_kind='dataset' AND resource_id=dataset_id)", &[&&dataset.as_bytes()[..], &&actor.as_bytes()[..]]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
-    if !permitted {
-        return Err(SessionError::Forbidden);
-    }
     Ok(CommandSession {
         principal: actor,
         account,
@@ -169,6 +184,18 @@ async fn command_session(
         username: row.try_get(7).map_err(metadata)?,
         expires,
     })
+}
+
+pub(super) async fn require_manager(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    actor: PrincipalId,
+) -> Result<(), SessionError> {
+    let permitted: bool = tx.query_one("SELECT EXISTS(SELECT 1 FROM control.principal_grants WHERE dataset_id=$1::bytea AND principal_id=$2::bytea AND action='principals.manage' AND resource_kind='dataset' AND resource_id=dataset_id)", &[&&dataset.as_bytes()[..], &&actor.as_bytes()[..]]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
+    if !permitted {
+        return Err(SessionError::Forbidden);
+    }
+    Ok(())
 }
 
 async fn issue_proof(

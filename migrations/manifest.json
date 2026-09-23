@@ -85,6 +85,10 @@
     {
       "version": 809,
       "name": "0809_reauthentication_expiry.sql"
+    },
+    {
+      "version": 810,
+      "name": "0810_scope_grants.sql"
     }
   ],
   "reserved": [

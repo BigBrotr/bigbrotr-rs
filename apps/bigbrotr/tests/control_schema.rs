@@ -3,6 +3,32 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn scoped_commands_require_an_explicit_upgrade_without_rewriting_proofs() {
+    let applied: Vec<_> = plan(&[], 809)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    assert_eq!(
+        migrations::require_applied(&applied, 810),
+        Err(MigrationError::MissingPrerequisite(810))
+    );
+    let upgrade =
+        plan(&applied, 810).expect("scope grant changes require their explicit additive schema");
+    assert_eq!(upgrade.pending.len(), 1);
+    assert_eq!(upgrade.pending[0].name, "0810_scope_grants.sql");
+    assert!(migrations::require_applied(&applied, 809).is_ok());
+}
+
+#[test]
 fn reauthentication_expiry_correction_does_not_rewrite_the_applied_proof_schema() {
     let applied: Vec<_> = plan(&[], 808)
         .unwrap()
