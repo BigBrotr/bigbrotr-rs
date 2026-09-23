@@ -19,13 +19,14 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Last observed main/HEAD `9f7fabd`, matching origin/main after the verified
-reauthentication implementation and evidence were pushed. No merge/rebase or
-another writer. All current dirty files belong to root's next integrated slice:
+Last observed main/HEAD `6709e68ece54b585d2f4fb844676a59b2a9a2f38`, unpublished
+candidate one commit ahead of origin/main `9f7fabd`. No merge/rebase or another
+writer. Candidate product inputs are:
 additive0810/catalog, scope-grant Control adapter/receipt, shared session helper,
 actual signed-publication/password/native-allocation fixture and runner, schema
 upgrade test, and owning private-admin/storage contracts. No grant HTTP route or
-private history read is advertised. No dependencies changed.
+private history read is advertised. No dependencies changed. Root-owned fixture/provisioning correction, RED evidence, checkpoint and laboratory
+inventory updates are dirty.
 
 The command binds dataset/actor/key/target/full VisibilityScope QualifiedRef,
 expected config/policy/account-grant revisions, and allocation catalog/frontier
@@ -83,15 +84,25 @@ Local `.research/implementation/scoped-grants/` evidence:
 - reauth-expiry-fix and reauth-fix-reviewed: scoped builds/Clippy and final19schema
   tests PASS. The fixed engine behavior is not established by these local checks.
 
-Next bounded action: finish reviewed local checks, commit this unqualified slice
-as an unpublished exact-Git candidate, transfer with
-`.research/implementation/scoped-grants/grants-native/transfer.py` and run the
-real signed Rocks/archive -> certified pin -> password -> grant/revoke scenario.
-The lab preflight preserves unrelated resources and copies intact b5ff8ab cache.
-No live grant lab has been launched yet. Record actual SQL/source/artifacts and
-fix failures without weakening independent readback.
+The6709e68 native candidate has finished **FAIL** at a missing fixture privilege:
+`SELECT ... FOR UPDATE` on reauthentication_proofs returned42501/Backend rather
+than the expected missing-native Unavailable. Build,20schema/3command tests,
+2transport tests and Clippy passed. Explicit810, actual login/proof and signed
+publication/captured cut ran; the five grant cases and independent readback did
+not complete. [RED evidence](evidence/p08-scoped-grants-permission-red-20260923.json)
+retains the failure. Applied810 bytes stay fixed. The narrow fixture correction
+adds UPDATE(proof_id), an explicit missing-privilege negative control and proof
+identity UPDATE refusal; no schema ownership or guard bypass is introduced.
 
-Dirty0810 enforces common actor/key identity, exact digest/audit, unique target
+The lab6709e68 owner01f25682923907f7c1e02065af2449fb is stopped/retained, both
+containers exited/PID0/noOOM and owned empty network removed;500prior records
+unchanged, eight unrelated workloads running,59,916,832,768bytes free.22capture
+and1026source hashes verified against MacGit; raw grants-native/capture. No live
+lab or cleanup debt. Next bounded action: commit the focused fixture/provisioning
+correction after local Clippy, then transfer that exact candidate into a fresh
+owned Tux lab and rerun the actual five grant cases and independent readback.
+
+Candidate0810 enforces common actor/key identity, exact digest/audit, unique target
 result revision and scope generation, same-session proof consumption, and retained
 revocation tombstones. Enable consumes actual ArchivedVisibility with complete
 bounds under the live pin/catalog barrier; revoke omits Archive. Historical retry
@@ -154,7 +165,7 @@ detail and current grant checks in both directions; lock/read the live proof
 before consume, unique historical proofID; self-grant validates pre-state separately
 from its own +1; explicitNULL checks for legacy initial command shape; deterministic
 account locks before proof cleanup; no historical FK to mutable current generation.
-No SQL implementation or execution of810 is claimed. Per-scope generations and
+810 is implemented and applied in the failed native candidate, without accepted-grant qualification. Per-scope generations and
 revocation tombstones must never reset; accepted historical retry cannot reapply.
 
 Enablement needs actual ArchivedVisibility under the same retained certified pin.

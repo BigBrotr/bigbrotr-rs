@@ -432,3 +432,11 @@ COMMIT rejection proves rollback and maps to ordinary denial; transport loss
 remains `CommitUnknown`. Other reported SQL failures poison the adapter as backend
 failures. This distinction requires the observed delayed-constraint regression;
 no generic SQL exception is treated as success or an expired proof.
+
+The scoped-grant runtime role also needs `UPDATE(proof_id)` on
+`control.reauthentication_proofs` to acquire its row lock: PostgreSQL16
+[locking SELECT requires an UPDATE privilege](https://www.postgresql.org/docs/16/sql-select.html)
+on at least one column. The immutable UPDATE trigger still refuses even an
+identity assignment. This is an explicit provisioning grant, not schema ownership
+or a SECURITY DEFINER bypass. The first native candidate failed at that missing
+fixture privilege; its executed failure is retained separately from qualification.

@@ -18202,5 +18202,36 @@
       "evidence": "docs/implementation/evidence/p08-reauthentication-native-20260923.json",
       "capture_sha256": "7f1c3aebc7feff3a0cc90663e17616ba18cb068234d1cc03c51e7a08254cd17c"
     }
+  },
+  "implementation_scoped_grants_20260923": {
+    "local_root": ".research/implementation/scoped-grants",
+    "native_candidate": {
+      "source": "6709e68ece54b585d2f4fb844676a59b2a9a2f38",
+      "tree": "11e77524f56833453916d19f1bbe90ef23c442eb",
+      "owner": "01f25682923907f7c1e02065af2449fb",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/scope-grants-6709e68",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "c22fb8413e16366ccae5c7739c262eb296dac8dd780dc68bacc97131e01f55f3"
+        },
+        {
+          "name": "rust-scope-grants",
+          "id": "b68852c00fbe01dd085cf45d7e1dc7b870107e3c49af3b48ce9d25ddc6c57e79"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.scope-grants",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T15:26:59.902465+00:00",
+      "network_id": "f2f46f005ac0b539082fa53d9d9b25f6cbafab90b13f59d254628300565f4998",
+      "postgres_id": "c22fb8413e16366ccae5c7739c262eb296dac8dd780dc68bacc97131e01f55f3",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "b68852c00fbe01dd085cf45d7e1dc7b870107e3c49af3b48ce9d25ddc6c57e79",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "observation": "6709e68 failed at missing fixture proof UPDATE row-lock privilege. Both owned containers stopped/PID0/noOOM, network removed,500 prior records preserved.22 capture/1026 source hashes verified; no current lab or cleanup debt."
   }
 }

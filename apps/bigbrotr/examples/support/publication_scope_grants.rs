@@ -45,6 +45,11 @@ pub async fn prepare(control: &str) {
         GRANT DELETE ON control.reauthentication_proofs,control.browser_sessions TO bigbrotr_control;
         GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;
     "#).await.unwrap();
+    // PostgreSQL row locks require UPDATE on at least one column, even though
+    // this immutable table is only inserted, locked and consumed by Control.
+    let denied = admin.batch_execute("BEGIN; SET LOCAL ROLE bigbrotr_control; SELECT proof_id FROM control.reauthentication_proofs FOR UPDATE").await.unwrap_err();
+    assert_eq!(denied.code().unwrap().code(), "42501");
+    admin.batch_execute("ROLLBACK; GRANT UPDATE(proof_id) ON control.reauthentication_proofs TO bigbrotr_control; BEGIN; SET LOCAL ROLE bigbrotr_control; SELECT proof_id FROM control.reauthentication_proofs FOR UPDATE; ROLLBACK").await.unwrap();
     let values:Vec<String>=admin.query("SELECT encode(control.command_u64_bytes(n::control.u64),'hex') FROM (VALUES (0::numeric),(1),(9223372036854775808),(18446744073709551615)) t(n)",&[]).await.unwrap().iter().map(|r|r.get(0)).collect();
     assert_eq!(
         values,
@@ -127,6 +132,10 @@ pub async fn run(
     let key = CommandKey::try_from([0xc1; 16]).unwrap();
     let first_proof = proof(owner, &session, key, &enable).await;
     let before = state(&admin).await;
+    let immutable = admin.batch_execute("BEGIN; SET LOCAL ROLE bigbrotr_control; UPDATE control.reauthentication_proofs SET proof_id=proof_id").await.unwrap_err();
+    assert_eq!(immutable.code().unwrap().code(), "23514");
+    admin.batch_execute("ROLLBACK").await.unwrap();
+    assert_eq!(state(&admin).await, before);
     assert_eq!(
         owner
             .accept_scope_grant(

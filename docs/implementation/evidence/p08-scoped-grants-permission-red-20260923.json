@@ -1,0 +1,185 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02",
+  "status": "FAIL",
+  "date": "2026-09-23",
+  "scope": "First native scoped-grant candidate; missing fixture row-lock privilege, no accepted grant qualification",
+  "source": {
+    "revision": "6709e68ece54b585d2f4fb844676a59b2a9a2f38",
+    "tree": "11e77524f56833453916d19f1bbe90ef23c442eb",
+    "source_files": 1026,
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "migration_810_sha256": "f1c3e00492ff7aceda38a9a1b87a392f5c873c7847f8ac9eda2b619c39987ebe"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "checks": [
+    {
+      "name": "fixture",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 74.54493237705901
+    },
+    {
+      "name": "scope-schema-command",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "control_schema",
+        "--test",
+        "management_grants"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 32.87114542676136
+    },
+    {
+      "name": "reauthentication-transport",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "interfaces::management::tests::reauthentication"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 11.987753301858902
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--lib",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe",
+        "--bin",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr-archive-worker",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.2702649207785726
+    }
+  ],
+  "finding": {
+    "expected": "Correct session/CSRF with no native evidence returns Unavailable, preserving proof and all grant/command/audit state.",
+    "observed": "PostgreSQL permission denied for reauthentication_proofs during SELECT FOR UPDATE; actual adapter returned Backend and fixture panicked before first complete case.",
+    "cause": "Fixture grants SELECT, INSERT and DELETE on the new proof table but lacks UPDATE on any column. PostgreSQL16 requires an UPDATE privilege for row locking.",
+    "correction": "Provision UPDATE(proof_id); keep the immutable UPDATE trigger. Add explicit42501-before-grant and23514-on-identity-update negative controls. No applied migration bytes changed.",
+    "documentation": "https://www.postgresql.org/docs/16/sql-select.html"
+  },
+  "executed_before_failure": [
+    "Explicit migration to810, real password login and command-bound proof issuance",
+    "Signed archive publication and certified captured cut",
+    "SQL u64 literal vectors and rounded-division negative control",
+    "Wrong-CSRF refusal preserves full rows and xmin"
+  ],
+  "not_run": [
+    "Remaining five complete scoped-grant cases",
+    "Independent six-family readback and final durable state SQL",
+    "Private HTTP grant/read, drain, COMMIT loss, concurrency and omission matrix"
+  ],
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/scope-grants-6709e68",
+    "owner": "01f25682923907f7c1e02065af2449fb",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "c22fb8413e16366ccae5c7739c262eb296dac8dd780dc68bacc97131e01f55f3"
+      },
+      {
+        "name": "rust-scope-grants",
+        "id": "b68852c00fbe01dd085cf45d7e1dc7b870107e3c49af3b48ce9d25ddc6c57e79"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preserved": 500,
+    "unrelated_running": 8,
+    "errors": [],
+    "free_bytes": 59916832768,
+    "note": "Both owned containers freshly observed exited/PID0/noOOM; no post-failure PostgreSQL restart or graceful Control release claimed."
+  },
+  "artifacts": {
+    "control": "b90b34670eca01bc14ef224e9f2ffe0f1e54d65f0d9d0b7ea45237431c574830",
+    "worker": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a",
+    "publisher": "4a8768fc1e3bc9ead8b488383290d7be3924f071b6b9caf4a58ffa114e205eff",
+    "reader": "25822b7fd24cd7141299d80d6cd0fcc2a0997ec48cc9664b3fccc3f87190e8fa"
+  },
+  "capture": {
+    "path": ".research/implementation/scoped-grants/grants-native",
+    "files": 22,
+    "sha256": "2e3d429a16698a791a5ac6504ce9ba45ab1974f0d8479571d654c91ea53e5617",
+    "verification": "All capture files and1026 source files match hashes and Mac Git archive; artifact hashes are the native harness observations."
+  }
+}
