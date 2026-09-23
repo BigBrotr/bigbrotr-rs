@@ -1,0 +1,369 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02 with P02-T04/T07 and P06-T01/T02 prerequisites",
+  "status": "PASS",
+  "date": "2026-09-23",
+  "scope": "Scoped acceptance only: real password and certified native allocation to atomic history grant/revoke, exact retry, delayed COMMIT expiry and six SQL omissions; no private grant/history HTTP or drain qualification",
+  "source": {
+    "revision": "4b9511d06356a3d2c4ceda100c498d6665221a9d",
+    "tree": "43c14021148974aab5101d7836b47490bb7a0473",
+    "source_files": 1032,
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "migrations": {
+      "810": "f1c3e00492ff7aceda38a9a1b87a392f5c873c7847f8ac9eda2b619c39987ebe",
+      "811": "6a7c414d05d44c330b5c55185a9b189ff071cc103fb24f803946ed1daa8e3c5a"
+    },
+    "harness_sha256": "bede05fefef0b8979f6a27d5d070af3ef677cb8217d8afffdf74e7069da84e8f",
+    "oracle_sha256": "7ad4381bdc691d45245232d7cbdebeed039c6de0c182bcdc193b3479678917a4"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres": {
+      "cpus": 2,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "isolation": "Internal network, no host ports, readonly exactGit source, no Docker socket/release keys; intact b5ff8ab compiler cache copied after ownership audit"
+  },
+  "checks": [
+    {
+      "name": "fixture",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 74.60081634204835
+    },
+    {
+      "name": "scope-schema-command",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "control_schema",
+        "--test",
+        "management_grants"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 32.92267034575343
+    },
+    {
+      "name": "reauthentication-transport",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "interfaces::management::tests::reauthentication"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 11.985212656203657
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--lib",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe",
+        "--bin",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr-archive-worker",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.3203118750825524
+    }
+  ],
+  "cases": [
+    {
+      "case": "scope-grant-csrf-and-missing-native-evidence-refuse-without-durable-effects",
+      "status": "PASS"
+    },
+    {
+      "case": "scope-grant-historical-active-receipt-cannot-reuse-a-released-pin",
+      "status": "PASS"
+    },
+    {
+      "case": "scope-grant-pin-expiry-at-observed-commit-rolls-back-and-keeps-control-usable",
+      "status": "PASS"
+    },
+    {
+      "case": "scope-grant-complete-positive-and-six-omissions-restore-full-state-and-xmin",
+      "status": "PASS"
+    },
+    {
+      "case": "scope-grant-real-password-native-allocation-self-cas-and-identical-retry",
+      "status": "PASS"
+    },
+    {
+      "case": "scope-grant-revoke-without-archive-and-historical-enable-retry-never-reapplies",
+      "status": "PASS"
+    }
+  ],
+  "atomic_omissions": [
+    {
+      "case_name": "account",
+      "phase": "constraints",
+      "sqlstate": "23514",
+      "message": "scope grant requires atomic command, exact audit, revision, grant and proof consumption"
+    },
+    {
+      "case_name": "audit",
+      "phase": "command",
+      "sqlstate": "23503",
+      "message": "insert or update on table \"management_commands\" violates foreign key constraint \"management_commands_audit_id_dataset_id_actor_id_action_ex_fkey\""
+    },
+    {
+      "case_name": "command",
+      "phase": "detail",
+      "sqlstate": "P0002",
+      "message": "query returned no rows"
+    },
+    {
+      "case_name": "detail",
+      "phase": "grant",
+      "sqlstate": "23514",
+      "message": "scope grant requires its exact new accepted command"
+    },
+    {
+      "case_name": "grant",
+      "phase": "constraints",
+      "sqlstate": "23514",
+      "message": "scope grant requires atomic command, exact audit, revision, grant and proof consumption"
+    },
+    {
+      "case_name": "none",
+      "phase": "positive-rollback",
+      "sqlstate": "BB099",
+      "message": "fixture complete transition rollback"
+    },
+    {
+      "case_name": "proof",
+      "phase": "constraints",
+      "sqlstate": "23514",
+      "message": "scope grant requires atomic command, exact audit, revision, grant and proof consumption"
+    }
+  ],
+  "observations": {
+    "upgrade": "Actual810 then811 preserves the six compared acceptance tables including xmin, plus fixture credential fields. This is not a populated historical-grant/legacy-initial-activation upgrade matrix.",
+    "privileges": "42501 without proof UPDATE; column-scoped UPDATE(proof_id) persists after rollback; actual identity UPDATE reaches immutable23514 and preserves compared rows.",
+    "unsigned_encoding": "Literal0,1,2^63-1,2^63,2^64-2,2^64-1 match eight-byte hex; old rounded-division expression independently differs at max.",
+    "fingerprints": "Actual permanent enable/revoke digests match separately frozen Python struct.pack/hashlib vectors, independently recalculated in read-only AI review.",
+    "expiry": "A500ms native pin and1.3second deferred delay reach actual COMMIT. Nontransactional sequence confirms entry; BB001 maps to Denied. Six acceptance tables/xmin are unchanged and Control refresh succeeds.",
+    "omission_scope": "Fixture-only invoker trigger on the actual fenced Control backend; complete positive and six omissions run in exception subtransactions with explicit flush of four scope constraints. All restore command/detail/grant/audit/proof/account rows and xmin. The ordinary outer grant then executes an actual COMMIT.",
+    "historical_retry": "Original acceptance resolves under live session/CSRF without new proof/native allocation, including after revoke and removal of principals.manage. It never reapplies the old enable."
+  },
+  "workload": {
+    "fixture": "normal signed publication",
+    "dataset": "01010101010101010101010101010101",
+    "snapshot": 3,
+    "topology": "0",
+    "bounds": [
+      {
+        "shard_id": 0,
+        "owner_epoch": 1,
+        "complete_through": 10
+      }
+    ],
+    "independent_readback": "Actual archive-read-probe plus separately implemented signed_publication_oracle validates all six archive families and complete signed-event bytes. Eight retained Parquet files hashed.",
+    "performance": "No throughput/aged-state/native memory capacity claim; configured limits are not measured capacity."
+  },
+  "durable_terminal": {
+    "commands": 2,
+    "details": 2,
+    "audit": 2,
+    "proofs": 0,
+    "disabled_generation2": 1,
+    "account_revision": "3",
+    "active_control": 0,
+    "active_pins": 0,
+    "backends": 0
+  },
+  "artifacts": {
+    "control": "db1a33cc281c2a093aff94c4da194d66689df1a3096ea788968625d4e2402bb9",
+    "worker": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a",
+    "publisher": "3b3c09822e25e7117433973930853fa26a237699c0a764be09576fcd58273420",
+    "reader": "25822b7fd24cd7141299d80d6cd0fcc2a0997ec48cc9664b3fccc3f87190e8fa"
+  },
+  "native_assets": {
+    "bigbrotr-archive-worker": {
+      "bytes": 14344128,
+      "sha256": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a"
+    },
+    "extensions/ducklake.duckdb_extension": {
+      "bytes": 36436086,
+      "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+    },
+    "extensions/httpfs.duckdb_extension": {
+      "bytes": 21570542,
+      "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+    },
+    "extensions/postgres_scanner.duckdb_extension": {
+      "bytes": 41696558,
+      "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+    },
+    "lib/duckdb.h": {
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "lib/libduckdb.so": {
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "parquet_files": {
+    "signed_normal/kind=7/main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": {
+      "bytes": 1902,
+      "sha256": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e"
+    },
+    "signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 1902,
+      "sha256": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70"
+    },
+    "signed_normal/kind=7/main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": {
+      "bytes": 10655,
+      "sha256": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076"
+    },
+    "signed_normal/kind=7/main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 6750,
+      "sha256": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be"
+    },
+    "signed_normal/kind=7/main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 3855,
+      "sha256": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35"
+    },
+    "signed_normal/kind=7/main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 4732,
+      "sha256": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05"
+    },
+    "signed_normal/kind=7/main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 4011,
+      "sha256": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937"
+    },
+    "signed_normal/kind=7/main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": {
+      "bytes": 6790,
+      "sha256": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+    }
+  },
+  "capture": {
+    "path": ".research/implementation/scoped-grants/grants-native-final-checks",
+    "files": 24,
+    "sha256": "5f133ad3760b9d39839e7503f47730bc8477e59943d00049188e6cbe57d680a9",
+    "verification": "PASS: all24 capture hashes,1032 source hashes against Mac Git archive, four actual ELF hashes, five native dependency asset bytes/hashes against the Linux registry, and terminal ownership independently verified."
+  },
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/scope-grants-4b9511d",
+    "owner": "47b49309bc046bf488d11bd72bafe34d",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "f65baf39fa287933d69500c58705c0e3510ad4579f08684ce8780dd356857bb2"
+      },
+      {
+        "name": "rust-scope-grants",
+        "id": "d223240b0df68ee0ac36d33d95cf1a43421e403608f600e41e3a9f9ec20a5729"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preserved": 508,
+    "unrelated_running": 8,
+    "errors": [],
+    "free_bytes": 45208035328,
+    "note": "Both owned containers stopped/PID0/noOOM; exact source remains clean. No stopped-PG restart or crash recovery claimed."
+  },
+  "prior_failures": [
+    "p08-scoped-grants-permission-red-20260923.json",
+    "p08-scoped-grants-fixture-rollback-red-20260923.json",
+    "p08-scoped-grants-delay-privilege-red-20260923.json",
+    "p08-scoped-grants-final-check-red-20260923.json"
+  ],
+  "review": {
+    "kind": "Read-only AI review plus integrating-owner diff review",
+    "scope": "Complete810/adapter and811 correction; fixture SQL and independent command vectors",
+    "limit": "Review missed the originally executed PL/pgSQL qualifier error; engine evidence, not review alone, establishes this scoped correction."
+  },
+  "exclusions": [
+    "No private grant route/UI or actual authorized history/export/restart journey",
+    "No ambiguous COMMIT response loss or crash/reacquisition for scope changes",
+    "No distinct old-holder active-pin schedule or multi-stream/zero-prefix native grant matrix",
+    "No two-actor/concurrent CAS/duplicate-CAS-in-one-transaction or u64-generation exhaustion execution",
+    "No full mixed-policy/extra-audit/digest-mismatch and proof-session/reset/logout acceptance matrix",
+    "No restrictive per-action delivery/native-work drain qualification",
+    "No aged/mixed load, production capacity, complete product/release or Linux arm64 qualification"
+  ]
+}

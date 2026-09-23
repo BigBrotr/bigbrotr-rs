@@ -18232,7 +18232,7 @@
       "network_state": "removed after owner/no-endpoint audit",
       "terminal_audit": "terminal-audit.json"
     },
-    "observation": "6099495 stopped/retained after actual deferred product42P01. Two cases pass; final acceptance unqualified.23 capture/1029 source/four ELF hashes verified,506 prior records unchanged, no active lab/cleanup debt.",
+    "observation": "4b9511d scoped native qualification PASS;24 capture/1032 source/four ELF/five native asset hashes verified. Both owned containers exited/PID0/noOOM, network removed;508 prior records unchanged, eight unrelated running,45208035328bytes free. No active lab or cleanup debt.",
     "native_permission_fix": {
       "source": "4e6bfb1ef62394a466aaa5a700a7c4c937116f4a",
       "tree": "8b4253c7b4f5ffd24e8ed3f57f54e14f2b832f6b",
@@ -18313,6 +18313,38 @@
       "container_id": "2fcc2572ba87a133d5cac1b1dc68caa2835512e6fd4ad7f5032b6a4f7143eb91",
       "network_state": "removed after owner/no-endpoint audit",
       "terminal_audit": "terminal-audit.json"
+    },
+    "native_final_checks": {
+      "source": "4b9511d06356a3d2c4ceda100c498d6665221a9d",
+      "tree": "43c14021148974aab5101d7836b47490bb7a0473",
+      "owner": "47b49309bc046bf488d11bd72bafe34d",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/scope-grants-4b9511d",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "f65baf39fa287933d69500c58705c0e3510ad4579f08684ce8780dd356857bb2"
+        },
+        {
+          "name": "rust-scope-grants",
+          "id": "d223240b0df68ee0ac36d33d95cf1a43421e403608f600e41e3a9f9ec20a5729"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.scope-grants",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T15:55:00.025516+00:00",
+      "network_id": "9bc04570884c2bec9a9e09c336a28f63d0c0dbedbd6fe4dc4a07e0a90797bb6d",
+      "postgres_id": "f65baf39fa287933d69500c58705c0e3510ad4579f08684ce8780dd356857bb2",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "d223240b0df68ee0ac36d33d95cf1a43421e403608f600e41e3a9f9ec20a5729",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "report": "docs/implementation/evidence/p08-scoped-grants-native-20260923.json",
+      "status": "PASS-scoped",
+      "capture_sha256": "5f133ad3760b9d39839e7503f47730bc8477e59943d00049188e6cbe57d680a9"
     }
   }
 }

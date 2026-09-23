@@ -407,7 +407,7 @@ qualifies the ordinary expiry refusal and graceful restart. Ambiguous proof COMM
 and concurrent capacity admission remain unqualified. No proof alone activates a
 grant or closes the remaining P08-T02/P06 history acceptance.
 
-0810, currently under native qualification, extends the existing command ledger
+0810, with the required0811 correction below, extends the existing command ledger
 with immutable `scope_grant_changes` and mutable `scope_grants` state. Its closed
 legacy/new shapes preserve initial activation's policy1 and partial uniqueness.
 Commands, detail, exact policy/config/time audit, account CAS, per-scope generation
@@ -424,8 +424,9 @@ The command's u64 encoding uses PostgreSQL16
 [integer quotient `div`](https://www.postgresql.org/docs/16/functions-math.html)
 and remainder, preserving unsigned values above bigint's maximum; truncating an
 already rounded numeric division is not an equivalent encoder. The native fixture
-contains the original rounded-expression negative control. Execution evidence is
-still required before this schema or adapter is qualified.
+contains the original rounded-expression negative control. The
+[scoped native evidence](../implementation/evidence/p08-scoped-grants-native-20260923.json)
+executes it alongside unsigned boundary values and actual grant fingerprints.
 
 A final grant-expiry refusal uses private SQLSTATE `BB001`: an explicit server
 COMMIT rejection proves rollback and maps to ordinary denial; transport loss
@@ -447,5 +448,11 @@ only `require_scope_grant_effects` with distinct local names, preserving810's
 checksum, stored rows, trigger definitions and function permissions. New grant
 acceptance requires explicit811. PostgreSQL16 distinguishes the hidden parameter
 block from a labeled local block in its [PL/pgSQL structure](https://www.postgresql.org/docs/16/plpgsql-structure.html).
-This correction is under native qualification; schema compilation alone does not
-execute deferred trigger statements.
+The same native report qualifies811 through delayed COMMIT expiry, an actual
+grant/revoke, historical retries and a complete positive plus six SQL omissions.
+The omissions flush the four scope constraints inside rolled-back subtransactions;
+the ordinary outer grant subsequently executes a real COMMIT. Comparisons cover
+the six acceptance tables and their xmin, not the whole database. Lost COMMIT,
+concurrent/multiple-scope acceptance, full legacy upgrade and private delivery
+remain separate required cases. Schema compilation alone does not execute deferred
+trigger statements.

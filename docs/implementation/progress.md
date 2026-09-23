@@ -19,179 +19,119 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Last observed main/HEAD `6099495098eee3c7ff61103ebe82dd5d87cb41ba`, unpublished
-candidate four commits ahead of origin/main `9f7fabd`. No merge/rebase or another
-writer. Candidate product inputs are:
-additive0810/catalog, scope-grant Control adapter/receipt, shared session helper,
-actual signed-publication/password/native-allocation fixture and runner, schema
-upgrade test, and owning private-admin/storage contracts. No grant HTTP route or
-private history read is advertised. No dependencies changed. The previous candidates and their RED evidence are committed; root-owned811 and
-its fixtures/contracts/evidence/checkpoint changes are dirty.
+Last observed main/HEAD `4b9511d06356a3d2c4ceda100c498d6665221a9d`, five
+unpublished coherent candidate/correction commits ahead of origin/main`9f7fabd`.
+No merge/rebase or other writer. Product changes now qualify their **scoped**
+boundary below. Root owns only the final report, owning task/contracts, checkpoint
+and inventory documentation changes. No dependencies changed. The repository was
+freshly verified private and named bigbrotr-rs through gh repo view.
 
-The command binds dataset/actor/key/target/full VisibilityScope QualifiedRef,
-expected config/policy/account-grant revisions, and allocation catalog/frontier
-only when enabling. Revocation explicitly requires null allocation so Archive
-outage cannot block it. Canonical positive decimal revisions and independent
-Python fixed-width SHA256 vectors include the actual native fixture actor/key.
+Next bounded action: finish report/diff/structural checks, commit and push this
+qualified scoped result. Then wire the private grant command and its explicitly
+configured, owned native reader into the existing Control/HTTP supervisor; proceed
+to the existing private event_history protocol under a per-action authority window.
+Retain the remaining failure/recovery gates below. Do not replace the real consumer
+with a new diagnostic CLI or mark P08/P06/M1 complete.
 
-The real reauthentication route shares login's one owned Argon2 worker and
-persistent account/peer attempt counters. Both transactions check the exact
-session/CSRF, current principals.manage and captured revisions. At most32 temporary
-proofs per account, five minutes shortened by session expiry. Same live key/content
-retry retains original ID/expiry/audit; changed content conflicts. Proof IDs require
-the original session/CSRF, never bearer authority. Temporary cleanup retains audit.
-808 permits only expired deletion; subsequent810 must add exact atomic consumption.
-Startup and both reauth transactions require explicit809.
+## Scoped grant result
 
-## Executed results and current failure correction
+[Native qualification](evidence/p08-scoped-grants-native-20260923.json) is PASS
+for exact4b9511d/tree`43c14021148974aab5101d7836b47490bb7a0473`. Linuxamd64,
+PG16.15, Rust1.98.1, exact DuckDB1.5.5 library/header/extensions.21schema/3command
+and2HTTP transport tests, scoped Clippy, six actual adapter/native cases and an
+independent signed six-family readback pass. Eight actual Parquet files are hashed.
 
-[Native RED](evidence/p08-reauthentication-expiry-red-20260923.json) records real
-PG16.15/Linuxamd64 execution atf83ac99/treecd1a4c2. Build,18schema/3command tests,
-two real HTTP transport tests and scoped Clippy PASS. Nine PG cases pass, then
-an INSERT delayed past session expiry fails the expected normal-denial assertion.
-The final cap/cleanup case was NOT_RUN. The guard raised23514, mapped to Backend,
-which poisoned Control. This was independently proposed by read-only AI review,
-then actually reproduced. No full HTTP+PG reauth was executed in that candidate.
+The actual password/native allocation consumer exercises wrong CSRF/missing native
+refusal, released-pin receipt refusal, a500ms pin with observed1.3second deferred
+COMMIT delay, complete grant and revoke, exact retry and old enable retry after
+revocation and loss of principals.manage. Explicit BB001 means known rollback/
+Denied with reusable Control; other SQL errors remain Backend and wire loss remains
+CommitUnknown. No accepted receipt is an applied-drain or read capability.
 
-The follow-up preserves applied808 bytes and adds809_reauthentication_expiry.sql.
-An otherwise valid but expired INSERT returns no row; Rust treats zero as Denied
-and appends no audit. Another unexpected affected count is InvalidMetadata.
-A persisted fixture trigger-entry marker distinguishes the actual delayed path.
-The new executable HTTP fixture covers two sessions/same key, independent cookie
-hash-to-SQL session binding, exact retry/content conflict, shared quota and restart.
-[Fixed native evidence](evidence/p08-reauthentication-native-20260923.json) at
-ac86c16 passes19schema/3command tests,2transport tests, scoped Clippy,11adapter
-cases and3actual executable HTTP cases. Independent terminal SQL finds3proofs/
-33issuance audits in the adapter database and2proofs/2audits in the HTTP database;
-both retain seven original grants and have zero active Control rows/backends.
-The ordinary executable restart preserves exact proof/response/xmin. It was
-**graceful**, not an ambiguous COMMIT or crash. Concurrent cap admission and the
-full audit-failure matrix remain unqualified; grant consumption/history do not
-exist yet.
+A fixture-only invoker trigger on the actual Control backend tests a complete
+positive plus six omitted effects. It flushes only four scope constraints inside
+exception subtransactions, restores the six acceptance tables and xmin, then lets
+the ordinary outer grant execute a real COMMIT. Independent terminal SQL finds
+commands2/details2/audits2/proofs0, one disabled generation2 scope, account revision3,
+activeControl0/activePins0/backends0. The fixture deliberately removes the dataset
+principals.manage grant near the end; the other six initial actions remain.
 
-Local `.research/implementation/scoped-grants/` evidence:
+Applied0810 is unchanged. Actual COMMIT exposed its local-variable function-name
+qualification as42P01; additive0811 replaces only that function with unambiguous
+wanted_actor/wanted_key and the adapter explicitly requires811. Local prerequisite
+RED was UnknownTarget811. Actual810->811 preserves compared acceptance rows/xmin
+and credential fields; this is not a populated-grant/full legacy activation upgrade.
+Runtime provisioning includes UPDATE(proof_id) for proof row locks; the immutable
+UPDATE guard still refuses even identity assignment. Frozen Python fingerprints
+for actual enable/revoke and six unsigned edge values match; old rounded division
+fails the max-u64 negative control.
 
-- command-kind:3tests PASS; Clippy timed out compiling native dependencies.
-  command-clippy-resume subsequently PASS after380s; no compiler diagnostic was
-  hidden as a product failure. Use ambient Cargo cache with CARGO_BUILD_JOBS=2;
-  old .research/cargo-home lacks current dependencies and must not be substituted.
-- reauth-red: actual UnknownTarget808; reauth-http-red: actual405 from old fallback.
-- reauth-connected/reauth-fixtures: earlier dirty18schema/3command and real
-  transport tests, relevant builds and Clippy PASS.
-- reauth-before-native: fixture compile failed from an incorrect include path;
-  corrected. reauth-native-ready passes builds/Clippy/generated-contract check/
-  TypeScript client/diff review.
-- reauth-expiry-fix and reauth-fix-reviewed: scoped builds/Clippy and final19schema
-  tests PASS. The fixed engine behavior is not established by these local checks.
+Four actual RED candidates remain documented and retained:
+[proof privilege](evidence/p08-scoped-grants-permission-red-20260923.json),
+[fixture GRANT rollback](evidence/p08-scoped-grants-fixture-rollback-red-20260923.json),
+[delay marker namespace](evidence/p08-scoped-grants-delay-privilege-red-20260923.json),
+[deferred product binding](evidence/p08-scoped-grants-final-check-red-20260923.json).
+Their partial PASS cases do not replace their overall failures. Read-only AI review
+and integrating-owner review covered810/adapter,811 and the omission fixture; review
+missed the originally executed qualifier error, so engine evidence is essential.
+The reviewer is idle and owns no files/resources.
 
-The6709e68 native candidate has finished **FAIL** at a missing fixture privilege:
-`SELECT ... FOR UPDATE` on reauthentication_proofs returned42501/Backend rather
-than the expected missing-native Unavailable. Build,20schema/3command tests,
-2transport tests and Clippy passed. Explicit810, actual login/proof and signed
-publication/captured cut ran; the five grant cases and independent readback did
-not complete. [RED evidence](evidence/p08-scoped-grants-permission-red-20260923.json)
-retains the failure. Applied810 bytes stay fixed. The narrow fixture correction
-adds UPDATE(proof_id), an explicit missing-privilege negative control and proof
-identity UPDATE refusal; no schema ownership or guard bypass is introduced.
+Still required: scope-command COMMIT loss/reacquisition and crash recovery,
+distinct old-holder active-pin schedule, multi-stream/zero bounds, multiple actors/
+scopes and concurrent CAS, duplicate CAS in one transaction, u64-generation
+exhaustion, full mixed-policy/extra-audit/proof-session/reset/logout acceptance,
+private HTTP/UI/history/export/restart and restrictive native-work/socket drain.
+No throughput, aged-state capacity, complete release or Linuxarm64 claim.
 
-The lab6709e68 owner01f25682923907f7c1e02065af2449fb is stopped/retained, both
-containers exited/PID0/noOOM and owned empty network removed;500prior records
-unchanged, eight unrelated workloads running,59,916,832,768bytes free.22capture
-and1026source hashes verified against MacGit; raw grants-native/capture. The second candidate4e6bfb1 also finished **FAIL** before grant acceptance: its
-single simple-query message let the row-lock test ROLLBACK undo the provisioning
-GRANT. [Fixture RED](evidence/p08-scoped-grants-fixture-rollback-red-20260923.json)
-records42501 instead of the intended immutable UPDATE23514; the correction commits
-GRANT separately and asserts the privilege persists after the lock-test rollback.
-No applied SQL changes. Local focused Clippy passes. Both owned containers stopped/
-PID0/noOOM, owned network removed,502prior records preserved, eight unrelated
-running.23capture/1027source/four actual ELF hashes verified; raw grants-native-fixed.
-The correction is committed. Root owns only checkpoint/inventory updates.
-898b7ac has finished **FAIL** at the deferred fixture marker's missing public
-schema USAGE; its first two cases pass, including unchanged-row CSRF/native refusal
-and a released-pin historical receipt. The narrow test-only correction explicitly
-grants namespace USAGE, keeping the expected Denied result and marker assertion.
-[Third RED](evidence/p08-scoped-grants-delay-privilege-red-20260923.json) retains it.
-Build,20schema/3command,2transport and Clippy pass; native final expiry/acceptance/
-readback remain pending. Both containers exited/PID0/noOOM, owned network removed,
-504prior records unchanged;23capture/1028source/four actual ELF hashes verified.
-The correction is committed; root owns checkpoint/inventory updates.
-6099495 finished **FAIL** at an actual product boundary: the deferred COMMIT
-function referenced DECLARE locals through the function-name qualifier, which PG
-interpreted as a table and rejected42P01. [Product RED](evidence/p08-scoped-grants-final-check-red-20260923.json)
-retains the failure. Applied810 stays fixed. Draft0811 replaces only the function
-with unambiguous local names; the adapter requires811. Local upgrade RED observed
-UnknownTarget811;21schema/3command tests and focused Clippy now pass. No successful
-native acceptance or811 upgrade is yet claimed.
+## Reauthentication baseline
 
-The6099495 lab is stopped/retained, both containers exited/PID0/noOOM, own empty
-network removed,506prior records unchanged;23capture/1029source/four actual ELF
-hashes verified. No live lab or cleanup debt. Root owns811/catalog/adapter, fixture
-and runner extensions, frozen independent grant fingerprints/u64 edge vectors,
-contracts, RED report and checkpoint/inventory changes.
+[Native reauthentication](evidence/p08-reauthentication-native-20260923.json) at
+ac86c16 is pushed with documentation9f7fabd:19schema/3command,2transport,11adapter
+and3actual executable HTTP cases pass. Actual HTTP graceful restart preserves the
+same proof/response/xmin; no ambiguous COMMIT or crash claim. Adapter terminal has
+3proofs/33issuance audits, HTTP2proofs/2audits; both retain seven grants and have no
+actual active Control/backends. The earlier[f83ac99 RED](evidence/p08-reauthentication-expiry-red-20260923.json)
+is preserved; additive809 handles otherwise valid proof INSERT crossing expiry.
 
-Read-only AI review is checking the correction and new fixture-only BEFORE audit
-trigger on the actual Control backend, installed after the expiry fault. Seven
-exception subtransactions cover a complete positive plus six omitted effects,
-exact phase/SQLSTATE/message, only four scope constraint triggers, and whole rows/
-xmin restored before the real grant. OfficialPG16.15 AfterTriggerEndSubXact restores
-queued events and constraint mode. This matrix is implemented but **NOT_RUN**.
-Next bounded action: finish review/local checks, commit811 and qualify that exact
-candidate on Tux through six native cases, independent signed readback and final SQL.
-
-Candidate0810 enforces common actor/key identity, exact digest/audit, unique target
-result revision and scope generation, same-session proof consumption, and retained
-revocation tombstones. Enable consumes actual ArchivedVisibility with complete
-bounds under the live pin/catalog barrier; revoke omits Archive. Historical retry
-requires live session/CSRF, resolves first and never reapplies. Two read-only AI
-review findings prompted per-target historical CAS uniqueness and explicit final
-session/pin checks; another found rounded numeric division unsuitable for u64
-encoding. The draft uses div/mod and includes the old-expression native negative
-control, not yet executed. Review also separated explicit deferred expiry (BB001,
-known rollback/Denied and reusable Control) from lost-COMMIT transport; a persisted
-sequence marker exercises that delayed final check. Old-holder pins are checked
-before invoking the current-holder helper; the distinct old-holder schedule still
-needs execution. Local schema-upgrade RED observed UnknownTarget810;
-subsequent20schema/3command tests and focused Clippy pass after the helper
-extraction. Two fixture compile errors and initial Clippy diagnostic remain in raw
-logs; no engine evidence is claimed from compilation. Omission/concurrency/expiry/
-COMMIT-loss/full legacy-upgrade cases and the private HTTP/history/drain consumer
-remain required; the initial five native fixture cases cannot close them.
+Proofs remain bounded32/account, five minutes shortened by session expiry, exact
+session/CSRF/command/revisions and immutable issuance audit. Real HTTP shares one
+owned Argon2 worker and persistent account/peer quotas with login. Same-key/content
+retry preserves proof/expiry/audit; changed content conflicts.808 introduced expired
+cleanup,810 adds exact atomic consumption. Temporary proofs never authorize reads.
+Concurrent cap admission/full reauth COMMIT-loss remain open. Startup/reauth requires
+809; new scope acceptance requires811.
 
 ## Laboratory custody
 
-The failed root `/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-f83ac99`
-is freshly stopped/retained. Owner`9e12ab992a9c82f6da602de1c7ac0609`, label
-`org.bigbrotr.reauthentication`; PG
-`0a26f539a3e562aa7a2cfc982ea62bf5a24ed2162f3d4c60c3195fba26191bca`, runner
-`7405265c1f7b85411d50671a76360025bd71a816ad13597b5ef9a33f7a1514c1` exited/PID0/noOOM.
-Own empty network removed. All496previous container records remain unchanged,
-eight unrelated workloads running;67,196,719,104bytes free at terminal inspection.
-The fixture panic leaves one active scheduling row but zero actual Control
-backends; no graceful owner release is claimed. Do not restart or reuse its output.
+No active lab or cleanup debt. The latest run is stopped/retained:
+`/home/tux/bigbrotr-implementation-20260917/runs/scope-grants-4b9511d`, owner
+`47b49309bc046bf488d11bd72bafe34d`, label`org.bigbrotr.scope-grants`, PG
+`f65baf39fa287933d69500c58705c0e3510ad4579f08684ce8780dd356857bb2`, runner
+`d223240b0df68ee0ac36d33d95cf1a43421e403608f600e41e3a9f9ec20a5729`.
+Both freshly exited/PID0/noOOM, owned empty network removed.508prior container
+records unchanged, eight unrelated workloads running,45,208,035,328bytes free.
+Raw `.research/implementation/scoped-grants/grants-native-final-checks/`: all24
+capture/1032source/four actual ELF/five native dependency asset hashes verified
+against MacGit and the exact Linux asset registry. CaptureSHA256
+`5f133ad3760b9d39839e7503f47730bc8477e59943d00049188e6cbe57d680a9`.
 
-All18capture/1018source hashes match Mac Git archive; captureSHA256
-`42ae13c1faa432bad267b26e6aa326ae6725f1d4f3b408ca617f21beeb2cc5e8`.
-Both actual ELF hashes independently match. Raw `scoped-grants/reauth-native-red/`;
-resources-start.json is historical, capture/resources.json is terminal. Keep
-secret-bearing fixtures on Tux. Inventory entry implementation_reauthentication_20260923
-owns details. No live lab or cleanup debt at this checkpoint.
+Four earlier scope-grant RED roots6709e68/4e6bfb1/898b7ac/6099495 are stopped/retained
+with original source/data/captures. The[lab inventory](../research/laboratory-inventory.json)
+implementation_scoped_grants_20260923 record owns their identities and lifecycle.
+Compiler cache was copied from verified intact b5ff8ab; no retired environment reused.
+The isolated runner had2CPU/6GiB/512PIDs and PG2CPU/1GiB/128PIDs, internal network,
+no host ports/socket/release keys and readonly exactGit source. Limits are not a
+measured production capacity envelope.
 
-The fixed root `/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-ac86c16`
-is stopped/retained, owner`627ce06cf0890fbcaafe6845f93bf1fe`, PG
-`63c29ca718f78dd17912f71472bc9cf1f7d56bf02f65f67f7d66079823758ea0`, runner
-`dde145a44275eca23d759fe0d13f7a5ac7bb4a77760adfe60f41394564e8b99f`.
-Both exited/PID0/noOOM, owned network removed;498prior records unchanged, eight
-unrelated workloads running,63,594,487,808bytes free. All24capture/1021source hashes
-and three actual ELF hashes independently verified; captureSHA256
-`7f1c3aebc7feff3a0cc90663e17616ba18cb068234d1cc03c51e7a08254cd17c`.
-Raw `scoped-grants/reauth-native-fixed/`, inventory native_fixed entry. No live lab,
-ongoing collection or cleanup debt. Cache was copied from intact b5ff8ab; exactGit
-source readonly, pinned Rust/PG16.15,2CPU6GiB512PIDs runner/2CPU1GiB128PIDs PG,
-internal network/nohostports/no release keys. Never use retired partial caches
-51d35ae/e65116b/591c75f or earlier panel/RED caches as complete build inputs.
-The later4738731 cache is also intact. All historical resource roots, secret
-boundaries and terminal receipts remain in the [lab inventory](../research/laboratory-inventory.json)
-and individual reports; verify current state before future operations.
+Reauthf83ac99/ ac86c16 are also stopped/retained in implementation_reauthentication_20260923.
+Fixed raw reauth-native-fixed has24capture/1021source/three ELF hashes verified;
+captureSHA256`7f1c3aebc7feff3a0cc90663e17616ba18cb068234d1cc03c51e7a08254cd17c`.
+Preserve original retained states; never infer graceful release from a failed fixture.
+Intact b5ff8ab and4738731 caches remain identified; retired partial51d35ae/e65116b/
+591c75f and earlier panel/RED caches are not complete build inputs. Local .research
+logs retain intermediate fixture/compile failures. Use ambient Cargo cache with
+CARGO_BUILD_JOBS=2, not stale .research/cargo-home. Verify all old custody claims
+freshly before reuse or cleanup; the inventory is historical navigation.
 
 ## Next integration invariants and review
 
@@ -201,7 +141,7 @@ detail and current grant checks in both directions; lock/read the live proof
 before consume, unique historical proofID; self-grant validates pre-state separately
 from its own +1; explicitNULL checks for legacy initial command shape; deterministic
 account locks before proof cleanup; no historical FK to mutable current generation.
-810 is implemented and applied in the failed native candidate, without accepted-grant qualification. Per-scope generations and
+810/811 have scoped native evidence above. Per-scope generations and
 revocation tombstones must never reset; accepted historical retry cannot reapply.
 
 Enablement needs actual ArchivedVisibility under the same retained certified pin.

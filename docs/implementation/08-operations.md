@@ -213,6 +213,15 @@ audit refusals, ambiguous COMMIT and actual grant consumption before history rea
 Current local tests establish only their named schema/transport boundaries;
 engine and integrated history evidence remain required.
 
+The [scoped grant qualification](evidence/p08-scoped-grants-native-20260923.json)
+at4b9511d now executes actual password/native allocation to atomic grant/revoke,
+exact historical retry, delayed COMMIT expiry and six omitted-effect refusals.
+Explicit811 corrects an executed deferred SQL variable-binding failure without
+rewriting810. This is an adapter/persistence prerequisite: proceed with the private
+grant route and its owned native reader, then history delivery under per-action
+authority. COMMIT-loss/reacquisition, multiple actors/scopes, restrictive drain and
+the full private/public route journey remain required; no T02 step closes here.
+
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 
 The selected Argon2id parameters are an application baseline to benchmark under
