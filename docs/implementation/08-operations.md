@@ -234,7 +234,13 @@ selection, captured snapshot, certified pin, joined native visibility and a fres
 acceptance check. Its isolated private_grant_cases.py fixture now passes eight actual native HTTP
 cases at0d95a6a, with independent final SQL and signed readback; see the
 [native HTTP evidence](evidence/p08-native-grant-http-20260923.json).
-Native-in-flight signal/deadline/disconnect and full history/drain remain open.
+The [native deadline run](evidence/p08-native-grant-deadline-incomplete-20260923.json)
+passes the actual blocked-query expiry case; its signal prerequisite failed.
+The corrected fixture [reproduces signal failure](evidence/p08-native-grant-signal-red-20260923.json)
+at1b9f710 with actual SQL wait and idle Control: exit4 retains the pin. A scoped
+supervisor correction distinguishes joined cancellation from unknown Control/native
+outcomes; native GREEN is pending. Full history/drain and further signal/COMMIT
+interleavings remain open, including the first signal during catalog rollback.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 

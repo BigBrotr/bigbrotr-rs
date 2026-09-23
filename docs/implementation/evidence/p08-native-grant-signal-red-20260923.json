@@ -1,0 +1,538 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02 / P02-T07 native private grant cancellation",
+  "date": "2026-09-23",
+  "status": "FAIL",
+  "source": {
+    "revision": "1b9f710f17750de8527f5dbcd8bdfb9e0a2668a9",
+    "tree": "40222356dd5ec2d56cbed5c5144212809a84c3c0"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "cases": [
+    {
+      "case": "http-native-blocked-deadline",
+      "status": "PASS",
+      "proxy_ready": {
+        "event": "ready",
+        "mode": "hold-reader-query",
+        "target": "publication",
+        "connections": 0,
+        "bytes": 0,
+        "frames": 0,
+        "data_queries": 0,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "owner_requests": 0,
+        "owner_forwarded": 0,
+        "owner_complete": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "auth_finals_omitted": 0,
+        "frontend_queries": 0,
+        "coordinator_inserts": 0,
+        "pin_claim_injections": 0,
+        "pin_rejections": [],
+        "session_mutations_complete": 0,
+        "port": 33537,
+        "source_sha256": "a851fe4bc73b298ed16e46899db1d203ba05ad8b05f41658ee4e155bbbcaa96a"
+      },
+      "submitted": {
+        "event": "submitted",
+        "parent_pid": 7675,
+        "mode": "deadline"
+      },
+      "reader_authenticated": {
+        "event": "held",
+        "mode": "hold-reader-query",
+        "target": "publication",
+        "connections": 2,
+        "bytes": 256488,
+        "frames": 4873,
+        "data_queries": 0,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "owner_requests": 0,
+        "owner_forwarded": 0,
+        "owner_complete": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "auth_finals_omitted": 0,
+        "frontend_queries": 193,
+        "coordinator_inserts": 0,
+        "pin_claim_injections": 0,
+        "pin_rejections": [],
+        "session_mutations_complete": 0,
+        "stage": "reader-query",
+        "backend_pid": 333
+      },
+      "password_attempts": {
+        "account": 4,
+        "peer": 4
+      },
+      "retained_before_wait": {
+        "active_pins": 1,
+        "proofs": 1,
+        "commands": 2,
+        "active_control": 1
+      },
+      "sql_waiter": {
+        "pid": 362,
+        "backend_start": "2026-09-23T17:29:48.183863+00:00",
+        "application_name": "bigbrotr-archive-visibility",
+        "blockers": [
+          361
+        ]
+      },
+      "native_child": {
+        "pid": 7679,
+        "ppid": 7675,
+        "start_ticks": 356684167
+      },
+      "client_exit": 0,
+      "completion_ms": 3914.46,
+      "client_output": "{\"event\": \"submitted\", \"parent_pid\": 7675, \"mode\": \"deadline\"}\n{\"event\": \"terminal\", \"mode\": \"deadline\", \"response\": {\"closed\": \"RemoteDisconnected\"}, \"parent_exit\": 0, \"scratch_entries\": 0}\n",
+      "client_error": "",
+      "client_terminal": {
+        "event": "terminal",
+        "mode": "deadline",
+        "response": {
+          "closed": "RemoteDisconnected"
+        },
+        "parent_exit": 0,
+        "scratch_entries": 0
+      },
+      "durable_after": {
+        "active_pins": 0,
+        "proofs": 1,
+        "commands": 2,
+        "active_control": 0
+      },
+      "blocker_exit": 0,
+      "blocker_error": "",
+      "proxy_exit": 0,
+      "proxy_terminal": {
+        "event": "terminal",
+        "mode": "hold-reader-query",
+        "target": "publication",
+        "connections": 3,
+        "bytes": 791199,
+        "frames": 10200,
+        "data_queries": 0,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "owner_requests": 0,
+        "owner_forwarded": 0,
+        "owner_complete": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "auth_finals_omitted": 0,
+        "frontend_queries": 240,
+        "coordinator_inserts": 0,
+        "pin_claim_injections": 0,
+        "pin_rejections": [],
+        "session_mutations_complete": 0,
+        "unexpected": 0
+      },
+      "retained_terminal": {
+        "active_pins": 0,
+        "proofs": 1,
+        "commands": 2,
+        "active_control": 0
+      }
+    },
+    {
+      "case": "http-native-blocked-signal",
+      "status": "INCOMPLETE",
+      "proxy_ready": {
+        "event": "ready",
+        "mode": "hold-reader-query",
+        "target": "publication",
+        "connections": 0,
+        "bytes": 0,
+        "frames": 0,
+        "data_queries": 0,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "owner_requests": 0,
+        "owner_forwarded": 0,
+        "owner_complete": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "auth_finals_omitted": 0,
+        "frontend_queries": 0,
+        "coordinator_inserts": 0,
+        "pin_claim_injections": 0,
+        "pin_rejections": [],
+        "session_mutations_complete": 0,
+        "port": 45165,
+        "source_sha256": "a851fe4bc73b298ed16e46899db1d203ba05ad8b05f41658ee4e155bbbcaa96a"
+      },
+      "submitted": {
+        "event": "submitted",
+        "parent_pid": 7800,
+        "mode": "signal"
+      },
+      "reader_authenticated": {
+        "event": "held",
+        "mode": "hold-reader-query",
+        "target": "publication",
+        "connections": 2,
+        "bytes": 256488,
+        "frames": 4873,
+        "data_queries": 0,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "owner_requests": 0,
+        "owner_forwarded": 0,
+        "owner_complete": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "auth_finals_omitted": 0,
+        "frontend_queries": 193,
+        "coordinator_inserts": 0,
+        "pin_claim_injections": 0,
+        "pin_rejections": [],
+        "session_mutations_complete": 0,
+        "stage": "reader-query",
+        "backend_pid": 386
+      },
+      "password_attempts": {
+        "account": 5,
+        "peer": 5
+      },
+      "retained_before_wait": {
+        "active_pins": 1,
+        "proofs": 2,
+        "commands": 2,
+        "active_control": 1
+      },
+      "sql_waiter": {
+        "pid": 415,
+        "backend_start": "2026-09-23T17:29:53.736203+00:00",
+        "application_name": "bigbrotr-archive-visibility",
+        "blockers": [
+          414
+        ]
+      },
+      "native_child": {
+        "pid": 7804,
+        "ppid": 7800,
+        "start_ticks": 356684728
+      },
+      "client_exit": 1,
+      "completion_ms": 20.084,
+      "client_output": "{\"event\": \"submitted\", \"parent_pid\": 7800, \"mode\": \"signal\"}\n",
+      "client_error": "Traceback (most recent call last):\n  File \"/out/build/source/experiments/archive-engine/private_grant_fault_client.py\", line 79, in <module>\n    if __name__=='__main__': main(sys.argv[1],int(sys.argv[2]))\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/out/build/source/experiments/archive-engine/private_grant_fault_client.py\", line 69, in main\n    assert code == 0, (code,server.error.read_text())\n           ^^^^^^^^^\nAssertionError: (4, 'error: native grant cancelled; join required\\n')\n",
+      "blocker_exit": 0,
+      "blocker_error": "",
+      "proxy_exit": 0,
+      "proxy_terminal": {
+        "event": "terminal",
+        "mode": "hold-reader-query",
+        "target": "publication",
+        "connections": 3,
+        "bytes": 791199,
+        "frames": 10200,
+        "data_queries": 0,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "owner_requests": 0,
+        "owner_forwarded": 0,
+        "owner_complete": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "auth_finals_omitted": 0,
+        "frontend_queries": 240,
+        "coordinator_inserts": 0,
+        "pin_claim_injections": 0,
+        "pin_rejections": [],
+        "session_mutations_complete": 0,
+        "unexpected": 0
+      },
+      "retained_terminal": {
+        "active_pins": 1,
+        "proofs": 2,
+        "commands": 2,
+        "active_control": 1
+      }
+    }
+  ],
+  "checks": {
+    "source": "1b9f710f17750de8527f5dbcd8bdfb9e0a2668a9",
+    "source_manifest_sha256": "33d102f4b1078a4183313d0562792d12fd78265a65c60f732d51d31a3aa9b3fc",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "scope": "real private HTTP allocation reader supervision and acceptance; no history delivery or restrictive drain qualification",
+    "format": "bigbrotr-foundation-ci/1",
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "fixture",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "catalog_schema_probe",
+          "--example",
+          "catalog_initialization_probe",
+          "--example",
+          "archive_receipt_probe",
+          "--example",
+          "archive_event_probe",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_coordinator_probe",
+          "--example",
+          "archive_attempt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 74.59091153601184
+      },
+      {
+        "name": "native-grant-consumer",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--test",
+          "management_grants",
+          "--test",
+          "config_entrypoint"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 51.36969406390563
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "--example",
+          "catalog_schema_probe",
+          "--example",
+          "catalog_initialization_probe",
+          "--example",
+          "archive_receipt_probe",
+          "--example",
+          "archive_event_probe",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_coordinator_probe",
+          "--example",
+          "archive_attempt_probe",
+          "--bin",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.6311830966733396
+      }
+    ],
+    "counts": {
+      "collected": 3,
+      "executed": 3,
+      "failed": 0,
+      "not_run": 0
+    }
+  },
+  "artifacts": {
+    "control": "1d618efe3aa90bdcbc8f40dfea6062fcbb1d29f4f564d9d3218b1a5686c31d41",
+    "worker": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a",
+    "event_reader": "6fd4422d2af7bf9e3fe48d6ee695e07b096668e1c344b2acb694964d8718f53f",
+    "publisher": "aaf7da61623d0ae9fa6fe76f631c2c57219f4fe30500cdf45586de25150da09c",
+    "reader": "25822b7fd24cd7141299d80d6cd0fcc2a0997ec48cc9664b3fccc3f87190e8fa"
+  },
+  "native_assets": {
+    "bigbrotr-archive-worker": {
+      "bytes": 14344128,
+      "sha256": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a"
+    },
+    "extensions/ducklake.duckdb_extension": {
+      "bytes": 36436086,
+      "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+    },
+    "extensions/httpfs.duckdb_extension": {
+      "bytes": 21570542,
+      "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+    },
+    "extensions/postgres_scanner.duckdb_extension": {
+      "bytes": 41696558,
+      "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+    },
+    "lib/duckdb.h": {
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "lib/libduckdb.so": {
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "capture": {
+    "local_root": ".research/implementation/native-grant-signal-red/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/native-grant-signal-red-1b9f710",
+    "sha256": "1181be524238399948cfccf56b3eb9d2c28e272a469f09ac5f5f876a04543cd3",
+    "files": 34,
+    "verified": "34 capture files,1045 exact Git source files,five actual ELF hashes and five dependency asset hashes verified; private session/CSRF file excluded and plaintext values scanned as secret canaries."
+  },
+  "cleanup": {
+    "owner": "d6d655daccc9d917fb6b3c612c1ff871",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "5a881fa9c979de5412861f87e25def120a5faddeea057e2f01507d4d34111b38"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "d28857e37a4de85d652318245887746daa7ed65a2e46feea662a0cc72fd962a8"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preexisting_count": 520,
+    "preexisting_preserved": true,
+    "unrelated_running": 8,
+    "free_bytes": 23288442880,
+    "terminals": {
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-23T17:26:27.499784353Z",
+        "FinishedAt": "2026-09-23T17:30:04.190256062Z"
+      },
+      "rust-visibility": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-23T17:26:29.474672115Z",
+        "FinishedAt": "2026-09-23T17:30:04.43536567Z"
+      }
+    }
+  },
+  "interpretation": "Actual blocked native deadline PASS. Signal reaches authenticated native child7804/parent7800 and real PG Lock waiter415/blocker414 with idle Control observed before SIGTERM. Actual parent exits4 (native grant cancelled; join required); expected graceful0 fails. SQL retains active pin1/Control1/proofs2/commands2. Fixture client terminates20.084ms after observe; this is not total shutdown or native capacity evidence. Code inspection locates propagation of cancelled external future after join before pin release. The original RED oracle aborts before independent child-absence assertion, so this run alone does not prove the exact reap instant. Password counters3->4->5 establish corrected fixture uses unchanged account/peer limits.",
+  "exclusions": [
+    "Original orchestrator status INCOMPLETE; this evidence classifies the executed product assertion as FAIL, without rewriting raw artifacts",
+    "No signal-success, ambiguous acceptance/crash or full private read/export qualification",
+    "No aged workload, throughput or Linux arm64 qualification"
+  ],
+  "password_attempts_before": {
+    "account": 3,
+    "peer": 3
+  }
+}

@@ -588,10 +588,14 @@ async fn supervise(
                         let mut supervisor = native_grants::Supervisor {
                             owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
                             refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
-                            management: management.as_ref().expect("management source"),
+                            management: management.as_ref().expect("management source"), stopping: false,
                         };
-                        Some(native_grants::execute(work,accepted.clone(),shared_budget.clone(),
-                            archive.coordinator.as_ref().expect("selected local reader"),&mut supervisor).await?)
+                        let response = native_grants::execute(work,accepted.clone(),shared_budget.clone(),
+                            archive.coordinator.as_ref().expect("selected local reader"),&mut supervisor).await?;
+                        // The nested supervisor consumed the signal. Cleanup is
+                        // now known complete; never admit or deliver more work.
+                        if supervisor.stopping { return Ok(()); }
+                        Some(response)
                     }
                 };
                 // Tokio deadlines alone do not detect every suspend/resume.

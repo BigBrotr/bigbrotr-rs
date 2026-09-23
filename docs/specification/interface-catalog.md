@@ -138,11 +138,13 @@ complete the workflows promised by P08/P09:
 The implemented initial subset is described by the versioned [private session
 OpenAPI contract](../../contracts/management/v1/openapi.yaml): login, current-session
 logout, self inspection, command-bound reauthentication and scope-grant acceptance
-in the trusted-host loopback HTTP profile. The grant route's first consumer has
-no configured native reader: fresh enablement refuses503; revocation and original
-acceptance retries dispatch to the fenced adapter. Its new/retried receipt reports
+in the trusted-host loopback HTTP profile. Fresh grant enablement requires explicit
+`archive.reader.enabled`, separate native read credentials and certified snapshot
+custody; an unconfigured or unavailable reader refuses503. Revocation and original
+acceptance retries need no Archive. [Native HTTP qualification](../implementation/evidence/p08-native-grant-http-20260923.json)
+covers actual enable/retry/restart/revoke at0d95a6a. Its new/retried receipt reports
 acceptance only, with exact decimal revisions/time and unobserved application.
-This is not native enablement, restrictive drain or private history qualification. Its
+Restrictive drain and private history delivery remain unqualified. Its
 `bigbrotr-session/1` response carries exact decimal-string revisions/microseconds,
 closed stored action names and `authority=observation-only`. Stored grants are not
 reusable action capabilities. Cookie/CSRF secrets never appear in the JSON body.

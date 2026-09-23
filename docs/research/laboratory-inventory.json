@@ -18515,5 +18515,41 @@
       "capture_sha256": "6b94b5635ed37d15198eb1437b2e397f1a3abe558c683c641a7f3b6f1f88e243"
     },
     "observation": "Stopped/retained; no active lab. Actual deadline PASS, signal prerequisite failed before native submission.34 capture/1044 source/five ELF/five asset hashes verified.518 prior containers unchanged,8 unrelated running; owned network removed. Original failed state preserved."
+  },
+  "implementation_native_grant_signal_red_20260923": {
+    "local_root": ".research/implementation/native-grant-signal-red",
+    "native": {
+      "source": "1b9f710f17750de8527f5dbcd8bdfb9e0a2668a9",
+      "tree": "40222356dd5ec2d56cbed5c5144212809a84c3c0",
+      "owner": "d6d655daccc9d917fb6b3c612c1ff871",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-grant-signal-red-1b9f710",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "5a881fa9c979de5412861f87e25def120a5faddeea057e2f01507d4d34111b38"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "d28857e37a4de85d652318245887746daa7ed65a2e46feea662a0cc72fd962a8"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T17:26:24.177822+00:00",
+      "network_id": "64697c6bdaf0cf7a4e24c66d376fa5c719f3759332152fa2cfefd7fdb262f0e8",
+      "postgres_id": "5a881fa9c979de5412861f87e25def120a5faddeea057e2f01507d4d34111b38",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "d28857e37a4de85d652318245887746daa7ed65a2e46feea662a0cc72fd962a8",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "FAIL",
+      "report": "docs/implementation/evidence/p08-native-grant-signal-red-20260923.json",
+      "capture_sha256": "1181be524238399948cfccf56b3eb9d2c28e272a469f09ac5f5f876a04543cd3"
+    },
+    "observation": "Stopped/retained. Actual SIGTERM assertion fails exit4 versus graceful0, pin1/Control1 retained. Deadline PASS; SQL password counters3/4/5.34 capture/1045 source/five ELF/five native asset hashes verified; private auth excluded/canary-scanned.520 prior records unchanged,8 unrelated running; no cleanup debt."
   }
 }

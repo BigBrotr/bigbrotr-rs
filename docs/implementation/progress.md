@@ -19,7 +19,7 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD7ea08a6; origin/main2bc18b9. Fault fixture candidate is local/unpublished. Native HTTP implementation and
+Verified main/HEAD1b9f710; origin/main2bc18b9. Fault fixture candidates are local/unpublished. Native HTTP implementation and
 qualification evidence are pushed. Owned-reader code and native
 qualification evidence are pushed. No merge/rebase or other writer.
 Private repository/name verified through gh repo view. No dependencies changed.
@@ -75,12 +75,25 @@ Signal case failed on fresh login before query/signal; code was not captured.
 Static accounting indicates shared fifth-attempt account quota was already used;
 do not claim an executed product signal defect. Original state/capture retained.
 
-Next bounded action: reuse the baseline actual live HTTP session in the fault
-fixture (private mode600 file excluded from capture), preserving password quotas,
-then execute real blocked-query SIGTERM against unchanged product code. Current
-signal path statically returns4 after known native join and retains the pin;
-keep expected graceful0/pin retirement discriminating, do not weaken it to green.
-No active lab. Root owns checkpoint/inventory/evidence and next fixture edits.
+[Executed signal RED](evidence/p08-native-grant-signal-red-20260923.json)
+at1b9f710 now reaches actual native child7804/parent7800 and PG Lock waiter415
+with Control idle before SIGTERM. Parent exits4; expected0 fails and SQL retains
+pin1/Control1/proof2/commands2. Deadline repeats PASS. Password counters3->4->5
+confirm fixture session reuse with unchanged quotas. Original orchestrator remains
+INCOMPLETE; report classifies the actual product assertion FAIL. The RED assertion
+precedes independent child-absence check, so do not infer its exact reap time.
+
+Root owns a focused product correction in serve.rs/native_grants.rs: record the
+consumed stop, join known native results before cleanup, retain Control/unknown
+termination failures, then exit outer supervision without further delivery. A
+first stop during capture rollback collects the same future under its finite
+deadline. No active lab. Mac34binary/25configuration/3CLI tests, Clippy, formatting and artifact/link checks
+PASS; an initial invocation named nonexistent targets and was corrected, its log
+retained. Full product diff and independent read-only AI review found no new
+concrete issue. Next bounded action: exact candidate native RED->GREEN including
+unchanged deadline/signal cases. No native GREEN claim yet.
+Independent read-only AI review identifies Control read cancellation as fatal,
+first signal during rollback and response/signal races; no tests run by reviewer.
 No P02/P06/P08 step or M1 closure; history/export follow this boundary.
 
 ## Scoped grant result
@@ -152,6 +165,18 @@ Concurrent cap admission/full reauth COMMIT-loss remain open. Startup/reauth req
 809; new scope acceptance requires811.
 
 ## Laboratory custody
+
+Stopped/retained signal RED lab:
+`/home/tux/bigbrotr-implementation-20260917/runs/native-grant-signal-red-1b9f710`,
+ownerd6d655daccc9d917fb6b3c612c1ff871, labelorg.bigbrotr.archive-visibility.
+PG5a881fa9c979de5412861f87e25def120a5faddeea057e2f01507d4d34111b38 and
+runnerd28857e37a4de85d652318245887746daa7ed65a2e46feea662a0cc72fd962a8:
+stopped/PID0/noOOM, owned network removed.520 prior records unchanged,8 unrelated
+running,23,288,442,880bytes free.34 capture/1045 source/five ELF/five asset hashes
+verified; captureSHA256
+`1181be524238399948cfccf56b3eb9d2c28e272a469f09ac5f5f876a04543cd3`.
+Inventory implementation_native_grant_signal_red_20260923. Original pin remains
+active in retained data; no false recovery/retirement claim and no cleanup debt.
 
 Stopped/retained fault lab:
 `/home/tux/bigbrotr-implementation-20260917/runs/native-grant-faults-7ea08a6`,

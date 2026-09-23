@@ -49,6 +49,12 @@ pub(super) struct Supervisor<'a> {
     pub root: &'a Resolved,
     pub stop: &'a mut Stop,
     pub management: &'a management::Management,
+    pub stopping: bool,
+}
+enum OnShutdown {
+    Cancel,
+    /// Collect the same cleanup future; a signal cannot imply its completion.
+    Finish,
 }
 impl Supervisor<'_> {
     fn maximum(&mut self) -> Result<Duration> {
@@ -62,11 +68,17 @@ impl Supervisor<'_> {
 
     /// The same absolute deadline survives every ready phase. Renewal wins ready
     /// work and never extends this finite allocation operation's own deadline.
+    /// Only catalog/native work belongs here: dropping an in-flight Control
+    /// operation poisons that session and must remain a fatal outcome.
     async fn external<T>(
         &mut self,
         deadline: Instant,
         future: impl Future<Output = T>,
+        on_shutdown: OnShutdown,
     ) -> Result<Option<T>> {
+        if self.stopping && matches!(on_shutdown, OnShutdown::Cancel) {
+            return Ok(None);
+        }
         tokio::pin!(future);
         loop {
             self.lease
@@ -74,9 +86,12 @@ impl Supervisor<'_> {
                 .map_err(|e| (4, e.to_string()))?;
             tokio::select! {
                 biased;
-                _ = self.stop.requested() => {
+                _ = self.stop.requested(), if !self.stopping => {
                     self.management.stop_admission();
-                    return Err((4, "native grant cancelled; join required".into()));
+                    self.stopping = true;
+                    if matches!(on_shutdown, OnShutdown::Cancel) {
+                        return Ok(None);
+                    }
                 },
                 _ = tokio::time::sleep_until(deadline) => return Ok(None),
                 _ = tokio::time::sleep_until(*self.refresh_due) => {
@@ -85,8 +100,10 @@ impl Supervisor<'_> {
                     if current != self.snapshot {
                         return Err((4, "accepted policy changed during native grant".into()));
                     }
-                    self.management.renew_delivery(self.lease.delivery_window(self.lease.known_epoch())
-                        .map_err(|e| (4,e.to_string()))?)?;
+                    if !self.stopping {
+                        self.management.renew_delivery(self.lease.delivery_window(self.lease.known_epoch())
+                            .map_err(|e| (4,e.to_string()))?)?;
+                    }
                     *self.refresh_due = Instant::now()
                         + (self.lease.remaining_validity().map_err(|e| (4,e.to_string()))? / 2)
                         .min(duration(self.root,"heartbeat_interval").saturating_sub(self.renewed.elapsed()));
@@ -110,13 +127,15 @@ impl Supervisor<'_> {
         self.lease
             .check_delivery(self.lease.known_epoch())
             .map_err(|e| (4, e.to_string()))?;
-        if Instant::now() >= deadline {
+        if self.stopping || Instant::now() >= deadline {
             return Ok(Err(SessionError::ArchiveUnavailable));
         }
         let cancel = Arc::new(AtomicBool::new(false));
         let worker_cancel = cancel.clone();
         let mut worker = tokio::task::spawn_blocking(move || job(&worker_cancel));
-        let observation = self.external(deadline, &mut worker).await;
+        let observation = self
+            .external(deadline, &mut worker, OnShutdown::Cancel)
+            .await;
         cancel.store(true, Ordering::Release);
         let (terminal, prior) = match observation {
             Ok(Some(terminal)) => (terminal, Ok(true)),
@@ -321,7 +340,11 @@ pub(super) async fn execute(
         Err(error) => return Ok(work.refuse(error)),
     };
     let connection = authority
-        .external(deadline, transport::connect_pinned(prepared.manager, None))
+        .external(
+            deadline,
+            transport::connect_pinned(prepared.manager, None),
+            OnShutdown::Cancel,
+        )
         .await?;
     let Some(Ok((mut manager, connection, route))) = connection else {
         return Ok(work.refuse(SessionError::ArchiveUnavailable));
@@ -335,11 +358,11 @@ pub(super) async fn execute(
     // All exits after driver creation reach its join with the manager grant held.
     let outcome = async {
         let reader = config.text("postgres.catalog.read_user").expect("selected reader");
-        if !matches!(authority.external(deadline, catalog_guard::inspect_reader(&mut manager, coordinator.identity(),reader)).await?,Some(Ok(()))) {
+        if !matches!(authority.external(deadline, catalog_guard::inspect_reader(&mut manager, coordinator.identity(),reader), OnShutdown::Cancel).await?,Some(Ok(()))) {
             return Ok(work.refuse(SessionError::ArchiveUnavailable));
         }
         let capture_duration = deadline.saturating_duration_since(Instant::now()).min(Duration::from_secs(120));
-        let capture = match authority.external(deadline, CatalogCapture::at_snapshot(&mut manager,coordinator,selected.snapshot_id,capture_duration)).await? {
+        let capture = match authority.external(deadline, CatalogCapture::at_snapshot(&mut manager,coordinator,selected.snapshot_id,capture_duration), OnShutdown::Cancel).await? {
             Some(Ok(value)) => value,
             _ => return Ok(work.refuse(SessionError::ArchiveUnavailable)),
         };
@@ -380,7 +403,7 @@ pub(super) async fn execute(
         // This separate finite cleanup allowance permits no new native work or
         // acceptance. Driver destruction below still retains local custody.
         let cleanup_deadline = Instant::now() + duration(authority.root,"graceful_shutdown_timeout");
-        if !matches!(authority.external(cleanup_deadline, capture.finish()).await?, Some(Ok(()))) {
+        if !matches!(authority.external(cleanup_deadline, capture.finish(), OnShutdown::Finish).await?, Some(Ok(()))) {
             return Err((4,"native grant catalog barrier completion unresolved".into()));
         }
         Ok(response)
