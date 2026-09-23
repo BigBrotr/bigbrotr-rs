@@ -21,22 +21,40 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Last verified main/HEAD and origin/main01752916dceda8563650bec95bc6a2985dd3b6a3,
-clean at resumption. Root now owns the additive0812 export-scope permission slice:
-model/SQL/adapter, independent vectors and HTTP/engine regression fixtures, plus
-owning docs and this checkpoint. Existing published migrations remain unchanged.
-The first new golden/action-separation tests ran RED: export was refused by the
-old closed enum. Subsequent Mac38binary/21schema/4grant tests and scoped Clippy
-PASS; fmt and artifact checks172Markdown/246JSON/errors[] pass. Root reviewed
-the full diff; independent read-only AI review requested and pending. Logs and
-launch/capture scripts are under .research/implementation/export-grants/.
-Next form an unpublished exact candidate and run the explicit812 upgrade plus
-actual HTTP action-separation/restart fixture on fresh isolated Tux PostgreSQL.
-Native execution is NOT_RUN; no new remote resources created yet.
-No export job acceptance or delivery is implemented yet. This necessary P08-T02
-permission prerequisite feeds the active P08-T03/T04 job slice; no second plan.
-Tux freshly observed540 retained containers/eight unrelated running, no BigBrotr
-process/lab, free203,556,044,800bytes. Existing evidence capture paths remain.
+Current main/HEAD923f186889923f828600f5b060210ab79dd44d2d, unpublished candidate;
+origin/main01752916dceda8563650bec95bc6a2985dd3b6a3. Root owns current evidence,
+inventory/checkpoint/task updates and the serve --help correction0811 ->0812.
+Additive0812 extends export/private-export scope grants through the existing
+command, with separate fingerprints and generations; old SQL bytes unchanged.
+Mac RED showed the closed enum rejection; subsequent38binary/21schema/4grant and
+scoped Clippy PASS. Linux same63 tests, actual fixture builds and Clippy PASS.
+Actual Mac serve --help now names0812; no other product change after native run.
+Root reviewed complete diff and29capture/1077source/fiveELF/fiveasset identities.
+Read-only AI found only stale help, now corrected; independently verified capture,
+Git source parity, four fingerprints and540 preserved container records. No discrepancy.
+
+[Native export-grant evidence](evidence/p08-export-grants-native-20260923.json)
+at923f186 has14 actual PASS cases, action-bound proofs/digests, independent action
+generations, export revoke tombstone preserved by restart/exact retry, signed
+history403 until separate history.read grant then exact200. Independent SQL:
+commands/details/audit4, proofs0, account5, activeControl0/pins0/Controlbackends0.
+EightParquet hashes unchanged. Upgrade812 preserves all compared rows+xmin and
+0811 guard source; no pre-existing grant records, so that compatibility remains
+unqualified. No export job/delivery yet.
+
+Original laboratory terminal INCOMPLETE: launch.py175 requested the wrong result
+filename after private-grant-cases.json completedPASS14. Separate final queries
+against both databases and runner zero-exit completion were NOT_RUN. Preserve
+original result; do not infer Archive backend state from stopped containers.
+Stopped root /home/tux/bigbrotr-implementation-20260917/runs/export-grants-923f186,
+ownerb125cdb3d100ed9fd764db55b1b2d225, label org.bigbrotr.archive-visibility;
+PG27fcd5dc4052d56d2ffe7b1f0d535297e7dd20fd0bcf822fa1e74bc7a36b4359;
+runner efab83c45783d2297a0012c9695d7e559bd3e85e4b032a2e4edad61ef1cc48b5.
+BothPID0/noOOM, exits137/143; ownednetworkremoved,540priorrecordsunchanged/eight
+unrelatedrunning. Inventory implementation_export_grants_20260923 records custody.
+CaptureSHA4ee3aecbb50026b68627a7d1bb02931f8e290fdee09a604f0213d62c947dffc1,
+local .research/implementation/export-grants/. Source/data/completebuildcache
+retained, no active lab/cleanup debt. Last free199,856,533,504bytes.
 
 4d81357 integrates model/protocol read modules, initial schemas/OpenAPI and docs,
 management history transport/delivery, serve history/native supervision, nonrenewable
@@ -133,16 +151,15 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: finish and qualify explicit export/private-export grants
-through the existing reauthentication/command route, preserving current history
-semantics and independent per-action generations. Then accept the first private
-export job with its command, complete immutable source cut and retention pins in
-one transaction before replying; implement actual standalone export/restart.
-Reuse control.jobs and existing native custody. Destination approval and dataset
-permission remain additional requirements, not implied by a scope grant.
-Relevant owning contracts are P08-T03/T04, operations-contract.md durable boundary,
-identity-and-encoding.md export closure, import-formats.md and Exporter section of
-derived-read-publication.md. No task or M1 closure yet.
+Next bounded action: finish independent capture review and commit/push the grant
+qualification with its original INCOMPLETE terminal disclosed. Then implement the
+first private export acceptance: command/job/complete immutable source cut and
+retention pins in one transaction before reply, followed by actual standalone
+export/restart. Reuse control.jobs and native custody. Approved destination and
+dataset permission are additional requirements. Read current holder guards and
+retention recovery before editing; acceptance must survive an unknown COMMIT.
+P08-T03/T04, operations-contract.md, identity-and-encoding.md, import-formats.md
+and Exporter in derived-read-publication.md own meaning. No task/M1 closure.
 
 Stopped root /home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be,
 ownerf61ac9d8311ca2e3bdfd09d2a67a16fa, label org.bigbrotr.archive-visibility;

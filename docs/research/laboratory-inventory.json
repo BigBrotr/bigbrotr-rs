@@ -19387,5 +19387,43 @@
       "capture_sha256": "104bcb822857d793b0f10d88da14274a703065c37b96326c7c7ad60e1cc37457"
     },
     "observation": "Three paired actual blocked HTTP body cases PASS. Full signed95195bytes vs action10720bytes/pin9720bytes, all about3.2s. Actual Control renewal with unchanged pin. SQL release assertions, both databases backend0, all8Parquet unchanged.35capture/1072source/fiveELF/fiveassets verified. Stopped/PID0/noOOM runner0/PGwrapper137, network removed,538 prior records/eight unrelated running preserved. Host tcp_wmem unchanged. Complete cache retained; no cleanup debt."
+  },
+  "implementation_export_grants_20260923": {
+    "local_root": ".research/implementation/export-grants",
+    "native": {
+      "source": "923f186889923f828600f5b060210ab79dd44d2d",
+      "tree": "98c0857e8d352c36aae7ed7e924d065f11ce5ae4",
+      "owner": "b125cdb3d100ed9fd764db55b1b2d225",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-grants-923f186",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "27fcd5dc4052d56d2ffe7b1f0d535297e7dd20fd0bcf822fa1e74bc7a36b4359"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "efab83c45783d2297a0012c9695d7e559bd3e85e4b032a2e4edad61ef1cc48b5"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T20:49:06.462930+00:00",
+      "network_id": "fb0884da2b240863b7b12711fe599899318d815961ea9090dce63583da891cd3",
+      "postgres_id": "27fcd5dc4052d56d2ffe7b1f0d535297e7dd20fd0bcf822fa1e74bc7a36b4359",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "efab83c45783d2297a0012c9695d7e559bd3e85e4b032a2e4edad61ef1cc48b5",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped; laboratory terminal INCOMPLETE",
+      "evidence": "docs/implementation/evidence/p08-export-grants-native-20260923.json",
+      "capture_sha256": "4ee3aecbb50026b68627a7d1bb02931f8e290fdee09a604f0213d62c947dffc1",
+      "actual_cases": 14,
+      "terminal_failure": "FileNotFoundError in launch.py175; original preserved"
+    },
+    "observation": "Stopped/PID0/noOOM runner143/PGwrapper137, owned network removed;540 prior records unchanged/eight unrelated running. Actual14 grant cases and Control terminal SQL pass, final separate both-database check NOT_RUN. Source/data/artifacts/cache retained; cache build completed but no export-job qualification. No cleanup debt."
   }
 }

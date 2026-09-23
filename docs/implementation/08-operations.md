@@ -252,8 +252,12 @@ interrupted Control renewal or an ambiguous accepting COMMIT.
 The current P08-T02 prerequisite for P08-T03/T04 extends the same route with
 [explicit export permissions](../user/administration/scope-grants.md), additive0812
 and independent action fingerprints/generations. It leaves default permissions,
-old grant digests and0811's deferred checks unchanged. Native qualification is
-pending; export jobs and destination approval remain separate required work.
+old grant digests and0811's deferred checks unchanged. The [native grant evidence](evidence/p08-export-grants-native-20260923.json) records14 actual cases at923f186,
+including proof/action separation, retained generations and restart retry. The
+original laboratory terminal is INCOMPLETE because its launcher requested the
+wrong result filename after the case fixture passed; the final separate
+both-database backend check was not run. Export jobs and destination approval
+remain separate required work.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 

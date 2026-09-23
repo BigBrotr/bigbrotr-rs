@@ -1,0 +1,250 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02 explicit export permissions; P08-T03/T04 prerequisite",
+  "date": "2026-09-23",
+  "status": "PASS-scoped; laboratory terminal INCOMPLETE",
+  "source": {
+    "revision": "923f186889923f828600f5b060210ab79dd44d2d",
+    "tree": "98c0857e8d352c36aae7ed7e924d065f11ce5ae4"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner": "2CPU/6GiB/512PIDs",
+    "postgres": "2CPU/1GiB/128PIDs",
+    "network": "Owned internal namespace, no host ports/socket/release keys; source and dependency assets read-only"
+  },
+  "changes": "Additive0812 and typed export/private-export actions reuse the authenticated scope-grant route. Existing migration bytes, history action code1/digests, default grants and0811 deferred six-effect checks remain unchanged. No job/export destination consumer yet.",
+  "checks": {
+    "mac": "RED: old closed action enum fails two of four management_grants cases; subsequent38binary/21schema/4grant and scoped Clippy PASS, fmt/artifacts PASS",
+    "linux": "38binary/21schema/4grant; fixture executables and scoped Clippy PASS"
+  },
+  "workload": {
+    "recipe": "experiments/archive-engine/private_grant_cases.py --export-grants",
+    "http": "experiments/archive-engine/export_grant_http.py",
+    "oracle": "experiments/archive-engine/signed_publication_oracle.py",
+    "snapshot": 3,
+    "frontier_revision": 1,
+    "source_bounds": [
+      {
+        "shard_id": 0,
+        "owner_epoch": 1,
+        "complete_through": 10
+      }
+    ],
+    "parquet_files": 8
+  },
+  "cases": [
+    {
+      "case": "export-actions-require-explicit812-before-binding",
+      "status": "PASS"
+    },
+    {
+      "case": "additive812-preserves-retained-rows-xmin-and811-final-check",
+      "status": "PASS"
+    },
+    {
+      "case": "native-reader-startup-privilege-0",
+      "status": "PASS",
+      "table": "control.archive_frontier_snapshots",
+      "privilege": "SELECT"
+    },
+    {
+      "case": "native-reader-startup-privilege-1",
+      "status": "PASS",
+      "table": "control.archive_pin_recoveries",
+      "privilege": "SELECT"
+    },
+    {
+      "case": "native-reader-startup-privilege-2",
+      "status": "PASS",
+      "table": "control.topology_generations",
+      "privilege": "SELECT"
+    },
+    {
+      "case": "native-reader-startup-privilege-3",
+      "status": "PASS",
+      "table": "control.consumer_frontier_revisions",
+      "privilege": "UPDATE"
+    },
+    {
+      "case": "initial-administrator-has-no-implicit-data-action",
+      "status": "PASS"
+    },
+    {
+      "case": "reauthentication-proof-cannot-change-export-action",
+      "status": "PASS"
+    },
+    {
+      "case": "export-enable-and-exact-retry-bind-the-command-action",
+      "status": "PASS"
+    },
+    {
+      "case": "private-export-has-its-own-scope-generation",
+      "status": "PASS"
+    },
+    {
+      "case": "either-export-grant-leaves-history-read-forbidden",
+      "status": "PASS"
+    },
+    {
+      "case": "revoke-updates-only-the-selected-export-action",
+      "status": "PASS"
+    },
+    {
+      "case": "history-enablement-uses-independent-generation-and-real-signed-read",
+      "status": "PASS"
+    },
+    {
+      "case": "restart-retry-does-not-reapply-the-revoked-export-grant",
+      "status": "PASS"
+    }
+  ],
+  "independent_sql": {
+    "commands": 4,
+    "details": 4,
+    "audit": 4,
+    "proofs": 0,
+    "disabled_generation2": 1,
+    "account_revision": "5",
+    "active_control": 0,
+    "active_pins": 0,
+    "backends": 0
+  },
+  "action_rows": [
+    [
+      "export",
+      false,
+      "2"
+    ],
+    [
+      "history.read",
+      true,
+      "1"
+    ],
+    [
+      "private-export",
+      true,
+      "1"
+    ]
+  ],
+  "command_digests": [
+    [
+      "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1",
+      "d393d75b85321c847201e00b259eb7c9d2c2ab72011bf733ded8de2a5bdbfdba"
+    ],
+    [
+      "c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2",
+      "0fce7862eb7e302a34defb18e438fa222aaf71898469817349e8eba6013d858f"
+    ],
+    [
+      "c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3",
+      "d02914c4c8fe9202fcdcd3c8f252dd6c4d21bac0392d42fbbe18511aab329a93"
+    ],
+    [
+      "c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4",
+      "8f7c50608a6a4b0f01d58763b4b3959d5040f0ab1a07cf3061bccf436af28ad2"
+    ]
+  ],
+  "upgrade": {
+    "tables_compared": 47,
+    "rows_and_xmin_unchanged": true,
+    "guard811_sha256": "08a15c3262473e51dd829d0e7acdddc50cee0ca8577fece1f62ea54d844a7f93",
+    "limitation": "No pre-existing scope-grant commands in this fresh fixture."
+  },
+  "files": {
+    "signed_normal/kind=7/main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e",
+    "signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70",
+    "signed_normal/kind=7/main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076",
+    "signed_normal/kind=7/main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be",
+    "signed_normal/kind=7/main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35",
+    "signed_normal/kind=7/main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05",
+    "signed_normal/kind=7/main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937",
+    "signed_normal/kind=7/main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+  },
+  "files_unchanged": true,
+  "capture": {
+    "local_root": ".research/implementation/export-grants/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/export-grants-923f186",
+    "sha256": "4ee3aecbb50026b68627a7d1bb02931f8e290fdee09a604f0213d62c947dffc1",
+    "files": 29,
+    "source_files": 1077,
+    "elfs": 5,
+    "dependency_assets": 5
+  },
+  "artifacts": {
+    "control": "60eeca538a4f45f8bcb710fceed8fa485ce708466f94beaf2a7cfe0c18070dd4",
+    "worker": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6",
+    "event_reader": "925876f35f0a0580dcdb221b0e7a37e987c9ab1103d7f386d48586751e803960",
+    "publisher": "a321410a06c33c05b553de906dc1a7e2ad9ba453d67953ddea913d09d7bc154c",
+    "reader": "5585760ef9a6d61e8d86c51396f863e86c1c9477e9f80167d1fc480fe886eed7"
+  },
+  "laboratory_terminal": {
+    "status": "INCOMPLETE",
+    "failure": {
+      "kind": "FileNotFoundError",
+      "frames": [
+        {
+          "file": "launch.py",
+          "line": 175,
+          "function": "<module>"
+        },
+        {
+          "file": "_local.py",
+          "line": 548,
+          "function": "read_text"
+        },
+        {
+          "file": "_abc.py",
+          "line": 632,
+          "function": "read_text"
+        },
+        {
+          "file": "_local.py",
+          "line": 539,
+          "function": "open"
+        }
+      ]
+    },
+    "explanation": "Launcher line175 requests private-export-grants-cases.json; committed host fixture writes private-grant-cases.json. The latter completed all14 cases and independent SQL/digest/file checks before this error. Original terminal audit is preserved unchanged.",
+    "not_run": [
+      "Separate final backend queries against both Archive and Control databases",
+      "Runner completion marker and ordinary zero-exit completion"
+    ],
+    "observed": "Case fixture independently observed Control database backends0/activeControl0/pins0 after actual parent stops. No terminal Archive backend claim or inferred success from container stop."
+  },
+  "cleanup": {
+    "owner": "b125cdb3d100ed9fd764db55b1b2d225",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "27fcd5dc4052d56d2ffe7b1f0d535297e7dd20fd0bcf822fa1e74bc7a36b4359"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "efab83c45783d2297a0012c9695d7e559bd3e85e4b032a2e4edad61ef1cc48b5"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "runner_exit": 143,
+    "postgres_wrapper_exit": 137,
+    "pid_zero": true,
+    "no_oom": true,
+    "preexisting_preserved": true,
+    "preexisting_count": 540,
+    "unrelated_running": 8,
+    "errors": [],
+    "free_bytes": 199856533504
+  },
+  "review": "Root reviewed complete changed files and capture/source/artifact identities. Independent read-only AI found stale serve --help migration0811; corrected to0812 afterward and exercised through actual Mac CLI. No other static counterexample confirmed; independent capture review verified29 files,1077 Git sources, four literal fingerprints and47 tables/61 unchanged rows. No discrepancy. No product tests/SSH by reviewer.",
+  "exclusions": [
+    "No pre-existing scope-grant records in the migration upgrade fixture",
+    "No export acceptance, destination approval, durable job, output, cancellation or export recovery",
+    "No multiple actors/scopes, concurrent grants, acceptance COMMIT ambiguity, broad resource/performance qualification",
+    "No full P08 task, M1, release or native Linux arm64 qualification"
+  ]
+}
