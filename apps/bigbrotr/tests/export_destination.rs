@@ -262,3 +262,35 @@ fn restrictive_umask_cannot_create_an_unusable_marker() {
         original
     );
 }
+
+#[test]
+fn acceptance_observation_keeps_custody_after_the_checker_thread_joins() {
+    use bigbrotr::export::destination::{DestinationError, LocalDestination};
+    use std::sync::Arc;
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().canonicalize().unwrap().join("export");
+    private(&root);
+    let dataset = "01010101010101010101010101010101".parse().unwrap();
+    let id = ID.parse().unwrap();
+    let destination = Arc::new(LocalDestination::initialize(&root, dataset, id).unwrap());
+    let original = destination.clone();
+    let checked = std::thread::spawn(move || destination.check_for_acceptance())
+        .join()
+        .unwrap()
+        .unwrap();
+    drop(original);
+    assert_eq!(checked.dataset(), dataset);
+    assert_eq!(checked.id(), id);
+    assert!(matches!(
+        LocalDestination::initialize(&root, dataset, id),
+        Err(DestinationError::Busy)
+    ));
+    drop(checked);
+    let replacement = Arc::new(LocalDestination::open(&root, dataset, id).unwrap());
+    fs::rename(&root, root.with_file_name("retained")).unwrap();
+    private(&root);
+    assert!(matches!(
+        replacement.check_for_acceptance(),
+        Err(DestinationError::Mismatch)
+    ));
+}

@@ -21,17 +21,47 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current verified main/HEAD and origin/main793bb62fbf0358d3ae3666b315ea3078d0ac75f9,
-tree8e4d5e715e781debcac088ba2d579cb1b5aff099; destination code/evidence pushed normally.
-Root owns uncommitted P08 export acceptance: typed command/JobId/receipt,
+Current main/HEAD5705b0720ba78389392da00170c33b53dd5a1057 is an unpublished
+local export-acceptance candidate. origin/main remains793bb62fbf0358d3ae3666b315ea3078d0ac75f9.
+Candidate source transferred exactly via Git to Tux; no remote editing.
+The candidate contains P08 export acceptance: typed command/JobId/receipt,
 additive draft0813 and catalog registration, fenced Control adapter and shared
 pin insertion with explicit Reader/Export purpose, native fixture/omission SQL,
 shared native runner profile and owning contract/checkpoint. No unrelated edits.
 Actual command RED preceded implementation; three independent command tests and
 21 schema catalog tests PASS; adapter fixture RED (missing methods) then cargo
 check and scoped Clippy PASS. Logs .research/implementation/export-jobs/.
-The actual native fixture and13 omission cases are written, NOT_RUN. HTTP,
-execution, artifacts and restart remain unimplemented. No active native process.
+[Native acceptance evidence](evidence/p08-export-acceptance-native-20260924.json)
+at5705b07 is PASS-scoped: four existing grant cases plus one export journey,
+13 SQL trials (one complete rollback and12 omissions/cut/digest/duplicate-pin
+negatives). Exact retry preserves job/time and every compared durable row/xmin;
+changed page size conflicts. Independent SQL job1/exportpin1/claim1 remains after
+reader0/Control0; both database backends0. Eight Parquet hashes recorded, signed
+archive oracle/readback PASS. No file export, HTTP, restart or recovery claim.
+
+Stopped lab /home/tux/bigbrotr-implementation-20260917/runs/export-jobs-5705b07,
+owner5ce34ce3dfff2584b488b24584868acf, org.bigbrotr.archive-visibility;
+PG2505891577d8a7fd93bf01abd7bf6b412dd358f89b4212257e84223d9d8b078b
+and runner2d989650ad547773a91555445cc83937b455b7c5a41aa26d71ce3789c3369110:
+PID0/noOOM, runner0/PGwrapper137; owned network removed.543 prior records unchanged,
+eight unrelated running; free196421156864 ->192756879360bytes, concurrent writes
+possible. Source, PGdata, signed archive, artifacts and complete cache retained.
+Job ebf3c7b00a9c0b8840f17b64a46b9952 deliberately retains its export obligation;
+do not release/GC it from expiry or stopped containers. No active process/debt.
+Capture24/source1095/fiveELF/fiveassets verified, SHA
+cf9f615067917bfa6cb772b5d7da25d84f7ee47d18b3f425e7639c6f9bf25bf2.
+First local verifier expected542 instead of543 (new destination lab); original
+verified-first.log preserved, corrected full inventory comparison passes.
+Independent AI capture review confirms identities/counts/digest, no product tests.
+
+Root owns the subsequent dirty CheckedDestination/ACL fix, actual thread custody
+test and evidence/inventory/checkpoint. No HTTP code edited yet. Filesystem
+verification now yields an owned CheckedDestination on blocking work; SQL only
+borrows it, never performs fsIO. The supervisor must retain destination custody
+through driver join on unresolved COMMIT. Source-stream UPDATE column privilege
+is now a startup prerequisite. Actual method-missing RED -> real thread custody
+GREEN1 plus scoped Clippy PASS; no native blocked-checker or ACL-negative yet.
+Applied0813 bytes now immutable; future SQL corrections must be additive.
 
 Independent read-only AI review identified a session revocation race in direct
 SQL and expiry during deferred source-lock waits on later transitions. Draft now
@@ -193,12 +223,19 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: review and commit the bounded native-acceptance candidate,
-inventory Tux/free space and run its exact-Git real PostgreSQL/native fixture.
-Preserve original failures and all13 omission outcomes. Then finish the actual
-private POST /management/v1/jobs consumer, expiry/COMMIT/restart, multistream zero
-and recovery cases, standalone signed JSONL artifact/execution. Do not stop at
-acceptance or equate this candidate to complete P08-T03/T04 or M1.
+Next bounded action: commit the checked-destination/ACL fix and scoped evidence,
+then wire private POST /management/v1/jobs through shared native allocation
+supervision with actual transport regressions. Keep original destination custody
+outside the SQL future through driver join. Configured destination selects813
+startup gate; absent destination must refuse job requests without poisoning an
+older otherwise valid session/reader runtime. Historical retry needs no native
+reader once its selected job API is available. Explicit destination startup and
+per-operation check use blocking work outside SQL.
+
+Pending required acceptance: source-lock ACL negative, actually blocked checker,
+COMMIT loss/restart, zero/multistream cuts, old pin/job anti-adoption, nonterminal
+release refusal/recovery and deferred source-lock expiry. Then standalone signed
+JSONL artifact/execution and end-to-end restart; no full P08/M1 completion.
 
 Job design inspected independently: reuse protocol1 purpose=export, atomic
 command/job/link/exact complete cut and pin; no adoption of historical pins/jobs.
@@ -217,8 +254,8 @@ is design only, not SQL evidence. Original
 export pin remains after Control restart/expiry. After actual terminal effect
 resolution, original holder may release; old-holder release needs existing fresh
 exclusive recovery-only custody. archive_pin_recoveries is completed evidence,
-not pending queue: link plus unreleased lease owns remaining cleanup. The command, draft migration and adapter are implemented/dirty but native
-acceptance remains NOT_RUN. P08-T03/T04 and owning contracts remain incomplete.
+not pending queue: link plus unreleased lease owns remaining cleanup. The command, applied migration and adapter have the bounded native acceptance
+evidence above; later custody/ACL delta is only locally tested. P08-T03/T04 and owning contracts remain incomplete.
 
 Stopped root /home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be,
 ownerf61ac9d8311ca2e3bdfd09d2a67a16fa, label org.bigbrotr.archive-visibility;

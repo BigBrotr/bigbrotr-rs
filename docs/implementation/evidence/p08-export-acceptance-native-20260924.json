@@ -1,0 +1,248 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "task": [
+    "P08-T03",
+    "P08-T04"
+  ],
+  "status": "PASS-scoped",
+  "source": "5705b0720ba78389392da00170c33b53dd5a1057",
+  "tree": "23086ad85439411a9d1cd85d131e1e664edb9027",
+  "scope": "Actual native archive allocation and independent destination binding to atomic private exact-ID export acceptance. No artifact execution, HTTP route, restart or recovery qualification.",
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 2,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128
+    }
+  },
+  "capture": {
+    "local": ".research/implementation/export-jobs/capture",
+    "archive_sha256": "cf9f615067917bfa6cb772b5d7da25d84f7ee47d18b3f425e7639c6f9bf25bf2",
+    "files": 24,
+    "source_files": 1095,
+    "source_manifest_sha256": "6dabdf1329821d58446e39445b7f7eef260380a143f78b2cb03520c07252af66",
+    "artifacts": {
+      "control": "600844d333e4935998a83413cf6fa52aded0a4c87078c4bf78d80a1e67384c1c",
+      "worker": "db44c8b3df19d1df97861556f1de3b64535c0db1761f0c89bd35d260bcab05eb",
+      "event_reader": "919bd0ffafdba0721624b3535643adacae03c286c36f3658a38fc25a96e9ad35",
+      "publisher": "940eb42fcd9e5cdec9db17231c98d632959579cfc07c20b2c734cdfa6b4e1302",
+      "reader": "c4bda52f78a41c9ee1b3611ac1cfd6e5bc3e348b3d51b0d5092c1c48f6099d20"
+    },
+    "native_assets": {
+      "bigbrotr-archive-worker": {
+        "bytes": 14378504,
+        "sha256": "db44c8b3df19d1df97861556f1de3b64535c0db1761f0c89bd35d260bcab05eb"
+      },
+      "extensions/ducklake.duckdb_extension": {
+        "bytes": 36436086,
+        "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+      },
+      "extensions/httpfs.duckdb_extension": {
+        "bytes": 21570542,
+        "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+      },
+      "extensions/postgres_scanner.duckdb_extension": {
+        "bytes": 41696558,
+        "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+      },
+      "lib/duckdb.h": {
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "lib/libduckdb.so": {
+        "bytes": 70529912,
+        "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+      }
+    }
+  },
+  "executed": {
+    "mac": "3 command golden/negative tests and21 schema tests; adapter fixture missing-method RED then cargo check; scoped Clippy, format, artifact checks PASS. Logs under .research/implementation/export-jobs.",
+    "native_checks": "21 schema catalog tests,3 command tests, actual packaged parent/worker build and scoped Clippy PASS. Shared tools.ci execution; not hosted GitHub Actions.",
+    "native_cases": [
+      {
+        "case": "scope-grant-csrf-and-missing-native-evidence-refuse-without-durable-effects",
+        "status": "PASS"
+      },
+      {
+        "case": "scope-grant-historical-active-receipt-cannot-reuse-a-released-pin",
+        "status": "PASS"
+      },
+      {
+        "case": "scope-grant-pin-expiry-at-observed-commit-rolls-back-and-keeps-control-usable",
+        "status": "PASS"
+      },
+      {
+        "case": "scope-grant-complete-positive-and-six-omissions-restore-full-state-and-xmin",
+        "status": "PASS"
+      },
+      {
+        "case": "export-atomic-native-acceptance-and-historical-retry",
+        "job": {
+          "accepted_at_us": 1790201143127892,
+          "command_key": "e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2",
+          "created": true,
+          "job_id": "ebf3c7b00a9c0b8840f17b64a46b9952"
+        },
+        "status": "PASS"
+      }
+    ],
+    "sql_trials": [
+      {
+        "case_name": "audit",
+        "phase": "command",
+        "sqlstate": "23503",
+        "message": "insert or update on table \"management_commands\" violates foreign key constraint \"management_commands_audit_id_dataset_id_actor_id_action_ex_fkey\""
+      },
+      {
+        "case_name": "bounds",
+        "phase": "constraints",
+        "sqlstate": "23514",
+        "message": "export job input must equal its complete retained frontier"
+      },
+      {
+        "case_name": "claim",
+        "phase": "constraints",
+        "sqlstate": "23514",
+        "message": "native pin requires every positive source prefix atomically"
+      },
+      {
+        "case_name": "command",
+        "phase": "detail",
+        "sqlstate": "23503",
+        "message": "insert or update on table \"export_jobs\" violates foreign key constraint \"export_jobs_actor_id_request_key_fkey\""
+      },
+      {
+        "case_name": "detail",
+        "phase": "constraints",
+        "sqlstate": "23514",
+        "message": "export acceptance requires atomic detail"
+      },
+      {
+        "case_name": "extra_pin",
+        "phase": "extra_pin",
+        "sqlstate": "23505",
+        "message": "duplicate key value violates unique constraint \"archive_snapshot_pins_export_job_id_key\""
+      },
+      {
+        "case_name": "job",
+        "phase": "bounds",
+        "sqlstate": "P0002",
+        "message": "query returned no rows"
+      },
+      {
+        "case_name": "lease",
+        "phase": "pin",
+        "sqlstate": "P0002",
+        "message": "query returned no rows"
+      },
+      {
+        "case_name": "none",
+        "phase": "positive-rollback",
+        "sqlstate": "BB099",
+        "message": "fixture complete export rollback"
+      },
+      {
+        "case_name": "pin",
+        "phase": "claim",
+        "sqlstate": "P0002",
+        "message": "query returned no rows"
+      },
+      {
+        "case_name": "seal",
+        "phase": "constraints",
+        "sqlstate": "23514",
+        "message": "export acceptance requires exact atomic command, audit, job and new pin"
+      },
+      {
+        "case_name": "wrong_cut",
+        "phase": "constraints",
+        "sqlstate": "23514",
+        "message": "export job input must equal its complete retained frontier"
+      },
+      {
+        "case_name": "wrong_digest",
+        "phase": "constraints",
+        "sqlstate": "23514",
+        "message": "export acceptance requires exact atomic command, audit, job and new pin"
+      }
+    ],
+    "independent_sql": {
+      "commands": 1,
+      "details": 1,
+      "audit": 1,
+      "jobs": 1,
+      "active_export_pins": 1,
+      "active_reader_pins": 0,
+      "active_claims": 1,
+      "active_control": 0,
+      "backends": 0
+    },
+    "fingerprint": {
+      "expected": "136bd1741e1ada671948332ef933e87ae7d645d93346be6f04a899cedbcbaec9",
+      "actual": "136bd1741e1ada671948332ef933e87ae7d645d93346be6f04a899cedbcbaec9",
+      "destination_binding": "4739095fea1d411d353995caccec98d3008022cacbfaa4ebbc28281a64198ce3"
+    },
+    "both_database_backends": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "signed_input": "Independent existing archive oracle/readback ran successfully over actual signed input;8 Parquet files hashed. Requested eventID ab*32 is an acceptance fixture, not evidence of exported event bytes.",
+    "rollback_oracle": "13 SQL trials include one deliberate positive BB099 rollback and12 missing/inconsistent component cases. Every trial compares all8 affected ledgers including xmin with its original baseline before ordinary acceptance.",
+    "retry": "Authenticated same key returns original job/time with created=false and no durable change; modified page size with same key conflicts. No native dependencies needed for this historical receipt.",
+    "retention": "After temporary reader and Control shutdown, exactly1 accepted job,1 export pin and1 positive-prefix claim remain. No expiry-based reclamation or completed-job cleanup claimed.",
+    "case_scope": "Four existing scope-grant prerequisite cases and one export acceptance/retry journey; not five distinct export scenarios.",
+    "independent_ai_review": "Read-only AI rehashed capture24/source1095, compared five artifact records and five dependency assets, independently recalculated binding/fingerprint and543 prior container records. It ran no product tests/SSH and did not rehash local ELF bytes (remote collector did)."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-jobs-5705b07",
+    "owner": "5ce34ce3dfff2584b488b24584868acf",
+    "label": "org.bigbrotr.archive-visibility",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "2505891577d8a7fd93bf01abd7bf6b412dd358f89b4212257e84223d9d8b078b"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "2d989650ad547773a91555445cc83937b455b7c5a41aa26d71ce3789c3369110"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "original_terminal": "PASS_PENDING_CAPTURE",
+    "prior_containers": 543,
+    "prior_preserved": true,
+    "unrelated_running": 8,
+    "free_bytes_before": 196421156864,
+    "free_bytes_after": 192756879360,
+    "free_space_note": "Concurrent host writes may contribute; no cache or dataset deletion in this run.",
+    "retained": "Source, build cache, signed archive, destination marker, binaries, PGdata and deliberately nonterminal export obligation retained. No active process or cleanup debt."
+  },
+  "verification_limits": [
+    "First local capture verifier expected542 prior containers, omitting the newly completed destination lab; preserved verified-first.log. Both full captured inventories contain543 matching records and corrected full comparison passes.",
+    "AI review is read-only static/capture review; it runs no product tests.",
+    "The applied0813 SQL bytes are now retained immutable. Any later SQL correction must be additive.",
+    "5705b07 still performed destination filesystem checks inside its SQL future and omitted a source_streams row-lock ACL prerequisite. Subsequent dirty fix moves checking into owned blocking work and adds the gate; checked-destination real-thread RED/GREEN and Clippy pass locally. This delta is not covered by this native run."
+  ],
+  "not_run": [
+    "Actual POST /management/v1/jobs and disconnect/cancellation",
+    "Export scheduling, signed JSONL file/manifest publication, packaged end-to-end export",
+    "Restart, unknown acceptance COMMIT, terminal export cleanup and old-holder recovery",
+    "Multi-stream/zero-prefix fixtures, legacy pin upgrade/anti-adoption, foreign-backend mutation and concurrent expiry source-lock schedules",
+    "Missing source_streams row-lock permission startup negative and actually blocked destination checker",
+    "Aged/mixed workloads,common64MiB,nativeLinuxarm64,complete product/release journeys"
+  ]
+}

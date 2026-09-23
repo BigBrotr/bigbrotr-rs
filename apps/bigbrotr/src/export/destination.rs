@@ -10,6 +10,7 @@ use std::{
     io::{Read, Write},
     os::unix::fs::{MetadataExt, PermissionsExt},
     path::{Component, Path, PathBuf},
+    sync::Arc,
 };
 
 const MARKER: &str = "destination.json";
@@ -48,7 +49,30 @@ pub struct LocalDestination {
     marker: Vec<u8>,
     digest: Digest256,
 }
+
+/// An observed binding with retained custody, not current execution authority.
+/// Construct on a supervised blocking worker, before acquiring SQL locks. The
+/// supervisor retains this value (and the original destination) through Control
+/// driver join on cancellation/unknown COMMIT; the SQL future only borrows it.
+pub struct CheckedDestination {
+    destination: Arc<LocalDestination>,
+}
+impl CheckedDestination {
+    pub fn dataset(&self) -> DatasetId {
+        self.destination.dataset
+    }
+    pub fn id(&self) -> DestinationId {
+        self.destination.id
+    }
+    pub fn binding_digest(&self) -> Digest256 {
+        self.destination.digest
+    }
+}
 impl LocalDestination {
+    pub fn check_for_acceptance(self: Arc<Self>) -> Result<CheckedDestination, Error> {
+        self.verify()?;
+        Ok(CheckedDestination { destination: self })
+    }
     pub fn initialize(root: &Path, dataset: DatasetId, id: DestinationId) -> Result<Self, Error> {
         Self::load(root, dataset, id, true)
     }

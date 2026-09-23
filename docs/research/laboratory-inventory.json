@@ -19453,5 +19453,43 @@
       "actual_cases": 10
     },
     "observation": "Runner exited0/PID0/noOOM;542 prior container records unchanged/eight unrelated running. No owned network/volume or database. Source, retained marker states, binary, logs and cache preserved. No active work or cleanup debt. Parent-only build intentionally has no archive-worker binding; do not use this artifact as an installed archive runtime."
+  },
+  "implementation_export_jobs_20260924": {
+    "local_root": ".research/implementation/export-jobs",
+    "native": {
+      "source": "5705b0720ba78389392da00170c33b53dd5a1057",
+      "tree": "23086ad85439411a9d1cd85d131e1e664edb9027",
+      "owner": "5ce34ce3dfff2584b488b24584868acf",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-jobs-5705b07",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "2505891577d8a7fd93bf01abd7bf6b412dd358f89b4212257e84223d9d8b078b"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "2d989650ad547773a91555445cc83937b455b7c5a41aa26d71ce3789c3369110"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T22:02:32.950069+00:00",
+      "network_id": "ed1dcd180caf8c34c7f9335147528929b1f7636305073fa04d23a5f8235c8582",
+      "postgres_id": "2505891577d8a7fd93bf01abd7bf6b412dd358f89b4212257e84223d9d8b078b",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "2d989650ad547773a91555445cc83937b455b7c5a41aa26d71ce3789c3369110",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "evidence": "docs/implementation/evidence/p08-export-acceptance-native-20260924.json",
+      "capture_sha256": "cf9f615067917bfa6cb772b5d7da25d84f7ee47d18b3f425e7639c6f9bf25bf2",
+      "native_cases": 5,
+      "sql_trials": 13
+    },
+    "observation": "Both owned containers stopped/PID0/noOOM, runner0/PGwrapper137; owned network removed.543 prior records unchanged/eight unrelated running. Accepted job ebf3c7b00a9c0b8840f17b64a46b9952 deliberately retains1 export pin/claim after reader0/Control0/both databases backend0. Data/source/native assets/build cache retained; no active work or cleanup debt. Free196421156864 ->192756879360bytes with concurrent writes possible."
   }
 }

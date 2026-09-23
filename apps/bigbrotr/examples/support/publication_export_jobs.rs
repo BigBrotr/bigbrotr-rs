@@ -43,6 +43,12 @@ pub async fn run(
         "destination":{"id":destination.id(),"binding_sha256":destination.binding_digest()},
         "expected_config_revision":"1","expected_policy_revision":"1"}))
     .unwrap();
+    let destination = std::sync::Arc::new(destination);
+    let checker = destination.clone();
+    let checked = tokio::task::spawn_blocking(move || checker.check_for_acceptance())
+        .await
+        .unwrap()
+        .unwrap();
     let key = CommandKey::try_from([0xe2; 16]).unwrap();
     let before = state(admin).await;
     assert_eq!(
@@ -75,7 +81,7 @@ pub async fn run(
             key,
             &command,
             Some(allocation),
-            Some(&destination),
+            Some(&checked),
             &committed,
         )
         .await

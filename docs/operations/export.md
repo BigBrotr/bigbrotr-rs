@@ -1,8 +1,10 @@
 # Private export destinations
 
 P08-T03/T04 implementation is in progress. The current finite commands prepare
-and inspect the filesystem destination. Durable export jobs, output formats,
-object storage and artifact publication remain required implementation work.
+and inspect the filesystem destination. Job acceptance has
+[scoped native evidence](../implementation/evidence/p08-export-acceptance-native-20260924.json),
+but no user-facing job route or completed file export yet. Execution, restart,
+output formats, object storage and artifact publication remain required work.
 
 Configure an explicit private destination in the deployment file:
 

@@ -9,7 +9,7 @@ use super::{
     snapshot_leases::{PinPurpose, insert_pin},
 };
 use crate::{
-    export::destination::LocalDestination,
+    export::destination::CheckedDestination,
     management::{
         credentials::random,
         jobs::{ExportCommand, JobReceipt},
@@ -32,7 +32,7 @@ impl ControlSession {
             .await
             .map_err(|_| SessionError::Unavailable)?;
         lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
-        let valid: bool = tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) AND has_function_privilege(CURRENT_USER,'control.export_command_digest(control.export_jobs,control.management_commands)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.command_u64_bytes(control.u64)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.scope_pin_live(bytea,bytea,numeric,bytea)','EXECUTE') FROM (VALUES ('control.jobs',ARRAY['SELECT','INSERT','UPDATE']),('control.job_input_bounds',ARRAY['SELECT','INSERT']),('control.export_jobs',ARRAY['SELECT','INSERT']),('control.management_commands',ARRAY['SELECT','INSERT']),('control.management_audit',ARRAY['SELECT','INSERT']),('control.scope_grants',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
+        let valid: bool = tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) AND has_any_column_privilege(CURRENT_USER,'control.source_streams','UPDATE') AND has_function_privilege(CURRENT_USER,'control.export_command_digest(control.export_jobs,control.management_commands)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.command_u64_bytes(control.u64)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.scope_pin_live(bytea,bytea,numeric,bytea)','EXECUTE') FROM (VALUES ('control.jobs',ARRAY['SELECT','INSERT','UPDATE']),('control.job_input_bounds',ARRAY['SELECT','INSERT']),('control.export_jobs',ARRAY['SELECT','INSERT']),('control.management_commands',ARRAY['SELECT','INSERT']),('control.management_audit',ARRAY['SELECT','INSERT']),('control.scope_grants',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
         if !valid {
             return Err(SessionError::Prerequisite);
         }
@@ -53,7 +53,7 @@ impl ControlSession {
         key: CommandKey,
         command: &ExportCommand,
         allocation: Option<&ScopeGrantAllocation<'_, '_>>,
-        destination: Option<&LocalDestination>,
+        destination: Option<&CheckedDestination>,
         commit_started: &Cell<bool>,
     ) -> Result<JobReceipt, SessionError> {
         command.validate(self.request.dataset)?;
@@ -121,7 +121,7 @@ async fn accept(
     key: CommandKey,
     command: &ExportCommand,
     allocation: Option<&ScopeGrantAllocation<'_, '_>>,
-    destination: Option<&LocalDestination>,
+    destination: Option<&CheckedDestination>,
 ) -> Result<JobReceipt, SessionError> {
     let current = authenticated_session(
         tx,
@@ -159,9 +159,8 @@ async fn accept(
     {
         return Err(SessionError::Conflict);
     }
-    destination
-        .verify()
-        .map_err(|_| SessionError::ArchiveUnavailable)?;
+    // Filesystem verification and owned custody came from a supervised blocking
+    // operation. Never perform filesystem I/O while polling the Control future.
     allocation
         .verify(tx, dataset_id, scope, &command.allocation)
         .await?;
@@ -215,9 +214,6 @@ async fn accept(
         .capture
         .verify()
         .await
-        .map_err(|_| SessionError::ArchiveUnavailable)?;
-    destination
-        .verify()
         .map_err(|_| SessionError::ArchiveUnavailable)?;
     Ok(JobReceipt {
         command_key: key,
