@@ -172,11 +172,15 @@ impl Server {
             task: Some(task),
         })
     }
+    /// Signal admission/IO shutdown before waiting for expensive owned work.
+    pub fn request_stop(&self) {
+        self.shutdown.send_replace(true);
+    }
     /// All connection futures own their IO and grant and are collected here.
     /// Hash work belongs to the Control supervisor and must be joined separately.
     pub async fn stop(&mut self) -> io::Result<()> {
         self.commands.close();
-        self.shutdown.send_replace(true);
+        self.request_stop();
         // Dropped queued commands release only their own reserved request data.
         while let Ok(command) = self.commands.try_recv() {
             drop(command);

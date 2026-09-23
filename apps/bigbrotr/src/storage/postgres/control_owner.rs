@@ -28,7 +28,9 @@ mod browser_sessions;
 pub use archive_frontier::ArchiveFrontierReceipt;
 #[path = "snapshot_leases.rs"]
 mod snapshot_leases;
-pub use snapshot_leases::{ArchivePinError, ArchivePinReceipt, ArchivePinRequest};
+pub use snapshot_leases::{
+    ArchivePinError, ArchivePinReceipt, ArchivePinRequest, ArchiveReadSelection,
+};
 #[path = "initial_batch.rs"]
 mod initial_batch;
 #[path = "producer_closing.rs"]

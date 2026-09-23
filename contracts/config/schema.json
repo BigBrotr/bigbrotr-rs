@@ -201,6 +201,19 @@
           },
           "type": "object"
         },
+        "reader": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "archive",
+              "x-bigbrotr-reload": "restart"
+            }
+          },
+          "type": "object"
+        },
         "row_group_rows": {
           "default": 64000,
           "oneOf": [

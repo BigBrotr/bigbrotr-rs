@@ -1,4 +1,5 @@
 //! First persistent role consumer. Every exit owns transport termination.
+mod native_grants;
 use super::{
     archive_preflight, archive_receipt, lifecycle_output::LifecycleOutput, management,
     postgres_command,
@@ -60,7 +61,7 @@ pub(crate) fn command() -> Command {
         .about("Run explicitly assigned roles; the initial runtime implements Control only")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
-        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0811 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires certified native allocation and is unavailable until the reader is configured and implemented. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
+        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0811 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {
@@ -486,11 +487,17 @@ async fn supervise(
             "accepted policy changed during startup; restart required".into(),
         ));
     }
-    let accepted = accepted.ok_or_else(|| (3, "accepted runtime policy unavailable".into()))?;
+    let accepted =
+        Arc::new(accepted.ok_or_else(|| (3, "accepted runtime policy unavailable".into()))?);
     let asset_observation = archive
         .management_assets
         .as_ref()
         .map(management::Assets::observation);
+    let shared_budget = archive
+        .management_budget
+        .as_ref()
+        .expect("serve budget")
+        .clone();
     let mut management = if accepted.flag("administration.enabled") {
         tokio::select! {
             biased;
@@ -498,7 +505,11 @@ async fn supervise(
             result = tokio::time::timeout(duration(root,"renewal_timeout")
                 .min(lease.remaining_validity().map_err(|e| (4,e.to_string()))?), async {
                     owner.require_browser_sessions().await?;
-                    owner.require_scope_grants().await
+                    owner.require_scope_grants().await?;
+                    if accepted.flag("archive.reader.enabled") {
+                        owner.require_archive_reader().await.map_err(|_| bigbrotr::management::sessions::SessionError::Prerequisite)?;
+                    }
+                    Ok::<_, bigbrotr::management::sessions::SessionError>(())
                 }) => {
                 result.map_err(|_| (4,"private session prerequisites deadline".into()))?
                     .map_err(|e| (3,format!("private session prerequisites refused: {e:?}")))?;
@@ -569,7 +580,19 @@ async fn supervise(
                 let response = tokio::select! {
                     biased;
                     _ = stop.requested() => return Err((4,"private session operation cancelled; outcome unresolved".into())),
-                    result = management.as_mut().expect("management work source").execute(work,&mut owner,maximum) => result?,
+                    result = management.as_mut().expect("management work source").execute(work,&mut owner,maximum,accepted.flag("archive.reader.enabled")) => result?,
+                };
+                let response = match response {
+                    management::Execution::Complete(response) => response,
+                    management::Execution::Archive(work) => {
+                        let mut supervisor = native_grants::Supervisor {
+                            owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
+                            refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
+                            management: management.as_ref().expect("management source"),
+                        };
+                        Some(native_grants::execute(work,accepted.clone(),shared_budget.clone(),
+                            archive.coordinator.as_ref().expect("selected local reader"),&mut supervisor).await?)
+                    }
                 };
                 // Tokio deadlines alone do not detect every suspend/resume.
                 // Keep the response/grant until the authority clock agrees.
@@ -770,6 +793,59 @@ fn accepted_policy(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn archive_reader_selection_is_explicit_offline_and_preserves_policy_bytes() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("root.toml");
+        let load = |text: &str| {
+            std::fs::write(&path, text).unwrap();
+            crate::config::load(&path)
+        };
+        let base = include_str!("../../../../config/recipes/archive-only.toml");
+        let disabled = format!("{base}\n[archive.reader]\nenabled=false\n");
+        let original = load(&disabled).unwrap();
+        let seed = PolicySeed::from_resolved(&original).unwrap();
+        let enabled = disabled.replace(
+            "[archive.reader]\nenabled=false",
+            "[archive.reader]\nenabled=true",
+        );
+        let reader = "read_user='allocation_reader'\nread_password_ref='file:/nonexistent/allocation-password'\n";
+        let complete = enabled.replace(
+            "[postgres.catalog]\n",
+            &format!("[postgres.catalog]\n{reader}"),
+        );
+        let root = load(&complete).unwrap();
+        assert!(root.flag("archive.reader.enabled"));
+        assert_eq!(
+            PolicySeed::from_resolved(&root).unwrap().document(),
+            seed.document()
+        );
+        assert!(
+            accepted_policy(&root, seed.document(), seed.digest())
+                .unwrap()
+                .flag("archive.reader.enabled")
+        );
+        assert!(load(&enabled).is_err());
+        for missing in [
+            "read_user='allocation_reader'\n",
+            "read_password_ref='file:/nonexistent/allocation-password'\n",
+        ] {
+            assert!(load(&complete.replace(missing, "")).is_err());
+        }
+        let existing = include_str!("../../../../config/recipes/serve-existing.toml");
+        assert!(load(&format!("{existing}\n[archive.reader]\nenabled=true\n")).is_err());
+        // A declaration never opens the nonexistent password or enables a publisher.
+        let reader_only = complete.replace(
+            "[archive.publisher]\nenabled = true",
+            "[archive.publisher]\nenabled = false",
+        );
+        assert!(
+            !load(&reader_only)
+                .unwrap()
+                .flag("archive.publisher.enabled")
+        );
+    }
 
     #[test]
     fn accepted_administration_gate_is_selected_from_policy_despite_file_drift() {

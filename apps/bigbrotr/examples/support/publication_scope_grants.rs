@@ -186,6 +186,33 @@ pub async fn run(
     );
     assert_eq!(state(&admin).await, before);
     case("scope-grant-csrf-and-missing-native-evidence-refuse-without-durable-effects");
+    // Load the selected immutable revision, never a moving latest pointer or a
+    // caller-supplied cut. Literal bounds come from the signed fixture's oracle.
+    assert!(
+        owner
+            .read_archive_selection(coordinator.identity().catalog(), 999)
+            .await
+            .unwrap()
+            .is_none()
+    );
+    let selected = owner
+        .read_archive_selection(coordinator.identity().catalog(), 1)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(selected.dataset_id, dataset());
+    assert_eq!(selected.catalog_id, coordinator.identity().catalog());
+    assert_eq!(selected.frontier_revision, 1);
+    assert_eq!(selected.snapshot_id, 3);
+    assert_eq!(selected.topology_generation.get(), 0);
+    assert_eq!(
+        selected.bounds,
+        vec![CutBound {
+            shard_id: 0,
+            owner_epoch: 1,
+            complete_through: 10
+        }]
+    );
     let capture = CatalogCapture::at_snapshot(manager, coordinator, 3, Duration::from_secs(120))
         .await
         .unwrap();

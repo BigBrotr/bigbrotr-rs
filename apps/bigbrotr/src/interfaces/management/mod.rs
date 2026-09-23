@@ -8,12 +8,14 @@ use bigbrotr::runtime::policy_authority::DeliveryWindow;
 use bigbrotr::{
     management::{
         credentials::HASH_RESERVATION,
+        grants::GrantCommand,
         reauthentication::VerifiedReauthentication,
-        sessions::{SessionError, SessionLifetime, VerifiedLogin},
+        sessions::{BrowserSecret, SessionError, SessionLifetime, VerifiedLogin},
     },
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits},
-    storage::postgres::control_owner::ControlSession,
+    storage::postgres::control_owner::{ControlSession, ScopeGrantAllocation},
 };
+use bigbrotr_model::{CommandKey, ReauthenticationId};
 use boundary::BrowserBoundary;
 use delivery::DeliveryGate;
 use std::{future::Future, net::SocketAddr, time::Duration};
@@ -46,6 +48,60 @@ impl Response {
         }
     }
 }
+/// Control has authenticated a fresh enablement and rolled back its first
+/// transaction. Native allocation must finish before a second full acceptance.
+pub(super) struct GrantWork {
+    completion: Completion,
+    session: BrowserSecret,
+    csrf: BrowserSecret,
+    key: CommandKey,
+    command: GrantCommand,
+    proof: ReauthenticationId,
+}
+impl GrantWork {
+    pub fn command(&self) -> &GrantCommand {
+        &self.command
+    }
+    pub fn deadline(&self) -> tokio::time::Instant {
+        self.completion.deadline
+    }
+    pub fn abandoned(&self) -> bool {
+        self.completion.abandoned()
+    }
+    pub fn refuse(self, error: SessionError) -> Response {
+        Response(self.completion, Err(error))
+    }
+    pub async fn accept(
+        self,
+        owner: &mut ControlSession,
+        maximum: Duration,
+        allocation: &ScopeGrantAllocation<'_, '_>,
+    ) -> Result<Response> {
+        if self.abandoned() {
+            return Ok(self.refuse(SessionError::ArchiveUnavailable));
+        }
+        let commit = std::cell::Cell::new(false);
+        let result = sql(
+            maximum,
+            owner.accept_scope_grant(
+                &self.session,
+                &self.csrf,
+                self.key,
+                &self.command,
+                self.proof,
+                Some(allocation),
+                &commit,
+            ),
+        )
+        .await?;
+        Ok(Response(self.completion, result.map(Reply::Grant)))
+    }
+}
+pub(super) enum Execution {
+    Complete(Option<Response>),
+    Archive(GrantWork),
+}
+
 pub(super) struct Management {
     server: Server,
     hashes: JoinSet<HashResult>,
@@ -58,6 +114,11 @@ pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
     // One Control, one hash, one optional asset bundle, and separate connection/
     // request ownership. Counts never supply an additional memory allowance.
     let items = 3 + transport::CONNECTIONS as u64 + transport::QUEUE as u64;
+    if root.flag("archive.reader.enabled") {
+        // Control, manager, secrets, native output, hash and HTTP all use this
+        // same ledger; a second application payload allowance is never created.
+        return super::archive_preflight::budget(root, items + 4);
+    }
     let envelope = ProcessEnvelope::new(
         n("memory_max_bytes"),
         n("baseline_bytes"),
@@ -153,14 +214,15 @@ impl Management {
         work: Work,
         owner: &mut ControlSession,
         maximum: Duration,
-    ) -> Result<Option<Response>> {
+        native_reader: bool,
+    ) -> Result<Execution> {
         match work.0 {
             WorkKind::Failed => {
                 return Err((1, "private management worker stopped unexpectedly".into()));
             }
             WorkKind::Hash((completion, result)) => {
                 if completion.abandoned() {
-                    return Ok(None);
+                    return Ok(Execution::Complete(None));
                 }
                 let result = match result {
                     Ok(VerifiedPassword::Login(verified)) => sql(
@@ -176,14 +238,14 @@ impl Management {
                     }
                     Err(e) => Err(e),
                 };
-                return Ok(Some(Response(completion, result)));
+                return Ok(Execution::Complete(Some(Response(completion, result))));
             }
             WorkKind::Command(Command {
                 operation,
                 completion,
             }) => {
                 if completion.abandoned() {
-                    return Ok(None);
+                    return Ok(Execution::Complete(None));
                 }
                 match operation {
                     Operation::Grant {
@@ -203,7 +265,21 @@ impl Management {
                             ),
                         )
                         .await?;
-                        return Ok(Some(Response(completion, result.map(Reply::Grant))));
+                        if native_reader && matches!(result, Err(SessionError::ArchiveUnavailable))
+                        {
+                            return Ok(Execution::Archive(GrantWork {
+                                completion,
+                                session,
+                                csrf,
+                                key,
+                                command,
+                                proof,
+                            }));
+                        }
+                        return Ok(Execution::Complete(Some(Response(
+                            completion,
+                            result.map(Reply::Grant),
+                        ))));
                     }
                     Operation::Reauthenticate {
                         session,
@@ -214,13 +290,19 @@ impl Management {
                         peer,
                     } => {
                         if !self.hashes.is_empty() {
-                            return Ok(Some(Response(completion, Err(SessionError::Capacity))));
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::Capacity),
+                            ))));
                         }
                         let Ok(mut grant) = self.budget.try_acquire(
                             ResourceRequest::data(HASH_RESERVATION, 1, 0)
                                 .expect("fixed hash reservation"),
                         ) else {
-                            return Ok(Some(Response(completion, Err(SessionError::Capacity))));
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::Capacity),
+                            ))));
                         };
                         let challenge = sql(
                             maximum,
@@ -241,7 +323,9 @@ impl Management {
                                 });
                             }
                             Ok(_) => {}
-                            Err(e) => return Ok(Some(Response(completion, Err(e)))),
+                            Err(e) => {
+                                return Ok(Execution::Complete(Some(Response(completion, Err(e)))));
+                            }
                         }
                     }
                     Operation::Login {
@@ -250,13 +334,19 @@ impl Management {
                         peer,
                     } => {
                         if !self.hashes.is_empty() {
-                            return Ok(Some(Response(completion, Err(SessionError::Capacity))));
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::Capacity),
+                            ))));
                         }
                         let Ok(mut grant) = self.budget.try_acquire(
                             ResourceRequest::data(HASH_RESERVATION, 1, 0)
                                 .expect("fixed hash reservation"),
                         ) else {
-                            return Ok(Some(Response(completion, Err(SessionError::Capacity))));
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::Capacity),
+                            ))));
                         };
                         let challenge =
                             sql(maximum, owner.begin_browser_login(&username, peer)).await?;
@@ -272,23 +362,31 @@ impl Management {
                                 });
                             }
                             Ok(_) => {}
-                            Err(e) => return Ok(Some(Response(completion, Err(e)))),
+                            Err(e) => {
+                                return Ok(Execution::Complete(Some(Response(completion, Err(e)))));
+                            }
                         }
                     }
                     Operation::Me(token) => {
                         let result =
                             sql(maximum, owner.inspect_browser_session(&token, true)).await?;
-                        return Ok(Some(Response(completion, result.map(Reply::Me))));
+                        return Ok(Execution::Complete(Some(Response(
+                            completion,
+                            result.map(Reply::Me),
+                        ))));
                     }
                     Operation::Logout { session, csrf } => {
                         let result =
                             sql(maximum, owner.revoke_browser_session(&session, &csrf)).await?;
-                        return Ok(Some(Response(completion, result.map(|()| Reply::Logout))));
+                        return Ok(Execution::Complete(Some(Response(
+                            completion,
+                            result.map(|()| Reply::Logout),
+                        ))));
                     }
                 }
             }
         }
-        Ok(None)
+        Ok(Execution::Complete(None))
     }
 
     pub fn renew_delivery(&self, window: DeliveryWindow) -> Result<()> {
@@ -296,8 +394,12 @@ impl Management {
             .renew(window)
             .map_err(|_| (4, "private delivery authority closed".into()))
     }
-    pub async fn stop(&mut self, grace: Duration) -> Result<()> {
+    pub fn stop_admission(&self) {
         self.delivery.revoke();
+        self.server.request_stop();
+    }
+    pub async fn stop(&mut self, grace: Duration) -> Result<()> {
+        self.stop_admission();
         let sockets = self.server.stop().await;
         // HTTP cancellation never detaches expensive password work. If the
         // bounded join fails, the caller must terminate this process; it cannot

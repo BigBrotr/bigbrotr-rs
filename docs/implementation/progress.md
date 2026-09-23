@@ -19,9 +19,8 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD c5d76a1; origin/main8f48d91. Candidate owned-reader commit
-is not pushed; prior HTTP qualification is pushed. No merge/rebase or other writer. Root owns the new ReaderCustody
-implementation, actual visibility fixture caller, scoped native check and docs.
+Verified main/HEAD and origin/main5082a1a. Owned-reader code and native
+qualification evidence are pushed. No merge/rebase or other writer.
 Private repository/name verified through gh repo view. No dependencies changed.
 
 [Private HTTP grant qualification](evidence/p08-private-grants-http-native-20260923.json)
@@ -46,20 +45,33 @@ cases. Root reviewed the diff and independent AI review found no concrete defect
 All58 capture/1037 source/five actual ELF/five dependency asset hashes verified.
 No Tokio/HTTP native-reader supervision or grant success is implied.
 
-Root has separate uncommitted next-consumer edits in snapshot_leases.rs,
-control_owner.rs, publication_scope_grants.rs, config/{registry,resolve}.rs and
-interfaces/serve.rs. Bounded immutable ArchiveReadSelection lookup compiles; its
-literal real-PG fixture is not run. Explicit archive.reader.enabled defaults false,
-requires local Control/Archive and paired separate read credentials, preserves
-accepted policy bytes and does no offline I/O; local RED/GREEN test passes.
-Generated config schema/reference and full consumer wiring are still pending.
-These edits are NOT part of the c5d76a1 native source or its qualification.
+Root owns the pending native HTTP candidate: config registry/validation and
+consumers, Management handoff/admission stop, serve/native_grants.rs,
+snapshot_leases.rs/control_owner.rs, publication fixture, actual HTTP/native
+fixtures and owning docs/OpenAPI/generated client descriptions. No dependency or
+migration changes. Explicit archive.reader.enabled defaults false; missing local
+roles/paired credentials refuse offline and accepted policy bytes stay unchanged.
+The consumer uses one resource ledger, absolute Control renewal, retained manager
+transport/capture/certified pin and owned joined native allocation evidence.
 
-Next bounded action: commit/push the owned-reader evidence only, then integrate
-pending native grant work into the Control supervisor. Preserve explicit reader
-selection, one shared resource budget, absolute renewal deadlines, joined blocking
-work and retained manager driver/capture/pin cleanup. Then exercise actual HTTP
-success/refusal/restart/cancellation before event_history. No task/M1 closure.
+Local candidate checks PASS:34 binary/25 configuration/3 command tests, including
+new admission-stop RED/GREEN with retained work, plus scoped Clippy. Initial
+compile failures and corrected results remain in
+`.research/implementation/owned-reader/native-consumer-*.log`. AI review found
+late admission shutdown and missing SQL invoker/row-lock prerequisites; both are
+corrected, with real PG revocation controls prepared but NOT_RUN. The HTTP
+fixture covers missing bundle/proof reuse, actual enable, identical retry,
+restart/revoke/old retry and independent final SQL/signed archive readback.
+Native HTTP execution, signal/slow catalog/ambiguous acceptance, multi-stream/zero
+selection and resource/load scenarios remain unqualified. Existing allocation
+fixture lookup compiles but its literal real-PG assertions have not run.
+
+Next bounded action: create the coherent unpublished candidate and transfer its
+clean exact Git source to a fresh inventoried Tux lab using
+`.research/implementation/native-grant-http/{transfer,launch,collect}.py`.
+Run the actual HTTP/native fixture, preserve any failure, verify terminal custody
+and capture identities, then extend cancellation/recovery scenarios before history.
+No new laboratory was active at this checkpoint; no task/M1 closure.
 
 ## Scoped grant result
 

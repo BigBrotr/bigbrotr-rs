@@ -181,6 +181,14 @@ pub fn keys() -> Vec<Key> {
         true
     );
     add!(
+        "archive.reader.enabled",
+        Bool,
+        false,
+        "restart",
+        "archive",
+        true
+    );
+    add!(
         "topology.ordered_set_reader",
         Enum(&["absent", "index"]),
         "absent",

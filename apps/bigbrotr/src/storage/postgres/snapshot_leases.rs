@@ -2,7 +2,8 @@
 //! Receipts are historical metadata, never principal authority or live read grants.
 use super::{ControlSession, application_transaction, fresh_id, require};
 use crate::storage::postgres::{catalog_guard::CatalogCapture, ingest_registry::ControlOwner};
-use bigbrotr_model::{DatasetId, OwnerResourceId};
+use bigbrotr_model::{DatasetId, OwnerResourceId, TopologyGeneration};
+use bigbrotr_protocol::archive_cut::CutBound;
 use std::{cell::Cell, fmt, time::Duration};
 use tokio_postgres::{Row, Transaction};
 
@@ -57,6 +58,19 @@ pub struct ArchivePinReceipt {
     pub released: bool,
     pub created: bool,
 }
+/// Immutable selection metadata observed from Control. Neither this value nor
+/// its stored frontier acquires a pin, establishes native presence or grants
+/// access. Consumers must retain the actual catalog barrier and certified pin.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ArchiveReadSelection {
+    pub dataset_id: DatasetId,
+    pub catalog_id: OwnerResourceId,
+    pub frontier_revision: u64,
+    pub snapshot_id: u64,
+    pub topology_generation: TopologyGeneration,
+    pub bounds: Vec<CutBound>,
+}
+
 struct Recorded {
     receipt: ArchivePinReceipt,
     ttl_us: i64,
@@ -73,6 +87,85 @@ fn number(row: &Row, i: usize) -> Result<u64, Error> {
 }
 
 impl ControlSession {
+    /// Selected readers require their observation, retention and invoker-helper
+    /// privileges before exposing the private listener. This acquires no pin.
+    pub async fn require_archive_reader(&mut self) -> Result<(), Error> {
+        self.begin_operation().map_err(|_| Error::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 18)
+            .await
+            .map_err(|_| Error::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| Error::Unavailable)?;
+        let valid: bool = tx.query_one(
+            "SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) AND has_any_column_privilege(CURRENT_USER,'control.consumer_frontier_revisions','UPDATE') AND has_function_privilege(CURRENT_USER,'control.lock_archive_pins(bytea,bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.require_archive_pin_holder(control.snapshot_leases,boolean)','EXECUTE') FROM (VALUES ('control.archive_frontier_snapshots',ARRAY['SELECT']),('control.consumer_frontier_revisions',ARRAY['SELECT']),('control.consumer_frontiers',ARRAY['SELECT']),('control.archive_persistence',ARRAY['SELECT']),('control.archive_pin_recoveries',ARRAY['SELECT']),('control.topology_generations',ARRAY['SELECT']),('control.consumers',ARRAY['SELECT','UPDATE']),('control.snapshot_leases',ARRAY['SELECT','INSERT','UPDATE']),('control.archive_snapshot_pins',ARRAY['SELECT','INSERT']),('control.retention_claims',ARRAY['SELECT','INSERT','UPDATE']),('control.source_streams',ARRAY['SELECT']),('control.topology_streams',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]
+        ).await.map_err(backend)?.try_get(0).map_err(backend)?;
+        if !valid {
+            return Err(Error::Prerequisite);
+        }
+        tx.rollback().await.map_err(backend)?;
+        self.available = true;
+        Ok(())
+    }
+
+    /// Load one exact sealed revision before capturing its native snapshot. The
+    /// bounded immutable rows can be observed without retaining a Control lock
+    /// across the later catalog barrier. Pin registration rechecks the binding.
+    pub async fn read_archive_selection(
+        &mut self,
+        catalog: OwnerResourceId,
+        revision: u64,
+    ) -> Result<Option<ArchiveReadSelection>, Error> {
+        if revision == 0 || catalog == self.identity.resource_id {
+            return Err(Error::InvalidInput);
+        }
+        self.begin_operation().map_err(|_| Error::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 17)
+            .await
+            .map_err(|_| Error::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| Error::Unavailable)?;
+        let dataset = self.request.dataset;
+        let outcome = async {
+            let row = tx.query_opt(
+                "SELECT f.snapshot_id,left(f.topology_generation::text,21),r.sealed AND r.dataset_id=f.dataset_id AND r.consumer_role='archive' AND r.topology_generation=f.topology_generation AND f.consumer_id=f.catalog_id FROM control.archive_frontier_snapshots f JOIN control.consumer_frontier_revisions r USING(consumer_id,frontier_revision) WHERE f.dataset_id=$1::bytea AND f.catalog_id=$2::bytea AND f.frontier_revision=$3::text::numeric",
+                &[&&dataset.as_bytes()[..], &&catalog.as_bytes()[..], &revision.to_string()],
+            ).await.map_err(backend)?;
+            let Some(row) = row else { return Ok(None); };
+            if !row.try_get::<_, bool>(2).map_err(backend)? {
+                return Err(Error::InvalidMetadata);
+            }
+            let snapshot_id = u64::try_from(row.try_get::<_, i64>(0).map_err(backend)?)
+                .ok().filter(|v| *v > 0).ok_or(Error::InvalidMetadata)?;
+            let topology_generation = TopologyGeneration::new(number(&row, 1)?);
+            let rows = tx.query(
+                "SELECT shard_id::bigint,left(owner_epoch::text,21),left(last_complete_sequence::text,21) FROM control.consumer_frontiers WHERE consumer_id=$1::bytea AND frontier_revision=$2::text::numeric ORDER BY shard_id,owner_epoch LIMIT 1025",
+                &[&&catalog.as_bytes()[..], &revision.to_string()],
+            ).await.map_err(backend)?;
+            if rows.len() > 1024 { return Err(Error::ResourceLimit); }
+            let mut bounds = Vec::new();
+            bounds.try_reserve_exact(rows.len()).map_err(|_| Error::ResourceLimit)?;
+            for row in rows {
+                let shard_id = u32::try_from(row.try_get::<_, i64>(0).map_err(backend)?)
+                    .map_err(|_| Error::InvalidMetadata)?;
+                let owner_epoch = number(&row, 1)?;
+                if owner_epoch == 0 { return Err(Error::InvalidMetadata); }
+                bounds.push(CutBound { shard_id, owner_epoch, complete_through: number(&row, 2)? });
+            }
+            Ok(Some(ArchiveReadSelection { dataset_id: dataset, catalog_id: catalog,
+                frontier_revision: revision, snapshot_id, topology_generation, bounds }))
+        }.await;
+        match outcome {
+            Ok(_) | Err(Error::ResourceLimit) => {
+                tx.rollback().await.map_err(backend)?;
+                self.available = true;
+                outcome
+            }
+            error => error,
+        }
+    }
+
     /// Retire an old holder's obligations only in a fresh recovery-only custody
     /// lifetime. Ordinary readers cannot be launched under that lifetime. Keep
     /// both actual transports retained through join, including unknown COMMIT.

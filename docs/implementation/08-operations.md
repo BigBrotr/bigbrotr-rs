@@ -229,6 +229,10 @@ is a known rolled-back native prerequisite refusal; Unavailable still fails the
 runtime when Control is unusable. The new executable fixture checks the unselected
 reader case and healthy restart, not successful HTTP grant mutation. Continue the
 owned native allocation consumer and private history; no task step closes here.
+The current candidate wires explicit archive.reader.enabled through immutable
+selection, captured snapshot, certified pin, joined native visibility and a fresh
+acceptance check. Its isolated private_grant_cases.py fixture is still NOT_RUN;
+local compiler/transport checks cannot qualify its real engine and shutdown paths.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 

@@ -890,3 +890,35 @@ async fn management_stop_cannot_finish_or_release_grants_before_blocking_worker_
         .unwrap();
     assert_eq!(budget.snapshot().active_permits(), 0);
 }
+
+#[tokio::test]
+async fn admission_stops_before_the_supervisor_joins_retained_work() {
+    let (mut server, address, budget) = server().await;
+    let client = tokio::spawn(exchange(
+        address,
+        format!(
+            "GET /management/v1/me HTTP/1.1\r\nHost: {address}\r\nCookie: BigBrotrLocalSession={}\r\n\r\n",
+            "11".repeat(32)
+        ),
+    ));
+    let pending = server.commands.recv().await.unwrap();
+    server.request_stop();
+    let response = tokio::time::timeout(Duration::from_secs(1), client)
+        .await
+        .unwrap()
+        .unwrap();
+    assert!(
+        response.is_empty(),
+        "shutdown must not deliver pending work"
+    );
+    assert!(tokio::net::TcpStream::connect(address).await.is_err());
+    assert!(pending.completion.abandoned());
+    assert_eq!(
+        budget.snapshot().active_permits(),
+        1,
+        "work custody survives socket shutdown"
+    );
+    drop(pending);
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}

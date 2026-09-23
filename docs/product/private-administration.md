@@ -220,10 +220,13 @@ existing grant. The seven initial dataset actions keep their existing meaning.
 The private PUT `/management/v1/principals/{principal_id}/grants` now dispatches
 this command with an explicit `proof_id`, the same Origin/session/CSRF boundary
 and Idempotency-Key used for reauthentication. Path and body target must agree.
-The first HTTP slice supports the adapter's revocation and historical acceptance
-paths; fresh enablement refuses503 while its native reader is not implemented.
-That refusal rolls back without consuming the proof or stopping healthy Control.
-Native HTTP enablement, restrictive drain and history delivery remain required.
+Revocation and historical acceptance paths need no Archive. Fresh enablement
+selects native allocation only with the explicit deployment root
+`archive.reader.enabled=true` (default false), local Control/Archive custody and
+separate catalog read credentials. Native prerequisite refusal rolls back without
+consuming the proof or stopping healthy Control. The new consumer is awaiting
+exact-revision native HTTP qualification; restrictive drain and history delivery
+remain required.
 
 Reauthentication binds the same live session, actor and exact command key/digest.
 The proof is a server-side identifier requiring the original session and CSRF,
@@ -354,7 +357,10 @@ Archive dependency. The grant route reports only immutable acceptance with
 `application=unobserved` and `authority=acceptance-only`, including historical
 retries; no receipt means applied drain. Listener startup now requires explicit811,
 the command/detail/current-grant table privileges, proof-column UPDATE for row
-locks and the two invoker helper EXECUTE privileges. No startup migration runs.
+locks and the two invoker helper EXECUTE privileges. A selected native reader
+also checks its actual Control observation/pin/helper privileges before binding,
+including recovery-history SELECT and the frontier row-lock column privilege.
+No startup migration runs.
 Successful native HTTP grant execution, restrictive drain and private history
 remain unqualified until their full consumers and practical acceptance exist.
 
@@ -362,3 +368,16 @@ remain unqualified until their full consumers and practical acceptance exist.
 qualifies the scoped storage/adapter boundary, including actual password/native
 allocation, grant/revoke/retry, delayed expiry and atomic omissions. It does not
 complete private administration, authorize delivery or qualify COMMIT-loss recovery.
+
+The native allocation consumer observes one immutable sealed selection, retains
+local custody and a manager transaction stabilizing its exact native snapshot,
+then registers a certified pin. A joined blocking reader returns owned allocation
+evidence; the second acceptance rechecks the live browser session, proof and CAS.
+The same application/native resource ledger covers Control, manager, HTTP, hash
+work and native output. Control refresh uses absolute deadlines throughout native
+work; request expiry never extends acceptance. Signal/authority loss stops HTTP
+admission and delivery before bounded native join. Known joined results release
+the pin and read-only scratch; unknown termination retains both for recovery.
+Cleanup has a separate finite allowance and cannot admit new work. Grant receipts
+contain only historical acceptance, so their delivery needs no continued native
+pin. They remain unsuitable for history delivery or restrictive-drain claims.

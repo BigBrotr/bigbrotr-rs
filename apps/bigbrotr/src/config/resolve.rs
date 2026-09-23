@@ -689,6 +689,13 @@ impl Resolved {
             self.require("archive", "ingest")?;
             self.present("storage.ingest_root")?;
         }
+        if self.flag("archive.reader.enabled") {
+            if !self.local("archive") || !self.local("control") {
+                return Err("archive reader requires local Control and Archive custody".into());
+            }
+            self.present("postgres.catalog.read_user")?;
+            self.present("postgres.catalog.read_password_ref")?;
+        }
         if self.local("archive") {
             self.require("control", "archive")?;
             if self.flag("archive.publisher.enabled") {

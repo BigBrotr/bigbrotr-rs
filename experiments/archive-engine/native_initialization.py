@@ -20,7 +20,8 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'], ['--private-grant-http'])
+private_grant_http = sys.argv[1:] == ['--private-grant-http']
 scope_grants = sys.argv[1:] == ['--scope-grants']
 archive_visibility = sys.argv[1:] == ['--archive-visibility']
 pin_recovery = sys.argv[1:] == ['--pin-recovery']
@@ -29,7 +30,7 @@ archive_frontier = pin_recovery or sys.argv[1:] == ['--archive-frontier']
 archive_cut = archive_frontier or sys.argv[1:] == ['--archive-cut']
 archive_membership = sys.argv[1:] == ['--archive-membership']
 publication_sync = sys.argv[1:] == ['--publication-sync']
-archive_event = scope_grants or archive_visibility or reader_custody or publication_sync or sys.argv[1:] == ['--archive-event']
+archive_event = private_grant_http or scope_grants or archive_visibility or reader_custody or publication_sync or sys.argv[1:] == ['--archive-event']
 producer_recovery = sys.argv[1:] == ['--producer-recovery']
 producer_closing = producer_recovery or sys.argv[1:] == ['--producer-closing']
 certification = producer_closing or sys.argv[1:] == ['--certification']
@@ -125,6 +126,11 @@ if scope_grants:
     checks = [checks[0],
         ('scope-schema-command', ['cargo','test','--locked','--release','-p','bigbrotr','--test','control_schema','--test','management_grants']),
         ('reauthentication-transport', ['cargo','test','--locked','--release','-p','bigbrotr','--bin','bigbrotr','interfaces::management::tests::reauthentication']),
+        checks[-1]]
+if private_grant_http:
+    identity.update(scope='real private HTTP allocation reader supervision and acceptance; no history delivery or restrictive drain qualification')
+    checks = [checks[0],
+        ('native-grant-consumer', ['cargo','test','--locked','--release','-p','bigbrotr','--bin','bigbrotr','--test','management_grants','--test','config_entrypoint']),
         checks[-1]]
 if import_source:
     identity.update(scope='captured JSONL source and existing connected signed-admission consumer')
