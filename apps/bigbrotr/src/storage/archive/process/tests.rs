@@ -335,6 +335,7 @@ fn explicit_worker_resource_refusal_requires_joined_empty_output() {
             ProcessError::Exit,
         ),
         ("printf '{}'; exit 75", ProcessError::Exit),
+        ("echo diagnostic >&2; exit 75", ProcessError::Exit),
         ("exit 1", ProcessError::Exit),
     ] {
         let budget = budget();

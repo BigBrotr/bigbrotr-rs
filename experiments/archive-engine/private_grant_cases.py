@@ -79,7 +79,7 @@ def main(root, history=False):
                 process=subprocess.Popen(client+['exercise-history'],stdout=out,stderr=err)
                 try:
                     for revision, changes in [
-                        (3,{'read.execution.max_memory_bytes':580*1024*1024}),
+                        (3,{'read.execution.max_memory_bytes':600*1024*1024}),
                         (4,{'read.execution.max_scan_bytes':1}),
                         (5,{'read.response.max_bytes':64}),
                         (6,{}),

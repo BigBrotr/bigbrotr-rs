@@ -1,0 +1,149 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02 / P06-T01/T02 private historical reader",
+  "date": "2026-09-23",
+  "status": "INCOMPLETE",
+  "source": {
+    "revision": "4d813579dc514d098327a20190338650b24f2090",
+    "tree": "6c6acc79999bf861ec4d3b4ca45dce11cf983576"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "checks": {
+    "status": "PASS",
+    "native_event_tests": 12,
+    "executable_tests": 38,
+    "configuration_tests": 25,
+    "grant_tests": 3,
+    "read_codec_tests": 2,
+    "policy_window_tests": 16,
+    "worker_process_tests": 12,
+    "clippy": "PASS",
+    "details": "out/native-tests/checks/result.json in captured evidence"
+  },
+  "failure": {
+    "boundary": "Orchestrator prerequisite assertion before actual HTTP qualification",
+    "observed": {
+      "kind": "AssertionError",
+      "frames": [
+        {
+          "file": "launch.py",
+          "line": 173,
+          "function": "<module>"
+        }
+      ]
+    },
+    "cause": "Linux executes twelve worker-process tests, including its platform-specific parent-death case; the Mac-based orchestrator expected eleven. All twelve passed. This is a harness failure, not evidence of a product failure.",
+    "http": "NOT_RUN; private-grant-cases.json does not exist"
+  },
+  "artifacts": {
+    "control": "6beec6dc1992980d89251fd70e117092b541c53dca425da4195b56e5192d7953",
+    "worker": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6",
+    "event_reader": "49b2ecaf2f30e98d6b2fc3d9a92afd3ff689cdbcd08ba02b091a33acd6bb4b3c",
+    "publisher": "1cd82350634760db238478110bdcfaec15b60107ad562ca9076fa454d133f1c5",
+    "reader": "5585760ef9a6d61e8d86c51396f863e86c1c9477e9f80167d1fc480fe886eed7"
+  },
+  "native_assets": {
+    "bigbrotr-archive-worker": {
+      "bytes": 14378424,
+      "sha256": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6"
+    },
+    "extensions/ducklake.duckdb_extension": {
+      "bytes": 36436086,
+      "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+    },
+    "extensions/httpfs.duckdb_extension": {
+      "bytes": 21570542,
+      "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+    },
+    "extensions/postgres_scanner.duckdb_extension": {
+      "bytes": 41696558,
+      "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+    },
+    "lib/duckdb.h": {
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "lib/libduckdb.so": {
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "capture": {
+    "local_root": ".research/implementation/event-history/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/private-history-4d81357",
+    "sha256": "529308f2abd81f528a5d9a134746039210644ccbf2f456cf8d3eeb6e282c16a3",
+    "verified": {
+      "capture_files": 25,
+      "source_files": 1061,
+      "elfs": 5,
+      "dependencies": 5,
+      "capture_sha": "529308f2abd81f528a5d9a134746039210644ccbf2f456cf8d3eeb6e282c16a3",
+      "preexisting": 528,
+      "unrelated": 8,
+      "free_bytes": 15088062464
+    }
+  },
+  "cleanup": {
+    "owner": "2d96bc6ded22fdb9a4e87a219561580a",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "e576e667c8aa303a30830b56612bf29eb8b5ad4db9d7276d219fb8bf68739a7e"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "6d09e9330551678859f1afa0bc35190b54c60bd3c1fc265fe8cb88b40336011c"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preexisting_count": 528,
+    "preexisting_preserved": true,
+    "unrelated_running": 8,
+    "free_bytes": 15088062464,
+    "terminals": {
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-23T19:03:48.534651194Z",
+        "FinishedAt": "2026-09-23T19:08:26.362832075Z"
+      },
+      "rust-visibility": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-23T19:03:50.29940061Z",
+        "FinishedAt": "2026-09-23T19:08:26.633212498Z"
+      }
+    }
+  },
+  "review": {
+    "kind": "Independent read-only AI and integrating owner",
+    "finding": "The580MiB memory negative does not discriminate the previous580.125MiB underestimate. Successor uses600MiB; neither threshold was exercised over HTTP here.",
+    "execution": "AI ran no tests"
+  },
+  "exclusions": [
+    "No real signed private HTTP read or HTTP resource-limit classification executed in this run",
+    "No practical history cancellation, manager loss, blocked-body delivery, pin cleanup or restrictive drain qualification",
+    "No M1/task completion, export, release, capacity or Linux arm64 claim"
+  ]
+}

@@ -30,6 +30,7 @@ def main(root):
     def sql(database,query):return command('docker','exec','-i',pg,'psql','-XAtq','-v','ON_ERROR_STOP=1','-U','postgres','-d',database,input=query)
     def control(query):return json.loads(sql('bbpub_control_normal',query))
     def proofs():return control("SELECT json_object_agg(encode(request_key,'hex'),encode(proof_id,'hex')) FROM control.reauthentication_proofs")
+    policy_revision=int(sql('bbpub_control_normal',"SELECT policy_revision FROM control.datasets WHERE dataset_id=decode('01010101010101010101010101010101','hex')"))
     def counts():return control("SELECT json_build_object('active_pins',(SELECT count(*) FROM control.snapshot_leases WHERE state='active'),'proofs',(SELECT count(*) FROM control.reauthentication_proofs),'commands',(SELECT count(*) FROM control.management_commands WHERE action='scope-grant.change'),'active_control',(SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'))")
     def snapshot():
         tables={'management_commands':" WHERE action='scope-grant.change'",'management_audit':" WHERE action='scope-grant.change'",'scope_grant_changes':'','scope_grants':'','reauthentication_proofs':'','local_accounts':'','snapshot_leases':'','archive_snapshot_pins':'','retention_claims':''}
@@ -58,7 +59,7 @@ print(json.dumps(dict(pid=parent,start_ticks=int(fields[19]),state=fields[0],chi
         record['proofs_before']=proofs();assert set(record['proofs_before'])=={'d1'*16,'d2'*16}
         proxy=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/archive-engine/native_commit_proxy.py','--mode','hold-capture-rollback'],input_pipe=True)
         ready=record['proxy_ready']=event(proxy,'ready');assert ready['source_sha256']==sha(source/'experiments/archive-engine/native_commit_proxy.py')
-        client=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/archive-engine/private_grant_fault_client.py','cleanup',str(ready['port'])],input_pipe=True)
+        client=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/archive-engine/private_grant_fault_client.py','cleanup',str(ready['port']),str(policy_revision)],input_pipe=True)
         submitted=record['submitted']=event(client,'submitted');parent=submitted['parent_pid']
         held=record['held']=event(proxy,'held');assert held['stage']=='capture-rollback'
         record['manager']=manager(held['backend_pid']);assert len(record['manager'])==1 and record['manager'][0]['state']=='idle in transaction' and record['manager'][0]['transaction']

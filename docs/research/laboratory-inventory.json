@@ -18705,5 +18705,41 @@
       "capture_sha256": "31e1b41b059fda4148f13a57fd5461b9db88f75c8bbef7e43b5ab49994e8fe29"
     },
     "observation": "Stopped/retained; 51 practical cases, native11/protocol2/parent2 and scoped Clippy PASS.74 capture/1051 source/five ELF/five native asset hashes verified.526 prior records unchanged,8 unrelated running. Owned network removed; no active lab/cleanup debt."
+  },
+  "implementation_private_history_build_20260923": {
+    "local_root": ".research/implementation/event-history",
+    "native": {
+      "source": "4d813579dc514d098327a20190338650b24f2090",
+      "tree": "6c6acc79999bf861ec4d3b4ca45dce11cf983576",
+      "owner": "2d96bc6ded22fdb9a4e87a219561580a",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-history-4d81357",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "e576e667c8aa303a30830b56612bf29eb8b5ad4db9d7276d219fb8bf68739a7e"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "6d09e9330551678859f1afa0bc35190b54c60bd3c1fc265fe8cb88b40336011c"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T19:03:45.222848+00:00",
+      "network_id": "87d46c750b7e18124d8a177658c73dea7ab4781e812304be124d07270a195d05",
+      "postgres_id": "e576e667c8aa303a30830b56612bf29eb8b5ad4db9d7276d219fb8bf68739a7e",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "6d09e9330551678859f1afa0bc35190b54c60bd3c1fc265fe8cb88b40336011c",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "report": "docs/implementation/evidence/p06-private-history-build-incomplete-20260923.json",
+      "capture_sha256": "529308f2abd81f528a5d9a134746039210644ccbf2f456cf8d3eeb6e282c16a3"
+    },
+    "observation": "Stopped/retained; all scoped Linux checks PASS but orchestrator expected Mac11 process tests instead of Linux12. Actual HTTP NOT_RUN.25 capture/1061 source/five ELF/five native asset hashes verified.528 prior records unchanged,eight unrelated running; owned network removed, no cleanup debt."
   }
 }

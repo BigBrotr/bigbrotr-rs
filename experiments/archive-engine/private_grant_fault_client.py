@@ -13,8 +13,8 @@ def emit(event, **fields):
     print(json.dumps(dict(event=event, **fields)), flush=True)
 
 
-def main(mode, port):
-    assert mode in ('deadline', 'signal', 'cleanup') and 0 < port < 65536
+def main(mode, port, policy_revision=2):
+    assert mode in ('deadline', 'signal', 'cleanup') and 0 < port < 65536 and policy_revision > 0
     original = http.CONFIG
     text = original.read_text()
     needle = '[postgres.catalog]\nendpoint="127.0.0.1:5432"'
@@ -25,7 +25,7 @@ def main(mode, port):
     server = http.Server('fault-'+mode)
     pool = ThreadPoolExecutor(max_workers=1)
     try:
-        server.ready()
+        server.ready(policy_revision)
         session = http.ROOT/'session.private'
         assert session.stat().st_mode & 0o777 == 0o600
         auth = json.loads(session.read_text())
@@ -35,7 +35,7 @@ def main(mode, port):
         auth['Idempotency-Key'] = ('d1' if mode == 'deadline' else 'd2')*16
         command = dict(principal_id=(http.ROOT/'principal').read_text(), action='history.read', enabled=True,
             scope=dict(dataset_id='01'*16,dictionary_kind=4,allocation_domain='04'*16,ordinal='1'),
-            expected_config_revision='1',expected_policy_revision='2',expected_grant_revision='3',
+            expected_config_revision='1',expected_policy_revision=str(policy_revision),expected_grant_revision='3',
             allocation=dict(catalog_id='5a'*16,frontier_revision='1'))
         proof_path = http.ROOT/'signal-proof.private'
         if mode == 'cleanup':
@@ -79,6 +79,8 @@ def main(mode, port):
                 except (OSError, http.http.client.HTTPException): pass
                 assert time.monotonic()<deadline, 'healthy Control did not resume'
                 time.sleep(.02)
+            emit('healthy', parent_pid=server.process.pid)
+            assert sys.stdin.readline() == 'stop\n'
             server.stop()
         else:
             # The host signals only at an observed native wait or catalog
@@ -89,7 +91,7 @@ def main(mode, port):
         retry = None
         if mode == 'cleanup':
             server = http.Server('fault-cleanup-restart')
-            server.ready()
+            server.ready(policy_revision)
             status, retry, _ = http.request('PUT', f'/management/v1/principals/{command["principal_id"]}/grants',dict(command=command,proof_id=proof['proof_id']),auth)
             assert status == 200 and not retry['created'] and retry['enabled'], (status,retry)
             assert retry['scope_generation']=='3' and retry['account_grant_revision']=='4'
@@ -102,4 +104,4 @@ def main(mode, port):
         http.CONFIG = original
 
 
-if __name__=='__main__': main(sys.argv[1],int(sys.argv[2]))
+if __name__=='__main__': main(sys.argv[1],int(sys.argv[2]),int(sys.argv[3]) if len(sys.argv)>3 else 2)

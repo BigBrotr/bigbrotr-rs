@@ -29,6 +29,7 @@ def main(root):
     assert not path.exists()
     def save():path.write_text(json.dumps(result,indent=2)+'\n')
     def sql(database,query):return command('docker','exec','-i',pg,'psql','-XAtq','-v','ON_ERROR_STOP=1','-U','postgres','-d',database,input=query)
+    policy_revision=int(sql('bbpub_control_normal',"SELECT policy_revision FROM control.datasets WHERE dataset_id=decode('01010101010101010101010101010101','hex')"))
     def counts():return json.loads(sql('bbpub_control_normal',"SELECT json_build_object('active_pins',(SELECT count(*) FROM control.snapshot_leases WHERE state='active'),'proofs',(SELECT count(*) FROM control.reauthentication_proofs),'commands',(SELECT count(*) FROM control.management_commands WHERE action='scope-grant.change'),'active_control',(SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'))"))
     try:
         assert json.loads((root/'private-grant-cases.json').read_text())['status']=='PASS'
@@ -41,7 +42,7 @@ def main(root):
                 proxy=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/archive-engine/native_commit_proxy.py','--mode','hold-reader-query'],input_pipe=True)
                 hello=record['proxy_ready']=event(proxy,'ready')
                 assert hello['source_sha256']==sha(source/'experiments/archive-engine/native_commit_proxy.py')
-                client=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/archive-engine/private_grant_fault_client.py',mode,str(hello['port'])],input_pipe=True)
+                client=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/archive-engine/private_grant_fault_client.py',mode,str(hello['port']),str(policy_revision)],input_pipe=True)
                 submitted=record['submitted']=event(client,'submitted')
                 held=record['reader_authenticated']=event(proxy,'held')
                 assert held['stage']=='reader-query'
@@ -84,29 +85,68 @@ print(json.dumps(rows))
                     assert sql('bbpub_control_normal',"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control' AND state='idle'")=='1'
                     command('docker','exec',runner,'kill','-TERM',str(submitted['parent_pid']))
                 started=time.monotonic();send(client,'observe\n')
+                if mode!='signal':
+                    record['healthy']=event(client,'healthy',timeout=10)
+                    inspection="""import json,sys
+from pathlib import Path
+parent=Path('/proc',sys.argv[1]); child=Path('/proc',sys.argv[2]); stat=(parent/'stat').read_text(); fields=stat[stat.rfind(')')+2:].split()
+print(json.dumps(dict(parent_state=fields[0],child_present=child.exists())))
+"""
+                    record['before_parent_stop']=json.loads(command('docker','exec',runner,'python3','-c',inspection,str(submitted['parent_pid']),str(children[0]['pid'])))
+                    assert record['before_parent_stop']['parent_state'] not in ('Z','X')
+                    assert not record['before_parent_stop']['child_present']
+                    assert counts()['active_pins']==0
+                    send(client,'stop\n')
                 record['client_exit']=client.wait(12)
                 record['completion_ms']=round((time.monotonic()-started)*1000,3)
                 record['client_output']=client.stdout.decode();record['client_error']=client.stderr.decode();save()
                 assert record['client_exit']==0 and not client.stderr and not client.overflow
                 record['client_terminal']=event(client,'terminal')
-                # The parent must positively reap its child, not just close HTTP.
+                # Terminal absence additionally covers SIGTERM. Only non-signal
+                # cases establish absence while the original parent is still alive.
                 assert command('docker','exec',runner,'python3','-c',"from pathlib import Path; import sys; print(Path('/proc',sys.argv[1]).exists())",str(children[0]['pid']))=='False'
                 record['durable_after']=counts();save()
                 assert record['durable_after']==dict(active_pins=0,proofs=1 if mode=='deadline' else 2,commands=2,active_control=0)
-                record['status']='PASS'
             finally:
-                if blocker is not None:
-                    if blocker.poll() is None:
-                        blocker.stdin.write('ROLLBACK;\n');blocker.stdin.close()
-                    record['blocker_exit']=blocker.wait(timeout=5)
-                    record['blocker_error']=blocker.stderr.read()
-                if client is not None:
-                    record['client_exit']=client.process.poll()
-                    record['client_output']=client.stdout.decode();record['client_error']=client.stderr.decode();client.stop()
-                if proxy is not None:
-                    if proxy.process.poll() is None:send(proxy,'stop\n')
-                    record['proxy_exit']=proxy.wait(5);record['proxy_terminal']=event(proxy,'terminal');proxy.stop()
-                record['retained_terminal']=counts();save()
+                cleanup_errors=[]
+                try:
+                    if blocker is not None:
+                        if blocker.poll() is None:
+                            blocker.stdin.write('ROLLBACK;\n');blocker.stdin.close()
+                        record['blocker_exit']=blocker.wait(timeout=5)
+                        record['blocker_error']=blocker.stderr.read()
+                except BaseException as error:
+                    cleanup_errors.append(dict(stage='blocker',error=type(error).__name__))
+                    # Its isolated PG/backend belongs to the launcher, which
+                    # still stops the container on any unresolved cleanup.
+                    if blocker is not None and blocker.poll() is None:
+                        try:blocker.kill();blocker.wait(timeout=5)
+                        except BaseException as error:cleanup_errors.append(dict(stage='blocker-host-join',error=type(error).__name__))
+                try:
+                    if client is not None:
+                        record['client_exit']=client.process.poll()
+                        client.stop()
+                        record['client_output']=client.stdout.decode();record['client_error']=client.stderr.decode()
+                except BaseException as error:
+                    cleanup_errors.append(dict(stage='client',error=type(error).__name__))
+                try:
+                    if proxy is not None:
+                        try:
+                            if proxy.process.poll() is None:send(proxy,'stop\n')
+                            record['proxy_exit']=proxy.wait(5);record['proxy_terminal']=event(proxy,'terminal')
+                        finally:proxy.stop()
+                except BaseException as error:
+                    cleanup_errors.append(dict(stage='proxy',error=type(error).__name__))
+                try:record['retained_terminal']=counts()
+                except BaseException as error:
+                    cleanup_errors.append(dict(stage='terminal-sql',error=type(error).__name__))
+                record['cleanup_errors']=cleanup_errors;save()
+            assert not cleanup_errors
+            assert record['blocker_exit']==0 and not record['blocker_error']
+            assert record['client_exit']==0 and not record['client_error']
+            assert record['proxy_exit']==0 and record['proxy_terminal']['unexpected']==0
+            assert record['retained_terminal']==record['durable_after']
+            record['status']='PASS';save()
         result['status']='PASS'
     except BaseException as error:
         result['failure']=type(error).__name__

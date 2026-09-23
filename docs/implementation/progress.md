@@ -19,9 +19,11 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD and origin/main7964e6109c09c78ae3f7f1fecfe402b97c0cc502.
-Completed scoped-absence code and qualification evidence are pushed. Root is sole
-writer of the uncommitted event-history integration: model/protocol read modules;
+Candidate main/HEAD4d813579dc514d098327a20190338650b24f2090,
+tree6c6acc79999bf861ec4d3b4ca45dce11cf983576, unpublished; origin/main remains
+7964e6109c09c78ae3f7f1fecfe402b97c0cc502. Exact source was clean at Git transfer.
+Root owns current checkpoint/evidence/inventory, corrected memory fixture and
+new history fault fixtures plus policy-aware grant-fault fixture updates. The candidate integrates: model/protocol read modules;
 management transport/delivery/history and tests; serve/history plus shared native
 supervision; policy action windows and tests; PostgreSQL history authorization and
 current certified selection; parent/native bounded event query and its new scan
@@ -39,8 +41,10 @@ Read-only AI counterexamples corrected: terminal watch closure race, unsupported
 HTTP400, read-specific TTL, actual pin lifetime, complete preparation-memory floor,
 configured request/page/queue/response/execution bounds, disconnect cancellation
 with positive join and catalog barrier verification before send. Root reviewed
-shared consumers and new contracts. Final narrow AI review of private worker exit
-and fixture policy handshakes is pending; AI runs no tests.
+shared consumers and new contracts. Final narrow AI review found no exit/handshake counterexample, but the580MiB
+fixture does not discriminate the old580.125MiB underestimate. Local successor
+now uses600MiB; candidate4d81357 must not close that regression even if429 passes.
+AI runs no tests. Preserve the running candidate unchanged through terminal capture.
 
 Native query scan admission conservatively charges two physical file passes for
 payload/eligibility, checks canonical file lengths against metadata and caps
@@ -61,12 +65,26 @@ cases are NOT_RUN. Broader registry/cursors/filters/error profile and practical
 blocked delivery, cancellation, short pins, manager loss and grant fault reruns
 remain gates; no task or M1 closure.
 
-Next bounded action: create one unpublished exact candidate, transfer via Git and
-run the isolated native engine plus actual private history fixture on Tux. Capture
+Next bounded action: review and commit the corrected fixture successor, then
+qualify actual private history plus shared grant cancellation on a fresh Tux lab. Capture
 source/dependency/artifact identities and independent terminal rows/files, then
 stop only owned resources and record failures or unknown results before advancing.
-Latest read-only Tux observation: x86_64, eight unrelated services running, no active
-BigBrotr lab,18,746,986,496bytes free. No new remote run or cleanup debt yet.
+The[first history candidate](evidence/p06-private-history-build-incomplete-20260923.json)
+is INCOMPLETE: scoped Linux12native/38binary/25config/3grant/2codec/16policy/12process
+and Clippy PASS, but orchestrator expected Mac11process tests. It stopped before
+actual HTTP; no product failure inferred. Corrected fixture uses Linux12.
+25capture/1061source/five ELF/five asset hashes verified. Both containers stopped,
+network removed,528 prior records unchanged,eight unrelated running. No active lab
+or cleanup debt. New history deadline/disconnect/signal fixtures remain NOT_RUN.
+Static fixture review corrected status loss on truncated200, unchecked cleanup
+terminals and post-parent child-absence attribution. New non-signal cases inspect
+child absence while parent is alive. Disconnect also requires early scheduling;
+a no-disconnect-cancellation mutant remains required before attributing causation
+to disconnect rather than a coincident action/connection expiry.
+Grant/history failure cleanup now attempts blocker, client, proxy and SQL
+observations independently, records all errors and cannot report PASS before
+clean terminal checks. Latest stderr+exit75 Mac regression PASS; new Python
+fixtures syntax/artifact checks PASS, actual scenarios remain NOT_RUN.
 
 [Private HTTP grant qualification](evidence/p08-private-grants-http-native-20260923.json)
 passes for exact6d3f1b0: five actual executable/PG refusal/startup/restart cases,
@@ -252,6 +270,18 @@ Concurrent cap admission/full reauth COMMIT-loss remain open. Startup/reauth req
 809; new scope acceptance requires811.
 
 ## Laboratory custody
+
+Stopped/retained candidate laboratory:
+`/home/tux/bigbrotr-implementation-20260917/runs/private-history-4d81357`,
+owner2d96bc6ded22fdb9a4e87a219561580a, labelorg.bigbrotr.archive-visibility.
+PGe576e667c8aa303a30830b56612bf29eb8b5ad4db9d7276d219fb8bf68739a7e,
+runner6d09e9330551678859f1afa0bc35190b54c60bd3c1fc265fe8cb88b40336011c:
+stopped/PID0/noOOM, runner143/PGwrapper137 after owned bounded stop; not graceful
+product exits. Network removed. Source4d81357/tree6c6acc79 preserved; no HTTP workload
+was started. Latest free15,088,062,464bytes. CaptureSHA256
+`529308f2abd81f528a5d9a134746039210644ccbf2f456cf8d3eeb6e282c16a3`.
+Local raw capture/scripts `.research/implementation/event-history`; inventory
+implementation_private_history_build_20260923. No active lab or cleanup debt.
 
 Stopped/retained query lab:
 `/home/tux/bigbrotr-implementation-20260917/runs/event-query-absence-882654e`,
