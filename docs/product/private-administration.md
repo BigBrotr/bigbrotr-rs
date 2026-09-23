@@ -226,7 +226,7 @@ selects native allocation only with the explicit deployment root
 separate catalog read credentials. Native prerequisite refusal rolls back without
 consuming the proof or stopping healthy Control. The [native HTTP evidence](../implementation/evidence/p08-native-grant-http-20260923.json)
 qualifies enable/retry/restart/revoke and prerequisite refusals at0d95a6a.
-Native-in-flight cancellation, restrictive drain and history delivery remain required.
+Restrictive drain, further cancellation interleavings and history delivery remain required.
 Shutdown during allocation stops HTTP admission before cancelling and joining the
 actual native worker. A known joined result permits explicit pin retirement only
 while Control remains usable and its policy authority valid. The supervisor then
@@ -236,7 +236,9 @@ same rollback; it neither establishes completion nor extends the cleanup deadlin
 Interrupted Control operations (including reads), unknown native termination,
 panic, join timeout or expired authority retain the fail-stop/recovery outcome.
 The [signal RED](../implementation/evidence/p08-native-grant-signal-red-20260923.json)
-executes the original failure; the correction still needs native qualification.
+executes the original failure; [native cancellation qualification](../implementation/evidence/p08-native-grant-cancellation-20260923.json)
+at932902f passes deadline and SIGTERM during an actual blocked native query.
+The first signal during catalog rollback remains a separate practical gate.
 
 Reauthentication binds the same live session, actor and exact command key/digest.
 The proof is a server-side identifier requiring the original session and CSRF,

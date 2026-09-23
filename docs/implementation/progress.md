@@ -19,7 +19,7 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD1b9f710; origin/main2bc18b9. Fault fixture candidates are local/unpublished. Native HTTP implementation and
+Verified main/HEAD932902f; origin/main2bc18b9. Fault fixtures/correction are local unpublished candidates. Native HTTP implementation and
 qualification evidence are pushed. Owned-reader code and native
 qualification evidence are pushed. No merge/rebase or other writer.
 Private repository/name verified through gh repo view. No dependencies changed.
@@ -83,17 +83,30 @@ confirm fixture session reuse with unchanged quotas. Original orchestrator remai
 INCOMPLETE; report classifies the actual product assertion FAIL. The RED assertion
 precedes independent child-absence check, so do not infer its exact reap time.
 
-Root owns a focused product correction in serve.rs/native_grants.rs: record the
-consumed stop, join known native results before cleanup, retain Control/unknown
-termination failures, then exit outer supervision without further delivery. A
-first stop during capture rollback collects the same future under its finite
-deadline. No active lab. Mac34binary/25configuration/3CLI tests, Clippy, formatting and artifact/link checks
-PASS; an initial invocation named nonexistent targets and was corrected, its log
-retained. Full product diff and independent read-only AI review found no new
-concrete issue. Next bounded action: exact candidate native RED->GREEN including
-unchanged deadline/signal cases. No native GREEN claim yet.
-Independent read-only AI review identifies Control read cancellation as fatal,
-first signal during rollback and response/signal races; no tests run by reviewer.
+[Native cancellation GREEN](evidence/p08-native-grant-cancellation-20260923.json)
+at932902f passes the unchanged actual deadline/signal cases and eight baseline
+native HTTP cases. Signal parent exits0/release committed, child positively absent,
+activePin0/Control0/proofs2/commands2/scratch0. Independent terminal PG backends0.
+Observed40.184ms after host TERM/observe is one fixture timing, not universal bound.
+Mac and Linux34binary/25configuration/3CLI tests plus scoped Clippy pass. No
+migration/dependency change. Failed initial Mac target-name invocation is retained.
+No active lab; root owns the qualification docs/inventory checkpoint edits.
+
+The correction records consumed stop, collects known native termination before
+pin cleanup and exits outer supervision before delivery/new admission. Unknown
+native/Control outcomes, expired lease and cancelled Control reads remain fatal.
+First signal during capture rollback continues the same future/deadline and skips
+renewal of the already revoked DeliveryGate; that interleaving is still NOT_RUN.
+Integrating-owner full diff and independent read-only AI review found no further
+concrete issue. AI ran no tests.
+
+Next bounded action: native first-signal-during-capture-rollback fixture. Hold only
+CatalogManager's exact rollback after authenticated native reader activity; before
+TERM require command3/proof1/pin0/Control idle. Keep parent/manager alive for6s,
+observe completed Control polls under the same backend identity, require actual
+HTTP EOF (not client timeout), then release rollback and require graceful0. Reuse
+stored d2 proof/session without a sixth password attempt; restart exact retry must
+preserve receipt/rows/xmin. Sources are not yet edited for this additional case.
 No P02/P06/P08 step or M1 closure; history/export follow this boundary.
 
 ## Scoped grant result
@@ -165,6 +178,18 @@ Concurrent cap admission/full reauth COMMIT-loss remain open. Startup/reauth req
 809; new scope acceptance requires811.
 
 ## Laboratory custody
+
+Stopped/retained corrected lab:
+`/home/tux/bigbrotr-implementation-20260917/runs/native-grant-signal-fixed-932902f`,
+owner6019c694f41ef200f2051d0cd24441d5, labelorg.bigbrotr.archive-visibility.
+PG7e6357754d69e308ba5899106bd09fb64594a49ae85b3d903c9c0f7ecab2ed45 and
+runner561e15ae8a8a5e7ad2c1d41b3fb527145f5ea8cfbd8acd79a902c7cdac2ef857:
+stopped/PID0/noOOM, runner0/restart-loopPG137; owned network removed.522 prior
+records unchanged,8 unrelated running,19,586,805,760bytes free.34 capture/1046
+source/five ELF/five native asset hashes verified; captureSHA256
+`74ce94aaa77a36d7fe351395264b4730c4d0f3e25b4d6e0449df95625cd540b3`.
+Inventory implementation_native_grant_signal_fixed_20260923; local
+`.research/implementation/native-grant-signal-fixed/capture`. No cleanup debt.
 
 Stopped/retained signal RED lab:
 `/home/tux/bigbrotr-implementation-20260917/runs/native-grant-signal-red-1b9f710`,

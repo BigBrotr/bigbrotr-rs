@@ -1,0 +1,401 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02 / P02-T07 native grant supervision prerequisite",
+  "date": "2026-09-23",
+  "status": "PASS",
+  "scope": "Actual blocked native grant allocation deadline and SIGTERM after idle Control observation; not all signal/Control/cleanup interleavings or complete task acceptance",
+  "source": {
+    "revision": "932902faef5dcc747a564d90f4f6ec801b4975fc",
+    "tree": "4b648882a1875ccf39f5af50f98d8fa14d698bb2",
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "client_sha256": "13d49722f4250af361c969ed6b8c1dd712cba193b003a1da45ff02ebef166a8e",
+    "harness_sha256": "fd99269ab1fd784f2d9ce8733ca1d7a56213e82ce050a30fe259600a1e31181a",
+    "proxy_sha256": "a851fe4bc73b298ed16e46899db1d203ba05ad8b05f41658ee4e155bbbcaa96a"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "Runner2CPU/6GiB/512PIDs, PG2CPU/1GiB/128PIDs, internal network, no host ports/socket/release keys; limits are not measured production capacity"
+  },
+  "cases": [
+    {
+      "case": "http-native-blocked-deadline",
+      "status": "PASS",
+      "password_attempts": {
+        "account": 4,
+        "peer": 4
+      },
+      "retained_before_wait": {
+        "active_pins": 1,
+        "proofs": 1,
+        "commands": 2,
+        "active_control": 1
+      },
+      "sql_waiter": {
+        "pid": 361,
+        "backend_start": "2026-09-23T17:37:23.504131+00:00",
+        "application_name": "bigbrotr-archive-visibility",
+        "blockers": [
+          360
+        ]
+      },
+      "native_child": {
+        "pid": 7680,
+        "ppid": 7676,
+        "start_ticks": 356729706
+      },
+      "completion_ms": 3974.177,
+      "client_terminal": {
+        "event": "terminal",
+        "mode": "deadline",
+        "response": {
+          "closed": "RemoteDisconnected"
+        },
+        "parent_exit": 0,
+        "scratch_entries": 0
+      },
+      "durable_after": {
+        "active_pins": 0,
+        "proofs": 1,
+        "commands": 2,
+        "active_control": 0
+      },
+      "blocker_exit": 0,
+      "proxy_exit": 0
+    },
+    {
+      "case": "http-native-blocked-signal",
+      "status": "PASS",
+      "password_attempts": {
+        "account": 5,
+        "peer": 5
+      },
+      "retained_before_wait": {
+        "active_pins": 1,
+        "proofs": 2,
+        "commands": 2,
+        "active_control": 1
+      },
+      "sql_waiter": {
+        "pid": 414,
+        "backend_start": "2026-09-23T17:37:29.073758+00:00",
+        "application_name": "bigbrotr-archive-visibility",
+        "blockers": [
+          413
+        ]
+      },
+      "native_child": {
+        "pid": 7806,
+        "ppid": 7802,
+        "start_ticks": 356730269
+      },
+      "completion_ms": 40.184,
+      "client_terminal": {
+        "event": "terminal",
+        "mode": "signal",
+        "response": {
+          "closed": "RemoteDisconnected"
+        },
+        "parent_exit": 0,
+        "scratch_entries": 0
+      },
+      "durable_after": {
+        "active_pins": 0,
+        "proofs": 2,
+        "commands": 2,
+        "active_control": 0
+      },
+      "blocker_exit": 0,
+      "proxy_exit": 0
+    }
+  ],
+  "password_attempts_before": {
+    "account": 3,
+    "peer": 3
+  },
+  "baseline": {
+    "cases": 8,
+    "signed_readback": "Independent six-family signed oracle and unchanged eight Parquet hashes",
+    "durable_before_faults": {
+      "commands": 2,
+      "details": 2,
+      "audit": 2,
+      "proofs": 0,
+      "disabled_generation2": 1,
+      "account_revision": "3",
+      "active_control": 0,
+      "active_pins": 0,
+      "backends": 0
+    }
+  },
+  "checks": {
+    "source": "932902faef5dcc747a564d90f4f6ec801b4975fc",
+    "source_manifest_sha256": "b8060fdbdf3578a813eca3f0da11dc6119ed61399ff8d02f50ee216c304a6fbe",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "scope": "real private HTTP allocation reader supervision and acceptance; no history delivery or restrictive drain qualification",
+    "format": "bigbrotr-foundation-ci/1",
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "fixture",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "catalog_schema_probe",
+          "--example",
+          "catalog_initialization_probe",
+          "--example",
+          "archive_receipt_probe",
+          "--example",
+          "archive_event_probe",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_coordinator_probe",
+          "--example",
+          "archive_attempt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 74.59876788593829
+      },
+      {
+        "name": "native-grant-consumer",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--test",
+          "management_grants",
+          "--test",
+          "config_entrypoint"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 51.27122381189838
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "--example",
+          "catalog_schema_probe",
+          "--example",
+          "catalog_initialization_probe",
+          "--example",
+          "archive_receipt_probe",
+          "--example",
+          "archive_event_probe",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_coordinator_probe",
+          "--example",
+          "archive_attempt_probe",
+          "--bin",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.4804709563031793
+      }
+    ],
+    "counts": {
+      "collected": 3,
+      "executed": 3,
+      "failed": 0,
+      "not_run": 0
+    }
+  },
+  "artifacts": {
+    "control": "7f2a157996171375d7ab524882c25c081cd4e11b009e201795c2154c6a2f7d07",
+    "worker": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a",
+    "event_reader": "6fd4422d2af7bf9e3fe48d6ee695e07b096668e1c344b2acb694964d8718f53f",
+    "publisher": "aaf7da61623d0ae9fa6fe76f631c2c57219f4fe30500cdf45586de25150da09c",
+    "reader": "25822b7fd24cd7141299d80d6cd0fcc2a0997ec48cc9664b3fccc3f87190e8fa"
+  },
+  "native_assets": {
+    "bigbrotr-archive-worker": {
+      "bytes": 14344128,
+      "sha256": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a"
+    },
+    "extensions/ducklake.duckdb_extension": {
+      "bytes": 36436086,
+      "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+    },
+    "extensions/httpfs.duckdb_extension": {
+      "bytes": 21570542,
+      "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+    },
+    "extensions/postgres_scanner.duckdb_extension": {
+      "bytes": 41696558,
+      "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+    },
+    "lib/duckdb.h": {
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "lib/libduckdb.so": {
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "independent_terminal_sql": {
+    "bbpub_normal": {
+      "backends": 0
+    },
+    "bbpub_control_normal": {
+      "backends": 0
+    }
+  },
+  "observations": {
+    "signal": "Known blocked child is absent from /proc after its actual parent gracefully exits0 with release committed; active pin and owner0, proof2/commands2 unchanged. HTTP closes and scratch is empty. Parent timing40.184ms begins after host TERM/observe; not a universal shutdown bound.",
+    "deadline": "Real PG relation Lock acquired only after authenticated native reader marker; manager retains capture. Five-second request deadline closes HTTP, positively joins child and retires pin; authenticated me still works before idle graceful shutdown.3974.177ms measured from established SQL wait, not total request time.",
+    "red": "Identical signal oracle at1b9f710 fails parent exit4 and retains pin1/Control1; original artifacts and failed state preserved.7ea08a6 signal never reached native work because fixture attempted an extra login.",
+    "control": "Cancellation of an in-flight Control operation remains fatal, including reads/polls. No unknown outcome is converted into a successful release. First signal during capture rollback is implemented but NOT_RUN in this report.",
+    "review": "Integrating-owner full product diff and independent read-only AI review. Review identified consumed-signal state, fatal Control read cancellation, first stop during cleanup and no delivery-gate renewal after stop. AI executed no tests."
+  },
+  "capture": {
+    "local_root": ".research/implementation/native-grant-signal-fixed/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/native-grant-signal-fixed-932902f",
+    "sha256": "74ce94aaa77a36d7fe351395264b4730c4d0f3e25b4d6e0449df95625cd540b3",
+    "bytes": 5560320,
+    "files": 34,
+    "verification": "34 capture/1046 exact Git source/five actual ELF/five native dependency hashes verified. Dependency assets match archive-engine registry. Private session/CSRF file excluded and its raw values scanned as secret canaries."
+  },
+  "cleanup": {
+    "owner": "6019c694f41ef200f2051d0cd24441d5",
+    "owner_label": "org.bigbrotr.archive-visibility",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "7e6357754d69e308ba5899106bd09fb64594a49ae85b3d903c9c0f7ecab2ed45"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "561e15ae8a8a5e7ad2c1d41b3fb527145f5ea8cfbd8acd79a902c7cdac2ef857"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preexisting_preserved": true,
+    "preexisting_count": 522,
+    "unrelated_running": 8,
+    "free_bytes": 19586805760,
+    "terminals": {
+      "rust-visibility": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-23T17:34:05.407052695Z",
+        "FinishedAt": "2026-09-23T17:37:30.061902767Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-23T17:34:03.267190454Z",
+        "FinishedAt": "2026-09-23T17:37:40.563553625Z"
+      }
+    },
+    "note": "Runner0; restart-loop PG137 after bounded stop, no OOM; both PID0. No graceful final PG shutdown claim."
+  },
+  "exclusions": [
+    "No first signal during capture rollback, simultaneous positive result/signal, interrupted Control refresh or lost acceptance COMMIT qualification here",
+    "No history delivery, standalone export, restrictive application/drain or M1/task closure",
+    "No aged/mixed workload, native default-memory envelope, Linux arm64 or hosted Actions qualification"
+  ]
+}

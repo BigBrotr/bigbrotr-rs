@@ -239,8 +239,10 @@ passes the actual blocked-query expiry case; its signal prerequisite failed.
 The corrected fixture [reproduces signal failure](evidence/p08-native-grant-signal-red-20260923.json)
 at1b9f710 with actual SQL wait and idle Control: exit4 retains the pin. A scoped
 supervisor correction distinguishes joined cancellation from unknown Control/native
-outcomes; native GREEN is pending. Full history/drain and further signal/COMMIT
-interleavings remain open, including the first signal during catalog rollback.
+outcomes. [Native GREEN](evidence/p08-native-grant-cancellation-20260923.json)
+at932902f passes the unchanged deadline/signal oracles, with pin0/Control0 and
+no new grant command. Full history/drain and further signal/COMMIT interleavings
+remain open, including the first signal during catalog rollback.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 

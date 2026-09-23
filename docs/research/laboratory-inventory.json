@@ -18551,5 +18551,41 @@
       "capture_sha256": "1181be524238399948cfccf56b3eb9d2c28e272a469f09ac5f5f876a04543cd3"
     },
     "observation": "Stopped/retained. Actual SIGTERM assertion fails exit4 versus graceful0, pin1/Control1 retained. Deadline PASS; SQL password counters3/4/5.34 capture/1045 source/five ELF/five native asset hashes verified; private auth excluded/canary-scanned.520 prior records unchanged,8 unrelated running; no cleanup debt."
+  },
+  "implementation_native_grant_signal_fixed_20260923": {
+    "local_root": ".research/implementation/native-grant-signal-fixed",
+    "native": {
+      "source": "932902faef5dcc747a564d90f4f6ec801b4975fc",
+      "tree": "4b648882a1875ccf39f5af50f98d8fa14d698bb2",
+      "owner": "6019c694f41ef200f2051d0cd24441d5",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-grant-signal-fixed-932902f",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "7e6357754d69e308ba5899106bd09fb64594a49ae85b3d903c9c0f7ecab2ed45"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "561e15ae8a8a5e7ad2c1d41b3fb527145f5ea8cfbd8acd79a902c7cdac2ef857"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T17:33:59.746478+00:00",
+      "network_id": "5220f62b3d5b94a3a79d57488b5e883d8bab405c79cd8ccfac9e8c0f4a5bfb36",
+      "postgres_id": "7e6357754d69e308ba5899106bd09fb64594a49ae85b3d903c9c0f7ecab2ed45",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "561e15ae8a8a5e7ad2c1d41b3fb527145f5ea8cfbd8acd79a902c7cdac2ef857",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "report": "docs/implementation/evidence/p08-native-grant-cancellation-20260923.json",
+      "capture_sha256": "74ce94aaa77a36d7fe351395264b4730c4d0f3e25b4d6e0449df95625cd540b3"
+    },
+    "observation": "Stopped/retained; actual deadline and signal PASS.34 capture/1046 source/five ELF/five native asset hashes verified.522 prior records unchanged,8 unrelated running; owned network removed. No active job or cleanup debt."
   }
 }
