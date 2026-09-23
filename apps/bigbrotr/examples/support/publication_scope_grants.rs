@@ -206,7 +206,7 @@ pub async fn run(
             }],
             snapshot_id: 3,
         },
-        coordinator,
+        coordinator.reader_custody().unwrap(),
         &CatalogRoute {
             address: "127.0.0.1".parse().unwrap(),
             port: 5432,

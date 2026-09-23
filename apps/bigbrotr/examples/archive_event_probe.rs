@@ -138,10 +138,28 @@ fn main() {
                         .query_event(query, coordinator, &route, credential, &budget)
                         .map(|value| Observation::Event(Box::new(value)))
                         .map_err(|e| format!("{e:?}")),
-                    Expected::Visibility(read) => preparation
-                        .read_visibility(read.clone(), coordinator, &route, credential, &budget)
+                    Expected::Visibility(read) => {
+                        let custody = coordinator.reader_custody().map_err(|e| format!("{e:?}"))?;
+                        let budget = &budget;
+                        // Exercise the owned blocking boundary needed by Control:
+                        // the worker receives no reference to LocalCoordinator.
+                        std::thread::scope(|scope| {
+                            scope
+                                .spawn(move || {
+                                    preparation.read_visibility(
+                                        read.clone(),
+                                        custody,
+                                        &route,
+                                        credential,
+                                        budget,
+                                    )
+                                })
+                                .join()
+                                .unwrap()
+                        })
                         .map(|value| Observation::Visibility(Box::new(value)))
-                        .map_err(|e| format!("{e:?}")),
+                        .map_err(|e| format!("{e:?}"))
+                    }
                 }
             });
         done.store(true, Ordering::Relaxed);

@@ -78,20 +78,17 @@ impl LocalCoordinator {
         self.custody.retain_catalog_connection(future)
     }
 
-    /// Readers share the existing coordinator's open file description. This
-    /// permits no initialization/publication launch and supplies no read grant.
-    /// The trusted worker keeps the descriptor until actual exit, including
-    /// when its parent dies or cannot establish termination before its deadline.
-    pub(super) fn inherit_reader(&self, command: &mut Command) -> Result<(), LifetimeError> {
+    /// Derive owned close-only custody for one reader worker and its result.
+    /// Only ordinary coordinators may do this; pin recovery cannot gain a reader
+    /// by being rewrapped. This is local exclusion, never SQL or read authority.
+    pub fn reader_custody(&self) -> Result<ReaderCustody, LifetimeError> {
         if !self.permits_reader_pins() {
             return Err(LifetimeError::Identity);
         }
-        let fd = self.custody.retain_custody()?;
-        if fd.as_raw_fd() < 3 {
-            return Err(LifetimeError::Filesystem);
-        }
-        command.preserved_fds(vec![fd.into()]);
-        Ok(())
+        Ok(ReaderCustody {
+            lock: self.custody.retain_custody()?,
+            identity: self.identity().clone(),
+        })
     }
 
     pub(super) fn from_custody(
@@ -178,6 +175,33 @@ impl LocalCoordinator {
             initialization_sha256,
             binding_digest: Digest256::from_bytes(Sha256::digest(&expected).into()),
         })
+    }
+}
+
+/// An owned reader lifetime derived from an ordinary coordinator. It can move to
+/// blocking work without sharing the initializer's mutable launch state. No raw
+/// descriptor/path constructor or initialization/publication launch is exposed.
+pub struct ReaderCustody {
+    lock: File,
+    identity: CatalogIdentity,
+}
+impl ReaderCustody {
+    pub fn identity(&self) -> &CatalogIdentity {
+        &self.identity
+    }
+
+    /// Preserve the same locked open file description through actual child exit,
+    /// including parent death or unknown termination. Never explicitly unlock it.
+    pub(super) fn inherit(&self, command: &mut Command) -> Result<(), LifetimeError> {
+        let fd = self
+            .lock
+            .try_clone()
+            .map_err(|_| LifetimeError::Filesystem)?;
+        if fd.as_raw_fd() < 3 {
+            return Err(LifetimeError::Filesystem);
+        }
+        command.preserved_fds(vec![fd.into()]);
+        Ok(())
     }
 }
 

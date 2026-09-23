@@ -19,10 +19,9 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD `6d3f1b0d3eb6cfc64246d9ebfdafb6b3f17f61db`, tree
-`509d0b252b70c9c3883a9a730bc667a3281e81f4`; origin/main remains d27f224 before
-this documentation commit/push. No merge/rebase or other writer. Root owns the
-OpenAPI clarification/generated comment, evidence, inventory and checkpoint edits.
+Verified main/HEAD and origin/main at8f48d91 after pushing6d3f1b0 and its scoped
+qualification. No merge/rebase or other writer. Root owns the new ReaderCustody
+implementation, actual visibility fixture caller, scoped native check and docs.
 Private repository/name verified through gh repo view. No dependencies changed.
 
 [Private HTTP grant qualification](evidence/p08-private-grants-http-native-20260923.json)
@@ -40,13 +39,20 @@ A fresh isolated checked run at the SAME source revision passed and was captured
 all35 capture/1036 source/two ELF/five native dependency asset hashes verified.
 Local raw logs and both captures: `.research/implementation/private-grants/`.
 
-Next bounded action: finish this evidence commit/push, then implement owned
-ReaderCustody for the configured native grant consumer, with real descriptor
-lifetime/recovery-refusal tests. Keep LocalCoordinator on the Control thread;
-move only restricted reader custody into supervised blocking work and retain it
-through the result consumer. Integrate the reader with shared resource accounting,
-Control renewal and cancellation, then the existing private event_history protocol.
-Do not replace the real consumer with a new diagnostic CLI or mark P08/P06/M1 complete.
+Owned ReaderCustody now derives only from ordinary LocalCoordinator, moves to
+blocking work and stays in ArchivedVisibility until consumption. Event/cut use
+the same private handoff.17 local initialization/custody tests and all-example
+Clippy pass; missing-API RED is retained under `.research/implementation/owned-reader/`.
+The actual visibility probe now moves custody into a joined worker thread and
+checks result-held flock after dropping the coordinator. Read-only independent AI review found no concrete new counterexample within
+these nine code files; Linux and Tokio/Control supervision remain unqualified.
+No new lab started yet.
+
+Next bounded action: review/commit the owned reader candidate and run existing
+actual signed visibility scenarios plus17 custody tests in a fresh Tux lab. Then
+wire this owned value into Control HTTP with explicit reader selection, one shared
+resource budget, continued renewal/cancellation and catalog/pin cleanup. Proceed
+to the existing event_history protocol; no diagnostic CLI substitution or task closure.
 
 ## Scoped grant result
 

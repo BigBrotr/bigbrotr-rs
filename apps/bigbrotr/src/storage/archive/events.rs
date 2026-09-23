@@ -6,7 +6,7 @@ use bigbrotr_protocol::{
     archive_event::{EventMatch, EventObservation, EventQuery, EventRead, EventReadError},
 };
 use serde::Serialize;
-use std::{fs::File, sync::atomic::Ordering, time::Instant};
+use std::{sync::atomic::Ordering, time::Instant};
 
 /// The grant covers the decoded body until its last consumer drops this value.
 /// Neither a caller-declared scope nor this read provides an access capability.
@@ -16,7 +16,7 @@ pub struct ArchivedEvent {
     _permit: OwnedPermit,
     // A decoded body can outlive its native job and originating coordinator.
     // Delivery must retain local exclusion as well as its allocation grant.
-    _custody: File,
+    _custody: super::ReaderCustody,
 }
 impl ArchivedEvent {
     pub fn event(&self) -> &VerifiedEvent {
@@ -144,11 +144,10 @@ impl Preparation<'_> {
             )
             .map_err(|_| ArchiveEventError::ResourceLimit)?;
         let custody = coordinator
-            .custody
-            .retain_custody()
+            .reader_custody()
             .map_err(|e| ArchiveEventError::Preparation(PreparationError::Custody(e)))?;
         let mut process = self
-            .start_reader(command, &[maximum.to_string()], budget, coordinator, tls)
+            .start_reader(command, &[maximum.to_string()], budget, &custody, tls)
             .map_err(ArchiveEventError::Preparation)?;
         if process.reserve_data_output(output_bytes, grant).is_err() {
             // Allocation failure happens after spawn. Observe termination before

@@ -1,7 +1,6 @@
 //! Allocation evidence for a future grant, never data/action authorization.
 use super::{
-    CatalogReaderCredentials, CatalogRoute, LocalCoordinator, Preparation, ProcessError,
-    ReceiptError,
+    CatalogReaderCredentials, CatalogRoute, Preparation, ProcessError, ReaderCustody, ReceiptError,
 };
 use crate::{
     runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
@@ -13,7 +12,7 @@ use bigbrotr_protocol::archive_visibility::{
     VisibilityRead, VisibilityReadError,
 };
 use serde::Serialize;
-use std::{fs::File, sync::atomic::Ordering, time::Instant};
+use std::{sync::atomic::Ordering, time::Instant};
 
 /// Only a joined real reader constructs this value. It proves one stored mapping
 /// in the supplied selection, not certification of that cut or permission to
@@ -21,9 +20,8 @@ use std::{fs::File, sync::atomic::Ordering, time::Instant};
 pub struct ArchivedVisibility {
     fact: Fact,
     read: VisibilityRead,
-    catalog: CatalogIdentity,
     _permit: OwnedPermit,
-    _custody: File,
+    custody: ReaderCustody,
 }
 impl ArchivedVisibility {
     pub fn entry(&self) -> &DictionaryEntry {
@@ -39,7 +37,7 @@ impl ArchivedVisibility {
         &self.read
     }
     pub fn catalog(&self) -> &CatalogIdentity {
-        &self.catalog
+        self.custody.identity()
     }
 }
 #[derive(Serialize)]
@@ -54,7 +52,7 @@ impl Preparation<'_> {
     pub fn read_visibility(
         self,
         expected: VisibilityRead,
-        coordinator: &LocalCoordinator,
+        custody: ReaderCustody,
         route: &CatalogRoute<'_>,
         credential: CatalogReaderCredentials<'_>,
         budget: &ResourceBudget,
@@ -76,7 +74,7 @@ impl Preparation<'_> {
                 ResourceRequest::data(OVERLAP, 1, 0).map_err(|_| ReceiptError::ResourceLimit)?,
             )
             .map_err(|_| ReceiptError::ResourceLimit)?;
-        let identity = coordinator.identity();
+        let identity = custody.identity();
         let (dsn, tls) = super::receipts::reader_connection(
             expected.dataset,
             identity,
@@ -98,12 +96,8 @@ impl Preparation<'_> {
             .validate()
             .map_err(ReceiptError::Preparation)?;
         super::bootstrap::wire_fits(&input).map_err(ReceiptError::Preparation)?;
-        let custody = coordinator
-            .custody
-            .retain_custody()
-            .map_err(|e| ReceiptError::Preparation(super::PreparationError::Custody(e)))?;
         let mut process = self
-            .start_reader("read-visibility", &[], budget, coordinator, tls)
+            .start_reader("read-visibility", &[], budget, &custody, tls)
             .map_err(ReceiptError::Preparation)?;
         let transfer = serde_json::to_writer(&mut process, &input);
         let output = process.finish();
@@ -128,9 +122,8 @@ impl Preparation<'_> {
         Ok(ArchivedVisibility {
             fact,
             read: expected,
-            catalog: identity.clone(),
             _permit: grant,
-            _custody: custody,
+            custody,
         })
     }
 }

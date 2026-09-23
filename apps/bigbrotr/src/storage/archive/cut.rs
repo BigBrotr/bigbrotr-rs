@@ -103,12 +103,15 @@ impl Preparation<'_> {
             .validate()
             .map_err(ReceiptError::Preparation)?;
         receipts::wire_fits(&input)?;
+        let custody = coordinator
+            .reader_custody()
+            .map_err(|e| ReceiptError::Preparation(super::PreparationError::Custody(e)))?;
         let mut process = self
             .start_reader(
                 "inspect-cut",
                 &[self.limits.max_records.to_string(), max_facts.to_string()],
                 budget,
-                coordinator,
+                &custody,
                 tls,
             )
             .map_err(ReceiptError::Preparation)?;

@@ -116,6 +116,7 @@ if archive_event:
 if archive_visibility:
     identity.update(scope='actual retained visibility allocation lookup; no action grant or HTTP read authority')
     checks = [checks[0],
+        ('owned-reader-custody', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive::initialization::tests', '--', '--test-threads=1']),
         ('native-visibility', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'visibility_tests::', '--', '--nocapture']),
         ('protocol-visibility', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-protocol', '--test', 'archive_visibility']),
         checks[-1]]

@@ -17,16 +17,13 @@ fn pin_recovery_custody_cannot_be_rewrapped_into_a_reader() {
         .retain_connection(std::future::pending::<()>())
         .unwrap();
     assert!(!owner.permits_reader_pins());
-    assert_eq!(
-        owner.inherit_reader(&mut Command::new("/bin/true")),
-        Err(LifetimeError::Identity)
-    );
+    assert_eq!(owner.reader_custody().err(), Some(LifetimeError::Identity));
     let custody = owner.custody;
     let rewrapped = super::super::LocalCoordinator::from_custody(custody, &state, false).unwrap();
     assert!(!rewrapped.permits_reader_pins());
     assert_eq!(
-        rewrapped.inherit_reader(&mut Command::new("/bin/true")),
-        Err(LifetimeError::Identity)
+        rewrapped.reader_custody().err(),
+        Some(LifetimeError::Identity)
     );
     drop(rewrapped);
     assert!(matches!(
@@ -38,9 +35,42 @@ fn pin_recovery_custody_cannot_be_rewrapped_into_a_reader() {
         super::super::LocalCoordinator::from_custody(recover_released(&identity), &state, false)
             .unwrap();
     assert!(ordinary.permits_reader_pins());
-    ordinary
-        .inherit_reader(&mut Command::new("/bin/true"))
-        .unwrap();
+    ordinary.reader_custody().unwrap();
+}
+
+#[test]
+fn owned_reader_custody_survives_thread_join_until_the_result_is_consumed() {
+    use std::{sync::mpsc::sync_channel, time::Duration};
+    let (_data, identity) = fixture();
+    let (state, _) = fixture();
+    let state = state.path().canonicalize().unwrap();
+    drop(LocalInitialization::create_for_boot(&identity, [3; 16], BOOT).unwrap());
+    let owner =
+        super::super::LocalCoordinator::from_custody(recover_released(&identity), &state, true)
+            .unwrap();
+    let reader = owner.reader_custody().unwrap();
+    drop(owner);
+    let expected = identity.clone();
+    let (ready_tx, ready_rx) = sync_channel(1);
+    let (finish_tx, finish_rx) = sync_channel(1);
+    // A real unscoped thread requires an owned Send value; the coordinator's
+    // non-Sync initialization state never enters the blocking worker.
+    let worker = std::thread::spawn(move || {
+        assert_eq!(reader.identity(), &expected);
+        ready_tx.send(()).unwrap();
+        finish_rx.recv_timeout(Duration::from_secs(2)).unwrap();
+        reader
+    });
+    ready_rx.recv_timeout(Duration::from_secs(2)).unwrap();
+    let during_work = LocalInitialization::recover_for_boot(&identity, BOOT).err();
+    finish_tx.send(()).unwrap();
+    let result = worker.join().unwrap();
+    let after_join = LocalInitialization::recover_for_boot(&identity, BOOT).err();
+    assert_eq!(result.identity(), &identity);
+    drop(result);
+    drop(recover_released(&identity));
+    assert_eq!(during_work, Some(LifetimeError::Occupied));
+    assert_eq!(after_join, Some(LifetimeError::Occupied));
 }
 
 #[test]
@@ -65,7 +95,11 @@ fn coordinator_children_retain_custody_until_the_last_actual_exit() {
                 .stdin(Stdio::piped())
                 .stdout(Stdio::piped());
             if inherit {
-                owner.inherit_reader(&mut command).unwrap();
+                owner
+                    .reader_custody()
+                    .unwrap()
+                    .inherit(&mut command)
+                    .unwrap();
             }
             let mut child = command.spawn().unwrap();
             let mut ready = String::new();

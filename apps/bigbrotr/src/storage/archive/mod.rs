@@ -13,7 +13,7 @@ mod receipts;
 mod worker;
 
 pub use client_identity::{NativeClientIdentity, NativeIdentityError};
-pub use coordinator::LocalCoordinator;
+pub use coordinator::{LocalCoordinator, ReaderCustody};
 pub use initialization::LocalInitialization;
 pub use inputs::{InputError, RetainedInputs};
 pub use installation::{ArtifactIdentity, InstallationError, WorkerInstallation};

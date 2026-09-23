@@ -414,6 +414,18 @@ columns, protected frontiers, aged capacity or Linux arm64.
 
 ## Complete native cut observation candidate
 
+`LocalCoordinator::reader_custody` now derives an owned `ReaderCustody` for
+blocking allocation reads. Its only constructor checks the ordinary coordinator's
+reader permission and duplicates the existing locked file description. It exposes
+identity and a crate-internal reader handoff, never initializer/publisher methods
+or construction from a path/descriptor. `Preparation::read_visibility` consumes it;
+`ArchivedVisibility` retains it through the final grant consumer. The catalog
+capture and mutable initialization state remain on the Control thread. Recovery-only
+custody still refuses derivation after coordinator rewrapping. Event/cut adapters
+use the same handoff internally without changing their caller authority contract.
+Local descriptor/thread/child tests pass; Linux qualification of this new owned
+handoff is pending. This does not yet implement the supervised private HTTP reader.
+
 `Preparation::inspect_cut` and `read_event` require the actual `LocalCoordinator`,
 whose validated binding supplies catalog identity. Both native children inherit a
 duplicate of its permanently locked open file description. This close-only
