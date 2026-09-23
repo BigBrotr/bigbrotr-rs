@@ -18443,5 +18443,41 @@
       "capture_sha256": "e597ff73f616ad2549dbcf588bd6fb6eaf18f03233d2b279c415d929b7b207d0"
     },
     "observation": "Stopped/retained,58 capture/1037 source/five actual ELF/five dependency assets verified.514 prior records unchanged, eight unrelated running,34368692224bytes free. PG restart-loop final container exit137/noOOM; native runner exit0. No active job/cleanup debt."
+  },
+  "implementation_native_grant_http_20260923": {
+    "local_root": ".research/implementation/native-grant-http",
+    "native": {
+      "source": "0d95a6a3fe5e43528b4ae3dabbee2bc9769267aa",
+      "tree": "8aed97901993bb5f6240bde25387ffa03d881607",
+      "owner": "2b38c1a14aad1fff7d69156887ad50f8",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-native-grants-0d95a6a",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "ae68c9a664dea9caed5f95d072049551c2c2328844599ab8f8cf8a3cb1d08dde"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "868d9e82ae52901ed4cbec5d8f6c0718298e72115a4facc27426e3bfe397791f"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T17:05:07.411029+00:00",
+      "network_id": "45cabed6acd5dd20ae859b12c5d50005ee99a60e3858677bb08c24b3e72bed70",
+      "postgres_id": "ae68c9a664dea9caed5f95d072049551c2c2328844599ab8f8cf8a3cb1d08dde",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "868d9e82ae52901ed4cbec5d8f6c0718298e72115a4facc27426e3bfe397791f",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "report": "docs/implementation/evidence/p08-native-grant-http-20260923.json",
+      "capture_sha256": "cef73ca087e66915ff1ade49775862a846b4bc43355c111b93fbb3f2dd19e061"
+    },
+    "observation": "Stopped/retained.28 capture/1041 source/five ELF/five dependency hashes verified.516 prior container records unchanged, eight unrelated running. Native runner0; restart-loop PG137/noOOM; network removed. No active job/cleanup debt."
   }
 }

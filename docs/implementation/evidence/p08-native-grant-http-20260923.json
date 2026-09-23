@@ -1,0 +1,301 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02 native private scope-grant consumer; P02-T07 prerequisite",
+  "date": "2026-09-23",
+  "status": "PASS",
+  "scope": "Actual selected native allocation to private HTTP grant acceptance, retry and graceful idle restart; not complete history/delivery/drain qualification",
+  "source": {
+    "revision": "0d95a6a3fe5e43528b4ae3dabbee2bc9769267aa",
+    "tree": "8aed97901993bb5f6240bde25387ffa03d881607",
+    "source_files": 1041,
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "harness_sha256": "e4167e3231e5db6eaaec61263aa098704657bb6d20dbf27790d8ec6eb3b763b8",
+    "client_sha256": "4d0e0f209ed63230d5e5f19986a75aeed2c93434012b52e4ed5d59fa9667fef3",
+    "oracle_sha256": "7ad4381bdc691d45245232d7cbdebeed039c6de0c182bcdc193b3479678917a4"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner": "2CPU/6GiB/512PIDs; internal network, readonly exact Git source, no host ports/socket/release keys",
+    "postgres": "2CPU/1GiB/128PIDs; fsync/full_page_writes on",
+    "cache": "Copied verified intact b5ff8ab cache; no retired state reused"
+  },
+  "checks": [
+    {
+      "name": "fixture",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 74.53457381995395
+    },
+    {
+      "name": "native-grant-consumer",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--test",
+        "management_grants",
+        "--test",
+        "config_entrypoint"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 51.41462842095643
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--lib",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe",
+        "--bin",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr-archive-worker",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.3205614127218723
+    }
+  ],
+  "cases": [
+    {
+      "case": "native-reader-startup-privilege-0",
+      "status": "PASS",
+      "table": "control.archive_frontier_snapshots",
+      "privilege": "SELECT"
+    },
+    {
+      "case": "native-reader-startup-privilege-1",
+      "status": "PASS",
+      "table": "control.archive_pin_recoveries",
+      "privilege": "SELECT"
+    },
+    {
+      "case": "native-reader-startup-privilege-2",
+      "status": "PASS",
+      "table": "control.topology_generations",
+      "privilege": "SELECT"
+    },
+    {
+      "case": "native-reader-startup-privilege-3",
+      "status": "PASS",
+      "table": "control.consumer_frontier_revisions",
+      "privilege": "UPDATE"
+    },
+    {
+      "case": "missing-bundle-refuses-with-healthy-Control-and-no-scratch",
+      "status": "PASS"
+    },
+    {
+      "case": "native-http-enable-reuses-unconsumed-proof",
+      "status": "PASS",
+      "elapsed_ms": 563.927
+    },
+    {
+      "case": "identical-http-retry-preserves-original-acceptance",
+      "status": "PASS"
+    },
+    {
+      "case": "restart-retry-and-revoke-do-not-reapply-old-enable",
+      "status": "PASS"
+    }
+  ],
+  "observations": {
+    "native": "Actual packaged main executable, bound worker, PostgreSQL manager and distinct SELECT-only native credential; no injected successful grant. Actual Control selection/capture/pin precede joined native allocation and fresh accepting transaction.",
+    "proof": "Same actual proof succeeds after missing bundle refusal; original HTTP retry remains historical after graceful restart and revoke. Missing bundle leaves healthy me route and empty read scratch.",
+    "privileges": "Four individual revoked privileges refuse before listener bind: frontier SELECT, recovery SELECT, topology SELECT and frontier row-lock UPDATE.",
+    "oracle": "Separate signed six-family readback and unchanged eight Parquet hashes.",
+    "initialization": "Existing real signed publication fixture seeds the archive/certified frontier. Real migration and owner issue/enroll commands prepare administration. A documented fixture-only policy successor enables the listener; this is not a policy-change API or clean Compose journey.",
+    "timing": "One observed successful enablement took563.927ms on this tiny archive; no throughput or capacity inference.",
+    "transport": "Admission-stop unit test closes actual sockets while retaining the queued work grant; signal during a native query is NOT_RUN in this report.",
+    "exclusion": "Generic harness remote_exclusion=UNKNOWN fields are not writer fencing claims. Independent SQL and owned terminal process/container observations provide only the stated boundaries."
+  },
+  "durable_terminal": {
+    "commands": 2,
+    "details": 2,
+    "audit": 2,
+    "proofs": 0,
+    "disabled_generation2": 1,
+    "account_revision": "3",
+    "active_control": 0,
+    "active_pins": 0,
+    "backends": 0
+  },
+  "artifacts": {
+    "control": "71e39b1ebb9d462f16b0758462f5afd1d106efb7e1ad5868151486ff9eb76e88",
+    "worker": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a",
+    "event_reader": "6fd4422d2af7bf9e3fe48d6ee695e07b096668e1c344b2acb694964d8718f53f",
+    "publisher": "aaf7da61623d0ae9fa6fe76f631c2c57219f4fe30500cdf45586de25150da09c",
+    "reader": "25822b7fd24cd7141299d80d6cd0fcc2a0997ec48cc9664b3fccc3f87190e8fa"
+  },
+  "native_assets": {
+    "bigbrotr-archive-worker": {
+      "bytes": 14344128,
+      "sha256": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a"
+    },
+    "extensions/ducklake.duckdb_extension": {
+      "bytes": 36436086,
+      "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+    },
+    "extensions/httpfs.duckdb_extension": {
+      "bytes": 21570542,
+      "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+    },
+    "extensions/postgres_scanner.duckdb_extension": {
+      "bytes": 41696558,
+      "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+    },
+    "lib/duckdb.h": {
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "lib/libduckdb.so": {
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "parquet_files": {
+    "signed_normal/kind=7/main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e",
+    "signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70",
+    "signed_normal/kind=7/main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076",
+    "signed_normal/kind=7/main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be",
+    "signed_normal/kind=7/main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35",
+    "signed_normal/kind=7/main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05",
+    "signed_normal/kind=7/main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937",
+    "signed_normal/kind=7/main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+  },
+  "capture": {
+    "local_root": ".research/implementation/native-grant-http/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/private-native-grants-0d95a6a",
+    "sha256": "cef73ca087e66915ff1ade49775862a846b4bc43355c111b93fbb3f2dd19e061",
+    "bytes": 5478400,
+    "files": 28,
+    "verified": "Every capture hash/size,1041 clean Git source files, five actual ELF hashes and five dependency asset hashes checked; asset hashes match contracts/release/archive-engine.json."
+  },
+  "cleanup": {
+    "owner": "2b38c1a14aad1fff7d69156887ad50f8",
+    "owner_label": "org.bigbrotr.archive-visibility",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "ae68c9a664dea9caed5f95d072049551c2c2328844599ab8f8cf8a3cb1d08dde"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "868d9e82ae52901ed4cbec5d8f6c0718298e72115a4facc27426e3bfe397791f"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preexisting_preserved": true,
+    "preexisting_count": 516,
+    "unrelated_running": 8,
+    "free_bytes": 30674616320,
+    "terminals": {
+      "rust-visibility": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-23T17:05:13.269316017Z",
+        "FinishedAt": "2026-09-23T17:08:30.008684733Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-23T17:05:11.23695331Z",
+        "FinishedAt": "2026-09-23T17:08:40.598823654Z"
+      }
+    },
+    "note": "Native runner exit0; PG restart-loop container exit137 after stop deadline, no OOM. Both PID0/stopped; no claim of graceful final PG shutdown."
+  },
+  "review": {
+    "kind": "Integrating-owner diff review and independent read-only AI review; AI ran no tests",
+    "findings": "Added pre-spawn authority/deadline check, admission stop before join, complete SQL invoker/row-lock prerequisite checks. Four SQL negative controls and actual transport shutdown regression executed.",
+    "remaining": "Delayed/blocked native cancellation, per-action delivery and pin recovery remain separate practical gates."
+  },
+  "exclusions": [
+    "No complete P08-T02/P02/P06 task or M1 closure",
+    "No native-in-flight signal, request expiry, disconnect, suspend or lost-authority drill yet",
+    "No grant COMMIT-loss/crash recovery, old-holder pin recovery or restrictive native/socket drain",
+    "No multi-stream/zero/cap selection qualification in this fixture; the new literal lookup assertion in publication_scope_grants.rs is not executed here",
+    "No private event_history delivery, standalone export, browser grant UI or full installation/upgrade journey",
+    "No aged/mixed load, measured native capacity, Linux arm64 or hosted Actions qualification"
+  ]
+}

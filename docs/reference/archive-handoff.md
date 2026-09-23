@@ -427,7 +427,10 @@ use the same handoff internally without changing their caller authority contract
 atc5d76a1 passes17 Linux custody tests, five native/two protocol tests and33
 actual signed visibility/read/refusal/restart cases. The decoded native result
 keeps the lock after coordinator destruction until its consumer drops it. This
-does not yet implement the supervised private HTTP reader.
+does not itself qualify the supervised private HTTP reader. The later
+[native grant HTTP consumer](../implementation/evidence/p08-native-grant-http-20260923.json)
+uses owned custody in the actual Control supervisor and passes enable/retry/restart
+and refusal cases; its in-flight signal/deadline and history delivery gates remain.
 
 `Preparation::inspect_cut` and `read_event` require the actual `LocalCoordinator`,
 whose validated binding supplies catalog identity. Both native children inherit a

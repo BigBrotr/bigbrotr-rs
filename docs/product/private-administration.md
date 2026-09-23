@@ -224,9 +224,9 @@ Revocation and historical acceptance paths need no Archive. Fresh enablement
 selects native allocation only with the explicit deployment root
 `archive.reader.enabled=true` (default false), local Control/Archive custody and
 separate catalog read credentials. Native prerequisite refusal rolls back without
-consuming the proof or stopping healthy Control. The new consumer is awaiting
-exact-revision native HTTP qualification; restrictive drain and history delivery
-remain required.
+consuming the proof or stopping healthy Control. The [native HTTP evidence](../implementation/evidence/p08-native-grant-http-20260923.json)
+qualifies enable/retry/restart/revoke and prerequisite refusals at0d95a6a.
+Native-in-flight cancellation, restrictive drain and history delivery remain required.
 
 Reauthentication binds the same live session, actor and exact command key/digest.
 The proof is a server-side identifier requiring the original session and CSRF,
@@ -361,8 +361,9 @@ locks and the two invoker helper EXECUTE privileges. A selected native reader
 also checks its actual Control observation/pin/helper privileges before binding,
 including recovery-history SELECT and the frontier row-lock column privilege.
 No startup migration runs.
-Successful native HTTP grant execution, restrictive drain and private history
-remain unqualified until their full consumers and practical acceptance exist.
+Successful native HTTP grant acceptance now has scoped evidence below.
+Native-in-flight cancellation, restrictive drain and private history remain
+unqualified until their full practical acceptance exists.
 
 [Native evidence at4b9511d](../implementation/evidence/p08-scoped-grants-native-20260923.json)
 qualifies the scoped storage/adapter boundary, including actual password/native

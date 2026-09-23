@@ -19,7 +19,7 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD and origin/main5082a1a. Owned-reader code and native
+Verified main/HEAD0d95a6a, origin/main5082a1a. Native HTTP candidate is local/unpublished. Owned-reader code and native
 qualification evidence are pushed. No merge/rebase or other writer.
 Private repository/name verified through gh repo view. No dependencies changed.
 
@@ -45,33 +45,36 @@ cases. Root reviewed the diff and independent AI review found no concrete defect
 All58 capture/1037 source/five actual ELF/five dependency asset hashes verified.
 No Tokio/HTTP native-reader supervision or grant success is implied.
 
-Root owns the pending native HTTP candidate: config registry/validation and
-consumers, Management handoff/admission stop, serve/native_grants.rs,
-snapshot_leases.rs/control_owner.rs, publication fixture, actual HTTP/native
-fixtures and owning docs/OpenAPI/generated client descriptions. No dependency or
-migration changes. Explicit archive.reader.enabled defaults false; missing local
-roles/paired credentials refuse offline and accepted policy bytes stay unchanged.
-The consumer uses one resource ledger, absolute Control renewal, retained manager
-transport/capture/certified pin and owned joined native allocation evidence.
+[Native private HTTP qualification](evidence/p08-native-grant-http-20260923.json)
+is PASS-scoped at0d95a6a/tree8aed97901993bb5f6240bde25387ffa03d881607:
+eight actual cases include four startup privilege revocations, missing-bundle
+proof preservation, successful native enable, identical retry and graceful idle
+restart/revoke/old retry. Independent final SQL: commands2/details2/audits2/proofs0,
+disabled generation2/account revision3/activeControl0/activePins0/backends0.
+Separate signed six-family readback and eight unchanged Parquet hashes pass.
+One successful enablement took563.927ms on this tiny archive, not a capacity claim.
+Linux34binary/25configuration/3command tests and scoped Clippy pass; corresponding
+Mac checks, generated contracts and artifact/link checks pass. Initial compile
+failures and new admission-stop RED/GREEN are retained under owned-reader logs.
 
-Local candidate checks PASS:34 binary/25 configuration/3 command tests, including
-new admission-stop RED/GREEN with retained work, plus scoped Clippy. Initial
-compile failures and corrected results remain in
-`.research/implementation/owned-reader/native-consumer-*.log`. AI review found
-late admission shutdown and missing SQL invoker/row-lock prerequisites; both are
-corrected, with real PG revocation controls prepared but NOT_RUN. The HTTP
-fixture covers missing bundle/proof reuse, actual enable, identical retry,
-restart/revoke/old retry and independent final SQL/signed archive readback.
-Native HTTP execution, signal/slow catalog/ambiguous acceptance, multi-stream/zero
-selection and resource/load scenarios remain unqualified. Existing allocation
-fixture lookup compiles but its literal real-PG assertions have not run.
+Explicit archive.reader.enabled defaults false and requires local Control/Archive
+and paired read credentials; accepted policy bytes remain unchanged. One resource
+ledger, absolute Control renewal, actual manager capture/pin and joined owned
+native evidence feed a fresh acceptance. AI review findings corrected pre-spawn
+checks, admission stop and SQL invoker/row-lock privileges; SQL negatives and
+transport regression now executed. No dependency/migration changes.
 
-Next bounded action: create the coherent unpublished candidate and transfer its
-clean exact Git source to a fresh inventoried Tux lab using
-`.research/implementation/native-grant-http/{transfer,launch,collect}.py`.
-Run the actual HTTP/native fixture, preserve any failure, verify terminal custody
-and capture identities, then extend cancellation/recovery scenarios before history.
-No new laboratory was active at this checkpoint; no task/M1 closure.
+Next bounded action: extend the real HTTP fixture with authenticated native query
+hold, renewal/5s deadline and SIGTERM/disconnect cases. Reuse the existing
+native_commit_proxy.py hold-reader-query mode, which gates only the actual
+bigbrotr_receipt_reader after authentication; acquiring a relation lock before
+manager inspection can block inspection instead of the child. Verify actual
+worker/backend identity, retained pin, terminal join and cleanup. Native-in-flight
+cancellation/ambiguous acceptance, multi-stream/zero/cap selection and aged/resource
+work remain unqualified. The new literal lookup assertion in
+publication_scope_grants.rs compiles but is NOT_RUN in this HTTP fixture.
+No P02/P06/P08 step or M1 closure; continue history/export after this boundary.
+Root has only evidence/checkpoint/owning-doc changes after candidate0d95a6a.
 
 ## Scoped grant result
 
@@ -144,6 +147,17 @@ Concurrent cap admission/full reauth COMMIT-loss remain open. Startup/reauth req
 ## Laboratory custody
 
 No active lab or cleanup debt. Latest stopped/retained run:
+`/home/tux/bigbrotr-implementation-20260917/runs/private-native-grants-0d95a6a`,
+owner2b38c1a14aad1fff7d69156887ad50f8, labelorg.bigbrotr.archive-visibility.
+PGae68c9a664dea9caed5f95d072049551c2c2328844599ab8f8cf8a3cb1d08dde and
+runner868d9e82ae52901ed4cbec5d8f6c0718298e72115a4facc27426e3bfe397791f:
+stopped/PID0/noOOM; runner0 and restart-loopPG137 after stop deadline. Owned
+network removed;516 prior records unchanged, eight unrelated running,
+30,674,616,320bytes free.28 capture/1041 source/five ELF/five native asset hashes
+verified. CaptureSHA256`cef73ca087e66915ff1ade49775862a846b4bc43355c111b93fbb3f2dd19e061`.
+Inventory implementation_native_grant_http_20260923; raw capture/verify.py/report.py
+under `.research/implementation/native-grant-http/`.
+Prior stopped/retained run:
 `/home/tux/bigbrotr-implementation-20260917/runs/archive-owned-reader-c5d76a1`,
 ownercc0187f04ef5e9c7fdd0ec399284c224, labelorg.bigbrotr.archive-visibility.
 PGdfed028d176c490a2d268fe14e6587fbbe05d7196b80ec2c5cc2f9b35ab00d44 and
