@@ -63,7 +63,7 @@ def main(root):
     def counts():
         return control("SELECT json_build_object('pins',(SELECT count(*) FROM control.snapshot_leases WHERE state='active'),'claims',(SELECT count(*) FROM control.retention_claims WHERE state='active'),'controls',(SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'))")
     def leases():
-        return control("SELECT json_build_object('now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,'owner',(SELECT json_build_object('epoch',epoch,'expires',lease_expires_at_us) FROM control.owner_epochs WHERE role='control' AND state='active'),'pins',(SELECT json_agg(json_build_object('id',encode(l.lease_id,'hex'),'state',l.state,'acquired',l.acquired_at_us,'expires',l.expires_at_us,'released',l.released_at_us,'requested',p.requested_ttl_us)) FROM control.snapshot_leases l JOIN control.archive_snapshot_pins p USING(lease_id) WHERE l.state='active')))")
+        return control("SELECT json_build_object('now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,'owner',(SELECT json_build_object('epoch',epoch,'expires',lease_expires_at_us) FROM control.owner_epochs WHERE role='control' AND state='active'),'pins',(SELECT json_agg(json_build_object('id',encode(l.lease_id,'hex'),'state',l.state,'acquired',l.acquired_at_us,'expires',l.expires_at_us,'released',l.released_at_us,'requested',p.requested_ttl_us)) FROM control.snapshot_leases l JOIN control.archive_snapshot_pins p USING(lease_id) WHERE l.state='active'))")
     def files():
         return {str(p.relative_to(root / 'out')):sha(p) for p in sorted((root / 'out/signed_large').rglob('*.parquet'))}
     policy = json.loads((source / 'experiments/archive-engine/receipt-policy.json').read_text())

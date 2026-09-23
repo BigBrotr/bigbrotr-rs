@@ -20,10 +20,12 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 ## Git and review boundary
 
 Last observed main/HEAD and origin/main
-`89e73c9` after verified evidence/inventory push. Remote remains private bigbrotr-rs.
+`050f71a` candidate, origin/main `89e73c9` after verified evidence/inventory push. Remote remains private bigbrotr-rs.
 Root now owns the blocked history-body fixtures, small large-mode fixture changes
 and this checkpoint. Product source remains unchanged from32dd58d; no dependency/
-migration changes or other writer. Read-only AI review of the new cases is pending.
+migration changes or other writer. Read-only AI found an extra parenthesis in the new SQL observation; locally corrected,
+original050f71a exact source remains unchanged on Tux. Final static review found no
+second concrete defect; positive drain timing still requires actual measurement.
 
 4d81357 integrates model/protocol read modules, initial schemas/OpenAPI and docs,
 management history transport/delivery, serve history/native supervision, nonrenewable
@@ -113,9 +115,17 @@ pin/claim. Paired complete delivery versus2s action and fixture-shortened2s actu
 pin; same3s drain schedule discriminates the ordinary5s HTTP timeout. A500ms
 heartbeat must produce observed Control renewals without extending either bound.
 Sources experiments/archive-engine/private_history_body_{client,cases}.py;
-local launch/transfer under .research/implementation/history-body/. Cases NOT_RUN.
-Then standalone export/restart; no task/M1 closure. No active product lab or
-maintenance process, no cleanup debt at this checkpoint.
+local launch/transfer under .research/implementation/history-body/. Native build RUNNING
+at050f71ab9cf8018e3c8779a2fd0f536d102dc29f/tree20f5a42b. Own root
+/home/tux/bigbrotr-implementation-20260917/runs/history-body-050f71a,
+owner7742c992294d38adeb3f0c16d736262f, label org.bigbrotr.archive-visibility.
+PG0f47f95c091116bf0f92035081b57bd30bde329b37a7a3fe1faf18e005e54371;
+runnerfc26b32f0a6f89ad6100ab23141080a34919276c6f77b89aa638772bd57db695;
+network8b75f573341a2fe13380f2f84e6e6a3ef34c91693ac511be784dda1444e35dcb.
+Fresh stopped32ddcache copy; installed-publication61271 assetsRO. Orchestrator owns
+cleanup; no active maintenance. Follow original outcome/capture, then exact corrected
+candidate. Cases not yet executed, known fixture SQL issue must not be called PASS.
+Then standalone export/restart; no task/M1 closure.
 
 Owner-requested first cache maintenance is PASS-reconciled in inventory key
 implementation_cache_retirement_20260923.142 explicit out/build/{target,cargo-home}
@@ -155,7 +165,7 @@ PID0/noOOM, runner0/PGwrapper137; owned network removed.534 prior records unchan
 eight unrelated running. CaptureSHA256
 `be68e4f6229b27b5224149b07cfcb8b891506dbcf6a57ad04eeecd94ee4791b3`.
 Source and complete cache retained. Original Control20 remains active-state;
-do not restart/relabel it recovered. No active product lab or cleanup debt.
+do not restart/relabel it recovered. This completed lab has no cleanup debt.
 Scripts/capture under `.research/implementation/history-capture/`.
 
 All dated statuses below were audited at terminal capture; inspect ownership and
