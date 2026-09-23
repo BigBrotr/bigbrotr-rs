@@ -184,6 +184,13 @@ def exercise():
         assert disabled['scope_generation'] == '2' and disabled['account_grant_revision'] == '3'
         assert change(command,auth,evidence) == (200,retried)
         case('restart-retry-and-revoke-do-not-reapply-old-enable')
+        # Later fault clients continue this real session. Additional logins would
+        # exhaust the shared five-attempt account quota before native work starts.
+        # The collector excludes this file and scans its values as secret canaries.
+        session = {key: auth[key] for key in ['Cookie', 'X-CSRF-Token']}
+        descriptor = os.open(ROOT/'session.private', os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(descriptor, 'w') as stream:
+            json.dump(session, stream)
         server.stop()
         assert not list((ROOT/'scratch').iterdir())
     finally:

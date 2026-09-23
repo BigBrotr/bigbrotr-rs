@@ -18479,5 +18479,41 @@
       "capture_sha256": "cef73ca087e66915ff1ade49775862a846b4bc43355c111b93fbb3f2dd19e061"
     },
     "observation": "Stopped/retained.28 capture/1041 source/five ELF/five dependency hashes verified.516 prior container records unchanged, eight unrelated running. Native runner0; restart-loop PG137/noOOM; network removed. No active job/cleanup debt."
+  },
+  "implementation_native_grant_faults_20260923": {
+    "local_root": ".research/implementation/native-grant-faults",
+    "native": {
+      "source": "7ea08a63d410ff3373fc1544e57b646ad6993422",
+      "tree": "527acba50caa8eb8355b7a23fe5a78cb91d69780",
+      "owner": "675651179f5edf13c92278087c141769",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-grant-faults-7ea08a6",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "6eea2fa7efaf53a129ce8945332a513f0854e7cc30e6afc0531808a609bf2696"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "2d9511450b186d6a3046c7a511509a8d7b8e03a4f86ccc806fc032c2a86caa6c"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T17:16:43.236367+00:00",
+      "network_id": "5e59d1490b49949a7e37506e5bf067390a396c378f7b3b639e05640bf51da62b",
+      "postgres_id": "6eea2fa7efaf53a129ce8945332a513f0854e7cc30e6afc0531808a609bf2696",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "2d9511450b186d6a3046c7a511509a8d7b8e03a4f86ccc806fc032c2a86caa6c",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "report": "docs/implementation/evidence/p08-native-grant-deadline-incomplete-20260923.json",
+      "capture_sha256": "6b94b5635ed37d15198eb1437b2e397f1a3abe558c683c641a7f3b6f1f88e243"
+    },
+    "observation": "Stopped/retained; no active lab. Actual deadline PASS, signal prerequisite failed before native submission.34 capture/1044 source/five ELF/five asset hashes verified.518 prior containers unchanged,8 unrelated running; owned network removed. Original failed state preserved."
   }
 }

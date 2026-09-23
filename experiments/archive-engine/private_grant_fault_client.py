@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """Real HTTP client while host-owned PostgreSQL blocks the actual native query."""
 from concurrent.futures import ThreadPoolExecutor
-from http.cookies import SimpleCookie
 import json
 from pathlib import Path
-import signal
 import sys
 import time
 import private_grant_http as http
@@ -27,20 +25,19 @@ def main(mode, port):
     pool = ThreadPoolExecutor(max_workers=1)
     try:
         server.ready()
-        status, _, headers = http.request('POST', '/management/v1/sessions', dict(username='alice', password=http.PASSWORD))
-        assert status == 201
-        cookies = SimpleCookie()
-        for name, value in headers:
-            if name.lower() == 'set-cookie': cookies.load(value)
-        auth = dict(Cookie='BigBrotrLocalSession='+cookies['BigBrotrLocalSession'].value)
-        auth['X-CSRF-Token'] = cookies['BigBrotrLocalCsrf'].value
+        session = http.ROOT/'session.private'
+        assert session.stat().st_mode & 0o777 == 0o600
+        auth = json.loads(session.read_text())
+        assert set(auth) == {'Cookie', 'X-CSRF-Token'}
+        status, value, _ = http.request('GET', '/management/v1/me', auth=auth)
+        assert status == 200, (status, value.get('error'))
         auth['Idempotency-Key'] = ('d1' if mode == 'deadline' else 'd2')*16
         command = dict(principal_id=(http.ROOT/'principal').read_text(), action='history.read', enabled=True,
             scope=dict(dataset_id='01'*16,dictionary_kind=4,allocation_domain='04'*16,ordinal='1'),
             expected_config_revision='1',expected_policy_revision='2',expected_grant_revision='3',
             allocation=dict(catalog_id='5a'*16,frontier_revision='1'))
         status, proof, _ = http.request('POST','/management/v1/sessions/current/reauthenticate',dict(password=http.PASSWORD,command=command),auth)
-        assert status == 201
+        assert status == 201, (status, proof.get('error'))
         def change():
             try:
                 status, _, _ = http.request('PUT', f'/management/v1/principals/{command["principal_id"]}/grants',dict(command=command,proof_id=proof['proof_id']),auth)

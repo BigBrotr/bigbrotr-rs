@@ -19,7 +19,7 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD and origin/main2bc18b9. Native HTTP implementation and
+Verified main/HEAD7ea08a6; origin/main2bc18b9. Fault fixture candidate is local/unpublished. Native HTTP implementation and
 qualification evidence are pushed. Owned-reader code and native
 qualification evidence are pushed. No merge/rebase or other writer.
 Private repository/name verified through gh repo view. No dependencies changed.
@@ -65,25 +65,23 @@ native evidence feed a fresh acceptance. AI review findings corrected pre-spawn
 checks, admission stop and SQL invoker/row-lock privileges; SQL negatives and
 transport regression now executed. No dependency/migration changes.
 
-Next bounded action: extend the real HTTP fixture with authenticated native query
-hold, renewal/5s deadline and SIGTERM/disconnect cases. Reuse the existing
-native_commit_proxy.py hold-reader-query mode, which gates only the actual
-bigbrotr_receipt_reader after authentication; acquiring a relation lock before
-manager inspection can block inspection instead of the child. Verify actual
-worker/backend identity, retained pin, terminal join and cleanup. Native-in-flight
-cancellation/ambiguous acceptance, multi-stream/zero/cap selection and aged/resource
-work remain unqualified. The new literal lookup assertion in
-publication_scope_grants.rs compiles but is NOT_RUN in this HTTP fixture.
-No P02/P06/P08 step or M1 closure; continue history/export after this boundary.
-Root now owns two new uncommitted fixture files, private_grant_fault_client.py
-and private_grant_fault_cases.py, plus this checkpoint. They assert actual
-PostgreSQL Lock wait, native child identity, no effects after the five-second
-request deadline, and graceful SIGTERM after confirmed native join. Sources parse,
-but native execution is NOT_RUN. Current signal path returns exit4 after joining
-and retains the pin; the new SIGTERM expected0 case is deliberately discriminating
-and may expose that remaining lifecycle behavior. Do not weaken it to green.
-Next exact candidate/lab scripts are under `.research/implementation/native-grant-faults/`;
-no new fault lab has started yet.
+[First native fault qualification](evidence/p08-native-grant-deadline-incomplete-20260923.json)
+at7ea08a6 is INCOMPLETE. Actual deadline case PASS: authenticated native child,
+real PostgreSQL Lock waiter after manager capture, retained pin1, request closed
+at five-second deadline, positively joined child, healthy me, then graceful idle
+release; final activePins0/activeControl0/proof1/commands2/scratch0. Observed
+3937.455ms from established wait, not total request duration or capacity evidence.
+Signal case failed on fresh login before query/signal; code was not captured.
+Static accounting indicates shared fifth-attempt account quota was already used;
+do not claim an executed product signal defect. Original state/capture retained.
+
+Next bounded action: reuse the baseline actual live HTTP session in the fault
+fixture (private mode600 file excluded from capture), preserving password quotas,
+then execute real blocked-query SIGTERM against unchanged product code. Current
+signal path statically returns4 after known native join and retains the pin;
+keep expected graceful0/pin retirement discriminating, do not weaken it to green.
+No active lab. Root owns checkpoint/inventory/evidence and next fixture edits.
+No P02/P06/P08 step or M1 closure; history/export follow this boundary.
 
 ## Scoped grant result
 
@@ -155,7 +153,19 @@ Concurrent cap admission/full reauth COMMIT-loss remain open. Startup/reauth req
 
 ## Laboratory custody
 
-No active lab or cleanup debt. Latest stopped/retained run:
+Stopped/retained fault lab:
+`/home/tux/bigbrotr-implementation-20260917/runs/native-grant-faults-7ea08a6`,
+owner675651179f5edf13c92278087c141769, labelorg.bigbrotr.archive-visibility.
+PG6eea2fa7efaf53a129ce8945332a513f0854e7cc30e6afc0531808a609bf2696 and
+runner2d9511450b186d6a3046c7a511509a8d7b8e03a4f86ccc806fc032c2a86caa6c:
+stopped/PID0/noOOM, owned network removed.518 prior records preserved,8 unrelated
+running,26,981,597,184bytes free.34 capture/1044 source/five ELF/five dependency
+hashes verified; captureSHA256
+`6b94b5635ed37d15198eb1437b2e397f1a3abe558c683c641a7f3b6f1f88e243`.
+Inventory implementation_native_grant_faults_20260923; local
+`.research/implementation/native-grant-faults/capture`. No cleanup debt.
+
+Prior stopped/retained run:
 `/home/tux/bigbrotr-implementation-20260917/runs/private-native-grants-0d95a6a`,
 owner2b38c1a14aad1fff7d69156887ad50f8, labelorg.bigbrotr.archive-visibility.
 PGae68c9a664dea9caed5f95d072049551c2c2328844599ab8f8cf8a3cb1d08dde and

@@ -32,6 +32,8 @@ def main(root):
     def counts():return json.loads(sql('bbpub_control_normal',"SELECT json_build_object('active_pins',(SELECT count(*) FROM control.snapshot_leases WHERE state='active'),'proofs',(SELECT count(*) FROM control.reauthentication_proofs),'commands',(SELECT count(*) FROM control.management_commands WHERE action='scope-grant.change'),'active_control',(SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'))"))
     try:
         assert json.loads((root/'private-grant-cases.json').read_text())['status']=='PASS'
+        result['password_attempts_before']=json.loads(sql('bbpub_control_normal', "SELECT json_object_agg(kind,attempts) FROM control.login_buckets"))
+        assert result['password_attempts_before']==dict(account=3,peer=3)
         for mode in ['deadline','signal']:
             record=dict(case='http-native-blocked-'+mode,status='INCOMPLETE');result['cases'].append(record);save()
             proxy=client=blocker=None
@@ -43,6 +45,8 @@ def main(root):
                 submitted=record['submitted']=event(client,'submitted')
                 held=record['reader_authenticated']=event(proxy,'held')
                 assert held['stage']=='reader-query'
+                record['password_attempts']=json.loads(sql('bbpub_control_normal', "SELECT json_object_agg(kind,attempts) FROM control.login_buckets"))
+                assert record['password_attempts']==dict(account=4 if mode=='deadline' else 5,peer=4 if mode=='deadline' else 5)
                 record['retained_before_wait']=counts();save()
                 assert record['retained_before_wait']['active_pins']==1
                 assert sql('bbpub_normal',"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='CatalogManager' AND state='idle in transaction'")=='1'
