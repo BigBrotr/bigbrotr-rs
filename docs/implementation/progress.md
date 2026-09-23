@@ -19,7 +19,8 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD932902f; origin/main2bc18b9. Fault fixtures/correction are local unpublished candidates. Native HTTP implementation and
+Verified main/HEAD and origin/main6dcd482. Native cancellation correction and
+qualification are pushed. Root owns later cleanup-fixture/checkpoint edits. Native HTTP implementation and
 qualification evidence are pushed. Owned-reader code and native
 qualification evidence are pushed. No merge/rebase or other writer.
 Private repository/name verified through gh repo view. No dependencies changed.
@@ -106,7 +107,12 @@ TERM require command3/proof1/pin0/Control idle. Keep parent/manager alive for6s,
 observe completed Control polls under the same backend identity, require actual
 HTTP EOF (not client timeout), then release rollback and require graceful0. Reuse
 stored d2 proof/session without a sixth password attempt; restart exact retry must
-preserve receipt/rows/xmin. Sources are not yet edited for this additional case.
+preserve receipt/rows/xmin. New private_grant_cleanup_cases.py, proxy mode hold-capture-rollback and client
+cleanup mode implement this fixture. Sources parse and artifact/link checks pass;
+actual execution is NOT_RUN. Independent AI review corrected the fixture to
+include all pin rows/xmin, count zombies as children, collect cleanup paths
+independently and prove pending HTTP then EOF before the natural5s deadline.
+No product source changes after qualified932902f.
 No P02/P06/P08 step or M1 closure; history/export follow this boundary.
 
 ## Scoped grant result

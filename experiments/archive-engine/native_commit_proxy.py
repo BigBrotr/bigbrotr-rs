@@ -102,6 +102,7 @@ class Proxy:
         self.writers = []
         self.tasks = []
         self.held = False
+        self.reader_database = None
         self.action = None
         self.release = asyncio.Event()
         self.report = dict(connections=0, bytes=0, frames=0, data_queries=0,
@@ -159,7 +160,10 @@ class Proxy:
         if fields[-2:] != [b'', b''] or len(fields) % 2:
             raise ValueError('startup-fields')
         fields = fields[:-2]
-        receipt_reader = dict(zip(fields[::2], fields[1::2])).get(b'user') == b'bigbrotr_receipt_reader'
+        parameters = dict(zip(fields[::2], fields[1::2]))
+        receipt_reader = parameters.get(b'user') == b'bigbrotr_receipt_reader'
+        capture_manager = parameters.get(b'user') == b'CatalogManager'
+        database = parameters.get(b'database')
         upstream, upstream_writer = await asyncio.open_connection('127.0.0.1', 5432)
         self.writers.append(upstream_writer)
         upstream_writer.write(header + startup)
@@ -202,6 +206,9 @@ class Proxy:
                     # The actual native reader exists only after full manager
                     # inspection. Hold its first authenticated query so the lab
                     # can acquire a real relation lock without racing inspection.
+                    if self.mode == 'hold-capture-rollback' and receipt_reader:
+                        assert state['backend_pid'] is not None and database == b'bbpub_normal'
+                        self.reader_database = database
                     if self.mode == 'hold-reader-query' and receipt_reader:
                         if not await self.hold('reader-query', state['backend_pid']):
                             return
@@ -260,6 +267,13 @@ class Proxy:
                         continue
                 if frontend and tag == b'Q':
                     query = body.upper()
+                    if (self.mode == 'hold-capture-rollback' and capture_manager
+                            and database == self.reader_database == b'bbpub_normal'
+                            and query.rstrip(b'\0; \r\n') == b'ROLLBACK'):
+                        # Manager inspection rolled back before native activity.
+                        # This exact later rollback belongs to the retained capture.
+                        if not await self.hold('capture-rollback', state['backend_pid']):
+                            return
                     # Closed manager fixture: only the generated archive login
                     # marks provisioning, never log its verifier or SQL bytes.
                     if self.mode in ('hold-manager-commit', 'hold-manager-owner') and query.startswith(b'CREATE ROLE "BB_ARCHIVE_'):
@@ -403,7 +417,7 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose', 'omit-recovery-claim-release'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'hold-capture-rollback', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose', 'omit-recovery-claim-release'], required=True)
     parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', *CONTROL_TARGETS], default='publication')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
