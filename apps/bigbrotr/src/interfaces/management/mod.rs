@@ -8,6 +8,7 @@ use bigbrotr::runtime::policy_authority::DeliveryWindow;
 use bigbrotr::{
     management::{
         credentials::HASH_RESERVATION,
+        reauthentication::VerifiedReauthentication,
         sessions::{SessionError, SessionLifetime, VerifiedLogin},
     },
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits},
@@ -20,7 +21,14 @@ use tokio::task::JoinSet;
 use transport::{Command, Completion, Operation, Reply, Server};
 
 type Result<T> = std::result::Result<T, (u8, String)>;
-type HashResult = (Completion, std::result::Result<VerifiedLogin, SessionError>);
+enum VerifiedPassword {
+    Login(VerifiedLogin),
+    Reauthentication(VerifiedReauthentication),
+}
+type HashResult = (
+    Completion,
+    std::result::Result<VerifiedPassword, SessionError>,
+);
 
 pub(super) struct Work(WorkKind);
 enum WorkKind {
@@ -155,12 +163,17 @@ impl Management {
                     return Ok(None);
                 }
                 let result = match result {
-                    Ok(verified) => sql(
+                    Ok(VerifiedPassword::Login(verified)) => sql(
                         maximum,
                         owner.finish_browser_login(verified, SessionLifetime::default()),
                     )
                     .await
                     .map(|r| r.map(Reply::Login))?,
+                    Ok(VerifiedPassword::Reauthentication(verified)) => {
+                        sql(maximum, owner.finish_browser_reauthentication(verified))
+                            .await
+                            .map(|r| r.map(Reply::Reauthenticated))?
+                    }
                     Err(e) => Err(e),
                 };
                 return Ok(Some(Response(completion, result)));
@@ -173,6 +186,45 @@ impl Management {
                     return Ok(None);
                 }
                 match operation {
+                    Operation::Reauthenticate {
+                        session,
+                        csrf,
+                        key,
+                        command,
+                        password,
+                        peer,
+                    } => {
+                        if !self.hashes.is_empty() {
+                            return Ok(Some(Response(completion, Err(SessionError::Capacity))));
+                        }
+                        let Ok(mut grant) = self.budget.try_acquire(
+                            ResourceRequest::data(HASH_RESERVATION, 1, 0)
+                                .expect("fixed hash reservation"),
+                        ) else {
+                            return Ok(Some(Response(completion, Err(SessionError::Capacity))));
+                        };
+                        let challenge = sql(
+                            maximum,
+                            owner.begin_browser_reauthentication(
+                                &session, &csrf, key, &command, peer,
+                            ),
+                        )
+                        .await?;
+                        match challenge {
+                            Ok(challenge) if !completion.abandoned() => {
+                                self.hashes.spawn_blocking(move || {
+                                    let result = challenge
+                                        .verify(password.as_bytes(), &mut grant)
+                                        .map(VerifiedPassword::Reauthentication);
+                                    drop(password);
+                                    drop(grant);
+                                    (completion, result)
+                                });
+                            }
+                            Ok(_) => {}
+                            Err(e) => return Ok(Some(Response(completion, Err(e)))),
+                        }
+                    }
                     Operation::Login {
                         username,
                         password,
@@ -192,7 +244,9 @@ impl Management {
                         match challenge {
                             Ok(challenge) if !completion.abandoned() => {
                                 self.hashes.spawn_blocking(move || {
-                                    let result = challenge.verify(password.as_bytes(), &mut grant);
+                                    let result = challenge
+                                        .verify(password.as_bytes(), &mut grant)
+                                        .map(VerifiedPassword::Login);
                                     drop(password);
                                     drop(grant);
                                     (completion, result)

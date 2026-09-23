@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac during the allocated visibility lookup prerequisite;
+Observed 2026-09-23 on Mac during P08-T02 reauthentication integration;
 previous owned labs remain stopped/retained. Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and resources before continuing.
 
@@ -21,11 +21,66 @@ another diagnostic command instead of the real read consumer.
 
 ## Git, current qualification and next action
 
-Observed main/HEAD `473873101db0cd59c087f2b9d65174cab3a79f9b`, one local
-candidate ahead of last verified origin/main `aabbb80f2dbfb9df869b096ac94fd6314237459a`.
-Root owns only the new qualification report, laboratory inventory and checkpoint
-updates after that exact source. No other writer, merge/rebase or active experiment.
-Recheck actual Git and remote before continuing. No migration/dependency changed.
+Observed main/HEAD and origin/main `17f464da0cd11f12d012ed2e341d49afc1529b27`.
+Root owns the P08-T02 dirty reauthentication/scoped-command slice: model
+CommandKey/ReauthenticationId, command inputs/goldens, management proof types,
+Control adapter, actual HTTP route/supervisor, additive808 migration/catalog,
+OpenAPI/generated client artifacts, targeted transport/schema tests, native
+browser-session fixture extension and existing contracts/checkpoint. No other
+writer/merge/rebase or dependency change. Last verified Tux labs are stopped;
+no new remote run has started yet.
+
+The desired history.read command binds dataset/actor/key/target/fullscope and
+expected config/policy/account-grant revisions; enabling requires catalog/frontier,
+revocation explicit null so Archive failure cannot block revocation. It is not
+an available grant route. Additive808 now owns temporary session/command proofs,
+while subsequent809 will own permanent grant generations and atomic consumption.
+No809/live-pin grant consumer/history/export is implemented. Keep this integrated
+P08-T02/P06 slice active, not a command-only completion or another diagnosticCLI.
+
+Actual private reauthentication route now uses the existing single owned Argon2
+worker and persistent attempt buckets. It rechecks credentials/session/CSRF/action
+and captured revisions after hashing; bounded32 proofs, five minutes shortened by
+session expiry, immutable exact audit. Identical live key/content retry preserves
+ID/expiry/audit; changed content conflicts. Runtime startup now requires808 and
+proof SELECT/INSERT/DELETE plus audit SELECT/INSERT. Consumption is not yet
+available:808 only permits expired proof cleanup and never deletes audit.
+
+Local evidence under `.research/implementation/scoped-grants/`: command-kind
+3tests PASS, original Clippy deadline during native rebuild; command-clippy-resume
+PASS after380s. Catalog RED actually reports UnknownTarget808; separate real HTTP
+RED reports405. reauth-connected and reauth-fixtures have18schema/3command tests,
+real HTTP route tests, relevant builds/Clippy PASS for their earlier dirty states.
+reauth-before-native failed compiling the fixture because of an incorrect relative
+include path; corrected. reauth-native-ready now passes probe builds, scoped
+Clippy, generated-contract drift, TypeScript client and diff checks. No PostgreSQL
+case has run yet. Preparing an unpublished exact-Git native candidate; it is
+explicitly unqualified and retains the expected expiry-at-INSERT failure.
+
+Independent read-only AI review confirms the current binding boundary but finds
+normal expiry between final check and INSERT becomes23514/Backend, stopping Control.
+The new fixture delays INSERT beyond expiry with an independently persisted entry
+marker and expects Denied/no proof-or-audit/usable Control. Keep the unqualified
+candidate long enough for exact-Git Tux RED, then fix affected-row handling and
+SQL expiry suppression. Native fixture now also compares independent golden digest
+and actual session identity; two-session isolation, concurrent cap, COMMIT ambiguity
+and full HTTP/PG reauth remain required. The proposed cap/cleanup test fills30
+short-lived rows by explicitly labeled fixture SQL, not password authority.
+
+Prepared ignored `scoped-grants/reauth-native-red/{launch,transfer}.py` uses exact
+Git export and intact owned b5ff8ab cache, pinned Linuxamd64 Rust/PG16.15 images,
+2CPU6GiB runner/internal network/no ports. It has not executed. Next bounded action:
+finish Mac fixture/build/schema verification and review, create an explicitly
+unpublished candidate, transfer exactGit, run actual reauth/expiry case, capture
+failure and stop only owned lab resources. Then correct confirmed failure and
+continue809 grant/live-pin/history without declaring808 as product completion.
+
+The809 read-only schema review remains actionable: exact audit-policy/outcome/time
+binding, command/detail/current-row checks in both directions, actual live proof
+before consume + unique historical proofID, self-grant pre-state vs its own +1,
+explicitNULL initial-command shape, deterministic account locks before proof
+cleanup, and history without FK to mutable current generation. No blind adoption;
+qualify actual SQL and retries. All MON findings remain scoped closed below.
 
 [Equal-mapping correction](evidence/p02-archive-visibility-repetition-native-20260920.json)
 is qualified on that candidate. The certified cut allows equal complete mapping
@@ -67,8 +122,8 @@ independently verified against Mac Git archive; captureSHA256
 No cleanup debt. Keep secret-bearing fixture directories remote. Verify current
 ownership/state before any reuse; do not restart used output roots.
 
-Next bounded action: review/commit/push this qualification, then implement the
-integrated P08-T02 reauthentication/scoped-grant/live-pin and P06 history consumer.
+The qualification has been reviewed and pushed. Continue the integrated P08-T02
+reauthentication/scoped-grant/live-pin and P06 history consumer.
 No further diagnostic-only precursor. Root has now also read complete0017/0018,
 CatalogCapture, browser_sessions, management transport/delivery and connection
 preparation; next grant work must inspect the actual migration consumers/manifest

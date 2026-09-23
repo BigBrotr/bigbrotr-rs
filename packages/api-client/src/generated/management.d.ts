@@ -60,6 +60,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/management/v1/sessions/current/reauthenticate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm a sensitive command with the current password
+         * @description Same session, exact Origin and explicit CSRF required; current principals.manage action. At most32 retained proofs per account, five minutes or remaining session validity. Password attempts share login quotas and its single owned hash worker. This proof alone does not grant history access; scoped command consumption remains under implementation and qualification.
+         */
+        post: operations["reauthenticateSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -90,11 +110,11 @@ export interface components {
         ApiError: {
             error: {
                 /** @enum {integer} */
-                status: 400 | 401 | 403 | 413 | 415 | 429 | 503;
+                status: 400 | 401 | 403 | 413 | 415 | 429 | 503 | 409;
                 /** @enum {string} */
-                code: "invalid_request" | "authentication_denied" | "browser_boundary_denied" | "request_too_large" | "unsupported_media_type" | "capacity_or_rate_limited" | "authority_unavailable";
+                code: "invalid_request" | "authentication_denied" | "browser_boundary_denied" | "request_too_large" | "unsupported_media_type" | "capacity_or_rate_limited" | "authority_unavailable" | "permission_denied" | "command_conflict";
                 /** @enum {string} */
-                message: "Invalid request." | "Authentication required or denied." | "Browser request boundary refused." | "Request exceeds its byte limit." | "JSON content type required." | "Request capacity or attempt limit reached." | "Current authority or dependency unavailable.";
+                message: "Invalid request." | "Authentication required or denied." | "Browser request boundary refused." | "Request exceeds its byte limit." | "JSON content type required." | "Request capacity or attempt limit reached." | "Current authority or dependency unavailable." | "This action is not permitted." | "Command key or expected revision conflicts with current state.";
                 /** @enum {string} */
                 retry_class: "authenticate" | "check_state" | "correct_request" | "retry_later";
                 correlation_id: string | null;
@@ -161,7 +181,67 @@ export interface components {
                 message?: "Current authority or dependency unavailable.";
                 /** @constant */
                 retry_class?: "check_state";
+            } | {
+                /** @constant */
+                status?: 403;
+                /** @constant */
+                code?: "permission_denied";
+                /** @constant */
+                message?: "This action is not permitted.";
+                /** @constant */
+                retry_class?: "check_state";
+            } | {
+                /** @constant */
+                status?: 409;
+                /** @constant */
+                code?: "command_conflict";
+                /** @constant */
+                message?: "Command key or expected revision conflicts with current state.";
+                /** @constant */
+                retry_class?: "check_state";
             });
+        };
+        /** @description Exact desired command, not authority. Scope dataset must equal the installed dataset. Enabling requires allocation; disabling requires null. Revisions/ordinal must fit positive uint64. */
+        ScopeGrantCommand: {
+            principal_id: string;
+            /** @constant */
+            action: "history.read";
+            scope: {
+                dataset_id: string;
+                /** @constant */
+                dictionary_kind: 4;
+                allocation_domain: string;
+                /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+                ordinal: string;
+            };
+            enabled: boolean;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_config_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_policy_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_grant_revision: string;
+            allocation: {
+                catalog_id: string;
+                /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+                frontier_revision: string;
+            } | null;
+        };
+        ReauthenticationInput: {
+            /** @description Exact password, at most1024 UTF-8 bytes and no control characters. Never trim or normalize. */
+            password: string;
+            command: components["schemas"]["ScopeGrantCommand"];
+        };
+        ReauthenticationProof: {
+            /** @constant */
+            format: "bigbrotr-reauthentication/1";
+            proof_id: string;
+            command_key: string;
+            command_digest: string;
+            /** @description Positive Unix microseconds, maximum9223372036854775807. A server observation, not a renewable client-side authority lease. */
+            expires_at_us: string;
+            /** @constant */
+            authority: "same-session-command-only";
         };
     };
     responses: never;
@@ -384,6 +464,107 @@ export interface operations {
             };
             /** @description Browser boundary denied */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Body byte limit */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description JSON required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    reauthenticateSession: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReauthenticationInput"];
+            };
+        };
+        responses: {
+            /** @description Same-session command proof; no cookies issued. A verified identical retry preserves original expiry and audit. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReauthenticationProof"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Command or revision conflict */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

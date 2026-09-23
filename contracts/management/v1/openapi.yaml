@@ -325,6 +325,147 @@
           }
         }
       }
+    },
+    "/management/v1/sessions/current/reauthenticate": {
+      "post": {
+        "operationId": "reauthenticateSession",
+        "summary": "Confirm a sensitive command with the current password",
+        "description": "Same session, exact Origin and explicit CSRF required; current principals.manage action. At most32 retained proofs per account, five minutes or remaining session validity. Password attempts share login quotas and its single owned hash worker. This proof alone does not grant history access; scoped command consumption remains under implementation and qualification.",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$",
+              "not": {
+                "const": "00000000000000000000000000000000"
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReauthenticationInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Same-session command proof; no cookies issued. A verified identical retry preserves original expiry and audit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReauthenticationProof"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Command or revision conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -451,7 +592,8 @@
                   413,
                   415,
                   429,
-                  503
+                  503,
+                  409
                 ]
               },
               "code": {
@@ -463,7 +605,9 @@
                   "request_too_large",
                   "unsupported_media_type",
                   "capacity_or_rate_limited",
-                  "authority_unavailable"
+                  "authority_unavailable",
+                  "permission_denied",
+                  "command_conflict"
                 ]
               },
               "message": {
@@ -475,7 +619,9 @@
                   "Request exceeds its byte limit.",
                   "JSON content type required.",
                   "Request capacity or attempt limit reached.",
-                  "Current authority or dependency unavailable."
+                  "Current authority or dependency unavailable.",
+                  "This action is not permitted.",
+                  "Command key or expected revision conflicts with current state."
                 ]
               },
               "retry_class": {
@@ -614,8 +760,215 @@
                     "const": "check_state"
                   }
                 }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 403
+                  },
+                  "code": {
+                    "const": "permission_denied"
+                  },
+                  "message": {
+                    "const": "This action is not permitted."
+                  },
+                  "retry_class": {
+                    "const": "check_state"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 409
+                  },
+                  "code": {
+                    "const": "command_conflict"
+                  },
+                  "message": {
+                    "const": "Command key or expected revision conflicts with current state."
+                  },
+                  "retry_class": {
+                    "const": "check_state"
+                  }
+                }
               }
             ]
+          }
+        }
+      },
+      "ScopeGrantCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "principal_id",
+          "action",
+          "scope",
+          "enabled",
+          "expected_config_revision",
+          "expected_policy_revision",
+          "expected_grant_revision",
+          "allocation"
+        ],
+        "properties": {
+          "principal_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "action": {
+            "type": "string",
+            "const": "history.read"
+          },
+          "scope": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "dataset_id",
+              "dictionary_kind",
+              "allocation_domain",
+              "ordinal"
+            ],
+            "properties": {
+              "dataset_id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$",
+                "not": {
+                  "const": "00000000000000000000000000000000"
+                }
+              },
+              "dictionary_kind": {
+                "type": "integer",
+                "const": 4
+              },
+              "allocation_domain": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$",
+                "not": {
+                  "const": "00000000000000000000000000000000"
+                }
+              },
+              "ordinal": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+              }
+            }
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "expected_config_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "expected_policy_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "expected_grant_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "allocation": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "catalog_id",
+                  "frontier_revision"
+                ],
+                "properties": {
+                  "catalog_id": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{32}$",
+                    "not": {
+                      "const": "00000000000000000000000000000000"
+                    }
+                  },
+                  "frontier_revision": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "description": "Exact desired command, not authority. Scope dataset must equal the installed dataset. Enabling requires allocation; disabling requires null. Revisions/ordinal must fit positive uint64."
+      },
+      "ReauthenticationInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "password",
+          "command"
+        ],
+        "properties": {
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 1024,
+            "writeOnly": true,
+            "description": "Exact password, at most1024 UTF-8 bytes and no control characters. Never trim or normalize."
+          },
+          "command": {
+            "$ref": "#/components/schemas/ScopeGrantCommand"
+          }
+        }
+      },
+      "ReauthenticationProof": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format",
+          "proof_id",
+          "command_key",
+          "command_digest",
+          "expires_at_us",
+          "authority"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "bigbrotr-reauthentication/1"
+          },
+          "proof_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "command_key": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "command_digest": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "expires_at_us": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Positive Unix microseconds, maximum9223372036854775807. A server observation, not a renewable client-side authority lease."
+          },
+          "authority": {
+            "type": "string",
+            "const": "same-session-command-only"
           }
         }
       }

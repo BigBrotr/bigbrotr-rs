@@ -17,10 +17,10 @@ use tokio_postgres::{Row, Transaction};
 use zeroize::Zeroizing;
 
 const HASH_MAX_AGE_US: i64 = 20_000_000;
-fn backend(_: tokio_postgres::Error) -> SessionError {
+pub(super) fn backend(_: tokio_postgres::Error) -> SessionError {
     SessionError::Backend
 }
-fn metadata(_: tokio_postgres::Error) -> SessionError {
+pub(super) fn metadata(_: tokio_postgres::Error) -> SessionError {
     SessionError::InvalidMetadata
 }
 
@@ -30,7 +30,7 @@ impl ControlSession {
     pub async fn require_browser_sessions(&mut self) -> Result<(), SessionError> {
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 807)
+        let tx = application_transaction(&mut self.client, 808)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -39,7 +39,7 @@ impl ControlSession {
         lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
         // PostgreSQL's comma-separated privilege argument means ANY, not ALL.
         // Check each required privilege separately before aggregating.
-        let row = tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) FROM (VALUES ('control.browser_sessions',ARRAY['SELECT','INSERT','UPDATE','DELETE']),('control.login_buckets',ARRAY['SELECT','INSERT','UPDATE']),('control.local_accounts',ARRAY['SELECT','UPDATE']),('control.local_credentials',ARRAY['SELECT','UPDATE']),('control.principal_grants',ARRAY['SELECT']),('control.management_audit',ARRAY['INSERT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?;
+        let row = tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) FROM (VALUES ('control.browser_sessions',ARRAY['SELECT','INSERT','UPDATE','DELETE']),('control.login_buckets',ARRAY['SELECT','INSERT','UPDATE']),('control.local_accounts',ARRAY['SELECT','UPDATE']),('control.local_credentials',ARRAY['SELECT','UPDATE']),('control.principal_grants',ARRAY['SELECT']),('control.reauthentication_proofs',ARRAY['SELECT','INSERT','DELETE']),('control.management_audit',ARRAY['SELECT','INSERT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?;
         if !row.try_get::<_, bool>(0).map_err(metadata)? {
             return Err(SessionError::Prerequisite);
         }
@@ -66,17 +66,7 @@ impl ControlSession {
             .map_err(|_| SessionError::Unavailable)?;
         lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
         let now = now(&tx).await?;
-        // Account before peer is a fixed lock order, including hash collisions.
-        let account_bucket = bucket(b"account", username.as_bytes());
-        let peer_bucket = match peer {
-            IpAddr::V4(ip) => bucket(b"peer4", &ip.octets()),
-            IpAddr::V6(ip) => match ip.to_ipv4_mapped() {
-                Some(ip) => bucket(b"peer4", &ip.octets()),
-                None => bucket(b"peer6", &ip.octets()),
-            },
-        };
-        let admitted = charge(&tx, self.request.dataset, "account", account_bucket, now, 5).await?
-            & charge(&tx, self.request.dataset, "peer", peer_bucket, now, 20).await?;
+        let admitted = charge_attempts(&tx, self.request.dataset, username, peer, now).await?;
         let outcome = if admitted {
             let account = account_by_name(&tx, self.request.dataset, username).await?;
             Ok(LoginChallenge {
@@ -214,19 +204,24 @@ impl ControlSession {
 
 // Business refusal is a completed transaction; transport/schema failures remain
 // poisoned. A cancelled future never reaches the owner's available=true branch.
-fn terminal<T>(
+pub(super) fn terminal<T>(
     _: &Transaction<'_>,
     outcome: Result<T, SessionError>,
 ) -> Result<Result<T, SessionError>, SessionError> {
     match outcome {
-        Err(e @ (SessionError::Denied | SessionError::Capacity | SessionError::InvalidInput)) => {
-            Ok(Err(e))
-        }
+        Err(
+            e @ (SessionError::Denied
+            | SessionError::Forbidden
+            | SessionError::Conflict
+            | SessionError::Throttled
+            | SessionError::Capacity
+            | SessionError::InvalidInput),
+        ) => Ok(Err(e)),
         Err(e) => Err(e),
         Ok(value) => Ok(Ok(value)),
     }
 }
-async fn lock_dataset(
+pub(super) async fn lock_dataset(
     tx: &Transaction<'_>,
     dataset: DatasetId,
     expected: PolicySnapshot,
@@ -241,7 +236,7 @@ async fn lock_dataset(
     }
     Ok(expected.policy_revision)
 }
-async fn now(tx: &Transaction<'_>) -> Result<i64, SessionError> {
+pub(super) async fn now(tx: &Transaction<'_>) -> Result<i64, SessionError> {
     tx.query_one(
         "SELECT (EXTRACT(EPOCH FROM clock_timestamp()) * 1000000)::bigint",
         &[],
@@ -261,6 +256,27 @@ fn bucket(domain: &[u8], value: &[u8]) -> i16 {
             .finalize()[0],
     )
 }
+pub(super) async fn charge_attempts(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    username: &str,
+    peer: IpAddr,
+    now: i64,
+) -> Result<bool, SessionError> {
+    // Fixed order, including collisions; both charges persist even on denial.
+    let account_bucket = bucket(b"account", username.as_bytes());
+    let peer_bucket = match peer {
+        IpAddr::V4(ip) => bucket(b"peer4", &ip.octets()),
+        IpAddr::V6(ip) => match ip.to_ipv4_mapped() {
+            Some(ip) => bucket(b"peer4", &ip.octets()),
+            None => bucket(b"peer6", &ip.octets()),
+        },
+    };
+    Ok(
+        charge(tx, dataset, "account", account_bucket, now, 5).await?
+            & charge(tx, dataset, "peer", peer_bucket, now, 20).await?,
+    )
+}
 async fn charge(
     tx: &Transaction<'_>,
     dataset: DatasetId,
@@ -278,7 +294,7 @@ async fn charge(
         &[&&dataset.as_bytes()[..], &kind, &bucket, &now, &maximum]).await.map_err(backend)?;
     Ok(row.is_some())
 }
-async fn account_by_name(
+pub(super) async fn account_by_name(
     tx: &Transaction<'_>,
     dataset: DatasetId,
     username: &str,
@@ -352,7 +368,7 @@ async fn issue(
         &[&&id[..], &&dataset.as_bytes()[..], &&account.principal.as_bytes()[..], &account.credential_revision.to_string(), &account.authentication_revision.to_string(), &&token.session_digest()[..], &&csrf.csrf_digest()[..], &now, &expires, &lifetime.idle_us, &idle]).await.map_err(backend)?;
     observation(tx, dataset, account.principal, &row, policy, expires, idle).await
 }
-async fn lock_account(
+pub(super) async fn lock_account(
     tx: &Transaction<'_>,
     dataset: DatasetId,
     principal: PrincipalId,
@@ -484,16 +500,16 @@ async fn observation(
         stored_actions,
     })
 }
-fn fixed<const N: usize>(row: &Row, column: usize) -> Result<[u8; N], SessionError> {
+pub(super) fn fixed<const N: usize>(row: &Row, column: usize) -> Result<[u8; N], SessionError> {
     row.try_get::<_, &[u8]>(column)
         .map_err(metadata)?
         .try_into()
         .map_err(|_| SessionError::InvalidMetadata)
 }
-fn principal(row: &Row, column: usize) -> Result<PrincipalId, SessionError> {
+pub(super) fn principal(row: &Row, column: usize) -> Result<PrincipalId, SessionError> {
     PrincipalId::try_from(fixed::<16>(row, column)?).map_err(|_| SessionError::InvalidMetadata)
 }
-fn revision(row: &Row, column: usize) -> Result<u64, SessionError> {
+pub(super) fn revision(row: &Row, column: usize) -> Result<u64, SessionError> {
     let text: &str = row.try_get(column).map_err(metadata)?;
     text.parse::<u64>()
         .ok()

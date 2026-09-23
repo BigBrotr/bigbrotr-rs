@@ -130,6 +130,11 @@ fixed_hex!(Digest256, 32);
 fixed_hex!(DatasetId, 16, nonzero);
 // Attribution identity only; parsing never authenticates a principal.
 fixed_hex!(PrincipalId, 16, nonzero);
+// Paired with an authenticated actor in the durable management command ledger.
+// This public correlation key is neither a bearer secret nor command authority.
+fixed_hex!(CommandKey, 16, nonzero);
+// A same-session proof reference, never a bearer credential.
+fixed_hex!(ReauthenticationId, 16, nonzero);
 // Names control.owner_epochs.resource_id and its synchronized ingest manifest.
 // A resource name is not an ownership grant.
 fixed_hex!(OwnerResourceId, 16, nonzero);

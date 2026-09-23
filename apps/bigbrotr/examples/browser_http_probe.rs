@@ -488,14 +488,14 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
                 "migrate",
                 "apply",
                 "--target",
-                "807",
+                "808",
                 "--user",
                 "postgres",
                 "--password-ref",
                 &admin_ref,
             ],
         );
-        admin.batch_execute("GRANT SELECT,INSERT,UPDATE ON control.browser_sessions,control.login_buckets TO bigbrotr_control; GRANT DELETE ON control.browser_sessions TO bigbrotr_control").await.unwrap();
+        admin.batch_execute("GRANT SELECT,INSERT,UPDATE ON control.browser_sessions,control.login_buckets TO bigbrotr_control; GRANT SELECT,INSERT,DELETE ON control.reauthentication_proofs TO bigbrotr_control; GRANT DELETE ON control.browser_sessions TO bigbrotr_control").await.unwrap();
         if mode == "faults" {
             faults(&binary, &config, &home, &admin).await;
             drop(admin);
@@ -568,13 +568,19 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
             "migrate",
             "apply",
             "--target",
-            "807",
+            "808",
             "--user",
             "postgres",
             "--password-ref",
             &admin_ref,
         ],
     );
+    admin
+        .batch_execute(
+            "GRANT SELECT,INSERT,DELETE ON control.reauthentication_proofs TO bigbrotr_control",
+        )
+        .await
+        .unwrap();
     admin
         .batch_execute("REVOKE DELETE ON control.browser_sessions FROM bigbrotr_control")
         .await
@@ -596,7 +602,7 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
         json!({"missing":"DELETE"}),
     );
     admin
-        .batch_execute("GRANT DELETE ON control.browser_sessions TO bigbrotr_control")
+        .batch_execute("GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs TO bigbrotr_control")
         .await
         .unwrap();
     admin

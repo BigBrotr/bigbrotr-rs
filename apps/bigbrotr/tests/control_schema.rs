@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn reauthentication_requires_explicit_upgrade_preserving_existing_sessions() {
+    let applied: Vec<_> = plan(&[], 807)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    assert_eq!(
+        migrations::require_applied(&applied, 808),
+        Err(MigrationError::MissingPrerequisite(808))
+    );
+    let upgrade = plan(&applied, 808).expect("reauthentication is an explicit additive migration");
+    assert_eq!(upgrade.pending.len(), 1);
+    assert_eq!(upgrade.pending[0].name, "0808_browser_reauthentication.sql");
+    assert!(migrations::require_applied(&applied, 807).is_ok());
+}
+
+#[test]
 fn session_mutation_audit_requires_an_explicit_additive_upgrade() {
     let applied: Vec<_> = plan(&[], 806)
         .unwrap()

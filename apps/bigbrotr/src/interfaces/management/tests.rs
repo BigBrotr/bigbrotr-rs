@@ -1,5 +1,110 @@
 use super::*;
+
+#[tokio::test]
+async fn reauthentication_requires_session_and_explicit_csrf_before_queueing() {
+    let (mut server, address, budget) = server().await;
+    let path = "/management/v1/sessions/current/reauthenticate";
+    for (extra, expected) in [
+        (String::new(), 401),
+        (
+            format!("Cookie: BigBrotrLocalSession={}\r\n", "11".repeat(32)),
+            403,
+        ),
+    ] {
+        let request = format!(
+            "POST {path} HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Type: application/json\r\nContent-Length: 2\r\n{extra}\r\n{{}}"
+        );
+        let response = exchange(address, request).await;
+        assert!(
+            response.starts_with(&format!("HTTP/1.1 {expected} ")),
+            "{response}"
+        );
+        assert!(server.commands.try_recv().is_err());
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
 use axum::http::{HeaderMap, HeaderValue, Method, Uri};
+
+#[tokio::test]
+async fn reauthentication_transport_binds_key_command_and_returns_no_cookies() {
+    let (mut server, address, budget) = server().await;
+    let vector: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../tests/fixtures/management/scope-grant.json"
+    ))
+    .unwrap();
+    let command = &vector["vectors"][1]["command"];
+    let body =
+        serde_json::json!({"password":"One exact private password","command":command}).to_string();
+    let header = format!(
+        "Cookie: BigBrotrLocalSession={}\r\nX-CSRF-Token: {}\r\n",
+        "11".repeat(32),
+        "22".repeat(32)
+    );
+    let request = |extra: &str, body: &str| {
+        format!(
+            "POST /management/v1/sessions/current/reauthenticate HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n{header}{extra}\r\n{body}",
+            body.len()
+        )
+    };
+    for extra in [
+        String::new(),
+        "Idempotency-Key: bad\r\n".into(),
+        format!(
+            "Idempotency-Key: {}\r\nIdempotency-Key: {}\r\n",
+            "04".repeat(16),
+            "04".repeat(16)
+        ),
+    ] {
+        assert!(
+            exchange(address, request(&extra, &body))
+                .await
+                .starts_with("HTTP/1.1 400 ")
+        );
+        assert!(server.commands.try_recv().is_err());
+    }
+    let extra = format!("Idempotency-Key: {}\r\n", "04".repeat(16));
+    let client = tokio::spawn(exchange(address, request(&extra, &body)));
+    let received = server.commands.recv().await.unwrap();
+    let transport::Operation::Reauthenticate {
+        session,
+        csrf,
+        key,
+        command: actual,
+        password,
+        peer,
+    } = received.operation
+    else {
+        panic!("wrong queued operation");
+    };
+    assert_eq!(session.expose_hex().as_str(), "11".repeat(32));
+    assert_eq!(csrf.expose_hex().as_str(), "22".repeat(32));
+    assert_eq!(key.to_string(), "04".repeat(16));
+    assert_eq!(serde_json::to_value(actual).unwrap(), *command);
+    assert!(password.as_str() == "One exact private password");
+    assert_eq!(peer, address.ip());
+    received
+        .completion
+        .finish(Ok(transport::Reply::Reauthenticated(
+            bigbrotr::management::reauthentication::ReauthenticationProof {
+                id: "09".repeat(16).parse().unwrap(),
+                command_key: key,
+                command_digest: "03".repeat(32).parse().unwrap(),
+                expires_at_us: 123,
+            },
+        )));
+    let response = client.await.unwrap();
+    assert!(response.starts_with("HTTP/1.1 201 "));
+    assert!(!response.contains("set-cookie:") && !response.contains("One exact private password"));
+    let reply: serde_json::Value =
+        serde_json::from_str(response.split_once("\r\n\r\n").unwrap().1).unwrap();
+    assert_eq!(
+        reply,
+        serde_json::json!({"format":"bigbrotr-reauthentication/1","proof_id":"09".repeat(16),"command_key":"04".repeat(16),"command_digest":"03".repeat(32),"expires_at_us":"123","authority":"same-session-command-only"})
+    );
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
 
 fn headers(host: &str, origin: Option<&str>) -> HeaderMap {
     let mut headers = HeaderMap::new();

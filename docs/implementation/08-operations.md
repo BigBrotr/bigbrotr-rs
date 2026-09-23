@@ -203,6 +203,16 @@ rollback/retry checks retain full row/xmin equality. General rejected-attempt
 audit, retention/capacity maintenance, reauth,
 grant CAS and restrictive application remain required; no T02 step is complete.
 
+The next integrated slice uses additive0808 for bounded same-session/command
+reauthentication and its exact issuance audit, followed by809 for durable scope
+grants and atomic proof consumption. Separating their lifecycles does not complete
+T02 or authorize a grant from a proof alone. The actual listener shares the login
+hash worker and persistent attempt limits. Qualification must exercise exact
+retry, expiry/cleanup, reset/logout/grant changes during hash, orphan/mixed-policy
+audit refusals, ambiguous COMMIT and actual grant consumption before history read.
+Current local tests establish only their named schema/transport boundaries;
+engine and integrated history evidence remain required.
+
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 
 The selected Argon2id parameters are an application baseline to benchmark under

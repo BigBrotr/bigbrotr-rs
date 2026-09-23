@@ -10,6 +10,8 @@ use zeroize::Zeroizing;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionError {
     Denied,
+    Forbidden,
+    Conflict,
     InvalidInput,
     Throttled,
     Capacity,

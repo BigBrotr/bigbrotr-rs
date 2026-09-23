@@ -31,9 +31,9 @@ pub use fact::{
     EventEligibility, EventOrigin, EventPayload, EventReceive, Fact, FactPayload, Provenance,
 };
 pub use identity::{
-    AllocationDomainId, DatasetId, Digest256, EventId, OwnerResourceId, PrincipalId,
-    ProcessIncarnation, ProducerSlotId, ProjectionGenerationId, PublicKey, RecoveryGenerationId,
-    Signature,
+    AllocationDomainId, CommandKey, DatasetId, Digest256, EventId, OwnerResourceId, PrincipalId,
+    ProcessIncarnation, ProducerSlotId, ProjectionGenerationId, PublicKey, ReauthenticationId,
+    RecoveryGenerationId, Signature,
 };
 pub use scalar::{
     CompleteThrough, DurationUs, ObservedTime, Ordinal, OwnerEpoch, PolicyEpoch, ProducerEpoch,

@@ -9,10 +9,12 @@ bigbrotr serve --file /etc/bigbrotr/root.toml --roles control
 Use an existing validated root with Control assigned locally, protected application
 credentials, the current explicit Control migrations, accepted initial
 configuration and an activated security revision. Accepted
-`administration.enabled=true` additionally requires migration0807, the browser
-session SQL privileges and INSERT on control.management_audit, then binds the
+`administration.enabled=true` additionally requires migration0808, the browser
+session SQL privileges, SELECT/INSERT/DELETE on control.reauthentication_proofs
+and SELECT/INSERT on control.management_audit, then binds the
 configured loopback private listener.
-Its initial routes provide login, self inspection and logout; they grant no data
+Its initial routes provide login, self inspection, logout and command-bound
+reauthentication; they grant no data
 read or management-command authority. `administration.enabled=false` starts no
 listener. Editing an already accepted managed
 seed does not disable administration. Follow the explicit migration/initialization
@@ -63,7 +65,7 @@ base_path = "/"
 ```
 
 The directory must be absolute with no symlink in any path component. The default
-null directory leaves the three session API routes available without a panel.
+null directory leaves the session API routes available without a panel.
 A bundle built for `/control` instead requires `base_path="/control/"` and is
 opened at `/control/` (including its trailing slash). Static and API requests use
 the configured literal loopback IP and port; `localhost` aliases are refused.
@@ -95,6 +97,17 @@ logout keeps its original audit, while revocations predating this feature or
 caused by account reset receive no fabricated logout receipt. Session cleanup
 retains those audit records. Rejected-request audit, audit browsing and retention
 maintenance remain under implementation.
+
+The reauthentication route accepts the current password and one typed scope-grant
+command, with the original cookie, explicit CSRF token and command Idempotency-Key.
+It shares login's attempt counters and single bounded hash worker. It returns a
+same-session proof ID for at most five minutes, shortened by session expiry. A
+verified retry of the same key/content preserves the original ID, expiry and audit;
+different content conflicts. Credential, active-state, grant or policy changes
+during hashing invalidate issuance. Up to32 proofs per account are retained;
+expired-proof cleanup retains their audit. This route and migration are under
+native qualification. Grant acceptance/consumption and actual private history
+remain under implementation; a proof is never a data-access credential.
 
 The accepted PostgreSQL configuration/security documents remain authoritative;
 changes to a managed seed or staged declarative file do not activate themselves.

@@ -14,7 +14,11 @@ use axum::{
     routing::{delete, get, post},
 };
 use bigbrotr::{
-    management::sessions::{BrowserSecret, IssuedSession, SessionError, SessionObservation},
+    management::{
+        grants::{CommandKey, GrantCommand},
+        reauthentication::ReauthenticationProof,
+        sessions::{BrowserSecret, IssuedSession, SessionError, SessionObservation},
+    },
     runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
 };
 use hyper::server::conn::http1;
@@ -48,6 +52,14 @@ const SESSION_COOKIE: &str = "BigBrotrLocalSession";
 const CSRF_COOKIE: &str = "BigBrotrLocalCsrf";
 
 pub(super) enum Operation {
+    Reauthenticate {
+        session: BrowserSecret,
+        csrf: BrowserSecret,
+        key: CommandKey,
+        command: GrantCommand,
+        password: Zeroizing<String>,
+        peer: IpAddr,
+    },
     Login {
         username: String,
         password: Zeroizing<String>,
@@ -60,6 +72,7 @@ pub(super) enum Operation {
     },
 }
 pub(super) enum Reply {
+    Reauthenticated(ReauthenticationProof),
     Login(IssuedSession),
     Me(SessionObservation),
     Logout,
@@ -133,6 +146,10 @@ impl Server {
         let router = Router::new()
             .route("/management/v1/sessions", post(login))
             .route("/management/v1/sessions/current", delete(logout))
+            .route(
+                "/management/v1/sessions/current/reauthenticate",
+                post(reauthenticate),
+            )
             .route("/management/v1/me", get(me))
             .fallback(static_asset)
             .with_state(state.clone());
@@ -212,6 +229,72 @@ async fn serve(
 struct LoginInput {
     username: String,
     password: String,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ReauthenticationInput {
+    password: String,
+    command: GrantCommand,
+}
+
+async fn reauthenticate(
+    State(shared): State<Shared>,
+    Extension(connection): Extension<Connection>,
+    request: Request,
+) -> Response {
+    let grant = match begin(&shared, &request) {
+        Ok(g) => g,
+        Err(e) => return error(e),
+    };
+    let session = match session(request.headers()) {
+        Ok(t) => t,
+        Err(e) => return error(e),
+    };
+    let Some(csrf) =
+        single(request.headers(), "x-csrf-token").and_then(|v| BrowserSecret::parse_hex(v).ok())
+    else {
+        return error(StatusCode::FORBIDDEN);
+    };
+    let Some(key) = single(request.headers(), "idempotency-key")
+        .and_then(|v| std::str::from_utf8(v).ok())
+        .and_then(|v| v.parse::<CommandKey>().ok())
+    else {
+        return error(StatusCode::BAD_REQUEST);
+    };
+    if !single(request.headers(), "content-type").is_some_and(|v| {
+        v.eq_ignore_ascii_case(b"application/json")
+            || v.eq_ignore_ascii_case(b"application/json; charset=utf-8")
+    }) {
+        return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
+    }
+    let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
+        Ok(bytes) => bytes,
+        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+    };
+    let input: ReauthenticationInput = match serde_json::from_slice(&bytes) {
+        Ok(input) => input,
+        Err(_) => return error(StatusCode::BAD_REQUEST),
+    };
+    drop(bytes);
+    let password = Zeroizing::new(input.password);
+    if password.len() > 1024 {
+        return error(StatusCode::BAD_REQUEST);
+    }
+    dispatch(
+        &shared,
+        connection,
+        grant,
+        Operation::Reauthenticate {
+            session,
+            csrf,
+            key,
+            command: input.command,
+            password,
+            peer: connection.peer,
+        },
+    )
+    .await
 }
 
 fn begin(shared: &Shared, request: &Request) -> Result<OwnedPermit, StatusCode> {
@@ -407,6 +490,11 @@ async fn dispatch(
         return error(StatusCode::TOO_MANY_REQUESTS);
     }
     match receive.await {
+        Ok(Ok(Reply::Reauthenticated(proof))) => protect((StatusCode::CREATED, Json(json!({
+            "format": "bigbrotr-reauthentication/1", "proof_id": proof.id,
+            "command_key": proof.command_key, "command_digest": proof.command_digest,
+            "expires_at_us": proof.expires_at_us.to_string(), "authority": "same-session-command-only"
+        }))).into_response()),
         Ok(Ok(Reply::Login(issued))) => {
             let mut response =
                 (StatusCode::CREATED, Json(observation(issued.observation))).into_response();
@@ -434,6 +522,8 @@ async fn dispatch(
             protect(response)
         }
         Ok(Err(SessionError::Denied)) => error(StatusCode::UNAUTHORIZED),
+        Ok(Err(SessionError::Forbidden)) => failure(StatusCode::FORBIDDEN, "permission_denied", "This action is not permitted.", "check_state"),
+        Ok(Err(SessionError::Conflict)) => error(StatusCode::CONFLICT),
         Ok(Err(SessionError::Throttled | SessionError::Capacity)) => {
             error(StatusCode::TOO_MANY_REQUESTS)
         }
@@ -478,6 +568,11 @@ fn protect(mut response: Response) -> Response {
 fn error(status: StatusCode) -> Response {
     let (code, message, retry) = match status {
         StatusCode::BAD_REQUEST => ("invalid_request", "Invalid request.", "correct_request"),
+        StatusCode::CONFLICT => (
+            "command_conflict",
+            "Command key or expected revision conflicts with current state.",
+            "check_state",
+        ),
         StatusCode::UNAUTHORIZED => (
             "authentication_denied",
             "Authentication required or denied.",
@@ -509,6 +604,9 @@ fn error(status: StatusCode) -> Response {
             "check_state",
         ),
     };
+    failure(status, code, message, retry)
+}
+fn failure(status: StatusCode, code: &str, message: &str, retry: &str) -> Response {
     let correlation = bigbrotr::runtime::ownership::fresh_process_incarnation()
         .ok()
         .map(|id| id.to_string());

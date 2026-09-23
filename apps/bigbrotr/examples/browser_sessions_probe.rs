@@ -100,7 +100,10 @@ async fn audit_failure(admin: &Client, enabled: bool) {
     admin.batch_execute(sql).await.unwrap();
 }
 
-async fn run(mut config: Config) {
+#[path = "browser_sessions_probe/reauthentication.rs"]
+mod reauthentication;
+
+async fn run(mut config: Config, reauth: bool) {
     let (mut admin, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
     migration_runner::run(&mut admin, 18, true, &Cell::new(false))
@@ -219,13 +222,24 @@ async fn run(mut config: Config) {
         assert_eq!(error.code().unwrap().code(), code);
     }
     case("audit-upgrade-preserves-legacy-shapes-and-refuses-null-or-mixed-revisions");
-    admin.batch_execute("GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT DELETE ON control.browser_sessions TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control").await.unwrap();
+    migration_runner::run(&mut admin, 808, true, &Cell::new(false))
+        .await
+        .unwrap();
+    admin.batch_execute("GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control").await.unwrap();
     case("additive-upgrade-preserves-password-and-seven-grants");
     config
         .user("bigbrotr_control")
         .password(std::fs::read("/secrets/bigbrotr_control").unwrap());
     let (mut owner, mut owner_driver) = acquire(&config, 31).await;
 
+    if reauth {
+        reauthentication::run(&mut admin, &mut owner).await;
+        owner.release().await.unwrap();
+        owner_driver.await.unwrap().unwrap();
+        drop(admin);
+        driver.await.unwrap().unwrap();
+        return;
+    }
     owner.require_browser_sessions().await.unwrap();
     owner
         .revoke_browser_session(
@@ -607,8 +621,14 @@ fn main() {
         .build()
         .unwrap()
         .block_on(async {
-            tokio::time::timeout(Duration::from_secs(120), run(config))
-                .await
-                .expect("bounded native scenarios");
+            tokio::time::timeout(
+                Duration::from_secs(120),
+                run(
+                    config,
+                    std::env::args().nth(2).as_deref() == Some("--reauthentication"),
+                ),
+            )
+            .await
+            .expect("bounded native scenarios");
         });
 }

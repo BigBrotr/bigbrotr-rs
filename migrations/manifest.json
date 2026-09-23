@@ -77,6 +77,10 @@
     {
       "version": 807,
       "name": "0807_session_mutation_audit.sql"
+    },
+    {
+      "version": 808,
+      "name": "0808_browser_reauthentication.sql"
     }
   ],
   "reserved": [

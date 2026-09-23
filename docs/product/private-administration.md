@@ -211,6 +211,40 @@ capacity admission. Audit rows remain retained until that maintenance path exist
 | Manage users/administrator grants | Administrator/owner grant | Reauthentication for privilege changes; no privilege escalation through config |
 | Execute arbitrary shell commands | No web permission | Not a management feature |
 
+The first scoped grant command changes one `history.read` grant for a complete
+visibility QualifiedRef. It carries the target principal, desired enabled flag,
+expected configuration/security/account-grant revisions, and an allocation
+selection `(catalog_id, frontier_revision)` when enabling. Disabling carries no
+allocation selection: an unavailable archive must not prevent revocation of an
+existing grant. The seven initial dataset actions keep their existing meaning.
+This command shape is being implemented; it is not yet an available route.
+
+Reauthentication binds the same live session, actor and exact command key/digest.
+The proof is a server-side identifier requiring the original session and CSRF,
+expires within five minutes, and records the credential/authentication/grant and
+security/configuration revisions observed after password verification. Issuance
+uses the same persistent account/peer attempt limits and bounded owned Argon2
+worker as login. Current credentials, session state and `principals.manage` must
+be checked again after hashing and when accepting the sensitive command.
+The initial808 profile retains at most32 proofs per account. A verified identical
+retry within the same session returns its original proof without extending expiry
+or repeating audit. A changed command under that live key conflicts. Expired
+proofs are removed under the account lock; their audit remains. Proof identifiers
+are references, not bearer credentials. The subsequent809 grant transaction must
+check the common accepted-command ledger before consuming a proof, preserve
+per-scope generation tombstones, and retain pending restrictive application until
+affected workers and delivery have actually drained.
+
+The command fingerprint uses SHA256 over ASCII
+`bigbrotr/scope-grant-change/1` plus NUL, dataset16, authenticated actor16,
+command-key16, target-principal16, scope `(dataset16,kind u16,domain16,ordinal u64)`,
+action byte1 for `history.read`, enabled byte0/1, then expected configuration,
+security and account-grant revisions as u64. Finish with allocation-present
+byte0/1, and when present catalog16/frontier-revision u64. Integers are big endian;
+JSON metadata uses canonical positive decimal strings and nonzero lowercase hex
+identities. The independent golden vectors cover enable/revoke. Neither a matching
+fingerprint nor a proof identifier alone confers authorization.
+
 Default import/export filesystem access stays under configured data roots; object
 storage credentials and allowed buckets/prefixes are explicit. Browser jobs never
 accept an arbitrary shell command, secret file path or unsigned executable plugin.
