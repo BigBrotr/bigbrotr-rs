@@ -21,31 +21,46 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current verified main/HEAD and origin/main fb45c36d3c9a8f003c2879e06e035a0a8280da78,
-tree9ded102f9c5410fd64e292769e209b5ad6db91dd, grant code/evidence pushed normally.
-Root now owns the uncommitted local destination prerequisite: export/destination
-library and finite initialize/inspect CLI, paired export.destination.id/root
-registry/validation, DestinationId, executable filesystem regressions and docs.
-No new remote lab exists. Actual Mac CLI regressions: initial two cases RED
-(unknown command/config), umask0600 independently RED (unreadable new marker),
-then all five destination tests PASS after corrections. Final affected checks
-pass: CLI3/config25/destination5/policy6, scoped Clippy, regenerated schema/reference.
-A mistyped test-target invocation ran no tests and is retained as mac-tests3.log;
-corrected mac-tests4.log records the actual final execution. No active Mac job.
-Independent read-only AI reread the final marker flow: earlier chmod/fsync-retry
-findings addressed; no further concrete counterexample. Ancestors beyond the
-synced parent must already be durably provisioned; docs now say so.
+Current verified main/HEAD a75d0fab318adc2b80d25abe65901554f138cbfb,
+tree8f5ce363e44390f45dc2f73c4a22528d6b0a2ce2; unpublished candidate over fetched
+origin/main fb45c36d3c9a8f003c2879e06e035a0a8280da78. Product/fixture worktree was
+clean at transfer. Root now owns destination evidence/inventory/task/docs, the stricter fixture
+barrier above and this checkpoint. No active Mac/native process or cleanup debt.
 
-New committed candidate fixture experiments/export-destination/{native,cases}.py
-is NOT_RUN until exact-Git Tux execution. Ten intended cases: actual ordered
-sync/retry, bind-mount alias refusal, cross-process locks, four fsync EIO schedules,
-three process deaths around rename (including previous valid marker). Root has
-reviewed all new product files, callers/diff and fixture. Linux/ext4 behavior,
-syscall failures and crashes still unqualified. No worker, export job or release
-claim. Initial read-only Tux census:542 containers/eight unrelated running,
-free199,850,586,112bytes; no active BigBrotr. Full preflight repeats in launcher.
-Scripts/logs remain .research/implementation/export-destination/. Candidate may
-be committed locally for exact-source testing before publication.
+[Destination evidence](evidence/p08-export-destination-native-20260923.json) at
+a75d0fa passes ten actual Linux/ext4 cases: ordered file/rename/root/parent sync,
+real nested bind alias refusal, independent cross-process locks, four fsync EIO
+schedules and three actual process-group kills at blocked fsync around rename.
+Initial interrupted writes retain staging and refuse; a prior valid marker stays
+readable through a failed retry, and complete retries use new synced inodes with
+identical bytes/digest. Actual child absence/join and no success stdout checked.
+Not power-loss, media corruption, export-job or release qualification.
+
+Mac REDs retain unknown CLI/config and restrictive umask; final CLI3/config25/
+destination5/policy6 plus scoped Clippy/artifact/fmt PASS. One mistyped target ran
+no tests (mac-tests3); corrected final execution is mac-tests4.log. Native same39
+tests/Clippy PASS. Root reviewed full changed product/fixture/callers and106
+capture files/1085 exact Git sources/one parent ELF. Independent read-only AI
+code/capture review confirms these observations with no blocking discrepancy.
+The collector hashes the remote ELF; AI reviewed record parity, not a local ELF.
+AI noted the automatic kill barrier observed files only: actual traces establish
+the intended pending fsync for all three cases. Fixture now also waits for that
+exact child/descriptor syscall entry; offline replay accepts all three captures
+and rejects missing-entry/completed-call/wrong-child controls. This stricter
+fixture delta has not run natively; a75d0fa evidence remains unchanged. Higher ancestors beyond synced parent require durable provisioning.
+
+Stopped lab /home/tux/bigbrotr-implementation-20260917/runs/export-destination-a75d0fa,
+owner4aea1ac8e208dbd58f0d020b8370b2e5, label org.bigbrotr.export-destination;
+runneradc9fa31f28c77bd7a533b0dcd246ad048e59597d68dc0c2e77bad986a29b5a6
+exit0/PID0/noOOM. No network/database/volume created;542 prior container records
+unchanged/eight unrelated running. Free199,820,947,456 ->196,457,189,376bytes,
+concurrent writes possible. Source, marker states, binary, logs and cache retained.
+Parent-only binary intentionally has no archive-worker binding; never promote it
+as a packaged archive runtime. CaptureSHA
+7d1ed4c0b803a505616661bd1a1457d1a3a0ea5ab74784285f2858ab9b7f6857,
+local .research/implementation/export-destination/, inventory
+implementation_export_destination_20260923. Original terminalPASS_PENDING_CAPTURE
+preserved; local full capture verification succeeded. No further deletion made.
 
 [Native export-grant evidence](evidence/p08-export-grants-native-20260923.json)
 at923f186 has14 actual PASS cases, action-bound proofs/digests, independent action
@@ -165,12 +180,11 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: commit the reviewed destination prerequisite as an
-unpublished candidate, transfer clean exact Git and run the ten native cases in
-one no-network/no-database isolated container with a fresh mount namespace. Use
-verified stopped32dd58d cache; preserve all prior resources. Capture and review
-actual source/artifact identities, cases and terminal custody before publication.
-Then continue atomic command/job/export-pin acceptance and standalone delivery.
+Next bounded action: commit destination evidence/fixture refinement/checkpoint
+and push the verified product candidate normally. Then implement
+P08-T03/T04 atomic command/job/export-pin acceptance with the actual private
+consumer, before standalone signed JSONL delivery/restart. Additive migration
+must preserve legacy checksums/rows; exact cut includes every zero prefix.
 
 Job design inspected independently: reuse protocol1 purpose=export, atomic
 command/job/link/exact complete cut and pin; no adoption of historical pins/jobs.

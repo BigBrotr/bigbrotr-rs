@@ -46,8 +46,9 @@ modes, and refuses linked or nonregular markers. An exclusive nonblocking root
 lock serializes initialization; retained consumers use a shared root lock.
 Conflicting users receive an explicit refusal rather than waiting indefinitely.
 Runtime placement checks use the existing native Linux/ext4 mount mapping when
-other selected stores exist. Native target qualification is pending; Mac tests
-exercise the finite filesystem behavior, not Linux installation durability.
+other selected stores exist. The [scoped native evidence](../implementation/evidence/p08-export-destination-native-20260923.json)
+exercises actual bind aliases, locks, interrupted writes and syscall errors on
+Linux amd64. This does not qualify host power loss or a packaged installation.
 
 A copied directory, changed dataset/ID/path, substituted root inode, missing or
 partial marker fails inspection. A failed write may leave a uniquely named `.destination-*.partial` staging file;

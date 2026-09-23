@@ -1,0 +1,221 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T03/T04 explicit local destination prerequisite",
+  "date": "2026-09-23",
+  "status": "PASS-scoped",
+  "source": {
+    "revision": "a75d0fab318adc2b80d25abe65901554f138cbfb",
+    "tree": "8f5ce363e44390f45dc2f73c4a22528d6b0a2ce2"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "filesystem": "local ext4 bind mounts",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "runner": "2CPU/6GiB/512PIDs",
+    "network": "none; no database, socket, release keys or real credentials; exact source mounted read-only",
+    "strace": "6.1"
+  },
+  "changes": "Explicit export destination initialize/inspect commands. Paired deployment-only ID/root, descriptor-bound canonical marker, nonblocking root custody, nofollow traversal and private modes. Identical complete retry writes a fresh synced inode then atomically replaces the same exact binding. Partial first initialization refuses without deletion.",
+  "checks": {
+    "mac": "Initial unknown CLI/config RED and independent restrictive-umask RED retained; final3 CLI/25 config/5 destination/6 policy tests, scoped Clippy and artifact/format checks PASS. One mistyped test-target invocation ran no tests and is not PASS.",
+    "linux": [
+      {
+        "name": "build",
+        "status": "PASS",
+        "seconds": 31.276026231702417
+      },
+      {
+        "name": "consumers",
+        "status": "PASS",
+        "seconds": 43.69354182155803
+      },
+      {
+        "name": "clippy",
+        "status": "PASS",
+        "seconds": 3.2719282009638846
+      }
+    ],
+    "linux_test_counts": {
+      "cli": 3,
+      "configuration": 25,
+      "destination": 5,
+      "policy": 6
+    }
+  },
+  "workload": {
+    "recipe": "experiments/export-destination/native.py",
+    "practical": "experiments/export-destination/cases.py",
+    "oracle": "Independent Python exact compact marker bytes/device/inode/SHA-256, real existing selected stores, separate bind alias, independent Python flock, strace syscall errors/delays and actual process-group kill/join"
+  },
+  "cases": [
+    {
+      "name": "ordered-sync",
+      "status": "PASS",
+      "trace": "ordered/syscalls.trace",
+      "trace_sha256": "f8a8c1f80c862a6032055821865da65973e7d68ae0021312b3fc724ff08c3aa5",
+      "exit": 0,
+      "binding_sha256": "6e6e955cfbfc063e05a4f63ad0c7592a3e6ab06f6502f4e0e594ff56c872b234",
+      "calls": [
+        "2225  1790198697.105147 fsync(6</out/cases/ordered/destination/.destination-deee4fd7481588e60e0f6521968aa92c.partial>) = 0",
+        "2225  1790198697.110254 renameat(5</out/cases/ordered/destination>, \".destination-deee4fd7481588e60e0f6521968aa92c.partial\", 5</out/cases/ordered/destination>, \"destination.json\") = 0",
+        "2225  1790198697.110317 fsync(5</out/cases/ordered/destination>) = 0",
+        "2225  1790198697.115547 fsync(8</out/cases/ordered>) = 0"
+      ],
+      "complete_retry_uses_new_inode": true
+    },
+    {
+      "name": "bind-alias",
+      "status": "PASS",
+      "refused_without_writes": true
+    },
+    {
+      "name": "cross-process-lock",
+      "status": "PASS",
+      "exclusive_refusal_seconds": 0.003404892049729824,
+      "shared_inspection": true
+    },
+    {
+      "name": "file-eio",
+      "status": "PASS",
+      "trace": "file-eio/syscalls.trace",
+      "trace_sha256": "beae2628a451cd1358712faf7dfc436bba7f91206b072c6d1e1fdf6afde2f6b1",
+      "exit": 4,
+      "injected": [
+        "2247  1790198697.165335 fsync(6</out/cases/file-eio/destination/.destination-7766b4b75385d3274621230193a2101e.partial>) = -1 EIO (Input/output error) (INJECTED)"
+      ],
+      "retained": {
+        ".destination-7766b4b75385d3274621230193a2101e.partial": "c1fcdf487d45c6a23aa2b1a437c64263193651d977004377b8703f045fbc0fb2"
+      },
+      "retry": "refused nonempty uninitialized root"
+    },
+    {
+      "name": "root-eio",
+      "status": "PASS",
+      "trace": "root-eio/syscalls.trace",
+      "trace_sha256": "0863e0cf9e67cca024238d3ce4ffa4f33c93a07fda8b547ba3e5700d5a9b1d03",
+      "exit": 4,
+      "injected": [
+        "2254  1790198697.178745 fsync(5</out/cases/root-eio/destination>) = -1 EIO (Input/output error) (INJECTED)"
+      ],
+      "binding_sha256": "2b6df9ff443626b2ee7e1199c3946690fc1dcead30e3724ec59c2015215e17e4",
+      "retry": "new synced inode, same binding"
+    },
+    {
+      "name": "parent-eio",
+      "status": "PASS",
+      "trace": "parent-eio/syscalls.trace",
+      "trace_sha256": "82c5dba42bb2de182be3d2639657a8853ca37770f9f98fa9ec6083c1578d618c",
+      "exit": 4,
+      "injected": [
+        "2261  1790198697.207421 fsync(8</out/cases/parent-eio>) = -1 EIO (Input/output error) (INJECTED)"
+      ],
+      "binding_sha256": "652cd018fb2fcaed8d18172e617825edb9b6b74d00f77299bb8324c2fe27309e",
+      "retry": "new synced inode, same binding"
+    },
+    {
+      "name": "retry-file-eio",
+      "status": "PASS",
+      "trace": "retry-file-eio/syscalls.trace",
+      "trace_sha256": "77432a6efe508314e55d928a08d456ea17f28850910aaf0867d16dc69a0cf4ef",
+      "exit": 4,
+      "injected": [
+        "2270  1790198697.238898 fsync(6</out/cases/retry-file-eio/destination/.destination-952de3a2df7cf16475bf53825d1064d7.partial>) = -1 EIO (Input/output error) (INJECTED)"
+      ],
+      "binding_sha256": "94d42dcdae0e70802d6d582f9bafccb839c297b86a43bc9c3bbe1deb3ddd295e",
+      "retry": "new synced inode, same binding"
+    },
+    {
+      "name": "kill-before-rename",
+      "status": "PASS",
+      "observed": {
+        "child_pid": 2279,
+        "files": [
+          ".destination-96754645dc4c834cbec615bdd7a73313.partial"
+        ],
+        "marker_present": false
+      },
+      "joined": true,
+      "child_absent": true,
+      "trace_sha256": "dcb95593d88abe69d3db2e70a135897db9d75eea0bd24d382b66aff4c94bedf3"
+    },
+    {
+      "name": "kill-after-rename",
+      "status": "PASS",
+      "observed": {
+        "child_pid": 2286,
+        "files": [
+          "destination.json"
+        ],
+        "marker_present": true
+      },
+      "joined": true,
+      "child_absent": true,
+      "trace_sha256": "a78bff0bebc67acc07827655e3fcc28a1949f6d4869bdd664f9f020790aded9f"
+    },
+    {
+      "name": "kill-retry-before-rename",
+      "status": "PASS",
+      "observed": {
+        "child_pid": 2295,
+        "files": [
+          "destination.json",
+          ".destination-e10122208308b4313efba70feb702a42.partial"
+        ],
+        "marker_present": true
+      },
+      "joined": true,
+      "child_absent": true,
+      "trace_sha256": "88cf8e0f4d3c7db5e4f013718881fe149d139b8c08913a32b2c33740beedc78f"
+    }
+  ],
+  "observations": [
+    "Successful syscall trace orders file fsync, renameat, root fsync, parent fsync before output.",
+    "Actual bind alias nested inside Archive passes lexical offline validation and fails runtime placement before any write.",
+    "Exclusive Python root lock causes initialize and inspect refusals in a combined3.405ms; shared lock permits inspect and refuses initialization.",
+    "Four actual injected EIO cases: first file, root, parent and retry file. First incomplete root retains exact staging bytes and refuses; post-rename retries use a new marker inode with identical digest; interrupted retry preserves previous readable binding and failed staging.",
+    "Three actual process deaths: first pre-rename, post-rename before directory sync, retry pre-rename. Each preserved trace ends at the selected blocked fsync. SIGKILL sent to owned group, strace supervisor collected by wait(), actual child observed absent from /proc; no success stdout. Exact retained files and marker identities checked."
+  ],
+  "capture": {
+    "local_root": ".research/implementation/export-destination/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/export-destination-a75d0fa",
+    "sha256": "7d1ed4c0b803a505616661bd1a1457d1a3a0ea5ab74784285f2858ab9b7f6857",
+    "files": 106,
+    "source_files": 1085,
+    "elfs": 1
+  },
+  "artifacts": {
+    "binary": {
+      "path": "out/native-tests/bigbrotr",
+      "sha256": "4ee2c4fed00b2e2f3afe51d802083a305087c4831d60b71d1104d4ae12a1fb8f",
+      "bytes": 11943432
+    }
+  },
+  "cleanup": {
+    "owner": "4aea1ac8e208dbd58f0d020b8370b2e5",
+    "containers": [
+      {
+        "name": "runner",
+        "id": "adc9fa31f28c77bd7a533b0dcd246ad048e59597d68dc0c2e77bad986a29b5a6"
+      }
+    ],
+    "state": "stopped-retained",
+    "runner_exit": 0,
+    "pid_zero": true,
+    "no_oom": true,
+    "preexisting_preserved": true,
+    "preexisting_count": 542,
+    "unrelated_running": 8,
+    "errors": [],
+    "free_before": 199820947456,
+    "free_after": 196457189376
+  },
+  "review": "Root reviewed complete product diff, actual marker/syscall observations,106 capture hashes,1085 exact Git sources and collector-computed parent ELF hash. Independent read-only AI rechecked capture/source/tree/artifact-record parity and all ten cases with no blocking discrepancy. The ELF stays on Tux: reviewer verified recorded identity parity, not a local ELF rehash. No product tests or SSH by reviewer.",
+  "exclusions": [
+    "No host power loss, media/writeback corruption, storage-controller or reboot qualification; EIO was injected at the syscall boundary.",
+    "Higher ancestors must already be durably provisioned. POSIX modes do not attest ACLs or privileged namespace changes.",
+    "No destination registry beyond one deployment-owned root; no durable export job, output format, source retention acceptance, publication or release.",
+    "No full P08 step/M1, mixed/aged load, native Linux arm64 or packaged installation qualification."
+  ],
+  "fixture_followup": "At a75d0fa the automatic kill barrier observes files; the three actual traces independently confirm pending fsync. Subsequent fixture hardening also requires the exact pending fsync entry for the actual child and descriptor before killing. That predicate was exercised offline against all three captured traces and missing-entry/completed-call/wrong-child negative controls; the modified fixture has not been rerun natively. Original capture is unchanged."
+}

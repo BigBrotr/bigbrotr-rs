@@ -9,6 +9,7 @@ import fcntl
 import hashlib
 import json
 import os
+import re
 import signal
 import subprocess
 import sys
@@ -226,16 +227,25 @@ try:
                     staged = [p for p in files if p.name.endswith('.partial')]
                     visible = ((len(staged) == 1 and staged[0].stat().st_size > 0)
                                if point == 1 else (root / 'destination.json').exists())
-                    if child and visible:
+                    # File visibility alone can precede the intended syscall.
+                    # Require strace's actual unterminated entry for this child
+                    # and descriptor, while the injected call remains delayed.
+                    target = (str(staged[0]) if staged else '') if point == 1 else str(root)
+                    entries = path.read_text().splitlines() if path.exists() else []
+                    entered = any(re.fullmatch(
+                        str(child) + r'\s+[0-9.]+ fsync\(\d+<' + re.escape(target) + r'>',
+                        line) for line in entries) if child and target else False
+                    if child and visible and entered:
                         break
                     assert process.poll() is None
                     time.sleep(.005)
                 else:
                     raise TimeoutError('selected fsync boundary not observed')
-                # Parent remains blocked before the injected 10s could finish.
+                # strace remains blocked before the injected 10s could finish.
                 assert process.poll() is None and time.monotonic() - started < 3
                 observed = dict(child_pid=child, files=[p.name for p in files],
-                                marker_present=(root / 'destination.json').exists())
+                                marker_present=(root / 'destination.json').exists(),
+                                blocked_fsync_entry=True)
             finally:
                 os.killpg(process.pid, signal.SIGKILL)
                 assert process.wait(timeout=3) == -signal.SIGKILL
