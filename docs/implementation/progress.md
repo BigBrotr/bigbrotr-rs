@@ -19,12 +19,11 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Last observed main/HEAD `b5c862ac7c50700cf532517994dff3f3224f6eab`,
-origin/main `daead51d53aac5e9e6e41a32cfad3907fd6a1465`, ahead one candidate.
-Root owns post-native capture evidence, this checkpoint, history user-doc link
-and inventory/retirement updates. No other writer or product edits, dependency/
-migration changes, merge or rebase. Next commit records the qualified candidate
-and verified cache maintenance, then push main only. Research branches stay local.
+Last observed main/HEAD and origin/main
+`89e73c9` after verified evidence/inventory push. Remote remains private bigbrotr-rs.
+Root now owns the blocked history-body fixtures, small large-mode fixture changes
+and this checkpoint. Product source remains unchanged from32dd58d; no dependency/
+migration changes or other writer. Read-only AI review of the new cases is pending.
 
 4d81357 integrates model/protocol read modules, initial schemas/OpenAPI and docs,
 management history transport/delivery, serve history/native supervision, nonrenewable
@@ -107,10 +106,16 @@ Both entered with parent alive/no children and pin/claim1/snapshot3/>4s residual
 No manager-loss-during-body or recovery claim.66capture/1069source/fiveELF/five
 assets verified; independent read-only AI found no discrepancy and ran no tests.
 
-Next bounded action: review/commit/push the capture evidence and inventory; then
-resume blocked history-body/short-lifetime cases using the existing signed large
-fixture, followed by standalone export/restart. No task/M1 closure. No active
-product lab, maintenance process or cleanup debt.
+Next bounded action: qualify the paired blocked history-body cases on an exact-Git
+Tux candidate. Existing independent signed large event, bounded tcp_wmem only in
+the owned network namespace, observed parent socket queue/child absence and SQL
+pin/claim. Paired complete delivery versus2s action and fixture-shortened2s actual
+pin; same3s drain schedule discriminates the ordinary5s HTTP timeout. A500ms
+heartbeat must produce observed Control renewals without extending either bound.
+Sources experiments/archive-engine/private_history_body_{client,cases}.py;
+local launch/transfer under .research/implementation/history-body/. Cases NOT_RUN.
+Then standalone export/restart; no task/M1 closure. No active product lab or
+maintenance process, no cleanup debt at this checkpoint.
 
 Owner-requested first cache maintenance is PASS-reconciled in inventory key
 implementation_cache_retirement_20260923.142 explicit out/build/{target,cargo-home}

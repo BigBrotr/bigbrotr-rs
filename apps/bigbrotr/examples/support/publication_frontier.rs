@@ -49,7 +49,7 @@ pub async fn inspect(
     cancel: &AtomicBool,
 ) {
     use bigbrotr_protocol::archive_cut::{CutBound, CutRead};
-    assert!(matches!(mode, "normal" | "history"));
+    assert!(matches!(mode, "normal" | "large" | "history"));
     owner.refresh(validate).await.unwrap();
     let capture = CatalogCapture::open(manager, coordinator, Duration::from_secs(120))
         .await

@@ -29,7 +29,8 @@ def cli(*args):
     return json.loads(result.stdout)
 
 
-def prepare():
+def prepare(mode='normal'):
+    assert mode in ('normal', 'large')
     ROOT.mkdir(mode=0o700)
     (ROOT / 'scratch').mkdir(mode=0o700)
     shutil.copy2('/out/native-tests/bigbrotr', BINARY)
@@ -56,17 +57,17 @@ enabled=true
 host="127.0.0.1"
 port=18080
 [storage]
-archive_root="/out/signed_normal/kind=7/"
-archive_state_root="/out/signed_normal/archive-state"
+archive_root="/out/signed_{mode}/kind=7/"
+archive_state_root="/out/signed_{mode}/archive-state"
 scratch_root="{ROOT}/scratch"
 [postgres.control]
 endpoint="127.0.0.1:5432"
-database="bbpub_control_normal"
+database="bbpub_control_{mode}"
 user="bigbrotr_control"
 password_ref="file:{ROOT}/bigbrotr_control"
 [postgres.catalog]
 endpoint="127.0.0.1:5432"
-database="bbpub_normal"
+database="bbpub_{mode}"
 user="CatalogManager"
 password_ref="file:{ROOT}/CatalogManager"
 read_user="bigbrotr_receipt_reader"
@@ -270,4 +271,4 @@ def exercise(history=False):
 
 
 if __name__ == '__main__':
-    {'prepare':prepare,'enroll':enroll,'exercise':exercise,'exercise-history':lambda:exercise(True)}[sys.argv[1]]()
+    {'prepare':prepare,'prepare-large':lambda:prepare('large'),'enroll':enroll,'exercise':exercise,'exercise-history':lambda:exercise(True)}[sys.argv[1]]()
