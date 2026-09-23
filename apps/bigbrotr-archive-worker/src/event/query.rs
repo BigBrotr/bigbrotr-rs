@@ -1,6 +1,8 @@
 //! Select scope eligibility before consulting the shared event body.
 use super::*;
-use bigbrotr_protocol::archive_event::{EventMatch, EventQuery};
+use bigbrotr_protocol::archive_event::{
+    EventMatch, EventQuery, EventQueryObservation, EventSelection, QUERY_FORMAT,
+};
 
 // No Debug/Serialize: the catalog holds the private reader credential.
 #[derive(Deserialize)]
@@ -25,12 +27,12 @@ impl EventQueryRequest {
 }
 impl crate::engine::Engine {
     /// Caller retains the certified pin and live authorization through delivery.
-    /// A Missing result is not an archive-wide absence certificate.
+    /// Absence is scoped to the exact selection, not an archive-wide certificate.
     pub fn query_event(
         self,
         request: &EventQueryRequest,
         max_bytes: usize,
-    ) -> Result<EventMatch, EventReadError> {
+    ) -> Result<EventQueryObservation, EventReadError> {
         request.expected.validate(max_bytes)?;
         self.attach_readonly_catalog(
             &request.catalog,
@@ -114,7 +116,7 @@ pub(super) fn lookup_attached(
     c: &Connection,
     query: &EventQuery,
     max_bytes: usize,
-) -> Result<EventMatch, EventReadError> {
+) -> Result<EventQueryObservation, EventReadError> {
     query.validate(max_bytes)?;
     c.execute_batch("BEGIN TRANSACTION")
         .map_err(|_| EventReadError::Native)?;
@@ -130,8 +132,35 @@ pub(super) fn lookup_attached(
     }
     // A private-first payload is shared storage, never evidence that the event
     // was eligible in the requested scope. Do not hydrate it before this check.
-    let eligibility = select_reference(c, query, true)?;
-    let payload = select_reference(c, query, false)?;
+    let result = match select_reference(c, query, true) {
+        Ok(eligibility) => EventSelection::Present {
+            matched: Box::new(hydrate(c, query, eligibility, max_bytes)?),
+        },
+        Err(EventReadError::Missing) => EventSelection::Absent {},
+        Err(error) => return Err(error),
+    };
+    c.execute_batch("COMMIT")
+        .map_err(|_| EventReadError::Native)?;
+    Ok(EventQueryObservation {
+        format: QUERY_FORMAT.into(),
+        snapshot_id,
+        request_digest: query.digest(),
+        result,
+    })
+    // Error destroys this one-shot engine; a failed transaction is never reused.
+}
+
+fn hydrate(
+    c: &Connection,
+    query: &EventQuery,
+    eligibility: FactRef,
+    max_bytes: usize,
+) -> Result<EventMatch, EventReadError> {
+    let payload = select_reference(c, query, false).map_err(|error| match error {
+        EventReadError::Missing => EventReadError::Mismatch,
+        other => other,
+    })?;
+    let snapshot_id = query.snapshot_id;
     let read = EventRead {
         dataset: query.dataset,
         event_id: query.event_id,
@@ -144,13 +173,10 @@ pub(super) fn lookup_attached(
     let eligibility_fact = read_eligibility(c, &read, max_bytes)?;
     let payload_fact = read_payload(c, &read, max_bytes)?;
     let event = join(&payload_fact, &eligibility_fact, &read, max_bytes)?;
-    c.execute_batch("COMMIT")
-        .map_err(|_| EventReadError::Native)?;
     Ok(EventMatch {
         snapshot_id,
         event,
         payload,
         eligibility,
     })
-    // Error destroys this one-shot engine; a failed transaction is never reused.
 }

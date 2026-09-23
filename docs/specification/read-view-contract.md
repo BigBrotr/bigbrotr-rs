@@ -157,6 +157,42 @@ an entire human browsing session for one unrelated expiration is unnecessarily
 costly. Snapshot semantics remain useful where reproducibility is part of the
 operation. Neither mode is relabeled as the other for a performance comparison.
 
+## Exact private historical selection
+
+The private native `query-event` selects one event ID under a qualified scope,
+ordered source prefixes and an exact retained snapshot. A successful result is
+either the original verified signed event or scoped absence: no eligibility
+matched that selection. Select eligibility before the shared body. Finding
+eligibility but no payload within the same cut is inconsistent, never absence.
+Duplicate references, corrupt matching facts, failed native work, interrupted
+transactions and unreadable required objects cannot become an empty result.
+This does not certify unrelated archive objects or authorize a principal. The
+read consumer separately owns the complete certified cut, pin and action grant.
+
+`bigbrotr-native-event-query/1` contains `snapshot_id`, `request_digest` and a
+closed `result`: `{"status":"absent"}` or `{"status":"present","matched":...}`.
+The match contains snapshot, signed event and its two immutable fact references.
+Emit either result only after the read transaction commits. The request SHA-256
+preimage is `bigbrotr/archive-event-query/1\0`, dataset bytes16, event ID bytes32,
+scope dataset bytes16, kind u16, allocation domain bytes16, ordinal u64,
+topology u64, snapshot u64, bound count u64, then ordered
+`(shard u32, epoch u64, prefix u64)` tuples; integers are big-endian.
+[The frozen absence vector](../../tests/fixtures/protocol/archive-event-absence.json)
+uses dataset01, event02, scope domain03/ordinal1, topology0, snapshot2 and the
+single explicit zero bound `(0,1,0)`. The parent checks correlation for both
+outcomes and independently verifies every returned signed event and source bound.
+It retains the allocation grant and owned reader custody even for absence, until
+the last consumer releases the observation. Positive native termination precedes
+construction of either observation. Output has a2KiB envelope allowance above the
+configured event-row bound, covered by the existing conservative allocation floor.
+
+This replaces the earlier unversioned private match response. Parent and worker
+are installed as one exact artifact pair; mixed versions refuse decoding and
+cannot reinterpret an old native error as absence. No persisted format, migration
+or public API version changes. Scanned-byte admission and the actual authenticated
+HTTP consumer remain P06-T01/T02 work; these private results alone do not qualify
+the common64MiB profile.
+
 ## Visibility allocation before a private grant
 
 A submitted `QualifiedRef` is a name, not evidence that the visibility mapping

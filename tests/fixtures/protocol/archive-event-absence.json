@@ -1,0 +1,8 @@
+{
+  "format": "bigbrotr-native-event-query/1",
+  "snapshot_id": 2,
+  "request_digest": "88763dd430d09c971dfb96743f0be0cb8e5c7fb94691622a019539fae2eeb0e2",
+  "result": {
+    "status": "absent"
+  }
+}

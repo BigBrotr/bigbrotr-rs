@@ -22,6 +22,18 @@ from signed_publication_oracle import EVENT, corpus, check, input_expectations
 from fault_cases import Process
 
 
+def event_query_digest(read):
+    """Independent closed wire correlation; integers are fixed-width big endian."""
+    scope = read['scope']
+    preimage = b'bigbrotr/archive-event-query/1\0' + bytes.fromhex(read['dataset']) + bytes.fromhex(read['event_id'])
+    preimage += bytes.fromhex(scope['dataset_id']) + struct.pack('>H', scope['dictionary_kind'])
+    preimage += bytes.fromhex(scope['allocation_domain'])
+    preimage += struct.pack('>QQQQ', int(scope['ordinal']), int(read['topology_generation']), read['snapshot_id'], len(read['bounds']))
+    for bound in read['bounds']:
+        preimage += struct.pack('>IQQ', *(bound[k] for k in ('shard_id', 'owner_epoch', 'complete_through')))
+    return hashlib.sha256(preimage).hexdigest()
+
+
 def cut_digest(read):
     body = b'bigbrotr/archive-cut-inspection/1\0' + bytes.fromhex(read['dataset_id'])
     body += struct.pack('>QQ', int(read['topology_generation']), len(read['bounds']))
@@ -98,7 +110,7 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
     binary = ['docker', 'exec', '--env', 'LD_LIBRARY_PATH=/out/archive-worker/lib', runner]
     inputs = root/('out/cut-inputs' if capture_cut else 'out/event-inputs')
     inputs.mkdir()
-    def run_case(label, request, wanted, interact=None, killed=False, executable='/out/native-tests/archive-event-probe'):
+    def run_case(label, request, wanted, interact=None, killed=False, executable='/out/native-tests/archive-event-probe', absent=False):
         case = dict(name=label, status='INCOMPLETE')
         result['cases'].append(case)
         request_path = inputs/(label+'.json')
@@ -118,7 +130,13 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
             assert case['exit'] == 0 and not case['stderr'] and not case['overflow']
             observed = json.loads(case['stdout'])
             assert observed['active_permits'] == 0
-            assert observed['result']['status'] == ('observed' if wanted else 'refused')
+            assert observed['result']['status'] == ('absent' if absent else 'observed' if wanted else 'refused')
+            if absent:
+                assert not wanted and query_lookup
+                assert observed['result'] == dict(status='absent', snapshot_id=str(request['expected']['snapshot_id']),
+                                                 request_digest=event_query_digest(request['expected']))
+                case['status'] = 'PASS'
+                return observed
             if wanted:
                 assert observed['result']['event'] == wanted
                 snapshot = request['expected'].get('snapshot_id')
@@ -247,7 +265,7 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                     for bound in [0, 6, 7, 8, 10]:
                         bounded = copy.deepcopy(request)
                         bounded['expected']['bounds'][0]['complete_through'] = bound
-                        run_case('prefix-'+str(bound), bounded, value if bound >= 8 else None)
+                        run_case('prefix-'+str(bound), bounded, value if bound >= 8 else None, absent=bound < 8)
                     for variant in ['missing-stream', 'foreign-epoch', 'foreign-shard', 'unrelated-zero']:
                         bounded = copy.deepcopy(request)
                         bounds = bounded['expected']['bounds']
@@ -255,7 +273,7 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                         elif variant == 'foreign-epoch': bounds[0]['owner_epoch'] = 2
                         elif variant == 'foreign-shard': bounds[0]['shard_id'] = 1
                         else: bounds.append(dict(shard_id=1, owner_epoch=1, complete_through=0))
-                        run_case(variant, bounded, value if variant=='unrelated-zero' else None)
+                        run_case(variant, bounded, value if variant=='unrelated-zero' else None, absent=variant!='unrelated-zero')
                 if reader_custody:
                     run_case('baseline-complete', request, value, executable='/out/native-tests/baseline-event-probe')
                 # Publication produced dictionary snapshot2 and signed-event
@@ -264,7 +282,7 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                 for snapshot in [0, 1, 2, 4, 2**63-1, 2**63, 2**64-1]:
                     selected = copy.deepcopy(request)
                     selected['expected']['snapshot_id'] = snapshot
-                    run_case('snapshot-'+str(snapshot), selected, None)
+                    run_case('snapshot-'+str(snapshot), selected, None, absent=query_lookup and snapshot in [1, 2])
                 request['expected']['snapshot_id'] = 3
                 run_case('snapshot-exact', request, value)
                 for variant in ['scope', *([] if query_lookup else ['digest']), 'event-id', 'missing', 'row-limit', 'zero-limit', 'wrong-catalog', 'unavailable-database']:
@@ -279,7 +297,7 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                     elif variant == 'zero-limit': bad['max_row_bytes'] = 0
                     elif variant == 'wrong-catalog': bad['catalog_id'] = '5b'*16
                     else: bad['database'] = 'absent'
-                    run_case(variant, bad, None)
+                    run_case(variant, bad, None, absent=query_lookup and variant in ['scope', 'event-id', 'missing'])
                 body_files = [name for name in original_files if '/events/' in name]
                 assert len(body_files) == 1
                 path = root/f'out/signed_{mode}/kind=7'/body_files[0]
@@ -295,7 +313,7 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                         retained.rename(path)
                     assert path.read_bytes() == original
                     run_case(fault+'-restored', request, value)
-                for action in (['negative-no-custody', 'cancel', 'deadline', 'parent-death'] if reader_custody else ['cancel', 'deadline']):
+                for action in (['negative-no-custody', 'cancel', 'deadline', 'parent-death'] if reader_custody else ['cancel', 'deadline', *(['absent-deadline'] if query_lookup else [])]):
                     cancellation = action in ['cancel', 'negative-no-custody']
                     executable = '/out/native-tests/baseline-event-probe' if action == 'negative-no-custody' else '/out/native-tests/archive-event-probe'
                     if action == 'negative-no-custody':
@@ -306,7 +324,8 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                         send(holder, "BEGIN; LOCK TABLE public.ducklake_snapshot IN ACCESS EXCLUSIVE MODE; SELECT json_build_object('event','locked','pid',pg_backend_pid());\n")
                         pid = event(holder, 'locked')['pid']
                         blocked = copy.deepcopy(request)
-                        blocked['deadline_ms'] = 6000 if action == 'deadline' else 15000
+                        blocked['deadline_ms'] = 6000 if action in ['deadline', 'absent-deadline'] else 15000
+                        if action == 'absent-deadline': blocked['expected']['event_id'] = '00'*32
                         if action == 'negative-no-custody':
                             # This retained pre-selector adapter accepts only
                             # current reads. The immutable fixture is still at3;
@@ -378,6 +397,9 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                         time.sleep(.02)
                     assert int(sql(db,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_receipt_reader';")) == 0
                     run_case(label+'-retry', request, value)
+                    if action == 'absent-deadline':
+                        blocked['deadline_ms'] = 15000
+                        run_case(label+'-absent-retry', blocked, None, absent=True)
             result[mode+'_metadata_after'] = metadata(db)
             assert result[mode+'_metadata_after'] == before and files(mode) == original_files
             result[mode+'_unchanged'] = True
@@ -402,6 +424,10 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
                 assert time.monotonic()<until
                 time.sleep(.05)
             run_case(mode+'-pg-restarted', request, value)
+            if query_lookup:
+                missing = copy.deepcopy(request)
+                missing['expected']['event_id'] = '00'*32
+                run_case(mode+'-absent-after-restart', missing, None, absent=True)
             result[mode+'_metadata_restarted'] = metadata(db)
             result[mode+'_files_restarted'] = files(mode)
             assert result[mode+'_metadata_restarted'] == before and result[mode+'_files_restarted'] == original_files

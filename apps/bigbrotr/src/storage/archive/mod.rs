@@ -27,7 +27,7 @@ pub use receipts::{
 pub use worker::{Preparation, PreparationError, PreparationInspection, PreparationLimits};
 
 mod events;
-pub use events::{ArchiveEventError, ArchivedEvent};
+pub use events::{ArchiveEventError, ArchivedEvent, ArchivedEventQuery};
 mod visibility;
 pub use visibility::ArchivedVisibility;
 mod membership;

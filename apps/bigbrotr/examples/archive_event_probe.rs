@@ -4,9 +4,9 @@ use bigbrotr::{
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, WaiterLimits},
     storage::{
         archive::{
-            ArchiveEventError, ArchivedEvent, ArchivedVisibility, ArtifactIdentity,
-            CatalogReaderCredentials, CatalogRoute, CatalogTls, LifetimeError, LocalCoordinator,
-            Preparation, PreparationError, PreparationLimits, WorkerInstallation,
+            ArchiveEventError, ArchivedEvent, ArchivedEventQuery, ArchivedVisibility,
+            ArtifactIdentity, CatalogReaderCredentials, CatalogRoute, CatalogTls, LifetimeError,
+            LocalCoordinator, Preparation, PreparationError, PreparationLimits, WorkerInstallation,
         },
         postgres::{catalog_guard::CatalogIdentity, connection_settings::PlaintextBoundary},
     },
@@ -43,6 +43,7 @@ enum Expected {
 }
 enum Observation {
     Event(Box<ArchivedEvent>),
+    Query(Box<ArchivedEventQuery>),
     Visibility(Box<ArchivedVisibility>),
 }
 fn main() {
@@ -134,10 +135,26 @@ fn main() {
                         .read_event(read, coordinator, &route, credential, &budget)
                         .map(|value| Observation::Event(Box::new(value)))
                         .map_err(|e| format!("{e:?}")),
-                    Expected::Query(query) => preparation
-                        .query_event(query, coordinator, &route, credential, &budget)
-                        .map(|value| Observation::Event(Box::new(value)))
-                        .map_err(|e| format!("{e:?}")),
+                    Expected::Query(query) => {
+                        let custody = coordinator.reader_custody().map_err(|e| format!("{e:?}"))?;
+                        let budget = &budget;
+                        std::thread::scope(|scope| {
+                            scope
+                                .spawn(move || {
+                                    preparation.query_event(
+                                        query.clone(),
+                                        custody,
+                                        &route,
+                                        credential,
+                                        budget,
+                                    )
+                                })
+                                .join()
+                                .unwrap()
+                        })
+                        .map(|value| Observation::Query(Box::new(value)))
+                        .map_err(|e| format!("{e:?}"))
+                    }
                     Expected::Visibility(read) => {
                         let custody = coordinator.reader_custody().map_err(|e| format!("{e:?}"))?;
                         let budget = &budget;
@@ -187,6 +204,14 @@ fn main() {
                 Observation::Event(observation) => {
                     serde_json::json!({"status":"observed","snapshot_id":observation.snapshot_id().to_string(),"event":observation.event().event()})
                 }
+                Observation::Query(observation) => match observation.event() {
+                    Some(event) => {
+                        serde_json::json!({"status":"observed","snapshot_id":observation.query().snapshot_id.to_string(),"event":event.event()})
+                    }
+                    None => {
+                        serde_json::json!({"status":"absent","snapshot_id":observation.query().snapshot_id.to_string(),"request_digest":observation.query().digest()})
+                    }
+                },
                 Observation::Visibility(observation) => {
                     serde_json::json!({"status":"observed","snapshot_id":observation.read().snapshot_id.to_string(),"scope":observation.entry().reference(),"fact_ref":observation.fact_ref(),"class":match observation.entry().descriptor() { bigbrotr_model::DictionaryDescriptor::Visibility { class } => class.as_str(), _=>panic!() }})
                 }

@@ -20,7 +20,8 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'], ['--private-grant-http'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'], ['--private-grant-http'], ['--event-query'])
+event_query = sys.argv[1:] == ['--event-query']
 private_grant_http = sys.argv[1:] == ['--private-grant-http']
 scope_grants = sys.argv[1:] == ['--scope-grants']
 archive_visibility = sys.argv[1:] == ['--archive-visibility']
@@ -30,7 +31,7 @@ archive_frontier = pin_recovery or sys.argv[1:] == ['--archive-frontier']
 archive_cut = archive_frontier or sys.argv[1:] == ['--archive-cut']
 archive_membership = sys.argv[1:] == ['--archive-membership']
 publication_sync = sys.argv[1:] == ['--publication-sync']
-archive_event = private_grant_http or scope_grants or archive_visibility or reader_custody or publication_sync or sys.argv[1:] == ['--archive-event']
+archive_event = event_query or private_grant_http or scope_grants or archive_visibility or reader_custody or publication_sync or sys.argv[1:] == ['--archive-event']
 producer_recovery = sys.argv[1:] == ['--producer-recovery']
 producer_closing = producer_recovery or sys.argv[1:] == ['--producer-closing']
 certification = producer_closing or sys.argv[1:] == ['--certification']
@@ -114,6 +115,13 @@ if archive_event:
             ('reader-parent', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive::events']),
             ('cut-parent', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive::cut']),
             checks[-1]]
+if event_query:
+    identity.update(scope='completed scoped event absence and owned query custody; not private HTTP or action authority')
+    checks = [checks[0],
+        ('native-events', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'event::tests', '--', '--nocapture']),
+        ('protocol-event', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-protocol', '--lib', 'archive_event::tests']),
+        ('parent-events', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive::events']),
+        checks[-1]]
 if archive_visibility:
     identity.update(scope='actual retained visibility allocation lookup; no action grant or HTTP read authority')
     checks = [checks[0],

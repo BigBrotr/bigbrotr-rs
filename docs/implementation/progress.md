@@ -19,9 +19,10 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD8e8cfa0, origin/main6dcd482. New fixture candidate unpublished.
-Native cancellation correction and
-qualification are pushed. Root owns later cleanup-fixture/checkpoint edits. Native HTTP implementation and
+Verified clean main/HEAD and origin/main25861b1 on resumption. Cleanup evidence
+and cache retirement audit are pushed. Fresh read-only Tux inspection confirms
+the latest two containers stopped/PID0/noOOM and eight unrelated workloads running.
+Root now owns the private event-history reader changes. Native HTTP implementation and
 qualification evidence are pushed. Owned-reader code and native
 qualification evidence are pushed. No merge/rebase or other writer.
 Private repository/name verified through gh repo view. No dependencies changed.
@@ -115,11 +116,21 @@ and two native fault cases repeat PASS; Linux34binary/25config/3CLI/Clippy PASS.
 The independent AI fixture review corrected missing pin rows, zombie visibility,
 cleanup error collection and EOF-versus-natural-timeout ambiguity before execution.
 
-Next bounded action: P06-T01/T02 actual private event_history consumer. Read current
-read-view/interface contracts and event query/native wire owners, define shared
-QueryRequest/QueryPage codec plus per-action principal/cut/pin ownership. Preserve
-verified absent versus unavailable/corrupt outcomes before an empty page. Wire the
-actual private route, no diagnostic substitute, then standalone export/restart.
+Root-owned prerequisite changes now distinguish completed scoped absence from
+failed native query output, correlate both outcomes to the exact request and move
+owned reader custody through the blocking query consumer. Private wire changes
+require the exact parent/worker artifact pair; persistent formats are unchanged.
+Mac parent regression RED then GREEN2/2, protocol2/2 and scoped Clippy pass.
+A first GREEN attempt exposed Serde's internally tagged unit variant accepting
+extra fields; the empty struct variant now refuses them. Exact dependency source
+was inspected. Logs: `.research/implementation/event-history/`. Native changes
+and revised practical cases are NOT_RUN; no HTTP behavior is yet added.
+
+Next bounded action: qualify the completed-absence/owned-query prerequisite on
+exact Git Tux inputs, including missing files, failed empty query, restart and
+unchanged original data. Then implement the actual private event_history route,
+shared QueryRequest/QueryPage and per-action principal/cut/pin/delivery ownership,
+followed by standalone export/restart. No diagnostic substitute for that route.
 Interrupted Control renewal/acceptance COMMIT, native success/signal race and
 full restrictive drain remain explicit later practical gates. No task/M1 closure.
 

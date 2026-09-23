@@ -1,4 +1,18 @@
 use super::query::lookup_attached;
+use bigbrotr_protocol::archive_event::{
+    EventMatch, EventQueryObservation, EventSelection, QUERY_FORMAT,
+};
+
+fn present(observation: EventQueryObservation) -> EventMatch {
+    assert_eq!(observation.format, QUERY_FORMAT);
+    match observation.result {
+        EventSelection::Present { matched } => {
+            assert_eq!(matched.snapshot_id, observation.snapshot_id);
+            *matched
+        }
+        EventSelection::Absent {} => panic!("expected a signed event"),
+    }
+}
 use super::*;
 use crate::{
     engine::{Engine, EngineLimits},
@@ -47,12 +61,15 @@ fn event_id_lookup_obeys_both_source_prefixes_and_exact_scope() {
         let reader = engine_at(temp.path(), home.path(), true, Some(2)).unwrap();
         let actual = lookup_attached(&reader.connection, &request, 4 * 1024 * 1024);
         if variant == "complete" {
-            let actual = actual.unwrap();
+            let actual = present(actual.unwrap());
             assert_eq!(actual.snapshot_id, 2);
             assert_eq!(actual.event, expected);
         } else {
+            let actual = actual.unwrap();
+            assert_eq!(actual.snapshot_id, 2);
+            assert_eq!(actual.request_digest, request.digest());
             assert!(
-                matches!(actual, Err(EventReadError::Missing)),
+                matches!(actual.result, EventSelection::Absent {}),
                 "{variant}: {actual:?}"
             );
         }
@@ -673,7 +690,8 @@ fn two_scopes_return_their_own_valid_signature_not_a_global_first_representative
         };
         let temp = tempfile::tempdir().unwrap();
         let reader = engine_at(temp.path(), home.path(), true, Some(4)).unwrap();
-        let selected = lookup_attached(&reader.connection, &query, 4 * 1024 * 1024).unwrap();
+        let selected =
+            present(lookup_attached(&reader.connection, &query, 4 * 1024 * 1024).unwrap());
         assert_eq!(&selected.event, expected);
         assert_eq!(selected.payload, request.payload);
         assert_eq!(selected.eligibility, request.eligibility);
@@ -786,26 +804,20 @@ fn lookup_cannot_cross_a_body_prefix_and_rejects_conflicting_logical_duplicates(
         let temp = tempfile::tempdir().unwrap();
         let reader = engine_at(temp.path(), home.path(), true, Some(3)).unwrap();
         let error = lookup_attached(&reader.connection, &query, 4 * 1024 * 1024).unwrap_err();
-        assert_eq!(
-            error,
-            if variant.starts_with("body-")
-                && matches!(variant, "body-after-cut" | "body-other-stream")
-            {
-                EventReadError::Missing
-            } else {
-                EventReadError::Mismatch
-            },
-            "{variant}"
-        );
+        assert_eq!(error, EventReadError::Mismatch, "{variant}");
         drop(reader);
         if variant == "body-corrupt" {
             let mut absent = query.clone();
             absent.scope.ordinal = Ordinal::new(3).unwrap();
             let temp = tempfile::tempdir().unwrap();
             let reader = engine_at(temp.path(), home.path(), true, Some(3)).unwrap();
-            assert_eq!(
-                lookup_attached(&reader.connection, &absent, 4 * 1024 * 1024).unwrap_err(),
-                EventReadError::Missing,
+            assert!(
+                matches!(
+                    lookup_attached(&reader.connection, &absent, 4 * 1024 * 1024)
+                        .unwrap()
+                        .result,
+                    EventSelection::Absent {}
+                ),
                 "absent scope must not hydrate a corrupt body"
             );
         }
@@ -834,9 +846,7 @@ fn lookup_cannot_cross_a_body_prefix_and_rejects_conflicting_logical_duplicates(
         let temp = tempfile::tempdir().unwrap();
         let reader = engine_at(temp.path(), home.path(), true, Some(3)).unwrap();
         assert_eq!(
-            lookup_attached(&reader.connection, &query, 4 * 1024 * 1024)
-                .unwrap()
-                .event,
+            present(lookup_attached(&reader.connection, &query, 4 * 1024 * 1024).unwrap()).event,
             expected
         );
     }

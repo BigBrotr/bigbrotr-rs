@@ -1,9 +1,11 @@
 //! Private historical reference/ID reads, not scope grants or source-cut proofs.
 use bigbrotr_model::{
-    DatasetId, DictionaryKind, EventId, FactRef, QualifiedRef, SignedEvent, SourceRecordId,
-    TopologyGeneration,
+    DatasetId, DictionaryKind, Digest256, EventId, FactRef, QualifiedRef, SignedEvent,
+    SourceRecordId, TopologyGeneration,
 };
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
+pub const QUERY_FORMAT: &str = "bigbrotr-native-event-query/1";
 pub const MAX_EVENT_ROW_BYTES: usize = 4 * 1024 * 1024;
 pub const MAX_EVENT_RESPONSE_BYTES: usize = MAX_EVENT_ROW_BYTES + 1024;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -33,6 +35,27 @@ pub struct EventQuery {
 }
 
 impl EventQuery {
+    /// Correlates a completed observation, including absence, to every selection
+    /// field. It is neither principal authority nor a certified source cut.
+    pub fn digest(&self) -> Digest256 {
+        let mut hash = Sha256::new();
+        hash.update(b"bigbrotr/archive-event-query/1\0");
+        hash.update(self.dataset.as_bytes());
+        hash.update(self.event_id.as_bytes());
+        hash.update(self.scope.dataset_id.as_bytes());
+        hash.update((self.scope.dictionary_kind as u16).to_be_bytes());
+        hash.update(self.scope.allocation_domain.as_bytes());
+        hash.update(self.scope.ordinal.get().to_be_bytes());
+        hash.update(self.topology_generation.get().to_be_bytes());
+        hash.update(self.snapshot_id.to_be_bytes());
+        hash.update((self.bounds.len() as u64).to_be_bytes());
+        for bound in &self.bounds {
+            hash.update(bound.shard_id.to_be_bytes());
+            hash.update(bound.owner_epoch.to_be_bytes());
+            hash.update(bound.complete_through.to_be_bytes());
+        }
+        Digest256::from_bytes(hash.finalize().into())
+    }
     pub fn validate(&self, max_bytes: usize) -> Result<(), EventReadError> {
         if max_bytes == 0
             || max_bytes > MAX_EVENT_ROW_BYTES
@@ -76,6 +99,23 @@ pub struct EventMatch {
     pub event: SignedEvent,
     pub payload: FactRef,
     pub eligibility: FactRef,
+}
+/// Emitted only after the native read transaction successfully completes.
+/// Absent means no eligibility for this exact selection; a missing payload after
+/// selecting eligibility is an error, never a successful empty observation.
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EventQueryObservation {
+    pub format: String,
+    pub snapshot_id: u64,
+    pub request_digest: Digest256,
+    pub result: EventSelection,
+}
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(tag = "status", rename_all = "snake_case", deny_unknown_fields)]
+pub enum EventSelection {
+    Absent {},
+    Present { matched: Box<EventMatch> },
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EventReadError {
