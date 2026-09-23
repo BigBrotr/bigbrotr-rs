@@ -18669,5 +18669,41 @@
       "capture_sha256": "c02c5ea276c69b0bd9acf2dae19c5a931c3bca2316ec95b31e5943f8d8264b95"
     },
     "observation": "Stopped/retained. First signal during actual capture rollback PASS, six-second held cleanup spans three completed Control polls, exact retry rows/xmin unchanged.40 capture/1048 source/five ELF/five asset hashes verified.524 prior records unchanged,8 unrelated running; owned network removed. No active job/cleanup debt."
+  },
+  "implementation_event_query_absence_20260923": {
+    "local_root": ".research/implementation/event-query-absence",
+    "native": {
+      "source": "882654e9b46f8b9e4b43a636875971151ccaaba0",
+      "tree": "fef7e40ea5e29649f886629d247fdd0e3d4e9155",
+      "owner": "cbeea19078b6d37d4adf29d87f0a5181",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/event-query-absence-882654e",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "dd8f2eb609c6b52998262383cffc57d374121c2578cc2d754ade93df0d3bcd88"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "67e8a4824424717052a53bdc9b4274dba5ec90708ed8126a604d91b2b0710c7b"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T18:07:55.956751+00:00",
+      "network_id": "2d6ef7a12f8ac271605eff9cb0b834c5ebedbca5547b42ff9db86f42f58a86c2",
+      "postgres_id": "dd8f2eb609c6b52998262383cffc57d374121c2578cc2d754ade93df0d3bcd88",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "67e8a4824424717052a53bdc9b4274dba5ec90708ed8126a604d91b2b0710c7b",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "report": "docs/implementation/evidence/p06-event-query-absence-native-20260923.json",
+      "capture_sha256": "31e1b41b059fda4148f13a57fd5461b9db88f75c8bbef7e43b5ab49994e8fe29"
+    },
+    "observation": "Stopped/retained; 51 practical cases, native11/protocol2/parent2 and scoped Clippy PASS.74 capture/1051 source/five ELF/five native asset hashes verified.526 prior records unchanged,8 unrelated running. Owned network removed; no active lab/cleanup debt."
   }
 }

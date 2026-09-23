@@ -165,6 +165,13 @@ is an explicit resource. An ID lookup is not an archive-policy bypass.
   and Clippy pass. It does not certify the caller's topology or supply live action/scope
   authorization, scanned-byte admission or public missing/unavailable semantics;
   those remain required by steps2/4/5 and P06-T01.
+  [Completed scoped absence and owned query custody](evidence/p06-event-query-absence-native-20260923.json)
+  at882654e pass51 practical cases,11 native/2 protocol/2 parent tests and scoped
+  Clippy. The result is correlated to the exact selection and keeps local custody
+  for either outcome; required eligibility/payload object failures and a blocked
+  empty query refuse. Three PG crashes/restarts preserve compared metadata and27
+  original Parquet hashes. This closes the private typed-absence prerequisite,
+  not the public error API, scanned-byte budget or authenticated history delivery.
 - [ ] **Step 4:** distinguish temporarily unavailable, corrupt, absent and
   policy-withheld bodies. Enforce bounded cold lookup and scan cost. Return
   resource unavailability or the documented policy result, not a partial body

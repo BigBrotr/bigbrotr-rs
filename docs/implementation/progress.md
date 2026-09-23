@@ -19,7 +19,7 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified clean main/HEAD and origin/main25861b1 on resumption. Cleanup evidence
+Verified main/HEAD882654e, origin/main25861b1 before evidence publication. Cleanup evidence
 and cache retirement audit are pushed. Fresh read-only Tux inspection confirms
 the latest two containers stopped/PID0/noOOM and eight unrelated workloads running.
 Root now owns the private event-history reader changes. Native HTTP implementation and
@@ -116,19 +116,27 @@ and two native fault cases repeat PASS; Linux34binary/25config/3CLI/Clippy PASS.
 The independent AI fixture review corrected missing pin rows, zombie visibility,
 cleanup error collection and EOF-versus-natural-timeout ambiguity before execution.
 
-Root-owned prerequisite changes now distinguish completed scoped absence from
+The prerequisite changes now distinguish completed scoped absence from
 failed native query output, correlate both outcomes to the exact request and move
 owned reader custody through the blocking query consumer. Private wire changes
 require the exact parent/worker artifact pair; persistent formats are unchanged.
 Mac parent regression RED then GREEN2/2, protocol2/2 and scoped Clippy pass.
 A first GREEN attempt exposed Serde's internally tagged unit variant accepting
 extra fields; the empty struct variant now refuses them. Exact dependency source
-was inspected. Logs: `.research/implementation/event-history/`. Native changes
-and revised practical cases are NOT_RUN; no HTTP behavior is yet added.
+was inspected. Logs: `.research/implementation/event-history/`.
+[Native qualification](evidence/p06-event-query-absence-native-20260923.json) at
+882654e/treefef7e40ea5e29649f886629d247fdd0e3d4e9155 passes51 practical cases:
+49 actual query processes and two signed cut journeys, including15 completed
+absences. Required payload/eligibility files missing or corrupt refuse; identical
+restoration succeeds. Absent-ID query under a real PG Lock refuses on deadline,
+then completes as absent after release. Three SIGQUIT/restart journeys preserve
+complete compared metadata and27 original Parquet hashes. Linux11native/2protocol/
+2parent tests plus scoped Clippy PASS. No HTTP behavior is yet added.
+Root and independent read-only AI reviewed the change. AI requested eligibility
+object negatives, now executed; it ran no tests. Scoped absence assumes the valid
+catalog/certified selection, not health of unrelated or pruned archive objects.
 
-Next bounded action: qualify the completed-absence/owned-query prerequisite on
-exact Git Tux inputs, including missing files, failed empty query, restart and
-unchanged original data. Then implement the actual private event_history route,
+Next bounded action: implement the actual private event_history route,
 shared QueryRequest/QueryPage and per-action principal/cut/pin/delivery ownership,
 followed by standalone export/restart. No diagnostic substitute for that route.
 Interrupted Control renewal/acceptance COMMIT, native success/signal race and
@@ -203,6 +211,19 @@ Concurrent cap admission/full reauth COMMIT-loss remain open. Startup/reauth req
 809; new scope acceptance requires811.
 
 ## Laboratory custody
+
+Stopped/retained query lab:
+`/home/tux/bigbrotr-implementation-20260917/runs/event-query-absence-882654e`,
+ownercbeea19078b6d37d4adf29d87f0a5181, labelorg.bigbrotr.archive-visibility.
+PGdd8f2eb609c6b52998262383cffc57d374121c2578cc2d754ade93df0d3bcd88,
+runner67e8a4824424717052a53bdc9b4274dba5ec90708ed8126a604d91b2b0710c7b:
+stopped/PID0/noOOM, runner0/PGwrapper137, owned network removed.526 prior
+records unchanged,8 unrelated running,18,755,985,408bytes free; all six workload
+databases have0 remaining backends.74 capture/1051 source/five ELF/five native
+asset hashes verified; captureSHA256
+`31e1b41b059fda4148f13a57fd5461b9db88f75c8bbef7e43b5ab49994e8fe29`.
+Inventory implementation_event_query_absence_20260923; local raw capture/scripts
+`.research/implementation/event-query-absence`. No active lab or cleanup debt.
 
 [Scoped cache retirement](evidence/p08-native-grant-cache-retirement-20260923.json)
 removed only out/build/{target,cargo-home} from stopped7ea08a6 and1b9f710.
@@ -337,8 +358,8 @@ Global Control renewal cannot extend an individual action lease. UTC plus5second
 alone is not a drain proof. Pin release follows joined native work and delivery.
 The selected history route is the existing GET/POST QueryRequest/QueryPage protocol
 on the private origin; do not invent a management history protocol or make cookies
-public bearer tokens. Native Missing still maps to ObservationUnknown; add verified
-absence before returning successful empty results. LIMIT2 bounds result rows,
+public bearer tokens. Completed query absence now has a correlated closed wire
+and retains custody; native errors still map to ObservationUnknown. LIMIT2 bounds result rows,
 not scanned bytes. Native common64MiB/aged-load capacity remains unqualified.
 
 serve-existing currently has native.disabled and no catalog reader credentials;

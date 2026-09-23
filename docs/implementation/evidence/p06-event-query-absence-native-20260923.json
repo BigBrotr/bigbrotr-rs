@@ -1,0 +1,791 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS",
+  "scope": "P02-T04/P06-T01/T02 completed exact-selection absence and owned query custody; not live history authorization, private HTTP delivery, complete P06/M1 or release qualification",
+  "source": {
+    "revision": "882654e9b46f8b9e4b43a636875971151ccaaba0",
+    "tree": "fef7e40ea5e29649f886629d247fdd0e3d4e9155",
+    "product_commit": "186200a",
+    "manifest": {
+      "path": ".research/implementation/event-query-absence/capture/out/build/source-manifest.json",
+      "bytes": 130667,
+      "sha256": "a9939fcf99de452ff82da50f7a44460f6f79dad18090ffcd6ef390ef1467f211"
+    },
+    "clean_unchanged": true,
+    "verified_against_mac_git_archive": true,
+    "lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "Runner2CPU/6GiB/512PIDs; PG2CPU/1GiB/128PIDs; internal network/no host ports; readonly exact Git source and bundle assets; no release keys",
+    "native_assets": {
+      "path": ".research/implementation/event-query-absence/capture/native-assets.json",
+      "bytes": 868,
+      "sha256": "ece98322fb272b868a2ac17597bc7f0c0f04cd80a68673da8bc9c466356981a0"
+    },
+    "engine_registry": {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    "dependencies": {
+      "path": "contracts/release/dependencies.json",
+      "bytes": 17254,
+      "sha256": "14bb6d43630ff5ad0eeaec28236ca138224d5e97603200f456536abbaa2c94c6"
+    }
+  },
+  "artifacts": {
+    "control": "8c25eb681e7bff7cdbbd6cde7139186fd65761ddec59c13b3ca95532d7ec209d",
+    "worker": "2c4ee4366da9f025894948d19e3ef0e0b63643d951c477925efda27eb3c8c7f8",
+    "event_reader": "8346547711badc655e01c702b99f5252975a3b92acbda5bcaf0bbaf1f652437c",
+    "publisher": "2040919c964ebed393f3686adb2b43cb508c2fd203d1a1fbc6962c7759a1e2f7",
+    "reader": "273d9966309de9c4e90455c07b05a9cb2412e987c80439b99af112ca35e7d9e6"
+  },
+  "implementation": [
+    "Versioned closed private response correlates both signed event and scoped absence to dataset, ID, full qualified scope, topology, ordered bounds and exact snapshot.",
+    "Only no matching eligibility after completed native transaction yields absence. Missing required payload, malformed or duplicate selected facts, native error, cancelled work and unknown termination never yield a successful empty observation.",
+    "Owned ReaderCustody moves into the blocking query consumer. Present and absent observations retain the memory grant and local exclusion after originating coordinator destruction; release follows final observation drop.",
+    "No persistent format or migration change. Exact parent/worker pair changes together; prior unversioned responses refuse. No public query route added."
+  ],
+  "independent_oracles": {
+    "fixture": {
+      "path": "tests/fixtures/protocol/archive-event-absence.json",
+      "bytes": 198,
+      "sha256": "ae17cb147c03436ba6b196c3bd3f5ec9de5371bcddf72c3dd48653f694144b84"
+    },
+    "harness": {
+      "path": "experiments/archive-engine/event_cases.py",
+      "bytes": 32310,
+      "sha256": "6176d06e2e12f7372c2dd13a0f2eb095695aeae1f60de2071e34e12e4d6687aa"
+    },
+    "signed": {
+      "path": "experiments/identity-contract/signed-fixture.json",
+      "bytes": 58802,
+      "sha256": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875"
+    },
+    "six_family": {
+      "path": "experiments/archive-engine/signed_publication_oracle.py",
+      "bytes": 16215,
+      "sha256": "7ad4381bdc691d45245232d7cbdebeed039c6de0c182bcdc193b3479678917a4"
+    },
+    "large": {
+      "path": "tests/fixtures/protocol/archive-event-response.json",
+      "bytes": 962,
+      "sha256": "815bf9e7e0fbcda73a77fbc3f91bebe0ec5c5f356e01bd665f695a8edb5af963"
+    },
+    "authority": "Fixture declarations and owned retained original files; no claim of a live user grant. Actual published Control cut identities are independently compared in normal/history fixtures."
+  },
+  "linux": {
+    "checks": {
+      "path": ".research/implementation/event-query-absence/capture/out/native-tests/checks/result.json",
+      "bytes": 5283,
+      "sha256": "c45ed8d976b93826d51d4dcd9d89f02226e2805ab46a7b1c20aebc0dad8347a0"
+    },
+    "native_events": 11,
+    "protocol_events": 2,
+    "parent_events": 2,
+    "clippy": "PASS",
+    "practical_cases": 51,
+    "actual_query_processes": 49,
+    "completed_absence": 15,
+    "cases": [
+      {
+        "name": "normal-captured-cut",
+        "status": "PASS"
+      },
+      {
+        "name": "normal-complete",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 363,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "prefix-0",
+        "status": "PASS",
+        "input_sha256": "6279cfc5a016a73079e398e47165ecd63dd7ebaa68db62633ddaa92d3ca0ba45",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 381,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "f40b6d5dca6ceec9292d15654d48c041483b36338de06cc52b261e96db737a07"
+      },
+      {
+        "name": "prefix-6",
+        "status": "PASS",
+        "input_sha256": "81785a6c2513bb3e9cc1b4530c603a5297c277b13c14a41620412bf5955c6668",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 427,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "c74b1ec2356f0f7ac45b8a6adc48fed065412c1f81fe3fd6fd49f4cfe9e77bd2"
+      },
+      {
+        "name": "prefix-7",
+        "status": "PASS",
+        "input_sha256": "7d2bdc7d86f2bee07fa76d2f4f30f6e520db010060b1a2b5c438d8e62a3517e8",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 397,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "60acf17584735fb3246eac4da64e0e21f2809c0ee94a0527dd68c46faa639e77"
+      },
+      {
+        "name": "prefix-8",
+        "status": "PASS",
+        "input_sha256": "6042859fa00eaf4dd8d30c6bbe3970b7f0f7de677ba197e7a698e1062ad3146a",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 429,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "prefix-10",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 416,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "missing-stream",
+        "status": "PASS",
+        "input_sha256": "d3b6eedd9dce6a9e7419a87c4d70fcbd7d876ac523383f7131b3f32517431c52",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 401,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "df83a0a3743791027a46b43f7f0fa767b5651f05f7242c91dd7de6fb82c0639d"
+      },
+      {
+        "name": "foreign-epoch",
+        "status": "PASS",
+        "input_sha256": "3ebf4751b3d486b7a0e8a672f95b9eafd2429e63c1bd1bc09c8c6d734b11b648",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 424,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "ac295d8dae67027e0de6441f93956d549be0666700f58f5d6352c10e3f96aeaf"
+      },
+      {
+        "name": "foreign-shard",
+        "status": "PASS",
+        "input_sha256": "f8680113922cc97ef0f41abd4a38be75bd796b000b5c6bfaf1427ccad2259ca1",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 407,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "3b647170c209374baf539c6d680e720794eb0f988937e4fa3c370fe4f92bf849"
+      },
+      {
+        "name": "unrelated-zero",
+        "status": "PASS",
+        "input_sha256": "d04ee3e83e4b7dfb697fcc56ee53cadb73fa03e89a7e8f96c37dfff475b76256",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 367,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "snapshot-0",
+        "status": "PASS",
+        "input_sha256": "29ae210417843eab62bde0494f5ca789825c4e4a758338f82a07c26740d52765",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 364,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-1",
+        "status": "PASS",
+        "input_sha256": "cbba7ae2b6fc8037f78c17b944880d884048a40d8b0781f68ea9d9f07c88f3c8",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 423,
+        "cancelled": false,
+        "snapshot_id": "1",
+        "request_digest": "f7484339fe84fe9bea8657e43406f6b27e0b0e3dc54f3eb74ef90493ce3e8a76"
+      },
+      {
+        "name": "snapshot-2",
+        "status": "PASS",
+        "input_sha256": "c1e352dd0eb60e2133afe63beadd3939997475e90f2cbf82fd6d544e18a22948",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 403,
+        "cancelled": false,
+        "snapshot_id": "2",
+        "request_digest": "560181a490172a54c4d9bb74ea9bcc62b10a62ca0be9e158abd49d637e1209e9"
+      },
+      {
+        "name": "snapshot-4",
+        "status": "PASS",
+        "input_sha256": "fee10d88315ada1db77dfbe160996a96c8745ad1481cf7f33ce0c746225c21af",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 384,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-9223372036854775807",
+        "status": "PASS",
+        "input_sha256": "ae33217ee8249a9ee0ba4722466253ebcce28d4d16f320c6ba973e1c23f4a7d5",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 328,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-9223372036854775808",
+        "status": "PASS",
+        "input_sha256": "a1f3223f0da072bdc6c87326ff909699b73b3e5f2e3974977570dfcf8685eaef",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 11,
+        "cancelled": false,
+        "error": "Input(InvalidInput)"
+      },
+      {
+        "name": "snapshot-18446744073709551615",
+        "status": "PASS",
+        "input_sha256": "09c3198b93868cc856b4a34d1d2186e66f19b32c92eb67093b0cd6be55742e5a",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 7,
+        "cancelled": false,
+        "error": "Input(InvalidInput)"
+      },
+      {
+        "name": "snapshot-exact",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 409,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "scope",
+        "status": "PASS",
+        "input_sha256": "bf204dc4f8a453eca0f51387e2fe5c92f233e24399327325677841a0205db3e9",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 421,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "99fec168398c248774a1937d78284d3bb55ff02fe0ba8347593e6ef001df6c56"
+      },
+      {
+        "name": "event-id",
+        "status": "PASS",
+        "input_sha256": "d3d239f7fe07f8f013f3bb75af69984df6a3b92f846f46d7e1161732440e8e09",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 414,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "45fb8a947e967cad926da69bfff1e382cbc3caca18fcaed384684f44bffcc84f"
+      },
+      {
+        "name": "missing",
+        "status": "PASS",
+        "input_sha256": "81785a6c2513bb3e9cc1b4530c603a5297c277b13c14a41620412bf5955c6668",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 396,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "c74b1ec2356f0f7ac45b8a6adc48fed065412c1f81fe3fd6fd49f4cfe9e77bd2"
+      },
+      {
+        "name": "row-limit",
+        "status": "PASS",
+        "input_sha256": "783929c5ba9521840522efe3359fc9da6c57cd896107efcf918b080b426f1ebe",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 419,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "zero-limit",
+        "status": "PASS",
+        "input_sha256": "4a576ddbcedfa6bdf7c57f647ed25a0d177b414bd0744ea8b1fc5dfa978782b2",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 6,
+        "cancelled": false,
+        "error": "Input(ResourceLimit)"
+      },
+      {
+        "name": "wrong-catalog",
+        "status": "PASS",
+        "input_sha256": "7008a3352996c26d885acf2ba8d7228fd1f47614b64e7226d9a917aebfc99e02",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 0,
+        "cancelled": false,
+        "error": "Preparation(Custody(Identity))"
+      },
+      {
+        "name": "unavailable-database",
+        "status": "PASS",
+        "input_sha256": "1253221ecc501b705181828aa413aeb17fb39efb682b9693d49d2d518e4dc0d8",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 303,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "events-missing-file",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 353,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "events-missing-file-restored",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 418,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "events-corrupt-footer",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 398,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "events-corrupt-footer-restored",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 403,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "event_eligibility_facts-missing-file",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 393,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "event_eligibility_facts-missing-file-restored",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 419,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "event_eligibility_facts-corrupt-footer",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 402,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "event_eligibility_facts-corrupt-footer-restored",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 441,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "cancel-blocked",
+        "status": "PASS",
+        "input_sha256": "58f18098246f9c40b116bf33f9b1a434db8488af01b5aa8bb2303fd983cf8ddd",
+        "blocking": [
+          {
+            "pid": 546,
+            "user": "bigbrotr_receipt_reader",
+            "application": "bigbrotr-archive-event",
+            "wait_type": "Lock",
+            "blockers": [
+              510
+            ]
+          }
+        ],
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 480,
+        "cancelled": true,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "cancel-blocked-retry",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 387,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "deadline-blocked",
+        "status": "PASS",
+        "input_sha256": "2229515f9f275581cdf1515a97775b39404d93ea114c7be928c660ccb4f37ded",
+        "blocking": [
+          {
+            "pid": 599,
+            "user": "bigbrotr_receipt_reader",
+            "application": "bigbrotr-archive-event",
+            "wait_type": "Lock",
+            "blockers": [
+              570
+            ]
+          }
+        ],
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 6006,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "deadline-blocked-retry",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 397,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "absent-deadline-blocked",
+        "status": "PASS",
+        "input_sha256": "3b305505883426bd03641fe0c985649542dd6844c6675aa1409a5f3f54a5b587",
+        "blocking": [
+          {
+            "pid": 659,
+            "user": "bigbrotr_receipt_reader",
+            "application": "bigbrotr-archive-event",
+            "wait_type": "Lock",
+            "blockers": [
+              623
+            ]
+          }
+        ],
+        "result": "refused",
+        "active_permits": 0,
+        "elapsed_ms": 6004,
+        "cancelled": false,
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "absent-deadline-blocked-retry",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 372,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "absent-deadline-blocked-absent-retry",
+        "status": "PASS",
+        "input_sha256": "d3d239f7fe07f8f013f3bb75af69984df6a3b92f846f46d7e1161732440e8e09",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 400,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "45fb8a947e967cad926da69bfff1e382cbc3caca18fcaed384684f44bffcc84f"
+      },
+      {
+        "name": "normal-pg-restarted",
+        "status": "PASS",
+        "input_sha256": "5f272995adc7099d9f3091d895b0da6b4984cc5b103d318eb67f98fd6fb99bee",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 405,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "normal-absent-after-restart",
+        "status": "PASS",
+        "input_sha256": "d3d239f7fe07f8f013f3bb75af69984df6a3b92f846f46d7e1161732440e8e09",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 406,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "45fb8a947e967cad926da69bfff1e382cbc3caca18fcaed384684f44bffcc84f"
+      },
+      {
+        "name": "large-complete",
+        "status": "PASS",
+        "input_sha256": "c22a2db02916ab2a80cacd09dcefff831eec60753c8b02611339d9510c68c5e5",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 400,
+        "cancelled": false,
+        "event_id": "05e909d2c260edbb52e21e3813a492ade70523c8493fb0ae5a9a37a04354db31",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "large-pg-restarted",
+        "status": "PASS",
+        "input_sha256": "c22a2db02916ab2a80cacd09dcefff831eec60753c8b02611339d9510c68c5e5",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 423,
+        "cancelled": false,
+        "event_id": "05e909d2c260edbb52e21e3813a492ade70523c8493fb0ae5a9a37a04354db31",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "large-absent-after-restart",
+        "status": "PASS",
+        "input_sha256": "01e1e3052bf8fce5beffff3f29999e344d6d86cc5ca936a91b6fbca283ed83bf",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 378,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "45fb8a947e967cad926da69bfff1e382cbc3caca18fcaed384684f44bffcc84f"
+      },
+      {
+        "name": "history-captured-cut",
+        "status": "PASS"
+      },
+      {
+        "name": "history-complete",
+        "status": "PASS",
+        "input_sha256": "289b8ac11a7ddfbab9250929de333c26b50cf0c0d8839442132c938bc7c258a4",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 366,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "4"
+      },
+      {
+        "name": "history-exact-previous",
+        "status": "PASS",
+        "input_sha256": "b3ccff17a4f0bed291c19e17d4388c0d7f5175f6a71b5f5f3cf00b01d7ea7f3d",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 402,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "history-pg-restarted",
+        "status": "PASS",
+        "input_sha256": "b3ccff17a4f0bed291c19e17d4388c0d7f5175f6a71b5f5f3cf00b01d7ea7f3d",
+        "result": "observed",
+        "active_permits": 0,
+        "elapsed_ms": 431,
+        "cancelled": false,
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "history-absent-after-restart",
+        "status": "PASS",
+        "input_sha256": "359b32d5ca3a072315a3678b65e7e2e92bc592cd1a74ff5bd2fa91016d8b2661",
+        "result": "absent",
+        "active_permits": 0,
+        "elapsed_ms": 375,
+        "cancelled": false,
+        "snapshot_id": "3",
+        "request_digest": "2d0d98bebbd127886f49a33adb663f30874ec76ab55e6f6611f04455eb62933c"
+      }
+    ],
+    "unchanged_metadata_and_files": {
+      "normal": {
+        "count": 8,
+        "manifest_sha256": "eaa17c608c5c9ec4995f01bd2547754dd5a2a5774b755a41e4f75c8a518b8e6c",
+        "restart": {
+          "before": "2026-09-23 18:08:00.524957+00",
+          "after": "2026-09-23 18:12:10.850975+00",
+          "signal": "SIGQUIT"
+        }
+      },
+      "large": {
+        "count": 8,
+        "manifest_sha256": "ca88f26bf1f37e974ddfb26cb0f843e699edee6f4ae64a920c6fdd100771d41b",
+        "restart": {
+          "before": "2026-09-23 18:12:10.850975+00",
+          "after": "2026-09-23 18:12:27.047091+00",
+          "signal": "SIGQUIT"
+        }
+      },
+      "history": {
+        "count": 11,
+        "manifest_sha256": "b68e3a185c12572f9ef65c2e4a2c410dc6c82aa8dbbbe588a7169f9276ebeaa2",
+        "restart": {
+          "before": "2026-09-23 18:12:27.047091+00",
+          "after": "2026-09-23 18:12:47.007327+00",
+          "signal": "SIGQUIT"
+        }
+      }
+    },
+    "independent_terminal_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      },
+      "bbpub_large": {
+        "backends": 0
+      },
+      "bbpub_control_large": {
+        "backends": 0
+      },
+      "bbpub_history": {
+        "backends": 0
+      },
+      "bbpub_control_history": {
+        "backends": 0
+      }
+    }
+  },
+  "mac": {
+    "parent_red": {
+      "path": ".research/implementation/event-history/parent-absence-red.log",
+      "bytes": 1112,
+      "sha256": "4cffc7ee812269b58dd96b2e3cf5c200e7dabeed50c884d0f2f9d8604c78a5df"
+    },
+    "closed_enum_red": {
+      "path": ".research/implementation/event-history/parent-absence-green.log",
+      "bytes": 1374,
+      "sha256": "7c1e30be309928001bc263234d873d13a1c9ce959b9998b56273419edb222aa2"
+    },
+    "parent_green": {
+      "path": ".research/implementation/event-history/parent-absence-green-2.log",
+      "bytes": 724,
+      "sha256": "034ab4ab91f3bb2f14f0940ccb71e2373a41909010646bf17c2ca164c0080e5c"
+    },
+    "protocol": {
+      "path": ".research/implementation/event-history/protocol.log",
+      "bytes": 743,
+      "sha256": "ccc6f7398dccb4d7cb67a797eda6755a36080c7ee506bd38c051725749defc43"
+    },
+    "clippy": {
+      "path": ".research/implementation/event-history/clippy.log",
+      "bytes": 298,
+      "sha256": "4d713ba8f2cd1166d00415564e8dc938910cc26dd9af4dc0b5897b8b97d7a080"
+    },
+    "note": "Original parent fails completed-absence assertion. First codec implementation fails hostile extra-field assertion because Serde internally tagged unit variant ignores content; empty struct variant refuses it. Two parent and two protocol tests plus scoped Clippy pass."
+  },
+  "review": {
+    "integrating_owner": "Complete product/fixture diff and affected contracts reviewed; actual output and immutable data comparisons inspected.",
+    "independent_ai": "Read-only AI review found no concrete production defect in scope; requested required-eligibility-file missing/corrupt controls, executed here. No reviewer execution.",
+    "upstream": [
+      {
+        "dependency": "serde_derive1.0.229",
+        "source": "src/de/enum_internally.rs",
+        "finding": "Unit style uses InternallyTaggedUnitVisitor; empty struct style honors deny_unknown_fields. Reproduced and regression verified."
+      },
+      {
+        "dependency": "DuckLake",
+        "commit": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+        "source": "src/storage/ducklake_metadata_manager.cpp",
+        "url": "https://github.com/duckdb/ducklake/blob/d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4/src/storage/ducklake_metadata_manager.cpp",
+        "finding": "Catalog statistics can prune files before scan. Scoped absence assumes valid catalog and separately certified cut; it does not verify unrelated/pruned objects. BLOB comparisons are excluded by this generator; no event-ID-specific pruning claim."
+      }
+    ]
+  },
+  "custody": {
+    "resources": {
+      "path": ".research/implementation/event-query-absence/capture/resources.json",
+      "bytes": 1363,
+      "sha256": "dc9208c5f2df578fcaa24ced015017bb4a8cc5c7ac21618886f59bb1aaca839e"
+    },
+    "terminal_audit": {
+      "path": ".research/implementation/event-query-absence/capture/terminal-audit.json",
+      "bytes": 4884,
+      "sha256": "30228ac2a9d6989ab111a1c16afed917c03e26dabdccc4495c7f917eb0b7100d"
+    },
+    "capture": {
+      "path": ".research/implementation/event-query-absence/evidence.tar",
+      "bytes": 8632320,
+      "sha256": "31e1b41b059fda4148f13a57fd5461b9db88f75c8bbef7e43b5ab49994e8fe29"
+    },
+    "capture_sha256": "31e1b41b059fda4148f13a57fd5461b9db88f75c8bbef7e43b5ab49994e8fe29",
+    "verified_capture_files": 74,
+    "verified_source_files": 1051,
+    "owned_network_removed": true,
+    "prior_container_records_preserved": 526,
+    "unrelated_running": 8,
+    "free_bytes": 18755985408,
+    "cleanup_debt": false,
+    "terminal": "Runner0; PG restart wrapper137 after bounded10s stop, both stopped/PID0/noOOM. Three workload PG crashes/restarts executed; no graceful final PG shutdown claim."
+  },
+  "limitations": [
+    "No authenticated private HTTP route, action-specific suspend-aware delivery window or restrictive drain qualification.",
+    "No public typed missing/unavailable API, pagination, scan-byte admission or common64MiB read profile qualification.",
+    "No global archive integrity/absence certificate; unknown or omitted streams in this private caller-declared selection exclude records, while admitted public consumers must certify topology completeness.",
+    "No mixed/aged-load or throughput/capacity measurement; elapsed values are tiny isolated fixture observations.",
+    "No broad native query mutant execution is claimed; observed parent RED and physical/backend negative controls have their exact scopes.",
+    "No hosted Actions, native Linuxarm64, packaging/release or complete product qualification."
+  ]
+}

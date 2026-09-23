@@ -239,10 +239,14 @@ Each logical lookup requires exactly one reference. Conflicting alternatives
 refuse even when both full facts individually verify. Full hydration still
 selects by source identity without filtering by digest, so a conflicting source
 duplicate is not hidden. Shared payload scope/envelope never selects the scope's
-signature or becomes public attribution. The private response includes both
+signature or becomes public attribution. A present response includes both
 references; the parent checks their source membership, exact snapshot and event
-signature again, retaining its data grant and actual local custody until the
-decoded body drops. Existing exact-reference requests remain supported.
+signature again. The [completed-selection wire](../specification/read-view-contract.md#exact-private-historical-selection)
+also represents scoped absence after a successful transaction with no matching
+eligibility. Both outcomes bind every selection field and retain their data grant
+and owned local custody until the last consumer drops. Eligibility without its
+required payload is inconsistent, not absence. Existing exact-reference requests
+remain supported; they still refuse a missing named fact.
 
 This lookup has bounded request/result size, native memory, scratch space,
 deadline and supervised cancellation. `LIMIT 2` does not bound scanned bytes.
