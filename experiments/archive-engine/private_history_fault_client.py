@@ -14,7 +14,7 @@ def emit(event, **fields):
 
 
 def main(mode, port, policy_revision):
-    assert mode in ('deadline', 'disconnect', 'signal')
+    assert mode in ('deadline', 'disconnect', 'signal', 'capture-pass', 'manager-loss')
     assert 0 < port < 65536 and policy_revision > 0
     original = http.CONFIG
     needle = '[postgres.catalog]\nendpoint="127.0.0.1:5432"'
@@ -47,6 +47,9 @@ def main(mode, port, policy_revision):
                 observed['status'] = response.status
                 data = response.read(16385)
                 assert len(data) <= 16384
+                if mode == 'capture-pass':
+                    assert response.status == 200 and json.loads(data)['items'] == [EVENT]
+                    observed['signed_event_verified'] = True
                 return {**observed, 'bytes':len(data)}
             except http.http.client.IncompleteRead as error:
                 return {**observed, 'closed':type(error).__name__, 'partial_bytes':len(error.partial)}
@@ -63,8 +66,16 @@ def main(mode, port, policy_revision):
             peer.shutdown(socket.SHUT_RDWR)
             peer.close()
         response = future.result(timeout=10)
-        assert response.get('status') != 200, response
-        if mode == 'signal':
+        if mode == 'capture-pass':
+            assert response.get('status') == 200 and response.get('signed_event_verified') is True, response
+        else:
+            assert response.get('status') != 200, response
+        if mode == 'manager-loss':
+            code = server.process.wait(timeout=10)
+            assert code == 4, (code, server.error.read_text())
+            assert 'history catalog rollback unresolved' in server.error.read_text()
+            assert time.monotonic() - request_started < 3
+        elif mode == 'signal':
             code = server.process.wait(timeout=15)
             assert code == 0, (code, server.error.read_text())
             assert json.loads(server.output.read_text().splitlines()[-1])['release'] == 'committed'

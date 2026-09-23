@@ -111,7 +111,7 @@ class Proxy:
                            guard_rejections=0, serialization_rejections=0, rejection_sequence=[])
         self.report.update(auth_finals_omitted=0, frontend_queries=0, coordinator_inserts=0)
         self.report.update(pin_claim_injections=0, pin_rejections=[])
-        self.report.update(session_mutations_complete=0)
+        self.report.update(session_mutations_complete=0, reader_queries=0, capture_verify_requests=0)
 
     def emit(self, event, **extra):
         print(json.dumps(dict(event=event, mode=self.mode, target=self.target, **self.report, **extra)), flush=True)
@@ -169,7 +169,7 @@ class Proxy:
         upstream_writer.write(header + startup)
         await upstream_writer.drain()
         state = dict(data=False, commit=False, backend_pid=None,
-                     owner_statement=None, owner_waiting=False, owner_forwarded=False)
+                     owner_statement=None, owner_waiting=False, owner_forwarded=False, capture_statements=set())
         session_commands = SessionCommandObserver(self.target) if self.target in (
             'control-session-issue', 'control-session-revoke') else None
         manager_committed = asyncio.Event()
@@ -206,11 +206,30 @@ class Proxy:
                     # The actual native reader exists only after full manager
                     # inspection. Hold its first authenticated query so the lab
                     # can acquire a real relation lock without racing inspection.
-                    if self.mode == 'hold-capture-rollback' and receipt_reader:
+                    if self.mode in ('hold-capture-rollback', 'hold-capture-verify') and receipt_reader:
                         assert state['backend_pid'] is not None and database == b'bbpub_normal'
                         self.reader_database = database
+                        self.report['reader_queries'] += 1
                     if self.mode == 'hold-reader-query' and receipt_reader:
                         if not await self.hold('reader-query', state['backend_pid']):
+                            return
+                if frontend and self.mode == 'hold-capture-verify' and capture_manager:
+                    # PostgreSQL16 extended protocol: associate Parse with Bind,
+                    # including a prepared statement reused after native work.
+                    # Hold only the post-native check, never pin admission checks.
+                    if tag == b'P':
+                        statement, query, _ = body.split(b'\0', 2)
+                        state['capture_statements'].discard(statement)
+                        if query.startswith(b'SELECT NOT enabled AND (SELECT max(snapshot_id) FROM public.ducklake_snapshot)='):
+                            assert len(statement) <= 64
+                            state['capture_statements'].add(statement)
+                        assert len(state['capture_statements']) <= 8
+                    elif tag == b'C' and body[:1] == b'S':
+                        state['capture_statements'].discard(body[1:-1])
+                    elif (tag == b'B' and database == self.reader_database == b'bbpub_normal'
+                          and body.split(b'\0', 2)[1] in state['capture_statements']):
+                        self.report['capture_verify_requests'] += 1
+                        if not await self.hold('capture-verify', state['backend_pid']):
                             return
                 if frontend and tag == b'P' and self.target in CONTROL_TARGETS:
                     # tokio-postgres prepares the fixed INSERT using extended
@@ -417,7 +436,7 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'hold-capture-rollback', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose', 'omit-recovery-claim-release'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'hold-capture-rollback', 'hold-capture-verify', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose', 'omit-recovery-claim-release'], required=True)
     parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', *CONTROL_TARGETS], default='publication')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')

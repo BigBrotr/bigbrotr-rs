@@ -19,14 +19,12 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Last observed main/HEAD `32dd58d5b587e8e6d59ec258ad5889eb3dc3a61c`,
-tree `4b539bbe3d6f3a65e01baabddb7880d873528385`; origin/main
-`7964e6109c09c78ae3f7f1fecfe402b97c0cc502`, ahead two unpublished commits.
-Remote private/name verified with gh. Exact source was clean at Git transfer.
-Root owns the pending three history evidence reports, research negative-control
-patch, history user-doc link, inventory and this checkpoint. No product edits
-after32dd58d, no migrations/dependency changes, merge/rebase or other writer.
-Next commit records evidence; push only main, never a research branch.
+Last observed main/HEAD and origin/main
+`daead51d53aac5e9e6e41a32cfad3907fd6a1465`, clean after the evidence push.
+Remote private/name verified with gh. Root now owns only the post-native capture
+fixture/proxy/client changes and this checkpoint. No product/migration/dependency
+changes, merge/rebase or other writer.32dd58d remains the latest tested product
+source; the next exact candidate adds practical cases, currently NOT_RUN.
 
 4d81357 integrates model/protocol read modules, initial schemas/OpenAPI and docs,
 management history transport/delivery, serve history/native supervision, nonrenewable
@@ -100,10 +98,17 @@ cannot extend a bound action/pin window. Pin release follows positive native
 join and actual HTTP terminal; unknown outcomes retain obligations/fail stop.
 CatalogCapture is verified after native work before sending the body.
 
-Next bounded action: finish evidence/doc commit and push verified main; then
-qualify actual CatalogManager loss before history delivery, followed by remaining
-blocked-body/short-lifetime schedules. Continue standalone export/restart after
-these checks. No experiment is active and no owned cleanup remains.
+Next bounded action: run the new paired post-native capture cases on an isolated
+exact-Git Tux candidate. Hold only the final verification Bind, independently
+observe actual manager transaction, child absence and retained pin/claim, then
+release for signed200 or terminate that exact CatalogManager backend and require
+no200/fail-stop with honest retained Control state. Source:
+experiments/archive-engine/private_history_capture_cases.py; launch/transfer
+scripts under `.research/implementation/history-capture/`. Static AI review caught
+a truncated200 positive false PASS; complete event comparison now has an explicit
+success marker that exception paths cannot set. Practical cases remain NOT_RUN.
+No experiment is active and no owned cleanup remains. Continue blocked-body/
+short-lifetime schedules, then standalone export/restart; no task/M1 closure.
 
 ## Laboratory custody
 
