@@ -19271,5 +19271,121 @@
     "other_caches": "Retained without deletion where this first audit lacked the selected native-ready/evidence-archive profile. Future retirement requires separate identity checks; these are not endorsed as reusable caches.",
     "containers": "Assessed after cache retirement: leave536 historical/current records and every volume unchanged; cache removal supplies sufficient immediate headroom.",
     "capacity": "Free-space observations include possible unrelated concurrent writes; allocated cache bytes are not a universal reclaim estimate."
+  },
+  "implementation_history_body_incomplete_20260923": {
+    "local_root": ".research/implementation/history-body-incomplete",
+    "native": {
+      "source": "050f71ab9cf8018e3c8779a2fd0f536d102dc29f",
+      "tree": "20f5a42be9f50b03640df6e42f46ae575a963346",
+      "owner": "7742c992294d38adeb3f0c16d736262f",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/history-body-050f71a",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "0f47f95c091116bf0f92035081b57bd30bde329b37a7a3fe1faf18e005e54371"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "fc26b32f0a6f89ad6100ab23141080a34919276c6f77b89aa638772bd57db695"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T20:15:30.455119+00:00",
+      "network_id": "8b75f573341a2fe13380f2f84e6e6a3ef34c91693ac511be784dda1444e35dcb",
+      "postgres_id": "0f47f95c091116bf0f92035081b57bd30bde329b37a7a3fe1faf18e005e54371",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "fc26b32f0a6f89ad6100ab23141080a34919276c6f77b89aa638772bd57db695",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "report": "docs/implementation/evidence/p06-history-body-fixture-incomplete-20260923.json",
+      "capture_sha256": "04351fe3dfe35db8b3e21e239f0d77f44516352d53bcdcde933869eef5e10ddd"
+    },
+    "observation": "Stopped retained; actual TCP body blockage observed, fixture SQL syntax error interrupted the first case. No body-delivery/expiry PASS.31capture/1072source/fiveELF/fiveassets verified;536 prior records preserved/eight unrelated running. Native-ready cache complete; original PG state retained without recovery or terminal durable-row assertion.",
+    "cache_retirement": {
+      "format": "bigbrotr-owned-cache-retirement/1",
+      "status": "PASS",
+      "started_at": "2026-09-23T20:29:09.127412+00:00",
+      "free_before": 200250556416,
+      "audit_sha256": "e0302fba65d54de98c50fb4729e143ded56fb154909de9fc7237bf269b0cde6d",
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/history-body-050f71a/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/history-body-050f71a/out/build/cargo-home"
+      ],
+      "completed": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/history-body-050f71a",
+          "owner": "7742c992294d38adeb3f0c16d736262f",
+          "source": "050f71ab9cf8018e3c8779a2fd0f536d102dc29f",
+          "capture_sha256": "04351fe3dfe35db8b3e21e239f0d77f44516352d53bcdcde933869eef5e10ddd",
+          "source_files": 1072,
+          "retained_artifact_count": 15,
+          "cache_bytes_observed": 3306512384
+        }
+      ],
+      "preserved": [
+        "private-history-32dd58d",
+        "history-capture-b5c862a",
+        "history-body-86443be",
+        "installed-publication-61271e2"
+      ],
+      "skipped": [],
+      "container_action": "No historical container or volume removed; cache-only retirement of the concluded failed fixture",
+      "free_after": 203556085760,
+      "containers_preserved": 540,
+      "unrelated_running": 8,
+      "finished_at": "2026-09-23T20:29:10.359286+00:00",
+      "evidence": {
+        "cache-audit.py": "936b880f9198a760c86951107da44d25578410c5c5bf766768f0a8fcae5528e2",
+        "cache-retire.py": "a00ebebaa1bbc04def05439c09f938c46423938244263b5d2dede0bea15a6080",
+        "candidates.json": "caf05cefd9922364c213e1dd99033722c9e67abb191935bf2a8acb06d9191c62",
+        "audit.json": "e0302fba65d54de98c50fb4729e143ded56fb154909de9fc7237bf269b0cde6d",
+        "process-observation.json": "daf640593f1a4a43a3de07f3583f786a9e067ea405021fba2e75c63fcd42b3c1",
+        "retirement.json": "57abd330d6e534fcebae5b6b811ba203eefccac6af08a8b39f9c50af59ff821e"
+      },
+      "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/history-body-050f71a",
+      "scope": "Only target/cargo-home retired after the corrected run; sources, original evidence, copied artifacts and original PG/scientific state preserved. No container/volume deletion; this build cache is now partial and not reusable."
+    }
+  },
+  "implementation_history_body_native_20260923": {
+    "local_root": ".research/implementation/history-body",
+    "native": {
+      "source": "86443beecea8720538c32d413f6557de6cc22fe1",
+      "tree": "0c97f77f7a43b179df25d0f83c639d7530fe10e7",
+      "owner": "f61ac9d8311ca2e3bdfd09d2a67a16fa",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "1a033fbe3cdc8847eea0bd6ccd699722907aaa1f2fbdfc141a25d6eb7f4a2d63"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "3338baf6985624852b84b57094b8ffebedeb89fb7076756cd5af041396b0d0b8"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T20:21:04.126814+00:00",
+      "network_id": "b2088f40c33956bd011e5ec2de38552ab9ee5ee3a9e4c17d2686d9c9cbc96697",
+      "postgres_id": "1a033fbe3cdc8847eea0bd6ccd699722907aaa1f2fbdfc141a25d6eb7f4a2d63",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "3338baf6985624852b84b57094b8ffebedeb89fb7076756cd5af041396b0d0b8",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "report": "docs/implementation/evidence/p06-history-body-native-20260923.json",
+      "capture_sha256": "104bcb822857d793b0f10d88da14274a703065c37b96326c7c7ad60e1cc37457"
+    },
+    "observation": "Three paired actual blocked HTTP body cases PASS. Full signed95195bytes vs action10720bytes/pin9720bytes, all about3.2s. Actual Control renewal with unchanged pin. SQL release assertions, both databases backend0, all8Parquet unchanged.35capture/1072source/fiveELF/fiveassets verified. Stopped/PID0/noOOM runner0/PGwrapper137, network removed,538 prior records/eight unrelated running preserved. Host tcp_wmem unchanged. Complete cache retained; no cleanup debt."
   }
 }

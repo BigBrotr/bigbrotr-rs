@@ -1,0 +1,119 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T01/T02 blocked history body fixture",
+  "date": "2026-09-23",
+  "status": "INCOMPLETE",
+  "source": {
+    "revision": "050f71ab9cf8018e3c8779a2fd0f536d102dc29f",
+    "tree": "20f5a42be9f50b03640df6e42f46ae575a963346"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner": "2CPU/6GiB/512PIDs",
+    "postgres": "2CPU/1GiB/128PIDs"
+  },
+  "checks": "12native/38binary/25configuration/3grant/2codec/16policy/12process and scoped Clippy PASS",
+  "failure": "Extra closing parenthesis in the new fixture leases() SELECT; actual PostgreSQL syntax error before authority_before. Independently identified by AI and corrected on Mac in86443be; original run source/output preserved.",
+  "observations": [
+    {
+      "case": "history-blocked-body-pass",
+      "status": "INCOMPLETE",
+      "headers": {
+        "event": "headers",
+        "parent_pid": 19040,
+        "client_port": 36156,
+        "started_ns": 3577069245590733,
+        "header_ms": 659.661,
+        "content_length": 95195,
+        "receive_buffer": 4096,
+        "mss": 500,
+        "initial_body_bytes": 1
+      },
+      "blocked": [
+        {
+          "pid": 19040,
+          "state": "S",
+          "start_ticks": 357706920,
+          "children": [],
+          "sockets": [
+            {
+              "state": "01",
+              "tx": 8000,
+              "rx": 0,
+              "inode": "159819859",
+              "owned": true
+            }
+          ]
+        },
+        {
+          "pid": 19040,
+          "state": "S",
+          "start_ticks": 357706920,
+          "children": [],
+          "sockets": [
+            {
+              "state": "01",
+              "tx": 7952,
+              "rx": 0,
+              "inode": "159819859",
+              "owned": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "capture": {
+    "local_root": ".research/implementation/history-body-incomplete/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/history-body-050f71a",
+    "sha256": "04351fe3dfe35db8b3e21e239f0d77f44516352d53bcdcde933869eef5e10ddd",
+    "verified": {
+      "capture_files": 31,
+      "source_files": 1072,
+      "elfs": 5,
+      "dependencies": 5,
+      "capture_sha": "04351fe3dfe35db8b3e21e239f0d77f44516352d53bcdcde933869eef5e10ddd",
+      "preexisting": 536,
+      "unrelated": 8,
+      "free_bytes": 203962335232
+    }
+  },
+  "artifacts": {
+    "control": "a09d83f4487187cb7815359272fdf60b0800dff1559bf4923810990105581565",
+    "worker": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6",
+    "event_reader": "49b2ecaf2f30e98d6b2fc3d9a92afd3ff689cdbcd08ba02b091a33acd6bb4b3c",
+    "publisher": "ee8bde4de108e2836d85c053570aba74f77e22e1d99c109b74f1d2f26d91935e",
+    "reader": "5585760ef9a6d61e8d86c51396f863e86c1c9477e9f80167d1fc480fe886eed7"
+  },
+  "cleanup": {
+    "owner": "7742c992294d38adeb3f0c16d736262f",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "0f47f95c091116bf0f92035081b57bd30bde329b37a7a3fe1faf18e005e54371"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "fc26b32f0a6f89ad6100ab23141080a34919276c6f77b89aa638772bd57db695"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "runner_exit": 143,
+    "postgres_wrapper_exit": 137,
+    "preexisting_preserved": true,
+    "preexisting_count": 536,
+    "unrelated_running": 8,
+    "host_tcp_wmem_preserved": true,
+    "errors": []
+  },
+  "limitations": [
+    "No complete HTTP body or short action/pin case qualified in this attempt",
+    "Terminal durable pin/Control state was not queried after the fixture failed; original PG state retained, no recovery or graceful release claim",
+    "No task/M1/release/arm64 completion"
+  ]
+}

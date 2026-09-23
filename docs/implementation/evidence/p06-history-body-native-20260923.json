@@ -1,0 +1,405 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T01/T02 actual blocked history delivery",
+  "date": "2026-09-23",
+  "status": "PASS-scoped",
+  "source": {
+    "revision": "86443beecea8720538c32d413f6557de6cc22fe1",
+    "tree": "0c97f77f7a43b179df25d0f83c639d7530fe10e7"
+  },
+  "product_equivalence": "Product source unchanged from32dd58d. Native large fixture accepts captured-cut mode; three new paired client/host cases. Original050f71a SQL fixture failure preserved separately.",
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner": "2CPU/6GiB/512PIDs",
+    "postgres": "2CPU/1GiB/128PIDs",
+    "tcp_wmem": "4096\t8192\t16384",
+    "network": "Isolated owned PG network namespace shared by runner; no host ports. Host tcp_wmem unchanged.",
+    "http_receive_bytes": 4096,
+    "http_mss_bytes": 500,
+    "heartbeat": "500ms fixture configuration; actual renewal independently observed"
+  },
+  "checks": "12native/38binary/25configuration/3grant/2codec/16policy/12process and scoped Clippy PASS",
+  "workload": {
+    "recipe": "tests/fixtures/protocol/archive-event-response.json",
+    "signed_event_bytes": 94577,
+    "signed_event_sha256": "5f880ef37e4bdafb8dd37c42a796afa5c4db1a2f9a5363b625c3bbaba2b78727",
+    "response_bytes": 95195,
+    "source_bounds": [
+      {
+        "shard_id": 0,
+        "owner_epoch": 1,
+        "complete_through": 10
+      }
+    ],
+    "snapshot": 3,
+    "frontier_revision": 1,
+    "parquet_files": 8
+  },
+  "cases": [
+    {
+      "case": "history-blocked-body-pass",
+      "status": "PASS",
+      "headers": {
+        "event": "headers",
+        "parent_pid": 19040,
+        "client_port": 48364,
+        "started_ns": 3577399458123678,
+        "header_ms": 534.765,
+        "content_length": 95195,
+        "receive_buffer": 4096,
+        "mss": 500,
+        "initial_body_bytes": 1
+      },
+      "blocked": [
+        {
+          "pid": 19040,
+          "state": "S",
+          "start_ticks": 357739941,
+          "children": [],
+          "sockets": [
+            {
+              "state": "01",
+              "tx": 8000,
+              "rx": 0,
+              "inode": "159824486",
+              "owned": true
+            }
+          ]
+        },
+        {
+          "pid": 19040,
+          "state": "S",
+          "start_ticks": 357739941,
+          "children": [],
+          "sockets": [
+            {
+              "state": "01",
+              "tx": 7952,
+              "rx": 0,
+              "inode": "159824486",
+              "owned": true
+            }
+          ]
+        }
+      ],
+      "authority_before": {
+        "now_us": 1790195146447246,
+        "owner": {
+          "epoch": 3,
+          "expires": 1790195206298380
+        },
+        "pins": [
+          {
+            "id": "8477d61c07804184ddd532038b375e57",
+            "state": "active",
+            "acquired": 1790195145421733,
+            "expires": 1790195150363279,
+            "released": null,
+            "requested": 4942105
+          }
+        ]
+      },
+      "authority_before_drain": {
+        "now_us": 1790195148425060,
+        "owner": {
+          "epoch": 3,
+          "expires": 1790195208303082
+        },
+        "pins": [
+          {
+            "id": "8477d61c07804184ddd532038b375e57",
+            "state": "active",
+            "acquired": 1790195145421733,
+            "expires": 1790195150363279,
+            "released": null,
+            "requested": 4942105
+          }
+        ]
+      },
+      "healthy": {
+        "event": "healthy",
+        "body_bytes": 95195,
+        "content_length": 95195,
+        "complete": true,
+        "signed_event_verified": true,
+        "request_ms": 3194.215,
+        "drain_started_ms": 3193.729,
+        "drain_ms": 0.486
+      },
+      "terminal": {
+        "event": "terminal",
+        "parent_exit": 0,
+        "scratch_entries": 0
+      },
+      "files_unchanged": true
+    },
+    {
+      "case": "history-blocked-body-action",
+      "status": "PASS",
+      "headers": {
+        "event": "headers",
+        "parent_pid": 19158,
+        "client_port": 44932,
+        "started_ns": 3577403140240060,
+        "header_ms": 544.572,
+        "content_length": 95195,
+        "receive_buffer": 4096,
+        "mss": 500,
+        "initial_body_bytes": 1
+      },
+      "blocked": [
+        {
+          "pid": 19158,
+          "state": "S",
+          "start_ticks": 357740309,
+          "children": [],
+          "sockets": [
+            {
+              "state": "01",
+              "tx": 9000,
+              "rx": 0,
+              "inode": "159830672",
+              "owned": true
+            }
+          ]
+        },
+        {
+          "pid": 19158,
+          "state": "S",
+          "start_ticks": 357740309,
+          "children": [],
+          "sockets": [
+            {
+              "state": "01",
+              "tx": 8952,
+              "rx": 0,
+              "inode": "159830672",
+              "owned": true
+            }
+          ]
+        }
+      ],
+      "authority_before": {
+        "now_us": 1790195150106481,
+        "owner": {
+          "epoch": 4,
+          "expires": 1790195209982704
+        },
+        "pins": [
+          {
+            "id": "5d7079c175175b4f8fda59f8a11d0ed5",
+            "state": "active",
+            "acquired": 1790195149102290,
+            "expires": 1790195154043749,
+            "released": null,
+            "requested": 4942015
+          }
+        ]
+      },
+      "authority_before_drain": {
+        "now_us": 1790195152079855,
+        "owner": {
+          "epoch": 4,
+          "expires": 1790195211986589
+        },
+        "pins": [
+          {
+            "id": "5d7079c175175b4f8fda59f8a11d0ed5",
+            "state": "active",
+            "acquired": 1790195149102290,
+            "expires": 1790195154043749,
+            "released": null,
+            "requested": 4942015
+          }
+        ]
+      },
+      "healthy": {
+        "event": "healthy",
+        "body_bytes": 10720,
+        "content_length": 95195,
+        "complete": false,
+        "signed_event_verified": false,
+        "request_ms": 3170.887,
+        "drain_started_ms": 3170.733,
+        "drain_ms": 0.153
+      },
+      "terminal": {
+        "event": "terminal",
+        "parent_exit": 0,
+        "scratch_entries": 0
+      },
+      "files_unchanged": true
+    },
+    {
+      "case": "history-blocked-body-pin",
+      "status": "PASS",
+      "headers": {
+        "event": "headers",
+        "parent_pid": 19276,
+        "client_port": 44964,
+        "started_ns": 3577406955004735,
+        "header_ms": 534.428,
+        "content_length": 95195,
+        "receive_buffer": 4096,
+        "mss": 500,
+        "initial_body_bytes": 1
+      },
+      "blocked": [
+        {
+          "pid": 19276,
+          "state": "S",
+          "start_ticks": 357740690,
+          "children": [],
+          "sockets": [
+            {
+              "state": "01",
+              "tx": 8000,
+              "rx": 0,
+              "inode": "159840293",
+              "owned": true
+            }
+          ]
+        },
+        {
+          "pid": 19276,
+          "state": "S",
+          "start_ticks": 357740690,
+          "children": [],
+          "sockets": [
+            {
+              "state": "01",
+              "tx": 7952,
+              "rx": 0,
+              "inode": "159840293",
+              "owned": true
+            }
+          ]
+        }
+      ],
+      "authority_before": {
+        "now_us": 1790195153960114,
+        "owner": {
+          "epoch": 5,
+          "expires": 1790195213795583
+        },
+        "pins": [
+          {
+            "id": "2e2ef99d53d6d2c5709ac0779ac66128",
+            "state": "active",
+            "acquired": 1790195152917989,
+            "expires": 1790195154917450,
+            "released": null,
+            "requested": 4942042
+          }
+        ]
+      },
+      "authority_before_drain": {
+        "now_us": 1790195155911554,
+        "owner": {
+          "epoch": 5,
+          "expires": 1790195215800776
+        },
+        "pins": [
+          {
+            "id": "2e2ef99d53d6d2c5709ac0779ac66128",
+            "state": "active",
+            "acquired": 1790195152917989,
+            "expires": 1790195154917450,
+            "released": null,
+            "requested": 4942042
+          }
+        ]
+      },
+      "healthy": {
+        "event": "healthy",
+        "body_bytes": 9720,
+        "content_length": 95195,
+        "complete": false,
+        "signed_event_verified": false,
+        "request_ms": 3197.761,
+        "drain_started_ms": 3197.661,
+        "drain_ms": 0.1
+      },
+      "terminal": {
+        "event": "terminal",
+        "parent_exit": 0,
+        "scratch_entries": 0
+      },
+      "files_unchanged": true
+    }
+  ],
+  "durable_assertions": "Host queries actually asserted pins1/claims1/Control1 while blocked, including before draining; then pins0/claims0/Control1 after actual socket EOF and healthy HTTP, then all0 after graceful Control stop. Raw counts were asserted in source, not copied into the case JSON. Pin row identities/times and Control expiries are retained above.",
+  "terminal_backends": {
+    "bbpub_large": 0,
+    "bbpub_control_large": 0
+  },
+  "files": {
+    "signed_large/kind=7/main/archive_commits/prepared-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/data.parquet": "22cb07393051ce65f46a2b89a5aec809cc0f3ddaa5f5f2bad7e7504789d049c6",
+    "signed_large/kind=7/main/archive_commits/prepared-efefefefefefefefefefefefefefefef/data.parquet": "7c6fc15cf54e25f48ba54452becc9c5ecdf166f1403b246a82f38a5a7721b1ae",
+    "signed_large/kind=7/main/dictionaries/prepared-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/data.parquet": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076",
+    "signed_large/kind=7/main/dictionaries/prepared-efefefefefefefefefefefefefefefef/data.parquet": "1567c90e9e3f61f76be8dc084c578df228394a0053e9c6896899d56fb3524632",
+    "signed_large/kind=7/main/event_eligibility_facts/prepared-efefefefefefefefefefefefefefefef/data.parquet": "b70130584cc8294650bbd552cfc79740f826fa4f2eec28e6bb9c5c4383a3be60",
+    "signed_large/kind=7/main/event_receive_facts/prepared-efefefefefefefefefefefefefefefef/data.parquet": "df59be80839f321a1afacf979a2ba398796db08dfe940c708db789fbe311e08d",
+    "signed_large/kind=7/main/events/prepared-efefefefefefefefefefefefefefefef/data.parquet": "25c234bf34396e98536241e71bc264ec2a700721a40ab410d388b1119eb31005",
+    "signed_large/kind=7/main/provenance_facts/prepared-efefefefefefefefefefefefefefefef/data.parquet": "d38a2f5ad968b0e1da50a2312977b8c2d452b0e1f4d0aae7476cd30e098375f6"
+  },
+  "capture": {
+    "local_root": ".research/implementation/history-body/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be",
+    "sha256": "104bcb822857d793b0f10d88da14274a703065c37b96326c7c7ad60e1cc37457",
+    "verified": {
+      "capture_files": 35,
+      "source_files": 1072,
+      "elfs": 5,
+      "dependencies": 5,
+      "capture_sha": "104bcb822857d793b0f10d88da14274a703065c37b96326c7c7ad60e1cc37457",
+      "preexisting": 538,
+      "unrelated": 8,
+      "free_bytes": 200257482752
+    }
+  },
+  "artifacts": {
+    "control": "bf7f6b2b1a0b3072e8cbb430c5bcc6fb8080c31ef00020f6da7a2ef05ea40f45",
+    "worker": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6",
+    "event_reader": "49b2ecaf2f30e98d6b2fc3d9a92afd3ff689cdbcd08ba02b091a33acd6bb4b3c",
+    "publisher": "ee8bde4de108e2836d85c053570aba74f77e22e1d99c109b74f1d2f26d91935e",
+    "reader": "5585760ef9a6d61e8d86c51396f863e86c1c9477e9f80167d1fc480fe886eed7"
+  },
+  "cleanup": {
+    "owner": "f61ac9d8311ca2e3bdfd09d2a67a16fa",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "1a033fbe3cdc8847eea0bd6ccd699722907aaa1f2fbdfc141a25d6eb7f4a2d63"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "3338baf6985624852b84b57094b8ffebedeb89fb7076756cd5af041396b0d0b8"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "runner_exit": 0,
+    "postgres_wrapper_exit": 137,
+    "preexisting_preserved": true,
+    "preexisting_count": 538,
+    "unrelated_running": 8,
+    "host_tcp_wmem_preserved": true,
+    "errors": []
+  },
+  "interpretation": "All three cases first receive200 headers and one body byte, then independently observe an owned established socket with pending bytes and no native children. Same3s host drain schedule: positive receives complete signed event;2s action stops with live native pin;2s actual pin stops with5s action and requested pin>3s. Control expiry advances by>2s without changing the pin. Both incomplete responses terminate before4s, separating them from the ordinary5s HTTP ceiling. Already queued bytes may arrive after expiry; no recall is claimed. Pin expiry alone does not authorize retention release.",
+  "review": "Root and read-only AI inspected the fixtures. AI found the extra SQL parenthesis; original native failure preserved and corrected here. AI independently verified35capture files and1072 Git-source hashes and both capture outcomes; no discrepancy. No product tests or SSH by reviewer. Negative cases assert partial length, not a byte-exact response prefix.",
+  "exclusions": [
+    "No throughput/RSS/aged mixed load, arbitrary slow-network support or public listener qualification",
+    "No CatalogManager loss during delivery, live restrictive rollout, interrupted Control COMMIT or action-gate mutation negative run",
+    "No full query registry, standalone export/restart, M1/task/release or Linux arm64 completion"
+  ],
+  "dependency_evidence": [
+    "https://docs.kernel.org/networking/ip-sysctl.html",
+    "https://docs.docker.com/engine/containers/run/"
+  ]
+}

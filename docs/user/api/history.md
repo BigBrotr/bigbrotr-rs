@@ -9,7 +9,9 @@ The [OpenAPI profile](../../../contracts/read/v1/openapi.yaml) describes this su
 records the tiny signed workload, actual limits, restart and cancellation evidence;
 [Post-native catalog loss](../../implementation/evidence/p06-history-capture-native-20260923.json)
 also verifies refusal before delivery after the actual manager backend is lost.
-These cases do not close the remaining guarantees listed below.
+[Blocked response delivery](../../implementation/evidence/p06-history-body-native-20260923.json)
+compares complete signed delivery with interrupted bodies after action/pin expiry,
+while Control renews. These cases do not close the remaining guarantees listed below.
 
 Use a live local browser session and its explicit `X-CSRF-Token`. POST also needs
 the exact same-origin `Origin` and JSON content type. Grant `history.read` for the

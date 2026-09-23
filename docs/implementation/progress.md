@@ -11,21 +11,22 @@ private bigbrotr-rs, unpublished Cargo packages and the read-only Go neighbor.
 Mac owns edits/Git; Tux runs trusted exact-Git Linux jobs while hosted Actions
 billing is unavailable. No public release, rename or Linux arm64 qualification.
 
-Active P08-T02 -> P06-T01/T02, consuming P02-T04/T07: session-bound reauthentication,
-scoped grant CAS/audit/consumption, certified native pin and real private
-`/v1/resources/event_history`, then standalone export/restart. Root is sole writer;
+Active P08-T03/T04 prerequisites for standalone export/restart, consuming the
+P08-T02 private authority and P06-T01/T02 real signed history/pinned-reader slices.
+The current bounded history-body qualification is complete, not the full tasks.
+Root is sole writer;
 read-only AI reviewer catalog_guard_review is idle and owns no files/resources.
 No P02/P06/P08 task or M1 milestone is complete; all later selected work remains.
 
 ## Git and review boundary
 
-Last observed main/HEAD and origin/main
-`050f71a` candidate, origin/main `89e73c9` after verified evidence/inventory push. Remote remains private bigbrotr-rs.
-Root now owns the blocked history-body fixtures, small large-mode fixture changes
-and this checkpoint. Product source remains unchanged from32dd58d; no dependency/
-migration changes or other writer. Read-only AI found an extra parenthesis in the new SQL observation; locally corrected,
-original050f71a exact source remains unchanged on Tux. Final static review found no
-second concrete defect; positive drain timing still requires actual measurement.
+Last observed main/HEAD86443beecea8720538c32d413f6557de6cc22fe1, origin/main89e73c9,
+ahead two exact candidates. Root owns body evidence/inventory, history user-doc
+links and this checkpoint. Product source remains unchanged from32dd58d; no dependency/
+migration changes or other writer. AI found one extra parenthesis in fixture SQL;
+actual050f71a reproduced it,86443be corrects it. No second static finding; no tests
+or SSH by reviewer. Current exact candidate native run PASS-scoped; capture review found
+no discrepancy. Both labs stopped, networks removed; no cleanup debt.
 
 4d81357 integrates model/protocol read modules, initial schemas/OpenAPI and docs,
 management history transport/delivery, serve history/native supervision, nonrenewable
@@ -73,8 +74,8 @@ inferred.25capture/1061source/five ELF/five assets verified.
 
 Important remaining gates:
 
-- CatalogManager loss during delivery; blocked full history response with durable
-  pin; shortened native pin/authorization schedules; restrictive rollout.
+- CatalogManager loss during delivery and live restrictive rollout; broader
+  authority/failure schedules beyond the bounded body cases remain open.
 - Interrupted Control renewal/acceptance COMMIT, native success/signal race,
   scope-command ambiguity/reacquisition, distinct old-holder pins, multistream/
   zero bounds, multiple actors/scopes/concurrent CAS and generation exhaustion.
@@ -108,24 +109,57 @@ Both entered with parent alive/no children and pin/claim1/snapshot3/>4s residual
 No manager-loss-during-body or recovery claim.66capture/1069source/fiveELF/five
 assets verified; independent read-only AI found no discrepancy and ran no tests.
 
-Next bounded action: qualify the paired blocked history-body cases on an exact-Git
-Tux candidate. Existing independent signed large event, bounded tcp_wmem only in
-the owned network namespace, observed parent socket queue/child absence and SQL
-pin/claim. Paired complete delivery versus2s action and fixture-shortened2s actual
-pin; same3s drain schedule discriminates the ordinary5s HTTP timeout. A500ms
-heartbeat must produce observed Control renewals without extending either bound.
-Sources experiments/archive-engine/private_history_body_{client,cases}.py;
-local launch/transfer under .research/implementation/history-body/. Native build RUNNING
-at050f71ab9cf8018e3c8779a2fd0f536d102dc29f/tree20f5a42b. Own root
-/home/tux/bigbrotr-implementation-20260917/runs/history-body-050f71a,
-owner7742c992294d38adeb3f0c16d736262f, label org.bigbrotr.archive-visibility.
-PG0f47f95c091116bf0f92035081b57bd30bde329b37a7a3fe1faf18e005e54371;
-runnerfc26b32f0a6f89ad6100ab23141080a34919276c6f77b89aa638772bd57db695;
-network8b75f573341a2fe13380f2f84e6e6a3ef34c91693ac511be784dda1444e35dcb.
-Fresh stopped32ddcache copy; installed-publication61271 assetsRO. Orchestrator owns
-cleanup; no active maintenance. Follow original outcome/capture, then exact corrected
-candidate. Cases not yet executed, known fixture SQL issue must not be called PASS.
-Then standalone export/restart; no task/M1 closure.
+[Blocked signed body qualification](evidence/p06-history-body-native-20260923.json)
+at86443beecea8720538c32d413f6557de6cc22fe1/tree0c97f77f passes three cases with
+actual large signed fixture, restricted TCP namespace and observed owned socket
+queues/no native children. Positive95,195bytes exact EVENT; action10720bytes and
+pin9720bytes partial, request3194.215/3170.887/3197.761ms. Control renewal advances
+expiry by>2s while the identical native pin remains retained through the3s wait.
+The action case still has a live pin; pin case has a1.999461s actual lifetime,
+requested>4.9s and5s action. Both incomplete responses end before4s, not the
+ordinary5s HTTP ceiling. Negative bytes are length-checked, not exact-prefix checked.
+Host SQL actually asserts pin/claim1 during blockage, then0 after socket EOF and
+healthy Control; final Control0/both databases backend0/eightParquet unchanged.
+35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
+and exact source with no discrepancy. No product tests/SSH by reviewer.
+
+Next bounded action: review/commit/push body evidence and inventory; then implement
+the first P08-T03/T04 private export job acceptance and actual standalone export.
+Reuse control.jobs, its immutable complete bounds and native snapshot pins;
+export needs its separate grant and approved destination. Existing history.read
+or initial administrator permissions do not authorize it. Persist idempotent job,
+source cut/pins and command before replying; retained paused/cancelled obligations
+must survive restart. Read full owning files/callers before edits. The relevant
+contracts are08-operations.md P08-T03/T04, operations-contract.md durable boundary,
+identity-and-encoding.md export closure, import-formats.md and exporter section of
+derived-read-publication.md. No export implementation or task/M1 closure yet.
+
+Stopped root /home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be,
+ownerf61ac9d8311ca2e3bdfd09d2a67a16fa, label org.bigbrotr.archive-visibility;
+PG1a033fbe3cdc8847eea0bd6ccd699722907aaa1f2fbdfc141a25d6eb7f4a2d63;
+runner3338baf6985624852b84b57094b8ffebedeb89fb7076756cd5af041396b0d0b8.
+PID0/noOOM runner0/PGwrapper137, owned network removed.538 prior records unchanged,
+eight unrelated running, hosttcp_wmem unchanged. CaptureSHA
+104bcb822857d793b0f10d88da14274a703065c37b96326c7c7ad60e1cc37457;
+local .research/implementation/history-body/. Complete cache retained; no active
+lab or maintenance, no cleanup debt. Initial free203,927,158,784bytes, terminal
+200,257,482,752bytes; later cache retirement below supersedes capacity only.
+
+[Original body fixture](evidence/p06-history-body-fixture-incomplete-20260923.json)
+at050f71a is INCOMPLETE after real PG rejects extra parenthesis in observation SQL.
+Native checks PASS; first response95,195bytes, actual owned socket queue8,000/7,952
+bytes across two observations, parentalive/nochildren; no complete delivery case.
+Stopped root history-body-050f71a/owner7742c992294d38adeb3f0c16d736262f,
+runnerfc26b32f/PG0f47f95c PID0/noOOM, exits143/137, networkremoved.536 prior
+records preserved/eightunrelatedrunning/hosttcp_wmem unchanged.31capture/1072source/
+fiveELF/fiveassets verified; captureSHA04351fe3dfe35db8b3e21e239f0d77f44516352d53bcdcde933869eef5e10ddd.
+Source/data/artifacts retained; target/cargo-home now retired after original
+capture verification and independent process/mount/owner audit. All1072source and
+recorded artifacts/original capture rehashed;540 containers preserved/eight running.
+Free200,250,556,416 ->203,556,085,760bytes (concurrent writes possible). Inventory
+records the exact paths/receipt; this cache is partial and must not be reused.
+Terminal SQL pins/Control not observed, no recovery or graceful release claim.
+Local .research/implementation/history-body-incomplete/.
 
 Owner-requested first cache maintenance is PASS-reconciled in inventory key
 implementation_cache_retirement_20260923.142 explicit out/build/{target,cargo-home}
@@ -138,7 +172,8 @@ Health metadata and did not retain the exact in-memory diff. Independent origina
 terminal capture comparison now passes; three unrelated health records changed,
 current health statuses unchanged. Preserve both original and reconciliation.
 
-Protected complete caches: private-history-32dd58d and history-capture-b5c862a;
+Protected complete caches: private-history-32dd58d, history-capture-b5c862a and
+the new history-body-86443be;
 installed-publication-61271e2 remains intact as the native asset dependency.
 The retired71 caches include b5ff8ab/4738731/a334ac8/c5d76a1/882654e/8e8cfa0/
 932902f/0d95a6a: no reuse as build inputs. Retained source/data/artifacts remain valid.
@@ -157,7 +192,7 @@ retire superseded caches regularly after preserving exact evidence/artifacts.
 
 ## Laboratory custody
 
-Stopped current root `/home/tux/bigbrotr-implementation-20260917/runs/history-capture-b5c862a`,
+Stopped prior root `/home/tux/bigbrotr-implementation-20260917/runs/history-capture-b5c862a`,
 owner ae079c92a38967076654df442fed64b7, label org.bigbrotr.archive-visibility.
 Runner e34c6be7e6526cb730c2dac5c451f427a9055ff297647b4be5d312fa392dd2a9,
 PG e8633a3f58a3d2988fef86abcb058cdf911a2b321ecf9615be9f0bf9ae8a20ff:
