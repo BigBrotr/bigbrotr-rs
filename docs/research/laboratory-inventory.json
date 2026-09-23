@@ -18740,6 +18740,146 @@
       "report": "docs/implementation/evidence/p06-private-history-build-incomplete-20260923.json",
       "capture_sha256": "529308f2abd81f528a5d9a134746039210644ccbf2f456cf8d3eeb6e282c16a3"
     },
-    "observation": "Stopped/retained; all scoped Linux checks PASS but orchestrator expected Mac11 process tests instead of Linux12. Actual HTTP NOT_RUN.25 capture/1061 source/five ELF/five native asset hashes verified.528 prior records unchanged,eight unrelated running; owned network removed, no cleanup debt."
+    "observation": "Stopped/retained; all scoped Linux checks PASS but orchestrator expected Mac11 process tests instead of Linux12. Actual HTTP NOT_RUN.25 capture/1061 source/five ELF/five native asset hashes verified.528 prior records unchanged,eight unrelated running; owned network removed, no cleanup debt.",
+    "cache_retirement": {
+      "status": "PASS",
+      "report": "docs/implementation/evidence/p06-history-build-cache-retirement-20260923.json",
+      "removed": [
+        "out/build/target",
+        "out/build/cargo-home"
+      ],
+      "remaining": "Source, scientific/PG data, installed artifacts and original capture retained; build cache is now partial and must not be reused."
+    }
+  },
+  "implementation_private_history_native_20260923": {
+    "local_root": ".research/implementation/event-history-native",
+    "native": {
+      "source": "32dd58d5b587e8e6d59ec258ad5889eb3dc3a61c",
+      "tree": "4b539bbe3d6f3a65e01baabddb7880d873528385",
+      "owner": "277267784f933351135813602916ca1a",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-history-32dd58d",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "5285a9c4c5bfb97ee9e3b486c05fc8f6c12ec6d0609bccfa5b88c8d1ccc20874"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "f3b5b7b73f4aca8f559a8e75e266b02875fe1a6a4ac5bdbdca1f780de454f381"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T19:14:57.450698+00:00",
+      "network_id": "ee2e0b7cfc0f3f736d9b9df00cc4a0d615412c52d493326d862a6b22ded9151d",
+      "postgres_id": "5285a9c4c5bfb97ee9e3b486c05fc8f6c12ec6d0609bccfa5b88c8d1ccc20874",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "f3b5b7b73f4aca8f559a8e75e266b02875fe1a6a4ac5bdbdca1f780de454f381",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "report": "docs/implementation/evidence/p06-private-history-native-20260923.json",
+      "capture_sha256": "b7dfd3e8d74f24f08892eb65387ff42eb1d79f30da58810869ce30691eb57077"
+    },
+    "observation": "Stopped/retained.18 actual HTTP baseline,2grant faults,1held cleanup/retry and3history faults PASS with independent SQL/child/file checks.60 capture/1064source/five ELF/five native assets verified.530 prior records unchanged,eight unrelated running,owned network removed. Disconnect-causation mutant now discriminates this case in the separate negative report; full reader acceptance remains open."
+  },
+  "implementation_history_disconnect_negative_20260923": {
+    "local_root": ".research/implementation/history-disconnect-negative",
+    "native": {
+      "source": "a334ac8c01030fa5d1fd2b18dc12ad85fc7b12f4",
+      "tree": "847fa9983cf804e38c1bd1ac3bd8726886977a07",
+      "owner": "33c287e40bd71a2c73ae47da7c9d35d2",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/history-disconnect-negative-a334ac8",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "62860755cd6f3fd5e1de544e28d1f42850444bbd5e146df3b1a38ee868989f8d"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "e8a12068b9c69f53a29a8d548e77357ad847d11aec6de5266a0c8f541114add7"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T19:23:36.432323+00:00",
+      "network_id": "4f82765536d5412f6055987c7f18fb83ee478ddce987be2de2499b63be482cd9",
+      "postgres_id": "62860755cd6f3fd5e1de544e28d1f42850444bbd5e146df3b1a38ee868989f8d",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "e8a12068b9c69f53a29a8d548e77357ad847d11aec6de5266a0c8f541114add7",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "EXPECTED_FAIL",
+      "report": "docs/implementation/evidence/p06-history-disconnect-negative-native-20260923.json",
+      "capture_sha256": "3155585329eab9690aa3f5c784b0d2c3ac6bb57fc71f022dd2c3fbfb4349b215"
+    },
+    "observation": "Stopped/retained. One-predicate mutant fails unchanged actual disconnect1s bound after baseline and deadline PASS. Original INCOMPLETE preserved; retained active-state Control1/pin0 after fixture kill, not recovered.58capture/1064source/five ELF/five assets verified.532 prior records unchanged,eight unrelated running,owned network removed. Never merge/push research branch."
+  },
+  "implementation_history_cache_retirement_20260923": {
+    "local_root": ".research/implementation/history-cache-retirement",
+    "result": {
+      "format": "bigbrotr-owned-cache-retirement/1",
+      "status": "PASS",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-history-4d81357",
+      "owner": "2d96bc6ded22fdb9a4e87a219561580a",
+      "source": "4d813579dc514d098327a20190338650b24f2090",
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/private-history-4d81357/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/private-history-4d81357/out/build/cargo-home"
+      ],
+      "free_before": 7671586816,
+      "started_at": "2026-09-23T19:31:27.164403+00:00",
+      "preexisting_preserved": 534,
+      "unrelated_running": 8,
+      "retained_source_files": 1061,
+      "retained_artifacts": {
+        "control": "6beec6dc1992980d89251fd70e117092b541c53dca425da4195b56e5192d7953",
+        "worker": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6",
+        "event_reader": "49b2ecaf2f30e98d6b2fc3d9a92afd3ff689cdbcd08ba02b091a33acd6bb4b3c",
+        "publisher": "1cd82350634760db238478110bdcfaec15b60107ad562ca9076fa454d133f1c5",
+        "reader": "5585760ef9a6d61e8d86c51396f863e86c1c9477e9f80167d1fc480fe886eed7"
+      },
+      "retained_native_assets": {
+        "bigbrotr-archive-worker": {
+          "bytes": 14378424,
+          "sha256": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6"
+        },
+        "extensions/ducklake.duckdb_extension": {
+          "bytes": 36436086,
+          "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+        },
+        "extensions/httpfs.duckdb_extension": {
+          "bytes": 21570542,
+          "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+        },
+        "extensions/postgres_scanner.duckdb_extension": {
+          "bytes": 41696558,
+          "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+        },
+        "lib/duckdb.h": {
+          "bytes": 244057,
+          "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+        },
+        "lib/libduckdb.so": {
+          "bytes": 70529912,
+          "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+        }
+      },
+      "free_after": 10978086912,
+      "interpretation": "Only stopped owned target/cargo-home removed. Source, artifact, data and original evidence remain.4d81357 build root is now partial; never reuse it as a complete cache. Free-space difference is an observation, not attribution excluding unrelated host writes.",
+      "execution": {
+        "script": ".research/implementation/history-cache-retirement/retire.py",
+        "sha256": "381fc930731630af026680420d526a2232db20d6d4d27600ac22424b93b47fc9",
+        "result_sha256": "f84555493a18de7518022f14628a5b73d5018d6d432e2de2738ed8ff17d46e54"
+      }
+    }
   }
 }

@@ -1,0 +1,170 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02 / P06-T01/T02 disconnected native history",
+  "date": "2026-09-23",
+  "status": "EXPECTED_FAIL",
+  "positive": {
+    "revision": "32dd58d5b587e8e6d59ec258ad5889eb3dc3a61c",
+    "report": "p06-private-history-native-20260923.json",
+    "observed_cancellation_ms": 39.056,
+    "observed_request_ms": 1081.638
+  },
+  "source": {
+    "revision": "a334ac8c01030fa5d1fd2b18dc12ad85fc7b12f4",
+    "tree": "847fa9983cf804e38c1bd1ac3bd8726886977a07",
+    "branch": "research/history-no-disconnect",
+    "publication": "Local research branch only; never merge or push",
+    "mutation": {
+      "file": "apps/bigbrotr/src/interfaces/serve/history.rs",
+      "before": "|| !work.abandoned() && action.check().is_ok()",
+      "after": "|| action.check().is_ok()",
+      "patch": "experiments/archive-engine/history-no-disconnect.patch",
+      "sha256": "e278fd11dc3021a971d9fea7e7dc801c1ceac48d3b0b7d01b6fa6f3c525df73c"
+    }
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "checks": {
+    "scoped_linux_tests_and_clippy": "PASS",
+    "unchanged_baseline_http_cases": 18,
+    "grant_faults": 2,
+    "held_catalog_cleanup": "PASS",
+    "history_deadline": "PASS"
+  },
+  "negative": {
+    "case": "http-history-blocked-disconnect",
+    "original_status": "INCOMPLETE",
+    "client_exit": 1,
+    "failed_assertion": "assert time.monotonic() - started < 1",
+    "sql_waiter": {
+      "pid": 1174,
+      "backend_start": "2026-09-23T19:28:52.302977+00:00",
+      "application_name": "bigbrotr-archive-event",
+      "blockers": [
+        1173
+      ]
+    },
+    "native_child": {
+      "pid": 20495,
+      "ppid": 20491,
+      "start_ticks": 357398579
+    },
+    "retained_before_wait": {
+      "active_pins": 1,
+      "proofs": 1,
+      "commands": 3,
+      "active_control": 1
+    },
+    "retained_terminal": {
+      "active_pins": 0,
+      "proofs": 1,
+      "commands": 3,
+      "active_control": 1
+    },
+    "proxy_exit": 0,
+    "proxy_unexpected": 0,
+    "cleanup_errors": [],
+    "history_signal": "NOT_RUN after intentional failure"
+  },
+  "artifacts": {
+    "control": "1e492a4ccf0c8a16dd180aecf0f86f16327c4ec3a3487809f9e252f5332b2449",
+    "worker": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6",
+    "event_reader": "49b2ecaf2f30e98d6b2fc3d9a92afd3ff689cdbcd08ba02b091a33acd6bb4b3c",
+    "publisher": "1cd82350634760db238478110bdcfaec15b60107ad562ca9076fa454d133f1c5",
+    "reader": "5585760ef9a6d61e8d86c51396f863e86c1c9477e9f80167d1fc480fe886eed7"
+  },
+  "native_assets": {
+    "bigbrotr-archive-worker": {
+      "bytes": 14378424,
+      "sha256": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6"
+    },
+    "extensions/ducklake.duckdb_extension": {
+      "bytes": 36436086,
+      "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+    },
+    "extensions/httpfs.duckdb_extension": {
+      "bytes": 21570542,
+      "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+    },
+    "extensions/postgres_scanner.duckdb_extension": {
+      "bytes": 41696558,
+      "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+    },
+    "lib/duckdb.h": {
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "lib/libduckdb.so": {
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "capture": {
+    "local_root": ".research/implementation/history-disconnect-negative/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/history-disconnect-negative-a334ac8",
+    "sha256": "3155585329eab9690aa3f5c784b0d2c3ac6bb57fc71f022dd2c3fbfb4349b215",
+    "verified": {
+      "capture_files": 58,
+      "source_files": 1064,
+      "elfs": 5,
+      "dependencies": 5,
+      "capture_sha": "3155585329eab9690aa3f5c784b0d2c3ac6bb57fc71f022dd2c3fbfb4349b215",
+      "preexisting": 532,
+      "unrelated": 8,
+      "free_bytes": 7677399040
+    }
+  },
+  "cleanup": {
+    "owner": "33c287e40bd71a2c73ae47da7c9d35d2",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "62860755cd6f3fd5e1de544e28d1f42850444bbd5e146df3b1a38ee868989f8d"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "e8a12068b9c69f53a29a8d548e77357ad847d11aec6de5266a0c8f541114add7"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preexisting_count": 532,
+    "preexisting_preserved": true,
+    "unrelated_running": 8,
+    "free_bytes": 7677399040,
+    "terminal_backends": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    }
+  },
+  "interpretation": "The unchanged actual disconnect scenario rejects the one-predicate mutant while32dd58d passes. Compilation/native/unit success alone does not discriminate this cancellation. This executed counterexample supports the observed disconnect-caused cancellation, not every scheduling/load case. Original INCOMPLETE fixture and traceback remain captured; no mutated product PASS is inferred from orchestrator recognition of EXPECTED_FAIL.",
+  "exclusions": [
+    "The failed fixture kills its parent during cleanup and retains one active-state Control row; no clean owner release/recovery claim and no restart of that retained database",
+    "No product patch from this research branch may enter main",
+    "No arbitrary workload/latency, blocked-body, manager-loss, shortened-lifetime, export, release or Linux arm64 qualification"
+  ],
+  "comparability": {
+    "unchanged_auxiliary_artifacts": [
+      "worker",
+      "event_reader",
+      "publisher",
+      "reader"
+    ],
+    "control_artifact_changed": true,
+    "source_difference_files": [
+      "apps/bigbrotr/src/interfaces/serve/history.rs"
+    ],
+    "input_fixtures": "All fixture sources unchanged",
+    "negative_timing": "Failed1s bound establishes at least1s; exact negative elapsed time was not recorded. No exact5s claim."
+  },
+  "review": "Independent read-only AI rechecked all60positive/58negative capture hashes and1064 source files per Git archive, exact mutation, source/toolchain/dependency parity and SQL/parent-child observations. No product tests were run by the reviewer."
+}

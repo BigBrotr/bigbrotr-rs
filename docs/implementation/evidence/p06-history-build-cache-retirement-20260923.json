@@ -1,0 +1,56 @@
+{
+  "format": "bigbrotr-owned-cache-retirement/1",
+  "status": "PASS",
+  "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-history-4d81357",
+  "owner": "2d96bc6ded22fdb9a4e87a219561580a",
+  "source": "4d813579dc514d098327a20190338650b24f2090",
+  "removed": [
+    "/home/tux/bigbrotr-implementation-20260917/runs/private-history-4d81357/out/build/target",
+    "/home/tux/bigbrotr-implementation-20260917/runs/private-history-4d81357/out/build/cargo-home"
+  ],
+  "free_before": 7671586816,
+  "started_at": "2026-09-23T19:31:27.164403+00:00",
+  "preexisting_preserved": 534,
+  "unrelated_running": 8,
+  "retained_source_files": 1061,
+  "retained_artifacts": {
+    "control": "6beec6dc1992980d89251fd70e117092b541c53dca425da4195b56e5192d7953",
+    "worker": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6",
+    "event_reader": "49b2ecaf2f30e98d6b2fc3d9a92afd3ff689cdbcd08ba02b091a33acd6bb4b3c",
+    "publisher": "1cd82350634760db238478110bdcfaec15b60107ad562ca9076fa454d133f1c5",
+    "reader": "5585760ef9a6d61e8d86c51396f863e86c1c9477e9f80167d1fc480fe886eed7"
+  },
+  "retained_native_assets": {
+    "bigbrotr-archive-worker": {
+      "bytes": 14378424,
+      "sha256": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6"
+    },
+    "extensions/ducklake.duckdb_extension": {
+      "bytes": 36436086,
+      "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+    },
+    "extensions/httpfs.duckdb_extension": {
+      "bytes": 21570542,
+      "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+    },
+    "extensions/postgres_scanner.duckdb_extension": {
+      "bytes": 41696558,
+      "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+    },
+    "lib/duckdb.h": {
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "lib/libduckdb.so": {
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "free_after": 10978086912,
+  "interpretation": "Only stopped owned target/cargo-home removed. Source, artifact, data and original evidence remain.4d81357 build root is now partial; never reuse it as a complete cache. Free-space difference is an observation, not attribution excluding unrelated host writes.",
+  "execution": {
+    "script": ".research/implementation/history-cache-retirement/retire.py",
+    "sha256": "381fc930731630af026680420d526a2232db20d6d4d27600ac22424b93b47fc9",
+    "result_sha256": "f84555493a18de7518022f14628a5b73d5018d6d432e2de2738ed8ff17d46e54"
+  }
+}

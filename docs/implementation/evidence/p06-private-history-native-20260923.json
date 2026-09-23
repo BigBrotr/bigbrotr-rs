@@ -1,0 +1,465 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02 / P06-T01/T02 private historical reader",
+  "date": "2026-09-23",
+  "status": "PASS-scoped",
+  "source": {
+    "revision": "32dd58d5b587e8e6d59ec258ad5889eb3dc3a61c",
+    "tree": "4b539bbe3d6f3a65e01baabddb7880d873528385"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "checks": {
+    "status": "PASS",
+    "native_event_tests": 12,
+    "executable_tests": 38,
+    "configuration_tests": 25,
+    "grant_tests": 3,
+    "read_codec_tests": 2,
+    "policy_window_tests": 16,
+    "worker_process_tests": 12,
+    "clippy": "PASS",
+    "details": "out/native-tests/checks/result.json in captured evidence"
+  },
+  "baseline": {
+    "cases": [
+      {
+        "case": "native-reader-startup-privilege-0",
+        "status": "PASS",
+        "table": "control.archive_frontier_snapshots",
+        "privilege": "SELECT"
+      },
+      {
+        "case": "native-reader-startup-privilege-1",
+        "status": "PASS",
+        "table": "control.archive_pin_recoveries",
+        "privilege": "SELECT"
+      },
+      {
+        "case": "native-reader-startup-privilege-2",
+        "status": "PASS",
+        "table": "control.topology_generations",
+        "privilege": "SELECT"
+      },
+      {
+        "case": "native-reader-startup-privilege-3",
+        "status": "PASS",
+        "table": "control.consumer_frontier_revisions",
+        "privilege": "UPDATE"
+      },
+      {
+        "case": "history-needs-real-session-and-separate-scope-grant",
+        "status": "PASS"
+      },
+      {
+        "case": "missing-bundle-refuses-with-healthy-Control-and-no-scratch",
+        "status": "PASS"
+      },
+      {
+        "case": "native-http-enable-reuses-unconsumed-proof",
+        "status": "PASS",
+        "elapsed_ms": 555.056
+      },
+      {
+        "case": "history-get-post-exact-signed-event-and-completed-empty-page",
+        "status": "PASS"
+      },
+      {
+        "case": "history-other-scope-csrf-and-unsupported-query-refuse",
+        "status": "PASS"
+      },
+      {
+        "case": "history-missing-native-bundle-is-unavailable-not-empty",
+        "status": "PASS"
+      },
+      {
+        "case": "history-configured-memory-limit",
+        "status": "PASS"
+      },
+      {
+        "case": "history-configured-scan-limit",
+        "status": "PASS"
+      },
+      {
+        "case": "history-configured-response-limit",
+        "status": "PASS"
+      },
+      {
+        "case": "history-configured-restored-limit",
+        "status": "PASS"
+      },
+      {
+        "case": "identical-http-retry-preserves-original-acceptance",
+        "status": "PASS"
+      },
+      {
+        "case": "history-real-server-restart-preserves-signed-page",
+        "status": "PASS"
+      },
+      {
+        "case": "restart-retry-and-revoke-do-not-reapply-old-enable",
+        "status": "PASS"
+      },
+      {
+        "case": "history-revoked-scope-remains-denied-after-old-enable-retry",
+        "status": "PASS"
+      }
+    ],
+    "independent_sql": {
+      "commands": 2,
+      "details": 2,
+      "audit": 2,
+      "proofs": 0,
+      "disabled_generation2": 1,
+      "account_revision": "3",
+      "active_control": 0,
+      "active_pins": 0,
+      "backends": 0
+    },
+    "signed_six_family_readback": true,
+    "parquet_files": {
+      "signed_normal/kind=7/main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e",
+      "signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70",
+      "signed_normal/kind=7/main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076",
+      "signed_normal/kind=7/main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be",
+      "signed_normal/kind=7/main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35",
+      "signed_normal/kind=7/main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05",
+      "signed_normal/kind=7/main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937",
+      "signed_normal/kind=7/main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+    },
+    "files_unchanged_through_baseline": true
+  },
+  "grant_faults": [
+    {
+      "case": "http-native-blocked-deadline",
+      "status": "PASS",
+      "sql_waiter": {
+        "pid": 452,
+        "backend_start": "2026-09-23T19:19:46.318648+00:00",
+        "application_name": "bigbrotr-archive-visibility",
+        "blockers": [
+          451
+        ]
+      },
+      "native_child": {
+        "pid": 19867,
+        "ppid": 19863,
+        "start_ticks": 357343995
+      },
+      "healthy": {
+        "event": "healthy",
+        "parent_pid": 19863
+      },
+      "before_parent_stop": {
+        "parent_state": "S",
+        "child_present": false
+      },
+      "completion_ms": 4183.538,
+      "durable_after": {
+        "active_pins": 0,
+        "proofs": 1,
+        "commands": 2,
+        "active_control": 0
+      },
+      "cleanup_errors": [],
+      "response": {
+        "closed": "RemoteDisconnected"
+      },
+      "parent_exit": 0
+    },
+    {
+      "case": "http-native-blocked-signal",
+      "status": "PASS",
+      "sql_waiter": {
+        "pid": 520,
+        "backend_start": "2026-09-23T19:19:52.077389+00:00",
+        "application_name": "bigbrotr-archive-visibility",
+        "blockers": [
+          519
+        ]
+      },
+      "native_child": {
+        "pid": 19998,
+        "ppid": 19994,
+        "start_ticks": 357344568
+      },
+      "completion_ms": 40.167,
+      "durable_after": {
+        "active_pins": 0,
+        "proofs": 2,
+        "commands": 2,
+        "active_control": 0
+      },
+      "cleanup_errors": [],
+      "response": {
+        "closed": "RemoteDisconnected"
+      },
+      "parent_exit": 0
+    }
+  ],
+  "catalog_cleanup": {
+    "status": "PASS",
+    "before_signal": {
+      "active_pins": 0,
+      "proofs": 1,
+      "commands": 3,
+      "active_control": 1
+    },
+    "after_retry": {
+      "active_pins": 0,
+      "proofs": 1,
+      "commands": 3,
+      "active_control": 0
+    },
+    "rows_before_sha256": "d3b7e6931c5c20b18615da2622ffe16acf94a445dbb551e84023b26d08408d94",
+    "rows_after_sha256": "d3b7e6931c5c20b18615da2622ffe16acf94a445dbb551e84023b26d08408d94",
+    "held_after_signal_ms": 6096.143,
+    "completed_polls": [
+      "2026-09-23T19:19:55.736928+00:00",
+      "2026-09-23T19:19:58.240362+00:00"
+    ],
+    "password_attempts": {
+      "account": 5,
+      "peer": 5
+    },
+    "cleanup_errors": []
+  },
+  "history_faults": [
+    {
+      "case": "http-history-blocked-deadline",
+      "status": "PASS",
+      "sql_waiter": {
+        "pid": 1135,
+        "backend_start": "2026-09-23T19:20:03.964887+00:00",
+        "application_name": "bigbrotr-archive-event",
+        "blockers": [
+          1134
+        ]
+      },
+      "native_child": {
+        "pid": 20369,
+        "ppid": 20365,
+        "start_ticks": 357345755
+      },
+      "healthy": {
+        "event": "healthy",
+        "parent_pid": 20365,
+        "cancellation_ms": 4026.296,
+        "request_ms": 5013.7
+      },
+      "before_parent_stop": {
+        "parent_state": "S",
+        "child_present": false
+      },
+      "completion_ms": 4228.485,
+      "durable_after": {
+        "active_pins": 0,
+        "proofs": 1,
+        "commands": 3,
+        "active_control": 0
+      },
+      "cleanup_errors": [],
+      "response": {
+        "closed": "RemoteDisconnected"
+      },
+      "parent_exit": 0
+    },
+    {
+      "case": "http-history-blocked-disconnect",
+      "status": "PASS",
+      "sql_waiter": {
+        "pid": 1195,
+        "backend_start": "2026-09-23T19:20:09.791446+00:00",
+        "application_name": "bigbrotr-archive-event",
+        "blockers": [
+          1194
+        ]
+      },
+      "native_child": {
+        "pid": 20500,
+        "ppid": 20496,
+        "start_ticks": 357346334
+      },
+      "healthy": {
+        "event": "healthy",
+        "parent_pid": 20496,
+        "cancellation_ms": 39.056,
+        "request_ms": 1081.638
+      },
+      "before_parent_stop": {
+        "parent_state": "S",
+        "child_present": false
+      },
+      "completion_ms": 237.57,
+      "durable_after": {
+        "active_pins": 0,
+        "proofs": 1,
+        "commands": 3,
+        "active_control": 0
+      },
+      "cleanup_errors": [],
+      "response": {
+        "closed": "RemoteDisconnected"
+      },
+      "parent_exit": 0
+    },
+    {
+      "case": "http-history-blocked-signal",
+      "status": "PASS",
+      "sql_waiter": {
+        "pid": 1255,
+        "backend_start": "2026-09-23T19:20:11.343652+00:00",
+        "application_name": "bigbrotr-archive-event",
+        "blockers": [
+          1254
+        ]
+      },
+      "native_child": {
+        "pid": 20631,
+        "ppid": 20627,
+        "start_ticks": 357346498
+      },
+      "completion_ms": 40.155,
+      "durable_after": {
+        "active_pins": 0,
+        "proofs": 1,
+        "commands": 3,
+        "active_control": 0
+      },
+      "cleanup_errors": [],
+      "response": {
+        "closed": "RemoteDisconnected"
+      },
+      "parent_exit": 0
+    }
+  ],
+  "terminal_backends": {
+    "bbpub_normal": {
+      "backends": 0
+    },
+    "bbpub_control_normal": {
+      "backends": 0
+    }
+  },
+  "artifacts": {
+    "control": "efbafa08e2b31285c1c5d4dedc4109b7475b875da3a1c23ac0a324e39fb6e512",
+    "worker": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6",
+    "event_reader": "49b2ecaf2f30e98d6b2fc3d9a92afd3ff689cdbcd08ba02b091a33acd6bb4b3c",
+    "publisher": "1cd82350634760db238478110bdcfaec15b60107ad562ca9076fa454d133f1c5",
+    "reader": "5585760ef9a6d61e8d86c51396f863e86c1c9477e9f80167d1fc480fe886eed7"
+  },
+  "native_assets": {
+    "bigbrotr-archive-worker": {
+      "bytes": 14378424,
+      "sha256": "a476f2b1fc8015c576d7b8d3ed432262a352a7d4ec98705f21f177d46e026dc6"
+    },
+    "extensions/ducklake.duckdb_extension": {
+      "bytes": 36436086,
+      "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+    },
+    "extensions/httpfs.duckdb_extension": {
+      "bytes": 21570542,
+      "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+    },
+    "extensions/postgres_scanner.duckdb_extension": {
+      "bytes": 41696558,
+      "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+    },
+    "lib/duckdb.h": {
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "lib/libduckdb.so": {
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "capture": {
+    "local_root": ".research/implementation/event-history-native/capture",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/private-history-32dd58d",
+    "sha256": "b7dfd3e8d74f24f08892eb65387ff42eb1d79f30da58810869ce30691eb57077",
+    "verified": {
+      "capture_files": 60,
+      "source_files": 1064,
+      "elfs": 5,
+      "dependencies": 5,
+      "capture_sha": "b7dfd3e8d74f24f08892eb65387ff42eb1d79f30da58810869ce30691eb57077",
+      "preexisting": 530,
+      "unrelated": 8,
+      "free_bytes": 11382923264
+    }
+  },
+  "cleanup": {
+    "owner": "277267784f933351135813602916ca1a",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "5285a9c4c5bfb97ee9e3b486c05fc8f6c12ec6d0609bccfa5b88c8d1ccc20874"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "f3b5b7b73f4aca8f559a8e75e266b02875fe1a6a4ac5bdbdca1f780de454f381"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preexisting_count": 530,
+    "preexisting_preserved": true,
+    "unrelated_running": 8,
+    "free_bytes": 11382923264,
+    "terminals": {
+      "rust-visibility": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-23T19:15:02.467242237Z",
+        "FinishedAt": "2026-09-23T19:20:12.049222231Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-23T19:15:00.50552498Z",
+        "FinishedAt": "2026-09-23T19:20:22.650385546Z"
+      }
+    }
+  },
+  "interpretation": "18 baseline cases exercise actual signed GET/POST/absence, scopes, CSRF, restart/revocation, unavailable bundle503, memory600MiB/scan1byte/response64bytes refusals429 and restored limits. Two grant faults and held rollback/retry repeat the shared supervisor. Three history faults observe real native SQL Lock wait and retained pin, then healthy/terminated consumers and zero active pins. Non-signal cases observe child absence while parent is alive; signal proves terminal child absence, not independent wait instrumentation. Fixture-only immutable policy successors3\u20136 are accepted while actual Control is stopped, not live policy rollout.",
+  "review": {
+    "kind": "Independent read-only AI and integrating owner",
+    "dispositions": [
+      "Nonrenewable action/pin and actual socket lifetime preserved",
+      "Corrected580MiB non-discriminating oracle to600MiB",
+      "Preserved200 status on truncated body; cleanup terminals gate PASS",
+      "Early disconnect scheduling and pre-parent-stop child absence added"
+    ],
+    "execution": "AI ran no tests"
+  },
+  "exclusions": [
+    "Actual catalog-manager loss, blocked full history response with durable pin, shortened native pin/authorization schedule and restrictive rollout remain required",
+    "No common64MiB/aged mixed-load/native RSS or throughput qualification; tiny read fixture uses1GiB admission allowance",
+    "No standalone export/M1/task completion, broader query registry/cursors/search, full error-profile, release or Linux arm64 claim"
+  ],
+  "negative_control": {
+    "report": "p06-history-disconnect-negative-native-20260923.json",
+    "status": "EXPECTED_FAIL",
+    "mutation": "Only the abandoned-client cancellation predicate removed; unchanged practical disconnect bound fails"
+  }
+}

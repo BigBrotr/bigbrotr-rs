@@ -1,0 +1,16 @@
+# RESEARCH ONLY: intentionally disable client-disconnect cancellation.
+# Apply only to isolated revision32dd58d for the recorded negative-control lab.
+# Never merge or deploy this behavior.
+diff --git a/apps/bigbrotr/src/interfaces/serve/history.rs b/apps/bigbrotr/src/interfaces/serve/history.rs
+index 7468411..540a454 100644
+--- a/apps/bigbrotr/src/interfaces/serve/history.rs
++++ b/apps/bigbrotr/src/interfaces/serve/history.rs
+@@ -310,7 +310,7 @@ pub(super) async fn execute(
+             let query = EventQuery { dataset:selected.dataset_id, event_id, scope:authorization.scope(), topology_generation:selected.topology_generation, bounds:selected.bounds, snapshot_id:selected.snapshot_id };
+             let custody = coordinator.reader_custody().map_err(|_| (4,"history reader custody refused; retain pin".into()))?;
+             let policy = authority.lease.known_epoch(); let observed = authorization.observed_at_us(); let page_size = work.query().page_size.expect("transport admitted page size");
+-            authority.blocking_while(deadline,|| !work.abandoned() && action.check().is_ok(),move |cancel| read(config,budget,prepared.reader,route,custody,query,selected.frontier_revision,policy,observed,page_size,deadline,cancel)).await?
++            authority.blocking_while(deadline,|| action.check().is_ok(),move |cancel| read(config,budget,prepared.reader,route,custody,query,selected.frontier_revision,policy,observed,page_size,deadline,cancel)).await?
+         };
+         match native {
+             Ok(body) => {
