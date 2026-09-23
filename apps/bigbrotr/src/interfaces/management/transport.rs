@@ -3,7 +3,7 @@
 use super::{
     Assets, BrowserBoundary,
     boundary::single,
-    delivery::{DeliveryGate, GuardedSocket},
+    delivery::{ActionGate, DeliveryGate, GuardedSocket},
 };
 use axum::{
     Extension, Json, Router,
@@ -52,6 +52,13 @@ const SESSION_COOKIE: &str = "BigBrotrLocalSession";
 const CSRF_COOKIE: &str = "BigBrotrLocalCsrf";
 
 pub(super) enum Operation {
+    History {
+        session: BrowserSecret,
+        csrf: BrowserSecret,
+        query: bigbrotr_model::read::QueryRequest,
+        delivery: ConnectionDelivery,
+        queue_permit: tokio::sync::OwnedSemaphorePermit,
+    },
     Grant {
         session: BrowserSecret,
         csrf: BrowserSecret,
@@ -79,6 +86,7 @@ pub(super) enum Operation {
     },
 }
 pub(super) enum Reply {
+    History(Box<super::history::HistoryBody>),
     Grant(GrantReceipt),
     Reauthenticated(ReauthenticationProof),
     Login(IssuedSession),
@@ -112,11 +120,42 @@ struct Shared {
     budget: ResourceBudget,
     commands: mpsc::Sender<Command>,
     assets: Option<Arc<Assets>>,
+    history: HistoryLimits,
+    history_slots: Arc<tokio::sync::Semaphore>,
 }
 #[derive(Clone, Copy)]
+pub(super) struct HistoryLimits {
+    pub bytes: usize,
+    pub default_page: u16,
+    pub max_page: u16,
+    pub queue: usize,
+}
+impl Default for HistoryLimits {
+    fn default() -> Self {
+        Self {
+            bytes: BODY_BYTES,
+            default_page: 100,
+            max_page: 1000,
+            queue: QUEUE,
+        }
+    }
+}
+impl HistoryLimits {
+    pub fn configured(root: &crate::config::Resolved) -> Self {
+        Self {
+            bytes: root.number("read.request.max_bytes").min(BODY_BYTES as u64) as usize,
+            default_page: root.number("read.default_page_size").min(1000) as u16,
+            max_page: root.number("read.max_page_size").min(1000) as u16,
+            queue: root.number("read.admission.queue_max").min(QUEUE as u64) as usize,
+        }
+    }
+}
+
+#[derive(Clone)]
 struct Connection {
     peer: IpAddr,
     deadline: Instant,
+    delivery: ConnectionDelivery,
 }
 
 pub(super) struct Server {
@@ -130,16 +169,27 @@ impl Server {
         budget: ResourceBudget,
         delivery: DeliveryGate,
         assets: Option<Assets>,
+        history: HistoryLimits,
     ) -> io::Result<Self> {
         BrowserBoundary::loopback(address).map_err(io::Error::other)?;
         let listener = TcpListener::bind(address).await?;
-        Self::from_listener(listener, budget, delivery, assets)
+        Self::from_listener_limits(listener, budget, delivery, assets, history)
     }
+    #[cfg(test)]
     pub(super) fn from_listener(
         listener: TcpListener,
         budget: ResourceBudget,
         delivery: DeliveryGate,
         assets: Option<Assets>,
+    ) -> io::Result<Self> {
+        Self::from_listener_limits(listener, budget, delivery, assets, HistoryLimits::default())
+    }
+    fn from_listener_limits(
+        listener: TcpListener,
+        budget: ResourceBudget,
+        delivery: DeliveryGate,
+        assets: Option<Assets>,
+        history: HistoryLimits,
     ) -> io::Result<Self> {
         let boundary =
             BrowserBoundary::loopback(listener.local_addr()?).map_err(io::Error::other)?;
@@ -150,6 +200,8 @@ impl Server {
             budget,
             commands: sender,
             assets: assets.map(Arc::new),
+            history,
+            history_slots: Arc::new(tokio::sync::Semaphore::new(history.queue)),
         };
         let router = Router::new()
             .route("/management/v1/sessions", post(login))
@@ -159,6 +211,10 @@ impl Server {
                 post(reauthenticate),
             )
             .route("/management/v1/me", get(me))
+            .route(
+                "/v1/resources/event_history",
+                get(history_query).post(history_query),
+            )
             .route(
                 "/management/v1/principals/{principal_id}/grants",
                 put(change_grant),
@@ -208,6 +264,7 @@ async fn serve(
     delivery: DeliveryGate,
 ) -> io::Result<()> {
     let mut connections = JoinSet::new();
+    let (all_joined, joined) = watch::channel(false);
     let outcome = loop {
         tokio::select! {
             biased;
@@ -219,9 +276,12 @@ async fn serve(
                 let (socket, peer) = match accepted { Ok(v) => v, Err(e) => break Err(e) };
                 if connections.len() >= CONNECTIONS { drop(socket); continue; }
                 let Ok(grant) = budget.try_acquire(ResourceRequest::data(CONNECTION_BYTES, 1, 0).expect("fixed connection reservation")) else { drop(socket); continue; };
-                let connection = Connection { peer: peer.ip(), deadline: Instant::now() + CONNECTION_TIME };
-                let service = TowerToHyperService::new(router.clone().layer(Extension(connection)));
-                let socket=GuardedSocket::new(socket,delivery.clone());
+                let (ended, terminal) = watch::channel(false);
+                let action = ActionGate::new();
+                let connection = Connection { peer: peer.ip(), deadline: Instant::now() + CONNECTION_TIME,
+                    delivery: ConnectionDelivery { action: action.clone(), terminal, joined: joined.clone() } };
+                let service = TowerToHyperService::new(router.clone().layer(Extension(connection.clone())));
+                let socket=GuardedSocket::new(socket,delivery.clone(),action);
                 connections.spawn(async move {
                     let mut http = http1::Builder::new();
                     http.keep_alive(false).half_close(false).max_headers(32).max_buf_size(16 * 1024)
@@ -230,6 +290,7 @@ async fn serve(
                     // drops the actual IO, including an incomplete body/write.
                     let _ = tokio::time::timeout_at(connection.deadline, http.serve_connection(TokioIo::new(socket), service)).await;
                     drop(grant);
+                    ended.send_replace(true);
                 });
             },
         }
@@ -237,7 +298,128 @@ async fn serve(
     drop(listener);
     connections.abort_all();
     while connections.join_next().await.is_some() {}
+    all_joined.send_replace(true);
     outcome
+}
+
+/// Closed notification channels alone are not proof of IO destruction. Normal
+/// completion signals after the owned HTTP future drops; aborted/panicked tasks
+/// require the server's positive abort-and-join acknowledgement.
+#[derive(Clone)]
+pub(crate) struct ConnectionDelivery {
+    pub action: ActionGate,
+    terminal: watch::Receiver<bool>,
+    joined: watch::Receiver<bool>,
+}
+impl ConnectionDelivery {
+    pub async fn ended(&mut self) {
+        let mut terminal_open = true;
+        let mut joined_open = true;
+        loop {
+            if *self.terminal.borrow() || *self.joined.borrow() {
+                return;
+            }
+            tokio::select! {
+                result = self.terminal.changed(), if terminal_open => { terminal_open = result.is_ok(); },
+                result = self.joined.changed(), if joined_open => { joined_open = result.is_ok(); },
+                else => std::future::pending::<()>().await,
+            }
+        }
+    }
+}
+
+async fn history_query(
+    State(shared): State<Shared>,
+    Extension(connection): Extension<Connection>,
+    request: Request,
+) -> Response {
+    if let Err(status) = shared
+        .boundary
+        .check(request.method(), request.uri(), request.headers())
+    {
+        return error(status);
+    }
+    let grant = match shared
+        .budget
+        .try_acquire(ResourceRequest::data(REQUEST_BYTES, 1, 0).expect("fixed request reservation"))
+    {
+        Ok(grant) => grant,
+        Err(_) => return error(StatusCode::TOO_MANY_REQUESTS),
+    };
+    let session = match session(request.headers()) {
+        Ok(value) => value,
+        Err(status) => return error(status),
+    };
+    let Some(csrf) =
+        single(request.headers(), "x-csrf-token").and_then(|v| BrowserSecret::parse_hex(v).ok())
+    else {
+        return error(StatusCode::FORBIDDEN);
+    };
+    let decoded = if request.method() == Method::GET {
+        if request.uri().query().unwrap_or("").len() > shared.history.bytes {
+            return error(StatusCode::PAYLOAD_TOO_LARGE);
+        }
+        let result = bigbrotr_protocol::read::decode_get(request.uri().query().unwrap_or(""));
+        if !matches!(to_bytes(request.into_body(), 0).await, Ok(bytes) if bytes.is_empty()) {
+            return error(StatusCode::BAD_REQUEST);
+        }
+        result
+    } else if request.method() == Method::POST {
+        if request.uri().query().is_some() {
+            return error(StatusCode::BAD_REQUEST);
+        }
+        if !single(request.headers(), "content-type").is_some_and(|v| {
+            v.eq_ignore_ascii_case(b"application/json")
+                || v.eq_ignore_ascii_case(b"application/json; charset=utf-8")
+        }) {
+            return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
+        }
+        let bytes = match to_bytes(request.into_body(), shared.history.bytes).await {
+            Ok(value) => value,
+            Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+        };
+        bigbrotr_protocol::read::decode_post(&bytes)
+    } else {
+        return protect(StatusCode::METHOD_NOT_ALLOWED.into_response());
+    };
+    let mut query = match decoded {
+        Ok(query) => query,
+        Err(bigbrotr_protocol::read::QueryError::Unsupported) => {
+            return failure(
+                StatusCode::BAD_REQUEST,
+                "unsupported_query",
+                "This query profile is unavailable.",
+                "correct_request",
+            );
+        }
+        Err(bigbrotr_protocol::read::QueryError::Limit) => {
+            return error(StatusCode::PAYLOAD_TOO_LARGE);
+        }
+        Err(_) => return error(StatusCode::BAD_REQUEST),
+    };
+    let page = query.page_size.unwrap_or(shared.history.default_page);
+    if page > shared.history.max_page {
+        return error(StatusCode::BAD_REQUEST);
+    }
+    query.page_size = Some(page);
+    let delivery = connection.delivery.clone();
+    let queue_permit = match shared.history_slots.clone().try_acquire_owned() {
+        Ok(value) => value,
+        Err(_) => return error(StatusCode::TOO_MANY_REQUESTS),
+    };
+    dispatch(
+        &shared,
+        connection,
+        grant,
+        Operation::History {
+            session,
+            csrf,
+            query,
+            delivery,
+            queue_permit,
+        },
+    )
+    .await
 }
 
 #[derive(Deserialize)]
@@ -374,7 +556,7 @@ async fn reauthenticate(
     }
     dispatch(
         &shared,
-        connection,
+        connection.clone(),
         grant,
         Operation::Reauthenticate {
             session,
@@ -482,7 +664,7 @@ async fn login(
     }
     dispatch(
         &shared,
-        connection,
+        connection.clone(),
         grant,
         Operation::Login {
             username: input.username,
@@ -581,6 +763,11 @@ async fn dispatch(
         return error(StatusCode::TOO_MANY_REQUESTS);
     }
     match receive.await {
+        Ok(Ok(Reply::History(body))) => {
+            let mut response = Response::new(Body::from(axum::body::Bytes::from_owner(*body)));
+            response.headers_mut().insert(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
+            protect(response)
+        },
         Ok(Ok(Reply::Grant(receipt))) => protect(Json(json!({
             "format":"bigbrotr-scope-grant/1", "command_key":receipt.command_key,
             "principal_id":receipt.principal_id, "scope":receipt.scope,
@@ -723,4 +910,58 @@ fn failure(status: StatusCode, code: &str, message: &str, retry: &str) -> Respon
             .insert(header::RETRY_AFTER, HeaderValue::from_static("60"));
     }
     response
+}
+
+#[cfg(test)]
+mod terminal_tests {
+    use super::*;
+    #[tokio::test]
+    async fn only_positive_http_completion_or_all_joined_releases_delivery() {
+        for normal in [true, false] {
+            let (end, terminal) = watch::channel(false);
+            let (all, joined) = watch::channel(false);
+            let mut delivery = ConnectionDelivery {
+                action: ActionGate::new(),
+                terminal,
+                joined,
+            };
+            if normal {
+                end.send_replace(true);
+            }
+            drop(end);
+            if normal {
+                tokio::time::timeout(Duration::from_secs(1), delivery.ended())
+                    .await
+                    .unwrap();
+            } else {
+                assert!(
+                    tokio::time::timeout(Duration::from_millis(20), delivery.ended())
+                        .await
+                        .is_err()
+                );
+                all.send_replace(true);
+                drop(all);
+                tokio::time::timeout(Duration::from_secs(1), delivery.ended())
+                    .await
+                    .unwrap();
+            }
+        }
+        // Exercise notification after the waiter actually began, followed by
+        // sender destruction. The final true must survive channel closure.
+        let (end, terminal) = watch::channel(false);
+        let (_all, joined) = watch::channel(false);
+        let mut delivery = ConnectionDelivery {
+            action: ActionGate::new(),
+            terminal,
+            joined,
+        };
+        let waiter = tokio::spawn(async move { delivery.ended().await });
+        tokio::task::yield_now().await;
+        end.send_replace(true);
+        drop(end);
+        tokio::time::timeout(Duration::from_secs(1), waiter)
+            .await
+            .unwrap()
+            .unwrap();
+    }
 }

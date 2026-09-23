@@ -166,6 +166,15 @@ matched that selection. Select eligibility before the shared body. Finding
 eligibility but no payload within the same cut is inconsistent, never absence.
 Duplicate references, corrupt matching facts, failed native work, interrupted
 transactions and unreadable required objects cannot become an empty result.
+Physical-input admission charges two complete passes over both selected tables'
+files before predicate pruning, capped at256MiB (or the smaller caller budget)
+and2048 data/delete files. Canonical immutable local file lengths must match
+metadata. Thus even an ID absent from a pruned file can be refused when the
+conservatively admitted file population is unavailable or too large. This bounds
+admitted compressed input, not every OS read or decompressed allocation. DuckLake
+list-files materializes metadata at bind; native memory/OS/deadline bounds remain
+independent. The exact paired private query input carries `scan_bytes`; omitted
+legacy probe input selects256MiB. No persistent format changes.
 This does not certify unrelated archive objects or authorize a principal. The
 read consumer separately owns the complete certified cut, pin and action grant.
 

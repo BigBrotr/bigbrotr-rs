@@ -2,6 +2,8 @@
 mod assets;
 mod boundary;
 mod delivery;
+mod history;
+pub(super) use history::{HistoryBody, HistoryWork};
 mod transport;
 pub(super) use assets::Assets;
 use bigbrotr::runtime::policy_authority::DeliveryWindow;
@@ -100,6 +102,7 @@ impl GrantWork {
 pub(super) enum Execution {
     Complete(Option<Response>),
     Archive(GrantWork),
+    History(HistoryWork),
 }
 
 pub(super) struct Management {
@@ -117,7 +120,7 @@ pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
     if root.flag("archive.reader.enabled") {
         // Control, manager, secrets, native output, hash and HTTP all use this
         // same ledger; a second application payload allowance is never created.
-        return super::archive_preflight::budget(root, items + 4);
+        return super::archive_preflight::budget(root, items + 6);
     }
     let envelope = ProcessEnvelope::new(
         n("memory_max_bytes"),
@@ -185,9 +188,15 @@ impl Management {
             })?;
         drop(capacity);
         let delivery = DeliveryGate::new(window);
-        let server = Server::bind(address, budget.clone(), delivery.clone(), assets)
-            .await
-            .map_err(|_| (1, "private management listener unavailable".into()))?;
+        let server = Server::bind(
+            address,
+            budget.clone(),
+            delivery.clone(),
+            assets,
+            transport::HistoryLimits::configured(root),
+        )
+        .await
+        .map_err(|_| (1, "private management listener unavailable".into()))?;
         Ok(Self {
             server,
             hashes: JoinSet::new(),
@@ -248,6 +257,22 @@ impl Management {
                     return Ok(Execution::Complete(None));
                 }
                 match operation {
+                    Operation::History {
+                        session,
+                        csrf,
+                        query,
+                        delivery,
+                        queue_permit,
+                    } => {
+                        drop(queue_permit);
+                        return Ok(Execution::History(HistoryWork {
+                            completion,
+                            session,
+                            csrf,
+                            query,
+                            delivery,
+                        }));
+                    }
                     Operation::Grant {
                         session,
                         csrf,

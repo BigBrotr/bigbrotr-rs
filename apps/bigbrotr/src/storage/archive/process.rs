@@ -23,6 +23,7 @@ pub enum ProcessError {
     Deadline,
     Cancelled,
     OutputLimit,
+    ResourceLimit,
     Exit,
     Io,
     /// The caller must retain the job root and treat native activity as unknown.
@@ -161,7 +162,17 @@ impl<'a> Process<'a> {
                 if status.success() && self.stderr.length == 0 {
                     return Ok(&self.stdout.bytes[..self.stdout.length]);
                 }
-                self.failure = Some(ProcessError::Exit);
+                self.failure = Some(
+                    if status.code()
+                        == Some(bigbrotr_protocol::archive_event::RESOURCE_LIMIT_EXIT_CODE as i32)
+                        && self.stdout.length == 0
+                        && self.stderr.length == 0
+                    {
+                        ProcessError::ResourceLimit
+                    } else {
+                        ProcessError::Exit
+                    },
+                );
                 break;
             }
             if !progress {

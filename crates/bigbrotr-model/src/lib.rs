@@ -10,6 +10,7 @@ pub mod evidence_intent;
 pub mod fact;
 mod fingerprint;
 pub mod identity;
+pub mod read;
 pub mod receipt_codec;
 pub mod scalar;
 pub mod source;

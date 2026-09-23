@@ -1,5 +1,5 @@
 //! The socket, not the handler queue, is the final authority dispatch boundary.
-use bigbrotr::runtime::policy_authority::DeliveryWindow;
+use bigbrotr::runtime::policy_authority::{ActionWindow, DeliveryWindow};
 use std::{
     io,
     pin::Pin,
@@ -52,13 +52,75 @@ fn denied() -> io::Error {
     )
 }
 
+enum ActionState {
+    Unbound,
+    Bound {
+        action: ActionWindow,
+        pin: Option<ActionWindow>,
+    },
+    Closed,
+}
+#[derive(Clone)]
+pub(crate) struct ActionGate(Arc<Mutex<ActionState>>);
+impl ActionGate {
+    pub fn new() -> Self {
+        Self(Arc::new(Mutex::new(ActionState::Unbound)))
+    }
+    pub fn bind(&self, mut window: ActionWindow) -> io::Result<()> {
+        let mut state = self.0.lock().map_err(|_| denied())?;
+        if !matches!(*state, ActionState::Unbound) || window.check().is_err() {
+            *state = ActionState::Closed;
+            return Err(denied());
+        }
+        *state = ActionState::Bound {
+            action: window,
+            pin: None,
+        };
+        Ok(())
+    }
+    pub fn constrain_pin(&self, window: Option<ActionWindow>) -> io::Result<()> {
+        let mut state = self.0.lock().map_err(|_| denied())?;
+        if let (ActionState::Bound { action, pin }, Some(mut window)) = (&mut *state, window)
+            && pin.is_none()
+            && action.check().is_ok()
+            && window.check().is_ok()
+        {
+            *pin = Some(window);
+            return Ok(());
+        }
+        *state = ActionState::Closed;
+        Err(denied())
+    }
+    pub fn check(&self) -> io::Result<()> {
+        let mut state = self.0.lock().map_err(|_| denied())?;
+        let valid = match &mut *state {
+            ActionState::Unbound => true,
+            ActionState::Bound { action, pin } => {
+                action.check().is_ok() && pin.as_mut().is_none_or(|pin| pin.check().is_ok())
+            }
+            ActionState::Closed => false,
+        };
+        if valid {
+            Ok(())
+        } else {
+            *state = ActionState::Closed;
+            Err(denied())
+        }
+    }
+}
+
 pub(super) struct GuardedSocket {
     socket: TcpStream,
     gate: DeliveryGate,
+    action: ActionGate,
 }
 impl GuardedSocket {
-    pub fn new(socket: TcpStream, gate: DeliveryGate) -> Self {
-        Self { socket, gate }
+    pub fn new(socket: TcpStream, gate: DeliveryGate, action: ActionGate) -> Self {
+        Self {
+            socket,
+            gate,
+            action,
+        }
     }
 }
 impl AsyncRead for GuardedSocket {
@@ -78,6 +140,7 @@ impl AsyncWrite for GuardedSocket {
     ) -> Poll<io::Result<usize>> {
         let this = self.get_mut();
         this.gate.check()?;
+        this.action.check()?;
         Pin::new(&mut this.socket).poll_write(cx, buf)
     }
     fn poll_write_vectored(
@@ -87,6 +150,7 @@ impl AsyncWrite for GuardedSocket {
     ) -> Poll<io::Result<usize>> {
         let this = self.get_mut();
         this.gate.check()?;
+        this.action.check()?;
         Pin::new(&mut this.socket).poll_write_vectored(cx, bufs)
     }
     fn is_write_vectored(&self) -> bool {
@@ -95,6 +159,7 @@ impl AsyncWrite for GuardedSocket {
     fn poll_flush(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
         let this = self.get_mut();
         this.gate.check()?;
+        this.action.check()?;
         Pin::new(&mut this.socket).poll_flush(cx)
     }
     fn poll_shutdown(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {

@@ -51,13 +51,13 @@ pub(super) struct Supervisor<'a> {
     pub management: &'a management::Management,
     pub stopping: bool,
 }
-enum OnShutdown {
+pub(super) enum OnShutdown {
     Cancel,
     /// Collect the same cleanup future; a signal cannot imply its completion.
     Finish,
 }
 impl Supervisor<'_> {
-    fn maximum(&mut self) -> Result<Duration> {
+    pub(super) fn maximum(&mut self) -> Result<Duration> {
         Ok(duration(self.root, "renewal_timeout").min(
             self.lease
                 .remaining_validity()
@@ -70,7 +70,7 @@ impl Supervisor<'_> {
     /// work and never extends this finite allocation operation's own deadline.
     /// Only catalog/native work belongs here: dropping an in-flight Control
     /// operation poisons that session and must remain a fatal outcome.
-    async fn external<T>(
+    pub(super) async fn external<T>(
         &mut self,
         deadline: Instant,
         future: impl Future<Output = T>,
@@ -119,26 +119,50 @@ impl Supervisor<'_> {
 
     /// Dropping a JoinHandle never joins spawn_blocking. Even on signal, expiry
     /// or lost Control, inspect its final result before allowing pin cleanup.
-    async fn blocking<T: Send + 'static>(
+    pub(super) async fn blocking<T: Send + 'static>(
         &mut self,
         deadline: Instant,
+        job: impl FnOnce(&AtomicBool) -> std::result::Result<T, WorkerError> + Send + 'static,
+    ) -> Result<std::result::Result<T, SessionError>> {
+        self.blocking_while(deadline, || true, job).await
+    }
+
+    pub(super) async fn blocking_while<T: Send + 'static>(
+        &mut self,
+        deadline: Instant,
+        permitted: impl Fn() -> bool,
         job: impl FnOnce(&AtomicBool) -> std::result::Result<T, WorkerError> + Send + 'static,
     ) -> Result<std::result::Result<T, SessionError>> {
         self.lease
             .check_delivery(self.lease.known_epoch())
             .map_err(|e| (4, e.to_string()))?;
-        if self.stopping || Instant::now() >= deadline {
+        if self.stopping || Instant::now() >= deadline || !permitted() {
             return Ok(Err(SessionError::ArchiveUnavailable));
         }
         let cancel = Arc::new(AtomicBool::new(false));
         let worker_cancel = cancel.clone();
         let mut worker = tokio::task::spawn_blocking(move || job(&worker_cancel));
         let observation = self
-            .external(deadline, &mut worker, OnShutdown::Cancel)
+            .external(
+                deadline,
+                async {
+                    loop {
+                        if !permitted() {
+                            return None;
+                        }
+                        tokio::select! {
+                            biased;
+                            _ = tokio::time::sleep(Duration::from_millis(25)) => {},
+                            terminal = &mut worker => return Some(terminal),
+                        }
+                    }
+                },
+                OnShutdown::Cancel,
+            )
             .await;
         cancel.store(true, Ordering::Release);
         let (terminal, prior) = match observation {
-            Ok(Some(terminal)) => (terminal, Ok(true)),
+            Ok(Some(Some(terminal))) => (terminal, Ok(true)),
             other => {
                 if other.is_err() {
                     self.management.stop_admission();
@@ -183,27 +207,30 @@ impl Supervisor<'_> {
     }
 }
 
-enum WorkerError {
+pub(super) enum WorkerError {
     Refused(SessionError),
     Unjoined,
 }
-fn unavailable<T>(_: T) -> WorkerError {
+pub(super) fn unavailable<T>(_: T) -> WorkerError {
     WorkerError::Refused(SessionError::ArchiveUnavailable)
 }
-struct Prepared {
-    manager: PreparedConnection,
-    manager_grant: OwnedPermit,
-    reader: ReaderInput,
+pub(super) struct Prepared {
+    pub(super) manager: PreparedConnection,
+    pub(super) manager_grant: OwnedPermit,
+    pub(super) reader: ReaderInput,
 }
-struct ReaderInput {
-    password: SecretBytes,
-    tls: Option<NativeClientIdentity>,
+pub(super) struct ReaderInput {
+    pub(super) password: SecretBytes,
+    pub(super) tls: Option<NativeClientIdentity>,
     _permit: OwnedPermit,
 }
-fn required<'a>(config: &'a Resolved, key: &str) -> std::result::Result<&'a str, WorkerError> {
+pub(super) fn required<'a>(
+    config: &'a Resolved,
+    key: &str,
+) -> std::result::Result<&'a str, WorkerError> {
     config.text(key).ok_or_else(|| unavailable(()))
 }
-fn prepare(
+pub(super) fn prepare(
     config: &Resolved,
     budget: &ResourceBudget,
 ) -> std::result::Result<Prepared, WorkerError> {
@@ -293,7 +320,7 @@ fn observe(
     })
 }
 
-fn pin_error(error: ArchivePinError) -> (u8, String) {
+pub(super) fn pin_error(error: ArchivePinError) -> (u8, String) {
     (
         4,
         format!("native grant Control operation failed: {error:?}; pin outcome requires recovery"),

@@ -20,9 +20,10 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'], ['--private-grant-http'], ['--event-query'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'], ['--private-grant-http'], ['--event-query'], ['--private-history'])
+private_history = sys.argv[1:] == ['--private-history']
 event_query = sys.argv[1:] == ['--event-query']
-private_grant_http = sys.argv[1:] == ['--private-grant-http']
+private_grant_http = private_history or sys.argv[1:] == ['--private-grant-http']
 scope_grants = sys.argv[1:] == ['--scope-grants']
 archive_visibility = sys.argv[1:] == ['--archive-visibility']
 pin_recovery = sys.argv[1:] == ['--pin-recovery']
@@ -139,6 +140,14 @@ if private_grant_http:
     identity.update(scope='real private HTTP allocation reader supervision and acceptance; no history delivery or restrictive drain qualification')
     checks = [checks[0],
         ('native-grant-consumer', ['cargo','test','--locked','--release','-p','bigbrotr','--bin','bigbrotr','--test','management_grants','--test','config_entrypoint']),
+        checks[-1]]
+if private_history:
+    identity.update(scope='private signed history HTTP, nonrenewable action/pin windows and physical scan admission')
+    checks = [*checks[:-1],
+        ('native-events', ['cargo','test','--locked','--release','-p','bigbrotr-archive-worker','--lib','event::tests','--','--nocapture']),
+        ('read-codec', ['cargo','test','--locked','--release','-p','bigbrotr-protocol','--lib','read::tests']),
+        ('action-window', ['cargo','test','--locked','--release','-p','bigbrotr','--lib','runtime::policy_authority']),
+        ('worker-process', ['cargo','test','--locked','--release','-p','bigbrotr','--lib','storage::archive::process']),
         checks[-1]]
 if import_source:
     identity.update(scope='captured JSONL source and existing connected signed-admission consumer')

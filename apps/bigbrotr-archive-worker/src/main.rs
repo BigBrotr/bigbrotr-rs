@@ -169,6 +169,11 @@ fn main() -> ExitCode {
     match run() {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
+            if error.downcast_ref::<bigbrotr_protocol::archive_event::EventReadError>()
+                == Some(&bigbrotr_protocol::archive_event::EventReadError::ResourceLimit)
+            {
+                return ExitCode::from(bigbrotr_protocol::archive_event::RESOURCE_LIMIT_EXIT_CODE);
+            }
             // Only our redacted errors and bounded numeric parsing reach here.
             let _ = writeln!(std::io::stderr().lock(), "{error}");
             ExitCode::FAILURE

@@ -237,6 +237,9 @@ fn engine_at(
         &std::env::var_os("BIGBROTR_ARCHIVE_TEST_BUNDLE").expect("pinned native bundle"),
     ))
     .unwrap();
+    // Match the production canonical-root requirement even under macOS /var
+    // aliases. The real admitted file-length check must not depend on TMPDIR.
+    let home = home.canonicalize().unwrap();
     let options = if readonly {
         crate::receipt::readonly_archive_options(home.join("objects").to_str().unwrap(), snapshot)?
     } else {
@@ -850,4 +853,53 @@ fn lookup_cannot_cross_a_body_prefix_and_rejects_conflicting_logical_duplicates(
             expected
         );
     }
+}
+
+#[test]
+fn query_scan_admission_charges_two_passes_and_rejects_changed_file_lengths() {
+    use std::{fs, io::Write};
+    let home = tempfile::tempdir().unwrap();
+    seed(home.path(), signed("timestamp-zero"));
+    let temp = tempfile::tempdir().unwrap();
+    let reader = engine_at(temp.path(), home.path(), true, Some(2)).unwrap();
+    let mut paths = Vec::new();
+    fn walk(dir: &std::path::Path, found: &mut Vec<std::path::PathBuf>) {
+        for entry in std::fs::read_dir(dir).unwrap() {
+            let path = entry.unwrap().path();
+            if path.is_dir() {
+                walk(&path, found);
+            } else if path.extension().is_some_and(|e| e == "parquet") {
+                found.push(path);
+            }
+        }
+    }
+    walk(home.path(), &mut paths);
+    assert_eq!(paths.len(), 2);
+    let charged: u64 = paths
+        .iter()
+        .map(|p| 2 * fs::metadata(p).unwrap().len())
+        .sum();
+    assert_eq!(query::admit_scan(&reader.connection, 2, charged, 2), Ok(()));
+    assert_eq!(
+        query::admit_scan(&reader.connection, 2, charged - 1, 2),
+        Err(EventReadError::ResourceLimit)
+    );
+    assert_eq!(
+        query::admit_scan(&reader.connection, 2, charged, 1),
+        Err(EventReadError::ResourceLimit)
+    );
+    assert_eq!(query::admit_scan(&reader.connection, 1, 1, 1), Ok(()));
+    let original = fs::read(&paths[0]).unwrap();
+    fs::OpenOptions::new()
+        .append(true)
+        .open(&paths[0])
+        .unwrap()
+        .write_all(b"unregistered length")
+        .unwrap();
+    assert_eq!(
+        query::admit_scan(&reader.connection, 2, charged * 10, 2),
+        Err(EventReadError::Mismatch)
+    );
+    fs::write(&paths[0], original).unwrap();
+    assert_eq!(query::admit_scan(&reader.connection, 2, charged, 2), Ok(()));
 }

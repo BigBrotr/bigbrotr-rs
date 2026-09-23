@@ -6,6 +6,9 @@ use bigbrotr_model::{
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 pub const QUERY_FORMAT: &str = "bigbrotr-native-event-query/1";
+/// Private paired-worker exit for a known finite read refusal. It carries no
+/// observation; the parent requires positive reap and empty stdout.
+pub const RESOURCE_LIMIT_EXIT_CODE: u8 = 75;
 pub const MAX_EVENT_ROW_BYTES: usize = 4 * 1024 * 1024;
 pub const MAX_EVENT_RESPONSE_BYTES: usize = MAX_EVENT_ROW_BYTES + 1024;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

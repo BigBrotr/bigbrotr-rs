@@ -1,0 +1,185 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "resource",
+    "items",
+    "effective_page_size",
+    "next_cursor",
+    "mode",
+    "candidate_cut",
+    "view_stamp",
+    "eligibility_lag_us"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "resource": {
+      "const": "event_history"
+    },
+    "items": {
+      "type": "array",
+      "maxItems": 1,
+      "items": {
+        "$ref": "urn:bigbrotr:nip01-event:1"
+      }
+    },
+    "effective_page_size": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "next_cursor": {
+      "type": "null"
+    },
+    "mode": {
+      "const": "snapshot"
+    },
+    "candidate_cut": {
+      "type": "null"
+    },
+    "view_stamp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_cut",
+        "input_generations",
+        "target_generations",
+        "visibility_as_of_us",
+        "temporal_generation",
+        "expiry_deadline_us",
+        "policy_epoch"
+      ],
+      "properties": {
+        "source_cut": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dataset_id",
+            "topology_generation",
+            "bounds"
+          ],
+          "properties": {
+            "dataset_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$",
+              "not": {
+                "const": "00000000000000000000000000000000"
+              }
+            },
+            "topology_generation": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$",
+              "description": "Canonical unsigned decimal; runtime also enforces uint64 maximum18446744073709551615."
+            },
+            "bounds": {
+              "type": "array",
+              "maxItems": 1024,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "stream",
+                  "last_complete_sequence"
+                ],
+                "properties": {
+                  "stream": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "shard_id",
+                      "owner_epoch"
+                    ],
+                    "properties": {
+                      "shard_id": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 4294967295
+                      },
+                      "owner_epoch": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{0,19}$",
+                        "description": "Canonical unsigned decimal; runtime also enforces uint64 maximum18446744073709551615."
+                      }
+                    }
+                  },
+                  "last_complete_sequence": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]{0,19})$",
+                    "description": "Canonical unsigned decimal; runtime also enforces uint64 maximum18446744073709551615."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "input_generations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "catalog_id",
+              "frontier_revision",
+              "snapshot_id"
+            ],
+            "properties": {
+              "kind": {
+                "const": "archive"
+              },
+              "catalog_id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$",
+                "not": {
+                  "const": "00000000000000000000000000000000"
+                }
+              },
+              "frontier_revision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical unsigned decimal; runtime also enforces uint64 maximum18446744073709551615."
+              },
+              "snapshot_id": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical unsigned decimal; runtime also enforces uint64 maximum18446744073709551615."
+              }
+            }
+          }
+        },
+        "target_generations": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "visibility_as_of_us": {
+          "type": "string",
+          "pattern": "^-?(0|[1-9][0-9]{0,18})$",
+          "description": "Signed int64 microseconds; not an authorization deadline."
+        },
+        "temporal_generation": {
+          "type": "null"
+        },
+        "expiry_deadline_us": {
+          "type": "null"
+        },
+        "policy_epoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$",
+          "description": "Canonical unsigned decimal; runtime also enforces uint64 maximum18446744073709551615."
+        }
+      }
+    },
+    "eligibility_lag_us": {
+      "type": "null"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:bigbrotr:query-page:1",
+  "title": "Initial exact-ID historical QueryPage",
+  "description": "An empty successful page means completed scoped absence at this certified cut. It never represents an unavailable engine or unknown observation."
+}

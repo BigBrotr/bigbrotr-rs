@@ -60,6 +60,36 @@ fn installed(at: AuthorityTick) -> PolicyLeaseTracker<ManualClock> {
 }
 
 #[test]
+fn action_reply_cannot_add_its_wait_or_subsequent_control_renewals_to_its_lifetime() {
+    let start = AuthorityTick(seconds(100));
+    let mut owner = installed(start);
+    let pending = owner.begin_action(epoch(1)).unwrap();
+    owner.clock.0.set(Ok(start + seconds(2)));
+    let mut action = pending.complete(seconds(3)).unwrap();
+    let refresh = owner.begin_refresh().unwrap();
+    owner.complete_refresh(&refresh, response(1)).unwrap();
+    owner.clock.0.set(Ok(start + seconds(3)));
+    owner.check_delivery(epoch(1)).unwrap();
+    assert_eq!(action.check(), Err(LeaseError::Expired));
+
+    let pending = owner.begin_action(epoch(1)).unwrap();
+    owner.clock.0.set(Ok(start + seconds(4)));
+    assert!(matches!(
+        pending.complete(seconds(1)),
+        Err(LeaseError::Expired)
+    ));
+    let pending = owner.begin_action(epoch(1)).unwrap();
+    assert!(matches!(
+        pending.complete(Duration::ZERO),
+        Err(LeaseError::Expired)
+    ));
+    let pending = owner.begin_action(epoch(1)).unwrap();
+    let mut action = pending.complete(seconds(100)).unwrap();
+    owner.clock.0.set(Ok(start + seconds(7)));
+    assert_eq!(action.check(), Err(LeaseError::Expired));
+}
+
+#[test]
 fn delivery_window_rechecks_real_clock_without_extending_the_installed_lease() {
     let start = AuthorityTick(seconds(100));
     let mut owner = installed(start);

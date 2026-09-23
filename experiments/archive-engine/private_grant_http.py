@@ -14,6 +14,7 @@ import signal
 import subprocess
 import sys
 import time
+from urllib.parse import quote
 
 ROOT = Path('/out/private-grant-http')
 BINARY = Path('/out/bigbrotr')
@@ -105,14 +106,14 @@ class Server:
         self.error = ROOT / f'{name}.stderr'
         with self.output.open('xb') as out, self.error.open('xb') as err:
             self.process = subprocess.Popen([str(BINARY), 'serve', '--roles', 'control', '--file', str(CONFIG)], env={}, stdout=out, stderr=err)
-    def ready(self):
+    def ready(self, revision=2):
         deadline = time.monotonic() + 10
         while time.monotonic() < deadline:
             assert self.process.poll() is None, self.error.read_text()
             lines = self.output.read_text().splitlines()
             if lines:
                 ready = json.loads(lines[0])
-                assert ready['state'] == 'idle' and ready['policy_revision'] == '2'
+                assert ready['state'] == 'idle' and ready['policy_revision'] == str(revision)
                 return ready
             time.sleep(.02)
         raise TimeoutError('private listener readiness')
@@ -127,8 +128,9 @@ class Server:
             self.process.wait(timeout=10)
 
 
-def exercise():
+def exercise(history=False):
     principal = (ROOT / 'principal').read_text()
+    policy_revision = 2
     cases = []
     def case(name, **detail):
         cases.append(dict(case=name, status='PASS', **detail))
@@ -148,6 +150,36 @@ def exercise():
                        scope=dict(dataset_id='01'*16,dictionary_kind=4,allocation_domain='04'*16,ordinal='1'),
                        expected_config_revision='1',expected_policy_revision='2',expected_grant_revision='1',
                        allocation=dict(catalog_id='5a'*16,frontier_revision='1'))
+        from signed_publication_oracle import EVENT
+        history_query = dict(version=1,resource='event_history',mode='snapshot',scope=command['scope'],filters=[dict(ids=[EVENT['id']])])
+        def query(value=history_query, method='POST', credentials=None):
+            credentials = auth if credentials is None else credentials
+            path='/v1/resources/event_history'
+            if method=='GET':
+                parts={key:val for key,val in value.items() if key!='resource'}
+                encoded='&'.join(key+'='+quote(val if key=='mode' else json.dumps(val,separators=(',',':')),safe='') for key,val in parts.items())
+                return request(method,path+'?'+encoded,auth=credentials)
+            return request(method,path,value,credentials)
+        def history_page(method='POST', missing=False):
+            value={**history_query,'filters':[dict(ids=['00'*32])]} if missing else history_query
+            status,page,headers=query(value,method)
+            assert status==200, (status,page)
+            assert set(page)=={'version','resource','items','effective_page_size','next_cursor','mode','candidate_cut','view_stamp','eligibility_lag_us'}
+            assert page['version']==1 and page['resource']=='event_history' and page['mode']=='snapshot'
+            assert page['items']==([] if missing else [EVENT])
+            assert page['effective_page_size']==100 and page['next_cursor'] is None and page['candidate_cut'] is None and page['eligibility_lag_us'] is None
+            stamp=page['view_stamp']
+            assert set(stamp)=={'source_cut','input_generations','target_generations','visibility_as_of_us','temporal_generation','expiry_deadline_us','policy_epoch'}
+            assert stamp['source_cut']==dict(dataset_id='01'*16,topology_generation='0',bounds=[dict(stream=dict(shard_id=0,owner_epoch='1'),last_complete_sequence='10')])
+            assert stamp['input_generations']==[dict(kind='archive',catalog_id='5a'*16,frontier_revision='1',snapshot_id='3')]
+            assert stamp['target_generations']==[] and stamp['temporal_generation'] is None and stamp['expiry_deadline_us'] is None and stamp['policy_epoch']==str(policy_revision)
+            assert isinstance(stamp['visibility_as_of_us'],str) and stamp['visibility_as_of_us'].isdigit() and int(stamp['visibility_as_of_us'])>0
+            assert ('cache-control','no-store') in [(k.lower(),v) for k,v in headers]
+            assert not any(k.lower()=='set-cookie' for k,_ in headers)
+        if history:
+            assert query()[0]==403
+            assert query(credentials={})[0]==401
+            case('history-needs-real-session-and-separate-scope-grant')
         def proof(command, auth):
             status, value, _ = request('POST', '/management/v1/sessions/current/reauthenticate', dict(password=PASSWORD,command=command), auth)
             assert status == 201, (status,value)
@@ -168,15 +200,50 @@ def exercise():
         assert enabled['scope_generation'] == '1' and enabled['account_grant_revision'] == '2'
         assert not list((ROOT/'scratch').iterdir())
         case('native-http-enable-reuses-unconsumed-proof', elapsed_ms=round((time.monotonic()-started)*1000,3))
+        if history:
+            history_page('GET'); history_page('POST'); history_page(missing=True)
+            case('history-get-post-exact-signed-event-and-completed-empty-page')
+            other={**history_query,'scope':{**command['scope'],'ordinal':'2'}}
+            assert query(other)[0]==403
+            assert query({**history_query,'principal':principal})[0]==400
+            assert query({**history_query,'cursor':'unissued'})[0]==400
+            assert query(credentials={**auth,'X-CSRF-Token':'00'*32})[0]==401
+            case('history-other-scope-csrf-and-unsupported-query-refuse')
+            bundle.rename(unavailable)
+            assert query()[0]==503
+            unavailable.rename(bundle)
+            assert request('GET','/management/v1/me',auth=auth)[0]==200
+            case('history-missing-native-bundle-is-unavailable-not-empty')
+            # Host accepts complete immutable fixture policies only while this
+            # actual Control process is stopped. This does not test live rollout.
+            for policy_revision, name in [(3,'memory'),(4,'scan'),(5,'response'),(6,'restored')]:
+                server.stop()
+                (ROOT/f'policy-{policy_revision}.waiting').write_text('stopped\n')
+                end=time.monotonic()+20
+                while not (ROOT/f'policy-{policy_revision}.ready').exists():
+                    if time.monotonic()>=end: raise TimeoutError('fixture policy acceptance')
+                    time.sleep(.02)
+                server=Server(f'limit-{name}')
+                server.ready(policy_revision)
+                if name=='restored': history_page()
+                else:
+                    status,value,_=query()
+                    assert status==429, (name,status,value)
+                    assert request('GET','/management/v1/me',auth=auth)[0]==200
+                assert not list((ROOT/'scratch').iterdir())
+                case(f'history-configured-{name}-limit')
         status, retried = change(command, auth, evidence)
         assert status == 200 and not retried['created']
         assert {**enabled,'created':False} == retried
         case('identical-http-retry-preserves-original-acceptance')
         server.stop()
         server = Server('restart')
-        server.ready()
+        server.ready(policy_revision)
         assert change(command, auth, evidence) == (200,retried)
-        revoke = {**command,'enabled':False,'allocation':None,'expected_grant_revision':'2'}
+        if history:
+            history_page('GET')
+            case('history-real-server-restart-preserves-signed-page')
+        revoke = {**command,'enabled':False,'allocation':None,'expected_grant_revision':'2','expected_policy_revision':str(policy_revision)}
         revoke_auth = {**auth,'Idempotency-Key':'c2'*16}
         revoke_proof = proof(revoke,revoke_auth)
         status, disabled = change(revoke,revoke_auth,revoke_proof)
@@ -184,6 +251,9 @@ def exercise():
         assert disabled['scope_generation'] == '2' and disabled['account_grant_revision'] == '3'
         assert change(command,auth,evidence) == (200,retried)
         case('restart-retry-and-revoke-do-not-reapply-old-enable')
+        if history:
+            assert query()[0]==403
+            case('history-revoked-scope-remains-denied-after-old-enable-retry')
         # Later fault clients continue this real session. Additional logins would
         # exhaust the shared five-attempt account quota before native work starts.
         # The collector excludes this file and scans its values as secret canaries.
@@ -200,4 +270,4 @@ def exercise():
 
 
 if __name__ == '__main__':
-    {'prepare':prepare,'enroll':enroll,'exercise':exercise}[sys.argv[1]]()
+    {'prepare':prepare,'enroll':enroll,'exercise':exercise,'exercise-history':lambda:exercise(True)}[sys.argv[1]]()

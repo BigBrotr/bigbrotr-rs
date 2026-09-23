@@ -191,6 +191,13 @@ impl<C: AuthorityClock> DeliveryWindow<C> {
 }
 
 impl<C: AuthorityClock + Clone> PolicyLeaseTracker<C> {
+    /// Start before the authenticated action lookup, so waiting for its reply
+    /// consumes both the Control lease and the action's remaining lifetime.
+    pub fn begin_action(&mut self, epoch: PolicyEpoch) -> Result<PendingAction<C>, LeaseError> {
+        let window = self.delivery_window(epoch)?;
+        let started = window.last_tick;
+        Ok(PendingAction { window, started })
+    }
     pub fn delivery_window(
         &mut self,
         admitted_epoch: PolicyEpoch,
@@ -203,6 +210,31 @@ impl<C: AuthorityClock + Clone> PolicyLeaseTracker<C> {
             epoch: admitted_epoch,
             failed: None,
         })
+    }
+}
+
+pub struct PendingAction<C: AuthorityClock = SuspendAwareClock> {
+    window: DeliveryWindow<C>,
+    started: AuthorityTick,
+}
+/// A nonrenewable time bound. The caller separately owns the authenticated
+/// principal/action/resource binding; this value alone is never a grant.
+pub struct ActionWindow<C: AuthorityClock = SuspendAwareClock>(DeliveryWindow<C>);
+impl<C: AuthorityClock> PendingAction<C> {
+    pub fn complete(mut self, remaining: Duration) -> Result<ActionWindow<C>, LeaseError> {
+        let deadline = self
+            .started
+            .0
+            .checked_add(remaining)
+            .ok_or(LeaseError::ClockRange)?;
+        self.window.deadline = self.window.deadline.min(AuthorityTick(deadline));
+        self.window.check()?;
+        Ok(ActionWindow(self.window))
+    }
+}
+impl<C: AuthorityClock> ActionWindow<C> {
+    pub fn check(&mut self) -> Result<(), LeaseError> {
+        self.0.check()
     }
 }
 

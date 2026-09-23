@@ -61,6 +61,8 @@ struct Input<'a> {
     catalog: super::bootstrap::Input<'a>,
     catalog_id: bigbrotr_model::OwnerResourceId,
     expected: Selection<'a>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    scan_bytes: Option<u64>,
 }
 #[derive(Clone, Copy, Serialize)]
 #[serde(untagged)]
@@ -89,6 +91,7 @@ impl Preparation<'_> {
             route,
             credential,
             budget,
+            None,
         )?;
         Ok(ArchivedEvent {
             event: event.ok_or(ArchiveEventError::ObservationUnknown)?,
@@ -107,12 +110,35 @@ impl Preparation<'_> {
         credential: CatalogReaderCredentials<'_>,
         budget: &ResourceBudget,
     ) -> Result<ArchivedEventQuery, ArchiveEventError> {
+        self.query_event_bounded(
+            expected,
+            custody,
+            route,
+            credential,
+            budget,
+            256 * 1024 * 1024,
+        )
+    }
+
+    pub fn query_event_bounded(
+        self,
+        expected: EventQuery,
+        custody: super::ReaderCustody,
+        route: &CatalogRoute<'_>,
+        credential: CatalogReaderCredentials<'_>,
+        budget: &ResourceBudget,
+        scan_bytes: u64,
+    ) -> Result<ArchivedEventQuery, ArchiveEventError> {
+        if scan_bytes == 0 || scan_bytes > 256 * 1024 * 1024 {
+            return Err(ArchiveEventError::ResourceLimit);
+        }
         let (event, _, retention) = self.read_selected(
             Selection::Query(&expected),
             custody,
             route,
             credential,
             budget,
+            Some(scan_bytes),
         )?;
         Ok(ArchivedEventQuery {
             event,
@@ -128,6 +154,7 @@ impl Preparation<'_> {
         route: &CatalogRoute<'_>,
         credential: CatalogReaderCredentials<'_>,
         budget: &ResourceBudget,
+        scan_bytes: Option<u64>,
     ) -> Result<(Option<VerifiedEvent>, u64, Retention), ArchiveEventError> {
         let maximum = self.limits.max_encoded_bytes;
         let identity = custody.identity();
@@ -165,6 +192,7 @@ impl Preparation<'_> {
             },
             catalog_id: identity.catalog(),
             expected,
+            scan_bytes,
         };
         input
             .catalog
@@ -197,7 +225,10 @@ impl Preparation<'_> {
         if transfer.is_err() {
             return Err(ArchiveEventError::ObservationUnknown);
         }
-        let (bytes, permit) = result.map_err(|_| ArchiveEventError::ObservationUnknown)?;
+        let (bytes, permit) = result.map_err(|error| match error {
+            ProcessError::ResourceLimit => ArchiveEventError::ResourceLimit,
+            _ => ArchiveEventError::ObservationUnknown,
+        })?;
         let (event, snapshot_id) = match expected {
             Selection::References(read) => {
                 let (event, snapshot) = decode_response(&bytes, read, maximum)?;

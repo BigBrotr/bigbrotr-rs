@@ -162,9 +162,16 @@ requires the separate `history.read` action for the complete visibility referenc
 and does not confer export permission. This private cookie binding does not apply
 to public HTTP, MCP or other bearer transports. GET query decoding is specific to
 the resource route; session and static routes keep their closed request shapes.
-Until the native reader, live certified pin, principal authority and delivery
-lifetimes are connected and qualified, this is a selected integration contract,
-not an advertised implemented endpoint.
+The [initial history profile](../../contracts/read/v1/openapi.yaml) now owns the
+exact shared request/page subset and [operator guidance](../user/api/history.md).
+Its implementation is under native qualification; do not advertise it from
+codec or transport tests. The first profile uses one exact event ID, snapshot
+mode, a current certified archive head and a complete retained cut. Broader
+selected resources, filters, counts and cursors remain required P06 work.
+Smaller configured request/page/queue/response/execution/authorization limits apply.
+The cold native worker's existing512MiB floor plus parent decode/output overlap
+must fit an explicit per-read memory allowance; the common64MiB profile is not
+qualified by this implementation. Insufficient allowance refuses capacity.
 
 The initial private static bundle has a closed JSON manifest
 `bigbrotr-private-assets/1`: exactly `format`, `base_path` and `files`, with each

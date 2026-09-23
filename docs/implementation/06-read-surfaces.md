@@ -59,6 +59,15 @@ separate from a 60-second metadata cache. Restrictive changes invalidate old
 authority through the desired/applied activation barrier. PG outage cannot
 extend a lease. Per-task protocol bounds can be smaller.
 
+The first cold private historical reader is an explicit native profile, not
+qualification of the common64MiB memory envelope. Its complete512MiB worker grant,
+parent decode/output and credential/transport overlap must fit the configured
+per-read allowance. The common default refuses capacity; the tiny qualification
+fixture deliberately uses1GiB. See [the initial profile](../user/api/history.md).
+Conservative physical-input admission counts two complete file passes, including
+metadata-versus-actual length checks; aged/mixed workload and OS amplification
+qualification remain required. No task checkbox is closed by this subset.
+
 ## P06-T01 — Resource registry, typed admission and shared authority
 
 **Dependencies:** P01-T02/T04–T08; P02-T05/T06/T07; P05-T01 for derived manifests.

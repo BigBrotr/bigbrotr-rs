@@ -1,0 +1,102 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "resource",
+    "scope",
+    "filters"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "resource": {
+      "const": "event_history"
+    },
+    "mode": {
+      "const": "snapshot",
+      "default": "snapshot"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset_id",
+        "dictionary_kind",
+        "allocation_domain",
+        "ordinal"
+      ],
+      "properties": {
+        "dataset_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$",
+          "not": {
+            "const": "00000000000000000000000000000000"
+          }
+        },
+        "dictionary_kind": {
+          "const": 4
+        },
+        "allocation_domain": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$",
+          "not": {
+            "const": "00000000000000000000000000000000"
+          }
+        },
+        "ordinal": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,19}$",
+          "description": "Canonical unsigned decimal; runtime also enforces uint64 maximum18446744073709551615."
+        }
+      }
+    },
+    "filters": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      }
+    },
+    "page_size": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 100
+    },
+    "cursor": {
+      "type": "null"
+    },
+    "projection": {
+      "type": "null"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:bigbrotr:query-request:1",
+  "title": "Initial exact-ID history QueryRequest",
+  "description": "Private integration profile. Broader selected resources, filters and cursors remain required work; reject rather than ignore unsupported constraints. Duplicate JSON keys are invalid; schemas alone cannot detect them."
+}

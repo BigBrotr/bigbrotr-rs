@@ -19,13 +19,54 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD882654e, origin/main25861b1 before evidence publication. Cleanup evidence
-and cache retirement audit are pushed. Fresh read-only Tux inspection confirms
-the latest two containers stopped/PID0/noOOM and eight unrelated workloads running.
-Root now owns the private event-history reader changes. Native HTTP implementation and
-qualification evidence are pushed. Owned-reader code and native
-qualification evidence are pushed. No merge/rebase or other writer.
-Private repository/name verified through gh repo view. No dependencies changed.
+Verified main/HEAD and origin/main7964e6109c09c78ae3f7f1fecfe402b97c0cc502.
+Completed scoped-absence code and qualification evidence are pushed. Root is sole
+writer of the uncommitted event-history integration: model/protocol read modules;
+management transport/delivery/history and tests; serve/history plus shared native
+supervision; policy action windows and tests; PostgreSQL history authorization and
+current certified selection; parent/native bounded event query and its new scan
+fixture. No migration or dependency changes, merge/rebase or other writer.
+
+Actual initial TCP RED401-vs404 is preserved. Mac latest consumer checks PASS:
+38 executable/25 configuration/3 grant tests,16 policy-window tests,11 actual
+worker-process tests and2 protocol read tests; scoped Clippy and artifact/link
+checks PASS. Three truly blocked TCP cases cover global revocation and action/pin
+expiry despite a renewed global lease. These are dirty-source Mac results, not
+native engine/HTTP qualification. Logs `.research/implementation/event-history/`
+retain failed compile iterations and explicit worker-resource exit RED/GREEN.
+
+Read-only AI counterexamples corrected: terminal watch closure race, unsupported
+HTTP400, read-specific TTL, actual pin lifetime, complete preparation-memory floor,
+configured request/page/queue/response/execution bounds, disconnect cancellation
+with positive join and catalog barrier verification before send. Root reviewed
+shared consumers and new contracts. Final narrow AI review of private worker exit
+and fixture policy handshakes is pending; AI runs no tests.
+
+Native query scan admission conservatively charges two physical file passes for
+payload/eligibility, checks canonical file lengths against metadata and caps
+256MiB/2048files with smaller configured limits. Exact DuckLake d8a1881 list-files
+source inspected: metadata materializes at bind and remains under native/OS bounds.
+New native test is NOT_RUN. A paired private worker exit75 distinguishes known
+read resource refusal only after positive reap/empty outputs; no observation or
+absence is manufactured. Persistent formats/dependencies/SQL checksums unchanged.
+The common64MiB memory profile remains unqualified; native memory admission now
+includes worker, decode, output and128MiB conservative preparation overlap.
+
+Generated initial QueryRequest/QueryPage/OpenAPI contracts and user history docs
+are present. Independent real-client fixture adds exact signed GET/POST/absence,
+scope/CSRF refusal, restart/revocation, unavailable bundle and smaller memory/scan/
+response limits. Fixture-only policy successors3–6 occur after actual Control stop
+and SQL activeControl0/pins0; they do not qualify live rollout. Expected18 practical
+cases are NOT_RUN. Broader registry/cursors/filters/error profile and practical
+blocked delivery, cancellation, short pins, manager loss and grant fault reruns
+remain gates; no task or M1 closure.
+
+Next bounded action: create one unpublished exact candidate, transfer via Git and
+run the isolated native engine plus actual private history fixture on Tux. Capture
+source/dependency/artifact identities and independent terminal rows/files, then
+stop only owned resources and record failures or unknown results before advancing.
+Latest read-only Tux observation: x86_64, eight unrelated services running, no active
+BigBrotr lab,18,746,986,496bytes free. No new remote run or cleanup debt yet.
 
 [Private HTTP grant qualification](evidence/p08-private-grants-http-native-20260923.json)
 passes for exact6d3f1b0: five actual executable/PG refusal/startup/restart cases,
@@ -131,7 +172,7 @@ absences. Required payload/eligibility files missing or corrupt refuse; identica
 restoration succeeds. Absent-ID query under a real PG Lock refuses on deadline,
 then completes as absent after release. Three SIGQUIT/restart journeys preserve
 complete compared metadata and27 original Parquet hashes. Linux11native/2protocol/
-2parent tests plus scoped Clippy PASS. No HTTP behavior is yet added.
+2parent tests plus scoped Clippy PASS. That historical revision adds no HTTP behavior.
 Root and independent read-only AI reviewed the change. AI requested eligibility
 object negatives, now executed; it ran no tests. Scoped absence assumes the valid
 catalog/certified selection, not health of unrelated or pruned archive objects.
@@ -359,7 +400,8 @@ alone is not a drain proof. Pin release follows joined native work and delivery.
 The selected history route is the existing GET/POST QueryRequest/QueryPage protocol
 on the private origin; do not invent a management history protocol or make cookies
 public bearer tokens. Completed query absence now has a correlated closed wire
-and retains custody; native errors still map to ObservationUnknown. LIMIT2 bounds result rows,
+and retains custody; unknown native errors still map to ObservationUnknown. The current candidate
+distinguishes a positively joined resource refusal. LIMIT2 bounds result rows,
 not scanned bytes. Native common64MiB/aged-load capacity remains unqualified.
 
 serve-existing currently has native.disabled and no catalog reader credentials;

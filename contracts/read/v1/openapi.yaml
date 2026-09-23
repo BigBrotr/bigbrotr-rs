@@ -1,0 +1,201 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "BigBrotr private historical read integration",
+    "version": "0.1.0-dev",
+    "description": "Unqualified implementation slice. Trusted-host loopback cookie adapter only; not public bearer HTTP. One exact ID, snapshot mode, no cursor/count/export. Body/query max8192bytes, smaller configured limits apply. Absolute HTTP connection ceiling5s; separate nonrenewable action and pin windows. Native profile needs an explicit sufficient read memory budget; defaults64MiB refuse capacity."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Private origin only"
+    }
+  ],
+  "security": [
+    {
+      "localSession": []
+    }
+  ],
+  "paths": {
+    "/v1/resources/event_history": {
+      "get": {
+        "operationId": "getEventHistory",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "const": "1"
+            },
+            "description": "Default1"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "const": "snapshot"
+            },
+            "description": "Default snapshot"
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Percent-encoded JSON qualified reference"
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Percent-encoded JSON exact-ID filter array"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "description": "Configured default, initially100"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Present cursors are unsupported"
+          },
+          {
+            "name": "projection",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "const": "null"
+            },
+            "description": "Only absent or JSON null supported"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One signed event or completed scoped empty page; no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "response.schema.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or unsupported query"
+          },
+          "401": {
+            "description": "Session or CSRF denied"
+          },
+          "403": {
+            "description": "Browser boundary or exact scope permission denied"
+          },
+          "413": {
+            "description": "Request byte bound"
+          },
+          "415": {
+            "description": "JSON media type required"
+          },
+          "429": {
+            "description": "Capacity refused; Retry-After60"
+          },
+          "503": {
+            "description": "Required authority or dependency unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "postEventHistory",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "One signed event or completed scoped empty page; no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "response.schema.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or unsupported query"
+          },
+          "401": {
+            "description": "Session or CSRF denied"
+          },
+          "403": {
+            "description": "Browser boundary or exact scope permission denied"
+          },
+          "413": {
+            "description": "Request byte bound"
+          },
+          "415": {
+            "description": "JSON media type required"
+          },
+          "429": {
+            "description": "Capacity refused; Retry-After60"
+          },
+          "503": {
+            "description": "Required authority or dependency unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "localSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "BigBrotrLocalSession"
+      }
+    }
+  }
+}

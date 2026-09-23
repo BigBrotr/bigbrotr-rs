@@ -20,6 +20,9 @@ mod archive_frontier;
 mod archive_persistence;
 #[path = "browser_reauthentication.rs"]
 mod browser_reauthentication;
+#[path = "history.rs"]
+mod history;
+pub use history::HistoryAuthorization;
 #[path = "scope_grants.rs"]
 mod scope_grants;
 pub use scope_grants::ScopeGrantAllocation;

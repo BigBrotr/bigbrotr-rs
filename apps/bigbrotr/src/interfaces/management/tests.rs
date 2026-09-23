@@ -4,6 +4,21 @@ use super::*;
 mod grants;
 
 #[tokio::test]
+async fn private_history_requires_session_before_admitting_read_work() {
+    let (mut server, address, budget) = server().await;
+    for method in ["GET", "POST"] {
+        let request = format!(
+            "{method} /v1/resources/event_history HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Length: 0\r\n\r\n"
+        );
+        let response = exchange(address, request).await;
+        assert!(response.starts_with("HTTP/1.1 401 "), "{response}");
+        assert!(server.commands.try_recv().is_err());
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
 async fn reauthentication_requires_session_and_explicit_csrf_before_queueing() {
     let (mut server, address, budget) = server().await;
     let path = "/management/v1/sessions/current/reauthenticate";
@@ -492,7 +507,8 @@ async fn actually_blocked_socket_cannot_resume_writing_after_gate_revocation() {
     }
     assert!(accepted > 0);
     let gate = delivery_gate(Duration::from_secs(5));
-    let mut writer = delivery::GuardedSocket::new(client, gate.clone());
+    let mut writer =
+        delivery::GuardedSocket::new(client, gate.clone(), delivery::ActionGate::new());
     // Already full at the OS, and the same pending writer remains alive.
     std::future::poll_fn(|cx| {
         loop {
@@ -532,6 +548,142 @@ async fn actually_blocked_socket_cannot_resume_writing_after_gate_revocation() {
 }
 
 #[tokio::test]
+async fn blocked_socket_action_expires_while_global_delivery_is_renewed() {
+    blocked_action(false).await;
+}
+#[tokio::test]
+async fn blocked_socket_pin_expires_while_action_and_global_delivery_remain_live() {
+    blocked_action(true).await;
+}
+async fn blocked_action(pin: bool) {
+    use std::{pin::Pin, task::Poll};
+    use tokio::io::AsyncWrite;
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let client = TcpStream::connect(listener.local_addr().unwrap())
+        .await
+        .unwrap();
+    let (mut reader, _) = listener.accept().await.unwrap();
+    client.writable().await.unwrap();
+    let block = [42_u8; 16 * 1024];
+    let mut accepted = 0;
+    loop {
+        match client.try_write(&block) {
+            Ok(n) => {
+                assert!(n > 0);
+                accepted += n;
+                assert!(
+                    accepted < 64 * 1024 * 1024,
+                    "OS did not block within explicit fixture bound"
+                );
+            }
+            Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => break,
+            Err(e) => panic!("unexpected socket error {e}"),
+        }
+    }
+    assert!(accepted > 0);
+    use bigbrotr::runtime::policy_authority::*;
+    let dataset = "01010101010101010101010101010101".parse().unwrap();
+    let process = "02020202020202020202020202020202".parse().unwrap();
+    let epoch = bigbrotr_model::PolicyEpoch::new(1);
+    let mut lease = PolicyLeaseTracker::new(
+        dataset,
+        process,
+        epoch,
+        PolicyLeaseTtl::new(Duration::from_secs(5)).unwrap(),
+    )
+    .unwrap();
+    let ticket = lease.begin_refresh().unwrap();
+    lease
+        .complete_refresh(
+            &ticket,
+            LeaseResponse {
+                dataset,
+                process_incarnation: process,
+                policy_epoch: epoch,
+                ttl: Duration::from_secs(5),
+            },
+        )
+        .unwrap();
+    let action = delivery::ActionGate::new();
+    action
+        .bind(
+            lease
+                .begin_action(epoch)
+                .unwrap()
+                .complete(if pin {
+                    Duration::from_secs(5)
+                } else {
+                    Duration::from_millis(100)
+                })
+                .unwrap(),
+        )
+        .unwrap();
+    if pin {
+        action
+            .constrain_pin(Some(
+                lease
+                    .begin_action(epoch)
+                    .unwrap()
+                    .complete(Duration::from_millis(100))
+                    .unwrap(),
+            ))
+            .unwrap();
+    }
+    let gate = DeliveryGate::new(lease.delivery_window(epoch).unwrap());
+    let mut writer = delivery::GuardedSocket::new(client, gate.clone(), action);
+    // Already full at the OS, and the same pending writer remains alive.
+    std::future::poll_fn(|cx| {
+        loop {
+            match Pin::new(&mut writer).poll_write(cx, &block) {
+                Poll::Pending => return Poll::Ready(()),
+                Poll::Ready(Ok(n)) => {
+                    assert!(n > 0);
+                    accepted += n;
+                    assert!(
+                        accepted < 64 * 1024 * 1024,
+                        "fixture socket did not remain bounded"
+                    );
+                }
+                Poll::Ready(Err(e)) => panic!("unexpected write error {e}"),
+            }
+        }
+    })
+    .await;
+    tokio::time::sleep(Duration::from_millis(120)).await;
+    let ticket = lease.begin_refresh().unwrap();
+    lease
+        .complete_refresh(
+            &ticket,
+            LeaseResponse {
+                dataset,
+                process_incarnation: process,
+                policy_epoch: epoch,
+                ttl: Duration::from_secs(5),
+            },
+        )
+        .unwrap();
+    gate.renew(lease.delivery_window(epoch).unwrap()).unwrap();
+    lease.check_delivery(epoch).unwrap();
+    let drained = tokio::spawn(async move {
+        let mut bytes = Vec::new();
+        reader.read_to_end(&mut bytes).await.unwrap();
+        bytes
+    });
+    let error = writer
+        .write_all(b"must-not-be-delivered")
+        .await
+        .unwrap_err();
+    assert_eq!(error.kind(), std::io::ErrorKind::PermissionDenied);
+    drop(writer);
+    let bytes = tokio::time::timeout(Duration::from_secs(2), drained)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(bytes.len(), accepted);
+    assert!(bytes.iter().all(|b| *b == 42));
+}
+
+#[tokio::test]
 async fn socket_delivery_checks_expiry_even_without_a_supervisor_poll() {
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
     let client = TcpStream::connect(listener.local_addr().unwrap())
@@ -539,7 +691,8 @@ async fn socket_delivery_checks_expiry_even_without_a_supervisor_poll() {
         .unwrap();
     let (mut reader, _) = listener.accept().await.unwrap();
     let gate = delivery_gate(Duration::from_millis(50));
-    let mut writer = delivery::GuardedSocket::new(client, gate.clone());
+    let mut writer =
+        delivery::GuardedSocket::new(client, gate.clone(), delivery::ActionGate::new());
     writer.write_all(b"before").await.unwrap();
     tokio::time::sleep(Duration::from_millis(70)).await;
     assert_eq!(

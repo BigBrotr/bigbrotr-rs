@@ -325,3 +325,26 @@ fn complete_data_without_exit_is_not_delivered_after_cancellation_or_deadline() 
         assert_eq!(budget.snapshot().active_permits(), 0);
     }
 }
+
+#[test]
+fn explicit_worker_resource_refusal_requires_joined_empty_output() {
+    for (script, expected) in [
+        ("exit 75", ProcessError::ResourceLimit),
+        (
+            "echo 'private archive event read failed: ResourceLimit' >&2; exit 1",
+            ProcessError::Exit,
+        ),
+        ("printf '{}'; exit 75", ProcessError::Exit),
+        ("exit 1", ProcessError::Exit),
+    ] {
+        let budget = budget();
+        let cancel = AtomicBool::new(false);
+        let mut command = Command::new("/bin/sh");
+        command.args(["-c", script]);
+        let mut process = spawn(&mut command, &budget, &cancel, Duration::from_secs(2));
+        assert_eq!(process.finish(), Err(expected), "{script}");
+        assert!(process.terminated());
+        drop(process);
+        assert_eq!(budget.snapshot().active_permits(), 0);
+    }
+}

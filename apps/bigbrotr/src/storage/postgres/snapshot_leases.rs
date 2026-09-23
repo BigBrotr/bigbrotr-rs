@@ -119,6 +119,24 @@ impl ControlSession {
         if revision == 0 || catalog == self.identity.resource_id {
             return Err(Error::InvalidInput);
         }
+        self.archive_selection(catalog, Some(revision)).await
+    }
+
+    pub async fn read_current_archive_selection(
+        &mut self,
+        catalog: OwnerResourceId,
+    ) -> Result<Option<ArchiveReadSelection>, Error> {
+        if catalog == self.identity.resource_id {
+            return Err(Error::InvalidInput);
+        }
+        self.archive_selection(catalog, None).await
+    }
+
+    async fn archive_selection(
+        &mut self,
+        catalog: OwnerResourceId,
+        revision: Option<u64>,
+    ) -> Result<Option<ArchiveReadSelection>, Error> {
         self.begin_operation().map_err(|_| Error::Unavailable)?;
         let tx = application_transaction(&mut self.client, 17)
             .await
@@ -129,13 +147,14 @@ impl ControlSession {
         let dataset = self.request.dataset;
         let outcome = async {
             let row = tx.query_opt(
-                "SELECT f.snapshot_id,left(f.topology_generation::text,21),r.sealed AND r.dataset_id=f.dataset_id AND r.consumer_role='archive' AND r.topology_generation=f.topology_generation AND f.consumer_id=f.catalog_id FROM control.archive_frontier_snapshots f JOIN control.consumer_frontier_revisions r USING(consumer_id,frontier_revision) WHERE f.dataset_id=$1::bytea AND f.catalog_id=$2::bytea AND f.frontier_revision=$3::text::numeric",
-                &[&&dataset.as_bytes()[..], &&catalog.as_bytes()[..], &revision.to_string()],
+                "SELECT f.snapshot_id,left(f.topology_generation::text,21),r.sealed AND r.dataset_id=f.dataset_id AND r.consumer_role='archive' AND r.topology_generation=f.topology_generation AND f.consumer_id=f.catalog_id,left(f.frontier_revision::text,21) FROM control.archive_frontier_snapshots f JOIN control.consumer_frontier_revisions r USING(consumer_id,frontier_revision) JOIN control.consumers c ON c.consumer_id=f.consumer_id AND c.dataset_id=f.dataset_id AND c.consumer_role='archive' WHERE f.dataset_id=$1::bytea AND f.catalog_id=$2::bytea AND f.frontier_revision=coalesce($3::text::numeric,c.current_revision)",
+                &[&&dataset.as_bytes()[..], &&catalog.as_bytes()[..], &revision.map(|v| v.to_string())],
             ).await.map_err(backend)?;
             let Some(row) = row else { return Ok(None); };
             if !row.try_get::<_, bool>(2).map_err(backend)? {
                 return Err(Error::InvalidMetadata);
             }
+            let revision = number(&row, 3)?;
             let snapshot_id = u64::try_from(row.try_get::<_, i64>(0).map_err(backend)?)
                 .ok().filter(|v| *v > 0).ok_or(Error::InvalidMetadata)?;
             let topology_generation = TopologyGeneration::new(number(&row, 1)?);
