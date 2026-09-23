@@ -19,7 +19,8 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Verified main/HEAD0d95a6a, origin/main5082a1a. Native HTTP candidate is local/unpublished. Owned-reader code and native
+Verified main/HEAD and origin/main2bc18b9. Native HTTP implementation and
+qualification evidence are pushed. Owned-reader code and native
 qualification evidence are pushed. No merge/rebase or other writer.
 Private repository/name verified through gh repo view. No dependencies changed.
 
@@ -74,7 +75,15 @@ cancellation/ambiguous acceptance, multi-stream/zero/cap selection and aged/reso
 work remain unqualified. The new literal lookup assertion in
 publication_scope_grants.rs compiles but is NOT_RUN in this HTTP fixture.
 No P02/P06/P08 step or M1 closure; continue history/export after this boundary.
-Root has only evidence/checkpoint/owning-doc changes after candidate0d95a6a.
+Root now owns two new uncommitted fixture files, private_grant_fault_client.py
+and private_grant_fault_cases.py, plus this checkpoint. They assert actual
+PostgreSQL Lock wait, native child identity, no effects after the five-second
+request deadline, and graceful SIGTERM after confirmed native join. Sources parse,
+but native execution is NOT_RUN. Current signal path returns exit4 after joining
+and retains the pin; the new SIGTERM expected0 case is deliberately discriminating
+and may expose that remaining lifecycle behavior. Do not weaken it to green.
+Next exact candidate/lab scripts are under `.research/implementation/native-grant-faults/`;
+no new fault lab has started yet.
 
 ## Scoped grant result
 
