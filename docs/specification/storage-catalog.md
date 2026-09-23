@@ -167,10 +167,13 @@ is private; public read models use allowlisted projections, never table dumps.
 | 0802 management | `management_commands(actor_id, request_key)`; `config_applications(revision, role_instance_id)`; extensions to shared `jobs(job_id)`; `job_dependencies(job_id, dependency_id)` | Atomic command/job/pin acceptance, desired/applied state; terminal job detail normally 30 days, unresolved obligations longer |
 | 0803 saved views | `saved_views(view_id)` | Owner, resource/query, label/revision; reauthorize on every reuse |
 | 0804 artifact publication | `artifact_publications(artifact_id)` and additive publication/user-catalog fields over existing `artifacts`/`artifact_files` | Immutable manifest/files, storage refs, source/policy basis, revision/state/pin; publication independent of signing; no recreation of the shared file inventory |
+| 0813 first export acceptance | Immutable `export_jobs(job_id)` detail over the common job ledger; nullable immutable `jobs.export_job_protocol` and unique `archive_snapshot_pins.export_job_id` | Exact request/query/destination binding, authenticated acceptance and retained complete input cut. New qualified jobs and export pins are accepted atomically; legacy rows remain unqualified and cannot be adopted. |
 
 Jobs cover exports, backup, restore verification, scrub, repair, migration and
 finite acquisition/analysis. Their typed result points to immutable manifests;
-there is no extra table for every job kind. Backup files, CSR graph files and
+there is no duplicate state ledger for every job kind. A concrete persistent
+responsibility may require immutable typed detail, such as the first export's
+query, destination binding and pin attribution in 0813. Backup files, CSR graph files and
 export bundles occupy artifact storage with checksummed manifests and retained
 references. Their bytes are included in disk planning. Credential values remain
 in the configured protected provider/local provisioning path, not the archive.
@@ -191,6 +194,23 @@ policy/audit receipt. These bootstrap obligations are retained beyond ordinary
 audit TTL. Existing initialization and enrollment rows keep their meanings;
 per-role applications, general command kinds and job dependencies remain later
 additive migrations under this responsibility, not empty early tables.
+
+The first 0813 consumer accepts a private exact-ID signed-events JSONL request
+with `history.read`, `export` and `private-export` scope grants plus dataset
+`data.read`. Command, audit, job, every cut member (including zero), detail and a
+new purpose=`export` pin/positive-prefix claims share one transaction. A temporary
+ordinary reader proves the native scope allocation; it is never the durable job
+pin. Historical command resolution authenticates the actor but does not reapply
+work, extend the pin or require the original reader to remain live. Execution
+requires fresh current authorization and a fresh reader. Nonterminal states,
+including pause/cancellation requested, retain the original lease and individual
+claims regardless of expiry. Terminal cleanup requires the original actual
+holder or fresh exclusive recovery under 0018; restart does not adopt old pins.
+Callers acquire authority/dataset/account/session, stable consumer, job, then
+lease/claim locks. The additive schema leaves old logical rows unchanged;
+adding nullable domain columns can change heap metadata. Neither protocol nor
+job linkage may be retrofitted by UPDATE. This initial acceptance is not an
+artifact manifest, successful export, execution scheduler or publication grant.
 
 Shared finite-job rows are created by P02-T01 in migration 0001 for the first
 P03/P04 consumers. The 0802 entry above adds management commands, grants and

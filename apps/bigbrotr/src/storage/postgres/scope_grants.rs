@@ -193,7 +193,15 @@ async fn accept_in_transaction(
     if command.enabled {
         allocation
             .ok_or(SessionError::ArchiveUnavailable)?
-            .verify(tx, dataset_id, command)
+            .verify(
+                tx,
+                dataset_id,
+                command.scope,
+                command
+                    .allocation
+                    .as_ref()
+                    .ok_or(SessionError::InvalidInput)?,
+            )
             .await?;
     } else if allocation.is_some() {
         return Err(SessionError::InvalidInput);
@@ -268,16 +276,13 @@ fn receipt(
     })
 }
 impl ScopeGrantAllocation<'_, '_> {
-    async fn verify(
+    pub(super) async fn verify(
         &self,
         tx: &Transaction<'_>,
         dataset: DatasetId,
-        command: &GrantCommand,
+        scope: bigbrotr_model::QualifiedRef,
+        selected: &crate::management::grants::AllocationSelection,
     ) -> Result<(), SessionError> {
-        let selected = command
-            .allocation
-            .as_ref()
-            .ok_or(SessionError::InvalidInput)?;
         let read = self.visibility.read();
         if self.capture.identity() != self.visibility.catalog()
             || self.capture.identity().dataset() != dataset
@@ -288,7 +293,7 @@ impl ScopeGrantAllocation<'_, '_> {
             || self.pin.snapshot_id != self.capture.snapshot_id()
             || read.dataset != dataset
             || read.snapshot_id != self.pin.snapshot_id
-            || read.scope != command.scope
+            || read.scope != scope
             || !self.capture.coordinator().permits_reader_pins()
         {
             return Err(SessionError::Conflict);

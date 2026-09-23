@@ -310,43 +310,8 @@ impl ControlSession {
             // No renewal, replacement holder or implicit resurrection on retry.
             return Ok(recorded.receipt);
         }
-        let dataset_id = identity.dataset();
-        let catalog_id = identity.catalog();
-        let dataset = &dataset_id.as_bytes()[..];
-        let catalog = &catalog_id.as_bytes()[..];
-        let revision = request.frontier_revision.to_string();
-        let row = tx.query_opt("SELECT f.topology_generation::text, f.snapshot_id=$4::bigint AND r.sealed AND p.coordinator_binding_sha256=$5::bytea FROM control.archive_frontier_snapshots f JOIN control.consumer_frontier_revisions r USING(consumer_id,frontier_revision) JOIN control.archive_persistence p ON p.dataset_id=f.dataset_id AND p.catalog_id=f.catalog_id WHERE f.dataset_id=$1::bytea AND f.catalog_id=$2::bytea AND f.frontier_revision=$3::text::numeric", &[&dataset,&catalog,&revision,&(capture.snapshot_id() as i64),&&capture.coordinator().binding_digest().as_bytes()[..]]).await.map_err(backend)?.ok_or(Error::Conflict)?;
-        if !row.try_get::<_, bool>(1).map_err(backend)? {
-            return Err(Error::Conflict);
-        }
-        let topology = number(&row, 0)?.to_string();
-        let bounds = tx.query("SELECT shard_id::bigint,owner_epoch::text,last_complete_sequence::text FROM control.consumer_frontiers WHERE consumer_id=$1::bytea AND frontier_revision=$2::text::numeric ORDER BY shard_id,owner_epoch LIMIT 1025", &[&catalog,&revision]).await.map_err(backend)?;
-        if bounds.len() > 1024 {
-            return Err(Error::ResourceLimit);
-        }
-        let lease = &request.lease_id[..];
-        let owner_resource = &self.identity.resource_id.as_bytes()[..];
-        let owner_epoch = self.identity.epoch.get().to_string();
-        let incarnation = &self.identity.process_incarnation.as_bytes()[..];
-        let inserted = tx.execute("INSERT INTO control.snapshot_leases(lease_id,dataset_id,consumer_id,frontier_revision,topology_generation,holder_kind,holder_role_instance_id,holder_role,holder_incarnation,acquired_at_us,updated_at_us,expires_at_us,archive_pin_protocol) SELECT $1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::text::numeric,'role_instance',$6::bytea,'control',$7::bytea,now_us,now_us,least(now_us+$8::bigint,lease_expires_at_us),1 FROM control.owner_epochs CROSS JOIN (SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint AS now_us)t WHERE resource_id=$9::bytea AND epoch=$10::text::numeric", &[&lease,&dataset,&catalog,&revision,&topology,&&self.identity.role_instance_id[..],&incarnation,&ttl_us,&owner_resource,&owner_epoch]).await.map_err(backend)?;
-        if inserted != 1 {
-            return Err(Error::Conflict);
-        }
-        tx.execute("INSERT INTO control.archive_snapshot_pins(lease_id,dataset_id,consumer_id,frontier_revision,issuer_resource,issuer_epoch,issuer_incarnation,purpose,requested_ttl_us) VALUES ($1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::bytea,$6::text::numeric,$7::bytea,'reader',$8::bigint)", &[&lease,&dataset,&catalog,&revision,&owner_resource,&owner_epoch,&incarnation,&ttl_us]).await.map_err(backend)?;
-        for bound in bounds {
-            let last = number(&bound, 2)?;
-            if last == 0 {
-                continue;
-            }
-            let shard: i64 = bound.try_get(0).map_err(backend)?;
-            let epoch = number(&bound, 1)?;
-            let claim = fresh_id().map_err(|_| Error::Unavailable)?;
-            tx.execute("INSERT INTO control.retention_claims(claim_id,lease_id,dataset_id,topology_generation,shard_id,owner_epoch,first_sequence,last_sequence,purpose,created_at_us) VALUES ($1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::bigint,$6::text::numeric,1,$7::text::numeric,'reader',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint)", &[&&claim[..],&lease,&dataset,&topology,&shard,&epoch.to_string(),&last.to_string()]).await.map_err(backend)?;
-        }
-        let mut receipt = read(&tx, dataset_id, catalog_id, request.lease_id, self.identity)
-            .await?
-            .ok_or(Error::InvalidMetadata)?
-            .receipt;
+        let mut receipt =
+            insert_pin(&tx, capture, request, self.identity, PinPurpose::Reader).await?;
         capture.verify().await.map_err(|_| Error::Unavailable)?;
         // Keep time/complete-claim checks deferred until COMMIT, after every wait.
         commit_started.set(true);
@@ -466,7 +431,17 @@ async fn read(
     lease: [u8; 16],
     owner: ControlOwner,
 ) -> Result<Option<Recorded>, Error> {
-    let row = tx.query_opt("SELECT l.dataset_id=$2::bytea AND l.consumer_id=$3::bytea AND l.archive_pin_protocol=1 AND p.purpose='reader',l.frontier_revision::text,f.snapshot_id,l.lease_revision::text,l.acquired_at_us,l.updated_at_us,l.expires_at_us,l.state='released',p.requested_ttl_us,p.issuer_resource=$4::bytea AND p.issuer_epoch=$5::text::numeric AND p.issuer_incarnation=$6::bytea FROM control.snapshot_leases l LEFT JOIN control.archive_snapshot_pins p USING(lease_id) LEFT JOIN control.archive_frontier_snapshots f ON f.consumer_id=p.consumer_id AND f.frontier_revision=p.frontier_revision WHERE l.lease_id=$1::bytea", &[&&lease[..],&&dataset.as_bytes()[..],&&catalog.as_bytes()[..],&&owner.resource_id.as_bytes()[..],&owner.epoch.get().to_string(),&&owner.process_incarnation.as_bytes()[..]]).await.map_err(backend)?;
+    read_purpose(tx, dataset, catalog, lease, owner, PinPurpose::Reader).await
+}
+async fn read_purpose(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    catalog: OwnerResourceId,
+    lease: [u8; 16],
+    owner: ControlOwner,
+    purpose: PinPurpose,
+) -> Result<Option<Recorded>, Error> {
+    let row = tx.query_opt("SELECT l.dataset_id=$2::bytea AND l.consumer_id=$3::bytea AND l.archive_pin_protocol=1 AND p.purpose=$7::text,l.frontier_revision::text,f.snapshot_id,l.lease_revision::text,l.acquired_at_us,l.updated_at_us,l.expires_at_us,l.state='released',p.requested_ttl_us,p.issuer_resource=$4::bytea AND p.issuer_epoch=$5::text::numeric AND p.issuer_incarnation=$6::bytea FROM control.snapshot_leases l LEFT JOIN control.archive_snapshot_pins p USING(lease_id) LEFT JOIN control.archive_frontier_snapshots f ON f.consumer_id=p.consumer_id AND f.frontier_revision=p.frontier_revision WHERE l.lease_id=$1::bytea", &[&&lease[..],&&dataset.as_bytes()[..],&&catalog.as_bytes()[..],&&owner.resource_id.as_bytes()[..],&owner.epoch.get().to_string(),&&owner.process_incarnation.as_bytes()[..],&purpose.as_str()]).await.map_err(backend)?;
     let Some(row) = row else {
         return Ok(None);
     };
@@ -493,4 +468,82 @@ async fn read(
         ttl_us: row.try_get(8).map_err(backend)?,
         current_holder: row.try_get(9).map_err(backend)?,
     }))
+}
+
+/// Internal purpose selection: ordinary reader callers never accept export pins.
+#[derive(Clone, Copy)]
+pub(super) enum PinPurpose {
+    Reader,
+    Export(bigbrotr_model::JobId),
+}
+impl PinPurpose {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Reader => "reader",
+            Self::Export(_) => "export",
+        }
+    }
+    fn job_id(&self) -> Option<&[u8]> {
+        match self {
+            Self::Reader => None,
+            Self::Export(id) => Some(&id.as_bytes()[..]),
+        }
+    }
+}
+
+/// Insert inside the caller's already fenced transaction. No commit or cleanup:
+/// durable job acceptance owns an export pin atomically with its initial cut.
+/// Caller holds the stable consumer lock before taking job/lease/claim locks.
+pub(super) async fn insert_pin(
+    tx: &Transaction<'_>,
+    capture: &CatalogCapture<'_>,
+    request: &ArchivePinRequest,
+    owner: ControlOwner,
+    purpose: PinPurpose,
+) -> Result<ArchivePinReceipt, Error> {
+    let ttl_us = request.ttl_us()?;
+    let identity = capture.identity();
+    let dataset_id = identity.dataset();
+    let catalog_id = identity.catalog();
+    let dataset = &dataset_id.as_bytes()[..];
+    let catalog = &catalog_id.as_bytes()[..];
+    let revision = request.frontier_revision.to_string();
+    let row = tx.query_opt("SELECT f.topology_generation::text, f.snapshot_id=$4::bigint AND r.sealed AND p.coordinator_binding_sha256=$5::bytea FROM control.archive_frontier_snapshots f JOIN control.consumer_frontier_revisions r USING(consumer_id,frontier_revision) JOIN control.archive_persistence p ON p.dataset_id=f.dataset_id AND p.catalog_id=f.catalog_id WHERE f.dataset_id=$1::bytea AND f.catalog_id=$2::bytea AND f.frontier_revision=$3::text::numeric", &[&dataset,&catalog,&revision,&(capture.snapshot_id() as i64),&&capture.coordinator().binding_digest().as_bytes()[..]]).await.map_err(backend)?.ok_or(Error::Conflict)?;
+    if !row.try_get::<_, bool>(1).map_err(backend)? {
+        return Err(Error::Conflict);
+    }
+    let topology = number(&row, 0)?.to_string();
+    let bounds = tx.query("SELECT shard_id::bigint,owner_epoch::text,last_complete_sequence::text FROM control.consumer_frontiers WHERE consumer_id=$1::bytea AND frontier_revision=$2::text::numeric ORDER BY shard_id,owner_epoch LIMIT 1025", &[&catalog,&revision]).await.map_err(backend)?;
+    if bounds.len() > 1024 {
+        return Err(Error::ResourceLimit);
+    }
+    let lease = &request.lease_id[..];
+    let owner_resource = &owner.resource_id.as_bytes()[..];
+    let owner_epoch = owner.epoch.get().to_string();
+    let incarnation = &owner.process_incarnation.as_bytes()[..];
+    let inserted = tx.execute("INSERT INTO control.snapshot_leases(lease_id,dataset_id,consumer_id,frontier_revision,topology_generation,holder_kind,holder_role_instance_id,holder_role,holder_incarnation,acquired_at_us,updated_at_us,expires_at_us,archive_pin_protocol) SELECT $1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::text::numeric,'role_instance',$6::bytea,'control',$7::bytea,now_us,now_us,least(now_us+$8::bigint,lease_expires_at_us),1 FROM control.owner_epochs CROSS JOIN (SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint AS now_us)t WHERE resource_id=$9::bytea AND epoch=$10::text::numeric", &[&lease,&dataset,&catalog,&revision,&topology,&&owner.role_instance_id[..],&incarnation,&ttl_us,&owner_resource,&owner_epoch]).await.map_err(backend)?;
+    if inserted != 1 {
+        return Err(Error::Conflict);
+    }
+    if matches!(purpose, PinPurpose::Reader) {
+        tx.execute("INSERT INTO control.archive_snapshot_pins(lease_id,dataset_id,consumer_id,frontier_revision,issuer_resource,issuer_epoch,issuer_incarnation,purpose,requested_ttl_us) VALUES ($1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::bytea,$6::text::numeric,$7::bytea,'reader',$8::bigint)", &[&lease,&dataset,&catalog,&revision,&owner_resource,&owner_epoch,&incarnation,&ttl_us]).await.map_err(backend)?;
+    } else {
+        tx.execute("INSERT INTO control.archive_snapshot_pins(lease_id,dataset_id,consumer_id,frontier_revision,issuer_resource,issuer_epoch,issuer_incarnation,purpose,requested_ttl_us,export_job_id) VALUES ($1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::bytea,$6::text::numeric,$7::bytea,$9::text,$8::bigint,$10::bytea)", &[&lease,&dataset,&catalog,&revision,&owner_resource,&owner_epoch,&incarnation,&ttl_us,&purpose.as_str(),&purpose.job_id()]).await.map_err(backend)?;
+    }
+    for bound in bounds {
+        let last = number(&bound, 2)?;
+        if last == 0 {
+            continue;
+        }
+        let shard: i64 = bound.try_get(0).map_err(backend)?;
+        let epoch = number(&bound, 1)?;
+        let claim = fresh_id().map_err(|_| Error::Unavailable)?;
+        tx.execute("INSERT INTO control.retention_claims(claim_id,lease_id,dataset_id,topology_generation,shard_id,owner_epoch,first_sequence,last_sequence,purpose,created_at_us) VALUES ($1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::bigint,$6::text::numeric,1,$7::text::numeric,$8::text,(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint)", &[&&claim[..],&lease,&dataset,&topology,&shard,&epoch.to_string(),&last.to_string(),&purpose.as_str()]).await.map_err(backend)?;
+    }
+    Ok(
+        read_purpose(tx, dataset_id, catalog_id, request.lease_id, owner, purpose)
+            .await?
+            .ok_or(Error::InvalidMetadata)?
+            .receipt,
+    )
 }

@@ -133,6 +133,7 @@ pub async fn run(
     database: &str,
     password: &str,
     cancel: &AtomicBool,
+    export_jobs: bool,
 ) {
     let (admin, driver) = connect("bbpub_control_normal", "postgres").await;
     owner.refresh(validate).await.unwrap();
@@ -403,6 +404,40 @@ pub async fn run(
     );
     admin.batch_execute("DROP TRIGGER a_scope_omissions ON control.management_audit; DROP FUNCTION public.scope_fixture_omissions(); DROP FUNCTION public.scope_fixture_state()").await.unwrap();
     case("scope-grant-complete-positive-and-six-omissions-restore-full-state-and-xmin");
+    if export_jobs {
+        for (offset, action) in ["export", "private-export"].into_iter().enumerate() {
+            let mut grant = command(true, offset as u64 + 2);
+            grant.action = serde_json::from_value(serde_json::json!(action)).unwrap();
+            let key = CommandKey::try_from([0xd1 + offset as u8; 16]).unwrap();
+            let proof = proof(owner, &session, key, &grant).await;
+            assert!(
+                owner
+                    .accept_scope_grant(
+                        &session.session,
+                        &session.csrf,
+                        key,
+                        &grant,
+                        proof,
+                        Some(&allocation),
+                        &Cell::new(false)
+                    )
+                    .await
+                    .unwrap()
+                    .created
+            );
+        }
+        publication_export_jobs::run(owner, &session, &allocation, &admin, home).await;
+        drop(visibility);
+        owner
+            .release_archive_pin(&pin, &Cell::new(false))
+            .await
+            .unwrap();
+        capture.finish().await.unwrap();
+        drop(admin);
+        driver.await.unwrap().unwrap();
+        return;
+    }
+
     let durable = state(&admin).await;
     assert_eq!(
         owner

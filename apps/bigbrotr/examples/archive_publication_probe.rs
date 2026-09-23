@@ -43,6 +43,8 @@ mod custody;
 mod ingest;
 #[path = "support/publication_installation.rs"]
 mod installed_catalog;
+#[path = "support/publication_export_jobs.rs"]
+mod publication_export_jobs;
 #[path = "support/publication_frontier.rs"]
 mod publication_frontier;
 #[path = "support/publication_frontier_recovery.rs"]
@@ -273,6 +275,7 @@ async fn run(
     event_read: bool,
     capture_cut: bool,
     scope_grants: bool,
+    export_jobs: bool,
 ) {
     assert!(!installed || !mode.starts_with("custody_"));
     let manager_login = if installed {
@@ -386,6 +389,9 @@ async fn run(
     initialize_control(&control, installed).await;
     if scope_grants {
         publication_scope_grants::prepare(&control).await;
+        if export_jobs {
+            publication_export_jobs::prepare(&control).await;
+        }
     }
     let (client, connection) = connection(&control, "bigbrotr_control", 5432).await;
     let driver = if let Some(coordinator) = &coordinator {
@@ -812,6 +818,7 @@ async fn run(
             &database,
             &reader_password,
             &cancel,
+            export_jobs,
         )
         .await;
     }
@@ -838,7 +845,11 @@ fn main() {
                 && (matches!(args[2].as_str(), "resolve" | "frontier" | "pin")
                     || matches!(
                         args[3].as_str(),
-                        "--installed" | "--event-read" | "--capture-cut" | "--scope-grants"
+                        "--installed"
+                            | "--event-read"
+                            | "--capture-cut"
+                            | "--scope-grants"
+                            | "--export-jobs"
                     )
                     || args[1] == "protocol")
     );
@@ -906,13 +917,23 @@ fn main() {
                     args.get(3).is_some_and(|s| {
                         matches!(
                             s.as_str(),
-                            "--installed" | "--event-read" | "--capture-cut" | "--scope-grants"
+                            "--installed"
+                                | "--event-read"
+                                | "--capture-cut"
+                                | "--scope-grants"
+                                | "--export-jobs"
                         )
                     }),
                     args.get(3).is_some_and(|s| s == "--event-read"),
+                    args.get(3).is_some_and(|s| {
+                        matches!(
+                            s.as_str(),
+                            "--capture-cut" | "--scope-grants" | "--export-jobs"
+                        )
+                    }),
                     args.get(3)
-                        .is_some_and(|s| matches!(s.as_str(), "--capture-cut" | "--scope-grants")),
-                    args.get(3).is_some_and(|s| s == "--scope-grants"),
+                        .is_some_and(|s| matches!(s.as_str(), "--scope-grants" | "--export-jobs")),
+                    args.get(3).is_some_and(|s| s == "--export-jobs"),
                 ),
             )
             .await

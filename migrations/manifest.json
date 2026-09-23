@@ -97,6 +97,10 @@
     {
       "version": 812,
       "name": "0812_export_scope_grants.sql"
+    },
+    {
+      "version": 813,
+      "name": "0813_export_jobs.sql"
     }
   ],
   "reserved": [

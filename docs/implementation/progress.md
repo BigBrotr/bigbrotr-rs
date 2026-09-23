@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-23 on the primary Mac workspace. This is navigation, not evidence
+Observed 2026-09-24 on the primary Mac workspace. This is navigation, not evidence
 or a second task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty ownership, evidence and resources before continuing.
 
@@ -21,11 +21,24 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current verified main/HEAD a75d0fab318adc2b80d25abe65901554f138cbfb,
-tree8f5ce363e44390f45dc2f73c4a22528d6b0a2ce2; unpublished candidate over fetched
-origin/main fb45c36d3c9a8f003c2879e06e035a0a8280da78. Product/fixture worktree was
-clean at transfer. Root now owns destination evidence/inventory/task/docs, the stricter fixture
-barrier above and this checkpoint. No active Mac/native process or cleanup debt.
+Current verified main/HEAD and origin/main793bb62fbf0358d3ae3666b315ea3078d0ac75f9,
+tree8e4d5e715e781debcac088ba2d579cb1b5aff099; destination code/evidence pushed normally.
+Root owns uncommitted P08 export acceptance: typed command/JobId/receipt,
+additive draft0813 and catalog registration, fenced Control adapter and shared
+pin insertion with explicit Reader/Export purpose, native fixture/omission SQL,
+shared native runner profile and owning contract/checkpoint. No unrelated edits.
+Actual command RED preceded implementation; three independent command tests and
+21 schema catalog tests PASS; adapter fixture RED (missing methods) then cargo
+check and scoped Clippy PASS. Logs .research/implementation/export-jobs/.
+The actual native fixture and13 omission cases are written, NOT_RUN. HTTP,
+execution, artifacts and restart remain unimplemented. No active native process.
+
+Independent read-only AI review identified a session revocation race in direct
+SQL and expiry during deferred source-lock waits on later transitions. Draft now
+retains the exact session and has a separate final Control-owner check ordered
+after job_input_complete; no native claim yet. UNIQUE export_job_id plus exact
+counterpart prevents shared/swapped pins. No prior migration bytes changed.
+One integrating writer; AI reviews current adapter, owns no resources.
 
 [Destination evidence](evidence/p08-export-destination-native-20260923.json) at
 a75d0fa passes ten actual Linux/ext4 cases: ordered file/rename/root/parent sync,
@@ -180,11 +193,12 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: commit destination evidence/fixture refinement/checkpoint
-and push the verified product candidate normally. Then implement
-P08-T03/T04 atomic command/job/export-pin acceptance with the actual private
-consumer, before standalone signed JSONL delivery/restart. Additive migration
-must preserve legacy checksums/rows; exact cut includes every zero prefix.
+Next bounded action: review and commit the bounded native-acceptance candidate,
+inventory Tux/free space and run its exact-Git real PostgreSQL/native fixture.
+Preserve original failures and all13 omission outcomes. Then finish the actual
+private POST /management/v1/jobs consumer, expiry/COMMIT/restart, multistream zero
+and recovery cases, standalone signed JSONL artifact/execution. Do not stop at
+acceptance or equate this candidate to complete P08-T03/T04 or M1.
 
 Job design inspected independently: reuse protocol1 purpose=export, atomic
 command/job/link/exact complete cut and pin; no adoption of historical pins/jobs.
@@ -192,12 +206,19 @@ Every execution separately acquires current grants and a fresh reader pin. Keep
 nonterminal paused/cancelling job lease AND individual claims unreleased; add
 actual-backend fencing to qualified export transitions (0001 currently checks
 only a tuple). Caller lock order authority/dataset/account -> stable consumer ->
-job -> lease/claims; deferred checks compare exact bounds including zero. Original
+job -> lease/claims; deferred checks compare exact bounds including zero. An additive nullable job export-protocol column and immutable optional
+export-job reference on newly inserted export pins can prohibit historical
+adoption without xmin/transaction-ID heuristics: link only a new unsealed accepted
+qualified job; old jobs are sealed and existing pin attribution cannot update.
+Deferred checks from command, audit, qualified job, detail and export pin must
+reject every omitted counterpart. Preserve legacy NULL protocol/link rows and
+checksum history; qualification cannot be retrofitted by UPDATE. This refinement
+is design only, not SQL evidence. Original
 export pin remains after Control restart/expiry. After actual terminal effect
 resolution, original holder may release; old-holder release needs existing fresh
 exclusive recovery-only custody. archive_pin_recoveries is completed evidence,
-not pending queue: link plus unreleased lease owns remaining cleanup. All job
-code/migrations still NOT_IMPLEMENTED. P08-T03/T04 and owning contracts remain.
+not pending queue: link plus unreleased lease owns remaining cleanup. The command, draft migration and adapter are implemented/dirty but native
+acceptance remains NOT_RUN. P08-T03/T04 and owning contracts remain incomplete.
 
 Stopped root /home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be,
 ownerf61ac9d8311ca2e3bdfd09d2a67a16fa, label org.bigbrotr.archive-visibility;

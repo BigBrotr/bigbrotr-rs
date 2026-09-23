@@ -277,6 +277,23 @@ filesystem binding. Browser requests will name that approved ID and its binding,
 not provide a path. See [destination initialization](../operations/export.md);
 this prerequisite does not yet accept or execute jobs.
 
+The first job request profile under implementation is `kind=export`,
+`format=signed-events-jsonl`, the shared exact-ID snapshot `QueryRequest`, an
+explicit catalog/frontier selection, approved destination ID/binding digest and
+expected configuration/security revisions. Broader queries and selected formats
+remain required later work and are refused by this initial profile. The output
+is private even when its inputs are public-eligible. No browser path is accepted.
+The authenticated actor and command key are bound outside the request body.
+
+Its request fingerprint uses SHA256 over ASCII `bigbrotr/export-event/1` plus NUL,
+dataset16, actor16, command-key16, qualified scope `(dataset16,kind u16,domain16,
+ordinal u64)`, event-ID32, effective page-size u16 (read default100), catalog16,
+frontier-revision u64, destination16, binding-SHA25632, format byte1, private byte1,
+then expected configuration and security revisions as u64. Integers are big
+endian; normalized omitted read defaults and explicit defaults are identical.
+The accepted source cut must equal every bound of that immutable frontier,
+including zero prefixes. A command hash alone never proves acceptance or pins.
+
 Default import/export filesystem access stays under configured data roots; object
 storage credentials and allowed buckets/prefixes are explicit. Browser jobs never
 accept an arbitrary shell command, secret file path or unsigned executable plugin.
