@@ -19,18 +19,17 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Last observed main/HEAD `f83ac99fd218717d0db11160afb86bc5fc5e328c`, an unpublished
-candidate ahead of origin/main `17f464da0cd11f12d012ed2e341d49afc1529b27`.
-No merge/rebase or another writer. Candidate adds command inputs/golden fixtures,
-CommandKey/ReauthenticationId, actual reauthentication HTTP/supervisor/Control
-adapter, additive808, OpenAPI/generated types and practical fixtures. Dependencies
-are unchanged. It is explicitly unqualified; do not push it as verified work yet.
+Last observed main/HEAD `ac86c16964a85b3fefd1d4dd2040ecf04b9ae9cd`, two unpublished
+commits ahead of origin/main `17f464da0cd11f12d012ed2e341d49afc1529b27`.
+No merge/rebase or another writer. Candidate f83ac99 and corrective ac86c16 add
+command inputs/golden fixtures, identifiers, actual reauthentication HTTP/Control,
+additive808/809, OpenAPI/generated types and practical fixtures. Dependencies are
+unchanged. Native qualification of ac86c16 is now captured and verified.
 
-Root-owned dirty follow-up: additive809 expiry correction/catalog/consumer
-prerequisite, native HTTP reauthentication fixture and runner, one migration test,
-RED evidence, lab inventory, storage/private-admin/user/task documentation and this
-checkpoint. No810 scoped grant migration or grant acceptance/live-pin/history
-consumer exists yet. No grant is created by a proof or desired command.
+Root-owned follow-up changes only this checkpoint, the lab inventory, storage
+contract qualification text and the successful evidence report. Product bytes
+remain those tested at ac86c16. No810 scoped grant migration or grant acceptance/
+live-pin/history consumer exists yet. No grant is created by a proof.
 
 The command binds dataset/actor/key/target/full VisibilityScope QualifiedRef,
 expected config/policy/account-grant revisions, and allocation catalog/frontier
@@ -45,7 +44,7 @@ proofs per account, five minutes shortened by session expiry. Same live key/cont
 retry retains original ID/expiry/audit; changed content conflicts. Proof IDs require
 the original session/CSRF, never bearer authority. Temporary cleanup retains audit.
 808 permits only expired deletion; subsequent810 must add exact atomic consumption.
-Startup and both reauth transactions in the dirty fix require explicit809.
+Startup and both reauth transactions require explicit809.
 
 ## Executed results and current failure correction
 
@@ -63,7 +62,15 @@ and appends no audit. Another unexpected affected count is InvalidMetadata.
 A persisted fixture trigger-entry marker distinguishes the actual delayed path.
 The new executable HTTP fixture covers two sessions/same key, independent cookie
 hash-to-SQL session binding, exact retry/content conflict, shared quota and restart.
-Fixed native results remain NOT_RUN until the next lab executes.
+[Fixed native evidence](evidence/p08-reauthentication-native-20260923.json) at
+ac86c16 passes19schema/3command tests,2transport tests, scoped Clippy,11adapter
+cases and3actual executable HTTP cases. Independent terminal SQL finds3proofs/
+33issuance audits in the adapter database and2proofs/2audits in the HTTP database;
+both retain seven original grants and have zero active Control rows/backends.
+The ordinary executable restart preserves exact proof/response/xmin. It was
+**graceful**, not an ambiguous COMMIT or crash. Concurrent cap admission and the
+full audit-failure matrix remain unqualified; grant consumption/history do not
+exist yet.
 
 Local `.research/implementation/scoped-grants/` evidence:
 
@@ -80,12 +87,10 @@ Local `.research/implementation/scoped-grants/` evidence:
 - reauth-expiry-fix and reauth-fix-reviewed: scoped builds/Clippy and final19schema
   tests PASS. The fixed engine behavior is not established by these local checks.
 
-Next bounded action: commit the reviewed follow-up as another unpublished
-candidate, transfer exactGit using prepared `reauth-native-fixed/transfer.py`, run
-11adapter+3actual executable HTTP cases, collect and independently verify source,
-artifacts, SQL and terminal resources. Fix any actual failures without weakening
-the oracle. Continue810 grant/live-pin/history; this proof boundary is not the
-product objective or completed management acceptance.
+Next bounded action: review/commit the evidence-only follow-up and fetch/push the
+verified coherent main history, then implement810 atomic scope-grant acceptance
+with the invariants below. Its real native consumers and private history must
+follow; do not turn a SQL-only fixture into completed management acceptance.
 
 ## Laboratory custody
 
@@ -106,11 +111,19 @@ resources-start.json is historical, capture/resources.json is terminal. Keep
 secret-bearing fixtures on Tux. Inventory entry implementation_reauthentication_20260923
 owns details. No live lab or cleanup debt at this checkpoint.
 
-Prepared reauth-native-fixed orchestration copies the verified intact b5ff8ab
-cache into a fresh root, uses pinned Rust/PG16.15 images,2CPU6GiB512PIDs runner and
-2CPU1GiB128PIDs PG, internal network/nohostports, readonly exact source/no release
-keys. Its ownership/preflight checks run before use. Never use retired caches
-51d35ae/e65116b/591c75f or partial earlier panel/RED caches as complete build inputs.
+The fixed root `/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-ac86c16`
+is stopped/retained, owner`627ce06cf0890fbcaafe6845f93bf1fe`, PG
+`63c29ca718f78dd17912f71472bc9cf1f7d56bf02f65f67f7d66079823758ea0`, runner
+`dde145a44275eca23d759fe0d13f7a5ac7bb4a77760adfe60f41394564e8b99f`.
+Both exited/PID0/noOOM, owned network removed;498prior records unchanged, eight
+unrelated workloads running,63,594,487,808bytes free. All24capture/1021source hashes
+and three actual ELF hashes independently verified; captureSHA256
+`7f1c3aebc7feff3a0cc90663e17616ba18cb068234d1cc03c51e7a08254cd17c`.
+Raw `scoped-grants/reauth-native-fixed/`, inventory native_fixed entry. No live lab,
+ongoing collection or cleanup debt. Cache was copied from intact b5ff8ab; exactGit
+source readonly, pinned Rust/PG16.15,2CPU6GiB512PIDs runner/2CPU1GiB128PIDs PG,
+internal network/nohostports/no release keys. Never use retired partial caches
+51d35ae/e65116b/591c75f or earlier panel/RED caches as complete build inputs.
 The later4738731 cache is also intact. All historical resource roots, secret
 boundaries and terminal receipts remain in the [lab inventory](../research/laboratory-inventory.json)
 and individual reports; verify current state before future operations.

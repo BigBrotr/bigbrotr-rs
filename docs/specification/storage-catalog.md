@@ -402,5 +402,7 @@ consumer to observe exactly one affected row before appending audit. Zero rows
 mean ordinary denial. PostgreSQL16 documents the row suppression in
 [BEFORE trigger return semantics](https://www.postgresql.org/docs/16/plpgsql-trigger.html).
 This correction requires explicit809 before private startup/reauthentication;
-its successful engine qualification is still pending. No proof alone activates
-a grant or closes the remaining P08-T02/P06 history acceptance.
+the [native adapter and executable HTTP evidence](../implementation/evidence/p08-reauthentication-native-20260923.json)
+qualifies the ordinary expiry refusal and graceful restart. Ambiguous proof COMMIT
+and concurrent capacity admission remain unqualified. No proof alone activates a
+grant or closes the remaining P08-T02/P06 history acceptance.

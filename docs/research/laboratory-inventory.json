@@ -18168,6 +18168,39 @@
       "terminal_audit": "terminal-audit.json",
       "evidence": "docs/implementation/evidence/p08-reauthentication-expiry-red-20260923.json",
       "capture_sha256": "42ae13c1faa432bad267b26e6aa326ae6725f1d4f3b408ca617f21beeb2cc5e8"
+    },
+    "native_fixed": {
+      "source": "ac86c16964a85b3fefd1d4dd2040ecf04b9ae9cd",
+      "tree": "dca29bcabf8901e1313ea776d84a2f28ff6b98e6",
+      "owner": "627ce06cf0890fbcaafe6845f93bf1fe",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-ac86c16",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "63c29ca718f78dd17912f71472bc9cf1f7d56bf02f65f67f7d66079823758ea0"
+        },
+        {
+          "name": "rust-audit",
+          "id": "dde145a44275eca23d759fe0d13f7a5ac7bb4a77760adfe60f41394564e8b99f"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.reauthentication",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T14:59:04.674404+00:00",
+      "network_id": "68f172b66038a31703cfb59aa0b443e7bbcc28f76da1882e64c4151b48e3e5de",
+      "postgres_id": "63c29ca718f78dd17912f71472bc9cf1f7d56bf02f65f67f7d66079823758ea0",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json",
+      "observed": "2026-09-23T15:00Z",
+      "observation": "Native11 adapter and3 actual HTTP cases PASS; both owned containers exited/PID0/noOOM, network removed,498 prior records unchanged/eight unrelated running.",
+      "boundaries": "2 CPU/6 GiB/512 PIDs runner; 2 CPU/1 GiB/128 PIDs PostgreSQL; internal network, no host ports or release keys",
+      "cache": "Verified stopped owned b5ff8ab cache copied; no historical environment restarted.",
+      "terminal_independent": "terminal-independent.json",
+      "evidence": "docs/implementation/evidence/p08-reauthentication-native-20260923.json",
+      "capture_sha256": "7f1c3aebc7feff3a0cc90663e17616ba18cb068234d1cc03c51e7a08254cd17c"
     }
   }
 }

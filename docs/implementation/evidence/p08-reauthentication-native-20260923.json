@@ -1,0 +1,307 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02",
+  "status": "PASS",
+  "date": "2026-09-23",
+  "scope": "Command-bound browser reauthentication issuance, expiry refusal, temporary-proof capacity and graceful executable restart; no grant consumption or history qualification",
+  "source": {
+    "revision": "ac86c16964a85b3fefd1d4dd2040ecf04b9ae9cd",
+    "tree": "dca29bcabf8901e1313ea776d84a2f28ff6b98e6",
+    "source_files": 1021,
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "limits": "2 CPU/6 GiB/512 PIDs runner; 2 CPU/1 GiB/128 PIDs PostgreSQL; internal network, no host ports or release keys"
+  },
+  "checks": [
+    {
+      "name": "build",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "browser_sessions_probe",
+        "--example",
+        "browser_http_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 41.180788152851164
+    },
+    {
+      "name": "schema-command",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "control_schema",
+        "--test",
+        "management_grants"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 7.076594230253249
+    },
+    {
+      "name": "http-transport",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "interfaces::management::tests::reauthentication"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 11.984545975923538
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "browser_sessions_probe",
+        "--example",
+        "browser_http_probe",
+        "--tests",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 4.172035230789334
+    },
+    {
+      "name": "native-reauthentication",
+      "command": [
+        "/out/build/target/release/examples/browser_sessions_probe",
+        "sessions",
+        "--reauthentication"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 7.394505084026605
+    },
+    {
+      "name": "native-http-reauthentication",
+      "command": [
+        "/out/build/target/release/examples/browser_http_probe",
+        "/out/build/target/release/bigbrotr",
+        "/out/http-fixture",
+        "--reauthentication-only"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 2.01782460603863
+    }
+  ],
+  "cases": {
+    "native-reauthentication": [
+      {
+        "case": "audit-upgrade-preserves-legacy-shapes-and-refuses-null-or-mixed-revisions",
+        "status": "PASS"
+      },
+      {
+        "case": "additive-upgrade-preserves-password-and-seven-grants",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-wrong-csrf-and-missing-action-charge-no-password-attempt",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-wrong-password-charges-both-buckets-and-keeps-control-usable",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-proof-exact-audit-bounded-lifetime-and-idempotent-content-binding",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-grant-change-and-logout-during-hash-invalidate-proof-issuance",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-credential-reset-and-reactivation-cannot-revive-password-work",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-reads-expiry-after-account-lock-wait",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-schema-refuses-mutation-live-delete-orphan-effects-and-mixed-audit-policy",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-expiry-at-insert-is-normal-denial-after-observed-trigger-entry",
+        "status": "PASS"
+      },
+      {
+        "case": "reauth-account-capacity-and-expired-cleanup-retain-issuance-audit",
+        "status": "PASS"
+      }
+    ],
+    "native-http-reauthentication": [
+      {
+        "case": "http-reauth-origin-session-csrf-and-wrong-password",
+        "detail": {
+          "charged_buckets": 2,
+          "proofs": 0
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "http-reauth-two-sessions-bind-independent-proofs-and-identical-retry",
+        "detail": {
+          "audit_rows": 2,
+          "original_xmin_preserved": true,
+          "proofs": 2
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "http-reauth-quota-and-restart-retain-original-proof-and-audit",
+        "detail": {
+          "audit_rows": 2,
+          "proofs": 2
+        },
+        "status": "PASS"
+      }
+    ]
+  },
+  "artifacts": {
+    "bigbrotr": "fa871b1d8d0e9c6d9caab15cee14dd9fc2072761c8977c48da4a856e093aa2d8",
+    "examples/browser_sessions_probe": "2fb6485db8d1851fe9a382de80eb945070e3e87babaae8d19d95fdfc4b587565",
+    "examples/browser_http_probe": "b7d33a5f6407332fa864c94dd4c2bff03a71d25c39a308cf27fa9089d9e3df01"
+  },
+  "regression": {
+    "red_report": "p08-reauthentication-expiry-red-20260923.json",
+    "observed": "The same delayed proof INSERT now returns Denied without proof or audit and Control remains usable. A persisted marker proves entry into the delayed trigger. Applied808 bytes are unchanged; additive809 is required.",
+    "oracle": "Independent Python fixed-width digest fixture; actual password hashing, two actual HTTP sessions with independently hashed cookies joined to SQL proof/audit rows; retry retains original JSON and row xmin."
+  },
+  "durable_terminal": {
+    "sessions": {
+      "proofs": 3,
+      "proof_audits": 33,
+      "grants": 7,
+      "active_control": 0,
+      "backends": 0
+    },
+    "http_sessions": {
+      "proofs": 2,
+      "proof_audits": 2,
+      "grants": 7,
+      "active_control": 0,
+      "backends": 0
+    }
+  },
+  "custody": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-ac86c16",
+    "owner": "627ce06cf0890fbcaafe6845f93bf1fe",
+    "state": "Both owned containers freshly exited, PID0, no OOM; only owned empty network removed; data and secret fixtures retained remotely.",
+    "preexisting_preserved": 498,
+    "unrelated_running": 8,
+    "free_bytes": 63594487808,
+    "cleanup_errors": []
+  },
+  "capture": {
+    "path": ".research/implementation/scoped-grants/reauth-native-fixed",
+    "files": 24,
+    "sha256": "7f1c3aebc7feff3a0cc90663e17616ba18cb068234d1cc03c51e7a08254cd17c",
+    "verification": "PASS",
+    "method": "Every capture hash, all1021 source files against Mac Git archive, all three actual ELF hashes, and498 pre-existing container records independently checked."
+  },
+  "exclusions": [
+    "HTTP restart was graceful; no ambiguous COMMIT or abrupt process loss in this slice",
+    "Capacity was filled serially; concurrent cap admission remains unqualified",
+    "No full audit-insertion failure matrix in the actual reauthentication adapter",
+    "No grant consumption, restrictive drain, certified private history/export, installed product or release qualification",
+    "No Linux arm64 or aged/mixed-load performance evidence"
+  ]
+}
