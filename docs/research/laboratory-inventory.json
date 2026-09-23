@@ -18346,5 +18346,66 @@
       "status": "PASS-scoped",
       "capture_sha256": "5f133ad3760b9d39839e7503f47730bc8477e59943d00049188e6cbe57d680a9"
     }
+  },
+  "implementation_private_grants_20260923": {
+    "local_root": ".research/implementation/private-grants",
+    "first_incomplete": {
+      "source": "6d3f1b0d3eb6cfc64246d9ebfdafb6b3f17f61db",
+      "tree": "509d0b252b70c9c3883a9a730bc667a3281e81f4",
+      "owner": "48895aad293e432d031633c2526a961f",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-grants-6d3f1b0",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "541445289c83c31d757e7a0c4b4834865d68336658327966ebcf54db80dcc9d5"
+        },
+        {
+          "name": "rust-audit",
+          "id": "99b28942b2c24e269f13d8a4273e3d3b65b69823f1ac873054e00a6ffcf23cda"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.private-grants",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T16:22:29.587466+00:00",
+      "network_id": "b6a5807230abb69a3cd8c40ec47e23ab765b893d72c7db28fb8a404c9175d525",
+      "postgres_id": "541445289c83c31d757e7a0c4b4834865d68336658327966ebcf54db80dcc9d5",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "checked": {
+      "source": "6d3f1b0d3eb6cfc64246d9ebfdafb6b3f17f61db",
+      "tree": "509d0b252b70c9c3883a9a730bc667a3281e81f4",
+      "owner": "d898c112938fc5ec1182e6fa72951794",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-grants-6d3f1b0-checked",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "2d221e43ecd9ac75ce44a3cb6da8c13b4ba05ed9d5e7ac10bb396888cb4eff88"
+        },
+        {
+          "name": "rust-audit",
+          "id": "89f947d75b161ae9d819eb793bc0c018016371e6ce27bf77c3da38dcb457d9a6"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.private-grants",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T16:26:02.830143+00:00",
+      "network_id": "a164e930043433405fda424b4cd3e90a772641090bbe7c8e0812caca7226c770",
+      "postgres_id": "2d221e43ecd9ac75ce44a3cb6da8c13b4ba05ed9d5e7ac10bb396888cb4eff88",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "report": "docs/implementation/evidence/p08-private-grants-http-native-20260923.json",
+      "status": "PASS-scoped",
+      "capture_sha256": "98649e398d65852cf8971249977fc92ddd43321be1842c615f3acb01e74b1473"
+    },
+    "observation": "Both labs stopped/retained; original INCOMPLETE audit preserved. Checked run includes independent SQL,35 capture/1036 source/two ELF/five dependency asset hashes.512 prior records preserved; eight unrelated workloads running;38054350848bytes free. No active job or cleanup debt."
   }
 }

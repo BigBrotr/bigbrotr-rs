@@ -90,7 +90,7 @@ export interface paths {
         get?: never;
         /**
          * Accept one scoped history grant change
-         * @description Exact Origin, same live session, CSRF and Idempotency-Key required. Path principal must equal command target. Body max8192bytes. Requires explicit migration0811 and application SQL privileges. Revocation and historical retries do not depend on Archive. Fresh enablement currently refuses503 because this runtime has no selected native allocation reader; it preserves the proof and keeps Control available. This is not complete grant/private-history qualification. A lost response is resolved by an identical command retry; never substitute a new key. Acceptance does not establish applied restrictive drain.
+         * @description Exact Origin, current session, CSRF and Idempotency-Key required. Fresh acceptance needs the original session bound to the proof; a historical receipt retry permits a new live session of the same actor. Path principal must equal command target. Body max8192bytes. Requires explicit migration0811 and application SQL privileges. Revocation and historical retries do not depend on Archive. Fresh enablement currently refuses503 because this runtime has no selected native allocation reader; it preserves the proof and keeps Control available. This is not complete grant/private-history qualification. A lost response is resolved by an identical command retry; never substitute a new key. Acceptance does not establish applied restrictive drain.
          */
         put: operations["changeScopeGrant"];
         post?: never;

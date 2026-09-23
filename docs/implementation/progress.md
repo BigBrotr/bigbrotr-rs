@@ -19,30 +19,34 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Resumed main/HEAD and origin/main at `d27f22434c6b9bee8a8df9ecf72c945a8503f6a1`,
-with a clean working tree and no merge/rebase or other writer. All scoped grant
-candidates and qualification documentation were pushed; the last tested product
-remains4b9511d. No dependencies changed. The repository was verified private and
-named bigbrotr-rs through gh repo view at the completed checkpoint. Root owns the
-next integration edits and this checkpoint.
+Verified main/HEAD `6d3f1b0d3eb6cfc64246d9ebfdafb6b3f17f61db`, tree
+`509d0b252b70c9c3883a9a730bc667a3281e81f4`; origin/main remains d27f224 before
+this documentation commit/push. No merge/rebase or other writer. Root owns the
+OpenAPI clarification/generated comment, evidence, inventory and checkpoint edits.
+Private repository/name verified through gh repo view. No dependencies changed.
 
-The first PUT grant transport is implemented locally: exact target/session/CSRF/
-key/proof input, acceptance-only receipt and explicit811/privilege startup checks.
-ArchiveUnavailable now distinguishes a known native refusal from failed Control.
-Local RED returned405 for the missing route; three new TCP/classification tests,
-23 management tests and focused Clippy pass. OpenAPI types are regenerated;
-structural checks pass. Raw logs: `.research/implementation/private-grants/`.
-The actual executable/PG fixture for unselected Archive is prepared but NOT_RUN.
-Root owns all current edits; no new lab started. Existing stopped-lab status below
-is historical, not freshly remeasured. No successful HTTP mutation/drain claim.
+[Private HTTP grant qualification](evidence/p08-private-grants-http-native-20260923.json)
+passes for exact6d3f1b0: five actual executable/PG refusal/startup/restart cases,
+21schema/3command/3transport tests and scoped Clippy. Independent terminal SQL:
+proof1/audit1/seven dataset grants/no scope grants or grant commands/account revision1/
+activeControl0/backends0. The completed ArchiveUnavailable refusal keeps Control
+usable and preserves the proof. Positive injected transport receipts do not prove
+an actual HTTP mutation. OpenAPI clarifies historical retries can use a new live
+session of the same actor; fresh acceptance requires the proof's original session.
 
-Next bounded action: commit the locally checked candidate, run the five actual
-HTTP/PG refusal/startup/restart cases in a fresh inventoried Tux lab, collect and
-review evidence. Then wire the explicitly configured, owned native reader into
-the existing Control/HTTP supervisor; proceed
-to the existing private event_history protocol under a per-action authority window.
-Retain the remaining failure/recovery gates below. Do not replace the real consumer
-with a new diagnostic CLI or mark P08/P06/M1 complete.
+The first lab attempt is INCOMPLETE: application cases passed, but a wrong result
+filename skipped independent terminal SQL. Original audit and capture preserved.
+A fresh isolated checked run at the SAME source revision passed and was captured;
+all35 capture/1036 source/two ELF/five native dependency asset hashes verified.
+Local raw logs and both captures: `.research/implementation/private-grants/`.
+
+Next bounded action: finish this evidence commit/push, then implement owned
+ReaderCustody for the configured native grant consumer, with real descriptor
+lifetime/recovery-refusal tests. Keep LocalCoordinator on the Control thread;
+move only restricted reader custody into supervised blocking work and retain it
+through the result consumer. Integrate the reader with shared resource accounting,
+Control renewal and cancellation, then the existing private event_history protocol.
+Do not replace the real consumer with a new diagnostic CLI or mark P08/P06/M1 complete.
 
 ## Scoped grant result
 
@@ -114,16 +118,21 @@ Concurrent cap admission/full reauth COMMIT-loss remain open. Startup/reauth req
 
 ## Laboratory custody
 
-No active lab or cleanup debt. The latest run is stopped/retained:
-`/home/tux/bigbrotr-implementation-20260917/runs/scope-grants-4b9511d`, owner
-`47b49309bc046bf488d11bd72bafe34d`, label`org.bigbrotr.scope-grants`, PG
-`f65baf39fa287933d69500c58705c0e3510ad4579f08684ce8780dd356857bb2`, runner
-`d223240b0df68ee0ac36d33d95cf1a43421e403608f600e41e3a9f9ec20a5729`.
-Both freshly exited/PID0/noOOM, owned empty network removed.508prior container
-records unchanged, eight unrelated workloads running,45,208,035,328bytes free.
-Raw `.research/implementation/scoped-grants/grants-native-final-checks/`: all24
-capture/1032source/four actual ELF/five native dependency asset hashes verified
-against MacGit and the exact Linux asset registry. CaptureSHA256
+No active lab or cleanup debt. Freshly collected checked run:
+`/home/tux/bigbrotr-implementation-20260917/runs/private-grants-6d3f1b0-checked`, owner
+`d898c112938fc5ec1182e6fa72951794`, label`org.bigbrotr.private-grants`, PG
+`2d221e43ecd9ac75ce44a3cb6da8c13b4ba05ed9d5e7ac10bb396888cb4eff88`, runner
+`89f947d75b161ae9d819eb793bc0c018016371e6ce27bf77c3da38dcb457d9a6`.
+Both exited0/PID0/noOOM, owned network removed.512prior container records preserved,
+eight unrelated running,38,054,350,848bytes free. CaptureSHA256
+`98649e398d65852cf8971249977fc92ddd43321be1842c615f3acb01e74b1473`.
+First incomplete6d3f1b0 lab owner48895aad293e432d031633c2526a961f is separately
+stopped/retained with its original audit. Full identities/lifecycle are in the
+[lab inventory](../research/laboratory-inventory.json) implementation_private_grants_20260923.
+
+Scoped4b9511d lab owner47b49309bc046bf488d11bd72bafe34d remains stopped/retained,
+unchanged by both new inventories. Its raw grants-native-final-checks capture has
+24files/1032source/four ELF/five native dependency assets verified, SHA256
 `5f133ad3760b9d39839e7503f47730bc8477e59943d00049188e6cbe57d680a9`.
 
 Four earlier scope-grant RED roots6709e68/4e6bfb1/898b7ac/6099495 are stopped/retained

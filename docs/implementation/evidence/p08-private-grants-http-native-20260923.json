@@ -1,0 +1,267 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02 with P02-T04/T07 and P06-T01/T02 prerequisites",
+  "date": "2026-09-23",
+  "status": "PASS",
+  "scope": "Private grant HTTP startup and refusals; no configured reader, successful HTTP grant, drain, history or capacity claim",
+  "source": {
+    "revision": "6d3f1b0d3eb6cfc64246d9ebfdafb6b3f17f61db",
+    "tree": "509d0b252b70c9c3883a9a730bc667a3281e81f4",
+    "source_files": 1036,
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "harness_sha256": "1cc0a5d61c9eec36ed94c5a5e9738f63f97ceae36af4f0dcd8ddadc34b54f5f8"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres": {
+      "cpus": 2,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "isolation": "Internal network, no host ports or Docker socket/release keys, readonly exact clean Git input. Intact b5ff8ab compiler cache copied after ownership audit; local documentation edits excluded."
+  },
+  "checks": [
+    {
+      "name": "build",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "browser_http_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 34.914827187079936
+    },
+    {
+      "name": "schema-command",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "control_schema",
+        "--test",
+        "management_grants"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 7.074604434426874
+    },
+    {
+      "name": "http-transport",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "interfaces::management::tests::grants"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 12.333267305977643
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "browser_http_probe",
+        "--tests",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 4.171218388248235
+    },
+    {
+      "name": "native-http-grants",
+      "command": [
+        "/out/build/target/release/examples/browser_http_probe",
+        "/out/build/target/release/bigbrotr",
+        "/out/http-fixture",
+        "--grants-only"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 1.6672640377655625
+    }
+  ],
+  "cases": [
+    {
+      "case": "http-grant-requires-explicit-811-before-binding",
+      "detail": {
+        "exit": 3
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "http-grant-startup-checks-each-privilege-and-proof-column-lock",
+      "detail": {
+        "refused_startups": 5
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "http-grant-real-session-csrf-target-and-proof-refusals-preserve-state",
+      "detail": {
+        "compared_tables": 6,
+        "xmin_unchanged": true
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "http-grant-unconfigured-reader-refuses-repeatedly-without-consuming-proof",
+      "detail": {
+        "compared_tables": 6,
+        "healthy_me": true,
+        "native_stores": []
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "http-grant-restart-retains-proof-and-unknown-revoke-creates-no-tombstone",
+      "detail": {
+        "active_control": 0,
+        "grant_commands": 0,
+        "proofs": 1,
+        "scope_grants": 0
+      },
+      "status": "PASS"
+    }
+  ],
+  "observations": {
+    "schema": "21 schema and3 command tests pass; three actual TCP transport tests and scoped Clippy pass.",
+    "privileges": "Five selected startup refusals: proof column UPDATE, command INSERT, detail SELECT, current grant UPDATE, command_u64_bytes EXECUTE. This is not every ACL combination.",
+    "state": "Six compared tables and xmin: commands, details, grants, audit, proofs and accounts. Session touches are not claimed unchanged.",
+    "retry": "Missing configured native reader returns503 twice; proof remains live and /me succeeds. Graceful actual executable restart preserves proof and same session. Unknown-scope revoke returns409 without a tombstone.",
+    "acceptance": "Local positive transport fixture injects the reply and checks exact integer/receipt representation. No successful actual PostgreSQL mutation through HTTP is qualified."
+  },
+  "durable_terminal": {
+    "http_sessions": {
+      "proofs": 1,
+      "proof_audits": 1,
+      "dataset_grants": 7,
+      "scope_grants": 0,
+      "grant_commands": 0,
+      "account_revision": "1",
+      "active_control": 0,
+      "backends": 0
+    }
+  },
+  "artifacts": {
+    "bigbrotr": "d7264ff99e98946afe4a672ff6565dda094af312e01ff2ccbb6c472a78657a9b",
+    "examples/browser_http_probe": "ce184199026f1194376f056b65f19ebedd73506d252277aa25d3a5c88cead6c1"
+  },
+  "native_assets": {
+    "extensions/ducklake.duckdb_extension": {
+      "bytes": 36436086,
+      "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+    },
+    "extensions/httpfs.duckdb_extension": {
+      "bytes": 21570542,
+      "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+    },
+    "extensions/postgres_scanner.duckdb_extension": {
+      "bytes": 41696558,
+      "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+    },
+    "lib/duckdb.h": {
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "lib/libduckdb.so": {
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "capture": {
+    "path": ".research/implementation/private-grants/recheck",
+    "files": 35,
+    "sha256": "98649e398d65852cf8971249977fc92ddd43321be1842c615f3acb01e74b1473",
+    "verification": "All35 capture and1036 source hashes verified against Mac Git archive. Two actual ELF hashes independently matched; five native dependency asset hashes and sizes match the exact registry. Collector freshly verifies stopped container ownership and absent owned network."
+  },
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-grants-6d3f1b0-checked",
+    "owner": "d898c112938fc5ec1182e6fa72951794",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "2d221e43ecd9ac75ce44a3cb6da8c13b4ba05ed9d5e7ac10bb396888cb4eff88"
+      },
+      {
+        "name": "rust-audit",
+        "id": "89f947d75b161ae9d819eb793bc0c018016371e6ce27bf77c3da38dcb457d9a6"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preserved": 512,
+    "unrelated_running": 8,
+    "free_bytes": 38054350848,
+    "errors": []
+  },
+  "prior_attempt": {
+    "status": "INCOMPLETE",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-grants-6d3f1b0",
+    "owner": "48895aad293e432d031633c2526a961f",
+    "source": "6d3f1b0d3eb6cfc64246d9ebfdafb6b3f17f61db",
+    "application": "Five actual HTTP cases PASS and runner exited0.",
+    "failure": "Lab collector sought private-grants-result.json instead of grant-http-result.json; final independent SQL was NOT_RUN. Original terminal audit retained unchanged; corrected lab repeated the same product revision in a new isolated root.",
+    "capture_path": ".research/implementation/private-grants/capture",
+    "capture_sha256": "e81803bd191ac1df7f58549c2b96b59cf559adbcf20aa33b0995bcf9b8c53081",
+    "cleanup": "Both containers exited0/PID0/noOOM; owned network removed;510 prior records preserved."
+  },
+  "review": {
+    "kind": "Read-only AI review and integrating-owner review",
+    "findings": "Clarified original proof session versus historical receipt retry; moved811 upgrade before unrelated privilege negative controls so they are not masked by the prerequisite. No product change after tested candidate.",
+    "limits": "Other probe modes were not rerun here; native grant success, restrictive drain and history remain unqualified."
+  },
+  "exclusions": [
+    "No configured native allocation reader or successful HTTP enable/revoke mutation journey",
+    "No ambiguous COMMIT or crash/reacquisition for grants",
+    "No restrictive native-work/socket drain or private authorized history/export",
+    "No browser grant UI, full mixed-policy/CAS/expiry matrix, aged-state capacity, release or Linux arm64 qualification"
+  ]
+}
