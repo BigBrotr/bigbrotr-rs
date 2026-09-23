@@ -1,0 +1,185 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P08-T02",
+  "status": "FAIL",
+  "date": "2026-09-23",
+  "scope": "Second scoped-grant fixture counterexample: provisioning was rolled back by its own row-lock test",
+  "source": {
+    "revision": "4e6bfb1ef62394a466aaa5a700a7c4c937116f4a",
+    "tree": "8b4253c7b4f5ffd24e8ed3f57f54e14f2b832f6b",
+    "source_files": 1027,
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "migration_810_sha256": "f1c3e00492ff7aceda38a9a1b87a392f5c873c7847f8ac9eda2b619c39987ebe"
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "checks": [
+    {
+      "name": "fixture",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 74.64551269076765
+    },
+    {
+      "name": "scope-schema-command",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "control_schema",
+        "--test",
+        "management_grants"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 33.574773176107556
+    },
+    {
+      "name": "reauthentication-transport",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "interfaces::management::tests::reauthentication"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 12.034969625994563
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--lib",
+        "--example",
+        "catalog_schema_probe",
+        "--example",
+        "catalog_initialization_probe",
+        "--example",
+        "archive_receipt_probe",
+        "--example",
+        "archive_event_probe",
+        "--example",
+        "archive_publication_probe",
+        "--example",
+        "archive_read_probe",
+        "--example",
+        "archive_coordinator_probe",
+        "--example",
+        "archive_attempt_probe",
+        "--bin",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr-archive-worker",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.3209379059262574
+    }
+  ],
+  "finding": {
+    "expected": "Column UPDATE privilege persists after the successful SELECT FOR UPDATE transaction, and identity assignment reaches the immutable proof guard23514.",
+    "observed": "The row-lock SELECT passed inside the same message as GRANT; the later UPDATE instead failed42501. No complete grant case ran.",
+    "cause": "PostgreSQL simple-query messages group preceding statements into the subsequent explicit transaction. The fixture ROLLBACK undid GRANT.",
+    "correction": "Commit GRANT as its own message, then run the row-lock transaction; assert has_column_privilege afterward before issuing the actual proof.",
+    "documentation": "https://www.postgresql.org/docs/16/protocol-flow.html#PROTOCOL-FLOW-MULTI-STATEMENT"
+  },
+  "executed_before_failure": [
+    "Build,20schema/3command tests,2HTTP transport tests and Clippy",
+    "Explicit migration810 and SQL u64 literal/rounded-expression negative controls",
+    "Missing-lock-privilege42501 and same-transaction successful lock",
+    "Signed publication/captured cut and real password login/proof issuance"
+  ],
+  "not_run": [
+    "Remaining five complete scoped-grant cases",
+    "Independent six-family readback and final durable state SQL",
+    "Private HTTP grant/read, drain, COMMIT loss, concurrency and omission matrix"
+  ],
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/scope-grants-4e6bfb1",
+    "owner": "7365d353b06dbb559a5c5fa7cd1748b8",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "e220fd55c5c83bfe371d5e444bdd27e61a540c0568d985d65e3cd22e7f0d2724"
+      },
+      {
+        "name": "rust-scope-grants",
+        "id": "66d0a7ab5112dffbb7827c01e747ee6ab66e884a984c89cbd970bf992fe6500d"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preserved": 502,
+    "unrelated_running": 8,
+    "errors": [],
+    "free_bytes": 56239988736,
+    "note": "Both owned containers freshly observed exited/PID0/noOOM; no post-failure PostgreSQL restart or graceful Control release claimed."
+  },
+  "artifacts": {
+    "control": "60df20c960e46572ecb90248fd1db6e64134e3f6cf78fe533186edf508598b6b",
+    "worker": "b24d0055cf84c7010e7898e1ac87788a3833b27b4cde758de94559c70e1cc37a",
+    "publisher": "21781b05c172947550f27b8d13eab186ecab4030288c3a13ad16cff7b79dd8cc",
+    "reader": "25822b7fd24cd7141299d80d6cd0fcc2a0997ec48cc9664b3fccc3f87190e8fa"
+  },
+  "capture": {
+    "path": ".research/implementation/scoped-grants/grants-native-fixed",
+    "files": 23,
+    "sha256": "d0cbed415150a12b47bd95fe96fb79b9fc5dc57df651c02cc592b509f38dbd32",
+    "verification": "PASS:23 capture/1027 source hashes checked against Mac Git archive; four actual ELF hashes independently verified;502 prior container records freshly unchanged."
+  }
+}

@@ -19,14 +19,14 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Last observed main/HEAD `6709e68ece54b585d2f4fb844676a59b2a9a2f38`, unpublished
-candidate one commit ahead of origin/main `9f7fabd`. No merge/rebase or another
+Last observed main/HEAD `4e6bfb1ef62394a466aaa5a700a7c4c937116f4a`, unpublished
+candidate two commits ahead of origin/main `9f7fabd`. No merge/rebase or another
 writer. Candidate product inputs are:
 additive0810/catalog, scope-grant Control adapter/receipt, shared session helper,
 actual signed-publication/password/native-allocation fixture and runner, schema
 upgrade test, and owning private-admin/storage contracts. No grant HTTP route or
-private history read is advertised. No dependencies changed. Root-owned fixture/provisioning correction, RED evidence, checkpoint and laboratory
-inventory updates are dirty.
+private history read is advertised. No dependencies changed. The correction and RED evidence are committed; only root-owned checkpoint and
+laboratory inventory updates are dirty.
 
 The command binds dataset/actor/key/target/full VisibilityScope QualifiedRef,
 expected config/policy/account-grant revisions, and allocation catalog/frontier
@@ -97,10 +97,17 @@ identity UPDATE refusal; no schema ownership or guard bypass is introduced.
 The lab6709e68 owner01f25682923907f7c1e02065af2449fb is stopped/retained, both
 containers exited/PID0/noOOM and owned empty network removed;500prior records
 unchanged, eight unrelated workloads running,59,916,832,768bytes free.22capture
-and1026source hashes verified against MacGit; raw grants-native/capture. No live
-lab or cleanup debt. Next bounded action: commit the focused fixture/provisioning
-correction after local Clippy, then transfer that exact candidate into a fresh
-owned Tux lab and rerun the actual five grant cases and independent readback.
+and1026source hashes verified against MacGit; raw grants-native/capture. The second candidate4e6bfb1 also finished **FAIL** before grant acceptance: its
+single simple-query message let the row-lock test ROLLBACK undo the provisioning
+GRANT. [Fixture RED](evidence/p08-scoped-grants-fixture-rollback-red-20260923.json)
+records42501 instead of the intended immutable UPDATE23514; the correction commits
+GRANT separately and asserts the privilege persists after the lock-test rollback.
+No applied SQL changes. Local focused Clippy passes. Both owned containers stopped/
+PID0/noOOM, owned network removed,502prior records preserved, eight unrelated
+running.23capture/1027source/four actual ELF hashes verified; raw grants-native-fixed.
+No active lab or cleanup debt. Root owns the narrow fixture/checkpoint/report diff.
+Next bounded action: commit this test transaction correction and qualify a fresh
+exactGit candidate through actual acceptance/readback and terminal custody.
 
 Candidate0810 enforces common actor/key identity, exact digest/audit, unique target
 result revision and scope generation, same-session proof consumption, and retained

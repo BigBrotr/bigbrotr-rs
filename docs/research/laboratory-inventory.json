@@ -18232,6 +18232,33 @@
       "network_state": "removed after owner/no-endpoint audit",
       "terminal_audit": "terminal-audit.json"
     },
-    "observation": "6709e68 failed at missing fixture proof UPDATE row-lock privilege. Both owned containers stopped/PID0/noOOM, network removed,500 prior records preserved.22 capture/1026 source hashes verified; no current lab or cleanup debt."
+    "observation": "4e6bfb1 stopped/retained after actual fixture GRANT rollback failure.23 capture/1027 source/four artifact hashes verified;502 prior records preserved. No active lab/cleanup debt.",
+    "native_permission_fix": {
+      "source": "4e6bfb1ef62394a466aaa5a700a7c4c937116f4a",
+      "tree": "8b4253c7b4f5ffd24e8ed3f57f54e14f2b832f6b",
+      "owner": "7365d353b06dbb559a5c5fa7cd1748b8",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/scope-grants-4e6bfb1",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "e220fd55c5c83bfe371d5e444bdd27e61a540c0568d985d65e3cd22e7f0d2724"
+        },
+        {
+          "name": "rust-scope-grants",
+          "id": "66d0a7ab5112dffbb7827c01e747ee6ab66e884a984c89cbd970bf992fe6500d"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.scope-grants",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T15:34:56.556249+00:00",
+      "network_id": "0aac3f0763013396825461680a3ef6a72deb543cb7f5b175b8b0a2ffe3717c58",
+      "postgres_id": "e220fd55c5c83bfe371d5e444bdd27e61a540c0568d985d65e3cd22e7f0d2724",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "66d0a7ab5112dffbb7827c01e747ee6ab66e884a984c89cbd970bf992fe6500d",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    }
   }
 }

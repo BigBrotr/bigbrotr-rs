@@ -49,7 +49,17 @@ pub async fn prepare(control: &str) {
     // this immutable table is only inserted, locked and consumed by Control.
     let denied = admin.batch_execute("BEGIN; SET LOCAL ROLE bigbrotr_control; SELECT proof_id FROM control.reauthentication_proofs FOR UPDATE").await.unwrap_err();
     assert_eq!(denied.code().unwrap().code(), "42501");
-    admin.batch_execute("ROLLBACK; GRANT UPDATE(proof_id) ON control.reauthentication_proofs TO bigbrotr_control; BEGIN; SET LOCAL ROLE bigbrotr_control; SELECT proof_id FROM control.reauthentication_proofs FOR UPDATE; ROLLBACK").await.unwrap();
+    admin.batch_execute("ROLLBACK").await.unwrap();
+    // Commit provisioning separately: a later ROLLBACK in the same simple-query
+    // message can also undo commands preceding its explicit BEGIN.
+    admin
+        .batch_execute(
+            "GRANT UPDATE(proof_id) ON control.reauthentication_proofs TO bigbrotr_control",
+        )
+        .await
+        .unwrap();
+    admin.batch_execute("BEGIN; SET LOCAL ROLE bigbrotr_control; SELECT proof_id FROM control.reauthentication_proofs FOR UPDATE; ROLLBACK").await.unwrap();
+    assert!(admin.query_one("SELECT has_column_privilege('bigbrotr_control','control.reauthentication_proofs','proof_id','UPDATE')", &[]).await.unwrap().get::<_,bool>(0));
     let values:Vec<String>=admin.query("SELECT encode(control.command_u64_bytes(n::control.u64),'hex') FROM (VALUES (0::numeric),(1),(9223372036854775808),(18446744073709551615)) t(n)",&[]).await.unwrap().iter().map(|r|r.get(0)).collect();
     assert_eq!(
         values,
