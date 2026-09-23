@@ -1013,6 +1013,22 @@ pub fn keys() -> Vec<Key> {
         false
     );
     add!("export.verify_restore", Bool, false, "job", "export", false);
+    add!(
+        "export.destination.id",
+        Identity,
+        Value::Null,
+        "restart",
+        "export",
+        true
+    );
+    add!(
+        "export.destination.root",
+        Path,
+        Value::Null,
+        "restart",
+        "export",
+        true
+    );
     // Acquisition settings have concrete units even before their workers exist.
     for (key, default, owner, reload) in [
         ("seed.max_line_bytes", "8KiB", "control", "job"),

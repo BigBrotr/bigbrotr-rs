@@ -320,6 +320,12 @@ listing; mutable artifact state follows the same page-read-time rule.
 
 **Failure contract:** partial source coverage is attributed; bad units are quarantined/reported under selected import policy. A policy revocation terminates or restricts new export chunks; already delivered files cannot be recalled. Job result distinguishes complete requested scope, partial scope and failed execution.
 
+The current bounded destination prerequisite has explicit finite
+[initialize/inspect commands](../operations/export.md), deployment-root pairing
+and descriptor-bound private markers. Source/job/pin atomic acceptance and actual
+export delivery remain the next consumer; this does not complete Step 1 or 3.
+Native destination qualification is pending.
+
 **Skew and output accounting:** reserve input/decompression/decoded-row/output/driver bytes before loading a unit and include JSON escaping or Parquet row-group/native memory in the job grant. One oversized first record is split only by a format that preserves its complete semantics, otherwise refused with exact scope; item count cannot exempt it. External-sort/spill work uses a finite scratch allowance. Export manifest paths are relative, normalized and unique with no parent traversal, disallowed symlink or platform-colliding names; referenced files cannot escape the artifact root. Run skewed large-content/repeated-tag/document fixtures, a slow download, one source dominating all chunks and full scratch disk alongside monitoring/live ingestion; retain peak RSS/cgroup/native/temp usage and independent progress of the reserved control/live shares.
 
 **Artifact publication authority:** extend this task with

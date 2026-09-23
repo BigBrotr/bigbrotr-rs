@@ -133,6 +133,8 @@ fixed_hex!(PrincipalId, 16, nonzero);
 // Paired with an authenticated actor in the durable management command ledger.
 // This public correlation key is neither a bearer secret nor command authority.
 fixed_hex!(CommandKey, 16, nonzero);
+// An approved output namespace, never a data or publication grant.
+fixed_hex!(DestinationId, 16, nonzero);
 // A same-session proof reference, never a bearer credential.
 fixed_hex!(ReauthenticationId, 16, nonzero);
 // Names control.owner_epochs.resource_id and its synchronized ingest manifest.

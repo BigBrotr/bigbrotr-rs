@@ -823,6 +823,23 @@ impl Resolved {
         if self.local("monitor") && self.flag("monitor.enabled") && checks.is_empty() {
             return Err("enabled monitor requires a nonempty computed check set".into());
         }
+        if self.text("export.destination.id").is_some()
+            != self.text("export.destination.root").is_some()
+        {
+            return Err("export destination requires both id and root".into());
+        }
+        if let Some(root) = self.text("export.destination.root") {
+            bigbrotr::export::destination::validate_root(Path::new(root))
+                .map_err(|_| "export destination requires a bounded canonical absolute root")?;
+            for key in self.selected_storage_roots() {
+                let other = Path::new(self.present(key)?);
+                if Path::new(root).starts_with(other) || other.starts_with(root) {
+                    return Err(
+                        "export destination must be disjoint from selected writable roots".into(),
+                    );
+                }
+            }
+        }
         self.budgets()?;
         let mut paths = BTreeSet::new();
         for key in self.selected_storage_roots() {
@@ -1169,6 +1186,9 @@ impl Resolved {
     }
     fn applicable(&self, key: &Key) -> bool {
         let name = key.name.as_str();
+        if name.starts_with("export.destination.") {
+            return self.text("export.destination.id").is_some();
+        }
         if name.starts_with("postgres.catalog.") {
             return self.local("archive");
         }

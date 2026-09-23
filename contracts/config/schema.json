@@ -931,6 +931,29 @@
           "x-bigbrotr-owner": "export",
           "x-bigbrotr-reload": "live"
         },
+        "destination": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "not": {
+                "const": "00000000000000000000000000000000"
+              },
+              "pattern": "^[0-9a-f]{32}$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "export",
+              "x-bigbrotr-reload": "restart"
+            },
+            "root": {
+              "format": "bigbrotr-absolute-path",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "export",
+              "x-bigbrotr-reload": "restart"
+            }
+          },
+          "type": "object"
+        },
         "memory": {
           "additionalProperties": false,
           "properties": {

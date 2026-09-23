@@ -18,6 +18,9 @@ fn main() -> ExitCode {
         Some("archive") => {
             interfaces::archive::execute(matches.subcommand_matches("archive").unwrap())
         }
+        Some("export") => {
+            interfaces::export::execute(matches.subcommand_matches("export").unwrap())
+        }
         Some("access") => {
             interfaces::access::execute(matches.subcommand_matches("access").unwrap())
         }

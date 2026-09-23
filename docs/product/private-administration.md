@@ -271,6 +271,12 @@ JSON metadata uses canonical positive decimal strings and nonzero lowercase hex
 identities. The independent golden vectors cover enable/revoke. Neither a matching
 fingerprint nor a proof identifier alone confers authorization.
 
+The first local destination consumer uses paired deployment roots `export.destination.id`
+and `export.destination.root`, explicit operator initialization and a retained
+filesystem binding. Browser requests will name that approved ID and its binding,
+not provide a path. See [destination initialization](../operations/export.md);
+this prerequisite does not yet accept or execute jobs.
+
 Default import/export filesystem access stays under configured data roots; object
 storage credentials and allowed buckets/prefixes are explicit. Browser jobs never
 accept an arbitrary shell command, secret file path or unsigned executable plugin.

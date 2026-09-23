@@ -21,17 +21,31 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD923f186889923f828600f5b060210ab79dd44d2d, unpublished candidate;
-origin/main01752916dceda8563650bec95bc6a2985dd3b6a3. Root owns current evidence,
-inventory/checkpoint/task updates and the serve --help correction0811 ->0812.
-Additive0812 extends export/private-export scope grants through the existing
-command, with separate fingerprints and generations; old SQL bytes unchanged.
-Mac RED showed the closed enum rejection; subsequent38binary/21schema/4grant and
-scoped Clippy PASS. Linux same63 tests, actual fixture builds and Clippy PASS.
-Actual Mac serve --help now names0812; no other product change after native run.
-Root reviewed complete diff and29capture/1077source/fiveELF/fiveasset identities.
-Read-only AI found only stale help, now corrected; independently verified capture,
-Git source parity, four fingerprints and540 preserved container records. No discrepancy.
+Current verified main/HEAD and origin/main fb45c36d3c9a8f003c2879e06e035a0a8280da78,
+tree9ded102f9c5410fd64e292769e209b5ad6db91dd, grant code/evidence pushed normally.
+Root now owns the uncommitted local destination prerequisite: export/destination
+library and finite initialize/inspect CLI, paired export.destination.id/root
+registry/validation, DestinationId, executable filesystem regressions and docs.
+No new remote lab exists. Actual Mac CLI regressions: initial two cases RED
+(unknown command/config), umask0600 independently RED (unreadable new marker),
+then all five destination tests PASS after corrections. Final affected checks
+pass: CLI3/config25/destination5/policy6, scoped Clippy, regenerated schema/reference.
+A mistyped test-target invocation ran no tests and is retained as mac-tests3.log;
+corrected mac-tests4.log records the actual final execution. No active Mac job.
+Independent read-only AI reread the final marker flow: earlier chmod/fsync-retry
+findings addressed; no further concrete counterexample. Ancestors beyond the
+synced parent must already be durably provisioned; docs now say so.
+
+New committed candidate fixture experiments/export-destination/{native,cases}.py
+is NOT_RUN until exact-Git Tux execution. Ten intended cases: actual ordered
+sync/retry, bind-mount alias refusal, cross-process locks, four fsync EIO schedules,
+three process deaths around rename (including previous valid marker). Root has
+reviewed all new product files, callers/diff and fixture. Linux/ext4 behavior,
+syscall failures and crashes still unqualified. No worker, export job or release
+claim. Initial read-only Tux census:542 containers/eight unrelated running,
+free199,850,586,112bytes; no active BigBrotr. Full preflight repeats in launcher.
+Scripts/logs remain .research/implementation/export-destination/. Candidate may
+be committed locally for exact-source testing before publication.
 
 [Native export-grant evidence](evidence/p08-export-grants-native-20260923.json)
 at923f186 has14 actual PASS cases, action-bound proofs/digests, independent action
@@ -151,15 +165,25 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: finish independent capture review and commit/push the grant
-qualification with its original INCOMPLETE terminal disclosed. Then implement the
-first private export acceptance: command/job/complete immutable source cut and
-retention pins in one transaction before reply, followed by actual standalone
-export/restart. Reuse control.jobs and native custody. Approved destination and
-dataset permission are additional requirements. Read current holder guards and
-retention recovery before editing; acceptance must survive an unknown COMMIT.
-P08-T03/T04, operations-contract.md, identity-and-encoding.md, import-formats.md
-and Exporter in derived-read-publication.md own meaning. No task/M1 closure.
+Next bounded action: commit the reviewed destination prerequisite as an
+unpublished candidate, transfer clean exact Git and run the ten native cases in
+one no-network/no-database isolated container with a fresh mount namespace. Use
+verified stopped32dd58d cache; preserve all prior resources. Capture and review
+actual source/artifact identities, cases and terminal custody before publication.
+Then continue atomic command/job/export-pin acceptance and standalone delivery.
+
+Job design inspected independently: reuse protocol1 purpose=export, atomic
+command/job/link/exact complete cut and pin; no adoption of historical pins/jobs.
+Every execution separately acquires current grants and a fresh reader pin. Keep
+nonterminal paused/cancelling job lease AND individual claims unreleased; add
+actual-backend fencing to qualified export transitions (0001 currently checks
+only a tuple). Caller lock order authority/dataset/account -> stable consumer ->
+job -> lease/claims; deferred checks compare exact bounds including zero. Original
+export pin remains after Control restart/expiry. After actual terminal effect
+resolution, original holder may release; old-holder release needs existing fresh
+exclusive recovery-only custody. archive_pin_recoveries is completed evidence,
+not pending queue: link plus unreleased lease owns remaining cleanup. All job
+code/migrations still NOT_IMPLEMENTED. P08-T03/T04 and owning contracts remain.
 
 Stopped root /home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be,
 ownerf61ac9d8311ca2e3bdfd09d2a67a16fa, label org.bigbrotr.archive-visibility;
