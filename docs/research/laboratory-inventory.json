@@ -18232,7 +18232,7 @@
       "network_state": "removed after owner/no-endpoint audit",
       "terminal_audit": "terminal-audit.json"
     },
-    "observation": "898b7ac stopped/retained: two native cases pass, deferred marker lacks schema USAGE.23 capture/1028 source/four ELF hashes verified;504 prior records unchanged. No active lab/cleanup debt.",
+    "observation": "6099495 stopped/retained after actual deferred product42P01. Two cases pass; final acceptance unqualified.23 capture/1029 source/four ELF hashes verified,506 prior records unchanged, no active lab/cleanup debt.",
     "native_permission_fix": {
       "source": "4e6bfb1ef62394a466aaa5a700a7c4c937116f4a",
       "tree": "8b4253c7b4f5ffd24e8ed3f57f54e14f2b832f6b",
@@ -18284,6 +18284,33 @@
       "postgres_id": "feb98b1d3004242a1130d22525c228855fae59201ab06074c34f98a5af2e1898",
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
       "container_id": "419b51dace1ca3a43c78c1268fcca1d0d7e30b3ce62c3da8195482dfc5a4cc83",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "native_expiry": {
+      "source": "6099495098eee3c7ff61103ebe82dd5d87cb41ba",
+      "tree": "fe77c54a9f9fe9a0e6259f9d3cbb8856e71fcae7",
+      "owner": "c1528ba7f52a92545fcb2b8c391679e7",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/scope-grants-6099495",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "ed8481ffe7ca8301af70c819e6872b066eea4267636c93a40a637ce9c18119e0"
+        },
+        {
+          "name": "rust-scope-grants",
+          "id": "2fcc2572ba87a133d5cac1b1dc68caa2835512e6fd4ad7f5032b6a4f7143eb91"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.scope-grants",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-23T15:46:29.228359+00:00",
+      "network_id": "ae6f5738bdb27381f00ff764f562f2722a5b6414b2deead4d958a15463596cfc",
+      "postgres_id": "ed8481ffe7ca8301af70c819e6872b066eea4267636c93a40a637ce9c18119e0",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "2fcc2572ba87a133d5cac1b1dc68caa2835512e6fd4ad7f5032b6a4f7143eb91",
       "network_state": "removed after owner/no-endpoint audit",
       "terminal_audit": "terminal-audit.json"
     }

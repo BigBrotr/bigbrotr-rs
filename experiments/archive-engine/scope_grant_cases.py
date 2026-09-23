@@ -48,7 +48,7 @@ def main(root):
         values=[json.loads(line) for line in publisher['stdout'].splitlines()]
         result['cases']=[v for v in values if 'case' in v];save()
         assert publisher['exit']==0 and not publisher['stderr'] and not publisher['overflow']
-        assert len(result['cases'])==5 and len({v['case'] for v in result['cases']})==5
+        assert len(result['cases'])==6 and len({v['case'] for v in result['cases']})==6
         assert all(v['status']=='PASS' for v in result['cases'])
         values=[v for v in values if 'event' in v]
         assert [v for v in values if v['event']=='captured-cut']==[cut_expectation('normal')]
@@ -69,6 +69,10 @@ def main(root):
             'backends',(SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()));"""
         result['independent_sql']=json.loads(sql('bbpub_control_normal',query));save()
         assert result['independent_sql']==dict(commands=2,details=2,audit=2,proofs=0,disabled_generation2=1,account_revision='3',active_control=0,active_pins=0,backends=0)
+        result['omissions']=json.loads(sql('bbpub_control_normal',"SELECT json_agg(t ORDER BY case_name) FROM public.scope_fixture_results t"));save()
+        assert [(r['case_name'],r['phase'],r['sqlstate']) for r in result['omissions']]==[
+            ('account','constraints','23514'),('audit','command','23503'),('command','detail','P0002'),
+            ('detail','grant','23514'),('grant','constraints','23514'),('none','positive-rollback','BB099'),('proof','constraints','23514')]
         result['files']={str(p.relative_to(root/'out')):dict(bytes=p.stat().st_size,sha256=sha(p)) for p in sorted((root/'out/signed_normal/kind=7').rglob('*.parquet'))}
         assert len(result['files'])==8
         result['status']='PASS'

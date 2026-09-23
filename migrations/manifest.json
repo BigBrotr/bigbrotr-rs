@@ -89,6 +89,10 @@
     {
       "version": 810,
       "name": "0810_scope_grants.sql"
+    },
+    {
+      "version": 811,
+      "name": "0811_scope_grant_final_checks.sql"
     }
   ],
   "reserved": [

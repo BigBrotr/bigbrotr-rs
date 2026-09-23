@@ -440,3 +440,12 @@ on at least one column. The immutable UPDATE trigger still refuses even an
 identity assignment. This is an explicit provisioning grant, not schema ownership
 or a SECURITY DEFINER bypass. The first native candidate failed at that missing
 fixture privilege; its executed failure is retained separately from qualification.
+
+The actual deferred COMMIT subsequently exposed a variable-binding error in810:
+the function-name qualifier does not label its DECLARE block. Additive0811 replaces
+only `require_scope_grant_effects` with distinct local names, preserving810's
+checksum, stored rows, trigger definitions and function permissions. New grant
+acceptance requires explicit811. PostgreSQL16 distinguishes the hidden parameter
+block from a labeled local block in its [PL/pgSQL structure](https://www.postgresql.org/docs/16/plpgsql-structure.html).
+This correction is under native qualification; schema compilation alone does not
+execute deferred trigger statements.

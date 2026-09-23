@@ -44,7 +44,7 @@ impl ControlSession {
         command.validate(self.request.dataset)?;
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 810)
+        let tx = application_transaction(&mut self.client, 811)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)

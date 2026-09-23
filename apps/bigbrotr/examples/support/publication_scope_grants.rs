@@ -60,13 +60,15 @@ pub async fn prepare(control: &str) {
         .unwrap();
     admin.batch_execute("BEGIN; SET LOCAL ROLE bigbrotr_control; SELECT proof_id FROM control.reauthentication_proofs FOR UPDATE; ROLLBACK").await.unwrap();
     assert!(admin.query_one("SELECT has_column_privilege('bigbrotr_control','control.reauthentication_proofs','proof_id','UPDATE')", &[]).await.unwrap().get::<_,bool>(0));
-    let values:Vec<String>=admin.query("SELECT encode(control.command_u64_bytes(n::control.u64),'hex') FROM (VALUES (0::numeric),(1),(9223372036854775808),(18446744073709551615)) t(n)",&[]).await.unwrap().iter().map(|r|r.get(0)).collect();
+    let values:Vec<String>=admin.query("SELECT encode(control.command_u64_bytes(n::control.u64),'hex') FROM (VALUES (0::numeric),(1),(9223372036854775807),(9223372036854775808),(18446744073709551614),(18446744073709551615)) t(n)",&[]).await.unwrap().iter().map(|r|r.get(0)).collect();
     assert_eq!(
         values,
         [
             "0000000000000000",
             "0000000000000001",
+            "7fffffffffffffff",
             "8000000000000000",
+            "fffffffffffffffe",
             "ffffffffffffffff"
         ]
     );
@@ -75,6 +77,13 @@ pub async fn prepare(control: &str) {
         rounded, "ffffffffffffffff",
         "negative control: rounded numeric division is not unsigned integer division"
     );
+    let before = state(&admin).await;
+    let credentials: String = admin.query_one("SELECT jsonb_agg(to_jsonb(c) ORDER BY principal_id)::text FROM control.local_credentials c", &[]).await.unwrap().get(0);
+    migration_runner::run(&mut admin, 811, true, &Cell::new(false))
+        .await
+        .unwrap();
+    assert_eq!(state(&admin).await, before);
+    assert_eq!(admin.query_one("SELECT jsonb_agg(to_jsonb(c) ORDER BY principal_id)::text FROM control.local_credentials c", &[]).await.unwrap().get::<_,String>(0), credentials);
     drop(admin);
     driver.await.unwrap().unwrap();
 }
@@ -324,6 +333,14 @@ pub async fn run(
         visibility: &visibility,
         pin: &pin,
     };
+    // The deferred-expiry fault is gone. Exercise SQL omissions on this same
+    // real Control backend, then roll them back before the ordinary acceptance.
+    admin
+        .batch_execute(include_str!(
+            "../../../../experiments/archive-engine/scope_grant_omissions.sql"
+        ))
+        .await
+        .unwrap();
     let accepted = owner
         .accept_scope_grant(
             &session.session,
@@ -344,6 +361,21 @@ pub async fn run(
         ),
         (1, 2)
     );
+    let outcomes: Vec<String> = admin.query("SELECT case_name||':'||phase||':'||sqlstate FROM public.scope_fixture_results ORDER BY case_name", &[]).await.unwrap().iter().map(|r|r.get(0)).collect();
+    assert_eq!(
+        outcomes,
+        [
+            "account:constraints:23514",
+            "audit:command:23503",
+            "command:detail:P0002",
+            "detail:grant:23514",
+            "grant:constraints:23514",
+            "none:positive-rollback:BB099",
+            "proof:constraints:23514"
+        ]
+    );
+    admin.batch_execute("DROP TRIGGER a_scope_omissions ON control.management_audit; DROP FUNCTION public.scope_fixture_omissions(); DROP FUNCTION public.scope_fixture_state()").await.unwrap();
+    case("scope-grant-complete-positive-and-six-omissions-restore-full-state-and-xmin");
     let durable = state(&admin).await;
     assert_eq!(
         owner
@@ -465,6 +497,15 @@ pub async fn run(
             rows.get::<_, String>(5)
         ),
         (2, 2, 2, 0, 1, "3".into())
+    );
+    let fingerprints: Vec<String> = admin.query("SELECT encode(request_digest,'hex') FROM control.management_commands WHERE action='scope-grant.change' ORDER BY request_key", &[]).await.unwrap().iter().map(|r|r.get(0)).collect();
+    // Frozen separately with Python struct.pack/hashlib, never SQL or GrantCommand.
+    assert_eq!(
+        fingerprints,
+        [
+            "255d4ff62015e9202e1ee0d6425ce0c48998fdfa2186046de5471e20a033c533",
+            "4b2800db8cadbc4ae1dbc1de39ab51a63c2056613ef74d982ba9562ea2d02a66"
+        ]
     );
     drop(admin);
     driver.await.unwrap().unwrap();

@@ -19,14 +19,14 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Last observed main/HEAD `898b7ac63996fc7df80143ddf7d0b757b0935286`, unpublished
-candidate three commits ahead of origin/main `9f7fabd`. No merge/rebase or another
+Last observed main/HEAD `6099495098eee3c7ff61103ebe82dd5d87cb41ba`, unpublished
+candidate four commits ahead of origin/main `9f7fabd`. No merge/rebase or another
 writer. Candidate product inputs are:
 additive0810/catalog, scope-grant Control adapter/receipt, shared session helper,
 actual signed-publication/password/native-allocation fixture and runner, schema
 upgrade test, and owning private-admin/storage contracts. No grant HTTP route or
-private history read is advertised. No dependencies changed. The correction and RED evidence are committed; only root-owned checkpoint and
-laboratory inventory updates are dirty.
+private history read is advertised. No dependencies changed. The previous candidates and their RED evidence are committed; root-owned811 and
+its fixtures/contracts/evidence/checkpoint changes are dirty.
 
 The command binds dataset/actor/key/target/full VisibilityScope QualifiedRef,
 expected config/policy/account-grant revisions, and allocation catalog/frontier
@@ -114,17 +114,29 @@ grants namespace USAGE, keeping the expected Denied result and marker assertion.
 Build,20schema/3command,2transport and Clippy pass; native final expiry/acceptance/
 readback remain pending. Both containers exited/PID0/noOOM, owned network removed,
 504prior records unchanged;23capture/1028source/four actual ELF hashes verified.
-No live lab or cleanup debt. Root owns fixture/harness/checkpoint/report updates.
-Next bounded action: commit the marker privilege correction, then run the exact
-candidate in a fresh isolated lab through all five cases and independent readback.
+The correction is committed; root owns checkpoint/inventory updates.
+6099495 finished **FAIL** at an actual product boundary: the deferred COMMIT
+function referenced DECLARE locals through the function-name qualifier, which PG
+interpreted as a table and rejected42P01. [Product RED](evidence/p08-scoped-grants-final-check-red-20260923.json)
+retains the failure. Applied810 stays fixed. Draft0811 replaces only the function
+with unambiguous local names; the adapter requires811. Local upgrade RED observed
+UnknownTarget811;21schema/3command tests and focused Clippy now pass. No successful
+native acceptance or811 upgrade is yet claimed.
 
-Read-only AI review re-read complete810/adapter and found no additional concrete
-counterexample. It recommended a fixture-only BEFORE audit trigger on the real
-Control backend, installed after the delayed-expiry case, using seven exception
-subtransactions (complete positive plus six omissions), exact phase/SQLSTATE/message,
-only the four scope constraint triggers and full state/xmin rollback assertions.
-OfficialPG16.15 AfterTriggerEndSubXact restores both queued deferred events and
-constraint mode. This matrix is proposed, not executed; no reviewer writes/resources.
+The6099495 lab is stopped/retained, both containers exited/PID0/noOOM, own empty
+network removed,506prior records unchanged;23capture/1029source/four actual ELF
+hashes verified. No live lab or cleanup debt. Root owns811/catalog/adapter, fixture
+and runner extensions, frozen independent grant fingerprints/u64 edge vectors,
+contracts, RED report and checkpoint/inventory changes.
+
+Read-only AI review is checking the correction and new fixture-only BEFORE audit
+trigger on the actual Control backend, installed after the expiry fault. Seven
+exception subtransactions cover a complete positive plus six omitted effects,
+exact phase/SQLSTATE/message, only four scope constraint triggers, and whole rows/
+xmin restored before the real grant. OfficialPG16.15 AfterTriggerEndSubXact restores
+queued events and constraint mode. This matrix is implemented but **NOT_RUN**.
+Next bounded action: finish review/local checks, commit811 and qualify that exact
+candidate on Tux through six native cases, independent signed readback and final SQL.
 
 Candidate0810 enforces common actor/key identity, exact digest/audit, unique target
 result revision and scope generation, same-session proof consumption, and retained

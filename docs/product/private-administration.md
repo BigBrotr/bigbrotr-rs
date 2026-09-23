@@ -318,7 +318,7 @@ required separate consumers; this command must not be exposed as a remote route.
 
 ### Scope-grant acceptance under qualification
 
-The additive0810 adapter extends the common `(actor_id, request_key)` command
+The additive0810 schema and explicitly required0811 correction extend the common `(actor_id, request_key)` command
 ledger with `scope-grant.change`. A fresh command flips one existing scope's state
 or enables its first generation. Repeated desired state under a *new* key is a
 conflict; revoking an unknown scope creates no tombstone. Accepted commands advance

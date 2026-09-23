@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn scoped_command_final_checks_require_the_additive_variable_binding_correction() {
+    let applied: Vec<_> = plan(&[], 810)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let upgrade = plan(&applied, 811).expect("deferred grant checks require explicit correction");
+    assert_eq!(upgrade.pending.len(), 1);
+    assert_eq!(upgrade.pending[0].name, "0811_scope_grant_final_checks.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 811),
+        Err(MigrationError::MissingPrerequisite(811))
+    );
+    assert!(migrations::require_applied(&applied, 810).is_ok());
+}
+
+#[test]
 fn scoped_commands_require_an_explicit_upgrade_without_rewriting_proofs() {
     let applied: Vec<_> = plan(&[], 809)
         .unwrap()
