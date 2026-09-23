@@ -62,7 +62,7 @@ pub(crate) fn command() -> Command {
         .about("Run explicitly assigned roles; the initial runtime implements Control only")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
-        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0812 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. The initial private GET/POST /v1/resources/event_history profile additionally requires a live session, explicit CSRF and history.read for its exact scope; one exact ID/snapshot, configured resource limits, and a certified archive pin apply. This profile is under qualification. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
+        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0812 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. The initial private GET/POST /v1/resources/event_history profile additionally requires a live session, explicit CSRF and history.read for its exact scope; one exact ID/snapshot, configured resource limits, and a certified archive pin apply. This profile is under qualification. POST /management/v1/jobs accepts private exact-ID signed JSONL export jobs; configured initialized export.destination requires migration0813 and job/pin/source-lock privileges before binding. Historical receipts on the available protocol need no current destination or native reader. Destination checks run on supervised blocking work, retained through Control driver join. This slice does not execute export files. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {
@@ -159,6 +159,7 @@ struct ArchiveRun {
     initialization_budget: Option<ResourceBudget>,
     management_budget: Option<ResourceBudget>,
     management_assets: Option<management::Assets>,
+    export_destination: Option<Arc<bigbrotr::export::destination::LocalDestination>>,
 }
 
 fn run(
@@ -212,6 +213,10 @@ fn run(
         .map(|budget| management::prepare_assets(&root, budget))
         .transpose()?
         .flatten();
+    let export_destination = matches!(operation, Operation::Serve)
+        .then(|| super::export::prepare_destination(&root))
+        .transpose()?
+        .flatten();
     let shared_budget = receipt
         .as_ref()
         .map(|(_, budget)| budget)
@@ -257,10 +262,14 @@ fn run(
         let driver = if let Some(custody) = &coordinator {
             tokio::spawn(custody.retain_connection(driver).map_err(|e| (4, format!("cannot retain archive coordinator custody: {e:?}")))?)
         } else { tokio::spawn(driver) };
-        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, initialization_budget, management_budget, management_assets }, operation).await;
+        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, initialization_budget, management_budget, management_assets,
+            export_destination: export_destination.clone() }, operation).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
         // the join. Dropping the request/session alone does not free its grant.
         postgres_command::join(driver).await;
+        // The checked observation/SQL future may already have been dropped.
+        // Original destination custody survives every unknown COMMIT and join.
+        drop(export_destination);
         outcome
     });
     runtime.shutdown_timeout(postgres_command::DRIVER_DRAIN);
@@ -500,6 +509,7 @@ async fn supervise(
         .expect("serve budget")
         .clone();
     let mut management = if accepted.flag("administration.enabled") {
+        let mut export_jobs = false;
         tokio::select! {
             biased;
             _ = stop.requested() => return Err((4,"private session startup cancelled".into())),
@@ -507,6 +517,10 @@ async fn supervise(
                 .min(lease.remaining_validity().map_err(|e| (4,e.to_string()))?), async {
                     owner.require_browser_sessions().await?;
                     owner.require_scope_grants().await?;
+                    export_jobs = owner.export_jobs_available().await?;
+                    if archive.export_destination.is_some() && !export_jobs {
+                        return Err(bigbrotr::management::sessions::SessionError::Prerequisite);
+                    }
                     if accepted.flag("archive.reader.enabled") {
                         owner.require_archive_reader().await.map_err(|_| bigbrotr::management::sessions::SessionError::Prerequisite)?;
                     }
@@ -527,6 +541,7 @@ async fn supervise(
                     .delivery_window(lease.known_epoch())
                     .map_err(|e| (4, e.to_string()))?,
                 archive.management_assets,
+                export_jobs,
             )
             .await?,
         )
@@ -581,7 +596,7 @@ async fn supervise(
                 let response = tokio::select! {
                     biased;
                     _ = stop.requested() => return Err((4,"private session operation cancelled; outcome unresolved".into())),
-                    result = management.as_mut().expect("management work source").execute(work,&mut owner,maximum,accepted.flag("archive.reader.enabled")) => result?,
+                    result = management.as_mut().expect("management work source").execute(work,&mut owner,maximum,accepted.flag("archive.reader.enabled"),archive.export_destination.as_ref()) => result?,
                 };
                 let response = match response {
                     management::Execution::Complete(response) => response,

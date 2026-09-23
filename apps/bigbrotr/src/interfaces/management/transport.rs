@@ -16,6 +16,7 @@ use axum::{
 use bigbrotr::{
     management::{
         grants::{CommandKey, GrantCommand, GrantReceipt},
+        jobs::{JobCommand, JobReceipt},
         reauthentication::ReauthenticationProof,
         sessions::{BrowserSecret, IssuedSession, SessionError, SessionObservation},
     },
@@ -52,6 +53,12 @@ const SESSION_COOKIE: &str = "BigBrotrLocalSession";
 const CSRF_COOKIE: &str = "BigBrotrLocalCsrf";
 
 pub(super) enum Operation {
+    Job {
+        session: BrowserSecret,
+        csrf: BrowserSecret,
+        key: CommandKey,
+        command: JobCommand,
+    },
     History {
         session: BrowserSecret,
         csrf: BrowserSecret,
@@ -86,6 +93,7 @@ pub(super) enum Operation {
     },
 }
 pub(super) enum Reply {
+    Job(JobReceipt),
     History(Box<super::history::HistoryBody>),
     Grant(GrantReceipt),
     Reauthenticated(ReauthenticationProof),
@@ -211,6 +219,7 @@ impl Server {
                 post(reauthenticate),
             )
             .route("/management/v1/me", get(me))
+            .route("/management/v1/jobs", post(create_job))
             .route(
                 "/v1/resources/event_history",
                 get(history_query).post(history_query),
@@ -441,6 +450,71 @@ struct ReauthenticationInput {
 struct GrantInput {
     proof_id: bigbrotr_model::ReauthenticationId,
     command: GrantCommand,
+}
+
+async fn create_job(
+    State(shared): State<Shared>,
+    Extension(connection): Extension<Connection>,
+    request: Request,
+) -> Response {
+    let grant = match begin(&shared, &request) {
+        Ok(grant) => grant,
+        Err(status) => return error(status),
+    };
+    let session = match session(request.headers()) {
+        Ok(session) => session,
+        Err(status) => return error(status),
+    };
+    let Some(csrf) =
+        single(request.headers(), "x-csrf-token").and_then(|v| BrowserSecret::parse_hex(v).ok())
+    else {
+        return error(StatusCode::FORBIDDEN);
+    };
+    let Some(key) = single(request.headers(), "idempotency-key")
+        .and_then(|v| std::str::from_utf8(v).ok())
+        .and_then(|v| v.parse::<CommandKey>().ok())
+    else {
+        return error(StatusCode::BAD_REQUEST);
+    };
+    if !single(request.headers(), "content-type").is_some_and(|v| {
+        v.eq_ignore_ascii_case(b"application/json")
+            || v.eq_ignore_ascii_case(b"application/json; charset=utf-8")
+    }) {
+        return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
+    }
+    let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
+        Ok(bytes) => bytes,
+        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+    };
+    let command: JobCommand = match serde_json::from_slice(&bytes) {
+        Ok(value) => value,
+        Err(_) => return error(StatusCode::BAD_REQUEST),
+    };
+    drop(bytes);
+    // Reject unsupported shapes here; Control separately binds the authenticated
+    // actor, installed dataset, revisions and exact native/destination proofs.
+    let validation = match &command {
+        JobCommand::Export(command) => command.validate(command.query.scope.dataset_id),
+    };
+    if let Err(error_kind) = validation {
+        return error(if error_kind == SessionError::Capacity {
+            StatusCode::TOO_MANY_REQUESTS
+        } else {
+            StatusCode::BAD_REQUEST
+        });
+    }
+    dispatch(
+        &shared,
+        connection,
+        grant,
+        Operation::Job {
+            session,
+            csrf,
+            key,
+            command,
+        },
+    )
+    .await
 }
 
 async fn change_grant(
@@ -763,6 +837,12 @@ async fn dispatch(
         return error(StatusCode::TOO_MANY_REQUESTS);
     }
     match receive.await {
+        Ok(Ok(Reply::Job(receipt))) => protect((
+            if receipt.created { StatusCode::ACCEPTED } else { StatusCode::OK },
+            Json(json!({"format":"bigbrotr-job-acceptance/1", "command_key":receipt.command_key,
+                "job_id":receipt.job_id, "accepted_at_us":receipt.accepted_at_us.to_string(),
+                "created":receipt.created, "execution":"unobserved", "authority":"acceptance-only"}))
+        ).into_response()),
         Ok(Ok(Reply::History(body))) => {
             let mut response = Response::new(Body::from(axum::body::Bytes::from_owner(*body)));
             response.headers_mut().insert(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));

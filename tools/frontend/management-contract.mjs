@@ -14,7 +14,9 @@ async function output(name, value) {
     if (await readFile(path, 'utf8') !== value) throw new Error(`Generated contract drift: ${name}`);
   } else await writeFile(path, value);
 }
-await output('management.d.ts', '// Generated from contracts/management/v1/openapi.yaml. Do not edit.\n' + astToString(await openapiTS(schema)));
+// Resolve the shared read request relative to the owning contract, so export
+// cannot acquire a divergent copy of QueryRequest in its generated client.
+await output('management.d.ts', '// Generated from contracts/management/v1/openapi.yaml. Do not edit.\n' + astToString(await openapiTS(new URL('../../contracts/management/v1/openapi.yaml', import.meta.url))));
 const ajv = new Ajv2020({ strict: true, allErrors: false, code: { source: true, esm: true } });
 const definitions = JSON.parse(JSON.stringify(schema.components.schemas).replaceAll('#/components/schemas/', '#/$defs/'));
 ajv.addSchema({ $id: 'bigbrotr-private-session', $defs: definitions });

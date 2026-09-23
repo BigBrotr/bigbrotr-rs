@@ -322,8 +322,11 @@ listing; mutable artifact state follows the same page-read-time rule.
 
 The current bounded destination prerequisite has explicit finite
 [initialize/inspect commands](../operations/export.md), deployment-root pairing
-and descriptor-bound private markers. Source/job/pin atomic acceptance and actual
-export delivery remain the next consumer; this does not complete Step 1 or 3.
+and descriptor-bound private markers. Source/job/pin atomic acceptance has
+[scoped native evidence](evidence/p08-export-acceptance-native-20260924.json)
+at5705b07. The private job route and destination supervision are now under native
+HTTP qualification; actual export delivery remains the next consumer. This does
+not complete Step 1 or 3.
 [Native destination qualification](evidence/p08-export-destination-native-20260923.json)
 at a75d0fa passes ten actual Linux/ext4 cases, including bind aliases, cross-process
 custody, fsync EIO and process death around rename. The marker's independent

@@ -89,11 +89,31 @@ export interface paths {
         };
         get?: never;
         /**
-         * Accept one scoped history grant change
-         * @description Exact Origin, current session, CSRF and Idempotency-Key required. Fresh acceptance needs the original session bound to the proof; a historical receipt retry permits a new live session of the same actor. Path principal must equal command target. Body max8192bytes. Requires explicit migration0811 and application SQL privileges. Revocation and historical retries do not depend on Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate reader credentials and the installed worker bundle. A known native prerequisite refusal preserves the proof and keeps Control available. Native HTTP execution remains under qualification. This is not complete grant/private-history qualification. A lost response is resolved by an identical command retry; never substitute a new key. Acceptance does not establish applied restrictive drain.
+         * Accept one scoped data grant change
+         * @description Exact Origin, current session, CSRF and Idempotency-Key required. Fresh acceptance needs the original session bound to the proof; a historical receipt retry permits a new live session of the same actor. Path principal must equal command target. Body max8192bytes. Requires explicit migration0812 and application SQL privileges. Revocation and historical retries do not depend on Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate reader credentials and the installed worker bundle. A known native prerequisite refusal preserves the proof and keeps Control available. Native HTTP execution remains under qualification. This is not complete grant/private-history qualification. A lost response is resolved by an identical command retry; never substitute a new key. Acceptance does not establish applied restrictive drain.
          */
         put: operations["changeScopeGrant"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/management/v1/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept a private signed event export job
+         * @description Exact Origin, current session, explicit CSRF and Idempotency-Key. Body max8192bytes. New work requires dataset data.read and all three exact-scope actions history.read, export and private-export, expected config/policy revisions, retained native allocation and configured initialized destination. Deployment selection requires migration0813 and job/pin/source-lock privileges before binding. A schema without813 or insufficient job privileges disables this route; existing812 session/history operation remains available. On the available protocol, an identical historical retry needs a live actor session but no current destination, native read or action grants; it never executes work or refreshes pins. A lost reply requires the identical original key/body. Initial transport is under qualification, not a completed exporter. No publication side effect.
+         */
+        post: operations["acceptJob"];
         delete?: never;
         options?: never;
         head?: never;
@@ -224,8 +244,8 @@ export interface components {
         /** @description Exact desired command, not authority. Scope dataset must equal the installed dataset. Enabling requires allocation; disabling requires null. Revisions/ordinal must fit positive uint64. */
         ScopeGrantCommand: {
             principal_id: string;
-            /** @constant */
-            action: "history.read";
+            /** @enum {string} */
+            action: "history.read" | "export" | "private-export";
             scope: {
                 dataset_id: string;
                 /** @constant */
@@ -293,6 +313,71 @@ export interface components {
             application: "unobserved";
             /** @constant */
             authority: "acceptance-only";
+        };
+        /** @description Initial private exact-ID signed JSONL job profile. Query defaults use immutable protocol defaults: snapshot and page_size100. Complete scope and approved destination binding required; no path or actor supplied by the browser. Acceptance is under native HTTP qualification; execution is not yet implemented. */
+        ExportJobCommand: {
+            /** @constant */
+            kind: "export";
+            /** @constant */
+            format: "signed-events-jsonl";
+            query: components["schemas"]["request.schema"];
+            allocation: {
+                catalog_id: string;
+                /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+                frontier_revision: string;
+            };
+            destination: {
+                id: string;
+                binding_sha256: string;
+            };
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_config_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_policy_revision: string;
+        };
+        /** @description Immutable historical acceptance only, not current job state, execution or artifact availability. An exact retry preserves job identity/time and does not refresh or reapply effects. */
+        JobAcceptance: {
+            /** @constant */
+            format: "bigbrotr-job-acceptance/1";
+            command_key: string;
+            job_id: string;
+            /** @description Original positive Unix microseconds, maximum9223372036854775807; exact decimal string. */
+            accepted_at_us: string;
+            created: boolean;
+            /** @constant */
+            execution: "unobserved";
+            /** @constant */
+            authority: "acceptance-only";
+        };
+        /**
+         * Initial exact-ID history QueryRequest
+         * @description Private integration profile. Broader selected resources, filters and cursors remain required work; reject rather than ignore unsupported constraints. Duplicate JSON keys are invalid; schemas alone cannot detect them.
+         */
+        "request.schema": {
+            /** @constant */
+            version: 1;
+            /** @constant */
+            resource: "event_history";
+            /**
+             * @default snapshot
+             * @constant
+             */
+            mode: "snapshot";
+            scope: {
+                dataset_id: string;
+                /** @constant */
+                dictionary_kind: 4;
+                allocation_domain: string;
+                /** @description Canonical unsigned decimal; runtime also enforces uint64 maximum18446744073709551615. */
+                ordinal: string;
+            };
+            filters: {
+                ids: string[];
+            }[];
+            /** @default 100 */
+            page_size: number | null;
+            cursor?: null;
+            projection?: null;
         };
     };
     responses: never;
@@ -688,6 +773,116 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ScopeGrantReceipt"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Command or revision conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Body byte limit */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description JSON required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    acceptJob: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExportJobCommand"];
+            };
+        };
+        responses: {
+            /** @description Identical historical acceptance for this actor/key; no execution claim. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobAcceptance"];
+                };
+            };
+            /** @description New atomic command, job and retained input pin accepted. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobAcceptance"];
                 };
             };
             /** @description Invalid request */

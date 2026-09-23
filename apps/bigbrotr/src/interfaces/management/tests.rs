@@ -2,6 +2,8 @@ use super::*;
 
 #[path = "grant_tests.rs"]
 mod grants;
+#[path = "job_tests.rs"]
+mod jobs;
 
 #[tokio::test]
 async fn private_history_requires_session_before_admitting_read_work() {
@@ -986,6 +988,7 @@ async fn management_stop_cannot_finish_or_release_grants_before_blocking_worker_
         hashes: JoinSet::new(),
         budget: budget.clone(),
         delivery,
+        export_jobs: false,
     };
     let client = tokio::spawn(exchange(
         address,

@@ -155,6 +155,18 @@ subset; the current frontend runtime validators cover session observations and
 errors. Grant/reauthentication browser consumers remain required; these artifacts
 do not advertise the whole table above.
 
+The initial `POST /management/v1/jobs` consumer accepts only an exact-ID private
+signed-event export using the shared QueryRequest and approved destination
+binding. Its [operator contract](../operations/export.md) specifies immutable
+acceptance202, historical retry200 and unavailable dependencies; the generated
+management contract references the existing read schema. Migration0813 and job
+privileges are startup prerequisites when a destination is explicitly selected.
+Without selection, a safe protocol/privilege probe preserves earlier session
+operation and permits historical receipt resolution when813 is available.
+Destination custody outlives cancelled SQL through actual driver join;
+filesystem observation runs outside the asynchronous Control transaction. This
+route is under native qualification and reports no execution/artifact readiness.
+
 The selected next history consumer mounts the same
 `/v1/resources/event_history` resource on the private origin with a browser-session
 authentication adapter. It uses the shared QueryRequest/QueryPage semantics,

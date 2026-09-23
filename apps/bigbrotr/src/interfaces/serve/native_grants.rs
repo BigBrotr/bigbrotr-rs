@@ -328,14 +328,14 @@ pub(super) fn pin_error(error: ArchivePinError) -> (u8, String) {
 }
 
 pub(super) async fn execute(
-    work: management::GrantWork,
+    work: management::AllocationWork,
     config: Arc<Resolved>,
     budget: ResourceBudget,
     coordinator: &LocalCoordinator,
     authority: &mut Supervisor<'_>,
 ) -> Result<management::Response> {
     let deadline = work.deadline();
-    let Some(allocation) = work.command().allocation.as_ref() else {
+    let Some(allocation) = work.allocation() else {
         return Ok(work.refuse(SessionError::InvalidInput));
     };
     if work.abandoned() || allocation.catalog_id != coordinator.identity().catalog() {
@@ -354,6 +354,22 @@ pub(super) async fn execute(
     };
     let Some(selected) = selected else {
         return Ok(work.refuse(SessionError::ArchiveUnavailable));
+    };
+    // Filesystem calls can block indefinitely. They run under renewal/signal
+    // supervision before any catalog transaction or temporary pin exists.
+    let destination = match work.destination() {
+        Some(destination) => match authority
+            .blocking_while(
+                deadline,
+                || !work.abandoned(),
+                move |_| destination.check_for_acceptance().map_err(unavailable),
+            )
+            .await?
+        {
+            Ok(checked) => Some(checked),
+            Err(error) => return Ok(work.refuse(error)),
+        },
+        None => None,
     };
     let preparation_config = config.clone();
     let preparation_budget = budget.clone();
@@ -403,7 +419,7 @@ pub(super) async fn execute(
             _ = authority.stop.requested() => return Err((4,"native grant pin admission cancelled; outcome unresolved".into())),
             result = tokio::time::timeout(maximum, authority.owner.register_archive_pin(&capture,&request, &commit)) => result.map_err(|_| (4,"native grant pin admission deadline; outcome unresolved".into()))?.map_err(pin_error)?,
         };
-        let expected = VisibilityRead { dataset:selected.dataset_id, scope:work.command().scope,
+        let expected = VisibilityRead { dataset:selected.dataset_id, scope:work.scope(),
             topology_generation:selected.topology_generation,bounds:selected.bounds,snapshot_id:selected.snapshot_id };
         let custody = coordinator.reader_custody().map_err(|_| (4,"native grant reader custody refused; retain pin".into()))?;
         let native = authority.blocking(deadline, move |cancel| observe(config,budget,prepared.reader,route,custody,expected,deadline,cancel)).await?;
@@ -414,7 +430,7 @@ pub(super) async fn execute(
                 let response = tokio::select! {
                     biased;
                     _ = authority.stop.requested() => return Err((4,"native grant acceptance cancelled; outcome unresolved".into())),
-                    result = work.accept(authority.owner,maximum,&allocation) => result?,
+                    result = work.accept(authority.owner,maximum,&allocation,destination.as_ref()) => result?,
                 };
                 drop(visibility);
                 response

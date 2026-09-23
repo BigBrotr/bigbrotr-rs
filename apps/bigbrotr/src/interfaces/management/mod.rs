@@ -8,19 +8,21 @@ mod transport;
 pub(super) use assets::Assets;
 use bigbrotr::runtime::policy_authority::DeliveryWindow;
 use bigbrotr::{
+    export::destination::{CheckedDestination, LocalDestination},
     management::{
         credentials::HASH_RESERVATION,
-        grants::GrantCommand,
+        grants::{AllocationSelection, GrantCommand},
+        jobs::{ExportCommand, JobCommand},
         reauthentication::VerifiedReauthentication,
         sessions::{BrowserSecret, SessionError, SessionLifetime, VerifiedLogin},
     },
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits},
     storage::postgres::control_owner::{ControlSession, ScopeGrantAllocation},
 };
-use bigbrotr_model::{CommandKey, ReauthenticationId};
+use bigbrotr_model::{CommandKey, QualifiedRef, ReauthenticationId};
 use boundary::BrowserBoundary;
 use delivery::DeliveryGate;
-use std::{future::Future, net::SocketAddr, time::Duration};
+use std::{future::Future, net::SocketAddr, sync::Arc, time::Duration};
 use tokio::task::JoinSet;
 use transport::{Command, Completion, Operation, Reply, Server};
 
@@ -50,19 +52,43 @@ impl Response {
         }
     }
 }
-/// Control has authenticated a fresh enablement and rolled back its first
-/// transaction. Native allocation must finish before a second full acceptance.
-pub(super) struct GrantWork {
+/// Control authenticated new work and rolled back its first transaction. Both
+/// consumers require the same native allocation before full atomic acceptance.
+pub(super) struct AllocationWork {
     completion: Completion,
     session: BrowserSecret,
     csrf: BrowserSecret,
     key: CommandKey,
-    command: GrantCommand,
-    proof: ReauthenticationId,
+    kind: AllocationKind,
 }
-impl GrantWork {
-    pub fn command(&self) -> &GrantCommand {
-        &self.command
+enum AllocationKind {
+    Grant {
+        command: GrantCommand,
+        proof: ReauthenticationId,
+    },
+    Export {
+        command: ExportCommand,
+        destination: Arc<LocalDestination>,
+    },
+}
+impl AllocationWork {
+    pub fn allocation(&self) -> Option<&AllocationSelection> {
+        match &self.kind {
+            AllocationKind::Grant { command, .. } => command.allocation.as_ref(),
+            AllocationKind::Export { command, .. } => Some(&command.allocation),
+        }
+    }
+    pub fn scope(&self) -> QualifiedRef {
+        match &self.kind {
+            AllocationKind::Grant { command, .. } => command.scope,
+            AllocationKind::Export { command, .. } => command.query.scope,
+        }
+    }
+    pub fn destination(&self) -> Option<Arc<LocalDestination>> {
+        match &self.kind {
+            AllocationKind::Export { destination, .. } => Some(destination.clone()),
+            AllocationKind::Grant { .. } => None,
+        }
     }
     pub fn deadline(&self) -> tokio::time::Instant {
         self.completion.deadline
@@ -78,30 +104,48 @@ impl GrantWork {
         owner: &mut ControlSession,
         maximum: Duration,
         allocation: &ScopeGrantAllocation<'_, '_>,
+        destination: Option<&CheckedDestination>,
     ) -> Result<Response> {
         if self.abandoned() {
             return Ok(self.refuse(SessionError::ArchiveUnavailable));
         }
         let commit = std::cell::Cell::new(false);
-        let result = sql(
-            maximum,
-            owner.accept_scope_grant(
-                &self.session,
-                &self.csrf,
-                self.key,
-                &self.command,
-                self.proof,
-                Some(allocation),
-                &commit,
-            ),
-        )
-        .await?;
-        Ok(Response(self.completion, result.map(Reply::Grant)))
+        let result = match self.kind {
+            AllocationKind::Grant { command, proof } => sql(
+                maximum,
+                owner.accept_scope_grant(
+                    &self.session,
+                    &self.csrf,
+                    self.key,
+                    &command,
+                    proof,
+                    Some(allocation),
+                    &commit,
+                ),
+            )
+            .await?
+            .map(Reply::Grant),
+            AllocationKind::Export { command, .. } => sql(
+                maximum,
+                owner.accept_export(
+                    &self.session,
+                    &self.csrf,
+                    self.key,
+                    &command,
+                    Some(allocation),
+                    destination,
+                    &commit,
+                ),
+            )
+            .await?
+            .map(Reply::Job),
+        };
+        Ok(Response(self.completion, result))
     }
 }
 pub(super) enum Execution {
     Complete(Option<Response>),
-    Archive(GrantWork),
+    Archive(AllocationWork),
     History(HistoryWork),
 }
 
@@ -110,6 +154,7 @@ pub(super) struct Management {
     hashes: JoinSet<HashResult>,
     budget: ResourceBudget,
     delivery: DeliveryGate,
+    export_jobs: bool,
 }
 
 pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
@@ -160,6 +205,7 @@ impl Management {
         budget: ResourceBudget,
         window: DeliveryWindow,
         assets: Option<Assets>,
+        export_jobs: bool,
     ) -> Result<Self> {
         let address = SocketAddr::new(
             root.text("administration.listen.host")
@@ -202,6 +248,7 @@ impl Management {
             hashes: JoinSet::new(),
             budget,
             delivery,
+            export_jobs,
         })
     }
 
@@ -224,6 +271,7 @@ impl Management {
         owner: &mut ControlSession,
         maximum: Duration,
         native_reader: bool,
+        destination: Option<&Arc<LocalDestination>>,
     ) -> Result<Execution> {
         match work.0 {
             WorkKind::Failed => {
@@ -257,6 +305,47 @@ impl Management {
                     return Ok(Execution::Complete(None));
                 }
                 match operation {
+                    Operation::Job {
+                        session,
+                        csrf,
+                        key,
+                        command: JobCommand::Export(command),
+                    } => {
+                        // Probe at startup, never touch813 tables on an older
+                        // valid runtime. Historical resolution needs no root.
+                        if !self.export_jobs {
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::ArchiveUnavailable),
+                            ))));
+                        }
+                        let commit = std::cell::Cell::new(false);
+                        let result = sql(
+                            maximum,
+                            owner
+                                .accept_export(&session, &csrf, key, &command, None, None, &commit),
+                        )
+                        .await?;
+                        if let Some(destination) = destination
+                            && native_reader
+                            && matches!(result, Err(SessionError::ArchiveUnavailable))
+                        {
+                            return Ok(Execution::Archive(AllocationWork {
+                                completion,
+                                session,
+                                csrf,
+                                key,
+                                kind: AllocationKind::Export {
+                                    command,
+                                    destination: destination.clone(),
+                                },
+                            }));
+                        }
+                        return Ok(Execution::Complete(Some(Response(
+                            completion,
+                            result.map(Reply::Job),
+                        ))));
+                    }
                     Operation::History {
                         session,
                         csrf,
@@ -292,13 +381,12 @@ impl Management {
                         .await?;
                         if native_reader && matches!(result, Err(SessionError::ArchiveUnavailable))
                         {
-                            return Ok(Execution::Archive(GrantWork {
+                            return Ok(Execution::Archive(AllocationWork {
                                 completion,
                                 session,
                                 csrf,
                                 key,
-                                command,
-                                proof,
+                                kind: AllocationKind::Grant { command, proof },
                             }));
                         }
                         return Ok(Execution::Complete(Some(Response(

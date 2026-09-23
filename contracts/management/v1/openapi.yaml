@@ -619,6 +619,157 @@
           }
         }
       }
+    },
+    "/management/v1/jobs": {
+      "post": {
+        "operationId": "acceptJob",
+        "summary": "Accept a private signed event export job",
+        "description": "Exact Origin, current session, explicit CSRF and Idempotency-Key. Body max8192bytes. New work requires dataset data.read and all three exact-scope actions history.read, export and private-export, expected config/policy revisions, retained native allocation and configured initialized destination. Deployment selection requires migration0813 and job/pin/source-lock privileges before binding. A schema without813 or insufficient job privileges disables this route; existing812 session/history operation remains available. On the available protocol, an identical historical retry needs a live actor session but no current destination, native read or action grants; it never executes work or refreshes pins. A lost reply requires the identical original key/body. Initial transport is under qualification, not a completed exporter. No publication side effect.",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$",
+              "not": {
+                "const": "00000000000000000000000000000000"
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportJobCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Command or revision conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "New atomic command, job and retained input pin accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAcceptance"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical historical acceptance for this actor/key; no execution claim.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAcceptance"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -973,7 +1124,11 @@
           },
           "action": {
             "type": "string",
-            "enum": ["history.read", "export", "private-export"]
+            "enum": [
+              "history.read",
+              "export",
+              "private-export"
+            ]
           },
           "scope": {
             "type": "object",
@@ -1246,6 +1401,136 @@
           }
         },
         "description": "Immutable acceptance observation. An identical historical retry returns created=false and the original result; it never reapplies state or proves restrictive drain."
+      },
+      "ExportJobCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "format",
+          "query",
+          "allocation",
+          "destination",
+          "expected_config_revision",
+          "expected_policy_revision"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "export"
+          },
+          "format": {
+            "type": "string",
+            "const": "signed-events-jsonl"
+          },
+          "query": {
+            "$ref": "../../read/v1/request.schema.json"
+          },
+          "allocation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "catalog_id",
+              "frontier_revision"
+            ],
+            "properties": {
+              "catalog_id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$",
+                "not": {
+                  "const": "00000000000000000000000000000000"
+                }
+              },
+              "frontier_revision": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+              }
+            }
+          },
+          "destination": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "binding_sha256"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$",
+                "not": {
+                  "const": "00000000000000000000000000000000"
+                }
+              },
+              "binding_sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          },
+          "expected_config_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "expected_policy_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          }
+        },
+        "description": "Initial private exact-ID signed JSONL job profile. Query defaults use immutable protocol defaults: snapshot and page_size100. Complete scope and approved destination binding required; no path or actor supplied by the browser. Acceptance is under native HTTP qualification; execution is not yet implemented."
+      },
+      "JobAcceptance": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format",
+          "command_key",
+          "job_id",
+          "accepted_at_us",
+          "created",
+          "execution",
+          "authority"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "bigbrotr-job-acceptance/1"
+          },
+          "command_key": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "job_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "accepted_at_us": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Original positive Unix microseconds, maximum9223372036854775807; exact decimal string."
+          },
+          "created": {
+            "type": "boolean"
+          },
+          "execution": {
+            "type": "string",
+            "const": "unobserved"
+          },
+          "authority": {
+            "type": "string",
+            "const": "acceptance-only"
+          }
+        },
+        "description": "Immutable historical acceptance only, not current job state, execution or artifact availability. An exact retry preserves job identity/time and does not refresh or reapply effects."
       }
     },
     "securitySchemes": {

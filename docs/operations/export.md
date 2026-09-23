@@ -3,7 +3,8 @@
 P08-T03/T04 implementation is in progress. The current finite commands prepare
 and inspect the filesystem destination. Job acceptance has
 [scoped native evidence](../implementation/evidence/p08-export-acceptance-native-20260924.json),
-but no user-facing job route or completed file export yet. Execution, restart,
+and the private job route below is implemented under native qualification.
+There is no completed file export yet. Execution, restart,
 output formats, object storage and artifact publication remain required work.
 
 Configure an explicit private destination in the deployment file:
@@ -69,3 +70,43 @@ The observation grants no job, dataset, scope or publication permission; the
 [explicit scoped permissions](../user/administration/scope-grants.md) remain
 separate, and job acceptance must bind source pins and the approved destination
 atomically before dispatch.
+
+With an initialized destination selected, `serve --roles control` requires
+migration0813 and job/pin privileges, including the source-stream row-lock
+privilege, before binding the private listener. It retains the destination
+descriptor through Control connection shutdown. Per-request filesystem checks
+run on supervised blocking work, outside Control transactions.
+
+`POST /management/v1/jobs` accepts the closed `ExportJobCommand` in the
+[management contract](../../contracts/management/v1/openapi.yaml). Supply the
+session cookie, explicit `X-CSRF-Token`, exact Origin and original
+`Idempotency-Key`; the body is limited to8192bytes. This initial profile selects
+one exact event ID through the shared snapshot QueryRequest, a certified native
+allocation and destination ID/binding digest. It accepts only
+`signed-events-jsonl`. Protocol defaults are snapshot mode and page size100;
+they do not change with deployment read defaults. The installed dataset and
+actor come from Control. Browser paths, shell text and arbitrary queries are
+refused. Unknown and duplicate command keys are refused before their values are
+decoded; the parser does not construct a generic tree for unsupported fields.
+New acceptance requires dataset `data.read` and all three exact-scope actions
+`history.read`, `export` and `private-export`.
+
+A new committed job returns202 with `bigbrotr-job-acceptance/1`, original command
+key, job ID, decimal-string acceptance time, `created=true`,
+`execution=unobserved` and `authority=acceptance-only`. An identical retry by a
+live session of the same actor returns200/`created=false` with the original
+identity/time. It does not repeat execution, change grants or refresh pins, and
+needs no current destination or native reader. A changed command under the same
+key conflicts. After a lost reply retain the exact key/body for resolution. A
+receipt does not prove file availability or current job state.
+
+The runtime probes the checksum-validated schema and job privileges at startup.
+Without protocol813 or its privileges the route refuses503 while an otherwise
+valid session/history runtime remains available when no destination is selected.
+With the protocol available, historical receipts remain resolvable even after
+removing the destination or disabling the native reader. New work needs both.
+Known destination/native refusals leave Control usable. Unknown Control/COMMIT
+outcomes fail closed and preserve retained obligations. The actual HTTP/engine,
+blocked-checker and ambiguity cases must qualify these guarantees; transport
+tests alone do not establish them. Job discovery, scheduling/execution and
+terminal recovery remain required P08-T03/T04 work.

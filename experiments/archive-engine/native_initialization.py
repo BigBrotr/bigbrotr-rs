@@ -20,12 +20,13 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'], ['--private-grant-http'], ['--event-query'], ['--private-history'], ['--export-grants'], ['--export-jobs'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'], ['--archive-visibility'], ['--scope-grants'], ['--private-grant-http'], ['--event-query'], ['--private-history'], ['--export-grants'], ['--export-jobs'], ['--export-job-http'])
+export_job_http = sys.argv[1:] == ['--export-job-http']
 export_jobs = sys.argv[1:] == ['--export-jobs']
 export_grants = sys.argv[1:] == ['--export-grants']
 private_history = sys.argv[1:] == ['--private-history']
 event_query = sys.argv[1:] == ['--event-query']
-private_grant_http = export_grants or private_history or sys.argv[1:] == ['--private-grant-http']
+private_grant_http = export_job_http or export_grants or private_history or sys.argv[1:] == ['--private-grant-http']
 scope_grants = export_jobs or sys.argv[1:] == ['--scope-grants']
 archive_visibility = sys.argv[1:] == ['--archive-visibility']
 pin_recovery = sys.argv[1:] == ['--pin-recovery']
@@ -160,6 +161,12 @@ if export_jobs:
     identity.update(scope='atomic native export-job acceptance; execution/artifact/restart remain unqualified')
     checks = [checks[0],
         ('export-job-consumer', ['cargo','test','--locked','--release','-p','bigbrotr','--test','management_jobs','--test','control_schema']),
+        checks[-1]]
+if export_job_http:
+    identity.update(scope='private HTTP durable export acceptance/retry and destination checker; no file execution')
+    checks = [checks[0],
+        ('export-job-http-consumer', ['cargo','test','--locked','--release','-p','bigbrotr','--bin','bigbrotr','--test','management_jobs','--test','control_schema','--test','export_destination']),
+        ('export-read-codec', ['cargo','test','--locked','--release','-p','bigbrotr-protocol','--lib','read::tests']),
         checks[-1]]
 if import_source:
     identity.update(scope='captured JSONL source and existing connected signed-admission consumer')

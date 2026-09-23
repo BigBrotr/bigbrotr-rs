@@ -21,23 +21,61 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD5705b0720ba78389392da00170c33b53dd5a1057 is an unpublished
-local export-acceptance candidate. origin/main remains793bb62fbf0358d3ae3666b315ea3078d0ac75f9.
-Candidate source transferred exactly via Git to Tux; no remote editing.
-The candidate contains P08 export acceptance: typed command/JobId/receipt,
-additive draft0813 and catalog registration, fenced Control adapter and shared
-pin insertion with explicit Reader/Export purpose, native fixture/omission SQL,
-shared native runner profile and owning contract/checkpoint. No unrelated edits.
-Actual command RED preceded implementation; three independent command tests and
-21 schema catalog tests PASS; adapter fixture RED (missing methods) then cargo
-check and scoped Clippy PASS. Logs .research/implementation/export-jobs/.
+Current main/HEAD and origin/main78a1ee26e94e16675febbf627a1174c3c43ed03d,
+both preceding commits5705b07/78a1ee2 pushed normally to the private origin.
+Root owns the dirty HTTP export slice: interfaces management/serve/export,
+job decode, optional Control protocol probe, shared initial QueryRequest decode,
+OpenAPI/generated types, native HTTP fixtures and affected contracts/checkpoint.
+No unrelated edits or active laboratory; no published history rewritten.
+
+Private POST /management/v1/jobs now reuses the supervised native allocation
+consumer and atomic813 adapter. Original destination Arc lives through actual
+Control driver join; per-operation check uses blocking supervision before catalog
+capture/pin. Typed202/new or200/historical receipt never claims execution. A safe
+checksum-validated812 protocol/privilege probe permits optional813 resolution:
+selected destination requires813; otherwise older session runtime remains usable.
+On813 historical retry requires no current destination/reader/grants. New work
+still needs actual destination and native allocation with current authorization.
+
+Read-only AI review found generic internally tagged Serde buffering before
+unknown-field refusal. Actual isolated System allocator measured6023wirebytes /
+258008peakallocatedbytes; new direct closed-map visitor225bytes. A second known
+projection array (2049 empty strings,6832wirebytes) measured98529bytes; initial
+shared QueryRequest now refuses non-null projection before decoding (341bytes),
+GET also refuses it without constructing a vector. Wire schema/fingerprint and
+all supported shapes stay unchanged; broader projections remain selected later
+work. Reproducible isolated source experiments/job-command-decode/, raw
+.research/implementation/export-jobs/decode-*. No RSS/native/whole-input-envelope
+claim. Original RED logs are retained; the first probe-driver dependency-path compile
+failure was observed in tool output without a saved compiler log. Final measured
+outputs have binary/library identities.
+
+Actual TCP RED405 -> three job route tests GREEN; full binary41, command5,
+destination6, read-codec2 PASS on Mac. Final scoped Clippy PASS, generated types
+and client TypeScript checks PASS; earlier client10 PASS. Artifact/link/fmt checks
+PASS-scoped. Missing Management test field and unnecessary unwrap corrected;
+original intermediate failures retained. No native HTTP evidence yet. AI reviewed
+custody/cleanup/optional-protocol and decoder; no tests/SSH/resources by reviewer.
+
+Next candidate uses experiments/archive-engine/export_job_http{,_cases}.py:
+actual812 no-destination refusal preserving session, selected813 prerequisite,
+source UPDATE ACL negative, independent grants/destination/native refusals,
+actual signed-event query acceptance, exact retries/row+xmin invariance and restart
+with destination+reader removed, revocation preserving original job/exportpin.
+Host barriers compare all ledgers before/after acceptance and retries, then only
+export effects after legitimate grant revocation. This is acceptance, not a file.
+Prepared ignored launcher/transfer .research/implementation/export-job-http/;
+no remote root exists yet. Fresh process/container/mount/free-space inventory
+precedes copying the verified stopped5705b07 cache; preserve all retained data.
+
 [Native acceptance evidence](evidence/p08-export-acceptance-native-20260924.json)
-at5705b07 is PASS-scoped: four existing grant cases plus one export journey,
-13 SQL trials (one complete rollback and12 omissions/cut/digest/duplicate-pin
-negatives). Exact retry preserves job/time and every compared durable row/xmin;
-changed page size conflicts. Independent SQL job1/exportpin1/claim1 remains after
-reader0/Control0; both database backends0. Eight Parquet hashes recorded, signed
-archive oracle/readback PASS. No file export, HTTP, restart or recovery claim.
+at5705b07 remains PASS-scoped: four grant prerequisite cases plus one export
+journey,13 SQL trials (one complete rollback and12 omissions/cut/digest/extra-pin
+negatives). Exact retry preserves job/time and affected row/xmin; changed page
+conflicts. Independent job1/exportpin1/claim1 retained after reader0/Control0;
+both database backends0, eight Parquet hashes and signed readback recorded.
+Original query used synthetic ab ID; no exported file, HTTP or restart claim.
+Applied0813 bytes immutable; future SQL correction must be additive.
 
 Stopped lab /home/tux/bigbrotr-implementation-20260917/runs/export-jobs-5705b07,
 owner5ce34ce3dfff2584b488b24584868acf, org.bigbrotr.archive-visibility;
@@ -47,28 +85,9 @@ PID0/noOOM, runner0/PGwrapper137; owned network removed.543 prior records unchan
 eight unrelated running; free196421156864 ->192756879360bytes, concurrent writes
 possible. Source, PGdata, signed archive, artifacts and complete cache retained.
 Job ebf3c7b00a9c0b8840f17b64a46b9952 deliberately retains its export obligation;
-do not release/GC it from expiry or stopped containers. No active process/debt.
-Capture24/source1095/fiveELF/fiveassets verified, SHA
-cf9f615067917bfa6cb772b5d7da25d84f7ee47d18b3f425e7639c6f9bf25bf2.
-First local verifier expected542 instead of543 (new destination lab); original
-verified-first.log preserved, corrected full inventory comparison passes.
-Independent AI capture review confirms identities/counts/digest, no product tests.
-
-Root owns the subsequent dirty CheckedDestination/ACL fix, actual thread custody
-test and evidence/inventory/checkpoint. No HTTP code edited yet. Filesystem
-verification now yields an owned CheckedDestination on blocking work; SQL only
-borrows it, never performs fsIO. The supervisor must retain destination custody
-through driver join on unresolved COMMIT. Source-stream UPDATE column privilege
-is now a startup prerequisite. Actual method-missing RED -> real thread custody
-GREEN1 plus scoped Clippy PASS; no native blocked-checker or ACL-negative yet.
-Applied0813 bytes now immutable; future SQL corrections must be additive.
-
-Independent read-only AI review identified a session revocation race in direct
-SQL and expiry during deferred source-lock waits on later transitions. Draft now
-retains the exact session and has a separate final Control-owner check ordered
-after job_input_complete; no native claim yet. UNIQUE export_job_id plus exact
-counterpart prevents shared/swapped pins. No prior migration bytes changed.
-One integrating writer; AI reviews current adapter, owns no resources.
+never release/GC on expiry or stopped containers. Capture24/source1095/fiveELF/
+fiveassets verified, SHA cf9f615067917bfa6cb772b5d7da25d84f7ee47d18b3f425e7639c6f9bf25bf2.
+Original verifier wrong expected542 retained, corrected543 fullrecord checkPASS.
 
 [Destination evidence](evidence/p08-export-destination-native-20260923.json) at
 a75d0fa passes ten actual Linux/ext4 cases: ordered file/rename/root/parent sync,
@@ -223,14 +242,11 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: commit the checked-destination/ACL fix and scoped evidence,
-then wire private POST /management/v1/jobs through shared native allocation
-supervision with actual transport regressions. Keep original destination custody
-outside the SQL future through driver join. Configured destination selects813
-startup gate; absent destination must refuse job requests without poisoning an
-older otherwise valid session/reader runtime. Historical retry needs no native
-reader once its selected job API is available. Explicit destination startup and
-per-operation check use blocking work outside SQL.
+Next bounded action: commit the locally verified HTTP/decoder candidate and run
+its exact Git revision on isolated Tux using the prepared launcher. Inspect actual
+terminal SQL/resources and collect/hash evidence; preserve failures honestly.
+Then qualify blocked checker and COMMIT loss before claiming those guarantees,
+and continue standalone signed JSONL execution/restart toward M1.
 
 Pending required acceptance: source-lock ACL negative, actually blocked checker,
 COMMIT loss/restart, zero/multistream cuts, old pin/job anti-adoption, nonterminal

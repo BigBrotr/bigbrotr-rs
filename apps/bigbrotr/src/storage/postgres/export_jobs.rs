@@ -23,22 +23,37 @@ use tokio_postgres::Transaction;
 
 impl ControlSession {
     pub async fn require_export_jobs(&mut self) -> Result<(), SessionError> {
+        if self.export_jobs_available().await? {
+            Ok(())
+        } else {
+            Err(SessionError::Prerequisite)
+        }
+    }
+
+    /// Probe the optional protocol without referencing813 objects on an older
+    /// valid schema. Absence or insufficient job privileges disables this API;
+    /// a selected destination makes false a fatal startup prerequisite instead.
+    pub async fn export_jobs_available(&mut self) -> Result<bool, SessionError> {
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 813)
+        let tx = application_transaction(&mut self.client, 812)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| SessionError::Unavailable)?;
         lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
-        let valid: bool = tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) AND has_any_column_privilege(CURRENT_USER,'control.source_streams','UPDATE') AND has_function_privilege(CURRENT_USER,'control.export_command_digest(control.export_jobs,control.management_commands)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.command_u64_bytes(control.u64)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.scope_pin_live(bytea,bytea,numeric,bytea)','EXECUTE') FROM (VALUES ('control.jobs',ARRAY['SELECT','INSERT','UPDATE']),('control.job_input_bounds',ARRAY['SELECT','INSERT']),('control.export_jobs',ARRAY['SELECT','INSERT']),('control.management_commands',ARRAY['SELECT','INSERT']),('control.management_audit',ARRAY['SELECT','INSERT']),('control.scope_grants',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
-        if !valid {
-            return Err(SessionError::Prerequisite);
-        }
+        let present: bool = tx.query_one("SELECT EXISTS(SELECT 1 FROM control.schema_versions WHERE engine='postgres-control' AND migration=813)", &[])
+            .await.map_err(backend)?.try_get(0).map_err(metadata)?;
+        let valid = if present {
+            let valid: bool = tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) AND has_any_column_privilege(CURRENT_USER,'control.source_streams','UPDATE') AND has_function_privilege(CURRENT_USER,'control.export_command_digest(control.export_jobs,control.management_commands)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.command_u64_bytes(control.u64)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.scope_pin_live(bytea,bytea,numeric,bytea)','EXECUTE') FROM (VALUES ('control.jobs',ARRAY['SELECT','INSERT','UPDATE']),('control.job_input_bounds',ARRAY['SELECT','INSERT']),('control.export_jobs',ARRAY['SELECT','INSERT']),('control.management_commands',ARRAY['SELECT','INSERT']),('control.management_audit',ARRAY['SELECT','INSERT']),('control.scope_grants',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
+            valid
+        } else {
+            false
+        };
         tx.rollback().await.map_err(backend)?;
         self.available = true;
-        Ok(())
+        Ok(valid)
     }
 
     /// `None` native inputs still allow an authenticated historical retry. New

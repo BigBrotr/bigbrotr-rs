@@ -45,6 +45,14 @@ pub fn decode_get(query: &str) -> Result<QueryRequest, QueryError> {
     fn json<T: serde::de::DeserializeOwned>(value: &str) -> Result<T, QueryError> {
         serde_json::from_str(value).map_err(|_| QueryError::Invalid)
     }
+    if fields
+        .remove("projection")
+        .is_some_and(|value| value.trim() != "null")
+    {
+        // Match the initial POST profile without materializing an unsupported
+        // Vec<String>; empty strings can amplify wire bytes into a large vector.
+        return Err(QueryError::Unsupported);
+    }
     let request = QueryRequest {
         version: fields
             .remove("version")
@@ -61,11 +69,7 @@ pub fn decode_get(query: &str) -> Result<QueryRequest, QueryError> {
         filters: json(&fields.remove("filters").ok_or(QueryError::Invalid)?)?,
         page_size: fields.remove("page_size").map(|v| json(&v)).transpose()?,
         cursor: fields.remove("cursor"),
-        projection: fields
-            .remove("projection")
-            .map(|v| json::<Option<Vec<String>>>(&v))
-            .transpose()?
-            .flatten(),
+        projection: None,
     };
     validate(&request)?;
     Ok(request)

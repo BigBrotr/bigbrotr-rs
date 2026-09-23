@@ -39,8 +39,17 @@ pub struct QueryRequest {
     pub page_size: Option<u16>,
     #[serde(default)]
     pub cursor: Option<String>,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "no_projection")]
     pub projection: Option<Vec<String>>,
+}
+fn no_projection<'de, D: serde::Deserializer<'de>>(
+    deserializer: D,
+) -> Result<Option<Vec<String>>, D::Error> {
+    // The initial wire profile allows only null. Do not allocate a vector of
+    // unsupported fields just to reject it later; many empty strings amplify
+    // a small request beyond the caller's reserved decode memory.
+    <()>::deserialize(deserializer)?;
+    Ok(None)
 }
 fn snapshot() -> ReadMode {
     ReadMode::Snapshot

@@ -4,7 +4,56 @@ use clap::{Arg, ArgMatches, Command};
 use std::{
     path::{Path, PathBuf},
     process::ExitCode,
+    sync::Arc,
 };
+
+fn check_placement(config: &crate::config::Resolved, root: &Path) -> Result<(), (u8, String)> {
+    for key in config.selected_storage_roots() {
+        let other = Path::new(config.text(key).expect("selected root"));
+        match other.try_exists() {
+            Ok(false) => (),
+            Ok(true) => bigbrotr::storage::archive::LocalCoordinator::require_disjoint(root, other)
+                .map_err(|_| {
+                    (
+                        4,
+                        "export destination storage placement cannot be verified".into(),
+                    )
+                })?,
+            Err(_) => return Err((4, "selected storage root cannot be inspected".into())),
+        }
+    }
+    Ok(())
+}
+
+/// Deployment-selected custody is acquired before Control startup and retained
+/// outside its operation futures through actual backend-driver destruction.
+pub(super) fn prepare_destination(
+    config: &crate::config::Resolved,
+) -> Result<Option<Arc<LocalDestination>>, (u8, String)> {
+    let Some(root) = config.text("export.destination.root") else {
+        return Ok(None);
+    };
+    let root = Path::new(root);
+    check_placement(config, root)?;
+    let id = config
+        .text("export.destination.id")
+        .expect("validated paired destination")
+        .parse()
+        .map_err(|_| (3, "invalid export destination identity".into()))?;
+    let dataset = config
+        .text("topology.dataset_id")
+        .expect("validated dataset")
+        .parse()
+        .map_err(|_| (3, "invalid dataset identity".into()))?;
+    LocalDestination::open(root, dataset, id)
+        .map(|value| Some(Arc::new(value)))
+        .map_err(|_| {
+            (
+                4,
+                "export destination unavailable; explicit initialization required".into(),
+            )
+        })
+}
 
 pub fn command() -> Command {
     let mut command = Command::new("export")
@@ -44,22 +93,7 @@ pub fn execute(args: &ArgMatches) -> ExitCode {
                 .text("export.destination.root")
                 .ok_or_else(|| (3, "missing export destination root".into()))?,
         );
-        for key in config.selected_storage_roots() {
-            let other = Path::new(config.text(key).expect("selected root"));
-            match other.try_exists() {
-                Ok(false) => (),
-                Ok(true) => {
-                    bigbrotr::storage::archive::LocalCoordinator::require_disjoint(root, other)
-                        .map_err(|_| {
-                            (
-                                4,
-                                "export destination storage placement cannot be verified".into(),
-                            )
-                        })?
-                }
-                Err(_) => return Err((4, "selected storage root cannot be inspected".into())),
-            }
-        }
+        check_placement(&config, root)?;
         let dataset = config
             .text("topology.dataset_id")
             .expect("validated dataset")

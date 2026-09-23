@@ -131,3 +131,34 @@ fn export_never_silently_discards_unsupported_or_ambiguous_input() {
         .is_err()
     );
 }
+
+#[test]
+fn unknown_fields_are_rejected_before_loading_their_nested_values() {
+    // An internally tagged enum first buffers the entire unknown value into
+    // Serde Content. Small wire inputs can then exceed the64KiB request grant.
+    // A counted byte reader discriminates immediate shape refusal from buffering
+    // followed by refusal; unknown values must never be loaded into any tree.
+    for prefix in [r#"{"kind":"export","x":"#, r#"{"x":"#] {
+        let body = format!("{prefix}[{}]}}", vec!["[0]"; 1500].join(","));
+        assert!(body.len() < 8192);
+        let mut reader = std::io::Cursor::new(body.as_bytes());
+        assert!(serde_json::from_reader::<_, JobCommand>(&mut reader).is_err());
+        assert!(
+            reader.position() <= prefix.len() as u64,
+            "unknown nested value was consumed: {}bytes",
+            reader.position()
+        );
+    }
+}
+
+#[test]
+fn unsupported_projection_is_refused_before_loading_its_vector() {
+    let mut command = vectors()["vectors"][0]["command"].clone();
+    command["query"]["projection"] = serde_json::json!(vec![""; 2049]);
+    let body = command.to_string();
+    assert!(body.len() < 8192);
+    let value_start = body.find("\"projection\":").unwrap() + "\"projection\":".len();
+    let mut reader = std::io::Cursor::new(body.as_bytes());
+    assert!(serde_json::from_reader::<_, JobCommand>(&mut reader).is_err());
+    assert!(reader.position() <= value_start as u64 + 1);
+}
