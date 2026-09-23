@@ -186,6 +186,25 @@ impl Management {
                     return Ok(None);
                 }
                 match operation {
+                    Operation::Grant {
+                        session,
+                        csrf,
+                        key,
+                        command,
+                        proof,
+                    } => {
+                        // Historical retries and revocation need no Archive.
+                        // An unconfigured native reader cannot enable a grant.
+                        let commit = std::cell::Cell::new(false);
+                        let result = sql(
+                            maximum,
+                            owner.accept_scope_grant(
+                                &session, &csrf, key, &command, proof, None, &commit,
+                            ),
+                        )
+                        .await?;
+                        return Ok(Some(Response(completion, result.map(Reply::Grant))));
+                    }
                     Operation::Reauthenticate {
                         session,
                         csrf,

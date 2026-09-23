@@ -11,11 +11,11 @@ use axum::{
     extract::{Request, State},
     http::{HeaderMap, HeaderValue, Method, StatusCode, header},
     response::{IntoResponse, Response},
-    routing::{delete, get, post},
+    routing::{delete, get, post, put},
 };
 use bigbrotr::{
     management::{
-        grants::{CommandKey, GrantCommand},
+        grants::{CommandKey, GrantCommand, GrantReceipt},
         reauthentication::ReauthenticationProof,
         sessions::{BrowserSecret, IssuedSession, SessionError, SessionObservation},
     },
@@ -52,6 +52,13 @@ const SESSION_COOKIE: &str = "BigBrotrLocalSession";
 const CSRF_COOKIE: &str = "BigBrotrLocalCsrf";
 
 pub(super) enum Operation {
+    Grant {
+        session: BrowserSecret,
+        csrf: BrowserSecret,
+        key: CommandKey,
+        command: GrantCommand,
+        proof: bigbrotr_model::ReauthenticationId,
+    },
     Reauthenticate {
         session: BrowserSecret,
         csrf: BrowserSecret,
@@ -72,6 +79,7 @@ pub(super) enum Operation {
     },
 }
 pub(super) enum Reply {
+    Grant(GrantReceipt),
     Reauthenticated(ReauthenticationProof),
     Login(IssuedSession),
     Me(SessionObservation),
@@ -151,6 +159,10 @@ impl Server {
                 post(reauthenticate),
             )
             .route("/management/v1/me", get(me))
+            .route(
+                "/management/v1/principals/{principal_id}/grants",
+                put(change_grant),
+            )
             .fallback(static_asset)
             .with_state(state.clone());
         let task = tokio::spawn(serve(listener, router, state.budget, stopped, delivery));
@@ -236,6 +248,81 @@ struct LoginInput {
 struct ReauthenticationInput {
     password: String,
     command: GrantCommand,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct GrantInput {
+    proof_id: bigbrotr_model::ReauthenticationId,
+    command: GrantCommand,
+}
+
+async fn change_grant(
+    State(shared): State<Shared>,
+    Extension(connection): Extension<Connection>,
+    request: Request,
+) -> Response {
+    let grant = match begin(&shared, &request) {
+        Ok(grant) => grant,
+        Err(status) => return error(status),
+    };
+    let session = match session(request.headers()) {
+        Ok(session) => session,
+        Err(status) => return error(status),
+    };
+    let Some(csrf) =
+        single(request.headers(), "x-csrf-token").and_then(|v| BrowserSecret::parse_hex(v).ok())
+    else {
+        return error(StatusCode::FORBIDDEN);
+    };
+    let Some(key) = single(request.headers(), "idempotency-key")
+        .and_then(|v| std::str::from_utf8(v).ok())
+        .and_then(|v| v.parse::<CommandKey>().ok())
+    else {
+        return error(StatusCode::BAD_REQUEST);
+    };
+    // Require the canonical raw path: percent-encoding cannot introduce a
+    // second spelling or redirect a command to a different target principal.
+    let Some(principal) = request
+        .uri()
+        .path()
+        .strip_prefix("/management/v1/principals/")
+        .and_then(|v| v.strip_suffix("/grants"))
+        .and_then(|v| v.parse::<bigbrotr_model::PrincipalId>().ok())
+    else {
+        return error(StatusCode::BAD_REQUEST);
+    };
+    if !single(request.headers(), "content-type").is_some_and(|v| {
+        v.eq_ignore_ascii_case(b"application/json")
+            || v.eq_ignore_ascii_case(b"application/json; charset=utf-8")
+    }) {
+        return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
+    }
+    let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
+        Ok(bytes) => bytes,
+        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+    };
+    let input: GrantInput = match serde_json::from_slice(&bytes) {
+        Ok(input) => input,
+        Err(_) => return error(StatusCode::BAD_REQUEST),
+    };
+    drop(bytes);
+    if principal != input.command.principal_id {
+        return error(StatusCode::BAD_REQUEST);
+    }
+    dispatch(
+        &shared,
+        connection,
+        grant,
+        Operation::Grant {
+            session,
+            csrf,
+            key,
+            command: input.command,
+            proof: input.proof_id,
+        },
+    )
+    .await
 }
 
 async fn reauthenticate(
@@ -490,6 +577,14 @@ async fn dispatch(
         return error(StatusCode::TOO_MANY_REQUESTS);
     }
     match receive.await {
+        Ok(Ok(Reply::Grant(receipt))) => protect(Json(json!({
+            "format":"bigbrotr-scope-grant/1", "command_key":receipt.command_key,
+            "principal_id":receipt.principal_id, "scope":receipt.scope,
+            "enabled":receipt.enabled, "scope_generation":receipt.scope_generation,
+            "account_grant_revision":receipt.account_grant_revision,
+            "accepted_at_us":receipt.accepted_at_us.to_string(), "created":receipt.created,
+            "application":"unobserved", "authority":"acceptance-only"
+        })).into_response()),
         Ok(Ok(Reply::Reauthenticated(proof))) => protect((StatusCode::CREATED, Json(json!({
             "format": "bigbrotr-reauthentication/1", "proof_id": proof.id,
             "command_key": proof.command_key, "command_digest": proof.command_digest,

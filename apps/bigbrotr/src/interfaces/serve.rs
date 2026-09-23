@@ -60,7 +60,7 @@ pub(crate) fn command() -> Command {
         .about("Run explicitly assigned roles; the initial runtime implements Control only")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
-        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session API (login, me, logout); migration0807 and its session/audit SQL privileges are required before binding. Other management actions and native stores are not started. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
+        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0811 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires certified native allocation and is unavailable until the reader is configured and implemented. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {
@@ -496,7 +496,10 @@ async fn supervise(
             biased;
             _ = stop.requested() => return Err((4,"private session startup cancelled".into())),
             result = tokio::time::timeout(duration(root,"renewal_timeout")
-                .min(lease.remaining_validity().map_err(|e| (4,e.to_string()))?), owner.require_browser_sessions()) => {
+                .min(lease.remaining_validity().map_err(|e| (4,e.to_string()))?), async {
+                    owner.require_browser_sessions().await?;
+                    owner.require_scope_grants().await
+                }) => {
                 result.map_err(|_| (4,"private session prerequisites deadline".into()))?
                     .map_err(|e| (3,format!("private session prerequisites refused: {e:?}")))?;
             }

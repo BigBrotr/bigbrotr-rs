@@ -217,7 +217,13 @@ expected configuration/security/account-grant revisions, and an allocation
 selection `(catalog_id, frontier_revision)` when enabling. Disabling carries no
 allocation selection: an unavailable archive must not prevent revocation of an
 existing grant. The seven initial dataset actions keep their existing meaning.
-This command shape is being implemented; it is not yet an available route.
+The private PUT `/management/v1/principals/{principal_id}/grants` now dispatches
+this command with an explicit `proof_id`, the same Origin/session/CSRF boundary
+and Idempotency-Key used for reauthentication. Path and body target must agree.
+The first HTTP slice supports the adapter's revocation and historical acceptance
+paths; fresh enablement refuses503 while its native reader is not implemented.
+That refusal rolls back without consuming the proof or stopping healthy Control.
+Native HTTP enablement, restrictive drain and history delivery remain required.
 
 Reauthentication binds the same live session, actor and exact command key/digest.
 The proof is a server-side identifier requiring the original session and CSRF,
@@ -344,8 +350,13 @@ catalog barrier, snapshot, topology and every certified source bound, including
 zero. The accepting transaction checks the active protocol1 pin, complete positive
 retention claims and actual Control holder under the shared pin lock, sampling
 the clock after waits and again at its final constraint check. Revocation needs no
-Archive dependency. Private grant routes, restrictive drain and private history
-remain unavailable until their full consumers and practical acceptance exist.
+Archive dependency. The grant route reports only immutable acceptance with
+`application=unobserved` and `authority=acceptance-only`, including historical
+retries; no receipt means applied drain. Listener startup now requires explicit811,
+the command/detail/current-grant table privileges, proof-column UPDATE for row
+locks and the two invoker helper EXECUTE privileges. No startup migration runs.
+Successful native HTTP grant execution, restrictive drain and private history
+remain unqualified until their full consumers and practical acceptance exist.
 
 [Native evidence at4b9511d](../implementation/evidence/p08-scoped-grants-native-20260923.json)
 qualifies the scoped storage/adapter boundary, including actual password/native

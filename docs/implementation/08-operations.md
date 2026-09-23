@@ -222,6 +222,14 @@ grant route and its owned native reader, then history delivery under per-action
 authority. COMMIT-loss/reacquisition, multiple actors/scopes, restrictive drain and
 the full private/public route journey remain required; no T02 step closes here.
 
+The next HTTP slice mounts the selected principal-grants PUT route with exact
+path/body target agreement, session/CSRF/key/proof decoding and acceptance-only
+receipts. Startup checks811 and command/proof-lock privileges. ArchiveUnavailable
+is a known rolled-back native prerequisite refusal; Unavailable still fails the
+runtime when Control is unusable. The new executable fixture checks the unselected
+reader case and healthy restart, not successful HTTP grant mutation. Continue the
+owned native allocation consumer and private history; no task step closes here.
+
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 
 The selected Argon2id parameters are an application baseline to benchmark under

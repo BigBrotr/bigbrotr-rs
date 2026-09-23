@@ -1,6 +1,8 @@
 //! Isolated native executable/PG journey; never a product command or fake server.
 #[path = "browser_http_probe/commit.rs"]
 mod commit;
+#[path = "browser_http_probe/grants.rs"]
+mod grants;
 #[path = "browser_http_probe/panel.rs"]
 mod panel;
 #[path = "browser_http_probe/reauthentication.rs"]
@@ -498,7 +500,12 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
             ],
         );
         admin.batch_execute("GRANT SELECT,INSERT,UPDATE ON control.browser_sessions,control.login_buckets TO bigbrotr_control; GRANT SELECT,INSERT,DELETE ON control.reauthentication_proofs TO bigbrotr_control; GRANT DELETE ON control.browser_sessions TO bigbrotr_control").await.unwrap();
-        if mode == "reauthentication" {
+        grants::upgrade(&binary, &config, &home, &admin, mode == "grants").await;
+        if mode == "grants" {
+            grants::run(&binary, &config, &home, &admin, &principal).await;
+            drop(admin);
+            driver.await.unwrap().unwrap();
+        } else if mode == "reauthentication" {
             reauthentication::run(&binary, &config, &home, &admin, &principal).await;
             drop(admin);
             driver.await.unwrap().unwrap();
@@ -587,6 +594,8 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
         )
         .await
         .unwrap();
+    // The following refusals must isolate privileges, not a missing811 schema.
+    grants::upgrade(&binary, &config, &home, &admin, false).await;
     admin
         .batch_execute("REVOKE DELETE ON control.browser_sessions FROM bigbrotr_control")
         .await
@@ -917,6 +926,7 @@ fn main() {
         Some("--commits-only") => "commits",
         Some("--audit-commits-only") => "audit-commits",
         Some("--reauthentication-only") => "reauthentication",
+        Some("--grants-only") => "grants",
         Some("--panel") => {
             panel = Some(panel::Options::parse(&mut args));
             "panel"

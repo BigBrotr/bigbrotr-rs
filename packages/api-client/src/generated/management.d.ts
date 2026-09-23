@@ -71,9 +71,29 @@ export interface paths {
         put?: never;
         /**
          * Confirm a sensitive command with the current password
-         * @description Same session, exact Origin and explicit CSRF required; current principals.manage action. At most32 retained proofs per account, five minutes or remaining session validity. Password attempts share login quotas and its single owned hash worker. This proof alone does not grant history access; scoped command consumption remains under implementation and qualification.
+         * @description Same session, exact Origin and explicit CSRF required; current principals.manage action. At most32 retained proofs per account, five minutes or remaining session validity. Password attempts share login quotas and its single owned hash worker. This proof alone does not grant history access; scope-grant acceptance consumes it atomically; native enablement and private history remain under implementation and qualification.
          */
         post: operations["reauthenticateSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/management/v1/principals/{principal_id}/grants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Accept one scoped history grant change
+         * @description Exact Origin, same live session, CSRF and Idempotency-Key required. Path principal must equal command target. Body max8192bytes. Requires explicit migration0811 and application SQL privileges. Revocation and historical retries do not depend on Archive. Fresh enablement currently refuses503 because this runtime has no selected native allocation reader; it preserves the proof and keeps Control available. This is not complete grant/private-history qualification. A lost response is resolved by an identical command retry; never substitute a new key. Acceptance does not establish applied restrictive drain.
+         */
+        put: operations["changeScopeGrant"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -242,6 +262,37 @@ export interface components {
             expires_at_us: string;
             /** @constant */
             authority: "same-session-command-only";
+        };
+        ScopeGrantInput: {
+            proof_id: string;
+            command: components["schemas"]["ScopeGrantCommand"];
+        };
+        /** @description Immutable acceptance observation. An identical historical retry returns created=false and the original result; it never reapplies state or proves restrictive drain. */
+        ScopeGrantReceipt: {
+            /** @constant */
+            format: "bigbrotr-scope-grant/1";
+            command_key: string;
+            principal_id: string;
+            scope: {
+                dataset_id: string;
+                /** @constant */
+                dictionary_kind: 4;
+                allocation_domain: string;
+                /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+                ordinal: string;
+            };
+            enabled: boolean;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            scope_generation: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            account_grant_revision: string;
+            /** @description Original positive Unix microseconds, maximum9223372036854775807; exact decimal string. */
+            accepted_at_us: string;
+            created: boolean;
+            /** @constant */
+            application: "unobserved";
+            /** @constant */
+            authority: "acceptance-only";
         };
     };
     responses: never;
@@ -534,6 +585,109 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReauthenticationProof"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Command or revision conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Body byte limit */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description JSON required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    changeScopeGrant: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                principal_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScopeGrantInput"];
+            };
+        };
+        responses: {
+            /** @description Accepted command or identical historical receipt; no cookies and no read capability. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScopeGrantReceipt"];
                 };
             };
             /** @description Invalid request */

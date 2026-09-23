@@ -1,5 +1,8 @@
 use super::*;
 
+#[path = "grant_tests.rs"]
+mod grants;
+
 #[tokio::test]
 async fn reauthentication_requires_session_and_explicit_csrf_before_queueing() {
     let (mut server, address, budget) = server().await;

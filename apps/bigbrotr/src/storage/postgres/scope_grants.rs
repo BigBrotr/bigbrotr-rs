@@ -30,6 +30,29 @@ pub struct ScopeGrantAllocation<'a, 'capture> {
     pub pin: &'a ArchivePinReceipt,
 }
 impl ControlSession {
+    /// Check the command's explicit schema and application privileges before
+    /// exposing its route. This neither reads native data nor grants an action.
+    pub async fn require_scope_grants(&mut self) -> Result<(), SessionError> {
+        self.begin_operation()
+            .map_err(|_| SessionError::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 811)
+            .await
+            .map_err(|_| SessionError::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| SessionError::Unavailable)?;
+        lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
+        let valid: bool = tx.query_one(
+            "SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) AND has_column_privilege(CURRENT_USER,'control.reauthentication_proofs','proof_id','UPDATE') AND has_function_privilege(CURRENT_USER,'control.command_u64_bytes(control.u64)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.scope_pin_live(bytea,bytea,numeric,bytea)','EXECUTE') FROM (VALUES ('control.management_commands',ARRAY['SELECT','INSERT']),('control.scope_grant_changes',ARRAY['SELECT','INSERT']),('control.scope_grants',ARRAY['SELECT','INSERT','UPDATE'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[])
+            .await.map_err(backend)?.try_get(0).map_err(metadata)?;
+        if !valid {
+            return Err(SessionError::Prerequisite);
+        }
+        tx.rollback().await.map_err(backend)?;
+        self.available = true;
+        Ok(())
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub async fn accept_scope_grant(
         &mut self,
@@ -67,7 +90,7 @@ impl ControlSession {
         let outcome = match outcome {
             // No Control error occurs in these native/capacity prerequisites.
             // A known rollback preserves the otherwise healthy Control session.
-            Err(SessionError::Unavailable) => Err(SessionError::Unavailable),
+            Err(SessionError::ArchiveUnavailable) => Err(SessionError::ArchiveUnavailable),
             other => terminal(&tx, other)?,
         };
         match outcome {
@@ -169,7 +192,7 @@ async fn accept_in_transaction(
     }
     if command.enabled {
         allocation
-            .ok_or(SessionError::Unavailable)?
+            .ok_or(SessionError::ArchiveUnavailable)?
             .verify(tx, dataset_id, command)
             .await?;
     } else if allocation.is_some() {
@@ -213,7 +236,7 @@ async fn accept_in_transaction(
         a.capture
             .verify()
             .await
-            .map_err(|_| SessionError::Unavailable)?;
+            .map_err(|_| SessionError::ArchiveUnavailable)?;
     }
     receipt(command, key, generation, next_account, time, true)
 }
@@ -273,7 +296,7 @@ impl ScopeGrantAllocation<'_, '_> {
         self.capture
             .verify()
             .await
-            .map_err(|_| SessionError::Unavailable)?;
+            .map_err(|_| SessionError::ArchiveUnavailable)?;
         let valid: bool = tx
             .query_one(
                 "SELECT control.scope_pin_live($1::bytea,$2::bytea,$3::text::numeric,$4::bytea)",
@@ -317,6 +340,6 @@ impl ScopeGrantAllocation<'_, '_> {
         self.capture
             .verify()
             .await
-            .map_err(|_| SessionError::Unavailable)
+            .map_err(|_| SessionError::ArchiveUnavailable)
     }
 }

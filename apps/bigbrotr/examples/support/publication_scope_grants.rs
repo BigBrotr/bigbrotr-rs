@@ -182,7 +182,7 @@ pub async fn run(
                 &Cell::new(false)
             )
             .await,
-        Err(SessionError::Unavailable)
+        Err(SessionError::ArchiveUnavailable)
     );
     assert_eq!(state(&admin).await, before);
     case("scope-grant-csrf-and-missing-native-evidence-refuse-without-durable-effects");

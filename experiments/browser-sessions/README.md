@@ -4,6 +4,16 @@ These fixtures require separately inventoried, isolated PostgreSQL and trusted
 exact-Git application source. They never operate an existing installation. All
 credentials are synthetic and remain in protected ignored laboratory paths.
 
+`grants_native.py` exercises the first scope-grant HTTP consumer with the native
+reader deliberately unselected. Five proposed cases check explicit811 startup,
+per-privilege refusals, actual session/CSRF/proof/target binding, repeated503 with
+unchanged six-table state/xmin and usable Control, then the same refusal after a
+graceful restart. Unknown-scope revocation must create no tombstone. It does not
+claim successful HTTP enable/revoke, historical-command retry, restrictive drain,
+private history or native reader custody; those remain integrated acceptance work.
+The source manifest, actual CLI/product/probe identities and independent terminal
+SQL must be retained before any qualification claim.
+
 `native.py` runs the storage adapter fixture `browser_sessions_probe`. Its qualified
 source/engine/artifact identities and practical limits are in
 [the storage evidence](../../docs/implementation/evidence/p08-browser-session-storage-native-20260920.json).

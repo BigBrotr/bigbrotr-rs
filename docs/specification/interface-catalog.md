@@ -137,14 +137,21 @@ complete the workflows promised by P08/P09:
 
 The implemented initial subset is described by the versioned [private session
 OpenAPI contract](../../contracts/management/v1/openapi.yaml): login, current-session
-logout and self inspection in the trusted-host loopback HTTP profile. Its
+logout, self inspection, command-bound reauthentication and scope-grant acceptance
+in the trusted-host loopback HTTP profile. The grant route's first consumer has
+no configured native reader: fresh enablement refuses503; revocation and original
+acceptance retries dispatch to the fenced adapter. Its new/retried receipt reports
+acceptance only, with exact decimal revisions/time and unobserved application.
+This is not native enablement, restrictive drain or private history qualification. Its
 `bigbrotr-session/1` response carries exact decimal-string revisions/microseconds,
 closed stored action names and `authority=observation-only`. Stored grants are not
 reusable action capabilities. Cookie/CSRF secrets never appear in the JSON body.
 GET self inspection counts as user activity, so the browser must not poll it to
-keep an unattended session alive. Full grant/reauthentication/audit and remote-TLS
-routes remain separate required implementation. Generated types and runtime
-validators cover this actual subset; they do not advertise the whole table above.
+keep an unattended session alive. Full grant/audit and remote-TLS
+routes remain separate required implementation. Generated types cover this actual
+subset; the current frontend runtime validators cover session observations and
+errors. Grant/reauthentication browser consumers remain required; these artifacts
+do not advertise the whole table above.
 
 The selected next history consumer mounts the same
 `/v1/resources/event_history` resource on the private origin with a browser-session

@@ -19,6 +19,8 @@ pub enum SessionError {
     Prerequisite,
     InvalidMetadata,
     Unavailable,
+    /// A completed refusal due to missing native evidence, with Control healthy.
+    ArchiveUnavailable,
     CommitUnknown,
     PolicyChanged,
 }

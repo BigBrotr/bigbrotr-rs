@@ -330,7 +330,7 @@
       "post": {
         "operationId": "reauthenticateSession",
         "summary": "Confirm a sensitive command with the current password",
-        "description": "Same session, exact Origin and explicit CSRF required; current principals.manage action. At most32 retained proofs per account, five minutes or remaining session validity. Password attempts share login quotas and its single owned hash worker. This proof alone does not grant history access; scoped command consumption remains under implementation and qualification.",
+        "description": "Same session, exact Origin and explicit CSRF required; current principals.manage action. At most32 retained proofs per account, five minutes or remaining session validity. Password attempts share login quotas and its single owned hash worker. This proof alone does not grant history access; scope-grant acceptance consumes it atomically; native enablement and private history remain under implementation and qualification.",
         "parameters": [
           {
             "name": "X-CSRF-Token",
@@ -460,6 +460,159 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/v1/principals/{principal_id}/grants": {
+      "put": {
+        "operationId": "changeScopeGrant",
+        "summary": "Accept one scoped history grant change",
+        "description": "Exact Origin, same live session, CSRF and Idempotency-Key required. Path principal must equal command target. Body max8192bytes. Requires explicit migration0811 and application SQL privileges. Revocation and historical retries do not depend on Archive. Fresh enablement currently refuses503 because this runtime has no selected native allocation reader; it preserves the proof and keeps Control available. This is not complete grant/private-history qualification. A lost response is resolved by an identical command retry; never substitute a new key. Acceptance does not establish applied restrictive drain.",
+        "parameters": [
+          {
+            "name": "principal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$",
+              "not": {
+                "const": "00000000000000000000000000000000"
+              }
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$",
+              "not": {
+                "const": "00000000000000000000000000000000"
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScopeGrantInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Command or revision conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Accepted command or identical historical receipt; no cookies and no read capability.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScopeGrantReceipt"
                 }
               }
             }
@@ -971,6 +1124,128 @@
             "const": "same-session-command-only"
           }
         }
+      },
+      "ScopeGrantInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "proof_id",
+          "command"
+        ],
+        "properties": {
+          "proof_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "command": {
+            "$ref": "#/components/schemas/ScopeGrantCommand"
+          }
+        }
+      },
+      "ScopeGrantReceipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format",
+          "command_key",
+          "principal_id",
+          "scope",
+          "enabled",
+          "scope_generation",
+          "account_grant_revision",
+          "accepted_at_us",
+          "created",
+          "application",
+          "authority"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "bigbrotr-scope-grant/1"
+          },
+          "command_key": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "principal_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "scope": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "dataset_id",
+              "dictionary_kind",
+              "allocation_domain",
+              "ordinal"
+            ],
+            "properties": {
+              "dataset_id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$",
+                "not": {
+                  "const": "00000000000000000000000000000000"
+                }
+              },
+              "dictionary_kind": {
+                "type": "integer",
+                "const": 4
+              },
+              "allocation_domain": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$",
+                "not": {
+                  "const": "00000000000000000000000000000000"
+                }
+              },
+              "ordinal": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+              }
+            }
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "scope_generation": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "account_grant_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "accepted_at_us": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Original positive Unix microseconds, maximum9223372036854775807; exact decimal string."
+          },
+          "created": {
+            "type": "boolean"
+          },
+          "application": {
+            "type": "string",
+            "const": "unobserved"
+          },
+          "authority": {
+            "type": "string",
+            "const": "acceptance-only"
+          }
+        },
+        "description": "Immutable acceptance observation. An identical historical retry returns created=false and the original result; it never reapplies state or proves restrictive drain."
       }
     },
     "securitySchemes": {

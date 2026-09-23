@@ -19,16 +19,27 @@ Do not substitute another diagnostic command for the integrated private reader.
 
 ## Git and current changes
 
-Last observed main/HEAD `4b9511d06356a3d2c4ceda100c498d6665221a9d`, five
-unpublished coherent candidate/correction commits ahead of origin/main`9f7fabd`.
-No merge/rebase or other writer. Product changes now qualify their **scoped**
-boundary below. Root owns only the final report, owning task/contracts, checkpoint
-and inventory documentation changes. No dependencies changed. The repository was
-freshly verified private and named bigbrotr-rs through gh repo view.
+Resumed main/HEAD and origin/main at `d27f22434c6b9bee8a8df9ecf72c945a8503f6a1`,
+with a clean working tree and no merge/rebase or other writer. All scoped grant
+candidates and qualification documentation were pushed; the last tested product
+remains4b9511d. No dependencies changed. The repository was verified private and
+named bigbrotr-rs through gh repo view at the completed checkpoint. Root owns the
+next integration edits and this checkpoint.
 
-Next bounded action: finish report/diff/structural checks, commit and push this
-qualified scoped result. Then wire the private grant command and its explicitly
-configured, owned native reader into the existing Control/HTTP supervisor; proceed
+The first PUT grant transport is implemented locally: exact target/session/CSRF/
+key/proof input, acceptance-only receipt and explicit811/privilege startup checks.
+ArchiveUnavailable now distinguishes a known native refusal from failed Control.
+Local RED returned405 for the missing route; three new TCP/classification tests,
+23 management tests and focused Clippy pass. OpenAPI types are regenerated;
+structural checks pass. Raw logs: `.research/implementation/private-grants/`.
+The actual executable/PG fixture for unselected Archive is prepared but NOT_RUN.
+Root owns all current edits; no new lab started. Existing stopped-lab status below
+is historical, not freshly remeasured. No successful HTTP mutation/drain claim.
+
+Next bounded action: commit the locally checked candidate, run the five actual
+HTTP/PG refusal/startup/restart cases in a fresh inventoried Tux lab, collect and
+review evidence. Then wire the explicitly configured, owned native reader into
+the existing Control/HTTP supervisor; proceed
 to the existing private event_history protocol under a per-action authority window.
 Retain the remaining failure/recovery gates below. Do not replace the real consumer
 with a new diagnostic CLI or mark P08/P06/M1 complete.
