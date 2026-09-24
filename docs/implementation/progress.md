@@ -21,7 +21,7 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD509a9bd, origin/main509a9bd; candidate53c6c9d and its scoped
+Current main/HEAD4e6b5c011c067800f52e67365b2b848b7943d4bc, origin/main509a9bd; candidate53c6c9d and its scoped
 evidence75906fc pushed normally. GET whitespace correction3a898c4 and blocked-checker candidate324b8eb are pushed
 with original failure evidence. Tracer evidence is pushed. Root owns the checker fixture timing/pidfd/instrument
 consumption changes, batched SQL oracle and this checkpoint. Candidate53c6c9d was clean at transfer.
@@ -311,27 +311,47 @@ no active lab, database, cleanup debt or deletion. Full source/build/tool artifa
 retained, especially qualified out/strace-exit-fixed SHA509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458.
 Local .research/implementation/strace-exit/attempt-{b5efc19,9b30c35}/.
 
-Checker now records submit time and requires a pending syscall/request with
->=1.25s ordinary5s request margin immediately before SIGTERM. Stable pidfd targets
-the actual parent for signals/cleanup even if the tracer exits first. Batched SQL
-keeps all eight exact row/xmin oracles with fewer Docker roundtrips. Only the
-qualified ELF/proof/patch digests are accepted. Native execution NOT_RUN for this
-delta; no new product behavior.
-Next bounded action: syntax/artifact/diff review, commit, then consume the exact qualified research tracer in a
-fresh exact-revision BigBrotr lab after inventory/capacity/ownership/hash checks.
-Original324b8eb INCOMPLETE is unchanged. No arbitrary kernel-I/O or power-loss
-claim from a suspended syscall-entry fixture.
+[Native blocked-checker evidence](evidence/p08-export-checker-native-20260924.json)
+at4e6b5c0/treefb87d6a4 is PASS-scoped. Actual held worker checker, same Control6
+renewal+2505374us, SIGTERM while request/syscall pending; actual trace signal
+arrives0.273ms after recorded timestamp,2.170879s before ordinary request deadline.
+Fail-stop exit4 after4030.39ms, parent/worker absent, tracer joined, root lock free.
+All8 ledger row/xmin images unchanged through hold/renewal/termination; final
+job/exportpin/readerpin/claim0, retained active-state Control1, both databases
+backend0 and8 original Parquet hashes unchanged. No unknown COMMIT/recovery/file
+export or continuous original-Arc custody qualification.
 
-Independent AI static review also found missing submit-time/margin immediately
-before SIGTERM, limited pre-signal/post-exit flock samples and early-tracer-exit
-cleanup relying on container teardown. Strengthen timestamps/pending/margin and
-owned tracee cleanup before rerun. Bulk SQL observation can avoid repeated Docker
-exec overhead while keeping exact independent row/xmin checks. The blocked
+Stopped export-checker-fixed-4e6b5c0, owner3f840fe30a3ffef7f9944c72ea6e38f9;
+runner2028ca56818cd9d17148b4686ac9b923eebeaefd65bfb177e5e687308f3dbeda,
+PGf54b25ba261f2197aae69f98fb861dff5d73a51427d506c71cd6bf9c3f566188.
+Runner0/PGwrapper137, PID0/noOOM/networkremoved;551priorrecords/eight unrelated
+running preserved. Latest free181367304192bytes. Source/artifacts/PGdata/archive/
+cache/logs retained; no active lab or cleanup debt. Capture36/source1110/fiveELF/
+fiveassets verified, SHA51beaeceb5c2ebebcc0237e4f414f6be109173d12de1a7268ba5a5b807cb19a3.
+Local .research/implementation/export-checker-fixed/; inventory
+implementation_export_checker_native_20260924. Independent read-only AI rechecked source/capture/trace/resource identities and
+SQL terminal observations, finding no discrepancy. Five historical leases/pins/
+claims remain; zero counts describe active obligations/new export effects only; earlier static review confirmed the SQL/proof binding and found
+two fixture robustness gaps below.
+
+Root corrected signal timestamp to after actual pidfd send, observes actual
+SIGTERM trace with>=1s request margin, and handles concurrent-death ESRCH while
+ensuring tracer/pidfd/pool cleanup. The candidate's observed timing already
+supports its scoped signal claim; revised general fixture remains NOT_RUN.
+Next bounded action: commit evidence/fixture, run revised fixture in a fresh
+inventoried lab using hash-verified4e6b5c0 ELF/assets only after exact Git diff
+proves product/build inputs unchanged. Preserve original build source identity;
+no new compilation/full Cargo cache or claimed repeated unit tests. Then proceed
+to actual COMMIT ambiguity/custody and standalone signed JSONL execution.
+
+Initial AI timing/cleanup findings led to the revised native fixture above.
+Pre-signal/post-exit flock samples do not prove continuous original Arc custody.
+The blocked
 worker owns its own Arc; this case cannot discriminate original supervisor Arc
 custody through unknown COMMIT. That remains a separate next acceptance boundary.
 Then complete COMMIT ambiguity/custody and standalone signed JSONL execution.
 
-Pending required acceptance: actually blocked checker, COMMIT loss/restart,
+Pending required acceptance: strengthened checker fixture, COMMIT loss/restart,
 zero/multistream cuts, old pin/job anti-adoption, nonterminal release refusal/
 recovery and deferred source-lock expiry. Then standalone signed JSONL artifact/
 execution and end-to-end restart; no full P08/M1 completion.

@@ -91,14 +91,21 @@ class TracedServer(http.Server):
         # A pidfd always addresses this process, even after numeric PID reuse.
         signal.pidfd_send_signal(self.parent_fd,number)
     def cleanup(self):
-        if self.parent_fd is not None:
-            poll=select.poll();poll.register(self.parent_fd,select.POLLIN)
-            if not poll.poll(0):self.signal(signal.SIGKILL)
-        if self.process.poll() is None:
-            os.killpg(self.process.pid,signal.SIGKILL);self.process.wait(timeout=10)
-        if self.parent_fd is not None:
-            assert poll.poll(2000),'Owned tracee death unobserved; container teardown required'
-            os.close(self.parent_fd);self.parent_fd=None
+        try:
+            if self.parent_fd is not None:
+                poll=select.poll();poll.register(self.parent_fd,select.POLLIN)
+                if not poll.poll(0):
+                    try:self.signal(signal.SIGKILL)
+                    except ProcessLookupError:pass # Concurrent death; positively check below.
+            if self.process.poll() is None:
+                try:os.killpg(self.process.pid,signal.SIGKILL)
+                except ProcessLookupError:pass
+            self.process.wait(timeout=10)
+            if self.parent_fd is not None:
+                assert poll.poll(2000),'Owned tracee death unobserved; container teardown required'
+        finally:
+            if self.parent_fd is not None:
+                os.close(self.parent_fd);self.parent_fd=None
 
 
 def exercise(auth, body):
@@ -148,12 +155,23 @@ def exercise(auth, body):
             assert pending_checker(server.trace.read_text(),server.parent)==tid
             assert time.monotonic()<end,'host renewal observation timeout'
             time.sleep(.01)
-        assert not lock_available() and not future.done()
+        assert not lock_available()
         assert pending_checker(server.trace.read_text(),server.parent)==tid
-        started=time.monotonic();margin=5-(started-submitted)
-        result['signal']=dict(monotonic=started,wall=time.time(),request_deadline_margin_seconds=margin,request_pending=True);save()
-        assert margin>=1.25,('Cannot distinguish signal from request expiry',margin)
+        assert not future.done()
+        started=time.monotonic()
         server.signal(signal.SIGTERM)
+        sent=time.monotonic();margin=5-(sent-submitted)
+        result['signal']=dict(monotonic=sent,wall=time.time(),request_deadline_margin_seconds=margin,request_pending=True)
+        assert margin>=1.25,('Cannot distinguish signal from request expiry',margin)
+        # Observe actual signal delivery while the ordinary request is still
+        # unexpired. No synchronous result-file write separates timing and send.
+        while True:
+            delivered=re.search(r'^'+str(server.parent)+r'\s+\d+\.\d+ --- SIGTERM ',server.trace.read_text(),re.MULTILINE)
+            remaining=5-(time.monotonic()-submitted)
+            assert remaining>=1,('No timely SIGTERM delivery observed',remaining)
+            if delivered:break
+            time.sleep(.01)
+        result['signal']['delivery_observed_margin_seconds']=remaining;save()
         code=server.process.wait(timeout=7)
         result['terminal']=dict(exit=code,elapsed_ms=round((time.monotonic()-started)*1000,3),response=future.result(timeout=2),parent_present=Path(f'/proc/{server.parent}').exists(),worker_present=Path(f'/proc/{tid}').exists(),lock_available=lock_available(),stderr=server.error.read_text(),stdout=server.output.read_text());save()
         terminal=result['terminal']
@@ -165,5 +183,7 @@ def exercise(auth, body):
         assert not list((http.ROOT/'scratch').iterdir())
         result['status']='PASS';save()
     finally:
-        server.cleanup();pool.shutdown(wait=True,cancel_futures=True);save()
+        try:server.cleanup()
+        finally:
+            pool.shutdown(wait=True,cancel_futures=True);save()
     return result

@@ -43,8 +43,10 @@ that exact ELF and `result.json`; it verifies both digests and the committed
 patch. Copy from the inventoried stopped lab only after fresh ownership and hash
 checks, mount the copied instrument read-only, and capture its identities again.
 The fixture records request submission and requires at least1.25s remaining of
-the ordinary5s deadline immediately before SIGTERM, with request/syscall still
-pending. This distinguishes the signal from a deadline that already expired.
+the ordinary5s deadline immediately after sending SIGTERM, with request/syscall
+pending before sending. It also requires actual signal delivery in the trace
+while at least1s remains. This distinguishes the signal from a deadline that
+already expired.
 Its pidfd tracks actual process death independently of tracer lifetime. These
 revised BigBrotr assertions require their own native run; the tool probe alone
 does not qualify them.
