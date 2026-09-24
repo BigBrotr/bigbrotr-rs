@@ -339,8 +339,13 @@ This does not complete Step 1 or 3.
 [The initial JSONL encoder](evidence/p08-export-jsonl-codec-mac-20260924.json)
 has seven Mac tests over independent literal signed bytes, output bounds,
 short writes and cancellation, including a source-isolated negative control.
-It has no runtime/file consumer yet; manifest, durability, execution and restart
+It has no runtime/file consumer yet; manifest publication, durability, execution and restart
 remain unfinished. This codec evidence does not qualify native file export.
+The [initial manifest encoder](evidence/p08-export-manifest-mac-20260924.json)
+now matches an independent Python byte oracle and the closed artifact schema.
+Five Mac tests exercise exact selection/cut metadata, output bounds, empty
+digest and native snapshot range. This remains an in-memory format boundary;
+filesystem publication and the actual job consumer are not implemented yet.
 [Native destination qualification](evidence/p08-export-destination-native-20260923.json)
 at a75d0fa passes ten actual Linux/ext4 cases, including bind aliases, cross-process
 custody, fsync EIO and process death around rename. The marker's independent

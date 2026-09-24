@@ -131,6 +131,50 @@ from the decoded length without a local cap. BigBrotr must exercise a partial
 prefix and huge declared length through its actual adapter. This is an observation
 about this pinned decoder, not an executed finding about the evolving Go project.
 
+### Initial signed JSONL artifact
+
+The private exact-ID artifact uses manifest identity
+`bigbrotr-signed-events-export/1`, distinct from a full native archive, analytical
+projection or deployment backup. Its `ArtifactId` is a newly allocated nonzero
+bytes16 identity, stored with the job's execution unit before any output dispatch;
+restart retains it. It is not a permission, digest, job ID or user-supplied path.
+The [closed JSON Schema](../../contracts/artifacts/v1/export.schema.json) owns
+the emitted field shape; its runtime-check descriptions are part of the profile.
+
+`manifest.json` describes one `events.jsonl` file (`file_id="events"`,
+`format="nostr-jsonl/1"`). The manifest includes artifact/job identities, complete
+source cut including zero prefixes, original catalog/frontier/snapshot, exact
+event filter and qualified visibility reference, and the accepted configuration
+and policy revisions. Accepted revisions describe original intent; they are not
+current execution authority. Counters and revisions use canonical decimal
+strings; the native snapshot is positive and bounded by signed BIGINT, while
+source counters retain their unsigned domain. The signed Nostr integers inside
+JSONL remain JSON numbers. File length,
+row count and conventional SHA-256 cover the exact bytes including LF. The
+manifest does not include its own digest; the artifact inventory retains that
+digest over the complete original manifest bytes.
+
+This profile states `visibility="private"`, `fidelity="full-signed-events"` and
+`origin="retained-scoped-archive"`. It includes complete signed events only.
+It explicitly excludes internal payload envelopes, eligibility facts, first-local
+receive metadata, relay provenance, imported claims, measurements, documents,
+dictionaries, coverage, derived results and deployment state. Its qualified
+visibility reference attributes the source selection; it is not a standalone
+dictionary inventory or evidence of acquisition origin. Verifying the complete
+Nostr objects requires no external dictionary or document. Other export formats
+still require their selected dependency closure.
+
+The initial manifest is bounded to 256 KiB and 1024 source streams. It names exactly
+zero or one complete row, with an explicit empty file digest for zero rows. The
+executor must keep the final manifest unavailable until the data file and its
+directory entries are synchronized. It then publishes the manifest atomically,
+synchronizes its directory and records the same file/manifest identities in the
+job checkpoint. File existence alone is neither SQL completion nor public
+publication. Recovery resolves the same unit against retained bytes and current
+authority; it never replaces a conflicting completed artifact with new intent.
+These are execution requirements, not claims that the current encoder has
+implemented filesystem publication or restart.
+
 ## Reuse and distribution boundary
 
 The inspected Pensieve repository declares

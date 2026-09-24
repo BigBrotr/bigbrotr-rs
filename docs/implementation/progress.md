@@ -19,10 +19,11 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEAD and origin/main a781df617222704678a5f3d9411dd56a6f5befc7,
-pushed after custody evidence/retirement. Root owns pending JSONL encoder and
-portable-artifact tests, format and shared artifact migration-reservation prose,
-and this checkpoint. No unrelated dirty files or active lab.
+Last observed main/HEAD and origin/main6f30ebb79862173e187adc0b6e9a679d1c4992c5,
+pushed after the JSONL codec/evidence and shared artifact reservation split.
+Root owns pending manifest encoder, ArtifactId, portable-manifest tests, schema,
+independent fixture generator/golden, evidence/format/task docs and this checkpoint.
+No unrelated dirty files or active lab.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
@@ -200,7 +201,7 @@ owning contracts now split the unapplied 0501 common inventory from later 0502
 analytics; 0804 publication remains a separate additive consumer. No SQL bytes
 or applied checksums changed in this slice.
 
-In-progress export/jsonl.rs streams an existing VerifiedEvent plus LF (or explicit
+Committed export/jsonl.rs streams an existing VerifiedEvent plus LF (or explicit
 empty native result), checks the complete output bound before writing and hashes
 actual accepted bytes. It does not flush, sync, create files or grant authority.
 Seven [Mac codec tests](evidence/p08-export-jsonl-codec-mac-20260924.json) pass
@@ -214,9 +215,23 @@ The library encoder has no runtime consumer yet; this is unfinished execution
 work, not a completed export or native/durable qualification. Review found no
 encoder defect and requested the discriminating last-LF test, now executed.
 
-Next connect this encoder to the bounded standalone manifest and descriptor-owned
-filesystem unit, then to shared 0501 inventory/additive execution state and the
-ordinary Control supervisor. Keep the same job/unit identity across commit/output
+The in-progress [manifest encoder](evidence/p08-export-manifest-mac-20260924.json)
+adds ArtifactId and the closed bigbrotr-signed-events-export/1 profile: exact
+original selection/cut, positive native snapshot, accepted revisions, file count/
+bytes/digest and explicit excluded families. Five Mac tests and an independent
+Python oracle pass. Existing local jsonschema4.25.1 validates schema plus eight
+rejection controls; no new dependency installation. Native snapshot upper-bound
+review finding reproduced RED, then corrected to i64::MAX; unsigned source
+counters still retain u64. Empty digest and1024 maximal-width streams are tested.
+Captured final logs under .research/implementation/export-manifest/. Clippy PASS
+for lib/portable_manifest; original RED outputs were observed but not captured.
+No filesystem output or current authority is certified by these public metadata
+structs; the runtime must derive file and manifest from one verified observation.
+
+Next implement the descriptor-owned filesystem unit consuming JSONL and manifest,
+then shared 0501 inventory/additive execution state and the ordinary Control
+supervisor. Keep output custody beyond native query completion through actual
+writes/joins, not just destination SH locking. Keep the same job/unit identity across commit/output
 ambiguity. No task checkbox closes before the actual restart/file journey.
 
 Focused source reading includes full export_jobs.rs, management/jobs.rs,
@@ -230,7 +245,7 @@ exclusion through all writes/joins. Reader-only release/recovery must not be use
 for export pins; future typed export loading must compare the exact export_job_id.
 The native Supervisor still requires Management and does not process management
 commands while waiting on a worker; execution/cancel integration must address
-those constraints rather than clone HTTP work. No scheduler/manifest/SQL execution
+those constraints rather than clone HTTP work. No scheduler/filesystem/SQL execution
 implementation or artifact storage result exists yet. Before editing those
 responsibilities, finish reading their complete affected callers and constraints.
 

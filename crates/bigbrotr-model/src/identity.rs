@@ -136,6 +136,8 @@ fixed_hex!(CommandKey, 16, nonzero);
 // An approved output namespace, never a data or publication grant.
 fixed_hex!(DestinationId, 16, nonzero);
 fixed_hex!(JobId, 16, nonzero);
+// Stable common file-inventory identity, not a path or publication permission.
+fixed_hex!(ArtifactId, 16, nonzero);
 // A same-session proof reference, never a bearer credential.
 fixed_hex!(ReauthenticationId, 16, nonzero);
 // Names control.owner_epochs.resource_id and its synchronized ingest manifest.

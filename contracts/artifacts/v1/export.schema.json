@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:bigbrotr:signed-events-export:1",
+  "title": "Private exact-ID signed JSONL export manifest",
+  "description": "Initial profile only; not a native archive, backup or public publication. At most256KiB encoded. Consumers additionally check integer ranges, ordered unique stream identities, dataset equality, original cut authority and actual file bytes; JSON Schema is not an authority or durability certificate. Duplicate JSON keys are invalid.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "artifact_id",
+    "job_id",
+    "visibility",
+    "fidelity",
+    "origin",
+    "source",
+    "selection",
+    "accepted_revisions",
+    "included_families",
+    "excluded_families",
+    "files"
+  ],
+  "properties": {
+    "format": {
+      "const": "bigbrotr-signed-events-export/1"
+    },
+    "artifact_id": {
+      "$ref": "#/$defs/id16"
+    },
+    "job_id": {
+      "$ref": "#/$defs/id16"
+    },
+    "visibility": {
+      "const": "private"
+    },
+    "fidelity": {
+      "const": "full-signed-events"
+    },
+    "origin": {
+      "const": "retained-scoped-archive"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cut",
+        "catalog_id",
+        "frontier_revision",
+        "snapshot_id"
+      ],
+      "properties": {
+        "cut": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dataset_id",
+            "topology_generation",
+            "bounds"
+          ],
+          "properties": {
+            "dataset_id": {
+              "$ref": "#/$defs/id16"
+            },
+            "topology_generation": {
+              "$ref": "#/$defs/u64"
+            },
+            "bounds": {
+              "type": "array",
+              "maxItems": 1024,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "stream",
+                  "last_complete_sequence"
+                ],
+                "properties": {
+                  "stream": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "shard_id",
+                      "owner_epoch"
+                    ],
+                    "properties": {
+                      "shard_id": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 4294967295
+                      },
+                      "owner_epoch": {
+                        "$ref": "#/$defs/positive"
+                      }
+                    }
+                  },
+                  "last_complete_sequence": {
+                    "$ref": "#/$defs/u64"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "catalog_id": {
+          "$ref": "#/$defs/id16"
+        },
+        "frontier_revision": {
+          "$ref": "#/$defs/positive"
+        },
+        "snapshot_id": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,18}$",
+          "description": "Positive native BIGINT; the consumer also enforces9223372036854775807 maximum."
+        }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "scope"
+      ],
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/digest"
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dataset_id",
+            "dictionary_kind",
+            "allocation_domain",
+            "ordinal"
+          ],
+          "properties": {
+            "dataset_id": {
+              "$ref": "#/$defs/id16"
+            },
+            "dictionary_kind": {
+              "const": 4
+            },
+            "allocation_domain": {
+              "$ref": "#/$defs/id16"
+            },
+            "ordinal": {
+              "$ref": "#/$defs/positive"
+            }
+          }
+        }
+      }
+    },
+    "accepted_revisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "configuration",
+        "policy"
+      ],
+      "properties": {
+        "configuration": {
+          "$ref": "#/$defs/positive"
+        },
+        "policy": {
+          "$ref": "#/$defs/positive"
+        }
+      }
+    },
+    "included_families": {
+      "const": [
+        "signed-events"
+      ]
+    },
+    "excluded_families": {
+      "const": [
+        "internal-payload-envelopes",
+        "eligibility-facts",
+        "first-local-receive",
+        "relay-provenance",
+        "imported-claims",
+        "measurements",
+        "documents",
+        "dictionaries",
+        "coverage",
+        "derived-results",
+        "deployment-state"
+      ]
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "file_id",
+          "path",
+          "format",
+          "bytes",
+          "rows",
+          "sha256"
+        ],
+        "properties": {
+          "file_id": {
+            "const": "events"
+          },
+          "path": {
+            "const": "events.jsonl"
+          },
+          "format": {
+            "const": "nostr-jsonl/1"
+          },
+          "bytes": {
+            "$ref": "#/$defs/u64"
+          },
+          "rows": {
+            "enum": [
+              "0",
+              "1"
+            ]
+          },
+          "sha256": {
+            "$ref": "#/$defs/digest"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "rows": {
+                  "const": "0"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "bytes": {
+                  "const": "0"
+                },
+                "sha256": {
+                  "const": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "bytes": {
+                  "$ref": "#/$defs/positive"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "id16": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$",
+      "not": {
+        "const": "00000000000000000000000000000000"
+      }
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "u64": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,19})$",
+      "description": "Canonical decimal string. The consumer also enforces uint64 maximum18446744073709551615."
+    },
+    "positive": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]{0,19}$",
+      "description": "Canonical nonzero decimal string. The consumer also enforces uint64 maximum18446744073709551615."
+    }
+  }
+}

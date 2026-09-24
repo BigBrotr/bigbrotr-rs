@@ -1,0 +1,103 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED_MANIFEST_ONLY",
+  "source": {
+    "base_revision": "6f30ebb79862173e187adc0b6e9a679d1c4992c5",
+    "state": "Root-owned Mac worktree changes over the base; exact relevant inputs below. No filesystem or job-execution consumer yet.",
+    "files_sha256": {
+      "apps/bigbrotr/src/export/manifest.rs": "023aa4d100dd3356f8c5ffe6cf58d0d9ab17a09d38bd2be3dd82f43d9a655c39",
+      "apps/bigbrotr/src/export/mod.rs": "04c7a91fd0581b52056bb2ea3a27a0493a4d611f090fad326262dcfe2af00445",
+      "apps/bigbrotr/src/export/jsonl.rs": "34abb597cbc146baeccbfed6f3aca045d7d58e0cfbed7e7b55b812b599f054db",
+      "apps/bigbrotr/tests/portable_manifest.rs": "7f4240e60837747c23e076801a9295ffdb5d791c9b22def8713ee910df6efc33",
+      "crates/bigbrotr-model/src/identity.rs": "573dc3307753f37554dfc730aee8cd950baba03d53bc33e6999d004120302f7c",
+      "crates/bigbrotr-model/src/lib.rs": "29a2a1625966f96af8ac457f48471fcbbc299a42db89e653b97beacae3c2c1eb",
+      "crates/bigbrotr-model/src/source.rs": "23820b94c2acc5b30bae7a3b07c3ef9915e7d9877a39c94a4bb96bc0907b63ca",
+      "crates/bigbrotr-model/src/scalar.rs": "daa76bc96b8f97c8f078df0b2f64c74de4e5e3ab7a07658fdb6ccc470a9406b2",
+      "contracts/artifacts/v1/export.schema.json": "308da5a6f02954b88f48ebed55aab66bba7fbd806237e1c099ab1c5974bc7ba5",
+      "tests/fixtures/exports/signed-jsonl-manifest.json": "334fda0aae6e281465132475f20d836e9b2ba89f0c832ccd94fda0d3622eebb1",
+      "tests/fixtures/exports/write_signed_jsonl_manifest.py": "81f9181e8b18d64d5ef3b6fe11da35572a1f323cbfe6f98fdcdea286c9ca5f8b",
+      "Cargo.lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    }
+  },
+  "environment": {
+    "host": "Primary Mac, Darwin 25.5.0 arm64",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "dependency_tuple": "Cargo.lock unchanged from the preceding JSONL codec; serde 1.0.229, serde_json 1.0.151, sha2 0.11.0. Existing local research venv supplies jsonschema 4.25.1; no dependency installed or changed."
+  },
+  "executed": [
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "portable_manifest"
+      ],
+      "exit_code": 0,
+      "log": ".research/implementation/export-manifest/rust-tests.log",
+      "log_sha256": "239029ea1a950d576e1fc2147fa1edc09cd9bfb74875fd8e34dd3174805cb807"
+    },
+    {
+      "command": [
+        ".research/gateway-contract/venv/bin/python",
+        "tests/fixtures/exports/write_signed_jsonl_manifest.py",
+        "--schema"
+      ],
+      "exit_code": 0,
+      "log": ".research/implementation/export-manifest/schema.log",
+      "log_sha256": "ee2d34a6e0f9698344586eac642bc0b7fdc7bd0e316b8de961b690807987470a"
+    }
+  ],
+  "additional_executed": {
+    "clippy": {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--test",
+        "portable_manifest",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "Tool output observed, not separately captured."
+    },
+    "red_observations": [
+      "Initial stub: two positive tests fail and one rejection test passes, after correcting a TopologyGeneration test constructor compile error. Original output observed in tools, not captured.",
+      "Independent review found acceptance of snapshot_id above native signed BIGINT. New test accepted i64::MAX but failed to reject maximum+1. Original output observed in tools, not captured. After inspecting EventQuery::validate and migration0016 snapshot binding, the encoder now refuses it; final five tests pass."
+    ]
+  },
+  "expected_results": [
+    "Exact manifest bytes match a separately authored Python JSON/SHA-256 oracle over the independently signed timestamp-zero fixture. Two-stream source cut retains the explicit zero prefix; exclusion families and original selection remain explicit.",
+    "Manifest byte bound includes its final LF; one byte below exact size refuses. A 1024-stream cut with maximal-width unsigned fields encodes completely; 1025 streams and zero output allowance refuse.",
+    "Current native snapshot domain is 1..i64::MAX; other unsigned metadata retains u64 maximum. Foreign/wrong-kind scope, zero revision and incompatible row/byte counts refuse.",
+    "An empty file requires the literal SHA-256 of zero bytes; an altered digest refuses.",
+    "Draft2020-12 schema accepts the golden present/empty documents and rejects eight explicit changes: unknown grant, foreign format, zero artifact ID, escaping path, extra file, wrong empty digest, missing exclusions and zero snapshot."
+  ],
+  "review": {
+    "kind": "Independent AI static review plus root source/complete diff review",
+    "findings": [
+      "Native snapshot maximum mismatch corrected after an executed RED.",
+      "Empty-file digest test added and passes.",
+      "Public metadata structs do not cross-certify query, cut and file; the executor must derive them from one actual verified observation. No authority inferred from their construction."
+    ]
+  },
+  "limitations": [
+    "No actual artifact file/directory synchronization, atomic final publication, SQL inventory/execution claim, worker or restart exercised. Neither export nor a P08 task step is complete.",
+    "Schema alone cannot prove original topology/cut completeness, source/scope dataset equality, actual file hash/signature, exact large-integer ceiling or runtime authority. Its descriptions name the additional checks.",
+    "No memory/RSS or capacity claim. The encoder reserves a bounded buffer but full executor/native accounting remains required.",
+    "No Tux processes, containers or caches created. No Linux amd64 or Linux arm64 qualification."
+  ]
+}
