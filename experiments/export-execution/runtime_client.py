@@ -19,7 +19,7 @@ root="/out/signed_normal/export-destination"
 payload_bytes="512MiB"
 [runtime.processes.native]
 memory_max_bytes="2GiB"
-native_bytes="1GiB"
+native_bytes="1536MiB"
 '''
     http.CONFIG.write_text(text)
     http.cli('config', 'validate')

@@ -51,7 +51,7 @@ def main(root):
         command(*client,'prepare')
         sql(db,'GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
         policy = json.loads((source/'experiments/archive-engine/receipt-policy.json').read_text())
-        policy['settings'].update({'administration.enabled':False,'export.memory.max_bytes':1073741824,'export.artifact.max_bytes':2097152,'export.spill.max_bytes':134217728})
+        policy['settings'].update({'administration.enabled':False,'archive.worker_memory_bytes':671088640,'export.memory.max_bytes':1073741824,'export.artifact.max_bytes':2097152,'export.spill.max_bytes':134217728})
         document = json.dumps(policy,sort_keys=True,separators=(',',':'))
         digest = hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
         sql(db,f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT 2,dataset_id,1,config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=1; UPDATE control.datasets SET policy_revision=2; COMMIT;")
@@ -87,16 +87,20 @@ def main(root):
         save()
         assert result['terminal']=={db:0,'bbpub_normal':0} and result['active_control']==0
         assert result['after']==dict(states=['succeeded'],units=1,artifacts=1,files=1,readers_active=result['before']['readers_active']), 'Installed runtime did not execute the retained job'
-        row=json.loads(sql(db,"SELECT jsonb_build_object('job',encode(j.job_id,'hex'),'artifact',encode(a.artifact_id,'hex'),'checkpoint',j.checkpoint_revision::text,'manifest',encode(a.manifest_sha256,'hex'),'bytes',f.byte_count::text,'rows',f.row_count::text,'sha256',encode(f.sha256,'hex'),'reader_released',l.state='released','export_retained',(SELECT state='active' FROM control.snapshot_leases WHERE lease_id=e.pin_lease_id)) FROM control.jobs j JOIN control.export_jobs e USING(job_id) JOIN control.artifacts a USING(job_id) JOIN control.artifact_files f ON f.artifact_id=a.artifact_id JOIN control.snapshot_leases l ON l.lease_id=a.verification_pin_id"))
+        row=json.loads(sql(db,"SELECT jsonb_build_object('job',encode(j.job_id,'hex'),'artifact',encode(a.artifact_id,'hex'),'checkpoint',j.checkpoint_revision::text,'manifest',encode(a.manifest_sha256,'hex'),'manifest_bytes',a.manifest_bytes::text,'bytes',f.byte_count::text,'rows',f.row_count::text,'sha256',encode(f.sha256,'hex'),'reader_released',l.state='released','export_retained',(SELECT state='active' FROM control.snapshot_leases WHERE lease_id=e.pin_lease_id)) FROM control.jobs j JOIN control.export_jobs e USING(job_id) JOIN control.artifacts a USING(job_id) JOIN control.artifact_files f ON f.artifact_id=a.artifact_id JOIN control.snapshot_leases l ON l.lease_id=a.verification_pin_id"))
         artifact=root/'out/signed_normal/export-destination'/row['artifact']
         raw=(artifact/'manifest.json').read_bytes(); manifest=json.loads(raw)
         assert (artifact/'events.jsonl').read_bytes()==b'' and row['rows']==row['bytes']=='0'
         assert row['checkpoint']=='1' and row['reader_released'] and row['export_retained']
         assert row['sha256']==hashlib.sha256(b'').hexdigest() and row['manifest']==hashlib.sha256(raw).hexdigest()
-        assert manifest['artifact_id']==row['artifact'] and manifest['job_id']==row['job']
-        assert manifest['source']==dict(cut=dict(dataset_id='01'*16,topology_generation='0',bounds=[dict(stream=dict(shard_id=0,owner_epoch='1'),last_complete_sequence='10')]),catalog_id='5a'*16,frontier_revision='1',snapshot_id='3')
-        assert manifest['selection']['event_id']=='ab'*32
-        assert manifest['accepted_revisions']==dict(configuration='1',policy='1')
+        assert str(len(raw))==row['manifest_bytes']
+        assert manifest==dict(format='bigbrotr-signed-events-export/1',artifact_id=row['artifact'],job_id=row['job'],
+            visibility='private',fidelity='full-signed-events',origin='retained-scoped-archive',
+            source=dict(cut=dict(dataset_id='01'*16,topology_generation='0',bounds=[dict(stream=dict(shard_id=0,owner_epoch='1'),last_complete_sequence='10')]),catalog_id='5a'*16,frontier_revision='1',snapshot_id='3'),
+            selection=dict(event_id='ab'*32,scope=dict(dataset_id='01'*16,dictionary_kind=4,allocation_domain='04'*16,ordinal='1')),
+            accepted_revisions=dict(configuration='1',policy='1'),included_families=['signed-events'],
+            excluded_families=['internal-payload-envelopes','eligibility-facts','first-local-receive','relay-provenance','imported-claims','measurements','documents','dictionaries','coverage','derived-results','deployment-state'],
+            files=[dict(file_id='events',path='events.jsonl',format='nostr-jsonl/1',bytes='0',rows='0',sha256=hashlib.sha256(b'').hexdigest())])
         result['output']=row
         result['output_hashes']={str((artifact/name).relative_to(root/'out')):sha(artifact/name) for name in ['events.jsonl','manifest.json']}
         result['status']='PASS'

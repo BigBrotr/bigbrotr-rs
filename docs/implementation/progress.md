@@ -21,13 +21,25 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified main/HEAD and origin/mainfc08c48a4c9573bcc308a082de64ab33c3c4820b,
-clean before the next fixture. Action-window candidate275f641 and complete scoped
-evidence are pushed. Root now owns the installed headless executor fixture and
-lab-profile/checkpoint edits. No product executor changes yet. Next exact native
-run is the expected RED: start ordinary serve with a retained accepted job and
-administration disabled, independently observe completion SQL and actual output.
-No active lab at this checkpoint; launch follows this fixture candidate commit.
+Last verified HEAD26cde0aebb837e5a492e0bd5122ab7b81e2f33e5 candidate;
+origin/mainfc08c48a4c9573bcc308a082de64ab33c3c4820b. Root owns fixture correction,
+filesystem capacity preflight and evidence/inventory/checkpoint edits.
+[First headless fixture](evidence/p08-export-runtime-fixture-incomplete-20260924.json)
+is INCOMPLETE: fresh installed build/tests/Clippy passed, but offline fixture
+validation rejected640MiB x2 workers against1GiB native pool before serve.
+Corrected next fixture uses1536MiB native pool/2GiB process AND managed policy640MiB;
+full manifest oracle strengthened after independent source review. This was not
+an executor RED. Capture26files/1158sources verified. Both containers stopped-
+retained, owner9769d2023e4c48a208a84ec32eefe9a5, network removed,592 prior
+records/eight running unchanged; free153717768192bytes, no cleanup debt.
+
+A real-filesystem capacity preflight now uses retained fstatvfs descriptor,
+checked growth+completion reserve arithmetic, and refuses impossible/overflowing
+capacity. Rustix1.1.5 exact Mac/Linux implementation inspected. Mac regression
+RED against unconditional admission then GREEN; Clippy passed. This is not a
+physical quota/shared multi-process reservation ledger. The automatic single
+Control consumer and broader resource qualification are still pending.
+Next run the corrected exact native headless fixture before adding the executor.
 
 [Action-window output gate](evidence/p08-export-action-window-native-20260924.json):
 real-clock100ms partial-buffer regression first failed against atomic-only output,
