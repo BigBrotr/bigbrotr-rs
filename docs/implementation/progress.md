@@ -19,39 +19,64 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-HEAD/origin/main a4b0464bd6cb75add45ed1b9ca3924b51e6e3d38, tree
-82c76a7e2543d34de827abd1648207af91a0bdb0. Private push succeeded and ls-remote
-matches; clean immediately after push. GitHub metadata confirms private
-BigBrotr/bigbrotr-rs with main default. Root owns this checkpoint and the resume-checker fixture changes in
-experiments/export-execution plus the exact-destination parameter in
-experiments/archive-engine/export_destination_blocked.py.
-No foreign work or active local/remote experiment. The clean transfer-only worktree
-skip-button-1647b5f was verified and removed. Product/test source1647b5f and the
-three earlier diagnostic/evidence commits are now published without history rewrite.
+HEAD 8dbd3c4f7defaca65a2c41998059664593afc58f, tree
+7c6b2addc5818b0b3a57f66dff2d89b32ae5f450; one local candidate above private
+origin/main a4b0464bd6cb75add45ed1b9ca3924b51e6e3d38. Candidate committed after six
+trace-oracle controls and artifact/link/handoff checks; clean exact Git transferred
+to Tux. Root now owns only this checkpoint/inventory update. No foreign edits.
+Independent read-only review found capture omission and pre-readiness cleanup
+ambiguity, both corrected before launch; no remaining concrete static blocker.
+Reviewed full serve/resume/native supervision, transport and destination boundaries.
 
-Resume checker is in preparation: actual held marker openat, rejecting priming,
-independent twelve-ledger/session audit and bounded signal timing. No native run
-or passing checker evidence yet. Wiring and six local trace-oracle controls pass;
-artifact/link/handoff checks pass. Reviewed full serve/resume/native supervision,
-transport and destination boundaries. Independent read-only fixture review identified capture omission and pre-readiness
-cleanup ambiguity; the dedicated collector now includes exact checker traces, and
-the client restores inputs only after known exclusion. Six parser controls still pass.
-Next commit a clean candidate and launch --runtime-resume-checker with a fresh
-Rust build, using transfer-resume-checker.py and collect-resume-checker.py.
-Prelaunch2026-09-24T20:45:33Z records758containers, eight unrelated running, no
-BigBrotr running and118387646464freebytes. No new deletion; useful caches and
-original artifacts remain protected. The per-lab preflight must recheck this.
+Run export-runtime-8dbd3c4 is stopped-retained, owner
+1ae77d53919b4876eeff7df396179ccd. Fresh installed build, 46 binary tests and Clippy
+pass. Actual resume checker evidence passes; report/inventory/operations/task
+updates passed independent review and are ready for coherent commit/private push.
+Original candidate is still unpublished. Root owns only these documentation files;
+no local/remote experiment active. Final census 20:53:46Z verifies both owned PID0/
+noOOM, network and orchestrator absent, 758 prior containers/eight unrelated running
+preserved. Actual installed ELF and restored marker hash/inode match evidence.
+Free 114598891520 bytes; per-run preflight 118352154624. No cache/data/container
+retirement. Retain new 8db caches/ELF and original 4e/73e/strace assets.
 
-Review and artifact/link/handoff checks passed; the keyboard slice is committed
-and pushed. Next qualify the actual resume destination checker under blocked
-native I/O and SIGTERM for P08-T03 Step3. Existing export_destination_blocked.py owns the qualified
-strace syscall barrier; resume has a distinct route and preserves an existing
-unit/pin. Do not substitute a dummy I/O call or allow priming to accept a resume.
-Use a fresh inventoried exact-Git lab, actual HTTP/SQL and independent unchanged
-receipt/unit/pin checks; preserve signal timing distinct from request expiry.
-Current UI findings do not justify unrelated Rust changes or repeated suites.
+Independent report review, artifact/link/handoff and diff checks passed.
+Next bounded action: coherent evidence commit/private push, then qualify resume session/
+grant expiry after actual PostgreSQL row-lock waits under P08-T03 Step3; read the
+current authentication/acceptance lock order and existing expiry fixtures first.
+Preserve current prepared paused-unit oracle, full receipts/pins and exact timing;
+no full task completion from this one scenario. Do not repeat unrelated browser
+or native suites. The new checker does not qualify arbitrary kernel I/O or continuous
+custody. Transfer/collector/oracle helpers are under ignored export-execution;
+review-resume-checker.py verifies current capture, not an unrun future profile.
 
 ## Latest qualified slice
+
+[Blocked resume checking](evidence/p08-export-resume-checker-native-20260924.json)
+passes on 8dbd3c4 with fresh Rust ELF: two rejecting 503 priming requests, actual
+non-main worker openat pending under qualified strace, same Control renewal by
+2505447 us, SIGTERM margin 2.4685 s, exit 4 in 4038.9 ms. Full twelve post-login row+xmin
+ledgers and idle state remain unchanged; exactly one independently attributed
+login audit separates preparation from baseline. One original paused revision7 unit and
+active export retention remain; zero artifacts. Both databases have zero backends, root lock available after
+positive process death, original marker bytes/inode restored. Source/artifacts:
+1260 current / 1110 seed Git entries, 37 payloads, tar
+b0b280642d5d15d3ddab1f55882a78c39e0d312f34956c81cc5aede8f8e90a1e.
+ParentSHA b76d606f28f71dbc2a434567e32df9bb50fc146fcd144d99167407aeae94473a;
+workerSHA unchanged 3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
+Capture attempt-8dbd3c4/capture. Final-censusSHA
+ae975025348c7fb47966f09ed91416b82a5bd34a1f24511aae429ea69c51acf5.
+Independent AI replay confirms hashes, all twelve ledgers and trace/resource
+consistency; no edits/tests/SSH. No new signed output, kernel-stall, expiry,
+continuous custody or packaged-release claim.
+
+Two local observer corrections preserve original native evidence: early trace
+was a partial syscall prefix, with unfinished appended later; offline verifier
+now checks both exact prefix and full terminal trace. New final census initially
+compared unordered mount arrays and dynamic health probe logs; inspected 289 order
+changes and 3 healthy log advances, then verified all mount contents/lifecycle/
+health status/failing streak/network/restart fields. Diagnosis and original
+observer retained; no product/fixture rerun or hidden failure reclassification.
+
 
 [The label-wrapper correction](evidence/p09-skip-button-native-20260924.json)
 passes on1647b5f with original73e Rust ELF and fresh frontend bundles: WebKit/root,
@@ -70,7 +95,7 @@ unqualified; prior188 recovery matrix keeps its separate source identity.
 All four roots export-runtime-1647b5f-{webkit-root,webkit-control,chromium-root,
 firefox-control} are stopped-retained. Exact owners/containers/captures live in
 inventory implementation_skip_button_fix_20260924. Actual final census after
-captures confirms20ownedPID0/noOOM, four networks absent, all orchestrators absent,
+captures confirms20owned PID0/noOOM, four networks absent, all orchestrators absent,
 same8unrelated running. Free118387777536bytes; initial root preflight120838275072.
 Both Rust parents per run exited0 with committed Control release, root locks free,
 scratch empty and bothDB0. PG137 is lab teardown, not database graceful shutdown.
@@ -138,7 +163,7 @@ and250ms scans. Default256MiB export cap cannot fit selected native profile;
 retain512MiB native floor and640MiB fixture worker. Charge parent/native overlap,
 credentials/manifest/output, two logical output copies,64MiB scratch+1MiB metadata.
 fstatvfs is preflight, not a physical quota, cross-process ledger or RSS proof.
-New expiry/lock-wait/grant/CAS interleavings, blocked resume checker, old-worker
+New expiry/lock-wait/grant/CAS interleavings, old-worker
 exclusion, zero/multiple streams, mixed aged workloads, full CLI/UI, packaging/M1
 and complete release journeys remain required before broader qualification.
 
@@ -186,7 +211,7 @@ Earlier45a96e7/016dd6f retirement freed6663274496allocatedbytes, free12217862144
 remain inventoried. Historical outcomes unchanged. Never rebuild merely to clean.
 No container/volume/qualification/object-storage data retirement in these slices.
 
-Protect current73e6517 cache/ELF, dd17842 qualification artifacts, retaineddc6/4a ELF,
+Protect current 8dbd3c4 and 73e6517 cache/ELF, dd17842 qualification artifacts, retaineddc6/4a ELF,
 useful877/f660 and exact4e6b5c0 seed cache/assets
 (owner3f840fe30a3ffef7f9944c72ea6e38f9). Protect strace-exit-9b30c35 instrumentation,
 reusable private-history-32dd58d, stopped history-capture-b5c862a and its real

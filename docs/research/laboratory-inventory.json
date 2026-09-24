@@ -24673,5 +24673,61 @@
       "unrelated_running": 8
     },
     "local_transfer_worktree": ".research/worktrees/skip-button-1647b5f: clean exact1647 source verified, then removed after all four transfers; no product edits there."
+  },
+  "implementation_resume_checker_20260924": {
+    "status": "stopped-retained; SCOPED_PASS",
+    "resources": {
+      "source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "tree": "7c6b2addc5818b0b3a57f66dff2d89b32ae5f450",
+      "owner": "1ae77d53919b4876eeff7df396179ccd",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-8dbd3c4",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "cf5ffeb3097d476b9e37e266f614b76f7472bd07acd13b41d9bc3c863c3f1411"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "41f8706566154d0a1e5cb997d8e08f7ad6a38bd10b2f3cf451a8f74a93efd996"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T20:48:13.484216+00:00",
+      "runtime_profile": "resume-checker",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "eed47051fa5220af4779bed1845aa15fbb523702c86a86c72986ae186f5c7e21",
+      "postgres_id": "cf5ffeb3097d476b9e37e266f614b76f7472bd07acd13b41d9bc3c863c3f1411",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "41f8706566154d0a1e5cb997d8e08f7ad6a38bd10b2f3cf451a8f74a93efd996",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "orchestrator": {
+      "pid": 514029,
+      "start_ticks": "366514702",
+      "source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "tree": "7c6b2addc5818b0b3a57f66dff2d89b32ae5f450"
+    },
+    "capture": {
+      "path": ".research/implementation/export-execution/attempt-8dbd3c4/capture",
+      "files": 37,
+      "sha256": "b0b280642d5d15d3ddab1f55882a78c39e0d312f34956c81cc5aede8f8e90a1e",
+      "source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "tree": "7c6b2addc5818b0b3a57f66dff2d89b32ae5f450",
+      "source_files": 1260
+    },
+    "final_census": {
+      "path": ".research/implementation/export-execution/resume-checker-final-census.json",
+      "sha256": "ae975025348c7fb47966f09ed91416b82a5bd34a1f24511aae429ea69c51acf5",
+      "observed_at": "2026-09-24T20:53:46.087322+00:00",
+      "free_bytes": 114598891520
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-checker-native-20260924.json",
+    "retention": "Keep new current compiler cache, source, original ELF/instrument/marker, PostgreSQL/archive state and complete logs. No deletion, container removal or volume/dataset retirement. Two owned PID0/noOOM; network and orchestrator absent. Rust wrapper0; PostgreSQL wrapper137 is lab teardown, not graceful database shutdown. Eight unrelated running workloads and758 prior lifecycle/mount/network/restart states preserved; normal health probe log timestamps advance."
   }
 }

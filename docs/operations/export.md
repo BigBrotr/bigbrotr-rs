@@ -153,7 +153,12 @@ supplies both checked configuration and policy revisions for new commands. Its
 native client test also refuses a changed body on an old key with otherwise-current
 revisions, then accepts that body under a new key. Always retain the original
 key and body while resolving an uncertain result.
-Blocked resume destination checker work and the CLI remain unfinished. A separate [installed
+The [blocked resume checker](../implementation/evidence/p08-export-resume-checker-native-20260924.json)
+now observes a real held marker open, continuing Control renewal and SIGTERM
+fail-stop in about 4.04 seconds, with the original paused unit/pin and all twelve
+post-login ledgers unchanged. Two deliberately incompatible-marker priming
+requests return 503; this does not qualify accepted resume or arbitrary kernel I/O.
+Expiry after lock waits and the CLI remain unfinished. A separate [installed
 signed-resume scenario](../implementation/evidence/p08-export-resume-output-native-20260924.json)
 restores a revoked input grant through authenticated HTTP, resumes the original
 unit and verifies exact signed bytes plus complete inventory. Identical retry

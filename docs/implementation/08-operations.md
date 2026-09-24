@@ -333,8 +333,11 @@ exchanges on pinned Node, with independent SQL receipt/preservation checks and
 same-session restart. Browser behavior is outside that fixture; the later
 [browser recovery matrix](evidence/p09-resume-browser-matrix-native-20260924.json)
 and [keyboard correction](evidence/p09-skip-button-native-20260924.json) own their
-scoped installed evidence. Blocked-checker, expiry scenarios and complete UI/CLI
-consumers remain required before completing this step.
+scoped installed evidence. The [blocked resume checker](evidence/p08-export-resume-checker-native-20260924.json)
+now passes actual worker openat hold, Control renewal and bounded SIGTERM fail-stop
+with the original paused unit/pin unchanged. Expiry after lock waits, changed
+session/grant interleavings and complete UI/CLI consumers remain required before
+completing this step.
 
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending

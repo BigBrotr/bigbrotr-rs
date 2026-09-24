@@ -1,0 +1,331 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "task": [
+    "P08-T03",
+    "P08-T04"
+  ],
+  "status": "SCOPED_PASS",
+  "source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+  "tree": "7c6b2addc5818b0b3a57f66dff2d89b32ae5f450",
+  "scope": "Actual installed POST resume destination openat held on a non-main worker, live Control renewal and SIGTERM, preserving the preexisting paused unit and original export pin. No Rust product changes in this slice.",
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "source_and_artifacts": {
+    "current_build": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+    "source_manifest_sha256": "b8fd1d99439834201a4618ef1ade39bb8a030d63ccd1c465bd24bb09acff21c1",
+    "cargo_lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "artifacts": {
+      "bigbrotr": "b76d606f28f71dbc2a434567e32df9bb50fc146fcd144d99167407aeae94473a",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "seed": {
+      "source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "tree": "fb87d6a4e8082d0dc2e5e8c5ac010de37920632a",
+      "owner": "3f840fe30a3ffef7f9944c72ea6e38f9",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+      "source_manifest_sha256": "eee5a33104dbee6059d2a106eab2b09d44b14e54c5badd06fce0f8425182ef6f",
+      "artifacts": {
+        "control": "42e2787cdabf4d31c1941ca38bebe5006ac8c0e8a4c8fdf8ac99d9644e38c88c",
+        "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+        "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+        "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+        "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+      },
+      "native_assets": {
+        "bigbrotr-archive-worker": {
+          "bytes": 14378448,
+          "sha256": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4"
+        },
+        "extensions/ducklake.duckdb_extension": {
+          "bytes": 36436086,
+          "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+        },
+        "extensions/httpfs.duckdb_extension": {
+          "bytes": 21570542,
+          "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+        },
+        "extensions/postgres_scanner.duckdb_extension": {
+          "bytes": 41696558,
+          "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+        },
+        "lib/duckdb.h": {
+          "bytes": 244057,
+          "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+        },
+        "lib/libduckdb.so": {
+          "bytes": 70529912,
+          "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+        }
+      },
+      "validation": "Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. This reuse record covers original seed artifacts only. Current compilation/adapter evidence, when selected, is recorded separately under adapter-checks and adapter-cases."
+    },
+    "instrument": {
+      "source": "9b30c3535c1407294fb95b40df8019ebda6860f9",
+      "owner": "84ac8cbf5292679b8ef7043fed7a2799",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35",
+      "files": {
+        "strace-exit-fixed": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+        "result.json": "cf0317fc8934eb70f3cf2d74ac6ba0680be09366a4ade586aabd95991c6c3abc"
+      }
+    }
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-8dbd3c4/capture",
+    "files": 37,
+    "sha256": "b0b280642d5d15d3ddab1f55882a78c39e0d312f34956c81cc5aede8f8e90a1e",
+    "source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+    "tree": "7c6b2addc5818b0b3a57f66dff2d89b32ae5f450",
+    "source_files": 1260
+  },
+  "executed": {
+    "local": "Six trace-oracle controls pass: exact destination/worker, default and other path exclusion, main-thread exclusion, returned/resumed calls, wrong marker/flags, literal regex escaping. Python syntax and artifact/link/handoff checks pass; no new Rust unit-test claims from Mac.",
+    "native_build": [
+      {
+        "name": "installed-build",
+        "command": [
+          "/usr/bin/python3",
+          "/out/build/source/experiments/export-execution/native.py",
+          "--build-runtime"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 61.205007726792246
+      },
+      {
+        "name": "management-tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 23.407175866886973
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.819190755020827
+      }
+    ],
+    "binary_tests": 46,
+    "seed_and_schema": {
+      "schema": "PASS",
+      "resume": "PASS"
+    },
+    "priming": [
+      {
+        "status": 503,
+        "code": "authority_unavailable"
+      },
+      {
+        "status": 503,
+        "code": "authority_unavailable"
+      }
+    ],
+    "marker_original_sha256": "ebc00ac241d29490fb1149d0f1a7256e402c7b74cc94b1b5904432b6b9e86541",
+    "marker_invalid_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "marker_restored_same_identity": {
+      "device": 66306,
+      "inode": 33557695
+    },
+    "job": "de488ab714fe0298c88556caaaee20bb",
+    "command": {
+      "expected_job_revision": "7",
+      "expected_config_revision": "1",
+      "expected_policy_revision": "2"
+    },
+    "key": "f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6",
+    "blocked": {
+      "tid": 3125,
+      "tracer": 3120,
+      "state": "t (tracing stop)",
+      "submitted_monotonic": 3665317.18470295,
+      "observed_monotonic": 3665317.348786518,
+      "destination": {
+        "path": "/out/signed_normal/export-destination",
+        "device": 66306,
+        "inode": 33557694
+      },
+      "lock_available": false,
+      "trace": "3123  1790283061.845834 openat(8</out/signed_normal/export-destination>, \"destination.json\", O_RDONLY|O_NOCTTY|O_NONBLOCK|O_LARGEFILE|O_NOFOLLOW|O_CLOEXEC) = 6</out/signed_normal/export-destination/destination.json>\n3123  1790283061.846066 openat(8</out/signed_normal/export-destination>, \"destination.json\", O_RDONLY|O_NOCTTY|O_NONBLOCK|O_LARGEFILE|O_NOFOLLOW|O_CLOEXEC) = 6</out/signed_normal/export-destination/destination.json>\n3125  1790283063.039410 openat(8</out/signed_normal/export-destination>, \"destination.json\", O_RDONLY|O_NOCTTY|O_NONBLOCK|O_LARGEFILE|O_NOFOLLOW|O_CLOEXEC) = 18</out/signed_normal/export-destination/destination.json>\n3125  1790283063.048380 openat(8</out/signed_normal/export-destination>, \"destination.json\", O_RDONLY|O_NOCTTY|O_NONBLOCK|O_LARGEFILE|O_NOFOLLOW|O_CLOEXEC) = 18</out/signed_normal/export-destination/destination.json>\n3125  1790283063.058556 openat(8</out/signed_normal/export-destination>, \"destination.json\", O_RDONLY|O_NOCTTY|O_NONBLOCK|O_LARGEFILE|O_NOFOLLOW|O_CLOEXEC"
+    },
+    "signal": {
+      "monotonic": 3665319.716186401,
+      "wall": 1790283065.5861824,
+      "request_deadline_margin_seconds": 2.4685165490955114,
+      "delivery_observed_margin_seconds": 2.458311017137021
+    },
+    "terminal": {
+      "exit": 4,
+      "elapsed_ms": 4038.885686080903,
+      "response": {
+        "closed": "RemoteDisconnected"
+      },
+      "parent_present": false,
+      "worker_present": false,
+      "lock_available": true,
+      "stderr": "error: native grant worker not joined; retain pin and terminate process\n"
+    },
+    "control_before": {
+      "resource": "da6be6a70b5676602a60e3ac5cf5e510",
+      "epoch": "5",
+      "incarnation": "4d0a9fe68334fa738a27873f6f2c7cf6",
+      "expires": 1790283122854978,
+      "pid": 541,
+      "start": "2026-09-24T20:51:01.847131+00:00",
+      "present": true
+    },
+    "control_after": {
+      "resource": "da6be6a70b5676602a60e3ac5cf5e510",
+      "epoch": "5",
+      "incarnation": "4d0a9fe68334fa738a27873f6f2c7cf6",
+      "expires": 1790283125360425,
+      "pid": 541,
+      "start": "2026-09-24T20:51:01.847131+00:00",
+      "present": true
+    },
+    "renewal_observation_seconds": 2.2753201769664884,
+    "renewal_microseconds": 2505447,
+    "terminal_owner": {
+      "resource": "da6be6a70b5676602a60e3ac5cf5e510",
+      "epoch": "5",
+      "incarnation": "4d0a9fe68334fa738a27873f6f2c7cf6",
+      "expires": 1790283125360425,
+      "pid": 541,
+      "start": "2026-09-24T20:51:01.847131+00:00",
+      "present": false
+    },
+    "backends": {
+      "bbpub_normal": 0,
+      "bbpub_control_normal": 0
+    },
+    "ledger_counts_before": {
+      "jobs": 1,
+      "job_input_bounds": 1,
+      "export_jobs": 1,
+      "export_execution_units": 1,
+      "artifacts": 0,
+      "artifact_files": 0,
+      "snapshot_leases": 4,
+      "archive_snapshot_pins": 4,
+      "retention_claims": 4,
+      "export_resume_commands": 1,
+      "management_commands": 6,
+      "management_audit": 12
+    },
+    "sql_conservation": "All twelve complete row+xmin ledgers identical between post-login baseline and terminal. Prepared state differs only by one attributable browser.session.issue audit, matched to the sole new session; idle timestamps/xmin unchanged after login. Job remains paused7, one original unit, no artifacts/files or new resume receipt. Four original lease/pin/claim rows retained, including active export retention despite expired scheduling TTL.",
+    "root_verification": {
+      "status": "VERIFIED_SCOPED_PASS",
+      "source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "counts": {
+        "out/build/source-manifest.json": 1260,
+        "artifact-source-manifest.json": 1110
+      },
+      "payloads": 37,
+      "preexisting": 758,
+      "free_before": 118352154624,
+      "free_after": 114611232768,
+      "artifacts": {
+        "bigbrotr": "b76d606f28f71dbc2a434567e32df9bb50fc146fcd144d99167407aeae94473a",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "renewal_microseconds": 2505447,
+      "signal_margin_seconds": 2.4685165490955114,
+      "terminal_elapsed_ms": 4038.885686080903
+    },
+    "actual_signal_trace_time": 1790283065.586213,
+    "conservative_trace_signal_margin_seconds": 2.468486
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-8dbd3c4",
+    "owner": "1ae77d53919b4876eeff7df396179ccd",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "cf5ffeb3097d476b9e37e266f614b76f7472bd07acd13b41d9bc3c863c3f1411"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "41f8706566154d0a1e5cb997d8e08f7ad6a38bd10b2f3cf451a8f74a93efd996"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "original_terminal": "PASS_PENDING_CAPTURE",
+    "preexisting_containers": 758,
+    "unrelated_running": 8,
+    "free_bytes_before": 118352154624,
+    "free_bytes_after": 114611232768,
+    "final_census": {
+      "path": ".research/implementation/export-execution/resume-checker-final-census.json",
+      "sha256": "ae975025348c7fb47966f09ed91416b82a5bd34a1f24511aae429ea69c51acf5",
+      "observed_at": "2026-09-24T20:53:46.087322+00:00",
+      "free_bytes": 114598891520
+    },
+    "retention": "Keep new current compiler cache, source, original ELF/instrument/marker, PostgreSQL/archive state and complete logs. No deletion, container removal or volume/dataset retirement. Two owned PID0/noOOM; network and orchestrator absent. Rust wrapper0; PostgreSQL wrapper137 is lab teardown, not graceful database shutdown. Eight unrelated running workloads and758 prior lifecycle/mount/network/restart states preserved; normal health probe log timestamps advance."
+  },
+  "observer_corrections": [
+    {
+      "observer": "review-resume-checker.py",
+      "original": "Local offline assertion required unfinished marker in the early partial trace. Native capture ends at O_CLOEXEC; strace appends unfinished at signal delivery.",
+      "resolution": "Require exact unreturned early syscall prefix and full terminal unfinished/signal/exit trace. Replayed unchanged capture; no native fixture/run modification."
+    },
+    {
+      "observer": "resume-checker-final-census-raw-observer.py",
+      "original": "New final census compared raw unordered Mounts lists and entire Health logs. Initial assertion failed.",
+      "resolution": "Inspected differences:289 mount-order changes and3 advancing healthy probe logs across291 containers, then required full mount equality by destination and all lifecycle/health status/failing-streak/network/restart fields unchanged. No excluded lifecycle change; original diagnosis retained.",
+      "diagnosis_path": ".research/implementation/export-execution/resume-checker-census-health-diff.json",
+      "diagnosis_sha256": "a0a73f9099a78d6ce9633a89b8748a0acd9a5dfe3c1a2a689f2486b085f935a8"
+    }
+  ],
+  "review": {
+    "root": "Read complete fixture/wiring, actual serve/resume/native supervision/transport/destination boundaries; verified37payloads,1260current/1110seed Git entries, actual ELF and final marker identity, full SQL and syscall evidence.",
+    "independent": "Read-only AI review independently recomputed37payloads, archive hash,1260current/1110seed Git entries, both ELF and tracer. Reconstructed all twelve SQL ledgers, single login attribution, no f6 effects, exact partial-to-terminal trace, Control renewal and conservative trace-derived signal margin. Checked758preexisting resource projections and final census/report/hash consistency. Final live-host assertions remain root measurements; no AI SSH, test execution, edits or continuous custody claim.",
+    "helpers": {
+      "transfer-resume-checker.py": "8366fa6bdea9218ba90bcb125bd8cc1baf42086cdacc0d062fb590b00fe5a696",
+      "collect-resume-checker.py": "c77e6e5688118c9c553f3f8956d3e64b19be32dc977570342bbcddebe1e0e0cc",
+      "review-resume-checker.py": "863c4483057966449d7fa0c5c40f0f543a4f75db4826977b1918aa735b63461d",
+      "resume-checker-final-census.py": "4e7ffdfcf86f91b850bf59cdd0eb746cd12a07af28ccc7e9ebd59a4cf46d4650"
+    }
+  },
+  "limits": [
+    "One bounded syscall-entry delay with qualified strace6.1 research patch; not arbitrary kernel/filesystem stalls or device failure. No continuous flock/custody proof from samples.",
+    "Destination marker temporarily incompatible after successful startup prevents either priming request accepting resume. The held request never returns from marker open; no accepted resume or new signed output is claimed.",
+    "One paused single-stream unit with execution disabled. No zero/multiple-stream, mixed aged workload, expiry after lock wait, changed session/grants during SQL, old-worker exclusion or terminal retention lifecycle qualification.",
+    "No request-free signal timing, general admission drain or every possible scheduling proof. Signal delivered with more than one second remaining to ordinary request expiry.",
+    "Pre-readiness failure/cleanup guard and host observer timeout branches were inspected, not executed in this PASS. Unexpected login failure has only generic AssertionError diagnostics.",
+    "No hosted Actions, Linux arm64, packaged installation, release, complete UI/CLI or full P08/M1/product qualification."
+  ]
+}
