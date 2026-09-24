@@ -22573,5 +22573,97 @@
       "host_tcp_wmem_preserved": true,
       "free_bytes": 139580645376
     }
+  },
+  "implementation_export_status_browser_20260924": {
+    "status": "stopped-retained; browser FAIL, laboratory INCOMPLETE",
+    "evidence": "docs/implementation/evidence/p09-export-status-browser-red-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-3830b0e/capture",
+    "verified": {
+      "files": 88,
+      "sha256": "16f79b9593f0a73837aef089e9bdcf33b240fff9f2cb3b83963ed41ccd87a397",
+      "source": "3830b0efbd230083759d8b661e83f5a3d2d89c39",
+      "tree": "18c24e4820af692631544bd646beec5ed912c66a",
+      "source_files": 1194
+    },
+    "resources": {
+      "source": "3830b0efbd230083759d8b661e83f5a3d2d89c39",
+      "tree": "18c24e4820af692631544bd646beec5ed912c66a",
+      "owner": "f9f3bdd3148aef3f4cd83cb3eac6e608",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3830b0e",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "frontend",
+          "id": "36e8bd7b72660de938a9ddaedc2f05942dfdf3711cd45b1b683c3f05737a0032"
+        },
+        {
+          "name": "postgres",
+          "id": "ff8ba5c8bb901a0dce09c87306895ebf2fe676d5ec1165c926cf61779fc6465f"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "e2d8cdd444ae13d4a13215af5edae6ca1d4b32a922a89c9e697e43fd8c0088fd"
+        },
+        {
+          "name": "browser-chromium-root",
+          "id": "8303d0cc8ea82558b16e78a88f3309d792510ff5113fcd03978c47aec216b222"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T14:11:02.116497+00:00",
+      "runtime_profile": "job-browser",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "f81362c1ea6645dbd2e9bcc906763420e7db5e6b",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "network_id": "269a043cb90385c55d726110299f92bae6887ee9a155f250da305ef479516318",
+      "postgres_id": "ff8ba5c8bb901a0dce09c87306895ebf2fe676d5ec1165c926cf61779fc6465f",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "e2d8cdd444ae13d4a13215af5edae6ca1d4b32a922a89c9e697e43fd8c0088fd",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "status": "INCOMPLETE",
+      "source": "3830b0efbd230083759d8b661e83f5a3d2d89c39",
+      "owner": "f9f3bdd3148aef3f4cd83cb3eac6e608",
+      "cases": {},
+      "result": "PASS",
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "failure": {
+        "kind": "AssertionError",
+        "frames": [
+          {
+            "file": "lab.py",
+            "line": 300,
+            "function": "<module>"
+          },
+          {
+            "file": "browser_cases.py",
+            "line": 129,
+            "function": "run"
+          }
+        ]
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 628,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "original_source_unchanged": true,
+      "host_tcp_wmem_preserved": true,
+      "free_bytes": 138968485888
+    },
+    "retention": "Preserve original failed browser/bundles/logs/source/ELF and PG/archive/output. No new Rust compiler cache. Node/pnpm tools remain in historical b6d9d7e root, read-only. All owned containers PID0, network removed; no cleanup debt."
   }
 }

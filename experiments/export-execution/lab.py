@@ -286,6 +286,7 @@ while not Path('/out/qualification-complete').exists():
         cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/runtime_cases.py' if executor else 'experiments/archive-engine/export_job_http_cases.py' if responsive else 'experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/cases.py')),str(root),*(['responsive'] if responsive else ['job-status'] if job_status else ['revocation'] if revocation else ['busy'] if busy else ['pause-commits'] if pause_commits else ['parking'] if parking else [])],stdout=log,stderr=subprocess.STDOUT,timeout=240)
     result=json.loads((root/('runtime-cases.json' if executor else 'export-job-http-cases.json' if responsive else 'adapter-cases.json' if adapter else 'schema-cases.json')).read_text())
     audit['result']=result['status']
+    audit['independent_sql_stage']='after-native-before-browser' if job_browser else 'after-native'
     audit['independent_sql']={}
     for database in ['bbpub_normal','bbpub_control_normal']:
         sql="SELECT json_build_object('backends',(SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()))"
@@ -308,6 +309,12 @@ except BaseException as error:
     print('native laboratory failure: ' + type(error).__name__, flush=True)
 finally:
     cleanup_errors = []
+    if job_browser and state.get('postgres_id'):
+        try:
+            audit['browser_terminal_sql']={database:json.loads(cmd('docker','exec',state['postgres_id'],'psql','-XAt','-U','postgres','-d',database,'-c',"SELECT json_build_object('backends',(SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()))")) for database in ['bbpub_normal','bbpub_control_normal']}
+            audit['browser_terminal_sql_ok']=all(v==dict(backends=0) for v in audit['browser_terminal_sql'].values())
+        except BaseException as error:
+            audit['browser_terminal_sql_unavailable']=type(error).__name__
     for ident in cmd('docker', 'ps', '-aq', '--filter', 'label=' + label + '=' + owner).split():
         if ident and not any(c['id'].startswith(ident) for c in state['containers']):
             c = owned(ident)
@@ -341,7 +348,7 @@ finally:
     audit['host_tcp_wmem_preserved'] = Path('/proc/sys/net/ipv4/tcp_wmem').read_text() == preflight['tcp_wmem']
     assert audit['host_tcp_wmem_preserved']
     audit['free_bytes'] = shutil.disk_usage(base).free
-    audit['status'] = 'PASS_PENDING_CAPTURE' if not audit.get('failure') and not cleanup_errors and audit.get('result') == 'PASS' and audit.get('container_ok') and audit['preexisting_preserved'] and audit['source_unchanged'] and audit['source_checkout_clean'] and audit['original_source_unchanged'] else 'INCOMPLETE'
+    audit['status'] = 'PASS_PENDING_CAPTURE' if not audit.get('failure') and not cleanup_errors and audit.get('result') == 'PASS' and audit.get('container_ok') and audit['preexisting_preserved'] and audit['source_unchanged'] and audit['source_checkout_clean'] and audit['original_source_unchanged'] and (not job_browser or audit.get('browser_terminal_sql_ok')) else 'INCOMPLETE'
     write(root / 'terminal-audit.json', audit)
     state['state'] = 'stopped-retained' if not cleanup_errors else 'cleanup-incomplete'
     state['terminal_audit'] = 'terminal-audit.json'

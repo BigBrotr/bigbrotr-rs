@@ -25,7 +25,7 @@
   <form onsubmit={inspect}>
     <div class="field">
       <label for="job-id">Job ID</label>
-      <input id="job-id" name="job-id" type="text" autocomplete="off" spellcheck="false" autocapitalize="none" minlength="32" maxlength="32" pattern="[0-9a-f]{32}" required bind:value={id} aria-describedby="job-help" />
+      <input id="job-id" name="job-id" type="text" autocomplete="off" spellcheck="false" autocapitalize="none" minlength="32" maxlength="32" pattern={'[0-9a-f]{32}'} required bind:value={id} aria-describedby="job-help" />
       <p id="job-help" class="help">32 lowercase hexadecimal characters. Only jobs started by your account are shown.</p>
     </div>
     <button type="submit" class="secondary" disabled={view.kind === 'checking'}>{view.kind === 'checking' ? 'Checking job…' : 'Check job'}</button>

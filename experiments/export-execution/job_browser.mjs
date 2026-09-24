@@ -52,7 +52,9 @@ async function login(who='alice') {
   await expect(page.getByRole('heading',{name:'Your session',exact:true})).toBeVisible();
 }
 async function lookup(p, expected) {
-  await p.getByLabel('Job ID',{exact:true}).fill(expected.job_id);
+  const field=p.getByLabel('Job ID',{exact:true});await field.fill(expected.job_id);
+  const validity=await field.evaluate(input=>({pattern:input.pattern,valid:input.checkValidity()}));
+  report.lastJobField=validity;assert.deepEqual(validity,{pattern:'[0-9a-f]{32}',valid:true});
   const received=p.waitForResponse(r=>r.url()===origin+'/management/v1/jobs/'+expected.job_id);
   await p.getByRole('button',{name:'Check job',exact:true}).click();
   const response=await received;assert.equal(response.status(),200);

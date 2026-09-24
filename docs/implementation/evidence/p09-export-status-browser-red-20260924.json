@@ -1,0 +1,236 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "FAIL",
+  "laboratory_status": "INCOMPLETE",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P09-T09"
+  ],
+  "source": "3830b0efbd230083759d8b661e83f5a3d2d89c39",
+  "tree": "18c24e4820af692631544bd646beec5ed912c66a",
+  "scope": "Actual Chromium root job view rejects a valid job ID before HTTP; no later browser journey qualified.",
+  "capture": {
+    "root": ".research/implementation/export-execution/attempt-3830b0e/capture",
+    "verified": {
+      "files": 88,
+      "sha256": "16f79b9593f0a73837aef089e9bdcf33b240fff9f2cb3b83963ed41ccd87a397",
+      "source": "3830b0efbd230083759d8b661e83f5a3d2d89c39",
+      "tree": "18c24e4820af692631544bd646beec5ed912c66a",
+      "source_files": 1194
+    }
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rust_artifact_source": "f81362c1ea6645dbd2e9bcc906763420e7db5e6b",
+    "artifacts": {
+      "bigbrotr": "61ace1586e2f0b37a8965b33852c775814192439520c94f809ef766a239bcd41",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "browser_version": "153.0.8010.12",
+    "browser_executables": [
+      {
+        "path": "/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+        "sha256": "ded93a9c9a53a1ae040f08124badcca95c938e9d5015ff340c3b5538c41bf39e"
+      }
+    ],
+    "frontend": {
+      "source": "3830b0efbd230083759d8b661e83f5a3d2d89c39",
+      "tree": "18c24e4820af692631544bd646beec5ed912c66a",
+      "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+      "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94",
+      "pnpm_sha256": "98e6b99a881d64a1cc982c3e60aa260bf02160386b12e74475e06486dc74b090",
+      "bundles": {
+        "root": {
+          "manifest_sha256": "104ca79ece432ce22dc8257d0c4ea7db0066252260b039c90065601e6e31cbcb",
+          "files": 13,
+          "bytes": 149813
+        },
+        "control": {
+          "manifest_sha256": "35f47a5e08beca6b9debe56dbf5aed07e99a579756df307a0d897bb39d74521a",
+          "files": 13,
+          "bytes": 149847
+        }
+      }
+    }
+  },
+  "executed": {
+    "frontend_checks": "PASS; original source files unchanged",
+    "native_status": "PASS",
+    "browser": {
+      "format": "bigbrotr-export-status-browser/1",
+      "status": "FAIL",
+      "engine": "chromium",
+      "mount": "root",
+      "cases": [
+        {
+          "name": "production-assets-and-native-form",
+          "status": "PASS",
+          "milliseconds": 226
+        }
+      ],
+      "http": [
+        {
+          "path": "/management/v1/me",
+          "method": "GET",
+          "status": 401,
+          "noStore": true
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "status": 201,
+          "noStore": true
+        }
+      ],
+      "requests": [
+        {
+          "path": "/management/v1/me",
+          "method": "GET",
+          "terminal": "finished"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST",
+          "terminal": "finished"
+        }
+      ],
+      "version": "153.0.8010.12",
+      "launchedExecutables": [
+        {
+          "path": "/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+          "sha256": "ded93a9c9a53a1ae040f08124badcca95c938e9d5015ff340c3b5538c41bf39e"
+        }
+      ],
+      "failure": {
+        "stage": "own-states-zero-checkpoint-no-idle-touch",
+        "kind": "TimeoutError2",
+        "location": {
+          "line": 56,
+          "column": 20
+        }
+      }
+    },
+    "host_commands": [
+      {
+        "name": "observe-before",
+        "rows": [
+          {
+            "id": "85185d81cca15aee56d4ccb2033d1a20",
+            "xmin": "938",
+            "revoked": null,
+            "last_seen": 1790259159505593,
+            "idle_expires": 1790260959505593
+          },
+          {
+            "id": "9e9b49890bae7d08469ec5a2998ef01e",
+            "xmin": "969",
+            "revoked": null,
+            "last_seen": 1790259160662564,
+            "idle_expires": 1790260960662564
+          },
+          {
+            "id": "c5db11cb09d1cccee4768e2078713434",
+            "xmin": "1007",
+            "revoked": null,
+            "last_seen": 1790259223014648,
+            "idle_expires": 1790261023014648
+          }
+        ]
+      }
+    ]
+  },
+  "failure": {
+    "cause": "Svelte5.57.1 interprets {32} as an expression inside the quoted attribute. Compiled DOM pattern is [0-9a-f]32, incompatible with the32-character field length.",
+    "native_bundle_node": {
+      "path": "_app/immutable/nodes/2.6_H0E-Ye.js",
+      "bytes": 64411,
+      "sha256": "145be6854cc9ecd6c504069904e4881301fc6f54de96eec7422a3dcd9947ce60",
+      "mounts": [
+        "root",
+        "control"
+      ]
+    },
+    "observed": "Only /me401 and login201; no job HTTP request. Screenshot shows valid expected ID and Chromium pattern-mismatch validation.",
+    "correction": "Use pattern={'[0-9a-f]{32}'}. Retain valid-ID HTTP lookup as regression; next fixture records actual DOM pattern and validity before submit. No API invariant or expected response changed.",
+    "compiler_source": "node_modules/.pnpm/svelte@5.57.1/node_modules/svelte/src/compiler/phases/1-parse/state/element.js:791-912"
+  },
+  "resources": {
+    "owner": "f9f3bdd3148aef3f4cd83cb3eac6e608",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3830b0e",
+    "state": "stopped-retained",
+    "network_state": "removed after owner/no-endpoint audit",
+    "preexisting": 628,
+    "unrelated_running": 8,
+    "free_before": 139536801792,
+    "free_after": 138968485888,
+    "cleanup_errors": [],
+    "containers": {
+      "frontend": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-24T14:11:04.739423778Z",
+        "FinishedAt": "2026-09-24T14:11:23.174060205Z"
+      },
+      "browser-chromium-root": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 1,
+        "Error": "",
+        "StartedAt": "2026-09-24T14:13:42.370422065Z",
+        "FinishedAt": "2026-09-24T14:14:13.280460103Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-24T14:11:23.581193246Z",
+        "FinishedAt": "2026-09-24T14:14:23.442339545Z"
+      },
+      "rust-visibility": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-24T14:11:25.274855763Z",
+        "FinishedAt": "2026-09-24T14:14:23.693891519Z"
+      }
+    },
+    "sql_boundary": "terminal-audit independent_sql was observed AFTER native status but BEFORE browser. No fresh post-browser SQL sample exists in this original failure; container PID0 is the final process exclusion evidence."
+  },
+  "review": {
+    "root": "All88 payload hashes,1194/1189/1110 exact Git sources, ELF, both complete bundles and628 prior resource comparisons verified. Inspected actual screenshot, report, compiler output and original one-line template.",
+    "independent_ai": "Confirmed both native compiled node hashes and incorrect pattern against manifests, actual Rust ready manifest, HTTP report and screenshot. Did not execute new tests."
+  },
+  "not_run": [
+    "Other five engine/mount pairs",
+    "Remaining seven Chromium journeys",
+    "Natural expiry/BFCache, broader accessibility, remote TLS and release installation"
+  ]
+}

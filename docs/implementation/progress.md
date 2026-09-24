@@ -20,14 +20,15 @@ product responsibilities in the existing task plan.
 
 ## Verified Git and latest boundary
 
-Last verified HEADcac50d60a591981b8060e50ed8cbb6c2b070be62 on main, clean and
-pushed to the same private origin. Root now owns the new export browser fixture
-(browser_cases.py, browser_server.py, job_browser.mjs), lab.py wiring, existing
-private-panel recipe documentation and this checkpoint. No product/build input
-changes. Independent AI fixture review identified a response-vs-request false-PASS
-and a non-JSON psql row; both corrected before execution. Native browser NOT_RUN.
-Review/check this fixture, commit exact candidate, then run --runtime-job-browser
-reusing f813 ELF after complete product/build input equality. No new Rust cache.
+Last verified HEAD3830b0efbd230083759d8b661e83f5a3d2d89c39 on main; one
+unpublished fixture candidate, origin cac50d60a591981b8060e50ed8cbb6c2b070be62.
+Root owns one-line JobStatus.svelte pattern correction, browser validity diagnostic,
+lab terminal SQL timing clarification, failed-browser evidence/inventory/checkpoint.
+Native browser3830 is stopped-retained/FAIL, no active lab. No other writer/merge.
+Commit this coherent fix/evidence and run a new exact --runtime-job-browser.
+The conservative whole-product reuse guard sees this UI change; omit reuse and
+build fresh current native artifacts. Retain current f813 cache until replacement
+is qualified, then evaluate retirement;130GiB free leaves room for this build.
 
 The known-refusal implementation at cdb78a1 has Mac fmt/check,42 binary tests and
 Clippy PASS, complete root diff review and independent AI source review without a
@@ -145,13 +146,27 @@ PID0/noOOM/network removed,622prior/eight running unchanged. Free144191508480→
 143794728960bytes. No cache. Root and independent complete capture reviews passed.
 Reviewer has not reread actual seed Parquet/dependency bytes, only recorded comparisons.
 
-Next bounded action: exercise the production private panel's job view in an
-actual browser against installed Rust/PostgreSQL, with independent SQL expected
-states and session/visibility failures. Inspect existing private-panel browser
-recipes and reusable tools before extending the export lab; use exact Git and
-check space. Do not mutate retained labs. Proposed six-pair fixture now exists;
-its scope includes actual SQL-blocked status discarded on logout, no-idle-touch,
-restart and account revocation. No browser execution evidence yet.
+Next bounded action: qualify the corrected job form in all six actual browser/
+mount pairs, using exact candidate Git and fresh native build. Check live resources
+and space first. The original [browser failure](evidence/p09-export-status-browser-red-20260924.json)
+at3830 is preserved: Chromium root login201, then valid32hex job ID refused by
+native HTML pattern validation before any job request. Svelte5.57.1 interpolated
+{32} in the quoted attribute, compiling pattern=[0-9a-f]32. Both actual bundles
+contain that incorrect setter, nodeSHA145be6854cc9ecd6c504069904e4881301fc6f54de96eec7422a3dcd9947ce60;
+actual Rust ready selects the root manifest, screenshot shows pattern mismatch.
+Root and independent AI verified these observations. One-line literal expression
+fix applied; Mac Svelte check0errors/0warnings and production build pass, corrected
+manifestdc929e832929097bed6c58434ce47eb63d0007992d6e60d18354cf87dfbd74cb.
+This is not browser GREEN. Six-pair fixture still requires real execution.
+Original capture88files/1194current/1189build/1110seed Git and ELF verified;
+tar16f79b9593f0a73837aef089e9bdcf33b240fff9f2cb3b83963ed41ccd87a397.
+First frontend checks/native status passed; only first browser form case passed,
+remaining scenarios NOT_RUN. Container frontend0/browser1/runner143/PG137,
+PID0/noOOM/network removed,628prior/eight running preserved. Free139536801792→
+138968485888bytes (verify exact preflight in report; concurrent writes possible).
+Original terminal SQL sample precedes browser, so no post-browser DB0 claim.
+No new Rust cache; browser package store/bundles retained. Collector includes all
+browser screenshots/commands/reports, built bundles and frontend check outputs.
 
 [Native status](evidence/p08-export-status-native-20260924.json) passes at29983cc,
 with exact f813 ELF after full product/build equality.18 uniquely correlated
