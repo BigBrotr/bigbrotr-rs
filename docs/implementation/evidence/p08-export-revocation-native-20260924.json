@@ -1,0 +1,310 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED",
+  "scope": "Authenticated input-grant revocation during blocked native export work prevents completion inventory, allows durable safe parking and remains paused on restart.",
+  "source": {
+    "files": 38,
+    "sha256": "06b0a63481944b0c2be2ddd46c9fba4d9341c5882651118f4ebaa6e5fe27af99",
+    "source": "22346dff1d24719b952a6e597daa297e933788c5",
+    "tree": "ccfa328129f61f76032a3c7cd6d90bc524c85a32",
+    "source_files": 1182
+  },
+  "capture": ".research/implementation/export-execution/attempt-22346df/capture",
+  "installed_build_source": "cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93",
+  "installed_artifacts": {
+    "bigbrotr": "c49713d931bb01cb8446ae1032891a1d655af03de2a6e1b7580de8d3ff60d862",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "reuse": "Complete product/build input equality and all current/build/seed Git manifests and both ELF hashes verified. No new build/cache/unit-test run.",
+  "acceptance": "Actual signed-event HTTP202, identical200 and logout204/me401 before automatic execution. Original seed empty export also completed in this run.",
+  "interleaving": {
+    "control_backend": {
+      "pid": 423,
+      "state": "idle",
+      "backend_start": "2026-09-24T13:19:46.048827+00:00"
+    },
+    "processes_held": {
+      "parent_present": true,
+      "children": [
+        {
+          "pid": 1518,
+          "ppid": 1515,
+          "start_ticks": 363824051
+        }
+      ],
+      "old_child_present": null
+    },
+    "holder_pid": 488,
+    "waiter_before": {
+      "pid": 489,
+      "blockers": [
+        488
+      ],
+      "backend_start": "2026-09-24T13:19:47.332301+00:00",
+      "application_name": "bigbrotr-archive-event"
+    },
+    "waiter_after": [
+      {
+        "pid": 489,
+        "blockers": [
+          488
+        ],
+        "backend_start": "2026-09-24T13:19:47.332301+00:00",
+        "application_name": "bigbrotr-archive-event"
+      }
+    ],
+    "revoked": {
+      "event": "revoked",
+      "command": {
+        "principal_id": "10101010101010101010101010101010",
+        "action": "history.read",
+        "enabled": false,
+        "scope": {
+          "dataset_id": "01010101010101010101010101010101",
+          "dictionary_kind": 4,
+          "allocation_domain": "04040404040404040404040404040404",
+          "ordinal": "1"
+        },
+        "expected_config_revision": "1",
+        "expected_policy_revision": "4",
+        "expected_grant_revision": "4",
+        "allocation": null
+      },
+      "receipt": {
+        "accepted_at_us": "1790255987592075",
+        "account_grant_revision": "5",
+        "application": "unobserved",
+        "authority": "acceptance-only",
+        "command_key": "e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5",
+        "created": true,
+        "enabled": false,
+        "format": "bigbrotr-scope-grant/1",
+        "principal_id": "10101010101010101010101010101010",
+        "scope": {
+          "allocation_domain": "04040404040404040404040404040404",
+          "dataset_id": "01010101010101010101010101010101",
+          "dictionary_kind": 4,
+          "ordinal": "1"
+        },
+        "scope_generation": "2"
+      },
+      "status": 200
+    },
+    "authority_before": {
+      "grants": [
+        {
+          "action": "export",
+          "enabled": true,
+          "generation": 1
+        },
+        {
+          "action": "history.read",
+          "enabled": true,
+          "generation": 1
+        },
+        {
+          "action": "private-export",
+          "enabled": true,
+          "generation": 1
+        }
+      ],
+      "account": {
+        "principal": "10101010101010101010101010101010",
+        "grant_revision": 4
+      }
+    },
+    "authority_after": {
+      "grants": [
+        {
+          "action": "export",
+          "enabled": true,
+          "generation": 1
+        },
+        {
+          "action": "history.read",
+          "enabled": false,
+          "generation": 2
+        },
+        {
+          "action": "private-export",
+          "enabled": true,
+          "generation": 1
+        }
+      ],
+      "account": {
+        "principal": "10101010101010101010101010101010",
+        "grant_revision": 5
+      }
+    },
+    "completion_authority_error": "2026-09-24 13:19:48.266 UTC [423] ERROR:  export execution requires current input and export grants",
+    "processes_after": {
+      "parent_present": true,
+      "children": [],
+      "old_child_present": false
+    }
+  },
+  "first_reader_backend": 425,
+  "first_reader_boundary": "Installation inspection connection is separate from the actual DuckLake waiter; the complete waiter identity stayed identical across authenticated revocation while held by the same owned relation lock.",
+  "durable_job": {
+    "row": {
+      "kind": "export",
+      "state": "paused",
+      "job_id": "\\xa212f4c388264b451e744b96fc5add9e",
+      "dataset_id": "\\x01010101010101010101010101010101",
+      "owner_role": "control",
+      "owner_epoch": 4,
+      "reason_code": "execution_refused",
+      "request_key": "\\xd3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3",
+      "job_revision": 4,
+      "principal_id": "\\x10101010101010101010101010101010",
+      "created_at_us": 1790255925068627,
+      "input_complete": true,
+      "request_digest": "\\x9440d811f3898f72edc86af12d18dd51de1ad5fdf7b06600d0f3c4dddd2b6749",
+      "completed_at_us": null,
+      "config_revision": 1,
+      "policy_revision": 3,
+      "owner_incarnation": "\\x3d543d8edf8327a301a0b9ec77848973",
+      "owner_resource_id": "\\x689fb8c08212151a20ab873127148f74",
+      "checkpoint_revision": 0,
+      "export_job_protocol": 1,
+      "result_manifest_digest": null,
+      "input_topology_generation": 0
+    },
+    "xmin": "957"
+  },
+  "immutable_unit": {
+    "row": {
+      "job_id": "\\xa212f4c388264b451e744b96fc5add9e",
+      "artifact_id": "\\xb1667c98898254cdfe4cfa5f60e3b591",
+      "reserved_at_us": 1790255986086074,
+      "max_output_bytes": 2097152,
+      "max_temporary_bytes": 4194304,
+      "reservation_transaction": "943"
+    },
+    "xmin": "943"
+  },
+  "files": {
+    "namespace": [
+      ".artifact-4f1251b419c56c4843b45568c0388c91.lock",
+      ".artifact-b1667c98898254cdfe4cfa5f60e3b591.lock",
+      "4f1251b419c56c4843b45568c0388c91",
+      "b1667c98898254cdfe4cfa5f60e3b591",
+      "destination.json"
+    ],
+    "mutex": {
+      "dev": 66306,
+      "ino": 31722639,
+      "mode": 33152,
+      "nlink": 1,
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "outputs": {
+      "events.jsonl": {
+        "bytes": 399,
+        "sha256": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+        "inode": 31722641
+      },
+      "manifest.json": {
+        "bytes": 1228,
+        "sha256": "cca2236c481da79ac80f6b7aeef7348a4a87dc861040ccc5d372830f4d946a8e",
+        "inode": 31722642
+      }
+    }
+  },
+  "retention": {
+    "released_reader": "\\x21fc26652cddba86d570816ee4d5b38d",
+    "claim": "One [1,10] reader_joined release; all other jobs and existing units/artifacts/files/leases/pins/claims and xmin preserved, original export pins active. The selected job advances accepted1 to running3 to paused4; no new completion inventory/checkpoint."
+  },
+  "restart": {
+    "owner_epoch": "5",
+    "unchanged": "All seven ledger rows/xmin and output namespace/mutex/files/digests/inodes identical through the1.5s restart observation and final stop. Grant state separately compared at the restart observation, not after final stop.",
+    "terminal": {
+      "event": "terminal",
+      "exit": 0,
+      "parent_absent": true,
+      "lock_available": true,
+      "scratch_empty": true
+    },
+    "backends": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    }
+  },
+  "rate": {
+    "before": {
+      "peer": 5,
+      "account": 5
+    },
+    "wait_seconds": 60.00024436786771,
+    "behavior": "Real sixty-second wait with no parent running; no counter reset or quota increase. Then actual login and password proof."
+  },
+  "resources": {
+    "source": "22346dff1d24719b952a6e597daa297e933788c5",
+    "tree": "ccfa328129f61f76032a3c7cd6d90bc524c85a32",
+    "owner": "22b451e9415b6419b623d0e921c258b8",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-22346df",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "13ecc53b8310fc43c54a7542c71be1a4b8efa3f05b54cc0cb623373321b3e79b"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "f14e7476d2f3e0ddc9206188f76641ebf66365a96f7137d7d5093e82b32c9182"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T13:18:29.433988+00:00",
+    "runtime_profile": "revocation",
+    "adapter_profile": null,
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "runtime_artifact_origin": "cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93",
+    "network_id": "4cdf30f6b69926eb1dd6e1283ab4e882e2721d814fdafbbc913874c7110c56fa",
+    "postgres_id": "13ecc53b8310fc43c54a7542c71be1a4b8efa3f05b54cc0cb623373321b3e79b",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "f14e7476d2f3e0ddc9206188f76641ebf66365a96f7137d7d5093e82b32c9182",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "PASS_PENDING_CAPTURE",
+    "source": "22346dff1d24719b952a6e597daa297e933788c5",
+    "owner": "22b451e9415b6419b623d0e921c258b8",
+    "result": "PASS",
+    "independent_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "container_ok": true,
+    "preexisting_preserved": true,
+    "preexisting_count": 622,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "original_source_unchanged": true,
+    "host_tcp_wmem_preserved": true,
+    "free_bytes": 143794728960
+  },
+  "free_before": 144191508480,
+  "review": "Root and independent AI complete capture/Git/ELF/SQL/xmin/signed-byte/manifest/resource reviews found no remaining discrepancy. Report wording distinguishes other preserved jobs from the selected transitioning job, and restart grant sampling from terminal ledger/file sampling. Seed Parquet/dependency bytes are outside the38-file capture; their unchanged identity follows the recorded recipe/comparisons.",
+  "boundaries": [
+    "Already admitted finite work produced private399B JSONL plus1228B manifest. Revocation cannot recall files; no artifact inventory or public visibility was granted. This is completion-authority qualification, not immediate revocation of every I/O.",
+    "One exact signed event, one scope/stream, one running unit; bounded waiter and1.5s restart samples. No continuous held-driver mutex observation, all schedules, aged workload or capacity claim.",
+    "No explicit status/resume/cancel, terminal pin GC, policy revision rollout, credential/account revocation, old-writer reclamation, host power loss, packaged M1, full P08 or Linux arm64 claim.",
+    "The earlier dc94248 fixture remains INCOMPLETE before revocation; its missing waiter observation is not reconstructed from this later run."
+  ]
+}

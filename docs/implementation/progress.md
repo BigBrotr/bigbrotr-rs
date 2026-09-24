@@ -20,12 +20,14 @@ product responsibilities in the existing task plan.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD dc9424806785ebf0a050e824d3f30b331a135905 (candidate),
-tree83ea3951b710a01912a9676ebd43c3c109816247. Origin main a37bdbf625e498bef15b6fa103156e58be861b8e
-was pushed/ls-remote confirmed. Root owns the corrected waiter fixture, failed
-revocation evidence/inventory and checkpoint. Product inputs unchanged since
-cdb78a1. No other contributor writes or merge/rebase; no active lab/cleanup debt.
-Pause-COMMIT capture reviews complete with no discrepancy.
+Last verified HEAD22346dff1d24719b952a6e597daa297e933788c5 (candidate),
+treeccfa328129f61f76032a3c7cd6d90bc524c85a32. Origin maina37bdbf625e498bef15b6fa103156e58be861b8e
+was pushed/ls-remote confirmed. Root owns revocation evidence/inventory,
+operations and this checkpoint. Product inputs unchanged since cdb78a1.
+No other contributor writes or merge/rebase; no active lab/cleanup debt.
+Pause-COMMIT and revocation root/independent complete capture reviews finished
+without remaining discrepancy. Root also owns the new job-status HTTP boundary
+test in job_tests.rs; it is intentionally RED and excluded from this evidence commit.
 
 The known-refusal implementation at cdb78a1 has Mac fmt/check,42 binary tests and
 Clippy PASS, complete root diff review and independent AI source review without a
@@ -124,17 +126,42 @@ Ownera6ae8b05cd43caadb4159c0ec70d3381 at /runs/export-runtime-dc94248 stopped-re
 PGbcdf89cb/runnerdd8ca6ee PID0/noOOM/network removed. BothDB0 before cleanup;
 620prior/eight running preserved. Free144631091200→144234491904bytes. No cache.
 
-Next bounded action: review/commit corrected fixture plus original failure, then
-run --runtime-revocation again in a fresh exact-Git lab with cdb ELF only after
-full input equality and new resource/space audit. No revocation qualified yet.
-Keep actual SQL wait before/after HTTP revocation, exact Control PID grant-error
-observation, paused4/no inventory, independent signed399B files, fresh reader
-join/release and original pins. Ordinary restart must preserve rows/xmin/files.
-The initially admitted bounded unit may finish private files; no claim of
-instantaneous revocation of every I/O. Password-rate wait occurs with no parent;
-never change counters/limits. After qualification continue authenticated
-status/resume/cancel and UI consumers. Root/static review alone is not evidence
-of this native scenario; the missed first-connection assumption demonstrates it.
+[Corrected native revocation](evidence/p08-export-revocation-native-20260924.json)
+at22346df passes with exactcdb ELF/full input equality. Actual first reader425,
+DuckLake waiter489 held by488; waiter unchanged across authenticated HTTP revoke.
+Control423 reports the exact current-input/export-grant error; parent1515/native1518
+positively joined, joba212f4c388264b451e744b96fc5add9e paused4/execution_refused,
+no inventory/checkpoint. Reader21fc26652cddba86d570816ee4d5b38d/[1,10] released;
+all other job rows, old units/retention/xmin and original export pins preserved. Unitb1667c98898254cdfe4cfa5f60e3b591
+retains2097152/4194304 caps. Private399B signed file +1228B manifest remain without
+completed inventory, checked independently. Restart epoch5 preserves all rows/xmin,
+namespace/mutexinode31722639 and output inodes31722641/642 through final stop;
+grant state compared at restart sample. Bothparents0,
+root locks available, no children/scratch/bothDB0. No instantaneous I/O revocation
+or full policy rollout claim. Capture38files/1182Git sources, tar
+06b0a63481944b0c2be2ddd46c9fba4d9341c5882651118f4ebaa6e5fe27af99.
+Owner22b451e9415b6419b623d0e921c258b8 stopped-retained PG13ecc53b/runnerf14e7476,
+PID0/noOOM/network removed,622prior/eight running unchanged. Free144191508480→
+143794728960bytes. No cache. Root and independent complete capture reviews passed.
+Reviewer has not reread actual seed Parquet/dependency bytes, only recorded comparisons.
+
+Next bounded action: commit/push scoped revocation evidence, then implement
+authenticated job observation as the first user-facing consumer before explicit
+resume/cancel. New actual TCP test job_status_requires_session_csrf_and_a_closed_request_before_queueing
+ran on Mac and failed404 versus expected401, as the route does not yet exist.
+Log: .research/implementation/export-execution/job-status-red.log. No GREEN claim.
+The proposed initial status is same-actor operational metadata with current
+dataset status.read/session/CSRF, no source/destination fields, no idle refresh
+or execution grant. Missing/invisible share404. Bind a nonrenewable action window
+started before SQL to the actual response socket. Existing813 job schema suffices;
+no inventory lookup or new migration is needed for those fields. Read complete current management session,
+job, delivery and permission contracts; choose closed metadata/current authority
+without exposing private selection or filesystem paths. Extend the existing
+OpenAPI/generated client and private UI consumer together. Status/listing and
+resume/cancel remain unimplemented. The current OpenAPI ExportJobCommand prose
+still says execution is not implemented; reconcile that stale description with
+under-qualification runtime when regenerating the affected contract. Changes
+outside docs/experiments require a new native build, not cdb artifact reuse.
 
 The runtime's ExecutionCustody can only come from successful RunningExport.prepare:
 it binds exact committed start job/revision/unit/destination/ControlOwner to the
@@ -172,7 +199,7 @@ fstatvfs is preflight, not a physical quota/shared durable ledger or RSS guarant
 Nonrenewable ActionWindow gates writes/flush/prerename; already admitted syscalls
 may finish. Control renewal cannot extend the action's original lifetime.
 
-Remaining gates include current-grant/policy revocation and CAS interleavings,
+Remaining gates include other current-grant/policy revocations and CAS interleavings,
 held-driver pause custody, real old-worker exclusion, explicit cancel/resume and pin
 terminal lifecycle, zero/multiple streams, job/output discovery, other selected
 formats, packaged M1, aged-queue/index fairness and mixed-workload capacity. Keep

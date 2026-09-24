@@ -172,6 +172,11 @@ also passes on the same product artifacts; broader refusal and authority scenari
 remain under qualification. [Pause-COMMIT interruption and restart](../implementation/evidence/p08-export-pause-commits-native-20260924.json)
 also passes: a committed pause stays paused after reply loss, and an uncommitted
 pause is retried under a new owner using the same unit.
+[Authenticated grant revocation during native execution](../implementation/evidence/p08-export-revocation-native-20260924.json)
+also passes in one installed scenario: after `history.read` is revoked while a
+native query waits, completion refuses the current grants and parks the job.
+Already admitted finite work can leave private files; those files have no completed
+inventory and confer no artifact visibility. The original pin remains retained.
 Paused jobs retain the original unit, immutable caps and export pin, and are
 excluded from automatic restart scans. Changing configuration does not enlarge
 that unit. Explicit resume/cancel controls are still required work. A Busy or
