@@ -191,8 +191,15 @@ The session API now supplies the checked configuration head alongside policy in
 the same transaction. Its pre-release contract requires a matching private bundle;
 no new stored session format or migration is involved. [Native session context](evidence/p08-session-command-context-native-20260924.json)
 now passes login/inspection and a real typed-client resume using the observed
-heads. Durable browser command recovery and the complete resume/reconnection
-journey still gate this consumer.
+heads. The first browser consumer now reserves bounded, closed account-owned
+IndexedDB metadata before sending, restores without automatic HTTP, preserves the
+original key/body for explicit retry and keeps acceptance separate from job state.
+Local model tests and actual Chromium store operations have scoped evidence in
+[the browser resume preparation report](evidence/p09-resume-browser-preparation-20260924.json).
+The original blocked-open experiment retained three native requests; a shared
+native-operation gate now permits one until its actual terminal event. Broader
+browser, installed HTTP/reload/lost-reply and privacy-oracle journeys still gate
+qualification of this consumer. No task step is complete from this local slice.
 
 - [ ] **Step 3:** implement typed queries/saved private views plus explicit export, storage/headroom and maintenance pages. Show measured rates/windows and unknown forecast, no unmeasured capacity promise. Explain current/historical policy and full/projection differences before download.
 

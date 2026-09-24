@@ -338,6 +338,45 @@ contains only those three revisions as canonical positive decimal strings;
 route/session/header bind the identities. An identical fingerprint establishes
 request identity only, never acceptance or current authorization.
 
+The selected browser resume consumer saves one request per account at its private
+origin before sending it. The IndexedDB database `bigbrotr-private-commands`,
+version1, has an `export-resume` store keyed by `principal_id`. Each closed record
+contains `format=bigbrotr-browser-resume/1`, principal/job/key identities, the three
+original expected revisions in `command`, and `outcome=pending|accepted|refused`.
+It contains no credential, session ID, source selection, event, destination or
+cached server response. At most32 account records of at most512 canonical JSON
+bytes each are admitted; these are logical data bounds, not browser storage/RSS
+guarantees. A full, unavailable or blocked store, incompatible schema or malformed
+current-account record refuses new submission. Validation does not load or repair
+other accounts' records. These admission bounds describe application writes, not
+an audit of arbitrary data injected by browser tools or other same-origin code.
+Only the current authenticated principal's record is displayed or dispatched.
+
+Use native IndexedDB read/write transactions for cross-tab reservation: an
+unresolved request cannot be overwritten by another job, key or revision. Wait
+for transaction completion, requesting strict durability, before HTTP; a single
+request's success event is insufficient. Opening/operations have a two-second
+deadline and close late connections. One native operation per factory/realm may
+remain outstanding; deadline/caller cancellation does not release that admission
+until the actual open or transaction ends. New attempts refuse while it remains
+outstanding, including across session/component recreation. Browser/device data clearing or storage loss
+is outside this local recovery guarantee; PostgreSQL remains the job/receipt
+authority. This boundary follows [IndexedDB3](https://www.w3.org/TR/IndexedDB-3/)
+and still requires actual supported-browser execution before qualification.
+
+Reload/sign-in restores saved metadata without automatically sending a command.
+An explicit retry uses exactly its original body and key, even after current
+session/job observations change. Only a validated acceptance or definitive409
+for that body settles it; authentication, capacity, dependency and transport
+failures keep it unresolved. Late results after logout, account change or teardown
+cannot restore private UI state. An accepted/refused record may be replaced by a
+later explicit resume using a newly observed paused job; the server's original
+receipt remains durable. Forgetting a resolved browser record changes no job.
+Session invalidation clears in-memory views but preserves this account-bound
+recovery metadata. The browser privacy oracle must inspect the exact store as well
+as Web Storage, accepting only this selected metadata; it must not allow arbitrary
+IndexedDB data or cache responses to make a test pass.
+
 ## Local first-owner transition
 
 The first CLI consumer is `access owner-token issue --username NAME --request-id

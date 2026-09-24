@@ -156,6 +156,14 @@ the added field; the current client rejects its absence. This pre-release wire
 change requires no database migration and does not permit automatic command retry
 with newer revisions.
 
+The initial export-resume controls keep one bounded recovery request per account
+in IndexedDB at the private origin. They wait for native transaction completion
+before sending, retain the original key/revisions and restore without automatic
+submission. Sign-out clears the view while preserving this non-secret recovery
+metadata. The [private administration contract](../product/private-administration.md)
+owns its limits and failure behavior. Local Chromium store checks do not qualify
+the installed resume/reload journey or all browser engines; those remain pending.
+
 These checks establish local build/client behavior. Real production CSP,
 Chromium/Firefox/WebKit, Rust/PostgreSQL and installed root/subpath journeys still
 require their own recorded execution. Native browser and complete frontend CI/

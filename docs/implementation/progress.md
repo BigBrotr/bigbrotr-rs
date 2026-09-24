@@ -23,31 +23,49 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD dc6a8d95a1c6dcb9033bb3e9247a061f73d907b6, tree
-2d5b5f74000796728685acda37e76aa017737109 on main; private origin/main remains
-def54030b8a5296ee302193f25d1839c9237e760. Root owns the pending native context
-report, inventory/task/operator/checkpoint edits and one additional client test
-(LF/CRLF/LS refusals). No foreign work. Original15569cc evidence is pushed.
+Last verified HEAD/origin/main dc4cebb337f2a2aea13b533ead5d1893e5b2e492, tree
+a5840c5f49698b8b541b1f1790404b059dd42e26 on main. Session-context evidence and
+4a cache retirement are pushed. Root owns the current browser-resume candidate:
+store/model/UI, shared command validator, contract/task/build/checkpoint/evidence,
+model/decoder tests and native store experiment. No foreign work.
+
+[Local browser resume preparation](evidence/p09-resume-browser-preparation-20260924.json)
+passes20paneltests,17clienttests, client types/generated contract checks and five
+actual Chromium153.0.8010.12 IndexedDB cases on Mac arm64/Node26.4.0. First blocked
+open reproduced3native requests; fixed shared gate retains one until real native
+terminal event, including after caller timeout. First green fixture then failed
+on an immediate action before the prior native abort ended; final fixture awaits
+an independent queued transaction. Original captures remain under ignored
+export-execution/resume-store-{open-red,open-green,native-green}. Exact input hashes
+are in the report. This is actual module/IDB evidence, not installed UI/HTTP,
+Firefox/WebKit, Linux or device-power-loss qualification. Read-only AI reviewed
+store/model/keyed UI: gate, contract scope and misleading recovery text corrected.
 
 Current exact-Git Tux lab export-runtime-dc6a8d9 is stopped-retained, owner
 4f7fe031f2bb8467ab28ed9db8f98ec7. Owned PostgreSQL
 1c55922fc67b32dd3dedd63dddb12f6746ed8db6347d709178efd6f9e68f811c and runner
 8fe1e8b04aa0db41e7c6e00211757d0564063408259bae79cabd4ac05f06af62 are PID0/noOOM,
 runner0/PG137, network removed, bothDB0. Original Node/4e assets remain separately
-owned and read-only. Keep the newdc6a8d9 compiler cache and runtime ELF.
+owned and read-only. Keep dc6a8d9 compiler cache/runtime ELF. Fresh read-only
+resumption census: eight unrelated running, no selected BigBrotr process;
+127059808256bytes free. No new Tux resource has been created in this local slice.
 
-Next bounded action: commit/push verified session-context evidence and cache
-retirement, then implement the browser resume consumer in existing P09-T09 Step2.
-It can now use the session's checked config_revision/policy_revision and the
-actor-owned paused job's revision. Preserve one original key/body across uncertain
-replies and reload; don't regenerate or rebase it automatically. Before adding
-browser persistence, specify its bounded non-secret command metadata and account/
-origin ownership in the existing product contract. Current JobModel owns only
-status and has no resume controls/storage. Session generation/dispose fences late
-private responses; preserve those. The current browser storage oracle only allows
-Kit scroll/empty snapshot: any new command store needs an independent explicit
-privacy/recovery oracle, not blanket allowance. No UI storage design is accepted
-merely by this checkpoint; inspect current contracts and choose a bounded approach.
+Next bounded action: finish candidate review/commit, then add the independent
+IndexedDB privacy oracle and run the production resume panel against installed
+Rust/PostgreSQL on Tux, from a clean exact Git revision. Inspect the existing
+resume-http and browser harness boundaries (read this session) before extending.
+The existing browser builder already creates root/subpath bundles and pins tools/
+image; it can support native store checks in the other engines and real UI.
+Do not claim current local tests qualify lost HTTP reply/reload/restart. Preserve
+original key/body and acceptance-only meaning. No automatic retries or rebasing.
+
+The UI now uses a session-owned ResumeModel alongside the explicit JobModel.
+Native IndexedDB reserves one closed request per account before HTTP; application
+admission limits32records/512bytes, strict transaction completion, bounded waits
+and one outstanding native operation per factory/realm. Restore never dispatches.
+Pending bodies cannot be replaced; retry uses all original revisions. Dispose
+fences every late result. The old privacy oracle covers only Web Storage and
+must be extended with exact selected IndexedDB metadata, never blanket allowance.
 Remaining blocked-checker, expiry/lock-wait cases and full CLI/product gates remain.
 
 ## Latest native evidence
@@ -72,7 +90,7 @@ additional local regression passes. Largeu64 is local serialization/client evide
 not real PG large-head or concurrent head-advance evidence. No DDL; required new
 config_revision means backend and closed private bundle must upgrade together.
 Local17clienttests/typecheck/contractcheck,10paneltests/Svelte0errors0warnings,
-27RustHTTPtests/fmt pass. Real UI/reload/browser persistence remain unimplemented.
+27RustHTTPtests/fmt pass. Real UI/reload qualification remains open; the local consumer now exists as described above.
 
 [15569cc actual TypeScript client](evidence/p08-export-resume-client-native-20260924.json)
 passes8real HTTP responses on Node26.4.0: login201, historical200, stale409,

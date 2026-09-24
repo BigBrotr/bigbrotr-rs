@@ -128,7 +128,7 @@
         </div>
         <p class="help">{m.refreshHelp}</p>
         {#key view.session}
-          <JobStatus onDenied={() => model?.invalidate('expired')} />
+          <JobStatus session={view.session} onDenied={() => model?.invalidate('expired')} />
         {/key}
       {:else}
         <form method="POST" onsubmit={signIn} aria-describedby={message ? 'session-notice' : undefined}>

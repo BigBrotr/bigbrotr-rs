@@ -1,0 +1,185 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "SCOPED_PASS",
+  "scope": "Local browser-resume consumer preparation, model behavior and actual Chromium IndexedDB only; not an installed UI/HTTP or release qualification",
+  "source": {
+    "base_commit": "dc4cebb337f2a2aea13b533ead5d1893e5b2e492",
+    "state": "root-owned uncommitted candidate; exact executed store inputs in retained captures",
+    "current_inputs": {
+      "apps/admin/src/lib/resume.ts": "534a56f806481f971aeb43ffb6d5a78aaaac5aa03b497101d449a61f436e9790",
+      "apps/admin/src/lib/resume-store.ts": "041144574899feca4d9323c6535c37cdda734bc1fd4d42a410b4af79a6ea3477",
+      "apps/admin/src/lib/JobStatus.svelte": "ff5693f518db1d34ee29aaa03f7143b2f6ea19e94b0625e2502289f1e8d01a7b",
+      "apps/admin/src/routes/+page.svelte": "053a76772863f8100fe1250347bb895e2eae8ea6a3260b0d20b918fb54c9a9c7",
+      "apps/admin/src/routes/style.css": "34538153270ed35994cff393db750136def9a9b00e2ccd7b7847ab967b21a622",
+      "apps/admin/tests/unit/resume.test.ts": "9c303c09f81941122e78885d603fc68bedee8932c18d35a77e46d4748e9ee570",
+      "apps/admin/tests/unit/resume-store.test.ts": "ed51b357d5a75d80fd80fc7090184120092c89d6e918a989aa1e4809d843ae1a",
+      "packages/api-client/src/management.ts": "e51f450e35eb65ae57eab3f6b9ecf1b792cc577b74555408a23796774891a4be",
+      "experiments/export-execution/resume_store_browser.mjs": "79383328bc15d927f244327e6bd9abb70e263aa8e0bfec1987d53b4f4322733c"
+    }
+  },
+  "environment": {
+    "os": "macOS",
+    "architecture": "arm64",
+    "node": "26.4.0",
+    "pnpm": "9.15.9",
+    "playwright": "1.63.0",
+    "chromium": "153.0.8010.12"
+  },
+  "local": {
+    "panel_unit_tests": 20,
+    "client_unit_tests": 17,
+    "svelte_errors": 0,
+    "svelte_warnings": 0,
+    "client_types": "PASS",
+    "generated_contract_drift": "PASS",
+    "build": {
+      "status": "PASS",
+      "profile": "local development marker, no exact Git attribution",
+      "files": 13,
+      "bytes": 170659,
+      "manifest_sha256": "6d4a640b4b8a5eb37d5d9c2f84ea042a049da5c06bc9e6bbb3b1d431dc5f5faa"
+    }
+  },
+  "native_store": {
+    "cases": [
+      {
+        "name": "blocked-open-does-not-accumulate-native-requests",
+        "status": "PASS",
+        "milliseconds": 2010.582583,
+        "evidence": {
+          "opensBeforeRecovery": 1,
+          "kinds": [
+            "unavailable",
+            "unavailable",
+            "unavailable"
+          ],
+          "times": [
+            2002.3999999761581,
+            0.2999999523162842,
+            0
+          ],
+          "recovered": true
+        }
+      },
+      {
+        "name": "request-success-followed-by-transaction-abort-is-not-persistence",
+        "status": "PASS",
+        "milliseconds": 3.2438750000001164,
+        "evidence": {
+          "requestSuccessEvents": 1,
+          "rejected": "unavailable",
+          "stored": false
+        }
+      },
+      {
+        "name": "two-tabs-reserve-one-original-identity-and-reload",
+        "status": "PASS",
+        "milliseconds": 78.7172499999997,
+        "evidence": {
+          "original": {
+            "format": "bigbrotr-browser-resume/1",
+            "principal_id": "00000000000000000000000000000001",
+            "job_id": "02020202020202020202020202020202",
+            "key": "03030303030303030303030303030303",
+            "command": {
+              "expected_job_revision": "7",
+              "expected_config_revision": "9007199254740993",
+              "expected_policy_revision": "2"
+            },
+            "outcome": "pending"
+          }
+        }
+      },
+      {
+        "name": "identity-cas-and-pending-forget-refusal",
+        "status": "PASS",
+        "milliseconds": 4.917915999999877,
+        "evidence": {
+          "pendingRefusal": "pending",
+          "staleOperationsChangedNothing": true,
+          "resolvedForget": true
+        }
+      },
+      {
+        "name": "capacity-and-account-local-corruption",
+        "status": "PASS",
+        "milliseconds": 12.718124999999873,
+        "evidence": {
+          "capacity": "full",
+          "admittedAccounts": 32,
+          "malformedCurrentAccount": [
+            "invalid",
+            "invalid"
+          ],
+          "otherAccountPreserved": true
+        }
+      }
+    ],
+    "captures": [
+      {
+        "path": ".research/implementation/export-execution/resume-store-open-red/report.json",
+        "sha256": "41f2e6b3d3976791e437f2dca48771a9f1b246731dd3e8d25cca524d14bd7a08",
+        "status": "FAIL",
+        "cases": 0,
+        "failure": "blocked-open-does-not-accumulate-native-requests"
+      },
+      {
+        "path": ".research/implementation/export-execution/resume-store-open-green/report.json",
+        "sha256": "00146ef7ddbcf2faae0b34af2d36fa848b117004c0715eb32d7e59eca722939c",
+        "status": "FAIL",
+        "cases": 3,
+        "failure": "identity-cas-and-pending-forget-refusal"
+      },
+      {
+        "path": ".research/implementation/export-execution/resume-store-native-green/report.json",
+        "sha256": "8e25d546817c5a80df06b0b8f3866f24f4010af1cc3366214c88cd702899aebd",
+        "status": "PASS",
+        "cases": 5,
+        "failure": null
+      }
+    ],
+    "inputs": [
+      {
+        "path": "apps/admin/src/lib/resume-store.ts",
+        "bytes": 9757,
+        "sha256": "041144574899feca4d9323c6535c37cdda734bc1fd4d42a410b4af79a6ea3477"
+      },
+      {
+        "path": "packages/api-client/src/management.ts",
+        "bytes": 11250,
+        "sha256": "e51f450e35eb65ae57eab3f6b9ecf1b792cc577b74555408a23796774891a4be"
+      },
+      {
+        "path": "packages/api-client/src/generated/validators.js",
+        "bytes": 74028,
+        "sha256": "ca7f4992b77be706ba79e66433cb1b2062cb4c7db78cfeef63885e34459a37de"
+      },
+      {
+        "path": "pnpm-lock.yaml",
+        "bytes": 36383,
+        "sha256": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4"
+      },
+      {
+        "path": "experiments/export-execution/resume_store_browser.mjs",
+        "bytes": 12216,
+        "sha256": "79383328bc15d927f244327e6bd9abb70e263aa8e0bfec1987d53b4f4322733c"
+      }
+    ]
+  },
+  "review": {
+    "independent": "Read-only AI store and consumer review; root independently reproduced blocked opens and corrected the gate, narrowed corruption validation contract, removed incorrect no-dispatch error wording; unavailable CLI-recovery advice changed to preserve data and contact the instance owner",
+    "counterexamples": [
+      "Outcome array accepted through String coercion: local decoder regression failed before exact-state fix",
+      "Blocked native open:3requests after3attempts before gate,1after gate; recovery succeeds after real unblock"
+    ],
+    "fixture_correction": "First gate run passed3cases then refused the next action because the previous native abort had not ended. The final fixture awaits an independent queued native transaction after known refusal; no production invariant was relaxed."
+  },
+  "limits": [
+    "No Firefox/WebKit operation, installed panel HTTP, CSP, browser lost-reply recovery or native Linux evidence in this report",
+    "Injected model storage/HTTP delays exercise lifecycle only; native store tests use actual IDB with narrow fault instrumentation",
+    "Logical32records/512bytes admission bounds; no physical quota, memory, device-power-loss or storage-eviction guarantee",
+    "Other accounts are counted, not decoded or repaired during an application admission",
+    "No native browser artifact hash or release provenance claim; local engine version and source hashes are recorded",
+    "Complete P09-T09, accessibility, general job discovery/cancel/download and selected product remain incomplete"
+  ]
+}

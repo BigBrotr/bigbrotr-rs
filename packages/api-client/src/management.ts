@@ -28,6 +28,11 @@ const REQUEST_MS = 6_000;
 const U64_MAX = 18446744073709551615n;
 const I64_MAX = 9223372036854775807n;
 
+/** The browser's saved command uses the same closed wire shape and integer range. */
+export function isResumeExportCommand(value: unknown): value is ResumeExportCommand {
+  return validateResumeCommand(value) && Object.values(value).every(item => BigInt(item) <= U64_MAX);
+}
+
 function observation(value: unknown): SessionObservation {
   if (!validateSession(value)) throw new ManagementFailure('incompatible');
   for (const key of ['credential_revision', 'grant_revision', 'config_revision', 'policy_revision'] as const) {
@@ -195,7 +200,7 @@ export function createManagementClient(environment: {
       for (const value of [id, key]) {
         if (!/^[0-9a-f]{32}$/.test(value) || /^0+$/.test(value)) throw new ManagementFailure('invalid_input');
       }
-      if (!validateResumeCommand(command) || Object.values(command).some(value => BigInt(value) > U64_MAX)) {
+      if (!isResumeExportCommand(command)) {
         throw new ManagementFailure('invalid_input');
       }
       // Snapshot before the first await: later caller mutation must not change
