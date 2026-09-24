@@ -3,6 +3,7 @@
 pub mod acquisition;
 pub mod export;
 pub mod management;
+pub mod read;
 pub mod runtime;
 pub mod secrets;
 pub mod storage;

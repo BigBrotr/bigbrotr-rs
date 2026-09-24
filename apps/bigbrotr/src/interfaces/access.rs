@@ -23,6 +23,7 @@ pub fn command() -> Command {
         .subcommand_required(true)
         .disable_help_subcommand(true)
         .subcommand(super::self_inspection::command())
+        .subcommand(super::cursor_keyring::command())
         .subcommand(
             Command::new("owner-token")
                 .subcommand_required(true)
@@ -67,6 +68,9 @@ pub fn command() -> Command {
 }
 type Result<T> = std::result::Result<T, (u8, String)>;
 pub fn execute(matches: &ArgMatches) -> ExitCode {
+    if let Some(args) = matches.subcommand_matches("cursor-keyring") {
+        return super::cursor_keyring::execute(args);
+    }
     if let Some(args) = matches.subcommand_matches("me") {
         return super::self_inspection::execute(args);
     }

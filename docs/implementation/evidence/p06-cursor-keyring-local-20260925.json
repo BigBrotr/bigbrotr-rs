@@ -1,0 +1,109 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1 / P08-T03 prerequisite",
+  "status": "PASS",
+  "scope": "Mac protected local keyfile and finite CLI only; step/product incomplete",
+  "observed_at": "2026-09-24T23:06:40.427631+00:00",
+  "source": {
+    "base": "90e5d6ff2b766e5894cd789b1adbbf959219f698",
+    "dirty": true,
+    "files_sha256": {
+      "apps/bigbrotr/src/read/keyring.rs": "52ddbf7f6d31cce8853165030ef4c89a4960a632eec9d40b1490acd94b41e10e",
+      "apps/bigbrotr/src/read/mod.rs": "2abddc3999d3ef25ad70a7adac75f77bbe610ab3b9a3001633eed72877edef79",
+      "apps/bigbrotr/src/secrets.rs": "3277d78bc59afd9f39672f890ec77ba8a7892cc91f77ea5ec9eef44ff07b6edb",
+      "apps/bigbrotr/src/interfaces/cursor_keyring.rs": "e92d3ef428375a85919c916e439a089a6da35574f8d232684e1185081ec6ce58",
+      "apps/bigbrotr/src/interfaces/access.rs": "c3bd9ba6b09dcee2970593933346198a242b0463ba4c4b795d4915dbb0af6003",
+      "apps/bigbrotr/src/interfaces/mod.rs": "684b0e6d7b52fcf0c2eca20767ac0a976910bffb3ec369d06787b66a5e918bd4",
+      "apps/bigbrotr/src/config/registry.rs": "962bb0115b4733d0131562fec853239c0c4d0219a5650826819c67e1c8ba80a5",
+      "apps/bigbrotr/src/config/mod.rs": "938e2c6db5d60ea54b887aeaa0f83995fb93b2f83ba439972017a80ddb70fbae",
+      "apps/bigbrotr/src/lib.rs": "aede9c24f52e4ce3b085be3b94445bb90a18d1fc1643ce78142e335369c212b9",
+      "apps/bigbrotr/tests/cursor_keyring.rs": "b2c0c8a92d11205c34822f62a17c219434934019fe3a14b4e71f264dbcf14126",
+      "apps/bigbrotr/tests/cursor_keyring_cli.rs": "95719e8b8342209b7dd30567898da9717e16c1d4d7cfde9e55a2304011b49b70",
+      "tests/fixtures/read/keyring-vectors.json": "6093a3166b43dd52c2210c7ed68c280a20ac4974afacaff9322b10c29f66b526",
+      "tests/fixtures/read/write_keyring_vectors.py": "e1fc521fa3f1da5c14a2f46b8fc4b38fb3a14a4f9c88be8a20b60c5386d48714",
+      "Cargo.lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "Cargo.toml": "36e7da34fd0d248ab5538b328a4bad0016fee187f6ab3745bc96075024daec2b",
+      "apps/bigbrotr/Cargo.toml": "cc7d59312807c266c60ba27c8242043060f2e4afc54d0be5526b3f6620ac733f",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    }
+  },
+  "environment": {
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "macos": "ProductName:\t\tmacOS\nProductVersion:\t\t26.5.2\nBuildVersion:\t\t25F84",
+    "architecture": "arm64"
+  },
+  "artifact": {
+    "binary": ".research/targets/product/debug/bigbrotr",
+    "sha256": "be1db5695271cfac8cfc6f49474ab237b352feca33dbabaa4ac23484dfc40d26",
+    "source_identity": "local dirty development build; not a native/release artifact"
+  },
+  "checks": {
+    "selected_consumers": {
+      "passed": 50,
+      "failed": 0,
+      "suites": [
+        "cursor_keyring",
+        "cursor_keyring_cli",
+        "secret_files",
+        "config_entrypoint",
+        "policy_seed",
+        "cli_contract"
+      ]
+    },
+    "collision_regression": "plain rename FAIL, no-replace PASS on actual Mac filesystem",
+    "wire": "15 independently encoded public vectors, 170 one-byte mutations all refused",
+    "clippy": "selected lib/bin/keyring/secret targets PASS",
+    "initial_RED": "missing keyring behavior2 failures; missing command/root2 failures",
+    "failed_fixture_compiles": [
+      "rustix::fs::mkfifo unavailable",
+      "rustix::fs::mknodat unavailable on Darwin; reused existing mkfifo executable pattern"
+    ]
+  },
+  "evidence": {
+    "root": ".research/implementation/cursor-keyring",
+    "files_sha256": {
+      "initial-red.stdout": "2df1a91217b11a0885f8b6d40724ac61aa5252307a1f158f4853971aacf3a2d0",
+      "initial-red.stderr": "5257bf79a4a8e9cb03e93df9ad2a818103304495b6c596539b63b0dc95d63825",
+      "initial-green.stdout": "609d34fbc51544b74355c0a1e80e34c958f478cd43b628bddfcb6c5ba5cc07f8",
+      "initial-green.stderr": "2f8c9f57722b965b0dd59bd365b5442270f44841a2da528bce63dd3c52020258",
+      "cli-red.stdout": "d0189ca33912f1f1ad3504ace18a6eaf9807b6477fbf208f1596aad861ac93f4",
+      "cli-red.stderr": "79f04e353238146c31ec2baf7f8fe23d37250ab86daf2cfadba5bf5a94f0810c",
+      "cli-green.stdout": "3fa7d3657c4ba42cb45970c16a0c3923d4085057d36e16ff4331a4f3d096a47e",
+      "cli-green.stderr": "444d181246bc869a74aa3f392382a354c90b0c0904cfd1b5f03a50c02e7f5d19",
+      "collision-red.rs": "c352ec0d90684658603888fb60596c91bb033fa680bb5470a2b967cc32f81ae6",
+      "collision-red.stdout": "70eea1726e96b7da2b4a2c80be7a1825248e573a7ce69417f5361b3a23c0535a",
+      "collision-red.stderr": "30e1849625e770d6ecda352db5913d8f818b778b305cc3e0ac4af8d1068f8f76",
+      "collision-green.stdout": "09df27f5fe96c7890b418c0d6be6f63797c87fad58e03f8659f99e33f487d1e4",
+      "collision-green.stderr": "737fdf5eacb01813f6559efea808631695b724eb71d09d6828445523144db6c3",
+      "boundaries.stderr": "e2980807f5c9ec0966377ad5606aec3cf5c51932fca4bf2c8a9b8d39e47289b0",
+      "boundaries-corrected.stderr": "2074b74a9c1434445ae4d91201567bead9f736644b57435479235c2fe8a8a522",
+      "boundaries-final.stdout": "140765c320a998b9323af25356146167950819f48ffee389ac675520805c3455",
+      "boundaries-final.stderr": "c3f364d220099fd3cee4b27fe4db39aa6835ac22b6916be4b00489d1fc30afbe",
+      "consumers.stdout": "5db63d1fb712226c2c784f053557d752983ae1eddbcfb1d9aaa60e7cc2eb8073",
+      "consumers.stderr": "c24bc7acbad1e037fabd3af9428f6e7040cdfeae4d608ced548c084ba7955fe3",
+      "clippy-final.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "clippy-final.stderr": "2c74dbe74bb7b46b5e3af75b6b54c309ddbb8e4d0d657c7025909815ed88b5c0",
+      "rustix-source.json": "7831cb4d2f46eefb5f84e83f7266b75cac88a2efac46180c4e9d1f0b94d76c5b"
+    }
+  },
+  "review": {
+    "kind": "independent read-only AI review; no product tests or SSH",
+    "corrected": [
+      "first-publication overwrite race",
+      "inspection output misleadingly claimed preparation",
+      "CLI help exit and partial semantics",
+      "native write injection per-thread scope; corrected before execution",
+      "native docker log stderr retention"
+    ],
+    "oracle_verification": "reviewer reconstructed all15 fixed public wire vectors independently"
+  },
+  "not_qualified": [
+    "Linux filesystem/crash/injected-errors/blocked stdout; new native recipe NOT_RUN",
+    "Control registration and unknown commits",
+    "AEAD product envelopes and cross-worker continuation",
+    "normal and emergency rotation",
+    "management job listing or scientific pins",
+    "packaged installation/release, Linux arm64, hosted GitHub Actions",
+    "host power loss, kernel I/O stalls, physical writeback corruption, ACLs and whole-process erasure"
+  ]
+}

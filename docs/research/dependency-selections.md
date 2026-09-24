@@ -611,6 +611,19 @@ Sources: [toml DeTable](https://docs.rs/toml/1.1.6+spec-1.1.0/toml/de/struct.DeT
 [getrandom fill](https://docs.rs/getrandom/0.4.3/getrandom/fn.fill.html), and
 [rustix open](https://docs.rs/rustix/1.1.5/rustix/fs/fn.open.html).
 
+P06's protected key preparer reuses pinned rustix1.1.5, source
+`287214b889865d8e1406a0ee71cc409b6f6191c8`, without a dependency change.
+Inspected `src/fs/at.rs:294–320`, libc types497–553/syscalls515–625 and
+linux_raw syscalls1163–1180: `renameat_with` forwards no-replace to Linux
+`renameat2` or Apple's `renameatx_np`/RENAME_EXCL. An unsupported operation fails;
+it does not fall back to overwriting. The versioned
+[API](https://docs.rs/rustix/1.1.5/rustix/fs/fn.renameat_with.html) and
+[Linux rename documentation](https://man7.org/linux/man-pages/man2/rename.2.html)
+require filesystem support for no-replace. Original source files and hashes are
+retained under `.research/implementation/cursor-keyring/rustix-source*`.
+The Mac collision regression failed under plain rename and passes with no-replace.
+This source/local result does not qualify native sync, crash or Control activation.
+
 
 ## Catalog writer credential material
 

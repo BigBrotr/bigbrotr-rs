@@ -850,6 +850,14 @@ pub fn keys() -> Vec<Key> {
         .default_from = Some("monitor.checks");
     // Common read budgets are shared across adapters, never a separate budget
     // for every HTTP, relay or gateway mount.
+    add!(
+        "read.cursor.keyring_ref",
+        Secret,
+        Value::Null,
+        "restart",
+        "read",
+        true
+    );
     for (name, default) in [
         ("default_page_size", 100),
         ("max_page_size", 1000),

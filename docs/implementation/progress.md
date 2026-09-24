@@ -20,11 +20,38 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Main HEAD4aebc1fbd7926c53bc0e08df3c3e0ac139911786, tree
-d7bc43542666055319d216f2fe1bce112d096426; private origin/main matches by ls-remote.
-The worktree was clean at resumption. Root now owns the cursor dependency probe,
-report, inventory, dependency-selection/P06/P08/cursor-contract and checkpoint
-changes; no foreign edits or product Rust/SQL/root Cargo changes.
+Main HEAD90e5d6ff2b766e5894cd789b1adbbf959219f698, tree
+8ab8ee601680adb14450ca7e52a2c25dc75c3907; private origin/main matches by ls-remote.
+The cursor dependency probe/report and clarified contracts are committed and
+pushed. Root owns the current keyring implementation, secret descriptor helpers,
+CLI/config root, generated schema/reference, fixtures/tests, native recipe and
+associated documentation. No foreign edits, SQL or root Cargo/lock changes.
+The local command consumer now exists: access cursor-keyring prepare/inspect.
+
+Mac verification:50selected CLI/config/policy/keyring/secret tests pass, plus the
+collision regression and Clippy. Fifteen independent public wire vectors include
+170/842byte valid files, malformed/checksum/count/identity cases; all170one-byte
+mutations refuse. Original initial stub and CLI RED, collision plain-rename RED,
+all succeeding logs and two unavailable Darwin FIFO API compilation errors remain
+under .research/implementation/cursor-keyring. The test now uses the existing
+mkfifo executable, as the secret-file suite already does. No native PASS yet.
+
+Independent read-only AI review found and root corrected first-creation overwrite
+with NOREPLACE, misleading inspected/prepared output and help wording. It rebuilt
+all15public vector bytes offline, but ran no product tests or SSH. Its native
+recipe review found per-thread ENOSPC injection would also break diagnostics;
+the recipe now traces only the main thread for that one write fault, and keeps
+write payloads raw. Both docker log streams will be retained. Parallel preparer
+successes/Busy counts are observations, while explicit Python flock establishes
+forced contention independently. Native recipe still NOT_RUN.
+
+The format/operations contract lives in derived-read-publication.md and protected
+credentials. Key loading retains32KiB and zeroizes its owned buffer, without an
+RSS/all-copies erasure claim. Prepare requires a dedicated0700parent and cooperative
+exclusion from external provisioning writers; first publication additionally
+refuses late collisions. Partial staging is retained/refused by preparation;
+inspection can read the last complete final without certifying previous sync.
+No runtime Control/AEAD/issuance/listing is wired or advertised by this slice.
 
 The previous resume qualifications are committed and pushed:
 [revocation during a real filesystem wait](evidence/p08-export-resume-revocation-native-20260924.json)
@@ -88,17 +115,16 @@ inventory now records a later explicit measurement. No other discrepancy.
 Artifact/handoff/fmt/diff checks pass (177markdown/316JSON; same three preexisting
 cycle candidates). All relevant source and complete changed diff reviewed.
 
-Next bounded action: finish the current dependency/contract commit, then implement
-persistent protected key preparation plus bounded versioned AEAD envelope for the
-first actor-owned GET /management/v1/jobs consumer and its private panel. Start
-with independent keyfile/envelope fixtures; read the complete affected config,
-bootstrap, SQL migration and HTTP callers before edits. Bootstrap must persist
-secret bytes before Control metadata registration, preserve identities across
-crash/unknown COMMIT, and never regenerate a missing active key on serve. Load
-keys and retain their budget before acquiring Control; no synchronous keyfile I/O
-inside a list transaction. Keyring references are deployment roots so accepted
-closed policy documents remain compatible. Existing admin consumers must not gain
-an unrelated keyring prerequisite.
+Next bounded action: commit this locally verified candidate, transfer the exact
+Git revision and run experiments/cursor-keyring/lab.py on Tux. Persist a fresh full
+preflight before copied cache/build use; the earlier ad-hoc SSH stdout census was
+truncated and is not evidence. The recipe preserves8db cache and qualified strace
+read-only, uses a fresh networkless owned container, and must execute all15actual
+filesystem/error/kill/collision/blocked-output cases. Capture only safe metadata,
+source/build/logs/trace: NEVER collect out/cases/*/keys, including partial files.
+Keep generated key bytes private on Tux. Then review actual durable effects and
+terminal resource census before qualifying the local boundary. Afterward continue
+P06Step1 AEAD/Control and the P08actor-owned GET /management/v1/jobs consumer.
 
 The list remains default50/max200, descending(created_at,job_id), owner/status.read,
 current session/CSRF and nonrenewable delivery, with current mutable-state filters.

@@ -1,0 +1,116 @@
+//! Actual process boundary: explicit preparation, offline roots and retry.
+use serde_json::Value;
+use std::{
+    fs,
+    os::unix::fs::PermissionsExt,
+    path::Path,
+    process::{Command, Output},
+};
+
+fn run(args: &[&str]) -> Output {
+    Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
+        .args(args)
+        .env_clear()
+        .output()
+        .unwrap()
+}
+fn observe(output: Output) -> Value {
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(output.stderr.is_empty());
+    serde_json::from_slice(&output.stdout).unwrap()
+}
+fn action(operation: &str, config: &Path) -> Output {
+    run(&[
+        "access",
+        "cursor-keyring",
+        operation,
+        "--file",
+        config.to_str().unwrap(),
+    ])
+}
+fn config(root: &Path) -> (std::path::PathBuf, String) {
+    let output = run(&["config", "example", "--recipe", "archive-only"]);
+    assert!(output.status.success());
+    let original = String::from_utf8(output.stdout).unwrap();
+    let file = root.join("instance.toml");
+    fs::write(&file, &original).unwrap();
+    (file, original)
+}
+
+#[test]
+fn configured_reference_is_offline_redacted_and_excluded_from_accepted_policy() {
+    let root = tempfile::tempdir().unwrap();
+    let (file, original) = config(root.path());
+    let baseline = observe(run(&["config", "show", "--file", file.to_str().unwrap()]));
+    let missing = root
+        .path()
+        .canonicalize()
+        .unwrap()
+        .join("not-created/keyring");
+    fs::write(
+        &file,
+        format!(
+            "{original}\n[read.cursor]\nkeyring_ref='file:{}'\n",
+            missing.display()
+        ),
+    )
+    .unwrap();
+    let staged = observe(run(&["config", "show", "--file", file.to_str().unwrap()]));
+    assert_eq!(staged["initial_policy"], baseline["initial_policy"]);
+    assert_eq!(
+        staged["settings"]["read.cursor.keyring_ref"]["value"],
+        "[redacted]"
+    );
+    assert_eq!(
+        staged["settings"]["read.cursor.keyring_ref"]["deployment_locked"],
+        true
+    );
+    assert!(!missing.parent().unwrap().exists());
+    let inspect = action("inspect", &file);
+    assert_eq!(inspect.status.code(), Some(4));
+    assert!(inspect.stdout.is_empty());
+    assert!(!String::from_utf8_lossy(&inspect.stderr).contains(missing.to_str().unwrap()));
+    assert!(!missing.parent().unwrap().exists());
+}
+
+#[test]
+fn prepare_and_inspect_survive_process_exit_without_contacting_control() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().canonicalize().unwrap();
+    let (file, original) = config(&root);
+    let absent = action("prepare", &file);
+    assert_eq!(absent.status.code(), Some(3));
+    assert!(absent.stdout.is_empty());
+    let keys = root.join("keys");
+    fs::create_dir(&keys).unwrap();
+    fs::set_permissions(&keys, fs::Permissions::from_mode(0o700)).unwrap();
+    fs::write(
+        &file,
+        format!(
+            "{original}\n[read.cursor]\nkeyring_ref='file:{}/keyring'\n",
+            keys.display()
+        ),
+    )
+    .unwrap();
+    assert_eq!(action("inspect", &file).status.code(), Some(4));
+    assert_eq!(fs::read_dir(&keys).unwrap().count(), 0);
+    let first = observe(action("prepare", &file));
+    assert_eq!(first["format"], "bigbrotr-cursor-keyring-observation/1");
+    assert_eq!(first["state"], "prepared-local");
+    assert_eq!(first["control_registration"], "not-checked");
+    assert_eq!(first["cursor_authority"], "not-granted");
+    assert_eq!(first["dataset_id"], "22222222222222222222222222222222");
+    assert_eq!(first["key_ids"].as_array().unwrap().len(), 1);
+    assert_eq!(first.as_object().unwrap().len(), 8);
+    let original = fs::read(keys.join("keyring")).unwrap();
+    let mut inspected = first.clone();
+    inspected["state"] = "inspected-local".into();
+    assert_eq!(observe(action("inspect", &file)), inspected);
+    assert_eq!(observe(action("prepare", &file)), first);
+    assert!(fs::read(keys.join("keyring")).unwrap() == original);
+    assert_eq!(fs::read_dir(&keys).unwrap().count(), 1);
+}

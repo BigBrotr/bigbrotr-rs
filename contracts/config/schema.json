@@ -2621,6 +2621,14 @@
               "x-bigbrotr-owner": "read",
               "x-bigbrotr-reload": "live"
             },
+            "keyring_ref": {
+              "format": "bigbrotr-file-secret-reference",
+              "type": "string",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "read",
+              "x-bigbrotr-reload": "restart"
+            },
             "ttl": {
               "default": "15m",
               "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",

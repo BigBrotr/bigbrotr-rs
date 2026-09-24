@@ -1395,6 +1395,49 @@ control metadata records key IDs and lifecycle, not plaintext keys. Restart or
 routing the next page to another worker must not invalidate an otherwise valid
 cursor. Cursor keys are separate from Nostr signing and API credential keys.
 
+The initial protected-files provider uses the optional deployment root
+`read.cursor.keyring_ref`, a redacted `file:/absolute/filename` reference excluded
+from accepted policy bytes. Existing administration does not require this root
+until it selects a cursor consumer. `access cursor-keyring prepare --file CONFIG`
+explicitly prepares local bytes before any Control registration;
+`access cursor-keyring inspect --file CONFIG` only loads an existing file. Neither
+command contacts Control, activates a key or grants cursor authority. Reports
+contain dataset/keyring/key IDs and a file fingerprint, never secret bytes.
+`prepared-local` reports successful preparation; `inspected-local` observes
+existing bytes without certifying a previous sync or Control registration.
+
+The parent is an operator-created dedicated directory owned by the effective UID
+with mode0700. Preparation locks its retained descriptor exclusively, refuses
+unexpected or partial siblings, writes a fresh exclusive mode0600 temporary file,
+syncs its bytes, renames it and syncs the directory and its parent. An identical
+complete retry writes the same verified bytes through a fresh synced inode, never
+new key material. First publication uses no-replace rename, including against a
+file created after the initial absence check. Complete retry replaces the verified
+existing file under a cooperative lock; operators must exclude other tools that
+write or rename this directory during preparation. The returned keyring is a
+local byte snapshot, not continuous custody of its pathname. A failed write retains staging for explicit inspection; no
+automatic cleanup or regeneration is safe. Read-only loading takes a shared lock,
+requires a regular single-link mode0400/0600 file and no symlink in its path, and
+can use the last complete final file despite unrelated staging. Loading does not
+repair or establish durable publication after an incomplete preparation. Control
+registration must follow successful preparation, and serve must never replace a
+missing registered key. Locks are nonblocking; another preparer returns busy.
+
+Private keyfile version1 has exact bytes: eight-byte magic `BBCKEY\0\x01`, dataset
+ID16, keyring ID16, unsigned big-endian key count2, then count records of key ID16
+and raw XChaCha key32, followed by SHA-25632 of every preceding byte. Count is
+1..16, total122..842bytes; IDs/material are nonzero and key IDs unique. Unknown
+versions, trailing bytes, wrong dataset, malformed counts or checksum mismatch
+are refused without modification. The checksum detects corruption and binds
+Control metadata; it is not authentication against the local credential owner.
+Lifecycle and issuance decisions belong to Control, never flags in this file.
+Preparation initially creates one key using OS entropy. No automatic format
+upgrade is selected; future formats require an explicit compatibility path.
+The loader retains a32KiB logical reservation through the key buffer's lifetime;
+its owned buffer is zeroized on drop. This is not an RSS ceiling or a claim of
+erasing kernel buffers, downstream copies or registers. Synchronous file I/O is
+performed before runtime/Control acquisition, not inside list transactions.
+
 Use a versioned authenticated-encryption envelope for self-contained continuation,
 so private scan positions are neither editable nor readable by clients. The
 initial implementation candidate is full-round XChaCha20-Poly1305 through the

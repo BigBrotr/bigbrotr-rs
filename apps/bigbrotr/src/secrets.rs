@@ -6,12 +6,14 @@
 //! Callers retain the allocation's charge for its whole lifetime.
 use rustix::fs::{Mode, OFlags, open, openat};
 use std::{
+    ffi::OsStr,
     fmt,
     fs::File,
     io::Read,
     os::unix::fs::MetadataExt,
     path::{Component, Path},
 };
+use zeroize::Zeroizing;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SecretError {
@@ -68,10 +70,21 @@ impl<'a> SecretFile<'a> {
     /// Load exact bytes without trimming, text conversion or a second path open.
     /// Owner adapters choose their own nonempty/encoding/password/key semantics.
     pub fn read(&self, limit: usize) -> Result<SecretBytes, SecretError> {
-        let capacity = limit
-            .checked_add(1)
-            .filter(|_| limit > 0)
-            .ok_or(SecretError::InvalidLimit)?;
+        read_capacity(limit)?;
+        let (parent, name) = self.open_parent()?;
+        let descriptor = openat(
+            &parent,
+            name,
+            OFlags::RDONLY | OFlags::CLOEXEC | OFlags::NOFOLLOW | OFlags::NONBLOCK | OFlags::NOCTTY,
+            Mode::empty(),
+        )
+        .map_err(|_| SecretError::Open)?;
+        read_file(File::from(descriptor), limit)
+    }
+
+    /// The cursor-key preparer also retains this parent across its exclusive
+    /// write. A second path open could otherwise bypass that directory's lock.
+    pub(crate) fn open_parent(&self) -> Result<(File, &'a OsStr), SecretError> {
         // Walk relative to retained directory descriptors. NOFOLLOW on only the
         // final path would still follow a replaced parent symlink.
         let directory_flags =
@@ -80,42 +93,42 @@ impl<'a> SecretFile<'a> {
             open("/", directory_flags, Mode::empty()).map_err(|_| SecretError::Open)?;
         let mut components = self.0.components().peekable();
         components.next(); // Absolute root, established by parse.
-        let descriptor = loop {
+        loop {
             let Some(Component::Normal(name)) = components.next() else {
                 return Err(SecretError::Reference);
             };
             if components.peek().is_none() {
-                break openat(
-                    &parent,
-                    name,
-                    OFlags::RDONLY
-                        | OFlags::CLOEXEC
-                        | OFlags::NOFOLLOW
-                        | OFlags::NONBLOCK
-                        | OFlags::NOCTTY,
-                    Mode::empty(),
-                )
-                .map_err(|_| SecretError::Open)?;
+                return Ok((File::from(parent), name));
             }
             parent = openat(&parent, name, directory_flags, Mode::empty())
                 .map_err(|_| SecretError::Open)?;
-        };
-        let mut file = File::from(descriptor);
-        let metadata = file.metadata().map_err(|_| SecretError::Open)?;
-        if !metadata.is_file() {
-            return Err(SecretError::NotRegular);
         }
-        if metadata.uid() != rustix::process::geteuid().as_raw() {
-            return Err(SecretError::Owner);
-        }
-        if !matches!(metadata.mode() & 0o7777, 0o400 | 0o600) {
-            return Err(SecretError::Permissions);
-        }
-        if metadata.len() > u64::try_from(limit).map_err(|_| SecretError::InvalidLimit)? {
-            return Err(SecretError::TooLarge);
-        }
-        read_contents(&mut file, limit, capacity)
     }
+}
+
+fn read_capacity(limit: usize) -> Result<usize, SecretError> {
+    limit
+        .checked_add(1)
+        .filter(|_| limit > 0)
+        .ok_or(SecretError::InvalidLimit)
+}
+
+pub(crate) fn read_file(mut file: File, limit: usize) -> Result<SecretBytes, SecretError> {
+    let capacity = read_capacity(limit)?;
+    let metadata = file.metadata().map_err(|_| SecretError::Open)?;
+    if !metadata.is_file() {
+        return Err(SecretError::NotRegular);
+    }
+    if metadata.uid() != rustix::process::geteuid().as_raw() {
+        return Err(SecretError::Owner);
+    }
+    if !matches!(metadata.mode() & 0o7777, 0o400 | 0o600) {
+        return Err(SecretError::Permissions);
+    }
+    if metadata.len() > u64::try_from(limit).map_err(|_| SecretError::InvalidLimit)? {
+        return Err(SecretError::TooLarge);
+    }
+    read_contents(&mut file, limit, capacity)
 }
 
 fn read_contents(
@@ -123,7 +136,7 @@ fn read_contents(
     limit: usize,
     capacity: usize,
 ) -> Result<SecretBytes, SecretError> {
-    let mut bytes = Vec::new();
+    let mut bytes = Zeroizing::new(Vec::new());
     bytes
         .try_reserve_exact(capacity)
         .map_err(|_| SecretError::Allocation)?;
@@ -148,9 +161,13 @@ fn read_contents(
 
 /// Move-only bytes with intentionally redacted diagnostics. No serialization or
 /// Clone implementation; a driver's explicit copy needs its own resource charge.
-/// This does not promise zeroization of process memory or downstream driver copies.
-pub struct SecretBytes(Vec<u8>);
+/// The owned buffer is zeroized on drop, without promising erasure of all process
+/// memory or downstream driver copies.
+pub struct SecretBytes(Zeroizing<Vec<u8>>);
 impl SecretBytes {
+    pub(crate) fn into_zeroizing(self) -> Zeroizing<Vec<u8>> {
+        self.0
+    }
     pub fn as_bytes(&self) -> &[u8] {
         &self.0
     }

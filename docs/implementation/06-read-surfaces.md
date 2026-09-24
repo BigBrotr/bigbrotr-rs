@@ -210,6 +210,17 @@ Scientific scan positions, generation pins and full acceptance still require the
 P06/P02 prerequisites above. Reuse the same key ownership and envelope, without
 inventing scientific pins for redacted operational metadata.
 
+Current partial implementation prepares/inspects protected local key bytes through
+`access cursor-keyring` and the optional deployment root `read.cursor.keyring_ref`.
+It has independent frozen keyfile fixtures, bounded descriptor reads, cooperative
+locking, identical retry and first-publication no-replace. The
+[local report](evidence/p06-cursor-keyring-local-20260925.json) records50selected
+Mac consumer tests, the collision RED/GREEN and review boundaries. The
+[native recipe](../../experiments/cursor-keyring/README.md) owns practical
+filesystem/cancellation acceptance. AEAD product integration, Control lifecycle,
+cross-worker consumers and the rest of Step1 remain open; a local keyfile does not
+activate issuance or complete this step.
+
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;
 `migrations/postgres/0603_read_pins.sql`;
 `contracts/read/v1/cursor-envelope.schema.json`; `config/examples/read.toml`;

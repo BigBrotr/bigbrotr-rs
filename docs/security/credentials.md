@@ -31,8 +31,9 @@ contents.
 
 This boundary checks POSIX ownership and mode, not extended ACLs or external
 provider permissions. Operators must provision a filesystem/mount without wider
-ACL access until that behavior is qualified. It does not promise memory
-zeroization; downstream drivers may retain additional copies. The logical read
+ACL access until that behavior is qualified. The owned read buffer is zeroized
+on drop; this does not promise erasure of all process memory, kernel buffers or
+downstream copies. The logical read
 buffer has `limit + 1` bytes, and `allocated_bytes()` exposes its retained vector
 capacity. Allocator overhead and temporary or driver copies need a conservative
 process allowance. Resource owners must retain their charges through the actual
@@ -43,3 +44,22 @@ their resource ownership, extended ACL enforcement, actual container mounts and
 credential rotation are separate implementation and acceptance gates. Filesystem
 I/O is synchronous; `O_NONBLOCK` does not bound regular-file I/O on a stalled
 filesystem. Runtime loading must use its owning bounded blocking boundary.
+
+Cursor keys use this reader plus a dedicated mode0700 parent, single-link files
+and an explicit preparation operation. Set `read.cursor.keyring_ref` to a
+protected file in a separately provisioned directory, then run
+`bigbrotr access cursor-keyring prepare --file instance.toml`.
+`bigbrotr access cursor-keyring inspect --file instance.toml` only observes local
+bytes. Both omit key material and reference paths from output; neither contacts
+Control or activates cursor issuance. Keep the same key bytes for restart and
+other workers, using a separately qualified protected distribution procedure.
+
+An identical complete preparation retry preserves every key and replaces the
+file through a new synced mode0600 inode. Preparation requires excluding external
+provisioning writers; its advisory lock only coordinates cooperating consumers.
+Partial staging is retained and preparation is refused. Preserve it for explicit
+recovery; do not delete the directory and regenerate keys whose registration or
+use is unknown. Inspection can read the last complete final file beside staging,
+but cannot certify its previous durable publication. See the
+[cursor ownership contract](../architecture/derived-read-publication.md#cursor-key-ownership-and-confidentiality)
+for the format and remaining Control/rotation boundaries.
