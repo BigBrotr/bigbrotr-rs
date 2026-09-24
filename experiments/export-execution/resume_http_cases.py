@@ -10,10 +10,12 @@ import resume_cases
 from signed_publication_cases import Process, command, event, send
 
 
-def main(root):
+def main(root, profile=None):
+    assert profile in (None, 'commits')
     state=json.loads((root/'resources.json').read_text()); runner=state['container_id']; pg=state['postgres_id']; db='bbpub_control_normal'
     path=root/'resume-http-cases.json'; assert not path.exists()
     result=dict(status='INCOMPLETE',source=state['source'],tree=state['tree'],cases={},scope='Actual installed resume HTTP and application-role SQL; native execution disabled to observe exact accepted revision. No resumed artifact output or COMMIT-fault qualification.')
+    if profile=='commits': result['scope']='Actual installed resume HTTP with native execution disabled; selected Control COMMIT lost before forwarding and after server completion, then original-key resolution.'
     client=None
     def save(): path.write_text(json.dumps(result,indent=2)+'\n')
     def sql(text): return command('docker','exec','-i',pg,'psql','-XAtq','-v','ON_ERROR_STOP=1','-U','postgres','-d',db,input=text)
@@ -38,7 +40,7 @@ def main(root):
     def stop(name):
         exchange(name,'stop');assert client.wait(10)==0 and not client.stderr and not client.overflow;client.stop()
     def observe():
-        tables=['jobs','export_jobs','export_execution_units','artifacts','artifact_files','snapshot_leases','archive_snapshot_pins','retention_claims','export_resume_commands','management_commands','management_audit']
+        tables=['jobs','job_input_bounds','export_jobs','export_execution_units','artifacts','artifact_files','snapshot_leases','archive_snapshot_pins','retention_claims','export_resume_commands','management_commands','management_audit']
         result={}
         for name in tables:
             where=" WHERE action='job.export.resume'" if name in ['management_commands','management_audit'] else ''
@@ -57,6 +59,11 @@ def main(root):
         job=sql('SELECT encode(job_id,\'hex\') FROM control.jobs');result['job']=job
         result['before']=observe();save()
         started=time.monotonic();time.sleep(60);result['rate_wait_seconds']=time.monotonic()-started;save()
+        if profile=='commits':
+            import resume_commit_cases
+            result['commits']=resume_commit_cases.run(root,state,sql,observe)
+            assert result['commits']['status']=='PASS'
+            result['status']='PASS';return
         client=start('missing-insert');exchange('first-login','login',username='alice')
         resume('missing-insert-refused',status=503)
         assert exchange('sessions-still-available','me')['status']==200
@@ -131,4 +138,6 @@ def main(root):
         save()
 
 
-if __name__=='__main__':main(Path(sys.argv[1]).resolve())
+if __name__=='__main__':
+    assert len(sys.argv) in (2,3)
+    main(Path(sys.argv[1]).resolve(),sys.argv[2] if len(sys.argv)==3 else None)

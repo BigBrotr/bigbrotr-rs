@@ -20,21 +20,25 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD30df0fd4c65bd8aa2fe5cfe65858381ad164621d, tree
-68f4a1f1f8b2f7bd337ec51fe104add48f45e8d6 on main; private origin/main remains
-54af815ba2d44b0ddb3b3ab31cb8245bf281c4b0. Two unpublished fixture candidates.
-Root owns pending signed-output evidence, scoped cache inventory retirement and
-checkpoint/docs plus untracked resume_commit_{client,cases}.py drafts for the next
-COMMIT-loss slice. No other contributor or merge/rebase. No active Tux BigBrotr lab
-at latest terminal capture and privileged process/cache census. Full product incomplete.
+Last verified HEADb7d1264abee2df04a83bd309886de368626ab1b1, tree
+10ed00438098e5f196a642adbae55b791458fa2f on main; private origin/main matches. Root owns
+pending COMMIT-loss fixtures: resume_commit_{client,cases}.py, shared HTTP/lab
+profile wiring, one bounded proxy target and this checkpoint. No product change,
+other contributor or merge/rebase. Fresh Tux inspection shows eight unrelated
+running containers, no BigBrotr lab and128836923392bytes free. Full product incomplete.
 
-Next bounded action: resume COMMIT-loss on both sides using the qualified4a3c4ce
-ELF and original paused7 HTTP fixture. Extend the existing bounded native proxy's
-selected Control target to export_resume_commands; preserve original key/body,
-observe actual SQL rows/xmin and driver/parent termination, then resolve through a
-fresh Control. Before-forward must retain paused state with no command; after
-server commit must retain queued8/original receipt. No false compensation/release.
-Use exact Git and product equality, fresh ownership/space census, retained failures.
+Next bounded action: commit the reviewed COMMIT-loss candidate and run
+--runtime-resume-commits using the qualified4a3c4ce ELF and original paused7
+HTTP fixture. Source/build equality, fresh ownership/space census and exact Git
+are required. Before-forward must retain paused7/full original rows+xmin with no
+command; after server completion must retain queued8/exactly one receipt. Both
+must fail-stop with no false release. Same in-memory session/key/body on a fresh
+Control without destination/current input resolves original receipt8. Twelve
+ledgers include source bounds; retain all failure observations and parent/backend
+termination. Python syntax/artifact checks pass locally; native fault run NOT_RUN.
+Independent read-only AI static review found no concrete blocker. Commands/audit
+are resume-only; post-exit flock availability does not qualify custody while a
+driver remains pending. No held-driver/cancel claim from this slice.
 
 [30df0fd signed resume](evidence/p08-export-resume-output-native-20260924.json) passes
 actual blocked-reader revocation,814 compatible migration with real CLI, refused

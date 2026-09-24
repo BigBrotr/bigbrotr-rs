@@ -27,6 +27,7 @@ CONTROL_TARGETS = {
     'control-session-issue': b'INSERT INTO CONTROL.BROWSER_SESSIONS(',
     'control-session-revoke': b'UPDATE CONTROL.BROWSER_SESSIONS SET REVOKED_AT_US=',
     'control-export-accept': b'INSERT INTO CONTROL.EXPORT_JOBS(',
+    'control-export-resume': b'INSERT INTO CONTROL.EXPORT_RESUME_COMMANDS(',
     'control-export-complete': b'INSERT INTO CONTROL.ARTIFACTS(',
     'control-export-pause': b"UPDATE CONTROL.JOBS SET STATE='PAUSED',",
 }
