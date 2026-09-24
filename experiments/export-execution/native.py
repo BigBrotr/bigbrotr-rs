@@ -55,7 +55,10 @@ if runtime:
     ready=json.loads(ready_path.read_text())
     Path('/out/seed-ready.json').write_bytes(ready_path.read_bytes())
     for key,name,target in [('control','bigbrotr','native-tests'),('worker','bigbrotr-archive-worker','archive-worker')]:
-        shutil.copy2(artifacts/name,Path('/out')/target/name)
+        installed=Path('/out')/target/name
+        assert not installed.is_symlink() and file_hash(installed)==ready[key]
+        installed.unlink() # Replace only this lab's verified read-only seed copy.
+        shutil.copy2(artifacts/name,installed)
         ready[key]=file_hash(artifacts/name)
     ready.update(runtime_source=manifest['revision'],runtime_source_manifest_sha256=identity['source_manifest_sha256'])
     ready_path.write_text(json.dumps(ready,indent=2)+'\n')

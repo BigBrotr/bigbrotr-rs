@@ -21,6 +21,16 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
+Candidate bf66e7d9873e1475f0272e5040d94b766535357e was transferred exactly and
+completed fresh installed parent/worker build plus Clippy. Practical cases NOT_RUN:
+fixture copy2 failed on the seed parent's preserved0500 mode. Original INCOMPLETE
+captured at .research/implementation/export-execution/attempt-bf66e7d; source/ELF
+and failed logs retained. Lab export-responsive-bf66e7d owner69903c122e8f50e57f0061e34a3b262d,
+PG409c8474/runnerb837854a stopped-retained; no active experiment. Root corrects only
+verified owned-copy replacement (unlink then fresh copy) and adds exact-input
+runtime artifact reuse, avoiding another cache/build for this fixture correction.
+Next candidate reruns real HTTP/blocked-worker test against unchanged bf66 ELF.
+
 Last verified main/HEAD and origin/main a084bed877ca90491db5a2caf4617dd98bcd4c88,
 clean before this slice. The rollback evidence and narrow cache retirement are
 committed/pushed. Root now owns a fixture-only responsiveness extension in the

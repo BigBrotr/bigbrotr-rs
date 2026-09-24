@@ -9,11 +9,13 @@ import base64, datetime, hashlib, json, os, re, secrets, shutil, subprocess, sys
 from pathlib import Path
 
 revision, tree = sys.argv[1:3]
-responsive = sys.argv[3:] == ["--runtime-responsive"]
+responsive = sys.argv[3:4] == ["--runtime-responsive"]
+reuse_runtime = sys.argv[4] if responsive and len(sys.argv)==5 else None
+assert reuse_runtime is None or re.fullmatch("[0-9a-f]{40}", reuse_runtime)
 rollback = sys.argv[3:] == ["--rust-rollback"]
 adapter = sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
-assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"])
-compile_current = adapter or responsive
+assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"]) or (responsive and len(sys.argv)==5)
+compile_current = adapter or (responsive and not reuse_runtime)
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
 root = base / 'runs' / (('export-responsive-' if responsive else 'export-rollback-' if rollback else 'export-adapter-' if adapter else 'export-execution-') + revision[:7])
@@ -145,6 +147,43 @@ try:
          artifacts={key:old_ready[key] for key in artifacts},native_assets=before,
          validation='Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. This reuse record covers original seed artifacts only. Current compilation/adapter evidence, when selected, is recorded separately under adapter-checks and adapter-cases.'))
     state['artifact_origin']=artifact_source;save()
+    if reuse_runtime:
+        runtime_root=base/'runs'/('export-responsive-'+reuse_runtime[:7])
+        runtime_state=json.loads((runtime_root/'resources.json').read_text())
+        assert runtime_state['source']==reuse_runtime and runtime_state['state']=='stopped-retained'
+        for entry in runtime_state['containers']:
+            item=next(c for c in prior if c['Id']==entry['id'])
+            assert item['Config']['Labels'][runtime_state['owner_label']]==runtime_state['owner']
+            assert not item['State']['Running'] and item['State']['Pid']==0
+        runtime_manifest=json.loads((runtime_root/'out/build/source-manifest.json').read_text())
+        assert runtime_manifest['revision']==reuse_runtime
+        assert all(sha(runtime_root/'out/build/source'/name)==digest for name,digest in runtime_manifest['files_sha256'].items())
+        def product_inputs(files):
+            return {name:digest for name,digest in files.items() if not name.startswith(('docs/','experiments/'))}
+        assert product_inputs(manifest['files_sha256'])==product_inputs(runtime_manifest['files_sha256'])
+        checks=json.loads((runtime_root/'out/adapter-checks/result.json').read_text())
+        assert checks['status']=='PASS'
+        built=json.loads((runtime_root/'out/adapter-checks/artifacts.json').read_text())
+        assert built['source']==reuse_runtime and built['source_manifest_sha256']==sha(runtime_root/'out/build/source-manifest.json')
+        assert built['build_info']['source']['revision']==reuse_runtime
+        assert built['build_info']['archive_worker']['sha256']==built['artifacts']['bigbrotr-archive-worker']
+        current=out/'runtime-artifacts';current.mkdir()
+        ready=dict(old_ready)
+        for key,name,target in [('control','bigbrotr','native-tests'),('worker','bigbrotr-archive-worker','archive-worker')]:
+            original=runtime_root/'out/runtime-artifacts'/name
+            assert not original.is_symlink() and sha(original)==built['artifacts'][name]
+            shutil.copy2(original,current/name)
+            installed=out/target/name
+            assert not installed.is_symlink() and sha(installed)==old_ready[key]
+            installed.unlink();shutil.copy2(original,installed)
+            ready[key]=sha(installed)
+        write(out/'seed-ready.json',old_ready)
+        ready.update(runtime_source=reuse_runtime,runtime_source_manifest_sha256=built['source_manifest_sha256'])
+        write(out/'native-tests/ready.json',ready)
+        write(root/'runtime-source-manifest.json',runtime_manifest)
+        write(root/'runtime-reuse.json',dict(root=str(runtime_root),owner=runtime_state['owner'],
+            build=built,validation='Exact product/build input equality; fixture-only changes. No new compilation or Clippy run.'))
+        state['runtime_artifact_origin']=reuse_runtime;save()
     if compile_current:
         # Original seed cache is stopped and inventoried above; copy only caches,
         # then compile current trusted Git inputs. Original remains read-only.

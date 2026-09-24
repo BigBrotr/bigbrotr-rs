@@ -20494,5 +20494,71 @@
       "free_bytes": 162194755584
     },
     "report": "docs/implementation/evidence/p08-export-catalog-loss-native-20260924.json"
+  },
+  "implementation_runtime_responsive_fixture_20260924": {
+    "resources": {
+      "source": "bf66e7d9873e1475f0272e5040d94b766535357e",
+      "tree": "93a6657d19d0260d6add661623d9f3254338696e",
+      "owner": "69903c122e8f50e57f0061e34a3b262d",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-responsive-bf66e7d",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "409c8474d3bf8849cf8a7737e12a494f915c3c7c428ec187f48c1719ebeaead6"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "b837854a2cbc2fd774a8753a15bc5345d394c31993bb01ad783acee5d4da4ec5"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T10:17:34.810768+00:00",
+      "runtime_profile": "responsive",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "c62f24753a3b478eaefabae4957da2d9895be5a0ec270c3d022cdae02e22839b",
+      "postgres_id": "409c8474d3bf8849cf8a7737e12a494f915c3c7c428ec187f48c1719ebeaead6",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "b837854a2cbc2fd774a8753a15bc5345d394c31993bb01ad783acee5d4da4ec5",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "orchestrator": {
+      "pid": 3870069,
+      "start_ticks": "362730844",
+      "source": "bf66e7d9873e1475f0272e5040d94b766535357e",
+      "tree": "93a6657d19d0260d6add661623d9f3254338696e"
+    },
+    "status": "INCOMPLETE",
+    "local_capture": ".research/implementation/export-execution/attempt-bf66e7d/capture",
+    "observation": "Current installed parent/worker build and Clippy passed; fixture failed replacing read-only seed parent copy before any practical case. No responsiveness RED yet. Both owned containers stopped; source, ELF, logs and cache retained.",
+    "terminal": {
+      "status": "INCOMPLETE",
+      "source": "bf66e7d9873e1475f0272e5040d94b766535357e",
+      "owner": "69903c122e8f50e57f0061e34a3b262d",
+      "cases": {},
+      "failure": {
+        "kind": "AssertionError",
+        "frames": [
+          {
+            "file": "lab.py",
+            "line": 229,
+            "function": "<module>"
+          }
+        ]
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 584,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "original_source_unchanged": true,
+      "host_tcp_wmem_preserved": true,
+      "free_bytes": 161789878272
+    }
   }
 }
