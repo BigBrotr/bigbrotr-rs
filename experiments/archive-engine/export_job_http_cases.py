@@ -13,7 +13,9 @@ from signed_publication_oracle import check,input_expectations,EVENT
 from event_cases import cut_expectation
 
 
-def main(root, checker=False):
+def main(root, profile='ordinary'):
+    assert profile in ('ordinary','checker','commits')
+    checker=profile=='checker'
     resources=json.loads((root/'resources.json').read_text());source=root/'source'
     assert Path(__file__).resolve().parents[2]==source
     assert command('git','-C',str(source),'rev-parse','HEAD')==resources['source']
@@ -98,9 +100,9 @@ def main(root, checker=False):
         case('source-row-lock-privilege-is-required-before-private-listener',observation=refused)
         http=result['http']={}
         with (root/'http-client.stdout').open('xb') as out,(root/'http-client.stderr').open('xb') as err:
-            process=subprocess.Popen(client+['checker' if checker else 'exercise'],stdout=out,stderr=err)
+            process=subprocess.Popen(client+['exercise' if profile=='ordinary' else profile],stdout=out,stderr=err)
             try:
-                for phase in (['checker-blocked'] if checker else ['before-accept','accepted','retried','restarted']):
+                for phase in ([] if profile=='commits' else ['checker-blocked'] if checker else ['before-accept','accepted','retried','restarted']):
                     end=time.monotonic()+90
                     while not (private/(phase+'.waiting')).exists():
                         assert process.poll() is None,'HTTP client ended before '+phase
@@ -126,6 +128,16 @@ def main(root, checker=False):
                 http.update(stdout=(root/'http-client.stdout').read_text(),stderr=(root/'http-client.stderr').read_text(),overflow=False);save()
         result['cases']+=json.loads((private/'export-job-http-cases.json').read_text());save()
         assert http['exit']==0 and not http['stderr'],http
+        if profile=='commits':
+            assert len(result['cases'])==4 and all(c['status']=='PASS' for c in result['cases'])
+            from export_job_commit_cases import run
+            result['commits']=run(root,sql,observe,retained)
+            assert result['commits']['status']=='PASS'
+            result['files']=files
+            assert files=={str(p.relative_to(root/'out')):sha(p) for p in sorted((root/'out/signed_normal/kind=7').rglob('*.parquet'))}
+            result['status']='PASS';save()
+            print(json.dumps(dict(status='PASS',prerequisites=4,commit_cases=len(result['commits']['cases']),source=resources['source'])))
+            return
         if checker:
             assert len(result['cases'])==5 and all(c['status']=='PASS' for c in result['cases'])
             result['checker']=json.loads((private/'checker-result.json').read_text())
@@ -169,4 +181,4 @@ def main(root, checker=False):
     print(json.dumps(dict(status=result['status'],cases=len(result['cases']),source=resources['source'])))
 
 
-if __name__=='__main__':main(Path(sys.argv[1]).resolve(),len(sys.argv)>2 and sys.argv[2]=='checker')
+if __name__=='__main__':main(Path(sys.argv[1]).resolve(),sys.argv[2] if len(sys.argv)>2 else 'ordinary')

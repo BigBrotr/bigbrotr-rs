@@ -21,10 +21,10 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEADeb6167d041afdaf6111e88c9e7e10b3d7bca42af, origin/main509a9bd; candidate53c6c9d and its scoped
+Current main/HEAD3f5169f, origin/main3f5169f; candidate53c6c9d and its scoped
 evidence75906fc pushed normally. GET whitespace correction3a898c4 and blocked-checker candidate324b8eb are pushed
-with original failure evidence. Tracer evidence is pushed. Root owns the checker fixture timing/pidfd/instrument
-consumption changes, batched SQL oracle and this checkpoint. Candidate53c6c9d was clean at transfer.
+with original failure evidence. Checker evidence and strengthened fixture are pushed. Root owns new COMMIT
+client/oracle files, their shared HTTP/proxy consumers and this checkpoint. Candidate53c6c9d was clean at transfer.
 No unrelated edits or rewritten published history. Laboratory below is now stopped.
 
 Private POST /management/v1/jobs now reuses the supervised native allocation
@@ -352,7 +352,8 @@ SHA876bbe6b26d72ae4bd38a16c6b07f3bd2bb42135ba114f07dcb38529011826a7.
 Local .research/implementation/export-checker-timed/; inventory
 implementation_export_checker_timing_20260924. No active lab/cleanup debt.
 
-Next bounded action: implement actual acceptance COMMIT fault/retry fixture with
+Next bounded action: review/commit and execute the prepared actual acceptance
+COMMIT fault/retry fixture with
 existing proxy targeted only to INSERT control.export_jobs. Before-forward must
 leave no export/job and one old active reader; same-key restart creates one job
 with fresh temporary reader released, preserving old unresolved reader. After-
@@ -363,6 +364,16 @@ Read-only AI confirmed these expected outcomes and identified the exact new-read
 allocation link and old-row/xmin comparisons; root inspected current adapter,
 Control0007/pin0018/proxy and owning P08 tasks. Separate original destination Arc
 custody-through-driver test remains required, then standalone signed JSONL.
+Prepared exact profile uses existing signed/native setup and separate real
+Control proxy. Fault counters bind actual backend PID to owner PID/start; old
+row+xmin sets remain unchanged subsets, new allocation_pin_id points only to new
+reader after before-forward retry. Exact literal job cut[shard0,epoch1,sequence10].
+Shared proxy eight local tests PASS; new practical cases NOT_RUN. No product
+code/SQL migration change. Fresh artifact-only launcher will reverify unchanged
+4e6b5c0 product/build inputs; no compiler caches. Ignored scripts/receipts
+.research/implementation/export-job-commits/. Additional implementation AI review
+was unavailable (model capacity); prior independent expected-outcome review
+completed. Root remains integrating reviewer; no tool/SSH execution by AI.
 
 Initial AI timing/cleanup findings led to the revised native fixture above.
 Pre-signal/post-exit flock samples do not prove continuous original Arc custody.

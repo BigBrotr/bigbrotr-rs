@@ -24,6 +24,14 @@ class Targets(unittest.TestCase):
         self.assertTrue(proxy.control_target_query('control-pin', b'INSERT INTO control.archive_snapshot_pins(pin_id) VALUES($1)'))
         self.assertFalse(proxy.control_target_query('control-pin', b'INSERT INTO control.archive_pin_recoveries(pin_id) VALUES($1)'))
 
+    def test_export_does_not_target_reader_or_owner_commits(self):
+        self.assertTrue(proxy.control_target_query('control-export-accept', b'INSERT INTO control.export_jobs(job_id,dataset_id) VALUES($1,$2)'))
+        for query in [b'INSERT INTO control.owner_epochs(resource_id) VALUES($1)',
+                      b'INSERT INTO control.archive_snapshot_pins(lease_id) VALUES($1)',
+                      b'INSERT INTO control.jobs(job_id) VALUES($1)',
+                      b'SELECT job_id FROM control.export_jobs WHERE request_key=$1']:
+            self.assertFalse(proxy.control_target_query('control-export-accept', query))
+
 
 class SessionCompletions(unittest.TestCase):
     def observer(self):

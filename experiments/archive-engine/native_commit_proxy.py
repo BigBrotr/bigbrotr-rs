@@ -26,6 +26,7 @@ CONTROL_TARGETS = {
     'control-pin-recovery': b'INSERT INTO CONTROL.ARCHIVE_PIN_RECOVERIES(',
     'control-session-issue': b'INSERT INTO CONTROL.BROWSER_SESSIONS(',
     'control-session-revoke': b'UPDATE CONTROL.BROWSER_SESSIONS SET REVOKED_AT_US=',
+    'control-export-accept': b'INSERT INTO CONTROL.EXPORT_JOBS(',
 }
 
 
@@ -319,7 +320,7 @@ class Proxy:
                             return
                         if self.mode == 'before-forward' and not self.report['faults']:
                             self.report['faults'] += 1
-                            self.emit('fault')
+                            self.emit('fault', backend_pid=state['backend_pid'])
                             return
                 if not frontend and tag == b'K':
                     assert len(body) == 8
@@ -354,7 +355,7 @@ class Proxy:
                     state['data'] = False
                     if self.mode == 'after-complete' and not self.report['faults']:
                         self.report['faults'] += 1
-                        self.emit('fault')
+                        self.emit('fault', backend_pid=state['backend_pid'])
                         return
                     if not await self.hold('reply', state['backend_pid']):
                         return
