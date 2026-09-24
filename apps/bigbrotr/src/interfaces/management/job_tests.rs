@@ -302,3 +302,160 @@ async fn job_route_reports_refusal_without_a_receipt_or_cookie() {
     server.stop().await.unwrap();
     assert_eq!(budget.snapshot().active_permits(), 0);
 }
+
+#[tokio::test]
+async fn resume_route_refuses_missing_authority_and_noncanonical_input_before_queueing() {
+    let (mut server, address, budget) = server().await;
+    let id = "09".repeat(16);
+    let body = r#"{"expected_job_revision":"7","expected_config_revision":"1","expected_policy_revision":"1"}"#;
+    let auth = authenticated();
+    let cookie = format!("Cookie: BigBrotrLocalSession={}\r\n", "11".repeat(32));
+    for (path, headers, input, status) in [
+        (id.clone(), String::new(), body.to_owned(), 401),
+        (id.clone(), cookie, body.to_owned(), 403),
+        (
+            id.clone(),
+            auth.replace(&format!("Idempotency-Key: {}\r\n", "08".repeat(16)), ""),
+            body.to_owned(),
+            400,
+        ),
+        (
+            id.clone(),
+            format!("{auth}Idempotency-Key: {}\r\n", "08".repeat(16)),
+            body.to_owned(),
+            400,
+        ),
+        (
+            id.clone(),
+            format!("{auth}X-CSRF-Token: {}\r\n", "22".repeat(32)),
+            body.to_owned(),
+            403,
+        ),
+        ("AB".repeat(16), auth.clone(), body.to_owned(), 400),
+        ("00".repeat(16), auth.clone(), body.to_owned(), 400),
+        (
+            format!("%30{}", &id[1..]),
+            auth.clone(),
+            body.to_owned(),
+            400,
+        ),
+        (id.clone(), auth.clone(), "{}".into(), 400),
+        (
+            id.clone(),
+            auth.clone(),
+            body.replace("\"7\"", "\"07\""),
+            400,
+        ),
+        (id.clone(), auth.clone(), body.replace("\"7\"", "7"), 400),
+        (
+            id.clone(),
+            auth.clone(),
+            body.replace("\"7\"", "\"7\",\"expected_job_revision\":\"7\""),
+            400,
+        ),
+        (
+            id.clone(),
+            auth.clone(),
+            body.replace('}', ",\"destination\":\"/tmp/other\"}"),
+            400,
+        ),
+        (id, auth, "x".repeat(8193), 413),
+    ] {
+        let request = format!(
+            "POST /management/v1/jobs/{path}/resume HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n{headers}\r\n{input}",
+            input.len()
+        );
+        let response = exchange(address, request).await;
+        assert!(
+            response.starts_with(&format!("HTTP/1.1 {status} ")),
+            "{response}"
+        );
+        assert!(server.commands.try_recv().is_err());
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn resume_route_preserves_exact_revision_receipt_and_known_refusals() {
+    let (mut server, address, budget) = server().await;
+    let body = r#"{"expected_job_revision":"18446744073709551614","expected_config_revision":"9","expected_policy_revision":"10"}"#;
+    for outcome in [
+        Ok(true),
+        Ok(false),
+        Err(SessionError::Conflict),
+        Err(SessionError::Denied),
+        Err(SessionError::Forbidden),
+        Err(SessionError::ArchiveUnavailable),
+        Err(SessionError::Capacity),
+    ] {
+        let client = tokio::spawn(exchange(
+            address,
+            request(address, &authenticated(), body).replace(
+                "/jobs HTTP",
+                &format!("/jobs/{}/resume HTTP", "09".repeat(16)),
+            ),
+        ));
+        let received = tokio::time::timeout(Duration::from_secs(1), server.commands.recv())
+            .await
+            .unwrap()
+            .unwrap();
+        let transport::Operation::ResumeExport {
+            session,
+            csrf,
+            key,
+            job,
+            command,
+        } = received.operation
+        else {
+            panic!("wrong operation");
+        };
+        assert_eq!(session.expose_hex().as_str(), "11".repeat(32));
+        assert_eq!(csrf.expose_hex().as_str(), "22".repeat(32));
+        assert_eq!(key.to_string(), "08".repeat(16));
+        assert_eq!(job.to_string(), "09".repeat(16));
+        assert_eq!(command.expected_job_revision.get(), u64::MAX - 1);
+        assert_eq!(command.expected_config_revision.get(), 9);
+        assert_eq!(command.expected_policy_revision.get(), 10);
+        received.completion.finish(outcome.map(|created| {
+            transport::Reply::ResumeExport(bigbrotr::management::jobs::ResumeExportReceipt {
+                command_key: key,
+                job_id: job,
+                job_revision: u64::MAX.to_string().try_into().unwrap(),
+                accepted_at_us: i64::MAX,
+                created,
+            })
+        }));
+        let response = client.await.unwrap();
+        let (headers, body) = response.split_once("\r\n\r\n").unwrap();
+        let status = match outcome {
+            Ok(true) => 202,
+            Ok(false) => 200,
+            Err(SessionError::Conflict) => 409,
+            Err(SessionError::Denied) => 401,
+            Err(SessionError::Forbidden) => 403,
+            Err(SessionError::Capacity) => 429,
+            _ => 503,
+        };
+        assert!(
+            headers.starts_with(&format!("HTTP/1.1 {status} ")),
+            "{response}"
+        );
+        assert!(!headers.contains("set-cookie:"));
+        assert!(headers.contains("cache-control: no-store\r\n"));
+        if let Ok(created) = outcome {
+            assert_eq!(
+                serde_json::from_str::<serde_json::Value>(body).unwrap(),
+                serde_json::json!({
+                    "format":"bigbrotr-export-resume/1", "command_key":"08".repeat(16), "job_id":"09".repeat(16),
+                    "job_revision":"18446744073709551615", "accepted_at_us":"9223372036854775807", "created":created,
+                    "execution":"unobserved", "authority":"acceptance-only"
+                })
+            );
+        } else {
+            assert!(!body.contains("acceptance-only"));
+        }
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}

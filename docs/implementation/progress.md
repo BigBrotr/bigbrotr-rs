@@ -20,16 +20,28 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD016dd6f0d8f5b8b3de332ba1e4542a68ec045031, tree
-1cd7f7706b5fb53f3fcd458bc839d34ee690e0e8 on main; private origin/main remains
-adee7b6e61e03ac9798a180f0c0a1e890eb29547. Five unpublished coherent candidates.
-Root owns pending scoped native-adapter evidence, inventory and checkpoint only.
-No other contributor or merge/rebase. Actual source is clean at the tested revision.
+Last verified HEAD879ce33 on main; private origin/main remains
+adee7b6e61e03ac9798a180f0c0a1e890eb29547. Six unpublished coherent candidates.
+Root owns pending resume HTTP transport/supervisor/optional prerequisite, typed
+client/generated contract, route/client regressions, real HTTP fixture and docs.
+No other contributor or merge/rebase. No active Tux BigBrotr containers at last check.
 
-Next bounded action: add the installed private HTTP resume consumer to the actual
-Rust adapter, preserving historical retry before destination access and the same
-command/action/delivery bounds. Complete owning transport/supervisor/client contract
-reading, then discriminating route fixtures. HTTP/client/UI remain unimplemented.
+Next bounded action: exact-Git --runtime-resume on Tux with fresh build after
+resource/space preflight. It uses SQL paused7, actual installed HTTP and PG; reader
+is disabled to independently observe acceptance without execution. The fixture
+revokes artifact_files/consumer_frontiers/consumer_frontier_revisions privileges.
+Independent AI identified these as unnecessary in the new optional resume probe;
+root confirmed the501 queued branch. Expect this candidate to expose the refusal
+before removing the excess prerequisites, then rerun the same oracle. Preserve
+original failure. No migration changes. Remaining expiry/COMMIT/held-driver/output
+scenarios still gate broader resume guarantees.
+
+Mac actual-TCP route was RED405instead401 before implementation. Current46binary
+tests/Clippy pass; typed-client three new regressions were RED missing method,
+then16client tests and typecheck pass. Generated contracts/artifact checks pass.
+Logs under .research/implementation/export-execution/resume-{http,client}-*.log.
+Client preserves original key/body, accepts202/200 only with matching receipt
+identity/revision/created flag, and has no automatic mutation retry. No UI yet.
 
 The [016dd6f actual Rust adapter](evidence/p08-export-resume-adapter-native-20260924.json)
 passes fresh native build/two execution-selection tests/Clippy and six practical
@@ -48,8 +60,7 @@ Normal Control driver join is observed; held-driver/cancel/unknown COMMIT are NO
 No resumed output or HTTP/browser acceptance claim. Independent AI capture review
 found no concrete discrepancy; command/audit comparisons are resume-only and original
 pin scheduling TTL was still positive. Already-expired scheduling lease remains NOT_RUN.
-A new Mac actual-TCP resume-route regression is RED:405instead of401 on the missing
-route. Root owns that pending job_tests.rs change; full HTTP implementation follows.
+
 
 The [3e41cb7 SQL boundary](evidence/p08-export-resume-schema-native-20260924.json)
 passes original unreceipted-transition refusal,11positive/omission/rollback cases,

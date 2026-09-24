@@ -266,7 +266,13 @@ still needs fresh reader authority and positive output exclusion. A currently
 authenticated identical retry resolves the original acceptance before current
 input grants, destination or job-state checks. It reports that historical accepted
 revision, even if a worker has since paused again; it must never requeue twice.
-This profile requires additive schema/adapter/HTTP qualification before exposure.
+The typed adapter has scoped native evidence; the initial HTTP consumer and typed
+client are under qualification in the [export operation](../operations/export.md).
+HTTP receipt format is `bigbrotr-export-resume/1`, with original command/job IDs,
+accepted job revision/time, created flag and unobserved execution. New acceptance
+returns202; identical historical resolution returns200. No response issues cookies
+or touches session activity. Schema0814/explicit SQL prerequisites are probed
+without implicit migration; missing optional privileges disable only this command.
 
 Deactivation revokes existing sessions/tokens and starts the restrictive policy
 barrier. Reactivation does not resurrect them. Protect the last recoverable owner

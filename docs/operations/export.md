@@ -113,6 +113,32 @@ needs no current destination or native reader. A changed command under the same
 key conflicts. After a lost reply retain the exact key/body for resolution. A
 receipt does not prove file availability or current job state.
 
+`POST /management/v1/jobs/{job_id}/resume` is now wired to the typed resume
+adapter and remains under installed HTTP qualification. Supply the live session,
+explicit CSRF, same-origin Origin and a new resume `Idempotency-Key`, distinct
+from the original export acceptance. The closed body contains only canonical
+positive decimal strings `expected_job_revision`, `expected_config_revision` and
+`expected_policy_revision`. A new acceptance returns202 with
+`bigbrotr-export-resume/1`, the command/job IDs, original accepted `job_revision`
+and `accepted_at_us`, `created=true`, `execution=unobserved` and
+`authority=acceptance-only`. An identical historical retry returns200 and
+`created=false`, even after a later pause. Preserve the original key/body on a
+lost reply; changing them submits a different command. The typed client makes
+no automatic mutation retry and checks identity, revisions and response status.
+
+Resume rechecks the original actor's `data.read`, exact-scope `history.read`,
+`export`, `private-export`, expected revisions and the initialized original
+destination. No `roles.control`, `status.read` or reauthentication proof is needed.
+The same unit/caps/cut and retained export pin survive; scheduling TTL expiry does
+not release retention. Filesystem checks run under signal/Control supervision,
+outside SQL. A new reader or output write is not part of resume acceptance;
+execution independently acquires both before writing. Schema0814 and explicit
+SQL privileges are required. Missing optional protocol privileges return503;
+historical retry needs no current input grant, destination or native reader.
+The [actual Rust adapter evidence](../implementation/evidence/p08-export-resume-adapter-native-20260924.json)
+does not yet qualify this HTTP path, unknown COMMIT or resumed output. Browser
+resume controls and the CLI remain required consumers.
+
 The private panel now provides **Inspect your job** after sign-in. Paste the job
 ID from the acceptance receipt and select **Check job**. The initial view shows
 only your own export's stored state,
@@ -132,7 +158,7 @@ other-account isolation and actual session revocation. The full-page screenshots
 show an unexplained skip-link overlay; viewport/focus verification remains open,
 along with natural-expiry, BFCache and full accessibility acceptance.
 This observation supplies no download or execution authority. Job listing,
-resume/cancel controls and artifact discovery remain required work.
+browser resume/cancel controls and artifact discovery remain required work.
 
 The runtime probes the checksum-validated schema and job privileges at startup.
 Without protocol813 or its privileges the route refuses503 while an otherwise
@@ -200,7 +226,8 @@ Already admitted finite work can leave private files; those files have no comple
 inventory and confer no artifact visibility. The original pin remains retained.
 Paused jobs retain the original unit, immutable caps and export pin, and are
 excluded from automatic restart scans. Changing configuration does not enlarge
-that unit. Explicit resume/cancel controls are still required work. A Busy or
+that unit. The explicit resume API above is under qualification; browser/CLI and
+cancel controls remain required work. A Busy or
 pre-output refusal cannot establish cessation of an old writer and remains fatal
 after known reader cleanup. The [foreign-lock counterpart](../implementation/evidence/p08-export-runtime-busy-native-20260924.json)
 observes an actual kernel `flock` refusal and autonomous fail-stop without a false

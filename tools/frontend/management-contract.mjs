@@ -23,11 +23,15 @@ ajv.addSchema({ $id: 'bigbrotr-private-session', $defs: definitions });
 await output('validators.js', '// Generated from contracts/management/v1/openapi.yaml. Do not edit.\n' + standalone(ajv, {
   validateSession: 'bigbrotr-private-session#/$defs/SessionObservation',
   validateError: 'bigbrotr-private-session#/$defs/ApiError',
-  validateJob: 'bigbrotr-private-session#/$defs/JobObservation'
+  validateJob: 'bigbrotr-private-session#/$defs/JobObservation',
+  validateResumeCommand: 'bigbrotr-private-session#/$defs/ResumeExportCommand',
+  validateResumeReceipt: 'bigbrotr-private-session#/$defs/ResumeExportAcceptance'
 }) + '\n');
 await output('validators.d.ts', `// Generated from contracts/management/v1/openapi.yaml. Do not edit.
 import type { components } from './management';
 export declare function validateSession(value: unknown): value is components['schemas']['SessionObservation'];
 export declare function validateError(value: unknown): value is components['schemas']['ApiError'];
 export declare function validateJob(value: unknown): value is components['schemas']['JobObservation'];
+export declare function validateResumeCommand(value: unknown): value is components['schemas']['ResumeExportCommand'];
+export declare function validateResumeReceipt(value: unknown): value is components['schemas']['ResumeExportAcceptance'];
 `);

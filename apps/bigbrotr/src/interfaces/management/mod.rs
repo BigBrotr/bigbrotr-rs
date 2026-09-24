@@ -12,14 +12,14 @@ use bigbrotr::{
     management::{
         credentials::HASH_RESERVATION,
         grants::{AllocationSelection, GrantCommand},
-        jobs::{ExportCommand, JobCommand},
+        jobs::{ExportCommand, JobCommand, ResumeExportCommand},
         reauthentication::VerifiedReauthentication,
         sessions::{BrowserSecret, SessionError, SessionLifetime, VerifiedLogin},
     },
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits},
     storage::postgres::control_owner::{ControlSession, ScopeGrantAllocation},
 };
-use bigbrotr_model::{CommandKey, QualifiedRef, ReauthenticationId};
+use bigbrotr_model::{CommandKey, JobId, QualifiedRef, ReauthenticationId};
 use boundary::BrowserBoundary;
 use delivery::DeliveryGate;
 use std::{future::Future, net::SocketAddr, sync::Arc, time::Duration};
@@ -143,10 +143,62 @@ impl AllocationWork {
         Ok(Response(self.completion, result))
     }
 }
+/// The original unit already retains its input. Resume observes only the
+/// configured destination before reauthorizing the command in a fresh SQL tx.
+pub(super) struct ResumeWork {
+    completion: Completion,
+    session: BrowserSecret,
+    csrf: BrowserSecret,
+    key: CommandKey,
+    job: JobId,
+    command: ResumeExportCommand,
+    destination: Arc<LocalDestination>,
+}
+impl ResumeWork {
+    pub fn destination(&self) -> Arc<LocalDestination> {
+        self.destination.clone()
+    }
+    pub fn deadline(&self) -> tokio::time::Instant {
+        self.completion.deadline
+    }
+    pub fn abandoned(&self) -> bool {
+        self.completion.abandoned()
+    }
+    pub fn refuse(self, error: SessionError) -> Response {
+        Response(self.completion, Err(error))
+    }
+    pub async fn accept(
+        self,
+        owner: &mut ControlSession,
+        maximum: Duration,
+        destination: &CheckedDestination,
+    ) -> Result<Response> {
+        if self.abandoned() {
+            return Ok(self.refuse(SessionError::ArchiveUnavailable));
+        }
+        let commit = std::cell::Cell::new(false);
+        let result = sql(
+            maximum,
+            owner.resume_export(
+                &self.session,
+                &self.csrf,
+                self.key,
+                self.job,
+                &self.command,
+                Some(destination),
+                &commit,
+            ),
+        )
+        .await?;
+        Ok(Response(self.completion, result.map(Reply::ResumeExport)))
+    }
+}
+
 pub(super) enum Execution {
     Complete(Option<Response>),
     Archive(AllocationWork),
     History(HistoryWork),
+    Resume(ResumeWork),
 }
 
 pub(super) struct Management {
@@ -155,6 +207,7 @@ pub(super) struct Management {
     budget: ResourceBudget,
     delivery: DeliveryGate,
     export_jobs: bool,
+    export_resume: bool,
 }
 
 pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
@@ -206,6 +259,7 @@ impl Management {
         window: DeliveryWindow,
         assets: Option<Assets>,
         export_jobs: bool,
+        export_resume: bool,
     ) -> Result<Self> {
         let address = SocketAddr::new(
             root.text("administration.listen.host")
@@ -249,6 +303,7 @@ impl Management {
             budget,
             delivery,
             export_jobs,
+            export_resume,
         })
     }
 
@@ -306,6 +361,45 @@ impl Management {
                     return Ok(Execution::Complete(None));
                 }
                 match operation {
+                    Operation::ResumeExport {
+                        session,
+                        csrf,
+                        key,
+                        job,
+                        command,
+                    } => {
+                        if !self.export_resume {
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::ArchiveUnavailable),
+                            ))));
+                        }
+                        // Authenticate and resolve history before any current
+                        // destination observation; no native allocation or pin.
+                        let commit = std::cell::Cell::new(false);
+                        let result = sql(
+                            maximum,
+                            owner.resume_export(&session, &csrf, key, job, &command, None, &commit),
+                        )
+                        .await?;
+                        if let Some(destination) = destination
+                            && matches!(result, Err(SessionError::ArchiveUnavailable))
+                        {
+                            return Ok(Execution::Resume(ResumeWork {
+                                completion,
+                                session,
+                                csrf,
+                                key,
+                                job,
+                                command,
+                                destination: destination.clone(),
+                            }));
+                        }
+                        return Ok(Execution::Complete(Some(Response(
+                            completion,
+                            result.map(Reply::ResumeExport),
+                        ))));
+                    }
                     Operation::JobStatus {
                         session,
                         csrf,

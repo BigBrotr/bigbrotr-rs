@@ -319,7 +319,8 @@ anomaly and broader expiry/accessibility qualification remain open. Bounded list
 artifact discovery, explicit resume/cancel and their full UI/CLI journeys remain
 selected P08/P09 work. No historical schema checksum changes.
 
-The next explicit own-export resume consumer uses the same exact-scope `export`
+The explicit own-export resume API and typed client, under installed HTTP
+qualification, use the same exact-scope `export`
 action as new export submission, separately from `data.read`, `history.read` and
 `private-export`. Generic role control or status visibility cannot authorize it.
 It does not require a new reauthentication proof: this command changes no grant,

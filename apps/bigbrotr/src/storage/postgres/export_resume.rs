@@ -21,22 +21,37 @@ impl ControlSession {
     /// The command is optional on older schemas; selecting it requires explicit
     /// migration and grants, never implicit DDL or privilege expansion.
     pub async fn require_export_resume(&mut self) -> Result<(), SessionError> {
-        self.require_export_execution().await?;
+        if self.export_resume_available().await? {
+            Ok(())
+        } else {
+            Err(SessionError::Prerequisite)
+        }
+    }
+
+    /// Probe after the ordinary browser/session prerequisites. Resume reads the
+    /// committed unit but does not insert artifacts or acquire a fresh pin.
+    /// Missing optional grants leave earlier session/job protocols usable.
+    pub async fn export_resume_available(&mut self) -> Result<bool, SessionError> {
+        if !self.export_jobs_available().await? {
+            return Ok(false);
+        }
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 814)
+        let tx = application_transaction(&mut self.client, 812)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| SessionError::Unavailable)?;
-        let valid: bool = tx.query_one("SELECT has_table_privilege(CURRENT_USER,'control.export_resume_commands','SELECT') AND has_table_privilege(CURRENT_USER,'control.export_resume_commands','INSERT') AND has_function_privilege(CURRENT_USER,'control.export_resume_digest(control.export_resume_commands,control.management_commands)','EXECUTE')", &[]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
-        if !valid {
-            return Err(SessionError::Prerequisite);
-        }
+        let present: bool = tx.query_one("SELECT EXISTS(SELECT 1 FROM control.schema_versions WHERE engine='postgres-control' AND migration=814)", &[]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
+        let valid = if present {
+            tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) AND has_any_column_privilege(CURRENT_USER,'control.principal_grants','UPDATE') AND has_any_column_privilege(CURRENT_USER,'control.local_accounts','UPDATE') AND has_any_column_privilege(CURRENT_USER,'control.consumer_frontier_revisions','UPDATE') AND has_function_privilege(CURRENT_USER,'control.lock_archive_pins(bytea,bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.require_export_execution_authority(bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.export_resume_digest(control.export_resume_commands,control.management_commands)','EXECUTE') FROM (VALUES ('control.export_resume_commands',ARRAY['SELECT','INSERT']),('control.export_execution_units',ARRAY['SELECT']),('control.artifacts',ARRAY['SELECT']),('control.artifact_files',ARRAY['SELECT']),('control.local_accounts',ARRAY['SELECT']),('control.principal_grants',ARRAY['SELECT']),('control.consumers',ARRAY['SELECT','UPDATE']),('control.consumer_frontier_revisions',ARRAY['SELECT']),('control.consumer_frontiers',ARRAY['SELECT']),('control.snapshot_leases',ARRAY['SELECT']),('control.archive_snapshot_pins',ARRAY['SELECT']),('control.source_streams',ARRAY['SELECT']),('control.topology_streams',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?.try_get::<_,bool>(0).map_err(metadata)?
+        } else {
+            false
+        };
         tx.rollback().await.map_err(backend)?;
         self.available = true;
-        Ok(())
+        Ok(valid)
     }
 
     /// `None` destination still permits an authenticated historical retry.

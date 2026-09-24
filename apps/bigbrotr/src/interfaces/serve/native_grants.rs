@@ -146,6 +146,7 @@ impl Supervisor<'_> {
                         // but new archive work must retry after this consumer.
                         management::Execution::History(work) => Some(work.refuse(SessionError::Capacity)),
                         management::Execution::Archive(work) => Some(work.refuse(SessionError::Capacity)),
+                        management::Execution::Resume(work) => Some(work.refuse(SessionError::Capacity)),
                     };
                     self.lease.check_delivery(self.lease.known_epoch()).map_err(|e| (4,e.to_string()))?;
                     if let Some(response) = response { response.deliver(); }

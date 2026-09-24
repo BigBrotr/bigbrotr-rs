@@ -140,6 +140,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/management/v1/jobs/{job_id}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Resume your paused signed export
+         * @description Exact Origin, live actor session, explicit CSRF and original Idempotency-Key; canonical raw job ID, no query, body max8192bytes. New resume requires expected job/config/policy revisions, current data.read plus exact-scope history.read/export/private-export and the original configured destination. No roles.control, status.read or reauthentication proof. It queues the same committed unit and retains the original pin/caps; no fresh reader is needed for acceptance. Actual execution independently obtains current reader authority and output exclusion. Identical historical retry resolves before current grants/destination/job state and cannot restart a second pause. No idle-session touch or cookies. Schema0814 and explicit resume privileges required; an unavailable optional protocol returns503 without disabling earlier session routes. Under installed HTTP qualification.
+         */
+        post: operations["resumeExport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -400,6 +420,31 @@ export interface components {
             reason_code: null | "resource_limit" | "execution_refused" | "other";
             /** @constant */
             authority: "observation-only";
+        };
+        /** @description Resume the same actor-owned paused signed-export unit. No selection, destination or cap change. A new resume key differs from the original export key; identical retry uses its original key and body. */
+        ResumeExportCommand: {
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_job_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_config_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_policy_revision: string;
+        };
+        /** @description Immutable historical resume acceptance. job_revision is the originally accepted revision, even after another pause. No current state, execution, output or download authority. */
+        ResumeExportAcceptance: {
+            /** @constant */
+            format: "bigbrotr-export-resume/1";
+            command_key: string;
+            job_id: string;
+            /** @description Original positive Unix microseconds, maximum9223372036854775807; exact decimal string. */
+            accepted_at_us: string;
+            created: boolean;
+            /** @constant */
+            execution: "unobserved";
+            /** @constant */
+            authority: "acceptance-only";
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            job_revision: string;
         };
         /**
          * Initial exact-ID history QueryRequest
@@ -1064,6 +1109,118 @@ export interface operations {
             };
             /** @description Missing or invisible export; same response. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    resumeExport: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResumeExportCommand"];
+            };
+        };
+        responses: {
+            /** @description Identical historical acceptance for this actor/key; no execution claim. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResumeExportAcceptance"];
+                };
+            };
+            /** @description New atomic resume receipt and same-unit queued revision accepted. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResumeExportAcceptance"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Command or revision conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Body byte limit */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description JSON required */
+            415: {
                 headers: {
                     [name: string]: unknown;
                 };

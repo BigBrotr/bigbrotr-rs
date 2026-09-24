@@ -989,6 +989,7 @@ async fn management_stop_cannot_finish_or_release_grants_before_blocking_worker_
         budget: budget.clone(),
         delivery,
         export_jobs: false,
+        export_resume: false,
     };
     let client = tokio::spawn(exchange(
         address,

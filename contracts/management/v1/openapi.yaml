@@ -881,6 +881,169 @@
           }
         }
       }
+    },
+    "/management/v1/jobs/{job_id}/resume": {
+      "post": {
+        "operationId": "resumeExport",
+        "summary": "Resume your paused signed export",
+        "description": "Exact Origin, live actor session, explicit CSRF and original Idempotency-Key; canonical raw job ID, no query, body max8192bytes. New resume requires expected job/config/policy revisions, current data.read plus exact-scope history.read/export/private-export and the original configured destination. No roles.control, status.read or reauthentication proof. It queues the same committed unit and retains the original pin/caps; no fresh reader is needed for acceptance. Actual execution independently obtains current reader authority and output exclusion. Identical historical retry resolves before current grants/destination/job state and cannot restart a second pause. No idle-session touch or cookies. Schema0814 and explicit resume privileges required; an unavailable optional protocol returns503 without disabling earlier session routes. Under installed HTTP qualification.",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$",
+              "not": {
+                "const": "00000000000000000000000000000000"
+              }
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$",
+              "not": {
+                "const": "00000000000000000000000000000000"
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResumeExportCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Command or revision conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "New atomic resume receipt and same-unit queued revision accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumeExportAcceptance"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical historical acceptance for this actor/key; no execution claim.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumeExportAcceptance"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1759,6 +1922,89 @@
           }
         },
         "description": "One actor-owned durable export observation. State is not worker liveness; no input, output, filesystem, execution or download authority. Completion time is present exactly for terminal states; paused/cancel_requested/partial/failed/cancelled/skipped require a redacted reason. Listing and artifact discovery remain separate consumers."
+      },
+      "ResumeExportCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "expected_job_revision",
+          "expected_config_revision",
+          "expected_policy_revision"
+        ],
+        "properties": {
+          "expected_job_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "expected_config_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "expected_policy_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          }
+        },
+        "description": "Resume the same actor-owned paused signed-export unit. No selection, destination or cap change. A new resume key differs from the original export key; identical retry uses its original key and body."
+      },
+      "ResumeExportAcceptance": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format",
+          "command_key",
+          "job_id",
+          "job_revision",
+          "accepted_at_us",
+          "created",
+          "execution",
+          "authority"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "bigbrotr-export-resume/1"
+          },
+          "command_key": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "job_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "accepted_at_us": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Original positive Unix microseconds, maximum9223372036854775807; exact decimal string."
+          },
+          "created": {
+            "type": "boolean"
+          },
+          "execution": {
+            "type": "string",
+            "const": "unobserved"
+          },
+          "authority": {
+            "type": "string",
+            "const": "acceptance-only"
+          },
+          "job_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          }
+        },
+        "description": "Immutable historical resume acceptance. job_revision is the originally accepted revision, even after another pause. No current state, execution, output or download authority."
       }
     },
     "securitySchemes": {

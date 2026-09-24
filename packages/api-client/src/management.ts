@@ -1,9 +1,11 @@
 import type { components } from './generated/management';
-import { validateError, validateSession, validateJob } from './generated/validators.js';
+import { validateError, validateSession, validateJob, validateResumeCommand, validateResumeReceipt } from './generated/validators.js';
 
 export type SessionObservation = components['schemas']['SessionObservation'];
 export type LoginInput = components['schemas']['LoginInput'];
 export type JobObservation = components['schemas']['JobObservation'];
+export type ResumeExportCommand = components['schemas']['ResumeExportCommand'];
+export type ResumeExportAcceptance = components['schemas']['ResumeExportAcceptance'];
 type ApiError = components['schemas']['ApiError']['error'];
 type FailureKind = 'api' | 'cancelled' | 'unavailable' | 'incompatible' | 'response_limit' | 'csrf_missing' | 'invalid_input';
 
@@ -133,8 +135,8 @@ export function createManagementClient(environment: {
 } = {}) {
   const fetch = environment.fetch ?? globalThis.fetch.bind(globalThis);
   const cookie = environment.cookie ?? (() => document.cookie);
-  async function request<T>(path: string, method: 'GET' | 'POST' | 'DELETE', success: number,
-    decode: (value: unknown) => T, signal?: AbortSignal, body?: string, csrf?: string): Promise<T | undefined> {
+  async function request<T>(path: string, method: 'GET' | 'POST' | 'DELETE', success: number | readonly number[],
+    decode: (value: unknown, status: number) => T, signal?: AbortSignal, body?: string, csrf?: string, key?: string): Promise<T | undefined> {
     const controller = new AbortController();
     const cancel = () => controller.abort();
     let timedOut = false;
@@ -146,19 +148,21 @@ export function createManagementClient(environment: {
       const headers: Record<string, string> = { Accept: 'application/json' };
       if (body !== undefined) headers['Content-Type'] = 'application/json';
       if (csrf !== undefined) headers['X-CSRF-Token'] = csrf;
+      if (key !== undefined) headers['Idempotency-Key'] = key;
       const response = await fetch(path, {
         method, body, headers, signal: controller.signal,
         credentials: 'same-origin', mode: 'same-origin', redirect: 'error', cache: 'no-store'
       });
       if (controller.signal.aborted) { await response.body?.cancel(); controller.signal.throwIfAborted(); }
       if (response.status === 204 && success === 204) return undefined;
-      if (response.status !== success && ![400, 401, 403, 404, 413, 415, 429, 503].includes(response.status)) {
+      const accepted = typeof success === 'number' ? response.status === success : success.includes(response.status);
+      if (!accepted && ![400, 401, 403, 404, 409, 413, 415, 429, 503].includes(response.status)) {
         await response.body?.cancel();
         throw new ManagementFailure('incompatible');
       }
       const value = await boundedJson(response, controller.signal);
       controller.signal.throwIfAborted();
-      if (response.status === success) return decode(value);
+      if (accepted) return decode(value, response.status);
       if (!validateError(value) || value.error.status !== response.status
         || (response.status === 429 && response.headers.get('retry-after') !== '60')) {
         throw new ManagementFailure('incompatible');
@@ -186,6 +190,26 @@ export function createManagementClient(environment: {
     async jobStatus(id: string, signal?: AbortSignal): Promise<JobObservation> {
       if (!/^[0-9a-f]{32}$/.test(id) || /^0+$/.test(id)) throw new ManagementFailure('invalid_input');
       return (await request(`/management/v1/jobs/${id}`, 'GET', 200, value => jobObservation(value, id), signal, undefined, csrfCookie(cookie())))!;
+    },
+    async resumeExport(id: string, key: string, command: ResumeExportCommand, signal?: AbortSignal): Promise<ResumeExportAcceptance> {
+      for (const value of [id, key]) {
+        if (!/^[0-9a-f]{32}$/.test(value) || /^0+$/.test(value)) throw new ManagementFailure('invalid_input');
+      }
+      if (!validateResumeCommand(command) || Object.values(command).some(value => BigInt(value) > U64_MAX)) {
+        throw new ManagementFailure('invalid_input');
+      }
+      // Snapshot before the first await: later caller mutation must not change
+      // the receipt identity compared against the bytes already dispatched.
+      const revision = BigInt(command.expected_job_revision) + 1n;
+      const body = JSON.stringify(command);
+      return (await request(`/management/v1/jobs/${id}/resume`, 'POST', [200, 202], (value, status) => {
+        if (!validateResumeReceipt(value) || value.job_id !== id || value.command_key !== key
+          || BigInt(value.job_revision) > U64_MAX || BigInt(value.job_revision) !== revision
+          || BigInt(value.accepted_at_us) > I64_MAX || value.created !== (status === 202)) {
+          throw new ManagementFailure('incompatible');
+        }
+        return value;
+      }, signal, body, csrfCookie(cookie()), key))!;
     }
   };
 }

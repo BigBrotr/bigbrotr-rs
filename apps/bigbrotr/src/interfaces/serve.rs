@@ -2,6 +2,7 @@
 mod export_jobs;
 mod history;
 mod native_grants;
+mod resume_export;
 use super::{
     archive_preflight, archive_receipt, lifecycle_output::LifecycleOutput, management,
     postgres_command,
@@ -63,7 +64,7 @@ pub(crate) fn command() -> Command {
         .about("Run explicitly assigned roles; the initial runtime implements Control only")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
-        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0812 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. The initial private GET/POST /v1/resources/event_history profile additionally requires a live session, explicit CSRF and history.read for its exact scope; one exact ID/snapshot, configured resource limits, and a certified archive pin apply. This profile is under qualification. POST /management/v1/jobs accepts private exact-ID signed JSONL export jobs; configured initialized export.destination requires migration0813 and job/pin/source-lock privileges before binding. Historical receipts on the available protocol need no current destination or native reader. Destination checks run on supervised blocking work, retained through Control driver join. Selected export.destination plus archive.reader.enabled also requires migration0501 and execution privileges before startup, including headless Control. The initial automatic exact-ID signed JSONL executor is under qualification; it uses current actor grants and the original retained snapshot. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
+        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0812 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. The initial private GET/POST /v1/resources/event_history profile additionally requires a live session, explicit CSRF and history.read for its exact scope; one exact ID/snapshot, configured resource limits, and a certified archive pin apply. This profile is under qualification. POST /management/v1/jobs accepts private exact-ID signed JSONL export jobs; configured initialized export.destination requires migration0813 and job/pin/source-lock privileges before binding. Historical receipts on the available protocol need no current destination or native reader. Destination checks run on supervised blocking work, retained through Control driver join. Selected export.destination plus archive.reader.enabled also requires migration0501 and execution privileges before startup, including headless Control. POST /management/v1/jobs/{job_id}/resume is under qualification with migration0814 and explicit SQL privileges; it queues the same paused unit after current grants/destination/CAS, without a fresh reader pin. Historical retries preserve the original receipt. The initial automatic exact-ID signed JSONL executor is under qualification; it uses current actor grants and the original retained snapshot. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {
@@ -524,6 +525,7 @@ async fn supervise(
     }
     let mut management = if accepted.flag("administration.enabled") {
         let mut export_jobs = false;
+        let mut export_resume = false;
         tokio::select! {
             biased;
             _ = stop.requested() => return Err((4,"private session startup cancelled".into())),
@@ -532,6 +534,7 @@ async fn supervise(
                     owner.require_browser_sessions().await?;
                     owner.require_scope_grants().await?;
                     export_jobs = owner.export_jobs_available().await?;
+                    export_resume = owner.export_resume_available().await?;
                     if archive.export_destination.is_some() && !export_jobs {
                         return Err(bigbrotr::management::sessions::SessionError::Prerequisite);
                     }
@@ -556,6 +559,7 @@ async fn supervise(
                     .map_err(|e| (4, e.to_string()))?,
                 archive.management_assets,
                 export_jobs,
+                export_resume,
             )
             .await?,
         )
@@ -659,6 +663,16 @@ async fn supervise(
                 };
                 let response = match response {
                     management::Execution::Complete(response) => response,
+                    management::Execution::Resume(work) => {
+                        let mut supervisor = native_grants::Supervisor {
+                            owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
+                            refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
+                            management: &mut management, stopping: false,
+                        };
+                        let response = resume_export::execute(work, &shared_budget, &mut supervisor).await?;
+                        if supervisor.stopping { return Ok(()); }
+                        Some(response)
+                    }
                     management::Execution::History(work) => {
                         let mut supervisor = native_grants::Supervisor {
                             owner: &mut owner, lease: &mut lease, renewed: &mut renewed,

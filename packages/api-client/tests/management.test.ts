@@ -206,3 +206,44 @@ test('missing or invisible job is a typed non-retrying failure', async () => {
   await assert.rejects(api.jobStatus(job.job_id), (error: unknown) => error instanceof ManagementFailure && error.api?.status === 404);
   assert.equal(calls, 1);
 });
+
+const resumeCommand = { expected_job_revision: '9007199254740993', expected_config_revision: '9', expected_policy_revision: '10' };
+const resumeReceipt = { format: 'bigbrotr-export-resume/1', command_key: '08'.repeat(16), job_id: job.job_id, job_revision: '9007199254740994', accepted_at_us: '1800000000000000', created: true, execution: 'unobserved', authority: 'acceptance-only' };
+test('resume binds original identity and revisions with explicit CSRF and no automatic retry', async () => {
+  const requests: RequestInit[] = [];
+  for (const created of [true, false]) {
+    const api = createManagementClient({ cookie: () => `BigBrotrLocalCsrf=${'a'.repeat(64)}`, fetch: async (path, init) => {
+      assert.equal(path, `/management/v1/jobs/${job.job_id}/resume`);
+      assert.equal(init?.method, 'POST');
+      assert.equal(new Headers(init?.headers).get('idempotency-key'), resumeReceipt.command_key);
+      assert.equal(new Headers(init?.headers).get('x-csrf-token'), 'a'.repeat(64));
+      assert.equal(init?.body, JSON.stringify(resumeCommand));
+      requests.push(init!);
+      return json({ ...resumeReceipt, created }, created ? 202 : 200);
+    } });
+    assert.deepEqual(await api.resumeExport(job.job_id, resumeReceipt.command_key, resumeCommand), { ...resumeReceipt, created });
+  }
+  assert.equal(requests.length, 2);
+});
+
+test('resume rejects mismatched receipt identity, revisions, status, authority and unknown fields', async () => {
+  for (const patch of [{ job_id: '07'.repeat(16) }, { command_key: '07'.repeat(16) }, { job_revision: resumeCommand.expected_job_revision }, { job_revision: '18446744073709551616' }, { accepted_at_us: '9223372036854775808' }, { created: false }, { destination: '/tmp/private' }, { authority: 'execute' }]) {
+    const api = createManagementClient({ cookie: () => `BigBrotrLocalCsrf=${'a'.repeat(64)}`, fetch: async () => json({ ...resumeReceipt, ...patch }, 202) });
+    await assert.rejects(api.resumeExport(job.job_id, resumeReceipt.command_key, resumeCommand), failure('incompatible'));
+  }
+});
+
+test('resume validates closed commands before transport and leaves unknown results unresolved', async () => {
+  let calls = 0;
+  const api = createManagementClient({ cookie: () => `BigBrotrLocalCsrf=${'a'.repeat(64)}`, fetch: async () => { calls++; throw new Error('private canary'); } });
+  for (const id of ['0'.repeat(32), 'AB'.repeat(16), '../me']) await assert.rejects(api.resumeExport(id, resumeReceipt.command_key, resumeCommand), failure('invalid_input'));
+  for (const key of ['', '0'.repeat(32), 'AB'.repeat(16)]) await assert.rejects(api.resumeExport(job.job_id, key, resumeCommand), failure('invalid_input'));
+  for (const patch of [{ expected_job_revision: '01' }, { expected_policy_revision: '18446744073709551616' }, { expected_config_revision: 1 }, { destination: '/tmp/private' }]) {
+    await assert.rejects(api.resumeExport(job.job_id, resumeReceipt.command_key, { ...resumeCommand, ...patch } as typeof resumeCommand), failure('invalid_input'));
+  }
+  assert.equal(calls, 0);
+  await assert.rejects(api.resumeExport(job.job_id, resumeReceipt.command_key, resumeCommand), failure('unavailable'));
+  assert.equal(calls, 1);
+  const conflict = createManagementClient({ cookie: () => `BigBrotrLocalCsrf=${'a'.repeat(64)}`, fetch: async () => json({ error: { status: 409, code: 'command_conflict', message: 'Command key or expected revision conflicts with current state.', retry_class: 'check_state', correlation_id: null } }, 409) });
+  await assert.rejects(conflict.resumeExport(job.job_id, resumeReceipt.command_key, resumeCommand), (error: unknown) => error instanceof ManagementFailure && error.api?.status === 409);
+});
