@@ -19,18 +19,32 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-HEAD1647b5f2eb93a1f8a11adc2ddf4c2262e6a2072e, tree
-d2cdef31288281768d8d23ba4b80a9553c63c397. Three candidate commits are unpublished
-above origin/main209a34e6467894a87700382bbfec7607a95711e5, freshly fetched. GitHub
-metadata confirms private BigBrotr/bigbrotr-rs with main default. Root owns only
-documentation: current report, inventory, checkpoint, build/private-administration
-contracts and P08/P09 task prose. No foreign work or active local/remote experiment.
-The clean transfer-only worktree skip-button-1647b5f was verified and removed.
+HEAD/origin/main a4b0464bd6cb75add45ed1b9ca3924b51e6e3d38, tree
+82c76a7e2543d34de827abd1648207af91a0bdb0. Private push succeeded and ls-remote
+matches; clean immediately after push. GitHub metadata confirms private
+BigBrotr/bigbrotr-rs with main default. Root owns this checkpoint and the resume-checker fixture changes in
+experiments/export-execution plus the exact-destination parameter in
+experiments/archive-engine/export_destination_blocked.py.
+No foreign work or active local/remote experiment. The clean transfer-only worktree
+skip-button-1647b5f was verified and removed. Product/test source1647b5f and the
+three earlier diagnostic/evidence commits are now published without history rewrite.
 
-Review and artifact/link/handoff checks passed; evidence is ready for the coherent
-commit/private push. After that, qualify the actual resume destination checker under blocked native I/O and
-SIGTERM for P08-T03 Step3. Read remaining supervisor/transport callers before
-changing the fixture. Existing export_destination_blocked.py owns the qualified
+Resume checker is in preparation: actual held marker openat, rejecting priming,
+independent twelve-ledger/session audit and bounded signal timing. No native run
+or passing checker evidence yet. Wiring and six local trace-oracle controls pass;
+artifact/link/handoff checks pass. Reviewed full serve/resume/native supervision,
+transport and destination boundaries. Independent read-only fixture review identified capture omission and pre-readiness
+cleanup ambiguity; the dedicated collector now includes exact checker traces, and
+the client restores inputs only after known exclusion. Six parser controls still pass.
+Next commit a clean candidate and launch --runtime-resume-checker with a fresh
+Rust build, using transfer-resume-checker.py and collect-resume-checker.py.
+Prelaunch2026-09-24T20:45:33Z records758containers, eight unrelated running, no
+BigBrotr running and118387646464freebytes. No new deletion; useful caches and
+original artifacts remain protected. The per-lab preflight must recheck this.
+
+Review and artifact/link/handoff checks passed; the keyboard slice is committed
+and pushed. Next qualify the actual resume destination checker under blocked
+native I/O and SIGTERM for P08-T03 Step3. Existing export_destination_blocked.py owns the qualified
 strace syscall barrier; resume has a distinct route and preserves an existing
 unit/pin. Do not substitute a dummy I/O call or allow priming to accept a resume.
 Use a fresh inventoried exact-Git lab, actual HTTP/SQL and independent unchanged

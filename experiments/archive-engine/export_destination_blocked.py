@@ -45,10 +45,10 @@ def instrument():
     return dict(sha256=TRACER_SHA,proof_sha256=proof_sha,research_patch=proof['source_inputs'][patch.name])
 
 
-def pending_checker(trace, parent):
+def pending_checker(trace, parent, destination='/out/private-grant-http/destination'):
     """Only an unreturned exact marker open on this server's worker qualifies."""
     for line in reversed(trace.splitlines()):
-        match = re.fullmatch(r'(\d+)\s+\d+\.\d+ openat\(\d+</out/private-grant-http/destination>, "destination.json", (.*)', line)
+        match = re.fullmatch(r'(\d+)\s+\d+\.\d+ openat\(\d+<' + re.escape(str(destination)) + r'>, "destination.json", (.*)', line)
         if not match:
             continue
         tid = int(match[1])
