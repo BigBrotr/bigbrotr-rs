@@ -123,6 +123,9 @@ The same observation is `GET /management/v1/jobs/{job_id}` with a live session
 cookie and explicit `X-CSRF-Token`; supply neither body nor query parameters.
 Current dataset `status.read` is required. Missing IDs and jobs owned by other
 accounts share404. Input permission loss does not hide your operational receipt.
+[Scoped native evidence](../implementation/evidence/p08-export-status-native-20260924.json)
+checks these visibility/grant/session boundaries and restart against PostgreSQL;
+the actual panel/browser journey remains unqualified.
 This observation supplies no download or execution authority. Job listing,
 resume/cancel controls and artifact discovery remain required work.
 

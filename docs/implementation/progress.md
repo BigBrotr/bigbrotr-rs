@@ -20,13 +20,14 @@ product responsibilities in the existing task plan.
 
 ## Verified Git and latest boundary
 
-Last verified HEADf81362c1ea6645dbd2e9bcc906763420e7db5e6b on main; candidate
+Last verified HEAD29983ccab5d77727f4cbc24241cb34e2a9a586eb on main; two commits
 unpublished, origin still62c18c9a108af2c8165508e07ad4e37920fbd292. Root owns
-only this subsequent checkpoint/inventory update. No other contributor writes
-or merge/rebase. The exact candidate completed the first native attempt as recorded below.
-The next coherent candidate needs a fresh native build; cdb78a1 ELF reuse is
-forbidden for these changed product/build inputs. Native status/browser are NOT_RUN.
-Pause-COMMIT and revocation capture reviews/evidence remain pushed and unchanged.
+only the subsequent scoped status evidence, task-ID correction(P09-T09), owning
+operations/task documentation, inventory and this checkpoint. No other writer or
+merge/rebase. Native status capture is verified PASS; browser remains NOT_RUN.
+Commit/push this evidence boundary, then implement the actual browser fixture.
+Fresh f813 parent/worker artifacts are current. Reuse requires complete product/
+build input equality; product changes require a new build, never old cdb ELF.
 
 The known-refusal implementation at cdb78a1 has Mac fmt/check,42 binary tests and
 Clippy PASS, complete root diff review and independent AI source review without a
@@ -144,21 +145,35 @@ PID0/noOOM/network removed,622prior/eight running unchanged. Free144191508480→
 143794728960bytes. No cache. Root and independent complete capture reviews passed.
 Reviewer has not reread actual seed Parquet/dependency bytes, only recorded comparisons.
 
-Next bounded action: commit the fixture-only request-correlation correction and
-run a new --runtime-job-status lab reusing f813 ELF only after complete product
-input equality. Original f813 native status is [INCOMPLETE](evidence/p08-export-status-fixture-incomplete-20260924.json):
-first own metadata200 is exact, then repeated event() selects that old reply for
-missing-status instead of waiting for its404. No actual missing reply retained.
-Root verified complete36file capture/1189current and1110seed Git/ELF/resource
-identities. Fresh build/native44 tests/Clippy PASS. No other product failure
-established. Root owns two fixture corrections, evidence/inventory/checkpoint.
-Capture tarbfdf66cbdec53347ff908cdc04f12bcf505f8f8414e00d5f110c29f0d55353dd.
-New parentSHA61ace1586e2f0b37a8965b33852c775814192439520c94f809ef766a239bcd41;
+Next bounded action: exercise the production private panel's job view in an
+actual browser against installed Rust/PostgreSQL, with independent SQL expected
+states and session/visibility failures. Inspect existing private-panel browser
+recipes and reusable tools before extending the export lab; use exact Git and
+check space. Do not mutate retained labs. No browser fixture is implemented yet.
+
+[Native status](evidence/p08-export-status-native-20260924.json) passes at29983cc,
+with exact f813 ELF after full product/build equality.18 uniquely correlated
+HTTP exchanges show succeeded4/checkpoint1 and accepted1/checkpoint0, missing/
+other-actor404, current status-grant403, account/session revocation401 and epoch4
+restart200. History/data grant loss does not hide the actor's redacted receipt.
+Initial reads preserve session idle/last_seen/xmin. All seven ledgers/xmin remain
+identical from after signed HTTP acceptance through restart; both parents0,
+positively reaped/root lock available/scratch empty/bothDB0.32 payload files,
+1190current/1189build/1110seed sources and exact ELF independently verified;
+tar1d0cfb7cc7f6db5eda4bfef737208d6361827a6b9514e9dc03c1b9c24573ac2a.
+Root and independent AI complete capture/source/resource audits found no concrete
+discrepancy. Excludes browser, expiry while SQL/socket blocks, paused/running HTTP
+and physical artifact rehash after lookups. No full task completion.
+
+Original f813 native status remains [INCOMPLETE](evidence/p08-export-status-fixture-incomplete-20260924.json):
+first own metadata200 was exact, then repeated event() selected that old reply
+instead of waiting for missing404. Actual missing reply not retained. Unique
+request/event correlation fixed the fixture, with no product or budget change.
+Complete36file/1189current/1110seed capture verified; fresh native build,44binary
+tests and Clippy PASS. Preserve original result and current f813 compiler cache.
+ParentSHA61ace1586e2f0b37a8965b33852c775814192439520c94f809ef766a239bcd41;
 workerSHA3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
-Independent AI fixture review confirms correlation correction; no further static
-block found. It did not audit this capture or run any tests.
-Then audit the complete native capture and exercise
-actual production assets/browser before qualifying this new user journey.
+
 Implemented initial GET status: authenticated actor-owned protocol1 export,
 current dataset status.read/session/CSRF, closed redacted metadata, no idle touch
 or input/output authority; missing/other actor404. Same Control/dataset/account
@@ -246,6 +261,9 @@ Both container PID0/noOOM, PG137/runner143, network removed, bothDB0,
 Fresh build completed before the fixture failed. Retain this useful current cache.
 Ignored transfer-status.py transfers exact Git; collect-runtime.py now includes
 job-status parent stdout/stderr. review-status-capture.py verified INCOMPLETE.
+Corrected29983cc owner6b9d5688cc4b4413b7799843b3aeb6e2 is also stopped-retained:
+PG4984e6c6/runner2e46e38e PID0/noOOM, PG137/runner0, network removed.626prior/
+eight running preserved; free139977797632→139580645376bytes. No new compiler cache.
 No active lab or cleanup debt after terminal capture; recheck before reuse.
 
 - cdb78a1 ownera7d3f8f762e57fc9f6f706f8cda4da91 stopped-retained, network removed;
@@ -269,7 +287,7 @@ as inventoried; original failed outcomes were never rewritten. No container/volu
 qualification/object-storage dataset/backup/catalog/index removal.
 
 Protect export-checker-fixed-4e6b5c0 seed source/assets/cache (owner3f840fe30a3ffef7f9944c72ea6e38f9),
-verified patched strace-exit-9b30c35, current cdb cache, reusable private-history-32dd58d,
+verified patched strace-exit-9b30c35, current f813 cache and retained cdb cache, reusable private-history-32dd58d,
 stopped history-capture-b5c862a and its installed-publication-61271e2/out/archive-worker
 dependency. Preserve deliberately retained PG fault states, old active-state leases,
 pins and claims. Process death/lease expiry never establishes safe GC or noncommit.

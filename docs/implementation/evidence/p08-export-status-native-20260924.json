@@ -1,0 +1,258 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P09-T09"
+  ],
+  "source": "29983ccab5d77727f4cbc24241cb34e2a9a586eb",
+  "tree": "003122c283b66543e1f8d66942ae0814e82b8554",
+  "scope": "Native actor-owned export metadata, current status authorization, no idle touch and restart; not browser or complete export qualification.",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rust": "1.98.1",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "artifacts": {
+      "bigbrotr": "61ace1586e2f0b37a8965b33852c775814192439520c94f809ef766a239bcd41",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "reuse": {
+    "source": "f81362c1ea6645dbd2e9bcc906763420e7db5e6b",
+    "source_files": 1189,
+    "condition": "All product/build inputs equal after excluding docs/ and experiments/; exact installed ELF bytes independently rehashed. Fresh build,44 binary tests and Clippy are recorded in the preceding f813 INCOMPLETE report.",
+    "seed_source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "seed_source_files": 1110
+  },
+  "capture": {
+    "root": ".research/implementation/export-execution/attempt-29983cc/capture",
+    "verified": {
+      "files": 32,
+      "sha256": "1d0cfb7cc7f6db5eda4bfef737208d6361827a6b9514e9dc03c1b9c24573ac2a",
+      "source": "29983ccab5d77727f4cbc24241cb34e2a9a586eb",
+      "tree": "003122c283b66543e1f8d66942ae0814e82b8554",
+      "source_files": 1190
+    }
+  },
+  "executed": {
+    "cases": {
+      "alice-login": {
+        "status": 201,
+        "operation": "login"
+      },
+      "owner-status": {
+        "status": 200,
+        "operation": "status"
+      },
+      "missing-status": {
+        "status": 404,
+        "operation": "status"
+      },
+      "signed-acceptance": {
+        "status": 202,
+        "operation": "accept"
+      },
+      "accepted-zero-checkpoint": {
+        "status": 200,
+        "operation": "status"
+      },
+      "input-revocation": {
+        "status": 200,
+        "operation": "revoke-history"
+      },
+      "status-after-input-revocation": {
+        "status": 200,
+        "operation": "status"
+      },
+      "bob-login": {
+        "status": 201,
+        "operation": "login"
+      },
+      "other-actor-status": {
+        "status": 404,
+        "operation": "status"
+      },
+      "bob-missing": {
+        "status": 404,
+        "operation": "status"
+      },
+      "bob-still-healthy": {
+        "status": 200,
+        "operation": "me"
+      },
+      "alice-login-again": {
+        "status": 201,
+        "operation": "login"
+      },
+      "status-grant-revoked": {
+        "status": 403,
+        "operation": "status"
+      },
+      "control-after-denial": {
+        "status": 200,
+        "operation": "me"
+      },
+      "no-data-grant": {
+        "status": 200,
+        "operation": "status"
+      },
+      "deactivated-session": {
+        "status": 401,
+        "operation": "status"
+      },
+      "restart-login": {
+        "status": 201,
+        "operation": "login"
+      },
+      "restart-status": {
+        "status": 200,
+        "operation": "status"
+      }
+    },
+    "completed_expected": {
+      "format": "bigbrotr-job-status/1",
+      "kind": "export",
+      "authority": "observation-only",
+      "state": "succeeded",
+      "job_id": "09f7a3e663fd9f005f14b90ef5224cbb",
+      "reason_code": null,
+      "job_revision": "4",
+      "created_at_us": "1790258087856430",
+      "completed_at_us": "1790258089411321",
+      "checkpoint_revision": "1"
+    },
+    "accepted_expected": {
+      "format": "bigbrotr-job-status/1",
+      "kind": "export",
+      "authority": "observation-only",
+      "state": "accepted",
+      "job_id": "4112eb6225ca55dbdf1caa948eea9137",
+      "reason_code": null,
+      "job_revision": "1",
+      "created_at_us": "1790258151944573",
+      "completed_at_us": null,
+      "checkpoint_revision": "0"
+    },
+    "rate_wait_seconds": 60.00032767187804,
+    "sessions": {
+      "before": [
+        {
+          "id": "08d00539b5d6f16ffb5a379fad4637db",
+          "xmin": "916",
+          "revoked": null,
+          "last_seen": 1790258151295454,
+          "principal": "10101010101010101010101010101010",
+          "idle_expires": 1790259951295454
+        },
+        {
+          "id": "e19e4058551083fea10bd2503ba7d4b5",
+          "xmin": "807",
+          "revoked": null,
+          "last_seen": 1790258085733001,
+          "principal": "10101010101010101010101010101010",
+          "idle_expires": 1790259885733001
+        }
+      ],
+      "after": [
+        {
+          "id": "08d00539b5d6f16ffb5a379fad4637db",
+          "xmin": "916",
+          "revoked": null,
+          "last_seen": 1790258151295454,
+          "principal": "10101010101010101010101010101010",
+          "idle_expires": 1790259951295454
+        },
+        {
+          "id": "e19e4058551083fea10bd2503ba7d4b5",
+          "xmin": "807",
+          "revoked": null,
+          "last_seen": 1790258085733001,
+          "principal": "10101010101010101010101010101010",
+          "idle_expires": 1790259885733001
+        }
+      ]
+    },
+    "invariants": [
+      "Every request has a unique fixture event and matching operation. Own response fields match independent SQL rows exactly except observation time.",
+      "Other-account and absent job replies match404/code/message/retry_class except random correlation_id. Bob really authenticated with only status.read.",
+      "Signed-event HTTP acceptance created one accepted job with checkpoint0. History permission was revoked by the actual reauthenticated management command; own redacted status remains available.",
+      "Privileged isolated fixture revoked status.read and data.read: status403 while /me200; restoring only status.read permits own metadata. This is not dataset-grant editor qualification.",
+      "Account deactivation invokes actual SQL session revocation; current request401. Reactivation and a fresh actual parent/session resolve the same accepted job.",
+      "All seven job/unit/artifact/file/lease/pin/claim ledgers including xmin remain identical from after acceptance through final restart. Original rows are preserved when adding the new accepted job.",
+      "Initial and restarted parents exit0, are positively reaped, leave the root lock available and scratch empty. Both databases have zero remaining backends."
+    ],
+    "parent_epochs": [
+      "3",
+      "4"
+    ],
+    "parent_pids": [
+      1402,
+      1508
+    ],
+    "prerequisite": "Original actual signed archive and installed empty JSONL completion checked first; empty bytes and full manifest captured before status lookups. No physical output rehash after status."
+  },
+  "resources": {
+    "owner": "6b9d5688cc4b4413b7799843b3aeb6e2",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-29983cc",
+    "state": "stopped-retained",
+    "network_state": "removed after owner/no-endpoint audit",
+    "preexisting": 626,
+    "unrelated_running": 8,
+    "free_before": 139977797632,
+    "free_after": 139580645376,
+    "terminal_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "containers": {
+      "rust-visibility": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-24T13:54:38.030447286Z",
+        "FinishedAt": "2026-09-24T13:55:55.293325897Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-24T13:54:36.184737341Z",
+        "FinishedAt": "2026-09-24T13:56:05.711472581Z"
+      }
+    },
+    "cleanup_errors": []
+  },
+  "review": {
+    "root": "Complete fixture source, captured HTTP/SQL observations and literal initial empty manifest inspected. Local verifier rehashed every payload, all1190/1189/1110 Git source files, exact ELF and all ledgers/resource comparisons.",
+    "independent_ai": "Complete capture/source/ELF/oracle/resource audit found no concrete discrepancy. It did not run a new experiment or inspect browser behavior. Report written after its capture audit."
+  },
+  "preserved_failure": "p08-export-status-fixture-incomplete-20260924.json remains INCOMPLETE. Repeated-event fixture bug fixed without changing product, expected replies or budgets.",
+  "not_qualified": [
+    "Actual private panel and browser lifecycle",
+    "Expiry while SQL or socket blocks",
+    "Paused/running state via this HTTP route",
+    "Physical artifact immutability after lookups",
+    "Account creation and dataset-grant editing product commands",
+    "Full P08/P09, release or Linux arm64"
+  ]
+}

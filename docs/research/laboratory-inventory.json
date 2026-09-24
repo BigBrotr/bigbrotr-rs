@@ -22504,5 +22504,74 @@
       "free_bytes": 140020953088
     },
     "retention": "Preserve original failed fixture result, source/ELF/logs/database/output. Keep new f813 compile cache for immediate continuation. No resource deletion; network removed."
+  },
+  "implementation_export_status_retry_20260924": {
+    "status": "stopped-retained; scoped PASS",
+    "resources": {
+      "source": "29983ccab5d77727f4cbc24241cb34e2a9a586eb",
+      "tree": "003122c283b66543e1f8d66942ae0814e82b8554",
+      "owner": "6b9d5688cc4b4413b7799843b3aeb6e2",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-29983cc",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "4984e6c64202b46ceedaa73c9f4e58d871a13759f522151df4dad1d6820efea3"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "2e46e38e829c2a702cf99be4c03ff5dd97020afe152669cbd62ff711af1aae12"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T13:54:35.447810+00:00",
+      "runtime_profile": "job-status",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "f81362c1ea6645dbd2e9bcc906763420e7db5e6b",
+      "network_id": "7daa49fca5b89fa1b609cbe3875b00b1d4b48b27fb474b4f8b38aae9e2457172",
+      "postgres_id": "4984e6c64202b46ceedaa73c9f4e58d871a13759f522151df4dad1d6820efea3",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "2e46e38e829c2a702cf99be4c03ff5dd97020afe152669cbd62ff711af1aae12",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "retention": "No compiler cache; exact f813 ELF reuse after complete product/build equality. Preserve source, artifacts, logs and deliberate PG/archive/output state. Both containers PID0, network removed; no cleanup debt.",
+    "evidence": "docs/implementation/evidence/p08-export-status-native-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-29983cc/capture",
+    "verified": {
+      "files": 32,
+      "sha256": "1d0cfb7cc7f6db5eda4bfef737208d6361827a6b9514e9dc03c1b9c24573ac2a",
+      "source": "29983ccab5d77727f4cbc24241cb34e2a9a586eb",
+      "tree": "003122c283b66543e1f8d66942ae0814e82b8554",
+      "source_files": 1190
+    },
+    "terminal": {
+      "status": "PASS_PENDING_CAPTURE",
+      "source": "29983ccab5d77727f4cbc24241cb34e2a9a586eb",
+      "owner": "6b9d5688cc4b4413b7799843b3aeb6e2",
+      "cases": {},
+      "result": "PASS",
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "container_ok": true,
+      "preexisting_preserved": true,
+      "preexisting_count": 626,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "original_source_unchanged": true,
+      "host_tcp_wmem_preserved": true,
+      "free_bytes": 139580645376
+    }
   }
 }
