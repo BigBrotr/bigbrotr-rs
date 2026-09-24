@@ -1,0 +1,805 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "task": [
+    "P08-T03",
+    "P08-T04"
+  ],
+  "status": "SCOPED_PASS",
+  "source": "338057bb7ee911a866d2ac93d0729d9be67c2d91",
+  "tree": "c16ede70dbfd7e137032f44f8eac44c3eb133656",
+  "scope": "Installed HTTP resume session expiry across actual PostgreSQL account/source row-lock waits, plus timely acceptance and authenticated historical resolution. No product Rust/SQL changes in this slice.",
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "source_and_artifacts": {
+    "runtime_source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+    "runtime_reuse": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-8dbd3c4",
+      "owner": "1ae77d53919b4876eeff7df396179ccd",
+      "build": {
+        "source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+        "tree": "7c6b2addc5818b0b3a57f66dff2d89b32ae5f450",
+        "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+        "source_manifest_sha256": "b8fd1d99439834201a4618ef1ade39bb8a030d63ccd1c465bd24bb09acff21c1",
+        "native_toolchain": {
+          "os": "Linux",
+          "architecture": "x86_64",
+          "discovery": "llvm-config",
+          "environment": {
+            "CC": "/usr/lib/llvm-14/bin/clang",
+            "CXX": "/usr/lib/llvm-14/bin/clang++",
+            "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+            "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+            "CARGO_BUILD_JOBS": "2",
+            "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+          },
+          "tools": {
+            "CC": {
+              "path": "/usr/lib/llvm-14/bin/clang",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "CXX": {
+              "path": "/usr/lib/llvm-14/bin/clang++",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "AR": {
+              "path": "/usr/lib/llvm-14/bin/llvm-ar",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+              "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+              "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+            },
+            "LIBCLANG_PATH": {
+              "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+              "version": "Debian clang version 14.0.6"
+            },
+            "discovery": {
+              "path": "/usr/lib/llvm-14/bin/llvm-config",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+              "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+              "version": "14.0.6"
+            }
+          },
+          "sdk": null
+        },
+        "scope": "Current installed executable and worker; practical profile recorded by the outer laboratory",
+        "build_info": {
+          "archive_worker": {
+            "bytes": 14378400,
+            "sha256": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+          },
+          "capabilities": [
+            "event-verification",
+            "config-static"
+          ],
+          "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+          "debug_info": "false",
+          "format": "bigbrotr-build/1",
+          "inputs_sha256": {
+            "Cargo.lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+            "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+            "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+            "contracts/release/dependencies.json": "14bb6d43630ff5ad0eeaec28236ca138224d5e97603200f456536abbaa2c94c6",
+            "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+          },
+          "optimization": "3",
+          "product": "BigBrotr",
+          "profile_assertion": "release",
+          "protocol_registry_format": "bigbrotr-protocol-versions/1",
+          "protocols": {
+            "event_verifier": "bigbrotr-nip01-verifier/1",
+            "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+          },
+          "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+          "schemas": {
+            "build_info": "bigbrotr-build/1",
+            "config_static": "bigbrotr-config-static/1",
+            "doctor": "bigbrotr-doctor/1",
+            "signed_event": "nip01-event/1"
+          },
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "b8fd1d99439834201a4618ef1ade39bb8a030d63ccd1c465bd24bb09acff21c1",
+            "revision": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+            "state": "builder-supplied",
+            "tree": "7c6b2addc5818b0b3a57f66dff2d89b32ae5f450"
+          },
+          "target": "x86_64-unknown-linux-gnu",
+          "version": "0.1.0-dev"
+        },
+        "artifacts": {
+          "bigbrotr": "b76d606f28f71dbc2a434567e32df9bb50fc146fcd144d99167407aeae94473a",
+          "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+        }
+      },
+      "separate_frontend_changes": {},
+      "validation": "All other product/build inputs equal. Declared presentation differences require fresh current frontend build and browser checks; Rust artifacts retain their original source identity. No new Rust compilation or Clippy run."
+    },
+    "current_source_manifest_sha256": "17e23e0512490ac2fb51c72d9749eb5946f4c8df2626b5a0ea1ea68f2681c582",
+    "cargo_lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "seed_source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "seed_source_manifest_sha256": "eee5a33104dbee6059d2a106eab2b09d44b14e54c5badd06fce0f8425182ef6f"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-338057b/capture",
+    "files": 29,
+    "sha256": "ff0d8d128a8031a0ead86f6967c5b734bf1340284a288960ed029a42780f604a",
+    "source": "338057bb7ee911a866d2ac93d0729d9be67c2d91",
+    "tree": "c16ede70dbfd7e137032f44f8eac44c3eb133656",
+    "source_files": 1264
+  },
+  "executed": {
+    "local": "Five selector/pump tests, ten existing target controls and one existing wire test pass. Artifact/link/handoff/Python-syntax/diff checks pass. No new Rust compilation/unit/Clippy run; verified unchanged product/build inputs reuse qualified8db ELF.",
+    "seed_and_schema": {
+      "schema-cases.json": "PASS",
+      "resume-schema-cases.json": "PASS"
+    },
+    "fixture": "Real runtime login supplies a long default-lifetime session. A separate random short session is provisioned via original PostgreSQL constraints and one atomic issue audit:1.25s idle/60s maximum, current account credential/authentication revisions. Plaintext session/CSRF credentials are sent through actual HTTP and never written to disk or evidence; only domain-separated digests enter a private omitted file. No clock/constraint bypass or configurable HTTP login lifetime claim.",
+    "root_verification": {
+      "status": "VERIFIED_SCOPED_PASS",
+      "source": "338057bb7ee911a866d2ac93d0729d9be67c2d91",
+      "runtime_source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "counts": {
+        "out/build/source-manifest.json": 1264,
+        "artifact-source-manifest.json": 1110,
+        "runtime-source-manifest.json": 1260
+      },
+      "payloads": 29,
+      "preexisting": 760,
+      "free_before": 114563158016,
+      "free_after": 114161668096,
+      "artifacts": {
+        "bigbrotr": "b76d606f28f71dbc2a434567e32df9bb50fc146fcd144d99167407aeae94473a",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "cases": [
+        {
+          "name": "account-expiry",
+          "status": 401,
+          "elapsed_seconds": 1.418588446918875,
+          "waiter_observed_before_expiry_us": 1145524,
+          "release_relative_to_expiry_us": 173469,
+          "accepted_before_expiry_us": null
+        },
+        {
+          "name": "source-expiry",
+          "status": 401,
+          "elapsed_seconds": 1.414336787071079,
+          "waiter_observed_before_expiry_us": 1188294,
+          "release_relative_to_expiry_us": 166965,
+          "accepted_before_expiry_us": null
+        },
+        {
+          "name": "source-live",
+          "status": 202,
+          "elapsed_seconds": 0.22115472611039877,
+          "waiter_observed_before_expiry_us": 1145258,
+          "release_relative_to_expiry_us": -1037967,
+          "accepted_before_expiry_us": 1034497
+        }
+      ]
+    },
+    "cases": [
+      {
+        "name": "account-expiry",
+        "status": "PASS",
+        "owner": {
+          "resource": "02aa913344ef92caa28bb73c743ca808",
+          "epoch": "5",
+          "incarnation": "8cc7b7a205b5f8b122feac679be6db6d",
+          "pid": 533,
+          "start": "2026-09-24T21:17:20.633169+00:00",
+          "present": true
+        },
+        "holder": {
+          "event": "holder-open",
+          "pid": 638
+        },
+        "blocked": {
+          "pid": 533,
+          "start": "2026-09-24T21:17:20.633169+00:00",
+          "wait_type": "Lock",
+          "wait": "transactionid",
+          "blocker": 638,
+          "blocker_start": "2026-09-24T21:17:21.896519+00:00",
+          "time_us": 1790284642107537,
+          "authority_query": false,
+          "account_query": true
+        },
+        "release_time_us": 1790284643426530,
+        "response": {
+          "event": "resume-response",
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "authentication_denied",
+              "correlation_id": "d4eef65a5d4b5df8f41fdfb354510d2b",
+              "message": "Authentication required or denied.",
+              "retry_class": "authenticate",
+              "status": 401
+            }
+          },
+          "elapsed_seconds": 1.418588446918875
+        },
+        "health": {
+          "event": "health-response",
+          "status": 200,
+          "body": {
+            "authority": "observation-only",
+            "checkpoint_revision": "0",
+            "completed_at_us": null,
+            "created_at_us": "1790284576835699",
+            "format": "bigbrotr-job-status/1",
+            "job_id": "59c4ba6b683d53ff99a6c5d23fc24441",
+            "job_revision": "7",
+            "kind": "export",
+            "observed_at_us": "1790284644137735",
+            "reason_code": "execution_refused",
+            "state": "paused"
+          },
+          "elapsed_seconds": 0.00532403402030468
+        },
+        "expired_retry": {
+          "event": "historical-short-response",
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "authentication_denied",
+              "correlation_id": "dc0df5832d6a0282560238d30540243d",
+              "message": "Authentication required or denied.",
+              "retry_class": "authenticate",
+              "status": 401
+            }
+          },
+          "elapsed_seconds": 0.00390768563374877
+        },
+        "proxy_terminal": {
+          "event": "terminal",
+          "mode": "pass",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 308437,
+          "frames": 4854,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 286,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "resume_authority_requests": 0,
+          "unexpected": 0
+        },
+        "client_terminal": {
+          "event": "terminal",
+          "exit": 0,
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "short_session": {
+          "id": "98179b9cef3c5965fc89a5901b4b56cb",
+          "issued": 1790284642003061,
+          "expires": 1790284702003061,
+          "idle_expires": 1790284643253061,
+          "idle_window": 1250000
+        },
+        "ledger_counts_before": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 12
+        },
+        "ledger_counts_after": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 14
+        }
+      },
+      {
+        "name": "source-expiry",
+        "status": "PASS",
+        "owner": {
+          "resource": "02aa913344ef92caa28bb73c743ca808",
+          "epoch": "6",
+          "incarnation": "a4e211cdf53996dba30382406e3b289b",
+          "pid": 1029,
+          "start": "2026-09-24T21:17:25.890388+00:00",
+          "present": true
+        },
+        "holder": {
+          "event": "holder-open",
+          "pid": 1133
+        },
+        "blocked": {
+          "pid": 1029,
+          "start": "2026-09-24T21:17:25.890388+00:00",
+          "wait_type": "Lock",
+          "wait": "transactionid",
+          "blocker": 1133,
+          "blocker_start": "2026-09-24T21:17:26.85206+00:00",
+          "time_us": 1790284646957586,
+          "authority_query": true,
+          "account_query": false
+        },
+        "release_time_us": 1790284648312845,
+        "response": {
+          "event": "resume-response",
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "authentication_denied",
+              "correlation_id": "56d0b64f9c02a428bfe3b08f491f1bcb",
+              "message": "Authentication required or denied.",
+              "retry_class": "authenticate",
+              "status": 401
+            }
+          },
+          "elapsed_seconds": 1.414336787071079
+        },
+        "health": {
+          "event": "health-response",
+          "status": 200,
+          "body": {
+            "authority": "observation-only",
+            "checkpoint_revision": "0",
+            "completed_at_us": null,
+            "created_at_us": "1790284576835699",
+            "format": "bigbrotr-job-status/1",
+            "job_id": "59c4ba6b683d53ff99a6c5d23fc24441",
+            "job_revision": "7",
+            "kind": "export",
+            "observed_at_us": "1790284649060358",
+            "reason_code": "execution_refused",
+            "state": "paused"
+          },
+          "elapsed_seconds": 0.005507556721568108
+        },
+        "expired_retry": {
+          "event": "historical-short-response",
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "authentication_denied",
+              "correlation_id": "825cd675283f38207fa4e1bce123008d",
+              "message": "Authentication required or denied.",
+              "retry_class": "authenticate",
+              "status": 401
+            }
+          },
+          "elapsed_seconds": 0.004701059311628342
+        },
+        "proxy_terminal": {
+          "event": "terminal",
+          "mode": "hold-resume-authority",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 323004,
+          "frames": 5269,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 310,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "resume_authority_requests": 2,
+          "unexpected": 0
+        },
+        "client_terminal": {
+          "event": "terminal",
+          "exit": 0,
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "short_session": {
+          "id": "a14e49fc7671213a357f86fe3faa31f2",
+          "issued": 1790284646895880,
+          "expires": 1790284706895880,
+          "idle_expires": 1790284648145880,
+          "idle_window": 1250000
+        },
+        "proxy_held": {
+          "event": "held",
+          "mode": "hold-resume-authority",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 242340,
+          "frames": 4013,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 236,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "resume_authority_requests": 2,
+          "stage": "resume-authority",
+          "backend_pid": 1029
+        },
+        "ledger_counts_before": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 14
+        },
+        "ledger_counts_after": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 16
+        }
+      },
+      {
+        "name": "source-live",
+        "status": "PASS",
+        "owner": {
+          "resource": "02aa913344ef92caa28bb73c743ca808",
+          "epoch": "7",
+          "incarnation": "0e87aa7df1091296b3dea9d639079cbf",
+          "pid": 1554,
+          "start": "2026-09-24T21:17:30.671587+00:00",
+          "present": true
+        },
+        "holder": {
+          "event": "holder-open",
+          "pid": 1659
+        },
+        "blocked": {
+          "pid": 1554,
+          "start": "2026-09-24T21:17:30.671587+00:00",
+          "wait_type": "Lock",
+          "wait": "transactionid",
+          "blocker": 1659,
+          "blocker_start": "2026-09-24T21:17:31.807438+00:00",
+          "time_us": 1790284651955543,
+          "authority_query": true,
+          "account_query": false
+        },
+        "release_time_us": 1790284652062834,
+        "response": {
+          "event": "resume-response",
+          "status": 202,
+          "body": {
+            "accepted_at_us": "1790284652066304",
+            "authority": "acceptance-only",
+            "command_key": "e0a49d73dc2206483cbda80082405239",
+            "created": true,
+            "execution": "unobserved",
+            "format": "bigbrotr-export-resume/1",
+            "job_id": "59c4ba6b683d53ff99a6c5d23fc24441",
+            "job_revision": "8"
+          },
+          "elapsed_seconds": 0.22115472611039877
+        },
+        "health": {
+          "event": "health-response",
+          "status": 200,
+          "body": {
+            "authority": "observation-only",
+            "checkpoint_revision": "0",
+            "completed_at_us": null,
+            "created_at_us": "1790284576835699",
+            "format": "bigbrotr-job-status/1",
+            "job_id": "59c4ba6b683d53ff99a6c5d23fc24441",
+            "job_revision": "8",
+            "kind": "export",
+            "observed_at_us": "1790284652995367",
+            "reason_code": null,
+            "state": "queued"
+          },
+          "elapsed_seconds": 0.0051756673492491245
+        },
+        "expired_retry": {
+          "event": "historical-short-response",
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "authentication_denied",
+              "correlation_id": "62db74f2cc387fc1bd98d36d2c575613",
+              "message": "Authentication required or denied.",
+              "retry_class": "authenticate",
+              "status": 401
+            }
+          },
+          "elapsed_seconds": 0.0041126590222120285
+        },
+        "proxy_terminal": {
+          "event": "terminal",
+          "mode": "hold-resume-authority",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 361246,
+          "frames": 5846,
+          "data_queries": 1,
+          "data_commits": 1,
+          "server_complete": 1,
+          "client_complete": 1,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 344,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "resume_authority_requests": 2,
+          "unexpected": 0
+        },
+        "client_terminal": {
+          "event": "terminal",
+          "exit": 0,
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "short_session": {
+          "id": "ca0a08d31d7de28d655188ac1a10cf4f",
+          "issued": 1790284651850801,
+          "expires": 1790284711850801,
+          "idle_expires": 1790284653100801,
+          "idle_window": 1250000
+        },
+        "proxy_held": {
+          "event": "held",
+          "mode": "hold-resume-authority",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 242340,
+          "frames": 4013,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 236,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "resume_authority_requests": 2,
+          "stage": "resume-authority",
+          "backend_pid": 1554
+        },
+        "historical_retry": {
+          "event": "historical-long-response",
+          "status": 200,
+          "body": {
+            "accepted_at_us": "1790284652066304",
+            "authority": "acceptance-only",
+            "command_key": "e0a49d73dc2206483cbda80082405239",
+            "created": false,
+            "execution": "unobserved",
+            "format": "bigbrotr-export-resume/1",
+            "job_id": "59c4ba6b683d53ff99a6c5d23fc24441",
+            "job_revision": "8"
+          },
+          "elapsed_seconds": 0.009372462052851915
+        },
+        "ledger_counts_before": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 16
+        },
+        "ledger_counts_after": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 2,
+          "management_commands": 7,
+          "management_audit": 19
+        }
+      }
+    ],
+    "durable_effects": "The two expired waits each return401 with zero resume INSERT/COMMIT attempts; all twelve post-login-plus-seed row+xmin ledgers remain identical. Timely source release produces exactly one atomic resume detail/command/audit and paused7-to-queued8 transition; exact original unit/caps/cut/pins remain unchanged, with no artifacts. SQL detail binds the short session; exact202 body and long-session200 historical body match the SQL receipt. All three short-session retries401; long-session GET200 proves Control still usable. No idle/xmin touch within each case, including after retries and stop. Subsequent real login removes exactly the preceding expired short session under the existing bounded-account cleanup; remaining long sessions are unchanged. All issue audits persist.",
+    "terminal": "All three actual parents exit0 with committed Control release, absent parent, available root flock and empty scratch. Both databases report zero other backends and no active Control owner. Runner0; PostgreSQL wrapper137 is owned lab teardown, not graceful database shutdown."
+  },
+  "resources": {
+    "resources": {
+      "source": "338057bb7ee911a866d2ac93d0729d9be67c2d91",
+      "tree": "c16ede70dbfd7e137032f44f8eac44c3eb133656",
+      "owner": "66c9ffd561acaaafaa9bd4d885b32818",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-338057b",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "2c119fa8b6bb9ea67b7b236986182c23cdf6988c9edfd9f1ea2e9b2e646ff63e"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "55a783f43ec2d329fc884f7293bdb3836af4dc114d00603c37f38b64c675e726"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T21:16:04.417590+00:00",
+      "runtime_profile": "resume-locks",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "network_id": "6d82626f8e1063ab729b571e96648c03ed3a4b45c2cf4f2a6fb0fb423caf278d",
+      "postgres_id": "2c119fa8b6bb9ea67b7b236986182c23cdf6988c9edfd9f1ea2e9b2e646ff63e",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "55a783f43ec2d329fc884f7293bdb3836af4dc114d00603c37f38b64c675e726",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "orchestrator": {
+      "pid": 532965,
+      "start_ticks": "366681794",
+      "source": "338057bb7ee911a866d2ac93d0729d9be67c2d91",
+      "tree": "c16ede70dbfd7e137032f44f8eac44c3eb133656"
+    },
+    "original_terminal": "PASS_PENDING_CAPTURE",
+    "preexisting_containers": 760,
+    "unrelated_running": 8,
+    "free_bytes_before": 114563158016,
+    "free_bytes_after": 114161668096,
+    "final_census": {
+      "path": ".research/implementation/export-execution/resume-locks-final-census.json",
+      "sha256": "0327a6c543c7e8e969d74af84868c40f2e799b9ce19dd91cb8401d6e210c1971",
+      "observed_at": "2026-09-24T21:18:47.274536+00:00",
+      "free_bytes": 114151206912
+    },
+    "retention": "Keep original source, ELF/native seed/assets, PostgreSQL/archive state, logs, manifests and captures. No cache copied, compilation, cache/data/container/volume retirement. Existing8db/73e/4e caches and all previously protected resources remain. Final census verifies two owned PID0/noOOM, removed network/absent orchestrator and all760 prior lifecycle/mount/network/restart/health status fields preserved; advancing probe logs are not lifecycle changes."
+  },
+  "observer_corrections": [
+    {
+      "observer": "review-resume-locks.py",
+      "original": "New offline checker expected a held field absent from the proxy terminal schema.",
+      "resolution": "Inspect actual terminal/held events and source; require exact mode/request count plus the already captured held event. Replayed original capture, no native changes."
+    },
+    {
+      "observer": "review-resume-locks.py",
+      "original": "New offline checker assumed sessions across separate case logins were append-only.",
+      "resolution": "Read full browser_sessions.rs and0806 guard: successful login deliberately deletes expired account sessions. Verify exactly the preceding short session was already expired and removed, exactly one audited long session was added, and every other row/xmin remained. Within-case comparisons including retries remain exact. Original native fixture/capture unchanged."
+    }
+  ],
+  "review": {
+    "root": "Reviewed complete new fixture/wiring/proxy and affected current auth/resume/guard boundaries. Recomputed29payloads,1264current/1260runtime/1110seed Git entries, both ELF; independently reconstructed all12ledgers, attributed sessions, exact receipts and actual waiter/expiry timing. Fresh final live census confirms artifacts and unrelated workload preservation.",
+    "independent": "Read-only AI review recomputed archive/29payload hashes,1264current/1260runtime/1110seed Git entries, identical product/build inputs and both ELF. Independently reconstructed all12row+xmin ledgers, exact receipt/digest/session/SQL time, all session conservation including next-login cleanup, and760stored preflight/terminal container records. Verified three committed parent releases, bothDB0, owned PID0/noOOM, report consistency and both offline-observer corrections. Final later census hash/script/summary is consistent, but no second full760record dump is retained; live-host assertion remains a root measurement. No AI tests, SSH, edits or new export/custody qualification.",
+    "helpers": {
+      "transfer-resume-locks.py": "211fcf88150579dd10eebb3a2ea12124ace96ed399520e79bff12cb9a6456171",
+      "collect-runtime.py": "c117698848536c4634e6603c84e18fe018446c9476da7d1624e59df7fb234745",
+      "review-resume-locks.py": "4a36e06b23f10e3a99f0709322621762b3a06b928bc64446e0dd4b7506f76760",
+      "resume-locks-final-census.py": "585362bb8c603f2221423cd5aeaf70b695232cb657de1cdff3c1a312dbe6573d"
+    }
+  },
+  "research": [
+    {
+      "url": "https://www.postgresql.org/docs/16/protocol-flow.html",
+      "used": "Extended query separates Parse/Bind from Execute; the second exact authority Execute is held before forwarding."
+    },
+    {
+      "url": "https://www.postgresql.org/docs/16/protocol-message-formats.html",
+      "used": "Unnamed unlimited Execute and statement/portal identities for the closed tokio-postgres fixture profile; synthetic wire pump tests discriminate actual forwarding."
+    },
+    {
+      "url": "https://www.postgresql.org/docs/16/explicit-locking.html",
+      "used": "Conflicting row locks wait until transaction end; actual pg_blocking_pids/PID/start evidence is required rather than inference from delay."
+    }
+  ],
+  "limits": [
+    "One paused single-stream job, execution disabled. No new signed output, zero/multiple streams, aged/mixed workloads or complete terminal retention lifecycle.",
+    "Short idle-expiry provisioning is a valid audited SQL fixture. No configurable HTTP session lifetime, maximum-expiry crossing, wall-clock jump or long-duration load qualification.",
+    "Account wait targets authentication before its current clock check; source wait targets the second actual authority call after session authentication/revalidation, before final expiry check. Does not qualify every lock position, grant/CAS/revocation ordering or deferred-COMMIT expiry crossing.",
+    "Historical short-session401 and long-session200 are actual HTTP exchanges; no browser/natural browser expiry/BFCache/accessibility qualification.",
+    "Provisioning failure redaction, observer timeout and cleanup-error branches are statically inspected, not executed in this PASS.",
+    "No new Rust build, hosted Actions, Linux arm64, ordinary Compose/release qualification, full CLI/UI or complete P08/M1/product claim."
+  ]
+}

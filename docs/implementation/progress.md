@@ -19,47 +19,60 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-HEAD/origin/main73c347e25aede674571f8953ac2e64cfb1cba6c4, tree
-f52cd36a58985c57862009e9eb52783ec26f8004. Candidate8dbd3c4 and its evidence commit
-are pushed to private BigBrotr/bigbrotr-rs/main; ls-remote matches, no rewrite.
-The private push was verified; root now owns this checkpoint and the new resume
-lock fixture, proxy selector/tests and lab wiring. No product Rust/SQL changes or
-foreign work. Native tested product source remains8dbd3c4, not this pending fixture.
+HEAD338057bb7ee911a866d2ac93d0729d9be67c2d91, tree
+c16ede70dbfd7e137032f44f8eac44c3eb133656; candidate above private
+origin/main73c347e. Root owns only checkpoint/report/inventory/operations/task
+documentation. No foreign work. Product Rust/SQL unchanged; native product
+artifacts retain8dbd3c4 identity. No experiment remains active.
 
-Run export-runtime-8dbd3c4 is stopped-retained, owner
-1ae77d53919b4876eeff7df396179ccd. Fresh installed build,46 binary tests and Clippy
-passed; checker evidence was committed/pushed. Final census20:53:46Z verified both
-owned PID0/noOOM, network/orchestrator absent,758 prior containers/eight unrelated
-running preserved, marker restored, free114598891520bytes. This is the last census,
-not a fresh claim about current Tux. No new experiment or cache retirement yet.
+Run export-runtime-338057b, owner66c9ffd561acaaafaa9bd4d885b32818, is stopped-retained
+with [scoped native evidence](evidence/p08-export-resume-locks-native-20260924.json)
+and independently replayed29payloads. Three actual account/source
+row waits: expired requests401 with zero resume INSERTs; timely source release202
+with exactly one atomic queued8 receipt. Expired-session retry401 and live-session
+historical retry200 preserve full receipts/units/pins and session timestamps/xmin.
+No new files/reader; short idle1.25s/maximum60s sessions are valid audited SQL
+fixtures, not configurable-login qualification. The second actual authority
+Execute is held after second authentication, so the source wait exercises the
+final current-clock check. Parent exits0/Control release committed in all cases;
+both databases0backends/no active owner. Original PostgreSQL wrapper137 is owned
+lab teardown, not a graceful database shutdown claim.
 
-Active bounded action: qualify resume session expiry after real PostgreSQL
-account/source row waits. Three prepared cases: account wait beyond idle expiry,
-second acceptance authority/source wait beyond expiry, and timely source release
-with one queued8 receipt. The first two must return401 without any resume INSERT;
-the last must202, expired-token retry401 and fresh-session historical retry200.
-All twelve row+xmin ledgers, session timing, exact HTTP/SQL receipts, actual waiter
-PID/start and Control usability are observed. The short session is valid audited
-SQL fixture provisioning (1.25s idle/60s maximum); normal login supplies the long
-session. No configurable HTTP login lifetime claim or constraint bypass.
+Actual final census21:18:47Z: two owned PID0/noOOM, network/orchestrator absent,
+760 prior containers/eight unrelated running preserved, free114151206912bytes.
+Per-run free114563158016→114161668096; concurrent host/capture writes explain
+separate observation times. No compiler cache copied/created, deletion or container/
+volume/data retirement. Preserve8db/73e/4e caches and all protected artifacts.
+Owned IDs/source/manifests/capture/final census are in inventory
+implementation_resume_locks_20260924 and the new report. Orchestrator532965/
+start_ticks366681794 is absent. No Tux edit outside exact-Git workflow.
 
-Read complete current resume/authentication adapters, session lifetime model,
-0806/0807/0501/0814 guards and related fixtures. The proxy holds only the second
-actual extended Execute of require_export_execution_authority, after the second
-session authentication; first call has no checked destination and rolls back.
-Official PostgreSQL16 protocol/locking docs inspected. Local5 selector/wire tests,
-10 existing target tests and1 existing wire test pass. Independent read-only AI
-review identified three oracle gaps; root corrected full HTTP receipt/session
-attribution, terminal session comparison after retries and digest-safe provisioning
-errors. Review/verification remains local, no native outcome yet.
+Root recomputed1264current/1260runtime/1110seed Git entries, unchanged complete
+product/build input set, both actual ELF, twelve row+xmin ledgers, attributable
+login/seed audits, session states, exact HTTP/SQL receipts and PG waiter/expiry
+timing. Local5 selector/pump +10 target +1 wire tests and artifact/handoff checks
+pass. Independent static and capture/report review passed: AI replayed all29
+payloads/manifests/ELF, twelve ledgers/sessions and760stored resource records.
+Final later census is a root assertion/summary, not a retained second full dump.
+Report remains scoped, no full task/M1 completion.
 
-Next: review final diff, run artifact/handoff checks, commit a clean candidate,
-inventory Tux, then transfer through Git with --runtime-resume-locks. Reuse exact
-8dbd3c4 installed ELF only after all product/build inputs match; preserve4e signed
-seed and both cache roots. No fresh compiler cache needed. Capture actual outputs
-and terminal resource census; keep failed/unknown outcomes. Existing transfer and
-collector helpers are under ignored export-execution. Do not repeat unrelated
-browser suites or claim full P08 completion from these three cases.
+Two new offline-observer corrections retain unchanged native capture: proxy
+terminal has no held field (explicit held event/mode/Execute count are required);
+separate subsequent login removes exactly the preceding expired short session
+under browser_sessions.rs:361/0806. Root read the complete519-line session adapter
+and requires every other row/xmin preserved. Within-case retries/stop remain exact.
+No native retry, fixture mutation or failure-to-PASS relabeling occurred.
+
+Next bounded action: commit/private push the reviewed evidence. Then continue P08-T03 Step3 current grant/account
+revision interleavings during resume, followed by full CLI/cancel consumers. Read
+current account/grant mutation lock order before choosing the next actual race;
+do not manufacture an impossible lock schedule or silently expand authority.
+Root read complete350-line scope_grants.rs and220-line export_resume.rs: both
+require Control/dataset before account/session, so a second protected mutation
+cannot be inserted arbitrarily inside an already locked acceptance. Further
+fixture selection must preserve that ordering. Maximum/commit-time expiry,
+zero/multiple streams and mixed aged workloads remain
+open. Current helper review-resume-locks.py is for this original capture only.
 
 ## Latest qualified slice
 

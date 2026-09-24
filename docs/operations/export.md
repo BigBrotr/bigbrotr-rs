@@ -158,7 +158,13 @@ now observes a real held marker open, continuing Control renewal and SIGTERM
 fail-stop in about 4.04 seconds, with the original paused unit/pin and all twelve
 post-login ledgers unchanged. Two deliberately incompatible-marker priming
 requests return 503; this does not qualify accepted resume or arbitrary kernel I/O.
-Expiry after lock waits and the CLI remain unfinished. A separate [installed
+The [session lock-wait scenarios](../implementation/evidence/p08-export-resume-locks-native-20260924.json)
+now check actual account/source waits: expired sessions return401 without a resume
+INSERT; timely source release accepts exactly one queued revision. An expired
+token cannot resolve history; a live session resolves the original receipt without
+idle refresh. Short lifetimes are valid SQL fixtures, not a configurable login
+feature. Other grant/revocation interleavings and the CLI remain unfinished.
+A separate [installed
 signed-resume scenario](../implementation/evidence/p08-export-resume-output-native-20260924.json)
 restores a revoked input grant through authenticated HTTP, resumes the original
 unit and verifies exact signed bytes plus complete inventory. Identical retry

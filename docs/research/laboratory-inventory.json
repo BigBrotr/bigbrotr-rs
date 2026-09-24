@@ -24729,5 +24729,62 @@
     },
     "evidence": "docs/implementation/evidence/p08-export-resume-checker-native-20260924.json",
     "retention": "Keep new current compiler cache, source, original ELF/instrument/marker, PostgreSQL/archive state and complete logs. No deletion, container removal or volume/dataset retirement. Two owned PID0/noOOM; network and orchestrator absent. Rust wrapper0; PostgreSQL wrapper137 is lab teardown, not graceful database shutdown. Eight unrelated running workloads and758 prior lifecycle/mount/network/restart states preserved; normal health probe log timestamps advance."
+  },
+  "implementation_resume_locks_20260924": {
+    "status": "stopped-retained; SCOPED_PASS",
+    "resources": {
+      "source": "338057bb7ee911a866d2ac93d0729d9be67c2d91",
+      "tree": "c16ede70dbfd7e137032f44f8eac44c3eb133656",
+      "owner": "66c9ffd561acaaafaa9bd4d885b32818",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-338057b",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "2c119fa8b6bb9ea67b7b236986182c23cdf6988c9edfd9f1ea2e9b2e646ff63e"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "55a783f43ec2d329fc884f7293bdb3836af4dc114d00603c37f38b64c675e726"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T21:16:04.417590+00:00",
+      "runtime_profile": "resume-locks",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "network_id": "6d82626f8e1063ab729b571e96648c03ed3a4b45c2cf4f2a6fb0fb423caf278d",
+      "postgres_id": "2c119fa8b6bb9ea67b7b236986182c23cdf6988c9edfd9f1ea2e9b2e646ff63e",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "55a783f43ec2d329fc884f7293bdb3836af4dc114d00603c37f38b64c675e726",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "orchestrator": {
+      "pid": 532965,
+      "start_ticks": "366681794",
+      "source": "338057bb7ee911a866d2ac93d0729d9be67c2d91",
+      "tree": "c16ede70dbfd7e137032f44f8eac44c3eb133656"
+    },
+    "capture": {
+      "path": ".research/implementation/export-execution/attempt-338057b/capture",
+      "files": 29,
+      "sha256": "ff0d8d128a8031a0ead86f6967c5b734bf1340284a288960ed029a42780f604a",
+      "source": "338057bb7ee911a866d2ac93d0729d9be67c2d91",
+      "tree": "c16ede70dbfd7e137032f44f8eac44c3eb133656",
+      "source_files": 1264
+    },
+    "final_census": {
+      "path": ".research/implementation/export-execution/resume-locks-final-census.json",
+      "sha256": "0327a6c543c7e8e969d74af84868c40f2e799b9ce19dd91cb8401d6e210c1971",
+      "observed_at": "2026-09-24T21:18:47.274536+00:00",
+      "free_bytes": 114151206912
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-locks-native-20260924.json",
+    "retention": "Keep original source, ELF/native seed/assets, PostgreSQL/archive state, logs, manifests and captures. No cache copied, compilation, cache/data/container/volume retirement. Existing8db/73e/4e caches and all previously protected resources remain. Final census verifies two owned PID0/noOOM, removed network/absent orchestrator and all760 prior lifecycle/mount/network/restart/health status fields preserved; advancing probe logs are not lifecycle changes."
   }
 }

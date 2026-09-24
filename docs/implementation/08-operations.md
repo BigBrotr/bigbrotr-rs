@@ -335,9 +335,15 @@ same-session restart. Browser behavior is outside that fixture; the later
 and [keyboard correction](evidence/p09-skip-button-native-20260924.json) own their
 scoped installed evidence. The [blocked resume checker](evidence/p08-export-resume-checker-native-20260924.json)
 now passes actual worker openat hold, Control renewal and bounded SIGTERM fail-stop
-with the original paused unit/pin unchanged. Expiry after lock waits, changed
-session/grant interleavings and complete UI/CLI consumers remain required before
-completing this step.
+with the original paused unit/pin unchanged. The [session lock-wait scenarios](evidence/p08-export-resume-locks-native-20260924.json)
+at338057b reuse exact8db ELF: account and second authority/source waits cross idle
+expiry and return401 without resume INSERTs; timely source release accepts one
+queued8 revision. Actual retries distinguish the expired session from a live
+session resolving that receipt. All twelve ledgers and session timestamps/xmin
+are checked, with explicit login/seed attribution. Short lifetimes are valid SQL
+fixtures, not configurable-login qualification. Further grant/CAS/revocation
+interleavings, maximum/commit expiry and complete UI/CLI consumers remain required
+before completing this step.
 
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending
