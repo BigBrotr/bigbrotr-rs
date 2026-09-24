@@ -21,9 +21,10 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD324b8ebbb8caa3a97bef0b141e7c6cf9150aab67, origin/main75906fc; candidate53c6c9d and its scoped
-evidence75906fc pushed normally. GET whitespace correction3a898c4 has Mac
-RED/GREEN+Clippy evidence, not yet pushed. Blocked-checker fixture committed324b8eb; root now owns this checkpoint. Candidate53c6c9d was clean at transfer.
+Current main/HEAD and origin/mainc494932; candidate53c6c9d and its scoped
+evidence75906fc pushed normally. GET whitespace correction3a898c4 and blocked-checker candidate324b8eb are pushed
+with original failure evidence. Root owns only the tracer discriminator/patch
+and this checkpoint. Candidate53c6c9d was clean at transfer.
 No unrelated edits or rewritten published history. Laboratory below is now stopped.
 
 Private POST /management/v1/jobs now reuses the supervised native allocation
@@ -296,7 +297,16 @@ new BigBrotr run. Exact upstream strace6.1 and7.0 dispatch_event both handle
 TE_STOP_BEFORE_EXIT then reapply syscall_delayed, retaining the exit event until
 the injected delay ends. Investigate a minimal research-only exit-event fix
 versus unmodified tool (source/patch/artifact identities), not a blind upgrade
-or weakened product test. No patch/tool change has yet been applied.
+or weakened product test. Prepared research-only strace-6.1-exit-delay.patch clears the per-thread flag
+and frees/nulls copied wait data only at irreversible EXIT; global timer remains.
+Exact source review and independent AI agree with this scope. A tiny unchanged
+pthread fixture and strace_exit_probe.py now compare unmodified/fixed tools,
+with/without60s hold, required1s observed hold and2s process-exit bound. Syntax
+and artifact checks PASS; actual tool build/execution NOT_RUN. Inputs/recipe
+experiments/archive-engine/strace-exit-probe.md; ignored launcher/transfer and
+pinned archive .research/implementation/strace-exit/. Next commit/transfer creates
+a separate unprivileged no-network2CPU/2GiB/128PID lab after fresh inventory.
+No new remote root exists yet.
 
 Independent AI static review also found missing submit-time/margin immediately
 before SIGTERM, limited pre-signal/post-exit flock samples and early-tracer-exit

@@ -1,0 +1,14 @@
+--- a/src/strace.c
++++ b/src/strace.c
+@@ -3816,6 +3816,11 @@
+ 
+ 	case TE_STOP_BEFORE_EXIT:
+ 		print_event_exit(current_tcp);
++		/* Research fixture: delay the syscall, never the irreversible exit.
++		 * The global timer may still belong to other delayed tracees. */
++		current_tcp->flags &= ~TCB_DELAYED;
++		free_trace_wait_data(current_tcp->delayed_wait_data);
++		current_tcp->delayed_wait_data = NULL;
+ 		break;
+ 	}
+ 
