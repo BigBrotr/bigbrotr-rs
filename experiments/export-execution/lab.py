@@ -12,14 +12,15 @@ revision, tree = sys.argv[1:3]
 responsive = sys.argv[3:4] == ["--runtime-responsive"]
 busy = sys.argv[3:4] == ["--runtime-busy"]
 pause_commits = sys.argv[3:4] == ["--runtime-pause-commits"]
+revocation = sys.argv[3:4] == ["--runtime-revocation"]
 parking = busy or pause_commits or sys.argv[3:4] == ["--runtime-parking"]
-executor = parking or sys.argv[3:4] == ["--runtime-executor"]
+executor = parking or revocation or sys.argv[3:4] == ["--runtime-executor"]
 runtime = responsive or executor
 reuse_runtime = sys.argv[4] if runtime and len(sys.argv)==5 else None
 assert reuse_runtime is None or re.fullmatch("[0-9a-f]{40}", reuse_runtime)
 rollback = sys.argv[3:] == ["--rust-rollback"]
 adapter = sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
-assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"]) or (runtime and len(sys.argv)==5)
+assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"]) or (runtime and len(sys.argv)==5)
 compile_current = adapter or (runtime and not reuse_runtime)
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
@@ -76,7 +77,7 @@ owner = secrets.token_hex(16)
 state = dict(source=revision, tree=tree, owner=owner, root=str(root), state='preparing', containers=[],
              rust_image=rust_image, owner_label=label, postgres_image=pg_image,
              started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-             runtime_profile='busy' if busy else 'pause-commits' if pause_commits else 'parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
+             runtime_profile='revocation' if revocation else 'busy' if busy else 'pause-commits' if pause_commits else 'parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
              adapter_profile='rollback' if rollback else 'completion' if adapter else None)
 def save(): write(root / 'resources.json', state)
 save()
@@ -273,7 +274,7 @@ while not Path('/out/qualification-complete').exists():
         assert compiled.returncode==0
     state['state']='qualifying-runtime' if runtime else 'qualifying-rust-adapter' if adapter else 'qualifying-schema';save()
     with (root/'schema-cases.log').open('xb') as log:
-        cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/runtime_cases.py' if executor else 'experiments/archive-engine/export_job_http_cases.py' if responsive else 'experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/cases.py')),str(root),*(['responsive'] if responsive else ['busy'] if busy else ['pause-commits'] if pause_commits else ['parking'] if parking else [])],stdout=log,stderr=subprocess.STDOUT,timeout=240)
+        cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/runtime_cases.py' if executor else 'experiments/archive-engine/export_job_http_cases.py' if responsive else 'experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/cases.py')),str(root),*(['responsive'] if responsive else ['revocation'] if revocation else ['busy'] if busy else ['pause-commits'] if pause_commits else ['parking'] if parking else [])],stdout=log,stderr=subprocess.STDOUT,timeout=240)
     result=json.loads((root/('runtime-cases.json' if executor else 'export-job-http-cases.json' if responsive else 'adapter-cases.json' if adapter else 'schema-cases.json')).read_text())
     audit['result']=result['status']
     audit['independent_sql']={}

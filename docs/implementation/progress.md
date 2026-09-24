@@ -20,13 +20,11 @@ product responsibilities in the existing task plan.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD6e45d490f51f2e69a6892ff099a9c63f543d573f (candidate),
-treea6ca2590b41e52811301ee98c0d0a96c89b7dec1. Origin main5323bd5e028722a1d2471a90f19dc36b8e8986cd
-pushed/ls-remote confirmed. Root owns new pause-COMMIT evidence, inventory,
-operations and this checkpoint. Product tree unchanged since cdb78a1. No other
-contributor writes or merge/rebase; no active lab/cleanup debt. Native result and
-root and independent AI complete capture reviews PASS_SCOPED with no discrepancy.
-Root also owns the next unexecuted revocation fixture; keep it out of this evidence commit.
+Last verified HEAD/origin main a37bdbf625e498bef15b6fa103156e58be861b8e,
+pushed and ls-remote confirmed. Root owns fixture-only revocation_cases.py,
+revocation_client.py, lab/runtime dispatch and this checkpoint. Product inputs
+unchanged since cdb78a1. No other contributor writes or merge/rebase; no active
+lab/cleanup debt. Pause-COMMIT capture reviews are complete, with no discrepancy.
 
 The known-refusal implementation at cdb78a1 has Mac fmt/check,42 binary tests and
 Clippy PASS, complete root diff review and independent AI source review without a
@@ -111,16 +109,22 @@ passed root and independent AI complete reviews. No held-driver interval
 or permission-revocation inference. Proxy target REDKeyError→GREEN10 preserved
 under export-execution/pause-target-{red,green}.log.
 
-Next bounded action: commit/push the reviewed pause-COMMIT evidence, then finish
-the current-authority interleaving fixture using the existing native reader hold
-and real grant revocation. The supervisor services Control-only management work
-during native waits; authenticated revocation needs no additional archive work. Establish a reproducible
-native query hold, revoke the executing actor's required grant, collect joined
-worker/output and require no completion inventory plus durable safe pause despite
-revoked input authority. Prefer actual authenticated management client where its
-route supports the selected revocation; read exact current contracts/callers first.
-Preserve old export pins and unknown outcomes. This scenario is proposed NOT_RUN;
-then continue explicit authenticated status/resume/cancel and their UI consumers.
+Next bounded action: finish review of the revocation fixture, commit clean Git
+and run --runtime-revocation on Tux with exact cdb artifacts after full input
+equality. Fresh read-only preflight:144664178688 free bytes; eight unrelated
+containers running and no BigBrotr container. Native scenario NOT_RUN.
+The supervisor services Control-only management work during native waits. Hold
+actual native event SQL behind a PostgreSQL relation lock; accept authenticated,
+reauthenticated history.read revocation through the same parent; confirm the
+same waiter remains, then release. Require the actual completion-authority error
+on that Control backend, paused4/execution_refused, no inventory, fresh reader
+joined/released and all original pins unchanged. The initially admitted finite
+unit may finish private files; check the literal399-byte signed event and manifest
+independently, and ensure ordinary restart preserves paused state/files/inodes.
+Wait the real password-rate window before launch, with no parent active. Do not
+change counters or limits. Fixture review caught default Python Unicode escaping
+and key order; corrected oracle gives399 bytes versus the old407, SHA4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9.
+Then continue explicit authenticated status/resume/cancel and their UI consumers.
 
 The runtime's ExecutionCustody can only come from successful RunningExport.prepare:
 it binds exact committed start job/revision/unit/destination/ControlOwner to the
@@ -201,7 +205,7 @@ Ignored root-owned transfer-runtime.py / transfer-parking.py / transfer-busy.py
 under .research/implementation/export-execution require clean Git, exact bundle/
 tree/source manifests and fresh resource/space inventory. Pass reuse revision only
 when ALL product/build inputs match; omit it after any product/build change.
-transfer-pause-commits.py follows the same workflow.
+transfer-pause-commits.py and transfer-revocation.py follow the same workflow.
 collect-runtime.py requires owned stopped-retained/PID0 containers, archives safe
 logs/JSON/ELF and rehashes source against Git. Keep original INCOMPLETE captures.
 No independently edited Tux source. Native logs are not GitHub-hosted CI results.
