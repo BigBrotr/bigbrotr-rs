@@ -21,12 +21,45 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEAD c1798bcae24628aa0f0a7ecf79f19f0e33c2484d, matching
-origin/main (push and ls-remote verified). Root owns dirty rollback research
-fixture changes only: probe.rs, new rollback.rs, adapter_cases.py, lab.py and
-this checkpoint. Product and applied SQL unchanged; no active experiment.
+Last observed main/HEAD ed2a93bb97b487df28571199e4cfc4f0267d4a58, one
+unpublished fixture candidate ahead of origin/main c1798bc. Root owns only dirty
+checkpoint/inventory after exact transfer. Isolated clean negative worktree
+.research/worktrees/export-rollback-no-reuse at d8effc7616c937f8173013bd507b359a5d292a0e,
+branch research/export-rollback-no-reuse; never merge/push. Its single product
+mutation removes ArchiveUnavailable from reusable, fixture identical to ed2.
+Negative Tux export-rollback-d8effc7 is stopped-retained, owner072be6a9733efea7ef0f6bd34b822e8e,
+PG8fa876a0/runnerc1c3db72 exit137/143/PID0/noOOM, network removed,580priorrecords/
+eight unrelated running unchanged. Actual expected RED: INSERT wait, catalog
+backend death/driver join, ArchiveUnavailable/noCOMMIT, equal rows+xmin, then
+same Control session Err(Unavailable). Original INCOMPLETE retained; no full
+terminal SQL/recovery claim. Capture26files/1153Git sources verified at
+.research/implementation/export-execution/attempt-d8effc7; tarSHA
+3f13e29e13dc348aad8e9af7d5678b1b2d099e16446df802eb733207770b371d.
+Positive exact ed2 lab completed and captured; owner4841a7686a2cdea29d2f96e7a073c16a,
+PG2e3b5636/runner7a010c7c exit137/0/PID0/noOOM, owned network removed. Both actual
+DBbackend0, activeControl0, jobsqueued/running2, units2, exportpins2active,
+fresh reader specifically released, artifacts/files/checkpoints0. Same session
+resolves unchanged Running job after known catalog-loss rollback. All582prior
+containers/eight unrelated running unchanged; free162194755584bytes at terminal.
+Capture26files/1153current+1110seed sources/twoELF/completeempty manifest checked
+at .research/implementation/export-execution/attempt-ed2a93b; tarSHA
+e2b5242bd3a41f4c3acf37dff9cb53476611b68693587e7e99b12c28a74f24cf.
+[Combined report](evidence/p08-export-catalog-loss-native-20260924.json) is dirty,
+independent positive/negative capture/source/ELF/full-manifest/terminal review
+complete with no discrepancy beyond corrected recovery/expiry wording. Superseded negative target/cargo-home
+retired after actual process/mount/owner audit and source/artifact/capture rehash:
+3326443520allocated bytes, free162185527296 ->165509836800bytes;584containers/
+eight running unchanged. PG/archive/output/source/logs/ELF preserved, positive
+ed2 compiler cache retained. No active cleanup debt. Negative original remains INCOMPLETE;
+no inference about final negative SQL or pin release after panic. Source-isolated
+mutation alone explains failed same-session reuse. No active experiment.
+Clean detached positive worktree .research/worktrees/export-rollback-positive is
+ed2; never edit it independently. Next coherent evidence commit/push, then integrate runtime supervision. Cache
+retirement and independent review are complete; no current lab or cleanup debt.
+Initial local negative bundle path mistake failed before remote transfer; fixed
+to absolute path. No product fix/new SQL in this fixture slice.
 0501 remains immutable SHA14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861.
-No active owned experiment or cleanup debt. Eight unrelated containers retained.
+No active experiment; eight unrelated containers preserved by terminal audits.
 
 Originalc9 lab remains [INCOMPLETE](evidence/p08-export-adapter-incomplete-20260924.json),
 fixture native512MiB rejected128+512MiB request before dispatch; reserve COMMIT
@@ -62,9 +95,10 @@ lock (ACCESS EXCLUSIVE blocks the earlier read), terminate
 the actual catalog backend, collect completion refusal/rollback and verify the
 same Control session still resolves unchanged running state. Use a source-isolated
 negative control removing ArchiveUnavailable reuse; no applied SQL changes.
-New --rust-rollback fixture is implemented, Mac example Clippy and structural
-checks pass, native execution NOT_RUN. Independent review of the fixture pending;
-then commit candidate, create isolated negative worktree and run exact Git on Tux. No scheduler yet. Keep OutputCustody outside
+New --rust-rollback fixture committed at ed2; Mac example Clippy and structural
+checks pass. AI review corrected SHARE lock and required raw negative capture;
+root corrected total released-reader assumption to the exact new pin because
+seed retains released historical readers. Native negative produced expected RED; positive scoped PASS, captured and independently reviewed. No scheduler yet. Keep OutputCustody outside
 supervise through actual Control driver join; don't repeat destination custody
 bug. External native work must process bounded management commands so revocation,
 logout and later job cancellation do not wait behind blocked I/O. Pending native

@@ -9,7 +9,9 @@ The typed adapter now has [scoped native completion evidence](../implementation/
 for signed and empty JSONL files, with durable inventory and fresh-process
 resolution. The ordinary runtime does not execute jobs yet. Automatic execution
 and its recovery, other output formats, object storage and artifact publication
-remain required work.
+remain required work. A [native catalog-loss test](../implementation/evidence/p08-export-catalog-loss-native-20260924.json)
+also checks rollback without partial inventory and reuse of the same Control
+session; it does not qualify automatic recovery of the retained job or files.
 
 Configure an explicit private destination in the deployment file:
 

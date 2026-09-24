@@ -20319,5 +20319,180 @@
     "retained": "Stopped PG/archive/output and source evidence; current useful compiler cache and ELF outside cache. Terminal jobs2/artifacts2/files2, original export pins retained, reader released. No recovery inferred.",
     "free_bytes_before": 170054766592,
     "free_bytes_after": 166353223680
+  },
+  "implementation_export_rollback_negative_20260924": {
+    "resources": {
+      "source": "d8effc7616c937f8173013bd507b359a5d292a0e",
+      "tree": "21cf748fccc8149bdfca9fcce428ff7cb821f24b",
+      "owner": "072be6a9733efea7ef0f6bd34b822e8e",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-rollback-d8effc7",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "8fa876a03c6df4847b0c914e68ca8ef6c4eed2635eb0a2f80f47532321e78ad6"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "c1c3db723fc1465070034dc821404783ab34166dcc4045e84f6e5ea7fc185ff2"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T10:00:39.171927+00:00",
+      "adapter_profile": "rollback",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "9310ea5804e787494d9f491c920b60bf8c9fd484035551a6d16db00eb4447c13",
+      "postgres_id": "8fa876a03c6df4847b0c914e68ca8ef6c4eed2635eb0a2f80f47532321e78ad6",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "c1c3db723fc1465070034dc821404783ab34166dcc4045e84f6e5ea7fc185ff2",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "orchestrator": {
+      "pid": 3853210,
+      "start_ticks": "362629280",
+      "source": "d8effc7616c937f8173013bd507b359a5d292a0e",
+      "tree": "21cf748fccc8149bdfca9fcce428ff7cb821f24b"
+    },
+    "status": "EXPECTED_RED_CAPTURED_ORIGINAL_INCOMPLETE",
+    "source_mutation": "Only removes ArchiveUnavailable from export_execution::reusable; fixture sources identical to positive ed2a93b. Never merge/push negative branch.",
+    "local_worktree": ".research/worktrees/export-rollback-no-reuse",
+    "local_branch": "research/export-rollback-no-reuse",
+    "capture": {
+      "files": 26,
+      "sha256": "3f13e29e13dc348aad8e9af7d5678b1b2d099e16446df802eb733207770b371d",
+      "source": "d8effc7616c937f8173013bd507b359a5d292a0e",
+      "tree": "21cf748fccc8149bdfca9fcce428ff7cb821f24b",
+      "source_files": 1153
+    },
+    "local_capture": ".research/implementation/export-execution/attempt-d8effc7/capture",
+    "terminal": {
+      "status": "INCOMPLETE",
+      "preexisting_preserved": true,
+      "preexisting_count": 580,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "free_bytes": 165936250880
+    },
+    "observation": "Actual INSERT blocked by SHARE locker, catalog backend terminated and actual driver joined, completion ArchiveUnavailable/noCOMMIT/identical target rows+xmin; same session then Err(Unavailable). Original process panic and INCOMPLETE retained. Pin release/owner release NOT_RUN; no complete terminal SQL inventory/recovery claim.",
+    "report": "docs/implementation/evidence/p08-export-catalog-loss-native-20260924.json",
+    "cache_retirement": {
+      "format": "bigbrotr-owned-cache-retirement/1",
+      "status": "PASS",
+      "started_at": "2026-09-24T10:07:42.985421+00:00",
+      "source": "d8effc7616c937f8173013bd507b359a5d292a0e",
+      "owner": "072be6a9733efea7ef0f6bd34b822e8e",
+      "superseding_source": "ed2a93bb97b487df28571199e4cfc4f0267d4a58",
+      "free_before": 162185527296,
+      "allocated_cache_bytes": 3326443520,
+      "processes": {
+        "refs": [],
+        "permission_errors": []
+      },
+      "inspected_historical_parent_mounts": [
+        "28304a580d2eb2ac4646161e2616aab2b41922acae3ad6d793dac011defb5ad0",
+        "6e9dddb463c33c7707e3483329dc3c3ed79d391862856a8dc9783e5cfe56c2b6",
+        "72a55cad4ce990ebcacc1df1ab6ea2b37089f9b800ff5dbbb707f117e34c694e",
+        "9c8d5fc3019e882bbb74b1661763d3a0bb8a7b6c12bfbd8fa14588dbfaefd9c8",
+        "9e7d4bd8f5f2caaf47a97703a36be113822f064fa475277179857efda60d1d85"
+      ],
+      "artifacts": {
+        "bigbrotr": "0a1b5922787b14513f6a2e0a79054ae5f586bdc87a69d62a9163193b8d26306f",
+        "export-execution-probe": "13c487316d83e3b45080f919d4d28e55e163e0161cb6fcba33ab19770dd7dca9"
+      },
+      "source_files": 1153,
+      "capture_sha256": {
+        "before.json": "a37b22022ea6e9fe2300f613c1442a8d089f279f7a1b6322e3a2e9197a459fca",
+        "after.json": "a37b22022ea6e9fe2300f613c1442a8d089f279f7a1b6322e3a2e9197a459fca",
+        "retirement.json": "7679dd5007cb23ca7428ad84c43b712a3ec04f3fcd123999aadd4ffed397da68"
+      },
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-rollback-d8effc7/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-rollback-d8effc7/out/build/cargo-home"
+      ],
+      "preserved": "Original failed capture/logs, current ELF outside cache, sources/manifests, seed artifacts, PGdata/archive/output. Newed2 cache and all other labs unchanged.",
+      "free_after": 165509836800,
+      "containers_preserved": 584,
+      "unrelated_running": 8,
+      "finished_at": "2026-09-24T10:07:44.101110+00:00",
+      "local_capture": ".research/implementation/export-execution/attempt-d8effc7/cache-retirement"
+    }
+  },
+  "implementation_export_rollback_positive_20260924": {
+    "resources": {
+      "source": "ed2a93bb97b487df28571199e4cfc4f0267d4a58",
+      "tree": "647d677d08a2407635ae2e4d4de00d25b87410ff",
+      "owner": "4841a7686a2cdea29d2f96e7a073c16a",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-rollback-ed2a93b",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "2e3b563601c52164affa99b2c112b06d7cb899b8e5f7265b2889fa42cafe4ae4"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "7a010c7c64142ec172dca80a2b4d32f2d574b8b3bb8e4820ddf2a304ec2cf241"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T10:03:01.120260+00:00",
+      "adapter_profile": "rollback",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "b3cc29891a742fa981e5da62fc359b0e56843c0409451fed9dede9f366f6a3ee",
+      "postgres_id": "2e3b563601c52164affa99b2c112b06d7cb899b8e5f7265b2889fa42cafe4ae4",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "7a010c7c64142ec172dca80a2b4d32f2d574b8b3bb8e4820ddf2a304ec2cf241",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "orchestrator": {
+      "pid": 3859070,
+      "start_ticks": "362643475",
+      "source": "ed2a93bb97b487df28571199e4cfc4f0267d4a58",
+      "tree": "647d677d08a2407635ae2e4d4de00d25b87410ff"
+    },
+    "status": "PASS_SCOPED_CAPTURED",
+    "local_worktree": ".research/worktrees/export-rollback-positive",
+    "observation": "Actual catalog loss rolls back completion, same ControlSession reused, exact fresh reader released; queued/running jobs and original export pins retained. Both owned containers stopped/PID0/noOOM and network removed; no active process/cleanup debt.",
+    "capture": {
+      "files": 26,
+      "sha256": "e2b5242bd3a41f4c3acf37dff9cb53476611b68693587e7e99b12c28a74f24cf",
+      "source": "ed2a93bb97b487df28571199e4cfc4f0267d4a58",
+      "tree": "647d677d08a2407635ae2e4d4de00d25b87410ff",
+      "source_files": 1153
+    },
+    "local_capture": ".research/implementation/export-execution/attempt-ed2a93b/capture",
+    "terminal": {
+      "status": "PASS_PENDING_CAPTURE",
+      "source": "ed2a93bb97b487df28571199e4cfc4f0267d4a58",
+      "owner": "4841a7686a2cdea29d2f96e7a073c16a",
+      "result": "PASS",
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "container_ok": true,
+      "preexisting_preserved": true,
+      "preexisting_count": 582,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "original_source_unchanged": true,
+      "host_tcp_wmem_preserved": true,
+      "free_bytes": 162194755584
+    },
+    "report": "docs/implementation/evidence/p08-export-catalog-loss-native-20260924.json"
   }
 }

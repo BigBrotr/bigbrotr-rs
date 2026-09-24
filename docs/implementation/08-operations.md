@@ -369,7 +369,13 @@ input grant revocation. Both full manifests and actual files match an independen
 oracle. Original `c9a8bda` remains INCOMPLETE due to the fixture's insufficient native
 budget; product limits were not weakened. This research driver uses the Rust
 acceptance API directly. Automatic runtime scheduling, current-authority
-concurrency, failure/recovery and POST-to-file journeys remain required.
+concurrency, failure/recovery and POST-to-file journeys remain required. The
+[catalog-loss discriminator](evidence/p08-export-catalog-loss-native-20260924.json)
+now exercises a real catalog backend loss after the completion INSERT starts.
+The actual transaction rolls back without inventory/checkpoint changes and the
+same Control session remains usable. An isolated mutation omitting that reusable
+error fails the same native fixture. Runtime cancellation and ambiguous COMMIT
+recovery are separate, still unqualified boundaries.
 [Native destination qualification](evidence/p08-export-destination-native-20260923.json)
 at a75d0fa passes ten actual Linux/ext4 cases, including bind aliases, cross-process
 custody, fsync EIO and process death around rename. The marker's independent
