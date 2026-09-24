@@ -1,0 +1,272 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED",
+  "scope": "Installed automatic signed export completion through actual PostgreSQL COMMIT interruptions, fail-stop and same-unit restart.",
+  "source": {
+    "files": 66,
+    "sha256": "3ccb2859ea1bffe24aba698cc75ea0b4c9f2c6faab32b892e3dec87e52f78ffd",
+    "source": "f7aa20183e03386ffe4cb6614ae49828ba8116d8",
+    "tree": "33188ba02aa10f061577be98ada3bb01ad712ebb",
+    "source_files": 1168
+  },
+  "capture": ".research/implementation/export-execution/attempt-f7aa201/capture",
+  "installed_build_source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+  "installed_artifacts": {
+    "bigbrotr": "6830a4f4bfe9a1c5c1da0a74bf8a62729527764ac9538ed620dcda008555ca9a",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "reuse_validation": "Exact product/build input equality; fixture-only changes. No new compilation or Clippy run.",
+  "method": [
+    "Real signed seed/archive and installed empty export, then signed HTTP/logout/output-before-SQL crash/restart prerequisites repeated. No source changes to product.",
+    "Two new signed jobs accepted through real HTTP202/identical200, logout204/me401, while real256MiB memory cap defers execution; no synthetic job inserts.",
+    "Policy6 selects headless Control and1GiB export cap. Actual bounded protocol proxy targets artifact INSERT then one COMMIT; first drops reply after server CommandComplete, second closes before forwarding COMMIT.",
+    "Both actual parents exit4CommitUnknown and are reaped. Each matched Control backend disappears; both databases have zero product backends. Destination directory lock can be acquired.",
+    "Fresh ordinary Control on the same stores completes only the running job. Compare all unrelated job/unit/inventory/file rows plus xmin, all old reader/export lease/pin/claim rows plus xmin, and full output manifests/bytes/inodes.",
+    "Final clean SIGTERM returns0; no active Control, both database backends0. Eight retained archive Parquet hashes unchanged. Owned containers stopped, network removed;608 prior container records/eight running preserved."
+  ],
+  "observed": [
+    {
+      "mode": "after-complete",
+      "job": "116fc9c18e6f0e3124693532b2f7d35b",
+      "artifact": "41c73874baa180962a0c0ecbe04a71ab",
+      "proxy": {
+        "backend_pid": 706,
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 1,
+        "client_complete": 0,
+        "faults": 1,
+        "rejection_sequence": []
+      },
+      "parent_exit": 4,
+      "parent_error": "error: export Control operation failed: CommitUnknown; retain unresolved obligations",
+      "parent_absent": true,
+      "destination_lock_available": true,
+      "after": {
+        "state": "succeeded",
+        "job_revision": 4,
+        "checkpoint_revision": 1
+      },
+      "terminal": {
+        "state": "succeeded",
+        "job_revision": 4,
+        "checkpoint_revision": 1
+      },
+      "inodes_before": {
+        "events.jsonl": 31478180,
+        "manifest.json": 31478181
+      },
+      "inodes_after": {
+        "events.jsonl": 31478180,
+        "manifest.json": 31478181
+      },
+      "output_hashes": {
+        "signed_normal/export-destination/41c73874baa180962a0c0ecbe04a71ab/events.jsonl": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+        "signed_normal/export-destination/41c73874baa180962a0c0ecbe04a71ab/manifest.json": "f90c371541e92d8e06297ec9561caa67653172b1c139e9b61f3f135f95205f7d"
+      },
+      "retained_unknown_reader": "fc96cf709ed8dddfaf376cdc018ba50c",
+      "database_backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      }
+    },
+    {
+      "mode": "before-forward",
+      "job": "ac758980c924f8ebdd01ccb0d7b19cf7",
+      "artifact": "d0a1a9a8724b620a2476655a766a3b8a",
+      "proxy": {
+        "backend_pid": 759,
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 1,
+        "rejection_sequence": []
+      },
+      "parent_exit": 4,
+      "parent_error": "error: export Control operation failed: CommitUnknown; retain unresolved obligations",
+      "parent_absent": true,
+      "destination_lock_available": true,
+      "after": {
+        "state": "running",
+        "job_revision": 3,
+        "checkpoint_revision": 0
+      },
+      "terminal": {
+        "state": "succeeded",
+        "job_revision": 5,
+        "checkpoint_revision": 1
+      },
+      "inodes_before": {
+        "events.jsonl": 31478187,
+        "manifest.json": 31478188
+      },
+      "inodes_after": {
+        "events.jsonl": 31478192,
+        "manifest.json": 31478193
+      },
+      "output_hashes": {
+        "signed_normal/export-destination/d0a1a9a8724b620a2476655a766a3b8a/events.jsonl": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+        "signed_normal/export-destination/d0a1a9a8724b620a2476655a766a3b8a/manifest.json": "696382f6a5ae97ccbfdfb7d31263c1fe17e80ead2862deec7dfc0f4ddcca7b18"
+      },
+      "retained_unknown_reader": "31098d39570bb08595b1e863ba365d5f",
+      "database_backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      }
+    }
+  ],
+  "login": {
+    "before": {
+      "buckets": [
+        {
+          "kind": "account",
+          "bucket": 97,
+          "attempts": 5,
+          "window_started_at_us": 1790251410954163
+        },
+        {
+          "kind": "peer",
+          "bucket": 13,
+          "attempts": 5,
+          "window_started_at_us": 1790251410954163
+        }
+      ],
+      "observed_us": 1790251419766766
+    },
+    "after": {
+      "buckets": [
+        {
+          "kind": "account",
+          "bucket": 97,
+          "attempts": 1,
+          "window_started_at_us": 1790251479931508
+        },
+        {
+          "kind": "peer",
+          "bucket": 13,
+          "attempts": 1,
+          "window_started_at_us": 1790251479931508
+        }
+      ],
+      "observed_us": 1790251481276195
+    },
+    "responses": [
+      429,
+      201
+    ],
+    "interpretation": "Actual429 confirms the seed/preceding-login five-attempt window. One explicit retry after60real seconds returns201; SQL counters reset through product logic, never by fixture UPDATE."
+  },
+  "restart": {
+    "owner": {
+      "archive_intents": {
+        "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+        "issued_through": "4",
+        "observed_through": "4",
+        "pages": 1,
+        "publication_authority": "not-granted",
+        "resolution": "not-performed",
+        "state": "observed"
+      },
+      "authority_scope": "Control custody; each private action and export independently reauthorized",
+      "config_revision": "1",
+      "dataset_id": "01010101010101010101010101010101",
+      "export_execution": "selected-under-qualification",
+      "format": "bigbrotr-control-runtime/1",
+      "listeners": [],
+      "native_stores": [],
+      "owner_epoch": "9",
+      "owner_resource_id": "dc0e2ee4a3e145d7bb71177bca4c35f6",
+      "policy_revision": "6",
+      "process_incarnation": "82fd9c90282afdc13f266c16867987e9",
+      "role": "control",
+      "state": "idle"
+    },
+    "fresh_released_reader": "33b1caf3eaab9b68e21a8447cafed236",
+    "backends": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    },
+    "client_terminal": {
+      "event": "terminal",
+      "exit": 0,
+      "lock_available": true
+    },
+    "complete_job_count": 4,
+    "signed_bytes_per_new_job": 399,
+    "manifest_bytes_per_new_job": 1228,
+    "old_pins": "All prior lease/pin/claim rows and xmin identical; includes both completion-fault readers retained active. No expiry-based reclamation."
+  },
+  "resources": {
+    "source": "f7aa20183e03386ffe4cb6614ae49828ba8116d8",
+    "tree": "33188ba02aa10f061577be98ada3bb01ad712ebb",
+    "owner": "b4a97ee5e89f92b973d15414149c545e",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f7aa201",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "312ee851782b5591b2145e8797975dcce9b29702e9cd0de5c458a74b58152fb1"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "f7a3b78ba02a9050f63cd6f4002f93a829966ba50fc72238fbaad5a299784b85"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T12:03:20.843382+00:00",
+    "runtime_profile": "executor",
+    "adapter_profile": null,
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "runtime_artifact_origin": "f70ac174ad091fd9b849ff18719b86e520478df8",
+    "network_id": "f3f464922f868a598a4e68bb93bb44c1d0cd5c9b72421374223ae4f89da09541",
+    "postgres_id": "312ee851782b5591b2145e8797975dcce9b29702e9cd0de5c458a74b58152fb1",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "f7a3b78ba02a9050f63cd6f4002f93a829966ba50fc72238fbaad5a299784b85",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "PASS_PENDING_CAPTURE",
+    "source": "f7aa20183e03386ffe4cb6614ae49828ba8116d8",
+    "owner": "b4a97ee5e89f92b973d15414149c545e",
+    "cases": {},
+    "result": "PASS",
+    "independent_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "container_ok": true,
+    "preexisting_preserved": true,
+    "preexisting_count": 608,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "original_source_unchanged": true,
+    "host_tcp_wmem_preserved": true,
+    "free_bytes": 146880151552
+  },
+  "review": "Root reviewed complete fixture/callers and verified capture hashes, current/build/seed Git manifests, exact ELF and product/build input equality. Separate literal complete signed manifest/399byte oracle, recalculated Nostr ID, all affected/unrelated SQL rows+xmin, pin comparisons, inode observations and608 stable resource records checked. Independent AI source review corrected missing unit_xmin before execution. Independent AI complete capture review independently verified66 files,1168current/1161build/1110seed Git sources, twoELF, all four full output manifests/JSONL, SQL/xmin/pin/claim/inode comparisons and608 stable prior resources. No concrete discrepancy; PG wrapper exit137 and filesystem-observation limits retained.",
+  "prior_incomplete": "p08-export-runtime-commit-preflight-incomplete-20260924.json retains first0a44c79 login failure with unknown response code; never relabeled PASS.",
+  "limitations": [
+    "No absence-of-all-filesystem-reads/writes claim: identical bytes and inodes establish only no observed replacement or content change.",
+    "These are connection interruptions at COMMIT, not PostgreSQL crash, host power loss or durable-media recovery.",
+    "Fault exits were bounded by fixture wait but no precise latency/RSS/mixed-workload capacity measurement was recorded.",
+    "Unknown reader/export retention obligations remain; no automatic expiry cleanup or GC qualification.",
+    "Current-authority revocation during execution, durable failure parking/pause/cancel, complete job discovery/browser surfaces and packaged M1 remain open.",
+    "Only Linux amd64 was exercised; no arm64 or fullP08/product qualification.",
+    "Outer PostgreSQL wrapper required forced container stop(exit137,noOOM); product databases were observed with zero backends before lab cleanup."
+  ]
+}

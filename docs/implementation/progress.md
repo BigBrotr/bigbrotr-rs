@@ -21,10 +21,32 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD main0a44c796fa64139a14c278fca549be925acc61ad candidate;
-origin/mainb146da4 pushed and ls-remote confirmed. Root owns only fixture login
-correction and its evidence/inventory/checkpoint. No product edits.
+Last verified HEAD main f7aa20183e03386ffe4cb6614ae49828ba8116d8 candidate;
+origin/main b146da4 pushed and ls-remote confirmed. Root owns only completion
+qualification evidence/inventory/operations/task/checkpoint documentation.
 Product input remains f70ac17. No other contributor writes or merge/rebase.
+
+[Installed completion-COMMIT interruption](evidence/p08-export-runtime-commits-native-20260924.json)
+passes at f7aa201 with exact f70 parent/worker after full product/build input
+equality. Two signed HTTP jobs/logouts under policy5; actual sixth login429 with
+bucket5, one explicit retry60s later201/bucket1. No product limits/SQL counters changed.
+Policy6 headless executor: after-complete proxyPID706/epoch7 gives succeeded4/
+checkpoint1; before-forward PID759/epoch8 gives running3/checkpoint0. Both parents
+exit4CommitUnknown/reaped, destination lock available, both DB backends0.
+Restart epoch9 preserves first full job/unit/inventory/xmin and files/inodes;
+second same artifact d0a1a9a8724b620a2476655a766a3b8a completes revision5 on new
+inodes31478192/193 (previous31478187/188), identical399signed bytes/1228Bmanifest.
+Only new reader33b1caf3eaab9b68e21a8447cafed236 released; all old lease/pin/claim/xmin
+unchanged, including unknown fc96cf709ed8dddfaf376cdc018ba50c and31098d39570bb08595b1e863ba365d5f.
+Four total completed jobs, clean final parentSIGTERM0, zero bothDBbackends/active
+Control, eight Parquet unchanged. No filesystem read/write tracing or expiryGC claim.
+Capture66files/1168Git sources locally verified, tar
+3ccb2859ea1bffe24aba698cc75ea0b4c9f2c6faab32b892e3dec87e52f78ffd.
+Root complete source/capture/oracle review and independent AI complete review found
+no discrepancy; original unit_xmin gap fixed before run. Owner
+b4a97ee5e89f92b973d15414149c545e stopped-retained/network removed; PG312ee851,
+runnerf7a3b78b. Runner0/PGwrapper137, PID0/noOOM;608 prior/eight running unchanged.
+Free147277094912 ->146880151552bytes; no compiler cache. No active lab/cleanup debt.
 
 [Signed installed recovery](evidence/p08-export-runtime-recovery-native-20260924.json)
 at944775d passes with exact reused f70parent/worker (complete product/build input
@@ -78,7 +100,7 @@ SHA87a0feb7ddd2a1f8de6914557df956822666d06b350cc49b734483b0dd1ff363.
 Owner337d33ac65c18f0d3f4b64f8257d2d28 stopped-retained/network removed;
 600 prior records/eight unrelated running preserved; free148637876224bytes.
 Keep fresh f70 compiler cache/ELF for fixture-only reuse. Independent complete capture review found no discrepancy, including source/ELF,
-manifest/SQL and600 prior resources. Fault paths and signed output/restart remain NOT_RUN.
+manifest/SQL and600 prior resources. Later signed output/restart and COMMIT evidence are linked above; other faults remain open.
 
 [Installed headless RED](evidence/p08-export-runtime-red-20260924.json): corrected
 ae4fffa fixture uses exact1c15d1a installed ELF after complete product/build input
@@ -93,7 +115,7 @@ Owner8948503c8434a6d43a9c57170fc289eb stopped-retained, owned network removed;
 598 prior containers/eight unrelated running preserved. Fresh resume inspection
 shows eight unrelated running and152398151680bytes free; no active BigBrotr lab.
 
-New automatic executor WIP uses separate committed reservation, current authority,
+The implemented automatic executor uses separate committed reservation, current authority,
 original retained snapshot, fresh reader pin, two PendingActions begun before the
 same SQL start (Control observer and actual writer), native query and opaque
 WrittenExport completion. Optional Management supports actual headless Control.
@@ -110,7 +132,7 @@ releases only that reader and finishes capture, then stops for inspection instea
 of in-process retry. Durable pause/resume/failure parking remains required work.
 Independent AI follow-up found no remaining counterexample in those fixes and
 clarified the five-second scope; no practical fault evidence yet. Mac42binary
-tests/check/Clippy passed on this WIP;
+tests/check/Clippy passed on that source;
 the above installed empty completion now passes, while these fault paths remain NOT_RUN.
 
 A retained-descriptor fstatvfs preflight accounts additional two-copy growth,
@@ -186,35 +208,26 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
+Commit/push the reviewed completion-COMMIT evidence and documentation. Then continue
+P08-T03 Step3/P08-T04 Step3: durable known-refusal parking, current-authority
+interruption and authenticated job inspection/resume/cancel. Read owning job
+state/authorization/operations contracts and actual current callers before choosing
+the next code boundary; no new master plan. No full P08/M1 claim.
+
+Current known-refusal path after reader admission joins/releases that reader and
+finishes capture, then fail-stops to prevent repeated durable reader claims.
+Replace it only with a durable, CAS-checked recovery state after known cessation;
+unknown SQL/native results still fail-stop. Paused jobs stay paused across restart;
+resume must be explicit, same unit, current grants and expected revision. Retain
+original export pins until their own qualified terminal lifecycle.
+
 [First completion fixture](evidence/p08-export-runtime-commit-preflight-incomplete-20260924.json)
-0a44c79 is INCOMPLETE at extra HTTP login; no COMMIT fault ran. Prior empty and
-signed restart passed. Actual response code was not captured. Source shows seed
-login+3reauth plus prior HTTP login exhaust5attempts; now record response/bucket
-times and wait the natural60-second window only on429. No limits/counters changed.
-Owner12aedebbc6c89e3695df0184e7312db2 stopped-retained/network removed;606prior/
-eight running unchanged, zero bothDBbackends, free147319689216bytes. Capture53files/
-1167sources verified; no compiler caches. No active lab or cleanup debt.
-
-Independent AI source review completed: missing unit_xmin comparison added; no
-other concrete blocker found. Root also reviewed complete fixture/callers. Commit
-one clean exact candidate. Reuse f70 installed binaries only after full product/
-build input equality, then run on Tux. No active lab; native COMMIT fixture NOT_RUN.
-New proxy target control-export-complete selects INSERT control.artifacts; target
-regression RED(KeyError) then GREEN9tests plus1existing wire test. Logs under
+0a44c79 stays INCOMPLETE at extra HTTP login; actual response code was not captured.
+No COMMIT fault ran. Capture53files/1167sources verified; owner12aedebbc6c89e3695df0184e7312db2
+stopped-retained,606prior/eight running preserved, zero bothDBbackends. Source diagnosis
+was later confirmed only by the new f7 run's429/bucket observations. No old result
+rewritten. Proxy target tests RED(KeyError) thenGREEN9+1wire; logs under
 .research/implementation/export-execution/completion-target-{red,green,wire}.log.
-Owning current proxy449lines, accepted-job COMMIT client/cases and wire tests read.
-
-New stage follows existing empty+signed crash/restart. Policy5 admin/cap256 accepts
-two signed jobs viaHTTP and logs out; policy6 headless/cap1GiB executes. First sorted
-job loses COMMIT reply AFTER server completion; second loses COMMIT BEFORE forward.
-Both actual parents must exit4CommitUnknown with database backends gone. Fresh
-restart must leave the already completed job/SQL+xmin/files+inodes unchanged,
-rebuild only the uncommitted unit on fresh inodes, retain all unknown old pins and
-release only its new reader. Compare complete literal manifests/399bytes, actual
-proxyPID/counts, durable rows and terminal pin state. Wrapper cleanup alone is
-never process exclusion; outer lab remains final cleanup on any failure.
-After qualification, continue authority/cancellation/failure-parking/resource gates;
-no full P08/M1 claim. Preserve all original negative and unknown state.
 
 Keep OutputCustody and its output OwnedPermit outside cancellable supervise
 through actual Control driver join; each blocked worker separately owns the same
@@ -226,9 +239,10 @@ Capture barrier -> short Control transaction lock order remains unchanged.
 postgres-only SQL, must exercise execution privileges. No applied SQL checksum
 changed. Aged queue scan/index, physical disk overhead/shared reservations,
 failure parking, permission/cancellation and workload acceptance remain gates.
-Remaining installed scenarios include actor revocation, output-before-SQL crash,
-COMMIT reply loss, restart with same unit, old-worker exclusion, zero/multiple
-streams, terminal pin lifecycle, cancel/resume, output discovery and packaged M1.
+Remaining installed scenarios include actor revocation, old-worker exclusion,
+zero/multiple streams, terminal pin lifecycle, cancel/resume, output discovery
+and packaged M1. The scoped output-before-SQL and completion-COMMIT restart
+scenarios above passed; they do not close these remaining gates.
 
 Resource accounting remains explicit: existing native floor512MiB, default export
 memory256MiB below it; do not lower the floor to get green. Current preflight uses

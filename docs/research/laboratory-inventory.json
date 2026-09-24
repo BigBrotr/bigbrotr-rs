@@ -21884,5 +21884,64 @@
       "cleanup_errors": []
     },
     "retention": "No new compiler caches; installed f70 artifacts reused after exact product/build input comparison. Keep original sources/logs/PG/archive/output and unresolved pins."
+  },
+  "implementation_export_runtime_commits_20260924": {
+    "status": "stopped-retained; PASS_SCOPED after capture/source/artifact verification",
+    "evidence": "docs/implementation/evidence/p08-export-runtime-commits-native-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-f7aa201/capture",
+    "verified": {
+      "files": 66,
+      "sha256": "3ccb2859ea1bffe24aba698cc75ea0b4c9f2c6faab32b892e3dec87e52f78ffd",
+      "source": "f7aa20183e03386ffe4cb6614ae49828ba8116d8",
+      "tree": "33188ba02aa10f061577be98ada3bb01ad712ebb",
+      "source_files": 1168
+    },
+    "resources": {
+      "source": "f7aa20183e03386ffe4cb6614ae49828ba8116d8",
+      "tree": "33188ba02aa10f061577be98ada3bb01ad712ebb",
+      "owner": "b4a97ee5e89f92b973d15414149c545e",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f7aa201",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "312ee851782b5591b2145e8797975dcce9b29702e9cd0de5c458a74b58152fb1"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "f7a3b78ba02a9050f63cd6f4002f93a829966ba50fc72238fbaad5a299784b85"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T12:03:20.843382+00:00",
+      "runtime_profile": "executor",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "f70ac174ad091fd9b849ff18719b86e520478df8",
+      "network_id": "f3f464922f868a598a4e68bb93bb44c1d0cd5c9b72421374223ae4f89da09541",
+      "postgres_id": "312ee851782b5591b2145e8797975dcce9b29702e9cd0de5c458a74b58152fb1",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "f7a3b78ba02a9050f63cd6f4002f93a829966ba50fc72238fbaad5a299784b85",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 608,
+      "unrelated_running": 8,
+      "free_bytes": 146880151552,
+      "cleanup_errors": []
+    },
+    "retention": "No new compiler caches; exact f70 installed ELF reused after complete product/build input equality. Keep original source/logs/PG/archive/files and all unresolved old reader/export claims. Network removed; no active lab."
   }
 }

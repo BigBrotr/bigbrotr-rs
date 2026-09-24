@@ -382,6 +382,15 @@ The actual transaction rolls back without inventory/checkpoint changes and the
 same Control session remains usable. An isolated mutation omitting that reusable
 error fails the same native fixture. Runtime cancellation and ambiguous COMMIT
 recovery are separate, still unqualified boundaries.
+The later installed automatic executor now has scoped [headless completion](evidence/p08-export-runtime-headless-native-20260924.json),
+[signed HTTP/logout and interrupted output restart](evidence/p08-export-runtime-recovery-native-20260924.json)
+and [completion-COMMIT interruption/restart](evidence/p08-export-runtime-commits-native-20260924.json)
+evidence. The latter resolves actual before-forward and after-server-completion
+outcomes with the same job/artifact identities and signed bytes; old unknown pins
+remain retained. These later observations supersede the earlier unimplemented
+status only for these exact paths. Current-authority interruption, durable
+pause/cancel/resume, output discovery and packaged/mixed-workload acceptance remain
+required; Step3 and M1 are not complete.
 [Native destination qualification](evidence/p08-export-destination-native-20260923.json)
 at a75d0fa passes ten actual Linux/ext4 cases, including bind aliases, cross-process
 custody, fsync EIO and process death around rename. The marker's independent

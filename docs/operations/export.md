@@ -12,9 +12,11 @@ executor under qualification. [One installed headless empty-export scenario](../
 passes with actual native lookup, files and SQL completion. [One installed signed
 HTTP/logout and interrupted-completion restart](../implementation/evidence/p08-export-runtime-recovery-native-20260924.json)
 also passes with the same artifact and exact signed bytes; its fault deliberately
-freezes the parent and one PostgreSQL backend before killing the parent. Completion
-COMMIT reply loss and cancellation scenarios remain open; other output formats, object storage and artifact
-publication also remain required work. A [native catalog-loss test](../implementation/evidence/p08-export-catalog-loss-native-20260924.json)
+freezes the parent and one PostgreSQL backend before killing the parent. [Installed completion-COMMIT interruptions](../implementation/evidence/p08-export-runtime-commits-native-20260924.json)
+also pass before COMMIT forwarding and after server completion: restart preserves
+the completed unit and rebuilds the uncommitted unit with the same identity and
+bytes. Old unresolved reader pins remain retained. Cancellation scenarios, other
+output formats, object storage and artifact publication remain required work. A [native catalog-loss test](../implementation/evidence/p08-export-catalog-loss-native-20260924.json)
 also checks rollback without partial inventory and reuse of the same Control
 session; it does not qualify automatic recovery of the retained job or files.
 
