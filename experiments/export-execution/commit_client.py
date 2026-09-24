@@ -26,8 +26,9 @@ def lock_available():
         os.close(descriptor)
 
 
-def main(mode, port):
+def main(mode, port, policy_revision=6):
     assert mode in ('before-forward', 'after-complete', 'restart')
+    assert policy_revision in (4, 6)
     original = http.CONFIG
     config = original.read_text()
     if mode != 'restart':
@@ -39,7 +40,7 @@ def main(mode, port):
     server = http.Server('executor-commit-' + mode)
     try:
         if mode == 'restart':
-            owner = server.ready(6)
+            owner = server.ready(policy_revision)
             assert owner['listeners'] == []
             emit('ready', owner=owner)
             assert sys.stdin.readline() == 'stop\n'
@@ -53,7 +54,7 @@ def main(mode, port):
         stderr = server.error.read_text()
         lines = [json.loads(line) for line in server.output.read_text().splitlines()]
         assert code == 4 and 'CommitUnknown' in stderr, (code, stderr)
-        assert lines and lines[0]['state'] == 'idle' and lines[0]['policy_revision'] == '6'
+        assert lines and lines[0]['state'] == 'idle' and lines[0]['policy_revision'] == str(policy_revision)
         assert lines[0]['listeners'] == [] and all(v.get('release') != 'committed' for v in lines)
         assert not Path(f'/proc/{server.process.pid}').exists() and lock_available()
         assert not list((http.ROOT / 'scratch').iterdir())
@@ -64,4 +65,5 @@ def main(mode, port):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1], int(sys.argv[2]))
+    assert len(sys.argv) in (3, 4)
+    main(sys.argv[1], int(sys.argv[2]), int(sys.argv[3]) if len(sys.argv)==4 else 6)

@@ -20,12 +20,11 @@ product responsibilities in the existing task plan.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD9d962d560808365ab445e8f97571929adcfd935a,
-tree2e66930656e74c69cab302781e89638912037eb1, branch main. Last pushed origin/main
-8e8d8a3d2f7a4aa98d170a3a339b05b2abdd1e1b. Root owns new regression evidence,
-later-evidence links, inventory and this checkpoint; product tree is unchanged
-since cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93. No other contributor writes or
-merge/rebase. Finish evidence review, coherent docs commit and private push.
+Last verified HEAD/origin main5323bd5e028722a1d2471a90f19dc36b8e8986cd pushed;
+ls-remote matched. Root owns fixture-only pause-COMMIT profile: proxy selector/test,
+commit client policy parameter, pause_commit_cases.py, lab/runtime/parking dispatch
+and this checkpoint. Product tree unchanged since cdb78a1. No other contributor
+writes or merge/rebase. Native pause-COMMIT NOT_RUN.
 
 The known-refusal implementation at cdb78a1 has Mac fmt/check,42 binary tests and
 Clippy PASS, complete root diff review and independent AI source review without a
@@ -86,14 +85,16 @@ bytes on new inodes. Unknown readersaf1738244ee81e2779e891841fbff3e0 and
 ced6c3cfb85b0843a618e71503224d3f released. Final parent0, bothDB0. Actual login429
 followed by one60s retry201; no rate counters or limits changed.
 Root whole capture/Git/ELF/signed-byte/manifest/SQL/resource verification PASS;
-independent AI review pending. Capture66files/1176Git sources, tar
+independent AI whole capture review also found no discrepancy. Capture66files/1176Git sources, tar
 9f0f0008a8e57661de23de175cc90ea75c84977d35356c5f28beb4b155fdcfd2.
 These are completion-COMMIT faults, not pause-COMMIT faults. No GC/load/arm64 claim.
 
 ## Next bounded action and invariants
 
-After delivering the verified evidence, qualify unknown **pause COMMIT** and
-recovery before exposing resume/cancel controls. A bounded fixture can reuse one
+Review the new fixture-only **pause COMMIT** profile, commit clean Git, then run
+with exactcdb78a1 ELF after complete input equality before exposing resume/cancel.
+Proxy selector test first failed KeyError, then passed10 tests; logs under
+export-execution/pause-target-{red,green}.log. Native NOT_RUN. It reuses one
 signed accepted job with1536 cap: before-forward pause leaves running3; a second
 owner retries the same immutable unit and after-server-completion pause leaves
 paused5; ordinary restart preserves paused5/no new reader. Both failed parents
@@ -101,7 +102,7 @@ must exit4/CommitUnknown, positively join, preserve original export pins and
 collect exact SQL/xmin, reader cleanup, output mutex and backend identities.
 Target only UPDATE jobs SET state='paused', never reservation/start/reader release.
 Reuse existing native_commit_proxy/clients and independent signed fixtures; first
-verify target discrimination, then actual PostgreSQL. This is proposed, NOT_RUN.
+verify target discrimination, then actual PostgreSQL. New fixture source exists; expected native outcomes remain NOT_RUN.
 
 The runtime's ExecutionCustody can only come from successful RunningExport.prepare:
 it binds exact committed start job/revision/unit/destination/ControlOwner to the

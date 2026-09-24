@@ -8,7 +8,7 @@ import time
 from signed_publication_cases import Process, command, event, send
 
 
-def run(root, state, sql, policy, *, busy=False):
+def run(root, state, sql, policy, *, busy=False, pause_commits=False):
     runner=state['container_id'];db='bbpub_control_normal';private=root/'out/private-grant-http'
     result=dict(status='INCOMPLETE',source=state['source'],cases=[])
     path=root/'parking-cases.json';assert not path.exists()
@@ -38,6 +38,12 @@ def run(root, state, sql, policy, *, busy=False):
         #fit this logical output grant. The actual reader must still execute.
         activate(4,{'administration.enabled':False,'export.memory.max_bytes':1073741824,'export.artifact.max_bytes':1536})
         save()
+        assert not (busy and pause_commits)
+        if pause_commits:
+            from pause_commit_cases import run as check_commits
+            result['pause_commits']=check_commits(root,state,sql,job,before,snapshot)
+            result['status']='PASS'
+            return result
         if busy:
             from busy_cases import run as check_busy
             result['busy']=check_busy(root,state,sql,job,before,snapshot)

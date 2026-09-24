@@ -45,6 +45,19 @@ class Targets(unittest.TestCase):
                       b'UPDATE control.jobs SET state=$1']:
             self.assertFalse(proxy.control_target_query(target, query))
 
+    def test_export_pause_does_not_target_start_reader_release_or_completion(self):
+        target = 'control-export-pause'
+        self.assertTrue(proxy.control_target_query(target,
+            b"UPDATE control.jobs SET state='paused',job_revision=job_revision+1,reason_code=$3::text WHERE job_id=$1::bytea"))
+        for query in [b'UPDATE control.jobs SET state=$3::text,job_revision=job_revision+1',
+                      b"UPDATE control.jobs SET state='succeeded',job_revision=job_revision+1",
+                      b'INSERT INTO control.export_execution_units(job_id) VALUES($1)',
+                      b'INSERT INTO control.artifacts(artifact_id) VALUES($1)',
+                      b"UPDATE control.snapshot_leases SET state='released' WHERE lease_id=$1",
+                      b'INSERT INTO control.archive_snapshot_pins(lease_id) VALUES($1)',
+                      b'SELECT job_id FROM control.jobs']:
+            self.assertFalse(proxy.control_target_query(target, query))
+
 
 class SessionCompletions(unittest.TestCase):
     def observer(self):
