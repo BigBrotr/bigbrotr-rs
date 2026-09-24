@@ -15,8 +15,6 @@ if sys.argv[1] == 'prepare':
 [export.destination]
 id="e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1"
 root="/out/signed_normal/export-destination"
-[runtime.processes.application]
-payload_bytes="512MiB"
 [runtime.processes.native]
 memory_max_bytes="3GiB"
 native_bytes="1536MiB"

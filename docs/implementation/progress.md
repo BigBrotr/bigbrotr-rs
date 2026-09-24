@@ -21,7 +21,7 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD1c15d1a1845d6c094ab7f4478f4edcc629702766 candidate;
+Last verified HEADb6fd7ebc857dafdf6832df8edf86b8435504677c candidate;
 origin/mainfc08c48a4c9573bcc308a082de64ab33c3c4820b. Root owns fixture correction,
 filesystem capacity preflight and evidence/inventory/checkpoint edits.
 [First headless fixture](evidence/p08-export-runtime-fixture-incomplete-20260924.json)
@@ -37,6 +37,19 @@ full manifest oracle strengthened after independent source review. This was not
 an executor RED. Capture26files/1158sources verified. Both containers stopped-
 retained, owner9769d2023e4c48a208a84ec32eefe9a5, network removed,592 prior
 records/eight running unchanged; free153717768192bytes, no cleanup debt.
+
+Thirdb6fd7eb reused1c15d1a ELF correctly; offline config passed, then Control
+preparation refused the fixture's unnecessary512MiB application payload override.
+The recipe's original2GiB is restored next; actual corrected TOML validates.
+No live Control or executor started; original INCOMPLETE retained. Capture24files/
+1159sources verified, ownera0d2f896afbb8f9ca3bd22f2e3a5b4cb stopped-retained,
+network removed. No current active experiment or cleanup debt.
+
+Retired only26cde0a/out/build/{target,cargo-home} after owner/mount/process FD/map
+checks and source/artifact/capture rehash.3331977216 allocated bytes; free
+149504614400 ->152834408448.598containers/eight running unchanged. Preserve current
+1c15d1a complete compiler cache, both installed ELF, all sources/logs/PG/archive.
+Audit under attempt-26cde0a/cache-retirement; no lab/container/volume removed.
 
 A real-filesystem capacity preflight now uses retained fstatvfs descriptor,
 checked growth+completion reserve arithmetic, and refuses impossible/overflowing
