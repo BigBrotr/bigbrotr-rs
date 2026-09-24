@@ -19,93 +19,63 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-HEAD/origin/main2b61b4e0113bd34179cc98ff1a38c9a1fbcd4533, tree
-f8b363736c2c3fbcb98cd585605af00037a3d697. Candidate338057b and reviewed evidence
-are pushed to private BigBrotr/bigbrotr-rs/main; ls-remote matches, no rewrite.
-Clean immediately after push; root now owns this checkpoint plus the new
-resume_revoke client/host fixture, lab wiring and finite TracedServer options.
-No product Rust/SQL changes or foreign work. Tested fixture source remains338057b, with unchanged
-product/build inputs and native runtime artifacts retaining8dbd3c4 identity.
-No experiment remains active.
+HEAD6aac0e94b27bb0e8436a2831e1ed9a942a80ca34, tree
+5dfb71fa56eda27473ce0d98ace544fc5fb6a43f; candidate above private origin/main2b61b4e.
+Root owns only current evidence/inventory/P08/operations/checkpoint edits; no foreign
+work. No product Rust/SQL changes. Native runtime retains8dbd3c4 identity after
+complete unchanged product/build input comparison. Native run is finished.
 
-Run export-runtime-338057b, owner66c9ffd561acaaafaa9bd4d885b32818, is stopped-retained
-with [scoped native evidence](evidence/p08-export-resume-locks-native-20260924.json)
-and independently replayed29payloads. Three actual account/source
-row waits: expired requests401 with zero resume INSERTs; timely source release202
-with exactly one atomic queued8 receipt. Expired-session retry401 and live-session
-historical retry200 preserve full receipts/units/pins and session timestamps/xmin.
-No new files/reader; short idle1.25s/maximum60s sessions are valid audited SQL
-fixtures, not configurable-login qualification. The second actual authority
-Execute is held after second authentication, so the source wait exercises the
-final current-clock check. Parent exits0/Control release committed in all cases;
-both databases0backends/no active owner. Original PostgreSQL wrapper137 is owned
-lab teardown, not a graceful database shutdown claim.
+[Resume revocation](evidence/p08-export-resume-revocation-native-20260924.json)
+has scoped PASS at6aac0e9: while a real non-main worker marker open waits under
+qualified strace6.1 delay_enter2s, authenticated history.read disable commits in
+0.012073s. The worker is sampled still stopped before/after the grant and after
+original marker bytes/same inode restoration. The real open subsequently succeeds;
+pending resume403 in2.007912s, identical resume403 and consumed-proof grant retry200
+with exact original receipt. GET still observes paused7.17complete row+xmin ledgers
+and session projections attribute only session/proof setup plus one atomic grant
+transition4→5/generation2/proof consumption; job/unit/caps/cut/pins and original
+resume history are unchanged. BothDB0/no active Control owner; parent exits0 with
+committed release, root flock available and scratch empty. No wire proxy here:
+absence of durable resume effects, not zero attempted INSERTs. Trace timestamps
+are syscall entry, with no separate return timestamp/read trace. No new output,
+Control-renewal or continuous custody qualification.
 
-Actual final census21:18:47Z: two owned PID0/noOOM, network/orchestrator absent,
-760 prior containers/eight unrelated running preserved, free114151206912bytes.
-Per-run free114563158016→114161668096; concurrent host/capture writes explain
-separate observation times. No compiler cache copied/created, deletion or container/
-volume/data retirement. Preserve8db/73e/4e caches and all protected artifacts.
-Owned IDs/source/manifests/capture/final census are in inventory
-implementation_resume_locks_20260924 and the new report. Orchestrator532965/
-start_ticks366681794 is absent. No Tux edit outside exact-Git workflow.
+Root recomputed31payloads,1267current/1260runtime/1110seed Git entries, both ELF and
+actual instrument/proof; independent read-only AI replay agrees on17ledgers,
+proof/session/grant receipt/digest, actual trace and all762stored prior containers
+in both original and later census. Six checker oracle tests passed before
+candidate; artifact/handoff/Python syntax/diff checks cover final documentation.
+No native retry, fixture failure or new compilation. Review-found capture and
+post-marker-write ordering gaps were corrected before the candidate.
 
-Root recomputed1264current/1260runtime/1110seed Git entries, unchanged complete
-product/build input set, both actual ELF, twelve row+xmin ledgers, attributable
-login/seed audits, session states, exact HTTP/SQL receipts and PG waiter/expiry
-timing. Local5 selector/pump +10 target +1 wire tests and artifact/handoff checks
-pass. Independent static and capture/report review passed: AI replayed all29
-payloads/manifests/ELF, twelve ledgers/sessions and760stored resource records.
-Final later census is a root assertion/summary, not a retained second full dump.
-Report remains scoped, no full task/M1 completion.
+Run export-runtime-6aac0e9, owner4713e1ef5f9b4c6eac74038a7f930731, is stopped-retained.
+Orchestrator554949/start_ticks366831870 absent; two owned containers PID0/noOOM,
+network removed. Actual final census21:47:02Z retains all762prior projections,
+eight unrelated running unchanged, free113696452608bytes. Per-run free
+114115346432→113708908544; earlier prelaunch/capture observations have different
+measurement times and concurrent writes. No cache copied/created, cache/container/
+volume/data retirement. Preserve8db/73e/4e, instrument and all existing protected
+inputs. Exact owned IDs/source/manifests/capture/census in inventory
+implementation_resume_revocation_20260924. Capture attempt-6aac0e9/capture, tar
+SHAa9aa845afc01c70e367b011840a562a84218344d129ac7c1e609af64f94abdae.
 
-Two new offline-observer corrections retain unchanged native capture: proxy
-terminal has no held field (explicit held event/mode/Execute count are required);
-separate subsequent login removes exactly the preceding expired short session
-under browser_sessions.rs:361/0806. Root read the complete519-line session adapter
-and requires every other row/xmin preserved. Within-case retries/stop remain exact.
-No native retry, fixture mutation or failure-to-PASS relabeling occurred.
+Earlier [session row waits](evidence/p08-export-resume-locks-native-20260924.json)
+at338057b remain independently qualified/pushed with same8db ELF: actual account
+and second-authority source waits cross idle expiry and return401 without resume
+INSERTs; timely release202 creates one atomic queued8 revision. Live-session
+historical200 versus expired401, exact receipts/units/pins,12ledgers/session
+checks and attributed login/short-session provisioning. Original capture and its
+two offline-observer corrections remain retained; no rerun. Short1.25s idle/60s
+maximum sessions are valid audited SQL fixtures, not configurable login behavior.
 
-Active bounded slice: actual authenticated history.read revocation while resume
-is checking its original filesystem marker, between the first rolled-back SQL
-validation and the second accepting transaction. Native supervisor can service
-revocation without nesting native allocation; grant enable would need a new read.
-New client prepares real login/password reauthentication before the hold, primes
-only with incompatible marker503s, then uses qualified strace6.1 delay_enter2s on
-the third per-thread marker open. While the identified worker is still stopped,
-actual PUT disables history.read. Restore original marker bytes/same inode before
-the finite delay returns; the pending resume must403, with no resume effects.
-Explicit retry of consumed grant proof/key resolves original200 receipt; resume
-retry403 and job GET200, then actual graceful parent/Control release. No extra
-native reader/export execution selected.17 complete ledgers plus safe session
-projection bind two issuance audits and one exact atomic grant transition/proof
-consumption; original job/unit/caps/cut/pins must stay unchanged.
-
-Read affected current resume/native supervisor/management, complete scope-grant
-adapter, grant digest model,0811 and session proof issuance, plus the actual
-checker/revocation fixtures. Official strace v6.1 manual delay/when semantics
-inspected (raw GitHub tag); this changes only fixture timing, no tracer rebuild.
-TracedServer now accepts explicit2s or original60s delay and captured log name.
-Existing six exact-marker/worker/returned-call oracle tests pass; artifact/Python
-syntax checks pass. Root and read-only AI static review are complete; confirmed capture and
-marker-ordering gaps were corrected. No outstanding concrete static blocker.
-The2s setup may be INCOMPLETE on a slow host; no Control renewal or continuous
-custody claim is part of this fixture. No new native run launched yet. Fresh Tux prelaunch census21:38:32Z:
-114151071744bytes free,762containers/eight unrelated running, no BigBrotr process;
-mounts/processes/ports/networks/volumes inventoried without mutations. Use existing
-collect-resume-checker.py to capture job-resume logs/trace/JSON/original marker AND
-actual copied instrument/proof. Preserve qualified strace plus8db/4e reuse roots.
-Marker restoration now re-samples the actual pending stopped worker after exact
-bytes/inode verification; do not infer this ordering from an after-write timestamp.
-
-Next: integrate confirmed review corrections, inspect full diff and artifact/
-handoff checks, commit clean candidate, inventory Tux and transfer via ignored
-transfer-resume-revoke.py with exact8db runtime reuse. Observe actual outcomes;
-if timing/fixture preparation fails, preserve it as incomplete. Then capture and
-independently check all durable effects/trace/identities/terminal resources before
-claiming this concurrency guarantee. Maximum/commit-time expiry, further account/
-grant/CAS orderings, zero/multiple streams, CLI/cancel and mixed workloads remain
-open. No full task/M1 completion from one scenario.
+Next: finish final report/diff review and checks, then commit/push the current
+fixture plus verified evidence to private main. Resume remaining expiry boundaries:
+inspect current final authentication/COMMIT checks and existing row-wait harness
+for a discriminating maximum-expiry and deferred-COMMIT expiry scenario. Preserve
+current captures and do not broaden this PASS to those unexecuted schedules.
+Further account/grant/CAS orderings, zero/multiple streams, CLI/cancel, mixed
+workloads and the full installed/release journeys remain open. No full task/M1
+or complete-product claim.
 
 ## Latest qualified slice
 

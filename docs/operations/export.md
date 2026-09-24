@@ -163,7 +163,12 @@ now check actual account/source waits: expired sessions return401 without a resu
 INSERT; timely source release accepts exactly one queued revision. An expired
 token cannot resolve history; a live session resolves the original receipt without
 idle refresh. Short lifetimes are valid SQL fixtures, not a configurable login
-feature. Other grant/revocation interleavings and the CLI remain unfinished.
+feature. The [resume revocation scenario](../implementation/evidence/p08-export-resume-revocation-native-20260924.json)
+also checks an authenticated input-permission revocation during the actual
+filesystem wait. After the marker check succeeds, fresh authorization refuses
+resume with403 and preserves the paused unit/pin. The grant retry resolves its
+original receipt; the job observation remains available. This single schedule
+does not qualify every grant/revocation interleaving; the CLI remains unfinished.
 A separate [installed
 signed-resume scenario](../implementation/evidence/p08-export-resume-output-native-20260924.json)
 restores a revoked input grant through authenticated HTTP, resumes the original

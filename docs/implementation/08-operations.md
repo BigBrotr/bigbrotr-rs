@@ -341,8 +341,13 @@ expiry and return401 without resume INSERTs; timely source release accepts one
 queued8 revision. Actual retries distinguish the expired session from a live
 session resolving that receipt. All twelve ledgers and session timestamps/xmin
 are checked, with explicit login/seed attribution. Short lifetimes are valid SQL
-fixtures, not configurable-login qualification. Further grant/CAS/revocation
-interleavings, maximum/commit expiry and complete UI/CLI consumers remain required
+fixtures, not configurable-login qualification. The [resume revocation scenario](evidence/p08-export-resume-revocation-native-20260924.json)
+at6aac0e9 now observes an authenticated history.read disable while the actual
+destination marker open waits. After original marker restoration and successful
+open, resume returns403. Seventeen complete ledgers and session state attribute
+only the grant transition; the paused unit/pin and original resume history remain
+unchanged. The consumed-proof grant retry returns its exact original receipt.
+Further grant/CAS/revocation interleavings, maximum/commit expiry and complete UI/CLI consumers remain required
 before completing this step.
 
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted

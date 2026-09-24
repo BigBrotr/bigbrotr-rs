@@ -1,0 +1,346 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "task": [
+    "P08-T03",
+    "P08-T04"
+  ],
+  "status": "SCOPED_PASS",
+  "source": "6aac0e94b27bb0e8436a2831e1ed9a942a80ca34",
+  "tree": "5dfb71fa56eda27473ce0d98ace544fc5fb6a43f",
+  "scope": "Installed HTTP history.read revocation while resume checks the original destination filesystem, followed by fresh authorization refusal and exact historical grant retry. Fixture-only changes; no product Rust or SQL changes.",
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "source_and_artifacts": {
+    "runtime_source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+    "runtime_tree": "7c6b2addc5818b0b3a57f66dff2d89b32ae5f450",
+    "runtime_owner": "1ae77d53919b4876eeff7df396179ccd",
+    "runtime_root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-8dbd3c4",
+    "runtime_manifest_sha256": "b8fd1d99439834201a4618ef1ade39bb8a030d63ccd1c465bd24bb09acff21c1",
+    "current_manifest_sha256": "92a05e9ea498796ba7ed5feebc92616a98b20f21c35e81951895f1e1991e2682",
+    "seed": {
+      "source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "tree": "fb87d6a4e8082d0dc2e5e8c5ac010de37920632a",
+      "owner": "3f840fe30a3ffef7f9944c72ea6e38f9",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+      "source_manifest_sha256": "eee5a33104dbee6059d2a106eab2b09d44b14e54c5badd06fce0f8425182ef6f",
+      "artifacts": {
+        "control": "42e2787cdabf4d31c1941ca38bebe5006ac8c0e8a4c8fdf8ac99d9644e38c88c",
+        "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+        "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+        "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+        "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+      },
+      "native_assets": {
+        "bigbrotr-archive-worker": {
+          "bytes": 14378448,
+          "sha256": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4"
+        },
+        "extensions/ducklake.duckdb_extension": {
+          "bytes": 36436086,
+          "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+        },
+        "extensions/httpfs.duckdb_extension": {
+          "bytes": 21570542,
+          "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+        },
+        "extensions/postgres_scanner.duckdb_extension": {
+          "bytes": 41696558,
+          "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+        },
+        "lib/duckdb.h": {
+          "bytes": 244057,
+          "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+        },
+        "lib/libduckdb.so": {
+          "bytes": 70529912,
+          "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+        }
+      },
+      "validation": "Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. This reuse record covers original seed artifacts only. Current compilation/adapter evidence, when selected, is recorded separately under adapter-checks and adapter-cases."
+    },
+    "cargo_lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "runtime_artifacts": {
+      "bigbrotr": "b76d606f28f71dbc2a434567e32df9bb50fc146fcd144d99167407aeae94473a",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "reuse": "Complete current non-doc/non-experiments source/build set equals8db; no exceptions, new Rust compilation or Clippy run. Original8db build/test evidence retains its own identity.",
+    "instrument": {
+      "source": "9b30c3535c1407294fb95b40df8019ebda6860f9",
+      "owner": "84ac8cbf5292679b8ef7043fed7a2799",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35",
+      "files": {
+        "strace-exit-fixed": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+        "result.json": "cf0317fc8934eb70f3cf2d74ac6ba0680be09366a4ade586aabd95991c6c3abc"
+      }
+    }
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-6aac0e9/capture",
+    "files": 31,
+    "sha256": "a9aa845afc01c70e367b011840a562a84218344d129ac7c1e609af64f94abdae",
+    "source": "6aac0e94b27bb0e8436a2831e1ed9a942a80ca34",
+    "tree": "5dfb71fa56eda27473ce0d98ace544fc5fb6a43f",
+    "source_files": 1267
+  },
+  "executed": {
+    "local": "Six exact-marker/thread/returned-call oracle tests pass before candidate. Artifact/Python-syntax/handoff/diff checks pass; documentation checks rerun for final evidence. Root offline verifier recomputes all31payloads, three full Git manifests, both runtime ELF and actual instrument/proof.",
+    "seed_and_schema": {
+      "schema-cases.json": "PASS",
+      "resume-schema-cases.json": "PASS"
+    },
+    "fixture": "Actual login and password reauthentication prepare a live session and same-command proof before the timed marker hold. Execution and native reader are disabled. Two incompatible-marker priming requests return503. The third per-thread open is delayed at entry for2s by the qualified strace6.1 instrument; no syscall result replacement. While the observed non-main thread remains in tracing stop, actual PUT disables history.read. Original marker bytes/same inode are restored and the held thread is resampled before the real open returns successfully. Pending resume revalidates authority and returns403; same-key retry403. Grant same-key/body/consumed-proof retry200 preserves original receipt with created=false. Actual GET still observes paused7.",
+    "root_verification": {
+      "status": "VERIFIED_SCOPED_PASS",
+      "source": "6aac0e94b27bb0e8436a2831e1ed9a942a80ca34",
+      "runtime_source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "source_files": {
+        "out/build/source-manifest.json": 1267,
+        "runtime-source-manifest.json": 1260,
+        "artifact-source-manifest.json": 1110
+      },
+      "payloads": 31,
+      "ledgers": 17,
+      "ledger_counts": {
+        "prepared": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 12,
+          "local_accounts": 1,
+          "principal_grants": 7,
+          "scope_grants": 3,
+          "scope_grant_changes": 3,
+          "reauthentication_proofs": 0
+        },
+        "baseline": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 14,
+          "local_accounts": 1,
+          "principal_grants": 7,
+          "scope_grants": 3,
+          "scope_grant_changes": 3,
+          "reauthentication_proofs": 1
+        },
+        "after": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 7,
+          "management_audit": 15,
+          "local_accounts": 1,
+          "principal_grants": 7,
+          "scope_grants": 3,
+          "scope_grant_changes": 4,
+          "reauthentication_proofs": 0
+        }
+      },
+      "resume_seconds": 2.007911663968116,
+      "grant_seconds": 0.01207299204543233,
+      "grant_accepted_at_us": 1790286143535674,
+      "preexisting": 762,
+      "unrelated_running": 8,
+      "free_before": 114115346432,
+      "free_after": 113708908544,
+      "final_free": 113696452608,
+      "marker_restored_to_http_response_lower_bound_seconds": 1.8310181801207364
+    },
+    "observed": {
+      "parent": {
+        "pid": 1301,
+        "pgid": 1298,
+        "start_ticks": "366839611"
+      },
+      "worker_tid": 1303,
+      "tracer": 1298,
+      "priming_statuses": [
+        503,
+        503
+      ],
+      "resume": {
+        "status": 403,
+        "body": {
+          "error": {
+            "code": "permission_denied",
+            "correlation_id": "8c536a2ed654eaf2acce753239cb280e",
+            "message": "This action is not permitted.",
+            "retry_class": "check_state",
+            "status": 403
+          }
+        },
+        "elapsed_seconds": 2.007911663968116
+      },
+      "retry": {
+        "status": 403,
+        "body": {
+          "error": {
+            "code": "permission_denied",
+            "correlation_id": "ad85c009c09f0175809a82e4d6e377c1",
+            "message": "This action is not permitted.",
+            "retry_class": "check_state",
+            "status": 403
+          }
+        },
+        "elapsed_seconds": 0.004544958006590605
+      },
+      "grant": {
+        "status": 200,
+        "receipt": {
+          "accepted_at_us": "1790286143535674",
+          "account_grant_revision": "5",
+          "application": "unobserved",
+          "authority": "acceptance-only",
+          "command_key": "e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7",
+          "created": true,
+          "enabled": false,
+          "format": "bigbrotr-scope-grant/1",
+          "principal_id": "10101010101010101010101010101010",
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "scope_generation": "2"
+        },
+        "elapsed_seconds": 0.01207299204543233
+      },
+      "grant_retry": {
+        "status": 200,
+        "receipt": {
+          "accepted_at_us": "1790286143535674",
+          "account_grant_revision": "5",
+          "application": "unobserved",
+          "authority": "acceptance-only",
+          "command_key": "e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7e7",
+          "created": false,
+          "enabled": false,
+          "format": "bigbrotr-scope-grant/1",
+          "principal_id": "10101010101010101010101010101010",
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "scope_generation": "2"
+        }
+      },
+      "marker_sha256": "3be80c1e20a4996da9ac2ef6d40c00fb4aac8ecc950ed823a8a61bcc06dd612b",
+      "marker_identity": {
+        "device": 66306,
+        "inode": 33567926
+      },
+      "grant_accepted_between_worker_samples": true,
+      "restored_while_worker_still_stopped": true
+    },
+    "durable_effects": "Full17row+xmin ledgers plus safe complete session projection before login/proof, after setup, after retries and after stop. Exactly two setup audits attribute session issue and reauthentication to their transaction xmin. One atomic grant transaction increments account grant revision4\u21925, disables only history.read at generation2, consumes the bound proof and appends one scope detail/command/audit. Independently encoded request digest and exact HTTP receipt match SQL. Every other account/grant field, job/unit/caps/cut/retention row and original resume history remain unchanged. Session timestamps/xmin remain identical after grant, resume/grant retries and stop. No new reader, artifact, or durable resume effects.",
+    "terminal": "Actual parent receives pidfd SIGTERM after replies, exits0 with committed Control release, absent process, available root flock and empty scratch. Both databases have zero other backends and no active Control owner in the native oracle. Runner0 and both owned containers PID0/noOOM; PostgreSQL wrapper137 is owned lab teardown, not graceful database shutdown."
+  },
+  "resources": {
+    "resources": {
+      "source": "6aac0e94b27bb0e8436a2831e1ed9a942a80ca34",
+      "tree": "5dfb71fa56eda27473ce0d98ace544fc5fb6a43f",
+      "owner": "4713e1ef5f9b4c6eac74038a7f930731",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-6aac0e9",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "811d18b34a27d403856b9a229ff5a58d91a317dd73b4ee838088167b040cfb29"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "f2b41184076cf12dd2c191982438424f2a279f4f1dfbdfcdd7f99c61eececd0f"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T21:41:05.172239+00:00",
+      "runtime_profile": "resume-revoke",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "network_id": "72861e445b56f3475d228efbb42cf8adc0eb5159d962c596bc93fa552b4505c1",
+      "postgres_id": "811d18b34a27d403856b9a229ff5a58d91a317dd73b4ee838088167b040cfb29",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "f2b41184076cf12dd2c191982438424f2a279f4f1dfbdfcdd7f99c61eececd0f",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "orchestrator": {
+      "pid": 554949,
+      "start_ticks": "366831870",
+      "source": "6aac0e94b27bb0e8436a2831e1ed9a942a80ca34",
+      "tree": "5dfb71fa56eda27473ce0d98ace544fc5fb6a43f"
+    },
+    "original_terminal": "PASS_PENDING_CAPTURE",
+    "free_bytes_before": 114115346432,
+    "free_bytes_after": 113708908544,
+    "final_census": {
+      "path": ".research/implementation/export-execution/resume-revoke-final-census.json",
+      "sha256": "72bafe312af1ef40ab9447c55a4ad0dfd9837de45a0e9acef717b768aed9fa71",
+      "observed_at": "2026-09-24T21:47:02.180268+00:00",
+      "free_bytes": 113696452608,
+      "full_prior_container_projections": 762
+    },
+    "retention": "Keep original source, runtime ELF, native seed/assets, PostgreSQL/archive state, logs, manifests, instrument/proof and captures. No compiler cache copied/created, recompilation, cache/data/container/volume retirement. Preserve8db/73e/4e caches, qualified strace and all previously protected inputs. All762 prior container lifecycle/mount/network/restart/health-status projections match the later full census; eight unrelated containers remain running. Probe log contents are deliberately excluded from stable lifecycle comparison."
+  },
+  "review": {
+    "root": "Read complete new fixture/wiring and relevant current resume/native-supervision/scope-grant/session-proof consumers. Replayed original capture without importing product or native oracle code. Independently verified all17ledgers, session/proof/audit lineage, canonical grant digest/receipt, marker ordering, terminal artifacts and both original/later762-container projections. Review does not requalify every existing seed or product boundary.",
+    "independent": "Read-only AI independently recomputed31payload/tar hashes,1267/1260/1110 Git manifests, full product/build equality, both ELF and actual strace/proof. Reconstructed17ledgers/session/proof/grant transaction/digest/receipts, exact same worker pending in all three samples and later successful DELAYED open. Compared all762original and later full container projections, eight unchanged unrelated workloads, owned PID0/noOOM and bothDB0. No discrepancy. No tests/SSH/edits; no separate syscall return timestamp/read trace, autonomous renewal measurement or continuous custody claim. Final report/inventory/task/operations and helper hash comparison found no discrepancy.",
+    "helpers": {
+      "transfer-resume-revoke.py": "0d7c55977ff9e1d8229f446cf3d253326f6dc08ed58686d9578bd3dfef4e1a84",
+      "collect-resume-checker.py": "c77e6e5688118c9c553f3f8956d3e64b19be32dc977570342bbcddebe1e0e0cc",
+      "review-resume-revoke.py": "e4b756559cd25000703faa9241d6fa4c4130fefcfc8d3612f8c7d628bb11c659",
+      "resume-revoke-final-census.py": "1c6fad82994045d202d329164a31bdc257c6e890755a62758fd8233209f8e398"
+    }
+  },
+  "research": [
+    {
+      "url": "https://raw.githubusercontent.com/strace/strace/v6.1/doc/strace.1.in",
+      "used": "Exact v6.1 delay_enter and when semantics: delay actual syscall entry with per-tracee counters; s duration. The qualified exit patch clears delayed flags only on irreversible tracee exit, not normal syscall return."
+    }
+  ],
+  "limits": [
+    "One paused single-stream protocol1 job, one principal and one restrictive scope change. No new signed output, multiple/zero-stream, max/commit-time expiry, other account/grant/CAS schedules, mixed/aged workload or cancellation qualification.",
+    "The2s delay is research instrumentation on real marker syscall entry, not arbitrary kernel I/O. Captured before/after/after-restoration samples do not establish continuous custody. This short test makes no Control-renewal claim.",
+    "The -ttt trace records syscall entry time, with later successful DELAYED completion but no separate return timestamp or read trace. The2.007912s is total HTTP request latency. The restoration-to-response lower bound uses submission time plus measured HTTP latency, not a measured syscall-return interval.",
+    "No PostgreSQL wire proxy in this profile: full durable comparisons establish absence of new committed resume effects, not zero attempted SQL writes.",
+    "Grant receipt reports acceptance-only/application-unobserved. It is not proof that all other deliveries have drained. Reauthentication is required for the grant change, not for resume.",
+    "Setup timeout and cleanup-failure branches were not exercised by this PASS. Incompatible-marker priming503s are expected negative controls, not failed native attempts.",
+    "Linux amd64 only. No hosted Actions, new Rust unit/Clippy run, browser or full CLI/Compose/release acceptance. Full P08/M1 and complete product remain incomplete."
+  ]
+}
