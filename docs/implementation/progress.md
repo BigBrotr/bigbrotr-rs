@@ -20,19 +20,48 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEADb531f9166310abb71a5f5242b0313988dc6a02cd on main; private
-origin/main54af815ba2d44b0ddb3b3ab31cb8245bf281c4b0 after successful qualification
-push. Root owns pending resume-output fixture corrections/evidence/inventory and
-this checkpoint. No other contributor or merge/rebase. No active Tux BigBrotr lab
-at the latest stopped-resource capture. Full selected product remains incomplete.
+Last verified HEAD30df0fd4c65bd8aa2fe5cfe65858381ad164621d, tree
+68f4a1f1f8b2f7bd337ec51fe104add48f45e8d6 on main; private origin/main remains
+54af815ba2d44b0ddb3b3ab31cb8245bf281c4b0. Two unpublished fixture candidates.
+Root owns pending signed-output evidence, scoped cache inventory retirement and
+checkpoint/docs plus untracked resume_commit_{client,cases}.py drafts for the next
+COMMIT-loss slice. No other contributor or merge/rebase. No active Tux BigBrotr lab
+at latest terminal capture and privileged process/cache census. Full product incomplete.
 
-Next bounded action: exact-Git rerun --runtime-resume-output with4a3c4ce ELF after
-full product/build equality and resource/space preflight. Corrected docker exec-i,
-readiness saved before host instructions, finally always retains client buffers.
-Independent AI prompted explicit binding of verification_pin_id to the only new
-reader after restoration, original catalog/frontier/topology and claim[1,10].
-Mac py_compile/diff check pass. Do not change product/caps/expected signed bytes
-for the fixture failure; fault/expiry/held-driver and UI gates remain open.
+Next bounded action: resume COMMIT-loss on both sides using the qualified4a3c4ce
+ELF and original paused7 HTTP fixture. Extend the existing bounded native proxy's
+selected Control target to export_resume_commands; preserve original key/body,
+observe actual SQL rows/xmin and driver/parent termination, then resolve through a
+fresh Control. Before-forward must retain paused state with no command; after
+server commit must retain queued8/original receipt. No false compensation/release.
+Use exact Git and product equality, fresh ownership/space census, retained failures.
+
+[30df0fd signed resume](evidence/p08-export-resume-output-native-20260924.json) passes
+actual blocked-reader revocation,814 compatible migration with real CLI, refused
+resume while revoked, authenticated history.read restoration, resume5→succeeded7,
+399exact signed bytes and complete SQL inventory. Original unit/cut/caps/artifact
+and retained inputs unchanged; new reader bound to this completion and original
+claim[1,10], released separately from original export retention. Old command/audit/
+artifact rows/xmin preserved. Same receipt5/time after retry and Control6→7 restart;
+recorded rows/xmin and files/inodes unchanged across restart/1.5s scheduler window.
+Root verifies43payloads/1227current/1223build/1110seed Git files, full product equality,
+both4aELF and674prior/eight unrelated running. Tar
+3bdb53e2084ff8c3b6d96f116f3bb3a40b822807cf30ae6a4e6bea5547c07815.
+Stopped-retained runs/export-runtime-30df0fd owner38337833c2cb58a60da5806bba4ff300;
+allownedPID0/noOOM/network removed, parents0/rootlocks available/scratch empty,
+bothDB0. Free122588622848→122189041664bytes, no new cache/build. Independent AI
+capture review confirms source/ELF, signed bytes, ledgers and resource observations
+without a concrete discrepancy; the final client event limitation is retained in
+the report. Unknown COMMIT/cancel/held-driver/UI/full release NOT_RUN.
+
+Afterward retired ONLY45a96e7 and016dd6f out/build/{target,cargo-home},
+6663274496allocatedbytes. Free122178621440→128836993024bytes, concurrent writes
+possible. All676containers/eight running unchanged; capture/source/ELF rehashed
+before/after; resolved paths/mounts and privileged read-only process FD/maps/cwd
+census exclude current dependencies. Reports under ignored export-execution/
+cache-retirement-{45a96e7,016dd6f}; inventory records retirement without rewriting
+historical outcomes. Preserve4a3c4ce current cache plus prior useful877/f660/4eseed,
+32dd58d/61271e2 and all data/captures. No container/volume/lab-data deletion.
 
 [b531f91 output fixture](evidence/p08-export-resume-output-fixture-incomplete-20260924.json)
 is INCOMPLETE: headless completion and real blocked-reader revocation PASS, actual

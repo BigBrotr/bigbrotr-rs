@@ -1,0 +1,271 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "PASS_SCOPED",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "source": "30df0fd4c65bd8aa2fe5cfe65858381ad164621d",
+  "tree": "68f4a1f1f8b2f7bd337ec51fe104add48f45e8d6",
+  "runtime_source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+  "environment": {
+    "host": "tux",
+    "target": "Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-30df0fd/capture",
+    "files": 43,
+    "sha256": "3bdb53e2084ff8c3b6d96f116f3bb3a40b822807cf30ae6a4e6bea5547c07815",
+    "source": "30df0fd4c65bd8aa2fe5cfe65858381ad164621d",
+    "tree": "68f4a1f1f8b2f7bd337ec51fe104add48f45e8d6",
+    "source_files": 1227
+  },
+  "artifacts": {
+    "bigbrotr": "6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "scope": "Actual installed revocation, authenticated grant restoration, explicit same-unit resume and complete signed JSONL/SQL inventory with same-cookie retry/restart. Same qualified4a3c4ce executables; no new compilation.",
+  "results": {
+    "prerequisites": "Headless empty completion and blocked actual native query/history.read revocation pass again; revocation joins its worker and parks the signed job4 with private files but no completed inventory.",
+    "migration": {
+      "event": "migration",
+      "observation": {
+        "applied_count": "1",
+        "current_version": "814",
+        "dataset_initialization": "not-performed",
+        "format": "bigbrotr-control-migration/1",
+        "release_upgrade_qualification": "not-performed",
+        "scope": "postgres-control",
+        "source_version": "501",
+        "status": "applied",
+        "steps": [
+          {
+            "name": "0814_export_resume.sql",
+            "sha256": "c2ddfa56c2b79cc647b34586aee739cd08885e58c4cfa4c965ef7243149d9b1d",
+            "version": "814"
+          }
+        ],
+        "target_version": "814"
+      }
+    },
+    "grant_restored": {
+      "event": "restored",
+      "status": 200,
+      "receipt": {
+        "accepted_at_us": "1790267467498624",
+        "account_grant_revision": "6",
+        "application": "unobserved",
+        "authority": "acceptance-only",
+        "command_key": "e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6",
+        "created": true,
+        "enabled": true,
+        "format": "bigbrotr-scope-grant/1",
+        "principal_id": "10101010101010101010101010101010",
+        "scope": {
+          "allocation_domain": "04040404040404040404040404040404",
+          "dataset_id": "01010101010101010101010101010101",
+          "dictionary_kind": 4,
+          "ordinal": "1"
+        },
+        "scope_generation": "3"
+      }
+    },
+    "resume": {
+      "event": "resumed",
+      "status": 202,
+      "receipt": {
+        "accepted_at_us": "1790267468429788",
+        "authority": "acceptance-only",
+        "command_key": "f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2",
+        "created": true,
+        "execution": "unobserved",
+        "format": "bigbrotr-export-resume/1",
+        "job_id": "750faa316d8ef24993d1bce64c73c04d",
+        "job_revision": "5"
+      },
+      "command": {
+        "expected_job_revision": "4",
+        "expected_config_revision": "1",
+        "expected_policy_revision": "4"
+      },
+      "key": "f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2"
+    },
+    "retry": {
+      "event": "retried",
+      "status": 200,
+      "receipt": {
+        "accepted_at_us": "1790267468429788",
+        "authority": "acceptance-only",
+        "command_key": "f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2",
+        "created": false,
+        "execution": "unobserved",
+        "format": "bigbrotr-export-resume/1",
+        "job_id": "750faa316d8ef24993d1bce64c73c04d",
+        "job_revision": "5"
+      }
+    },
+    "restart": {
+      "event": "restarted",
+      "status": 200,
+      "receipt": {
+        "accepted_at_us": "1790267468429788",
+        "authority": "acceptance-only",
+        "command_key": "f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2",
+        "created": false,
+        "execution": "unobserved",
+        "format": "bigbrotr-export-resume/1",
+        "job_id": "750faa316d8ef24993d1bce64c73c04d",
+        "job_revision": "5"
+      },
+      "owner": {
+        "archive_intents": {
+          "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+          "issued_through": "4",
+          "observed_through": "4",
+          "pages": 1,
+          "publication_authority": "not-granted",
+          "resolution": "not-performed",
+          "state": "observed"
+        },
+        "authority_scope": "Control custody; each private action and export independently reauthorized",
+        "config_revision": "1",
+        "dataset_id": "01010101010101010101010101010101",
+        "export_execution": "selected-under-qualification",
+        "format": "bigbrotr-control-runtime/1",
+        "listeners": [
+          {
+            "host": "127.0.0.1",
+            "kind": "private-session-http",
+            "port": 18080,
+            "private_assets": null,
+            "profile": "trusted-host-loopback"
+          }
+        ],
+        "native_stores": [],
+        "owner_epoch": "7",
+        "owner_resource_id": "6e7c49ad2f3ba18534097d2b489e85ba",
+        "policy_revision": "4",
+        "process_incarnation": "cb2d5c0d2f14955cdff35028e9617e63",
+        "role": "control",
+        "state": "idle"
+      },
+      "stopped": {
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      }
+    },
+    "transition": [
+      "paused4",
+      "resume acceptance5",
+      "running6",
+      "succeeded7/checkpoint1"
+    ],
+    "preserved": "All original job_input_bounds/export_jobs/export_execution_units rows and xmin unchanged; same original unit/cut/limits/destination/artifact. Old leases/pins/claims remain unchanged including active export pin. Old command/audit/artifact/file rows and xmin preserved.",
+    "fresh_reader": "Exactly one extra reader after the grant restoration allocation; artifact.verification_pin_id is that new lease, with original dataset/catalog/frontier/topology and claim[shard0,epoch1,1..10]. Reader/claim released under observed execution owner. Restored grant allocation separately released; no old reader adopted.",
+    "receipt": "Original accepted revision5/time survives succeeded7 and next Control epoch; independently computed digest and actor/dataset/key/job/revisions/audit tuple match SQL.",
+    "signed_bytes": 399,
+    "signed_sha256": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+    "files_before": {
+      "events.jsonl": {
+        "sha256": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+        "bytes": 399,
+        "inode": 32645307
+      },
+      "manifest.json": {
+        "sha256": "ed4be5974e2b3df3a284cb6b2a4d2ccb00e7c79f91892cf12c0495d05822b429",
+        "bytes": 1228,
+        "inode": 32645308
+      }
+    },
+    "files_after": {
+      "events.jsonl": {
+        "sha256": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+        "bytes": 399,
+        "inode": 32645320
+      },
+      "manifest.json": {
+        "sha256": "ed4be5974e2b3df3a284cb6b2a4d2ccb00e7c79f91892cf12c0495d05822b429",
+        "bytes": 1228,
+        "inode": 32645321
+      }
+    },
+    "restart_stability": "Full recorded ledgers including xmin and output hashes/inodes unchanged across explicit retry, process restart and1.5seconds of scheduler intervals.",
+    "terminal": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    }
+  },
+  "review": {
+    "root": {
+      "status": "VERIFIED_SCOPED_PASS",
+      "source": "30df0fd4c65bd8aa2fe5cfe65858381ad164621d",
+      "runtime_source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+      "counts": {
+        "out/build/source-manifest.json": 1227,
+        "artifact-source-manifest.json": 1110,
+        "runtime-source-manifest.json": 1223
+      },
+      "payloads": 43,
+      "preexisting": 674,
+      "free_before": 122588622848,
+      "free_after": 122189041664,
+      "artifacts": {
+        "bigbrotr": "6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      }
+    },
+    "independent_signed_oracle": "Captured signed output compared byte-for-byte with frozen E_public from experiments/identity-contract/signed-fixture.json, including all ordered tags/content/signature; manifest equals independent expected document and SQL inventory hashes/bytes/rows.",
+    "independent_ai": "Offline read-only AI review independently rehashed tar,43payloads,1227/1223/1110Git files,460product/build inputs and both ELF; replayed literal signed bytes/manifest, fresh reader and original cut/claim binding, receipt digest/SQL rows/xmin and674prior resources. No concrete discrepancy. Confirms the explicitly retained final-client-event limitation. No tests/SSH/resource changes; cache retirement outside this review."
+  },
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-30df0fd",
+    "owner": "38337833c2cb58a60da5806bba4ff300",
+    "state": "stopped-retained",
+    "all_owned_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "resume_parent_terminals": {
+      "before_restart": {
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "final": "Client Server.stop asserted exit0, reaped parent/root lock/scratch before emitting terminal; host observed event and client exit0. Host later overwrote result.terminal with SQL snapshot. Final parent stdout ends in committed release and stderr is empty; distinct final client-terminal event was not retained."
+    },
+    "preexisting": 674,
+    "unrelated_running": 8,
+    "free_before": 122588622848,
+    "free_after": 122189041664
+  },
+  "remaining": [
+    "Unknown resume COMMIT on both sides; cancellation, held checker/driver custody",
+    "Natural session expiry and revocation/CAS/expiry while waiting for locks",
+    "Other actors/terminal states and selected formats at HTTP/browser consumers",
+    "TypeScript client against real HTTP and full browser/CLI resume journey",
+    "Incompatible814 rows through actual migrator; compatible upgrade here is not release-upgrade qualification",
+    "Mixed workloads, aged state, full selected product, hosted Actions, native arm64 and release journeys"
+  ]
+}

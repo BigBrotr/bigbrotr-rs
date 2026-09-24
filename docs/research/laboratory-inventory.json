@@ -23300,7 +23300,27 @@
     },
     "free_before": 134338449408,
     "free_after": 130631946240,
-    "retention": "Preserve original SQL receipts, queued8 state, source/seed identities, both new ELF and useful016dd6f compiler cache for immediate resume HTTP work. No dataset/container/volume retirement in this run."
+    "retention": "Preserve original SQL receipts, queued8 state, source/seed identities, both new ELF and useful016dd6f compiler cache for immediate resume HTTP work. No dataset/container/volume retirement in this run.",
+    "cache_retirement": {
+      "status": "PASS",
+      "evidence": ".research/implementation/export-execution/cache-retirement-016dd6f",
+      "identities": {
+        "cache-retirement.json": "d22b0e23b1ccc7339dc12557284a7ec031ecc6aafa2f3bfe09673213df5c0975",
+        "cache-containers-before.json": "65ffb0aa63789b8e14768f17e642baa062fccf2e929e414929a74cd1e29e63ee",
+        "cache-containers-after.json": "65ffb0aa63789b8e14768f17e642baa062fccf2e929e414929a74cd1e29e63ee",
+        "script_sha256": "6bb30aa0f5198bf615487f52f4142bac602ff200d0cf5cf10d4232d164434811"
+      },
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-016dd6f/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-016dd6f/out/build/cargo-home"
+      ],
+      "allocated_bytes": 3328512000,
+      "free_before": 125510934528,
+      "free_after": 128836993024,
+      "containers_preserved": 676,
+      "preserved": "Original capture/logs, current ELF outside cache, sources/manifests, seed artifacts, PGdata/archive/output. Current4a3c4ce cache and all other labs unchanged.",
+      "scope": "Only target/cargo-home removed after resolved-path/mount/process audits and source/capture/ELF rehash before/after. Historical results unchanged; no container, volume or laboratory data deletion."
+    }
   },
   "implementation_export_resume_http_red_20260924": {
     "status": "stopped-retained; HTTP prerequisite FAIL, laboratory INCOMPLETE",
@@ -23345,7 +23365,27 @@
     },
     "free_before": 130587975680,
     "free_after": 126854455296,
-    "retention": "Preserve original failure, SQL state, sources/seed identities and ELF. Cache may be retired after corrected native run qualifies; no resource retirement performed here."
+    "retention": "Preserve original failure, SQL state, sources/seed identities and ELF. Cache may be retired after corrected native run qualifies; no resource retirement performed here.",
+    "cache_retirement": {
+      "status": "PASS",
+      "evidence": ".research/implementation/export-execution/cache-retirement-45a96e7",
+      "identities": {
+        "cache-retirement.json": "fe94a67d2a55d94f0a6e45f54ae314f7f4bcabfecf5fdd9fe2d7f731550ee2dd",
+        "cache-containers-before.json": "65ffb0aa63789b8e14768f17e642baa062fccf2e929e414929a74cd1e29e63ee",
+        "cache-containers-after.json": "65ffb0aa63789b8e14768f17e642baa062fccf2e929e414929a74cd1e29e63ee",
+        "script_sha256": "50b1cbfd7c6a638e9625207b836db8bc659e31da4ef6a4564814da1ca0e15067"
+      },
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45a96e7/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45a96e7/out/build/cargo-home"
+      ],
+      "allocated_bytes": 3334762496,
+      "free_before": 122178621440,
+      "free_after": 125510934528,
+      "containers_preserved": 676,
+      "preserved": "Original capture/logs, current ELF outside cache, sources/manifests, seed artifacts, PGdata/archive/output. Current4a3c4ce cache and all other labs unchanged.",
+      "scope": "Only target/cargo-home removed after resolved-path/mount/process audits and source/capture/ELF rehash before/after. Historical results unchanged; no container, volume or laboratory data deletion."
+    }
   },
   "implementation_export_resume_http_20260924": {
     "status": "stopped-retained; scoped installed HTTP resume PASS",
@@ -23435,5 +23475,49 @@
       "source_files": 1226
     },
     "retention": "Keep original failure, SQL state, signed private files, source/build identities and all captured logs; no cache created or resource retirement."
+  },
+  "implementation_export_resume_output_20260924": {
+    "status": "stopped-retained; same-unit signed completion PASS_SCOPED",
+    "resources": {
+      "source": "30df0fd4c65bd8aa2fe5cfe65858381ad164621d",
+      "tree": "68f4a1f1f8b2f7bd337ec51fe104add48f45e8d6",
+      "owner": "38337833c2cb58a60da5806bba4ff300",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-30df0fd",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "701ae7715ea93019c34a913516f8e1fcface5d5db0eb14339fa81d335ff200a7"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "c568eba7a395dec51a575c98d7601e68cba81143fe843fd531401f4ce5d8ea98"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T16:29:39.423939+00:00",
+      "runtime_profile": "resume-output",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+      "network_id": "6993181e3a2eed08bce19ebb3d4210a20329671d2dbb546b6cd6a03a87fda4d5",
+      "postgres_id": "701ae7715ea93019c34a913516f8e1fcface5d5db0eb14339fa81d335ff200a7",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "c568eba7a395dec51a575c98d7601e68cba81143fe843fd531401f4ce5d8ea98",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-output-native-20260924.json",
+    "capture": {
+      "files": 43,
+      "sha256": "3bdb53e2084ff8c3b6d96f116f3bb3a40b822807cf30ae6a4e6bea5547c07815",
+      "source": "30df0fd4c65bd8aa2fe5cfe65858381ad164621d",
+      "tree": "68f4a1f1f8b2f7bd337ec51fe104add48f45e8d6",
+      "source_files": 1227
+    },
+    "retention": "Preserve same-unit completed signed artifact, original paused/revocation evidence, all SQL states/captures/source manifests and reused4a3c4ce ELF. No build cache created."
   }
 }

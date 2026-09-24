@@ -138,8 +138,13 @@ historical retry needs no current input grant, destination or native reader.
 The installed HTTP evidence covers reduced SQL privileges, same-unit acceptance,
 expired scheduling TTL with retained input, known refusals and historical retry
 after restart/revocation. The reader is disabled in that fixture. Unknown COMMIT,
-blocked destination work, resumed signed output and the real TypeScript/browser
-consumer remain required acceptance; browser controls and the CLI are unfinished.
+blocked destination work and the real TypeScript/browser consumer remain required
+acceptance; browser controls and the CLI are unfinished. A separate [installed
+signed-resume scenario](../implementation/evidence/p08-export-resume-output-native-20260924.json)
+restores a revoked input grant through authenticated HTTP, resumes the original
+unit and verifies exact signed bytes plus complete inventory. Identical retry
+after completion and process restart preserves its original acceptance receipt;
+the new reader is released and the original export retention remains.
 
 The private panel now provides **Inspect your job** after sign-in. Paste the job
 ID from the acceptance receipt and select **Check job**. The initial view shows
