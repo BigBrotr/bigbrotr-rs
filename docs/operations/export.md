@@ -8,8 +8,9 @@ and the private job route has
 The typed adapter now has [scoped native completion evidence](../implementation/evidence/p08-export-adapter-native-20260924.json)
 for signed and empty JSONL files, with durable inventory and fresh-process
 resolution. The ordinary Control runtime now contains a single-job automatic
-executor under qualification. Its installed completion/restart/cancellation
-scenarios remain open; other output formats, object storage and artifact
+executor under qualification. [One installed headless empty-export scenario](../implementation/evidence/p08-export-runtime-headless-native-20260924.json)
+passes with actual native lookup, files and SQL completion. Installed signed output,
+restart and cancellation scenarios remain open; other output formats, object storage and artifact
 publication also remain required work. A [native catalog-loss test](../implementation/evidence/p08-export-catalog-loss-native-20260924.json)
 also checks rollback without partial inventory and reuse of the same Control
 session; it does not qualify automatic recovery of the retained job or files.

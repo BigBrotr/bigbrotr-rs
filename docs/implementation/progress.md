@@ -21,11 +21,24 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEADae4fffa6312d6e85ec71be6b75a6b81ede462a5b candidate;
+Last verified HEADf70ac174ad091fd9b849ff18719b86e520478df8 candidate;
 origin/mainfc08c48a4c9573bcc308a082de64ab33c3c4820b freshly verified by ls-remote.
-Root owns new serve/export_jobs.rs, serve.rs, optional-management Supervisor/history,
-operations/export.md and the RED evidence/inventory/checkpoint updates. No other
-contributor edits or merge/rebase. Product candidate is not yet native qualified.
+Root owns the evidence/inventory/documentation update and an untracked next
+recovery_client.py fixture, intentionally excluded from the evidence commit.
+The product source is committed; no other contributor edits or merge/rebase.
+
+[Native installed headless completion](evidence/p08-export-runtime-headless-native-20260924.json)
+passes at exact f70ac17, tree56981910b75493d19e05963512c67e5d9adc7e2f. Fresh
+parent/worker build,42release tests and Clippy pass. The identical RED fixture
+now reaches succeeded/checkpoint1, one unit/artifact/file, complete literal empty
+JSONL/manifest, fresh reader released and original export pin retained. No HTTP
+listener, actual SIGTERM clean; both DB backends and active Control zero, eight
+Parquet unchanged. Capture33files/1161Git sources locally verified,
+SHA87a0feb7ddd2a1f8de6914557df956822666d06b350cc49b734483b0dd1ff363.
+Owner337d33ac65c18f0d3f4b64f8257d2d28 stopped-retained/network removed;
+600 prior records/eight unrelated running preserved; free148637876224bytes.
+Keep fresh f70 compiler cache/ELF for fixture-only reuse. Independent complete capture review found no discrepancy, including source/ELF,
+manifest/SQL and600 prior resources. Fault paths and signed output/restart remain NOT_RUN.
 
 [Installed headless RED](evidence/p08-export-runtime-red-20260924.json): corrected
 ae4fffa fixture uses exact1c15d1a installed ELF after complete product/build input
@@ -58,7 +71,7 @@ of in-process retry. Durable pause/resume/failure parking remains required work.
 Independent AI follow-up found no remaining counterexample in those fixes and
 clarified the five-second scope; no practical fault evidence yet. Mac42binary
 tests/check/Clippy passed on this WIP;
-actual automatic completion and these fault paths remain NOT_RUN.
+the above installed empty completion now passes, while these fault paths remain NOT_RUN.
 
 A retained-descriptor fstatvfs preflight accounts additional two-copy growth,
 64MiB scratch and1MiB metadata while preserving the configured completion reserve.
@@ -133,12 +146,13 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Review the remaining source delta and independent follow-up, commit one clean
-executor candidate, then transfer exact Git and run the same native headless
-fixture with a fresh installed parent/worker build (no artifact reuse across
-product changes). Expected literal empty file+manifest, complete SQL inventory,
-reader release and retained export pin. Record failure honestly if it occurs.
-Then qualify real signed output, restart/replay and confirmed fault paths.
+Complete independent capture review, record scoped evidence and push the verified
+coherent prefix. Then extend the same isolated fixture: actual signed event
+accepted through HTTP, browser logout, kill Control after output publication while
+SQL inventory INSERT is observably blocked, restart with the same unit, literal
+signed bytes/manifest and exact SQL/pin observations. Use f70 installed artifacts
+only after complete product/build-input equality. No second edited Tux copy.
+Record any outcome as observed, including initial fixture failures.
 
 Keep OutputCustody and its output OwnedPermit outside cancellable supervise
 through actual Control driver join; each blocked worker separately owns the same

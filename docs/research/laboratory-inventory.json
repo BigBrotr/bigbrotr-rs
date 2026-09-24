@@ -21629,5 +21629,55 @@
     "unrelated_running": 8,
     "free_bytes": 152408317952,
     "retention": "All source, original logs, actual reused ELF, PostgreSQL state and signed archive retained. No new compiler cache."
+  },
+  "implementation_export_runtime_headless_20260924": {
+    "status": "stopped-retained; PASS_SCOPED after local hash/source verification",
+    "evidence": "docs/implementation/evidence/p08-export-runtime-headless-native-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-f70ac17/capture",
+    "verified": {
+      "files": 33,
+      "sha256": "87a0feb7ddd2a1f8de6914557df956822666d06b350cc49b734483b0dd1ff363",
+      "source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+      "tree": "56981910b75493d19e05963512c67e5d9adc7e2f",
+      "source_files": 1161
+    },
+    "resources": {
+      "source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+      "tree": "56981910b75493d19e05963512c67e5d9adc7e2f",
+      "owner": "337d33ac65c18f0d3f4b64f8257d2d28",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f70ac17",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "fbb7b564ed39346ac7b8c52e7984d635f073923a84ef8c77e1f6887d7f0a7966"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "7b00dc7ceaefb4fd182804f18105c250e1c59535c212203a935229dc85005596"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T11:19:36.869312+00:00",
+      "runtime_profile": "executor",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "7a4305aa0a9143c98b91b0c9b98e9fa4795fc2daa04a59cddb504592e3297001",
+      "postgres_id": "fbb7b564ed39346ac7b8c52e7984d635f073923a84ef8c77e1f6887d7f0a7966",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "7b00dc7ceaefb4fd182804f18105c250e1c59535c212203a935229dc85005596",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "preexisting_preserved": true,
+      "preexisting_count": 600,
+      "unrelated_running": 8,
+      "free_bytes": 148637876224,
+      "cleanup_errors": []
+    },
+    "retention": "Keep fresh installed parent/worker and complete compiler cache for immediate exact-input fixture reuse; original source, logs, PostgreSQL state and archive retained."
   }
 }

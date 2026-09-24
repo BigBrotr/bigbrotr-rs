@@ -1,0 +1,175 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED",
+  "scope": "Installed headless Control automatically consumes one already accepted exact-ID export through actual native lookup, empty JSONL/manifest publication and atomic SQL completion.",
+  "source": {
+    "files": 33,
+    "sha256": "87a0feb7ddd2a1f8de6914557df956822666d06b350cc49b734483b0dd1ff363",
+    "source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+    "tree": "56981910b75493d19e05963512c67e5d9adc7e2f",
+    "source_files": 1161
+  },
+  "capture": ".research/implementation/export-execution/attempt-f70ac17/capture",
+  "build": {
+    "source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+    "tree": "56981910b75493d19e05963512c67e5d9adc7e2f",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "artifacts": {
+      "bigbrotr": "6830a4f4bfe9a1c5c1da0a74bf8a62729527764ac9538ed620dcda008555ca9a",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    }
+  },
+  "checks": [
+    "Fresh installed parent AND worker build",
+    "42 release binary tests and Clippy",
+    "Original signed archive producer with five scoped PASS records and independent actual native readback",
+    "Same runtime fixture/oracle as pre-implementation ae4fffa RED",
+    "Host independent literal complete manifest/empty JSONL/SQL and pin lifecycle assertions",
+    "All captured files, source manifest against exact Git archive and both installed ELF rehashed locally"
+  ],
+  "observed": {
+    "before": {
+      "files": 0,
+      "units": 0,
+      "states": [
+        "accepted"
+      ],
+      "artifacts": 0,
+      "readers_active": 0
+    },
+    "ready": {
+      "archive_intents": {
+        "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+        "issued_through": "4",
+        "observed_through": "4",
+        "pages": 1,
+        "publication_authority": "not-granted",
+        "resolution": "not-performed",
+        "state": "observed"
+      },
+      "authority_scope": "Control custody; each private action and export independently reauthorized",
+      "config_revision": "1",
+      "dataset_id": "01010101010101010101010101010101",
+      "export_execution": "selected-under-qualification",
+      "format": "bigbrotr-control-runtime/1",
+      "listeners": [],
+      "native_stores": [],
+      "owner_epoch": "2",
+      "owner_resource_id": "2b28d9e7f05dea642aadfbae3416ebb2",
+      "policy_revision": "2",
+      "process_incarnation": "f808d9e6106c32a398f5a31d5591aa27",
+      "role": "control",
+      "state": "idle"
+    },
+    "after": {
+      "files": 1,
+      "units": 1,
+      "states": [
+        "succeeded"
+      ],
+      "artifacts": 1,
+      "readers_active": 0
+    },
+    "runtime_exit": 0,
+    "terminal": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    },
+    "active_control": 0,
+    "output": {
+      "job": "21bdc7f1549849fb75bb8a3c99fd2e74",
+      "rows": "0",
+      "bytes": "0",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "artifact": "87b3243c0b6d145e4ba50328612d5dd1",
+      "manifest": "11784983cd57226c6ad7a9e08e4f92432942bed1786cd0fb31a7be6c95b43b68",
+      "checkpoint": "1",
+      "manifest_bytes": "1226",
+      "export_retained": true,
+      "reader_released": true
+    },
+    "output_hashes": {
+      "signed_normal/export-destination/87b3243c0b6d145e4ba50328612d5dd1/events.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "signed_normal/export-destination/87b3243c0b6d145e4ba50328612d5dd1/manifest.json": "11784983cd57226c6ad7a9e08e4f92432942bed1786cd0fb31a7be6c95b43b68"
+    },
+    "unchanged_archive_files": {
+      "signed_normal/kind=7/main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e",
+      "signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70",
+      "signed_normal/kind=7/main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076",
+      "signed_normal/kind=7/main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be",
+      "signed_normal/kind=7/main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35",
+      "signed_normal/kind=7/main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05",
+      "signed_normal/kind=7/main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937",
+      "signed_normal/kind=7/main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+    }
+  },
+  "review": "Root complete source/capture review and independent AI static/capture review. Three findings corrected before this run: scratch-error retry, output permit lifetime and repeated durable reader claims after native refusal. AI independently rehashed tar/33files/1161current+1110seed sources/two ELF, compared complete manifest, SQL and600 prior resource records; no concrete discrepancy. Failure paths are not practically qualified by this happy path.",
+  "resources": {
+    "source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+    "tree": "56981910b75493d19e05963512c67e5d9adc7e2f",
+    "owner": "337d33ac65c18f0d3f4b64f8257d2d28",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f70ac17",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "fbb7b564ed39346ac7b8c52e7984d635f073923a84ef8c77e1f6887d7f0a7966"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "7b00dc7ceaefb4fd182804f18105c250e1c59535c212203a935229dc85005596"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T11:19:36.869312+00:00",
+    "runtime_profile": "executor",
+    "adapter_profile": null,
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "network_id": "7a4305aa0a9143c98b91b0c9b98e9fa4795fc2daa04a59cddb504592e3297001",
+    "postgres_id": "fbb7b564ed39346ac7b8c52e7984d635f073923a84ef8c77e1f6887d7f0a7966",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "7b00dc7ceaefb4fd182804f18105c250e1c59535c212203a935229dc85005596",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "PASS_PENDING_CAPTURE",
+    "source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+    "owner": "337d33ac65c18f0d3f4b64f8257d2d28",
+    "result": "PASS",
+    "independent_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "container_ok": true,
+    "preexisting_preserved": true,
+    "preexisting_count": 600,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "original_source_unchanged": true,
+    "host_tcp_wmem_preserved": true,
+    "free_bytes": 148637876224
+  },
+  "limitations": [
+    "Selected native Linux amd64 only; no arm64 evidence.",
+    "Exact absent ID deliberately exercises authorized empty output, not an emitted signed row.",
+    "No whole P08 task or M1 acceptance; installed signed-event emission, crash/restart, commit-reply loss and current-authority faults remain open.",
+    "Scratch fault/worker-unknown permit retention fixes have static review but not practical fault evidence yet.",
+    "No continuous-service, aged-queue fairness, mixed-load capacity, physical disk quota or shared durable growth ledger claim.",
+    "Known failure after reader admission stops this initial runtime after positive cleanup; durable parking/resume remains required work.",
+    "Export retention pin remains active by design; terminal retention/recovery lifecycle unfinished."
+  ]
+}
