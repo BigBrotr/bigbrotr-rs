@@ -14,8 +14,10 @@ def run(root, state, sql, policy):
     client = None
     def save(): path.write_text(json.dumps(result,indent=2)+'\n')
     def exchange(name, operation, **fields):
-        send(client,json.dumps(dict(operation=operation,**fields))+'\n')
-        observed=event(client, {'revoke-history':'revoked'}.get(operation,operation),timeout=8)
+        assert name not in result['cases']
+        send(client,json.dumps(dict(operation=operation,request=name,**fields))+'\n')
+        observed=event(client,name,timeout=8)
+        assert observed['operation']==operation
         result['cases'][name]=observed;save();return observed
     def session_rows():
         # No token/CSRF digest, salt or credential material in evidence.

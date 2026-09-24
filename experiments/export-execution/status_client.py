@@ -37,15 +37,15 @@ def main():
                     if name.lower() == 'set-cookie': cookies.load(value)
                 auth = {'Cookie': 'BigBrotrLocalSession=' + cookies['BigBrotrLocalSession'].value,
                         'X-CSRF-Token': cookies['BigBrotrLocalCsrf'].value}
-                emit('login', status=status, observation=observation)
+                emit(command['request'],operation=op, status=status, observation=observation)
             elif op == 'status':
                 status, observation, headers = http.request('GET', '/management/v1/jobs/' + command['job'], auth=auth)
                 assert ('cache-control','no-store') in [(k.lower(),v) for k,v in headers]
                 assert not any(k.lower()=='set-cookie' for k,_ in headers)
-                emit('status', status=status, observation=observation)
+                emit(command['request'],operation=op, status=status, observation=observation)
             elif op == 'me':
                 status, observation, _ = http.request('GET', '/management/v1/me', auth=auth)
-                emit('me', status=status, observation=observation)
+                emit(command['request'],operation=op, status=status, observation=observation)
             elif op == 'accept':
                 body = dict(kind='export',format='signed-events-jsonl',
                     query=dict(version=1,resource='event_history',mode='snapshot',
@@ -57,7 +57,7 @@ def main():
                     expected_config_revision='1',expected_policy_revision='3')
                 status, receipt, _ = http.request('POST','/management/v1/jobs',body,{**auth,'Idempotency-Key':'e8'*16})
                 assert status==202 and receipt['created'] and receipt['execution']=='unobserved', (status,receipt)
-                emit('accept',status=status,receipt=receipt)
+                emit(command['request'],operation=op,status=status,receipt=receipt)
             elif op == 'revoke-history':
                 current = command['principal']
                 change = dict(principal_id=current, action='history.read', enabled=False,
@@ -70,7 +70,7 @@ def main():
                 status, receipt, _ = http.request('PUT',f'/management/v1/principals/{current}/grants',
                     dict(command=change,proof_id=proof['proof_id']),keyed)
                 assert status==200 and receipt['created'] and not receipt['enabled'], (status,receipt)
-                emit('revoked',status=status,receipt=receipt)
+                emit(command['request'],operation=op,status=status,receipt=receipt)
             else:
                 raise AssertionError('unknown fixture instruction')
         raise AssertionError('missing explicit stop')

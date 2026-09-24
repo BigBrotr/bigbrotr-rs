@@ -22427,5 +22427,82 @@
       "free_bytes": 143794728960
     },
     "retention": "No compiler cache. Keep all source/logs/ELF/database/archive/output and original export pins. Revoked unit private files are deliberately retained without completion inventory. Network removed."
+  },
+  "implementation_export_status_20260924": {
+    "status": "stopped-retained; original INCOMPLETE",
+    "evidence": "docs/implementation/evidence/p08-export-status-fixture-incomplete-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-f81362c/capture",
+    "verified": {
+      "files": 36,
+      "sha256": "bfdf66cbdec53347ff908cdc04f12bcf505f8f8414e00d5f110c29f0d55353dd",
+      "source": "f81362c1ea6645dbd2e9bcc906763420e7db5e6b",
+      "tree": "4b9d1d3ca25a590ed23c906c6e3bfeb0f8d1b2ad",
+      "source_files": 1189
+    },
+    "resources": {
+      "source": "f81362c1ea6645dbd2e9bcc906763420e7db5e6b",
+      "tree": "4b9d1d3ca25a590ed23c906c6e3bfeb0f8d1b2ad",
+      "owner": "f064eff9afaa717279018131ab651579",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f81362c",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "0adfe2c81d8bdd2aa8e559420e48784ed09783807f343cc72e4a34cddcd8a7f7"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "720ad2fc0fa1a95759e6eb6ed6e34cf4fec1ea0b35768375f6e483bd40b8f3c2"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T13:48:35.532840+00:00",
+      "runtime_profile": "job-status",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "3976ee535929e3279306a9273e5f1a05231c88c60e58aa5cbd94aee3edf40426",
+      "postgres_id": "0adfe2c81d8bdd2aa8e559420e48784ed09783807f343cc72e4a34cddcd8a7f7",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "720ad2fc0fa1a95759e6eb6ed6e34cf4fec1ea0b35768375f6e483bd40b8f3c2",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "status": "INCOMPLETE",
+      "source": "f81362c1ea6645dbd2e9bcc906763420e7db5e6b",
+      "owner": "f064eff9afaa717279018131ab651579",
+      "cases": {},
+      "result": "INCOMPLETE",
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "failure": {
+        "kind": "AssertionError",
+        "frames": [
+          {
+            "file": "lab.py",
+            "line": 287,
+            "function": "<module>"
+          }
+        ]
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 624,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "original_source_unchanged": true,
+      "host_tcp_wmem_preserved": true,
+      "free_bytes": 140020953088
+    },
+    "retention": "Preserve original failed fixture result, source/ELF/logs/database/output. Keep new f813 compile cache for immediate continuation. No resource deletion; network removed."
   }
 }

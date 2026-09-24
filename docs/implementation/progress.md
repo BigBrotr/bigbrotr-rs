@@ -20,10 +20,10 @@ product responsibilities in the existing task plan.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD/origin62c18c9a108af2c8165508e07ad4e37920fbd292.
-Root owns the current authenticated status implementation, tests, generated
-contract/client, private panel and native status fixture. No other contributor
-writes or merge/rebase; no active lab/cleanup debt at the preflight below.
+Last verified HEADf81362c1ea6645dbd2e9bcc906763420e7db5e6b on main; candidate
+unpublished, origin still62c18c9a108af2c8165508e07ad4e37920fbd292. Root owns
+only this subsequent checkpoint/inventory update. No other contributor writes
+or merge/rebase. The exact candidate completed the first native attempt as recorded below.
 The next coherent candidate needs a fresh native build; cdb78a1 ELF reuse is
 forbidden for these changed product/build inputs. Native status/browser are NOT_RUN.
 Pause-COMMIT and revocation capture reviews/evidence remain pushed and unchanged.
@@ -144,9 +144,20 @@ PID0/noOOM/network removed,622prior/eight running unchanged. Free144191508480→
 143794728960bytes. No cache. Root and independent complete capture reviews passed.
 Reviewer has not reread actual seed Parquet/dependency bytes, only recorded comparisons.
 
-Next bounded action: commit the reviewed status candidate with its qualification
-limits, transfer that exact Git revision, and run --runtime-job-status on Tux with
-fresh parent/worker builds. Then audit the complete native capture and exercise
+Next bounded action: commit the fixture-only request-correlation correction and
+run a new --runtime-job-status lab reusing f813 ELF only after complete product
+input equality. Original f813 native status is [INCOMPLETE](evidence/p08-export-status-fixture-incomplete-20260924.json):
+first own metadata200 is exact, then repeated event() selects that old reply for
+missing-status instead of waiting for its404. No actual missing reply retained.
+Root verified complete36file capture/1189current and1110seed Git/ELF/resource
+identities. Fresh build/native44 tests/Clippy PASS. No other product failure
+established. Root owns two fixture corrections, evidence/inventory/checkpoint.
+Capture tarbfdf66cbdec53347ff908cdc04f12bcf505f8f8414e00d5f110c29f0d55353dd.
+New parentSHA61ace1586e2f0b37a8965b33852c775814192439520c94f809ef766a239bcd41;
+workerSHA3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
+Independent AI fixture review confirms correlation correction; no further static
+block found. It did not audit this capture or run any tests.
+Then audit the complete native capture and exercise
 actual production assets/browser before qualifying this new user journey.
 Implemented initial GET status: authenticated actor-owned protocol1 export,
 current dataset status.read/session/CSRF, closed redacted metadata, no idle touch
@@ -224,9 +235,18 @@ advancing through the selected product; no task completion from this scoped slic
 All roots below are under /home/tux/bigbrotr-implementation-20260917/runs/.
 [Inventory](../research/laboratory-inventory.json) owns full IDs/mounts/audits.
 Fresh read-only preflight:143784255488bytes available, eight unrelated containers
-running and no BigBrotr/cargo/rustc/python process names matched. No active lab
-or cleanup debt observed. The launcher must still capture complete mounts, ports,
-processes, volumes and ownership before allocating any new resources.
+running and no BigBrotr/cargo/rustc/python process names matched. The subsequent launcher captured complete mounts/ports/processes/volumes and
+created now stopped-retained export-runtime-f81362c, ownerf064eff9afaa717279018131ab651579,
+sourcef81362c1ea6645dbd2e9bcc906763420e7db5e6b/tree4b9d1d3ca25a590ed23c906c6e3bfeb0f8d1b2ad.
+PG0adfe2c81d8bdd2aa8e559420e48784ed09783807f343cc72e4a34cddcd8a7f7,
+runner720ad2fc0fa1a95759e6eb6ed6e34cf4fec1ea0b35768375f6e483bd40b8f3c2,
+network3976ee535929e3279306a9273e5f1a05231c88c60e58aa5cbd94aee3edf40426.
+Both container PID0/noOOM, PG137/runner143, network removed, bothDB0,
+624prior/eight running preserved. Free143751401472→140020953088bytes.
+Fresh build completed before the fixture failed. Retain this useful current cache.
+Ignored transfer-status.py transfers exact Git; collect-runtime.py now includes
+job-status parent stdout/stderr. review-status-capture.py verified INCOMPLETE.
+No active lab or cleanup debt after terminal capture; recheck before reuse.
 
 - cdb78a1 ownera7d3f8f762e57fc9f6f706f8cda4da91 stopped-retained, network removed;
   PG05565327/runner19b56f6f PID0/noOOM.612 prior/eight running preserved.

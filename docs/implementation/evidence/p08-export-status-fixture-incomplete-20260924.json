@@ -1,0 +1,175 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "INCOMPLETE",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P09-T02"
+  ],
+  "source": "f81362c1ea6645dbd2e9bcc906763420e7db5e6b",
+  "tree": "4b9d1d3ca25a590ed23c906c6e3bfeb0f8d1b2ad",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rust": "1.98.1",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "artifacts": {
+      "bigbrotr": "61ace1586e2f0b37a8965b33852c775814192439520c94f809ef766a239bcd41",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "capture": {
+    "root": ".research/implementation/export-execution/attempt-f81362c/capture",
+    "verified": {
+      "files": 36,
+      "sha256": "bfdf66cbdec53347ff908cdc04f12bcf505f8f8414e00d5f110c29f0d55353dd",
+      "source": "f81362c1ea6645dbd2e9bcc906763420e7db5e6b",
+      "tree": "4b9d1d3ca25a590ed23c906c6e3bfeb0f8d1b2ad",
+      "source_files": 1189
+    }
+  },
+  "executed": {
+    "native_build_and_checks": [
+      {
+        "name": "installed-build",
+        "command": [
+          "/usr/bin/python3",
+          "/out/build/source/experiments/export-execution/native.py",
+          "--build-runtime"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 60.6501292726025
+      },
+      {
+        "name": "management-tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 23.258892083074898
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.869160338304937
+      }
+    ],
+    "native_binary_tests": 44,
+    "first_own_status": {
+      "event": "status",
+      "status": 200,
+      "observation": {
+        "authority": "observation-only",
+        "checkpoint_revision": "1",
+        "completed_at_us": "1790257820925867",
+        "created_at_us": "1790257819242764",
+        "format": "bigbrotr-job-status/1",
+        "job_id": "965558329fa37934e993fa90020f3943",
+        "job_revision": "4",
+        "kind": "export",
+        "observed_at_us": "1790257882496491",
+        "reason_code": null,
+        "state": "succeeded"
+      }
+    },
+    "rate_wait_seconds": 60.000498733017594,
+    "prerequisite": "Original signed archive and current installed empty JSONL completion were checked before the status fixture. This is not signed nonempty output qualification for this new artifact."
+  },
+  "failure": {
+    "class": "fixture-response-selection",
+    "observed": "missing-status copied the exact first owner-status200 observation, including its old observed_at_us; assertion expecting404 failed.",
+    "cause": "signed_publication_cases.event rescans all prior stdout and returns the first same-name event. status_client emitted repeated status/login/me names.",
+    "correction": "Unique request name echoed as event; caller verifies that unique event and operation. No product implementation, expected status, byte budget, rate limit or SQL invariant changes.",
+    "limits": "Actual missing-request response was not retained. Do not interpret this as an API404 failure, or infer that later planned cases ran."
+  },
+  "resources": {
+    "owner": "f064eff9afaa717279018131ab651579",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f81362c",
+    "state": "stopped-retained",
+    "network_state": "removed after owner/no-endpoint audit",
+    "preexisting": 624,
+    "unrelated_running": 8,
+    "free_before": 143751401472,
+    "free_after": 140020953088,
+    "terminal_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "containers": {
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-24T13:48:39.022949282Z",
+        "FinishedAt": "2026-09-24T13:51:32.797646082Z"
+      },
+      "rust-visibility": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-24T13:48:41.095962234Z",
+        "FinishedAt": "2026-09-24T13:51:33.072258631Z"
+      }
+    },
+    "cleanup_errors": []
+  },
+  "review": {
+    "root": "Complete capture hashes, exact current/seed Git manifests, current ELF, initial observation, fixture cause and every retained resource comparison inspected/checked locally.",
+    "independent_ai": "Product source/contract review found no blocking counterexample. Separate static fixture review found repeated-event bug; correction inspected. No independent native capture review yet.",
+    "dependency": "Axum0.8.9 GET implicitly accepts HEAD; handler explicitly refuses it. https://docs.rs/axum/0.8.9/axum/routing/method_routing/fn.get.html"
+  },
+  "not_qualified": [
+    "missing/other actor visibility",
+    "accepted zero checkpoint status",
+    "current grant/account revocation status",
+    "status restart",
+    "actual private panel/browser lifecycle",
+    "expiry while SQL/socket blocks",
+    "full P08/P09 or release qualification",
+    "Linux arm64"
+  ]
+}
