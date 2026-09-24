@@ -110,7 +110,10 @@ Known destination/native refusals leave Control usable. Unknown Control/COMMIT
 outcomes fail closed and preserve retained obligations. The scoped native HTTP
 evidence covers missing privileges, changed marker,
 missing native assets, exact retry, Control restart without destination/reader,
-and revocation with retained job/pin. Actually blocked checker and ambiguous
-COMMIT schedules remain unqualified; transport tests alone do not establish them.
+and revocation with retained job/pin. The [blocked-checker native scenario](../implementation/evidence/p08-export-checker-timing-native-20260924.json)
+observes Control renewal and bounded fail-stop on SIGTERM with no new job or
+active pin. It suspends syscall entry; arbitrary kernel I/O is not qualified.
+Ambiguous COMMIT and continuous destination custody through driver join remain
+unqualified; transport tests alone do not establish them.
 Job discovery, scheduling/execution and
 terminal recovery remain required P08-T03/T04 work.

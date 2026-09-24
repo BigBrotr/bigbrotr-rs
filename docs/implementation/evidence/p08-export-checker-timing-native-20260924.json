@@ -1,0 +1,201 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "task": [
+    "P08-T03",
+    "P08-T04"
+  ],
+  "status": "PASS-scoped",
+  "source": "eb6167d041afdaf6111e88c9e7e10b3d7bca42af",
+  "tree": "dacb42db5fa9e740938c146249ccaf0694391180",
+  "scope": "Strengthened actual blocked-checker signal timing and process cleanup using unchanged verified installed product artifacts. Supplements p08-export-checker-native-20260924.json; no new product build or broader qualification.",
+  "artifact_reuse": {
+    "source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "tree": "fb87d6a4e8082d0dc2e5e8c5ac010de37920632a",
+    "owner": "3f840fe30a3ffef7f9944c72ea6e38f9",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+    "source_delta": [
+      "docs/implementation/evidence/p08-export-checker-native-20260924.json",
+      "docs/implementation/progress.md",
+      "docs/research/laboratory-inventory.json",
+      "experiments/archive-engine/export_destination_blocked.py",
+      "experiments/archive-engine/strace-exit-probe.md"
+    ],
+    "source_manifest_sha256": "eee5a33104dbee6059d2a106eab2b09d44b14e54c5badd06fce0f8425182ef6f",
+    "artifacts": {
+      "control": "42e2787cdabf4d31c1941ca38bebe5006ac8c0e8a4c8fdf8ac99d9644e38c88c",
+      "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+      "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+      "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+      "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+    },
+    "native_assets": {
+      "bigbrotr-archive-worker": {
+        "bytes": 14378448,
+        "sha256": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4"
+      },
+      "extensions/ducklake.duckdb_extension": {
+        "bytes": 36436086,
+        "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+      },
+      "extensions/httpfs.duckdb_extension": {
+        "bytes": 21570542,
+        "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+      },
+      "extensions/postgres_scanner.duckdb_extension": {
+        "bytes": 41696558,
+        "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+      },
+      "lib/duckdb.h": {
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "lib/libduckdb.so": {
+        "bytes": 70529912,
+        "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+      }
+    },
+    "validation": "No new compilation or unit/Clippy execution. Original build records preserved; actual fixture runs on same artifact tuple after exact Git product/build input equality."
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "capture": {
+    "local": ".research/implementation/export-checker-timed/capture",
+    "archive_sha256": "876bbe6b26d72ae4bd38a16c6b07f3bd2bb42135ba114f07dcb38529011826a7",
+    "files": 38,
+    "fixture_source_files": 1111,
+    "original_build_source_files": 1110,
+    "artifacts": {
+      "control": "42e2787cdabf4d31c1941ca38bebe5006ac8c0e8a4c8fdf8ac99d9644e38c88c",
+      "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+      "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+      "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+      "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+    }
+  },
+  "executed": {
+    "cases": [
+      {
+        "case": "unselected-destination-refuses-job-without-poisoning812-runtime",
+        "status": "PASS"
+      },
+      {
+        "case": "selected-destination-requires-explicit813-before-private-listener",
+        "status": "PASS",
+        "observation": {
+          "exit": 3,
+          "remote_exclusion": "UNKNOWN",
+          "stdout": "",
+          "stderr": "error: private session prerequisites refused: Prerequisite\n",
+          "overflow": false
+        }
+      },
+      {
+        "case": "source-row-lock-privilege-is-required-before-private-listener",
+        "status": "PASS",
+        "observation": {
+          "exit": 3,
+          "remote_exclusion": "UNKNOWN",
+          "stdout": "",
+          "stderr": "error: private session prerequisites refused: Prerequisite\n",
+          "overflow": false
+        }
+      },
+      {
+        "case": "new-export-needs-live-session-csrf-and-each-independent-scope-action",
+        "status": "PASS"
+      },
+      {
+        "case": "actual-blocked-destination-renews-control-and-signal-fails-stop-within-bound",
+        "status": "PASS"
+      }
+    ],
+    "signal": {
+      "monotonic": 3612970.17738003,
+      "wall": 1790230716.0473766,
+      "request_deadline_margin_seconds": 2.265600877813995,
+      "request_pending": true,
+      "delivery_observed_margin_seconds": 2.255323324818164
+    },
+    "actual_signal_trace_time": 1790230716.047411,
+    "terminal": {
+      "exit": 4,
+      "elapsed_ms": 4045.743,
+      "response": {
+        "closed": "RemoteDisconnected"
+      },
+      "parent_present": false,
+      "worker_present": false,
+      "lock_available": true,
+      "stderr": "error: native grant worker not joined; retain pin and terminate process\n"
+    },
+    "control_renewal": {
+      "before": {
+        "epoch": 6,
+        "expires": 1790230773423199
+      },
+      "after": {
+        "epoch": 6,
+        "expires": 1790230775929530
+      }
+    },
+    "final_sql": {
+      "commands": 0,
+      "details": 0,
+      "audit": 0,
+      "jobs": 0,
+      "export_pins": 0,
+      "reader_pins": 0,
+      "claims": 0
+    },
+    "active_control": 1,
+    "terminal_backends": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    },
+    "files": {
+      "signed_normal/kind=7/main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e",
+      "signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70",
+      "signed_normal/kind=7/main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076",
+      "signed_normal/kind=7/main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be",
+      "signed_normal/kind=7/main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35",
+      "signed_normal/kind=7/main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05",
+      "signed_normal/kind=7/main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937",
+      "signed_normal/kind=7/main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+    },
+    "oracle": "Eight full row+xmin digest sets identical through hold/renewal/termination; zero active job/export effects and reader/export pins, five historical leases/pins/claims retained. Signal observed in real trace with>=1s ordinary request margin; response RemoteDisconnected, no accepted work. Root lock held before signal and available after positively observed parent/worker absence and tracer join.",
+    "validation": "Both original build and fresh fixture source manifests verified against exact Git. Source delta allowlisted to two fixture/recipe paths and three documentation/evidence paths; all product/build/dependency inputs unchanged. Five actual remote ELF hashes match4e6b5c0 and all native assets match original tuple. Complete38 capture hashes and553 prior resource projections verified locally. No new Cargo/Clippy execution; copied logs retain original4e6b5c0 identity. No concurrency-race injection claim; actual revised cleanup completed."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-timed-eb6167d",
+    "owner": "b385dbc9d6e6be4cbb4b1cf4997981c2",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "04bb2f5c076dae33f91890f2e7aba95858285b7938567893f1ceedb293bc7c82"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "d364def4c6a8e5138397d001886db8b0b3acf658f4a0114fde5c876bf865c12d"
+      }
+    ],
+    "state": "stopped-retained",
+    "original_terminal": "PASS_PENDING_CAPTURE",
+    "network": "removed after owner/no-endpoint audit",
+    "prior_containers": 553,
+    "unrelated_running": 8,
+    "free_bytes_before": 181331128320,
+    "free_bytes_after": 180961017856,
+    "note": "Concurrent writes possible. No target/cargo-home created, no compilation; only source/installed artifacts and fresh database/archive. Runner0/PGwrapper137, PID0/noOOM, network removed, no active lab/cleanup debt. Preserve deliberate active-state Control row; no expiry recovery/GC."
+  },
+  "not_run": [
+    "Continuous original destination Arc custody through Control driver join",
+    "COMMIT loss/restart and old-holder recovery",
+    "Standalone JSONL execution, full P08/M1/release, arbitrary kernel I/O/power loss"
+  ]
+}

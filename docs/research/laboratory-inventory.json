@@ -19650,5 +19650,42 @@
       "capture_sha256": "51beaeceb5c2ebebcc0237e4f414f6be109173d12de1a7268ba5a5b807cb19a3"
     },
     "observation": "Runner0/PGwrapper137, both stopped/PID0/noOOM; network removed. No active lab/cleanup debt. Eight complete ledger row+xmin digest sets equal at hold, after renewal and after process termination. Independent zero job/export-pin/reader-pin/claim observations; no graceful owner release. Control epoch6 remains active-state intentionally; no expiry recovery/GC permission. 551 prior records unchanged/eight unrelated running; free185052176384 ->181367304192bytes, concurrent writes possible. Source, archive, PGdata, complete cache, installed artifacts and original logs retained."
+  },
+  "implementation_export_checker_timing_20260924": {
+    "local_root": ".research/implementation/export-checker-timed",
+    "native": {
+      "source": "eb6167d041afdaf6111e88c9e7e10b3d7bca42af",
+      "tree": "dacb42db5fa9e740938c146249ccaf0694391180",
+      "owner": "b385dbc9d6e6be4cbb4b1cf4997981c2",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-timed-eb6167d",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "04bb2f5c076dae33f91890f2e7aba95858285b7938567893f1ceedb293bc7c82"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "d364def4c6a8e5138397d001886db8b0b3acf658f4a0114fde5c876bf865c12d"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T06:18:17.624750+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "aca2ab89cc7908e5e3e700dc846906e4fa3702e57b0bbdf70029940c27fe4824",
+      "postgres_id": "04bb2f5c076dae33f91890f2e7aba95858285b7938567893f1ceedb293bc7c82",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "d364def4c6a8e5138397d001886db8b0b3acf658f4a0114fde5c876bf865c12d",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "evidence": "docs/implementation/evidence/p08-export-checker-timing-native-20260924.json",
+      "capture_sha256": "876bbe6b26d72ae4bd38a16c6b07f3bd2bb42135ba114f07dcb38529011826a7"
+    },
+    "observation": "Concurrent writes possible. No target/cargo-home created, no compilation; only source/installed artifacts and fresh database/archive. Runner0/PGwrapper137, PID0/noOOM, network removed, no active lab/cleanup debt. Preserve deliberate active-state Control row; no expiry recovery/GC. 553 prior full records unchanged/eight unrelated running; free181331128320 ->180961017856bytes."
   }
 }

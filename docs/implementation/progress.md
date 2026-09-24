@@ -21,7 +21,7 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD4e6b5c011c067800f52e67365b2b848b7943d4bc, origin/main509a9bd; candidate53c6c9d and its scoped
+Current main/HEADeb6167d041afdaf6111e88c9e7e10b3d7bca42af, origin/main509a9bd; candidate53c6c9d and its scoped
 evidence75906fc pushed normally. GET whitespace correction3a898c4 and blocked-checker candidate324b8eb are pushed
 with original failure evidence. Tracer evidence is pushed. Root owns the checker fixture timing/pidfd/instrument
 consumption changes, batched SQL oracle and this checkpoint. Candidate53c6c9d was clean at transfer.
@@ -334,15 +334,35 @@ SQL terminal observations, finding no discrepancy. Five historical leases/pins/
 claims remain; zero counts describe active obligations/new export effects only; earlier static review confirmed the SQL/proof binding and found
 two fixture robustness gaps below.
 
-Root corrected signal timestamp to after actual pidfd send, observes actual
-SIGTERM trace with>=1s request margin, and handles concurrent-death ESRCH while
-ensuring tracer/pidfd/pool cleanup. The candidate's observed timing already
-supports its scoped signal claim; revised general fixture remains NOT_RUN.
-Next bounded action: commit evidence/fixture, run revised fixture in a fresh
-inventoried lab using hash-verified4e6b5c0 ELF/assets only after exact Git diff
-proves product/build inputs unchanged. Preserve original build source identity;
-no new compilation/full Cargo cache or claimed repeated unit tests. Then proceed
-to actual COMMIT ambiguity/custody and standalone signed JSONL execution.
+[Strengthened checker fixture](evidence/p08-export-checker-timing-native-20260924.json)
+at eb6167d reuses verified4e6b5c0 ELF/native assets after exact source-delta checks;
+no new compilation or unit/Clippy execution. Actual timing/cleanup assertions
+PASS: signal delivery observed with2.255s request margin, exit4 after4045.743ms,
+Control renewal+2506331us, same zero active export/pin effects and retainedControl1,
+bothDBbackend0/eightParquetunchanged, complete8ledgerrow/xmin equality. No race
+injection claim. This closes the bounded blocked-checker prerequisite only.
+
+Stopped export-checker-timed-eb6167d, ownerb385dbc9d6e6be4cbb4b1cf4997981c2;
+runnerd364def4c6a8e5138397d001886db8b0b3acf658f4a0114fde5c876bf865c12d,
+PG04bb2f5c076dae33f91890f2e7aba95858285b7938567893f1ceedb293bc7c82.
+Runner0/PGwrapper137, PID0/noOOM/networkremoved;553priorrecords/eight unrelated
+running preserved. Latest free180961017856bytes. No target/cargo-home created.
+Capture38/freshsource1111/originalbuildsource1110/fiveELF/fiveassets verified;
+SHA876bbe6b26d72ae4bd38a16c6b07f3bd2bb42135ba114f07dcb38529011826a7.
+Local .research/implementation/export-checker-timed/; inventory
+implementation_export_checker_timing_20260924. No active lab/cleanup debt.
+
+Next bounded action: implement actual acceptance COMMIT fault/retry fixture with
+existing proxy targeted only to INSERT control.export_jobs. Before-forward must
+leave no export/job and one old active reader; same-key restart creates one job
+with fresh temporary reader released, preserving old unresolved reader. After-
+complete must retain job/exportpin+oldreader; restart without destination/reader
+returns identical receipt and preserves all8job/pin ledgers. Observe actual
+backend exclusion, old pin identities and signed archive; no expiry recovery.
+Read-only AI confirmed these expected outcomes and identified the exact new-reader
+allocation link and old-row/xmin comparisons; root inspected current adapter,
+Control0007/pin0018/proxy and owning P08 tasks. Separate original destination Arc
+custody-through-driver test remains required, then standalone signed JSONL.
 
 Initial AI timing/cleanup findings led to the revised native fixture above.
 Pre-signal/post-exit flock samples do not prove continuous original Arc custody.
@@ -351,7 +371,7 @@ worker owns its own Arc; this case cannot discriminate original supervisor Arc
 custody through unknown COMMIT. That remains a separate next acceptance boundary.
 Then complete COMMIT ambiguity/custody and standalone signed JSONL execution.
 
-Pending required acceptance: strengthened checker fixture, COMMIT loss/restart,
+Pending required acceptance: COMMIT loss/restart,
 zero/multistream cuts, old pin/job anti-adoption, nonterminal release refusal/
 recovery and deferred source-lock expiry. Then standalone signed JSONL artifact/
 execution and end-to-end restart; no full P08/M1 completion.
