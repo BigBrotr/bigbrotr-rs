@@ -1,0 +1,458 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "SCOPED_PASS",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3",
+    "P09-T09 Step 2"
+  ],
+  "source": "dd17842eac35c0c678371bfe4b06f4b9b929d116",
+  "tree": "35e85ea3be5bc72c04ff8e1e166e7afc95c1292b",
+  "runtime_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+  "scope": "Initial installed private browser resume recovery, Chromium/root with actual Rust/PostgreSQL; separate native IndexedDB operations on all three automated engines.",
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-dd17842/capture",
+    "files": 119,
+    "sha256": "3a7447ecdca5a3818ae02f686bb4ad3179db33dd8d6a7d01e4b79b5af21def3a",
+    "source": "dd17842eac35c0c678371bfe4b06f4b9b929d116",
+    "tree": "35e85ea3be5bc72c04ff8e1e166e7afc95c1292b",
+    "source_files": 1249
+  },
+  "review": {
+    "status": "VERIFIED_SCOPED_PASS",
+    "source": "dd17842eac35c0c678371bfe4b06f4b9b929d116",
+    "runtime_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+    "counts": {
+      "out/build/source-manifest.json": 1249,
+      "artifact-source-manifest.json": 1110,
+      "runtime-source-manifest.json": 1246
+    },
+    "payloads": 119,
+    "preexisting": 691,
+    "free_before": 123072909312,
+    "free_after": 122500673536,
+    "artifacts": {
+      "bigbrotr": "a3bb9bd6f7b3a7e6140c72f133401c65571e401b6e1eaec424e520b668b2e96c",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "native_store_engines": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "ui_cases": 7,
+    "receipt": {
+      "accepted_at_us": "1790275141782981",
+      "authority": "acceptance-only",
+      "command_key": "07ba791e9aa6c33c1e84ac1c5fd64b5b",
+      "created": true,
+      "execution": "unobserved",
+      "format": "bigbrotr-export-resume/1",
+      "job_id": "b1c4b386d4a1c74e86430dbfd8f81b51",
+      "job_revision": "8"
+    },
+    "bundles": {
+      "root": {
+        "manifest_sha256": "0fb87bf82d8a3ec0ce851ec360f0eec59eea704175500a481226bc385982f29e",
+        "files": 13,
+        "bytes": 170717
+      },
+      "control": {
+        "manifest_sha256": "cf863cf815f7091cd1a275e118ab55e0f86f5970e810ccd575c45bc74b61f6e9",
+        "files": 13,
+        "bytes": 170751
+      }
+    }
+  },
+  "environment": {
+    "platform": "Linux amd64 on isolated Tux; trusted exact Git",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "node": "26.4.0",
+    "pnpm": "9.15.9",
+    "playwright": "1.63.0",
+    "browsers": {
+      "chromium": "153.0.8010.12",
+      "firefox": "155.0",
+      "webkit": "26.6"
+    },
+    "cargo_lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "pnpm_lock_sha256": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4"
+  },
+  "build": {
+    "runtime": "No new Rust build: complete product/build input equality with 73e6517, original bound ELF/source and build checks independently verified. 73e has fresh build/46 binary tests/Clippy recorded in the preceding incomplete fixture report.",
+    "frontend_checks": [
+      {
+        "name": "install",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 1.5669544152915478
+      },
+      {
+        "name": "contracts",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 0.5160343302413821
+      },
+      {
+        "name": "client-types",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 0.7666206122376025
+      },
+      {
+        "name": "client",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 6.3426410015672445
+      },
+      {
+        "name": "admin-types",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 1.9279410559684038
+      },
+      {
+        "name": "admin-unit",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 1.4696416351944208
+      },
+      {
+        "name": "wire-observer",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 0.06494523724541068
+      },
+      {
+        "name": "job-storage-oracle",
+        "status": "PASS",
+        "exit_code": 0,
+        "seconds": 0.06391373695805669
+      }
+    ],
+    "bundles": {
+      "root": {
+        "manifest_sha256": "0fb87bf82d8a3ec0ce851ec360f0eec59eea704175500a481226bc385982f29e",
+        "files": 13,
+        "bytes": 170717
+      },
+      "control": {
+        "manifest_sha256": "cf863cf815f7091cd1a275e118ab55e0f86f5970e810ccd575c45bc74b61f6e9",
+        "files": 13,
+        "bytes": 170751
+      }
+    }
+  },
+  "results": {
+    "native_store_cases": {
+      "chromium": {
+        "status": "PASS",
+        "cases": [
+          "blocked-open-does-not-accumulate-native-requests",
+          "request-success-followed-by-transaction-abort-is-not-persistence",
+          "two-tabs-reserve-one-original-identity-and-reload",
+          "identity-cas-and-pending-forget-refusal",
+          "capacity-and-account-local-corruption"
+        ],
+        "blocked_opens_before_recovery": 1,
+        "account_capacity": 32
+      },
+      "firefox": {
+        "status": "PASS",
+        "cases": [
+          "blocked-open-does-not-accumulate-native-requests",
+          "request-success-followed-by-transaction-abort-is-not-persistence",
+          "two-tabs-reserve-one-original-identity-and-reload",
+          "identity-cas-and-pending-forget-refusal",
+          "capacity-and-account-local-corruption"
+        ],
+        "blocked_opens_before_recovery": 1,
+        "account_capacity": 32
+      },
+      "webkit": {
+        "status": "PASS",
+        "cases": [
+          "blocked-open-does-not-accumulate-native-requests",
+          "request-success-followed-by-transaction-abort-is-not-persistence",
+          "two-tabs-reserve-one-original-identity-and-reload",
+          "identity-cas-and-pending-forget-refusal",
+          "capacity-and-account-local-corruption"
+        ],
+        "blocked_opens_before_recovery": 1,
+        "account_capacity": 32
+      }
+    },
+    "browser_cases": [
+      {
+        "name": "installed-bundle-session-and-paused-job",
+        "status": "PASS",
+        "milliseconds": 1822.050775
+      },
+      {
+        "name": "persist-original-request-before-real-acceptance-withheld-reply",
+        "status": "PASS",
+        "milliseconds": 1077.68185
+      },
+      {
+        "name": "reload-restores-without-dispatch-and-explicit-retry-resolves-original",
+        "status": "PASS",
+        "milliseconds": 2400.9791370000003
+      },
+      {
+        "name": "same-cookie-retry-after-control-restart-without-current-input-authority",
+        "status": "PASS",
+        "milliseconds": 2945.2089829999995
+      },
+      {
+        "name": "logout-clears-both-tabs-and-other-account-does-not-display-saved-request",
+        "status": "PASS",
+        "milliseconds": 3101.211800000001
+      },
+      {
+        "name": "same-account-recovery-and-real-revocation",
+        "status": "PASS",
+        "milliseconds": 2086.562994
+      },
+      {
+        "name": "forget-resolved-browser-metadata-leaves-durable-job-unchanged",
+        "status": "PASS",
+        "milliseconds": 5838.254150999999
+      }
+    ],
+    "withheld": {
+      "status": 202,
+      "receipt": {
+        "accepted_at_us": "1790275141782981",
+        "authority": "acceptance-only",
+        "command_key": "07ba791e9aa6c33c1e84ac1c5fd64b5b",
+        "created": true,
+        "execution": "unobserved",
+        "format": "bigbrotr-export-resume/1",
+        "job_id": "b1c4b386d4a1c74e86430dbfd8f81b51",
+        "job_revision": "8"
+      },
+      "pendingBeforeForward": {
+        "format": "bigbrotr-browser-resume/1",
+        "principal_id": "10101010101010101010101010101010",
+        "job_id": "b1c4b386d4a1c74e86430dbfd8f81b51",
+        "key": "07ba791e9aa6c33c1e84ac1c5fd64b5b",
+        "command": {
+          "expected_job_revision": "7",
+          "expected_config_revision": "1",
+          "expected_policy_revision": "2"
+        },
+        "outcome": "pending"
+      },
+      "noStore": true,
+      "setCookie": false
+    },
+    "resume_response_statuses": [
+      202,
+      200,
+      200,
+      401
+    ],
+    "same_original_key_and_three_revisions_in_all_four_requests": true,
+    "web_storage": "verified",
+    "final_saved_requests": [],
+    "retained_after_revocation": [
+      {
+        "format": "bigbrotr-browser-resume/1",
+        "principal_id": "10101010101010101010101010101010",
+        "job_id": "b1c4b386d4a1c74e86430dbfd8f81b51",
+        "key": "07ba791e9aa6c33c1e84ac1c5fd64b5b",
+        "command": {
+          "expected_job_revision": "7",
+          "expected_config_revision": "1",
+          "expected_policy_revision": "2"
+        },
+        "outcome": "accepted"
+      }
+    ],
+    "sql": {
+      "tables": 12,
+      "original_job_xmin": "910",
+      "accepted_job_xmin": "948",
+      "original_state": "paused7",
+      "accepted_state": "queued8",
+      "new_resume_detail_command_audit_and_job_same_transaction": true,
+      "receipt": {
+        "action": "job.export.resume",
+        "actor_id": "\\x10101010101010101010101010101010",
+        "audit_id": "\\x9348eb9488b9275955f9dee01205bfcd",
+        "dataset_id": "\\x01010101010101010101010101010101",
+        "request_key": "\\x07ba791e9aa6c33c1e84ac1c5fd64b5b",
+        "accepted_at_us": 1790275141782981,
+        "authority_mode": null,
+        "request_digest": "\\xd50e88612129df6e668665eb555cdbf3aa9f46b1c0360f5bb295814f4e8af3fd",
+        "document_digest": null,
+        "policy_revision": 2,
+        "expected_config_revision": 1
+      },
+      "prepared_audit_count": 12,
+      "post_login_audit_count": 13,
+      "post_resume_audit_count": 14,
+      "final_audit_count": 20,
+      "session_audits": [
+        {
+          "boundary": "alice-login",
+          "action": "browser.session.issue",
+          "xmin": "945"
+        },
+        {
+          "boundary": "alice-logout",
+          "action": "browser.session.revoke",
+          "xmin": "977"
+        },
+        {
+          "boundary": "bob-login",
+          "action": "browser.session.issue",
+          "xmin": "980"
+        },
+        {
+          "boundary": "bob-logout",
+          "action": "browser.session.revoke",
+          "xmin": "981"
+        },
+        {
+          "boundary": "alice-login",
+          "action": "browser.session.issue",
+          "xmin": "984"
+        },
+        {
+          "boundary": "alice-login",
+          "action": "browser.session.issue",
+          "xmin": "990"
+        },
+        {
+          "boundary": "alice-logout",
+          "action": "browser.session.revoke",
+          "xmin": "992"
+        }
+      ],
+      "all_original_rows_and_xmin_preserved_except_declared_job_transition": true,
+      "session_idle_and_last_seen_unchanged_across_each_resume": true,
+      "no_new_reader_pin_or_output": true
+    },
+    "restart": {
+      "name": "restart",
+      "stopped": {
+        "event": "restart-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "ready": {
+        "event": "restarted",
+        "owner": {
+          "archive_intents": {
+            "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+            "issued_through": "4",
+            "observed_through": "4",
+            "pages": 1,
+            "publication_authority": "not-granted",
+            "resolution": "not-performed",
+            "state": "observed"
+          },
+          "authority_scope": "Control custody; each private action and export independently reauthorized",
+          "config_revision": "1",
+          "dataset_id": "01010101010101010101010101010101",
+          "export_execution": "not-selected",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [
+            {
+              "host": "127.0.0.1",
+              "kind": "private-session-http",
+              "port": 18080,
+              "private_assets": {
+                "base_path": "/",
+                "bytes": 170717,
+                "files": 13,
+                "manifest_sha256": "0fb87bf82d8a3ec0ce851ec360f0eec59eea704175500a481226bc385982f29e"
+              },
+              "profile": "trusted-host-loopback"
+            }
+          ],
+          "native_stores": [],
+          "owner_epoch": "6",
+          "owner_resource_id": "c66868def8dc353816e159d32d5f0f44",
+          "policy_revision": "2",
+          "process_incarnation": "935e3d8bcc637164bb4c30bf3694101f",
+          "role": "control",
+          "state": "idle"
+        },
+        "parent_pid": 1299
+      }
+    },
+    "terminal": {
+      "event": "stop-terminal",
+      "exit": 0,
+      "parent_absent": true,
+      "lock_available": true,
+      "scratch_empty": true
+    }
+  },
+  "visual_review": {
+    "path": "out/browser-cases/resume-chromium-root/resume-mobile.png",
+    "sha256": "92e8d052763f96ec2b174a743c32572540280334b29f609f9d529ea87c6abb38",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "review": "Root inspected the actual full-page screenshot: readable queued state and acceptance-only saved request, readable identifiers and stacked controls; no horizontal overflow. Existing full-page skip-link overlay remains visible and separately INCOMPLETE, not a new CSS diagnosis or full accessibility pass."
+  },
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-dd17842",
+    "owner": "ff09631fb1f63b8b5fb0f62aefd95214",
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "owned_pid_zero_no_oom": true,
+    "exit_codes": {
+      "frontend": 0,
+      "resume-store-chromium": 0,
+      "resume-store-firefox": 0,
+      "resume-store-webkit": 0,
+      "resume-chromium-root": 0,
+      "rust-visibility": 0,
+      "postgres": 137
+    },
+    "backends": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "preexisting": 691,
+    "unrelated_running": 8,
+    "errors": [],
+    "free_before": 123072909312,
+    "free_after": 122500673536
+  },
+  "limits": [
+    "Initial installed resume UI covers Chromium/root only; Firefox/WebKit and subpath installed resume journeys remain NOT_RUN. Store-only cases do not close those gates.",
+    "The first 202 is a real request forwarded with Playwright route.fetch then route.abort; this is browser reply withholding, not native TCP/COMMIT loss. Separate native COMMIT evidence remains required and linked by export operations.",
+    "Runtime reader is disabled: queued8 is observed, no resumed output/execution qualification in this journey. Prior signed execution evidence is separate.",
+    "This proves 7 explicit session audits plus one resume without filtering other audit/command rows. It is not invariance of all session credentials; login legitimately removes revoked credentials.",
+    "Prepared\u2192post-login adds only the required browser.session.issue audit. This confirms the old oracle defect in this run; original 73e post-login SQL remains unobserved and its INCOMPLETE report is unchanged.",
+    "Two-second store bounds are logical operation waits; browser/device power loss, physical storage quotas, global browser memory and hostile same-origin data growth are not qualified.",
+    "Cross-tab invalidation uses the current supported BroadcastChannel path. Natural expiry/BFCache, assistive technology and the existing skip-link geometry investigation remain open.",
+    "No general job creation/cancellation/listing/download or CLI resume, complete P08/P09 task, packaged release/hosted CI or Linux arm64 qualification.",
+    "Some final no-idle observations are retained only as executed assertion booleans; the capture preserves initial boundary rows but is not a fully reconstructible per-request session timeline."
+  ],
+  "independent_ai_review": "Read-only local artifact review independently recomputed 119 payload/tar hashes,1249/1246/1110 Git files, both ELF/bundles, exact audit 12\u219213\u219214\u219220 reconstruction and request fingerprint. It confirmed four original-key/body requests and both Control releases. No product test or SSH by reviewer. No discrepancy found; PostgreSQL 137 and retained-only-boolean final no-idle observations remain explicit limitations."
+}

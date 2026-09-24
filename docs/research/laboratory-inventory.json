@@ -23715,7 +23715,34 @@
       "tree": "2d5b5f74000796728685acda37e76aa017737109",
       "source_files": 1236
     },
-    "retention": "Preserve currentdc6a8d9 compiler cache, bound ELF, source/manifests, SQL state and receipts. Original Node tools remain read-only ownedb6d9d7e. No data/container retirement."
+    "retention": "Compiler target/cargo-home retired after scopeddd17842 native verification on73e ELF; preserve originaldc6 source/manifests/ELF/capture, SQL state and receipts. No data/container retirement.",
+    "cache_retirement": {
+      "status": "PASS",
+      "evidence": ".research/implementation/export-execution/cache-retirement-dc6a8d9",
+      "verified": {
+        "status": "VERIFIED_SCOPED_RETIREMENT",
+        "files": {
+          "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "cache-containers-before.json": "624e12b8682031a26316be43313b32b2be8eb725123f252205dd409fb0ad79f8",
+          "cache-retirement.json": "5d79b4d63c774913c6f2d2d45b599719bc632780f078e1eda71d8103ef025808",
+          "stdout.log": "7061a4968b30de18df8b8c052669b9c5952a29e15fe3eaa0e7fd43eef894fc76",
+          "recipe.py": "8bdb6168bba005b01fad64404ca0d709c2ad872dc7e1ba48882fb2dcfe6959c3",
+          "cache-containers-after.json": "624e12b8682031a26316be43313b32b2be8eb725123f252205dd409fb0ad79f8"
+        },
+        "source": "dc6a8d95a1c6dcb9033bb3e9247a061f73d907b6",
+        "allocated_cache_bytes": 3334766592,
+        "free_before": 122489946112,
+        "free_after": 125822181376,
+        "containers": 698
+      },
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-dc6a8d9/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-dc6a8d9/out/build/cargo-home"
+      ],
+      "preserved": "Original capture/logs, current ELF outside cache, sources/manifests, seed artifacts, PGdata/archive/output. Current73e6517 cache and all other labs unchanged.",
+      "superseding_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+      "qualification_source": "dd17842eac35c0c678371bfe4b06f4b9b929d116"
+    }
   },
   "implementation_resume_browser_20260924": {
     "status": "stopped-retained; INCOMPLETE before browser resume, native store15cases PASS",
@@ -23779,6 +23806,71 @@
       "source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
       "tree": "f966090c11255f9cb2279a11d014a5112005e613",
       "source_files": 1246
+    }
+  },
+  "implementation_resume_browser_audits_20260924": {
+    "status": "stopped-retained; scoped installed Chromium/root resume recovery PASS and native store15cases PASS",
+    "resources": {
+      "source": "dd17842eac35c0c678371bfe4b06f4b9b929d116",
+      "tree": "35e85ea3be5bc72c04ff8e1e166e7afc95c1292b",
+      "owner": "ff09631fb1f63b8b5fb0f62aefd95214",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-dd17842",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "frontend",
+          "id": "f9ade1ad0afe75d0595b543f0f1f712ab49be4d647e886fb811d0e898eba93f2"
+        },
+        {
+          "name": "postgres",
+          "id": "757cb02b4fbd5eaa9178c9beeb37e525ce8af2be2303442da5584082cbe4c459"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "34b2c51f6f9979c60968f3aff6f5adf79aee082dc950f99462385b5ed1c19756"
+        },
+        {
+          "name": "resume-store-chromium",
+          "id": "cdf444211e4dd746510c28f922ec9411e649f2508e45ca4cd22270cd7bff0b9b"
+        },
+        {
+          "name": "resume-store-firefox",
+          "id": "9aaf27f2f0ed88813bda70ff6afec5a294d8a947f723af5bc56ed371ed2d5ed9"
+        },
+        {
+          "name": "resume-store-webkit",
+          "id": "a54c66df6c2936dfe14fc9bc8461e6c567afb5acd4d985eef294c279fc910f88"
+        },
+        {
+          "name": "resume-chromium-root",
+          "id": "9c236d9d49b1df49809b6b039c9b83183527e0bb82174660a44e68c2f5e12408"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T18:37:14.765025+00:00",
+      "runtime_profile": "resume-browser",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "network_id": "a15a0667a50b12da5d98e7dbf06f340b1d206fb1037f3e2355c87c101408e2f6",
+      "postgres_id": "757cb02b4fbd5eaa9178c9beeb37e525ce8af2be2303442da5584082cbe4c459",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "34b2c51f6f9979c60968f3aff6f5adf79aee082dc950f99462385b5ed1c19756",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "retention": "Preserve exact73e ELF, all original SQL/session/browser observations, bundles/source/logs/capture and qualifieddd17842 state. Current73e compiler cache and separately owned4e/b6 remain retained. No new Rust compiler cache in this run.",
+    "evidence": "docs/implementation/evidence/p09-resume-browser-native-20260924.json",
+    "capture": {
+      "files": 119,
+      "sha256": "3a7447ecdca5a3818ae02f686bb4ad3179db33dd8d6a7d01e4b79b5af21def3a",
+      "source": "dd17842eac35c0c678371bfe4b06f4b9b929d116",
+      "tree": "35e85ea3be5bc72c04ff8e1e166e7afc95c1292b",
+      "source_files": 1249
     }
   }
 }

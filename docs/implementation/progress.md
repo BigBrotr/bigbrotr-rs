@@ -23,29 +23,39 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD73e651769e9cd4c82cb0d51731db698eeeadf0f4, tree
-f966090c11255f9cb2279a11d014a5112005e613 on main; origin/main remains
-dc4cebb337f2a2aea13b533ead5d1893e5b2e492. Product3faefeb and native fixture73e6517
-are locally committed, awaiting native integration before push. Root owns the fixture correction, original failure evidence and
-checkpoint/inventory observations. No foreign work.
+Last verified HEADdd17842eac35c0c678371bfe4b06f4b9b929d116, tree
+35e85ea3be5bc72c04ff8e1e166e7afc95c1292b on main; origin/main remains
+dc4cebb337f2a2aea13b533ead5d1893e5b2e492 (fresh fetch confirmed unchanged before integration).
+This checkpoint accompanies the documentation/evidence integration atop that
+revision. Root owns only those report/operator/build/task/export documentation
+and inventory changes. Verify the resulting integration HEAD and origin before
+resuming; no product change follows the testeddd17842 source. No foreign work or
+active lab.
 
-Tux73e6517 is stopped-retained, owner e77b276c5af26eadc38957fdc5efe1cc;
-seven owned containers PID0/noOOM, network removed, bothDB0 and684prior/eight
-unrelated running preserved. [Original INCOMPLETE fixture report](evidence/p09-resume-browser-fixture-incomplete-20260924.json)
-retains89payloads and exact1246current/1110seed Git files, capture tar
-f568ab50fcec6d07ca393c85247b71ec95addabe35a2167be99138544f239fad.
-Fresh native build/46binarytests/Clippy and15native store cases across3engines pass.
-Actual browser login201/job200 reaches before-loss, where whole-ledger comparison
-fails before any resume POST. Source requires a login audit; failed post-login SQL
-was not saved, so original exact delta remains unobserved. No screenshot available.
-Root owns fixture correction plus original evidence/inventory/checkpoint; no
-product mutation. New explicit login/logout boundaries check each single audit,
-actual session identity/transaction and complete unchanged other ledgers. Failed
-observations are now retained. Local3oracle regressions pass after2semanticRED.
-Read-only AI fixture review completed; preserve failure session identities as well.
-Next bounded action: commit clean candidate, repeat native
-browser journey using exact73e ELF after complete product/build equality. Preserve
-73e compiler cache/ELF/SQL and separately owned4e/b6 dependencies. No active lab.
+Tuxdd17842 is stopped-retained, owner ff09631fb1f63b8b5fb0f62aefd95214;
+seven owned containers PID0/noOOM, network removed, bothDB0 and691prior/eight
+unrelated running preserved. Exact73e6517 ELF reused after complete product/build
+input equality; no new Rust build/cache. Current73e compiler cache and all actual
+ELF/source/SQL/browser artifacts remain protected with separately owned4e/b6.
+[Installed recovery](evidence/p09-resume-browser-native-20260924.json) passes 15 native
+store cases across 3 engines and 7 production Chromium/root steps. Root and read-only
+AI independently verify119payloads,1249current/1246runtime/1110seed Git files,
+both ELF/bundles and full SQL reconstruction. Capturetar
+3a7447ecdca5a3818ae02f686bb4ad3179db33dd8d6a7d01e4b79b5af21def3a.
+Next bounded action after verifying the integration commit/remote: extend the
+same installed resume fixture to remaining engine/mount pairs, with fresh isolated
+seed/state per pair and exact ELF reuse. Inspect lab/transfer naming and current
+browser profiles before edits. Keep risk-selected runs and ordinary product
+implementation moving; no fresh Rust cache when complete inputs match.
+
+[Original73e fixture](evidence/p09-resume-browser-fixture-incomplete-20260924.json)
+stays INCOMPLETE: its pre-login baseline wrongly required all12ledgers unchanged
+after login201/job200, before any resumePOST. Original failed SQL observation and
+screenshot were not retained. Correcteddd boundary confirms the sole initial login
+audit; old evidence is not rewritten. Three local audit-oracle tests include two
+semanticRED cases and changed/extra/bad-attribution negatives. Fixture now saves
+failed SQL and session projections. Native 73e build/46 binary tests/Clippy and
+15 native store cases passed; retain its original capture and cache.
 
 [Local browser resume preparation](evidence/p09-resume-browser-preparation-20260924.json)
 passes20paneltests,17clienttests, client types/generated contract checks and five
@@ -59,31 +69,24 @@ are in the report. This is actual module/IDB evidence, not installed UI/HTTP,
 Firefox/WebKit, Linux or device-power-loss qualification. Read-only AI reviewed
 store/model/keyed UI: gate, contract scope and misleading recovery text corrected.
 
-Current exact-Git Tux lab export-runtime-dc6a8d9 is stopped-retained, owner
-4f7fe031f2bb8467ab28ed9db8f98ec7. Owned PostgreSQL
-1c55922fc67b32dd3dedd63dddb12f6746ed8db6347d709178efd6f9e68f811c and runner
-8fe1e8b04aa0db41e7c6e00211757d0564063408259bae79cabd4ac05f06af62 are PID0/noOOM,
-runner0/PG137, network removed, bothDB0. Original Node/4e assets remain separately
-owned and read-only. Keep dc6a8d9 compiler cache/runtime ELF. Fresh read-only
-resumption census: eight unrelated running, no selected BigBrotr process;
-127059808256bytes free. The stopped73e6517 resources are separately inventoried above.
-
-The native fixture is being corrected at the session-audit boundary described
-above. The next run must demonstrate all seven actual production UI steps, native
-storage on three engines, complete SQL effects and terminal custody. First lost
-reply uses Playwright to forward realPOST/202 then abort delivery; it is not TCP or
-COMMIT loss. Retain the original request key/body through reload/retry, no automatic
-resubmission. Security-header oracle uses allHeaders with awaited reads; actual
-local Chromium negative distinguishes Set-Cookie omitted by headers(). Browser
-rendering and the existing skip-link geometry issue remain separate gates.
+Both native parents in dd17842 stop with release=committed, roots available and
+scratch empty. The first reply loss is Playwright forward realPOST/202 then abort,
+not TCP/COMMIT loss. SQLpaused7/xmin910→queued8/xmin948, exact receipt8/time
+1790275141782981, key07ba791e9aa6c33c1e84ac1c5fd64b5b. Four requests retain7/1/2:
+real202withheld, then200/200/401. Original12ledgers/rows retained except declared
+job change + one atomic resume; audit 12→13→14→20 includes exactly 4 issue/3 logout.
+No new reader/output. Some final no-idle observations survive as assertion booleans
+only. Actual 375px screenshot is readable/no horizontal overflow; known skip-link
+overlay remains, full accessibility not claimed. Firefox/WebKit here qualify only
+native store operations; full installed resume engine/subpath matrix remains open.
 
 The UI now uses a session-owned ResumeModel alongside the explicit JobModel.
 Native IndexedDB reserves one closed request per account before HTTP; application
 admission limits32records/512bytes, strict transaction completion, bounded waits
 and one outstanding native operation per factory/realm. Restore never dispatches.
 Pending bodies cannot be replaced; retry uses all original revisions. Dispose
-fences every late result. The old privacy oracle covers only Web Storage and
-must be extended with exact selected IndexedDB metadata, never blanket allowance.
+fences every late result. The privacy oracle checks both Web Storage and the exact
+selected IndexedDB metadata, with closed-shape negative controls.
 Remaining blocked-checker, expiry/lock-wait cases and full CLI/product gates remain.
 
 ## Latest native evidence
@@ -108,7 +111,7 @@ additional local regression passes. Largeu64 is local serialization/client evide
 not real PG large-head or concurrent head-advance evidence. No DDL; required new
 config_revision means backend and closed private bundle must upgrade together.
 Local17clienttests/typecheck/contractcheck,10paneltests/Svelte0errors0warnings,
-27RustHTTPtests/fmt pass. Real UI/reload qualification remains open; the local consumer now exists as described above.
+27RustHTTPtests/fmt pass. The later scopeddd17842 UI/reload evidence is described above; full matrix remains open.
 
 [15569cc actual TypeScript client](evidence/p08-export-resume-client-native-20260924.json)
 passes8real HTTP responses on Node26.4.0: login201, historical200, stale409,
@@ -252,20 +255,21 @@ backups, archives/catalogs/indexes, source, original logs/receipts/manifests/has
 and intentionally retained failure states. Process death/expiry is not safe GC.
 No global prune, implicit volume deletion or unrelated workload changes.
 
-Latest scoped retirement removed only4a3c4ce out/build/{target,cargo-home} after
-dc6a8d9 qualification:3334766592allocatedbytes, free123717173248→127049465856.
-All684containers/eight running unchanged. Exact resolved paths, mount plus privileged
-read-only FD/maps/cwd/exe/root census and original capture/source/ELF hash checks
-before/after. Verified recipe/reports under ignored export-execution/cache-retirement-4a3c4ce.
-Old4a3c4ce artifacts and all database states retained; dc6a8d9 cache supersedes its
-compiler cache. A local inventory updater failed on a historical string resource
-field after successful capture; corrected only the updater, never reran retirement.
+Latest retirement removed onlydc6a8d9 out/build/{target,cargo-home} afterdd17842
+qualified actual73e ELF:3334766592allocatedbytes, free122489946112→125822181376.
+All698containers/eight unrelated running unchanged. Exact paths, mount census and
+privileged read-only FD/maps/cwd/exe/root census, original capture/source/ELF
+hash checks before/after are retained under ignored cache-retirement-dc6a8d9.
+Originaldc6 ELF/SQL/logs/source/capture retained; current73e cache supersedes its
+compiler cache. No container/volume/data retirement. Previous4a3c4ce cache
+retirement3334766592bytes and original reports remain inventoried unchanged.
 Earlier45a96e7/016dd6f retirement freed6663274496allocatedbytes, free122178621440→
 128836993024; earlier142cache directories/71runs and1c15/26cd/bf66/f70/cdb/f813
 remain inventoried. Historical outcomes unchanged. Never rebuild merely to clean.
 No container/volume/qualification/object-storage data retirement in these slices.
 
-Protect currentdc6a8d9 cache/ELF and retained4a3c4ce ELF, useful877/f660 and exact4e6b5c0 seed cache/assets
+Protect current73e6517 cache/ELF, dd17842 qualification artifacts, retaineddc6/4a ELF,
+useful877/f660 and exact4e6b5c0 seed cache/assets
 (owner3f840fe30a3ffef7f9944c72ea6e38f9). Protect strace-exit-9b30c35 instrumentation,
 reusable private-history-32dd58d, stopped history-capture-b5c862a and its real
 installed-publication-61271e2/out/archive-worker dependency. Pinned Node/pnpm in

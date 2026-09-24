@@ -197,9 +197,18 @@ original key/body for explicit retry and keeps acceptance separate from job stat
 Local model tests and actual Chromium store operations have scoped evidence in
 [the browser resume preparation report](evidence/p09-resume-browser-preparation-20260924.json).
 The original blocked-open experiment retained three native requests; a shared
-native-operation gate now permits one until its actual terminal event. Broader
-browser, installed HTTP/reload/lost-reply and privacy-oracle journeys still gate
-qualification of this consumer. No task step is complete from this local slice.
+native-operation gate now permits one until its actual terminal event.
+[Installed resume recovery](evidence/p09-resume-browser-native-20260924.json) now
+passes 15 native store cases across the three engines and 7 production Chromium/root
+journeys with actual HTTP/PostgreSQL: persist before real 202 with delivery withheld,
+reload without dispatch, identical retry/restart, other-account isolation, actual
+revocation and resolved forget. The full 12 ledgers preserve old rows and original
+retention while adding one atomic resume and exactly 7 session audits. The original
+[pre-login audit comparison failure](evidence/p09-resume-browser-fixture-incomplete-20260924.json)
+remains INCOMPLETE; corrected boundaries explicitly verify each session mutation.
+[Operator recovery instructions](../user/administration/jobs-recovery.md) use the
+actual controls. Remaining engine/mount journeys, accessibility, creation, cancel,
+discovery and downloads still gate the full step; no task checkbox is completed.
 
 - [ ] **Step 3:** implement typed queries/saved private views plus explicit export, storage/headroom and maintenance pages. Show measured rates/windows and unknown forecast, no unmeasured capacity promise. Explain current/historical policy and full/projection differences before download.
 

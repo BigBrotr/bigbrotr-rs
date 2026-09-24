@@ -153,7 +153,7 @@ supplies both checked configuration and policy revisions for new commands. Its
 native client test also refuses a changed body on an old key with otherwise-current
 revisions, then accepts that body under a new key. Always retain the original
 key and body while resolving an uncertain result.
-Blocked destination checker work, browser controls and the CLI remain unfinished. A separate [installed
+Blocked resume destination checker work and the CLI remain unfinished. A separate [installed
 signed-resume scenario](../implementation/evidence/p08-export-resume-output-native-20260924.json)
 restores a revoked input grant through authenticated HTTP, resumes the original
 unit and verifies exact signed bytes plus complete inventory. Identical retry
@@ -179,7 +179,16 @@ other-account isolation and actual session revocation. The full-page screenshots
 show an unexplained skip-link overlay; viewport/focus verification remains open,
 along with natural-expiry, BFCache and full accessibility acceptance.
 This observation supplies no download or execution authority. Job listing,
-browser resume/cancel controls and artifact discovery remain required work.
+cancel controls and artifact discovery remain required work.
+
+The initial **Resume this export** control now saves the original request before
+sending and restores it after reload without automatic submission. Follow
+[inspecting and resuming your export](../user/administration/jobs-recovery.md) for
+the actual controls and recovery steps. [Scoped installed browser evidence](../implementation/evidence/p09-resume-browser-native-20260924.json)
+covers Chromium at the root mount with actual Rust/PostgreSQL, a withheld real 202,
+identical retry after reload/restart, account separation/revocation and resolved
+local forget. Native IndexedDB operations also pass on Firefox and WebKit; their
+complete installed resume UI journeys and the subpath matrix remain open.
 
 The runtime probes the checksum-validated schema and job privileges at startup.
 Without protocol813 or its privileges the route refuses503 while an otherwise
@@ -247,8 +256,9 @@ Already admitted finite work can leave private files; those files have no comple
 inventory and confer no artifact visibility. The original pin remains retained.
 Paused jobs retain the original unit, immutable caps and export pin, and are
 excluded from automatic restart scans. Changing configuration does not enlarge
-that unit. The explicit resume API above is under qualification; browser/CLI and
-cancel controls remain required work. A Busy or
+that unit. The explicit resume API and initial browser consumer have the scoped
+evidence above; full browser qualification, CLI and cancel controls remain
+required work. A Busy or
 pre-output refusal cannot establish cessation of an old writer and remains fatal
 after known reader cleanup. The [foreign-lock counterpart](../implementation/evidence/p08-export-runtime-busy-native-20260924.json)
 observes an actual kernel `flock` refusal and autonomous fail-stop without a false

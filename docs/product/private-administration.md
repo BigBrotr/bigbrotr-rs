@@ -321,7 +321,9 @@ selected P08/P09 work. No historical schema checksum changes.
 
 The explicit own-export resume API has [scoped installed HTTP evidence](../implementation/evidence/p08-export-resume-http-native-20260924.json);
 its [typed client also has installed HTTP evidence](../implementation/evidence/p08-export-resume-client-native-20260924.json)
-on pinned Node; browser controls remain required. They use the same exact-scope `export`
+on pinned Node. Initial browser controls now have
+[scoped installed recovery evidence](../implementation/evidence/p09-resume-browser-native-20260924.json).
+They use the same exact-scope `export`
 action as new export submission, separately from `data.read`, `history.read` and
 `private-export`. Generic role control or status visibility cannot authorize it.
 It does not require a new reauthentication proof: this command changes no grant,
@@ -362,13 +364,16 @@ until the actual open or transaction ends. New attempts refuse while it remains
 outstanding, including across session/component recreation. Browser/device data clearing or storage loss
 is outside this local recovery guarantee; PostgreSQL remains the job/receipt
 authority. This boundary follows [IndexedDB3](https://www.w3.org/TR/IndexedDB-3/)
-and still requires actual supported-browser execution before qualification.
+with native store evidence on Chromium 153.0.8010.12, Firefox 155.0 and WebKit 26.6
+on Linux amd64. The installed resume UI is currently exercised on Chromium/root;
+other engine/mount, device and accessibility journeys remain required.
 
 Reload/sign-in restores saved metadata without automatically sending a command.
 An explicit retry uses exactly its original body and key, even after current
 session/job observations change. Only a validated acceptance or definitive409
 for that body settles it; authentication, capacity, dependency and transport
-failures keep it unresolved. Late results after logout, account change or teardown
+failures preserve the original record for recovery. Late results after logout,
+account change or teardown
 cannot restore private UI state. An accepted/refused record may be replaced by a
 later explicit resume using a newly observed paused job; the server's original
 receipt remains durable. Forgetting a resolved browser record changes no job.

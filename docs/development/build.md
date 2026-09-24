@@ -161,8 +161,10 @@ in IndexedDB at the private origin. They wait for native transaction completion
 before sending, retain the original key/revisions and restore without automatic
 submission. Sign-out clears the view while preserving this non-secret recovery
 metadata. The [private administration contract](../product/private-administration.md)
-owns its limits and failure behavior. Local Chromium store checks do not qualify
-the installed resume/reload journey or all browser engines; those remain pending.
+owns its limits and failure behavior. [Scoped native evidence](../implementation/evidence/p09-resume-browser-native-20260924.json)
+covers actual store operations on all three automated engines and the installed
+Chromium root resume/reload/restart journey. It does not qualify the complete
+resume engine/mount matrix or a released installation.
 
 These checks establish local build/client behavior. Real production CSP,
 Chromium/Firefox/WebKit, Rust/PostgreSQL and installed root/subpath journeys still
