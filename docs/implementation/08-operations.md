@@ -329,7 +329,10 @@ at53c6c9d: privilege/authority/destination/native refusals, atomic acceptance,
 exact retry and Control restart without destination/reader, retaining the
 original job/pin through revocation. The [blocked-checker signal scenario](evidence/p08-export-checker-timing-native-20260924.json)
 also passes with actual Control renewal and bounded process termination.
-Ambiguous COMMIT and actual export delivery remain open. This does not complete Step 1 or 3.
+The [COMMIT-loss/restart scenarios](evidence/p08-export-job-commits-native-20260924.json)
+resolve identical keys across actual before/after server commit interruptions,
+preserving old pins. Held-driver destination custody and actual export delivery
+remain open. This does not complete Step 1 or 3.
 [Native destination qualification](evidence/p08-export-destination-native-20260923.json)
 at a75d0fa passes ten actual Linux/ext4 cases, including bind aliases, cross-process
 custody, fsync EIO and process death around rename. The marker's independent

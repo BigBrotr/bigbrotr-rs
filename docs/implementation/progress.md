@@ -1,572 +1,208 @@
 # Current execution checkpoint
 
-Observed 2026-09-24 on the primary Mac workspace. This is navigation, not evidence
-or a second task plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
-and verify Git, dirty ownership, evidence and resources before continuing.
+Observed 2026-09-24 in the primary Mac workspace. This is navigation, not evidence
+or a second plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
+and verify Git, evidence and actual resource ownership before continuing.
 
 ## Mandate and active slice
 
 The complete selected product remains owner-authorized and incomplete. Preserve
 private bigbrotr-rs, unpublished Cargo packages and the read-only Go neighbor.
-Mac owns edits/Git; Tux runs trusted exact-Git Linux jobs while hosted Actions
-billing is unavailable. No public release, rename or Linux arm64 qualification.
+Mac owns edits/Git; Tux runs trusted exact-Git jobs while hosted Actions billing
+is unavailable. No public release, rename or Linux arm64 qualification.
 
-Active P08-T03/T04 prerequisites for standalone export/restart, consuming the
-P08-T02 private authority and P06-T01/T02 real signed history/pinned-reader slices.
-The current bounded history-body qualification is complete, not the full tasks.
-Root is sole writer;
-read-only AI reviewer catalog_guard_review is reviewing this permission boundary
-and owns no files/resources.
-No P02/P06/P08 task or M1 milestone is complete; all later selected work remains.
+Active P08-T03/T04: standalone signed export and durable job/restart, consuming
+P08-T02 private authority and P06-T01/T02 signed history/pinned-reader work.
+No full P02/P06/P08 task or M1 milestone is complete. No exported JSONL file yet.
+Root is sole writer/integrator; catalog_guard_review is read-only AI reviewing
+COMMIT evidence; review completed with no edits, product tests, SSH or resources. Its first
+implementation-review attempt hit model capacity; retry source review completed.
 
-## Git and review boundary
+## Git and current implementation
 
-Current main/HEAD3f5169f, origin/main3f5169f; candidate53c6c9d and its scoped
-evidence75906fc pushed normally. GET whitespace correction3a898c4 and blocked-checker candidate324b8eb are pushed
-with original failure evidence. Checker evidence and strengthened fixture are pushed. Root owns new COMMIT
-client/oracle files, their shared HTTP/proxy consumers and this checkpoint. Candidate53c6c9d was clean at transfer.
-No unrelated edits or rewritten published history. Laboratory below is now stopped.
+Last observed main/HEAD9fae8e4baf008ba49e6079d608ebe5e4ba16952a, origin/main3f5169f.
+One unpublished coherent fixture candidate; earlier checker/evidence work pushed
+normally. Root owns only the pending COMMIT evidence, task/operator documentation,
+inventory and this checkpoint. No unrelated dirty files or rewritten history.
+Current product ELF origin remains4e6b5c011c067800f52e67365b2b848b7943d4bc;
+fresh fixture revisions verify exact allowlisted source differences and original
+artifact hashes. No new compilation/Cargo cache when product inputs are unchanged.
+Do not relabel reused build/test records as a new build or new unit/Clippy run.
 
-Private POST /management/v1/jobs now reuses the supervised native allocation
-consumer and atomic813 adapter. Original destination Arc lives through actual
-Control driver join; per-operation check uses blocking supervision before catalog
-capture/pin. Typed202/new or200/historical receipt never claims execution. A safe
-checksum-validated812 protocol/privilege probe permits optional813 resolution:
-selected destination requires813; otherwise older session runtime remains usable.
-On813 historical retry requires no current destination/reader/grants. New work
-still needs actual destination and native allocation with current authorization.
+Private POST /management/v1/jobs currently accepts exact-ID snapshot signed-JSONL
+jobs through the ordinary supervised allocation path and atomic0813 adapter.
+It binds command/audit/job/detail/complete source cut/export pin in one transaction.
+202/new or200/historical receipts report acceptance only. Same-key changed body
+conflicts; historical retry on available813 needs no current destination/reader/
+grants. New work requires current data.read/history.read/export/private-export,
+configured initialized destination and real native allocation. Optional813 startup
+probe preserves an unselected destination's valid812 session runtime; selecting
+a destination requires813 and privileges, including source-stream UPDATE.
 
-Read-only AI review found generic internally tagged Serde buffering before
-unknown-field refusal. Actual isolated System allocator measured6023wirebytes /
-258008peakallocatedbytes; new direct closed-map visitor225bytes. A second known
-projection array (2049 empty strings,6832wirebytes) measured98529bytes; initial
-shared QueryRequest now refuses non-null projection before decoding (341bytes),
-GET also refuses it without constructing a vector. Wire schema/fingerprint and
-all supported shapes stay unchanged; broader projections remain selected later
-work. Reproducible isolated source experiments/job-command-decode/, raw
-.research/implementation/export-jobs/decode-*. No RSS/native/whole-input-envelope
-claim. Original RED logs are retained; the first probe-driver dependency-path compile
-failure was observed in tool output without a saved compiler log. Final measured
-outputs have binary/library identities.
+Per-request filesystem checks run as supervised blocking work before catalog
+capture/pin/Control mutation. CheckedDestination retains an Arc; the ORIGINAL
+LocalDestination Arc remains outside supervise through actual Control driver join.
+Do not weaken that custody. Unknown native/Control outcomes retain obligations
+and fail-stop; expiry never releases a pin or authorizes GC. Applied0813 and all
+prior migration bytes/checksums remain immutable; corrections must be additive.
 
-Actual TCP RED405 -> three job route tests GREEN; full binary41, command5,
-destination6, read-codec2 PASS on Mac. Final scoped Clippy PASS, generated types
-and client TypeScript checks PASS; earlier client10 PASS. Artifact/link/fmt checks
-PASS-scoped. Missing Management test field and unnecessary unwrap corrected;
-original intermediate failures retained. Native HTTP evidence below now exists. AI reviewed
-custody/cleanup/optional-protocol and decoder; no tests/SSH/resources by reviewer.
+The closed typed decoder refuses unknown nested fields/non-null initial projection
+before allocating a generic tree. GET uses JSON whitespace only, matching POST.
+Original memory REDs and scoped measurements are in the HTTP evidence below;
+no process RSS or all-envelope bound inferred. Broader query shapes, jobs list/
+scheduling/execution/cancel/resume, files, UI and remaining selected product work
+are still required. Current history is one exact ID/snapshot/scope, not the full
+QueryRequest registry. Native512MiB floor remains an unqualified capacity limit.
 
-[Private export HTTP evidence](evidence/p08-export-job-http-native-20260924.json)
-at53c6c9d/treea6607129 is PASS-scoped,11 actual cases: optional812 remains usable,
-selected813/source UPDATE privilege required before listener, independent grant/
-CSRF/revision/destination/native refusals, real native atomic acceptance and exact
-retry. Actual Control restart removes destination AND reader yet returns the same
-receipt; new work refuses. Revoking export preserves the original job/pin.
-All8 ledgers row+xmin hashes compare at retry/restart; original export effects
-compare after legitimate grant mutation. Before acceptance job/pin/claim0,
-final accepted job1/exportpin1/claim1/reader0/Control0/both databases backend0.
-Requested event is independently signed E_public; eight Parquet hashes unchanged.
-No output file or ambiguous COMMIT/blocked filesystem qualification.
+## Latest executed evidence
 
-Native binary41/commands5/schema21/destination6/read-codec2 and Clippy PASS via
-shared tools.ci. Capture33/source1102/fiveELF/fiveassets verified, SHA
-9160fd1b07be27767543b93289346264411a15bf84e04b70f3561c24277c4966;
-original PASS_PENDING_CAPTURE preserved. Independent AI rechecked source/capture/artifact parity, independent digest,
-all8 ledger retry/restart/revocation hashes and545 prior records; no discrepancy
-in these claims. Reviewer reports GET projection.trim accepts
-non-JSON Unicode whitespace (NBSP); fix with discriminating codec regression next.
-Does not affect these POST cases. New codec regression fails on actual NBSP
-acceptance; explicit JSON-only whitespace fixes it. Three codec tests and scoped
-Clippy PASS on Mac, logs .research/implementation/export-job-http/codec-whitespace-*.
-No product test/SSH execution by reviewer.
+- [Export HTTP](evidence/p08-export-job-http-native-20260924.json),53c6c9d:
+  eleven real cases, current grants/native/destination/privilege refusals, exact
+  acceptance/retry and actual Control restart without destination/reader. Job/pin
+  retained through revocation; all8 row/xmin sets compare. No file execution.
+  Codec whitespace fix3a898c4 has Mac RED/GREEN and subsequent native3codec PASS.
+- [Blocked checker original](evidence/p08-export-checker-incomplete-20260924.json),
+  324b8eb remains INCOMPLETE. Actual syscall hold/renewal reached; unmodified
+  strace6.1 delayed thread death, preventing terminal qualification. Preserve
+  original logs/data and unknown terminal SQL state; do not relabel it PASS.
+- [Research instrument](evidence/p08-export-checker-instrument-20260924.json),
+  9b30c35: same tiny pthread program, original/patched strace6.1 with/without60s
+  entry hold. Original-held timeout2s/internal diagnostic; fixed-held exit4 in
+  1.093ms after~1.008s observed hold, no syscall return. b5efc19 failed before build
+  on Python3.11 extractall(filter=), preserved. No product dependency changed.
+- [Blocked checker](evidence/p08-export-checker-native-20260924.json),4e6b5c0:
+  real held worker, Control6 renewal+2505374us, actual SIGTERM2.170879s before
+  ordinary request expiry, fail-stop4 in4030.39ms. Parent/worker absent, tracer
+  joined, root lock available; eight ledger row/xmin sets unchanged. Active
+  job/exportpin/readerpin/claim0, retained active-stateControl1, bothDBbackend0,
+  eight Parquet hashes unchanged. Five historical pin/lease/claim rows remain.
+- [Strengthened checker](evidence/p08-export-checker-timing-native-20260924.json),
+  eb6167d with unchanged4e6b5c0 ELF: timestamp after pidfd send, actual SIGTERM
+  observed with2.255s margin, exit4 in4045.743ms; renewal+2506331us. Revised cleanup
+  handles concurrent-death ESRCH and closes pidfd/joins tracer/pool. No injected
+  cleanup-race claim. Same terminal SQL/archive invariants. No new Cargo run.
+- [COMMIT loss/restart](evidence/p08-export-job-commits-native-20260924.json),
+  9fae8e4/tree0b3a9c32, unchanged4e6b5c0 ELF: both actual requests disconnect and
+  Control exits4 CommitUnknown. Proxy selects only export INSERT/COMMIT, records
+  original backendPID matching owner PID/start, server completion0/1 and client0.
+  Actual original backend absent before fresh Control. Before-forward has no
+  job/exportpin; epoch6->7 retry202 creates one job/new temporary reader, releases
+  only that new reader and retains the old reader. After-complete epoch8->9 restart
+  without destination AND reader returns200 originaljob/time, unchanged8ledgers.
+  Exact job cut[shard0,epoch1,sequence10], real independently signed E_public ID;
+  all old row/xmin subsets unchanged. Finaljobs2/exportpins2/readers2/claims4
+  deliberately retained, activeControl0/bothDBbackend0/eightParquetunchanged.
+  Capture41/freshsource1114/originalbuild1110/fiveELF/fiveassets verified; SHA
+  ee7f6522ccc5b8b657e6127d38f0d000943774948b4a24c8522459d4d8b66c94.
+  Eight local proxy tests PASS; no new Cargo/Clippy execution. AI source/oracle
+  and independent complete capture/source/row/resource review found no mismatch.
+  ELF/Parquet comparisons use captured remote hashes, not local artifact bytes.
 
-Stopped root /home/tux/bigbrotr-implementation-20260917/runs/export-job-http-53c6c9d,
-owner081c997dedc334103edc5f9601d5c7e0, org.bigbrotr.archive-visibility;
-PG038c001ad3b896d488254c3e4e7b3cd3f0dd2f9648004cdb56175c2ee54c1b50,
-runnercca28df70646cd720d5ef7c25a5489194965095fe9d6c3fee9d8f9d38cbbc1b0.
-Fresh resume inspection confirms PID0/noOOM, runner0/PGwrapper137. Owned network
-removed,545 prior records unchanged/eight unrelated running at terminal.
-Free192720818176 ->189041491968bytes; resume189024509952bytes, concurrent writes
-possible. Source, PGdata, archive, artifacts and complete cache retained.
-Job35363c3023bd47efb753db3de5d19f7f deliberately retains its export obligation.
-Local .research/implementation/export-job-http/; inventory
-implementation_export_job_http_20260924. No deletion or active cleanup debt.
+Neither immediate proxy socket loss nor blocked checker proves continuous
+original Arc custody across a HELD Control driver join. No recovery release of
+old pins, full zero/multistream/old-job anti-adoption acceptance, native-success/
+signal race, JSONL artifact or packaged M1/release qualification from these cases.
 
-[Native acceptance evidence](evidence/p08-export-acceptance-native-20260924.json)
-at5705b07 remains PASS-scoped: four grant prerequisite cases plus one export
-journey,13 SQL trials (one complete rollback and12 omissions/cut/digest/extra-pin
-negatives). Exact retry preserves job/time and affected row/xmin; changed page
-conflicts. Independent job1/exportpin1/claim1 retained after reader0/Control0;
-both database backends0, eight Parquet hashes and signed readback recorded.
-Original query used synthetic ab ID; no exported file, HTTP or restart claim.
-Applied0813 bytes immutable; future SQL correction must be additive.
+## Current laboratory custody
 
-Stopped lab /home/tux/bigbrotr-implementation-20260917/runs/export-jobs-5705b07,
-owner5ce34ce3dfff2584b488b24584868acf, org.bigbrotr.archive-visibility;
-PG2505891577d8a7fd93bf01abd7bf6b412dd358f89b4212257e84223d9d8b078b
-and runner2d989650ad547773a91555445cc83937b455b7c5a41aa26d71ce3789c3369110:
-PID0/noOOM, runner0/PGwrapper137; owned network removed.543 prior records unchanged,
-eight unrelated running; free196421156864 ->192756879360bytes, concurrent writes
-possible. Source, PGdata, signed archive, artifacts and complete cache retained.
-Job ebf3c7b00a9c0b8840f17b64a46b9952 deliberately retains its export obligation;
-never release/GC on expiry or stopped containers. Capture24/source1095/fiveELF/
-fiveassets verified, SHA cf9f615067917bfa6cb772b5d7da25d84f7ee47d18b3f425e7639c6f9bf25bf2.
-Original verifier wrong expected542 retained, corrected543 fullrecord checkPASS.
+No active lab, tool session or cleanup debt after terminal audits. These are dated
+observations; re-inspect before reuse/deletion. Full identities and mounts are in
+[the inventory](../research/laboratory-inventory.json). No unrelated workload,
+host port, dataset, backup, archive, catalog or index deleted by these new runs.
 
-[Destination evidence](evidence/p08-export-destination-native-20260923.json) at
-a75d0fa passes ten actual Linux/ext4 cases: ordered file/rename/root/parent sync,
-real nested bind alias refusal, independent cross-process locks, four fsync EIO
-schedules and three actual process-group kills at blocked fsync around rename.
-Initial interrupted writes retain staging and refuse; a prior valid marker stays
-readable through a failed retry, and complete retries use new synced inodes with
-identical bytes/digest. Actual child absence/join and no success stdout checked.
-Not power-loss, media corruption, export-job or release qualification.
+All roots below are under /home/tux/bigbrotr-implementation-20260917/runs/:
 
-Mac REDs retain unknown CLI/config and restrictive umask; final CLI3/config25/
-destination5/policy6 plus scoped Clippy/artifact/fmt PASS. One mistyped target ran
-no tests (mac-tests3); corrected final execution is mac-tests4.log. Native same39
-tests/Clippy PASS. Root reviewed full changed product/fixture/callers and106
-capture files/1085 exact Git sources/one parent ELF. Independent read-only AI
-code/capture review confirms these observations with no blocking discrepancy.
-The collector hashes the remote ELF; AI reviewed record parity, not a local ELF.
-AI noted the automatic kill barrier observed files only: actual traces establish
-the intended pending fsync for all three cases. Fixture now also waits for that
-exact child/descriptor syscall entry; offline replay accepts all three captures
-and rejects missing-entry/completed-call/wrong-child controls. This stricter
-fixture delta has not run natively; a75d0fa evidence remains unchanged. Higher ancestors beyond synced parent require durable provisioning.
+| Root | Owner / inventory key | Last observed retained state |
+|---|---|---|
+| export-job-commits-9fae8e4 | 722870a7e48046680d4ebc92b8470d8a / implementation_export_job_commits_20260924 | runner6780ca4a/PGb410506d stopped0/137, PID0/noOOM/networkremoved;555priorrecords/eight running preserved |
+| export-checker-timed-eb6167d | b385dbc9d6e6be4cbb4b1cf4997981c2 / implementation_export_checker_timing_20260924 | stopped0/137, PID0/noOOM/networkremoved;553priorrecords/eight running preserved; no compiler cache |
+| export-checker-fixed-4e6b5c0 | 3f840fe30a3ffef7f9944c72ea6e38f9 / implementation_export_checker_native_20260924 | stopped0/137, PID0/noOOM/networkremoved; qualified installed ELF/assets and complete cache retained |
+| strace-exit-9b30c35 | 84ac8cbf5292679b8ef7043fed7a2799 / implementation_strace_exit_9b30c35_20260924 | no-network runner exit0/PID0/noOOM; qualified research tracer/source/build retained |
 
-Stopped lab /home/tux/bigbrotr-implementation-20260917/runs/export-destination-a75d0fa,
-owner4aea1ac8e208dbd58f0d020b8370b2e5, label org.bigbrotr.export-destination;
-runneradc9fa31f28c77bd7a533b0dcd246ad048e59597d68dc0c2e77bad986a29b5a6
-exit0/PID0/noOOM. No network/database/volume created;542 prior container records
-unchanged/eight unrelated running. Free199,820,947,456 ->196,457,189,376bytes,
-concurrent writes possible. Source, marker states, binary, logs and cache retained.
-Parent-only binary intentionally has no archive-worker binding; never promote it
-as a packaged archive runtime. CaptureSHA
-7d1ed4c0b803a505616661bd1a1457d1a3a0ea5ab74784285f2858ab9b7f6857,
-local .research/implementation/export-destination/, inventory
-implementation_export_destination_20260923. Original terminalPASS_PENDING_CAPTURE
-preserved; local full capture verification succeeded. No further deletion made.
+Latest free180559454208bytes (COMMIT lab preflight180924563456); concurrent writes
+possible. Fixture-only last two runs created no target/cargo-home. Keep original
+ELF build4e6b5c0 and native asset provenance; never substitute a different binary
+based only on its filename or similarly named source. Research tracer SHA
+509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458.
+Ignored local receipts/captures under .research/implementation/{strace-exit,
+export-checker,export-checker-fixed,export-checker-timed,export-job-commits}/.
 
-[Native export-grant evidence](evidence/p08-export-grants-native-20260923.json)
-at923f186 has14 actual PASS cases, action-bound proofs/digests, independent action
-generations, export revoke tombstone preserved by restart/exact retry, signed
-history403 until separate history.read grant then exact200. Independent SQL:
-commands/details/audit4, proofs0, account5, activeControl0/pins0/Controlbackends0.
-EightParquet hashes unchanged. Upgrade812 preserves all compared rows+xmin and
-0811 guard source; no pre-existing grant records, so that compatibility remains
-unqualified. No export job/delivery yet.
+COMMIT lab retained jobs081c96c4ac3455f32bd671ffc710337c and
+fa123119ab454e60b881039319a72c2c; original reader pins
+8e6b51173c3e6715e97eaf8a95a3ae28/f0f442f99cdd744b223a7bf3a9be3387.
+No adoption, automatic restart/recovery or deletion of those obligations.
+Other deliberately retained failures/active-state rows remain under their dated
+inventory entries, especially324b8eb, history-capture-b5c862a,
+history-disconnect-negative-a334ac8 and pin-recovery51d35ae. Stopped containers
+or expired leases never prove pin recovery or noncommit.
 
-Original laboratory terminal INCOMPLETE: launch.py175 requested the wrong result
-filename after private-grant-cases.json completedPASS14. Separate final queries
-against both databases and runner zero-exit completion were NOT_RUN. Preserve
-original result; do not infer Archive backend state from stopped containers.
-Stopped root /home/tux/bigbrotr-implementation-20260917/runs/export-grants-923f186,
-ownerb125cdb3d100ed9fd764db55b1b2d225, label org.bigbrotr.archive-visibility;
-PG27fcd5dc4052d56d2ffe7b1f0d535297e7dd20fd0bcf822fa1e74bc7a36b4359;
-runner efab83c45783d2297a0012c9695d7e559bd3e85e4b032a2e4edad61ef1cc48b5.
-BothPID0/noOOM, exits137/143; ownednetworkremoved,540priorrecordsunchanged/eight
-unrelatedrunning. Inventory implementation_export_grants_20260923 records custody.
-CaptureSHA4ee3aecbb50026b68627a7d1bb02931f8e290fdee09a604f0213d62c947dffc1,
-local .research/implementation/export-grants/. Source/data/completebuildcache
-retained, no active lab/cleanup debt. Last free199,856,533,504bytes.
+## Owner-requested cache maintenance
 
-4d81357 integrates model/protocol read modules, initial schemas/OpenAPI and docs,
-management history transport/delivery, serve history/native supervision, nonrenewable
-policy action windows, PostgreSQL history authority/current certified selection,
-and bounded native event scan/resource-refusal transport.32dd58d corrects the
-600MiB admission oracle, policy-aware fault fixtures and positive HTTP terminal
-observations. The complete diff and real consumers were reviewed by root and
-independent read-only AI. AI ran no product tests.
+Completed first retirement89e73c9, inventory implementation_cache_retirement_20260923:
+142 explicit target/cargo-home directories from71 concluded runs removed,
+200390811648 allocated bytes; free7270416384 ->207661162496bytes with concurrent
+writes possible. Rehashed59494sources/897artifacts/71archives;536container records
+and eight unrelated running preserved. Original retirement remained INCOMPLETE
+because comparator included rolling Health metadata; independent captured-state
+reconciliation PASS (three health record changes, same statuses). Both preserved.
+No whole lab/container/volume/qualification or object-storage dataset deletion.
 
-## Current evidence and limits
+Protect installed-publication-61271e2 native asset dependency, reusable stopped
+private-history-32dd58d and history-capture-b5c862a. Do not infer their lifecycle
+from age. 53707a2/efeb4e0 were conservatively skipped; unexamined caches not approved
+for deletion/reuse. Smaller history-body-050f71a cache retirement0175291 removed
+only verified target/cargo-home, preserving original incomplete SQL-fixture data.
+Former b5ff8ab/4738731/a334ac8/c5d76a1/882654e/8e8cfa0/932902f/0d95a6a caches are
+retired, never complete build inputs. Check space before every new lab; prefer
+artifact reuse for fixture-only changes and retire superseded caches regularly
+with source/evidence/artifact preservation and fresh process/mount/owner audit.
 
-[Native private history qualification](evidence/p06-private-history-native-20260923.json)
-at32dd58d is PASS-scoped:18 real HTTP baseline cases, two grant faults, one held
-cleanup/retry and three history faults. Linux12native/38binary/25config/3grant/
-2codec/16policy/12process tests plus scoped Clippy pass. Corresponding Mac checks
-pass (11process because one Linux-only case), including three truly blocked TCP
-cases for global revocation/action expiry/pin expiry despite renewed global lease.
-Logs `.research/implementation/event-history/` preserve actual RED/compile iterations.
+## Next bounded action
 
-Executed signed GET/POST/empty pages, exact scope/CSRF refusals, restart/revocation,
-600MiB memory/scan1byte/response64bytes429 and unavailable bundle503. Fixture-only
-policy successors3–6 occur after actual Control stop and activeControl0/pins0;
-this does not qualify live rollout. Final fault SQL has pin0/Control0/proof1/
-commands3 and both databases backend0. Disconnect resumes Control in39.056ms
-(request1081.638ms), with child absent while parent lives before stop. SIGTERM
-proves terminal child absence, not independent wait instrumentation. Held grant
-rollback6096.143ms spans two completed polls; nine compared tables/rows+xmin
-unchanged. Eight Parquet hashes unchanged through baseline only, not after faults.
-60capture/1064source/five ELF/five asset hashes verified.
+Commit/push current COMMIT evidence after review. Then discriminate original
+LocalDestination Arc custody across actual held Control driver join. Exact
+Cargo-locked tokio-postgres0.7.18 source inspected: Connection retains pending
+responses after Client/response receiver drop and waits until they complete;
+Transaction.commit sets done before awaiting COMMIT, so dropping that future
+cannot enqueue an implicit rollback. Product join drains2s then aborts AND joins.
+Archive crate SHA matches Cargo.lock a528f7d280f6d5b9cd149635c8705b0dd049754bc67d81d31fa25169a93809d3;
+local connection.rs c7dd2c8259d306144ba60e0acabd210eada65cd88631aaa9e8e350620d880e4d,
+transaction.rs a2c0261a3ca426e9046d73b2b330720918f4d4a6010d0a143707f17f0333d62e
+match exact crate archive. Initial .cargo-checksum.json lookup absent; verified
+actual cached .crate bytes instead. Full connection and relevant transaction/
+client ownership routines inspected; unrelated client query methods uninspected.
 
-[Negative control](evidence/p06-history-disconnect-negative-native-20260923.json)
-at a334ac8 removes only the abandoned-client cancellation predicate. Same actual
-fixture fails its1s disconnect bound after baseline/grant/deadline PASS; exact
-negative elapsed time was not recorded. Original INCOMPLETE and retained
-pin0/Control1 after forced fixture cleanup are preserved, not called normal
-release/recovery. Both databases backend0.58capture/1064source/five ELF/five assets
-verified; four auxiliary ELF identities match32dd58d, only parent differs.
-AI independently rechecked capture hashes, Git source parity and observations;
-no SSH or product test execution. This discriminates the observed cancellation.
+Proposed fixture: hold the actual export COMMIT reply, SIGTERM while pending;
+observe catalog backend gone and native child absent while original Control
+socket remains open, with cross-process root flock refusal throughout that
+interval. Positive old backend/pin/job observations remain required after exit.
+An isolated negative source removing only original Arc retention should expose
+root lock availability while driver socket remains. This design is NOT_RUN;
+inspect timing/races and exact ownership before implementing the discriminator.
+No new master plan. Then actual standalone signed JSONL execution/restart through
+existing P08-T03/T04, followed by all remaining selected tasks.
 
-The [first candidate](evidence/p06-private-history-build-incomplete-20260923.json)
-4d81357 is INCOMPLETE: scoped Linux checks passed, orchestrator expected Mac11
-instead of Linux12process tests and stopped before HTTP. No product failure
-inferred.25capture/1061source/five ELF/five assets verified.
+## Earlier prerequisites and preserved work
 
-Important remaining gates:
+Use reports/inventory for precise scope and failures, not broad task PASS:
+[atomic acceptance](evidence/p08-export-acceptance-native-20260924.json),
+[destination](evidence/p08-export-destination-native-20260923.json),
+[export grants](evidence/p08-export-grants-native-20260923.json),
+[private history](evidence/p06-private-history-native-20260923.json),
+[blocked body](evidence/p06-history-body-native-20260923.json),
+[post-native capture](evidence/p06-history-capture-native-20260923.json),
+[scoped grants](evidence/p08-scoped-grants-native-20260923.json),
+[reauthentication](evidence/p08-reauthentication-native-20260923.json),
+[native cleanup](evidence/p08-native-grant-cleanup-20260923.json),
+[pin recovery](evidence/p02-archive-pin-recovery-native-20260920.json).
+Catalog custody -> capture barrier -> short Control transaction lock order remains.
+ArchivePinReceipt is historical, not live authority. Policy/global lease renewal
+cannot extend a fixed action/pin window. LocalCoordinator is Send, not Sync.
 
-- CatalogManager loss during delivery and live restrictive rollout; broader
-  authority/failure schedules beyond the bounded body cases remain open.
-- Interrupted Control renewal/acceptance COMMIT, native success/signal race,
-  scope-command ambiguity/reacquisition, distinct old-holder pins, multistream/
-  zero bounds, multiple actors/scopes/concurrent CAS and generation exhaustion.
-- Full QueryRequest registry/filters/cursors/error profile, standalone export and
-  restart, shared clients/private grant UI, later selected product tasks.
-- Common64MiB memory, aged/mixed load, native RSS/OS I/O/throughput qualification,
-  packaged release and native Linux arm64 evidence.
-
-Current history is one exact ID, snapshot, exact scope, private browser session
-with explicit CSRF. Unsupported broader shapes return400, no fabricated empty
-result on native failure. Selection follows the consumer's current certified
-revision; LIMIT2 bounds output, not input. Scan admission charges two physical
-passes over payload/eligibility, checks canonical paths/lengths and caps256MiB/
-2048files (or smaller policy). DuckLake d8a1881 list-files materializes at bind;
-this stays under native/OS bounds, not claimed OS amplification accounting.
-Private paired worker exit75 requires positive reap and empty outputs before429.
-Persistent formats/dependencies/SQL checksums unchanged.
-
-Read memory includes native512MiB floor, decode/output and128MiB conservative
-preparation overlap; tiny fixture uses1GiB allowance. Global Control renewal
-cannot extend a bound action/pin window. Pin release follows positive native
-join and actual HTTP terminal; unknown outcomes retain obligations/fail stop.
-CatalogCapture is verified after native work before sending the body.
-
-[Post-native capture qualification](evidence/p06-history-capture-native-20260923.json)
-at b5c862ac7c50700cf532517994dff3f3224f6eab/tree6362d1e is PASS-scoped.
-Paired final verification Bind: positive signed200/1016bytes; actual manager
-termination503/192bytes, exit4 with precise rollback-unresolved error, pin/claim0
-and retained active-state Control20. Both databases backend0/eightParquet unchanged.
-Both entered with parent alive/no children and pin/claim1/snapshot3/>4s residual.
-No manager-loss-during-body or recovery claim.66capture/1069source/fiveELF/five
-assets verified; independent read-only AI found no discrepancy and ran no tests.
-
-[Blocked signed body qualification](evidence/p06-history-body-native-20260923.json)
-at86443beecea8720538c32d413f6557de6cc22fe1/tree0c97f77f passes three cases with
-actual large signed fixture, restricted TCP namespace and observed owned socket
-queues/no native children. Positive95,195bytes exact EVENT; action10720bytes and
-pin9720bytes partial, request3194.215/3170.887/3197.761ms. Control renewal advances
-expiry by>2s while the identical native pin remains retained through the3s wait.
-The action case still has a live pin; pin case has a1.999461s actual lifetime,
-requested>4.9s and5s action. Both incomplete responses end before4s, not the
-ordinary5s HTTP ceiling. Negative bytes are length-checked, not exact-prefix checked.
-Host SQL actually asserts pin/claim1 during blockage, then0 after socket EOF and
-healthy Control; final Control0/both databases backend0/eightParquet unchanged.
-35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
-and exact source with no discrepancy. No product tests/SSH by reviewer.
-
-[Blocked-checker candidate](evidence/p08-export-checker-incomplete-20260924.json)
-at324b8eb/treee43d2d72 is INCOMPLETE. Native binary41/schema21/destination6/
-commands5/read-codec3 and Clippy PASS. Actual third worker marker openat held by
-strace6.1, two priming wrong-digest409 requests, matching Tgid/TracerPid and root
-flock refusal. Independent SQL at hold: no job/exportpin/readerpin/active claim;
-same Control epoch6 expiry advances2005463us. Main SIGTERM observed while hold
-persists; product reports unjoined-worker fail stop. strace emits internal
-"delayed wait data set already" and fails to terminate within7s; original client
-TimeoutExpired and lab INCOMPLETE preserved. No terminal SQL/backend observations,
-post-exit custody, complete process join or successful signal-bound claim.
-
-Stopped /home/tux/bigbrotr-implementation-20260917/runs/export-checker-324b8eb,
-owner9deefd9d70c61b7fb8bec9d583995fe2, org.bigbrotr.archive-visibility;
-runnerf076f7f0efbc08e12c995d763e4d2f6ea81798912e9df98390a73e3adff44d8d,
-PGef91476ecedc6b9bb08fba2ff3f30c3d18a222c7e7bbe555f22e100262d239b9.
-Both PID0/noOOM, runner143/PGwrapper137 after failure; owned network removed.
-547prior records unchanged/eight unrelated running, free188994342912 ->
-185314996224bytes (concurrent writes possible). Source, PGdata, archive, marker,
-artifacts and complete cache retained; no active lab or cleanup debt. Unknown
-terminal durable state is preserved for explicit recovery. Capture34/source1104/
-fiveELF/fiveassets verified; SHA28d5b33ad98f2631937ad10e2c4d0087324f3cada6bc3323d0956aa234b43b97.
-Local .research/implementation/export-checker/; inventory
-implementation_export_checker_incomplete_20260924. Verification PASS applies to
-capture integrity, not the incomplete product scenario.
-
-[Research instrument discriminator](evidence/p08-export-checker-instrument-20260924.json)
-at9b30c35 is PASS-scoped: same tiny pthread fixture, original/patched strace6.1,
-with/without60s injected hold. Original-held times out2s with internal diagnostic;
-fixed-held exits4 in1.093ms after about1.008s actual hold, without syscall return.
-Both no-injection controls exit4. Patch affects only irreversible EXIT handling,
-clears per-thread delay/copy and preserves global timer; no product dependency
-changed. Earlier b5efc19 attempt remains INCOMPLETE before build because exact
-runner Python3.11 lacks extractall(filter=); safe byte-only extraction corrected.
-Both original artifacts and first local verifier log-location error preserved.
-
-Two no-network labs strace-exit-{b5efc19,9b30c35} stopped/PID0/noOOM, exits1/0.
-Inventory implementation_strace_exit_{b5efc19,9b30c35}_20260924 records full IDs.
-Capture11/36 files and1109 exact Git sources each verified; independent read-only
-AI repeated source/capture/prior-container/trace checks without discrepancies.
-ELF hashes compared from remote records, not local binary bytes.549/550 prior
-container records preserved/eight unrelated running. Latest free185094381568bytes;
-no active lab, database, cleanup debt or deletion. Full source/build/tool artifacts
-retained, especially qualified out/strace-exit-fixed SHA509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458.
-Local .research/implementation/strace-exit/attempt-{b5efc19,9b30c35}/.
-
-[Native blocked-checker evidence](evidence/p08-export-checker-native-20260924.json)
-at4e6b5c0/treefb87d6a4 is PASS-scoped. Actual held worker checker, same Control6
-renewal+2505374us, SIGTERM while request/syscall pending; actual trace signal
-arrives0.273ms after recorded timestamp,2.170879s before ordinary request deadline.
-Fail-stop exit4 after4030.39ms, parent/worker absent, tracer joined, root lock free.
-All8 ledger row/xmin images unchanged through hold/renewal/termination; final
-job/exportpin/readerpin/claim0, retained active-state Control1, both databases
-backend0 and8 original Parquet hashes unchanged. No unknown COMMIT/recovery/file
-export or continuous original-Arc custody qualification.
-
-Stopped export-checker-fixed-4e6b5c0, owner3f840fe30a3ffef7f9944c72ea6e38f9;
-runner2028ca56818cd9d17148b4686ac9b923eebeaefd65bfb177e5e687308f3dbeda,
-PGf54b25ba261f2197aae69f98fb861dff5d73a51427d506c71cd6bf9c3f566188.
-Runner0/PGwrapper137, PID0/noOOM/networkremoved;551priorrecords/eight unrelated
-running preserved. Latest free181367304192bytes. Source/artifacts/PGdata/archive/
-cache/logs retained; no active lab or cleanup debt. Capture36/source1110/fiveELF/
-fiveassets verified, SHA51beaeceb5c2ebebcc0237e4f414f6be109173d12de1a7268ba5a5b807cb19a3.
-Local .research/implementation/export-checker-fixed/; inventory
-implementation_export_checker_native_20260924. Independent read-only AI rechecked source/capture/trace/resource identities and
-SQL terminal observations, finding no discrepancy. Five historical leases/pins/
-claims remain; zero counts describe active obligations/new export effects only; earlier static review confirmed the SQL/proof binding and found
-two fixture robustness gaps below.
-
-[Strengthened checker fixture](evidence/p08-export-checker-timing-native-20260924.json)
-at eb6167d reuses verified4e6b5c0 ELF/native assets after exact source-delta checks;
-no new compilation or unit/Clippy execution. Actual timing/cleanup assertions
-PASS: signal delivery observed with2.255s request margin, exit4 after4045.743ms,
-Control renewal+2506331us, same zero active export/pin effects and retainedControl1,
-bothDBbackend0/eightParquetunchanged, complete8ledgerrow/xmin equality. No race
-injection claim. This closes the bounded blocked-checker prerequisite only.
-
-Stopped export-checker-timed-eb6167d, ownerb385dbc9d6e6be4cbb4b1cf4997981c2;
-runnerd364def4c6a8e5138397d001886db8b0b3acf658f4a0114fde5c876bf865c12d,
-PG04bb2f5c076dae33f91890f2e7aba95858285b7938567893f1ceedb293bc7c82.
-Runner0/PGwrapper137, PID0/noOOM/networkremoved;553priorrecords/eight unrelated
-running preserved. Latest free180961017856bytes. No target/cargo-home created.
-Capture38/freshsource1111/originalbuildsource1110/fiveELF/fiveassets verified;
-SHA876bbe6b26d72ae4bd38a16c6b07f3bd2bb42135ba114f07dcb38529011826a7.
-Local .research/implementation/export-checker-timed/; inventory
-implementation_export_checker_timing_20260924. No active lab/cleanup debt.
-
-Next bounded action: review/commit and execute the prepared actual acceptance
-COMMIT fault/retry fixture with
-existing proxy targeted only to INSERT control.export_jobs. Before-forward must
-leave no export/job and one old active reader; same-key restart creates one job
-with fresh temporary reader released, preserving old unresolved reader. After-
-complete must retain job/exportpin+oldreader; restart without destination/reader
-returns identical receipt and preserves all8job/pin ledgers. Observe actual
-backend exclusion, old pin identities and signed archive; no expiry recovery.
-Read-only AI confirmed these expected outcomes and identified the exact new-reader
-allocation link and old-row/xmin comparisons; root inspected current adapter,
-Control0007/pin0018/proxy and owning P08 tasks. Separate original destination Arc
-custody-through-driver test remains required, then standalone signed JSONL.
-Prepared exact profile uses existing signed/native setup and separate real
-Control proxy. Fault counters bind actual backend PID to owner PID/start; old
-row+xmin sets remain unchanged subsets, new allocation_pin_id points only to new
-reader after before-forward retry. Exact literal job cut[shard0,epoch1,sequence10].
-Shared proxy eight local tests PASS; new practical cases NOT_RUN. No product
-code/SQL migration change. Fresh artifact-only launcher will reverify unchanged
-4e6b5c0 product/build inputs; no compiler caches. Ignored scripts/receipts
-.research/implementation/export-job-commits/. Additional implementation AI review
-was unavailable (model capacity); prior independent expected-outcome review
-completed. Root remains integrating reviewer; no tool/SSH execution by AI.
-
-Initial AI timing/cleanup findings led to the revised native fixture above.
-Pre-signal/post-exit flock samples do not prove continuous original Arc custody.
-The blocked
-worker owns its own Arc; this case cannot discriminate original supervisor Arc
-custody through unknown COMMIT. That remains a separate next acceptance boundary.
-Then complete COMMIT ambiguity/custody and standalone signed JSONL execution.
-
-Pending required acceptance: COMMIT loss/restart,
-zero/multistream cuts, old pin/job anti-adoption, nonterminal release refusal/
-recovery and deferred source-lock expiry. Then standalone signed JSONL artifact/
-execution and end-to-end restart; no full P08/M1 completion.
-
-Job design inspected independently: reuse protocol1 purpose=export, atomic
-command/job/link/exact complete cut and pin; no adoption of historical pins/jobs.
-Every execution separately acquires current grants and a fresh reader pin. Keep
-nonterminal paused/cancelling job lease AND individual claims unreleased; add
-actual-backend fencing to qualified export transitions (0001 currently checks
-only a tuple). Caller lock order authority/dataset/account -> stable consumer ->
-job -> lease/claims; deferred checks compare exact bounds including zero. An additive nullable job export-protocol column and immutable optional
-export-job reference on newly inserted export pins can prohibit historical
-adoption without xmin/transaction-ID heuristics: link only a new unsealed accepted
-qualified job; old jobs are sealed and existing pin attribution cannot update.
-Deferred checks from command, audit, qualified job, detail and export pin must
-reject every omitted counterpart. Preserve legacy NULL protocol/link rows and
-checksum history; qualification cannot be retrofitted by UPDATE. This refinement
-is design only, not SQL evidence. Original
-export pin remains after Control restart/expiry. After actual terminal effect
-resolution, original holder may release; old-holder release needs existing fresh
-exclusive recovery-only custody. archive_pin_recoveries is completed evidence,
-not pending queue: link plus unreleased lease owns remaining cleanup. The command, applied migration and adapter have the bounded native acceptance
-evidence above; custody/ACL delta now has scoped HTTP/native evidence; blocked/unknown boundaries remain open. P08-T03/T04 and owning contracts remain incomplete.
-
-Stopped root /home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be,
-ownerf61ac9d8311ca2e3bdfd09d2a67a16fa, label org.bigbrotr.archive-visibility;
-PG1a033fbe3cdc8847eea0bd6ccd699722907aaa1f2fbdfc141a25d6eb7f4a2d63;
-runner3338baf6985624852b84b57094b8ffebedeb89fb7076756cd5af041396b0d0b8.
-PID0/noOOM runner0/PGwrapper137, owned network removed.538 prior records unchanged,
-eight unrelated running, hosttcp_wmem unchanged. CaptureSHA
-104bcb822857d793b0f10d88da14274a703065c37b96326c7c7ad60e1cc37457;
-local .research/implementation/history-body/. Complete cache retained; no active
-lab or maintenance, no cleanup debt. Initial free203,927,158,784bytes, terminal
-200,257,482,752bytes; later cache retirement below supersedes capacity only.
-
-[Original body fixture](evidence/p06-history-body-fixture-incomplete-20260923.json)
-at050f71a is INCOMPLETE after real PG rejects extra parenthesis in observation SQL.
-Native checks PASS; first response95,195bytes, actual owned socket queue8,000/7,952
-bytes across two observations, parentalive/nochildren; no complete delivery case.
-Stopped root history-body-050f71a/owner7742c992294d38adeb3f0c16d736262f,
-runnerfc26b32f/PG0f47f95c PID0/noOOM, exits143/137, networkremoved.536 prior
-records preserved/eightunrelatedrunning/hosttcp_wmem unchanged.31capture/1072source/
-fiveELF/fiveassets verified; captureSHA04351fe3dfe35db8b3e21e239f0d77f44516352d53bcdcde933869eef5e10ddd.
-Source/data/artifacts retained; target/cargo-home now retired after original
-capture verification and independent process/mount/owner audit. All1072source and
-recorded artifacts/original capture rehashed;540 containers preserved/eight running.
-Free200,250,556,416 ->203,556,085,760bytes (concurrent writes possible). Inventory
-records the exact paths/receipt; this cache is partial and must not be reused.
-Terminal SQL pins/Control not observed, no recovery or graceful release claim.
-Local .research/implementation/history-body-incomplete/.
-
-Owner-requested first cache maintenance is PASS-reconciled in inventory key
-implementation_cache_retirement_20260923.142 explicit out/build/{target,cargo-home}
-directories from71 concluded runs removed. All59,494 source files,897 retained
-artifact files and71 original archives rehashed;536 container identities/images/
-lifecycles/mounts/networks/restart policies preserved, eight unrelated running.
-Free space7,270,416,384 ->207,661,162,496bytes; concurrent writes may contribute.
-Original retirement.json remains INCOMPLETE: its final comparator included rolling
-Health metadata and did not retain the exact in-memory diff. Independent original
-terminal capture comparison now passes; three unrelated health records changed,
-current health statuses unchanged. Preserve both original and reconciliation.
-
-Protected complete caches: private-history-32dd58d, history-capture-b5c862a and
-the new history-body-86443be;
-installed-publication-61271e2 remains intact as the native asset dependency.
-The retired71 caches include b5ff8ab/4738731/a334ac8/c5d76a1/882654e/8e8cfa0/
-932902f/0d95a6a: no reuse as build inputs. Retained source/data/artifacts remain valid.
-installed-binding-53707a2 and producer-recovery-outcomes-efeb4e0 did not satisfy
-this conservative audit and were skipped. Other unexamined cache profiles remain
-for later assessment, not automatically reusable. No dataset, backup, archive,
-catalog, index, historical container or volume deleted. No whole lab deletion.
-
-Raw scripts/receipts local `.research/implementation/cache-retirement-20260923/`,
-remote `/home/tux/bigbrotr-implementation-20260917/cache-retirement-20260923/`.
-Initial confined /proc observations refused deletion and are preserved remotely;
-complete temporary metadata-only census had zero unreadable processes and zero
-run references, then the no-network/no-host-mount helper removed itself. No host
-security settings changed. Inspect free space before every subsequent lab and
-retire superseded caches regularly after preserving exact evidence/artifacts.
-
-## Laboratory custody
-
-Stopped prior root `/home/tux/bigbrotr-implementation-20260917/runs/history-capture-b5c862a`,
-owner ae079c92a38967076654df442fed64b7, label org.bigbrotr.archive-visibility.
-Runner e34c6be7e6526cb730c2dac5c451f427a9055ff297647b4be5d312fa392dd2a9,
-PG e8633a3f58a3d2988fef86abcb058cdf911a2b321ecf9615be9f0bf9ae8a20ff:
-PID0/noOOM, runner0/PGwrapper137; owned network removed.534 prior records unchanged,
-eight unrelated running. CaptureSHA256
-`be68e4f6229b27b5224149b07cfcb8b891506dbcf6a57ad04eeecd94ee4791b3`.
-Source and complete cache retained. Original Control20 remains active-state;
-do not restart/relabel it recovered. This completed lab has no cleanup debt.
-Scripts/capture under `.research/implementation/history-capture/`.
-
-All dated statuses below were audited at terminal capture; inspect ownership and
-actual state again before reuse/cleanup. Full container/network/image identities
-are in the [inventory](../research/laboratory-inventory.json), not inferred from PIDs.
-No host ports, release keys or Docker socket in runners; source RO. Linuxamd64,
-PG16.15, runner2CPU/6GiB/512PIDs and PG2CPU/1GiB/128PIDs are fixture limits only.
-
-- Positive root `/home/tux/bigbrotr-implementation-20260917/runs/private-history-32dd58d`,
-  owner277267784f933351135813602916ca1a; inventory
-  implementation_private_history_native_20260923. Stopped/PID0/noOOM,
-  runner0/PGwrapper137, network removed,530 prior records unchanged/eight unrelated
-  running. Complete build cache retained. CaptureSHA256
-  `b7dfd3e8d74f24f08892eb65387ff42eb1d79f30da58810869ce30691eb57077`.
-  Local `.research/implementation/event-history-native/{capture,launch.py,transfer.py,collect.py,verify.py}`.
-- Negative root `/home/tux/bigbrotr-implementation-20260917/runs/history-disconnect-negative-a334ac8`,
-  owner33c287e40bd71a2c73ae47da7c9d35d2; inventory
-  implementation_history_disconnect_negative_20260923. Stopped/PID0/noOOM,
-  runner0/PGwrapper137, network removed,532 prior records unchanged/eight unrelated
-  running. Compiler cache now retired; retained Control row is intentionally
-  unrecovered. CaptureSHA256
-  `3155585329eab9690aa3f5c784b0d2c3ac6bb57fc71f022dd2c3fbfb4349b215`.
-  Local `.research/implementation/history-disconnect-negative/`.
-- First root `/home/tux/bigbrotr-implementation-20260917/runs/private-history-4d81357`,
-  owner2d96bc6ded22fdb9a4e87a219561580a; inventory
-  implementation_private_history_build_20260923. Stopped/PID0/noOOM,
-  runner143/PGwrapper137 after bounded fixture stop; no graceful product claim.
-  Network removed,528 prior records unchanged/eight unrelated running.
-  CaptureSHA256 `529308f2abd81f528a5d9a134746039210644ccbf2f456cf8d3eeb6e282c16a3`.
-  Local `.research/implementation/event-history/`.
-  [Verified cache retirement](evidence/p06-history-build-cache-retirement-20260923.json)
-  removed only out/build/{target,cargo-home}. This cache is PARTIAL; never reuse.
-  Source1061/five ELF/five native assets/original capture rehashed unchanged.
-  Data/evidence remain.534 container records unchanged/eight unrelated running;
-  latest observed free10,978,086,912bytes, not attributed reclaimed capacity.
-  Local `.research/implementation/history-cache-retirement/`; inventory
-  implementation_history_cache_retirement_20260923.
-
-Clean committed local research worktree `.research/worktrees/history-no-disconnect`,
-branch research/history-no-disconnect, HEADa334ac8c01030fa5d1fd2b18dc12ad85fc7b12f4,
-tree847fa9983cf804e38c1bd1ac3bd8726886977a07, based exactly on32dd58d. Never merge/push.
-First transfer from dirty main was refused before remote creation; corrected clean
-worktree transfer succeeded. Preserve historical intentionally dirty
-`.research/worktrees/private-panel-no-revoke` atb6d9d7e unchanged too.
-
-Older retained lab roots, credentials/data obligations and original incomplete
-outcomes remain owned by their inventory records/evidence below. In particular,
-7ea08a6/1b9f710/51d35ae/e65116b/591c75f and other recorded retired caches are
-PARTIAL, never complete build inputs. b5ff8ab and4738731 caches are now retired by
-the maintenance above. Native assets from installed-publication-61271e2 are retained read-only
-and require fresh checksum verification. Do not reuse retired preimplementation
-resources. Prefer verified stopped32dd58d cache for next run; inventory host first.
-
-## Prerequisite evidence and retained obligations
-
-Current private read depends on these scoped results; follow reports for precise
-revisions/exclusions and original failed attempts, not a blanket task PASS:
-
-- [Scoped grants](evidence/p08-scoped-grants-native-20260923.json), additive0811
-  correction over checksum-preserved0810, actual six-effect omission negatives,
-  privilege/known rollback/refusal and retained pin acceptance. Historical retry
-  cannot reapply a grant. Per-scope generations/tombstones never reset.
-- [Reauthentication](evidence/p08-reauthentication-native-20260923.json), separate
-  immutable issuance audit/session-CSRF binding, persistent password quotas and
-  exact retry. Concurrent cap admission/full COMMIT loss remain open.
-- [Native grant HTTP](evidence/p08-native-grant-http-20260923.json),
-  [signal correction](evidence/p08-native-grant-cancellation-20260923.json),
-  [held catalog rollback](evidence/p08-native-grant-cleanup-20260923.json).
-  Known cancellation collects the same native future before pin cleanup; first
-  signal during catalog rollback retains the same future and skips revoked gate
-  renewal. Unknown native/Control outcome and expired lease remain fatal.
-- [Owned reader](evidence/p02-owned-reader-custody-native-20260923.json) and
-  [scoped absence](evidence/p06-event-query-absence-native-20260923.json), including
-  actual missing/corrupt required objects, Lock refusal and PG crash/restart.
-  Completed absence assumes a valid certified selection, not all-object health.
-- [Snapshot pins](evidence/p02-archive-snapshot-pins-native-20260920.json),
-  [pin recovery](evidence/p02-archive-pin-recovery-native-20260920.json) and
-  [reader custody](evidence/p02-archive-reader-custody-native-20260920.json).
-  One original pin deliberately remains active in recovery51d35ae; expiry/local
-  WAL reopen/absent SQL rows never prove noncommit or GC permission.
-- [Session HTTP](evidence/p08-browser-http-native-20260920.json),
-  [commit recovery](evidence/p08-browser-http-commits-native-20260920.json),
-  [hash lifecycle](evidence/p08-browser-http-faults-native-20260920.json),
-  [private panel](evidence/p09-private-panel-native-20260920.json),
-  [large static response](evidence/p09-large-static-native-20260920.json).
-
-Maintain custody -> catalog barrier -> short Control transaction lock order.
-ArchivePinReceipt is historical, not a live capability. Registration must check
-sealed frontier/topology/all bounds, active protocol1 pin/positive claims/current
-holder and post-lock time; require_archive_pin_holder alone does not prove live
-state. LocalCoordinator is Send, not Sync. No pin/claim recovery or GC claim from
-mere scheduling expiry. Native reader defaults disabled; explicit configuration
-must keep manager/reader roles separate without enabling a publisher.
+Clean research worktree .research/worktrees/history-no-disconnect remains at
+a334ac8c01030fa5d1fd2b18dc12ad85fc7b12f4, branchresearch/history-no-disconnect;
+never merge/push. Historical intentionally dirty private-panel-no-revoke atb6d9d7e
+remains untouched. Neighboring Go repository stays read-only.
 
 Monitor findings remain scoped closed with no contrary evidence:
 [MON001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),

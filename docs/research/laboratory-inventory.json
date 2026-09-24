@@ -19687,5 +19687,42 @@
       "capture_sha256": "876bbe6b26d72ae4bd38a16c6b07f3bd2bb42135ba114f07dcb38529011826a7"
     },
     "observation": "Concurrent writes possible. No target/cargo-home created, no compilation; only source/installed artifacts and fresh database/archive. Runner0/PGwrapper137, PID0/noOOM, network removed, no active lab/cleanup debt. Preserve deliberate active-state Control row; no expiry recovery/GC. 553 prior full records unchanged/eight unrelated running; free181331128320 ->180961017856bytes."
+  },
+  "implementation_export_job_commits_20260924": {
+    "local_root": ".research/implementation/export-job-commits",
+    "native": {
+      "source": "9fae8e4baf008ba49e6079d608ebe5e4ba16952a",
+      "tree": "0b3a9c32ae264b97e97e842003b241282c881480",
+      "owner": "722870a7e48046680d4ebc92b8470d8a",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-commits-9fae8e4",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "b410506d0af405610f2cfd8c4a36546e5a9ed34681046520d22ad5e51d8ab16b"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "6780ca4a5423bbc81b3574415fd7c8c9aad29b2b5d69e56b977b55d74abd6d61"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T06:29:42.862761+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "7a10bfdca662926de08f200f21f3bed2aa803cd9632132bd729d6ca7a64e6737",
+      "postgres_id": "b410506d0af405610f2cfd8c4a36546e5a9ed34681046520d22ad5e51d8ab16b",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "6780ca4a5423bbc81b3574415fd7c8c9aad29b2b5d69e56b977b55d74abd6d61",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "evidence": "docs/implementation/evidence/p08-export-job-commits-native-20260924.json",
+      "capture_sha256": "ee7f6522ccc5b8b657e6127d38f0d000943774948b4a24c8522459d4d8b66c94"
+    },
+    "observation": "Concurrent writes possible; no compiler caches created/deleted. Runner0/PGwrapper137, PID0/noOOM, network removed. Source/artifacts/PGdata/archive/logs retained; no active lab/cleanup debt. Two accepted jobs, two active export pins and two unresolved original reader pins with four claims intentionally remain. No recovery release or GC permission. 555 prior records preserved/eight unrelated running; free180924563456 ->180559454208bytes."
   }
 }

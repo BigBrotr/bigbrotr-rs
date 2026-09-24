@@ -113,7 +113,12 @@ missing native assets, exact retry, Control restart without destination/reader,
 and revocation with retained job/pin. The [blocked-checker native scenario](../implementation/evidence/p08-export-checker-timing-native-20260924.json)
 observes Control renewal and bounded fail-stop on SIGTERM with no new job or
 active pin. It suspends syscall entry; arbitrary kernel I/O is not qualified.
-Ambiguous COMMIT and continuous destination custody through driver join remain
-unqualified; transport tests alone do not establish them.
+The [COMMIT-loss/restart evidence](../implementation/evidence/p08-export-job-commits-native-20260924.json)
+covers connection loss before forwarding acceptance COMMIT and after server
+completion. Both fail-stop and retain prior reader pins; a fresh Control resolves
+the original key against actual SQL state. A committed job retains its export
+pin; restart without destination/reader still returns that receipt. Old unresolved
+pins are not recovered by this retry. Continuous destination custody through a
+held driver join remains unqualified.
 Job discovery, scheduling/execution and
 terminal recovery remain required P08-T03/T04 work.
