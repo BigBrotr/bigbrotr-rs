@@ -19528,5 +19528,41 @@
       "native_cases": 11
     },
     "observation": "Source, PGdata, signed archive, destination marker, binaries, logs and complete build cache retained. Accepted job35363c3023bd47efb753db3de5d19f7f deliberately retains its export pin/claim. No active laboratory or cleanup debt. Both owned containers stopped/PID0/noOOM, runner0/PGwrapper137; owned network removed.545 prior records unchanged/eight unrelated running. Control0/both databases backend0. Free192720818176 ->189041491968bytes at terminal; concurrent writes possible."
+  },
+  "implementation_export_checker_incomplete_20260924": {
+    "local_root": ".research/implementation/export-checker",
+    "native": {
+      "source": "324b8ebbb8caa3a97bef0b141e7c6cf9150aab67",
+      "tree": "e43d2d72020834e70b7efe9adec7be9267555a07",
+      "owner": "9deefd9d70c61b7fb8bec9d583995fe2",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-324b8eb",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "ef91476ecedc6b9bb08fba2ff3f30c3d18a222c7e7bbe555f22e100262d239b9"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "f076f7f0efbc08e12c995d763e4d2f6ea81798912e9df98390a73e3adff44d8d"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T05:38:02.179205+00:00",
+      "network_id": "85471252f15bbd9afbeaa53748d1a1845409e9a20a8864c5d6ea1ddac73d4ff6",
+      "postgres_id": "ef91476ecedc6b9bb08fba2ff3f30c3d18a222c7e7bbe555f22e100262d239b9",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "f076f7f0efbc08e12c995d763e4d2f6ea81798912e9df98390a73e3adff44d8d",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "evidence": "docs/implementation/evidence/p08-export-checker-incomplete-20260924.json",
+      "capture_sha256": "28d5b33ad98f2631937ad10e2c4d0087324f3cada6bc3323d0956aa234b43b97"
+    },
+    "observation": "Owned runner143/PGwrapper137, both stopped/PID0/noOOM after fixture failure; network removed. No graceful product release or zero database-backend inference from container state. Source, complete cache, installed artifacts, PGdata, signed archive, marker and original logs retained. No active laboratory/cleanup debt. Durable terminal Control/pin state not queried before stopping; preserve for explicit recovery. 547prior records unchanged/eight unrelated running. Free188994342912 ->185314996224bytes with concurrent writes possible."
   }
 }

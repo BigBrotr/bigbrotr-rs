@@ -21,11 +21,10 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD3a898c4, origin/main75906fc; candidate53c6c9d and its scoped
+Current main/HEAD324b8ebbb8caa3a97bef0b141e7c6cf9150aab67, origin/main75906fc; candidate53c6c9d and its scoped
 evidence75906fc pushed normally. GET whitespace correction3a898c4 has Mac
-RED/GREEN+Clippy evidence, not yet pushed. Root owns only the blocked-checker
-experimental fixture and this checkpoint. Candidate53c6c9d was clean at transfer.
-No unrelated edits, active laboratory or rewritten published history.
+RED/GREEN+Clippy evidence, not yet pushed. Blocked-checker fixture committed324b8eb; root now owns this checkpoint. Candidate53c6c9d was clean at transfer.
+No unrelated edits or rewritten published history. Laboratory below is now stopped.
 
 Private POST /management/v1/jobs now reuses the supervised native allocation
 consumer and atomic813 adapter. Original destination Arc lives through actual
@@ -266,21 +265,47 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: commit the prepared blocked-checker fixture, transfer exact
-Git to a fresh isolated Tux root via .research/implementation/export-checker/.
-Fresh host/process/mount/free-space inventory and stopped53c6c9d cache identity
-check precede copy. No new remote root exists yet. Native strace6.1 delay_enter
-holds an actual marker openat on a non-main thread for60s; pending trace +actual
-Tgid/TracerPid +held root flock required before host SQL observes unchanged
-ledgers and renewal. Then actual SIGTERM must fail stop within7s using2s grace,
-leave no job/readerpin, retain unreleased Control row, and close both backends.
-This external syscall hold is not media/power-loss qualification. Priming uses
-wrong digest409, never a successful job; default60s ownership TTL unchanged,
-fixture heartbeat500ms. Initial offline barrier positive/negative controls and
-Python syntax PASS; actual execution NOT_RUN. Upstream exact6.1 syscall.c and
-pathtrace.c inspected: injection follows path selection; counters are per TID,
-so fixture observes the pending call rather than assuming thread reuse. Retain
-original outcomes. Then COMMIT ambiguity/custody and signed JSONL execution.
+[Blocked-checker candidate](evidence/p08-export-checker-incomplete-20260924.json)
+at324b8eb/treee43d2d72 is INCOMPLETE. Native binary41/schema21/destination6/
+commands5/read-codec3 and Clippy PASS. Actual third worker marker openat held by
+strace6.1, two priming wrong-digest409 requests, matching Tgid/TracerPid and root
+flock refusal. Independent SQL at hold: no job/exportpin/readerpin/active claim;
+same Control epoch6 expiry advances2005463us. Main SIGTERM observed while hold
+persists; product reports unjoined-worker fail stop. strace emits internal
+"delayed wait data set already" and fails to terminate within7s; original client
+TimeoutExpired and lab INCOMPLETE preserved. No terminal SQL/backend observations,
+post-exit custody, complete process join or successful signal-bound claim.
+
+Stopped /home/tux/bigbrotr-implementation-20260917/runs/export-checker-324b8eb,
+owner9deefd9d70c61b7fb8bec9d583995fe2, org.bigbrotr.archive-visibility;
+runnerf076f7f0efbc08e12c995d763e4d2f6ea81798912e9df98390a73e3adff44d8d,
+PGef91476ecedc6b9bb08fba2ff3f30c3d18a222c7e7bbe555f22e100262d239b9.
+Both PID0/noOOM, runner143/PGwrapper137 after failure; owned network removed.
+547prior records unchanged/eight unrelated running, free188994342912 ->
+185314996224bytes (concurrent writes possible). Source, PGdata, archive, marker,
+artifacts and complete cache retained; no active lab or cleanup debt. Unknown
+terminal durable state is preserved for explicit recovery. Capture34/source1104/
+fiveELF/fiveassets verified; SHA28d5b33ad98f2631937ad10e2c4d0087324f3cada6bc3323d0956aa234b43b97.
+Local .research/implementation/export-checker/; inventory
+implementation_export_checker_incomplete_20260924. Verification PASS applies to
+capture integrity, not the incomplete product scenario.
+
+Next bounded action: commit original failure evidence, then isolate the tracer
+failure with a tiny native multithreaded syscall/exit discriminator before any
+new BigBrotr run. Exact upstream strace6.1 and7.0 dispatch_event both handle
+TE_STOP_BEFORE_EXIT then reapply syscall_delayed, retaining the exit event until
+the injected delay ends. Investigate a minimal research-only exit-event fix
+versus unmodified tool (source/patch/artifact identities), not a blind upgrade
+or weakened product test. No patch/tool change has yet been applied.
+
+Independent AI static review also found missing submit-time/margin immediately
+before SIGTERM, limited pre-signal/post-exit flock samples and early-tracer-exit
+cleanup relying on container teardown. Strengthen timestamps/pending/margin and
+owned tracee cleanup before rerun. Bulk SQL observation can avoid repeated Docker
+exec overhead while keeping exact independent row/xmin checks. The blocked
+worker owns its own Arc; this case cannot discriminate original supervisor Arc
+custody through unknown COMMIT. That remains a separate next acceptance boundary.
+Then complete COMMIT ambiguity/custody and standalone signed JSONL execution.
 
 Pending required acceptance: actually blocked checker, COMMIT loss/restart,
 zero/multistream cuts, old pin/job anti-adoption, nonterminal release refusal/

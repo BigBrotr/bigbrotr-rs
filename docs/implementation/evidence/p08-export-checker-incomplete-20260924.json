@@ -1,0 +1,163 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "task": [
+    "P08-T03",
+    "P08-T04"
+  ],
+  "status": "INCOMPLETE",
+  "source": "324b8ebbb8caa3a97bef0b141e7c6cf9150aab67",
+  "tree": "e43d2d72020834e70b7efe9adec7be9267555a07",
+  "scope": "Actual per-request destination syscall hold under Control renewal; terminal qualification blocked by strace6.1 delayed-exit behavior. No successful bounded process termination, terminal SQL or recovery claim.",
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 2,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128
+    }
+  },
+  "capture": {
+    "local": ".research/implementation/export-checker/capture",
+    "archive_sha256": "28d5b33ad98f2631937ad10e2c4d0087324f3cada6bc3323d0956aa234b43b97",
+    "files": 34,
+    "source_files": 1104,
+    "source_manifest_sha256": "4ab2cfc341d810920ab8ffacdf2f5cc7764c14c2c3b8ec03a2ed8ee1e8c4670d",
+    "artifacts": {
+      "control": "ef42d48ed445ed78a6c04d4a205d4223633bb6eaae5f7c22c43dddaf597c4f03",
+      "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+      "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+      "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+      "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+    },
+    "native_assets": {
+      "bigbrotr-archive-worker": {
+        "bytes": 14378448,
+        "sha256": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4"
+      },
+      "extensions/ducklake.duckdb_extension": {
+        "bytes": 36436086,
+        "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+      },
+      "extensions/httpfs.duckdb_extension": {
+        "bytes": 21570542,
+        "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+      },
+      "extensions/postgres_scanner.duckdb_extension": {
+        "bytes": 41696558,
+        "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+      },
+      "lib/duckdb.h": {
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "lib/libduckdb.so": {
+        "bytes": 70529912,
+        "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+      }
+    }
+  },
+  "executed": {
+    "native_checks": "Shared tools.ci: binary41,schema21,destination6,commands5,read-codec3 and Clippy PASS. Includes corrected GET Unicode whitespace regression.",
+    "prerequisites": [
+      {
+        "case": "unselected-destination-refuses-job-without-poisoning812-runtime",
+        "status": "PASS"
+      },
+      {
+        "case": "selected-destination-requires-explicit813-before-private-listener",
+        "status": "PASS",
+        "observation": {
+          "exit": 3,
+          "remote_exclusion": "UNKNOWN",
+          "stdout": "",
+          "stderr": "error: private session prerequisites refused: Prerequisite\n",
+          "overflow": false
+        }
+      },
+      {
+        "case": "source-row-lock-privilege-is-required-before-private-listener",
+        "status": "PASS",
+        "observation": {
+          "exit": 3,
+          "remote_exclusion": "UNKNOWN",
+          "stdout": "",
+          "stderr": "error: private session prerequisites refused: Prerequisite\n",
+          "overflow": false
+        }
+      },
+      {
+        "case": "new-export-needs-live-session-csrf-and-each-independent-scope-action",
+        "status": "PASS"
+      }
+    ],
+    "blocked_before_signal": {
+      "commands": 0,
+      "details": 0,
+      "audit": 0,
+      "jobs": 0,
+      "export_pins": 0,
+      "reader_pins": 0,
+      "claims": 0
+    },
+    "control_renewal": {
+      "before": {
+        "epoch": 6,
+        "expires": 1790228563085146
+      },
+      "after": {
+        "epoch": 6,
+        "expires": 1790228565090609
+      }
+    },
+    "trace": "Actual server8616, worker8619, third per-worker destination.json openat held; two prior wrong-binding requests returned409. Actual Tgid/TracerPid and ptrace stop checked. Root exclusive flock refused before hold/signal.",
+    "timings": "Held openat1790228502.067942; main SIGTERM1790228506.169243; product unjoined-worker error and one sibling exit4 followed, but tracer/whole process did not join within7s. These timestamps are observations, not a successful termination bound.",
+    "failure": {
+      "client_exit": 1,
+      "kind": "TimeoutExpired waiting for strace after SIGTERM",
+      "seconds": 7,
+      "product_stderr": "error: native grant worker not joined; retain pin and terminate process",
+      "tracer_stderr": "/usr/bin/strace: dispatch_event: pid 8619 has delayed wait data set already"
+    },
+    "source_inspection": "Exact stracev6.1 src/strace.c dispatch_event processes TE_STOP_BEFORE_EXIT then reapplies syscall_delayed and replaces pending wait data; current inspectedv7.0 retains this condition too. Requires isolated discriminator before attributing full root cause or changing the instrument. No blind dependency upgrade. Linux ptrace documentation requires PTRACE_CONT/PTRACE_DETACH at PTRACE_EVENT_EXIT to finish exit: https://man7.org/linux/man-pages/man2/ptrace.2.html . Upstream6.1 source archive SHA2562579e9cec37dbb786f6ea0bebd15f40dd561ef2bde2a2a2ecdce5963b01859fd retained locally; not yet built or patched.",
+    "independent_ai_review": "Read-only static review identified signal/deadline causal timing gap, limited flock samples and early-tracer-exit cleanup gap. No product tests/SSH. Native capture independent review pending."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-324b8eb",
+    "owner": "9deefd9d70c61b7fb8bec9d583995fe2",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "ef91476ecedc6b9bb08fba2ff3f30c3d18a222c7e7bbe555f22e100262d239b9"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "f076f7f0efbc08e12c995d763e4d2f6ea81798912e9df98390a73e3adff44d8d"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "original_terminal": "INCOMPLETE",
+    "prior_containers": 547,
+    "prior_preserved": true,
+    "unrelated_running": 8,
+    "free_bytes_before": 188994342912,
+    "free_bytes_after": 185314996224,
+    "free_space_note": "Concurrent writes may contribute; no deletion in this run.",
+    "termination": "Owned runner143/PGwrapper137, both stopped/PID0/noOOM after fixture failure; network removed. No graceful product release or zero database-backend inference from container state.",
+    "retained": "Source, complete cache, installed artifacts, PGdata, signed archive, marker and original logs retained. No active laboratory/cleanup debt. Durable terminal Control/pin state not queried before stopping; preserve for explicit recovery."
+  },
+  "not_run": [
+    "Successful bounded actual parent/thread/tracer join and post-exit lock availability",
+    "Independent terminal Control/pin/job SQL, both-database backend checks and final archive hash comparison",
+    "Continuous destination custody through Control driver join, ambiguous COMMIT and old-holder recovery",
+    "Standalone JSONL execution, job scheduling/cancel/resume and complete P08/M1/release acceptance"
+  ]
+}
