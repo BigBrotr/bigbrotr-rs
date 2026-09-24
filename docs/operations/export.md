@@ -148,6 +148,11 @@ a continuous proof for every schedule. The [actual TypeScript client](../impleme
 also passes acceptance, explicit retry, revision/body conflicts, same-session
 Control restart and account deactivation against installed HTTP/PostgreSQL on
 Node26.4.0. Its in-memory cookie jar is a fixture, not browser qualification.
+The [current session context](../implementation/evidence/p08-session-command-context-native-20260924.json)
+supplies both checked configuration and policy revisions for new commands. Its
+native client test also refuses a changed body on an old key with otherwise-current
+revisions, then accepts that body under a new key. Always retain the original
+key and body while resolving an uncertain result.
 Blocked destination checker work, browser controls and the CLI remain unfinished. A separate [installed
 signed-resume scenario](../implementation/evidence/p08-export-resume-output-native-20260924.json)
 restores a revoked input grant through authenticated HTTP, resumes the original

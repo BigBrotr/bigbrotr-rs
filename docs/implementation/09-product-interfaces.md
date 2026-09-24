@@ -189,8 +189,10 @@ Keep the original command key and all three revisions together for explicit retr
 never replace them from a later observation while resolving an uncertain result.
 The session API now supplies the checked configuration head alongside policy in
 the same transaction. Its pre-release contract requires a matching private bundle;
-no new stored session format or migration is involved. Native validation and the
-complete browser resume/reconnection journey still gate this consumer.
+no new stored session format or migration is involved. [Native session context](evidence/p08-session-command-context-native-20260924.json)
+now passes login/inspection and a real typed-client resume using the observed
+heads. Durable browser command recovery and the complete resume/reconnection
+journey still gate this consumer.
 
 - [ ] **Step 3:** implement typed queries/saved private views plus explicit export, storage/headroom and maintenance pages. Show measured rates/windows and unknown forecast, no unmeasured capacity promise. Explain current/historical policy and full/projection differences before download.
 

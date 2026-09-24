@@ -23,36 +23,56 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD def54030b8a5296ee302193f25d1839c9237e760, tree
-2716fe2d98ea6002d83061c68b271a8c813d24f0 on main; private origin/main matches. Root owns the
-session-context product/contract/client/test/fixture edits and this checkpoint.
-No foreign work. The15569cc scoped evidence and inventory are committed/pushed.
+Last verified HEAD dc6a8d95a1c6dcb9033bb3e9247a061f73d907b6, tree
+2d5b5f74000796728685acda37e76aa017737109 on main; private origin/main remains
+def54030b8a5296ee302193f25d1839c9237e760. Root owns the pending native context
+report, inventory/task/operator/checkpoint edits and one additional client test
+(LF/CRLF/LS refusals). No foreign work. Original15569cc evidence is pushed.
 
-The resume-client lab is stopped-retained: export-runtime-15569cc, owner
-8673756b1b88c9128e362bd02f1060e1. Both owned containers PID0/noOOM, runner0/PG137;
-network removed and both databases have zero backends. All680 prior containers,
-including eight unrelated running, preserve lifecycle/mount/network state.
-Free127914237952→127506673664bytes. No Rust compilation or new build cache.
+Current exact-Git Tux lab export-runtime-dc6a8d9 is stopped-retained, owner
+4f7fe031f2bb8467ab28ed9db8f98ec7. Owned PostgreSQL
+1c55922fc67b32dd3dedd63dddb12f6746ed8db6347d709178efd6f9e68f811c and runner
+8fe1e8b04aa0db41e7c6e00211757d0564063408259bae79cabd4ac05f06af62 are PID0/noOOM,
+runner0/PG137, network removed, bothDB0. Original Node/4e assets remain separately
+owned and read-only. Keep the newdc6a8d9 compiler cache and runtime ELF.
 
-Next bounded action: commit and run current configuration revision observations
-for the P09 resume consumer. The edited lock_dataset checks both authoritative
-heads in the transaction and returns the checked
-PolicySnapshot through issue/inspect/observation. Canonical config_revision and
-generated validators implemented. Local old-validator RED, new17clienttests/
-typecheck/contractcheck,10paneltests/Svelte0errors0warnings,27Rust HTTPtests pass.
-Updated Node fixture explicitly inspects the session, independently checks SQL
-heads1/2 and uses the returned values for new resume bodies. Native NOT_RUN; use transfer-resume-client.py with only the repository argument
-(no4a reuse because product inputs changed), fresh exact-Git build. After cleanup,
-collect-runtime.py and review-session-context.py verify captured build/client/SQL.
-The updated fixture adds10requests including otherwise-current old-key/body
-conflict before new acceptance. Independent static review pending.
-No DDL. Closed old client schemas will reject the added field: backend and private
-bundle must upgrade together; document that pre-release compatibility boundary.
-Do not invent revision1 or add technical manual fields merely to unblock the UI.
-Follow with real session login/inspect and typed resume against PostgreSQL with
-independent head expectations; UI persistence, browser and CLI remain open.
+Next bounded action: commit/push verified session-context evidence and cache
+retirement, then implement the browser resume consumer in existing P09-T09 Step2.
+It can now use the session's checked config_revision/policy_revision and the
+actor-owned paused job's revision. Preserve one original key/body across uncertain
+replies and reload; don't regenerate or rebase it automatically. Before adding
+browser persistence, specify its bounded non-secret command metadata and account/
+origin ownership in the existing product contract. Current JobModel owns only
+status and has no resume controls/storage. Session generation/dispose fences late
+private responses; preserve those. The current browser storage oracle only allows
+Kit scroll/empty snapshot: any new command store needs an independent explicit
+privacy/recovery oracle, not blanket allowance. No UI storage design is accepted
+merely by this checkpoint; inspect current contracts and choose a bounded approach.
+Remaining blocked-checker, expiry/lock-wait cases and full CLI/product gates remain.
 
 ## Latest native evidence
+
+[dc6a8d9 session command context](evidence/p08-session-command-context-native-20260924.json)
+passes fresh native installed build,46binarytests/Clippy and10actual Node/HTTP
+requests against PostgreSQL. Login and explicit/me expose checked config1/policy2;
+client uses them for resume. Olde4 key/currentbody7/1/2 returns409 before newf5
+samebody202. Exact receipt8/time1790271166668341 persists through retries and
+Control5→6 restart without destination/currentdata.read; deactivation401. Original
+12projections/retention unchanged except queued8 and one atomic resume tuple
+xmin966; sessions961 unchanged after/me. Commands/audit projections are resume-only.
+Bothparents0/rootfree/scratchempty/bothDB0. Root verifies34payloads,1236current/
+1110seed Git files, fresh bound ELF and682prior/eight running resources;
+capturetar f512d59e5edcdb91aa7c4ff89962e23932d05c1fa5c791c0461967f3cb258213.
+ParentSHA720addf6ce4e97ca0e52601198d4bd708bc0036453d69dafb27bef077bb868ea;
+workerSHA3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
+Free127461650432→123727515648 before later cache retirement. Independent static
+AI review found no defect; no separate AI raw capture review claimed. Its proposed
+newline issue was NOT_REPRODUCED on Node26.4.0 and retracted after ECMAScript check;
+additional local regression passes. Largeu64 is local serialization/client evidence,
+not real PG large-head or concurrent head-advance evidence. No DDL; required new
+config_revision means backend and closed private bundle must upgrade together.
+Local17clienttests/typecheck/contractcheck,10paneltests/Svelte0errors0warnings,
+27RustHTTPtests/fmt pass. Real UI/reload/browser persistence remain unimplemented.
 
 [15569cc actual TypeScript client](evidence/p08-export-resume-client-native-20260924.json)
 passes8real HTTP responses on Node26.4.0: login201, historical200, stale409,
@@ -196,16 +216,20 @@ backups, archives/catalogs/indexes, source, original logs/receipts/manifests/has
 and intentionally retained failure states. Process death/expiry is not safe GC.
 No global prune, implicit volume deletion or unrelated workload changes.
 
-Latest scoped retirement removed only45a96e7 and016dd6f out/build/{target,cargo-home}:
-6663274496allocatedbytes; free122178621440→128836993024, concurrent writes possible.
-All676containers/eight running unchanged; resolved-path/mount and privileged
-read-only FD/maps/cwd audits, source/capture/ELF rehash before/after. Reports under
-ignored export-execution/cache-retirement-{45a96e7,016dd6f}. Historical outcomes
-unchanged. Earlier142cache directories/71runs and later1c15/26cd/bf66/f70/cdb/f813
-retirements remain inventoried. Never rebuild old experiments merely to clean.
+Latest scoped retirement removed only4a3c4ce out/build/{target,cargo-home} after
+dc6a8d9 qualification:3334766592allocatedbytes, free123717173248→127049465856.
+All684containers/eight running unchanged. Exact resolved paths, mount plus privileged
+read-only FD/maps/cwd/exe/root census and original capture/source/ELF hash checks
+before/after. Verified recipe/reports under ignored export-execution/cache-retirement-4a3c4ce.
+Old4a3c4ce artifacts and all database states retained; dc6a8d9 cache supersedes its
+compiler cache. A local inventory updater failed on a historical string resource
+field after successful capture; corrected only the updater, never reran retirement.
+Earlier45a96e7/016dd6f retirement freed6663274496allocatedbytes, free122178621440→
+128836993024; earlier142cache directories/71runs and1c15/26cd/bf66/f70/cdb/f813
+remain inventoried. Historical outcomes unchanged. Never rebuild merely to clean.
 No container/volume/qualification/object-storage data retirement in these slices.
 
-Protect current4a3c4ce cache/ELF, useful877/f660 and exact4e6b5c0 seed cache/assets
+Protect currentdc6a8d9 cache/ELF and retained4a3c4ce ELF, useful877/f660 and exact4e6b5c0 seed cache/assets
 (owner3f840fe30a3ffef7f9944c72ea6e38f9). Protect strace-exit-9b30c35 instrumentation,
 reusable private-history-32dd58d, stopped history-capture-b5c862a and its real
 installed-publication-61271e2/out/archive-worker dependency. Pinned Node/pnpm in

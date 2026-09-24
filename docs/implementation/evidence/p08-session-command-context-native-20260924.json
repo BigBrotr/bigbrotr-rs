@@ -1,0 +1,227 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "PASS_SCOPED",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T02 Step 2",
+    "P08-T03 Step 3",
+    "P09-T09 Step 2"
+  ],
+  "source": "dc6a8d95a1c6dcb9033bb3e9247a061f73d907b6",
+  "tree": "2d5b5f74000796728685acda37e76aa017737109",
+  "scope": "Fresh installed Rust build exposes same-transaction config_revision in login and/me. Actual Node TypeScript client checks SQL heads1/2 and consumes them for resume. Native export execution disabled.",
+  "environment": {
+    "host": "tux",
+    "target": "Linux amd64",
+    "rust": "1.98.1",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "node": "26.4.0",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-dc6a8d9/capture",
+    "files": 34,
+    "sha256": "f512d59e5edcdb91aa7c4ff89962e23932d05c1fa5c791c0461967f3cb258213",
+    "source": "dc6a8d95a1c6dcb9033bb3e9247a061f73d907b6",
+    "tree": "2d5b5f74000796728685acda37e76aa017737109",
+    "source_files": 1236
+  },
+  "artifacts": {
+    "bigbrotr": "720addf6ce4e97ca0e52601198d4bd708bc0036453d69dafb27bef077bb868ea",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "results": {
+    "build_checks": [
+      {
+        "name": "installed-build",
+        "command": [
+          "/usr/bin/python3",
+          "/out/build/source/experiments/export-execution/native.py",
+          "--build-runtime"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 61.04857806907967
+      },
+      {
+        "name": "management-tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 23.467603319790214
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.9194365749135613
+      }
+    ],
+    "binary_tests": 46,
+    "heads": {
+      "config_revision": "1",
+      "policy_revision": "2"
+    },
+    "http": [
+      {
+        "case": "login",
+        "status": 201
+      },
+      {
+        "case": "inspect",
+        "status": 200
+      },
+      {
+        "case": "historical",
+        "status": 200
+      },
+      {
+        "case": "historical-body-conflict",
+        "status": 409
+      },
+      {
+        "case": "stale-revision",
+        "status": 409
+      },
+      {
+        "case": "accepted",
+        "status": 202
+      },
+      {
+        "case": "retry",
+        "status": 200
+      },
+      {
+        "case": "changed-body",
+        "status": 409
+      },
+      {
+        "case": "retry-after-restart",
+        "status": 200
+      },
+      {
+        "case": "deactivated-session",
+        "status": 401
+      }
+    ],
+    "accepted": {
+      "accepted_at_us": "1790271166668341",
+      "authority": "acceptance-only",
+      "command_key": "f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5",
+      "created": true,
+      "execution": "unobserved",
+      "format": "bigbrotr-export-resume/1",
+      "job_id": "56d7f2f532c5cf234a4a0de808686048",
+      "job_revision": "8"
+    },
+    "request_digest": "\\xd566336aaac93ff95917e263b3810c7f865f1aa7b04685e7f8f4629f88f19304",
+    "atomic_xmin": "966",
+    "session_xmin": "961",
+    "preservation": "Old e4 key with current paused7/config1/policy2 body returns409; newf5 key with that same body returns202.12projections preserve original rows/xmin except queued8 and one atomic detail/command/audit inxmin966. Subsequent retries and Control5\u21926 restart preserve original receipt8/time, all projected rows and original retention. Commands/audit projections are resume-only.",
+    "session": "Login and explicit/me each return config1/policy2 from independently observed SQL heads. After/me, same session961 last_seen/idle/xmin stays unchanged through resume. Same cookie works after Control restart without destination/currentdata.read; deactivated account returns401.",
+    "server_terminal": {
+      "event": "server-terminal",
+      "operation": "stop",
+      "exit": 0,
+      "parent_absent": true,
+      "lock_available": true,
+      "scratch_empty": true
+    },
+    "backends": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    }
+  },
+  "review": {
+    "root": {
+      "status": "VERIFIED_SCOPED_PASS",
+      "source": "dc6a8d95a1c6dcb9033bb3e9247a061f73d907b6",
+      "runtime_source": "dc6a8d95a1c6dcb9033bb3e9247a061f73d907b6",
+      "counts": {
+        "out/build/source-manifest.json": 1236,
+        "artifact-source-manifest.json": 1110
+      },
+      "payloads": 34,
+      "preexisting": 682,
+      "free_before": 127461650432,
+      "free_after": 123727515648,
+      "artifacts": {
+        "bigbrotr": "720addf6ce4e97ca0e52601198d4bd708bc0036453d69dafb27bef077bb868ea",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "node": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-no-preload-b6d9d7e",
+        "owner": "f062862798d1c5a5606e31e87618683e",
+        "archive_sha256": "5c4286dcd5bbd5acb1ccc7eb0e088bd5eb1e3affad671ee9364004f8f6a4a431",
+        "files_verified": 4654,
+        "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94"
+      }
+    },
+    "independent_ai": "Static review of the new code/callers found no concrete defect: both checked heads pass through existing locked transaction, matched-bundle incompatibility explicit, current old-key/body conflict precedes same-body new-key acceptance. No independent AI raw capture review claimed for this run.",
+    "local": {
+      "client_tests": 17,
+      "panel_tests": 10,
+      "rust_http_tests": 27,
+      "typecheck": "PASS",
+      "generated_contract_check": "PASS",
+      "svelte": "0 errors,0 warnings",
+      "rustfmt": "PASS",
+      "red": "Before implementation, old validator rejected positive configuration observation. Recorded under .research/implementation/export-execution/session-context-red.json.",
+      "newline": "A static trailing-newline hypothesis was retracted and not reproduced on actual Node26.4.0 RegExp/generated validator/client for LF/CRLF/LS/PS. Additional LF/CRLF/LS regression passes locally after candidate commit; .research/implementation/export-execution/session-context-newline.json. No decoder change."
+    }
+  },
+  "compatibility": "Required config_revision extends unreleased closed session/1 wire shape. Upgrade backend and private bundle together; old validators reject extra field and new validators reject absence. No DDL or changed stored session format.",
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-dc6a8d9",
+    "owner": "4f7fe031f2bb8467ab28ed9db8f98ec7",
+    "state": "stopped-retained",
+    "all_owned_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "preexisting": 682,
+    "unrelated_running": 8,
+    "free_before": 127461650432,
+    "free_after": 123727515648
+  },
+  "remaining": [
+    "Actual SQL head advance/lock-wait interleavings not exercised by this1/2profile; large u64 values tested locally, not real PostgreSQL in this run",
+    "Node tools4654file before/after checks are runner evidence; tools archive is outside this capture",
+    "No browser cookie/Origin or UI acceptance, durable browser pending-command recovery, CLI, native export output or COMMIT fault qualification from this profile",
+    "Full selected product, package/release journeys and native arm64 remain open"
+  ]
+}

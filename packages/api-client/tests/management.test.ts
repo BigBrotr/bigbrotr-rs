@@ -43,7 +43,7 @@ test('session configuration revision is exact and required for command context',
   const api = createManagementClient({ fetch: async (_, init) => json(value, init?.method === 'POST' ? 201 : 200) });
   assert.deepEqual(await api.login({ username: 'owner', password: 'actual password' }), value);
   assert.deepEqual(await api.inspect(), value);
-  for (const config_revision of [undefined, null, 1, '0', '01', '18446744073709551616']) {
+  for (const config_revision of [undefined, null, 1, '0', '01', '18446744073709551616', '1\n', '1\r\n', '1\u2028']) {
     await assert.rejects(createManagementClient({ fetch: async () => json({ ...value, config_revision }) }).inspect(), failure('incompatible'));
   }
 });

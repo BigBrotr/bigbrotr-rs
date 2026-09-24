@@ -23430,7 +23430,29 @@
     },
     "free_before": 126809890816,
     "free_after": 123076579328,
-    "retention": "Preserve SQL queued8 state, original receipts and input pins, captured logs, source/seed identities and fresh ELF. Current4a3c4ce artifacts/cache support next same-unit completion and fault scenarios. No container/dataset/volume retirement."
+    "retention": "Preserve SQL queued8 state, original receipts and input pins, captured logs, source/seed identities and fresh ELF. Current4a3c4ce artifacts/cache support next same-unit completion and fault scenarios. No container/dataset/volume retirement.",
+    "cache_retirement": {
+      "date": "2026-09-24",
+      "evidence": ".research/implementation/export-execution/cache-retirement-4a3c4ce",
+      "status": "VERIFIED_SCOPED_RETIREMENT",
+      "files_sha256": {
+        "cache-retirement.json": "add1d06b84fdc9fa04fe76f4ccfbacc42ae66359f7bfa1cd9474fe2b53ee7ae0",
+        "cache-containers-before.json": "5bc6e34500b8123236779897627d3ee78c78b23a32c157fcb6fe2fc149b06549",
+        "cache-containers-after.json": "5bc6e34500b8123236779897627d3ee78c78b23a32c157fcb6fe2fc149b06549"
+      },
+      "recipe_sha256": "9c51666571b473907c35c9f114c9dd01a18f6082c86d5b2f6dce46c3231aea51",
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-4a3c4ce/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-4a3c4ce/out/build/cargo-home"
+      ],
+      "allocated_cache_bytes": 3334766592,
+      "free_before": 123717173248,
+      "free_after": 127049465856,
+      "containers_preserved": 684,
+      "unrelated_running": 8,
+      "preserved": "Original capture/logs, current ELF outside cache, sources/manifests, seed artifacts, PGdata/archive/output. Currentdc6a8d9 cache and all other labs unchanged.",
+      "superseding_source": "dc6a8d95a1c6dcb9033bb3e9247a061f73d907b6"
+    }
   },
   "implementation_export_resume_output_fixture_20260924": {
     "status": "stopped-retained; INCOMPLETE stdin fixture",
@@ -23651,5 +23673,48 @@
       "source_files": 1235
     },
     "retention": "Preserve original SQL/session observations, receipts/logs/manifests and reused4a ELF; Node tools remain owned by retainedb6d9d7e and mounted read-only. No new build cache or resource retirement."
+  },
+  "implementation_session_command_context_20260924": {
+    "status": "stopped-retained; scoped installed session command context PASS",
+    "resources": {
+      "source": "dc6a8d95a1c6dcb9033bb3e9247a061f73d907b6",
+      "tree": "2d5b5f74000796728685acda37e76aa017737109",
+      "owner": "4f7fe031f2bb8467ab28ed9db8f98ec7",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-dc6a8d9",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "1c55922fc67b32dd3dedd63dddb12f6746ed8db6347d709178efd6f9e68f811c"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "8fe1e8b04aa0db41e7c6e00211757d0564063408259bae79cabd4ac05f06af62"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T17:29:54.613292+00:00",
+      "runtime_profile": "resume-client",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "2206c471d865fe6890d1a8dc78a02e7d870cffaf503a0c1a87daac1cd8c0f358",
+      "postgres_id": "1c55922fc67b32dd3dedd63dddb12f6746ed8db6347d709178efd6f9e68f811c",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "8fe1e8b04aa0db41e7c6e00211757d0564063408259bae79cabd4ac05f06af62",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p08-session-command-context-native-20260924.json",
+    "capture": {
+      "files": 34,
+      "sha256": "f512d59e5edcdb91aa7c4ff89962e23932d05c1fa5c791c0461967f3cb258213",
+      "source": "dc6a8d95a1c6dcb9033bb3e9247a061f73d907b6",
+      "tree": "2d5b5f74000796728685acda37e76aa017737109",
+      "source_files": 1236
+    },
+    "retention": "Preserve currentdc6a8d9 compiler cache, bound ELF, source/manifests, SQL state and receipts. Original Node tools remain read-only ownedb6d9d7e. No data/container retirement."
   }
 }
