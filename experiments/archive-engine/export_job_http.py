@@ -56,7 +56,7 @@ def destination():
     assert observed['binding_sha256']==command()['destination']['binding_sha256']
 
 
-def exercise():
+def exercise(checker=False):
     auth=json.loads((http.ROOT/'session.private').read_text())
     principal=(http.ROOT/'principal').read_text()
     body=command();key='d1'*16
@@ -94,6 +94,13 @@ def exercise():
             grant(action,True,revision,format(0xc0+revision,'02x')*16)
             if revision<3:assert job()[0]==403
         case('new-export-needs-live-session-csrf-and-each-independent-scope-action')
+        if checker:
+            server.stop()
+            from export_destination_blocked import exercise as blocked
+            blocked(auth,body)
+            case('actual-blocked-destination-renews-control-and-signal-fails-stop-within-bound')
+            print(json.dumps(dict(status='PASS',cases=len(cases))))
+            return
         assert job({**body,'expected_policy_revision':'1'})[0]==409
         bad={**body,'destination':{**body['destination'],'binding_sha256':'00'*32}}
         assert job(bad)[0]==409
@@ -150,4 +157,4 @@ def exercise():
 
 
 if __name__=='__main__':
-    {'unselected':unselected,'destination':destination,'exercise':exercise}[sys.argv[1]]()
+    {'unselected':unselected,'destination':destination,'exercise':exercise,'checker':lambda:exercise(True)}[sys.argv[1]]()

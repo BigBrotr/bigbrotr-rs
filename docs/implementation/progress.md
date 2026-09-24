@@ -21,9 +21,10 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD and origin/main75906fc; candidate53c6c9d and its scoped
-evidence75906fc pushed normally. Root owns only the GET codec whitespace
-correction/regression and this checkpoint. Candidate53c6c9d was clean at transfer.
+Current main/HEAD3a898c4, origin/main75906fc; candidate53c6c9d and its scoped
+evidence75906fc pushed normally. GET whitespace correction3a898c4 has Mac
+RED/GREEN+Clippy evidence, not yet pushed. Root owns only the blocked-checker
+experimental fixture and this checkpoint. Candidate53c6c9d was clean at transfer.
 No unrelated edits, active laboratory or rewritten published history.
 
 Private POST /management/v1/jobs now reuses the supervised native allocation
@@ -265,9 +266,21 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: commit the verified GET whitespace fix; qualify an actually
-blocked destination checker and COMMIT loss
-before claiming those guarantees; continue standalone signed JSONL execution/restart.
+Next bounded action: commit the prepared blocked-checker fixture, transfer exact
+Git to a fresh isolated Tux root via .research/implementation/export-checker/.
+Fresh host/process/mount/free-space inventory and stopped53c6c9d cache identity
+check precede copy. No new remote root exists yet. Native strace6.1 delay_enter
+holds an actual marker openat on a non-main thread for60s; pending trace +actual
+Tgid/TracerPid +held root flock required before host SQL observes unchanged
+ledgers and renewal. Then actual SIGTERM must fail stop within7s using2s grace,
+leave no job/readerpin, retain unreleased Control row, and close both backends.
+This external syscall hold is not media/power-loss qualification. Priming uses
+wrong digest409, never a successful job; default60s ownership TTL unchanged,
+fixture heartbeat500ms. Initial offline barrier positive/negative controls and
+Python syntax PASS; actual execution NOT_RUN. Upstream exact6.1 syscall.c and
+pathtrace.c inspected: injection follows path selection; counters are per TID,
+so fixture observes the pending call rather than assuming thread reuse. Retain
+original outcomes. Then COMMIT ambiguity/custody and signed JSONL execution.
 
 Pending required acceptance: actually blocked checker, COMMIT loss/restart,
 zero/multistream cuts, old pin/job anti-adoption, nonterminal release refusal/

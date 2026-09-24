@@ -13,7 +13,7 @@ from signed_publication_oracle import check,input_expectations,EVENT
 from event_cases import cut_expectation
 
 
-def main(root):
+def main(root, checker=False):
     resources=json.loads((root/'resources.json').read_text());source=root/'source'
     assert Path(__file__).resolve().parents[2]==source
     assert command('git','-C',str(source),'rev-parse','HEAD')==resources['source']
@@ -95,16 +95,23 @@ def main(root):
         case('source-row-lock-privilege-is-required-before-private-listener',observation=refused)
         http=result['http']={}
         with (root/'http-client.stdout').open('xb') as out,(root/'http-client.stderr').open('xb') as err:
-            process=subprocess.Popen(client+['exercise'],stdout=out,stderr=err)
+            process=subprocess.Popen(client+['checker' if checker else 'exercise'],stdout=out,stderr=err)
             try:
-                for phase in ['before-accept','accepted','retried','restarted']:
+                for phase in (['checker-blocked'] if checker else ['before-accept','accepted','retried','restarted']):
                     end=time.monotonic()+90
                     while not (private/(phase+'.waiting')).exists():
                         assert process.poll() is None,'HTTP client ended before '+phase
                         if time.monotonic()>=end:raise TimeoutError(phase)
                         time.sleep(.02)
                     observed=observe();result[phase]=dict(sql=observed,rows=retained(),export_rows=retained(True));save()
-                    count=0 if phase=='before-accept' else 1
+                    if checker:
+                        def owner():
+                            return json.loads(sql(db,"SELECT json_build_object('epoch',epoch,'expires',lease_expires_at_us) FROM control.owner_epochs WHERE role='control' AND state='active'"))
+                        first=owner();time.sleep(2.2);second=owner()
+                        result['checker_renewal']=dict(before=first,after=second);save()
+                        assert first['epoch']==second['epoch'] and second['expires']-first['expires']>1_000_000
+                        assert result[phase]['rows']==retained(), 'Blocked checker changed export/pin state'
+                    count=0 if phase in ('before-accept','checker-blocked') else 1
                     assert observed==dict(commands=count,details=count,audit=count,jobs=count,export_pins=count,reader_pins=0,claims=count),observed
                     if phase in ('retried','restarted'):assert result['accepted']==result[phase]
                     (private/(phase+'.ready')).write_text('observed\n')
@@ -114,6 +121,21 @@ def main(root):
                 http.update(stdout=(root/'http-client.stdout').read_text(),stderr=(root/'http-client.stderr').read_text(),overflow=False);save()
         result['cases']+=json.loads((private/'export-job-http-cases.json').read_text());save()
         assert http['exit']==0 and not http['stderr'],http
+        if checker:
+            assert len(result['cases'])==5 and all(c['status']=='PASS' for c in result['cases'])
+            result['checker']=json.loads((private/'checker-result.json').read_text())
+            assert result['checker']['status']=='PASS'
+            result['final_sql']=observe();assert result['final_sql']==result['checker-blocked']['sql']
+            assert retained()==result['checker-blocked']['rows']
+            result['active_control']=int(sql(db,"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'"))
+            assert result['active_control']==1 # Deliberately retained on fail-stop.
+            result['terminal_backends']={database:int(sql(database,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()")) for database in [db,'bbpub_normal']}
+            assert result['terminal_backends']=={db:0,'bbpub_normal':0}
+            result['files']=files
+            assert files=={str(p.relative_to(root/'out')):sha(p) for p in sorted((root/'out/signed_normal/kind=7').rglob('*.parquet'))}
+            result['status']='PASS';save()
+            print(json.dumps(dict(status='PASS',cases=len(result['cases']),source=resources['source'])))
+            return
         assert len(result['cases'])==11 and all(c['status']=='PASS' for c in result['cases'])
         result['final_export_rows']=retained(True);assert result['final_export_rows']==result['accepted']['export_rows']
         result['final_sql']=observe();assert result['final_sql']==result['accepted']['sql']
@@ -142,4 +164,4 @@ def main(root):
     print(json.dumps(dict(status=result['status'],cases=len(result['cases']),source=resources['source'])))
 
 
-if __name__=='__main__':main(Path(sys.argv[1]).resolve())
+if __name__=='__main__':main(Path(sys.argv[1]).resolve(),len(sys.argv)>2 and sys.argv[2]=='checker')
