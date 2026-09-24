@@ -20,17 +20,36 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD3e41cb78d0e619fc6f49c916559cf32fdfc38f7b, tree
-7a0cf3cda84a17533277c9464c465d0c75c5b162 on main; private origin/main remains
-adee7b6e61e03ac9798a180f0c0a1e890eb29547. Four unpublished candidates through0814.
-Root owns the pending Rust resume adapter/receipt/prerequisite probe, real adapter
-fixture/profile, scoped SQL evidence and checkpoint/inventory documentation.
-No other contributor or merge/rebase.
+Last verified HEAD016dd6f0d8f5b8b3de332ba1e4542a68ec045031, tree
+1cd7f7706b5fb53f3fcd458bc839d34ee690e0e8 on main; private origin/main remains
+adee7b6e61e03ac9798a180f0c0a1e890eb29547. Five unpublished coherent candidates.
+Root owns pending scoped native-adapter evidence, inventory and checkpoint only.
+No other contributor or merge/rebase. Actual source is clean at the tested revision.
 
-Next bounded action: qualify --resume-adapter from a clean exact Git candidate,
-with fresh native compilation after space/resource preflight. It consumes the
-real signed seed and scoped SQL paused7 fixture, then uses actual Rust Control
-and the application role. No HTTP/client/UI is exposed yet.
+Next bounded action: add the installed private HTTP resume consumer to the actual
+Rust adapter, preserving historical retry before destination access and the same
+command/action/delivery bounds. Complete owning transport/supervisor/client contract
+reading, then discriminating route fixtures. HTTP/client/UI remain unimplemented.
+
+The [016dd6f actual Rust adapter](evidence/p08-export-resume-adapter-native-20260924.json)
+passes fresh native build/two execution-selection tests/Clippy and six practical
+case events on real PostgreSQL with the application role. Receipt SELECT omission
+is refused before existing job writes. A fresh session resolves original receipt5
+after second pause7/session deletion, even without current input/destination or
+extra role grants. New missing-destination/stale-CAS/bad-CSRF commands refuse;
+valid current input/export authority accepts exactly queued8. Full unit/selection/
+artifact/lease/pin/claim rows AND xmin remain unchanged; original command/audit/
+receipt unchanged and one new row each. Root verifies26payloads/1218current/1110seed
+Git files and both fresh ELF; tar e499fc3f93f01731542c3051c7cb31157ce4f366669c0d8d94c8a833e4ebac07.
+Stopped-retained runs/export-adapter-016dd6f ownerf975651d0a24e3daa7405c1ce1668251;
+allownedPID0/noOOM/network removed, bothDB0,666prior/eight unrelated running unchanged.
+Free134338449408→130631946240bytes; current016 compiler cache useful for HTTP slice.
+Normal Control driver join is observed; held-driver/cancel/unknown COMMIT are NOT_RUN.
+No resumed output or HTTP/browser acceptance claim. Independent AI capture review
+found no concrete discrepancy; command/audit comparisons are resume-only and original
+pin scheduling TTL was still positive. Already-expired scheduling lease remains NOT_RUN.
+A new Mac actual-TCP resume-route regression is RED:405instead of401 on the missing
+route. Root owns that pending job_tests.rs change; full HTTP implementation follows.
 
 The [3e41cb7 SQL boundary](evidence/p08-export-resume-schema-native-20260924.json)
 passes original unreceipted-transition refusal,11positive/omission/rollback cases,
@@ -54,10 +73,9 @@ The new adapter resolves authenticated actor/key/body history before current
 input/destination/state checks; new acceptance locks consumer before job/source,
 checks original destination and CAS, then commits the receipt. Unknown COMMIT
 poisons Control and retains caller destination custody until driver join. Actual
-native qualification remains next. The existing export startup probe also checks
+native qualification is scoped PASS above. The existing export startup probe also checks
 SELECT on0814's receipt table when present, because its transition guard needs
-that read for existing execution; no implicit grants. Review and engine tests
-must confirm this integration before the next product consumer.
+that read for existing execution; no implicit grants. The actual application-role omission test confirms this prerequisite before the next consumer.
 
 The [8743fd8 geometry follow-up](evidence/p09-skip-link-geometry-incomplete-20260924.json)
 is stopped-retained INCOMPLETE, owner2d2445d06a8106c48ff9d534eeeefa44,
@@ -286,7 +304,7 @@ Root's ResumeExportCommand fingerprint/closed parsing has two Mac tests passing,
 preceded by missing-type compile RED; Clippy passed. Independent Python vectors
 bind four IDs and three u64 revisions. This is identity only, not acceptance.
 SQL RED is now executed as above; new0814 SQL acceptance is scoped PASS as above.
-Rust adapter is under native qualification; HTTP/client/UI remain unimplemented.
+Rust adapter has scoped native evidence above; HTTP/client/UI remain unimplemented.
 Independent AI read the action mapping, not these new tests or SQL fixture.
 
 ## Tux ownership and maintenance

@@ -23256,5 +23256,50 @@
     "free_before": 134729986048,
     "free_after": 134372995072,
     "retention": "Preserve original SQL receipts, source/native seed identities and paused7 state with its committed resume receipt. No new compiler cache."
+  },
+  "implementation_export_resume_adapter_20260924": {
+    "status": "stopped-retained; scoped actual Rust adapter PASS",
+    "resources": {
+      "source": "016dd6f0d8f5b8b3de332ba1e4542a68ec045031",
+      "tree": "1cd7f7706b5fb53f3fcd458bc839d34ee690e0e8",
+      "owner": "f975651d0a24e3daa7405c1ce1668251",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-016dd6f",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "11ac98e428531177bb66a6ccddef50cce50927a29b13d36ac5dbc735bd57dd27"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "c93b6c892b7cfcb53575045289e8507a2332ecbd7001fcc02ebc7db942fcad22"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T15:42:49.004239+00:00",
+      "runtime_profile": null,
+      "adapter_profile": "resume",
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "53e05a00daab5d045dfe19c0f17acfe444d255e8eecaa163b28eac1b04ea3dc2",
+      "postgres_id": "11ac98e428531177bb66a6ccddef50cce50927a29b13d36ac5dbc735bd57dd27",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "c93b6c892b7cfcb53575045289e8507a2332ecbd7001fcc02ebc7db942fcad22",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-adapter-native-20260924.json",
+    "capture": {
+      "files": 26,
+      "sha256": "e499fc3f93f01731542c3051c7cb31157ce4f366669c0d8d94c8a833e4ebac07",
+      "source": "016dd6f0d8f5b8b3de332ba1e4542a68ec045031",
+      "tree": "1cd7f7706b5fb53f3fcd458bc839d34ee690e0e8",
+      "source_files": 1218
+    },
+    "free_before": 134338449408,
+    "free_after": 130631946240,
+    "retention": "Preserve original SQL receipts, queued8 state, source/seed identities, both new ELF and useful016dd6f compiler cache for immediate resume HTTP work. No dataset/container/volume retirement in this run."
   }
 }

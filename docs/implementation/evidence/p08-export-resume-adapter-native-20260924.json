@@ -1,0 +1,185 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "PASS_SCOPED",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "source": "016dd6f0d8f5b8b3de332ba1e4542a68ec045031",
+  "tree": "1cd7f7706b5fb53f3fcd458bc839d34ee690e0e8",
+  "environment": {
+    "host": "tux",
+    "target": "Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-016dd6f/capture",
+    "files": 26,
+    "sha256": "e499fc3f93f01731542c3051c7cb31157ce4f366669c0d8d94c8a833e4ebac07",
+    "source": "016dd6f0d8f5b8b3de332ba1e4542a68ec045031",
+    "tree": "1cd7f7706b5fb53f3fcd458bc839d34ee690e0e8",
+    "source_files": 1218
+  },
+  "scope": "Actual Rust resume and application role on retained SQL fixture; no HTTP or resumed artifact output",
+  "artifacts": {
+    "bigbrotr": "2af46cabf78cfd20a104eab675ac8a1c2ac49b05aa6baef672975d31d4bfb115",
+    "export-execution-probe": "7b2e0dfcf7f6f583ad33600e4b383340637a202516486b19f64a3054ea696cd3"
+  },
+  "build_checks": [
+    {
+      "name": "build",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "export-execution-probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 46.69252942223102
+    },
+    {
+      "name": "selection-tests",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "export::execution::tests"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 16.09167878003791
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--example",
+        "export-execution-probe",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 2.8188751661218703
+    }
+  ],
+  "results": {
+    "cases": {
+      "missing-resume-ledger-read": [
+        {
+          "case": "resume-ledger-select-required-before-existing-job-writes",
+          "status": "PASS"
+        }
+      ],
+      "resume": [
+        {
+          "case": "fresh-session-resolves-old-receipt-after-second-pause-and-session-cleanup",
+          "status": "PASS"
+        },
+        {
+          "case": "retry-needs-no-current-input-destination-or-role-control-and-cannot-requeue",
+          "status": "PASS"
+        },
+        {
+          "case": "new-resume-refuses-missing-destination-stale-revision-and-invalid-csrf",
+          "status": "PASS"
+        },
+        {
+          "case": "resume-commits-once-without-roles-control-status-or-manager-and-preserves-unit",
+          "status": "PASS"
+        },
+        {
+          "case": "resume-control-driver-joined-before-destination-release",
+          "status": "PASS"
+        }
+      ]
+    },
+    "transition": {
+      "before": {
+        "state": "paused",
+        "revision": "7"
+      },
+      "after": {
+        "state": "queued",
+        "revision": "8"
+      }
+    },
+    "unchanged_rows_and_xmin": [
+      "export_jobs",
+      "export_execution_units",
+      "artifacts",
+      "artifact_files",
+      "snapshot_leases",
+      "archive_snapshot_pins",
+      "retention_claims"
+    ],
+    "receipts": "Original detail/common-command/audit rows and xmin unchanged; exactly one additional row in each ledger; independent SHA256 matches new command digest",
+    "sql_boundary": "Original unreceipted refusal and all11 SQL receipt cases repeat PASS; original session deleted before actual Rust fresh login",
+    "terminal": {
+      "active_control": 0,
+      "backends": 0,
+      "forbidden_extra_grants": 0,
+      "command_count": 2,
+      "audit_count": 2
+    }
+  },
+  "review": {
+    "root": "Verified26payloads,1218current/1110seed Git file hashes, both fresh ELF identities, command digest and666prior container lifecycle/mount/network/restart records. Actual application-role prerequisite denial precedes granting receipt SELECT/INSERT.",
+    "independent_ai": "Read-only AI capture review independently verified26payloads/tar,1218current/1110seed Git files, both fresh ELF, both command digests and complete observed rows/xmin. Same new transaction binds job/detail/common-command/audit;666prior resource records preserved. No concrete discrepancy; no SSH or test execution."
+  },
+  "cleanup": {
+    "state": "stopped-retained",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-016dd6f",
+    "owner": "f975651d0a24e3daa7405c1ce1668251",
+    "all_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "unrelated_running": 8,
+    "free_before": 134338449408,
+    "free_after": 130631946240
+  },
+  "remaining": [
+    "Installed HTTP/client/UI resume consumer",
+    "Session expiry and actor/grant/policy/CAS lock interleavings",
+    "Unknown COMMIT on both sides, cancellation and held-driver destination custody",
+    "Actual same-unit signed output after permission restoration",
+    "Migration incompatible-row refusal through actual Rust migrator",
+    "No capacity, hosted CI, arm64 or release qualification",
+    "Original pin scheduling TTL was still positive (about27seconds); already-expired scheduling lease NOT_RUN. Command/audit comparison covers only job.export.resume."
+  ]
+}
