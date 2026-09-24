@@ -365,8 +365,13 @@ outstanding, including across session/component recreation. Browser/device data 
 is outside this local recovery guarantee; PostgreSQL remains the job/receipt
 authority. This boundary follows [IndexedDB3](https://www.w3.org/TR/IndexedDB-3/)
 with native store evidence on Chromium 153.0.8010.12, Firefox 155.0 and WebKit 26.6
-on Linux amd64. The installed resume UI is currently exercised on Chromium/root;
-other engine/mount, device and accessibility journeys remain required.
+on Linux amd64. The installed resume UI has scoped recovery evidence on Chromium,
+Firefox and WebKit at both `/` and `/control/`: the
+[remaining engine/mount matrix](../implementation/evidence/p09-resume-browser-matrix-native-20260924.json)
+extends the original Chromium/root journey on unchanged product code. Device
+power loss and full accessibility remain unqualified; the
+[WebKit keyboard diagnostic](../implementation/evidence/p09-skip-link-trace-incomplete-20260924.json)
+retains its separate incomplete outcome.
 
 Reload/sign-in restores saved metadata without automatically sending a command.
 An explicit retry uses exactly its original body and key, even after current

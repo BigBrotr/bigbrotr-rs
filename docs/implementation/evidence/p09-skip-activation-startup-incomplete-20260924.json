@@ -1,0 +1,237 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "date": "2026-09-24",
+  "status": "INCOMPLETE",
+  "tasks": [
+    "P09-T09 Step 2",
+    "P08-T03 Step 3"
+  ],
+  "source": "67e4badf8e62ba5b3d185514b9880515bd19d52a",
+  "tree": "9ba411f5ee955112268979cf41a030d95012debc",
+  "runtime_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+  "scope": "Native WebKit/root activation diagnostic did not reach its first host command or retain a focus trace. Host deadline expired; actual pending browser API stage was not saved.",
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-67e4bad-webkit-root/capture",
+    "files": 78,
+    "sha256": "d87f74c1a315ccf2615b11ef12daf06e7682cfd2b3243e99efa2f89cf95c0abe",
+    "source": "67e4badf8e62ba5b3d185514b9880515bd19d52a",
+    "tree": "9ba411f5ee955112268979cf41a030d95012debc",
+    "source_files": 1254
+  },
+  "review": {
+    "status": "VERIFIED_PRE_COMMAND_TIMEOUT",
+    "source": "67e4badf8e62ba5b3d185514b9880515bd19d52a",
+    "runtime_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+    "counts": {
+      "out/build/source-manifest.json": 1254,
+      "artifact-source-manifest.json": 1110,
+      "runtime-source-manifest.json": 1246
+    },
+    "payloads": 78,
+    "free_before": 122078158848,
+    "free_after": 121505669120,
+    "preexisting": 728,
+    "artifacts": {
+      "bigbrotr": "a3bb9bd6f7b3a7e6140c72f133401c65571e401b6e1eaec424e520b668b2e96c",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "browser_commands": 0,
+    "trace_retained": false,
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "process_observation_sha256": "c3eb79809b62ee118e603a79f9a3cc1620b4ec49ac38c02b9db93e755da95461",
+    "bundles": {
+      "root": {
+        "manifest_sha256": "28957b5ed66c2e9daee4fcb84ef4c6a327c982ec3d1d7e1b8885609c6d03f0af",
+        "files": 13,
+        "bytes": 170717
+      },
+      "control": {
+        "manifest_sha256": "2028aefd5984be7f618c5ae2e18d18b1115676b48abaa443fd7c0476464c424d",
+        "files": 13,
+        "bytes": 170751
+      }
+    }
+  },
+  "environment": {
+    "platform": "Tux native Linux amd64",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "webkit_store_version": "26.6",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4"
+  },
+  "observations": {
+    "host_failure": {
+      "kind": "AssertionError",
+      "frames": [
+        {
+          "file": "lab.py",
+          "line": 328,
+          "function": "<module>"
+        },
+        {
+          "file": "resume_browser_cases.py",
+          "line": 62,
+          "function": "run"
+        }
+      ]
+    },
+    "browser_commands": 0,
+    "browser_report": "NOT_RETAINED",
+    "skip_trace": "NOT_RETAINED",
+    "frontend": {
+      "collected": 8,
+      "executed": 8,
+      "failed": 0,
+      "not_run": 0
+    },
+    "native_store": {
+      "engine": "webkit",
+      "cases": 5,
+      "status": "PASS"
+    },
+    "prepared": {
+      "tables": 12,
+      "job_state": "paused",
+      "job_revision": 7,
+      "management_audit_rows": 12
+    },
+    "process_snapshot": {
+      "path": "browser-startup-process-observation.json",
+      "sha256": "c3eb79809b62ee118e603a79f9a3cc1620b4ec49ac38c02b9db93e755da95461",
+      "observed_at": "2026-09-24T19:54:26.261313+00:00",
+      "timing": "During cleanup, after PostgreSQL and Rust wrapper had stopped; not a retained pre-deadline stage trace.",
+      "processes": [
+        {
+          "pid": 339163,
+          "comm": "docker-init",
+          "status": {
+            "State": "\tS (sleeping)",
+            "PPid": "\t339134",
+            "Threads": "\t1",
+            "VmRSS": "\t     696 kB",
+            "VmSize": "\t    1044 kB",
+            "voluntary_ctxt_switches": "\t177",
+            "nonvoluntary_ctxt_switches": "\t2"
+          },
+          "wchan": "do_sigtimedwait.isra.0"
+        },
+        {
+          "pid": 339175,
+          "comm": "node-MainThread",
+          "status": {
+            "State": "\tS (sleeping)",
+            "PPid": "\t339163",
+            "Threads": "\t11",
+            "VmRSS": "\t  120200 kB",
+            "VmSize": "\t 1574184 kB",
+            "voluntary_ctxt_switches": "\t86",
+            "nonvoluntary_ctxt_switches": "\t6"
+          },
+          "wchan": "do_epoll_wait"
+        },
+        {
+          "pid": 339346,
+          "comm": "bash",
+          "status": {
+            "State": "\tS (sleeping)",
+            "PPid": "\t339175",
+            "Threads": "\t1",
+            "VmRSS": "\t    3656 kB",
+            "VmSize": "\t    4884 kB",
+            "voluntary_ctxt_switches": "\t9",
+            "nonvoluntary_ctxt_switches": "\t0"
+          },
+          "wchan": "do_wait"
+        },
+        {
+          "pid": 339366,
+          "comm": "MiniBrowser",
+          "status": {
+            "State": "\tS (sleeping)",
+            "PPid": "\t339346",
+            "Threads": "\t1",
+            "VmRSS": "\t   46516 kB",
+            "VmSize": "\t  280836 kB",
+            "voluntary_ctxt_switches": "\t259",
+            "nonvoluntary_ctxt_switches": "\t2"
+          },
+          "wchan": "do_wait"
+        },
+        {
+          "pid": 339370,
+          "comm": "gst-plugin-scan",
+          "status": {
+            "State": "\tR (running)",
+            "PPid": "\t339366",
+            "Threads": "\t5",
+            "VmRSS": "\t  109500 kB",
+            "VmSize": "\t  592612 kB",
+            "voluntary_ctxt_switches": "\t14",
+            "nonvoluntary_ctxt_switches": "\t1558"
+          },
+          "wchan": "0"
+        }
+      ],
+      "limits": {
+        "Memory": 6442450944,
+        "MemorySwap": 6442450944,
+        "NanoCpus": 2000000000,
+        "PidsLimit": 512
+      }
+    }
+  },
+  "cleanup": {
+    "state": "stopped-retained",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-67e4bad-webkit-root",
+    "owner": "8c866dedd03e4cb119e40f5b08fc2c02",
+    "network": "removed after owner/no-endpoint audit",
+    "exit_codes": {
+      "frontend": 0,
+      "resume-store-webkit": 0,
+      "postgres": 137,
+      "rust-visibility": 143,
+      "resume-webkit-root": 137
+    },
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "prior_containers": 728,
+    "unrelated_running": 8,
+    "free_before": 122078158848,
+    "free_after": 121505669120
+  },
+  "limitations": [
+    "No focus, padding, installed recovery or accessibility result was produced. The original ba5 failure and the separately qualified188 resume matrix retain their outcomes.",
+    "The retained process snapshot shows MiniBrowser waiting with its gst-plugin-scan child running, but is from cleanup. There is no atomic stage/report from this browser attempt, so attributing the exact original wait solely to plugin scanning would overstate the evidence.",
+    "No actual terminal twelve-ledger/session snapshot exists for this early host timeout. Only the prepared state and independent final zero application-backend counts were captured; no unchanged-rows claim.",
+    "Container exits137/143 establish failure cleanup after owner checks, not a successful Control release. No OOM recorded, all five owned PIDs zero and network removed.",
+    "No new Rust build or native engine qualification; unchanged product inputs permit exact73e ELF reuse. The five store cases passed in a separate preceding WebKit process.",
+    "Native Linux amd64 research is not hosted CI, a packaged release, Safari/iOS behavior or Linux arm64 qualification."
+  ],
+  "next_action": "Give browser launch an explicit30s deadline within the150s host allowance and atomically save initial/stage/failure reports before teardown. Record safe bounded pre-page launch diagnostics. Retain host PID/container audits because a rejected launch may have started children without returning a browser handle. Run the same discriminating fixture in a fresh isolated lab without disabling plugins or automatically retrying failures.",
+  "independent_review": "Root recomputed all78 payloads, three complete Git source manifests, product-input equality, both ELF/bundles and retained resource observations. Read-only AI independently checked all78 payloads, the two diagnostic Git sources and owned terminal evidence. No product tests or SSH by that reviewer.",
+  "fixture_followup": {
+    "playwright": "1.63.0",
+    "core_bundle_sha256": "549070af3acabb3efcc4f55bfe6210f9f7c2fcf633cf7eaa59bfe60719969171",
+    "default_launch_timeout_ms": 180000,
+    "host_deadline_ms": 150000,
+    "selected_explicit_launch_timeout_ms": 30000,
+    "source": "https://github.com/microsoft/playwright/blob/v1.63.0/packages/playwright-core/src/client/timeoutSettings.ts",
+    "status": "Prepared locally; native validation NOT_RUN",
+    "review": "Fixed unhandled GET waiter with Promise.all, and defer aggregate PASS until available client handles close. A launch timeout does not independently prove child process termination."
+  }
+}

@@ -221,6 +221,10 @@ Check job button, while controlled Job ID starts reach the visible skip link.
 All trial outcomes remain recorded. Delayed recovery, button-specific capture
 effects and pointer/keyboard differences require a discriminating probe before
 changing CSS or attributing an engine defect.
+The [next native attempt](evidence/p09-skip-activation-startup-incomplete-20260924.json)
+expired before its first browser command and retained no focus trace. Its process
+snapshot is from cleanup; the next fixture must save its stage and bound launch
+inside the host deadline before this comparison can be evaluated.
 
 - [ ] **Step 3:** implement typed queries/saved private views plus explicit export, storage/headroom and maintenance pages. Show measured rates/windows and unknown forecast, no unmeasured capacity promise. Explain current/historical policy and full/projection differences before download.
 

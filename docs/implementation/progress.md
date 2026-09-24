@@ -23,34 +23,47 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Verified HEAD/origin/main 209a34e6467894a87700382bbfec7607a95711e5, clean after
-private evidence push. Root now owns only the next diagnostic in skip_trace.mjs,
-its resume_browser.mjs caller and this checkpoint. No product/CSS/dependency
-change. The fresh Tux census confirms no active BigBrotr lab, 728 containers,
-eight unrelated running workloads and more than 122 GB free; ba5 containers and
-orchestrator remain stopped. Prior transfer-only worktree was removed.
+HEAD 67e4badf8e62ba5b3d185514b9880515bd19d52a, tree
+9ba411f5ee955112268979cf41a030d95012debc, clean at Git transfer. Origin/main is
+209a34e6467894a87700382bbfec7607a95711e5; current candidate is unpublished.
+Root owns the startup report, inventory/checkpoint, private-contract matrix
+correction and resume_browser.mjs deadline/evidence changes. No product change.
 
-Current bounded probe: first pointer lookup before any screenshot in this reloaded
-document; then pointer lookup with capture; then native Job ID → Tab → Check job
-→ Enter with no refocus after the actual GET. Preserve each eight-key outcome and
-record a separate passive 500 ms plus one diagnostic key before any refocus on
-failure. If that first pointer path fails while keyboard activation passes, add
-one actual pointer lookup at a measured button point outside every text rectangle.
-The DOM hit test must identify the button; this does not expose WebKit internals.
-Retain the two existing controlled input starts. Trace only allowlisted
-focus, button/text-node identities, disabled mutations and later-task cancellation
-state, with bounded queues and atomic observations; no input values. No causal
-engine/CSS claim. Local JavaScript syntax/diff/artifact checks pass. Read-only
-review confirms the corrected GET/activation Promise collection and finds no
-other concrete blocker. Only the first trial precedes every screenshot; later
-trials share focus history. Mutation observations record callback state, not an
-exact disable duration. Native execution is NOT_RUN. Next: commit a clean
-candidate and run one fresh WebKit/root pair using the already qualified 73e ELF. The wrapper
-will recheck source, artifact inputs, mounts/processes and headroom before use.
+[The activation probe attempt](evidence/p09-skip-activation-startup-incomplete-20260924.json)
+is stopped-retained and INCOMPLETE at export-runtime-67e4bad-webkit-root,
+owner 8c866dedd03e4cb119e40f5b08fc2c02. The host deadline expired before the first
+browser command; no browser report or focus trace was retained. Root checked all
+78 payloads, 1254/1246/1110 Git files, exact ELF/bundles and resource preservation;
+read-only AI separately checked all payloads and the diagnostic sources. Five
+native store cases passed in the preceding separate WebKit process. All five
+owned containers PID0/noOOM, network removed, both databases zero application
+backends, 728 prior/eight unrelated running preserved. Free bytes
+122078158848 → 121505669120 before capture; no new Rust compiler caches.
+No terminal twelve-ledger/session snapshot exists for this early timeout.
+
+The retained process snapshot shows MiniBrowser waiting and its gst-plugin-scan
+child running, but was taken during cleanup after PG/runner exit. It does not
+prove the original pending API stage or a GStreamer defect. Preserve that limit.
+Playwright1.63.0 coreBundle actually defaults launch to180s, exceeding the150s
+host window. The next fixture uses an explicit30s launch bound and atomic initial,
+launch/context/page/step/failure reports before teardown. Only bounded pre-page
+launch error text is retained; later errors stay redacted. PASS is assigned only
+after the journey and available client handles finish. A rejected launch can
+leave children without a returned handle; only the host owner/PID audit proves
+native exit. No disabled plugins, added automatic retries or relaxed assertions.
+
+Next: review/check the final collection fix, commit clean Git, then run one fresh
+WebKit/root diagnostic. Preserve the original eight-key outcomes; add passive
+500ms plus one separate key before refocusing. First pointer lookup precedes
+every screenshot; keyboard Enter uses the same GET with no post-response refocus.
+Only observed pointer/keyboard divergence enables the measured padding trial.
+Other trials share document/focus history; mutation callbacks do not establish
+exact disable duration. No product/CSS change is justified by current evidence.
+Prior ba5 and the separately qualified188 matrix retain their outcomes below.
 
 [Native WebKit/root trace](evidence/p09-skip-link-trace-incomplete-20260924.json)
 is stopped-retained at export-runtime-ba5beff-webkit-root,
-owner0cbc4054ff6c8ea35ceb06d20e4846e8. No active lab. Root verified96payloads,
+owner0cbc4054ff6c8ea35ceb06d20e4846e8. Root verified96payloads,
 1253/1246/1110Git files, exact73e ELF/bundles and actual terminal12ledgers/session
 idle preservation. Capturetar94c9a82f4bb0cb12c7e965996d9a3274291fe1c1c8d2bc61cc32b288db7f7f58.
 All five owned containers PID0/noOOM, network removed, bothDB0,723prior/eight

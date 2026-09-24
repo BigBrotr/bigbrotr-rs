@@ -14,9 +14,14 @@ assert.ok(['chromium', 'firefox', 'webkit'].includes(engine));
 assert.ok(['root', 'control'].includes(mount));
 const url = origin + (mount === 'root' ? '/' : '/control/');
 const report = { format: 'bigbrotr-resume-browser/1', status: 'INCOMPLETE', engine, mount, cases: [], requests: [], responses: [] };
-let browser, context, page, stage = 'launch', sequence = 0;
+let browser, context, page, stage = 'launch', sequence = 0, journeyComplete = false;
 const errors = [];
 const headerReads = [];
+async function save() {
+  report.stage = stage;
+  await writeFile(home + '/browser-report.tmp', JSON.stringify(report, null, 2) + '\n', { mode: 0o600 });
+  await rename(home + '/browser-report.tmp', home + '/browser-report.json');
+}
 async function command(name, fields = {}) {
   const n = ++sequence;
   await writeFile(`${home}/command-${n}.tmp`, JSON.stringify({ name, ...fields }), { flag: 'wx', mode: 0o600 });
@@ -29,8 +34,9 @@ async function command(name, fields = {}) {
   }
 }
 async function step(name, body) {
-  stage = name; const started = performance.now(); await body();
+  stage = name; await save(); const started = performance.now(); await body();
   report.cases.push({ name, status: 'PASS', milliseconds: performance.now() - started });
+  await save();
 }
 function observe(p) {
   p.on('pageerror', () => errors.push('pageerror'));
@@ -85,8 +91,13 @@ async function retry() {
   await expect(page.getByRole('button', { name: 'Forget resolved request', exact: true })).toBeEnabled();
 }
 try {
-  browser = await ({ chromium, firefox, webkit })[engine].launch({ headless: true }); report.version = browser.version();
+  // Leave time for failure evidence and teardown inside the host's 150 s bound.
+  // The selected Playwright default launch timeout is longer than that bound.
+  report.launchTimeoutMs = 30000; await save();
+  browser = await ({ chromium, firefox, webkit })[engine].launch({ headless: true, timeout: report.launchTimeoutMs });
+  report.version = browser.version(); stage = 'context'; await save();
   context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  stage = 'page'; await save();
   page = await context.newPage(); observe(page);
   await step('installed-bundle-session-and-paused-job', async () => {
     const response = await page.goto(url); assert.equal(response.status(), 200);
@@ -187,13 +198,27 @@ try {
   });
   await Promise.all(headerReads);
   assert.equal(resumes().length, 4); assert.deepEqual(errors, []); assert.equal(report.overflow, undefined);
-  assert.ok(report.responses.every(r => r.noStore && !r.resumeSetCookie)); report.status = 'PASS';
+  assert.ok(report.responses.every(r => r.noStore && !r.resumeSetCookie)); journeyComplete = true;
 } catch (error) {
   report.status = 'FAIL'; report.failure = { stage, kind: error?.constructor?.name ?? 'UnknownError' };
+  if (stage === 'launch') {
+    // Before any page or credential exists, the launch error contains only
+    // executable/process diagnostics. Later HTTP/UI errors remain redacted.
+    const detail = String(error?.message ?? '');
+    report.failure.detail = detail.slice(0, 4096);
+    report.failure.detailTruncated = detail.length > 4096;
+  }
   const line = String(error.stack).match(/resume_browser\.mjs:(\d+):(\d+)/); if (line) report.failure.location = { line: +line[1], column: +line[2] };
+  await save();
   if (page) try { await page.screenshot({ path: home + '/failure.png', fullPage: true, timeout: 2000 }); } catch { report.failure.screenshot = 'unavailable'; }
 } finally {
+  // A rejected launch may have started a child without returning a browser
+  // handle. Only the host's owned-container audit establishes native exit.
+  report.browserHandleAcquired = Boolean(browser);
+  report.teardown = 'pending'; await save();
   for (const resource of [context, browser]) if (resource) try { await resource.close(); } catch { report.status = 'FAIL'; report.teardown = 'failed'; }
-  await writeFile(home + '/browser-report.json', JSON.stringify(report, null, 2) + '\n', { flag: 'wx', mode: 0o600 });
+  if (report.teardown === 'pending') report.teardown = 'available-handles-closed';
+  if (journeyComplete && report.teardown === 'available-handles-closed') report.status = 'PASS';
+  await save();
   process.exitCode = report.status === 'PASS' ? 0 : 1;
 }
