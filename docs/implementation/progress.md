@@ -15,15 +15,15 @@ Active P08-T03/T04: standalone signed export and durable job/restart, consuming
 P08-T02 private authority and P06-T01/T02 signed history/pinned-reader work.
 No full P02/P06/P08 task or M1 milestone is complete. No exported JSONL file yet.
 Root is sole writer/integrator; catalog_guard_review is read-only AI reviewing
-COMMIT evidence; review completed with no edits, product tests, SSH or resources. Its first
+the new held-driver custody fixture, with no edits, product tests, SSH or resources. Its first
 implementation-review attempt hit model capacity; retry source review completed.
 
 ## Git and current implementation
 
-Last observed main/HEAD9fae8e4baf008ba49e6079d608ebe5e4ba16952a, origin/main3f5169f.
-One unpublished coherent fixture candidate; earlier checker/evidence work pushed
-normally. Root owns only the pending COMMIT evidence, task/operator documentation,
-inventory and this checkpoint. No unrelated dirty files or rewritten history.
+Last observed main/HEAD and origin/main8c5ef5638607b4db7d0fe242ac10625a7b37f5d9,
+normal push confirmed. Root owns new export_job_custody_client.py and
+export_job_custody_cases.py, the shared HTTP fixture's custody profile and this
+checkpoint. No unrelated dirty files or rewritten history. No new lab started.
 Current product ELF origin remains4e6b5c011c067800f52e67365b2b848b7943d4bc;
 fresh fixture revisions verify exact allowlisted source differences and original
 artifact hashes. No new compilation/Cargo cache when product inputs are unchanged.
@@ -159,7 +159,7 @@ with source/evidence/artifact preservation and fresh process/mount/owner audit.
 
 ## Next bounded action
 
-Commit/push current COMMIT evidence after review. Then discriminate original
+COMMIT evidence committed/pushed8c5ef56. Discriminate original
 LocalDestination Arc custody across actual held Control driver join. Exact
 Cargo-locked tokio-postgres0.7.18 source inspected: Connection retains pending
 responses after Client/response receiver drop and waits until they complete;
@@ -177,8 +177,11 @@ observe catalog backend gone and native child absent while original Control
 socket remains open, with cross-process root flock refusal throughout that
 interval. Positive old backend/pin/job observations remain required after exit.
 An isolated negative source removing only original Arc retention should expose
-root lock availability while driver socket remains. This design is NOT_RUN;
-inspect timing/races and exact ownership before implementing the discriminator.
+root lock availability while driver socket remains. The new fixture remains NOT_RUN on native Linux. It brackets independent flock
+with the same PID/start/actual socket FD inode, requires the exact cancellation
+branch and at least0.5s samples after catalog0, without claiming catalog0 is
+the join entry. Run positive unchanged4e ELF, then isolated original-Arc-removal
+negative with its own compiled artifact; preserve original outcomes and all pins.
 No new master plan. Then actual standalone signed JSONL execution/restart through
 existing P08-T03/T04, followed by all remaining selected tasks.
 
