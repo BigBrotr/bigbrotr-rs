@@ -21,9 +21,10 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEAD1a80a48057a0753377259d2ca10457dfc38f1bbb,
-tree3e7595326b9d52f2214b4d387efcde48cf096fcd; two unpublished candidates ahead
-of origin/mainb36f0b5. Root owns new evidence/checkpoint/inventory only.
+Last observed main/HEAD c1798bcae24628aa0f0a7ecf79f19f0e33c2484d, matching
+origin/main (push and ls-remote verified). Root owns dirty rollback research
+fixture changes only: probe.rs, new rollback.rs, adapter_cases.py, lab.py and
+this checkpoint. Product and applied SQL unchanged; no active experiment.
 0501 remains immutable SHA14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861.
 No active owned experiment or cleanup debt. Eight unrelated containers retained.
 
@@ -54,13 +55,16 @@ audit stopped before mutation on those mounts; refined explicit-ID audit passed.
 No lab, dataset, database, archive, log, artifact, container or volume removed. No product mutation for
 the corrected fixture; native640MiB/envelope1409MiB does not qualify capacity.
 
-Next commit/push reviewed scoped adapter evidence, then exercise the remaining
+Scoped adapter evidence is committed/pushed at c1798bc. Now exercise the remaining
 mid-transaction catalog-capture failure before ordinary Control integration.
 Hold the real artifacts INSERT behind an independently observed PG SHARE table
 lock (ACCESS EXCLUSIVE blocks the earlier read), terminate
 the actual catalog backend, collect completion refusal/rollback and verify the
 same Control session still resolves unchanged running state. Use a source-isolated
-negative control removing ArchiveUnavailable reuse; no applied SQL changes. No scheduler yet. Keep OutputCustody outside
+negative control removing ArchiveUnavailable reuse; no applied SQL changes.
+New --rust-rollback fixture is implemented, Mac example Clippy and structural
+checks pass, native execution NOT_RUN. Independent review of the fixture pending;
+then commit candidate, create isolated negative worktree and run exact Git on Tux. No scheduler yet. Keep OutputCustody outside
 supervise through actual Control driver join; don't repeat destination custody
 bug. External native work must process bounded management commands so revocation,
 logout and later job cancellation do not wait behind blocked I/O. Pending native

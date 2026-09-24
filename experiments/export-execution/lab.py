@@ -9,11 +9,12 @@ import base64, datetime, hashlib, json, os, re, secrets, shutil, subprocess, sys
 from pathlib import Path
 
 revision, tree = sys.argv[1:3]
-adapter = sys.argv[3:] == ["--rust-adapter"]
-assert sys.argv[3:] in ([], ["--rust-adapter"])
+rollback = sys.argv[3:] == ["--rust-rollback"]
+adapter = sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
+assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"])
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
-root = base / 'runs' / (('export-adapter-' if adapter else 'export-execution-') + revision[:7])
+root = base / 'runs' / (('export-rollback-' if rollback else 'export-adapter-' if adapter else 'export-execution-') + revision[:7])
 source, out = root / 'source', root / 'out'
 cache_root = base / 'runs/export-checker-fixed-4e6b5c0'
 cache = cache_root / 'out/build'
@@ -65,7 +66,8 @@ assert sha(source / 'Cargo.lock') == sha(cache / 'source/Cargo.lock')
 owner = secrets.token_hex(16)
 state = dict(source=revision, tree=tree, owner=owner, root=str(root), state='preparing', containers=[],
              rust_image=rust_image, owner_label=label, postgres_image=pg_image,
-             started_at=datetime.datetime.now(datetime.timezone.utc).isoformat())
+             started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+             adapter_profile='rollback' if rollback else 'completion' if adapter else None)
 def save(): write(root / 'resources.json', state)
 save()
 audit = dict(status='INCOMPLETE', source=revision, owner=owner, cases={})

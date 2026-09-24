@@ -1,4 +1,5 @@
 //! Isolated real adapter/native/output fixture, not the installed scheduler.
+mod rollback;
 use bigbrotr::{
     export::{
         destination::LocalDestination,
@@ -129,7 +130,7 @@ async fn main() {
     let mode = std::env::args().nth(1).unwrap();
     assert!(matches!(
         mode.as_str(),
-        "migrate" | "denied" | "run" | "resolve"
+        "migrate" | "denied" | "run" | "resolve" | "rollback"
     ));
     if mode == "migrate" {
         let (mut admin, driver) = connection("bbpub_control_normal", "postgres").await;
@@ -258,7 +259,12 @@ async fn main() {
         .await
         .unwrap();
     let (mut manager, connection) = connection("bbpub_normal", "postgres").await;
-    let catalog_driver = tokio::spawn(coordinator.retain_connection(connection).unwrap());
+    let mut catalog_driver = tokio::spawn(coordinator.retain_connection(connection).unwrap());
+    let catalog_pid: i32 = manager
+        .query_one("SELECT pg_backend_pid()", &[])
+        .await
+        .unwrap()
+        .get(0);
     catalog_guard::inspect_reader(&mut manager, &identity, "bigbrotr_receipt_reader")
         .await
         .unwrap();
@@ -407,6 +413,31 @@ async fn main() {
             .unwrap()
             .unwrap();
         assert_eq!(old_export_pin.state(), ExportState::Running);
+        if mode == "rollback" {
+            rollback::exercise(
+                &mut owner,
+                &written,
+                &capture,
+                pin.lease_id,
+                catalog_pid,
+                &mut catalog_driver,
+            )
+            .await;
+            drop(written);
+            owner
+                .release_archive_pin(&pin, &Cell::new(false))
+                .await
+                .unwrap();
+            assert!(capture.finish().await.is_err());
+            drop(manager);
+            // exercise collected the actual catalog driver before unlocking.
+            owner.release().await.unwrap();
+            driver.await.unwrap().unwrap();
+            drop(custodies);
+            drop(destination);
+            case("catalog-loss-rollback-reader-release-and-control-driver-join");
+            return;
+        }
         let complete = owner
             .complete_export(&written, &capture, pin.lease_id, &Cell::new(false))
             .await
