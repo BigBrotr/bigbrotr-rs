@@ -20560,5 +20560,97 @@
       "host_tcp_wmem_preserved": true,
       "free_bytes": 161789878272
     }
+  },
+  "implementation_runtime_responsive_red_20260924": {
+    "resources": {
+      "source": "ad0f55bda767a8df944dc56019b3ee6e5efcd049",
+      "tree": "41568391d30ca0847b8b3cb47ca49827543a5f7c",
+      "owner": "cadaebedec1096c6dd856a80b44b11d0",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-responsive-ad0f55b",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "a87b4e5d92a8ede1263cf4c93a123c28b0d5026574894ebc1a74c28ef02406fd"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "44500ff1ef78859102cbc93b2a719406343deb58a7ccca22bf02bfa444e18528"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T10:21:43.261656+00:00",
+      "runtime_profile": "responsive",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "bf66e7d9873e1475f0272e5040d94b766535357e",
+      "network_id": "e7001fbbb810353351d0795e26cd5b9e44116ea717f08e941b795fb97ca451a6",
+      "postgres_id": "a87b4e5d92a8ede1263cf4c93a123c28b0d5026574894ebc1a74c28ef02406fd",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "44500ff1ef78859102cbc93b2a719406343deb58a7ccca22bf02bfa444e18528",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "status": "EXPECTED_RED_CAPTURED",
+    "local_capture": ".research/implementation/export-execution/attempt-ad0f55b/capture",
+    "capture": {
+      "files": 27,
+      "sha256": "100fca6afd4b24a9f877c93929d239f818408c6db66f26ca8fcbcf924f6a97d1",
+      "source": "ad0f55bda767a8df944dc56019b3ee6e5efcd049",
+      "tree": "41568391d30ca0847b8b3cb47ca49827543a5f7c",
+      "source_files": 1154
+    },
+    "observation": "Original result remains INCOMPLETE. Same bf66 installed subject: GET /me times out while actual destination openat and original request remain pending. Signal/fail-stop and exact ledger/Parquet/terminal-backend oracles passed before final response assertion. No current fix qualified.",
+    "response": {
+      "expected_status": 200,
+      "timeout_seconds": 0.75,
+      "error": "TimeoutError",
+      "elapsed_ms": 751.098,
+      "worker_still_blocked": true,
+      "original_request_pending": true
+    },
+    "signal": {
+      "monotonic": 3627576.610974145,
+      "wall": 1790245322.4809716,
+      "request_deadline_margin_seconds": 1.5045414050109684,
+      "request_pending": true,
+      "delivery_observed_margin_seconds": 1.4942796011455357
+    },
+    "terminal": {
+      "status": "INCOMPLETE",
+      "source": "ad0f55bda767a8df944dc56019b3ee6e5efcd049",
+      "owner": "cadaebedec1096c6dd856a80b44b11d0",
+      "cases": {},
+      "result": "INCOMPLETE",
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "failure": {
+        "kind": "AssertionError",
+        "frames": [
+          {
+            "file": "lab.py",
+            "line": 280,
+            "function": "<module>"
+          }
+        ]
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 586,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "original_source_unchanged": true,
+      "host_tcp_wmem_preserved": true,
+      "free_bytes": 161350119424
+    }
   }
 }

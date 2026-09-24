@@ -604,7 +604,7 @@ async fn supervise(
                         let mut supervisor = native_grants::Supervisor {
                             owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
                             refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
-                            management: management.as_ref().expect("management source"), stopping: false,
+                            management: management.as_mut().expect("management source"), stopping: false,
                         };
                         history::execute(work,accepted.clone(),shared_budget.clone(),archive.coordinator.as_ref(),&mut supervisor).await?;
                         if supervisor.stopping { return Ok(()); }
@@ -614,7 +614,7 @@ async fn supervise(
                         let mut supervisor = native_grants::Supervisor {
                             owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
                             refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
-                            management: management.as_ref().expect("management source"), stopping: false,
+                            management: management.as_mut().expect("management source"), stopping: false,
                         };
                         let response = native_grants::execute(work,accepted.clone(),shared_budget.clone(),
                             archive.coordinator.as_ref().expect("selected local reader"),&mut supervisor).await?;

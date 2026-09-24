@@ -48,7 +48,7 @@ pub(super) struct Supervisor<'a> {
     pub snapshot: PolicySnapshot,
     pub root: &'a Resolved,
     pub stop: &'a mut Stop,
-    pub management: &'a management::Management,
+    pub management: &'a mut management::Management,
     pub stopping: bool,
 }
 pub(super) enum OnShutdown {
@@ -75,6 +75,17 @@ impl Supervisor<'_> {
         deadline: Instant,
         future: impl Future<Output = T>,
         on_shutdown: OnShutdown,
+    ) -> Result<Option<T>> {
+        self.external_monitored(deadline, future, on_shutdown, || {})
+            .await
+    }
+
+    async fn external_monitored<T>(
+        &mut self,
+        deadline: Instant,
+        future: impl Future<Output = T>,
+        on_shutdown: OnShutdown,
+        monitor: impl Fn(),
     ) -> Result<Option<T>> {
         if self.stopping && matches!(on_shutdown, OnShutdown::Cancel) {
             return Ok(None);
@@ -113,6 +124,26 @@ impl Supervisor<'_> {
                     // JoinHandle must never be polled twice after expiry.
                     return Ok(Some(result));
                 },
+                work = self.management.next(), if !self.stopping && matches!(on_shutdown, OnShutdown::Cancel) => {
+                    // The ready native result wins the queue above, so HTTP
+                    // traffic cannot postpone collecting a completed worker.
+                    let maximum = self.maximum()?.min(deadline.saturating_duration_since(Instant::now()));
+                    let execution = tokio::select! {
+                        biased;
+                        _ = self.stop.requested() => return Err((4,"private operation cancelled during native work; Control outcome unresolved".into())),
+                        result = monitored(self.management.execute(work,self.owner,maximum,false,None), &monitor) => result?,
+                    };
+                    let response = match execution {
+                        management::Execution::Complete(response) => response,
+                        // One native consumer owns the capture barrier/budget.
+                        // Historical retries and revocation can use Control,
+                        // but new archive work must retry after this consumer.
+                        management::Execution::History(work) => Some(work.refuse(SessionError::Capacity)),
+                        management::Execution::Archive(work) => Some(work.refuse(SessionError::Capacity)),
+                    };
+                    self.lease.check_delivery(self.lease.known_epoch()).map_err(|e| (4,e.to_string()))?;
+                    if let Some(response) = response { response.deliver(); }
+                },
             }
         }
     }
@@ -143,7 +174,7 @@ impl Supervisor<'_> {
         let worker_cancel = cancel.clone();
         let mut worker = tokio::task::spawn_blocking(move || job(&worker_cancel));
         let observation = self
-            .external(
+            .external_monitored(
                 deadline,
                 async {
                     loop {
@@ -158,6 +189,13 @@ impl Supervisor<'_> {
                     }
                 },
                 OnShutdown::Cancel,
+                || {
+                    // Management SQL still has to be collected, but cannot
+                    // suspend disconnect/action-expiry cancellation of a worker.
+                    if !permitted() || Instant::now() >= deadline {
+                        cancel.store(true, Ordering::Release);
+                    }
+                },
             )
             .await;
         cancel.store(true, Ordering::Release);
@@ -458,4 +496,52 @@ pub(super) async fn execute(
     postgres_command::join(driver).await;
     drop(prepared.manager_grant);
     outcome
+}
+
+/// Keep a native cancellation observer live while collecting one Control call.
+async fn monitored<T>(future: impl Future<Output = T>, monitor: &impl Fn()) -> T {
+    tokio::pin!(future);
+    loop {
+        monitor();
+        tokio::select! {
+            biased;
+            result = &mut future => return result,
+            _ = tokio::time::sleep(Duration::from_millis(25)) => {},
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn native_cancellation_remains_observed_while_control_waits() {
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_time()
+            .build()
+            .unwrap();
+        runtime.block_on(async {
+            let allowed = Cell::new(true);
+            let cancelled = Cell::new(false);
+            let control = async {
+                allowed.set(false);
+                // A pending real timer gives the monitor multiple opportunities;
+                // collection continues to the original Control result.
+                tokio::time::sleep(Duration::from_millis(100)).await;
+                assert!(
+                    cancelled.get(),
+                    "native cancellation observer was suspended"
+                );
+                42
+            };
+            let result = monitored(control, &|| {
+                if !allowed.get() {
+                    cancelled.set(true);
+                }
+            })
+            .await;
+            assert_eq!(result, 42);
+        });
+    }
 }

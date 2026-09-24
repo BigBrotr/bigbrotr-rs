@@ -38,6 +38,7 @@ if runtime:
     identity['scope']='Current installed executable and worker under actual blocked filesystem supervision'
     assert execute([
         ('installed-build',[sys.executable,__file__,'--build-runtime']),
+        ('management-tests',['cargo','test','--locked','--offline','--release','-p','bigbrotr','--bin','bigbrotr']),
         ('clippy',['cargo','clippy','--locked','--offline','--release','-p','bigbrotr','--bin','bigbrotr','--','-D','warnings']),
     ],checks,SOURCE,env,identity,1800)['status']=='PASS'
     worker=json.loads(Path('/out/runtime-worker.json').read_text())

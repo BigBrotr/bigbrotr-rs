@@ -21,6 +21,27 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
+The corrected fixture ad0f55bda767a8df944dc56019b3ee6e5efcd049, using identical
+bf66 installed ELF, produced the expected native RED: /me TimeoutError751.098ms,
+worker still held and original request pending. Actual SIGTERM margin1.5045s;
+exit4 after4043.045ms, parent/worker absent and root lock released only on exit.
+Exact eight acceptance ledgers and eight Parquet files unchanged, new jobs/pins0,
+active-stateControl1 deliberately retained, both DBbackends0. Original INCOMPLETE
+retained; capture27files/1154Git sources verified at attempt-ad0f55b, tarSHA
+100fca6afd4b24a9f877c93929d239f818408c6db66f26ca8fcbcf924f6a97d1.
+Lab ownercadaebedec1096c6dd856a80b44b11d0 stopped-retained, no cleanup errors;
+586prior containers/eight unrelated running preserved; free161350119424bytes.
+
+Root now implements bounded management servicing in native Supervisor.external:
+ready native completion wins the queue; each Control call retains its finite
+budget and fatal cancellation semantics; no nested History/Archive admission and
+no management command in cleanup Finish. The cancellation observer still runs
+while SQL waits; never repoll an already consumed native JoinHandle. New actual
+timer regression failed against future.await stub then passed the implementation.
+Mac42 binary tests and Clippy pass; logs under export-execution/monitor-{red,green},
+management-{mac,clippy-mac}. Native fixed executable qualification is next; no PASS
+claim for installed responsiveness yet. No scheduler or execution completion.
+
 Candidate bf66e7d9873e1475f0272e5040d94b766535357e was transferred exactly and
 completed fresh installed parent/worker build plus Clippy. Practical cases NOT_RUN:
 fixture copy2 failed on the seed parent's preserved0500 mode. Original INCOMPLETE
