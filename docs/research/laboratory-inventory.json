@@ -20105,5 +20105,48 @@
       "capture_sha256": "4d7bb82526d6341c28eb4055f6a4bde8c5cda5bb5992663eac55bba8aa18efb0"
     },
     "observation": "Native seed/readback succeeded with actual original4e artifacts and frozen signed fixtures; no claim that those old artifacts implement501. Both owned containers stopped/PID0/noOOM, network removed and570priorrecords/eight unrelated running preserved. Original source, PG/archive state, artifacts and failed logs retained."
+  },
+  "implementation_export_inventory_preflight_20260924": {
+    "native": {
+      "source": "54d515d64f3b9848a50bc56bf96ce0d65bdabb1e",
+      "tree": "6294eb17ce8572ae0e416c6f5595b2485e28ca75",
+      "owner": "61c5670dde58717b23b067d4e32b5555",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-execution-54d515d",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "3d56581feb7fe8a696d734b18033cbae3f972c9f5d5d75c69162bc7c52c89243"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "a50b468c07fd63115f75b1acc20757b6828545dc8b2b5b92fb9a3a5a3ca5684a"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T08:55:56.153410+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "49c3861fe2945089587b11e345a7b512ad2a999c6583d541fae092a94b3dcf68",
+      "postgres_id": "3d56581feb7fe8a696d734b18033cbae3f972c9f5d5d75c69162bc7c52c89243",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "a50b468c07fd63115f75b1acc20757b6828545dc8b2b5b92fb9a3a5a3ca5684a",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "local_root": ".research/implementation/export-execution/attempt-54d515d",
+    "orchestrator": {
+      "pid": 3811035,
+      "start_ticks": "362240979",
+      "source": "54d515d64f3b9848a50bc56bf96ce0d65bdabb1e",
+      "tree": "6294eb17ce8572ae0e416c6f5595b2485e28ca75"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "evidence": "docs/implementation/evidence/p08-export-inventory-preflight-incomplete-20260924.json",
+      "capture_sha256": "5bf691731e243184f148fc1265dd8c29b9689ebb5bc0564adfb6862ee3755f7b"
+    },
+    "observation": "Original sources, failed fixture, PG/archive state and verified original4e artifacts retained. Both containers stopped/PID0/noOOM; owned network removed;572priorrecords/eight unrelated running preserved. No new compiler cache/build; exact terminal SQL state not independently sampled."
   }
 }

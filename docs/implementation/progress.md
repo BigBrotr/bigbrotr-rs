@@ -21,8 +21,8 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEAD90b54b7a320c1eb52e78952afec71f4b9c8d707c,
-tree81be60410c4cdc108d9bc64f1c428f0328b736a9; unpublished candidate one commit ahead
+Last observed main/HEAD54d515d64f3b9848a50bc56bf96ce0d65bdabb1e,
+tree6294eb17ce8572ae0e416c6f5595b2485e28ca75; two unpublished candidates ahead
 of origin/maindfd3129. Root owns fixture-only corrections plus incomplete evidence,
 inventory and checkpoint. Product0501 SQL unchanged after native application.
 Mac catalog22 tests pass (newRED UnknownTarget501 first). Native candidate501
@@ -311,6 +311,17 @@ PGe14dd349 exit137 and runner3497e7ce exit143, bothPID0/noOOM, owned networkremo
 174599081984bytes, concurrent writes possible. No compiler cache/build. Full source,
 original4e seed artifacts, database/archive and failed logs preserved; capture at
 .research/implementation/export-execution/attempt-90b54b7 verified against Git.
+
+Second lab export-execution-54d515d, owner61c5670dde58717b23b067d4e32b5555,
+[INCOMPLETE](evidence/p08-export-inventory-preflight-incomplete-20260924.json):
+new pre501 refusal fixture called a post501 helper and got42883. No501application
+or reservation/completion cases in this attempt. Root removed that premature call;
+original501 bytes unchanged. PG3d56581f/runnera50b468c stopped/PID0/noOOM, network
+removed,572priorrecords/eight unrelated running preserved; no cleanup error.
+Free174213984256bytes, no compiler cache. Full14-file capture and1143 exact Git
+source hashes verified at .research/implementation/export-execution/attempt-54d515d/.
+Native seed/archive/PG state and all failed outputs remain retained; no exact
+terminal SQL state or recovery claim.
 
 Next bounded action: commit reviewed fixture correction and run it in a fresh
 isolated exact-Git lab with the same frozen4e seed producer (not current501Rust

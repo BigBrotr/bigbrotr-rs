@@ -15,7 +15,6 @@ BEGIN
             (extract(epoch FROM clock_timestamp())*1000000)::bigint+120000000,'active',1,pg_backend_pid(),
             (SELECT backend_start FROM pg_stat_activity WHERE pid=pg_backend_pid()));
     SELECT * INTO STRICT j FROM control.jobs WHERE export_job_protocol=1;
-    PERFORM control.require_export_execution_authority(j.job_id);
     UPDATE control.jobs SET state='queued',job_revision=job_revision+1,owner_resource_id=o.resource_id,
         owner_epoch=o.epoch+1,owner_incarnation=decode(repeat('b3',16),'hex') WHERE job_id=j.job_id;
 END $$;
