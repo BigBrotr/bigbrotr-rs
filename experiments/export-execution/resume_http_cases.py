@@ -26,12 +26,15 @@ def main(root):
         value=exchange(name,'resume',job=job,key=key,body=dict(expected_job_revision=revision,expected_config_revision='1',expected_policy_revision=policy),**fields)
         assert value['status']==status, value
         if status in [200,202]:
-            assert value['observation']==dict(format='bigbrotr-export-resume/1',command_key=key,job_id=job,job_revision=str(int(revision)+1),accepted_at_us=value['observation']['accepted_at_us'],created=status==202,execution='unobserved',authority='acceptance-only')
+            stored=json.loads(sql(f"SELECT json_build_object('accepted_at_us',c.accepted_at_us::text,'job_revision',(r.expected_job_revision+1)::text) FROM control.management_commands c JOIN control.export_resume_commands r USING(actor_id,request_key) JOIN control.export_jobs e ON e.job_id=r.job_id AND e.actor_id=r.actor_id AND e.dataset_id=r.dataset_id WHERE r.request_key=decode('{key}','hex') AND r.job_id=decode('{job}','hex')"))
+            assert stored['job_revision']==str(int(revision)+1)
+            assert value['observation']==dict(format='bigbrotr-export-resume/1',command_key=key,job_id=job,job_revision=stored['job_revision'],accepted_at_us=stored['accepted_at_us'],created=status==202,execution='unobserved',authority='acceptance-only')
             assert int(value['observation']['accepted_at_us'])>0
         return value['observation']
     def start(name):
-        current=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/export-execution/resume_http_client.py',name],input_pipe=True)
-        ready=event(current,'ready');result[name+'-ready']=ready;save();return current
+        nonlocal client
+        client=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/export-execution/resume_http_client.py',name],input_pipe=True)
+        ready=event(client,'ready');result[name+'-ready']=ready;save();return client
     def stop(name):
         exchange(name,'stop');assert client.wait(10)==0 and not client.stderr and not client.overflow;client.stop()
     def observe():
@@ -100,6 +103,18 @@ def main(root):
         for table in before.keys()-{'jobs','export_resume_commands','management_commands','management_audit'}:assert before[table]==after[table],table
         for table in ['export_resume_commands','management_commands','management_audit']:
             assert len(before[table])==1 and len(after[table])==2 and before[table][0] in after[table]
+        detail,command_row,audit=[next(v for v in after[t] if v not in before[t]) for t in ['export_resume_commands','management_commands','management_audit']]
+        assert detail['xmin']==command_row['xmin']==audit['xmin']==after['jobs'][0]['xmin']
+        detail,command_row,audit=detail['row'],command_row['row'],audit['row']
+        original=before['export_jobs'][0]['row']
+        assert detail['dataset_id']==original['dataset_id']==command_row['dataset_id']==audit['dataset_id']
+        assert detail['actor_id']==original['actor_id']==command_row['actor_id']==audit['actor_id']
+        assert detail['job_id']=='\\x'+job and detail['request_key']==command_row['request_key']==audit['subject_id']=='\\x'+'f1'*16
+        assert detail['expected_job_revision']==7 and command_row['expected_config_revision']==audit['config_revision']==1 and command_row['policy_revision']==audit['policy_revision']==2
+        assert command_row['audit_id']==audit['audit_id'] and command_row['action']==audit['action']=='job.export.resume' and audit['outcome']=='accepted'
+        assert str(command_row['accepted_at_us'])==str(audit['created_at_us'])==accepted['accepted_at_us']
+        payload=b'bigbrotr/export-resume/1\0'+b''.join(bytes.fromhex(detail[k][2:]) for k in ['dataset_id','actor_id','request_key','job_id'])+b''.join(n.to_bytes(8,'big') for n in [7,1,2])
+        assert command_row['request_digest']=='\\x'+hashlib.sha256(payload).hexdigest()
         result['terminal']=json.loads(sql("SELECT json_build_object('active_control',(SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'),'backends',(SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()),'extra_grants',(SELECT count(*) FROM control.principal_grants WHERE action IN ('roles.control','status.read','principals.manage')))"))
         assert result['terminal']==dict(active_control=0,backends=0,extra_grants=0)
         result['status']='PASS'

@@ -23301,5 +23301,50 @@
     "free_before": 134338449408,
     "free_after": 130631946240,
     "retention": "Preserve original SQL receipts, queued8 state, source/seed identities, both new ELF and useful016dd6f compiler cache for immediate resume HTTP work. No dataset/container/volume retirement in this run."
+  },
+  "implementation_export_resume_http_red_20260924": {
+    "status": "stopped-retained; HTTP prerequisite FAIL, laboratory INCOMPLETE",
+    "resources": {
+      "source": "45a96e7feecd19f3db1f91e2662e11e4674fe0a6",
+      "tree": "088f36d288e4db1f6d297340255723c5d9146dd2",
+      "owner": "41c237c3f07a6985e2b8e5144f6a0b6e",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45a96e7",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "b2b05606cd51488ccaa054df2adf2fdd61265b685598b42d6460dbf57f88e1ec"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "7ce17d8b5b78046e791a5aaf4fab5318516a62927a2bc7daf3e5525c33134145"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T16:09:29.019644+00:00",
+      "runtime_profile": "resume",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "8d57e6f0021dd4ed6ff2978d77b65457e8dc27fce74d5e39e4114d5967451f59",
+      "postgres_id": "b2b05606cd51488ccaa054df2adf2fdd61265b685598b42d6460dbf57f88e1ec",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "7ce17d8b5b78046e791a5aaf4fab5318516a62927a2bc7daf3e5525c33134145",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-http-red-20260924.json",
+    "capture": {
+      "files": 32,
+      "sha256": "afbe40f7c2988d1585d969cdac9cad67635055f4250588975b075c1cae16d2f8",
+      "source": "45a96e7feecd19f3db1f91e2662e11e4674fe0a6",
+      "tree": "088f36d288e4db1f6d297340255723c5d9146dd2",
+      "source_files": 1222
+    },
+    "free_before": 130587975680,
+    "free_after": 126854455296,
+    "retention": "Preserve original failure, SQL state, sources/seed identities and ELF. Cache may be retired after corrected native run qualifies; no resource retirement performed here."
   }
 }

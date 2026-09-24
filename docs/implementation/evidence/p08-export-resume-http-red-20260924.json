@@ -1,0 +1,217 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "FAIL",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3",
+    "P09-T09 Step 2"
+  ],
+  "source": "45a96e7feecd19f3db1f91e2662e11e4674fe0a6",
+  "tree": "088f36d288e4db1f6d297340255723c5d9146dd2",
+  "environment": {
+    "host": "tux",
+    "target": "Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-45a96e7/capture",
+    "files": 32,
+    "sha256": "afbe40f7c2988d1585d969cdac9cad67635055f4250588975b075c1cae16d2f8",
+    "source": "45a96e7feecd19f3db1f91e2662e11e4674fe0a6",
+    "tree": "088f36d288e4db1f6d297340255723c5d9146dd2",
+    "source_files": 1222
+  },
+  "scope": "Actual installed resume HTTP and application-role SQL; native execution disabled to observe exact accepted revision. No resumed artifact output or COMMIT-fault qualification.",
+  "artifacts": {
+    "bigbrotr": "477e00785d87bd24d6812e2b33c55517246532c4e9f9bcd51a75bb02033a5e6e",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "build_checks": [
+    {
+      "name": "installed-build",
+      "command": [
+        "/usr/bin/python3",
+        "/out/build/source/experiments/export-execution/native.py",
+        "--build-runtime"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 61.119484967086464
+    },
+    {
+      "name": "management-tests",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 23.47161216288805
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.8716885480098426
+    }
+  ],
+  "results": {
+    "laboratory": "INCOMPLETE",
+    "observed": {
+      "first-login": {
+        "event": "first-login",
+        "operation": "login",
+        "status": 201
+      },
+      "missing-insert-refused": {
+        "event": "missing-insert-refused",
+        "operation": "resume",
+        "status": 503,
+        "observation": {
+          "error": {
+            "code": "authority_unavailable",
+            "correlation_id": "1b1ca4dcb7a1ba63e82b80a27ac9fb45",
+            "message": "Current authority or dependency unavailable.",
+            "retry_class": "check_state",
+            "status": 503
+          }
+        }
+      },
+      "sessions-still-available": {
+        "event": "sessions-still-available",
+        "operation": "me",
+        "status": 200,
+        "observation": {
+          "authority": "observation-only",
+          "credential_revision": "1",
+          "expires_at_us": "1790295136611993",
+          "format": "bigbrotr-session/1",
+          "grant_revision": "4",
+          "idle_expires_at_us": "1790268136618599",
+          "policy_revision": "2",
+          "principal_id": "10101010101010101010101010101010",
+          "stored_actions": [
+            "audit.read",
+            "budgets.change",
+            "data.read",
+            "policy.change",
+            "principals.manage",
+            "roles.control",
+            "status.read"
+          ]
+        }
+      },
+      "missing-terminal": {
+        "event": "missing-terminal",
+        "operation": "stop",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "current-login": {
+        "event": "current-login",
+        "operation": "login",
+        "status": 201
+      },
+      "old-receipt-after-session-deletion": {
+        "event": "old-receipt-after-session-deletion",
+        "operation": "resume",
+        "status": 503,
+        "observation": {
+          "error": {
+            "code": "authority_unavailable",
+            "correlation_id": "8e061475293e317910e06db9d8d2b849",
+            "message": "Current authority or dependency unavailable.",
+            "retry_class": "check_state",
+            "status": 503
+          }
+        }
+      },
+      "failure-terminal": {
+        "event": "failure-terminal",
+        "operation": "stop",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      }
+    },
+    "failure": "Historical original receipt expected200, observed503 after granting resume INSERT and revoking artifact_files/consumer_frontiers/consumer_frontier_revisions. The startup resume probe incorrectly required those unrelated execution privileges.",
+    "remaining_not_run": "Successful historical HTTP receipts, new HTTP resume acceptance, input/destination/CAS/expiry and post-acceptance/restart observations did not run."
+  },
+  "review": {
+    "root": "Verified32captured payloads,1222current/1110seed Git files, fresh parent/worker ELF and668prior container lifecycle/mount/network/restart records. Actual SQL fixture passes; failure is the first authenticated historical HTTP resume after reduced table privileges.",
+    "independent_ai": "Static AI identified excess probe conditions. Also found the first fixture did not bind accepted_at_us to SQL and lost its Process reference on readiness failure. Both fixture gaps are corrected in the next candidate, not retroactively attributed to this run."
+  },
+  "cleanup": {
+    "state": "stopped-retained",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45a96e7",
+    "owner": "41c237c3f07a6985e2b8e5144f6a0b6e",
+    "all_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "parent_terminals": [
+      {
+        "event": "missing-terminal",
+        "operation": "stop",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      {
+        "event": "failure-terminal",
+        "operation": "stop",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      }
+    ],
+    "unrelated_running": 8,
+    "free_before": 130587975680,
+    "free_after": 126854455296
+  },
+  "remaining": [
+    "Correct the optional probe and rerun the same reduced-privilege HTTP oracle",
+    "Timestamp/receipt tuple and transaction identity require the strengthened fixture",
+    "Typed TypeScript client browser consumer, cancellation, held checker/driver and unknown COMMIT",
+    "Resumed output, full selected product, hosted CI, arm64 and release qualification"
+  ]
+}

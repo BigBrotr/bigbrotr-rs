@@ -20,21 +20,34 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD879ce33 on main; private origin/main remains
-adee7b6e61e03ac9798a180f0c0a1e890eb29547. Six unpublished coherent candidates.
-Root owns pending resume HTTP transport/supervisor/optional prerequisite, typed
-client/generated contract, route/client regressions, real HTTP fixture and docs.
-No other contributor or merge/rebase. No active Tux BigBrotr containers at last check.
+Last verified HEAD45a96e7feecd19f3db1f91e2662e11e4674fe0a6, tree
+088f36d288e4db1f6d297340255723c5d9146dd2 on main; private origin/main remains
+adee7b6e61e03ac9798a180f0c0a1e890eb29547. Seven unpublished coherent candidates.
+Root owns the pending probe correction, stronger HTTP fixture and RED evidence/
+inventory/checkpoint. No other contributor or merge/rebase. No active Tux BigBrotr
+lab after owner-verified45a96e7 terminal capture.
 
-Next bounded action: exact-Git --runtime-resume on Tux with fresh build after
-resource/space preflight. It uses SQL paused7, actual installed HTTP and PG; reader
-is disabled to independently observe acceptance without execution. The fixture
-revokes artifact_files/consumer_frontiers/consumer_frontier_revisions privileges.
-Independent AI identified these as unnecessary in the new optional resume probe;
-root confirmed the501 queued branch. Expect this candidate to expose the refusal
-before removing the excess prerequisites, then rerun the same oracle. Preserve
-original failure. No migration changes. Remaining expiry/COMMIT/held-driver/output
-scenarios still gate broader resume guarantees.
+Next bounded action: commit and transfer the corrected candidate via exact Git,
+then --runtime-resume with fresh installed build. It removes only excess SELECT
+checks on artifact_files/consumer_frontiers/consumer_frontier_revisions and the
+last table's UPDATE requirement; applied SQL unchanged. The strengthened fixture
+binds HTTP timestamps/revisions to SQL, checks new command/digest/audit/transaction
+identity, and retains its Process before readiness. Native outcome still pending.
+Mac Clippy after correction passes. Keep expiry/COMMIT/held-driver/output gates open.
+
+[45a96e7 HTTP RED](evidence/p08-export-resume-http-red-20260924.json) reproduced
+historical receipt503instead200 after unrelated execution-table privilege removal.
+Fresh installed build/46binarytests/ClippyPASS; original SQL fixturesPASS. Missing
+resume INSERT503 leaves session/me200 usable. Both actual HTTP parents0/reaped,
+root locks available/scratch empty; bothDB0. Root verified32payloads/1222current/
+1110seed sources, bothELF,668prior/eight running unchanged. Tar
+ afbe40f7c2988d1585d969cdac9cad67635055f4250588975b075c1cae16d2f8.
+Stopped-retained runs/export-runtime-45a96e7 owner41c237c3f07a6985e2b8e5144f6a0b6e;
+allownedPID0/noOOM/network removed; free130587975680→126854455296bytes. No success
+HTTP acceptance claim. Static AI confirmed known probe issue and identified the
+timestamp/readiness fixture gaps addressed in the next candidate.
+The destination worker retains its own64KiB memory/task permit until actual return;
+blocked-worker/cancellation qualification remains NOT_RUN.
 
 Mac actual-TCP route was RED405instead401 before implementation. Current46binary
 tests/Clippy pass; typed-client three new regressions were RED missing method,
