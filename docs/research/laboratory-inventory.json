@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-09-23",
+  "updated_at": "2026-09-24",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -23030,5 +23030,71 @@
     "evidence": "docs/implementation/evidence/p01-control-poll-admission-native-20260924.json",
     "retention": "Keep34payloadcapture/source/ELFs/PG/archive/output. Reused877nativeELF; no new Rust cache. Both databases0, all ownedPID0/noOOM/network removed;643prior/eight running preserved.",
     "free_bytes": 136414396416
+  },
+  "implementation_export_status_browser_drain_20260924": {
+    "status": "PASS_SCOPED; stopped-retained; visual screenshot follow-up open",
+    "resources": {
+      "source": "ca44302317207b1c21d1d4bb6ac08299a842963a",
+      "tree": "c541d7cc8660b343e1a543d17d7aebc9973ab46b",
+      "owner": "5ad93742ca0ade20cde06c4ce42f0f8f",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-ca44302",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "frontend",
+          "id": "d17d73857e7dc42389a8bdc309c3e32f3e092da2d8b63c23fec9db3988c8be8f"
+        },
+        {
+          "name": "postgres",
+          "id": "f4ab8ad3cc58ce3e74c8ceeed9088c9f31361e146d3255627f34416a08af9ccb"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "f05a97c414786ee4509c0855da739d0eff166da6713f696f81012195680bb3dd"
+        },
+        {
+          "name": "browser-chromium-root",
+          "id": "b314e008272754a9470e23cd4264091b30e85889288c64e2eb458bdcf3d7fba6"
+        },
+        {
+          "name": "browser-chromium-control",
+          "id": "af3eac80f0c450c6f1e21b1a433566378a4a879a89e5867d9bbce57026bfaeb8"
+        },
+        {
+          "name": "browser-firefox-root",
+          "id": "042b3d0125f6e586e979be462895de7b61c8e099635ac6b246e61bb21ad1b7cb"
+        },
+        {
+          "name": "browser-firefox-control",
+          "id": "5d994af7800719a1b51c942b249f6f0680b329bfc7e1b0d6ffbe3ca80c7a568e"
+        },
+        {
+          "name": "browser-webkit-root",
+          "id": "09283c336b84d5a3e33b506a2bdd11c99da7900405a63d65acd84ddf3ba50d63"
+        },
+        {
+          "name": "browser-webkit-control",
+          "id": "1a7468b5ff88db8040ee15c196276f3225446bed15e85c288e2a3512c8548ce9"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T14:51:59.916465+00:00",
+      "runtime_profile": "job-browser",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "network_id": "e1f723b357fea8e22144eff41516939a54f871c5ce4cdbe968c9338f23f3ce9a",
+      "postgres_id": "f4ab8ad3cc58ce3e74c8ceeed9088c9f31361e146d3255627f34416a08af9ccb",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "f05a97c414786ee4509c0855da739d0eff166da6713f696f81012195680bb3dd",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p09-export-status-browser-native-20260924.json",
+    "retention": "Keep original source, 213-payload capture, exact native ELF, both production bundles, six browser reports/screenshots, PG/archive/output. No new Rust cache. All owned containers PID 0 without OOM, network removed, both databases zero; 645 preexisting containers and eight unrelated running preserved.",
+    "free_bytes": 135789490176
   }
 }

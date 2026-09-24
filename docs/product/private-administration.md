@@ -313,7 +313,9 @@ The lookup does not refresh session activity. Its nonrenewable delivery window
 starts before SQL and gates actual socket writes; Control renewal cannot extend
 the original session observation. Ordinary denial/missing results complete the
 transaction without poisoning healthy Control. Unknown SQL outcomes remain fatal.
-This slice is under practical qualification; bounded listing, broader job kinds,
+This slice has [scoped native browser evidence](../implementation/evidence/p09-export-status-browser-native-20260924.json)
+for six engine/mount pairs; viewport/focus investigation of a full-page screenshot
+anomaly and broader expiry/accessibility qualification remain open. Bounded listing, broader job kinds,
 artifact discovery, explicit resume/cancel and their full UI/CLI journeys remain
 selected P08/P09 work. No historical schema checksum changes.
 

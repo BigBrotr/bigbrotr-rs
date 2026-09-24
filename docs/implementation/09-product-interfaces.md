@@ -174,6 +174,15 @@ The app keeps anti-CSRF/session handling at the private origin and never offers 
 
 - [ ] **Step 1:** implement job creation from approved sources/destinations with pinned scope, full/projected export choice, coverage/visibility preview and safe defaults. Jobs use persisted idempotency keys; double-click/network retry does not start duplicate work.
 - [ ] **Step 2:** implement progress with committed versus displayed position, remaining work and resume unit. Closing/reopening a tab or restarting a worker retains receipt and progress. Cancel requests stop new work at a declared boundary and preserve committed data; cancelled does not mean rolled back.
+
+The initial actor-owned export lookup has [scoped production browser evidence](evidence/p09-export-status-browser-native-20260924.json):
+eight journeys in each Chromium/Firefox/WebKit root/subpath pair, including
+checkpoint zero, same-session process restart, logout with an actual blocked SQL
+lookup, other-account isolation and revocation. Original HTML-pattern and storage
+fixture failures remain recorded. Full-page screenshots expose a skip-link
+overlay whose viewport/focus behavior still needs investigation. This does not
+complete Step 2, general accessibility, job discovery, resume/cancel or downloads.
+
 - [ ] **Step 3:** implement typed queries/saved private views plus explicit export, storage/headroom and maintenance pages. Show measured rates/windows and unknown forecast, no unmeasured capacity promise. Explain current/historical policy and full/projection differences before download.
 
 Saved-view persistence uses P08-T03's owner-scoped CAS routes. Storage exposes optional content/provenance/index readiness, cost, rebuild/retire jobs and affected capability; index removal is not removal of the full archival evidence. Exercise rebuild failure with the old complete generation still readable, then successful replacement and eventual retirement after pins release.

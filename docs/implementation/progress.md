@@ -20,15 +20,46 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD b3cd3f1adc6b81ab8aafc33bd9d590144aa0c70d, tree
-1a7468ff505a54b3f006ae041c0769588d9ff7d6 on main. Six unpublished commits after
-private origin/main cac50d60a591981b8060e50ed8cbb6c2b070be62. Root owns only
-subsequent checkpoint/inventory updates. No other contributor or merge/rebase.
+Last verified HEAD ca44302317207b1c21d1d4bb6ac08299a842963a, tree
+c541d7cc8660b343e1a543d17d7aebc9973ab46b on main. Seven unpublished commits after
+private origin/main cac50d60a591981b8060e50ed8cbb6c2b070be62; fetched with no new
+remote commits. Root owns the browser evidence report, owning task/product/export
+documentation and checkpoint/inventory updates. No other contributor or merge/rebase.
 
-Next bounded action: run --runtime-job-browser using exact877f3d4 ELF after
-fixture-only product/build equality, collect all six engine/mount outcomes, audit
-actual bundles/HTTP/SQL/screenshots, then commit and push the verified integrated
-status slice. No new Rust cache needed. Resume P08-T03 explicit resume after it.
+Next bounded action: commit/push the reviewed ca44302 browser
+qualification, then resolve the observed skip-link
+screenshot anomaly with actual focus/geometry and viewport capture. Preserve the
+original successful functional matrix. Do not claim visual/accessibility closure
+from a horizontal-width check. Then resume P08-T03 explicit job resume.
+
+[The ca44302 browser matrix](evidence/p09-export-status-browser-native-20260924.json)
+passes 48 journeys across Chromium/Firefox/WebKit at / and /control/. Same 877
+native ELF after full product/build equality; both fresh production bundles and
+all 213 captured payloads verified, including 1204 current / 1202 build / 1110
+seed Git files. Tar 80997983f69367bd57b9b175ecf30a2512bb014a3b2ca450a7c75f5f5ca90ae2.
+All six actual blocked job requests failed after logout, with exact Control
+PID/backend_start/query identified and locks held 0.1607–0.2420 seconds. Complete
+seven-ledger rows/xmin unchanged; session rows unchanged around reads/restart;
+all parents exit 0, no remaining SQL backends, root locks free, scratch empty.
+Actual web storage in every pair contains only numeric framework scroll and an
+empty snapshot object, with no localStorage. Original failures remain recorded.
+
+Root inspected all six 375px full-page screenshots. A Skip to session badge appears
+over other document content. The CSS translates an unfocused fixed box above the
+viewport; a full-page capture at an existing scroll offset may expose that box.
+The original fixture did not retain focus, geometry or a viewport-only image, so
+cause and actual viewport behavior are UNRESOLVED. No product change yet. Also,
+the local audit helper initially expected literal HTML pattern= in minified JS;
+the actual bundle uses a dynamic setter. Corrected audit predicate rejects both
+original 3830 RED bundles and quantifier-loss mutations; original browser DOM
+assertions passed unchanged. This was an audit-helper assumption, not a run failure.
+
+Tux ca44302 is stopped-retained, owner 5ad93742ca0ade20cde06c4ce42f0f8f,
+root runs/export-runtime-ca44302. All owned containers PID 0/no OOM, network removed;
+645 prior containers/eight unrelated running preserved. Free 136370376704 →
+135789490176 bytes. No new Rust cache. Root and independent read-only AI capture
+reviews found no concrete HTTP/SQL discrepancy; the visual limitation remains. Natural expiry/BFCache, paused/running HTTP, remote TLS,
+assistive technology and full product/release remain separate acceptance gates.
 
 The strengthened [b3cd3f1 shutdown probe](evidence/p01-control-poll-admission-native-20260924.json)
 passes: host receives complete network probe plus live-parent samples before AND
@@ -70,12 +101,12 @@ Kit2.70.3 source persists scroll positions and snapshots on reload/hidden; the
 panel defines no snapshot capture. Revised independent oracle permits exactly
 numeric indexed{x,y} scroll plus an empty snapshot dictionary, no local entries.
 Closed keys/size/shape and negative private-payload cases preserve the no-private-
-webstorage invariant. Two local oracle tests pass; actual shape still NOT_RUN. Independent AI found
+webstorage invariant. Two local oracle tests passed; actual shape was NOT_RUN in that attempt. Independent AI found
 duplicate JSON keys could hide discarded private bytes; RED reproduced locally,
 then raw===JSON.stringify(parsed) restored GREEN, matching the exact Kit writer.
 
 The corrected storage fixture and preserved incomplete evidence are incc8e5a8.
-Only runtime measurement of recognized storage shapes can qualify it.
+The subsequent ca44302 run now measures and qualifies those recognized shapes.
 Fresh f660 native build/44tests/Clippy PASS; parentSHA
 757c976509d8676d7f8931394af3498e9b811b23deacad91acab1104a96c8a04;
 worker3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
@@ -174,7 +205,7 @@ join. Never poll a ready JoinHandle twice or reuse a poisoned SQL connection.
 Fresh-reader cleanup never releases the original export pin. Paused jobs are absent
 from automatic scans and keep immutable caps; changing configuration cannot enlarge
 an old unit. Explicit resume needs same committed unit, expected revision and current
-grants. Terminal jobs cannot resurrect. Cancel/resume/listing remain unfinished; status/UI are under qualification.
+grants. Terminal jobs cannot resurrect. Cancel/resume/listing remain unfinished; status has scoped native/browser evidence, with the visual follow-up above still open.
 
 501 execution selection preserves unselected0813 acceptance. Actual application
 login privileges must be exercised, not postgres-only proofs. Applied0501 SHA
@@ -213,7 +244,7 @@ these boundaries, did not execute scenarios or review all output custody again.
 ## Tux ownership and maintenance
 
 All run roots below are under /home/tux/bigbrotr-implementation-20260917/runs/.
-Current cc8e5a8 is stopped-retained as above. f660 is stopped-retained; keep its useful
+Current ca44302 and earlier cc8e5a8 are stopped-retained as above. f660 is stopped-retained; keep its useful
 compiler cache. Earlier29983cc and3830 are also stopped-retained, all
 containers PID0/noOOM/network removed.3830 preserved628prior/eight unrelated
 running; free139536801792→138968485888bytes (concurrent writes possible). Its

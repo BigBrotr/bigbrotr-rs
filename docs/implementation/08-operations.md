@@ -297,8 +297,12 @@ metadata under current `status.read`, without input/output authority or idle
 refresh, with OpenAPI/generated client and a session-owned private panel view.
 Mac boundary/client/model checks pass. [Scoped native status evidence](evidence/p08-export-status-native-20260924.json)
 now checks own/other/missing metadata, checkpoint zero, no idle touch, current
-grants, session revocation and restart against actual PostgreSQL. Browser and
-expiry-during-blocked-query/socket qualification remain pending. The ownership/redaction subset is specified in
+grants, session revocation and restart against actual PostgreSQL.
+[The production browser matrix](evidence/p09-export-status-browser-native-20260924.json)
+adds six engine/mount pairs, including logout during a positively identified
+blocked account query, unchanged session/job ledgers and actual parent cleanup.
+The screenshot skip-link anomaly, natural expiry and expiry during blocked
+query/socket delivery remain separate gates. The ownership/redaction subset is specified in
 [private administration](../product/private-administration.md). It does not
 complete listing, resume/cancel, artifact discovery or this step's full acceptance.
 

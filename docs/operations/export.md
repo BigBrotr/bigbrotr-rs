@@ -114,8 +114,8 @@ key conflicts. After a lost reply retain the exact key/body for resolution. A
 receipt does not prove file availability or current job state.
 
 The private panel now provides **Inspect your job** after sign-in. Paste the job
-ID from the acceptance receipt and select **Check job**. The initial view is
-under practical qualification and shows only your own export's stored state,
+ID from the acceptance receipt and select **Check job**. The initial view shows
+only your own export's stored state,
 revision/checkpoint, times and a redacted reason. Check again to refresh it;
 there is no background polling or idle-session extension. Signing out, session
 expiry or a session change clears the view and cancels a pending lookup.
@@ -124,8 +124,13 @@ cookie and explicit `X-CSRF-Token`; supply neither body nor query parameters.
 Current dataset `status.read` is required. Missing IDs and jobs owned by other
 accounts share404. Input permission loss does not hide your operational receipt.
 [Scoped native evidence](../implementation/evidence/p08-export-status-native-20260924.json)
-checks these visibility/grant/session boundaries and restart against PostgreSQL;
-the actual panel/browser journey remains unqualified.
+checks these visibility/grant/session boundaries and restart against PostgreSQL.
+[Scoped browser evidence](../implementation/evidence/p09-export-status-browser-native-20260924.json)
+adds Chromium, Firefox and WebKit at both root and `/control/`: process restart
+with the same session, cross-tab logout, a blocked lookup discarded on logout,
+other-account isolation and actual session revocation. The full-page screenshots
+show an unexplained skip-link overlay; viewport/focus verification remains open,
+along with natural-expiry, BFCache and full accessibility acceptance.
 This observation supplies no download or execution authority. Job listing,
 resume/cancel controls and artifact discovery remain required work.
 

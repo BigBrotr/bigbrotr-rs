@@ -1,0 +1,727 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS_SCOPED",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P09-T09"
+  ],
+  "source": "ca44302317207b1c21d1d4bb6ac08299a842963a",
+  "tree": "c541d7cc8660b343e1a543d17d7aebc9973ab46b",
+  "scope": "Actor-owned job observation through actual production assets, Rust HTTP and PostgreSQL; six engine/mount pairs and eight journeys per pair. No API interception or synthetic responses.",
+  "capture": {
+    "root": ".research/implementation/export-execution/attempt-ca44302/capture",
+    "verified": {
+      "files": 213,
+      "sha256": "80997983f69367bd57b9b175ecf30a2512bb014a3b2ca450a7c75f5f5ca90ae2",
+      "source": "ca44302317207b1c21d1d4bb6ac08299a842963a",
+      "tree": "c541d7cc8660b343e1a543d17d7aebc9973ab46b",
+      "source_files": 1204
+    }
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "build_source": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+    "artifacts": {
+      "bigbrotr": "48ae6d1a7a1e685780d84db05692f75eb671c0e5178ad7aab7ca7b5f74325805",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "cargo_lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "pnpm_lock_sha256": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+    "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94",
+    "pnpm_sha256": "98e6b99a881d64a1cc982c3e60aa260bf02160386b12e74475e06486dc74b090",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "playwright": "1.63.0",
+    "browser_registry_sha256": "545d52f8382c391e605562c330e9c1c534a16045898203037a49bb8bd769a946",
+    "bundles": {
+      "root": {
+        "manifest_sha256": "f7e617fe093d9509300776780f4a6a38f10d5db87e043f3225e60cbc546095f4",
+        "files": 13,
+        "bytes": 149815
+      },
+      "control": {
+        "manifest_sha256": "42f6ccb6d29c8c1cbb754e98c2c42233f1fecd7e876741e9eed587731eb5f7a5",
+        "files": 13,
+        "bytes": 149849
+      }
+    }
+  },
+  "frontend": {
+    "checks": {
+      "install": "PASS",
+      "contracts": "PASS",
+      "client-types": "PASS",
+      "client": "PASS",
+      "admin-types": "PASS",
+      "admin-unit": "PASS",
+      "wire-observer": "PASS",
+      "job-storage-oracle": "PASS"
+    },
+    "counts": {
+      "collected": 8,
+      "executed": 8,
+      "failed": 0,
+      "not_run": 0
+    }
+  },
+  "native_status": {
+    "cases": {
+      "alice-login": 201,
+      "owner-status": 200,
+      "missing-status": 404,
+      "signed-acceptance": 202,
+      "accepted-zero-checkpoint": 200,
+      "input-revocation": 200,
+      "status-after-input-revocation": 200,
+      "bob-login": 201,
+      "other-actor-status": 404,
+      "bob-missing": 404,
+      "bob-still-healthy": 200,
+      "alice-login-again": 201,
+      "status-grant-revoked": 403,
+      "control-after-denial": 200,
+      "no-data-grant": 200,
+      "deactivated-session": 401,
+      "restart-login": 201,
+      "restart-status": 200
+    },
+    "reference": "p08-export-status-native-20260924.json",
+    "note": "The 18 correlated native exchanges passed again with the drained Control ELF. Real rate windows remain in force."
+  },
+  "cases": {
+    "chromium-root": {
+      "status": "PASS",
+      "browser_version": "153.0.8010.12",
+      "executables": [
+        {
+          "path": "/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+          "sha256": "ded93a9c9a53a1ae040f08124badcca95c938e9d5015ff340c3b5538c41bf39e"
+        }
+      ],
+      "journeys": [
+        "production-assets-and-native-form",
+        "own-states-zero-checkpoint-no-idle-touch",
+        "missing-clears-prior-observation",
+        "same-cookie-real-process-restart",
+        "cross-tab-logout-forgets-job",
+        "blocked-sql-lookup-discarded-on-logout",
+        "other-account-has-no-job-observation",
+        "real-session-revocation-forgets-job"
+      ],
+      "job_requests": 12,
+      "blocked_lookup": {
+        "request_terminal": "failed",
+        "held_seconds": 0.1681010820902884,
+        "waiter": {
+          "pid": 745,
+          "query": "SELECT active,left(credential_revision::text,21),left(authentication_revision::text,21),left(grant_revision::text,21) FROM control.local_accounts WHERE dataset_id=$1::bytea AND principal_id=$2::bytea FOR UPDATE",
+          "backend_start": "2026-09-24T14:54:42.189368+00:00",
+          "wait_event_type": "Lock"
+        },
+        "current_backend": [
+          {
+            "pid": 745,
+            "backend_start": "2026-09-24T14:54:42.189368+00:00"
+          }
+        ]
+      },
+      "form": {
+        "pattern": "[0-9a-f]{32}",
+        "valid": true
+      },
+      "storage": {
+        "status": "verified",
+        "scroll": {
+          "1790261680860": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "snapshot": {}
+      },
+      "session_rows_unchanged": true,
+      "restart_session_rows_unchanged": true,
+      "parent_terminal": {
+        "event": "stop-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "restart_terminal": {
+        "event": "restart-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "ledgers_unchanged": true,
+      "mobile_screenshot_sha256": "f3a1edd02c4c4b09968e3ae5f5b3e8afb2c6ce4971997c3e6a17d0704994e1d4"
+    },
+    "chromium-control": {
+      "status": "PASS",
+      "browser_version": "153.0.8010.12",
+      "executables": [
+        {
+          "path": "/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+          "sha256": "ded93a9c9a53a1ae040f08124badcca95c938e9d5015ff340c3b5538c41bf39e"
+        }
+      ],
+      "journeys": [
+        "production-assets-and-native-form",
+        "own-states-zero-checkpoint-no-idle-touch",
+        "missing-clears-prior-observation",
+        "same-cookie-real-process-restart",
+        "cross-tab-logout-forgets-job",
+        "blocked-sql-lookup-discarded-on-logout",
+        "other-account-has-no-job-observation",
+        "real-session-revocation-forgets-job"
+      ],
+      "job_requests": 12,
+      "blocked_lookup": {
+        "request_terminal": "failed",
+        "held_seconds": 0.1606760611757636,
+        "waiter": {
+          "pid": 891,
+          "query": "SELECT active,left(credential_revision::text,21),left(authentication_revision::text,21),left(grant_revision::text,21) FROM control.local_accounts WHERE dataset_id=$1::bytea AND principal_id=$2::bytea FOR UPDATE",
+          "backend_start": "2026-09-24T14:55:47.474274+00:00",
+          "wait_event_type": "Lock"
+        },
+        "current_backend": [
+          {
+            "pid": 891,
+            "backend_start": "2026-09-24T14:55:47.474274+00:00"
+          }
+        ]
+      },
+      "form": {
+        "pattern": "[0-9a-f]{32}",
+        "valid": true
+      },
+      "storage": {
+        "status": "verified",
+        "scroll": {
+          "1790261746018": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "snapshot": {}
+      },
+      "session_rows_unchanged": true,
+      "restart_session_rows_unchanged": true,
+      "parent_terminal": {
+        "event": "stop-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "restart_terminal": {
+        "event": "restart-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "ledgers_unchanged": true,
+      "mobile_screenshot_sha256": "a2a7af5caaba6bc106ab199c1c800d4f2e20375ed199a01cb60b026d03dfec32"
+    },
+    "firefox-root": {
+      "status": "PASS",
+      "browser_version": "155.0",
+      "executables": [
+        {
+          "path": "/ms-playwright/firefox-1543/firefox/firefox",
+          "sha256": "062272ac4d851eade5b75db2dc7c14569d96cb3ca38f949337cdc1b74367e35b"
+        }
+      ],
+      "journeys": [
+        "production-assets-and-native-form",
+        "own-states-zero-checkpoint-no-idle-touch",
+        "missing-clears-prior-observation",
+        "same-cookie-real-process-restart",
+        "cross-tab-logout-forgets-job",
+        "blocked-sql-lookup-discarded-on-logout",
+        "other-account-has-no-job-observation",
+        "real-session-revocation-forgets-job"
+      ],
+      "job_requests": 12,
+      "blocked_lookup": {
+        "request_terminal": "failed",
+        "held_seconds": 0.2293881201185286,
+        "waiter": {
+          "pid": 1038,
+          "query": "SELECT active,left(credential_revision::text,21),left(authentication_revision::text,21),left(grant_revision::text,21) FROM control.local_accounts WHERE dataset_id=$1::bytea AND principal_id=$2::bytea FOR UPDATE",
+          "backend_start": "2026-09-24T14:56:53.44964+00:00",
+          "wait_event_type": "Lock"
+        },
+        "current_backend": [
+          {
+            "pid": 1038,
+            "backend_start": "2026-09-24T14:56:53.44964+00:00"
+          }
+        ]
+      },
+      "form": {
+        "pattern": "[0-9a-f]{32}",
+        "valid": true
+      },
+      "storage": {
+        "status": "verified",
+        "scroll": {
+          "1790261811914": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "snapshot": {}
+      },
+      "session_rows_unchanged": true,
+      "restart_session_rows_unchanged": true,
+      "parent_terminal": {
+        "event": "stop-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "restart_terminal": {
+        "event": "restart-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "ledgers_unchanged": true,
+      "mobile_screenshot_sha256": "eb87d0573044199756c8ec1d9bae3947ad1dc98ffec8d852997f83096d6f0bb9"
+    },
+    "firefox-control": {
+      "status": "PASS",
+      "browser_version": "155.0",
+      "executables": [
+        {
+          "path": "/ms-playwright/firefox-1543/firefox/firefox",
+          "sha256": "062272ac4d851eade5b75db2dc7c14569d96cb3ca38f949337cdc1b74367e35b"
+        }
+      ],
+      "journeys": [
+        "production-assets-and-native-form",
+        "own-states-zero-checkpoint-no-idle-touch",
+        "missing-clears-prior-observation",
+        "same-cookie-real-process-restart",
+        "cross-tab-logout-forgets-job",
+        "blocked-sql-lookup-discarded-on-logout",
+        "other-account-has-no-job-observation",
+        "real-session-revocation-forgets-job"
+      ],
+      "job_requests": 12,
+      "blocked_lookup": {
+        "request_terminal": "failed",
+        "held_seconds": 0.2419921699911356,
+        "waiter": {
+          "pid": 1184,
+          "query": "SELECT active,left(credential_revision::text,21),left(authentication_revision::text,21),left(grant_revision::text,21) FROM control.local_accounts WHERE dataset_id=$1::bytea AND principal_id=$2::bytea FOR UPDATE",
+          "backend_start": "2026-09-24T14:57:59.489727+00:00",
+          "wait_event_type": "Lock"
+        },
+        "current_backend": [
+          {
+            "pid": 1184,
+            "backend_start": "2026-09-24T14:57:59.489727+00:00"
+          }
+        ]
+      },
+      "form": {
+        "pattern": "[0-9a-f]{32}",
+        "valid": true
+      },
+      "storage": {
+        "status": "verified",
+        "scroll": {
+          "1790261877913": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "snapshot": {}
+      },
+      "session_rows_unchanged": true,
+      "restart_session_rows_unchanged": true,
+      "parent_terminal": {
+        "event": "stop-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "restart_terminal": {
+        "event": "restart-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "ledgers_unchanged": true,
+      "mobile_screenshot_sha256": "1a0c762c947a5d5dd0b011ef38d85a3bcbee8b8830c895763d16c8cb455434e4"
+    },
+    "webkit-root": {
+      "status": "PASS",
+      "browser_version": "26.6",
+      "executables": [
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser",
+          "sha256": "7c71efed38fb0d916f5edb7db9a98cdf218642dd8dce02375730eb9ad5510751"
+        }
+      ],
+      "journeys": [
+        "production-assets-and-native-form",
+        "own-states-zero-checkpoint-no-idle-touch",
+        "missing-clears-prior-observation",
+        "same-cookie-real-process-restart",
+        "cross-tab-logout-forgets-job",
+        "blocked-sql-lookup-discarded-on-logout",
+        "other-account-has-no-job-observation",
+        "real-session-revocation-forgets-job"
+      ],
+      "job_requests": 12,
+      "blocked_lookup": {
+        "request_terminal": "failed",
+        "held_seconds": 0.21276222169399261,
+        "waiter": {
+          "pid": 1330,
+          "query": "SELECT active,left(credential_revision::text,21),left(authentication_revision::text,21),left(grant_revision::text,21) FROM control.local_accounts WHERE dataset_id=$1::bytea AND principal_id=$2::bytea FOR UPDATE",
+          "backend_start": "2026-09-24T14:59:06.033136+00:00",
+          "wait_event_type": "Lock"
+        },
+        "current_backend": [
+          {
+            "pid": 1330,
+            "backend_start": "2026-09-24T14:59:06.033136+00:00"
+          }
+        ]
+      },
+      "form": {
+        "pattern": "[0-9a-f]{32}",
+        "valid": true
+      },
+      "storage": {
+        "status": "verified",
+        "scroll": {
+          "1790261943994": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "snapshot": {}
+      },
+      "session_rows_unchanged": true,
+      "restart_session_rows_unchanged": true,
+      "parent_terminal": {
+        "event": "stop-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "restart_terminal": {
+        "event": "restart-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "ledgers_unchanged": true,
+      "mobile_screenshot_sha256": "0e2b64a0c4fa92b58307c136a76f1f405683e2c1bd6c9970d41a7eaf7c4728ef"
+    },
+    "webkit-control": {
+      "status": "PASS",
+      "browser_version": "26.6",
+      "executables": [
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser",
+          "sha256": "7c71efed38fb0d916f5edb7db9a98cdf218642dd8dce02375730eb9ad5510751"
+        }
+      ],
+      "journeys": [
+        "production-assets-and-native-form",
+        "own-states-zero-checkpoint-no-idle-touch",
+        "missing-clears-prior-observation",
+        "same-cookie-real-process-restart",
+        "cross-tab-logout-forgets-job",
+        "blocked-sql-lookup-discarded-on-logout",
+        "other-account-has-no-job-observation",
+        "real-session-revocation-forgets-job"
+      ],
+      "job_requests": 12,
+      "blocked_lookup": {
+        "request_terminal": "failed",
+        "held_seconds": 0.21160161308944225,
+        "waiter": {
+          "pid": 1478,
+          "query": "SELECT active,left(credential_revision::text,21),left(authentication_revision::text,21),left(grant_revision::text,21) FROM control.local_accounts WHERE dataset_id=$1::bytea AND principal_id=$2::bytea FOR UPDATE",
+          "backend_start": "2026-09-24T15:00:12.079244+00:00",
+          "wait_event_type": "Lock"
+        },
+        "current_backend": [
+          {
+            "pid": 1478,
+            "backend_start": "2026-09-24T15:00:12.079244+00:00"
+          }
+        ]
+      },
+      "form": {
+        "pattern": "[0-9a-f]{32}",
+        "valid": true
+      },
+      "storage": {
+        "status": "verified",
+        "scroll": {
+          "1790262010020": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "snapshot": {}
+      },
+      "session_rows_unchanged": true,
+      "restart_session_rows_unchanged": true,
+      "parent_terminal": {
+        "event": "stop-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "restart_terminal": {
+        "event": "restart-terminal",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "ledgers_unchanged": true,
+      "mobile_screenshot_sha256": "b424c5c05913b3072796e090ca3c808b2430bd9ae0d89ad6bb1f3fdc84b4c9b8"
+    }
+  },
+  "durable_comparison": {
+    "tables": [
+      "jobs",
+      "export_execution_units",
+      "artifacts",
+      "artifact_files",
+      "snapshot_leases",
+      "archive_snapshot_pins",
+      "retention_claims"
+    ],
+    "complete_rows_and_xmin_equal": true,
+    "terminal_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    }
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-ca44302",
+    "owner": "5ad93742ca0ade20cde06c4ce42f0f8f",
+    "state": "stopped-retained",
+    "network_state": "removed after owner/no-endpoint audit",
+    "preexisting_preserved": 645,
+    "unrelated_running": 8,
+    "free_before": 136370376704,
+    "free_after": 135789490176,
+    "cleanup_errors": [],
+    "containers": {
+      "frontend": {
+        "id": "d17d73857e7dc42389a8bdc309c3e32f3e092da2d8b63c23fec9db3988c8be8f",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:52:02.24115066Z",
+          "FinishedAt": "2026-09-24T14:52:19.998635721Z"
+        }
+      },
+      "browser-chromium-root": {
+        "id": "b314e008272754a9470e23cd4264091b30e85889288c64e2eb458bdcf3d7fba6",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:54:40.342893249Z",
+          "FinishedAt": "2026-09-24T14:54:44.387109681Z"
+        }
+      },
+      "browser-chromium-control": {
+        "id": "af3eac80f0c450c6f1e21b1a433566378a4a879a89e5867d9bbce57026bfaeb8",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:55:45.519164977Z",
+          "FinishedAt": "2026-09-24T14:55:49.739282176Z"
+        }
+      },
+      "browser-firefox-root": {
+        "id": "042b3d0125f6e586e979be462895de7b61c8e099635ac6b246e61bb21ad1b7cb",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:56:51.018278179Z",
+          "FinishedAt": "2026-09-24T14:56:55.982639944Z"
+        }
+      },
+      "browser-firefox-control": {
+        "id": "5d994af7800719a1b51c942b249f6f0680b329bfc7e1b0d6ffbe3ca80c7a568e",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:57:57.013615448Z",
+          "FinishedAt": "2026-09-24T14:58:02.272860897Z"
+        }
+      },
+      "browser-webkit-root": {
+        "id": "09283c336b84d5a3e33b506a2bdd11c99da7900405a63d65acd84ddf3ba50d63",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:59:03.361841836Z",
+          "FinishedAt": "2026-09-24T14:59:08.246419801Z"
+        }
+      },
+      "browser-webkit-control": {
+        "id": "1a7468b5ff88db8040ee15c196276f3225446bed15e85c288e2a3512c8548ce9",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T15:00:09.384150223Z",
+          "FinishedAt": "2026-09-24T15:00:14.321741589Z"
+        }
+      },
+      "rust-visibility": {
+        "id": "f05a97c414786ee4509c0855da739d0eff166da6713f696f81012195680bb3dd",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:52:22.413409032Z",
+          "FinishedAt": "2026-09-24T15:00:15.9785222Z"
+        }
+      },
+      "postgres": {
+        "id": "f4ab8ad3cc58ce3e74c8ceeed9088c9f31361e146d3255627f34416a08af9ccb",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 137,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:52:20.395130416Z",
+          "FinishedAt": "2026-09-24T15:00:26.748919061Z"
+        }
+      }
+    }
+  },
+  "review": {
+    "root": "Verified every capture payload, current/build/seed Git manifests, ELF, actual bundle files and selected manifest at every server startup; independently compared all seven complete ledgers and session rows including xmin, exact blocked Control PID/backend_start/query, request settlement, parent cleanup and every preexisting container identity/lifecycle/mount/network/restart. Inspected all six mobile screenshots.",
+    "independent_ai": "Read-only AI review verified all 213 payloads/tar, 1204 current / 1202 build / 1110 seed Git files, exact native ELF, 26 asset files and both manifests/setters, all six reports/48 steps, blocked waiter identity and failed job requests, session rows/xmin, seven ledgers, 645 prior records, nine owned terminal containers and both databases zero. No concrete HTTP/SQL discrepancy found. Visual closure is explicitly excluded; horizontal-width sampling does not prove absence of overlaps. A report wording correction now records the first local audit predicate failure accurately. No independent test or remote action was performed.",
+    "audit_helper_correction": "The first executed local audit failed because its predicate expected a literal HTML pattern attribute. The actual minified bundle uses a dynamic pattern setter. The corrected exact setter predicate passes both current bundles and rejects both retained 3830 RED bundles and quantifier-loss mutations. Original browser DOM validity assertions already passed unchanged; no runtime test or product change followed from this audit-only correction."
+  },
+  "visual_followup": {
+    "status": "UNRESOLVED",
+    "observed": "All six full-page screenshots contain a Skip to session badge above the current job view, overlapping other document content. The screenshots were taken after automatic scroll with an offscreen translated fixed-position skip link. Original active element, bounding rectangle and viewport-only capture are absent.",
+    "hypothesis": "The full-page capture may include the off-viewport fixed box at the preceding scroll offset; this is not established as the cause or as a visible viewport defect.",
+    "next": "Capture actual focus, computed style, bounding rectangle, scroll and viewport-only image with the same production journey; test keyboard reveal/activation. This gates visual closure, not the already executed HTTP/SQL assertions."
+  },
+  "exclusions": [
+    "No natural session expiry or BFCache schedule, paused/running HTTP state, remote TLS, assistive technology or full accessibility qualification.",
+    "No complete P08/P09 task, packaged installation, release, arm64 or capacity claim.",
+    "The no-background-poll assertion observes a 600 ms interval; client source has no polling loop.",
+    "Per-pair account reactivation and the original Bob account setup are isolated privileged fixtures, not qualified account-management routes.",
+    "Original 3830/f660/cc8 failures retain their historical outcomes."
+  ]
+}
