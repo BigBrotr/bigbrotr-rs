@@ -335,6 +335,12 @@ preserving old pins. The [held-driver custody discriminator](evidence/p08-export
 passes at92550c9 with unchanged4e ELF; source-isolated Arc removal fails the same
 fixture. This is sampled exclusion during actual pending driver drain; original
 failed fixture attempts remain INCOMPLETE. Actual export delivery remains open.
+The [native responsiveness discriminator](evidence/p08-runtime-responsive-native-20260924.json)
+now observes authenticated `/me` during an actual blocked destination syscall at
+46ac18b, preserving renewal, bounded fail-stop and independent ledger checks.
+The same fixture times out on the preceding executable. Native supervision
+services bounded Control commands without nesting another native allocation;
+this is not yet automatic export execution or job cancellation qualification.
 This does not complete Step 1 or 3.
 [The initial JSONL encoder](evidence/p08-export-jsonl-codec-mac-20260924.json)
 has seven Mac tests over independent literal signed bytes, output bounds,

@@ -20559,6 +20559,43 @@
       "original_source_unchanged": true,
       "host_tcp_wmem_preserved": true,
       "free_bytes": 161789878272
+    },
+    "cache_retirement": {
+      "format": "bigbrotr-owned-cache-retirement/1",
+      "status": "PASS",
+      "started_at": "2026-09-24T10:29:41.155732+00:00",
+      "source": "bf66e7d9873e1475f0272e5040d94b766535357e",
+      "owner": "69903c122e8f50e57f0061e34a3b262d",
+      "superseding_source": "46ac18b053f9787e11154483f2060d98643f9677",
+      "free_before": 157567987712,
+      "allocated_cache_bytes": 3329847296,
+      "processes": {
+        "refs": [],
+        "permission_errors": []
+      },
+      "inspected_historical_parent_mounts": [
+        "28304a580d2eb2ac4646161e2616aab2b41922acae3ad6d793dac011defb5ad0",
+        "6e9dddb463c33c7707e3483329dc3c3ed79d391862856a8dc9783e5cfe56c2b6",
+        "72a55cad4ce990ebcacc1df1ab6ea2b37089f9b800ff5dbbb707f117e34c694e",
+        "9c8d5fc3019e882bbb74b1661763d3a0bb8a7b6c12bfbd8fa14588dbfaefd9c8",
+        "9e7d4bd8f5f2caaf47a97703a36be113822f064fa475277179857efda60d1d85"
+      ],
+      "artifacts": {
+        "bigbrotr": "fd1e5be7b9c0057d4b57fd163bf6ade4d3e77012188a2a639f26bed4f55253fe",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "source_files": 1154,
+      "capture_sha256": "df52455d8745571fb9c4cc55e14120c065bcf153d0f7b2bdfb04fdec8d464743",
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-responsive-bf66e7d/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-responsive-bf66e7d/out/build/cargo-home"
+      ],
+      "preserved": "Original failed capture/logs, current ELF outside cache, sources/manifests, seed artifacts, PGdata/archive/output. New46ac18b cache and all other labs unchanged.",
+      "free_after": 160895680512,
+      "containers_preserved": 590,
+      "unrelated_running": 8,
+      "finished_at": "2026-09-24T10:29:42.298673+00:00",
+      "local_evidence": ".research/implementation/export-execution/attempt-bf66e7d/cache-retirement"
     }
   },
   "implementation_runtime_responsive_red_20260924": {
@@ -20652,5 +20689,73 @@
       "host_tcp_wmem_preserved": true,
       "free_bytes": 161350119424
     }
+  },
+  "implementation_runtime_responsive_native_20260924": {
+    "resources": {
+      "source": "46ac18b053f9787e11154483f2060d98643f9677",
+      "tree": "1590a6a6796c7d218a5e0554db37ebcc6cb3e9cb",
+      "owner": "e52fe24d94d25db9f1ab062e70b9a580",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-responsive-46ac18b",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "dd40a5d081409189e01d699208a1f43da634a10b7e317990286812d5f7169bde"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "6408b94a065b52515114fb3b1fa35a79b849a0fae2edb5db4fdda52656b4c2b9"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T10:25:34.937983+00:00",
+      "runtime_profile": "responsive",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "18f2f7d9ea15147e8ca213a614425e612604960864cfa37f2897304f13880687",
+      "postgres_id": "dd40a5d081409189e01d699208a1f43da634a10b7e317990286812d5f7169bde",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "6408b94a065b52515114fb3b1fa35a79b849a0fae2edb5db4fdda52656b4c2b9",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "status": "PASS_SCOPED_CAPTURED",
+    "local_capture": ".research/implementation/export-execution/attempt-46ac18b/capture",
+    "capture": {
+      "files": 33,
+      "sha256": "e69a0d5241372cc24aaae69bb1431246178329ab8f29708647f2165bc06c113f",
+      "source": "46ac18b053f9787e11154483f2060d98643f9677",
+      "tree": "1590a6a6796c7d218a5e0554db37ebcc6cb3e9cb",
+      "source_files": 1154
+    },
+    "terminal": {
+      "status": "PASS_PENDING_CAPTURE",
+      "source": "46ac18b053f9787e11154483f2060d98643f9677",
+      "owner": "e52fe24d94d25db9f1ab062e70b9a580",
+      "cases": {},
+      "result": "PASS",
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "container_ok": true,
+      "preexisting_preserved": true,
+      "preexisting_count": 588,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "original_source_unchanged": true,
+      "host_tcp_wmem_preserved": true,
+      "free_bytes": 157578080256
+    },
+    "observation": "Actual /me200 in5.602ms during held worker; bounded signal fail-stop and terminal ledger/Parquet/backend checks passed. Current installed parent/worker and compiler cache retained.",
+    "report": "docs/implementation/evidence/p08-runtime-responsive-native-20260924.json"
   }
 }
