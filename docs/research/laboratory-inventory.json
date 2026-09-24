@@ -19564,5 +19564,55 @@
       "capture_sha256": "28d5b33ad98f2631937ad10e2c4d0087324f3cada6bc3323d0956aa234b43b97"
     },
     "observation": "Owned runner143/PGwrapper137, both stopped/PID0/noOOM after fixture failure; network removed. No graceful product release or zero database-backend inference from container state. Source, complete cache, installed artifacts, PGdata, signed archive, marker and original logs retained. No active laboratory/cleanup debt. Durable terminal Control/pin state not queried before stopping; preserve for explicit recovery. 547prior records unchanged/eight unrelated running. Free188994342912 ->185314996224bytes with concurrent writes possible."
+  },
+  "implementation_strace_exit_b5efc19_20260924": {
+    "local_root": ".research/implementation/strace-exit/attempt-b5efc19",
+    "native": {
+      "source": "b5efc190295131b13fe936a1e0761941afa96829",
+      "tree": "99741284bb6fd7939de02957996a50f3abc457b8",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-b5efc19",
+      "owner": "30ca97ef90ea5f4c7943b2534b94eea8",
+      "owner_label": "org.bigbrotr.strace-exit",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "runner",
+          "id": "6aa5d4b038625a339131c1563749c385d19be4cfc04d3d288267978b7ec175e9"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "started_at": "2026-09-24T05:52:56.498476+00:00"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "evidence": "docs/implementation/evidence/p08-export-checker-instrument-20260924.json",
+      "capture_sha256": "7651fea4fe455f5c2d5f5eee1e16c7672a3c3612b8d07993dce2587992d39859"
+    },
+    "observation": "Research-only no-network tool discriminator; runner exit1, PID0/noOOM. 549 prior full records preserved; eight unrelated running. No database/volume/named network created. Original sources, pinned input archive, failure result and logs retained; no tool build occurred. No active experiment or cleanup debt. Free185276547072 ->185270734848bytes; concurrent writes possible."
+  },
+  "implementation_strace_exit_9b30c35_20260924": {
+    "local_root": ".research/implementation/strace-exit/attempt-9b30c35",
+    "native": {
+      "source": "9b30c3535c1407294fb95b40df8019ebda6860f9",
+      "tree": "7b98a173ae68bf4afd4c81101878ccba16436ca8",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35",
+      "owner": "84ac8cbf5292679b8ef7043fed7a2799",
+      "owner_label": "org.bigbrotr.strace-exit",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "runner",
+          "id": "16c88a811850716e99809ce5de0c083fe8484ee553ede8a32c2c204e787bbd2d"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "started_at": "2026-09-24T05:54:51.967295+00:00"
+    },
+    "qualification": {
+      "status": "PASS",
+      "evidence": "docs/implementation/evidence/p08-export-checker-instrument-20260924.json",
+      "capture_sha256": "5e06ce5dde864c3eb465e70fc2c6051d142169f793d206733434b4fe368de7c9"
+    },
+    "observation": "Research-only no-network tool discriminator; runner exit0, PID0/noOOM. 550 prior full records preserved; eight unrelated running. No database/volume/named network created. Original sources, logs, tool build outputs and artifacts retained. No active experiment or cleanup debt. Free185238192128 ->185094381568bytes; concurrent writes possible."
   }
 }

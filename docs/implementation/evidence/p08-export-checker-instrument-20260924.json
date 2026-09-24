@@ -1,0 +1,266 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "task": [
+    "P08-T03",
+    "P08-T04"
+  ],
+  "status": "PASS-scoped",
+  "scope": "Research instrument discriminator only. The original BigBrotr blocked-checker run at324b8eb remains INCOMPLETE. No product dependency changed.",
+  "recipe": "experiments/archive-engine/strace-exit-probe.md",
+  "attempts": [
+    {
+      "source": "b5efc190295131b13fe936a1e0761941afa96829",
+      "tree": "99741284bb6fd7939de02957996a50f3abc457b8",
+      "status": "INCOMPLETE",
+      "original_terminal": "INCOMPLETE",
+      "local": ".research/implementation/strace-exit/attempt-b5efc19",
+      "capture_sha256": "7651fea4fe455f5c2d5f5eee1e16c7672a3c3612b8d07993dce2587992d39859",
+      "capture_files": 11,
+      "source_files": 1109,
+      "source_manifest_sha256": "5279f19c05d2e252293a60f71528e97d55f218e3c8152799987b4e9b2acc0ac1",
+      "resource": {
+        "source": "b5efc190295131b13fe936a1e0761941afa96829",
+        "tree": "99741284bb6fd7939de02957996a50f3abc457b8",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-b5efc19",
+        "owner": "30ca97ef90ea5f4c7943b2534b94eea8",
+        "owner_label": "org.bigbrotr.strace-exit",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "runner",
+            "id": "6aa5d4b038625a339131c1563749c385d19be4cfc04d3d288267978b7ec175e9"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "started_at": "2026-09-24T05:52:56.498476+00:00"
+      },
+      "terminal": {
+        "preexisting_preserved": true,
+        "preexisting_count": 549,
+        "unrelated_running": 8,
+        "free_bytes": 185270734848,
+        "source_unchanged": true
+      },
+      "runner_lifecycle": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 1,
+        "Error": "",
+        "StartedAt": "2026-09-24T05:52:56.62557079Z",
+        "FinishedAt": "2026-09-24T05:52:56.952890006Z"
+      },
+      "result": {
+        "status": "INCOMPLETE",
+        "source_inputs": {
+          "strace_exit_fixture.c": "99091d3f7c2f73a22a6aaa104ef30092ffa11f2aaf701358e266190200641d48",
+          "strace_exit_probe.py": "c0a7b4eabb16a0c4fd062983b0dc615274d26a17526b3566e6242f92c33fbdbb",
+          "strace-6.1-exit-delay.patch": "878d70b6b699b40b51173883f5aeba0ae3971dd1b10f64844151cbedc2d315d6"
+        },
+        "cases": [],
+        "source_archive": {
+          "url": "https://strace.io/files/6.1/strace-6.1.tar.xz",
+          "sha256": "2579e9cec37dbb786f6ea0bebd15f40dd561ef2bde2a2a2ecdce5963b01859fd"
+        },
+        "kernel": "Linux 6.12.101+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.101-1 (2026-08-05) x86_64",
+        "compiler": "cc (Debian 12.2.0-14+deb12u1) 12.2.0\nCopyright (C) 2022 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+      },
+      "failure": "Python3.11 extractall(filter=) unsupported: failed before extraction/build; no cases executed. Original traceback in orchestrator.log preserved.",
+      "free_bytes_before": 185276547072
+    },
+    {
+      "source": "9b30c3535c1407294fb95b40df8019ebda6860f9",
+      "tree": "7b98a173ae68bf4afd4c81101878ccba16436ca8",
+      "status": "PASS",
+      "original_terminal": "PASS_PENDING_CAPTURE",
+      "local": ".research/implementation/strace-exit/attempt-9b30c35",
+      "capture_sha256": "5e06ce5dde864c3eb465e70fc2c6051d142169f793d206733434b4fe368de7c9",
+      "capture_files": 36,
+      "source_files": 1109,
+      "source_manifest_sha256": "256dfa9b056aa3bfada33940e57947ad38b65700db5a0335671631ec325b3e4a",
+      "resource": {
+        "source": "9b30c3535c1407294fb95b40df8019ebda6860f9",
+        "tree": "7b98a173ae68bf4afd4c81101878ccba16436ca8",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35",
+        "owner": "84ac8cbf5292679b8ef7043fed7a2799",
+        "owner_label": "org.bigbrotr.strace-exit",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "runner",
+            "id": "16c88a811850716e99809ce5de0c083fe8484ee553ede8a32c2c204e787bbd2d"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "started_at": "2026-09-24T05:54:51.967295+00:00"
+      },
+      "terminal": {
+        "preexisting_preserved": true,
+        "preexisting_count": 550,
+        "unrelated_running": 8,
+        "free_bytes": 185094381568,
+        "source_unchanged": true
+      },
+      "runner_lifecycle": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-24T05:54:52.096609659Z",
+        "FinishedAt": "2026-09-24T05:55:27.529250871Z"
+      },
+      "result": {
+        "status": "PASS",
+        "source_inputs": {
+          "strace_exit_fixture.c": "99091d3f7c2f73a22a6aaa104ef30092ffa11f2aaf701358e266190200641d48",
+          "strace_exit_probe.py": "3e2203239f5f348a8462a1dec86257becb03315d30a0a015ccb728b16ae18e37",
+          "strace-6.1-exit-delay.patch": "878d70b6b699b40b51173883f5aeba0ae3971dd1b10f64844151cbedc2d315d6"
+        },
+        "cases": [
+          {
+            "profile": "original-pass",
+            "tool_sha256": "e60f6a83a9c18bdf1733ff671e9b9bbf1f498a0f1af480ce550b3dd9653172db",
+            "command": [
+              "/out/strace-original",
+              "-f",
+              "-ttt",
+              "-yy",
+              "-P",
+              "destination.json",
+              "-e",
+              "trace=openat",
+              "-o",
+              "/out/original-pass/trace.log",
+              "/out/fixture",
+              "/out/original-pass"
+            ],
+            "parent_pid": 17303,
+            "worker_tid": null,
+            "observed_hold": false,
+            "exit": 4,
+            "exit_observation_ms": 1.08,
+            "stdout_before_cleanup": "{\"event\":\"ready\",\"pid\":17303}\n{\"event\":\"returned\"}\n",
+            "stderr_before_cleanup": "",
+            "tracees_absent": true
+          },
+          {
+            "profile": "original-held",
+            "tool_sha256": "e60f6a83a9c18bdf1733ff671e9b9bbf1f498a0f1af480ce550b3dd9653172db",
+            "command": [
+              "/out/strace-original",
+              "-f",
+              "-ttt",
+              "-yy",
+              "-P",
+              "destination.json",
+              "-e",
+              "trace=openat",
+              "-o",
+              "/out/original-held/trace.log",
+              "-e",
+              "inject=openat:delay_enter=60s:when=1",
+              "/out/fixture",
+              "/out/original-held"
+            ],
+            "parent_pid": 17308,
+            "worker_tid": 17309,
+            "observed_hold": true,
+            "exit": "TIMEOUT",
+            "exit_observation_ms": 2000.136,
+            "stdout_before_cleanup": "{\"event\":\"ready\",\"pid\":17308}\n",
+            "stderr_before_cleanup": "/out/strace-original: dispatch_event: pid 17309 has delayed wait data set already\n",
+            "tracees_absent": true
+          },
+          {
+            "profile": "fixed-pass",
+            "tool_sha256": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+            "command": [
+              "/out/strace-exit-fixed",
+              "-f",
+              "-ttt",
+              "-yy",
+              "-P",
+              "destination.json",
+              "-e",
+              "trace=openat",
+              "-o",
+              "/out/fixed-pass/trace.log",
+              "/out/fixture",
+              "/out/fixed-pass"
+            ],
+            "parent_pid": 18994,
+            "worker_tid": null,
+            "observed_hold": false,
+            "exit": 4,
+            "exit_observation_ms": 1.085,
+            "stdout_before_cleanup": "{\"event\":\"ready\",\"pid\":18994}\n{\"event\":\"returned\"}\n",
+            "stderr_before_cleanup": "",
+            "tracees_absent": true
+          },
+          {
+            "profile": "fixed-held",
+            "tool_sha256": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+            "command": [
+              "/out/strace-exit-fixed",
+              "-f",
+              "-ttt",
+              "-yy",
+              "-P",
+              "destination.json",
+              "-e",
+              "trace=openat",
+              "-o",
+              "/out/fixed-held/trace.log",
+              "-e",
+              "inject=openat:delay_enter=60s:when=1",
+              "/out/fixture",
+              "/out/fixed-held"
+            ],
+            "parent_pid": 18999,
+            "worker_tid": 19000,
+            "observed_hold": true,
+            "exit": 4,
+            "exit_observation_ms": 1.093,
+            "stdout_before_cleanup": "{\"event\":\"ready\",\"pid\":18999}\n",
+            "stderr_before_cleanup": "",
+            "tracees_absent": true
+          }
+        ],
+        "source_archive": {
+          "url": "https://strace.io/files/6.1/strace-6.1.tar.xz",
+          "sha256": "2579e9cec37dbb786f6ea0bebd15f40dd561ef2bde2a2a2ecdce5963b01859fd"
+        },
+        "kernel": "Linux 6.12.101+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.101-1 (2026-08-05) x86_64",
+        "compiler": "cc (Debian 12.2.0-14+deb12u1) 12.2.0\nCopyright (C) 2022 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+        "fixture_sha256": "9c7c7e01d27f0979dcdd868543a2c4ee0f8d4c47a0b4d4f5d3d0ce21ab419067"
+      },
+      "free_bytes_before": 185238192128
+    }
+  ],
+  "interpretation": {
+    "cause": "The unmodified6.1 tracer delays PTRACE_EVENT_EXIT after exit_group while the syscall delay remains active. Same C fixture, same60s delay, only EXIT handling changes: original-held times out after2s with delayed-wait diagnostic; fixed-held exits4 in1.093ms after about1.008s observed hold, with no returned marker. Both no-injection controls exit4.",
+    "patch": "Clear only the per-thread delayed flag and free/null its copied wait record at irreversible EXIT. Keep global timer because other threads may use it.",
+    "source_inspection": [
+      "https://github.com/strace/strace/blob/v6.1/src/strace.c",
+      "https://github.com/strace/strace/blob/v6.1/src/delay.c",
+      "https://man7.org/linux/man-pages/man2/ptrace.2.html"
+    ],
+    "capture_verification": "Both complete capture archives/hash manifests and1109 source files per attempt verified against exact Git archives. First verifier expected the3.11 traceback in runner.log; actual traceback is in orchestrator.log. Original failed verified-first.log retained; corrected complete verifier PASS.",
+    "independent_ai_review": "Read-only source/capture review independently verified36/11 capture files, both1109 source manifests,550/549 complete prior container projections and actual traces/stdout/stderr. No discrepancy found; no tests/SSH/edits. Tool ELF hashes compared between remote records, not locally rehashed ELF bytes."
+  },
+  "limits": [
+    "Only isolated Linuxamd64 tracer behavior; not general strace qualification or an upstream fix claim.",
+    "delay_enter suspends the real caller at syscall entry; does not exercise arbitrary uninterruptible kernel I/O, media failure or power loss.",
+    "BigBrotr successful bounded termination, terminal SQL, COMMIT ambiguity/custody and standalone export remain unqualified by this instrument probe."
+  ]
+}

@@ -21,7 +21,7 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEADb5efc190295131b13fe936a1e0761941afa96829, origin/mainc494932; candidate53c6c9d and its scoped
+Current main/HEAD9b30c3535c1407294fb95b40df8019ebda6860f9, origin/mainc494932; candidate53c6c9d and its scoped
 evidence75906fc pushed normally. GET whitespace correction3a898c4 and blocked-checker candidate324b8eb are pushed
 with original failure evidence. Root owns only the tracer discriminator/patch
 and this checkpoint. Candidate53c6c9d was clean at transfer.
@@ -291,29 +291,31 @@ Local .research/implementation/export-checker/; inventory
 implementation_export_checker_incomplete_20260924. Verification PASS applies to
 capture integrity, not the incomplete product scenario.
 
-Next bounded action: commit original failure evidence, then isolate the tracer
-failure with a tiny native multithreaded syscall/exit discriminator before any
-new BigBrotr run. Exact upstream strace6.1 and7.0 dispatch_event both handle
-TE_STOP_BEFORE_EXIT then reapply syscall_delayed, retaining the exit event until
-the injected delay ends. Investigate a minimal research-only exit-event fix
-versus unmodified tool (source/patch/artifact identities), not a blind upgrade
-or weakened product test. Prepared research-only strace-6.1-exit-delay.patch clears the per-thread flag
-and frees/nulls copied wait data only at irreversible EXIT; global timer remains.
-Exact source review and independent AI agree with this scope. A tiny unchanged
-pthread fixture and strace_exit_probe.py now compare unmodified/fixed tools,
-with/without60s hold, required1s observed hold and2s process-exit bound. Syntax
-and artifact checks PASS; actual tool build/execution NOT_RUN. Inputs/recipe
-experiments/archive-engine/strace-exit-probe.md; ignored launcher/transfer and
-pinned archive .research/implementation/strace-exit/. Next commit/transfer creates
-a separate unprivileged no-network2CPU/2GiB/128PID lab after fresh inventory.
-First probe lab strace-exit-b5efc19 ended INCOMPLETE before extraction/build:
-runner Python3.11 does not support tarfile.extractall(filter=). Original result
-and traceback preserved. Owner30ca97ef90ea5f4c7943b2534b94eea8, label
-org.bigbrotr.strace-exit, runner6aa5d4b038625a339131c1563749c385d19be4cfc04d3d288267978b7ec175e9
-stopped; no network/PG resources created. Inventory/capture pending. Root now
-corrects extraction for exact3.11: validate every path/type/hardlink target,
-copy regular bytes exclusively and never restore links/ownership/mode metadata.
-Next fresh candidate must run the same unmodified/patched discriminator.
+[Research instrument discriminator](evidence/p08-export-checker-instrument-20260924.json)
+at9b30c35 is PASS-scoped: same tiny pthread fixture, original/patched strace6.1,
+with/without60s injected hold. Original-held times out2s with internal diagnostic;
+fixed-held exits4 in1.093ms after about1.008s actual hold, without syscall return.
+Both no-injection controls exit4. Patch affects only irreversible EXIT handling,
+clears per-thread delay/copy and preserves global timer; no product dependency
+changed. Earlier b5efc19 attempt remains INCOMPLETE before build because exact
+runner Python3.11 lacks extractall(filter=); safe byte-only extraction corrected.
+Both original artifacts and first local verifier log-location error preserved.
+
+Two no-network labs strace-exit-{b5efc19,9b30c35} stopped/PID0/noOOM, exits1/0.
+Inventory implementation_strace_exit_{b5efc19,9b30c35}_20260924 records full IDs.
+Capture11/36 files and1109 exact Git sources each verified; independent read-only
+AI repeated source/capture/prior-container/trace checks without discrepancies.
+ELF hashes compared from remote records, not local binary bytes.549/550 prior
+container records preserved/eight unrelated running. Latest free185094381568bytes;
+no active lab, database, cleanup debt or deletion. Full source/build/tool artifacts
+retained, especially qualified out/strace-exit-fixed SHA509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458.
+Local .research/implementation/strace-exit/attempt-{b5efc19,9b30c35}/.
+
+Next bounded action: strengthen checker signal timing and tracee cleanup,
+batch its SQL oracle, then consume the exact qualified research tracer in a
+fresh exact-revision BigBrotr lab after inventory/capacity/ownership/hash checks.
+Original324b8eb INCOMPLETE is unchanged. No arbitrary kernel-I/O or power-loss
+claim from a suspended syscall-entry fixture.
 
 Independent AI static review also found missing submit-time/margin immediately
 before SIGTERM, limited pre-signal/post-exit flock samples and early-tracer-exit
