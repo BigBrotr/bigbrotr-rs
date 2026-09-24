@@ -11,7 +11,7 @@ from signed_publication_cases import Process, command, event, send
 
 
 def main(root, profile=None):
-    assert profile in (None, 'commits', 'custody', 'client', 'prepare-browser', 'checker', 'locks', 'revoke')
+    assert profile in (None, 'commits', 'custody', 'client', 'prepare-browser', 'checker', 'locks', 'revoke', 'expiry')
     state=json.loads((root/'resources.json').read_text()); runner=state['container_id']; pg=state['postgres_id']; db='bbpub_control_normal'
     path=root/'resume-http-cases.json'; assert not path.exists()
     result=dict(status='INCOMPLETE',source=state['source'],tree=state['tree'],cases={},scope='Actual installed resume HTTP and application-role SQL; native execution disabled to observe exact accepted revision. No resumed artifact output or COMMIT-fault qualification.')
@@ -21,6 +21,7 @@ def main(root, profile=None):
     if profile=='prepare-browser': result['scope']='Verified signed seed and paused7/config1/policy2 fixture prepared for a separate production browser run. This result alone does not exercise the browser or resume HTTP.'
     if profile=='checker': result['scope']='Actual resume destination openat held, Control renewal and SIGTERM; unchanged paused unit and original pin. Priming marker is deliberately incompatible; no accepted resume or output qualification.'
     if profile=='revoke': result['scope']='Authenticated scope revocation while a real resume marker open waits; fresh authorization must refuse acceptance. No export execution or arbitrary kernel-stall qualification.'
+    if profile=='expiry': result['scope']='Actual installed resume COMMIT held across idle/maximum-clamped session expiry and a timely positive control. No inconsistent session fixture or separate maximum-predicate discriminator.'
     if profile=='locks': result['scope']='Actual installed HTTP across PostgreSQL account/source row waits with valid short seeded sessions, plus timely acceptance. No configurable-login lifetime or arbitrary clock fault qualification.'
     client=None
     def save(): path.write_text(json.dumps(result,indent=2)+'\n')
@@ -69,6 +70,11 @@ def main(root, profile=None):
             import resume_revoke_cases
             result['revoke']=resume_revoke_cases.run(root,state,sql)
             assert result['revoke']['status']=='PASS'
+            result['status']='PASS';return
+        if profile=='expiry':
+            import resume_lock_cases
+            result['expiry']=resume_lock_cases.run(root,state,sql,profile='expiry')
+            assert result['expiry']['status']=='PASS'
             result['status']='PASS';return
         if profile=='locks':
             import resume_lock_cases

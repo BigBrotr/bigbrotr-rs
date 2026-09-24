@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-24 in the primary Mac workspace. Navigation, not evidence or a
+Observed 2026-09-25 in the primary Mac workspace (latest Tux timestamps are UTC). Navigation, not evidence or a
 second plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint):
 verify Git, actual artifacts and live resource ownership before continuing.
 Historical detail stays in Git and linked reports; task files own completion.
@@ -19,10 +19,12 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-HEAD6aac0e94b27bb0e8436a2831e1ed9a942a80ca34, tree
-5dfb71fa56eda27473ce0d98ace544fc5fb6a43f; candidate above private origin/main2b61b4e.
-Root owns only current evidence/inventory/P08/operations/checkpoint edits; no foreign
-work. No product Rust/SQL changes. Native runtime retains8dbd3c4 identity after
+HEAD/origin/main183ceb8e25f8bd03b3e0f3648d42ce21f97f3a53, tree
+c1d241dc2d2f959df167b70b0cdfb7b8df9ab1d7. Fixture6aac0e9 plus reviewed evidence
+are pushed to private BigBrotr/bigbrotr-rs/main; ls-remote matches, no rewrite.
+Clean immediately after push; root now owns this checkpoint, existing lab/HTTP/
+short-session harness/client and shared proxy edits plus new test_resume_expiry.py.
+No foreign work. No product Rust/SQL changes. Native runtime retains8dbd3c4 identity after
 complete unchanged product/build input comparison. Native run is finished.
 
 [Resume revocation](evidence/p08-export-resume-revocation-native-20260924.json)
@@ -68,11 +70,34 @@ checks and attributed login/short-session provisioning. Original capture and its
 two offline-observer corrections remain retained; no rerun. Short1.25s idle/60s
 maximum sessions are valid audited SQL fixtures, not configurable login behavior.
 
-Next: finish final report/diff review and checks, then commit/push the current
-fixture plus verified evidence to private main. Resume remaining expiry boundaries:
-inspect current final authentication/COMMIT checks and existing row-wait harness
-for a discriminating maximum-expiry and deferred-COMMIT expiry scenario. Preserve
-current captures and do not broaden this PASS to those unexecuted schedules.
+The existing short-session/HTTP harness now has a separate expiry profile for
+held actual resume COMMIT: idle expiry, maximum-clamped expiry and timely positive
+release. Existing locks profile remains distinct.
+Read full0814,0806, Rust resume adapter/runtime consumer and489-line proxy.0814
+defers exact BB001 session validation to COMMIT; the adapter should rollback/401
+and keep Control reusable.0806 requires idle_expires=min(maximum,last_seen+idle),
+so valid maximum-bound sessions cannot isolate removal of only the maximum
+predicate; do not invent an inconsistent fixture to claim that discriminator.
+Use existing hold-commit, verify actual backend idle-in-transaction after job
+UPDATE while COMMIT remains unforwarded, then release across the real SQL clock.
+Specific safe BB001/matching814-message and subsequent ReadyForQuery I counters
+are implemented. New wire tests were RED on the missing counter, then all three
+tests/four exchanges pass; full17resume fixture tests and artifact/handoff/diff
+checks pass. Root and read-only AI static review found no remaining blocker.
+Actual accepted_at precedes the held COMMIT; compare it before the held clock,
+not after release. Release clock is before sending proxy release, not actual
+server commit time. Error must401 with no durable effects and same Control
+PID/start still usable; positive must202 with exact one atomic receipt. Native
+outcomes NOT_RUN. Fresh Tux prelaunch22:02:46Z:113696362496bytes free,764containers,
+eight unrelated running, no BigBrotr process; mounts/processes/ports/network/
+volumes inventoried in resume-expiry-prelaunch-20260925.json. No retirement.
+
+Next: commit the clean fixture candidate, exact-Git transfer through ignored
+transfer-resume-expiry.py with8db runtime reuse, then observe without rerun.
+Capture through collect-runtime.py after stopped-retained. Verify original12
+ledgers/session/audit/receipt and specific BB001/idle wire evidence plus actual
+SQL held transaction and terminal resources. Do not use old offline row-wait
+assertions unchanged. Preserve all current captures.
 Further account/grant/CAS orderings, zero/multiple streams, CLI/cancel, mixed
 workloads and the full installed/release journeys remain open. No full task/M1
 or complete-product claim.

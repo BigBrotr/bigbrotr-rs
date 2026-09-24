@@ -17,7 +17,7 @@ from commit_client import emit, lock_available
 
 
 def main(name, port, job):
-    assert name in ('account-expiry','source-expiry','source-live') and 0<port<65536
+    assert name in ('account-expiry','source-expiry','source-live','commit-idle-expiry','commit-maximum-expiry','commit-live') and 0<port<65536
     assert re.fullmatch('[0-9a-f]{32}',job)
     original=http.CONFIG
     needle='[postgres.control]\nendpoint="127.0.0.1:5432"'

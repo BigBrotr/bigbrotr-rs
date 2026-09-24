@@ -146,6 +146,7 @@ class Proxy:
         self.report.update(auth_finals_omitted=0, frontend_queries=0, coordinator_inserts=0)
         self.report.update(pin_claim_injections=0, pin_rejections=[])
         self.report.update(session_mutations_complete=0, reader_queries=0, capture_verify_requests=0, resume_authority_requests=0)
+        self.report.update(resume_expiry_rejections=0, resume_expiry_idle=0)
 
     def emit(self, event, **extra):
         print(json.dumps(dict(event=event, mode=self.mode, target=self.target, **self.report, **extra)), flush=True)
@@ -203,7 +204,7 @@ class Proxy:
         upstream_writer.write(header + startup)
         await upstream_writer.drain()
         state = dict(data=False, commit=False, backend_pid=None,
-                     owner_statement=None, owner_waiting=False, owner_forwarded=False, capture_statements=set())
+                     owner_statement=None, owner_waiting=False, owner_forwarded=False, capture_statements=set(), resume_expiry_waiting=False)
         session_commands = SessionCommandObserver(self.target) if self.target in (
             'control-session-issue', 'control-session-revoke') else None
         resume_authority = ResumeAuthorityObserver() if self.mode == 'hold-resume-authority' else None
@@ -368,6 +369,14 @@ class Proxy:
                     state['backend_pid'] = struct.unpack('!I', body[:4])[0]
                 if not frontend and tag == b'E' and state['data']:
                     fields = body.split(b'\0')
+                    if (self.target == 'control-export-resume' and state['commit']
+                            and b'CBB001' in fields
+                            and b'Mexport resume session authority expired or changed before commit' in fields):
+                        # Other guards also use BB001. Retain only this closed
+                        # classification, never arbitrary backend error details.
+                        assert not state['resume_expiry_waiting']
+                        state['resume_expiry_waiting'] = True
+                        self.report['resume_expiry_rejections'] += 1
                     if self.target == 'control-pin' and b'C23514' in fields:
                         for label, message in [('missing-prefix', b'native pin requires every positive source prefix atomically'),
                                                ('wrong-prefix', b'native pin claim must retain its exact positive prefix'),
@@ -405,6 +414,9 @@ class Proxy:
                     # connection. Its later transactions need fresh classification.
                     state['commit'] = False
                     state['data'] = False
+                    if state['resume_expiry_waiting']:
+                        self.report['resume_expiry_idle'] += 1
+                        state['resume_expiry_waiting'] = False
                 if not frontend and tag == b'Z' and state['owner_waiting']:
                     assert body == b'T'
                     state['owner_waiting'] = False
