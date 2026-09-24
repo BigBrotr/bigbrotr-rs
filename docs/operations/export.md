@@ -3,8 +3,9 @@
 P08-T03/T04 implementation is in progress. The current finite commands prepare
 and inspect the filesystem destination. Job acceptance has
 [scoped native evidence](../implementation/evidence/p08-export-acceptance-native-20260924.json),
-and the private job route below is implemented under native qualification.
-There is no completed file export yet. Execution, restart,
+and the private job route has
+[native HTTP acceptance/retry evidence](../implementation/evidence/p08-export-job-http-native-20260924.json).
+There is no completed file export yet. Execution and its recovery,
 output formats, object storage and artifact publication remain required work.
 
 Configure an explicit private destination in the deployment file:
@@ -106,7 +107,10 @@ valid session/history runtime remains available when no destination is selected.
 With the protocol available, historical receipts remain resolvable even after
 removing the destination or disabling the native reader. New work needs both.
 Known destination/native refusals leave Control usable. Unknown Control/COMMIT
-outcomes fail closed and preserve retained obligations. The actual HTTP/engine,
-blocked-checker and ambiguity cases must qualify these guarantees; transport
-tests alone do not establish them. Job discovery, scheduling/execution and
+outcomes fail closed and preserve retained obligations. The scoped native HTTP
+evidence covers missing privileges, changed marker,
+missing native assets, exact retry, Control restart without destination/reader,
+and revocation with retained job/pin. Actually blocked checker and ambiguous
+COMMIT schedules remain unqualified; transport tests alone do not establish them.
+Job discovery, scheduling/execution and
 terminal recovery remain required P08-T03/T04 work.

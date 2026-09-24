@@ -21,12 +21,11 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD and origin/main78a1ee26e94e16675febbf627a1174c3c43ed03d,
-both preceding commits5705b07/78a1ee2 pushed normally to the private origin.
-Root owns the dirty HTTP export slice: interfaces management/serve/export,
-job decode, optional Control protocol probe, shared initial QueryRequest decode,
-OpenAPI/generated types, native HTTP fixtures and affected contracts/checkpoint.
-No unrelated edits or active laboratory; no published history rewritten.
+Current main/HEAD53c6c9de6e6f83e67e6930c5e75e1ef0a8b7299b, origin/main
+78a1ee26e94e16675febbf627a1174c3c43ed03d (ahead1, not yet pushed).
+Candidate53c6c9d was clean at native transfer and resume. Root now owns only
+concise native evidence, inventory, operator/task documentation and this checkpoint.
+No unrelated edits, active laboratory or rewritten published history.
 
 Private POST /management/v1/jobs now reuses the supervised native allocation
 consumer and atomic813 adapter. Original destination Arc lives through actual
@@ -54,19 +53,41 @@ Actual TCP RED405 -> three job route tests GREEN; full binary41, command5,
 destination6, read-codec2 PASS on Mac. Final scoped Clippy PASS, generated types
 and client TypeScript checks PASS; earlier client10 PASS. Artifact/link/fmt checks
 PASS-scoped. Missing Management test field and unnecessary unwrap corrected;
-original intermediate failures retained. No native HTTP evidence yet. AI reviewed
+original intermediate failures retained. Native HTTP evidence below now exists. AI reviewed
 custody/cleanup/optional-protocol and decoder; no tests/SSH/resources by reviewer.
 
-Next candidate uses experiments/archive-engine/export_job_http{,_cases}.py:
-actual812 no-destination refusal preserving session, selected813 prerequisite,
-source UPDATE ACL negative, independent grants/destination/native refusals,
-actual signed-event query acceptance, exact retries/row+xmin invariance and restart
-with destination+reader removed, revocation preserving original job/exportpin.
-Host barriers compare all ledgers before/after acceptance and retries, then only
-export effects after legitimate grant revocation. This is acceptance, not a file.
-Prepared ignored launcher/transfer .research/implementation/export-job-http/;
-no remote root exists yet. Fresh process/container/mount/free-space inventory
-precedes copying the verified stopped5705b07 cache; preserve all retained data.
+[Private export HTTP evidence](evidence/p08-export-job-http-native-20260924.json)
+at53c6c9d/treea6607129 is PASS-scoped,11 actual cases: optional812 remains usable,
+selected813/source UPDATE privilege required before listener, independent grant/
+CSRF/revision/destination/native refusals, real native atomic acceptance and exact
+retry. Actual Control restart removes destination AND reader yet returns the same
+receipt; new work refuses. Revoking export preserves the original job/pin.
+All8 ledgers row+xmin hashes compare at retry/restart; original export effects
+compare after legitimate grant mutation. Before acceptance job/pin/claim0,
+final accepted job1/exportpin1/claim1/reader0/Control0/both databases backend0.
+Requested event is independently signed E_public; eight Parquet hashes unchanged.
+No output file or ambiguous COMMIT/blocked filesystem qualification.
+
+Native binary41/commands5/schema21/destination6/read-codec2 and Clippy PASS via
+shared tools.ci. Capture33/source1102/fiveELF/fiveassets verified, SHA
+9160fd1b07be27767543b93289346264411a15bf84e04b70f3561c24277c4966;
+original PASS_PENDING_CAPTURE preserved. Independent AI rechecked source/capture/artifact parity, independent digest,
+all8 ledger retry/restart/revocation hashes and545 prior records; no discrepancy
+in these claims. Reviewer reports GET projection.trim accepts
+non-JSON Unicode whitespace (NBSP); fix with discriminating codec regression next.
+Does not affect these POST cases. No product test/SSH execution by reviewer.
+
+Stopped root /home/tux/bigbrotr-implementation-20260917/runs/export-job-http-53c6c9d,
+owner081c997dedc334103edc5f9601d5c7e0, org.bigbrotr.archive-visibility;
+PG038c001ad3b896d488254c3e4e7b3cd3f0dd2f9648004cdb56175c2ee54c1b50,
+runnercca28df70646cd720d5ef7c25a5489194965095fe9d6c3fee9d8f9d38cbbc1b0.
+Fresh resume inspection confirms PID0/noOOM, runner0/PGwrapper137. Owned network
+removed,545 prior records unchanged/eight unrelated running at terminal.
+Free192720818176 ->189041491968bytes; resume189024509952bytes, concurrent writes
+possible. Source, PGdata, archive, artifacts and complete cache retained.
+Job35363c3023bd47efb753db3de5d19f7f deliberately retains its export obligation.
+Local .research/implementation/export-job-http/; inventory
+implementation_export_job_http_20260924. No deletion or active cleanup debt.
 
 [Native acceptance evidence](evidence/p08-export-acceptance-native-20260924.json)
 at5705b07 remains PASS-scoped: four grant prerequisite cases plus one export
@@ -242,16 +263,14 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: commit the locally verified HTTP/decoder candidate and run
-its exact Git revision on isolated Tux using the prepared launcher. Inspect actual
-terminal SQL/resources and collect/hash evidence; preserve failures honestly.
-Then qualify blocked checker and COMMIT loss before claiming those guarantees,
-and continue standalone signed JSONL execution/restart toward M1.
+Next bounded action: commit/push the reviewed scoped HTTP evidence. Correct GET nullable-projection whitespace parity with RED/GREEN codec
+evidence. Then qualify an actually blocked destination checker and COMMIT loss
+before claiming those guarantees; continue standalone signed JSONL execution/restart.
 
-Pending required acceptance: source-lock ACL negative, actually blocked checker,
-COMMIT loss/restart, zero/multistream cuts, old pin/job anti-adoption, nonterminal
-release refusal/recovery and deferred source-lock expiry. Then standalone signed
-JSONL artifact/execution and end-to-end restart; no full P08/M1 completion.
+Pending required acceptance: actually blocked checker, COMMIT loss/restart,
+zero/multistream cuts, old pin/job anti-adoption, nonterminal release refusal/
+recovery and deferred source-lock expiry. Then standalone signed JSONL artifact/
+execution and end-to-end restart; no full P08/M1 completion.
 
 Job design inspected independently: reuse protocol1 purpose=export, atomic
 command/job/link/exact complete cut and pin; no adoption of historical pins/jobs.
@@ -271,7 +290,7 @@ export pin remains after Control restart/expiry. After actual terminal effect
 resolution, original holder may release; old-holder release needs existing fresh
 exclusive recovery-only custody. archive_pin_recoveries is completed evidence,
 not pending queue: link plus unreleased lease owns remaining cleanup. The command, applied migration and adapter have the bounded native acceptance
-evidence above; later custody/ACL delta is only locally tested. P08-T03/T04 and owning contracts remain incomplete.
+evidence above; custody/ACL delta now has scoped HTTP/native evidence; blocked/unknown boundaries remain open. P08-T03/T04 and owning contracts remain incomplete.
 
 Stopped root /home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be,
 ownerf61ac9d8311ca2e3bdfd09d2a67a16fa, label org.bigbrotr.archive-visibility;

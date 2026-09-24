@@ -1,0 +1,241 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "task": [
+    "P08-T03",
+    "P08-T04"
+  ],
+  "status": "PASS-scoped",
+  "source": "53c6c9de6e6f83e67e6930c5e75e1ef0a8b7299b",
+  "tree": "a6607129e2825da88ed3d9022f4cd9eb9771efd5",
+  "scope": "Private HTTP acceptance of one exact signed-event export job through real native allocation; authenticated historical retry, restart with destination/reader removed, and grant revocation. No file execution or ambiguous COMMIT qualification.",
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 2,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128
+    }
+  },
+  "capture": {
+    "local": ".research/implementation/export-job-http/capture",
+    "archive_sha256": "9160fd1b07be27767543b93289346264411a15bf84e04b70f3561c24277c4966",
+    "files": 33,
+    "source_files": 1102,
+    "source_manifest_sha256": "f69e1215d2b20615f128cc98e0b94099453f21840b0942b48b032407183394e0",
+    "artifacts": {
+      "control": "c3a7de83a327dbebc3f31b2b4581e462e7c80de5afb9e67ab2219017bf8ae493",
+      "worker": "46d4d5ef41dfbf242773e435c2de0d744d7b6c623dd81f81c94a1a0b476d41a7",
+      "event_reader": "56a7a330b4211973ac0ac86bb89ff71970f354706978f66e99d7e957e978d714",
+      "publisher": "15addff31ae013f298a31f3c672e92a8557e18d122eededa01598fd43d5bca70",
+      "reader": "78b982cce7d01b3a415888a05ae267fe5c19cb69d8122d546d4f243897616db2"
+    },
+    "native_assets": {
+      "bigbrotr-archive-worker": {
+        "bytes": 14378512,
+        "sha256": "46d4d5ef41dfbf242773e435c2de0d744d7b6c623dd81f81c94a1a0b476d41a7"
+      },
+      "extensions/ducklake.duckdb_extension": {
+        "bytes": 36436086,
+        "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+      },
+      "extensions/httpfs.duckdb_extension": {
+        "bytes": 21570542,
+        "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+      },
+      "extensions/postgres_scanner.duckdb_extension": {
+        "bytes": 41696558,
+        "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+      },
+      "lib/duckdb.h": {
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "lib/libduckdb.so": {
+        "bytes": 70529912,
+        "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+      }
+    }
+  },
+  "executed": {
+    "mac": "Actual TCP route RED405 then3 route tests GREEN; binary41,command5,destination6,read-codec2 tests and scoped Clippy PASS. Generated contract/client TypeScript and artifact/format checks PASS. Original intermediate compile/test failures retained under .research/implementation/export-jobs.",
+    "decoder_memory": {
+      "scope": "Isolated actual Rust System allocator on Mac, Deserialize only; body already owned. Not RSS/native/all-input memory qualification. Both final probes retain0 bytes after refusal.",
+      "unknown_field": {
+        "wire_bytes": 6023,
+        "before_peak_bytes": 258008,
+        "after_peak_bytes": 225
+      },
+      "projection_array": {
+        "wire_bytes": 6832,
+        "empty_strings": 2049,
+        "before_peak_bytes": 98529,
+        "after_peak_bytes": 341
+      },
+      "source": "experiments/job-command-decode",
+      "raw": ".research/implementation/export-jobs/decode-*",
+      "regressions": "Counted-reader tests reject unsupported field/projection before reading amplified value; old implementation fails each discriminator. Supported QueryRequest shapes and identity unchanged."
+    },
+    "native_checks": "Shared tools.ci native profile: binary41,commands5,schema21,destination6,read-codec2 tests; scoped Clippy and actual parent/worker builds PASS. Not hosted GitHub Actions.",
+    "native_cases": [
+      {
+        "case": "unselected-destination-refuses-job-without-poisoning812-runtime",
+        "status": "PASS"
+      },
+      {
+        "case": "selected-destination-requires-explicit813-before-private-listener",
+        "status": "PASS",
+        "observation": {
+          "exit": 3,
+          "remote_exclusion": "UNKNOWN",
+          "stdout": "",
+          "stderr": "error: private session prerequisites refused: Prerequisite\n",
+          "overflow": false
+        }
+      },
+      {
+        "case": "source-row-lock-privilege-is-required-before-private-listener",
+        "status": "PASS",
+        "observation": {
+          "exit": 3,
+          "remote_exclusion": "UNKNOWN",
+          "stdout": "",
+          "stderr": "error: private session prerequisites refused: Prerequisite\n",
+          "overflow": false
+        }
+      },
+      {
+        "case": "new-export-needs-live-session-csrf-and-each-independent-scope-action",
+        "status": "PASS"
+      },
+      {
+        "case": "revision-and-destination-digest-conflict-without-acceptance",
+        "status": "PASS"
+      },
+      {
+        "case": "changed-destination-refuses-under-supervised-checker-and-keeps-control-healthy",
+        "status": "PASS"
+      },
+      {
+        "case": "missing-native-bundle-leaves-no-job-or-retained-reader-pin",
+        "status": "PASS"
+      },
+      {
+        "case": "real-native-allocation-accepts-one-job-and-export-pin-atomically",
+        "status": "PASS"
+      },
+      {
+        "case": "same-key-retry-preserves-durable-rows-and-changed-query-conflicts",
+        "status": "PASS"
+      },
+      {
+        "case": "restart-with-destination-and-reader-removed-resolves-original-receipt",
+        "status": "PASS"
+      },
+      {
+        "case": "revocation-does-not-reapply-or-release-original-export-obligation",
+        "status": "PASS"
+      }
+    ],
+    "receipt": {
+      "accepted_at_us": "1790203409234847",
+      "authority": "acceptance-only",
+      "command_key": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+      "created": true,
+      "execution": "unobserved",
+      "format": "bigbrotr-job-acceptance/1",
+      "job_id": "35363c3023bd47efb753db3de5d19f7f"
+    },
+    "fingerprint": {
+      "expected": "9d3a576fd9d9c54db55bbcee9102ef57ad0ef7625028ac10324338161b36d743",
+      "actual": "9d3a576fd9d9c54db55bbcee9102ef57ad0ef7625028ac10324338161b36d743",
+      "actor": "212fbbc35af1cfb47c5a04c0cbb51936",
+      "binding": "f0117fd7e99831f5bbeda05fd2f8b0d000cc5621b4c0049fcefe4e68fe7f48fb"
+    },
+    "independent_sql": {
+      "commands": 1,
+      "details": 1,
+      "audit": 1,
+      "jobs": 1,
+      "export_pins": 1,
+      "reader_pins": 0,
+      "claims": 1
+    },
+    "both_database_backends": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "grants_after_revocation": [
+      [
+        "export",
+        false,
+        "2"
+      ],
+      [
+        "history.read",
+        true,
+        "1"
+      ],
+      [
+        "private-export",
+        true,
+        "1"
+      ]
+    ],
+    "signed_input": "Independent archive oracle/readback uses actual signed E_public a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb, also the requested event ID. Eight Parquet hashes unchanged across HTTP cases. No exported file.",
+    "retry_oracle": "All8 ledgers compared including row/xmin hashes after accepted/retried/restarted host barriers; original export-only effects compared again after legitimate grant revocation. Exactly one job/export pin/positive claim remains; temporary reader pins0 and final active Control0.",
+    "destination_checker": "Removed marker causes503 while Control remains healthy; this is a real filesystem refusal, not a blocked I/O experiment.",
+    "privilege": "REVOKE source_streams UPDATE independently checked absent, selected-destination startup exits3 before private listener; restored before positive acceptance.",
+    "restart": "Actual Control stop/start with destination section removed and reader disabled: identical key/body returns200 same job/time; new key returns503. Revoke export separately, historical retry remains200 and new key403.",
+    "independent_ai_review": "Read-only AI independently rehashed33 capture files and1102 exact Git sources, compared5 artifact records/5 native assets, recomputed request digest, checked11 cases and all8 ledger row/xmin hashes across retry/restart/revocation, and compared545 prior container records. No product tests/SSH/local ELF-byte rehash. One separate GET nullable-projection Unicode-whitespace discrepancy found; correction remains next work and does not affect these POST cases."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-http-53c6c9d",
+    "owner": "081c997dedc334103edc5f9601d5c7e0",
+    "label": "org.bigbrotr.archive-visibility",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "038c001ad3b896d488254c3e4e7b3cd3f0dd2f9648004cdb56175c2ee54c1b50"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "cca28df70646cd720d5ef7c25a5489194965095fe9d6c3fee9d8f9d38cbbc1b0"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "original_terminal": "PASS_PENDING_CAPTURE",
+    "prior_containers": 545,
+    "prior_preserved": true,
+    "unrelated_running": 8,
+    "free_bytes_before": 192720818176,
+    "free_bytes_after": 189041491968,
+    "free_space_note": "Concurrent host writes may contribute; no cache/dataset deletion in this run. Fresh resume inspection confirms both owned containers stopped/PID0/noOOM, runner0/PGwrapper137; free189024509952bytes.",
+    "retained": "Source, PGdata, signed archive, destination marker, binaries, logs and complete build cache retained. Accepted job35363c3023bd47efb753db3de5d19f7f deliberately retains its export pin/claim. No active laboratory or cleanup debt."
+  },
+  "verification_limits": [
+    "Prerequisite-refused process observations report remote_exclusion UNKNOWN; exit3/empty stdout/refusal recorded, not called graceful Control release. Subsequent actual server stops and independent final backend checks are separate observations.",
+    "Remote collector hashes actual ELF bytes; local verification compares captured identities with exact build/source records, not a local ELF rehash.",
+    "Original terminal PASS_PENDING_CAPTURE preserved. Full local capture/source/artifact verification succeeded.",
+    "First allocator-probe driver compiler failure appeared in tool output without saved compiler log; original unknown-field RED log retained but original binary overwritten. Final probes retain exact binary/library identities."
+  ],
+  "not_run": [
+    "Actually blocked destination checker; request disconnect/signal while it remains blocked and custody through Control transport destruction",
+    "Acceptance COMMIT loss, before/after commit crash, unknown-outcome reconciliation and old-holder pin recovery",
+    "Standalone signed JSONL production, scheduling/cancel/resume, terminal export cleanup and packaged export journey",
+    "Multi-stream/zero-prefix fixtures, old pin/job anti-adoption, foreign backend mutation and source-lock expiry races",
+    "Aged/mixed workloads, common64MiB, native Linux arm64 and complete product/release journeys"
+  ]
+}
