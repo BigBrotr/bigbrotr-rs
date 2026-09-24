@@ -1,0 +1,567 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "INCOMPLETE",
+  "date": "2026-09-24",
+  "tasks": [
+    "P09-T09 Step 2",
+    "P09-T11"
+  ],
+  "source": "8743fd81df402c2590ed2eec52d561e994f01c5c",
+  "tree": "c285b42059ac0dce35c10037e78dd72a5f80d6be",
+  "scope": "Skip-link viewport geometry and keyboard follow-up to ca44302; no complete accessibility qualification",
+  "environment": {
+    "host": "tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "playwright": "1.63.0",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-8743fd8/capture",
+    "files": 189,
+    "sha256": "41f7a095cddb38c2378fd702d590ca52976d4aad4d46dc1bffdbf8e64e6d157b",
+    "source": "8743fd81df402c2590ed2eec52d561e994f01c5c",
+    "tree": "c285b42059ac0dce35c10037e78dd72a5f80d6be",
+    "source_files": 1205
+  },
+  "artifact_reuse": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-877f3d4",
+    "owner": "8ffeb89001b1123d49c279063dcc92c9",
+    "build": {
+      "source": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+      "tree": "57fb00da7c79384329ace08208f2b176e38ca82e",
+      "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "source_manifest_sha256": "d826acdd6c80ecddfa394162aeebee06400d4922774d08667cc65e6f8d401023",
+      "native_toolchain": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "discovery": "llvm-config",
+        "environment": {
+          "CC": "/usr/lib/llvm-14/bin/clang",
+          "CXX": "/usr/lib/llvm-14/bin/clang++",
+          "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+          "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+          "CARGO_BUILD_JOBS": "2",
+          "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+        },
+        "tools": {
+          "CC": {
+            "path": "/usr/lib/llvm-14/bin/clang",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "CXX": {
+            "path": "/usr/lib/llvm-14/bin/clang++",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "AR": {
+            "path": "/usr/lib/llvm-14/bin/llvm-ar",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+            "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+            "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+          },
+          "LIBCLANG_PATH": {
+            "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+            "version": "Debian clang version 14.0.6"
+          },
+          "discovery": {
+            "path": "/usr/lib/llvm-14/bin/llvm-config",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+            "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+            "version": "14.0.6"
+          }
+        },
+        "sdk": null
+      },
+      "scope": "Current installed executable and worker; practical profile recorded by the outer laboratory",
+      "build_info": {
+        "archive_worker": {
+          "bytes": 14378400,
+          "sha256": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+        },
+        "capabilities": [
+          "event-verification",
+          "config-static"
+        ],
+        "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+        "debug_info": "false",
+        "format": "bigbrotr-build/1",
+        "inputs_sha256": {
+          "Cargo.lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+          "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+          "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+          "contracts/release/dependencies.json": "14bb6d43630ff5ad0eeaec28236ca138224d5e97603200f456536abbaa2c94c6",
+          "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+        },
+        "optimization": "3",
+        "product": "BigBrotr",
+        "profile_assertion": "release",
+        "protocol_registry_format": "bigbrotr-protocol-versions/1",
+        "protocols": {
+          "event_verifier": "bigbrotr-nip01-verifier/1",
+          "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+        },
+        "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+        "schemas": {
+          "build_info": "bigbrotr-build/1",
+          "config_static": "bigbrotr-config-static/1",
+          "doctor": "bigbrotr-doctor/1",
+          "signed_event": "nip01-event/1"
+        },
+        "source": {
+          "dirty": false,
+          "manifest_sha256": "d826acdd6c80ecddfa394162aeebee06400d4922774d08667cc65e6f8d401023",
+          "revision": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+          "state": "builder-supplied",
+          "tree": "57fb00da7c79384329ace08208f2b176e38ca82e"
+        },
+        "target": "x86_64-unknown-linux-gnu",
+        "version": "0.1.0-dev"
+      },
+      "artifacts": {
+        "bigbrotr": "48ae6d1a7a1e685780d84db05692f75eb671c0e5178ad7aab7ca7b5f74325805",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      }
+    },
+    "validation": "Exact product/build input equality; fixture-only changes. No new compilation or Clippy run."
+  },
+  "results": {
+    "native_status": "18 exchanges PASS",
+    "browser_pairs": {
+      "chromium-root": "PASS",
+      "chromium-control": "PASS",
+      "firefox-root": "PASS",
+      "firefox-control": "PASS",
+      "webkit-root": "INCOMPLETE"
+    },
+    "webkit_control": "NOT_RUN",
+    "webkit_failure": {
+      "stage": "own-states-zero-checkpoint-no-idle-touch",
+      "kind": "AssertionError",
+      "location": {
+        "line": 124,
+        "column": 48
+      }
+    },
+    "geometry": {
+      "chromium-root": {
+        "beforeFullPage": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.5938)",
+          "box": {
+            "x": 11.1875,
+            "y": -86.40625,
+            "width": 131.609375,
+            "height": 48.796875,
+            "top": -86.40625,
+            "bottom": -37.609375,
+            "left": 11.1875,
+            "right": 142.796875
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "afterFullPage": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.5938)",
+          "box": {
+            "x": 11.1875,
+            "y": -86.40625,
+            "width": 131.609375,
+            "height": 48.796875,
+            "top": -86.40625,
+            "bottom": -37.609375,
+            "left": 11.1875,
+            "right": 142.796875
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "reverseTabs": 5,
+        "focused": {
+          "focused": true,
+          "position": "fixed",
+          "transform": "none",
+          "box": {
+            "x": 11.1875,
+            "y": 11.1875,
+            "width": 131.609375,
+            "height": 48.796875,
+            "top": 11.1875,
+            "bottom": 59.984375,
+            "left": 11.1875,
+            "right": 142.796875
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "keyboardTarget": "first-session-action"
+      },
+      "chromium-control": {
+        "beforeFullPage": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.5938)",
+          "box": {
+            "x": 11.1875,
+            "y": -86.40625,
+            "width": 131.609375,
+            "height": 48.796875,
+            "top": -86.40625,
+            "bottom": -37.609375,
+            "left": 11.1875,
+            "right": 142.796875
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "afterFullPage": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.5938)",
+          "box": {
+            "x": 11.1875,
+            "y": -86.40625,
+            "width": 131.609375,
+            "height": 48.796875,
+            "top": -86.40625,
+            "bottom": -37.609375,
+            "left": 11.1875,
+            "right": 142.796875
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "reverseTabs": 5,
+        "focused": {
+          "focused": true,
+          "position": "fixed",
+          "transform": "none",
+          "box": {
+            "x": 11.1875,
+            "y": 11.1875,
+            "width": 131.609375,
+            "height": 48.796875,
+            "top": 11.1875,
+            "bottom": 59.984375,
+            "left": 11.1875,
+            "right": 142.796875
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "keyboardTarget": "first-session-action"
+      },
+      "firefox-root": {
+        "beforeFullPage": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.6)",
+          "box": {
+            "x": 11.199996948242188,
+            "y": -86.39999389648438,
+            "width": 132.40000915527344,
+            "height": 48.79998779296875,
+            "top": -86.39999389648438,
+            "bottom": -37.600006103515625,
+            "left": 11.199996948242188,
+            "right": 143.60000610351562
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860.566650390625
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "afterFullPage": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.6)",
+          "box": {
+            "x": 11.199996948242188,
+            "y": -86.39999389648438,
+            "width": 132.40000915527344,
+            "height": 48.79998779296875,
+            "top": -86.39999389648438,
+            "bottom": -37.600006103515625,
+            "left": 11.199996948242188,
+            "right": 143.60000610351562
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860.566650390625
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "reverseTabs": 4,
+        "focused": {
+          "focused": true,
+          "position": "fixed",
+          "transform": "none",
+          "box": {
+            "x": 11.199996948242188,
+            "y": 11.199996948242188,
+            "width": 132.40000915527344,
+            "height": 48.80000305175781,
+            "top": 11.199996948242188,
+            "bottom": 60,
+            "left": 11.199996948242188,
+            "right": 143.60000610351562
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860.566650390625
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "keyboardTarget": "first-session-action"
+      },
+      "firefox-control": {
+        "beforeFullPage": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.6)",
+          "box": {
+            "x": 11.199996948242188,
+            "y": -86.39999389648438,
+            "width": 132.40000915527344,
+            "height": 48.79998779296875,
+            "top": -86.39999389648438,
+            "bottom": -37.600006103515625,
+            "left": 11.199996948242188,
+            "right": 143.60000610351562
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860.566650390625
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "afterFullPage": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.6)",
+          "box": {
+            "x": 11.199996948242188,
+            "y": -86.39999389648438,
+            "width": 132.40000915527344,
+            "height": 48.79998779296875,
+            "top": -86.39999389648438,
+            "bottom": -37.600006103515625,
+            "left": 11.199996948242188,
+            "right": 143.60000610351562
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860.566650390625
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "reverseTabs": 4,
+        "focused": {
+          "focused": true,
+          "position": "fixed",
+          "transform": "none",
+          "box": {
+            "x": 11.199996948242188,
+            "y": 11.199996948242188,
+            "width": 132.40000915527344,
+            "height": 48.80000305175781,
+            "top": 11.199996948242188,
+            "bottom": 60,
+            "left": 11.199996948242188,
+            "right": 143.60000610351562
+          },
+          "scroll": {
+            "x": 0,
+            "y": 860.566650390625
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "keyboardTarget": "first-session-action"
+      },
+      "webkit-root": {
+        "beforeFullPage": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.59375)",
+          "box": {
+            "x": 11.1875,
+            "y": -86.8125,
+            "width": 132.328125,
+            "height": 48.796875,
+            "top": -86.8125,
+            "bottom": -38.015625,
+            "left": 11.1875,
+            "right": 143.515625
+          },
+          "scroll": {
+            "x": 0,
+            "y": 424
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "afterFullPage": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.59375)",
+          "box": {
+            "x": 11.1875,
+            "y": -86.8125,
+            "width": 132.328125,
+            "height": 48.796875,
+            "top": -86.8125,
+            "bottom": -38.015625,
+            "left": 11.1875,
+            "right": 143.515625
+          },
+          "scroll": {
+            "x": 0,
+            "y": 424
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        },
+        "reverseTabs": 8,
+        "focused": {
+          "focused": false,
+          "position": "fixed",
+          "transform": "matrix(1, 0, 0, 1, 0, -97.59375)",
+          "box": {
+            "x": 11.1875,
+            "y": -86.8125,
+            "width": 132.328125,
+            "height": 48.796875,
+            "top": -86.8125,
+            "bottom": -38.015625,
+            "left": 11.1875,
+            "right": 143.515625
+          },
+          "scroll": {
+            "x": 0,
+            "y": 424
+          },
+          "viewport": {
+            "width": 375,
+            "height": 812
+          }
+        }
+      }
+    }
+  },
+  "review": {
+    "payloads": "All 189 payload hashes/sizes, three Git source manifests, complete product/build equality and native ELF checked locally",
+    "resource_census": "All654 prior container identities, lifecycle, mounts, networks and restart settings unchanged; eight unrelated running",
+    "images_inspected": [
+      "chromium-root/accepted-viewport.png",
+      "chromium-root/skip-focused.png",
+      "webkit-root/accepted-viewport.png"
+    ],
+    "finding": "The unfocused fixed link remains above the viewport before and after the full-page capture in all five executed pairs. Actual Chromium and WebKit viewport screenshots show no unfocused badge. Four Chromium/Firefox pairs focus and activate the link with the keyboard. WebKit root does not reach it in eight reverse tabs; no per-key active-element trace was retained, so cause is unresolved.",
+    "audit_limitation": "The first local follow-up audit expected a FAIL entry in the completed-case list. The original fixture records only completed PASS cases and stores the failed stage separately. The audit was corrected to inspect the original failure object; runtime evidence/expectations were unchanged."
+  },
+  "cleanup": {
+    "state": "stopped-retained",
+    "owner": "2d2445d06a8106c48ff9d534eeeefa44",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-8743fd8",
+    "owned_containers": 8,
+    "all_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "final_browser_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "free_before": 135744331776,
+    "free_after": 135166988288
+  },
+  "remaining": [
+    "WebKit focus-path diagnosis and actual keyboard acceptance",
+    "WebKit /control/ follow-up",
+    "Whole-matrix post-browser ledger equality and explicit final WebKit parent success did not execute",
+    "Natural expiry, BFCache, remote TLS, assistive technology and full product/release acceptance"
+  ],
+  "independent_ai_review": {
+    "scope": "Read-only inspection of exact selected upstream WKPage, WPE bootstrap and WebKit preference/key handling; no execution",
+    "finding": "No selected override found. GTK/WPE defaults TabsToLinks=true; Option inversion is Cocoa-only. This does not measure the actual process preference or explain the captured focus failure.",
+    "references": [
+      "https://raw.githubusercontent.com/microsoft/playwright/v1.63.0/browser_patches/webkit/UPSTREAM_CONFIG.sh",
+      "https://github.com/WebKit/WebKit/blob/4d05d732e5a84f32675bef4cc135a2e7a9269a87/Source/WTF/Scripts/Preferences/UnifiedWebPreferences.yaml#L7699",
+      "https://github.com/WebKit/WebKit/blob/4d05d732e5a84f32675bef4cc135a2e7a9269a87/Source/WebCore/page/EventHandler.cpp#L4508",
+      "https://github.com/microsoft/playwright/blob/v1.63.0/packages/playwright-core/src/server/webkit/wkPage.ts",
+      "https://github.com/microsoft/playwright/blob/v1.63.0/browser_patches/webkit/patches/bootstrap.diff"
+    ],
+    "next_probe": "Keep original eight Shift+Tab inputs/assertion; record safe activeElement identity/tabIndex and document.hasFocus before/after each. Separately compare a known Job ID start with/without full-page screenshot; never directly focus the skip link as keyboard evidence."
+  }
+}

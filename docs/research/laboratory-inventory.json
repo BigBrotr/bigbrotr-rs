@@ -23096,5 +23096,75 @@
     "evidence": "docs/implementation/evidence/p09-export-status-browser-native-20260924.json",
     "retention": "Keep original source, 213-payload capture, exact native ELF, both production bundles, six browser reports/screenshots, PG/archive/output. No new Rust cache. All owned containers PID 0 without OOM, network removed, both databases zero; 645 preexisting containers and eight unrelated running preserved.",
     "free_bytes": 135789490176
+  },
+  "implementation_export_skip_geometry_20260924": {
+    "status": "stopped-retained; INCOMPLETE",
+    "resources": {
+      "source": "8743fd81df402c2590ed2eec52d561e994f01c5c",
+      "tree": "c285b42059ac0dce35c10037e78dd72a5f80d6be",
+      "owner": "2d2445d06a8106c48ff9d534eeeefa44",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-8743fd8",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "frontend",
+          "id": "f85a2ac94574be8048cad30d97e2b22a25086888590b143aaca17ca65c8a3c82"
+        },
+        {
+          "name": "postgres",
+          "id": "eb37754657850f209bda67b6b80a5c93db9cfcddbd23e28691144dc588156d31"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "63c802b524044f464edba38b44523f5b250d437bcbbbc1bf85e9bcc2675195f6"
+        },
+        {
+          "name": "browser-chromium-root",
+          "id": "3fb8c99929340b3cbecf2e2f0e7a77c7c3e1104715126592612a45a0f209c074"
+        },
+        {
+          "name": "browser-chromium-control",
+          "id": "8773ad917c8d1880617b3e043c21ccc9259ac40bc670a94ee5ae665b76f9a4c3"
+        },
+        {
+          "name": "browser-firefox-root",
+          "id": "1040b56f29c035892e05df90abfdcd851ad18469430422d431956cabeb62edb9"
+        },
+        {
+          "name": "browser-firefox-control",
+          "id": "3725d35edbd132eeb532bf111b6f05506a93cc64cd98efd74219c89c4b8a6b69"
+        },
+        {
+          "name": "browser-webkit-root",
+          "id": "90b75b9d65461130b72c7117996cf0974e14a523be24bf25d59a3a01dac4a7e6"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T15:07:25.627572+00:00",
+      "runtime_profile": "job-browser",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "network_id": "c848c23c115ff6b3b983cdeb6c81ea2c088300956f2ab20891190c4aad97038a",
+      "postgres_id": "eb37754657850f209bda67b6b80a5c93db9cfcddbd23e28691144dc588156d31",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "63c802b524044f464edba38b44523f5b250d437bcbbbc1bf85e9bcc2675195f6",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p09-skip-link-geometry-incomplete-20260924.json",
+    "capture": {
+      "files": 189,
+      "sha256": "41f7a095cddb38c2378fd702d590ca52976d4aad4d46dc1bffdbf8e64e6d157b",
+      "source": "8743fd81df402c2590ed2eec52d561e994f01c5c",
+      "tree": "c285b42059ac0dce35c10037e78dd72a5f80d6be",
+      "source_files": 1205
+    },
+    "free_before": 135744331776,
+    "free_after": 135166988288,
+    "retention": "Keep original source, logs, production bundles, screenshots, ELF and PG state. No new Rust compiler cache. Eight unrelated running containers preserved."
   }
 }

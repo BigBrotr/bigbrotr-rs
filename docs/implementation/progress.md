@@ -20,19 +20,35 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD adee7b6e61e03ac9798a180f0c0a1e890eb29547, tree
-a201a97b2a8d699a498a9681364a663bff9ae03c on main, pushed to private origin/main
-without rewriting history. The eight integrated commits after cac50d6 are now
-published. Root owns only the additional job_browser.mjs geometry/keyboard
-fixture, its README and this checkpoint. No other contributor or merge/rebase.
+Last verified HEAD 8743fd81df402c2590ed2eec52d561e994f01c5c, tree
+c285b42059ac0dce35c10037e78dd72a5f80d6be on main. Private origin/main is
+adee7b6e61e03ac9798a180f0c0a1e890eb29547 after the verified integrated push.
+One unpublished fixture candidate. Root also owns the pending resume command/type
+and independent fixture, owning contract/task amendments, schema RED fixture and
+lab profile, plus this checkpoint/inventory. No other contributor or merge/rebase.
 
-Next bounded action: commit and run the fixture-only skip-link follow-up on Tux
-using exact 877 ELF after full product/build equality. It records actual focus,
-geometry and a viewport image before/after the original full-page capture, then
-reveals and activates the link through keyboard traversal. Preserve the original
-successful functional matrix. Do not claim visual/accessibility closure from a
-horizontal-width check. Then resume P08-T03 explicit job resume. No product CSS
-change is justified yet; full-page capture behavior is only a hypothesis.
+Next bounded action: run the prepared --resume-schema negative control through
+an exact clean Git candidate on Tux, after preflight. This uses the retained4e
+native seed and current SQL; it creates no compiler cache. Confirm that an
+unreceipted paused→queued transition currently passes deferred constraints,
+inside a rolled-back subtransaction. Then implement its additive command boundary
+and real consumer; no resume endpoint or migration exists yet.
+
+The [8743fd8 geometry follow-up](evidence/p09-skip-link-geometry-incomplete-20260924.json)
+is stopped-retained INCOMPLETE, owner2d2445d06a8106c48ff9d534eeeefa44,
+root runs/export-runtime-8743fd8. Four Chromium/Firefox mount pairs pass all eight
+journeys and keyboard activation; WebKit root fails after eight Shift+Tab presses,
+WebKit control NOT_RUN. All five observed unfocused boxes remain above viewport.
+Root inspected Chromium viewport/focused and WebKit viewport images: no unfocused
+badge in the actual viewport. No CSS defect established. Per-key activeElement
+was not captured; diagnose that separately before changing keyboard expectations.
+Local audit verifies189payloads/1205current/1202build/1110seed Git sources, same877
+ELF/full product equality, both fresh bundles and654prior/eight running resources.
+Tar41f7a095cddb38c2378fd702d590ca52976d4aad4d46dc1bffdbf8e64e6d157b.
+All ownedPID0/noOOM/network removed; final bothDB0, cleanup_errors empty. Full
+post-browser ledger comparison/explicit final WebKit parent success NOT_RUN.
+Free after135166988288; fresh read-only Tux inspection135155126272 bytes. No active
+BigBrotr containers. Preserve originalca functional evidence and this failure.
 
 [The ca44302 browser matrix](evidence/p09-export-status-browser-native-20260924.json)
 passes 48 journeys across Chromium/Firefox/WebKit at / and /control/. Same 877
@@ -233,15 +249,19 @@ terminal lifecycle, zero/multiple streams, job/output discovery, other selected
 formats, packaged M1, aged-queue/index fairness and mixed-workload capacity. Keep
 advancing through the selected product; no task completion from this scoped slice.
 
-Independent AI prerequisite mapping for the next resume responsibility identified
-paused→queued/CAS/current owner, same unit/cut/artifact/caps and current data.read
-plus exact history.read/export/private-export; source→job lock order from0501.
-A distinct additive resume command/audit receipt is needed: historical retry after
-a new worker pause must not queue again. Current contracts do not select a separate
-jobs.resume grant or require reauth; decide explicitly in owning contracts before
-implementation. Clear versus retained prior reason_code also needs definition.
-Do not use expired owner/pin as proof of old writer exclusion. Reviewer only read
-these boundaries, did not execute scenarios or review all output custody again.
+The next resume responsibility is now explicit in interface-catalog/private-
+administration and P08-T03 Step3: own paused protocol1 export, existing exact-scope
+export action plus independent input/private grants and original destination.
+No roles.control, status.read or fresh reauthentication requirement. Same committed
+unit/caps/cut and original retained export pin; clear pause reason and CAS revisions.
+Historical actor/key/body retry returns the original acceptance before current
+input/destination/job-state checks and cannot restart a second pause. Consumer→job
+locking and positive output exclusion remain required. Additive migration after0501.
+Root's ResumeExportCommand fingerprint/closed parsing has two Mac tests passing,
+preceded by missing-type compile RED; Clippy passed. Independent Python vectors
+bind four IDs and three u64 revisions. This is identity only, not acceptance.
+SQL RED fixture is prepared but NOT_RUN; adapter/HTTP/client/UI remain unimplemented.
+Independent AI read the action mapping, not these new tests or SQL fixture.
 
 ## Tux ownership and maintenance
 
