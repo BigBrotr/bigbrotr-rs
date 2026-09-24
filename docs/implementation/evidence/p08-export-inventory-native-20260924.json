@@ -1,0 +1,264 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS",
+  "scope": "Shared artifact SQL reservation/completion constraints on PostgreSQL16.15. No job-produced filesystem artifact or automatic Control execution.",
+  "source": {
+    "files": 14,
+    "sha256": "a59fa481c4007006aa82c69985d02fd42f9602cecdd992f39f1e5ea1cda8cc52",
+    "source": "eec78a0b2a3d608a0d060d6b6bf82595acb1483b",
+    "tree": "94955f63e31cba4da00efd16fdf1b344d66f714e",
+    "source_files": 1144
+  },
+  "sql": {
+    "path": "migrations/postgres/0501_artifacts.sql",
+    "sha256": "14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861",
+    "origin": "90b54b7a320c1eb52e78952afec71f4b9c8d707c",
+    "application": "Exact SQL and schema_versions receipt in one explicit transaction. Existing accepted job rows unchanged. Application order after813; numeric501 is not a downgrade.",
+    "unchanged": "Same SQL bytes in original incomplete90b54b7 and corrected eec78a0; fixture changes only."
+  },
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "limits": "Isolated runner2CPU/6GiB/512PIDs, PG2CPU/1GiB/128PIDs; no capacity result."
+  },
+  "seed_artifacts": {
+    "source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "tree": "fb87d6a4e8082d0dc2e5e8c5ac010de37920632a",
+    "owner": "3f840fe30a3ffef7f9944c72ea6e38f9",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+    "source_manifest_sha256": "eee5a33104dbee6059d2a106eab2b09d44b14e54c5badd06fce0f8425182ef6f",
+    "artifacts": {
+      "control": "42e2787cdabf4d31c1941ca38bebe5006ac8c0e8a4c8fdf8ac99d9644e38c88c",
+      "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+      "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+      "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+      "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+    },
+    "native_assets": {
+      "bigbrotr-archive-worker": {
+        "bytes": 14378448,
+        "sha256": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4"
+      },
+      "extensions/ducklake.duckdb_extension": {
+        "bytes": 36436086,
+        "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+      },
+      "extensions/httpfs.duckdb_extension": {
+        "bytes": 21570542,
+        "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+      },
+      "extensions/postgres_scanner.duckdb_extension": {
+        "bytes": 41696558,
+        "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+      },
+      "lib/duckdb.h": {
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "lib/libduckdb.so": {
+        "bytes": 70529912,
+        "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+      }
+    },
+    "validation": "Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. Current0501 SQL executes separately. No current build, Rust adapter, unit/Clippy or runtime qualification."
+  },
+  "recipes": [
+    "experiments/export-execution/lab.py",
+    "experiments/export-execution/cases.py",
+    "experiments/export-execution/migration_refusal.sql",
+    "experiments/export-execution/schema_cases.sql",
+    "experiments/export-execution/completion_cases.sql"
+  ],
+  "executed": {
+    "total_cases": 19,
+    "legacy_migration_refusal": {
+      "exit": 3,
+      "stdout": "\n",
+      "stderr": "ERROR:  55000: 0501 refuses advanced or inconsistent export history; explicit recovery required\nCONTEXT:  PL/pgSQL function inline_code_block line 14 at RAISE\nLOCATION:  exec_stmt_raise, pl_exec.c:3897\n"
+    },
+    "reservation_trials": "claim|BB099\nrun_before_claim_commit|23514\nimmediate_constraint_bypass|23514\nmissing_unit|23514\nrewrite_unit|23514\nt",
+    "completion_trials": [
+      {
+        "code": "23514",
+        "name": "artifact_missing",
+        "phase": "constraints",
+        "message": "export completion requires exact atomic inventory and checkpoint"
+      },
+      {
+        "code": "23514",
+        "name": "checkpoint_missing",
+        "phase": "constraints",
+        "message": "unfinished exact export cannot advertise a completed unit"
+      },
+      {
+        "code": "23514",
+        "name": "checkpoint_without_artifact",
+        "phase": "constraints",
+        "message": "unfinished exact export cannot advertise a completed unit"
+      },
+      {
+        "code": "BB099",
+        "name": "complete",
+        "phase": "positive-rollback",
+        "message": "complete artifact rollback"
+      },
+      {
+        "code": "BB099",
+        "name": "empty",
+        "phase": "positive-rollback",
+        "message": "complete artifact rollback"
+      },
+      {
+        "code": "23514",
+        "name": "extra_file",
+        "phase": "constraints",
+        "message": "export inventory requires its exact complete signed file"
+      },
+      {
+        "code": "23514",
+        "name": "file_missing",
+        "phase": "constraints",
+        "message": "export inventory requires its exact complete signed file"
+      },
+      {
+        "code": "23514",
+        "name": "manifest_mismatch",
+        "phase": "constraints",
+        "message": "export completion requires exact atomic inventory and checkpoint"
+      },
+      {
+        "code": "BB001",
+        "name": "old_export_pin",
+        "phase": "constraints",
+        "message": "export completion requires a fresh live reader on its original cut"
+      },
+      {
+        "code": "23514",
+        "name": "wrong_destination",
+        "phase": "constraints",
+        "message": "export completion requires exact atomic inventory and checkpoint"
+      },
+      {
+        "code": "23514",
+        "name": "wrong_empty_digest",
+        "phase": "constraints",
+        "message": "export inventory requires its exact complete signed file"
+      },
+      {
+        "code": "23514",
+        "name": "wrong_file",
+        "phase": "constraints",
+        "message": "export inventory requires its exact complete signed file"
+      },
+      {
+        "code": "23514",
+        "name": "wrong_total",
+        "phase": "constraints",
+        "message": "export inventory requires its exact complete signed file"
+      }
+    ],
+    "terminal_sql": {
+      "units": 1,
+      "artifacts": 0,
+      "files": 0,
+      "jobs": 1,
+      "active_control": 0,
+      "backends": 0
+    },
+    "terminal_database_backends": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "archive_files_unchanged": {
+      "signed_normal/kind=7/main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e",
+      "signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70",
+      "signed_normal/kind=7/main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076",
+      "signed_normal/kind=7/main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be",
+      "signed_normal/kind=7/main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35",
+      "signed_normal/kind=7/main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05",
+      "signed_normal/kind=7/main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937",
+      "signed_normal/kind=7/main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+    }
+  },
+  "observations": [
+    "Before501, an actual fenced Control creates a queued0813 job in the trial transaction. Migration rejects55000; connection rollback leaves original job and no unit table. The original accepted job then migrates without row changes.",
+    "Actual current backend and session advisory exclusion are used. Immutable unit reservation succeeds queued; missing unit, rewrite, running before reservation COMMIT and SET CONSTRAINTS IMMEDIATE bypass refuse. Each initial trial rolls back.",
+    "A separate real COMMIT persists one unit and queued job before all13 completion trials. Full and zero-row positive cases reach the deliberate BB099 rollback marker after SET CONSTRAINTS ALL IMMEDIATE. Missing or extra file, missing artifact/checkpoint, checkpoint without artifact, mismatched destination/digest/total/path/empty digest all fail their expected23514 constraints. Old export pin failsBB001 as fresh reader authority.",
+    "Every completion trial verifies original job row restoration, no artifacts/files and no trial reader lease after rollback. Final committed unit1/queued job1/checkpoint0 remain; artifacts0/files0. Original export pin stays retained. No successful artifact completion COMMIT is claimed by rollback trials.",
+    "Original4e ELF seeds a real signed archive, actual0813 acceptance and independent native readback. Fixture metadata for completion uses literal manifests/file descriptions to test SQL shape; it does not claim file output or a manifest matching the random seed job ID.",
+    "Root verified14 captured files,1144 exact current Git sources and1110 original4e source entries. Native asset/ELF and8Parquet comparisons are captured remote hashes, not local rehashes of those bytes in this capture."
+  ],
+  "mac": "Catalog test initially failed UnknownTarget501, then all22 control_schema tests passed. Cargo fmt check passed after formatting. This does not execute SQL; outputs observed in tools, not separately captured.",
+  "dependency_evidence": {
+    "postgres_version": "16.15",
+    "function": "pg_current_xact_id returns top-level xid8 even in a subtransaction; only equality with the current transaction is used. No long-term pg_xact_status lookup or XID recovery identity.",
+    "official_docs": "https://www.postgresql.org/docs/16/functions-info.html#FUNCTIONS-PG-SNAPSHOT",
+    "inspected_source": "https://github.com/postgres/postgres/blob/REL_16_15/src/backend/utils/adt/xid8funcs.c#L341-L357"
+  },
+  "capture": {
+    "local_root": ".research/implementation/export-execution/attempt-eec78a0",
+    "files": 14,
+    "sha256": "a59fa481c4007006aa82c69985d02fd42f9602cecdd992f39f1e5ea1cda8cc52",
+    "original_terminal_status": "PASS_PENDING_CAPTURE"
+  },
+  "resources": {
+    "source": "eec78a0b2a3d608a0d060d6b6bf82595acb1483b",
+    "tree": "94955f63e31cba4da00efd16fdf1b344d66f714e",
+    "owner": "8e651fd655300859fbfc0f8b01e619e9",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-execution-eec78a0",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "6ebed6036db2d78100708f20877cf3a2937e6578affc6d7ad2f1596a55272b10"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "519067279fdbc6b5ddc76761ab233f400334605a9deb8e544e09de59ea279c22"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T08:57:32.713786+00:00",
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "network_id": "9d3d5c8c4e9d0494bbf7cc84e4c42206b6996e00fce02e7d4072560ab4a1c40c",
+    "postgres_id": "6ebed6036db2d78100708f20877cf3a2937e6578affc6d7ad2f1596a55272b10",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "519067279fdbc6b5ddc76761ab233f400334605a9deb8e544e09de59ea279c22",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "preexisting_preserved": true,
+    "preexisting_count": 574,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "original_source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "free_bytes": 173828571136
+  },
+  "free_bytes_before": 174182543360,
+  "review": "Independent read-only AI source review found the deferred-trigger same-transaction bypass, masked/duplicate omission cases and multiline JSON parsing; corrected before the final run. Independent offline capture review completed:14files,1144current/1110originalGit sources, unchanged501hash, all19outcomes, literal messages, ten seed digest/preimages with readback and574stable resource records checked. No concrete discrepancy. No reviewer edits/tests/SSH.",
+  "limitations": [
+    "First90b54b7 attempt remains INCOMPLETE after fixture CASE syntax error; second54d515d remains INCOMPLETE after a pre501 fixture called a post501 helper. Original results/source/database/artifacts retained separately; final SQL rows were not independently sampled after those failures.",
+    "No current Rust build, new Cargo cache or repeated unit/Clippy run on Tux. Original4e artifacts are seed producers only and do not implement501. Direct psql executes current SQL/receipt, not the new Rust migrator binary.",
+    "Tests use postgres; application login501 privileges, especially UPDATE needed for data.read row locking, remain unqualified. No current-authority concurrent revocation/slow-source-lock schedule, lost completion COMMIT, runtime restart/scheduler, successful artifact COMMIT or artifact-byte verification from these SQL trials.",
+    "One source stream at sequence10; no zero-prefix/multistream SQL completion evidence. No physical crash/power loss, mixed workload, process RSS, logical restore/XID equality, Linux arm64 or complete task/release qualification.",
+    "Runner exit0, PG wrapper exit137, bothPID0/noOOM. Owned network removed,574priorresources/eight unrelated running preserved. Free space174182543360 to173828571136bytes, with concurrent writes possible. Source/PG/archive/artifacts retained; no cache retirement in these SQL labs.",
+    "The migration-negative fixture constructs queued0813 state in the same transaction before executing DDL, then rolls it back. This qualifies the refusal predicate, not a prior executor restart/reconciliation journey."
+  ]
+}

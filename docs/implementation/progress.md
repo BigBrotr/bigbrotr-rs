@@ -21,14 +21,13 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEAD54d515d64f3b9848a50bc56bf96ce0d65bdabb1e,
-tree6294eb17ce8572ae0e416c6f5595b2485e28ca75; two unpublished candidates ahead
-of origin/maindfd3129. Root owns fixture-only corrections plus incomplete evidence,
-inventory and checkpoint. Product0501 SQL unchanged after native application.
-Mac catalog22 tests pass (newRED UnknownTarget501 first). Native candidate501
-applied with its receipt; five reservation cases PASS. Completion fixture failed
-syntax after reservation COMMIT; exact final SQL rows not inspected. Retain all
-obligations, do not infer release/recovery. No active lab after terminal audit.
+Last observed main/HEADeec78a0b2a3d608a0d060d6b6bf82595acb1483b,
+tree94955f63e31cba4da00efd16fdf1b344d66f714e; three unpublished candidates ahead
+of origin/maindfd3129. Root owns final scoped SQL evidence/task/inventory/checkpoint
+updates only. Product0501 SQL unchanged since90b54b7 application; SHA14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861.
+Mac catalog22 tests pass (newRED UnknownTarget501 first). Corrected native19cases
+pass; root and independent AI verified complete capture without discrepancy. No active
+lab or pending tool session. Original90/54 failures remain INCOMPLETE/retained.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
@@ -323,15 +322,31 @@ source hashes verified at .research/implementation/export-execution/attempt-54d5
 Native seed/archive/PG state and all failed outputs remain retained; no exact
 terminal SQL state or recovery claim.
 
-Next bounded action: commit reviewed fixture correction and run it in a fresh
-isolated exact-Git lab with the same frozen4e seed producer (not current501Rust
-qualification). Require migration refusal of advanced0813 history plus all18 distinct reservation/
-completion fixture outcomes,
-actual terminal SQL rows, unchanged archive hashes and complete resource audit.
-Do not reuse originaldatabase or silently retry its unknown rows. Application
-login data.read row-lock UPDATE privilege and actual Rust/runtime consumer remain
-unimplemented/unqualified; SQL trials usepostgres. Continue with that consumer
-after native evidence, not a task completion checkbox.
+Corrected lab export-execution-eec78a0, owner8e651fd655300859fbfc0f8b01e619e9,
+[scoped SQL report](evidence/p08-export-inventory-native-20260924.json):19PASS,
+including advanced0813 migration refusal,5reservation and13completion trials.
+Separate reservation COMMIT; completion positives/negatives roll back. Final
+unit1/queuedjob1/checkpoint0/artifacts0/files0/activeControl0/bothDBbackend0;
+original export pin retained, no successful artifact COMMIT or pin recovery.
+Runner51906727 exit0/PG6ebed603 exit137, bothPID0/noOOM/networkremoved;574prior
+records/eight unrelated running preserved. No cleanup error, free173828571136bytes,
+no compiler cache. Capture14files/1144Git sources/1110original4e sources verified
+at .research/implementation/export-execution/attempt-eec78a0/; tarSHA
+a59fa481c4007006aa82c69985d02fd42f9602cecdd992f39f1e5ea1cda8cc52.
+Native assets/ELF and8Parquet identities in this report use remote recorded hashes,
+not local artifact bytes. Original4e ELF only seeds native archive/0813 acceptance;
+current501 executes directly in psql. No currentRust/migrator binary qualification.
+
+Next bounded action: commit the reviewed scoped evidence and push verified main;
+structural/link/diff checks pass. Then implement the typed Rust
+execution consumer over501. Reserve immutable ArtifactId/caps and COMMITqueued;
+subsequent running transition rechecks current authority, completes data+manifest
+and records atomic files+artifact/checkpoint under a fresh reader of ORIGINALcut.
+Startup501 privileges must include data.read row-lock UPDATE privilege; postgres
+fixture does not qualify application login. Keep current acceptance813 available
+when execution is unselected. Current authority concurrency, real successful
+completion COMMIT/loss/restart and exact file/native-observation binding remain
+required; never certify completion from constructible metadata or file existence.
 
 Wire shared0501 inventory,
 additive execution state and ordinary Control supervision. Keep output custody

@@ -20148,5 +20148,49 @@
       "capture_sha256": "5bf691731e243184f148fc1265dd8c29b9689ebb5bc0564adfb6862ee3755f7b"
     },
     "observation": "Original sources, failed fixture, PG/archive state and verified original4e artifacts retained. Both containers stopped/PID0/noOOM; owned network removed;572priorrecords/eight unrelated running preserved. No new compiler cache/build; exact terminal SQL state not independently sampled."
+  },
+  "implementation_export_inventory_corrected_20260924": {
+    "native": {
+      "source": "eec78a0b2a3d608a0d060d6b6bf82595acb1483b",
+      "tree": "94955f63e31cba4da00efd16fdf1b344d66f714e",
+      "owner": "8e651fd655300859fbfc0f8b01e619e9",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-execution-eec78a0",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "6ebed6036db2d78100708f20877cf3a2937e6578affc6d7ad2f1596a55272b10"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "519067279fdbc6b5ddc76761ab233f400334605a9deb8e544e09de59ea279c22"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T08:57:32.713786+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "9d3d5c8c4e9d0494bbf7cc84e4c42206b6996e00fce02e7d4072560ab4a1c40c",
+      "postgres_id": "6ebed6036db2d78100708f20877cf3a2937e6578affc6d7ad2f1596a55272b10",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "519067279fdbc6b5ddc76761ab233f400334605a9deb8e544e09de59ea279c22",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "local_root": ".research/implementation/export-execution/attempt-eec78a0",
+    "orchestrator": {
+      "pid": 3814623,
+      "start_ticks": "362250635",
+      "source": "eec78a0b2a3d608a0d060d6b6bf82595acb1483b",
+      "tree": "94955f63e31cba4da00efd16fdf1b344d66f714e"
+    },
+    "qualification": {
+      "status": "PASS",
+      "scope": "Shared artifact SQL reservation/completion constraints on PostgreSQL16.15. No job-produced filesystem artifact or automatic Control execution.",
+      "evidence": "docs/implementation/evidence/p08-export-inventory-native-20260924.json",
+      "capture_sha256": "a59fa481c4007006aa82c69985d02fd42f9602cecdd992f39f1e5ea1cda8cc52"
+    },
+    "observation": "Runner exit0, PG wrapper exit137, bothPID0/noOOM. Owned network removed,574priorresources/eight unrelated running preserved. Free space174182543360 to173828571136bytes, with concurrent writes possible. Source/PG/archive/artifacts retained; no cache retirement in these SQL labs."
   }
 }

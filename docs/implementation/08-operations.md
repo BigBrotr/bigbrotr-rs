@@ -354,7 +354,13 @@ executes thirteen main functional/fault cases, one bind preparation and one actu
 bind refusal at d40b937 using unchanged c685bb3 ELF. This includes fsync EIO, three
 SIGKILLs, short writes, ENOSPC and cross-process locking. The original mistargeted
 statx fixture remains INCOMPLETE. No power-loss or SQL/Control job qualification;
-the automatic consumer is not implemented yet. No Step 3 completion.
+the automatic consumer is not implemented yet. The [0501 SQL prerequisite](evidence/p08-export-inventory-native-20260924.json)
+passes19 scoped native cases at eec78a0: migration refusal for advanced0813 work,
+immutable reservation with a separate COMMIT, and full/empty completion plus
+negative counterparts under actual PostgreSQL constraints. Completion trials
+roll back; one committed queued reservation remains. These direct-SQL fixtures
+do not qualify the Rust adapter, successful artifact COMMIT, current-authority
+concurrency, output bytes or runtime restart. No Step 3 completion.
 [Native destination qualification](evidence/p08-export-destination-native-20260923.json)
 at a75d0fa passes ten actual Linux/ext4 cases, including bind aliases, cross-process
 custody, fsync EIO and process death around rename. The marker's independent
