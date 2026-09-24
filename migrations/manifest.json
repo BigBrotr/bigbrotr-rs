@@ -101,6 +101,10 @@
     {
       "version": 813,
       "name": "0813_export_jobs.sql"
+    },
+    {
+      "version": 501,
+      "name": "0501_artifacts.sql"
     }
   ],
   "reserved": [

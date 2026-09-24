@@ -155,7 +155,7 @@ is private; public read models use allowlisted projections, never table dumps.
 | 0016 native archive frontiers | `archive_owner_sessions(catalog_id, owner_epoch)`, `archive_frontier_snapshots(consumer_id, frontier_revision)` and selected `archive_frontier_batches` | Current fenced Archive attribution and immutable native observation extend the common consumer ledger. Historical unbound rows are not adopted; a frontier receipt alone grants no read pin or reclamation. |
 | 0017 native snapshot pins | Immutable `archive_snapshot_pins(lease_id)` and nullable `snapshot_leases.archive_pin_protocol` | Exact native frontier, original Control issuer and requested TTL bind the existing lease/claim ledger. New Archive leases require explicit participation; old NULL rows remain unchanged retention obligations. Expiry is not release or worker-exit proof. |
 | 0018 excluded reader recovery | Immutable `archive_pin_recoveries(lease_id)` | Original qualified lease and issuer remain intact; fresh local exclusion plus current fenced Control permit atomic lease/claim release with separate recovery attribution. No old-row adoption or expiry-based reclamation. |
-| 0501 shared artifact inventory | `artifacts(artifact_id)`; `artifact_files(artifact_id, file_id)` | First supplied by the signed export consumer; shared immutable file identities and completion manifest, retained while referenced. No independent graph-file inventory. |
+| 0501 shared artifact inventory | `artifacts(artifact_id)`; `artifact_files(artifact_id, file_id)`; immutable first-consumer `export_execution_units(job_id)` | First supplied by the signed export consumer; shared immutable file identities and completion manifest, retained while referenced. No independent graph-file inventory. |
 | 0502 analytics | `target_definitions(definition_id, version)`; `target_generations(generation_id)`; `target_inputs(generation_id, input_id)`; `active_targets(target_id, analysis_scope_id)`; `graph_artifacts(artifact_id)` | Current plus two complete generations and required pins; analysis scope includes visibility/window/profile; graph_artifacts is a typed manifest binding to the existing common artifact inventory, not another file owner |
 | 0603 read pins | `read_pins(pin_id)` extending existing retention claims | Query context/cut/generation/expiry and logical source-retention claims; authorization expiry is separate |
 | 0609 DVM | `dvm_requests(request_event_id)`; `dvm_results(request_event_id, part_id)` with `intent_id` reference to `signed_outbox` | Request/result-part mapping and unresolved delivery; signed bytes have one outbox authority, not a second result payload copy; private payload display retention bounded |
@@ -191,6 +191,35 @@ adds user catalog/publication operations without imposing a P05-to-P08
 implementation cycle. Public discovery requires its separate verified
 export manifest and publication grant/state. Duplicate metadata cannot authorize
 one owner to reclaim a file still pinned by another consumer.
+
+The first0501 consumer reserves a new artifact ID and finite output/temporary
+byte caps in immutable `export_execution_units` after0813 acceptance COMMIT.
+A queued reservation must commit before a running transition. A trigger-imposed
+`reservation_transaction` uses PostgreSQL's full top-level transaction ID solely
+to refuse same-transaction execution, including after `SET CONSTRAINTS IMMEDIATE`.
+It is not a job identity or portable recovery token. PostgreSQL16's
+[transaction functions](https://www.postgresql.org/docs/16/functions-info.html#FUNCTIONS-PG-SNAPSHOT)
+and [REL_16_15 implementation](https://github.com/postgres/postgres/blob/REL_16_15/src/backend/utils/adt/xid8funcs.c)
+return the top-level ID even inside subtransactions. After a logical restore,
+an accidental equality can refuse that attempt; another transaction retries the
+same immutable unit. Restore qualification remains a separate required journey.
+
+Only completed files enter the shared immutable inventory. The initial profile
+binds the accepted destination, one exact `events.jsonl` file (including zero
+rows/bytes), manifest length/digest and fresh verification reader pin on the
+original frontier. Artifact/file insertion and succeeded/checkpoint1/digest are
+atomic in both directions. No other exact-ID state advances this checkpoint.
+Current account, dataset data.read and all three exact scope grants are checked
+under their mutation locks; the original browser session and expired export-pin
+scheduling lifetime do not authorize or prevent execution. Source-row waits
+precede final authority clocks. The data.read row itself is locked against a
+direct authorized SQL deletion; callers need SELECT and row-lock UPDATE privilege.
+Retained export pins are separate from fresh reader authority and remain until
+typed terminal cleanup with actual exclusion. No new release/recovery adapter is
+implied by the inventory. Advanced pre0501 qualified jobs cause atomic migration
+refusal; accepted unowned initial rows remain unchanged and legacy NULL protocol
+rows cannot acquire units. Common file identities later support0502/0804 without
+another file owner. Native SQL and runtime qualification are tracked in P08-T04.
 
 The first implemented 0802 consumer appends after 0805 and supplies only
 `management_commands` for explicit first security activation. Its bytes16 request

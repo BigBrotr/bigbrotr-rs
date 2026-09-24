@@ -21,14 +21,14 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEADd40b93739ed48f6b87c06c9911c209844e95730f,
-tree24c33105558a9c9285f1cee8a64f6c0a98f64771; two unpublished candidates ahead of
-origin/main0e2f196. Verified clean before root-owned final evidence/task/inventory/
-checkpoint updates. Product/probe unchanged from c685bb3; corrected d40 fixture
-ran against the same verified two ELF. No new build/unit/Clippy or Cargo cache.
-Both exact Git sources and all captured artifact bytes verified locally and by
-independent read-only AI; no reviewer edits/tests/SSH/resources. Pending evidence
-commit and ordinary push after documentation checks; fetch remote first.
+Last observed main/HEADdfd3129bbe82d65685345dd880629857fd9738ad,
+tree38d467861d3f84a77b0b416efa0088945cb7eaed; main equals fetched origin/main after
+ordinary push. Root now owns the uncommitted0501 migration/catalog/schema test,
+export-execution SQL/native recipes and owning storage-contract/checkpoint edits.
+No applied SQL changed. Catalog test first failed UnknownTarget501, then all22
+Mac catalog tests passed; this does not execute SQL. Native schema recipes are
+prepared, NOT_RUN, before any runtime execution adapter. No active lab.
+The completed filesystem reports remain at their original exact revisions.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
@@ -293,12 +293,21 @@ Actual Mac research executable wrote334byte JSONL SHA2006c3bc... and1321byte man
 SHA334fda0a..., checked against independent frozen fixtures. No SQL/native archive
 observation/job completion from that driver.
 
-The corrected d40 native fixture completed, captured and reviewed as recorded
-above; the original c685 result stays INCOMPLETE. No product mutation was needed
-after the mistargeted statx injection. Both sources and the useful original build
-cache remain retained. Next bounded action: commit/push the reviewed scoped
-native evidence after documentation checks, then implement the common artifact
-inventory and atomic job execution/checkpoint consumer below.
+The corrected d40 native fixture completed, captured, independently reviewed and
+pushed with reportdfd3129. The original c685 result remains INCOMPLETE. No product
+mutation followed the mistargeted statx injection; useful c685 build cache retained.
+
+Current bounded work:0501 common completed-only artifact inventory and immutable
+export_execution_units. Reservation commits queued before running. Same-transaction
+XID guard closes a review counterexample using SET CONSTRAINTS IMMEDIATE; this
+is not a portable identity. New independent SQL fixtures reserve in a separate
+COMMIT before completion omissions, so unrelated guards cannot mask the result.
+The adapter/scheduler is not implemented. Next: review the exact SQL/recipes,
+commit an unpublished candidate and qualify current SQL on fresh isolated Tux PG,
+seeded by original4e real publication/acceptance ELF with separate provenance.
+No new Rust build/cache is needed for that SQL-only fixture; no current binary
+qualification is inferred. Preserve old source/artifacts and check free space
+before launching. Record results before adding the Rust execution consumer.
 
 Wire shared0501 inventory,
 additive execution state and ordinary Control supervision. Keep output custody

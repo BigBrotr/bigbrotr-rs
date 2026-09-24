@@ -197,8 +197,8 @@ fn changed_or_unrecognized_history_never_becomes_a_repair_plan() {
         Err(MigrationError::UnknownTarget(0))
     ));
     assert!(matches!(
-        plan(&[], 501),
-        Err(MigrationError::UnknownTarget(501))
+        plan(&[], 599),
+        Err(MigrationError::UnknownTarget(599))
     ));
 }
 
@@ -456,4 +456,30 @@ fn import_record_checkpoints_require_explicit_protocol_after_input_bindings() {
         migrations::require_applied(&applied, 14),
         Err(MigrationError::MissingPrerequisite(14))
     );
+}
+
+#[test]
+fn artifact_inventory_appends_after_acceptance_without_rewriting_its_receipts() {
+    let accepted: Vec<_> = plan(&[], 813)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let upgrade =
+        plan(&accepted, 501).expect("export execution requires explicit artifact inventory");
+    assert_eq!(upgrade.pending.len(), 1);
+    assert_eq!(upgrade.pending[0].name, "0501_artifacts.sql");
+    assert_eq!(
+        migrations::require_applied(&accepted, 501),
+        Err(MigrationError::MissingPrerequisite(501))
+    );
+    assert!(migrations::require_applied(&accepted, 813).is_ok());
 }
