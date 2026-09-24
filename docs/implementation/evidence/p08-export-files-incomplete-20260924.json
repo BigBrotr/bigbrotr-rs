@@ -1,0 +1,376 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "INCOMPLETE",
+  "source": {
+    "files": 124,
+    "sha256": "19d653ecc80cf0360544759db5c8d3d62383268536556afc9fd3af65c70caff5",
+    "source": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11",
+    "tree": "4c23c892fe564808a8459c553d54ebe56175e022",
+    "source_files": 1134
+  },
+  "recipes": [
+    "experiments/export-files/lab.py",
+    "experiments/export-files/native.py",
+    "experiments/export-files/cases.py",
+    "experiments/export-files/probe.rs"
+  ],
+  "build": {
+    "source": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11",
+    "tree": "4c23c892fe564808a8459c553d54ebe56175e022",
+    "source_manifest_sha256": "a64726bea0db845b637fa890b39cdf535d3c799291d99a8951b354699f50f15e",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "scope": "actual filesystem unit; no SQL, native archive observation, runtime job or release",
+    "artifacts": {
+      "bigbrotr": "be2c704342a984515dee2899b15303b0185756183310566cbbc466835937e302",
+      "export-files-probe": "09ba0fc882eb529ad103388f2d726dccba791fbec0fe2480b4cf480110c6fa85"
+    },
+    "build_info": {
+      "archive_worker": null,
+      "capabilities": [
+        "event-verification",
+        "config-static"
+      ],
+      "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+        "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+        "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+        "contracts/release/dependencies.json": "14bb6d43630ff5ad0eeaec28236ca138224d5e97603200f456536abbaa2c94c6",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocol_registry_format": "bigbrotr-protocol-versions/1",
+      "protocols": {
+        "event_verifier": "bigbrotr-nip01-verifier/1",
+        "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1",
+        "config_static": "bigbrotr-config-static/1",
+        "doctor": "bigbrotr-doctor/1",
+        "signed_event": "nip01-event/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "a64726bea0db845b637fa890b39cdf535d3c799291d99a8951b354699f50f15e",
+        "revision": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11",
+        "state": "builder-supplied",
+        "tree": "4c23c892fe564808a8459c553d54ebe56175e022"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    }
+  },
+  "checks": [
+    {
+      "name": "build",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "export-files-probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 33.91347775934264
+    },
+    {
+      "name": "flush-cancellation",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "export::files::tests::cancellation_stops_new_writes_inside_a_partial_buffer_flush"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 16.136641348246485
+    },
+    {
+      "name": "filesystem-tests",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "export_files"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 4.520842540077865
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--test",
+        "export_files",
+        "--example",
+        "export-files-probe",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 2.5673425998538733
+    }
+  ],
+  "executed": {
+    "cases": [
+      {
+        "name": "ordered-sync-and-identical-exchange",
+        "observed_status": "PASS"
+      },
+      {
+        "name": "fsync-eio-1",
+        "observed_status": "PASS"
+      },
+      {
+        "name": "fsync-eio-2",
+        "observed_status": "PASS"
+      },
+      {
+        "name": "fsync-eio-3",
+        "observed_status": "PASS"
+      },
+      {
+        "name": "fsync-eio-4",
+        "observed_status": "PASS"
+      },
+      {
+        "name": "exchange-root-eio-and-cleanup-eio",
+        "observed_status": "PASS"
+      },
+      {
+        "name": "actual-partial-write-and-retry",
+        "observed_status": "PASS"
+      },
+      {
+        "name": "kernel-mount-identity-unavailable",
+        "observed_status": "RUNNING"
+      }
+    ],
+    "completed_pass": 7,
+    "interrupted_by_fixture_assertion": 1,
+    "remaining_not_run": 7,
+    "qualification_total": 15,
+    "outcome": "Build, one flush unit test, seven real filesystem tests and Clippy passed. Main practical fixture failed at its eighth case; six further main cases and the separate alias case were NOT_RUN."
+  },
+  "observations": [
+    "Actual Linux order: data fsync, manifest fsync, staging-directory fsync, RENAME_NOREPLACE, destination fsync. Complete independent334/1321byte artifacts verified; identical retry uses RENAME_EXCHANGE and fresh inodes, retaining at most one staging copy.",
+    "All four fsync EIO boundaries and subsequent identical retry executed. EIO after EXCHANGE and error after verified staging cleanup also recover on a fresh invocation; bytes remain identical.",
+    "Actual RLIMIT_FSIZE=17 stopped the writer with a17-byte JSONL prefix and no final/manifest; a new invocation recovered the complete same unit."
+  ],
+  "failure": {
+    "case": "kernel-mount-identity-unavailable",
+    "reason": "Fixture injected ENOSYS into only the first statx. The captured call requested STATX_ALL for ordinary file metadata; fallback allowed continuation. The later explicit STATX_MNT_ID calls all succeeded, so kernel mount identity was never made unavailable. Probe returned success and the independent expected-refusal assertion stopped the fixture.",
+    "trace": ".research/implementation/export-files/attempt-c685bb3/capture/out/cases/command-28.trace",
+    "trace_sha256": "33f912fe1edbb6a9cff3bcbec7cd039705f4910707999bd9dbeb61e0855fd163",
+    "correction": "Pending fixture changes fail every statx invocation (when=1+) and require an actually injected ENOSYS on an explicit STATX_MNT_ID request. No product mutation justified by this trace. Original attempt remains INCOMPLETE; reuse the verified compiled artifacts for the new fixture revision after complete Git delta checks."
+  },
+  "terminal": {
+    "status": "INCOMPLETE",
+    "source": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11",
+    "owner": "846c86dd375c2381af209c8681d0be4f",
+    "failure": {
+      "kind": "AssertionError",
+      "frames": [
+        {
+          "file": "lab.py",
+          "line": 150,
+          "function": "<module>"
+        },
+        {
+          "file": "lab.py",
+          "line": 127,
+          "function": "finish"
+        }
+      ]
+    },
+    "container_terminals": {
+      "native": {
+        "id": "09dc3d0d2470ae8b950866af99b5a0533e1ad77f0c35e36205bc314a27f346ca",
+        "name": "/bigbrotr-export-files-c685bb3-native",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 1,
+          "Error": "",
+          "StartedAt": "2026-09-24T08:20:24.919440394Z",
+          "FinishedAt": "2026-09-24T08:21:22.830245071Z"
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35/out/strace-exit-fixed",
+            "Destination": "/instrument/strace",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3/out",
+            "Destination": "/out",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3/out/build/source",
+            "Destination": "/out/build/source",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          }
+        ],
+        "networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "b2e69b2cd9e7ed698a608f62703a485587f1dfbd2b5e1c67bbfdba07bd2d322a",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        },
+        "restart": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        }
+      }
+    },
+    "preexisting_preserved": true,
+    "preexisting_count": 567,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "original_source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "free_bytes": 175084965888
+  },
+  "resources": {
+    "source": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11",
+    "tree": "4c23c892fe564808a8459c553d54ebe56175e022",
+    "owner": "846c86dd375c2381af209c8681d0be4f",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "native",
+        "id": "09dc3d0d2470ae8b950866af99b5a0533e1ad77f0c35e36205bc314a27f346ca"
+      }
+    ],
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-files",
+    "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+    "tracer_sha256": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+    "started_at": "2026-09-24T08:20:21.923986+00:00"
+  },
+  "limitations": [
+    "The capture was independently matched to all124 original files and1134 exact Git source hashes. Source and archived artifact bytes verified locally; no claim from a successful process exit alone.",
+    "No SIGKILL, bind-alias, ENOSPC or statx-unavailability qualification from this attempt. No power-loss, physical writeback, SQL job or native archive observation claim.",
+    "All567 prior container lifecycle/mount/network/restart records preserved, eight unrelated running. Owned native container exited1/PID0/noOOM; no dedicated network created; no cleanup errors. Source/cache/artifacts/failed output retained; no retirement yet."
+  ]
+}

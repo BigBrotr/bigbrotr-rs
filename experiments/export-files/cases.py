@@ -195,9 +195,13 @@ try:
 
         case('kernel-mount-identity-unavailable')
         root = fixture('statx-unavailable')
-        value, trace = run(root, expected=4, inject='statx:error=ENOSYS:when=1')
+        # Rust's ordinary metadata also calls statx(STATX_ALL) and can fall back
+        # after ENOSYS. Fail every statx, including the explicit mount-ID query;
+        # failing only the first metadata call leaves the tested feature present.
+        value, trace = run(root, expected=4, inject='statx:error=ENOSYS:when=1+')
         assert value == dict(error='Filesystem')
-        assert '(INJECTED)' in trace and '= -1 ENOSYS' in trace
+        assert any('STATX_MNT_ID, ' in line and '= -1 ENOSYS' in line and '(INJECTED)' in line
+                   for line in trace.splitlines())
         assert not (root / ID).exists() and not (root / STAGE).exists()
         passed(refused=True)
 

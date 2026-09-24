@@ -19972,5 +19972,38 @@
       "capture_sha256": "fb6467106032f94f9b8ebba027d9aaecaaff75b5d9f6a29117be5e01d361f4e4"
     },
     "observation": "All owned containers stopped/PID0/noOOM and owned network removed where created; prior lifecycle/mount/network/restart records preserved. Original failures retained. No recovery, adoption or pin release. Sources/logs/artifacts/database state remain; no compiler cache except first negative installer (separately retired after artifact preservation)."
+  },
+  "implementation_export_files_20260924": {
+    "local_root": ".research/implementation/export-files",
+    "native": {
+      "source": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11",
+      "tree": "4c23c892fe564808a8459c553d54ebe56175e022",
+      "owner": "846c86dd375c2381af209c8681d0be4f",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "native",
+          "id": "09dc3d0d2470ae8b950866af99b5a0533e1ad77f0c35e36205bc314a27f346ca"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-files",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+      "tracer_sha256": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+      "started_at": "2026-09-24T08:20:21.923986+00:00"
+    },
+    "orchestrator": {
+      "pid": 3789067,
+      "start_ticks": "362027556",
+      "source": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11",
+      "tree": "4c23c892fe564808a8459c553d54ebe56175e022"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "evidence": "docs/implementation/evidence/p08-export-files-incomplete-20260924.json",
+      "capture_sha256": "19d653ecc80cf0360544759db5c8d3d62383268536556afc9fd3af65c70caff5"
+    },
+    "observation": "All567 prior container lifecycle/mount/network/restart records preserved, eight unrelated running. Owned native container exited1/PID0/noOOM; no dedicated network created; no cleanup errors. Source/cache/artifacts/failed output retained; no retirement yet."
   }
 }

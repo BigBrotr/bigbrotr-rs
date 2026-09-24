@@ -19,8 +19,8 @@ import tarfile
 import time
 import traceback
 
-revision, tree = sys.argv[1:]
-assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
+revision, tree, *reuse = sys.argv[1:]
+assert len(reuse) <= 1 and all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree, *reuse])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
 root = base / 'runs' / ('export-files-' + revision[:7])
 source, out = root / 'source', root / 'out'
@@ -139,16 +139,56 @@ try:
     manifest = dict(format='bigbrotr-source/1', revision=revision, tree=tree, archive_sha256=sha(archive),
                     files_sha256={str(p.relative_to(export)): sha(p) for p in sorted(export.rglob('*')) if p.is_file()})
     write(build / 'source-manifest.json', manifest)
-    write(root / 'cache-origin.json', dict(root=str(cache_root), source=original['revision'],
-          source_manifest_sha256=sha(cache / 'source-manifest.json'),
-          purpose='Copied compiler/dependency caches only. Fresh compilation/checks and artifact hashes required; no reused ELF claim.'))
-    for name in ['target', 'cargo-home']:
-        subprocess.run(['cp', '-a', '--reflink=auto', str(cache / name), str(build / name)], check=True, timeout=120)
+    if reuse:
+        # Fixture-only revision: prove complete Git input equivalence and copy
+        # the original compiled artifacts. Do not create another Cargo cache or
+        # label the earlier build/tests as executed at this fixture revision.
+        origin = base / 'runs' / ('export-files-' + reuse[0][:7])
+        previous = json.loads((origin / 'resources.json').read_text())
+        assert previous['source'] == reuse[0] and previous['state'] == 'stopped-retained'
+        for entry in previous['containers']:
+            c = next(c for c in prior if c['Id'] == entry['id'])
+            assert c['Config']['Labels'][previous['owner_label']] == previous['owner']
+            assert not c['State']['Running'] and c['State']['Pid'] == 0
+        delta = cmd('git', '-C', str(source), 'diff', '--name-only', reuse[0], revision).splitlines()
+        allowed = {'experiments/export-files/cases.py', 'experiments/export-files/lab.py',
+                   'docs/implementation/progress.md', 'docs/research/laboratory-inventory.json',
+                   'docs/implementation/evidence/p08-export-files-incomplete-20260924.json'}
+        assert delta and set(delta) <= allowed, delta
+        original_build = json.loads((origin / 'out/checks/artifacts.json').read_text())
+        original_source = json.loads((origin / 'out/build/source-manifest.json').read_text())
+        assert original_build['source'] == original_source['revision'] == reuse[0]
+        assert original_build['source_manifest_sha256'] == sha(origin / 'out/build/source-manifest.json')
+        assert all(sha(origin / 'out/build/source' / name) == digest for name, digest in original_source['files_sha256'].items())
+        assert json.loads((origin / 'out/checks/result.json').read_text())['status'] == 'PASS'
+        artifacts = out / 'artifacts'; artifacts.mkdir()
+        for name, digest in original_build['artifacts'].items():
+            assert name in ['bigbrotr', 'export-files-probe']
+            original_file = origin / 'out/artifacts' / name
+            assert not original_file.is_symlink() and sha(original_file) == digest
+            shutil.copy2(original_file, artifacts / name)
+            assert sha(artifacts / name) == digest
+        assert set(original_build['artifacts']) == {'bigbrotr', 'export-files-probe'}
+        write(root / 'artifact-reuse.json', dict(origin=str(origin), source=original_build['source'],
+              tree=original_build['tree'], source_manifest_sha256=original_build['source_manifest_sha256'],
+              artifacts=original_build['artifacts'], source_delta=delta,
+              scope='Same two ELF, original build/tests retained at origin; no compilation or unit/Clippy rerun. New fixture only.'))
+        state['artifact_origin'] = reuse[0]; save()
+    else:
+        write(root / 'cache-origin.json', dict(root=str(cache_root), source=original['revision'],
+              source_manifest_sha256=sha(cache / 'source-manifest.json'),
+              purpose='Copied compiler/dependency caches only. Fresh compilation/checks and artifact hashes required; no reused ELF claim.'))
+        for name in ['target', 'cargo-home']:
+            subprocess.run(['cp', '-a', '--reflink=auto', str(cache / name), str(build / name)], check=True, timeout=120)
     assert shutil.disk_usage(base).free > 8 * 1024**3
     state['state'] = 'building-and-qualifying'; save()
-    runner = start('native', ['python3', '-B', '/out/build/source/experiments/export-files/native.py'])
+    arguments = (['python3', '-B', '/out/build/source/experiments/export-files/cases.py',
+                  '/out/artifacts/export-files-probe', '/out/cases', '/instrument/strace'] if reuse else
+                 ['python3', '-B', '/out/build/source/experiments/export-files/native.py'])
+    runner = start('native', arguments)
     finish(runner, 2100)
-    assert json.loads((out / 'checks/complete.json').read_text())['status'] == 'PASS'
+    if not reuse:
+        assert json.loads((out / 'checks/complete.json').read_text())['status'] == 'PASS'
     cases = json.loads((out / 'cases/result.json').read_text())
     assert cases['status'] == 'PASS' and len(cases['cases']) == 14
     state['state'] = 'qualifying-alias'; save()

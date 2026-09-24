@@ -20,13 +20,13 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEAD and origin/main0e2f196e4e70414d73a1c6b2ab3d93a6aa222443,
-pushed after codec6f30ebb and manifest0e2f196. Root now owns the pending filesystem
-consumer, its tests/research recipes, owning contract/task/evidence and this checkpoint.
-No unrelated dirty files, pending tool session or active lab. Independent read-only
+Last observed main/HEADc685bb36a1fa7d5e32faf19a8407d0e2e7b61c11,
+tree4c23c892fe564808a8459c553d54ebe56175e022; unpublished candidate one commit
+ahead of origin/main0e2f196. Root owns pending fixture/launcher correction, incomplete evidence and
+checkpoint/inventory updates only. Product source is unchanged after the candidate.
+Mac filesystem candidate was committed clean and transferred by Git bundle to
+Tux; no push yet. The first native lab is stopped-retained/INCOMPLETE as detailed below. Independent read-only
 AI protocol/code/fixture review completed; no edits/tests/SSH/resources by reviewer.
-Form a clean candidate from these verified Mac inputs before exact-Git Tux testing;
-do not push it as native-qualified or relabel the earlier4e runtime ELF.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
@@ -131,11 +131,29 @@ race, JSONL artifact or packaged M1/release qualification from these cases.
 
 ## Current laboratory custody
 
-No active lab, pending tool session or cleanup debt after terminal audits. Latest
-read-only Tux check found178493562880freebytes,567containers and eight unrelated
-running, no BigBrotr running; cache4e6b5c0 and tracer9b30c35 remain stopped-retained.
-No new cache or deletion in the current filesystem preparation. These are dated
-observations; re-inspect before reuse/deletion. Full identities and mounts are in
+No active lab or pending tool session after the first filesystem candidate's
+terminal audit. Lab /home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3,
+owner846c86dd375c2381af209c8681d0be4f, labelorg.bigbrotr.export-files, native container
+09dc3d0d2470ae8b950866af99b5a0533e1ad77f0c35e36205bc314a27f346ca is stopped-retained:
+exit1/PID0/noOOM, no cleanup error;567prior records/eight unrelated running preserved.
+OrchestratorPID3789067/start_ticks362027556 is historical, not a live claim.
+Result [INCOMPLETE](evidence/p08-export-files-incomplete-20260924.json): actual fresh
+33.91s native build, one flush test, seven file tests and Clippy PASS; first seven
+practical cases PASS (ordered sync/exchange,4EIO,exchange+cleanupEIO,17-byte RLIMIT
+partial+retry). Eighth fixture failed: one-shot ENOSYS hit ordinary STATX_ALL,
+while explicit STATX_MNT_ID still succeeded. Product did not encounter missing
+mount identity. Six later main cases plus separate alias remain NOT_RUN.
+Preserve original result/logs/output. Full124-file capture and1134 Git sourcehashes
+verified locally at .research/implementation/export-files/attempt-c685bb3/;
+captureSHA19d653ecc80cf0360544759db5c8d3d62383268536556afc9fd3af65c70caff5.
+Source manifestSHAa64726bea0db845b637fa890b39cdf535d3c799291d99a8951b354699f50f15e.
+Compiled probeSHA09ba0fc882eb529ad103388f2d726dccba791fbec0fe2480b4cf480110c6fa85;
+parentSHAbe2c704342a984515dee2899b15303b0185756183310566cbbc466835937e302.
+Both under out/artifacts, complete build cache retained for current useful work.
+Original4e6b5c0 source/cache/ELF and tracer9b30c35 unchanged/protected. No cache
+retirement yet; free175084965888bytes after isolated build (before178493562880,
+concurrent writes possible). No host ports, new Docker volume or dedicated network.
+These are dated observations; re-inspect before reuse/deletion. Full identities and mounts are in
 [the inventory](../research/laboratory-inventory.json). No unrelated workload,
 host port, dataset, backup, archive, catalog or index deleted by these new runs.
 
@@ -258,19 +276,26 @@ Actual Mac research executable wrote334byte JSONL SHA2006c3bc... and1321byte man
 SHA334fda0a..., checked against independent frozen fixtures. No SQL/native archive
 observation/job completion from that driver.
 
-Next bounded action: review/commit this candidate and run its new exact-source
-experiments/export-files/{lab.py,native.py,cases.py,probe.rs} on Tux. Fourteen planned
-main cases plus one separate actual bind-alias container cover syscall order,
-EIO at four sync points, exchange/cleanup EIO, RLIMIT_FSIZE17-byte output, mount
-identity refusal, cross-process lock, three actual fsync-entry SIGKILLs, ENOSPC
-and alias preparation/refusal. Recipes have syntax/static review only, NOT_RUN.
-Kill fixtures require actual correlated entry, pidfd death/join, expected signal
-exit, empty tracer stderr and SIGKILL trace; never ignore instrument diagnostics.
-Use isolated copies of retained4e6b5c0 compiler caches and verified research tracer
-strace-exit9b30c35 SHA509ea4b8...; original source/artifacts stay untouched. Lab recipe
-rechecks complete inventory/free space immediately before launch, uses2CPU/6GiB,
-no network/ports/capabilities, no Docker socket, read-only source/root and separate
-small tmpfs for ENOSPC. Git transfer only. No new run directory allocated yet.
+Next bounded action: commit the reviewed fixture correction and rerun through
+Git with c685bb3 as explicit artifact origin. New cases.py uses statxENOSYS when=1+
+and requires an actual injected error on STATX_MNT_ID, not just any statx failure.
+The exact strace6.1 manual confirms first+ selects all subsequent invocations;
+original command28 trace establishes the mistake. No product mutation justified.
+The lab.py optional third argument is the original build SHA: it verifies the
+complete Git delta allowlist, original stopped owner/source manifest and two ELF
+hashes, then copies only artifacts into a fresh root. No new Cargo cache, build,
+unit or Clippy rerun for this fixture-only change. Record original build identity
+separately from the new executed fixture revision. AI reviewer is reading original
+capture and corrected recipe; no edits/tests/SSH/resources.
+
+Fourteen main plus one separate actual bind-alias case must execute, including
+cross-process lock, three actual fsync-entry SIGKILLs and ENOSPC. Kill fixtures
+require correlated entry, pidfd death/join, expected signal exit, empty tracer
+stderr and SIGKILL trace; never ignore instrument diagnostics. Qualified tracer
+strace-exit9b30c35 SHA509ea4b8... is read-only input. Original sources/artifacts
+stay untouched. The recipe rechecks complete inventory/free space before launch,
+uses2CPU/6GiB/no network/ports/capabilities/Docker socket, read-only source/root and
+separate small tmpfs for ENOSPC. No corrected run allocated yet.
 
 After actual native results/capture/review/owned cleanup, wire shared0501 inventory,
 additive execution state and ordinary Control supervision. Keep output custody
