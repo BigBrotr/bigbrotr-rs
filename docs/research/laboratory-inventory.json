@@ -20192,5 +20192,48 @@
       "capture_sha256": "a59fa481c4007006aa82c69985d02fd42f9602cecdd992f39f1e5ea1cda8cc52"
     },
     "observation": "Runner exit0, PG wrapper exit137, bothPID0/noOOM. Owned network removed,574priorresources/eight unrelated running preserved. Free space174182543360 to173828571136bytes, with concurrent writes possible. Source/PG/archive/artifacts retained; no cache retirement in these SQL labs."
+  },
+  "implementation_export_adapter_20260924": {
+    "resources": {
+      "source": "c9a8bda7774fc74f0a8c1d14ed08c3637251362c",
+      "tree": "5894a3a72d288ffe18241e90a04f0f271328d863",
+      "owner": "e5b0ccbbcc5b58f8dbeaa22a462d5289",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-c9a8bda",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "fbb5442d3732f2f69889302fec2a6601066aed4edd038d8d10dc72e777451638"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "8794b4e8eb70fcfb1c989d8e0f0cbf101621c7ee5bd2857ae56371ac00933517"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T09:31:21.341728+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "2e6202ca471e64aaefcad1384df13b04ce10e3724294d3c2d74bae12f95ce527",
+      "postgres_id": "fbb5442d3732f2f69889302fec2a6601066aed4edd038d8d10dc72e777451638",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "8794b4e8eb70fcfb1c989d8e0f0cbf101621c7ee5bd2857ae56371ac00933517",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "status": "INCOMPLETE",
+    "report": "docs/implementation/evidence/p08-export-adapter-incomplete-20260924.json",
+    "local_root": ".research/implementation/export-execution/attempt-c9a8bda",
+    "capture": {
+      "files": 23,
+      "sha256": "05f1560feb99ebaf1e958532467ffecd2d74f059fb4717c9a4930b33aeef53e0",
+      "source": "c9a8bda7774fc74f0a8c1d14ed08c3637251362c",
+      "tree": "5894a3a72d288ffe18241e90a04f0f271328d863",
+      "source_files": 1150
+    },
+    "retained": "Original source, compiler cache, current ELF copies outside cache, seed assets, PostgreSQL/archive/output and failed logs. No active process or cleanup debt; no terminal SQL recovery claim.",
+    "free_bytes_before": 173796765696,
+    "free_bytes_after": 170095345664
   }
 }

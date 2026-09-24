@@ -21,19 +21,34 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEADb36f0b5e4645da073b22c231c35bc410f0e76508, origin/main
-and remote main identical; clean before current root-owned edits. Published scoped
-SQL report and candidates are pushed. Dirty root-owned paths: export/execution.rs,
-export/mod.rs, storage/postgres/export_execution.rs, control_owner.rs and native
-events.rs accessor, Cargo example registration, experiments/export-execution
-lab/native/probe/adapter_cases recipes, storage-catalog contract and this checkpoint. No competing edits. Product0501 SQL
-unchanged since90b54b7 application; SHA14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861.
-The new Rust adapter compiles; two exact native-selection/custody regressions
-observed RED then GREEN; Clippy/lib/example PASS. No current adapter/native journey
-has run. Independent read-only AI reviews the new adapter while root prepares its
-actual-process fixture. Capture rollback and complete native identity findings
-are corrected in code; actual failure injection remains pending. No active lab or cleanup debt. Fresh Tux observation:
-173828104192 free bytes and only the same eight unrelated containers running.
+Last observed main/HEAD c9a8bda7774fc74f0a8c1d14ed08c3637251362c,
+tree5894a3a72d288ffe18241e90a04f0f271328d863; unpublished candidate ahead
+of origin/mainb36f0b5 (remote verified). Root owns the fixture budget correction,
+this checkpoint, inventory and new incomplete report; no unrelated dirty files.
+0501 remains immutable SHA14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861.
+Mac check, two binding/custody regressions and Clippy/lib/example PASS; both
+regressions observed RED first. Independent AI found catalog identity checked
+too late and ArchiveUnavailable without collected rollback; corrected in c9.
+Actual mid-transaction capture failure/mismatched native custody remain NOT_RUN.
+The manifest oracle compares the entire independent object, including closed
+fields/catalog/accepted revisions.
+
+Lab export-adapter-c9a8bda is terminal [INCOMPLETE](evidence/p08-export-adapter-incomplete-20260924.json),
+owner e5b0ccbbcc5b58f8dbeaa22a462d5289, PGfbb5442d/runner8794b4e8 stopped/PID0/noOOM;
+owned network removed, historical orchestrator3831392 absent on fresh inspection.
+Actual current Rust build/two tests/Clippy, migration501, missing-row-lock refusal
+and separate reservation COMMIT/retry/cap refusal PASS. Fixture native allocation
+512MiB cannot satisfy128MiB memory+512MiB reserve; Preparation(Unavailable) occurs
+before worker dispatch. No file/completion/restart claim. Budget correction only:
+native640MiB/envelope1409MiB, beneath6GiBcontainer; product limits unchanged.
+Capture23files/1150sources and both current ELF bytes verified locally under
+.research/implementation/export-execution/attempt-c9a8bda/. Original SQL/archive
+and failed logs preserved; exact terminal SQL state not independently sampled.
+576priorcontainers/eight unrelated running unchanged; free173796765696 ->170095345664
+bytes during run,170085974016 at fresh inspection (concurrent writes possible).
+Next commit this bounded correction/report, then rerun exact Git in a new isolated
+adapter lab. No active owned experiment or cleanup debt. After qualification,
+retire this superseded compiler cache only after ownership/artifact checks.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
@@ -138,8 +153,8 @@ race, JSONL artifact or packaged M1/release qualification from these cases.
 
 ## Current laboratory custody
 
-No active lab or pending tool session after both filesystem candidates'
-terminal audits. Original lab /home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3,
+The currentc9 adapter lab is stopped-retained as recorded above; the following filesystem
+laboratories are older terminal observations. Original lab /home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3,
 owner846c86dd375c2381af209c8681d0be4f, labelorg.bigbrotr.export-files, native container
 09dc3d0d2470ae8b950866af99b5a0533e1ad77f0c35e36205bc314a27f346ca is stopped-retained:
 exit1/PID0/noOOM, no cleanup error;567prior records/eight unrelated running preserved.
@@ -344,7 +359,7 @@ not local artifact bytes. Original4e ELF only seeds native archive/0813 acceptan
 current501 executes directly in psql. No currentRust/migrator binary qualification.
 
 The reviewed scoped evidence is committed/pushed atb36f0b5. Current bounded
-action: qualify the dirty typed Rust execution consumer over501 against actual
+action: qualify the committed typed Rust execution consumer over501 against actual
 PostgreSQL and native reader/output, then integrate ordinary Control supervision. Reserve immutable ArtifactId/caps and COMMITqueued;
 subsequent running transition rechecks current authority, completes data+manifest
 and records atomic files+artifact/checkpoint under a fresh reader of ORIGINALcut.
@@ -380,8 +395,8 @@ exclusion through all writes/joins. Reader-only release/recovery must not be use
 for export pins; future typed export loading must compare the exact export_job_id.
 The native Supervisor still requires Management and does not process management
 commands while waiting on a worker; execution/cancel integration must address
-those constraints rather than clone HTTP work. No scheduler or job-produced artifact exists yet. The dirty SQL execution adapter
-is implemented but not yet qualified against PostgreSQL. Its opaque WrittenExport
+those constraints rather than clone HTTP work. No scheduler or job-produced artifact exists yet. The committed SQL execution adapter has partial PostgreSQL evidence; native
+artifact completion is still unqualified. Its opaque WrittenExport
 owns the actual native observation, complete file result and output unit; matching
 includes the real catalog custody identity, absent from EventQuery itself. Before editing those
 responsibilities, finish reading their complete affected callers and constraints.

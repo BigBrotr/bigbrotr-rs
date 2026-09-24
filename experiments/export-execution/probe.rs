@@ -91,9 +91,9 @@ async fn connection(database: &str, role: &str) -> (Client, transport::Driver) {
 fn budget() -> ResourceBudget {
     ResourceBudget::new(
         ProcessEnvelope::new(
-            1281 << 20,
+            1409 << 20,
             0,
-            ResourceLimits::new(768 << 20, 8, 512 << 20, 1 << 20),
+            ResourceLimits::new(768 << 20, 8, 640 << 20, 1 << 20),
             WaiterLimits::new(0, 0),
         )
         .unwrap(),

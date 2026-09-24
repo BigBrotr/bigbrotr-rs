@@ -1,0 +1,159 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "INCOMPLETE",
+  "source": {
+    "files": 23,
+    "sha256": "05f1560feb99ebaf1e958532467ffecd2d74f059fb4717c9a4930b33aeef53e0",
+    "source": "c9a8bda7774fc74f0a8c1d14ed08c3637251362c",
+    "tree": "5894a3a72d288ffe18241e90a04f0f271328d863",
+    "source_files": 1150
+  },
+  "scope": "Current typed Rust execution adapter and actual501 migrator on native Linux amd64; research process, not installed scheduling.",
+  "executed": {
+    "native_checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "export-execution-probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 44.58816393883899
+      },
+      {
+        "name": "selection-tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "export::execution::tests"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 15.990658085327595
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--example",
+          "export-execution-probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.6682897661812603
+      }
+    ],
+    "migrate": {
+      "exit": 0,
+      "remote_exclusion": "UNKNOWN",
+      "stdout": "{\"case\":\"current-rust-migrator-applies501-to-accepted813-job\",\"status\":\"PASS\"}\n",
+      "stderr": "",
+      "overflow": false
+    },
+    "missing_row_lock": {
+      "exit": 0,
+      "remote_exclusion": "UNKNOWN",
+      "stdout": "{\"case\":\"missing-execution-row-lock-privilege-refused\",\"status\":\"PASS\"}\n",
+      "stderr": "",
+      "overflow": false
+    },
+    "execute": {
+      "exit": 101,
+      "remote_exclusion": "UNKNOWN",
+      "stdout": "{\"case\":\"separate-reservation-commit-and-identical-retry-retain-original-caps\",\"status\":\"PASS\"}\n",
+      "stderr": "\nthread 'main' (2746) panicked at apps/bigbrotr/../../experiments/export-execution/probe.rs:322:10:\ncalled `Result::unwrap()` on an `Err` value: Preparation(Unavailable)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+      "overflow": false
+    }
+  },
+  "failure": "Fixture native budget512MiB is below memory128MiB plus reserve512MiB. Preparation::start_owned refuses640MiB before child dispatch. Raise fixture native budget to640MiB and envelope to1409MiB; product reservation and native floor unchanged. This attempt created no export file/completion.",
+  "artifacts": {
+    "bigbrotr": "05f171b8623d95da571d6b1e35e42a5c892d0f659adb15085e4ab4802f8d6ed3",
+    "export-execution-probe": "c91fffda5dcbd592ed32d006ff5bdd703458925b6a9ff8bf56be55cf14e6477a"
+  },
+  "dependencies": {
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "worker_source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "worker_sha256": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4"
+  },
+  "resources": {
+    "source": "c9a8bda7774fc74f0a8c1d14ed08c3637251362c",
+    "tree": "5894a3a72d288ffe18241e90a04f0f271328d863",
+    "owner": "e5b0ccbbcc5b58f8dbeaa22a462d5289",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-c9a8bda",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "fbb5442d3732f2f69889302fec2a6601066aed4edd038d8d10dc72e777451638"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "8794b4e8eb70fcfb1c989d8e0f0cbf101621c7ee5bd2857ae56371ac00933517"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T09:31:21.341728+00:00",
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "network_id": "2e6202ca471e64aaefcad1384df13b04ce10e3724294d3c2d74bae12f95ce527",
+    "postgres_id": "fbb5442d3732f2f69889302fec2a6601066aed4edd038d8d10dc72e777451638",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "8794b4e8eb70fcfb1c989d8e0f0cbf101621c7ee5bd2857ae56371ac00933517",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "INCOMPLETE",
+    "preexisting_preserved": true,
+    "preexisting_count": 576,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "original_source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "free_bytes": 170095345664
+  },
+  "capture": ".research/implementation/export-execution/attempt-c9a8bda/capture",
+  "limitations": [
+    "Actual reservation COMMIT completed before failure; exact terminal SQL state not independently sampled. Retain original database and all obligations; no recovery inferred from stopped processes.",
+    "Both owned containers stopped/PID0/noOOM, owned network removed. Eight unrelated running and576priorcontainer records preserved. Fresh inspection confirms stopped states; historical orchestrator PID absent.",
+    "Native successful signed/empty artifact COMMIT and fresh resolution NOT_RUN. No HTTP acceptance, automatic executor, cancellation, ambiguous completion, resource envelope or arm64 qualification.",
+    "Source1150files and both current ELF bytes independently rehashed locally; seed artifacts use captured remote identities. Full current capture23files retained.",
+    "Mac full-custody and query-binding tests observed RED/GREEN. Mid-transaction capture verification failure and actual mismatched native custody dispatch remain NOT_RUN."
+  ]
+}
