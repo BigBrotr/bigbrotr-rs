@@ -84,12 +84,20 @@ def main(port):
         while not poll.poll(0):
             assert time.monotonic()<end,'parent termination deadline'
             assert len(result['samples'])<1500,'sample budget'
-            catalog_gone=gate.exists();start_before=start_ticks(pid)
-            before=sockets(pid,port);free=lock_available();after=sockets(pid,port)
-            result['samples'].append(dict(monotonic=time.monotonic(),socket_open=before==after==initial,
-                socket_before=before,socket_after=after,
-                same_process=start_before==start_ticks(pid)==result['parent_start_ticks'],
-                lock_available=free,catalog_gone=catalog_gone,children=children(pid),parent_live=not bool(poll.poll(0))))
+            try:
+                catalog_gone=gate.exists();start_before=start_ticks(pid)
+                before=sockets(pid,port);free=lock_available();after=sockets(pid,port)
+                result['samples'].append(dict(monotonic=time.monotonic(),socket_open=before==after==initial,
+                    socket_before=before,socket_after=after,
+                    same_process=start_before==start_ticks(pid)==result['parent_start_ticks'],
+                    lock_available=free,catalog_gone=catalog_gone,children=children(pid),parent_live=not bool(poll.poll(0))))
+            except PermissionError:
+                # Linux may revoke /proc/<pid>/fd access while exit tears down
+                # its mm, just before pidfd readability. A live denied process
+                # is an unknown observation, never a successful absent socket.
+                if not poll.poll(100):raise
+                result['sampling_ended_on_process_exit']=True
+                break
             time.sleep(.01)
         result['terminal']=dict(exit=server.process.wait(timeout=2),response=future.result(timeout=2),
             lock_available=lock_available(),parent_present=Path(f'/proc/{pid}').exists(),

@@ -23,7 +23,10 @@ implementation-review attempt hit model capacity; retry source review completed.
 Last observed main/HEAD and origin/main8c5ef5638607b4db7d0fe242ac10625a7b37f5d9,
 normal push confirmed. Root owns new export_job_custody_client.py and
 export_job_custody_cases.py, the shared HTTP fixture's custody profile and this
-checkpoint. No unrelated dirty files or rewritten history. No new lab started.
+checkpoint. No unrelated dirty files or rewritten history. Positive e86e21f custody passed; negative first installer failed and second
+reached104 lock-available samples before a /proc exit-permission race interrupted
+terminal collection. Preserve both INCOMPLETE outcomes; root fixes the sampler
+to accept denied /proc access only after positive pidfd death within100ms.
 Current product ELF origin remains4e6b5c011c067800f52e67365b2b848b7943d4bc;
 fresh fixture revisions verify exact allowlisted source differences and original
 artifact hashes. No new compilation/Cargo cache when product inputs are unchanged.
@@ -105,7 +108,8 @@ signal race, JSONL artifact or packaged M1/release qualification from these case
 
 ## Current laboratory custody
 
-No active lab, tool session or cleanup debt after terminal audits. These are dated
+No active lab after e86e21f positive and6f1cb4c negative attempts (native execution
+terminally stopped); negative capture/evidence and scoped cache retirement pending. These are dated
 observations; re-inspect before reuse/deletion. Full identities and mounts are in
 [the inventory](../research/laboratory-inventory.json). No unrelated workload,
 host port, dataset, backup, archive, catalog or index deleted by these new runs.
@@ -177,7 +181,9 @@ observe catalog backend gone and native child absent while original Control
 socket remains open, with cross-process root flock refusal throughout that
 interval. Positive old backend/pin/job observations remain required after exit.
 An isolated negative source removing only original Arc retention should expose
-root lock availability while driver socket remains. The new fixture remains NOT_RUN on native Linux. It brackets independent flock
+root lock availability while driver socket remains. The first positive fixture passed on native Linux (capture under
+.research/implementation/export-job-custody),98supported samples over1.873s;
+negative still incomplete after a terminal observation race. It brackets independent flock
 with the same PID/start/actual socket FD inode, requires the exact cancellation
 branch and at least0.5s samples after catalog0, without claiming catalog0 is
 the join entry. Run positive unchanged4e ELF, then isolated original-Arc-removal
