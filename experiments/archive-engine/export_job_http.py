@@ -57,7 +57,7 @@ def destination():
 
 
 def exercise(mode='ordinary'):
-    assert mode in ('ordinary','checker','commits')
+    assert mode in ('ordinary','checker','responsive','commits')
     auth=json.loads((http.ROOT/'session.private').read_text())
     principal=(http.ROOT/'principal').read_text()
     body=command();key='d1'*16
@@ -99,10 +99,10 @@ def exercise(mode='ordinary'):
             server.stop()
             print(json.dumps(dict(status='PASS',cases=len(cases))))
             return
-        if mode=='checker':
+        if mode in ('checker','responsive'):
             server.stop()
             from export_destination_blocked import exercise as blocked
-            blocked(auth,body)
+            blocked(auth,body,responsive=mode=='responsive')
             case('actual-blocked-destination-renews-control-and-signal-fails-stop-within-bound')
             print(json.dumps(dict(status='PASS',cases=len(cases))))
             return
@@ -162,4 +162,4 @@ def exercise(mode='ordinary'):
 
 
 if __name__=='__main__':
-    {'unselected':unselected,'destination':destination,'exercise':exercise,'checker':lambda:exercise('checker'),'commits':lambda:exercise('commits')}[sys.argv[1]]()
+    {'unselected':unselected,'destination':destination,'exercise':exercise,'checker':lambda:exercise('checker'),'responsive':lambda:exercise('responsive'),'commits':lambda:exercise('commits')}[sys.argv[1]]()

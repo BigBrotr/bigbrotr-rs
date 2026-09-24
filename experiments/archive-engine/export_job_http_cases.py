@@ -14,8 +14,8 @@ from event_cases import cut_expectation
 
 
 def main(root, profile='ordinary'):
-    assert profile in ('ordinary','checker','commits','custody')
-    checker=profile=='checker'
+    assert profile in ('ordinary','checker','responsive','commits','custody')
+    checker=profile in ('checker','responsive')
     resources=json.loads((root/'resources.json').read_text());source=root/'source'
     assert Path(__file__).resolve().parents[2]==source
     assert command('git','-C',str(source),'rev-parse','HEAD')==resources['source']
@@ -127,7 +127,7 @@ def main(root, profile='ordinary'):
                 if process.poll() is None:process.kill();process.wait(timeout=10)
                 http.update(stdout=(root/'http-client.stdout').read_text(),stderr=(root/'http-client.stderr').read_text(),overflow=False);save()
         result['cases']+=json.loads((private/'export-job-http-cases.json').read_text());save()
-        assert http['exit']==0 and not http['stderr'],http
+        if not checker:assert http['exit']==0 and not http['stderr'],http
         if profile in ('commits','custody'):
             assert len(result['cases'])==4 and all(c['status']=='PASS' for c in result['cases'])
             if profile=='commits':
@@ -142,9 +142,7 @@ def main(root, profile='ordinary'):
             print(json.dumps(dict(status='PASS',prerequisites=4,profile=profile,source=resources['source'])))
             return
         if checker:
-            assert len(result['cases'])==5 and all(c['status']=='PASS' for c in result['cases'])
             result['checker']=json.loads((private/'checker-result.json').read_text())
-            assert result['checker']['status']=='PASS'
             result['final_sql']=observe();assert result['final_sql']==result['checker-blocked']['sql']
             assert retained()==result['checker-blocked']['rows']
             result['active_control']=int(sql(db,"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'"))
@@ -153,6 +151,10 @@ def main(root, profile='ordinary'):
             assert result['terminal_backends']=={db:0,'bbpub_normal':0}
             result['files']=files
             assert files=={str(p.relative_to(root/'out')):sha(p) for p in sorted((root/'out/signed_normal/kind=7').rglob('*.parquet'))}
+            save()
+            assert http['exit']==0 and not http['stderr'],http
+            assert len(result['cases'])==5 and all(c['status']=='PASS' for c in result['cases'])
+            assert result['checker']['status']=='PASS'
             result['status']='PASS';save()
             print(json.dumps(dict(status='PASS',cases=len(result['cases']),source=resources['source'])))
             return

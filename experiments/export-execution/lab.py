@@ -9,12 +9,14 @@ import base64, datetime, hashlib, json, os, re, secrets, shutil, subprocess, sys
 from pathlib import Path
 
 revision, tree = sys.argv[1:3]
+responsive = sys.argv[3:] == ["--runtime-responsive"]
 rollback = sys.argv[3:] == ["--rust-rollback"]
 adapter = sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
-assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"])
+assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"])
+compile_current = adapter or responsive
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
-root = base / 'runs' / (('export-rollback-' if rollback else 'export-adapter-' if adapter else 'export-execution-') + revision[:7])
+root = base / 'runs' / (('export-responsive-' if responsive else 'export-rollback-' if rollback else 'export-adapter-' if adapter else 'export-execution-') + revision[:7])
 source, out = root / 'source', root / 'out'
 cache_root = base / 'runs/export-checker-fixed-4e6b5c0'
 cache = cache_root / 'out/build'
@@ -52,7 +54,7 @@ preflight = dict(containers=prior, directories=sorted(p.name for p in (base / 'r
                  tcp_wmem=Path('/proc/sys/net/ipv4/tcp_wmem').read_text(), ports=cmd('ss', '-lntup'), processes=cmd('ps', '-eo', 'pid,ppid,stat,comm'),
                  volumes=cmd('docker', 'volume', 'ls'), networks=cmd('docker', 'network', 'ls'),
                  free_bytes=shutil.disk_usage(base).free, architecture=cmd('uname', '-m'))
-assert preflight['architecture'] == 'x86_64' and preflight['free_bytes'] > (12 if adapter else 4)*1024**3
+assert preflight['architecture'] == 'x86_64' and preflight['free_bytes'] > (12 if compile_current else 4)*1024**3
 # Copy the exact historical native seed producer, not compiler caches.
 # It establishes the original0813 state; only new SQL is under qualification.
 write(root / 'preflight.json', preflight)
@@ -67,6 +69,7 @@ owner = secrets.token_hex(16)
 state = dict(source=revision, tree=tree, owner=owner, root=str(root), state='preparing', containers=[],
              rust_image=rust_image, owner_label=label, postgres_image=pg_image,
              started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+             runtime_profile='responsive' if responsive else None,
              adapter_profile='rollback' if rollback else 'completion' if adapter else None)
 def save(): write(root / 'resources.json', state)
 save()
@@ -142,7 +145,7 @@ try:
          artifacts={key:old_ready[key] for key in artifacts},native_assets=before,
          validation='Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. This reuse record covers original seed artifacts only. Current compilation/adapter evidence, when selected, is recorded separately under adapter-checks and adapter-cases.'))
     state['artifact_origin']=artifact_source;save()
-    if adapter:
+    if compile_current:
         # Original seed cache is stopped and inventoried above; copy only caches,
         # then compile current trusted Git inputs. Original remains read-only.
         for name in ['target','cargo-home']:
@@ -151,7 +154,24 @@ try:
         write(root/'cache-origin.json',dict(root=str(cache_root),source=artifact_source,
             source_manifest_sha256=sha(cache/'source-manifest.json'),scope='Copied compiler caches only; fresh current Rust compilation required.'))
 
-    assert shutil.disk_usage(base).free>(8*1024**3 if adapter else 512*1024**2)
+    assert shutil.disk_usage(base).free>(8*1024**3 if compile_current else 512*1024**2)
+    if responsive:
+        instrument_root=base/'runs/strace-exit-9b30c35'
+        instrument_state=json.loads((instrument_root/'resources.json').read_text())
+        assert instrument_state['owner']=='84ac8cbf5292679b8ef7043fed7a2799'
+        assert instrument_state['state']=='stopped-retained'
+        for entry in instrument_state['containers']:
+            item=next(c for c in prior if c['Id']==entry['id'])
+            assert item['Config']['Labels']['org.bigbrotr.strace-exit']==instrument_state['owner']
+            assert not item['State']['Running'] and item['State']['Pid']==0
+        instrument=out/'checker-instrument';instrument.mkdir()
+        expected={'strace-exit-fixed':'509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458',
+                  'result.json':'cf0317fc8934eb70f3cf2d74ac6ba0680be09366a4ade586aabd95991c6c3abc'}
+        for name,digest in expected.items():
+            assert sha(instrument_root/'out'/name)==digest
+            shutil.copy2(instrument_root/'out'/name,instrument/name)
+            assert sha(instrument/name)==digest
+        write(root/'checker-instrument.json',dict(source=instrument_state['source'],owner=instrument_state['owner'],root=str(instrument_root),files=expected))
     native_assets = out/'archive-worker'
     write(root / 'rust-image.json', json.loads(cmd('docker', 'image', 'inspect', rust_image))[0])
     state['network_id'] = cmd('docker', 'network', 'create', '--internal', '--label', label + '=' + owner, 'bigbrotr-export-execution-' + revision[:7])
@@ -202,23 +222,23 @@ while not Path('/out/qualification-complete').exists():
         assert owned(runner)['State']['Running']
         if time.monotonic()>=deadline: raise TimeoutError('build readiness')
         time.sleep(.5)
-    if adapter:
+    if compile_current:
         state['state']='building-current-rust-adapter';save()
         with (root/'adapter-build.log').open('xb') as log:
-            compiled=subprocess.run(['docker','exec',runner,'python3','-B','/out/build/source/experiments/export-execution/native.py'],stdout=log,stderr=subprocess.STDOUT,timeout=1800)
+            compiled=subprocess.run(['docker','exec',runner,'python3','-B','/out/build/source/experiments/export-execution/native.py',*(['--runtime'] if responsive else [])],stdout=log,stderr=subprocess.STDOUT,timeout=1800)
         assert compiled.returncode==0
-    state['state']='qualifying-rust-adapter' if adapter else 'qualifying-schema';save()
+    state['state']='qualifying-runtime' if responsive else 'qualifying-rust-adapter' if adapter else 'qualifying-schema';save()
     with (root/'schema-cases.log').open('xb') as log:
-        cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/cases.py')),str(root)],stdout=log,stderr=subprocess.STDOUT,timeout=240)
-    result=json.loads((root/('adapter-cases.json' if adapter else 'schema-cases.json')).read_text())
+        cases=subprocess.run(['python3','-B',str(source/('experiments/archive-engine/export_job_http_cases.py' if responsive else 'experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/cases.py')),str(root),*(['responsive'] if responsive else [])],stdout=log,stderr=subprocess.STDOUT,timeout=240)
+    result=json.loads((root/('export-job-http-cases.json' if responsive else 'adapter-cases.json' if adapter else 'schema-cases.json')).read_text())
     audit['result']=result['status']
-    assert cases.returncode==0 and result['status']=='PASS'
     audit['independent_sql']={}
     for database in ['bbpub_normal','bbpub_control_normal']:
         sql="SELECT json_build_object('backends',(SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()))"
         observed=json.loads(cmd('docker','exec',pg,'psql','-XAt','-U','postgres','-d',database,'-c',sql))
         audit['independent_sql'][database]=observed
         assert observed==dict(backends=0)
+    assert cases.returncode==0 and result['status']=='PASS'
     (out/'qualification-complete').write_text('PASS\n')
     audit['container_ok']=finish(runner,'rust-visibility',30)
     assert audit['container_ok']

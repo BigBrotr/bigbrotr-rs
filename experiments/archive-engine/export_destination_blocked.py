@@ -108,7 +108,7 @@ class TracedServer(http.Server):
                 os.close(self.parent_fd);self.parent_fd=None
 
 
-def exercise(auth, body):
+def exercise(auth, body, responsive=False):
     # Deployment-owned timings, unchanged60s owner TTL; fit a real renewal and
     # bounded fail-stop inside the externally imposed60s syscall hold.
     with http.CONFIG.open('a') as stream:
@@ -148,6 +148,29 @@ def exercise(auth, body):
         assert status['State'].strip().startswith('t'),status['State']
         assert not future.done() and not lock_available()
         result['blocked']=dict(tid=tid,tracer=server.process.pid,state=status['State'].strip(),lock_available=False,trace=server.trace.read_text(),submitted_monotonic=submitted,observed_monotonic=time.monotonic());save()
+        if responsive:
+            # Bound the observer independently of the ordinary five-second
+            # request. Record failure, then still qualify signal and cleanup.
+            connection=http.http.client.HTTPConnection('127.0.0.1',18080,timeout=.75)
+            started=time.monotonic()
+            observation=dict(expected_status=200,timeout_seconds=.75)
+            try:
+                connection.request('GET','/management/v1/me',headers={
+                    'Origin':'http://'+http.ADDRESS,**auth})
+                response=connection.getresponse()
+                observation['status']=response.status
+                data=response.read(16385)
+                assert len(data)<=16384
+                value=json.loads(data)
+                observation['principal_matches']=value.get('principal_id')==(http.ROOT/'principal').read_text()
+            except (OSError,http.http.client.HTTPException) as error:
+                observation['error']=type(error).__name__
+            finally:
+                connection.close()
+                observation['elapsed_ms']=round((time.monotonic()-started)*1000,3)
+                observation['worker_still_blocked']=pending_checker(server.trace.read_text(),server.parent)==tid
+                observation['original_request_pending']=not future.done()
+                result['management_during_native']=observation;save()
         (http.ROOT/'checker-blocked.waiting').write_text('observed\n')
         end=time.monotonic()+4
         while not (http.ROOT/'checker-blocked.ready').exists():
@@ -181,6 +204,10 @@ def exercise(auth, body):
         assert '"release":"committed"' not in terminal['stdout']
         assert terminal['response'].get('status') not in (200,202)
         assert not list((http.ROOT/'scratch').iterdir())
+        if responsive:
+            observation=result['management_during_native']
+            assert observation.get('status')==200 and observation.get('principal_matches'),observation
+            assert observation['worker_still_blocked'] and observation['original_request_pending'],observation
         result['status']='PASS';save()
     finally:
         try:server.cleanup()

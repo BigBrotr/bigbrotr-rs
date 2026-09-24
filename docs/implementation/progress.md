@@ -21,12 +21,25 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEAD ed2a93bb97b487df28571199e4cfc4f0267d4a58, one
-unpublished fixture candidate ahead of origin/main c1798bc. Root owns only dirty
-checkpoint/inventory after exact transfer. Isolated clean negative worktree
-.research/worktrees/export-rollback-no-reuse at d8effc7616c937f8173013bd507b359a5d292a0e,
-branch research/export-rollback-no-reuse; never merge/push. Its single product
-mutation removes ArchiveUnavailable from reusable, fixture identical to ed2.
+Last verified main/HEAD and origin/main a084bed877ca90491db5a2caf4617dd98bcd4c88,
+clean before this slice. The rollback evidence and narrow cache retirement are
+committed/pushed. Root now owns a fixture-only responsiveness extension in the
+existing export execution laboratory and HTTP checker files. No runtime product
+change yet. Next: exact-Git native RED for GET /management/v1/me while the actual
+destination openat is held; still observe renewal, SIGTERM, actual worker death,
+ledger preservation and terminal SQL even when the responsiveness assertion fails.
+Build current installed parent/worker using the established ordered builder;
+retain original4e only for archive seed/readback, with distinct identities.
+Fresh Tux observation: no running BigBrotr container, eight unrelated running,
+165509775360 bytes free. No active experiment or cleanup debt at this checkpoint.
+Use --runtime-responsive on experiments/export-execution/lab.py; no new master plan.
+After RED, integrate bounded management service into external native supervision,
+without nested native admission or new work during cleanup. SQL cancellation
+still poisons Control; keep action/pin deadlines independent of lease renewal.
+
+Isolated clean negative worktree .research/worktrees/export-rollback-no-reuse at
+d8effc7616c937f8173013bd507b359a5d292a0e, branch research/export-rollback-no-reuse;
+never merge/push. Its sole product mutation removes ArchiveUnavailable reuse.
 Negative Tux export-rollback-d8effc7 is stopped-retained, owner072be6a9733efea7ef0f6bd34b822e8e,
 PG8fa876a0/runnerc1c3db72 exit137/143/PID0/noOOM, network removed,580priorrecords/
 eight unrelated running unchanged. Actual expected RED: INSERT wait, catalog
@@ -44,7 +57,7 @@ containers/eight unrelated running unchanged; free162194755584bytes at terminal.
 Capture26files/1153current+1110seed sources/twoELF/completeempty manifest checked
 at .research/implementation/export-execution/attempt-ed2a93b; tarSHA
 e2b5242bd3a41f4c3acf37dff9cb53476611b68693587e7e99b12c28a74f24cf.
-[Combined report](evidence/p08-export-catalog-loss-native-20260924.json) is dirty,
+[Combined report](evidence/p08-export-catalog-loss-native-20260924.json) is committed,
 independent positive/negative capture/source/ELF/full-manifest/terminal review
 complete with no discrepancy beyond corrected recovery/expiry wording. Superseded negative target/cargo-home
 retired after actual process/mount/owner audit and source/artifact/capture rehash:
@@ -54,7 +67,7 @@ ed2 compiler cache retained. No active cleanup debt. Negative original remains I
 no inference about final negative SQL or pin release after panic. Source-isolated
 mutation alone explains failed same-session reuse. No active experiment.
 Clean detached positive worktree .research/worktrees/export-rollback-positive is
-ed2; never edit it independently. Next coherent evidence commit/push, then integrate runtime supervision. Cache
+ed2; never edit it independently. Continue runtime supervision. Cache
 retirement and independent review are complete; no current lab or cleanup debt.
 Initial local negative bundle path mistake failed before remote transfer; fixed
 to absolute path. No product fix/new SQL in this fixture slice.
@@ -101,8 +114,8 @@ root corrected total released-reader assumption to the exact new pin because
 seed retains released historical readers. Native negative produced expected RED; positive scoped PASS, captured and independently reviewed. No scheduler yet. Keep OutputCustody outside
 supervise through actual Control driver join; don't repeat destination custody
 bug. External native work must process bounded management commands so revocation,
-logout and later job cancellation do not wait behind blocked I/O. Pending native
-capture-failure rollback and full-custody dispatch scenarios remain NOT_RUN.
+logout and later job cancellation do not wait behind blocked I/O. Mid-transaction catalog-loss rollback is now scoped qualified; broader full-custody
+dispatch/recovery scenarios remain NOT_RUN.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
