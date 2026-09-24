@@ -96,8 +96,23 @@ def main():
         result['kernel']=subprocess.check_output(['uname','-srvm'],text=True).strip()
         result['compiler']=subprocess.check_output(['cc','--version'],text=True)
         with tarfile.open(ARCHIVE) as tar:
-            assert all(not Path(m.name).is_absolute() and '..' not in Path(m.name).parts for m in tar.getmembers())
-            tar.extractall(ROOT,filter='data')
+            for member in tar.getmembers():
+                name=Path(member.name)
+                assert not name.is_absolute() and '..' not in name.parts and name.parts[0]=='strace-6.1'
+                assert member.isdir() or member.isfile() or member.islnk()
+                if member.islnk():
+                    target=Path(member.linkname)
+                    assert not target.is_absolute() and '..' not in target.parts and target.parts[0]=='strace-6.1'
+                    assert tar.getmember(member.linkname).isfile()
+                destination=ROOT/name
+                if member.isdir():destination.mkdir(exist_ok=True)
+                else:
+                    # Python3.11 lacks extraction filters. Copy only validated
+                    # regular bytes (including archive-internal hardlink data),
+                    # never create links or restore archive owner/mode metadata.
+                    with tar.extractfile(member) as original,destination.open('xb') as output:
+                        shutil.copyfileobj(original,output)
+                    destination.chmod(0o755 if member.mode&0o111 else 0o644)
         build=ROOT/'strace-6.1'
         command('configure',['./configure','--enable-mpers=no','--with-libunwind=no','--with-libdw=no'],build)
         command('make-original',['make','-j2'],build)

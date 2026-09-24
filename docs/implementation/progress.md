@@ -21,7 +21,7 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD and origin/mainc494932; candidate53c6c9d and its scoped
+Current main/HEADb5efc190295131b13fe936a1e0761941afa96829, origin/mainc494932; candidate53c6c9d and its scoped
 evidence75906fc pushed normally. GET whitespace correction3a898c4 and blocked-checker candidate324b8eb are pushed
 with original failure evidence. Root owns only the tracer discriminator/patch
 and this checkpoint. Candidate53c6c9d was clean at transfer.
@@ -306,7 +306,14 @@ and artifact checks PASS; actual tool build/execution NOT_RUN. Inputs/recipe
 experiments/archive-engine/strace-exit-probe.md; ignored launcher/transfer and
 pinned archive .research/implementation/strace-exit/. Next commit/transfer creates
 a separate unprivileged no-network2CPU/2GiB/128PID lab after fresh inventory.
-No new remote root exists yet.
+First probe lab strace-exit-b5efc19 ended INCOMPLETE before extraction/build:
+runner Python3.11 does not support tarfile.extractall(filter=). Original result
+and traceback preserved. Owner30ca97ef90ea5f4c7943b2534b94eea8, label
+org.bigbrotr.strace-exit, runner6aa5d4b038625a339131c1563749c385d19be4cfc04d3d288267978b7ec175e9
+stopped; no network/PG resources created. Inventory/capture pending. Root now
+corrects extraction for exact3.11: validate every path/type/hardlink target,
+copy regular bytes exclusively and never restore links/ownership/mode metadata.
+Next fresh candidate must run the same unmodified/patched discriminator.
 
 Independent AI static review also found missing submit-time/margin immediately
 before SIGTERM, limited pre-signal/post-exit flock samples and early-tracer-exit
