@@ -306,6 +306,19 @@ query/socket delivery remain separate gates. The ownership/redaction subset is s
 [private administration](../product/private-administration.md). It does not
 complete listing, resume/cancel, artifact discovery or this step's full acceptance.
 
+The next Step 3 slice is explicit resume of the actor's paused protocol1 export.
+Use the existing scope `export` action plus current independent input/private
+export grants and the original destination; preserve the seven dataset-action
+meanings. Add a new migration after0501 for immutable resume command/audit detail,
+without changing applied checksums. Require the original committed unit/caps/cut,
+expected revision and current Control, with consumer-before-job locking. Record
+historical acceptance before dispatch; identical retry after a second pause must
+return the first receipt without requeueing. Practical cases must include absent
+effects/forged transition, terminal/other-actor refusal, changed key/body, revoked
+grants, expiry after a lock wait, both COMMIT-loss sides and actual same-unit
+signed completion after permission restoration. The HTTP/client/UI consumer and
+its actual browser journey follow the persistent boundary; none is yet qualified.
+
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending
 (created_at, job_id), an opaque policy-bound cursor and a listing upper cut.

@@ -114,6 +114,44 @@ pub struct JobReceipt {
     pub created: bool,
 }
 
+/// Resume only the original paused unit. A browser cannot replace its query,
+/// destination, committed progress or immutable capacity through this command.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ResumeExportCommand {
+    pub expected_job_revision: Revision,
+    pub expected_config_revision: Revision,
+    pub expected_policy_revision: Revision,
+}
+impl ResumeExportCommand {
+    pub fn digest(
+        &self,
+        dataset: DatasetId,
+        actor: PrincipalId,
+        key: CommandKey,
+        job: JobId,
+    ) -> Digest256 {
+        let mut hash = Sha256::new();
+        hash.update(b"bigbrotr/export-resume/1\0");
+        for bytes in [
+            dataset.as_bytes(),
+            actor.as_bytes(),
+            key.as_bytes(),
+            job.as_bytes(),
+        ] {
+            hash.update(bytes);
+        }
+        for revision in [
+            self.expected_job_revision,
+            self.expected_config_revision,
+            self.expected_policy_revision,
+        ] {
+            hash.update(revision.get().to_be_bytes());
+        }
+        Digest256::from_bytes(hash.finalize().into())
+    }
+}
+
 /// Redacted operational metadata of the authenticated actor's own export.
 /// This neither refreshes input grants nor authorizes artifact access or writes.
 pub struct JobObservation {

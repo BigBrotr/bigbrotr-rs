@@ -248,6 +248,26 @@ cancel-requested jobs only drain toward cancellation. A new deliberate attempt i
 declared lineage. Worker crash recovery resumes eligible nonterminal work without
 requiring the operator to mint another job identity.
 
+For the initial actor-owned signed-export resume profile, the job-kind action is
+the existing exact-scope `export` grant. Recheck it independently of dataset
+`data.read`, scope `history.read` and `private-export`, and the original approved
+destination binding. `roles.control` authorizes configured role lifecycle, not
+this finite export action; no new generic job-control grant is implied. Only the
+original actor may resume this profile. A new command contains the expected job,
+configuration and security revisions, with the job ID in the route and a new
+resume-command key in `Idempotency-Key`. Identical retries keep that key; it is
+distinct from the original export-acceptance key. No input, destination or cap is editable.
+
+Acceptance queues the same committed unit, advances the job revision exactly once,
+clears the prior pause reason and records an immutable command/audit receipt in
+the same transaction. It requires the retained original cut and export pin, but
+does not renew the pin's scheduling lease or create a reader pin. Actual execution
+still needs fresh reader authority and positive output exclusion. A currently
+authenticated identical retry resolves the original acceptance before current
+input grants, destination or job-state checks. It reports that historical accepted
+revision, even if a worker has since paused again; it must never requeue twice.
+This profile requires additive schema/adapter/HTTP qualification before exposure.
+
 Deactivation revokes existing sessions/tokens and starts the restrictive policy
 barrier. Reactivation does not resurrect them. Protect the last recoverable owner
 and retain audit attribution. Secret-reference restriction similarly invalidates

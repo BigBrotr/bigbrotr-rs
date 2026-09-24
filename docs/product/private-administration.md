@@ -319,6 +319,23 @@ anomaly and broader expiry/accessibility qualification remain open. Bounded list
 artifact discovery, explicit resume/cancel and their full UI/CLI journeys remain
 selected P08/P09 work. No historical schema checksum changes.
 
+The next explicit own-export resume consumer uses the same exact-scope `export`
+action as new export submission, separately from `data.read`, `history.read` and
+`private-export`. Generic role control or status visibility cannot authorize it.
+It does not require a new reauthentication proof: this command changes no grant,
+source selection, destination or resource cap. A lost reply is resolved with the
+same actor/key/body and returns only the original acceptance revision/time.
+It cannot restart a later pause or supply execution/download authority. The
+[resume contract](../specification/interface-catalog.md#private-management-and-cli)
+owns the same-unit, CAS, current-grant and durable-retry rules.
+
+Its command fingerprint is SHA256 over ASCII `bigbrotr/export-resume/1` plus NUL,
+dataset16, authenticated actor16, command-key16, job16, then expected job,
+configuration and security revisions as big-endian u64. The closed request body
+contains only those three revisions as canonical positive decimal strings;
+route/session/header bind the identities. An identical fingerprint establishes
+request identity only, never acceptance or current authorization.
+
 ## Local first-owner transition
 
 The first CLI consumer is `access owner-token issue --username NAME --request-id
