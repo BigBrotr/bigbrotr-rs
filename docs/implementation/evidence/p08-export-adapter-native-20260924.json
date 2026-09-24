@@ -1,0 +1,281 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED",
+  "scope": "Current typed Rust SQL/native/files adapter: empty and signed-event completion COMMIT, logout-independent job execution and fresh historical resolution. Research process; not automatic installed Control executor.",
+  "source": {
+    "files": 28,
+    "sha256": "b07205f05d0e39add0074c73510e79b170bc19e4dc3d79c3e781cc19941a3a13",
+    "source": "1a80a48057a0753377259d2ca10457dfc38f1bbb",
+    "tree": "3e7595326b9d52f2214b4d387efcde48cf096fcd",
+    "source_files": 1151
+  },
+  "checks": [
+    {
+      "name": "build",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "export-execution-probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 44.63815851556137
+    },
+    {
+      "name": "selection-tests",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "export::execution::tests"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 16.090651052072644
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--example",
+        "export-execution-probe",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 2.6686692857183516
+    }
+  ],
+  "artifacts": {
+    "bigbrotr": "30f443ca902382827d7767977c5c147733dfadf8f8231c18a520e2cce44eafa8",
+    "export-execution-probe": "088f53810a02b8c5357ff66a1f76522ec5f399a78b76f175be3dcd34317ba14a"
+  },
+  "dependencies": {
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "source_manifest_sha256": "342853e31777326aeff0e0ae042583439e83926f19b882b959c1d8b2a1674953",
+    "worker_source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "worker_sha256": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_target": "x86_64-unknown-linux-gnu"
+  },
+  "executed_cases": {
+    "migrate": {
+      "exit": 0,
+      "remote_exclusion": "UNKNOWN",
+      "stdout": "{\"case\":\"current-rust-migrator-applies501-to-accepted813-job\",\"status\":\"PASS\"}\n",
+      "stderr": "",
+      "overflow": false
+    },
+    "missing-row-lock": {
+      "exit": 0,
+      "remote_exclusion": "UNKNOWN",
+      "stdout": "{\"case\":\"missing-execution-row-lock-privilege-refused\",\"status\":\"PASS\"}\n",
+      "stderr": "",
+      "overflow": false
+    },
+    "execute": {
+      "exit": 0,
+      "remote_exclusion": "UNKNOWN",
+      "stdout": "{\"case\":\"separate-reservation-commit-and-identical-retry-retain-original-caps\",\"status\":\"PASS\"}\n{\"case\":\"native-empty-and-signed-event-output-complete-after-browser-logout\",\"status\":\"PASS\"}\n{\"case\":\"known-completion-reader-release-and-actual-driver-joins\",\"status\":\"PASS\"}\n",
+      "stderr": "",
+      "overflow": false
+    },
+    "resolve": {
+      "exit": 0,
+      "remote_exclusion": "UNKNOWN",
+      "stdout": "{\"case\":\"fresh-control-resolves-completion-without-input-grants-or-files\",\"status\":\"PASS\"}\n",
+      "stderr": "",
+      "overflow": false
+    }
+  },
+  "outputs": [
+    {
+      "job": "0a153c5a6e6ffa354c7e57ebaffc9781",
+      "rows": "0",
+      "bytes": "0",
+      "state": "succeeded",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "artifact": "32a539af4a5489b3eff79fecb419832a",
+      "manifest": "71a8aa27e5e9ef7cf8e525c16d04f71e3e75b7c7d2414acbeff03814004c1f84",
+      "checkpoint": "1",
+      "manifest_bytes": "1226",
+      "export_retained": true,
+      "reader_released": true
+    },
+    {
+      "job": "e761e2131eb583430675a3b1a0ca92a2",
+      "rows": "1",
+      "bytes": "399",
+      "state": "succeeded",
+      "sha256": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+      "artifact": "70fa1c72851750f63ea4529fcf2bab03",
+      "manifest": "3a3ee22b24a28aaebaba6e0e867c46d9700a131a24350334da691f9abf4f7199",
+      "checkpoint": "1",
+      "manifest_bytes": "1228",
+      "export_retained": true,
+      "reader_released": true
+    }
+  ],
+  "output_hashes": {
+    "signed_normal/export-destination/32a539af4a5489b3eff79fecb419832a/events.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "signed_normal/export-destination/32a539af4a5489b3eff79fecb419832a/manifest.json": "71a8aa27e5e9ef7cf8e525c16d04f71e3e75b7c7d2414acbeff03814004c1f84",
+    "signed_normal/export-destination/70fa1c72851750f63ea4529fcf2bab03/events.jsonl": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+    "signed_normal/export-destination/70fa1c72851750f63ea4529fcf2bab03/manifest.json": "3a3ee22b24a28aaebaba6e0e867c46d9700a131a24350334da691f9abf4f7199"
+  },
+  "terminal_sql": {
+    "jobs": 2,
+    "files": 2,
+    "backends": 0,
+    "artifacts": 2,
+    "active_control": 0
+  },
+  "unchanged_archive_files": {
+    "signed_normal/kind=7/main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e",
+    "signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70",
+    "signed_normal/kind=7/main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076",
+    "signed_normal/kind=7/main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be",
+    "signed_normal/kind=7/main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35",
+    "signed_normal/kind=7/main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05",
+    "signed_normal/kind=7/main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937",
+    "signed_normal/kind=7/main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+  },
+  "resources": {
+    "source": "1a80a48057a0753377259d2ca10457dfc38f1bbb",
+    "tree": "3e7595326b9d52f2214b4d387efcde48cf096fcd",
+    "owner": "13ee53e74d3fd424d61fcfd74e224f56",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-1a80a48",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "ebf871a8c20818620320123e42eef52cab99d270c726d18e5d00f7092d788df5"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "ec3b896707062878106134b3e9fd48ca5108641d9d255541b1f5a02c886c376b"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T09:41:08.733964+00:00",
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "network_id": "459e403903e92a282dcec34918872affdf8d3e575c830eee8985fbdb1c06fe53",
+    "postgres_id": "ebf871a8c20818620320123e42eef52cab99d270c726d18e5d00f7092d788df5",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "ec3b896707062878106134b3e9fd48ca5108641d9d255541b1f5a02c886c376b",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "PASS_PENDING_CAPTURE",
+    "source": "1a80a48057a0753377259d2ca10457dfc38f1bbb",
+    "owner": "13ee53e74d3fd424d61fcfd74e224f56",
+    "cases": {},
+    "result": "PASS",
+    "independent_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "container_ok": true,
+    "preexisting_preserved": true,
+    "preexisting_count": 578,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "original_source_unchanged": true,
+    "host_tcp_wmem_preserved": true,
+    "free_bytes": 166353223680
+  },
+  "container_terminals": {
+    "rust-visibility": {
+      "id": "ec3b896707062878106134b3e9fd48ca5108641d9d255541b1f5a02c886c376b",
+      "lifecycle": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-24T09:41:14.00731248Z",
+        "FinishedAt": "2026-09-24T09:42:30.767297906Z"
+      }
+    },
+    "postgres": {
+      "id": "ebf871a8c20818620320123e42eef52cab99d270c726d18e5d00f7092d788df5",
+      "lifecycle": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-24T09:41:12.010064622Z",
+        "FinishedAt": "2026-09-24T09:42:41.302373979Z"
+      }
+    }
+  },
+  "capture": ".research/implementation/export-execution/attempt-1a80a48/capture",
+  "local_recheck": {
+    "status": "PASS",
+    "seed_source_files": 1110,
+    "actual_output_pairs": 2,
+    "seed_oracle": "PASS",
+    "current_elf_files": 2,
+    "scope": "Local replay of captured signed seed, exact output bytes/full manifest, original source hashes and current ELF bytes; remote SQL/archive state from captured evidence"
+  },
+  "review": {
+    "ai": "Read-only independent source review identified full native custody validation before filesystem writes and collected rollback after ArchiveUnavailable; both corrected before this run. Independently verified both failed/successful captures:28finalfiles,1151current/1110seed Git sources,two ELF,exact signed399byte/empty output,full manifests,six adapter cases,terminal SQL and578unchanged priorresources. No substantive discrepancy. No reviewer product execution/SSH/writes.",
+    "root": "Exact current1151/original1110source files,28capturefiles,twoactualELF and both output pairs rehashed locally; full manifest and signed seed oracle replayed. SQL and8Parquet identity comparisons use captured remote records."
+  },
+  "limitations": [
+    "Original c9 remains INCOMPLETE: fixture512MiB native budget cannot satisfy128+512MiB request. Corrected fixture640MiB native/envelope1409MiB; product unchanged, no measured capacity/RSS claim.",
+    "Actual native worker supplied explicitly from qualified4e seed. Current parent build-info has archive_worker=null; not packaged worker or installation qualification.",
+    "Acceptance invokes actual Rust API directly; no POST-to-automatic-executor journey. Browser logout occurs before both jobs execute; current account/grants still authorize.",
+    "Both completed jobs retain original export pins; fresh reader pin released only after completion COMMIT. No terminal export-pin cleanup/recovery, ambiguous completion, crash-before-checkpoint, old-worker exclusion or cancellation qualification.",
+    "Fresh resolve process does not open destination/catalog/worker and succeeds after deleting data.read. Files remain present; no claim of physical file removal or native-service outage.",
+    "Original cut snapshot3/frontier1/one stream through10. No actual advanced-frontier/expired-exportpin/zero-prefix/multistream qualification here.",
+    "Capture failure inside transaction, mismatched native-custody dispatch, authority revocation during output, exhausted resources, aged scheduling and signal supervision remain NOT_RUN. No full task, M1, release or Linux arm64 qualification."
+  ]
+}

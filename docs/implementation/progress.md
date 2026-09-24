@@ -13,47 +13,63 @@ is unavailable. No public release, rename or Linux arm64 qualification.
 
 Active P08-T03/T04: standalone signed export and durable job/restart, consuming
 P08-T02 private authority and P06-T01/T02 signed history/pinned-reader work.
-No full P02/P06/P08 task or M1 milestone is complete. No job-produced JSONL artifact yet.
-The filesystem library/research driver has written the independent fixture on Mac
-and Tux; scoped native failures/retries pass, but no durable runtime job yet.
+No full P02/P06/P08 task or M1 milestone is complete. The typed Rust adapter now
+commits empty and signed-event files/artifact/checkpoint on native Tux. Automatic
+installed execution, interruption and recovery qualification remain unfinished.
 Root is sole writer/integrator. Independent read-only AI completed design,
 fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer.
 
 ## Git and current implementation
 
-Last observed main/HEAD c9a8bda7774fc74f0a8c1d14ed08c3637251362c,
-tree5894a3a72d288ffe18241e90a04f0f271328d863; unpublished candidate ahead
-of origin/mainb36f0b5 (remote verified). Root owns the fixture budget correction,
-this checkpoint, inventory and new incomplete report; no unrelated dirty files.
+Last observed main/HEAD1a80a48057a0753377259d2ca10457dfc38f1bbb,
+tree3e7595326b9d52f2214b4d387efcde48cf096fcd; two unpublished candidates ahead
+of origin/mainb36f0b5. Root owns new evidence/checkpoint/inventory only.
 0501 remains immutable SHA14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861.
-Mac check, two binding/custody regressions and Clippy/lib/example PASS; both
-regressions observed RED first. Independent AI found catalog identity checked
-too late and ArchiveUnavailable without collected rollback; corrected in c9.
-Actual mid-transaction capture failure/mismatched native custody remain NOT_RUN.
-The manifest oracle compares the entire independent object, including closed
-fields/catalog/accepted revisions.
+No active owned experiment or cleanup debt. Eight unrelated containers retained.
 
-Lab export-adapter-c9a8bda is terminal [INCOMPLETE](evidence/p08-export-adapter-incomplete-20260924.json),
-owner e5b0ccbbcc5b58f8dbeaa22a462d5289, PGfbb5442d/runner8794b4e8 stopped/PID0/noOOM;
-owned network removed, historical orchestrator3831392 absent on fresh inspection.
-Actual current Rust build/two tests/Clippy, migration501, missing-row-lock refusal
-and separate reservation COMMIT/retry/cap refusal PASS. Fixture native allocation
-512MiB cannot satisfy128MiB memory+512MiB reserve; Preparation(Unavailable) occurs
-before worker dispatch. No file/completion/restart claim. Budget correction only:
-native640MiB/envelope1409MiB, beneath6GiBcontainer; product limits unchanged.
-Capture23files/1150sources and both current ELF bytes verified locally under
-.research/implementation/export-execution/attempt-c9a8bda/. Original SQL/archive
-and failed logs preserved; exact terminal SQL state not independently sampled.
-576priorcontainers/eight unrelated running unchanged; free173796765696 ->170095345664
-bytes during run,170085974016 at fresh inspection (concurrent writes possible).
-Next commit this bounded correction/report, then rerun exact Git in a new isolated
-adapter lab. No active owned experiment or cleanup debt. After qualification,
-retire this superseded compiler cache only after ownership/artifact checks.
+Originalc9 lab remains [INCOMPLETE](evidence/p08-export-adapter-incomplete-20260924.json),
+fixture native512MiB rejected128+512MiB request before dispatch; reserve COMMIT
+had happened, exact terminal SQL not independently sampled. Source/PG/archive/logs
+and ELF outside compiler cache retained. Independent AI verified the entire
+23-file capture,1150Git sources/two ELF and failure diagnosis with no discrepancy.
+
+Corrected1a lab [scoped report](evidence/p08-export-adapter-native-20260924.json):
+actual Rust build/two regressions/Clippy and six adapter cases PASS. Both signed
+399-byte and empty0-byte outputs match independent exact bytes/full manifests;
+completed artifacts/files/checkpoint COMMIT and fresh Control resolution after
+input grant revocation pass. Acceptance is direct Rust API, not HTTP/runtime.
+Original export pins retained; only fresh reader released, both DBbackend0,
+activeControl0/jobs2/artifacts2/files2. Final capture28files/1151current+1110seed
+source hashes/two ELF verified locally;8Parquet unchanged remotely. Independent read-only AI completed final capture/source/ELF/full-manifest/SQL
+and578resource review with no substantive discrepancy; root also replayed oracle.
+Owner13ee53e74d3fd424d61fcfd74e224f56, PGebf871a8/runner ec3b8967 stopped/PID0/noOOM;
+owned network removed,578priorrecords/eight unrelated running preserved.
+Free166353223680bytes at terminal; concurrent writes possible. Current useful
+1a compiler cache retained. Supersededc9 target/cargo-home retired after actual
+process/mount/container and retained source/ELF/capture checks:3326787584allocated
+bytes, free166343868416 ->169668538368bytes;580containers/eight running unchanged.
+Five old stopped Sept17 containers had collection-wide parent mounts; their finite
+commands inspected and no dependency on the Sept24 cache. First conservative
+audit stopped before mutation on those mounts; refined explicit-ID audit passed.
+No lab, dataset, database, archive, log, artifact, container or volume removed. No product mutation for
+the corrected fixture; native640MiB/envelope1409MiB does not qualify capacity.
+
+Next commit/push reviewed scoped adapter evidence, then exercise the remaining
+mid-transaction catalog-capture failure before ordinary Control integration.
+Hold the real artifacts INSERT behind an independently observed PG SHARE table
+lock (ACCESS EXCLUSIVE blocks the earlier read), terminate
+the actual catalog backend, collect completion refusal/rollback and verify the
+same Control session still resolves unchanged running state. Use a source-isolated
+negative control removing ArchiveUnavailable reuse; no applied SQL changes. No scheduler yet. Keep OutputCustody outside
+supervise through actual Control driver join; don't repeat destination custody
+bug. External native work must process bounded management commands so revocation,
+logout and later job cancellation do not wait behind blocked I/O. Pending native
+capture-failure rollback and full-custody dispatch scenarios remain NOT_RUN.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
 retention before Control driver join. Original mutant build6f1cb4c is retained.
-Current product ELF origin remains4e6b5c011c067800f52e67365b2b848b7943d4bc;
+Last installed serve fixture ELF origin remains4e6b5c011c067800f52e67365b2b848b7943d4bc;
 fresh fixture revisions verify exact allowlisted source differences and original
 artifact hashes. No new compilation/Cargo cache when product inputs are unchanged.
 Do not relabel reused build/test records as a new build or new unit/Clippy run.
@@ -359,8 +375,8 @@ not local artifact bytes. Original4e ELF only seeds native archive/0813 acceptan
 current501 executes directly in psql. No currentRust/migrator binary qualification.
 
 The reviewed scoped evidence is committed/pushed atb36f0b5. Current bounded
-action: qualify the committed typed Rust execution consumer over501 against actual
-PostgreSQL and native reader/output, then integrate ordinary Control supervision. Reserve immutable ArtifactId/caps and COMMITqueued;
+action: integrate the now scoped-qualified Rust execution consumer into ordinary Control
+supervision, after final capture review and coherent evidence commit. Reserve immutable ArtifactId/caps and COMMITqueued;
 subsequent running transition rechecks current authority, completes data+manifest
 and records atomic files+artifact/checkpoint under a fresh reader of ORIGINALcut.
 Startup501 privileges must include data.read row-lock UPDATE privilege; postgres
@@ -395,11 +411,13 @@ exclusion through all writes/joins. Reader-only release/recovery must not be use
 for export pins; future typed export loading must compare the exact export_job_id.
 The native Supervisor still requires Management and does not process management
 commands while waiting on a worker; execution/cancel integration must address
-those constraints rather than clone HTTP work. No scheduler or job-produced artifact exists yet. The committed SQL execution adapter has partial PostgreSQL evidence; native
-artifact completion is still unqualified. Its opaque WrittenExport
+those constraints rather than clone HTTP work. No scheduler exists yet. The committed SQL execution adapter now has scoped
+PostgreSQL/native artifact completion evidence; runtime supervision remains open. Its opaque WrittenExport
 owns the actual native observation, complete file result and output unit; matching
-includes the real catalog custody identity, absent from EventQuery itself. Before editing those
-responsibilities, finish reading their complete affected callers and constraints.
+includes the real catalog custody identity, absent from EventQuery itself. Root has now read full serve.rs/native_grants.rs/history.rs/management/mod.rs
+for runtime integration; inspect remaining resource/config/cancellation callers
+before changing those responsibilities. The query queue needs an additive
+selective index or measured aged-state plan before capacity claims.
 
 ## Earlier prerequisites and preserved work
 

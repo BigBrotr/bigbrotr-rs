@@ -20232,8 +20232,92 @@
       "tree": "5894a3a72d288ffe18241e90a04f0f271328d863",
       "source_files": 1150
     },
-    "retained": "Original source, compiler cache, current ELF copies outside cache, seed assets, PostgreSQL/archive/output and failed logs. No active process or cleanup debt; no terminal SQL recovery claim.",
+    "retained": "Original source/manifests, current ELF outside cache, seed assets, PostgreSQL/archive/output and failed capture/logs. Superseded target/cargo-home explicitly retired; do not reuse cache.",
     "free_bytes_before": 173796765696,
-    "free_bytes_after": 170095345664
+    "free_bytes_after": 170095345664,
+    "cache_retirement": {
+      "format": "bigbrotr-owned-cache-retirement/1",
+      "status": "PASS",
+      "started_at": "2026-09-24T09:47:20.383572+00:00",
+      "source": "c9a8bda7774fc74f0a8c1d14ed08c3637251362c",
+      "owner": "e5b0ccbbcc5b58f8dbeaa22a462d5289",
+      "superseding_source": "1a80a48057a0753377259d2ca10457dfc38f1bbb",
+      "free_before": 166343868416,
+      "allocated_cache_bytes": 3326787584,
+      "processes": {
+        "refs": [],
+        "permission_errors": []
+      },
+      "inspected_historical_parent_mounts": [
+        "28304a580d2eb2ac4646161e2616aab2b41922acae3ad6d793dac011defb5ad0",
+        "6e9dddb463c33c7707e3483329dc3c3ed79d391862856a8dc9783e5cfe56c2b6",
+        "72a55cad4ce990ebcacc1df1ab6ea2b37089f9b800ff5dbbb707f117e34c694e",
+        "9c8d5fc3019e882bbb74b1661763d3a0bb8a7b6c12bfbd8fa14588dbfaefd9c8",
+        "9e7d4bd8f5f2caaf47a97703a36be113822f064fa475277179857efda60d1d85"
+      ],
+      "artifacts": {
+        "bigbrotr": "05f171b8623d95da571d6b1e35e42a5c892d0f659adb15085e4ab4802f8d6ed3",
+        "export-execution-probe": "c91fffda5dcbd592ed32d006ff5bdd703458925b6a9ff8bf56be55cf14e6477a"
+      },
+      "source_files": 1150,
+      "capture_sha256": {
+        "before.json": "bf40b6e38e4959ca0c0a90a39d4f17de192e04a9feb518944913ed1d45b4492d",
+        "after.json": "bf40b6e38e4959ca0c0a90a39d4f17de192e04a9feb518944913ed1d45b4492d",
+        "retirement.json": "43c073f88a3caae51b1b85c56fbe249e5d3d5baa7b954bf68d8c031736e61e35"
+      },
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-c9a8bda/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-c9a8bda/out/build/cargo-home"
+      ],
+      "preserved": "Original failed capture/logs, current ELF outside cache, sources/manifests, seed artifacts, PGdata/archive/output. New1a cache and all other labs unchanged.",
+      "free_after": 169668538368,
+      "containers_preserved": 580,
+      "unrelated_running": 8,
+      "finished_at": "2026-09-24T09:47:21.515104+00:00",
+      "local_capture": ".research/implementation/export-execution/attempt-c9a8bda/cache-retirement"
+    }
+  },
+  "implementation_export_adapter_corrected_20260924": {
+    "resources": {
+      "source": "1a80a48057a0753377259d2ca10457dfc38f1bbb",
+      "tree": "3e7595326b9d52f2214b4d387efcde48cf096fcd",
+      "owner": "13ee53e74d3fd424d61fcfd74e224f56",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-1a80a48",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "ebf871a8c20818620320123e42eef52cab99d270c726d18e5d00f7092d788df5"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "ec3b896707062878106134b3e9fd48ca5108641d9d255541b1f5a02c886c376b"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T09:41:08.733964+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "459e403903e92a282dcec34918872affdf8d3e575c830eee8985fbdb1c06fe53",
+      "postgres_id": "ebf871a8c20818620320123e42eef52cab99d270c726d18e5d00f7092d788df5",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "ec3b896707062878106134b3e9fd48ca5108641d9d255541b1f5a02c886c376b",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "status": "PASS_SCOPED_CAPTURED",
+    "report": "docs/implementation/evidence/p08-export-adapter-native-20260924.json",
+    "local_root": ".research/implementation/export-execution/attempt-1a80a48",
+    "capture": {
+      "files": 28,
+      "sha256": "b07205f05d0e39add0074c73510e79b170bc19e4dc3d79c3e781cc19941a3a13",
+      "source": "1a80a48057a0753377259d2ca10457dfc38f1bbb",
+      "tree": "3e7595326b9d52f2214b4d387efcde48cf096fcd",
+      "source_files": 1151
+    },
+    "retained": "Stopped PG/archive/output and source evidence; current useful compiler cache and ELF outside cache. Terminal jobs2/artifacts2/files2, original export pins retained, reader released. No recovery inferred.",
+    "free_bytes_before": 170054766592,
+    "free_bytes_after": 166353223680
   }
 }

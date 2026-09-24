@@ -360,7 +360,16 @@ immutable reservation with a separate COMMIT, and full/empty completion plus
 negative counterparts under actual PostgreSQL constraints. Completion trials
 roll back; one committed queued reservation remains. These direct-SQL fixtures
 do not qualify the Rust adapter, successful artifact COMMIT, current-authority
-concurrency, output bytes or runtime restart. No Step 3 completion.
+concurrency, output bytes or runtime restart. No Step 3 completion. The
+[typed Rust adapter](evidence/p08-export-adapter-native-20260924.json) now passes
+six scoped native cases at `1a80a48` with the actual 0501 migrator and application
+login: immutable reservation/retry/cap refusal, signed and empty native output,
+completion COMMIT, reader release and fresh-process historical resolution after
+input grant revocation. Both full manifests and actual files match an independent
+oracle. Original `c9a8bda` remains INCOMPLETE due to the fixture's insufficient native
+budget; product limits were not weakened. This research driver uses the Rust
+acceptance API directly. Automatic runtime scheduling, current-authority
+concurrency, failure/recovery and POST-to-file journeys remain required.
 [Native destination qualification](evidence/p08-export-destination-native-20260923.json)
 at a75d0fa passes ten actual Linux/ext4 cases, including bind aliases, cross-process
 custody, fsync EIO and process death around rename. The marker's independent

@@ -5,8 +5,11 @@ and inspect the filesystem destination. Job acceptance has
 [scoped native evidence](../implementation/evidence/p08-export-acceptance-native-20260924.json),
 and the private job route has
 [native HTTP acceptance/retry evidence](../implementation/evidence/p08-export-job-http-native-20260924.json).
-There is no completed file export yet. Execution and its recovery,
-output formats, object storage and artifact publication remain required work.
+The typed adapter now has [scoped native completion evidence](../implementation/evidence/p08-export-adapter-native-20260924.json)
+for signed and empty JSONL files, with durable inventory and fresh-process
+resolution. The ordinary runtime does not execute jobs yet. Automatic execution
+and its recovery, other output formats, object storage and artifact publication
+remain required work.
 
 Configure an explicit private destination in the deployment file:
 
