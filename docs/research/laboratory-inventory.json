@@ -22103,7 +22103,29 @@
       "free_bytes": 142669053952,
       "cleanup_errors": []
     },
-    "retention": "Keep current cdb78a1 compiler cache, installed ELF, source/logs/PG/archive/output and all retained export pins. Network removed, no active lab."
+    "retention": "Original result unchanged. Only target/cargo-home retired after verified replacement877, resolved paths/foreign mounts/process FD/cwd/exe/maps audit. Capture/source/manifests/ELF/logs/PG/archive/output retained and rehashed; no container/volume deletion.",
+    "cache_retirement_20260924": {
+      "status": "PASS",
+      "source": "cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93",
+      "owner": "a7d3f8f762e57fc9f6f706f8cda4da91",
+      "superseding_source": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+      "free_before": 130183901184,
+      "free_after": 133514514432,
+      "allocated_cache_bytes": 3332952064,
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-cdb78a1/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-cdb78a1/out/build/cargo-home"
+      ],
+      "artifacts": {
+        "bigbrotr": "c49713d931bb01cb8446ae1032891a1d655af03de2a6e1b7580de8d3ff60d862",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "source_files": 1172,
+      "capture_sha256": "b97f896ffa7895026af2d05269336d4cc55338c8cbe4a245747f2a493a14a161",
+      "containers_preserved": 643,
+      "unrelated_running": 8,
+      "finished_at": "2026-09-24T14:47:36.417645+00:00"
+    }
   },
   "implementation_export_runtime_busy_20260924": {
     "status": "stopped-retained; PASS_SCOPED after capture/source/artifact/trace verification",
@@ -22503,7 +22525,29 @@
       "host_tcp_wmem_preserved": true,
       "free_bytes": 140020953088
     },
-    "retention": "Preserve original failed fixture result, source/ELF/logs/database/output. Keep new f813 compile cache for immediate continuation. No resource deletion; network removed."
+    "retention": "Original result unchanged. Only target/cargo-home retired after verified replacement877, resolved paths/foreign mounts/process FD/cwd/exe/maps audit. Capture/source/manifests/ELF/logs/PG/archive/output retained and rehashed; no container/volume deletion.",
+    "cache_retirement_20260924": {
+      "status": "PASS",
+      "source": "f81362c1ea6645dbd2e9bcc906763420e7db5e6b",
+      "owner": "f064eff9afaa717279018131ab651579",
+      "superseding_source": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+      "free_before": 133514506240,
+      "free_after": 136845594624,
+      "allocated_cache_bytes": 3333423104,
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f81362c/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f81362c/out/build/cargo-home"
+      ],
+      "artifacts": {
+        "bigbrotr": "61ace1586e2f0b37a8965b33852c775814192439520c94f809ef766a239bcd41",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "source_files": 1189,
+      "capture_sha256": "bfdf66cbdec53347ff908cdc04f12bcf505f8f8414e00d5f110c29f0d55353dd",
+      "containers_preserved": 643,
+      "unrelated_running": 8,
+      "finished_at": "2026-09-24T14:48:34.359813+00:00"
+    }
   },
   "implementation_export_status_retry_20260924": {
     "status": "stopped-retained; scoped PASS",
@@ -22913,5 +22957,41 @@
     "evidence": "docs/implementation/evidence/p01-control-poll-shutdown-red-20260924.json",
     "free_bytes": 133969047552,
     "retention": "Keep32payloadcapture/source/ELFs and PG/archive/output, no new Rust cache. All ownedPID0/noOOM/network removed; bothDB0; prior639containers/eight running unchanged."
+  },
+  "implementation_control_poll_shutdown_candidate_20260924": {
+    "status": "PASS_SCOPED; stopped-retained; source/capture verified",
+    "resources": {
+      "source": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+      "tree": "57fb00da7c79384329ace08208f2b176e38ca82e",
+      "owner": "8ffeb89001b1123d49c279063dcc92c9",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-877f3d4",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "0c8da5da3195206518c19d5df5a94f28e740f0b8d51149fba0961581e9a9b63b"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "c7de6f91818f02b4d85ca64c03a93804d2d096314db99ba2e2921209a311ee6f"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T14:43:30.146595+00:00",
+      "runtime_profile": "shutdown",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "ccba7ef0de37197bdb6ea6fac2163c1dca8d25bf2d4f60edc96445e1b3a57980",
+      "postgres_id": "0c8da5da3195206518c19d5df5a94f28e740f0b8d51149fba0961581e9a9b63b",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "c7de6f91818f02b4d85ca64c03a93804d2d096314db99ba2e2921209a311ee6f",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "retention": "Keep fresh877native compiler cache/ELFs/source/40payloadcapture/PG/archive/output for current continuation. All ownedPID0/noOOM/network removed; bothDB0 and641prior/eight running preserved.",
+    "evidence": "docs/implementation/evidence/p01-control-poll-shutdown-native-20260924.json",
+    "free_bytes": 130194173952
   }
 }

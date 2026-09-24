@@ -28,7 +28,8 @@ try:
                 closed = peer.recv(1) == b''
         except (ConnectionRefusedError, ConnectionResetError):
             closed = True
-        emit('admission', parent_running=running, closed=closed)
+        emit('admission', parent_running=running,
+             parent_running_after=server.process.poll() is None, closed=closed)
     code = server.process.wait(timeout=10)
     emit('terminal', exit=code, elapsed_seconds=time.monotonic()-started,
          parent_absent=not Path(f'/proc/{server.process.pid}').exists(),

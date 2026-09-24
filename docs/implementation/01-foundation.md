@@ -342,8 +342,11 @@ the original process abandons the operation and cannot report graceful release.
 The candidate drains only that same idle operation within its original deadline,
 closes private admission immediately and enters shutdown directly. The additive
 `--runtime-shutdown` profile also holds the database beyond deadline and checks
-private admission while the parent remains blocked. Native corrected evidence is
-pending; keep broader native-work/mutating-command cancellation separate.
+private admission while the parent remains blocked. [Native corrected evidence](evidence/p01-control-poll-shutdown-native-20260924.json)
+at877f3d4 passes the two headless schedules, including explicit non-success beyond
+deadline. Its private probe sampled a live parent and a closed connection, but
+did not establish their order relative to unlock; the strengthened host handshake
+remains to be executed. Broader native-work/mutating-command cancellation remains separate.
 
 ## P01-T07 — Same-process and remote component adapters
 

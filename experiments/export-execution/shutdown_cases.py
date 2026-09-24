@@ -42,15 +42,20 @@ def run(root, state, sql):
                 assert waiter['query']=='SELECT substring(dataset_id FROM 1 FOR 17), substring(instance_id FROM 1 FOR 17) FROM control.datasets LIMIT 2 FOR UPDATE'
                 observed['waiter']=waiter;save()
                 send(client,json.dumps(dict(operation='signal'))+'\n');event(client,'signalled')
-                started=time.monotonic();time.sleep(delay)
+                started=time.monotonic()
+                if name.startswith('private-'):
+                    # The host still owns the row lock. Receive the completed
+                    # network probe and both liveness samples before unlocking.
+                    observed['admission']=event(client,'admission',timeout=2)
+                    assert observed['admission']==dict(event='admission',parent_running=True,parent_running_after=True,closed=True)
+                    assert blocked()==[waiter]
+                    observed['admission_before_unlock']=True;save()
+                time.sleep(delay)
                 with client.condition:
                     observed['early_terminal']=any(json.loads(line).get('event')=='terminal' for line in bytes(client.stdout).split(b'\n')[:-1])
                 send(holder,'ROLLBACK;\n\\q\n');assert holder.wait(5)==0;holder.stop();holder=None
                 observed['held_after_signal_seconds']=time.monotonic()-started
                 observed['terminal']=event(client,'terminal',timeout=10)
-                if name.startswith('private-'):
-                    observed['admission']=event(client,'admission')
-                    assert observed['admission']==dict(event='admission',parent_running=True,closed=True)
                 assert client.wait(5)==0 and not client.stderr and not client.overflow
                 observed['owners']=json.loads(sql(db,"SELECT json_agg(json_build_object('epoch',epoch::text,'state',state) ORDER BY epoch) FROM control.owner_epochs WHERE role='control'"))
                 observed['backends']={database:int(sql(database,"SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()")) for database in [db,'bbpub_normal']}

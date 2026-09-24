@@ -20,26 +20,33 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD 3def25ee0c1e73e7597343ce4708e169fe920680, tree
-92bee116109fcf8c6ea2cac8d47465dd9db878b8 on main. Four unpublished commits after
+Last verified HEAD 877f3d43d0569f67f8b61333e989cb7c91a8866b, tree
+57fb00da7c79384329ace08208f2b176e38ca82e on main. Five unpublished commits after
 private origin/main cac50d60a591981b8060e50ed8cbb6c2b070be62. Root owns only
 subsequent checkpoint/inventory updates. No other contributor or merge/rebase.
 
-Next bounded action: compile and execute --runtime-shutdown on the corrected
-idle-only refresh path, then resume the six-pair browser qualification. Root owns
-serve.rs, shutdown fixture and owning operations/checkpoint/evidence/inventory
-changes. Native RED at3def25e identified the exact policy SELECT/PID/backend_start:
-short unlock0.3204s still exit4/unreleased owner; long hold6s exit4 after2.024s,
-bothDB0/parent absent/archive lock free/scratch empty. Original f660 ELF reused.
-Capture32files/1201current sources, tar
-fa1401f955ddbdaa8e1329e8d9fb2f5e798878205823bdda80eb7433b7794e21.
-The candidate closes admission on signal, collects the same future with original
-deadline, then directly enters common shutdown; it does not reset available or
-alter startup/native/command cancellation. Mac44binarytests and Clippy pass. Independent AI review caught two scheduling
-edges before native qualification: reuse one renew decision and avoid starting
-an unpolled refresh after stop. Both are addressed; no authority flag reset.
-A separate private-listener blocked-poll case must show closed admission while
-parent remains alive, before lock release. No native GREEN yet.
+Next bounded action: execute the strengthened --runtime-shutdown private probe
+on exact877f3d4 ELF (fixture-only product equality), then resume six-pair browser
+qualification. Original877 is stopped-retained; headless short stop0 after0.314s,
+long hold6s yields exit1/Backend after4.489s and active owner metadata; bothDB0,
+actual parent absent/archive lock free/scratch empty. Private original sampled a
+live parent before a closed network probe, but host consumed this event after
+unlock: it cannot prove pre-unlock ordering. Independent AI caught this gap;
+new fixture requires admission event and same blocked PG waiter before unlock,
+plus liveness after probe. No product/budget change for this strengthening.
+Fresh877build/44binarytests/ClippyPASS, parentSHA
+48ae6d1a7a1e685780d84db05692f75eb671c0e5178ad7aab7ca7b5f74325805;
+worker3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
+Root and independent AI verified40payloads/1202current/1110seed sources/ELFs;
+tar135275e2d1711678bc0797e77c864826ad05b0e437c656090092d8f95df9d522.
+641prior/eight running preserved, no cleanup debt. Keep current877native cache.
+
+The idle-only fix closes admission on stop and collects the same future with
+original deadline, then directly enters common shutdown. No available flag reset;
+startup/native/command cancellation unchanged. One renew decision and a started
+flag avoid inconsistent cancellation classification or new operation after stop.
+Native RED3def positively identifies the blocked query/backend: short unlock0.32s
+still exit4/unreleased owner. Original cc8 failure remains unattributed.
 
 cc8e5a8 is stopped-retained, owner acdef12a05d81aff7e3b2ecde476ddf7. Its
 [original attempt](evidence/p09-export-status-shutdown-incomplete-20260924.json)
@@ -209,7 +216,8 @@ containers PID0/noOOM/network removed.3830 preserved628prior/eight unrelated
 running; free139536801792→138968485888bytes (concurrent writes possible). Its
 frontend0/browser1/runner143/PG137 results are original, not rewritten.
 
-Protect current f660 inputs/cache, previous useful f813/cdb caches and ELF,
+Protect current877 and useful f660 caches/ELF. Previous cdb/f813 compiler caches
+are retired as below; their original ELF and evidence remain. Protect
 export-checker-fixed-4e6b5c0 seed source/assets/cache(owner3f840fe30a3ffef7f9944c72ea6e38f9),
 verified strace-exit-9b30c35, reusable private-history-32dd58d, stopped
 history-capture-b5c862a and its installed-publication-61271e2/out/archive-worker
@@ -225,8 +233,11 @@ resolved path, mounts and privileged read-only process FD/cwd/exe/maps audits.
 Free142214000640→145544396800bytes;33capturefiles/1161sources/bothELF rehashed
 before/after;616containers/eight running unchanged. No container, volume,
 qualification/object-storage dataset/backup/archive/catalog/index deletion.
-After f660 replacement qualifies, evaluate superseded compiler caches rather
-than keeping a build per revision. Check space before every lab; skip doubtful
+After877qualified, retired only cdb78a1/f81362c out/build/{target,cargo-home}:
+6666375168allocatedbytes. Free130183901184→136845594624bytes with concurrent
+writes possible. All643containers/eight running unchanged; captures/sources/ELFs
+rehash before/after, privileged read-only process/mount census no dependency.
+Current877/f660 caches and all evidence/databases/archives retained. Check space before every lab; skip doubtful
 retirement candidates and preserve evidence. Do not rebuild solely to clean.
 
 Ignored root-owned transfer-*.py helpers under .research/implementation/

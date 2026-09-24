@@ -1,0 +1,195 @@
+{
+  "status": "PASS_SCOPED",
+  "source": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+  "tree": "57fb00da7c79384329ace08208f2b176e38ca82e",
+  "environment": "Tux native Linux amd64, PostgreSQL16.15, Rust1.98.1",
+  "artifacts": {
+    "bigbrotr": "48ae6d1a7a1e685780d84db05692f75eb671c0e5178ad7aab7ca7b5f74325805",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-877f3d4/capture",
+    "files": 40,
+    "current_git_files": 1202,
+    "seed_git_files": 1110,
+    "sha256": "135275e2d1711678bc0797e77c864826ad05b0e437c656090092d8f95df9d522"
+  },
+  "prerequisites": "Fresh installed native build,44binarytests,Clippy passed; original4e signed archive/0813 job, empty export through current installed executable completed first.",
+  "cases": {
+    "released-before-deadline": {
+      "holder": {
+        "event": "locked",
+        "pid": 339
+      },
+      "waiter": {
+        "pid": 325,
+        "query": "SELECT substring(dataset_id FROM 1 FOR 17), substring(instance_id FROM 1 FOR 17) FROM control.datasets LIMIT 2 FOR UPDATE",
+        "backend_start": "2026-09-24T14:45:16.252596+00:00",
+        "wait_event_type": "Lock"
+      },
+      "early_terminal": false,
+      "held_after_signal_seconds": 0.32027233904227614,
+      "owners": [
+        {
+          "epoch": "1",
+          "state": "released"
+        },
+        {
+          "epoch": "2",
+          "state": "released"
+        },
+        {
+          "epoch": "3",
+          "state": "released"
+        }
+      ],
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "status": "PASS",
+      "owner_epoch": "3",
+      "parent_pid": 3223,
+      "terminal": {
+        "event": "terminal",
+        "exit": 0,
+        "elapsed_seconds": 0.3142539490945637,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true,
+        "stderr": ""
+      }
+    },
+    "held-past-deadline": {
+      "holder": {
+        "event": "locked",
+        "pid": 529
+      },
+      "waiter": {
+        "pid": 515,
+        "query": "SELECT substring(dataset_id FROM 1 FOR 17), substring(instance_id FROM 1 FOR 17) FROM control.datasets LIMIT 2 FOR UPDATE",
+        "backend_start": "2026-09-24T14:45:19.544837+00:00",
+        "wait_event_type": "Lock"
+      },
+      "early_terminal": true,
+      "held_after_signal_seconds": 6.0202675042673945,
+      "owners": [
+        {
+          "epoch": "1",
+          "state": "released"
+        },
+        {
+          "epoch": "2",
+          "state": "released"
+        },
+        {
+          "epoch": "3",
+          "state": "released"
+        },
+        {
+          "epoch": "4",
+          "state": "active"
+        }
+      ],
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "status": "PASS",
+      "owner_epoch": "4",
+      "parent_pid": 3231,
+      "terminal": {
+        "event": "terminal",
+        "exit": 1,
+        "elapsed_seconds": 4.489183388184756,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true,
+        "stderr": "error: Control backend operation failed: Backend\n"
+      }
+    },
+    "private-released-before-deadline": {
+      "holder": {
+        "event": "locked",
+        "pid": 735
+      },
+      "waiter": {
+        "pid": 721,
+        "query": "SELECT substring(dataset_id FROM 1 FOR 17), substring(instance_id FROM 1 FOR 17) FROM control.datasets LIMIT 2 FOR UPDATE",
+        "backend_start": "2026-09-24T14:45:28.45987+00:00",
+        "wait_event_type": "Lock"
+      },
+      "early_terminal": false,
+      "held_after_signal_seconds": 0.6202710391953588,
+      "admission": {
+        "event": "admission",
+        "parent_running": true,
+        "closed": true
+      },
+      "owners": [
+        {
+          "epoch": "1",
+          "state": "released"
+        },
+        {
+          "epoch": "2",
+          "state": "released"
+        },
+        {
+          "epoch": "3",
+          "state": "released"
+        },
+        {
+          "epoch": "4",
+          "state": "released"
+        },
+        {
+          "epoch": "5",
+          "state": "released"
+        }
+      ],
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "status": "PASS",
+      "owner_epoch": "5",
+      "parent_pid": 3239,
+      "terminal": {
+        "event": "terminal",
+        "exit": 0,
+        "elapsed_seconds": 0.6167369931936264,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true,
+        "stderr": ""
+      }
+    }
+  },
+  "interpretation": [
+    "The identical short-block schedule fails on retained f660 ELF in source3def25e, then succeeds with the877f3d4 product.",
+    "The private client sampled a live parent before a connection probe that returned closed. The original host read this event after unlocking; it does not prove the probe completed before unlock or parent exit.",
+    "Held-past-deadline preserves non-success and active owner metadata; next positive acquisition excludes/releases that old backend through the existing fence. Actual local parent/driver termination and both database backend counts are inspected.",
+    "The originalcc8 Unavailable origin remains unproven. This is an independent deterministic counterexample and correction."
+  ],
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-877f3d4",
+    "owner": "8ffeb89001b1123d49c279063dcc92c9",
+    "state": "stopped-retained",
+    "prior_preserved": 641,
+    "unrelated_running": 8,
+    "free_before": 133924999168,
+    "free_after": 130194173952,
+    "cleanup_errors": []
+  },
+  "review": [
+    "Root reviewed full source delta, original logs/JSON, all capture hashes/Git source manifests/native ELF/source identities and all prior container identities/lifecycle/mount/network/restart metadata.",
+    "Independent AI verified40payloads/tar,1202current/1110seed Git blobs,2ELFs/Cargo.lock and corrected source. It found the private probe/unlock ordering gap; preserve this limitation and require host acknowledgement before unlock plus a second parent liveness sample."
+  ],
+  "exclusions": [
+    "Idle nonrenewing policy poll only; no heartbeat renewal COMMIT loss, second signal, natural suspend or native/mutating-command drain qualification.",
+    "Browser matrix still pending; no full P01/P08/P09 task qualification.",
+    "Private pre-unlock admission ordering is NOT_QUALIFIED by this original fixture; no simultaneous active response-stream test."
+  ]
+}
