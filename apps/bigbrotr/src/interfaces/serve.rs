@@ -1,4 +1,5 @@
 //! First persistent role consumer. Every exit owns transport termination.
+mod export_jobs;
 mod history;
 mod native_grants;
 use super::{
@@ -62,7 +63,7 @@ pub(crate) fn command() -> Command {
         .about("Run explicitly assigned roles; the initial runtime implements Control only")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
-        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0812 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. The initial private GET/POST /v1/resources/event_history profile additionally requires a live session, explicit CSRF and history.read for its exact scope; one exact ID/snapshot, configured resource limits, and a certified archive pin apply. This profile is under qualification. POST /management/v1/jobs accepts private exact-ID signed JSONL export jobs; configured initialized export.destination requires migration0813 and job/pin/source-lock privileges before binding. Historical receipts on the available protocol need no current destination or native reader. Destination checks run on supervised blocking work, retained through Control driver join. This slice does not execute export files. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
+        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0812 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. The initial private GET/POST /v1/resources/event_history profile additionally requires a live session, explicit CSRF and history.read for its exact scope; one exact ID/snapshot, configured resource limits, and a certified archive pin apply. This profile is under qualification. POST /management/v1/jobs accepts private exact-ID signed JSONL export jobs; configured initialized export.destination requires migration0813 and job/pin/source-lock privileges before binding. Historical receipts on the available protocol need no current destination or native reader. Destination checks run on supervised blocking work, retained through Control driver join. Selected export.destination plus archive.reader.enabled also requires migration0501 and execution privileges before startup, including headless Control. The initial automatic exact-ID signed JSONL executor is under qualification; it uses current actor grants and the original retained snapshot. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {
@@ -160,6 +161,7 @@ struct ArchiveRun {
     management_budget: Option<ResourceBudget>,
     management_assets: Option<management::Assets>,
     export_destination: Option<Arc<bigbrotr::export::destination::LocalDestination>>,
+    export_custody: export_jobs::Custody,
 }
 
 fn run(
@@ -217,6 +219,7 @@ fn run(
         .then(|| super::export::prepare_destination(&root))
         .transpose()?
         .flatten();
+    let export_custody = Arc::new(std::sync::Mutex::new(None));
     let shared_budget = receipt
         .as_ref()
         .map(|(_, budget)| budget)
@@ -263,12 +266,13 @@ fn run(
             tokio::spawn(custody.retain_connection(driver).map_err(|e| (4, format!("cannot retain archive coordinator custody: {e:?}")))?)
         } else { tokio::spawn(driver) };
         let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, initialization_budget, management_budget, management_assets,
-            export_destination: export_destination.clone() }, operation).await;
+            export_destination: export_destination.clone(), export_custody: export_custody.clone() }, operation).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
         // the join. Dropping the request/session alone does not free its grant.
         postgres_command::join(driver).await;
         // The checked observation/SQL future may already have been dropped.
         // Original destination custody survives every unknown COMMIT and join.
+        drop(export_custody);
         drop(export_destination);
         outcome
     });
@@ -508,6 +512,16 @@ async fn supervise(
         .as_ref()
         .expect("serve budget")
         .clone();
+    let execute_exports =
+        archive.export_destination.is_some() && accepted.flag("archive.reader.enabled");
+    if execute_exports {
+        tokio::select! {
+            biased;
+            _ = stop.requested() => return Err((4,"export startup cancelled".into())),
+            result = tokio::time::timeout(duration(root,"renewal_timeout").min(lease.remaining_validity().map_err(|e| (4,e.to_string()))?),owner.require_export_execution()) =>
+                result.map_err(|_| (4,"export prerequisites deadline".into()))?.map_err(|e| (3,format!("export prerequisites refused: {e:?}")))?,
+        }
+    }
     let mut management = if accepted.flag("administration.enabled") {
         let mut export_jobs = false;
         tokio::select! {
@@ -561,13 +575,15 @@ async fn supervise(
         "dataset_id":dataset, "process_incarnation":incarnation,
         "owner_resource_id":identity.resource_id, "owner_epoch":identity.epoch.get().to_string(),
         "config_revision":snapshot.config_revision.to_string(), "policy_revision":snapshot.policy_revision.to_string(),
-        "archive_intents":archive_inventory, "listeners":listeners, "native_stores":[], "authority_scope":"local Control and private session observation; no data/action capability"}),
+        "archive_intents":archive_inventory, "listeners":listeners, "native_stores":[], "export_execution":if execute_exports { "selected-under-qualification" } else { "not-selected" }, "authority_scope":"Control custody; each private action and export independently reauthorized"}),
         false,
     );
     let heartbeat = duration(root, "heartbeat_interval");
     let outcome = async {
     let mut refresh_due = Instant::now() + (lease.remaining_validity().map_err(|e| (1,e.to_string()))? / 2)
         .min(heartbeat.saturating_sub(renewed.elapsed()));
+    let mut export_after = None;
+    let mut export_due = Instant::now();
     loop {
         lease.check_delivery(lease.known_epoch()).map_err(|e| (1,e.to_string()))?;
         // A slow successful response already consumed part of the request-start
@@ -590,6 +606,28 @@ async fn supervise(
                 refresh_due = Instant::now() + (lease.remaining_validity().map_err(|e| (1,e.to_string()))? / 2)
                     .min(heartbeat.saturating_sub(renewed.elapsed()));
             },
+            _ = tokio::time::sleep_until(export_due), if execute_exports => {
+                let maximum = duration(root,"renewal_timeout").min(lease.remaining_validity().map_err(|e| (4,e.to_string()))? / 2);
+                let selected = tokio::select! {
+                    biased;
+                    _ = stop.requested() => return Err((4,"export queue lookup cancelled; Control unavailable".into())),
+                    result = tokio::time::timeout(maximum,owner.next_export_job(export_after)) => result.map_err(|_| (4,"export queue lookup deadline".into()))?.map_err(|e| (4,format!("export queue unavailable: {e:?}")))?,
+                };
+                // Advance even after a known denial; reset only on exhaustion.
+                export_after = selected;
+                if let Some(id) = selected {
+                    let mut supervisor = native_grants::Supervisor {
+                        owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
+                        refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
+                        management: &mut management, stopping: false,
+                    };
+                    export_jobs::execute(id,accepted.clone(),shared_budget.clone(),archive.export_destination.as_ref().expect("selected destination").clone(),archive.coordinator.as_ref().expect("selected reader"),&archive.export_custody,&mut supervisor).await?;
+                    if supervisor.stopping { return Ok(()); }
+                }
+                // The ready job wins HTTP at most once per bounded interval;
+                // native supervision continues servicing existing Control work.
+                export_due = Instant::now() + Duration::from_millis(250);
+            },
             work = next_management(&mut management) => {
                 lease.check_delivery(lease.known_epoch()).map_err(|e| (4,e.to_string()))?;
                 let maximum = duration(root,"renewal_timeout").min(lease.remaining_validity().map_err(|e| (4,e.to_string()))? / 2);
@@ -604,7 +642,7 @@ async fn supervise(
                         let mut supervisor = native_grants::Supervisor {
                             owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
                             refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
-                            management: management.as_mut().expect("management source"), stopping: false,
+                            management: &mut management, stopping: false,
                         };
                         history::execute(work,accepted.clone(),shared_budget.clone(),archive.coordinator.as_ref(),&mut supervisor).await?;
                         if supervisor.stopping { return Ok(()); }
@@ -614,7 +652,7 @@ async fn supervise(
                         let mut supervisor = native_grants::Supervisor {
                             owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
                             refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
-                            management: management.as_mut().expect("management source"), stopping: false,
+                            management: &mut management, stopping: false,
                         };
                         let response = native_grants::execute(work,accepted.clone(),shared_budget.clone(),
                             archive.coordinator.as_ref().expect("selected local reader"),&mut supervisor).await?;

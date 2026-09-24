@@ -7,9 +7,10 @@ and the private job route has
 [native HTTP acceptance/retry evidence](../implementation/evidence/p08-export-job-http-native-20260924.json).
 The typed adapter now has [scoped native completion evidence](../implementation/evidence/p08-export-adapter-native-20260924.json)
 for signed and empty JSONL files, with durable inventory and fresh-process
-resolution. The ordinary runtime does not execute jobs yet. Automatic execution
-and its recovery, other output formats, object storage and artifact publication
-remain required work. A [native catalog-loss test](../implementation/evidence/p08-export-catalog-loss-native-20260924.json)
+resolution. The ordinary Control runtime now contains a single-job automatic
+executor under qualification. Its installed completion/restart/cancellation
+scenarios remain open; other output formats, object storage and artifact
+publication also remain required work. A [native catalog-loss test](../implementation/evidence/p08-export-catalog-loss-native-20260924.json)
 also checks rollback without partial inventory and reuse of the same Control
 session; it does not qualify automatic recovery of the retained job or files.
 
@@ -128,5 +129,39 @@ samples root exclusion while the original Control socket remains pending after
 SIGTERM; an isolated source mutation removing original destination custody fails
 the same oracle. This qualifies that observed drain interval, not continuous
 observation of every possible schedule.
-Job discovery, scheduling/execution and
-terminal recovery remain required P08-T03/T04 work.
+Job discovery and terminal recovery remain required P08-T03/T04 work.
+
+Selecting both an export destination and `archive.reader.enabled` selects the
+initial automatic exact-ID executor, including when accepted administration is
+disabled. This requires migration0501 plus execution privileges before startup;
+explicitly apply migrations with the protected migrator. The runtime scans one
+accepted/queued/running job at a time, advances past known refusals and wraps at
+exhaustion, with a250ms interval between attempts. It commits an immutable artifact
+reservation separately, then rechecks current actor/input/scope grants, captures
+the original retained snapshot and obtains a fresh reader pin. Browser logout
+and disconnect do not affect that committed job. File publication uses the
+nonrenewable action window; inventory completion rechecks Control and catalog.
+Known joined cleanup releases only the fresh reader pin. The durable export pin
+is retained until its separate terminal retention lifecycle is implemented.
+
+Each attempt has a five-second deadline for native work and a nonrenewable
+action window. Control collection, positive joins and cleanup have their own
+finite allowances and can extend total elapsed time. It shares the runtime's
+application/native ledger; `export.memory.max_bytes` must fit the complete worker,
+parent decode and credential/output overlap. The default256MiB is insufficient
+for this native profile and causes deferred work. Disk preflight checks complete
+additional logical copies,64MiB native scratch and1MiB metadata headroom against
+available space while preserving `runtime.disk_completion_reserve_bytes` on both
+output and scratch filesystems. Existing bytes already reduce observed free
+space. This preflight is not a physical quota or a shared multi-process durable
+reservation ledger; those integration/capacity guarantees remain open. File I/O
+or scratch preparation/cleanup failure halts the current runtime for recovery.
+A known refusal after fresh reader admission releases that joined reader and
+stops this initial executor instead of repeatedly creating durable reader claims.
+Inspect the retained job before restarting; automatic failure parking/resume is
+not implemented yet. A refusal before reader admission advances the scan without
+creating another reader claim. Unknown SQL or worker termination
+retains pins and output custody through actual transport joins; it never reports
+successful cancellation. Pause/cancel commands, aged-queue fairness, mixed-workload
+resource qualification and the complete installed recovery journey are still
+required before this executor is advertised as qualified.

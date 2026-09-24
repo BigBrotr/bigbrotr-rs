@@ -48,7 +48,7 @@ pub(super) struct Supervisor<'a> {
     pub snapshot: PolicySnapshot,
     pub root: &'a Resolved,
     pub stop: &'a mut Stop,
-    pub management: &'a mut management::Management,
+    pub management: &'a mut Option<management::Management>,
     pub stopping: bool,
 }
 pub(super) enum OnShutdown {
@@ -57,6 +57,12 @@ pub(super) enum OnShutdown {
     Finish,
 }
 impl Supervisor<'_> {
+    pub(super) fn stop_admission(&self) {
+        if let Some(management) = self.management.as_ref() {
+            management.stop_admission();
+        }
+    }
+
     pub(super) fn maximum(&mut self) -> Result<Duration> {
         Ok(duration(self.root, "renewal_timeout").min(
             self.lease
@@ -98,7 +104,7 @@ impl Supervisor<'_> {
             tokio::select! {
                 biased;
                 _ = self.stop.requested(), if !self.stopping => {
-                    self.management.stop_admission();
+                    self.stop_admission();
                     self.stopping = true;
                     if matches!(on_shutdown, OnShutdown::Cancel) {
                         return Ok(None);
@@ -111,8 +117,8 @@ impl Supervisor<'_> {
                     if current != self.snapshot {
                         return Err((4, "accepted policy changed during native grant".into()));
                     }
-                    if !self.stopping {
-                        self.management.renew_delivery(self.lease.delivery_window(self.lease.known_epoch())
+                    if let Some(management) = self.management.as_ref().filter(|_| !self.stopping) {
+                        management.renew_delivery(self.lease.delivery_window(self.lease.known_epoch())
                             .map_err(|e| (4,e.to_string()))?)?;
                     }
                     *self.refresh_due = Instant::now()
@@ -124,14 +130,14 @@ impl Supervisor<'_> {
                     // JoinHandle must never be polled twice after expiry.
                     return Ok(Some(result));
                 },
-                work = self.management.next(), if !self.stopping && matches!(on_shutdown, OnShutdown::Cancel) => {
+                work = super::next_management(self.management), if !self.stopping && matches!(on_shutdown, OnShutdown::Cancel) => {
                     // The ready native result wins the queue above, so HTTP
                     // traffic cannot postpone collecting a completed worker.
                     let maximum = self.maximum()?.min(deadline.saturating_duration_since(Instant::now()));
                     let execution = tokio::select! {
                         biased;
                         _ = self.stop.requested() => return Err((4,"private operation cancelled during native work; Control outcome unresolved".into())),
-                        result = monitored(self.management.execute(work,self.owner,maximum,false,None), &monitor) => result?,
+                        result = monitored(self.management.as_mut().expect("management work source").execute(work,self.owner,maximum,false,None), &monitor) => result?,
                     };
                     let response = match execution {
                         management::Execution::Complete(response) => response,
@@ -203,7 +209,7 @@ impl Supervisor<'_> {
             Ok(Some(Some(terminal))) => (terminal, Ok(true)),
             other => {
                 if other.is_err() {
-                    self.management.stop_admission();
+                    self.stop_admission();
                 }
                 let terminal = tokio::time::timeout(
                     duration(self.root, "graceful_shutdown_timeout"),
@@ -231,6 +237,12 @@ impl Supervisor<'_> {
                 "native child termination unknown; retain pin and scratch".into(),
             ));
         }
+        if matches!(terminal, Err(WorkerError::OutputFailure)) {
+            return Err((
+                4,
+                "export filesystem work failed; retain unit and halt for recovery".into(),
+            ));
+        }
         let admitted = prior?;
         self.lease
             .check_delivery(self.lease.known_epoch())
@@ -240,12 +252,15 @@ impl Supervisor<'_> {
         }
         Ok(terminal.map_err(|error| match error {
             WorkerError::Refused(error) => error,
-            WorkerError::Unjoined => unreachable!("handled before cleanup"),
+            WorkerError::Unjoined | WorkerError::OutputFailure => {
+                unreachable!("handled before cleanup")
+            }
         }))
     }
 }
 
 pub(super) enum WorkerError {
+    OutputFailure,
     Refused(SessionError),
     Unjoined,
 }
@@ -490,7 +505,7 @@ pub(super) async fn execute(
         Ok(response)
     }.await;
     if outcome.is_err() {
-        authority.management.stop_admission();
+        authority.stop_admission();
     }
     drop(manager);
     postgres_command::join(driver).await;

@@ -1,0 +1,158 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "INCOMPLETE",
+  "scope": "Discriminating installed headless executor RED before implementation; original result retained.",
+  "source": {
+    "files": 25,
+    "sha256": "1c5ee1a161e0b0ad7f24df731d18d29d5275e5438a4c6b09619c8cb87f0661f3",
+    "source": "ae4fffa6312d6e85ec71be6b75a6b81ede462a5b",
+    "tree": "f4e0a250c2ac2c103c22c3686192b429f8ad0e30",
+    "source_files": 1159
+  },
+  "capture": ".research/implementation/export-execution/attempt-ae4fffa/capture",
+  "installed_build_source": "1c15d1a1845d6c094ab7f4478f4edcc629702766",
+  "installed_artifacts": {
+    "bigbrotr": "9f4f5be09a8c062519e4f60d61f5134670db769c8321b8e6f9d522a845a83dae",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "reuse_validation": "Exact product/build input equality; fixture-only changes. No new compilation or Clippy run.",
+  "expected": "The accepted exact-ID job completes automatically with one empty signed-events JSONL file, complete literal manifest and one SQL artifact/file/checkpoint; only its fresh reader pin is released.",
+  "observed": {
+    "status": "INCOMPLETE",
+    "source": "ae4fffa6312d6e85ec71be6b75a6b81ede462a5b",
+    "before": {
+      "files": 0,
+      "units": 0,
+      "states": [
+        "accepted"
+      ],
+      "artifacts": 0,
+      "readers_active": 0
+    },
+    "ready": {
+      "archive_intents": {
+        "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+        "issued_through": "4",
+        "observed_through": "4",
+        "pages": 1,
+        "publication_authority": "not-granted",
+        "resolution": "not-performed",
+        "state": "observed"
+      },
+      "authority_scope": "local Control and private session observation; no data/action capability",
+      "config_revision": "1",
+      "dataset_id": "01010101010101010101010101010101",
+      "format": "bigbrotr-control-runtime/1",
+      "listeners": [],
+      "native_stores": [],
+      "owner_epoch": "2",
+      "owner_resource_id": "378434df2c4bdf88c46588afc2b28c37",
+      "policy_revision": "2",
+      "process_incarnation": "2a04d08a175613cee904516cfc1b47d4",
+      "role": "control",
+      "state": "idle"
+    },
+    "after": {
+      "files": 0,
+      "units": 0,
+      "states": [
+        "accepted"
+      ],
+      "artifacts": 0,
+      "readers_active": 0
+    },
+    "runtime_exit": 0,
+    "terminal": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    },
+    "active_control": 0,
+    "unchanged_archive_files": {
+      "signed_normal/kind=7/main/archive_commits/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "e6c5b85de0bbc82de4b2f98e16ef8e680019ac757ad42ef91d5be2ced5dc7f6e",
+      "signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70",
+      "signed_normal/kind=7/main/dictionaries/prepared-b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6/data.parquet": "62aed0913ef0f5b8c99d022ce7f9c31f0bc209e42d23062f01c992e14ffa9076",
+      "signed_normal/kind=7/main/dictionaries/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "d2ecdc4fa01171e7b6e2dd182357ebef207ecdd3add1c65bba2fe60d3f0cb6be",
+      "signed_normal/kind=7/main/event_eligibility_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "dfc94e8cf3df7d1d3061f95ab92a53c6dd5d10850959dc257d6de63e075faf35",
+      "signed_normal/kind=7/main/event_receive_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f06b11dc455fdc8fe028d2e6b529c4cfc2418560fda0a5e847a0573d8e7f9a05",
+      "signed_normal/kind=7/main/events/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "f7e5726609ec7caf0f7975d44f8452b08183a9d4e52f4cc0d3fb61d530d84937",
+      "signed_normal/kind=7/main/provenance_facts/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet": "8d8705a143f2810057143788693df36af0955dbdfc1fdf724c37887b601b30a6"
+    },
+    "failure": "AssertionError"
+  },
+  "failure": "After ten seconds of actual ready headless Control, the job stayed accepted; units/artifacts/files remained zero. The oracle failed: Installed runtime did not execute the retained job.",
+  "resources": {
+    "source": "ae4fffa6312d6e85ec71be6b75a6b81ede462a5b",
+    "tree": "f4e0a250c2ac2c103c22c3686192b429f8ad0e30",
+    "owner": "8948503c8434a6d43a9c57170fc289eb",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-ae4fffa",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "2322414a923bf1a5f94430c4cb970789cf0f338404d719bd024753a7d14863cb"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "a00d8d43df7cb0e6a77c811355fed1ac6b31315d268df2cf795cd5b20afec17f"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T11:03:36.005378+00:00",
+    "runtime_profile": "executor",
+    "adapter_profile": null,
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "runtime_artifact_origin": "1c15d1a1845d6c094ab7f4478f4edcc629702766",
+    "network_id": "f26180dfd2b4cf158a783ebfaafb0897d31483e22cb6a449bdb565590de34780",
+    "postgres_id": "2322414a923bf1a5f94430c4cb970789cf0f338404d719bd024753a7d14863cb",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "a00d8d43df7cb0e6a77c811355fed1ac6b31315d268df2cf795cd5b20afec17f",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "INCOMPLETE",
+    "source": "ae4fffa6312d6e85ec71be6b75a6b81ede462a5b",
+    "owner": "8948503c8434a6d43a9c57170fc289eb",
+    "result": "INCOMPLETE",
+    "independent_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "failure": {
+      "kind": "AssertionError",
+      "frames": [
+        {
+          "file": "lab.py",
+          "line": 282,
+          "function": "<module>"
+        }
+      ]
+    },
+    "preexisting_preserved": true,
+    "preexisting_count": 598,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "original_source_unchanged": true,
+    "host_tcp_wmem_preserved": true,
+    "free_bytes": 152408317952
+  },
+  "boundaries": [
+    "No automatic executor existed in the tested product source.",
+    "Seeded signed archive and independent actual native readback passed; target exact ID is absent, so this scenario expects an empty file. It does not qualify emitted signed rows.",
+    "Earlier three fixture preparation failures remain separate INCOMPLETE evidence.",
+    "No restart, output/SQL crash, revocation during execution, scratch fault or unknown worker resource-retention scenario is qualified by this RED."
+  ]
+}

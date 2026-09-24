@@ -21581,5 +21581,53 @@
     },
     "failure": "Fixture lowered application payload from recipe2GiB to512MiB, less than Control512MiB+16MiB+credential preparation reservation. Serve refused before connecting. No executor RED.",
     "correction": "Remove this unnecessary fixture override; preserve recipe2GiB application payload/4GiB process. Corrected exact TOML statically validated again; next native run uses same1c15d1a ELF."
+  },
+  "implementation_export_runtime_red_20260924": {
+    "status": "stopped-retained; original INCOMPLETE is the discriminating expected RED",
+    "source": {
+      "files": 25,
+      "sha256": "1c5ee1a161e0b0ad7f24df731d18d29d5275e5438a4c6b09619c8cb87f0661f3",
+      "source": "ae4fffa6312d6e85ec71be6b75a6b81ede462a5b",
+      "tree": "f4e0a250c2ac2c103c22c3686192b429f8ad0e30",
+      "source_files": 1159
+    },
+    "resources": {
+      "source": "ae4fffa6312d6e85ec71be6b75a6b81ede462a5b",
+      "tree": "f4e0a250c2ac2c103c22c3686192b429f8ad0e30",
+      "owner": "8948503c8434a6d43a9c57170fc289eb",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-ae4fffa",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "2322414a923bf1a5f94430c4cb970789cf0f338404d719bd024753a7d14863cb"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "a00d8d43df7cb0e6a77c811355fed1ac6b31315d268df2cf795cd5b20afec17f"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T11:03:36.005378+00:00",
+      "runtime_profile": "executor",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "1c15d1a1845d6c094ab7f4478f4edcc629702766",
+      "network_id": "f26180dfd2b4cf158a783ebfaafb0897d31483e22cb6a449bdb565590de34780",
+      "postgres_id": "2322414a923bf1a5f94430c4cb970789cf0f338404d719bd024753a7d14863cb",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "a00d8d43df7cb0e6a77c811355fed1ac6b31315d268df2cf795cd5b20afec17f",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "local_capture": ".research/implementation/export-execution/attempt-ae4fffa/capture",
+    "evidence": "docs/implementation/evidence/p08-export-runtime-red-20260924.json",
+    "preexisting_preserved": true,
+    "preexisting_count": 598,
+    "unrelated_running": 8,
+    "free_bytes": 152408317952,
+    "retention": "All source, original logs, actual reused ELF, PostgreSQL state and signed archive retained. No new compiler cache."
   }
 }

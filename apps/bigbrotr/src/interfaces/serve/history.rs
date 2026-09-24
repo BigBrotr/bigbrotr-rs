@@ -332,7 +332,7 @@ pub(super) async fn execute(
         Ok(())
     }.await;
     if outcome.is_err() {
-        authority.management.stop_admission();
+        authority.stop_admission();
     }
     drop(manager);
     postgres_command::join(driver).await;

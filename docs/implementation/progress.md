@@ -21,46 +21,56 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEADb6fd7ebc857dafdf6832df8edf86b8435504677c candidate;
-origin/mainfc08c48a4c9573bcc308a082de64ab33c3c4820b. Root owns fixture correction,
-filesystem capacity preflight and evidence/inventory/checkpoint edits.
-[First headless fixture](evidence/p08-export-runtime-fixture-incomplete-20260924.json)
-is INCOMPLETE: fresh installed build/tests/Clippy passed, but offline fixture
-validation rejected640MiB x2 workers against1GiB native pool before serve.
-Second1c15d1a attempt also failed offline:1536MiB native lane plus recipe
-128+256+512MiB allowances exceeds2GiB. Original INCOMPLETE retained; fresh
-installed build/tests/Clippy passed, runtime NOT_RUN. Capture26files/1159sources
-verified, owner9dc0f4d2212eb5552aec325df1f17e92 stopped-retained/network removed.
-Next correction3GiB process is actually validated by the Mac executable using
-the exact produced TOML. It keeps all lanes and managed policy640MiB;
-full manifest oracle strengthened after independent source review. This was not
-an executor RED. Capture26files/1158sources verified. Both containers stopped-
-retained, owner9769d2023e4c48a208a84ec32eefe9a5, network removed,592 prior
-records/eight running unchanged; free153717768192bytes, no cleanup debt.
+Last verified HEADae4fffa6312d6e85ec71be6b75a6b81ede462a5b candidate;
+origin/mainfc08c48a4c9573bcc308a082de64ab33c3c4820b freshly verified by ls-remote.
+Root owns new serve/export_jobs.rs, serve.rs, optional-management Supervisor/history,
+operations/export.md and the RED evidence/inventory/checkpoint updates. No other
+contributor edits or merge/rebase. Product candidate is not yet native qualified.
 
-Thirdb6fd7eb reused1c15d1a ELF correctly; offline config passed, then Control
-preparation refused the fixture's unnecessary512MiB application payload override.
-The recipe's original2GiB is restored next; actual corrected TOML validates.
-No live Control or executor started; original INCOMPLETE retained. Capture24files/
-1159sources verified, ownera0d2f896afbb8f9ca3bd22f2e3a5b4cb stopped-retained,
-network removed. No current active experiment or cleanup debt.
+[Installed headless RED](evidence/p08-export-runtime-red-20260924.json): corrected
+ae4fffa fixture uses exact1c15d1a installed ELF after complete product/build input
+equality. Control actually starts with no listener, policy2/config1; after ten
+seconds the retained job is still accepted, units/artifacts/files zero. Actual
+SIGTERM is clean; Control released, both database backends zero, eight Parquet
+files unchanged. This is the discriminating pre-implementation failure, unlike
+[three earlier fixture errors](evidence/p08-export-runtime-fixture-incomplete-20260924.json).
+Original INCOMPLETE preserved. Capture25files/1159Git sources verified,
+SHA1c5ee1a161e0b0ad7f24df731d18d29d5275e5438a4c6b09619c8cb87f0661f3.
+Owner8948503c8434a6d43a9c57170fc289eb stopped-retained, owned network removed;
+598 prior containers/eight unrelated running preserved. Fresh resume inspection
+shows eight unrelated running and152398151680bytes free; no active BigBrotr lab.
 
-Retired only26cde0a/out/build/{target,cargo-home} after owner/mount/process FD/map
-checks and source/artifact/capture rehash.3331977216 allocated bytes; free
-149504614400 ->152834408448.598containers/eight running unchanged. Preserve current
-1c15d1a complete compiler cache, both installed ELF, all sources/logs/PG/archive.
-Audit under attempt-26cde0a/cache-retirement; no lab/container/volume removed.
+New automatic executor WIP uses separate committed reservation, current authority,
+original retained snapshot, fresh reader pin, two PendingActions begun before the
+same SQL start (Control observer and actual writer), native query and opaque
+WrittenExport completion. Optional Management supports actual headless Control.
+Selected destination+reader requires0501 execution privileges before readiness;
+unselected historical0813 acceptance remains separate. One job per bounded scan;
+pre-reader refusals advance; five-second native/action deadline,250ms between
+queue lookups. SQL collection/join/cleanup can extend total elapsed time.
 
-A real-filesystem capacity preflight now uses retained fstatvfs descriptor,
-checked growth+completion reserve arithmetic, and refuses impossible/overflowing
-capacity. Rustix1.1.5 exact Mac/Linux implementation inspected. Mac regression
-RED against unconditional admission then GREEN; Clippy passed. This is not a
-physical quota/shared multi-process reservation ledger. The automatic single
-Control consumer and broader resource qualification are still pending.
-Next run corrected exact native headless fixture, reusing1c15d1a installed ELF
-after complete product/build-input equality. No new cache/compilation is needed.
-The runtime-profile build description now refers to the actual selected lab, not
-the earlier blocked-syscall case. Then add the executor; no product consumer yet.
+Independent AI review found scratch retry leakage, async-only output permit and
+unbounded durable reader/claim growth after permanent native failure. Applied:
+preflight/scratch cleanup I/O errors fail-stop; external RetainedOutput and worker
+share the actual output OwnedPermit; a known refusal after reader admission joins,
+releases only that reader and finishes capture, then stops for inspection instead
+of in-process retry. Durable pause/resume/failure parking remains required work.
+Independent AI follow-up found no remaining counterexample in those fixes and
+clarified the five-second scope; no practical fault evidence yet. Mac42binary
+tests/check/Clippy passed on this WIP;
+actual automatic completion and these fault paths remain NOT_RUN.
+
+A retained-descriptor fstatvfs preflight accounts additional two-copy growth,
+64MiB scratch and1MiB metadata while preserving the configured completion reserve.
+Exact Rustix1.1.5 Mac/Linux source inspected; regression RED against unconditional
+admission then GREEN and Clippy passed. No physical quota/shared durable growth
+ledger or realistic mixed-workload capacity claim.
+
+Latest narrow retirement removed only26cde0a/out/build/{target,cargo-home} after
+owner/mount/process FD/map checks and source/artifact/capture rehash:3331977216
+allocated bytes; free149504614400 ->152834408448, concurrent writes possible.
+598containers/eight running unchanged. Current1c15d1a complete cache and both ELF,
+all source/logs/PG/archive retained. Audit attempt-26cde0a/cache-retirement.
 
 [Action-window output gate](evidence/p08-export-action-window-native-20260924.json):
 real-clock100ms partial-buffer regression first failed against atomic-only output,
@@ -123,34 +133,23 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Implement the ordinary Control export executor using the qualified action-window
-output gate. No manual run command after POST. Select one bounded
-exact-ID job, reserve immutable ArtifactId/caps and COMMIT queued separately,
-then recheck current authority before running. Advance the cursor past denied/
-capacity-conflicting work; reset at exhaustion without HTTP/job starvation.
-Measure an aged queue or add an additive selective index before capacity claims.
+Review the remaining source delta and independent follow-up, commit one clean
+executor candidate, then transfer exact Git and run the same native headless
+fixture with a fresh installed parent/worker build (no artifact reuse across
+product changes). Expected literal empty file+manifest, complete SQL inventory,
+reader release and retained export pin. Record failure honestly if it occurs.
+Then qualify real signed output, restart/replay and confirmed fault paths.
 
-Use PreparedExport::write_with_window for automatic writes. Begin its pending
-action before authoritative SQL, bind returned remaining lifetime and retain it
-through actual I/O. AtomicBool polling alone cannot enforce expiry during a slow
-Control wait. Filesystem qualification is complete at its stated narrow scope.
+Keep OutputCustody and its output OwnedPermit outside cancellable supervise
+through actual Control driver join; each blocked worker separately owns the same
+permit. Native budget and reader custody remain joined/termination-bound. Never
+poll a ready JoinHandle twice or drop a live Control future as a known refusal.
+Capture barrier -> short Control transaction lock order remains unchanged.
 
-Supervisor still requires mutable Management; make management optional when the
-headless automatic consumer first needs it. Keep bounded command service and
-positive native joins. A ready JoinHandle must never be polled twice. Do not wrap
-Control futures in the generic cancellable external helper. SQL transport loss
-or cancelled COMMIT leaves unknown obligations and fail-stops.
-
-Keep original LocalDestination AND each OutputCustody Arc outside cancellable
-supervise through actual native workers and actual Control driver joins. Returning
-WrittenExport or dropping a future alone is insufficient. Use a fresh reader of
-the ORIGINAL retained frontier, not the current head. Browser logout/disconnect
-cannot cancel a committed job; current account/action/scope grants can restrict
-new execution. Reader-only release/recovery must never release export pins.
-
-501 startup/privilege selection must preserve valid unselected0813 acceptance.
-The artifact adapter needs UPDATE privilege on data.read/grant/account rows for
-locking. Actual application login, not postgres-only SQL, must exercise it.
+501 selection preserves unselected0813 acceptance. Exact application login, not
+postgres-only SQL, must exercise execution privileges. No applied SQL checksum
+changed. Aged queue scan/index, physical disk overhead/shared reservations,
+failure parking, permission/cancellation and workload acceptance remain gates.
 Remaining installed scenarios include actor revocation, output-before-SQL crash,
 COMMIT reply loss, restart with same unit, old-worker exclusion, zero/multiple
 streams, terminal pin lifecycle, cancel/resume, output discovery and packaged M1.
@@ -229,7 +228,7 @@ running unchanged. Current installed ELF/worker and complete compiler cache kept
 Ad0 uses copied bf66 artifacts, has no compiler cache. All original outputs,
 PostgreSQL states, traces, sources/manifests and captures are retained.
 
-Latest narrow cache retirement: only export-responsive-bf66e7d/out/build/{target,
+Earlier narrow cache retirement: only export-responsive-bf66e7d/out/build/{target,
 cargo-home};3329847296 allocated bytes. Free157567987712 ->160895680512bytes,
 concurrent writes possible. Fresh owner/mount/process FD/map audit, retained
 1154source files/twoELF/24-file capture rehashed;590containers/eight running unchanged.
