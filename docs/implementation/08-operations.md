@@ -331,8 +331,11 @@ original job/pin through revocation. The [blocked-checker signal scenario](evide
 also passes with actual Control renewal and bounded process termination.
 The [COMMIT-loss/restart scenarios](evidence/p08-export-job-commits-native-20260924.json)
 resolve identical keys across actual before/after server commit interruptions,
-preserving old pins. Held-driver destination custody and actual export delivery
-remain open. This does not complete Step 1 or 3.
+preserving old pins. The [held-driver custody discriminator](evidence/p08-export-destination-custody-native-20260924.json)
+passes at92550c9 with unchanged4e ELF; source-isolated Arc removal fails the same
+fixture. This is sampled exclusion during actual pending driver drain; original
+failed fixture attempts remain INCOMPLETE. Actual export delivery remains open.
+This does not complete Step 1 or 3.
 [Native destination qualification](evidence/p08-export-destination-native-20260923.json)
 at a75d0fa passes ten actual Linux/ext4 cases, including bind aliases, cross-process
 custody, fsync EIO and process death around rename. The marker's independent

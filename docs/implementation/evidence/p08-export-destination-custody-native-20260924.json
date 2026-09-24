@@ -1,0 +1,694 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "task": [
+    "P08-T03",
+    "P08-T04"
+  ],
+  "status": "PASS-scoped",
+  "source": "92550c98b0525cecf345cde7f3055fc8d762e827",
+  "tree": "6e4f63a283b326c7db5df345a9d49a04c04fb867",
+  "scope": "Sampled root exclusion during actual pending Control driver drain after cancellation of an export acceptance with server COMMIT complete and reply held. Original destination Arc retained through driver join, discriminated by source-isolated Arc-removal negative. No JSONL execution.",
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "Runner2CPU/6GiB/512PIDs, PostgreSQL2CPU/1GiB/128PIDs, no host ports; not a load/capacity qualification."
+  },
+  "source_basis": {
+    "crate": "tokio-postgres0.7.18",
+    "inspection": "Exact cached crate archive matches Cargo.lock checksum and inspected source. Connection retains pending responses after receiver/Client drop; Transaction.commit sets done before awaiting COMMIT, preventing Drop rollback.",
+    "files": {
+      "src/connection.rs": "c7dd2c8259d306144ba60e0acabd210eada65cd88631aaa9e8e350620d880e4d",
+      "src/transaction.rs": "a2c0261a3ca426e9046d73b2b330720918f4d4a6010d0a143707f17f0333d62e"
+    },
+    "protocol": "https://www.postgresql.org/docs/16/protocol-flow.html",
+    "pidfd": "https://docs.python.org/3.11/library/signal.html#signal.pidfd_send_signal",
+    "crate_archive_sha256": "a528f7d280f6d5b9cd149635c8705b0dd049754bc67d81d31fa25169a93809d3"
+  },
+  "variants": [
+    {
+      "case": "original-positive",
+      "status": "PASS-scoped",
+      "source": "e86e21f67a29724e7adf221883a45de08b8964b1",
+      "tree": "c1f55e1192976ae0fb3413685d0719cf9569295e",
+      "capture": {
+        "local": ".research/implementation/export-job-custody/capture",
+        "files": 37,
+        "sha256": "57e5d4800d3b67a3905a28411582f202c8736b697abe8453b7f96de06f4661cd"
+      },
+      "resources": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-e86e21f",
+        "owner": "84e921e381ba4a8835e29c0799dc9a43",
+        "containers": [
+          {
+            "name": "postgres",
+            "id": "372316525f9412bd597e39f6443b8df0e796ab00a8f750673e370c5055b6bcf2"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "a4c42d8fed88251215eee39a94563d126001637958c456fcddfbb800c044fc4e"
+          }
+        ],
+        "original_terminal": "PASS_PENDING_CAPTURE",
+        "state": "stopped-retained",
+        "network": "removed after owner/no-endpoint audit",
+        "prior_containers": 557,
+        "unrelated_running": 8,
+        "free_before": 180522745856,
+        "free_after": 180157681664
+      },
+      "artifacts": {
+        "control": "42e2787cdabf4d31c1941ca38bebe5006ac8c0e8a4c8fdf8ac99d9644e38c88c",
+        "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+        "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+        "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+        "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+      },
+      "observed": {
+        "total_samples": 104,
+        "supported_samples": 98,
+        "interval_seconds": 1.872676978353411,
+        "largest_sample_gap_seconds": 0.020040863193571568,
+        "violations": 0,
+        "signal_margin_seconds": 4.275648186914623,
+        "process_exit_permission_observed": false,
+        "terminal": {
+          "exit": 4,
+          "response": {
+            "closed": "RemoteDisconnected"
+          },
+          "lock_available": true,
+          "parent_present": false,
+          "stderr": "error: native grant acceptance cancelled; outcome unresolved\n",
+          "elapsed_ms": 2008.877
+        },
+        "socket_inode": [
+          "160699656"
+        ],
+        "held": {
+          "owner": {
+            "resource": "3eef6967e4b0da66aa42dabd42f06fd6",
+            "epoch": "6",
+            "incarnation": "1ceac70aa5ff11827a365243882db896",
+            "pid": 309,
+            "start": "2026-09-24T06:51:17.907001+00:00",
+            "present": true
+          },
+          "catalog_backends": 1
+        },
+        "catalog_gone": {
+          "owner": {
+            "resource": "3eef6967e4b0da66aa42dabd42f06fd6",
+            "epoch": "6",
+            "incarnation": "1ceac70aa5ff11827a365243882db896",
+            "pid": 309,
+            "start": "2026-09-24T06:51:17.907001+00:00",
+            "present": true
+          },
+          "catalog_backends": 0
+        },
+        "terminal_sql": {
+          "commands": 1,
+          "details": 1,
+          "audit": 1,
+          "jobs": 1,
+          "export_pins": 1,
+          "reader_pins": 1,
+          "claims": 2
+        },
+        "terminal_owner": {
+          "owner": {
+            "resource": "3eef6967e4b0da66aa42dabd42f06fd6",
+            "epoch": "6",
+            "incarnation": "1ceac70aa5ff11827a365243882db896",
+            "pid": 309,
+            "start": "2026-09-24T06:51:17.907001+00:00",
+            "present": false
+          },
+          "catalog_backends": 0
+        },
+        "jobs": [
+          {
+            "id": "1ce99cacc5f834f6957043ea9d3f23ae",
+            "key": "e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6",
+            "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+            "state": "accepted",
+            "complete": true,
+            "allocation_pin": "373eeebe09794c75a3fff26e5ee92a1b",
+            "export_pin": "7928632a1e8d08c4838de87dce5da750",
+            "bounds": [
+              [
+                0,
+                "1",
+                "10"
+              ]
+            ]
+          }
+        ],
+        "pins": [
+          {
+            "id": "373eeebe09794c75a3fff26e5ee92a1b",
+            "purpose": "reader",
+            "state": "active",
+            "epoch": "6",
+            "job": null,
+            "claims": [
+              [
+                0,
+                "1",
+                "1",
+                "10",
+                "reader",
+                "active"
+              ]
+            ]
+          },
+          {
+            "id": "7928632a1e8d08c4838de87dce5da750",
+            "purpose": "export",
+            "state": "active",
+            "epoch": "6",
+            "job": "1ce99cacc5f834f6957043ea9d3f23ae",
+            "claims": [
+              [
+                0,
+                "1",
+                "1",
+                "10",
+                "export",
+                "active"
+              ]
+            ]
+          }
+        ],
+        "both_database_backends": {
+          "bbpub_normal": {
+            "backends": 0
+          },
+          "bbpub_control_normal": {
+            "backends": 0
+          }
+        },
+        "proxy_completion": {
+          "server": 1,
+          "client": 0
+        }
+      },
+      "checks": "Actual four prerequisites, signed native publication/independent readback, held export COMMIT, pidfd SIGTERM, same PID/start/actual FD inode on both sides of independent nonblocking exclusive root flock, actual parent/proxy/client completion and fresh SQL. Not a continuous trace of every instant.",
+      "archive_hashes": "Eight original Parquet hashes compared before/after actual case; unchanged."
+    },
+    {
+      "case": "installer-failure",
+      "status": "INCOMPLETE",
+      "source": "6f1cb4c60bab071e46d9f94ae0cb707ed277f484",
+      "tree": "4b1c96b247a97ff4164dc5d9ecb4b6d260e9913c",
+      "capture": {
+        "local": ".research/implementation/export-job-custody-negative/capture",
+        "files": 29,
+        "sha256": "c424f613638c522e385dde1fc28e781d65fbe01d23458cfc448b0cbb5a4d74db"
+      },
+      "resources": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-6f1cb4c",
+        "owner": "f2a8ceb72b34fa6806d14dc30e0bb620",
+        "containers": [
+          {
+            "name": "postgres",
+            "id": "39b10289587bea85bbb603bab651dcd19349130e94ba0fb678c000b1a3b99763"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "814c9adcca3412278b353abd30bbb9d5aa32d0969247d807f3733463fcfb4eb0"
+          }
+        ],
+        "original_terminal": "INCOMPLETE",
+        "state": "stopped-retained",
+        "network": "removed after owner/no-endpoint audit",
+        "prior_containers": 559,
+        "unrelated_running": 8,
+        "free_before": 180121120768,
+        "free_after": 176480972800
+      },
+      "failure": "Cargo release compilation completed in31.42s; copying over retained0555 executable failed PermissionError before new build-info verification or any product fixture. Compiled ELF21fb24\u2026 preserved outside cache and verified in later attempt; no compilation rerun."
+    },
+    {
+      "case": "proc-exit-race",
+      "status": "INCOMPLETE",
+      "source": "6f1cb4c60bab071e46d9f94ae0cb707ed277f484",
+      "tree": "4b1c96b247a97ff4164dc5d9ecb4b6d260e9913c",
+      "capture": {
+        "local": ".research/implementation/export-job-custody-negative-r2/capture",
+        "files": 40,
+        "sha256": "5c82d99a03e7296432ee3b5860d2cd2fc261eb4cf96cae673dac652536f25ac1"
+      },
+      "resources": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-r2-6f1cb4c",
+        "owner": "1e1c49e3f4c1e9daccc635ecf8fa471b",
+        "containers": [
+          {
+            "name": "postgres",
+            "id": "0b56119288dc3b0a871c63300699b8748bd9660c9672bf2b02f45a196b930406"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "98993d38c297f2c7febe244d8e03c527889dbae4be09d0f36c8d4bd9c1f27804"
+          }
+        ],
+        "original_terminal": "INCOMPLETE",
+        "state": "stopped-retained",
+        "network": "removed after owner/no-endpoint audit",
+        "prior_containers": 561,
+        "unrelated_running": 8,
+        "free_before": 176432427008,
+        "free_after": 176067407872
+      },
+      "failure": "104 recorded samples showed root lock available; PermissionError reading /proc/1551/fd during exit interrupted terminal collection. Native product terminal SQL/both-backend check NOT_RUN. Do not relabel original INCOMPLETE as qualified negative."
+    },
+    {
+      "case": "missing-git-ancestor",
+      "status": "INCOMPLETE",
+      "source": "5f1582c511755de16830e1152d246cc7c24461b2",
+      "tree": "2e1abd061a3fcd9d30435a4743349f33f905b82a",
+      "capture": {
+        "local": ".research/implementation/export-job-custody-negative-r3/capture",
+        "files": 9,
+        "sha256": "83975d8807352398ed7a479d86c54502c6eea30851bb449ede5b620bbaf54589"
+      },
+      "resources": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-r3-5f1582c",
+        "owner": "0e65ba59c87bfe9e6a02ee3d7c4d7915",
+        "containers": [],
+        "original_terminal": "INCOMPLETE",
+        "state": "stopped-retained",
+        "network": "not-created",
+        "prior_containers": 563,
+        "unrelated_running": 8,
+        "free_before": 176030871552,
+        "free_after": 175991005184
+      },
+      "failure": "Fixture orchestration referenced92550c9, absent from negative branch Git ancestry/bundle after cherry-pick. Failed before artifact reuse/container creation. Fixed local recipe to verify available ancestor plus exact complete source difference."
+    },
+    {
+      "case": "isolated-negative",
+      "status": "EXPECTED_NEGATIVE_FAILURE",
+      "source": "5f1582c511755de16830e1152d246cc7c24461b2",
+      "tree": "2e1abd061a3fcd9d30435a4743349f33f905b82a",
+      "capture": {
+        "local": ".research/implementation/export-job-custody-negative-r4/capture",
+        "files": 41,
+        "sha256": "8e694cd29d1c4aab86992eb74095c998641416ffd326befe95e28281b9b8d1e1"
+      },
+      "resources": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-r4-5f1582c",
+        "owner": "27b9af80eff81ccb66ad825b441b7f2f",
+        "containers": [
+          {
+            "name": "postgres",
+            "id": "72009faa488424100f3df018037e4989e8426b49cad75fef758ebf085418f790"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "f1ed8aaba4145ed6358189d10f8c1f51bbf96a416fc226a3ed64b9c7e2d0ca11"
+          }
+        ],
+        "original_terminal": "PASS_PENDING_CAPTURE",
+        "state": "stopped-retained",
+        "network": "removed after owner/no-endpoint audit",
+        "prior_containers": 563,
+        "unrelated_running": 8,
+        "free_before": 175960662016,
+        "free_after": 175595433984
+      },
+      "artifacts": {
+        "control": "21fb24a7a1d870396a0f108df6f60057c7c08de74983a209eff38cdca7001d28",
+        "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+        "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+        "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+        "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+      },
+      "observed": {
+        "total_samples": 105,
+        "supported_samples": 98,
+        "interval_seconds": 1.8564540510997176,
+        "largest_sample_gap_seconds": 0.01961863413453102,
+        "violations": 98,
+        "signal_margin_seconds": 4.278865841683,
+        "process_exit_permission_observed": false,
+        "terminal": {
+          "exit": 4,
+          "response": {
+            "closed": "RemoteDisconnected"
+          },
+          "lock_available": true,
+          "parent_present": false,
+          "stderr": "error: native grant acceptance cancelled; outcome unresolved\n",
+          "elapsed_ms": 2012.755
+        },
+        "socket_inode": [
+          "160720446"
+        ],
+        "held": {
+          "owner": {
+            "resource": "f794181b85061b14f1c2bb1fe1b2d8c7",
+            "epoch": "6",
+            "incarnation": "de11120ffc5dc995022cfa471ead3e02",
+            "pid": 306,
+            "start": "2026-09-24T07:00:11.565294+00:00",
+            "present": true
+          },
+          "catalog_backends": 1
+        },
+        "catalog_gone": {
+          "owner": {
+            "resource": "f794181b85061b14f1c2bb1fe1b2d8c7",
+            "epoch": "6",
+            "incarnation": "de11120ffc5dc995022cfa471ead3e02",
+            "pid": 306,
+            "start": "2026-09-24T07:00:11.565294+00:00",
+            "present": true
+          },
+          "catalog_backends": 0
+        },
+        "terminal_sql": {
+          "commands": 1,
+          "details": 1,
+          "audit": 1,
+          "jobs": 1,
+          "export_pins": 1,
+          "reader_pins": 1,
+          "claims": 2
+        },
+        "terminal_owner": {
+          "owner": {
+            "resource": "f794181b85061b14f1c2bb1fe1b2d8c7",
+            "epoch": "6",
+            "incarnation": "de11120ffc5dc995022cfa471ead3e02",
+            "pid": 306,
+            "start": "2026-09-24T07:00:11.565294+00:00",
+            "present": false
+          },
+          "catalog_backends": 0
+        },
+        "jobs": [
+          {
+            "id": "f1d93caf1a104e28c10aa17f5e5f47a1",
+            "key": "e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6",
+            "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+            "state": "accepted",
+            "complete": true,
+            "allocation_pin": "31dd60bdd09768fd9a32158f32e32496",
+            "export_pin": "35017618e16e4e90583a77abbfef2443",
+            "bounds": [
+              [
+                0,
+                "1",
+                "10"
+              ]
+            ]
+          }
+        ],
+        "pins": [
+          {
+            "id": "31dd60bdd09768fd9a32158f32e32496",
+            "purpose": "reader",
+            "state": "active",
+            "epoch": "6",
+            "job": null,
+            "claims": [
+              [
+                0,
+                "1",
+                "1",
+                "10",
+                "reader",
+                "active"
+              ]
+            ]
+          },
+          {
+            "id": "35017618e16e4e90583a77abbfef2443",
+            "purpose": "export",
+            "state": "active",
+            "epoch": "6",
+            "job": "f1d93caf1a104e28c10aa17f5e5f47a1",
+            "claims": [
+              [
+                0,
+                "1",
+                "1",
+                "10",
+                "export",
+                "active"
+              ]
+            ]
+          }
+        ],
+        "both_database_backends": {
+          "bbpub_normal": {
+            "backends": 0
+          },
+          "bbpub_control_normal": {
+            "backends": 0
+          }
+        },
+        "proxy_completion": {
+          "server": 1,
+          "client": 0
+        }
+      },
+      "checks": "Actual four prerequisites, signed native publication/independent readback, held export COMMIT, pidfd SIGTERM, same PID/start/actual FD inode on both sides of independent nonblocking exclusive root flock, actual parent/proxy/client completion and fresh SQL. Not a continuous trace of every instant.",
+      "negative_origin": {
+        "source": "6f1cb4c60bab071e46d9f94ae0cb707ed277f484",
+        "tree": "4b1c96b247a97ff4164dc5d9ecb4b6d260e9913c",
+        "owner": "f2a8ceb72b34fa6806d14dc30e0bb620",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-6f1cb4c",
+        "sha256": "21fb24a7a1d870396a0f108df6f60057c7c08de74983a209eff38cdca7001d28",
+        "source_manifest_sha256": "350a2bf364a0b90f7d90cb6096862f6ffedc1362e4d309529f7d09a2f442d21b",
+        "build_log_sha256": "37a7ad1fa843553c9051163d7df1961e47699df4536399887de8e51b16667333",
+        "reuse": "Exact completed compilation; first installer failed before scenario. No rebuild or compiler cache."
+      }
+    },
+    {
+      "case": "corrected-positive",
+      "status": "PASS-scoped",
+      "source": "92550c98b0525cecf345cde7f3055fc8d762e827",
+      "tree": "6e4f63a283b326c7db5df345a9d49a04c04fb867",
+      "capture": {
+        "local": ".research/implementation/export-job-custody-updated/capture",
+        "files": 37,
+        "sha256": "fb6467106032f94f9b8ebba027d9aaecaaff75b5d9f6a29117be5e01d361f4e4"
+      },
+      "resources": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-updated-92550c9",
+        "owner": "1a780c88b9e9df03e56a547502808242",
+        "containers": [
+          {
+            "name": "postgres",
+            "id": "1a71b50e795f073ede7c82fbd72a7e7563ccb720a9ac6019baebe043543a8779"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "5f360abfb948fb47b412f7de743b71b0215dd90e4e8517f28dcb0665bdee91f3"
+          }
+        ],
+        "original_terminal": "PASS_PENDING_CAPTURE",
+        "state": "stopped-retained",
+        "network": "removed after owner/no-endpoint audit",
+        "prior_containers": 565,
+        "unrelated_running": 8,
+        "free_before": 175558713344,
+        "free_after": 175187681280
+      },
+      "artifacts": {
+        "control": "42e2787cdabf4d31c1941ca38bebe5006ac8c0e8a4c8fdf8ac99d9644e38c88c",
+        "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+        "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+        "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+        "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+      },
+      "observed": {
+        "total_samples": 104,
+        "supported_samples": 101,
+        "interval_seconds": 1.9227491891942918,
+        "largest_sample_gap_seconds": 0.02006887597963214,
+        "violations": 0,
+        "signal_margin_seconds": 4.344091047998518,
+        "process_exit_permission_observed": true,
+        "terminal": {
+          "exit": 4,
+          "response": {
+            "closed": "RemoteDisconnected"
+          },
+          "lock_available": true,
+          "parent_present": false,
+          "stderr": "error: native grant acceptance cancelled; outcome unresolved\n",
+          "elapsed_ms": 2005.375
+        },
+        "socket_inode": [
+          "160729786"
+        ],
+        "held": {
+          "owner": {
+            "resource": "72b0d5570fefdf0cc6cfa05c81d612aa",
+            "epoch": "6",
+            "incarnation": "096df07bb73fd86c79a02a366af2782f",
+            "pid": 308,
+            "start": "2026-09-24T07:01:05.551023+00:00",
+            "present": true
+          },
+          "catalog_backends": 1
+        },
+        "catalog_gone": {
+          "owner": {
+            "resource": "72b0d5570fefdf0cc6cfa05c81d612aa",
+            "epoch": "6",
+            "incarnation": "096df07bb73fd86c79a02a366af2782f",
+            "pid": 308,
+            "start": "2026-09-24T07:01:05.551023+00:00",
+            "present": true
+          },
+          "catalog_backends": 0
+        },
+        "terminal_sql": {
+          "commands": 1,
+          "details": 1,
+          "audit": 1,
+          "jobs": 1,
+          "export_pins": 1,
+          "reader_pins": 1,
+          "claims": 2
+        },
+        "terminal_owner": {
+          "owner": {
+            "resource": "72b0d5570fefdf0cc6cfa05c81d612aa",
+            "epoch": "6",
+            "incarnation": "096df07bb73fd86c79a02a366af2782f",
+            "pid": 308,
+            "start": "2026-09-24T07:01:05.551023+00:00",
+            "present": false
+          },
+          "catalog_backends": 0
+        },
+        "jobs": [
+          {
+            "id": "a3d2dafdc4e95d15b7a132179bc86c40",
+            "key": "e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6",
+            "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+            "state": "accepted",
+            "complete": true,
+            "allocation_pin": "17bc28fd0346954eb8642ff91a785761",
+            "export_pin": "f8713ffaa1762a7a302bca14fdeb67f2",
+            "bounds": [
+              [
+                0,
+                "1",
+                "10"
+              ]
+            ]
+          }
+        ],
+        "pins": [
+          {
+            "id": "17bc28fd0346954eb8642ff91a785761",
+            "purpose": "reader",
+            "state": "active",
+            "epoch": "6",
+            "job": null,
+            "claims": [
+              [
+                0,
+                "1",
+                "1",
+                "10",
+                "reader",
+                "active"
+              ]
+            ]
+          },
+          {
+            "id": "f8713ffaa1762a7a302bca14fdeb67f2",
+            "purpose": "export",
+            "state": "active",
+            "epoch": "6",
+            "job": "a3d2dafdc4e95d15b7a132179bc86c40",
+            "claims": [
+              [
+                0,
+                "1",
+                "1",
+                "10",
+                "export",
+                "active"
+              ]
+            ]
+          }
+        ],
+        "both_database_backends": {
+          "bbpub_normal": {
+            "backends": 0
+          },
+          "bbpub_control_normal": {
+            "backends": 0
+          }
+        },
+        "proxy_completion": {
+          "server": 1,
+          "client": 0
+        }
+      },
+      "checks": "Actual four prerequisites, signed native publication/independent readback, held export COMMIT, pidfd SIGTERM, same PID/start/actual FD inode on both sides of independent nonblocking exclusive root flock, actual parent/proxy/client completion and fresh SQL. Not a continuous trace of every instant.",
+      "archive_hashes": "Eight original Parquet hashes compared before/after actual case; unchanged."
+    }
+  ],
+  "artifact_identity": "Positive original and corrected fixtures reuse unchanged4e6b5c0 ELF tuple after complete source-delta verification. Negative fixtures5f1582c reuse the exact Control ELF built at6f1cb4c; only serve.rs differs from positive product inputs: move destination into supervise and remove original Arc drop after driver join. Four other ELF and five native assets remain4e6b5c0. Runtime build-info binds negative source/tree/manifest/worker. No new Cargo/Clippy tests; one narrow release compilation, never pushed/merged mutant.",
+  "original_metadata_correction": "Negative artifact-reuse.json.validation inherited the positive same-artifact-tuple wording. That sentence is inaccurate for Control. Original record preserved; negative-artifact-origin.json, ready.control_source, actual-artifacts and this report establish substituted21fb24\u2026 Control with other four ELF/assets unchanged.",
+  "limits": [
+    "Catalog backend0 precedes native_grants/supervise return and is not an observed join-call entry. Same pending Control socket plus isolated mutation supplies discrimination. Samples bound only the observed intervals; no continuous all-instant proof.",
+    "Positive corrected run exercised the new PermissionError+positive pidfd-death path; an independently forced live-permission-denial case was not executed. Denied access for a live process remains fatal; missing socket observations are unsupported samples.",
+    "No old-row+xmin preservation comparison from this case when adding a job. Full terminal job/pin linkage checked; earlier COMMIT report owns its separate immutable subset evidence.",
+    "Negative case records eight terminal Parquet hashes but does not reach its pre/post comparison after expectedFAIL. Only positive cases qualify unchanged archive hashes.",
+    "Old unresolved reader/export pins and retained active-state Control row remain obligations; expiry, stopped containers and unknown outcome do not release them. Earlier incomplete r2 has no terminal SQL qualification.",
+    "No arbitrary kernel I/O, host power loss, Linux arm64, complete job scheduler/recovery, standalone files, whole P08/M1 or packaged release qualification."
+  ],
+  "review": "Read-only independent AI inspected design/fixture and actual captures offline. Verified37 positive/41 negative file hashes/tars,1117 sources each against Git, complete positive925\u2192negative5f source difference solely serve.rs, sample timing, exact SQL/pin/job identities and565/563 preserved container records. Found inherited negative artifact-reuse wording; correction above preserves original. No tests/SSH/edits by reviewer. ELF/native/Parquet verification uses captured remote hashes, not local executable/data bytes.",
+  "cache_retirement": {
+    "status": "PASS",
+    "local": ".research/implementation/export-job-custody-negative/cache-retirement",
+    "identity": {
+      "process-observation.json": {
+        "bytes": 44,
+        "sha256": "daf640593f1a4a43a3de07f3583f786a9e067ea405021fba2e75c63fcd42b3c1"
+      },
+      "audit.json": {
+        "bytes": 4997,
+        "sha256": "ff373730d289fc2c6ae744c781f6f5f326dfb643d3015b97905c392fa3eaa464"
+      },
+      "cache-containers-before.json": {
+        "bytes": 1031938,
+        "sha256": "c3cecaaff3375f00ec69e04355f721ca1501d66d457dba908f6cb3e9becf7825"
+      },
+      "retirement.json": {
+        "bytes": 1359,
+        "sha256": "3b499992d76d30c599677efafdba0be85986361ba7e718835faba5f9447d893d"
+      },
+      "cache-containers-after.json": {
+        "bytes": 1031938,
+        "sha256": "c3cecaaff3375f00ec69e04355f721ca1501d66d457dba908f6cb3e9becf7825"
+      }
+    },
+    "removed": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-6f1cb4c/out/build/target",
+      "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-6f1cb4c/out/build/cargo-home"
+    ],
+    "allocated_bytes": 3314737152,
+    "free_before": 175180263424,
+    "free_after": 178493968384,
+    "source_files": 1117,
+    "preserved_artifacts": 16,
+    "containers_preserved": 567,
+    "unrelated_running": 8,
+    "scope": "Only target and cargo-home of concluded first negative installer. Native compiled mutant preserved/hashed outside cache before removal; exact source,original failed evidence/logs,installed artifacts,PGdata retained. Fresh process+mount audit no references/errors; no containers/volumes/data deleted. Concurrent writes possible; never reuse retired cache."
+  }
+}

@@ -19724,5 +19724,253 @@
       "capture_sha256": "ee7f6522ccc5b8b657e6127d38f0d000943774948b4a24c8522459d4d8b66c94"
     },
     "observation": "Concurrent writes possible; no compiler caches created/deleted. Runner0/PGwrapper137, PID0/noOOM, network removed. Source/artifacts/PGdata/archive/logs retained; no active lab/cleanup debt. Two accepted jobs, two active export pins and two unresolved original reader pins with four claims intentionally remain. No recovery release or GC permission. 555 prior records preserved/eight unrelated running; free180924563456 ->180559454208bytes."
+  },
+  "implementation_export_job_custody_20260924": {
+    "local_root": ".research/implementation/export-job-custody",
+    "native": {
+      "source": "e86e21f67a29724e7adf221883a45de08b8964b1",
+      "tree": "c1f55e1192976ae0fb3413685d0719cf9569295e",
+      "owner": "84e921e381ba4a8835e29c0799dc9a43",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-e86e21f",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "372316525f9412bd597e39f6443b8df0e796ab00a8f750673e370c5055b6bcf2"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "a4c42d8fed88251215eee39a94563d126001637958c456fcddfbb800c044fc4e"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T06:51:03.329255+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "3f36a349905c8140979a5b248613a97d03069106335263128f2c9530dcad8283",
+      "postgres_id": "372316525f9412bd597e39f6443b8df0e796ab00a8f750673e370c5055b6bcf2",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "a4c42d8fed88251215eee39a94563d126001637958c456fcddfbb800c044fc4e",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "evidence": "docs/implementation/evidence/p08-export-destination-custody-native-20260924.json",
+      "capture_sha256": "57e5d4800d3b67a3905a28411582f202c8736b697abe8453b7f96de06f4661cd"
+    },
+    "observation": "All owned containers stopped/PID0/noOOM and owned network removed where created; prior lifecycle/mount/network/restart records preserved. Original failures retained. No recovery, adoption or pin release. Sources/logs/artifacts/database state remain; no compiler cache except first negative installer (separately retired after artifact preservation)."
+  },
+  "implementation_export_job_custody_negative_20260924": {
+    "local_root": ".research/implementation/export-job-custody-negative",
+    "native": {
+      "source": "6f1cb4c60bab071e46d9f94ae0cb707ed277f484",
+      "tree": "4b1c96b247a97ff4164dc5d9ecb4b6d260e9913c",
+      "owner": "f2a8ceb72b34fa6806d14dc30e0bb620",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-6f1cb4c",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "39b10289587bea85bbb603bab651dcd19349130e94ba0fb678c000b1a3b99763"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "814c9adcca3412278b353abd30bbb9d5aa32d0969247d807f3733463fcfb4eb0"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T06:53:35.206506+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "control_source": "6f1cb4c60bab071e46d9f94ae0cb707ed277f484",
+      "network_id": "e09657fe49890ef492047792b4b592af346d49a109ae15fce3ee4cdfb913bf3b",
+      "postgres_id": "39b10289587bea85bbb603bab651dcd19349130e94ba0fb678c000b1a3b99763",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "814c9adcca3412278b353abd30bbb9d5aa32d0969247d807f3733463fcfb4eb0",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "evidence": "docs/implementation/evidence/p08-export-destination-custody-native-20260924.json",
+      "capture_sha256": "c424f613638c522e385dde1fc28e781d65fbe01d23458cfc448b0cbb5a4d74db"
+    },
+    "observation": "All owned containers stopped/PID0/noOOM and owned network removed where created; prior lifecycle/mount/network/restart records preserved. Original failures retained. No recovery, adoption or pin release. Sources/logs/artifacts/database state remain; no compiler cache except first negative installer (separately retired after artifact preservation).",
+    "cache_retirement": {
+      "status": "PASS",
+      "local": ".research/implementation/export-job-custody-negative/cache-retirement",
+      "identity": {
+        "process-observation.json": {
+          "bytes": 44,
+          "sha256": "daf640593f1a4a43a3de07f3583f786a9e067ea405021fba2e75c63fcd42b3c1"
+        },
+        "audit.json": {
+          "bytes": 4997,
+          "sha256": "ff373730d289fc2c6ae744c781f6f5f326dfb643d3015b97905c392fa3eaa464"
+        },
+        "cache-containers-before.json": {
+          "bytes": 1031938,
+          "sha256": "c3cecaaff3375f00ec69e04355f721ca1501d66d457dba908f6cb3e9becf7825"
+        },
+        "retirement.json": {
+          "bytes": 1359,
+          "sha256": "3b499992d76d30c599677efafdba0be85986361ba7e718835faba5f9447d893d"
+        },
+        "cache-containers-after.json": {
+          "bytes": 1031938,
+          "sha256": "c3cecaaff3375f00ec69e04355f721ca1501d66d457dba908f6cb3e9becf7825"
+        }
+      },
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-6f1cb4c/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-6f1cb4c/out/build/cargo-home"
+      ],
+      "allocated_bytes": 3314737152,
+      "free_before": 175180263424,
+      "free_after": 178493968384,
+      "source_files": 1117,
+      "preserved_artifacts": 16,
+      "containers_preserved": 567,
+      "unrelated_running": 8,
+      "scope": "Only target and cargo-home of concluded first negative installer. Native compiled mutant preserved/hashed outside cache before removal; exact source,original failed evidence/logs,installed artifacts,PGdata retained. Fresh process+mount audit no references/errors; no containers/volumes/data deleted. Concurrent writes possible; never reuse retired cache."
+    }
+  },
+  "implementation_export_job_custody_negative_r2_20260924": {
+    "local_root": ".research/implementation/export-job-custody-negative-r2",
+    "native": {
+      "source": "6f1cb4c60bab071e46d9f94ae0cb707ed277f484",
+      "tree": "4b1c96b247a97ff4164dc5d9ecb4b6d260e9913c",
+      "owner": "1e1c49e3f4c1e9daccc635ecf8fa471b",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-r2-6f1cb4c",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "0b56119288dc3b0a871c63300699b8748bd9660c9672bf2b02f45a196b930406"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "98993d38c297f2c7febe244d8e03c527889dbae4be09d0f36c8d4bd9c1f27804"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T06:56:31.335194+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "control_source": "6f1cb4c60bab071e46d9f94ae0cb707ed277f484",
+      "network_id": "5ba18a25c92c0d6f4ada56747091fcd6ccbdb703abf1c4506c70153255de45c5",
+      "postgres_id": "0b56119288dc3b0a871c63300699b8748bd9660c9672bf2b02f45a196b930406",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "98993d38c297f2c7febe244d8e03c527889dbae4be09d0f36c8d4bd9c1f27804",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "evidence": "docs/implementation/evidence/p08-export-destination-custody-native-20260924.json",
+      "capture_sha256": "5c82d99a03e7296432ee3b5860d2cd2fc261eb4cf96cae673dac652536f25ac1"
+    },
+    "observation": "All owned containers stopped/PID0/noOOM and owned network removed where created; prior lifecycle/mount/network/restart records preserved. Original failures retained. No recovery, adoption or pin release. Sources/logs/artifacts/database state remain; no compiler cache except first negative installer (separately retired after artifact preservation)."
+  },
+  "implementation_export_job_custody_negative_r3_20260924": {
+    "local_root": ".research/implementation/export-job-custody-negative-r3",
+    "native": {
+      "source": "5f1582c511755de16830e1152d246cc7c24461b2",
+      "tree": "2e1abd061a3fcd9d30435a4743349f33f905b82a",
+      "owner": "0e65ba59c87bfe9e6a02ee3d7c4d7915",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-r3-5f1582c",
+      "state": "stopped-retained",
+      "containers": [],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T06:58:51.630488+00:00",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "evidence": "docs/implementation/evidence/p08-export-destination-custody-native-20260924.json",
+      "capture_sha256": "83975d8807352398ed7a479d86c54502c6eea30851bb449ede5b620bbaf54589"
+    },
+    "observation": "All owned containers stopped/PID0/noOOM and owned network removed where created; prior lifecycle/mount/network/restart records preserved. Original failures retained. No recovery, adoption or pin release. Sources/logs/artifacts/database state remain; no compiler cache except first negative installer (separately retired after artifact preservation)."
+  },
+  "implementation_export_job_custody_negative_r4_20260924": {
+    "local_root": ".research/implementation/export-job-custody-negative-r4",
+    "native": {
+      "source": "5f1582c511755de16830e1152d246cc7c24461b2",
+      "tree": "2e1abd061a3fcd9d30435a4743349f33f905b82a",
+      "owner": "27b9af80eff81ccb66ad825b441b7f2f",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-negative-r4-5f1582c",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "72009faa488424100f3df018037e4989e8426b49cad75fef758ebf085418f790"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "f1ed8aaba4145ed6358189d10f8c1f51bbf96a416fc226a3ed64b9c7e2d0ca11"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T06:59:56.399733+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "control_source": "6f1cb4c60bab071e46d9f94ae0cb707ed277f484",
+      "network_id": "5b4b6f82f9d388d6f4b0534b63e1865a50a2acccc4667732b61e83532bf5c5f2",
+      "postgres_id": "72009faa488424100f3df018037e4989e8426b49cad75fef758ebf085418f790",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "f1ed8aaba4145ed6358189d10f8c1f51bbf96a416fc226a3ed64b9c7e2d0ca11",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "EXPECTED_NEGATIVE_FAILURE",
+      "evidence": "docs/implementation/evidence/p08-export-destination-custody-native-20260924.json",
+      "capture_sha256": "8e694cd29d1c4aab86992eb74095c998641416ffd326befe95e28281b9b8d1e1"
+    },
+    "observation": "All owned containers stopped/PID0/noOOM and owned network removed where created; prior lifecycle/mount/network/restart records preserved. Original failures retained. No recovery, adoption or pin release. Sources/logs/artifacts/database state remain; no compiler cache except first negative installer (separately retired after artifact preservation)."
+  },
+  "implementation_export_job_custody_updated_20260924": {
+    "local_root": ".research/implementation/export-job-custody-updated",
+    "native": {
+      "source": "92550c98b0525cecf345cde7f3055fc8d762e827",
+      "tree": "6e4f63a283b326c7db5df345a9d49a04c04fb867",
+      "owner": "1a780c88b9e9df03e56a547502808242",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-job-custody-updated-92550c9",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "1a71b50e795f073ede7c82fbd72a7e7563ccb720a9ac6019baebe043543a8779"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "5f360abfb948fb47b412f7de743b71b0215dd90e4e8517f28dcb0665bdee91f3"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T07:00:50.923013+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "e6ef0a9a90eb8305cc570c49015a9d5fc82692ccef2077259d8a34ab2628a73d",
+      "postgres_id": "1a71b50e795f073ede7c82fbd72a7e7563ccb720a9ac6019baebe043543a8779",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "5f360abfb948fb47b412f7de743b71b0215dd90e4e8517f28dcb0665bdee91f3",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "qualification": {
+      "status": "PASS-scoped",
+      "evidence": "docs/implementation/evidence/p08-export-destination-custody-native-20260924.json",
+      "capture_sha256": "fb6467106032f94f9b8ebba027d9aaecaaff75b5d9f6a29117be5e01d361f4e4"
+    },
+    "observation": "All owned containers stopped/PID0/noOOM and owned network removed where created; prior lifecycle/mount/network/restart records preserved. Original failures retained. No recovery, adoption or pin release. Sources/logs/artifacts/database state remain; no compiler cache except first negative installer (separately retired after artifact preservation)."
   }
 }

@@ -14,19 +14,19 @@ is unavailable. No public release, rename or Linux arm64 qualification.
 Active P08-T03/T04: standalone signed export and durable job/restart, consuming
 P08-T02 private authority and P06-T01/T02 signed history/pinned-reader work.
 No full P02/P06/P08 task or M1 milestone is complete. No exported JSONL file yet.
-Root is sole writer/integrator; catalog_guard_review is read-only AI reviewing
-the new held-driver custody fixture, with no edits, product tests, SSH or resources. Its first
-implementation-review attempt hit model capacity; retry source review completed.
+Root is sole writer/integrator. Independent read-only AI completed design,
+fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer.
 
 ## Git and current implementation
 
-Last observed main/HEAD and origin/main8c5ef5638607b4db7d0fe242ac10625a7b37f5d9,
-normal push confirmed. Root owns new export_job_custody_client.py and
-export_job_custody_cases.py, the shared HTTP fixture's custody profile and this
-checkpoint. No unrelated dirty files or rewritten history. Positive e86e21f custody passed; negative first installer failed and second
-reached104 lock-available samples before a /proc exit-permission race interrupted
-terminal collection. Preserve both INCOMPLETE outcomes; root fixes the sampler
-to accept denied /proc access only after positive pidfd death within100ms.
+Last observed main/HEAD92550c98b0525cecf345cde7f3055fc8d762e827,
+origin/main8c5ef5638607b4db7d0fe242ac10625a7b37f5d9. Two coherent unpublished
+fixture commits. Root owns pending held-driver evidence/task/operator documents,
+inventory and this checkpoint. No unrelated dirty files or active lab.
+Research negative worktree .research/worktrees/export-no-custody is clean at
+5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
+never merge/push. Its only product change removes original destination Arc
+retention before Control driver join. Original mutant build6f1cb4c is retained.
 Current product ELF origin remains4e6b5c011c067800f52e67365b2b848b7943d4bc;
 fresh fixture revisions verify exact allowlisted source differences and original
 artifact hashes. No new compilation/Cargo cache when product inputs are unchanged.
@@ -101,15 +101,33 @@ QueryRequest registry. Native512MiB floor remains an unqualified capacity limit.
   and independent complete capture/source/row/resource review found no mismatch.
   ELF/Parquet comparisons use captured remote hashes, not local artifact bytes.
 
-Neither immediate proxy socket loss nor blocked checker proves continuous
-original Arc custody across a HELD Control driver join. No recovery release of
-old pins, full zero/multistream/old-job anti-adoption acceptance, native-success/
-signal race, JSONL artifact or packaged M1/release qualification from these cases.
+- [Held-driver destination custody](evidence/p08-export-destination-custody-native-20260924.json):
+  corrected positive92550c9 on4e ELF has101 supported FD/inode/PID-start brackets,
+ 1.922749s,zero available root locks, exact cancelled-acceptance error/exit4 in
+ 2005.375ms. Mutant fixture5f1582c on6f1cb4c ELF21fb24… has98/98 available locks
+ over1.856454s,exit4 in2012.755ms. Fixture sources identical; onlyserve.rs product
+ difference removes original Arc. Actual server COMMIT1/client0, catalog1->0,
+ originalControl backend gone/bothDB0, job1+reader1+export1+claims2 retained and
+ active-stateControl1. No recovery. Positive8Parquet hashes unchanged; negative
+ only terminal8hashes, no pre/post claim. Catalog0 is not join entry; discrimination
+ uses actual pending socket and isolated mutation, with bounded samples.
+  Original positivee86 also passed98samples/1.872677s/2008.877ms. Three negative
+ attempts remain INCOMPLETE: installer cannot overwrite0555 copied binary;
+ /proc exit PermissionError after104 lockavailable samples prevented terminal SQL;
+ unavailable cherry-pick parent in remote Git failed before artifacts/containers.
+ Corrected positive actually exercised denied/proc then positive pidfd death;
+ live denial still raises. Complete37positive/41negative files and1117 sourcefiles
+ each verified by root+independent AI, plus563/565 unchanged prior resources.
+ Negative inherited artifact-reuse.validation sentence is inaccurate for Control;
+ report corrects it via negative-artifact-origin/actual hashes without rewriting
+ original evidence. No compilation rerun; one31.42s narrow negative build only.
+
+No full zero/multistream/old-job anti-adoption acceptance, native-success/signal
+race, JSONL artifact or packaged M1/release qualification from these cases.
 
 ## Current laboratory custody
 
-No active lab after e86e21f positive and6f1cb4c negative attempts (native execution
-terminally stopped); negative capture/evidence and scoped cache retirement pending. These are dated
+No active lab, pending tool session or cleanup debt after terminal audits. These are dated
 observations; re-inspect before reuse/deletion. Full identities and mounts are in
 [the inventory](../research/laboratory-inventory.json). No unrelated workload,
 host port, dataset, backup, archive, catalog or index deleted by these new runs.
@@ -123,13 +141,24 @@ All roots below are under /home/tux/bigbrotr-implementation-20260917/runs/:
 | export-checker-fixed-4e6b5c0 | 3f840fe30a3ffef7f9944c72ea6e38f9 / implementation_export_checker_native_20260924 | stopped0/137, PID0/noOOM/networkremoved; qualified installed ELF/assets and complete cache retained |
 | strace-exit-9b30c35 | 84ac8cbf5292679b8ef7043fed7a2799 / implementation_strace_exit_9b30c35_20260924 | no-network runner exit0/PID0/noOOM; qualified research tracer/source/build retained |
 
-Latest free180559454208bytes (COMMIT lab preflight180924563456); concurrent writes
-possible. Fixture-only last two runs created no target/cargo-home. Keep original
-ELF build4e6b5c0 and native asset provenance; never substitute a different binary
-based only on its filename or similarly named source. Research tracer SHA
+Latest scoped cleanup free175180263424 ->178493968384bytes; concurrent writes
+possible. Retired only first negative installer6f1cb4c target/cargo-home, preserving
+1117sources/16artifacts and original captured failure.567containers/eight unrelated
+running unchanged. Negative compiled ELF retained outside cache; do not reuse
+retired cache. No cache made for other five new custody runs. Keep original
+ELF build4e6b5c0 and native asset provenance. Research tracer SHA
 509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458.
 Ignored local receipts/captures under .research/implementation/{strace-exit,
-export-checker,export-checker-fixed,export-checker-timed,export-job-commits}/.
+export-checker,export-checker-fixed,export-checker-timed,export-job-commits,
+export-job-custody,export-job-custody-updated,export-job-custody-negative,
+export-job-custody-negative-r2,export-job-custody-negative-r3,
+export-job-custody-negative-r4}/. New custody resource identities/retained pin IDs
+are in the report and inventory entries implementation_export_job_custody*20260924.
+Final positive runner5f360abf/PG1a71b50e owner1a780c88b9e9df03e56a547502808242;
+Negative runnerf1ed8aab/PG72009faa owner27b9af80eff81ccb66ad825b441b7f2f;
+both final labs stopped
+runner0/PG137,PID0/noOOM and owned networks removed. Do not infer recovery from
+these terminal observations.
 
 COMMIT lab retained jobs081c96c4ac3455f32bd671ffc710337c and
 fa123119ab454e60b881039319a72c2c; original reader pins
@@ -163,33 +192,20 @@ with source/evidence/artifact preservation and fresh process/mount/owner audit.
 
 ## Next bounded action
 
-COMMIT evidence committed/pushed8c5ef56. Discriminate original
-LocalDestination Arc custody across actual held Control driver join. Exact
-Cargo-locked tokio-postgres0.7.18 source inspected: Connection retains pending
-responses after Client/response receiver drop and waits until they complete;
-Transaction.commit sets done before awaiting COMMIT, so dropping that future
-cannot enqueue an implicit rollback. Product join drains2s then aborts AND joins.
-Archive crate SHA matches Cargo.lock a528f7d280f6d5b9cd149635c8705b0dd049754bc67d81d31fa25169a93809d3;
-local connection.rs c7dd2c8259d306144ba60e0acabd210eada65cd88631aaa9e8e350620d880e4d,
-transaction.rs a2c0261a3ca426e9046d73b2b330720918f4d4a6010d0a143707f17f0333d62e
-match exact crate archive. Initial .cargo-checksum.json lookup absent; verified
-actual cached .crate bytes instead. Full connection and relevant transaction/
-client ownership routines inspected; unrelated client query methods uninspected.
+Commit/push the current custody qualification/evidence after final diff review.
+Then advance P08-T03 Step3/P08-T04 Step3 to actual signed JSONL execution/restart.
+Read existing export job/pin guards and current history/capture consumers before
+choosing the bounded execution transition. Applied0813 and earlier migrations
+stay immutable; new durable execution state requires an additive contract/migration,
+positive owner exclusion and independent crash/COMMIT evidence. Job receipt is
+acceptance only, export retention is not fresh reader/action authority, browser
+session loss must not silently cancel committed work. No file exists yet.
 
-Proposed fixture: hold the actual export COMMIT reply, SIGTERM while pending;
-observe catalog backend gone and native child absent while original Control
-socket remains open, with cross-process root flock refusal throughout that
-interval. Positive old backend/pin/job observations remain required after exit.
-An isolated negative source removing only original Arc retention should expose
-root lock availability while driver socket remains. The first positive fixture passed on native Linux (capture under
-.research/implementation/export-job-custody),98supported samples over1.873s;
-negative still incomplete after a terminal observation race. It brackets independent flock
-with the same PID/start/actual socket FD inode, requires the exact cancellation
-branch and at least0.5s samples after catalog0, without claiming catalog0 is
-the join entry. Run positive unchanged4e ELF, then isolated original-Arc-removal
-negative with its own compiled artifact; preserve original outcomes and all pins.
-No new master plan. Then actual standalone signed JSONL execution/restart through
-existing P08-T03/T04, followed by all remaining selected tasks.
+Source inspection begun only: P08-T03/T04 task paragraphs and first225lines of
+storage/postgres/export_jobs.rs. The remainder and actual execution/cancellation/
+manifest contracts/callers still need full focused reading. Do not treat this
+navigation as an execution design or start scaffolding before the responsibility
+and real consumer are clear. Then all remaining selected product tasks remain.
 
 ## Earlier prerequisites and preserved work
 
