@@ -144,8 +144,11 @@ and original-key resolution after restart without destination/input grants.
 [Sampled resume destination custody](../implementation/evidence/p08-export-resume-custody-native-20260924.json)
 also retains root exclusion during an actual pending Control reply and SIGTERM;
 the observed parent exits in about two seconds. This is a sampled interval, not
-a continuous proof for every schedule. Blocked destination checker work and the
-real TypeScript/browser consumer remain required acceptance; browser controls and the CLI are unfinished. A separate [installed
+a continuous proof for every schedule. The [actual TypeScript client](../implementation/evidence/p08-export-resume-client-native-20260924.json)
+also passes acceptance, explicit retry, revision/body conflicts, same-session
+Control restart and account deactivation against installed HTTP/PostgreSQL on
+Node26.4.0. Its in-memory cookie jar is a fixture, not browser qualification.
+Blocked destination checker work, browser controls and the CLI remain unfinished. A separate [installed
 signed-resume scenario](../implementation/evidence/p08-export-resume-output-native-20260924.json)
 restores a revoked input grant through authenticated HTTP, resumes the original
 unit and verifies exact signed bytes plus complete inventory. Identical retry

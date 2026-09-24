@@ -23,35 +23,52 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Last verified HEADfd55f036e0ada7dfc68a4c04cd4bed070d3cbac5, tree
-19ec8c861ebd17492af82a09cd489d332d2a849d on main; private origin/main matches. Root owns
-untracked resume_client.mjs and resume_client_cases.py plus lab/HTTP profile wiring
-and this checkpoint. No product changes, other contributor or merge/rebase.
-Fresh Tux inspection after0550: no active BigBrotr container, eight unrelated
-running,127948832768bytes free. All current labs are stopped-retained.
+Last verified HEAD 15569cca9fbc055de3652f77b18fd100ef88604b, tree
+5c9d3431b653686322711c7a0656e9b48a569ba5 on main; private origin/main remains
+fd55f036e0ada7dfc68a4c04cd4bed070d3cbac5. Root owns the pending evidence/inventory/
+operator/task/checkpoint documentation. Root also owns the next session-context
+product/contract/client/test edits; no foreign work.
 
-Next bounded action: finish static review, commit and run --runtime-resume-client
-against the existing paused7 HTTP lab. DraftNode26.4.0 imports the actual TypeScript
-client and uses real fetch with fixed loopback Origin and an in-memory cookie jar.
-Local syntax plus actual import/empty explicit stop pass; this is plumbing only,
-HTTP NOT_RUN. Host checks originalreceipt5, stale409, newf5receipt8, identicalretry,
-body conflict, same-session restart without destination/input and deactivated401.
-Expected8fetch submissions/HTTP responses, independent SQL time/digest/rows/xmin, unchanged session
-idle/last_seen, explicit parent/client exit and bothDB0. Reuse pinned Node tools
-only after full archive/extracted-file and stopped-owner checks, then recheck
-identity after the case. Read-only tools mount/env-i; no new dependency install,
-Rust compilation or browser qualification. Exact Git/product equality required
-before4aELF reuse. Independent static AI review found no concrete blocker. Moved fetch counter before
-await so missing headers cannot hide a client submission; no transport-internal
-packet-count claim. COMMIT-loss and hostile-response cases remain separate. Local plumbing record:
-.research/implementation/export-execution/resume-client-plumbing.json.
+The resume-client lab is stopped-retained: export-runtime-15569cc, owner
+8673756b1b88c9128e362bd02f1060e1. Both owned containers PID0/noOOM, runner0/PG137;
+network removed and both databases have zero backends. All680 prior containers,
+including eight unrelated running, preserve lifecycle/mount/network state.
+Free127914237952→127506673664bytes. No Rust compilation or new build cache.
 
-Browser resume/CLI remain selected. The current session observation supplies
-policy_revision but no config_revision: inspect the owning configuration/session
-contract before choosing how a later UI obtains its required CAS input. Do not
-invent a revision or add technical manual fields merely to unblock the UI.
+Next bounded action: commit15569cc evidence, then commit and run current
+configuration revision observations
+for the P09 resume consumer. The edited lock_dataset checks both authoritative
+heads in the transaction and returns the checked
+PolicySnapshot through issue/inspect/observation. Canonical config_revision and
+generated validators implemented. Local old-validator RED, new17clienttests/
+typecheck/contractcheck,10paneltests/Svelte0errors0warnings,27Rust HTTPtests pass.
+Updated Node fixture explicitly inspects the session, independently checks SQL
+heads1/2 and uses the returned values for new resume bodies. Native NOT_RUN.
+No DDL. Closed old client schemas will reject the added field: backend and private
+bundle must upgrade together; document that pre-release compatibility boundary.
+Do not invent revision1 or add technical manual fields merely to unblock the UI.
+Follow with real session login/inspect and typed resume against PostgreSQL with
+independent head expectations; UI persistence, browser and CLI remain open.
 
 ## Latest native evidence
+
+[15569cc actual TypeScript client](evidence/p08-export-resume-client-native-20260924.json)
+passes8real HTTP responses on Node26.4.0: login201, historical200, stale409,
+new202, retry200, body409, same-session Control5→6 retry200 and deactivated401.
+Paused7/xmin910→queued8/xmin948, one atomic resume detail/command/audit; all
+original rows/xmin retained across12ledgers. Exact receipt8/time survives retry,
+no destination/currentdata.read afterrestart, sessionidle/last_seen/xmin unchanged.
+Parent/client explicitstop0, root free/scratch empty/bothDB0. Cookiejar in memory;
+no browser, hostile response or COMMIT-loss claim. Nodearchive and4654files checked
+before/after, toolsreadonly. Root verified28payloads and1235/1223/1110Git files,
+fullproduct/build equality and4aELF. Capturetar
+60e68d11c2b7f6e6f8adf1aa78172335fe8a95e6bca2d67fc96dbe6700e973d6;
+independent AI hashes/SQL/event/resource review agrees. Commands/
+audit projections are resume-only. Node tool rehash is runner evidence outside
+this capture. Changed-body409 also used stale revision6, so it does not alone
+isolate fingerprint validation from CAS. The next fixture adds old-key conflict
+with otherwise-current paused7/context before acceptance. No source/runtime/
+product mutation during the15569cc experiment.
 
 [0550da3 held resume reply](evidence/p08-export-resume-custody-native-20260924.json)
 passes actual SIGTERM while PostgreSQL completed COMMIT and the proxy withheld
@@ -108,7 +125,7 @@ Actual Rust adapter [016dd6f](evidence/p08-export-resume-adapter-native-20260924
 and SQL [3e41cb7](evidence/p08-export-resume-schema-native-20260924.json) retain
 their separate scope; [9d7bb21 RED](evidence/p08-export-resume-schema-red-20260924.json)
 is the old unreceipted-transition counterexample. Local typed client16tests/typecheck
-pass; new actual TypeScript resume consumer remains NOT_RUN.
+pass; actual TypeScript resume consumer has the scoped15569cc evidence above.
 
 Qualified runtime source4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b:
 parentSHA6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f,

@@ -23607,5 +23607,49 @@
       "source_files": 1232
     },
     "retention": "Preserve original samples/gate, SQL states/receipts, source/tool identities and reused4a3c4ce ELF; no new cache. No resource retirement."
+  },
+  "implementation_export_resume_client_20260924": {
+    "status": "stopped-retained; scoped actual TypeScript resume client PASS",
+    "resources": {
+      "source": "15569cca9fbc055de3652f77b18fd100ef88604b",
+      "tree": "5c9d3431b653686322711c7a0656e9b48a569ba5",
+      "owner": "8673756b1b88c9128e362bd02f1060e1",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-15569cc",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "a01c6e736c6cac8e645fd876170ede1515469b12887b270309bc0270a9343664"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "8a56f2cb50d5bc5fd670aa757b891aac148def071a75d14663644b672070686a"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T17:18:08.739147+00:00",
+      "runtime_profile": "resume-client",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+      "network_id": "3747aba91dc054bd9d6820700f73d89a5af402d2072408ceac862f2c7059d29e",
+      "postgres_id": "a01c6e736c6cac8e645fd876170ede1515469b12887b270309bc0270a9343664",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "8a56f2cb50d5bc5fd670aa757b891aac148def071a75d14663644b672070686a",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-client-native-20260924.json",
+    "capture": {
+      "files": 28,
+      "sha256": "60e68d11c2b7f6e6f8adf1aa78172335fe8a95e6bca2d67fc96dbe6700e973d6",
+      "source": "15569cca9fbc055de3652f77b18fd100ef88604b",
+      "tree": "5c9d3431b653686322711c7a0656e9b48a569ba5",
+      "source_files": 1235
+    },
+    "retention": "Preserve original SQL/session observations, receipts/logs/manifests and reused4a ELF; Node tools remain owned by retainedb6d9d7e and mounted read-only. No new build cache or resource retirement."
   }
 }

@@ -320,7 +320,8 @@ artifact discovery, explicit resume/cancel and their full UI/CLI journeys remain
 selected P08/P09 work. No historical schema checksum changes.
 
 The explicit own-export resume API has [scoped installed HTTP evidence](../implementation/evidence/p08-export-resume-http-native-20260924.json);
-its typed client has local contract checks. They use the same exact-scope `export`
+its [typed client also has installed HTTP evidence](../implementation/evidence/p08-export-resume-client-native-20260924.json)
+on pinned Node; browser controls remain required. They use the same exact-scope `export`
 action as new export submission, separately from `data.read`, `history.read` and
 `private-export`. Generic role control or status visibility cannot authorize it.
 It does not require a new reauthentication proof: this command changes no grant,

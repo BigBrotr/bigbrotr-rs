@@ -1,0 +1,194 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "PASS_SCOPED",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3",
+    "P09-T09 Step 2"
+  ],
+  "source": "15569cca9fbc055de3652f77b18fd100ef88604b",
+  "tree": "5c9d3431b653686322711c7a0656e9b48a569ba5",
+  "runtime_source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+  "scope": "Actual TypeScript management client on pinned Node26.4.0 against installed Control HTTP/PostgreSQL. Native export execution disabled. Loopback Origin and in-memory cookie jar supplied by fixture; no browser or new Rust build.",
+  "environment": {
+    "host": "tux",
+    "target": "Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "node": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-no-preload-b6d9d7e",
+      "owner": "f062862798d1c5a5606e31e87618683e",
+      "archive_sha256": "5c4286dcd5bbd5acb1ccc7eb0e088bd5eb1e3affad671ee9364004f8f6a4a431",
+      "files_verified": 4654,
+      "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94"
+    },
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-15569cc/capture",
+    "files": 28,
+    "sha256": "60e68d11c2b7f6e6f8adf1aa78172335fe8a95e6bca2d67fc96dbe6700e973d6",
+    "source": "15569cca9fbc055de3652f77b18fd100ef88604b",
+    "tree": "5c9d3431b653686322711c7a0656e9b48a569ba5",
+    "source_files": 1235
+  },
+  "artifacts": {
+    "bigbrotr": "6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "results": {
+    "http": [
+      {
+        "case": "login",
+        "status": 201,
+        "client_fetch_submissions": 1
+      },
+      {
+        "case": "historical",
+        "status": 200,
+        "client_fetch_submissions": 1
+      },
+      {
+        "case": "stale-revision",
+        "status": 409,
+        "client_fetch_submissions": 1
+      },
+      {
+        "case": "accepted",
+        "status": 202,
+        "client_fetch_submissions": 1
+      },
+      {
+        "case": "retry",
+        "status": 200,
+        "client_fetch_submissions": 1
+      },
+      {
+        "case": "changed-body",
+        "status": 409,
+        "client_fetch_submissions": 1
+      },
+      {
+        "case": "retry-after-restart",
+        "status": 200,
+        "client_fetch_submissions": 1
+      },
+      {
+        "case": "deactivated-session",
+        "status": 401,
+        "client_fetch_submissions": 1
+      }
+    ],
+    "historical": {
+      "accepted_at_us": "1790270304144731",
+      "authority": "acceptance-only",
+      "command_key": "e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4",
+      "created": false,
+      "execution": "unobserved",
+      "format": "bigbrotr-export-resume/1",
+      "job_id": "6afda9bfac5794dfa4ab71dcbff7707d",
+      "job_revision": "5"
+    },
+    "accepted": {
+      "accepted_at_us": "1790270367301332",
+      "authority": "acceptance-only",
+      "command_key": "f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5",
+      "created": true,
+      "execution": "unobserved",
+      "format": "bigbrotr-export-resume/1",
+      "job_id": "6afda9bfac5794dfa4ab71dcbff7707d",
+      "job_revision": "8"
+    },
+    "committed_receipt": {
+      "action": "job.export.resume",
+      "actor_id": "\\x10101010101010101010101010101010",
+      "audit_id": "\\xc9f0d99ba6ba9defa88b98e42d97da21",
+      "dataset_id": "\\x01010101010101010101010101010101",
+      "request_key": "\\xf5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5",
+      "accepted_at_us": 1790270367301332,
+      "authority_mode": null,
+      "request_digest": "\\xad18eab43e3b0ffd609d97066c02fff8bd6c7dc4d53ded2d4a0283f1dc00b934",
+      "document_digest": null,
+      "policy_revision": 2,
+      "expected_config_revision": 1
+    },
+    "preservation": "All12 observed ledgers retain original rows/xmin except paused7/xmin910 becomes queued8/xmin948 and one new atomic resume detail/common command/audit inxmin948. Independent digest/actor/dataset/key/job/revisions/time/Control5 owner match. Original unit/caps/source bounds/selection/pins/claims and old receipts unchanged. Retry and restart retain receipt8 and accepted_at_us; no new execution or output.",
+    "session": "One real login; same in-memory cookie survives Control5\u21926 restart. Session ID/last_seen/idle expiry/xmin identical before/after six resume requests before account deactivation. No cookie values retained. Historical retry after restart has no destination or current data.read. Deactivated account returns401.",
+    "restarted": {
+      "exit": 0,
+      "parent_absent": true,
+      "lock_available": true,
+      "scratch_empty": true
+    },
+    "server_terminal": {
+      "event": "server-terminal",
+      "operation": "stop",
+      "exit": 0,
+      "parent_absent": true,
+      "lock_available": true,
+      "scratch_empty": true
+    },
+    "backends": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    }
+  },
+  "review": {
+    "root": {
+      "status": "VERIFIED_SCOPED_PASS",
+      "source": "15569cca9fbc055de3652f77b18fd100ef88604b",
+      "runtime_source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+      "counts": {
+        "out/build/source-manifest.json": 1235,
+        "artifact-source-manifest.json": 1110,
+        "runtime-source-manifest.json": 1223
+      },
+      "payloads": 28,
+      "preexisting": 680,
+      "free_before": 127914237952,
+      "free_after": 127506673664,
+      "artifacts": {
+        "bigbrotr": "6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "node": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-no-preload-b6d9d7e",
+        "owner": "f062862798d1c5a5606e31e87618683e",
+        "archive_sha256": "5c4286dcd5bbd5acb1ccc7eb0e088bd5eb1e3affad671ee9364004f8f6a4a431",
+        "files_verified": 4654,
+        "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94"
+      }
+    },
+    "static": "Independent AI found no concrete blocker. Root moved fetch counting before await to include pre-header failures; no transport-internal packet-count claim.",
+    "independent_ai": "Read-only AI independently recalculated tar/28payloads,1235/1223/1110Git identities,460product/build inputs, both ELF, receipt digest, atomic xmin948 and old rows/session944 preservation, eight Node events and680prior resources. Both Control releases/parent0 and bothDB0 agree with logs; runner0/PG137/PID0/noOOM. No concrete discrepancy. Node tools are outside this capture, so before/after4654file verification is recorded runner evidence, not a repeated offline hash of extracted tools."
+  },
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-15569cc",
+    "owner": "8673756b1b88c9128e362bd02f1060e1",
+    "state": "stopped-retained",
+    "all_owned_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "preexisting": 680,
+    "unrelated_running": 8,
+    "free_before": 127914237952,
+    "free_after": 127506673664
+  },
+  "remaining": [
+    "No browser cookie/Origin/CSRF enforcement or UI journey qualification from Node fixture",
+    "No malformed response, pre-header transport failure or COMMIT ambiguity in this profile; separate original evidence owns other scenarios",
+    "No resumed native output in this run; separate30df evidence owns signed completion",
+    "Blocked checker, natural session expiry/lock waits, broader revocation/CAS interleavings, browser/CLI, full selected product and release journeys remain required",
+    "No hosted CI or native arm64 claim",
+    "The12 projections filter management_commands and management_audit to job.export.resume; no global ledger preservation claim. Node tools archive/extracted files are retained outside the current capture.",
+    "changed-body409 also used stale expected revision6. This case alone does not discriminate fingerprint validation from CAS refusal."
+  ]
+}
