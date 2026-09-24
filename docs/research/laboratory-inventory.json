@@ -20005,5 +20005,62 @@
       "capture_sha256": "19d653ecc80cf0360544759db5c8d3d62383268536556afc9fd3af65c70caff5"
     },
     "observation": "All567 prior container lifecycle/mount/network/restart records preserved, eight unrelated running. Owned native container exited1/PID0/noOOM; no dedicated network created; no cleanup errors. Source/cache/artifacts/failed output retained; no retirement yet."
+  },
+  "implementation_export_files_corrected_20260924": {
+    "local_root": ".research/implementation/export-files/attempt-d40b937",
+    "native": {
+      "source": "d40b93739ed48f6b87c06c9911c209844e95730f",
+      "tree": "24c33105558a9c9285f1cee8a64f6c0a98f64771",
+      "owner": "6685f9794eebdf9261342ccdc91bdcf8",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-d40b937",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "native",
+          "id": "72d535e9efd46b6fc74e9761c7a98ddccfd24de11835723a493d5ec90f8a76a6"
+        },
+        {
+          "name": "alias",
+          "id": "e4f16bee3244ccd78dd69aaf98cf65adc9069a2a88065282c9211f3f9caf7c65"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-files",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+      "tracer_sha256": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+      "started_at": "2026-09-24T08:28:55.963969+00:00",
+      "artifact_origin": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11"
+    },
+    "orchestrator": {
+      "pid": 3796513,
+      "start_ticks": "362078958",
+      "source": "d40b93739ed48f6b87c06c9911c209844e95730f",
+      "tree": "24c33105558a9c9285f1cee8a64f6c0a98f64771"
+    },
+    "qualification": {
+      "status": "PASS",
+      "scope": "Filesystem unit only, using the real Rust library and signed frozen fixture. Durable SQL job execution remains unimplemented.",
+      "evidence": "docs/implementation/evidence/p08-export-files-native-20260924.json",
+      "capture_sha256": "5be68d52baba3cb64f4e075ec93ede20af3bf62ca535327aa832c19aef20f8cd"
+    },
+    "artifact_reuse": {
+      "origin": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3",
+      "source": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11",
+      "tree": "4c23c892fe564808a8459c553d54ebe56175e022",
+      "source_manifest_sha256": "a64726bea0db845b637fa890b39cdf535d3c799291d99a8951b354699f50f15e",
+      "artifacts": {
+        "bigbrotr": "be2c704342a984515dee2899b15303b0185756183310566cbbc466835937e302",
+        "export-files-probe": "09ba0fc882eb529ad103388f2d726dccba791fbec0fe2480b4cf480110c6fa85"
+      },
+      "source_delta": [
+        "docs/implementation/evidence/p08-export-files-incomplete-20260924.json",
+        "docs/implementation/progress.md",
+        "docs/research/laboratory-inventory.json",
+        "experiments/export-files/cases.py",
+        "experiments/export-files/lab.py"
+      ],
+      "scope": "Same two ELF, original build/tests retained at origin; no compilation or unit/Clippy rerun. New fixture only."
+    },
+    "observation": "No new Cargo cache or retirement. Existing c685 complete useful cache and4e installed assets/cache remain retained. Both owned containers stopped0/PID0/noOOM; no cleanup errors or dedicated network. Free space after174991237120bytes, subject to concurrent writes."
   }
 }

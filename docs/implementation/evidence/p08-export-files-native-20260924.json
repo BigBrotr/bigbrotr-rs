@@ -1,0 +1,327 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS",
+  "scope": "Filesystem unit only, using the real Rust library and signed frozen fixture. Durable SQL job execution remains unimplemented.",
+  "source": {
+    "files": 185,
+    "sha256": "5be68d52baba3cb64f4e075ec93ede20af3bf62ca535327aa832c19aef20f8cd",
+    "source": "d40b93739ed48f6b87c06c9911c209844e95730f",
+    "tree": "24c33105558a9c9285f1cee8a64f6c0a98f64771",
+    "source_files": 1135
+  },
+  "build_reuse": {
+    "origin": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3",
+    "source": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11",
+    "tree": "4c23c892fe564808a8459c553d54ebe56175e022",
+    "source_manifest_sha256": "a64726bea0db845b637fa890b39cdf535d3c799291d99a8951b354699f50f15e",
+    "artifacts": {
+      "bigbrotr": "be2c704342a984515dee2899b15303b0185756183310566cbbc466835937e302",
+      "export-files-probe": "09ba0fc882eb529ad103388f2d726dccba791fbec0fe2480b4cf480110c6fa85"
+    },
+    "source_delta": [
+      "docs/implementation/evidence/p08-export-files-incomplete-20260924.json",
+      "docs/implementation/progress.md",
+      "docs/research/laboratory-inventory.json",
+      "experiments/export-files/cases.py",
+      "experiments/export-files/lab.py"
+    ],
+    "scope": "Same two ELF, original build/tests retained at origin; no compilation or unit/Clippy rerun. New fixture only."
+  },
+  "original_build_evidence": "p08-export-files-incomplete-20260924.json",
+  "recipes": [
+    "experiments/export-files/lab.py",
+    "experiments/export-files/native.py",
+    "experiments/export-files/cases.py",
+    "experiments/export-files/probe.rs"
+  ],
+  "executed": {
+    "main_records": 14,
+    "main_functional_or_fault_cases": 13,
+    "main_preparation_records": 1,
+    "separate_bind_case": 1,
+    "cases": [
+      {
+        "name": "ordered-sync-and-identical-exchange",
+        "status": "PASS"
+      },
+      {
+        "name": "fsync-eio-1",
+        "status": "PASS"
+      },
+      {
+        "name": "fsync-eio-2",
+        "status": "PASS"
+      },
+      {
+        "name": "fsync-eio-3",
+        "status": "PASS"
+      },
+      {
+        "name": "fsync-eio-4",
+        "status": "PASS"
+      },
+      {
+        "name": "exchange-root-eio-and-cleanup-eio",
+        "status": "PASS"
+      },
+      {
+        "name": "actual-partial-write-and-retry",
+        "status": "PASS"
+      },
+      {
+        "name": "kernel-mount-identity-unavailable",
+        "status": "PASS"
+      },
+      {
+        "name": "cross-process-lock",
+        "status": "PASS"
+      },
+      {
+        "name": "kill-data-sync",
+        "status": "PASS"
+      },
+      {
+        "name": "kill-final-sync",
+        "status": "PASS"
+      },
+      {
+        "name": "kill-exchange-sync",
+        "status": "PASS"
+      },
+      {
+        "name": "actual-tmpfs-enospc-and-retry",
+        "status": "PASS"
+      },
+      {
+        "name": "prepare-bind-alias",
+        "status": "PASS"
+      },
+      {
+        "name": "same-filesystem-bind-alias-preserved",
+        "status": "PASS"
+      }
+    ]
+  },
+  "observations": [
+    "Actual data, manifest, staging-directory and root fsync order surrounds NOREPLACE; identical retry uses fresh inodes and EXCHANGE with fixed staging count. Four individual sync EIO cases and combined exchange/cleanup EIO retain same-unit retry identity.",
+    "Actual RLIMIT_FSIZE=17 leaves a17-byte prefix before successful retry. Cross-process flock rejects a competing writer and permits it after release.",
+    "Corrected command28 injects ENOSYS on every statx and proves an actual STATX_MNT_ID failure before refusal. The original c685 attempt remains INCOMPLETE: its one-shot injection targeted ordinary STATX_ALL only.",
+    "Three actual pidfd SIGKILL cases stop at correlated delayed fsync entry: data, root after NOREPLACE, root after EXCHANGE. Tracer joins, actual child is absent, signal trace and empty stderr checked; a fresh invocation recovers independent exact bytes.",
+    "Actual ENOSPC write on128KiB tmpfs with126976-byte filler fails; removing only owned filler permits complete same-unit retry.",
+    "Actual same-device bind of final directory onto staging has the same inode but different mount identity. Writer refuses before unlink/mkdir/rename/fsync; final bytes/inodes remain unchanged.",
+    "Root and independent read-only AI rehashed the capture, all1135 exact Git source entries and both ELF. All17 captured data/manifest pairs match independent334-byte JSONL and1321-byte manifest. All568 prior stable lifecycle/mount/network/restart records and eight unrelated running workloads remain unchanged."
+  ],
+  "artifact_bytes": {
+    "events.jsonl": {
+      "bytes": 334,
+      "sha256": "2006c3bc3473e92f0bcf8e5b8905bc0784ce18e13b00b31ab095bfb469f0f06f"
+    },
+    "manifest.json": {
+      "bytes": 1321,
+      "sha256": "334fda0aae6e281465132475f20d836e9b2ba89f0c832ccd94fda0d3622eebb1"
+    }
+  },
+  "capture": {
+    "local_root": ".research/implementation/export-files/attempt-d40b937",
+    "sha256": "5be68d52baba3cb64f4e075ec93ede20af3bf62ca535327aa832c19aef20f8cd",
+    "files": 185,
+    "source_files": 1135,
+    "original_terminal_status": "PASS_PENDING_CAPTURE",
+    "verification": "Complete local capture and independent AI review completed; original terminal record preserved."
+  },
+  "resources": {
+    "source": "d40b93739ed48f6b87c06c9911c209844e95730f",
+    "tree": "24c33105558a9c9285f1cee8a64f6c0a98f64771",
+    "owner": "6685f9794eebdf9261342ccdc91bdcf8",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-d40b937",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "native",
+        "id": "72d535e9efd46b6fc74e9761c7a98ddccfd24de11835723a493d5ec90f8a76a6"
+      },
+      {
+        "name": "alias",
+        "id": "e4f16bee3244ccd78dd69aaf98cf65adc9069a2a88065282c9211f3f9caf7c65"
+      }
+    ],
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-files",
+    "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+    "tracer_sha256": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+    "started_at": "2026-09-24T08:28:55.963969+00:00",
+    "artifact_origin": "c685bb36a1fa7d5e32faf19a8407d0e2e7b61c11",
+    "free_bytes_before": 175047004160
+  },
+  "terminal": {
+    "status": "PASS_PENDING_CAPTURE",
+    "source": "d40b93739ed48f6b87c06c9911c209844e95730f",
+    "owner": "6685f9794eebdf9261342ccdc91bdcf8",
+    "result": "PASS",
+    "container_terminals": {
+      "native": {
+        "id": "72d535e9efd46b6fc74e9761c7a98ddccfd24de11835723a493d5ec90f8a76a6",
+        "name": "/bigbrotr-export-files-d40b937-native",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T08:28:56.358324966Z",
+          "FinishedAt": "2026-09-24T08:28:57.169705311Z"
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35/out/strace-exit-fixed",
+            "Destination": "/instrument/strace",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-d40b937/out",
+            "Destination": "/out",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-d40b937/out/build/source",
+            "Destination": "/out/build/source",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          }
+        ],
+        "networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "b2e69b2cd9e7ed698a608f62703a485587f1dfbd2b5e1c67bbfdba07bd2d322a",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        },
+        "restart": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        }
+      },
+      "alias": {
+        "id": "e4f16bee3244ccd78dd69aaf98cf65adc9069a2a88065282c9211f3f9caf7c65",
+        "name": "/bigbrotr-export-files-d40b937-alias",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T08:28:57.6092973Z",
+          "FinishedAt": "2026-09-24T08:28:57.74250154Z"
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35/out/strace-exit-fixed",
+            "Destination": "/instrument/strace",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-d40b937/out",
+            "Destination": "/out",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-d40b937/out/build/source",
+            "Destination": "/out/build/source",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-d40b937/out/cases/bind-alias/10101010101010101010101010101010",
+            "Destination": "/out/cases/bind-alias/.artifact-10101010101010101010101010101010.partial",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          }
+        ],
+        "networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "b2e69b2cd9e7ed698a608f62703a485587f1dfbd2b5e1c67bbfdba07bd2d322a",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        },
+        "restart": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        }
+      }
+    },
+    "preexisting_preserved": true,
+    "preexisting_count": 568,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "original_source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "free_bytes": 174991237120
+  },
+  "limitations": [
+    "No new compilation, unit or Clippy run at d40; original c685 build, one flush test, seven file tests and Clippy records remain in the original report. Both actual ELF hashes and the complete five-file Git delta were checked before reuse.",
+    "Injected EIO is not physical writeback loss. SIGKILL at fsync entry is not power loss or a measured interruption of physical writeback.",
+    "ENOSPC tmpfs bytes were checked in the runner and disappear at container stop; no local rehash of those ephemeral output files. Other retained final/staging bytes are captured.",
+    "Bind case is same final inode on a different mount. A distinct foreign-inode bind was not separately executed.",
+    "No SQL execution/checkpoint, current authorization, native archive observation, automatic Control job, runtime cancellation, publication, packaged installation, mixed workload, RSS, physical quota or Linux arm64 qualification. No task completion inferred.",
+    "No new Cargo cache or retirement. Existing c685 complete useful cache and4e installed assets/cache remain retained. Both owned containers stopped0/PID0/noOOM; no cleanup errors or dedicated network. Free space after174991237120bytes, subject to concurrent writes."
+  ]
+}
