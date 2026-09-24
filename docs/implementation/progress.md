@@ -23,32 +23,51 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Verified HEAD/origin5887369feb1ba8c341b081b418371011f1bc28d9 on main, clean
-after the matrix evidence push. Root now owns resume_browser.mjs, the new skip_trace.mjs diagnostic, terminal
-SQL capture in resume_browser_cases.py and this checkpoint. No product/CSS/dependency change.
-The clean transfer-only188 worktree was removed; historical worktrees unchanged.
+Observed HEAD ba5beff565e587b68605a73f215a475df75e4d98 on main, clean when
+transferred; origin/main 5887369feb1ba8c341b081b418371011f1bc28d9. The candidate
+and its reviewed evidence are ready for one private push. Root owns the evidence,
+P09 task note, inventory and checkpoint changes. Artifact and handoff checks pass;
+a fresh owner-checked census confirms all five diagnostic containers remain stopped.
+No product/CSS/dependency change. Prior188 transfer worktree removed; other
+historical worktrees remain untouched.
 
-The next bounded slice instruments the current WebKit/root production journey.
-It repeats an actual Check job before tracing, records only allowlisted focus
-identity/Tab/Enter events, no input values, plus scroll/rect/style and frame samples.
-Three independent outcomes: eight reverse Tabs from actual post-lookup focus,
-then from a verified centered Job ID with and without a full-page capture. Never
-focus the skip link; preserve each failed outcome before proceeding. Visible
-keyboard target, Enter to #session, Tab to Sign out remain mandatory. All trials
-must pass before this extended fixture can return PASS. Raw trace is atomically replaced between observations, preserving the prior complete
-JSON during interruption (no power-loss claim). Syntax/diff checks pass. Read-only
-AI found native history.replaceState would desynchronize Kit current.url and fake
-a later Enter failure; root confirmed exact Kit2.70.3 client.js2720-2950 SHA
- a2e26ea4f6b2668c396af9b44bbda2047640c2c9cbb81d3660ec4b1e3310a2c3.
-The fixture now uses actual same-document goBack, verifies observed popstate,
-null navigation response, surviving document marker and the original URL. Both
-controlled starts require actual document focus and a measured centered input.
-Root applied the review's tmp+rename and measured-start corrections; added monotonic
-times and explicitly capture-phase defaultPrevented. Caller/capture/150s host bound
-were reviewed; fresh full SQL/session observations are also captured when a
-browser diagnostic ends before the next host command. Native execution NOT_RUN. Next action: commit the reviewed diagnostic,
-run only WebKit/root on exact73e ELF in a fresh inventoried lab, collect all three
-trial outcomes even if the original path fails. No CSS change from screenshots.
+[Native WebKit/root trace](evidence/p09-skip-link-trace-incomplete-20260924.json)
+is stopped-retained at export-runtime-ba5beff-webkit-root,
+owner0cbc4054ff6c8ea35ceb06d20e4846e8. No active lab. Root verified96payloads,
+1253/1246/1110Git files, exact73e ELF/bundles and actual terminal12ledgers/session
+idle preservation. Capturetar94c9a82f4bb0cb12c7e965996d9a3274291fe1c1c8d2bc61cc32b288db7f7f58.
+All five owned containers PID0/noOOM, network removed, bothDB0,723prior/eight
+unrelated running preserved; free122698444800→122124992512 before capture.
+Runner143/browser1/PG137 reflect failure cleanup; no successful Control release
+was recorded. Preserve original SQL/trace/PNG/source and current73e/4e/b6 inputs.
+
+Outcome INCOMPLETE, not a passed accessibility or full recovery journey. All8real
+ShiftTab pairs leave the same enabled Check job focused, documentFocused=true;
+no focus changes during about121ms. Both verified centered Job ID trials pass
+input→Refresh→Sign out→skip in3reverseTabs, with and without full-page screenshot,
+then visible Enter#session/TabSignout.69samples and all3trial outcomes retained;
+3actual PNG reviewed. Full-page overlay coexists with identical unfocused
+above-viewport geometry; no CSS defect established. Whole terminalSQL equals
+accepted queued8; session idle rows equal before-retry. Only first2browsersteps
+completed, third partial; restart/revocation/forget not reached. Matrix188 remains
+its separate scoped recovery qualification and old8743 stays INCOMPLETE.
+
+Read-only AI confirms the trace. Internal WebKit hit-test/focus-start behavior is
+a hypothesis, not an observed node. Current first8keys are fast; elapsed-time
+recovery and capture effects specific to button focus are not excluded. Next action:
+finish this evidence/checkpoint commit and private push; then preserve UNREACHED8,
+add passive500ms+one key before refocusing, compare actual pointer lookup without
+screenshot against keyboard Enter on the same button/GET without refocus after
+response, recording disabled mutations. Padding-outside-text follows only if
+pointer and keyboard diverge. No product/CSS change justified yet.
+
+The diagnostic uses atomic tmp+rename snapshots (no fsync/power-loss claim).
+Root corrected the review's Kit2.70.3 native-replaceState router mismatch before
+execution: actual same-document goBack, observed popstate, null response and
+surviving marker/original URL now pass in the native trace. Reviewed Kit client.js
+2720-2950 SHA a2e26ea4f6b2668c396af9b44bbda2047640c2c9cbb81d3660ec4b1e3310a2c3.
+Only allowlisted focus identities/keys and geometry enter the trace, no input
+values. Capture-phase defaultPrevented does not establish the final default action.
 
 [The remaining resume matrix](evidence/p09-resume-browser-matrix-native-20260924.json)
 passes Firefox/root, Firefox/control, WebKit/root, WebKit/control and Chromium/control
@@ -66,25 +85,14 @@ and orchestrator identities. 25 owned containers PID0/noOOM, five networks remov
 all prior containers/eight unrelated running workloads preserved per run. No new
 Rust compiler caches. Latest completed free122744524800bytes; fresh final census after captures
 finds122733789184bytes and the same25 stopped/eight unrelated running containers.
-No lab active.
+That census preceded the new diagnostic above.
 Current73e cache/ELF and separately owned4e/b6 inputs remain protected. Root and
 read-only AI independently verified the complete five captures without discrepancy.
 Retry200 body equality and some final no-idle checks are executed assertions;
 those complete raw replies/snapshots are not retained for offline reconstruction.
 Artifact/link/handoff checks pass and historical inventory entries are unchanged.
-The matrix is committed/pushed; keyboard trace preparation now continues above.
+The matrix is committed/pushed; the keyboard trace ended as recorded above.
 No product tests or SSH by the independent reviewer.
-
-Read-only catalog_guard_review found the old skip-link boxes remain above the
-viewport while full-page capture uses different coordinates. The old ShiftTab
-loop starts from unrecorded focus after lookup disabled its button; this is a
-hypothesis for a discriminating trace, not a CSS diagnosis. Current UI adds resume
-tab stops, so an A/B on this build cannot reconstruct8743 retrospectively. Preserve
-its INCOMPLETE status. Trace keyboard focus/scroll/rect with and without full-page
-capture from the actual post-lookup state and a verified Job ID focus. Keep the
-original eight reverse Tabs and each result; never focus the skip link directly.
-Check keyboard reachability/visible bounds, Enter to #session and Tab to Sign out.
-No old lab restart or product/CSS change is justified before this observation.
 
 Tuxdd17842 is stopped-retained, owner ff09631fb1f63b8b5fb0f62aefd95214;
 seven owned containers PID0/noOOM, network removed, bothDB0 and691prior/eight

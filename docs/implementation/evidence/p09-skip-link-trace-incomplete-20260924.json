@@ -1,0 +1,249 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "INCOMPLETE",
+  "date": "2026-09-24",
+  "tasks": [
+    "P09-T09 Step 2",
+    "P08-T03 Step 3"
+  ],
+  "source": "ba5beff565e587b68605a73f215a475df75e4d98",
+  "tree": "2b56dd102be81c5a83b0b7a9415e84bc3bac85c5",
+  "runtime_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+  "scope": "Current production WebKit/root skip-link diagnostic after a real job lookup. First8reverseTabs remain on Check job; two independently controlled input starts pass. No product/CSS change or full accessibility qualification.",
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-ba5beff-webkit-root/capture",
+    "files": 96,
+    "sha256": "94c9a82f4bb0cb12c7e965996d9a3274291fe1c1c8d2bc61cc32b288db7f7f58",
+    "source": "ba5beff565e587b68605a73f215a475df75e4d98",
+    "tree": "2b56dd102be81c5a83b0b7a9415e84bc3bac85c5",
+    "source_files": 1253
+  },
+  "review": {
+    "status": "VERIFIED_DIAGNOSTIC_FAILURE",
+    "source": "ba5beff565e587b68605a73f215a475df75e4d98",
+    "runtime_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+    "counts": {
+      "out/build/source-manifest.json": 1253,
+      "artifact-source-manifest.json": 1110,
+      "runtime-source-manifest.json": 1246
+    },
+    "payloads": 96,
+    "trials": [
+      {
+        "name": "post-lookup",
+        "reverseTabs": 8,
+        "status": "UNREACHED",
+        "focused": false
+      },
+      {
+        "name": "known-input-without-full-page",
+        "reverseTabs": 3,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      },
+      {
+        "name": "known-input-with-full-page",
+        "reverseTabs": 3,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      }
+    ],
+    "samples": 69,
+    "trace_sha256": "0eb8c430809a74f91bc1c28c02bec8c40a38dbd4a7a5e967935584b497096dec",
+    "free_before": 122698444800,
+    "free_after": 122124992512,
+    "preexisting": 723,
+    "sql_terminal_equals_accepted": true,
+    "idle_terminal_equals_before_retry": true,
+    "receipt": {
+      "accepted_at_us": "1790278110732009",
+      "authority": "acceptance-only",
+      "command_key": "827803aef9167fa66804626aaba227c0",
+      "created": true,
+      "execution": "unobserved",
+      "format": "bigbrotr-export-resume/1",
+      "job_id": "15f047a1e88029b7239291286a0e2df0",
+      "job_revision": "8"
+    }
+  },
+  "environment": {
+    "platform": "Tux native Linux amd64",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "browser_version": "26.6",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94",
+    "pnpm_sha256": "98e6b99a881d64a1cc982c3e60aa260bf02160386b12e74475e06486dc74b090"
+  },
+  "results": {
+    "trace_status": "FAIL",
+    "trials": [
+      {
+        "name": "post-lookup",
+        "reverseTabs": 8,
+        "status": "UNREACHED",
+        "focused": false
+      },
+      {
+        "name": "known-input-without-full-page",
+        "reverseTabs": 3,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      },
+      {
+        "name": "known-input-with-full-page",
+        "reverseTabs": 3,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      }
+    ],
+    "unfocused_above_viewport_before_and_after_capture": true,
+    "post_lookup": {
+      "active": "check-job",
+      "tab_index": 0,
+      "disabled": false,
+      "document_focused": true,
+      "reverse_key_pairs": 8,
+      "focus_changes_between_keys": 0,
+      "scroll": {
+        "x": 0,
+        "y": 1067
+      },
+      "skip_top": -86.8125,
+      "skip_bottom": -38.015625,
+      "first_keydown_monotonic_ms": 1793,
+      "last_frame_monotonic_ms": 1914,
+      "sampled_interval_ms": 121
+    },
+    "controlled_starts": {
+      "same_observed_focus_scroll_input_and_skip_boxes": true,
+      "scroll": {
+        "x": 0,
+        "y": 945
+      },
+      "input_top": 380.859375,
+      "input_bottom": 430.03125,
+      "reverse_path": [
+        "job-id",
+        "refresh-session",
+        "sign-out",
+        "skip"
+      ],
+      "enter_hash": "#session",
+      "next_tab": "sign-out",
+      "same_document_back_popstate_observed": true
+    },
+    "browser_completed_steps": [
+      {
+        "name": "installed-bundle-session-and-paused-job",
+        "status": "PASS",
+        "milliseconds": 2310.732936
+      },
+      {
+        "name": "persist-original-request-before-real-acceptance-withheld-reply",
+        "status": "PASS",
+        "milliseconds": 1068.279136
+      }
+    ],
+    "browser_failure": {
+      "stage": "reload-restores-without-dispatch-and-explicit-retry-resolves-original",
+      "kind": "AssertionError",
+      "location": {
+        "line": 149,
+        "column": 12
+      }
+    },
+    "host_commands": [
+      "alice-login",
+      "before-loss",
+      "accepted",
+      "before-retry",
+      "after-retry"
+    ],
+    "sql": {
+      "tables": 12,
+      "prepared_audits": 12,
+      "post_login_audits": 13,
+      "post_resume_audits": 14,
+      "terminal_equals_accepted": true,
+      "terminal_idle_equals_before_retry": true,
+      "job_revision": "8",
+      "old_rows_and_original_retention_preserved": true
+    }
+  },
+  "cleanup": {
+    "state": "stopped-retained",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-ba5beff-webkit-root",
+    "owner": "0cbc4054ff6c8ea35ceb06d20e4846e8",
+    "network": "removed after owner/no-endpoint audit",
+    "exit_codes": {
+      "frontend": 0,
+      "resume-store-webkit": 0,
+      "resume-webkit-root": 1,
+      "postgres": 137,
+      "rust-visibility": 143
+    },
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "prior_containers": 723,
+    "unrelated_running": 8
+  },
+  "visual_review": [
+    {
+      "path": "out/browser-cases/resume-webkit-root/skip-before-viewport.png",
+      "sha256": "2b41093907807ae96693cd99343f52de7f6708cced617473d03802da72fc9234"
+    },
+    {
+      "path": "out/browser-cases/resume-webkit-root/skip-before-full.png",
+      "sha256": "52a038c255496941fa971d06db02d81dff316b75c3f157d4021aa20b168005d4"
+    },
+    {
+      "path": "out/browser-cases/resume-webkit-root/skip-known-input-with-full-page-focused.png",
+      "sha256": "aa35117b46117b5a491f8c6c5c9e989d81849010df4d478c7c66b6bb0a99c782"
+    }
+  ],
+  "limitations": [
+    "This current-build failure is preserved; controlled-start success does not turn the post-lookup failure or the full7step browser journey into PASS. Restart/revocation/forget steps were not reached.",
+    "The first8key events actually remain on the same enabled button; this is not evidence that a ninth ordinary tab stop was merely needed. The internal browser focus-navigation starting node is unobserved.",
+    "Capture-phase defaultPrevented=false does not establish the final default action after other listeners. Event timing and next-frame samples are observations, not continuous focus/engine instrumentation.",
+    "The old8743 capture has no initial/intermediate focus trace; the current resume UI has additional controls, so this run cannot retrospectively reconstruct that old failure.",
+    "The actual viewport screenshot has no unfocused skip badge. Full-page capture includes it despite identical above-viewport geometry before/after; this alone is not a product CSS defect. Focused link is visible in its recorded viewport.",
+    "The standalone diagnostic saved one original receipt202 and observed retry200. Whole terminalSQL equals accepted state and session idle rows equal the pre-retry boundary. It does not qualify resumed output or COMMIT loss.",
+    "Failure cleanup stopped all owned containers and left both databases without application backends. No explicit successful Control release is recorded: ready.stdout contains the initial observation only; runner143/browser1/PG137 are retained, not graceful-shutdown evidence.",
+    "Tmp+rename preserves the last complete trace across a later process interruption; fsync/power-loss durability of research evidence was not exercised.",
+    "The8attempts span about121ms. There is no passive delayed counterpart before refocusing, so the trace does not prove a permanent trap or that focus reset rather than elapsed time caused recovery.",
+    "The failed button-start trial follows full-page capture; the successful with/without-capture pair starts from the input. A capture effect specific to button focus remains possible."
+  ],
+  "next_action": "Preserve UNREACHED8 and add a passive500ms delayed key before any refocus; compare actual pointer lookup without screenshot and keyboard Enter on the same Check job/GET without refocusing after response. Record disabled mutations. If pointer and keyboard differ, test verified padding outside text. No causal CSS/engine attribution yet.",
+  "independent_review": "Root recomputed all96payloads,1253/1246/1110Git source files, ELF/bundles, full atomic resume and terminal SQL/session preservation. Read-only AI separately inspected the entire focus trace and confirmed initial8unchanged-button events and both3Tab successes; causal upstream hypotheses remain under investigation. No product tests or SSH by that reviewer. The reviewer also read the locked WebKit focus-start/hit-test paths; the internal node remains unobserved, and neither button-specific capture effects nor time-dependent recovery is excluded.",
+  "artifacts": {
+    "bigbrotr": "a3bb9bd6f7b3a7e6140c72f133401c65571e401b6e1eaec424e520b668b2e96c",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  }
+}

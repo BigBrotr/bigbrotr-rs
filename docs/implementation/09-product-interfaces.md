@@ -215,6 +215,13 @@ mobile captures and independently reconstructed the complete ledgers and artifac
 Accessibility, natural expiry, blocked resume authorization, creation, cancel,
 discovery and downloads still gate the full step; no task checkbox is completed.
 
+The [current WebKit keyboard trace](evidence/p09-skip-link-trace-incomplete-20260924.json)
+remains INCOMPLETE: eight reverse Tabs after pointer lookup stay on the enabled
+Check job button, while controlled Job ID starts reach the visible skip link.
+All trial outcomes remain recorded. Delayed recovery, button-specific capture
+effects and pointer/keyboard differences require a discriminating probe before
+changing CSS or attributing an engine defect.
+
 - [ ] **Step 3:** implement typed queries/saved private views plus explicit export, storage/headroom and maintenance pages. Show measured rates/windows and unknown forecast, no unmeasured capacity promise. Explain current/historical policy and full/projection differences before download.
 
 Saved-view persistence uses P08-T03's owner-scoped CAS routes. Storage exposes optional content/provenance/index readiness, cost, rebuild/retire jobs and affected capability; index removal is not removal of the full archival evidence. Exercise rebuild failure with the old complete generation still readable, then successful replacement and eventual retirement after pins release.

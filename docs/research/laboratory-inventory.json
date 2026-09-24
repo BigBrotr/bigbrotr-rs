@@ -24210,5 +24210,70 @@
       "unrelated_running": 8,
       "free_bytes": 122733789184
     }
+  },
+  "implementation_skip_trace_20260924": {
+    "status": "stopped-retained; INCOMPLETE: native post-lookup keyboard trace fails, both controlled input starts pass",
+    "resources": {
+      "source": "ba5beff565e587b68605a73f215a475df75e4d98",
+      "tree": "2b56dd102be81c5a83b0b7a9415e84bc3bac85c5",
+      "owner": "0cbc4054ff6c8ea35ceb06d20e4846e8",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-ba5beff-webkit-root",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "frontend",
+          "id": "7c8ee5fcf636200bf2e0e453457907c66fae48e85b487895cb3af0bf7e0e31be"
+        },
+        {
+          "name": "postgres",
+          "id": "6aada392d21ac41920ad7841349956d22ddcea5899fcaacd5f3be7811369b581"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "85a52d5984240ed3b79e9aafe3215f12fac814961da5272a4237194b45ef636d"
+        },
+        {
+          "name": "resume-store-webkit",
+          "id": "815a539ea795957962bcd745a6042a93d89b0f6d84cfa1dd4609340e51d61264"
+        },
+        {
+          "name": "resume-webkit-root",
+          "id": "e84bf8b6512726eb326878218fa4919e6ba6da557465799807b935c5b21bcd88"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T19:26:49.577433+00:00",
+      "runtime_profile": "resume-browser",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "resume_browser_pair": "webkit-root",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "network_id": "f574825193abb5816fe93609f8ee10aadf206ba7f49211737eb049a2367f821c",
+      "postgres_id": "6aada392d21ac41920ad7841349956d22ddcea5899fcaacd5f3be7811369b581",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "85a52d5984240ed3b79e9aafe3215f12fac814961da5272a4237194b45ef636d",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "orchestrator": {
+      "pid": 312576,
+      "start_ticks": "366026317",
+      "source": "ba5beff565e587b68605a73f215a475df75e4d98",
+      "tree": "2b56dd102be81c5a83b0b7a9415e84bc3bac85c5"
+    },
+    "retention": "Retain all prior matrix captures, current73e compiler/ELF and separate4e/b6 inputs. New run has no Rust compiler cache. Preserve diagnostic trials and SQL observations even on failure.",
+    "evidence": "docs/implementation/evidence/p09-skip-link-trace-incomplete-20260924.json",
+    "capture": {
+      "path": ".research/implementation/export-execution/attempt-ba5beff-webkit-root/capture",
+      "files": 96,
+      "sha256": "94c9a82f4bb0cb12c7e965996d9a3274291fe1c1c8d2bc61cc32b288db7f7f58",
+      "source": "ba5beff565e587b68605a73f215a475df75e4d98",
+      "tree": "2b56dd102be81c5a83b0b7a9415e84bc3bac85c5",
+      "source_files": 1253
+    }
   }
 }
