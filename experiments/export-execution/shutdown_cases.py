@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Actual SIGTERM while a positively identified policy poll waits on PostgreSQL."""
 import json
+import hashlib
 import time
 from signed_publication_cases import Process, event, send
 
@@ -18,10 +19,16 @@ def run(root, state, sql):
             assert time.monotonic()<end, 'bounded observation deadline'
             time.sleep(.02)
     try:
-        for name,delay in [('released-before-deadline',.3),('held-past-deadline',6)]:
+        for name,delay in [('released-before-deadline',.3),('held-past-deadline',6),('private-released-before-deadline',.6)]:
             observed=result['cases'][name]={};save()
             client=holder=None
             try:
+                if name.startswith('private-'):
+                    policy=json.loads(sql(db,'SELECT document FROM control.policy_revisions WHERE revision=2'))
+                    policy['settings']['administration.enabled']=True
+                    document=json.dumps(policy,sort_keys=True,separators=(',',':'))
+                    digest=hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+                    sql(db,f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT 3,dataset_id,2,config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=2; UPDATE control.datasets SET policy_revision=3; COMMIT;")
                 client=Process(['docker','exec','-i',state['container_id'],'python3','-B','/out/build/source/experiments/export-execution/shutdown_client.py',name],input_pipe=True)
                 observed['ready']=event(client,'ready');save()
                 backend=json.loads(sql(db,"SELECT json_build_object('pid',pid,'backend_start',backend_start) FROM pg_stat_activity WHERE usename='bigbrotr_control' AND datname=current_database()"))
@@ -41,12 +48,15 @@ def run(root, state, sql):
                 send(holder,'ROLLBACK;\n\\q\n');assert holder.wait(5)==0;holder.stop();holder=None
                 observed['held_after_signal_seconds']=time.monotonic()-started
                 observed['terminal']=event(client,'terminal',timeout=10)
+                if name.startswith('private-'):
+                    observed['admission']=event(client,'admission')
+                    assert observed['admission']==dict(event='admission',parent_running=True,closed=True)
                 assert client.wait(5)==0 and not client.stderr and not client.overflow
                 observed['owners']=json.loads(sql(db,"SELECT json_agg(json_build_object('epoch',epoch::text,'state',state) ORDER BY epoch) FROM control.owner_epochs WHERE role='control'"))
                 observed['backends']={database:int(sql(database,"SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()")) for database in [db,'bbpub_normal']}
                 terminal=observed['terminal']
                 safe=all(terminal[k] for k in ['parent_absent','lock_available','scratch_empty']) and not any(observed['backends'].values()) and terminal['elapsed_seconds']<8
-                if name=='released-before-deadline':
+                if name.endswith('released-before-deadline'):
                     expected=safe and not observed['early_terminal'] and terminal['exit']==0 and not terminal['stderr'] and json.loads(terminal['stdout'].splitlines()[-1]).get('release')=='committed' and observed['owners'][-1]['state']=='released'
                 else:
                     expected=safe and observed['early_terminal'] and terminal['exit']!=0 and len(terminal['stdout'].splitlines())==1 and observed['owners'][-1]['state']=='active'

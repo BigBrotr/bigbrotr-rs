@@ -335,6 +335,16 @@ Control cases are qualified within that report's scope. Maximum-load, complete
 service recovery and broader authority acceptance remain open; these scoped runs
 do not complete the task.
 
+P01-T05 Steps5/6 and P01-T06 Step4 also own the idle policy-poll shutdown
+correction. A [native negative](evidence/p01-control-poll-shutdown-red-20260924.json)
+positively blocks the current Control poll, then signals before a short unlock:
+the original process abandons the operation and cannot report graceful release.
+The candidate drains only that same idle operation within its original deadline,
+closes private admission immediately and enters shutdown directly. The additive
+`--runtime-shutdown` profile also holds the database beyond deadline and checks
+private admission while the parent remains blocked. Native corrected evidence is
+pending; keep broader native-work/mutating-command cancellation separate.
+
 ## P01-T07 — Same-process and remote component adapters
 
 **Depends on:** P01-T02/T05/T06. **Files:** `contracts/rpc/v1/*.proto`,

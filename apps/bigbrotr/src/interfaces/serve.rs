@@ -593,7 +593,28 @@ async fn supervise(
             _ = stop.requested() => return Ok(()),
             // Renewal wins a continuously ready queue. HTTP cannot starve it.
             _ = tokio::time::sleep_until(refresh_due) => {
-                let current = refresh_authority(&mut owner, &mut lease, &mut renewed, dataset, root, stop).await?;
+                let current = {
+                    let started = Cell::new(false);
+                    let renew = renewed.elapsed() >= heartbeat;
+                    let refresh = async {
+                        started.set(true);
+                        collect_refresh(&mut owner, &mut lease, &mut renewed, dataset, root, renew).await
+                    };
+                    tokio::pin!(refresh);
+                    tokio::select! {
+                        biased;
+                        _ = stop.requested() => {
+                            if let Some(management) = &management { management.stop_admission(); }
+                            // Keep the same admitted operation and its original
+                            // deadline. Dropping it would poison an otherwise
+                            // healthy Control session. Never resume dispatch or
+                            // renew delivery after consuming this stop signal.
+                            if started.get() { refresh.await?; }
+                            return Ok(());
+                        },
+                        result = &mut refresh => result?,
+                    }
+                };
                 if current != snapshot {
                     return Err((4,"accepted policy changed; private runtime restart required".into()));
                 }
@@ -769,13 +790,30 @@ async fn refresh_authority(
     root: &Resolved,
     stop: &mut Stop,
 ) -> Result<PolicySnapshot> {
+    let renew = renewed.elapsed() >= duration(root, "heartbeat_interval");
+    tokio::select! {
+        biased;
+        _ = stop.requested() => Err(owner_error(if renew { OwnerError::CommitUnknown } else { OwnerError::Unavailable })),
+        result = collect_refresh(owner, lease, renewed, dataset, root, renew) => result,
+    }
+}
+
+/// Collect one policy operation without resetting its request-start authority
+/// or timeout. Callers choose cancellation; only the idle loop drains on stop.
+async fn collect_refresh(
+    owner: &mut ControlSession,
+    lease: &mut PolicyLeaseTracker,
+    renewed: &mut Instant,
+    dataset: DatasetId,
+    root: &Resolved,
+    renew: bool,
+) -> Result<PolicySnapshot> {
     // A paused process cannot revive its old lease before checking expiry. This
     // same path supervises bounded startup pages and the subsequent idle loop.
     lease
         .check_delivery(lease.known_epoch())
         .map_err(|e| (1, e.to_string()))?;
     let ticket = lease.begin_refresh().map_err(|e| (1, e.to_string()))?;
-    let renew = renewed.elapsed() >= duration(root, "heartbeat_interval");
     let refresh_started = Instant::now();
     let validate = |document: &str, digest| validate_policy(root, document, digest);
     let operation = async {
@@ -786,12 +824,18 @@ async fn refresh_authority(
         }
     };
     let ttl = duration(root, "authorization_ttl");
-    let snapshot = tokio::select! {
-        biased;
-        _ = stop.requested() => Err(if renew { OwnerError::CommitUnknown } else { OwnerError::Unavailable }),
-        result = tokio::time::timeout(duration(root, "renewal_timeout").min(lease.remaining_validity().map_err(|e| (1, e.to_string()))?), operation) =>
-            result.unwrap_or(Err(if renew { OwnerError::CommitUnknown } else { OwnerError::Backend })),
-    }.map_err(owner_error)?;
+    let snapshot = tokio::time::timeout(
+        duration(root, "renewal_timeout")
+            .min(lease.remaining_validity().map_err(|e| (1, e.to_string()))?),
+        operation,
+    )
+    .await
+    .unwrap_or(Err(if renew {
+        OwnerError::CommitUnknown
+    } else {
+        OwnerError::Backend
+    }))
+    .map_err(owner_error)?;
     lease
         .complete_refresh(
             &ticket,

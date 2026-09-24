@@ -1,0 +1,178 @@
+{
+  "status": "FAIL",
+  "claim": "Deterministic idle policy poll stop abandons a healthy short operation",
+  "source": "3def25ee0c1e73e7597343ce4708e169fe920680",
+  "tree": "92bee116109fcf8c6ea2cac8d47465dd9db878b8",
+  "runtime_artifact_source": "f660ab8eba028a0f874faeb33c47ca0938b1ca5a",
+  "artifacts": {
+    "bigbrotr": "757c976509d8676d7f8931394af3498e9b811b23deacad91acab1104a96c8a04",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-3def25e/capture",
+    "files": 32,
+    "sha256": "fa1401f955ddbdaa8e1329e8d9fb2f5e798878205823bdda80eb7433b7794e21"
+  },
+  "cases": {
+    "released-before-deadline": {
+      "ready": {
+        "event": "ready",
+        "owner": {
+          "archive_intents": {
+            "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+            "issued_through": "4",
+            "observed_through": "4",
+            "pages": 1,
+            "publication_authority": "not-granted",
+            "resolution": "not-performed",
+            "state": "observed"
+          },
+          "authority_scope": "Control custody; each private action and export independently reauthorized",
+          "config_revision": "1",
+          "dataset_id": "01010101010101010101010101010101",
+          "export_execution": "selected-under-qualification",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [],
+          "native_stores": [],
+          "owner_epoch": "3",
+          "owner_resource_id": "17b27d4d4071cfc8bb25ae873c0c771c",
+          "policy_revision": "2",
+          "process_incarnation": "5d001cd005c5fa1cdf594cfd8f3e2768",
+          "role": "control",
+          "state": "idle"
+        },
+        "parent_pid": 1401
+      },
+      "holder": {
+        "event": "locked",
+        "pid": 334
+      },
+      "waiter": {
+        "pid": 320,
+        "query": "SELECT substring(dataset_id FROM 1 FOR 17), substring(instance_id FROM 1 FOR 17) FROM control.datasets LIMIT 2 FOR UPDATE",
+        "backend_start": "2026-09-24T14:39:31.591224+00:00",
+        "wait_event_type": "Lock"
+      },
+      "early_terminal": false,
+      "held_after_signal_seconds": 0.3204114241525531,
+      "terminal": {
+        "event": "terminal",
+        "exit": 4,
+        "elapsed_seconds": 0.31498410878703,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true,
+        "stdout": "{\"archive_intents\":{\"catalog_id\":\"5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a\",\"issued_through\":\"4\",\"observed_through\":\"4\",\"pages\":1,\"publication_authority\":\"not-granted\",\"resolution\":\"not-performed\",\"state\":\"observed\"},\"authority_scope\":\"Control custody; each private action and export independently reauthorized\",\"config_revision\":\"1\",\"dataset_id\":\"01010101010101010101010101010101\",\"export_execution\":\"selected-under-qualification\",\"format\":\"bigbrotr-control-runtime/1\",\"listeners\":[],\"native_stores\":[],\"owner_epoch\":\"3\",\"owner_resource_id\":\"17b27d4d4071cfc8bb25ae873c0c771c\",\"policy_revision\":\"2\",\"process_incarnation\":\"5d001cd005c5fa1cdf594cfd8f3e2768\",\"role\":\"control\",\"state\":\"idle\"}\n",
+        "stderr": "error: Control backend operation failed: Unavailable\n"
+      },
+      "owners": [
+        {
+          "epoch": "1",
+          "state": "released"
+        },
+        {
+          "epoch": "2",
+          "state": "released"
+        },
+        {
+          "epoch": "3",
+          "state": "active"
+        }
+      ],
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "status": "FAIL"
+    },
+    "held-past-deadline": {
+      "ready": {
+        "event": "ready",
+        "owner": {
+          "archive_intents": {
+            "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+            "issued_through": "4",
+            "observed_through": "4",
+            "pages": 1,
+            "publication_authority": "not-granted",
+            "resolution": "not-performed",
+            "state": "observed"
+          },
+          "authority_scope": "Control custody; each private action and export independently reauthorized",
+          "config_revision": "1",
+          "dataset_id": "01010101010101010101010101010101",
+          "export_execution": "selected-under-qualification",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [],
+          "native_stores": [],
+          "owner_epoch": "4",
+          "owner_resource_id": "17b27d4d4071cfc8bb25ae873c0c771c",
+          "policy_revision": "2",
+          "process_incarnation": "b9dc063583d37b47169a3b43700b3e78",
+          "role": "control",
+          "state": "idle"
+        },
+        "parent_pid": 1409
+      },
+      "holder": {
+        "event": "locked",
+        "pid": 523
+      },
+      "waiter": {
+        "pid": 509,
+        "query": "SELECT substring(dataset_id FROM 1 FOR 17), substring(instance_id FROM 1 FOR 17) FROM control.datasets LIMIT 2 FOR UPDATE",
+        "backend_start": "2026-09-24T14:39:34.943751+00:00",
+        "wait_event_type": "Lock"
+      },
+      "early_terminal": true,
+      "held_after_signal_seconds": 6.020569530315697,
+      "terminal": {
+        "event": "terminal",
+        "exit": 4,
+        "elapsed_seconds": 2.0239768559113145,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true,
+        "stdout": "{\"archive_intents\":{\"catalog_id\":\"5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a\",\"issued_through\":\"4\",\"observed_through\":\"4\",\"pages\":1,\"publication_authority\":\"not-granted\",\"resolution\":\"not-performed\",\"state\":\"observed\"},\"authority_scope\":\"Control custody; each private action and export independently reauthorized\",\"config_revision\":\"1\",\"dataset_id\":\"01010101010101010101010101010101\",\"export_execution\":\"selected-under-qualification\",\"format\":\"bigbrotr-control-runtime/1\",\"listeners\":[],\"native_stores\":[],\"owner_epoch\":\"4\",\"owner_resource_id\":\"17b27d4d4071cfc8bb25ae873c0c771c\",\"policy_revision\":\"2\",\"process_incarnation\":\"b9dc063583d37b47169a3b43700b3e78\",\"role\":\"control\",\"state\":\"idle\"}\n",
+        "stderr": "error: Control backend operation failed: Unavailable\n"
+      },
+      "owners": [
+        {
+          "epoch": "1",
+          "state": "released"
+        },
+        {
+          "epoch": "2",
+          "state": "released"
+        },
+        {
+          "epoch": "3",
+          "state": "released"
+        },
+        {
+          "epoch": "4",
+          "state": "active"
+        }
+      ],
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "status": "PASS"
+    }
+  },
+  "scope": "Actual installed Control/SIGTERM/PostgreSQL row lock, headless, no simulated database response. Short release should allow same-operation drain and graceful release. Long hold must remain bounded fail-stop. This independently reproduces the source race; original cc8 cause remains unproven.",
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3def25e",
+    "owner": "e33a0538fda5d4427dbb46decc131ff0",
+    "state": "stopped-retained",
+    "prior_preserved": 639,
+    "unrelated_running": 8,
+    "free_before": 134366322688,
+    "free_after": 133969047552
+  },
+  "exclusions": [
+    "No private listener admission probe in this original RED.",
+    "No heartbeat-renewal COMMIT ambiguity or native worker shutdown qualification."
+  ]
+}

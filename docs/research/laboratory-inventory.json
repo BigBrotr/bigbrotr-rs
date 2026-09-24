@@ -22876,5 +22876,42 @@
       }
     },
     "evidence": "docs/implementation/evidence/p09-export-status-shutdown-incomplete-20260924.json"
+  },
+  "implementation_control_poll_shutdown_red_20260924": {
+    "status": "FAIL; deterministic short-poll stop regression; stopped-retained",
+    "resources": {
+      "source": "3def25ee0c1e73e7597343ce4708e169fe920680",
+      "tree": "92bee116109fcf8c6ea2cac8d47465dd9db878b8",
+      "owner": "e33a0538fda5d4427dbb46decc131ff0",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3def25e",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "fd2aed84ed349ba9aea1c3f7957eb51e590c16ba06107cc27e88e3eef7b06647"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "b2d3d9a835e5c851ab1afdcb7f2e64b368a2baf481656a5b3254594d016fcdc8"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T14:39:17.005770+00:00",
+      "runtime_profile": "shutdown",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "f660ab8eba028a0f874faeb33c47ca0938b1ca5a",
+      "network_id": "40807c0f8ec41a6046d3e5b90233a4684382a3839e1e74828c8453762154bfc6",
+      "postgres_id": "fd2aed84ed349ba9aea1c3f7957eb51e590c16ba06107cc27e88e3eef7b06647",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "b2d3d9a835e5c851ab1afdcb7f2e64b368a2baf481656a5b3254594d016fcdc8",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p01-control-poll-shutdown-red-20260924.json",
+    "free_bytes": 133969047552,
+    "retention": "Keep32payloadcapture/source/ELFs and PG/archive/output, no new Rust cache. All ownedPID0/noOOM/network removed; bothDB0; prior639containers/eight running unchanged."
   }
 }

@@ -449,6 +449,14 @@ shutdown, storage detach/revoke enforced at commit, or a future fencing storage
 service). TTL, hostname/PID, inaccessible health port or operator assertion alone
 is insufficient. Resume an old paused owner during the acceptance drill.
 
+In the implemented idle Control loop, a stop during policy polling or heartbeat
+renewal closes private admission and delivery immediately, then collects that
+same operation within its original authority/SQL deadline. A known completion
+continues shutdown without renewing delivery or dispatching another job. Timeout,
+backend failure or ambiguous COMMIT still fails closed, retaining ownership until
+transport termination; no flag reset makes an abandoned session reusable. Startup,
+native-work and mutating-command cancellation keep their separate fail-stop paths.
+
 ### PostgreSQL Control commit exclusion
 
 The Control adapter exclusively owns one unpooled PostgreSQL connection. It
