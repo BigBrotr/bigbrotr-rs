@@ -13,7 +13,7 @@ from signed_publication_oracle import check, input_expectations
 from event_cases import cut_expectation
 
 
-def main(root, parking=False):
+def main(root, profile=None):
     state = json.loads((root/'resources.json').read_text()); source = root/'source'
     assert Path(__file__).resolve().parents[2] == source
     assert command('git','-C',str(source),'rev-parse','HEAD') == state['source']
@@ -105,9 +105,9 @@ def main(root, parking=False):
         result['output']=row
         result['output_hashes']={str((artifact/name).relative_to(root/'out')):sha(artifact/name) for name in ['events.jsonl','manifest.json']}
         save()
-        if parking:
+        if profile in ('parking', 'busy'):
             from parking_cases import run as park
-            result['parking'] = park(root, state, sql, policy)
+            result['parking'] = park(root, state, sql, policy, busy=profile=='busy')
         else:
             from recovery_cases import run as recover
             result['recovery'] = recover(root, state, sql, policy, expected_manifest)
@@ -124,5 +124,5 @@ def main(root, parking=False):
 
 
 if __name__=='__main__':
-    assert len(sys.argv)==2 or sys.argv[2:]==['parking']
-    main(Path(sys.argv[1]).resolve(), len(sys.argv)==3)
+    assert len(sys.argv)==2 or sys.argv[2:] in (['parking'], ['busy'])
+    main(Path(sys.argv[1]).resolve(), sys.argv[2] if len(sys.argv)==3 else None)

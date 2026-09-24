@@ -10,14 +10,15 @@ from pathlib import Path
 
 revision, tree = sys.argv[1:3]
 responsive = sys.argv[3:4] == ["--runtime-responsive"]
-parking = sys.argv[3:4] == ["--runtime-parking"]
+busy = sys.argv[3:4] == ["--runtime-busy"]
+parking = busy or sys.argv[3:4] == ["--runtime-parking"]
 executor = parking or sys.argv[3:4] == ["--runtime-executor"]
 runtime = responsive or executor
 reuse_runtime = sys.argv[4] if runtime and len(sys.argv)==5 else None
 assert reuse_runtime is None or re.fullmatch("[0-9a-f]{40}", reuse_runtime)
 rollback = sys.argv[3:] == ["--rust-rollback"]
 adapter = sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
-assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"]) or (runtime and len(sys.argv)==5)
+assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"]) or (runtime and len(sys.argv)==5)
 compile_current = adapter or (runtime and not reuse_runtime)
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
@@ -74,7 +75,7 @@ owner = secrets.token_hex(16)
 state = dict(source=revision, tree=tree, owner=owner, root=str(root), state='preparing', containers=[],
              rust_image=rust_image, owner_label=label, postgres_image=pg_image,
              started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-             runtime_profile='parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
+             runtime_profile='busy' if busy else 'parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
              adapter_profile='rollback' if rollback else 'completion' if adapter else None)
 def save(): write(root / 'resources.json', state)
 save()
@@ -197,7 +198,7 @@ try:
             source_manifest_sha256=sha(cache/'source-manifest.json'),scope='Copied compiler caches only; fresh current Rust compilation required.'))
 
     assert shutil.disk_usage(base).free>(8*1024**3 if compile_current else 512*1024**2)
-    if responsive:
+    if responsive or busy:
         instrument_root=base/'runs/strace-exit-9b30c35'
         instrument_state=json.loads((instrument_root/'resources.json').read_text())
         assert instrument_state['owner']=='84ac8cbf5292679b8ef7043fed7a2799'
@@ -271,7 +272,7 @@ while not Path('/out/qualification-complete').exists():
         assert compiled.returncode==0
     state['state']='qualifying-runtime' if runtime else 'qualifying-rust-adapter' if adapter else 'qualifying-schema';save()
     with (root/'schema-cases.log').open('xb') as log:
-        cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/runtime_cases.py' if executor else 'experiments/archive-engine/export_job_http_cases.py' if responsive else 'experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/cases.py')),str(root),*(['responsive'] if responsive else ['parking'] if parking else [])],stdout=log,stderr=subprocess.STDOUT,timeout=240)
+        cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/runtime_cases.py' if executor else 'experiments/archive-engine/export_job_http_cases.py' if responsive else 'experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/cases.py')),str(root),*(['responsive'] if responsive else ['busy'] if busy else ['parking'] if parking else [])],stdout=log,stderr=subprocess.STDOUT,timeout=240)
     result=json.loads((root/('runtime-cases.json' if executor else 'export-job-http-cases.json' if responsive else 'adapter-cases.json' if adapter else 'schema-cases.json')).read_text())
     audit['result']=result['status']
     audit['independent_sql']={}

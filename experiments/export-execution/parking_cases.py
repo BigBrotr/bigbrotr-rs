@@ -8,7 +8,7 @@ import time
 from signed_publication_cases import Process, command, event, send
 
 
-def run(root, state, sql, policy):
+def run(root, state, sql, policy, *, busy=False):
     runner=state['container_id'];db='bbpub_control_normal';private=root/'out/private-grant-http'
     result=dict(status='INCOMPLETE',source=state['source'],cases=[])
     path=root/'parking-cases.json';assert not path.exists()
@@ -38,6 +38,11 @@ def run(root, state, sql, policy):
         #fit this logical output grant. The actual reader must still execute.
         activate(4,{'administration.enabled':False,'export.memory.max_bytes':1073741824,'export.artifact.max_bytes':1536})
         save()
+        if busy:
+            from busy_cases import run as check_busy
+            result['busy']=check_busy(root,state,sql,job,before,snapshot)
+            result['status']='PASS'
+            return result
         for label in ['attempt','restart']:
             record=dict(label=label,status='INCOMPLETE');result['cases'].append(record);client=None
             try:

@@ -166,7 +166,8 @@ A known refusal after fresh reader admission releases only that joined reader.
 After verified capture cleanup, a successfully started job with its exact output
 lock still held is durably paused under current Control/policy and its expected
 job revision. `resource_limit` identifies capacity refusal; other known refusals
-use `execution_refused`. This new parking path is under native qualification.
+use `execution_refused`. [One installed parking/restart scenario](../implementation/evidence/p08-export-runtime-parking-native-20260924.json)
+passes; broader refusal and authority scenarios remain under qualification.
 Paused jobs retain the original unit, immutable caps and export pin, and are
 excluded from automatic restart scans. Changing configuration does not enlarge
 that unit. Explicit resume/cancel controls are still required work. A Busy or

@@ -21,13 +21,27 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD95bc5c2211e5ed185722c85977b6d00ec7236529 (local candidate),
-origin main8e8d8a3d2f7a4aa98d170a3a339b05b2abdd1e1b. Root owns the new bound
-ExecutionCustody, current-owner/CAS pause adapter, runtime known-refusal branch,
-stronger parking oracle, operations text and RED evidence/inventory. No other
-contributor writes or merge/rebase. Mac fmt/check,42 binary tests and Clippy passed; root complete diff and independent
-AI source review found no concrete counterexample. Product candidate native build
-NOT_RUN.
+Last verified HEADcdb78a15e45e026b33c1b8c1e6a026b00d2b1b93 (local candidate),
+origin main8e8d8a3d2f7a4aa98d170a3a339b05b2abdd1e1b. Root owns fixture-only Busy
+counterpart/dispatch, scoped parking evidence/inventory/operations and checkpoint.
+No other contributor writes or merge/rebase. Mac fmt/check,42 binary tests and
+Clippy passed; root complete diff and independent AI source review found no
+concrete counterexample. No migration/dependency changes.
+
+[Native parking/restart](evidence/p08-export-runtime-parking-native-20260924.json)
+passes at exactcdb78a1,treecabf46894ece7b994641d9ee05e638e4061b388d. Fresh parent/worker,
+42native release tests and Clippy pass. Signed HTTP/logout job4e77f8a5a2ad40032e210ec06166ce85
+parks revision4/resource_limit/checkpoint0 under epoch4. Artifact8707d09c5a2dc80344746a2fc26d7aee
+keeps1536/3072 caps, no final/staging/inventory. One new reader33c15e469c887a6f2e066f7230082636
+and its claim released; every old pin/claim+xmin unchanged, export pins active.
+Epoch5 ordinary restart preserves complete SQL/xmin and namespace/mutex identity
+(dev66306/inode31606836/mode0600/nlink1/emptySHA), bounded1.5s observations each.
+Both parents alive until actual SIGTERM/exit0, reaped/root lock available/scratch
+empty, bothDB0. Source/capture42files/1172Git sources and ELFs independently checked
+by root; tarb97f896ffa7895026af2d05269336d4cc55338c8cbe4a245747f2a493a14a161.
+Ownera7d3f8f762e57fc9f6f706f8cda4da91 stopped-retained/network removed;
+612prior/eight running unchanged, free146398420992 ->142669053952. Keep newcache.
+Sufficient-cap signed counterpart and Busy/authority/pauseCOMMIT faults NOT_RUN.
 
 [Installed parking RED](evidence/p08-export-runtime-parking-red-20260924.json)
 at95bc5c2 reused exact f70 parent/worker after complete product/build equality.
@@ -221,14 +235,17 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Review and check the narrow known-refusal pause candidate, then commit clean Git
-and run a fresh native --runtime-parking build. The strengthened oracle requires
-paused4/resource_limit/checkpoint0, unchanged full SQL/xmin after ordinary restart,
-healthy Control, one released fresh reader, preserved export pins, unchanged
-namespace and mutex dev/inode/mode/nlink/size/hash. No native positive yet.
-Then exercise sufficient-cap signed completion on the same product artifacts to
-discriminate actual output-cap refusal. Busy/old-writer counterpart and authority
-interleavings remain explicit gates; do not declare full pause/resume qualified.
+Review/commit the fixture-only --runtime-busy counterpart, then reuse exactcdb78a1
+ELF only after complete product/build equality. The case blocks actual reader
+admission after committed unit reservation, holds the exact artifact flock,
+then requires an actual traced artifact flock EAGAIN, running3/no pause/no files
+and autonomous parent4 after known cleanup while another process still observes
+Busy. The exact retained patched strace traces only flock; actual parent and
+tracer identities/absence are checked. Preserve every old pin/claim, collect bothDB0 and
+actual parent absence. New isolated lab only; no active lab now.
+Then exercise sufficient-cap signed completion/recovery on these product artifacts.
+Busy/authority interleavings and pause-COMMIT faults remain gates; no full pause,
+explicit resume/cancel or P08/M1 completion claim.
 
 Existing0001/0008/0501/0813 permits this without checksum/migration changes.
 Required: actual joined worker; ExecutionCustody tied to exact successful start
@@ -240,8 +257,7 @@ retains it through outer actual Control join. Explicit resume/cancel/UI remain
 later acceptance gates. No full P08/M1 claim.
 
 Current known-refusal path after reader admission joins/releases that reader and
-finishes capture, then fail-stops to prevent repeated durable reader claims.
-Replace it only with a durable, CAS-checked recovery state after known cessation;
+finishes capture, then pauses with matched custody after known cessation;
 unknown SQL/native results still fail-stop. Paused jobs stay paused across restart;
 resume must be explicit, same unit, current grants and expected revision. Retain
 original export pins until their own qualified terminal lifecycle.
