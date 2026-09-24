@@ -21,12 +21,29 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified main/HEAD46ac18b053f9787e11154483f2060d98643f9677,
-tree1590a6a6796c7d218a5e0554db37ebcc6cb3e9cb, three unpublished commits ahead of
-origin/main a084bed877ca90491db5a2caf4617dd98bcd4c88. Root owns only this checkpoint,
-the scoped responsiveness report, owning task note and inventory updates. Independent final capture review is complete. Next finish the coherent evidence
-commit/push; then advance the executor prerequisite below.
-No active experiment, unjoined worker or resource cleanup debt.
+Last verified main/HEAD and origin/main9cd60a542b7f6a7cc16dfdb5d9886773262694b9,
+clean before the next slice. Responsiveness evidence is committed/pushed and the
+prior turn was progress. Root now owns only the synchronous export action-window
+gate, its Rust/native fixtures, owning output contract and checkpoint edits.
+No active experiment or cleanup debt at this checkpoint.
+
+A real-clock100ms ActionWindow test expired during the first short flush while
+AtomicBool stayedfalse and the independently renewed Control lease stayedvalid.
+It failed against the old writer, then passed with a synchronous predicate below
+BufWriter. ExportUnit::write_while checks it at cancellation checkpoints and each
+actual writer retry; PreparedExport::write_with_window owns the nonrenewable
+window. Raw filesystem/research APIs still grant no job authority. The automatic
+executor must use the window-bound method. Added a post-verification/pre-rename
+check because filesystem verification can itself consume the remaining window.
+Mac2 flush tests,7 real file tests and Clippy pass; logs under
+.research/implementation/export-execution/action-{flush-red,flush-green,files-mac,clippy-mac}.log.
+Next run exact native export-files laboratory with the new paired fault: actual
+first data write delayed at exit250ms; ungated negative completes after expiry,
+gated refuses further sync/manifest/rename with334byte staging only. This is NOT_RUN,
+not a production/executor qualification. Independent source review found no write
+gate bypass and narrowed wording to permit synchronization of an already admitted
+namespace change while withholding completion. Native case
+sources extend the existing lab; no separate maintenance or master plan.
 
 [Runtime responsiveness](evidence/p08-runtime-responsive-native-20260924.json):
 
@@ -68,7 +85,7 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Finish responsiveness evidence commit/push, then implement the ordinary
+Finish the action-window prerequisite qualification, then implement the ordinary
 Control export executor. No manual run command after POST. Select one bounded
 exact-ID job, reserve immutable ArtifactId/caps and COMMIT queued separately,
 then recheck current authority before running. Advance the cursor past denied/
@@ -77,8 +94,8 @@ Measure an aged queue or add an additive selective index before capacity claims.
 
 Before automatic writing, enforce the nonrenewable actor/pin ActionWindow at
 actual filesystem write boundaries. An AtomicBool updated by supervisor polling
-alone can lag during a Control renewal/SQL wait. Current ExportUnit/PreparedExport
-write APIs take only AtomicBool: this prerequisite is still open. Read full
+alone can lag during a Control renewal/SQL wait. The candidate adds a synchronous window-bound API; native qualification and its
+automatic runtime consumer are still open. Read full
 files.rs/jsonl.rs/execution.rs and policy_authority.rs/callers before changing it;
 root has just inspected those export files and the ActionWindow implementation.
 Use a discriminating expiry-during-short-write/flush test and actual native fault

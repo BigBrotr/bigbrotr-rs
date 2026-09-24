@@ -41,12 +41,12 @@ assert execute([
     ('build', ['cargo', 'build', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                '--bin', 'bigbrotr', '--example', 'export-files-probe']),
     ('flush-cancellation', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
-                            '--lib', 'export::files::tests::cancellation_stops_new_writes_inside_a_partial_buffer_flush']),
+                            '--lib', 'export::files::tests']),
     ('filesystem-tests', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr', '--test', 'export_files']),
     ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                 '--lib', '--test', 'export_files', '--example', 'export-files-probe', '--', '-D', 'warnings']),
 ], out, SOURCE, env, identity, 1800)['status'] == 'PASS'
-assert '1 passed; 0 failed; 0 ignored' in (out / 'flush-cancellation.log').read_text()
+assert '2 passed; 0 failed; 0 ignored' in (out / 'flush-cancellation.log').read_text()
 assert '7 passed; 0 failed; 0 ignored' in (out / 'filesystem-tests.log').read_text()
 artifacts = Path('/out/artifacts'); artifacts.mkdir()
 for original, name in [('examples/export-files-probe', 'export-files-probe'), ('bigbrotr', 'bigbrotr')]:

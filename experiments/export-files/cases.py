@@ -193,6 +193,28 @@ try:
         run(root)
         passed(kernel_rlimit_fsize=17, actual_partial_hex=partial.hex(), recovered=files(root))
 
+        case('action-expiry-during-actual-data-write-with-negative-control')
+        observations=[]
+        for gated in [False,True]:
+            root=fixture('action-expiry-'+str(gated).lower())
+            value,trace=run(root, operation='write-window' if gated else 'write-window-negative',
+                expected=4 if gated else 0, inject='write:delay_exit=250ms:when=1')
+            assert value['witness']==dict(action_expired=True,control_valid=True,cancelled=False),value
+            data_calls=[line for line in trace.splitlines() if 'write(' in line and '<'+str(root/STAGE/'events.jsonl')+'>' in line]
+            assert len(data_calls)==1 and '= 334' in data_calls[0] and '(DELAYED)' in data_calls[0],data_calls
+            if gated:
+                assert value['error']=='Cancelled' and not (root/ID).exists()
+                data=(root/STAGE/'events.jsonl').read_bytes()
+                assert len(data)==334 and hashlib.sha256(data).hexdigest()==expected_hash
+                assert not (root/STAGE/'manifest.json').exists()
+                assert not complete_calls(trace)
+            else:
+                assert value['data_bytes']==334
+                files(root)
+                assert len(complete_calls(trace))==5
+            observations.append(dict(gated=gated,result=value,actual_delayed_write=data_calls[0]))
+        passed(observations=observations,scope='One admitted data write may finish after expiry; no later write/sync/manifest publication on the gated path')
+
         case('kernel-mount-identity-unavailable')
         root = fixture('statx-unavailable')
         # Rust's ordinary metadata also calls statx(STATX_ALL) and can fall back

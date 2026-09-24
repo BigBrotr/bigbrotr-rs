@@ -225,7 +225,13 @@ at most 256 KiB, I/O buffering is 64 KiB plus an 8 KiB comparison scratch buffer
 the executor also retains the verified event/native custody. It never collects
 another complete JSONL byte buffer. Cancellation gates each new writer call,
 including short-write retries during buffer flush, and withholds the result even
-after a complete rename. A blocked kernel call still requires supervised process
+after a complete rename. The executor also supplies its nonrenewable action/pin
+window to those synchronous checks: Control renewal or a delayed supervisor
+must not extend authorization of the next write. Recheck after a potentially
+blocking destination verification before rename. A call admitted before expiry
+may still complete afterwards; refuse subsequent payload writes, new manifest
+publication and successful completion. Synchronization of an already admitted
+namespace change may finish while custody remains held. A blocked kernel call still requires supervised process
 termination and retained obligations, not an assertion that AtomicBool aborts I/O.
 
 Normalize permissions only on newly created names under private namespace

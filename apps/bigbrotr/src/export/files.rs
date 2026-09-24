@@ -148,7 +148,28 @@ impl ExportUnit {
         temporary_maximum: u64,
         cancelled: &AtomicBool,
     ) -> Result<StoredExport, Error> {
-        check_cancel(cancelled)?;
+        self.write_while(
+            manifest,
+            event,
+            maximum,
+            temporary_maximum,
+            cancelled,
+            || true,
+        )
+    }
+
+    /// The execution consumer supplies a synchronous authority check. It runs
+    /// below buffering at every actual write/retry, independently of a supervisor.
+    pub fn write_while(
+        &mut self,
+        manifest: &SignedEventsManifest<'_>,
+        event: Option<&VerifiedEvent>,
+        maximum: u64,
+        temporary_maximum: u64,
+        cancelled: &AtomicBool,
+        permitted: impl Fn() -> bool,
+    ) -> Result<StoredExport, Error> {
+        check_cancel(cancelled, &permitted)?;
         let destination = &self.custody.destination;
         destination.verify().map_err(|_| Error::Conflict)?;
         if manifest.artifact_id != self.artifact
@@ -176,6 +197,7 @@ impl ExportUnit {
             data,
             bytes: &bytes,
             cancelled,
+            permitted: &permitted,
         };
         let root = &destination.directory;
         // Validate ALL preexisting contents before any removal. A partial file is
@@ -189,9 +211,9 @@ impl ExportUnit {
             return Err(Error::Conflict);
         }
         if let Some(staging) = staging {
-            check_cancel(cancelled)?;
+            check_cancel(cancelled, &permitted)?;
             for (name, present) in [(DATA, staging.data), (MANIFEST, staging.manifest)] {
-                check_cancel(cancelled)?;
+                check_cancel(cancelled, &permitted)?;
                 if present {
                     unlinkat(&staging.directory, name, AtFlags::empty())?;
                 }
@@ -199,7 +221,7 @@ impl ExportUnit {
             unlinkat(root, self.staging.as_str(), AtFlags::REMOVEDIR)?;
             root.sync_all()?;
         }
-        check_cancel(cancelled)?;
+        check_cancel(cancelled, &permitted)?;
         mkdirat(root, self.staging.as_str(), MODE | Mode::XUSR)?;
         // Only the exclusively created name is normalized; no preexisting path
         // is repaired. This handles a restrictive umask without changing global
@@ -222,6 +244,7 @@ impl ExportUnit {
             CancelOutput {
                 writer: create(&directory, DATA)?,
                 cancelled,
+                permitted: &permitted,
             },
         );
         let written =
@@ -234,30 +257,32 @@ impl ExportUnit {
         // BufWriter::drop may flush. Dismantle on EVERY outcome so cancellation
         // or failure cannot cause an unobserved write while unwinding the buffer.
         let (file, _) = output.into_parts();
-        check_cancel(cancelled)?;
+        check_cancel(cancelled, &permitted)?;
         if written? != data {
             return Err(Error::Conflict);
         }
         flushed?;
-        check_cancel(cancelled)?;
+        check_cancel(cancelled, &permitted)?;
         file.writer.sync_all()?;
-        check_cancel(cancelled)?;
+        check_cancel(cancelled, &permitted)?;
         let mut file = CancelOutput {
             writer: create(&directory, MANIFEST)?,
             cancelled,
+            permitted: &permitted,
         };
         for chunk in bytes.chunks(BUFFER) {
-            check_cancel(cancelled)?;
+            check_cancel(cancelled, &permitted)?;
             let result = file.write_all(chunk);
-            check_cancel(cancelled)?;
+            check_cancel(cancelled, &permitted)?;
             result?;
         }
-        check_cancel(cancelled)?;
+        check_cancel(cancelled, &permitted)?;
         file.writer.sync_all()?;
-        check_cancel(cancelled)?;
+        check_cancel(cancelled, &permitted)?;
         directory.sync_all()?;
-        check_cancel(cancelled)?;
+        check_cancel(cancelled, &permitted)?;
         destination.verify().map_err(|_| Error::Conflict)?;
+        check_cancel(cancelled, &permitted)?;
         renameat_with(
             root,
             self.staging.as_str(),
@@ -270,7 +295,7 @@ impl ExportUnit {
             },
         )?;
         root.sync_all()?;
-        check_cancel(cancelled)?;
+        check_cancel(cancelled, &permitted)?;
         Ok(StoredExport {
             data,
             manifest_bytes: bytes.len() as u64,
@@ -279,8 +304,8 @@ impl ExportUnit {
     }
 }
 
-fn check_cancel(cancelled: &AtomicBool) -> Result<(), Error> {
-    if cancelled.load(Ordering::Acquire) {
+fn check_cancel(cancelled: &AtomicBool, permitted: &dyn Fn() -> bool) -> Result<(), Error> {
+    if cancelled.load(Ordering::Acquire) || !permitted() {
         Err(Error::Cancelled)
     } else {
         Ok(())
@@ -333,6 +358,7 @@ struct Expected<'a, 'b> {
     data: JsonlFile,
     bytes: &'a [u8],
     cancelled: &'a AtomicBool,
+    permitted: &'a dyn Fn() -> bool,
 }
 struct Existing {
     directory: File,
@@ -357,7 +383,7 @@ fn inspect(
         manifest: false,
     };
     for entry in Dir::read_from(&existing.directory)? {
-        check_cancel(expected.cancelled)?;
+        check_cancel(expected.cancelled, expected.permitted)?;
         let entry = entry?;
         let name = match entry.file_name().to_bytes() {
             b"." | b".." => continue,
@@ -427,12 +453,12 @@ struct Compare {
 struct CancelOutput<'a, W> {
     writer: W,
     cancelled: &'a AtomicBool,
+    permitted: &'a dyn Fn() -> bool,
 }
 impl<W: Write> Write for CancelOutput<'_, W> {
     fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
-        if self.cancelled.load(Ordering::Acquire) {
-            return Err(io::Error::other("export output cancelled"));
-        }
+        check_cancel(self.cancelled, self.permitted)
+            .map_err(|_| io::Error::other("export output cancelled"))?;
         self.writer.write(bytes)
     }
     fn flush(&mut self) -> io::Result<()> {
@@ -488,6 +514,7 @@ mod tests {
             CancelOutput {
                 writer: sink,
                 cancelled: &cancel,
+                permitted: &|| true,
             },
         );
         buffered.write_all(b"complete data").unwrap();
@@ -496,5 +523,95 @@ mod tests {
         assert!(result.is_err());
         assert_eq!(output.writer.accepted, 1);
         assert_eq!(pending.unwrap(), b"omplete data");
+    }
+
+    #[test]
+    fn expired_action_stops_flush_without_a_supervisor_cancellation() {
+        use crate::runtime::policy_authority::{
+            ActionWindow, LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl,
+        };
+        use bigbrotr_model::PolicyEpoch;
+        use std::{cell::RefCell, time::Duration};
+        let dataset = [1; 16].try_into().unwrap();
+        let incarnation = [2; 16].try_into().unwrap();
+        let epoch = PolicyEpoch::new(1);
+        let mut lease = PolicyLeaseTracker::new(
+            dataset,
+            incarnation,
+            epoch,
+            PolicyLeaseTtl::new(Duration::from_secs(5)).unwrap(),
+        )
+        .unwrap();
+        let ticket = lease.begin_refresh().unwrap();
+        lease
+            .complete_refresh(
+                &ticket,
+                LeaseResponse {
+                    dataset,
+                    process_incarnation: incarnation,
+                    policy_epoch: epoch,
+                    ttl: Duration::from_secs(5),
+                },
+            )
+            .unwrap();
+        let window = RefCell::new(
+            lease
+                .begin_action(epoch)
+                .unwrap()
+                .complete(Duration::from_millis(100))
+                .unwrap(),
+        );
+        // Renewing the parent is not a renewal of this particular action.
+        let ticket = lease.begin_refresh().unwrap();
+        lease
+            .complete_refresh(
+                &ticket,
+                LeaseResponse {
+                    dataset,
+                    process_incarnation: incarnation,
+                    policy_epoch: epoch,
+                    ttl: Duration::from_secs(5),
+                },
+            )
+            .unwrap();
+        struct DelayedShort<'a> {
+            writes: usize,
+            window: &'a RefCell<ActionWindow>,
+        }
+        impl Write for DelayedShort<'_> {
+            fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+                assert!(!bytes.is_empty());
+                self.writes += 1;
+                // The first admitted syscall completes only after expiry.
+                while self.window.borrow_mut().check().is_ok() {
+                    std::thread::sleep(Duration::from_millis(2));
+                }
+                Ok(1)
+            }
+            fn flush(&mut self) -> io::Result<()> {
+                Ok(())
+            }
+        }
+        let cancel = AtomicBool::new(false);
+        let permitted = || window.borrow_mut().check().is_ok();
+        let mut output = BufWriter::with_capacity(
+            16,
+            CancelOutput {
+                writer: DelayedShort {
+                    writes: 0,
+                    window: &window,
+                },
+                cancelled: &cancel,
+                permitted: &permitted,
+            },
+        );
+        output.write_all(b"complete data").unwrap();
+        let result = output.flush();
+        let (output, pending) = output.into_parts();
+        assert!(result.is_err(), "expired action admitted another write");
+        assert_eq!(output.writer.writes, 1);
+        assert_eq!(pending.unwrap(), b"omplete data");
+        assert!(!cancel.load(Ordering::Acquire));
+        assert!(lease.check_delivery(epoch).is_ok());
     }
 }

@@ -190,7 +190,7 @@ try:
     if not reuse:
         assert json.loads((out / 'checks/complete.json').read_text())['status'] == 'PASS'
     cases = json.loads((out / 'cases/result.json').read_text())
-    assert cases['status'] == 'PASS' and len(cases['cases']) == 14
+    assert cases['status'] == 'PASS' and len(cases['cases']) == 15
     state['state'] = 'qualifying-alias'; save()
     ID = '10' * 16
     alias = start('alias', ['python3', '-B', '/out/build/source/experiments/export-files/cases.py',

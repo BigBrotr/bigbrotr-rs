@@ -4,6 +4,7 @@ use super::{
     files::{ExportFileError, ExportUnit, OutputCustody, StoredExport},
     manifest::SignedEventsManifest,
 };
+use crate::runtime::policy_authority::ActionWindow;
 use crate::storage::postgres::catalog_guard::CatalogIdentity;
 use crate::{
     management::jobs::ExportDestination,
@@ -15,6 +16,7 @@ use bigbrotr_model::{
 };
 use bigbrotr_protocol::archive_event::EventQuery;
 use std::{
+    cell::RefCell,
     sync::{Arc, atomic::AtomicBool},
     time::Duration,
 };
@@ -207,11 +209,38 @@ impl PreparedExport {
     }
     /// Consumes an actual native lookup, including authorized absence. Neither a
     /// caller-supplied manifest nor StoredExport can create a completion input.
-    /// The supervisor gates current authority/cancellation until actual join.
+    /// This primitive checks explicit cancellation. Runtime execution uses
+    /// `write_with_window` to enforce action expiry at the actual write boundary;
+    /// callers retain current authority and custody until positive worker join.
     pub fn write(
+        self,
+        observation: ArchivedEventQuery,
+        cancelled: &AtomicBool,
+    ) -> Result<WrittenExport, ExportFileError> {
+        self.write_while(observation, cancelled, || true)
+    }
+
+    /// Start the pending action before the authoritative SQL lookup and bind its
+    /// returned remaining lifetime. This nonrenewable window travels with the
+    /// worker; a delayed supervisor cannot extend output authority. The caller
+    /// still owns current principal/scope binding and positive worker joins.
+    pub fn write_with_window(
+        self,
+        observation: ArchivedEventQuery,
+        cancelled: &AtomicBool,
+        window: ActionWindow,
+    ) -> Result<WrittenExport, ExportFileError> {
+        let window = RefCell::new(window);
+        self.write_while(observation, cancelled, || {
+            window.borrow_mut().check().is_ok()
+        })
+    }
+
+    fn write_while(
         mut self,
         observation: ArchivedEventQuery,
         cancelled: &AtomicBool,
+        permitted: impl Fn() -> bool,
     ) -> Result<WrittenExport, ExportFileError> {
         let selection = &self.running.job.selection;
         if !same_custody(
@@ -241,12 +270,13 @@ impl PreparedExport {
             accepted_config_revision: selection.config_revision,
             accepted_policy_revision: selection.policy_revision,
         };
-        let stored = self.unit.write(
+        let stored = self.unit.write_while(
             &manifest,
             observation.event(),
             reservation.limits.maximum,
             reservation.limits.temporary,
             cancelled,
+            permitted,
         )?;
         Ok(WrittenExport {
             running: self.running,
