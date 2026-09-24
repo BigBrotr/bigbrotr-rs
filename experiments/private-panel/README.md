@@ -106,9 +106,9 @@ at709656d executes all18 tests on Linux amd64. This does not measure queued
 kernel bytes or a universal shutdown latency.
 
 The initial export-job view has a separate `--runtime-job-browser` profile in
-`experiments/export-execution/lab.py`. It first executes the actual signed archive,
-empty export and authenticated status fixture, then builds current production
-assets through this frontend stage. Six isolated browser containers exercise the
+`experiments/export-execution/lab.py`. It builds current production assets before
+creating the PostgreSQL fixture, then executes the actual signed archive, empty
+export and authenticated status prerequisites. Six isolated browser containers exercise the
 root/subpath view with Chromium, Firefox and WebKit, real stored completed and
 accepted jobs, missing/other-account refusals, restart and revocation. The SQL
 oracle compares session activity across lookups and seven durable ledgers across
@@ -117,8 +117,14 @@ lookup while the page signs out; its eventual request settlement must not restor
 private state. Each pair waits the real sixty-second login rate window. No rate
 counter resets, mocked API, request interception or CSP bypass are used.
 
-This new profile is a proposed practical scenario until a source-bound capture
-records its actual outcome. It does not qualify natural session expiry, BFCache,
+[Scoped evidence at ca44302](../../docs/implementation/evidence/p09-export-status-browser-native-20260924.json)
+records all six pairs and 48 functional journeys. Its full-page screenshots show
+a skip-link overlay whose actual viewport/focus behavior was not recorded.
+The follow-up fixture captures geometry before/after that screenshot, a separate
+viewport image, then keyboard traversal to reveal and activate the skip link.
+Those additional checks are proposed until their own source-bound run completes;
+they must not retroactively change the original outcome or claim its cause.
+The profile does not qualify natural session expiry, BFCache,
 all paused/running states, remote TLS, broad accessibility or release installation.
 The host retains originals and collects every explicitly owned browser container
 on failure. Verified historical Node/pnpm archives are reused read-only after

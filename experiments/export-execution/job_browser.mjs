@@ -73,6 +73,14 @@ async function unavailable(p,id) {
   await expect(p.locator('.job-sheet .failure')).toContainText('unavailable to your account');
   await expect(p.locator('.job-observation')).toHaveCount(0);
 }
+async function skipGeometry() {
+  return page.locator('.skip').evaluate(link => {
+    const box=link.getBoundingClientRect(), style=getComputedStyle(link);
+    return {focused:document.activeElement===link, position:style.position, transform:style.transform,
+      box:{x:box.x,y:box.y,width:box.width,height:box.height,top:box.top,bottom:box.bottom,left:box.left,right:box.right},
+      scroll:{x:scrollX,y:scrollY}, viewport:{width:innerWidth,height:innerHeight}};
+  });
+}
 try {
   browser=await({chromium,firefox,webkit}[engine]).launch({headless:true});
   report.version=browser.version();report.launchedExecutables=[];
@@ -99,7 +107,29 @@ try {
     const before=report.http.length;await sleep(600);assert.equal(report.http.length,before);await command('observe-after');
     await page.setViewportSize({width:375,height:812});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
-    await page.screenshot({path:join(home,'accepted-mobile.png'),fullPage:true});await page.setViewportSize({width:1280,height:900});
+    report.skipLink={beforeFullPage:await skipGeometry()};
+    await page.screenshot({path:join(home,'accepted-viewport.png')});
+    await page.screenshot({path:join(home,'accepted-mobile.png'),fullPage:true});
+    report.skipLink.afterFullPage=await skipGeometry();
+    // A full-page capture can include a fixed box that is outside the actual
+    // scrolled viewport. Retain both observations instead of inferring focus
+    // or visual overlap from the full-page bitmap alone.
+    for(const sample of [report.skipLink.beforeFullPage,report.skipLink.afterFullPage]) {
+      assert.equal(sample.focused,false);assert.equal(sample.position,'fixed');
+      assert.ok(sample.box.bottom<=0,'unfocused skip link must be above the viewport');
+    }
+    let tabs=0;
+    while(!(await skipGeometry()).focused && tabs<8) {await page.keyboard.press('Shift+Tab');tabs++;}
+    report.skipLink.reverseTabs=tabs;report.skipLink.focused=await skipGeometry();
+    const focus=report.skipLink.focused;assert.equal(focus.focused,true);
+    assert.ok(focus.box.top>=0&&focus.box.left>=0&&focus.box.bottom<=focus.viewport.height&&focus.box.right<=focus.viewport.width);
+    await page.screenshot({path:join(home,'skip-focused.png')});
+    await page.keyboard.press('Enter');
+    assert.equal(await page.evaluate(()=>location.hash),'#session');
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('button',{name:'Sign out',exact:true})).toBeFocused();
+    report.skipLink.keyboardTarget='first-session-action';
+    await page.setViewportSize({width:1280,height:900});
   });
   await step('missing-clears-prior-observation',async()=>{await unavailable(page,'ff'.repeat(16));await lookup(page,input.accepted);});
   await step('same-cookie-real-process-restart',async()=>{

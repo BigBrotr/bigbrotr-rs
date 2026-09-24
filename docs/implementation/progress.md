@@ -20,17 +20,19 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD ca44302317207b1c21d1d4bb6ac08299a842963a, tree
-c541d7cc8660b343e1a543d17d7aebc9973ab46b on main. Seven unpublished commits after
-private origin/main cac50d60a591981b8060e50ed8cbb6c2b070be62; fetched with no new
-remote commits. Root owns the browser evidence report, owning task/product/export
-documentation and checkpoint/inventory updates. No other contributor or merge/rebase.
+Last verified HEAD adee7b6e61e03ac9798a180f0c0a1e890eb29547, tree
+a201a97b2a8d699a498a9681364a663bff9ae03c on main, pushed to private origin/main
+without rewriting history. The eight integrated commits after cac50d6 are now
+published. Root owns only the additional job_browser.mjs geometry/keyboard
+fixture, its README and this checkpoint. No other contributor or merge/rebase.
 
-Next bounded action: commit/push the reviewed ca44302 browser
-qualification, then resolve the observed skip-link
-screenshot anomaly with actual focus/geometry and viewport capture. Preserve the
-original successful functional matrix. Do not claim visual/accessibility closure
-from a horizontal-width check. Then resume P08-T03 explicit job resume.
+Next bounded action: commit and run the fixture-only skip-link follow-up on Tux
+using exact 877 ELF after full product/build equality. It records actual focus,
+geometry and a viewport image before/after the original full-page capture, then
+reveals and activates the link through keyboard traversal. Preserve the original
+successful functional matrix. Do not claim visual/accessibility closure from a
+horizontal-width check. Then resume P08-T03 explicit job resume. No product CSS
+change is justified yet; full-page capture behavior is only a hypothesis.
 
 [The ca44302 browser matrix](evidence/p09-export-status-browser-native-20260924.json)
 passes 48 journeys across Chromium/Firefox/WebKit at / and /control/. Same 877
@@ -72,8 +74,8 @@ Original877 remains scoped: its first private probe did not prove unlock order.
 Fresh877build/44binarytests/ClippyPASS, parentSHA
 48ae6d1a7a1e685780d84db05692f75eb671c0e5178ad7aab7ca7b5f74325805;
 worker3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
-Keep current877/f660 useful caches and all original ELF/evidence. Latest free
-136414396416bytes, after new small seed/output; maintenance details below.
+Keep current877/f660 useful caches and all original ELF/evidence. That run left
+136414396416bytes free; current ca44302 space is recorded above.
 
 The idle-only fix closes admission on stop and collects the same future with
 original deadline, then directly enters common shutdown. No available flag reset;
