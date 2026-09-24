@@ -1,0 +1,205 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED",
+  "scope": "Actual foreign artifact flock refuses acquisition; installed Control fails autonomously without falsely parking the job.",
+  "source": {
+    "files": 39,
+    "sha256": "0c7b89b24c2ac62a89526ea693207e49eb4a4a410442fe94c6d3b3fc1d1f1c8a",
+    "source": "76593458bc5b90a308e17aef4a8e0aa8d6e806b2",
+    "tree": "41d6623dd503d2d755d50b8c3ada1c5ccce494cf",
+    "source_files": 1175
+  },
+  "capture": ".research/implementation/export-execution/attempt-7659345/capture",
+  "installed_build_source": "cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93",
+  "installed_artifacts": {
+    "bigbrotr": "c49713d931bb01cb8446ae1032891a1d655af03de2a6e1b7580de8d3ff60d862",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "reuse_validation": "Complete product/build source equality and exact ELF hashes; no new compilation.",
+  "instrument": {
+    "source": "9b30c3535c1407294fb95b40df8019ebda6860f9",
+    "owner": "84ac8cbf5292679b8ef7043fed7a2799",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35",
+    "files": {
+      "strace-exit-fixed": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+      "result.json": "cf0317fc8934eb70f3cf2d74ac6ba0680be09366a4ade586aabd95991c6c3abc"
+    }
+  },
+  "observed": {
+    "job": {
+      "kind": "export",
+      "state": "running",
+      "job_id": "\\xac0ea9cae601146462b3d4865eaf21c0",
+      "dataset_id": "\\x01010101010101010101010101010101",
+      "owner_role": "control",
+      "owner_epoch": 4,
+      "reason_code": null,
+      "request_key": "\\xd3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3",
+      "job_revision": 3,
+      "principal_id": "\\x10101010101010101010101010101010",
+      "created_at_us": 1790253463709403,
+      "input_complete": true,
+      "request_digest": "\\x169fe24c07c5ae260c88bd2c550989f9e413a976d9c4a0a0bdd4722d393b9bea",
+      "completed_at_us": null,
+      "config_revision": 1,
+      "policy_revision": 3,
+      "owner_incarnation": "\\xf52dc0c767241da37abc10aedb9afd5c",
+      "owner_resource_id": "\\x64067bc0f9f37953d47dabc7d6e383bf",
+      "checkpoint_revision": 0,
+      "export_job_protocol": 1,
+      "result_manifest_digest": null,
+      "input_topology_generation": 0
+    },
+    "unit": {
+      "job_id": "\\xac0ea9cae601146462b3d4865eaf21c0",
+      "artifact_id": "\\x46bb4e5e96d7470259532b27a6cf5911",
+      "reserved_at_us": 1790253464483374,
+      "max_output_bytes": 1536,
+      "max_temporary_bytes": 3072,
+      "reservation_transaction": "927"
+    },
+    "ready": {
+      "event": "ready",
+      "owner": {
+        "archive_intents": {
+          "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+          "issued_through": "4",
+          "observed_through": "4",
+          "pages": 1,
+          "publication_authority": "not-granted",
+          "resolution": "not-performed",
+          "state": "observed"
+        },
+        "authority_scope": "Control custody; each private action and export independently reauthorized",
+        "config_revision": "1",
+        "dataset_id": "01010101010101010101010101010101",
+        "export_execution": "selected-under-qualification",
+        "format": "bigbrotr-control-runtime/1",
+        "listeners": [],
+        "native_stores": [],
+        "owner_epoch": "4",
+        "owner_resource_id": "64067bc0f9f37953d47dabc7d6e383bf",
+        "policy_revision": "4",
+        "process_incarnation": "f52dc0c767241da37abc10aedb9afd5c",
+        "role": "control",
+        "state": "idle"
+      },
+      "parent_pid": 1511,
+      "parent_start_ticks": "363571855",
+      "tracer_pid": 1508
+    },
+    "blocked_reader": {
+      "pid": 422,
+      "query": "INSERT INTO control.archive_snapshot_pins(lease_id,dataset_id,consumer_id,frontier_revision,issuer_resource,issuer_epoch,issuer_incarnation,purpose,requested_ttl_us) VALUES ($1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::bytea,$6::text::numeric,$7::bytea,'reader',$8::bigint)",
+      "backend_start": "2026-09-24T12:37:44.442373+00:00",
+      "blocking_pids": [
+        420
+      ]
+    },
+    "artifact_flock_trace": [
+      "1513  flock(18</out/signed_normal/export-destination/.artifact-46bb4e5e96d7470259532b27a6cf5911.lock>, LOCK_EX|LOCK_NB) = -1 EAGAIN (Resource temporarily unavailable)"
+    ],
+    "terminal": {
+      "event": "terminal",
+      "autonomous_exit": true,
+      "exit": 4,
+      "stderr": "error: export refusal without matched output custody; inspect retained job\n",
+      "parent_absent": true,
+      "tracer_absent": true,
+      "lock_available": true,
+      "scratch_empty": true
+    },
+    "backends": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    },
+    "mutex": {
+      "dev": 66306,
+      "ino": 31611780,
+      "mode": 33152,
+      "nlink": 1,
+      "uid": 1000,
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "namespace": [
+      ".artifact-35f97fd977e76b507f8567082e0fbd16.lock",
+      ".artifact-46bb4e5e96d7470259532b27a6cf5911.lock",
+      "35f97fd977e76b507f8567082e0fbd16",
+      "destination.json"
+    ],
+    "contender_while_held": "busy",
+    "contender_after_release": "available",
+    "fresh_reader": "3b2b136fab982a630a6fc01877aa3d61",
+    "reader_state": "released; its one retention claim also released",
+    "old_state": "All old jobs except target, units, inventory, leases/pins/claims and xmin unchanged; namespace/mutex unchanged."
+  },
+  "resources": {
+    "source": "76593458bc5b90a308e17aef4a8e0aa8d6e806b2",
+    "tree": "41d6623dd503d2d755d50b8c3ada1c5ccce494cf",
+    "owner": "fd8a14d856f74c53de71ec92ef3a7965",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-7659345",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "c6e8daf0dada15217f4ea63b9f4a397f3bb7e2f7d878be0f21c99b3c0735e04f"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "bc54439b0cde5a8a98c0f70a227b8555a1c58746408af677e726fbfa10382cb3"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T12:37:28.167258+00:00",
+    "runtime_profile": "busy",
+    "adapter_profile": null,
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "runtime_artifact_origin": "cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93",
+    "network_id": "32a51ca882ff05c1d1eb7a967002ca774647d9a7439f7a3e820d02b70a780281",
+    "postgres_id": "c6e8daf0dada15217f4ea63b9f4a397f3bb7e2f7d878be0f21c99b3c0735e04f",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "bc54439b0cde5a8a98c0f70a227b8555a1c58746408af677e726fbfa10382cb3",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "PASS_PENDING_CAPTURE",
+    "source": "76593458bc5b90a308e17aef4a8e0aa8d6e806b2",
+    "owner": "fd8a14d856f74c53de71ec92ef3a7965",
+    "result": "PASS",
+    "independent_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "container_ok": true,
+    "preexisting_preserved": true,
+    "preexisting_count": 614,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "original_source_unchanged": true,
+    "host_tcp_wmem_preserved": true,
+    "free_bytes": 142224248832
+  },
+  "free_before": 142626172928,
+  "boundaries": [
+    "The fixture holds a real empty conforming mutex, not an actual old native writer. Trace observes the installed process thread getting EAGAIN; no injection.",
+    "Reader admission is briefly blocked by an owned PostgreSQL SHARE lock after committed reservation. The foreign artifact mutex is held before releasing that blocker.",
+    "No SIGTERM causes this exit; the client waits for autonomous parent/tracer termination and collects both database backends0.",
+    "This proves observed refusal/no false pause under foreign exclusion. It does not qualify reclamation of an old live writer, revocation, pause-COMMIT loss, resume/cancel or pin GC.",
+    "The required sufficient-cap signed output counterpart on cdb artifacts remains pending; no full P08 or Linux arm64 qualification."
+  ]
+}

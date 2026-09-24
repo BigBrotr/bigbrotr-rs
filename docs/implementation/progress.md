@@ -21,7 +21,7 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEADcdb78a15e45e026b33c1b8c1e6a026b00d2b1b93 (local candidate),
+Last verified HEAD76593458bc5b90a308e17aef4a8e0aa8d6e806b2 (local candidate),
 origin main8e8d8a3d2f7a4aa98d170a3a339b05b2abdd1e1b. Root owns fixture-only Busy
 counterpart/dispatch, scoped parking evidence/inventory/operations and checkpoint.
 No other contributor writes or merge/rebase. Mac fmt/check,42 binary tests and
@@ -38,10 +38,11 @@ Epoch5 ordinary restart preserves complete SQL/xmin and namespace/mutex identity
 (dev66306/inode31606836/mode0600/nlink1/emptySHA), bounded1.5s observations each.
 Both parents alive until actual SIGTERM/exit0, reaped/root lock available/scratch
 empty, bothDB0. Source/capture42files/1172Git sources and ELFs independently checked
-by root; tarb97f896ffa7895026af2d05269336d4cc55338c8cbe4a245747f2a493a14a161.
+by root and independently by AI review; tarb97f896ffa7895026af2d05269336d4cc55338c8cbe4a245747f2a493a14a161.
 Ownera7d3f8f762e57fc9f6f706f8cda4da91 stopped-retained/network removed;
 612prior/eight running unchanged, free146398420992 ->142669053952. Keep newcache.
-Sufficient-cap signed counterpart and Busy/authority/pauseCOMMIT faults NOT_RUN.
+Sufficient-cap signed counterpart and authority/pauseCOMMIT faults NOT_RUN;
+Busy counterpart is recorded below.
 
 [Installed parking RED](evidence/p08-export-runtime-parking-red-20260924.json)
 at95bc5c2 reused exact f70 parent/worker after complete product/build equality.
@@ -235,17 +236,31 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Review/commit the fixture-only --runtime-busy counterpart, then reuse exactcdb78a1
-ELF only after complete product/build equality. The case blocks actual reader
-admission after committed unit reservation, holds the exact artifact flock,
-then requires an actual traced artifact flock EAGAIN, running3/no pause/no files
-and autonomous parent4 after known cleanup while another process still observes
-Busy. The exact retained patched strace traces only flock; actual parent and
-tracer identities/absence are checked. Preserve every old pin/claim, collect bothDB0 and
-actual parent absence. New isolated lab only; no active lab now.
-Then exercise sufficient-cap signed completion/recovery on these product artifacts.
-Busy/authority interleavings and pause-COMMIT faults remain gates; no full pause,
-explicit resume/cancel or P08/M1 completion claim.
+[Busy counterpart](evidence/p08-export-runtime-busy-native-20260924.json) passes at
+7659345 with exactcdb ELF after full product/build equality. Actual traced
+artifact46bb4e5e96d7470259532b27a6cf5911 flock EAGAIN; autonomous parent4 and tracer
+absent, jobac0ea9cae601146462b3d4865eaf21c0 running3/no pause/no output. One fresh
+reader3b2b136fab982a630a6fc01877aa3d61/claim released, every older row+xmin unchanged,
+bothDB0. Mutex conforming/unchanged; contender Busy until fixture release, then
+available. Capture39files/1175Git sources/trace+ELF verified by root; tar
+0c7b89b24c2ac62a89526ea693207e49eb4a4a410442fe94c6d3b3fc1d1f1c8a.
+Ownerfd8a14d856f74c53de71ec92ef3a7965 stopped-retained/network removed;
+614prior/eight running unchanged, free142626172928 ->142224248832. No newcache.
+The holder is a real foreign mutex, not an old native writer/reclamation proof.
+
+Maintenance complete: ONLY f70ac17/out/build/{target,cargo-home} retired after
+fresh owner/resolved path/mount and privileged read-only process FD/maps audits.
+3332640768allocatedbytes; free142214000640 ->145544396800 (concurrent writes possible).
+33capturefiles/1161sources/bothELF rehashed before/after;616containers/eight running
+unchanged. Current cdb cache retained; every source/log/capture/PG/archive/output,
+qualification/object-storage and historical dependency untouched. Inventory owns
+retirement; local audit attempt-f70ac17/cache-retirement. No active lab/cleanup debt.
+
+Next: commit evidence/retirement/checkpoint, run sufficient-cap signed completion,
+output recovery and COMMIT regression on exactcdb78a1 ELF after complete source
+input equality in a new isolated lab. No new native build/cache needed. Authority
+and pause-COMMIT interleavings remain gates; no full pause/resume/cancel or P08/M1
+completion claim. Root owns documentation only; no product changes.
 
 Existing0001/0008/0501/0813 permits this without checksum/migration changes.
 Required: actual joined worker; ExecutionCustody tied to exact successful start

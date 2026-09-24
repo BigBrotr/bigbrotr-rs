@@ -21715,7 +21715,51 @@
       "free_bytes": 148637876224,
       "cleanup_errors": []
     },
-    "retention": "Keep fresh installed parent/worker and complete compiler cache for immediate exact-input fixture reuse; original source, logs, PostgreSQL state and archive retained."
+    "retention": "Keep fresh installed parent/worker and complete compiler cache for immediate exact-input fixture reuse; original source, logs, PostgreSQL state and archive retained.",
+    "cache_retirement_20260924": {
+      "report": {
+        "format": "bigbrotr-owned-cache-retirement/1",
+        "status": "PASS",
+        "started_at": "2026-09-24T12:38:51.032036+00:00",
+        "source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+        "owner": "337d33ac65c18f0d3f4b64f8257d2d28",
+        "superseding_source": "cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93",
+        "free_before": 142214000640,
+        "allocated_cache_bytes": 3332640768,
+        "processes": {
+          "refs": [],
+          "permission_errors": []
+        },
+        "inspected_historical_parent_mounts": [
+          "28304a580d2eb2ac4646161e2616aab2b41922acae3ad6d793dac011defb5ad0",
+          "6e9dddb463c33c7707e3483329dc3c3ed79d391862856a8dc9783e5cfe56c2b6",
+          "72a55cad4ce990ebcacc1df1ab6ea2b37089f9b800ff5dbbb707f117e34c694e",
+          "9c8d5fc3019e882bbb74b1661763d3a0bb8a7b6c12bfbd8fa14588dbfaefd9c8",
+          "9e7d4bd8f5f2caaf47a97703a36be113822f064fa475277179857efda60d1d85"
+        ],
+        "artifacts": {
+          "bigbrotr": "6830a4f4bfe9a1c5c1da0a74bf8a62729527764ac9538ed620dcda008555ca9a",
+          "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+        },
+        "source_files": 1161,
+        "capture_sha256": "87a0feb7ddd2a1f8de6914557df956822666d06b350cc49b734483b0dd1ff363",
+        "removed": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f70ac17/out/build/target",
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f70ac17/out/build/cargo-home"
+        ],
+        "preserved": "Original capture/logs, current ELF outside cache, sources/manifests, seed artifacts, PGdata/archive/output. Currentcdb78a1 cache and all other labs unchanged.",
+        "free_after": 145544396800,
+        "containers_preserved": 616,
+        "unrelated_running": 8,
+        "finished_at": "2026-09-24T12:38:52.078503+00:00"
+      },
+      "local_audit": ".research/implementation/export-execution/attempt-f70ac17/cache-retirement",
+      "audit_sha256": {
+        "cache-containers-before.json": "3a1f218d0232836c89da9080caad4571d7fc074d6759cb6a64cbf4fa1768c073",
+        "cache-retirement.json": "045593214a2081580045c259f0aa07f4c8a0f12f1d96bf271ec3b685c0475de9",
+        "cache-containers-after.json": "3a1f218d0232836c89da9080caad4571d7fc074d6759cb6a64cbf4fa1768c073"
+      }
+    }
   },
   "implementation_export_runtime_recovery_20260924": {
     "status": "stopped-retained; PASS_SCOPED after capture hash/source verification",
@@ -22060,5 +22104,64 @@
       "cleanup_errors": []
     },
     "retention": "Keep current cdb78a1 compiler cache, installed ELF, source/logs/PG/archive/output and all retained export pins. Network removed, no active lab."
+  },
+  "implementation_export_runtime_busy_20260924": {
+    "status": "stopped-retained; PASS_SCOPED after capture/source/artifact/trace verification",
+    "evidence": "docs/implementation/evidence/p08-export-runtime-busy-native-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-7659345/capture",
+    "verified": {
+      "files": 39,
+      "sha256": "0c7b89b24c2ac62a89526ea693207e49eb4a4a410442fe94c6d3b3fc1d1f1c8a",
+      "source": "76593458bc5b90a308e17aef4a8e0aa8d6e806b2",
+      "tree": "41d6623dd503d2d755d50b8c3ada1c5ccce494cf",
+      "source_files": 1175
+    },
+    "resources": {
+      "source": "76593458bc5b90a308e17aef4a8e0aa8d6e806b2",
+      "tree": "41d6623dd503d2d755d50b8c3ada1c5ccce494cf",
+      "owner": "fd8a14d856f74c53de71ec92ef3a7965",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-7659345",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "c6e8daf0dada15217f4ea63b9f4a397f3bb7e2f7d878be0f21c99b3c0735e04f"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "bc54439b0cde5a8a98c0f70a227b8555a1c58746408af677e726fbfa10382cb3"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T12:37:28.167258+00:00",
+      "runtime_profile": "busy",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93",
+      "network_id": "32a51ca882ff05c1d1eb7a967002ca774647d9a7439f7a3e820d02b70a780281",
+      "postgres_id": "c6e8daf0dada15217f4ea63b9f4a397f3bb7e2f7d878be0f21c99b3c0735e04f",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "bc54439b0cde5a8a98c0f70a227b8555a1c58746408af677e726fbfa10382cb3",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 614,
+      "unrelated_running": 8,
+      "free_bytes": 142224248832,
+      "cleanup_errors": []
+    },
+    "retention": "Exact cdb installed artifacts reused; no compiler cache. Keep source/logs/trace/PG/archive/output and retained export pins. Network removed; no active lab."
   }
 }

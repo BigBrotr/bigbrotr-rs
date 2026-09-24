@@ -172,7 +172,9 @@ Paused jobs retain the original unit, immutable caps and export pin, and are
 excluded from automatic restart scans. Changing configuration does not enlarge
 that unit. Explicit resume/cancel controls are still required work. A Busy or
 pre-output refusal cannot establish cessation of an old writer and remains fatal
-after known reader cleanup. A refusal before reader admission advances the scan
+after known reader cleanup. The [foreign-lock counterpart](../implementation/evidence/p08-export-runtime-busy-native-20260924.json)
+observes an actual kernel `flock` refusal and autonomous fail-stop without a false
+pause; it does not qualify reclamation of an old writer. A refusal before reader admission advances the scan
 without creating another reader claim. Unknown SQL or worker termination
 retains pins and output custody through actual transport joins; it never reports
 successful cancellation. Pause/cancel commands, aged-queue fairness, mixed-workload
