@@ -105,6 +105,10 @@
     {
       "version": 501,
       "name": "0501_artifacts.sql"
+    },
+    {
+      "version": 814,
+      "name": "0814_export_resume.sql"
     }
   ],
   "reserved": [

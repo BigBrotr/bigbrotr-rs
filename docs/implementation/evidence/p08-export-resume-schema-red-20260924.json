@@ -1,0 +1,69 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "FAIL_EXPECTED_RED",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "source": "9d7bb214133855d70cc3be78ed9365c3b3acc849",
+  "tree": "4ed79468a086cf1331147b649a1f091a9908cf37",
+  "environment": {
+    "host": "tux",
+    "target": "Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-9d7bb21/capture",
+    "files": 16,
+    "sha256": "2716090547ebd197bb3ba2c98e402f20e776def9ecb909ce99703605108610a7",
+    "source": "9d7bb214133855d70cc3be78ed9365c3b3acc849",
+    "tree": "4ed79468a086cf1331147b649a1f091a9908cf37",
+    "source_files": 1211
+  },
+  "scope": "Actual PostgreSQL paused-to-queued constraint probe; original4e ELF seeds independently checked archive/acceptance, current0501 SQL creates a committed unit. No current Rust resume implementation or output execution.",
+  "original": {
+    "status": "FAIL",
+    "source": "9d7bb214133855d70cc3be78ed9365c3b3acc849",
+    "tree": "4ed79468a086cf1331147b649a1f091a9908cf37",
+    "scope": "Unreceipted paused-to-queued refusal only; no API or output execution qualification",
+    "trial_sha256": "3bc5be55146d4df9ab9d2758bdc282084c45912ffe62c9e19da73eeccc1dfb22",
+    "original_stdout": "{\"code\":\"BB099\",\"phase\":\"unreceipted-resume-accepted\",\"message\":\"resume passed constraints without a command receipt\",\"unchanged\":true}\nt",
+    "transition": {
+      "code": "BB099",
+      "phase": "unreceipted-resume-accepted",
+      "message": "resume passed constraints without a command receipt",
+      "unchanged": true
+    },
+    "failure": "AssertionError"
+  },
+  "baseline": "19 existing reservation/completion SQL cases PASS with actual signed seed and independent native reader",
+  "conclusion": "Paused revision4 can advance to queued5 and pass SET CONSTRAINTS ALL IMMEDIATE without a resume command/audit. The deliberate BB099 rolls back the subtransaction; no unreceipted queue transition was committed. New0814 enforcement remains under implementation.",
+  "review": "Root verified16capture payload hashes,1211current/1110seed Git source files and all662prior container identities/lifecycle/mount/network/restart data. No independent AI execution.",
+  "cleanup": {
+    "owner": "33bb4c90b0dc036b7c5f3f714d3ee5a1",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-execution-9d7bb21",
+    "state": "stopped-retained",
+    "owned_containers": 2,
+    "all_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "unrelated_running": 8,
+    "free_before": 135121199104,
+    "free_after": 134764441600
+  },
+  "remaining": [
+    "Atomic receipt migration and incompatible-row refusal",
+    "Typed Rust adapter and actual application-role privileges",
+    "Live authorization/CAS/concurrency/COMMIT-loss tests",
+    "HTTP/client/UI and same-unit signed completion"
+  ]
+}

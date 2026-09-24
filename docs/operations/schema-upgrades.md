@@ -45,7 +45,7 @@ require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
 
-An omitted target selects the latest embedded migration, currently 812. An explicit
+An omitted target selects the latest embedded migration, currently 814. An explicit
 target 1 preserves the initial control-only boundary for its historical fixtures.
 Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
 had no source registry, so their exact source authority cannot be inferred.
@@ -363,3 +363,14 @@ before binding. Apply it explicitly with the migration credential; startup never
 migrates. Older binaries refuse the unknown migration rather than silently
 misinterpreting export authority. Export jobs and destination approval have their
 own acceptance boundary; this schema extension does not dispatch work.
+
+
+Migration0814 adds immutable own-export resume receipts after0501, without editing
+prior checksums or inventing historical resume records. Future paused→queued
+transitions require an atomic command, audit and exact next revision; the queued
+receipt must commit before execution. Paused rows without their retained original
+unit/pin refuse55000 and require explicit recovery. Session identity is attribution,
+not a permanent foreign key to disposable credentials. Runtime provisioning will
+need SELECT/INSERT on control.export_resume_commands and its invoker functions;
+no UPDATE/DELETE/TRUNCATE. This new boundary is under native qualification; the
+resume API/client is not implemented or advertised by migration presence.

@@ -20,19 +20,30 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD 8743fd81df402c2590ed2eec52d561e994f01c5c, tree
-c285b42059ac0dce35c10037e78dd72a5f80d6be on main. Private origin/main is
-adee7b6e61e03ac9798a180f0c0a1e890eb29547 after the verified integrated push.
-One unpublished fixture candidate. Root also owns the pending resume command/type
-and independent fixture, owning contract/task amendments, schema RED fixture and
-lab profile, plus this checkpoint/inventory. No other contributor or merge/rebase.
+Last verified HEAD9d7bb214133855d70cc3be78ed9365c3b3acc849, tree
+4ed79468a086cf1331147b649a1f091a9908cf37 on main; private origin/main remains
+adee7b6e61e03ac9798a180f0c0a1e890eb29547. Three unpublished coherent candidates
+include geometry/evidence and resume identity/SQL RED fixture. Root owns pending
+0814 migration/catalog, SQL acceptance scenarios, RED evidence and checkpoint/
+inventory documentation. No other contributor or merge/rebase.
 
-Next bounded action: run the prepared --resume-schema negative control through
-an exact clean Git candidate on Tux, after preflight. This uses the retained4e
-native seed and current SQL; it creates no compiler cache. Confirm that an
-unreceipted paused→queued transition currently passes deferred constraints,
-inside a rolled-back subtransaction. Then implement its additive command boundary
-and real consumer; no resume endpoint or migration exists yet.
+Next bounded action: qualify additive0814 with --resume-schema on a fresh clean
+Git candidate. The [9d7bb21 native RED](evidence/p08-export-resume-schema-red-20260924.json)
+confirmed unreceipted paused4→queued5 passes constraints, then deliberately rolls
+back. Its16payloads/1211current/1110seed Git source files and662prior/eight running
+resources are verified; tar2716090547ebd197bb3ba2c98e402f20e776def9ecb909ce99703605108610a7.
+Stopped-retained root runs/export-execution-9d7bb21, owner33bb4c90b0dc036b7c5f3f714d3ee5a1;
+ownedPID0/noOOM/network removed, bothDB0, no cleanup debt or compiler cache.
+Free after134764441600. This test does not claim an unreceipted committed transition.
+
+Draft0814 binds same-unit resume to a new command/audit/detail and exact revision,
+requires current input/session authority and refuses further transitions in the
+same transaction even after immediate constraint flush. Root corrected trigger
+record dispatch before execution. Independent read-only AI found a session FK
+would prevent terminal-session cleanup; removed it, retaining only attribution.
+No further concrete source counterexample found in that bounded review. SQL engine
+positive/omission/rollback cases and session cleanup still pending; typed adapter,
+HTTP/client/UI and actual resumed signed completion remain unimplemented.
 
 The [8743fd8 geometry follow-up](evidence/p09-skip-link-geometry-incomplete-20260924.json)
 is stopped-retained INCOMPLETE, owner2d2445d06a8106c48ff9d534eeeefa44,
@@ -260,7 +271,8 @@ locking and positive output exclusion remain required. Additive migration after0
 Root's ResumeExportCommand fingerprint/closed parsing has two Mac tests passing,
 preceded by missing-type compile RED; Clippy passed. Independent Python vectors
 bind four IDs and three u64 revisions. This is identity only, not acceptance.
-SQL RED fixture is prepared but NOT_RUN; adapter/HTTP/client/UI remain unimplemented.
+SQL RED is now executed as above; new0814 acceptance remains pending.
+Adapter/HTTP/client/UI remain unimplemented.
 Independent AI read the action mapping, not these new tests or SQL fixture.
 
 ## Tux ownership and maintenance

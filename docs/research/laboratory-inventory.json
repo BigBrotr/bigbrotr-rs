@@ -23166,5 +23166,50 @@
     "free_before": 135744331776,
     "free_after": 135166988288,
     "retention": "Keep original source, logs, production bundles, screenshots, ELF and PG state. No new Rust compiler cache. Eight unrelated running containers preserved."
+  },
+  "implementation_export_resume_schema_red_20260924": {
+    "status": "stopped-retained; expected RED, lab INCOMPLETE",
+    "resources": {
+      "source": "9d7bb214133855d70cc3be78ed9365c3b3acc849",
+      "tree": "4ed79468a086cf1331147b649a1f091a9908cf37",
+      "owner": "33bb4c90b0dc036b7c5f3f714d3ee5a1",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-execution-9d7bb21",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "15929f7e59214e9026f41959b5a1134400f73291fc99e743c2539669ee995a2b"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "683deddfa53fa232432adb8b0c29b8ea1d1ab37f02247304e61f44ff21c5ea28"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T15:24:16.567322+00:00",
+      "runtime_profile": null,
+      "adapter_profile": null,
+      "schema_profile": "resume",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "5d92358cbb4433d0cc6f298ab4b4baa7e17f6e76559ee26e90cbdf14993fdb6a",
+      "postgres_id": "15929f7e59214e9026f41959b5a1134400f73291fc99e743c2539669ee995a2b",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "683deddfa53fa232432adb8b0c29b8ea1d1ab37f02247304e61f44ff21c5ea28",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-schema-red-20260924.json",
+    "capture": {
+      "files": 16,
+      "sha256": "2716090547ebd197bb3ba2c98e402f20e776def9ecb909ce99703605108610a7",
+      "source": "9d7bb214133855d70cc3be78ed9365c3b3acc849",
+      "tree": "4ed79468a086cf1331147b649a1f091a9908cf37",
+      "source_files": 1211
+    },
+    "retention": "Preserve source, native seed identities, evidence and deliberately retained paused4 PG state. No compiler cache created.",
+    "free_before": 135121199104,
+    "free_after": 134764441600
   }
 }
