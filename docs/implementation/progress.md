@@ -21,13 +21,18 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD26cde0aebb837e5a492e0bd5122ab7b81e2f33e5 candidate;
+Last verified HEAD1c15d1a1845d6c094ab7f4478f4edcc629702766 candidate;
 origin/mainfc08c48a4c9573bcc308a082de64ab33c3c4820b. Root owns fixture correction,
 filesystem capacity preflight and evidence/inventory/checkpoint edits.
 [First headless fixture](evidence/p08-export-runtime-fixture-incomplete-20260924.json)
 is INCOMPLETE: fresh installed build/tests/Clippy passed, but offline fixture
 validation rejected640MiB x2 workers against1GiB native pool before serve.
-Corrected next fixture uses1536MiB native pool/2GiB process AND managed policy640MiB;
+Second1c15d1a attempt also failed offline:1536MiB native lane plus recipe
+128+256+512MiB allowances exceeds2GiB. Original INCOMPLETE retained; fresh
+installed build/tests/Clippy passed, runtime NOT_RUN. Capture26files/1159sources
+verified, owner9dc0f4d2212eb5552aec325df1f17e92 stopped-retained/network removed.
+Next correction3GiB process is actually validated by the Mac executable using
+the exact produced TOML. It keeps all lanes and managed policy640MiB;
 full manifest oracle strengthened after independent source review. This was not
 an executor RED. Capture26files/1158sources verified. Both containers stopped-
 retained, owner9769d2023e4c48a208a84ec32eefe9a5, network removed,592 prior
@@ -39,7 +44,10 @@ capacity. Rustix1.1.5 exact Mac/Linux implementation inspected. Mac regression
 RED against unconditional admission then GREEN; Clippy passed. This is not a
 physical quota/shared multi-process reservation ledger. The automatic single
 Control consumer and broader resource qualification are still pending.
-Next run the corrected exact native headless fixture before adding the executor.
+Next run corrected exact native headless fixture, reusing1c15d1a installed ELF
+after complete product/build-input equality. No new cache/compilation is needed.
+The runtime-profile build description now refers to the actual selected lab, not
+the earlier blocked-syscall case. Then add the executor; no product consumer yet.
 
 [Action-window output gate](evidence/p08-export-action-window-native-20260924.json):
 real-clock100ms partial-buffer regression first failed against atomic-only output,

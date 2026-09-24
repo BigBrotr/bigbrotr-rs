@@ -35,7 +35,7 @@ identity = dict(source=manifest['revision'],tree=manifest['tree'],lockfile_sha25
 checks = Path('/out/adapter-checks')
 if runtime:
     env.update(build_environment(Path('/out/archive-worker')))
-    identity['scope']='Current installed executable and worker under actual blocked filesystem supervision'
+    identity['scope']='Current installed executable and worker; practical profile recorded by the outer laboratory'
     assert execute([
         ('installed-build',[sys.executable,__file__,'--build-runtime']),
         ('management-tests',['cargo','test','--locked','--offline','--release','-p','bigbrotr','--bin','bigbrotr']),

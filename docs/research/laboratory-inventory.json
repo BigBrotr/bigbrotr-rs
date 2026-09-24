@@ -21148,5 +21148,203 @@
     },
     "status": "INCOMPLETE_CAPTURED",
     "report": "docs/implementation/evidence/p08-export-runtime-fixture-incomplete-20260924.json"
+  },
+  "implementation_export_runtime_envelope_fixture_20260924": {
+    "status": "INCOMPLETE",
+    "source": {
+      "files": 26,
+      "sha256": "9ed518921c4559951e62896abd2ed6a296e9e18f9450bbab10733e583b21e6d7",
+      "source": "1c15d1a1845d6c094ab7f4478f4edcc629702766",
+      "tree": "e01639c5dc446710bea74bcbefa3ba0486cdc748",
+      "source_files": 1159
+    },
+    "local_capture": ".research/implementation/export-execution/attempt-1c15d1a/capture",
+    "resources": {
+      "source": "1c15d1a1845d6c094ab7f4478f4edcc629702766",
+      "tree": "e01639c5dc446710bea74bcbefa3ba0486cdc748",
+      "owner": "9dc0f4d2212eb5552aec325df1f17e92",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1c15d1a",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "d26154e72eb146f1c754cf394637db891a07f508f119f8962319cb0b6ac10522"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "a37bdcbb1dabd2660333fe8753c8006ff31acc4ec0f50fb99f4464681a6545da"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T10:58:06.379797+00:00",
+      "runtime_profile": "executor",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "fe72f5e6a7866616d090c3d1668281f4dad2aba582ba3e987387a05013a2195b",
+      "postgres_id": "d26154e72eb146f1c754cf394637db891a07f508f119f8962319cb0b6ac10522",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "a37bdcbb1dabd2660333fe8753c8006ff31acc4ec0f50fb99f4464681a6545da",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "status": "INCOMPLETE",
+      "source": "1c15d1a1845d6c094ab7f4478f4edcc629702766",
+      "owner": "9dc0f4d2212eb5552aec325df1f17e92",
+      "cases": {},
+      "result": "INCOMPLETE",
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "failure": {
+        "kind": "AssertionError",
+        "frames": [
+          {
+            "file": "lab.py",
+            "line": 282,
+            "function": "<module>"
+          }
+        ]
+      },
+      "container_terminals": {
+        "postgres": {
+          "id": "d26154e72eb146f1c754cf394637db891a07f508f119f8962319cb0b6ac10522",
+          "name": "/bigbrotr-export-execution-1c15d1a-postgres",
+          "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "lifecycle": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 137,
+            "Error": "",
+            "StartedAt": "2026-09-24T10:58:09.668812446Z",
+            "FinishedAt": "2026-09-24T10:59:58.927036081Z"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1c15d1a/secrets",
+              "Destination": "/secrets",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1c15d1a/pgdata",
+              "Destination": "/var/lib/postgresql/data",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "networks": {
+            "bigbrotr-export-execution-1c15d1a": {
+              "IPAMConfig": null,
+              "Links": null,
+              "Aliases": null,
+              "DriverOpts": null,
+              "GwPriority": 0,
+              "NetworkID": "fe72f5e6a7866616d090c3d1668281f4dad2aba582ba3e987387a05013a2195b",
+              "EndpointID": "",
+              "Gateway": "",
+              "IPAddress": "",
+              "MacAddress": "",
+              "IPPrefixLen": 0,
+              "IPv6Gateway": "",
+              "GlobalIPv6Address": "",
+              "GlobalIPv6PrefixLen": 0,
+              "DNSNames": [
+                "bigbrotr-export-execution-1c15d1a-postgres",
+                "d26154e72eb1"
+              ]
+            }
+          },
+          "restart": {
+            "Name": "no",
+            "MaximumRetryCount": 0
+          }
+        },
+        "rust-visibility": {
+          "id": "a37bdcbb1dabd2660333fe8753c8006ff31acc4ec0f50fb99f4464681a6545da",
+          "name": "/bigbrotr-export-execution-1c15d1a-rust-visibility",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "lifecycle": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-24T10:58:11.547434185Z",
+            "FinishedAt": "2026-09-24T10:59:59.183614626Z"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1c15d1a/out/archive-worker",
+              "Destination": "/assets",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1c15d1a/out",
+              "Destination": "/out",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1c15d1a/out/build/source",
+              "Destination": "/out/build/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1c15d1a/secrets",
+              "Destination": "/secrets",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "networks": {},
+          "restart": {
+            "Name": "no",
+            "MaximumRetryCount": 0
+          }
+        }
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 594,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "original_source_unchanged": true,
+      "host_tcp_wmem_preserved": true,
+      "free_bytes": 149950324736
+    },
+    "failure": "Corrected native lane1536MiB plus recipe baseline128/payload256/completion512 totals2432MiB, exceeding process2GiB. Offline validation refused before serve.",
+    "next_correction": "Process3GiB preserves all recipe lanes. Actual Mac executable validates exact produced corrected TOML; document SHA bd0d113a7e28871995271474add72082be2e7152dade5f20893a7f11b50c83a0. Managed policy remains640MiB. Next fixture reuses identical actual installed binaries after complete source-input equality; no extra compiler cache."
   }
 }

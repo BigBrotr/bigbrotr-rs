@@ -10,13 +10,13 @@ from pathlib import Path
 
 revision, tree = sys.argv[1:3]
 responsive = sys.argv[3:4] == ["--runtime-responsive"]
-executor = sys.argv[3:] == ["--runtime-executor"]
+executor = sys.argv[3:4] == ["--runtime-executor"]
 runtime = responsive or executor
-reuse_runtime = sys.argv[4] if responsive and len(sys.argv)==5 else None
+reuse_runtime = sys.argv[4] if runtime and len(sys.argv)==5 else None
 assert reuse_runtime is None or re.fullmatch("[0-9a-f]{40}", reuse_runtime)
 rollback = sys.argv[3:] == ["--rust-rollback"]
 adapter = sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
-assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"]) or (responsive and len(sys.argv)==5)
+assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"]) or (runtime and len(sys.argv)==5)
 compile_current = adapter or (runtime and not reuse_runtime)
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
@@ -150,7 +150,7 @@ try:
          validation='Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. This reuse record covers original seed artifacts only. Current compilation/adapter evidence, when selected, is recorded separately under adapter-checks and adapter-cases.'))
     state['artifact_origin']=artifact_source;save()
     if reuse_runtime:
-        runtime_root=base/'runs'/('export-responsive-'+reuse_runtime[:7])
+        runtime_root=base/'runs'/(('export-runtime-' if executor else 'export-responsive-')+reuse_runtime[:7])
         runtime_state=json.loads((runtime_root/'resources.json').read_text())
         assert runtime_state['source']==reuse_runtime and runtime_state['state']=='stopped-retained'
         for entry in runtime_state['containers']:
