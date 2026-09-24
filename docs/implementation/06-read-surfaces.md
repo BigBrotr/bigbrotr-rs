@@ -216,8 +216,10 @@ It has independent frozen keyfile fixtures, bounded descriptor reads, cooperativ
 locking, identical retry and first-publication no-replace. The
 [local report](evidence/p06-cursor-keyring-local-20260925.json) records50selected
 Mac consumer tests, the collision RED/GREEN and review boundaries. The
-[native recipe](../../experiments/cursor-keyring/README.md) owns practical
-filesystem/cancellation acceptance. AEAD product integration, Control lifecycle,
+[native report](evidence/p06-cursor-keyring-native-20260925.json) qualifies15local
+keyfile scenarios at7acfd32 with unchanged1f251db ELF, including sync failures,
+four SIGKILL windows, late collision and blocked stdout. The original observer
+failure remains INCOMPLETE in its separate report. AEAD product integration, Control lifecycle,
 cross-worker consumers and the rest of Step1 remain open; a local keyfile does not
 activate issuance or complete this step.
 

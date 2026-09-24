@@ -63,3 +63,8 @@ use is unknown. Inspection can read the last complete final file beside staging,
 but cannot certify its previous durable publication. See the
 [cursor ownership contract](../architecture/derived-read-publication.md#cursor-key-ownership-and-confidentiality)
 for the format and remaining Control/rotation boundaries.
+
+The [native local-keyfile qualification](../implementation/evidence/p06-cursor-keyring-native-20260925.json)
+records actual sync/error/process-death/retry effects and a full blocking stdout
+pipe. It preserves the original failed observer run separately. This finite
+command evidence does not qualify key distribution, Control or rotation.

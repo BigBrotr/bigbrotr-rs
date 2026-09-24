@@ -1,0 +1,106 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1 / P08-T03 prerequisite",
+  "status": "PASS",
+  "scope": "Protected local cursor keyfile preparation/inspection only. Step1 and the selected product remain INCOMPLETE.",
+  "source": "7acfd329edf77ebbdc65d51011d8c6cb68bca8e6",
+  "tree": "4ae78b158362a8c7b7c0756578f23a71b3807f00",
+  "environment": "Native Linux amd64, Rust1.98.1, pinned trusted Rust image, ext4; one networkless container with6GiB/twoCPU bounds",
+  "artifact": {
+    "source": "1f251dbfb59c870dd413d6da338dfdeb2911a9c9",
+    "tree": "4b8b65f089d53d1c629decebd48d4122f244ed46",
+    "binary_sha256": "7ebfe502a87cadc101461d5fd5bd823e2e3ee268571bc50db7050fa148cb35c0",
+    "source_manifest_sha256": "5885edb076805e43d3e351aa0c8120b55c3c82f2608b1ab7945127d93d91ab46",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "native_worker_bound": false,
+    "source_files": 1289,
+    "current_source_files": 1290,
+    "unchanged_inputs": 838,
+    "reuse": "Only documentation except generated config reference and cursor-keyring recipe may differ. All other experiments included. Original successful native build/50selected tests/collision regression/Clippy reused; none rerun or attributed to the new fixture revision."
+  },
+  "practical": {
+    "status": "PASS",
+    "cases": 15,
+    "case_names": [
+      "ordered-sync",
+      "independent-wire",
+      "cross-process-lock",
+      "parallel-processes",
+      "file-eio",
+      "directory-eio",
+      "parent-eio",
+      "retry-file-eio",
+      "write-enospc",
+      "kill-before-rename",
+      "kill-after-rename",
+      "kill-before-parent-sync",
+      "kill-retry-before-rename",
+      "late-file-collision",
+      "blocked-stdout"
+    ],
+    "observations": [
+      "Actual raw122-byte write, file fsync, RENAME_NOREPLACE, directory fsync and parent fsync, followed by same-byte retry through a different inode. Inspection reports inspected-local.",
+      "Fifteen independent public wire vectors through actual CLI; external Python exclusive/shared flock verifies nonblocking refusal and shared inspection.",
+      "Eight concurrent processes: one successful identity and seven Busy refusals in this run; not a required scheduling distribution.",
+      "EIO at each of three sync calls and retry first sync; exactly one injected call per case. Partial state is retained/refused, published final survives retry with identical keys and new inode.",
+      "Exactly one main-thread122-byte write returns ENOSPC; zero-byte staging retained, final absent and retry refuses. Diagnostic writer not faulted.",
+      "Four actual SIGKILL windows after observed pending fsync with exact child executable/FD path: before rename, after rename, before parent sync and retry before rename. Positive child absence and filesystem/retry effects checked.",
+      "External final file appears after absence check; RENAME_NOREPLACE returns EEXIST, public sentinel unchanged and partial retained, retry refuses Mismatch.",
+      "Actually full blocking65536-byte stdout pipe with its read end held open and never drained: process exits1 within finite observation, durable local file inspects and retries with same keys."
+    ],
+    "exclusive_refusal_seconds": 0.003149447962641716,
+    "blocked_stdout_seconds": 0.21487012365832925,
+    "blocked_stdout_pipe_bytes": 65536,
+    "raw_result_sha256": "dd0f33757ae68a252024e16514e56c3388b36ad3b481f71053bf61769e19bd45",
+    "strace_sha256": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458"
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-keyring-7acfd32",
+    "owner": "2e3e3a6a495abe9e0f84fe863d84e229",
+    "container": "90a49655924167a7d0a64720b75a9556e5005d95f883d280be7904a45df030f1",
+    "state": "stopped-retained",
+    "exit_code": 0,
+    "pid": 0,
+    "oom": false,
+    "preexisting_preserved": 767,
+    "unrelated_running": 8,
+    "free_before": 109770043392,
+    "free_after": 109715476480,
+    "retirement": "None. No additional compiler cache copied; original1f build cache retained for next product slice. No DB, network or volume created; all private generated key/failure state retained.",
+    "live_recheck": {
+      "at": "2026-09-24T23:23:48.157580+00:00",
+      "free_bytes": 109713907712,
+      "prior_projections_preserved": 768,
+      "private_key_directories_checked": 29,
+      "path": ".research/implementation/cursor-keyring/live-final.json",
+      "sha256": "f3842bde606feb991c0b9c18bca973c82e5f5fd4a31683eb3bcb56cbed25b4c5",
+      "scope": "Fresh read-only container/owner/process/ELF and actual file format/mode/owner/link/hash/inode comparison; no product/fixture rerun or private key-byte transfer."
+    }
+  },
+  "capture": {
+    "local": ".research/implementation/cursor-keyring/capture-7acfd32",
+    "payload_files": 176,
+    "tar_sha256": "b4183ecdeb03d141b287aa5f7ed5d9c985719817999ea9d4a027b9df30d81f04",
+    "manifest_sha256": "37ac42f7dcc3e141f26e78be30d3e791d31fb934d78063aa276d2a820007070c",
+    "excluded": "All generated key and partial bytes remain private on Tux; safe metadata/logs/raw-pointer trace/source/ELF only."
+  },
+  "review": {
+    "root": "Replayed205payload hashes,1289original/1290current Git blobs and tar entries,838unchanged product/build/test inputs, original ELF/build-info, all15case outputs/traces and767prior resource projections. Additional fresh live metadata census checks actual retained file effects without key transfer.",
+    "independent_ai": "Read-only AI independently verified both captures/source trees/ELF,838inputs,54CLI responses,11traces,15case outcomes, final resources and29live key-directory metadata records including15public vectors. No product tests, SSH or edits. No substantive discrepancy; wording clarified held-open undrained stdout and killed-tracer evidence limits."
+  },
+  "original_failure": {
+    "report": "docs/implementation/evidence/p06-cursor-keyring-native-incomplete-20260925.json",
+    "status": "INCOMPLETE",
+    "source": "1f251dbfb59c870dd413d6da338dfdeb2911a9c9",
+    "correction": "Moved misplaced ENOSPC observer assertions into the intended error loop; preserved original source/NameError/logs/outcome. No product or expected-result change."
+  },
+  "limitations": [
+    "No Control registration/current key lifecycle, AEAD product envelopes, cross-worker issuance, rotation/revocation, pagination or HTTP/browser qualification.",
+    "No physical power loss, kernel I/O stall, writeback corruption, network filesystem, ACL or hostile same-UID provisioning writer qualification.",
+    "Advisory coordination requires external provisioning exclusion. Returned keyring owns bytes and budget, not ongoing pathname custody.",
+    "Logical32KiB charge/owned buffer zeroization is not a RSS, all-copy erasure or process-wide secret-erasure guarantee.",
+    "No packaged install/release or Linux arm64/hosted Actions claim.",
+    "The SIGKILL traces end at pending fsync because the tracer is also killed. Child absence is checked by the native runner and terminal container census, not a terminal strace event."
+  ]
+}

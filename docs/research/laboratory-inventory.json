@@ -24953,6 +24953,53 @@
       "oom": false
     },
     "original_failure": "cases.py185 NameError in incorrectly placed ENOSPC assertions; raw original preserved, later cases NOT_RUN",
-    "next": "Corrected exact-Git practical-only run with verified unchanged1f251db ELF, no additional compiler-cache copy"
+    "next": "Continue P06-T03 Step1 AEAD/Control prerequisite and P08 actor-owned job-list consumer; preserve both original runs, private key states and useful1f compiler cache.",
+    "corrected_run": {
+      "source": "7acfd329edf77ebbdc65d51011d8c6cb68bca8e6",
+      "tree": "4ae78b158362a8c7b7c0756578f23a71b3807f00",
+      "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-keyring-7acfd32",
+      "owner": "2e3e3a6a495abe9e0f84fe863d84e229",
+      "owner_label": "org.bigbrotr.cursor-keyring",
+      "orchestrator": {
+        "pid": 618667,
+        "start_ticks": "367403811",
+        "source": "7acfd329edf77ebbdc65d51011d8c6cb68bca8e6",
+        "tree": "4ae78b158362a8c7b7c0756578f23a71b3807f00"
+      },
+      "container": "90a49655924167a7d0a64720b75a9556e5005d95f883d280be7904a45df030f1",
+      "status": "PASS15local-keyfile practical cases; stopped-retained, original first attempt unchanged",
+      "artifact_source": "1f251dbfb59c870dd413d6da338dfdeb2911a9c9",
+      "report": "docs/implementation/evidence/p06-cursor-keyring-native-20260925.json",
+      "capture": {
+        "local": ".research/implementation/cursor-keyring/capture-7acfd32",
+        "payload_files": 176,
+        "tar_sha256": "b4183ecdeb03d141b287aa5f7ed5d9c985719817999ea9d4a027b9df30d81f04",
+        "manifest_sha256": "37ac42f7dcc3e141f26e78be30d3e791d31fb934d78063aa276d2a820007070c",
+        "excluded": "All generated key and partial bytes remain private on Tux; safe metadata/logs/raw-pointer trace/source/ELF only."
+      },
+      "resources": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-keyring-7acfd32",
+        "owner": "2e3e3a6a495abe9e0f84fe863d84e229",
+        "container": "90a49655924167a7d0a64720b75a9556e5005d95f883d280be7904a45df030f1",
+        "state": "stopped-retained",
+        "exit_code": 0,
+        "pid": 0,
+        "oom": false,
+        "preexisting_preserved": 767,
+        "unrelated_running": 8,
+        "free_before": 109770043392,
+        "free_after": 109715476480,
+        "retirement": "None. No additional compiler cache copied; original1f build cache retained for next product slice. No DB, network or volume created; all private generated key/failure state retained.",
+        "live_recheck": {
+          "at": "2026-09-24T23:23:48.157580+00:00",
+          "free_bytes": 109713907712,
+          "prior_projections_preserved": 768,
+          "private_key_directories_checked": 29,
+          "path": ".research/implementation/cursor-keyring/live-final.json",
+          "sha256": "f3842bde606feb991c0b9c18bca973c82e5f5fd4a31683eb3bcb56cbed25b4c5",
+          "scope": "Fresh read-only container/owner/process/ELF and actual file format/mode/owner/link/hash/inode comparison; no product/fixture rerun or private key-byte transfer."
+        }
+      }
+    }
   }
 }

@@ -48,5 +48,12 @@ checked at teardown; no global cleanup or volume deletion is performed.
 Injected syscall failure/process death tests do not simulate host power loss,
 physical writeback corruption, network filesystems or a hung kernel. The local
 keyring is a snapshot of protected bytes, not continuing pathname custody or
-authority. Registration must follow a successful explicit preparation. This
-recipe remains NOT_RUN until an exact native report records executed results.
+authority. Registration must follow a successful explicit preparation.
+
+The [native report](../../docs/implementation/evidence/p06-cursor-keyring-native-20260925.json)
+records15practical cases passing at7acfd32 with the verified unchanged1f251db ELF.
+The [original run](../../docs/implementation/evidence/p06-cursor-keyring-native-incomplete-20260925.json)
+remains INCOMPLETE after an observer NameError; its successful build/tests and
+first ordered-sync case retain their original identity. The correction moved
+misplaced ENOSPC assertions into their intended loop without changing product
+code or expected answers. No broader cursor/Control/release gate is closed.

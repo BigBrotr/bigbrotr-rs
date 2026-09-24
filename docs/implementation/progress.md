@@ -20,13 +20,12 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Main HEAD1f251dbfb59c870dd413d6da338dfdeb2911a9c9, tree
-4b8b65f089d53d1c629decebd48d4122f244ed46. Private origin/main last verified90e5d6f;
-this local candidate is not pushed yet. Clean exact Git was bundled to Tux.
-The protected local keyring, CLI/config root, descriptor helper, fixtures/tests,
-native recipe and documentation are committed in1f251db. Root now owns only
-checkpoint/inventory/report and fixture-only correction after the native run. No foreign
-edits, SQL or root Cargo/lock changes. No local product process remains active.
+Main HEAD7acfd329edf77ebbdc65d51011d8c6cb68bca8e6, tree
+4ae78b158362a8c7b7c0756578f23a71b3807f00. Private origin/main freshly verified90e5d6f;
+local1f251db product and7acfd32 fixture candidates are not pushed yet.
+The worktree was clean on resumption. Root now owns only the native report,
+checkpoint, inventory and linked documentation. No foreign edits, SQL or root
+Cargo/lock changes. Mac remains sole writer; no local product process is active.
 
 Mac verification:50selected CLI/config/policy/keyring/secret tests pass, plus the
 collision regression and Clippy. Fifteen independent public wire vectors include
@@ -34,7 +33,7 @@ collision regression and Clippy. Fifteen independent public wire vectors include
 mutations refuse. Original initial stub and CLI RED, collision plain-rename RED,
 all succeeding logs and two unavailable Darwin FIFO API compilation errors remain
 under .research/implementation/cursor-keyring. The test now uses the existing
-mkfifo executable, as the secret-file suite already does. No native PASS yet.
+mkfifo executable, as the secret-file suite already does. Native scope and original observer failure are recorded below.
 
 Independent read-only AI review found and root corrected first-creation overwrite
 with NOREPLACE, misleading inspected/prepared output and help wording. It rebuilt
@@ -43,7 +42,7 @@ recipe review found per-thread ENOSPC injection would also break diagnostics;
 the recipe now traces only the main thread for that one write fault, and keeps
 write payloads raw. Both docker log streams will be retained. Parallel preparer
 successes/Busy counts are observations, while explicit Python flock establishes
-forced contention independently. Native recipe was NOT_RUN at commit; the exact candidate is now running below.
+forced contention independently. Native recipe was NOT_RUN at its original commit; both exact runs are now terminal below.
 
 The format/operations contract lives in derived-read-publication.md and protected
 credentials. Key loading retains32KiB and zeroizes its owned buffer, without an
@@ -135,18 +134,49 @@ No retirement/network/volume/database. All generated keys and partial files rema
 private on Tux and are excluded from capture. Original8db cache and strace509ea
 remain read-only; this run's fresh compiler cache is retained.
 
-Root now owns a fixture-only correction: move the three ENOSPC assertions to their
-intended loop, record actual failed-case status, and support explicit reuse of the
-already built parent after full unchanged-product/build/test input comparison.
-No Rust/SQL/config/lock changes. Original product artifact identity remains1f251db;
-new practical source will have its own exact revision. Reuse mounts only old
-source/build metadata/native-test artifacts, never old generated key data.
+The corrected fixture7acfd32 reused that exact1f ELF after838unchanged build/product/
+test inputs, including the generated config reference and other experiment
+fixtures. No second compilation, cache copy or test/Clippy attribution to7ac.
+All15practical cases PASS in the [native report](evidence/p06-cursor-keyring-native-20260925.json):
+ordered sync/retry,15wire vectors, independent Python flock, eight preparers
+(one success/seven Busy), four EIO calls, one main-thread ENOSPC, four SIGKILL
+windows, late external collision and an actually full65536byte stdout pipe.
+Blocked output exits1 in0.214870124s with same durable keys on inspect/retry.
+The original1f NameError/outcome and private failure states remain unchanged.
 
-Next bounded action: finish read-only review, commit the corrected recipe and
-transfer exact Git to a new cursor-keyring run, selecting1f251db as artifact source.
-Execute all15practical cases, inspect durable effects and terminal resources;
-never overwrite/relabel the failed run. After local keyring qualification continue
-P06Step1 AEAD/Control and P08actor-owned GET /management/v1/jobs.
+Corrected root cursor-keyring-7acfd32 is stopped-retained, owner
+2e3e3a6a495abe9e0f84fe863d84e229. Container
+90a49655924167a7d0a64720b75a9556e5005d95f883d280be7904a45df030f1
+PID0/noOOM/exit0; orchestrator618667/start367403811 absent. No DB/network/volume.
+Capture-7acfd32 has176safe payloads; tar SHA
+b4183ecdeb03d141b287aa5f7ed5d9c985719817999ea9d4a027b9df30d81f04.
+Root verifies205payloads across both runs,1289original/1290current Git entries,
+ELF/source/manifests,838inputs, all15result/trace cases and767prior projections.
+Final free109715476480bytes from109770043392; eight unrelated running.
+Independent read-only AI verifies both captures/Git/ELF,838inputs,54CLI responses,
+11traces,15cases, final resources and29live private-directory metadata records.
+No substantive discrepancy; clarified held-open undrained pipe and killed-tracer
+evidence limits. No product tests/SSH/edits by AI.
+
+Fresh read-only live census2026-09-24T23:23:48Z verifies all768container projections,
+both owners/orchestrator absence/ELF and29actual private-key directories: modes,
+links, file formats, hashes and expected preserved/changed inodes. No private key
+bytes transferred. Free109713907712bytes; retained in
+.research/implementation/cursor-keyring/live-final.json SHA
+f3842bde606feb991c0b9c18bca973c82e5f5fd4a31683eb3bcb56cbed25b4c5.
+No cleanup needed before this small reuse run. Keep1f fresh compiler cache for
+next product build; no retirement of original8db/73e or failure/source evidence.
+These syscall failures/process kills are not power-loss/kernel-stall/ACL/shared
+filesystem qualification. SIGKILL child absence is observed by runner and terminal
+container census, not a terminal strace line after its tracer was killed.
+
+Artifact/handoff checks pass:178markdown/319JSON,123tasks/756steps and the same
+three historical cycle candidates. Full changed diff inspected; no new product
+change after native qualification.
+
+Next bounded action: commit evidence and privately push verified1f/7ac/docs.
+Then implement P06Step1 AEAD envelope/Control ownership before
+P08 actor-owned GET /management/v1/jobs. Do not close Step1 from local keyfiles.
 
 The list remains default50/max200, descending(created_at,job_id), owner/status.read,
 current session/CSRF and nonrenewable delivery, with current mutable-state filters.
