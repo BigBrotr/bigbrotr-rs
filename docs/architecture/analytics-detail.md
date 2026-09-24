@@ -63,8 +63,10 @@ double contribution. Retain pins and account for WAL, compaction, checkpoints,
 staged CH output and artifacts together.
 
 Migration 0501 supplies shared `artifacts`/`artifact_files` inventory for the first
-graph consumer; `graph_artifacts` is its typed graph binding. Later 0804 adds
-publication metadata, without making P05 depend on P08 or owning the files again.
+signed export consumer. Migration 0502 adds analytical state and
+`graph_artifacts` as a typed binding to that inventory. Later 0804 adds publication
+metadata; neither graph production nor export execution depends on public
+publication, and no consumer owns the same files through a second inventory.
 
 ## Subjects and the meaning of ranking
 

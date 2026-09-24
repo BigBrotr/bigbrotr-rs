@@ -155,7 +155,8 @@ is private; public read models use allowlisted projections, never table dumps.
 | 0016 native archive frontiers | `archive_owner_sessions(catalog_id, owner_epoch)`, `archive_frontier_snapshots(consumer_id, frontier_revision)` and selected `archive_frontier_batches` | Current fenced Archive attribution and immutable native observation extend the common consumer ledger. Historical unbound rows are not adopted; a frontier receipt alone grants no read pin or reclamation. |
 | 0017 native snapshot pins | Immutable `archive_snapshot_pins(lease_id)` and nullable `snapshot_leases.archive_pin_protocol` | Exact native frontier, original Control issuer and requested TTL bind the existing lease/claim ledger. New Archive leases require explicit participation; old NULL rows remain unchanged retention obligations. Expiry is not release or worker-exit proof. |
 | 0018 excluded reader recovery | Immutable `archive_pin_recoveries(lease_id)` | Original qualified lease and issuer remain intact; fresh local exclusion plus current fenced Control permit atomic lease/claim release with separate recovery attribution. No old-row adoption or expiry-based reclamation. |
-| 0501 analytics/shared artifact inventory | `target_definitions(definition_id, version)`; `target_generations(generation_id)`; `target_inputs(generation_id, input_id)`; `active_targets(target_id, analysis_scope_id)`; `artifacts(artifact_id)`; `artifact_files(artifact_id, file_id)`; `graph_artifacts(artifact_id)` | Current plus two complete generations and required pins; analysis scope includes visibility/window/profile; graph_artifacts is a typed manifest binding to the common artifact inventory, not another file owner |
+| 0501 shared artifact inventory | `artifacts(artifact_id)`; `artifact_files(artifact_id, file_id)` | First supplied by the signed export consumer; shared immutable file identities and completion manifest, retained while referenced. No independent graph-file inventory. |
+| 0502 analytics | `target_definitions(definition_id, version)`; `target_generations(generation_id)`; `target_inputs(generation_id, input_id)`; `active_targets(target_id, analysis_scope_id)`; `graph_artifacts(artifact_id)` | Current plus two complete generations and required pins; analysis scope includes visibility/window/profile; graph_artifacts is a typed manifest binding to the existing common artifact inventory, not another file owner |
 | 0603 read pins | `read_pins(pin_id)` extending existing retention claims | Query context/cut/generation/expiry and logical source-retention claims; authorization expiry is separate |
 | 0609 DVM | `dvm_requests(request_event_id)`; `dvm_results(request_event_id, part_id)` with `intent_id` reference to `signed_outbox` | Request/result-part mapping and unresolved delivery; signed bytes have one outbox authority, not a second result payload copy; private payload display retention bounded |
 | 0610 subscriptions | `dvm_subscriptions(subscription_id)`; `dvm_subscription_batches(subscription_id, batch_id)` | Expiry/resume/input cuts, reserved control semantics and pending outcomes |
@@ -182,8 +183,12 @@ in the configured protected provider/local provisioning path, not the archive.
 identity and its `artifact_files`; common retention claims protect those files.
 An internal graph artifact is not thereby a publishable research export.
 Foundational artifact identity/file inventory is supplied in 0501 with its first
-graph consumer; P08 adds user catalog/publication operations without imposing a
-P05-to-P08 implementation cycle. Public discovery requires its separate verified
+signed export consumer. The initial end-to-end milestone reaches export before
+analytics, so 0502 later adds target and graph interpretation over that inventory;
+there are no empty analytics tables or parallel export-file owners. These are
+unapplied migration reservations, not changes to any published checksum. P08
+adds user catalog/publication operations without imposing a P05-to-P08
+implementation cycle. Public discovery requires its separate verified
 export manifest and publication grant/state. Duplicate metadata cannot authorize
 one owner to reclaim a file still pinned by another consumer.
 

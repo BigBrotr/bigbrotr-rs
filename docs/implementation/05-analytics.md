@@ -76,7 +76,7 @@ results; no extrapolation is presented as a completed 100-billion-edge run.
 
 **Proposed files:** `crates/bigbrotr-model/src/analytics.rs`;
 `apps/bigbrotr/src/analytics/{registry,scheduler,dirty,manifest,commit}.rs`;
-`migrations/postgres/0501_analytics_control.sql`;
+`migrations/postgres/0502_analytics_control.sql`;
 `contracts/analytics/v1/{definition,target-manifest}.schema.json`;
 `config/examples/analytics.toml`; `docs/user/analytics/definitions.md`;
 `apps/bigbrotr/tests/analytics_generations.rs`;
@@ -97,8 +97,9 @@ cancelled branches; cancelled work cannot commit later.
   absent/zero distinction, API exposure and permitted protocol bindings. Reject
   duplicate IDs and bindings that claim facts no producer supplies. Implement
   the exact names/subjects/producers in the assertion-binding specification and
-  introspect their real stored keys. Migration 0501 creates shared `artifacts`
-  and `artifact_files`; `graph_artifacts` references that inventory. P08's 0804
+  introspect their real stored keys. Reuse migration 0501's shared `artifacts`
+  and `artifact_files`, first consumed by P08's signed export. Migration 0502
+  adds the analytical records; `graph_artifacts` references that inventory. P08's 0804
   adds publication metadata, not the first graph-file owner.
   Reuse pure definition/reducer contracts across views and publishers without
   granting reducers network/signing authority. Register composition populations

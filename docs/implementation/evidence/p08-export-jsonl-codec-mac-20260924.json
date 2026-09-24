@@ -1,0 +1,126 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED_CODEC_ONLY",
+  "source": {
+    "base_revision": "a781df617222704678a5f3d9411dd56a6f5befc7",
+    "state": "Mac worktree changes over the base; exact compiler/test inputs below. No installed runtime consumer yet.",
+    "files_sha256": {
+      "apps/bigbrotr/src/export/jsonl.rs": "34abb597cbc146baeccbfed6f3aca045d7d58e0cfbed7e7b55b812b599f054db",
+      "apps/bigbrotr/src/export/mod.rs": "e27cfefe156d1a42be69fd8e75f03fec8bbc669aab17c01173809f47f13061de",
+      "apps/bigbrotr/tests/portable_artifacts.rs": "2e037ebbc04d4761c944ba48da819e92ee496a9159ad3a48b94abfc44d59d929",
+      "crates/bigbrotr-model/src/event.rs": "0dd793f2b20b5e215302a89e6c4ddb8d66a95f8db76233c5de6ae34a19c5c1f0",
+      "crates/bigbrotr-protocol/src/event.rs": "4dde91ff827ad2757cb05f4facb0824845c6efdcbca3b9c37a875998e0423170",
+      "tests/fixtures/protocol/signed-extremes.json": "dfe738600b4b6df4bce59c7a44cfdfc9222c618d518301d8b7fab589d3ac7ec7",
+      "tests/fixtures/protocol/signed_extremes.py": "c425c578314e6c5b2e63cffe6923a6a9a71a6228c55e180069022c7594bbf604",
+      "Cargo.lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "Cargo.toml": "36e7da34fd0d248ab5538b328a4bad0016fee187f6ab3745bc96075024daec2b",
+      "apps/bigbrotr/Cargo.toml": "86fbbc326ae861b11754e311850731574225cbb617fb709277c7a1911be9d12c",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    }
+  },
+  "environment": {
+    "system": "Darwin",
+    "release": "25.5.0",
+    "machine": "arm64",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05)",
+    "dependencies": {
+      "serde": {
+        "version": "1.0.229",
+        "checksum": "4148590afebada386688f18773da617792bf2ef03ffc1e4cbd2b1d45b023e0ba"
+      },
+      "serde_json": {
+        "version": "1.0.151",
+        "checksum": "c841b55ecdae098c80dcae9cf767f6f8a0c2cdb3416bbef72181df4d0fe73f14"
+      },
+      "sha2": {
+        "version": "0.11.0",
+        "checksum": "446ba717509524cb3f22f17ecc096f10f4822d76ab5c0b9822c5f9c284e825f4"
+      }
+    }
+  },
+  "executed": [
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "portable_artifacts",
+        "cancellation_after_the_last_lf_still_withholds_the_receipt",
+        "--",
+        "--exact"
+      ],
+      "exit_code": 101,
+      "result": "EXPECTED_NEGATIVE_FAILURE",
+      "source_sha256": "e6b64b25713f9df970bd32327c5166e7c6064036c8f2ad54e92e8e9a798d70e1"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "portable_artifacts"
+      ],
+      "exit_code": 0,
+      "result": "PASS",
+      "source_sha256": "34abb597cbc146baeccbfed6f3aca045d7d58e0cfbed7e7b55b812b599f054db"
+    }
+  ],
+  "additional_executed": {
+    "initial_red": "After correcting a private EventLimits import compile error, six executable assertions failed against an Output-only stub. Observed in tool output; original RED log not captured.",
+    "clippy": {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--test",
+        "portable_artifacts",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "scope": "Observed tool output; no separate log captured."
+    }
+  },
+  "expected_results": [
+    "Literal full seven-field JSONL bytes from frozen independently authored signed timestamp-zero and unsigned-maximum fixtures, including exactly one LF.",
+    "Ordered/repeated tags, empty values, Unicode spelling and JSON escaping preserved; no floating-point conversion.",
+    "Byte bound includes LF and rejects before output; wrong requested ID and preexisting cancellation write nothing.",
+    "Three-byte short writes and Interrupted preserve actual byte count/hash; permanent failure after 17 bytes returns Output, never a partial receipt.",
+    "Cancellation after the last LF returns Cancelled despite complete bytes being present. Removing only the final check fails this assertion, restoring it passes all seven.",
+    "Explicit absence yields zero rows, zero bytes and the literal standard empty SHA-256. This tests encoding, not native absence authority."
+  ],
+  "review": {
+    "kind": "independent AI static review plus integrating owner diff/source review",
+    "finding": "Add final-LF cancellation discriminator; implemented and exercised against isolated mutation. No further encoder defect identified.",
+    "boundary": "No complete product, job executor, native reader or filesystem qualification from this review."
+  },
+  "captures": {
+    ".research/implementation/export-jsonl-codec/negative-jsonl.rs": "e6b64b25713f9df970bd32327c5166e7c6064036c8f2ad54e92e8e9a798d70e1",
+    ".research/implementation/export-jsonl-codec/negative.log": "26b572b7798782e7c0245f8204d03cea851e6b7d6de450afc74e2e2a2aa932df",
+    ".research/implementation/export-jsonl-codec/positive-jsonl.rs": "34abb597cbc146baeccbfed6f3aca045d7d58e0cfbed7e7b55b812b599f054db",
+    ".research/implementation/export-jsonl-codec/positive.log": "7efb732545c1d95253fa759604bcfdc53ef784ef56f819c06707838875f07043",
+    ".research/implementation/export-jsonl-codec/runs.json": "c278a6a734188defe1a151d8f4b291cf07d0cfd81387cac282ba7f2ef4d68d8f"
+  },
+  "limitations": [
+    "The encoder has no runtime consumer yet. No file, final manifest, SQL execution claim/checkpoint or completed export is produced.",
+    "The writer tests are in-memory/fault writers. They do not qualify fsync, ENOSPC on an actual filesystem, blocked kernel I/O, process termination or restart.",
+    "Cancellation is checked between calls and after encoding; it does not autonomously interrupt a blocked Write. The actual consumer must retain custody/grants and enforce bounded termination.",
+    "No Tux resources or Tux Cargo caches created; no Linux amd64 or Linux arm64 result claimed. No capacity/RSS measurement or full P08 step completion."
+  ]
+}

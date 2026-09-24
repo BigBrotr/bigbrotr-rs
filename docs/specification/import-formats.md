@@ -90,6 +90,25 @@ rejection or advance a checkpoint. [Captured-source implementation](../reference
 defines the current ephemeral storage and allocation boundary. Full job authority,
 destination policy and durable obligation closure remain separate prerequisites.
 
+The initial exact-ID signed export writes `nostr-jsonl/1` as a compact object
+with fields in `id`, `pubkey`, `created_at`, `kind`, `tags`, `content`, `sig` order,
+followed by exactly one LF. Integers retain their full unsigned domain; tag order,
+duplicates, empty strings and Unicode spelling remain unchanged. JSON escaping
+preserves values, without Unicode normalization. It uses the selected scope's
+verified signature representative, never a payload's unrelated first signature.
+No acquisition, receipt, provenance, deployment or scope fields are added to the
+signed event object. Those interpretations and excluded families belong in the
+artifact manifest. An authorized absence at the selected cut produces an explicit
+zero-row, zero-byte file and its SHA-256, not an omitted or failed output.
+
+The byte limit includes LF and is checked before writing the row. Encoding streams
+the already verified event without another complete JSON buffer and hashes the
+bytes actually accepted by the output writer. Cancellation or an output failure
+returns no successful file description, even after a prefix was written. The
+file description is only an encoding result: the executor retains custody and
+budgets through file/directory synchronization and final manifest/checkpoint
+publication. A successful encoder test does not establish those durable effects.
+
 For the length-delimited protobuf adapter:
 
 1. EOF before the first byte of the next length is clean completion. EOF after

@@ -19,10 +19,10 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEAD92550c98b0525cecf345cde7f3055fc8d762e827,
-origin/main8c5ef5638607b4db7d0fe242ac10625a7b37f5d9. Two coherent unpublished
-fixture commits. Root owns pending held-driver evidence/task/operator documents,
-inventory and this checkpoint. No unrelated dirty files or active lab.
+Last observed main/HEAD and origin/main a781df617222704678a5f3d9411dd56a6f5befc7,
+pushed after custody evidence/retirement. Root owns pending JSONL encoder and
+portable-artifact tests, format and shared artifact migration-reservation prose,
+and this checkpoint. No unrelated dirty files or active lab.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
@@ -192,20 +192,47 @@ with source/evidence/artifact preservation and fresh process/mount/owner audit.
 
 ## Next bounded action
 
-Commit/push the current custody qualification/evidence after final diff review.
-Then advance P08-T03 Step3/P08-T04 Step3 to actual signed JSONL execution/restart.
-Read existing export job/pin guards and current history/capture consumers before
-choosing the bounded execution transition. Applied0813 and earlier migrations
-stay immutable; new durable execution state requires an additive contract/migration,
-positive owner exclusion and independent crash/COMMIT evidence. Job receipt is
-acceptance only, export retention is not fresh reader/action authority, browser
-session loss must not silently cancel committed work. No file exists yet.
+Advance P08-T03 Step3/P08-T04 Step3 to actual signed JSONL execution/restart.
+The automatic Control consumer will select one bounded exact-ID job at a time,
+with a separate committed execution claim after acceptance. No extra manual run
+command is required after POST. The first artifact consumer is export, so the
+owning contracts now split the unapplied 0501 common inventory from later 0502
+analytics; 0804 publication remains a separate additive consumer. No SQL bytes
+or applied checksums changed in this slice.
 
-Source inspection begun only: P08-T03/T04 task paragraphs and first225lines of
-storage/postgres/export_jobs.rs. The remainder and actual execution/cancellation/
-manifest contracts/callers still need full focused reading. Do not treat this
-navigation as an execution design or start scaffolding before the responsibility
-and real consumer are clear. Then all remaining selected product tasks remain.
+In-progress export/jsonl.rs streams an existing VerifiedEvent plus LF (or explicit
+empty native result), checks the complete output bound before writing and hashes
+actual accepted bytes. It does not flush, sync, create files or grant authority.
+Seven [Mac codec tests](evidence/p08-export-jsonl-codec-mac-20260924.json) pass
+against independent literal bytes/signed extreme fixtures,
+short writes/Interrupted/output failure/cancellation/absence. The first stub was
+RED 6/6 after correcting one test import compile error; the original RED output
+was observed in tool output, not captured to a file. A source-isolated negative
+removing the final cancellation check fails the new last-LF test; restored source
+passes 7/7. Exact sources/logs are under .research/implementation/export-jsonl-codec/.
+The library encoder has no runtime consumer yet; this is unfinished execution
+work, not a completed export or native/durable qualification. Review found no
+encoder defect and requested the discriminating last-LF test, now executed.
+
+Next connect this encoder to the bounded standalone manifest and descriptor-owned
+filesystem unit, then to shared 0501 inventory/additive execution state and the
+ordinary Control supervisor. Keep the same job/unit identity across commit/output
+ambiguity. No task checkbox closes before the actual restart/file journey.
+
+Focused source reading includes full export_jobs.rs, management/jobs.rs,
+snapshot_leases.rs remainder, history SQL/native consumer, destination.rs,
+0813 and 0001 job guards; task paragraphs, import-format and shared inventory
+contracts. Independent read-only AI confirmed: acceptance cannot transition
+before its initial COMMIT; use accepted->queued->running, not accepted->running.
+Current job authority uses active account/grants, never browser session lifetime.
+Read the ORIGINAL frontier, acquire a new reader pin, and retain coordinator/output
+exclusion through all writes/joins. Reader-only release/recovery must not be used
+for export pins; future typed export loading must compare the exact export_job_id.
+The native Supervisor still requires Management and does not process management
+commands while waiting on a worker; execution/cancel integration must address
+those constraints rather than clone HTTP work. No scheduler/manifest/SQL execution
+implementation or artifact storage result exists yet. Before editing those
+responsibilities, finish reading their complete affected callers and constraints.
 
 ## Earlier prerequisites and preserved work
 

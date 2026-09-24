@@ -314,7 +314,7 @@ listing; mutable artifact state follows the same page-read-time rule.
 
 - [ ] **Step 1:** implement inspection/validation before job creation: file sizes/digests/schema, allowed roots, no symlink escape, signature/canonical identity, unsupported version, compression expansion limits, and provenance-claim labeling. Full imports require reconstructable signed content/tags/signatures under their format contract (proto3 defaults are described in [import formats](../specification/import-formats.md)); projected artifacts are rejected by canonical import and opened with standalone DuckDB using the shipped analysis guide. No second analytical dataset ingestion/catalog is selected.
 - [ ] **Step 2:** implement resumable source units keyed by input digest and stable unit ID; retry/move cannot change original admission or fabricate a local relay witness. Unsupported seek-resume explicitly rereads a bounded unit; progress output names that cost.
-- [ ] **Step 3:** implement pinned, policy-rechecked export chunks and atomic final manifest publication. Include referenced deduplicated monitoring documents and dictionaries; cancelled/failed files remain incomplete and cannot be listed as public datasets. Public publishing of an export is a separate grant/command, not a side effect of creating it.
+- [ ] **Step 3:** implement pinned, policy-rechecked export chunks and atomic final manifest publication. The first signed export creates the shared 0501 artifact/file inventory; later analytics 0502 and publication 0804 extend it. Include referenced deduplicated monitoring documents and dictionaries; cancelled/failed files remain incomplete and cannot be listed as public datasets. Public publishing of an export is a separate grant/command, not a side effect of creating it.
 - [ ] **Step 4:** propose `cargo test -p bigbrotr --test portable_artifacts` with ordered/repeated tags, empty values, timestamp zero/u64 maximum, conflicting duplicate IDs, private claims, missing document and signature-invalid legacy rows. Negative control: edit one content byte without updating its signed ID/signature; the independent signature verifier must reject it even if a file checksum was recomputed.
 - [ ] **Step 5:** proposed `portable-artifacts` scenario imports a fixture twice, interrupts/resumes a unit, exports full and projected views, stops BigBrotr and all catalogs, then opens the result in a separately invoked pinned DuckDB. Compare signed fields and exact IDs with `export_oracle.py`'s source manifest, verify standalone document joins, and prove the projection cannot pass the full-event importer.
 
@@ -336,6 +336,11 @@ passes at92550c9 with unchanged4e ELF; source-isolated Arc removal fails the sam
 fixture. This is sampled exclusion during actual pending driver drain; original
 failed fixture attempts remain INCOMPLETE. Actual export delivery remains open.
 This does not complete Step 1 or 3.
+[The initial JSONL encoder](evidence/p08-export-jsonl-codec-mac-20260924.json)
+has seven Mac tests over independent literal signed bytes, output bounds,
+short writes and cancellation, including a source-isolated negative control.
+It has no runtime/file consumer yet; manifest, durability, execution and restart
+remain unfinished. This codec evidence does not qualify native file export.
 [Native destination qualification](evidence/p08-export-destination-native-20260923.json)
 at a75d0fa passes ten actual Linux/ext4 cases, including bind aliases, cross-process
 custody, fsync EIO and process death around rename. The marker's independent
@@ -347,9 +352,10 @@ export-job, standalone artifact or installation completion is inferred.
 **Artifact publication authority:** extend this task with
 `src/export/publication.rs`, `src/interfaces/management/artifacts.rs`,
 `migrations/postgres/0804_artifact_publication.sql` and
-`contracts/artifacts/v1/publication.schema.json`. Extend P05-T01 migration 0501's
-common `artifacts`/`artifact_files` inventory through additive migration 0804 and
-`artifact_publications`; never recreate graph-owned files under a second retention
+`contracts/artifacts/v1/publication.schema.json`. Extend migration 0501's common
+`artifacts`/`artifact_files` inventory, first consumed by export and shared with
+P05-T01, through additive migration 0804 and `artifact_publications`; never
+recreate graph-owned files under a second retention
 identity. The small PG catalog binds
 artifact ID, immutable manifest/file digests, source cut/visibility-policy basis,
 storage reference, owner, revision and private/verified/published/withdrawn/expired

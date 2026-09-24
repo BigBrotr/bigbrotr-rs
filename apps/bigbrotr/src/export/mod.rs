@@ -1,2 +1,3 @@
-//! Private portable artifact destinations. Binding storage does not authorize jobs.
+//! Private portable artifacts. Encoding and storage bindings do not authorize jobs.
 pub mod destination;
+pub mod jsonl;

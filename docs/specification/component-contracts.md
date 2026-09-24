@@ -268,7 +268,7 @@ are intentional task ownership, not permission to invent missing migrations:
 | Engine | Reserved identifiers and owner |
 |---|---|
 | PG | 0001 control, 0002 ingest, 0003 minimal relay (P02); 0004 acquisition, 0005 import (P03); 0006 relay lifecycle (P04) |
-| PG | 0501 analytics control and common artifact/file inventory with its first graph consumer; 0603 read pins; 0609 DVM jobs, 0610 subscriptions, 0611 payments |
+| PG | 0501 common artifact/file inventory with its first signed export consumer; 0502 analytics control and graph bindings; 0603 read pins; 0609 DVM jobs, 0610 subscriptions, 0611 payments |
 | PG | 0703 publication outbox, 0704 delivery, 0705 NIP-85 progress, 0707 NIP-66 progress |
 | PG | 0801 management identity, 0802 commands/revisions/jobs, 0803 saved views |
 | PG | 0804 additive artifact publication/catalog fields over 0501 inventory (P08-T04); publication authority is separate from Nostr signing |
