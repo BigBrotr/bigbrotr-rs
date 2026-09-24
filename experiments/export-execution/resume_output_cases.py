@@ -28,7 +28,7 @@ def run(root, state, sql, expected_manifest, revoked):
         return {name:dict(sha256=sha(directory/name),bytes=(directory/name).stat().st_size,inode=(directory/name).stat().st_ino) for name in ['events.jsonl','manifest.json']}
     try:
         assert revoked['status']=='PASS' and revoked['backends']=={db:0,'bbpub_normal':0}
-        native=['docker','exec',runner,'python3','-B','/out/build/source/experiments/export-execution/resume_output_client.py']
+        native=['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/export-execution/resume_output_client.py']
         result['migration']=json.loads(command(*native,'migrate'))
         sql(db,"GRANT SELECT,INSERT ON control.export_resume_commands TO bigbrotr_control; GRANT EXECUTE ON FUNCTION control.export_resume_digest(control.export_resume_commands,control.management_commands) TO bigbrotr_control;")
         before=result['before']=snapshot();save()
@@ -47,7 +47,7 @@ def run(root, state, sql, expected_manifest, revoked):
         expected['files'][0].update(bytes='399',rows='1',sha256=hashlib.sha256(signed).hexdigest())
         result['files_before']=output();save()
         client=Process([*native,job],input_pipe=True)
-        result['ready']=event(client,'ready');assert result['ready']['denied']==403
+        result['ready']=event(client,'ready');save();assert result['ready']['denied']==403
         denied=snapshot()
         for table in before.keys()-{'management_audit'}:assert denied[table]==before[table],table
         # Login audit is the only new row before grant restoration.
@@ -91,6 +91,18 @@ def run(root, state, sql, expected_manifest, revoked):
             assert all(v in after[table] for v in restored[table]),table
             assert len(after[table])==len(restored[table])+1,table
         reader=a['verification_pin_id']
+        lease,pin,claim=[next(v['row'] for v in after[t] if v not in restored[t]) for t in ['snapshot_leases','archive_snapshot_pins','retention_claims']]
+        assert lease['lease_id']==pin['lease_id']==claim['lease_id']==reader
+        original=next(v['row'] for v in before['export_jobs'] if v['row']['job_id']=='\\x'+job)
+        assert lease['dataset_id']==pin['dataset_id']==claim['dataset_id']==original['dataset_id']
+        assert lease['consumer_id']==pin['consumer_id']==original['catalog_id']
+        assert lease['frontier_revision']==pin['frontier_revision']==original['frontier_revision']
+        assert lease['topology_generation']==claim['topology_generation']==target(before)['input_topology_generation']
+        bounds=[v['row'] for v in before['job_input_bounds'] if v['row']['job_id']=='\\x'+job]
+        assert len(bounds)==1 and (claim['shard_id'],claim['owner_epoch'],claim['first_sequence'],claim['last_sequence'])==(bounds[0]['shard_id'],bounds[0]['owner_epoch'],1,bounds[0]['last_complete_sequence'])==(0,1,1,10)
+        assert claim['purpose']==pin['purpose']=='reader' and claim['release_reason']=='reader_joined'
+        owner=result['ready']['owner']
+        assert pin['issuer_resource']=='\\x'+owner['owner_resource_id'] and pin['issuer_epoch']==int(owner['owner_epoch']) and pin['issuer_incarnation']=='\\x'+owner['process_incarnation']
         assert next(v['row']['state'] for v in after['snapshot_leases'] if v['row']['lease_id']==reader)=='released'
         assert next(v['row']['purpose'] for v in after['archive_snapshot_pins'] if v['row']['lease_id']==reader)=='reader'
         assert next(v['row']['state'] for v in after['retention_claims'] if v['row']['lease_id']==reader)=='released'
@@ -130,6 +142,11 @@ def run(root, state, sql, expected_manifest, revoked):
         result['failure']=type(error).__name__;raise
     finally:
         if client:
-            client.stop()
-            result['client_output']=client.stdout.decode();result['client_error']=client.stderr.decode()
+            try:
+                client.stop()
+            except BaseException as error:
+                result['cleanup_error']=type(error).__name__
+                result['status']='INCOMPLETE'
+            finally:
+                result['client_output']=client.stdout.decode();result['client_error']=client.stderr.decode()
         save()

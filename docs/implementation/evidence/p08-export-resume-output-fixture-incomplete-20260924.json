@@ -1,0 +1,100 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "INCOMPLETE",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "source": "b531f9166310abb71a5f5242b0313988dc6a02cd",
+  "tree": "f0fca5875e11a026b0dd27151c18e73a1ae62f6b",
+  "runtime_source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-b531f91/capture",
+    "files": 41,
+    "sha256": "f4b669b2d55c1e799a83d465aa14431db38573cb409453549e219c5d2dacd6c9",
+    "source": "b531f9166310abb71a5f5242b0313988dc6a02cd",
+    "tree": "f0fca5875e11a026b0dd27151c18e73a1ae62f6b",
+    "source_files": 1226
+  },
+  "review": {
+    "status": "VERIFIED_INCOMPLETE_FIXTURE",
+    "source": "b531f9166310abb71a5f5242b0313988dc6a02cd",
+    "runtime_source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+    "counts": {
+      "out/build/source-manifest.json": 1226,
+      "artifact-source-manifest.json": 1110,
+      "runtime-source-manifest.json": 1223
+    },
+    "payloads": 41,
+    "preexisting": 672,
+    "free_before": 123031879680,
+    "free_after": 122632921088,
+    "artifacts": {
+      "bigbrotr": "6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    }
+  },
+  "results": {
+    "headless_completion": "PASS",
+    "actual_blocked_reader_revocation": "PASS",
+    "compatible_814_migrator": {
+      "event": "migration",
+      "observation": {
+        "applied_count": "1",
+        "current_version": "814",
+        "dataset_initialization": "not-performed",
+        "format": "bigbrotr-control-migration/1",
+        "release_upgrade_qualification": "not-performed",
+        "scope": "postgres-control",
+        "source_version": "501",
+        "status": "applied",
+        "steps": [
+          {
+            "name": "0814_export_resume.sql",
+            "sha256": "c2ddfa56c2b79cc647b34586aee739cd08885e58c4cfa4c965ef7243149d9b1d",
+            "version": "814"
+          }
+        ],
+        "target_version": "814"
+      }
+    },
+    "resume_output": "NOT_RUN",
+    "failure": "Host BrokenPipeError sending restore. The docker exec command omitted -i although the client requires stdin instructions. A second BrokenPipeError closing stdin prevented the finally block from saving its buffered original client stderr/ready response. The EOF assertion is inferred from source; original inner traceback was not retained."
+  },
+  "correction": "Attach stdin with docker exec -i, save readiness before host work, always save client buffers even when wrapper cleanup fails. Also bind completion verification_pin_id to the sole new reader after restoration and its original cut/claim.",
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-b531f91",
+    "owner": "07abd70ac66a6d9cc85ee63531b100e1",
+    "state": "stopped-retained",
+    "all_owned_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "preexisting": 672,
+    "unrelated_running": 8,
+    "free_before": 123031879680,
+    "free_after": 122632921088
+  },
+  "limits": [
+    "No new compilation; exact complete product/build equality with4a3c4ce and original ELF hashes verified",
+    "Original revocation parent cleanup passed; new resume parent graceful exit was not observed",
+    "No restored grant, accepted resume, resumed signed completion or final ledger comparison claim",
+    "No new build cache, no container/data/volume retirement"
+  ]
+}

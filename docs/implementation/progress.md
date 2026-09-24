@@ -20,21 +20,31 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD54af815ba2d44b0ddb3b3ab31cb8245bf281c4b0 on main and private
-origin/main after successful push. Root owns pending resume-output fixtures and
-lab profile plus this checkpoint. No other contributor or merge/rebase. No active
-Tux BigBrotr lab at the last terminal audit. Full product remains incomplete.
+Last verified HEADb531f9166310abb71a5f5242b0313988dc6a02cd on main; private
+origin/main54af815ba2d44b0ddb3b3ab31cb8245bf281c4b0 after successful qualification
+push. Root owns pending resume-output fixture corrections/evidence/inventory and
+this checkpoint. No other contributor or merge/rebase. No active Tux BigBrotr lab
+at the latest stopped-resource capture. Full selected product remains incomplete.
 
-Next bounded action: commit exact fixture candidate and run --runtime-resume-output
-with qualified4a3c4ce ELF only after complete product/build input equality and
-resource/space census. It extends actual installed revocation: apply814 with the
-real migrator, authenticate/restore history.read, explicit same-unit resume, full
-signed output/SQL inventory and restart with original acceptance receipt. Original
-unit/cut/caps/artifact and all retained input pins must survive; new reader cleanup
-must be observed, not inferred from succeeded state. Mac py_compile/diff check pass;
-this new practical scenario has NOT_RUN status. Independent static AI caught a
-missing grant-proof Idempotency-Key; root added the same e6 key to proof and PUT.
-Fault/expiry/held-driver scenarios and UI remain required; no full-task completion.
+Next bounded action: exact-Git rerun --runtime-resume-output with4a3c4ce ELF after
+full product/build equality and resource/space preflight. Corrected docker exec-i,
+readiness saved before host instructions, finally always retains client buffers.
+Independent AI prompted explicit binding of verification_pin_id to the only new
+reader after restoration, original catalog/frontier/topology and claim[1,10].
+Mac py_compile/diff check pass. Do not change product/caps/expected signed bytes
+for the fixture failure; fault/expiry/held-driver and UI gates remain open.
+
+[b531f91 output fixture](evidence/p08-export-resume-output-fixture-incomplete-20260924.json)
+is INCOMPLETE: headless completion and real blocked-reader revocation PASS, actual
+migrator814 returns applied, then host BrokenPipe sending restore. The command
+omitted docker exec-i; its expected client EOF assertion is inferred because a
+second BrokenPipe in wrapper cleanup prevented original client buffers from being
+saved. No resumed HTTP/output claim. Root verifies41payloads/1226current/1223build/
+1110seed Git files, full product equality, both4a ELF and672prior/eight running.
+Tar f4b669b2d55c1e799a83d465aa14431db38573cb409453549e219c5d2dacd6c9.
+Stopped-retained runs/export-runtime-b531f91 owner07abd70ac66a6d9cc85ee63531b100e1;
+allownedPID0/noOOM/network removed,bothDB0,cleanup errors empty. New resume parent
+graceful exit not observed. Free123031879680→122632921088bytes; no new build cache.
 
 [4a3c4ce installed HTTP](evidence/p08-export-resume-http-native-20260924.json) passes
 fresh build/46binarytests/Clippy plus17HTTP exchanges and7control events. Reduced

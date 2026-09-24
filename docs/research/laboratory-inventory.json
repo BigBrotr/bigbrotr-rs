@@ -23391,5 +23391,49 @@
     "free_before": 126809890816,
     "free_after": 123076579328,
     "retention": "Preserve SQL queued8 state, original receipts and input pins, captured logs, source/seed identities and fresh ELF. Current4a3c4ce artifacts/cache support next same-unit completion and fault scenarios. No container/dataset/volume retirement."
+  },
+  "implementation_export_resume_output_fixture_20260924": {
+    "status": "stopped-retained; INCOMPLETE stdin fixture",
+    "resources": {
+      "source": "b531f9166310abb71a5f5242b0313988dc6a02cd",
+      "tree": "f0fca5875e11a026b0dd27151c18e73a1ae62f6b",
+      "owner": "07abd70ac66a6d9cc85ee63531b100e1",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-b531f91",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "7bae76cea2efdbf9bfe00fa4e64f6f4c869b5866e17e7acbfb8048083ded5a1e"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "ac232bb0f9f5deda5ffc3a0a547bccab1501935eef994cae3dd4322f78c5c0de"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T16:25:12.910049+00:00",
+      "runtime_profile": "resume-output",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+      "network_id": "87b21ada78d6858c6f2f6edc0dd93d855c577d4d674b0f23c3e63bcdaec8a011",
+      "postgres_id": "7bae76cea2efdbf9bfe00fa4e64f6f4c869b5866e17e7acbfb8048083ded5a1e",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "ac232bb0f9f5deda5ffc3a0a547bccab1501935eef994cae3dd4322f78c5c0de",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-output-fixture-incomplete-20260924.json",
+    "capture": {
+      "files": 41,
+      "sha256": "f4b669b2d55c1e799a83d465aa14431db38573cb409453549e219c5d2dacd6c9",
+      "source": "b531f9166310abb71a5f5242b0313988dc6a02cd",
+      "tree": "f0fca5875e11a026b0dd27151c18e73a1ae62f6b",
+      "source_files": 1226
+    },
+    "retention": "Keep original failure, SQL state, signed private files, source/build identities and all captured logs; no cache created or resource retirement."
   }
 }
