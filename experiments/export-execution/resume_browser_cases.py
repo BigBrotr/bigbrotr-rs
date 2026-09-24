@@ -108,6 +108,11 @@ def run(root, state, sql, start, finish, tools):
             time.sleep(.025)
         result['browser_container_ok']=finish(ident,case_name,5)
         result['browser']=json.loads((case/'browser-report.json').read_text());save()
+        # Keep an actual terminal SQL observation even when a browser diagnostic
+        # exits before issuing the next host command.
+        last_observed=result['browser_terminal_observation']=observe()
+        last_identities=result['browser_terminal_sessions']=session_identities()
+        result['browser_terminal_idle']=sessions();save()
         assert result['browser_container_ok'] and result['browser']['status']=='PASS' and index==len(expected)
         assert result['browser']['engine']==engine and result['browser']['mount']==mount
         send(server,json.dumps(dict(operation='stop'))+'\n');result['terminal']=event(server,'stop-terminal')

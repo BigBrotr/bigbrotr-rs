@@ -6,6 +6,7 @@ import { readFile, writeFile, rename } from 'node:fs/promises';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { chromium, firefox, webkit, expect } from '@playwright/test';
 import { inspectStorage, readResumeStorage } from './storage_oracle.mjs';
+import { traceSkipLink } from './skip_trace.mjs';
 const home = '/case', origin = 'http://127.0.0.1:18080';
 const input = JSON.parse(await readFile(home + '/input.json', 'utf8'));
 const [engine = 'chromium', mount = 'root'] = process.argv.slice(2);
@@ -139,6 +140,13 @@ try {
     await page.setViewportSize({ width: 375, height: 812 });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     await page.screenshot({ path: home + '/resume-mobile.png', fullPage: true });
+    report.skipTrace = await traceSkipLink(page, home, async () => {
+      const checked = page.waitForResponse(r => r.url() === `${origin}/management/v1/jobs/${input.job}`);
+      await page.getByRole('button', { name: 'Check job', exact: true }).click();
+      assert.equal((await (await checked).json()).state, 'queued');
+      await expect(page.getByRole('button', { name: 'Check job', exact: true })).toBeEnabled();
+    });
+    assert.equal(report.skipTrace.status, 'PASS');
     await page.setViewportSize({ width: 1280, height: 900 });
   });
   await step('same-cookie-retry-after-control-restart-without-current-input-authority', async () => {
