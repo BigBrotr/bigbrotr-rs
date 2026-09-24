@@ -345,8 +345,9 @@ closes private admission immediately and enters shutdown directly. The additive
 private admission while the parent remains blocked. [Native corrected evidence](evidence/p01-control-poll-shutdown-native-20260924.json)
 at877f3d4 passes the two headless schedules, including explicit non-success beyond
 deadline. Its private probe sampled a live parent and a closed connection, but
-did not establish their order relative to unlock; the strengthened host handshake
-remains to be executed. Broader native-work/mutating-command cancellation remains separate.
+did not establish their order relative to unlock. The [strengthened host handshake](evidence/p01-control-poll-admission-native-20260924.json)
+atb3cd3f1 observes the completed probe, live parent on both sides and the same
+blocked PostgreSQL query before unlock; it passes with unchanged877product. Broader native-work/mutating-command cancellation remains separate.
 
 ## P01-T07 — Same-process and remote component adapters
 

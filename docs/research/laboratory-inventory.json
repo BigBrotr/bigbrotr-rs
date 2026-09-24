@@ -22993,5 +22993,42 @@
     "retention": "Keep fresh877native compiler cache/ELFs/source/40payloadcapture/PG/archive/output for current continuation. All ownedPID0/noOOM/network removed; bothDB0 and641prior/eight running preserved.",
     "evidence": "docs/implementation/evidence/p01-control-poll-shutdown-native-20260924.json",
     "free_bytes": 130194173952
+  },
+  "implementation_control_poll_admission_20260924": {
+    "status": "PASS_SCOPED; stopped-retained; strengthened host order",
+    "resources": {
+      "source": "b3cd3f1adc6b81ab8aafc33bd9d590144aa0c70d",
+      "tree": "1a7468ff505a54b3f006ae041c0769588d9ff7d6",
+      "owner": "6e917dfdf1131fb495e28d39d7e59db7",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-b3cd3f1",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "bc036df1b23d02adb1eb6df7e8621fba3e68daff0d7b52ed128c7465ec38df8d"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "b392aa6301b66a9bbbf69b32572cd476cfa738562bb8241806654c2f9ccb774f"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T14:49:43.055120+00:00",
+      "runtime_profile": "shutdown",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+      "network_id": "a5d70020e3237cf81fe143412d70bf6be4d1a4b31cfe5b80e02ee481ab98267a",
+      "postgres_id": "bc036df1b23d02adb1eb6df7e8621fba3e68daff0d7b52ed128c7465ec38df8d",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "b392aa6301b66a9bbbf69b32572cd476cfa738562bb8241806654c2f9ccb774f",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p01-control-poll-admission-native-20260924.json",
+    "retention": "Keep34payloadcapture/source/ELFs/PG/archive/output. Reused877nativeELF; no new Rust cache. Both databases0, all ownedPID0/noOOM/network removed;643prior/eight running preserved.",
+    "free_bytes": 136414396416
   }
 }

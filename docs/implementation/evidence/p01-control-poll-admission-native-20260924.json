@@ -1,0 +1,183 @@
+{
+  "status": "PASS_SCOPED",
+  "source": "b3cd3f1adc6b81ab8aafc33bd9d590144aa0c70d",
+  "tree": "1a7468ff505a54b3f006ae041c0769588d9ff7d6",
+  "build_source": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+  "artifacts": {
+    "bigbrotr": "48ae6d1a7a1e685780d84db05692f75eb671c0e5178ad7aab7ca7b5f74325805",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-b3cd3f1/capture",
+    "files": 34,
+    "current_git_files": 1203,
+    "sha256": "12937fab01cdf4b3caa7a8178f16e7d057d9ee25fb42424fbb17733ca35c60a8"
+  },
+  "scope": "Strengthened idle-policy shutdown oracle; same exact877 product/native ELF verified against all non-doc/non-experiment inputs.",
+  "cases": {
+    "released-before-deadline": {
+      "holder": {
+        "event": "locked",
+        "pid": 337
+      },
+      "waiter": {
+        "pid": 323,
+        "query": "SELECT substring(dataset_id FROM 1 FOR 17), substring(instance_id FROM 1 FOR 17) FROM control.datasets LIMIT 2 FOR UPDATE",
+        "backend_start": "2026-09-24T14:49:57.663756+00:00",
+        "wait_event_type": "Lock"
+      },
+      "early_terminal": false,
+      "held_after_signal_seconds": 0.3202615659683943,
+      "owners": [
+        {
+          "epoch": "1",
+          "state": "released"
+        },
+        {
+          "epoch": "2",
+          "state": "released"
+        },
+        {
+          "epoch": "3",
+          "state": "released"
+        }
+      ],
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "status": "PASS",
+      "terminal": {
+        "event": "terminal",
+        "exit": 0,
+        "elapsed_seconds": 0.314293519128114,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true,
+        "stderr": ""
+      },
+      "owner_epoch": "3"
+    },
+    "held-past-deadline": {
+      "holder": {
+        "event": "locked",
+        "pid": 534
+      },
+      "waiter": {
+        "pid": 520,
+        "query": "SELECT substring(dataset_id FROM 1 FOR 17), substring(instance_id FROM 1 FOR 17) FROM control.datasets LIMIT 2 FOR UPDATE",
+        "backend_start": "2026-09-24T14:50:00.805031+00:00",
+        "wait_event_type": "Lock"
+      },
+      "early_terminal": true,
+      "held_after_signal_seconds": 6.0204620459116995,
+      "owners": [
+        {
+          "epoch": "1",
+          "state": "released"
+        },
+        {
+          "epoch": "2",
+          "state": "released"
+        },
+        {
+          "epoch": "3",
+          "state": "released"
+        },
+        {
+          "epoch": "4",
+          "state": "active"
+        }
+      ],
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "status": "PASS",
+      "terminal": {
+        "event": "terminal",
+        "exit": 1,
+        "elapsed_seconds": 4.531816826201975,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true,
+        "stderr": "error: Control backend operation failed: Backend\n"
+      },
+      "owner_epoch": "4"
+    },
+    "private-released-before-deadline": {
+      "holder": {
+        "event": "locked",
+        "pid": 746
+      },
+      "waiter": {
+        "pid": 732,
+        "query": "SELECT substring(dataset_id FROM 1 FOR 17), substring(instance_id FROM 1 FOR 17) FROM control.datasets LIMIT 2 FOR UPDATE",
+        "backend_start": "2026-09-24T14:50:09.921246+00:00",
+        "wait_event_type": "Lock"
+      },
+      "admission": {
+        "event": "admission",
+        "parent_running": true,
+        "parent_running_after": true,
+        "closed": true
+      },
+      "admission_before_unlock": true,
+      "early_terminal": false,
+      "held_after_signal_seconds": 0.8049674569629133,
+      "owners": [
+        {
+          "epoch": "1",
+          "state": "released"
+        },
+        {
+          "epoch": "2",
+          "state": "released"
+        },
+        {
+          "epoch": "3",
+          "state": "released"
+        },
+        {
+          "epoch": "4",
+          "state": "released"
+        },
+        {
+          "epoch": "5",
+          "state": "released"
+        }
+      ],
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "status": "PASS",
+      "terminal": {
+        "event": "terminal",
+        "exit": 0,
+        "elapsed_seconds": 0.8174002468585968,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true,
+        "stderr": ""
+      },
+      "owner_epoch": "5"
+    }
+  },
+  "review": "Root verified every34captured payload,1203current/1202build/1110seed Git source manifests, ELF, actual parent stdout/stderr, same blocked query/backend, SQL owners/backends and643prior container lifecycle/mount/network/restart records. Host now receives completed admission probe and both parent-liveness samples, then independently sees the same blocked policy query, all before issuing ROLLBACK. This closes the ordering gap identified by independent AI in original877. No private response-stream drain qualification.",
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-b3cd3f1",
+    "owner": "6e917dfdf1131fb495e28d39d7e59db7",
+    "state": "stopped-retained",
+    "prior_preserved": 643,
+    "unrelated_running": 8,
+    "free_before": 136811868160,
+    "free_after": 136414396416,
+    "cleanup_errors": []
+  },
+  "exclusions": [
+    "No heartbeat renewal COMMIT ambiguity, native/mutating command or second signal qualification.",
+    "No browser matrix or full product/release qualification.",
+    "Original877 private ordering limitation and cc8 unattributed failure remain recorded."
+  ]
+}

@@ -20,26 +20,29 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD 877f3d43d0569f67f8b61333e989cb7c91a8866b, tree
-57fb00da7c79384329ace08208f2b176e38ca82e on main. Five unpublished commits after
+Last verified HEAD b3cd3f1adc6b81ab8aafc33bd9d590144aa0c70d, tree
+1a7468ff505a54b3f006ae041c0769588d9ff7d6 on main. Six unpublished commits after
 private origin/main cac50d60a591981b8060e50ed8cbb6c2b070be62. Root owns only
 subsequent checkpoint/inventory updates. No other contributor or merge/rebase.
 
-Next bounded action: execute the strengthened --runtime-shutdown private probe
-on exact877f3d4 ELF (fixture-only product equality), then resume six-pair browser
-qualification. Original877 is stopped-retained; headless short stop0 after0.314s,
-long hold6s yields exit1/Backend after4.489s and active owner metadata; bothDB0,
-actual parent absent/archive lock free/scratch empty. Private original sampled a
-live parent before a closed network probe, but host consumed this event after
-unlock: it cannot prove pre-unlock ordering. Independent AI caught this gap;
-new fixture requires admission event and same blocked PG waiter before unlock,
-plus liveness after probe. No product/budget change for this strengthening.
+Next bounded action: run --runtime-job-browser using exact877f3d4 ELF after
+fixture-only product/build equality, collect all six engine/mount outcomes, audit
+actual bundles/HTTP/SQL/screenshots, then commit and push the verified integrated
+status slice. No new Rust cache needed. Resume P08-T03 explicit resume after it.
+
+The strengthened [b3cd3f1 shutdown probe](evidence/p01-control-poll-admission-native-20260924.json)
+passes: host receives complete network probe plus live-parent samples before AND
+after, independently sees the same blocked PG query, then unlocks. Both headless
+short0 and long non-success/retained-owner schedules also pass. Same877ELF,
+34payloads/1203current/1202build/1110seed source manifests and all643prior/eight
+running resources verified; no cleanup debt. Tar
+12937fab01cdf4b3caa7a8178f16e7d057d9ee25fb42424fbb17733ca35c60a8.
+Original877 remains scoped: its first private probe did not prove unlock order.
 Fresh877build/44binarytests/ClippyPASS, parentSHA
 48ae6d1a7a1e685780d84db05692f75eb671c0e5178ad7aab7ca7b5f74325805;
 worker3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
-Root and independent AI verified40payloads/1202current/1110seed sources/ELFs;
-tar135275e2d1711678bc0797e77c864826ad05b0e437c656090092d8f95df9d522.
-641prior/eight running preserved, no cleanup debt. Keep current877native cache.
+Keep current877/f660 useful caches and all original ELF/evidence. Latest free
+136414396416bytes, after new small seed/output; maintenance details below.
 
 The idle-only fix closes admission on stop and collects the same future with
 original deadline, then directly enters common shutdown. No available flag reset;
