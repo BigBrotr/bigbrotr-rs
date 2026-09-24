@@ -19,11 +19,14 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-HEAD338057bb7ee911a866d2ac93d0729d9be67c2d91, tree
-c16ede70dbfd7e137032f44f8eac44c3eb133656; candidate above private
-origin/main73c347e. Root owns only checkpoint/report/inventory/operations/task
-documentation. No foreign work. Product Rust/SQL unchanged; native product
-artifacts retain8dbd3c4 identity. No experiment remains active.
+HEAD/origin/main2b61b4e0113bd34179cc98ff1a38c9a1fbcd4533, tree
+f8b363736c2c3fbcb98cd585605af00037a3d697. Candidate338057b and reviewed evidence
+are pushed to private BigBrotr/bigbrotr-rs/main; ls-remote matches, no rewrite.
+Clean immediately after push; root now owns this checkpoint plus the new
+resume_revoke client/host fixture, lab wiring and finite TracedServer options.
+No product Rust/SQL changes or foreign work. Tested fixture source remains338057b, with unchanged
+product/build inputs and native runtime artifacts retaining8dbd3c4 identity.
+No experiment remains active.
 
 Run export-runtime-338057b, owner66c9ffd561acaaafaa9bd4d885b32818, is stopped-retained
 with [scoped native evidence](evidence/p08-export-resume-locks-native-20260924.json)
@@ -63,16 +66,46 @@ under browser_sessions.rs:361/0806. Root read the complete519-line session adapt
 and requires every other row/xmin preserved. Within-case retries/stop remain exact.
 No native retry, fixture mutation or failure-to-PASS relabeling occurred.
 
-Next bounded action: commit/private push the reviewed evidence. Then continue P08-T03 Step3 current grant/account
-revision interleavings during resume, followed by full CLI/cancel consumers. Read
-current account/grant mutation lock order before choosing the next actual race;
-do not manufacture an impossible lock schedule or silently expand authority.
-Root read complete350-line scope_grants.rs and220-line export_resume.rs: both
-require Control/dataset before account/session, so a second protected mutation
-cannot be inserted arbitrarily inside an already locked acceptance. Further
-fixture selection must preserve that ordering. Maximum/commit-time expiry,
-zero/multiple streams and mixed aged workloads remain
-open. Current helper review-resume-locks.py is for this original capture only.
+Active bounded slice: actual authenticated history.read revocation while resume
+is checking its original filesystem marker, between the first rolled-back SQL
+validation and the second accepting transaction. Native supervisor can service
+revocation without nesting native allocation; grant enable would need a new read.
+New client prepares real login/password reauthentication before the hold, primes
+only with incompatible marker503s, then uses qualified strace6.1 delay_enter2s on
+the third per-thread marker open. While the identified worker is still stopped,
+actual PUT disables history.read. Restore original marker bytes/same inode before
+the finite delay returns; the pending resume must403, with no resume effects.
+Explicit retry of consumed grant proof/key resolves original200 receipt; resume
+retry403 and job GET200, then actual graceful parent/Control release. No extra
+native reader/export execution selected.17 complete ledgers plus safe session
+projection bind two issuance audits and one exact atomic grant transition/proof
+consumption; original job/unit/caps/cut/pins must stay unchanged.
+
+Read affected current resume/native supervisor/management, complete scope-grant
+adapter, grant digest model,0811 and session proof issuance, plus the actual
+checker/revocation fixtures. Official strace v6.1 manual delay/when semantics
+inspected (raw GitHub tag); this changes only fixture timing, no tracer rebuild.
+TracedServer now accepts explicit2s or original60s delay and captured log name.
+Existing six exact-marker/worker/returned-call oracle tests pass; artifact/Python
+syntax checks pass. Root and read-only AI static review are complete; confirmed capture and
+marker-ordering gaps were corrected. No outstanding concrete static blocker.
+The2s setup may be INCOMPLETE on a slow host; no Control renewal or continuous
+custody claim is part of this fixture. No new native run launched yet. Fresh Tux prelaunch census21:38:32Z:
+114151071744bytes free,762containers/eight unrelated running, no BigBrotr process;
+mounts/processes/ports/networks/volumes inventoried without mutations. Use existing
+collect-resume-checker.py to capture job-resume logs/trace/JSON/original marker AND
+actual copied instrument/proof. Preserve qualified strace plus8db/4e reuse roots.
+Marker restoration now re-samples the actual pending stopped worker after exact
+bytes/inode verification; do not infer this ordering from an after-write timestamp.
+
+Next: integrate confirmed review corrections, inspect full diff and artifact/
+handoff checks, commit clean candidate, inventory Tux and transfer via ignored
+transfer-resume-revoke.py with exact8db runtime reuse. Observe actual outcomes;
+if timing/fixture preparation fails, preserve it as incomplete. Then capture and
+independently check all durable effects/trace/identities/terminal resources before
+claiming this concurrency guarantee. Maximum/commit-time expiry, further account/
+grant/CAS orderings, zero/multiple streams, CLI/cancel and mixed workloads remain
+open. No full task/M1 completion from one scenario.
 
 ## Latest qualified slice
 

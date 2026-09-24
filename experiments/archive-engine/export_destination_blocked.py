@@ -69,11 +69,12 @@ def lock_available(destination=None):
 
 
 class TracedServer(http.Server):
-    def __init__(self):
-        self.output=http.ROOT/'checker.stdout';self.error=http.ROOT/'checker.stderr'
-        self.trace=http.ROOT/'checker.trace';self.parent=None;self.parent_fd=None
+    def __init__(self, *, delay_seconds=60, name='checker'):
+        assert delay_seconds in (2,60) and re.fullmatch('[a-z-]{1,64}',name)
+        self.output=http.ROOT/(name+'.stdout');self.error=http.ROOT/(name+'.stderr')
+        self.trace=http.ROOT/(name+'.trace');self.parent=None;self.parent_fd=None
         self.command=[str(TRACER),'-f','-ttt','-yy','-P','destination.json',
-            '-e','trace=openat','-e','inject=openat:delay_enter=60s:when=3',
+            '-e','trace=openat','-e',f'inject=openat:delay_enter={delay_seconds}s:when=3',
             '-o',str(self.trace),str(http.BINARY),'serve','--roles','control','--file',str(http.CONFIG)]
         with self.output.open('xb') as out,self.error.open('xb') as err:
             self.process=subprocess.Popen(self.command,env={},stdout=out,stderr=err,start_new_session=True)
