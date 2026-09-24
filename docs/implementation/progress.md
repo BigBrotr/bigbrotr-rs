@@ -20,20 +20,38 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD45a96e7feecd19f3db1f91e2662e11e4674fe0a6, tree
-088f36d288e4db1f6d297340255723c5d9146dd2 on main; private origin/main remains
-adee7b6e61e03ac9798a180f0c0a1e890eb29547. Seven unpublished coherent candidates.
-Root owns the pending probe correction, stronger HTTP fixture and RED evidence/
-inventory/checkpoint. No other contributor or merge/rebase. No active Tux BigBrotr
-lab after owner-verified45a96e7 terminal capture.
+Last verified HEAD4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b, tree
+00fa42058fdcc1b7db534afb1ad99a0ed7e4dc7f on main; private origin/main remains
+adee7b6e61e03ac9798a180f0c0a1e890eb29547. Eight unpublished coherent candidates.
+Root owns pending HTTP qualification report/inventory/docs/checkpoint. No other
+contributor or merge/rebase. No active Tux BigBrotr lab after terminal capture.
 
-Next bounded action: commit and transfer the corrected candidate via exact Git,
-then --runtime-resume with fresh installed build. It removes only excess SELECT
-checks on artifact_files/consumer_frontiers/consumer_frontier_revisions and the
-last table's UPDATE requirement; applied SQL unchanged. The strengthened fixture
-binds HTTP timestamps/revisions to SQL, checks new command/digest/audit/transaction
-identity, and retains its Process before readiness. Native outcome still pending.
-Mac Clippy after correction passes. Keep expiry/COMMIT/held-driver/output gates open.
+Next bounded action: actual same-unit signed completion after permission restoration,
+using existing installed revocation scenario's paused job. Apply814 with the actual
+migrator, restore history.read through authenticated HTTP, then explicit resume;
+compare the original unit/cut/caps/artifact and complete signed bytes, fresh reader
+release, original export pin retention and no duplicate completion across restart.
+Reuse4a3c4ce ELF only if complete product/build input equality holds. Fault/expiry/
+held-driver scenarios and UI remain required; do not mark full tasks complete.
+
+[4a3c4ce installed HTTP](evidence/p08-export-resume-http-native-20260924.json) passes
+fresh build/46binarytests/Clippy plus17HTTP exchanges and7control events. Reduced
+privileges now permit original receipt5 and exactly one new queued8. Missing INSERT,
+input denial, body conflict, stale revision, bad CSRF, absent destination/marker
+and account deactivation refuse. Same cookie/key resolves after process restart
+without destination/input grants. Original scheduling lease is expired but active
+retention remains; unit/selection/artifact/lease/pin/claim rows AND xmin unchanged.
+Sessions'last_seen/idle/xmin unchanged through acceptance/refusals/initial restarts.
+Every successful receipt matches independent SQL; actor/key/job/revisions/digest/
+audit/common transaction checked. Root verifies38payloads/1223current/1110seed Git
+files/bothELF and670prior/eight unrelated running records. Tar
+5ec2fbd635638092692e63bcc8bb0fc64f109af33d2903b3348be3dfab40172c.
+Stopped-retained runs/export-runtime-4a3c4ce ownere4c989c7f3641add8f020b597033b2da;
+allownedPID0/noOOM/network removed, allfiveparents0/reaped/rootlocks free/scratch
+empty,bothDB0. Free126809890816→123076579328bytes; protect4a3c4ce artifacts/cache.
+Independent read-only AI capture review confirms source/ELF/digest/SQL/resource
+observations without a concrete discrepancy. This is Python actual HTTP with execution
+disabled; real TypeScript/browser consumer and resumed signed output NOT_RUN.
 
 [45a96e7 HTTP RED](evidence/p08-export-resume-http-red-20260924.json) reproduced
 historical receipt503instead200 after unrelated execution-table privilege removal.
@@ -328,7 +346,7 @@ Root's ResumeExportCommand fingerprint/closed parsing has two Mac tests passing,
 preceded by missing-type compile RED; Clippy passed. Independent Python vectors
 bind four IDs and three u64 revisions. This is identity only, not acceptance.
 SQL RED is now executed as above; new0814 SQL acceptance is scoped PASS as above.
-Rust adapter has scoped native evidence above; HTTP/client/UI remain unimplemented.
+Rust adapter and installed HTTP have scoped native evidence above; typed client has Mac checks, browser/CLI resume and full fault/output qualification remain open.
 Independent AI read the action mapping, not these new tests or SQL fixture.
 
 ## Tux ownership and maintenance

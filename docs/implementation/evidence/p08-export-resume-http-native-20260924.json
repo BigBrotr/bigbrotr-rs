@@ -1,0 +1,689 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "PASS_SCOPED",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3",
+    "P09-T09 Step 2"
+  ],
+  "source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+  "tree": "00fa42058fdcc1b7db534afb1ad99a0ed7e4dc7f",
+  "environment": {
+    "host": "tux",
+    "target": "Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-4a3c4ce/capture",
+    "files": 38,
+    "sha256": "5ec2fbd635638092692e63bcc8bb0fc64f109af33d2903b3348be3dfab40172c",
+    "source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+    "tree": "00fa42058fdcc1b7db534afb1ad99a0ed7e4dc7f",
+    "source_files": 1223
+  },
+  "scope": "Actual installed resume HTTP and application-role SQL; native execution disabled to observe exact accepted revision. No resumed artifact output or COMMIT-fault qualification.",
+  "artifacts": {
+    "bigbrotr": "6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "build_checks": [
+    {
+      "name": "installed-build",
+      "command": [
+        "/usr/bin/python3",
+        "/out/build/source/experiments/export-execution/native.py",
+        "--build-runtime"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 61.10546634485945
+    },
+    {
+      "name": "management-tests",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 23.469135630875826
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.922406912315637
+    }
+  ],
+  "results": {
+    "cases": {
+      "first-login": {
+        "event": "first-login",
+        "operation": "login",
+        "status": 201
+      },
+      "missing-insert-refused": {
+        "event": "missing-insert-refused",
+        "operation": "resume",
+        "status": 503,
+        "observation": {
+          "error": {
+            "code": "authority_unavailable",
+            "correlation_id": "b7c03c4fe25acf44ba48d0f786642e76",
+            "message": "Current authority or dependency unavailable.",
+            "retry_class": "check_state",
+            "status": 503
+          }
+        }
+      },
+      "sessions-still-available": {
+        "event": "sessions-still-available",
+        "operation": "me",
+        "status": 200,
+        "observation": {
+          "authority": "observation-only",
+          "credential_revision": "1",
+          "expires_at_us": "1790295418637939",
+          "format": "bigbrotr-session/1",
+          "grant_revision": "4",
+          "idle_expires_at_us": "1790268418644091",
+          "policy_revision": "2",
+          "principal_id": "10101010101010101010101010101010",
+          "stored_actions": [
+            "audit.read",
+            "budgets.change",
+            "data.read",
+            "policy.change",
+            "principals.manage",
+            "roles.control",
+            "status.read"
+          ]
+        }
+      },
+      "missing-terminal": {
+        "event": "missing-terminal",
+        "operation": "stop",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "current-login": {
+        "event": "current-login",
+        "operation": "login",
+        "status": 201
+      },
+      "old-receipt-after-session-deletion": {
+        "event": "old-receipt-after-session-deletion",
+        "operation": "resume",
+        "status": 200,
+        "observation": {
+          "accepted_at_us": "1790266557204363",
+          "authority": "acceptance-only",
+          "command_key": "e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4",
+          "created": false,
+          "execution": "unobserved",
+          "format": "bigbrotr-export-resume/1",
+          "job_id": "c77b5745850dbea631944062afcb7b7a",
+          "job_revision": "5"
+        }
+      },
+      "old-receipt-without-input-grants": {
+        "event": "old-receipt-without-input-grants",
+        "operation": "resume",
+        "status": 200,
+        "observation": {
+          "accepted_at_us": "1790266557204363",
+          "authority": "acceptance-only",
+          "command_key": "e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4",
+          "created": false,
+          "execution": "unobserved",
+          "format": "bigbrotr-export-resume/1",
+          "job_id": "c77b5745850dbea631944062afcb7b7a",
+          "job_revision": "5"
+        }
+      },
+      "new-input-denied": {
+        "event": "new-input-denied",
+        "operation": "resume",
+        "status": 403,
+        "observation": {
+          "error": {
+            "code": "permission_denied",
+            "correlation_id": "5606aa46b88058b3f8336c4ec86e77fa",
+            "message": "This action is not permitted.",
+            "retry_class": "check_state",
+            "status": 403
+          }
+        }
+      },
+      "key-body-conflict": {
+        "event": "key-body-conflict",
+        "operation": "resume",
+        "status": 409,
+        "observation": {
+          "error": {
+            "code": "command_conflict",
+            "correlation_id": "b8c0ef7c3e7307e982e9b8ac3251165e",
+            "message": "Command key or expected revision conflicts with current state.",
+            "retry_class": "check_state",
+            "status": 409
+          }
+        }
+      },
+      "stale-revision": {
+        "event": "stale-revision",
+        "operation": "resume",
+        "status": 409,
+        "observation": {
+          "error": {
+            "code": "command_conflict",
+            "correlation_id": "cc0e2094b4d23a1118f6a4191cf2a2ba",
+            "message": "Command key or expected revision conflicts with current state.",
+            "retry_class": "check_state",
+            "status": 409
+          }
+        }
+      },
+      "csrf-denied": {
+        "event": "csrf-denied",
+        "operation": "resume",
+        "status": 401,
+        "observation": {
+          "error": {
+            "code": "authentication_denied",
+            "correlation_id": "8f65faffc308d84cc3b77a8914931b61",
+            "message": "Authentication required or denied.",
+            "retry_class": "authenticate",
+            "status": 401
+          }
+        }
+      },
+      "without-destination": {
+        "event": "without-destination",
+        "operation": "restart",
+        "stopped": {
+          "exit": 0,
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "owner": {
+          "archive_intents": {
+            "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+            "issued_through": "4",
+            "observed_through": "4",
+            "pages": 1,
+            "publication_authority": "not-granted",
+            "resolution": "not-performed",
+            "state": "observed"
+          },
+          "authority_scope": "Control custody; each private action and export independently reauthorized",
+          "config_revision": "1",
+          "dataset_id": "01010101010101010101010101010101",
+          "export_execution": "not-selected",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [
+            {
+              "host": "127.0.0.1",
+              "kind": "private-session-http",
+              "port": 18080,
+              "private_assets": null,
+              "profile": "trusted-host-loopback"
+            }
+          ],
+          "native_stores": [],
+          "owner_epoch": "7",
+          "owner_resource_id": "ca5af62c3b242cf0d8c333bf6e32cd86",
+          "policy_revision": "2",
+          "process_incarnation": "1e14b55e3fff923da88e733e3fcfbe34",
+          "role": "control",
+          "state": "idle"
+        },
+        "parent_pid": 3131
+      },
+      "missing-destination": {
+        "event": "missing-destination",
+        "operation": "resume",
+        "status": 503,
+        "observation": {
+          "error": {
+            "code": "authority_unavailable",
+            "correlation_id": "0d2ca3458df5175cdce5e3e8f51a35fd",
+            "message": "Current authority or dependency unavailable.",
+            "retry_class": "check_state",
+            "status": 503
+          }
+        }
+      },
+      "historical-without-destination": {
+        "event": "historical-without-destination",
+        "operation": "resume",
+        "status": 200,
+        "observation": {
+          "accepted_at_us": "1790266557204363",
+          "authority": "acceptance-only",
+          "command_key": "e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4",
+          "created": false,
+          "execution": "unobserved",
+          "format": "bigbrotr-export-resume/1",
+          "job_id": "c77b5745850dbea631944062afcb7b7a",
+          "job_revision": "5"
+        }
+      },
+      "destination-restored": {
+        "event": "destination-restored",
+        "operation": "restart",
+        "stopped": {
+          "exit": 0,
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "owner": {
+          "archive_intents": {
+            "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+            "issued_through": "4",
+            "observed_through": "4",
+            "pages": 1,
+            "publication_authority": "not-granted",
+            "resolution": "not-performed",
+            "state": "observed"
+          },
+          "authority_scope": "Control custody; each private action and export independently reauthorized",
+          "config_revision": "1",
+          "dataset_id": "01010101010101010101010101010101",
+          "export_execution": "not-selected",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [
+            {
+              "host": "127.0.0.1",
+              "kind": "private-session-http",
+              "port": 18080,
+              "private_assets": null,
+              "profile": "trusted-host-loopback"
+            }
+          ],
+          "native_stores": [],
+          "owner_epoch": "8",
+          "owner_resource_id": "ca5af62c3b242cf0d8c333bf6e32cd86",
+          "policy_revision": "2",
+          "process_incarnation": "81f5a041c41f2bdf4113eb37ca510c54",
+          "role": "control",
+          "state": "idle"
+        },
+        "parent_pid": 3133
+      },
+      "marker-unavailable": {
+        "event": "marker-unavailable",
+        "operation": "marker",
+        "available": false
+      },
+      "marker-refused": {
+        "event": "marker-refused",
+        "operation": "resume",
+        "status": 503,
+        "observation": {
+          "error": {
+            "code": "authority_unavailable",
+            "correlation_id": "217eae422da6cb4a82cdc23227db8a36",
+            "message": "Current authority or dependency unavailable.",
+            "retry_class": "check_state",
+            "status": 503
+          }
+        }
+      },
+      "marker-restored": {
+        "event": "marker-restored",
+        "operation": "marker",
+        "available": true
+      },
+      "new-resume-accepted": {
+        "event": "new-resume-accepted",
+        "operation": "resume",
+        "status": 202,
+        "observation": {
+          "accepted_at_us": "1790266622159653",
+          "authority": "acceptance-only",
+          "command_key": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
+          "created": true,
+          "execution": "unobserved",
+          "format": "bigbrotr-export-resume/1",
+          "job_id": "c77b5745850dbea631944062afcb7b7a",
+          "job_revision": "8"
+        }
+      },
+      "same-receipt": {
+        "event": "same-receipt",
+        "operation": "resume",
+        "status": 200,
+        "observation": {
+          "accepted_at_us": "1790266622159653",
+          "authority": "acceptance-only",
+          "command_key": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
+          "created": false,
+          "execution": "unobserved",
+          "format": "bigbrotr-export-resume/1",
+          "job_id": "c77b5745850dbea631944062afcb7b7a",
+          "job_revision": "8"
+        }
+      },
+      "restart-without-destination": {
+        "event": "restart-without-destination",
+        "operation": "restart",
+        "stopped": {
+          "exit": 0,
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "owner": {
+          "archive_intents": {
+            "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+            "issued_through": "4",
+            "observed_through": "4",
+            "pages": 1,
+            "publication_authority": "not-granted",
+            "resolution": "not-performed",
+            "state": "observed"
+          },
+          "authority_scope": "Control custody; each private action and export independently reauthorized",
+          "config_revision": "1",
+          "dataset_id": "01010101010101010101010101010101",
+          "export_execution": "not-selected",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [
+            {
+              "host": "127.0.0.1",
+              "kind": "private-session-http",
+              "port": 18080,
+              "private_assets": null,
+              "profile": "trusted-host-loopback"
+            }
+          ],
+          "native_stores": [],
+          "owner_epoch": "9",
+          "owner_resource_id": "ca5af62c3b242cf0d8c333bf6e32cd86",
+          "policy_revision": "2",
+          "process_incarnation": "d88f1a02ea554bd8c15fafe738a4e663",
+          "role": "control",
+          "state": "idle"
+        },
+        "parent_pid": 3136
+      },
+      "same-receipt-after-restart-and-revocation": {
+        "event": "same-receipt-after-restart-and-revocation",
+        "operation": "resume",
+        "status": 200,
+        "observation": {
+          "accepted_at_us": "1790266622159653",
+          "authority": "acceptance-only",
+          "command_key": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
+          "created": false,
+          "execution": "unobserved",
+          "format": "bigbrotr-export-resume/1",
+          "job_id": "c77b5745850dbea631944062afcb7b7a",
+          "job_revision": "8"
+        }
+      },
+      "deactivated-session-denied": {
+        "event": "deactivated-session-denied",
+        "operation": "resume",
+        "status": 401,
+        "observation": {
+          "error": {
+            "code": "authentication_denied",
+            "correlation_id": "9732962432683e6ed20c0c7a2ad10fc1",
+            "message": "Authentication required or denied.",
+            "retry_class": "authenticate",
+            "status": 401
+          }
+        }
+      },
+      "final-terminal": {
+        "event": "final-terminal",
+        "operation": "stop",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      }
+    },
+    "transition": {
+      "before": {
+        "state": "paused",
+        "revision": "7"
+      },
+      "after": {
+        "state": "queued",
+        "revision": "8"
+      }
+    },
+    "retention": {
+      "active": true,
+      "expired": true
+    },
+    "unchanged_rows_and_xmin": [
+      "export_jobs",
+      "export_execution_units",
+      "artifacts",
+      "artifact_files",
+      "snapshot_leases",
+      "archive_snapshot_pins",
+      "retention_claims"
+    ],
+    "receipts": "Every HTTP success matches independent SQL time and revision; exact actor/dataset/key/job/revision/audit tuple and independently computed SHA256 match. Original detail/common-command/audit and xmin unchanged; one new row each in the same transaction as queued8.",
+    "session_observation": "Last-seen/idle expiry/xmin unchanged across successful and refused resume, receipt resolution and two same-cookie parent restarts; final retry after input revocation also resolves without a destination.",
+    "terminal": {
+      "active_control": 0,
+      "backends": 0,
+      "extra_grants": 0
+    }
+  },
+  "review": {
+    "root": "Verified38payloads,1223current/1110seed Git files, fresh parent/worker ELF,670prior container lifecycle/mount/network/restart records, all observed ledger rows and xmin plus independent tuple/digest/transaction binding. 24 fixture protocol/control events include17 actual HTTP exchanges. Original45a96e7 reduced-privilege failure preserved; same revoked tables now allow historical resolution and new acceptance.",
+    "independent_ai": "Read-only AI independently verified both RED/GREEN tar/payloads, complete current and seed Git archives, both ELF pairs, all successful HTTP receipt/SQL bindings, SHA256 and detail/command/audit/job xmin1014, historical receipt xmin919, seven unchanged ledgers, expired but active original pin and no new reader.668/670prior records/eight running and bothDB0/ownedPID0/noOOM/networkremoved confirmed. No concrete discrepancy; no SSH or test execution."
+  },
+  "cleanup": {
+    "state": "stopped-retained",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-4a3c4ce",
+    "owner": "e4c989c7f3641add8f020b597033b2da",
+    "all_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "parent_terminals": {
+      "missing-terminal": {
+        "event": "missing-terminal",
+        "operation": "stop",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      },
+      "without-destination": {
+        "event": "without-destination",
+        "operation": "restart",
+        "stopped": {
+          "exit": 0,
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "owner": {
+          "archive_intents": {
+            "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+            "issued_through": "4",
+            "observed_through": "4",
+            "pages": 1,
+            "publication_authority": "not-granted",
+            "resolution": "not-performed",
+            "state": "observed"
+          },
+          "authority_scope": "Control custody; each private action and export independently reauthorized",
+          "config_revision": "1",
+          "dataset_id": "01010101010101010101010101010101",
+          "export_execution": "not-selected",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [
+            {
+              "host": "127.0.0.1",
+              "kind": "private-session-http",
+              "port": 18080,
+              "private_assets": null,
+              "profile": "trusted-host-loopback"
+            }
+          ],
+          "native_stores": [],
+          "owner_epoch": "7",
+          "owner_resource_id": "ca5af62c3b242cf0d8c333bf6e32cd86",
+          "policy_revision": "2",
+          "process_incarnation": "1e14b55e3fff923da88e733e3fcfbe34",
+          "role": "control",
+          "state": "idle"
+        },
+        "parent_pid": 3131
+      },
+      "destination-restored": {
+        "event": "destination-restored",
+        "operation": "restart",
+        "stopped": {
+          "exit": 0,
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "owner": {
+          "archive_intents": {
+            "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+            "issued_through": "4",
+            "observed_through": "4",
+            "pages": 1,
+            "publication_authority": "not-granted",
+            "resolution": "not-performed",
+            "state": "observed"
+          },
+          "authority_scope": "Control custody; each private action and export independently reauthorized",
+          "config_revision": "1",
+          "dataset_id": "01010101010101010101010101010101",
+          "export_execution": "not-selected",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [
+            {
+              "host": "127.0.0.1",
+              "kind": "private-session-http",
+              "port": 18080,
+              "private_assets": null,
+              "profile": "trusted-host-loopback"
+            }
+          ],
+          "native_stores": [],
+          "owner_epoch": "8",
+          "owner_resource_id": "ca5af62c3b242cf0d8c333bf6e32cd86",
+          "policy_revision": "2",
+          "process_incarnation": "81f5a041c41f2bdf4113eb37ca510c54",
+          "role": "control",
+          "state": "idle"
+        },
+        "parent_pid": 3133
+      },
+      "restart-without-destination": {
+        "event": "restart-without-destination",
+        "operation": "restart",
+        "stopped": {
+          "exit": 0,
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "owner": {
+          "archive_intents": {
+            "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+            "issued_through": "4",
+            "observed_through": "4",
+            "pages": 1,
+            "publication_authority": "not-granted",
+            "resolution": "not-performed",
+            "state": "observed"
+          },
+          "authority_scope": "Control custody; each private action and export independently reauthorized",
+          "config_revision": "1",
+          "dataset_id": "01010101010101010101010101010101",
+          "export_execution": "not-selected",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [
+            {
+              "host": "127.0.0.1",
+              "kind": "private-session-http",
+              "port": 18080,
+              "private_assets": null,
+              "profile": "trusted-host-loopback"
+            }
+          ],
+          "native_stores": [],
+          "owner_epoch": "9",
+          "owner_resource_id": "ca5af62c3b242cf0d8c333bf6e32cd86",
+          "policy_revision": "2",
+          "process_incarnation": "d88f1a02ea554bd8c15fafe738a4e663",
+          "role": "control",
+          "state": "idle"
+        },
+        "parent_pid": 3136
+      },
+      "final-terminal": {
+        "event": "final-terminal",
+        "operation": "stop",
+        "exit": 0,
+        "parent_absent": true,
+        "lock_available": true,
+        "scratch_empty": true
+      }
+    },
+    "unrelated_running": 8,
+    "free_before": 126809890816,
+    "free_after": 123076579328
+  },
+  "remaining": [
+    "Actual same-unit signed completion after permission restoration",
+    "TypeScript client against real HTTP, browser/CLI resume consumers",
+    "Natural session expiry and expiry/revocation/CAS lock interleavings",
+    "Unknown COMMIT on both sides, cancellation and held-checker/driver destination custody",
+    "Migration incompatible-row refusal through actual Rust migrator",
+    "No workload capacity, hosted CI, arm64 or release qualification",
+    "Input unit selection is an independently seeded exact-ID empty export; native execution deliberately disabled. Command/audit comparisons cover job.export.resume only."
+  ]
+}

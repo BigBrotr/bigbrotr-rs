@@ -319,8 +319,10 @@ grants, expiry after a lock wait, both COMMIT-loss sides and actual same-unit
 signed completion after permission restoration. The [SQL receipt boundary](evidence/p08-export-resume-schema-native-20260924.json)
 now has scoped PostgreSQL evidence for atomic omissions, rollback, same-unit
 commit and disposable session cleanup. The actual Rust application-role adapter
-is under qualification; HTTP/client/UI and actual signed completion follow this
-persistent boundary and are not yet qualified.
+and [installed HTTP consumer](evidence/p08-export-resume-http-native-20260924.json)
+have scoped evidence; the typed client has local contract checks. Actual signed
+completion after restored permission, fault/expiry scenarios and UI/CLI consumers
+remain required before completing this step.
 
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending

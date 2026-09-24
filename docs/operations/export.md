@@ -114,7 +114,7 @@ key conflicts. After a lost reply retain the exact key/body for resolution. A
 receipt does not prove file availability or current job state.
 
 `POST /management/v1/jobs/{job_id}/resume` is now wired to the typed resume
-adapter and remains under installed HTTP qualification. Supply the live session,
+adapter with [scoped installed HTTP evidence](../implementation/evidence/p08-export-resume-http-native-20260924.json). Supply the live session,
 explicit CSRF, same-origin Origin and a new resume `Idempotency-Key`, distinct
 from the original export acceptance. The closed body contains only canonical
 positive decimal strings `expected_job_revision`, `expected_config_revision` and
@@ -135,9 +135,11 @@ outside SQL. A new reader or output write is not part of resume acceptance;
 execution independently acquires both before writing. Schema0814 and explicit
 SQL privileges are required. Missing optional protocol privileges return503;
 historical retry needs no current input grant, destination or native reader.
-The [actual Rust adapter evidence](../implementation/evidence/p08-export-resume-adapter-native-20260924.json)
-does not yet qualify this HTTP path, unknown COMMIT or resumed output. Browser
-resume controls and the CLI remain required consumers.
+The installed HTTP evidence covers reduced SQL privileges, same-unit acceptance,
+expired scheduling TTL with retained input, known refusals and historical retry
+after restart/revocation. The reader is disabled in that fixture. Unknown COMMIT,
+blocked destination work, resumed signed output and the real TypeScript/browser
+consumer remain required acceptance; browser controls and the CLI are unfinished.
 
 The private panel now provides **Inspect your job** after sign-in. Paste the job
 ID from the acceptance receipt and select **Check job**. The initial view shows
