@@ -23519,5 +23519,49 @@
       "source_files": 1227
     },
     "retention": "Preserve same-unit completed signed artifact, original paused/revocation evidence, all SQL states/captures/source manifests and reused4a3c4ce ELF. No build cache created."
+  },
+  "implementation_export_resume_commits_20260924": {
+    "status": "stopped-retained; scoped installed resume COMMIT-loss PASS",
+    "resources": {
+      "source": "3104705c070efabe1fa76b00f7347d1906326218",
+      "tree": "64299098e489f0b924dbc4919cbf50d1f27f52f9",
+      "owner": "6ce7da41937751bbdb4c79381396d45f",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3104705",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "92a740a58a2528d71be5adc5a9250e900d7fc2db656f15bcf4575933598792ef"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "fa73b838d7288d7dcd393fb2913d43c92589dd5e015adebfde3e159c214cf054"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T16:47:12.624138+00:00",
+      "runtime_profile": "resume-commits",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+      "network_id": "4f9cf8ad7ba31b6f3160790cccd239ac97faacef09f0933c320e0387336e0dbd",
+      "postgres_id": "92a740a58a2528d71be5adc5a9250e900d7fc2db656f15bcf4575933598792ef",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "fa73b838d7288d7dcd393fb2913d43c92589dd5e015adebfde3e159c214cf054",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-commits-native-20260924.json",
+    "capture": {
+      "files": 29,
+      "sha256": "8155ed464fa7eba0702309514856c9826478dfbf69e3a120c1371d14214b30ff",
+      "source": "3104705c070efabe1fa76b00f7347d1906326218",
+      "tree": "64299098e489f0b924dbc4919cbf50d1f27f52f9",
+      "source_files": 1230
+    },
+    "retention": "Preserve original paused7 and committed queued8 observations, all SQL states/receipts/logs/manifests and reused4a3c4ce ELF. No build cache created; no resource retirement."
   }
 }

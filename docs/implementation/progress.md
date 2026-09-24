@@ -20,25 +20,39 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEADb7d1264abee2df04a83bd309886de368626ab1b1, tree
-10ed00438098e5f196a642adbae55b791458fa2f on main; private origin/main matches. Root owns
-pending COMMIT-loss fixtures: resume_commit_{client,cases}.py, shared HTTP/lab
-profile wiring, one bounded proxy target and this checkpoint. No product change,
-other contributor or merge/rebase. Fresh Tux inspection shows eight unrelated
-running containers, no BigBrotr lab and128836923392bytes free. Full product incomplete.
+Last verified HEAD3104705c070efabe1fa76b00f7347d1906326218, tree
+64299098e489f0b924dbc4919cbf50d1f27f52f9 on main; private origin/main is
+b7d1264 (signed-output evidence and cache retirement pushed). One unpublished
+fault-fixture candidate; root owns pending evidence/docs/inventory/checkpoint and
+held-driver drafts: resume_custody_cases.py, extracted accepted_resume oracle and
+optional resume path in export_job_custody_client.py. No held-driver run yet. No product change,
+other contributor or merge/rebase. Full product incomplete.
 
-Next bounded action: commit the reviewed COMMIT-loss candidate and run
---runtime-resume-commits using the qualified4a3c4ce ELF and original paused7
-HTTP fixture. Source/build equality, fresh ownership/space census and exact Git
-are required. Before-forward must retain paused7/full original rows+xmin with no
-command; after server completion must retain queued8/exactly one receipt. Both
-must fail-stop with no false release. Same in-memory session/key/body on a fresh
-Control without destination/current input resolves original receipt8. Twelve
-ledgers include source bounds; retain all failure observations and parent/backend
-termination. Python syntax/artifact checks pass locally; native fault run NOT_RUN.
-Independent read-only AI static review found no concrete blocker. Commands/audit
-are resume-only; post-exit flock availability does not qualify custody while a
-driver remains pending. No held-driver/cancel claim from this slice.
+[3104705 resume COMMIT loss](evidence/p08-export-resume-commits-native-20260924.json)
+passes both before-forward and after-complete on the same in-memory session/key/body.
+Actual proxies identify Control5/6 backend and0/1server completions, no client
+completion; both parents4/CommitUnknown/reaped, rootlocks available/scratch empty.
+Before: all12ledgers/rows/xmin unchanged paused7/xmin910. After: queued8, one extra
+resume detail/common command/audit, commonxmin959 and independent digest/identity.
+All other rows and retained pins/claims/source bounds unchanged. Fresh Control7
+without destination/current data.read returns original receipt8/time; repeat and
+terminal rows unchanged, parent0, bothDB0. No automatic execution in this fixture.
+Root verifies29payloads/1230current/1223build/1110seed Git files and full product
+input equality to4a3c4ce plus both original ELF. Capture tar
+8155ed464fa7eba0702309514856c9826478dfbf69e3a120c1371d14214b30ff.
+Tux runs/export-runtime-3104705 owner6ce7da41937751bbdb4c79381396d45f stopped-retained;
+allownedPID0/noOOM/network removed;676prior/eight unrelated running unchanged.
+Free128802492416→128403394560bytes, no new build/cache. Independent AI static
+review and independent capture audit found no concrete discrepancy. Commands/audit snapshots
+are resume-only; post-exit flock availability does not qualify pending-driver custody.
+
+Next bounded action: qualify resume destination custody during a held actual Control
+COMMIT reply and SIGTERM. Reuse bounded pidfd/socket/flock sampling from the prior
+acceptance-custody fixture, with native execution disabled and original paused7.
+Positively identify Control/backend, inspect actual still-open socket on both sides
+of root exclusion samples, require bounded parent termination and unchanged retained
+inputs. Keep no continuous-custody/all-schedules claim. Exact Git/4a product equality,
+fresh space/ownership census and retained original evidence remain required.
 
 [30df0fd signed resume](evidence/p08-export-resume-output-native-20260924.json) passes
 actual blocked-reader revocation,814 compatible migration with real CLI, refused

@@ -137,9 +137,12 @@ SQL privileges are required. Missing optional protocol privileges return503;
 historical retry needs no current input grant, destination or native reader.
 The installed HTTP evidence covers reduced SQL privileges, same-unit acceptance,
 expired scheduling TTL with retained input, known refusals and historical retry
-after restart/revocation. The reader is disabled in that fixture. Unknown COMMIT,
-blocked destination work and the real TypeScript/browser consumer remain required
-acceptance; browser controls and the CLI are unfinished. A separate [installed
+after restart/revocation. The reader is disabled in that fixture. A separate
+[installed resume COMMIT-loss scenario](../implementation/evidence/p08-export-resume-commits-native-20260924.json)
+checks both unforwarded COMMIT and server-completed reply loss, bounded fail-stop
+and original-key resolution after restart without destination/input grants.
+Blocked destination work, held-driver custody and the real TypeScript/browser
+consumer remain required acceptance; browser controls and the CLI are unfinished. A separate [installed
 signed-resume scenario](../implementation/evidence/p08-export-resume-output-native-20260924.json)
 restores a revoked input grant through authenticated HTTP, resumes the original
 unit and verifies exact signed bytes plus complete inventory. Identical retry

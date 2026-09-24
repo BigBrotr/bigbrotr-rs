@@ -1,0 +1,335 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "PASS_SCOPED",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "source": "3104705c070efabe1fa76b00f7347d1906326218",
+  "tree": "64299098e489f0b924dbc4919cbf50d1f27f52f9",
+  "runtime_source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+  "scope": "Actual installed resume HTTP with native execution disabled; same key/body/session across unforwarded COMMIT and server-completed reply loss, followed by fresh Control resolution. No new compilation.",
+  "environment": {
+    "host": "tux",
+    "target": "Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-3104705/capture",
+    "files": 29,
+    "sha256": "8155ed464fa7eba0702309514856c9826478dfbf69e3a120c1371d14214b30ff",
+    "source": "3104705c070efabe1fa76b00f7347d1906326218",
+    "tree": "64299098e489f0b924dbc4919cbf50d1f27f52f9",
+    "source_files": 1230
+  },
+  "artifacts": {
+    "bigbrotr": "6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "results": {
+    "cases": [
+      {
+        "mode": "before-forward",
+        "status": "PASS",
+        "owner": {
+          "resource": "2d59ea3968a0e5e9fc3089abc8ffa6c7",
+          "epoch": "5",
+          "incarnation": "28153d4003c8dadbb3f6639889727631",
+          "pid": 535,
+          "start": "2026-09-24T16:48:28.730167+00:00",
+          "present": true
+        },
+        "fault": {
+          "event": "fault",
+          "mode": "before-forward",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 195316,
+          "frames": 3693,
+          "data_queries": 1,
+          "data_commits": 1,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 1,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 217,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "backend_pid": 535
+        },
+        "failed": {
+          "event": "failed-before",
+          "response": {
+            "closed": "RemoteDisconnected"
+          },
+          "exit": 4,
+          "error": "error: private management backend unavailable: CommitUnknown\n",
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "failed_owner": {
+          "resource": "2d59ea3968a0e5e9fc3089abc8ffa6c7",
+          "epoch": "5",
+          "incarnation": "28153d4003c8dadbb3f6639889727631",
+          "pid": 535,
+          "start": "2026-09-24T16:48:28.730167+00:00",
+          "present": false
+        },
+        "backends": {
+          "bbpub_control_normal": 0,
+          "bbpub_normal": 0
+        },
+        "proxy_terminal": {
+          "event": "terminal",
+          "mode": "before-forward",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 195316,
+          "frames": 3693,
+          "data_queries": 1,
+          "data_commits": 1,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 1,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 217,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "unexpected": 0
+        }
+      },
+      {
+        "mode": "after-complete",
+        "status": "PASS",
+        "owner": {
+          "resource": "2d59ea3968a0e5e9fc3089abc8ffa6c7",
+          "epoch": "6",
+          "incarnation": "b4e2e39490d9b458b8575b544b1a7e2d",
+          "pid": 648,
+          "start": "2026-09-24T16:48:29.973111+00:00",
+          "present": true
+        },
+        "fault": {
+          "event": "fault",
+          "mode": "after-complete",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 173918,
+          "frames": 3149,
+          "data_queries": 1,
+          "data_commits": 1,
+          "server_complete": 1,
+          "client_complete": 0,
+          "faults": 1,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 185,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "backend_pid": 648
+        },
+        "failed": {
+          "event": "failed-after",
+          "response": {
+            "closed": "RemoteDisconnected"
+          },
+          "exit": 4,
+          "error": "error: private management backend unavailable: CommitUnknown\n",
+          "parent_absent": true,
+          "lock_available": true,
+          "scratch_empty": true
+        },
+        "failed_owner": {
+          "resource": "2d59ea3968a0e5e9fc3089abc8ffa6c7",
+          "epoch": "6",
+          "incarnation": "b4e2e39490d9b458b8575b544b1a7e2d",
+          "pid": 648,
+          "start": "2026-09-24T16:48:29.973111+00:00",
+          "present": false
+        },
+        "backends": {
+          "bbpub_control_normal": 0,
+          "bbpub_normal": 0
+        },
+        "proxy_terminal": {
+          "event": "terminal",
+          "mode": "after-complete",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 173918,
+          "frames": 3149,
+          "data_queries": 1,
+          "data_commits": 1,
+          "server_complete": 1,
+          "client_complete": 0,
+          "faults": 1,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 185,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "unexpected": 0
+        }
+      }
+    ],
+    "before_forward": "Twelve recorded ledgers retain every original row and xmin, including paused7 xmin910, source bounds, unit, four retained leases/pins/claims and original receipt. No new command or release.",
+    "after_complete": "Queued8 and exactly one extra resume detail/common command/audit share xmin959. Actor/dataset/key/job/revisions/audit/time and independent command digest match. All other original rows and xmin unchanged, including source bounds and all retained pins/claims. Artifact inventory remains empty; native execution is disabled.",
+    "retried": {
+      "event": "retried",
+      "status": 200,
+      "receipt": {
+        "accepted_at_us": "1790268510115564",
+        "authority": "acceptance-only",
+        "command_key": "f3f3f3f3f3f3f3f3f3f3f3f3f3f3f3f3",
+        "created": false,
+        "execution": "unobserved",
+        "format": "bigbrotr-export-resume/1",
+        "job_id": "cbe8f06940b129016a46585b8ae3f589",
+        "job_revision": "8"
+      },
+      "owner": {
+        "archive_intents": {
+          "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+          "issued_through": "4",
+          "observed_through": "4",
+          "pages": 1,
+          "publication_authority": "not-granted",
+          "resolution": "not-performed",
+          "state": "observed"
+        },
+        "authority_scope": "Control custody; each private action and export independently reauthorized",
+        "config_revision": "1",
+        "dataset_id": "01010101010101010101010101010101",
+        "export_execution": "not-selected",
+        "format": "bigbrotr-control-runtime/1",
+        "listeners": [
+          {
+            "host": "127.0.0.1",
+            "kind": "private-session-http",
+            "port": 18080,
+            "private_assets": null,
+            "profile": "trusted-host-loopback"
+          }
+        ],
+        "native_stores": [],
+        "owner_epoch": "7",
+        "owner_resource_id": "2d59ea3968a0e5e9fc3089abc8ffa6c7",
+        "policy_revision": "2",
+        "process_incarnation": "3334ca910ca2dc593c7f57807d7f6723",
+        "role": "control",
+        "state": "idle"
+      },
+      "parent_pid": 1314
+    },
+    "terminal": {
+      "event": "final-terminal",
+      "exit": 0,
+      "parent_absent": true,
+      "lock_available": true,
+      "scratch_empty": true
+    },
+    "sql": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    }
+  },
+  "review": {
+    "root": {
+      "status": "VERIFIED_SCOPED_PASS",
+      "source": "3104705c070efabe1fa76b00f7347d1906326218",
+      "runtime_source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+      "counts": {
+        "out/build/source-manifest.json": 1230,
+        "artifact-source-manifest.json": 1110,
+        "runtime-source-manifest.json": 1223
+      },
+      "payloads": 29,
+      "preexisting": 676,
+      "free_before": 128802492416,
+      "free_after": 128403394560,
+      "artifacts": {
+        "bigbrotr": "6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      }
+    },
+    "independent_ai": "Offline read-only AI audit independently verified tar/29payloads,1230/1223/1110Git files, full product/build equality and both ELF4a; replayed12SQL ledgers/xmin, original-unit preservation, independent digest/receipt, Control/backend identity, parent failures/restart and676prior resources. No concrete discrepancy. Same-cookie/no-destination/no-input established from executed path without retaining secrets. No tests, edits or remote access."
+  },
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3104705",
+    "owner": "6ce7da41937751bbdb4c79381396d45f",
+    "state": "stopped-retained",
+    "all_owned_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "preexisting": 676,
+    "unrelated_running": 8,
+    "free_before": 128802492416,
+    "free_after": 128403394560
+  },
+  "remaining": [
+    "Destination custody while a driver/checker remains pending; cancellation and natural session expiry/lock-wait interleavings",
+    "Command/audit snapshots are filtered to job.export.resume; no all-management-history claim",
+    "Post-exit flock availability does not qualify continuous custody during driver drain",
+    "Original unit/retention preserved here; no resumed output in this fixture (separate30df0fd evidence)",
+    "TypeScript consumer against real HTTP, browser and CLI resume journey",
+    "Mixed workloads/aged state, complete selected product and packaged/release journeys; hosted Actions and native arm64 not qualified"
+  ]
+}
