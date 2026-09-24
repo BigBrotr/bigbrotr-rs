@@ -1,0 +1,204 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "INCOMPLETE",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P09-T09"
+  ],
+  "source": "f660ab8eba028a0f874faeb33c47ca0938b1ca5a",
+  "tree": "36afdfbbf2c01aad79d04130cd534fd7c383fdc3",
+  "capture": {
+    "root": ".research/implementation/export-execution/attempt-f660ab8/capture",
+    "verified": {
+      "files": 109,
+      "sha256": "c84c7e870516c0b58a7f35fcbab4d21e568b4873bfb452091befa04fff2aa52b",
+      "source": "f660ab8eba028a0f874faeb33c47ca0938b1ca5a",
+      "tree": "36afdfbbf2c01aad79d04130cd534fd7c383fdc3",
+      "source_files": 1195
+    }
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "artifacts": {
+      "bigbrotr": "757c976509d8676d7f8931394af3498e9b811b23deacad91acab1104a96c8a04",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "browser_version": "153.0.8010.12",
+    "browser_executables": [
+      {
+        "path": "/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+        "sha256": "ded93a9c9a53a1ae040f08124badcca95c938e9d5015ff340c3b5538c41bf39e"
+      }
+    ],
+    "bundles": {
+      "root": {
+        "manifest_sha256": "d85cfa98c2b5be8811abc00f9621d21928b1c5ad579b5c3afaaeb5122516da84",
+        "files": 13,
+        "bytes": 149810
+      },
+      "control": {
+        "manifest_sha256": "dcea3712f9fb873415c27d68a9861dc94576475d311e3f76ed8155d60938a8c8",
+        "files": 13,
+        "bytes": 149844
+      }
+    }
+  },
+  "executed": {
+    "native": "Fresh build,44 release binary tests,Clippy and authenticated native status PASS.",
+    "browser_status": "FAIL",
+    "cases": [
+      {
+        "name": "production-assets-and-native-form",
+        "status": "PASS",
+        "milliseconds": 219
+      },
+      {
+        "name": "own-states-zero-checkpoint-no-idle-touch",
+        "status": "PASS",
+        "milliseconds": 993
+      },
+      {
+        "name": "missing-clears-prior-observation",
+        "status": "PASS",
+        "milliseconds": 96
+      },
+      {
+        "name": "same-cookie-real-process-restart",
+        "status": "PASS",
+        "milliseconds": 417
+      },
+      {
+        "name": "cross-tab-logout-forgets-job",
+        "status": "PASS",
+        "milliseconds": 210
+      },
+      {
+        "name": "blocked-sql-lookup-discarded-on-logout",
+        "status": "PASS",
+        "milliseconds": 724
+      },
+      {
+        "name": "other-account-has-no-job-observation",
+        "status": "PASS",
+        "milliseconds": 255
+      }
+    ],
+    "last_field": {
+      "pattern": "[0-9a-f]{32}",
+      "valid": true
+    },
+    "last_reply": {
+      "path": "/management/v1/jobs/a064d137435a49c1b5c1bb8460ab3368",
+      "method": "GET",
+      "status": 401,
+      "noStore": true
+    },
+    "blocked_request": {
+      "path": "/management/v1/jobs/a064d137435a49c1b5c1bb8460ab3368",
+      "method": "GET",
+      "terminal": "failed"
+    },
+    "lock_seconds": 0.17273415764793754,
+    "session_rows_unchanged": true
+  },
+  "failure": {
+    "observed": {
+      "stage": "real-session-revocation-forgets-job",
+      "kind": "AssertionError",
+      "location": {
+        "line": 133,
+        "column": 12
+      }
+    },
+    "assertion": "localStorage.length==0 and sessionStorage.length==0 after actual reload/session revocation.",
+    "unknown": "Original counts, keys and values were not retained. Do not claim that a specific runtime entry caused this mismatch or that private state leaked.",
+    "source_evidence": "Selected Kit2.70.3 client.js:74-88,508-527,2655-2695 persists sveltekit:scroll and sveltekit:snapshot on reload/hidden. session-storage.js uses JSON.stringify. No panel component exports snapshot capture.",
+    "correction": "Fixture now permits only no localStorage, numeric indexed{x,y} scroll positions and exactly empty framework snapshot object, with closed keys/shape/size. It records only recognized numeric metadata and rejects job/session/credential content, unknown keys and populated snapshots. New real execution must validate that predicted shape."
+  },
+  "resources": {
+    "owner": "fa676bdb3ecafa7c1111f8d45d4aed23",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f660ab8",
+    "state": "stopped-retained",
+    "network_state": "removed after owner/no-endpoint audit",
+    "preexisting": 632,
+    "unrelated_running": 8,
+    "free_before": 138924453888,
+    "free_after": 135022288896,
+    "post_browser_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "containers": {
+      "frontend": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-24T14:18:53.058080124Z",
+        "FinishedAt": "2026-09-24T14:19:10.232276828Z"
+      },
+      "browser-chromium-root": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 1,
+        "Error": "",
+        "StartedAt": "2026-09-24T14:22:57.325111188Z",
+        "FinishedAt": "2026-09-24T14:23:01.047445387Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-24T14:19:10.69118676Z",
+        "FinishedAt": "2026-09-24T14:23:11.336154834Z"
+      },
+      "rust-visibility": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-24T14:19:12.57089059Z",
+        "FinishedAt": "2026-09-24T14:23:11.575541038Z"
+      }
+    },
+    "cleanup_errors": []
+  },
+  "review": {
+    "root": "All109 payload hashes,1195current/1110seed Git sources, fresh ELF,44 native test result,both complete bundles and632 prior resource comparisons verified. Inspected actual mobile screenshot, HTTP request settlement, held waiter PID/backend_start and unchanged session rows.",
+    "independent_ai": "Read exact Kit storage writer and reviewed the closed oracle. Found duplicate JSON keys can hide discarded private bytes; matching raw bytes to JSON.stringify(parsed) closes that case. Discriminating local test fails before correction and passes afterward. Original runtime contents remain unknown."
+  },
+  "not_run": [
+    "Five later browser/mount pairs",
+    "Final successful browser stop and full seven-ledger post-matrix comparison",
+    "Actual storage shape under revised oracle",
+    "Natural expiry/BFCache, broader accessibility, remote TLS and release installation"
+  ]
+}

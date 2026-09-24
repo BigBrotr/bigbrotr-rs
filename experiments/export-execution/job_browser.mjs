@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { chromium, firefox, webkit, expect } from '@playwright/test';
+import { inspectStorage } from './storage_oracle.mjs';
 const [engine, mount] = process.argv.slice(2);
 assert.ok(['chromium','firefox','webkit'].includes(engine));
 assert.ok(['root','control'].includes(mount));
@@ -130,7 +131,8 @@ try {
     const denied=page.waitForResponse(r=>r.url()===origin+'/management/v1/jobs/'+input.accepted.job_id);
     await page.getByRole('button',{name:'Check job',exact:true}).click();assert.equal((await denied).status(),401);
     await expect(page.locator('.job-sheet')).toHaveCount(0);await expect(page.locator('.session-facts')).toHaveCount(0);
-    assert.deepEqual(await page.evaluate(()=>({local:localStorage.length,session:sessionStorage.length})),{local:0,session:0});
+    const storage=await page.evaluate(()=>({local:Object.entries(localStorage),session:Object.entries(sessionStorage)}));
+    report.storage=inspectStorage(storage);assert.equal(report.storage.status,'verified');
   });
   assert.equal(report.requests.some(r=>r.path==='/management/v1/jobs/bad'),false);
   await expect.poll(()=>pendingJobs.size).toBe(0);

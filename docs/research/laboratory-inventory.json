@@ -22665,5 +22665,106 @@
       "free_bytes": 138968485888
     },
     "retention": "Preserve original failed browser/bundles/logs/source/ELF and PG/archive/output. No new Rust compiler cache. Node/pnpm tools remain in historical b6d9d7e root, read-only. All owned containers PID0, network removed; no cleanup debt."
+  },
+  "implementation_export_status_browser_retry_20260924": {
+    "status": "stopped-retained; original storage assertion INCOMPLETE",
+    "evidence": "docs/implementation/evidence/p09-export-status-storage-incomplete-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-f660ab8/capture",
+    "verified": {
+      "files": 109,
+      "sha256": "c84c7e870516c0b58a7f35fcbab4d21e568b4873bfb452091befa04fff2aa52b",
+      "source": "f660ab8eba028a0f874faeb33c47ca0938b1ca5a",
+      "tree": "36afdfbbf2c01aad79d04130cd534fd7c383fdc3",
+      "source_files": 1195
+    },
+    "resources": {
+      "source": "f660ab8eba028a0f874faeb33c47ca0938b1ca5a",
+      "tree": "36afdfbbf2c01aad79d04130cd534fd7c383fdc3",
+      "owner": "fa676bdb3ecafa7c1111f8d45d4aed23",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f660ab8",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "frontend",
+          "id": "348fa3f9eea3fdbd772a9b71f6f5552314c61af3e830eb6c6777212668e08062"
+        },
+        {
+          "name": "postgres",
+          "id": "38bdb481da896967ff49e39a5b1d58943a67c335bd2471272561be925945b780"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "c1650ada32dc278fe88900699636198ddf6a6dd8262aa200cfe1ef35a0b97b79"
+        },
+        {
+          "name": "browser-chromium-root",
+          "id": "39463e8d40cb338a07ed1305e01533c93c7d4cf5006ca7cfc6abe197eb357f6c"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T14:18:46.418242+00:00",
+      "runtime_profile": "job-browser",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "network_id": "5e71139041742c013d8c6e5b126c956c9b378685345a90112b0c2a9e66ade866",
+      "postgres_id": "38bdb481da896967ff49e39a5b1d58943a67c335bd2471272561be925945b780",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "c1650ada32dc278fe88900699636198ddf6a6dd8262aa200cfe1ef35a0b97b79",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "status": "INCOMPLETE",
+      "source": "f660ab8eba028a0f874faeb33c47ca0938b1ca5a",
+      "owner": "fa676bdb3ecafa7c1111f8d45d4aed23",
+      "cases": {},
+      "result": "PASS",
+      "independent_sql_stage": "after-native-before-browser",
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "failure": {
+        "kind": "AssertionError",
+        "frames": [
+          {
+            "file": "lab.py",
+            "line": 301,
+            "function": "<module>"
+          },
+          {
+            "file": "browser_cases.py",
+            "line": 129,
+            "function": "run"
+          }
+        ]
+      },
+      "browser_terminal_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "browser_terminal_sql_ok": true,
+      "preexisting_preserved": true,
+      "preexisting_count": 632,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "original_source_unchanged": true,
+      "host_tcp_wmem_preserved": true,
+      "free_bytes": 135022288896
+    },
+    "retention": "Keep fresh f660 native cache/ELF for continuation. Preserve original browser failure, source/logs/bundles and deliberate PG/archive/output. All owned containers PID0/noOOM/network removed, post-browser SQL0, no cleanup debt."
   }
 }
