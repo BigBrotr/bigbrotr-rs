@@ -21,10 +21,13 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified main/HEAD275f641d632009bd0eb99855ce89b05082c0f285,
-clean candidate; origin/main9cd60a542b7f6a7cc16dfdb5d9886773262694b9.
-Root owns only evidence/inventory/checkpoint edits after exact native qualification.
-No active experiment or cleanup debt. The product remains incomplete.
+Last verified main/HEAD and origin/mainfc08c48a4c9573bcc308a082de64ab33c3c4820b,
+clean before the next fixture. Action-window candidate275f641 and complete scoped
+evidence are pushed. Root now owns the installed headless executor fixture and
+lab-profile/checkpoint edits. No product executor changes yet. Next exact native
+run is the expected RED: start ordinary serve with a retained accepted job and
+administration disabled, independently observe completion SQL and actual output.
+No active lab at this checkpoint; launch follows this fixture candidate commit.
 
 [Action-window output gate](evidence/p08-export-action-window-native-20260924.json):
 real-clock100ms partial-buffer regression first failed against atomic-only output,
