@@ -23,13 +23,30 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Observed HEAD ba5beff565e587b68605a73f215a475df75e4d98 on main, clean when
-transferred; origin/main 5887369feb1ba8c341b081b418371011f1bc28d9. The candidate
-and its reviewed evidence are ready for one private push. Root owns the evidence,
-P09 task note, inventory and checkpoint changes. Artifact and handoff checks pass;
-a fresh owner-checked census confirms all five diagnostic containers remain stopped.
-No product/CSS/dependency change. Prior188 transfer worktree removed; other
-historical worktrees remain untouched.
+Verified HEAD/origin/main 209a34e6467894a87700382bbfec7607a95711e5, clean after
+private evidence push. Root now owns only the next diagnostic in skip_trace.mjs,
+its resume_browser.mjs caller and this checkpoint. No product/CSS/dependency
+change. The fresh Tux census confirms no active BigBrotr lab, 728 containers,
+eight unrelated running workloads and more than 122 GB free; ba5 containers and
+orchestrator remain stopped. Prior transfer-only worktree was removed.
+
+Current bounded probe: first pointer lookup before any screenshot in this reloaded
+document; then pointer lookup with capture; then native Job ID → Tab → Check job
+→ Enter with no refocus after the actual GET. Preserve each eight-key outcome and
+record a separate passive 500 ms plus one diagnostic key before any refocus on
+failure. If that first pointer path fails while keyboard activation passes, add
+one actual pointer lookup at a measured button point outside every text rectangle.
+The DOM hit test must identify the button; this does not expose WebKit internals.
+Retain the two existing controlled input starts. Trace only allowlisted
+focus, button/text-node identities, disabled mutations and later-task cancellation
+state, with bounded queues and atomic observations; no input values. No causal
+engine/CSS claim. Local JavaScript syntax/diff/artifact checks pass. Read-only
+review confirms the corrected GET/activation Promise collection and finds no
+other concrete blocker. Only the first trial precedes every screenshot; later
+trials share focus history. Mutation observations record callback state, not an
+exact disable duration. Native execution is NOT_RUN. Next: commit a clean
+candidate and run one fresh WebKit/root pair using the already qualified 73e ELF. The wrapper
+will recheck source, artifact inputs, mounts/processes and headroom before use.
 
 [Native WebKit/root trace](evidence/p09-skip-link-trace-incomplete-20260924.json)
 is stopped-retained at export-runtime-ba5beff-webkit-root,
@@ -52,14 +69,10 @@ accepted queued8; session idle rows equal before-retry. Only first2browsersteps
 completed, third partial; restart/revocation/forget not reached. Matrix188 remains
 its separate scoped recovery qualification and old8743 stays INCOMPLETE.
 
-Read-only AI confirms the trace. Internal WebKit hit-test/focus-start behavior is
-a hypothesis, not an observed node. Current first8keys are fast; elapsed-time
-recovery and capture effects specific to button focus are not excluded. Next action:
-finish this evidence/checkpoint commit and private push; then preserve UNREACHED8,
-add passive500ms+one key before refocusing, compare actual pointer lookup without
-screenshot against keyboard Enter on the same button/GET without refocus after
-response, recording disabled mutations. Padding-outside-text follows only if
-pointer and keyboard diverge. No product/CSS change justified yet.
+Read-only AI confirmed the prior trace. Internal WebKit hit-test/focus-start
+behavior remains a hypothesis. Its eight keys were fast; elapsed-time recovery
+and capture effects specific to button focus were not excluded. The next probe
+above addresses those gaps. No product/CSS change is justified yet.
 
 The diagnostic uses atomic tmp+rename snapshots (no fsync/power-loss claim).
 Root corrected the review's Kit2.70.3 native-replaceState router mismatch before

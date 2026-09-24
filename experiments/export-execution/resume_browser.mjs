@@ -139,13 +139,14 @@ try {
     assert.equal((await (await response).json()).state, 'queued'); await expect(page.locator('.job-state')).toHaveText('Queued');
     await page.setViewportSize({ width: 375, height: 812 });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-    await page.screenshot({ path: home + '/resume-mobile.png', fullPage: true });
-    report.skipTrace = await traceSkipLink(page, home, async () => {
-      const checked = page.waitForResponse(r => r.url() === `${origin}/management/v1/jobs/${input.job}`);
-      await page.getByRole('button', { name: 'Check job', exact: true }).click();
-      assert.equal((await (await checked).json()).state, 'queued');
+    // The first pointer trial must precede every screenshot in this document.
+    report.skipTrace = await traceSkipLink(page, home, async activate => {
+      const checked = page.waitForResponse(r => r.url() === `${origin}/management/v1/jobs/${input.job}`, { timeout: 5000 });
+      const [response] = await Promise.all([checked, activate()]);
+      assert.equal((await response.json()).state, 'queued');
       await expect(page.getByRole('button', { name: 'Check job', exact: true })).toBeEnabled();
     });
+    await page.screenshot({ path: home + '/resume-mobile.png', fullPage: true });
     assert.equal(report.skipTrace.status, 'PASS');
     await page.setViewportSize({ width: 1280, height: 900 });
   });

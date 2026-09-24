@@ -3,6 +3,7 @@
 // outcomes. A successful controlled start never erases the first failed path.
 import assert from 'node:assert/strict';
 import { writeFile, rename } from 'node:fs/promises';
+import { setTimeout as sleep } from 'node:timers/promises';
 
 export async function traceSkipLink(page, directory, lookup) {
   const report = { format: 'bigbrotr-skip-trace/1', status: 'INCOMPLETE', samples: [], trials: [] };
@@ -34,19 +35,55 @@ export async function traceSkipLink(page, directory, lookup) {
       return { label, tag: element.tagName, tabIndex: element.tabIndex ?? null,
         disabled: element instanceof HTMLButtonElement || element instanceof HTMLInputElement ? element.disabled : null };
     };
-    const state = { events: [], overflow: false, identify };
-    const listen = event => {
-      if (event instanceof KeyboardEvent && !['Tab', 'Enter'].includes(event.key)) return;
+    const nodes = new WeakMap(); let nextNode = 0;
+    const nodeId = node => {
+      if (!node) return null;
+      if (!nodes.has(node)) nodes.set(node, ++nextNode);
+      return nodes.get(node);
+    };
+    const button = document.getElementById('job-id').closest('form').querySelector('button');
+    const buttonState = () => {
+      const current = document.getElementById('job-id').closest('form').querySelector('button');
+      return { node: nodeId(current), original: current === button, disabled: current.disabled,
+        children: [...current.childNodes].map(node => ({ node: nodeId(node), type: node.nodeType })) };
+    };
+    const state = { events: [], overflow: false, identify, buttonState };
+    const append = item => {
       if (state.events.length === 256) { state.overflow = true; return; }
-      const item = { type: event.type, target: identify(event.target), active: identify(document.activeElement),
-        trusted: event.isTrusted, monotonicMs: performance.now(), defaultPreventedAtCapture: event.defaultPrevented };
-      if (event instanceof KeyboardEvent) Object.assign(item, { key: event.key,
-        shift: event.shiftKey, alt: event.altKey, control: event.ctrlKey, meta: event.metaKey });
       state.events.push(item);
     };
+    const timers = new Set();
+    const listen = event => {
+      if (event instanceof KeyboardEvent && !['Tab', 'Enter'].includes(event.key)) return;
+      const item = { type: event.type, target: identify(event.target), active: identify(document.activeElement),
+        trusted: event.isTrusted, monotonicMs: performance.now(), defaultPreventedAtCapture: event.defaultPrevented };
+      if (event instanceof KeyboardEvent) {
+        Object.assign(item, { key: event.key, shift: event.shiftKey,
+          alt: event.altKey, control: event.ctrlKey, meta: event.metaKey });
+        // Observe a later task, without pretending capture phase is the final
+        // cancellation state. It may be drained by a subsequent sample.
+        const timer = setTimeout(() => {
+          timers.delete(timer);
+          append({ type: 'keyboard-later-task', phase: event.type, key: event.key,
+            defaultPrevented: event.defaultPrevented, monotonicMs: performance.now(),
+            active: identify(document.activeElement) });
+        }, 0);
+        timers.add(timer);
+      }
+      append(item);
+    };
+    const observer = new MutationObserver(records => {
+      for (const record of records) append({ type: 'button-mutation', mutation: record.type,
+        node: nodeId(record.target), oldDisabledPresent: record.type === 'attributes' ? record.oldValue !== null : null,
+        button: buttonState(), monotonicMs: performance.now() });
+    });
+    observer.observe(button, { attributes: true, attributeFilter: ['disabled'], attributeOldValue: true,
+      childList: true, characterData: true, subtree: true });
     for (const type of ['keydown', 'keyup', 'focusin', 'focusout']) document.addEventListener(type, listen, true);
     for (const type of ['popstate', 'hashchange']) window.addEventListener(type, listen);
     state.dispose = () => {
+      observer.disconnect();
+      for (const timer of timers) clearTimeout(timer);
       for (const type of ['keydown', 'keyup', 'focusin', 'focusout']) document.removeEventListener(type, listen, true);
       for (const type of ['popstate', 'hashchange']) window.removeEventListener(type, listen);
     };
@@ -59,6 +96,7 @@ export async function traceSkipLink(page, directory, lookup) {
       const input = document.getElementById('job-id')?.getBoundingClientRect();
       const viewport = visualViewport;
       return { active: state.identify(document.activeElement), documentFocused: document.hasFocus(), monotonicMs: performance.now(),
+        button: state.buttonState(),
         hash: location.hash, events: state.events.splice(0), overflow: state.overflow,
         inputBox: input ? { top: input.top, bottom: input.bottom, left: input.left, right: input.right } : null,
         scroll: { x: scrollX, y: scrollY }, viewport: { width: innerWidth, height: innerHeight },
@@ -84,16 +122,11 @@ export async function traceSkipLink(page, directory, lookup) {
     return sample(`${trial}-${index}-frame-${key}`);
   }
   try {
-    await sample('before-current-lookup');
-    await lookup();
-    const beforeCapture = await sample('after-current-lookup');
-    await page.screenshot({ path: directory + '/skip-before-viewport.png' });
-    await page.screenshot({ path: directory + '/skip-before-full.png', fullPage: true });
-    const afterCapture = await sample('after-original-full-page');
-    report.unfocusedAboveViewport = [beforeCapture, afterCapture].every(value =>
-      !value.skip.focused && value.skip.position === 'fixed' && value.skip.box.bottom <= 0);
-    for (const name of ['post-lookup', 'known-input-without-full-page', 'known-input-with-full-page']) {
-      if (name !== 'post-lookup') {
+    report.delayed = [];
+    const trials = ['pointer-without-full-page', 'post-lookup', 'keyboard-without-full-page',
+      'known-input-without-full-page', 'known-input-with-full-page'];
+    for (const name of trials) {
+      {
         // A real same-document back updates Kit's router as well as the URL.
         // Native replaceState alone would leave Kit's current.url at #session,
         // making the following Enter look like a false keyboard failure.
@@ -105,11 +138,52 @@ export async function traceSkipLink(page, directory, lookup) {
         } else assert.equal(previous.hash, '');
         assert.equal(page.url(), entryUrl);
         await sample(name + '-after-history-reset');
+      }
+      if (name.startsWith('known-input') || name === 'keyboard-without-full-page') {
         await page.getByLabel('Job ID', { exact: true }).focus();
         await page.getByLabel('Job ID', { exact: true }).evaluate(input => input.scrollIntoView({ block: 'center', inline: 'nearest' }));
+        const prepared = await sample(name + '-input-prepared');
+        assert.equal(prepared.active.label, 'job-id'); assert.equal(prepared.documentFocused, true);
+      }
+      if (name === 'keyboard-without-full-page') {
+        const ready = await key(name, 'prepare', 'Tab');
+        assert.equal(ready.active.label, 'check-job'); assert.equal(ready.active.disabled, false);
+        await lookup(() => page.keyboard.press('Enter'));
+      } else if (name === 'pointer-padding') {
+        const button = page.getByRole('button', { name: 'Check job', exact: true });
+        await button.scrollIntoViewIfNeeded({ timeout: 2000 });
+        const point = await button.evaluate(button => {
+          const box = button.getBoundingClientRect();
+          const walker = document.createTreeWalker(button, NodeFilter.SHOW_TEXT), textBoxes = [];
+          while (walker.nextNode()) {
+            const range = document.createRange(); range.selectNodeContents(walker.currentNode);
+            for (const rect of range.getClientRects()) textBoxes.push({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom });
+          }
+          const x = box.left + 8, y = (box.top + box.bottom) / 2;
+          return { x, y, box: { left: box.left, right: box.right, top: box.top, bottom: box.bottom }, textBoxes,
+            inside: box.left < x && x < box.right && box.top < y && y < box.bottom,
+            visible: x >= 0 && x < innerWidth && y >= 0 && y < innerHeight,
+            outsideText: textBoxes.length > 0 && textBoxes.every(r => x < r.left || x > r.right || y < r.top || y > r.bottom),
+            buttonAtPoint: document.elementFromPoint(x, y) === button };
+        });
+        report.padding = point; await save();
+        assert.ok(point.inside && point.visible && point.outsideText && point.buttonAtPoint, 'verified padding click point');
+        await sample(name + '-before-lookup');
+        await lookup(() => page.mouse.click(point.x, point.y));
+      } else if (!name.startsWith('known-input')) {
+        await sample(name + '-before-lookup');
+        await lookup(() => page.getByRole('button', { name: 'Check job', exact: true }).click({ timeout: 2000 }));
+      }
+      const lookedUp = await sample(name + '-after-lookup');
+      if (name === 'post-lookup') {
+        await page.screenshot({ path: directory + '/skip-before-viewport.png' });
+        await page.screenshot({ path: directory + '/skip-before-full.png', fullPage: true });
+        const captured = await sample('after-original-full-page');
+        report.unfocusedAboveViewport = [lookedUp, captured].every(value =>
+          !value.skip.focused && value.skip.position === 'fixed' && value.skip.box.bottom <= 0);
       }
       const start = await sample(name + '-start');
-      if (name !== 'post-lookup') {
+      if (name.startsWith('known-input')) {
         assert.equal(start.active.label, 'job-id'); assert.equal(start.documentFocused, true);
         assert.ok(start.inputBox && Math.abs((start.inputBox.top + start.inputBox.bottom - start.viewport.height) / 2) <= 1, 'controlled input must be centered within one CSS pixel');
       }
@@ -125,6 +199,17 @@ export async function traceSkipLink(page, directory, lookup) {
       while (!current.skip.focused && count < 8) current = await key(name, ++count, 'Shift+Tab');
       const result = { name, reverseTabs: count, status: 'UNREACHED', focused: current.skip.focused };
       report.trials.push(result); await save();
+      if (!current.skip.focused && !name.startsWith('known-input')) {
+        // A delayed extra key is a separate diagnostic, never a ninth attempt
+        // that changes the original eight-key result. Do not refocus first.
+        const before = await sample(name + '-before-passive-delay');
+        await sleep(500);
+        const after = await sample(name + '-after-passive-delay');
+        const delayed = await key(name, 'delayed', 'Shift+Tab');
+        report.delayed.push({ name, elapsedMs: after.monotonicMs - before.monotonicMs,
+          before: before.active, afterWait: after.active, afterKey: delayed.active,
+          focused: delayed.skip.focused }); await save();
+      }
       if (!current.skip.focused) continue;
       const { box } = current.skip;
       result.visible = current.skip.visibility === 'visible' && current.skip.display !== 'none'
@@ -137,6 +222,12 @@ export async function traceSkipLink(page, directory, lookup) {
       result.status = result.visible && current.hash === '' && entered.hash === '#session'
         && next.active.label === 'sign-out' ? 'PASS' : 'FAIL';
       await save();
+      if (name === 'keyboard-without-full-page' && result.status === 'PASS'
+        && report.trials.find(trial => trial.name === 'pointer-without-full-page')?.status === 'UNREACHED') {
+        // Follow up only an observed activation-path difference. The actual
+        // browser hit-test starting node remains unobserved by this DOM probe.
+        trials.splice(3, 0, 'pointer-padding');
+      }
     }
     report.status = report.unfocusedAboveViewport && report.trials.every(value => value.status === 'PASS') ? 'PASS' : 'FAIL';
     return report;
