@@ -4,6 +4,11 @@
 Original4e ELF creates the real archive and0813 acceptance. Default mode qualifies
 SQL constraints only; --rust-adapter separately compiles and exercises the current
 Rust consumer against that retained native worker and independently checked seed.
+
+Resume browser qualification accepts an optional ENGINE-MOUNT after the reused
+runtime revision. Each explicit pair uses its own source/run/container/network
+suffix; prepare that exact Git checkout through the transfer workflow first.
+Each run retains independent database/seed state and exercises its selected engine.
 """
 import base64, datetime, hashlib, json, os, re, secrets, shutil, subprocess, sys, tarfile, time, traceback, urllib.request
 from pathlib import Path
@@ -29,15 +34,18 @@ revocation = resume_output or sys.argv[3:4] == ["--runtime-revocation"]
 parking = busy or pause_commits or sys.argv[3:4] == ["--runtime-parking"]
 executor = resume_http or shutdown or parking or revocation or job_status or sys.argv[3:4] == ["--runtime-executor"]
 runtime = responsive or executor
-reuse_runtime = sys.argv[4] if runtime and len(sys.argv)==5 else None
+browser_variant = sys.argv[5] if resume_browser and len(sys.argv)==6 else None
+assert browser_variant is None or browser_variant in tuple(engine+'-'+mount for engine in ['chromium','firefox','webkit'] for mount in ['root','control'])
+reuse_runtime = sys.argv[4] if runtime and (len(sys.argv)==5 or browser_variant) else None
 assert reuse_runtime is None or re.fullmatch("[0-9a-f]{40}", reuse_runtime)
 rollback = sys.argv[3:] == ["--rust-rollback"]
 adapter = resume_adapter or sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
-assert sys.argv[3:] in ([], ["--runtime-resume-browser"], ["--runtime-resume-client"], ["--runtime-resume-custody"], ["--runtime-resume-commits"], ["--runtime-resume-output"], ["--runtime-resume"], ["--resume-schema"], ["--resume-adapter"], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"], ["--runtime-job-status"], ["--runtime-job-browser"], ["--runtime-shutdown"]) or (runtime and len(sys.argv)==5)
+assert sys.argv[3:] in ([], ["--runtime-resume-browser"], ["--runtime-resume-client"], ["--runtime-resume-custody"], ["--runtime-resume-commits"], ["--runtime-resume-output"], ["--runtime-resume"], ["--resume-schema"], ["--resume-adapter"], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"], ["--runtime-job-status"], ["--runtime-job-browser"], ["--runtime-shutdown"]) or (runtime and len(sys.argv)==5) or browser_variant is not None
 compile_current = adapter or (runtime and not reuse_runtime)
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
-root = base / 'runs' / (('export-runtime-' if executor else 'export-responsive-' if responsive else 'export-rollback-' if rollback else 'export-adapter-' if adapter else 'export-execution-') + revision[:7])
+run_id = revision[:7] + ('-'+browser_variant if browser_variant else '')
+root = base / 'runs' / (('export-runtime-' if executor else 'export-responsive-' if responsive else 'export-rollback-' if rollback else 'export-adapter-' if adapter else 'export-execution-') + run_id)
 source, out = root / 'source', root / 'out'
 cache_root = base / 'runs/export-checker-fixed-4e6b5c0'
 cache = cache_root / 'out/build'
@@ -93,6 +101,7 @@ state = dict(source=revision, tree=tree, owner=owner, root=str(root), state='pre
              runtime_profile='resume-browser' if resume_browser else 'resume-client' if resume_client else 'resume-custody' if resume_custody else 'resume-commits' if resume_commits else 'resume-output' if resume_output else 'resume' if resume_http else 'shutdown' if shutdown else 'job-browser' if job_browser else 'job-status' if job_status else 'revocation' if revocation else 'busy' if busy else 'pause-commits' if pause_commits else 'parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
              adapter_profile='resume' if resume_adapter else 'rollback' if rollback else 'completion' if adapter else None)
 state['schema_profile'] = 'resume' if resume_schema else None
+if resume_browser:state['resume_browser_pair'] = browser_variant or 'chromium-root'
 def save(): write(root / 'resources.json', state)
 save()
 audit = dict(status='INCOMPLETE', source=revision, owner=owner, cases={})
@@ -106,7 +115,7 @@ def mount(host, target, readonly=False):
     return ['--mount', f'type=bind,src={host},dst={target}' + (',readonly' if readonly else '')]
 
 def start(name, image, arguments, mounts, network, memory='6g', pids='512', readonly=True, user=True):
-    args = ['docker', 'create', '--init', '--name', 'bigbrotr-export-execution-' + revision[:7] + '-' + name,
+    args = ['docker', 'create', '--init', '--name', 'bigbrotr-export-execution-' + run_id + '-' + name,
             '--label', label + '=' + owner, '--cpus', '2', '--memory', memory, '--memory-swap', memory,
             '--pids-limit', pids, '--network', network, '--shm-size', '256m']
     if user:
@@ -244,7 +253,7 @@ try:
         state['browser_image']=browser_cases.IMAGE;save()
     native_assets = out/'archive-worker'
     write(root / 'rust-image.json', json.loads(cmd('docker', 'image', 'inspect', rust_image))[0])
-    state['network_id'] = cmd('docker', 'network', 'create', '--internal', '--label', label + '=' + owner, 'bigbrotr-export-execution-' + revision[:7])
+    state['network_id'] = cmd('docker', 'network', 'create', '--internal', '--label', label + '=' + owner, 'bigbrotr-export-execution-' + run_id)
     save()
     secret = root / 'secrets'
     secret.mkdir(mode=0o755)

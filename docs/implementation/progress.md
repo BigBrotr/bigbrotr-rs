@@ -23,14 +23,27 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Last verified HEADdd17842eac35c0c678371bfe4b06f4b9b929d116, tree
-35e85ea3be5bc72c04ff8e1e166e7afc95c1292b on main; origin/main remains
-dc4cebb337f2a2aea13b533ead5d1893e5b2e492 (fresh fetch confirmed unchanged before integration).
-This checkpoint accompanies the documentation/evidence integration atop that
-revision. Root owns only those report/operator/build/task/export documentation
-and inventory changes. Verify the resulting integration HEAD and origin before
-resuming; no product change follows the testeddd17842 source. No foreign work or
-active lab.
+Last verified HEAD/origin15bb98ca11cd4aa438e8d458036e33e2c577c7b8 on main,
+clean before this slice. Last turn made verified progress: browser recovery and
+operator documentation integrated/pushed, superseded dc6 compiler cache retired.
+Root now owns only four resume/lab fixture changes and this checkpoint. No
+product behavior or dependency change. Tuxdd/73e owned containers were freshly
+checked PID0/stopped; eight unrelated workloads remain running,125822136320bytes
+free. No active lab. Existing foreign/research worktrees remain untouched.
+
+Preparing remaining resume engine/mount acceptance: optional closed ENGINE-MOUNT
+argument after reused runtime SHA, disjoint per-pair root/container/network names,
+fresh PG/signed seed in each run, exact73e ELF and production bundles. Each pair
+executes five native store cases for its selected engine and the same seven UI/
+HTTP/SQL steps; no15store-case repetition perpair. All new pair outcomes NOT_RUN.
+Root reviewed full relevant harness boundaries, syntax/doc checks and3audit-oracle
+regressions pass. Read-only AI parameter/identity review found no concrete issue. Three invalid
+selectors refuse before host/Git/docker operations. Next bounded
+step: commit reviewed fixture, create a clean detached transfer-only worktree,
+launch Firefox/root, observe to terminal and collect/review before the next pair.
+Use the existing main workspace for all edits/checkpoint updates. No independent
+source edits on Tux or in the staging worktree. Remaining pairs: Firefox/control,
+WebKit/root, WebKit/control, Chromium/control. Preserve scopeddd Chromium/root.
 
 Tuxdd17842 is stopped-retained, owner ff09631fb1f63b8b5fb0f62aefd95214;
 seven owned containers PID0/noOOM, network removed, bothDB0 and691prior/eight
@@ -42,11 +55,7 @@ store cases across 3 engines and 7 production Chromium/root steps. Root and read
 AI independently verify119payloads,1249current/1246runtime/1110seed Git files,
 both ELF/bundles and full SQL reconstruction. Capturetar
 3a7447ecdca5a3818ae02f686bb4ad3179db33dd8d6a7d01e4b79b5af21def3a.
-Next bounded action after verifying the integration commit/remote: extend the
-same installed resume fixture to remaining engine/mount pairs, with fresh isolated
-seed/state per pair and exact ELF reuse. Inspect lab/transfer naming and current
-browser profiles before edits. Keep risk-selected runs and ordinary product
-implementation moving; no fresh Rust cache when complete inputs match.
+
 
 [Original73e fixture](evidence/p09-resume-browser-fixture-incomplete-20260924.json)
 stays INCOMPLETE: its pre-login baseline wrongly required all12ledgers unchanged

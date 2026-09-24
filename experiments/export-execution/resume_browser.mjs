@@ -4,11 +4,15 @@
 import assert from 'node:assert/strict';
 import { readFile, writeFile, rename } from 'node:fs/promises';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { chromium, expect } from '@playwright/test';
+import { chromium, firefox, webkit, expect } from '@playwright/test';
 import { inspectStorage, readResumeStorage } from './storage_oracle.mjs';
 const home = '/case', origin = 'http://127.0.0.1:18080';
 const input = JSON.parse(await readFile(home + '/input.json', 'utf8'));
-const report = { format: 'bigbrotr-resume-browser/1', status: 'INCOMPLETE', engine: 'chromium', mount: 'root', cases: [], requests: [], responses: [] };
+const [engine = 'chromium', mount = 'root'] = process.argv.slice(2);
+assert.ok(['chromium', 'firefox', 'webkit'].includes(engine));
+assert.ok(['root', 'control'].includes(mount));
+const url = origin + (mount === 'root' ? '/' : '/control/');
+const report = { format: 'bigbrotr-resume-browser/1', status: 'INCOMPLETE', engine, mount, cases: [], requests: [], responses: [] };
 let browser, context, page, stage = 'launch', sequence = 0;
 const errors = [];
 const headerReads = [];
@@ -80,11 +84,11 @@ async function retry() {
   await expect(page.getByRole('button', { name: 'Forget resolved request', exact: true })).toBeEnabled();
 }
 try {
-  browser = await chromium.launch({ headless: true }); report.version = browser.version();
+  browser = await ({ chromium, firefox, webkit })[engine].launch({ headless: true }); report.version = browser.version();
   context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   page = await context.newPage(); observe(page);
   await step('installed-bundle-session-and-paused-job', async () => {
-    const response = await page.goto(origin + '/'); assert.equal(response.status(), 200);
+    const response = await page.goto(url); assert.equal(response.status(), 200);
     assert.match(response.headers()['content-security-policy'], /frame-ancestors 'none'/);
     await login(); assert.deepEqual(await stored(), []);
     await page.getByLabel('Job ID', { exact: true }).fill(input.job);
@@ -142,7 +146,7 @@ try {
     assert.deepEqual(resumes().map(r => ({ key: r.key, body: r.body })), Array(3).fill({ key: original.key, body: original.command }));
   });
   await step('logout-clears-both-tabs-and-other-account-does-not-display-saved-request', async () => {
-    const other = await context.newPage(); observe(other); await other.goto(origin + '/');
+    const other = await context.newPage(); observe(other); await other.goto(url);
     await expect(other.getByRole('button', { name: 'Retry saved request', exact: true })).toBeEnabled();
     await logout();
     for (const p of [page, other]) await expect(p.locator('.job-sheet')).toHaveCount(0);

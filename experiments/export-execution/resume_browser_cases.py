@@ -12,7 +12,10 @@ from resume_browser_oracle import session_mutation
 
 def run(root, state, sql, start, finish, tools):
     out=root/'out';runner=state['container_id'];pg=state['postgres_id'];db='bbpub_control_normal'
-    result=dict(status='INCOMPLETE',source=state['source'],native_stores={},commands=[])
+    pair=state.get('resume_browser_pair','chromium-root');engine,mount=pair.split('-')
+    assert engine in ['chromium','firefox','webkit'] and mount in ['root','control']
+    case_name='resume-'+pair
+    result=dict(status='INCOMPLETE',source=state['source'],pair=pair,native_stores={},commands=[])
     path=root/'resume-browser-cases.json';assert not path.exists()
     server=None;last_observed=None;last_identities=None
     def save():path.write_text(json.dumps(result,indent=2)+'\n')
@@ -31,13 +34,12 @@ def run(root, state, sql, start, finish, tools):
     try:
         # Native store operations are separate from the installed UI. Fresh
         # isolated browser contexts contain only the synthetic non-secret data.
-        for engine in ['chromium','firefox','webkit']:
-            case=out/'browser-cases'/('resume-store-'+engine);case.mkdir(parents=True,mode=0o700)
-            ident=start('resume-store-'+engine,IMAGE,['/tools/node/bin/node','/out/frontend-source/experiments/export-execution/resume_store_browser.mjs','/case',engine],
-                        bind(out,'/out',True)+bind(case,'/case')+bind(tools,'/tools',True)+['--env','PLAYWRIGHT_BROWSERS_PATH=/ms-playwright','--env','HOME=/tmp'], 'none')
-            ok=finish(ident,'resume-store-'+engine,90)
-            value=json.loads((case/'report.json').read_text());result['native_stores'][engine]=dict(container=ident,container_ok=ok,report=value);save()
-            assert ok and value['status']=='PASS' and len(value['cases'])==5
+        case=out/'browser-cases'/('resume-store-'+engine);case.mkdir(parents=True,mode=0o700)
+        ident=start('resume-store-'+engine,IMAGE,['/tools/node/bin/node','/out/frontend-source/experiments/export-execution/resume_store_browser.mjs','/case',engine],
+                    bind(out,'/out',True)+bind(case,'/case')+bind(tools,'/tools',True)+['--env','PLAYWRIGHT_BROWSERS_PATH=/ms-playwright','--env','HOME=/tmp'], 'none')
+        ok=finish(ident,'resume-store-'+engine,90)
+        value=json.loads((case/'report.json').read_text());result['native_stores'][engine]=dict(container=ident,container_ok=ok,report=value);save()
+        assert ok and value['status']=='PASS' and value['engine']==engine and len(value['cases'])==5
         query('GRANT INSERT ON control.export_resume_commands TO bigbrotr_control;')
         assert json.loads(query("SELECT json_agg(username ORDER BY username) FROM control.local_accounts"))==['alice']
         # Isolated fixture provisioning, not an account-editor qualification.
@@ -47,11 +49,11 @@ def run(root, state, sql, start, finish, tools):
         assert json.loads(query("SELECT json_agg(username ORDER BY username) FROM control.local_accounts"))==['alice','bob']
         before=result['prepared']=observe();ledger=before;assert len(before['jobs'])==1
         job=before['jobs'][0]['row'];assert (job['state'],job['job_revision'])==('paused',7)
-        case=out/'browser-cases/resume-chromium-root';case.mkdir(parents=True,mode=0o700)
+        case=out/'browser-cases'/case_name;case.mkdir(parents=True,mode=0o700)
         (case/'input.json').write_text(json.dumps(dict(job=job['job_id'][2:],actor=job['principal_id'][2:]))+'\n')
-        server=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/export-execution/resume_browser_server.py','root'],input_pipe=True)
+        server=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/export-execution/resume_browser_server.py',mount],input_pipe=True)
         result['ready']=event(server,'ready');owner=result['ready']['owner'];save()
-        ident=start('resume-chromium-root',IMAGE,['/tools/node/bin/node','/out/frontend-source/experiments/export-execution/resume_browser.mjs'],
+        ident=start(case_name,IMAGE,['/tools/node/bin/node','/out/frontend-source/experiments/export-execution/resume_browser.mjs',engine,mount],
                     bind(out,'/out',True)+bind(case,'/case')+bind(tools,'/tools',True)+['--env','PLAYWRIGHT_BROWSERS_PATH=/ms-playwright','--env','HOME=/tmp'],'container:'+pg)
         result['browser_container']=ident;save()
         expected=['alice-login','before-loss','accepted','before-retry','after-retry','restart','after-restart-retry','alice-logout','bob-login','bob-logout','alice-login','deactivate','reactivate','alice-login','before-forget','forgotten','alice-logout']
@@ -104,9 +106,10 @@ def run(root, state, sql, start, finish, tools):
             assert c['Config']['Labels'][state['owner_label']]==state['owner']
             if not c['State']['Running']:break
             time.sleep(.025)
-        result['browser_container_ok']=finish(ident,'resume-chromium-root',5)
+        result['browser_container_ok']=finish(ident,case_name,5)
         result['browser']=json.loads((case/'browser-report.json').read_text());save()
         assert result['browser_container_ok'] and result['browser']['status']=='PASS' and index==len(expected)
+        assert result['browser']['engine']==engine and result['browser']['mount']==mount
         send(server,json.dumps(dict(operation='stop'))+'\n');result['terminal']=event(server,'stop-terminal')
         assert result['terminal']==dict(event='stop-terminal',exit=0,parent_absent=True,lock_available=True,scratch_empty=True)
         assert server.wait(12)==0 and not server.stderr and not server.overflow

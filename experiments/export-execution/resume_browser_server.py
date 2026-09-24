@@ -9,17 +9,19 @@ import private_grant_http as http
 from commit_client import emit, lock_available
 from resume_http_client import DESTINATION
 
-assert sys.argv[1:] == ['root']
+assert len(sys.argv) == 2 and sys.argv[1] in ('root', 'control')
+mount = sys.argv[1]
+base_path = '/' if mount == 'root' else '/control/'
 original = http.CONFIG.read_text()
 assert '[administration.assets]' not in original and original.count(DESTINATION) == 1
-configured = original + '\n[administration.assets]\ndirectory="/out/bundles/root"\nbase_path="/"\n'
+configured = original + f'\n[administration.assets]\ndirectory="/out/bundles/{mount}"\nbase_path="{base_path}"\n'
 server = None
 def start(name, destination=True):
     http.CONFIG.write_text(configured if destination else configured.replace(DESTINATION, ''))
     current = http.Server('job-resume-browser-' + name)
     try:
         ready = current.ready(2)
-        assert ready['listeners'][0]['private_assets']['base_path'] == '/'
+        assert ready['listeners'][0]['private_assets']['base_path'] == base_path
         emit(name, owner=ready, parent_pid=current.process.pid)
         return current
     except BaseException:
