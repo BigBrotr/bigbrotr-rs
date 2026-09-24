@@ -1,8 +1,9 @@
 // Native IndexedDB against the actual TS module. This is not installed HTTP/UI evidence.
 import assert from 'node:assert/strict';
-import { mkdir, writeFile, readFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
 import { chromium, firefox, webkit } from '@playwright/test';
 const root = resolve(import.meta.dirname, '../..');
@@ -18,7 +19,7 @@ for (const path of ['apps/admin/src/lib/resume-store.ts', 'packages/api-client/s
   const bytes = await readFile(resolve(root, path));
   report.inputs.push({ path, bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex') });
 }
-let server, browser, context, stage = 'startup';
+let server, browser, context, cache, stage = 'startup';
 async function step(name, body) {
   stage = name; const started = performance.now();
   let timer;
@@ -28,7 +29,9 @@ async function step(name, body) {
   } finally { clearTimeout(timer); }
 }
 try {
+  cache = await mkdtemp(resolve(tmpdir(), 'bigbrotr-resume-store-'));
   server = await createServer({ root: resolve(root, 'apps/admin'), configFile: false, appType: 'custom',
+    cacheDir: cache,
     server: { host: '127.0.0.1', port: 0 },
     plugins: [{ name: 'isolated-store-probe', configureServer(server) {
       server.middlewares.use((req, res, next) => {
@@ -185,6 +188,7 @@ try {
 } finally {
   for (const resource of [context, browser, server]) if (resource) try { await resource.close(); }
   catch { report.status = 'FAIL'; report.teardown = 'failed'; }
+  if (cache) await rm(cache, { recursive: true });
   await writeFile(resolve(output, 'report.json'), JSON.stringify(report, null, 2) + '\n', { flag: 'wx', mode: 0o600 });
   console.log(JSON.stringify({ status: report.status, stage, cases: report.cases.length, failure: report.failure?.message }));
   process.exitCode = report.status === 'PASS' ? 0 : 1;

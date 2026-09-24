@@ -16,12 +16,14 @@ pause_commits = sys.argv[3:4] == ["--runtime-pause-commits"]
 shutdown = sys.argv[3:4] == ["--runtime-shutdown"]
 resume_output = sys.argv[3:4] == ["--runtime-resume-output"]
 resume_client = sys.argv[3:4] == ["--runtime-resume-client"]
+resume_browser = sys.argv[3:4] == ["--runtime-resume-browser"]
 resume_custody = sys.argv[3:4] == ["--runtime-resume-custody"]
 resume_commits = sys.argv[3:4] == ["--runtime-resume-commits"]
-resume_http = resume_client or resume_custody or resume_commits or sys.argv[3:4] == ["--runtime-resume"]
+resume_http = resume_browser or resume_client or resume_custody or resume_commits or sys.argv[3:4] == ["--runtime-resume"]
 resume_adapter = sys.argv[3:4] == ["--resume-adapter"]
 resume_schema = sys.argv[3:4] == ["--resume-schema"]
 job_browser = sys.argv[3:4] == ["--runtime-job-browser"]
+browser_profile = job_browser or resume_browser
 job_status = job_browser or sys.argv[3:4] == ["--runtime-job-status"]
 revocation = resume_output or sys.argv[3:4] == ["--runtime-revocation"]
 parking = busy or pause_commits or sys.argv[3:4] == ["--runtime-parking"]
@@ -31,7 +33,7 @@ reuse_runtime = sys.argv[4] if runtime and len(sys.argv)==5 else None
 assert reuse_runtime is None or re.fullmatch("[0-9a-f]{40}", reuse_runtime)
 rollback = sys.argv[3:] == ["--rust-rollback"]
 adapter = resume_adapter or sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
-assert sys.argv[3:] in ([], ["--runtime-resume-client"], ["--runtime-resume-custody"], ["--runtime-resume-commits"], ["--runtime-resume-output"], ["--runtime-resume"], ["--resume-schema"], ["--resume-adapter"], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"], ["--runtime-job-status"], ["--runtime-job-browser"], ["--runtime-shutdown"]) or (runtime and len(sys.argv)==5)
+assert sys.argv[3:] in ([], ["--runtime-resume-browser"], ["--runtime-resume-client"], ["--runtime-resume-custody"], ["--runtime-resume-commits"], ["--runtime-resume-output"], ["--runtime-resume"], ["--resume-schema"], ["--resume-adapter"], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"], ["--runtime-job-status"], ["--runtime-job-browser"], ["--runtime-shutdown"]) or (runtime and len(sys.argv)==5)
 compile_current = adapter or (runtime and not reuse_runtime)
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
@@ -88,7 +90,7 @@ owner = secrets.token_hex(16)
 state = dict(source=revision, tree=tree, owner=owner, root=str(root), state='preparing', containers=[],
              rust_image=rust_image, owner_label=label, postgres_image=pg_image,
              started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-             runtime_profile='resume-client' if resume_client else 'resume-custody' if resume_custody else 'resume-commits' if resume_commits else 'resume-output' if resume_output else 'resume' if resume_http else 'shutdown' if shutdown else 'job-browser' if job_browser else 'job-status' if job_status else 'revocation' if revocation else 'busy' if busy else 'pause-commits' if pause_commits else 'parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
+             runtime_profile='resume-browser' if resume_browser else 'resume-client' if resume_client else 'resume-custody' if resume_custody else 'resume-commits' if resume_commits else 'resume-output' if resume_output else 'resume' if resume_http else 'shutdown' if shutdown else 'job-browser' if job_browser else 'job-status' if job_status else 'revocation' if revocation else 'busy' if busy else 'pause-commits' if pause_commits else 'parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
              adapter_profile='resume' if resume_adapter else 'rollback' if rollback else 'completion' if adapter else None)
 state['schema_profile'] = 'resume' if resume_schema else None
 def save(): write(root / 'resources.json', state)
@@ -234,7 +236,7 @@ try:
         sys.path.insert(0,str(source/'experiments/export-execution'))
         import resume_client_cases
         client_tools=resume_client_cases.node_tools(root,prior)
-    if job_browser:
+    if browser_profile:
         sys.path.insert(0,str(source/'experiments/archive-engine'))
         sys.path.insert(0,str(source/'experiments/export-execution'))
         import browser_cases
@@ -297,10 +299,10 @@ while not Path('/out/qualification-complete').exists():
         assert compiled.returncode==0
     state['state']='qualifying-runtime' if runtime else 'qualifying-rust-adapter' if adapter else 'qualifying-schema';save()
     with (root/'schema-cases.log').open('xb') as log:
-        cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/resume_http_cases.py' if resume_http else 'experiments/export-execution/runtime_cases.py' if executor else 'experiments/archive-engine/export_job_http_cases.py' if responsive else 'experiments/export-execution/resume_adapter_cases.py' if resume_adapter else 'experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/resume_cases.py' if resume_schema else 'experiments/export-execution/cases.py')),str(root),*(['client'] if resume_client else ['custody'] if resume_custody else ['commits'] if resume_commits else ['responsive'] if responsive else ['shutdown'] if shutdown else ['job-status'] if job_status else ['resume-output'] if resume_output else ['revocation'] if revocation else ['busy'] if busy else ['pause-commits'] if pause_commits else ['parking'] if parking else [])],stdout=log,stderr=subprocess.STDOUT,timeout=240)
+        cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/resume_http_cases.py' if resume_http else 'experiments/export-execution/runtime_cases.py' if executor else 'experiments/archive-engine/export_job_http_cases.py' if responsive else 'experiments/export-execution/resume_adapter_cases.py' if resume_adapter else 'experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/resume_cases.py' if resume_schema else 'experiments/export-execution/cases.py')),str(root),*(['prepare-browser'] if resume_browser else ['client'] if resume_client else ['custody'] if resume_custody else ['commits'] if resume_commits else ['responsive'] if responsive else ['shutdown'] if shutdown else ['job-status'] if job_status else ['resume-output'] if resume_output else ['revocation'] if revocation else ['busy'] if busy else ['pause-commits'] if pause_commits else ['parking'] if parking else [])],stdout=log,stderr=subprocess.STDOUT,timeout=240)
     result=json.loads((root/('resume-http-cases.json' if resume_http else 'runtime-cases.json' if executor else 'export-job-http-cases.json' if responsive else 'resume-adapter-cases.json' if resume_adapter else 'adapter-cases.json' if adapter else 'resume-schema-cases.json' if resume_schema else 'schema-cases.json')).read_text())
     audit['result']=result['status']
-    audit['independent_sql_stage']='after-native-before-browser' if job_browser else 'after-native'
+    audit['independent_sql_stage']='after-native-before-browser' if browser_profile else 'after-native'
     audit['independent_sql']={}
     for database in ['bbpub_normal','bbpub_control_normal']:
         sql="SELECT json_build_object('backends',(SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()))"
@@ -308,11 +310,14 @@ while not Path('/out/qualification-complete').exists():
         audit['independent_sql'][database]=observed
         assert observed==dict(backends=0)
     assert cases.returncode==0 and result['status']=='PASS'
-    if job_browser:
+    if browser_profile:
         state['state']='qualifying-browser';save()
         def browser_sql(db,query):
             return browser_cases.command('docker','exec','-i',pg,'psql','-XAtq','-v','ON_ERROR_STOP=1','-U','postgres','-d',db,input=query)
-        audit['browser']=browser_cases.run(root,state,browser_sql,start,finish,browser_tools)['status']
+        if resume_browser:
+            import resume_browser_cases
+            audit['browser']=resume_browser_cases.run(root,state,browser_sql,start,finish,browser_tools)['status']
+        else:audit['browser']=browser_cases.run(root,state,browser_sql,start,finish,browser_tools)['status']
         assert audit['browser']=='PASS'
     (out/'qualification-complete').write_text('PASS\n')
     audit['container_ok']=finish(runner,'rust-visibility',30)
@@ -323,7 +328,7 @@ except BaseException as error:
     print('native laboratory failure: ' + type(error).__name__, flush=True)
 finally:
     cleanup_errors = []
-    if job_browser and state.get('postgres_id'):
+    if browser_profile and state.get('postgres_id'):
         try:
             audit['browser_terminal_sql']={database:json.loads(cmd('docker','exec',state['postgres_id'],'psql','-XAt','-U','postgres','-d',database,'-c',"SELECT json_build_object('backends',(SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()))")) for database in ['bbpub_normal','bbpub_control_normal']}
             audit['browser_terminal_sql_ok']=all(v==dict(backends=0) for v in audit['browser_terminal_sql'].values())
@@ -362,7 +367,7 @@ finally:
     audit['host_tcp_wmem_preserved'] = Path('/proc/sys/net/ipv4/tcp_wmem').read_text() == preflight['tcp_wmem']
     assert audit['host_tcp_wmem_preserved']
     audit['free_bytes'] = shutil.disk_usage(base).free
-    audit['status'] = 'PASS_PENDING_CAPTURE' if not audit.get('failure') and not cleanup_errors and audit.get('result') == 'PASS' and audit.get('container_ok') and audit['preexisting_preserved'] and audit['source_unchanged'] and audit['source_checkout_clean'] and audit['original_source_unchanged'] and (not job_browser or audit.get('browser_terminal_sql_ok')) else 'INCOMPLETE'
+    audit['status'] = 'PASS_PENDING_CAPTURE' if not audit.get('failure') and not cleanup_errors and audit.get('result') == 'PASS' and audit.get('container_ok') and audit['preexisting_preserved'] and audit['source_unchanged'] and audit['source_checkout_clean'] and audit['original_source_unchanged'] and (not browser_profile or audit.get('browser_terminal_sql_ok')) else 'INCOMPLETE'
     write(root / 'terminal-audit.json', audit)
     state['state'] = 'stopped-retained' if not cleanup_errors else 'cleanup-incomplete'
     state['terminal_audit'] = 'terminal-audit.json'
