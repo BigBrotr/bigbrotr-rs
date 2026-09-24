@@ -8,8 +8,8 @@ use crate::{
     export::{
         destination::CheckedDestination,
         execution::{
-            ExportJob, ExportLimits, ExportReservation, ExportSelection, ExportState,
-            RunningExport, WrittenExport,
+            ExecutionCustody, ExportJob, ExportLimits, ExportPauseReason, ExportReservation,
+            ExportSelection, ExportState, RunningExport, WrittenExport,
         },
     },
     management::{jobs::ExportDestination, sessions::SessionError},
@@ -233,6 +233,61 @@ impl ControlSession {
                     self.available = true;
                 }
                 result.map(|_| running)
+            }
+            error => {
+                if reusable(&error) {
+                    tx.rollback().await.map_err(backend)?;
+                    self.available = true;
+                }
+                error
+            }
+        }
+    }
+
+    /// Park a known refusal only after the supervisor has joined every writer
+    /// and finished the fresh reader/capture cleanup. The bound filesystem lock
+    /// remains held through this transaction and any unknown transport outcome.
+    /// Parking grants no input read or output write, so revoked input grants do
+    /// not prevent it. Current Control, policy and the exact start still must match.
+    pub async fn pause_export(
+        &mut self,
+        custody: &ExecutionCustody,
+        reason: ExportPauseReason,
+        started: &Cell<bool>,
+    ) -> Result<ExportJob, Error> {
+        let expected = &custody.job;
+        if expected.selection.query.dataset != self.request.dataset
+            || custody.owner != self.identity
+            || expected.state != ExportState::Running
+            || expected.reservation.is_none()
+        {
+            return Err(Error::Conflict);
+        }
+        self.begin_operation().map_err(|_| Error::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 501)
+            .await
+            .map_err(|_| Error::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| Error::Unavailable)?;
+        lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
+        let outcome = async {
+            // Job-only transition: no consumer or pin locks are acquired after
+            // this job lock. Deferred source bounds lock last, as in0008.
+            tx.query_opt("SELECT job_id FROM control.jobs WHERE job_id=$1::bytea AND dataset_id=$2::bytea FOR UPDATE", &[&&expected.selection.job.as_bytes()[..],&&self.request.dataset.as_bytes()[..]]).await.map_err(backend)?.ok_or(Error::Conflict)?;
+            let old = read(&tx, self.request.dataset, expected.selection.job).await?.ok_or(Error::Conflict)?;
+            if &old != expected { return Err(Error::Conflict); }
+            let changed = tx.execute("UPDATE control.jobs SET state='paused',job_revision=job_revision+1,reason_code=$3::text WHERE job_id=$1::bytea AND job_revision=$2::text::numeric AND state='running' AND owner_resource_id=$4::bytea AND owner_epoch=$5::text::numeric AND owner_incarnation=$6::bytea", &[&&expected.selection.job.as_bytes()[..],&expected.revision.to_string(),&reason.code(),&&self.identity.resource_id.as_bytes()[..],&self.identity.epoch.get().to_string(),&&self.identity.process_incarnation.as_bytes()[..]]).await.map_err(backend)?;
+            if changed != 1 { return Err(Error::Conflict); }
+            read(&tx, self.request.dataset, expected.selection.job).await?.ok_or(Error::InvalidMetadata)
+        }.await;
+        match outcome {
+            Ok(job) => {
+                let result = commit(tx, started).await;
+                if reusable(&result) {
+                    self.available = true;
+                }
+                result.map(|_| job)
             }
             error => {
                 if reusable(&error) {

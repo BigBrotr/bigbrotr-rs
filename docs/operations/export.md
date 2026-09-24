@@ -162,11 +162,17 @@ output and scratch filesystems. Existing bytes already reduce observed free
 space. This preflight is not a physical quota or a shared multi-process durable
 reservation ledger; those integration/capacity guarantees remain open. File I/O
 or scratch preparation/cleanup failure halts the current runtime for recovery.
-A known refusal after fresh reader admission releases that joined reader and
-stops this initial executor instead of repeatedly creating durable reader claims.
-Inspect the retained job before restarting; automatic failure parking/resume is
-not implemented yet. A refusal before reader admission advances the scan without
-creating another reader claim. Unknown SQL or worker termination
+A known refusal after fresh reader admission releases only that joined reader.
+After verified capture cleanup, a successfully started job with its exact output
+lock still held is durably paused under current Control/policy and its expected
+job revision. `resource_limit` identifies capacity refusal; other known refusals
+use `execution_refused`. This new parking path is under native qualification.
+Paused jobs retain the original unit, immutable caps and export pin, and are
+excluded from automatic restart scans. Changing configuration does not enlarge
+that unit. Explicit resume/cancel controls are still required work. A Busy or
+pre-output refusal cannot establish cessation of an old writer and remains fatal
+after known reader cleanup. A refusal before reader admission advances the scan
+without creating another reader claim. Unknown SQL or worker termination
 retains pins and output custody through actual transport joins; it never reports
 successful cancellation. Pause/cancel commands, aged-queue fairness, mixed-workload
 resource qualification and the complete installed recovery journey are still

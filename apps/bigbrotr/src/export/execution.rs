@@ -203,9 +203,42 @@ pub struct PreparedExport {
     running: RunningExport,
     unit: ExportUnit,
 }
+/// Actual output exclusion bound to the committed start that acquired it.
+/// This is not proof of worker termination: the supervisor must positively join
+/// every writer before parking, and retain this value through SQL resolution.
+#[derive(Clone)]
+pub struct ExecutionCustody {
+    pub(crate) job: ExportJob,
+    pub(crate) owner: ControlOwner,
+    _files: Arc<OutputCustody>,
+}
+impl ExecutionCustody {
+    pub fn job(&self) -> &ExportJob {
+        &self.job
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExportPauseReason {
+    ResourceLimit,
+    ExecutionRefused,
+}
+impl ExportPauseReason {
+    pub(crate) fn code(self) -> &'static str {
+        match self {
+            Self::ResourceLimit => "resource_limit",
+            Self::ExecutionRefused => "execution_refused",
+        }
+    }
+}
+
 impl PreparedExport {
-    pub fn custody(&self) -> Arc<OutputCustody> {
-        self.unit.custody()
+    pub fn custody(&self) -> ExecutionCustody {
+        ExecutionCustody {
+            job: self.running.job.clone(),
+            owner: self.running.owner,
+            _files: self.unit.custody(),
+        }
     }
     /// Consumes an actual native lookup, including authorized absence. Neither a
     /// caller-supplied manifest nor StoredExport can create a completion input.

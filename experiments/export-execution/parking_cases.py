@@ -3,6 +3,7 @@
 import copy
 import hashlib
 import json
+import stat
 import time
 from signed_publication_cases import Process, command, event, send
 
@@ -63,7 +64,7 @@ def run(root, state, sql, policy):
                 assert record['client_terminal']['parent_absent'] and record['client_terminal']['lock_available'] and record['client_terminal']['scratch_empty']
                 assert not record['client_terminal']['stderr']
                 final=record['terminal'];row=target(final)
-                assert row['state']=='paused' and row['job_revision']==4 and row['checkpoint_revision']==0 and row['reason_code']=='execution_refused'
+                assert row['state']=='paused' and row['job_revision']==4 and row['checkpoint_revision']==0 and row['reason_code']=='resource_limit'
                 assert row['result_manifest_digest'] is None and row['completed_at_us'] is None
                 for table in ['artifacts','artifact_files']:assert final[table]==before[table]
                 for old in before['jobs']:assert old['row']['job_id']=='\\x'+job or old in final['jobs']
@@ -75,10 +76,17 @@ def run(root, state, sql, policy):
                 destination=root/'out/signed_normal/export-destination'
                 record['files_present']={name:(destination/name).exists() for name in [artifact,'.artifact-'+artifact+'.partial','.artifact-'+artifact+'.lock']}
                 assert record['files_present']=={artifact:False,'.artifact-'+artifact+'.partial':False,'.artifact-'+artifact+'.lock':True}
+                lock=destination/('.artifact-'+artifact+'.lock');info=lock.lstat()
+                assert stat.S_ISREG(info.st_mode) and info.st_nlink==1
+                record['namespace']=sorted(p.name for p in destination.iterdir())
+                record['mutex']={key:getattr(info,'st_'+key) for key in ['dev','ino','mode','nlink','size']}
+                record['mutex']['sha256']=hashlib.sha256(lock.read_bytes()).hexdigest()
                 added=[v['row'] for v in final['archive_snapshot_pins'] if v not in before['archive_snapshot_pins']];assert len(added)==1 and added[0]['purpose']=='reader'
                 assert next(v['row']['state'] for v in final['snapshot_leases'] if v['row']['lease_id']==added[0]['lease_id'])=='released'
                 assert sql(db,"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'")=='0'
-                if label=='restart':assert final==result['cases'][0]['terminal']
+                if label=='restart':
+                    assert final==result['cases'][0]['terminal']
+                    for key in ['namespace','mutex']:assert record[key]==result['cases'][0][key]
             finally:
                 if client is not None:
                     client.stop();record['client_output']=client.stdout.decode();record['client_error']=client.stderr.decode()

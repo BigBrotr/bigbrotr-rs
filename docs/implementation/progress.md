@@ -21,10 +21,23 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD/origin main8e8d8a3d2f7a4aa98d170a3a339b05b2abdd1e1b pushed,
-ls-remote confirmed. Root owns new parking_client.py/parking_cases.py, runtime
-profile dispatch and this checkpoint. No product edits yet.
-Product input remains f70ac17. No other contributor writes or merge/rebase.
+Last verified HEAD95bc5c2211e5ed185722c85977b6d00ec7236529 (local candidate),
+origin main8e8d8a3d2f7a4aa98d170a3a339b05b2abdd1e1b. Root owns the new bound
+ExecutionCustody, current-owner/CAS pause adapter, runtime known-refusal branch,
+stronger parking oracle, operations text and RED evidence/inventory. No other
+contributor writes or merge/rebase. Mac fmt/check,42 binary tests and Clippy passed; root complete diff and independent
+AI source review found no concrete counterexample. Product candidate native build
+NOT_RUN.
+
+[Installed parking RED](evidence/p08-export-runtime-parking-red-20260924.json)
+at95bc5c2 reused exact f70 parent/worker after complete product/build equality.
+Actual signed accepted job4e0669eb8dc4019995f339f0b5696b92 stays running3/checkpoint0;
+parent exits4 after known reader cleanup, reaped/root lock available/scratch empty,
+both DB backends0. Original INCOMPLETE preserved; generic refusal does not prove
+output cap cause. Capture34files/1171Git sources and ELF verified, tar
+f11bbcf5a4c76a198a4561083409055d59d21f8435b267a366aa35721bc564de.
+Owner3e1d51dc1ff400900af981ce602b14f8 stopped-retained, network removed;
+610 prior/eight running unchanged, free146837372928 ->146441183232. No new cache.
 
 [Installed completion-COMMIT interruption](evidence/p08-export-runtime-commits-native-20260924.json)
 passes at f7aa201 with exact f70 parent/worker after full product/build input
@@ -208,24 +221,23 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Qualify the new --runtime-parking fixture as a discriminating RED against exact
-f70 installed ELF, after full product/build input equality. No active lab yet.
-Fixture-only source candidate first; native NOT_RUN. It uses the real signedHTTP
-job and1536byte immutable unit against399+1228bytes. Expect one joined/released
-reader, paused4/execution_refused/checkpoint0/no inventory, healthy Control and
-no new rows/files after ordinary restart. The current f70 path should instead
-fail-stop with running3; capture that failure, never label it PASS. This profile
-runs empty prerequisite+parking only, not unrelated COMMIT/recovery stages.
+Review and check the narrow known-refusal pause candidate, then commit clean Git
+and run a fresh native --runtime-parking build. The strengthened oracle requires
+paused4/resource_limit/checkpoint0, unchanged full SQL/xmin after ordinary restart,
+healthy Control, one released fresh reader, preserved export pins, unchanged
+namespace and mutex dev/inode/mode/nlink/size/hash. No native positive yet.
+Then exercise sufficient-cap signed completion on the same product artifacts to
+discriminate actual output-cap refusal. Busy/old-writer counterpart and authority
+interleavings remain explicit gates; do not declare full pause/resume qualified.
 
-Then implement the narrow known-refusal park under P08-T03 Step3/P08-T04 Step3.
-Independent AI design review confirmed existing0001/0008/0501/0813 permits it
-without checksum/migration changes. Required: actual joined worker; acquired
-OutputCustody tied to exact job/artifact/destination/start revision; current
-Control/policy and exact job/owner CAS at COMMIT, no revoked input-grant requirement.
-No park for pre-output/Busy failures or any unknown SQL/native result. Known
-COMMIT allows normal slot clear after catalog driver join; unknown retains it
-through outer actual Control join. Resume/cancel/UI and Busy native counterpart
-remain later acceptance gates. No full P08/M1 claim.
+Existing0001/0008/0501/0813 permits this without checksum/migration changes.
+Required: actual joined worker; ExecutionCustody tied to exact successful start
+job/artifact/destination/revision; current Control/policy and exact job/owner CAS,
+no revoked input-grant requirement. ExecutionCustody alone does not prove a join.
+No park for pre-output/Busy failures, shutdown, or unknown SQL/native outcomes.
+Known pause COMMIT allows normal slot clear after catalog driver join; unknown
+retains it through outer actual Control join. Explicit resume/cancel/UI remain
+later acceptance gates. No full P08/M1 claim.
 
 Current known-refusal path after reader admission joins/releases that reader and
 finishes capture, then fail-stops to prevent repeated durable reader claims.

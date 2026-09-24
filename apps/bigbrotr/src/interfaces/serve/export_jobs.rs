@@ -10,8 +10,8 @@ use crate::{
 use bigbrotr::{
     export::{
         destination::{LocalDestination, check_filesystem_growth},
-        execution::{ExportLimits, ExportState},
-        files::{ExportFileError, OutputCustody},
+        execution::{ExecutionCustody, ExportLimits, ExportPauseReason, ExportState},
+        files::ExportFileError,
     },
     management::sessions::SessionError,
     runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
@@ -40,7 +40,7 @@ use tokio::time::Instant;
 /// A dropped completion future must not release filesystem writer exclusion.
 pub(super) type Custody = Arc<Mutex<Option<RetainedOutput>>>;
 pub(super) struct RetainedOutput {
-    _files: Arc<OutputCustody>,
+    execution: ExecutionCustody,
     _memory: Arc<OwnedPermit>,
 }
 const ROW_BYTES: usize = 1024 * 1024;
@@ -61,6 +61,12 @@ fn known_refusal(error: SessionError) -> bool {
             | SessionError::Capacity
             | SessionError::ArchiveUnavailable
     )
+}
+fn pause_reason(error: SessionError) -> ExportPauseReason {
+    match error {
+        SessionError::Capacity => ExportPauseReason::ResourceLimit,
+        _ => ExportPauseReason::ExecutionRefused,
+    }
 }
 fn limits(config: &Resolved) -> std::result::Result<ExportLimits, SessionError> {
     let required = config
@@ -222,6 +228,7 @@ pub(super) async fn execute(
         };
         // Every known refusal below still joins the child and releases ONLY this
         // fresh reader pin. The original export retention pin is never released here.
+        let mut started_job = None;
         let work = async {
             // Both bounds start before the same SQL request. The Control copy
             // observes expiry during native work; the worker copy gates actual
@@ -244,16 +251,17 @@ pub(super) async fn execute(
             };
             let running = match running {
                 Ok(value) => value,
-                Err(error) if known_refusal(error) => return Ok(false),
+                Err(error) if known_refusal(error) => return Ok(Some(pause_reason(error))),
                 Err(error) => return Err(sql_error(error)),
             };
+            started_job = Some(running.job().clone());
             let observer = match observer.complete(running.remaining()) {
                 Ok(value) => RefCell::new(value),
-                Err(_) => return Ok(false),
+                Err(_) => return Ok(Some(ExportPauseReason::ExecutionRefused)),
             };
             let mut window = match pending.complete(running.remaining()) {
                 Ok(value) => value,
-                Err(_) => return Ok(false),
+                Err(_) => return Ok(Some(ExportPauseReason::ExecutionRefused)),
             };
             let slot = retained.clone();
             let retained_grant = output_grant.clone();
@@ -267,7 +275,7 @@ pub(super) async fn execute(
                         return Err(unavailable(()));
                     }
                     *slot = Some(RetainedOutput {
-                        _files: output.custody(),
+                        execution: output.custody(),
                         _memory: retained_grant,
                     });
                     Ok(output)
@@ -275,7 +283,7 @@ pub(super) async fn execute(
             ).await?;
             let output = match prepared_output {
                 Ok(value) => value,
-                Err(_) => return Ok(false),
+                Err(error) => return Ok(Some(pause_reason(error))),
             };
             let custody = coordinator.reader_custody()
                 .map_err(|_| (4, "export reader custody refused; retain pin".into()))?;
@@ -337,7 +345,7 @@ pub(super) async fn execute(
             ).await?;
             let written = match native {
                 Ok(value) => value,
-                Err(_) => return Ok(false),
+                Err(error) => return Ok(Some(pause_reason(error))),
             };
             let maximum = authority.maximum()?;
             let commit = Cell::new(false);
@@ -352,14 +360,14 @@ pub(super) async fn execute(
                 },
             };
             match completed {
-                Ok(_) => Ok(true),
-                Err(error) if known_refusal(error) => Ok(false),
+                Ok(_) => Ok(None),
+                Err(error) if known_refusal(error) => Ok(Some(pause_reason(error))),
                 Err(error) => Err(sql_error(error)),
             }
         }.await;
         // Unknown Control or native outcomes deliberately retain both pin and
         // output exclusion through actual driver destruction in the outer runtime.
-        let completed = work?;
+        let refusal = work?;
         authority.lease.check_delivery(authority.lease.known_epoch())
             .map_err(|e| (4, e.to_string()))?;
         tokio::time::timeout(authority.maximum()?, authority.owner.release_archive_pin(&pin, &commit))
@@ -370,11 +378,32 @@ pub(super) async fn execute(
         if !matches!(finished, Some(Ok(()))) {
             return Err((4, "export catalog barrier completion unresolved".into()));
         }
-        if !completed {
-            // Retrying a permanent native refusal creates a fresh durable reader
-            // claim every time. Until durable pause/retry control is implemented,
-            // stop after the known cleanup instead of growing an unattended loop.
-            return Err((4, "export attempt refused after reader admission; inspect retained job before restart".into()));
+        if let Some(reason) = refusal {
+            if authority.stopping {
+                return Err((4, "export stopped before durable pause; inspect retained job".into()));
+            }
+            // A start or Busy refusal has no output custody and cannot assert
+            // cessation of an old writer. Match the successful start exactly;
+            // a slot from another attempt is never a parking witness.
+            let custody = retained.lock()
+                .map_err(|_| (4, "export custody poisoned".into()))?
+                .as_ref()
+                .filter(|held| Some(held.execution.job()) == started_job.as_ref())
+                .map(|held| held.execution.clone())
+                .ok_or_else(|| (4, "export refusal without matched output custody; inspect retained job".into()))?;
+            let maximum = authority.maximum()?;
+            let commit = Cell::new(false);
+            tokio::select! {
+                biased;
+                _ = authority.stop.requested() => {
+                    return Err((4, "export pause cancelled; outcome unresolved".into()));
+                },
+                result = tokio::time::timeout(maximum,
+                    authority.owner.pause_export(&custody, reason, &commit)) => {
+                    result.map_err(|_| (4, "export pause deadline; outcome unresolved".into()))?
+                        .map_err(sql_error)?;
+                },
+            }
         }
         Ok(())
     }.await;

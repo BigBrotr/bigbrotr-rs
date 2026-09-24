@@ -1,0 +1,117 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "INCOMPLETE",
+  "scope": "Discriminating installed known-refusal parking RED. Original failure preserved.",
+  "source": {
+    "files": 34,
+    "sha256": "f11bbcf5a4c76a198a4561083409055d59d21f8435b267a366aa35721bc564de",
+    "source": "95bc5c2211e5ed185722c85977b6d00ec7236529",
+    "tree": "203a8b7a813251afe16ff7d327a310da6f0efbfe",
+    "source_files": 1171
+  },
+  "capture": ".research/implementation/export-execution/attempt-95bc5c2/capture",
+  "installed_build_source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+  "installed_artifacts": {
+    "bigbrotr": "6830a4f4bfe9a1c5c1da0a74bf8a62729527764ac9538ed620dcda008555ca9a",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "reuse_validation": "Complete product/build inputs and actual ELF hashes match f70ac17; fixture-only reuse, no new compilation.",
+  "expected": "Known joined refusal parks the running job once while Control remains available; ordinary restart leaves it paused.",
+  "observed": {
+    "job_id": "4e0669eb8dc4019995f339f0b5696b92",
+    "state": "running",
+    "job_revision": 3,
+    "checkpoint_revision": 0,
+    "reason_code": null,
+    "client_terminal": {
+      "event": "terminal",
+      "alive_before_stop": false,
+      "exit": 4,
+      "stderr": "error: export attempt refused after reader admission; inspect retained job before restart\n",
+      "parent_absent": true,
+      "lock_available": true,
+      "scratch_empty": true
+    },
+    "backends": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    },
+    "snapshot_unchanged_through_stop": true
+  },
+  "failure": "parking_cases.py assertion: known refusal stopped Control instead of parking",
+  "resources": {
+    "source": "95bc5c2211e5ed185722c85977b6d00ec7236529",
+    "tree": "203a8b7a813251afe16ff7d327a310da6f0efbfe",
+    "owner": "3e1d51dc1ff400900af981ce602b14f8",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-95bc5c2",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "79b359e4fe8a02520c419a614fd17bdbffa31ef2bac62f6b03dee2f2c743fc09"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "1729dc4cb9bc5bafd9cbc234a725fcbc5a2d46f08adc36b63cc13e75f8546beb"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T12:17:09.854127+00:00",
+    "runtime_profile": "parking",
+    "adapter_profile": null,
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "runtime_artifact_origin": "f70ac174ad091fd9b849ff18719b86e520478df8",
+    "network_id": "8c1206742027e05af6ee249550494c7c9dd21245145033f6ab4804b36251d17a",
+    "postgres_id": "79b359e4fe8a02520c419a614fd17bdbffa31ef2bac62f6b03dee2f2c743fc09",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "1729dc4cb9bc5bafd9cbc234a725fcbc5a2d46f08adc36b63cc13e75f8546beb",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "INCOMPLETE",
+    "source": "95bc5c2211e5ed185722c85977b6d00ec7236529",
+    "owner": "3e1d51dc1ff400900af981ce602b14f8",
+    "result": "INCOMPLETE",
+    "independent_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "failure": {
+      "kind": "AssertionError",
+      "frames": [
+        {
+          "file": "lab.py",
+          "line": 283,
+          "function": "<module>"
+        }
+      ]
+    },
+    "preexisting_preserved": true,
+    "preexisting_count": 610,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "original_source_unchanged": true,
+    "host_tcp_wmem_preserved": true,
+    "free_bytes": 146441183232
+  },
+  "free_before": 146837372928,
+  "boundaries": [
+    "The previous runtime flattens refusal causes. This RED establishes running3 and parent exit4, not that the 1536-byte cap caused that refusal.",
+    "The original fixture only checked path existence. No mutex identity or paused restart claim; those assertions were not reached.",
+    "Empty completion prerequisite and actual signed HTTP acceptance passed. No pause, cancel, resume, old-writer exclusion or mixed-workload qualification."
+  ]
+}
