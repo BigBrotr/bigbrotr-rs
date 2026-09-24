@@ -21,10 +21,9 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD53c6c9de6e6f83e67e6930c5e75e1ef0a8b7299b, origin/main
-78a1ee26e94e16675febbf627a1174c3c43ed03d (ahead1, not yet pushed).
-Candidate53c6c9d was clean at native transfer and resume. Root now owns only
-concise native evidence, inventory, operator/task documentation and this checkpoint.
+Current main/HEAD and origin/main75906fc; candidate53c6c9d and its scoped
+evidence75906fc pushed normally. Root owns only the GET codec whitespace
+correction/regression and this checkpoint. Candidate53c6c9d was clean at transfer.
 No unrelated edits, active laboratory or rewritten published history.
 
 Private POST /management/v1/jobs now reuses the supervised native allocation
@@ -75,7 +74,10 @@ original PASS_PENDING_CAPTURE preserved. Independent AI rechecked source/capture
 all8 ledger retry/restart/revocation hashes and545 prior records; no discrepancy
 in these claims. Reviewer reports GET projection.trim accepts
 non-JSON Unicode whitespace (NBSP); fix with discriminating codec regression next.
-Does not affect these POST cases. No product test/SSH execution by reviewer.
+Does not affect these POST cases. New codec regression fails on actual NBSP
+acceptance; explicit JSON-only whitespace fixes it. Three codec tests and scoped
+Clippy PASS on Mac, logs .research/implementation/export-job-http/codec-whitespace-*.
+No product test/SSH execution by reviewer.
 
 Stopped root /home/tux/bigbrotr-implementation-20260917/runs/export-job-http-53c6c9d,
 owner081c997dedc334103edc5f9601d5c7e0, org.bigbrotr.archive-visibility;
@@ -263,8 +265,8 @@ healthy Control; final Control0/both databases backend0/eightParquet unchanged.
 35capture/1072source/fiveELF/fiveassets verified; independent AI rechecked captures
 and exact source with no discrepancy. No product tests/SSH by reviewer.
 
-Next bounded action: commit/push the reviewed scoped HTTP evidence. Correct GET nullable-projection whitespace parity with RED/GREEN codec
-evidence. Then qualify an actually blocked destination checker and COMMIT loss
+Next bounded action: commit the verified GET whitespace fix; qualify an actually
+blocked destination checker and COMMIT loss
 before claiming those guarantees; continue standalone signed JSONL execution/restart.
 
 Pending required acceptance: actually blocked checker, COMMIT loss/restart,

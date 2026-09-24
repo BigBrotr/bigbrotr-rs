@@ -47,7 +47,7 @@ pub fn decode_get(query: &str) -> Result<QueryRequest, QueryError> {
     }
     if fields
         .remove("projection")
-        .is_some_and(|value| value.trim() != "null")
+        .is_some_and(|value| value.trim_matches([' ', '\t', '\r', '\n']) != "null")
     {
         // Match the initial POST profile without materializing an unsupported
         // Vec<String>; empty strings can amplify wire bytes into a large vector.
@@ -181,6 +181,40 @@ mod tests {
             post().replace("\"version\":1", "\"version\":1,\"principal\":\"owner\""),
         ] {
             assert_eq!(decode_post(value.as_bytes()), Err(QueryError::Invalid));
+        }
+    }
+    #[test]
+    fn nullable_projection_accepts_only_json_whitespace_in_both_transports() {
+        let expected = decode_post(post().as_bytes()).unwrap();
+        for whitespace in [
+            "", " ", "\t", "\r", "\n", " \t\r\n", "\u{a0}", "\u{2003}", "\u{b}",
+        ] {
+            let value = format!("{whitespace}null{whitespace}");
+            let get = decode_get(&format!(
+                "scope={}&filters={}&projection={}",
+                encode(&scope()),
+                encode(&filters()),
+                encode(&value)
+            ));
+            let post = decode_post(
+                format!("{},\"projection\":{value}}}", post().trim_end_matches('}')).as_bytes(),
+            );
+            if whitespace
+                .bytes()
+                .all(|b| matches!(b, b' ' | b'\t' | b'\r' | b'\n'))
+            {
+                assert_eq!(get, Ok(expected.clone()));
+                assert_eq!(post, Ok(expected.clone()));
+            } else {
+                assert!(
+                    get.is_err(),
+                    "GET accepted non-JSON whitespace {whitespace:?}"
+                );
+                assert!(
+                    post.is_err(),
+                    "POST accepted non-JSON whitespace {whitespace:?}"
+                );
+            }
         }
     }
     #[test]
