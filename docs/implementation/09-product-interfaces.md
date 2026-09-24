@@ -207,7 +207,12 @@ retention while adding one atomic resume and exactly 7 session audits. The origi
 [pre-login audit comparison failure](evidence/p09-resume-browser-fixture-incomplete-20260924.json)
 remains INCOMPLETE; corrected boundaries explicitly verify each session mutation.
 [Operator recovery instructions](../user/administration/jobs-recovery.md) use the
-actual controls. Remaining engine/mount journeys, accessibility, creation, cancel,
+actual controls. The [remaining engine/mount pairs](evidence/p09-resume-browser-matrix-native-20260924.json)
+now pass 35 installed steps and 25 native store cases on `188fce9`: Firefox and
+WebKit at both mounts and Chromium at `/control/`. The earlier `dd17842` Chromium/root remains
+separately qualified on the same product implementation. Root reviewed all five
+mobile captures and independently reconstructed the complete ledgers and artifacts.
+Accessibility, natural expiry, blocked resume authorization, creation, cancel,
 discovery and downloads still gate the full step; no task checkbox is completed.
 
 - [ ] **Step 3:** implement typed queries/saved private views plus explicit export, storage/headroom and maintenance pages. Show measured rates/windows and unknown forecast, no unmeasured capacity promise. Explain current/historical policy and full/projection differences before download.

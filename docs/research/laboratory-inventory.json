@@ -23872,5 +23872,343 @@
       "tree": "35e85ea3be5bc72c04ff8e1e166e7afc95c1292b",
       "source_files": 1249
     }
+  },
+  "implementation_resume_browser_matrix_20260924": {
+    "status": "stopped-retained; five remaining installed engine/mount pairs scoped PASS; no active lab",
+    "runs": {
+      "firefox-root": {
+        "status": "stopped-retained; scoped installed firefox-root recovery7steps and native store5cases PASS",
+        "resources": {
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824",
+          "owner": "9d8fb44490cb080bbe8027c8c48b9f54",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-188fce9-firefox-root",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "731de7dde0fdce4b750d5e941fcd4767d54a218acfac65dc0b83f5429627255d"
+            },
+            {
+              "name": "postgres",
+              "id": "ff07570f599effe74ce8ac49a279261346f6c6bb4340ba8ce9c4b3a0621c1e75"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "05be42fa54ddee9b6cb91c54f9b38f111b94f5f5f898c787ba8acd53c20996a5"
+            },
+            {
+              "name": "resume-store-firefox",
+              "id": "6b81722e2c056047d369afa1981c16e7c0307f5927ec36056c7e3215c2d8207c"
+            },
+            {
+              "name": "resume-firefox-root",
+              "id": "6cb4d8a4a05da13d2b02cf253178e1f0e7cef6065786ea8f8a3d15a0ff654341"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-24T18:57:25.626819+00:00",
+          "runtime_profile": "resume-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "resume_browser_pair": "firefox-root",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "a0e7196f7de8b4a0cdb94acb07e191daa0259c53c8124655c16b71a44bb117be",
+          "postgres_id": "ff07570f599effe74ce8ac49a279261346f6c6bb4340ba8ce9c4b3a0621c1e75",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "05be42fa54ddee9b6cb91c54f9b38f111b94f5f5f898c787ba8acd53c20996a5",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "orchestrator": {
+          "pid": 212366,
+          "start_ticks": "365849922",
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824"
+        },
+        "retention": "Retain original SQL/browser/source/logs/capture and exact runtime ELF. No new Rust compiler cache; protect separately owned73e/4e/b6 inputs.",
+        "capture": {
+          "path": ".research/implementation/export-execution/attempt-188fce9-firefox-root/capture",
+          "files": 115,
+          "sha256": "84438e850577aa34d0224dc418a0f9df8989649f8eb3f1a7f01915fb52fbec2b",
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824",
+          "source_files": 1251
+        },
+        "evidence": "docs/implementation/evidence/p09-resume-browser-matrix-native-20260924.json"
+      },
+      "firefox-control": {
+        "status": "stopped-retained; scoped installed firefox-control recovery7steps and native store5cases PASS",
+        "resources": {
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824",
+          "owner": "514ac523cf970efbefd05e0d22366596",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-188fce9-firefox-control",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "5423ef2ef95d6ef1e38dd22ee58dabeec7f9f3e8df2bb4fbba2f038b69f4a1e1"
+            },
+            {
+              "name": "postgres",
+              "id": "c52d2ec9ab89a4e19ece28078031580782f0d623316a5a36297d8f9b1dcba796"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "01e1b28f05fb319677ea5451e7c2ad1fb9f25c5c9d531c0feb83a5067fd1f01c"
+            },
+            {
+              "name": "resume-store-firefox",
+              "id": "6a2fb3a588766b425cc826e2e776e839a9d002484b5dabec1e60b0d0e55ddd6e"
+            },
+            {
+              "name": "resume-firefox-control",
+              "id": "2be3c62db03983fdc9a71f593eb17a13f31050844a69b23605cb4687bcca9887"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-24T19:00:08.462357+00:00",
+          "runtime_profile": "resume-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "resume_browser_pair": "firefox-control",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "f7c680de56d684fd2b53372a851d518e7314973bdfbeace3424ed4301b570db7",
+          "postgres_id": "c52d2ec9ab89a4e19ece28078031580782f0d623316a5a36297d8f9b1dcba796",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "01e1b28f05fb319677ea5451e7c2ad1fb9f25c5c9d531c0feb83a5067fd1f01c",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "orchestrator": {
+          "pid": 231229,
+          "start_ticks": "365866204",
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824"
+        },
+        "retention": "Retain original SQL/browser/source/logs/capture and exact runtime ELF. No new Rust compiler cache; protect separately owned73e/4e/b6 inputs.",
+        "capture": {
+          "path": ".research/implementation/export-execution/attempt-188fce9-firefox-control/capture",
+          "files": 115,
+          "sha256": "3e7ef62af05c717a820b65e3efcf2e2da8442eccc379bbd4a876735907f2fc35",
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824",
+          "source_files": 1251
+        },
+        "evidence": "docs/implementation/evidence/p09-resume-browser-matrix-native-20260924.json"
+      },
+      "webkit-root": {
+        "status": "stopped-retained; scoped installed webkit-root recovery7steps and native store5cases PASS",
+        "resources": {
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824",
+          "owner": "3ef158900e7e2cc829775ee8499ec401",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-188fce9-webkit-root",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "c09b3009622085e8ed4b3c32bd477a6bf7f79936e849bb68ae4d5025578471e6"
+            },
+            {
+              "name": "postgres",
+              "id": "21200e4e0510fb72ccbb8cb1f07d22845f9390f4eaba10456aa3817ac25b366b"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "1f3afc889329461c8525f1a5210a8c856a79a66aba7870ef96c0e664674f55c2"
+            },
+            {
+              "name": "resume-store-webkit",
+              "id": "c05a26e9118631cd7b75db3c7fb00b4f2d40c11f79078dd38896566e7d2ff9c0"
+            },
+            {
+              "name": "resume-webkit-root",
+              "id": "e04d584cadc9081e9aff71119474355a45af79ab4a7f3eb84b336286d5fa3462"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-24T19:02:56.331792+00:00",
+          "runtime_profile": "resume-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "resume_browser_pair": "webkit-root",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "88c1f1d1240afcd51c5f9d30985a60db835e31c059b4d9c9b606d9febc60d13d",
+          "postgres_id": "21200e4e0510fb72ccbb8cb1f07d22845f9390f4eaba10456aa3817ac25b366b",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "1f3afc889329461c8525f1a5210a8c856a79a66aba7870ef96c0e664674f55c2",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "orchestrator": {
+          "pid": 250165,
+          "start_ticks": "365882988",
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824"
+        },
+        "retention": "Retain original SQL/browser/source/logs/capture and exact runtime ELF. No new Rust compiler cache; protect separately owned73e/4e/b6 inputs.",
+        "capture": {
+          "path": ".research/implementation/export-execution/attempt-188fce9-webkit-root/capture",
+          "files": 115,
+          "sha256": "ce3733eaed331a5107b9e881943d9cbd77ecf0df0ffd0d6de162c2de8c3976cc",
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824",
+          "source_files": 1251
+        },
+        "evidence": "docs/implementation/evidence/p09-resume-browser-matrix-native-20260924.json"
+      },
+      "webkit-control": {
+        "status": "stopped-retained; scoped installed webkit-control recovery7steps and native store5cases PASS",
+        "resources": {
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824",
+          "owner": "87f198afafcf0d433cb726acf033e791",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-188fce9-webkit-control",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "9906ac8272a1510269459dd7871affdbd0bef54ed481f459e9ce26859446a582"
+            },
+            {
+              "name": "postgres",
+              "id": "c29ecbb06a3b1661028a992c81b52230c442c7f570e7bd99486a7d2c34156921"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "f0b398fdeb74d4b8fe58a748cf29841444bceb294d77b5835bf886d516431eff"
+            },
+            {
+              "name": "resume-store-webkit",
+              "id": "2c09d29328d82d56a528f78eba05f7da18714c031fb9504179ba4568579d5c27"
+            },
+            {
+              "name": "resume-webkit-control",
+              "id": "960eef6fa72eeed3977b9e101f14b8a294b2c97ffdb97127eb3fd591bf791fc3"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-24T19:05:58.012455+00:00",
+          "runtime_profile": "resume-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "resume_browser_pair": "webkit-control",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "77695a3e2747c6fb958f26ec5a28576b00476f38d2d67d1422c48d9e7a71e25a",
+          "postgres_id": "c29ecbb06a3b1661028a992c81b52230c442c7f570e7bd99486a7d2c34156921",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "f0b398fdeb74d4b8fe58a748cf29841444bceb294d77b5835bf886d516431eff",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "orchestrator": {
+          "pid": 269006,
+          "start_ticks": "365901157",
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824"
+        },
+        "retention": "Retain original SQL/browser/source/logs/capture and exact runtime ELF. No new Rust compiler cache; protect separately owned73e/4e/b6 inputs.",
+        "capture": {
+          "path": ".research/implementation/export-execution/attempt-188fce9-webkit-control/capture",
+          "files": 115,
+          "sha256": "87b180ae68496935d86759a9c7d18e473f29112d9aaa3c4dd7fb6daf35a99626",
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824",
+          "source_files": 1251
+        },
+        "evidence": "docs/implementation/evidence/p09-resume-browser-matrix-native-20260924.json"
+      },
+      "chromium-control": {
+        "status": "stopped-retained; scoped installed chromium-control recovery7steps and native store5cases PASS",
+        "resources": {
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824",
+          "owner": "f1bf48e84425e999319b0bc644c577ed",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-188fce9-chromium-control",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "21d37eb1abcee387d9bdc1a0c50e8c86e91d4627dcbbd3a09f5eaf611308e065"
+            },
+            {
+              "name": "postgres",
+              "id": "5766540c165b0dade79659083d56765488f24fc1b1937b7e27707cfe5d0b249c"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "eb07ee5ee1c904b79f7b17831ec77b70339c3326bbc841f48a58fbd11ab80f65"
+            },
+            {
+              "name": "resume-store-chromium",
+              "id": "b1b1a6cfae0c39e2a3876eaeb697a191526e8f2db10e205f16611dd2f641b432"
+            },
+            {
+              "name": "resume-chromium-control",
+              "id": "ab2cd66175dc02a2e9647b65648fd2135f226f52e8fa4f7d6c53fa573be56772"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-24T19:08:35.492330+00:00",
+          "runtime_profile": "resume-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "resume_browser_pair": "chromium-control",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "e429673dab662a101ae62baa7f76a3f090a2126b06319a2b2c69ce05b1c28dc0",
+          "postgres_id": "5766540c165b0dade79659083d56765488f24fc1b1937b7e27707cfe5d0b249c",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "eb07ee5ee1c904b79f7b17831ec77b70339c3326bbc841f48a58fbd11ab80f65",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "orchestrator": {
+          "pid": 287738,
+          "start_ticks": "365916905",
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824"
+        },
+        "retention": "Retain original SQL/browser/source/logs/capture and exact runtime ELF. No new Rust compiler cache; protect separately owned73e/4e/b6 inputs.",
+        "capture": {
+          "path": ".research/implementation/export-execution/attempt-188fce9-chromium-control/capture",
+          "files": 115,
+          "sha256": "0d2e5dfcdf2ddca2d5adbd56bec08ec3b8e59d8d0f6063c423d659796962c6bf",
+          "source": "188fce9da3208e8d1cb52df5f5749453977f607b",
+          "tree": "d71a02d8f6824b71f169e5c8f5962b473bc55824",
+          "source_files": 1251
+        },
+        "evidence": "docs/implementation/evidence/p09-resume-browser-matrix-native-20260924.json"
+      }
+    },
+    "final_census": {
+      "path": ".research/implementation/export-execution/resume-matrix-final-census.json",
+      "sha256": "624bc3481186f55bfcdcc0dba52497c21a52c2ecc23325334a4f752265a804c9",
+      "observed_at": "2026-09-24T19:13:14.282749+00:00",
+      "owned_stopped_pid_zero_no_oom": 25,
+      "unrelated_running": 8,
+      "free_bytes": 122733789184
+    }
   }
 }

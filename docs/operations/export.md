@@ -187,8 +187,14 @@ sending and restores it after reload without automatic submission. Follow
 the actual controls and recovery steps. [Scoped installed browser evidence](../implementation/evidence/p09-resume-browser-native-20260924.json)
 covers Chromium at the root mount with actual Rust/PostgreSQL, a withheld real 202,
 identical retry after reload/restart, account separation/revocation and resolved
-local forget. Native IndexedDB operations also pass on Firefox and WebKit; their
-complete installed resume UI journeys and the subpath matrix remain open.
+local forget. The [remaining five engine/mount pairs](../implementation/evidence/p09-resume-browser-matrix-native-20260924.json)
+now pass the same seven steps: Firefox and WebKit at `/` and `/control/`, plus
+Chromium at `/control/`. Each uses a fresh isolated database, the same qualified
+Rust artifacts and current production bundles. Full-ledger checks preserve old
+rows while adding one atomic resume and seven expected session audits per pair.
+These journeys observe acceptance and queued state with execution disabled;
+accessibility, natural expiry, blocked resume authorization and complete release
+installation remain separate gates.
 
 The runtime probes the checksum-validated schema and job privileges at startup.
 Without protocol813 or its privileges the route refuses503 while an otherwise

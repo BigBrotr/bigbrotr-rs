@@ -45,8 +45,8 @@ from this browser. It changes no job or server receipt. Unconfirmed requests
 cannot be forgotten through this control. The browser keeps one request per
 account, so resolve that request before submitting a different one.
 
-[Scoped native evidence](../../implementation/evidence/p09-resume-browser-native-20260924.json)
-covers this installed Chromium journey on Linux amd64, including reload after a
-withheld real acceptance, server restart and account revocation. Native storage
-checks also ran on Firefox and WebKit. The complete browser/deployment matrix,
-accessibility and release installation remain open qualification work.
+[Scoped browser evidence](../../implementation/evidence/p09-resume-browser-matrix-native-20260924.json)
+covers this recovery journey in Chromium, Firefox and WebKit at `/` and `/control/`
+on Linux amd64, including reload after a withheld real acceptance, server restart
+and account revocation. Accessibility, natural session expiry and release
+installation remain open qualification work.

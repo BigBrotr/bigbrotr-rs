@@ -23,27 +23,48 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD/origin15bb98ca11cd4aa438e8d458036e33e2c577c7b8 on main,
-clean before this slice. Last turn made verified progress: browser recovery and
-operator documentation integrated/pushed, superseded dc6 compiler cache retired.
-Root now owns only four resume/lab fixture changes and this checkpoint. No
-product behavior or dependency change. Tuxdd/73e owned containers were freshly
-checked PID0/stopped; eight unrelated workloads remain running,125822136320bytes
-free. No active lab. Existing foreign/research worktrees remain untouched.
+Last verified HEAD188fce9da3208e8d1cb52df5f5749453977f607b on main;
+origin15bb98ca11cd4aa438e8d458036e33e2c577c7b8. Root owns the matrix evidence,
+inventory and affected recovery/build/task documentation. No product or dependency
+change. Candidate188 was transferred from a clean detached staging worktree;
+all editing remained in main. That temporary worktree is now removed after clean
+identity inspection; historical worktrees remain untouched.
 
-Preparing remaining resume engine/mount acceptance: optional closed ENGINE-MOUNT
-argument after reused runtime SHA, disjoint per-pair root/container/network names,
-fresh PG/signed seed in each run, exact73e ELF and production bundles. Each pair
-executes five native store cases for its selected engine and the same seven UI/
-HTTP/SQL steps; no15store-case repetition perpair. All new pair outcomes NOT_RUN.
-Root reviewed full relevant harness boundaries, syntax/doc checks and3audit-oracle
-regressions pass. Read-only AI parameter/identity review found no concrete issue. Three invalid
-selectors refuse before host/Git/docker operations. Next bounded
-step: commit reviewed fixture, create a clean detached transfer-only worktree,
-launch Firefox/root, observe to terminal and collect/review before the next pair.
-Use the existing main workspace for all edits/checkpoint updates. No independent
-source edits on Tux or in the staging worktree. Remaining pairs: Firefox/control,
-WebKit/root, WebKit/control, Chromium/control. Preserve scopeddd Chromium/root.
+[The remaining resume matrix](evidence/p09-resume-browser-matrix-native-20260924.json)
+passes Firefox/root, Firefox/control, WebKit/root, WebKit/control and Chromium/control
+on exact188 source with qualified73e ELF. Five fresh isolated databases, 35 installed
+UI steps, 25 selected-engine native store cases. Root independently verified all
+575 payloads, 1251 current/1246 runtime/1110 seed Git files per run, exact ELF/bundles
+and complete 12-ledger reconstruction. Each adds one atomic resume and seven
+session audits, retains original key/body7/1/2 and observes202withheld/200/200/401.
+All five mobile screenshots inspected; existing skip-link overlay remains separate.
+Prior dd Chromium/root is preserved, giving the six scoped engine/mount journeys
+on unchanged product implementation. No full P08/P09 task completion.
+
+All five runs are stopped-retained; inventory owns exact roots, owners, container
+and orchestrator identities. 25 owned containers PID0/noOOM, five networks removed,
+all prior containers/eight unrelated running workloads preserved per run. No new
+Rust compiler caches. Latest completed free122744524800bytes; fresh final census after captures
+finds122733789184bytes and the same25 stopped/eight unrelated running containers.
+No lab active.
+Current73e cache/ELF and separately owned4e/b6 inputs remain protected. Root and
+read-only AI independently verified the complete five captures without discrepancy.
+Retry200 body equality and some final no-idle checks are executed assertions;
+those complete raw replies/snapshots are not retained for offline reconstruction.
+Artifact/link/handoff checks pass, historical inventory entries unchanged. Ready
+for the coherent private push, then the bounded current-build WebKit/root keyboard
+trace below. No product tests or SSH by the independent reviewer.
+
+Read-only catalog_guard_review found the old skip-link boxes remain above the
+viewport while full-page capture uses different coordinates. The old ShiftTab
+loop starts from unrecorded focus after lookup disabled its button; this is a
+hypothesis for a discriminating trace, not a CSS diagnosis. Current UI adds resume
+tab stops, so an A/B on this build cannot reconstruct8743 retrospectively. Preserve
+its INCOMPLETE status. Trace keyboard focus/scroll/rect with and without full-page
+capture from the actual post-lookup state and a verified Job ID focus. Keep the
+original eight reverse Tabs and each result; never focus the skip link directly.
+Check keyboard reachability/visible bounds, Enter to #session and Tab to Sign out.
+No old lab restart or product/CSS change is justified before this observation.
 
 Tuxdd17842 is stopped-retained, owner ff09631fb1f63b8b5fb0f62aefd95214;
 seven owned containers PID0/noOOM, network removed, bothDB0 and691prior/eight
@@ -86,8 +107,8 @@ real202withheld, then200/200/401. Original12ledgers/rows retained except declare
 job change + one atomic resume; audit 12→13→14→20 includes exactly 4 issue/3 logout.
 No new reader/output. Some final no-idle observations survive as assertion booleans
 only. Actual 375px screenshot is readable/no horizontal overflow; known skip-link
-overlay remains, full accessibility not claimed. Firefox/WebKit here qualify only
-native store operations; full installed resume engine/subpath matrix remains open.
+overlay remains, full accessibility not claimed. Firefox/WebKit in that original report qualify only
+native store operations; the later188 matrix above now adds installed journeys.
 
 The UI now uses a session-owned ResumeModel alongside the explicit JobModel.
 Native IndexedDB reserves one closed request per account before HTTP; application

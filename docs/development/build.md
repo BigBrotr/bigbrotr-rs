@@ -163,8 +163,11 @@ submission. Sign-out clears the view while preserving this non-secret recovery
 metadata. The [private administration contract](../product/private-administration.md)
 owns its limits and failure behavior. [Scoped native evidence](../implementation/evidence/p09-resume-browser-native-20260924.json)
 covers actual store operations on all three automated engines and the installed
-Chromium root resume/reload/restart journey. It does not qualify the complete
-resume engine/mount matrix or a released installation.
+Chromium root resume/reload/restart journey. The [remaining five pairs](../implementation/evidence/p09-resume-browser-matrix-native-20260924.json)
+now have the same installed recovery evidence on native Linux amd64, with new
+bundles and exact reused Rust artifacts. Each executes its selected engine's
+native store cases and the real HTTP/PostgreSQL journey. This is scoped recovery
+coverage, not full accessibility, session-expiry or released-installation acceptance.
 
 These checks establish local build/client behavior. Real production CSP,
 Chromium/Firefox/WebKit, Rust/PostgreSQL and installed root/subpath journeys still
