@@ -24844,5 +24844,63 @@
     },
     "evidence": "docs/implementation/evidence/p08-export-resume-revocation-native-20260924.json",
     "retention": "Keep original source, runtime ELF, native seed/assets, PostgreSQL/archive state, logs, manifests, instrument/proof and captures. No compiler cache copied/created, recompilation, cache/data/container/volume retirement. Preserve8db/73e/4e caches, qualified strace and all previously protected inputs. All762 prior container lifecycle/mount/network/restart/health-status projections match the later full census; eight unrelated containers remain running. Probe log contents are deliberately excluded from stable lifecycle comparison."
+  },
+  "implementation_resume_expiry_20260925": {
+    "status": "stopped-retained; SCOPED_PASS",
+    "resources": {
+      "source": "d3cd5e6a0e58c0f7f5694e16f96813218b78ac2d",
+      "tree": "ee1ba21a141fcee5263ae2182feb9d0b25004389",
+      "owner": "7508fe5a13909e5b6cac432fd5cfb155",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-d3cd5e6",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "fac490da62a3d243b01388f4b2f004838289578a55a9bb742f409fda299cee1d"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "2d31071fb54c0b95b85390e60a243d0907e0cec37853f7b06710f92133c72a7d"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T22:03:56.687163+00:00",
+      "runtime_profile": "resume-expiry",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "network_id": "1f019dfce55e940f7d13e33ba464ffd8aed0369a15778eaa1610505aa592de6d",
+      "postgres_id": "fac490da62a3d243b01388f4b2f004838289578a55a9bb742f409fda299cee1d",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "2d31071fb54c0b95b85390e60a243d0907e0cec37853f7b06710f92133c72a7d",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "orchestrator": {
+      "pid": 570964,
+      "start_ticks": "366969022",
+      "source": "d3cd5e6a0e58c0f7f5694e16f96813218b78ac2d",
+      "tree": "ee1ba21a141fcee5263ae2182feb9d0b25004389"
+    },
+    "capture": {
+      "path": ".research/implementation/export-execution/attempt-d3cd5e6/capture",
+      "files": 29,
+      "sha256": "d878256942bdb0bce07e4bbf5e99c12485a54f44c50b46f6bf8997c9d51d1883",
+      "source": "d3cd5e6a0e58c0f7f5694e16f96813218b78ac2d",
+      "tree": "ee1ba21a141fcee5263ae2182feb9d0b25004389",
+      "source_files": 1269
+    },
+    "final_census": {
+      "path": ".research/implementation/export-execution/resume-expiry-final-census.json",
+      "sha256": "d19faf86b23463e2eb8e1d8d9863e0c4ed36a24110b22b787453c2ab76eb843c",
+      "observed_at": "2026-09-24T22:06:53.083962+00:00",
+      "free_bytes": 113241657344,
+      "full_prior_container_projections": 764
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-expiry-native-20260925.json",
+    "retention": "Keep source, runtime/seed ELF and native assets, PostgreSQL/archive state, logs, full ledgers/manifests and captures. No new compiler cache, compilation or cache/container/volume/data retirement. Preserve8db/73e/4e caches and all previously protected inputs. Two owned PID0/noOOM, network and orchestrator absent; all764previous container lifecycle/mount/network/restart/health-status projections match the later full census, eight unrelated workloads remain running. Free-space observations have distinct timestamps and concurrent host/capture writes."
   }
 }

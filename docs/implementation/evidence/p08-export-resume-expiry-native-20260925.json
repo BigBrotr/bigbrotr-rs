@@ -1,0 +1,508 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-25",
+  "task": [
+    "P08-T03",
+    "P08-T04"
+  ],
+  "status": "SCOPED_PASS",
+  "source": "d3cd5e6a0e58c0f7f5694e16f96813218b78ac2d",
+  "tree": "ee1ba21a141fcee5263ae2182feb9d0b25004389",
+  "scope": "Installed HTTP resume COMMIT held across real session expiry, rollback/401 with reusable Control, and timely accepted COMMIT/history. Native run timestamps are2026-09-24UTC; report date is the primary Mac local date. Fixture-only changes.",
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "source_and_artifacts": {
+    "runtime_source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+    "runtime_tree": "7c6b2addc5818b0b3a57f66dff2d89b32ae5f450",
+    "runtime_root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-8dbd3c4",
+    "runtime_owner": "1ae77d53919b4876eeff7df396179ccd",
+    "runtime_manifest_sha256": "b8fd1d99439834201a4618ef1ade39bb8a030d63ccd1c465bd24bb09acff21c1",
+    "current_manifest_sha256": "5595ae6b5ed36171bcf527a3d030b8c6cd08a68116f5c343db58442dafe57ef2",
+    "seed_source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "seed_manifest_sha256": "eee5a33104dbee6059d2a106eab2b09d44b14e54c5badd06fce0f8425182ef6f",
+    "seed_reuse_record": "artifact-reuse.json in capture",
+    "cargo_lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "artifacts": {
+      "bigbrotr": "b76d606f28f71dbc2a434567e32df9bb50fc146fcd144d99167407aeae94473a",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "reuse": "Every non-doc/non-experiments product/build input equals8db, with no exceptions. Original8db build/unit/Clippy evidence retains its source identity; none rerun here."
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-d3cd5e6/capture",
+    "files": 29,
+    "sha256": "d878256942bdb0bce07e4bbf5e99c12485a54f44c50b46f6bf8997c9d51d1883",
+    "source": "d3cd5e6a0e58c0f7f5694e16f96813218b78ac2d",
+    "tree": "ee1ba21a141fcee5263ae2182feb9d0b25004389",
+    "source_files": 1269
+  },
+  "executed": {
+    "local": "New wire regression was RED on the missing specific expiry counter, then3tests/four synthetic wire exchanges pass. Seventeen local resume fixture tests and artifact/handoff/Python-syntax/diff checks pass. Native outcomes below are separate from those wire tests.",
+    "seed_and_schema": {
+      "schema-cases.json": "PASS",
+      "resume-schema-cases.json": "PASS"
+    },
+    "root_verification": {
+      "status": "VERIFIED_SCOPED_PASS",
+      "source": "d3cd5e6a0e58c0f7f5694e16f96813218b78ac2d",
+      "runtime_source": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "counts": {
+        "out/build/source-manifest.json": 1269,
+        "artifact-source-manifest.json": 1110,
+        "runtime-source-manifest.json": 1260
+      },
+      "payloads": 29,
+      "preexisting": 764,
+      "free_before": 113653858304,
+      "free_after": 113252118528,
+      "final_census_sha256": "d19faf86b23463e2eb8e1d8d9863e0c4ed36a24110b22b787453c2ab76eb843c",
+      "final_free_bytes": 113241657344,
+      "artifacts": {
+        "bigbrotr": "b76d606f28f71dbc2a434567e32df9bb50fc146fcd144d99167407aeae94473a",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "cases": [
+        {
+          "name": "commit-idle-expiry",
+          "status": 401,
+          "elapsed_seconds": 1.3905110810883343,
+          "commit_held_observed_before_expiry_us": 1136634,
+          "release_relative_to_expiry_us": 142857,
+          "accepted_before_expiry_us": null
+        },
+        {
+          "name": "commit-maximum-expiry",
+          "status": 401,
+          "elapsed_seconds": 1.374022173229605,
+          "commit_held_observed_before_expiry_us": 1134614,
+          "release_relative_to_expiry_us": 126501,
+          "accepted_before_expiry_us": null
+        },
+        {
+          "name": "commit-live",
+          "status": 202,
+          "elapsed_seconds": 0.12592646479606628,
+          "commit_held_observed_before_expiry_us": 1172536,
+          "release_relative_to_expiry_us": -1128119,
+          "accepted_before_expiry_us": 1231446
+        }
+      ]
+    },
+    "fixture": "Actual runtime login provides a live default-lifetime session; separately provisioned random short session uses the original PostgreSQL constraints and one atomic issue audit. The existing proxy holds the actual selected resume COMMIT before forwarding. Independent pg_stat_activity matches Control PID/start, a real assigned xid, idle-in-transaction and last queued-job UPDATE; observed before expiry. No clock or constraint bypass. Two cases release after expiry; a third releases while live. ErrorResponse must be exactly BB001 plus the0814 final-session message and followed by ReadyForQuery I. Then a real GET through the long session200 and unchanged Control identity prove reuse. Short-session history401; live-session history200 preserves the accepted receipt.",
+    "cases": [
+      {
+        "name": "commit-idle-expiry",
+        "status": "PASS",
+        "owner": {
+          "resource": "49302f49fc9e04402368963ac6a30232",
+          "epoch": "5",
+          "incarnation": "dbb1c753302bedba1d62327060b772f6",
+          "pid": 536,
+          "start": "2026-09-24T22:05:13.113151+00:00",
+          "present": true
+        },
+        "commit_pending": {
+          "pid": 536,
+          "start": "2026-09-24T22:05:13.113151+00:00",
+          "state": "idle in transaction",
+          "xid": "949",
+          "queued_update": true,
+          "time_us": 1790287514435994
+        },
+        "release_time_us": 1790287515715485,
+        "short_session": {
+          "issued": 1790287514322628,
+          "expires": 1790287574322628,
+          "idle_expires": 1790287515572628,
+          "idle_window": 1250000
+        },
+        "response": {
+          "event": "resume-response",
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "authentication_denied",
+              "correlation_id": "6d670fab7bf5a78aa753638bc9aadfba",
+              "message": "Authentication required or denied.",
+              "retry_class": "authenticate",
+              "status": 401
+            }
+          },
+          "elapsed_seconds": 1.3905110810883343
+        },
+        "proxy_terminal": {
+          "event": "terminal",
+          "mode": "hold-commit",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 325461,
+          "frames": 5337,
+          "data_queries": 1,
+          "data_commits": 1,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [
+            "other"
+          ],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 314,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "resume_authority_requests": 0,
+          "resume_expiry_rejections": 1,
+          "resume_expiry_idle": 1,
+          "unexpected": 0
+        },
+        "historical_retry": null,
+        "ledger_counts_before": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 13
+        },
+        "ledger_counts_after": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 14
+        }
+      },
+      {
+        "name": "commit-maximum-expiry",
+        "status": "PASS",
+        "owner": {
+          "resource": "49302f49fc9e04402368963ac6a30232",
+          "epoch": "6",
+          "incarnation": "dab304215dda0868e8dc6098f7b6b635",
+          "pid": 1034,
+          "start": "2026-09-24T22:05:18.60211+00:00",
+          "present": true
+        },
+        "commit_pending": {
+          "pid": 1034,
+          "start": "2026-09-24T22:05:18.60211+00:00",
+          "state": "idle in transaction",
+          "xid": "972",
+          "queued_update": true,
+          "time_us": 1790287520118366
+        },
+        "release_time_us": 1790287521379481,
+        "short_session": {
+          "issued": 1790287520002980,
+          "expires": 1790287521252980,
+          "idle_expires": 1790287521252980,
+          "idle_window": 1250000
+        },
+        "response": {
+          "event": "resume-response",
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "authentication_denied",
+              "correlation_id": "5314e0e6ae73cb93ce31f718d4df4c82",
+              "message": "Authentication required or denied.",
+              "retry_class": "authenticate",
+              "status": 401
+            }
+          },
+          "elapsed_seconds": 1.374022173229605
+        },
+        "proxy_terminal": {
+          "event": "terminal",
+          "mode": "hold-commit",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 325461,
+          "frames": 5337,
+          "data_queries": 1,
+          "data_commits": 1,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [
+            "other"
+          ],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 314,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "resume_authority_requests": 0,
+          "resume_expiry_rejections": 1,
+          "resume_expiry_idle": 1,
+          "unexpected": 0
+        },
+        "historical_retry": null,
+        "ledger_counts_before": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 15
+        },
+        "ledger_counts_after": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 16
+        }
+      },
+      {
+        "name": "commit-live",
+        "status": "PASS",
+        "owner": {
+          "resource": "49302f49fc9e04402368963ac6a30232",
+          "epoch": "7",
+          "incarnation": "86bac6834f836fad556bc05be98319b1",
+          "pid": 1546,
+          "start": "2026-09-24T22:05:23.864806+00:00",
+          "present": true
+        },
+        "commit_pending": {
+          "pid": 1546,
+          "start": "2026-09-24T22:05:23.864806+00:00",
+          "state": "idle in transaction",
+          "xid": "994",
+          "queued_update": true,
+          "time_us": 1790287524791105
+        },
+        "release_time_us": 1790287524835522,
+        "short_session": {
+          "issued": 1790287524713641,
+          "expires": 1790287525963641,
+          "idle_expires": 1790287525963641,
+          "idle_window": 1250000
+        },
+        "response": {
+          "event": "resume-response",
+          "status": 202,
+          "body": {
+            "accepted_at_us": "1790287524732195",
+            "authority": "acceptance-only",
+            "command_key": "8b61a99709e7f58e2364d85926980cb7",
+            "created": true,
+            "execution": "unobserved",
+            "format": "bigbrotr-export-resume/1",
+            "job_id": "4060b0236d80485c9ea28c05141f7c0a",
+            "job_revision": "8"
+          },
+          "elapsed_seconds": 0.12592646479606628
+        },
+        "proxy_terminal": {
+          "event": "terminal",
+          "mode": "hold-commit",
+          "target": "control-export-resume",
+          "connections": 1,
+          "bytes": 336106,
+          "frames": 5628,
+          "data_queries": 1,
+          "data_commits": 1,
+          "server_complete": 1,
+          "client_complete": 1,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 331,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "resume_authority_requests": 0,
+          "resume_expiry_rejections": 0,
+          "resume_expiry_idle": 0,
+          "unexpected": 0
+        },
+        "historical_retry": {
+          "event": "historical-long-response",
+          "status": 200,
+          "body": {
+            "accepted_at_us": "1790287524732195",
+            "authority": "acceptance-only",
+            "command_key": "8b61a99709e7f58e2364d85926980cb7",
+            "created": false,
+            "execution": "unobserved",
+            "format": "bigbrotr-export-resume/1",
+            "job_id": "4060b0236d80485c9ea28c05141f7c0a",
+            "job_revision": "8"
+          },
+          "elapsed_seconds": 0.003716357983648777
+        },
+        "ledger_counts_before": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 1,
+          "management_commands": 6,
+          "management_audit": 17
+        },
+        "ledger_counts_after": {
+          "jobs": 1,
+          "job_input_bounds": 1,
+          "export_jobs": 1,
+          "export_execution_units": 1,
+          "artifacts": 0,
+          "artifact_files": 0,
+          "snapshot_leases": 4,
+          "archive_snapshot_pins": 4,
+          "retention_claims": 4,
+          "export_resume_commands": 2,
+          "management_commands": 7,
+          "management_audit": 19
+        }
+      }
+    ],
+    "durable_effects": "All12complete row+xmin ledgers and safe session projections are compared after login/short-session provisioning, after response/retries and after stop. Expired COMMITs each attempt exactly one resume INSERT and COMMIT, receive the exact deferred session refusal and roll back every resume effect. Only the two attributed issue audits/session rows explain setup changes. Timely COMMIT creates one atomic paused7\u2192queued8 job/detail/command/audit transaction, exact independently encoded digest, short-session binding and202receipt; live historical200 changes only created=false. Original unit/caps/cut/pins and all other rows stay unchanged; zero artifacts/new readers. Session timestamps/xmin stay unchanged within each case. Each next real login removes exactly the previous already-expired short session; other sessions/audits remain.",
+    "terminal": "All three actual parents exit0 with committed Control release, absent processes, available destination flock and empty scratch. Both databases have zero other backends and no active Control owner. Runner0; owned PostgreSQL wrapper137 is lab teardown, not graceful database shutdown."
+  },
+  "resources": {
+    "resources": {
+      "source": "d3cd5e6a0e58c0f7f5694e16f96813218b78ac2d",
+      "tree": "ee1ba21a141fcee5263ae2182feb9d0b25004389",
+      "owner": "7508fe5a13909e5b6cac432fd5cfb155",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-d3cd5e6",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "fac490da62a3d243b01388f4b2f004838289578a55a9bb742f409fda299cee1d"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "2d31071fb54c0b95b85390e60a243d0907e0cec37853f7b06710f92133c72a7d"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T22:03:56.687163+00:00",
+      "runtime_profile": "resume-expiry",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "8dbd3c4f7defaca65a2c41998059664593afc58f",
+      "network_id": "1f019dfce55e940f7d13e33ba464ffd8aed0369a15778eaa1610505aa592de6d",
+      "postgres_id": "fac490da62a3d243b01388f4b2f004838289578a55a9bb742f409fda299cee1d",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "2d31071fb54c0b95b85390e60a243d0907e0cec37853f7b06710f92133c72a7d",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "orchestrator": {
+      "pid": 570964,
+      "start_ticks": "366969022",
+      "source": "d3cd5e6a0e58c0f7f5694e16f96813218b78ac2d",
+      "tree": "ee1ba21a141fcee5263ae2182feb9d0b25004389"
+    },
+    "original_terminal": "PASS_PENDING_CAPTURE",
+    "free_bytes_before": 113653858304,
+    "free_bytes_after": 113252118528,
+    "final_census": {
+      "path": ".research/implementation/export-execution/resume-expiry-final-census.json",
+      "sha256": "d19faf86b23463e2eb8e1d8d9863e0c4ed36a24110b22b787453c2ab76eb843c",
+      "observed_at": "2026-09-24T22:06:53.083962+00:00",
+      "free_bytes": 113241657344,
+      "full_prior_container_projections": 764
+    },
+    "retention": "Keep source, runtime/seed ELF and native assets, PostgreSQL/archive state, logs, full ledgers/manifests and captures. No new compiler cache, compilation or cache/container/volume/data retirement. Preserve8db/73e/4e caches and all previously protected inputs. Two owned PID0/noOOM, network and orchestrator absent; all764previous container lifecycle/mount/network/restart/health-status projections match the later full census, eight unrelated workloads remain running. Free-space observations have distinct timestamps and concurrent host/capture writes."
+  },
+  "review": {
+    "root": "Read full0814/0806, Rust resume adapter/runtime consumer and shared proxy, changed harness and caller chain. Independently recomputed29payload/tar hashes,1269/1260/1110 Git manifests, full product/build equality and both ELF; reconstructed12ledgers/audit/session/digest/receipt, actual pending transaction and final764resource projections. No native rerun or observer correction was needed.",
+    "independent": "Read-only AI found no concrete discrepancy in complete capture/report/P08/operations/inventory diff. Independently recomputed29payload/tar hashes,1269/1260/1110 Git manifests, complete product/build equality and both ELF; reconstructed12ledgers/session/audit, exactBB001 plus ReadyForQuery I, two rollback401 and live queued8/xmin994 with exact202\u2192200receipt. Compared all764preflight/terminal/final-census projections including stable health fields, eight unrelated running and two owned PID0/noOOM. No tests/SSH/edits or independent fresh remote inspection; final process/network facts are retained root census observations. Timestamp and maximum=idle limitations remain explicit.",
+    "helpers": {
+      "transfer-resume-expiry.py": "42484d83f941511a9bd96d7db4ff86b7a99ac3c7b6e8ef7cfbea3bb5f0afeed6",
+      "collect-runtime.py": "c117698848536c4634e6603c84e18fe018446c9476da7d1624e59df7fb234745",
+      "review-resume-expiry.py": "22caad9087ed34a79043ad54b1f46e46b516c64a046e5c2f9fbba38767d9eebe",
+      "resume-expiry-final-census.py": "b9b40a101ed91dedb29f585a6a4900b0fb75e58dfaa2495654488d6974b08227"
+    },
+    "local_logs": {
+      "resume-expiry-wire-red.log": "cdcbee31bbfb1e8fb5b90b8b522c76f7f5a006ab7832f943bb68707a88654a75",
+      "resume-expiry-wire-green.log": "851a8a323dfeabba910b62c3f09cf5443a8b4aebb13fcdb0957fe2ebc6077af4",
+      "resume-expiry-local.log": "c3c66c2d8d8b9e2cbf2991f6091901e0d649a4ea9601e8a00397f257a8d16827"
+    }
+  },
+  "research": [
+    {
+      "url": "https://www.postgresql.org/docs/16/sql-createtrigger.html",
+      "used": "Deferred constraint triggers run at transaction end; selected0814 trigger rechecks current clock and session before commit."
+    },
+    {
+      "url": "https://www.postgresql.org/docs/16/protocol-flow.html",
+      "used": "Actual simple-query COMMIT response and ReadyForQuery transaction state after an error. Synthetic wire tests validate proxy forwarding/classification separately from native SQL."
+    }
+  ],
+  "limits": [
+    "One paused single-stream protocol1 job and one actor. No new signed output, zero/multiple streams, other grant/CAS/expiry schedules, mixed/aged workloads or cancellation acceptance.",
+    "Short sessions are valid audited SQL fixtures, not configurable HTTP login lifetime. Maximum=idle1.25s exercises their coincident boundary.0806 enforces idle_expires=LEAST(maximum,last_seen+idle), so this cannot isolate omission of only the maximum predicate.",
+    "accepted_at_us is assigned before the held COMMIT. release_time_us is a PostgreSQL clock sample before sending proxy release, not the server commit timestamp. Successful deferred validation establishes the actual commit was accepted; no inferred post-release acceptance timestamp.",
+    "The exact BB001 counter identifies the0814 session guard, not every generic BB001. Each expired case reaches SQL mutations and COMMIT; there is no zero-attempted-write claim. No continuous custody or Control-renewal measurement.",
+    "No wall-clock jumps, stalled deferred guard after its last clock check, product source-mutation discriminator or full browser/natural-expiry/BFCache qualification.",
+    "No new Rust compilation/unit/Clippy run, hosted Actions, Linux arm64, ordinary Compose/release or full CLI qualification. P08/M1 and complete selected product remain incomplete."
+  ]
+}

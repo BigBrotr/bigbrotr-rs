@@ -169,6 +169,12 @@ filesystem wait. After the marker check succeeds, fresh authorization refuses
 resume with403 and preserves the paused unit/pin. The grant retry resolves its
 original receipt; the job observation remains available. This single schedule
 does not qualify every grant/revocation interleaving; the CLI remains unfinished.
+The [COMMIT expiry scenarios](../implementation/evidence/p08-export-resume-expiry-native-20260925.json)
+also hold the actual COMMIT until a short session expires. Both idle and
+maximum-clamped cases return401 and roll back the resume while preserving a
+usable Control connection. Timely release commits one receipt; an expired
+session cannot retrieve it, while a live session of the actor can. These are
+audited short-session fixtures, not configurable login lifetimes.
 A separate [installed
 signed-resume scenario](../implementation/evidence/p08-export-resume-output-native-20260924.json)
 restores a revoked input grant through authenticated HTTP, resumes the original

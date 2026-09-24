@@ -19,13 +19,19 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-HEAD/origin/main183ceb8e25f8bd03b3e0f3648d42ce21f97f3a53, tree
-c1d241dc2d2f959df167b70b0cdfb7b8df9ab1d7. Fixture6aac0e9 plus reviewed evidence
-are pushed to private BigBrotr/bigbrotr-rs/main; ls-remote matches, no rewrite.
-Clean immediately after push; root now owns this checkpoint, existing lab/HTTP/
-short-session harness/client and shared proxy edits plus new test_resume_expiry.py.
-No foreign work. No product Rust/SQL changes. Native runtime retains8dbd3c4 identity after
-complete unchanged product/build input comparison. Native run is finished.
+HEADd3cd5e6a0e58c0f7f5694e16f96813218b78ac2d, tree
+ee1ba21a141fcee5263ae2182feb9d0b25004389. Clean fixture candidate is unpublished
+above private origin/main183ceb8. Root now owns the evidence/inventory/P08/operations/checkpoint update;
+no foreign edits. Native run export-runtime-d3cd5e6 started22:03:56Z,
+owner7508fe5a13909e5b6cac432fd5cfb155, now stopped-retained with native PASS.
+Orchestrator570964/start_ticks366969022; PGfac490da62a3d243b01388f4b2f004838289578a55a9bb742f409fda299cee1d,
+runner2d31071fb54c0b95b85390e60a243d0907e0cec37853f7b06710f92133c72a7d,
+network1f019dfce55e940f7d13e33ba464ffd8aed0369a15778eaa1610505aa592de6d.
+Actual owned PID0/noOOM, network/orchestrator absent; verify again before any
+later action. Transferred exact clean Git with
+8db runtime reuse and4e seed; no compiler cache copied/created.
+No product Rust/SQL changes. Native runtime retains8dbd3c4 identity after
+complete unchanged product/build input comparison. Previous6aac0e9 native run is finished; currentd3cd5e6 is also finished.
 
 [Resume revocation](evidence/p08-export-resume-revocation-native-20260924.json)
 has scoped PASS at6aac0e9: while a real non-main worker marker open waits under
@@ -70,34 +76,50 @@ checks and attributed login/short-session provisioning. Original capture and its
 two offline-observer corrections remain retained; no rerun. Short1.25s idle/60s
 maximum sessions are valid audited SQL fixtures, not configurable login behavior.
 
-The existing short-session/HTTP harness now has a separate expiry profile for
-held actual resume COMMIT: idle expiry, maximum-clamped expiry and timely positive
-release. Existing locks profile remains distinct.
-Read full0814,0806, Rust resume adapter/runtime consumer and489-line proxy.0814
-defers exact BB001 session validation to COMMIT; the adapter should rollback/401
-and keep Control reusable.0806 requires idle_expires=min(maximum,last_seen+idle),
-so valid maximum-bound sessions cannot isolate removal of only the maximum
-predicate; do not invent an inconsistent fixture to claim that discriminator.
-Use existing hold-commit, verify actual backend idle-in-transaction after job
-UPDATE while COMMIT remains unforwarded, then release across the real SQL clock.
-Specific safe BB001/matching814-message and subsequent ReadyForQuery I counters
-are implemented. New wire tests were RED on the missing counter, then all three
-tests/four exchanges pass; full17resume fixture tests and artifact/handoff/diff
-checks pass. Root and read-only AI static review found no remaining blocker.
-Actual accepted_at precedes the held COMMIT; compare it before the held clock,
-not after release. Release clock is before sending proxy release, not actual
-server commit time. Error must401 with no durable effects and same Control
-PID/start still usable; positive must202 with exact one atomic receipt. Native
-outcomes NOT_RUN. Fresh Tux prelaunch22:02:46Z:113696362496bytes free,764containers,
-eight unrelated running, no BigBrotr process; mounts/processes/ports/network/
-volumes inventoried in resume-expiry-prelaunch-20260925.json. No retirement.
+[COMMIT expiry](evidence/p08-export-resume-expiry-native-20260925.json) has native
+scoped PASS on d3cd5e6. Final independent read-only AI capture/report review
+found no discrepancy, including29payloads/three manifests/two ELF,12ledgers/
+sessions/audits/receipt and all764original/terminal/final resource projections.
+Two actual COMMIT holds cross idle or maximum-clamped1.25s expiry:401 in1.390511/
+1.374022s, exact0814 BB001/message followed by ReadyForQuery I, no durable resume
+effects. Timely release202 in0.125926s creates exactly one atomic queued8 receipt.
+All three keep the same Control PID/start usable; expired-session retry401,
+live historical200 with exact receipt. Full12ledgers/session/audit/digest/pins
+replayed independently by root. Original accepted_at precedes held COMMIT;
+release_time is a clock sample before sending release, not server commit time.
+0806 requires idle_expires=min(maximum,last_seen+idle), so maximum=idle cannot
+isolate removal of only the maximum predicate. No invented invalid session.
 
-Next: commit the clean fixture candidate, exact-Git transfer through ignored
-transfer-resume-expiry.py with8db runtime reuse, then observe without rerun.
-Capture through collect-runtime.py after stopped-retained. Verify original12
-ledgers/session/audit/receipt and specific BB001/idle wire evidence plus actual
-SQL held transaction and terminal resources. Do not use old offline row-wait
-assertions unchanged. Preserve all current captures.
+Actual final census retains all764previous lifecycle/mount/network/restart/health
+status projections and eight unrelated running; owned containers PID0/noOOM,
+network/orchestrator absent, bothDB0/no active Control. Root checks installed
+ELF/marker against original identities. Per-run free113653858304→113252118528;
+after capture free113241657344bytes. No compiler cache created/copied and no
+cache/container/volume/data retirement. All prior protected resources remain.
+Capture attempt-d3cd5e6/capture:29payloads,1269current/1260runtime/1110seed Git files,
+tar d878256942bdb0bce07e4bbf5e99c12485a54f44c50b46f6bf8997c9d51d1883.
+Inventory implementation_resume_expiry_20260925 owns exact resources. Final census
+SHA d19faf86b23463e2eb8e1d8d9863e0c4ed36a24110b22b787453c2ab76eb843c.
+No native retry/failure. Wire regression was RED on missing counter, then3tests/
+four exchanges pass; all17resume fixture tests plus artifact/handoff/diff checks
+passed before candidate. Official PG16 trigger/protocol docs inspected. Runtime
+Rust/SQL unchanged; no new Rust unit/Clippy/build/browser qualification.
+
+Next: commit/push current verified fixture+evidence privately; all relevant checks
+and final diff/review are complete. Do not rerun this native scenario.
+Then implement bounded actor-owned GET /management/v1/jobs and its private panel
+consumer under P08-T03/P09, using the required P06-T03 Step1 cursor prerequisite.
+Initial reading: P08 default50/max200, descending(created_at,job_id), listing upper
+cut/current mutable-state filters; current job_status.rs supplies actor/status.read
+and nonrenewable delivery semantics. Shared cursor contract requires a durable
+protected shared keyring, versioned XChaCha20-Poly1305 encrypted bindings,900s
+absolute lifetime/30s allowance and rotation/revocation; no plaintext or ephemeral
+per-worker shortcut. Read complete owning contracts/callers before implementing.
+The selected0.11.0 AEAD candidate is not yet in Cargo/dependency records. Initial
+docs.rs request was inaccessible and crates.io metadata returned403; this is
+transport unavailability, not proof the dependency is absent. Next inspect exact
+official source/local registry through the documented dependency pipeline and
+wire its first real job-list consumer; no new cursor code or secrets created.
 Further account/grant/CAS orderings, zero/multiple streams, CLI/cancel, mixed
 workloads and the full installed/release journeys remain open. No full task/M1
 or complete-product claim.

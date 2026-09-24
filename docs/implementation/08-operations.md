@@ -347,7 +347,13 @@ destination marker open waits. After original marker restoration and successful
 open, resume returns403. Seventeen complete ledgers and session state attribute
 only the grant transition; the paused unit/pin and original resume history remain
 unchanged. The consumed-proof grant retry returns its exact original receipt.
-Further grant/CAS/revocation interleavings, maximum/commit expiry and complete UI/CLI consumers remain required
+The [COMMIT expiry scenarios](evidence/p08-export-resume-expiry-native-20260925.json)
+atd3cd5e6 now hold the actual resume COMMIT: idle and maximum-clamped expiry
+return401 with the exact deferred session refusal and rollback; timely release
+commits one queued8 receipt. The same Control remains usable, and live-session
+history preserves that receipt. Maximum and idle deadlines coincide in the valid
+maximum-bound fixture; this does not isolate omission of only the maximum check.
+Further grant/CAS/revocation and expiry orderings and complete UI/CLI consumers remain required
 before completing this step.
 
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
