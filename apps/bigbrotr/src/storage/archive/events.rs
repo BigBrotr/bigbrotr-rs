@@ -40,6 +40,10 @@ pub struct ArchivedEventQuery {
     _retention: Retention,
 }
 impl ArchivedEventQuery {
+    /// Identity of the actual retained reader, not a caller-declared query field.
+    pub fn catalog_identity(&self) -> &crate::storage::postgres::catalog_guard::CatalogIdentity {
+        self._retention._custody.identity()
+    }
     pub fn event(&self) -> Option<&VerifiedEvent> {
         self.event.as_ref()
     }

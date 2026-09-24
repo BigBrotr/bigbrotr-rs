@@ -185,8 +185,9 @@ An internal graph artifact is not thereby a publishable research export.
 Foundational artifact identity/file inventory is supplied in 0501 with its first
 signed export consumer. The initial end-to-end milestone reaches export before
 analytics, so 0502 later adds target and graph interpretation over that inventory;
-there are no empty analytics tables or parallel export-file owners. These are
-unapplied migration reservations, not changes to any published checksum. P08
+there are no empty analytics tables or parallel export-file owners. 0501 is now
+applied in isolated qualification and its checksum is immutable;
+0502/0804 remain unapplied reservations. P08
 adds user catalog/publication operations without imposing a P05-to-P08
 implementation cycle. Public discovery requires its separate verified
 export manifest and publication grant/state. Duplicate metadata cannot authorize
@@ -220,6 +221,26 @@ implied by the inventory. Advanced pre0501 qualified jobs cause atomic migration
 refusal; accepted unowned initial rows remain unchanged and legacy NULL protocol
 rows cannot acquire units. Common file identities later support0502/0804 without
 another file owner. Native SQL and runtime qualification are tracked in P08-T04.
+
+The Rust execution adapter keeps historical resolution separate from permission
+to dispatch. Historical lookup reads the original unit, cut and completed file
+inventory without requiring current actor grants or opening its destination.
+Reservation/start/completion mutations recheck the current validated policy and
+actor grants before taking job/pin effects. A committed start binds a real capture,
+its stored coordinator digest and a current reader on the original frontier; the
+local action deadline starts before the SQL request and cannot exceed either
+reader or Control validity. Reclaiming a running SQL row does not exclude an old
+filesystem worker: exclusive output custody is still required.
+
+The completion argument is an opaque value owning the actual native event lookup
+(or absence), output unit and synchronized file result. Before writing, it checks
+the complete native catalog identity and every original query field, then builds
+the manifest internally. A public file-description struct cannot substitute for
+that observation. Capture failure inside a Control transaction collects rollback
+before reporting ArchiveUnavailable; loss of the actual COMMIT reply remains
+CommitUnknown and requires historical resolution. These adapters do not yet
+advertise an installed scheduler; native execution/failure and full supervision
+qualification remain explicit P08 gates.
 
 The first implemented 0802 consumer appends after 0805 and supplies only
 `management_commands` for explicit first security activation. Its bytes16 request

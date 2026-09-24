@@ -12,6 +12,10 @@ publish = false
 name = "export-files-probe"
 path = "../../experiments/export-files/probe.rs"
 
+[[example]]
+name = "export-execution-probe"
+path = "../../experiments/export-execution/probe.rs"
+
 [dependencies]
 axum.workspace = true
 hyper.workspace = true

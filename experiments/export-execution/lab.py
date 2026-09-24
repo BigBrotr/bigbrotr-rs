@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """Isolated trusted Git schema qualification with a retained native seed producer.
 
-No current Rust build is claimed: original4e ELF creates independent real archive
-and0813 acceptance; current exact0501 SQL/fixtures run through PostgreSQL afterward.
+Original4e ELF creates the real archive and0813 acceptance. Default mode qualifies
+SQL constraints only; --rust-adapter separately compiles and exercises the current
+Rust consumer against that retained native worker and independently checked seed.
 """
 import base64, datetime, hashlib, json, os, re, secrets, shutil, subprocess, sys, tarfile, time, traceback, urllib.request
 from pathlib import Path
 
-revision, tree = sys.argv[1:]
+revision, tree = sys.argv[1:3]
+adapter = sys.argv[3:] == ["--rust-adapter"]
+assert sys.argv[3:] in ([], ["--rust-adapter"])
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
-root = base / 'runs' / ('export-execution-' + revision[:7])
+root = base / 'runs' / (('export-adapter-' if adapter else 'export-execution-') + revision[:7])
 source, out = root / 'source', root / 'out'
 cache_root = base / 'runs/export-checker-fixed-4e6b5c0'
 cache = cache_root / 'out/build'
@@ -48,7 +51,7 @@ preflight = dict(containers=prior, directories=sorted(p.name for p in (base / 'r
                  tcp_wmem=Path('/proc/sys/net/ipv4/tcp_wmem').read_text(), ports=cmd('ss', '-lntup'), processes=cmd('ps', '-eo', 'pid,ppid,stat,comm'),
                  volumes=cmd('docker', 'volume', 'ls'), networks=cmd('docker', 'network', 'ls'),
                  free_bytes=shutil.disk_usage(base).free, architecture=cmd('uname', '-m'))
-assert preflight['architecture'] == 'x86_64' and preflight['free_bytes'] > 4*1024**3
+assert preflight['architecture'] == 'x86_64' and preflight['free_bytes'] > (12 if adapter else 4)*1024**3
 # Copy the exact historical native seed producer, not compiler caches.
 # It establishes the original0813 state; only new SQL is under qualification.
 write(root / 'preflight.json', preflight)
@@ -135,9 +138,18 @@ try:
     write(root/'artifact-reuse.json',dict(source=artifact_source,tree=old['tree'],owner=old['owner'],root=str(cache_root),
          source_manifest_sha256=sha(cache/'source-manifest.json'),
          artifacts={key:old_ready[key] for key in artifacts},native_assets=before,
-         validation='Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. Current0501 SQL executes separately. No current build, Rust adapter, unit/Clippy or runtime qualification.'))
+         validation='Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. This reuse record covers original seed artifacts only. Current compilation/adapter evidence, when selected, is recorded separately under adapter-checks and adapter-cases.'))
     state['artifact_origin']=artifact_source;save()
-    assert shutil.disk_usage(base).free>512*1024**2
+    if adapter:
+        # Original seed cache is stopped and inventoried above; copy only caches,
+        # then compile current trusted Git inputs. Original remains read-only.
+        for name in ['target','cargo-home']:
+            assert (cache/name).is_dir() and not (cache/name).is_symlink()
+            subprocess.run(['cp','-a','--reflink=auto',str(cache/name),str(build/name)],check=True,timeout=120)
+        write(root/'cache-origin.json',dict(root=str(cache_root),source=artifact_source,
+            source_manifest_sha256=sha(cache/'source-manifest.json'),scope='Copied compiler caches only; fresh current Rust compilation required.'))
+
+    assert shutil.disk_usage(base).free>(8*1024**3 if adapter else 512*1024**2)
     native_assets = out/'archive-worker'
     write(root / 'rust-image.json', json.loads(cmd('docker', 'image', 'inspect', rust_image))[0])
     state['network_id'] = cmd('docker', 'network', 'create', '--internal', '--label', label + '=' + owner, 'bigbrotr-export-execution-' + revision[:7])
@@ -173,7 +185,7 @@ try:
     save()
     wrapper = """import subprocess,time
 from pathlib import Path
-deadline=time.monotonic()+1800
+deadline=time.monotonic()+2400
 while not Path('/out/qualification-complete').exists():
     if time.monotonic()>=deadline: raise TimeoutError('qualification completion marker')
     time.sleep(.2)
@@ -188,10 +200,15 @@ while not Path('/out/qualification-complete').exists():
         assert owned(runner)['State']['Running']
         if time.monotonic()>=deadline: raise TimeoutError('build readiness')
         time.sleep(.5)
-    state['state']='qualifying-schema';save()
+    if adapter:
+        state['state']='building-current-rust-adapter';save()
+        with (root/'adapter-build.log').open('xb') as log:
+            compiled=subprocess.run(['docker','exec',runner,'python3','-B','/out/build/source/experiments/export-execution/native.py'],stdout=log,stderr=subprocess.STDOUT,timeout=1800)
+        assert compiled.returncode==0
+    state['state']='qualifying-rust-adapter' if adapter else 'qualifying-schema';save()
     with (root/'schema-cases.log').open('xb') as log:
-        cases=subprocess.run(['python3','-B',str(source/'experiments/export-execution/cases.py'),str(root)],stdout=log,stderr=subprocess.STDOUT,timeout=240)
-    result=json.loads((root/'schema-cases.json').read_text())
+        cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/cases.py')),str(root)],stdout=log,stderr=subprocess.STDOUT,timeout=240)
+    result=json.loads((root/('adapter-cases.json' if adapter else 'schema-cases.json')).read_text())
     audit['result']=result['status']
     assert cases.returncode==0 and result['status']=='PASS'
     audit['independent_sql']={}

@@ -21,13 +21,19 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEADeec78a0b2a3d608a0d060d6b6bf82595acb1483b,
-tree94955f63e31cba4da00efd16fdf1b344d66f714e; three unpublished candidates ahead
-of origin/maindfd3129. Root owns final scoped SQL evidence/task/inventory/checkpoint
-updates only. Product0501 SQL unchanged since90b54b7 application; SHA14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861.
-Mac catalog22 tests pass (newRED UnknownTarget501 first). Corrected native19cases
-pass; root and independent AI verified complete capture without discrepancy. No active
-lab or pending tool session. Original90/54 failures remain INCOMPLETE/retained.
+Last observed main/HEADb36f0b5e4645da073b22c231c35bc410f0e76508, origin/main
+and remote main identical; clean before current root-owned edits. Published scoped
+SQL report and candidates are pushed. Dirty root-owned paths: export/execution.rs,
+export/mod.rs, storage/postgres/export_execution.rs, control_owner.rs and native
+events.rs accessor, Cargo example registration, experiments/export-execution
+lab/native/probe/adapter_cases recipes, storage-catalog contract and this checkpoint. No competing edits. Product0501 SQL
+unchanged since90b54b7 application; SHA14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861.
+The new Rust adapter compiles; two exact native-selection/custody regressions
+observed RED then GREEN; Clippy/lib/example PASS. No current adapter/native journey
+has run. Independent read-only AI reviews the new adapter while root prepares its
+actual-process fixture. Capture rollback and complete native identity findings
+are corrected in code; actual failure injection remains pending. No active lab or cleanup debt. Fresh Tux observation:
+173828104192 free bytes and only the same eight unrelated containers running.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
@@ -337,9 +343,9 @@ Native assets/ELF and8Parquet identities in this report use remote recorded hash
 not local artifact bytes. Original4e ELF only seeds native archive/0813 acceptance;
 current501 executes directly in psql. No currentRust/migrator binary qualification.
 
-Next bounded action: commit the reviewed scoped evidence and push verified main;
-structural/link/diff checks pass. Then implement the typed Rust
-execution consumer over501. Reserve immutable ArtifactId/caps and COMMITqueued;
+The reviewed scoped evidence is committed/pushed atb36f0b5. Current bounded
+action: qualify the dirty typed Rust execution consumer over501 against actual
+PostgreSQL and native reader/output, then integrate ordinary Control supervision. Reserve immutable ArtifactId/caps and COMMITqueued;
 subsequent running transition rechecks current authority, completes data+manifest
 and records atomic files+artifact/checkpoint under a fresh reader of ORIGINALcut.
 Startup501 privileges must include data.read row-lock UPDATE privilege; postgres
@@ -374,8 +380,10 @@ exclusion through all writes/joins. Reader-only release/recovery must not be use
 for export pins; future typed export loading must compare the exact export_job_id.
 The native Supervisor still requires Management and does not process management
 commands while waiting on a worker; execution/cancel integration must address
-those constraints rather than clone HTTP work. No scheduler/SQL execution
-implementation or job-produced artifact exists yet. Before editing those
+those constraints rather than clone HTTP work. No scheduler or job-produced artifact exists yet. The dirty SQL execution adapter
+is implemented but not yet qualified against PostgreSQL. Its opaque WrittenExport
+owns the actual native observation, complete file result and output unit; matching
+includes the real catalog custody identity, absent from EventQuery itself. Before editing those
 responsibilities, finish reading their complete affected callers and constraints.
 
 ## Earlier prerequisites and preserved work

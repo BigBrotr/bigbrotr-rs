@@ -20,6 +20,8 @@ mod archive_frontier;
 mod archive_persistence;
 #[path = "browser_reauthentication.rs"]
 mod browser_reauthentication;
+#[path = "export_execution.rs"]
+mod export_execution;
 #[path = "export_jobs.rs"]
 mod export_jobs;
 #[path = "history.rs"]
