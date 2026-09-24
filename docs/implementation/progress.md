@@ -21,9 +21,9 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD main f7aa20183e03386ffe4cb6614ae49828ba8116d8 candidate;
-origin/main b146da4 pushed and ls-remote confirmed. Root owns only completion
-qualification evidence/inventory/operations/task/checkpoint documentation.
+Last verified HEAD/origin main8e8d8a3d2f7a4aa98d170a3a339b05b2abdd1e1b pushed,
+ls-remote confirmed. Root owns new parking_client.py/parking_cases.py, runtime
+profile dispatch and this checkpoint. No product edits yet.
 Product input remains f70ac17. No other contributor writes or merge/rebase.
 
 [Installed completion-COMMIT interruption](evidence/p08-export-runtime-commits-native-20260924.json)
@@ -208,11 +208,24 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Commit/push the reviewed completion-COMMIT evidence and documentation. Then continue
-P08-T03 Step3/P08-T04 Step3: durable known-refusal parking, current-authority
-interruption and authenticated job inspection/resume/cancel. Read owning job
-state/authorization/operations contracts and actual current callers before choosing
-the next code boundary; no new master plan. No full P08/M1 claim.
+Qualify the new --runtime-parking fixture as a discriminating RED against exact
+f70 installed ELF, after full product/build input equality. No active lab yet.
+Fixture-only source candidate first; native NOT_RUN. It uses the real signedHTTP
+job and1536byte immutable unit against399+1228bytes. Expect one joined/released
+reader, paused4/execution_refused/checkpoint0/no inventory, healthy Control and
+no new rows/files after ordinary restart. The current f70 path should instead
+fail-stop with running3; capture that failure, never label it PASS. This profile
+runs empty prerequisite+parking only, not unrelated COMMIT/recovery stages.
+
+Then implement the narrow known-refusal park under P08-T03 Step3/P08-T04 Step3.
+Independent AI design review confirmed existing0001/0008/0501/0813 permits it
+without checksum/migration changes. Required: actual joined worker; acquired
+OutputCustody tied to exact job/artifact/destination/start revision; current
+Control/policy and exact job/owner CAS at COMMIT, no revoked input-grant requirement.
+No park for pre-output/Busy failures or any unknown SQL/native result. Known
+COMMIT allows normal slot clear after catalog driver join; unknown retains it
+through outer actual Control join. Resume/cancel/UI and Busy native counterpart
+remain later acceptance gates. No full P08/M1 claim.
 
 Current known-refusal path after reader admission joins/releases that reader and
 finishes capture, then fail-stops to prevent repeated durable reader claims.

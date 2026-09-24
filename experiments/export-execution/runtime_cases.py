@@ -13,7 +13,7 @@ from signed_publication_oracle import check, input_expectations
 from event_cases import cut_expectation
 
 
-def main(root):
+def main(root, parking=False):
     state = json.loads((root/'resources.json').read_text()); source = root/'source'
     assert Path(__file__).resolve().parents[2] == source
     assert command('git','-C',str(source),'rev-parse','HEAD') == state['source']
@@ -105,13 +105,17 @@ def main(root):
         result['output']=row
         result['output_hashes']={str((artifact/name).relative_to(root/'out')):sha(artifact/name) for name in ['events.jsonl','manifest.json']}
         save()
-        from recovery_cases import run as recover
-        result['recovery'] = recover(root, state, sql, policy, expected_manifest)
-        result['output_hashes'].update(result['recovery']['output_hashes'])
-        save()
-        from commit_cases import run as commit_faults
-        result['completion_commits'] = commit_faults(root, state, sql, policy, expected_manifest)
-        result['output_hashes'].update(result['completion_commits']['output_hashes'])
+        if parking:
+            from parking_cases import run as park
+            result['parking'] = park(root, state, sql, policy)
+        else:
+            from recovery_cases import run as recover
+            result['recovery'] = recover(root, state, sql, policy, expected_manifest)
+            result['output_hashes'].update(result['recovery']['output_hashes'])
+            save()
+            from commit_cases import run as commit_faults
+            result['completion_commits'] = commit_faults(root, state, sql, policy, expected_manifest)
+            result['output_hashes'].update(result['completion_commits']['output_hashes'])
         assert files=={str(p.relative_to(root/'out')):sha(p) for p in sorted((root/'out/signed_normal/kind=7').rglob('*.parquet'))}
         result['status']='PASS'
     except BaseException as error:
@@ -119,4 +123,6 @@ def main(root):
     finally: save()
 
 
-if __name__=='__main__': main(Path(sys.argv[1]).resolve())
+if __name__=='__main__':
+    assert len(sys.argv)==2 or sys.argv[2:]==['parking']
+    main(Path(sys.argv[1]).resolve(), len(sys.argv)==3)
