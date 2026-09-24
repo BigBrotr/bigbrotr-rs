@@ -6,6 +6,7 @@ Socket inode observations bracket each independent flock attempt. This is a
 bounded sampled discriminator, not proof about every possible I/O schedule.
 """
 from concurrent.futures import ThreadPoolExecutor
+from http.cookies import SimpleCookie
 import json
 import os
 from pathlib import Path
@@ -15,7 +16,7 @@ import sys
 import time
 import private_grant_http as http
 import export_job_http as jobs
-from export_destination_blocked import lock_available
+from export_destination_blocked import lock_available as destination_lock_available
 
 
 def emit(event, **fields):
@@ -50,14 +51,19 @@ def children(pid):
     return sorted(set(result))
 
 
-def main(port):
+def main(port, resume_job=None):
+    assert resume_job is None or (len(resume_job)==32 and all(c in '0123456789abcdef' for c in resume_job))
     assert 0<port<65536
     original=http.CONFIG;text=original.read_text();needle='[postgres.control]\nendpoint="127.0.0.1:5432"'
     assert text.count(needle)==1
-    config=http.ROOT/'custody.toml';config.write_text(text.replace(needle,f'[postgres.control]\nendpoint="127.0.0.1:{port}"'))
+    prefix='job-resume-custody' if resume_job else 'custody'
+    destination=Path('/out/signed_normal/export-destination') if resume_job else http.ROOT/'destination'
+    if resume_job: assert text.count('root="/out/signed_normal/export-destination"')==1
+    def lock_available():return destination_lock_available(destination)
+    config=http.ROOT/(prefix+'.toml');config.write_text(text.replace(needle,f'[postgres.control]\nendpoint="127.0.0.1:{port}"'))
     http.CONFIG=config
-    server=http.Server('custody');pool=ThreadPoolExecutor(max_workers=1);pidfd=None
-    path=http.ROOT/'custody-result.json';assert not path.exists()
+    server=http.Server(prefix);pool=ThreadPoolExecutor(max_workers=1);pidfd=None
+    path=http.ROOT/(prefix+'-result.json');assert not path.exists()
     result=dict(status='INCOMPLETE',samples=[])
     def save():path.write_text(json.dumps(result,indent=2)+'\n')
     try:
@@ -66,12 +72,24 @@ def main(port):
         initial=sockets(pid,port);assert len(initial)==1
         result['control_socket']=initial;result['parent_start_ticks']=start_ticks(pid)
         assert not lock_available()
-        auth=json.loads((http.ROOT/'session.private').read_text());body=jobs.command();key='e6'*16
+        info=destination.stat();result['destination']=dict(path=str(destination),device=info.st_dev,inode=info.st_ino)
+        if resume_job:
+            status,_,headers=http.request('POST','/management/v1/sessions',dict(username='alice',password='Independent owner password 2026'))
+            assert status==201,status
+            cookies=SimpleCookie()
+            for k,v in headers:
+                if k.lower()=='set-cookie':cookies.load(v)
+            auth={'Cookie':'BigBrotrLocalSession='+cookies['BigBrotrLocalSession'].value,'X-CSRF-Token':cookies['BigBrotrLocalCsrf'].value}
+            body=dict(expected_job_revision='7',expected_config_revision='1',expected_policy_revision='2');key='f4'*16
+            route=f'/management/v1/jobs/{resume_job}/resume'
+        else:
+            auth=json.loads((http.ROOT/'session.private').read_text());body=jobs.command();key='e6'*16
+            route='/management/v1/jobs'
         def request():
-            try:return dict(status=http.request('POST','/management/v1/jobs',body,{**auth,'Idempotency-Key':key})[0])
+            try:return dict(status=http.request('POST',route,body,{**auth,'Idempotency-Key':key})[0])
             except (OSError,http.http.client.HTTPException) as error:return dict(closed=type(error).__name__)
         submitted=time.monotonic();future=pool.submit(request)
-        emit('submitted',pid=pid,key=key,owner=result['ready'])
+        emit('submitted',pid=pid,key=key,owner=result['ready'],command=body if resume_job else None)
         assert sys.stdin.readline()=='signal\n'
         assert not future.done() and sockets(pid,port)==initial and not children(pid)
         signal.pidfd_send_signal(pidfd,signal.SIGTERM)
@@ -80,7 +98,7 @@ def main(port):
         assert margin>=1.0,margin
         emit('signal_sent',**result['signal'])
         end=sent+8
-        gate=http.ROOT/'custody-catalog-gone.json'
+        gate=http.ROOT/(prefix+'-catalog-gone.json')
         while not poll.poll(0):
             assert time.monotonic()<end,'parent termination deadline'
             assert len(result['samples'])<1500,'sample budget'
@@ -104,7 +122,7 @@ def main(port):
             stderr=server.error.read_text(),stdout=server.output.read_text(),elapsed_ms=round((time.monotonic()-sent)*1000,3));save()
         terminal=result['terminal']
         assert terminal['exit']==4 and not terminal['parent_present'] and terminal['lock_available']
-        assert 'native grant acceptance cancelled; outcome unresolved' in terminal['stderr']
+        assert ('export resume cancelled; Control outcome unresolved' if resume_job else 'native grant acceptance cancelled; outcome unresolved') in terminal['stderr']
         assert '"release":"committed"' not in terminal['stdout']
         assert terminal['response'].get('status') not in (200,202)
         assert not list((http.ROOT/'scratch').iterdir())
@@ -125,4 +143,6 @@ def main(port):
             pool.shutdown(wait=True,cancel_futures=True);http.CONFIG=original;save()
 
 
-if __name__=='__main__':main(int(sys.argv[1]))
+if __name__=='__main__':
+    assert len(sys.argv) in (2,3)
+    main(int(sys.argv[1]),sys.argv[2] if len(sys.argv)==3 else None)

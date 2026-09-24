@@ -11,11 +11,12 @@ from signed_publication_cases import Process, command, event, send
 
 
 def main(root, profile=None):
-    assert profile in (None, 'commits')
+    assert profile in (None, 'commits', 'custody')
     state=json.loads((root/'resources.json').read_text()); runner=state['container_id']; pg=state['postgres_id']; db='bbpub_control_normal'
     path=root/'resume-http-cases.json'; assert not path.exists()
     result=dict(status='INCOMPLETE',source=state['source'],tree=state['tree'],cases={},scope='Actual installed resume HTTP and application-role SQL; native execution disabled to observe exact accepted revision. No resumed artifact output or COMMIT-fault qualification.')
     if profile=='commits': result['scope']='Actual installed resume HTTP with native execution disabled; selected Control COMMIT lost before forwarding and after server completion, then original-key resolution.'
+    if profile=='custody': result['scope']='Actual installed resume HTTP with native execution disabled; held server-completed reply and SIGTERM, sampled destination exclusion during actual pending Control driver drain.'
     client=None
     def save(): path.write_text(json.dumps(result,indent=2)+'\n')
     def sql(text): return command('docker','exec','-i',pg,'psql','-XAtq','-v','ON_ERROR_STOP=1','-U','postgres','-d',db,input=text)
@@ -59,6 +60,11 @@ def main(root, profile=None):
         job=sql('SELECT encode(job_id,\'hex\') FROM control.jobs');result['job']=job
         result['before']=observe();save()
         started=time.monotonic();time.sleep(60);result['rate_wait_seconds']=time.monotonic()-started;save()
+        if profile=='custody':
+            import resume_custody_cases
+            result['custody']=resume_custody_cases.run(root,state,sql,observe)
+            assert result['custody']['status']=='PASS'
+            result['status']='PASS';return
         if profile=='commits':
             import resume_commit_cases
             result['commits']=resume_commit_cases.run(root,state,sql,observe)

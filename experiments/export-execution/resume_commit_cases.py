@@ -5,6 +5,29 @@ import json
 from signed_publication_cases import Process, command, event, send, sha
 
 
+def accepted_resume(before, after, current, key):
+    """Fixed paused7/config1/policy2 fixture; compare the complete atomic transition."""
+    job=before['jobs'][0]['row']['job_id'][2:]
+    assert len(after['jobs'])==1 and (after['jobs'][0]['row']['state'],after['jobs'][0]['row']['job_revision'],after['jobs'][0]['row']['reason_code'])==('queued',8,None)
+    changed={'state','job_revision','reason_code','owner_resource_id','owner_epoch','owner_incarnation'}
+    assert {k:v for k,v in before['jobs'][0]['row'].items() if k not in changed}=={k:v for k,v in after['jobs'][0]['row'].items() if k not in changed}
+    assert after['jobs'][0]['row']['owner_resource_id']=='\\x'+current['resource'] and after['jobs'][0]['row']['owner_epoch']==int(current['epoch']) and after['jobs'][0]['row']['owner_incarnation']=='\\x'+current['incarnation']
+    for table in before.keys()-{'jobs','export_resume_commands','management_commands','management_audit'}:assert before[table]==after[table],table
+    for table in ['export_resume_commands','management_commands','management_audit']:
+        assert len(after[table])==len(before[table])+1 and all(v in after[table] for v in before[table]),table
+    d,c,a=[next(v for v in after[t] if v not in before[t]) for t in ['export_resume_commands','management_commands','management_audit']]
+    assert d['xmin']==c['xmin']==a['xmin']==after['jobs'][0]['xmin']
+    d,c,a=d['row'],c['row'],a['row'];receipt=c
+    assert c['actor_id']==d['actor_id']==a['actor_id']==before['jobs'][0]['row']['principal_id']
+    assert c['dataset_id']==d['dataset_id']==a['dataset_id']==before['jobs'][0]['row']['dataset_id']
+    assert c['request_key']==d['request_key']==a['subject_id']=='\\x'+key and d['job_id']=='\\x'+job
+    assert d['expected_job_revision']==7 and c['expected_config_revision']==a['config_revision']==1 and c['policy_revision']==a['policy_revision']==2
+    assert c['audit_id']==a['audit_id'] and c['action']==a['action']=='job.export.resume' and c['accepted_at_us']==a['created_at_us'] and a['outcome']=='accepted'
+    payload=b'bigbrotr/export-resume/1\0'+b''.join(bytes.fromhex(d[k][2:]) for k in ['dataset_id','actor_id','request_key','job_id'])+b''.join(n.to_bytes(8,'big') for n in [7,1,2])
+    assert c['request_digest']=='\\x'+hashlib.sha256(payload).hexdigest()
+    return receipt
+
+
 def run(root, state, sql, observe):
     result=dict(status='INCOMPLETE',source=state['source'],cases=[])
     path=root/'resume-commit-cases.json';assert not path.exists()
@@ -44,23 +67,7 @@ def run(root, state, sql, observe):
             assert record['backends']=={'bbpub_control_normal':0,'bbpub_normal':0}
             if index==0:assert after==before
             else:
-                assert len(after['jobs'])==1 and (after['jobs'][0]['row']['state'],after['jobs'][0]['row']['job_revision'],after['jobs'][0]['row']['reason_code'])==('queued',8,None)
-                changed={'state','job_revision','reason_code','owner_resource_id','owner_epoch','owner_incarnation'}
-                assert {k:v for k,v in before['jobs'][0]['row'].items() if k not in changed}=={k:v for k,v in after['jobs'][0]['row'].items() if k not in changed}
-                assert after['jobs'][0]['row']['owner_resource_id']=='\\x'+current['resource'] and after['jobs'][0]['row']['owner_epoch']==int(current['epoch']) and after['jobs'][0]['row']['owner_incarnation']=='\\x'+current['incarnation']
-                for table in before.keys()-{'jobs','export_resume_commands','management_commands','management_audit'}:assert before[table]==after[table],table
-                for table in ['export_resume_commands','management_commands','management_audit']:
-                    assert len(after[table])==len(before[table])+1 and all(v in after[table] for v in before[table]),table
-                d,c,a=[next(v for v in after[t] if v not in before[t]) for t in ['export_resume_commands','management_commands','management_audit']]
-                assert d['xmin']==c['xmin']==a['xmin']==after['jobs'][0]['xmin']
-                d,c,a=d['row'],c['row'],a['row'];result['committed_receipt']=c
-                assert c['actor_id']==d['actor_id']==a['actor_id']==before['jobs'][0]['row']['principal_id']
-                assert c['dataset_id']==d['dataset_id']==a['dataset_id']==before['jobs'][0]['row']['dataset_id']
-                assert c['request_key']==d['request_key']==a['subject_id']=='\\x'+'f3'*16 and d['job_id']=='\\x'+job
-                assert d['expected_job_revision']==7 and c['expected_config_revision']==a['config_revision']==1 and c['policy_revision']==a['policy_revision']==2
-                assert c['audit_id']==a['audit_id'] and c['action']==a['action']=='job.export.resume' and c['accepted_at_us']==a['created_at_us'] and a['outcome']=='accepted'
-                payload=b'bigbrotr/export-resume/1\0'+b''.join(bytes.fromhex(d[k][2:]) for k in ['dataset_id','actor_id','request_key','job_id'])+b''.join(n.to_bytes(8,'big') for n in [7,1,2])
-                assert c['request_digest']=='\\x'+hashlib.sha256(payload).hexdigest()
+                result['committed_receipt']=accepted_resume(before,after,current,'f3'*16)
             send(proxy,'stop\n');assert proxy.wait(5)==0
             record['proxy_terminal']=event(proxy,'terminal')
             assert record['proxy_terminal']['unexpected']==0 and not proxy.stderr and not proxy.overflow

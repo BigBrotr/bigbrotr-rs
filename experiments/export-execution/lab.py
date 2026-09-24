@@ -15,8 +15,9 @@ busy = sys.argv[3:4] == ["--runtime-busy"]
 pause_commits = sys.argv[3:4] == ["--runtime-pause-commits"]
 shutdown = sys.argv[3:4] == ["--runtime-shutdown"]
 resume_output = sys.argv[3:4] == ["--runtime-resume-output"]
+resume_custody = sys.argv[3:4] == ["--runtime-resume-custody"]
 resume_commits = sys.argv[3:4] == ["--runtime-resume-commits"]
-resume_http = resume_commits or sys.argv[3:4] == ["--runtime-resume"]
+resume_http = resume_custody or resume_commits or sys.argv[3:4] == ["--runtime-resume"]
 resume_adapter = sys.argv[3:4] == ["--resume-adapter"]
 resume_schema = sys.argv[3:4] == ["--resume-schema"]
 job_browser = sys.argv[3:4] == ["--runtime-job-browser"]
@@ -29,7 +30,7 @@ reuse_runtime = sys.argv[4] if runtime and len(sys.argv)==5 else None
 assert reuse_runtime is None or re.fullmatch("[0-9a-f]{40}", reuse_runtime)
 rollback = sys.argv[3:] == ["--rust-rollback"]
 adapter = resume_adapter or sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
-assert sys.argv[3:] in ([], ["--runtime-resume-commits"], ["--runtime-resume-output"], ["--runtime-resume"], ["--resume-schema"], ["--resume-adapter"], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"], ["--runtime-job-status"], ["--runtime-job-browser"], ["--runtime-shutdown"]) or (runtime and len(sys.argv)==5)
+assert sys.argv[3:] in ([], ["--runtime-resume-custody"], ["--runtime-resume-commits"], ["--runtime-resume-output"], ["--runtime-resume"], ["--resume-schema"], ["--resume-adapter"], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"], ["--runtime-job-status"], ["--runtime-job-browser"], ["--runtime-shutdown"]) or (runtime and len(sys.argv)==5)
 compile_current = adapter or (runtime and not reuse_runtime)
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
@@ -86,7 +87,7 @@ owner = secrets.token_hex(16)
 state = dict(source=revision, tree=tree, owner=owner, root=str(root), state='preparing', containers=[],
              rust_image=rust_image, owner_label=label, postgres_image=pg_image,
              started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-             runtime_profile='resume-commits' if resume_commits else 'resume-output' if resume_output else 'resume' if resume_http else 'shutdown' if shutdown else 'job-browser' if job_browser else 'job-status' if job_status else 'revocation' if revocation else 'busy' if busy else 'pause-commits' if pause_commits else 'parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
+             runtime_profile='resume-custody' if resume_custody else 'resume-commits' if resume_commits else 'resume-output' if resume_output else 'resume' if resume_http else 'shutdown' if shutdown else 'job-browser' if job_browser else 'job-status' if job_status else 'revocation' if revocation else 'busy' if busy else 'pause-commits' if pause_commits else 'parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
              adapter_profile='resume' if resume_adapter else 'rollback' if rollback else 'completion' if adapter else None)
 state['schema_profile'] = 'resume' if resume_schema else None
 def save(): write(root / 'resources.json', state)
@@ -290,7 +291,7 @@ while not Path('/out/qualification-complete').exists():
         assert compiled.returncode==0
     state['state']='qualifying-runtime' if runtime else 'qualifying-rust-adapter' if adapter else 'qualifying-schema';save()
     with (root/'schema-cases.log').open('xb') as log:
-        cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/resume_http_cases.py' if resume_http else 'experiments/export-execution/runtime_cases.py' if executor else 'experiments/archive-engine/export_job_http_cases.py' if responsive else 'experiments/export-execution/resume_adapter_cases.py' if resume_adapter else 'experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/resume_cases.py' if resume_schema else 'experiments/export-execution/cases.py')),str(root),*(['commits'] if resume_commits else ['responsive'] if responsive else ['shutdown'] if shutdown else ['job-status'] if job_status else ['resume-output'] if resume_output else ['revocation'] if revocation else ['busy'] if busy else ['pause-commits'] if pause_commits else ['parking'] if parking else [])],stdout=log,stderr=subprocess.STDOUT,timeout=240)
+        cases=subprocess.run(['python3','-B',str(source/('experiments/export-execution/resume_http_cases.py' if resume_http else 'experiments/export-execution/runtime_cases.py' if executor else 'experiments/archive-engine/export_job_http_cases.py' if responsive else 'experiments/export-execution/resume_adapter_cases.py' if resume_adapter else 'experiments/export-execution/adapter_cases.py' if adapter else 'experiments/export-execution/resume_cases.py' if resume_schema else 'experiments/export-execution/cases.py')),str(root),*(['custody'] if resume_custody else ['commits'] if resume_commits else ['responsive'] if responsive else ['shutdown'] if shutdown else ['job-status'] if job_status else ['resume-output'] if resume_output else ['revocation'] if revocation else ['busy'] if busy else ['pause-commits'] if pause_commits else ['parking'] if parking else [])],stdout=log,stderr=subprocess.STDOUT,timeout=240)
     result=json.loads((root/('resume-http-cases.json' if resume_http else 'runtime-cases.json' if executor else 'export-job-http-cases.json' if responsive else 'resume-adapter-cases.json' if resume_adapter else 'adapter-cases.json' if adapter else 'resume-schema-cases.json' if resume_schema else 'schema-cases.json')).read_text())
     audit['result']=result['status']
     audit['independent_sql_stage']='after-native-before-browser' if job_browser else 'after-native'

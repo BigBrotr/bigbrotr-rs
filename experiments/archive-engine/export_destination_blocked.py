@@ -59,8 +59,8 @@ def pending_checker(trace, parent):
     return None
 
 
-def lock_available():
-    descriptor=os.open(http.ROOT/'destination', os.O_RDONLY|os.O_DIRECTORY)
+def lock_available(destination=None):
+    descriptor=os.open(destination if destination is not None else http.ROOT/'destination', os.O_RDONLY|os.O_DIRECTORY)
     try:
         try:fcntl.flock(descriptor, fcntl.LOCK_EX|fcntl.LOCK_NB)
         except BlockingIOError:return False

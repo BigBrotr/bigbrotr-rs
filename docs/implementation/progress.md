@@ -20,13 +20,13 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD3104705c070efabe1fa76b00f7347d1906326218, tree
-64299098e489f0b924dbc4919cbf50d1f27f52f9 on main; private origin/main is
-b7d1264 (signed-output evidence and cache retirement pushed). One unpublished
-fault-fixture candidate; root owns pending evidence/docs/inventory/checkpoint and
-held-driver drafts: resume_custody_cases.py, extracted accepted_resume oracle and
-optional resume path in export_job_custody_client.py. No held-driver run yet. No product change,
-other contributor or merge/rebase. Full product incomplete.
+Last verified HEAD54b6c4c926d5a893e0a337097237af42c71d67e6, tree
+1a380c8f3f2bd16a5334966247cba734acb5e02a on main; private origin/main matches. Root owns
+held-driver fixture changes: resume_custody_cases.py, optional resume path in
+export_job_custody_client.py, parametrized root flock primitive, extracted
+accepted_resume oracle, HTTP/lab profile wiring and this checkpoint. No product
+change, other contributor or merge/rebase. No active BigBrotr lab after310 terminal.
+Full product incomplete.
 
 [3104705 resume COMMIT loss](evidence/p08-export-resume-commits-native-20260924.json)
 passes both before-forward and after-complete on the same in-memory session/key/body.
@@ -46,13 +46,23 @@ Free128802492416→128403394560bytes, no new build/cache. Independent AI static
 review and independent capture audit found no concrete discrepancy. Commands/audit snapshots
 are resume-only; post-exit flock availability does not qualify pending-driver custody.
 
-Next bounded action: qualify resume destination custody during a held actual Control
+Next bounded action: commit and run --runtime-resume-custody to qualify destination
+custody during a held actual Control
 COMMIT reply and SIGTERM. Reuse bounded pidfd/socket/flock sampling from the prior
 acceptance-custody fixture, with native execution disabled and original paused7.
 Positively identify Control/backend, inspect actual still-open socket on both sides
 of root exclusion samples, require bounded parent termination and unchanged retained
 inputs. Keep no continuous-custody/all-schedules claim. Exact Git/4a product equality,
 fresh space/ownership census and retained original evidence remain required.
+Before launch, static review found wrong inherited password (independent AI) and
+wrong inherited root flock path (root review). Both corrected for resume only;
+default acceptance path unchanged. Mac actual two-directory flock check confirms
+selected-root exclusion and later availability. Extracted SQL oracle replays310
+and rejects four mutations (lost bounds, released retention, old xmin, owner).
+Python syntax/artifact checks pass. No further concrete static blocker; native
+held-driver NOT_RUN. Local check records are resume-custody-{root,oracle}-check.json
+under ignored export-execution. Existing collector includes all new prefixed
+sampler JSON/stdout/stderr, including failures before observed.
 
 [30df0fd signed resume](evidence/p08-export-resume-output-native-20260924.json) passes
 actual blocked-reader revocation,814 compatible migration with real CLI, refused
