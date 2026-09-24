@@ -204,6 +204,12 @@ verification failure rather than trusting a known event ID.
 
 **Dependencies:** P06-T01/T02; P01-T04/T06; P02-T07.
 
+Step 1's protected shared keyring/AEAD foundation may start with P08-T03's first
+operational job-list consumer after the P01 configuration/authority foundations.
+Scientific scan positions, generation pins and full acceptance still require the
+P06/P02 prerequisites above. Reuse the same key ownership and envelope, without
+inventing scientific pins for redacted operational metadata.
+
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;
 `migrations/postgres/0603_read_pins.sql`;
 `contracts/read/v1/cursor-envelope.schema.json`; `config/examples/read.toml`;

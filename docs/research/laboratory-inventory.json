@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-09-24",
+  "updated_at": "2026-09-25",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -24902,5 +24902,19 @@
     },
     "evidence": "docs/implementation/evidence/p08-export-resume-expiry-native-20260925.json",
     "retention": "Keep source, runtime/seed ELF and native assets, PostgreSQL/archive state, logs, full ledgers/manifests and captures. No new compiler cache, compilation or cache/container/volume/data retirement. Preserve8db/73e/4e caches and all previously protected inputs. Two owned PID0/noOOM, network and orchestrator absent; all764previous container lifecycle/mount/network/restart/health-status projections match the later full census, eight unrelated workloads remain running. Free-space observations have distinct timestamps and concurrent host/capture writes."
+  },
+  "cursor_dependency_audit_20260925": {
+    "path": ".research/checkouts/cursor-dependency-audit-20260925",
+    "owner": "root",
+    "state": "completed-retained; local source inspection and isolated probe only",
+    "source": "experiments/cursor-crypto",
+    "evidence": "docs/research/evidence/cursor-crypto.json",
+    "purpose": "P06-T03 Step1 exact AEAD dependency qualification before first P08 job-list consumer",
+    "contents": "Six checked published crates/index metadata, full file manifests, isolated Cargo target, original count and lint failures plus corrected outputs; all test keys are public fixtures",
+    "allocated_or_logical_size_note": "Logical regular-file bytes at the stated observation, including retained target/cache; subsequent check logs may grow. Not physical allocation or RSS.",
+    "logical_file_bytes": 73927608,
+    "remote_resources_created": false,
+    "product_code_or_root_lock_changed": false,
+    "logical_file_bytes_observed_at": "2026-09-24T22:34:35.356653+00:00"
   }
 }

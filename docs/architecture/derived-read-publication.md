@@ -1423,9 +1423,18 @@ available. An undecryptable, revoked or expired token never silently restarts at
 the latest generation. Test cross-worker/restart continuation, normal and emergency
 rotation, changed principal/filter, withheld scan positions and tampered envelopes.
 
-Cursor pages share the original absolute 900-second query pin; page requests
+Scientific cursor pages share the original absolute 900-second query pin; page requests
 do not slide retention indefinitely. Initial admission permits at most 4096
 active query pins plus the configured retained-artifact byte budget. Follow the
 server-emitted cursor after byte-bound pages and scan-only progress; the token
 must remain usable under its own documented continuation parameters. The exact
 implementation and negative controls are in P06-T03.
+
+Operational management lists reuse the encrypted envelope/keyring and current
+authorization checks, with their own resource-specific continuation bindings.
+The [job registry](../implementation/08-operations.md#p08-t03--managed-revisions-lifecycle-commands-and-durable-jobs)
+uses an admission upper cut and rechecks mutable state at each page; it does not
+create an Archive generation pin, `SourceCut` or scientific `ReadViewStamp` merely
+to inspect redacted job metadata. Its original absolute cursor expiry never
+slides on a later page. This distinction does not weaken generation/retention
+requirements for scientific resources that consume actual retained inputs.

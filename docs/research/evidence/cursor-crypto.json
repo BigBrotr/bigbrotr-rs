@@ -1,0 +1,201 @@
+{
+  "format": "bigbrotr-cursor-crypto-qualification/1",
+  "observed_at": "2026-09-24T22:31:32.514086+00:00",
+  "task": "P06-T03 Step1 dependency selection; P08-T03 operational list consumer prerequisite",
+  "status": "PASS within stated dependency-only scope",
+  "source": {
+    "base_revision": "4aebc1fbd7926c53bc0e08df3c3e0ac139911786",
+    "state": "Mac root-owned uncommitted probe files identified below; product code and root Cargo lock unchanged",
+    "files_sha256": {
+      "experiments/cursor-crypto/Cargo.lock": "a1eec80325331ab960c793bd5293120fd0b1e04d65a758cd0237871ac6c6acfa",
+      "experiments/cursor-crypto/Cargo.toml": "2029a56991cc3447a9cc0cd6a220cd042a690c9f7f8c48560dcf02224343c673",
+      "experiments/cursor-crypto/README.md": "75390db32deae21042b9c3fbabf4f4f0b30a848c15f26965f2796008055ae2ea",
+      "experiments/cursor-crypto/fixtures.py": "4b46e53e93d7a69182484c962f98e2c0c78ab1aede0d455740f2c94afef8e3d2",
+      "experiments/cursor-crypto/src/main.rs": "6a4abb9ccb312d1f1b12c1ce18847bb907224081e20bb224391097a9c4e39b01",
+      "experiments/cursor-crypto/vectors.json": "7f1e742b7df05d3b58de91135f58fa98a06b597b57b376f5cc2cceedc209d46c"
+    }
+  },
+  "environment": {
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.5.2\nBuildVersion:\t\t25F84",
+    "compiler": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "target": "aarch64-apple-darwin",
+    "profile": "dev; default target backend; no forced target features",
+    "configuration": "RUSTFLAGS/CARGO_ENCODED_RUSTFLAGS/CARGO_BUILD_RUSTFLAGS/CARGO_BUILD_TARGET/CARGO_TARGET_AARCH64_APPLE_DARWIN_RUSTFLAGS/CARGO_HOME absent at post-run inspection; only repository .cargo/config.toml found in ancestor/default Cargo configuration search; it selects target-dir only, overridden by the explicit probe target path.",
+    "cargo_config_sha256": "5dd7fdccfd6cf2652363489596fa15cc74ca772d36f05f2c9447e9b2f2caadd7"
+  },
+  "dependency": {
+    "name": "chacha20poly1305",
+    "version": "0.11.0",
+    "default_features": false,
+    "features": [
+      "zeroize"
+    ],
+    "api": "XChaCha20Poly1305 + AeadInOut::{encrypt_inout_detached,decrypt_inout_detached}",
+    "published_sources": [
+      {
+        "name": "chacha20poly1305",
+        "version": "0.11.0",
+        "url": "https://static.crates.io/crates/chacha20poly1305/chacha20poly1305-0.11.0.crate",
+        "sha256": "9b89e1c441e926b9c82a8d023f6e1b7ae0adcfaa7d621814e4d60789bac751cb",
+        "source": {
+          "git": {
+            "sha1": "e37a978ccf0992d9053fbc039470d6527108e393"
+          },
+          "path_in_vcs": "chacha20poly1305"
+        }
+      },
+      {
+        "name": "aead",
+        "version": "0.6.1",
+        "url": "https://static.crates.io/crates/aead/aead-0.6.1.crate",
+        "sha256": "1973cfbc1a2daf9cf550e74e1f088c28e7f7d8c1e1418fb6c9dc5184b7e84c99",
+        "source": {
+          "git": {
+            "sha1": "3d2d90045bffc402af4edb6a5a4dbb1e217329d1"
+          },
+          "path_in_vcs": "aead"
+        }
+      },
+      {
+        "name": "cipher",
+        "version": "0.5.2",
+        "url": "https://static.crates.io/crates/cipher/cipher-0.5.2.crate",
+        "sha256": "e8cf2a2c93cd704877c0858356ed03480ff301ee950b43f1cbe4573b088bfa6c",
+        "source": {
+          "git": {
+            "sha1": "f836f71fadb3b975b577a293d57851d044f0a44b"
+          },
+          "path_in_vcs": "cipher"
+        }
+      },
+      {
+        "name": "poly1305",
+        "version": "0.9.1",
+        "url": "https://static.crates.io/crates/poly1305/poly1305-0.9.1.crate",
+        "sha256": "6e2d0073b297041425c7c3df6eb4792d598a15323fe63346852b092eca02904c",
+        "source": {
+          "git": {
+            "sha1": "4f5691919d96ec0089ecca4492be7f1848c78fdf"
+          },
+          "path_in_vcs": "poly1305"
+        }
+      },
+      {
+        "name": "universal-hash",
+        "version": "0.6.1",
+        "url": "https://static.crates.io/crates/universal-hash/universal-hash-0.6.1.crate",
+        "sha256": "f4987bdc12753382e0bec4a65c50738ffaabc998b9cdd1f952fb5f39b0048a96",
+        "source": {
+          "git": {
+            "sha1": "82279a5a9ff2af5f10194b9147fe60050cda1851"
+          },
+          "path_in_vcs": "universal-hash"
+        }
+      },
+      {
+        "name": "chacha20",
+        "version": "0.10.2",
+        "url": "https://static.crates.io/crates/chacha20/chacha20-0.10.2.crate",
+        "sha256": "65c35e4b699c7e15ccbe7ee35c005e4fc0a278d22238a2857e6ce2dadeda1b06",
+        "source": {
+          "git": {
+            "sha1": "6b236b758a0279f64d777797514813b2cb572c8b"
+          },
+          "path_in_vcs": "chacha20"
+        }
+      }
+    ],
+    "probe_lock_sha256": "a1eec80325331ab960c793bd5293120fd0b1e04d65a758cd0237871ac6c6acfa",
+    "root_cargo_lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "features_sha256": "3a5fb2e0cf52584162a11a076aba39e46d28420adeddddc03125534ca5759869"
+  },
+  "workload": {
+    "fixture_sha256": "7f1e742b7df05d3b58de91135f58fa98a06b597b57b376f5cc2cceedc209d46c",
+    "oracle": {
+      "pynacl": "1.6.2",
+      "sodium_module_sha256": "49032c357199dde6ae341319e558ce3ed9daa80f5ac83972aa9a63158b0b5371"
+    },
+    "published_vector": "https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha-03#appendix-A.3.1",
+    "positive_vectors": 11,
+    "lengths": [
+      114,
+      0,
+      1,
+      15,
+      16,
+      17,
+      63,
+      64,
+      65,
+      255,
+      4096
+    ],
+    "plaintext_bytes": 4706,
+    "negative_calls": 4915,
+    "negative_arithmetic": "4706 ciphertext byte changes + 176 tag byte changes + 33 key/nonce/AAD changes",
+    "expected_results": "Frozen full ciphertext/tag bytes from the expired draft and independently generated PyNaCl/libsodium vectors; no RustCrypto-generated expected outputs"
+  },
+  "commands": [
+    {
+      "command": "python3 experiments/cursor-crypto/fixtures.py > experiments/cursor-crypto/vectors.json",
+      "outcome": "PASS; independently checks the published example before generating"
+    },
+    {
+      "command": "cargo run --manifest-path experiments/cursor-crypto/Cargo.toml --target-dir .research/checkouts/cursor-dependency-audit-20260925/target",
+      "outcome": "FAIL after all crypto assertions: wrong terminal expected count5015, actual4915",
+      "original_source": ".research/checkouts/cursor-dependency-audit-20260925/probe-first.rs",
+      "stderr": ".research/checkouts/cursor-dependency-audit-20260925/probe.stderr"
+    },
+    {
+      "command": "cargo run --locked --manifest-path experiments/cursor-crypto/Cargo.toml --target-dir .research/checkouts/cursor-dependency-audit-20260925/target",
+      "outcome": "PASS with corrected independently recomputed count4915; subsequent final run after equivalent hex parser lint fix also PASS",
+      "final_stdout": ".research/checkouts/cursor-dependency-audit-20260925/probe-final.stdout"
+    },
+    {
+      "command": "cargo clippy --locked --manifest-path experiments/cursor-crypto/Cargo.toml --target-dir .research/checkouts/cursor-dependency-audit-20260925/target -- -D warnings",
+      "outcome": "First FAIL: constant chunks_exact should use as_chunks; corrected parser then PASS",
+      "final_stderr": ".research/checkouts/cursor-dependency-audit-20260925/clippy-final.stderr"
+    }
+  ],
+  "findings": [
+    "All11 exact encrypt/tag/decrypt answers match; all4915 altered inputs refuse before mutating caller ciphertext.",
+    "Selected dependency has no allocating AEAD or RNG feature; the probe itself allocates finite public fixtures and copies for assertions.",
+    "Source uses full-round XChaCha with24-byte nonce; universal-hash0.6.1 comparison is ctutils, despite the wrapper comment naming subtle.",
+    "zeroize covers stored wrapper key and selected ChaCha state, not complete memory erasure; poly1305 optional zeroization is not enabled."
+  ],
+  "scope_limits": [
+    "Not a product cursor/keyring implementation or authorization test.",
+    "No OS nonce generation, key provisioning, expiry, rotation, cross-worker/restart, SQL, HTTP/browser, pin or release test.",
+    "No Linux amd64 or Linux arm64 qualification; macOS arm64 does not establish Linux arm64 support.",
+    "No complete cryptographic audit, constant-time measurement, memory-allocation/RSS bound or exhaustive tamper proof.",
+    "Future product lock/feature unification and real consumer must be qualified separately."
+  ],
+  "local_source_access_note": "Initial docs.rs/crates.io API transport failures did not establish package absence. Official sparse index and static archives later succeeded. Initial local extraction failed before unpacking because Python3.9 lacks tarfile filter; manual path/type-validated regular-file extraction succeeded, without dependency code execution.",
+  "retained_artifacts_sha256": {
+    ".research/checkouts/cursor-dependency-audit-20260925/inventory.json": "7fed73f1864a0ba81489f3e764b6a39cbb35eb918c9ab9d5cf80ac7db66f7072",
+    ".research/checkouts/cursor-dependency-audit-20260925/extraction-note.txt": "595cfc4ce7772fae914ecb3659253d52828aba5ea9c7446c8e58bf0b5b68dde0",
+    ".research/checkouts/cursor-dependency-audit-20260925/probe-first.rs": "ae3dfc3acca286601795cafc957598840d45b95542f2b0753209c21361991062",
+    ".research/checkouts/cursor-dependency-audit-20260925/probe.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/checkouts/cursor-dependency-audit-20260925/probe.stderr": "1fec2d6f506f4ad462e324b885014a2ffc4d9671869e3a296e2bb274701f9da6",
+    ".research/checkouts/cursor-dependency-audit-20260925/probe-corrected.rs": "06596e661af2081cf431bc5f74dbd2184b232edb2ad7115fb13c2b10e9c86fb8",
+    ".research/checkouts/cursor-dependency-audit-20260925/probe-corrected.stdout": "d97404f3fab28f7001c81e2d572499c43848893ca4578eb34b894d952636fe6c",
+    ".research/checkouts/cursor-dependency-audit-20260925/probe-corrected.stderr": "02cfaafdc5eba51f21e25cb49029518a7e126a96a32e1dacba742de5c21cdc06",
+    ".research/checkouts/cursor-dependency-audit-20260925/probe-final.stdout": "d97404f3fab28f7001c81e2d572499c43848893ca4578eb34b894d952636fe6c",
+    ".research/checkouts/cursor-dependency-audit-20260925/probe-final.stderr": "0e739ead0c3101c5f2a493ae29c2e20c6f47db80fe9018959285469f151da104",
+    ".research/checkouts/cursor-dependency-audit-20260925/clippy.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/checkouts/cursor-dependency-audit-20260925/clippy.stderr": "a07ffc4fa83504ac4424c584f3614b3dc7368a33e75a5baab21b5d86c31858f0",
+    ".research/checkouts/cursor-dependency-audit-20260925/clippy-final.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/checkouts/cursor-dependency-audit-20260925/clippy-final.stderr": "23c282d66f50a3946924af14450673c9fd38d0144cd48a1b5cedbe55405016d0",
+    ".research/checkouts/cursor-dependency-audit-20260925/features.txt": "3a5fb2e0cf52584162a11a076aba39e46d28420adeddddc03125534ca5759869",
+    ".research/checkouts/cursor-dependency-audit-20260925/target/debug/bigbrotr-cursor-crypto-probe": "6b1f68b2084feb2745c6edf845730fe687aa4dd39c2a976c0b7f3b44ef19d782"
+  },
+  "remote_resources_created": false,
+  "root_product_inputs_changed": false,
+  "review": "Root reviewed complete probe/generator and changed contracts and checked the draft A.3.1 source. Independent read-only AI verified recorded source/log/binary hashes, all six archives/index/VCS and117 extracted files, lock/features, PyNaCl module, frozen input/oracle logic,4915 arithmetic, failure attribution and narrow upstream facts. No crypto/test/build/SSH rerun by AI. Its inventory-size discrepancy was exactly the60221 bytes of newly retained artifact/handoff logs; inventory now has an explicit later measurement time. No other discrepancy found.",
+  "structural_checks": {
+    "artifact_check": "PASS:177 markdown/316 JSON, no errors; links/shape/syntax only",
+    "handoff_check": "PASS:no errors,123tasks/756steps, same three preexisting prose cycle candidates",
+    "cargo_fmt_and_git_diff_check": "PASS",
+    "root_product_inputs": "git diff --exit-code -- Cargo.toml Cargo.lock apps/bigbrotr passed"
+  }
+}

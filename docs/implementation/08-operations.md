@@ -365,6 +365,18 @@ resolution still uses the original command key. Reopen a clean browser with
 multiple principals/pages to prove the registry, not client memory, supplies it.
 The upper cut excludes newly created jobs; mutable state filters are evaluated
 at page-read time, so this operational listing is not a frozen historical audit.
+The implementation must use a durable admission barrier distinct from wall-clock
+creation time: a clock regression or a later insertion with the same timestamp
+cannot place new work inside an old listing. Allocate that order transactionally
+with accepted jobs and capture the upper bound under the same dataset
+serialization; do not use PostgreSQL `xmin` or change historical creation times.
+An additive migration assigns deterministic initial ordinals to existing jobs
+under migration exclusion and preserves their receipts. Test both commit/rollback
+orders and backdated/equal-time insertions between pages against an independent
+expected list. The encrypted continuation binds the original admission bound,
+last scanned `(created_at,job_id)`, normalized filters/page size, actor, dataset,
+policy and absolute lifetime. Current `status.read` and owner visibility remain
+necessary even for a decryptable token. This list creates no scientific input pin.
 Role/relay/artifact summaries share the page-size/authorization rules. Roles and
 relays order by immutable role-instance and endpoint ID respectively; artifacts
 order by (created_at, artifact_id) with their own upper cut. Refresh starts a new
