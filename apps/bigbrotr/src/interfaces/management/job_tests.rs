@@ -24,6 +24,116 @@ fn authenticated() -> String {
 }
 
 #[tokio::test]
+async fn job_status_requires_session_csrf_and_a_closed_request_before_queueing() {
+    let (mut server, address, budget) = server().await;
+    let id = "09".repeat(16);
+    let cookie = format!("Cookie: BigBrotrLocalSession={}\r\n", "11".repeat(32));
+    let auth = format!("{cookie}X-CSRF-Token: {}\r\n", "22".repeat(32));
+    for (path, headers, body, status) in [
+        (id.clone(), String::new(), "", 401),
+        (id.clone(), cookie, "", 403),
+        ("invalid".into(), auth.clone(), "", 400),
+        ("00".repeat(16), auth.clone(), "", 400),
+        ("AB".repeat(16), auth.clone(), "", 400),
+        (format!("%30{}", &id[1..]), auth.clone(), "", 400),
+        (format!("{id}?extra=1"), auth.clone(), "", 400),
+        (id.clone(), auth.clone(), "{}", 400),
+        (
+            id,
+            format!("{auth}X-CSRF-Token: {}\r\n", "22".repeat(32)),
+            "",
+            403,
+        ),
+    ] {
+        let request = format!(
+            "GET /management/v1/jobs/{path} HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Length: {}\r\n{headers}\r\n{body}",
+            body.len()
+        );
+        let response = exchange(address, request).await;
+        assert!(
+            response.starts_with(&format!("HTTP/1.1 {status} ")),
+            "{response}"
+        );
+        assert!(server.commands.try_recv().is_err());
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn job_status_preserves_closed_metadata_and_never_sets_session_cookies() {
+    use bigbrotr::{
+        export::execution::ExportState,
+        management::jobs::{JobObservation, JobReason},
+    };
+    let (mut server, address, budget) = server().await;
+    for missing in [false, true] {
+        let client = tokio::spawn(exchange(
+            address,
+            format!(
+                "GET /management/v1/jobs/{} HTTP/1.1\r\nHost: {address}\r\n{}\r\n",
+                "09".repeat(16),
+                authenticated()
+            ),
+        ));
+        let received = tokio::time::timeout(Duration::from_secs(1), server.commands.recv())
+            .await
+            .unwrap()
+            .unwrap();
+        let transport::Operation::JobStatus {
+            session, csrf, job, ..
+        } = received.operation
+        else {
+            panic!("wrong operation");
+        };
+        assert_eq!(session.expose_hex().as_str(), "11".repeat(32));
+        assert_eq!(csrf.expose_hex().as_str(), "22".repeat(32));
+        assert_eq!(job.to_string(), "09".repeat(16));
+        received
+            .completion
+            .finish(Ok(transport::Reply::JobStatus((!missing).then_some(
+                JobObservation {
+                    job_id: job,
+                    state: ExportState::Paused,
+                    job_revision: u64::MAX,
+                    checkpoint_revision: 0,
+                    created_at_us: i64::MIN,
+                    completed_at_us: None,
+                    observed_at_us: i64::MAX,
+                    reason: Some(JobReason::ResourceLimit),
+                },
+            ))));
+        let response = client.await.unwrap();
+        let (headers, body) = response.split_once("\r\n\r\n").unwrap();
+        assert!(headers.starts_with(if missing {
+            "HTTP/1.1 404 "
+        } else {
+            "HTTP/1.1 200 "
+        }));
+        assert!(headers.contains("cache-control: no-store\r\n"));
+        assert!(!headers.contains("set-cookie:"));
+        let body: serde_json::Value = serde_json::from_str(body).unwrap();
+        if missing {
+            assert_eq!(body["error"]["code"], "job_unavailable");
+            assert_eq!(body["error"]["message"], "Job unavailable to this account.");
+        } else {
+            assert_eq!(
+                body,
+                serde_json::json!({
+                    "format":"bigbrotr-job-status/1", "job_id":"09".repeat(16), "kind":"export",
+                    "state":"paused", "job_revision":"18446744073709551615", "checkpoint_revision":"0",
+                    "created_at_us":"-9223372036854775808", "completed_at_us":null,
+                    "observed_at_us":"9223372036854775807", "reason_code":"resource_limit",
+                    "authority":"observation-only"
+                })
+            );
+        }
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
 async fn job_route_refuses_unauthenticated_ambiguous_and_unsupported_requests_before_queueing() {
     let (mut server, address, budget) = server().await;
     let body = input();

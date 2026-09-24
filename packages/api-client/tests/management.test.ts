@@ -159,3 +159,50 @@ test('a stalled response is cancelled at the finite client deadline', async () =
   assert.equal(cancelled, true);
   assert.ok(performance.now() - started < 10_000);
 });
+
+const job = {
+  format: 'bigbrotr-job-status/1', job_id: '09'.repeat(16), kind: 'export', state: 'paused',
+  job_revision: '9007199254740993', checkpoint_revision: '0', created_at_us: '1800000000000000',
+  completed_at_us: null, observed_at_us: '1800000000000999', reason_code: 'resource_limit',
+  authority: 'observation-only'
+};
+
+test('job status uses the canonical fixed route and CSRF without refreshing the session', async () => {
+  const requests: string[] = [];
+  const api = createManagementClient({ cookie: () => `BigBrotrLocalCsrf=${'a'.repeat(64)}`, fetch: async (path, init) => {
+    requests.push(String(path));
+    assert.equal(init?.method, 'GET');
+    assert.equal(init?.body, undefined);
+    assert.equal(new Headers(init?.headers).get('x-csrf-token'), 'a'.repeat(64));
+    assert.equal(init?.credentials, 'same-origin');
+    return json(job);
+  } });
+  assert.deepEqual(await api.jobStatus(job.job_id), job);
+  for (const id of ['', '0'.repeat(32), 'AB'.repeat(16), '../me', `${job.job_id}?extra=1`]) {
+    await assert.rejects(api.jobStatus(id), failure('invalid_input'));
+  }
+  assert.deepEqual(requests, [`/management/v1/jobs/${job.job_id}`]);
+});
+
+test('job observations reject wrong identities, private fields, invalid states and unsafe integers', async () => {
+  for (const patch of [
+    { job_id: '01'.repeat(16) }, { query: { private: true } }, { state: 'completed' },
+    { reason_code: 'sensitive_arbitrary_database_text' }, { authority: 'execute' },
+    { job_revision: '18446744073709551616' }, { checkpoint_revision: '-1' },
+    { created_at_us: '9223372036854775808' }, { completed_at_us: '1800000000000001' },
+    { state: 'succeeded', reason_code: null }, { reason_code: null }
+  ]) {
+    const api = createManagementClient({ cookie: () => `BigBrotrLocalCsrf=${'a'.repeat(64)}`, fetch: async () => json({ ...job, ...patch }) });
+    await assert.rejects(api.jobStatus(job.job_id), failure('incompatible'));
+  }
+});
+
+test('missing or invisible job is a typed non-retrying failure', async () => {
+  let calls = 0;
+  const api = createManagementClient({ cookie: () => `BigBrotrLocalCsrf=${'a'.repeat(64)}`, fetch: async () => {
+    calls++;
+    return json({ error: { status: 404, code: 'job_unavailable', message: 'Job unavailable to this account.', retry_class: 'check_state', correlation_id: null } }, 404);
+  } });
+  await assert.rejects(api.jobStatus(job.job_id), (error: unknown) => error instanceof ManagementFailure && error.api?.status === 404);
+  assert.equal(calls, 1);
+});

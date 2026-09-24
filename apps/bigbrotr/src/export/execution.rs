@@ -80,7 +80,8 @@ impl ExportSelection {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum ExportState {
     Accepted,
     Queued,
@@ -92,6 +93,23 @@ pub enum ExportState {
     Failed,
     Cancelled,
     Skipped,
+}
+impl ExportState {
+    pub fn from_code(value: &str) -> Option<Self> {
+        Some(match value {
+            "accepted" => Self::Accepted,
+            "queued" => Self::Queued,
+            "running" => Self::Running,
+            "paused" => Self::Paused,
+            "cancel_requested" => Self::CancelRequested,
+            "succeeded" => Self::Succeeded,
+            "partial" => Self::Partial,
+            "failed" => Self::Failed,
+            "cancelled" => Self::Cancelled,
+            "skipped" => Self::Skipped,
+            _ => return None,
+        })
+    }
 }
 
 /// Retained logical byte caps. Physical allocation overhead is reserved by the

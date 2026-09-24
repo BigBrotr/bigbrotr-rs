@@ -405,19 +405,8 @@ async fn read(
     if !row.try_get::<_, bool>(19).map_err(metadata)? {
         return Err(Error::InvalidMetadata);
     }
-    let state = match row.try_get::<_, &str>(1).map_err(metadata)? {
-        "accepted" => ExportState::Accepted,
-        "queued" => ExportState::Queued,
-        "running" => ExportState::Running,
-        "paused" => ExportState::Paused,
-        "cancel_requested" => ExportState::CancelRequested,
-        "succeeded" => ExportState::Succeeded,
-        "partial" => ExportState::Partial,
-        "failed" => ExportState::Failed,
-        "cancelled" => ExportState::Cancelled,
-        "skipped" => ExportState::Skipped,
-        _ => return Err(Error::InvalidMetadata),
-    };
+    let state = ExportState::from_code(row.try_get::<_, &str>(1).map_err(metadata)?)
+        .ok_or(Error::InvalidMetadata)?;
     let result = row
         .try_get::<_, Option<&[u8]>>(4)
         .map_err(metadata)?

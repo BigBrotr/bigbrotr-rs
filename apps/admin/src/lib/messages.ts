@@ -25,7 +25,7 @@ export const messages = {
   noActions: 'No permissions are stored for this account.',
   refresh: 'Refresh session',
   refreshHelp: 'Refresh checks your account and counts as activity. This page does not keep your session alive in the background.',
-  initialScope: 'Initial private panel · Session access',
+  initialScope: 'Initial private panel · Session and export status',
   scriptRequired: 'JavaScript is required to sign in. Your local administration commands remain available.',
   checkingFailed: 'The session could not be checked. Check that this instance is running, then try again.',
   incompatible: 'This panel and the instance returned incompatible session information. Reload the panel or check that their versions match.',
@@ -62,6 +62,6 @@ export function notice(view: SessionView): string | undefined {
 
 export function utcTime(microseconds: string): string {
   const milliseconds = BigInt(microseconds) / 1000n;
-  if (milliseconds > 8_640_000_000_000_000n) return 'Date outside display range';
+  if (milliseconds > 8_640_000_000_000_000n || milliseconds < -8_640_000_000_000_000n) return 'Date outside display range';
   return new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'medium', timeZone: 'UTC' }).format(Number(milliseconds)) + ' UTC';
 }

@@ -634,7 +634,7 @@ async fn supervise(
                 let response = tokio::select! {
                     biased;
                     _ = stop.requested() => return Err((4,"private session operation cancelled; outcome unresolved".into())),
-                    result = management.as_mut().expect("management work source").execute(work,&mut owner,maximum,accepted.flag("archive.reader.enabled"),archive.export_destination.as_ref()) => result?,
+                    result = management.as_mut().expect("management work source").execute(work,&mut owner,&mut lease,maximum,accepted.flag("archive.reader.enabled"),archive.export_destination.as_ref()) => result?,
                 };
                 let response = match response {
                     management::Execution::Complete(response) => response,

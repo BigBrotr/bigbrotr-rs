@@ -114,6 +114,28 @@ pub struct JobReceipt {
     pub created: bool,
 }
 
+/// Redacted operational metadata of the authenticated actor's own export.
+/// This neither refreshes input grants nor authorizes artifact access or writes.
+pub struct JobObservation {
+    pub job_id: JobId,
+    pub state: crate::export::execution::ExportState,
+    pub job_revision: u64,
+    pub checkpoint_revision: u64,
+    pub created_at_us: i64,
+    pub completed_at_us: Option<i64>,
+    pub observed_at_us: i64,
+    pub reason: Option<JobReason>,
+}
+
+/// Never forward arbitrary database diagnostic text to a browser.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum JobReason {
+    ResourceLimit,
+    ExecutionRefused,
+    Other,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ExportFormat {
     #[serde(rename = "signed-events-jsonl")]

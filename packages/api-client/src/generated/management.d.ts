@@ -120,6 +120,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/management/v1/jobs/{job_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Inspect your export job
+         * @description Live browser session, explicit CSRF, current dataset status.read and authenticated actor ownership. GET only, canonical raw ID, no body or query. Requires available0813 job protocol; no archive/native/destination access. Input grants may have been revoked: this exposes only the actor's redacted operational receipt. Missing and other actors' jobs both404. No idle-session touch, background renewal or execution authority. Response socket uses a nonrenewable action window started before SQL. At most one bounded row.
+         */
+        get: operations["observeJob"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -150,11 +170,11 @@ export interface components {
         ApiError: {
             error: {
                 /** @enum {integer} */
-                status: 400 | 401 | 403 | 413 | 415 | 429 | 503 | 409;
+                status: 400 | 401 | 403 | 413 | 415 | 429 | 503 | 409 | 404;
                 /** @enum {string} */
-                code: "invalid_request" | "authentication_denied" | "browser_boundary_denied" | "request_too_large" | "unsupported_media_type" | "capacity_or_rate_limited" | "authority_unavailable" | "permission_denied" | "command_conflict";
+                code: "invalid_request" | "authentication_denied" | "browser_boundary_denied" | "request_too_large" | "unsupported_media_type" | "capacity_or_rate_limited" | "authority_unavailable" | "permission_denied" | "command_conflict" | "job_unavailable";
                 /** @enum {string} */
-                message: "Invalid request." | "Authentication required or denied." | "Browser request boundary refused." | "Request exceeds its byte limit." | "JSON content type required." | "Request capacity or attempt limit reached." | "Current authority or dependency unavailable." | "This action is not permitted." | "Command key or expected revision conflicts with current state.";
+                message: "Invalid request." | "Authentication required or denied." | "Browser request boundary refused." | "Request exceeds its byte limit." | "JSON content type required." | "Request capacity or attempt limit reached." | "Current authority or dependency unavailable." | "This action is not permitted." | "Command key or expected revision conflicts with current state." | "Job unavailable to this account.";
                 /** @enum {string} */
                 retry_class: "authenticate" | "check_state" | "correct_request" | "retry_later";
                 correlation_id: string | null;
@@ -239,6 +259,15 @@ export interface components {
                 message?: "Command key or expected revision conflicts with current state.";
                 /** @constant */
                 retry_class?: "check_state";
+            } | {
+                /** @constant */
+                status?: 404;
+                /** @constant */
+                code?: "job_unavailable";
+                /** @constant */
+                message?: "Job unavailable to this account.";
+                /** @constant */
+                retry_class?: "check_state";
             });
         };
         /** @description Exact desired command, not authority. Scope dataset must equal the installed dataset. Enabling requires allocation; disabling requires null. Revisions/ordinal must fit positive uint64. */
@@ -314,7 +343,7 @@ export interface components {
             /** @constant */
             authority: "acceptance-only";
         };
-        /** @description Initial private exact-ID signed JSONL job profile. Query defaults use immutable protocol defaults: snapshot and page_size100. Complete scope and approved destination binding required; no path or actor supplied by the browser. Acceptance is under native HTTP qualification; execution is not yet implemented. */
+        /** @description Initial private exact-ID signed JSONL job profile. Query defaults use immutable protocol defaults: snapshot and page_size100. Complete scope and approved destination binding required; no path or actor supplied by the browser. Native acceptance and automatic signed JSONL execution are under qualification; the acceptance receipt itself does not observe execution. */
         ExportJobCommand: {
             /** @constant */
             kind: "export";
@@ -348,6 +377,29 @@ export interface components {
             execution: "unobserved";
             /** @constant */
             authority: "acceptance-only";
+        };
+        /** @description One actor-owned durable export observation. State is not worker liveness; no input, output, filesystem, execution or download authority. Completion time is present exactly for terminal states; paused/cancel_requested/partial/failed/cancelled/skipped require a redacted reason. Listing and artifact discovery remain separate consumers. */
+        JobObservation: {
+            /** @constant */
+            format: "bigbrotr-job-status/1";
+            job_id: string;
+            /** @constant */
+            kind: "export";
+            /** @enum {string} */
+            state: "accepted" | "queued" | "running" | "paused" | "cancel_requested" | "succeeded" | "partial" | "failed" | "cancelled" | "skipped";
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            job_revision: string;
+            /** @description Canonical uint64 decimal string, maximum18446744073709551615. */
+            checkpoint_revision: string;
+            /** @description Canonical signed int64 Unix microseconds. Never round through JavaScript Number. */
+            created_at_us: string;
+            completed_at_us: string | null;
+            /** @description Canonical signed int64 Unix microseconds. Never round through JavaScript Number. */
+            observed_at_us: string;
+            /** @enum {string|null} */
+            reason_code: null | "resource_limit" | "execution_refused" | "other";
+            /** @constant */
+            authority: "observation-only";
         };
         /**
          * Initial exact-ID history QueryRequest
@@ -932,6 +984,86 @@ export interface operations {
             };
             /** @description JSON required */
             415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    observeJob: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current durable metadata; no cookies or idle refresh. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobObservation"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Missing or invisible export; same response. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

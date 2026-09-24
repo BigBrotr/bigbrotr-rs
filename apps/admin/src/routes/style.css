@@ -64,6 +64,11 @@ dd code { font-size: .9rem; }
 .permissions li { break-inside: avoid; margin: .3rem 0; }
 .actions, .recovery-actions { display: flex; gap: .8rem; flex-wrap: wrap; align-items: center; }
 .recovery-actions { margin-top: 1.4rem; }
+.job-sheet { border-top: .25rem solid var(--navy); margin-top: 3rem; padding-top: 2rem; }
+.job-sheet h2 { font-size: 1.5rem; letter-spacing: -.02em; }
+.job-observation { margin-top: 1.5rem; }
+.job-state { font-size: 1.75rem; font-weight: 650; color: var(--navy); margin: 0; }
+.job-observation .session-facts { margin-top: 1.25rem; }
 @media (max-width: 46rem) {
   .shell { display: block; }
   .spine { padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }

@@ -16,7 +16,7 @@ use axum::{
 use bigbrotr::{
     management::{
         grants::{CommandKey, GrantCommand, GrantReceipt},
-        jobs::{JobCommand, JobReceipt},
+        jobs::{JobCommand, JobObservation, JobReceipt},
         reauthentication::ReauthenticationProof,
         sessions::{BrowserSecret, IssuedSession, SessionError, SessionObservation},
     },
@@ -53,6 +53,12 @@ const SESSION_COOKIE: &str = "BigBrotrLocalSession";
 const CSRF_COOKIE: &str = "BigBrotrLocalCsrf";
 
 pub(super) enum Operation {
+    JobStatus {
+        session: BrowserSecret,
+        csrf: BrowserSecret,
+        job: bigbrotr_model::JobId,
+        delivery: ConnectionDelivery,
+    },
     Job {
         session: BrowserSecret,
         csrf: BrowserSecret,
@@ -93,6 +99,7 @@ pub(super) enum Operation {
     },
 }
 pub(super) enum Reply {
+    JobStatus(Option<JobObservation>),
     Job(JobReceipt),
     History(Box<super::history::HistoryBody>),
     Grant(GrantReceipt),
@@ -220,6 +227,7 @@ impl Server {
             )
             .route("/management/v1/me", get(me))
             .route("/management/v1/jobs", post(create_job))
+            .route("/management/v1/jobs/{job_id}", get(job_status))
             .route(
                 "/v1/resources/event_history",
                 get(history_query).post(history_query),
@@ -450,6 +458,54 @@ struct ReauthenticationInput {
 struct GrantInput {
     proof_id: bigbrotr_model::ReauthenticationId,
     command: GrantCommand,
+}
+
+async fn job_status(
+    State(shared): State<Shared>,
+    Extension(connection): Extension<Connection>,
+    request: Request,
+) -> Response {
+    let grant = match begin(&shared, &request) {
+        Ok(grant) => grant,
+        Err(status) => return error(status),
+    };
+    // Axum GET also handles HEAD; this observation profile accepts only GET.
+    if request.method() != Method::GET {
+        return protect((StatusCode::METHOD_NOT_ALLOWED, [(header::ALLOW, "GET")]).into_response());
+    }
+    let session = match session(request.headers()) {
+        Ok(value) => value,
+        Err(status) => return error(status),
+    };
+    let Some(csrf) =
+        single(request.headers(), "x-csrf-token").and_then(|v| BrowserSecret::parse_hex(v).ok())
+    else {
+        return error(StatusCode::FORBIDDEN);
+    };
+    let Some(job) = request
+        .uri()
+        .path()
+        .strip_prefix("/management/v1/jobs/")
+        .and_then(|v| v.parse::<bigbrotr_model::JobId>().ok())
+    else {
+        return error(StatusCode::BAD_REQUEST);
+    };
+    if !matches!(to_bytes(request.into_body(), 0).await, Ok(bytes) if bytes.is_empty()) {
+        return error(StatusCode::BAD_REQUEST);
+    }
+    let delivery = connection.delivery.clone();
+    dispatch(
+        &shared,
+        connection,
+        grant,
+        Operation::JobStatus {
+            session,
+            csrf,
+            job,
+            delivery,
+        },
+    )
+    .await
 }
 
 async fn create_job(
@@ -837,6 +893,16 @@ async fn dispatch(
         return error(StatusCode::TOO_MANY_REQUESTS);
     }
     match receive.await {
+        Ok(Ok(Reply::JobStatus(Some(value)))) => protect(Json(json!({
+            "format":"bigbrotr-job-status/1", "job_id":value.job_id, "kind":"export",
+            "state":value.state, "job_revision":value.job_revision.to_string(),
+            "checkpoint_revision":value.checkpoint_revision.to_string(),
+            "created_at_us":value.created_at_us.to_string(),
+            "completed_at_us":value.completed_at_us.map(|v| v.to_string()),
+            "observed_at_us":value.observed_at_us.to_string(), "reason_code":value.reason,
+            "authority":"observation-only"
+        })).into_response()),
+        Ok(Ok(Reply::JobStatus(None))) => failure(StatusCode::NOT_FOUND, "job_unavailable", "Job unavailable to this account.", "check_state"),
         Ok(Ok(Reply::Job(receipt))) => protect((
             if receipt.created { StatusCode::ACCEPTED } else { StatusCode::OK },
             Json(json!({"format":"bigbrotr-job-acceptance/1", "command_key":receipt.command_key,

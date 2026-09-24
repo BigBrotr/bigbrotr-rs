@@ -292,6 +292,14 @@ HTTP or durable-job step above.
 
 **Saved views and optional indexes:** `GET|POST /management/v1/saved-views`, `PUT|DELETE /management/v1/saved-views/{view_id}` persist an owner-scoped canonical `QueryRequest`, label and revision; update/delete require expected revision and never store credentials or reuse past authorization. Opening a view reauthorizes its current input scope. Index rebuild/retire are typed job kinds over a P06 index-generation manifest, not arbitrary DDL: preview affected capability and pinned readers, build/verify/activate replacement before reclaiming the old generation, or explicitly disable/retire only that optional index. P09 Storage/Queries must use these working routes rather than invent client-only management features. Reserve migration 0803 in the central manifest alongside 0801/0802.
 
+The first authenticated job-detail consumer now implements actor-owned export
+metadata under current `status.read`, without input/output authority or idle
+refresh, with OpenAPI/generated client and a session-owned private panel view.
+Mac boundary/client/model checks pass; actual PostgreSQL and browser qualification
+remain pending. The ownership/redaction subset is specified in
+[private administration](../product/private-administration.md). It does not
+complete listing, resume/cancel, artifact discovery or this step's full acceptance.
+
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending
 (created_at, job_id), an opaque policy-bound cursor and a listing upper cut.

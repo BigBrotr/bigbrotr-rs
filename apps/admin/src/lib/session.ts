@@ -14,7 +14,7 @@ export type SessionView = {
 /** One in-memory observation. No cookie, password, storage cache or background refresh. */
 export class SessionModel {
   view: SessionView = { kind: 'checking' };
-  private readonly api: ManagementClient;
+  private readonly api: Pick<ManagementClient, 'login' | 'inspect' | 'logout'>;
   private readonly publish: (view: SessionView) => void;
   private readonly broadcast: () => void;
   private generation = 0;
@@ -25,7 +25,7 @@ export class SessionModel {
   private disposed = false;
   private pendingMutations = 0;
 
-  constructor(api: ManagementClient, publish: (view: SessionView) => void, broadcast: () => void) {
+  constructor(api: Pick<ManagementClient, 'login' | 'inspect' | 'logout'>, publish: (view: SessionView) => void, broadcast: () => void) {
     this.api = api;
     this.publish = publish;
     this.broadcast = broadcast;

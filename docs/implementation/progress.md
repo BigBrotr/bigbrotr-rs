@@ -20,14 +20,13 @@ product responsibilities in the existing task plan.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD22346dff1d24719b952a6e597daa297e933788c5 (candidate),
-treeccfa328129f61f76032a3c7cd6d90bc524c85a32. Origin maina37bdbf625e498bef15b6fa103156e58be861b8e
-was pushed/ls-remote confirmed. Root owns revocation evidence/inventory,
-operations and this checkpoint. Product inputs unchanged since cdb78a1.
-No other contributor writes or merge/rebase; no active lab/cleanup debt.
-Pause-COMMIT and revocation root/independent complete capture reviews finished
-without remaining discrepancy. Root also owns the new job-status HTTP boundary
-test in job_tests.rs; it is intentionally RED and excluded from this evidence commit.
+Last verified HEAD/origin62c18c9a108af2c8165508e07ad4e37920fbd292.
+Root owns the current authenticated status implementation, tests, generated
+contract/client, private panel and native status fixture. No other contributor
+writes or merge/rebase; no active lab/cleanup debt at the preflight below.
+The next coherent candidate needs a fresh native build; cdb78a1 ELF reuse is
+forbidden for these changed product/build inputs. Native status/browser are NOT_RUN.
+Pause-COMMIT and revocation capture reviews/evidence remain pushed and unchanged.
 
 The known-refusal implementation at cdb78a1 has Mac fmt/check,42 binary tests and
 Clippy PASS, complete root diff review and independent AI source review without a
@@ -145,23 +144,38 @@ PID0/noOOM/network removed,622prior/eight running unchanged. Free144191508480→
 143794728960bytes. No cache. Root and independent complete capture reviews passed.
 Reviewer has not reread actual seed Parquet/dependency bytes, only recorded comparisons.
 
-Next bounded action: commit/push scoped revocation evidence, then implement
-authenticated job observation as the first user-facing consumer before explicit
-resume/cancel. New actual TCP test job_status_requires_session_csrf_and_a_closed_request_before_queueing
-ran on Mac and failed404 versus expected401, as the route does not yet exist.
-Log: .research/implementation/export-execution/job-status-red.log. No GREEN claim.
-The proposed initial status is same-actor operational metadata with current
-dataset status.read/session/CSRF, no source/destination fields, no idle refresh
-or execution grant. Missing/invisible share404. Bind a nonrenewable action window
-started before SQL to the actual response socket. Existing813 job schema suffices;
-no inventory lookup or new migration is needed for those fields. Read complete current management session,
-job, delivery and permission contracts; choose closed metadata/current authority
-without exposing private selection or filesystem paths. Extend the existing
-OpenAPI/generated client and private UI consumer together. Status/listing and
-resume/cancel remain unimplemented. The current OpenAPI ExportJobCommand prose
-still says execution is not implemented; reconcile that stale description with
-under-qualification runtime when regenerating the affected contract. Changes
-outside docs/experiments require a new native build, not cdb artifact reuse.
+Next bounded action: commit the reviewed status candidate with its qualification
+limits, transfer that exact Git revision, and run --runtime-job-status on Tux with
+fresh parent/worker builds. Then audit the complete native capture and exercise
+actual production assets/browser before qualifying this new user journey.
+Implemented initial GET status: authenticated actor-owned protocol1 export,
+current dataset status.read/session/CSRF, closed redacted metadata, no idle touch
+or input/output authority; missing/other actor404. Same Control/dataset/account
+locks; post-query clock read; nonrenewable action begun before SQL bound to socket,
+including the native supervisor management branch. Checkpoint0 remains valid.
+Owning private-administration/export contracts now state this visibility subset;
+listing, broader kinds, artifact discovery, resume/cancel remain selected work.
+No schema/dependency/checksum changes. Existing813 schema/probe suffices.
+Generated OpenAPI/types/validators/client and private panel now consume status.
+The session-owned panel cancels/discards pending observation on session change,
+logout/expiry/suspend; explicit Check job has no automatic poll or session refresh.
+Initial review found no contract requirement for input grants to read this actor's
+own redacted receipt; independent AI implementation review finished without a concrete blocking finding.
+That review excludes the new native fixture and any PostgreSQL/browser execution.
+
+Executed Mac: actual TCP RED404→GREEN for the absent route;44 binary tests PASS,
+Clippy PASS, client13 tests PASS, panel10 unit tests PASS, client types and Svelte
+check PASS(no warnings), static build PASS(13files149750bytes), generated check
+PASS, artifact/handoff checks PASS. Logs under ignored
+.research/implementation/export-execution/job-*.log. Client new-method RED and
+panel missing-module RED retained; one temporary Rust move-in-guard compile error
+and one Svelte test-stub type error were corrected before those GREEN runs.
+These are local checks, not real PostgreSQL/browser evidence. Native fixture uses
+original actual archive/completed-job seed, separate authenticated account,
+no-idle-touch row/xmin comparison, current input/status grant refusal, account
+revocation and restart, with unchanged job/unit/artifact/pin ledgers. The second
+account/dataset grants are privileged isolated fixture setup, not qualification
+of the unfinished account-management product. It preserves real rate windows.
 
 The runtime's ExecutionCustody can only come from successful RunningExport.prepare:
 it binds exact committed start job/revision/unit/destination/ControlOwner to the
@@ -179,7 +193,7 @@ join. Never poll a ready JoinHandle twice or reuse a poisoned SQL connection.
 Fresh-reader cleanup never releases the original export pin. Paused jobs are absent
 from automatic scans and keep immutable caps; changing configuration cannot enlarge
 an old unit. Explicit resume needs same committed unit, expected revision and current
-grants. Terminal jobs cannot resurrect. Cancel/resume/status/UI remain unfinished.
+grants. Terminal jobs cannot resurrect. Cancel/resume/listing remain unfinished; status/UI are under qualification.
 
 501 execution selection preserves unselected0813 acceptance. Actual application
 login privileges must be exercised, not postgres-only proofs. Applied0501 SHA
@@ -209,7 +223,10 @@ advancing through the selected product; no task completion from this scoped slic
 
 All roots below are under /home/tux/bigbrotr-implementation-20260917/runs/.
 [Inventory](../research/laboratory-inventory.json) owns full IDs/mounts/audits.
-Last observed no active lab or cleanup debt; inspect again before reuse/deletion.
+Fresh read-only preflight:143784255488bytes available, eight unrelated containers
+running and no BigBrotr/cargo/rustc/python process names matched. No active lab
+or cleanup debt observed. The launcher must still capture complete mounts, ports,
+processes, volumes and ownership before allocating any new resources.
 
 - cdb78a1 ownera7d3f8f762e57fc9f6f706f8cda4da91 stopped-retained, network removed;
   PG05565327/runner19b56f6f PID0/noOOM.612 prior/eight running preserved.

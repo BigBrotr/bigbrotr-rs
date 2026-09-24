@@ -1,8 +1,9 @@
 import type { components } from './generated/management';
-import { validateError, validateSession } from './generated/validators.js';
+import { validateError, validateSession, validateJob } from './generated/validators.js';
 
 export type SessionObservation = components['schemas']['SessionObservation'];
 export type LoginInput = components['schemas']['LoginInput'];
+export type JobObservation = components['schemas']['JobObservation'];
 type ApiError = components['schemas']['ApiError']['error'];
 type FailureKind = 'api' | 'cancelled' | 'unavailable' | 'incompatible' | 'response_limit' | 'csrf_missing' | 'invalid_input';
 
@@ -12,7 +13,7 @@ export class ManagementFailure extends Error {
   readonly api?: ApiError;
   readonly retryAfterSeconds?: number;
   constructor(kind: FailureKind, api?: ApiError, retryAfterSeconds?: number) {
-    super(`Private session request failed: ${kind}`);
+    super(`Private management request failed: ${kind}`);
     this.name = 'ManagementFailure';
     this.kind = kind;
     this.api = api;
@@ -33,6 +34,23 @@ function observation(value: unknown): SessionObservation {
   const absolute = BigInt(value.expires_at_us);
   const idle = BigInt(value.idle_expires_at_us);
   if (absolute > I64_MAX || idle > absolute) throw new ManagementFailure('incompatible');
+  return value;
+}
+
+function jobObservation(value: unknown, expected: string): JobObservation {
+  if (!validateJob(value) || value.job_id !== expected) throw new ManagementFailure('incompatible');
+  for (const key of ['job_revision', 'checkpoint_revision'] as const) {
+    if (BigInt(value[key]) > U64_MAX) throw new ManagementFailure('incompatible');
+  }
+  for (const key of ['created_at_us', 'completed_at_us', 'observed_at_us'] as const) {
+    const time = value[key];
+    if (time !== null && (BigInt(time) > I64_MAX || BigInt(time) < -I64_MAX - 1n)) throw new ManagementFailure('incompatible');
+  }
+  const terminal = ['succeeded', 'partial', 'failed', 'cancelled', 'skipped'].includes(value.state);
+  if (terminal !== (value.completed_at_us !== null)
+    || (['paused', 'cancel_requested', 'partial', 'failed', 'cancelled', 'skipped'].includes(value.state) && value.reason_code === null)) {
+    throw new ManagementFailure('incompatible');
+  }
   return value;
 }
 
@@ -115,8 +133,8 @@ export function createManagementClient(environment: {
 } = {}) {
   const fetch = environment.fetch ?? globalThis.fetch.bind(globalThis);
   const cookie = environment.cookie ?? (() => document.cookie);
-  async function request(path: string, method: 'GET' | 'POST' | 'DELETE', success: number,
-    signal?: AbortSignal, body?: string, csrf?: string): Promise<SessionObservation | undefined> {
+  async function request<T>(path: string, method: 'GET' | 'POST' | 'DELETE', success: number,
+    decode: (value: unknown) => T, signal?: AbortSignal, body?: string, csrf?: string): Promise<T | undefined> {
     const controller = new AbortController();
     const cancel = () => controller.abort();
     let timedOut = false;
@@ -134,13 +152,13 @@ export function createManagementClient(environment: {
       });
       if (controller.signal.aborted) { await response.body?.cancel(); controller.signal.throwIfAborted(); }
       if (response.status === 204 && success === 204) return undefined;
-      if (response.status !== success && ![400, 401, 403, 413, 415, 429, 503].includes(response.status)) {
+      if (response.status !== success && ![400, 401, 403, 404, 413, 415, 429, 503].includes(response.status)) {
         await response.body?.cancel();
         throw new ManagementFailure('incompatible');
       }
       const value = await boundedJson(response, controller.signal);
       controller.signal.throwIfAborted();
-      if (response.status === success) return observation(value);
+      if (response.status === success) return decode(value);
       if (!validateError(value) || value.error.status !== response.status
         || (response.status === 429 && response.headers.get('retry-after') !== '60')) {
         throw new ManagementFailure('incompatible');
@@ -157,13 +175,17 @@ export function createManagementClient(environment: {
   }
   return {
     async login(input: LoginInput, signal?: AbortSignal): Promise<SessionObservation> {
-      return (await request('/management/v1/sessions', 'POST', 201, signal, loginInput(input)))!;
+      return (await request('/management/v1/sessions', 'POST', 201, observation, signal, loginInput(input)))!;
     },
     async inspect(signal?: AbortSignal): Promise<SessionObservation> {
-      return (await request('/management/v1/me', 'GET', 200, signal))!;
+      return (await request('/management/v1/me', 'GET', 200, observation, signal))!;
     },
     async logout(signal?: AbortSignal): Promise<void> {
-      await request('/management/v1/sessions/current', 'DELETE', 204, signal, undefined, csrfCookie(cookie()));
+      await request('/management/v1/sessions/current', 'DELETE', 204, () => undefined, signal, undefined, csrfCookie(cookie()));
+    },
+    async jobStatus(id: string, signal?: AbortSignal): Promise<JobObservation> {
+      if (!/^[0-9a-f]{32}$/.test(id) || /^0+$/.test(id)) throw new ManagementFailure('invalid_input');
+      return (await request(`/management/v1/jobs/${id}`, 'GET', 200, value => jobObservation(value, id), signal, undefined, csrfCookie(cookie())))!;
     }
   };
 }

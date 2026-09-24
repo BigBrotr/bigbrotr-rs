@@ -2,6 +2,7 @@
   import { onMount, tick } from 'svelte';
   import { createManagementClient } from '@bigbrotr/api-client/management';
   import { SessionModel } from '$lib/session';
+  import JobStatus from '$lib/JobStatus.svelte';
   import type { SessionView } from '$lib/session';
   import { messages as m, notice, utcTime } from '$lib/messages';
   import './style.css';
@@ -126,6 +127,9 @@
           <button type="button" class="secondary" onclick={() => void model?.inspect()}>{m.refresh}</button>
         </div>
         <p class="help">{m.refreshHelp}</p>
+        {#key view.session}
+          <JobStatus onDenied={() => model?.invalidate('expired')} />
+        {/key}
       {:else}
         <form method="POST" onsubmit={signIn} aria-describedby={message ? 'session-notice' : undefined}>
           <div class="field">

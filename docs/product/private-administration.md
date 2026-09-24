@@ -299,6 +299,24 @@ storage credentials and allowed buckets/prefixes are explicit. Browser jobs neve
 accept an arbitrary shell command, secret file path or unsigned executable plugin.
 A role's ability to start a job is distinct from authority over the job's data.
 
+The initial `GET /management/v1/jobs/{job_id}` observation profile exposes only
+the authenticated actor's own protocol1 export job. It requires a current browser
+session, explicit CSRF and dataset `status.read`. Ownership is the visibility
+rule for this redacted operational receipt: revoking input/export grants does not
+hide whether the actor's already accepted work paused or finished. Other actors'
+jobs and missing IDs both return404, including for administrators. It exposes
+only ID, kind, durable state, job/checkpoint revisions, creation/completion and
+observation times, and a closed reason (`resource_limit`, `execution_refused`,
+`other` or null). No scope, selection, event count, destination, file or artifact
+authority is included. State is not proof of worker liveness or file availability.
+The lookup does not refresh session activity. Its nonrenewable delivery window
+starts before SQL and gates actual socket writes; Control renewal cannot extend
+the original session observation. Ordinary denial/missing results complete the
+transaction without poisoning healthy Control. Unknown SQL outcomes remain fatal.
+This slice is under practical qualification; bounded listing, broader job kinds,
+artifact discovery, explicit resume/cancel and their full UI/CLI journeys remain
+selected P08/P09 work. No historical schema checksum changes.
+
 ## Local first-owner transition
 
 The first CLI consumer is `access owner-token issue --username NAME --request-id

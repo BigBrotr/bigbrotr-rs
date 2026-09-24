@@ -137,7 +137,7 @@ impl Supervisor<'_> {
                     let execution = tokio::select! {
                         biased;
                         _ = self.stop.requested() => return Err((4,"private operation cancelled during native work; Control outcome unresolved".into())),
-                        result = monitored(self.management.as_mut().expect("management work source").execute(work,self.owner,maximum,false,None), &monitor) => result?,
+                        result = monitored(self.management.as_mut().expect("management work source").execute(work,self.owner,self.lease,maximum,false,None), &monitor) => result?,
                     };
                     let response = match execution {
                         management::Execution::Complete(response) => response,

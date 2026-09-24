@@ -113,6 +113,19 @@ needs no current destination or native reader. A changed command under the same
 key conflicts. After a lost reply retain the exact key/body for resolution. A
 receipt does not prove file availability or current job state.
 
+The private panel now provides **Inspect your job** after sign-in. Paste the job
+ID from the acceptance receipt and select **Check job**. The initial view is
+under practical qualification and shows only your own export's stored state,
+revision/checkpoint, times and a redacted reason. Check again to refresh it;
+there is no background polling or idle-session extension. Signing out, session
+expiry or a session change clears the view and cancels a pending lookup.
+The same observation is `GET /management/v1/jobs/{job_id}` with a live session
+cookie and explicit `X-CSRF-Token`; supply neither body nor query parameters.
+Current dataset `status.read` is required. Missing IDs and jobs owned by other
+accounts share404. Input permission loss does not hide your operational receipt.
+This observation supplies no download or execution authority. Job listing,
+resume/cancel controls and artifact discovery remain required work.
+
 The runtime probes the checksum-validated schema and job privileges at startup.
 Without protocol813 or its privileges the route refuses503 while an otherwise
 valid session/history runtime remains available when no destination is selected.

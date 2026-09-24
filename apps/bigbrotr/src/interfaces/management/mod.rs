@@ -6,7 +6,7 @@ mod history;
 pub(super) use history::{HistoryBody, HistoryWork};
 mod transport;
 pub(super) use assets::Assets;
-use bigbrotr::runtime::policy_authority::DeliveryWindow;
+use bigbrotr::runtime::policy_authority::{DeliveryWindow, PolicyLeaseTracker};
 use bigbrotr::{
     export::destination::{CheckedDestination, LocalDestination},
     management::{
@@ -269,6 +269,7 @@ impl Management {
         &mut self,
         work: Work,
         owner: &mut ControlSession,
+        lease: &mut PolicyLeaseTracker,
         maximum: Duration,
         native_reader: bool,
         destination: Option<&Arc<LocalDestination>>,
@@ -305,6 +306,39 @@ impl Management {
                     return Ok(Execution::Complete(None));
                 }
                 match operation {
+                    Operation::JobStatus {
+                        session,
+                        csrf,
+                        job,
+                        delivery,
+                    } => {
+                        if !self.export_jobs {
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::ArchiveUnavailable),
+                            ))));
+                        }
+                        let action = lease
+                            .begin_action(lease.known_epoch())
+                            .map_err(|e| (4, e.to_string()))?;
+                        let result =
+                            sql(maximum, owner.observe_browser_job(&session, &csrf, job)).await?;
+                        let result = match result {
+                            Ok(status) => {
+                                // Renewing the enclosing Control lease must not
+                                // extend this session's authority at socket IO.
+                                match action.complete(status.remaining()) {
+                                    Ok(window) => match delivery.action.bind(window) {
+                                        Ok(()) => Ok(Reply::JobStatus(status.into_observation())),
+                                        Err(_) => Err(SessionError::Unavailable),
+                                    },
+                                    _ => Err(SessionError::Unavailable),
+                                }
+                            }
+                            Err(error) => Err(error),
+                        };
+                        return Ok(Execution::Complete(Some(Response(completion, result))));
+                    }
                     Operation::Job {
                         session,
                         csrf,

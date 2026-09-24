@@ -10,7 +10,7 @@ const observed: SessionObservation = {
   grant_revision: '2', policy_revision: '3', expires_at_us: futureExpiry,
   idle_expires_at_us: futureExpiry, stored_actions: ['data.read'], authority: 'observation-only'
 };
-const client = (inspect: ManagementClient['inspect']): ManagementClient => ({
+const client = (inspect: ManagementClient['inspect']): Pick<ManagementClient, 'inspect' | 'login' | 'logout'> => ({
   inspect, login: async () => observed, logout: async () => {}
 });
 

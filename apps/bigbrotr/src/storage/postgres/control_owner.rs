@@ -24,6 +24,9 @@ mod browser_reauthentication;
 mod export_execution;
 #[path = "export_jobs.rs"]
 mod export_jobs;
+#[path = "job_status.rs"]
+mod job_status;
+pub use job_status::AuthorizedJobStatus;
 #[path = "history.rs"]
 mod history;
 pub use history::HistoryAuthorization;

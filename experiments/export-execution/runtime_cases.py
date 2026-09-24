@@ -105,7 +105,10 @@ def main(root, profile=None):
         result['output']=row
         result['output_hashes']={str((artifact/name).relative_to(root/'out')):sha(artifact/name) for name in ['events.jsonl','manifest.json']}
         save()
-        if profile == 'revocation':
+        if profile == 'job-status':
+            from status_cases import run as status
+            result['job_status'] = status(root, state, sql, policy)
+        elif profile == 'revocation':
             from revocation_cases import run as revoke
             result['revocation'] = revoke(root, state, sql, policy, expected_manifest)
             result['output_hashes'].update(result['revocation']['output_hashes'])
@@ -128,5 +131,5 @@ def main(root, profile=None):
 
 
 if __name__=='__main__':
-    assert len(sys.argv)==2 or sys.argv[2:] in (['parking'], ['busy'], ['pause-commits'], ['revocation'])
+    assert len(sys.argv)==2 or sys.argv[2:] in (['parking'], ['busy'], ['pause-commits'], ['revocation'], ['job-status'])
     main(Path(sys.argv[1]).resolve(), sys.argv[2] if len(sys.argv)==3 else None)
