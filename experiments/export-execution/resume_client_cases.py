@@ -49,8 +49,9 @@ def run(root, state, sql, observe):
         assert name not in result['cases']
         send(client,json.dumps(dict(name=name,operation=operation,**fields))+'\n')
         value=event(client,name);result['cases'][name]=value;save();return value
-    def resume(name, key='f5'*16, revision='7', policy='2', status=200):
-        value=request(name,'resume',key=key,command=dict(expected_job_revision=revision,expected_config_revision='1',expected_policy_revision=policy))
+    def resume(name, key='f5'*16, revision='7', policy=None, status=200):
+        value=(request(name,'resume-current',key=key,revision=revision) if policy is None else
+               request(name,'resume',key=key,command=dict(expected_job_revision=revision,expected_config_revision='1',expected_policy_revision=policy)))
         assert value['status']==status and value['requests']==1,value
         if status in (200,202):
             stored=json.loads(sql(f"SELECT json_build_object('time',c.accepted_at_us::text,'revision',(d.expected_job_revision+1)::text) FROM control.export_resume_commands d JOIN control.management_commands c USING(actor_id,request_key) WHERE d.job_id=decode('{job}','hex') AND d.request_key=decode('{key}','hex')"))
@@ -69,9 +70,16 @@ def run(root, state, sql, observe):
         owner=result['server_ready']['owner']
         client=Process(['docker','exec','-i',runner,'env','-i','/tools/node/bin/node','/out/build/source/experiments/export-execution/resume_client.mjs',job],input_pipe=True)
         result['client_ready']=event(client,'ready');assert result['client_ready']['node']=='v26.4.0'
-        assert request('login','login')['status']==201
+        result['heads']=json.loads(sql("SELECT json_build_object('config_revision',config_revision::text,'policy_revision',policy_revision::text) FROM control.datasets"))
+        assert result['heads']==dict(config_revision='1',policy_revision='2')
+        for name,operation,status in [('login','login',201),('inspect','inspect',200)]:
+            value=request(name,operation)
+            assert value['status']==status
+            assert {k:value['observation'][k] for k in result['heads']}==result['heads']
+        # Explicit /me is activity; subsequent resume commands must not touch it.
         result['sessions_before']=sessions()
         resume('historical',key='e4'*16,revision='4',policy='1')
+        resume('historical-body-conflict',key='e4'*16,status=409)
         resume('stale-revision',revision='6',status=409)
         assert observe()==before
         receipt=resume('accepted',status=202)
@@ -91,7 +99,7 @@ def run(root, state, sql, observe):
         resume('deactivated-session',status=401)
         result['client_terminal']=request('client-terminal','stop')
         assert client.wait(10)==0 and not client.stderr and not client.overflow
-        assert [x['status'] for x in result['client_terminal']['traffic']]==[201,200,409,202,200,409,200,401]
+        assert [x['status'] for x in result['client_terminal']['traffic']]==[201,200,200,409,409,202,200,409,200,401]
         send(server,json.dumps(dict(request='server-terminal',operation='stop'))+'\n')
         result['server_terminal']=event(server,'server-terminal')
         assert result['server_terminal']==dict(event='server-terminal',operation='stop',exit=0,parent_absent=True,lock_available=True,scratch_empty=True)

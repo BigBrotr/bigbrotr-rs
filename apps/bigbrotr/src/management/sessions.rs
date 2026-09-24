@@ -158,6 +158,7 @@ pub struct SessionObservation {
     pub principal: PrincipalId,
     pub credential_revision: u64,
     pub grant_revision: u64,
+    pub config_revision: u64,
     pub policy_revision: u64,
     pub expires_at_us: i64,
     pub idle_expires_at_us: i64,

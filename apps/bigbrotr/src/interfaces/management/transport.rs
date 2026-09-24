@@ -1045,7 +1045,7 @@ async fn dispatch(
 fn observation(value: SessionObservation) -> serde_json::Value {
     json!({"format":"bigbrotr-session/1", "principal_id":value.principal.to_string(),
         "credential_revision":value.credential_revision.to_string(), "grant_revision":value.grant_revision.to_string(),
-        "policy_revision":value.policy_revision.to_string(), "expires_at_us":value.expires_at_us.to_string(),
+        "config_revision":value.config_revision.to_string(), "policy_revision":value.policy_revision.to_string(), "expires_at_us":value.expires_at_us.to_string(),
         "idle_expires_at_us":value.idle_expires_at_us.to_string(), "stored_actions":value.stored_actions,
         "authority":"observation-only"})
 }

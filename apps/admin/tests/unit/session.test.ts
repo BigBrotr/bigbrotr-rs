@@ -7,7 +7,7 @@ import type { ManagementClient, SessionObservation } from '@bigbrotr/api-client/
 const futureExpiry = String(BigInt(Date.now() + 3_600_000) * 1000n);
 const observed: SessionObservation = {
   format: 'bigbrotr-session/1', principal_id: 'a'.repeat(32), credential_revision: '1',
-  grant_revision: '2', policy_revision: '3', expires_at_us: futureExpiry,
+  grant_revision: '2', config_revision: '4', policy_revision: '3', expires_at_us: futureExpiry,
   idle_expires_at_us: futureExpiry, stored_actions: ['data.read'], authority: 'observation-only'
 };
 const client = (inspect: ManagementClient['inspect']): Pick<ManagementClient, 'inspect' | 'login' | 'logout'> => ({

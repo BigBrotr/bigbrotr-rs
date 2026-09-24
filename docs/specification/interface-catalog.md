@@ -148,6 +148,15 @@ Restrictive drain and private history delivery remain unqualified. Its
 `bigbrotr-session/1` response carries exact decimal-string revisions/microseconds,
 closed stored action names and `authority=observation-only`. Stored grants are not
 reusable action capabilities. Cookie/CSRF secrets never appear in the JSON body.
+Both login and self inspection include required `config_revision` and
+`policy_revision`, from the same locked and checked dataset head as the session
+observation. These canonical positive uint64 strings supply expected command
+revisions; they do not freeze future state, authorize a command or describe its
+application. A changed head still requires a fresh observation and explicit
+resubmission after conflict, never automatic rebasing. This pre-release extension
+requires a matching backend/private bundle: closed older session validators reject
+the added field, and new validators reject observations missing it. It changes no
+stored session or applied SQL format.
 GET self inspection counts as user activity, so the browser must not poll it to
 keep an unattended session alive. Full grant/audit and remote-TLS
 routes remain separate required implementation. Generated types cover this actual

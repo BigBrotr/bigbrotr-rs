@@ -30,7 +30,7 @@ const I64_MAX = 9223372036854775807n;
 
 function observation(value: unknown): SessionObservation {
   if (!validateSession(value)) throw new ManagementFailure('incompatible');
-  for (const key of ['credential_revision', 'grant_revision', 'policy_revision'] as const) {
+  for (const key of ['credential_revision', 'grant_revision', 'config_revision', 'policy_revision'] as const) {
     if (BigInt(value[key]) > U64_MAX) throw new ManagementFailure('incompatible');
   }
   const absolute = BigInt(value.expires_at_us);

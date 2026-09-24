@@ -4,7 +4,7 @@ import { createManagementClient, ManagementFailure, sessionDeadlineMs } from '..
 
 const observed = {
   format: 'bigbrotr-session/1', principal_id: '0123456789abcdef0123456789abcdef',
-  credential_revision: '18446744073709551615', grant_revision: '9007199254740993', policy_revision: '1',
+  credential_revision: '18446744073709551615', grant_revision: '9007199254740993', config_revision: '9007199254740995', policy_revision: '1',
   expires_at_us: '1800000000000999', idle_expires_at_us: '1799999990000001',
   stored_actions: ['audit.read', 'data.read'], authority: 'observation-only'
 };
@@ -36,6 +36,16 @@ test('fixed relative routes, exact credentials, cookies and no automatic retry',
     assert.equal(init?.mode, 'same-origin');
   }
   assert.equal(new Headers(requests[2]?.init?.headers).get('x-csrf-token'), 'a'.repeat(64));
+});
+
+test('session configuration revision is exact and required for command context', async () => {
+  const value = { ...observed, config_revision: '18446744073709551615' };
+  const api = createManagementClient({ fetch: async (_, init) => json(value, init?.method === 'POST' ? 201 : 200) });
+  assert.deepEqual(await api.login({ username: 'owner', password: 'actual password' }), value);
+  assert.deepEqual(await api.inspect(), value);
+  for (const config_revision of [undefined, null, 1, '0', '01', '18446744073709551616']) {
+    await assert.rejects(createManagementClient({ fetch: async () => json({ ...value, config_revision }) }).inspect(), failure('incompatible'));
+  }
 });
 
 test('absent, malformed and duplicate CSRF never dispatch a logout', async () => {

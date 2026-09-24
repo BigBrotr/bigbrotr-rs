@@ -9,14 +9,15 @@ const job = process.argv[2];
 assert.match(job, /^[0-9a-f]{32}$/);
 const origin = 'http://127.0.0.1:18080';
 const cookies = new Map();
+let context;
 const traffic = [];
 const lifetime = setTimeout(() => { console.error('typed resume fixture lifetime exceeded'); process.exit(3); }, 90_000);
 const client = createManagementClient({
   cookie: () => [...cookies].map(([k, v]) => `${k}=${v}`).join('; '),
   fetch: async (path, init) => {
     assert.equal(typeof path, 'string');
-    assert(path === '/management/v1/sessions' || path === `/management/v1/jobs/${job}/resume`);
-    assert.equal(init.method, 'POST');
+    assert(['/management/v1/sessions', '/management/v1/me', `/management/v1/jobs/${job}/resume`].includes(path));
+    assert.equal(init.method, path.endsWith('/me') ? 'GET' : 'POST');
     assert(traffic.length < 16);
     const headers = new Headers(init.headers);
     headers.set('Origin', origin);
@@ -64,7 +65,18 @@ try {
       let value;
       if (request.operation === 'login') {
         assert.deepEqual(Object.keys(request).sort(), ['name', 'operation']);
-        value = await client.login({ username: 'alice', password: 'Independent owner password 2026' });
+        value = context = await client.login({ username: 'alice', password: 'Independent owner password 2026' });
+      } else if (request.operation === 'inspect') {
+        assert.deepEqual(Object.keys(request).sort(), ['name', 'operation']);
+        value = context = await client.inspect();
+      } else if (request.operation === 'resume-current') {
+        assert.deepEqual(Object.keys(request).sort(), ['key', 'name', 'operation', 'revision']);
+        assert(context);
+        value = await client.resumeExport(job, request.key, {
+          expected_job_revision: request.revision,
+          expected_config_revision: context.config_revision,
+          expected_policy_revision: context.policy_revision
+        });
       } else {
         assert.equal(request.operation, 'resume');
         assert.deepEqual(Object.keys(request).sort(), ['command', 'key', 'name', 'operation']);
@@ -80,5 +92,5 @@ try {
   }
   assert(stopped, 'missing explicit stop');
 } finally {
-  cookies.clear(); input.close(); clearTimeout(lifetime);
+  cookies.clear(); context = undefined; input.close(); clearTimeout(lifetime);
 }

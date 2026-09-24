@@ -149,6 +149,12 @@ wire types and runtime schemas. After an intentional contract edit, run
 validators ship without a runtime compiler or eval. Relative URLs, same-origin
 credentials, streaming response limits and explicit timeout/cancellation remain
 in the handwritten client transport. Session models are not action capabilities.
+Build and upgrade the backend and private bundle together. Session observations
+now require `config_revision` alongside `policy_revision`, so commands can use
+the heads actually observed during authentication. Older closed validators reject
+the added field; the current client rejects its absence. This pre-release wire
+change requires no database migration and does not permit automatic command retry
+with newer revisions.
 
 These checks establish local build/client behavior. Real production CSP,
 Chromium/Firefox/WebKit, Rust/PostgreSQL and installed root/subpath journeys still

@@ -23,11 +23,10 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD 15569cca9fbc055de3652f77b18fd100ef88604b, tree
-5c9d3431b653686322711c7a0656e9b48a569ba5 on main; private origin/main remains
-fd55f036e0ada7dfc68a4c04cd4bed070d3cbac5. Root owns the pending evidence/inventory/
-operator/task/checkpoint documentation. Root also owns the next session-context
-product/contract/client/test edits; no foreign work.
+Last verified HEAD def54030b8a5296ee302193f25d1839c9237e760, tree
+2716fe2d98ea6002d83061c68b271a8c813d24f0 on main; private origin/main matches. Root owns the
+session-context product/contract/client/test/fixture edits and this checkpoint.
+No foreign work. The15569cc scoped evidence and inventory are committed/pushed.
 
 The resume-client lab is stopped-retained: export-runtime-15569cc, owner
 8673756b1b88c9128e362bd02f1060e1. Both owned containers PID0/noOOM, runner0/PG137;
@@ -35,15 +34,18 @@ network removed and both databases have zero backends. All680 prior containers,
 including eight unrelated running, preserve lifecycle/mount/network state.
 Free127914237952→127506673664bytes. No Rust compilation or new build cache.
 
-Next bounded action: commit15569cc evidence, then commit and run current
-configuration revision observations
+Next bounded action: commit and run current configuration revision observations
 for the P09 resume consumer. The edited lock_dataset checks both authoritative
 heads in the transaction and returns the checked
 PolicySnapshot through issue/inspect/observation. Canonical config_revision and
 generated validators implemented. Local old-validator RED, new17clienttests/
 typecheck/contractcheck,10paneltests/Svelte0errors0warnings,27Rust HTTPtests pass.
 Updated Node fixture explicitly inspects the session, independently checks SQL
-heads1/2 and uses the returned values for new resume bodies. Native NOT_RUN.
+heads1/2 and uses the returned values for new resume bodies. Native NOT_RUN; use transfer-resume-client.py with only the repository argument
+(no4a reuse because product inputs changed), fresh exact-Git build. After cleanup,
+collect-runtime.py and review-session-context.py verify captured build/client/SQL.
+The updated fixture adds10requests including otherwise-current old-key/body
+conflict before new acceptance. Independent static review pending.
 No DDL. Closed old client schemas will reject the added field: backend and private
 bundle must upgrade together; document that pre-release compatibility boundary.
 Do not invent revision1 or add technical manual fields merely to unblock the UI.

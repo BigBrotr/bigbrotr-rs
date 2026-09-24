@@ -183,6 +183,15 @@ fixture failures remain recorded. Full-page screenshots expose a skip-link
 overlay whose viewport/focus behavior still needs investigation. This does not
 complete Step 2, general accessibility, job discovery, resume/cancel or downloads.
 
+The resume consumer obtains expected configuration/security revisions from the
+current session observation, and the job revision from its own job observation.
+Keep the original command key and all three revisions together for explicit retry;
+never replace them from a later observation while resolving an uncertain result.
+The session API now supplies the checked configuration head alongside policy in
+the same transaction. Its pre-release contract requires a matching private bundle;
+no new stored session format or migration is involved. Native validation and the
+complete browser resume/reconnection journey still gate this consumer.
+
 - [ ] **Step 3:** implement typed queries/saved private views plus explicit export, storage/headroom and maintenance pages. Show measured rates/windows and unknown forecast, no unmeasured capacity promise. Explain current/historical policy and full/projection differences before download.
 
 Saved-view persistence uses P08-T03's owner-scoped CAS routes. Storage exposes optional content/provenance/index readiness, cost, rebuild/retire jobs and affected capability; index removal is not removal of the full archival evidence. Exercise rebuild failure with the old complete generation still readable, then successful replacement and eventual retirement after pins release.

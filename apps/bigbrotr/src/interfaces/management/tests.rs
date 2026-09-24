@@ -827,6 +827,7 @@ async fn actual_http_keeps_separate_cookies_and_explicit_csrf_proof() {
                 principal: "01010101010101010101010101010101".parse().unwrap(),
                 credential_revision: 1,
                 grant_revision: 1,
+                config_revision: u64::MAX,
                 policy_revision: 1,
                 expires_at_us: 50,
                 idle_expires_at_us: 40,
@@ -853,6 +854,9 @@ async fn actual_http_keeps_separate_cookies_and_explicit_csrf_proof() {
     );
     assert!(!body.contains(&session) && !body.contains(&csrf));
     assert!(body.contains("observation-only"));
+    let observed: serde_json::Value = serde_json::from_str(body).unwrap();
+    assert_eq!(observed["config_revision"], "18446744073709551615");
+    assert_eq!(observed["policy_revision"], "1");
     let logout = format!(
         "DELETE /management/v1/sessions/current HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nCookie: BigBrotrLocalSession={session}; BigBrotrLocalCsrf={csrf}\r\n"
     );

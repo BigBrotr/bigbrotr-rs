@@ -177,6 +177,8 @@ export interface components {
             credential_revision: string;
             /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
             grant_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. Configuration head checked in the same transaction as the policy/session observation; input for expected revisions, never command authority. */
+            config_revision: string;
             /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
             policy_revision: string;
             /** @description Positive Unix microseconds, maximum9223372036854775807. A server observation, not a renewable client-side authority lease. */

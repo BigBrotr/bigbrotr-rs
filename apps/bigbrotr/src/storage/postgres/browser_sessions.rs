@@ -225,7 +225,7 @@ pub(super) async fn lock_dataset(
     tx: &Transaction<'_>,
     dataset: DatasetId,
     expected: PolicySnapshot,
-) -> Result<u64, SessionError> {
+) -> Result<PolicySnapshot, SessionError> {
     let row = tx.query_one("SELECT left(config_revision::text,21),left(policy_revision::text,21) FROM control.datasets WHERE dataset_id=$1::bytea AND config_revision IS NOT NULL AND policy_revision IS NOT NULL FOR UPDATE", &[&&dataset.as_bytes()[..]]).await.map_err(backend)?;
     // A newly observed authoritative head cannot be ignored until the next poll.
     // Reject before login charges, session issuance, touches or revocation.
@@ -234,7 +234,7 @@ pub(super) async fn lock_dataset(
     {
         return Err(SessionError::PolicyChanged);
     }
-    Ok(expected.policy_revision)
+    Ok(expected)
 }
 pub(super) async fn now(tx: &Transaction<'_>) -> Result<i64, SessionError> {
     tx.query_one(
@@ -330,7 +330,7 @@ async fn issue(
     id: &[u8; 16],
     token: &BrowserSecret,
     csrf: &BrowserSecret,
-    policy: u64,
+    policy: PolicySnapshot,
 ) -> Result<SessionObservation, SessionError> {
     // Account first, credential second. Reset/deactivation uses this same order.
     let row = lock_account(tx, dataset, account.principal).await?;
@@ -389,7 +389,7 @@ async fn inspect(
     dataset: DatasetId,
     token: &BrowserSecret,
     touch: bool,
-    policy: u64,
+    policy: PolicySnapshot,
 ) -> Result<SessionObservation, SessionError> {
     let (principal, account) = session_account(tx, dataset, token).await?;
     let row = tx.query_opt("SELECT substring(session_id FROM 1 FOR 17),left(credential_revision::text,21),left(authentication_revision::text,21),expires_at_us,idle_expires_at_us,idle_window_us,last_seen_at_us,revoked_at_us IS NULL FROM control.browser_sessions WHERE dataset_id=$1::bytea AND token_digest=$2::bytea FOR UPDATE", &[&&dataset.as_bytes()[..], &&token.session_digest()[..]]).await.map_err(backend)?.ok_or(SessionError::Denied)?;
@@ -464,7 +464,7 @@ async fn observation(
     dataset: DatasetId,
     principal: PrincipalId,
     account: &Row,
-    policy: u64,
+    policy: PolicySnapshot,
     expires: i64,
     idle: i64,
 ) -> Result<SessionObservation, SessionError> {
@@ -494,7 +494,8 @@ async fn observation(
         principal,
         credential_revision: revision(account, 1)?,
         grant_revision: revision(account, 3)?,
-        policy_revision: policy,
+        config_revision: policy.config_revision,
+        policy_revision: policy.policy_revision,
         expires_at_us: expires,
         idle_expires_at_us: idle,
         stored_actions,
