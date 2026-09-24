@@ -73,6 +73,12 @@ impl LocalDestination {
         self.verify()?;
         Ok(CheckedDestination { destination: self })
     }
+    /// Observe available filesystem capacity through the retained descriptor.
+    /// This is a preflight, not a quota or a grant against concurrent writers.
+    pub fn check_growth(&self, growth: u64, reserve: u64) -> Result<(), Error> {
+        self.verify()?;
+        check_filesystem_growth(&self.directory, growth, reserve)
+    }
     pub fn initialize(root: &Path, dataset: DatasetId, id: DestinationId) -> Result<Self, Error> {
         Self::load(root, dataset, id, true)
     }
@@ -213,6 +219,24 @@ impl LocalDestination {
     }
 }
 
+/// A bounded local preflight; resident/retained bytes already reduce f_bavail.
+/// Callers serialize their outstanding work and include its entire growth plus
+/// allocation/metadata headroom. This does not replace a shared reservation ledger.
+pub fn check_filesystem_growth(directory: &File, growth: u64, reserve: u64) -> Result<(), Error> {
+    let stats = rustix::fs::fstatvfs(directory).map_err(|_| Error::Filesystem)?;
+    if stats.f_frsize == 0 || stats.f_bavail > stats.f_blocks {
+        return Err(Error::ResourceLimit);
+    }
+    let free = stats
+        .f_bavail
+        .checked_mul(stats.f_frsize)
+        .ok_or(Error::ResourceLimit)?;
+    if free.checked_sub(growth).is_none_or(|left| left < reserve) {
+        return Err(Error::ResourceLimit);
+    }
+    Ok(())
+}
+
 pub fn validate_root(root: &Path) -> Result<(), Error> {
     let text = root.to_str().ok_or(Error::InvalidRoot)?;
     if !root.is_absolute()
@@ -279,4 +303,30 @@ fn matches_marker(parent: &File, expected: &[u8]) -> Result<bool, Error> {
         return Err(Error::Mismatch);
     }
     Ok(true)
+}
+
+#[cfg(test)]
+mod capacity_tests {
+    use super::*;
+    #[test]
+    fn filesystem_growth_never_consumes_the_completion_reserve() {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::set_permissions(root.path(), std::fs::Permissions::from_mode(0o700)).unwrap();
+        let path = root.path().canonicalize().unwrap();
+        let destination = LocalDestination::initialize(
+            &path,
+            [1; 16].try_into().unwrap(),
+            [2; 16].try_into().unwrap(),
+        )
+        .unwrap();
+        assert_eq!(destination.check_growth(0, 0), Ok(()));
+        assert_eq!(
+            destination.check_growth(1, u64::MAX),
+            Err(DestinationError::ResourceLimit)
+        );
+        assert_eq!(
+            destination.check_growth(u64::MAX, 1),
+            Err(DestinationError::ResourceLimit)
+        );
+    }
 }
