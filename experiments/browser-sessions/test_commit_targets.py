@@ -32,6 +32,19 @@ class Targets(unittest.TestCase):
                       b'SELECT job_id FROM control.export_jobs WHERE request_key=$1']:
             self.assertFalse(proxy.control_target_query('control-export-accept', query))
 
+    def test_export_completion_does_not_target_reservation_or_reader(self):
+        target = 'control-export-complete'
+        self.assertTrue(proxy.control_target_query(target,
+            b'INSERT INTO control.artifacts(artifact_id,job_id) VALUES($1,$2)'))
+        for query in [b'INSERT INTO control.export_jobs(job_id) VALUES($1)',
+                      b'INSERT INTO control.export_execution_units(job_id) VALUES($1)',
+                      b'INSERT INTO control.archive_snapshot_pins(lease_id) VALUES($1)',
+                      b'INSERT INTO control.artifact_files(artifact_id) VALUES($1)',
+                      b'SELECT artifact_id FROM control.artifacts',
+                      b"SELECT 'INSERT INTO control.artifacts('",
+                      b'UPDATE control.jobs SET state=$1']:
+            self.assertFalse(proxy.control_target_query(target, query))
+
 
 class SessionCompletions(unittest.TestCase):
     def observer(self):

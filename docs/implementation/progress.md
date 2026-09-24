@@ -21,9 +21,11 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD main944775d829fc82e0f56d01af0bf57c5591fde44e candidate;
-origin/main43e4fee4ff95d0c525ff8dd2a8ef54153b778b2c pushed/ls-remote confirmed.
-Root owns recovery evidence/inventory/checkpoint documentation updates only.
+Last verified HEAD/origin main b146da4bb286e5ac7ecba891ba7c6e86336fb2d4;
+verified coherent prefix pushed and ls-remote confirmed.
+Root owns WIP completion-COMMIT fixtures: native_commit_proxy.py target,
+test_commit_targets.py discriminator, recovery_client.py acceptance generalization,
+runtime_cases.py stage, new commit_client.py/commit_cases.py and this checkpoint.
 Product input remains f70ac17. No other contributor writes or merge/rebase.
 
 [Signed installed recovery](evidence/p08-export-runtime-recovery-native-20260924.json)
@@ -186,13 +188,26 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Record/push scoped reviewed evidence on main (never the negative). Then qualify
-installed completion
-COMMIT reply loss using the existing exact-request SQL proxy/recovery contract;
-resolve original job/unit before retry and retain unknown pins. Follow with current
-authority, cancellation, failure parking and resource faults; no full P08/M1 claim.
-Outer container shutdown was the negative fixture's final process exclusion.
-Preserve original failures and all unresolved pins/PostgreSQL/archive evidence.
+Independent AI source review completed: missing unit_xmin comparison added; no
+other concrete blocker found. Root also reviewed complete fixture/callers. Commit
+one clean exact candidate. Reuse f70 installed binaries only after full product/
+build input equality, then run on Tux. No active lab; native COMMIT fixture NOT_RUN.
+New proxy target control-export-complete selects INSERT control.artifacts; target
+regression RED(KeyError) then GREEN9tests plus1existing wire test. Logs under
+.research/implementation/export-execution/completion-target-{red,green,wire}.log.
+Owning current proxy449lines, accepted-job COMMIT client/cases and wire tests read.
+
+New stage follows existing empty+signed crash/restart. Policy5 admin/cap256 accepts
+two signed jobs viaHTTP and logs out; policy6 headless/cap1GiB executes. First sorted
+job loses COMMIT reply AFTER server completion; second loses COMMIT BEFORE forward.
+Both actual parents must exit4CommitUnknown with database backends gone. Fresh
+restart must leave the already completed job/SQL+xmin/files+inodes unchanged,
+rebuild only the uncommitted unit on fresh inodes, retain all unknown old pins and
+release only its new reader. Compare complete literal manifests/399bytes, actual
+proxyPID/counts, durable rows and terminal pin state. Wrapper cleanup alone is
+never process exclusion; outer lab remains final cleanup on any failure.
+After qualification, continue authority/cancellation/failure-parking/resource gates;
+no full P08/M1 claim. Preserve all original negative and unknown state.
 
 Keep OutputCustody and its output OwnedPermit outside cancellable supervise
 through actual Control driver join; each blocked worker separately owns the same

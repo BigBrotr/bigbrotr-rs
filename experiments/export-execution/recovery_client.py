@@ -27,10 +27,10 @@ def wait(name, server):
         time.sleep(.01)
 
 
-def accept():
-    server = http.Server('executor-signed-accept')
+def accept(revision=3, keys=('d3',), label='signed-accept'):
+    server = http.Server('executor-' + label)
     try:
-        ready = server.ready(3)
+        ready = server.ready(revision)
         assert len(ready['listeners']) == 1
         status, _, headers = http.request('POST', '/management/v1/sessions',
             dict(username='alice', password='Independent owner password 2026'))
@@ -48,12 +48,16 @@ def accept():
             allocation=dict(catalog_id='5a'*16, frontier_revision='1'),
             destination=dict(id='e1'*16, binding_sha256=hashlib.sha256(
                 Path('/out/signed_normal/export-destination/destination.json').read_bytes()).hexdigest()),
-            expected_config_revision='1', expected_policy_revision='3')
-        status, receipt, _ = http.request('POST', '/management/v1/jobs', body,
-            {**auth, 'Idempotency-Key': 'd3'*16})
-        assert status == 202 and receipt['created'] and receipt['execution'] == 'unobserved', (status, receipt)
-        assert http.request('POST', '/management/v1/jobs', body,
-            {**auth, 'Idempotency-Key': 'd3'*16})[:2] == (200, {**receipt, 'created': False})
+            expected_config_revision='1', expected_policy_revision=str(revision))
+        receipts = []
+        for prefix in keys:
+            key = prefix * 16
+            status, receipt, _ = http.request('POST', '/management/v1/jobs', body,
+                {**auth, 'Idempotency-Key': key})
+            assert status == 202 and receipt['created'] and receipt['execution'] == 'unobserved', (status, receipt)
+            assert http.request('POST', '/management/v1/jobs', body,
+                {**auth, 'Idempotency-Key': key})[:2] == (200, {**receipt, 'created': False})
+            receipts.append(receipt)
         # Logout is a204 with no JSON body; use the actual HTTP protocol directly.
         connection = HTTPConnection('127.0.0.1', 18080, timeout=8)
         connection.request('DELETE', '/management/v1/sessions/current', headers={
@@ -63,7 +67,9 @@ def accept():
         connection.close()
         assert http.request('GET', '/management/v1/me', auth=auth)[0] == 401
         server.stop()
-        record('signed-accept', dict(status='PASS', receipt=receipt, command=body, logged_out=True))
+        result = dict(status='PASS', command=body, logged_out=True)
+        result.update({'receipt': receipts[0]} if len(receipts) == 1 else {'receipts': receipts})
+        record(label, result)
     finally:
         server.cleanup()
 
@@ -102,4 +108,4 @@ def runtime(crash):
 
 
 if __name__ == '__main__':
-    {'accept': accept, 'crash': lambda: runtime(True), 'restart': lambda: runtime(False)}[sys.argv[1]]()
+    {'accept': accept, 'accept-commits': lambda: accept(5, ('d5', 'd6'), 'commit-accept'), 'crash': lambda: runtime(True), 'restart': lambda: runtime(False)}[sys.argv[1]]()

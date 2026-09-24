@@ -108,6 +108,10 @@ def main(root):
         from recovery_cases import run as recover
         result['recovery'] = recover(root, state, sql, policy, expected_manifest)
         result['output_hashes'].update(result['recovery']['output_hashes'])
+        save()
+        from commit_cases import run as commit_faults
+        result['completion_commits'] = commit_faults(root, state, sql, policy, expected_manifest)
+        result['output_hashes'].update(result['completion_commits']['output_hashes'])
         assert files=={str(p.relative_to(root/'out')):sha(p) for p in sorted((root/'out/signed_normal/kind=7').rglob('*.parquet'))}
         result['status']='PASS'
     except BaseException as error:
