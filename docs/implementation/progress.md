@@ -21,29 +21,31 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified main/HEAD and origin/main9cd60a542b7f6a7cc16dfdb5d9886773262694b9,
-clean before the next slice. Responsiveness evidence is committed/pushed and the
-prior turn was progress. Root now owns only the synchronous export action-window
-gate, its Rust/native fixtures, owning output contract and checkpoint edits.
-No active experiment or cleanup debt at this checkpoint.
+Last verified main/HEAD275f641d632009bd0eb99855ce89b05082c0f285,
+clean candidate; origin/main9cd60a542b7f6a7cc16dfdb5d9886773262694b9.
+Root owns only evidence/inventory/checkpoint edits after exact native qualification.
+No active experiment or cleanup debt. The product remains incomplete.
 
-A real-clock100ms ActionWindow test expired during the first short flush while
-AtomicBool stayedfalse and the independently renewed Control lease stayedvalid.
-It failed against the old writer, then passed with a synchronous predicate below
-BufWriter. ExportUnit::write_while checks it at cancellation checkpoints and each
-actual writer retry; PreparedExport::write_with_window owns the nonrenewable
-window. Raw filesystem/research APIs still grant no job authority. The automatic
-executor must use the window-bound method. Added a post-verification/pre-rename
-check because filesystem verification can itself consume the remaining window.
-Mac2 flush tests,7 real file tests and Clippy pass; logs under
-.research/implementation/export-execution/action-{flush-red,flush-green,files-mac,clippy-mac}.log.
-Next run exact native export-files laboratory with the new paired fault: actual
-first data write delayed at exit250ms; ungated negative completes after expiry,
-gated refuses further sync/manifest/rename with334byte staging only. This is NOT_RUN,
-not a production/executor qualification. Independent source review found no write
-gate bypass and narrowed wording to permit synchronization of an already admitted
-namespace change while withholding completion. Native case
-sources extend the existing lab; no separate maintenance or master plan.
+[Action-window output gate](evidence/p08-export-action-window-native-20260924.json):
+real-clock100ms partial-buffer regression first failed against atomic-only output,
+then passed with a synchronous predicate. Control renewal cannot renew that action.
+PreparedExport::write_with_window carries the nonrenewable window to each actual
+writer call; recheck after destination verification before rename. Raw primitives
+grant no job authority. An already admitted syscall/namespace sync may finish;
+new payload writes/publication and successful completion remain gated.
+
+Fresh exact275f641 native parent/probe build,2 flush tests,7 file tests,Clippy,
+14 main functional/fault cases plus bind preparation and separate bind case pass.
+Actual250ms delayed334byte write: ungated negative completes after expiry;
+gated exits4/Cancelled with only334byte staging, no manifest/final or later sync/
+rename. Both witnesses show expired action, valid Control and false cancellation.
+Mac RED/GREEN logs remain under export-execution/action-*.log. Native capture
+.research/implementation/export-files/attempt-275f641 has211files/1155Git sources,
+SHA4626cbac2e8eeb373c29b5e39ac7e92d1d0d98109d4433479e0780f574526cfa.
+Root rehashed all19JSONL/18manifest files to independent fixtures. Source AI review
+and complete capture AI review found no concrete bypass/discrepancy. The
+fixture Control witness is a local tracker, not actual PostgreSQL renewal. This qualifies filesystem
+expiry only, not installed executor/current SQL authority/restart/cancellation.
 
 [Runtime responsiveness](evidence/p08-runtime-responsive-native-20260924.json):
 
@@ -85,21 +87,17 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Finish the action-window prerequisite qualification, then implement the ordinary
-Control export executor. No manual run command after POST. Select one bounded
+Implement the ordinary Control export executor using the qualified action-window
+output gate. No manual run command after POST. Select one bounded
 exact-ID job, reserve immutable ArtifactId/caps and COMMIT queued separately,
 then recheck current authority before running. Advance the cursor past denied/
 capacity-conflicting work; reset at exhaustion without HTTP/job starvation.
 Measure an aged queue or add an additive selective index before capacity claims.
 
-Before automatic writing, enforce the nonrenewable actor/pin ActionWindow at
-actual filesystem write boundaries. An AtomicBool updated by supervisor polling
-alone can lag during a Control renewal/SQL wait. The candidate adds a synchronous window-bound API; native qualification and its
-automatic runtime consumer are still open. Read full
-files.rs/jsonl.rs/execution.rs and policy_authority.rs/callers before changing it;
-root has just inspected those export files and the ActionWindow implementation.
-Use a discriminating expiry-during-short-write/flush test and actual native fault
-case; never let Control renewal extend a finite actor/pin grant.
+Use PreparedExport::write_with_window for automatic writes. Begin its pending
+action before authoritative SQL, bind returned remaining lifetime and retain it
+through actual I/O. AtomicBool polling alone cannot enforce expiry during a slow
+Control wait. Filesystem qualification is complete at its stated narrow scope.
 
 Supervisor still requires mutable Management; make management optional when the
 headless automatic consumer first needs it. Keep bounded command service and
@@ -183,6 +181,11 @@ never continuing authority. LocalCoordinator is Send, not Sync.
 All run roots below are under /home/tux/bigbrotr-implementation-20260917/runs/.
 [Inventory](../research/laboratory-inventory.json) owns full IDs, mounts and dated
 observations; re-inspect before reuse/deletion. No current active lab or cleanup debt.
+
+Latest275f641 filesystem lab owner50a1e54c95994bf1c514e4970599f5e6 is
+stopped-retained, native20f23b1b/alias1f15849a PID0/noOOM/exit0.590 prior
+container records/eight running unchanged. Free160863735808 ->157482590208bytes;
+current compiler cache retained. No volumes, datasets or old artifacts changed.
 
 Latest46ac lab owner e52fe24d94d25db9f1ab062e70b9a580 is stopped-retained, both
 containers PID0/noOOM, owned network removed.588 prior records/eight unrelated

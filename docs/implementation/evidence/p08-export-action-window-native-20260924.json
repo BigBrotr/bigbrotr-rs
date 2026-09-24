@@ -1,0 +1,432 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED",
+  "scope": "Nonrenewable action window at actual filesystem write boundaries; automatic installed export execution remains unimplemented.",
+  "source": {
+    "files": 211,
+    "sha256": "4626cbac2e8eeb373c29b5e39ac7e92d1d0d98109d4433479e0780f574526cfa",
+    "source": "275f641d632009bd0eb99855ce89b05082c0f285",
+    "tree": "3640181fe598be8058a7a8a606f3b24b10606889",
+    "source_files": 1155
+  },
+  "build": {
+    "source": "275f641d632009bd0eb99855ce89b05082c0f285",
+    "tree": "3640181fe598be8058a7a8a606f3b24b10606889",
+    "source_manifest_sha256": "8393be7fbc031912eeba1e5b84cc8582314e30e6e36774e2e91c3a5c5b97da23",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "scope": "actual filesystem unit; no SQL, native archive observation, runtime job or release",
+    "artifacts": {
+      "bigbrotr": "cb11f9d22abb0823896b8f04aaeb5fdc0fc0d0af77745f4db342ba7841d49f92",
+      "export-files-probe": "e90034bd052b38b834b647c476d94197b4e590ae82e8d71704e9542dfb400909"
+    },
+    "build_info": {
+      "archive_worker": null,
+      "capabilities": [
+        "event-verification",
+        "config-static"
+      ],
+      "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+        "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+        "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+        "contracts/release/dependencies.json": "14bb6d43630ff5ad0eeaec28236ca138224d5e97603200f456536abbaa2c94c6",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocol_registry_format": "bigbrotr-protocol-versions/1",
+      "protocols": {
+        "event_verifier": "bigbrotr-nip01-verifier/1",
+        "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1",
+        "config_static": "bigbrotr-config-static/1",
+        "doctor": "bigbrotr-doctor/1",
+        "signed_event": "nip01-event/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "8393be7fbc031912eeba1e5b84cc8582314e30e6e36774e2e91c3a5c5b97da23",
+        "revision": "275f641d632009bd0eb99855ce89b05082c0f285",
+        "state": "builder-supplied",
+        "tree": "3640181fe598be8058a7a8a606f3b24b10606889"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    }
+  },
+  "recipes": [
+    "experiments/export-files/lab.py",
+    "experiments/export-files/native.py",
+    "experiments/export-files/cases.py",
+    "experiments/export-files/probe.rs"
+  ],
+  "executed": {
+    "mac": [
+      "Real-clock partial-buffer expiry regression: RED against the old atomic-only writer; GREEN with synchronous window predicate. Parent Control independently renewed and cancellation flag remained false.",
+      "Two flush tests, seven actual file tests, Clippy for lib/file tests/both export probes passed."
+    ],
+    "native": [
+      "Fresh exact-source release parent/probe build, two flush tests, seven filesystem tests and Clippy passed.",
+      "Fifteen main records: fourteen functional/fault cases and one bind preparation; separate real bind alias case passed."
+    ],
+    "paired_fault": {
+      "name": "action-expiry-during-actual-data-write-with-negative-control",
+      "status": "PASS",
+      "commands": [
+        {
+          "command": [
+            "/out/artifacts/export-files-probe",
+            "initialize",
+            "/out/cases/action-expiry-false"
+          ],
+          "exit": 0,
+          "log": "command-27"
+        },
+        {
+          "command": [
+            "/instrument/strace",
+            "-f",
+            "-yy",
+            "-ttt",
+            "-o",
+            "/out/cases/command-28.trace",
+            "-e",
+            "trace=fsync,write,renameat2,openat,fchmodat,flock,statx,unlinkat,mkdirat",
+            "-e",
+            "inject=write:delay_exit=250ms:when=1",
+            "/out/artifacts/export-files-probe",
+            "write-window-negative",
+            "/out/cases/action-expiry-false"
+          ],
+          "exit": 0,
+          "log": "command-28"
+        },
+        {
+          "command": [
+            "/out/artifacts/export-files-probe",
+            "initialize",
+            "/out/cases/action-expiry-true"
+          ],
+          "exit": 0,
+          "log": "command-29"
+        },
+        {
+          "command": [
+            "/instrument/strace",
+            "-f",
+            "-yy",
+            "-ttt",
+            "-o",
+            "/out/cases/command-30.trace",
+            "-e",
+            "trace=fsync,write,renameat2,openat,fchmodat,flock,statx,unlinkat,mkdirat",
+            "-e",
+            "inject=write:delay_exit=250ms:when=1",
+            "/out/artifacts/export-files-probe",
+            "write-window",
+            "/out/cases/action-expiry-true"
+          ],
+          "exit": 4,
+          "log": "command-30"
+        }
+      ],
+      "observations": [
+        {
+          "gated": false,
+          "result": {
+            "data_bytes": 334,
+            "witness": {
+              "action_expired": true,
+              "cancelled": false,
+              "control_valid": true
+            }
+          },
+          "actual_delayed_write": "1903  1790246649.181523 write(6</out/cases/action-expiry-false/.artifact-10101010101010101010101010101010.partial/events.jsonl>, \"{\\\"id\\\":\\\"e258cc73c1ed89e28f28705e9\"..., 334) = 334 (DELAYED)"
+        },
+        {
+          "gated": true,
+          "result": {
+            "error": "Cancelled",
+            "witness": {
+              "action_expired": true,
+              "cancelled": false,
+              "control_valid": true
+            }
+          },
+          "actual_delayed_write": "1908  1790246649.472986 write(6</out/cases/action-expiry-true/.artifact-10101010101010101010101010101010.partial/events.jsonl>, \"{\\\"id\\\":\\\"e258cc73c1ed89e28f28705e9\"..., 334) = 334 (DELAYED)"
+        }
+      ],
+      "scope": "One admitted data write may finish after expiry; no later write/sync/manifest publication on the gated path"
+    }
+  },
+  "observations": [
+    "Both actual first data writes returned334bytes with injected250ms exit delay against a100ms action window. Both final witnesses show action expired, parent Control valid and cancellation flag false.",
+    "Ungated negative exits0 with complete334byte data and1321byte manifest; five fsync/rename calls. Gated exits4/Cancelled with only334byte staging data, no manifest/final directory and no fsync/rename after the delayed data write.",
+    "Negative selects the existing raw filesystem primitive; it is not a separate source mutation. The Rust unit separately discriminates suppression of short-write retries inside BufWriter.",
+    "All19 retained JSONL files and18 manifests independently rehashed to frozen expected bytes. Complete211-file capture and1155 Git source entries rehashed; actual ELF hashes match build records."
+  ],
+  "capture": {
+    "files": 211,
+    "sha256": "4626cbac2e8eeb373c29b5e39ac7e92d1d0d98109d4433479e0780f574526cfa",
+    "source": "275f641d632009bd0eb99855ce89b05082c0f285",
+    "tree": "3640181fe598be8058a7a8a606f3b24b10606889",
+    "source_files": 1155,
+    "local_root": ".research/implementation/export-files/attempt-275f641"
+  },
+  "resources": {
+    "source": "275f641d632009bd0eb99855ce89b05082c0f285",
+    "tree": "3640181fe598be8058a7a8a606f3b24b10606889",
+    "owner": "50a1e54c95994bf1c514e4970599f5e6",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "native",
+        "id": "20f23b1b080417d298c85c5b0838517b504889495e4266493eccbfd753045d77"
+      },
+      {
+        "name": "alias",
+        "id": "1f15849a36a28996f3ed70b2ea9915652559c07661deb2e0b44f985d7c9255c4"
+      }
+    ],
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-files",
+    "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+    "tracer_sha256": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+    "started_at": "2026-09-24T10:43:07.452995+00:00"
+  },
+  "terminal": {
+    "status": "PASS_PENDING_CAPTURE",
+    "source": "275f641d632009bd0eb99855ce89b05082c0f285",
+    "owner": "50a1e54c95994bf1c514e4970599f5e6",
+    "result": "PASS",
+    "container_terminals": {
+      "native": {
+        "id": "20f23b1b080417d298c85c5b0838517b504889495e4266493eccbfd753045d77",
+        "name": "/bigbrotr-export-files-275f641-native",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T10:43:10.316094646Z",
+          "FinishedAt": "2026-09-24T10:44:10.116842968Z"
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35/out/strace-exit-fixed",
+            "Destination": "/instrument/strace",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out",
+            "Destination": "/out",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out/build/source",
+            "Destination": "/out/build/source",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          }
+        ],
+        "networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "b2e69b2cd9e7ed698a608f62703a485587f1dfbd2b5e1c67bbfdba07bd2d322a",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        },
+        "restart": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        }
+      },
+      "alias": {
+        "id": "1f15849a36a28996f3ed70b2ea9915652559c07661deb2e0b44f985d7c9255c4",
+        "name": "/bigbrotr-export-files-275f641-alias",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "lifecycle": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T10:44:10.27171474Z",
+          "FinishedAt": "2026-09-24T10:44:10.398261238Z"
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35/out/strace-exit-fixed",
+            "Destination": "/instrument/strace",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out",
+            "Destination": "/out",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out/build/source",
+            "Destination": "/out/build/source",
+            "Mode": "",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out/cases/bind-alias/10101010101010101010101010101010",
+            "Destination": "/out/cases/bind-alias/.artifact-10101010101010101010101010101010.partial",
+            "Mode": "",
+            "RW": true,
+            "Propagation": "rprivate"
+          }
+        ],
+        "networks": {
+          "none": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "b2e69b2cd9e7ed698a608f62703a485587f1dfbd2b5e1c67bbfdba07bd2d322a",
+            "EndpointID": "",
+            "Gateway": "",
+            "IPAddress": "",
+            "MacAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        },
+        "restart": {
+          "Name": "no",
+          "MaximumRetryCount": 0
+        }
+      }
+    },
+    "preexisting_preserved": true,
+    "preexisting_count": 590,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "original_source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "free_bytes": 157482590208
+  },
+  "space": {
+    "free_bytes_before": 160863735808,
+    "free_bytes_after": 157482590208,
+    "concurrent_writes_possible": true
+  },
+  "review": {
+    "root": "Complete candidate diff, owning output/adapter/supervisor boundaries and paired syscall traces inspected; capture/source/ELF/output identities verified.",
+    "independent_ai": "Read-only AI source and complete capture review completed:211 files/tar/1155 Git sources/two ELF, delayed-write traces, golden output, tests and590 prior container records verified. No concrete discrepancy. No tests or SSH run by reviewer."
+  },
+  "limitations": [
+    "A syscall admitted before expiry may complete afterwards; synchronization of an already admitted namespace mutation can finish while custody is held. No claim that cancellation recalls kernel I/O.",
+    "No SQL principal/pin binding, automatic runtime consumer, revocation under blocked Control, installed job/restart/cancel, power loss, mixed workload, RSS, physical quota or Linux arm64 qualification.",
+    "The standalone filesystem probe does not exercise PreparedExport::write_with_window with a real archive observation. The automatic executor must bind current action authority and use that API.",
+    "Existing fault cases retain their earlier limits: injected EIO is not physical writeback loss, SIGKILL at fsync entry is not power loss; tmpfs ENOSPC bytes disappear on stop.",
+    "No cache deletion in this lab. Current useful compiler cache and original sources/artifacts/logs retained. Both owned containers stopped0/PID0/noOOM; all590 prior stable container records and eight unrelated running workloads unchanged.",
+    "control_valid in this filesystem fixture refers only to the local PolicyLeaseTracker; no live PostgreSQL Control renewal is exercised."
+  ]
+}

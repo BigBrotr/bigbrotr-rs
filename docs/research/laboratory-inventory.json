@@ -20757,5 +20757,199 @@
     },
     "observation": "Actual /me200 in5.602ms during held worker; bounded signal fail-stop and terminal ledger/Parquet/backend checks passed. Current installed parent/worker and compiler cache retained.",
     "report": "docs/implementation/evidence/p08-runtime-responsive-native-20260924.json"
+  },
+  "implementation_export_action_window_native_20260924": {
+    "resources": {
+      "source": "275f641d632009bd0eb99855ce89b05082c0f285",
+      "tree": "3640181fe598be8058a7a8a606f3b24b10606889",
+      "owner": "50a1e54c95994bf1c514e4970599f5e6",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "native",
+          "id": "20f23b1b080417d298c85c5b0838517b504889495e4266493eccbfd753045d77"
+        },
+        {
+          "name": "alias",
+          "id": "1f15849a36a28996f3ed70b2ea9915652559c07661deb2e0b44f985d7c9255c4"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-files",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+      "tracer_sha256": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+      "started_at": "2026-09-24T10:43:07.452995+00:00"
+    },
+    "status": "PASS_SCOPED_CAPTURED",
+    "local_capture": ".research/implementation/export-files/attempt-275f641/capture",
+    "capture": {
+      "files": 211,
+      "sha256": "4626cbac2e8eeb373c29b5e39ac7e92d1d0d98109d4433479e0780f574526cfa",
+      "source": "275f641d632009bd0eb99855ce89b05082c0f285",
+      "tree": "3640181fe598be8058a7a8a606f3b24b10606889",
+      "source_files": 1155,
+      "local_root": ".research/implementation/export-files/attempt-275f641"
+    },
+    "terminal": {
+      "status": "PASS_PENDING_CAPTURE",
+      "source": "275f641d632009bd0eb99855ce89b05082c0f285",
+      "owner": "50a1e54c95994bf1c514e4970599f5e6",
+      "result": "PASS",
+      "container_terminals": {
+        "native": {
+          "id": "20f23b1b080417d298c85c5b0838517b504889495e4266493eccbfd753045d77",
+          "name": "/bigbrotr-export-files-275f641-native",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "lifecycle": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-24T10:43:10.316094646Z",
+            "FinishedAt": "2026-09-24T10:44:10.116842968Z"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35/out/strace-exit-fixed",
+              "Destination": "/instrument/strace",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out",
+              "Destination": "/out",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out/build/source",
+              "Destination": "/out/build/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "networks": {
+            "none": {
+              "IPAMConfig": null,
+              "Links": null,
+              "Aliases": null,
+              "DriverOpts": null,
+              "GwPriority": 0,
+              "NetworkID": "b2e69b2cd9e7ed698a608f62703a485587f1dfbd2b5e1c67bbfdba07bd2d322a",
+              "EndpointID": "",
+              "Gateway": "",
+              "IPAddress": "",
+              "MacAddress": "",
+              "IPPrefixLen": 0,
+              "IPv6Gateway": "",
+              "GlobalIPv6Address": "",
+              "GlobalIPv6PrefixLen": 0,
+              "DNSNames": null
+            }
+          },
+          "restart": {
+            "Name": "no",
+            "MaximumRetryCount": 0
+          }
+        },
+        "alias": {
+          "id": "1f15849a36a28996f3ed70b2ea9915652559c07661deb2e0b44f985d7c9255c4",
+          "name": "/bigbrotr-export-files-275f641-alias",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "lifecycle": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-24T10:44:10.27171474Z",
+            "FinishedAt": "2026-09-24T10:44:10.398261238Z"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35/out/strace-exit-fixed",
+              "Destination": "/instrument/strace",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out",
+              "Destination": "/out",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out/build/source",
+              "Destination": "/out/build/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out/cases/bind-alias/10101010101010101010101010101010",
+              "Destination": "/out/cases/bind-alias/.artifact-10101010101010101010101010101010.partial",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "networks": {
+            "none": {
+              "IPAMConfig": null,
+              "Links": null,
+              "Aliases": null,
+              "DriverOpts": null,
+              "GwPriority": 0,
+              "NetworkID": "b2e69b2cd9e7ed698a608f62703a485587f1dfbd2b5e1c67bbfdba07bd2d322a",
+              "EndpointID": "",
+              "Gateway": "",
+              "IPAddress": "",
+              "MacAddress": "",
+              "IPPrefixLen": 0,
+              "IPv6Gateway": "",
+              "GlobalIPv6Address": "",
+              "GlobalIPv6PrefixLen": 0,
+              "DNSNames": null
+            }
+          },
+          "restart": {
+            "Name": "no",
+            "MaximumRetryCount": 0
+          }
+        }
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 590,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "original_source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "free_bytes": 157482590208
+    },
+    "report": "docs/implementation/evidence/p08-export-action-window-native-20260924.json",
+    "observation": "Actual delayed write negative completes after action expiry; gated output retains staging only. Fresh build/cache retained. No runtime execution qualification."
   }
 }
