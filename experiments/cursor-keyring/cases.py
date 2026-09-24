@@ -182,9 +182,6 @@ try:
         path.write_bytes(bytes.fromhex(vector['hex']))
         path.chmod(0o600)
         before = snapshot(root)
-        if name == 'write-enospc':
-            assert 'write(' in injected[0]
-            assert len(before) == 1 and next(iter(before.values()))['bytes'] == 0
         if vector['error']:
             assert vector['error'] in cli(config, 'inspect', 4)
         else:
@@ -252,6 +249,9 @@ try:
         assert len(injected) == 1
         assert ('ENOSPC' if name == 'write-enospc' else 'EIO') in injected[0]
         before = snapshot(root)
+        if name == 'write-enospc':
+            assert 'write(' in injected[0]
+            assert len(before) == 1 and next(iter(before.values()))['bytes'] == 0
         if partial:
             assert len([p for p in before if p.endswith('.partial')]) == 1
             assert 'Incomplete' in cli(config, expected=4)
@@ -348,6 +348,8 @@ try:
     assert all(c['status'] == 'PASS' for c in report['cases'])
     report['status'] = 'PASS'
 except BaseException as error:
+    if current is not None:
+        current['status'] = 'FAIL'
     report['failure'] = dict(kind=type(error).__name__, detail=str(error),
                             frames=[dict(file=Path(f.filename).name, line=f.lineno)
                                     for f in traceback.extract_tb(error.__traceback__)])

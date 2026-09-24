@@ -20,13 +20,13 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Main HEAD90e5d6ff2b766e5894cd789b1adbbf959219f698, tree
-8ab8ee601680adb14450ca7e52a2c25dc75c3907; private origin/main matches by ls-remote.
-The cursor dependency probe/report and clarified contracts are committed and
-pushed. Root owns the current keyring implementation, secret descriptor helpers,
-CLI/config root, generated schema/reference, fixtures/tests, native recipe and
-associated documentation. No foreign edits, SQL or root Cargo/lock changes.
-The local command consumer now exists: access cursor-keyring prepare/inspect.
+Main HEAD1f251dbfb59c870dd413d6da338dfdeb2911a9c9, tree
+4b8b65f089d53d1c629decebd48d4122f244ed46. Private origin/main last verified90e5d6f;
+this local candidate is not pushed yet. Clean exact Git was bundled to Tux.
+The protected local keyring, CLI/config root, descriptor helper, fixtures/tests,
+native recipe and documentation are committed in1f251db. Root now owns only
+checkpoint/inventory/report and fixture-only correction after the native run. No foreign
+edits, SQL or root Cargo/lock changes. No local product process remains active.
 
 Mac verification:50selected CLI/config/policy/keyring/secret tests pass, plus the
 collision regression and Clippy. Fifteen independent public wire vectors include
@@ -43,7 +43,7 @@ recipe review found per-thread ENOSPC injection would also break diagnostics;
 the recipe now traces only the main thread for that one write fault, and keeps
 write payloads raw. Both docker log streams will be retained. Parallel preparer
 successes/Busy counts are observations, while explicit Python flock establishes
-forced contention independently. Native recipe still NOT_RUN.
+forced contention independently. Native recipe was NOT_RUN at commit; the exact candidate is now running below.
 
 The format/operations contract lives in derived-read-publication.md and protected
 credentials. Key loading retains32KiB and zeroizes its owned buffer, without an
@@ -115,16 +115,38 @@ inventory now records a later explicit measurement. No other discrepancy.
 Artifact/handoff/fmt/diff checks pass (177markdown/316JSON; same three preexisting
 cycle candidates). All relevant source and complete changed diff reviewed.
 
-Next bounded action: commit this locally verified candidate, transfer the exact
-Git revision and run experiments/cursor-keyring/lab.py on Tux. Persist a fresh full
-preflight before copied cache/build use; the earlier ad-hoc SSH stdout census was
-truncated and is not evidence. The recipe preserves8db cache and qualified strace
-read-only, uses a fresh networkless owned container, and must execute all15actual
-filesystem/error/kill/collision/blocked-output cases. Capture only safe metadata,
-source/build/logs/trace: NEVER collect out/cases/*/keys, including partial files.
-Keep generated key bytes private on Tux. Then review actual durable effects and
-terminal resource census before qualifying the local boundary. Afterward continue
-P06Step1 AEAD/Control and the P08actor-owned GET /management/v1/jobs consumer.
+Latest Tux run cursor-keyring-1f251db is stopped-retained, owner
+ca3561d0e4feb8654200a2e26591abdd. Container8491f36ebe7d0ec1a0270189403e00e877fa00068a1454bf33e6d263c30bc941
+PID0/noOOM/exit1. Native build34.4s,50consumer tests, collision regression and
+Clippy pass. Actual ordered-sync/identical retry passes, then the practical
+observer fails NameError at cases.py185: root inserted ENOSPC assertions into the
+first snapshot block (wire loop), not the later injected-error loop. No product
+failure inferred; all later cases remain NOT_RUN. Original recipe/source/results
+are preserved in1f251db and the [INCOMPLETE report](evidence/p06-cursor-keyring-native-incomplete-20260925.json).
+
+Capture-1f251db contains29safe payloads; tar SHA
+90e35dfe2db189bea694c6ffb6a39bf40f4065ea3bb8506f0e00fa9257e76ed3.
+Root replay verifies1289Git files against Git blob IDs/source archive/hash manifest,
+ELF7ebfe502a87cadc101461d5fd5bd823e2e3ee268571bc50db7050fa148cb35c0,
+source manifest5885edb076805e43d3e351aa0c8120b55c3c82f2608b1ab7945127d93d91ab46,
+all four native build/test/Clippy results and766unchanged preexisting projections.
+Eight unrelated running; native preflight free113205817344→109807341568bytes.
+No retirement/network/volume/database. All generated keys and partial files remain
+private on Tux and are excluded from capture. Original8db cache and strace509ea
+remain read-only; this run's fresh compiler cache is retained.
+
+Root now owns a fixture-only correction: move the three ENOSPC assertions to their
+intended loop, record actual failed-case status, and support explicit reuse of the
+already built parent after full unchanged-product/build/test input comparison.
+No Rust/SQL/config/lock changes. Original product artifact identity remains1f251db;
+new practical source will have its own exact revision. Reuse mounts only old
+source/build metadata/native-test artifacts, never old generated key data.
+
+Next bounded action: finish read-only review, commit the corrected recipe and
+transfer exact Git to a new cursor-keyring run, selecting1f251db as artifact source.
+Execute all15practical cases, inspect durable effects and terminal resources;
+never overwrite/relabel the failed run. After local keyring qualification continue
+P06Step1 AEAD/Control and P08actor-owned GET /management/v1/jobs.
 
 The list remains default50/max200, descending(created_at,job_id), owner/status.read,
 current session/CSRF and nonrenewable delivery, with current mutable-state filters.

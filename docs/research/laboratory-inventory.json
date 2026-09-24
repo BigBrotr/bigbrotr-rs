@@ -24920,8 +24920,39 @@
   "implementation_cursor_keyring_20260925": {
     "local_root": ".research/implementation/cursor-keyring",
     "source_base": "90e5d6ff2b766e5894cd789b1adbbf959219f698",
-    "status": "local implementation under validation; native recipe not run",
+    "status": "1f251db stopped-retained; native build/tests/Clippy PASS, practical INCOMPLETE after observer NameError",
     "contents": "Initial stub/test RED, initial GREEN, CLI RED/GREEN, publication collision RED source and RED/GREEN logs, boundary test logs including two unavailable Darwin FIFO API compilation failures, native recipe preparation and build/Clippy logs. Generated local test secrets are temporary; tracked fixtures contain public fixed keys only.",
-    "remote_resources": "None created yet; all earlier retained dependencies remain protected. Initial read-only census output was truncated and is not qualification evidence; native preflight must persist a complete fresh census."
+    "remote_resources": "One owned networkless container; copied8db compiler caches and read-only qualified strace509ea. No DB/network/volume/data retirement. Original resources protected. Raw generated keys stay private in out/cases/*/keys and must never be copied by a generic capture.",
+    "source": "1f251dbfb59c870dd413d6da338dfdeb2911a9c9",
+    "tree": "4b8b65f089d53d1c629decebd48d4122f244ed46",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-keyring-1f251db",
+    "owner": "ca3561d0e4feb8654200a2e26591abdd",
+    "owner_label": "org.bigbrotr.cursor-keyring",
+    "orchestrator": {
+      "pid": 608790,
+      "start_ticks": "367355174"
+    },
+    "container": "8491f36ebe7d0ec1a0270189403e00e877fa00068a1454bf33e6d263c30bc941",
+    "preflight": {
+      "local": ".research/implementation/cursor-keyring/preflight.json",
+      "at": "2026-09-24T23:07:12.742987+00:00",
+      "containers": 766,
+      "unrelated_running": 8,
+      "free_bytes": 113241251840
+    },
+    "original_report": "docs/implementation/evidence/p06-cursor-keyring-native-incomplete-20260925.json",
+    "capture": {
+      "path": ".research/implementation/cursor-keyring/capture-1f251db",
+      "files": 29,
+      "tar_sha256": "90e35dfe2db189bea694c6ffb6a39bf40f4065ea3bb8506f0e00fa9257e76ed3"
+    },
+    "free_after": 109807341568,
+    "terminal": {
+      "pid": 0,
+      "exit_code": 1,
+      "oom": false
+    },
+    "original_failure": "cases.py185 NameError in incorrectly placed ENOSPC assertions; raw original preserved, later cases NOT_RUN",
+    "next": "Corrected exact-Git practical-only run with verified unchanged1f251db ELF, no additional compiler-cache copy"
   }
 }

@@ -18,7 +18,9 @@ import time
 from pathlib import Path
 
 sys.dont_write_bytecode = True
-revision, tree = sys.argv[1:]
+revision, tree = sys.argv[1:3]
+reuse = sys.argv[3] if len(sys.argv) == 4 else None
+assert len(sys.argv) in (3,4) and (reuse is None or re.fullmatch('[0-9a-f]{40}',reuse))
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917/runs')
 root = base/('cursor-keyring-'+revision[:7])
@@ -69,8 +71,15 @@ write(root/'preflight.json', preflight)
 assert preflight['free_bytes'] > 12*1024**3
 assert not any('bigbrotr' in c['Name'].lower() and c['State']['Running'] for c in prior)
 assert not out.exists()
-for origin, owner in [(cache,'1ae77d53919b4876eeff7df396179ccd'),
-                      (instrument,'84ac8cbf5292679b8ef7043fed7a2799')]:
+origins = [(instrument,'84ac8cbf5292679b8ef7043fed7a2799')]
+if not reuse:
+    origins.append((cache,'1ae77d53919b4876eeff7df396179ccd'))
+else:
+    previous = base/('cursor-keyring-'+reuse[:7])
+    old = json.loads((previous/'resources.json').read_text())
+    assert old['source'] == reuse and old['state'] == 'stopped-retained'
+    origins.append((previous,old['owner']))
+for origin, owner in origins:
     state = json.loads((origin/'resources.json').read_text())
     assert state['owner'] == owner and state['state'] == 'stopped-retained'
     for entry in state['containers']:
@@ -81,7 +90,8 @@ for origin, owner in [(cache,'1ae77d53919b4876eeff7df396179ccd'),
         if c['State']['Running']:
             assert not any(Path(m['Source']).is_relative_to(origin) for m in c['Mounts'] if m.get('Source','').startswith('/'))
 assert sha(instrument/'out/strace-exit-fixed') == '509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458'
-assert sha(source/'Cargo.lock') == sha(cache/'out/build/source/Cargo.lock')
+if not reuse:
+    assert sha(source/'Cargo.lock') == sha(cache/'out/build/source/Cargo.lock')
 write(root/'image.json', json.loads(cmd('docker','image','inspect',image))[0])
 owner = secrets.token_hex(16)
 state = dict(source=revision, tree=tree, owner=owner, owner_label=label, root=str(root),
@@ -101,12 +111,15 @@ try:
     manifest = dict(format='bigbrotr-source/1', revision=revision, tree=tree, archive_sha256=sha(archive),
                     files_sha256={str(p.relative_to(export)):sha(p) for p in sorted(export.rglob('*')) if p.is_file()})
     write(build/'source-manifest.json', manifest)
-    for name in ['target','cargo-home']:
-        original = cache/'out/build'/name
-        assert original.is_dir() and not original.is_symlink()
-        subprocess.run(['cp','-a','--reflink=auto',str(original),str(build/name)],check=True,timeout=120)
-    write(root/'cache-origin.json',dict(root=str(cache), owner='1ae77d53919b4876eeff7df396179ccd',
-        source_manifest_sha256=sha(cache/'out/build/source-manifest.json'), scope='copied compiler caches; fresh current build'))
+    if not reuse:
+        for name in ['target','cargo-home']:
+            original = cache/'out/build'/name
+            assert original.is_dir() and not original.is_symlink()
+            subprocess.run(['cp','-a','--reflink=auto',str(original),str(build/name)],check=True,timeout=120)
+        write(root/'cache-origin.json',dict(root=str(cache), owner='1ae77d53919b4876eeff7df396179ccd',
+            source_manifest_sha256=sha(cache/'out/build/source-manifest.json'), scope='copied compiler caches; fresh current build'))
+    else:
+        write(root/'artifact-origin.json',dict(root=str(previous),source=reuse,owner=old['owner']))
     assert shutil.disk_usage(base).free > 8*1024**3
     args = ['docker','create','--init','--name','bigbrotr-cursor-keyring-'+revision[:7],
             '--label',label+'='+owner,'--cpus','2','--memory','6g','--memory-swap','6g','--pids-limit','512',
@@ -115,8 +128,13 @@ try:
             '--tmpfs','/tmp:rw,exec,nosuid,nodev,size=512m',
             '--mount',f'type=bind,src={out},dst=/out',
             '--mount',f'type=bind,src={export},dst=/out/build/source,readonly',
-            '--mount',f'type=bind,src={instrument}/out,dst=/instrument,readonly',
-            image,'python3','-B','/out/build/source/experiments/cursor-keyring/native.py']
+            '--mount',f'type=bind,src={instrument}/out,dst=/instrument,readonly']
+    if reuse:
+        for name in ['out/build/source','out/build/source-manifest.json','out/native-tests']:
+            args += ['--mount',f'type=bind,src={previous}/{name},dst=/reuse/{name},readonly']
+    args += [image,'python3','-B','/out/build/source/experiments/cursor-keyring/native.py']
+    if reuse:
+        args += ['--reuse']
     container = cmd(*args)
     state.update(state='running', containers=[dict(name='rust-keyring',id=container)])
     write(root/'resources.json',state)

@@ -1,0 +1,73 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1 / P08-T03 prerequisite",
+  "status": "INCOMPLETE",
+  "source": "1f251dbfb59c870dd413d6da338dfdeb2911a9c9",
+  "tree": "4b8b65f089d53d1c629decebd48d4122f244ed46",
+  "environment": "Native Linux amd64, Rust1.98.1, pinned trusted Rust image, ext4; one networkless container",
+  "scope": "protected local cursor keyfile preparation, no Control/envelope/rotation/HTTP or release",
+  "build": {
+    "status": "PASS",
+    "source_manifest_sha256": "5885edb076805e43d3e351aa0c8120b55c3c82f2608b1ab7945127d93d91ab46",
+    "binary_sha256": "7ebfe502a87cadc101461d5fd5bd823e2e3ee268571bc50db7050fa148cb35c0",
+    "git_files_verified": 1289,
+    "native_worker_bound": false,
+    "selected_consumer_tests": 50,
+    "collision_regression": 1,
+    "clippy": "PASS"
+  },
+  "practical": {
+    "status": "INCOMPLETE",
+    "executed_successfully": [
+      "ordered-sync: actual fsync/RENAME_NOREPLACE/fsync/fsync, identical preparation retains keys and changes inode; inspection reports separate state"
+    ],
+    "failure": {
+      "kind": "NameError",
+      "detail": "name 'name' is not defined",
+      "frames": [
+        {
+          "file": "cases.py",
+          "line": 185
+        }
+      ]
+    },
+    "explanation": "ENOSPC observer assertions were mistakenly inserted at the first snapshot(root), inside the independent-wire loop. The main-thread-only write fault fix itself was correct. No filesystem error/kill/collision/blocked-output case was reached. The correction moves those three assertions into the intended injected-error loop without changing product code or expected results.",
+    "not_run": [
+      "cross-process-lock",
+      "parallel-processes",
+      "file-eio",
+      "directory-eio",
+      "parent-eio",
+      "retry-file-eio",
+      "write-enospc",
+      "kill-before-rename",
+      "kill-after-rename",
+      "kill-before-parent-sync",
+      "kill-retry-before-rename",
+      "late-file-collision",
+      "blocked-stdout"
+    ]
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-keyring-1f251db",
+    "owner": "ca3561d0e4feb8654200a2e26591abdd",
+    "container": "8491f36ebe7d0ec1a0270189403e00e877fa00068a1454bf33e6d263c30bc941",
+    "state": "stopped-retained",
+    "exit_code": 1,
+    "pid": 0,
+    "oom": false,
+    "preexisting_preserved": 766,
+    "unrelated_running": 8,
+    "free_before": 113205817344,
+    "free_after": 109807341568,
+    "retirement": "None. Generated keys and incomplete fixture state remain private on Tux; compiler caches and evidence retained."
+  },
+  "capture": {
+    "local": ".research/implementation/cursor-keyring/capture-1f251db",
+    "payload_files": 29,
+    "tar_sha256": "90e35dfe2db189bea694c6ffb6a39bf40f4065ea3bb8506f0e00fa9257e76ed3",
+    "manifest_sha256": "93d039cc5be726fe6ff805a4033291882ea170a28868f79ad324945e83d4573a",
+    "excluded": "All case keys and partial bytes; safe logs/trace/source/build/resource metadata only."
+  },
+  "next": "Run the corrected exact-Git practical recipe with this ELF only after full unchanged-product-input comparison; retain this original INCOMPLETE result."
+}

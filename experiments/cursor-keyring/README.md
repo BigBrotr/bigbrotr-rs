@@ -16,6 +16,17 @@ no Archive-worker binding, verifies its embedded source identity, runs selected
 Rust/CLI tests and Clippy, and executes the practical cases. It never treats the
 old compiler cache as proof of the current source or artifact.
 
+For a fixture-only correction, `lab.py REVISION TREE ARTIFACT_REVISION` may reuse
+an earlier stopped lab's parent only after verifying its successful build/tests/
+Clippy receipt, original source manifest and ELF hash and comparing every current
+product/build/test input. Only documentation (except the generated configuration
+reference consumed by CLI tests) and this cursor-keyring recipe may differ.
+Other experiment fixtures remain compared because Rust tests may include them.
+The artifact keeps
+its original embedded identity; the current practical run records both revisions.
+This mode copies no compiler cache, runs no redundant compilation/tests and mounts
+only old source/build metadata/native-test artifacts read-only, never old key data.
+
 Fifteen practical cases cover ordered sync and identical retry, the independent
 public wire corpus, cross-process locks, eight concurrent preparers, injected
 file/directory/parent sync errors, injected ENOSPC, four SIGKILL windows, a file
