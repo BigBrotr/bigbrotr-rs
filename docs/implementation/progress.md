@@ -23,11 +23,29 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD3faefeb44c9b977d0432b8b6bc057f540a909609, tree
-a064afe0a7d8eb4ca38546b695f9acc158707fed on main; origin/main remains
-dc4cebb337f2a2aea13b533ead5d1893e5b2e492. The browser-resume product candidate is
-locally committed, awaiting native integration before push. Root owns pending
-native fixture/profile, independent IDB oracle and checkpoint edits. No foreign work.
+Last verified HEAD73e651769e9cd4c82cb0d51731db698eeeadf0f4, tree
+f966090c11255f9cb2279a11d014a5112005e613 on main; origin/main remains
+dc4cebb337f2a2aea13b533ead5d1893e5b2e492. Product3faefeb and native fixture73e6517
+are locally committed, awaiting native integration before push. Root owns the fixture correction, original failure evidence and
+checkpoint/inventory observations. No foreign work.
+
+Tux73e6517 is stopped-retained, owner e77b276c5af26eadc38957fdc5efe1cc;
+seven owned containers PID0/noOOM, network removed, bothDB0 and684prior/eight
+unrelated running preserved. [Original INCOMPLETE fixture report](evidence/p09-resume-browser-fixture-incomplete-20260924.json)
+retains89payloads and exact1246current/1110seed Git files, capture tar
+f568ab50fcec6d07ca393c85247b71ec95addabe35a2167be99138544f239fad.
+Fresh native build/46binarytests/Clippy and15native store cases across3engines pass.
+Actual browser login201/job200 reaches before-loss, where whole-ledger comparison
+fails before any resume POST. Source requires a login audit; failed post-login SQL
+was not saved, so original exact delta remains unobserved. No screenshot available.
+Root owns fixture correction plus original evidence/inventory/checkpoint; no
+product mutation. New explicit login/logout boundaries check each single audit,
+actual session identity/transaction and complete unchanged other ledgers. Failed
+observations are now retained. Local3oracle regressions pass after2semanticRED.
+Read-only AI fixture review completed; preserve failure session identities as well.
+Next bounded action: commit clean candidate, repeat native
+browser journey using exact73e ELF after complete product/build equality. Preserve
+73e compiler cache/ELF/SQL and separately owned4e/b6 dependencies. No active lab.
 
 [Local browser resume preparation](evidence/p09-resume-browser-preparation-20260924.json)
 passes20paneltests,17clienttests, client types/generated contract checks and five
@@ -48,32 +66,16 @@ Current exact-Git Tux lab export-runtime-dc6a8d9 is stopped-retained, owner
 runner0/PG137, network removed, bothDB0. Original Node/4e assets remain separately
 owned and read-only. Keep dc6a8d9 compiler cache/runtime ELF. Fresh read-only
 resumption census: eight unrelated running, no selected BigBrotr process;
-127059808256bytes free. No new Tux resource has been created in this local slice.
+127059808256bytes free. The stopped73e6517 resources are separately inventoried above.
 
-Next bounded action: finish native fixture review/commit and launch its clean exact
-Git revision on Tux. New --runtime-resume-browser uses the original checked signed
-seed/paused7 and actual current ELF, builds both locked production bundles, runs
-five actual IDB cases per Chromium/Firefox/WebKit, then the initial Chromium root
-production UI journey. The selected fault forwards a real POST/202 through
-Playwright, checks SQL, then aborts the browser route. It is not a TCP/COMMIT fault.
-Reload must not submit; explicit retry/restart returns the original receipt, no
-session idle touch, cross-tab logout/account separation/revocation and resolved
-forget leave the durable job intact. Independent IDB oracle has3local tests; its
-positive case failed before implementation. Native fixture is NOT_RUN. Local
-store experiment with its new temporary cache passes5cases; original captures stay. Independent
-static fixture review completed: fixed security-header oracle with allHeaders,
-awaited collection and real202 APIResponse check. Actual local Chromium negative
-control sees Set-Cookie via allHeaders but not headers(); only booleans retained in
-ignored resume-header-negative.json. Distinct stop/restart event identities,
-explicit offline Bob provisioning, final source/bundle rehash and failure-safe
-report save were checked. New browser SQL oracle compares complete command/audit
-tables, not the earlier resume-only projection. Full diff/syntax/doc checks pass;
-Tux scenarios remain NOT_RUN until their actual execution. Inspect the existing
-resume-http and browser harness boundaries (read this session) before extending.
-The existing browser builder already creates root/subpath bundles and pins tools/
-image; it can support native store checks in the other engines and real UI.
-Do not claim current local tests qualify lost HTTP reply/reload/restart. Preserve
-original key/body and acceptance-only meaning. No automatic retries or rebasing.
+The native fixture is being corrected at the session-audit boundary described
+above. The next run must demonstrate all seven actual production UI steps, native
+storage on three engines, complete SQL effects and terminal custody. First lost
+reply uses Playwright to forward realPOST/202 then abort delivery; it is not TCP or
+COMMIT loss. Retain the original request key/body through reload/retry, no automatic
+resubmission. Security-header oracle uses allHeaders with awaited reads; actual
+local Chromium negative distinguishes Set-Cookie omitted by headers(). Browser
+rendering and the existing skip-link geometry issue remain separate gates.
 
 The UI now uses a session-owned ResumeModel alongside the explicit JobModel.
 Native IndexedDB reserves one closed request per account before HTTP; application

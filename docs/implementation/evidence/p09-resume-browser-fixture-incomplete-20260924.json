@@ -1,0 +1,440 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "INCOMPLETE",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3",
+    "P09-T09 Step 2"
+  ],
+  "source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+  "tree": "f966090c11255f9cb2279a11d014a5112005e613",
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-73e6517/capture",
+    "files": 89,
+    "sha256": "f568ab50fcec6d07ca393c85247b71ec95addabe35a2167be99138544f239fad",
+    "source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+    "tree": "f966090c11255f9cb2279a11d014a5112005e613",
+    "source_files": 1246
+  },
+  "review": {
+    "status": "VERIFIED_INCOMPLETE_FIXTURE",
+    "source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+    "runtime_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+    "counts": {
+      "out/build/source-manifest.json": 1246,
+      "artifact-source-manifest.json": 1110
+    },
+    "payloads": 89,
+    "preexisting": 684,
+    "free_before": 127024734208,
+    "free_after": 123118301184,
+    "artifacts": {
+      "bigbrotr": "a3bb9bd6f7b3a7e6140c72f133401c65571e401b6e1eaec424e520b668b2e96c",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "native_store_engines": {
+      "chromium": "153.0.8010.12",
+      "firefox": "155.0",
+      "webkit": "26.6"
+    },
+    "ui_completed_cases": 0,
+    "bundles": {
+      "root": {
+        "manifest_sha256": "95b040303d18e03572edc3fa2390c0858731773f5b213d43efc6faf5593dbbea",
+        "files": 13,
+        "bytes": 170717
+      },
+      "control": {
+        "manifest_sha256": "56203a0678a74d3998f7af5a147f4d3e30d7c58caba6f13f303eface4e6bd512",
+        "files": 13,
+        "bytes": 170751
+      }
+    }
+  },
+  "results": {
+    "native_build": [
+      {
+        "name": "installed-build",
+        "command": [
+          "/usr/bin/python3",
+          "/out/build/source/experiments/export-execution/native.py",
+          "--build-runtime"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 60.91771884681657
+      },
+      {
+        "name": "management-tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 23.322863761801273
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.6716003748588264
+      }
+    ],
+    "native_store_cases": {
+      "chromium": {
+        "status": "PASS",
+        "browser_version": "153.0.8010.12",
+        "platform": "linux",
+        "arch": "x64",
+        "cases": [
+          {
+            "name": "blocked-open-does-not-accumulate-native-requests",
+            "status": "PASS",
+            "evidence": {
+              "opensBeforeRecovery": 1,
+              "kinds": [
+                "unavailable",
+                "unavailable",
+                "unavailable"
+              ],
+              "times": [
+                2001.1000003814697,
+                0.2999997138977051,
+                0
+              ],
+              "recovered": true
+            }
+          },
+          {
+            "name": "request-success-followed-by-transaction-abort-is-not-persistence",
+            "status": "PASS",
+            "evidence": {
+              "requestSuccessEvents": 1,
+              "rejected": "unavailable",
+              "stored": false
+            }
+          },
+          {
+            "name": "two-tabs-reserve-one-original-identity-and-reload",
+            "status": "PASS",
+            "evidence": {
+              "original": {
+                "format": "bigbrotr-browser-resume/1",
+                "principal_id": "00000000000000000000000000000001",
+                "job_id": "02020202020202020202020202020202",
+                "key": "03030303030303030303030303030303",
+                "command": {
+                  "expected_job_revision": "7",
+                  "expected_config_revision": "9007199254740993",
+                  "expected_policy_revision": "2"
+                },
+                "outcome": "pending"
+              }
+            }
+          },
+          {
+            "name": "identity-cas-and-pending-forget-refusal",
+            "status": "PASS",
+            "evidence": {
+              "pendingRefusal": "pending",
+              "staleOperationsChangedNothing": true,
+              "resolvedForget": true
+            }
+          },
+          {
+            "name": "capacity-and-account-local-corruption",
+            "status": "PASS",
+            "evidence": {
+              "capacity": "full",
+              "admittedAccounts": 32,
+              "malformedCurrentAccount": [
+                "invalid",
+                "invalid"
+              ],
+              "otherAccountPreserved": true
+            }
+          }
+        ]
+      },
+      "firefox": {
+        "status": "PASS",
+        "browser_version": "155.0",
+        "platform": "linux",
+        "arch": "x64",
+        "cases": [
+          {
+            "name": "blocked-open-does-not-accumulate-native-requests",
+            "status": "PASS",
+            "evidence": {
+              "opensBeforeRecovery": 1,
+              "kinds": [
+                "unavailable",
+                "unavailable",
+                "unavailable"
+              ],
+              "times": [
+                2001,
+                0,
+                0
+              ],
+              "recovered": true
+            }
+          },
+          {
+            "name": "request-success-followed-by-transaction-abort-is-not-persistence",
+            "status": "PASS",
+            "evidence": {
+              "requestSuccessEvents": 1,
+              "rejected": "unavailable",
+              "stored": false
+            }
+          },
+          {
+            "name": "two-tabs-reserve-one-original-identity-and-reload",
+            "status": "PASS",
+            "evidence": {
+              "original": {
+                "format": "bigbrotr-browser-resume/1",
+                "principal_id": "00000000000000000000000000000001",
+                "job_id": "02020202020202020202020202020202",
+                "key": "03030303030303030303030303030303",
+                "command": {
+                  "expected_job_revision": "7",
+                  "expected_config_revision": "9007199254740993",
+                  "expected_policy_revision": "2"
+                },
+                "outcome": "pending"
+              }
+            }
+          },
+          {
+            "name": "identity-cas-and-pending-forget-refusal",
+            "status": "PASS",
+            "evidence": {
+              "pendingRefusal": "pending",
+              "staleOperationsChangedNothing": true,
+              "resolvedForget": true
+            }
+          },
+          {
+            "name": "capacity-and-account-local-corruption",
+            "status": "PASS",
+            "evidence": {
+              "capacity": "full",
+              "admittedAccounts": 32,
+              "malformedCurrentAccount": [
+                "invalid",
+                "invalid"
+              ],
+              "otherAccountPreserved": true
+            }
+          }
+        ]
+      },
+      "webkit": {
+        "status": "PASS",
+        "browser_version": "26.6",
+        "platform": "linux",
+        "arch": "x64",
+        "cases": [
+          {
+            "name": "blocked-open-does-not-accumulate-native-requests",
+            "status": "PASS",
+            "evidence": {
+              "opensBeforeRecovery": 1,
+              "kinds": [
+                "unavailable",
+                "unavailable",
+                "unavailable"
+              ],
+              "times": [
+                2001,
+                0,
+                0
+              ],
+              "recovered": true
+            }
+          },
+          {
+            "name": "request-success-followed-by-transaction-abort-is-not-persistence",
+            "status": "PASS",
+            "evidence": {
+              "requestSuccessEvents": 1,
+              "rejected": "unavailable",
+              "stored": false
+            }
+          },
+          {
+            "name": "two-tabs-reserve-one-original-identity-and-reload",
+            "status": "PASS",
+            "evidence": {
+              "original": {
+                "format": "bigbrotr-browser-resume/1",
+                "principal_id": "00000000000000000000000000000001",
+                "job_id": "02020202020202020202020202020202",
+                "key": "03030303030303030303030303030303",
+                "command": {
+                  "expected_job_revision": "7",
+                  "expected_config_revision": "9007199254740993",
+                  "expected_policy_revision": "2"
+                },
+                "outcome": "pending"
+              }
+            }
+          },
+          {
+            "name": "identity-cas-and-pending-forget-refusal",
+            "status": "PASS",
+            "evidence": {
+              "pendingRefusal": "pending",
+              "staleOperationsChangedNothing": true,
+              "resolvedForget": true
+            }
+          },
+          {
+            "name": "capacity-and-account-local-corruption",
+            "status": "PASS",
+            "evidence": {
+              "capacity": "full",
+              "admittedAccounts": 32,
+              "malformedCurrentAccount": [
+                "invalid",
+                "invalid"
+              ],
+              "otherAccountPreserved": true
+            }
+          }
+        ]
+      }
+    },
+    "installed_browser": {
+      "format": "bigbrotr-resume-browser/1",
+      "status": "FAIL",
+      "engine": "chromium",
+      "mount": "root",
+      "cases": [],
+      "requests": [
+        {
+          "path": "/management/v1/me",
+          "method": "GET"
+        },
+        {
+          "path": "/management/v1/sessions",
+          "method": "POST"
+        },
+        {
+          "path": "/management/v1/jobs/9804c965977f7a6067992a4e6412ac19",
+          "method": "GET"
+        }
+      ],
+      "responses": [
+        {
+          "path": "/management/v1/me",
+          "status": 401,
+          "noStore": true,
+          "resumeSetCookie": false
+        },
+        {
+          "path": "/management/v1/sessions",
+          "status": 201,
+          "noStore": true,
+          "resumeSetCookie": false
+        },
+        {
+          "path": "/management/v1/jobs/9804c965977f7a6067992a4e6412ac19",
+          "status": 200,
+          "noStore": true,
+          "resumeSetCookie": false
+        }
+      ],
+      "version": "153.0.8010.12",
+      "failure": {
+        "stage": "installed-bundle-session-and-paused-job",
+        "kind": "AssertionError",
+        "location": {
+          "line": 23,
+          "column": 12
+        },
+        "screenshot": "unavailable"
+      }
+    },
+    "failure": {
+      "kind": "AssertionError",
+      "frames": [
+        {
+          "file": "lab.py",
+          "line": 319,
+          "function": "<module>"
+        },
+        {
+          "file": "resume_browser_cases.py",
+          "line": 65,
+          "function": "run"
+        }
+      ]
+    }
+  },
+  "diagnosis": "The full-ledger snapshot precedes login. browser_sessions.rs finish_browser_login and migration0807 require browser.session.issue audit. The fixture asserts all12ledgers unchanged after successful201login/200job-read, before any resume request. Original failing post-login SQL snapshot was not saved, so the exact delta remains unobserved in this capture; the audit explanation is source-based and must be checked on the next native run.",
+  "correction": "Explicit per-login/logout command boundaries validate exactly one attributed audit in the session transaction, preserve every old row/xmin and all other ledgers, and compare the resume transition against the observed post-login baseline. Save the last complete SQL observation on failure. Three local oracle regressions include two semantic RED cases before implementation plus corrupt/extra/changed-row negative cases.",
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-73e6517",
+    "owner": "e77b276c5af26eadc38957fdc5efe1cc",
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "owned_pid_zero_no_oom": true,
+    "preexisting": 684,
+    "unrelated_running": 8,
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "free_before": 127024734208,
+    "free_after": 123118301184
+  },
+  "limits": [
+    "No browser resume POST or installed UI recovery scenario completed; screenshot unavailable after host failure teardown.",
+    "Native IndexedDB cases are actual per-engine module/storage evidence, not installed UI or device-power-loss evidence.",
+    "No global audit exclusion or product change is justified by this fixture failure.",
+    "No cache/container/data/volume retirement in this run. Same verified73e ELF may support a fixture-only retry after exact complete product/build input equality."
+  ],
+  "review_boundary": "Root independently rehashed89capture payloads, all1246current/1110seed Git files, bound ELF and both bundle manifests/members, and inspected actual SQL/native/browser/terminal records. Independent AI static review covered the four changed browser fixture/oracle files, full browser_sessions.rs and0807; it found no further expectation defect and identified missing failure session identities, now saved. No independent AI raw capture revalidation claimed."
+}

@@ -23716,5 +23716,69 @@
       "source_files": 1236
     },
     "retention": "Preserve currentdc6a8d9 compiler cache, bound ELF, source/manifests, SQL state and receipts. Original Node tools remain read-only ownedb6d9d7e. No data/container retirement."
+  },
+  "implementation_resume_browser_20260924": {
+    "status": "stopped-retained; INCOMPLETE before browser resume, native store15cases PASS",
+    "resources": {
+      "source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+      "tree": "f966090c11255f9cb2279a11d014a5112005e613",
+      "owner": "e77b276c5af26eadc38957fdc5efe1cc",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-73e6517",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "frontend",
+          "id": "3707f1155f07ee6d014e5736c7d8802994a9a4ebda556aadda4c19c5d3d71d97"
+        },
+        {
+          "name": "postgres",
+          "id": "09c3339624309fec400f78c4b58c26253f22fa5ba1156413fb75e9e7ab41b530"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "ed19445ca55da28f170af6ee6bc91466bbda24394b258a0e2881908da08aecbc"
+        },
+        {
+          "name": "resume-store-chromium",
+          "id": "221943890f106d90936dee4579da58ca26062210647160051e6c925e3f97400f"
+        },
+        {
+          "name": "resume-store-firefox",
+          "id": "a7a210b39e6cd3eaf3776bbce091e2ee300b1356532308a67e7ce49cd8cb367f"
+        },
+        {
+          "name": "resume-store-webkit",
+          "id": "9e1887803cf524877445e9dba50fbd5fe537d880fd0b366f5bfa43ba3f8fee12"
+        },
+        {
+          "name": "resume-chromium-root",
+          "id": "b08f04d394ca1ee05709afcf08e31a9d0697473421a2e60a6e889cb346f01e55"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T18:23:00.661832+00:00",
+      "runtime_profile": "resume-browser",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "network_id": "8d9c86cbe34683d30010f0a33b005214bba1081f4e380026308dfbff4e4b9218",
+      "postgres_id": "09c3339624309fec400f78c4b58c26253f22fa5ba1156413fb75e9e7ab41b530",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "ed19445ca55da28f170af6ee6bc91466bbda24394b258a0e2881908da08aecbc",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "retention": "Preserve original failure SQL state, source/logs/capture/bundles and current73e compiler cache/bound ELF. Reuse may copy exact ELF after complete product equality; no retirement in this slice. Retained4e/b6 inputs remain separately owned.",
+    "evidence": "docs/implementation/evidence/p09-resume-browser-fixture-incomplete-20260924.json",
+    "capture": {
+      "files": 89,
+      "sha256": "f568ab50fcec6d07ca393c85247b71ec95addabe35a2167be99138544f239fad",
+      "source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+      "tree": "f966090c11255f9cb2279a11d014a5112005e613",
+      "source_files": 1246
+    }
   }
 }

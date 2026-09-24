@@ -59,6 +59,12 @@ async function login(who = 'alice') {
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Your session', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Load saved request', exact: true })).toBeEnabled();
+  await command(who + '-login');
+}
+async function logout(who = 'alice') {
+  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await expect(page.locator('#session-notice')).toContainText('signed out');
+  await command(who + '-logout');
 }
 async function stored(p = page) {
   const result = await readResumeStorage(p); assert.equal(result.status, 'verified'); return result.records;
@@ -138,15 +144,13 @@ try {
   await step('logout-clears-both-tabs-and-other-account-does-not-display-saved-request', async () => {
     const other = await context.newPage(); observe(other); await other.goto(origin + '/');
     await expect(other.getByRole('button', { name: 'Retry saved request', exact: true })).toBeEnabled();
-    await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-    await expect(page.locator('#session-notice')).toContainText('signed out');
+    await logout();
     for (const p of [page, other]) await expect(p.locator('.job-sheet')).toHaveCount(0);
     assert.deepEqual(await stored(), [{ ...original, outcome: 'accepted' }]); await other.close();
     await login('bob'); await expect(page.locator('.resume-sheet')).toContainText('No resume request');
     await expect(page.locator('.resume-sheet')).not.toContainText(original.key);
     assert.deepEqual(await stored(), [{ ...original, outcome: 'accepted' }]);
-    await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-    await expect(page.locator('#session-notice')).toContainText('signed out');
+    await logout('bob');
     await expect(page.locator('.job-sheet')).toHaveCount(0);
   });
   await step('same-account-recovery-and-real-revocation', async () => {
@@ -159,11 +163,11 @@ try {
   });
   await step('forget-resolved-browser-metadata-leaves-durable-job-unchanged', async () => {
     await command('reactivate'); await login();
+    await command('before-forget');
     await page.getByRole('button', { name: 'Forget resolved request', exact: true }).click();
     await expect(page.locator('.resume-sheet')).toContainText('No resume request'); assert.deepEqual(await stored(), []);
     await command('forgotten');
-    await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-    await expect(page.locator('#session-notice')).toContainText('signed out');
+    await logout();
     await expect(page.locator('.job-sheet')).toHaveCount(0);
     report.webStorage = inspectStorage(await page.evaluate(() => ({ local: Object.entries(localStorage), session: Object.entries(sessionStorage) })));
     assert.equal(report.webStorage.status, 'verified'); report.finalSavedRequests = await stored();

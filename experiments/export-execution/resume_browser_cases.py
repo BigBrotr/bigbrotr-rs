@@ -7,13 +7,14 @@ import time
 from signed_publication_cases import Process, command, event, send
 from resume_commit_cases import accepted_resume
 from browser_cases import IMAGE
+from resume_browser_oracle import session_mutation
 
 
 def run(root, state, sql, start, finish, tools):
     out=root/'out';runner=state['container_id'];pg=state['postgres_id'];db='bbpub_control_normal'
     result=dict(status='INCOMPLETE',source=state['source'],native_stores={},commands=[])
     path=root/'resume-browser-cases.json';assert not path.exists()
-    server=None
+    server=None;last_observed=None;last_identities=None
     def save():path.write_text(json.dumps(result,indent=2)+'\n')
     def bind(p,target,ro=False):return ['--mount',f'type=bind,src={p},dst={target}'+(',readonly' if ro else '')]
     def query(text):return sql(db,text)
@@ -25,6 +26,8 @@ def run(root, state, sql, start, finish, tools):
         return values
     def sessions():
         return json.loads(query("SELECT coalesce(jsonb_agg(jsonb_build_object('id',encode(session_id,'hex'),'last_seen',last_seen_at_us,'idle_expires',idle_expires_at_us,'xmin',xmin::text) ORDER BY session_id),'[]') FROM control.browser_sessions"))
+    def session_identities():
+        return json.loads(query("SELECT coalesce(jsonb_agg(jsonb_build_object('id',encode(session_id,'hex'),'actor',encode(principal_id,'hex'),'dataset',encode(dataset_id,'hex'),'issued',issued_at_us,'revoked',revoked_at_us,'xmin',xmin::text) ORDER BY session_id),'[]') FROM control.browser_sessions"))
     try:
         # Native store operations are separate from the installed UI. Fresh
         # isolated browser contexts contain only the synthetic non-secret data.
@@ -42,7 +45,7 @@ def run(root, state, sql, start, finish, tools):
         bob='b7'*16
         query(f"BEGIN; INSERT INTO control.principals SELECT decode('{bob}','hex'),dataset_id,'local',created_at_us,database_role,local_os_uid FROM control.principals WHERE kind='installation'; INSERT INTO control.local_accounts(principal_id,dataset_id,username,initial_owner,active,credential_revision,grant_revision) SELECT decode('{bob}','hex'),dataset_id,'bob',false,true,credential_revision,1 FROM control.local_accounts WHERE username='alice'; INSERT INTO control.local_credentials SELECT decode('{bob}','hex'),dataset_id,credential_revision,format,argon_version,memory_kib,passes,lanes,salt,password_hash FROM control.local_credentials WHERE principal_id=(SELECT principal_id FROM control.local_accounts WHERE username='alice'); INSERT INTO control.principal_grants SELECT dataset_id,decode('{bob}','hex'),'status.read','dataset',dataset_id FROM control.datasets; COMMIT;")
         assert json.loads(query("SELECT json_agg(username ORDER BY username) FROM control.local_accounts"))==['alice','bob']
-        before=result['before']=observe();assert len(before['jobs'])==1
+        before=result['prepared']=observe();ledger=before;assert len(before['jobs'])==1
         job=before['jobs'][0]['row'];assert (job['state'],job['job_revision'])==('paused',7)
         case=out/'browser-cases/resume-chromium-root';case.mkdir(parents=True,mode=0o700)
         (case/'input.json').write_text(json.dumps(dict(job=job['job_id'][2:],actor=job['principal_id'][2:]))+'\n')
@@ -51,7 +54,7 @@ def run(root, state, sql, start, finish, tools):
         ident=start('resume-chromium-root',IMAGE,['/tools/node/bin/node','/out/frontend-source/experiments/export-execution/resume_browser.mjs'],
                     bind(out,'/out',True)+bind(case,'/case')+bind(tools,'/tools',True)+['--env','PLAYWRIGHT_BROWSERS_PATH=/ms-playwright','--env','HOME=/tmp'],'container:'+pg)
         result['browser_container']=ident;save()
-        expected=['before-loss','accepted','before-retry','after-retry','restart','after-restart-retry','deactivate','reactivate','forgotten']
+        expected=['alice-login','before-loss','accepted','before-retry','after-retry','restart','after-restart-retry','alice-logout','bob-login','bob-logout','alice-login','deactivate','reactivate','alice-login','before-forget','forgotten','alice-logout']
         index=0;boundary=None;after=None;deadline=time.monotonic()+150
         while True:
             assert time.monotonic()<deadline,'browser host deadline'
@@ -61,29 +64,40 @@ def run(root, state, sql, start, finish, tools):
                 request=json.loads(entry.read_text());name=request['name'];assert name==expected[index]
                 assert set(request)==({'name','key','body'} if name=='accepted' else {'name'})
                 detail=dict(name=name);reply=dict(state='verified')
-                if name=='before-loss':
-                    assert observe()==before;boundary=sessions();detail['sessions']=boundary
+                # Preserve the failed observation before asserting, without ever
+                # capturing token/CSRF digests or credential rows.
+                last_observed=observe();last_identities=None
+                if name.endswith(('-login','-logout')):
+                    actor=bob if name.startswith('bob-') else job['principal_id'][2:]
+                    identities=last_identities=detail['sessions']=session_identities()
+                    detail['audit']=session_mutation(ledger,last_observed,identities,'issue' if name.endswith('-login') else 'revoke',actor)
+                    ledger=last_observed
+                elif name=='before-loss':
+                    assert last_observed==ledger
+                    before=result['before']=last_observed;boundary=sessions();detail['sessions']=boundary
                 elif name=='accepted':
                     key=request['key'];assert re.fullmatch('[0-9a-f]{32}',key) and key!='0'*32
                     assert request['body']==dict(expected_job_revision='7',expected_config_revision='1',expected_policy_revision='2')
-                    after=result['accepted']=observe()
+                    after=result['accepted']=last_observed
                     accepted=result['receipt']=accepted_resume(before,after,dict(resource=owner['owner_resource_id'],epoch=owner['owner_epoch'],incarnation=owner['process_incarnation']),key)
                     reply['receipt']=dict(format='bigbrotr-export-resume/1',job_id=job['job_id'][2:],command_key=key,job_revision='8',accepted_at_us=str(accepted['accepted_at_us']),created=True,execution='unobserved',authority='acceptance-only')
                     assert sessions()==boundary;detail['session_unchanged']=True;detail['key']=key
-                elif name=='before-retry':boundary=sessions();detail['sessions']=boundary;assert observe()==after
+                    ledger=after
+                elif name=='before-retry':boundary=sessions();detail['sessions']=boundary;assert last_observed==ledger
                 elif name in ['after-retry','after-restart-retry']:
-                    assert sessions()==boundary and observe()==after;detail['sessions_unchanged']=True;detail['ledgers_unchanged']=True
+                    assert sessions()==boundary and last_observed==ledger;detail['sessions_unchanged']=True;detail['ledgers_unchanged']=True
                 elif name=='restart':
                     send(server,json.dumps(dict(operation='restart'))+'\n')
                     detail['stopped']=event(server,'restart-terminal');detail['ready']=event(server,'restarted')
                     assert detail['stopped']==dict(event='restart-terminal',exit=0,parent_absent=True,lock_available=True,scratch_empty=True)
                     current=detail['ready']['owner'];assert int(current['owner_epoch'])==int(owner['owner_epoch'])+1 and current['process_incarnation']!=owner['process_incarnation']
                     query("BEGIN; SELECT 1 FROM control.datasets FOR UPDATE; SELECT 1 FROM control.local_accounts WHERE username='alice' FOR UPDATE; DELETE FROM control.principal_grants WHERE action='data.read'; COMMIT;")
-                    assert sessions()==boundary and observe()==after
+                    assert sessions()==boundary and observe()==ledger
                 elif name in ['deactivate','reactivate']:
+                    assert last_observed==ledger
                     query("BEGIN; SELECT 1 FROM control.datasets FOR UPDATE; UPDATE control.local_accounts SET active="+('false' if name=='deactivate' else 'true')+" WHERE username='alice'; COMMIT;")
-                    assert observe()==after
-                elif name=='forgotten':assert observe()==after;detail['ledgers_unchanged']=True
+                    assert observe()==ledger
+                elif name in ['before-forget','forgotten']:assert last_observed==ledger;detail['ledgers_unchanged']=True
                 result['commands'].append(detail);save();index+=1
                 temporary=case/f'response-{index}.tmp';temporary.write_text(json.dumps(reply)+'\n');temporary.rename(case/f'response-{index}.json')
             c=json.loads(command('docker','inspect',ident))[0]
@@ -96,7 +110,7 @@ def run(root, state, sql, start, finish, tools):
         send(server,json.dumps(dict(operation='stop'))+'\n');result['terminal']=event(server,'stop-terminal')
         assert result['terminal']==dict(event='stop-terminal',exit=0,parent_absent=True,lock_available=True,scratch_empty=True)
         assert server.wait(12)==0 and not server.stderr and not server.overflow
-        result['after']=observe();assert result['after']==after
+        result['after']=observe();assert result['after']==ledger
         result['backends']={database:int(sql(database,"SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()")) for database in [db,'bbpub_normal']}
         assert not any(result['backends'].values())
         assert query("SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'")=='0'
@@ -111,7 +125,10 @@ def run(root, state, sql, start, finish, tools):
         result['frontend_originals_and_bundles_unchanged']=True
         result['status']='PASS';return result
     except BaseException as error:
-        result['failure']=type(error).__name__;raise
+        result['failure']=type(error).__name__
+        if last_observed is not None:result['failure_observation']=last_observed
+        if last_identities is not None:result['failure_sessions']=last_identities
+        raise
     finally:
         try:
             if server:server.stop()
