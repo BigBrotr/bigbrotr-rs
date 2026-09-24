@@ -111,10 +111,14 @@ def main(root, profile=None):
         elif profile == 'job-status':
             from status_cases import run as status
             result['job_status'] = status(root, state, sql, policy)
-        elif profile == 'revocation':
+        elif profile in ('revocation', 'resume-output'):
             from revocation_cases import run as revoke
             result['revocation'] = revoke(root, state, sql, policy, expected_manifest)
             result['output_hashes'].update(result['revocation']['output_hashes'])
+            if profile == 'resume-output':
+                from resume_output_cases import run as resume_output
+                result['resume_output'] = resume_output(root, state, sql, expected_manifest, result['revocation'])
+                result['output_hashes'].update(result['resume_output']['output_hashes'])
         elif profile in ('parking', 'busy', 'pause-commits'):
             from parking_cases import run as park
             result['parking'] = park(root, state, sql, policy, busy=profile=='busy', pause_commits=profile=='pause-commits')
@@ -134,5 +138,5 @@ def main(root, profile=None):
 
 
 if __name__=='__main__':
-    assert len(sys.argv)==2 or sys.argv[2:] in (['shutdown'], ['parking'], ['busy'], ['pause-commits'], ['revocation'], ['job-status'])
+    assert len(sys.argv)==2 or sys.argv[2:] in (['resume-output'], ['shutdown'], ['parking'], ['busy'], ['pause-commits'], ['revocation'], ['job-status'])
     main(Path(sys.argv[1]).resolve(), sys.argv[2] if len(sys.argv)==3 else None)

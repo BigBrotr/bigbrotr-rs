@@ -20,19 +20,21 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b, tree
-00fa42058fdcc1b7db534afb1ad99a0ed7e4dc7f on main; private origin/main remains
-adee7b6e61e03ac9798a180f0c0a1e890eb29547. Eight unpublished coherent candidates.
-Root owns pending HTTP qualification report/inventory/docs/checkpoint. No other
-contributor or merge/rebase. No active Tux BigBrotr lab after terminal capture.
+Last verified HEAD54af815ba2d44b0ddb3b3ab31cb8245bf281c4b0 on main and private
+origin/main after successful push. Root owns pending resume-output fixtures and
+lab profile plus this checkpoint. No other contributor or merge/rebase. No active
+Tux BigBrotr lab at the last terminal audit. Full product remains incomplete.
 
-Next bounded action: actual same-unit signed completion after permission restoration,
-using existing installed revocation scenario's paused job. Apply814 with the actual
-migrator, restore history.read through authenticated HTTP, then explicit resume;
-compare the original unit/cut/caps/artifact and complete signed bytes, fresh reader
-release, original export pin retention and no duplicate completion across restart.
-Reuse4a3c4ce ELF only if complete product/build input equality holds. Fault/expiry/
-held-driver scenarios and UI remain required; do not mark full tasks complete.
+Next bounded action: commit exact fixture candidate and run --runtime-resume-output
+with qualified4a3c4ce ELF only after complete product/build input equality and
+resource/space census. It extends actual installed revocation: apply814 with the
+real migrator, authenticate/restore history.read, explicit same-unit resume, full
+signed output/SQL inventory and restart with original acceptance receipt. Original
+unit/cut/caps/artifact and all retained input pins must survive; new reader cleanup
+must be observed, not inferred from succeeded state. Mac py_compile/diff check pass;
+this new practical scenario has NOT_RUN status. Independent static AI caught a
+missing grant-proof Idempotency-Key; root added the same e6 key to proof and PUT.
+Fault/expiry/held-driver scenarios and UI remain required; no full-task completion.
 
 [4a3c4ce installed HTTP](evidence/p08-export-resume-http-native-20260924.json) passes
 fresh build/46binarytests/Clippy plus17HTTP exchanges and7control events. Reduced
