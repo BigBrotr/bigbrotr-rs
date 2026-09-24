@@ -11,12 +11,13 @@ from signed_publication_cases import Process, command, event, send
 
 
 def main(root, profile=None):
-    assert profile in (None, 'commits', 'custody')
+    assert profile in (None, 'commits', 'custody', 'client')
     state=json.loads((root/'resources.json').read_text()); runner=state['container_id']; pg=state['postgres_id']; db='bbpub_control_normal'
     path=root/'resume-http-cases.json'; assert not path.exists()
     result=dict(status='INCOMPLETE',source=state['source'],tree=state['tree'],cases={},scope='Actual installed resume HTTP and application-role SQL; native execution disabled to observe exact accepted revision. No resumed artifact output or COMMIT-fault qualification.')
     if profile=='commits': result['scope']='Actual installed resume HTTP with native execution disabled; selected Control COMMIT lost before forwarding and after server completion, then original-key resolution.'
     if profile=='custody': result['scope']='Actual installed resume HTTP with native execution disabled; held server-completed reply and SIGTERM, sampled destination exclusion during actual pending Control driver drain.'
+    if profile=='client': result['scope']='Actual TypeScript client on Node26.4.0 against installed HTTP/PostgreSQL; native export execution disabled. Explicit loopback Origin and in-memory cookie jar, no browser qualification.'
     client=None
     def save(): path.write_text(json.dumps(result,indent=2)+'\n')
     def sql(text): return command('docker','exec','-i',pg,'psql','-XAtq','-v','ON_ERROR_STOP=1','-U','postgres','-d',db,input=text)
@@ -60,6 +61,11 @@ def main(root, profile=None):
         job=sql('SELECT encode(job_id,\'hex\') FROM control.jobs');result['job']=job
         result['before']=observe();save()
         started=time.monotonic();time.sleep(60);result['rate_wait_seconds']=time.monotonic()-started;save()
+        if profile=='client':
+            import resume_client_cases
+            result['client']=resume_client_cases.run(root,state,sql,observe)
+            assert result['client']['status']=='PASS'
+            result['status']='PASS';return
         if profile=='custody':
             import resume_custody_cases
             result['custody']=resume_custody_cases.run(root,state,sql,observe)

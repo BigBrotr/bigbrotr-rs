@@ -23,25 +23,28 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD0550da3d4153e7e33b5dc171cd4131f4c42faa94, tree
-8e83d716600686b3d0ec2d9544b11ec3229b6bc7 on main. Private origin/main remains
-54b6c4c926d5a893e0a337097237af42c71d67e6; one unpublished fixture candidate.
-Root owns pending custody evidence/docs/inventory/checkpoint and untracked
-experiments/export-execution/resume_client.mjs. No other contributor or merge/rebase.
-Fresh Tux inspection: no active BigBrotr container, eight unrelated running,
-127948832768bytes free. All current lab containers are stopped-retained.
+Last verified HEADfd55f036e0ada7dfc68a4c04cd4bed070d3cbac5, tree
+19ec8c861ebd17492af82a09cd489d332d2a849d on main; private origin/main matches. Root owns
+untracked resume_client.mjs and resume_client_cases.py plus lab/HTTP profile wiring
+and this checkpoint. No product changes, other contributor or merge/rebase.
+Fresh Tux inspection after0550: no active BigBrotr container, eight unrelated
+running,127948832768bytes free. All current labs are stopped-retained.
 
-Next bounded action: finish/push reviewed0550 custody evidence, then wire the real
-TypeScript client fixture to the existing paused7 resume HTTP laboratory. The
-new Node26.4.0 draft imports actual packages/api-client/src/management.ts and
-uses real fetch with a fixed loopback Origin and in-memory cookie jar; node--check
-passes, but it has NOT_RUN against HTTP. Reuse pinned Node tools only after full
-archive/extracted-file identity and owner checks. No frontend dependency install
-is needed for the standalone generated validator; no browser behavior claim from
-Node. Add host orchestration, exact Node identity, full SQL comparisons and normal
-server restart without destination/input grants. Keep original keys/body, receipts,
-request counts and explicit terminal observations; no automatic mutation retry.
-Use exact Git and full product/build equality before reusing4a3c4ce ELF.
+Next bounded action: finish static review, commit and run --runtime-resume-client
+against the existing paused7 HTTP lab. DraftNode26.4.0 imports the actual TypeScript
+client and uses real fetch with fixed loopback Origin and an in-memory cookie jar.
+Local syntax plus actual import/empty explicit stop pass; this is plumbing only,
+HTTP NOT_RUN. Host checks originalreceipt5, stale409, newf5receipt8, identicalretry,
+body conflict, same-session restart without destination/input and deactivated401.
+Expected8fetch submissions/HTTP responses, independent SQL time/digest/rows/xmin, unchanged session
+idle/last_seen, explicit parent/client exit and bothDB0. Reuse pinned Node tools
+only after full archive/extracted-file and stopped-owner checks, then recheck
+identity after the case. Read-only tools mount/env-i; no new dependency install,
+Rust compilation or browser qualification. Exact Git/product equality required
+before4aELF reuse. Independent static AI review found no concrete blocker. Moved fetch counter before
+await so missing headers cannot hide a client submission; no transport-internal
+packet-count claim. COMMIT-loss and hostile-response cases remain separate. Local plumbing record:
+.research/implementation/export-execution/resume-client-plumbing.json.
 
 Browser resume/CLI remain selected. The current session observation supplies
 policy_revision but no config_revision: inspect the owning configuration/session
