@@ -21,12 +21,51 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD/origin main43e4fee4ff95d0c525ff8dd2a8ef54153b778b2c;
-verified prefix pushed and ls-remote confirmed.
-Root owns the next runtime_cases.py/recovery_cases.py/recovery_client.py fixture
-and checkpoint update. Product input remains exactly f70ac17; native recovery
-NOT_RUN. Capture helper now preserves partial recovery outputs on failure.
-The product source is committed; no other contributor edits or merge/rebase.
+Last verified HEAD main944775d829fc82e0f56d01af0bf57c5591fde44e candidate;
+origin/main43e4fee4ff95d0c525ff8dd2a8ef54153b778b2c pushed/ls-remote confirmed.
+Root owns recovery evidence/inventory/checkpoint documentation updates only.
+Product input remains f70ac17. No other contributor writes or merge/rebase.
+
+[Signed installed recovery](evidence/p08-export-runtime-recovery-native-20260924.json)
+at944775d passes with exact reused f70parent/worker (complete product/build input
+equality). Actual HTTP202/identical200/logout204/me401, real memory256MiB defer,
+then policy4/headless1GiB. Actual artifact INSERT is blocked by owned SHARE lock;
+parent and its matched backend are frozen. Ungranted RowExclusiveLock confirmed
+AFTER parent SIGKILL(-9,1.103ms). Resume backend/remove blocker: running revision3,
+checkpoint0/artifacts0 unchanged. Ordinary restart reaches same artifact,
+revision5/checkpoint1/one file,399signed bytes/complete1228B manifest unchanged and
+both inodes replaced. Old reader lease/pin/claim+xmin unchanged through final
+stop; new reader released, export pin retained. Two total jobs/units/artifacts/files,
+zero both DB backends/active Control, eight Parquet unchanged. This deliberately
+frozen fault is not host power loss or completion-COMMIT reply loss.
+Capture50files/1164Git sources locally verified,
+SHA4a6d2f28c4623ce393a01bab8b5e0efb4a9e157dc9b59d78810caefe7e44bfeb.
+Owner22d2e3e828b3ed6fb32767c555620f8a stopped-retained/network removed;
+602 prior records/eight running preserved; free148199477248. No compiler cache.
+Independent complete positive capture review found no discrepancy; negative capture and paired report also independently reviewed without discrepancy.
+
+Source-isolated negative9fa8b98e239f72fcecb19aade8805ba923610202,
+treeba6154d0342584ce22274ad71bb54b9feb9c32f4, worktree.research/worktrees/
+export-runtime-no-resume branch research/export-runtime-no-resume. NEVER merge/push.
+Only product mutation removes running from next_export_job scan; all other source,
+fixture/dependency/build inputs identical944775d. Fresh native build/42tests/Clippy
+pass; identical fixture reaches signed output/crash/restart, then TimeoutError
+at recovery_cases.py153 (automatic recovered completion). Original INCOMPLETE.
+The host killed only docker-exec, so final SQL actually observed catalog0/Control1
+before lab.py281 assertion. No graceful-stop or final pin-recovery claim. Outer
+finally stopped both owned containers/PID0/noOOM, removed network, no cleanup errors.
+604 prior resources/eight unrelated running preserved; free144428478464bytes.
+Capture55files/1164Git sources locally verified,
+SHA8b9be87a53c7ceeba4ba605d5a5fded8fe2f787877338629d76b3144aa3413f5.
+Owner2c066c99e4c485fd66bc1d15baf022e0, PG17c6473d/rust a246e07b,
+/runs/export-runtime-9fa8b98 is stopped-retained. No active experiment.
+
+Latest maintenance retired ONLY1c15d1a/out/build/{target,cargo-home}:
+3332145152allocatedbytes; free144418250752 ->147748179968 (concurrent writes possible).
+Fresh owner/mount/processFD/map audit;26file capture/1159sources/bothELF rehashed;
+606containers/eight running unchanged. All source/logs/PG/archive/files retained;
+current f70 complete cache protected. Inventory includes audit, local copy at
+attempt-1c15d1a/cache-retirement. No container/volume/dataset removal.
 
 [Native installed headless completion](evidence/p08-export-runtime-headless-native-20260924.json)
 passes at exact f70ac17, tree56981910b75493d19e05963512c67e5d9adc7e2f. Fresh
@@ -83,8 +122,8 @@ ledger or realistic mixed-workload capacity claim.
 Latest narrow retirement removed only26cde0a/out/build/{target,cargo-home} after
 owner/mount/process FD/map checks and source/artifact/capture rehash:3331977216
 allocated bytes; free149504614400 ->152834408448, concurrent writes possible.
-598containers/eight running unchanged. Current1c15d1a complete cache and both ELF,
-all source/logs/PG/archive retained. Audit attempt-26cde0a/cache-retirement.
+598containers/eight running unchanged. At that earlier retirement,1c15d1a cache was retained; it is now superseded and
+retired as recorded above. Both ELF and all source/logs/PG/archive remain. Audit attempt-26cde0a/cache-retirement.
 
 [Action-window output gate](evidence/p08-export-action-window-native-20260924.json):
 real-clock100ms partial-buffer regression first failed against atomic-only output,
@@ -147,23 +186,13 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Review/commit the next recovery fixture, then transfer clean exact Git and reuse
-f70 installed parent/worker after complete product/build-input equality. The
-fixture first repeats qualified empty completion; policy3 then enables HTTP while
-real256MiB export cap defers execution. Accept a real signed-event job, retry its
-receipt, logout and stop; policy4 restores1GiB export cap with no listener. Hold
-actual artifacts table SHARE lock, observe completed files and blocked actual
-INSERT, freeze only the parent and its positively identified PostgreSQL backend,
-verify actual ungranted lock after parent SIGKILL, resume backend/remove only owned
-lock, verify rollback and retained reader, then restart. Expect same ArtifactId and exact bytes/manifest, one
-completion and only the new reader release. No deadline/SQL/source weakening.
-Independent static fixture review found a timeout-to-kill race and missing
-terminal old-reader comparison. Paired freeze/after-kill lock observation and
-full lease/pin/claim+xmin terminal equality address these. Independent follow-up
-confirmed those fixes; final export pin/job equality after stop also added. No
-practical recovery result yet.
-Outer container shutdown remains the final join on fixture failure. Preserve
-original failures; no current active lab.
+Record/push scoped reviewed evidence on main (never the negative). Then qualify
+installed completion
+COMMIT reply loss using the existing exact-request SQL proxy/recovery contract;
+resolve original job/unit before retry and retain unknown pins. Follow with current
+authority, cancellation, failure parking and resource faults; no full P08/M1 claim.
+Outer container shutdown was the negative fixture's final process exclusion.
+Preserve original failures and all unresolved pins/PostgreSQL/archive evidence.
 
 Keep OutputCustody and its output OwnedPermit outside cancellable supervise
 through actual Control driver join; each blocked worker separately owns the same

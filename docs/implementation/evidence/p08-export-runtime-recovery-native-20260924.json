@@ -1,0 +1,605 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED",
+  "scope": "Actual HTTP signed-event acceptance/logout, automatic file publication, process kill with completion INSERT blocked, same-unit restart and SQL completion.",
+  "source": {
+    "files": 50,
+    "sha256": "4a6d2f28c4623ce393a01bab8b5e0efb4a9e157dc9b59d78810caefe7e44bfeb",
+    "source": "944775d829fc82e0f56d01af0bf57c5591fde44e",
+    "tree": "6147720b64df90c4c63c096e5bf1e898fbfc04c3",
+    "source_files": 1164
+  },
+  "capture": ".research/implementation/export-execution/attempt-944775d/capture",
+  "installed_build_source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+  "installed_artifacts": {
+    "bigbrotr": "6830a4f4bfe9a1c5c1da0a74bf8a62729527764ac9538ed620dcda008555ca9a",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "reuse_validation": "Exact product/build input equality; fixture-only changes. No new compilation or Clippy run.",
+  "method": [
+    "Repeat the qualified headless empty export with actual signed archive/native readback.",
+    "Policy3 enables HTTP and leaves the actual256MiB export memory cap insufficient: accept202, identical receipt200, logout204 and/me401, then clean stop. No export unit yet.",
+    "Policy4 restores1GiB export memory and disables HTTP. A separate owned SQL session holds artifacts SHARE lock. Observe actual current-owner backend INSERT and blocker identity.",
+    "SIGSTOP installed parent and its positively identified PostgreSQL backend. Independently confirm ungranted RowExclusiveLock before AND after parent SIGKILL. The suspended backend cannot finish the wait or process its timeout during inspection.",
+    "Resume only that backend, terminate the owned blocker, observe both product database backends gone and unchanged running job/checkpoint0/no artifact inventory.",
+    "Restart ordinary Control on the same stores/config; it rereads the original snapshot and recreates the same unit on new inodes. Same399signed bytes, complete literal manifest, checkpoint1 and one artifact/file. Only its new reader is released; old lease/pin/claim including PostgreSQL xmin remains unchanged after final stop."
+  ],
+  "observed": {
+    "status": "PASS",
+    "source": "944775d829fc82e0f56d01af0bf57c5591fde44e",
+    "acceptance": {
+      "status": "PASS",
+      "receipt": {
+        "accepted_at_us": "1790249731420430",
+        "authority": "acceptance-only",
+        "command_key": "d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3",
+        "created": true,
+        "execution": "unobserved",
+        "format": "bigbrotr-job-acceptance/1",
+        "job_id": "384dc4331907a131e9891ac55b1b6d57"
+      },
+      "command": {
+        "kind": "export",
+        "format": "signed-events-jsonl",
+        "query": {
+          "version": 1,
+          "resource": "event_history",
+          "mode": "snapshot",
+          "scope": {
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "allocation_domain": "04040404040404040404040404040404",
+            "ordinal": "1"
+          },
+          "filters": [
+            {
+              "ids": [
+                "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+              ]
+            }
+          ]
+        },
+        "allocation": {
+          "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+          "frontier_revision": "1"
+        },
+        "destination": {
+          "id": "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+          "binding_sha256": "79ae23bd12d909b224f23b1398564df78b421e1c0e21e49683e6b5f101ca53d2"
+        },
+        "expected_config_revision": "1",
+        "expected_policy_revision": "3"
+      },
+      "logged_out": true
+    },
+    "accepted_sql": {
+      "files": 0,
+      "state": "accepted",
+      "artifact": null,
+      "revision": "1",
+      "artifacts": 0,
+      "checkpoint": "0",
+      "export_retained": true
+    },
+    "blocked_completion": {
+      "parent": {
+        "pid": 1508,
+        "state": "State:\tT (stopped)",
+        "observed_ns": 3631986716113984
+      },
+      "initial": {
+        "pid": 380,
+        "wait": "relation",
+        "query": "INSERT INTO control.artifacts(artifact_id,job_id,dataset_id,principal_id,destination_id,destination_binding_sha256,manifest_format,manifest_bytes,manifest_sha256,file_count,total_bytes,verification_pin_id,completed_at_us) VALUES($1::bytea,$2::bytea,$3::bytea,$4::bytea,$5::bytea,$6::bytea,'bigbrotr-signed-events-export/1',$7::text::numeric,$8::bytea,1,$9::text::numeric,$10::bytea,$11::bigint)",
+        "wait_type": "Lock",
+        "observed_at": "2026-09-24T11:35:32.574893+00:00",
+        "query_start": "2026-09-24T11:35:32.503823+00:00",
+        "backend_start": "2026-09-24T11:35:31.86326+00:00",
+        "blocking_pids": [
+          378
+        ]
+      },
+      "frozen_backend": {
+        "pid": 380,
+        "wait": "relation",
+        "query": "INSERT INTO control.artifacts(artifact_id,job_id,dataset_id,principal_id,destination_id,destination_binding_sha256,manifest_format,manifest_bytes,manifest_sha256,file_count,total_bytes,verification_pin_id,completed_at_us) VALUES($1::bytea,$2::bytea,$3::bytea,$4::bytea,$5::bytea,$6::bytea,'bigbrotr-signed-events-export/1',$7::text::numeric,$8::bytea,1,$9::text::numeric,$10::bytea,$11::bigint)",
+        "wait_type": "Lock",
+        "observed_at": "2026-09-24T11:35:32.688023+00:00",
+        "query_start": "2026-09-24T11:35:32.503823+00:00",
+        "backend_start": "2026-09-24T11:35:31.86326+00:00",
+        "blocking_pids": [
+          378
+        ]
+      },
+      "backend_start_ticks": "363198599",
+      "ungranted_row_exclusive_lock": true
+    },
+    "before_crash": {
+      "files": 0,
+      "state": "running",
+      "artifact": "14f2d33bfc93b93419b637ed6e77374e",
+      "revision": "3",
+      "artifacts": 0,
+      "checkpoint": "0",
+      "export_retained": true
+    },
+    "output_hashes": {
+      "signed_normal/export-destination/14f2d33bfc93b93419b637ed6e77374e/events.jsonl": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+      "signed_normal/export-destination/14f2d33bfc93b93419b637ed6e77374e/manifest.json": "52a02ceaa407d0ea791dc7b05d2923bf356b7e4afe24caf9ed778c7f71da3df5"
+    },
+    "before_inodes": {
+      "events.jsonl": 31344485,
+      "manifest.json": 31344486
+    },
+    "literal_manifest": {
+      "format": "bigbrotr-signed-events-export/1",
+      "artifact_id": "14f2d33bfc93b93419b637ed6e77374e",
+      "job_id": "384dc4331907a131e9891ac55b1b6d57",
+      "visibility": "private",
+      "fidelity": "full-signed-events",
+      "origin": "retained-scoped-archive",
+      "source": {
+        "cut": {
+          "dataset_id": "01010101010101010101010101010101",
+          "topology_generation": "0",
+          "bounds": [
+            {
+              "stream": {
+                "shard_id": 0,
+                "owner_epoch": "1"
+              },
+              "last_complete_sequence": "10"
+            }
+          ]
+        },
+        "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+        "frontier_revision": "1",
+        "snapshot_id": "3"
+      },
+      "selection": {
+        "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "scope": {
+          "dataset_id": "01010101010101010101010101010101",
+          "dictionary_kind": 4,
+          "allocation_domain": "04040404040404040404040404040404",
+          "ordinal": "1"
+        }
+      },
+      "accepted_revisions": {
+        "configuration": "1",
+        "policy": "3"
+      },
+      "included_families": [
+        "signed-events"
+      ],
+      "excluded_families": [
+        "internal-payload-envelopes",
+        "eligibility-facts",
+        "first-local-receive",
+        "relay-provenance",
+        "imported-claims",
+        "measurements",
+        "documents",
+        "dictionaries",
+        "coverage",
+        "derived-results",
+        "deployment-state"
+      ],
+      "files": [
+        {
+          "file_id": "events",
+          "path": "events.jsonl",
+          "format": "nostr-jsonl/1",
+          "bytes": "399",
+          "rows": "1",
+          "sha256": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9"
+        }
+      ]
+    },
+    "unresolved_readers_before_crash": [
+      {
+        "pin": {
+          "purpose": "reader",
+          "lease_id": "\\x8ba768c6c3bbea007c7eac2a88ca678d",
+          "dataset_id": "\\x01010101010101010101010101010101",
+          "consumer_id": "\\x5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+          "issuer_role": "control",
+          "issuer_epoch": 4,
+          "export_job_id": null,
+          "issuer_resource": "\\xfee0aa5129ecffbf96464a5f60d66a69",
+          "requested_ttl_us": 4934020,
+          "frontier_revision": 1,
+          "issuer_incarnation": "\\x309a14dc3d94129b4deff71d7861efcc"
+        },
+        "lease": {
+          "state": "active",
+          "lease_id": "\\x8ba768c6c3bbea007c7eac2a88ca678d",
+          "dataset_id": "\\x01010101010101010101010101010101",
+          "consumer_id": "\\x5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+          "holder_kind": "role_instance",
+          "holder_role": "control",
+          "expires_at_us": 1790249736923886,
+          "holder_job_id": null,
+          "updated_at_us": 1790249731990372,
+          "acquired_at_us": 1790249731990372,
+          "lease_revision": 1,
+          "release_reason": null,
+          "released_at_us": null,
+          "frontier_revision": 1,
+          "holder_incarnation": "\\x309a14dc3d94129b4deff71d7861efcc",
+          "topology_generation": 0,
+          "archive_pin_protocol": 1,
+          "holder_role_instance_id": "\\x40cf5be2c3a87f74487b7edb6331ee2f"
+        },
+        "claims": [
+          {
+            "row": {
+              "state": "active",
+              "purpose": "reader",
+              "claim_id": "\\x69e028a79489db6ae2ca363d95dcfc51",
+              "lease_id": "\\x8ba768c6c3bbea007c7eac2a88ca678d",
+              "shard_id": 0,
+              "dataset_id": "\\x01010101010101010101010101010101",
+              "owner_epoch": 1,
+              "created_at_us": 1790249731992156,
+              "last_sequence": 10,
+              "first_sequence": 1,
+              "release_reason": null,
+              "released_at_us": null,
+              "topology_generation": 0
+            },
+            "xmin": "930"
+          }
+        ],
+        "pin_xmin": "930",
+        "lease_xmin": "930"
+      }
+    ],
+    "kill": {
+      "status": "PASS",
+      "exit": -9,
+      "elapsed_ms": 1.103
+    },
+    "kill_while_insert_pending": true,
+    "after_crash": {
+      "files": 0,
+      "state": "running",
+      "artifact": "14f2d33bfc93b93419b637ed6e77374e",
+      "revision": "3",
+      "artifacts": 0,
+      "checkpoint": "0",
+      "export_retained": true
+    },
+    "after_restart": {
+      "files": 1,
+      "state": "succeeded",
+      "artifact": "14f2d33bfc93b93419b637ed6e77374e",
+      "revision": "5",
+      "artifacts": 1,
+      "checkpoint": "1",
+      "export_retained": true
+    },
+    "terminal_job": {
+      "files": 1,
+      "state": "succeeded",
+      "artifact": "14f2d33bfc93b93419b637ed6e77374e",
+      "revision": "5",
+      "artifacts": 1,
+      "checkpoint": "1",
+      "export_retained": true
+    },
+    "inventory": {
+      "rows": "1",
+      "bytes": "399",
+      "sha256": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+      "artifact": "14f2d33bfc93b93419b637ed6e77374e",
+      "manifest": "52a02ceaa407d0ea791dc7b05d2923bf356b7e4afe24caf9ed778c7f71da3df5",
+      "manifest_bytes": "1228",
+      "reader_released": true
+    },
+    "after_inodes": {
+      "events.jsonl": 31344498,
+      "manifest.json": 31344499
+    },
+    "totals": {
+      "jobs": 2,
+      "files": 2,
+      "units": 2,
+      "artifacts": 2
+    },
+    "retained_old_readers": [
+      {
+        "pin": {
+          "purpose": "reader",
+          "lease_id": "\\x8ba768c6c3bbea007c7eac2a88ca678d",
+          "dataset_id": "\\x01010101010101010101010101010101",
+          "consumer_id": "\\x5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+          "issuer_role": "control",
+          "issuer_epoch": 4,
+          "export_job_id": null,
+          "issuer_resource": "\\xfee0aa5129ecffbf96464a5f60d66a69",
+          "requested_ttl_us": 4934020,
+          "frontier_revision": 1,
+          "issuer_incarnation": "\\x309a14dc3d94129b4deff71d7861efcc"
+        },
+        "lease": {
+          "state": "active",
+          "lease_id": "\\x8ba768c6c3bbea007c7eac2a88ca678d",
+          "dataset_id": "\\x01010101010101010101010101010101",
+          "consumer_id": "\\x5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+          "holder_kind": "role_instance",
+          "holder_role": "control",
+          "expires_at_us": 1790249736923886,
+          "holder_job_id": null,
+          "updated_at_us": 1790249731990372,
+          "acquired_at_us": 1790249731990372,
+          "lease_revision": 1,
+          "release_reason": null,
+          "released_at_us": null,
+          "frontier_revision": 1,
+          "holder_incarnation": "\\x309a14dc3d94129b4deff71d7861efcc",
+          "topology_generation": 0,
+          "archive_pin_protocol": 1,
+          "holder_role_instance_id": "\\x40cf5be2c3a87f74487b7edb6331ee2f"
+        },
+        "claims": [
+          {
+            "row": {
+              "state": "active",
+              "purpose": "reader",
+              "claim_id": "\\x69e028a79489db6ae2ca363d95dcfc51",
+              "lease_id": "\\x8ba768c6c3bbea007c7eac2a88ca678d",
+              "shard_id": 0,
+              "dataset_id": "\\x01010101010101010101010101010101",
+              "owner_epoch": 1,
+              "created_at_us": 1790249731992156,
+              "last_sequence": 10,
+              "first_sequence": 1,
+              "release_reason": null,
+              "released_at_us": null,
+              "topology_generation": 0
+            },
+            "xmin": "930"
+          }
+        ],
+        "pin_xmin": "930",
+        "lease_xmin": "930"
+      }
+    ],
+    "terminal": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    }
+  },
+  "resources": {
+    "source": "944775d829fc82e0f56d01af0bf57c5591fde44e",
+    "tree": "6147720b64df90c4c63c096e5bf1e898fbfc04c3",
+    "owner": "22d2e3e828b3ed6fb32767c555620f8a",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-944775d",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "2a0142d48b30a987d61241932b66e15a5817d5005949976ee150ba15bec90087"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "dc77c6e7a18a8074659dac88ad3de9dffa219c4241387db4d2ce92470b8c33ee"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T11:35:15.887144+00:00",
+    "runtime_profile": "executor",
+    "adapter_profile": null,
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "runtime_artifact_origin": "f70ac174ad091fd9b849ff18719b86e520478df8",
+    "network_id": "748cd44475dec98b4ab92d90931fa14a41fa17c15658b5ccf696571c9dbe6e4c",
+    "postgres_id": "2a0142d48b30a987d61241932b66e15a5817d5005949976ee150ba15bec90087",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "dc77c6e7a18a8074659dac88ad3de9dffa219c4241387db4d2ce92470b8c33ee",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "PASS_PENDING_CAPTURE",
+    "source": "944775d829fc82e0f56d01af0bf57c5591fde44e",
+    "owner": "22d2e3e828b3ed6fb32767c555620f8a",
+    "result": "PASS",
+    "independent_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "container_ok": true,
+    "preexisting_preserved": true,
+    "preexisting_count": 602,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "original_source_unchanged": true,
+    "host_tcp_wmem_preserved": true,
+    "free_bytes": 148199477248
+  },
+  "review": "Root complete source/capture review and independent AI review. Before execution, AI identified a sample-to-kill race and missing terminal reader/export-pin comparison; both were fixed. Complete positive capture review independently checked50files, all current/build/seed Git manifests and ELF,399signed bytes including recalculated event ID, full manifest, paired freeze, SQL/pin/xmin terminal state and602 prior resources; no discrepancy. Independent negative review also verified55files,1164negative+1110seed Git sources, sole SQL-list mutation, identical fixtures, exact ELF,42tests/Clippy, discriminating timeout and604 retained resources. The additional observed Control backend1/audit failure is retained; no complete SQL terminal state is inferred after timeout. No concrete discrepancy remained.",
+  "negative_control": {
+    "status": "INCOMPLETE",
+    "interpretation": "Expected discriminating recovery timeout, with an additional observed residual Control backend requiring outer container shutdown. Never relabel the original run PASS.",
+    "source": {
+      "files": 55,
+      "sha256": "8b9be87a53c7ceeba4ba605d5a5fded8fe2f787877338629d76b3144aa3413f5",
+      "source": "9fa8b98e239f72fcecb19aade8805ba923610202",
+      "tree": "ba6154d0342584ce22274ad71bb54b9feb9c32f4",
+      "source_files": 1164
+    },
+    "capture": ".research/implementation/export-execution/attempt-9fa8b98/capture",
+    "mutation": "Only next_export_job SQL omits running from eligible states; git diff identifies exactly that one file/line. All fixture/build/dependency sources identical944775d. Isolated research/export-runtime-no-resume, never merge or push.",
+    "build": {
+      "source": "9fa8b98e239f72fcecb19aade8805ba923610202",
+      "tree": "ba6154d0342584ce22274ad71bb54b9feb9c32f4",
+      "artifacts": {
+        "bigbrotr": "f639aa1113ebef9329da1f20bf1271fc2187a0a735bdc21ef3b21d2e4c546596",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+    },
+    "checks": "Fresh installed build,42release binary tests and Clippy pass. Original headless empty completion and signedHTTP/logout/pre-crash output/paired freeze pass before recovery times out.",
+    "observed": {
+      "status": "INCOMPLETE",
+      "accepted_sql": {
+        "files": 0,
+        "state": "accepted",
+        "artifact": null,
+        "revision": "1",
+        "artifacts": 0,
+        "checkpoint": "0",
+        "export_retained": true
+      },
+      "blocked_completion": {
+        "parent": {
+          "pid": 3327,
+          "state": "State:\tT (stopped)",
+          "observed_ns": 3632218966523155
+        },
+        "initial": {
+          "pid": 377,
+          "wait": "relation",
+          "query": "INSERT INTO control.artifacts(artifact_id,job_id,dataset_id,principal_id,destination_id,destination_binding_sha256,manifest_format,manifest_bytes,manifest_sha256,file_count,total_bytes,verification_pin_id,completed_at_us) VALUES($1::bytea,$2::bytea,$3::bytea,$4::bytea,$5::bytea,$6::bytea,'bigbrotr-signed-events-export/1',$7::text::numeric,$8::bytea,1,$9::text::numeric,$10::bytea,$11::bigint)",
+          "wait_type": "Lock",
+          "observed_at": "2026-09-24T11:39:24.827828+00:00",
+          "query_start": "2026-09-24T11:39:24.800379+00:00",
+          "backend_start": "2026-09-24T11:39:24.149034+00:00",
+          "blocking_pids": [
+            375
+          ]
+        },
+        "frozen_backend": {
+          "pid": 377,
+          "wait": "relation",
+          "query": "INSERT INTO control.artifacts(artifact_id,job_id,dataset_id,principal_id,destination_id,destination_binding_sha256,manifest_format,manifest_bytes,manifest_sha256,file_count,total_bytes,verification_pin_id,completed_at_us) VALUES($1::bytea,$2::bytea,$3::bytea,$4::bytea,$5::bytea,$6::bytea,'bigbrotr-signed-events-export/1',$7::text::numeric,$8::bytea,1,$9::text::numeric,$10::bytea,$11::bigint)",
+          "wait_type": "Lock",
+          "observed_at": "2026-09-24T11:39:24.92882+00:00",
+          "query_start": "2026-09-24T11:39:24.800379+00:00",
+          "backend_start": "2026-09-24T11:39:24.149034+00:00",
+          "blocking_pids": [
+            375
+          ]
+        },
+        "backend_start_ticks": "363221827",
+        "ungranted_row_exclusive_lock": true
+      },
+      "before_crash": {
+        "files": 0,
+        "state": "running",
+        "artifact": "c0ddeebe4fd674cec63995f102d0bb76",
+        "revision": "3",
+        "artifacts": 0,
+        "checkpoint": "0",
+        "export_retained": true
+      },
+      "after_crash": {
+        "files": 0,
+        "state": "running",
+        "artifact": "c0ddeebe4fd674cec63995f102d0bb76",
+        "revision": "3",
+        "artifacts": 0,
+        "checkpoint": "0",
+        "export_retained": true
+      },
+      "kill": {
+        "status": "PASS",
+        "exit": -9,
+        "elapsed_ms": 1.104
+      },
+      "kill_while_insert_pending": true,
+      "output_hashes": {
+        "signed_normal/export-destination/c0ddeebe4fd674cec63995f102d0bb76/events.jsonl": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+        "signed_normal/export-destination/c0ddeebe4fd674cec63995f102d0bb76/manifest.json": "08e7d3e3e854ee02605006cdfe33bd63d4467a1c136f63f05838730488f66491"
+      },
+      "failure": "TimeoutError"
+    },
+    "failure": "recovery_cases.py:153 -> TimeoutError: automatic recovered completion after real restart readiness. No final recovered-job/inventory or terminal pin state asserted.",
+    "cleanup": "Host killed docker-exec client but its inner runtime was still connected: independent_sql catalog0/Control1, then lab.py:281 asserts. Outer finally subsequently stopped both verified owned containers (PID0/noOOM), removed only owned network, and preserved prior resources. This is not graceful product shutdown evidence.",
+    "resources": {
+      "source": "9fa8b98e239f72fcecb19aade8805ba923610202",
+      "tree": "ba6154d0342584ce22274ad71bb54b9feb9c32f4",
+      "owner": "2c066c99e4c485fd66bc1d15baf022e0",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9fa8b98",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "17c6473de8e11c0794a4858ba6bfe5df9312312169222187a690e8c1cc516016"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "a246e07b789a515f452eb4d21d95111f5f1f0fdd30e06e6d8b40a011c5aa8b1e"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T11:37:35.432333+00:00",
+      "runtime_profile": "executor",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "de3d78fc894792b4a12c00987695592e88d71b0c61e23961074bfe8a8d0233f4",
+      "postgres_id": "17c6473de8e11c0794a4858ba6bfe5df9312312169222187a690e8c1cc516016",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "a246e07b789a515f452eb4d21d95111f5f1f0fdd30e06e6d8b40a011c5aa8b1e",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "status": "INCOMPLETE",
+      "source": "9fa8b98e239f72fcecb19aade8805ba923610202",
+      "owner": "2c066c99e4c485fd66bc1d15baf022e0",
+      "result": "INCOMPLETE",
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 1
+        }
+      },
+      "failure": {
+        "kind": "AssertionError",
+        "frames": [
+          {
+            "file": "lab.py",
+            "line": 281,
+            "function": "<module>"
+          }
+        ]
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 604,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "original_source_unchanged": true,
+      "host_tcp_wmem_preserved": true,
+      "free_bytes": 144428478464
+    }
+  },
+  "limitations": [
+    "Fault injection deliberately freezes parent AND one PostgreSQL backend; not a spontaneous host/power failure claim.",
+    "This is before inventory COMMIT; COMMIT acknowledgement loss after durable completion is a separate open installed-executor case.",
+    "No time-bound shutdown, concurrent old-worker exclusion, scratch failure, output-permit unknown-join or resource exhaustion qualification from this case.",
+    "Old unresolved reader remains retained deliberately; no automatic pin recovery/GC claim.",
+    "Current-authority revocation during work, durable failure parking/pause/cancel, aged-queue/mixed-workload and full packaged M1 remain open.",
+    "Linux amd64 only; no native arm64 qualification."
+  ]
+}

@@ -21381,7 +21381,44 @@
       "free_bytes": 149950324736
     },
     "failure": "Corrected native lane1536MiB plus recipe baseline128/payload256/completion512 totals2432MiB, exceeding process2GiB. Offline validation refused before serve.",
-    "next_correction": "Process3GiB preserves all recipe lanes. Actual Mac executable validates exact produced corrected TOML; document SHA bd0d113a7e28871995271474add72082be2e7152dade5f20893a7f11b50c83a0. Managed policy remains640MiB. Next fixture reuses identical actual installed binaries after complete source-input equality; no extra compiler cache."
+    "next_correction": "Process3GiB preserves all recipe lanes. Actual Mac executable validates exact produced corrected TOML; document SHA bd0d113a7e28871995271474add72082be2e7152dade5f20893a7f11b50c83a0. Managed policy remains640MiB. Next fixture reuses identical actual installed binaries after complete source-input equality; no extra compiler cache.",
+    "cache_retirement": {
+      "format": "bigbrotr-owned-cache-retirement/1",
+      "status": "PASS",
+      "started_at": "2026-09-24T11:40:41.548684+00:00",
+      "source": "1c15d1a1845d6c094ab7f4478f4edcc629702766",
+      "owner": "9dc0f4d2212eb5552aec325df1f17e92",
+      "superseding_source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+      "free_before": 144418250752,
+      "allocated_cache_bytes": 3332145152,
+      "processes": {
+        "refs": [],
+        "permission_errors": []
+      },
+      "inspected_historical_parent_mounts": [
+        "28304a580d2eb2ac4646161e2616aab2b41922acae3ad6d793dac011defb5ad0",
+        "6e9dddb463c33c7707e3483329dc3c3ed79d391862856a8dc9783e5cfe56c2b6",
+        "72a55cad4ce990ebcacc1df1ab6ea2b37089f9b800ff5dbbb707f117e34c694e",
+        "9c8d5fc3019e882bbb74b1661763d3a0bb8a7b6c12bfbd8fa14588dbfaefd9c8",
+        "9e7d4bd8f5f2caaf47a97703a36be113822f064fa475277179857efda60d1d85"
+      ],
+      "artifacts": {
+        "bigbrotr": "9f4f5be09a8c062519e4f60d61f5134670db769c8321b8e6f9d522a845a83dae",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "source_files": 1159,
+      "capture_sha256": "9ed518921c4559951e62896abd2ed6a296e9e18f9450bbab10733e583b21e6d7",
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1c15d1a/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1c15d1a/out/build/cargo-home"
+      ],
+      "preserved": "Original failed capture/logs, current ELF outside cache, sources/manifests, seed artifacts, PGdata/archive/output. Currentf70ac17 cache and all other labs unchanged.",
+      "free_after": 147748179968,
+      "containers_preserved": 606,
+      "unrelated_running": 8,
+      "finished_at": "2026-09-24T11:40:42.733213+00:00",
+      "local_capture": ".research/implementation/export-execution/attempt-1c15d1a/cache-retirement"
+    }
   },
   "implementation_export_runtime_startup_fixture_20260924": {
     "status": "INCOMPLETE",
@@ -21679,5 +21716,114 @@
       "cleanup_errors": []
     },
     "retention": "Keep fresh installed parent/worker and complete compiler cache for immediate exact-input fixture reuse; original source, logs, PostgreSQL state and archive retained."
+  },
+  "implementation_export_runtime_recovery_20260924": {
+    "status": "stopped-retained; PASS_SCOPED after capture hash/source verification",
+    "evidence": "docs/implementation/evidence/p08-export-runtime-recovery-native-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-944775d/capture",
+    "verified": {
+      "files": 50,
+      "sha256": "4a6d2f28c4623ce393a01bab8b5e0efb4a9e157dc9b59d78810caefe7e44bfeb",
+      "source": "944775d829fc82e0f56d01af0bf57c5591fde44e",
+      "tree": "6147720b64df90c4c63c096e5bf1e898fbfc04c3",
+      "source_files": 1164
+    },
+    "resources": {
+      "source": "944775d829fc82e0f56d01af0bf57c5591fde44e",
+      "tree": "6147720b64df90c4c63c096e5bf1e898fbfc04c3",
+      "owner": "22d2e3e828b3ed6fb32767c555620f8a",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-944775d",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "2a0142d48b30a987d61241932b66e15a5817d5005949976ee150ba15bec90087"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "dc77c6e7a18a8074659dac88ad3de9dffa219c4241387db4d2ce92470b8c33ee"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T11:35:15.887144+00:00",
+      "runtime_profile": "executor",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "f70ac174ad091fd9b849ff18719b86e520478df8",
+      "network_id": "748cd44475dec98b4ab92d90931fa14a41fa17c15658b5ccf696571c9dbe6e4c",
+      "postgres_id": "2a0142d48b30a987d61241932b66e15a5817d5005949976ee150ba15bec90087",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "dc77c6e7a18a8074659dac88ad3de9dffa219c4241387db4d2ce92470b8c33ee",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "preexisting_preserved": true,
+      "preexisting_count": 602,
+      "unrelated_running": 8,
+      "free_bytes": 148199477248,
+      "cleanup_errors": []
+    },
+    "retention": "No new compiler cache; f70 installed ELF copied only after exact product/build input comparison. All original source/logs/PG/archive/files and unresolved old reader claim retained."
+  },
+  "implementation_export_runtime_no_resume_20260924": {
+    "status": "stopped-retained; original INCOMPLETE expected recovery timeout plus residual-backend audit failure",
+    "evidence": "docs/implementation/evidence/p08-export-runtime-recovery-native-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-9fa8b98/capture",
+    "verified": {
+      "files": 55,
+      "sha256": "8b9be87a53c7ceeba4ba605d5a5fded8fe2f787877338629d76b3144aa3413f5",
+      "source": "9fa8b98e239f72fcecb19aade8805ba923610202",
+      "tree": "ba6154d0342584ce22274ad71bb54b9feb9c32f4",
+      "source_files": 1164
+    },
+    "resources": {
+      "source": "9fa8b98e239f72fcecb19aade8805ba923610202",
+      "tree": "ba6154d0342584ce22274ad71bb54b9feb9c32f4",
+      "owner": "2c066c99e4c485fd66bc1d15baf022e0",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9fa8b98",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "17c6473de8e11c0794a4858ba6bfe5df9312312169222187a690e8c1cc516016"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "a246e07b789a515f452eb4d21d95111f5f1f0fdd30e06e6d8b40a011c5aa8b1e"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T11:37:35.432333+00:00",
+      "runtime_profile": "executor",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "de3d78fc894792b4a12c00987695592e88d71b0c61e23961074bfe8a8d0233f4",
+      "postgres_id": "17c6473de8e11c0794a4858ba6bfe5df9312312169222187a690e8c1cc516016",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "a246e07b789a515f452eb4d21d95111f5f1f0fdd30e06e6d8b40a011c5aa8b1e",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 1
+        }
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 604,
+      "unrelated_running": 8,
+      "free_bytes": 144428478464,
+      "cleanup_errors": []
+    },
+    "retention": "Deliberate source-isolated negative never merged/pushed. Keep original files/PG state and unresolved reader/export pin. Current negative ELF/cache retained pending final review; outer container stop owns actual exclusion."
   }
 }
