@@ -19,35 +19,47 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-HEAD 8dbd3c4f7defaca65a2c41998059664593afc58f, tree
-7c6b2addc5818b0b3a57f66dff2d89b32ae5f450; one local candidate above private
-origin/main a4b0464bd6cb75add45ed1b9ca3924b51e6e3d38. Candidate committed after six
-trace-oracle controls and artifact/link/handoff checks; clean exact Git transferred
-to Tux. Root now owns only this checkpoint/inventory update. No foreign edits.
-Independent read-only review found capture omission and pre-readiness cleanup
-ambiguity, both corrected before launch; no remaining concrete static blocker.
-Reviewed full serve/resume/native supervision, transport and destination boundaries.
+HEAD/origin/main73c347e25aede674571f8953ac2e64cfb1cba6c4, tree
+f52cd36a58985c57862009e9eb52783ec26f8004. Candidate8dbd3c4 and its evidence commit
+are pushed to private BigBrotr/bigbrotr-rs/main; ls-remote matches, no rewrite.
+The private push was verified; root now owns this checkpoint and the new resume
+lock fixture, proxy selector/tests and lab wiring. No product Rust/SQL changes or
+foreign work. Native tested product source remains8dbd3c4, not this pending fixture.
 
 Run export-runtime-8dbd3c4 is stopped-retained, owner
-1ae77d53919b4876eeff7df396179ccd. Fresh installed build, 46 binary tests and Clippy
-pass. Actual resume checker evidence passes; report/inventory/operations/task
-updates passed independent review and are ready for coherent commit/private push.
-Original candidate is still unpublished. Root owns only these documentation files;
-no local/remote experiment active. Final census 20:53:46Z verifies both owned PID0/
-noOOM, network and orchestrator absent, 758 prior containers/eight unrelated running
-preserved. Actual installed ELF and restored marker hash/inode match evidence.
-Free 114598891520 bytes; per-run preflight 118352154624. No cache/data/container
-retirement. Retain new 8db caches/ELF and original 4e/73e/strace assets.
+1ae77d53919b4876eeff7df396179ccd. Fresh installed build,46 binary tests and Clippy
+passed; checker evidence was committed/pushed. Final census20:53:46Z verified both
+owned PID0/noOOM, network/orchestrator absent,758 prior containers/eight unrelated
+running preserved, marker restored, free114598891520bytes. This is the last census,
+not a fresh claim about current Tux. No new experiment or cache retirement yet.
 
-Independent report review, artifact/link/handoff and diff checks passed.
-Next bounded action: coherent evidence commit/private push, then qualify resume session/
-grant expiry after actual PostgreSQL row-lock waits under P08-T03 Step3; read the
-current authentication/acceptance lock order and existing expiry fixtures first.
-Preserve current prepared paused-unit oracle, full receipts/pins and exact timing;
-no full task completion from this one scenario. Do not repeat unrelated browser
-or native suites. The new checker does not qualify arbitrary kernel I/O or continuous
-custody. Transfer/collector/oracle helpers are under ignored export-execution;
-review-resume-checker.py verifies current capture, not an unrun future profile.
+Active bounded action: qualify resume session expiry after real PostgreSQL
+account/source row waits. Three prepared cases: account wait beyond idle expiry,
+second acceptance authority/source wait beyond expiry, and timely source release
+with one queued8 receipt. The first two must return401 without any resume INSERT;
+the last must202, expired-token retry401 and fresh-session historical retry200.
+All twelve row+xmin ledgers, session timing, exact HTTP/SQL receipts, actual waiter
+PID/start and Control usability are observed. The short session is valid audited
+SQL fixture provisioning (1.25s idle/60s maximum); normal login supplies the long
+session. No configurable HTTP login lifetime claim or constraint bypass.
+
+Read complete current resume/authentication adapters, session lifetime model,
+0806/0807/0501/0814 guards and related fixtures. The proxy holds only the second
+actual extended Execute of require_export_execution_authority, after the second
+session authentication; first call has no checked destination and rolls back.
+Official PostgreSQL16 protocol/locking docs inspected. Local5 selector/wire tests,
+10 existing target tests and1 existing wire test pass. Independent read-only AI
+review identified three oracle gaps; root corrected full HTTP receipt/session
+attribution, terminal session comparison after retries and digest-safe provisioning
+errors. Review/verification remains local, no native outcome yet.
+
+Next: review final diff, run artifact/handoff checks, commit a clean candidate,
+inventory Tux, then transfer through Git with --runtime-resume-locks. Reuse exact
+8dbd3c4 installed ELF only after all product/build inputs match; preserve4e signed
+seed and both cache roots. No fresh compiler cache needed. Capture actual outputs
+and terminal resource census; keep failed/unknown outcomes. Existing transfer and
+collector helpers are under ignored export-execution. Do not repeat unrelated
+browser suites or claim full P08 completion from these three cases.
 
 ## Latest qualified slice
 

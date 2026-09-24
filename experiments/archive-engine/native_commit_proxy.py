@@ -97,6 +97,36 @@ class SessionCommandObserver:
         return False
 
 
+class ResumeAuthorityObserver:
+    """Identify actual extended Execute, not preparation or unrelated binds."""
+    QUERY = b'SELECT control.require_export_execution_authority($1::bytea)'
+
+    def __init__(self):
+        self.statements = set()
+        self.bound = False
+        self.requests = 0
+
+    def frontend(self, tag, body):
+        if tag == b'P':
+            name, query, _ = body.split(b'\0', 2)
+            assert len(name) <= 64
+            self.statements.discard(name)
+            if query == self.QUERY: self.statements.add(name)
+            assert len(self.statements) <= 8
+        elif tag == b'C' and body[:1] == b'S':
+            self.statements.discard(body[1:-1])
+        elif tag == b'B':
+            portal, name, _ = body.split(b'\0', 2)
+            assert portal == b''
+            self.bound = name in self.statements
+        elif tag == b'E':
+            assert body == b'\0' * 5
+            if self.bound:
+                self.requests += 1
+                return self.requests == 2
+        return False
+
+
 class Proxy:
     def __init__(self, mode, target='publication', lifetime_seconds=120):
         self.mode = mode
@@ -115,7 +145,7 @@ class Proxy:
                            guard_rejections=0, serialization_rejections=0, rejection_sequence=[])
         self.report.update(auth_finals_omitted=0, frontend_queries=0, coordinator_inserts=0)
         self.report.update(pin_claim_injections=0, pin_rejections=[])
-        self.report.update(session_mutations_complete=0, reader_queries=0, capture_verify_requests=0)
+        self.report.update(session_mutations_complete=0, reader_queries=0, capture_verify_requests=0, resume_authority_requests=0)
 
     def emit(self, event, **extra):
         print(json.dumps(dict(event=event, mode=self.mode, target=self.target, **self.report, **extra)), flush=True)
@@ -176,6 +206,7 @@ class Proxy:
                      owner_statement=None, owner_waiting=False, owner_forwarded=False, capture_statements=set())
         session_commands = SessionCommandObserver(self.target) if self.target in (
             'control-session-issue', 'control-session-revoke') else None
+        resume_authority = ResumeAuthorityObserver() if self.mode == 'hold-resume-authority' else None
         manager_committed = asyncio.Event()
 
         async def pump(source, destination, frontend):
@@ -193,6 +224,12 @@ class Proxy:
                         await asyncio.Future()
                     return
                 tag, header, body = frame
+                if frontend and resume_authority is not None:
+                    assert parameters.get(b'user') == b'bigbrotr_control' and database == b'bbpub_control_normal'
+                    selected = resume_authority.frontend(tag, body)
+                    self.report['resume_authority_requests'] = resume_authority.requests
+                    if selected and not await self.hold('resume-authority', state['backend_pid']):
+                        return
                 if session_commands is not None:
                     if frontend:
                         session_commands.frontend(tag, body)
@@ -440,7 +477,7 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'hold-capture-rollback', 'hold-capture-verify', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose', 'omit-recovery-claim-release'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'hold-capture-rollback', 'hold-capture-verify', 'hold-resume-authority', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose', 'omit-recovery-claim-release'], required=True)
     parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', *CONTROL_TARGETS], default='publication')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
