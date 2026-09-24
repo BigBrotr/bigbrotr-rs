@@ -3,308 +3,102 @@
 Observed 2026-09-24 in the primary Mac workspace. Navigation, not evidence or a
 second plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint):
 verify Git, actual artifacts and live resource ownership before continuing.
-Historical checkpoint detail remains in Git; task files and reports own outcomes.
+Historical detail stays in Git and linked reports; task files own completion.
 
 ## Mandate and current slice
 
 The complete selected product remains owner-authorized and INCOMPLETE. Keep
 private bigbrotr-rs, unpublished Cargo packages and the read-only Go neighbor.
 Mac owns edits/Git; Tux runs trusted exact-Git jobs while hosted Actions billing
-is unavailable. No public release, repository rename or Linux arm64 qualification.
-
-Active P08-T03 Step3 / P08-T04 Step3, with the thin P09-T09 Step2 job-status
-consumer. Automatic signed JSONL execution, known-refusal parking/restart,
-actor-owned observations and explicit same-unit resume have scoped evidence.
-No full P02/P06/P08/P09 task or M1 milestone is complete. Continue the whole
-selected product through the existing task pipeline, including ordinary packaging,
-acquisition, analytics, public surfaces, website and complete private operations.
-Root is sole writer/integrator. catalog_guard_review is an independent read-only
-AI reviewer: no edits/tests/SSH or resource ownership.
+is unavailable. No public release, rename or Linux arm64 qualification.
+Active P08-T03 Step3 / P08-T04 Step3, with thin P09-T09 Step2. No full
+P02/P06/P08/P09 task or M1 milestone is complete. Continue through the existing
+pipeline, including packaging, acquisition, analytics, public surfaces and website.
+Root is sole writer/integrator. catalog_guard_review is a read-only AI reviewer,
+with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-HEAD 4f484a433d8aca903597e6f722c3cfdf4539cff2, tree
-68230f7e5418a7110db0d725d0626e0ac06a3ac7. Origin/main is
-209a34e6467894a87700382bbfec7607a95711e5; two candidate commits are unpublished.
-Root owns dirty JobStatus.svelte/style.css, the narrow frontend-only runtime reuse
-check in export-execution/lab.py, inventory/checkpoint and the new RED report.
-No foreign work or active lab. Fresh owner/container inspection confirms all five
-4f containers exited/PID0; no cleanup errors. Next: review and commit the candidate
-label wrapper, then repeat the unchanged first ordinary pointer fixture on fresh
-WebKit/root. Keep the eight-key bound. Native GREEN is NOT_RUN.
+HEAD1647b5f2eb93a1f8a11adc2ddf4c2262e6a2072e, tree
+d2cdef31288281768d8d23ba4b80a9553c63c397. Three candidate commits are unpublished
+above origin/main209a34e6467894a87700382bbfec7607a95711e5, freshly fetched. GitHub
+metadata confirms private BigBrotr/bigbrotr-rs with main default. Root owns only
+documentation: current report, inventory, checkpoint, build/private-administration
+contracts and P08/P09 task prose. No foreign work or active local/remote experiment.
+The clean transfer-only worktree skip-button-1647b5f was verified and removed.
 
-[Native activation comparison](evidence/p09-skip-activation-native-red-20260924.json)
-is stopped-retained at export-runtime-4f484a4-webkit-root, owner
-e99e24f419e74304894caa19a4815a41. Root verified98 payloads and1255/1246/1110
-complete Git files, ELF/bundles, atomic receipt and terminal12-ledger/session
-preservation. Read-only AI reviewed the trace and relevant code, not a second full
-SQL/resource audit. Two ordinary pointer trials remain UNREACHED after8keys and
-separate502/503ms waits plus one key. Keyboard/padding pass4, known-input controls
-pass3. All166samples retain the same button/text nodes;84 later-task key events
-have defaultPrevented=false. First pointer failure precedes every screenshot.
-Padding has different focus/scroll history and click primitive; internal WebKit
-starting node is unobserved. These are causal limits, not a passed user journey.
-Only2of7 steps complete; restart/revocation/forget not reached. TerminalSQL equals
-accepted queued8; idle rows equal before-retry. Browser1/runner143/PG137 are failure
-cleanup, not graceful Control release. All5PID0/noOOM, network removed, bothDB0,
-733prior/eight unrelated running preserved. Free121459822592→120885309440 before
-capture. Original73e/4e/b6 inputs, all SQL/source/captures and caches protected.
+Review and artifact/link/handoff checks passed; evidence is ready for the coherent
+commit/private push. After that, qualify the actual resume destination checker under blocked native I/O and
+SIGTERM for P08-T03 Step3. Read remaining supervisor/transport callers before
+changing the fixture. Existing export_destination_blocked.py owns the qualified
+strace syscall barrier; resume has a distinct route and preserves an existing
+unit/pin. Do not substitute a dummy I/O call or allow priming to accept a resume.
+Use a fresh inventoried exact-Git lab, actual HTTP/SQL and independent unchanged
+receipt/unit/pin checks; preserve signal timing distinct from request expiry.
+Current UI findings do not justify unrelated Rust changes or repeated suites.
 
-The candidate wraps only the Check job label in a span with pointer-events:none
-in compiled CSS; accessible text, native submit and disabled semantics remain.
-Local Node26.4.0 Svelte check passes0errors0warnings. The next lab records exactly
-the two changed presentation hashes, builds current frontend bundles afresh and
-keeps every other product/build input equal to73e. Reused ELF keeps its original
-source identity; this is not a new Rust build or release promotion. No relaxed
-browser assertions or modified historical outcomes. Read-only AI found no concrete defect in the candidate/reuse boundary and
-confirmed the retained RED report; no test/SSH by the reviewer. Native efficacy
-remains NOT_RUN. Artifact/link/handoff checks pass.
+## Latest qualified slice
 
-[The activation probe attempt](evidence/p09-skip-activation-startup-incomplete-20260924.json)
-is stopped-retained and INCOMPLETE at export-runtime-67e4bad-webkit-root,
-owner 8c866dedd03e4cb119e40f5b08fc2c02. The host deadline expired before the first
-browser command; no browser report or focus trace was retained. Root checked all
-78 payloads, 1254/1246/1110 Git files, exact ELF/bundles and resource preservation;
-read-only AI separately checked all payloads and the diagnostic sources. Five
-native store cases passed in the preceding separate WebKit process. All five
-owned containers PID0/noOOM, network removed, both databases zero application
-backends, 728 prior/eight unrelated running preserved. Free bytes
-122078158848 → 121505669120 before capture; no new Rust compiler caches.
-No terminal twelve-ledger/session snapshot exists for this early timeout.
+[The label-wrapper correction](evidence/p09-skip-button-native-20260924.json)
+passes on1647b5f with original73e Rust ELF and fresh frontend bundles: WebKit/root,
+WebKit/control, Chromium/root and Firefox/control. Root independently verifies
+496payloads,1256current/1246runtime/1110seed Git files per run, both ELF, all assets,
+12SQL ledgers and7attributed session audits per run. Exactly two frontend files
+differ from73e; all other product/build inputs match. The browser/host/trace
+fixtures equal the original4f RED. Five native store cases and7installed recovery
+steps pass per pair. Five focus trials each pass4/4/4/3/3reverseTabs, then visible
+Enter#session/TabSignout. No delayed extra keys or conditional padding are needed.
+Chromium starts from body after lookup; WebKit starts from check-job. This verifies
+the combined span/CSS workaround, not cross-engine button-focus retention or an
+internal WebKit cause. Full accessibility and the changed six-pair matrix remain
+unqualified; prior188 recovery matrix keeps its separate source identity.
 
-The retained process snapshot shows MiniBrowser waiting and its gst-plugin-scan
-child running, but was taken during cleanup after PG/runner exit. It does not
-prove the original pending API stage or a GStreamer defect. Preserve that limit.
-Playwright1.63.0 coreBundle actually defaults launch to180s, exceeding the150s
-host window. The next fixture uses an explicit30s launch bound and atomic initial,
-launch/context/page/step/failure reports before teardown. Only bounded pre-page
-launch error text is retained; later errors stay redacted. PASS is assigned only
-after the journey and available client handles finish. A rejected launch can
-leave children without a returned handle; only the host owner/PID audit proves
-native exit. No disabled plugins, added automatic retries or relaxed assertions.
+All four roots export-runtime-1647b5f-{webkit-root,webkit-control,chromium-root,
+firefox-control} are stopped-retained. Exact owners/containers/captures live in
+inventory implementation_skip_button_fix_20260924. Actual final census after
+captures confirms20ownedPID0/noOOM, four networks absent, all orchestrators absent,
+same8unrelated running. Free118387777536bytes; initial root preflight120838275072.
+Both Rust parents per run exited0 with committed Control release, root locks free,
+scratch empty and bothDB0. PG137 is lab teardown, not database graceful shutdown.
+No new Rust compiler caches, no data/container/volume retirement. All current and
+original artifacts remain protected. Root viewed each focused-link and mobile
+capture. Full-page overlay persists despite verified actual viewport geometry;
+no claim of a screenshot-rendering fix. Independent AI review covers root full
+identity/trace plus SQL/resource consistency, and other-pair identity/trace checks;
+final Firefox/report review also found no discrepancy. AI checked all496payloads
+and root full SQL; other three pairs received browser/identity/terminal/report
+checks without repeated full SQL or visual PNG review. No tests/SSH/edits by AI.
 
-The 4f followup reached the browser journey with the configured30s launch bound
-and saved its functional failure before closing available handles. It does not
-exercise the launch-timeout branch or explain67e. Preserve the original eight-key
-failures and the separate delayed outcomes. Prior ba5 and the independently
-qualified188 matrix retain their outcomes below.
+Two local observer failures remain recorded without relabeling native results:
+the new offline verifier first failed only at JSON serialization after a local
+variable shadow, then passed after renaming frontend_changes; the sequential
+collector read missing Chromium resources.json before preflight created it.
+The original Chromium lab continued, was inspected and collected without restart.
+Ignored skip-remaining-state.json retains that observer failure. No active helper.
 
-[Native WebKit/root trace](evidence/p09-skip-link-trace-incomplete-20260924.json)
-is stopped-retained at export-runtime-ba5beff-webkit-root,
-owner0cbc4054ff6c8ea35ceb06d20e4846e8. Root verified96payloads,
-1253/1246/1110Git files, exact73e ELF/bundles and actual terminal12ledgers/session
-idle preservation. Capturetar94c9a82f4bb0cb12c7e965996d9a3274291fe1c1c8d2bc61cc32b288db7f7f58.
-All five owned containers PID0/noOOM, network removed, bothDB0,723prior/eight
-unrelated running preserved; free122698444800→122124992512 before capture.
-Runner143/browser1/PG137 reflect failure cleanup; no successful Control release
-was recorded. Preserve original SQL/trace/PNG/source and current73e/4e/b6 inputs.
+Original [4f activation RED](evidence/p09-skip-activation-native-red-20260924.json),
+[67e startup timeout](evidence/p09-skip-activation-startup-incomplete-20260924.json)
+and [ba5 trace](evidence/p09-skip-link-trace-incomplete-20260924.json) remain retained.
+4f first pointer fails8keys even before screenshots and after separate502/503ms
+waits; no internal starting node observed. The30s launch bound now saves stage and
+failure before teardown, but its timeout branch was not exercised by the green runs.
 
-Outcome INCOMPLETE, not a passed accessibility or full recovery journey. All8real
-ShiftTab pairs leave the same enabled Check job focused, documentFocused=true;
-no focus changes during about121ms. Both verified centered Job ID trials pass
-input→Refresh→Sign out→skip in3reverseTabs, with and without full-page screenshot,
-then visible Enter#session/TabSignout.69samples and all3trial outcomes retained;
-3actual PNG reviewed. Full-page overlay coexists with identical unfocused
-above-viewport geometry; no CSS defect established. Whole terminalSQL equals
-accepted queued8; session idle rows equal before-retry. Only first2browsersteps
-completed, third partial; restart/revocation/forget not reached. Matrix188 remains
-its separate scoped recovery qualification and old8743 stays INCOMPLETE.
+The earlier [resume matrix](evidence/p09-resume-browser-matrix-native-20260924.json)
+and [original installed recovery](evidence/p09-resume-browser-native-20260924.json)
+own the six scoped old-product engine/mount journeys. Actual signed same-unit
+output, COMMIT-loss sides, held-driver custody, session context and typed client
+reports remain linked from [P08](08-operations.md) and [export operations](../operations/export.md).
+Read their exclusions before reusing a guarantee. No browser trace qualifies
+new signed output, new readers, device power loss or packaged-release acceptance.
 
-Read-only AI confirmed the prior trace. Internal WebKit hit-test/focus-start
-behavior remains a hypothesis. Its eight keys were fast; elapsed-time recovery
-and capture effects specific to button focus were not excluded. The later4f probe
-above addresses those gaps and motivates the bounded candidate now under test.
-
-The diagnostic uses atomic tmp+rename snapshots (no fsync/power-loss claim).
-Root corrected the review's Kit2.70.3 native-replaceState router mismatch before
-execution: actual same-document goBack, observed popstate, null response and
-surviving marker/original URL now pass in the native trace. Reviewed Kit client.js
-2720-2950 SHA a2e26ea4f6b2668c396af9b44bbda2047640c2c9cbb81d3660ec4b1e3310a2c3.
-Only allowlisted focus identities/keys and geometry enter the trace, no input
-values. Capture-phase defaultPrevented does not establish the final default action.
-
-[The remaining resume matrix](evidence/p09-resume-browser-matrix-native-20260924.json)
-passes Firefox/root, Firefox/control, WebKit/root, WebKit/control and Chromium/control
-on exact188 source with qualified73e ELF. Five fresh isolated databases, 35 installed
-UI steps, 25 selected-engine native store cases. Root independently verified all
-575 payloads, 1251 current/1246 runtime/1110 seed Git files per run, exact ELF/bundles
-and complete 12-ledger reconstruction. Each adds one atomic resume and seven
-session audits, retains original key/body7/1/2 and observes202withheld/200/200/401.
-All five mobile screenshots inspected; existing skip-link overlay remains separate.
-Prior dd Chromium/root is preserved, giving the six scoped engine/mount journeys
-on unchanged product implementation. No full P08/P09 task completion.
-
-All five runs are stopped-retained; inventory owns exact roots, owners, container
-and orchestrator identities. 25 owned containers PID0/noOOM, five networks removed,
-all prior containers/eight unrelated running workloads preserved per run. No new
-Rust compiler caches. Latest completed free122744524800bytes; fresh final census after captures
-finds122733789184bytes and the same25 stopped/eight unrelated running containers.
-That census preceded the new diagnostic above.
-Current73e cache/ELF and separately owned4e/b6 inputs remain protected. Root and
-read-only AI independently verified the complete five captures without discrepancy.
-Retry200 body equality and some final no-idle checks are executed assertions;
-those complete raw replies/snapshots are not retained for offline reconstruction.
-Artifact/link/handoff checks pass and historical inventory entries are unchanged.
-The matrix is committed/pushed; the keyboard trace ended as recorded above.
-No product tests or SSH by the independent reviewer.
-
-Tuxdd17842 is stopped-retained, owner ff09631fb1f63b8b5fb0f62aefd95214;
-seven owned containers PID0/noOOM, network removed, bothDB0 and691prior/eight
-unrelated running preserved. Exact73e6517 ELF reused after complete product/build
-input equality; no new Rust build/cache. Current73e compiler cache and all actual
-ELF/source/SQL/browser artifacts remain protected with separately owned4e/b6.
-[Installed recovery](evidence/p09-resume-browser-native-20260924.json) passes 15 native
-store cases across 3 engines and 7 production Chromium/root steps. Root and read-only
-AI independently verify119payloads,1249current/1246runtime/1110seed Git files,
-both ELF/bundles and full SQL reconstruction. Capturetar
-3a7447ecdca5a3818ae02f686bb4ad3179db33dd8d6a7d01e4b79b5af21def3a.
-
-
-[Original73e fixture](evidence/p09-resume-browser-fixture-incomplete-20260924.json)
-stays INCOMPLETE: its pre-login baseline wrongly required all12ledgers unchanged
-after login201/job200, before any resumePOST. Original failed SQL observation and
-screenshot were not retained. Correcteddd boundary confirms the sole initial login
-audit; old evidence is not rewritten. Three local audit-oracle tests include two
-semanticRED cases and changed/extra/bad-attribution negatives. Fixture now saves
-failed SQL and session projections. Native 73e build/46 binary tests/Clippy and
-15 native store cases passed; retain its original capture and cache.
-
-[Local browser resume preparation](evidence/p09-resume-browser-preparation-20260924.json)
-passes20paneltests,17clienttests, client types/generated contract checks and five
-actual Chromium153.0.8010.12 IndexedDB cases on Mac arm64/Node26.4.0. First blocked
-open reproduced3native requests; fixed shared gate retains one until real native
-terminal event, including after caller timeout. First green fixture then failed
-on an immediate action before the prior native abort ended; final fixture awaits
-an independent queued transaction. Original captures remain under ignored
-export-execution/resume-store-{open-red,open-green,native-green}. Exact input hashes
-are in the report. This is actual module/IDB evidence, not installed UI/HTTP,
-Firefox/WebKit, Linux or device-power-loss qualification. Read-only AI reviewed
-store/model/keyed UI: gate, contract scope and misleading recovery text corrected.
-
-Both native parents in dd17842 stop with release=committed, roots available and
-scratch empty. The first reply loss is Playwright forward realPOST/202 then abort,
-not TCP/COMMIT loss. SQLpaused7/xmin910→queued8/xmin948, exact receipt8/time
-1790275141782981, key07ba791e9aa6c33c1e84ac1c5fd64b5b. Four requests retain7/1/2:
-real202withheld, then200/200/401. Original12ledgers/rows retained except declared
-job change + one atomic resume; audit 12→13→14→20 includes exactly 4 issue/3 logout.
-No new reader/output. Some final no-idle observations survive as assertion booleans
-only. Actual 375px screenshot is readable/no horizontal overflow; known skip-link
-overlay remains, full accessibility not claimed. Firefox/WebKit in that original report qualify only
-native store operations; the later188 matrix above now adds installed journeys.
-
-The UI now uses a session-owned ResumeModel alongside the explicit JobModel.
-Native IndexedDB reserves one closed request per account before HTTP; application
-admission limits32records/512bytes, strict transaction completion, bounded waits
-and one outstanding native operation per factory/realm. Restore never dispatches.
-Pending bodies cannot be replaced; retry uses all original revisions. Dispose
-fences every late result. The privacy oracle checks both Web Storage and the exact
-selected IndexedDB metadata, with closed-shape negative controls.
-Remaining blocked-checker, expiry/lock-wait cases and full CLI/product gates remain.
-
-## Latest native evidence
-
-[dc6a8d9 session command context](evidence/p08-session-command-context-native-20260924.json)
-passes fresh native installed build,46binarytests/Clippy and10actual Node/HTTP
-requests against PostgreSQL. Login and explicit/me expose checked config1/policy2;
-client uses them for resume. Olde4 key/currentbody7/1/2 returns409 before newf5
-samebody202. Exact receipt8/time1790271166668341 persists through retries and
-Control5→6 restart without destination/currentdata.read; deactivation401. Original
-12projections/retention unchanged except queued8 and one atomic resume tuple
-xmin966; sessions961 unchanged after/me. Commands/audit projections are resume-only.
-Bothparents0/rootfree/scratchempty/bothDB0. Root verifies34payloads,1236current/
-1110seed Git files, fresh bound ELF and682prior/eight running resources;
-capturetar f512d59e5edcdb91aa7c4ff89962e23932d05c1fa5c791c0461967f3cb258213.
-ParentSHA720addf6ce4e97ca0e52601198d4bd708bc0036453d69dafb27bef077bb868ea;
+Qualified runtime source73e651769e9cd4c82cb0d51731db698eeeadf0f4, owner
+e77b276c5af26eadc38957fdc5efe1cc, treef966090c11255f9cb2279a11d014a5112005e613.
+Original native build/46binarytests/Clippy and15storecases passed; its old browser
+fixture remains INCOMPLETE. ParentSHA
+a3bb9bd6f7b3a7e6140c72f133401c65571e401b6e1eaec424e520b668b2e96c,
 workerSHA3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
-Free127461650432→123727515648 before later cache retirement. Independent static
-AI review found no defect; no separate AI raw capture review claimed. Its proposed
-newline issue was NOT_REPRODUCED on Node26.4.0 and retracted after ECMAScript check;
-additional local regression passes. Largeu64 is local serialization/client evidence,
-not real PG large-head or concurrent head-advance evidence. No DDL; required new
-config_revision means backend and closed private bundle must upgrade together.
-Local17clienttests/typecheck/contractcheck,10paneltests/Svelte0errors0warnings,
-27RustHTTPtests/fmt pass. The later scopeddd17842 UI/reload evidence is described above; full matrix remains open.
-
-[15569cc actual TypeScript client](evidence/p08-export-resume-client-native-20260924.json)
-passes8real HTTP responses on Node26.4.0: login201, historical200, stale409,
-new202, retry200, body409, same-session Control5→6 retry200 and deactivated401.
-Paused7/xmin910→queued8/xmin948, one atomic resume detail/command/audit; all
-original rows/xmin retained across12ledgers. Exact receipt8/time survives retry,
-no destination/currentdata.read afterrestart, sessionidle/last_seen/xmin unchanged.
-Parent/client explicitstop0, root free/scratch empty/bothDB0. Cookiejar in memory;
-no browser, hostile response or COMMIT-loss claim. Nodearchive and4654files checked
-before/after, toolsreadonly. Root verified28payloads and1235/1223/1110Git files,
-fullproduct/build equality and4aELF. Capturetar
-60e68d11c2b7f6e6f8adf1aa78172335fe8a95e6bca2d67fc96dbe6700e973d6;
-independent AI hashes/SQL/event/resource review agrees. Commands/
-audit projections are resume-only. Node tool rehash is runner evidence outside
-this capture. Changed-body409 also used stale revision6, so it does not alone
-isolate fingerprint validation from CAS. The next fixture adds old-key conflict
-with otherwise-current paused7/context before acceptance. No source/runtime/
-product mutation during the15569cc experiment.
-
-[0550da3 held resume reply](evidence/p08-export-resume-custody-native-20260924.json)
-passes actual SIGTERM while PostgreSQL completed COMMIT and the proxy withheld
-its reply.105samples/100supported span1.889735s, maxgap19.682ms, no available root
-lock while the same process/startticks/socket remains live. Correct destination
-dev66306/inode32655380. Parent4 in2004.614ms, RemoteDisconnected, no committed
-Control release; lock available after exit. SQLpaused7/xmin910→queued8; new
-resume detail/common command/audit/job inxmin946, independent digest and owner
-binding; all original source bounds/unit/selection/retention and old receipts
-unchanged. BothDB0, no new reader/output. This is sampled evidence, not continuous
-custody, a Catalog join-call observation or a new causal-mutant qualification.
-Root and independent AI verify27payloads/1232current/1223build/1110seed Git files,
-full product equality and both4aELF. Capture tar
-3856e8f7ab14c54f3b6a6fa83d15bc292ea420234718449339dd078bd3492973.
-Run export-runtime-0550da3 ownerb7b8f846442dbf8a9aecff85eb43e022: ownedPID0/noOOM,
-network removed,678prior/eight running preserved; free128358465536→127959240704.
-Static review corrected inherited password and wrong root path before native;
-Mac actual two-directory flock and four malformed SQL-state oracles discriminate.
-
-[3104705 COMMIT loss](evidence/p08-export-resume-commits-native-20260924.json)
-passes both sides with the same session/key/body. Actual Control5/6 backends,
-0/1server completions, no client completion; bothparents4/CommitUnknown/reaped,
-rootlocks available/scratch empty. Before:12ledgers/rows/xmin unchanged paused7.
-After:queued8 and one atomic receipt, xmin959. Fresh Control7 without destination/
-current data.read returns original receipt8/time; retries/terminal rows unchanged,
-parent0/bothDB0. No automatic execution. Root and independent AI verify29payloads,
-1230/1223/1110Git files and both4aELF; tar
-8155ed464fa7eba0702309514856c9826478dfbf69e3a120c1371d14214b30ff.
-Run export-runtime-3104705 owner6ce7da41937751bbdb4c79381396d45f stopped-retained;
-ownedPID0/noOOM/network removed,676prior/eight running preserved;
-free128802492416→128403394560. Commands/audit snapshots are resume-only.
-
-[30df0fd signed resume](evidence/p08-export-resume-output-native-20260924.json)
-passes actual blocked-reader revocation,814 migration with installed CLI,
-authenticated grant restoration, resume5→succeeded7,399exact signed bytes plus
-1228byte manifest/inventory. Same unit/cut/caps/artifact, original retained inputs
-unchanged; fresh reader bound to original claim[1,10], then separately released.
-Historical receipt5 survives completion/retry/Control6→7 restart; rows/xmin/files/
-inodes unchanged. Root/independent AI verify43payloads/1227/1223/1110Git files;
-tar3bdb53e2084ff8c3b6d96f116f3bb3a40b822807cf30ae6a4e6bea5547c07815.
-Final client event was overwritten by SQL snapshot: report preserves that limit,
-actual client exit0/assertions and parent logs, not a separate retained event.
-Run export-runtime-30df0fd owner38337833c2cb58a60da5806bba4ff300 stopped-retained.
-Original [b531 fixture failure](evidence/p08-export-resume-output-fixture-incomplete-20260924.json)
-remains INCOMPLETE: missing docker exec-i, original BrokenPipe; no resume claim.
-
-[4a3c4ce HTTP](evidence/p08-export-resume-http-native-20260924.json) passed fresh
-Linux build/46binarytests/Clippy and17HTTP exchanges plus7control events. Probe
-privileges now match actual resume dependencies; original [45a96e7 RED](evidence/p08-export-resume-http-red-20260924.json)
-retains its historical503 failure. Native scheduling TTL already expired while
-original retention remains active. Reduced grants, known refusals, same-session
-historical retry and process restart pass with unchanged original rows/xmin.
-Actual Rust adapter [016dd6f](evidence/p08-export-resume-adapter-native-20260924.json)
-and SQL [3e41cb7](evidence/p08-export-resume-schema-native-20260924.json) retain
-their separate scope; [9d7bb21 RED](evidence/p08-export-resume-schema-red-20260924.json)
-is the old unreceipted-transition counterexample. Local typed client16tests/typecheck
-pass; actual TypeScript resume consumer has the scoped15569cc evidence above.
-
-Qualified runtime source4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b:
-parentSHA6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f,
-workerSHA3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353,
 Cargo.lockSHA8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122.
-Linux amd64/Rust1.98.1/PostgreSQL16.15. These are not hosted CI or release results.
+Linux amd64/Rust1.98.1/PostgreSQL16.15; no hosted CI or release qualification.
 
 ## Retained invariants and remaining gates
 
@@ -351,11 +145,9 @@ session-owned, cancels and drops late observations on logout/expiry/replacement.
 [ca44302 browser](evidence/p09-export-status-browser-native-20260924.json) passes
 48journeys in Chromium/Firefox/WebKit at / and /control/ on877ELF. Original3830
 HTML pattern bug andf660 overly strict storage oracle failures remain retained.
-[8743fd8 geometry](evidence/p09-skip-link-geometry-incomplete-20260924.json) remains
-INCOMPLETE: four Chromium/Firefox pairs pass, WebKit root cannot reach skip link
-after8ShiftTab; control NOT_RUN. Actual unfocused boxes above viewport, no CSS bug
-established. Need per-key activeElement traces with/without full-page screenshot;
-no blind expectation/CSS change. Natural expiry/BFCache/accessibility still open.
+[The original geometry diagnostic](evidence/p09-skip-link-geometry-incomplete-20260924.json)
+retains its INCOMPLETE outcome; the current four-pair correction is above. Full
+natural-expiry/BFCache/accessibility acceptance remains open.
 [Control shutdown](evidence/p01-control-poll-admission-native-20260924.json) retains
 its strengthened877/b3cd proof and original blocked-poll RED; no unrelated reruns.
 

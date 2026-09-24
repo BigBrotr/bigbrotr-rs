@@ -314,8 +314,9 @@ starts before SQL and gates actual socket writes; Control renewal cannot extend
 the original session observation. Ordinary denial/missing results complete the
 transaction without poisoning healthy Control. Unknown SQL outcomes remain fatal.
 This slice has [scoped native browser evidence](../implementation/evidence/p09-export-status-browser-native-20260924.json)
-for six engine/mount pairs; viewport/focus investigation of a full-page screenshot
-anomaly and broader expiry/accessibility qualification remain open. Bounded listing, broader job kinds,
+for six engine/mount pairs. The [job-label correction](../implementation/evidence/p09-skip-button-native-20260924.json)
+adds four pointer-to-keyboard regressions with the current bundle; broader
+expiry/accessibility qualification remains open. Bounded listing, broader job kinds,
 artifact discovery, explicit resume/cancel and their full UI/CLI journeys remain
 selected P08/P09 work. No historical schema checksum changes.
 
@@ -371,7 +372,9 @@ Firefox and WebKit at both `/` and `/control/`: the
 extends the original Chromium/root journey on unchanged product code. Device
 power loss and full accessibility remain unqualified; the
 [WebKit keyboard diagnostic](../implementation/evidence/p09-skip-link-trace-incomplete-20260924.json)
-retains its separate incomplete outcome.
+retains its separate incomplete outcome. The subsequent label wrapper and compiled
+CSS restore the tested native navigation path on four selected engine/mount pairs,
+without changing button semantics or proving an internal browser cause.
 
 Reload/sign-in restores saved metadata without automatically sending a command.
 An explicit retry uses exactly its original body and key, even after current

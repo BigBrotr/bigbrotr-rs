@@ -179,8 +179,8 @@ The initial actor-owned export lookup has [scoped production browser evidence](e
 eight journeys in each Chromium/Firefox/WebKit root/subpath pair, including
 checkpoint zero, same-session process restart, logout with an actual blocked SQL
 lookup, other-account isolation and revocation. Original HTML-pattern and storage
-fixture failures remain recorded. Full-page screenshots expose a skip-link
-overlay whose viewport/focus behavior still needs investigation. This does not
+fixture failures remain recorded. The later keyboard investigation and scoped
+correction are recorded below; full-page captures retain a separate overlay. This does not
 complete Step 2, general accessibility, job discovery, resume/cancel or downloads.
 
 The resume consumer obtains expected configuration/security revisions from the
@@ -215,16 +215,20 @@ mobile captures and independently reconstructed the complete ledgers and artifac
 Accessibility, natural expiry, blocked resume authorization, creation, cancel,
 discovery and downloads still gate the full step; no task checkbox is completed.
 
-The [current WebKit keyboard trace](evidence/p09-skip-link-trace-incomplete-20260924.json)
-remains INCOMPLETE: eight reverse Tabs after pointer lookup stay on the enabled
-Check job button, while controlled Job ID starts reach the visible skip link.
-All trial outcomes remain recorded. Delayed recovery, button-specific capture
-effects and pointer/keyboard differences require a discriminating probe before
-changing CSS or attributing an engine defect.
-The [next native attempt](evidence/p09-skip-activation-startup-incomplete-20260924.json)
-expired before its first browser command and retained no focus trace. Its process
-snapshot is from cleanup; the next fixture must save its stage and bound launch
-inside the host deadline before this comparison can be evaluated.
+The original [WebKit keyboard trace](evidence/p09-skip-link-trace-incomplete-20260924.json)
+and [activation comparison](evidence/p09-skip-activation-native-red-20260924.json)
+retain their failed ordinary-pointer outcomes. An intervening
+[startup timeout](evidence/p09-skip-activation-startup-incomplete-20260924.json)
+retains its missing-trace limit; the fixture now saves stages and bounds launch.
+The [label-wrapper correction](evidence/p09-skip-button-native-20260924.json) passes
+the unchanged first ordinary pointer path, five focus trials and seven installed
+recovery steps on WebKit root/control, Chromium root and Firefox control at `1647b5f`.
+The span and compiled CSS preserve native submit/disabled behavior and accessible text.
+All first pointer paths reach the visible skip link in four reverse Tabs, then Enter
+and Tab reach the session target and Sign out. Chromium starts from body while
+WebKit starts from the button; no cross-engine focus-retention claim. Original
+internal WebKit hit-test causality remains unobserved. These four regressions do
+not complete accessibility, the six-pair acceptance matrix or Step 2.
 
 - [ ] **Step 3:** implement typed queries/saved private views plus explicit export, storage/headroom and maintenance pages. Show measured rates/windows and unknown forecast, no unmeasured capacity promise. Explain current/historical policy and full/projection differences before download.
 

@@ -1,0 +1,547 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "SCOPED_PASS",
+  "date": "2026-09-24",
+  "tasks": [
+    "P09-T09 Step 2",
+    "P08-T03 Step 3"
+  ],
+  "source": "1647b5f2eb93a1f8a11adc2ddf4c2262e6a2072e",
+  "tree": "d2cdef31288281768d8d23ba4b80a9553c63c397",
+  "runtime_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+  "scope": "Job lookup pointer-to-keyboard navigation and installed resume/reload/restart journey on four engine/mount pairs. No full accessibility, P08/P09 task or release completion.",
+  "change": "Wrap the Check job text in a span with pointer-events:none in compiled CSS, retaining accessible text and native submit/disabled behavior.",
+  "counterexample": "docs/implementation/evidence/p09-skip-activation-native-red-20260924.json",
+  "unchanged_fixture_source": "4f484a433d8aca903597e6f722c3cfdf4539cff2",
+  "frontend_changes": {
+    "apps/admin/src/lib/JobStatus.svelte": {
+      "current": "93e9aab967e13eb13fc932d46836f60d7abe497c31124f60d840a225ba025bc6",
+      "runtime_source": "ff5693f518db1d34ee29aaa03f7143b2f6ea19e94b0625e2502289f1e8d01a7b"
+    },
+    "apps/admin/src/routes/style.css": {
+      "current": "0470ff61cc22e6761dc16322739c2d987b6e9c18daf21d202ec4b354f1fdbdfc",
+      "runtime_source": "34538153270ed35994cff393db750136def9a9b00e2ccd7b7847ab967b21a622"
+    }
+  },
+  "artifacts": {
+    "bigbrotr": "a3bb9bd6f7b3a7e6140c72f133401c65571e401b6e1eaec424e520b668b2e96c",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "environment": {
+    "platform": "Tux native Linux amd64",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "postgres": "16.15; fsync=on/full_page_writes=on",
+    "node": "26.4.0",
+    "pnpm": "9.15.9"
+  },
+  "pairs": {
+    "webkit-root": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1647b5f-webkit-root",
+      "owner": "c4fbe29af8e63c7eb68bdb727df21fd8",
+      "capture": {
+        "path": ".research/implementation/export-execution/attempt-1647b5f-webkit-root/capture",
+        "files": 124,
+        "sha256": "aa9bb1fa071da2be3dd5ee1086281cc3f9bf9c51ed998e6bb230a1108b84a0ba",
+        "source": "1647b5f2eb93a1f8a11adc2ddf4c2262e6a2072e",
+        "tree": "d2cdef31288281768d8d23ba4b80a9553c63c397",
+        "source_files": 1256
+      },
+      "trace_sha256": "66a66821196d0286a01f5f8eef49524c4e747224f2e74d2c05e403424ebb00bb",
+      "trials": [
+        {
+          "name": "pointer-without-full-page",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "post-lookup",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "keyboard-without-full-page",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "known-input-without-full-page",
+          "reverseTabs": 3,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "known-input-with-full-page",
+          "reverseTabs": 3,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        }
+      ],
+      "samples": 120,
+      "native_store_cases": 5,
+      "ui_cases": 7,
+      "browser_version": "26.6",
+      "receipt": {
+        "accepted_at_us": "1790281096296550",
+        "authority": "acceptance-only",
+        "command_key": "a80fab930bb7049f7aadb2c730bd8423",
+        "created": true,
+        "execution": "unobserved",
+        "format": "bigbrotr-export-resume/1",
+        "job_id": "c055a6ab9009438f039be86fe9281283",
+        "job_revision": "8"
+      },
+      "bundles": {
+        "root": {
+          "manifest_sha256": "e74560b016569c55906593c461af73ad95f0ce081c92f50e7c8ef8f94158e346",
+          "files": 13,
+          "bytes": 170813
+        },
+        "control": {
+          "manifest_sha256": "6b49d883bf9238795ff539bc28388ae556c8095bab0e31cbfe0a1da5ee7208ae",
+          "files": 13,
+          "bytes": 170847
+        }
+      },
+      "cleanup": {
+        "exit_codes": {
+          "frontend": 0,
+          "resume-store-webkit": 0,
+          "resume-webkit-root": 0,
+          "rust-visibility": 0,
+          "postgres": 137
+        },
+        "network": "removed after owner/no-endpoint audit",
+        "sql": {
+          "bbpub_normal": {
+            "backends": 0
+          },
+          "bbpub_control_normal": {
+            "backends": 0
+          }
+        },
+        "errors": [],
+        "preexisting": 738,
+        "unrelated_running": 8,
+        "free_before": 120838275072,
+        "free_after": 120263868416
+      },
+      "visual_files": {
+        "resume-mobile.png": "cb1fdf7fa94faf98feddca291e2d8cfbe2704dc07a20918f44da106a83c78b39",
+        "skip-pointer-without-full-page-focused.png": "853ddf7d73e2dc4c9166e07f8f9b81b27ca92a52af32a44214e47490a84968a9"
+      }
+    },
+    "webkit-control": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1647b5f-webkit-control",
+      "owner": "f9dd9b184c4eabfdbaef049fa288fb22",
+      "capture": {
+        "path": ".research/implementation/export-execution/attempt-1647b5f-webkit-control/capture",
+        "files": 124,
+        "sha256": "a74594ad7ed68dc96b23fa0498edfb9d0b19ed8a0cedfc4d92c90360f6f702e7",
+        "source": "1647b5f2eb93a1f8a11adc2ddf4c2262e6a2072e",
+        "tree": "d2cdef31288281768d8d23ba4b80a9553c63c397",
+        "source_files": 1256
+      },
+      "trace_sha256": "e959511f2e17c0b2e4f4f11a7110370d6c704ee6599ff8f2f99913d601f024b2",
+      "trials": [
+        {
+          "name": "pointer-without-full-page",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "post-lookup",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "keyboard-without-full-page",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "known-input-without-full-page",
+          "reverseTabs": 3,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "known-input-with-full-page",
+          "reverseTabs": 3,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        }
+      ],
+      "samples": 120,
+      "native_store_cases": 5,
+      "ui_cases": 7,
+      "browser_version": "26.6",
+      "receipt": {
+        "accepted_at_us": "1790281287089693",
+        "authority": "acceptance-only",
+        "command_key": "3343f307f195ede85c227672063ecb3e",
+        "created": true,
+        "execution": "unobserved",
+        "format": "bigbrotr-export-resume/1",
+        "job_id": "240da9af9664bda9fccc2313e703a36a",
+        "job_revision": "8"
+      },
+      "bundles": {
+        "root": {
+          "manifest_sha256": "e74560b016569c55906593c461af73ad95f0ce081c92f50e7c8ef8f94158e346",
+          "files": 13,
+          "bytes": 170813
+        },
+        "control": {
+          "manifest_sha256": "6b49d883bf9238795ff539bc28388ae556c8095bab0e31cbfe0a1da5ee7208ae",
+          "files": 13,
+          "bytes": 170847
+        }
+      },
+      "cleanup": {
+        "exit_codes": {
+          "frontend": 0,
+          "resume-store-webkit": 0,
+          "resume-webkit-control": 0,
+          "rust-visibility": 0,
+          "postgres": 137
+        },
+        "network": "removed after owner/no-endpoint audit",
+        "sql": {
+          "bbpub_normal": {
+            "backends": 0
+          },
+          "bbpub_control_normal": {
+            "backends": 0
+          }
+        },
+        "errors": [],
+        "preexisting": 743,
+        "unrelated_running": 8,
+        "free_before": 120217010176,
+        "free_after": 119642570752
+      },
+      "visual_files": {
+        "resume-mobile.png": "2074045da424b274300cb71c8fa1c39b4aad256ad9dc550e227c09b732121754",
+        "skip-pointer-without-full-page-focused.png": "853ddf7d73e2dc4c9166e07f8f9b81b27ca92a52af32a44214e47490a84968a9"
+      }
+    },
+    "chromium-root": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1647b5f-chromium-root",
+      "owner": "2121c87569772bb4c0d14f67c395e1df",
+      "capture": {
+        "path": ".research/implementation/export-execution/attempt-1647b5f-chromium-root/capture",
+        "files": 124,
+        "sha256": "bed76c9f9e8279df715c97f6f8514d1367107003e9f15a6c45ceb839e5927f80",
+        "source": "1647b5f2eb93a1f8a11adc2ddf4c2262e6a2072e",
+        "tree": "d2cdef31288281768d8d23ba4b80a9553c63c397",
+        "source_files": 1256
+      },
+      "trace_sha256": "301ab6811ccbdc1364d01149eabe4afeedcf7460570c002bac5f3cafcf88ba1c",
+      "trials": [
+        {
+          "name": "pointer-without-full-page",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "post-lookup",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "keyboard-without-full-page",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "known-input-without-full-page",
+          "reverseTabs": 3,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "known-input-with-full-page",
+          "reverseTabs": 3,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        }
+      ],
+      "samples": 120,
+      "native_store_cases": 5,
+      "ui_cases": 7,
+      "browser_version": "153.0.8010.12",
+      "receipt": {
+        "accepted_at_us": "1790281437330617",
+        "authority": "acceptance-only",
+        "command_key": "53650d2d7e7ae946ba419e4819f0aa1f",
+        "created": true,
+        "execution": "unobserved",
+        "format": "bigbrotr-export-resume/1",
+        "job_id": "a1dddc5f4017110f4748523e49af6144",
+        "job_revision": "8"
+      },
+      "bundles": {
+        "root": {
+          "manifest_sha256": "e74560b016569c55906593c461af73ad95f0ce081c92f50e7c8ef8f94158e346",
+          "files": 13,
+          "bytes": 170813
+        },
+        "control": {
+          "manifest_sha256": "6b49d883bf9238795ff539bc28388ae556c8095bab0e31cbfe0a1da5ee7208ae",
+          "files": 13,
+          "bytes": 170847
+        }
+      },
+      "cleanup": {
+        "exit_codes": {
+          "frontend": 0,
+          "resume-store-chromium": 0,
+          "resume-chromium-root": 0,
+          "rust-visibility": 0,
+          "postgres": 137
+        },
+        "network": "removed after owner/no-endpoint audit",
+        "sql": {
+          "bbpub_normal": {
+            "backends": 0
+          },
+          "bbpub_control_normal": {
+            "backends": 0
+          }
+        },
+        "errors": [],
+        "preexisting": 748,
+        "unrelated_running": 8,
+        "free_before": 119595757568,
+        "free_after": 119021260800
+      },
+      "visual_files": {
+        "resume-mobile.png": "fe0ea3ea0b2cd53f77843330f449985d5008a7a1ed811af470d7bfe9fd49e8d4",
+        "skip-pointer-without-full-page-focused.png": "5b860a360ab510c7bb6ed273e87b62dcf68eeddfa9a26361c7520239b2be62c3"
+      }
+    },
+    "firefox-control": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-1647b5f-firefox-control",
+      "owner": "55675f8c90e9d8987bd325b7b63cc3d0",
+      "capture": {
+        "path": ".research/implementation/export-execution/attempt-1647b5f-firefox-control/capture",
+        "files": 124,
+        "sha256": "d771045f1b291263daebc5da1d62210e261de1f4c82aea061f832cb4a194d3bd",
+        "source": "1647b5f2eb93a1f8a11adc2ddf4c2262e6a2072e",
+        "tree": "d2cdef31288281768d8d23ba4b80a9553c63c397",
+        "source_files": 1256
+      },
+      "trace_sha256": "cc3f61fb9c6dcbb228ba6f5cb01f700915608a1fbfb90dc53e034a6a992ce6e9",
+      "trials": [
+        {
+          "name": "pointer-without-full-page",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "post-lookup",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "keyboard-without-full-page",
+          "reverseTabs": 4,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "known-input-without-full-page",
+          "reverseTabs": 3,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        },
+        {
+          "name": "known-input-with-full-page",
+          "reverseTabs": 3,
+          "status": "PASS",
+          "focused": true,
+          "visible": true,
+          "hashBefore": "",
+          "hashAfter": "#session",
+          "next": "sign-out"
+        }
+      ],
+      "samples": 120,
+      "native_store_cases": 5,
+      "ui_cases": 7,
+      "browser_version": "155.0",
+      "receipt": {
+        "accepted_at_us": "1790281601969374",
+        "authority": "acceptance-only",
+        "command_key": "50b33c0e5f7f04008e86b97f8ea4305d",
+        "created": true,
+        "execution": "unobserved",
+        "format": "bigbrotr-export-resume/1",
+        "job_id": "cb93ee07b56e6b9449c70be0024a87f6",
+        "job_revision": "8"
+      },
+      "bundles": {
+        "root": {
+          "manifest_sha256": "e74560b016569c55906593c461af73ad95f0ce081c92f50e7c8ef8f94158e346",
+          "files": 13,
+          "bytes": 170813
+        },
+        "control": {
+          "manifest_sha256": "6b49d883bf9238795ff539bc28388ae556c8095bab0e31cbfe0a1da5ee7208ae",
+          "files": 13,
+          "bytes": 170847
+        }
+      },
+      "cleanup": {
+        "exit_codes": {
+          "frontend": 0,
+          "resume-store-firefox": 0,
+          "resume-firefox-control": 0,
+          "rust-visibility": 0,
+          "postgres": 137
+        },
+        "network": "removed after owner/no-endpoint audit",
+        "sql": {
+          "bbpub_normal": {
+            "backends": 0
+          },
+          "bbpub_control_normal": {
+            "backends": 0
+          }
+        },
+        "errors": [],
+        "preexisting": 753,
+        "unrelated_running": 8,
+        "free_before": 118973972480,
+        "free_after": 118399340544
+      },
+      "visual_files": {
+        "resume-mobile.png": "0257c3c5c0a3b15e1310553b997444c5c76175b78cbb70fcd77e506a5bdb750f",
+        "skip-pointer-without-full-page-focused.png": "c82962b24faedf5ff20a9b71bba499205f874a40483dd29b41a8ffdd364d9884"
+      }
+    }
+  },
+  "validation": {
+    "payloads": 496,
+    "source_manifest_files": {
+      "out/build/source-manifest.json": 1256,
+      "artifact-source-manifest.json": 1110,
+      "runtime-source-manifest.json": 1246
+    },
+    "verifier": {
+      "path": ".research/implementation/export-execution/review-skip-fixed.py",
+      "sha256": "7d52d780dfe317b9ee4af110da81a4eb505c2a67a665a97200aa3b51a1e9321e"
+    },
+    "source": "Every captured payload, complete current/runtime/seed Git manifests, exact ELF and every bundle asset independently rehashed. Exactly two declared presentation changes; every other product/build input equal to original Rust build. Current bundles freshly built; ELF retains73e identity.",
+    "browser": "Unchanged first locator.click before any screenshot now reaches the visible skip link in four reverse Tabs, followed by Enter to #session and Tab to Sign out. All five trials pass within original eight-key bound; no conditional padding/delayed extra keys needed. Actual focus frames independently compared with expected order.",
+    "sql": "Full twelve-ledger reconstruction preserves all original rows/xmin/unit/cut/pin except queued8 and one atomic resume. Seven separately attributed login/logout audit mutations; original key/body7/1/2 and receipt on successful retries across restart, then401 after revocation while the saved accepted record remains. Both parents exit0 with committed Control release, root locks available and scratch empty.",
+    "harness_correction": "First offline verification reached report serialization then failed because a local changed variable was shadowed by a SQL-field set. Renamed frontend_changes and reran; no assertion or captured input changed.",
+    "local_orchestration": "A local sequential observer read resources.json before Chromium preflight created it and exited. The original remote laboratory continued; root verified ownership, collected its original result and launched Firefox separately. No remote test was retried or restarted."
+  },
+  "limitations": [
+    "Four selected pairs, not a new complete six-pair matrix. Prior188 recovery evidence retains its own source identity. Full session-expiry/BFCache/accessibility and shipped installation remain unqualified.",
+    "This verifies the workaround for the observed journey. Pointer hit-test starting node inside WebKit is unobserved; original padding controls had different focus/scroll history. No unique internal-cause or Safari/iOS claim.",
+    "Chromium/root begins reverse navigation from body after lookup; WebKit begins from check-job. Both traverse the expected four controls. This does not claim that focus remains on the button in every engine.",
+    "Full-page screenshots can retain the separately observed skip overlay even when actual unfocused viewport geometry is above the viewport. Do not infer visibility or accessibility from those full-page captures alone.",
+    "First reply loss forwards actual202 then aborts in Playwright; not TCP/COMMIT loss. Native export execution is disabled, so acceptance/recovery creates no reader or output.",
+    "Some unchanged-session/retry-body observations are executed assertion booleans rather than complete independently reconstructable raw snapshots. No device-power-loss guarantee.",
+    "No new Rust compilation/Clippy, hosted Actions, arm64, signed release or Docker Hub promotion. Resource/free-byte observations include possible concurrent host writes."
+  ],
+  "independent_review": "Root independently rehashed all496payloads, three complete Git manifests per run, ELF/bundles and reconstructed all twelve ledgers/seven session audits for each pair; root visually inspected focused-link and mobile PNGs. Read-only AI separately checked all496payloads/tars/ELFs/bundles/source identities, all four browser/focus traces and final resource census. AI reconstructed full SQL/session mutations for WebKit/root; other three pairs received browser/identity/terminal/report checks, not repeated full SQL reconstruction. No separate AI visual PNG assessment, test execution, SSH or edits. No discrepancy found within those boundaries.",
+  "final_resource_census": {
+    "path": ".research/implementation/export-execution/skip-button-final-census.json",
+    "sha256": "005bc2af0215a564fe59a3471cbc9de3f749ec850d72c42d4c1d6a9585d7e04d",
+    "observed_at": "2026-09-24T20:28:44.788191+00:00",
+    "owned_stopped": 20,
+    "networks_absent": 4,
+    "unrelated_running": 8,
+    "free_bytes": 118387777536
+  }
+}

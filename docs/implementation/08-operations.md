@@ -301,8 +301,9 @@ grants, session revocation and restart against actual PostgreSQL.
 [The production browser matrix](evidence/p09-export-status-browser-native-20260924.json)
 adds six engine/mount pairs, including logout during a positively identified
 blocked account query, unchanged session/job ledgers and actual parent cleanup.
-The screenshot skip-link anomaly, natural expiry and expiry during blocked
-query/socket delivery remain separate gates. The ownership/redaction subset is specified in
+The [pointer-to-keyboard correction](evidence/p09-skip-button-native-20260924.json)
+now has four scoped browser regressions. Full accessibility, natural expiry and
+expiry during blocked query/socket delivery remain separate gates. The ownership/redaction subset is specified in
 [private administration](../product/private-administration.md). It does not
 complete listing, resume/cancel, artifact discovery or this step's full acceptance.
 
@@ -329,8 +330,11 @@ passes on both sides of server commit with original-key resolution.
 also passes for actual SIGTERM with a pending Control reply. The [actual typed
 client](evidence/p08-export-resume-client-native-20260924.json) passes eight HTTP
 exchanges on pinned Node, with independent SQL receipt/preservation checks and
-same-session restart. Browser behavior is outside that fixture. Blocked-checker,
-expiry scenarios and UI/CLI consumers remain required before completing this step.
+same-session restart. Browser behavior is outside that fixture; the later
+[browser recovery matrix](evidence/p09-resume-browser-matrix-native-20260924.json)
+and [keyboard correction](evidence/p09-skip-button-native-20260924.json) own their
+scoped installed evidence. Blocked-checker, expiry scenarios and complete UI/CLI
+consumers remain required before completing this step.
 
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending

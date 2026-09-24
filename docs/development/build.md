@@ -149,6 +149,8 @@ It records both versions' hashes and requires exact equality of every other
 product/build input. The current frontend is independently rebuilt and checked
 from the current Git source. The reused ELF retains its original build revision;
 this laboratory exception is not a new Rust qualification or release promotion.
+[Four native browser regressions](../implementation/evidence/p09-skip-button-native-20260924.json)
+exercise the corrected label with this exact reuse boundary and fresh bundles.
 
 The OpenAPI3.1 [session subset](../../contracts/management/v1/openapi.yaml) owns
 wire types and runtime schemas. After an intentional contract edit, run
