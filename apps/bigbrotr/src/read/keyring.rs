@@ -89,6 +89,19 @@ impl Keyring {
         )
     }
 
+    pub(super) fn dataset_bytes(&self) -> &[u8] {
+        &self.bytes[8..24]
+    }
+
+    pub(super) fn key(&self, id: &[u8; 16]) -> Option<&[u8; 32]> {
+        self.bytes[HEADER..self.bytes.len() - CHECKSUM]
+            .as_chunks::<RECORD>()
+            .0
+            .iter()
+            .find(|record| &record[..16] == id)
+            .map(|record| record[16..].try_into().expect("validated key record"))
+    }
+
     fn load(
         reference: &str,
         dataset: DatasetId,

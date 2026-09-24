@@ -1,0 +1,214 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1 / P08-T03 prerequisite",
+  "status": "PASS within local codec scope",
+  "source": {
+    "base_revision": "d92329947fc06d5abb3bdddb6f6a3a8ef109dd5b",
+    "state": "Root-owned Mac dirty files, identified by exact input hashes; no native candidate qualification.",
+    "files_sha256": {
+      "Cargo.toml": "5d6a32895261682d5f70d4c2ef7c49ccb515f9df24a5045e70e0c32c6260e072",
+      "Cargo.lock": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+      "apps/bigbrotr/Cargo.toml": "7c2cec38c739622acd71f8727c9bb472ecd5cf5195bd93db9d391afc67c3189d",
+      "apps/bigbrotr/src/read/mod.rs": "bc894a5f65f9788b2824527305aa36de58c4010d26ffd629a4cce8bb7ce52a96",
+      "apps/bigbrotr/src/read/keyring.rs": "e65c802d3f69c740263f3711e4ffb0fc52b608e76d22c467ffefa1409824c1e3",
+      "apps/bigbrotr/src/read/cursor.rs": "7fc8645e25b7e2442b52a39f07eac723fc52b097d614c2d7a789f7b5aee5dd3f",
+      "apps/bigbrotr/src/read/cursor/tests.rs": "d3b852b0316d27a9b31dda472a28da8897717415fc6b7df9b012f58ef0eb1c61",
+      "apps/bigbrotr/tests/read_cursors.rs": "ebeea63ce754124222f309e7154a23d5fc49fbfb9fe9723e5fba071df0ad923d",
+      "tests/fixtures/read/write_cursor_vectors.py": "c1b0909d22a3ada4cc373d4c15195ac7c17f821a159ecbd664ca3d898a84057b",
+      "tests/fixtures/read/cursor-vectors.json": "71eca40a024f9365961eaec63122758eeb59b500b1fbb4291eeffc1355bc8ffa",
+      "tests/fixtures/read/keyring-vectors.json": "6093a3166b43dd52c2210c7ed68c280a20ac4974afacaff9322b10c29f66b526"
+    }
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Darwin",
+      "architecture": "arm64",
+      "discovery": "xcrun",
+      "environment": {
+        "CC": "/Library/Developer/CommandLineTools/usr/bin/clang",
+        "CXX": "/Library/Developer/CommandLineTools/usr/bin/clang++",
+        "AR": "/Library/Developer/CommandLineTools/usr/bin/ar",
+        "LIBCLANG_PATH": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+        "CLANG_PATH": "/Library/Developer/CommandLineTools/usr/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "SDKROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk"
+      },
+      "tools": {
+        "CC": {
+          "path": "/Library/Developer/CommandLineTools/usr/bin/clang",
+          "realpath": "/Library/Developer/CommandLineTools/usr/bin/clang",
+          "sha256": "f30550eab15fdf5ab8c0dc54c52679711241e5d4b636b027e18c09fef531775d",
+          "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+        },
+        "CXX": {
+          "path": "/Library/Developer/CommandLineTools/usr/bin/clang++",
+          "realpath": "/Library/Developer/CommandLineTools/usr/bin/clang",
+          "sha256": "f30550eab15fdf5ab8c0dc54c52679711241e5d4b636b027e18c09fef531775d",
+          "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+        },
+        "AR": {
+          "path": "/Library/Developer/CommandLineTools/usr/bin/ar",
+          "realpath": "/Library/Developer/CommandLineTools/usr/bin/ar",
+          "sha256": "d26c671be515802ff5a18edde5ca73c6bcaaf87048ef192025f00002be515794",
+          "version": null
+        },
+        "LIBCLANG_PATH": {
+          "path": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+          "realpath": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+          "sha256": "c9aaefc23d735a58f59c9e9e0520171d18ec3653095cc875a1d546c09ad25f30",
+          "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)"
+        },
+        "discovery": {
+          "path": "/usr/bin/xcrun",
+          "realpath": "/usr/bin/xcrun",
+          "sha256": "a439970aea2b4e435eac6518ff62c97fd1c57d8c731974027ad211b515c7a7b8",
+          "version": "xcrun version 72."
+        }
+      },
+      "sdk": {
+        "path": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+        "version": "26.5",
+        "settings_sha256": "f8d005f09381389167f9e0aeaa169bc9e7dff162ef22ca2fd8e98df7ff1acafe"
+      }
+    },
+    "profile": "dev/test",
+    "parent_binary_sha256": "baf881c6360b609cc4ad0bce8d7c8a57a7c4e9a7d5016c8c525887c761ffc947",
+    "embedded_source": {
+      "dirty": null,
+      "manifest_sha256": null,
+      "revision": null,
+      "state": "unrecorded",
+      "tree": null
+    }
+  },
+  "behavior": {
+    "format_version": 1,
+    "encoded_limit": 4096,
+    "decoded_limit": 3072,
+    "plaintext_limit": 3015,
+    "reservation_bytes": 16384,
+    "guarantees": [
+      "Canonical unpadded base64url; version/key ID, dataset, stable keyring and exact bounded resource AAD.",
+      "Fallible bounded caller-owned AEAD buffers. Public issuance always invokes getrandom for24-byte nonce; no public deterministic nonce API.",
+      "Returned encoded/plaintext bytes retain permit; debug/errors redact contents. Owned buffers zeroized on drop, before permit release.",
+      "No plaintext or legacy fallback for malformed, foreign-domain, tampered or unavailable-key tokens. Stable retained key survives unrelated keyfile changes."
+    ]
+  },
+  "verification": {
+    "codec_tests": 7,
+    "encryption_entropy_unit_tests": 2,
+    "keyring_regressions": 7,
+    "actual_cli_regressions": 2,
+    "clippy": "PASS selected lib/bin/three test targets",
+    "independent_vectors": 10,
+    "plaintext_lengths": [
+      0,
+      1,
+      15,
+      16,
+      17,
+      63,
+      64,
+      65,
+      255,
+      3015
+    ],
+    "single_byte_mutations": 4081,
+    "mutation_arithmetic": "3511ciphertext + ten57-byte version/key/nonce/tag overheads",
+    "expected": "Exact complete ciphertext/tag/envelope generated independently through PyNaCl/libsodium, frozen before implementation. Both keys, empty plaintext and exact maximum. Product deterministic nonce injection is private unit-test use only.",
+    "oracle": {
+      "pynacl": "1.6.2",
+      "sodium_module_sha256": "49032c357199dde6ae341319e558ce3ed9daa80f5ac83972aa9a63158b0b5371"
+    },
+    "rng": "Actual two maximum-size public seal calls produce different tokens and decrypt across separately loaded keyring instances; not a statistical randomness or cross-process continuation test.",
+    "entropy_failure": "Injected private helper failure returns Entropy, no token; insufficient charge and oversized input refuse before entropy. No real OS entropy outage injected.",
+    "red": [
+      "Initial stub:four failed/two passed out of six, expected missing positive/capacity behavior.",
+      "Expanded stub:five failed/two passed out of seven, including independent reviewer retained-key discriminator.",
+      "Two unit tests fail on stub, then exact libsodium encryption and entropy/admission ordering pass."
+    ],
+    "practical": "Two actual Mac CLI keyfile commands/config regressions still pass. New envelope has no runtime consumer yet; native/Control/HTTP/browser/rotation tests remain NOT_RUN."
+  },
+  "dependencies": {
+    "lock_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "new_packages": [
+      "aead0.6.1",
+      "chacha20poly13050.11.0",
+      "cipher0.5.2",
+      "inout0.2.2",
+      "poly13050.9.1",
+      "universal-hash0.6.1"
+    ],
+    "versions_changed": [],
+    "wrapper_features": [
+      "zeroize"
+    ],
+    "aead_features": [],
+    "unification": "Existing rand/PostgreSQL already selects chacha20/rng; this consumer adds cipher/xchacha/zeroize to the same0.10.2. Public nonce generation still uses existing getrandom0.4.3. Workspace metadata is broader than the separately captured application feature trees.",
+    "source_scope": "Reused prior exact AEAD source audit, reread wrapper/cipher and added exact base64 config/decode_slice and inout slice-borrow boundary. Original crate archives/full manifests retained; not a complete cryptographic audit."
+  },
+  "review": "Root read complete implementation, tests and diff. Independent read-only AI read codec/private helpers,7integration/2unit tests and relevant exact upstream sources; no concrete defect. Its unrelated-key continuity regression was added before GREEN. AI executed no suite or SSH. Final independent offline report review replayed all11 source hashes,47 retained artifacts, development binary/lock,4081 mutations and original RED/GREEN/Clippy logs with no concrete discrepancy. No product suite, SSH or fresh remote census was performed by the reviewer.",
+  "limitations": [
+    "Control registration/current lifecycle, actor/query/policy/time/retention bindings and real worker/HTTP consumers remain unimplemented. This codec grants no authority.",
+    "No Linux or Linux arm64, packaged install/release, rotation, actual OS entropy outage, full memory/RSS/constant-time or all-copy erasure qualification.",
+    "Authentication confidentiality does not hide token length or eliminate timing leakage. Selected primitive is XChaCha, not an IETF-standardized wire protocol.",
+    "No complete task/Step1/M1/product claim; native interoperability and authority acceptance follow actual consumer integration."
+  ],
+  "resources": {
+    "local_root": ".research/implementation/cursor-envelope",
+    "remote_resources_created": false,
+    "native_states": "Both previous keyfile labs remain stopped-retained and unmodified; previous census/report keeps its original observation time."
+  },
+  "observer_correction": "Original report generator incorrectly expected automatic Git embedding. build.rs deliberately records unrecorded when trusted builder variables are absent; the local helper supplies none. The original report source and a diagnostic note are retained; the first assertion failure was returned directly by the execution tool. Actual local input hashes and compile/test commands identify this development run; no tests or product code changed to correct this observation.",
+  "artifacts_sha256": {
+    ".research/implementation/cursor-envelope/aead-features.txt": "a6675a80883a65a4717f533c39cf327b7903efd06d61fc0272c62c56aeec308b",
+    ".research/implementation/cursor-envelope/base64-source.json": "09b33467e7d05bca84fae46f8e1c65226cdaadd58d2a014e82725903bf71c13f",
+    ".research/implementation/cursor-envelope/boundaries-final.command.json": "63b3ef07697b74a6357b32a7ba0e4eefad5c5afdcccda86b1be91ef826c0603d",
+    ".research/implementation/cursor-envelope/boundaries-final.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-envelope/boundaries-final.stderr": "a745e931cd45386e3161f8dda0976e76778167145f1444e2ad953d30b53c2a17",
+    ".research/implementation/cursor-envelope/boundaries-final.stdout": "6ab5d3d8d8ffb6373e7bc98f93850bbaf534051638a44db11d8bce338510023c",
+    ".research/implementation/cursor-envelope/build-info.json": "13fbdeb219a76662721ea5dcdd131c034fb678a61ce2e2ff3afc6da511e442ab",
+    ".research/implementation/cursor-envelope/chacha-features.txt": "7d9177899eff82225b4cf97324bd07ce204959da6bc83ad7354ef91c2160b3e4",
+    ".research/implementation/cursor-envelope/check.py": "cc8ab9f626c185b73e2eb7e02aaa31b4e5cc272dea01e0cd99e5293fef5d2fe0",
+    ".research/implementation/cursor-envelope/clippy.command.json": "d62cd4475dda9e0e24543a78be0025007d196a22fb311f97c3707ac0019f1e29",
+    ".research/implementation/cursor-envelope/clippy.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-envelope/clippy.stderr": "3374cbb0d0d48632c99bcf6e46aadc1955c07b674fbf158fff84d52dfa5f714f",
+    ".research/implementation/cursor-envelope/clippy.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-envelope/encryption-green.command.json": "9ff6af7ee1f6392bd731c5120f9fb839c1866b783a6426f2328ef531d2aa578e",
+    ".research/implementation/cursor-envelope/encryption-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-envelope/encryption-green.stderr": "6e975c81fa024c368d22071e3f0f4eb9cb1eea1c77a18bd02fc0c1cea8b79f1e",
+    ".research/implementation/cursor-envelope/encryption-green.stdout": "518439deea637bea4463accd14b680e9497bbfe13e0a006042f8b6163f6f605f",
+    ".research/implementation/cursor-envelope/encryption-red.command.json": "9ff6af7ee1f6392bd731c5120f9fb839c1866b783a6426f2328ef531d2aa578e",
+    ".research/implementation/cursor-envelope/encryption-red.exit": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+    ".research/implementation/cursor-envelope/encryption-red.stderr": "370c4a69f2ee3ee1771167c40c96aa665c22ddf08da8f045cb112f180c3c9984",
+    ".research/implementation/cursor-envelope/encryption-red.stdout": "15a3031297f8dbb9cfcccaf6985e00b8d10458e7f334ba0212c2d7b96ab482c0",
+    ".research/implementation/cursor-envelope/expanded-red.command.json": "c73ea6557eab2d1bfd3861e00206eb82cce243393ae5e4a092b9b1e1009155c8",
+    ".research/implementation/cursor-envelope/expanded-red.exit": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+    ".research/implementation/cursor-envelope/expanded-red.stderr": "56aedb12703e632540d4e4c53f384b35d9d5661ca0eb367b27197191b3ed78e3",
+    ".research/implementation/cursor-envelope/expanded-red.stdout": "035e697afd1856fabeb243c99be00ba0774ee959ec2dc592e8964c6e8d63a1cb",
+    ".research/implementation/cursor-envelope/expanded-stub.rs": "e38d5bbd15f2eb1d1f2a0b1daccc0baf2475718c5a7aeb2aa81a97c3de6b1366",
+    ".research/implementation/cursor-envelope/expanded-tests.rs": "f5f54dcbe95581adce926bd176854ff8375f149c09bf3433e0781cbfe6e7a209",
+    ".research/implementation/cursor-envelope/expanded-unit-tests.rs": "ab39fbb6082b3c3a0407cfa9e5f7e34004c31fda2c36a1d456167db433ae95f5",
+    ".research/implementation/cursor-envelope/green.command.json": "c73ea6557eab2d1bfd3861e00206eb82cce243393ae5e4a092b9b1e1009155c8",
+    ".research/implementation/cursor-envelope/green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-envelope/green.stderr": "ed2a9610d93d54bd33570658101a0cc1851df2a20c449fdf1f12055ea8f144d6",
+    ".research/implementation/cursor-envelope/green.stdout": "1e2009f9eab25d77c37a57bfcd45e39b07b251b49bd54eeae4b1e693372d29d7",
+    ".research/implementation/cursor-envelope/handoff.json": "99e423ffa10cf416ce3e78cc99516b4f17da222d60af87edc671e32da36844d6",
+    ".research/implementation/cursor-envelope/initial-cursor.rs": "bf3d82d1f666bfa43d9584f579d0e0e1a1383675e6784f5b2f85f8121b5afbd7",
+    ".research/implementation/cursor-envelope/initial-read_cursors.rs": "bfa8350c7ba9a478fbc5bc436b33fedc12577b387112974e5de6a912222ce47d",
+    ".research/implementation/cursor-envelope/initial-red.command.json": "c73ea6557eab2d1bfd3861e00206eb82cce243393ae5e4a092b9b1e1009155c8",
+    ".research/implementation/cursor-envelope/initial-red.exit": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+    ".research/implementation/cursor-envelope/initial-red.stderr": "0976be2da6abbc703e0d6edc6de46d31c660de88b17470b1d2d964a040f1c4a4",
+    ".research/implementation/cursor-envelope/initial-red.stdout": "eefdbb6a5acf5a8d5432f06305102f23bfc522746a5efc5324ac1393eea8f226",
+    ".research/implementation/cursor-envelope/metadata.json": "a83ffb5211ae05ef074233f99efb024b37f5ecbc660d86940bf1cf47f9482739",
+    ".research/implementation/cursor-envelope/metadata.stderr": "3f3f59782f728f987a2ac2c5aede9453cb29769e251e5bd4528b844892436d13",
+    ".research/implementation/cursor-envelope/native-toolchain.json": "5bbfbe8a350616e9446eb3795076ba2495b9eaa77094fecbc634c828777b8e13",
+    ".research/implementation/cursor-envelope/report-observer-note.txt": "cb724808319ed0548d6448f31ed19e0b6fd5385fe75d7213c8fc596021b2b7bd",
+    ".research/implementation/cursor-envelope/report-original.py": "a8c7ccd43e2cef24b1a5c01ded5326524649b80daaa2ee9f268acc81c11929b5",
+    ".research/implementation/cursor-envelope/report.py": "4ba4ab27d048bab2de55f0ed45441520dce125480e30b7f35fddec217764690b",
+    ".research/implementation/cursor-envelope/selected-features.json": "7e1385546d1779ddea7b1f921cce51aa83635721aaf927f31b7ade0557c39db2",
+    ".research/implementation/cursor-envelope/source-audit.json": "3264c86f62d571b4b42637272305897886dbf87084b49e34abf7420f56b42f6b"
+  }
+}

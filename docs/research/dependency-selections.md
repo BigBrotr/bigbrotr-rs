@@ -17,7 +17,7 @@ storage contracts; library defaults cannot override them.
 | Responsibility | Selected candidate | Reason and alternative disposition |
 |---|---|---|
 | Local password credentials | `argon2` 0.6.0, default features off, `zeroize`; direct `zeroize` 1.9.0 with alloc and `subtle` 2.6.1 | The closed 64MiB/3/1 Argon2id format uses explicit caller-owned fallible block memory and the existing OS entropy provider. No PHC parser or hidden hashing pool is needed for this first enrollment consumer. Native listener/concurrency qualification remains required. |
-| Encrypted continuation | `chacha20poly1305` 0.11.0, default features off, `zeroize` | Full-round XChaCha20-Poly1305 through `AeadInOut` on bounded caller-owned slices; fresh nonces use the existing OS entropy provider. No local cipher, reduced-round variant or additional RNG is selected. Shared protected keyring and first job-list consumer remain implementation work. |
+| Encrypted continuation | `chacha20poly1305` 0.11.0, default features off, `zeroize` | Full-round XChaCha20-Poly1305 through `AeadInOut` on bounded caller-owned slices; fresh nonces use the existing OS entropy provider. Local keyfile and bounded envelope subsets exist; Control lifecycle and first job-list consumer remain implementation work. |
 | PostgreSQL control transactions | `tokio-postgres` 0.7.18 + `tokio-postgres-rustls` 0.14.0; `deadpool-postgres` 0.14.2 remains the selected later pool candidate | Direct PG transaction, parameter and cancellation APIs fit the explicit control ledger. The first migration/inspection owner uses one unpooled connection, so Deadpool is deliberately deferred until a real bounded pooled consumer exists. SQLx 0.9.0 remains a credible alternative, but its additional database abstraction and optional compile-time SQL metadata workflow are unnecessary for the selected PG-only control adapter. No second PG driver is selected. |
 | HTTP API, management, static assets, ArchiveRelay upgrade and native MCP mount | `axum` 0.8.9 over Hyper 1/Tower 0.5, with `tower-http` 0.6 for appropriate middleware | Shared Tokio/Tower foundation with tonic and rmcp; route boundaries preserve distinct listener/auth/budget policies. Raw Hyper-only routing would add application plumbing; Actix/Rocket would introduce another framework with no demonstrated requirement. This is a fit decision, not a benchmark claim. |
 | Guarded outbound Nostr WebSocket | `tokio-tungstenite` 0.29.0, aligned with axum's WS dependency | Supply the already guarded TCP/TLS stream, then perform the handshake; preserve Host/SNI. Version 0.30.0 was observed but adds a second major-minor line without a required feature. No client-pool SDK defaults define acquisition behavior. |
@@ -44,7 +44,28 @@ used aead 0.6.1, cipher 0.5.2, chacha20 0.10.2 and universal-hash 0.6.1 boundari
 The [probe and frozen independent vectors](../../experiments/cursor-crypto/README.md)
 exercise the actual selected API on macOS arm64. The scoped
 [result](evidence/cursor-crypto.json) is not native Linux or product qualification;
-the root Cargo lock remains unchanged until the first product consumer exists.
+that probe did not change the root Cargo lock. The bounded product codec now
+selects the same wrapper/API through the application dependency below.
+
+The first product lock adds six packages without changing existing versions:
+`aead` 0.6.1, `chacha20poly1305` 0.11.0, `cipher` 0.5.2, `inout` 0.2.2, `poly1305` 0.9.1 and
+`universal-hash` 0.6.1. The actual application feature graph keeps the wrapper's
+sole `zeroize` feature and aead without allocating helpers. Existing PostgreSQL's
+`rand` 0.10.2 already enables chacha20's `rng` feature; the AEAD adds `cipher`,
+`xchacha` and `zeroize` to the same 0.10.2 package. The codec still obtains every
+nonce directly through `getrandom` 0.4.3. This is feature unification, not a second
+cursor RNG or evidence that the whole application has no RNG feature.
+
+Canonical unpadded base64url uses existing `base64` 0.22.1, archive
+`72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6`,
+source `e14400697453bcc85997119b874bc03d9601d0af`. Its GeneralPurpose `NO_PAD`
+config requires no padding and refuses nonzero trailing bits. `decode_slice`
+writes into the caller's bounded buffer. `inout` 0.2.2's mutable-slice conversion
+retains the same pointer/length without allocating or copying a message. Its
+archive is `4250ce6452e92010fdf7268ccc5d14faa80bb12fc741938534c58f16804e03c7`.
+Exact sources/manifests, workspace metadata and application feature trees are
+retained under `.research/implementation/cursor-envelope`. These narrow source
+facts do not qualify Control, expiry, cross-worker continuation or release.
 
 The `XChaCha20Poly1305` alias selects 20 rounds and 24-byte nonces. Encryption uses
 caller-owned input/output and returns a 16-byte tag. Decryption authenticates AAD,

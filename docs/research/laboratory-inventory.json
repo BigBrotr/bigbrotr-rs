@@ -25001,5 +25001,13 @@
         }
       }
     }
+  },
+  "implementation_cursor_envelope_20260925": {
+    "local_root": ".research/implementation/cursor-envelope",
+    "source_base": "d92329947fc06d5abb3bdddb6f6a3a8ef109dd5b",
+    "status": "Local codec7 + keyring7 + CLI2 + crypto2 tests PASS; selected Clippy PASS; no native envelope or Control qualification",
+    "contents": "Frozen independent public libsodium vectors; original stub RED and GREEN sources/logs; source/feature audit including base64 and inout full archives/manifests; local compiler identity. Original report-generator source and diagnostic note preserve its incorrect automatic-Git-embedding assumption; actual build reports unrecorded. No live keys.",
+    "remote_resources_created": false,
+    "report": "docs/implementation/evidence/p06-cursor-envelope-local-20260925.json"
   }
 }

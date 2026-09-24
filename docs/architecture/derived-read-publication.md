@@ -1456,6 +1456,33 @@ allocation. A valid token still undergoes current authorization, snapshot
 availability and request-binding checks. Possessing it grants no additional read
 authority. Avoid secret-dependent compression and do not log complete tokens.
 
+Envelope version 1 is canonical unpadded base64url of version byte 1, key ID16,
+OS nonce24, ciphertext and detached tag16. Its encoded bound is 4096 ASCII bytes,
+decoded bound 3072 bytes and plaintext bound 3015 bytes; empty plaintext is allowed
+by the envelope, while each resource validates its own required fields. Unknown
+versions, padding, noncanonical trailing bits, malformed lengths and failed
+authentication are refused without plaintext output. No legacy format fallback
+or compression is selected.
+
+Associated data is the literal 16 bytes `BigBrotr cursor\0`, dataset ID16, keyring
+ID16, version/key ID17, unsigned big-endian resource-name length2 and the resource
+name. Resource names are 1..128 ASCII bytes from letters, digits, `.`, `_`, `-`, `/`;
+their exact case and version are significant. The first operational consumer
+uses `management.jobs/1`. Bind the stable keyring ID, not the whole file checksum:
+adding a key during rotation must not invalidate tokens issued with retained keys.
+This envelope supplies confidentiality/integrity only. Its caller authenticates
+current access first, then validates Control's current key lifecycle and decrypted
+resource-specific principal/query/policy/time/cut fields. Loading a key or opening
+an envelope cannot grant authority or certify expiry/rotation by itself.
+
+Each finite encode/decode operation retains a 16KiB logical reservation through
+the returned token/plaintext lifetime, separately from the keyring's32KiB charge
+and the caller's input/transport reservation. Allocate fallibly only after length
+and reservation checks. The owned scratch/plaintext/token buffers are zeroized
+on drop; downstream serialization and cipher-internal copies keep their own
+documented bounds and erasure limitations. No unbounded input allocation or
+per-token filesystem/network access is part of this codec.
+
 Rotation switches issuance to a new key only after the serving workers can read
 it. Retain an old decrypt-only key through the latest permitted expiry of tokens
 it issued, including the configured clock-skew allowance. Use the common 900-second

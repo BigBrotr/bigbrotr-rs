@@ -1,7 +1,8 @@
 # Phase 06 — Query core, HTTP, ArchiveRelay, DVM and finite agent gateways
 
-This is a future implementation plan. No task, command or test below is claimed
-to exist or pass yet. Follow the [component contract](../specification/component-contracts.md),
+This plan defines the complete selected behavior. Partial evidence notes below
+identify implemented and executed subsets; unchecked steps remain open.
+Follow the [component contract](../specification/component-contracts.md),
 [read design](../architecture/derived-read-publication.md),
 [search/reconciliation design](../architecture/search-and-reconciliation.md),
 [private administration](../product/private-administration.md) and
@@ -219,9 +220,13 @@ Mac consumer tests, the collision RED/GREEN and review boundaries. The
 [native report](evidence/p06-cursor-keyring-native-20260925.json) qualifies15local
 keyfile scenarios at7acfd32 with unchanged1f251db ELF, including sync failures,
 four SIGKILL windows, late collision and blocked stdout. The original observer
-failure remains INCOMPLETE in its separate report. AEAD product integration, Control lifecycle,
-cross-worker consumers and the rest of Step1 remain open; a local keyfile does not
-activate issuance or complete this step.
+failure remains INCOMPLETE in its separate report. The bounded product envelope
+now binds version/key ID, dataset, stable keyring and resource. The
+[local envelope report](evidence/p06-cursor-envelope-local-20260925.json) records
+exact libsodium fixtures,4081byte mutations, retained16KiB capacity and scoped
+tests/Clippy. Control lifecycle,
+cross-worker consumers and the rest of Step1 remain open; local bytes and a codec
+do not activate issuance or complete this step.
 
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;
 `migrations/postgres/0603_read_pins.sql`;

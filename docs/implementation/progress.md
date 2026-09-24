@@ -20,12 +20,13 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Main HEAD7acfd329edf77ebbdc65d51011d8c6cb68bca8e6, tree
-4ae78b158362a8c7b7c0756578f23a71b3807f00. Private origin/main freshly verified90e5d6f;
-local1f251db product and7acfd32 fixture candidates are not pushed yet.
-The worktree was clean on resumption. Root now owns only the native report,
-checkpoint, inventory and linked documentation. No foreign edits, SQL or root
-Cargo/lock changes. Mac remains sole writer; no local product process is active.
+Main HEAD d92329947fc06d5abb3bdddb6f6a3a8ef109dd5b, tree
+1774145c94b5c88a72223b34cc9217c83e6175ae, privately pushed and origin/main verified.
+Worktree was clean after push. Root now owns the bounded AEAD envelope codec,
+its independent fixtures/tests and owning contract. No foreign edits or new SQL.
+Root Cargo.lock now has six added packages, no existing version changes; SHA
+4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa.
+Mac remains sole writer; both native keyring runs are stopped-retained.
 
 Mac verification:50selected CLI/config/policy/keyring/secret tests pass, plus the
 collision regression and Clippy. Fifteen independent public wire vectors include
@@ -174,9 +175,43 @@ Artifact/handoff checks pass:178markdown/319JSON,123tasks/756steps and the same
 three historical cycle candidates. Full changed diff inspected; no new product
 change after native qualification.
 
-Next bounded action: commit evidence and privately push verified1f/7ac/docs.
-Then implement P06Step1 AEAD envelope/Control ownership before
-P08 actor-owned GET /management/v1/jobs. Do not close Step1 from local keyfiles.
+P06Step1 envelope codec is implemented locally in read/cursor.rs, with private
+borrowed key access, fixed3072/4096byte buffers and16KiB permit retained through
+returned payload/token. Version1/AAD use the owning contract; public seal always
+gets OS entropy. Ten independent libsodium vectors cover both keys and0..3015byte
+payloads. Initial stub six tests:four FAIL/two PASS; expanded seven tests:five
+FAIL/two PASS; two exact encryption/entropy unit tests FAIL as expected. Original
+sources/logs retained. Current seven codec + seven keyring + two actual CLI tests
+PASS, including4081single-byte token changes and unrelated-key continuity; two
+exact encryption/entropy unit tests PASS. No Control, clock or native cross-worker
+qualification is inferred. Independent read-only AI reviewed the full codec,
+private helpers,7integration/2unit tests and relevant exact source boundaries.
+No concrete defect; no AI suite/SSH execution. Its unrelated-key continuity
+regression is included and passes. Selected Clippy passes below.
+
+Selected local Clippy passes after6m40s native dependency compilation; all owned
+local checks are terminal. Mac free13GiB at last observation. The
+[local envelope report](evidence/p06-cursor-envelope-local-20260925.json) binds11input
+hashes, exact toolchain,47retained evidence files and development parentSHA
+baf881c6360b609cc4ad0bce8d7c8a57a7c4e9a7d5016c8c525887c761ffc947.
+Its embedded source is explicitly unrecorded: trusted builder assertions were
+absent. The first report generator incorrectly expected automatic Git embedding
+and failed; original source/diagnostic note retained, actual source-input hashes
+and local compile/test commands recorded instead. No product/test rerun or source
+identity was invented to correct this observer. No native envelope qualification.
+
+Final artifact/handoff/fmt/diff checks pass:178markdown/320JSON,123tasks/756steps
+and the same three historical cycle candidates.
+Final independent offline AI report review verifies all11 source hashes,47
+retained artifacts, development parent/lock,4081 mutations and original RED/GREEN/
+Clippy logs. No concrete discrepancy, suite execution, SSH or fresh remote census.
+
+Next bounded action: commit/push this reviewed local codec slice, then implement
+Control registration/current key lifecycle and its real SQL/CLI consumer before
+P08 actor-owned GET /management/v1/jobs. Do not close
+Step1 from codec fixtures. Native/API/rotation/expiry/paging remain required.
+Tux has no new run or active owned process; latest live census above remains the
+last check. Preserve its private key/failure states and useful1f compiler cache.
 
 The list remains default50/max200, descending(created_at,job_id), owner/status.read,
 current session/CSRF and nonrenewable delivery, with current mutable-state filters.
