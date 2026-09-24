@@ -35,3 +35,16 @@ Qualify this instrument before reusing it against BigBrotr. A delay at syscall
 entry exercises non-returning blocking work under supervision; it does not prove
 that every kernel I/O in uninterruptible D state is terminable. The original
 BigBrotr run remains INCOMPLETE even if this isolated discriminator succeeds.
+
+The [executed discriminator](../../docs/implementation/evidence/p08-export-checker-instrument-20260924.json)
+at9b30c35 records the scoped result, including the original failed extraction.
+The revised BigBrotr checker fixture consumes `/out/checker-instrument/` with
+that exact ELF and `result.json`; it verifies both digests and the committed
+patch. Copy from the inventoried stopped lab only after fresh ownership and hash
+checks, mount the copied instrument read-only, and capture its identities again.
+The fixture records request submission and requires at least1.25s remaining of
+the ordinary5s deadline immediately before SIGTERM, with request/syscall still
+pending. This distinguishes the signal from a deadline that already expired.
+Its pidfd tracks actual process death independently of tracer lifetime. These
+revised BigBrotr assertions require their own native run; the tool probe alone
+does not qualify them.

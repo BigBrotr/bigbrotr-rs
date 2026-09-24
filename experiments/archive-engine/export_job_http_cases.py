@@ -48,8 +48,11 @@ def main(root, checker=False):
           'claims',(SELECT count(*) FROM control.retention_claims WHERE state='active'));"""))
     def retained(export_only=False):
         # Compare exact row images and PostgreSQL xmin for every acceptance ledger.
-        return {table:json.loads(sql(db,f"SELECT jsonb_build_array(count(*),encode(sha256(convert_to(coalesce(string_agg(to_jsonb(t)::text||':'||xmin::text,chr(10) ORDER BY to_jsonb(t)::text),''),'UTF8')),'hex')) FROM control.{table} t"+(" WHERE action='job.export.accept'" if export_only and table in ['management_commands','management_audit'] else "")))
-            for table in ['management_commands','management_audit','jobs','job_input_bounds','export_jobs','snapshot_leases','archive_snapshot_pins','retention_claims']}
+        fields=[]
+        for table in ['management_commands','management_audit','jobs','job_input_bounds','export_jobs','snapshot_leases','archive_snapshot_pins','retention_claims']:
+            where=" WHERE action='job.export.accept'" if export_only and table in ['management_commands','management_audit'] else ""
+            fields.append(f"'{table}',(SELECT jsonb_build_array(count(*),encode(sha256(convert_to(coalesce(string_agg(to_jsonb(t)::text||':'||xmin::text,chr(10) ORDER BY to_jsonb(t)::text),''),'UTF8')),'hex')) FROM control.{table} t{where})")
+        return json.loads(sql(db,'SELECT jsonb_build_object('+','.join(fields)+');'))
     try:
         for database in ['bbpub_normal',db]:
             sql('postgres',f'CREATE DATABASE {database};')
@@ -103,7 +106,9 @@ def main(root, checker=False):
                         assert process.poll() is None,'HTTP client ended before '+phase
                         if time.monotonic()>=end:raise TimeoutError(phase)
                         time.sleep(.02)
-                    observed=observe();result[phase]=dict(sql=observed,rows=retained(),export_rows=retained(True));save()
+                    observed=observe();result[phase]=dict(sql=observed,rows=retained());
+                    if not checker:result[phase]['export_rows']=retained(True)
+                    save()
                     if checker:
                         def owner():
                             return json.loads(sql(db,"SELECT json_build_object('epoch',epoch,'expires',lease_expires_at_us) FROM control.owner_epochs WHERE role='control' AND state='active'"))

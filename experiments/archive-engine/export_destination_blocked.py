@@ -7,14 +7,42 @@ end admission, exhaust the bounded worker join and fail stop with custody held.
 """
 from concurrent.futures import ThreadPoolExecutor
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
 import re
+import select
 import signal
 import subprocess
 import time
 import private_grant_http as http
+
+
+TRACER=Path('/out/checker-instrument/strace-exit-fixed')
+TRACER_SHA='509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458'
+
+
+def instrument():
+    """Consume only the tool qualified by the independent native discriminator."""
+    proof_bytes=(TRACER.parent/'result.json').read_bytes()
+    proof_sha=hashlib.sha256(proof_bytes).hexdigest()
+    assert proof_sha=='cf0317fc8934eb70f3cf2d74ac6ba0680be09366a4ade586aabd95991c6c3abc'
+    proof=json.loads(proof_bytes)
+    assert proof['status']=='PASS'
+    assert hashlib.sha256(TRACER.read_bytes()).hexdigest()==TRACER_SHA
+    patch=Path(__file__).with_name('strace-6.1-exit-delay.patch')
+    assert hashlib.sha256(patch.read_bytes()).hexdigest()==proof['source_inputs'][patch.name]
+    cases={case['profile']:case for case in proof['cases']}
+    assert set(cases)=={'original-pass','original-held','fixed-pass','fixed-held'}
+    assert all(case['tracees_absent'] for case in cases.values())
+    assert cases['original-held']['exit']=='TIMEOUT'
+    assert 'delayed wait data set already' in cases['original-held']['stderr_before_cleanup']
+    assert all(cases[key]['exit']==4 for key in ['original-pass','fixed-pass','fixed-held'])
+    assert cases['fixed-held']['observed_hold'] and cases['fixed-held']['exit_observation_ms']<2000
+    assert 'returned' not in cases['fixed-held']['stdout_before_cleanup']
+    assert cases['fixed-held']['tool_sha256']==TRACER_SHA
+    return dict(sha256=TRACER_SHA,proof_sha256=proof_sha,research_patch=proof['source_inputs'][patch.name])
 
 
 def pending_checker(trace, parent):
@@ -43,8 +71,8 @@ def lock_available():
 class TracedServer(http.Server):
     def __init__(self):
         self.output=http.ROOT/'checker.stdout';self.error=http.ROOT/'checker.stderr'
-        self.trace=http.ROOT/'checker.trace';self.parent=None
-        self.command=['/usr/bin/strace','-f','-ttt','-yy','-P','destination.json',
+        self.trace=http.ROOT/'checker.trace';self.parent=None;self.parent_fd=None
+        self.command=[str(TRACER),'-f','-ttt','-yy','-P','destination.json',
             '-e','trace=openat','-e','inject=openat:delay_enter=60s:when=3',
             '-o',str(self.trace),str(http.BINARY),'serve','--roles','control','--file',str(http.CONFIG)]
         with self.output.open('xb') as out,self.error.open('xb') as err:
@@ -54,10 +82,23 @@ class TracedServer(http.Server):
         children=Path(f'/proc/{self.process.pid}/task/{self.process.pid}/children').read_text().split()
         assert len(children)==1,children
         self.parent=int(children[0]);assert Path(f'/proc/{self.parent}/exe').resolve()==http.BINARY
+        self.parent_fd=os.pidfd_open(self.parent)
+        assert os.getpgid(self.parent)==self.process.pid
+        assert Path(f'/proc/{self.parent}/exe').resolve()==http.BINARY
+        self.identity=dict(pid=self.parent,pgid=self.process.pid,start_ticks=Path(f'/proc/{self.parent}/stat').read_text().rsplit(')',1)[1].split()[19])
         return result
+    def signal(self, number):
+        # A pidfd always addresses this process, even after numeric PID reuse.
+        signal.pidfd_send_signal(self.parent_fd,number)
     def cleanup(self):
+        if self.parent_fd is not None:
+            poll=select.poll();poll.register(self.parent_fd,select.POLLIN)
+            if not poll.poll(0):self.signal(signal.SIGKILL)
         if self.process.poll() is None:
             os.killpg(self.process.pid,signal.SIGKILL);self.process.wait(timeout=10)
+        if self.parent_fd is not None:
+            assert poll.poll(2000),'Owned tracee death unobserved; container teardown required'
+            os.close(self.parent_fd);self.parent_fd=None
 
 
 def exercise(auth, body):
@@ -66,15 +107,16 @@ def exercise(auth, body):
     with http.CONFIG.open('a') as stream:
         stream.write('\n[runtime]\nheartbeat_interval="500ms"\ngraceful_shutdown_timeout="2s"\n')
     http.cli('config','validate')
-    version=subprocess.check_output(['/usr/bin/strace','--version'],text=True)
+    proof=instrument()
+    version=subprocess.check_output([str(TRACER),'--version'],text=True)
     assert version.splitlines()[0]=='strace -- version 6.1',version
     server=TracedServer();pool=ThreadPoolExecutor(max_workers=1)
-    result=dict(status='INCOMPLETE',strace=version,command=server.command,primed=[])
+    result=dict(status='INCOMPLETE',strace=version,instrument=proof,command=server.command,primed=[])
     path=http.ROOT/'checker-result.json'
     def save():path.write_text(json.dumps(result,indent=2)+'\n')
     future=None
     try:
-        result['ready']=server.ready();result['parent_pid']=server.parent;save()
+        result['ready']=server.ready();result['parent_pid']=server.parent;result['parent_identity']=server.identity;save()
         bad={**body,'destination':{**body['destination'],'binding_sha256':'00'*32}}
         def request():
             try:return dict(status=http.request('POST','/management/v1/jobs',bad,{**auth,'Idempotency-Key':'e2'*16})[0])
@@ -82,7 +124,7 @@ def exercise(auth, body):
         # Injection counters are per tracee. Prime only with rejecting commands;
         # never assume Tokio reuses a particular thread or infer a block from time.
         for _ in range(8):
-            future=pool.submit(request);deadline=time.monotonic()+4;tid=None;seen=None;since=None
+            submitted=time.monotonic();future=pool.submit(request);deadline=submitted+4;tid=None;seen=None;since=None
             while not future.done() and time.monotonic()<deadline:
                 current=pending_checker(server.trace.read_text(),server.parent)
                 if current != seen:
@@ -98,7 +140,7 @@ def exercise(auth, body):
         assert int(status['Tgid'])==server.parent and int(status['TracerPid'])==server.process.pid
         assert status['State'].strip().startswith('t'),status['State']
         assert not future.done() and not lock_available()
-        result['blocked']=dict(tid=tid,tracer=server.process.pid,state=status['State'].strip(),lock_available=False,trace=server.trace.read_text());save()
+        result['blocked']=dict(tid=tid,tracer=server.process.pid,state=status['State'].strip(),lock_available=False,trace=server.trace.read_text(),submitted_monotonic=submitted,observed_monotonic=time.monotonic());save()
         (http.ROOT/'checker-blocked.waiting').write_text('observed\n')
         end=time.monotonic()+4
         while not (http.ROOT/'checker-blocked.ready').exists():
@@ -106,8 +148,12 @@ def exercise(auth, body):
             assert pending_checker(server.trace.read_text(),server.parent)==tid
             assert time.monotonic()<end,'host renewal observation timeout'
             time.sleep(.01)
-        assert not lock_available()
-        started=time.monotonic();os.kill(server.parent,signal.SIGTERM)
+        assert not lock_available() and not future.done()
+        assert pending_checker(server.trace.read_text(),server.parent)==tid
+        started=time.monotonic();margin=5-(started-submitted)
+        result['signal']=dict(monotonic=started,wall=time.time(),request_deadline_margin_seconds=margin,request_pending=True);save()
+        assert margin>=1.25,('Cannot distinguish signal from request expiry',margin)
+        server.signal(signal.SIGTERM)
         code=server.process.wait(timeout=7)
         result['terminal']=dict(exit=code,elapsed_ms=round((time.monotonic()-started)*1000,3),response=future.result(timeout=2),parent_present=Path(f'/proc/{server.parent}').exists(),worker_present=Path(f'/proc/{tid}').exists(),lock_available=lock_available(),stderr=server.error.read_text(),stdout=server.output.read_text());save()
         terminal=result['terminal']

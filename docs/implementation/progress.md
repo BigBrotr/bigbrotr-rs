@@ -21,10 +21,10 @@ No P02/P06/P08 task or M1 milestone is complete; all later selected work remains
 
 ## Git and review boundary
 
-Current main/HEAD9b30c3535c1407294fb95b40df8019ebda6860f9, origin/mainc494932; candidate53c6c9d and its scoped
+Current main/HEAD509a9bd, origin/main509a9bd; candidate53c6c9d and its scoped
 evidence75906fc pushed normally. GET whitespace correction3a898c4 and blocked-checker candidate324b8eb are pushed
-with original failure evidence. Root owns only the tracer discriminator/patch
-and this checkpoint. Candidate53c6c9d was clean at transfer.
+with original failure evidence. Tracer evidence is pushed. Root owns the checker fixture timing/pidfd/instrument
+consumption changes, batched SQL oracle and this checkpoint. Candidate53c6c9d was clean at transfer.
 No unrelated edits or rewritten published history. Laboratory below is now stopped.
 
 Private POST /management/v1/jobs now reuses the supervised native allocation
@@ -311,8 +311,13 @@ no active lab, database, cleanup debt or deletion. Full source/build/tool artifa
 retained, especially qualified out/strace-exit-fixed SHA509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458.
 Local .research/implementation/strace-exit/attempt-{b5efc19,9b30c35}/.
 
-Next bounded action: strengthen checker signal timing and tracee cleanup,
-batch its SQL oracle, then consume the exact qualified research tracer in a
+Checker now records submit time and requires a pending syscall/request with
+>=1.25s ordinary5s request margin immediately before SIGTERM. Stable pidfd targets
+the actual parent for signals/cleanup even if the tracer exits first. Batched SQL
+keeps all eight exact row/xmin oracles with fewer Docker roundtrips. Only the
+qualified ELF/proof/patch digests are accepted. Native execution NOT_RUN for this
+delta; no new product behavior.
+Next bounded action: syntax/artifact/diff review, commit, then consume the exact qualified research tracer in a
 fresh exact-revision BigBrotr lab after inventory/capacity/ownership/hash checks.
 Original324b8eb INCOMPLETE is unchanged. No arbitrary kernel-I/O or power-loss
 claim from a suspended syscall-entry fixture.
