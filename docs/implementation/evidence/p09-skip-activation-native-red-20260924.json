@@ -1,0 +1,414 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "INCOMPLETE",
+  "date": "2026-09-24",
+  "tasks": [
+    "P09-T09 Step 2",
+    "P08-T03 Step 3"
+  ],
+  "source": "4f484a433d8aca903597e6f722c3cfdf4539cff2",
+  "tree": "68230f7e5418a7110db0d725d0626e0ac06a3ac7",
+  "runtime_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+  "scope": "Native current WebKit/root activation comparison. Two ordinary pointer lookup paths fail; keyboard and conditional padding controls pass. Original failure remains a functional RED, not full accessibility or recovery acceptance.",
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-4f484a4-webkit-root/capture",
+    "files": 98,
+    "sha256": "c351fad1ce04f6bb19e72f42c43098da50377d4b0efa5b588b02e20a87a5ddec",
+    "source": "4f484a433d8aca903597e6f722c3cfdf4539cff2",
+    "tree": "68230f7e5418a7110db0d725d0626e0ac06a3ac7",
+    "source_files": 1255
+  },
+  "review": {
+    "status": "VERIFIED_ACTIVATION_FAILURE",
+    "source": "4f484a433d8aca903597e6f722c3cfdf4539cff2",
+    "runtime_source": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+    "counts": {
+      "out/build/source-manifest.json": 1255,
+      "artifact-source-manifest.json": 1110,
+      "runtime-source-manifest.json": 1246
+    },
+    "payloads": 98,
+    "trials": [
+      {
+        "name": "pointer-without-full-page",
+        "reverseTabs": 8,
+        "status": "UNREACHED",
+        "focused": false
+      },
+      {
+        "name": "post-lookup",
+        "reverseTabs": 8,
+        "status": "UNREACHED",
+        "focused": false
+      },
+      {
+        "name": "keyboard-without-full-page",
+        "reverseTabs": 4,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      },
+      {
+        "name": "pointer-padding",
+        "reverseTabs": 4,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      },
+      {
+        "name": "known-input-without-full-page",
+        "reverseTabs": 3,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      },
+      {
+        "name": "known-input-with-full-page",
+        "reverseTabs": 3,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      }
+    ],
+    "delayed": [
+      {
+        "name": "pointer-without-full-page",
+        "elapsedMs": 502,
+        "before": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "afterWait": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "afterKey": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "focused": false
+      },
+      {
+        "name": "post-lookup",
+        "elapsedMs": 503,
+        "before": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "afterWait": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "afterKey": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "focused": false
+      }
+    ],
+    "padding": {
+      "x": 28,
+      "y": 557.3984375,
+      "box": {
+        "left": 20,
+        "right": 130.390625,
+        "top": 534.40625,
+        "bottom": 580.390625
+      },
+      "textBoxes": [
+        {
+          "left": 41,
+          "right": 109.390625,
+          "top": 547.3984375,
+          "bottom": 567.3984375
+        }
+      ],
+      "inside": true,
+      "visible": true,
+      "outsideText": true,
+      "buttonAtPoint": true
+    },
+    "samples": 166,
+    "trace_sha256": "3c9794dc224b9c08a3d993d349881ac98f0b8646c03f8f1df7f1500605a1ee30",
+    "free_before": 121459822592,
+    "free_after": 120885309440,
+    "preexisting": 733,
+    "sql_terminal_equals_accepted": true,
+    "idle_terminal_equals_before_retry": true,
+    "receipt": {
+      "accepted_at_us": "1790280126436919",
+      "authority": "acceptance-only",
+      "command_key": "2cf14ef39cfa2d7adb9e640d391e2e7b",
+      "created": true,
+      "execution": "unobserved",
+      "format": "bigbrotr-export-resume/1",
+      "job_id": "e2d2a85762c51defcb51488913574eb7",
+      "job_revision": "8"
+    },
+    "button_node_stable": true,
+    "text_node_stable": true,
+    "later_task_key_events": 84
+  },
+  "environment": {
+    "platform": "Tux native Linux amd64",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "version": "26.6",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4"
+  },
+  "results": {
+    "status": "FAIL",
+    "trials": [
+      {
+        "name": "pointer-without-full-page",
+        "reverseTabs": 8,
+        "status": "UNREACHED",
+        "focused": false
+      },
+      {
+        "name": "post-lookup",
+        "reverseTabs": 8,
+        "status": "UNREACHED",
+        "focused": false
+      },
+      {
+        "name": "keyboard-without-full-page",
+        "reverseTabs": 4,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      },
+      {
+        "name": "pointer-padding",
+        "reverseTabs": 4,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      },
+      {
+        "name": "known-input-without-full-page",
+        "reverseTabs": 3,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      },
+      {
+        "name": "known-input-with-full-page",
+        "reverseTabs": 3,
+        "status": "PASS",
+        "focused": true,
+        "visible": true,
+        "hashBefore": "",
+        "hashAfter": "#session",
+        "next": "sign-out"
+      }
+    ],
+    "delayed": [
+      {
+        "name": "pointer-without-full-page",
+        "elapsedMs": 502,
+        "before": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "afterWait": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "afterKey": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "focused": false
+      },
+      {
+        "name": "post-lookup",
+        "elapsedMs": 503,
+        "before": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "afterWait": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "afterKey": {
+          "label": "check-job",
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        },
+        "focused": false
+      }
+    ],
+    "padding": {
+      "x": 28,
+      "y": 557.3984375,
+      "box": {
+        "left": 20,
+        "right": 130.390625,
+        "top": 534.40625,
+        "bottom": 580.390625
+      },
+      "textBoxes": [
+        {
+          "left": 41,
+          "right": 109.390625,
+          "top": 547.3984375,
+          "bottom": 567.3984375
+        }
+      ],
+      "inside": true,
+      "visible": true,
+      "outsideText": true,
+      "buttonAtPoint": true
+    },
+    "samples": 166,
+    "later_task_key_events": 84,
+    "stable_button_node": 1,
+    "stable_text_node": 2,
+    "lookup_disabled_cycles": 4,
+    "sql_terminal_equals_accepted": true,
+    "idle_terminal_equals_before_retry": true,
+    "prepared_audits": 12,
+    "post_login_audits": 13,
+    "post_resume_audits": 14,
+    "completed_browser_steps": [
+      {
+        "name": "installed-bundle-session-and-paused-job",
+        "status": "PASS",
+        "milliseconds": 2079.3784149999997
+      },
+      {
+        "name": "persist-original-request-before-real-acceptance-withheld-reply",
+        "status": "PASS",
+        "milliseconds": 874.0940070000001
+      }
+    ],
+    "failure": {
+      "stage": "reload-restores-without-dispatch-and-explicit-retry-resolves-original",
+      "kind": "AssertionError",
+      "location": {
+        "line": 161,
+        "column": 12
+      }
+    },
+    "launch_timeout_ms": 30000,
+    "teardown": "available-handles-closed",
+    "browser_handle_acquired": true,
+    "host_commands": [
+      "alice-login",
+      "before-loss",
+      "accepted",
+      "before-retry",
+      "after-retry"
+    ]
+  },
+  "cleanup": {
+    "state": "stopped-retained",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-4f484a4-webkit-root",
+    "owner": "e99e24f419e74304894caa19a4815a41",
+    "network": "removed after owner/no-endpoint audit",
+    "exit_codes": {
+      "frontend": 0,
+      "resume-store-webkit": 0,
+      "resume-webkit-root": 1,
+      "postgres": 137,
+      "rust-visibility": 143
+    },
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "preexisting": 733,
+    "unrelated_running": 8,
+    "free_before": 121459822592,
+    "free_after": 120885309440
+  },
+  "limitations": [
+    "Both first8-key outcomes remain UNREACHED; extra delayed keys and positive controls do not turn them into PASS. Only2of7 browser steps completed; restart/revocation/forget not reached.",
+    "The first ordinary pointer trial precedes every screenshot in this document and still fails. Other trials share focus/history; successful padding follows keyboard input focus, same-document back and a different scroll position, and uses mouse.click rather than locator.click. Text-hit causality is not uniquely identified.",
+    "All166 samples retain the same button/text nodes. Four lookups observe disabled/text mutation callbacks with true then false states; callback times do not independently measure the exact disabled interval.",
+    "All84 later-task keyboard events record defaultPrevented=false. Internal WebKit focus-navigation starting nodes and default-action execution are not instrumented.",
+    "Waits502/503ms and one extra key preserve the focused button. This excludes recovery within these observed waits, not every future delay or browser configuration.",
+    "Actual terminal12-ledger SQL equals the accepted queued8 state and idle rows equal the pre-retry boundary. One login audit and one atomic resume preserve all older rows/original pin. No resumed output, new reader, TCP or COMMIT-loss qualification.",
+    "The30s launch bound was configured and normal launch reached the journey. This run does not reproduce or explain the earlier67e startup stall, nor exercise its timeout failure branch.",
+    "Client handles closed, and host independently found all5 owned container PIDs0/noOOM with network removed. Failure cleanup exit143/browser1/PG137 is not a successful Control release.",
+    "No CSS/product change in the tested revision. No Safari/iOS, arm64, full accessibility or packaged-release claim."
+  ],
+  "next_action": "Apply the small candidate label wrapper with pointer-events:none in compiled CSS, preserving native button semantics and accessible text. Rerun the same first ordinary locator click unchanged. A passing result can qualify that workaround for this tested journey, not uniquely prove internal text-hit causality.",
+  "visual_review": [
+    {
+      "path": "out/browser-cases/resume-webkit-root/skip-before-viewport.png",
+      "sha256": "25e67e6ffd500d81448201c8b5cd8be4e58261d5b85079e3080c15ae630b74fa"
+    },
+    {
+      "path": "out/browser-cases/resume-webkit-root/skip-pointer-padding-focused.png",
+      "sha256": "61674b9d21ada6c9c23869cf60e34d657afab43d802c54bb79a21c470f5262c7"
+    }
+  ],
+  "independent_review": "Root recomputed98payloads,1255/1246/1110 complete Git source manifests, ELF/bundles, atomic resume including Control owner, full SQL/session preservation and all166focus samples. Read-only AI independently inspected trace/hash and relevant code, confirming the functional failure and residual causal confounders; no second full SQL/resource audit or test/SSH claimed.",
+  "upstream_hypothesis": {
+    "status": "HYPOTHESIS; internal starting node unobserved",
+    "webkit_commit": "4d05d732e5a84f32675bef4cc135a2e7a9269a87",
+    "source": "https://github.com/WebKit/WebKit/blob/4d05d732e5a84f32675bef4cc135a2e7a9269a87/Source/WebCore/dom/Document.cpp#L6722",
+    "local": ".research/implementation/export-execution/skip-webkit-upstream",
+    "files": {
+      "UPSTREAM_CONFIG.sh": "dc2ff9ad58889b89b927152c851cd43bddcfb4b34306469c70c12056590d26dc",
+      "bootstrap.diff": "fea735011093a46032cc9b3da9e67ecab28821a6a8e20da071d3c962d4d5e1ff",
+      "FocusController.cpp": "5d6a98c79f360f8cefd5355acd252ca8c19f6bf47884711439f99c6cbd06582b",
+      "Document.cpp": "97c02bc2694ab3fb4a1f3ac987509a1a98b6a2e6943a533986229ab13e20c1e9",
+      "EventHandler.cpp": "5a921a4143bdc1c696c335742911f883d8a964527bcf177474dc7d4a8ddc707f"
+    },
+    "interpretation": "Pointer hit testing can select a focus-navigation starting node distinct from activeElement. The examined focus controller can return when its candidate is already focused. This source path is consistent with the trace, not a runtime observation of that node."
+  }
+}

@@ -24339,6 +24339,71 @@
       "tree": "9ba411f5ee955112268979cf41a030d95012debc",
       "source_files": 1254
     },
-    "evidence": "docs/implementation/evidence/p09-skip-activation-startup-incomplete-20260924.json"
+    "evidence": "docs/implementation/evidence/p09-skip-activation-startup-incomplete-20260924.json",
+    "followup_4f484a4": {
+      "status": "stopped-retained; functional RED: ordinary pointer paths fail, keyboard/padding controls pass",
+      "resources": {
+        "source": "4f484a433d8aca903597e6f722c3cfdf4539cff2",
+        "tree": "68230f7e5418a7110db0d725d0626e0ac06a3ac7",
+        "owner": "e99e24f419e74304894caa19a4815a41",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-4f484a4-webkit-root",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "frontend",
+            "id": "923ffdd30e487ae3012e55ed8931ba6ee6c73885911cb8e15f8eb7c65bbfda1f"
+          },
+          {
+            "name": "postgres",
+            "id": "c3ad1513b03ed6f69345da1c9e4d5b764fdd2c1015cebd8299e3555d0cf930a1"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "fea0175687cfa0e4000c52ec0bb296115de2478d8c764fc539760712d216e787"
+          },
+          {
+            "name": "resume-store-webkit",
+            "id": "bf536396c6f6bc82e43c666dd757675d7401e7d616ecc6566960a18c2ec64a5a"
+          },
+          {
+            "name": "resume-webkit-root",
+            "id": "6be05be2b847a7d0cf5df18d7f1693b054796e4bfcc34347f0b50345bfb07ca0"
+          }
+        ],
+        "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "owner_label": "org.bigbrotr.export-execution",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "started_at": "2026-09-24T20:00:25.254509+00:00",
+        "runtime_profile": "resume-browser",
+        "adapter_profile": null,
+        "schema_profile": null,
+        "resume_browser_pair": "webkit-root",
+        "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+        "runtime_artifact_origin": "73e651769e9cd4c82cb0d51731db698eeeadf0f4",
+        "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+        "network_id": "4ff1650ea6fae20e637258be155a3daf286fe044436071fd442f9d9e73b36cad",
+        "postgres_id": "c3ad1513b03ed6f69345da1c9e4d5b764fdd2c1015cebd8299e3555d0cf930a1",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "fea0175687cfa0e4000c52ec0bb296115de2478d8c764fc539760712d216e787",
+        "network_state": "removed after owner/no-endpoint audit",
+        "terminal_audit": "terminal-audit.json"
+      },
+      "orchestrator": {
+        "pid": 410249,
+        "start_ticks": "366227880",
+        "source": "4f484a433d8aca903597e6f722c3cfdf4539cff2",
+        "tree": "68230f7e5418a7110db0d725d0626e0ac06a3ac7"
+      },
+      "retention": "Retain all original67e/ba5 evidence and current73e/4e/b6 inputs; this fresh run adds no Rust compiler cache.",
+      "capture": {
+        "path": ".research/implementation/export-execution/attempt-4f484a4-webkit-root/capture",
+        "files": 98,
+        "sha256": "c351fad1ce04f6bb19e72f42c43098da50377d4b0efa5b588b02e20a87a5ddec",
+        "source": "4f484a433d8aca903597e6f722c3cfdf4539cff2",
+        "tree": "68230f7e5418a7110db0d725d0626e0ac06a3ac7",
+        "source_files": 1255
+      },
+      "evidence": "docs/implementation/evidence/p09-skip-activation-native-red-20260924.json"
+    }
   }
 }

@@ -143,6 +143,13 @@ The packager refuses symlinks, unknown file types and limits before publishing
 the manifest. The [Control runtime](../user/control-runtime.md) verifies and serves
 it from `administration.assets.directory`; no Node production server is needed.
 
+For the current browser-only research regression, the export laboratory may reuse
+qualified Rust artifacts while changing only `JobStatus.svelte` and `style.css`.
+It records both versions' hashes and requires exact equality of every other
+product/build input. The current frontend is independently rebuilt and checked
+from the current Git source. The reused ELF retains its original build revision;
+this laboratory exception is not a new Rust qualification or release promotion.
+
 The OpenAPI3.1 [session subset](../../contracts/management/v1/openapi.yaml) owns
 wire types and runtime schemas. After an intentional contract edit, run
 `pnpm contracts:generate` and review the generated client diff. Standalone Ajv

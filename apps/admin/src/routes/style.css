@@ -66,6 +66,8 @@ dd code { font-size: .9rem; }
 .recovery-actions { margin-top: 1.4rem; }
 .job-sheet { border-top: .25rem solid var(--navy); margin-top: 3rem; padding-top: 2rem; }
 .job-sheet h2 { font-size: 1.5rem; letter-spacing: -.02em; }
+/* Keep label clicks on the native button for subsequent keyboard navigation. */
+.job-sheet .button-label { pointer-events: none; }
 .job-observation { margin-top: 1.5rem; }
 .job-state { font-size: 1.75rem; font-weight: 650; color: var(--navy); margin: 0; }
 .job-observation .session-facts { margin-top: 1.25rem; }

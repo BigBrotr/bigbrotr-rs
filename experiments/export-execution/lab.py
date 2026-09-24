@@ -187,9 +187,15 @@ try:
         runtime_manifest=json.loads((runtime_root/'out/build/source-manifest.json').read_text())
         assert runtime_manifest['revision']==reuse_runtime
         assert all(sha(runtime_root/'out/build/source'/name)==digest for name,digest in runtime_manifest['files_sha256'].items())
+        # These two presentation inputs are built separately into the current
+        # browser bundle, never embedded by the Rust build. Keep this exception
+        # narrow; all other product/build inputs must still match the reused ELF.
+        separate_frontend = {'apps/admin/src/lib/JobStatus.svelte', 'apps/admin/src/routes/style.css'} if browser_profile else set()
         def product_inputs(files):
-            return {name:digest for name,digest in files.items() if not name.startswith(('docs/','experiments/'))}
+            return {name:digest for name,digest in files.items() if not name.startswith(('docs/','experiments/')) and name not in separate_frontend}
         assert product_inputs(manifest['files_sha256'])==product_inputs(runtime_manifest['files_sha256'])
+        frontend_changes = {name: dict(current=manifest['files_sha256'][name], runtime_source=runtime_manifest['files_sha256'][name])
+                            for name in sorted(separate_frontend) if manifest['files_sha256'][name]!=runtime_manifest['files_sha256'][name]}
         checks=json.loads((runtime_root/'out/adapter-checks/result.json').read_text())
         assert checks['status']=='PASS'
         built=json.loads((runtime_root/'out/adapter-checks/artifacts.json').read_text())
@@ -211,7 +217,8 @@ try:
         write(out/'native-tests/ready.json',ready)
         write(root/'runtime-source-manifest.json',runtime_manifest)
         write(root/'runtime-reuse.json',dict(root=str(runtime_root),owner=runtime_state['owner'],
-            build=built,validation='Exact product/build input equality; fixture-only changes. No new compilation or Clippy run.'))
+            build=built,separate_frontend_changes=frontend_changes,
+            validation='All other product/build inputs equal. Declared presentation differences require fresh current frontend build and browser checks; Rust artifacts retain their original source identity. No new Rust compilation or Clippy run.'))
         state['runtime_artifact_origin']=reuse_runtime;save()
     if compile_current:
         # Original seed cache is stopped and inventoried above; copy only caches,

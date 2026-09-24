@@ -23,11 +23,42 @@ AI reviewer: no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-HEAD 67e4badf8e62ba5b3d185514b9880515bd19d52a, tree
-9ba411f5ee955112268979cf41a030d95012debc, clean at Git transfer. Origin/main is
-209a34e6467894a87700382bbfec7607a95711e5; current candidate is unpublished.
-Root owns the startup report, inventory/checkpoint, private-contract matrix
-correction and resume_browser.mjs deadline/evidence changes. No product change.
+HEAD 4f484a433d8aca903597e6f722c3cfdf4539cff2, tree
+68230f7e5418a7110db0d725d0626e0ac06a3ac7. Origin/main is
+209a34e6467894a87700382bbfec7607a95711e5; two candidate commits are unpublished.
+Root owns dirty JobStatus.svelte/style.css, the narrow frontend-only runtime reuse
+check in export-execution/lab.py, inventory/checkpoint and the new RED report.
+No foreign work or active lab. Fresh owner/container inspection confirms all five
+4f containers exited/PID0; no cleanup errors. Next: review and commit the candidate
+label wrapper, then repeat the unchanged first ordinary pointer fixture on fresh
+WebKit/root. Keep the eight-key bound. Native GREEN is NOT_RUN.
+
+[Native activation comparison](evidence/p09-skip-activation-native-red-20260924.json)
+is stopped-retained at export-runtime-4f484a4-webkit-root, owner
+e99e24f419e74304894caa19a4815a41. Root verified98 payloads and1255/1246/1110
+complete Git files, ELF/bundles, atomic receipt and terminal12-ledger/session
+preservation. Read-only AI reviewed the trace and relevant code, not a second full
+SQL/resource audit. Two ordinary pointer trials remain UNREACHED after8keys and
+separate502/503ms waits plus one key. Keyboard/padding pass4, known-input controls
+pass3. All166samples retain the same button/text nodes;84 later-task key events
+have defaultPrevented=false. First pointer failure precedes every screenshot.
+Padding has different focus/scroll history and click primitive; internal WebKit
+starting node is unobserved. These are causal limits, not a passed user journey.
+Only2of7 steps complete; restart/revocation/forget not reached. TerminalSQL equals
+accepted queued8; idle rows equal before-retry. Browser1/runner143/PG137 are failure
+cleanup, not graceful Control release. All5PID0/noOOM, network removed, bothDB0,
+733prior/eight unrelated running preserved. Free121459822592→120885309440 before
+capture. Original73e/4e/b6 inputs, all SQL/source/captures and caches protected.
+
+The candidate wraps only the Check job label in a span with pointer-events:none
+in compiled CSS; accessible text, native submit and disabled semantics remain.
+Local Node26.4.0 Svelte check passes0errors0warnings. The next lab records exactly
+the two changed presentation hashes, builds current frontend bundles afresh and
+keeps every other product/build input equal to73e. Reused ELF keeps its original
+source identity; this is not a new Rust build or release promotion. No relaxed
+browser assertions or modified historical outcomes. Read-only AI found no concrete defect in the candidate/reuse boundary and
+confirmed the retained RED report; no test/SSH by the reviewer. Native efficacy
+remains NOT_RUN. Artifact/link/handoff checks pass.
 
 [The activation probe attempt](evidence/p09-skip-activation-startup-incomplete-20260924.json)
 is stopped-retained and INCOMPLETE at export-runtime-67e4bad-webkit-root,
@@ -52,14 +83,11 @@ after the journey and available client handles finish. A rejected launch can
 leave children without a returned handle; only the host owner/PID audit proves
 native exit. No disabled plugins, added automatic retries or relaxed assertions.
 
-Next: review/check the final collection fix, commit clean Git, then run one fresh
-WebKit/root diagnostic. Preserve the original eight-key outcomes; add passive
-500ms plus one separate key before refocusing. First pointer lookup precedes
-every screenshot; keyboard Enter uses the same GET with no post-response refocus.
-Only observed pointer/keyboard divergence enables the measured padding trial.
-Other trials share document/focus history; mutation callbacks do not establish
-exact disable duration. No product/CSS change is justified by current evidence.
-Prior ba5 and the separately qualified188 matrix retain their outcomes below.
+The 4f followup reached the browser journey with the configured30s launch bound
+and saved its functional failure before closing available handles. It does not
+exercise the launch-timeout branch or explain67e. Preserve the original eight-key
+failures and the separate delayed outcomes. Prior ba5 and the independently
+qualified188 matrix retain their outcomes below.
 
 [Native WebKit/root trace](evidence/p09-skip-link-trace-incomplete-20260924.json)
 is stopped-retained at export-runtime-ba5beff-webkit-root,
@@ -84,8 +112,8 @@ its separate scoped recovery qualification and old8743 stays INCOMPLETE.
 
 Read-only AI confirmed the prior trace. Internal WebKit hit-test/focus-start
 behavior remains a hypothesis. Its eight keys were fast; elapsed-time recovery
-and capture effects specific to button focus were not excluded. The next probe
-above addresses those gaps. No product/CSS change is justified yet.
+and capture effects specific to button focus were not excluded. The later4f probe
+above addresses those gaps and motivates the bounded candidate now under test.
 
 The diagnostic uses atomic tmp+rename snapshots (no fsync/power-loss claim).
 Root corrected the review's Kit2.70.3 native-replaceState router mismatch before
