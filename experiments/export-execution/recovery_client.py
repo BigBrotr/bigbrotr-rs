@@ -27,14 +27,26 @@ def wait(name, server):
         time.sleep(.01)
 
 
-def accept(revision=3, keys=('d3',), label='signed-accept'):
+def accept(revision=3, keys=('d3',), label='signed-accept', wait_for_rate_window=False):
     server = http.Server('executor-' + label)
     try:
         ready = server.ready(revision)
         assert len(ready['listeners']) == 1
         status, _, headers = http.request('POST', '/management/v1/sessions',
             dict(username='alice', password='Independent owner password 2026'))
-        assert status == 201
+        login_statuses = [status]
+        record(label + '-login', dict(status='INCOMPLETE', responses=login_statuses))
+        if status == 429 and wait_for_rate_window:
+            # The seed login and three reauthentications plus the first HTTP
+            # stage consume the real five-attempt account window. Let the actual
+            # sixty-second window expire; never reset SQL buckets or raise limits.
+            time.sleep(60)
+            status, _, headers = http.request('POST', '/management/v1/sessions',
+                dict(username='alice', password='Independent owner password 2026'))
+            login_statuses.append(status)
+            record(label + '-login', dict(status='INCOMPLETE', responses=login_statuses))
+        assert status == 201, status
+        record(label + '-login', dict(status='PASS', responses=login_statuses))
         cookies = SimpleCookie()
         for name, value in headers:
             if name.lower() == 'set-cookie':
@@ -108,4 +120,4 @@ def runtime(crash):
 
 
 if __name__ == '__main__':
-    {'accept': accept, 'accept-commits': lambda: accept(5, ('d5', 'd6'), 'commit-accept'), 'crash': lambda: runtime(True), 'restart': lambda: runtime(False)}[sys.argv[1]]()
+    {'accept': accept, 'accept-commits': lambda: accept(5, ('d5', 'd6'), 'commit-accept', wait_for_rate_window=True), 'crash': lambda: runtime(True), 'restart': lambda: runtime(False)}[sys.argv[1]]()

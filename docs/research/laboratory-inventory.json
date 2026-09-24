@@ -21825,5 +21825,64 @@
       "cleanup_errors": []
     },
     "retention": "Deliberate source-isolated negative never merged/pushed. Keep original files/PG state and unresolved reader/export pin. Current negative ELF/cache retained pending final review; outer container stop owns actual exclusion."
+  },
+  "implementation_export_runtime_commit_preflight_20260924": {
+    "status": "stopped-retained; original INCOMPLETE at sixth fixture login",
+    "evidence": "docs/implementation/evidence/p08-export-runtime-commit-preflight-incomplete-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-0a44c79/capture",
+    "verified": {
+      "files": 53,
+      "sha256": "7145880b685a2964a3ac6daf7fb9b8c36cf6baa01a4ce8ff688c816ecfd73baa",
+      "source": "0a44c796fa64139a14c278fca549be925acc61ad",
+      "tree": "a48d02ec1bc5fda2618175855c2fc08ce873ffcb",
+      "source_files": 1167
+    },
+    "resources": {
+      "source": "0a44c796fa64139a14c278fca549be925acc61ad",
+      "tree": "a48d02ec1bc5fda2618175855c2fc08ce873ffcb",
+      "owner": "12aedebbc6c89e3695df0184e7312db2",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-0a44c79",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "839e0d440147125e150371a1a5dadb88df5b52b2dbe18bed1e99946e64274e9c"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "f2c7eb917c338fe143378706eb053de7be626e417444e27138bfdd62eb13ffe8"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T11:59:17.685427+00:00",
+      "runtime_profile": "executor",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "f70ac174ad091fd9b849ff18719b86e520478df8",
+      "network_id": "51ac417a50e3b6a5cca5dcbf0e8b534c7238b08ee496e78d2ed32886c9516e9c",
+      "postgres_id": "839e0d440147125e150371a1a5dadb88df5b52b2dbe18bed1e99946e64274e9c",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "f2c7eb917c338fe143378706eb053de7be626e417444e27138bfdd62eb13ffe8",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 606,
+      "unrelated_running": 8,
+      "free_bytes": 147319689216,
+      "cleanup_errors": []
+    },
+    "retention": "No new compiler caches; installed f70 artifacts reused after exact product/build input comparison. Keep original sources/logs/PG/archive/output and unresolved pins."
   }
 }

@@ -1,0 +1,114 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "INCOMPLETE",
+  "scope": "Installed completion COMMIT fixture preparation stopped at additional HTTP login; no completion proxy fault executed.",
+  "source": {
+    "files": 53,
+    "sha256": "7145880b685a2964a3ac6daf7fb9b8c36cf6baa01a4ce8ff688c816ecfd73baa",
+    "source": "0a44c796fa64139a14c278fca549be925acc61ad",
+    "tree": "a48d02ec1bc5fda2618175855c2fc08ce873ffcb",
+    "source_files": 1167
+  },
+  "capture": ".research/implementation/export-execution/attempt-0a44c79/capture",
+  "installed_build_source": "f70ac174ad091fd9b849ff18719b86e520478df8",
+  "installed_artifacts": {
+    "bigbrotr": "6830a4f4bfe9a1c5c1da0a74bf8a62729527764ac9538ed620dcda008555ca9a",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "observed": {
+    "prior_empty_completion": {
+      "files": 1,
+      "units": 1,
+      "states": [
+        "succeeded"
+      ],
+      "artifacts": 1,
+      "readers_active": 0
+    },
+    "prior_signed_recovery_status": "PASS",
+    "completion_cases": {
+      "status": "INCOMPLETE",
+      "source": "0a44c796fa64139a14c278fca549be925acc61ad",
+      "cases": [],
+      "output_hashes": {},
+      "failure": "AssertionError"
+    },
+    "failure": "recovery_client.py:37 expected201 at the additional policy5 login; original client did not retain the actual status. Never infer the response code from this capture."
+  },
+  "diagnosis": "Source inspection: original4e seed makes one login and three password reauthentications; signed recovery makes the fifth account attempt. A sixth request within the fixed60-second SQL window is throttled. This explains the likely failure, but the first capture does not prove429. The corrected fixture records statuses and real SQL bucket times, and only after429 waits60seconds for the natural window before one explicit retry; no product limits or SQL counters changed.",
+  "resources": {
+    "source": "0a44c796fa64139a14c278fca549be925acc61ad",
+    "tree": "a48d02ec1bc5fda2618175855c2fc08ce873ffcb",
+    "owner": "12aedebbc6c89e3695df0184e7312db2",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-0a44c79",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "839e0d440147125e150371a1a5dadb88df5b52b2dbe18bed1e99946e64274e9c"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "f2c7eb917c338fe143378706eb053de7be626e417444e27138bfdd62eb13ffe8"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T11:59:17.685427+00:00",
+    "runtime_profile": "executor",
+    "adapter_profile": null,
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "runtime_artifact_origin": "f70ac174ad091fd9b849ff18719b86e520478df8",
+    "network_id": "51ac417a50e3b6a5cca5dcbf0e8b534c7238b08ee496e78d2ed32886c9516e9c",
+    "postgres_id": "839e0d440147125e150371a1a5dadb88df5b52b2dbe18bed1e99946e64274e9c",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "f2c7eb917c338fe143378706eb053de7be626e417444e27138bfdd62eb13ffe8",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "INCOMPLETE",
+    "source": "0a44c796fa64139a14c278fca549be925acc61ad",
+    "owner": "12aedebbc6c89e3695df0184e7312db2",
+    "cases": {},
+    "result": "INCOMPLETE",
+    "independent_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "failure": {
+      "kind": "AssertionError",
+      "frames": [
+        {
+          "file": "lab.py",
+          "line": 282,
+          "function": "<module>"
+        }
+      ]
+    },
+    "preexisting_preserved": true,
+    "preexisting_count": 606,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "original_source_unchanged": true,
+    "host_tcp_wmem_preserved": true,
+    "free_bytes": 147319689216
+  },
+  "limitations": [
+    "Completion COMMIT faults and their restart oracle NOT_RUN in this attempt.",
+    "No new compilation or Clippy: exact product/build input equality permitted f70 artifact reuse.",
+    "All original outputs/PG state preserved; no cleanup/deletion of evidence."
+  ]
+}

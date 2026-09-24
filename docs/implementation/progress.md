@@ -21,11 +21,9 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD/origin main b146da4bb286e5ac7ecba891ba7c6e86336fb2d4;
-verified coherent prefix pushed and ls-remote confirmed.
-Root owns WIP completion-COMMIT fixtures: native_commit_proxy.py target,
-test_commit_targets.py discriminator, recovery_client.py acceptance generalization,
-runtime_cases.py stage, new commit_client.py/commit_cases.py and this checkpoint.
+Last verified HEAD main0a44c796fa64139a14c278fca549be925acc61ad candidate;
+origin/mainb146da4 pushed and ls-remote confirmed. Root owns only fixture login
+correction and its evidence/inventory/checkpoint. No product edits.
 Product input remains f70ac17. No other contributor writes or merge/rebase.
 
 [Signed installed recovery](evidence/p08-export-runtime-recovery-native-20260924.json)
@@ -187,6 +185,15 @@ three-capture review done with no concrete discrepancy. Later cache retirement
 was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
+
+[First completion fixture](evidence/p08-export-runtime-commit-preflight-incomplete-20260924.json)
+0a44c79 is INCOMPLETE at extra HTTP login; no COMMIT fault ran. Prior empty and
+signed restart passed. Actual response code was not captured. Source shows seed
+login+3reauth plus prior HTTP login exhaust5attempts; now record response/bucket
+times and wait the natural60-second window only on429. No limits/counters changed.
+Owner12aedebbc6c89e3695df0184e7312db2 stopped-retained/network removed;606prior/
+eight running unchanged, zero bothDBbackends, free147319689216bytes. Capture53files/
+1167sources verified; no compiler caches. No active lab or cleanup debt.
 
 Independent AI source review completed: missing unit_xmin comparison added; no
 other concrete blocker found. Root also reviewed complete fixture/callers. Commit

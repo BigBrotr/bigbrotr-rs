@@ -66,7 +66,12 @@ def run(root, state, sql, policy, empty_manifest):
         record['cleanup_errors']=errors;save();assert not errors
     try:
         activate(5,{'administration.enabled':True,'export.memory.max_bytes':268435456})
-        command('docker','exec',runner,'python3','-B','/out/build/source/experiments/export-execution/recovery_client.py','accept-commits')
+        def login_buckets():
+            return json.loads(sql(db,"SELECT jsonb_build_object('observed_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,'buckets',(SELECT jsonb_agg(jsonb_build_object('kind',kind,'bucket',bucket,'window_started_at_us',window_started_at_us,'attempts',attempts) ORDER BY kind,bucket) FROM control.login_buckets))"))
+        result['login_before']=login_buckets();save()
+        command('docker','exec',runner,'python3','-B','/out/build/source/experiments/export-execution/recovery_client.py','accept-commits',timeout=85)
+        result['login_after']=login_buckets()
+        result['login_responses']=json.loads((private/'executor-commit-accept-login.json').read_text());save()
         acceptance=json.loads((private/'executor-commit-accept.json').read_text())
         assert acceptance['status']=='PASS' and acceptance['logged_out'] and len(acceptance['receipts'])==2
         jobs=sorted(r['job_id'] for r in acceptance['receipts'])
