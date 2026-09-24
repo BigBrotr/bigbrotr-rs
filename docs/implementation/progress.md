@@ -20,11 +20,13 @@ product responsibilities in the existing task plan.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD/origin main5323bd5e028722a1d2471a90f19dc36b8e8986cd pushed;
-ls-remote matched. Root owns fixture-only pause-COMMIT profile: proxy selector/test,
-commit client policy parameter, pause_commit_cases.py, lab/runtime/parking dispatch
-and this checkpoint. Product tree unchanged since cdb78a1. No other contributor
-writes or merge/rebase. Native pause-COMMIT NOT_RUN.
+Last verified HEAD6e45d490f51f2e69a6892ff099a9c63f543d573f (candidate),
+treea6ca2590b41e52811301ee98c0d0a96c89b7dec1. Origin main5323bd5e028722a1d2471a90f19dc36b8e8986cd
+pushed/ls-remote confirmed. Root owns new pause-COMMIT evidence, inventory,
+operations and this checkpoint. Product tree unchanged since cdb78a1. No other
+contributor writes or merge/rebase; no active lab/cleanup debt. Native result and
+root and independent AI complete capture reviews PASS_SCOPED with no discrepancy.
+Root also owns the next unexecuted revocation fixture; keep it out of this evidence commit.
 
 The known-refusal implementation at cdb78a1 has Mac fmt/check,42 binary tests and
 Clippy PASS, complete root diff review and independent AI source review without a
@@ -91,18 +93,34 @@ These are completion-COMMIT faults, not pause-COMMIT faults. No GC/load/arm64 cl
 
 ## Next bounded action and invariants
 
-Review the new fixture-only **pause COMMIT** profile, commit clean Git, then run
-with exactcdb78a1 ELF after complete input equality before exposing resume/cancel.
-Proxy selector test first failed KeyError, then passed10 tests; logs under
-export-execution/pause-target-{red,green}.log. Native NOT_RUN. It reuses one
-signed accepted job with1536 cap: before-forward pause leaves running3; a second
-owner retries the same immutable unit and after-server-completion pause leaves
-paused5; ordinary restart preserves paused5/no new reader. Both failed parents
-must exit4/CommitUnknown, positively join, preserve original export pins and
-collect exact SQL/xmin, reader cleanup, output mutex and backend identities.
-Target only UPDATE jobs SET state='paused', never reservation/start/reader release.
-Reuse existing native_commit_proxy/clients and independent signed fixtures; first
-verify target discrimination, then actual PostgreSQL. New fixture source exists; expected native outcomes remain NOT_RUN.
+[Pause-COMMIT/restart](evidence/p08-export-pause-commits-native-20260924.json) passes
+at6e45d49 with exactcdb ELF and full source input equality. Job e97f4b87aa762a39a1d55d25838657a9:
+before-forward PID458/epoch4 leaves running3; second owner PID582/epoch5 start4 +
+after-complete pause leaves paused5/resource_limit. Both parents4CommitUnknown,
+reaped/root lock available/bothDB0. Fresh readers42b973fe84c5fa4ab439588c7426ce29 and
+9587f218eaee9ac88b9b8ef6e354edf0 plus [1,10] claims already released; all older rows/
+xmin retained. Artifactc60cafb473e6f93095ddc3909273f764 immutable1536/3072/unit xmin928;
+no final/staging/inventory. Same mutexinode31621720/emptySHA across both attempts.
+Epoch6 ordinary restart preserves every SQL row/xmin, namespace and mutex through
+1.5s sample and actual parent0 stop. Capture39files/1178Git sources locally verified,
+tarf2766ef6321735af63cff28d8188ede8db8931f331fc076605619971b317bf96.
+Owner7b31ceb572bebf48f0abd6fc7de77536 stopped-retained/network removed; PG35f9f0f7/
+runnerbe832244 PID0/noOOM,618prior/eight running unchanged. Free145071742976→
+144674607104bytes. No compiler cache. Actual source/ELF/all ledger/resource checks
+passed root and independent AI complete reviews. No held-driver interval
+or permission-revocation inference. Proxy target REDKeyError→GREEN10 preserved
+under export-execution/pause-target-{red,green}.log.
+
+Next bounded action: commit/push the reviewed pause-COMMIT evidence, then finish
+the current-authority interleaving fixture using the existing native reader hold
+and real grant revocation. The supervisor services Control-only management work
+during native waits; authenticated revocation needs no additional archive work. Establish a reproducible
+native query hold, revoke the executing actor's required grant, collect joined
+worker/output and require no completion inventory plus durable safe pause despite
+revoked input authority. Prefer actual authenticated management client where its
+route supports the selected revocation; read exact current contracts/callers first.
+Preserve old export pins and unknown outcomes. This scenario is proposed NOT_RUN;
+then continue explicit authenticated status/resume/cancel and their UI consumers.
 
 The runtime's ExecutionCustody can only come from successful RunningExport.prepare:
 it binds exact committed start job/revision/unit/destination/ControlOwner to the
@@ -141,7 +159,7 @@ Nonrenewable ActionWindow gates writes/flush/prerename; already admitted syscall
 may finish. Control renewal cannot extend the action's original lifetime.
 
 Remaining gates include current-grant/policy revocation and CAS interleavings,
-pause-COMMIT faults, real old-worker exclusion, explicit cancel/resume and pin
+held-driver pause custody, real old-worker exclusion, explicit cancel/resume and pin
 terminal lifecycle, zero/multiple streams, job/output discovery, other selected
 formats, packaged M1, aged-queue/index fairness and mixed-workload capacity. Keep
 advancing through the selected product; no task completion from this scoped slice.
@@ -183,6 +201,7 @@ Ignored root-owned transfer-runtime.py / transfer-parking.py / transfer-busy.py
 under .research/implementation/export-execution require clean Git, exact bundle/
 tree/source manifests and fresh resource/space inventory. Pass reuse revision only
 when ALL product/build inputs match; omit it after any product/build change.
+transfer-pause-commits.py follows the same workflow.
 collect-runtime.py requires owned stopped-retained/PID0 containers, archives safe
 logs/JSON/ELF and rehashes source against Git. Keep original INCOMPLETE captures.
 No independently edited Tux source. Native logs are not GitHub-hosted CI results.

@@ -169,7 +169,9 @@ job revision. `resource_limit` identifies capacity refusal; other known refusals
 use `execution_refused`. [One installed parking/restart scenario](../implementation/evidence/p08-export-runtime-parking-native-20260924.json)
 passes. A [sufficient-cap signed-output and recovery counterpart](../implementation/evidence/p08-export-parking-completion-regression-native-20260924.json)
 also passes on the same product artifacts; broader refusal and authority scenarios
-remain under qualification.
+remain under qualification. [Pause-COMMIT interruption and restart](../implementation/evidence/p08-export-pause-commits-native-20260924.json)
+also passes: a committed pause stays paused after reply loss, and an uncommitted
+pause is retried under a new owner using the same unit.
 Paused jobs retain the original unit, immutable caps and export pin, and are
 excluded from automatic restart scans. Changing configuration does not enlarge
 that unit. Explicit resume/cancel controls are still required work. A Busy or
