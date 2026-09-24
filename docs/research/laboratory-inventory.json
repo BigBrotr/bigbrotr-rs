@@ -23211,5 +23211,50 @@
     "retention": "Preserve source, native seed identities, evidence and deliberately retained paused4 PG state. No compiler cache created.",
     "free_before": 135121199104,
     "free_after": 134764441600
+  },
+  "implementation_export_resume_schema_20260924": {
+    "status": "stopped-retained; scoped SQL PASS",
+    "resources": {
+      "source": "3e41cb78d0e619fc6f49c916559cf32fdfc38f7b",
+      "tree": "7a0cf3cda84a17533277c9464c465d0c75c5b162",
+      "owner": "13159e2871710785610424825fdaae77",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-execution-3e41cb7",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "5d14a4c760c7dfa108cf7cad6683bbbc6cd5fa3dca34b85be525f68eaa1f0c7b"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "cfa151ee3ef7c85a12456e94574f21c1a862c368c161b3fc53083380c845325f"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T15:32:27.011641+00:00",
+      "runtime_profile": null,
+      "adapter_profile": null,
+      "schema_profile": "resume",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "c2653ce1ad5549c9941e195e5dbf663f12201bbc994c341e3f884f4d7a0b42d6",
+      "postgres_id": "5d14a4c760c7dfa108cf7cad6683bbbc6cd5fa3dca34b85be525f68eaa1f0c7b",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "cfa151ee3ef7c85a12456e94574f21c1a862c368c161b3fc53083380c845325f",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-schema-native-20260924.json",
+    "capture": {
+      "files": 16,
+      "sha256": "decd1f38a8372e2fd33bbde0aeb829c3f12af12f317ff4950e6cc5706c20c378",
+      "source": "3e41cb78d0e619fc6f49c916559cf32fdfc38f7b",
+      "tree": "7a0cf3cda84a17533277c9464c465d0c75c5b162",
+      "source_files": 1214
+    },
+    "free_before": 134729986048,
+    "free_after": 134372995072,
+    "retention": "Preserve original SQL receipts, source/native seed identities and paused7 state with its committed resume receipt. No new compiler cache."
   }
 }

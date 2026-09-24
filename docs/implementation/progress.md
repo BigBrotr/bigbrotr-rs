@@ -20,30 +20,44 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEAD9d7bb214133855d70cc3be78ed9365c3b3acc849, tree
-4ed79468a086cf1331147b649a1f091a9908cf37 on main; private origin/main remains
-adee7b6e61e03ac9798a180f0c0a1e890eb29547. Three unpublished coherent candidates
-include geometry/evidence and resume identity/SQL RED fixture. Root owns pending
-0814 migration/catalog, SQL acceptance scenarios, RED evidence and checkpoint/
-inventory documentation. No other contributor or merge/rebase.
+Last verified HEAD3e41cb78d0e619fc6f49c916559cf32fdfc38f7b, tree
+7a0cf3cda84a17533277c9464c465d0c75c5b162 on main; private origin/main remains
+adee7b6e61e03ac9798a180f0c0a1e890eb29547. Four unpublished candidates through0814.
+Root owns the pending Rust resume adapter/receipt/prerequisite probe, real adapter
+fixture/profile, scoped SQL evidence and checkpoint/inventory documentation.
+No other contributor or merge/rebase.
 
-Next bounded action: qualify additive0814 with --resume-schema on a fresh clean
-Git candidate. The [9d7bb21 native RED](evidence/p08-export-resume-schema-red-20260924.json)
-confirmed unreceipted paused4→queued5 passes constraints, then deliberately rolls
-back. Its16payloads/1211current/1110seed Git source files and662prior/eight running
-resources are verified; tar2716090547ebd197bb3ba2c98e402f20e776def9ecb909ce99703605108610a7.
-Stopped-retained root runs/export-execution-9d7bb21, owner33bb4c90b0dc036b7c5f3f714d3ee5a1;
-ownedPID0/noOOM/network removed, bothDB0, no cleanup debt or compiler cache.
-Free after134764441600. This test does not claim an unreceipted committed transition.
+Next bounded action: qualify --resume-adapter from a clean exact Git candidate,
+with fresh native compilation after space/resource preflight. It consumes the
+real signed seed and scoped SQL paused7 fixture, then uses actual Rust Control
+and the application role. No HTTP/client/UI is exposed yet.
 
-Draft0814 binds same-unit resume to a new command/audit/detail and exact revision,
-requires current input/session authority and refuses further transitions in the
-same transaction even after immediate constraint flush. Root corrected trigger
-record dispatch before execution. Independent read-only AI found a session FK
-would prevent terminal-session cleanup; removed it, retaining only attribution.
-No further concrete source counterexample found in that bounded review. SQL engine
-positive/omission/rollback cases and session cleanup still pending; typed adapter,
-HTTP/client/UI and actual resumed signed completion remain unimplemented.
+The [3e41cb7 SQL boundary](evidence/p08-export-resume-schema-native-20260924.json)
+passes original unreceipted-transition refusal,11positive/omission/rollback cases,
+committed resume5→running6→paused7 and session deletion with receipt5 unchanged.
+0814 SHA c2ddfa56c2b79cc647b34586aee739cd08885e58c4cfa4c965ef7243149d9b1d
+is now applied evidence: corrections must be additive. Historical0501 unchanged.
+Root verified16payloads/1214current/1110seed Git files, digest and664prior/eight
+running resources; tar decd1f38a8372e2fd33bbde0aeb829c3f12af12f317ff4950e6cc5706c20c378.
+Stopped-retained runs/export-execution-3e41cb7 owner13159e2871710785610424825fdaae77;
+ownedPID0/noOOM/network removed, bothDB0, no cleanup debt/cache; free134372995072.
+This is postgres-role SQL evidence, not Rust/HTTP or artifact output acceptance.
+
+The [9d7bb21 RED](evidence/p08-export-resume-schema-red-20260924.json) preserved
+unreceipted paused4→queued5 passing constraints then deliberately rolling back.
+Stopped-retained runs/export-execution-9d7bb21 owner33bb4c90b0dc036b7c5f3f714d3ee5a1,
+16payloads/1211current/1110seed sources,662prior/eight running verified; tar
+2716090547ebd197bb3ba2c98e402f20e776def9ecb909ce99703605108610a7.
+BothDB0/ownedPID0/noOOM/network removed, free134764441600. No unreceipted commit claim.
+
+The new adapter resolves authenticated actor/key/body history before current
+input/destination/state checks; new acceptance locks consumer before job/source,
+checks original destination and CAS, then commits the receipt. Unknown COMMIT
+poisons Control and retains caller destination custody until driver join. Actual
+native qualification remains next. The existing export startup probe also checks
+SELECT on0814's receipt table when present, because its transition guard needs
+that read for existing execution; no implicit grants. Review and engine tests
+must confirm this integration before the next product consumer.
 
 The [8743fd8 geometry follow-up](evidence/p09-skip-link-geometry-incomplete-20260924.json)
 is stopped-retained INCOMPLETE, owner2d2445d06a8106c48ff9d534eeeefa44,
@@ -271,8 +285,8 @@ locking and positive output exclusion remain required. Additive migration after0
 Root's ResumeExportCommand fingerprint/closed parsing has two Mac tests passing,
 preceded by missing-type compile RED; Clippy passed. Independent Python vectors
 bind four IDs and three u64 revisions. This is identity only, not acceptance.
-SQL RED is now executed as above; new0814 acceptance remains pending.
-Adapter/HTTP/client/UI remain unimplemented.
+SQL RED is now executed as above; new0814 SQL acceptance is scoped PASS as above.
+Rust adapter is under native qualification; HTTP/client/UI remain unimplemented.
 Independent AI read the action mapping, not these new tests or SQL fixture.
 
 ## Tux ownership and maintenance

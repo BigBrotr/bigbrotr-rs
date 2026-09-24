@@ -1,4 +1,5 @@
 //! Isolated real adapter/native/output fixture, not the installed scheduler.
+mod resume;
 mod rollback;
 use bigbrotr::{
     export::{
@@ -130,7 +131,7 @@ async fn main() {
     let mode = std::env::args().nth(1).unwrap();
     assert!(matches!(
         mode.as_str(),
-        "migrate" | "denied" | "run" | "resolve" | "rollback"
+        "migrate" | "denied" | "run" | "resolve" | "rollback" | "resume" | "resume-denied"
     ));
     if mode == "migrate" {
         let (mut admin, driver) = connection("bbpub_control_normal", "postgres").await;
@@ -165,6 +166,10 @@ async fn main() {
     )
     .await
     .unwrap();
+    if matches!(mode.as_str(), "resume" | "resume-denied") {
+        resume::run(owner, driver, mode == "resume-denied").await;
+        return;
+    }
     if mode == "denied" {
         assert_eq!(
             owner.require_export_execution().await,

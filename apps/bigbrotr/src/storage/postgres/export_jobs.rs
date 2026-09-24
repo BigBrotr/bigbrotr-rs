@@ -47,7 +47,15 @@ impl ControlSession {
             .await.map_err(backend)?.try_get(0).map_err(metadata)?;
         let valid = if present {
             let valid: bool = tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) AND has_any_column_privilege(CURRENT_USER,'control.source_streams','UPDATE') AND has_function_privilege(CURRENT_USER,'control.export_command_digest(control.export_jobs,control.management_commands)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.command_u64_bytes(control.u64)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.scope_pin_live(bytea,bytea,numeric,bytea)','EXECUTE') FROM (VALUES ('control.jobs',ARRAY['SELECT','INSERT','UPDATE']),('control.job_input_bounds',ARRAY['SELECT','INSERT']),('control.export_jobs',ARRAY['SELECT','INSERT']),('control.management_commands',ARRAY['SELECT','INSERT']),('control.management_audit',ARRAY['SELECT','INSERT']),('control.scope_grants',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
-            valid
+            let resume_schema: bool = tx.query_one("SELECT EXISTS(SELECT 1 FROM control.schema_versions WHERE engine='postgres-control' AND migration=814)", &[]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
+            // The additive transition guard reads this ledger even for existing
+            // execution. Refuse missing grants before accepting new job work.
+            let resume_guard = if resume_schema {
+                tx.query_one("SELECT has_table_privilege(CURRENT_USER,'control.export_resume_commands','SELECT')", &[]).await.map_err(backend)?.try_get::<_,bool>(0).map_err(metadata)?
+            } else {
+                true
+            };
+            valid && resume_guard
         } else {
             false
         };

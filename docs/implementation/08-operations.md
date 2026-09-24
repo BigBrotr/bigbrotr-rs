@@ -316,8 +316,11 @@ historical acceptance before dispatch; identical retry after a second pause must
 return the first receipt without requeueing. Practical cases must include absent
 effects/forged transition, terminal/other-actor refusal, changed key/body, revoked
 grants, expiry after a lock wait, both COMMIT-loss sides and actual same-unit
-signed completion after permission restoration. The HTTP/client/UI consumer and
-its actual browser journey follow the persistent boundary; none is yet qualified.
+signed completion after permission restoration. The [SQL receipt boundary](evidence/p08-export-resume-schema-native-20260924.json)
+now has scoped PostgreSQL evidence for atomic omissions, rollback, same-unit
+commit and disposable session cleanup. The actual Rust application-role adapter
+is under qualification; HTTP/client/UI and actual signed completion follow this
+persistent boundary and are not yet qualified.
 
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending

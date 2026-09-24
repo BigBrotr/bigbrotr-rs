@@ -152,6 +152,16 @@ impl ResumeExportCommand {
     }
 }
 
+/// Immutable acceptance only, even when a later worker has paused again.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ResumeExportReceipt {
+    pub command_key: CommandKey,
+    pub job_id: JobId,
+    pub job_revision: Revision,
+    pub accepted_at_us: i64,
+    pub created: bool,
+}
+
 /// Redacted operational metadata of the authenticated actor's own export.
 /// This neither refreshes input grants nor authorizes artifact access or writes.
 pub struct JobObservation {

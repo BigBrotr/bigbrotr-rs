@@ -1,0 +1,164 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "PASS_SCOPED",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "source": "3e41cb78d0e619fc6f49c916559cf32fdfc38f7b",
+  "tree": "7a0cf3cda84a17533277c9464c465d0c75c5b162",
+  "environment": {
+    "host": "tux",
+    "target": "Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-3e41cb7/capture",
+    "files": 16,
+    "sha256": "decd1f38a8372e2fd33bbde0aeb829c3f12af12f317ff4950e6cc5706c20c378",
+    "source": "3e41cb78d0e619fc6f49c916559cf32fdfc38f7b",
+    "tree": "7a0cf3cda84a17533277c9464c465d0c75c5b162",
+    "source_files": 1214
+  },
+  "scope": "SQL resume receipt, transition, rollback and same-unit custody only; no Rust API or artifact output execution qualification",
+  "migration": {
+    "id": 814,
+    "sha256": "c2ddfa56c2b79cc647b34586aee739cd08885e58c4cfa4c965ef7243149d9b1d",
+    "original_0501_sha256": "14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861",
+    "execution": "psql as postgres, NOT current Rust migrator/application-role qualification"
+  },
+  "results": {
+    "unreceipted": {
+      "code": "23514",
+      "phase": "update",
+      "message": "paused export resume requires its atomic command receipt",
+      "unchanged": true
+    },
+    "cases": [
+      {
+        "code": "23514",
+        "name": "early_execution",
+        "phase": "command",
+        "message": "export resume must commit before another transition"
+      },
+      {
+        "code": "23503",
+        "name": "missing_audit",
+        "phase": "command",
+        "message": "insert or update on table \"management_commands\" violates foreign key constraint \"management_commands_audit_id_dataset_id_actor_id_action_ex_fkey\""
+      },
+      {
+        "code": "23503",
+        "name": "missing_command",
+        "phase": "command",
+        "message": "insert or update on table \"export_resume_commands\" violates foreign key constraint \"export_resume_commands_actor_id_request_key_fkey\""
+      },
+      {
+        "code": "23514",
+        "name": "missing_detail",
+        "phase": "command",
+        "message": "paused export resume requires its atomic command receipt"
+      },
+      {
+        "code": "23514",
+        "name": "missing_transition",
+        "phase": "command",
+        "message": "export resume requires exact atomic command audit and queued revision"
+      },
+      {
+        "code": "23514",
+        "name": "orphan_audit",
+        "phase": "command",
+        "message": "export resume audit is not its command receipt"
+      },
+      {
+        "code": "BB099",
+        "name": "positive",
+        "phase": "accepted-rollback",
+        "message": "accepted resume rollback"
+      },
+      {
+        "code": "23514",
+        "name": "retained_reason",
+        "phase": "command",
+        "message": "paused export resume requires its atomic command receipt"
+      },
+      {
+        "code": "23514",
+        "name": "rewrite_receipt",
+        "phase": "command",
+        "message": "immutable control history cannot be changed"
+      },
+      {
+        "code": "23514",
+        "name": "stale_revision",
+        "phase": "command",
+        "message": "resume requires the original actor and paused committed unit revision"
+      },
+      {
+        "code": "23514",
+        "name": "wrong_digest",
+        "phase": "command",
+        "message": "export resume requires exact atomic command audit and queued revision"
+      }
+    ],
+    "committed": {
+      "state": "paused",
+      "revision": "7",
+      "accepted_revision": "5",
+      "resume_commands": 1,
+      "units": 1,
+      "artifacts": 0,
+      "pin_active": true
+    },
+    "session_cleanup": {
+      "cleanup_session_removed": true,
+      "resume_receipt_unchanged": true
+    },
+    "independent_command": {
+      "seed": {
+        "dataset": "01010101010101010101010101010101",
+        "actor": "10101010101010101010101010101010",
+        "job": "9ac00f679d399afb60171c98509f7c4a",
+        "job_revision": "4",
+        "config_revision": "1",
+        "policy_revision": "1"
+      },
+      "bytes_hex": "62696762726f74722f6578706f72742d726573756d652f31000101010101010101010101010101010110101010101010101010101010101010e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e49ac00f679d399afb60171c98509f7c4a000000000000000400000000000000010000000000000001",
+      "sha256": "42bfd7444b70e9607d43a37192ea228b84c88427b7148ce9bf24703faf23c4b2"
+    }
+  },
+  "review": {
+    "root": "Verified all16payload hashes/sizes,1214current/1110seed Git files, independent command digest, unchanged RED trial identity and all664prior container identity/lifecycle/mount/network/restart records. Read full new DDL/fixture and observed SQL output.",
+    "independent_ai": "Read-only schema review found a permanent session FK would block terminal session deletion; removed before3e41cb7. Split trigger tuple dispatch before engine execution. No other concrete counterexample in inspected0001/0007/0017/0501/0806/0813/0814 boundary; AI did not run tests."
+  },
+  "cleanup": {
+    "state": "stopped-retained",
+    "owner": "13159e2871710785610424825fdaae77",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-execution-3e41cb7",
+    "owned_containers": 2,
+    "all_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "unrelated_running": 8,
+    "free_before": 134729986048,
+    "free_after": 134372995072
+  },
+  "remaining": [
+    "Actual Rust adapter, application-role prerequisites and installed HTTP/client/UI",
+    "Original-actor/session/grant/policy/CAS lock interleavings and expiry",
+    "Both ambiguous COMMIT sides and historical retries through fresh process",
+    "Migration incompatible-row refusal through actual migrator",
+    "Actual same-unit signed output after permission restoration",
+    "No workload/capacity/release qualification"
+  ]
+}

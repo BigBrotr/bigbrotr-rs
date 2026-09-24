@@ -370,7 +370,8 @@ prior checksums or inventing historical resume records. Future paused→queued
 transitions require an atomic command, audit and exact next revision; the queued
 receipt must commit before execution. Paused rows without their retained original
 unit/pin refuse55000 and require explicit recovery. Session identity is attribution,
-not a permanent foreign key to disposable credentials. Runtime provisioning will
-need SELECT/INSERT on control.export_resume_commands and its invoker functions;
+not a permanent foreign key to disposable credentials. Existing execution needs SELECT on control.export_resume_commands because the
+new transition guard reads it; startup checks this when0814 is present. The
+resume adapter additionally needs INSERT and its invoker functions;
 no UPDATE/DELETE/TRUNCATE. This new boundary is under native qualification; the
 resume API/client is not implemented or advertised by migration presence.
