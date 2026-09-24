@@ -23563,5 +23563,49 @@
       "source_files": 1230
     },
     "retention": "Preserve original paused7 and committed queued8 observations, all SQL states/receipts/logs/manifests and reused4a3c4ce ELF. No build cache created; no resource retirement."
+  },
+  "implementation_export_resume_custody_20260924": {
+    "status": "stopped-retained; scoped installed resume destination custody PASS",
+    "resources": {
+      "source": "0550da3d4153e7e33b5dc171cd4131f4c42faa94",
+      "tree": "8e83d716600686b3d0ec2d9544b11ec3229b6bc7",
+      "owner": "b7b8f846442dbf8a9aecff85eb43e022",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-0550da3",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "357e62d55830f704fbf0a827b14c1731933e1b40d2b8093dda446d20eba3cc3e"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "4bdc237dc840f84cbb9b6a183e381592bbb43bf77a4923f4208a4ad151eb6227"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T16:58:40.708403+00:00",
+      "runtime_profile": "resume-custody",
+      "adapter_profile": null,
+      "schema_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+      "network_id": "e5a689583de8939ad3f9a17bad4c59ed0eb671f43f5397b773c4080a82e354ac",
+      "postgres_id": "357e62d55830f704fbf0a827b14c1731933e1b40d2b8093dda446d20eba3cc3e",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "4bdc237dc840f84cbb9b6a183e381592bbb43bf77a4923f4208a4ad151eb6227",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "evidence": "docs/implementation/evidence/p08-export-resume-custody-native-20260924.json",
+    "capture": {
+      "files": 27,
+      "sha256": "3856e8f7ab14c54f3b6a6fa83d15bc292ea420234718449339dd078bd3492973",
+      "source": "0550da3d4153e7e33b5dc171cd4131f4c42faa94",
+      "tree": "8e83d716600686b3d0ec2d9544b11ec3229b6bc7",
+      "source_files": 1232
+    },
+    "retention": "Preserve original samples/gate, SQL states/receipts, source/tool identities and reused4a3c4ce ELF; no new cache. No resource retirement."
   }
 }

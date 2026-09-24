@@ -324,9 +324,11 @@ have scoped evidence; the typed client has local contract checks. [Actual signed
 completion after restored permission](evidence/p08-export-resume-output-native-20260924.json)
 also passes with the same unit/artifact and exact bytes across restart.
 [Installed resume COMMIT loss](evidence/p08-export-resume-commits-native-20260924.json)
-passes on both sides of server commit with original-key resolution. Held-driver/
-checker custody, expiry scenarios and UI/CLI consumers remain required before
-completing this step.
+passes on both sides of server commit with original-key resolution.
+[Sampled held-driver custody](evidence/p08-export-resume-custody-native-20260924.json)
+also passes for actual SIGTERM with a pending Control reply. Blocked-checker and
+expiry scenarios plus real client/UI/CLI consumers remain required before completing
+this step.
 
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending

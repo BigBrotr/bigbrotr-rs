@@ -1,0 +1,238 @@
+{
+  "format": "bigbrotr-practical-evidence/1",
+  "status": "PASS_SCOPED",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "source": "0550da3d4153e7e33b5dc171cd4131f4c42faa94",
+  "tree": "8e83d716600686b3d0ec2d9544b11ec3229b6bc7",
+  "runtime_source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+  "scope": "Actual installed resume COMMIT completed on PostgreSQL with reply held; real pidfd SIGTERM, sampled destination exclusion while actual Control socket remains pending, bounded parent termination. Native export execution disabled; no new compilation or causal mutant.",
+  "environment": {
+    "host": "tux",
+    "target": "Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "lockfile_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-0550da3/capture",
+    "files": 27,
+    "sha256": "3856e8f7ab14c54f3b6a6fa83d15bc292ea420234718449339dd078bd3492973",
+    "source": "0550da3d4153e7e33b5dc171cd4131f4c42faa94",
+    "tree": "8e83d716600686b3d0ec2d9544b11ec3229b6bc7",
+    "source_files": 1232
+  },
+  "artifacts": {
+    "bigbrotr": "6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "results": {
+    "sampling": {
+      "total": 105,
+      "supported": 100,
+      "interval_seconds": 1.8897350248880684,
+      "largest_gap_seconds": 0.019682120066136122,
+      "violations": 0,
+      "signal_margin_seconds": 4.884997498244047,
+      "terminal_elapsed_ms": 2004.614
+    },
+    "destination": {
+      "path": "/out/signed_normal/export-destination",
+      "device": 66306,
+      "inode": 32655380
+    },
+    "socket": [
+      "162052341"
+    ],
+    "parent_start_ticks": "365145144",
+    "held": {
+      "event": "held",
+      "mode": "hold-reply",
+      "target": "control-export-resume",
+      "connections": 1,
+      "bytes": 195361,
+      "frames": 3700,
+      "data_queries": 1,
+      "data_commits": 1,
+      "server_complete": 1,
+      "client_complete": 0,
+      "faults": 0,
+      "owner_requests": 0,
+      "owner_forwarded": 0,
+      "owner_complete": 0,
+      "guard_rejections": 0,
+      "serialization_rejections": 0,
+      "rejection_sequence": [],
+      "auth_finals_omitted": 0,
+      "frontend_queries": 217,
+      "coordinator_inserts": 0,
+      "pin_claim_injections": 0,
+      "pin_rejections": [],
+      "session_mutations_complete": 0,
+      "reader_queries": 0,
+      "capture_verify_requests": 0,
+      "stage": "reply",
+      "backend_pid": 535
+    },
+    "held_state": {
+      "owner": {
+        "resource": "59a195e91187a23b49f6f2de9e4d9a11",
+        "epoch": "5",
+        "incarnation": "e86beadc47a5d7b35b185e9b0f758aa1",
+        "pid": 535,
+        "start": "2026-09-24T16:59:57.334421+00:00",
+        "present": true
+      },
+      "catalog_backends": 0
+    },
+    "after_signal": {
+      "owner": {
+        "resource": "59a195e91187a23b49f6f2de9e4d9a11",
+        "epoch": "5",
+        "incarnation": "e86beadc47a5d7b35b185e9b0f758aa1",
+        "pid": 535,
+        "start": "2026-09-24T16:59:57.334421+00:00",
+        "present": true
+      },
+      "catalog_backends": 0
+    },
+    "terminal": {
+      "exit": 4,
+      "response": {
+        "closed": "RemoteDisconnected"
+      },
+      "lock_available": true,
+      "parent_present": false,
+      "stderr": "error: export resume cancelled; Control outcome unresolved\n",
+      "elapsed_ms": 2004.614
+    },
+    "terminal_owner": {
+      "owner": {
+        "resource": "59a195e91187a23b49f6f2de9e4d9a11",
+        "epoch": "5",
+        "incarnation": "e86beadc47a5d7b35b185e9b0f758aa1",
+        "pid": 535,
+        "start": "2026-09-24T16:59:57.334421+00:00",
+        "present": false
+      },
+      "catalog_backends": 0
+    },
+    "committed_receipt": {
+      "action": "job.export.resume",
+      "actor_id": "\\x10101010101010101010101010101010",
+      "audit_id": "\\x00614fad29fb2dcc4b9f3d5660b0173b",
+      "dataset_id": "\\x01010101010101010101010101010101",
+      "request_key": "\\xf4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4",
+      "accepted_at_us": 1790269197489072,
+      "authority_mode": null,
+      "request_digest": "\\x9788f31ff023dabec24f4645baa28121f3a5dc9f013ead5a69c0850ef0b6517b",
+      "document_digest": null,
+      "policy_revision": 2,
+      "expected_config_revision": 1
+    },
+    "proxy_terminal": {
+      "event": "terminal",
+      "mode": "hold-reply",
+      "target": "control-export-resume",
+      "connections": 1,
+      "bytes": 195361,
+      "frames": 3700,
+      "data_queries": 1,
+      "data_commits": 1,
+      "server_complete": 1,
+      "client_complete": 0,
+      "faults": 0,
+      "owner_requests": 0,
+      "owner_forwarded": 0,
+      "owner_complete": 0,
+      "guard_rejections": 0,
+      "serialization_rejections": 0,
+      "rejection_sequence": [],
+      "auth_finals_omitted": 0,
+      "frontend_queries": 217,
+      "coordinator_inserts": 0,
+      "pin_claim_injections": 0,
+      "pin_rejections": [],
+      "session_mutations_complete": 0,
+      "reader_queries": 0,
+      "capture_verify_requests": 0,
+      "unexpected": 0
+    },
+    "preservation": "Original paused7/xmin910 becomes queued8; new resume detail/common command/audit/job share xmin946. Digest/actor/dataset/key/job/revisions/time and owner match independent oracle. All original source bounds/unit/selection/retention rows and xmin unchanged; one new command only. Old receipts retained, no fresh native reader or artifact completion.",
+    "sql": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    }
+  },
+  "review": {
+    "root": {
+      "status": "VERIFIED_SCOPED_PASS",
+      "source": "0550da3d4153e7e33b5dc171cd4131f4c42faa94",
+      "runtime_source": "4a3c4ce24f2bc9e6c705c03a2fff9dd0e650883b",
+      "counts": {
+        "out/build/source-manifest.json": 1232,
+        "artifact-source-manifest.json": 1110,
+        "runtime-source-manifest.json": 1223
+      },
+      "payloads": 27,
+      "preexisting": 678,
+      "free_before": 128358465536,
+      "free_after": 127959240704,
+      "artifacts": {
+        "bigbrotr": "6a0a43fbf1b2c3756a39c0ccbb0477c1ab5b4fc8ce4640d323859155132f379f",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "sampling": {
+        "total": 105,
+        "supported": 100,
+        "interval_seconds": 1.8897350248880684,
+        "largest_gap_seconds": 0.019682120066136122,
+        "violations": 0,
+        "signal_margin_seconds": 4.884997498244047,
+        "terminal_elapsed_ms": 2004.614
+      }
+    },
+    "static": "Independent AI found inherited seed password mismatch; root found wrong inherited destination path. Both corrected before native run. Shared root primitive has Mac actual two-directory flock discriminator, and extracted SQL oracle replays310 with four malformed-state refusals. No new negative native mutant; prior acceptance mutant is not causal evidence for this resume path.",
+    "independent_ai": "Offline read-only AI independently verified tar/27payloads,1232/1223/1110Git files, full product/build equality and both ELF; replayed105samples/100supported, root identity, actual socket/process/terminal timing, SQL digest/rows/xmin and678prior resources. No concrete discrepancy. Retains sampled-only/no-causal-mutant/no-Catalog-join-call boundaries. No tests, edits or remote access."
+  },
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-0550da3",
+    "owner": "b7b8f846442dbf8a9aecff85eb43e022",
+    "state": "stopped-retained",
+    "all_owned_pid_zero_no_oom": true,
+    "network": "removed after owner/no-endpoint audit",
+    "errors": [],
+    "sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "preexisting": 678,
+    "unrelated_running": 8,
+    "free_before": 128358465536,
+    "free_after": 127959240704
+  },
+  "remaining": [
+    "Samples support only the observed live-process/socket intervals, not continuous custody or every possible driver schedule",
+    "Catalog had zero backends before resume because native execution was disabled; no catalog join-call observation",
+    "No negative mutated resume executable in this run; previous acceptance mutant remains separate",
+    "Blocked destination checker, natural session expiry and lock-wait/revocation interleavings",
+    "No resumed output/retry here; separate30df and310 evidence owns those scenarios",
+    "Command/audit observations are resume-only; unresolved prior leases/Control remain retained obligations",
+    "TypeScript real HTTP, browser/CLI consumers, full selected product, packaged/release journeys and native arm64 remain required"
+  ]
+}

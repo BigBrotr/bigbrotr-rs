@@ -141,8 +141,11 @@ after restart/revocation. The reader is disabled in that fixture. A separate
 [installed resume COMMIT-loss scenario](../implementation/evidence/p08-export-resume-commits-native-20260924.json)
 checks both unforwarded COMMIT and server-completed reply loss, bounded fail-stop
 and original-key resolution after restart without destination/input grants.
-Blocked destination work, held-driver custody and the real TypeScript/browser
-consumer remain required acceptance; browser controls and the CLI are unfinished. A separate [installed
+[Sampled resume destination custody](../implementation/evidence/p08-export-resume-custody-native-20260924.json)
+also retains root exclusion during an actual pending Control reply and SIGTERM;
+the observed parent exits in about two seconds. This is a sampled interval, not
+a continuous proof for every schedule. Blocked destination checker work and the
+real TypeScript/browser consumer remain required acceptance; browser controls and the CLI are unfinished. A separate [installed
 signed-resume scenario](../implementation/evidence/p08-export-resume-output-native-20260924.json)
 restores a revoked input grant through authenticated HTTP, resumes the original
 unit and verifies exact signed bytes plus complete inventory. Identical retry
