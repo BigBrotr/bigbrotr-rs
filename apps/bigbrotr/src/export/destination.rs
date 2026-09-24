@@ -42,7 +42,7 @@ use DestinationError as Error;
 /// Held through the destination's actual consumers. The marker is a storage
 /// binding only, never a dataset/scope grant, publication or write authority.
 pub struct LocalDestination {
-    directory: File,
+    pub(super) directory: File,
     root: PathBuf,
     dataset: DatasetId,
     id: DestinationId,
@@ -238,7 +238,7 @@ fn directory(path: &Path) -> Result<File, Error> {
     }
     Ok(File::from(descriptor))
 }
-fn private(meta: &std::fs::Metadata, directory: bool) -> Result<(), Error> {
+pub(super) fn private(meta: &std::fs::Metadata, directory: bool) -> Result<(), Error> {
     if meta.uid() != rustix::process::geteuid().as_raw()
         || if directory {
             !meta.is_dir() || meta.mode() & 0o7777 != 0o700

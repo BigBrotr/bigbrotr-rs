@@ -8,6 +8,10 @@ license.workspace = true
 repository.workspace = true
 publish = false
 
+[[example]]
+name = "export-files-probe"
+path = "../../experiments/export-files/probe.rs"
+
 [dependencies]
 axum.workspace = true
 hyper.workspace = true

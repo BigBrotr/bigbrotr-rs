@@ -1,0 +1,200 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED_MAC_FILES_ONLY",
+  "source": {
+    "base_revision": "0e2f196e4e70414d73a1c6b2ab3d93a6aa222443",
+    "state": "Root-owned worktree over this base; final exact inputs below. Linux recipes are unexecuted candidates.",
+    "files_sha256": {
+      "apps/bigbrotr/src/export/files.rs": "fb2d90d0ad52128d5aafd2527698bde68e944f1886e7cdef23b5f42cb900905b",
+      "apps/bigbrotr/src/export/destination.rs": "a50b95c8f07e05f229a2613df07682520558d063b89dcb264173bad8faeea6cc",
+      "apps/bigbrotr/src/export/mod.rs": "81bace387f7ac2af200b041d072cd576a420d1f2771ae612932d0161fca055c5",
+      "apps/bigbrotr/src/export/jsonl.rs": "34abb597cbc146baeccbfed6f3aca045d7d58e0cfbed7e7b55b812b599f054db",
+      "apps/bigbrotr/src/export/manifest.rs": "023aa4d100dd3356f8c5ffe6cf58d0d9ab17a09d38bd2be3dd82f43d9a655c39",
+      "apps/bigbrotr/tests/export_files.rs": "1b04b71b3ddc251d82d0e9eadd96a860a06ce2be93f3ea36d0e7cbba85972952",
+      "apps/bigbrotr/Cargo.toml": "5b4458305fc4e34b90bdd789c20a74921d3b9da07f44566056787652c75c0cde",
+      "experiments/export-files/probe.rs": "1eb69ef9c10ed43c56f08daed0d9e04115be3aa3f3c3a8efce1259b65c5bb358",
+      "experiments/export-files/cases.py": "08bbbacf939de098f11f0d8e31f582775cd295042b3066f6c28049ccd9e6c28f",
+      "experiments/export-files/native.py": "7cf45c0a99057cacad9148df9630e41b743bc8cdbaf2ca709bb6a78a089c861c",
+      "experiments/export-files/lab.py": "cbebd72ddbf489bdf7a4e075d2445a208e466a0aebeaa4aed3119e265be33a58",
+      "tests/fixtures/exports/signed-jsonl-manifest.json": "334fda0aae6e281465132475f20d836e9b2ba89f0c832ccd94fda0d3622eebb1",
+      "tests/fixtures/protocol/signed-extremes.json": "dfe738600b4b6df4bce59c7a44cfdfc9222c618d518301d8b7fab589d3ac7ec7",
+      "Cargo.lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    }
+  },
+  "environment": {
+    "host": "macOS-26.5.2-arm64-arm-64bit",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "dependencies": {
+      "status": "SOURCE_INSPECTION_ONLY",
+      "dependency": "rustix1.1.5",
+      "crate_sha256": "891efababe418670775f199f0d233d84843c227a0949a883ce15b37c78d6629d",
+      "verified_local_source_sha256": {
+        "src/fs/at.rs": "ebc1b1d64e6e41c793454025293bcd018934f97f72e642cd32a2dda1487bd760",
+        "src/backend/libc/fs/types.rs": "354d2ffe66965986c6062efd8bf630a6f6f3710e690ccd773b5c2199719602ab",
+        "src/backend/libc/fs/syscalls.rs": "965e467c1badf61755656f28e462a9fb29a4c686e10b12e0e4fa3a22e4431a86",
+        "src/backend/linux_raw/fs/syscalls.rs": "b2d13695ec2f5248b3b030d6ccbdf054897e4ce01ec88b2f856d16d886d98840",
+        "src/fs/statx.rs": "49023d382193d3041c330b5ef54e6cefe8c1f90280134d141a6f7d4274c43ea4"
+      },
+      "inspection": [
+        "fs/at.rs250..323: rename wrappers and flags dispatch",
+        "libc/fs/types.rs488..552: Linux NOREPLACE/EXCHANGE and Apple RENAME_EXCL/RENAME_SWAP",
+        "libc/fs/syscalls.rs586..627: Apple dispatch; no unflagged fallback for flags or retained dirfds",
+        "linux_raw/fs/syscalls.rs1164..1181: direct renameat2 flags dispatch",
+        "fs/statx.rs20..155 and198..220: MNT_ID and stx_mask, descriptor EMPTY_PATH dispatch",
+        "fs/at.rs416..445: chmodat Linux SYMLINK_NOFOLLOW unsupported; only normalize exclusively created name under private namespace custody"
+      ],
+      "official_sources": [
+        "https://docs.rs/rustix/1.1.5/rustix/fs/fn.renameat_with.html",
+        "https://man7.org/linux/man-pages/man2/rename.2.html",
+        "https://man7.org/linux/man-pages/man2/statx.2.html",
+        "https://docs.rs/rustix/1.1.5/rustix/fs/fn.chmodat.html"
+      ],
+      "consequence": "Fixed per-unit staging + permanent mutex; compare expected same-unit files before cleanup; fresh synced inodes and NOREPLACE/EXCHANGE + root sync. Linux statx mount identity required to reject same-device bind aliases; no qualified Linux execution yet."
+    }
+  },
+  "executed": [
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "export::files::tests"
+      ],
+      "exit_code": 0,
+      "log": ".research/implementation/export-files/final-flush-tests.log",
+      "sha256": "64ae1a9ddc38e8b5e5a7df22482a7728056993bf815ee31ff71dc534359b1506"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "export_files"
+      ],
+      "exit_code": 0,
+      "log": ".research/implementation/export-files/final-filesystem-tests.log",
+      "sha256": "c32266277b21f18fef9afdb221a374eee59ed1f7f94b34af4fa132f3a901b8bf"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--example",
+        "export-files-probe"
+      ],
+      "exit_code": 0,
+      "log": ".research/implementation/export-files/final-probe-build.log",
+      "sha256": "e81d042cb70c74832778247c001cf2057c8ec407090ab6e845ad5f5885ed7307"
+    },
+    {
+      "command": [
+        "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/targets/product/debug/examples/export-files-probe",
+        "initialize",
+        "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/implementation/export-files/mac-probe-final/destination"
+      ],
+      "exit_code": 0,
+      "result": {
+        "initialized": true
+      }
+    },
+    {
+      "command": [
+        "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/targets/product/debug/examples/export-files-probe",
+        "write",
+        "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/implementation/export-files/mac-probe-final/destination"
+      ],
+      "exit_code": 0,
+      "result": {
+        "data_bytes": 334,
+        "data_sha256": "2006c3bc3473e92f0bcf8e5b8905bc0784ce18e13b00b31ab095bfb469f0f06f",
+        "manifest_bytes": 1321,
+        "manifest_sha256": "334fda0aae6e281465132475f20d836e9b2ba89f0c832ccd94fda0d3622eebb1"
+      }
+    }
+  ],
+  "additional_executed": {
+    "clippy": {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--tests",
+        "--example",
+        "export-files-probe",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "Tool output observed; not separately captured"
+    },
+    "negative_flush": {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "export::files::tests::cancellation_stops_new_writes_inside_a_partial_buffer_flush"
+      ],
+      "exit_code": 101,
+      "source_sha256": "91451cc8233614dfdf6c7e9bbbfa8e02439623a7bfbf62c354d44303441077ef"
+    },
+    "negative_log": {
+      "path": ".research/implementation/export-files/negative-flush.log",
+      "sha256": "05e838d52cfb2dca71daab9ec3d0532f4ba32bccf65bbaed2211b13d9deb97e5"
+    },
+    "original_red": "Four initial filesystem tests failed on the stub after fixing a test lifetime compile error. Output observed in tools, not captured.",
+    "corrected_test_selection": "An earlier combined cargo test command with the export name filter ran the one unit test and zero filesystem tests. It is not filesystem evidence. The final separate unfiltered invocation executes all seven tests; both original and corrected logs are retained.",
+    "recipe_validation": "Python syntax checked only. Initial probe failed to compile because SourceCut deliberately has no Deserialize; fixed by explicit typed fixture construction before the final build/probe."
+  },
+  "observations": [
+    "Seven real Mac file tests: complete literal manifest/signed data; repeated fresh-inode same-unit exchange with at most one staging directory; all four incomplete staging subsets; preservation of differing final/staged bytes and unknown entries; symlink/hardlink refusal; shared custody excludes another writer until last Arc; original root/unit/lock conflicts; byte caps and pre-cancellation; explicit empty file; actual child umask0777 and existing-mode refusal.",
+    "Review identified a buffer-flush cancellation gap. Captured passthrough writer RED accepts additional short writes after cancellation. Actual CancelOutput gate now sits below BufWriter; the final unit test stops after exactly one byte, reports an error and retains the unsent buffer without Drop writes.",
+    "The final research executable initialized a real private Mac destination and wrote events.jsonl334bytes SHA2006c3bc3473e92f0bcf8e5b8905bc0784ce18e13b00b31ab095bfb469f0f06f and manifest.json1321bytes SHA334fda0aae6e281465132475f20d836e9b2ba89f0c832ccd94fda0d3622eebb1. Independently authored manifest bytes and frozen signed event digest compared exactly."
+  ],
+  "local_artifacts": {
+    "root": ".research/implementation/export-files/mac-probe-final",
+    "probe_sha256": "f774b42c322fb609b6d91233be929e3d6d05b6531bb9f4f8fcfe075c52fd1f6f"
+  },
+  "review": {
+    "kind": "Independent AI static counterexample review plus root complete changed code/contract/fixture review",
+    "findings": [
+      "Prefer same-parent whole-directory publication over independently replaced files.",
+      "Fresh identical EXCHANGE required after ambiguous prior root sync; NOREPLACE alone cannot recover it.",
+      "Use fixed staging to bound crash accumulation; all cleanup subsets remain retryable.",
+      "Reject root/final/staging inode aliases and Linux bind mounts before cleanup.",
+      "Normalize only new names for restrictive umask; never repair existing permission conflicts.",
+      "Flush cancellation guard moved below buffering with executed RED/GREEN.",
+      "Planned kill cases now require the expected signal exit, no tracer stderr and an actual SIGKILL terminal trace, in addition to pidfd/death checks. Linux execution still NOT_RUN."
+    ]
+  },
+  "limitations": [
+    "No actual SQL execution claim/checkpoint, artifact inventory, scheduler, current job authority, pinned native observation or runtime cancellation/driver join exercised. No P08 task/step or M1 completed.",
+    "Linux statx/renameat2/mount branch and planned EIO, actual RLIMIT_FSIZE partial write, ENOSPC, process-kill and bind-alias cases NOT_RUN at this checkpoint. Mac rename and ordinary sync success is not native Linux or power-loss qualification.",
+    "Injected EIO substitutes syscall result, not physical writeback loss. SIGKILL does not qualify power loss. These limits apply also when the planned native cases are later executed.",
+    "Memory buffers and two-copy logical file cap are bounded by construction; no peak RSS, native memory, mixed load or physical disk-quota measurement.",
+    "Conflict recovery preserves differing/unknown bytes; it is not automatic corruption repair. Crash before new permission normalization may require explicit operator recovery. Same-UID/root hostile concurrent namespace mutation is outside local custody.",
+    "The permanent empty mutex file may be created on refusal. Original completed unit state must be resolved before calling the filesystem writer; filesystem contents are not job authority.",
+    "Read-only Tux observation:178493562880freebytes,567containers,eight unrelated running,no active BigBrotr container. No new remote run/cache/deletion yet; full inventory required immediately before launch."
+  ]
+}

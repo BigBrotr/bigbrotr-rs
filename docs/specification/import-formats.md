@@ -172,8 +172,69 @@ synchronizes its directory and records the same file/manifest identities in the
 job checkpoint. File existence alone is neither SQL completion nor public
 publication. Recovery resolves the same unit against retained bytes and current
 authority; it never replaces a conflicting completed artifact with new intent.
-These are execution requirements, not claims that the current encoder has
-implemented filesystem publication or restart.
+The filesystem unit implements the following bounded local protocol; the SQL
+execution claim, inventory checkpoint and supervised runtime consumer remain
+separate integration requirements, not guarantees supplied by the encoder.
+
+#### Local output and retry
+
+Before dispatch, persist the original unit's artifact identity, destination
+binding and retained byte reservation. Resolve any ambiguous SQL completion
+before resuming: a completed unit must not be rewritten. Reconstruct expected
+bytes from the original pinned cut under current authority, including an actual
+authorized absence for an empty export. A self-consistent old manifest is not
+the expected result.
+
+The private destination holds three fixed names per artifact: its final hex
+identity directory, `.artifact-<id>.partial` and `.artifact-<id>.lock`. The empty
+lock file is a permanent mutex, never authority, and is not renamed or removed.
+Acquire its exclusive nonblocking lock before output; retain its descriptor and
+the original destination beyond cancellation through all actual worker and SQL
+driver joins. Only one write handle can exist under that custody. A failed
+acquisition can create an empty lock but never repairs existing contents.
+
+Validate both existing directories before any removal. The final must contain
+exactly the two complete expected files. Staging may contain either, both or
+neither; each retained file must be a byte prefix of the same expected output.
+An incomplete manifest is never a receipt. Refuse unknown names, differing bytes,
+links, nonregular files, foreign ownership, permission conflicts or aliases,
+preserving those objects. Directories are private `0700`; files are `0600` with
+one link. Linux additionally requires descriptor-based `statx` mount identities
+to refuse same-filesystem bind aliases; missing mount identity fails closed.
+This local output capability requires that kernel/filesystem support (Linux
+5.8 or later for `STATX_MNT_ID`), independent of the rest of the product's kernel
+requirements. See [statx](https://man7.org/linux/man-pages/man2/statx.2.html).
+
+Under the durably reserved namespace and exclusive custody, remove only the
+verified staging entries and directory, then synchronize the destination. Create
+a fresh staging directory and new files, write the complete data and manifest,
+synchronize both files and staging directory, and publish with atomic
+`NOREPLACE` directory rename. If a prior nonterminal final exactly matches the
+independently reconstructed output, use `EXCHANGE` instead, leaving the old
+directory at the staging name. Synchronize the destination before returning a
+file result. An error after either rename retains the same identity for retry;
+rebuilding on fresh inodes reissues the writes instead of merely repeating fsync
+on an inode that may have suffered writeback failure. Neither operation permits
+automatic repair of differing bytes or arbitrary corruption.
+
+There is at most one staging copy, including after interrupted cleanup or
+exchange. Reserve two complete data-plus-manifest logical byte counts; include
+filesystem metadata/allocation overhead and retained output in the executor's
+disk accounting. This bound is not a physical quota. The manifest allocation is
+at most 256 KiB, I/O buffering is 64 KiB plus an 8 KiB comparison scratch buffer;
+the executor also retains the verified event/native custody. It never collects
+another complete JSONL byte buffer. Cancellation gates each new writer call,
+including short-write retries during buffer flush, and withholds the result even
+after a complete rename. A blocked kernel call still requires supervised process
+termination and retained obligations, not an assertion that AtomicBool aborts I/O.
+
+Normalize permissions only on newly created names under private namespace
+custody; do not change process-global umask or repair an existing nonconforming
+path. A crash before this normalization can require explicit operator recovery.
+Concurrent hostile mutation by the same OS user/root is outside the local
+custody boundary. Kernel syscall, crash and restart qualification must exercise
+these paths on the supported installation filesystem; Mac file tests alone do
+not establish native Linux or power-loss durability.
 
 ## Reuse and distribution boundary
 

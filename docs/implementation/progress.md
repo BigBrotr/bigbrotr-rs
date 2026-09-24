@@ -13,17 +13,20 @@ is unavailable. No public release, rename or Linux arm64 qualification.
 
 Active P08-T03/T04: standalone signed export and durable job/restart, consuming
 P08-T02 private authority and P06-T01/T02 signed history/pinned-reader work.
-No full P02/P06/P08 task or M1 milestone is complete. No exported JSONL file yet.
+No full P02/P06/P08 task or M1 milestone is complete. No job-produced JSONL artifact yet.
+The new filesystem library/research driver has written the independent fixture on Mac.
 Root is sole writer/integrator. Independent read-only AI completed design,
 fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer.
 
 ## Git and current implementation
 
-Last observed main/HEAD and origin/main6f30ebb79862173e187adc0b6e9a679d1c4992c5,
-pushed after the JSONL codec/evidence and shared artifact reservation split.
-Root owns pending manifest encoder, ArtifactId, portable-manifest tests, schema,
-independent fixture generator/golden, evidence/format/task docs and this checkpoint.
-No unrelated dirty files or active lab.
+Last observed main/HEAD and origin/main0e2f196e4e70414d73a1c6b2ab3d93a6aa222443,
+pushed after codec6f30ebb and manifest0e2f196. Root now owns the pending filesystem
+consumer, its tests/research recipes, owning contract/task/evidence and this checkpoint.
+No unrelated dirty files, pending tool session or active lab. Independent read-only
+AI protocol/code/fixture review completed; no edits/tests/SSH/resources by reviewer.
+Form a clean candidate from these verified Mac inputs before exact-Git Tux testing;
+do not push it as native-qualified or relabel the earlier4e runtime ELF.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
@@ -128,7 +131,10 @@ race, JSONL artifact or packaged M1/release qualification from these cases.
 
 ## Current laboratory custody
 
-No active lab, pending tool session or cleanup debt after terminal audits. These are dated
+No active lab, pending tool session or cleanup debt after terminal audits. Latest
+read-only Tux check found178493562880freebytes,567containers and eight unrelated
+running, no BigBrotr running; cache4e6b5c0 and tracer9b30c35 remain stopped-retained.
+No new cache or deletion in the current filesystem preparation. These are dated
 observations; re-inspect before reuse/deletion. Full identities and mounts are in
 [the inventory](../research/laboratory-inventory.json). No unrelated workload,
 host port, dataset, backup, archive, catalog or index deleted by these new runs.
@@ -215,7 +221,7 @@ The library encoder has no runtime consumer yet; this is unfinished execution
 work, not a completed export or native/durable qualification. Review found no
 encoder defect and requested the discriminating last-LF test, now executed.
 
-The in-progress [manifest encoder](evidence/p08-export-manifest-mac-20260924.json)
+The committed [manifest encoder](evidence/p08-export-manifest-mac-20260924.json)
 adds ArtifactId and the closed bigbrotr-signed-events-export/1 profile: exact
 original selection/cut, positive native snapshot, accepted revisions, file count/
 bytes/digest and explicit excluded families. Five Mac tests and an independent
@@ -228,11 +234,58 @@ for lib/portable_manifest; original RED outputs were observed but not captured.
 No filesystem output or current authority is certified by these public metadata
 structs; the runtime must derive file and manifest from one verified observation.
 
-Next implement the descriptor-owned filesystem unit consuming JSONL and manifest,
-then shared 0501 inventory/additive execution state and the ordinary Control
-supervisor. Keep output custody beyond native query completion through actual
-writes/joins, not just destination SH locking. Keep the same job/unit identity across commit/output
-ambiguity. No task checkbox closes before the actual restart/file journey.
+The filesystem unit is now implemented, with [scoped Mac evidence](evidence/p08-export-files-mac-20260924.json).
+It retains a per-artifact exclusive lock via OutputCustody Arc, a unique writer
+handle, fixed same-parent staging/final names, and at most two complete file copies.
+It verifies complete final bytes and all staged prefixes BEFORE cleanup, rebuilds
+fresh inodes and performs NOREPLACE or identical EXCHANGE then root sync. Unknown
+or differing bytes, permission conflicts, links and root substitution are preserved.
+Linux additionally requires statx MNT_ID to reject same-device bind mounts; this
+new branch remains unexecuted. Directory chmod applies only to new names; crash
+before normalization can require explicit recovery. No promise against hostile
+same-UID/root namespace mutation or arbitrary corruption repair.
+
+Seven actual Mac file tests PASS, including all staging subsets, exact independent
+manifest/signed fields, fixed staging count, retained lock exclusion, empty result,
+byte caps and a real child under umask0777. Review found a BufWriter flush gate gap;
+negative passthrough writer reproduced RED, then CancelOutput below buffering
+stops after one short write and leaves pending bytes unsent. Final one-unit/seven-file
+tests and Clippy PASS. An earlier combined filter ran zero file tests; its log is
+retained and explicitly not counted. Exact captures, negative source and final
+commands: .research/implementation/export-files/{negative-flush.rs,negative-flush.log,
+final-runs.json,final-flush-tests.log,final-filesystem-tests.log,mac-probe-final/}.
+Actual Mac research executable wrote334byte JSONL SHA2006c3bc... and1321byte manifest
+SHA334fda0a..., checked against independent frozen fixtures. No SQL/native archive
+observation/job completion from that driver.
+
+Next bounded action: review/commit this candidate and run its new exact-source
+experiments/export-files/{lab.py,native.py,cases.py,probe.rs} on Tux. Fourteen planned
+main cases plus one separate actual bind-alias container cover syscall order,
+EIO at four sync points, exchange/cleanup EIO, RLIMIT_FSIZE17-byte output, mount
+identity refusal, cross-process lock, three actual fsync-entry SIGKILLs, ENOSPC
+and alias preparation/refusal. Recipes have syntax/static review only, NOT_RUN.
+Kill fixtures require actual correlated entry, pidfd death/join, expected signal
+exit, empty tracer stderr and SIGKILL trace; never ignore instrument diagnostics.
+Use isolated copies of retained4e6b5c0 compiler caches and verified research tracer
+strace-exit9b30c35 SHA509ea4b8...; original source/artifacts stay untouched. Lab recipe
+rechecks complete inventory/free space immediately before launch, uses2CPU/6GiB,
+no network/ports/capabilities, no Docker socket, read-only source/root and separate
+small tmpfs for ENOSPC. Git transfer only. No new run directory allocated yet.
+
+After actual native results/capture/review/owned cleanup, wire shared0501 inventory,
+additive execution state and ordinary Control supervision. Keep output custody
+beyond native query completion through actual writes/joins, not merely destination
+SH locking. Keep the original job/unit identity across commit/output ambiguity.
+The SQL consumer must resolve completed/nonterminal state, current authority and
+exact retained cut before filesystem dispatch; filesystem mutex/prefixes grant
+none of those. No task checkbox closes before the real POST/restart/file journey.
+
+Dependency evidence: locked rustix1.1.5 crate SHA891efaba..., relevant registry source
+members verified against the archive; renameat_with NOREPLACE/EXCHANGE, Linux/Apple
+backends, statx mask/MNT_ID and chmodat behavior inspected. Record retained at
+.research/implementation/export-files/dependency-source.json and in the Mac report.
+Official APIs justify syscall choices, not durability qualification. Linux5.8+
+MNT_ID requirement is now scoped in the owning import-format output contract.
 
 Focused source reading includes full export_jobs.rs, management/jobs.rs,
 snapshot_leases.rs remainder, history SQL/native consumer, destination.rs,
