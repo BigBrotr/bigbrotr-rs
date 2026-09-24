@@ -22766,5 +22766,115 @@
       "free_bytes": 135022288896
     },
     "retention": "Keep fresh f660 native cache/ELF for continuation. Preserve original browser failure, source/logs/bundles and deliberate PG/archive/output. All owned containers PID0/noOOM/network removed, post-browser SQL0, no cleanup debt."
+  },
+  "implementation_export_status_browser_storage_retry_20260924": {
+    "status": "INCOMPLETE; stopped-retained before browser start; initial stop refused",
+    "resources": {
+      "source": "cc8e5a82c3baea7dd4cec24655f8af827b128ab7",
+      "tree": "9b650d59a607a26fc9f3c84606697da2326a3f27",
+      "owner": "acdef12a05d81aff7e3b2ecde476ddf7",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-cc8e5a8",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "frontend",
+          "id": "a9b6d43b5f3aa2cbf0e6f1271a46be26809a6a321e1aaa3d101a6e95c7b849f8"
+        },
+        {
+          "name": "postgres",
+          "id": "a7a4c1ba1bfdffe57c98162ec00f740748a46d98f97649544c8d2ca05c8b83eb"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "0f4e8e64681c2c03b1b2d4138c17a46c3e22871c8187a950f4d1f6885503a191"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T14:28:23.130003+00:00",
+      "runtime_profile": "job-browser",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "f660ab8eba028a0f874faeb33c47ca0938b1ca5a",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "network_id": "a731d043f99d5509d49fbe64eff631a636e2bc518a68843e49ea5f8b9908feb2",
+      "postgres_id": "a7a4c1ba1bfdffe57c98162ec00f740748a46d98f97649544c8d2ca05c8b83eb",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "0f4e8e64681c2c03b1b2d4138c17a46c3e22871c8187a950f4d1f6885503a191",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "retention": "Preserve original failure,78payload capture/source/ELF/bundles/logs/PG/archive/output; no native cache created. Both databases0, containersPID0/noOOM, network removed. No cleanup debt.",
+    "terminal_audit": {
+      "status": "INCOMPLETE",
+      "failure": {
+        "kind": "AssertionError",
+        "frames": [
+          {
+            "file": "lab.py",
+            "line": 296,
+            "function": "<module>"
+          }
+        ]
+      },
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 636,
+      "unrelated_running": 8,
+      "source_unchanged": true,
+      "source_checkout_clean": true,
+      "cleanup_errors": [],
+      "free_bytes": 134410375168,
+      "containers": {
+        "frontend": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:28:25.364399672Z",
+          "FinishedAt": "2026-09-24T14:28:41.623790073Z"
+        },
+        "postgres": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 137,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:28:42.041253819Z",
+          "FinishedAt": "2026-09-24T14:30:09.497964285Z"
+        },
+        "rust-visibility": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-24T14:28:43.876142252Z",
+          "FinishedAt": "2026-09-24T14:30:09.770208154Z"
+        }
+      }
+    },
+    "evidence": "docs/implementation/evidence/p09-export-status-shutdown-incomplete-20260924.json"
   }
 }

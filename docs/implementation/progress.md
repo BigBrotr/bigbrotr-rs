@@ -20,14 +20,30 @@ product in the existing task plan, including ordinary installation and full UI.
 
 ## Verified Git and next bounded action
 
-Last verified HEADf660ab8eba028a0f874faeb33c47ca0938b1ca5a, tree
-36afdfbbf2c01aad79d04130cd534fd7c383fdc3 on main. Two unpublished commits after
+Last verified HEADcc8e5a82c3baea7dd4cec24655f8af827b128ab7, tree
+9b650d59a607a26fc9f3c84606697da2326a3f27 on main. Three unpublished commits after
 private origin/main cac50d60a591981b8060e50ed8cbb6c2b070be62. Root owns only
 subsequent checkpoint/inventory updates. No other contributor or merge/rebase.
 
-Next bounded action: commit the fixture-only storage oracle correction and rerun
---runtime-job-browser, reusing exact f660 ELF after full product/build equality.
-No new native cache or product change. The original f660 run is stopped-retained
+Next bounded action: run the deterministic --runtime-shutdown regression with
+exact f660 ELF (fixture-only product equality) before correcting the idle poll
+shutdown path. Hold the identified policy SELECT on the dataset row, signal the
+actual parent, release within its original deadline, and separately hold beyond
+that deadline. Preserve actual exit/owner/backend/lock observations. No runtime
+fix yet; no new native cache needed for RED. Browser qualification resumes after
+this boundary is understood.
+
+cc8e5a8 is stopped-retained, owner acdef12a05d81aff7e3b2ecde476ddf7. Its
+[original attempt](evidence/p09-export-status-shutdown-incomplete-20260924.json)
+is INCOMPLETE before browsers:16 HTTP exchanges through401 passed; initial stop
+failed with parent error Control backend operation failed: Unavailable. Numeric
+parent exit was not retained by the original wrapper. The source has this exact
+error when SIGTERM cancels a policy poll, but original cause is not established.
+78capture payloads/1198current Git files/full product equality/ELF/prior636
+containers verified. All ownedPID0/noOOM/bothDB0; eight unrelated running intact;
+free134978461696→134410375168bytes. Browser matrix/storage shape NOT_RUN.
+
+The original f660 run is stopped-retained
 and [INCOMPLETE](evidence/p09-export-status-storage-incomplete-20260924.json): first7
 Chromium root journeys pass, actual final401 clears the view, then an assertion
 that both web stores are entirely empty fails. Original counts/keys were not
@@ -40,9 +56,8 @@ webstorage invariant. Two local oracle tests pass; actual shape still NOT_RUN. I
 duplicate JSON keys could hide discarded private bytes; RED reproduced locally,
 then raw===JSON.stringify(parsed) restored GREEN, matching the exact Kit writer.
 
-Root owns storage_oracle.mjs/.test.mjs, job_browser.mjs diagnostic/call,
-private-panel/native.py test invocation, new incomplete evidence and this
-checkpoint/inventory. Review this diff, commit exact source and qualify it.
+The corrected storage fixture and preserved incomplete evidence are incc8e5a8.
+Only runtime measurement of recognized storage shapes can qualify it.
 Fresh f660 native build/44tests/Clippy PASS; parentSHA
 757c976509d8676d7f8931394af3498e9b811b23deacad91acab1104a96c8a04;
 worker3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
@@ -167,11 +182,21 @@ terminal lifecycle, zero/multiple streams, job/output discovery, other selected
 formats, packaged M1, aged-queue/index fairness and mixed-workload capacity. Keep
 advancing through the selected product; no task completion from this scoped slice.
 
+Independent AI prerequisite mapping for the next resume responsibility identified
+paused→queued/CAS/current owner, same unit/cut/artifact/caps and current data.read
+plus exact history.read/export/private-export; source→job lock order from0501.
+A distinct additive resume command/audit receipt is needed: historical retry after
+a new worker pause must not queue again. Current contracts do not select a separate
+jobs.resume grant or require reauth; decide explicitly in owning contracts before
+implementation. Clear versus retained prior reason_code also needs definition.
+Do not use expired owner/pin as proof of old writer exclusion. Reviewer only read
+these boundaries, did not execute scenarios or review all output custody again.
+
 ## Tux ownership and maintenance
 
 All run roots below are under /home/tux/bigbrotr-implementation-20260917/runs/.
-Current f660 is stopped-retained; keep its useful compiler cache. No active lab
-or cleanup debt at this boundary. Earlier29983cc and3830 are also stopped-retained, all
+Current cc8e5a8 is stopped-retained as above. f660 is stopped-retained; keep its useful
+compiler cache. Earlier29983cc and3830 are also stopped-retained, all
 containers PID0/noOOM/network removed.3830 preserved628prior/eight unrelated
 running; free139536801792→138968485888bytes (concurrent writes possible). Its
 frontend0/browser1/runner143/PG137 results are original, not rewritten.

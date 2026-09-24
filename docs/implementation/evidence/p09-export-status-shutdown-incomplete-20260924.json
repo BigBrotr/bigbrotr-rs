@@ -1,0 +1,40 @@
+{
+  "status": "INCOMPLETE",
+  "source": "cc8e5a82c3baea7dd4cec24655f8af827b128ab7",
+  "tree": "9b650d59a607a26fc9f3c84606697da2326a3f27",
+  "environment": "Tux Linux amd64, PostgreSQL16.15",
+  "artifacts": {
+    "bigbrotr": "757c976509d8676d7f8931394af3498e9b811b23deacad91acab1104a96c8a04",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "native_build_source": "f660ab8eba028a0f874faeb33c47ca0938b1ca5a",
+  "capture": {
+    "path": ".research/implementation/export-execution/attempt-cc8e5a8/capture",
+    "files": 78,
+    "sha256": "5ec003a0d3057e5fed1c55da062d613f36328182d74242855802de02e7fbdcc5",
+    "current_source_files": 1198
+  },
+  "observed": [
+    "Frontend prerequisites, closed storage oracle tests and production builds passed.",
+    "Initial signed archive and empty native export completed.",
+    "16 correlated HTTP exchanges through account-deactivated401 matched expected status; status200 metadata matched independent SQL; initial session idle/last_seen/xmin unchanged.",
+    "Initial explicit stop failed before its terminal receipt; parent stderr: Control backend operation failed: Unavailable. No stopped/release output. The wrapper exit assertion does not retain the parent numeric exit.",
+    "No browser container started; all six pairs NOT_RUN.",
+    "All owned containers stopped/PID0/noOOM; both PostgreSQL databases0 backends before cleanup; no cleanup errors."
+  ],
+  "investigation": "Source permits exactly this error when SIGTERM cancels a nonrenewing policy poll, but the original capture cannot distinguish this from an unavailable session. A deterministic blocked-policy-poll signal experiment is next; no root-cause claim from the message alone.",
+  "resources": {
+    "owner": "acdef12a05d81aff7e3b2ecde476ddf7",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-cc8e5a8",
+    "state": "stopped-retained",
+    "prior_preserved": 636,
+    "unrelated_running": 8,
+    "free_before": 134978461696,
+    "free_after": 134410375168
+  },
+  "exclusions": [
+    "Natural expiry/BFCache and browser storage shape NOT_RUN.",
+    "Graceful initial/restart release and final status ledgers not qualified.",
+    "No new Rust build; full product/build input equality verified against f660."
+  ]
+}
