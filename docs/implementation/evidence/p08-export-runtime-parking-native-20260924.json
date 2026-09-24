@@ -256,9 +256,11 @@
   "free_before": 146398420992,
   "boundaries": [
     "This is one signed HTTP acceptance/logout, one1536-byte immutable unit and bounded1.5s no-retry observations before each stop. No aged queue, load or capacity qualification.",
-    "ResourceLimit is a typed output-path refusal here; actual native query failures map to execution_refused. A sufficient-cap signed completion counterpart on these new product artifacts remains pending.",
+    "ResourceLimit is a typed output-path refusal here; actual native query failures map to execution_refused. This capture does not execute the sufficient-cap signed counterpart; its later evidence is linked separately.",
     "Full SQL/xmin and mutex identity equality establishes observed nonreplacement; no syscall trace claims absence of filesystem reads or in-place writes.",
-    "Busy/old-worker counterpart, revocation and pause-COMMIT interruption remain NOT_RUN. Explicit pause/resume/cancel APIs and terminal export pin reclamation are unfinished.",
+    "This capture does not execute the foreign-lock counterpart, old-worker reclamation, revocation or pause-COMMIT interruption. Explicit pause/resume/cancel APIs and terminal export pin reclamation are unfinished.",
     "PostgreSQL wrapper137 occurred during laboratory cleanup after product backends0; not product crash or power-loss evidence. No Linux arm64 qualification."
-  ]
+  ],
+  "later_sufficient_cap_counterpart": "p08-export-parking-completion-regression-native-20260924.json",
+  "later_busy_counterpart": "p08-export-runtime-busy-native-20260924.json"
 }

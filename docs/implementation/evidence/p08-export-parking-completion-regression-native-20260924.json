@@ -1,0 +1,385 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "PASS_SCOPED",
+  "scope": "Sufficient-cap signed output and completion recovery regression on the same product build that parks known output refusals.",
+  "source": {
+    "files": 66,
+    "sha256": "9f0f0008a8e57661de23de175cc90ea75c84977d35356c5f28beb4b155fdcfd2",
+    "source": "9d962d560808365ab445e8f97571929adcfd935a",
+    "tree": "2e66930656e74c69cab302781e89638912037eb1",
+    "source_files": 1176
+  },
+  "capture": ".research/implementation/export-execution/attempt-9d962d5/capture",
+  "installed_build_source": "cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93",
+  "installed_artifacts": {
+    "bigbrotr": "c49713d931bb01cb8446ae1032891a1d655af03de2a6e1b7580de8d3ff60d862",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "reuse_validation": "Complete product/build source equality, actual installed ELF and worker hashes verified; fixture/documentation changes only. No new build or unit/Clippy run.",
+  "parking_counterpart": "p08-export-runtime-parking-native-20260924.json",
+  "observed": {
+    "empty_completion": {
+      "job": "cddaa091a3407f25e7cb12fe3648a62a",
+      "rows": "0",
+      "bytes": "0",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "artifact": "4d925bbc870fbe8f5cb95eb48cc8b4cd",
+      "manifest": "be974a30377af61c8005209295f8991a78af701637d4fcee5b2291693db9de4a",
+      "checkpoint": "1",
+      "manifest_bytes": "1226",
+      "export_retained": true,
+      "reader_released": true
+    },
+    "signed_recovery": {
+      "before_crash": {
+        "files": 0,
+        "state": "running",
+        "artifact": "b979db9915e0d70d8e3d7df1818f2f04",
+        "revision": "3",
+        "artifacts": 0,
+        "checkpoint": "0",
+        "export_retained": true
+      },
+      "kill": {
+        "status": "PASS",
+        "exit": -9,
+        "elapsed_ms": 1.089
+      },
+      "kill_while_insert_pending": true,
+      "after_crash": {
+        "files": 0,
+        "state": "running",
+        "artifact": "b979db9915e0d70d8e3d7df1818f2f04",
+        "revision": "3",
+        "artifacts": 0,
+        "checkpoint": "0",
+        "export_retained": true
+      },
+      "terminal_job": {
+        "files": 1,
+        "state": "succeeded",
+        "artifact": "b979db9915e0d70d8e3d7df1818f2f04",
+        "revision": "5",
+        "artifacts": 1,
+        "checkpoint": "1",
+        "export_retained": true
+      },
+      "inventory": {
+        "rows": "1",
+        "bytes": "399",
+        "sha256": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+        "artifact": "b979db9915e0d70d8e3d7df1818f2f04",
+        "manifest": "b178a0761f04ab8db8362565605bee4abf4d2bdaa27e87973f2950408b2e9467",
+        "manifest_bytes": "1228",
+        "reader_released": true
+      },
+      "before_inodes": {
+        "events.jsonl": 31616733,
+        "manifest.json": 31616734
+      },
+      "after_inodes": {
+        "events.jsonl": 31616746,
+        "manifest.json": 31616747
+      },
+      "totals": {
+        "jobs": 2,
+        "files": 2,
+        "units": 2,
+        "artifacts": 2
+      },
+      "terminal": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      }
+    },
+    "completion_faults": [
+      {
+        "mode": "after-complete",
+        "job": "73dea8593defd437a27dcff5afa86ccc",
+        "fault": {
+          "event": "fault",
+          "mode": "after-complete",
+          "target": "control-export-complete",
+          "connections": 1,
+          "bytes": 205659,
+          "frames": 3527,
+          "data_queries": 1,
+          "data_commits": 1,
+          "server_complete": 1,
+          "client_complete": 0,
+          "faults": 1,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 208,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "backend_pid": 708
+        },
+        "failed": {
+          "event": "failed",
+          "exit": 4,
+          "stderr": "error: export Control operation failed: CommitUnknown; retain unresolved obligations\n",
+          "owner": {
+            "archive_intents": {
+              "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+              "issued_through": "4",
+              "observed_through": "4",
+              "pages": 1,
+              "publication_authority": "not-granted",
+              "resolution": "not-performed",
+              "state": "observed"
+            },
+            "authority_scope": "Control custody; each private action and export independently reauthorized",
+            "config_revision": "1",
+            "dataset_id": "01010101010101010101010101010101",
+            "export_execution": "selected-under-qualification",
+            "format": "bigbrotr-control-runtime/1",
+            "listeners": [],
+            "native_stores": [],
+            "owner_epoch": "7",
+            "owner_resource_id": "855c90475e8737855435d17f16059096",
+            "policy_revision": "6",
+            "process_incarnation": "f4d9d39de385d9e34adbf62fb5ca6c38",
+            "role": "control",
+            "state": "idle"
+          },
+          "parent_absent": true,
+          "lock_available": true
+        },
+        "owner": {
+          "pid": 708,
+          "epoch": "7",
+          "start": "2026-09-24T12:43:39.529829+00:00",
+          "present": false,
+          "resource": "855c90475e8737855435d17f16059096",
+          "incarnation": "f4d9d39de385d9e34adbf62fb5ca6c38"
+        },
+        "state": "succeeded",
+        "revision": 4,
+        "unknown_reader": "af1738244ee81e2779e891841fbff3e0",
+        "artifact": "3d97258672a4be77386cc43a44135f44",
+        "before_inodes": {
+          "events.jsonl": 31616760,
+          "manifest.json": 31616761
+        },
+        "after_inodes": {
+          "events.jsonl": 31616760,
+          "manifest.json": 31616761
+        }
+      },
+      {
+        "mode": "before-forward",
+        "job": "776720b12e90b9357ca155da113bf33c",
+        "fault": {
+          "event": "fault",
+          "mode": "before-forward",
+          "target": "control-export-complete",
+          "connections": 1,
+          "bytes": 206535,
+          "frames": 3556,
+          "data_queries": 1,
+          "data_commits": 1,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 1,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 210,
+          "coordinator_inserts": 0,
+          "pin_claim_injections": 0,
+          "pin_rejections": [],
+          "session_mutations_complete": 0,
+          "reader_queries": 0,
+          "capture_verify_requests": 0,
+          "backend_pid": 761
+        },
+        "failed": {
+          "event": "failed",
+          "exit": 4,
+          "stderr": "error: export Control operation failed: CommitUnknown; retain unresolved obligations\n",
+          "owner": {
+            "archive_intents": {
+              "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+              "issued_through": "4",
+              "observed_through": "4",
+              "pages": 1,
+              "publication_authority": "not-granted",
+              "resolution": "not-performed",
+              "state": "observed"
+            },
+            "authority_scope": "Control custody; each private action and export independently reauthorized",
+            "config_revision": "1",
+            "dataset_id": "01010101010101010101010101010101",
+            "export_execution": "selected-under-qualification",
+            "format": "bigbrotr-control-runtime/1",
+            "listeners": [],
+            "native_stores": [],
+            "owner_epoch": "8",
+            "owner_resource_id": "855c90475e8737855435d17f16059096",
+            "policy_revision": "6",
+            "process_incarnation": "61003eedc0e52ea5861094fb07182e5a",
+            "role": "control",
+            "state": "idle"
+          },
+          "parent_absent": true,
+          "lock_available": true
+        },
+        "owner": {
+          "pid": 761,
+          "epoch": "8",
+          "start": "2026-09-24T12:43:40.916267+00:00",
+          "present": false,
+          "resource": "855c90475e8737855435d17f16059096",
+          "incarnation": "61003eedc0e52ea5861094fb07182e5a"
+        },
+        "state": "running",
+        "revision": 3,
+        "unknown_reader": "93051a5a82c0962f17c3cb88c29a1561",
+        "artifact": "4108b4769a64b5feac67c6aec063bad6",
+        "before_inodes": {
+          "events.jsonl": 31616767,
+          "manifest.json": 31616768
+        },
+        "after_inodes": {
+          "events.jsonl": 31616772,
+          "manifest.json": 31616773
+        }
+      }
+    ],
+    "restart": {
+      "ready": {
+        "event": "ready",
+        "owner": {
+          "archive_intents": {
+            "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+            "issued_through": "4",
+            "observed_through": "4",
+            "pages": 1,
+            "publication_authority": "not-granted",
+            "resolution": "not-performed",
+            "state": "observed"
+          },
+          "authority_scope": "Control custody; each private action and export independently reauthorized",
+          "config_revision": "1",
+          "dataset_id": "01010101010101010101010101010101",
+          "export_execution": "selected-under-qualification",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [],
+          "native_stores": [],
+          "owner_epoch": "9",
+          "owner_resource_id": "855c90475e8737855435d17f16059096",
+          "policy_revision": "6",
+          "process_incarnation": "1c4e47776ac3d467717c17e0908b588c",
+          "role": "control",
+          "state": "idle"
+        }
+      },
+      "client_terminal": {
+        "event": "terminal",
+        "exit": 0,
+        "lock_available": true
+      },
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "job_count": 4,
+      "preserved": "Completed job/unit/inventory/xmin and output hash/inodes unchanged; uncommitted unit completes as same artifact/revision5 with fresh file inodes. Every prior pin/claim/xmin unchanged, one new completion reader released.",
+      "released_reader": "ced6c3cfb85b0843a618e71503224d3f"
+    },
+    "signed_file_bytes": 399,
+    "manifest_bytes": 1228,
+    "total_bytes": 1627,
+    "unit_maximum": 2097152,
+    "login_responses": {
+      "status": "PASS",
+      "responses": [
+        429,
+        201
+      ]
+    }
+  },
+  "resources": {
+    "source": "9d962d560808365ab445e8f97571929adcfd935a",
+    "tree": "2e66930656e74c69cab302781e89638912037eb1",
+    "owner": "7192cc8a407c83a911ab550be487797a",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9d962d5",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "d382ba1e25394aa0fdba2d0219a5e7abbd189bb90bf11d88d1e05890f764f61f"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "0529fce0c08ae98d897500110869e872aebf0bd283e7d74a6b9322d94800092b"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T12:42:18.160670+00:00",
+    "runtime_profile": "executor",
+    "adapter_profile": null,
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "runtime_artifact_origin": "cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93",
+    "network_id": "f9e07769a222d955f8347cf05be6b374ec269bf2b90789a7724b6bf2840bd091",
+    "postgres_id": "d382ba1e25394aa0fdba2d0219a5e7abbd189bb90bf11d88d1e05890f764f61f",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "0529fce0c08ae98d897500110869e872aebf0bd283e7d74a6b9322d94800092b",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "PASS_PENDING_CAPTURE",
+    "source": "9d962d560808365ab445e8f97571929adcfd935a",
+    "owner": "7192cc8a407c83a911ab550be487797a",
+    "result": "PASS",
+    "independent_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "container_ok": true,
+    "preexisting_preserved": true,
+    "preexisting_count": 616,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "original_source_unchanged": true,
+    "host_tcp_wmem_preserved": true,
+    "free_bytes": 145114730496
+  },
+  "free_before": 145511944192,
+  "review": "Root verified whole capture/Git manifests/ELF, independent full signed bytes and manifests, SQL/xmin and all616 preexisting resource records.",
+  "boundaries": [
+    "The paired1536-byte parked unit and this2097152-byte successful profile use the same product ELF. No production limits or SQL rate counters weakened.",
+    "The output-before-SQL fault deliberately freezes the actual parent and matched PostgreSQL backend before killing the parent; not a natural host crash.",
+    "The completion proxy interrupts actual COMMIT before forwarding and after PostgreSQL server completion. These are completion faults, not pause-COMMIT faults.",
+    "Original unknown readers remain active-state obligations; no pin expiry/GC, old-writer reclamation, revocation or explicit resume/cancel qualification.",
+    "Observed unchanged inode/hash does not establish absence of reads/in-place writes. No capacity, packaged M1, full P08 or Linux arm64 claim."
+  ]
+}

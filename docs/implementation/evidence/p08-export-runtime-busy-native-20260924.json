@@ -200,6 +200,7 @@
     "Reader admission is briefly blocked by an owned PostgreSQL SHARE lock after committed reservation. The foreign artifact mutex is held before releasing that blocker.",
     "No SIGTERM causes this exit; the client waits for autonomous parent/tracer termination and collects both database backends0.",
     "This proves observed refusal/no false pause under foreign exclusion. It does not qualify reclamation of an old live writer, revocation, pause-COMMIT loss, resume/cancel or pin GC.",
-    "The required sufficient-cap signed output counterpart on cdb artifacts remains pending; no full P08 or Linux arm64 qualification."
-  ]
+    "This capture does not execute the sufficient-cap signed output counterpart; its later evidence is linked separately. No full P08 or Linux arm64 qualification."
+  ],
+  "later_sufficient_cap_counterpart": "p08-export-parking-completion-regression-native-20260924.json"
 }

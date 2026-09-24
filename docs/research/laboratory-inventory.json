@@ -22163,5 +22163,64 @@
       "cleanup_errors": []
     },
     "retention": "Exact cdb installed artifacts reused; no compiler cache. Keep source/logs/trace/PG/archive/output and retained export pins. Network removed; no active lab."
+  },
+  "implementation_export_parking_completion_regression_20260924": {
+    "status": "stopped-retained; PASS_SCOPED after complete capture verification",
+    "evidence": "docs/implementation/evidence/p08-export-parking-completion-regression-native-20260924.json",
+    "capture": ".research/implementation/export-execution/attempt-9d962d5/capture",
+    "verified": {
+      "files": 66,
+      "sha256": "9f0f0008a8e57661de23de175cc90ea75c84977d35356c5f28beb4b155fdcfd2",
+      "source": "9d962d560808365ab445e8f97571929adcfd935a",
+      "tree": "2e66930656e74c69cab302781e89638912037eb1",
+      "source_files": 1176
+    },
+    "resources": {
+      "source": "9d962d560808365ab445e8f97571929adcfd935a",
+      "tree": "2e66930656e74c69cab302781e89638912037eb1",
+      "owner": "7192cc8a407c83a911ab550be487797a",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9d962d5",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "d382ba1e25394aa0fdba2d0219a5e7abbd189bb90bf11d88d1e05890f764f61f"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "0529fce0c08ae98d897500110869e872aebf0bd283e7d74a6b9322d94800092b"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T12:42:18.160670+00:00",
+      "runtime_profile": "executor",
+      "adapter_profile": null,
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "runtime_artifact_origin": "cdb78a15e45e026b33c1b8c1e6a026b00d2b1b93",
+      "network_id": "f9e07769a222d955f8347cf05be6b374ec269bf2b90789a7724b6bf2840bd091",
+      "postgres_id": "d382ba1e25394aa0fdba2d0219a5e7abbd189bb90bf11d88d1e05890f764f61f",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "0529fce0c08ae98d897500110869e872aebf0bd283e7d74a6b9322d94800092b",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "terminal": {
+      "independent_sql": {
+        "bbpub_normal": {
+          "backends": 0
+        },
+        "bbpub_control_normal": {
+          "backends": 0
+        }
+      },
+      "preexisting_preserved": true,
+      "preexisting_count": 616,
+      "unrelated_running": 8,
+      "free_bytes": 145114730496,
+      "cleanup_errors": []
+    },
+    "retention": "No compiler cache; exact cdb artifacts reused after complete input equality. Keep original source/logs/PG/archive/files and unresolved reader/export obligations. Network removed."
   }
 }
