@@ -117,7 +117,13 @@ print(json.dumps(dict(parent_present=Path('/proc',str(parent)).exists(),children
         while not (waiting := waiters()):
             assert time.monotonic()<deadline, 'actual native SQL wait absent'
             time.sleep(.02)
-        assert len(waiting)==1 and waiting[0]['pid']==held['backend_pid'] and holder in waiting[0]['blockers']
+        result['waiters_observed'] = waiting; save()
+        # The first connection inspects installation then DETACHes; DuckLake
+        # attaches its own catalog afterward. Its backend need not be the one
+        # held at first authentication. Bind the real waiter to this owned lock,
+        # reader login/application and isolated native child, then compare that
+        # complete waiter identity again after authenticated revocation.
+        assert len(waiting)==1 and holder in waiting[0]['blockers']
         assert waiting[0]['application_name']=='bigbrotr-archive-event'
         result['waiter_before'] = waiting[0]; save()
         send(client,'revoke\n'); result['revoked'] = event(client,'revoked',timeout=5)

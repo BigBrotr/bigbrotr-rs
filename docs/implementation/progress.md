@@ -20,11 +20,12 @@ product responsibilities in the existing task plan.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD/origin main a37bdbf625e498bef15b6fa103156e58be861b8e,
-pushed and ls-remote confirmed. Root owns fixture-only revocation_cases.py,
-revocation_client.py, lab/runtime dispatch and this checkpoint. Product inputs
-unchanged since cdb78a1. No other contributor writes or merge/rebase; no active
-lab/cleanup debt. Pause-COMMIT capture reviews are complete, with no discrepancy.
+Last verified HEAD dc9424806785ebf0a050e824d3f30b331a135905 (candidate),
+tree83ea3951b710a01912a9676ebd43c3c109816247. Origin main a37bdbf625e498bef15b6fa103156e58be861b8e
+was pushed/ls-remote confirmed. Root owns the corrected waiter fixture, failed
+revocation evidence/inventory and checkpoint. Product inputs unchanged since
+cdb78a1. No other contributor writes or merge/rebase; no active lab/cleanup debt.
+Pause-COMMIT capture reviews complete with no discrepancy.
 
 The known-refusal implementation at cdb78a1 has Mac fmt/check,42 binary tests and
 Clippy PASS, complete root diff review and independent AI source review without a
@@ -109,22 +110,31 @@ passed root and independent AI complete reviews. No held-driver interval
 or permission-revocation inference. Proxy target REDKeyError→GREEN10 preserved
 under export-execution/pause-target-{red,green}.log.
 
-Next bounded action: finish review of the revocation fixture, commit clean Git
-and run --runtime-revocation on Tux with exact cdb artifacts after full input
-equality. Fresh read-only preflight:144664178688 free bytes; eight unrelated
-containers running and no BigBrotr container. Native scenario NOT_RUN.
-The supervisor services Control-only management work during native waits. Hold
-actual native event SQL behind a PostgreSQL relation lock; accept authenticated,
-reauthenticated history.read revocation through the same parent; confirm the
-same waiter remains, then release. Require the actual completion-authority error
-on that Control backend, paused4/execution_refused, no inventory, fresh reader
-joined/released and all original pins unchanged. The initially admitted finite
-unit may finish private files; check the literal399-byte signed event and manifest
-independently, and ensure ordinary restart preserves paused state/files/inodes.
-Wait the real password-rate window before launch, with no parent active. Do not
-change counters or limits. Fixture review caught default Python Unicode escaping
-and key order; corrected oracle gives399 bytes versus the old407, SHA4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9.
-Then continue explicit authenticated status/resume/cancel and their UI consumers.
+[First revocation fixture](evidence/p08-export-revocation-fixture-incomplete-20260924.json)
+atdc94248 is INCOMPLETE before any revoke request. It failed the compound waiter
+identity assertion; the value was not saved, so do not invent the failed predicate.
+Root source inspection found no backend affinity across the first PostgreSQL
+installation ATTACH/DETACH and subsequent DuckLake ATTACH in receipt.rs.
+The corrected fixture saves the actual waiter before assertions and binds it to
+its owned PG lock, reader login/application and sole native child, then still
+requires that exact waiter across authenticated revocation. No product change.
+Original34file/1181source capture and both ELF verified; tar
+f9c19d4bcd4c5c07672593c17421c02b5b7ae76e83be30341d9ba9965c4a5844.
+Ownera6ae8b05cd43caadb4159c0ec70d3381 at /runs/export-runtime-dc94248 stopped-retained,
+PGbcdf89cb/runnerdd8ca6ee PID0/noOOM/network removed. BothDB0 before cleanup;
+620prior/eight running preserved. Free144631091200→144234491904bytes. No cache.
+
+Next bounded action: review/commit corrected fixture plus original failure, then
+run --runtime-revocation again in a fresh exact-Git lab with cdb ELF only after
+full input equality and new resource/space audit. No revocation qualified yet.
+Keep actual SQL wait before/after HTTP revocation, exact Control PID grant-error
+observation, paused4/no inventory, independent signed399B files, fresh reader
+join/release and original pins. Ordinary restart must preserve rows/xmin/files.
+The initially admitted bounded unit may finish private files; no claim of
+instantaneous revocation of every I/O. Password-rate wait occurs with no parent;
+never change counters/limits. After qualification continue authenticated
+status/resume/cancel and UI consumers. Root/static review alone is not evidence
+of this native scenario; the missed first-connection assumption demonstrates it.
 
 The runtime's ExecutionCustody can only come from successful RunningExport.prepare:
 it binds exact committed start job/revision/unit/destination/ControlOwner to the
