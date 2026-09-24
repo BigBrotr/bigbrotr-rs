@@ -1,0 +1,111 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-24",
+  "tasks": [
+    "P08-T03 Step 3",
+    "P08-T04 Step 3"
+  ],
+  "status": "INCOMPLETE",
+  "source": {
+    "files": 14,
+    "sha256": "4d7bb82526d6341c28eb4055f6a4bde8c5cda5bb5992663eac55bba8aa18efb0",
+    "source": "90b54b7a320c1eb52e78952afec71f4b9c8d707c",
+    "tree": "81be60410c4cdc108d9bc64f1c428f0328b736a9",
+    "source_files": 1141
+  },
+  "scope": "Candidate0501 SQL on real PostgreSQL16.15 after original4e real native publication and0813 acceptance; no current Rust build or runtime export.",
+  "executed": {
+    "migration_sha256": "14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861",
+    "migration": "applied with exact ledger receipt; existing job rows unchanged",
+    "reservation_trials": "claim|BB099\nrun_before_claim_commit|23514\nimmediate_constraint_bypass|23514\nmissing_unit|23514\nrewrite_unit|23514\nt",
+    "completion": "NOT_RUN: fixture DO statement syntax error after separate reservation COMMIT",
+    "terminal_sql": "NOT_INSPECTED after failure; retain database. The preceding reservation COMMIT succeeded, but no independently sampled final rows. Do not infer released Control or recovery."
+  },
+  "failure": "completion_cases.sql ELSE/CASE expression in IF needs parentheses. Original psql error and traceback retained. Independent AI also identified potentially multiline json_agg parsing and duplicated artifact-missing/success-without-artifact case; corrected recipe uses jsonb_agg and replaces duplicate with extra-file refusal. Product0501 SQL bytes unchanged.",
+  "resources": {
+    "source": "90b54b7a320c1eb52e78952afec71f4b9c8d707c",
+    "tree": "81be60410c4cdc108d9bc64f1c428f0328b736a9",
+    "owner": "2d284761e331170f0a67f6eeb59062c7",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-execution-90b54b7",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "e14dd3490567b68b7ace6ec803f1cebc8e586844413454afa3b2bf8701c0f6bd"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "3497e7ce50ae3bf15c51c999272b692474057d309190aca26cba19c22e4d82e6"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "owner_label": "org.bigbrotr.export-execution",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "started_at": "2026-09-24T08:52:45.849412+00:00",
+    "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "network_id": "89307c2d268aa537d70781c4d2f9bafb190800c06b7e7f7e8ecb875f377e12bd",
+    "postgres_id": "e14dd3490567b68b7ace6ec803f1cebc8e586844413454afa3b2bf8701c0f6bd",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "3497e7ce50ae3bf15c51c999272b692474057d309190aca26cba19c22e4d82e6",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "status": "INCOMPLETE",
+    "preexisting_preserved": true,
+    "preexisting_count": 570,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "original_source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "free_bytes": 174599081984
+  },
+  "capture": ".research/implementation/export-execution/attempt-90b54b7/capture",
+  "artifact_origin": {
+    "source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "tree": "fb87d6a4e8082d0dc2e5e8c5ac010de37920632a",
+    "owner": "3f840fe30a3ffef7f9944c72ea6e38f9",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+    "source_manifest_sha256": "eee5a33104dbee6059d2a106eab2b09d44b14e54c5badd06fce0f8425182ef6f",
+    "artifacts": {
+      "control": "42e2787cdabf4d31c1941ca38bebe5006ac8c0e8a4c8fdf8ac99d9644e38c88c",
+      "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+      "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+      "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+      "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+    },
+    "native_assets": {
+      "bigbrotr-archive-worker": {
+        "bytes": 14378448,
+        "sha256": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4"
+      },
+      "extensions/ducklake.duckdb_extension": {
+        "bytes": 36436086,
+        "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+      },
+      "extensions/httpfs.duckdb_extension": {
+        "bytes": 21570542,
+        "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+      },
+      "extensions/postgres_scanner.duckdb_extension": {
+        "bytes": 41696558,
+        "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+      },
+      "lib/duckdb.h": {
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "lib/libduckdb.so": {
+        "bytes": 70529912,
+        "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+      }
+    },
+    "validation": "Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. Current0501 SQL executes separately. No current build, Rust adapter, unit/Clippy or runtime qualification."
+  },
+  "limitations": [
+    "Five reservation trials executed: positive rollback, missing unit, immutable unit rewrite, same-transaction run and SET CONSTRAINTS bypass refusals. Full/empty completion and all completion omissions remain NOT_RUN.",
+    "SQL fixture uses postgres; application login new data.read row-lock privilege is not qualified. No new compiler cache, build/unit/Clippy run, filesystem output, Control job adapter, runtime or restart qualification.",
+    "Native seed/readback succeeded with actual original4e artifacts and frozen signed fixtures; no claim that those old artifacts implement501. Both owned containers stopped/PID0/noOOM, network removed and570priorrecords/eight unrelated running preserved. Original source, PG/archive state, artifacts and failed logs retained."
+  ]
+}

@@ -20062,5 +20062,48 @@
       "scope": "Same two ELF, original build/tests retained at origin; no compilation or unit/Clippy rerun. New fixture only."
     },
     "observation": "No new Cargo cache or retirement. Existing c685 complete useful cache and4e installed assets/cache remain retained. Both owned containers stopped0/PID0/noOOM; no cleanup errors or dedicated network. Free space after174991237120bytes, subject to concurrent writes."
+  },
+  "implementation_export_inventory_20260924": {
+    "native": {
+      "source": "90b54b7a320c1eb52e78952afec71f4b9c8d707c",
+      "tree": "81be60410c4cdc108d9bc64f1c428f0328b736a9",
+      "owner": "2d284761e331170f0a67f6eeb59062c7",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-execution-90b54b7",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "e14dd3490567b68b7ace6ec803f1cebc8e586844413454afa3b2bf8701c0f6bd"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "3497e7ce50ae3bf15c51c999272b692474057d309190aca26cba19c22e4d82e6"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.export-execution",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-24T08:52:45.849412+00:00",
+      "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "network_id": "89307c2d268aa537d70781c4d2f9bafb190800c06b7e7f7e8ecb875f377e12bd",
+      "postgres_id": "e14dd3490567b68b7ace6ec803f1cebc8e586844413454afa3b2bf8701c0f6bd",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "3497e7ce50ae3bf15c51c999272b692474057d309190aca26cba19c22e4d82e6",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "local_root": ".research/implementation/export-execution/attempt-90b54b7",
+    "orchestrator": {
+      "pid": 3806720,
+      "start_ticks": "362221948",
+      "source": "90b54b7a320c1eb52e78952afec71f4b9c8d707c",
+      "tree": "81be60410c4cdc108d9bc64f1c428f0328b736a9"
+    },
+    "qualification": {
+      "status": "INCOMPLETE",
+      "evidence": "docs/implementation/evidence/p08-export-inventory-incomplete-20260924.json",
+      "capture_sha256": "4d7bb82526d6341c28eb4055f6a4bde8c5cda5bb5992663eac55bba8aa18efb0"
+    },
+    "observation": "Native seed/readback succeeded with actual original4e artifacts and frozen signed fixtures; no claim that those old artifacts implement501. Both owned containers stopped/PID0/noOOM, network removed and570priorrecords/eight unrelated running preserved. Original source, PG/archive state, artifacts and failed logs retained."
   }
 }

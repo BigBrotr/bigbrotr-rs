@@ -21,14 +21,14 @@ fixture and both final capture reviews; no edits/tests/SSH/resources by reviewer
 
 ## Git and current implementation
 
-Last observed main/HEADdfd3129bbe82d65685345dd880629857fd9738ad,
-tree38d467861d3f84a77b0b416efa0088945cb7eaed; main equals fetched origin/main after
-ordinary push. Root now owns the uncommitted0501 migration/catalog/schema test,
-export-execution SQL/native recipes and owning storage-contract/checkpoint edits.
-No applied SQL changed. Catalog test first failed UnknownTarget501, then all22
-Mac catalog tests passed; this does not execute SQL. Native schema recipes are
-prepared, NOT_RUN, before any runtime execution adapter. No active lab.
-The completed filesystem reports remain at their original exact revisions.
+Last observed main/HEAD90b54b7a320c1eb52e78952afec71f4b9c8d707c,
+tree81be60410c4cdc108d9bc64f1c428f0328b736a9; unpublished candidate one commit ahead
+of origin/maindfd3129. Root owns fixture-only corrections plus incomplete evidence,
+inventory and checkpoint. Product0501 SQL unchanged after native application.
+Mac catalog22 tests pass (newRED UnknownTarget501 first). Native candidate501
+applied with its receipt; five reservation cases PASS. Completion fixture failed
+syntax after reservation COMMIT; exact final SQL rows not inspected. Retain all
+obligations, do not infer release/recovery. No active lab after terminal audit.
 Research negative worktree .research/worktrees/export-no-custody is clean at
 5f1582c511755de16830e1152d246cc7c24461b2, branchresearch/export-no-custody;
 never merge/push. Its only product change removes original destination Arc
@@ -297,17 +297,30 @@ The corrected d40 native fixture completed, captured, independently reviewed and
 pushed with reportdfd3129. The original c685 result remains INCOMPLETE. No product
 mutation followed the mistargeted statx injection; useful c685 build cache retained.
 
-Current bounded work:0501 common completed-only artifact inventory and immutable
-export_execution_units. Reservation commits queued before running. Same-transaction
-XID guard closes a review counterexample using SET CONSTRAINTS IMMEDIATE; this
-is not a portable identity. New independent SQL fixtures reserve in a separate
-COMMIT before completion omissions, so unrelated guards cannot mask the result.
-The adapter/scheduler is not implemented. Next: review the exact SQL/recipes,
-commit an unpublished candidate and qualify current SQL on fresh isolated Tux PG,
-seeded by original4e real publication/acceptance ELF with separate provenance.
-No new Rust build/cache is needed for that SQL-only fixture; no current binary
-qualification is inferred. Preserve old source/artifacts and check free space
-before launching. Record results before adding the Rust execution consumer.
+Current bounded work:0501 common completed-only inventory and immutable export
+unit. Original native90b54b7 is [INCOMPLETE](evidence/p08-export-inventory-incomplete-20260924.json):
+five reservation cases pass, including same-transaction/immediate-constraint
+bypass refusals. Separate reservation COMMIT precedes a completion fixture syntax
+error; no final SQL state/recovery claim. Root corrected CASE parentheses;
+independent AI found multiline json_agg parsing and a duplicated omission. New
+recipe uses jsonb_agg and extra-file refusal instead. Original0501 bytes unchanged.
+
+Lab export-execution-90b54b7, owner2d284761e331170f0a67f6eeb59062c7, stopped retained:
+PGe14dd349 exit137 and runner3497e7ce exit143, bothPID0/noOOM, owned networkremoved,
+570priorrecords/eight unrelated running preserved; no cleanup errors. Freeafter
+174599081984bytes, concurrent writes possible. No compiler cache/build. Full source,
+original4e seed artifacts, database/archive and failed logs preserved; capture at
+.research/implementation/export-execution/attempt-90b54b7 verified against Git.
+
+Next bounded action: commit reviewed fixture correction and run it in a fresh
+isolated exact-Git lab with the same frozen4e seed producer (not current501Rust
+qualification). Require migration refusal of advanced0813 history plus all18 distinct reservation/
+completion fixture outcomes,
+actual terminal SQL rows, unchanged archive hashes and complete resource audit.
+Do not reuse originaldatabase or silently retry its unknown rows. Application
+login data.read row-lock UPDATE privilege and actual Rust/runtime consumer remain
+unimplemented/unqualified; SQL trials usepostgres. Continue with that consumer
+after native evidence, not a task completion checkbox.
 
 Wire shared0501 inventory,
 additive execution state and ordinary Control supervision. Keep output custody

@@ -36,7 +36,7 @@ BEGIN
     IF u.reservation_transaction=pg_current_xact_id() THEN RAISE EXCEPTION 'fixture failed to commit reservation'; END IF;
     before_job:=to_jsonb(j);
     FOREACH mode IN ARRAY ARRAY['complete','empty','artifact_missing','file_missing','checkpoint_missing',
-        'checkpoint_without_artifact','success_without_artifact','manifest_mismatch','wrong_destination',
+        'checkpoint_without_artifact','extra_file','manifest_mismatch','wrong_destination',
         'wrong_file','wrong_total','wrong_empty_digest','old_export_pin'] LOOP
         BEGIN
             PERFORM control.require_export_execution_authority(j.job_id);
@@ -55,7 +55,7 @@ BEGIN
                     j.input_topology_generation,shard_id,owner_epoch,1,last_complete_sequence,'reader',time_us
                     FROM control.job_input_bounds WHERE job_id=j.job_id AND last_complete_sequence>0;
             phase:='running'; UPDATE control.jobs SET state='running',job_revision=job_revision+1 WHERE job_id=j.job_id;
-            IF mode NOT IN ('artifact_missing','checkpoint_without_artifact','success_without_artifact') THEN
+            IF mode NOT IN ('artifact_missing','checkpoint_without_artifact') THEN
                 phase:='artifact';
                 INSERT INTO control.artifacts(artifact_id,job_id,dataset_id,principal_id,destination_id,
                     destination_binding_sha256,manifest_format,manifest_bytes,manifest_sha256,file_count,total_bytes,verification_pin_id,completed_at_us)
@@ -65,7 +65,7 @@ BEGIN
                         CASE WHEN mode IN ('empty','wrong_empty_digest') THEN 1321 WHEN mode='wrong_total' THEN 1656 ELSE 1655 END,
                         CASE WHEN mode='old_export_pin' THEN e.pin_lease_id ELSE pin END,time_us);
             END IF;
-            IF mode NOT IN ('file_missing','artifact_missing','checkpoint_without_artifact','success_without_artifact') THEN
+            IF mode NOT IN ('file_missing','artifact_missing','checkpoint_without_artifact') THEN
                 phase:='file';
                 INSERT INTO control.artifact_files VALUES(u.artifact_id,'events',
                     CASE WHEN mode='wrong_file' THEN 'different.jsonl' ELSE 'events.jsonl' END,'nostr-jsonl/1',
@@ -73,6 +73,9 @@ BEGIN
                     CASE WHEN mode IN ('empty','wrong_empty_digest') THEN 0 ELSE 1 END,
                     CASE WHEN mode='empty' THEN decode('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855','hex')
                         ELSE decode('2006c3bc3473e92f0bcf8e5b8905bc0784ce18e13b00b31ab095bfb469f0f06f','hex') END);
+            END IF;
+            IF mode='extra_file' THEN
+                INSERT INTO control.artifact_files VALUES(u.artifact_id,'extra','extra.jsonl','nostr-jsonl/1',0,0,sha256(''::bytea));
             END IF;
             IF mode='checkpoint_without_artifact' THEN
                 phase:='job'; UPDATE control.jobs SET checkpoint_revision=1,job_revision=job_revision+1 WHERE job_id=j.job_id;
@@ -89,7 +92,7 @@ BEGIN
             IF (phase,code,message) IS DISTINCT FROM ('positive-rollback','BB099','complete artifact rollback') THEN
                 RAISE EXCEPTION 'positive % failed: % % %',mode,phase,code,message;
             END IF;
-        ELSIF phase<>'constraints' OR code<>CASE WHEN mode='old_export_pin' THEN 'BB001' ELSE '23514' END THEN
+        ELSIF phase<>'constraints' OR code<>(CASE WHEN mode='old_export_pin' THEN 'BB001' ELSE '23514' END) THEN
             RAISE EXCEPTION 'negative % failed elsewhere: % % %',mode,phase,code,message;
         END IF;
         IF (SELECT to_jsonb(t) FROM control.jobs t WHERE job_id=j.job_id) IS DISTINCT FROM before_job
@@ -98,7 +101,7 @@ BEGIN
         INSERT INTO completion_trial_results VALUES(mode,phase,code,message);
     END LOOP;
 END $$;
-SELECT json_agg(t ORDER BY name) FROM completion_trial_results t;
+SELECT jsonb_agg(t ORDER BY name) FROM completion_trial_results t;
 -- Only the reservation remains committed. Retain its original attribution and
 -- export pin; no terminal recovery or reader release is inferred from rollback.
 UPDATE control.owner_epochs SET state='released',released_at_us=(extract(epoch FROM clock_timestamp())*1000000)::bigint,

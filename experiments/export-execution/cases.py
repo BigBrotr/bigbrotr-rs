@@ -50,6 +50,12 @@ def main(root):
         assert len(original_files)==8
         before=sql(db,"SELECT json_agg(to_jsonb(j) ORDER BY job_id) FROM control.jobs j")
         migration=source/'migrations/postgres/0501_artifacts.sql';digest=sha(migration)
+        refusal=(source/'experiments/export-execution/migration_refusal.sql').read_text()+migration.read_text()+"\nCOMMIT;"
+        refused=subprocess.run(['docker','exec','-i',pg,'psql','-XAtq','-v','ON_ERROR_STOP=1','-v','VERBOSITY=verbose','-U','postgres','-d',db],input=refusal,text=True,capture_output=True,timeout=30)
+        result['migration_refusal']=dict(exit=refused.returncode,stdout=refused.stdout,stderr=refused.stderr);save()
+        assert refused.returncode==3 and '55000' in refused.stderr and '0501 refuses advanced or inconsistent export history' in refused.stderr
+        assert sql(db,"SELECT to_regclass('control.export_execution_units') IS NULL")=='t'
+        assert sql(db,"SELECT json_agg(to_jsonb(j) ORDER BY job_id) FROM control.jobs j")==before
         ddl="BEGIN; SELECT pg_advisory_xact_lock(1111651442,1296648018); "+migration.read_text()+f"\nINSERT INTO control.schema_versions VALUES('postgres-control',501,'0501_artifacts.sql',decode('{digest}','hex'),1,1,1,(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,current_user); COMMIT;"
         result['migration_stdout']=sql(db,ddl);result['migration_sha256']=digest;save()
         assert sql(db,"SELECT json_agg(to_jsonb(j) ORDER BY job_id) FROM control.jobs j")==before
@@ -63,7 +69,7 @@ def main(root):
         result['completion_sha256']=sha(completion)
         result['completion_stdout']=sql(db,completion.read_text());save()
         rows=[json.loads(line) for line in result['completion_stdout'].splitlines() if line.startswith('[')]
-        assert len(rows)==1 and len(rows[0])==13
+        assert len(rows)==1 and [r['name'] for r in rows[0]]==sorted(['complete','empty','artifact_missing','file_missing','checkpoint_missing','checkpoint_without_artifact','extra_file','manifest_mismatch','wrong_destination','wrong_file','wrong_total','wrong_empty_digest','old_export_pin'])
         assert all(r['code']==('BB099' if r['name'] in ['complete','empty'] else 'BB001' if r['name']=='old_export_pin' else '23514') for r in rows[0])
         result['terminal_sql']=json.loads(sql(db,"SELECT json_build_object('units',(SELECT count(*) FROM control.export_execution_units),'artifacts',(SELECT count(*) FROM control.artifacts),'files',(SELECT count(*) FROM control.artifact_files),'jobs',(SELECT count(*) FROM control.jobs WHERE export_job_protocol=1 AND state='queued' AND checkpoint_revision=0),'active_control',(SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'),'backends',(SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()))"))
         assert result['terminal_sql']==dict(units=1,artifacts=0,files=0,jobs=1,active_control=0,backends=0)
@@ -73,7 +79,7 @@ def main(root):
     except BaseException as error:
         result['failure']=type(error).__name__;raise
     finally:save()
-    print(json.dumps(dict(status=result['status'],source=state['source'],cases=18)))
+    print(json.dumps(dict(status=result['status'],source=state['source'],cases=19)))
 
 
 if __name__=='__main__':main(Path(sys.argv[1]).resolve())
