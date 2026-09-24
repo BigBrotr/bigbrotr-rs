@@ -94,15 +94,21 @@ def main(root):
         assert row['checkpoint']=='1' and row['reader_released'] and row['export_retained']
         assert row['sha256']==hashlib.sha256(b'').hexdigest() and row['manifest']==hashlib.sha256(raw).hexdigest()
         assert str(len(raw))==row['manifest_bytes']
-        assert manifest==dict(format='bigbrotr-signed-events-export/1',artifact_id=row['artifact'],job_id=row['job'],
+        expected_manifest=dict(format='bigbrotr-signed-events-export/1',artifact_id=row['artifact'],job_id=row['job'],
             visibility='private',fidelity='full-signed-events',origin='retained-scoped-archive',
             source=dict(cut=dict(dataset_id='01'*16,topology_generation='0',bounds=[dict(stream=dict(shard_id=0,owner_epoch='1'),last_complete_sequence='10')]),catalog_id='5a'*16,frontier_revision='1',snapshot_id='3'),
             selection=dict(event_id='ab'*32,scope=dict(dataset_id='01'*16,dictionary_kind=4,allocation_domain='04'*16,ordinal='1')),
             accepted_revisions=dict(configuration='1',policy='1'),included_families=['signed-events'],
             excluded_families=['internal-payload-envelopes','eligibility-facts','first-local-receive','relay-provenance','imported-claims','measurements','documents','dictionaries','coverage','derived-results','deployment-state'],
             files=[dict(file_id='events',path='events.jsonl',format='nostr-jsonl/1',bytes='0',rows='0',sha256=hashlib.sha256(b'').hexdigest())])
+        assert manifest == expected_manifest
         result['output']=row
         result['output_hashes']={str((artifact/name).relative_to(root/'out')):sha(artifact/name) for name in ['events.jsonl','manifest.json']}
+        save()
+        from recovery_cases import run as recover
+        result['recovery'] = recover(root, state, sql, policy, expected_manifest)
+        result['output_hashes'].update(result['recovery']['output_hashes'])
+        assert files=={str(p.relative_to(root/'out')):sha(p) for p in sorted((root/'out/signed_normal/kind=7').rglob('*.parquet'))}
         result['status']='PASS'
     except BaseException as error:
         result['failure']=type(error).__name__;raise

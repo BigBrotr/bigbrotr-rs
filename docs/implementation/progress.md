@@ -21,10 +21,11 @@ edits, tests, SSH access or resource ownership.
 
 ## Verified Git and latest boundary
 
-Last verified HEADf70ac174ad091fd9b849ff18719b86e520478df8 candidate;
-origin/mainfc08c48a4c9573bcc308a082de64ab33c3c4820b freshly verified by ls-remote.
-Root owns the evidence/inventory/documentation update and an untracked next
-recovery_client.py fixture, intentionally excluded from the evidence commit.
+Last verified HEAD/origin main43e4fee4ff95d0c525ff8dd2a8ef54153b778b2c;
+verified prefix pushed and ls-remote confirmed.
+Root owns the next runtime_cases.py/recovery_cases.py/recovery_client.py fixture
+and checkpoint update. Product input remains exactly f70ac17; native recovery
+NOT_RUN. Capture helper now preserves partial recovery outputs on failure.
 The product source is committed; no other contributor edits or merge/rebase.
 
 [Native installed headless completion](evidence/p08-export-runtime-headless-native-20260924.json)
@@ -146,13 +147,23 @@ was reviewed by root only. Earlier failed attempts are never relabeled PASS.
 
 ## Next bounded action
 
-Complete independent capture review, record scoped evidence and push the verified
-coherent prefix. Then extend the same isolated fixture: actual signed event
-accepted through HTTP, browser logout, kill Control after output publication while
-SQL inventory INSERT is observably blocked, restart with the same unit, literal
-signed bytes/manifest and exact SQL/pin observations. Use f70 installed artifacts
-only after complete product/build-input equality. No second edited Tux copy.
-Record any outcome as observed, including initial fixture failures.
+Review/commit the next recovery fixture, then transfer clean exact Git and reuse
+f70 installed parent/worker after complete product/build-input equality. The
+fixture first repeats qualified empty completion; policy3 then enables HTTP while
+real256MiB export cap defers execution. Accept a real signed-event job, retry its
+receipt, logout and stop; policy4 restores1GiB export cap with no listener. Hold
+actual artifacts table SHARE lock, observe completed files and blocked actual
+INSERT, freeze only the parent and its positively identified PostgreSQL backend,
+verify actual ungranted lock after parent SIGKILL, resume backend/remove only owned
+lock, verify rollback and retained reader, then restart. Expect same ArtifactId and exact bytes/manifest, one
+completion and only the new reader release. No deadline/SQL/source weakening.
+Independent static fixture review found a timeout-to-kill race and missing
+terminal old-reader comparison. Paired freeze/after-kill lock observation and
+full lease/pin/claim+xmin terminal equality address these. Independent follow-up
+confirmed those fixes; final export pin/job equality after stop also added. No
+practical recovery result yet.
+Outer container shutdown remains the final join on fixture failure. Preserve
+original failures; no current active lab.
 
 Keep OutputCustody and its output OwnedPermit outside cancellable supervise
 through actual Control driver join; each blocked worker separately owns the same
