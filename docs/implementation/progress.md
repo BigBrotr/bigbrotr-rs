@@ -20,14 +20,14 @@ product responsibilities in the existing task plan.
 
 ## Verified Git and latest boundary
 
-Last verified HEAD29983ccab5d77727f4cbc24241cb34e2a9a586eb on main; two commits
-unpublished, origin still62c18c9a108af2c8165508e07ad4e37920fbd292. Root owns
-only the subsequent scoped status evidence, task-ID correction(P09-T09), owning
-operations/task documentation, inventory and this checkpoint. No other writer or
-merge/rebase. Native status capture is verified PASS; browser remains NOT_RUN.
-Commit/push this evidence boundary, then implement the actual browser fixture.
-Fresh f813 parent/worker artifacts are current. Reuse requires complete product/
-build input equality; product changes require a new build, never old cdb ELF.
+Last verified HEADcac50d60a591981b8060e50ed8cbb6c2b070be62 on main, clean and
+pushed to the same private origin. Root now owns the new export browser fixture
+(browser_cases.py, browser_server.py, job_browser.mjs), lab.py wiring, existing
+private-panel recipe documentation and this checkpoint. No product/build input
+changes. Independent AI fixture review identified a response-vs-request false-PASS
+and a non-JSON psql row; both corrected before execution. Native browser NOT_RUN.
+Review/check this fixture, commit exact candidate, then run --runtime-job-browser
+reusing f813 ELF after complete product/build input equality. No new Rust cache.
 
 The known-refusal implementation at cdb78a1 has Mac fmt/check,42 binary tests and
 Clippy PASS, complete root diff review and independent AI source review without a
@@ -149,7 +149,9 @@ Next bounded action: exercise the production private panel's job view in an
 actual browser against installed Rust/PostgreSQL, with independent SQL expected
 states and session/visibility failures. Inspect existing private-panel browser
 recipes and reusable tools before extending the export lab; use exact Git and
-check space. Do not mutate retained labs. No browser fixture is implemented yet.
+check space. Do not mutate retained labs. Proposed six-pair fixture now exists;
+its scope includes actual SQL-blocked status discarded on logout, no-idle-touch,
+restart and account revocation. No browser execution evidence yet.
 
 [Native status](evidence/p08-export-status-native-20260924.json) passes at29983cc,
 with exact f813 ELF after full product/build equality.18 uniquely correlated
@@ -264,6 +266,10 @@ job-status parent stdout/stderr. review-status-capture.py verified INCOMPLETE.
 Corrected29983cc owner6b9d5688cc4b4413b7799843b3aeb6e2 is also stopped-retained:
 PG4984e6c6/runner2e46e38e PID0/noOOM, PG137/runner0, network removed.626prior/
 eight running preserved; free139977797632→139580645376bytes. No new compiler cache.
+Fresh read-only preflight before browser preparation found139570257920free bytes,
+eight unrelated running containers and no matched BigBrotr/Cargo/Rustc process.
+Retained private-panel-no-preload-b6d9d7e tools/resources exist; new launcher must
+still verify all ownership/mounts, tool archives/extracted files and image identity.
 No active lab or cleanup debt after terminal capture; recheck before reuse.
 
 - cdb78a1 ownera7d3f8f762e57fc9f6f706f8cda4da91 stopped-retained, network removed;

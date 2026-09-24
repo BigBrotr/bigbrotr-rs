@@ -104,3 +104,22 @@ The [Mac evidence](../../docs/implementation/evidence/p09-large-static-local-202
 includes an isolated no-revoke runtime failure. [Native evidence](../../docs/implementation/evidence/p09-large-static-native-20260920.json)
 at709656d executes all18 tests on Linux amd64. This does not measure queued
 kernel bytes or a universal shutdown latency.
+
+The initial export-job view has a separate `--runtime-job-browser` profile in
+`experiments/export-execution/lab.py`. It first executes the actual signed archive,
+empty export and authenticated status fixture, then builds current production
+assets through this frontend stage. Six isolated browser containers exercise the
+root/subpath view with Chromium, Firefox and WebKit, real stored completed and
+accepted jobs, missing/other-account refusals, restart and revocation. The SQL
+oracle compares session activity across lookups and seven durable ledgers across
+the whole matrix. A real account row lock holds a positively identified Control
+lookup while the page signs out; its eventual request settlement must not restore
+private state. Each pair waits the real sixty-second login rate window. No rate
+counter resets, mocked API, request interception or CSP bypass are used.
+
+This new profile is a proposed practical scenario until a source-bound capture
+records its actual outcome. It does not qualify natural session expiry, BFCache,
+all paused/running states, remote TLS, broad accessibility or release installation.
+The host retains originals and collects every explicitly owned browser container
+on failure. Verified historical Node/pnpm archives are reused read-only after
+checking every extracted file/link; the frontend fetch stage has no lab secrets.

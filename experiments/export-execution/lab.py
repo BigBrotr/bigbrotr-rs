@@ -7,12 +7,14 @@ Rust consumer against that retained native worker and independently checked seed
 """
 import base64, datetime, hashlib, json, os, re, secrets, shutil, subprocess, sys, tarfile, time, traceback, urllib.request
 from pathlib import Path
+sys.dont_write_bytecode = True
 
 revision, tree = sys.argv[1:3]
 responsive = sys.argv[3:4] == ["--runtime-responsive"]
 busy = sys.argv[3:4] == ["--runtime-busy"]
 pause_commits = sys.argv[3:4] == ["--runtime-pause-commits"]
-job_status = sys.argv[3:4] == ["--runtime-job-status"]
+job_browser = sys.argv[3:4] == ["--runtime-job-browser"]
+job_status = job_browser or sys.argv[3:4] == ["--runtime-job-status"]
 revocation = sys.argv[3:4] == ["--runtime-revocation"]
 parking = busy or pause_commits or sys.argv[3:4] == ["--runtime-parking"]
 executor = parking or revocation or job_status or sys.argv[3:4] == ["--runtime-executor"]
@@ -21,7 +23,7 @@ reuse_runtime = sys.argv[4] if runtime and len(sys.argv)==5 else None
 assert reuse_runtime is None or re.fullmatch("[0-9a-f]{40}", reuse_runtime)
 rollback = sys.argv[3:] == ["--rust-rollback"]
 adapter = sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
-assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"], ["--runtime-job-status"]) or (runtime and len(sys.argv)==5)
+assert sys.argv[3:] in ([], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"], ["--runtime-job-status"], ["--runtime-job-browser"]) or (runtime and len(sys.argv)==5)
 compile_current = adapter or (runtime and not reuse_runtime)
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
@@ -78,7 +80,7 @@ owner = secrets.token_hex(16)
 state = dict(source=revision, tree=tree, owner=owner, root=str(root), state='preparing', containers=[],
              rust_image=rust_image, owner_label=label, postgres_image=pg_image,
              started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-             runtime_profile='job-status' if job_status else 'revocation' if revocation else 'busy' if busy else 'pause-commits' if pause_commits else 'parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
+             runtime_profile='job-browser' if job_browser else 'job-status' if job_status else 'revocation' if revocation else 'busy' if busy else 'pause-commits' if pause_commits else 'parking' if parking else 'executor' if executor else 'responsive' if responsive else None,
              adapter_profile='rollback' if rollback else 'completion' if adapter else None)
 def save(): write(root / 'resources.json', state)
 save()
@@ -218,6 +220,12 @@ try:
             shutil.copy2(instrument_root/'out'/name,instrument/name)
             assert sha(instrument/name)==digest
         write(root/'checker-instrument.json',dict(source=instrument_state['source'],owner=instrument_state['owner'],root=str(instrument_root),files=expected))
+    if job_browser:
+        sys.path.insert(0,str(source/'experiments/archive-engine'))
+        sys.path.insert(0,str(source/'experiments/export-execution'))
+        import browser_cases
+        browser_tools=browser_cases.prepare(root,prior,start,finish)
+        state['browser_image']=browser_cases.IMAGE;save()
     native_assets = out/'archive-worker'
     write(root / 'rust-image.json', json.loads(cmd('docker', 'image', 'inspect', rust_image))[0])
     state['network_id'] = cmd('docker', 'network', 'create', '--internal', '--label', label + '=' + owner, 'bigbrotr-export-execution-' + revision[:7])
@@ -285,6 +293,12 @@ while not Path('/out/qualification-complete').exists():
         audit['independent_sql'][database]=observed
         assert observed==dict(backends=0)
     assert cases.returncode==0 and result['status']=='PASS'
+    if job_browser:
+        state['state']='qualifying-browser';save()
+        def browser_sql(db,query):
+            return browser_cases.command('docker','exec','-i',pg,'psql','-XAtq','-v','ON_ERROR_STOP=1','-U','postgres','-d',db,input=query)
+        audit['browser']=browser_cases.run(root,state,browser_sql,start,finish,browser_tools)['status']
+        assert audit['browser']=='PASS'
     (out/'qualification-complete').write_text('PASS\n')
     audit['container_ok']=finish(runner,'rust-visibility',30)
     assert audit['container_ok']
