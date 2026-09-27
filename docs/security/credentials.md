@@ -123,7 +123,9 @@ The key snapshot uses32KiB of the same process payload allowance as Control and
 HTTP and remains charged through the actual connection-driver join. Missing or
 invalid files refuse without preparation; enrollment mismatch refuses before
 listener startup. A SQL refusal may follow a committed Control acquisition.
-The `enrolled-local-snapshot` runtime observation is under practical qualification
-and grants no cursor authority or complete lifecycle readiness. No configured
+The [native runtime qualification](../implementation/evidence/p06-cursor-runtime-native-20260927.json)
+covers initial/additional/subset snapshots, refusals, real lock waits, owner expiry,
+cancellation/deadline and recovery. The `enrolled-local-snapshot` observation
+grants no cursor authority or complete lifecycle readiness. No configured
 root adds no keyfile read or0602 requirement. Synchronous startup file loading
 does not establish a bound on stalled regular-file I/O.

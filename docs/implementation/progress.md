@@ -20,14 +20,46 @@ phase, M1 or selected-product completion. Root is sole writer/integrator;
 catalog_guard_review is an independent read-only AI reviewer, with no edits,
 product tests, SSH or resource ownership.
 
-Main HEAD/private origin ecd35f9a10f0505474c247cc0b5427f7bd858a3c verified
-with ls-remote again before the runtime candidate. Root owns the current
-runtime/fixture/contract/evidence changes; no merge/rebase or other contributor
-changes. Native-qualified enrollment product remains9b02; b562/c659 are retained
-fixture/evidence corrections, ecd35 records that qualification. The next coherent
-local candidate is not yet published and has no native runtime result.
-Final artifact/handoff checks pass179Markdown/328JSON,123tasks/756steps with
-same three historical cycle candidates; complete qualification diff reviewed.
+Main HEAD is unpublished candidate6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7,
+treea06365c2eae1fc4b5d80d14e5d4fc3606ed382eb. Private origin/main remains
+ecd35f9a10f0505474c247cc0b5427f7bd858a3c (last ls-remote before candidate).
+Candidate was clean for exact Git-bundle transfer. Root owns the native evidence,
+P06 task/security/fixture documentation, inventory and this checkpoint refresh.
+Root also owns an uncommitted P08 job-admission compatibility test; it is separate
+from the runtime qualification commit. No merge/rebase or another contributor's edits. No private push yet.
+
+## Current runtime qualification
+
+Candidate6474 now passes the scoped
+[native runtime report](evidence/p06-cursor-runtime-native-20260927.json):
+54Rust tests/Clippy and117checks across9actual PostgreSQL16.15 databases on
+Linux amd64/Rust1.98.1. The actual serve consumer opens an existing optional
+snapshot, charges32KiB to the shared budget through actual driver join, validates
+all0602ID/material bindings under the Control incarnation, checks server expiry
+after waits and awaits rollback before exposing a non-authorizing observation.
+No DDL, activation, issuance, key distribution or complete readiness is claimed.
+
+Startup/restart/additional/subset/reordered/16key snapshots, wrong material/ring/ID,
+missing enrollment/schema/SELECT, distinct runtime role without installation
+principal, absent-root compatibility, actual dataset contention, real2500ms owner
+lease expiry, SIGTERM/deadline and same-byte recovery all pass. Prior9b02ELF is a
+negative control: it starts with wrong material because it lacks this consumer.
+The lease test observes real server expiry before releasing the dataset lock;
+no owner-row or clock mutation. Refusal can follow a committed acquisition.
+
+Root independently verifies182safe payloads/1323Git files, source/ELF identity,
+actual test summaries, SQL/xmin, refusal file hashes/metadata, owner correlations,
+expiry and proxy counts. Positive key-byte/inode preservation, owner release and
+zero-backend counts remain runner assertions. Local27Rust/22wire checks remain
+separate in their original report; helper tests are not PostgreSQL evidence.
+Capture .research/implementation/cursor-runtime/capture-6474cd3,
+tar594b17d014e566ef578465eac5e858db0eb38081106ed77f4af2d0efa8ded50e;
+ELFd9c98747bd1ae7fe5dca267a9e0a1b1df86e6afe23c6cfbce792c8390a9781f7;
+source manifeste75b6ab6ccc10eb71e59adc64404335749c9aec40723424e917576d731f1bd36.
+Independent read-only AI confirms the capture, twoELFs,23SQL/seven refusal-file
+comparisons,32raw process streams/24serve children, four proxy sequences with
+2/1/1/1COMMITs, literal bindings/mutations and780prior/784final-live projections.
+No discrepancy or AI product tests/SSH. Earlier product/fixture review stays linked.
 
 ## Latest qualified responsibility
 
@@ -98,11 +130,16 @@ Three owned containers PID0/noOOM: fault59ff0adc exit137 (expected kill),
 clientbc9f442f exit143, PG04c486d2 exit0. Its empty networkaf1d0fe5 is removed.
 All12databases and14private key directories (including partial EIO staging) stay.
 
-Fresh2026-09-27T17:03:27Z census verifies all780container projections, eight
-unrelated running, source/ELF identity, orchestrator absence and protected keyfile
-metadata; .research/implementation/cursor-enrollment/live-final.json.
-No active BigBrotr experiment. Original9b02 build and e684 addition containers
-are stopped-retained; their compiler caches are the current useful generations.
+Latest runtime run cursor-runtime-6474cd3 is stopped-retained/PASS, owner
+1a45b5d0a0fc08079fc3a1bcde9f0001; orchestrator2256351/start391338882 is absent or
+terminal zombie. Build0afdf2fb exit0, helper9b0be3a2/clientc20a9343 exit143,
+PG79536716 exit0, allPID0/noOOM. Its empty network846b3c56 is retired; nine
+SQL databases and private key directories, current6474compiler cache/native/source
+artifacts remain. Fresh17:53:53UTC census matches all784terminal container
+projections/eight unrelated running, source Git clean and original ELF hash;
+free101110304768bytes. See .research/implementation/cursor-runtime/live-final.json.
+No active BigBrotr experiment. Original9b02/e684caches remain retained. The prior
+enrollment census and maintenance results below are historical, unchanged.
 
 Subsequent scoped maintenance removes only these four resolved paths:
 
@@ -139,36 +176,32 @@ Historical dirty private-panel-no-revoke and detached positiveed2a93b stay untou
 
 ## Next bounded action and retained constraints
 
-Qualification and inventory are committed/pushed; maintenance is complete. Root
-has now read the complete Control/session/serve, keyring, registration adapter,
-shared management budget and transport helpers,0602/0007, credential and cursor
-contracts, plus exact locked transaction rollback source. The selected next
-P06-T03 Step1 prerequisite is the actual serve consumer's loaded-key binding
-check, documented in the owning cursor contract and task. No DDL or activation
-authority is added. Independent read-only AI confirms the boundary and highlights
-external Arc custody, one shared budget, post-wait lease expiry and committed
-owner history on post-acquisition refusal. The runtime consumer is now implemented
-locally: read-only open, shared32KiB item, external Arc through driver join,
-per-key0602point reads, post-wait server lease check, awaited rollback and
-non-authorizing enrolled-local-snapshot observation.27selected Rust tests and
-Clippy pass;22real-loopback wire helper tests pass. Local evidence and exact
-execution notes are in evidence/p06-cursor-runtime-local-20260927.json and
-.research/implementation/cursor-runtime/. The previous unrecorded Mac ELF is
-the missing-key RED; an initially overlapping Cargo run is explicitly NOT RED.
+Maintenance is complete. Runtime candidate6474qualification, safe capture and
+fresh live census are complete; root's current edits record those actual outcomes.
+Independent review and full qualification diff are complete; artifact/handoff
+checks pass179Markdown/330JSON and123tasks/756steps, same3historical cycle candidates.
+Next: commit the qualification, fetch/inspect the private remote (last ls-remote
+still ecd35), and push fast-forward. No product test rerun is needed
+for documentation alone unless review finds a concrete defect. Preserve the
+original local RED/overlapping-build distinctions in
+.research/implementation/cursor-runtime/execution-notes.json.
 
-Native runtime.py is authored/NOT_RUN. Review caught/fixed a one-COMMIT proxy
-limit incompatible with Control release, failure-output loss, tolerance of a
-missing owned container, and missing keyfile refusal comparisons. The explicit
-finite later-COMMIT allowance retains default0; no product invariant is weakened.
-Current Tux read-only census17:36:46UTC:780containers/eight unrelated running,
-no active BigBrotr,104920018944free bytes; protected9b02/e684/private-history and
-archive-worker dependency exist. No new Tux run has started. Root owns all
-runtime/fixture/contract/evidence edits; no other contributor changes.
-Focused independent fixture re-review confirms the corrections; source/diff,
-179Markdown/329JSON and123tasks/756steps checks pass with unchanged historical
-cycle candidates. Next: form an unpublished candidate,
-transfer exact Git via bundle to a fresh cursor-runtime-SHORT run, use the stopped
-9b02cache for an offline native build and actual PostgreSQL acceptance.
+Next selected P08-T03 Step3 responsibility is the already specified transactional
+job admission upper cut, independent of the still-required cursor lifecycle.
+Root read complete0001/0008, migrations catalog/manifest/schema tests, export
+acceptance and job status adapters, current cursor contract and task/list contract.
+Initial schema compatibility RED fails as expected with UnknownTarget(815),
+exit101 under .research/implementation/job-admission/schema-red.*; no new SQL
+yet, no remote experiment. Proposed additive0815uses immutable job_admissions mapping and indexed
+per-dataset max+1 under dataset serialization, backfills deterministic ordinals
+without touching jobs/xmin, and participates in actual job INSERT. Avoid sequences,
+wall-clock/xmin cuts, an unused counter table and existing-row trigger bypasses.
+Read remaining trigger/caller boundaries and review this choice before implementation;
+test both lock orders/rollback and backdated/equal-time jobs. Current cursor
+lifecycle/activation/revocation remains required before publishing paged reads.
+No second plan or unused worker registry. Applied0601/0602remain unchanged.
+Current native cache6474is useful for the next exact-source run; refresh free
+space/process/container/mount census first. Never modify Tux source.
 
 The current runtime implements only Control: avoid an unused distributed worker
 registry. Readiness must bind actual loaded dataset/ring/ID/material and full

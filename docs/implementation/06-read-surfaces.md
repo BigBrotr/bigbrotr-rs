@@ -257,17 +257,19 @@ retain their separate INCOMPLETE outcomes. SQL0602 has been applied and is
 immutable. Actual runtime readiness/activation/retirement/revocation and the
 remaining Step1/3 consumer acceptance stay open; enrollment grants no issuance.
 
-Next bounded Step1 prerequisite: load an explicitly configured keyring in the
-actual `serve` consumer, retain its shared32KiB reservation through driver join,
-and check immutable0602material bindings under the current Control fence with
-post-wait lease validation. No DDL or issuing authority is added. Practical
-acceptance must distinguish absent-root compatibility, local refusal before SQL,
-initial/additional/subset snapshots, conflicting material/ring, missing enrollment
-and privileges, actual lock waits/expiry/cancellation and unchanged key/audit
-history. Runtime loading alone does not close activation or full readiness.
-The [local runtime report](evidence/p06-cursor-runtime-local-20260927.json)
-records27selected Rust tests/Clippy and22wire-helper tests. Actual PostgreSQL
-runtime scenarios remain NOT_RUN; helper tests are not engine evidence.
+The actual `serve` consumer now loads an explicitly configured keyring, retains
+its shared32KiB reservation through driver join, and checks immutable0602material
+bindings under the current Control fence with post-wait lease validation. No DDL
+or issuing authority is added. The
+[local runtime report](evidence/p06-cursor-runtime-local-20260927.json) records
+27selected Rust tests/Clippy and22wire-helper tests. The
+[native runtime report](evidence/p06-cursor-runtime-native-20260927.json) records
+54Rust tests/Clippy and117checks across9actual PostgreSQL databases at6474cd3:
+startup/restart/additional/subset/reordered/16key snapshots, material/ring/schema/
+privilege refusals, absent-root compatibility, actual dataset lock contention,
+server-observed lease expiry, cancellation/deadline and same-byte recovery.
+A retained prior executable is the negative control for mismatched material.
+Runtime loading does not close activation, retirement/revocation or full readiness.
 
 
 

@@ -1,0 +1,127 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1 / P08-T03 prerequisite",
+  "status": "PASS",
+  "source": "6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7",
+  "tree": "a06365c2eae1fc4b5d80d14e5d4fc3606ed382eb",
+  "scope": "Actual serve startup validates the loaded cursor snapshot against permanent Control enrollment. No activation, issuance, old-key retention or complete readiness.",
+  "environment": {
+    "os": "Linux amd64",
+    "rust": "1.98.1",
+    "postgres": "16.15",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "published_ports": []
+  },
+  "build": {
+    "binary_sha256": "d9c98747bd1ae7fe5dca267a9e0a1b1df86e6afe23c6cfbce792c8390a9781f7",
+    "source_manifest_sha256": "e75b6ab6ccc10eb71e59adc64404335749c9aec40723424e917576d731f1bd36",
+    "lockfile_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "native_rust_tests": 54,
+    "test_groups": {
+      "tests": 50,
+      "crypto": 2,
+      "runtime-keys": 1,
+      "collision": 1
+    },
+    "clippy": "PASS",
+    "source_files": 1323,
+    "attribution": "Fresh exact-Git offline native build with copied stopped9b02 compiler caches;54Rust tests/Clippy executed at6474. The retained9b02ELF is only an explicit negative control."
+  },
+  "practical": {
+    "checks": 117,
+    "databases": 9,
+    "executed": [
+      "Actual Control startup/restart accepts enrolled initial/additional/subset/reordered/16key snapshots with a distinct runtime SQL role, no installation principal and no key INSERT privilege. Non-authorizing output is correlated with the actual active owner/backend incarnation.",
+      "Wrong material/ring/ID, unenrolled addition, absent ring/schema and missing SELECT refuse without idle output; recorded policy/key/audit rows plus xmin and refusal keyfile metadata remain unchanged. Privilege recovery succeeds.",
+      "Retained prior9b02ELF starts with changed key material, demonstrating the old missing consumer; current6474 refuses those same bytes.",
+      "Absent configured key root starts against pre-keyring schema9 without key reads or0602 requirement.",
+      "Acquisition COMMIT is held while a real dataset locker queues. Runtime then demonstrably waits behind that locker. Releasing it permits binding and graceful stop; proxy forwards two commits.",
+      "Real2500ms owner lease expires during the wait; server expiry is observed before lock release, with no owner-row or clock mutation. Binding refuses Unavailable exit4 rather than publishing idle. Exact source expiry timestamps are retained.",
+      "SIGTERM and caller deadline while waiting produce explicit cancellation/deadline exit4 and no idle output. Proxy observes one acquisition COMMIT for each refused binding; same-byte fresh-owner recovery succeeds.",
+      "All32runner subprocesses terminate without capture overflow, all9databases have zero selected application/migrator/blocker backends, owned helper/client/PG/build containers are stopped, and only the owned empty network is retired before final PASS."
+    ],
+    "expiry": {
+      "acquired_at_us": 1790531308910988,
+      "lease_expires_at_us": 1790531311410988,
+      "observed_at_us": 1790531311455449
+    },
+    "limits": [
+      "One Linux amd64 host and pinned engine tuple, small isolated fixtures. No load/aged-state/arm64/host-power-loss/stalled-filesystem qualification.",
+      "Positive key-byte/inode equality, owner release and zero-backend counts are runner assertions; recorded before/after SQL/xmin, refusal file hashes/metadata, lock waits, proxy counts and safe process outputs are independently inspectable.",
+      "No wall-clock cancellation-latency measurement beyond fixture wait bounds; recorded proxy elapsed time is not shutdown latency.",
+      "Runtime refusal can follow a committed Control acquisition; unchanged claims concern recorded key/audit/policy tables, not zero database effects.",
+      "No distribution, active lifecycle, emergency revocation, cursor delivery, cross-worker pages, browser job list, packaging or release qualification."
+    ]
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-runtime-6474cd3",
+    "owner": "1a45b5d0a0fc08079fc3a1bcde9f0001",
+    "postgres_owner": "e925ef303396f3752904e9236c2ebeea",
+    "state": "stopped-retained",
+    "orchestrator_pid": 2256351,
+    "orchestrator_start_ticks": "391338882",
+    "containers": [
+      {
+        "id": "0afdf2fbb1124fc5ea1e9ac45c84418799e3626327ed6cac5e4092524ad5801d",
+        "name": "/bigbrotr-cursor-runtime-6474cd3",
+        "pid": 0,
+        "exit": 0,
+        "oom": false
+      },
+      {
+        "id": "9b0be3a2b045baa37dfba905c10a7ee185679b35783e5fd2860c786630907ff3",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_gehemnd-client-cursor-fault",
+        "pid": 0,
+        "exit": 143,
+        "oom": false
+      },
+      {
+        "id": "c20a93430f9541ccb3a87e3726840848128e58cd423a1e4f586113ef0a9a3fdb",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_gehemnd-client",
+        "pid": 0,
+        "exit": 143,
+        "oom": false
+      },
+      {
+        "id": "79536716e2e69c0fd154c98e2def3c89e41cb19d001f06251e8794dcd4adb297",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_gehemnd",
+        "pid": 0,
+        "exit": 0,
+        "oom": false
+      }
+    ],
+    "network_removed": "846b3c5622a6de09474069ba314e36c4bcf2ff1c3a8c4f28a199f06994d68afc",
+    "preexisting_preserved": 780,
+    "free_before": 104881614848,
+    "free_after": 101111894016,
+    "preserved": "All9databases/private keys, source/manifests/native artifacts, compiler cache and original outputs retained. No container/volume/data deletion; prior780container projections unchanged."
+  },
+  "capture": {
+    "local": ".research/implementation/cursor-runtime/capture-6474cd3",
+    "payload_files": 182,
+    "tar_sha256": "594b17d014e566ef578465eac5e858db0eb38081106ed77f4af2d0efa8ded50e",
+    "manifest_sha256": "9df7d1313a89c4fe99f5291477c7cc441176fdd8c0241c222eea07e3c57cc210",
+    "excluded": "Private keys/credentials/database data/compiler caches remain on Tux."
+  },
+  "live_census": {
+    "at": "2026-09-27T17:53:53.612989+00:00",
+    "path": ".research/implementation/cursor-runtime/live-final.json",
+    "sha256": "0ae375179fa02ff001cec1cdec7cfa61833d58fd131ccd7b2a265634f5d75d77",
+    "unchanged_containers": 784,
+    "unrelated_running": 8,
+    "protected_key_directories": 9,
+    "free_bytes": 101110304768,
+    "source_clean": true,
+    "orchestrator_absent_or_zombie": true
+  },
+  "review": "Root verifies182safe payloads/1323Git files/source manifest/ELF identity,54Rust test summaries,117cases, SQL/xmin/refusal metadata, owner correlations, expiry/proxy and fresh784container census. Independent read-only AI confirms tar/payloads/Git/twoELFs,23SQL before-after comparisons/seven refusal-file comparisons, all32raw process streams/24serve children, four held-released-receipt proxy sequences with2/1/1/1COMMITs, literal key bindings/mutation hashes and780prior/784final-live projections. No concrete discrepancy; no AI product tests, SSH or resource actions. Runner-only assertions and remaining exclusions stay explicit.",
+  "compatibility": {
+    "sql0601": "Previously applied; unchanged",
+    "sql0602_sha256": "20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48",
+    "sql0602": "No DDL change; optional root requires0602 only when selected."
+  }
+}

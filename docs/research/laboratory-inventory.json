@@ -25282,5 +25282,93 @@
       "recipe": ".research/implementation/cursor-enrollment/retire-caches.py",
       "audit": "All780container projections unchanged; privileged read-only FD/maps/cwd/exe/root probe had0references and0permission errors. Original retained native/source hashes verified before/after. First read-only attempt refused a wrong historical receipt filename before any deletion; note retained."
     }
+  },
+  "implementation_cursor_runtime_20260927": {
+    "local_root": ".research/implementation/cursor-runtime",
+    "source": "6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7",
+    "tree": "a06365c2eae1fc4b5d80d14e5d4fc3606ed382eb",
+    "status": "PASS scoped runtime binding;54Rust tests/Clippy and117actual checks across9databases",
+    "local_report": "docs/implementation/evidence/p06-cursor-runtime-local-20260927.json",
+    "scope": "Actual Control startup loaded-key enrollment binding only; no activation, distribution, issuance or release",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-runtime-6474cd3",
+    "remote_resources_created": true,
+    "owner": "1a45b5d0a0fc08079fc3a1bcde9f0001",
+    "state": "stopped-retained",
+    "build_container": "0afdf2fbb1124fc5ea1e9ac45c84418799e3626327ed6cac5e4092524ad5801d",
+    "orchestrator_pid": 2256351,
+    "start_ticks": "391338882",
+    "source_manifest_sha256": "e75b6ab6ccc10eb71e59adc64404335749c9aec40723424e917576d731f1bd36",
+    "preflight": {
+      "path": ".research/implementation/cursor-runtime/preflight-tux.json",
+      "at": "2026-09-27T17:36:46.611791+00:00",
+      "free_bytes": 104920018944,
+      "containers": 780,
+      "running_unrelated": 8,
+      "active_bigbrotr": []
+    },
+    "cache_origin": "Copied stopped cursor-enrollment-9b02bd9 target/cargo-home; same Cargo.lock, offline fresh source build. Prior original ELF retained as explicit negative control.",
+    "next_action": "Use this retained compiler cache for the next bounded lifecycle consumer only after fresh resource census; source and private SQL/key evidence stay retained. No active experiment.",
+    "native_report": "docs/implementation/evidence/p06-cursor-runtime-native-20260927.json",
+    "capture": {
+      "local": ".research/implementation/cursor-runtime/capture-6474cd3",
+      "payload_files": 182,
+      "tar_sha256": "594b17d014e566ef578465eac5e858db0eb38081106ed77f4af2d0efa8ded50e",
+      "manifest_sha256": "9df7d1313a89c4fe99f5291477c7cc441176fdd8c0241c222eea07e3c57cc210",
+      "excluded": "Private keys/credentials/database data/compiler caches remain on Tux."
+    },
+    "live_census": {
+      "at": "2026-09-27T17:53:53.612989+00:00",
+      "path": ".research/implementation/cursor-runtime/live-final.json",
+      "sha256": "0ae375179fa02ff001cec1cdec7cfa61833d58fd131ccd7b2a265634f5d75d77",
+      "unchanged_containers": 784,
+      "unrelated_running": 8,
+      "protected_key_directories": 9,
+      "free_bytes": 101110304768,
+      "source_clean": true,
+      "orchestrator_absent_or_zombie": true
+    },
+    "resources": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-runtime-6474cd3",
+      "owner": "1a45b5d0a0fc08079fc3a1bcde9f0001",
+      "postgres_owner": "e925ef303396f3752904e9236c2ebeea",
+      "state": "stopped-retained",
+      "orchestrator_pid": 2256351,
+      "orchestrator_start_ticks": "391338882",
+      "containers": [
+        {
+          "id": "0afdf2fbb1124fc5ea1e9ac45c84418799e3626327ed6cac5e4092524ad5801d",
+          "name": "/bigbrotr-cursor-runtime-6474cd3",
+          "pid": 0,
+          "exit": 0,
+          "oom": false
+        },
+        {
+          "id": "9b0be3a2b045baa37dfba905c10a7ee185679b35783e5fd2860c786630907ff3",
+          "name": "/bigbrotr-implementation-pg-20260917-cursor_gehemnd-client-cursor-fault",
+          "pid": 0,
+          "exit": 143,
+          "oom": false
+        },
+        {
+          "id": "c20a93430f9541ccb3a87e3726840848128e58cd423a1e4f586113ef0a9a3fdb",
+          "name": "/bigbrotr-implementation-pg-20260917-cursor_gehemnd-client",
+          "pid": 0,
+          "exit": 143,
+          "oom": false
+        },
+        {
+          "id": "79536716e2e69c0fd154c98e2def3c89e41cb19d001f06251e8794dcd4adb297",
+          "name": "/bigbrotr-implementation-pg-20260917-cursor_gehemnd",
+          "pid": 0,
+          "exit": 0,
+          "oom": false
+        }
+      ],
+      "network_removed": "846b3c5622a6de09474069ba314e36c4bcf2ff1c3a8c4f28a199f06994d68afc",
+      "preexisting_preserved": 780,
+      "free_before": 104881614848,
+      "free_after": 101111894016,
+      "preserved": "All9databases/private keys, source/manifests/native artifacts, compiler cache and original outputs retained. No container/volume/data deletion; prior780container projections unchanged."
+    }
   }
 }

@@ -64,5 +64,7 @@ or owner-row modification is used. The small supported lease configuration is
 explicit; owner expiry must be observed on the server before releasing the lock.
 The enclosing wrapper preserves results/data, stops its labeled helper/client/PG,
 checks all preexisting containers, and retires only its empty network before PASS.
-This authored runtime recipe is NOT_RUN until a separately linked result exists;
-it grants no activation, issuing key, old-key retention or cross-worker readiness.
+The [native runtime report](../../docs/implementation/evidence/p06-cursor-runtime-native-20260927.json)
+records54Rust tests/Clippy and117checks across9databases at6474cd3, with retained
+source, ELF, SQL/key metadata and terminal resource evidence. It grants no
+activation, issuing key, old-key retention or cross-worker readiness.
