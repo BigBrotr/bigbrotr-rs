@@ -114,3 +114,48 @@ fn prepare_and_inspect_survive_process_exit_without_contacting_control() {
     assert!(fs::read(keys.join("keyring")).unwrap() == original);
     assert_eq!(fs::read_dir(&keys).unwrap().count(), 1);
 }
+
+#[test]
+fn register_requires_existing_complete_keys_before_any_database_connection() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().canonicalize().unwrap();
+    let (file, original) = config(&root);
+    let password = root.join("pg-password");
+    fs::write(&password, b"public test password").unwrap();
+    fs::set_permissions(&password, fs::Permissions::from_mode(0o600)).unwrap();
+    let keys = root.join("keys");
+    fs::create_dir(&keys).unwrap();
+    fs::set_permissions(&keys, fs::Permissions::from_mode(0o700)).unwrap();
+    fs::write(
+        &file,
+        format!(
+            "{}\n[read.cursor]\nkeyring_ref='file:{}/keyring'\n",
+            original.replace(
+                "file:/run/secrets/bigbrotr-control",
+                &format!("file:{}", password.display())
+            ),
+            keys.display()
+        ),
+    )
+    .unwrap();
+    let missing = action("register", &file);
+    assert_eq!(
+        missing.status.code(),
+        Some(4),
+        "{}",
+        String::from_utf8_lossy(&missing.stderr)
+    );
+    assert!(String::from_utf8_lossy(&missing.stderr).contains("NotInitialized"));
+    assert!(missing.stdout.is_empty());
+    assert_eq!(fs::read_dir(&keys).unwrap().count(), 0);
+    fs::write(keys.join("unresolved.partial"), b"public retained sentinel").unwrap();
+    let partial = action("register", &file);
+    assert_eq!(partial.status.code(), Some(4));
+    assert!(String::from_utf8_lossy(&partial.stderr).contains("Incomplete"));
+    assert!(partial.stdout.is_empty());
+    assert!(!keys.join("keyring").exists());
+    assert_eq!(
+        fs::read(keys.join("unresolved.partial")).unwrap(),
+        b"public retained sentinel"
+    );
+}

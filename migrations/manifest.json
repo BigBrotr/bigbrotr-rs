@@ -109,6 +109,10 @@
     {
       "version": 814,
       "name": "0814_export_resume.sql"
+    },
+    {
+      "version": 601,
+      "name": "0601_cursor_keys.sql"
     }
   ],
   "reserved": [

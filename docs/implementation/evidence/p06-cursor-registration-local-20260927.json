@@ -1,0 +1,185 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1 / P08-T03 prerequisite",
+  "status": "PASS within local registration preparation/catalog/CLI scope; native NOT_RUN",
+  "source": {
+    "base_revision": "7404f2a56dc54d8d04c5b9174c7b8dc024ac4638",
+    "state": "Root-owned dirty Mac inputs; exact native candidate follows this report.",
+    "files_sha256": {
+      "Cargo.lock": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+      "apps/bigbrotr/src/read/keyring.rs": "cf83254629d0a152aa51986675249a246ca2b4fdd5b78140e1f924b82fb7da9b",
+      "apps/bigbrotr/src/interfaces/cursor_keyring.rs": "5510fc995727424469671dccdd51031d09cc1bca0c2ea57bae10cc55c2f6581d",
+      "apps/bigbrotr/src/storage/postgres/cursor_registration.rs": "06761eef74476f774ce4c06833a319a76de418ba38c41f9bc090a94f29a4c2b4",
+      "apps/bigbrotr/src/storage/postgres/migrations.rs": "1bfe153e02c6578659ff8538c0972d87d806f229adc82dcef81d4a747b639df1",
+      "apps/bigbrotr/src/storage/postgres/mod.rs": "4fbd09fc73a57570d0fb7746b752a265c95cb06e7cbe0ce311fbb4caf49313cb",
+      "apps/bigbrotr/tests/cursor_registration.rs": "51d20ed6d9b09c66ff01556b70e70325e6fc6d5ee4a88d5c823b968a246a454e",
+      "apps/bigbrotr/tests/cursor_keyring_cli.rs": "06ccea331304f7106aef9bcc9e97ecb0a50effd8a56b0750e0dbc28657cd1343",
+      "apps/bigbrotr/tests/control_schema.rs": "42fc42dcde361fefaf4f6f98003b6bdd127b14ff051052779eb18341779039e5",
+      "migrations/postgres/0601_cursor_keys.sql": "72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026",
+      "migrations/manifest.json": "532b2b66d1248b00f49f2448c6495223b9780d4b4837edac230dda623134b6f2",
+      "tests/fixtures/read/key-binding-vectors.json": "1323c64078321c033012be9cd01994169e9ef1c7e22ff8febe49425e89a4ea5e",
+      "tests/fixtures/read/write_key_binding_vectors.py": "a7919bb29719543273a89f7f1ad8527769fbbeb0fc68690ac8f6f13841f5b396",
+      "tests/fixtures/read/keyring-vectors.json": "6093a3166b43dd52c2210c7ed68c280a20ac4974afacaff9322b10c29f66b526",
+      "experiments/control-migrations/fault_cases.py": "2c31df80dcfecbd3e4eac661e20cb238bc75774e61c507fc0a0d32deaf98db50",
+      "experiments/control-migrations/test_fault_proxy.py": "9e727edcc2dfce2172dbb84131bf2a1897572852024e6e86c2ad734c1afeb841"
+    }
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Darwin",
+      "architecture": "arm64",
+      "discovery": "xcrun",
+      "environment": {
+        "CC": "/Library/Developer/CommandLineTools/usr/bin/clang",
+        "CXX": "/Library/Developer/CommandLineTools/usr/bin/clang++",
+        "AR": "/Library/Developer/CommandLineTools/usr/bin/ar",
+        "LIBCLANG_PATH": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+        "CLANG_PATH": "/Library/Developer/CommandLineTools/usr/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "SDKROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk"
+      },
+      "tools": {
+        "CC": {
+          "path": "/Library/Developer/CommandLineTools/usr/bin/clang",
+          "realpath": "/Library/Developer/CommandLineTools/usr/bin/clang",
+          "sha256": "f30550eab15fdf5ab8c0dc54c52679711241e5d4b636b027e18c09fef531775d",
+          "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+        },
+        "CXX": {
+          "path": "/Library/Developer/CommandLineTools/usr/bin/clang++",
+          "realpath": "/Library/Developer/CommandLineTools/usr/bin/clang",
+          "sha256": "f30550eab15fdf5ab8c0dc54c52679711241e5d4b636b027e18c09fef531775d",
+          "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+        },
+        "AR": {
+          "path": "/Library/Developer/CommandLineTools/usr/bin/ar",
+          "realpath": "/Library/Developer/CommandLineTools/usr/bin/ar",
+          "sha256": "d26c671be515802ff5a18edde5ca73c6bcaaf87048ef192025f00002be515794",
+          "version": null
+        },
+        "LIBCLANG_PATH": {
+          "path": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+          "realpath": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+          "sha256": "c9aaefc23d735a58f59c9e9e0520171d18ec3653095cc875a1d546c09ad25f30",
+          "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)"
+        },
+        "discovery": {
+          "path": "/usr/bin/xcrun",
+          "realpath": "/usr/bin/xcrun",
+          "sha256": "a439970aea2b4e435eac6518ff62c97fd1c57d8c731974027ad211b515c7a7b8",
+          "version": "xcrun version 72."
+        }
+      },
+      "sdk": {
+        "path": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+        "version": "26.5",
+        "settings_sha256": "f8d005f09381389167f9e0aeaa169bc9e7dff162ef22ca2fd8e98df7ff1acafe"
+      }
+    }
+  },
+  "verification": {
+    "tests": {
+      "control_schema": 23,
+      "keyring": 7,
+      "cli": 3,
+      "registration": 2,
+      "codec": 7
+    },
+    "clippy": "PASS selected library/binary/test targets",
+    "proxy_tests": 20,
+    "red": [
+      "Existing-only preparation stub: two discriminating failures.",
+      "Migration601 unknown: one expected failure.",
+      "CLI register absent: expected usage exit2 instead of unavailable-key exit4.",
+      "Actual proxy events rejected by old metadata allowlist: two expected errors."
+    ],
+    "oracle": "Two frozen Python/hashlib fingerprints from the independent public binary keyfile, checked without Rust generation. Native SQL comparison/COMMIT/engine tests are authored, not executed.",
+    "corrections": [
+      "Fixture generator initially looked for absent keyfile in cursor-vectors; corrected to existing keyring-vectors before product tests. Original note retained.",
+      "Clippy rejected constant chunks_exact in test parser; equivalent as_chunks passes.",
+      "Shared proxy metadata reader now validates already-emitted commit_number as exact int1..64; all20 real loopback tests traverse this reader."
+    ]
+  },
+  "behavior": [
+    "Existing-only synchronized typed key snapshot cannot create missing keys or adopt incomplete staging.",
+    "Prepared snapshot retains byte reservation; independent per-key material bindings preserve ordered IDs.",
+    "Additive0601 and explicit finite register consumer implemented; no activation/issuance authority. Native atomicity still unqualified."
+  ],
+  "review": "Root read complete implementation, affected contracts and diff. Independent read-only AI reviewed SQL, adapter, CLI and native recipe without tests/SSH. Corrected fingerprint wording; recipe receipts now bind full SQL/audit identities; atomic reports and independent cleanup; held-COMMIT event retained. Native execution remains required.",
+  "limitations": [
+    "No native PostgreSQL registration result yet; SQL migration has not been applied.",
+    "No current lifecycle, activation, normal/emergency rotation, cross-worker issuance, actor-owned pages or browser claim.",
+    "No host power loss, Linux arm64, Compose/release or whole task/milestone/product completion."
+  ],
+  "resources": {
+    "local_root": ".research/implementation/cursor-registration",
+    "remote_resources_created": false
+  },
+  "artifacts_sha256": {
+    ".research/implementation/cursor-registration/artifacts.log": "116683f9a675a32bd0d227cb26106ce2c670b03f287c613a24231f107b8a012b",
+    ".research/implementation/cursor-registration/candidate-clippy.command.json": "d4c2b93ad8e2d91ff25d3e5203d279044893404349f11069c9ac8935cb770da0",
+    ".research/implementation/cursor-registration/candidate-clippy.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-registration/candidate-clippy.stderr": "8a0e1e5ce4150a4e5e03409d157867b7c95d673971715aa9b921b1d66123f812",
+    ".research/implementation/cursor-registration/candidate-clippy.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-registration/candidate-tests.command.json": "0cdcd621a62d9d862b8cb0f0c335651631bde9171d6605ac4c25efe9eaf01961",
+    ".research/implementation/cursor-registration/candidate-tests.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-registration/candidate-tests.stderr": "24663fc15c0ceb48408beb1ea7231747c0d6562c1aab7ea1a918a9542c66abfe",
+    ".research/implementation/cursor-registration/candidate-tests.stdout": "9f1b823072cad84c84527cba5352898df98fbb5a4bbf6af38a46592f1a48814a",
+    ".research/implementation/cursor-registration/check.py": "6d354ee4e071dc5ecb7189b13155efde21336b2021e51c47aece7a28c88d6b4e",
+    ".research/implementation/cursor-registration/cli-red.command.json": "7bdc474ad27250b94356f84e144931c2c42502bf972d44c61ef492ae8faf5a60",
+    ".research/implementation/cursor-registration/cli-red.exit": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+    ".research/implementation/cursor-registration/cli-red.stderr": "df6f6716b9cd04f73642061ab4c6f070583f283cd1844f60b29667ae256a023f",
+    ".research/implementation/cursor-registration/cli-red.stdout": "b619d17f654dc726b433ab9c5008aac06f737d8f8f3021e1cad1650b3b8acf0d",
+    ".research/implementation/cursor-registration/clippy-final.command.json": "d4c2b93ad8e2d91ff25d3e5203d279044893404349f11069c9ac8935cb770da0",
+    ".research/implementation/cursor-registration/clippy-final.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-registration/clippy-final.stderr": "f60ae391f96f5300e12df6fd5d22416fc0c08f10dd73abd434bd120481c6b14d",
+    ".research/implementation/cursor-registration/clippy-final.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-registration/clippy.command.json": "d4c2b93ad8e2d91ff25d3e5203d279044893404349f11069c9ac8935cb770da0",
+    ".research/implementation/cursor-registration/clippy.exit": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+    ".research/implementation/cursor-registration/clippy.stderr": "91738e6599fda934addbac155ff18621062a0d07e08774cbd410f066c690f72f",
+    ".research/implementation/cursor-registration/clippy.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-registration/fixture-note.txt": "93540cea745643ef042aed68e7056611eefb17be23d868c1a124090bda3d8a19",
+    ".research/implementation/cursor-registration/handoff.json": "feed699c7f88cc2d9131606f5ae6038b089c0489d6eb80799ebe1004fa1bc06f",
+    ".research/implementation/cursor-registration/handoff.log": "e16f1a9ffc323e05e67630bab93659245da75cdbb39a5a50462976f61aa18bde",
+    ".research/implementation/cursor-registration/initial-keyring.rs": "3927aae0e4477f2f209996e4b634e6d224392c2ee4e4ec261270334b2dcff2e4",
+    ".research/implementation/cursor-registration/initial-red.command.json": "41a63188600729ab5f17f8297116b2554bb38820ac954d1b976a8c6bf6e0a463",
+    ".research/implementation/cursor-registration/initial-red.exit": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+    ".research/implementation/cursor-registration/initial-red.stderr": "c75ef3fc1bfc261c6216c9eb4809b9f878e579639d14dbf91ca60134b1e99846",
+    ".research/implementation/cursor-registration/initial-red.stdout": "5e3c690e333fd1d44b4d5fb086a50bfb595e443506175ee843a83ff02116abc2",
+    ".research/implementation/cursor-registration/initial-schema-tests.rs": "0e3eb0608a62c1ad28961a7216594f853c9d1c1bb7e96617d9336a155104e604",
+    ".research/implementation/cursor-registration/initial-tests.rs": "f8eaa98585dad9004d7d3b3928bdeb7e5dd93b8fb04d682dfbb3c165e93201c1",
+    ".research/implementation/cursor-registration/keyring-green.command.json": "1f00897cba69042ba4620fc824cae308a25d65388c2c9daa46d2c1a634cf3b5a",
+    ".research/implementation/cursor-registration/keyring-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-registration/keyring-green.stderr": "57e85481380f5cf8691bfda271245863e7d9f9e4c9a88abbb3d2b2f7831304d3",
+    ".research/implementation/cursor-registration/keyring-green.stdout": "545d2934c4bf1db9156c147206f1f6686705d3cb05cc0ed224bc831c3fbafabe",
+    ".research/implementation/cursor-registration/local-green.command.json": "0cdcd621a62d9d862b8cb0f0c335651631bde9171d6605ac4c25efe9eaf01961",
+    ".research/implementation/cursor-registration/local-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-registration/local-green.stderr": "3ff23cc0d849da8215999711ad5d3935bec7b84914ce9d4caccd6c4b3ec85fc5",
+    ".research/implementation/cursor-registration/local-green.stdout": "0c5e654cdc035c4df425e1582b2b3c804a76f0e7fb38c9066ae1fc8d1ec29daa",
+    ".research/implementation/cursor-registration/migration-red.command.json": "cb60f178317829e8972be4cdd138446a27539ab94db733fa8b143af67c86a42b",
+    ".research/implementation/cursor-registration/migration-red.exit": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+    ".research/implementation/cursor-registration/migration-red.stderr": "b06486d515ed67adc28b5ec315dc5196e8e7311bf012611b1feb1595959107a0",
+    ".research/implementation/cursor-registration/migration-red.stdout": "be3d197880349cf3b94b62e9c92014b2de9a18311b30e21795eb7f981e297c68",
+    ".research/implementation/cursor-registration/native-toolchain.json": "5bbfbe8a350616e9446eb3795076ba2495b9eaa77094fecbc634c828777b8e13",
+    ".research/implementation/cursor-registration/preflight-resume-20260927.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-registration/preflight-resume-20260927.json": "c2819c7a7759252f857faffe8211d7df8c8bd256f68ebcdf52df09c64af165b5",
+    ".research/implementation/cursor-registration/preflight-resume-20260927.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-registration/preflight.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-registration/preflight.json": "56df0796891fe96ae928d73b704c38d92bc0b4ba873b0083080565172d659701",
+    ".research/implementation/cursor-registration/preflight.py": "00e467352f86f91d3f57206aa671c15ffc4b4f78d3002502cc69b8ab8de07c45",
+    ".research/implementation/cursor-registration/preflight.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-registration/prepared-final.command.json": "41a63188600729ab5f17f8297116b2554bb38820ac954d1b976a8c6bf6e0a463",
+    ".research/implementation/cursor-registration/prepared-final.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-registration/prepared-final.stderr": "5e869d675ee357d177c3a519dd885c1903b0e40b7309ceed08943cd80ed114e2",
+    ".research/implementation/cursor-registration/prepared-final.stdout": "d704b9eafe9e947121df270ad2544485e49b338264488555885cc5c7c0307313",
+    ".research/implementation/cursor-registration/proxy-metadata-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-registration/proxy-metadata-green.stderr": "5f38c2df493051f1b3d4c9edc3383f9f3fd96704149a2345d1759cd256422767",
+    ".research/implementation/cursor-registration/proxy-metadata-green.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-registration/proxy-metadata-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    ".research/implementation/cursor-registration/proxy-metadata-red.stderr": "806c65c37a0fdcffb79a475954d12e9b8b60b451df16bc8024fc8c585788b5de",
+    ".research/implementation/cursor-registration/proxy-metadata-red.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-registration/report.py": "19ed6aff1e3adb647d689f8f38b8fb8de015d447bae0a2965b1b1ca82627deef"
+  }
+}

@@ -1438,6 +1438,37 @@ its owned buffer is zeroized on drop. This is not an RSS ceiling or a claim of
 erasing kernel buffers, downstream copies or registers. Synchronous file I/O is
 performed before runtime/Control acquisition, not inside list transactions.
 
+Initial Control registration is an explicit deployment operation:
+`access cursor-keyring register --file CONFIG`. It re-prepares only an existing
+valid keyfile under the same exclusive/synchronization protocol before connecting
+to Control; it never creates missing keys, adopts partial staging or interprets
+inspection as proof of synchronization. The typed registration input owns that
+prepared snapshot and its reservation through the actual connection-driver join.
+Operators still exclude external provisioning changes; this is a snapshot, not
+continuous custody of the path or proof of distribution to every worker.
+
+Additive migration0601 appends after0814. One immutable registration per dataset
+binds dataset/instance, stable keyring ID, format1, initial file fingerprint, ordered
+1..16 key IDs/material fingerprints and its original installation audit. A key's
+fingerprint is SHA-256 of `bigbrotr/cursor-key-material/1\0`, dataset ID16,
+keyring ID16, key ID16 and raw key32. Control stores the fingerprint, never the
+raw key. The file fingerprint is its validated terminal checksum: SHA-256 of
+all preceding file bytes, not SHA-256 of the checksum-appended file. Individual
+fingerprints remain meaningful when later rotation changes
+the whole file. Existing SQL and records are not rewritten or adopted.
+
+The protected application credential performs registration under the common
+migration lock and dataset row lock, with matching installation-role attribution.
+Registration, every declared key and the exact audit commit together. Identical
+retry reads the original receipt without SQL writes; a changed ring, material,
+order, file digest or count is a conflict. A lost COMMIT is unknown until this
+same serialized retry on a fresh connection resolves it; neither regenerate
+keys nor blindly report rollback. Registration history remains retained while
+key compatibility/recovery can depend on it. No initial registration is an
+issuing key, activation, worker readiness, authentication or decryption grant.
+Current lifecycle, worker distribution, activation and rotation are separate
+required consumers before exposing paged reads.
+
 Use a versioned authenticated-encryption envelope for self-contained continuation,
 so private scan positions are neither editable nor readable by clients. The
 initial implementation candidate is full-round XChaCha20-Poly1305 through the

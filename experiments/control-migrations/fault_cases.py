@@ -54,7 +54,7 @@ def safe_event(item):
                "commits_seen", "commits_forwarded", "server_commit_complete", "client_commit_complete",
                "listen_host", "listen_port", "upstream_port", "pid", "proxy_sha256", "max_frame_bytes",
                "max_wire_bytes", "max_messages", "deadline_seconds", "reason", "frames", "tags",
-               "declared_wire_bytes"}
+               "declared_wire_bytes", "commit_number"}
     if not isinstance(item, dict) or set(item) - allowed:
         raise Incomplete("proxy-metadata-fields")
     if item.get("format") != "bigbrotr-pg-fault-proxy/1" or item.get("event") not in {
@@ -70,6 +70,9 @@ def safe_event(item):
         elif key == "listen_host":
             if value != "127.0.0.1":
                 raise Incomplete("proxy-address")
+        elif key == "commit_number":
+            if type(value) is not int or not 1 <= value <= 64:
+                raise Incomplete("proxy-commit-number")
         elif key == "proxy_sha256":
             if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
                 raise Incomplete("proxy-source")

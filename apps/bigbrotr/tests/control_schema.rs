@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn cursor_registration_is_an_explicit_additive_migration_after_export_resume() {
+    let applied: Vec<_> = plan(&[], 814)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next = plan(&applied, 601).expect("registration requires its real additive schema");
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0601_cursor_keys.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 601),
+        Err(MigrationError::MissingPrerequisite(601))
+    );
+    assert!(migrations::require_applied(&applied, 814).is_ok());
+}
+
+#[test]
 fn scoped_command_final_checks_require_the_additive_variable_binding_correction() {
     let applied: Vec<_> = plan(&[], 810)
         .unwrap()

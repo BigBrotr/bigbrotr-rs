@@ -68,3 +68,23 @@ The [native local-keyfile qualification](../implementation/evidence/p06-cursor-k
 records actual sync/error/process-death/retry effects and a full blocking stdout
 pipe. It preserves the original failed observer run separately. This finite
 command evidence does not qualify key distribution, Control or rotation.
+
+After explicit Control migration0601, register the existing keys with
+`bigbrotr access cursor-keyring register --file instance.toml`. This command
+re-synchronizes the same complete local bytes and then contacts Control through
+its protected application credential. Missing keys and partial staging refuse;
+registration never generates replacement keys. The deployment connection needs
+schema usage, SELECT on the Control ledger/dataset/principals/audit and new key
+tables, INSERT on `cursor_keyrings`, `cursor_keys`, `management_audit`,
+UPDATE on at least one dataset column for the row lock, and EXECUTE on
+`guard_cursor_registration` and `require_cursor_registration`. Use the existing
+narrow application role, never the migration/schema owner.
+
+Registration stores an immutable initial fingerprint and ordered key IDs/material
+fingerprints with the installation actor/audit. It does not activate issuance.
+A matching retry returns the original receipt without database writes; changed
+keys are a conflict. Exit4 with `COMMIT outcome unknown` requires retaining the
+keys and repeating the same registration on a fresh connection. Do not infer
+rollback or prepare a replacement identity. Old binaries that do not recognize
+0601 cannot open the upgraded Control ledger; stop them before explicit migration.
+Native SQL/recovery qualification of this new command remains pending.

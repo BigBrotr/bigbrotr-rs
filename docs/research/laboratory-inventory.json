@@ -25009,5 +25009,31 @@
     "contents": "Frozen independent public libsodium vectors; original stub RED and GREEN sources/logs; source/feature audit including base64 and inout full archives/manifests; local compiler identity. Original report-generator source and diagnostic note preserve its incorrect automatic-Git-embedding assumption; actual build reports unrecorded. No live keys.",
     "remote_resources_created": false,
     "report": "docs/implementation/evidence/p06-cursor-envelope-local-20260925.json"
+  },
+  "implementation_cursor_registration_20260925": {
+    "local_root": ".research/implementation/cursor-registration",
+    "source_base": "7404f2a56dc54d8d04c5b9174c7b8dc024ac4638",
+    "status": "42selected local tests and Clippy PASS;20actual proxy tests PASS. Full selected native recipe authored/reviewed but NOT_RUN; candidate transfer next.",
+    "remote_resources_created": false,
+    "contents": "Independent public key bindings, initial stub and discriminating local tests; no live keys.",
+    "preflight": {
+      "at": "2026-09-25T00:11:45.741473+00:00",
+      "free_bytes": 109713924096,
+      "containers": 768,
+      "unchanged_prior_projections": 768,
+      "running_unrelated": 8,
+      "path": ".research/implementation/cursor-registration/preflight.json",
+      "sha256": "56df0796891fe96ae928d73b704c38d92bc0b4ba873b0083080565172d659701"
+    },
+    "report": "docs/implementation/evidence/p06-cursor-registration-local-20260927.json",
+    "resumption_preflight": {
+      "at": "2026-09-27T15:25:53.758992+00:00",
+      "free_bytes": 109701558272,
+      "containers": 768,
+      "unchanged_prior_projections": 768,
+      "running_unrelated": 8,
+      "path": ".research/implementation/cursor-registration/preflight-resume-20260927.json",
+      "sha256": "c2819c7a7759252f857faffe8211d7df8c8bd256f68ebcdf52df09c64af165b5"
+    }
   }
 }

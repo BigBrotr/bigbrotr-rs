@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-25 in the primary Mac workspace (latest Tux timestamps are UTC). Navigation, not evidence or a
+Observed 2026-09-27 in the primary Mac workspace (latest Tux timestamps are UTC). Navigation, not evidence or a
 second plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint):
 verify Git, actual artifacts and live resource ownership before continuing.
 Historical detail stays in Git and linked reports; task files own completion.
@@ -20,13 +20,14 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Main HEAD d92329947fc06d5abb3bdddb6f6a3a8ef109dd5b, tree
-1774145c94b5c88a72223b34cc9217c83e6175ae, privately pushed and origin/main verified.
-Worktree was clean after push. Root now owns the bounded AEAD envelope codec,
-its independent fixtures/tests and owning contract. No foreign edits or new SQL.
-Root Cargo.lock now has six added packages, no existing version changes; SHA
-4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa.
-Mac remains sole writer; both native keyring runs are stopped-retained.
+Main HEAD 7404f2a56dc54d8d04c5b9174c7b8dc024ac4638, tree
+282d094ebc42279632f046a9c5fb44b2b87d3c41, privately pushed and origin/main verified.
+The local codec slice is committed; its scoped report/limitations remain below.
+Root now owns P06Step1 explicit initial Control registration: existing-only synced
+key snapshot, immutable key IDs/material fingerprints, atomic installation audit
+and same-registration retry. Issuance/current lifecycle remains the next consumer.
+No remote run is active or newly created. The new ignored local evidence root is
+.research/implementation/cursor-registration; inventory entry follows first checks.
 
 Mac verification:50selected CLI/config/policy/keyring/secret tests pass, plus the
 collision regression and Clippy. Fifteen independent public wire vectors include
@@ -206,12 +207,48 @@ Final independent offline AI report review verifies all11 source hashes,47
 retained artifacts, development parent/lock,4081 mutations and original RED/GREEN/
 Clippy logs. No concrete discrepancy, suite execution, SSH or fresh remote census.
 
-Next bounded action: commit/push this reviewed local codec slice, then implement
-Control registration/current key lifecycle and its real SQL/CLI consumer before
-P08 actor-owned GET /management/v1/jobs. Do not close
-Step1 from codec fixtures. Native/API/rotation/expiry/paging remain required.
-Tux has no new run or active owned process; latest live census above remains the
-last check. Preserve its private key/failure states and useful1f compiler cache.
+Initial registration is implemented locally, not committed or native-qualified:
+root owns read/keyring PreparedKeyring+per-key fingerprints, SQL0601/catalog,
+Control adapter, CLI, tests/independent public hash fixture and contracts. All42
+selected local schema/keyring/codec/CLI/registration tests pass; Clippy passes.
+Initial two stub tests and missing-migration test fail as expected; CLI register
+RED fails because command is absent. Original sources/logs remain in
+.research/implementation/cursor-registration. First fixture generator incorrectly
+looked for keyfile in cursor-vectors; corrected to existing keyring-vectors before
+any product test. First Clippy flags constant chunks_exact in the new test; changed
+to as_chunks and final Clippy passes. No product invariant/test expectation weakened.
+
+Independent read-only AI reviewed complete SQL/adapter/new keyfile boundary and
+CLI custody plus relevant existing triggers. One concrete wording correction:
+initial file fingerprint is the body's terminal checksum, not SHA256 of the
+checksum-appended file. Contract corrected; no other static counterexample.
+SQL omissions, SET CONSTRAINTS, concurrent registrations and unknown COMMIT must
+still be executed. Review is not native evidence.
+
+The [local registration report](evidence/p06-cursor-registration-local-20260927.json)
+binds actual42tests/Clippy and20real proxy tests to exact dirty input hashes.
+Candidate-tests and candidate-clippy reconfirm the final Rust inputs; all local
+checks are terminal. Proxy metadata previously rejected its existing commit_number;
+reader validation and all20loopback tests now agree, with original RED retained.
+
+The full selected experiments/cursor-registration recipe is authored and parsed,
+NOT_RUN. It covers SQL omissions/mutations, exact receipt vs independent SQL/audit,
+unchanged retry row versions, COMMIT loss on both sides, concurrent same/conflicting
+registrants, process kill, real blocked stdout, fsyncEIO and engine restart.
+Independent AI review found missing full receipt binding and cleanup depending on
+an interruptible report; root corrected both before the first native run. Report
+publication is atomic; owned helper cleanup derives from setup identity. Held
+COMMIT metadata is retained; contention claims only actual registration-lock wait.
+No native candidate or transfer yet. Next: commit this unpublished candidate,
+transfer exact Git and run its owned lab on Tux; qualify registration before
+current key lifecycle and actor-owned listing. No Step1/task/M1 completion.
+
+Fresh read-only preflight2026-09-27T15:25:53Z records109701558272free bytes (~102GiB),
+all768 prior container projections unchanged, eight unrelated running, no running
+BigBrotr container. Ports/processes/mounts/networks/volumes/directories retained
+under cursor-registration/preflight-resume-20260927.json; it did not recheck private
+key bytes. No resource created/stopped/retired and no cleanup needed before this
+build. Keep prior1f/8db/73e caches and all private failure states/source/artifacts.
 
 The list remains default50/max200, descending(created_at,job_id), owner/status.read,
 current session/CSRF and nonrenewable delivery, with current mutable-state filters.

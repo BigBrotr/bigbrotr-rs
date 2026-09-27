@@ -228,6 +228,13 @@ tests/Clippy. Control lifecycle,
 cross-worker consumers and the rest of Step1 remain open; local bytes and a codec
 do not activate issuance or complete this step.
 
+Initial Control registration has [local checks](evidence/p06-cursor-registration-local-20260927.json): additive0601, an
+existing-only synchronized key snapshot and the actual `access cursor-keyring
+register` consumer. It records an immutable complete key set and installation
+audit; it cannot activate issuance. Native atomicity, concurrent identical and
+conflicting retries, COMMIT-loss resolution, refusal before any SQL effect and
+engine restart remain required before this subset is qualified.
+
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;
 `migrations/postgres/0603_read_pins.sql`;
 `contracts/read/v1/cursor-envelope.schema.json`; `config/examples/read.toml`;

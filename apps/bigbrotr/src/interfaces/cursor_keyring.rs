@@ -1,14 +1,17 @@
 //! Explicit local secret preparation. Control registration is a separate effect.
+use super::postgres_command;
 use bigbrotr::{
-    read::keyring::{KEYRING_RESERVATION, Keyring},
+    read::keyring::{KEYRING_RESERVATION, Keyring, PreparedKeyring},
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits},
+    storage::postgres::cursor_registration::{self, RegistrationError},
 };
+use bigbrotr_model::DatasetId;
 use clap::{Arg, ArgMatches, Command};
-use std::{path::PathBuf, process::ExitCode};
+use std::{cell::Cell, path::PathBuf, process::ExitCode, time::Duration};
 
 pub(super) fn command() -> Command {
     let mut command = Command::new("cursor-keyring")
-        .about("Prepare or inspect protected local continuation keys")
+        .about("Prepare, inspect or register protected continuation keys")
         .subcommand_required(true)
         .disable_help_subcommand(true);
     for (name, about) in [
@@ -25,7 +28,10 @@ pub(super) fn command() -> Command {
             .arg(Arg::new("file").long("file").required(true).value_parser(clap::value_parser!(PathBuf)))
             .after_help("Requires read.cursor.keyring_ref in the deployment file and an existing dedicated mode0700 directory owned by this user. Symlinks are refused. Preparation refuses partial or conflicting state; inspection may read the last complete final file beside staging. Successful preparation syncs exact keys and directory entries; complete retry preserves keys. Exclude external provisioning writers during preparation. No database contact, Control registration, activation or runtime authority. Output omits secret bytes and paths. Exit:0 operation completed,1 configuration/output I/O,2 usage,3 configuration/budget,4 unavailable/conflicting key storage."));
     }
-    command
+    command.subcommand(Command::new("register")
+        .about("Register already prepared keys once in Control; no activation")
+        .arg(Arg::new("file").long("file").required(true).value_parser(clap::value_parser!(PathBuf)))
+        .after_help("Requires migration0601 and the protected Control application credential. Re-syncs only existing complete local keys before connection; missing or partial keys refuse. Identical retry resolves the original immutable registration and audit. Conflicting keys require explicit recovery, never regeneration. No key activation, runtime authority or worker-distribution proof. Keep keys and driver reservation until connection closure. Exit:0 registered/resolved,1 connection/output failure,2 usage,3 configuration/schema/conflict,4 local key unavailable or COMMIT outcome unknown; retry identical keys on a fresh connection."))
 }
 
 pub(super) fn execute(args: &ArgMatches) -> ExitCode {
@@ -43,6 +49,9 @@ pub(super) fn execute(args: &ArgMatches) -> ExitCode {
             .expect("validated dataset")
             .parse()
             .map_err(|_| (3, "invalid dataset identity".into()))?;
+        if operation == "register" {
+            return register(&config, reference, dataset);
+        }
         let number = |field: &str| config.number(&format!("runtime.processes.application.{field}"));
         let envelope = ProcessEnvelope::new(
             number("memory_max_bytes"),
@@ -95,4 +104,74 @@ pub(super) fn execute(args: &ArgMatches) -> ExitCode {
     // Key bytes and their reservation have dropped before the finite output drain.
     let delivered = output.finish();
     std::process::exit(i32::from(if delivered { code } else { 1 }));
+}
+
+fn register(
+    config: &crate::config::Resolved,
+    reference: &str,
+    dataset: DatasetId,
+) -> Result<serde_json::Value, (u8, String)> {
+    let required = |key: &str| {
+        config
+            .text(key)
+            .ok_or_else(|| (3, format!("{key}: required for cursor registration")))
+    };
+    let instance = required("topology.instance_id")?
+        .parse()
+        .map_err(|_| (3, "invalid instance identity".into()))?;
+    let (connection, permit) = postgres_command::prepare(
+        config,
+        required("postgres.control.user")?,
+        required("postgres.control.password_ref")?,
+        KEYRING_RESERVATION,
+    )?;
+    // One combined charge accounts for connection/transaction and secret bytes.
+    // The prepared snapshot owns it until the real driver join below completes.
+    let prepared = PreparedKeyring::existing(reference, dataset, permit)
+        .map_err(|error| (4, error.to_string()))?;
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .map_err(|_| (1, "cannot start finite Control executor".into()))?;
+    let result = runtime.block_on(async {
+        let (mut client, driver) = postgres_command::connect(connection)
+            .await
+            .map_err(|_| RegistrationError::Backend)?;
+        let started = Cell::new(false);
+        let result = match tokio::time::timeout(
+            Duration::from_secs(30),
+            cursor_registration::register(&mut client, instance, &prepared, &started),
+        )
+        .await
+        {
+            Ok(result) => result,
+            Err(_) if started.get() => Err(RegistrationError::CommitUnknown),
+            Err(_) => Err(RegistrationError::Backend),
+        };
+        postgres_command::close(client, driver).await;
+        result
+    });
+    runtime.shutdown_timeout(postgres_command::DRIVER_DRAIN);
+    let hex = |bytes: [u8; 16]| format!("{:032x}", u128::from_be_bytes(bytes));
+    let keys = prepared.keys();
+    let mut report = serde_json::json!({
+        "format":"bigbrotr-cursor-registration/1", "dataset_id":dataset,
+        "keyring_id":hex(keys.id()), "key_ids":keys.key_ids().map(hex).collect::<Vec<_>>(),
+        "initial_file_fingerprint_sha256":keys.fingerprint(), "cursor_authority":"not-granted"
+    });
+    match result {
+        Ok(receipt) => {
+            report["state"] = if receipt.created { "registered" } else { "already-registered" }.into();
+            report["actor_id"] = serde_json::to_value(receipt.actor).expect("fixed identity");
+            report["audit_id"] = hex(receipt.audit_id).into();
+            report["registered_at_us"] = receipt.registered_at_us.to_string().into();
+            Ok(report)
+        }
+        Err(RegistrationError::CommitUnknown) => Err((4, "cursor key registration COMMIT outcome unknown; retain keys and retry the same registration on a fresh connection".into())),
+        Err(error) => Err((match error {
+            RegistrationError::Backend => 1,
+            RegistrationError::Entropy => 4,
+            _ => 3,
+        }, error.to_string())),
+    }
 }

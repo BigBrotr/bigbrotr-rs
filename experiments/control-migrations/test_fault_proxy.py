@@ -5,6 +5,7 @@ from pathlib import Path
 import struct
 import sys
 import unittest
+from fault_cases import safe_event, Incomplete
 
 SCRIPT = Path(__file__).with_name("fault_proxy.py")
 STARTUP = b"\x00\x03\x00\x00user\x00lab\x00database\x00lab\x00\x00"
@@ -106,7 +107,7 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         while True:
             line = await asyncio.wait_for(self.process.stdout.readline(), 7)
             self.assertTrue(line, "proxy exited before expected safe event: " + kind)
-            item = json.loads(line)
+            item = safe_event(json.loads(line))
             self.events.append(item)
             if item["event"] == kind:
                 return item
@@ -383,6 +384,17 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(await reader.read(), b"")
         result = await self.finish(code=3, backend=False)
         self.assertEqual(result["reason"], "control-length")
+
+
+class MetadataTests(unittest.TestCase):
+    def test_commit_selection_is_bounded_and_unknown_payload_fields_stay_refused(self):
+        event = dict(format='bigbrotr-pg-fault-proxy/1', event='ready', mode='hold', commit_number=3)
+        self.assertEqual(safe_event(event), event)
+        for value in [0, 65, True, 1.5, '3']:
+            with self.assertRaises(Incomplete):
+                safe_event(dict(event, commit_number=value))
+        with self.assertRaises(Incomplete):
+            safe_event(dict(event, raw_query='fixture-secret'))
 
 
 if __name__ == "__main__":

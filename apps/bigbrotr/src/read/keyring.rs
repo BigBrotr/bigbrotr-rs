@@ -56,20 +56,61 @@ impl fmt::Debug for Keyring {
         f.write_str("Keyring([redacted])")
     }
 }
+/// Successfully synchronized existing keys. Only this local preparation can
+/// construct registration input; a plain read cannot attest prior publication.
+/// Holds bytes and their reservation; does not retain filesystem path custody.
+pub struct PreparedKeyring(Keyring);
+impl PreparedKeyring {
+    pub fn existing(
+        reference: &str,
+        dataset: DatasetId,
+        permit: OwnedPermit,
+    ) -> Result<Self, KeyringError> {
+        Keyring::load(reference, dataset, permit, Load::PrepareExisting).map(Self)
+    }
+    pub fn keys(&self) -> &Keyring {
+        &self.0
+    }
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Load {
+    Inspect,
+    Prepare,
+    PrepareExisting,
+}
 impl Keyring {
+    pub fn dataset(&self) -> DatasetId {
+        DatasetId::try_from(<[u8; 16]>::try_from(&self.bytes[8..24]).expect("bounded dataset"))
+            .expect("validated dataset")
+    }
+    /// Non-secret registration bindings, preserving file order. These hashes
+    /// cannot authorize a key or substitute for its protected bytes.
+    pub fn bindings(&self) -> impl Iterator<Item = ([u8; 16], Digest256)> + '_ {
+        self.key_ids().map(|id| {
+            let digest = Sha256::new()
+                .chain_update(b"bigbrotr/cursor-key-material/1\0")
+                .chain_update(self.dataset_bytes())
+                .chain_update(self.id())
+                .chain_update(id)
+                .chain_update(self.key(&id).expect("validated key"))
+                .finalize()
+                .into();
+            (id, Digest256::from_bytes(digest))
+        })
+    }
     pub fn prepare(
         reference: &str,
         dataset: DatasetId,
         permit: OwnedPermit,
     ) -> Result<Self, KeyringError> {
-        Self::load(reference, dataset, permit, true)
+        Self::load(reference, dataset, permit, Load::Prepare)
     }
     pub fn open(
         reference: &str,
         dataset: DatasetId,
         permit: OwnedPermit,
     ) -> Result<Self, KeyringError> {
-        Self::load(reference, dataset, permit, false)
+        Self::load(reference, dataset, permit, Load::Inspect)
     }
     pub fn id(&self) -> [u8; 16] {
         self.bytes[24..40].try_into().expect("validated ring ID")
@@ -106,9 +147,10 @@ impl Keyring {
         reference: &str,
         dataset: DatasetId,
         permit: OwnedPermit,
-        prepare: bool,
+        operation: Load,
     ) -> Result<Self, KeyringError> {
         use KeyringError as Error;
+        let prepare = operation != Load::Inspect;
         if permit.request().units().data_bytes() < KEYRING_RESERVATION
             || permit.request().units().items() < 1
         {
@@ -175,7 +217,7 @@ impl Keyring {
         let replace = existing.is_some();
         let bytes = match existing {
             Some(bytes) => bytes,
-            None if prepare => fresh(dataset)?,
+            None if operation == Load::Prepare => fresh(dataset)?,
             None => return Err(Error::NotInitialized),
         };
         if prepare {
