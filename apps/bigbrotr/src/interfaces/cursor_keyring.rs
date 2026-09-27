@@ -23,15 +23,43 @@ pub(super) fn command() -> Command {
             "inspect",
             "Read an existing local keyring without creating or repairing it",
         ),
+        (
+            "prepare-key",
+            "Add one local key to an existing ring; same key ID retries identical bytes",
+        ),
     ] {
-        command = command.subcommand(Command::new(name).about(about)
+        let mut subcommand = Command::new(name).about(about)
             .arg(Arg::new("file").long("file").required(true).value_parser(clap::value_parser!(PathBuf)))
-            .after_help("Requires read.cursor.keyring_ref in the deployment file and an existing dedicated mode0700 directory owned by this user. Symlinks are refused. Preparation refuses partial or conflicting state; inspection may read the last complete final file beside staging. Successful preparation syncs exact keys and directory entries; complete retry preserves keys. Exclude external provisioning writers during preparation. No database contact, Control registration, activation or runtime authority. Output omits secret bytes and paths. Exit:0 operation completed,1 configuration/output I/O,2 usage,3 configuration/budget,4 unavailable/conflicting key storage."));
+            .after_help("Requires read.cursor.keyring_ref in the deployment file and an existing dedicated mode0700 directory owned by this user. Symlinks are refused. Preparation refuses partial or conflicting state; inspection may read the last complete final file beside staging. Successful preparation syncs exact keys and directory entries; complete retry preserves keys. Exclude external provisioning writers during preparation. Prepare-key requires an existing complete keyfile and a nonzero32-character lowercase hex key ID; retry the same ID after interruption. Prepare in one location, then distribute those exact protected bytes. No database contact, Control registration, activation or runtime authority. Output omits secret bytes and paths. Exit:0 operation completed,1 configuration/output I/O,2 usage,3 configuration/budget,4 unavailable/conflicting key storage.");
+        if name == "prepare-key" {
+            subcommand = subcommand.arg(
+                Arg::new("key-id")
+                    .long("key-id")
+                    .required(true)
+                    .value_parser(key_id),
+            );
+        }
+        command = command.subcommand(subcommand);
     }
     command.subcommand(Command::new("register")
         .about("Register already prepared keys once in Control; no activation")
         .arg(Arg::new("file").long("file").required(true).value_parser(clap::value_parser!(PathBuf)))
         .after_help("Requires migration0601 and the protected Control application credential. Re-syncs only existing complete local keys before connection; missing or partial keys refuse. Identical retry resolves the original immutable registration and audit. Conflicting keys require explicit recovery, never regeneration. No key activation, runtime authority or worker-distribution proof. Keep keys and driver reservation until connection closure. Exit:0 registered/resolved,1 connection/output failure,2 usage,3 configuration/schema/conflict,4 local key unavailable or COMMIT outcome unknown; retry identical keys on a fresh connection."))
+}
+
+fn key_id(text: &str) -> Result<[u8; 16], String> {
+    if text.len() != 32
+        || !text
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+    {
+        return Err("expected a nonzero32-character lowercase hexadecimal key ID".into());
+    }
+    let id = u128::from_str_radix(text, 16).expect("bounded hexadecimal ID");
+    if id == 0 {
+        return Err("key ID must be nonzero".into());
+    }
+    Ok(id.to_be_bytes())
 }
 
 pub(super) fn execute(args: &ArgMatches) -> ExitCode {
@@ -75,16 +103,21 @@ pub(super) fn execute(args: &ArgMatches) -> ExitCode {
                     "cursor keys do not fit the declared payload grant".into(),
                 )
             })?;
-        let keyring = if operation == "prepare" {
-            Keyring::prepare(reference, dataset, permit)
-        } else {
-            Keyring::open(reference, dataset, permit)
+        let keyring = match operation {
+            "prepare" => Keyring::prepare(reference, dataset, permit),
+            "prepare-key" => Keyring::prepare_key(
+                reference,
+                dataset,
+                *args.get_one::<[u8; 16]>("key-id").expect("required key ID"),
+                permit,
+            ),
+            _ => Keyring::open(reference, dataset, permit),
         }
         .map_err(|error| (4, error.to_string()))?;
         let hex = |bytes: [u8; 16]| format!("{:032x}", u128::from_be_bytes(bytes));
         Ok::<_, (u8, String)>(serde_json::json!({
             "format":"bigbrotr-cursor-keyring-observation/1",
-            "state":if operation == "prepare" { "prepared-local" } else { "inspected-local" },
+            "state":if operation == "inspect" { "inspected-local" } else { "prepared-local" },
             "dataset_id":dataset, "keyring_id":hex(keyring.id()),
             "key_ids":keyring.key_ids().map(hex).collect::<Vec<_>>(),
             "fingerprint_sha256":keyring.fingerprint(), "control_registration":"not-checked",

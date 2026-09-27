@@ -25140,5 +25140,20 @@
       "orchestrator_absent_or_zombie": true
     },
     "retention": "Retain source/ELF/SQL/keys/fault state and fresh3ba compiler cache; previous1f/8db/73e protected until separate verified lifecycle assessment. No deletion in this run."
+  },
+  "implementation_cursor_rotation_20260927": {
+    "local_root": ".research/implementation/cursor-rotation",
+    "source_base": "d5bc05da0b7d37f60c7d3bb45e66d66a92ad54f9",
+    "status": "23selected Mac tests/Clippy PASS after core+CLI RED;13case native recipe parsed/NOT_RUN.",
+    "remote_resources_created": false,
+    "contents": "Root-owned local sources/logs for idempotent protected key addition; public fixtures only.",
+    "report": "docs/implementation/evidence/p06-cursor-key-addition-local-20260927.json",
+    "preflight": {
+      "path": ".research/implementation/cursor-rotation/preflight-resume.json",
+      "at": "2026-09-27T16:14:49.275069+00:00",
+      "free_bytes": 105878175744,
+      "unchanged_containers": 772,
+      "running_unrelated": 8
+    }
   }
 }

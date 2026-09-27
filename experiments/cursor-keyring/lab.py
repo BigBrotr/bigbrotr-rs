@@ -19,16 +19,19 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True
 revision, tree = sys.argv[1:3]
-reuse = sys.argv[3] if len(sys.argv) == 4 else None
+rotation = sys.argv[3:] == ['--rotation']
+reuse = sys.argv[3] if len(sys.argv) == 4 and not rotation else None
 assert len(sys.argv) in (3,4) and (reuse is None or re.fullmatch('[0-9a-f]{40}',reuse))
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917/runs')
-root = base/('cursor-keyring-'+revision[:7])
+family = 'cursor-rotation' if rotation else 'cursor-keyring'
+root = base/(family+'-'+revision[:7])
 source, out = root/'source', root/'out'
-cache = base/'export-runtime-8dbd3c4'
+cache = base/('cursor-registration-3ba3ceb' if rotation else 'export-runtime-8dbd3c4')
+cache_owner = 'eb663e23ef210c56bebc0df9c974f84a' if rotation else '1ae77d53919b4876eeff7df396179ccd'
 instrument = base/'strace-exit-9b30c35'
 image = 'sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d'
-label = 'org.bigbrotr.cursor-keyring'
+label = 'org.bigbrotr.'+family
 
 
 def cmd(*args):
@@ -73,7 +76,7 @@ assert not any('bigbrotr' in c['Name'].lower() and c['State']['Running'] for c i
 assert not out.exists()
 origins = [(instrument,'84ac8cbf5292679b8ef7043fed7a2799')]
 if not reuse:
-    origins.append((cache,'1ae77d53919b4876eeff7df396179ccd'))
+    origins.append((cache,cache_owner))
 else:
     previous = base/('cursor-keyring-'+reuse[:7])
     old = json.loads((previous/'resources.json').read_text())
@@ -115,13 +118,15 @@ try:
         for name in ['target','cargo-home']:
             original = cache/'out/build'/name
             assert original.is_dir() and not original.is_symlink()
+            if name == 'cargo-home':
+                assert not any((original/n).exists() for n in ['credentials','credentials.toml','config','config.toml'])
             subprocess.run(['cp','-a','--reflink=auto',str(original),str(build/name)],check=True,timeout=120)
-        write(root/'cache-origin.json',dict(root=str(cache), owner='1ae77d53919b4876eeff7df396179ccd',
+        write(root/'cache-origin.json',dict(root=str(cache), owner=cache_owner,
             source_manifest_sha256=sha(cache/'out/build/source-manifest.json'), scope='copied compiler caches; fresh current build'))
     else:
         write(root/'artifact-origin.json',dict(root=str(previous),source=reuse,owner=old['owner']))
     assert shutil.disk_usage(base).free > 8*1024**3
-    args = ['docker','create','--init','--name','bigbrotr-cursor-keyring-'+revision[:7],
+    args = ['docker','create','--init','--name','bigbrotr-'+family+'-'+revision[:7],
             '--label',label+'='+owner,'--cpus','2','--memory','6g','--memory-swap','6g','--pids-limit','512',
             '--network','none','--user',f'{os.getuid()}:{os.getgid()}', '--read-only', '--cap-drop','ALL',
             '--cap-add','SYS_PTRACE','--security-opt','seccomp=unconfined','--security-opt','no-new-privileges',
@@ -135,6 +140,8 @@ try:
     args += [image,'python3','-B','/out/build/source/experiments/cursor-keyring/native.py']
     if reuse:
         args += ['--reuse']
+    if rotation:
+        args += ['--rotation']
     container = cmd(*args)
     state.update(state='running', containers=[dict(name='rust-keyring',id=container)])
     write(root/'resources.json',state)

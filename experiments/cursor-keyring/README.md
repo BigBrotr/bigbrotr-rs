@@ -57,3 +57,15 @@ remains INCOMPLETE after an observer NameError; its successful build/tests and
 first ordered-sync case retain their original identity. The correction moved
 misplaced ENOSPC assertions into their intended loop without changing product
 code or expected answers. No broader cursor/Control/release gate is closed.
+
+The separate `lab.py REVISION TREE --rotation` selection qualifies the explicit
+local `prepare-key --key-id ID` addition. Its fresh run root is
+`cursor-rotation-SHORT`, with copied compiler caches from the stopped qualified
+`cursor-registration-3ba3ceb`; Cargo.lock must match and the container remains
+networkless. This selection builds/tests the changed product and runs only the
+new13-case `prepare_key.py` fixture. It checks exact previous-key preservation,
+idempotent complete retry including cap16, missing/partial/lock/concurrent cases,
+four EIO/ENOSPC boundaries, three pending-fsync SIGKILL windows and full stdout.
+Prepared key material remains private under the same keys-directory rule.
+This recipe is authored, not yet native-qualified. It adds no Control enrollment,
+activation, distribution, retirement or full rotation claim.

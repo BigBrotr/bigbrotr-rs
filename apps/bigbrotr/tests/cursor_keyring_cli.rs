@@ -159,3 +159,57 @@ fn register_requires_existing_complete_keys_before_any_database_connection() {
         b"public retained sentinel"
     );
 }
+
+#[test]
+fn prepare_key_is_an_explicit_offline_idempotent_addition_not_initialization() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().canonicalize().unwrap();
+    let (file, original) = config(&root);
+    let directory = root.join("keys");
+    fs::create_dir(&directory).unwrap();
+    fs::set_permissions(&directory, fs::Permissions::from_mode(0o700)).unwrap();
+    fs::write(
+        &file,
+        format!(
+            "{original}\n[read.cursor]\nkeyring_ref='file:{}/keyring'\n",
+            directory.display()
+        ),
+    )
+    .unwrap();
+    let add = |id| {
+        run(&[
+            "access",
+            "cursor-keyring",
+            "prepare-key",
+            "--file",
+            file.to_str().unwrap(),
+            "--key-id",
+            id,
+        ])
+    };
+    let key_id = "55555555555555555555555555555555";
+    assert_eq!(add(key_id).status.code(), Some(4));
+    assert!(!directory.join("keyring").exists());
+    let first = observe(action("prepare", &file));
+    let extended = observe(add(key_id));
+    assert_eq!(extended["format"], "bigbrotr-cursor-keyring-observation/1");
+    assert_eq!(extended["state"], "prepared-local");
+    assert_eq!(extended["cursor_authority"], "not-granted");
+    assert_eq!(extended["control_registration"], "not-checked");
+    assert_eq!(extended["keyring_id"], first["keyring_id"]);
+    assert_eq!(extended["key_ids"][0], first["key_ids"][0]);
+    assert_eq!(extended["key_ids"][1], key_id);
+    assert_eq!(extended.as_object().unwrap().len(), 8);
+    let bytes = fs::read(directory.join("keyring")).unwrap();
+    assert_eq!(observe(add(key_id)), extended);
+    for invalid in [
+        "",
+        "0",
+        "00000000000000000000000000000000",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "gggggggggggggggggggggggggggggggg",
+    ] {
+        assert_eq!(add(invalid).status.code(), Some(2));
+    }
+    assert_eq!(fs::read(directory.join("keyring")).unwrap(), bytes);
+}

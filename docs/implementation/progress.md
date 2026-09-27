@@ -12,7 +12,7 @@ private bigbrotr-rs, unpublished Cargo packages and the read-only Go neighbor.
 Mac owns edits/Git; Tux runs trusted exact-Git jobs while hosted Actions billing
 is unavailable. No public release, rename or Linux arm64 qualification.
 Active P08-T03 Step3 / P08-T04 Step3, with thin P09-T09 Step2 and the
-P06-T03 Step1 cursor/keyring prerequisite. No full
+P06-T03 Step1/3 cursor/keyring prerequisite. No full
 P02/P06/P08/P09 task or M1 milestone is complete. Continue through the existing
 pipeline, including packaging, acquisition, analytics, public surfaces and website.
 Root is sole writer/integrator. catalog_guard_review is a read-only AI reviewer,
@@ -20,13 +20,31 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Product candidate and pre-qualification-commit main HEAD
-3ba3ceb6943f819567dca760640d47e183d2c4fa, tree
-07da3dea689d8b40f9f777320961ff236b09404e, coherent candidate now natively qualified.
-Origin/main remains7404f2a; no push of the new candidate yet. Product/source tree
-was clean at exact-Git transfer. Root owns only qualification docs/report/inventory changes after the terminal
-native run. The local registration report identifies prior
-dirty inputs, not a native result.
+Main HEAD/private origin d5bc05da0b7d37f60c7d3bb45e66d66a92ad54f9 verified,
+clean after qualification push. Product candidate3ba3ceb is natively qualified;
+only documentation changed in d5. Root now owns the next P06-T03 Step1/3 local
+rotation prerequisite: explicit idempotent prepare-key with a caller-selected
+nonzero public key ID, preserving existing ring/keys. This adds no registration,
+activation or runtime authority. New local evidence root cursor-rotation is
+inventoried; no new Tux run. Three stub core tests fail as expected; separate
+actual CLI RED fails at absent subcommand. Original sources/logs retained.
+Implementation now passes23selected tests (10keyring/4CLI/2registration/7codec)
+and selected Clippy. prepare_key appends with a separate fallibly allocated
+Zeroizing buffer, retains32KiB and reuses existing synchronized publication.
+Independent read-only AI reviewed this product delta and all13native cases;
+no blocking counterexample, test execution or SSH by AI;
+no native candidate or qualification yet. The existing keyring lab/native scripts
+have an explicit --rotation selector, taking only copied stopped3ba build caches.
+The new recipe is parsed/NOT_RUN, with EIO/ENOSPC,three held-fsync kills,actual
+blocked stdout,lock/concurrent/max16/missing/partial/exact-byte retry oracles.
+Whole serve/management/Control/keyring/CLI consumers
+and linked cursor/list contracts were read before changes. Read-only AI reviewed
+upcoming readiness/lifecycle constraints below, without tests/SSH/edits.
+
+Fresh read-only preflight2026-09-27T16:14:49Z verifies all772container projections
+unchanged, eight unrelated running and no running BigBrotr container. Free
+105878175744bytes; ports/processes/mounts/networks/volumes/directories retained
+under cursor-rotation/preflight-resume.json. No deletion or resource change.
 
 Latest Tux root cursor-registration-3ba3ceb is stopped-retained, owner
 eb663e23ef210c56bebc0df9c974f84a. Orchestrator2149748/start390551357 is absent or
@@ -71,13 +89,21 @@ and outcomes unchanged. Independent offline AI verifies all16inputs/63artifacts,
 
 SQL0601 SHA72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026
 has now been applied and is immutable; subsequent corrections need additive DDL.
-This checkpoint belongs to the qualification docs commit following3ba3ceb; no
-product inputs changed after that native run. Artifact/handoff/fmt/diff checks
-pass:179Markdown/322JSON,123tasks/756steps and the same3historical cycle candidates.
-Next bounded action after private push: implement current key lifecycle/activation
-with a real consumer before actor-owned listing. Read full remaining serve/
-management consumers before changes; current reads cover Control owner,
-initialization,job status/domain and the owning P06/P08 cursor/list contracts. Existing task/Step1/M1/product remain open.
+Qualification commit d5 records3ba; current prepare-key changes are separate and
+not yet native-qualified. Final artifact/fmt/diff checks pass179Markdown/323JSON; handoff confirms123tasks/
+756steps and the same3historical cycle candidates.
+Next bounded action: commit the reviewed unpublished prepare-key candidate, then
+run the exact-Git --rotation lab using current3ba cache. No SQL601 edits. Continue
+through Control key enrollment/readiness/lifecycle and actor-owned listing. Existing task/Step1/M1/product remain open.
+
+Static AI lifecycle review flags: current require_control_owner checks backend/
+incarnation/state but not lease expiry; readiness needs current time after waits.
+Bind readiness to actual loaded ID+material and full owner incarnation; a successor
+must validate active plus still-required old keys before serving. Runtime currently
+implements only Control, so do not invent an unconsumed distributed registry.
+Persist a monotone per-key maximum original expiry+skew before delivery; retirement
+using today's reduced TTL is unsafe. These are constraints for the next real
+lifecycle consumer, not executed lifecycle evidence or selected new DDL yet.
 
 Mac verification:50selected CLI/config/policy/keyring/secret tests pass, plus the
 collision regression and Clippy. Fifteen independent public wire vectors include

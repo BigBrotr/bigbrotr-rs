@@ -235,6 +235,12 @@ audit; it cannot activate issuance. The [native registration report](evidence/p0
 qualifies atomicity, concurrent same/conflicting retries, COMMIT-loss resolution,
 sync refusal before SQL, blocked output and engine restart at3ba3ceb. Current
 lifecycle/activation/rotation and all remaining Step1 acceptance stay open.
+The next local addition command, `prepare-key --key-id`, now passes23selected
+Mac keyring/registration/codec/CLI tests and Clippy. A caller-stable public ID
+makes a lost-response retry preserve the same material; existing keys and ring
+identity remain unchanged. Its13case native fault/retry recipe is authored but
+NOT_RUN; Control enrollment/readiness/activation/retirement are not implemented.
+
 
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;
 `migrations/postgres/0603_read_pins.sql`;

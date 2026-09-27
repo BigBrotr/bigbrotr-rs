@@ -1469,6 +1469,25 @@ issuing key, activation, worker readiness, authentication or decryption grant.
 Current lifecycle, worker distribution, activation and rotation are separate
 required consumers before exposing paged reads.
 
+Local preparation for rotation uses `access cursor-keyring prepare-key --file
+CONFIG --key-id ID`. The explicit ID is a nonzero32-character lowercase hexadecimal
+identifier, not secret material. On an existing complete keyfile, a missing ID
+appends one fresh OS-generated key; an existing ID preserves its original bytes.
+Both cases use the same exclusive synchronized publication as preparation and
+return `prepared-local`, without contacting Control. Dataset, ring ID, prior key
+IDs/material and order remain unchanged. At16keys only an already present ID can
+be retried; insufficient capacity, missing files, invalid IDs and partial staging
+refuse without replacement or cleanup. A lost response is retried with the same
+ID, never a new identifier. Prepare the key in one provisioning location and
+distribute those exact protected bytes; running the same ID on separate workers
+would generate different material. Readiness must compare each material binding,
+not just the public ID. This prepares additional local bytes only; it cannot
+prove distribution or register/activate them. Globally registered key IDs must
+never be reused with new material, including after local removal; Control's
+permanent material binding will independently enforce this at enrollment.
+Initial `register` still resolves only its exact original keyfile; subsequent
+key enrollment and lifecycle need their separate additive protocol.
+
 Use a versioned authenticated-encryption envelope for self-contained continuation,
 so private scan positions are neither editable nor readable by clients. The
 initial implementation candidate is full-round XChaCha20-Poly1305 through the

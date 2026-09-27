@@ -77,8 +77,20 @@ enum Load {
     Inspect,
     Prepare,
     PrepareExisting,
+    PrepareKey([u8; 16]),
 }
 impl Keyring {
+    /// Add one key to an existing local ring, or re-sync the same key on retry.
+    /// Prepare in one location, then distribute identical bytes to all workers.
+    /// The public ID is caller-stable; this grants no Control lifecycle authority.
+    pub fn prepare_key(
+        reference: &str,
+        dataset: DatasetId,
+        key_id: [u8; 16],
+        permit: OwnedPermit,
+    ) -> Result<Self, KeyringError> {
+        Self::load(reference, dataset, permit, Load::PrepareKey(key_id))
+    }
     pub fn dataset(&self) -> DatasetId {
         DatasetId::try_from(<[u8; 16]>::try_from(&self.bytes[8..24]).expect("bounded dataset"))
             .expect("validated dataset")
@@ -156,6 +168,9 @@ impl Keyring {
         {
             return Err(Error::Capacity);
         }
+        if operation == Load::PrepareKey([0; 16]) {
+            return Err(Error::Mismatch);
+        }
         let reference = SecretFile::parse(reference).map_err(|_| Error::InvalidReference)?;
         let (directory, name) = reference.open_parent().map_err(secret_error)?;
         let metadata = directory.metadata().map_err(|_| Error::Filesystem)?;
@@ -220,6 +235,11 @@ impl Keyring {
             None if operation == Load::Prepare => fresh(dataset)?,
             None => return Err(Error::NotInitialized),
         };
+        let bytes = if let Load::PrepareKey(id) = operation {
+            append_key(bytes, id)?
+        } else {
+            bytes
+        };
         if prepare {
             let mut nonce = [0u8; 16];
             getrandom::fill(&mut nonce).map_err(|_| Error::Entropy)?;
@@ -265,6 +285,34 @@ impl Keyring {
             _permit: permit,
         })
     }
+}
+
+fn append_key(bytes: Zeroizing<Vec<u8>>, id: [u8; 16]) -> Result<Zeroizing<Vec<u8>>, KeyringError> {
+    let body = &bytes[..bytes.len() - CHECKSUM];
+    let records = body[HEADER..].as_chunks::<RECORD>().0;
+    if records.iter().any(|record| record[..16] == id) {
+        return Ok(bytes);
+    }
+    if records.len() == MAX_KEYS {
+        return Err(KeyringError::Capacity);
+    }
+    // Never reallocate a buffer containing old secrets: the allocator would
+    // free an unzeroized copy. Both bounded buffers remain owned/charged here.
+    let mut next = Zeroizing::new(Vec::new());
+    next.try_reserve_exact(bytes.len() + RECORD)
+        .map_err(|_| KeyringError::Capacity)?;
+    next.extend_from_slice(body);
+    next[40..42].copy_from_slice(&((records.len() + 1) as u16).to_be_bytes());
+    next.extend_from_slice(&id);
+    let material = next.len();
+    next.resize(material + 32, 0);
+    getrandom::fill(&mut next[material..]).map_err(|_| KeyringError::Entropy)?;
+    if next[material..] == [0; 32] {
+        return Err(KeyringError::Entropy);
+    }
+    let digest = Sha256::digest(&next);
+    next.extend_from_slice(&digest);
+    Ok(next)
 }
 
 fn publish(

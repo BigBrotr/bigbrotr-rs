@@ -23,7 +23,8 @@ def source_files():
 
 assert source_files() == manifest['files_sha256']
 reuse = sys.argv[1:] == ['--reuse']
-assert not sys.argv[1:] or reuse
+rotation = sys.argv[1:] == ['--rotation']
+assert not sys.argv[1:] or reuse or rotation
 if reuse:
     previous = Path('/reuse')
     old_manifest = json.loads((previous/'out/build/source-manifest.json').read_text())
@@ -67,12 +68,13 @@ else:
     identity = dict(source=manifest['revision'], tree=manifest['tree'],
                     source_manifest_sha256=file_hash(build/'source-manifest.json'),
                     lockfile_sha256=file_hash(source/'Cargo.lock'), native_toolchain=native,
-                    scope='protected local cursor key preparation; no Control, envelope, worker or release')
+                    scope='protected local cursor key addition; no lifecycle/activation/distribution/release' if rotation else 'protected local cursor key preparation; no Control, envelope, worker or release')
+    consumers = ['cursor_keyring','cursor_keyring_cli','cursor_registration','read_cursors'] if rotation else [
+        'cursor_keyring','cursor_keyring_cli','secret_files','config_entrypoint','policy_seed','cli_contract']
     assert execute([
         ('build', ['cargo', 'build', '--locked', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr']),
         ('consumers', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr',
-                       '--test', 'cursor_keyring', '--test', 'cursor_keyring_cli', '--test', 'secret_files',
-                       '--test', 'config_entrypoint', '--test', 'policy_seed', '--test', 'cli_contract']),
+                       *[arg for name in consumers for arg in ['--test',name]]]),
         ('collision', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'initial_publication_never']),
         ('clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--lib', '--bin', 'bigbrotr',
                     '--test', 'cursor_keyring', '--test', 'cursor_keyring_cli', '--', '-D', 'warnings']),
@@ -87,7 +89,7 @@ else:
     identity.update(binary_sha256=file_hash(binary), build_info=info)
     (out/'artifact.json').write_text(json.dumps(identity, indent=2)+'\n')
 assert execute([
-    ('filesystem', [sys.executable, '-B', str(source/'experiments/cursor-keyring/cases.py'),
+    ('filesystem', [sys.executable, '-B', str(source/'experiments/cursor-keyring'/('prepare_key.py' if rotation else 'cases.py')),
                     str(binary), '/out/cases', '/instrument/strace-exit-fixed']),
 ], out/'practical', source, env, identity, 180)['status'] == 'PASS'
 assert source_files() == manifest['files_sha256']

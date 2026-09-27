@@ -304,3 +304,116 @@ fn modes_links_and_nonregular_files_are_refused_without_modification() {
         KeyringError::Permissions
     );
 }
+
+#[test]
+fn prepare_key_appends_once_preserving_the_exact_existing_ring_and_material() {
+    use sha2::{Digest, Sha256};
+    let vectors = public_vectors();
+    let original = decode(vectors["cases"][0]["hex"].as_str().unwrap());
+    let dataset = vectors["dataset_id"].as_str().unwrap().parse().unwrap();
+    let (root, reference) = fixture();
+    let path = root.path().join("keys.bin");
+    write_private(&path, &original);
+    let added =
+        Keyring::prepare_key(&reference, dataset, [0x55; 16], permit(KEYRING_RESERVATION)).unwrap();
+    assert_eq!(added.id(), [0x22; 16]);
+    assert_eq!(
+        added.key_ids().collect::<Vec<_>>(),
+        vec![[0x33; 16], [0x44; 16], [0x55; 16]]
+    );
+    let bytes = fs::read(&path).unwrap();
+    assert_eq!(bytes.len(), 218);
+    assert_eq!(&bytes[..40], &original[..40]);
+    assert_eq!(&bytes[40..42], &[0, 3]);
+    assert_eq!(&bytes[42..138], &original[42..138]);
+    assert_eq!(&bytes[138..154], &[0x55; 16]);
+    assert_ne!(&bytes[154..186], &[0; 32]);
+    assert_eq!(&bytes[186..], Sha256::digest(&bytes[..186]).as_slice());
+    drop(added);
+    let retry =
+        Keyring::prepare_key(&reference, dataset, [0x55; 16], permit(KEYRING_RESERVATION)).unwrap();
+    assert_eq!(retry.key_ids().count(), 3);
+    assert_eq!(fs::read(&path).unwrap(), bytes);
+    assert_eq!(fs::read_dir(root.path()).unwrap().count(), 1);
+    assert_eq!(
+        Keyring::open(&reference, dataset, permit(KEYRING_RESERVATION))
+            .unwrap()
+            .fingerprint(),
+        retry.fingerprint()
+    );
+}
+
+#[test]
+fn prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts() {
+    let vectors = public_vectors();
+    let case = vectors["cases"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|c| c["name"] == "sixteen-public-keys")
+        .unwrap();
+    let original = decode(case["hex"].as_str().unwrap());
+    let dataset = vectors["dataset_id"].as_str().unwrap().parse().unwrap();
+    let existing: [u8; 16] = original[42..58].try_into().unwrap();
+    let (root, reference) = fixture();
+    let path = root.path().join("keys.bin");
+    write_private(&path, &original);
+    assert_eq!(
+        Keyring::prepare_key(&reference, dataset, existing, permit(KEYRING_RESERVATION))
+            .unwrap()
+            .key_ids()
+            .count(),
+        16
+    );
+    assert_eq!(
+        Keyring::prepare_key(&reference, dataset, [0xee; 16], permit(KEYRING_RESERVATION))
+            .unwrap_err(),
+        KeyringError::Capacity
+    );
+    assert_eq!(
+        Keyring::prepare_key(&reference, dataset, [0; 16], permit(KEYRING_RESERVATION))
+            .unwrap_err(),
+        KeyringError::Mismatch
+    );
+    assert_eq!(
+        Keyring::prepare_key(
+            &reference,
+            dataset,
+            existing,
+            permit(KEYRING_RESERVATION - 1)
+        )
+        .unwrap_err(),
+        KeyringError::Capacity
+    );
+    assert_eq!(fs::read(&path).unwrap(), original);
+    assert_eq!(fs::read_dir(root.path()).unwrap().count(), 1);
+}
+
+#[test]
+fn prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement() {
+    let (root, reference) = fixture();
+    let dataset = [1; 16].try_into().unwrap();
+    assert_eq!(
+        Keyring::prepare_key(&reference, dataset, [5; 16], permit(KEYRING_RESERVATION))
+            .unwrap_err(),
+        KeyringError::NotInitialized
+    );
+    assert_eq!(fs::read_dir(root.path()).unwrap().count(), 0);
+    let first = Keyring::prepare(&reference, dataset, permit(KEYRING_RESERVATION)).unwrap();
+    let original = fs::read(root.path().join("keys.bin")).unwrap();
+    write_private(
+        &root.path().join("failed.partial"),
+        b"preserve incomplete preparation",
+    );
+    for id in [first.key_ids().next().unwrap(), [5; 16]] {
+        assert_eq!(
+            Keyring::prepare_key(&reference, dataset, id, permit(KEYRING_RESERVATION)).unwrap_err(),
+            KeyringError::Incomplete
+        );
+    }
+    assert_eq!(fs::read(root.path().join("keys.bin")).unwrap(), original);
+    assert_eq!(
+        fs::read(root.path().join("failed.partial")).unwrap(),
+        b"preserve incomplete preparation"
+    );
+}
