@@ -271,6 +271,18 @@ server-observed lease expiry, cancellation/deadline and same-byte recovery.
 A retained prior executable is the negative control for mismatched material.
 Runtime loading does not close activation, retirement/revocation or full readiness.
 
+The next bounded slice selects protected maintenance-window activation/revocation
+through additive0604 and actual startup readiness. Reuse Control's existing fence
+before dataset locking; refuse unreleased owners even after expiry. Immutable
+request receipts supply CAS and historical retry before current admission gates;
+one per-key projection retains revocation/expiry obligations, without a separate
+head table or unused worker registry. Required practical cases include actual
+Control start/stop/crash recovery, both fence acquisition orders, old receipts
+after rotation/restart, changed requests, rollback and ambiguous COMMIT, missing
+loaded material and raw-SQL audit/projection closure. Retention writes and token
+issuance remain gated on the actual page consumer. No new acceptance result or
+Step1/3 completion follows from this design choice.
+
 
 
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;

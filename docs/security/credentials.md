@@ -129,3 +129,25 @@ cancellation/deadline and recovery. The `enrolled-local-snapshot` observation
 grants no cursor authority or complete lifecycle readiness. No configured
 root adds no keyfile read or0602 requirement. Synchronous startup file loading
 does not establish a bound on stalled regular-file I/O.
+
+Maintenance lifecycle commands are under qualification in migration0604:
+`access cursor-keyring activate-key --file instance.toml --key-id ID --request-id
+ID --expected-revision N`, and the corresponding `revoke-key` operation. Stop
+Control cleanly first, then migrate explicitly. The first expected revision is
+zero; use the returned revision for a subsequent transition. Keep the request ID
+and all original arguments for an ambiguous-COMMIT retry. Revocation is permanent,
+including for an enrolled key never activated, and never regenerates missing keys.
+An expired unreleased owner still refuses a new command; valid start/stop is the
+existing owner recovery path. Historical identical requests remain resolvable
+while Control runs and after later key changes, without changing their receipt.
+
+The installation role additionally needs SELECT/INSERT on `cursor_key_transitions`,
+SELECT/INSERT/UPDATE on `cursor_key_lifecycle`, INSERT on the existing audit,
+the dataset row-lock privilege, and EXECUTE on the0604 functions and existing
+`command_u64_bytes`. Triggers own the projection changes; these grants do not
+permit arbitrary lifecycle edits. A runtime needs only SELECT on both new tables
+beside its previous privileges. With0604 applied, a configured cursor consumer
+refuses startup if its actual loaded snapshot omits the active key or a required
+decrypt key. The receipt does not prove distribution to another process or grant
+page access. Issuance, retained-expiry writes and complete pagination remain
+separate required consumers; this candidate does not advertise them.

@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn cursor_lifecycle_requires_an_additive_upgrade_after_job_admission() {
+    let applied: Vec<_> = plan(&[], 815)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let upgrade = plan(&applied, 604).expect("lifecycle requires its own explicit schema");
+    assert_eq!(upgrade.pending.len(), 1);
+    assert_eq!(upgrade.pending[0].name, "0604_cursor_key_lifecycle.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 604),
+        Err(MigrationError::MissingPrerequisite(604))
+    );
+    assert!(migrations::require_applied(&applied, 602).is_ok());
+}
+
+#[test]
 fn cursor_registration_is_an_explicit_additive_migration_after_export_resume() {
     let applied: Vec<_> = plan(&[], 814)
         .unwrap()

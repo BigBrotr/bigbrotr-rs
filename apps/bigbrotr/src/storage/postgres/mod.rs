@@ -5,6 +5,7 @@ pub mod catalog_guard;
 pub mod configuration;
 pub mod connection_settings;
 pub mod control_owner;
+pub mod cursor_lifecycle;
 pub mod cursor_registration;
 pub mod enrollment;
 pub mod import_checkpoints;

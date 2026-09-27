@@ -11,7 +11,7 @@ use std::{cell::Cell, path::PathBuf, process::ExitCode, time::Duration};
 
 pub(super) fn command() -> Command {
     let mut command = Command::new("cursor-keyring")
-        .about("Prepare, inspect, register or enroll protected continuation keys")
+        .about("Prepare protected continuation keys and manage their Control lifecycle")
         .subcommand_required(true)
         .disable_help_subcommand(true);
     for (name, about) in [
@@ -41,7 +41,7 @@ pub(super) fn command() -> Command {
         }
         command = command.subcommand(subcommand);
     }
-    command.subcommand(Command::new("register")
+    super::cursor_lifecycle::commands(command).subcommand(Command::new("register")
         .about("Register already prepared keys once in Control; no activation")
         .arg(Arg::new("file").long("file").required(true).value_parser(clap::value_parser!(PathBuf)))
         .after_help("Requires migration0601 and the protected Control application credential. Re-syncs only existing complete local keys before connection; missing or partial keys refuse. Identical retry resolves the original immutable registration and audit. Conflicting keys require explicit recovery, never regeneration. No key activation, runtime authority or worker-distribution proof. Keep keys and driver reservation until connection closure. Exit:0 registered/resolved,1 connection/output failure,2 usage,3 configuration/schema/conflict,4 local key unavailable or COMMIT outcome unknown; retry identical keys on a fresh connection."))
@@ -52,7 +52,7 @@ pub(super) fn command() -> Command {
         .after_help("Requires migration0602, an initially registered ring and the protected Control application credential. Re-syncs an existing complete keyfile and requires the selected key before connecting. The public key ID permanently binds its material fingerprint. Identical retry returns original initial or additional enrollment attribution even after other local keys change. No distribution, activation or issuance authority. Exit:0 enrolled/resolved,1 connection/output failure,2 usage,3 configuration/schema/conflict,4 local key unavailable or COMMIT unknown. Retain keys and retry the identical key on a fresh connection after an unknown outcome."))
 }
 
-fn key_id(text: &str) -> Result<[u8; 16], String> {
+pub(super) fn key_id(text: &str) -> Result<[u8; 16], String> {
     if text.len() != 32
         || !text
             .bytes()
@@ -82,6 +82,9 @@ pub(super) fn execute(args: &ArgMatches) -> ExitCode {
             .expect("validated dataset")
             .parse()
             .map_err(|_| (3, "invalid dataset identity".into()))?;
+        if matches!(operation, "activate-key" | "revoke-key") {
+            return super::cursor_lifecycle::execute(&config, reference, dataset, operation, args);
+        }
         if matches!(operation, "register" | "enroll-key") {
             let selected = if operation == "enroll-key" {
                 Some(*args.get_one::<[u8; 16]>("key-id").expect("required key ID"))

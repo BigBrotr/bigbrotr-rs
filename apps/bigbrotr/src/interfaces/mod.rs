@@ -6,6 +6,7 @@ mod archive_receipt;
 mod catalog_inspection;
 pub(crate) mod configuration;
 mod cursor_keyring;
+mod cursor_lifecycle;
 pub mod export;
 pub(crate) mod initial_activation;
 mod lifecycle_output;

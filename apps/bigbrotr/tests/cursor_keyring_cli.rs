@@ -42,6 +42,74 @@ fn config(root: &Path) -> (std::path::PathBuf, String) {
 }
 
 #[test]
+fn lifecycle_requires_explicit_request_revision_and_existing_keys_before_connection() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().canonicalize().unwrap();
+    let (file, original) = config(&root);
+    let password = root.join("pg-password");
+    fs::write(&password, b"public test password").unwrap();
+    fs::set_permissions(&password, fs::Permissions::from_mode(0o600)).unwrap();
+    let keys = root.join("keys");
+    fs::create_dir(&keys).unwrap();
+    fs::set_permissions(&keys, fs::Permissions::from_mode(0o700)).unwrap();
+    fs::write(
+        &file,
+        format!(
+            "{}\n[read.cursor]\nkeyring_ref='file:{}/keyring'\n",
+            original.replace(
+                "file:/run/secrets/bigbrotr-control",
+                &format!("file:{}", password.display())
+            ),
+            keys.display()
+        ),
+    )
+    .unwrap();
+    for operation in ["activate-key", "revoke-key"] {
+        let invoke = |request, revision| {
+            run(&[
+                "access",
+                "cursor-keyring",
+                operation,
+                "--file",
+                file.to_str().unwrap(),
+                "--key-id",
+                "55555555555555555555555555555555",
+                "--request-id",
+                request,
+                "--expected-revision",
+                revision,
+            ])
+        };
+        let missing = invoke("66666666666666666666666666666666", "0");
+        assert_eq!(
+            missing.status.code(),
+            Some(4),
+            "{}",
+            String::from_utf8_lossy(&missing.stderr)
+        );
+        assert!(String::from_utf8_lossy(&missing.stderr).contains("NotInitialized"));
+        assert!(missing.stdout.is_empty());
+        assert_eq!(fs::read_dir(&keys).unwrap().count(), 0);
+        assert_eq!(action(operation, &file).status.code(), Some(2));
+        for invalid in [
+            "0",
+            "00000000000000000000000000000000",
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        ] {
+            assert_eq!(invoke(invalid, "0").status.code(), Some(2));
+        }
+        for invalid in ["-1", "01", "18446744073709551616"] {
+            assert_eq!(
+                invoke("66666666666666666666666666666666", invalid)
+                    .status
+                    .code(),
+                Some(2)
+            );
+        }
+    }
+}
+
+#[test]
 fn configured_reference_is_offline_redacted_and_excluded_from_accepted_policy() {
     let root = tempfile::tempdir().unwrap();
     let (file, original) = config(root.path());

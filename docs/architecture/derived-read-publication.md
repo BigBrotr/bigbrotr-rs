@@ -1543,6 +1543,69 @@ and does not prove distribution or possession of every still-required old key.
 Those lifecycle checks remain required before paged reads; they extend this
 actual runtime consumer rather than an unused persistent worker registry.
 
+The first lifecycle consumer uses an explicit maintenance window. The protected
+installation commands are `access cursor-keyring activate-key` and `revoke-key`,
+each with `--file CONFIG --key-id ID --request-id ID --expected-revision N`.
+IDs are nonzero lowercase32hex; the predecessor is canonical unsigned decimal,
+including zero for no previous transition. Migration0604 appends after0815;
+0603 remains reserved for scientific read pins. No old registration, enrollment,
+job or audit is rewritten. Enrollment never implicitly activates a key.
+
+An immutable lifecycle receipt records request, actor, ring, action, selected key,
+expected/new revision, resulting active key and exact installation audit. The
+latest receipt by dataset/revision is the head; there is no separate mutable head
+table or second active flag. A per-key projection records first activation,
+irreversible revocation and the maximum original issued expiry plus allowance.
+The request digest is SHA-256 of `bigbrotr/cursor-key-lifecycle/1\0`, dataset16,
+ring16, actor16, request16, action byte (1 activate,2 revoke), selected key16 and
+expected revision as unsigned big-endian8. No whole-file fingerprint or mutable
+global lifecycle revision is bound into an existing cursor's envelope.
+
+The finite command synchronizes an existing complete local snapshot and retains
+it and the connection reservation through driver join. It authenticates the
+deployment/installation and resolves an identical historical request before new
+quiescence, revision or local selected-key checks. A changed request conflicts;
+lost COMMIT requires the same request on a fresh connection, even after Control
+has restarted or another transition committed. Historical retry grants no new
+authority and preserves all original rows and attribution.
+
+New transitions take migration exclusion, the existing Control try-advisory
+transaction fence, then the dataset row lock. They refuse any unreleased Control
+owner, including expired owners: expiry is not process exclusion. After a crash,
+a valid Control start and clean stop supplies the existing recovery path. Read
+the predecessor in a fresh READ COMMITTED statement after locking. Receipt,
+projection effects and exact audit commit atomically. Raw SQL must preserve this
+closure, CAS, irreversible revocation and immutable receipts; multiple valid
+transitions in one transaction must not compare an earlier receipt to the final
+mutable projection. Activation requires enrolled matching local material, refuses
+an already active or revoked target, and retains old decrypt obligations. Revoking
+the active key leaves no issuer until a different key is explicitly activated;
+revoking an already revoked key with a new request is a conflict.
+An enrolled but never activated key can be revoked, including when absent from
+the local snapshot; an unenrolled ID cannot. Activation after such revocation is
+permanently refused. Rotating A→B→A preserves A's first activation and retention;
+A→B→revoke A leaves B active.
+
+The maintenance command is not a worker-distribution attestation. Each actual
+cursor-selected Control startup validates every loaded material and requires the
+current active key plus all unrevoked keys whose retained decrypt deadline has not
+passed. Selection is bounded by the indexed live retention projection and a17th
+sentinel; at most16 keys may be required/loaded, independent of permanent history
+size. Existing602-only enrollment observations remain non-authorizing. A runtime
+without a configured cursor root cannot issue/decrypt pages. Future independent
+workers require their own actual readiness before they become eligible; online
+multiworker rollout is not qualified by this maintenance protocol.
+
+No issuer is enabled by this migration alone. Before token delivery the owning
+page transaction must monotonically retain that key through the token's original
+absolute expiry plus30seconds, with known COMMIT under current authority. This
+uses the maximum supported allowance even when the current live setting is lower.
+Until that consumer exists, direct retention writes are refused. Decreasing TTL
+cannot shorten prior obligations; continued pages cannot extend original expiry.
+Decryption must check authoritative revocation despite cached bytes. Tests of this
+maintenance boundary do not qualify actual issuance, retirement or cross-worker
+continuation; these remain required before the paged endpoint is advertised.
+
 Use a versioned authenticated-encryption envelope for self-contained continuation,
 so private scan positions are neither editable nor readable by clients. The
 initial implementation candidate is full-round XChaCha20-Poly1305 through the

@@ -3,11 +3,12 @@ use super::{
     ControlSession, OwnerError, application_transaction, backend, fixed, require, transaction_error,
 };
 use crate::read::keyring::Keyring;
+use crate::storage::postgres::cursor_lifecycle::{self, LifecycleError};
 use std::sync::Arc;
 
 impl ControlSession {
-    /// Observe permanent enrollment only, not current issuance/decryption authority
-    /// or the presence of every lifecycle-required key. The transport supervisor
+    /// Observe enrollment and, after604, all lifecycle-required local keys.
+    /// This grants no current issuance/decryption authority. The transport supervisor
     /// retains another Arc through the actual driver join, including cancellation.
     /// No reload or implicit provisioning occurs on an existing session.
     pub async fn bind_cursor_keys(&mut self, keys: Arc<Keyring>) -> Result<(), OwnerError> {
@@ -36,12 +37,26 @@ impl ControlSession {
         }
         // At most16 indexed point lookups. Never scan historical bindings or
         // compare against the original whole-file digest/order/count in0601.
-        for (id, digest) in keys.bindings() {
-            let row = tx.query_opt("SELECT substring(keyring_id FROM 1 FOR 17), substring(material_digest FROM 1 FOR 33) FROM control.cursor_key_materials WHERE dataset_id=$1::bytea AND key_id=$2::bytea", &[&dataset, &&id[..]]).await.map_err(backend)?
-                .ok_or(OwnerError::IncompatibleDeployment)?;
-            if fixed::<16>(&row, 0)? != keys.id() || fixed::<32>(&row, 1)? != *digest.as_bytes() {
-                return Err(OwnerError::IncompatibleDeployment);
-            }
+        cursor_lifecycle::validate_materials(&tx, &keys)
+            .await
+            .map_err(lifecycle_error)?;
+        // Older enrollment-only deployments remain non-authorizing. Once604 is
+        // applied, a configured consumer may not omit the selected issuer or any
+        // still-required decrypt material. The common migration lock is held.
+        let lifecycle: bool = tx
+            .query_one(
+                "SELECT EXISTS(SELECT 1 FROM control.schema_versions
+             WHERE engine='postgres-control' AND migration=604)",
+                &[],
+            )
+            .await
+            .map_err(backend)?
+            .try_get(0)
+            .map_err(backend)?;
+        if lifecycle {
+            cursor_lifecycle::validate_required_keys(&tx, &keys)
+                .await
+                .map_err(lifecycle_error)?;
         }
         // require_control_owner retains the backend fence and row locks, but
         // does not check lease time. Waits above must not admit an expired owner.
@@ -60,5 +75,12 @@ impl ControlSession {
     pub fn enrolled_cursor_keys(&self) -> Option<&Keyring> {
         self.available.then_some(())?;
         self.enrolled_cursor_keys.as_deref()
+    }
+}
+
+fn lifecycle_error(error: LifecycleError) -> OwnerError {
+    match error {
+        LifecycleError::Backend => OwnerError::Backend,
+        _ => OwnerError::IncompatibleDeployment,
     }
 }

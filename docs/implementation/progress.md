@@ -20,13 +20,14 @@ phase, M1 or selected-product completion. Root is sole writer/integrator.
 catalog_guard_review, archive_intent_review and fact_codec_review completed
 independent read-only AI reviews with no edits, product tests, SSH or resources.
 
-Main HEAD is 7ee94dbc68a2c396ccf96efce08e7c885a46535f,
-tree 863d7e8a1dde97133599319f1d098bfd248481be. Private origin/main last verified
-at cbe5e397cd14f11ccd66dd2c9f0e9ed9f88bb496. The clean candidate was transferred
+Main HEAD and private origin/main are e2a66329f01341ee0186335bb38cc930d37810ab.
+The qualified product source is 7ee94dbc68a2c396ccf96efce08e7c885a46535f,
+tree 863d7e8a1dde97133599319f1d098bfd248481be. The clean candidate was transferred
 by exact Git bundle; the second profile cloned that same Git revision. No Tux
 source edits. Root owns current report/task/inventory/checkpoint documentation.
-No merge/rebase or other contributor edits. Qualification is complete below;
-final documentation commit/private push still pending.
+No merge/rebase or other contributor edits. Qualification, documentation and
+private push are complete. Root is now editing lifecycle contracts/tests/code;
+the first new test requires additive0604 after0815 (0603 remains read pins).
 
 ## Latest qualified responsibility
 
@@ -233,8 +234,8 @@ export responsibility; do not require complete P01–P06 acceptance first.
 
 ## Next bounded action
 
-Close current evidence/task documentation, affected artifact checks, complete diff
-review and coherent private push. Source/SQL independent review found no regression;
+Current evidence/task documentation, affected artifact checks, complete diff
+review and coherent private push are complete. Source/SQL review found no regression;
 resume and shutdown capture AI reviews are complete with no discrepancies.
 Use held policy polls (not lease renewal); host/client duration origins differ,
 and admission-before-unlock liveness is sampled.
@@ -242,24 +243,44 @@ Mac cargo check passed. Do not rerun unchanged broad suites without a new concer
 The launcher quoting SyntaxError before second-run resource creation is preserved
 in shutdown-launch-syntax-error.stderr; corrected launch produced the separate PASS.
 
-Then continue P06-T03 Step1/3 lifecycle needed by P08-T03 discovery. Root reread the
+Continue P06-T03 Step1/3 lifecycle needed by P08-T03 discovery. Root reread the
 complete credentials/authority documents, current enrollment SQL, actual runtime
 key binder/loader and finite CLI, plus the complete owning key-ownership section
 of derived-read-publication (1389–end). The unrelated earlier derivation sections
 were not re-reviewed. Control acquisition/release and initial-policy activation
 were inspected for lock/retry patterns; other Control methods remain outside this
-focused re-review. No lifecycle implementation or new migration has begun.
+focused re-review. The new schema and real-CLI regressions failed as intended
+(UnknownTarget604/unrecognized activate-key), then34selected Mac tests passed
+(26schema,6CLI,2prepared snapshots), as did Clippy-Dwarnings. Initial compile
+diagnostic used the wrong Digest256 constructor, corrected before GREEN; original
+logs remain under .research/implementation/cursor-lifecycle. No SQL604 or native
+lifecycle case has run yet. Existing applied SQL remains unchanged.
 
-Bounded design under evaluation: protected CLI activation in a maintenance window,
+Selected bounded design: protected CLI activation/revocation in a maintenance window,
 using the existing Control advisory transaction lock before the dataset lock,
 refusing unreleased owners even when expired. New runtime starts must validate
 all lifecycle-required keys against their actual loaded snapshot; no extra unused
 worker registry. Historical same-request receipts must remain resolvable after
 subsequent activity, and later issuing/decrypt consumers must persist maximum
-original expiry+30s and check current revocation. These are candidate mechanics,
-not adopted contracts or executed tests. Independent read-only AI is examining
-concurrency/recovery counterexamples while root inspects callers. Next: settle
-the smallest useful activation responsibility, update its existing owning contract/
-task and add a discriminating real-consumer test before product code. Preserve
+original expiry+30s and check current revocation. The immutable latest receipt
+provides lifecycle revision and active key; one per-key projection retains
+irreversible revocation and required decrypt retention. No separate head table.
+Root implemented the finite CLI,604receipt/projection and optional runtime
+readiness. Historical receipt precedes maintenance exclusion; the actual prepared
+snapshot/combined reservation survives driver join. Shared material validation
+avoids a duplicate runtime/enrollment lookup. Issued-expiry writes remain refused
+until their actual page consumer exists.
+Independent read-only AI found a static temporary-trigger attack against relying
+on trigger depth for first-activation provenance. Before any SQL application,
+the candidate added an indexed earliest immutable activation check and capture
+relation check; the real-PG hostile CTE fixture must discriminate this correction.
+AI reviewed the fix/test but executed nothing. No independent security/production
+qualification follows. Owning architecture/catalog/credentials/P06 task updated.
+Resumption20:05:59UTC verified all796container projections, no active BigBrotr lab,
+original artifacts intact and88,553,316,352free bytes. The lifecycle profile will
+inventory again and use stopped6474compiler cache in a new owned run.
+Next: coherent candidate commit, exact-Git transfer, execute --lifecycle on Tux,
+preserve original outcomes/keys/state and review actual SQL/control effects.
+Preserve
 applied SQL and all original evidence. No paginated endpoint before lifecycle
 authority; no new master plan or task completion from these qualifications.

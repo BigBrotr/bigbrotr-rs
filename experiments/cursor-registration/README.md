@@ -68,3 +68,17 @@ The [native runtime report](../../docs/implementation/evidence/p06-cursor-runtim
 records54Rust tests/Clippy and117checks across9databases at6474cd3, with retained
 source, ELF, SQL/key metadata and terminal resource evidence. It grants no
 activation, issuing key, old-key retention or cross-worker readiness.
+
+`lab.py REVISION TREE --lifecycle` uses the retained6474compiler cache for a fresh
+offline exact-source build, then `lifecycle.py` with separate SQL and fault cases.
+The selected contract is maintenance-window activation/revocation and actual
+Control startup readiness. Expected digest bytes are encoded independently in
+Python; SQL fixtures include multirow transitions and a caller-created temporary
+trigger that attempts to forge first activation. Native cases exercise explicit
+815→604 upgrade, historical retry while live/after rotation, absent active keys,
+real SIGKILL and expired-but-unreleased owner refusal, both fence orders, held and
+lost COMMIT, rollback, irreversible revocation and PostgreSQL restart. Original
+state/logs/keys remain retained; only safe metadata is captured. These authored
+cases remain NOT_RUN until the enclosing evidence records their actual outcomes.
+No issuer, retention writer, browser page, online multiworker rollout or release
+qualification follows from this profile.

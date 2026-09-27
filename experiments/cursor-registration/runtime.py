@@ -265,7 +265,7 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',type=Path)
     parser.add_argument('--child',action='store_true')
-    parser.add_argument('--signal',choices=['TERM','INT'])
+    parser.add_argument('--signal',choices=['TERM','INT','KILL'])
     parser.add_argument('--record',type=Path)
     parser.add_argument('--config')
     parser.add_argument('--binary',choices=['/build/bigbrotr','/build/previous-bigbrotr'],default='/build/bigbrotr')

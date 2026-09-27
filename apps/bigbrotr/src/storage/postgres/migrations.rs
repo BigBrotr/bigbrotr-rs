@@ -25,7 +25,7 @@ impl Migration {
 }
 
 // Application order matches migrations/manifest.json, independent of reserved ID order.
-static MIGRATIONS: [Migration; 30] = [
+static MIGRATIONS: [Migration; 31] = [
     Migration {
         version: 1,
         name: "0001_control.sql",
@@ -262,6 +262,14 @@ static MIGRATIONS: [Migration; 30] = [
         version: 815,
         name: "0815_job_admission.sql",
         sql: include_str!("../../../../../migrations/postgres/0815_job_admission.sql"),
+        reader_min: 1,
+        reader_max: 1,
+        writer_floor: 1,
+    },
+    Migration {
+        version: 604,
+        name: "0604_cursor_key_lifecycle.sql",
+        sql: include_str!("../../../../../migrations/postgres/0604_cursor_key_lifecycle.sql"),
         reader_min: 1,
         reader_max: 1,
         writer_floor: 1,

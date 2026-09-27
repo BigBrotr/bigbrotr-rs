@@ -18,7 +18,8 @@ revision, tree = sys.argv[1:3]
 enrollment = sys.argv[3:] == ["--enrollment"]
 cursor_runtime = sys.argv[3:] == ["--runtime"]
 job_admission = sys.argv[3:] == ["--job-admission"]
-assert not sys.argv[3:] or enrollment or cursor_runtime or job_admission
+cursor_lifecycle = sys.argv[3:] == ["--lifecycle"]
+assert not sys.argv[3:] or enrollment or cursor_runtime or job_admission or cursor_lifecycle
 family = "job-admission" if job_admission else "cursor-runtime" if cursor_runtime else "cursor-enrollment" if enrollment else "cursor-registration"
 offline = enrollment or cursor_runtime or job_admission
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
@@ -28,6 +29,14 @@ source = root / 'source'; out = root / 'out'; build = out / 'build'
 cache = base / ('cursor-runtime-6474cd3' if job_admission else 'cursor-enrollment-9b02bd9' if cursor_runtime else 'cursor-rotation-e684915' if enrollment else 'cursor-keyring-1f251db')
 cache_owner = '1a45b5d0a0fc08079fc3a1bcde9f0001' if job_admission else '203570ac651e0191d5b613262c9b2091' if cursor_runtime else '89b64550b3049b02bc61122a16c3efe5' if enrollment else 'ca3561d0e4feb8654200a2e26591abdd'
 cache_source = '6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7' if job_admission else '9b02bd9f692ec07f57954b140fcd6efd20220ebe' if cursor_runtime else 'e68491570fec7f6df63f4a161dc6ba7a7d9bb491' if enrollment else '1f251dbfb59c870dd413d6da338dfdeb2911a9c9'
+if cursor_lifecycle:
+    family = 'cursor-lifecycle'
+    offline = True
+    root = base / (family + '-' + revision[:7])
+    source = root / 'source'; out = root / 'out'; build = out / 'build'
+    cache = base / 'cursor-runtime-6474cd3'
+    cache_owner = '1a45b5d0a0fc08079fc3a1bcde9f0001'
+    cache_source = '6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7'
 instrument = base / 'strace-exit-9b30c35'
 image = 'sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d'
 label = 'org.bigbrotr.'+family+'-build'
@@ -72,7 +81,7 @@ for origin, owner in [(cache,cache_owner)] + ([] if job_admission else [(instrum
         if c['State']['Running']:
             assert not any(Path(m['Source']).is_relative_to(origin) for m in c['Mounts'] if m.get('Source','').startswith('/'))
 if not job_admission: assert sha(instrument/'out/strace-exit-fixed') == '509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458'
-assert sha(cache/'out/native-tests/bigbrotr') == ('d9c98747bd1ae7fe5dca267a9e0a1b1df86e6afe23c6cfbce792c8390a9781f7' if job_admission else 'a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716' if cursor_runtime else '2b65d3537ab7b3f147840b07358e20f0e27750c391d1683445672bfde347dadd' if enrollment else '7ebfe502a87cadc101461d5fd5bd823e2e3ee268571bc50db7050fa148cb35c0')
+assert sha(cache/'out/native-tests/bigbrotr') == ('d9c98747bd1ae7fe5dca267a9e0a1b1df86e6afe23c6cfbce792c8390a9781f7' if job_admission or cursor_lifecycle else 'a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716' if cursor_runtime else '2b65d3537ab7b3f147840b07358e20f0e27750c391d1683445672bfde347dadd' if enrollment else '7ebfe502a87cadc101461d5fd5bd823e2e3ee268571bc50db7050fa148cb35c0')
 if offline: assert sha(source/'Cargo.lock') == sha(cache/'out/build/source/Cargo.lock')
 write(root/'image.json', json.loads(cmd('docker','image','inspect',image))[0])
 owner = secrets.token_hex(16)
@@ -107,7 +116,7 @@ try:
         '--network','none' if offline else 'bridge','--user',f'{os.getuid()}:{os.getgid()}', '--read-only','--cap-drop','ALL',
         '--security-opt','no-new-privileges','--tmpfs','/tmp:rw,exec,nosuid,nodev,size=512m',
         '--mount',f'type=bind,src={out},dst=/out', '--mount',f'type=bind,src={export},dst=/out/build/source,readonly',
-        image,'python3','-B','/out/build/source/experiments/'+('control-migrations/admission_native.py' if job_admission else 'cursor-registration/native.py'), *(['--runtime'] if cursor_runtime else ['--enrollment'] if enrollment else []))
+        image,'python3','-B','/out/build/source/experiments/'+('control-migrations/admission_native.py' if job_admission else 'cursor-registration/native.py'), *(['--lifecycle'] if cursor_lifecycle else ['--runtime'] if cursor_runtime else ['--enrollment'] if enrollment else []))
     state.update(state='running', containers=[dict(name='native-build',id=container)]); write(root/'resources.json',state)
     cmd('docker','start',container)
     deadline = time.monotonic()+4000
@@ -132,11 +141,11 @@ try:
     state['postgres_resource_ids']={name:json.loads(cmd('docker','inspect',name))[0]['Id'] for name in [pg['client'],pg['postgres']]}
     state['postgres_root'] = str(runtime); write(root/'resources.json',state)
     with (root/'cases.stdout').open('xb') as stdout, (root/'cases.stderr').open('xb') as stderr:
-        result = subprocess.run(['python3','-B',str(source/'experiments/control-migrations/job_admission_cases.py') if job_admission else str(source/'experiments/cursor-registration'/('runtime.py' if cursor_runtime else 'enrollment.py' if enrollment else 'run.py')),'--root',str(runtime)],
+        result = subprocess.run(['python3','-B',str(source/'experiments/control-migrations/job_admission_cases.py') if job_admission else str(source/'experiments/cursor-registration'/('lifecycle.py' if cursor_lifecycle else 'runtime.py' if cursor_runtime else 'enrollment.py' if enrollment else 'run.py')),'--root',str(runtime)],
                                 stdout=stdout,stderr=stderr,timeout=1200 if job_admission else 600)
     state['cases_exit'] = result.returncode
     assert result.returncode == 0
-    assert json.loads((runtime/('job-admission.json' if job_admission else 'cursor-runtime.json' if cursor_runtime else 'cursor-enrollment.json' if enrollment else 'cursor-registration.json')).read_text())['status'] == 'PASS'
+    assert json.loads((runtime/('cursor-lifecycle.json' if cursor_lifecycle else 'job-admission.json' if job_admission else 'cursor-runtime.json' if cursor_runtime else 'cursor-enrollment.json' if enrollment else 'cursor-registration.json')).read_text())['status'] == 'PASS'
     state['qualification'] = 'CHECKS_PASSED'
 except BaseException as error:
     state.update(qualification='INCOMPLETE', failure=type(error).__name__)
@@ -171,7 +180,7 @@ finally:
         except (OSError, ValueError) as error:
             cleanup_errors.append(dict(name='postgres-resource-record',error=type(error).__name__))
     if pg is not None:
-        terminal=stop_owned(pg['client']+'-cursor-fault','org.bigbrotr.cursor-registration',pg['owner'],required=(enrollment or cursor_runtime) and state.get('qualification')=='CHECKS_PASSED')
+        terminal=stop_owned(pg['client']+'-cursor-fault','org.bigbrotr.cursor-registration',pg['owner'],required=(enrollment or cursor_runtime or cursor_lifecycle) and state.get('qualification')=='CHECKS_PASSED')
         if terminal: state.setdefault('fault_terminals',[]).append(terminal)
         for name in [pg['client'],pg['postgres']]:
             terminal=stop_owned(name,'org.bigbrotr.control-migration-lab',pg['owner'],state.get('postgres_resource_ids',{}).get(name),required=pg['state']=='running')
