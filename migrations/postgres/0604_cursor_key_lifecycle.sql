@@ -163,9 +163,9 @@ BEGIN
                  WHERE dataset_id=NEW.dataset_id AND key_id=NEW.key_id AND action='activate'
                  ORDER BY revision LIMIT 1)
             OR NEW.first_activation_revision IS DISTINCT FROM
-                CASE WHEN current_transition.action='activate' THEN current_transition.revision ELSE NULL END
+                (CASE WHEN current_transition.action='activate' THEN current_transition.revision ELSE NULL END)
             OR NEW.revoked_revision IS DISTINCT FROM
-                CASE WHEN current_transition.action='revoke' THEN current_transition.revision ELSE NULL END THEN
+                (CASE WHEN current_transition.action='revoke' THEN current_transition.revision ELSE NULL END) THEN
             RAISE EXCEPTION 'cursor projection differs from first transition' USING ERRCODE='23514';
         END IF;
     ELSE

@@ -20,14 +20,17 @@ phase, M1 or selected-product completion. Root is sole writer/integrator.
 catalog_guard_review, archive_intent_review and fact_codec_review completed
 independent read-only AI reviews with no edits, product tests, SSH or resources.
 
-Main HEAD and private origin/main are e2a66329f01341ee0186335bb38cc930d37810ab.
+Main HEAD is unpublished candidate dd406a2d94468efba3415d221dc762acc712b4e9,
+tree076a467ef963a5a0ab274430cace9525a6810c1b. Private origin/main remains
+e2a66329f01341ee0186335bb38cc930d37810ab, verified before candidate commit.
 The qualified product source is 7ee94dbc68a2c396ccf96efce08e7c885a46535f,
 tree 863d7e8a1dde97133599319f1d098bfd248481be. The clean candidate was transferred
 by exact Git bundle; the second profile cloned that same Git revision. No Tux
 source edits. Root owns current report/task/inventory/checkpoint documentation.
-No merge/rebase or other contributor edits. Qualification, documentation and
-private push are complete. Root is now editing lifecycle contracts/tests/code;
-the first new test requires additive0604 after0815 (0603 remains read pins).
+No merge/rebase or other contributor edits. Previous qualification/private push
+are complete. Root owns current lifecycle inventory/checkpoint edits; product,
+contracts and fixtures are in the clean candidate transferred by exact Git.
+The new schema is additive0604 after0815 (0603 remains read pins).
 
 ## Latest qualified responsibility
 
@@ -94,6 +97,24 @@ worker3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353;
 source manifest8e1142d4c7ae548740f6fef71739c8d82577b16acec859d4e6f8ba0d38b2a7f4.
 
 ## Live resources and maintenance
+
+STOPPED-RETAINED/INCOMPLETE: cursor-lifecycle-dd406a2 under the same runs root, owner
+e8ed697a5ba6bb90be6550c4765242ba, labelorg.bigbrotr.cursor-lifecycle-build.
+Native build fbc147fcc54e94e2faeb240394d41bee6983e82f1a9a005cd3e9c2ed847aaf02
+finished; orchestrator2408184/start392194568 is terminal. Source dd406a2/tree076a467 is clean;
+manifestdca3947f9100a3032d632591d18845ac28b2806df5f882c3c63f0f2d043cbb07.
+Full preflight at20:08:12UTC and terminal20:10:29UTC preserved796existing containers.
+Free84,918,714,368bytes. Native57Rust tests/build/Clippy pass; six practical checks
+passed before604 upgrade failed with SQL syntax error at character9482. Parentheses
+are required around CASE expressions inside PL/pgSQL IF. Exact16.15 parser source
+confirms the top-level THEN delimiter. No604ledger write/COMMIT can follow this
+batch failure; the original fixture did not record a post-error SQL snapshot.
+All four owned containers stopped, PGexit0/client/helper143/build0, no cleanup
+errors and empty network removed. Preserve original sources/database/keys/capture;
+33safe payloads, tar32f5d0e6e33b3f777b8b8465b4e4cd77a534bbc071219cabdbb19d3f7f8b7280.
+See the [original incomplete report](evidence/p06-cursor-lifecycle-native-incomplete-20260927.json)
+and implementation_cursor_lifecycle_20260927
+and .research/implementation/cursor-lifecycle/{transfer.stdout,poll.json}.
 
 The [inventory](../research/laboratory-inventory.json), especially
 implementation_export_structure_20260927 and implementation_job_admission_20260927,
@@ -279,8 +300,11 @@ qualification follows. Owning architecture/catalog/credentials/P06 task updated.
 Resumption20:05:59UTC verified all796container projections, no active BigBrotr lab,
 original artifacts intact and88,553,316,352free bytes. The lifecycle profile will
 inventory again and use stopped6474compiler cache in a new owned run.
-Next: coherent candidate commit, exact-Git transfer, execute --lifecycle on Tux,
-preserve original outcomes/keys/state and review actual SQL/control effects.
+Candidate dd406a2's original native outcome is preserved as INCOMPLETE above.
+Root owns the two-parenthesis SQL correction plus report/inventory/checkpoint;
+604 has never successfully applied. Next: verify/commit correction, transfer a
+new exact revision and repeat the affected real lifecycle qualification in a
+new isolated lab. Do not infer PASS from the57native Rust tests or static review.
 Preserve
 applied SQL and all original evidence. No paginated endpoint before lifecycle
 authority; no new master plan or task completion from these qualifications.

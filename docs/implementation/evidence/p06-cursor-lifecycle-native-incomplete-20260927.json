@@ -1,0 +1,78 @@
+{
+  "format": "bigbrotr-cursor-lifecycle-qualification/1",
+  "status": "INCOMPLETE",
+  "source": "dd406a2d94468efba3415d221dc762acc712b4e9",
+  "tree": "076a467ef963a5a0ab274430cace9525a6810c1b",
+  "environment": {
+    "os": "Linux",
+    "architecture": "amd64",
+    "postgres": "16.15",
+    "fsync": "on",
+    "full_page_writes": "on"
+  },
+  "binary_sha256": "b46b3e7002e0da52d56a50da8fb845db470b847d317a922474494019de8fa3ea",
+  "source_manifest_sha256": "dca3947f9100a3032d632591d18845ac28b2806df5f882c3c63f0f2d043cbb07",
+  "lockfile_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+  "local_checks": {
+    "tests": 34,
+    "clippy": "PASS",
+    "red": [
+      "schema UnknownTarget604",
+      "CLI unrecognized activate-key"
+    ],
+    "logs": ".research/implementation/cursor-lifecycle"
+  },
+  "native_build": {
+    "status": "PASS",
+    "tests": 57,
+    "failed": 0,
+    "ignored": 0,
+    "clippy": "PASS"
+  },
+  "practical": {
+    "status": "INCOMPLETE",
+    "passed": 6,
+    "failed_case": "explicit-upgrade",
+    "databases": [
+      "bb_lifecycle_journey"
+    ],
+    "error": "PostgreSQL syntax error at end of input at character9482 of0604; the first unparenthesized CASE THEN ends the enclosing PL/pgSQL IF expression prematurely.",
+    "classification": "product SQL syntax defect; not a fixture or engine failure",
+    "durable_boundary": "Actual815 migration, configuration initialization, policy activation, registration and pre604 lifecycle refusal passed.604 batch failed before the migration runner can insert its ledger receipt or send COMMIT. The original failed fixture does not retain a post-error SQL ledger snapshot; no stronger observed row-state claim.",
+    "root_cause_source": "https://github.com/postgres/postgres/blob/REL_16_15/src/pl/plpgsql/src/pl_gram.y#L2562",
+    "correction": "Parenthesize the two CASE expressions in the unpublished, never successfully applied604 candidate. Preserve original failed source/artifact/database/capture; corrected native outcome is separate."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-dd406a2",
+    "owner": "e8ed697a5ba6bb90be6550c4765242ba",
+    "state": "stopped-retained",
+    "cleanup_errors": [],
+    "preexisting_preserved": 796,
+    "free_bytes": 84918714368,
+    "network_removed": true,
+    "container_exits": {
+      "cd3dc066eec8fae62adee30473b27153e478382b18e5cd4697c73fb4245ea471": 143,
+      "ca196a17fc9490de4aa6200c84ef72de97adcd1f3c717d9fd813c0722accf8e6": 0,
+      "d4a6bd7ba638410b0e3bf98420e0b506a35a8a290499993f74e33e4fc45103cf": 143
+    }
+  },
+  "capture": {
+    "path": ".research/implementation/cursor-lifecycle/capture-dd406a2",
+    "files": 33,
+    "tar_sha256": "32f5d0e6e33b3f777b8b8465b4e4cd77a534bbc071219cabdbb19d3f7f8b7280",
+    "manifest_sha256": "60374970804bdc42d634d9af2a1b2fa0a6f97a3ef96fdcae27ac465e58fffe53"
+  },
+  "not_run": [
+    "successful604 upgrade",
+    "lifecycle acceptance/rotation/revocation",
+    "actual604 startup readiness",
+    "SQL hostile CTE",
+    "Control/COMMIT fault schedules",
+    "cursor issuance/retention writer",
+    "browser",
+    "capacity",
+    "release"
+  ],
+  "source_files_verified_against_git": 1338,
+  "candidate_migration_sha256": "4ff8a92db7d50abe0451004c973f8574f11771d242c8f48be25aa9a69826b833"
+}

@@ -25595,5 +25595,52 @@
       }
     ],
     "preserve": "Retain source, database/fault states, native assets, signed archive/exports, captures and first-run current compiler cache. No deletion in this slice."
+  },
+  "implementation_cursor_lifecycle_20260927": {
+    "source": "dd406a2d94468efba3415d221dc762acc712b4e9",
+    "tree": "076a467ef963a5a0ab274430cace9525a6810c1b",
+    "state": "stopped-retained",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-dd406a2",
+    "owner": "e8ed697a5ba6bb90be6550c4765242ba",
+    "owner_label": "org.bigbrotr.cursor-lifecycle-build",
+    "containers": [
+      {
+        "name": "native-build",
+        "id": "fbc147fcc54e94e2faeb240394d41bee6983e82f1a9a005cd3e9c2ed847aaf02"
+      }
+    ],
+    "orchestrator": {
+      "pid": 2408184,
+      "start_ticks": "392194568",
+      "source": "dd406a2d94468efba3415d221dc762acc712b4e9",
+      "tree": "076a467ef963a5a0ab274430cace9525a6810c1b"
+    },
+    "observed": "INCOMPLETE:604 parser refusal;57native Rust tests/Clippy passed. Original database/key state and evidence retained.",
+    "local_metadata": ".research/implementation/cursor-lifecycle",
+    "free_bytes": 84918714368,
+    "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-runtime-6474cd3",
+    "preserve": "Retain original source, build and test output, database/failure state and protected keyfiles. No deletion authorized by this entry; enclosing harness stops only exactly owned resources.",
+    "report": "docs/implementation/evidence/p06-cursor-lifecycle-native-incomplete-20260927.json",
+    "postgres_resource_ids": {
+      "bigbrotr-implementation-pg-20260917-cursor_nneagkc-client": "cd3dc066eec8fae62adee30473b27153e478382b18e5cd4697c73fb4245ea471",
+      "bigbrotr-implementation-pg-20260917-cursor_nneagkc": "ca196a17fc9490de4aa6200c84ef72de97adcd1f3c717d9fd813c0722accf8e6"
+    },
+    "fault_containers": [
+      {
+        "id": "d4a6bd7ba638410b0e3bf98420e0b506a35a8a290499993f74e33e4fc45103cf",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_nneagkc-client-cursor-fault",
+        "state": "exited",
+        "exit": 143
+      }
+    ],
+    "cleanup_errors": [],
+    "network_removed": true,
+    "last_observed_at": "2026-09-27T20:10:29.369950+00:00",
+    "capture": {
+      "path": ".research/implementation/cursor-lifecycle/capture-dd406a2",
+      "files": 33,
+      "tar_sha256": "32f5d0e6e33b3f777b8b8465b4e4cd77a534bbc071219cabdbb19d3f7f8b7280",
+      "manifest_sha256": "60374970804bdc42d634d9af2a1b2fa0a6f97a3ef96fdcae27ac465e58fffe53"
+    }
   }
 }
