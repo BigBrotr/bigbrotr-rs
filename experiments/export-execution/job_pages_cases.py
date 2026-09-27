@@ -49,7 +49,7 @@ class EnvelopeOracle:
             issued=fields[14],expires=fields[15],key=raw[1:17].hex())
 
 
-def run(root,state,sql,policy, *, prepare_consumer=False):
+def run(root,state,sql,policy, *, prepare_consumer=False, cursor_lifetime=None):
     db='bbpub_control_normal'; runner=state['container_id']; source=root/'source'
     private=root/'out/private-grant-http'; config=private/'instance.toml'
     result=dict(status='INCOMPLETE',source=state['source'],cases={})
@@ -111,6 +111,12 @@ def run(root,state,sql,policy, *, prepare_consumer=False):
         result['migration_receipts']=actual
         sql(db,'GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control; GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs TO bigbrotr_control;')
         selected=copy.deepcopy(policy);selected['settings'].update({'administration.enabled':True,'export.memory.max_bytes':268435456})
+        if cursor_lifetime is not None:
+            assert prepare_consumer
+            ttl,skew = cursor_lifetime
+            assert ttl > 0 and 0 <= skew <= 30_000_000
+            selected['settings'].update({'read.cursor.ttl':ttl,'read.cursor.clock_skew':skew})
+            result['cursor_lifetime'] = dict(ttl_us=ttl,skew_us=skew)
         document=json.dumps(selected,sort_keys=True,separators=(',',':'))
         digest=hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
         sql(db,f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT 3,dataset_id,2,config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=2; UPDATE control.datasets SET policy_revision=3; COMMIT;")

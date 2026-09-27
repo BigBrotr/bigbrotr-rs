@@ -28,10 +28,10 @@ def request(method, path, body=None, auth=None):
     return result
 
 
-def main():
+def main(lifetime=False):
     server = None
     accounts, pages = {}, {}
-    tokens = http.ROOT / 'job-page-tokens.json'
+    tokens = http.ROOT / ('job-pages-lifetime-tokens.private' if lifetime else 'job-page-tokens.json')
     assert not tokens.exists()
     tokens.write_text('{}\n'); tokens.chmod(0o600)
     try:
@@ -40,8 +40,9 @@ def main():
             name, op = command['request'], command['operation']
             if op == 'start':
                 assert server is None
-                server = http.Server('job-pages-' + name)
-                ready = server.ready(3)
+                prefix = 'job-pages-lifetime-' if lifetime else 'job-pages-'
+                server = http.Server(prefix + name)
+                ready = server.ready(command.get('policy_revision',3))
                 assert len(ready['listeners']) == 1
                 emit(name, operation=op, owner=ready)
             elif op in ('pause', 'stop'):
@@ -95,6 +96,9 @@ def main():
                     assert token is not None
                     query += '&cursor='+token
                 if 'invalid' in command: query += '&cursor='+command['invalid']
+                # Isolated independent envelope fixtures arrive over the private
+                # command pipe; never copy them to emitted observations.
+                if 'fixture_cursor' in command: query += '&cursor='+command['fixture_cursor']
                 auth = accounts[command['username']] if 'username' in command else {}
                 status,value,headers = request('GET','/management/v1/jobs?'+query,auth=auth)
                 assert ('cache-control','no-store') in [(k.lower(),v) for k,v in headers]
@@ -115,4 +119,6 @@ def main():
         if server is not None: server.cleanup()
 
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    assert sys.argv[1:] in ([], ['--lifetime'])
+    main(lifetime=bool(sys.argv[1:]))

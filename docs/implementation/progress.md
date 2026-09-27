@@ -12,13 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified origin/main is 0095eff39ac81ee68aad07a58fffa9ea36fb4493; local unpublished
-candidate HEAD is 9b7da032d117ecbf846796f17b2fa4bf40e09896, tree
-4d31f9188f33e2de55baaefc004bbbf45a8112b7. Its native run is now qualified and
-stopped-retained. Root owns dirty evidence/inventory/P08/checkpoint updates.
-No product, migration or release
-changes. 41327e1's two COMMIT loss schedules and recovery are qualified and pushed.
-Read-only AI completed the held-fixture review; root is the sole writer.
+Published HEAD and verified origin/main are 9bd39f45e33b40526825b0d9f2b4e16415802fae.
+Its held native run at 9b7da03 is qualified and stopped-retained. Root owns the
+dirty lifetime fixture, shared page preparation/client, lab/runtime wiring and
+this checkpoint. No product, migration or release changes. Read-only AI reviews
+the new fixture; root is the sole writer. No active native experiment.
 
 Active IDs: P08-T03 Step 3 / P08-T04 Step 3, thin P09-T09 Step 2 and only the
 operational P06-T03 Steps 1/3 cursor prerequisites. No task, phase, M1 or product
@@ -181,10 +179,28 @@ atomic result replacement, and deadline samples excluding pre-timeout wait.
 AI ran no tests/SSH; no post-run AI evidence claim. Syntax/artifact/diff checks
 and actual caller INCOMPLETE/FAIL/PASS discrimination pass. Capture under ignored
 attempt-9b7da03-job-pages-held; review-held.py/live-held.py retain the recipes.
-Next action: finish documentation verification and ordinary push, then implement
-the bounded actual-page lifetime/current-authority acceptance. Absolute expiry,
-TTL/skew and current policy/grant/session need independent tokens and actual SQL;
-delivery and mixed/aged workload remain separate. Preserve original evidence.
+The next bounded lifetime/current-authority fixture is implemented but NOT_RUN.
+It reuses the actual page client and seeds a 12-second TTL/two-second skew in the
+accepted policy. Original actual issuance, non-sliding continuation and natural
+expiry have SQL clock bounds; independently sealed future timestamps distinguish
+allowed skew from refusal. Pinned libsodium 1.0.18 official encryption ABI read.
+Stopped Control policy3→4 changes TTL to five seconds/skew zero; old binding must
+refuse409 and new issuance must reflect the accepted values. Grant removal,
+restoration and account deactivation are explicit privileged fixtures, not new
+production editors. Ten full ledgers and session reads are checked, with the
+account-triggered revocation separately attributed rather than declared unchanged.
+Pre-run AI found a hard-coded ready(3), incorrect session equality after account
+revocation and missing retention comparison after TTL reduction; all fixed.
+Root aligned403 with permission_denied, checks actual grant-row deltas and every
+decoded binding against SQL, and gives new server logs a separate lifetime prefix
+to preserve preparation evidence. Read-only Tux preflight at23:16:01 UTC matches
+848 containers/eight unrelated running, clean sources/artifacts and no owned active
+process/network; free73,430,802,432 bytes exceeds the unchanged66GiB lab preflight.
+Syntax/artifact/diff and nested INCOMPLETE/FAIL/PASS caller checks pass. AI reread
+the corrections and found no further concrete blocker; no tests/SSH. Root also
+bounds changed-policy/grant/account token refusals before their original expiry.
+Commit exact source and run --runtime-job-pages-lifetime with
+the same f677 artifacts. Delivery and mixed/aged workload remain separate.
 
 Before the COMMIT run, retired only export-runtime-5de46a0/out/build/{target,cargo-home}
 after source/capture/native-artifact, process FD/maps and mount checks. Inventory
