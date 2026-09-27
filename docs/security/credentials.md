@@ -113,3 +113,17 @@ and execution of its trigger functions alongside the existing registration grant
 On schema0602 even initial registration requires INSERT on this relation, because
 its initial bindings are captured in the same transaction. Missing privileges
 must roll back the entire registration. Enrollment never activates a key.
+
+When `read.cursor.keyring_ref` is configured, `serve` loads the existing file
+before PostgreSQL credentials/connection and requires migration0602 plus SELECT
+on `cursor_keyrings` and `cursor_key_materials`, in addition to normal Control
+owner privileges. It checks every loaded ID/material binding, including headless
+Control; it needs no installation principal or INSERT privilege on key tables.
+The key snapshot uses32KiB of the same process payload allowance as Control and
+HTTP and remains charged through the actual connection-driver join. Missing or
+invalid files refuse without preparation; enrollment mismatch refuses before
+listener startup. A SQL refusal may follow a committed Control acquisition.
+The `enrolled-local-snapshot` runtime observation is under practical qualification
+and grants no cursor authority or complete lifecycle readiness. No configured
+root adds no keyfile read or0602 requirement. Synchronous startup file loading
+does not establish a bound on stalled regular-file I/O.

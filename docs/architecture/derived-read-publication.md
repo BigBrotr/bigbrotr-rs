@@ -1518,6 +1518,31 @@ limit. Point lookup by dataset/key ID bounds each retry without scanning history
 Raw SQL must preserve initial-origin provenance, exact additional-audit closure
 and immutable rows; rollback leaves neither a binding nor an orphan accepted audit.
 
+An explicitly configured keyring is also a prerequisite for `serve`, including
+headless Control. Startup opens the existing file once before connecting, using
+one32KiB item from the shared process budget. It never prepares or regenerates
+keys. The loaded snapshot remains owned through the actual Control driver join,
+including failed acquisition, cancellation and refused database validation.
+No configured root preserves compatibility with runtimes predating0602; finite
+Archive initialization/receipt commands do not select this cursor consumer.
+
+The current Control incarnation checks the loaded dataset, ring and each of its
+at most16individual material bindings against0602. Migration exclusion precedes
+the Control fence and dataset lock. Fresh statements after locking observe prior
+enrollment commits; a final server-clock check requires the actual owner's lease
+still to be valid after all waits. The supervisor additionally applies its local
+nonrenewable startup deadline and delivery check. Successful validation awaits
+rollback before exposing an `enrolled-local-snapshot` observation. It writes no
+cursor or audit history and requires no provisioning actor; acquiring Control
+itself may already have committed a new owner epoch before a later refusal.
+
+Initial registration order/count/file fingerprint do not constrain subsequent
+local snapshots: any nonempty subset of enrolled material can pass this binding
+check. This observation grants no activation, issuance or decryption authority
+and does not prove distribution or possession of every still-required old key.
+Those lifecycle checks remain required before paged reads; they extend this
+actual runtime consumer rather than an unused persistent worker registry.
+
 Use a versioned authenticated-encryption envelope for self-contained continuation,
 so private scan positions are neither editable nor readable by clients. The
 initial implementation candidate is full-round XChaCha20-Poly1305 through the

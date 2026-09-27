@@ -107,7 +107,7 @@ class Session:
             tag, header, body = message
             if direction == "frontend" and tag == b"Q" and is_commit(body):
                 self.commits_seen += 1
-                if self.commits_seen > self.args.commit_number:
+                if self.commits_seen > self.args.commit_number + self.args.later_commits:
                     raise Refused("multiple-commits")
                 if self.commits_seen == self.args.commit_number and self.args.mode == "before-forward":
                     self.faults += 1
@@ -303,11 +303,16 @@ def main():
     parser.add_argument("--listen-port", type=bounded_int(0, 65535), default=0)
     parser.add_argument("--mode", choices=("pass", "before-forward", "after-complete", "hold"), required=True)
     parser.add_argument("--commit-number", type=bounded_int(1, 64), default=1)
+    # Persistent Control also commits refresh/release after the targeted fault.
+    # Opt in to a finite allowance; historical finite-command defaults stay strict.
+    parser.add_argument("--later-commits", type=bounded_int(0, 63), default=0)
     parser.add_argument("--deadline-seconds", type=deadline, default=120)
     parser.add_argument("--max-frame-bytes", type=bounded_int(8, 16 * 1024 * 1024), default=1024 * 1024)
     parser.add_argument("--max-wire-bytes", type=bounded_int(64, 1024 * 1024 * 1024), default=64 * 1024 * 1024)
     parser.add_argument("--max-messages", type=bounded_int(1, 1000000), default=20000)
     args = parser.parse_args()
+    if args.commit_number + args.later_commits > 64:
+        parser.error("selected and later commits must total at most64")
     async def run():
         return await Session(args).serve()
     try:

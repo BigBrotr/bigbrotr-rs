@@ -1,4 +1,5 @@
 //! First persistent role consumer. Every exit owns transport termination.
+mod cursor_keys;
 mod export_jobs;
 mod history;
 mod native_grants;
@@ -64,7 +65,7 @@ pub(crate) fn command() -> Command {
         .about("Run explicitly assigned roles; the initial runtime implements Control only")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
-        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0812 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. The initial private GET/POST /v1/resources/event_history profile additionally requires a live session, explicit CSRF and history.read for its exact scope; one exact ID/snapshot, configured resource limits, and a certified archive pin apply. This profile is under qualification. POST /management/v1/jobs accepts private exact-ID signed JSONL export jobs; configured initialized export.destination requires migration0813 and job/pin/source-lock privileges before binding. Historical receipts on the available protocol need no current destination or native reader. Destination checks run on supervised blocking work, retained through Control driver join. Selected export.destination plus archive.reader.enabled also requires migration0501 and execution privileges before startup, including headless Control. POST /management/v1/jobs/{job_id}/resume is under qualification with migration0814 and explicit SQL privileges; it queues the same paused unit after current grants/destination/CAS, without a fresh reader pin. Historical retries preserve the original receipt. The initial automatic exact-ID signed JSONL executor is under qualification; it uses current actor grants and the original retained snapshot. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
+        .after_help("Requires explicit initialization, migrations and initial policy activation. Configured read.cursor.keyring_ref loads existing keys before connecting and requires migration0602 plus SELECT on cursor_keyrings/cursor_key_materials. This verifies enrolled local material only, granting no cursor authority; it applies even to headless Control. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0812 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. The initial private GET/POST /v1/resources/event_history profile additionally requires a live session, explicit CSRF and history.read for its exact scope; one exact ID/snapshot, configured resource limits, and a certified archive pin apply. This profile is under qualification. POST /management/v1/jobs accepts private exact-ID signed JSONL export jobs; configured initialized export.destination requires migration0813 and job/pin/source-lock privileges before binding. Historical receipts on the available protocol need no current destination or native reader. Destination checks run on supervised blocking work, retained through Control driver join. Selected export.destination plus archive.reader.enabled also requires migration0501 and execution privileges before startup, including headless Control. POST /management/v1/jobs/{job_id}/resume is under qualification with migration0814 and explicit SQL privileges; it queues the same paused unit after current grants/destination/CAS, without a fresh reader pin. Historical retries preserve the original receipt. The initial automatic exact-ID signed JSONL executor is under qualification; it uses current actor grants and the original retained snapshot. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {
@@ -163,6 +164,7 @@ struct ArchiveRun {
     management_assets: Option<management::Assets>,
     export_destination: Option<Arc<bigbrotr::export::destination::LocalDestination>>,
     export_custody: export_jobs::Custody,
+    cursor_keys: Option<Arc<bigbrotr::read::keyring::Keyring>>,
 }
 
 fn run(
@@ -209,6 +211,11 @@ fn run(
     let management_budget = matches!(operation, Operation::Serve)
         .then(|| management::budget(&root))
         .transpose()?;
+    let cursor_keys = management_budget
+        .as_ref()
+        .map(|budget| cursor_keys::load(&root, dataset, budget))
+        .transpose()?
+        .flatten();
     // Explicitly configured bundles are startup prerequisites even when the
     // later accepted policy disables the listener. Never read disk under lease.
     let management_assets = management_budget
@@ -267,10 +274,14 @@ fn run(
             tokio::spawn(custody.retain_connection(driver).map_err(|e| (4, format!("cannot retain archive coordinator custody: {e:?}")))?)
         } else { tokio::spawn(driver) };
         let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, initialization_budget, management_budget, management_assets,
-            export_destination: export_destination.clone(), export_custody: export_custody.clone() }, operation).await;
+            export_destination: export_destination.clone(), export_custody: export_custody.clone(),
+            cursor_keys: cursor_keys.clone() }, operation).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
         // the join. Dropping the request/session alone does not free its grant.
         postgres_command::join(driver).await;
+        // The session/operation may already be gone. Its snapshot and charged
+        // bytes remain alive until the actual transport is terminal.
+        drop(cursor_keys);
         // The checked observation/SQL future may already have been dropped.
         // Original destination custody survives every unknown COMMIT and join.
         drop(export_custody);
@@ -325,6 +336,20 @@ async fn supervise(
         .check_delivery(lease.known_epoch())
         .map_err(|e| (1, e.to_string()))?;
     let identity = owner.identity();
+    if let Some(keys) = archive.cursor_keys {
+        tokio::select! {
+            biased;
+            _ = stop.requested() => return Err((4, "cursor key enrollment check cancelled".into())),
+            result = tokio::time::timeout(duration(root, "renewal_timeout")
+                .min(lease.remaining_validity().map_err(|e| (4,e.to_string()))?), owner.bind_cursor_keys(keys)) => {
+                result.map_err(|_| (4, "cursor key enrollment check deadline exceeded".into()))?
+                    .map_err(|error| (owner_error(error).0, format!("cursor key enrollment refused: {error}")))?;
+            }
+        }
+        lease
+            .check_delivery(lease.known_epoch())
+            .map_err(|e| (4, e.to_string()))?;
+    }
     if let Some(coordinator) = &archive.coordinator {
         let commit = Cell::new(false);
         let binding = async {
@@ -579,7 +604,7 @@ async fn supervise(
         "dataset_id":dataset, "process_incarnation":incarnation,
         "owner_resource_id":identity.resource_id, "owner_epoch":identity.epoch.get().to_string(),
         "config_revision":snapshot.config_revision.to_string(), "policy_revision":snapshot.policy_revision.to_string(),
-        "archive_intents":archive_inventory, "listeners":listeners, "native_stores":[], "export_execution":if execute_exports { "selected-under-qualification" } else { "not-selected" }, "authority_scope":"Control custody; each private action and export independently reauthorized"}),
+        "archive_intents":archive_inventory, "listeners":listeners, "native_stores":[], "cursor_keyring":cursor_keys::observation(owner.enrolled_cursor_keys()), "export_execution":if execute_exports { "selected-under-qualification" } else { "not-selected" }, "authority_scope":"Control custody; each private action and export independently reauthorized"}),
         false,
     );
     let heartbeat = duration(root, "heartbeat_interval");

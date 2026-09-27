@@ -20,6 +20,8 @@ mod archive_frontier;
 mod archive_persistence;
 #[path = "browser_reauthentication.rs"]
 mod browser_reauthentication;
+#[path = "cursor_keys.rs"]
+mod cursor_keys;
 #[path = "export_execution.rs"]
 mod export_execution;
 #[path = "export_jobs.rs"]
@@ -120,6 +122,7 @@ pub struct ControlSession {
     identity: ingest_registry::ControlOwner,
     available: bool,
     validated_policy: PolicySnapshot,
+    enrolled_cursor_keys: Option<std::sync::Arc<crate::read::keyring::Keyring>>,
 }
 impl ControlSession {
     /// The validator checks BOTH complete stored documents against actual roots.
@@ -192,6 +195,7 @@ impl ControlSession {
                 identity,
                 available: true,
                 validated_policy: policy,
+                enrolled_cursor_keys: None,
             },
             policy,
         ))

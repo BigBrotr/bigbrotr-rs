@@ -212,9 +212,12 @@ pub(super) struct Management {
 
 pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
     let n = |name: &str| root.number(&format!("runtime.processes.application.{name}"));
-    // One Control, one hash, one optional asset bundle, and separate connection/
+    // One Control, one hash, optional assets/keys, and separate connection/
     // request ownership. Counts never supply an additional memory allowance.
-    let items = 3 + transport::CONNECTIONS as u64 + transport::QUEUE as u64;
+    let items = 3
+        + u64::from(root.text("read.cursor.keyring_ref").is_some())
+        + transport::CONNECTIONS as u64
+        + transport::QUEUE as u64;
     if root.flag("archive.reader.enabled") {
         // Control, manager, secrets, native output, hash and HTTP all use this
         // same ledger; a second application payload allowance is never created.

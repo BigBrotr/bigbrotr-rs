@@ -254,6 +254,42 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         result = await self.finish(code=3)
         self.assertEqual((result["faults"], result["server_commit_complete"]), (0, 0))
 
+    async def test_explicit_later_commit_allowance_is_finite_after_hold(self):
+        async def server(reader, writer):
+            for _ in range(2):
+                self.assertEqual(await receive(reader), (b"Q", b"COMMIT\x00"))
+                writer.write(frame(b"C", b"COMMIT\x00") + frame(b"Z", b"I"))
+                await writer.drain()
+            self.assertEqual(await reader.read(), b"")
+        reader, writer = await self.start("hold", server, "--later-commits", "1")
+        await self.authenticate(reader, writer)
+        for index in range(2):
+            writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+            if index == 0:
+                await self.event("held"); await self.command(b"release\n")
+            self.assertEqual(await receive(reader), (b"C", b"COMMIT\x00"))
+            self.assertEqual(await receive(reader), (b"Z", b"I"))
+        writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+        self.assertEqual(await reader.read(), b"")
+        result = await self.finish(code=3)
+        self.assertEqual((result["reason"], result["commits_seen"], result["commits_forwarded"], result["client_commit_complete"], result["faults"]),
+                         ("multiple-commits", 3, 2, 2, 1))
+
+    async def test_default_still_refuses_a_second_commit(self):
+        async def server(reader, writer):
+            self.assertEqual(await receive(reader), (b"Q", b"COMMIT\x00"))
+            writer.write(frame(b"C", b"COMMIT\x00") + frame(b"Z", b"I")); await writer.drain()
+            self.assertEqual(await reader.read(), b"")
+        reader, writer = await self.start("pass", server)
+        await self.authenticate(reader, writer)
+        writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+        self.assertEqual(await receive(reader), (b"C", b"COMMIT\x00"))
+        self.assertEqual(await receive(reader), (b"Z", b"I"))
+        writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+        self.assertEqual(await reader.read(), b"")
+        result = await self.finish(code=3)
+        self.assertEqual((result["reason"], result["commits_seen"], result["commits_forwarded"]), ("multiple-commits", 2, 1))
+
     async def test_substring_and_extended_query_are_not_targeted(self):
         queries = [(b"Q", b"SELECT 'COMMIT secret-sql'\x00"), (b"P", b"\x00COMMIT\x00\x00\x00")]
         async def server(reader, writer):

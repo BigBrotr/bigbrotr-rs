@@ -49,3 +49,20 @@ database/key state remain retained. Corrected fixture c6595c8 passes155checks on
 [native report](../../docs/implementation/evidence/p06-cursor-enrollment-native-20260927.json).
 The enrollment selection does not qualify activation,
 worker readiness/distribution or the complete normal/emergency rotation journey.
+
+`lab.py REVISION TREE --runtime` selects the next actual startup consumer with
+copied stopped9b02compiler cache and a fresh offline build. `runtime.py` compares
+initial/additional/subset/reordered/16key snapshots, mismatches, missing schema
+and SELECT privileges, a runtime SQL role without provisioning authority, and
+absent-root compatibility. The retained9b02 executable is a negative control:
+it starts with wrong loaded material because it has no runtime binding consumer.
+The fixture records that limitation, not a successful new-product test.
+A held acquisition COMMIT puts a real dataset locker ahead of the binding read;
+release, elapsed owner lease, cancellation and caller deadline exercise the actual
+executable, SQL locks and subsequent fresh-owner recovery. No artificial clock
+or owner-row modification is used. The small supported lease configuration is
+explicit; owner expiry must be observed on the server before releasing the lock.
+The enclosing wrapper preserves results/data, stops its labeled helper/client/PG,
+checks all preexisting containers, and retires only its empty network before PASS.
+This authored runtime recipe is NOT_RUN until a separately linked result exists;
+it grants no activation, issuing key, old-key retention or cross-worker readiness.

@@ -1,0 +1,125 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1 / P08-T03 prerequisite",
+  "status": "PASS scoped local checks; native runtime binding NOT_RUN",
+  "source": {
+    "base": "ecd35f9a10f0505474c247cc0b5427f7bd858a3c",
+    "state": "Root-owned dirty Mac input hashes",
+    "files_sha256": {
+      "apps/bigbrotr/src/interfaces/serve.rs": "2b5145861e0d72e006113a6c36ee9b55d3b4ddb7e0ccc2e0d5db986ae953f271",
+      "apps/bigbrotr/src/interfaces/serve/cursor_keys.rs": "00693d7c82817071fbc7c6966bcc55d7014cb8d04c8059e1de02acbedea6ac85",
+      "apps/bigbrotr/src/interfaces/management/mod.rs": "4c5828df7bfcfbbdb7956ac4c71281bff6cf9aacf5cdcf1f3a58e3bffab0efdd",
+      "apps/bigbrotr/src/storage/postgres/control_owner.rs": "71b5e046ee4c3a50b263d773fd396e3aa6b90c4771b4889676e08e091e9e2e37",
+      "apps/bigbrotr/src/storage/postgres/cursor_keys.rs": "c449f370324c0456084594630faa48e8d1aba87b354c18578639547be34fe0b8",
+      "apps/bigbrotr/tests/control_runtime_entrypoint.rs": "ddc3fdbbdde985e650b8ff40bd9fc7aeaee6fcb4b7cacea00de45c442f3d146e",
+      "experiments/control-migrations/fault_proxy.py": "84e99e5ed844652e770c57b7f218d6770bb837e394c099e90c438e7a83117fca",
+      "experiments/control-migrations/test_fault_proxy.py": "0a0d19a0bb12b47bb37461d655d168544fd6eaa7835658971fd049aab58e25b9",
+      "experiments/cursor-registration/runtime.py": "a9c3d08ec3240513ab91bca49f3caaf94af9f20894e4da8baa2efc0c17051fc4",
+      "experiments/cursor-registration/lab.py": "f27d54cffba7ef5ff5b8b6a0831c5d75021dd88f2cfc2ad05aedaad3b05b3fbd",
+      "experiments/cursor-registration/native.py": "83a5897026c5d32533c98ec685eee319582d07b64d21cdd7c5868ee24fb5ebc6",
+      "Cargo.lock": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa"
+    }
+  },
+  "environment": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "discovery": "xcrun",
+    "environment": {
+      "CC": "/Library/Developer/CommandLineTools/usr/bin/clang",
+      "CXX": "/Library/Developer/CommandLineTools/usr/bin/clang++",
+      "AR": "/Library/Developer/CommandLineTools/usr/bin/ar",
+      "LIBCLANG_PATH": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+      "CLANG_PATH": "/Library/Developer/CommandLineTools/usr/bin/clang",
+      "CARGO_BUILD_JOBS": "2",
+      "SDKROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk"
+    },
+    "tools": {
+      "CC": {
+        "path": "/Library/Developer/CommandLineTools/usr/bin/clang",
+        "realpath": "/Library/Developer/CommandLineTools/usr/bin/clang",
+        "sha256": "f30550eab15fdf5ab8c0dc54c52679711241e5d4b636b027e18c09fef531775d",
+        "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+      },
+      "CXX": {
+        "path": "/Library/Developer/CommandLineTools/usr/bin/clang++",
+        "realpath": "/Library/Developer/CommandLineTools/usr/bin/clang",
+        "sha256": "f30550eab15fdf5ab8c0dc54c52679711241e5d4b636b027e18c09fef531775d",
+        "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+      },
+      "AR": {
+        "path": "/Library/Developer/CommandLineTools/usr/bin/ar",
+        "realpath": "/Library/Developer/CommandLineTools/usr/bin/ar",
+        "sha256": "d26c671be515802ff5a18edde5ca73c6bcaaf87048ef192025f00002be515794",
+        "version": null
+      },
+      "LIBCLANG_PATH": {
+        "path": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+        "realpath": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+        "sha256": "c9aaefc23d735a58f59c9e9e0520171d18ec3653095cc875a1d546c09ad25f30",
+        "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)"
+      },
+      "discovery": {
+        "path": "/usr/bin/xcrun",
+        "realpath": "/usr/bin/xcrun",
+        "sha256": "a439970aea2b4e435eac6518ff62c97fd1c57d8c731974027ad211b515c7a7b8",
+        "version": "xcrun version 72."
+      }
+    },
+    "sdk": {
+      "path": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+      "version": "26.5",
+      "settings_sha256": "f8d005f09381389167f9e0aeaa169bc9e7dff162ef22ca2fd8e98df7ff1acafe"
+    }
+  },
+  "checks": {
+    "rust_tests": 27,
+    "clippy": "PASS selected library/binary/actual runtime entrypoint",
+    "proxy_wire_tests": 22,
+    "configuration": "Actual config validate accepts the composed short owner-lease fixture; no server touched"
+  },
+  "review": {
+    "product": "Independent read-only AI read complete changed modules, callers, tests and contract. No concrete defect; actual SQL/lease/cancellation remain native gates.",
+    "fixture": "Independent AI found single-COMMIT proxy incompatible with persistent Control release, lost failure output, missing-owned-container tolerance, and missing keyfile refusal comparison. Root corrected those before any native run. Focused independent re-review confirms all four corrections statically and finds no remaining concrete blocker; no reviewer execution or SSH."
+  },
+  "red": "Retained previous unrecorded development ELF reproduces missing key reaching PG credentials. See exact execution notes; overlapping initial Cargo completion is not RED evidence.",
+  "scope": "One shared32KiB loaded snapshot, immutable0602binding read under Control incarnation, post-wait lease test and driver-join custody. No new persistent table or issuing authority.",
+  "limitations": [
+    "No executed actual PostgreSQL runtime binding/lease/lock/cancellation scenario in this report.",
+    "No complete key lifecycle, cross-worker readiness, activation, rotation or paged job-list.",
+    "No M1, task, product, arm64 or release qualification."
+  ],
+  "artifacts_sha256": {
+    ".research/implementation/cursor-runtime/budget-green.command.json": "03a0a9d5c52f0269b8f3c5dd394a820f1bef177760b0ed47370fa6f007ed197d",
+    ".research/implementation/cursor-runtime/budget-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-runtime/budget-green.stderr": "c8b1b1851c8ae55ba04684accf849cf9855ca8895a8ccb570c64dff6d53a4fb6",
+    ".research/implementation/cursor-runtime/budget-green.stdout": "de2b0f9fc179c437b663d11a21725d92673c17947e55f343a48507c27568a81d",
+    ".research/implementation/cursor-runtime/check.py": "820860b597a288b75e9cba8229bedce0d936750c9f38f55a3d57e45c455ca44d",
+    ".research/implementation/cursor-runtime/clippy.command.json": "8f5f8d5f46d38afcb70e35a2491b37ba04c9f4a3a48485e764f98ab4f26ecdd8",
+    ".research/implementation/cursor-runtime/clippy.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-runtime/clippy.stderr": "05723a36a0930d8ada1c50940514d8508fe341499583399704797f352d58033a",
+    ".research/implementation/cursor-runtime/clippy.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-runtime/execution-notes.json": "c8c41e00f6ef7391a42cdd6d9430094f114cf605fa5ebd3b4cdaf22fd0a43022",
+    ".research/implementation/cursor-runtime/fixture-config.toml": "c3aeb85c801302b7cebcf086a35686f8fe8f0b6775409a1410d22088ff407a48",
+    ".research/implementation/cursor-runtime/fixture-validation.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-runtime/fixture-validation.stdout": "a0743f3250cd4a46b30bf4fe28f5d38477fd0688d6dddf0e23bd88c0f838069e",
+    ".research/implementation/cursor-runtime/local-green.command.json": "e10c2faec0cb986c5b4d2b148e6888b47398b0b45b36ea202af7fc0fb60536f9",
+    ".research/implementation/cursor-runtime/local-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-runtime/local-green.stderr": "9a708836a152c3c9962614ec740372869ccb547a004f306ea197cad84d99d3b7",
+    ".research/implementation/cursor-runtime/local-green.stdout": "18dbc2fd3dc061977f9adf790a6c79add6a9f1974d75ad4d3618246847118e7e",
+    ".research/implementation/cursor-runtime/local-red.log": "67449a5c70dd59c9d55d4621f119459d35feb4d5783e7caececa646925eac32e",
+    ".research/implementation/cursor-runtime/native-toolchain.json": "5bbfbe8a350616e9446eb3795076ba2495b9eaa77094fecbc634c828777b8e13",
+    ".research/implementation/cursor-runtime/overlapping-build.command.json": "bdc7a5948a61829cdcc2c093b374c1882ad8df6560813cf38634e2eebd0cc831",
+    ".research/implementation/cursor-runtime/overlapping-build.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-runtime/overlapping-build.stderr": "a8290359ec0df902f38035e0c1761b41cfb21621608e7071bb4f3cf121e04947",
+    ".research/implementation/cursor-runtime/overlapping-build.stdout": "5e67c37889d2625507ff74699c2c184a849956227c1a478c0b572a1ade76b4b2",
+    ".research/implementation/cursor-runtime/preflight-invalid-fixture.json": "714907137e2038a1d59ce2afb12f8e223efb68b700b78fab7842a67e5f14a544",
+    ".research/implementation/cursor-runtime/preflight-red.json": "67fb57cce07dcc0eb1cba3c56f86980591800c9087676538664e0f450aef5316",
+    ".research/implementation/cursor-runtime/preflight-red.py": "ab738f468bc22d19e12850fd278b0af103f883553d33891567800e2fcee70473",
+    ".research/implementation/cursor-runtime/preflight-tux.json": "70df8791a035e2ac95f41801c560e0c5fd85516b023a8a61679ec75844836388",
+    ".research/implementation/cursor-runtime/preflight-tux.py": "62321747635d474dbc3c7673b4e23bb6e76829c8b6388ecd92a6f7ae7a248e9b",
+    ".research/implementation/cursor-runtime/proxy-green.stderr": "f27d533e949ba7665bfcbe09a27559c60f89f50cdcd1764edbfe71b849edf486",
+    ".research/implementation/cursor-runtime/proxy-green.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-runtime/proxy-red.stderr": "332c5cf6c7ea7af0c3561a4f528f32fafd3c63dd81ab3a97d0f935fb78b78db4",
+    ".research/implementation/cursor-runtime/proxy-red.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

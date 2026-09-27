@@ -20,11 +20,14 @@ phase, M1 or selected-product completion. Root is sole writer/integrator;
 catalog_guard_review is an independent read-only AI reviewer, with no edits,
 product tests, SSH or resource ownership.
 
-Last observed main HEAD c6595c8822a1add6248f8aca9890bda5657f0ea0; private origin
-0091fc9b181ec35cefbe6a6133e365f04e7c6e75. Source was clean at exact-Git transfer.
-Root now owns only qualification evidence, P06/recipe documentation, this
-checkpoint and inventory changes. No merge/rebase or other contributor changes.
-Product candidate9b02bd9f692ec07f57954b140fcd6efd20220ebe remains unchanged.
+Main HEAD/private origin ecd35f9a10f0505474c247cc0b5427f7bd858a3c verified
+with ls-remote again before the runtime candidate. Root owns the current
+runtime/fixture/contract/evidence changes; no merge/rebase or other contributor
+changes. Native-qualified enrollment product remains9b02; b562/c659 are retained
+fixture/evidence corrections, ecd35 records that qualification. The next coherent
+local candidate is not yet published and has no native runtime result.
+Final artifact/handoff checks pass179Markdown/328JSON,123tasks/756steps with
+same three historical cycle candidates; complete qualification diff reviewed.
 
 ## Latest qualified responsibility
 
@@ -136,12 +139,36 @@ Historical dirty private-panel-no-revoke and detached positiveed2a93b stay untou
 
 ## Next bounded action and retained constraints
 
-Final offline evidence review is complete. Commit/push the coherent qualification
-plus inventory update, then inspect the complete actual Control/session/serve
-consumer and owning key lifecycle contracts before the next P06-T03 Step1/3
-readiness/activation responsibility. Initial reads this turn cover the full cursor
-contract section, Control owner1–210 and serve1–170; the remainder still needs
-reading before edits. No new lifecycle design, DDL or implementation is selected.
+Qualification and inventory are committed/pushed; maintenance is complete. Root
+has now read the complete Control/session/serve, keyring, registration adapter,
+shared management budget and transport helpers,0602/0007, credential and cursor
+contracts, plus exact locked transaction rollback source. The selected next
+P06-T03 Step1 prerequisite is the actual serve consumer's loaded-key binding
+check, documented in the owning cursor contract and task. No DDL or activation
+authority is added. Independent read-only AI confirms the boundary and highlights
+external Arc custody, one shared budget, post-wait lease expiry and committed
+owner history on post-acquisition refusal. The runtime consumer is now implemented
+locally: read-only open, shared32KiB item, external Arc through driver join,
+per-key0602point reads, post-wait server lease check, awaited rollback and
+non-authorizing enrolled-local-snapshot observation.27selected Rust tests and
+Clippy pass;22real-loopback wire helper tests pass. Local evidence and exact
+execution notes are in evidence/p06-cursor-runtime-local-20260927.json and
+.research/implementation/cursor-runtime/. The previous unrecorded Mac ELF is
+the missing-key RED; an initially overlapping Cargo run is explicitly NOT RED.
+
+Native runtime.py is authored/NOT_RUN. Review caught/fixed a one-COMMIT proxy
+limit incompatible with Control release, failure-output loss, tolerance of a
+missing owned container, and missing keyfile refusal comparisons. The explicit
+finite later-COMMIT allowance retains default0; no product invariant is weakened.
+Current Tux read-only census17:36:46UTC:780containers/eight unrelated running,
+no active BigBrotr,104920018944free bytes; protected9b02/e684/private-history and
+archive-worker dependency exist. No new Tux run has started. Root owns all
+runtime/fixture/contract/evidence edits; no other contributor changes.
+Focused independent fixture re-review confirms the corrections; source/diff,
+179Markdown/329JSON and123tasks/756steps checks pass with unchanged historical
+cycle candidates. Next: form an unpublished candidate,
+transfer exact Git via bundle to a fresh cursor-runtime-SHORT run, use the stopped
+9b02cache for an offline native build and actual PostgreSQL acceptance.
 
 The current runtime implements only Control: avoid an unused distributed worker
 registry. Readiness must bind actual loaded dataset/ring/ID/material and full
