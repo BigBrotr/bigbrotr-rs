@@ -12,12 +12,15 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Pre-evidence-commit HEAD is 3bdea1f49f812fc9750c7469cef44eae2cdbede3 on main,
-two unpublished candidates ahead of fetched origin/main 6274b8f. 45b7e48 owns the
-client/panel; 3bdea1f changes only capacity fixtures/docs, with identical product
-inputs. Root sole writer/integrator; no merge/rebase or contributor changes.
-Current diff is documentation/evidence/inventory only. Complete its artifact/link
-check and coherent commit/push; verify actual HEAD/remote after resumption.
+Published HEAD and verified origin/main are afa518a2a1968901ee0861131db1c93a8b76da10.
+45b7e48 owns the client/panel; 3bdea1f changes capacity fixtures; afa518a records
+six-pair evidence. Root owns the next dirty fixture-only slice: narrow native
+proxy target and regression, job_pages_commit client/cases, lab/runtime dispatch,
+this checkpoint and inventory. No product source or applied migration changes.
+Read-only AI reviewed the fixture and relevant proxy/caller/0816 boundaries;
+its two findings were corrected: propagate incomplete cleanup, and independently
+bound a new recovery issuance by SQL time and changed retention/xmin. It ran no
+tests or SSH. Root checked the caller with INCOMPLETE/FAIL/PASS receipts.
 
 Active IDs: P08-T03 Step 3 / P08-T04 Step 3, thin P09-T09 Step 2 and only the
 operational P06-T03 Steps 1/3 cursor prerequisites. No task, phase, M1 or product
@@ -142,15 +145,26 @@ expiry guarantee. No generic supervisor framework/domain relocation/Rocks rewrit
 was justified by the prior structural review. Monitor MON-001/002/004/005/006/007/
 009/010 remain scoped closed in their linked P01/P02 reports absent contrary evidence.
 
-Next: after this boundary's documentation commit/push, add an explicit cursor
-retention target to the existing native PostgreSQL fault proxy and qualify actual
-COMMIT loss before forwarding and after server completion, followed by held
-COMMIT/reply and cancellation/custody. Owning job_list.rs and its management caller,
-PendingAction::complete, native_commit_proxy.py and existing resume COMMIT fixture
-have been read. Preserve Control→dataset/account/session→consumer→job→sorted-source
-lock order; no token on unknown completion, no driver reuse, no premature custody
-release or repoll of a consumed JoinHandle. Expected SQL/HTTP outcomes must remain
-independent of the product serializer/adapter.
+Next bounded work is in progress: the existing PostgreSQL proxy now has an
+explicit cursor-retention target. New installed fixtures cover lost COMMIT before
+forwarding and after server completion, then fresh Control ownership and identical
+continuation retries. They assert no successful HTTP header/token on unknown
+completion, exact retention effects, unchanged ten job ledgers/session idle state,
+original cursor lifetime and joined cleanup. Local target regression was RED for
+the absent target and then GREEN; 11 target plus one wire test and artifact/syntax
+checks pass. Native execution is NOT_RUN until a clean candidate is transferred.
+Review the fixture, commit it, transfer exact Git and run --runtime-job-pages-commits
+with retained f677 Rust artifacts. Enumerated frontend changes are unused by this
+backend-only profile; no fresh frontend or Rust build qualification is implied.
+Held COMMIT/reply and cancellation/custody follow this bounded loss/recovery check.
+
+Before that run, retired only export-runtime-5de46a0/out/build/{target,cargo-home}
+after source/capture/native-artifact, process FD/maps and mount checks. Inventory
+retire_5de_cache_20260928 owns the receipt: 3,494,395,904 allocated bytes removed,
+free 70,855,979,008 → 74,348,867,584 bytes; 844 stable container projections and eight
+unrelated running containers preserved. Original source, logs, ELF and database/
+archive/fault states remain. No historical run rebuilt, no container/volume removed.
+Do not rerun any retirement recipe. Check current capacity again before launch.
 
 Further page gates: absolute expiry, changed policy/grant/session and TTL/skew,
 backdated/tied actual pages, delivery/resource exhaustion and mixed/aged workloads.

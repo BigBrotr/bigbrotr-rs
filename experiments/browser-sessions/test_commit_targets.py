@@ -9,6 +9,19 @@ proxy = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(proxy)
 
 class Targets(unittest.TestCase):
+    def test_cursor_retention_does_not_target_lifecycle_or_session(self):
+        target = 'control-cursor-retention'
+        self.assertIn(target, proxy.CONTROL_TARGETS)
+        self.assertTrue(proxy.control_target_query(target,
+            b'UPDATE control.cursor_key_lifecycle SET decrypt_until_us=$3::bigint WHERE dataset_id=$1::bytea'))
+        for query in [b'INSERT INTO control.cursor_key_lifecycle(dataset_id) VALUES($1)',
+                      b'UPDATE control.cursor_key_lifecycle SET revoked_revision=$2',
+                      b'SELECT decrypt_until_us FROM control.cursor_key_lifecycle',
+                      b'INSERT INTO control.cursor_key_transitions(dataset_id) VALUES($1)',
+                      b'INSERT INTO control.owner_epochs(resource_id) VALUES($1)',
+                      b'INSERT INTO control.browser_sessions(session_id) VALUES($1)']:
+            self.assertFalse(proxy.control_target_query(target, query))
+
     def test_session_mutation_only(self):
         issue = b'INSERT INTO control.browser_sessions(session_id,dataset_id) VALUES($1,$2)'
         revoke = b'UPDATE control.browser_sessions SET revoked_at_us=GREATEST(issued_at_us,42) WHERE session_id=$1'

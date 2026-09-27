@@ -30,6 +30,7 @@ CONTROL_TARGETS = {
     'control-export-resume': b'INSERT INTO CONTROL.EXPORT_RESUME_COMMANDS(',
     'control-export-complete': b'INSERT INTO CONTROL.ARTIFACTS(',
     'control-export-pause': b"UPDATE CONTROL.JOBS SET STATE='PAUSED',",
+    'control-cursor-retention': b'UPDATE CONTROL.CURSOR_KEY_LIFECYCLE SET DECRYPT_UNTIL_US=',
 }
 
 

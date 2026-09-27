@@ -26810,6 +26810,26 @@
       "artifacts_preserved": true,
       "free_bytes": 70855983104,
       "note": "Seven consumer laboratories, including the original failed preparation, stopped-retained; own networks absent; all 844 stable container projections unchanged with eight unrelated running. No active BigBrotr experiment. Scoped b93 cache retirement is linked in the original capacity report."
+    },
+    "retire_5de_cache_20260928": {
+      "at": "2026-09-27T22:37:49.733006+00:00",
+      "source": "5de46a0aba3c98a1943639bc7814dd17176076cc",
+      "owner": "deff54343ce7c7e283caa281b11a86d6",
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-5de46a0/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-5de46a0/out/build/cargo-home"
+      ],
+      "allocated_bytes": 3494395904,
+      "free_before": 70855979008,
+      "free_after": 74348867584,
+      "containers_preserved": 844,
+      "unrelated_running": 8,
+      "preserved": "All sources, original evidence, exact native artifacts, database/fault/archival datasets and every other run remain. 5de/f677 original native artifacts,8fa/f677 compiler caches and all current consumer labs remain. Only obsolete 5de compilation caches retire. No containers/volumes removed.",
+      "retained_hash_count": 36,
+      "recipe": ".research/implementation/job-pages/retire-5de-cache.py",
+      "recipe_sha256": "497bf7409d1ff5a4cc0c55fae4a17868483c15556a13d11baf9bc16ecc079e88",
+      "original_result": ".research/implementation/job-pages/retire-5de.json",
+      "result_sha256": "f4c39e4aff803c304665ebe3ef68a30bb7d3d795b57ebb91e8fefa5355f2fc85"
     }
   }
 }
