@@ -387,22 +387,24 @@ backdated/equal-time negative controls, simultaneous/multirow insertion, both
 cut/admission lock orders, rollback/backend death, separate SELECT/INSERT failures,
 immutable mapping, isolation refusal, actual optional401/503gate and restart.
 The [first incomplete attempt](evidence/p08-job-admission-native-incomplete-20260927.json)
-remains recorded separately. Synthetic backup metadata does not qualify new real
-export command/audit/pin acceptance on815: that installed journey is next before
-consolidating the consumer guarantee. The1000row backward-index observation is
+remains recorded separately. Synthetic backup metadata alone does not qualify real
+export command/audit/pin acceptance; the separate installed journey below now
+exercises that consumer on815. The1000row backward-index observation is
 not mixed/aged-load evidence. Cursor lifecycle and complete list/client/browser
 delivery remain open; no whole Step3 completion.
 
-The next installed fixture is authored in the existing export-execution laboratory
-as `--runtime-job-admission`, explicitly selecting815 while preserving older501
-profiles. It compares original qualified export rows/xmin across upgrade, executes
-the retained job with the installed worker, and checks a new signed HTTP acceptance
-has ordinal2 and the same command/audit/actor/request/pin/claim/input bounds. An
-identical request must return200/original receipt with no row/xmin change. Existing
-status ownership, revocation and process-restart observations include the mapping.
-The historical4e native seed keeps its own identity; current8fa compiler caches
-supply unchanged locked dependencies for a fresh current installed build.
-This extension is **NOT_RUN**; it grants no new release/list/lifecycle guarantee.
+The [installed815fixture](evidence/p08-job-admission-installed-native-20260927.json)
+now passes on5de46a0: fresh actual main/worker build,47binary tests/Clippy and19HTTP
+exchanges against PostgreSQL16.15. `--runtime-job-admission` explicitly selects815
+while preserving older501profiles. All selected original rows/xmin survive upgrade;
+the retained empty export completes, then a new signed-event request receives
+ordinal2. Its literal query/digest/time and command/audit/actor/pin/claim/input bounds
+agree. Identical retry returns200/original receipt; twelve selected ledgers and
+original output hashes remain unchanged through authorization checks and Control
+restart. Historical4e seed and8fa compiler-cache identities remain separate from
+the freshly built current artifacts. The new signed job deliberately stays accepted
+under256MiB; its execution and815COMMIT-loss schedules remain unqualified here.
+No complete list, cursor lifecycle, browser or release guarantee follows.
 
 Role/relay/artifact summaries share the page-size/authorization rules. Roles and
 relays order by immutable role-instance and endpoint ID respectively; artifacts

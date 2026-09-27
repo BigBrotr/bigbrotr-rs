@@ -96,9 +96,12 @@ in the acceptance transaction. The startup probe checks both privileges; missing
 either disables the optional job API, or refuses startup when a destination is
 selected. Migration does not grant privileges automatically. Stop older binaries
 before applying815 because they reject its unknown ledger entry. This foundation
-has [SQL and optional-runtime evidence](../implementation/evidence/p08-job-admission-native-20260927.json);
-the real export acceptance journey after815 is still required. It does not enable
-paginated job discovery.
+has [SQL and optional-runtime evidence](../implementation/evidence/p08-job-admission-native-20260927.json)
+and a separate [installed acceptance/retry/status journey](../implementation/evidence/p08-job-admission-installed-native-20260927.json)
+on815. The latter preserves original rows through upgrade and verifies the new
+request's atomic job/receipt/pin/admission closure. It deliberately defers that
+new job under insufficient execution memory; it does not extend earlier signed
+execution or COMMIT-loss qualifications to815, or enable paginated job discovery.
 
 `POST /management/v1/jobs` accepts the closed `ExportJobCommand` in the
 [management contract](../../contracts/management/v1/openapi.yaml). Supply the

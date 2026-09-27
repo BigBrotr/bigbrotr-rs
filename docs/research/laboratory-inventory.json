@@ -25469,6 +25469,82 @@
       "permission_errors": 0,
       "preserved": "All databases/private keys/fault states/captures/source/manifests/native artifacts/logs remain. Current8fa/6474/9b02/e684 caches,8db/73e/4e6seed,private-history32dd58d,historycaptureb5c862a and installed-publication61271e2 archive-worker dependency untouched. No container/volume/dataset deletion.",
       "note": "Historical run outcomes unchanged; retired only duplicate failed-e82compiler caches after successful8faqualification."
+    },
+    "installed": {
+      "source": "5de46a0aba3c98a1943639bc7814dd17176076cc",
+      "tree": "6062a9b0d00d5601e88e4cbaa9a671839b498d06",
+      "owner": "deff54343ce7c7e283caa281b11a86d6",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-5de46a0",
+      "owner_label": "org.bigbrotr.export-execution",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "66169db63883f2cf8e3c0378792c3ea2fac14307e76af4f6ef57e3d91910b119"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "aa78b07bc8d2690610d1a980bba3861bde81db0a41d71b369da39c5d1cc09677"
+        }
+      ],
+      "network_id": "63cc8a20f825c7f76a7d4b36fb2c9d920cdace3ce900e3b98de96a8742b20c59",
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "orchestrator": {
+        "pid": 2349631,
+        "start_ticks": "391740056",
+        "source": "5de46a0aba3c98a1943639bc7814dd17176076cc",
+        "tree": "6062a9b0d00d5601e88e4cbaa9a671839b498d06"
+      },
+      "status": "Scoped installed acceptance/retry/status PASS; capture and independent read-only AI review complete",
+      "preflight": ".research/implementation/job-admission/installed/preflight.json",
+      "compiler_seed": "/home/tux/bigbrotr-implementation-20260917/runs/job-admission-8fae53a",
+      "artifact_seed": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+      "preserve": "Original sources, artifact identities, logs, PostgreSQL state and compiler cache; no unrelated resources touched.",
+      "report": "docs/implementation/evidence/p08-job-admission-installed-native-20260927.json",
+      "capture": {
+        "root": ".research/implementation/job-admission/installed/attempt-5de46a0/capture",
+        "payloads": 38,
+        "source_files": 1330,
+        "tar_sha256": "0ab1bb6ce461c31f6f8f2c9eb695a245d7acd7c26fa7160fd02b7eecdf95d19b",
+        "manifest_sha256": "6933e9f05e9faec6ba7d2e559fd40b4610cf659e1f7882eeed9d3a9971025cbf",
+        "excluded": "Credentials, database files, original compiler caches and native asset libraries remain in the owned Tux laboratory."
+      },
+      "artifacts": {
+        "bigbrotr": "4cd89255aeb6a1978db2625bde34e2b70f1cfe63af0b6edd6844d662c4aa277d",
+        "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+      },
+      "terminal": {
+        "rust-visibility": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-27T18:52:32.307509448Z",
+          "FinishedAt": "2026-09-27T18:55:22.990351474Z"
+        },
+        "postgres": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 137,
+          "Error": "",
+          "StartedAt": "2026-09-27T18:52:30.451032321Z",
+          "FinishedAt": "2026-09-27T18:55:33.44809931Z"
+        }
+      },
+      "network_state": "removed after owner/no-endpoint audit",
+      "live_at": "2026-09-27T18:57:25.161471+00:00",
+      "free_bytes": 92955615232
     }
   }
 }

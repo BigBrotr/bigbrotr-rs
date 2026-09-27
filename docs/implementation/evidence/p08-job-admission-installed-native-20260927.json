@@ -1,0 +1,342 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P09-T09"
+  ],
+  "source": "5de46a0aba3c98a1943639bc7814dd17176076cc",
+  "tree": "6062a9b0d00d5601e88e4cbaa9a671839b498d06",
+  "scope": "Installed export acceptance and identical HTTP retry with0815transactional admission; actual prior empty-export execution and actor-owned status/restart. No signed-output execution for the newly accepted job or complete task/release claim.",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "host": "Tux",
+    "rust": "1.98.1",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "lockfile_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "source_manifest_sha256": "8e1142d4c7ae548740f6fef71739c8d82577b16acec859d4e6f8ba0d38b2a7f4",
+    "artifacts": {
+      "bigbrotr": "4cd89255aeb6a1978db2625bde34e2b70f1cfe63af0b6edd6844d662c4aa277d",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "native_toolchain": "Clang/LLVM14.0.6; exact compiler hashes retained in adapter-checks/artifacts.json"
+  },
+  "dependencies": {
+    "compiler_cache": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-admission-8fae53a",
+      "source": "8fae53a883b6e1c258a184204271a7e691c0da81",
+      "source_manifest_sha256": "490845a9551e13b835d01866234ba85db09f1bcef4106790fab5b880d20485e0",
+      "scope": "Copied compiler caches only; fresh current Rust compilation required. Historical native seed identity is recorded separately."
+    },
+    "seed": {
+      "source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "tree": "fb87d6a4e8082d0dc2e5e8c5ac010de37920632a",
+      "owner": "3f840fe30a3ffef7f9944c72ea6e38f9",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+      "source_manifest_sha256": "eee5a33104dbee6059d2a106eab2b09d44b14e54c5badd06fce0f8425182ef6f",
+      "artifacts": {
+        "control": "42e2787cdabf4d31c1941ca38bebe5006ac8c0e8a4c8fdf8ac99d9644e38c88c",
+        "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+        "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+        "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+        "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+      },
+      "native_assets": {
+        "bigbrotr-archive-worker": {
+          "bytes": 14378448,
+          "sha256": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4"
+        },
+        "extensions/ducklake.duckdb_extension": {
+          "bytes": 36436086,
+          "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+        },
+        "extensions/httpfs.duckdb_extension": {
+          "bytes": 21570542,
+          "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+        },
+        "extensions/postgres_scanner.duckdb_extension": {
+          "bytes": 41696558,
+          "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+        },
+        "lib/duckdb.h": {
+          "bytes": 244057,
+          "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+        },
+        "lib/libduckdb.so": {
+          "bytes": 70529912,
+          "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+        }
+      },
+      "validation": "Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. This reuse record covers original seed artifacts only. Current compilation/adapter evidence, when selected, is recorded separately under adapter-checks and adapter-cases."
+    },
+    "note": "Historical producer/reader identity remains separate from the freshly built current main/worker. The original4e lock differs; no equality with current dependencies is claimed."
+  },
+  "capture": {
+    "root": ".research/implementation/job-admission/installed/attempt-5de46a0/capture",
+    "payloads": 38,
+    "source_files": 1330,
+    "tar_sha256": "0ab1bb6ce461c31f6f8f2c9eb695a245d7acd7c26fa7160fd02b7eecdf95d19b",
+    "manifest_sha256": "6933e9f05e9faec6ba7d2e559fd40b4610cf659e1f7882eeed9d3a9971025cbf",
+    "excluded": "Credentials, database files, original compiler caches and native asset libraries remain in the owned Tux laboratory."
+  },
+  "executed": {
+    "native_build": "Fresh current main and worker;47binary tests, no ignored/filtered tests, Clippy-Dwarnings PASS. Native driver uses actual engines/bindings, not a model.",
+    "migration": {
+      "target": 815,
+      "checksum": "3a562bdf4612c1fee7f5b0b53603cd0579b12316adf1319e730336548ec22e9d",
+      "preserved_rows": {
+        "jobs": 1,
+        "export_jobs": 1,
+        "job_input_bounds": 1,
+        "management_commands": 5,
+        "management_audit": 10,
+        "snapshot_leases": 4,
+        "archive_snapshot_pins": 4,
+        "retention_claims": 4
+      },
+      "backfill": [
+        {
+          "job": "72add12a58384fce8233d15ed3be718a",
+          "ordinal": "1",
+          "protocol": 1
+        }
+      ],
+      "assertion": "Every selected pre/post row including xmin is identical; exact installed migrate apply performs the upgrade."
+    },
+    "signed_archive": "Original4e producer creates real signed archive and0813job; current worker consumes it. Separate original reader and independent signed_publication_oracle verify the retained input; eight Parquet file hashes remain unchanged.",
+    "prior_job": {
+      "output": {
+        "job": "72add12a58384fce8233d15ed3be718a",
+        "rows": "0",
+        "bytes": "0",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "artifact": "b130a3b16144f3995a6b5801e04eabde",
+        "manifest": "db651bbdcfd79ceda0080b448b3df4bebd7f75f2c6e73d0f5c25143aa0a21ab1",
+        "checkpoint": "1",
+        "manifest_bytes": "1226",
+        "export_retained": true,
+        "reader_released": true
+      },
+      "assertion": "Installed headless Control completes the original exact-ID query for absent ab\u2026ab, producing an empty JSONL and independently expected complete manifest fields (1226bytes observed). Reader released; export retention stays."
+    },
+    "http": {
+      "alice-login": {
+        "status": 201,
+        "operation": "login"
+      },
+      "owner-status": {
+        "status": 200,
+        "operation": "status"
+      },
+      "missing-status": {
+        "status": 404,
+        "operation": "status"
+      },
+      "signed-acceptance": {
+        "status": 202,
+        "operation": "accept"
+      },
+      "signed-identical-retry": {
+        "status": 200,
+        "operation": "retry"
+      },
+      "accepted-zero-checkpoint": {
+        "status": 200,
+        "operation": "status"
+      },
+      "input-revocation": {
+        "status": 200,
+        "operation": "revoke-history"
+      },
+      "status-after-input-revocation": {
+        "status": 200,
+        "operation": "status"
+      },
+      "bob-login": {
+        "status": 201,
+        "operation": "login"
+      },
+      "other-actor-status": {
+        "status": 404,
+        "operation": "status"
+      },
+      "bob-missing": {
+        "status": 404,
+        "operation": "status"
+      },
+      "bob-still-healthy": {
+        "status": 200,
+        "operation": "me"
+      },
+      "alice-login-again": {
+        "status": 201,
+        "operation": "login"
+      },
+      "status-grant-revoked": {
+        "status": 403,
+        "operation": "status"
+      },
+      "control-after-denial": {
+        "status": 200,
+        "operation": "me"
+      },
+      "no-data-grant": {
+        "status": 200,
+        "operation": "status"
+      },
+      "deactivated-session": {
+        "status": 401,
+        "operation": "status"
+      },
+      "restart-login": {
+        "status": 201,
+        "operation": "login"
+      },
+      "restart-status": {
+        "status": 200,
+        "operation": "status"
+      }
+    },
+    "new_acceptance": {
+      "receipt": {
+        "accepted_at_us": "1790535317553293",
+        "authority": "acceptance-only",
+        "command_key": "e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8",
+        "created": true,
+        "execution": "unobserved",
+        "format": "bigbrotr-job-acceptance/1",
+        "job_id": "f2af5e1f640ba88ae06763134e5a9422"
+      },
+      "admission": {
+        "job": "f2af5e1f640ba88ae06763134e5a9422",
+        "jobs": 2,
+        "kind": "export",
+        "actor": "10101010101010101010101010101010",
+        "action": "job.export.accept",
+        "bounds": [
+          [
+            0,
+            "1",
+            "10"
+          ]
+        ],
+        "config": "1",
+        "policy": "3",
+        "ordinal": "2",
+        "mappings": 2,
+        "protocol": 1,
+        "same_time": true,
+        "selection": {
+          "event": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "domain": "04040404040404040404040404040404",
+          "format": "signed-events-jsonl",
+          "binding": "3a0a2a15d97816e50a6bb0cbcaff8b1266a7ed707437ff7281205eafe01241ca",
+          "catalog": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+          "dataset": "01010101010101010101010101010101",
+          "ordinal": "1",
+          "frontier": "1",
+          "page_size": 100,
+          "visibility": "private",
+          "destination": "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+          "dictionary_kind": 4
+        },
+        "export_pin": true,
+        "same_actor": true,
+        "audit_bound": true,
+        "command_key": "e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8",
+        "same_digest": true,
+        "lease_active": true,
+        "same_dataset": true,
+        "same_request": true,
+        "accepted_at_us": "1790535317553293",
+        "input_complete": true,
+        "request_digest": "b33d295fefbbf0af10d827a8a94e65cf0fad39fe9390a1d72a480b2a90c3d750",
+        "active_export_claims": 1
+      },
+      "wire_timestamp_type": "string",
+      "assertion": "Literal signed-event request, separate wire fingerprint, actor/dataset/key/config/policy, command/audit/detail, pin/claim and complete(0,1,10)input bound all agree. New admission ordinal2; old ordinal1 and every selected prior row/xmin retained. Unit/artifact/file inventories and output hashes unchanged."
+    },
+    "retry": "Actual identical POST returns200, created=false and the original key/job/time. All12selected ledgers including xmin are identical before/after retry, observation/revocation and Control process restart. Command/audit comparison selects job.export.accept; later login/grant audits have separate lifecycles.",
+    "status": "Own metadata remains available after actual authenticated history.read revocation and with status.read retained after removal of data.read. Other actor and absent job share404; removing status.read gives403, /me stays200; deactivation gives401. Fresh Control/session reads the same accepted job; no idle-session update on the initial status reads.",
+    "output_preservation": {
+      "b130a3b16144f3995a6b5801e04eabde/manifest.json": "db651bbdcfd79ceda0080b448b3df4bebd7f75f2c6e73d0f5c25143aa0a21ab1",
+      "b130a3b16144f3995a6b5801e04eabde/events.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "processes": "Three actual Control epochs2/3/4 report committed release; headless and two HTTP parents exit0. HTTP helper positively reaps parents, checks destination lock available and scratch empty. Final zero backends/active Control are runner assertions, not a retained per-backend/owner SQL snapshot."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-5de46a0",
+    "owner": "deff54343ce7c7e283caa281b11a86d6",
+    "owner_label": "org.bigbrotr.export-execution",
+    "orchestrator": {
+      "pid": 2349631,
+      "start_ticks": "391740056",
+      "source": "5de46a0aba3c98a1943639bc7814dd17176076cc",
+      "tree": "6062a9b0d00d5601e88e4cbaa9a671839b498d06"
+    },
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "66169db63883f2cf8e3c0378792c3ea2fac14307e76af4f6ef57e3d91910b119"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "aa78b07bc8d2690610d1a980bba3861bde81db0a41d71b369da39c5d1cc09677"
+      }
+    ],
+    "terminal": {
+      "rust-visibility": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-27T18:52:32.307509448Z",
+        "FinishedAt": "2026-09-27T18:55:22.990351474Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-27T18:52:30.451032321Z",
+        "FinishedAt": "2026-09-27T18:55:33.44809931Z"
+      }
+    },
+    "network_id": "63cc8a20f825c7f76a7d4b36fb2c9d920cdace3ce900e3b98de96a8742b20c59",
+    "network_state": "removed after owner/no-endpoint audit",
+    "preserved_preexisting": 790,
+    "unrelated_running": 8,
+    "cleanup_errors": [],
+    "free_before": 96864374784,
+    "free_after": 92966064128,
+    "live_at": "2026-09-27T18:57:25.161471+00:00",
+    "live_free_bytes": 92955615232,
+    "live_unchanged": 792,
+    "note": "PostgreSQL wrapper exits137 after the owned stop deadline, no OOM. This is cleanup, not a qualified PostgreSQL restart/recovery. Database state, logs, native/source artifacts and current compiler cache are retained; no volumes/datasets/containers removed."
+  },
+  "review": {
+    "root": "Complete changed fixture and actual acceptance boundaries inspected. Independent local verifier checks all38payloads,1330current and1110seed Git files, exact currentELFs, raw12SQLledgers/xmin/request encoding, wire timestamp type, old output files and790prior/792live container projections.",
+    "independent_ai": "Read-only AI independently confirms all38payloads/tar,1330current and1110seed Gitfiles, both currentELFs, wire fingerprint/timestamp string, new admission2and exact atomic job/command/audit/pin/claim xmin943, released allocation reader xmin944, twelve unchanged retry/restart ledgers, literal1226byte empty manifest,790prior/792live container projections. It identified two pre-run oracle gaps, both corrected, and an imprecise report permission phrase, corrected. No product tests, SSH or edits."
+  },
+  "not_qualified": [
+    "Execution of the newly accepted signed-event job: deliberately insufficient256MiB export policy leaves it accepted/checkpoint0. Earlier signed-output qualification remains separate.",
+    "New815acceptance ambiguous-COMMIT/crash/refusal schedules; previous schema qualifications are not automatically extended.",
+    "PostgreSQL restart/power loss or recovery of this installed run. Separate815SQL mapping restart evidence remains scoped to its original fixture.",
+    "Mixed/aged-load performance, capacity, fairness or arbitrary kernel I/O.",
+    "Paginated job listing, cursor activation/issuance/rotation/revocation, client/browser journeys or full P08/P09.",
+    "Complete Docker Compose/release journey, hosted GitHub Actions, Docker Hub promotion or native Linux arm64."
+  ]
+}
