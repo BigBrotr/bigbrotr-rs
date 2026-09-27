@@ -20,14 +20,64 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Main HEAD 7404f2a56dc54d8d04c5b9174c7b8dc024ac4638, tree
-282d094ebc42279632f046a9c5fb44b2b87d3c41, privately pushed and origin/main verified.
-The local codec slice is committed; its scoped report/limitations remain below.
-Root now owns P06Step1 explicit initial Control registration: existing-only synced
-key snapshot, immutable key IDs/material fingerprints, atomic installation audit
-and same-registration retry. Issuance/current lifecycle remains the next consumer.
-No remote run is active or newly created. The new ignored local evidence root is
-.research/implementation/cursor-registration; inventory entry follows first checks.
+Product candidate and pre-qualification-commit main HEAD
+3ba3ceb6943f819567dca760640d47e183d2c4fa, tree
+07da3dea689d8b40f9f777320961ff236b09404e, coherent candidate now natively qualified.
+Origin/main remains7404f2a; no push of the new candidate yet. Product/source tree
+was clean at exact-Git transfer. Root owns only qualification docs/report/inventory changes after the terminal
+native run. The local registration report identifies prior
+dirty inputs, not a native result.
+
+Latest Tux root cursor-registration-3ba3ceb is stopped-retained, owner
+eb663e23ef210c56bebc0df9c974f84a. Orchestrator2149748/start390551357 is absent or
+terminal zombie at fresh census. Native release build,45Rust tests and Clippy PASS.
+Actual PostgreSQL16.15 qualification passes128checks (127distinct labels) across
+11fresh databases. Source manifestd6b19092e9e77e7d3c48dcc779d2ceb0fb31800492638e1bffb4aeb4b776bb40;
+parent ELFdc8234584f757fbfa2df6566468ac89c1c05b934de996b609eaeb972fad7da78.
+The [native registration report](evidence/p06-cursor-registration-native-20260927.json)
+records full receipt/SQL bindings, unchanged retry xmin, direct SQL omission and
+mutation refusal, both COMMIT-loss sides, concurrent same/conflicting key sets,
+held-COMMIT kill, actual65536byte stdout pipe (exit1 in0.225111s), fsyncEIO before
+connect and PG SIGKILL/restart. No activation/rotation/issuance qualification.
+
+All4owned containers PID0/noOOM. PG ownerc3ab42ee0076576e8b4f78aea61ec08f;
+buildc9a52c27c0d9a4a04050e2890c2a6df43b83e95ec9bfd55b924a9518e7c3195c exit0,
+PG2838a0b74578e9ee1103d4fdb3ca591d7573ef023f236dec8bcff061f645ffb6 exit0,
+client361966cb78f22d9ab80d811601d16a7ba6c3b376540284d8370c16e6a8e690ca exit143,
+faulthelpere74da1ffd30545090c9bdf97f22d974fa659e89dcad5158879da0d882ff2ff36 exit137
+(expected killed case). Network retained;11databases/keyfiles/partial EIO state,
+source/ELF/logs and fresh3ba compiler cache retained. No deletions.
+
+Capture94payloads,1308Git blobs independently replayed, tarSHA
+c75b25f5496b57e01a75a58f42335a598788967496a3c592b5b730739cb33846.
+All768preexisting projections unchanged. Latest live census2026-09-27T15:49:08Z
+verifies all772projections,clean source/ELF,protected key metadata and no live owned
+orchestrator. Free105878368256bytes (~98.6GiB); run preflight109664874496 and
+terminal105879973888bytes, including concurrent writes. Local capture/review/live
+files remain under .research/implementation/cursor-registration; inventory has
+exact resource ownership. Independent read-only AI replay confirms tar,94payloads,
+1308Git files,ELF,all10report artifact hashes,45tests,128events/127names,SQL
+receipt/xmin/proxy/syscall checks and768prior/772later projections. No discrepancy,
+AI tests,SSH or edits; private-key mode/schema/backend assertions remain runner
+observations, not live AI measurements.
+
+First offline verifier refused a duplicate blocked-output-retry-no-sql-write
+label. Both original PASS events remain: recover checks SQL/xmin, caller adds
+unchanged key bytes. The observer now checks both explicitly, with original
+source/note retained; no product/fixture/native outcome changed or rerun.
+Local report categorization corrected to19loopback+1metadata proxy tests; total20
+and outcomes unchanged. Independent offline AI verifies all16inputs/63artifacts,
+42Mac tests/Clippy,proxy RED/GREEN and both public binding hashes.
+
+SQL0601 SHA72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026
+has now been applied and is immutable; subsequent corrections need additive DDL.
+This checkpoint belongs to the qualification docs commit following3ba3ceb; no
+product inputs changed after that native run. Artifact/handoff/fmt/diff checks
+pass:179Markdown/322JSON,123tasks/756steps and the same3historical cycle candidates.
+Next bounded action after private push: implement current key lifecycle/activation
+with a real consumer before actor-owned listing. Read full remaining serve/
+management consumers before changes; current reads cover Control owner,
+initialization,job status/domain and the owning P06/P08 cursor/list contracts. Existing task/Step1/M1/product remain open.
 
 Mac verification:50selected CLI/config/policy/keyring/secret tests pass, plus the
 collision regression and Clippy. Fifteen independent public wire vectors include
@@ -207,7 +257,7 @@ Final independent offline AI report review verifies all11 source hashes,47
 retained artifacts, development parent/lock,4081 mutations and original RED/GREEN/
 Clippy logs. No concrete discrepancy, suite execution, SSH or fresh remote census.
 
-Initial registration is implemented locally, not committed or native-qualified:
+Initial registration is committed and native-qualified in3ba3ceb as recorded above:
 root owns read/keyring PreparedKeyring+per-key fingerprints, SQL0601/catalog,
 Control adapter, CLI, tests/independent public hash fixture and contracts. All42
 selected local schema/keyring/codec/CLI/registration tests pass; Clippy passes.
@@ -222,26 +272,24 @@ Independent read-only AI reviewed complete SQL/adapter/new keyfile boundary and
 CLI custody plus relevant existing triggers. One concrete wording correction:
 initial file fingerprint is the body's terminal checksum, not SHA256 of the
 checksum-appended file. Contract corrected; no other static counterexample.
-SQL omissions, SET CONSTRAINTS, concurrent registrations and unknown COMMIT must
-still be executed. Review is not native evidence.
+SQL omissions, SET CONSTRAINTS, concurrent registrations and unknown COMMIT
+subsequently passed on3ba3ceb; that execution is separate from static review.
 
 The [local registration report](evidence/p06-cursor-registration-local-20260927.json)
-binds actual42tests/Clippy and20real proxy tests to exact dirty input hashes.
+binds actual42tests/Clippy and20proxy tests to exact dirty input hashes.
 Candidate-tests and candidate-clippy reconfirm the final Rust inputs; all local
 checks are terminal. Proxy metadata previously rejected its existing commit_number;
-reader validation and all20loopback tests now agree, with original RED retained.
+reader validation and 19loopback plus1metadata test now agree, with original RED retained.
 
-The full selected experiments/cursor-registration recipe is authored and parsed,
-NOT_RUN. It covers SQL omissions/mutations, exact receipt vs independent SQL/audit,
+The full selected experiments/cursor-registration recipe ran on3ba3ceb. It covers SQL omissions/mutations, exact receipt vs independent SQL/audit,
 unchanged retry row versions, COMMIT loss on both sides, concurrent same/conflicting
 registrants, process kill, real blocked stdout, fsyncEIO and engine restart.
 Independent AI review found missing full receipt binding and cleanup depending on
 an interruptible report; root corrected both before the first native run. Report
 publication is atomic; owned helper cleanup derives from setup identity. Held
 COMMIT metadata is retained; contention claims only actual registration-lock wait.
-No native candidate or transfer yet. Next: commit this unpublished candidate,
-transfer exact Git and run its owned lab on Tux; qualify registration before
-current key lifecycle and actor-owned listing. No Step1/task/M1 completion.
+Candidate3ba3ceb is terminal PASS as recorded above; current key lifecycle and
+actor-owned listing remain the next consumers. No Step1/task/M1 completion.
 
 Fresh read-only preflight2026-09-27T15:25:53Z records109701558272free bytes (~102GiB),
 all768 prior container projections unchanged, eight unrelated running, no running

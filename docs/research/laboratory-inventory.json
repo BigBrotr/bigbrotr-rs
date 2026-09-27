@@ -25013,8 +25013,8 @@
   "implementation_cursor_registration_20260925": {
     "local_root": ".research/implementation/cursor-registration",
     "source_base": "7404f2a56dc54d8d04c5b9174c7b8dc024ac4638",
-    "status": "42selected local tests and Clippy PASS;20actual proxy tests PASS. Full selected native recipe authored/reviewed but NOT_RUN; candidate transfer next.",
-    "remote_resources_created": false,
+    "status": "Initial registration3ba3ceb native PASS:45Rust tests/Clippy,128practical checks across11freshPG16.15 databases. All4owned containers stopped-retained; independent offline AI evidence replay complete without a concrete discrepancy.",
+    "remote_resources_created": true,
     "contents": "Independent public key bindings, initial stub and discriminating local tests; no live keys.",
     "preflight": {
       "at": "2026-09-25T00:11:45.741473+00:00",
@@ -25034,6 +25034,111 @@
       "running_unrelated": 8,
       "path": ".research/implementation/cursor-registration/preflight-resume-20260927.json",
       "sha256": "c2819c7a7759252f857faffe8211d7df8c8bd256f68ebcdf52df09c64af165b5"
-    }
+    },
+    "native_run": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-registration-3ba3ceb",
+      "source": "3ba3ceb6943f819567dca760640d47e183d2c4fa",
+      "tree": "07da3dea689d8b40f9f777320961ff236b09404e",
+      "owner": "eb663e23ef210c56bebc0df9c974f84a",
+      "orchestrator_pid": 2149748,
+      "orchestrator_start_ticks": "390551357",
+      "container": "c9a52c27c0d9a4a04050e2890c2a6df43b83e95ec9bfd55b924a9518e7c3195c",
+      "state": "stopped-retained",
+      "cache_origin": "cursor-keyring-1f251db",
+      "postgres_owner": "c3ab42ee0076576e8b4f78aea61ec08f",
+      "containers": [
+        {
+          "id": "c9a52c27c0d9a4a04050e2890c2a6df43b83e95ec9bfd55b924a9518e7c3195c",
+          "name": "/bigbrotr-cursor-registration-3ba3ceb",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-27T15:34:23.038336077Z",
+            "FinishedAt": "2026-09-27T15:36:13.450429127Z"
+          }
+        },
+        {
+          "id": "361966cb78f22d9ab80d811601d16a7ba6c3b376540284d8370c16e6a8e690ca",
+          "name": "/bigbrotr-implementation-pg-20260917-cursor_dlkdmol-client",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-27T15:36:15.831254413Z",
+            "FinishedAt": "2026-09-27T15:36:58.087436048Z"
+          }
+        },
+        {
+          "id": "2838a0b74578e9ee1103d4fdb3ca591d7573ef023f236dec8bcff061f645ffb6",
+          "name": "/bigbrotr-implementation-pg-20260917-cursor_dlkdmol",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-27T15:36:48.843417415Z",
+            "FinishedAt": "2026-09-27T15:36:58.445896476Z"
+          }
+        },
+        {
+          "id": "e74da1ffd30545090c9bdf97f22d974fa659e89dcad5158879da0d882ff2ff36",
+          "name": "/bigbrotr-implementation-pg-20260917-cursor_dlkdmol-client-cursor-fault",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 137,
+            "Error": "",
+            "StartedAt": "2026-09-27T15:36:32.454405781Z",
+            "FinishedAt": "2026-09-27T15:36:47.964151002Z"
+          }
+        }
+      ],
+      "network": {
+        "id": "b6f4bef04e0f8a25674430b62b447943d36c67224a88e6b2e442ca11aa4d0d77",
+        "name": "bigbrotr-implementation-pg-20260917-cursor_dlkdmol",
+        "containers": {}
+      },
+      "source_manifest_sha256": "d6b19092e9e77e7d3c48dcc779d2ceb0fb31800492638e1bffb4aeb4b776bb40",
+      "binary_sha256": "dc8234584f757fbfa2df6566468ac89c1c05b934de996b609eaeb972fad7da78",
+      "native_report": "docs/implementation/evidence/p06-cursor-registration-native-20260927.json",
+      "capture": {
+        "path": ".research/implementation/cursor-registration/capture-3ba3ceb",
+        "files": 94,
+        "tar_sha256": "c75b25f5496b57e01a75a58f42335a598788967496a3c592b5b730739cb33846",
+        "manifest_sha256": "67f7fb96de4d06e31c4acedc8bece0fa2032b5ba92017fc64a4bb56b4cdef865",
+        "excluded": "Credentials, keys, database data and compiler caches remain on Tux; captured logs/config references do not include their secret contents."
+      }
+    },
+    "latest_live": {
+      "at": "2026-09-27T15:49:08.477873+00:00",
+      "containers_unchanged": 772,
+      "free_bytes": 105878368256,
+      "key_directories": 13,
+      "orchestrator_absent_or_zombie": true
+    },
+    "retention": "Retain source/ELF/SQL/keys/fault state and fresh3ba compiler cache; previous1f/8db/73e protected until separate verified lifecycle assessment. No deletion in this run."
   }
 }

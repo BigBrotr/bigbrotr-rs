@@ -87,4 +87,6 @@ keys are a conflict. Exit4 with `COMMIT outcome unknown` requires retaining the
 keys and repeating the same registration on a fresh connection. Do not infer
 rollback or prepare a replacement identity. Old binaries that do not recognize
 0601 cannot open the upgraded Control ledger; stop them before explicit migration.
-Native SQL/recovery qualification of this new command remains pending.
+The [native registration qualification](../implementation/evidence/p06-cursor-registration-native-20260927.json)
+records actual PostgreSQL atomicity, concurrent retries, COMMIT ambiguity,
+blocked output and restart. Activation and rotation remain required work.

@@ -99,15 +99,17 @@
     "corrections": [
       "Fixture generator initially looked for absent keyfile in cursor-vectors; corrected to existing keyring-vectors before product tests. Original note retained.",
       "Clippy rejected constant chunks_exact in test parser; equivalent as_chunks passes.",
-      "Shared proxy metadata reader now validates already-emitted commit_number as exact int1..64; all20 real loopback tests traverse this reader."
-    ]
+      "Shared proxy metadata reader now validates already-emitted commit_number as exact int1..64; 19 real loopback tests plus one in-memory metadata validation traverse this reader."
+    ],
+    "proxy_loopback_tests": 19,
+    "proxy_metadata_tests": 1
   },
   "behavior": [
     "Existing-only synchronized typed key snapshot cannot create missing keys or adopt incomplete staging.",
     "Prepared snapshot retains byte reservation; independent per-key material bindings preserve ordered IDs.",
     "Additive0601 and explicit finite register consumer implemented; no activation/issuance authority. Native atomicity still unqualified."
   ],
-  "review": "Root read complete implementation, affected contracts and diff. Independent read-only AI reviewed SQL, adapter, CLI and native recipe without tests/SSH. Corrected fingerprint wording; recipe receipts now bind full SQL/audit identities; atomic reports and independent cleanup; held-COMMIT event retained. Native execution remains required.",
+  "review": "Root read complete implementation, affected contracts and diff. Independent read-only AI reviewed SQL, adapter, CLI and native recipe without tests/SSH. Corrected fingerprint wording; recipe receipts now bind full SQL/audit identities; atomic reports and independent cleanup; held-COMMIT event retained. Native execution remains required. Final offline AI replay verifies16input hashes,63artifact hashes,42Rust tests/Clippy,all20proxy tests and independent public fingerprints. Corrected only test categorization:19loopback+1metadata; total and outcomes unchanged.",
   "limitations": [
     "No native PostgreSQL registration result yet; SQL migration has not been applied.",
     "No current lifecycle, activation, normal/emergency rotation, cross-worker issuance, actor-owned pages or browser claim.",

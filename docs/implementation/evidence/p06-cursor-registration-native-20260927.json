@@ -1,0 +1,316 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1 / P08-T03 prerequisite",
+  "status": "PASS within initial registration scope",
+  "source": {
+    "revision": "3ba3ceb6943f819567dca760640d47e183d2c4fa",
+    "tree": "07da3dea689d8b40f9f777320961ff236b09404e",
+    "clean": true,
+    "git_files_verified": 1308,
+    "source_manifest_sha256": "d6b19092e9e77e7d3c48dcc779d2ceb0fb31800492638e1bffb4aeb4b776bb40",
+    "lock_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "migration_0601_sha256": "72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026"
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "binary_sha256": "dc8234584f757fbfa2df6566468ac89c1c05b934de996b609eaeb972fad7da78",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "limits": "Build2CPU/6GiB/512PIDs; PG2CPU/1536MiB/256PIDs; isolated internal network/no published ports. Fault helper2CPU/1GiB/128PIDs; SYS_PTRACE only for inspected instrumentation."
+  },
+  "verification": {
+    "native_checks": [
+      {
+        "name": "fetch",
+        "command": [
+          "cargo",
+          "fetch",
+          "--locked",
+          "--target",
+          "x86_64-unknown-linux-gnu"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.524975982028991
+      },
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 36.429018542636186
+      },
+      {
+        "name": "tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "cursor_registration",
+          "--test",
+          "cursor_keyring_cli",
+          "--test",
+          "control_schema",
+          "--test",
+          "cursor_keyring",
+          "--test",
+          "read_cursors"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 49.84609746467322
+      },
+      {
+        "name": "crypto",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "read::cursor::tests"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 16.69949793210253
+      },
+      {
+        "name": "collision",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "initial_publication_never"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.12395342998206615
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--bin",
+          "bigbrotr",
+          "--test",
+          "cursor_registration",
+          "--test",
+          "cursor_keyring_cli",
+          "--test",
+          "control_schema",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 4.471526612062007
+      }
+    ],
+    "rust_tests": 45,
+    "practical_databases": 11,
+    "recorded_checks": 128,
+    "distinct_check_names": 127,
+    "independent_expected": "Frozen public two-key wire and Python/hashlib material hashes. Exact complete CLI receipts compared with observed installation principal, SQL registration, ordered keys and matching immutable audit; PostgreSQL row xmin retained for no-write retry.",
+    "sql": "Eight omitted/inconsistent registration transactions refuse with independently specified SQLSTATE and unchanged schema digest; complete independently constructed SQL succeeds. UPDATE/DELETE/TRUNCATE reject for both tables even as owner; application role denies them.",
+    "authority": "Successful registration reports cursor_authority=not-granted. Old814 schema, changed key material, missing keyfile and missing INSERT permission refuse; late privilege failure rolls back audit/header/key effects together.",
+    "commit_loss": {
+      "before": {
+        "cli_exit": 4,
+        "counters": {
+          "commits_seen": 1,
+          "commits_forwarded": 0,
+          "server_commit_complete": 0,
+          "client_commit_complete": 0
+        },
+        "outcome": "not committed; exact retry registers"
+      },
+      "after": {
+        "cli_exit": 4,
+        "counters": {
+          "commits_seen": 1,
+          "commits_forwarded": 1,
+          "server_commit_complete": 1,
+          "client_commit_complete": 0
+        },
+        "outcome": "committed; exact retry no SQL write"
+      }
+    },
+    "concurrency": "Held original COMMIT hides uncommitted rows. Separate same-key and conflicting-key clients actually wait on a PostgreSQL Lock with recorded blocker PIDs. Release resolves original/identical receipts to one audit; conflicting client exits3. Sample identifies actual registrant contention, not the particular locked relation.",
+    "process_kill": "Fault helper killed while first COMMIT is held and not forwarded; actual CLI exits137, backend disappears, Control remains baseline. Same retained keys register successfully afterward.",
+    "blocked_stdout": {
+      "exit": 1,
+      "elapsed_seconds": 0.22511109011247754,
+      "stderr": "",
+      "pipe_bytes": 65536,
+      "status": "PASS"
+    },
+    "sync_error": {
+      "exit": 4,
+      "stderr": "error: cursor keyring refused: Filesystem\n",
+      "trace_sha256": "365256a2cfb8e68e31fa9500f9efb9a2363d22b1fadc9a5c9f166f3e7cdcc495",
+      "tracer_sha256": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+      "status": "PASS"
+    },
+    "fsync": "First fsync receives real injected EIO; CLI exits4 before any connect syscall, original keyfile retained plus one partial staging file, SQL baseline unchanged.",
+    "restart": "Actual PostgreSQL SIGKILL/start followed by identical existing registration receipt and unchanged registration/key/audit row versions; no application/migration backends remain in any of11 databases."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-registration-3ba3ceb",
+    "owner": "eb663e23ef210c56bebc0df9c974f84a",
+    "postgres_owner": "c3ab42ee0076576e8b4f78aea61ec08f",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "id": "c9a52c27c0d9a4a04050e2890c2a6df43b83e95ec9bfd55b924a9518e7c3195c",
+        "name": "/bigbrotr-cursor-registration-3ba3ceb",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-27T15:34:23.038336077Z",
+          "FinishedAt": "2026-09-27T15:36:13.450429127Z"
+        }
+      },
+      {
+        "id": "361966cb78f22d9ab80d811601d16a7ba6c3b376540284d8370c16e6a8e690ca",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_dlkdmol-client",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-27T15:36:15.831254413Z",
+          "FinishedAt": "2026-09-27T15:36:58.087436048Z"
+        }
+      },
+      {
+        "id": "2838a0b74578e9ee1103d4fdb3ca591d7573ef023f236dec8bcff061f645ffb6",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_dlkdmol",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-27T15:36:48.843417415Z",
+          "FinishedAt": "2026-09-27T15:36:58.445896476Z"
+        }
+      },
+      {
+        "id": "e74da1ffd30545090c9bdf97f22d974fa659e89dcad5158879da0d882ff2ff36",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_dlkdmol-client-cursor-fault",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 137,
+          "Error": "",
+          "StartedAt": "2026-09-27T15:36:32.454405781Z",
+          "FinishedAt": "2026-09-27T15:36:47.964151002Z"
+        }
+      }
+    ],
+    "network": {
+      "id": "b6f4bef04e0f8a25674430b62b447943d36c67224a88e6b2e442ca11aa4d0d77",
+      "name": "bigbrotr-implementation-pg-20260917-cursor_dlkdmol",
+      "containers": {}
+    },
+    "preexisting_preserved": 768,
+    "free_before": 109664874496,
+    "free_after": 105879973888,
+    "latest_live": {
+      "at": "2026-09-27T15:49:08.477873+00:00",
+      "containers_unchanged": 772,
+      "free_bytes": 105878368256,
+      "key_directories": 13,
+      "orchestrator_absent_or_zombie": true
+    },
+    "cleanup": "All4owned containers stopped/PID0/noOOM; network,11databases,keys,partial failure state,source,ELF,logs and fresh compiler cache retained. No resource retirement or unrelated workload change. Space includes concurrent host writes."
+  },
+  "capture": {
+    "path": ".research/implementation/cursor-registration/capture-3ba3ceb",
+    "files": 94,
+    "tar_sha256": "c75b25f5496b57e01a75a58f42335a598788967496a3c592b5b730739cb33846",
+    "manifest_sha256": "67f7fb96de4d06e31c4acedc8bece0fa2032b5ba92017fc64a4bb56b4cdef865",
+    "excluded": "Credentials, keys, database data and compiler caches remain on Tux; captured logs/config references do not include their secret contents."
+  },
+  "review": "Root independently replayed94payload hashes,1308Git blobs/source tar/manifest,actual ELF,SQL receipts/commit counters,trace and all768preexisting container projections. Fresh read-only live census verifies772projections,clean source,ELF,protected key metadata and terminal resources. Independent read-only AI replay confirms tar,94payloads,1308Git files,ELF,all10report artifact hashes,45Rust tests,128events/127names,SQLreceipt/xmin/proxy/syscall boundaries and768prior/772later container projections. Private-key modes/ownership,some schema-digest and backend-count assertions are runner observations checked in source/results, not AI live remeasurement. No new discrepancy, tests, SSH or edits.",
+  "observer_correction": "First offline verifier rejected the repeated blocked-output-retry-no-sql-write label: recover records row/xmin equality, caller records same plus key bytes. Both original entries are PASS;128events/127names. Original observer/note retained; corrected verifier checks both explicitly. No native/product/test outcome was changed or rerun.",
+  "limitations": [
+    "Initial immutable registration only; no current issuing key, activation, worker distribution, normal/emergency rotation or paged HTTP/browser acceptance.",
+    "SIGKILL/restart and injected fsync error are not host power-loss, kernel-stall, disk-full or physical-storage durability qualification.",
+    "No held-driver cancellation/deadline beyond the executed COMMIT/kill cases; no statistical randomness, memory/RSS/all-copy erasure or workload capacity claim.",
+    "No Linux arm64, hosted Actions, full M1/task/product, Docker Hub promotion or ordinary Compose release qualification."
+  ],
+  "artifacts_sha256": {
+    ".research/implementation/cursor-registration/review.py": "27121ea7eac58aa65db702a02fdcf3aba996a314f319202d137a3d035a858756",
+    ".research/implementation/cursor-registration/review-original.py": "f902601a908f6ee65e4da0048ce544719b40d4d7a41620428a8e1cb915904373",
+    ".research/implementation/cursor-registration/review-observer-note.txt": "c08bc5ac1c8c1ecef2c3c4a7ddf72659f11787fbc3e37ebfe073ce82216e8d04",
+    ".research/implementation/cursor-registration/review.json": "a189aa4f03b6450862e1126f4b6c3fd098f2779d51ceb17c1155626d10547627",
+    ".research/implementation/cursor-registration/live-final.py": "0ea0434f3313e73400adeee5774e44e2ca79c9310d9fd7740b08a0c866a37247",
+    ".research/implementation/cursor-registration/live-final.json": "a7181e7ef42c7a164a71899e876244efe0c6c183277175d528662c89b46c4d92",
+    ".research/implementation/cursor-registration/capture-3ba3ceb/resources.json": "e2d3c699bdfa32bcb3ac28d4538c18e8773cdc17544b5989d14d42ccad797101",
+    ".research/implementation/cursor-registration/capture-3ba3ceb/final-census.json": "e43443fb627b16eb012b9978809ab7b48fa9118aad76dca4ea1ef2fa2de9be3e",
+    ".research/implementation/cursor-registration/capture-3ba3ceb/postgres/cursor-registration.json": "1f4a18e0465afbbe79070d7d5081cf28c218a5b3e2dc453751e6b320a0bfabf5",
+    ".research/implementation/cursor-registration/capture-3ba3ceb/out/native-tests/result.json": "91ed199ac132e3f6de1f2618fd708fbc7ddc42e20306356336a94d00ead48b67"
+  }
+}

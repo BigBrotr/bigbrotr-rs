@@ -231,9 +231,10 @@ do not activate issuance or complete this step.
 Initial Control registration has [local checks](evidence/p06-cursor-registration-local-20260927.json): additive0601, an
 existing-only synchronized key snapshot and the actual `access cursor-keyring
 register` consumer. It records an immutable complete key set and installation
-audit; it cannot activate issuance. Native atomicity, concurrent identical and
-conflicting retries, COMMIT-loss resolution, refusal before any SQL effect and
-engine restart remain required before this subset is qualified.
+audit; it cannot activate issuance. The [native registration report](evidence/p06-cursor-registration-native-20260927.json)
+qualifies atomicity, concurrent same/conflicting retries, COMMIT-loss resolution,
+sync refusal before SQL, blocked output and engine restart at3ba3ceb. Current
+lifecycle/activation/rotation and all remaining Step1 acceptance stay open.
 
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;
 `migrations/postgres/0603_read_pins.sql`;
