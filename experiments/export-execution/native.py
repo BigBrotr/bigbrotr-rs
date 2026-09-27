@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile the actual501 Rust consumer; retained4e only supplies native worker/seed."""
+"""Compile the current Rust consumer; retained4e only supplies native assets/seed."""
 import json
 import shutil
 import subprocess

@@ -48,7 +48,20 @@ def main(root, profile=None):
         files = {str(p.relative_to(root/'out')):sha(p) for p in sorted((root/'out/signed_normal/kind=7').rglob('*.parquet'))}
         assert len(files)==8
         client = ['docker','exec',runner,'python3','-B','/out/build/source/experiments/export-execution/runtime_client.py']
-        command(*client,'prepare')
+        admission = profile == 'job-admission'
+        def seed_rows():
+            return {table:json.loads(sql(db,f"SELECT coalesce(jsonb_agg(jsonb_build_object('row',to_jsonb(t),'xmin',xmin::text) ORDER BY to_jsonb(t)::text),'[]') FROM control.{table} t"))
+                    for table in ['jobs','export_jobs','job_input_bounds','management_commands','management_audit','snapshot_leases','archive_snapshot_pins','retention_claims']}
+        if admission: result['pre815_seed']=seed_rows();save()
+        command(*client,'prepare',*(['815'] if admission else []))
+        if admission:
+            result['post815_seed']=seed_rows()
+            assert result['post815_seed']==result['pre815_seed']
+            result['backfilled_admission']=json.loads(sql(db,"SELECT jsonb_agg(jsonb_build_object('job',encode(j.job_id,'hex'),'ordinal',a.admission_ordinal::text,'protocol',j.export_job_protocol)) FROM control.job_admissions a JOIN control.jobs j USING(job_id)"))
+            seed_job=result['pre815_seed']['jobs'][0]['row']['job_id'][2:]
+            assert result['backfilled_admission']==[dict(job=seed_job,ordinal='1',protocol=1)]
+            result['migration815_checksum']=sql(db,"SELECT encode(checksum,'hex') FROM control.schema_versions WHERE migration=815")
+            assert result['migration815_checksum']==sha(source/'migrations/postgres/0815_job_admission.sql');save()
         sql(db,'GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
         policy = json.loads((source/'experiments/archive-engine/receipt-policy.json').read_text())
         policy['settings'].update({'administration.enabled':False,'archive.worker_memory_bytes':671088640,'export.memory.max_bytes':1073741824,'export.artifact.max_bytes':2097152,'export.spill.max_bytes':134217728})
@@ -108,9 +121,9 @@ def main(root, profile=None):
         if profile == 'shutdown':
             from shutdown_cases import run as shutdown
             result['shutdown'] = shutdown(root, state, sql)
-        elif profile == 'job-status':
+        elif profile in ('job-status','job-admission'):
             from status_cases import run as status
-            result['job_status'] = status(root, state, sql, policy)
+            result['job_status'] = status(root, state, sql, policy, admission=admission)
         elif profile in ('revocation', 'resume-output'):
             from revocation_cases import run as revoke
             result['revocation'] = revoke(root, state, sql, policy, expected_manifest)
@@ -138,5 +151,5 @@ def main(root, profile=None):
 
 
 if __name__=='__main__':
-    assert len(sys.argv)==2 or sys.argv[2:] in (['resume-output'], ['shutdown'], ['parking'], ['busy'], ['pause-commits'], ['revocation'], ['job-status'])
+    assert len(sys.argv)==2 or sys.argv[2:] in (['resume-output'], ['shutdown'], ['parking'], ['busy'], ['pause-commits'], ['revocation'], ['job-status'], ['job-admission'])
     main(Path(sys.argv[1]).resolve(), sys.argv[2] if len(sys.argv)==3 else None)

@@ -20,12 +20,13 @@ phase, M1 or selected-product completion. Root is sole writer/integrator;
 catalog_guard_review is an independent read-only AI reviewer, with no edits,
 product tests, SSH or resource ownership.
 
-Main HEAD is unpublished candidate8fae53a883b6e1c258a184204271a7e691c0da81,
-tree1f50b1b9ddfb3796a0389855796608e018eba193. Private origin/main is675d74785696cf5d2fc5f4941d9103e756f2ee54.
-That evidence/documentation commit follows qualified product6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7,
-treea06365c2eae1fc4b5d80d14e5d4fc3606ed382eb. Clean candidatee82was transferred
-by Git bundle, no Tux source edits. Root owns current retry inventory/checkpoint updates.
-No merge/rebase or another contributor's edits; no815private push yet.
+Main HEAD and private origin/main are32dd92ae11241d25766b3f5c5c9b9064b25c47c8,
+verified by ls-remote after the fast-forward push. It records the qualified
+8fae53a883b6e1c258a184204271a7e691c0da81 tree1f50b1b9ddfb3796a0389855796608e018eba193;
+producte82ae830ce15530693ecdbadcfff2de463d45da3 inputs are unchanged. Root owns the
+current next-slice edits in experiments/export-execution/{lab,native,runtime_cases,
+runtime_client,status_cases,status_client}.py, P08 and this checkpoint. No
+merge/rebase or another contributor's edits.
 
 ## Current runtime qualification
 
@@ -256,8 +257,8 @@ caches and all protected historical assets/database state remain. No container,
 volume, whole-lab or dataset deletion. Metadata.research/implementation/job-admission/cache-retirement.json,
 SHAac68426c4bc351912957feb2ba195e71c04539afb3e42183597bcb9bad7c8e43. Original native outcomes stay unchanged.
 
-Independent review complete. Next: document/diff checks and coherent evidence
-commit; fetch/inspect remote then private fast-forward push. Following bounded
+Independent review, full diff and artifact/handoff checks pass. Qualification commit
+32dd92a and both prior candidates are privately pushed. Next bounded
 P08-T03 Step3 acceptance: run actual installed signed export acceptance/identical
 retry under815, observe its command/audit/job/pin plus admission closure. Existing
 export-execution status client already performs a real POST; preserve its old501
@@ -265,9 +266,30 @@ profile and select815explicitly. Its historical4e seedCargo.lock differs from th
 current lock (8984426c… versus4f9cbb84…); original native seed remains verified,
 but a current compatible compiler cache (retained8fa) and fresh installed build
 are required. Do not falsely require old seed dependencies to equal current code.
-No new experiment prepared/started. Read remaining selected harness boundaries,
-record exact artifacts, check space/resources and retire only verified unused caches
-before the next run. No paginated endpoint before cursor lifecycle authority.
+The explicit --runtime-job-admission fixture is authored, NOT_RUN. Complete
+selected harness files and actual acceptance consumers were reviewed; original
+private_grant_http lines1–160 cover consumed prepare/Server/request helpers,
+remaining helpers were not re-reviewed. Independent read-only AI found two oracle
+gaps: internal SQL consistency did not bind the signed request, and old ledger
+rows were not all protected before retry. Root added independent request encoding,
+literal selection/configuration/policy and HTTP timestamp/key comparisons, every
+prior selected row/xmin as a subset, exact unit/artifact/file equality and original
+output hashes. AI reinspection is pending; no AI edits, tests or SSH.
+
+Fixture/helper AST and diff whitespace checks pass. The current profile still
+executes the initial empty export and accepts/retries the real signed-event request;
+it does not execute that new signed job under the deliberately insufficient256MiB
+policy. Do not inflate this scope into a complete installed signed export journey.
+No new experiment prepared/started. Fresh18:49:39UTC Tux preflight observes
+96903761920bytes free,790containers/eight unrelated running and no active BigBrotr
+process/experiment. Ports, volumes, networks, mounts, memory and protected paths
+were inspected. No extra deletion is needed for this bounded run. Local navigation:
+.research/implementation/job-admission/installed/{preflight.json,transfer.py}.
+Next: finish fixture review and artifact/handoff checks, commit clean candidate,
+transfer exact Git to a newly owned export-runtime run, compile the current main
+and worker with the retained8fa compiler cache and qualify the selected815journey.
+Inventory immediately after launch; capture failures and cleanup honestly. No
+paginated endpoint before cursor lifecycle authority.
 
 The current runtime implements only Control: avoid an unused distributed worker
 registry. Readiness must bind actual loaded dataset/ring/ID/material and full

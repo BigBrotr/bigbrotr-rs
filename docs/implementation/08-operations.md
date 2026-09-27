@@ -393,6 +393,17 @@ consolidating the consumer guarantee. The1000row backward-index observation is
 not mixed/aged-load evidence. Cursor lifecycle and complete list/client/browser
 delivery remain open; no whole Step3 completion.
 
+The next installed fixture is authored in the existing export-execution laboratory
+as `--runtime-job-admission`, explicitly selecting815 while preserving older501
+profiles. It compares original qualified export rows/xmin across upgrade, executes
+the retained job with the installed worker, and checks a new signed HTTP acceptance
+has ordinal2 and the same command/audit/actor/request/pin/claim/input bounds. An
+identical request must return200/original receipt with no row/xmin change. Existing
+status ownership, revocation and process-restart observations include the mapping.
+The historical4e native seed keeps its own identity; current8fa compiler caches
+supply unchanged locked dependencies for a fresh current installed build.
+This extension is **NOT_RUN**; it grants no new release/list/lifecycle guarantee.
+
 Role/relay/artifact summaries share the page-size/authorization rules. Roles and
 relays order by immutable role-instance and endpoint ID respectively; artifacts
 order by (created_at, artifact_id) with their own upper cut. Refresh starts a new

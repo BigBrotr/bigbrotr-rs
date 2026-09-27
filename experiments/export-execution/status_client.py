@@ -46,7 +46,7 @@ def main():
             elif op == 'me':
                 status, observation, _ = http.request('GET', '/management/v1/me', auth=auth)
                 emit(command['request'],operation=op, status=status, observation=observation)
-            elif op == 'accept':
+            elif op in ('accept', 'retry'):
                 body = dict(kind='export',format='signed-events-jsonl',
                     query=dict(version=1,resource='event_history',mode='snapshot',
                         scope=dict(dataset_id='01'*16,dictionary_kind=4,allocation_domain='04'*16,ordinal='1'),
@@ -56,8 +56,8 @@ def main():
                         Path('/out/signed_normal/export-destination/destination.json').read_bytes()).hexdigest()),
                     expected_config_revision='1',expected_policy_revision='3')
                 status, receipt, _ = http.request('POST','/management/v1/jobs',body,{**auth,'Idempotency-Key':'e8'*16})
-                assert status==202 and receipt['created'] and receipt['execution']=='unobserved', (status,receipt)
-                emit(command['request'],operation=op,status=status,receipt=receipt)
+                assert status==(202 if op=='accept' else 200) and receipt['created']==(op=='accept') and receipt['execution']=='unobserved', (status,receipt)
+                emit(command['request'],operation=op,status=status,receipt=receipt,submitted=body,request_key='e8'*16)
             elif op == 'revoke-history':
                 current = command['principal']
                 change = dict(principal_id=current, action='history.read', enabled=False,

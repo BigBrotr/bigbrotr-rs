@@ -9,7 +9,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'archive-engine'))
 import private_grant_http as http
 
 if sys.argv[1] == 'prepare':
-    http.prepare(migration_target='501')
+    assert sys.argv[1:] in (['prepare'], ['prepare', '815'])
+    http.prepare(migration_target='815' if sys.argv[2:] else '501')
     text = http.CONFIG.read_text().replace('worker_memory_bytes="512MiB"', 'worker_memory_bytes="640MiB"')
     text += '''
 [export.destination]
