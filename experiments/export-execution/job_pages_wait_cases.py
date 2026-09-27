@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Discriminating session expiry at a real status-grant SQL lock wait."""
+"""Discriminating session expiry at real grant and issuer SQL lock waits."""
 import json
 import re
 import secrets
@@ -14,8 +14,10 @@ def session_waits(root,state,sql,client,exchange,actor):
     path=root/'job-pages-waits.json';assert not path.exists()
     def save():path.write_text(json.dumps(records,indent=2)+'\n')
     def clock():return int(sql(db,'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
-    for expired in [False,True]:
-        name='grant-wait-expired' if expired else 'grant-wait-live'
+    for boundary,expired in [('grant',False),('grant',True),('issuer',False),('issuer',True)]:
+        name=boundary+('-wait-expired' if expired else '-wait-live')
+        table='principal_grants' if boundary=='grant' else 'cursor_key_lifecycle'
+        query_marker='status.read' if boundary=='grant' else 'first_activation_revision'
         record=dict(name=name,passed=False);records.append(record);save()
         holder=None
         try:
@@ -55,7 +57,7 @@ def session_waits(root,state,sql,client,exchange,actor):
             record['session']=json.loads(seeded.stdout)
             del private,provision,seeded
             expires=record['session']['expires']
-            send(holder,"BEGIN; LOCK TABLE control.principal_grants IN ACCESS EXCLUSIVE MODE; SELECT json_build_object('event','locked');\n")
+            send(holder,f"BEGIN; LOCK TABLE control.{table} IN ACCESS EXCLUSIVE MODE; SELECT json_build_object('event','locked');\n")
             event(holder,'locked',timeout=2)
             request=name+'-response'
             started=time.monotonic()
@@ -65,16 +67,16 @@ def session_waits(root,state,sql,client,exchange,actor):
                 rows=json.loads(sql(db,f"""SELECT coalesce(json_agg(json_build_object(
                     'pid',w.pid,'start',w.backend_start,'wait',w.wait_event_type,
                     'time_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,
-                    'status_query',w.query LIKE '%FROM control.principal_grants%'
-                        AND w.query LIKE '%status.read%')),'[]')
+                    'boundary_query',w.query LIKE '%FROM control.{table}%'
+                        AND w.query LIKE '%{query_marker}%')),'[]')
                     FROM pg_stat_activity w JOIN control.owner_epochs o
                         ON w.pid=o.control_backend_pid AND w.backend_start=o.control_backend_start
                     WHERE o.role='control' AND o.state='active' AND w.wait_event_type='Lock'
                         AND {record['holder']['pid']}=ANY(pg_blocking_pids(w.pid))"""))
                 if rows:break
-                assert time.monotonic()<deadline,'actual status-grant wait missing'
+                assert time.monotonic()<deadline,'actual '+boundary+' wait missing'
                 time.sleep(.01)
-            assert len(rows)==1 and rows[0]['status_query'] and rows[0]['time_us']<expires
+            assert len(rows)==1 and rows[0]['boundary_query'] and rows[0]['time_us']<expires
             record['blocked']=rows[0];save()
             if expired:
                 while clock()<expires+30000:time.sleep(.01)

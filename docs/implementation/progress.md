@@ -14,9 +14,9 @@ execution while billing remains blocked. No public release, rename, Linux arm64,
 hosted CI or complete packaged-release qualification is claimed. An active goal
 covers the complete product; a bounded qualification does not complete it.
 
-Main HEAD before this fixture candidate is unpublished b93ba83dc7923e7dee45525538b8b4482caa5975,
-tree ce40e59d66cab8e31b5b6d3799ab383bb9e0aaa4. Private origin/main remains
-qualified ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47 (local ahead2 before the next candidate). No merge/rebase
+Main HEAD before the correction candidate is unpublished78520fa7d3f64bd67c1ff36cca808126b1bcb2fb,
+tree3494ba3c200a4a721e27167e175221029caeee42. Private origin/main remains
+qualified ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47 (local ahead4 before the next candidate). No merge/rebase
 or other contributor changes. Root sole writer/integrator; current dirty files
 are the page regression fixtures, this checkpoint and inventory. catalog_guard_review
 completed the read-only static boundary review; findings recorded below. All agents idle.
@@ -163,89 +163,63 @@ poison Control on unknownCOMMIT, and never repoll a consumed JoinHandle.
 
 ## Active page implementation and next bounded action
 
-The selected initial export list contract is in private-administration.md:
-actor-owned protocol1 exports, bounded page_size+1 candidate scan before mutable
-state/admission filtering, last-scanned continuation, immutable admission cut,
-original absolute expiry and current grants before decryption. This permits an
-empty advancing page without unbounded scans. The fixed103byte confidential payload
-has independent Python-generated fixture bytes. Existing cursor codec/session/
-resource budgets are reused, with no generic backend abstraction or new crate.
+HEAD before the correction candidate is78520fa7d3f64bd67c1ff36cca808126b1bcb2fb,
+tree3494ba3c200a4a721e27167e175221029caeee42; origin remains ef5b8b9. Four local
+candidate commits are unpublished. Root dirty product correction job_list.rs,
+private-administration contract, expiry fixture, checkpoint/inventory. Review
+agents idle; read-only AI review of the correction found no further counterexample.
 
-Local .research/implementation/job-pages preserves discriminating RED logs:
-new actual HTTP GET returned405 instead of401, schema target816 was unknown.
-Current Mac checks:4domain tests,30actual HTTP tests,27schema tests PASS, and Clippy
-with warnings denied PASS. Original static registry count and test-struct compile
-failures are retained. The Control adapter, explicit GET route, current key checks,
-retention transaction, bounded zeroizing response and startup optional-schema probe
-are wired. Shared list/detail decoding uses named bounded columns; scan and retention
-helpers keep transaction completion visible without a new framework. Library/domain
-structures have real consumers. Applied0604 is unchanged;0816 is now applied and checksum-immutable
+Implemented bounded actor pages,103byte confidential continuation, retention
+before delivery and explicit HTTP consumer; schema0816 now applied/immutable,
 f7ed51d54f735110a1a5a6a4db901568be833c223dcbd723aee02a7a60c3e090.
+Shared named row decoding, bounded scan and retention helpers keep transaction
+completion visible. No generic framework/crate. Client/panel not yet extended.
+Mac4domain/30HTTP/27schema tests and Clippy passed at initial productd860;
+current correction lib/bin Clippy and artifact checks passed, native GREEN pending.
 
-The existing export-execution laboratory now has an authored --runtime-job-pages
-profile: fresh current parent+worker builds, original signed seed, actual API export
-acceptance, independent expected page IDs, libsodium1.0.18 decryption, session no-touch,
-actor isolation, maintenance normal/emergency key changes, startup and retention
-SQL refusal. Its new scenarios remain NOT_RUN. Complete fault/aged-load/browser
-acceptance remains open; no full list/rotation/M1 guarantee is closed by local tests.
-Fresh20:55:42UTC read-only Tux census:807unchanged container projections,8unrelated
-running, no BigBrotr lab active,81,010,356,224free bytes. Original stopped lifecycle
-resources/source/ELF still match. No new resource/cache deletion.
+Original attempts retained under .research/implementation/job-pages/attempt-*:
+- d860dfb: native81tests/Clippy passed; final artifact binding failed because the
+  schema integration build overwrote Cargo's mutable parent without worker identity.
+  Harness now preserves installed pair immediately after ordered build. No SQL816.
+- b93ba83: installed artifacts verified, native81tests/Clippy passed, actual signed
+  seed readback/execution and815→816 upgrade preserve selected rows/xmin. Page client
+  failed before login due to stdlib import shadowing; corrected fixture only.
+- 9f3dd72 reused exactb93 artifacts,1349source files checked. Never-active empty/
+  terminal200 vs503 confirmed. Ordinary pages/cuts/no-touch/bindings passed. Live
+  grant wait400; expired1.25s wait disconnected, no HTTP verdict. Default half-
+  remaining policy SQL budget can be~1.25s; a setup limitation, not auth RED.
+- 78520fa reused exactb93 artifacts with heartbeat500ms (same TTL/deadline rules).
+  Actual live grant wait400 before expiry; expired wait400 after expiry instead
+  of401. No-issuer empty/terminal200 both before activation and after final revoke
+  instead of503. These five discriminator failures are the expected RED. Original
+  six comparisons/rotation/revocation/seven unchanged jobs, no idle touch and zero
+  terminal backends retained. All captures/manifests/hash verification preserved;
+  failures remain INCOMPLETE, never rewritten as qualification PASS.
 
-Exact Git candidate d860dfb finished INCOMPLETE before practical cases: all five
-native checks passed (50 binary,4 domain,27 schema tests and Clippy), but the schema
-integration build replaced target/release/bigbrotr without the worker binding.
-The final artifact assertion refused archive_worker=null. This is a harness
-artifact-selection failure, not an executed page/SQL outcome. Original logs,
-source, native files and terminal audit remain in export-runtime-d860dfb,
-owner251281c4473f1d9f44b693bb559f5749. PG/runner stopped137/143, noOOM, own empty
-network removed;807prior container projections/eight unrelated running preserved;
-77,110,558,720free bytes at terminal audit. No migration0816 application yet.
-The harness now snapshots the installed parent/worker immediately after their
-ordered build, before tests can replace Cargo's mutable output paths.
+Current correction selects an active loaded/unrevoked issuer on EVERY page under
+existing dataset exclusion, then resamples server time after grant AND issuer
+waits before opening a token. The selected key/deadline is reused for retention;
+no extra duplicate query, no transaction/SQL schema change. Final authority/expiry,
+known COMMIT/rollback and actual socket gates remain. Added issuer-table live/
+expired waits alongside the proven grant discriminator; these additions NOT_RUN.
+Read-only AI review inspected correction and fixtures. Documented SQL limit:
+SET CONSTRAINTS IMMEDIATE runs a deferred lease check early; the actual adapter
+keeps it deferred. Do not claim universal raw-SQL commit-time expiry.
 
-Independent AI static review of d860dfb found two open contract defects: empty or
-terminal pages bypass active-issuer lookup; session expiry during require_status
-SQL wait is not checked before cursor opening. Reproduce both through actual
-HTTP/PG before fixing. Require the active loaded/unrevoked issuer on every page;
-recheck session expiry after all pre-decrypt SQL waits. Preserve final expiry and
-socket gates. An additional raw-SQL limit is recorded: SET CONSTRAINTS IMMEDIATE
-can run the deferred0816 lease check early; the Rust adapter keeps it deferred.
-Do not claim universal raw-SQL COMMIT-time expiry from that trigger. Review found
-scan/retention helper boundaries useful; no new orchestration abstraction needed.
+All four page labs now stopped-retained (full identities in inventory). Latest785 ownership is recorded in the inventory; verify it before reuse.
+No active BigBrotr experiment. Retired ONLY d860 out/build/target and cargo-home:
+3,497,406,464allocated bytes after ownership/mount/root/FD/maps audit.37retained
+source/evidence/native artifact hashes verified; datasets/private state unchanged.
+Initial post-removal audit compared volatile full container State and failed;
+original INCOMPLETE preserved. Follow-up stable projections equal785terminal
+census,815containers/eight unrelated running; no container/volume deletion.
+At21:28:57UTC free went72,233,619,456→75,731,017,728bytes. Preserve8fa compiler cache,
+b93 exact maincc5e58660eae911ed8bc0baf77d80b6278ca043128b79bfcb35620a9a75cb507,
+worker3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353,
+4e original signed producer/assets and all previously inventoried dependencies.
 
-Next: rerun the corrected artifact-selection harness on exact Git, preserve and
-inspect practical outcomes, then execute the discriminating expiry/issuer cases
-before product corrections. Complete fault/aged-load/generated client/panel/browser
-acceptance remains open. No whole list, rotation, M1 or release qualification.
-
-Corrected harness candidate b93ba83 produced a verified installed parent/worker;
-all81native tests/Clippy pass. Actual signed archive readback, old job execution,
-815→816 upgrade with original rows/xmin preserved, enrollment and active-key startup
-executed. The page client then failed BEFORE LOGIN: private_grant_http aliased as
-http shadowed stdlib http.client. Original outcome INCOMPLETE, no page response.
-Use explicit HTTPConnection import. Original b93 resources stopped-retained,
-owner747e2795e020729bf2decca0968dea57, PG137/runner143, noOOM/cleanup errors;
-809preexisting projections/eight unrelated running unchanged;73,156,907,008free bytes.
-Safe captures for d860/b93 remain under .research/implementation/job-pages.
-
-Next exact fixture-only retry reuses b93's verified artifacts with all product/build
-inputs checked equal; no repeated Rust build. Added expected503 for empty/terminal
-pages before activation and after last-key revocation; actual principal_grants
-lock waits with live and expired1.25s separately seeded/audited sessions expect400
-and401 respectively. All SQL guards remain enabled, no original session mutation.
-These new regressions are NOT_RUN and collect failures before final assertion.
-
-Fixture9f3dd720d24b5777c59335b8de3c365d0b8341f8 reused exact b93 artifacts:
-never-active empty and terminal pages returned200 (confirmed contract defect).
-Actual multiple signed acceptances, pages, empty progress, actor/filter binding,
-no-touch, original cut and retained expiry comparisons passed before the wait.
-Live grant lock returned400 invalid_cursor; expired1.25s lock had actual observed
-wait/release after expiry but HTTP disconnected, so no expiry RED is claimed.
-Root found the default phase-dependent half-remaining policy SQL budget can be
-~1.25s. Retry selects heartbeat500ms as the prior resume fixture, changing neither
-TTL nor production deadline. All original SQL guards/receipts stay enabled.
-Read-only AI fixture review added a final seven-job equality assertion and a
-post-response clock sample. Token/socket expiry remains NOT_RUN. Original9f3
-resources stopped-retained, ownerd199840de1ae07fbb8f7676ce2d0d5cc; source clean,
-noOOM, cleanup terminal evidence captured. Next retry remains fixture-only.
+Next: exact-Git native build and practical GREEN retry for the two confirmed
+page-authority defects, retaining all original outcomes. Then close remaining
+retention COMMIT-loss/held/replay and cursor/session/delivery checks; introduce
+actual generated client/panel/browser consumer. Aged/mixed measurements remain
+open; no complete list/rotation/M1/Compose release or capacity claim.

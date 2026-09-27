@@ -350,17 +350,21 @@ are big-endian. Time options are presence byte0/1 followed by i64; absent bytes
 must be zero. Policy/grant revisions and admission cut are nonzero. Envelope AAD
 already binds dataset, stable keyring and resource. The original issue/expiry
 survive every continuation, even if current TTL changes. A changed policy
-revision still invalidates its binding. Authenticate current access before opening; check current policy/grant bindings, key revocation and
-the retained deadline after opening, then server time again after SQL waits.
+revision still invalidates its binding. Authenticate current access before opening;
+recheck session expiry after grant and issuer SQL waits, before envelope opening or token-specific errors. Check
+current policy/grant bindings, key revocation and the retained deadline after
+opening, then server time again after SQL waits.
 
 Additive0816 supplies the actor index and permits only monotone retention updates
 by the actual current Control backend on an active, unrevoked key. Existing0604
 transition guards remain responsible for activation/revocation. Retain original
 expiry+30seconds before delivery with known COMMIT; missing active key or absent
-schema is unavailable, never implicit provisioning. A page without a new retention
-effect completes by acknowledged rollback. Unknown COMMIT/rollback poisons the
-owner; no token escapes that outcome. Reads never touch session idle time, and
-their socket action window cannot be extended by Control renewal. This profile
+schema is unavailable even for empty/terminal pages, never implicit provisioning.
+A page without a new retention effect completes by acknowledged rollback. Unknown COMMIT/rollback poisons the
+owner; no token escapes that outcome. The adapter preserves the initially deferred
+retention check through COMMIT. Direct SQL that explicitly makes that constraint
+immediate does not acquire a universal commit-time lease check from PostgreSQL.
+Reads never touch session idle time, and their socket action window cannot be extended by Control renewal. This profile
 is under implementation; it does not qualify the endpoint or broader job kinds.
 
 The explicit own-export resume API has [scoped installed HTTP evidence](../implementation/evidence/p08-export-resume-http-native-20260924.json);

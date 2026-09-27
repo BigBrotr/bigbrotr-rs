@@ -118,7 +118,19 @@ impl ControlSession {
             )
             .await?;
             job_status::require_status(&tx, dataset, current.principal).await?;
+            // The selected endpoint requires an issuer even for a terminal page.
+            // Dataset exclusion keeps this selection stable through completion.
+            let issuer = active_issuer(&tx, dataset).await?;
             let time = now(&tx).await?;
+            // Both grant and issuer lookups may wait. Expiry must precede opening
+            // the envelope, including its malformed-token error path.
+            if time >= current.expires {
+                return Err(SessionError::Denied);
+            }
+            let issuer = issuer.ok_or(SessionError::CursorUnavailable)?;
+            if !keys.key_ids().any(|id| id == issuer.id) {
+                return Err(SessionError::CursorUnavailable);
+            }
             let grants = revision(&current.account, 3)?;
             let skew = i64::try_from(lifetime.skew_us)
                 .ok()
@@ -213,7 +225,8 @@ impl ControlSession {
                     issued_at_us,
                     expires_at_us,
                 };
-                let (encoded, changed) = retain_cursor(&tx, &keys, &payload, budget).await?;
+                let (encoded, changed) =
+                    retain_cursor(&tx, &keys, &issuer, &payload, budget).await?;
                 retained = changed;
                 continuation = Some(payload);
                 Some(encoded)
@@ -350,18 +363,15 @@ async fn scan_jobs(
     })
 }
 
-/// Sealing does not release bytes. The caller must positively commit a changed
-/// retention obligation, or acknowledge rollback when the existing one suffices.
-async fn retain_cursor(
+struct IssuingKey {
+    id: [u8; 16],
+    retained_until_us: Option<i64>,
+}
+
+async fn active_issuer(
     tx: &Transaction<'_>,
-    keys: &Keyring,
-    payload: &Continuation,
-    budget: &ResourceBudget,
-) -> Result<(EncodedCursor, bool), SessionError> {
-    let until = payload
-        .expires_at_us
-        .checked_add(MAX_SKEW_US)
-        .ok_or(SessionError::Capacity)?;
+    dataset: DatasetId,
+) -> Result<Option<IssuingKey>, SessionError> {
     let row = tx
         .query_opt(
             "SELECT substring(l.key_id FROM 1 FOR 17),l.decrypt_until_us
@@ -370,15 +380,35 @@ async fn retain_cursor(
             SELECT resulting_active_key_id FROM control.cursor_key_transitions
             WHERE dataset_id=$1::bytea ORDER BY revision DESC LIMIT 1)
             AND l.first_activation_revision IS NOT NULL AND l.revoked_revision IS NULL",
-            &[&&keys.dataset().as_bytes()[..]],
+            &[&&dataset.as_bytes()[..]],
         )
         .await
-        .map_err(backend)?
-        .ok_or(SessionError::CursorUnavailable)?;
-    let key = fixed::<16>(&row, 0)?;
+        .map_err(backend)?;
+    row.map(|row| {
+        Ok(IssuingKey {
+            id: fixed::<16>(&row, 0)?,
+            retained_until_us: row.try_get(1).map_err(metadata)?,
+        })
+    })
+    .transpose()
+}
+
+/// Sealing does not release bytes. The caller must positively commit a changed
+/// retention obligation, or acknowledge rollback when the existing one suffices.
+async fn retain_cursor(
+    tx: &Transaction<'_>,
+    keys: &Keyring,
+    issuer: &IssuingKey,
+    payload: &Continuation,
+    budget: &ResourceBudget,
+) -> Result<(EncodedCursor, bool), SessionError> {
+    let until = payload
+        .expires_at_us
+        .checked_add(MAX_SKEW_US)
+        .ok_or(SessionError::Capacity)?;
     let encoded = cursor::seal(
         keys,
-        key,
+        issuer.id,
         RESOURCE,
         &payload.encode()[..],
         codec_permit(budget)?,
@@ -391,17 +421,13 @@ async fn retain_cursor(
         }
     })?;
     let mut retained = false;
-    if row
-        .try_get::<_, Option<i64>>(1)
-        .map_err(metadata)?
-        .is_none_or(|old| old < until)
-    {
+    if issuer.retained_until_us.is_none_or(|old| old < until) {
         let changed = tx
             .execute(
                 "UPDATE control.cursor_key_lifecycle SET decrypt_until_us=$3::bigint
              WHERE dataset_id=$1::bytea AND key_id=$2::bytea
                 AND (decrypt_until_us IS NULL OR decrypt_until_us<$3::bigint)",
-                &[&&keys.dataset().as_bytes()[..], &&key[..], &until],
+                &[&&keys.dataset().as_bytes()[..], &&issuer.id[..], &until],
             )
             .await
             .map_err(backend)?;
