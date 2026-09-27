@@ -26830,6 +26830,98 @@
       "recipe_sha256": "497bf7409d1ff5a4cc0c55fae4a17868483c15556a13d11baf9bc16ecc079e88",
       "original_result": ".research/implementation/job-pages/retire-5de.json",
       "result_sha256": "f4c39e4aff803c304665ebe3ef68a30bb7d3d795b57ebb91e8fefa5355f2fc85"
-    }
+    },
+    "commits_runs": [
+      {
+        "resources": {
+          "source": "41327e1438c103ad1e1c3fc8fbee08a71b3f64f8",
+          "tree": "0af043d1164a31da415c1e7b4815561168e2951d",
+          "owner": "8c2fb64cbeaf20cd3cd45cc15c2a2291",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-41327e1-job-pages-commits",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "postgres",
+              "id": "4fa3856b46ac518d93232dafbc0c17ee6c6f2b46925b2f734f6b05a37e392d2d"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "33a6b5bbe04e271d6792a6d34b5e968429e5593b290f43d1c4df7b841700a14c"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T22:44:12.980340+00:00",
+          "runtime_profile": "job-pages-commits",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+          "network_id": "c5a0340adcbe0eabdf20fcf6519b3827e0634642c0914e95e8729146d33a8522",
+          "postgres_id": "4fa3856b46ac518d93232dafbc0c17ee6c6f2b46925b2f734f6b05a37e392d2d",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "33a6b5bbe04e271d6792a6d34b5e968429e5593b290f43d1c4df7b841700a14c",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "orchestrator": {
+          "pid": 2670868,
+          "start_ticks": "393130645",
+          "source": "41327e1438c103ad1e1c3fc8fbee08a71b3f64f8",
+          "tree": "0af043d1164a31da415c1e7b4815561168e2951d"
+        },
+        "capture": {
+          "files": 41,
+          "sha256": "9011df47d7f9e74fee17d18da3c24df0b66b519d0de43c89bba3afbb12f21ced",
+          "source": "41327e1438c103ad1e1c3fc8fbee08a71b3f64f8",
+          "tree": "0af043d1164a31da415c1e7b4815561168e2951d",
+          "source_files": 1359
+        },
+        "evidence": "docs/implementation/evidence/p08-job-pages-commit-native-20260928.json",
+        "review": {
+          "status": "PASS",
+          "source": "41327e1438c103ad1e1c3fc8fbee08a71b3f64f8",
+          "tree": "0af043d1164a31da415c1e7b4815561168e2951d",
+          "page_sets": 3,
+          "commit_faults": 2,
+          "ledger_sizes": {
+            "jobs": 6,
+            "job_admissions": 6,
+            "job_input_bounds": 6,
+            "export_jobs": 6,
+            "export_execution_units": 1,
+            "artifacts": 1,
+            "artifact_files": 1,
+            "snapshot_leases": 15,
+            "archive_snapshot_pins": 15,
+            "retention_claims": 15
+          },
+          "retention_xmin": [
+            "930",
+            "1037",
+            "1056"
+          ],
+          "owner_epochs": [
+            5,
+            6,
+            7
+          ],
+          "capture_manifest_sha256": "e07d57193b2eeec78d94c66e61825f99cd914ca9c560ac91a315e9f8a90b3809",
+          "runtime_artifacts": {
+            "bigbrotr": "ac15753aa08abee07ccc76431b9a407544427ed269c53c09ba4435628ff4f5ec",
+            "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+          }
+        },
+        "live": {
+          "at": "2026-09-27T22:46:35.295927+00:00",
+          "unchanged": 846,
+          "orchestrator_absent_or_zombie": true,
+          "source_clean": true,
+          "native_assets_preserved": true,
+          "free_bytes": 73890541568
+        }
+      }
+    ]
   }
 }

@@ -1,0 +1,187 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P06-T03"
+  ],
+  "source": "41327e1438c103ad1e1c3fc8fbee08a71b3f64f8",
+  "tree": "0af043d1164a31da415c1e7b4815561168e2951d",
+  "scope": "Lost cursor-retention COMMIT before forwarding and after server completion, followed by fresh Control ownership and known page issuance/continuation. Backend-only bounded evidence, not complete discovery, custody, M1 or release.",
+  "environment": {
+    "target": "Native Linux amd64 Tux",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runtime_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "oracle": {
+      "version": "1.0.18",
+      "path": "/usr/lib/x86_64-linux-gnu/libsodium.so.23.3.0",
+      "sha256": "85e2e494494f4f50c4b6d2b4ae90e885da1bfdefd52c4cc5767fd10abff62505",
+      "api_source": "https://github.com/jedisct1/libsodium/blob/1.0.18/src/libsodium/include/sodium/crypto_aead_xchacha20poly1305.h"
+    }
+  },
+  "artifacts": {
+    "runtime_source": "f6770e99b21e57a6094316caa9b428f175773844",
+    "runtime_tree": "fb401b4852b91ed7029ff501e704f1249b8bc7e9",
+    "runtime_sha256": {
+      "bigbrotr": "ac15753aa08abee07ccc76431b9a407544427ed269c53c09ba4435628ff4f5ec",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "source_manifest_sha256": "15c78d1d991d04f904bf6b9876646568d491aaf9600588c20cd2bb9c769a11ee",
+    "runtime_manifest_sha256": "ce7a7acd38ba4674cffa8ebe72e66ebec945358e2188ad2e6a29e81b379c9021",
+    "proxy_sha256": "ed9c41299c691236e189bab25adf9241f6dbf483473848974c14e91bba5f5939",
+    "input_equivalence": "All non-documentation/experiment build inputs equal except 12 explicitly enumerated frontend files in runtime-reuse.json. This backend-only profile executes none of them. Original 4e seed producer/readers and f677 installed main/worker retain their own identities. No new Rust compilation or frontend qualification."
+  },
+  "recipe": "python3 experiments/export-execution/lab.py 41327e1438c103ad1e1c3fc8fbee08a71b3f64f8 0af043d1164a31da415c1e7b4815561168e2951d --runtime-job-pages-commits f6770e99b21e57a6094316caa9b428f175773844 job-pages-commits",
+  "workload": "Fresh isolated actual signed archive seed, successful empty export and migration through 0816. Five real signed-event requests accepted under deliberate 256 MiB deferral, six total actor-owned jobs. One in-memory login persists across the two failed owners and recovery; no new signed export execution or capacity claim.",
+  "executed": {
+    "local": "New target discrimination regression RED then GREEN; 11 target tests and one wire test PASS. Actual caller block refuses INCOMPLETE/FAIL cleanup receipts and accepts PASS. Artifact/syntax and diff checks PASS.",
+    "commit_faults": 2,
+    "recovery_page_sets": 3,
+    "results": [
+      {
+        "mode": "before-forward",
+        "status": "PASS",
+        "control_epoch": "5",
+        "fault": {
+          "data_queries": 1,
+          "data_commits": 1,
+          "faults": 1,
+          "server_complete": 0,
+          "client_complete": 0
+        },
+        "response": {
+          "closed": "RemoteDisconnected"
+        },
+        "retention": [
+          {
+            "row": {
+              "key_id": "\\x33333333333333333333333333333333",
+              "dataset_id": "\\x01010101010101010101010101010101",
+              "decrypt_until_us": null,
+              "revoked_revision": null,
+              "first_activation_revision": 1
+            },
+            "xmin": "930"
+          }
+        ]
+      },
+      {
+        "mode": "after-complete",
+        "status": "PASS",
+        "control_epoch": "6",
+        "fault": {
+          "data_queries": 1,
+          "data_commits": 1,
+          "faults": 1,
+          "server_complete": 1,
+          "client_complete": 0
+        },
+        "response": {
+          "closed": "RemoteDisconnected"
+        },
+        "retention": [
+          {
+            "row": {
+              "key_id": "\\x33333333333333333333333333333333",
+              "dataset_id": "\\x01010101010101010101010101010101",
+              "decrypt_until_us": 1790550066374187,
+              "revoked_revision": null,
+              "first_activation_revision": 1
+            },
+            "xmin": "1037"
+          }
+        ]
+      }
+    ],
+    "recovery_retention": [
+      {
+        "row": {
+          "key_id": "\\x33333333333333333333333333333333",
+          "dataset_id": "\\x01010101010101010101010101010101",
+          "decrypt_until_us": 1790550067527378,
+          "revoked_revision": null,
+          "first_activation_revision": 1
+        },
+        "xmin": "1056"
+      }
+    ],
+    "recovery_issue_bounds_us": [
+      1790549137522594,
+      1790549137527378,
+      1790549137618502
+    ],
+    "ledger_sizes": {
+      "jobs": 6,
+      "job_admissions": 6,
+      "job_input_bounds": 6,
+      "export_jobs": 6,
+      "export_execution_units": 1,
+      "artifacts": 1,
+      "artifact_files": 1,
+      "snapshot_leases": 15,
+      "archive_snapshot_pins": 15,
+      "retention_claims": 15
+    }
+  },
+  "invariants": {
+    "ledgers": "Ten complete job/admission/input/export/unit/artifact/file/lease/pin/claim projections including xmin agree before, after both faults and after recovery pages. Other database effects such as owner, audit and cursor retention are not asserted unchanged.",
+    "session_idle": "Saved session IDs, last_seen, idle_expires and xmin agree across each fault request and across recovery reads. Session issue itself is outside those read intervals.",
+    "termination": "Each failed Control returns exit 4 CommitUnknown without a committed owner release. Parent absent, destination flock available, scratch empty and zero actual Control/catalog backends. Subsequent owner epochs 5,6,7 have distinct process incarnations. Final stop exits 0 with release. These are terminal observations, not continuous driver-custody evidence.",
+    "recovery": "Independent SQL time bounds a fresh original issue instant, deadline grows and xmin changes after recovery. Two continuations of the same first cursor return the independently expected rows; original 900-second lifetime, expiry+30-second retention and full retention row/xmin remain unchanged."
+  },
+  "review": {
+    "root": "Read changed fixtures, proxy and actual adapter/dispatch/guard boundaries. Independently reconstructed all three page sets from saved complete SQL rows; checked durable effects, sessions, fault counters, source/ELF/capture hashes and live resources.",
+    "ai": "Read-only AI reviewed fixture/proxy/caller/0816/collector scope. Two pre-run findings fixed: propagate incomplete cleanup to the outer result, and bound new recovery issuance by SQL time plus changed retention/xmin. No AI tests or SSH; no claim of post-run AI evidence review."
+  },
+  "resource": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-41327e1-job-pages-commits",
+    "owner": "8c2fb64cbeaf20cd3cd45cc15c2a2291",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "4fa3856b46ac518d93232dafbc0c17ee6c6f2b46925b2f734f6b05a37e392d2d"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "33a6b5bbe04e271d6792a6d34b5e968429e5593b290f43d1c4df7b841700a14c"
+      }
+    ],
+    "network_removed": "c5a0340adcbe0eabdf20fcf6519b3827e0634642c0914e95e8729146d33a8522",
+    "orchestrator": {
+      "pid": 2670868,
+      "start_ticks": "393130645",
+      "source": "41327e1438c103ad1e1c3fc8fbee08a71b3f64f8",
+      "tree": "0af043d1164a31da415c1e7b4815561168e2951d"
+    },
+    "terminal_exits": {
+      "rust-visibility": 0,
+      "postgres": 137
+    },
+    "live": {
+      "at": "2026-09-27T22:46:35.295927+00:00",
+      "unchanged": 846,
+      "orchestrator_absent_or_zombie": true,
+      "source_clean": true,
+      "native_assets_preserved": true,
+      "free_bytes": 73890541568
+    }
+  },
+  "capture": {
+    "root": ".research/implementation/job-pages/attempt-41327e1-job-pages-commits/capture",
+    "files": 41,
+    "sha256": "9011df47d7f9e74fee17d18da3c24df0b66b519d0de43c89bba3afbb12f21ced",
+    "source": "41327e1438c103ad1e1c3fc8fbee08a71b3f64f8",
+    "tree": "0af043d1164a31da415c1e7b4815561168e2951d",
+    "source_files": 1359,
+    "manifest_sha256": "e07d57193b2eeec78d94c66e61825f99cd914ca9c560ac91a315e9f8a90b3809",
+    "result_sha256": "b1d9005e8c03a92c573a54eb31a1ad047bd8a2f5f19722f229fcf6d8a3cdab06",
+    "independent_review_sha256": "b26a2579a13b98ab06792cde8503692d2387b6dd439a082819aae6194259f870"
+  },
+  "not_qualified": [
+    "Held COMMIT/reply, cancellation/custody, delivery failures, expired cursor/session, changed policy/grants/TTL/skew and mixed/aged/exhausted workloads remain open.",
+    "Only these two deliberate plaintext loopback fault schedules; no general network partition, graceful PostgreSQL restart, performance, native arm64, hosted Actions or release claim.",
+    "PostgreSQL wrapper exits 137 without OOM during owned deadline cleanup; native runner exits 0. Preserve the database and all original artifacts. Private keys, configuration and session/cursor bytes are excluded from the capture."
+  ]
+}

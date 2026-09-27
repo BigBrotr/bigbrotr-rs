@@ -12,15 +12,15 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Published HEAD and verified origin/main are afa518a2a1968901ee0861131db1c93a8b76da10.
-45b7e48 owns the client/panel; 3bdea1f changes capacity fixtures; afa518a records
-six-pair evidence. Root owns the next dirty fixture-only slice: narrow native
-proxy target and regression, job_pages_commit client/cases, lab/runtime dispatch,
-this checkpoint and inventory. No product source or applied migration changes.
-Read-only AI reviewed the fixture and relevant proxy/caller/0816 boundaries;
-its two findings were corrected: propagate incomplete cleanup, and independently
-bound a new recovery issuance by SQL time and changed retention/xmin. It ran no
-tests or SSH. Root checked the caller with INCOMPLETE/FAIL/PASS receipts.
+HEAD is candidate 41327e1438c103ad1e1c3fc8fbee08a71b3f64f8, one ahead of
+verified origin/main afa518a2a1968901ee0861131db1c93a8b76da10. Current root-owned
+diff is documentation/evidence/inventory closing its native qualification.
+45b7e48 owns the client/panel; 3bdea1f fixes laboratory capacity; afa518a records
+six-pair evidence. 41327e1 changes only the COMMIT fault fixture and documentation;
+all product Rust remains identical to f677. Commit/push the reviewed evidence and
+verify the actual remote before starting the next candidate. No merge/rebase or
+contributor changes. Read-only AI completed its scoped fixture review; root remains
+the sole writer and integrator.
 
 Active IDs: P08-T03 Step 3 / P08-T04 Step 3, thin P09-T09 Step 2 and only the
 operational P06-T03 Steps 1/3 cursor prerequisites. No task, phase, M1 or product
@@ -92,18 +92,16 @@ volatile-State audit failure and successful stable-projection follow-up.
 
 [Inventory](../research/laboratory-inventory.json) key
 implementation_job_pages_20260927 owns exact identities, consumer_runs and
-consumer_live. Seven consumer labs (six successful pairs plus original failure)
-and five earlier native page labs are stopped-retained. Last active root was
-/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3bdea1f-chromium-control,
-owner 08872c840b78feece43151e17d5ce818, PID 2649106/start 393016447, now terminal.
-Local matrix wrapper session 35150 ended 0; earlier 72167/17455 ended 1 and remain
-recorded. No active BigBrotr experiment at 22:35:48 UTC audit: 844 stable container
-projections equal, eight unrelated running, all seven source checkouts clean,
-original/native artifacts verified and owned networks absent. Free 70,855,983,104
-bytes (~66.0 GiB), just BELOW the laboratory 66 GiB start threshold. Audit current
-headroom and retire another verified obsolete cache before the next native run.
-Owned frontend/native/browser containers exit 0; PG wrappers 137/no OOM are deadline
-cleanup, not graceful engine shutdown/recovery evidence.
+consumer_live. Seven consumer labs, five earlier native page labs and the new
+COMMIT lab are stopped-retained. Latest root is
+/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-41327e1-job-pages-commits,
+owner 8c2fb64cbeaf20cd3cd45cc15c2a2291, PID 2670868/start 393130645, now terminal.
+Inventory commits_runs owns its exact resources and evidence. At 22:46:35 UTC,
+846 stable container projections matched the terminal audit, eight unrelated
+containers ran, current source/artifact identities matched and its network was
+absent. Free 73,890,541,568 bytes; check again before the next native run.
+Owned native runner exits 0; PG wrapper 137/no OOM is deadline cleanup, not graceful
+engine shutdown/recovery evidence. No active BigBrotr experiment at this audit.
 
 Ignored .research/implementation/job-pages retains original captures, per-attempt
 review.json/verified.json, consumer-live.json and retirement recipes/results.
@@ -145,20 +143,36 @@ expiry guarantee. No generic supervisor framework/domain relocation/Rocks rewrit
 was justified by the prior structural review. Monitor MON-001/002/004/005/006/007/
 009/010 remain scoped closed in their linked P01/P02 reports absent contrary evidence.
 
-Next bounded work is in progress: the existing PostgreSQL proxy now has an
-explicit cursor-retention target. New installed fixtures cover lost COMMIT before
-forwarding and after server completion, then fresh Control ownership and identical
-continuation retries. They assert no successful HTTP header/token on unknown
-completion, exact retention effects, unchanged ten job ledgers/session idle state,
-original cursor lifetime and joined cleanup. Local target regression was RED for
-the absent target and then GREEN; 11 target plus one wire test and artifact/syntax
-checks pass. Native execution is NOT_RUN until a clean candidate is transferred.
-Review the fixture, commit it, transfer exact Git and run --runtime-job-pages-commits
-with retained f677 Rust artifacts. Enumerated frontend changes are unused by this
-backend-only profile; no fresh frontend or Rust build qualification is implied.
-Held COMMIT/reply and cancellation/custody follow this bounded loss/recovery check.
+The [COMMIT loss report](evidence/p08-job-pages-commit-native-20260928.json)
+now qualifies before-forward rollback and after-complete reply loss at 41327e1.
+Actual HTTP receives RemoteDisconnected in both cases; Control exits 4 CommitUnknown,
+never acknowledges owner release, then has no parent/backends and releases its
+local destination lock. Ten complete ledgers and session idle observations remain
+unchanged. Retention is unchanged before-forward; after-complete extends only the
+expected key deadline. New owner epochs 5/6/7 recover. SQL time bounds fresh issuance;
+three independently reconstructed page sets preserve the original lifetime and
+unchanged retention/xmin on repeated continuation. These are terminal cleanup
+observations, not continuous custody evidence. All 41 safe capture payloads and
+1359 source files are verified under attempt-41327e1-job-pages-commits.
 
-Before that run, retired only export-runtime-5de46a0/out/build/{target,cargo-home}
+The narrow proxy target had a discriminating RED then GREEN; 11 target and one
+wire test pass. AI's two pre-run findings were fixed: propagate incomplete cleanup,
+and require genuinely new recovery issuance. Root also executed the actual caller
+block with INCOMPLETE/FAIL/PASS receipts and independently reviewed captured results.
+The backend-only profile declares 12 unused frontend changes and reuses exact f677
+ELFs; no fresh Rust/frontend qualification. No product defect was observed.
+
+Next: qualify held COMMIT/reply and cancellation/custody using this existing proxy
+and installed fixture. Read existing export_job_custody_client.py and the actual
+management dispatch: its SQL is bounded by authority even after HTTP disconnect;
+PendingAction starts before SQL, so completion cannot extend delivery validity.
+Retain independent server state and distinguish an intentionally proxy-held remote
+backend from the actual driver's joined local socket. Preserve lock ordering,
+no-token-on-unknown, fencing and bounded cleanup. Do not infer continuous custody
+from the terminal observations above. Absolute expiry/authority/delivery and load
+remain separate acceptance after these held boundaries.
+
+Before the COMMIT run, retired only export-runtime-5de46a0/out/build/{target,cargo-home}
 after source/capture/native-artifact, process FD/maps and mount checks. Inventory
 retire_5de_cache_20260928 owns the receipt: 3,494,395,904 allocated bytes removed,
 free 70,855,979,008 → 74,348,867,584 bytes; 844 stable container projections and eight

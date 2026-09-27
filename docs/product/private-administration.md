@@ -376,6 +376,11 @@ and account revocation. It holds one current page in session-owned memory and
 never persists its cursor. Ten selected job/artifact/pin ledgers remain unchanged;
 session idle observations have separately named boundaries. This is a thin
 P09-T09 Step 2 consumer, not complete pagination/CLI/accessibility qualification.
+The [retention COMMIT-loss report](../implementation/evidence/p08-job-pages-commit-native-20260928.json)
+adds two actual fault schedules: no page escapes either unknown outcome, and fresh
+Control ownership permits a new listing. Only the committed schedule changes key
+retention; continuation retries preserve the original deadline. Held COMMIT/reply,
+continuous custody and remaining expiry/delivery/load acceptance are still open.
 
 The explicit own-export resume API has [scoped installed HTTP evidence](../implementation/evidence/p08-export-resume-http-native-20260924.json);
 its [typed client also has installed HTTP evidence](../implementation/evidence/p08-export-resume-client-native-20260924.json)

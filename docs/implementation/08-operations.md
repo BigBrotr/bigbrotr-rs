@@ -427,8 +427,11 @@ now adds 42 stages and 120 independent page sets across six actual browser/mount
 including explicit paging/reopen, live SQL-blocked logout and account revocation.
 It reuses the original Rust ELF with separately identified fresh bundles. The
 [original capacity setup failure](evidence/p09-job-pages-capacity-incomplete-20260928.json)
-and scoped obsolete-cache retirement are preserved. Next acceptance targets actual
-retention COMMIT loss/hold and driver custody, then remaining pagination limits;
+and scoped obsolete-cache retirement are preserved. The
+[COMMIT loss fixture](evidence/p08-job-pages-commit-native-20260928.json) now verifies
+before-forward rollback, committed reply loss and fresh issuance after actual
+Control recovery. Three independent page sets and ten unchanged ledgers distinguish
+the observed effects. Next acceptance targets held COMMIT/reply and driver custody;
 these prevent claiming complete discovery, but require no adjacent scientific
 pagination subsystem.
 
