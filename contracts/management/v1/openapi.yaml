@@ -769,6 +769,161 @@
             }
           }
         }
+      },
+      "get": {
+        "operationId": "listJobs",
+        "summary": "List current actor-owned export metadata",
+        "description": "Exact Origin, current session, explicit CSRF and dataset status.read. No input/output grant or idle refresh. Optional protocol requires0816, loaded registered material and an active unrevoked issuer, including empty/final pages. Query is closed; no duplicate/empty/percent-encoded values, body or HEAD. Initial listing captures an immutable admission upper bound. Current state filters are reevaluated per page. Current policy/grant bindings, original absolute lifetime and key revocation apply to every continuation. Retention commits before token delivery; no token on unknown COMMIT. HTTP/native qualification is scoped; full fault/browser acceptance remains open.",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/JobListQuery/properties/kind"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/JobListQuery/properties/state"
+            }
+          },
+          {
+            "name": "created_from_us",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/JobListQuery/properties/created_from_us"
+            }
+          },
+          {
+            "name": "created_before_us",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/JobListQuery/properties/created_before_us"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/JobListQuery/properties/page_size"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/JobListQuery/properties/cursor"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid query or refused continuation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Continuation no longer matches this request or authority",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Continuation expired; explicitly start a new listing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Bounded current observations, possibly empty with a continuation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobPage"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/management/v1/jobs/{job_id}": {
@@ -1178,7 +1333,8 @@
                   429,
                   503,
                   409,
-                  404
+                  404,
+                  410
                 ]
               },
               "code": {
@@ -1193,7 +1349,10 @@
                   "authority_unavailable",
                   "permission_denied",
                   "command_conflict",
-                  "job_unavailable"
+                  "job_unavailable",
+                  "invalid_cursor",
+                  "cursor_incompatible",
+                  "cursor_expired"
                 ]
               },
               "message": {
@@ -1208,7 +1367,10 @@
                   "Current authority or dependency unavailable.",
                   "This action is not permitted.",
                   "Command key or expected revision conflicts with current state.",
-                  "Job unavailable to this account."
+                  "Job unavailable to this account.",
+                  "Continuation token refused.",
+                  "Continuation no longer matches this request or authority.",
+                  "Continuation expired. Start a new listing."
                 ]
               },
               "retry_class": {
@@ -1390,6 +1552,54 @@
                   },
                   "message": {
                     "const": "Job unavailable to this account."
+                  },
+                  "retry_class": {
+                    "const": "check_state"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 400
+                  },
+                  "code": {
+                    "const": "invalid_cursor"
+                  },
+                  "message": {
+                    "const": "Continuation token refused."
+                  },
+                  "retry_class": {
+                    "const": "correct_request"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 409
+                  },
+                  "code": {
+                    "const": "cursor_incompatible"
+                  },
+                  "message": {
+                    "const": "Continuation no longer matches this request or authority."
+                  },
+                  "retry_class": {
+                    "const": "check_state"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": 410
+                  },
+                  "code": {
+                    "const": "cursor_expired"
+                  },
+                  "message": {
+                    "const": "Continuation expired. Start a new listing."
                   },
                   "retry_class": {
                     "const": "check_state"
@@ -2011,6 +2221,105 @@
           }
         },
         "description": "Immutable historical resume acceptance. job_revision is the originally accepted revision, even after another pause. No current state, execution, output or download authority."
+      },
+      "JobCursor": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{1,4096}$",
+        "description": "Opaque continuation, never a substitute for current session/permission. Repeat the same normalized filters. Do not decode, persist or log it."
+      },
+      "JobListQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "export"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "accepted",
+              "queued",
+              "running",
+              "paused",
+              "cancel_requested",
+              "succeeded",
+              "partial",
+              "failed",
+              "cancelled",
+              "skipped"
+            ]
+          },
+          "created_from_us": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]{0,18})$",
+            "description": "Inclusive canonical signed int64 Unix microseconds."
+          },
+          "created_before_us": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]{0,18})$",
+            "description": "Exclusive canonical signed int64 Unix microseconds, strictly greater than created_from_us when both are present."
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535,
+            "description": "Default50, clamped to200. Continuation binds the effective value."
+          },
+          "cursor": {
+            "$ref": "#/components/schemas/JobCursor"
+          }
+        }
+      },
+      "JobPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format",
+          "items",
+          "next_cursor",
+          "effective_page_size",
+          "observed_at_us",
+          "authority"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "bigbrotr-job-list/1"
+          },
+          "items": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "$ref": "#/components/schemas/JobObservation"
+            }
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobCursor"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "effective_page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "observed_at_us": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]{0,18})$",
+            "description": "Canonical signed int64 Unix microseconds. Never round through JavaScript Number."
+          },
+          "authority": {
+            "type": "string",
+            "const": "observation-only"
+          }
+        },
+        "description": "At most effective_page_size current actor-owned export observations, descending(created_at_us,job_id). Empty pages may advance: next_cursor null alone means completion. Candidate scan is bounded before current mutable filters/admission-cut checks. No scientific snapshot, frozen membership, input/output or execution authority. JSON response max128KiB; no automatic fetch-all."
       }
     },
     "securitySchemes": {

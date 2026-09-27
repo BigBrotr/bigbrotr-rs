@@ -1,9 +1,11 @@
 import type { components } from './generated/management';
-import { validateError, validateSession, validateJob, validateResumeCommand, validateResumeReceipt } from './generated/validators.js';
+import { validateError, validateSession, validateJob, validateJobListQuery, validateJobPage, validateResumeCommand, validateResumeReceipt } from './generated/validators.js';
 
 export type SessionObservation = components['schemas']['SessionObservation'];
 export type LoginInput = components['schemas']['LoginInput'];
 export type JobObservation = components['schemas']['JobObservation'];
+export type JobListQuery = components['schemas']['JobListQuery'];
+export type JobPage = components['schemas']['JobPage'];
 export type ResumeExportCommand = components['schemas']['ResumeExportCommand'];
 export type ResumeExportAcceptance = components['schemas']['ResumeExportAcceptance'];
 type ApiError = components['schemas']['ApiError']['error'];
@@ -24,6 +26,7 @@ export class ManagementFailure extends Error {
 }
 
 const RESPONSE_BYTES = 16 * 1024;
+const PAGE_RESPONSE_BYTES = 128 * 1024;
 const REQUEST_MS = 6_000;
 const U64_MAX = 18446744073709551615n;
 const I64_MAX = 9223372036854775807n;
@@ -44,8 +47,8 @@ function observation(value: unknown): SessionObservation {
   return value;
 }
 
-function jobObservation(value: unknown, expected: string): JobObservation {
-  if (!validateJob(value) || value.job_id !== expected) throw new ManagementFailure('incompatible');
+function jobObservation(value: unknown, expected?: string): JobObservation {
+  if (!validateJob(value) || (expected !== undefined && value.job_id !== expected)) throw new ManagementFailure('incompatible');
   for (const key of ['job_revision', 'checkpoint_revision'] as const) {
     if (BigInt(value[key]) > U64_MAX) throw new ManagementFailure('incompatible');
   }
@@ -57,6 +60,46 @@ function jobObservation(value: unknown, expected: string): JobObservation {
   if (terminal !== (value.completed_at_us !== null)
     || (['paused', 'cancel_requested', 'partial', 'failed', 'cancelled', 'skipped'].includes(value.state) && value.reason_code === null)) {
     throw new ManagementFailure('incompatible');
+  }
+  return value;
+}
+
+function i64(value: string): boolean {
+  const integer = BigInt(value);
+  return integer >= -I64_MAX - 1n && integer <= I64_MAX;
+}
+
+function listQuery(value: unknown): JobListQuery {
+  if (!validateJobListQuery(value)
+    || (value.created_from_us !== undefined && !i64(value.created_from_us))
+    || (value.created_before_us !== undefined && !i64(value.created_before_us))
+    || (value.created_from_us !== undefined && value.created_before_us !== undefined
+      && BigInt(value.created_from_us) >= BigInt(value.created_before_us))) {
+    throw new ManagementFailure('invalid_input');
+  }
+  // Keep the filters checked against the response identical to the sent bytes.
+  return { ...value };
+}
+
+function jobPage(value: unknown, query: JobListQuery): JobPage {
+  if (!validateJobPage(value) || !i64(value.observed_at_us)
+    || value.effective_page_size !== Math.min(query.page_size ?? 50, 200)
+    || value.items.length > value.effective_page_size) throw new ManagementFailure('incompatible');
+  let previous: JobObservation | undefined;
+  const ids = new Set<string>();
+  for (const item of value.items) {
+    const row = jobObservation(item);
+    const created = BigInt(row.created_at_us);
+    if (row.observed_at_us !== value.observed_at_us || ids.has(row.job_id)
+      || (query.state !== undefined && row.state !== query.state)
+      || (query.created_from_us !== undefined && created < BigInt(query.created_from_us))
+      || (query.created_before_us !== undefined && created >= BigInt(query.created_before_us))
+      || (previous !== undefined && (created > BigInt(previous.created_at_us)
+        || (created === BigInt(previous.created_at_us) && row.job_id >= previous.job_id)))) {
+      throw new ManagementFailure('incompatible');
+    }
+    ids.add(row.job_id);
+    previous = row;
   }
   return value;
 }
@@ -96,7 +139,7 @@ function loginInput(value: LoginInput): string {
   return JSON.stringify({ username: value.username, password: value.password });
 }
 
-async function boundedJson(response: Response, signal: AbortSignal): Promise<unknown> {
+async function boundedJson(response: Response, signal: AbortSignal, limit: number): Promise<unknown> {
   const media = response.headers.get('content-type');
   if (!media || !/^application\/json(?:;\s*charset=utf-8)?$/i.test(media) || !response.body) {
     await response.body?.cancel();
@@ -118,7 +161,7 @@ async function boundedJson(response: Response, signal: AbortSignal): Promise<unk
       signal.throwIfAborted();
       if (next.done) { finished = true; break; }
       bytes += next.value.byteLength;
-      if (bytes > RESPONSE_BYTES) throw new ManagementFailure('response_limit');
+      if (bytes > limit) throw new ManagementFailure('response_limit');
       text += decoder.decode(next.value, { stream: true });
     }
     text += decoder.decode();
@@ -141,7 +184,8 @@ export function createManagementClient(environment: {
   const fetch = environment.fetch ?? globalThis.fetch.bind(globalThis);
   const cookie = environment.cookie ?? (() => document.cookie);
   async function request<T>(path: string, method: 'GET' | 'POST' | 'DELETE', success: number | readonly number[],
-    decode: (value: unknown, status: number) => T, signal?: AbortSignal, body?: string, csrf?: string, key?: string): Promise<T | undefined> {
+    decode: (value: unknown, status: number) => T, signal?: AbortSignal, body?: string, csrf?: string,
+    key?: string, responseLimit = RESPONSE_BYTES): Promise<T | undefined> {
     const controller = new AbortController();
     const cancel = () => controller.abort();
     let timedOut = false;
@@ -161,11 +205,11 @@ export function createManagementClient(environment: {
       if (controller.signal.aborted) { await response.body?.cancel(); controller.signal.throwIfAborted(); }
       if (response.status === 204 && success === 204) return undefined;
       const accepted = typeof success === 'number' ? response.status === success : success.includes(response.status);
-      if (!accepted && ![400, 401, 403, 404, 409, 413, 415, 429, 503].includes(response.status)) {
+      if (!accepted && ![400, 401, 403, 404, 409, 410, 413, 415, 429, 503].includes(response.status)) {
         await response.body?.cancel();
         throw new ManagementFailure('incompatible');
       }
-      const value = await boundedJson(response, controller.signal);
+      const value = await boundedJson(response, controller.signal, accepted ? responseLimit : RESPONSE_BYTES);
       controller.signal.throwIfAborted();
       if (accepted) return decode(value, response.status);
       if (!validateError(value) || value.error.status !== response.status
@@ -195,6 +239,16 @@ export function createManagementClient(environment: {
     async jobStatus(id: string, signal?: AbortSignal): Promise<JobObservation> {
       if (!/^[0-9a-f]{32}$/.test(id) || /^0+$/.test(id)) throw new ManagementFailure('invalid_input');
       return (await request(`/management/v1/jobs/${id}`, 'GET', 200, value => jobObservation(value, id), signal, undefined, csrfCookie(cookie())))!;
+    },
+    async listJobs(input: JobListQuery = {}, signal?: AbortSignal): Promise<JobPage> {
+      const query = listQuery(input);
+      // Every accepted value is already canonical URL-safe ASCII. Encoding it
+      // again would violate the server's deliberately closed query grammar.
+      const parameters = (['kind', 'state', 'created_from_us', 'created_before_us', 'page_size', 'cursor'] as const)
+        .filter(key => query[key] !== undefined).map(key => `${key}=${query[key]}`).join('&');
+      const path = '/management/v1/jobs' + (parameters ? `?${parameters}` : '');
+      return (await request(path, 'GET', 200, value => jobPage(value, query), signal,
+        undefined, csrfCookie(cookie()), undefined, PAGE_RESPONSE_BYTES))!;
     },
     async resumeExport(id: string, key: string, command: ResumeExportCommand, signal?: AbortSignal): Promise<ResumeExportAcceptance> {
       for (const value of [id, key]) {

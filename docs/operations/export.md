@@ -103,6 +103,27 @@ request's atomic job/receipt/pin/admission closure. It deliberately defers that
 new job under insufficient execution memory; it does not extend earlier signed
 execution or COMMIT-loss qualifications to815, or enable paginated job discovery.
 
+`GET /management/v1/jobs` provides bounded actor-owned protocol1 export metadata.
+It requires migration0816, current `status.read`, a live session/explicit CSRF and
+an active loaded cursor issuer. Apply migrations explicitly while stopped; grant
+the Control role the selected schema privileges, including UPDATE on
+`control.cursor_key_lifecycle`. Follow the protected keyring lifecycle in
+[cursor key custody](../security/credentials.md). Missing issuance prerequisites yield503
+even for empty/final pages. The [scoped native report](../implementation/evidence/p08-job-pages-native-20260927.json)
+records actual continuation, retention, restart and key rotation/revocation;
+remaining commit/delivery faults, expiry and load acceptance stay open.
+
+The closed query accepts `kind=export`, one `state`, inclusive
+`created_from_us`, exclusive `created_before_us`, `page_size` and `cursor`.
+Times are canonical signed64 decimal microseconds; page size defaults to50 and
+clamps to200. Repeat the same filters and effective page size with `next_cursor`.
+An empty page can still advance; only a null continuation means the listing has
+ended. A fresh listing includes new admissions. Refused/changed/expired cursors
+return400/409/410 respectively and require explicit correction or a new listing.
+The typed client and **Your exports** panel now implement this consumer, with
+practical qualification in progress. They do not automatically fetch every page
+or turn operational metadata into download authority.
+
 `POST /management/v1/jobs` accepts the closed `ExportJobCommand` in the
 [management contract](../../contracts/management/v1/openapi.yaml). Supply the
 session cookie, explicit `X-CSRF-Token`, exact Origin and original
@@ -213,8 +234,8 @@ with the same session, cross-tab logout, a blocked lookup discarded on logout,
 other-account isolation and actual session revocation. The full-page screenshots
 show an unexplained skip-link overlay; viewport/focus verification remains open,
 along with natural-expiry, BFCache and full accessibility acceptance.
-This observation supplies no download or execution authority. Job listing,
-cancel controls and artifact discovery remain required work.
+This observation supplies no download or execution authority. Full listing
+qualification, cancel controls and artifact discovery remain required work.
 
 The initial **Resume this export** control now saves the original request before
 sending and restores it after reload without automatic submission. Follow

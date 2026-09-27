@@ -49,7 +49,7 @@ class EnvelopeOracle:
             issued=fields[14],expires=fields[15],key=raw[1:17].hex())
 
 
-def run(root,state,sql,policy):
+def run(root,state,sql,policy, *, prepare_consumer=False):
     db='bbpub_control_normal'; runner=state['container_id']; source=root/'source'
     private=root/'out/private-grant-http'; config=private/'instance.toml'
     result=dict(status='INCOMPLETE',source=state['source'],cases={})
@@ -152,6 +152,21 @@ def run(root,state,sql,policy):
         assert all(r['state']=='accepted' for r in rows[1:]) and rows[0]['state']=='succeeded'
         known={r['job']:r for r in rows}
         completed={r[0]:r[1] for r in json.loads(sql(db,"SELECT jsonb_agg(jsonb_build_array(encode(job_id,'hex'),completed_at_us::text)) FROM control.jobs WHERE completed_at_us IS NOT NULL"))}
+        if prepare_consumer:
+            # The new consumer starts from real HTTP acceptances. Keep this
+            # preparation distinct from the separately qualified page regressions.
+            result['consumer_expected']=[dict(format='bigbrotr-job-status/1',kind='export',
+                job_id=row['job'],state=row['state'],job_revision=row['revision'],
+                checkpoint_revision=row['checkpoint'],created_at_us=row['time'],
+                completed_at_us=completed.get(row['job']),reason_code=None,
+                authority='observation-only') for row in reversed(rows)]
+            exchange('prepared-terminal','stop')
+            assert client.wait(10)==0 and not client.stderr and not client.overflow
+            result['terminal_jobs']=job_rows();assert result['terminal_jobs']==rows
+            assert sql(db,"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state<>'released'")=='0'
+            assert sql(db,"SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()")=='0'
+            result['scope']='Consumer preparation only; no page regression qualification in this profile'
+            result['status']='PASS';save();return result
         result['sessions_before_reads']=sessions();save()
         first=page('first',accepted[-1:-3:-1],True,username='alice')
         token=opened('first');assert token==dict(actor=seed['actor'],policy=3,grants=4,state=0,

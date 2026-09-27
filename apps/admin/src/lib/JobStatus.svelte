@@ -1,14 +1,16 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
   import { createManagementClient } from '@bigbrotr/api-client/management';
-  import type { JobObservation, SessionObservation } from '@bigbrotr/api-client/management';
-  import { JobModel, jobFailure, type JobView } from './jobs';
+  import type { SessionObservation } from '@bigbrotr/api-client/management';
+  import { JobModel, jobFailure, jobStateLabels, type JobView } from './jobs';
+  import JobList from './JobList.svelte';
   import { ResumeModel, resumeFailure, type ResumeView } from './resume';
   import { BrowserResumeStore } from './resume-store';
   import { utcTime } from './messages';
 
   const { session, onDenied }: { session: SessionObservation; onDenied: () => void } = $props();
   let id = $state('');
+  let detailHeading = $state<HTMLHeadingElement>();
   let view = $state<JobView>({ kind: 'empty' });
   let resume = $state<ResumeView>({ kind: 'loading' });
   const client = createManagementClient();
@@ -21,17 +23,17 @@
     void resumer.restore();
   });
   onDestroy(() => { model.dispose(); resumer?.dispose(); });
-  const labels: Record<JobObservation['state'], string> = {
-    accepted: 'Accepted', queued: 'Queued', running: 'Running', paused: 'Paused',
-    cancel_requested: 'Cancellation requested', succeeded: 'Succeeded', partial: 'Partially completed',
-    failed: 'Failed', cancelled: 'Cancelled', skipped: 'Skipped'
-  };
   function inspect(event: SubmitEvent) { event.preventDefault(); void model.inspect(id); }
 </script>
 
 <section class="job-sheet" aria-labelledby="job-title">
   <p class="eyebrow">Work / Export</p>
-  <h2 id="job-title">Inspect your job</h2>
+  <JobList onDenied={() => onDenied()} onSelect={selected => {
+    id = selected;
+    void model.inspect(id);
+    detailHeading?.focus();
+  }} />
+  <h2 id="job-title" bind:this={detailHeading} tabindex="-1">Inspect your job</h2>
   <p>Enter the job ID from your acceptance receipt. You can reconnect here after closing the browser.</p>
   <form onsubmit={inspect}>
     <div class="field">
@@ -51,7 +53,7 @@
     {#if view.observation}
       {@const job = view.observation}
       <div class="job-observation">
-        <p class="job-state">{labels[job.state]}</p>
+        <p class="job-state">{jobStateLabels[job.state]}</p>
         <p class="help">Observed {utcTime(job.observed_at_us)}. Check again for changes.</p>
         <dl class="session-facts">
           <div><dt>Job</dt><dd><code>{job.job_id}</code></dd></div>

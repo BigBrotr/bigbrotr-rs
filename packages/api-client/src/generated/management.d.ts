@@ -107,7 +107,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * List current actor-owned export metadata
+         * @description Exact Origin, current session, explicit CSRF and dataset status.read. No input/output grant or idle refresh. Optional protocol requires0816, loaded registered material and an active unrevoked issuer, including empty/final pages. Query is closed; no duplicate/empty/percent-encoded values, body or HEAD. Initial listing captures an immutable admission upper bound. Current state filters are reevaluated per page. Current policy/grant bindings, original absolute lifetime and key revocation apply to every continuation. Retention commits before token delivery; no token on unknown COMMIT. HTTP/native qualification is scoped; full fault/browser acceptance remains open.
+         */
+        get: operations["listJobs"];
         put?: never;
         /**
          * Accept a private signed event export job
@@ -192,11 +196,11 @@ export interface components {
         ApiError: {
             error: {
                 /** @enum {integer} */
-                status: 400 | 401 | 403 | 413 | 415 | 429 | 503 | 409 | 404;
+                status: 400 | 401 | 403 | 413 | 415 | 429 | 503 | 409 | 404 | 410;
                 /** @enum {string} */
-                code: "invalid_request" | "authentication_denied" | "browser_boundary_denied" | "request_too_large" | "unsupported_media_type" | "capacity_or_rate_limited" | "authority_unavailable" | "permission_denied" | "command_conflict" | "job_unavailable";
+                code: "invalid_request" | "authentication_denied" | "browser_boundary_denied" | "request_too_large" | "unsupported_media_type" | "capacity_or_rate_limited" | "authority_unavailable" | "permission_denied" | "command_conflict" | "job_unavailable" | "invalid_cursor" | "cursor_incompatible" | "cursor_expired";
                 /** @enum {string} */
-                message: "Invalid request." | "Authentication required or denied." | "Browser request boundary refused." | "Request exceeds its byte limit." | "JSON content type required." | "Request capacity or attempt limit reached." | "Current authority or dependency unavailable." | "This action is not permitted." | "Command key or expected revision conflicts with current state." | "Job unavailable to this account.";
+                message: "Invalid request." | "Authentication required or denied." | "Browser request boundary refused." | "Request exceeds its byte limit." | "JSON content type required." | "Request capacity or attempt limit reached." | "Current authority or dependency unavailable." | "This action is not permitted." | "Command key or expected revision conflicts with current state." | "Job unavailable to this account." | "Continuation token refused." | "Continuation no longer matches this request or authority." | "Continuation expired. Start a new listing.";
                 /** @enum {string} */
                 retry_class: "authenticate" | "check_state" | "correct_request" | "retry_later";
                 correlation_id: string | null;
@@ -288,6 +292,33 @@ export interface components {
                 code?: "job_unavailable";
                 /** @constant */
                 message?: "Job unavailable to this account.";
+                /** @constant */
+                retry_class?: "check_state";
+            } | {
+                /** @constant */
+                status?: 400;
+                /** @constant */
+                code?: "invalid_cursor";
+                /** @constant */
+                message?: "Continuation token refused.";
+                /** @constant */
+                retry_class?: "correct_request";
+            } | {
+                /** @constant */
+                status?: 409;
+                /** @constant */
+                code?: "cursor_incompatible";
+                /** @constant */
+                message?: "Continuation no longer matches this request or authority.";
+                /** @constant */
+                retry_class?: "check_state";
+            } | {
+                /** @constant */
+                status?: 410;
+                /** @constant */
+                code?: "cursor_expired";
+                /** @constant */
+                message?: "Continuation expired. Start a new listing.";
                 /** @constant */
                 retry_class?: "check_state";
             });
@@ -447,6 +478,33 @@ export interface components {
             authority: "acceptance-only";
             /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
             job_revision: string;
+        };
+        /** @description Opaque continuation, never a substitute for current session/permission. Repeat the same normalized filters. Do not decode, persist or log it. */
+        JobCursor: string;
+        JobListQuery: {
+            /** @constant */
+            kind?: "export";
+            /** @enum {string} */
+            state?: "accepted" | "queued" | "running" | "paused" | "cancel_requested" | "succeeded" | "partial" | "failed" | "cancelled" | "skipped";
+            /** @description Inclusive canonical signed int64 Unix microseconds. */
+            created_from_us?: string;
+            /** @description Exclusive canonical signed int64 Unix microseconds, strictly greater than created_from_us when both are present. */
+            created_before_us?: string;
+            /** @description Default50, clamped to200. Continuation binds the effective value. */
+            page_size?: number;
+            cursor?: components["schemas"]["JobCursor"];
+        };
+        /** @description At most effective_page_size current actor-owned export observations, descending(created_at_us,job_id). Empty pages may advance: next_cursor null alone means completion. Candidate scan is bounded before current mutable filters/admission-cut checks. No scientific snapshot, frozen membership, input/output or execution authority. JSON response max128KiB; no automatic fetch-all. */
+        JobPage: {
+            /** @constant */
+            format: "bigbrotr-job-list/1";
+            items: components["schemas"]["JobObservation"][];
+            next_cursor: components["schemas"]["JobCursor"] | null;
+            effective_page_size: number;
+            /** @description Canonical signed int64 Unix microseconds. Never round through JavaScript Number. */
+            observed_at_us: string;
+            /** @constant */
+            authority: "observation-only";
         };
         /**
          * Initial exact-ID history QueryRequest
@@ -921,6 +979,100 @@ export interface operations {
             };
             /** @description JSON required */
             415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listJobs: {
+        parameters: {
+            query?: {
+                kind?: components["schemas"]["JobListQuery"]["kind"];
+                state?: components["schemas"]["JobListQuery"]["state"];
+                created_from_us?: components["schemas"]["JobListQuery"]["created_from_us"];
+                created_before_us?: components["schemas"]["JobListQuery"]["created_before_us"];
+                page_size?: components["schemas"]["JobListQuery"]["page_size"];
+                cursor?: components["schemas"]["JobListQuery"]["cursor"];
+            };
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bounded current observations, possibly empty with a continuation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobPage"];
+                };
+            };
+            /** @description Invalid query or refused continuation */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Continuation no longer matches this request or authority */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Continuation expired; explicitly start a new listing */
+            410: {
                 headers: {
                     [name: string]: unknown;
                 };

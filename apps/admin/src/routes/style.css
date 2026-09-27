@@ -15,11 +15,11 @@
 * { box-sizing: border-box; }
 body { margin: 0; }
 .startup-recovery { padding: 1rem 1.5rem; border-bottom: 1px solid var(--line); }
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 button { cursor: pointer; min-height: 2.85rem; }
 button:disabled { cursor: wait; opacity: .65; }
 :focus-visible { outline: 3px solid var(--teal); outline-offset: 4px; }
-h1:focus, .notice:focus { outline: 2px solid var(--teal); outline-offset: 6px; }
+h1:focus, h2:focus, .notice:focus { outline: 2px solid var(--teal); outline-offset: 6px; }
 a { color: var(--teal); }
 code, .origin { font-family: 'SFMono-Regular', Consolas, monospace; overflow-wrap: anywhere; }
 .skip { position: fixed; top: .7rem; left: .7rem; z-index: 2; padding: .75rem; background: var(--white); transform: translateY(-200%); }
@@ -43,7 +43,7 @@ h2 { font-size: 1.05rem; margin: 0 0 1rem; }
 .progress { font-size: .9rem; min-height: 1.4rem; margin: .7rem 0; }
 .field { margin-bottom: 1.6rem; }
 label { display: block; font-weight: 600; margin-bottom: .4rem; }
-input { width: 100%; padding: .7rem .8rem; border: 1px solid var(--line); border-radius: .25rem; background: var(--white); color: var(--ink); min-height: 3rem; }
+input, select { width: 100%; padding: .7rem .8rem; border: 1px solid var(--line); border-radius: .25rem; background: var(--white); color: var(--ink); min-height: 3rem; }
 .help { font-size: .85rem; line-height: 1.5; margin: .5rem 0 0; }
 .primary, .secondary { padding: .6rem 1.25rem; border-radius: .25rem; font-weight: 650; border: 1px solid var(--teal); }
 .primary { background: var(--teal); color: var(--white); }
@@ -68,6 +68,12 @@ dd code { font-size: .9rem; }
 .job-sheet h2 { font-size: 1.5rem; letter-spacing: -.02em; }
 /* Keep label clicks on the native button for subsequent keyboard navigation. */
 .job-sheet .button-label { pointer-events: none; }
+.job-list { border-bottom: 1px solid var(--line); padding-bottom: 2rem; margin-bottom: 2rem; }
+.job-filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1rem; }
+.job-rows { list-style: none; padding: 0; margin: 1rem 0; }
+.job-rows li { border-top: 1px solid var(--line); padding: 1rem 0; }
+.job-row-state { margin: 0; color: var(--navy); font-weight: 650; }
+.job-open { text-align: left; max-width: 100%; }
 .job-observation { margin-top: 1.5rem; }
 .job-state { font-size: 1.75rem; font-weight: 650; color: var(--navy); margin: 0; }
 .job-observation .session-facts { margin-top: 1.25rem; }
@@ -86,7 +92,8 @@ dd code { font-size: .9rem; }
   .origin { font-size: .72rem; }
   .workspace { padding: 2rem 1.25rem; }
   .permissions ul { columns: 1; }
+  .job-filters { grid-template-columns: 1fr; }
 }
 @media (forced-colors: active) {
-  .primary, .secondary, input, .notice { border: 1px solid ButtonText; }
+  .primary, .secondary, input, select, .notice { border: 1px solid ButtonText; }
 }

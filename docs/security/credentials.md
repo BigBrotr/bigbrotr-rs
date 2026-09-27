@@ -145,14 +145,18 @@ The installation role additionally needs SELECT/INSERT on `cursor_key_transition
 SELECT/INSERT/UPDATE on `cursor_key_lifecycle`, INSERT on the existing audit,
 the dataset row-lock privilege, and EXECUTE on the0604 functions and existing
 `command_u64_bytes`. Triggers own the projection changes; these grants do not
-permit arbitrary lifecycle edits. A runtime needs only SELECT on both new tables
-beside its previous privileges. With0604 applied, a configured cursor consumer
+permit arbitrary lifecycle edits. The0604readiness check needs SELECT on both new tables beside previous
+privileges. The0816job-list consumer additionally needs UPDATE on
+`cursor_key_lifecycle` and execution of its retention guards; it commits retained
+expiry before returning a continuation. With0604 applied, a configured cursor consumer
 refuses startup if its actual loaded snapshot omits the active key or a required
 decrypt key. The receipt does not prove distribution to another process or grant
-page access. Issuance, retained-expiry writes and complete pagination remain
-separate required consumers; this candidate does not advertise them.
+page access. The [first operational consumer](../implementation/evidence/p08-job-pages-native-20260927.json)
+now has scoped issuance/retention/restart/rotation evidence. Fault, expiry, load
+and full browser acceptance still gate complete pagination.
 The [native lifecycle qualification](../implementation/evidence/p06-cursor-lifecycle-native-20260927.json)
 exercises actual CLI/Control rotation, irreversible revocation, missing-active-key
 refusal, both lock orders, unknown-COMMIT retry and PostgreSQL restart. This is a
-maintenance-window qualification; online worker rollout and paginated reads remain
-unqualified until their complete consumers execute.
+maintenance-window qualification; online worker rollout and scientific pagination
+remain unqualified. See [export operation](../operations/export.md) for the separate
+actor-owned operational list and its remaining acceptance limits.

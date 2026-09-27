@@ -418,7 +418,7 @@ at f6770e9 adds bounded actor-owned export pages on0816:81native tests/Clippy,
 33HTTP exchanges,12independent expected pages and eight issuer/expiry regressions.
 Original failed attempts remain preserved. Actual continuation, empty advancing
 pages, bound cut metadata, retention, restart, A→B issuance and revocation pass;
-eight-field projections for seven jobs stay unchanged. Named decoding/scan/retention helpers preserve visible
+seven-field projections for seven jobs stay unchanged. Named decoding/scan/retention helpers preserve visible
 transaction completion. Held/lost retention COMMIT, absolute expiry and changed
 authority/delivery, mixed/aged workloads and full client/UI/CLI acceptance remain
 open. This closes only the report's bounded responsibility, not Step3.

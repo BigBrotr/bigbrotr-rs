@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-27 in the primary Mac workspace; Tux timestamps are UTC.
+Observed 2026-09-28 in the primary Mac workspace; Tux timestamps are UTC.
 Navigation, not evidence or another plan. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Git preserves earlier detail; linked reports and the inventory own original results.
@@ -14,14 +14,13 @@ execution while billing remains blocked. No public release, rename, Linux arm64,
 hosted CI or complete packaged-release qualification is claimed. An active goal
 covers the complete product; a bounded qualification does not complete it.
 
-Main HEAD is unpublished f6770e99b21e57a6094316caa9b428f175773844,
-tree fb401b4852b91ed7029ff501e704f1249b8bc7e9. Private origin/main remains
-qualified ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47 (ahead5 before the evidence commit).
-No merge/rebase or other contributor changes. Root sole writer/integrator.
-Dirty documentation records the completed native page boundary. Concurrent root-owned
-OpenAPI/generated client/generator changes and packages/api-client/tests/job-pages.test.ts
-belong to the next client slice, excluded from this evidence commit. AI evidence
-review runs read-only; its findings narrowed the cut and SQL-projection claims.
+Main HEAD is 6274b8f1919507b1745779875db27f4138f0df72, verified equal to private
+origin/main after pushing the qualified native page boundary. Root sole writer;
+no merge/rebase or contributor changes. Dirty next consumer owns OpenAPI/generated
+client/generator, JobList/JobStatus/model/CSS/tests, native consumer fixtures and
+associated docs. A report wording correction records seven job projection fields,
+not eight; original experiment outcomes are unchanged. Read-only AI consumer review
+found no concrete counterexample; it executed no tests/browser/SSH.
 
 Active tasks: P08-T03 Step3 / P08-T04 Step3, thin P09-T09 Step2, and only P06-T03
 Step1/3 cursor prerequisites for actor-owned export discovery. No complete task,
@@ -168,7 +167,7 @@ The [native page report](evidence/p08-job-pages-native-20260927.json) qualifies
 actor-owned protocol1 export pages at f6770e9:81native tests/Clippy,33actual HTTP
 exchanges,12independently reconstructed page sets and eight authority regressions.
 Installed815→816 preserves selected original rows/xmin; all32migration checksums
-agree. Eight-field terminal projections for seven jobs remain unchanged (one succeeded empty export and six
+agree. Seven-field terminal projections for seven jobs remain unchanged (one succeeded empty export and six
 signed-event requests accepted under deliberate256MiB). No new signed execution.
 Schema0816 is now applied/immutable:
 f7ed51d54f735110a1a5a6a4db901568be833c223dcbd723aee02a7a60c3e090.
@@ -215,21 +214,40 @@ before the new build. No container/volume deletion. Preserve8fa compiler cache,
 b93 original tested artifacts,4e signed producer/assets and protected dependencies.
 
 Next visible action remains P08-T03 Step3 / thin P09-T09 Step2: generated typed
-client and a session-owned private panel page to reopen exports without a known ID.
-Closed OpenAPI query/response shapes, canonical lossless integer filters, effective
-page size, descending order,128KiB streamed cap and typed400/409/410 errors are the
-next bounded client implementation. Five discriminating tests first failed because listJobs was absent, then pass with
-the dirty implementation; client typecheck and generated drift check pass on
-Node26.4.0. Original .research/implementation/job-pages/client-red.log preserved.
-An initial Ajv standalone length helper used CommonJS require in ESM; the ASCII
-cursor length is now expressed in its bounded regex with identical accepted input,
-avoiding an unnecessary runtime dependency. No actual Node/page-browser evidence yet. Keep current page
-only; explicit next follows even an empty page, never automatic fetch-all/retry.
+client and private panel to reopen exports without a known ID. Implemented closed
+filters/responses, lossless i64/u64, order/row checks,128KiB success-page cap and
+safe typed cursor failures; existing16KiB other/error cap stays. Panel has state,
+UTC date and page-size filters, explicit next even for empty advancing pages,
+new-list reset, session-owned cancellation and fresh detail lookup. No cached
+page/cursor persistence or automatic fetch-all/retry. Six client/six model
+regressions include RED before implementation; all23client/26admin tests pass.
+Client types/generated drift and Svelte check pass after the final reset fix;
+the production bundle builds (13files/205096bytes, manifest SHA256
+cc5e60eb3cd8694c392e3009bbe8eb074d4f34a060ab88402efb4411931882b6).
+Native candidate will rebuild the current bundle. Original Ajv ESM-helper and Svelte rune
+name errors were corrected; no new dependency or backend change.
+
+Actual installed Node and Chromium/root consumer qualification is being prepared
+as --runtime-job-pages-browser, using exact f677 Rust ELF/worker with explicitly
+inventoried separate frontend inputs. The preparation shares actual signed
+admission/0816 setup, then stops before unrelated original page-regression cases.
+Fresh production root/control bundles; real HTTP and independent ten-ledger/xmin
+oracle, ordinary read session timestamps, actual Control restart, other actor,
+blocked SQL page/logout and account revocation. These practical cases NOT_RUN yet.
+Root owns new job_pages_browser.mjs/job_pages_browser_cases.py; original fixtures
+and evidence retained. Check full diff/checks and current free space before clean
+candidate commit/exact-Git transfer. Fresh22:03:12UTC audit verifies all817stable
+container projections, no active BigBrotr work and71,776,739,328free bytes.
+AI fixture review found five oracle/diagnostic gaps, all corrected before execution:
+reuse the existing SvelteKit storage oracle; require the held continuation to
+fail rather than finish; bind its SQL waiter to current Control PID/start; isolate
+the lower date bound; save atomic per-stage results before bounded browser launch
+and pending teardown. Syntax/artifact/diff checks pass; these are not practical
+qualification. The two new fixture files and complete product diff are reviewed.
 
 Remaining native page acceptance includes held/lost retention COMMIT on both sides,
 absolute token expiry/current grant-policy-session revocation, cancellation and
 socket delivery, changed TTL/skew, backdated/tied page workloads and mixed/aged
-measurements. Broader UI/CLI/jobs, M1 clean Compose and selected product stay open.
-Do not repeat unchanged broad suites without a changed risk. Finish evidence review
-and coherent documentation commit/push, then implement the client and actual
-Node/browser consumer while retaining these native gates.
+measurements. Full browser engine/mount acceptance, CLI/jobs, M1 clean Compose and
+selected product stay open. Next bounded action: verify/commit the consumer, then
+run it on Tux without rebuilding unchanged Rust or repeating unrelated suites.

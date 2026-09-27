@@ -48,7 +48,7 @@ def main(root, profile=None):
         files = {str(p.relative_to(root/'out')):sha(p) for p in sorted((root/'out/signed_normal/kind=7').rglob('*.parquet'))}
         assert len(files)==8
         client = ['docker','exec',runner,'python3','-B','/out/build/source/experiments/export-execution/runtime_client.py']
-        admission = profile in ('job-admission','job-pages')
+        admission = profile in ('job-admission','job-pages','job-pages-prepare')
         def seed_rows():
             return {table:json.loads(sql(db,f"SELECT coalesce(jsonb_agg(jsonb_build_object('row',to_jsonb(t),'xmin',xmin::text) ORDER BY to_jsonb(t)::text),'[]') FROM control.{table} t"))
                     for table in ['jobs','export_jobs','job_input_bounds','management_commands','management_audit','snapshot_leases','archive_snapshot_pins','retention_claims']}
@@ -121,9 +121,9 @@ def main(root, profile=None):
         if profile == 'shutdown':
             from shutdown_cases import run as shutdown
             result['shutdown'] = shutdown(root, state, sql)
-        elif profile == 'job-pages':
+        elif profile in ('job-pages','job-pages-prepare'):
             from job_pages_cases import run as pages
-            result['job_pages'] = pages(root, state, sql, policy)
+            result['job_pages'] = pages(root, state, sql, policy, prepare_consumer=profile=='job-pages-prepare')
         elif profile in ('job-status','job-admission'):
             from status_cases import run as status
             result['job_status'] = status(root, state, sql, policy, admission=admission)
@@ -154,5 +154,5 @@ def main(root, profile=None):
 
 
 if __name__=='__main__':
-    assert len(sys.argv)==2 or sys.argv[2:] in (['job-pages'], ['resume-output'], ['shutdown'], ['parking'], ['busy'], ['pause-commits'], ['revocation'], ['job-status'], ['job-admission'])
+    assert len(sys.argv)==2 or sys.argv[2:] in (['job-pages-prepare'], ['job-pages'], ['resume-output'], ['shutdown'], ['parking'], ['busy'], ['pause-commits'], ['revocation'], ['job-status'], ['job-admission'])
     main(Path(sys.argv[1]).resolve(), sys.argv[2] if len(sys.argv)==3 else None)

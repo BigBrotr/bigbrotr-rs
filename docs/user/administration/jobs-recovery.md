@@ -1,11 +1,26 @@
-# Inspecting and resuming your export
+# Finding, inspecting and resuming your export
 
-The current private panel can inspect an existing export and resume a paused
-export owned by your account. Job creation, cancellation, listing and downloads
-are still being implemented. The [export operations guide](../../operations/export.md)
+The current private panel can find your exports, inspect their stored state and
+resume a paused export owned by your account. The new listing consumer is under
+practical qualification. Job creation, cancellation and downloads remain unfinished. The [export operations guide](../../operations/export.md)
 describes the current API and deployment prerequisites.
 
-Sign in at your instance's private address. In **Inspect your job**, paste the
+Sign in at your instance's private address. In **Your exports**, select **List my
+exports**. Optional filters select one state and a UTC date range; the start day
+is included and the end day is excluded. Pages contain at most the selected
+number of jobs (1–200, default50), ordered newest first. Select a job ID to check
+its latest state in **Inspect your job**.
+
+**Next page** advances explicitly, including when a page has no matching jobs.
+States can change between pages. Start a new listing to include newly created
+jobs. Changing a filter clears the page without sending a request. A listing
+that expires or no longer matches current access must be restarted explicitly;
+the panel does not silently jump to the first page. Reloading or signing out
+forgets the page and its continuation, without cancelling any job. Listing does
+not keep your session alive. If listing is unavailable, ask the owner to check
+its migration, permissions and active cursor key prerequisites.
+
+Alternatively, in **Inspect your job**, paste the
 32-character job ID from your acceptance receipt and select **Check job**. The
 panel shows the stored state and when it was observed. Check again for changes;
 this view does not refresh automatically or keep your session alive.
