@@ -533,3 +533,28 @@ fn additional_cursor_keys_require_an_additive_schema_preserving_initial_receipts
     );
     assert!(migrations::require_applied(&applied, 601).is_ok());
 }
+
+#[test]
+fn job_admission_order_requires_an_additive_upgrade_preserving_existing_jobs() {
+    let applied: Vec<_> = plan(&[], 602)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next = plan(&applied, 815).expect("job admission must have an explicit durable order");
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0815_job_admission.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 815),
+        Err(MigrationError::MissingPrerequisite(815))
+    );
+    assert!(migrations::require_applied(&applied, 813).is_ok());
+}

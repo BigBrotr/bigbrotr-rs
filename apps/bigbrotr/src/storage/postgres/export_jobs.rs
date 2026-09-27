@@ -55,7 +55,15 @@ impl ControlSession {
             } else {
                 true
             };
-            valid && resume_guard
+            let admission_schema: bool = tx.query_one("SELECT EXISTS(SELECT 1 FROM control.schema_versions WHERE engine='postgres-control' AND migration=815)", &[]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
+            // New acceptance participates in815 through an invoker trigger;
+            // do not advertise it when its atomic mapping cannot be inserted.
+            let admission_guard = if admission_schema {
+                tx.query_one("SELECT has_table_privilege(CURRENT_USER,'control.job_admissions','SELECT') AND has_table_privilege(CURRENT_USER,'control.job_admissions','INSERT')", &[]).await.map_err(backend)?.try_get::<_,bool>(0).map_err(metadata)?
+            } else {
+                true
+            };
+            valid && resume_guard && admission_guard
         } else {
             false
         };

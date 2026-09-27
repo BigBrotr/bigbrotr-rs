@@ -152,3 +152,36 @@ remain under the owned root, never overwritten. A parser pass, missing final
 summary or skipped native run is not acceptance. This harness does not qualify
 external RocksDB/ClickHouse receipts, process fencing, concurrent schedules,
 physical reclamation, archive/read/export or native ARM PostgreSQL.
+
+## Transactional job admission fixture
+
+`qualification.py <commit> <tree> --job-admission` runs a fresh exact-Git Linux
+build, the existing schema tests/Clippy and `job_admission_cases.py`. Its explicit
+seed is the retained6474cursor runtime compiler cache; source comes from the new
+Git tree, with the same locked dependencies and no network during compilation.
+The old `cursor-registration/lab.py` remains a compatibility entrypoint for the
+registration, enrollment and runtime profiles in this shared orchestrator.
+
+The815fixture applies real migrations using the actual CLI, initializes and
+activates Control, then uses finite synthetic backup job metadata through the
+application SQL role. It checks deterministic backfill without rewriting existing
+rows/xmin/receipts, identical retries, transaction rollback, privilege and isolation
+refusals, mapping immutability, immediate constraints/multirow insertion, actual
+lock barriers in both writer/cut orders, backend death and restart. Literal expected
+rows distinguish transactional admission order from equal/backdated timestamps.
+A1000row EXPLAIN records the actual backward-index lookup; this is not a mixed,
+aged workload or capacity claim.
+
+The actual `serve` process additionally probes the optional815privilege boundary
+through its loopback management endpoint. A nonexistent session must reach401
+with sufficient grants and503 when mapping SELECT or INSERT is missing. This
+is neither authenticated listing nor actual export command/audit/pin acceptance.
+Those installed journeys and cursor authority lifecycle remain required. No
+existing SQL checksum changes and no implicit migration or initialization occur.
+
+Results, SQL responses, observer snapshots and process streams stay in the owned
+run. PASS requires all cases and session cleanup, then the enclosing orchestrator
+positively stops its owned containers, preserves prior container projections and
+retires only its empty network. Databases/source/build/evidence remain retained.
+The new profile is **NOT_RUN** until its separate exact-source report records an
+actual result; source review or AST parsing does not qualify PostgreSQL behavior.

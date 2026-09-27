@@ -377,6 +377,19 @@ expected list. The encrypted continuation binds the original admission bound,
 last scanned `(created_at,job_id)`, normalized filters/page size, actor, dataset,
 policy and absolute lifetime. Current `status.read` and owner visibility remain
 necessary even for a decryptable token. This list creates no scientific input pin.
+The next bounded Step3 prerequisite implements that order in additive0815,
+using the [immutable job admission mapping](../specification/storage-catalog.md#postgresql-operational-relations).
+Actual job INSERT consumes it; no empty list API or extra counter owner is added.
+The compatibility test first fails with UnknownTarget(815). Local schema/probe
+changes are under implementation; native upgrade/acceptance/rollback/concurrency
+are NOT_RUN. Practical acceptance must preserve complete old job/receipt rows,
+exercise simultaneous and multirow inserts, both cut/admission lock orders,
+commit/rollback and connection loss, and exclude backdated/equal-time new jobs
+from a fixed literal expected list. Check missing SELECT and INSERT independently,
+early constraints, forbidden mapping replacement/truncation and unsupported
+isolation. Runtime/grant compatibility and actual index behavior require engine
+evidence. Cursor lifecycle and complete list/client/browser delivery remain open.
+
 Role/relay/artifact summaries share the page-size/authorization rules. Roles and
 relays order by immutable role-instance and endpoint ID respectively; artifacts
 order by (created_at, artifact_id) with their own upper cut. Refresh starts a new

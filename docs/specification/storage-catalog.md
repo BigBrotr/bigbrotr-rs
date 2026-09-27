@@ -172,6 +172,46 @@ is private; public read models use allowlisted projections, never table dumps.
 | 0804 artifact publication | `artifact_publications(artifact_id)` and additive publication/user-catalog fields over existing `artifacts`/`artifact_files` | Immutable manifest/files, storage refs, source/policy basis, revision/state/pin; publication independent of signing; no recreation of the shared file inventory |
 | 0813 first export acceptance | Immutable `export_jobs(job_id)` detail over the common job ledger; nullable immutable `jobs.export_job_protocol` and unique `archive_snapshot_pins.export_job_id` | Exact request/query/destination binding, authenticated acceptance and retained complete input cut. New qualified jobs and export pins are accepted atomically; legacy rows remain unqualified and cannot be adopted. |
 
+| 0815 job admission | `job_admissions(job_id)` with unique `admission_ordinal` | Immutable transactional order for the operational listing upper cut; retains compact identity/order through future detail reclamation. |
+
+Migration0815 adds `job_admissions(job_id, admission_ordinal)` for the operational
+listing upper cut. The primary key references the immutable job identity; the
+positive u64 ordinal is unique. This Control database has one immutable local
+dataset under `datasets.singleton`, so the mapping derives its dataset from its
+job rather than storing a second dataset attribution. Imported source datasets
+are not additional local authorities. Supporting multiple local datasets would
+require an explicit incompatible schema/authority migration.
+
+Under migration exclusion and dataset/jobs table locks, existing jobs receive
+deterministic ordinals ordered by `(created_at_us,job_id)`. These ordinals place
+all old jobs before future admission; they do not reconstruct original commit
+order. Original job rows, timestamps, receipts and row versions are untouched.
+For a new job, a BEFORE INSERT guard takes the dataset lock before FK row locks;
+AFTER INSERT allocates a mapping in that same transaction. A separate statement
+after the lock reads the greatest ordinal through its unique index and adds one.
+READ COMMITTED is required. PostgreSQL16's
+[volatile snapshot rules](https://www.postgresql.org/docs/16/xfunc-volatility.html)
+and [row locks](https://www.postgresql.org/docs/16/explicit-locking.html#LOCKING-ROWS)
+supply the intended visibility/serialization; actual concurrent engine tests are
+still required. No sequence, transaction ID, clock or independent mutable counter
+is the listing authority. Rollback rolls back the mapping too.
+
+Mappings cannot be edited, deleted, truncated, or assigned a caller-selected
+ordinal. Every accepted job requires its mapping at commit. Empty history has
+upper cut zero; captures take the same dataset serialization before a fresh
+indexed maximum read. They retain `(created_at_us DESC,job_id DESC)` for traversal
+order and recheck mutable state/actor eligibility per page. The mapping adds one
+small row and two indexes per job, with no job-heap rewrite or duplicated payload;
+future detail reclamation must retain this compact identity/order obligation or
+explicitly migrate its monotone authority. Today's retained-job rule remains.
+
+The existing export acceptance consumes the trigger immediately after explicit
+0815 migration. Its startup probe requires SELECT and INSERT on the mapping only
+when815 is installed. Migration never grants application privileges implicitly.
+Old binaries reject the unknown ledger entry and must be stopped before upgrade;
+new binaries still accept earlier known schemas for their earlier capabilities.
+This foundation does not expose a job list or grant cursor lifecycle authority.
+
 Jobs cover exports, backup, restore verification, scrub, repair, migration and
 finite acquisition/analysis. Their typed result points to immutable manifests;
 there is no duplicate state ledger for every job kind. A concrete persistent

@@ -90,6 +90,14 @@ privilege, before binding the private listener. It retains the destination
 descriptor through Control connection shutdown. Per-request filesystem checks
 run on supervised blocking work, outside Control transactions.
 
+If additive migration0815 is installed, the runtime also needs SELECT and INSERT
+on `control.job_admissions`: every new job records its immutable admission order
+in the acceptance transaction. The startup probe checks both privileges; missing
+either disables the optional job API, or refuses startup when a destination is
+selected. Migration does not grant privileges automatically. Stop older binaries
+before applying815 because they reject its unknown ledger entry. This foundation
+is under native qualification; it does not enable paginated job discovery.
+
 `POST /management/v1/jobs` accepts the closed `ExportJobCommand` in the
 [management contract](../../contracts/management/v1/openapi.yaml). Supply the
 session cookie, explicit `X-CSRF-Token`, exact Origin and original

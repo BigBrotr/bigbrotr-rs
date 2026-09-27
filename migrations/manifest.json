@@ -117,6 +117,10 @@
     {
       "version": 602,
       "name": "0602_cursor_key_enrollment.sql"
+    },
+    {
+      "version": 815,
+      "name": "0815_job_admission.sql"
     }
   ],
   "reserved": [

@@ -20,13 +20,13 @@ phase, M1 or selected-product completion. Root is sole writer/integrator;
 catalog_guard_review is an independent read-only AI reviewer, with no edits,
 product tests, SSH or resource ownership.
 
-Main HEAD is unpublished candidate6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7,
-treea06365c2eae1fc4b5d80d14e5d4fc3606ed382eb. Private origin/main remains
-ecd35f9a10f0505474c247cc0b5427f7bd858a3c (last ls-remote before candidate).
-Candidate was clean for exact Git-bundle transfer. Root owns the native evidence,
-P06 task/security/fixture documentation, inventory and this checkpoint refresh.
-Root also owns an uncommitted P08 job-admission compatibility test; it is separate
-from the runtime qualification commit. No merge/rebase or another contributor's edits. No private push yet.
+Main HEAD and private origin/main are675d74785696cf5d2fc5f4941d9103e756f2ee54,
+verified after the fast-forward push. That evidence/documentation commit follows
+qualified product6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7,
+treea06365c2eae1fc4b5d80d14e5d4fc3606ed382eb. Root owns the current uncommitted
+0815migration, catalog/manifest/schema test, export privilege probe, owning P08/storage
+contract updates and shared native qualification fixture. No merge/rebase or
+another contributor's edits. No815candidate commit or remote execution yet.
 
 ## Current runtime qualification
 
@@ -176,32 +176,41 @@ Historical dirty private-panel-no-revoke and detached positiveed2a93b stay untou
 
 ## Next bounded action and retained constraints
 
-Maintenance is complete. Runtime candidate6474qualification, safe capture and
-fresh live census are complete; root's current edits record those actual outcomes.
-Independent review and full qualification diff are complete; artifact/handoff
-checks pass179Markdown/330JSON and123tasks/756steps, same3historical cycle candidates.
-Next: commit the qualification, fetch/inspect the private remote (last ls-remote
-still ecd35), and push fast-forward. No product test rerun is needed
-for documentation alone unless review finds a concrete defect. Preserve the
-original local RED/overlapping-build distinctions in
+Maintenance is complete. Runtime6474qualification, capture, live census, independent
+review and documentation commit675d747 are complete and privately pushed. The
+original local RED/overlapping-build distinctions remain in
 .research/implementation/cursor-runtime/execution-notes.json.
 
-Next selected P08-T03 Step3 responsibility is the already specified transactional
-job admission upper cut, independent of the still-required cursor lifecycle.
-Root read complete0001/0008, migrations catalog/manifest/schema tests, export
-acceptance and job status adapters, current cursor contract and task/list contract.
-Initial schema compatibility RED fails as expected with UnknownTarget(815),
-exit101 under .research/implementation/job-admission/schema-red.*; no new SQL
-yet, no remote experiment. Proposed additive0815uses immutable job_admissions mapping and indexed
-per-dataset max+1 under dataset serialization, backfills deterministic ordinals
-without touching jobs/xmin, and participates in actual job INSERT. Avoid sequences,
-wall-clock/xmin cuts, an unused counter table and existing-row trigger bypasses.
-Read remaining trigger/caller boundaries and review this choice before implementation;
-test both lock orders/rollback and backdated/equal-time jobs. Current cursor
-lifecycle/activation/revocation remains required before publishing paged reads.
-No second plan or unused worker registry. Applied0601/0602remain unchanged.
-Current native cache6474is useful for the next exact-source run; refresh free
-space/process/container/mount census first. Never modify Tux source.
+Current P08-T03 Step3 responsibility is transactional job admission order, independent
+of the still-required cursor lifecycle. Additive0815draft inserts an immutable compact
+job_admissions mapping in the actual job INSERT transaction. The immutable local
+dataset singleton serializes writers; separate VOLATILE statements see preceding
+commits. Deterministic backfill preserves existing jobs/receipts/xmin and does not
+claim original commit order. Existing export startup probes optional mapping
+SELECT and INSERT separately; prior schemas remain valid. Applied SQL is unchanged.
+Root read all0813and the actual transport/consumer boundaries. Independent AI static
+SQL review found no blocker; real concurrency/index behavior remains NOT_RUN.
+
+Local schema RED failed as expected UnknownTarget(815), exit101; GREEN25tests and
+Clippy pass, fmt check passes. Artifacts under.research/implementation/job-admission/.
+Fresh exact-source native fixture is authored for upgrade, unchanged rows/receipts,
+time-only negative control, same-key retry, rollback/isolation/privilege failures,
+immutable mapping, multirow/immediate checks, two writers and both cut lock orders,
+backend death, real serve optional permissions, index observation and PG restart.
+The synthetic job metadata does not claim signed export execution or full list delivery.
+Shared qualification.py retains prior cursor profile entrypoint; new815profile seeds
+from the retained6474cache. Fixture AST and actual offline configuration validation pass; review/real SQL execution is pending.
+Root is sole writer. Independent read-only AI reviewed complete fixture/resource
+boundaries: root corrected the equal-time negative to latejob9below(200,10), and
+separated failed stop from stream/exit/overflow capture. No additional static blocker.
+No AI execution or resource ownership; all native outcomes remain unknown.
+
+Fresh18:19:48UTC preflight observes101110116352bytes free,784containers/eight
+unrelated running, no active BigBrotr experiment; protected paths exist.
+Next: finish fixture review/local checks, commit a clean candidate for exact-Git transfer, run native815qualification,
+preserve every outcome and terminal resource state, then inspect evidence/diff before
+private publication. No paginated endpoint before cursor lifecycle/activation/revocation.
+Never modify Tux source or rebuild old experiments for cleanup.
 
 The current runtime implements only Control: avoid an unused distributed worker
 registry. Readiness must bind actual loaded dataset/ring/ID/material and full
