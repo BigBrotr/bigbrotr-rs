@@ -25750,7 +25750,7 @@
     }
   },
   "implementation_job_pages_20260927": {
-    "state": "two original incomplete runs stopped-retained; fixture retry prepared",
+    "state": "three original runs stopped-retained; bounded expiry fixture retry prepared",
     "local_root": ".research/implementation/job-pages",
     "base_source": "ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47",
     "scope": "P08-T03 Step3 / P09-T09 Step2 actor-owned export listing and required P06-T03 cursor retention; incomplete",
@@ -26012,6 +26012,49 @@
           "free_bytes": 73156907008,
           "prior_preserved": true,
           "prior_count": 809,
+          "unrelated_running": 8,
+          "cleanup_errors": []
+        }
+      },
+      {
+        "resources": {
+          "source": "9f3dd720d24b5777c59335b8de3c365d0b8341f8",
+          "tree": "cc0cbb2f214db35f62a0acb86e53e7f5b4792e41",
+          "owner": "d199840de1ae07fbb8f7676ce2d0d5cc",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9f3dd72",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "postgres",
+              "id": "8aa1a4c1909b6a1295fb57b8948df82b89e4bdd21b67dd63609de1bba86c54f9"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "8b9e5a21cd6d325ddaa2aa9f89fe2b832c99f60f6b6327bda05da3413b65cea8"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T21:20:01.847131+00:00",
+          "runtime_profile": "job-pages",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "b93ba83dc7923e7dee45525538b8b4482caa5975",
+          "network_id": "14db22f23a7187acc9feac5efbd3c7a94db7fcdce0d037642f488d114ff8a710",
+          "postgres_id": "8aa1a4c1909b6a1295fb57b8948df82b89e4bdd21b67dd63609de1bba86c54f9",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "8b9e5a21cd6d325ddaa2aa9f89fe2b832c99f60f6b6327bda05da3413b65cea8",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "outcome": "INCOMPLETE: never-active empty/terminal200 confirms defect; ordinary pages/live grant wait pass; expired wait HTTP disconnected, inconclusive",
+        "terminal": {
+          "status": "INCOMPLETE",
+          "free_bytes": 72700633088,
+          "prior_preserved": true,
+          "prior_count": 811,
           "unrelated_running": 8,
           "cleanup_errors": []
         }

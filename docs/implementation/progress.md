@@ -235,3 +235,17 @@ pages before activation and after last-key revocation; actual principal_grants
 lock waits with live and expired1.25s separately seeded/audited sessions expect400
 and401 respectively. All SQL guards remain enabled, no original session mutation.
 These new regressions are NOT_RUN and collect failures before final assertion.
+
+Fixture9f3dd720d24b5777c59335b8de3c365d0b8341f8 reused exact b93 artifacts:
+never-active empty and terminal pages returned200 (confirmed contract defect).
+Actual multiple signed acceptances, pages, empty progress, actor/filter binding,
+no-touch, original cut and retained expiry comparisons passed before the wait.
+Live grant lock returned400 invalid_cursor; expired1.25s lock had actual observed
+wait/release after expiry but HTTP disconnected, so no expiry RED is claimed.
+Root found the default phase-dependent half-remaining policy SQL budget can be
+~1.25s. Retry selects heartbeat500ms as the prior resume fixture, changing neither
+TTL nor production deadline. All original SQL guards/receipts stay enabled.
+Read-only AI fixture review added a final seven-job equality assertion and a
+post-response clock sample. Token/socket expiry remains NOT_RUN. Original9f3
+resources stopped-retained, ownerd199840de1ae07fbb8f7676ce2d0d5cc; source clean,
+noOOM, cleanup terminal evidence captured. Next retry remains fixture-only.

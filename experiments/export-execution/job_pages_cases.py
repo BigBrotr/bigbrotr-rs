@@ -123,7 +123,11 @@ def run(root,state,sql,policy):
         wire[-32:]=hashlib.sha256(wire[:-32]).digest();wire=bytes(wire)
         keydir=private/'job-page-keys';keydir.mkdir(mode=0o700)
         keyfile=keydir/'ring';keyfile.write_bytes(wire);keyfile.chmod(0o600)
-        config.write_text(config.read_text()+'\n[read.cursor]\nkeyring_ref="file:/out/private-grant-http/job-page-keys/ring"\n')
+        # Renew at500ms so the half-remaining SQL admission budget exceeds
+        # the1.25s session wait in either policy-refresh phase. Do not extend
+        # authorization TTLs or modify the production deadline calculation.
+        config.write_text(config.read_text()+'\n[runtime]\nheartbeat_interval="500ms"\n'
+            +'\n[read.cursor]\nkeyring_ref="file:/out/private-grant-http/job-page-keys/ring"\n')
         result['registration']=cli('access','cursor-keyring','register')
         a,b=wire[42:58].hex(),wire[90:106].hex()
         oracle=EnvelopeOracle(wire);result['oracle']=oracle.identity;save()
@@ -212,11 +216,12 @@ def run(root,state,sql,policy):
         contract_refusal('last-revoked-terminal',503,'authority_unavailable',username='alice',query='page_size=200')
         exchange('terminal','stop');assert client.wait(10)==0 and not client.stderr and not client.overflow
         result['terminal_retention']=retained();result['terminal_jobs']=job_rows();save()
+        assert result['terminal_jobs']==sorted(known.values(),key=lambda row:int(row['ordinal']))
         assert sql(db,"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state<>'released'")=='0'
         assert sql(db,"SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()")=='0'
         assert all(case['passed'] for case in result['regressions'].values()),'page authority regressions'
         result['status']='PASS'
-        result['not_run']=['held/lost retention COMMIT','expired token and session during waits/delivery',
+        result['not_run']=['held/lost retention COMMIT','expired token and session during socket delivery',
             'backdated/tied aged jobs and mixed load','raw retention mutation combinations and concurrent locks',
             'generated client/private panel/browser pages','complete M1/Compose release journey']
     except BaseException as error:

@@ -84,6 +84,8 @@ def session_waits(root,state,sql,client,exchange,actor):
             event(holder,'unlocked');assert holder.wait(5)==0 and not holder.stderr
             holder.stop();holder=None
             response=record['response']=event(client,request,timeout=5)
+            record['response_time_us']=clock()
+            assert (record['response_time_us']>=expires)==expired
             record['elapsed_seconds']=time.monotonic()-started
             assert record['elapsed_seconds']<4
             expected=(401,'authentication_denied') if expired else (400,'invalid_cursor')
