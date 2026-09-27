@@ -20,17 +20,32 @@ phase, M1 or selected-product completion. Root is sole writer/integrator.
 catalog_guard_review, archive_intent_review and fact_codec_review completed
 independent read-only AI reviews with no edits, product tests, SSH or resources.
 
-Main HEAD and private origin/main are cbe5e397cd14f11ccd66dd2c9f0e9ed9f88bb496,
-verified by ls-remote after the fast-forward push. It records the qualified
-5de46a0aba3c98a1943639bc7814dd17176076cc tree6062a9b0d00d5601e88e4cbaa9a671839b498d06.
-The clean candidate was transferred by exact Git bundle, no Tux edits. Root now owns
-the bounded structural candidate: serve.rs, PostgreSQL export_resume.rs and the
-read/completed-files portion of export_execution.rs, the existing laboratory's
-current compiler-cache/profile reuse wiring, and this checkpoint. No merge/rebase
-or other contributor edits. The next local commit is an unpublished test candidate;
-native qualification is pending, not PASS.
+Main HEAD is 7ee94dbc68a2c396ccf96efce08e7c885a46535f,
+tree 863d7e8a1dde97133599319f1d098bfd248481be. Private origin/main last verified
+at cbe5e397cd14f11ccd66dd2c9f0e9ed9f88bb496. The clean candidate was transferred
+by exact Git bundle; the second profile cloned that same Git revision. No Tux
+source edits. Root owns current report/task/inventory/checkpoint documentation.
+No merge/rebase or other contributor edits. Qualification is complete below;
+final documentation commit/private push still pending.
 
 ## Latest qualified responsibility
+
+The [structural qualification](evidence/p08-export-structure-native-20260927.json)
+records 7ee94db: one existing Supervisor spans dispatch/native consumers, resume
+and read/output SQL are multiline, four validation aliases are named, and output
+decoding is local. No new framework, type relocation, Rocks rewrite or SQL migration.
+Root and independent read-only AI reviewed preserved lock/transaction/COMMIT/stop
+semantics. Both actual installed profiles pass on current main/worker: 47 binary
+tests/Clippy, signed revocation/resume with exact 399-byte event and 1,228-byte manifest,
+original unit/input/xmin, 202 → 200 → 200 receipt and Control restart. Resumed output
+changes inodes; only subsequent retries/restart preserve those new files unchanged.
+Three real blocked-policy-poll SIGTERM schedules pass: timely release exits 0;
+held-past-deadline exits 1 after 4.5366 seconds with unresolved owner retained; next valid
+start/stop recovers it. Private admission closes while the signalled parent still
+waits. Captures retain 49/34 payloads and 1,331 Git files each. No new COMMIT-loss,
+browser/load/PG-restart/815 integration qualification is inferred.
+
+## Preceding admission and installed qualification
 
 Additive0815 transactionally records immutable job admission order in the actual
 job INSERT. Dataset singleton locking serializes writers; separate VOLATILE
@@ -80,14 +95,26 @@ source manifest8e1142d4c7ae548740f6fef71739c8d82577b16acec859d4e6f8ba0d38b2a7f4.
 ## Live resources and maintenance
 
 The [inventory](../research/laboratory-inventory.json), especially
-implementation_job_admission_20260927 and its installed entry, owns full identities.
-Latest run /home/tux/bigbrotr-implementation-20260917/runs/export-runtime-5de46a0,
+implementation_export_structure_20260927 and implementation_job_admission_20260927,
+owns full identities. Latest runs are export-runtime-7ee94db and
+export-runtime-7ee94db-shutdown under the same /home/tux/bigbrotr-implementation-20260917/runs root,
+owners 34265d5c65a06d3bc49234fa8060884e / bc62299ca3ec718bf1568b9676ad6046.
+Both are stopped-retained; both empty owned networks removed; own client wrappers
+exit 0 and PG wrappers exit 137/no OOM after the scoped stop deadline. Fresh 19:28:53 UTC
+census matches 796 container projections/eight unrelated running, both orchestrators
+absent or zombie, source/ELFs/native assets intact. Free 88,553,566,208 bytes (82.5 GiB)
+from 92,955,447,296 before, including capture/concurrent writes. No active BigBrotr lab.
+No deletion in this slice. Retain first 7ee compiler cache and both original databases,
+archives, outputs, sources and captures. Local metadata/captures:
+.research/implementation/export-structure; main SHA 5a26b3c715c5b724aabd9eb1550c21d98d0101f1a8a16449516aba234b02aa69.
+
+Prior run /home/tux/bigbrotr-implementation-20260917/runs/export-runtime-5de46a0,
 ownerdeff54343ce7c7e283caa281b11a86d6, labelorg.bigbrotr.export-execution, is
 stopped-retained/PASS. Orchestrator2349631/start391740056 absent or terminal zombie.
 PG66169db6exit137 and rust-clientaa78b07bexit0, bothPID0/noOOM; own empty network
 63cc8a20 removed. The PG wrapper required the stop deadline's kill; this cleanup
 is not a graceful PG restart/recovery claim. Preserve database state and artifacts.
-Fresh18:57:25UTC read-only census matches all792projections/eight unrelated running,
+Its18:57:25UTC read-only census matched all792then-existing projections/eight unrelated running,
 source clean, original native asset and currentELF hashes unchanged, network absent;
 free92955615232bytes (about86.6GiB). No active BigBrotr experiment. Metadata:
 .research/implementation/job-admission/installed/{live.json,review.json}.
@@ -206,29 +233,16 @@ export responsibility; do not require complete P01–P06 acceptance first.
 
 ## Next bounded action
 
-Installed815capture review, full diff, artifact/handoff checks and coherent commit
-cbe5e39 are complete and privately pushed. Checks report179Markdown/333JSON,
-123tasks/756steps and three unchanged historical prose dependency cycles.
+Close current evidence/task documentation, affected artifact checks, complete diff
+review and coherent private push. Source/SQL independent review found no regression;
+resume and shutdown capture AI reviews are complete with no discrepancies.
+Use held policy polls (not lease renewal); host/client duration origins differ,
+and admission-before-unlock liveness is sampled.
+Mac cargo check passed. Do not rerun unchanged broad suites without a new concern.
+The launcher quoting SyntaxError before second-run resource creation is preserved
+in shutdown-launch-syntax-error.stderr; corrected launch produced the separate PASS.
 
-The bounded adapter/supervision improvements are implemented. Independent AI
-diff review found no semantic regression:29SQL strings preserve tokens/order apart
-from four named boolean result aliases; all parameter/projection order, nullable
-decoding and COMMIT paths remain. The existing Supervisor is constructed once;
-all four explicit stopping checks remain. No admission/type-ownership rewrite.
-Rustfmt, diff whitespace and Python syntax checks pass; local Cargo check is still
-compiling native dependencies. Tux19:21:04UTC preflight found92955447296free bytes,
-no active BigBrotr and eight unrelated running containers. Original dependencies
-remain present; no cleanup required before this bounded run. Preflight retained at
-.research/implementation/export-structure/preflight.json.
-
-Next transfer the clean candidate by Git and execute existing installed resume-output
-and shutdown profiles in separate owned databases/containers. Compile once against
-the verified current8fa cache; use the same exact ELFs for the second profile with
-an explicit suffix. Preserve original outputs, signed399byte event, ledger/xmin,
-restart/retry and bounded blocked-renewal SIGTERM observations. No behavior-change
-unit test or broad unchanged suite is added for this refactor. Record practical
-outcomes before publication, then continue P06-T03 Step1/3 lifecycle needed by
-P08-T03 discovery. Root reread the
+Then continue P06-T03 Step1/3 lifecycle needed by P08-T03 discovery. Root reread the
 complete credentials/authority documents, current enrollment SQL, actual runtime
 key binder/loader and finite CLI, plus the complete owning key-ownership section
 of derived-read-publication (1389–end). The unrelated earlier derivation sections

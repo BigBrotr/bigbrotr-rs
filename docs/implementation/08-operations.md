@@ -356,6 +356,13 @@ maximum-bound fixture; this does not isolate omission of only the maximum check.
 Further grant/CAS/revocation and expiry orderings and complete UI/CLI consumers remain required
 before completing this step.
 
+The [bounded structural review and native rerun](evidence/p08-export-structure-native-20260927.json)
+at 7ee94db keeps one shared dispatch/native supervision context and makes resume
+and retained-output SQL/decoding readable without changing transaction semantics.
+Existing installed signed revocation/resume/retry/restart and three held-policy-poll
+SIGTERM schedules pass with the same current binaries. This is scoped maintenance
+evidence; it does not complete discovery, remaining acceptance or M1.
+
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending
 (created_at, job_id), an opaque policy-bound cursor and a listing upper cut.

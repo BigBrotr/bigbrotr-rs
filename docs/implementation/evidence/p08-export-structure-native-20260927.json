@@ -1,0 +1,170 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P09-T09"
+  ],
+  "source": "7ee94dbc68a2c396ccf96efce08e7c885a46535f",
+  "tree": "863d7e8a1dde97133599319f1d098bfd248481be",
+  "scope": "Bounded structural refactor: shared Control dispatch supervision, readable resume/read SQL and completed-file decoding. Actual installed signed resume/revocation/retry/restart and three held-policy-poll SIGTERM schedules; no complete task, M1 or release claim.",
+  "changes": [
+    "One existing Supervisor spans dispatch and four native consumers; explicit stopping checks, absolute renewal deadlines and common shutdown/driver custody remain.",
+    "Resume SQL and export read/output queries retain predicates, projections, parameter order and transaction semantics; four boolean aliases name validation results. Completed-file decoding is local and pure.",
+    "Historical/running/prepared/written export types remain distinct. Identity relocation and Rocks admission extraction were reviewed and deferred; no concrete defect justified extending this change."
+  ],
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rust": "1.98.1",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "lockfile_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "source_manifest_sha256": "92d880a00f9cc064f3bafbf5ec9bd50c1f66b3fdfd7cb3b08a17e926f9b24e7d",
+    "artifacts": {
+      "bigbrotr": "5a26b3c715c5b724aabd9eb1550c21d98d0101f1a8a16449516aba234b02aa69",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    }
+  },
+  "inputs": {
+    "compiler_cache": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-admission-8fae53a",
+      "source": "8fae53a883b6e1c258a184204271a7e691c0da81",
+      "source_manifest_sha256": "490845a9551e13b835d01866234ba85db09f1bcef4106790fab5b880d20485e0",
+      "scope": "Copied compiler caches only; fresh current Rust compilation required. Historical native seed identity is recorded separately."
+    },
+    "native_seed_source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+    "native_seed_record_sha256": "c18f6d4fac4a0f5ce46af2e08a9722ed85bfbc883454209457aa7b8470722a04",
+    "native_seed_details": "artifact-reuse.json in each capture retains exact original4e producer/reader and engine asset hashes. Both native seeds were independently read and eight original Parquet files remained unchanged.",
+    "shutdown_reuse": "Second isolated run reuses exactly the first current main/worker. Current source/product inputs and ELF hashes are checked, not rebuilt. runtime-reuse.json retains attribution."
+  },
+  "checks": {
+    "local": "cargo fmt --all -- --check, git diff --check and Python syntax PASS. Mac cargo check --locked -p bigbrotr --bin bigbrotr passed against the product diff committed as7ee94db; no local artifact qualification.",
+    "native": "Fresh main/worker build;47binary tests, zero ignored/filtered/failed; Clippy-Dwarnings PASS. Same binaries execute both profiles.",
+    "sql_static_review": "Independent read-only AI compared all29SQL strings in the two adapter files: identical tokens/order except four intentional result aliases; unchanged nullable/bounded decoding, parameter arrays and transaction/lock/error paths."
+  },
+  "resume": {
+    "profile": "--runtime-resume-output",
+    "migration": "Existing profile applies501 then explicit814; no migration file changed. Separate installed815 qualification remains p08-job-admission-installed-native-20260927.json.",
+    "negative_control": "While the actual native PostgreSQL reader waits on the same identified lock, authenticated history.read revocation changes authority. Completion is refused by its specific SQL guard, the worker is joined, reader pin released and the original signed unit pauses at revision4.",
+    "acceptance": "Resume initially403; actual reauthentication and grant restoration permit202revision5, scheduler reaches succeeded7/checkpoint1. The original unit and two-job input/acceptance ledgers remain identical including xmin.",
+    "job_id": "7c3280eccfc6b5e5ed2d73b823c6835f",
+    "artifact_id": "9f4a86d1d7275b7105194d24a5df0098",
+    "signed_bytes": 399,
+    "signed_sha256": "4b11e191facc0b4278f6d5f33b22eb5e27ff3d6386f17b3e5f51ddcf2b4db1e9",
+    "manifest_bytes": 1228,
+    "manifest_sha256": "4bb4512a055eec9d12cbd1f2238678b6f8f4b1a13d7b404196f931fdbd497416",
+    "request_digest": "5be28e121b87f1e28a9ab4b5df38f85da45fc42af214d621f4642dc7251d9a52",
+    "retry": "HTTP200 original accepted_at/key/body receipt with created=false, before and after real Control restart. The runner compares all12selected ledgers and output hashes/inodes at those boundaries; completed and final rows/xmin are retained in capture.",
+    "output": "Independent literal signed fixture and full manifest; resumed output preserves bytes/digests/artifact identity but creates new output inodes. Post-completion retries/restart preserve those new inodes.",
+    "terminal_backends": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    }
+  },
+  "shutdown": {
+    "released-before-deadline": {
+      "status": "PASS",
+      "held_after_signal_seconds": 0.3204959542490542,
+      "exit": 0,
+      "exit_after_signal_seconds": 0.3154440000653267,
+      "parent_absent": true,
+      "lock_available": true,
+      "scratch_empty": true,
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "last_owner": {
+        "epoch": "3",
+        "state": "released"
+      },
+      "early_terminal": false
+    },
+    "held-past-deadline": {
+      "status": "PASS",
+      "held_after_signal_seconds": 6.0202918029390275,
+      "exit": 1,
+      "exit_after_signal_seconds": 4.536618595942855,
+      "parent_absent": true,
+      "lock_available": true,
+      "scratch_empty": true,
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "last_owner": {
+        "epoch": "4",
+        "state": "active"
+      },
+      "early_terminal": true
+    },
+    "private-released-before-deadline": {
+      "status": "PASS",
+      "held_after_signal_seconds": 0.8112080371938646,
+      "exit": 0,
+      "exit_after_signal_seconds": 0.8185341916978359,
+      "parent_absent": true,
+      "lock_available": true,
+      "scratch_empty": true,
+      "backends": {
+        "bbpub_control_normal": 0,
+        "bbpub_normal": 0
+      },
+      "last_owner": {
+        "epoch": "5",
+        "state": "released"
+      },
+      "early_terminal": false,
+      "admission_before_unlock": {
+        "event": "admission",
+        "parent_running": true,
+        "parent_running_after": true,
+        "closed": true
+      }
+    }
+  },
+  "captures": {
+    "resume": {
+      "root": ".research/implementation/export-structure/attempt-7ee94db/capture",
+      "payloads": 49,
+      "source_files": 1331,
+      "tar_sha256": "0d5ee63ace64fa6cd803b8c60af2c8c4e1f462e94d225984d96bd498091d8fdd",
+      "manifest_sha256": "f10a193a6fc72db0a3b16ffedbf3d8f1c9e9f10db2f64a41e825338cbd546c2c",
+      "owner": "34265d5c65a06d3bc49234fa8060884e",
+      "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-7ee94db"
+    },
+    "shutdown": {
+      "root": ".research/implementation/export-structure/attempt-7ee94db-shutdown/capture",
+      "payloads": 34,
+      "source_files": 1331,
+      "tar_sha256": "07f59acaf4d0a454bbb32a8d74525a669b606677606fa3cc2e5cbfe958ab15df",
+      "manifest_sha256": "0eefb142dfa7f04f6b167968452890c2d8b7acc875d2cb8d7e42ff66b1429b4b",
+      "owner": "bc62299ca3ec718bf1568b9676ad6046",
+      "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-7ee94db-shutdown"
+    }
+  },
+  "resources": {
+    "live_at": "2026-09-27T19:28:53.190193+00:00",
+    "container_projections": 796,
+    "unrelated_running": 8,
+    "free_before_bytes": 92955447296,
+    "free_after_bytes": 88553566208,
+    "state": "Both runs stopped-retained, both empty owned networks removed. Own rust wrappers exit0, PG restart wrappers exit137 after scoped stop timeout with no OOM. This is not graceful PostgreSQL recovery evidence.",
+    "preserved": "All sources, original evidence, PostgreSQL states, signed archive/output files and artifacts remain. No caches, containers or volumes removed; concurrent writes and capture copies affect free-space delta."
+  },
+  "review": {
+    "root": "Capture checksums and exact Git source manifests, current ELF identities, signed event/full selection/manifest, independent request digest, original unit/input ledgers and raw shutdown outcomes reviewed.",
+    "independent_ai": "Independent read-only AI reviews found no discrepancy in source and the two captures. Both artifact/source hashes, signed output/ledgers and three held-policy-poll shutdown streams were checked. Review corrected terminology (policy poll, not lease renewal) and distinguishes sampled liveness and separate host/client time origins."
+  },
+  "limits": [
+    "Small two-job fixture; no load, aged-state, capacity or performance improvement claim.",
+    "No new COMMIT-loss injection, browser matrix or simultaneous native SIGTERM checker in these runs; prior qualifications retain their exact scopes.",
+    "No cursor activation/list, acquisition-service/clean-bundle M1, complete CLI/download, hosted Actions, Docker Hub promotion, Linux arm64 or public release qualification.",
+    "A launcher quoting SyntaxError occurred before its Python script executed, creating no second-run resources. Original diagnostic remains in shutdown-launch-syntax-error.stderr; corrected launcher then executed the recorded shutdown run.",
+    "Held-after-signal uses the host clock after the signalled response and includes collecting ROLLBACK; exit-after-signal uses the client clock from before SIGTERM. These observations do not establish an exact shared-clock timeout margin or continuous liveness."
+  ],
+  "shutdown_interpretation": "Timely unlocks release the owner and exit0. Held-past-deadline exits1/Backend after4.537s and leaves owner4 active; after unlock the SQL snapshot observes zero backends. The next valid start/stop releases owner4 and owner5. Private admission is closed at two liveness samples while the parent still awaits the same policy poll, before host unlock."
+}

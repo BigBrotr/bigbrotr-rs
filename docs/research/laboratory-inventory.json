@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-09-25",
+  "updated_at": "2026-09-27T19:28:53.190193+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -25546,5 +25546,54 @@
       "live_at": "2026-09-27T18:57:25.161471+00:00",
       "free_bytes": 92955615232
     }
+  },
+  "implementation_export_structure_20260927": {
+    "source": "7ee94dbc68a2c396ccf96efce08e7c885a46535f",
+    "tree": "863d7e8a1dde97133599319f1d098bfd248481be",
+    "state": "stopped-retained",
+    "report": "docs/implementation/evidence/p08-export-structure-native-20260927.json",
+    "preflight": ".research/implementation/export-structure/preflight.json",
+    "live_census": ".research/implementation/export-structure/live.json",
+    "live_at": "2026-09-27T19:28:53.190193+00:00",
+    "free_bytes": 88553566208,
+    "runs": [
+      {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-7ee94db",
+        "owner": "34265d5c65a06d3bc49234fa8060884e",
+        "owner_label": "org.bigbrotr.export-execution",
+        "containers": [
+          {
+            "name": "postgres",
+            "id": "7d84492af8dfe640ef08434118b3dd93614f625100b1c73738b77c19b25db986"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "e08845e0e659ac6a6356fb8232786d7f78050284f55ac8ba6775045d604728ac"
+          }
+        ],
+        "network_id": "7bb1432903811aa9c5aafad16826cc6713da3fac96d8ec12d2484fbe4dc304a2",
+        "network_state": "removed after owner/no-endpoint audit",
+        "runtime_profile": "resume-output"
+      },
+      {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-7ee94db-shutdown",
+        "owner": "bc62299ca3ec718bf1568b9676ad6046",
+        "owner_label": "org.bigbrotr.export-execution",
+        "containers": [
+          {
+            "name": "postgres",
+            "id": "862c8f4f81419de097fe55fda76a41fc3cf9c43062097e006984a035546c6103"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "3e5b39e7e3c758ca0f9d62cdd1d0d16db238fbe682cdf7ef8cecaad43571c7d1"
+          }
+        ],
+        "network_id": "5a8447c8a8c971893ae030240a3a1a80126345d8b8d10cc274e880957a7b7814",
+        "network_state": "removed after owner/no-endpoint audit",
+        "runtime_profile": "shutdown"
+      }
+    ],
+    "preserve": "Retain source, database/fault states, native assets, signed archive/exports, captures and first-run current compiler cache. No deletion in this slice."
   }
 }
