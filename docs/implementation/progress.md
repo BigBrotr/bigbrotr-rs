@@ -12,15 +12,17 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Published HEAD and verified origin/main are 0095eff39ac81ee68aad07a58fffa9ea36fb4493.
-Root owns the next dirty fixture-only slice: job_pages_held client/cases and
-lab/runtime dispatch, plus this checkpoint. No product, migration or release
+Verified origin/main is 0095eff39ac81ee68aad07a58fffa9ea36fb4493; local unpublished
+candidate HEAD is 9b7da032d117ecbf846796f17b2fa4bf40e09896, tree
+4d31f9188f33e2de55baaefc004bbbf45a8112b7. Its native run is now qualified and
+stopped-retained. Root owns dirty evidence/inventory/P08/checkpoint updates.
+No product, migration or release
 changes. 41327e1's two COMMIT loss schedules and recovery are qualified and pushed.
 Read-only AI completed the held-fixture review; root is the sole writer.
 
 Active IDs: P08-T03 Step 3 / P08-T04 Step 3, thin P09-T09 Step 2 and only the
 operational P06-T03 Steps 1/3 cursor prerequisites. No task, phase, M1 or product
-completion. Next backend acceptance: retention COMMIT loss/hold and custody.
+completion. Next backend acceptance: page lifetime and current authority.
 
 ## Latest qualified user journey
 
@@ -89,13 +91,13 @@ volatile-State audit failure and successful stable-projection follow-up.
 [Inventory](../research/laboratory-inventory.json) key
 implementation_job_pages_20260927 owns exact identities, consumer_runs and
 consumer_live. Seven consumer labs, five earlier native page labs and the new
-COMMIT lab are stopped-retained. Latest root is
-/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-41327e1-job-pages-commits,
-owner 8c2fb64cbeaf20cd3cd45cc15c2a2291, PID 2670868/start 393130645, now terminal.
-Inventory commits_runs owns its exact resources and evidence. At 22:46:35 UTC,
-846 stable container projections matched the terminal audit, eight unrelated
+COMMIT and held-page labs are stopped-retained. Latest root is
+/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9b7da03-job-pages-held,
+owner ea127a243a8c73040da3db21f86aea1b, PID2686690/start393242602, now terminal.
+Inventory held_runs owns its exact resources and evidence. At 23:05:14 UTC,
+848 stable container projections matched the terminal audit, eight unrelated
 containers ran, current source/artifact identities matched and its network was
-absent. Free 73,890,541,568 bytes; check again before the next native run.
+absent. Free 73,430,867,968 bytes; check again before the next native run.
 Owned native runner exits 0; PG wrapper 137/no OOM is deadline cleanup, not graceful
 engine shutdown/recovery evidence. No active BigBrotr experiment at this audit.
 
@@ -158,31 +160,31 @@ block with INCOMPLETE/FAIL/PASS receipts and independently reviewed captured res
 The backend-only profile declares 12 unused frontend changes and reuses exact f677
 ELFs; no fresh Rust/frontend qualification. No product defect was observed.
 
-Next held COMMIT/reply qualification is being implemented: four combinations
-of held frontend COMMIT/backend reply and authority deadline/SIGTERM. The new
-job_pages_held client samples the actual Control socket inode, pidfd/process
-identity and destination flock through driver drain, bounded to eight seconds.
-The host independently compares durable retention, ten ledgers, session idle
-state, exact owner/backend identity and cleanup. A proxy-held frontend COMMIT
-can keep its server endpoint alive after local driver termination; explicitly
-stop that proxy and observe the backend gone before starting another owner.
-The last failed owner remains active-but-absent intentionally in retained SQL.
+The [held-page report](evidence/p08-job-pages-held-native-20260928.json) now qualifies
+all four frontend-COMMIT/backend-reply × deadline/SIGTERM schedules at 9b7da03,
+using exact f677 ELFs. Actual request-to-exit is 4.299–4.325 seconds at timeout and
+2.070–2.115 seconds with SIGTERM. All HTTP requests receive RemoteDisconnected;
+Controls exit 4 without owner release. 651 supported socket/lock samples retain
+destination exclusion; 390 after the conservative timeout bound or signal span
+1.679–1.994 seconds per case. No continuous-custody or key-memory claim. Ten full
+ledgers and per-request session timestamps/xmin remain unchanged. COMMIT holds
+preserve retention; reply holds extend only the expected deadline/xmin. Actual
+remote endpoints are independently checked after local exit and proxy stop;
+no new owner starts before zero backends. Epochs 5/6/7/8 have distinct incarnations.
+The last failed owner remains active-but-absent deliberately in retained SQL.
 
-Read complete serve.rs, its JobList dispatcher/SQL timeout, driver join, 0816 and
-reused socket/custody/proxy helpers. Native tests are NOT_RUN. Three pre-run AI
-findings corrected: uniquely indexed events for the rescanning event() helper,
-atomic result replacement, and post-timeout samples bounded by the installed
-config's actual SQL upper limit. The latter excludes pre-timeout SQL wait from
-the driver-drain interval. Claims concern directory exclusion, not key memory.
-Root reviewed the complete fixture/diff and confirmed config-show microseconds
-and the actual dispatch timeout formula. Syntax/artifact/diff checks pass. The
-actual runtime caller rejects nested INCOMPLETE/FAIL receipts. At 23:02:15 UTC,
-846 stable container projections/eight unrelated running matched, sources and
-artifacts matched, no owned process/network remained and 73,890,435,072 bytes were
-free. Commit a candidate, transfer exact Git and run
---runtime-job-pages-held with f677 artifacts. Verify current disk first; previous
-run ended with ~68.8 GiB free. Keep all original evidence and protected resources.
-Absolute expiry/authority/delivery and load remain separate acceptance afterward.
+Root read complete serve/dispatch/driver/proxy/helper boundaries, recomputed raw
+sample eligibility/deadline intervals and SQL effects, and verified all 47 safe
+capture payloads, 1362 Git files and source/ELF/live resource identities. Three
+pre-run read-only AI findings fixed: indexed events for rescanning event(),
+atomic result replacement, and deadline samples excluding pre-timeout wait.
+AI ran no tests/SSH; no post-run AI evidence claim. Syntax/artifact/diff checks
+and actual caller INCOMPLETE/FAIL/PASS discrimination pass. Capture under ignored
+attempt-9b7da03-job-pages-held; review-held.py/live-held.py retain the recipes.
+Next action: finish documentation verification and ordinary push, then implement
+the bounded actual-page lifetime/current-authority acceptance. Absolute expiry,
+TTL/skew and current policy/grant/session need independent tokens and actual SQL;
+delivery and mixed/aged workload remain separate. Preserve original evidence.
 
 Before the COMMIT run, retired only export-runtime-5de46a0/out/build/{target,cargo-home}
 after source/capture/native-artifact, process FD/maps and mount checks. Inventory

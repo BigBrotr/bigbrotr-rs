@@ -431,9 +431,15 @@ and scoped obsolete-cache retirement are preserved. The
 [COMMIT loss fixture](evidence/p08-job-pages-commit-native-20260928.json) now verifies
 before-forward rollback, committed reply loss and fresh issuance after actual
 Control recovery. Three independent page sets and ten unchanged ledgers distinguish
-the observed effects. Next acceptance targets held COMMIT/reply and driver custody;
-these prevent claiming complete discovery, but require no adjacent scientific
-pagination subsystem.
+the observed effects. The [held COMMIT/reply fixture](evidence/p08-job-pages-held-native-20260928.json)
+at 9b7da03 now passes all four timeout/SIGTERM schedules. Actual Control exits in
+2.070–4.325 seconds; 651 supported socket/lock samples retain destination exclusion,
+including 390 after the conservative timeout bound or signal. Ten full ledgers and
+per-request session state remain unchanged; retention distinguishes held COMMIT
+from held reply. Remote proxy endpoint closure is checked separately. This is
+sampled directory custody, not continuous proof or key-memory inspection. Absolute
+expiry, changed authority, delivery/exhaustion and mixed/aged pages remain open;
+none requires the adjacent scientific pagination subsystem.
 
 Role/relay/artifact summaries share the page-size/authorization rules. Roles and
 relays order by immutable role-instance and endpoint ID respectively; artifacts

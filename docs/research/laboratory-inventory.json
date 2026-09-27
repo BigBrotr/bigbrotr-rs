@@ -26922,6 +26922,140 @@
           "free_bytes": 73890541568
         }
       }
+    ],
+    "held_runs": [
+      {
+        "resources": {
+          "source": "9b7da032d117ecbf846796f17b2fa4bf40e09896",
+          "tree": "4d31f9188f33e2de55baaefc004bbbf45a8112b7",
+          "owner": "ea127a243a8c73040da3db21f86aea1b",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9b7da03-job-pages-held",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "postgres",
+              "id": "3861ce688d51f366e604d826e247dada621ab61b5ad4ee85ebc1417130e170ac"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "42792835bef29193af140fb0e7da826e102eb689d1c084f41b2f3727e59b1f8f"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T23:02:52.541852+00:00",
+          "runtime_profile": "job-pages-held",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+          "network_id": "2360c3196118c7f6146c95acd67ab8462c77c549d496821aef3409ce1494b379",
+          "postgres_id": "3861ce688d51f366e604d826e247dada621ab61b5ad4ee85ebc1417130e170ac",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "42792835bef29193af140fb0e7da826e102eb689d1c084f41b2f3727e59b1f8f",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "orchestrator": {
+          "pid": 2686690,
+          "start_ticks": "393242602",
+          "source": "9b7da032d117ecbf846796f17b2fa4bf40e09896",
+          "tree": "4d31f9188f33e2de55baaefc004bbbf45a8112b7"
+        },
+        "capture": {
+          "files": 47,
+          "sha256": "e1265d85adf3804f298abcbf6084e62dbc2e72cb2e3a4b77cceeed39c462c7bc",
+          "source": "9b7da032d117ecbf846796f17b2fa4bf40e09896",
+          "tree": "4d31f9188f33e2de55baaefc004bbbf45a8112b7",
+          "source_files": 1362
+        },
+        "evidence": "docs/implementation/evidence/p08-job-pages-held-native-20260928.json",
+        "review": {
+          "status": "PASS",
+          "source": "9b7da032d117ecbf846796f17b2fa4bf40e09896",
+          "tree": "4d31f9188f33e2de55baaefc004bbbf45a8112b7",
+          "held_cases": [
+            {
+              "stage": "commit",
+              "trigger": "deadline",
+              "samples": 223,
+              "supported": 222,
+              "post_trigger_samples": 92,
+              "post_trigger_interval_seconds": 1.738189514260739,
+              "request_to_exit_seconds": 4.324932968243957,
+              "response": {
+                "closed": "RemoteDisconnected"
+              },
+              "owner_epoch": "5"
+            },
+            {
+              "stage": "reply",
+              "trigger": "deadline",
+              "samples": 220,
+              "supported": 220,
+              "post_trigger_samples": 89,
+              "post_trigger_interval_seconds": 1.6792034143581986,
+              "request_to_exit_seconds": 4.298844068776816,
+              "response": {
+                "closed": "RemoteDisconnected"
+              },
+              "owner_epoch": "6"
+            },
+            {
+              "stage": "commit",
+              "trigger": "signal",
+              "samples": 105,
+              "supported": 105,
+              "post_trigger_samples": 105,
+              "post_trigger_interval_seconds": 1.9932393357157707,
+              "request_to_exit_seconds": 2.070014270953834,
+              "response": {
+                "closed": "RemoteDisconnected"
+              },
+              "owner_epoch": "7"
+            },
+            {
+              "stage": "reply",
+              "trigger": "signal",
+              "samples": 105,
+              "supported": 104,
+              "post_trigger_samples": 104,
+              "post_trigger_interval_seconds": 1.9751890539191663,
+              "request_to_exit_seconds": 2.1144693167880177,
+              "response": {
+                "closed": "RemoteDisconnected"
+              },
+              "owner_epoch": "8"
+            }
+          ],
+          "ledger_sizes": {
+            "jobs": 6,
+            "job_admissions": 6,
+            "job_input_bounds": 6,
+            "export_jobs": 6,
+            "export_execution_units": 1,
+            "artifacts": 1,
+            "artifact_files": 1,
+            "snapshot_leases": 15,
+            "archive_snapshot_pins": 15,
+            "retention_claims": 15
+          },
+          "capture_manifest_sha256": "3886be12852f737a0f00a0bda4d8ebdd467ca5a3f6c2b693fcc49d4fb11187a4",
+          "runtime_artifacts": {
+            "bigbrotr": "ac15753aa08abee07ccc76431b9a407544427ed269c53c09ba4435628ff4f5ec",
+            "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+          }
+        },
+        "live": {
+          "at": "2026-09-27T23:05:14.617984+00:00",
+          "unchanged": 848,
+          "orchestrator_absent_or_zombie": true,
+          "source_clean": true,
+          "native_assets_preserved": true,
+          "free_bytes": 73430867968
+        }
+      }
     ]
   }
 }

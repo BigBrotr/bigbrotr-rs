@@ -1,0 +1,162 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P06-T03"
+  ],
+  "source": "9b7da032d117ecbf846796f17b2fa4bf40e09896",
+  "tree": "4d31f9188f33e2de55baaefc004bbbf45a8112b7",
+  "scope": "Held cursor-retention COMMIT and held server reply under actual authority timeout and SIGTERM; bounded parent termination, sampled destination exclusion and independent durable effects. No complete discovery, memory zeroization, capacity, M1 or release claim.",
+  "environment": {
+    "target": "Native Linux amd64 Tux",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runtime_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "artifacts": {
+    "runtime_source": "f6770e99b21e57a6094316caa9b428f175773844",
+    "runtime_tree": "fb401b4852b91ed7029ff501e704f1249b8bc7e9",
+    "runtime_sha256": {
+      "bigbrotr": "ac15753aa08abee07ccc76431b9a407544427ed269c53c09ba4435628ff4f5ec",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "source_manifest_sha256": "8bfd4d458362b6d51f705ee173b6183fdc2b173a3f813f05f75eb2ce406c27cb",
+    "runtime_manifest_sha256": "ce7a7acd38ba4674cffa8ebe72e66ebec945358e2188ad2e6a29e81b379c9021",
+    "proxy_sha256": "ed9c41299c691236e189bab25adf9241f6dbf483473848974c14e91bba5f5939",
+    "input_equivalence": "All non-documentation/experiment build inputs equal except 12 explicitly enumerated unused frontend files. Reused f677 installed Rust pair and original 4e signed seed producer/readers retain their identities. No fresh Rust compilation or frontend execution."
+  },
+  "recipe": "python3 experiments/export-execution/lab.py 9b7da032d117ecbf846796f17b2fa4bf40e09896 4d31f9188f33e2de55baaefc004bbbf45a8112b7 --runtime-job-pages-held f6770e99b21e57a6094316caa9b428f175773844 job-pages-held",
+  "workload": "Fresh actual signed archive seed and successful empty export, installed migrations through 0816, five real signed-event HTTP requests accepted under deliberate 256 MiB deferral. Six actor-owned jobs. One in-memory login persists across four failed Controls; no new signed export execution or capacity claim.",
+  "executed": {
+    "local": "Fixture syntax, artifact and diff checks PASS. Actual runtime caller block discriminates nested INCOMPLETE/FAIL/PASS receipts. No product changes or broad Rust suite rerun.",
+    "cases": [
+      {
+        "stage": "commit",
+        "trigger": "deadline",
+        "samples": 223,
+        "supported": 222,
+        "post_trigger_samples": 92,
+        "post_trigger_interval_seconds": 1.738189514260739,
+        "request_to_exit_seconds": 4.324932968243957,
+        "response": {
+          "closed": "RemoteDisconnected"
+        },
+        "owner_epoch": "5"
+      },
+      {
+        "stage": "reply",
+        "trigger": "deadline",
+        "samples": 220,
+        "supported": 220,
+        "post_trigger_samples": 89,
+        "post_trigger_interval_seconds": 1.6792034143581986,
+        "request_to_exit_seconds": 4.298844068776816,
+        "response": {
+          "closed": "RemoteDisconnected"
+        },
+        "owner_epoch": "6"
+      },
+      {
+        "stage": "commit",
+        "trigger": "signal",
+        "samples": 105,
+        "supported": 105,
+        "post_trigger_samples": 105,
+        "post_trigger_interval_seconds": 1.9932393357157707,
+        "request_to_exit_seconds": 2.070014270953834,
+        "response": {
+          "closed": "RemoteDisconnected"
+        },
+        "owner_epoch": "7"
+      },
+      {
+        "stage": "reply",
+        "trigger": "signal",
+        "samples": 105,
+        "supported": 104,
+        "post_trigger_samples": 104,
+        "post_trigger_interval_seconds": 1.9751890539191663,
+        "request_to_exit_seconds": 2.1144693167880177,
+        "response": {
+          "closed": "RemoteDisconnected"
+        },
+        "owner_epoch": "8"
+      }
+    ],
+    "ledger_sizes": {
+      "jobs": 6,
+      "job_admissions": 6,
+      "job_input_bounds": 6,
+      "export_jobs": 6,
+      "export_execution_units": 1,
+      "artifacts": 1,
+      "artifact_files": 1,
+      "snapshot_leases": 15,
+      "archive_snapshot_pins": 15,
+      "retention_claims": 15
+    },
+    "supported_samples": 651,
+    "post_trigger_samples": 390
+  },
+  "invariants": {
+    "custody": "Pidfd and PID/start identify the real parent. Each supported sample reads its exact PostgreSQL socket inode before and after an independent nonblocking destination flock attempt, requires the same live process and no child. All 651 supported samples retain exclusion. The 390 post-trigger samples span 1.679 to 1.994 seconds per case. Deadline samples start only after observing + min(configured renewal timeout, configured policy TTL / 2); actual SQL was already held when observing began. This conservative bound excludes pre-timeout wait. Sampling is not continuous proof and does not observe key memory.",
+    "termination": "All four actual HTTP requests receive RemoteDisconnected; checking response status before body forbids even a truncated 200. Actual Controls exit 4 with the expected deadline/cancellation error, no committed owner release, parent absent, destination lock available and empty scratch. Request-to-exit is 4.299\u20134.325 seconds for timeout and 2.070\u20132.115 seconds for SIGTERM, below the eight-second fixture bound. These are four measured runs, not universal latency guarantees.",
+    "remote_backend": "Holding frontend COMMIT prevents the proxy reading local EOF, so its server endpoint remains until explicit proxy stop. Holding a backend reply allows the frontend pump to observe EOF and close that endpoint. Independent SQL records both local-exit states, then verifies zero Control/catalog backends after proxy close before starting the next owner. Owner epochs 5/6/7/8 have distinct incarnations. Last failed owner row deliberately remains active-but-absent; no fabricated SQL release.",
+    "durable": "Ten complete job/admission/input/export/unit/artifact/file/lease/pin/claim ledgers including xmin remain identical before, after each schedule and finally. Per-request session IDs, last_seen, idle_expires and xmin remain unchanged. Held COMMIT changes no retention row; held reply changes only the current key retention deadline and xmin, within independent SQL clock bounds for the original 900-second lifetime plus 30 seconds. Other owner/audit state is not asserted unchanged."
+  },
+  "review": {
+    "root": "Read complete new fixtures and relevant actual dispatch, driver join, socket/lock helpers and proxy. Recomputed supported/post-timeout sample sets and deadline bound from saved raw samples/settings, compared SQL ledgers/sessions/retention/backend identity, and verified capture/source/ELF hashes and live resources.",
+    "ai": "Read-only pre-run AI reviewed fixture/proxy/caller and relevant custody helpers. Three findings fixed before native execution: indexed events for rescanning event(), atomic result replacement, and post-timeout sampling excluding prior SQL wait. No AI tests/SSH or post-run evidence review."
+  },
+  "resource": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9b7da03-job-pages-held",
+    "owner": "ea127a243a8c73040da3db21f86aea1b",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "3861ce688d51f366e604d826e247dada621ab61b5ad4ee85ebc1417130e170ac"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "42792835bef29193af140fb0e7da826e102eb689d1c084f41b2f3727e59b1f8f"
+      }
+    ],
+    "network_removed": "2360c3196118c7f6146c95acd67ab8462c77c549d496821aef3409ce1494b379",
+    "orchestrator": {
+      "pid": 2686690,
+      "start_ticks": "393242602",
+      "source": "9b7da032d117ecbf846796f17b2fa4bf40e09896",
+      "tree": "4d31f9188f33e2de55baaefc004bbbf45a8112b7"
+    },
+    "terminal_exits": {
+      "rust-visibility": 0,
+      "postgres": 137
+    },
+    "live": {
+      "at": "2026-09-27T23:05:14.617984+00:00",
+      "unchanged": 848,
+      "orchestrator_absent_or_zombie": true,
+      "source_clean": true,
+      "native_assets_preserved": true,
+      "free_bytes": 73430867968
+    }
+  },
+  "capture": {
+    "root": ".research/implementation/job-pages/attempt-9b7da03-job-pages-held/capture",
+    "files": 47,
+    "sha256": "e1265d85adf3804f298abcbf6084e62dbc2e72cb2e3a4b77cceeed39c462c7bc",
+    "source": "9b7da032d117ecbf846796f17b2fa4bf40e09896",
+    "tree": "4d31f9188f33e2de55baaefc004bbbf45a8112b7",
+    "source_files": 1362,
+    "manifest_sha256": "3886be12852f737a0f00a0bda4d8ebdd467ca5a3f6c2b693fcc49d4fb11187a4",
+    "result_sha256": "7c7bcc56a983dc7cd26f2ea3fecc8a888f6bfa028b45bce75542cf313fe2ab9f",
+    "independent_review_sha256": "9ed72e107d9209db81b08de2c545d4d3456704b6852dbf0343340426932b04c1"
+  },
+  "not_qualified": [
+    "Only four deliberate plaintext loopback proxy schedules. No general network partition, continuous exclusion proof, key-memory inspection, native arm64, hosted Actions or release qualification.",
+    "Absolute token expiry, changed policy/grants/session/TTL/skew, backdated/tied real pages, delivery/exhaustion and mixed/aged workloads remain open.",
+    "PostgreSQL wrapper exits 137 without OOM during owned deadline cleanup; native runner exits 0. This is not graceful PostgreSQL restart/recovery evidence. All original databases, artifacts and logs retained; secrets and session/cursor bytes excluded from capture."
+  ]
+}
