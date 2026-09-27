@@ -104,3 +104,12 @@ required before using these additional keys for continuation.
 The [native local addition report](../implementation/evidence/p06-cursor-key-addition-native-20260927.json)
 records identical retry and partial-state refusal across syscall errors, process
 interruption and blocked output. It does not qualify distribution or activation.
+
+Additional Control enrollment is under implementation as `access cursor-keyring
+enroll-key --file instance.toml --key-id ID`. Its explicit migration0602 preserves
+initial registration receipts and establishes a permanent per-key fingerprint.
+Provision the application role with SELECT/INSERT on `control.cursor_key_materials`
+and execution of its trigger functions alongside the existing registration grants.
+On schema0602 even initial registration requires INSERT on this relation, because
+its initial bindings are captured in the same transaction. Missing privileges
+must roll back the entire registration. Enrollment never activates a key.

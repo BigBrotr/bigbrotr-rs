@@ -508,3 +508,28 @@ fn artifact_inventory_appends_after_acceptance_without_rewriting_its_receipts() 
     );
     assert!(migrations::require_applied(&accepted, 813).is_ok());
 }
+
+#[test]
+fn additional_cursor_keys_require_an_additive_schema_preserving_initial_receipts() {
+    let applied: Vec<_> = plan(&[], 601)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next = plan(&applied, 602).expect("additional cursor keys need their own schema");
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0602_cursor_key_enrollment.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 602),
+        Err(MigrationError::MissingPrerequisite(602))
+    );
+    assert!(migrations::require_applied(&applied, 601).is_ok());
+}

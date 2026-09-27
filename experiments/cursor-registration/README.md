@@ -21,3 +21,15 @@ root. The surrounding orchestrator must preserve logs, safe evidence, private
 keys, source/build manifests and data, then stop only its labeled resources.
 The fixture does not qualify key activation, rotation, cross-worker distribution,
 page semantics, host power loss or the ordinary Compose release journey.
+
+The explicit `lab.py REVISION TREE --enrollment` selection uses a fresh
+`cursor-enrollment-SHORT` root and copied stopped `cursor-rotation-e684915`
+compiler cache. The unchanged Cargo.lock permits an offline networkless build.
+The subsequent isolated PostgreSQL laboratory executes `enrollment.py`, including
+601→602 upgrade, initial mirror/privileges, 16-key registration, selected-key
+retry after local file changes, permanent material conflicts, raw SQL closure,
+real blocked stdout/fsync failure, both COMMIT-loss sides, concurrent same/conflicting
+keys, killed pre-COMMIT client and engine restart. It retains every original
+outcome and private keyfile; the enclosing owner captures only safe metadata.
+This enrollment selection is authored and NOT_RUN; it does not qualify activation,
+worker readiness/distribution or the complete normal/emergency rotation journey.

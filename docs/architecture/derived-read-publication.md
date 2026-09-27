@@ -1488,6 +1488,36 @@ permanent material binding will independently enforce this at enrollment.
 Initial `register` still resolves only its exact original keyfile; subsequent
 key enrollment and lifecycle need their separate additive protocol.
 
+Additional key enrollment is an explicit protected deployment operation:
+`access cursor-keyring enroll-key --file CONFIG --key-id ID`. It synchronizes an
+existing complete local keyfile and requires the selected key before connecting.
+Migration0602 introduces a permanent material-binding registry; it copies initial
+bindings and their original actor/audit/time under migration exclusion, without
+rewriting0601 rows or inventing acceptance events. Future initial registrations
+populate the same registry in their original transaction. The initial ordered
+key set remains the immutable registration snapshot, while the material registry
+owns the permanent namespace for initial and subsequently enrolled keys.
+
+Enrollment serializes on the dataset row and requires its installation credential,
+matching dataset/instance/ring and material fingerprint. A new binding and its
+exact `cursor-key.enroll` audit commit together. The key ID identifies the retry:
+an existing initial key resolves its original ring-registration audit with origin
+`initial`; an additional key resolves its original per-key audit with origin
+`additional`. Neither retry writes SQL or changes the original attribution/time.
+Other legitimate local additions/removals/order changes do not change this one-key
+identity. A conflicting material fingerprint is refused permanently, including
+after key retirement or local removal. Control retains only the fingerprint.
+A missing initial ring is a prerequisite failure, never implicit registration.
+
+The finite command keeps the prepared snapshot and combined connection reservation
+through the actual driver join. An unknown COMMIT requires identical retry on a
+fresh connection. This operation establishes enrollment only; it cannot attest
+worker distribution, readiness or activate issuance. The local file limit is16
+simultaneously loaded keys; retained historical bindings are not evicted at that
+limit. Point lookup by dataset/key ID bounds each retry without scanning history.
+Raw SQL must preserve initial-origin provenance, exact additional-audit closure
+and immutable rows; rollback leaves neither a binding nor an orphan accepted audit.
+
 Use a versioned authenticated-encryption envelope for self-contained continuation,
 so private scan positions are neither editable nor readable by clients. The
 initial implementation candidate is full-round XChaCha20-Poly1305 through the

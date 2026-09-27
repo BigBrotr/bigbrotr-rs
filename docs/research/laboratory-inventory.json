@@ -25183,5 +25183,20 @@
       "sha256": "6e3a0e98a5e54b97855251229930a62a2bf75ad1907e79d3da4efd5c98cee8a7"
     },
     "retention": "All source/artifacts/logs/failure keyfiles and fresh compiler cache retained. No resource deletion, database, network or volume created;8unrelated running unchanged. Space deltas include concurrent host writes."
+  },
+  "implementation_cursor_enrollment_20260927": {
+    "local_root": ".research/implementation/cursor-enrollment",
+    "source_base": "0091fc9b181ec35cefbe6a6133e365f04e7c6e75",
+    "status": "48selected Mac tests and Clippy PASS; native recipe parsed/NOT_RUN. Independent source/recipe review completed; two fixture gaps corrected before native execution.",
+    "remote_resources_created": false,
+    "scope": "Explicit prepared-key enrollment; preserve initial0601 and no activation authority.",
+    "local_report": "docs/implementation/evidence/p06-cursor-enrollment-local-20260927.json",
+    "preflight": {
+      "at": "2026-09-27T16:36:45.893995+00:00",
+      "free_bytes": 102307016704,
+      "unchanged_containers": 773,
+      "running_unrelated": 8,
+      "path": ".research/implementation/cursor-enrollment/preflight.json"
+    }
   }
 }

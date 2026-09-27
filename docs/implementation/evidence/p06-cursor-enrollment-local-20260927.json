@@ -1,0 +1,116 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1/3 / P08-T03 prerequisite",
+  "status": "PASS within local schema/CLI refusal scope; PostgreSQL enrollment NOT_RUN",
+  "source": {
+    "base": "0091fc9b181ec35cefbe6a6133e365f04e7c6e75",
+    "state": "Root-owned dirty Mac input hashes",
+    "files_sha256": {
+      "apps/bigbrotr/src/interfaces/cursor_keyring.rs": "443b8dcae4ada66ddfb0750549e9297f9f81c7fb2ae159349565fdb88b4599c1",
+      "apps/bigbrotr/src/storage/postgres/cursor_registration.rs": "cde90ee56d55a5e79eedf2ef6df9eeb8d04380f9d91ce8d46bf08c9eaf6110cb",
+      "apps/bigbrotr/src/storage/postgres/migrations.rs": "3937cf800315c14e513ab8a03323b286483ceec4e86f66462723255405618e2d",
+      "apps/bigbrotr/tests/cursor_keyring_cli.rs": "aea0c6b476dbd47437009bb92690751574ab0d1f815af89f111c4f632587cc39",
+      "apps/bigbrotr/tests/control_schema.rs": "dc2c7623b1c90c5bdf0c68f6f6678800d589cd656f240f6285d2868b5b83d85e",
+      "migrations/postgres/0602_cursor_key_enrollment.sql": "20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48",
+      "migrations/manifest.json": "b238e3caef94ca52d484ce5cbab57260e18ecbc2ce08b2ba806b1b84c6110e0b",
+      "Cargo.lock": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa"
+    }
+  },
+  "environment": {
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Darwin",
+      "architecture": "arm64",
+      "discovery": "xcrun",
+      "environment": {
+        "CC": "/Library/Developer/CommandLineTools/usr/bin/clang",
+        "CXX": "/Library/Developer/CommandLineTools/usr/bin/clang++",
+        "AR": "/Library/Developer/CommandLineTools/usr/bin/ar",
+        "LIBCLANG_PATH": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+        "CLANG_PATH": "/Library/Developer/CommandLineTools/usr/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "SDKROOT": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk"
+      },
+      "tools": {
+        "CC": {
+          "path": "/Library/Developer/CommandLineTools/usr/bin/clang",
+          "realpath": "/Library/Developer/CommandLineTools/usr/bin/clang",
+          "sha256": "f30550eab15fdf5ab8c0dc54c52679711241e5d4b636b027e18c09fef531775d",
+          "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+        },
+        "CXX": {
+          "path": "/Library/Developer/CommandLineTools/usr/bin/clang++",
+          "realpath": "/Library/Developer/CommandLineTools/usr/bin/clang",
+          "sha256": "f30550eab15fdf5ab8c0dc54c52679711241e5d4b636b027e18c09fef531775d",
+          "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+        },
+        "AR": {
+          "path": "/Library/Developer/CommandLineTools/usr/bin/ar",
+          "realpath": "/Library/Developer/CommandLineTools/usr/bin/ar",
+          "sha256": "d26c671be515802ff5a18edde5ca73c6bcaaf87048ef192025f00002be515794",
+          "version": null
+        },
+        "LIBCLANG_PATH": {
+          "path": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+          "realpath": "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib",
+          "sha256": "c9aaefc23d735a58f59c9e9e0520171d18ec3653095cc875a1d546c09ad25f30",
+          "version": "Apple clang version 21.0.0 (clang-2100.1.1.101)"
+        },
+        "discovery": {
+          "path": "/usr/bin/xcrun",
+          "realpath": "/usr/bin/xcrun",
+          "sha256": "a439970aea2b4e435eac6518ff62c97fd1c57d8c731974027ad211b515c7a7b8",
+          "version": "xcrun version 72."
+        }
+      },
+      "sdk": {
+        "path": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+        "version": "26.5",
+        "settings_sha256": "f8d005f09381389167f9e0aeaa169bc9e7dff162ef22ca2fd8e98df7ff1acafe"
+      }
+    }
+  },
+  "checks": {
+    "total": 48,
+    "schema": 24,
+    "keyring_cli": 5,
+    "keyring": 10,
+    "registration_preparation": 2,
+    "envelope": 7,
+    "clippy": "PASS selected library/binary/schema/CLI/registration tests",
+    "red": "Schema test fails UnknownTarget602; actual CLI test separately fails absent-command usage2 instead of missing-key4. Initial test sources and exact original logs retained.",
+    "green": "Explicit additive schema plan; canonical ID,missing/partial/absent-selected-key CLI refusals before connection. Existing keyring,codec,registration and schema regressions pass."
+  },
+  "review": "Independent read-only AI reviewed complete0601/0602, adapter/CLI/tests and preparation/driver/transaction boundaries. No concrete defect. Initial mirror requires additional INSERT privilege. Native engine semantics, receipts and COMMIT recovery are not inferred from local results. Pre-run independent fixture review found missing complete baseline/xmin preservation and premature PASS before cleanup. Both strengthened before any native run; all cleanup attempts now isolated and a cleanup error records INCOMPLETE. An offline fixture predicate check passes1positive/10negative cases; this is not a product test. Targeted read-only AI re-review confirms both fixture corrections, with no new counterexample or execution.",
+  "native": "Existing cursor-registration lab gains explicit --enrollment selection with copied stopped e684 cache and offline fresh build; enrollment.py and syscall cases parsed/NOT_RUN.",
+  "limitations": [
+    "No actual PostgreSQL0602 application or enrollment success/receipt/atomicity/concurrency/commit-recovery evidence yet.",
+    "No readiness,activation,retirement,distribution or full rotation.",
+    "No task/milestone/product/release completion."
+  ],
+  "artifacts_sha256": {
+    ".research/implementation/cursor-enrollment/check.py": "3d2802f086ded0be4f4f58d75097961809fde6ca258f1b9a1fe496a389a6da92",
+    ".research/implementation/cursor-enrollment/cli-red.command.json": "781de56aa944e37a1b5f5eede2903d655b7f966e1bbe5c49f8b494b0f42133a5",
+    ".research/implementation/cursor-enrollment/cli-red.exit": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+    ".research/implementation/cursor-enrollment/cli-red.stderr": "ba29f8a4df89b815feefc7ee8777994ed1114cff3ce42de4de544af96821b6e5",
+    ".research/implementation/cursor-enrollment/cli-red.stdout": "f9484094b805a80152a1c52afe0fc6844d597ca1b59869703e449a7139dfd86e",
+    ".research/implementation/cursor-enrollment/clippy.command.json": "a66423f92d3302e37c3aadcdfa4e31615d12d0e868481bdbc5cc09c25daa6639",
+    ".research/implementation/cursor-enrollment/clippy.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-enrollment/clippy.stderr": "7062b391f0b277a3e4d20206a5548d689d4eb14a26c361635d1c402431da171e",
+    ".research/implementation/cursor-enrollment/clippy.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/cursor-enrollment/initial-control_schema.rs": "dc2c7623b1c90c5bdf0c68f6f6678800d589cd656f240f6285d2868b5b83d85e",
+    ".research/implementation/cursor-enrollment/initial-cursor_keyring_cli.rs": "aea0c6b476dbd47437009bb92690751574ab0d1f815af89f111c4f632587cc39",
+    ".research/implementation/cursor-enrollment/local-green.command.json": "8bb258a4ce434765b7a8cc8e8194223937e1f17fbec4b15b5b3519d10a0c0bd1",
+    ".research/implementation/cursor-enrollment/local-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    ".research/implementation/cursor-enrollment/local-green.stderr": "26c575b5bae7129b1aa722bad9acfa7925d5aad3fb76dfe02d19a658abd65cf9",
+    ".research/implementation/cursor-enrollment/local-green.stdout": "bff500b71446fc7bee12dc062b82b518f0cbcf00c75f9a16059f4670d36b6773",
+    ".research/implementation/cursor-enrollment/native-toolchain.json": "5bbfbe8a350616e9446eb3795076ba2495b9eaa77094fecbc634c828777b8e13",
+    ".research/implementation/cursor-enrollment/schema-red.command.json": "923ca7541829a8b68ede4c9dcb2ec8242349d5f0b963ba0400446e57ef63e7a2",
+    ".research/implementation/cursor-enrollment/schema-red.exit": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+    ".research/implementation/cursor-enrollment/schema-red.stderr": "fedf1324b5463a17cf66cc608813c3d8fa143bc544e5d88d1265835ff4d9ff55",
+    ".research/implementation/cursor-enrollment/schema-red.stdout": "462b2cc26c08cebcfceb4f62947905e6c671447f3d51d653b8d3427455ca3ec1",
+    ".research/implementation/cursor-enrollment/oracle-check.py": "4c8e4c9ef5daddc0834c2ed18143f2d60234dcae4f149cf90acede4eba7ed75c",
+    ".research/implementation/cursor-enrollment/oracle-check.json": "0dc036f408a07f83c064e8ee45188cd87174cedd784c5df37cf8463e9dc206cf",
+    ".research/implementation/cursor-enrollment/preflight.json": "263817034f768708dd9be91febfeb911f4a741852b7041f823cdabbad81051f6"
+  }
+}

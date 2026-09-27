@@ -14,15 +14,20 @@ import tarfile
 import time
 
 sys.dont_write_bytecode = True
-revision, tree = sys.argv[1:]
+revision, tree = sys.argv[1:3]
+enrollment = sys.argv[3:] == ["--enrollment"]
+assert not sys.argv[3:] or enrollment
+family = "cursor-enrollment" if enrollment else "cursor-registration"
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917/runs')
-root = base / ('cursor-registration-' + revision[:7])
+root = base / (family + '-' + revision[:7])
 source = root / 'source'; out = root / 'out'; build = out / 'build'
-cache = base / 'cursor-keyring-1f251db'
+cache = base / ('cursor-rotation-e684915' if enrollment else 'cursor-keyring-1f251db')
+cache_owner = '89b64550b3049b02bc61122a16c3efe5' if enrollment else 'ca3561d0e4feb8654200a2e26591abdd'
+cache_source = 'e68491570fec7f6df63f4a161dc6ba7a7d9bb491' if enrollment else '1f251dbfb59c870dd413d6da338dfdeb2911a9c9'
 instrument = base / 'strace-exit-9b30c35'
 image = 'sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d'
-label = 'org.bigbrotr.cursor-registration-build'
+label = 'org.bigbrotr.'+family+'-build'
 
 
 def cmd(*args): return subprocess.check_output(args, text=True, timeout=60).strip()
@@ -54,7 +59,7 @@ assert cmd('uname','-m') == 'x86_64' and not out.exists()
 prior, preflight = census(); write(root/'preflight.json', preflight)
 assert preflight['free_bytes'] > 12*1024**3
 assert not any('bigbrotr' in c['Name'].lower() and c['State']['Running'] for c in prior)
-for origin, owner in [(cache,'ca3561d0e4feb8654200a2e26591abdd'), (instrument,'84ac8cbf5292679b8ef7043fed7a2799')]:
+for origin, owner in [(cache,cache_owner), (instrument,'84ac8cbf5292679b8ef7043fed7a2799')]:
     state = json.loads((origin/'resources.json').read_text())
     assert state['owner'] == owner and state['state'] == 'stopped-retained'
     for entry in state['containers']:
@@ -64,7 +69,8 @@ for origin, owner in [(cache,'ca3561d0e4feb8654200a2e26591abdd'), (instrument,'8
         if c['State']['Running']:
             assert not any(Path(m['Source']).is_relative_to(origin) for m in c['Mounts'] if m.get('Source','').startswith('/'))
 assert sha(instrument/'out/strace-exit-fixed') == '509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458'
-assert sha(cache/'out/native-tests/bigbrotr') == '7ebfe502a87cadc101461d5fd5bd823e2e3ee268571bc50db7050fa148cb35c0'
+assert sha(cache/'out/native-tests/bigbrotr') == ('2b65d3537ab7b3f147840b07358e20f0e27750c391d1683445672bfde347dadd' if enrollment else '7ebfe502a87cadc101461d5fd5bd823e2e3ee268571bc50db7050fa148cb35c0')
+if enrollment: assert sha(source/'Cargo.lock') == sha(cache/'out/build/source/Cargo.lock')
 write(root/'image.json', json.loads(cmd('docker','image','inspect',image))[0])
 owner = secrets.token_hex(16)
 state = dict(source=revision, tree=tree, owner=owner, owner_label=label, root=str(root),
@@ -89,16 +95,16 @@ try:
         if name == 'cargo-home':
             assert not any((original / n).exists() for n in ['credentials','credentials.toml','config','config.toml'])
         subprocess.run(['cp','-a','--reflink=auto',str(original),str(build/name)], check=True, timeout=120)
-    write(root/'cache-origin.json', dict(root=str(cache), source='1f251dbfb59c870dd413d6da338dfdeb2911a9c9',
+    write(root/'cache-origin.json', dict(root=str(cache), source=cache_source,
         manifest_sha256=sha(cache/'out/build/source-manifest.json'),
-        scope='copied compiler cache only; changed root lock fetched with --locked and fresh build'))
+        scope='copied compiler cache; fresh offline build with unchanged lock' if enrollment else 'copied compiler cache only; changed root lock fetched with --locked and fresh build'))
     assert shutil.disk_usage(base).free > 8*1024**3
-    container = cmd('docker','create','--init','--name','bigbrotr-cursor-registration-'+revision[:7],
+    container = cmd('docker','create','--init','--name','bigbrotr-'+family+'-'+revision[:7],
         '--label',label+'='+owner,'--cpus','2','--memory','6g','--memory-swap','6g','--pids-limit','512',
-        '--network','bridge','--user',f'{os.getuid()}:{os.getgid()}', '--read-only','--cap-drop','ALL',
+        '--network','none' if enrollment else 'bridge','--user',f'{os.getuid()}:{os.getgid()}', '--read-only','--cap-drop','ALL',
         '--security-opt','no-new-privileges','--tmpfs','/tmp:rw,exec,nosuid,nodev,size=512m',
         '--mount',f'type=bind,src={out},dst=/out', '--mount',f'type=bind,src={export},dst=/out/build/source,readonly',
-        image,'python3','-B','/out/build/source/experiments/cursor-registration/native.py')
+        image,'python3','-B','/out/build/source/experiments/cursor-registration/native.py', *(['--enrollment'] if enrollment else []))
     state.update(state='running', containers=[dict(name='native-build',id=container)]); write(root/'resources.json',state)
     cmd('docker','start',container)
     deadline = time.monotonic()+4000
@@ -118,11 +124,11 @@ try:
     pg = json.loads((runtime/'resources.json').read_text())
     state['postgres_root'] = str(runtime); write(root/'resources.json',state)
     with (root/'cases.stdout').open('xb') as stdout, (root/'cases.stderr').open('xb') as stderr:
-        result = subprocess.run(['python3','-B',str(source/'experiments/cursor-registration/run.py'),'--root',str(runtime)],
+        result = subprocess.run(['python3','-B',str(source/'experiments/cursor-registration'/('enrollment.py' if enrollment else 'run.py')),'--root',str(runtime)],
                                 stdout=stdout,stderr=stderr,timeout=600)
     state['cases_exit'] = result.returncode
     assert result.returncode == 0
-    assert json.loads((runtime/'cursor-registration.json').read_text())['status'] == 'PASS'
+    assert json.loads((runtime/('cursor-enrollment.json' if enrollment else 'cursor-registration.json')).read_text())['status'] == 'PASS'
     state['qualification'] = 'PASS'
 except BaseException as error:
     state.update(qualification='INCOMPLETE', failure=type(error).__name__)
@@ -167,7 +173,7 @@ finally:
         except OSError as error:
             cleanup_errors.append(dict(name='postgres-resource-record',error=type(error).__name__))
     if container:
-        state['terminal']=stop_owned('bigbrotr-cursor-registration-'+revision[:7],label,owner,container)
+        state['terminal']=stop_owned('bigbrotr-'+family+'-'+revision[:7],label,owner,container)
     now, final=census(); before={c['id']:c for c in preflight['containers']}
     assert set(before) <= {c['Id'] for c in now}
     assert all(projection(c)==before[c['Id']] for c in now if c['Id'] in before)

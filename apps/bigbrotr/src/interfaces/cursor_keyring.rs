@@ -3,7 +3,7 @@ use super::postgres_command;
 use bigbrotr::{
     read::keyring::{KEYRING_RESERVATION, Keyring, PreparedKeyring},
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits},
-    storage::postgres::cursor_registration::{self, RegistrationError},
+    storage::postgres::cursor_registration::{self, KeyOrigin, RegistrationError},
 };
 use bigbrotr_model::DatasetId;
 use clap::{Arg, ArgMatches, Command};
@@ -11,7 +11,7 @@ use std::{cell::Cell, path::PathBuf, process::ExitCode, time::Duration};
 
 pub(super) fn command() -> Command {
     let mut command = Command::new("cursor-keyring")
-        .about("Prepare, inspect or register protected continuation keys")
+        .about("Prepare, inspect, register or enroll protected continuation keys")
         .subcommand_required(true)
         .disable_help_subcommand(true);
     for (name, about) in [
@@ -45,6 +45,11 @@ pub(super) fn command() -> Command {
         .about("Register already prepared keys once in Control; no activation")
         .arg(Arg::new("file").long("file").required(true).value_parser(clap::value_parser!(PathBuf)))
         .after_help("Requires migration0601 and the protected Control application credential. Re-syncs only existing complete local keys before connection; missing or partial keys refuse. Identical retry resolves the original immutable registration and audit. Conflicting keys require explicit recovery, never regeneration. No key activation, runtime authority or worker-distribution proof. Keep keys and driver reservation until connection closure. Exit:0 registered/resolved,1 connection/output failure,2 usage,3 configuration/schema/conflict,4 local key unavailable or COMMIT outcome unknown; retry identical keys on a fresh connection."))
+        .subcommand(Command::new("enroll-key")
+        .about("Enroll one prepared key in Control; no activation")
+        .arg(Arg::new("file").long("file").required(true).value_parser(clap::value_parser!(PathBuf)))
+        .arg(Arg::new("key-id").long("key-id").required(true).value_parser(key_id))
+        .after_help("Requires migration0602, an initially registered ring and the protected Control application credential. Re-syncs an existing complete keyfile and requires the selected key before connecting. The public key ID permanently binds its material fingerprint. Identical retry returns original initial or additional enrollment attribution even after other local keys change. No distribution, activation or issuance authority. Exit:0 enrolled/resolved,1 connection/output failure,2 usage,3 configuration/schema/conflict,4 local key unavailable or COMMIT unknown. Retain keys and retry the identical key on a fresh connection after an unknown outcome."))
 }
 
 fn key_id(text: &str) -> Result<[u8; 16], String> {
@@ -77,8 +82,13 @@ pub(super) fn execute(args: &ArgMatches) -> ExitCode {
             .expect("validated dataset")
             .parse()
             .map_err(|_| (3, "invalid dataset identity".into()))?;
-        if operation == "register" {
-            return register(&config, reference, dataset);
+        if matches!(operation, "register" | "enroll-key") {
+            let selected = if operation == "enroll-key" {
+                Some(*args.get_one::<[u8; 16]>("key-id").expect("required key ID"))
+            } else {
+                None
+            };
+            return register(&config, reference, dataset, selected);
         }
         let number = |field: &str| config.number(&format!("runtime.processes.application.{field}"));
         let envelope = ProcessEnvelope::new(
@@ -143,6 +153,7 @@ fn register(
     config: &crate::config::Resolved,
     reference: &str,
     dataset: DatasetId,
+    selected: Option<[u8; 16]>,
 ) -> Result<serde_json::Value, (u8, String)> {
     let required = |key: &str| {
         config
@@ -162,6 +173,22 @@ fn register(
     // The prepared snapshot owns it until the real driver join below completes.
     let prepared = PreparedKeyring::existing(reference, dataset, permit)
         .map_err(|error| (4, error.to_string()))?;
+    let selected_binding = if let Some(id) = selected {
+        Some(
+            prepared
+                .keys()
+                .bindings()
+                .find(|(candidate, _)| *candidate == id)
+                .ok_or_else(|| {
+                    (
+                        3,
+                        "selected cursor key is not present in the prepared keyfile".into(),
+                    )
+                })?,
+        )
+    } else {
+        None
+    };
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
@@ -171,10 +198,17 @@ fn register(
             .await
             .map_err(|_| RegistrationError::Backend)?;
         let started = Cell::new(false);
-        let result = match tokio::time::timeout(
-            Duration::from_secs(30),
-            cursor_registration::register(&mut client, instance, &prepared, &started),
-        )
+        let result = match tokio::time::timeout(Duration::from_secs(30), async {
+            if let Some(id) = selected {
+                cursor_registration::enroll(&mut client, instance, &prepared, id, &started)
+                    .await
+                    .map(|result| (result.receipt, Some(result.origin)))
+            } else {
+                cursor_registration::register(&mut client, instance, &prepared, &started)
+                    .await
+                    .map(|receipt| (receipt, None))
+            }
+        })
         .await
         {
             Ok(result) => result,
@@ -187,20 +221,31 @@ fn register(
     runtime.shutdown_timeout(postgres_command::DRIVER_DRAIN);
     let hex = |bytes: [u8; 16]| format!("{:032x}", u128::from_be_bytes(bytes));
     let keys = prepared.keys();
-    let mut report = serde_json::json!({
-        "format":"bigbrotr-cursor-registration/1", "dataset_id":dataset,
-        "keyring_id":hex(keys.id()), "key_ids":keys.key_ids().map(hex).collect::<Vec<_>>(),
-        "initial_file_fingerprint_sha256":keys.fingerprint(), "cursor_authority":"not-granted"
-    });
     match result {
-        Ok(receipt) => {
-            report["state"] = if receipt.created { "registered" } else { "already-registered" }.into();
+        Ok((receipt, origin)) => {
+            let mut report = if let Some((id, digest)) = selected_binding {
+                serde_json::json!({
+                    "format":"bigbrotr-cursor-key-enrollment/1", "dataset_id":dataset,
+                    "keyring_id":hex(keys.id()), "key_id":hex(id), "material_fingerprint_sha256":digest,
+                    "cursor_authority":"not-granted",
+                    "state":if receipt.created {"enrolled"} else {"already-enrolled"},
+                    "origin":match origin.expect("enrollment origin") {KeyOrigin::Initial => "initial", KeyOrigin::Additional => "additional"},
+                    "enrolled_at_us":receipt.registered_at_us.to_string()
+                })
+            } else {
+                serde_json::json!({
+                    "format":"bigbrotr-cursor-registration/1", "dataset_id":dataset,
+                    "keyring_id":hex(keys.id()), "key_ids":keys.key_ids().map(hex).collect::<Vec<_>>(),
+                    "initial_file_fingerprint_sha256":keys.fingerprint(), "cursor_authority":"not-granted",
+                    "state":if receipt.created {"registered"} else {"already-registered"},
+                    "registered_at_us":receipt.registered_at_us.to_string()
+                })
+            };
             report["actor_id"] = serde_json::to_value(receipt.actor).expect("fixed identity");
             report["audit_id"] = hex(receipt.audit_id).into();
-            report["registered_at_us"] = receipt.registered_at_us.to_string().into();
             Ok(report)
         }
-        Err(RegistrationError::CommitUnknown) => Err((4, "cursor key registration COMMIT outcome unknown; retain keys and retry the same registration on a fresh connection".into())),
+        Err(RegistrationError::CommitUnknown) => Err((4, "cursor key registration/enrollment COMMIT outcome unknown; retain keys and retry the identical input on a fresh connection".into())),
         Err(error) => Err((match error {
             RegistrationError::Backend => 1,
             RegistrationError::Entropy => 4,

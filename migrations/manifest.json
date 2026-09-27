@@ -113,6 +113,10 @@
     {
       "version": 601,
       "name": "0601_cursor_keys.sql"
+    },
+    {
+      "version": 602,
+      "name": "0602_cursor_key_enrollment.sql"
     }
   ],
   "reserved": [

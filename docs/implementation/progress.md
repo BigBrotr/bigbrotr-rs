@@ -20,14 +20,29 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Main HEAD e68491570fec7f6df63f4a161dc6ba7a7d9bb491, tree
-ae55773a8511557ee62763b93ae05e54217cf5dd, is the unpublished prepare-key candidate.
-Private origin remains d5bc05da0b7d37f60c7d3bb45e66d66a92ad54f9. Exact clean Git
-inputs transferred by bundle from3ba; root now owns only qualification
-documentation after the terminal native run. Product/local evidence and the13case
-native recipe were independently reviewed; no blocking finding, AI tests or SSH.
-Local23selected tests and Clippy PASS after discriminating core/CLI RED.
-The command adds local bytes idempotently; no Control enrollment/activation.
+Main HEAD/private origin0091fc9b181ec35cefbe6a6133e365f04e7c6e75 verified, clean
+after qualification push. Product e68491570fec7f6df63f4a161dc6ba7a7d9bb491 was
+transferred clean via Git;0091 adds only qualification documentation.
+Root now owns the next explicit additional-key enrollment prerequisite and
+its tests/contracts, under inventoried cursor-enrollment. No native run active.
+Initial0601 remains immutable; new0602 will preserve its original receipt and
+provide permanent per-key material bindings with an actual enroll-key CLI.
+Read-only AI completed SQL/upgrade/ID/audit and Rust/CLI custody review: no
+concrete defect. Initial mirror requires explicit new INSERT/function privileges.
+Schema RED UnknownTarget602 and actual CLI RED usage2 observed;48selected Mac
+tests and Clippy now PASS. Local report p06-cursor-enrollment-local-20260927.json.
+New --enrollment native recipe is parsed/NOT_RUN, using stopped e684 cache;
+SQL upgrade/fresh/privilege/audit cases, output/fsync,COMMIT/concurrency/kill and
+restart still require actual execution. Independent recipe review found two gaps,
+corrected before any run: preserve complete baseline/xmin plus exactly new
+material/audit on acceptance, and publish PASS only after successful cleanup.
+Cleanup attempts are isolated and errors remain INCOMPLETE. Offline fixture
+predicate verifies1positive/10negative controls; not a product/SQL test.
+Targeted AI re-review confirms both corrections; no new counterexample or execution.
+Fresh Tux preflight2026-09-27T16:36:45Z verifies all773prior projections unchanged,
+eight unrelated running,102307016704free bytes; no active BigBrotr lab or deletion.
+Artifact/handoff/fmt/diff pass179Markdown/325JSON,123tasks/756steps; unchanged
+three historical cycle candidates. Native SQL602 is still unapplied/NOT_RUN.
 
 Current Tux root cursor-rotation-e684915, owner89b64550b3049b02bc61122a16c3efe5,
 is stopped-retained, qualification PASS. Orchestrator2184798/start390803174 is
@@ -101,10 +116,10 @@ has now been applied and is immutable; subsequent corrections need additive DDL.
 Qualification commit d5 records3ba; prepare-key e684915 is now natively qualified.
 Final artifact/handoff checks pass179Markdown/324JSON,123tasks/756steps and the
 same3historical cycle candidates; full qualification diff inspected.
-Next bounded action after qualification commit/private push: implement explicit
-additional key enrollment with immutable ID/material/audit binding, preserving
-applied0601 and its initial whole-file retry contract. Then continue actual
-Control readiness/lifecycle and actor-owned listing. No SQL601 edits.
+Next bounded action: finish enrollment recipe review, commit an unpublished
+candidate and execute the exact-Git --enrollment lab using current e684 cache.
+Capture and review original SQL outcomes before any readiness/lifecycle work.
+No SQL601 edits.
 Existing task/Step1/M1/product remain open.
 
 Static AI lifecycle review flags: current require_control_owner checks backend/

@@ -213,3 +213,68 @@ fn prepare_key_is_an_explicit_offline_idempotent_addition_not_initialization() {
     }
     assert_eq!(fs::read(directory.join("keyring")).unwrap(), bytes);
 }
+
+#[test]
+fn enroll_key_requires_canonical_id_and_prepared_selected_material_before_connection() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().canonicalize().unwrap();
+    let (file, original) = config(&root);
+    let password = root.join("pg-password");
+    fs::write(&password, b"public test password").unwrap();
+    fs::set_permissions(&password, fs::Permissions::from_mode(0o600)).unwrap();
+    let keys = root.join("keys");
+    fs::create_dir(&keys).unwrap();
+    fs::set_permissions(&keys, fs::Permissions::from_mode(0o700)).unwrap();
+    fs::write(
+        &file,
+        format!(
+            "{}\n[read.cursor]\nkeyring_ref='file:{}/keyring'\n",
+            original.replace(
+                "file:/run/secrets/bigbrotr-control",
+                &format!("file:{}", password.display())
+            ),
+            keys.display()
+        ),
+    )
+    .unwrap();
+    let enroll = |id| {
+        run(&[
+            "access",
+            "cursor-keyring",
+            "enroll-key",
+            "--file",
+            file.to_str().unwrap(),
+            "--key-id",
+            id,
+        ])
+    };
+    let id = "55555555555555555555555555555555";
+    let missing = enroll(id);
+    assert_eq!(missing.status.code(), Some(4));
+    assert!(String::from_utf8_lossy(&missing.stderr).contains("NotInitialized"));
+    assert!(missing.stdout.is_empty());
+    assert_eq!(fs::read_dir(&keys).unwrap().count(), 0);
+    let first = observe(action("prepare", &file));
+    let original = fs::read(keys.join("keyring")).unwrap();
+    let absent = enroll(id);
+    assert_eq!(absent.status.code(), Some(3));
+    assert!(String::from_utf8_lossy(&absent.stderr).contains("selected cursor key is not present"));
+    assert!(absent.stdout.is_empty());
+    for invalid in [
+        "",
+        "0",
+        "00000000000000000000000000000000",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    ] {
+        assert_eq!(enroll(invalid).status.code(), Some(2));
+    }
+    fs::write(keys.join("unresolved.partial"), b"retained sentinel").unwrap();
+    let partial = enroll(first["key_ids"][0].as_str().unwrap());
+    assert_eq!(partial.status.code(), Some(4));
+    assert!(String::from_utf8_lossy(&partial.stderr).contains("Incomplete"));
+    assert_eq!(fs::read(keys.join("keyring")).unwrap(), original);
+    assert_eq!(
+        fs::read(keys.join("unresolved.partial")).unwrap(),
+        b"retained sentinel"
+    );
+}

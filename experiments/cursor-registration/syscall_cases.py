@@ -13,9 +13,11 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('case', choices=['blocked-output', 'sync-error'])
 parser.add_argument('config')
 parser.add_argument('output', type=Path)
+parser.add_argument('--key-id')
 args = parser.parse_args()
 assert not args.output.exists()
-command = ['/build/bigbrotr', 'access', 'cursor-keyring', 'register', '--file', args.config]
+command = ['/build/bigbrotr', 'access', 'cursor-keyring', 'enroll-key' if args.key_id else 'register', '--file', args.config]
+if args.key_id: command += ['--key-id',args.key_id]
 if args.case == 'blocked-output':
     reader, writer = os.pipe()
     flags = fcntl.fcntl(writer, fcntl.F_GETFL)

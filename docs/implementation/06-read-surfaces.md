@@ -242,6 +242,14 @@ identity remain unchanged. The [native addition report](evidence/p06-cursor-key-
 qualifies24Rust tests and13actual CLI cases at e684915, including EIO/ENOSPC,
 three SIGKILL windows, forced locking and a full output pipe. Control enrollment/
 readiness/activation/retirement remain required work.
+The next bounded prerequisite is explicit additional-key enrollment with an
+actual CLI, additive0602, permanent ID/material bindings and original audit retry.
+The [local enrollment report](evidence/p06-cursor-enrollment-local-20260927.json)
+records48selected tests/Clippy after schema and actual CLI RED. Native enrollment
+is NOT_RUN; runtime lifecycle remains open.
+Native acceptance must cover upgrade and fresh initial registration, original
+receipts, changed whole files, conflicting material, SQL omissions/mutations,
+concurrent same/conflicting enrollment, both COMMIT-loss sides and restart.
 
 
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;
