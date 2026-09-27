@@ -65,6 +65,11 @@ def run(root,state,sql,policy):
         value=event(client,name,timeout=10)
         assert value['operation']==op
         result['cases'][name]=value;save();return value
+    def contract_refusal(name,status,code,**fields):
+        response=exchange(name,'page',**fields)
+        result.setdefault('regressions',{})[name]=dict(expected_status=status,expected_code=code,
+            passed=response['status']==status and response['observation'].get('error',{}).get('code')==code)
+        save()
     def sessions():
         return json.loads(sql(db,"SELECT coalesce(jsonb_agg(jsonb_build_object('id',encode(session_id,'hex'),'principal',encode(principal_id,'hex'),'last_seen',last_seen_at_us,'idle_expires',idle_expires_at_us,'revoked',revoked_at_us,'xmin',xmin::text) ORDER BY session_id),'[]') FROM control.browser_sessions"))
     def retained():
@@ -121,13 +126,17 @@ def run(root,state,sql,policy):
         config.write_text(config.read_text()+'\n[read.cursor]\nkeyring_ref="file:/out/private-grant-http/job-page-keys/ring"\n')
         result['registration']=cli('access','cursor-keyring','register')
         a,b=wire[42:58].hex(),wire[90:106].hex()
-        result['activate_a']=cli('access','cursor-keyring','activate-key','--key-id',a,'--request-id','a1'*16,'--expected-revision','0')
         oracle=EnvelopeOracle(wire);result['oracle']=oracle.identity;save()
         # Preserve the seed's actual four attempt charges; do not erase them.
         started=time.monotonic();time.sleep(60);result['rate_wait_seconds']=time.monotonic()-started
         client=Process(['docker','exec','-i',runner,'python3','-B','/out/build/source/experiments/export-execution/job_pages_client.py'],input_pipe=True)
         exchange('initial','start')
         exchange('alice-login','login',username='alice');exchange('bob-login','login',username='bob')
+        contract_refusal('never-active-empty',503,'authority_unavailable',username='bob')
+        contract_refusal('never-active-terminal',503,'authority_unavailable',username='alice')
+        exchange('before-initial-activation','pause')
+        result['activate_a']=cli('access','cursor-keyring','activate-key','--key-id',a,'--request-id','a1'*16,'--expected-revision','0')
+        exchange('after-initial-activation','start')
         seed=job_rows()[0]; accepted=[]
         for index in range(5):
             value=exchange('accept-'+str(index),'accept',username='alice',key=format(100+index,'032x'))
@@ -178,6 +187,11 @@ def run(root,state,sql,policy):
                 RAISE NOTICE 'foreign retention refused 23514'; END $$;
             SELECT 'foreign-retention-refused';""")
         assert retained()==before
+        from job_pages_wait_cases import session_waits
+        result['session_waits']=session_waits(root,state,sql,client,exchange,bob)
+        for case in result['session_waits']:
+            result.setdefault('regressions',{})[case['name']]=dict(passed=case['passed'])
+        save()
         exchange('before-rotation','pause')
         result['activate_b']=cli('access','cursor-keyring','activate-key','--key-id',b,'--request-id','a2'*16,'--expected-revision','1')
         exchange('after-rotation','start')
@@ -191,10 +205,16 @@ def run(root,state,sql,policy):
         exchange('after-revocation','start')
         refusal('revoked-cached-key',400,'invalid_cursor',username='alice',**{'continue':'first'})
         page('unrevoked-key',[accepted[0],seed['job']],False,username='alice',**{'continue':'rotated-second'})
+        exchange('before-last-revocation','pause')
+        result['revoke_b']=cli('access','cursor-keyring','revoke-key','--key-id',b,'--request-id','a4'*16,'--expected-revision','3')
+        exchange('after-last-revocation','start')
+        contract_refusal('last-revoked-empty',503,'authority_unavailable',username='bob')
+        contract_refusal('last-revoked-terminal',503,'authority_unavailable',username='alice',query='page_size=200')
         exchange('terminal','stop');assert client.wait(10)==0 and not client.stderr and not client.overflow
         result['terminal_retention']=retained();result['terminal_jobs']=job_rows();save()
         assert sql(db,"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state<>'released'")=='0'
         assert sql(db,"SELECT count(*) FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database()")=='0'
+        assert all(case['passed'] for case in result['regressions'].values()),'page authority regressions'
         result['status']='PASS'
         result['not_run']=['held/lost retention COMMIT','expired token and session during waits/delivery',
             'backdated/tied aged jobs and mixed load','raw retention mutation combinations and concurrent locks',

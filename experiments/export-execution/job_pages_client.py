@@ -2,9 +2,11 @@
 """Actual installed client; session/cursor bytes stay in the private owned root."""
 import base64
 import hashlib
-import http.client
+from http.client import HTTPConnection
 from http.cookies import SimpleCookie
 import json
+import os
+import secrets
 from pathlib import Path
 import sys
 sys.dont_write_bytecode = True
@@ -15,7 +17,7 @@ from signed_publication_oracle import EVENT
 
 
 def request(method, path, body=None, auth=None):
-    connection = http.client.HTTPConnection('127.0.0.1', 18080, timeout=8)
+    connection = HTTPConnection('127.0.0.1', 18080, timeout=8)
     headers = {'Origin': 'http://127.0.0.1:18080', 'Content-Type': 'application/json', **(auth or {})}
     connection.request(method, path, json.dumps(body) if body is not None else None, headers)
     response = connection.getresponse()
@@ -60,6 +62,18 @@ def main():
                 accounts[user] = {'Cookie':'BigBrotrLocalSession='+cookies['BigBrotrLocalSession'].value,
                                   'X-CSRF-Token':cookies['BigBrotrLocalCsrf'].value}
                 emit(name,operation=op,status=status)
+            elif op == 'prepare-short':
+                # A separately seeded short-lived session tests the clock boundary
+                # without mutating an immutable login receipt or disabling guards.
+                token,csrf = secrets.token_bytes(32),secrets.token_bytes(32)
+                identity = secrets.token_hex(16)
+                accounts[name] = {'Cookie':'BigBrotrLocalSession='+token.hex(),'X-CSRF-Token':csrf.hex()}
+                path = http.ROOT / (name+'.private')
+                with os.fdopen(os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600),'w') as stream:
+                    json.dump(dict(id=identity,
+                        token=hashlib.sha256(b'bigbrotr/browser-session/1\0'+token).hexdigest(),
+                        csrf=hashlib.sha256(b'bigbrotr/browser-csrf/1\0'+csrf).hexdigest()),stream)
+                emit(name,operation=op,session=identity)
             elif op == 'accept':
                 body = dict(kind='export',format='signed-events-jsonl',
                     query=dict(version=1,resource='event_history',mode='snapshot',

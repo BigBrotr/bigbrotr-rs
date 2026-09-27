@@ -14,13 +14,12 @@ execution while billing remains blocked. No public release, rename, Linux arm64,
 hosted CI or complete packaged-release qualification is claimed. An active goal
 covers the complete product; a bounded qualification does not complete it.
 
-Main HEAD is unpublished candidate d860dfb4709aa5c61b3b9f381998e23cab143d66,
-tree d86e79ea48d1f4320b87425c521393bdc93c2761. Private origin/main remains
-qualified ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47 (local ahead1). No merge/rebase
+Main HEAD before this fixture candidate is unpublished b93ba83dc7923e7dee45525538b8b4482caa5975,
+tree ce40e59d66cab8e31b5b6d3799ab383bb9e0aaa4. Private origin/main remains
+qualified ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47 (local ahead2 before the next candidate). No merge/rebase
 or other contributor changes. Root sole writer/integrator; current dirty files
-are this checkpoint and the inventory's live native-run record. catalog_guard_review
-is independently reviewing the candidate SQL/domain/HTTP boundary read-only;
-no edits, tests or SSH. Historical agents remain idle.
+are the page regression fixtures, this checkpoint and inventory. catalog_guard_review
+completed the read-only static boundary review; findings recorded below. All agents idle.
 
 Active tasks: P08-T03 Step3 / P08-T04 Step3, thin P09-T09 Step2, and only P06-T03
 Step1/3 cursor prerequisites for actor-owned export discovery. No complete task,
@@ -180,7 +179,8 @@ failures are retained. The Control adapter, explicit GET route, current key chec
 retention transaction, bounded zeroizing response and startup optional-schema probe
 are wired. Shared list/detail decoding uses named bounded columns; scan and retention
 helpers keep transaction completion visible without a new framework. Library/domain
-structures have real consumers. Applied0604 is unchanged;0816 has NOT_RUN on PG.
+structures have real consumers. Applied0604 is unchanged;0816 is now applied and checksum-immutable
+f7ed51d54f735110a1a5a6a4db901568be833c223dcbd723aee02a7a60c3e090.
 
 The existing export-execution laboratory now has an authored --runtime-job-pages
 profile: fresh current parent+worker builds, original signed seed, actual API export
@@ -218,3 +218,20 @@ Next: rerun the corrected artifact-selection harness on exact Git, preserve and
 inspect practical outcomes, then execute the discriminating expiry/issuer cases
 before product corrections. Complete fault/aged-load/generated client/panel/browser
 acceptance remains open. No whole list, rotation, M1 or release qualification.
+
+Corrected harness candidate b93ba83 produced a verified installed parent/worker;
+all81native tests/Clippy pass. Actual signed archive readback, old job execution,
+815→816 upgrade with original rows/xmin preserved, enrollment and active-key startup
+executed. The page client then failed BEFORE LOGIN: private_grant_http aliased as
+http shadowed stdlib http.client. Original outcome INCOMPLETE, no page response.
+Use explicit HTTPConnection import. Original b93 resources stopped-retained,
+owner747e2795e020729bf2decca0968dea57, PG137/runner143, noOOM/cleanup errors;
+809preexisting projections/eight unrelated running unchanged;73,156,907,008free bytes.
+Safe captures for d860/b93 remain under .research/implementation/job-pages.
+
+Next exact fixture-only retry reuses b93's verified artifacts with all product/build
+inputs checked equal; no repeated Rust build. Added expected503 for empty/terminal
+pages before activation and after last-key revocation; actual principal_grants
+lock waits with live and expired1.25s separately seeded/audited sessions expect400
+and401 respectively. All SQL guards remain enabled, no original session mutation.
+These new regressions are NOT_RUN and collect failures before final assertion.

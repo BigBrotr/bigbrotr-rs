@@ -25750,7 +25750,7 @@
     }
   },
   "implementation_job_pages_20260927": {
-    "state": "first run stopped-retained INCOMPLETE; artifact-selection harness correction prepared",
+    "state": "two original incomplete runs stopped-retained; fixture retry prepared",
     "local_root": ".research/implementation/job-pages",
     "base_source": "ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47",
     "scope": "P08-T03 Step3 / P09-T09 Step2 actor-owned export listing and required P06-T03 cursor retention; incomplete",
@@ -25791,7 +25791,7 @@
       "compiler_cache": "job-admission-8fae53a (copied cache, fresh current parent and worker build)",
       "source": "clean Git candidate; exact revision/tree required before transfer"
     },
-    "validation": "Native binary50/domain4/schema27 and Clippy PASS at d860dfb. Practical SQL816/HTTP NOT_RUN. Original artifact-binding failure retained.",
+    "validation": "b93ba83 ordered parent/worker identity verified;81 native tests/Clippy PASS. Actual seed execution and815\u2192816 original-row preservation pass; page requests NOT_RUN due to fixture import collision. No product corrections yet.",
     "preserve": "All existing owned or unrelated resources unchanged. Do not retire retained lifecycle/qualification/object-storage datasets or original seed artifacts. Tokens/keyfiles/credentials remain private inside the future isolated run.",
     "runs": [
       {
@@ -25973,6 +25973,48 @@
           "free_bytes": 77110558720
         },
         "outcome": "INCOMPLETE: schema test replaced mutable Cargo binary; final worker binding assertion refused it before practical execution"
+      },
+      {
+        "resources": {
+          "source": "b93ba83dc7923e7dee45525538b8b4482caa5975",
+          "tree": "ce40e59d66cab8e31b5b6d3799ab383bb9e0aaa4",
+          "owner": "747e2795e020729bf2decca0968dea57",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-b93ba83",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "postgres",
+              "id": "844f8ba54996539c815286363656e21dcda5812cc2230bc337b49f1ed7cac9c4"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "3a8cd420cad47676533cf55a0c1f57977945887fdeafef4a9502326b901b4559"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T21:14:57.062951+00:00",
+          "runtime_profile": "job-pages",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "network_id": "9c1ae2aabbb8fca55da753f647ffd36f8db5b3e438baf4489d70f5fe3e96350f",
+          "postgres_id": "844f8ba54996539c815286363656e21dcda5812cc2230bc337b49f1ed7cac9c4",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "3a8cd420cad47676533cf55a0c1f57977945887fdeafef4a9502326b901b4559",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "outcome": "INCOMPLETE: valid installed artifacts and applied816; HTTP fixture failed before login (shadowed http module)",
+        "terminal": {
+          "status": "INCOMPLETE",
+          "free_bytes": 73156907008,
+          "prior_preserved": true,
+          "prior_count": 809,
+          "unrelated_running": 8,
+          "cleanup_errors": []
+        }
       }
     ]
   }
