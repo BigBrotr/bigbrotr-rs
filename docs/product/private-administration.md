@@ -364,8 +364,11 @@ A page without a new retention effect completes by acknowledged rollback. Unknow
 owner; no token escapes that outcome. The adapter preserves the initially deferred
 retention check through COMMIT. Direct SQL that explicitly makes that constraint
 immediate does not acquire a universal commit-time lease check from PostgreSQL.
-Reads never touch session idle time, and their socket action window cannot be extended by Control renewal. This profile
-is under implementation; it does not qualify the endpoint or broader job kinds.
+Reads never touch session idle time, and their socket action window cannot be extended by Control renewal.
+[Scoped native evidence](../implementation/evidence/p08-job-pages-native-20260927.json)
+covers actual pages, retention, restart/rotation/revocation and post-wait session
+expiry. Held/lost retention COMMIT, delivery faults, absolute expiry, mixed/aged
+load and full client/UI/CLI acceptance remain open; broader job kinds are unqualified.
 
 The explicit own-export resume API has [scoped installed HTTP evidence](../implementation/evidence/p08-export-resume-http-native-20260924.json);
 its [typed client also has installed HTTP evidence](../implementation/evidence/p08-export-resume-client-native-20260924.json)

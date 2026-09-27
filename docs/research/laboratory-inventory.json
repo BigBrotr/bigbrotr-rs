@@ -25750,7 +25750,7 @@
     }
   },
   "implementation_job_pages_20260927": {
-    "state": "original attempts stopped-retained; corrected Rust candidate ready for native validation",
+    "state": "all five runs stopped-retained; bounded native page qualification PASS, remaining acceptance open",
     "local_root": ".research/implementation/job-pages",
     "base_source": "ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47",
     "scope": "P08-T03 Step3 / P09-T09 Step2 actor-owned export listing and required P06-T03 cursor retention; incomplete",
@@ -25791,7 +25791,7 @@
       "compiler_cache": "job-admission-8fae53a (copied cache, fresh current parent and worker build)",
       "source": "clean Git candidate; exact revision/tree required before transfer"
     },
-    "validation": "b93ba83 ordered parent/worker identity verified;81 native tests/Clippy PASS. Actual seed execution and815\u2192816 original-row preservation pass; page requests NOT_RUN due to fixture import collision. No product corrections yet.",
+    "validation": "See docs/implementation/evidence/p08-job-pages-native-20260927.json;81native tests/Clippy,33HTTPexchanges,12independent page sets,eight authority regressions. Original four INCOMPLETE outcomes preserved.",
     "preserve": "All existing owned or unrelated resources unchanged. Do not retire retained lifecycle/qualification/object-storage datasets or original seed artifacts. Tokens/keyfiles/credentials remain private inside the future isolated run.",
     "runs": [
       {
@@ -26101,6 +26101,49 @@
           "unrelated_running": 8,
           "cleanup_errors": []
         }
+      },
+      {
+        "resources": {
+          "source": "f6770e99b21e57a6094316caa9b428f175773844",
+          "tree": "fb401b4852b91ed7029ff501e704f1249b8bc7e9",
+          "owner": "49efbd1cfc6497dd0a3086c72e43eda6",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f6770e9",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "postgres",
+              "id": "3c73a798c31b75db8821cefde17e6a056ec54966ad77eb88ee5c50bdaa33b639"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "5bf6b03438f41a14838e3b63b0ad3a724c5ce20f43e9a745d259dc865d6f0728"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T21:30:10.685703+00:00",
+          "runtime_profile": "job-pages",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "network_id": "b5f46afb08e25925aa1740c9d01dd665dbeecae227a627a549bacb8ecff5d514",
+          "postgres_id": "3c73a798c31b75db8821cefde17e6a056ec54966ad77eb88ee5c50bdaa33b639",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "5bf6b03438f41a14838e3b63b0ad3a724c5ce20f43e9a745d259dc865d6f0728",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "terminal": {
+          "status": "PASS_PENDING_CAPTURE",
+          "result": "PASS",
+          "free_bytes": 71787466752,
+          "prior_preserved": true,
+          "prior_count": 815,
+          "unrelated_running": 8,
+          "cleanup_errors": []
+        },
+        "outcome": "PASS within linked report scope; source/capture/artifact identities and stopped ownership rechecked"
       }
     ],
     "cache_retirement_d860": {
@@ -26117,6 +26160,14 @@
       "containers_preserved": 815,
       "unrelated_running": 8,
       "original_audit": "INCOMPLETE at full State equality; includes volatile health data, original before State was not retained. Follow-up compares stable lifecycle/mount/network/restart projections against the retained immediately preceding785 terminal census; all equal. Original result preserved."
+    },
+    "live": {
+      "at": "2026-09-27T21:39:52.115254+00:00",
+      "unchanged": 817,
+      "orchestrator_absent_or_zombie": true,
+      "source_clean": true,
+      "native_assets_preserved": true,
+      "free_bytes": 71776878592
     }
   }
 }

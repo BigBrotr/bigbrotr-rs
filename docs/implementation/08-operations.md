@@ -413,6 +413,16 @@ the freshly built current artifacts. The new signed job deliberately stays accep
 under256MiB; its execution and815COMMIT-loss schedules remain unqualified here.
 No complete list, cursor lifecycle, browser or release guarantee follows.
 
+The [installed page qualification](evidence/p08-job-pages-native-20260927.json)
+at f6770e9 adds bounded actor-owned export pages on0816:81native tests/Clippy,
+33HTTP exchanges,12independent expected pages and eight issuer/expiry regressions.
+Original failed attempts remain preserved. Actual continuation, empty advancing
+pages, bound cut metadata, retention, restart, A→B issuance and revocation pass;
+eight-field projections for seven jobs stay unchanged. Named decoding/scan/retention helpers preserve visible
+transaction completion. Held/lost retention COMMIT, absolute expiry and changed
+authority/delivery, mixed/aged workloads and full client/UI/CLI acceptance remain
+open. This closes only the report's bounded responsibility, not Step3.
+
 Role/relay/artifact summaries share the page-size/authorization rules. Roles and
 relays order by immutable role-instance and endpoint ID respectively; artifacts
 order by (created_at, artifact_id) with their own upper cut. Refresh starts a new

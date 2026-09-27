@@ -183,6 +183,12 @@ fixture failures remain recorded. The later keyboard investigation and scoped
 correction are recorded below; full-page captures retain a separate overlay. This does not
 complete Step 2, general accessibility, job discovery, resume/cancel or downloads.
 
+Actor-owned job discovery now has [bounded native HTTP evidence](evidence/p08-job-pages-native-20260927.json)
+at f6770e9, including empty advancing pages, current session checks and key
+rotation/revocation. The next thin Step2 consumer adds typed-client paging and
+private-panel reopening without a known job ID; neither browser behavior nor
+complete discovery acceptance follows from this backend fixture.
+
 The resume consumer obtains expected configuration/security revisions from the
 current session observation, and the job revision from its own job observation.
 Keep the original command key and all three revisions together for explicit retry;

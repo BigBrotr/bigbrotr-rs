@@ -1,0 +1,232 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P06-T03",
+    "P09-T09"
+  ],
+  "source": "f6770e99b21e57a6094316caa9b428f175773844",
+  "tree": "fb401b4852b91ed7029ff501e704f1249b8bc7e9",
+  "scope": "Bounded actor-owned protocol1 export HTTP pages, installed815\u2192816 upgrade, actual retention/continuation/restart/key rotation and post-wait session checks. No whole task, cursor fault envelope, browser, M1 or release qualification.",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "host": "Tux",
+    "rust": "1.98.1",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "lockfile_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "source_manifest_sha256": "ce7a7acd38ba4674cffa8ebe72e66ebec945358e2188ad2e6a29e81b379c9021",
+    "artifacts": {
+      "bigbrotr": "ac15753aa08abee07ccc76431b9a407544427ed269c53c09ba4435628ff4f5ec",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "worker_bytes": 14378400,
+    "native_toolchain": "Clang/LLVM14.0.6; compiler hashes retained in captured adapter-checks/artifacts.json"
+  },
+  "dependencies": {
+    "compiler_cache": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-admission-8fae53a",
+      "source": "8fae53a883b6e1c258a184204271a7e691c0da81",
+      "source_manifest_sha256": "490845a9551e13b835d01866234ba85db09f1bcef4106790fab5b880d20485e0",
+      "scope": "Copied compiler caches only; fresh current Rust compilation required. Historical native seed identity is recorded separately."
+    },
+    "seed": {
+      "source": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+      "tree": "fb87d6a4e8082d0dc2e5e8c5ac010de37920632a",
+      "owner": "3f840fe30a3ffef7f9944c72ea6e38f9",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-checker-fixed-4e6b5c0",
+      "source_manifest_sha256": "eee5a33104dbee6059d2a106eab2b09d44b14e54c5badd06fce0f8425182ef6f",
+      "artifacts": {
+        "control": "42e2787cdabf4d31c1941ca38bebe5006ac8c0e8a4c8fdf8ac99d9644e38c88c",
+        "worker": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4",
+        "event_reader": "e719645ebbbd512b287a24304572ed8ad9ab31df733d3766d72fa117facbc3e5",
+        "publisher": "3c891ba6820a0f2fff7ed37c29f7b089eb4194a3cd966a802b66ca79e059a92b",
+        "reader": "4d000695b838a173d5af47813a51c99ea65247a634f96f91b758f2a5f52a5ce4"
+      },
+      "native_assets": {
+        "bigbrotr-archive-worker": {
+          "bytes": 14378448,
+          "sha256": "425b7c37ea07764a08dbec19a1f5b81ff3c9678ba74b968af4688694e092c7b4"
+        },
+        "extensions/ducklake.duckdb_extension": {
+          "bytes": 36436086,
+          "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+        },
+        "extensions/httpfs.duckdb_extension": {
+          "bytes": 21570542,
+          "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+        },
+        "extensions/postgres_scanner.duckdb_extension": {
+          "bytes": 41696558,
+          "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+        },
+        "lib/duckdb.h": {
+          "bytes": 244057,
+          "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+        },
+        "lib/libduckdb.so": {
+          "bytes": 70529912,
+          "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+        }
+      },
+      "validation": "Original4e producer/reader only seeds and independently verifies the original0813 archive/job fixture. This reuse record covers original seed artifacts only. Current compilation/adapter evidence, when selected, is recorded separately under adapter-checks and adapter-cases."
+    },
+    "note": "Historical4e signed producer/readers and engines are attributed separately. Current parent and worker freshly built, preserved before schema tests can overwrite mutable Cargo target outputs."
+  },
+  "recipe": "experiments/export-execution/lab.py REVISION TREE --runtime-job-pages",
+  "capture": {
+    "root": ".research/implementation/job-pages/attempt-f6770e9/capture",
+    "payloads": 49,
+    "source_files": 1349,
+    "tar_sha256": "792c9289dcaeec873b39c16c49ed18c4210ae8c6662a67b879b0e4ef7a859ed2",
+    "manifest_sha256": "1b918f82e92bd66f9f78ffd52ab519bf98713c17d982f59d1f7c6409809a07be",
+    "excluded": "Key bytes, bearer/cursor tokens, credentials, database files and private digests remain remote; allowlisted safe captures only."
+  },
+  "executed": {
+    "build": "50binary +4selected domain +27schema tests (81total), actual installed build and Clippy-Dwarnings PASS; not the full workspace suite.",
+    "migration": {
+      "target": 816,
+      "checksum": "f7ed51d54f735110a1a5a6a4db901568be833c223dcbd723aee02a7a60c3e090",
+      "assertion": "Actual installed migration preserves selected original rows including xmin across815\u2192816; all32installed migration checksums verified. Applied0604 and0815 unchanged."
+    },
+    "workload": "One actual prior completed empty export plus five HTTP-accepted signed-event jobs, then one later accepted job. Deliberate256MiB leaves the six new jobs accepted; no new signed-output execution claim.",
+    "pages": {
+      "http_exchanges": 33,
+      "independent_expected_sets": 12,
+      "assertion": "Own actor descending pages2; other actor empty. Payload cut6 precedes later ordinal7; fresh cut7 includes it. The later job is newer than the continuation position, so this fixture does not discriminate omission of the cut predicate; backdated/tied page acceptance remains open. Mutable succeeded filter yields empty advancing pages then the completed seed. Foreign actor/filter token409, invalid cursor400, missing session401. Eight-field terminal projections for all seven jobs equal the admitted projections; this is not complete row/xmin preservation. Initial ordinary read sequence and each of four short-session waits preserve observed session timestamps/xmin; no global final session comparison."
+    },
+    "envelope": "Independent libsodium1.0.18 opens the160byte envelope and103byte big-endian payload. Actor/policy/grants/filter/page/cut/position/absolute lifetime independently checked. Original900s lifetime preserved across continuation, Control restart and protected CLI A\u2192B activation. B token preserves original A issue/expiry. RevokeA refusesA; B still works; revokeB leaves no issuer.",
+    "retention": "Known successful issuance retains original expiry+30s; identical continuation does not advance it. A and B final retained deadlines match independent decoded token deadlines. Foreign raw SQL retention update refused23514: Control backend does not own commit exclusion; retained state unchanged.",
+    "authority_regressions": {
+      "never-active-empty": {
+        "expected_status": 503,
+        "expected_code": "authority_unavailable",
+        "passed": true
+      },
+      "never-active-terminal": {
+        "expected_status": 503,
+        "expected_code": "authority_unavailable",
+        "passed": true
+      },
+      "grant-wait-live": {
+        "passed": true
+      },
+      "grant-wait-expired": {
+        "passed": true
+      },
+      "issuer-wait-live": {
+        "passed": true
+      },
+      "issuer-wait-expired": {
+        "passed": true
+      },
+      "last-revoked-empty": {
+        "expected_status": 503,
+        "expected_code": "authority_unavailable",
+        "passed": true
+      },
+      "last-revoked-terminal": {
+        "expected_status": 503,
+        "expected_code": "authority_unavailable",
+        "passed": true
+      }
+    },
+    "wait_oracle": "Actual grant and issuer-table Lock waits identified before expiry. Timely releases return400invalid_cursor before expiry; releases after expiry return401authentication_denied. Four valid1.25s SQL session fixtures preserve issuance audit/guards and their timestamps/xmin; no configurable-login-lifetime claim. Fixture heartbeat500ms avoids the default policy polling phase collision; production authorization TTL5s/deadline semantics unchanged.",
+    "terminal_sql": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    }
+  },
+  "original_attempts": [
+    {
+      "source": "d860dfb4709aa5c61b3b9f381998e23cab143d66",
+      "tree": "d86e79ea48d1f4320b87425c521393bdc93c2761",
+      "capture_root": ".research/implementation/job-pages/attempt-d860dfb/capture",
+      "tar_sha256": "2f11ac8f73e7ec563ac8b5d5a1a92f427e44c28207d55560eba6eb5d98d1dfa2",
+      "payloads": 24,
+      "outcome": "INCOMPLETE before SQL816:81native tests/Clippy passed, but schema test overwrote Cargo parent without worker binding. Harness now copies installed pair before checks."
+    },
+    {
+      "source": "b93ba83dc7923e7dee45525538b8b4482caa5975",
+      "tree": "ce40e59d66cab8e31b5b6d3799ab383bb9e0aaa4",
+      "capture_root": ".research/implementation/job-pages/attempt-b93ba83/capture",
+      "tar_sha256": "e173393527a7915c1a6d5ef3a1ce8fdcec406d9e7024a485a0c001ef0882a19b",
+      "payloads": 40,
+      "outcome": "INCOMPLETE before login: verified installed artifacts,81native tests/Clippy, seed execution and upgrade passed; fixture http import shadowed stdlib. Fixed fixture import only."
+    },
+    {
+      "source": "9f3dd720d24b5777c59335b8de3c365d0b8341f8",
+      "tree": "cc0cbb2f214db35f62a0acb86e53e7f5b4792e41",
+      "capture_root": ".research/implementation/job-pages/attempt-9f3dd72/capture",
+      "tar_sha256": "f63020319ca62d96d9d708f6e2dcead96c15733d70af35302ac5f71d1980426c",
+      "payloads": 35,
+      "outcome": "INCOMPLETE: exactb93ELF reuse; absent-issuer200 defect observed. Expired grant wait disconnected, inconclusive. Inferred policy-budget phase collision; fixture changed to500ms heartbeat without changing TTL/deadline semantics."
+    },
+    {
+      "source": "78520fa7d3f64bd67c1ff36cca808126b1bcb2fb",
+      "tree": "3494ba3c200a4a721e27167e175221029caeee42",
+      "capture_root": ".research/implementation/job-pages/attempt-78520fa/capture",
+      "tar_sha256": "209189027e98bc0602eeb1a0121f350e852c0d3dc642f8e7ded48b03678d27c3",
+      "payloads": 41,
+      "outcome": "INCOMPLETE / expected RED: exactb93ELF reuse. Four absent-issuer responses200 instead of503, expired grant wait400 instead of401. Live wait400 before expiry positive. Normal page/key rotation oracles reached; original failures preserved."
+    }
+  ],
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-f6770e9",
+    "owner": "49efbd1cfc6497dd0a3086c72e43eda6",
+    "owner_label": "org.bigbrotr.export-execution",
+    "orchestrator": {
+      "pid": 2538062,
+      "start_ticks": "392686419",
+      "source": "f6770e99b21e57a6094316caa9b428f175773844",
+      "tree": "fb401b4852b91ed7029ff501e704f1249b8bc7e9"
+    },
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "3c73a798c31b75db8821cefde17e6a056ec54966ad77eb88ee5c50bdaa33b639"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "5bf6b03438f41a14838e3b63b0ad3a724c5ce20f43e9a745d259dc865d6f0728"
+      }
+    ],
+    "state": "stopped-retained",
+    "network_id": "b5f46afb08e25925aa1740c9d01dd665dbeecae227a627a549bacb8ecff5d514",
+    "network_state": "removed after owner/no-endpoint audit",
+    "terminal_exits": {
+      "rust-visibility": 0,
+      "postgres": 137
+    },
+    "oom": false,
+    "preexisting_preserved": 815,
+    "unrelated_running": 8,
+    "cleanup_errors": [],
+    "live_at": "2026-09-27T21:39:52.115254+00:00",
+    "live_unchanged": 817,
+    "live_free_bytes": 71776878592,
+    "note": "PostgreSQL wrapper137 is deadline cleanup, not graceful engine shutdown/recovery evidence. Source, artifacts and817stable container projections rechecked. All five laboratories stopped-retained; own networks removed, datasets/private states preserved."
+  },
+  "review": {
+    "root": "Independently checked49capture payloads,1349exact Git files, both installed ELF hashes/worker binding,12literal page sets, cut/order/deadline/retention projections, unchanged eight-field projections for seven jobs, eight authority regressions and original five RED failures. Complete changed product/fixture boundaries read. Named decoding/scan/retention/key selection helpers preserve visible transaction completion; no new framework or crate.",
+    "ai": "Read-only AI static review found the no-issuer and post-grant-wait expiry defects, then inspected their correction and regressions without another counterexample. AI did not execute native tests or SSH. A separate offline AI evidence review confirms all five capture archives/payloads/Git manifests and final ELFs,33HTTP/12pages/8regressions. It identified the non-discriminating newer-job cut fixture and projection/session comparison scope; claims corrected and backdated/tied scenarios retained as open."
+  },
+  "not_qualified": [
+    "held/lost retention COMMIT",
+    "expired token and session during socket delivery",
+    "backdated/tied aged jobs and mixed load",
+    "raw retention mutation combinations and concurrent locks",
+    "generated client/private panel/browser pages",
+    "complete M1/Compose release journey",
+    "Absolute token expiry, current policy/grant/session revocation during pages, changed TTL/skew, replay/cancellation/exhausted resources and ambiguous-COMMIT custody require further practical cases.",
+    "Direct SQL SET CONSTRAINTS IMMEDIATE runs deferred lease validation early; no universal raw-SQL commit-time expiry guarantee. The actual Rust adapter keeps it deferred.",
+    "No production capacity, complete generated-client/UI/CLI journey, hosted Actions, Docker Hub release promotion or native Linux arm64 claim."
+  ]
+}

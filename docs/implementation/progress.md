@@ -14,18 +14,20 @@ execution while billing remains blocked. No public release, rename, Linux arm64,
 hosted CI or complete packaged-release qualification is claimed. An active goal
 covers the complete product; a bounded qualification does not complete it.
 
-Main HEAD before the correction candidate is unpublished78520fa7d3f64bd67c1ff36cca808126b1bcb2fb,
-tree3494ba3c200a4a721e27167e175221029caeee42. Private origin/main remains
-qualified ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47 (local ahead4 before the next candidate). No merge/rebase
-or other contributor changes. Root sole writer/integrator; current dirty files
-are the page regression fixtures, this checkpoint and inventory. catalog_guard_review
-completed the read-only static boundary review; findings recorded below. All agents idle.
+Main HEAD is unpublished f6770e99b21e57a6094316caa9b428f175773844,
+tree fb401b4852b91ed7029ff501e704f1249b8bc7e9. Private origin/main remains
+qualified ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47 (ahead5 before the evidence commit).
+No merge/rebase or other contributor changes. Root sole writer/integrator.
+Dirty documentation records the completed native page boundary. Concurrent root-owned
+OpenAPI/generated client/generator changes and packages/api-client/tests/job-pages.test.ts
+belong to the next client slice, excluded from this evidence commit. AI evidence
+review runs read-only; its findings narrowed the cut and SQL-projection claims.
 
 Active tasks: P08-T03 Step3 / P08-T04 Step3, thin P09-T09 Step2, and only P06-T03
 Step1/3 cursor prerequisites for actor-owned export discovery. No complete task,
 phase, M1 or selected-product completion.
 
-## Latest qualified responsibility
+## Retained cursor lifecycle boundary
 
 The [lifecycle report](evidence/p06-cursor-lifecycle-native-20260927.json) combines
 57native tests/Clippy at a11bcac with124original practical PASS events and67fault
@@ -52,8 +54,7 @@ not independent saved SQL snapshots of every backend/owner. No capacity claim.
 
 SQL0604 now applied and is checksum-immutable:
 fa416f1c192641503b71a4d683d56936f39d5d1c398a17f1867de20df0481bc8.
-It appends after0815;0603 stays reserved for scientific read pins. No issuer or
-retention writer yet. The immutable latest receipt owns lifecycle revision/active
+It appends after0815;0603 stays reserved for scientific read pins. The later page consumer below adds issuance and retention. The immutable latest receipt owns lifecycle revision/active
 selection; a per-key projection retains first activation, revocation and future
 expiry obligations. No second head table or unused worker registry.
 
@@ -161,65 +162,74 @@ Preserve Control→dataset/account/session→consumer→job→sorted-source lock
 validate server time after waits, retain buffers/custody through actual driver join,
 poison Control on unknownCOMMIT, and never repoll a consumed JoinHandle.
 
-## Active page implementation and next bounded action
+## Latest qualified responsibility and next bounded action
 
-HEAD before the correction candidate is78520fa7d3f64bd67c1ff36cca808126b1bcb2fb,
-tree3494ba3c200a4a721e27167e175221029caeee42; origin remains ef5b8b9. Four local
-candidate commits are unpublished. Root dirty product correction job_list.rs,
-private-administration contract, expiry fixture, checkpoint/inventory. Review
-agents idle; read-only AI review of the correction found no further counterexample.
-
-Implemented bounded actor pages,103byte confidential continuation, retention
-before delivery and explicit HTTP consumer; schema0816 now applied/immutable,
+The [native page report](evidence/p08-job-pages-native-20260927.json) qualifies
+actor-owned protocol1 export pages at f6770e9:81native tests/Clippy,33actual HTTP
+exchanges,12independently reconstructed page sets and eight authority regressions.
+Installed815→816 preserves selected original rows/xmin; all32migration checksums
+agree. Eight-field terminal projections for seven jobs remain unchanged (one succeeded empty export and six
+signed-event requests accepted under deliberate256MiB). No new signed execution.
+Schema0816 is now applied/immutable:
 f7ed51d54f735110a1a5a6a4db901568be833c223dcbd723aee02a7a60c3e090.
-Shared named row decoding, bounded scan and retention helpers keep transaction
-completion visible. No generic framework/crate. Client/panel not yet extended.
-Mac4domain/30HTTP/27schema tests and Clippy passed at initial productd860;
-current correction lib/bin Clippy and artifact checks passed, native GREEN pending.
 
-Original attempts retained under .research/implementation/job-pages/attempt-*:
-- d860dfb: native81tests/Clippy passed; final artifact binding failed because the
-  schema integration build overwrote Cargo's mutable parent without worker identity.
-  Harness now preserves installed pair immediately after ordered build. No SQL816.
-- b93ba83: installed artifacts verified, native81tests/Clippy passed, actual signed
-  seed readback/execution and815→816 upgrade preserve selected rows/xmin. Page client
-  failed before login due to stdlib import shadowing; corrected fixture only.
-- 9f3dd72 reused exactb93 artifacts,1349source files checked. Never-active empty/
-  terminal200 vs503 confirmed. Ordinary pages/cuts/no-touch/bindings passed. Live
-  grant wait400; expired1.25s wait disconnected, no HTTP verdict. Default half-
-  remaining policy SQL budget can be~1.25s; a setup limitation, not auth RED.
-- 78520fa reused exactb93 artifacts with heartbeat500ms (same TTL/deadline rules).
-  Actual live grant wait400 before expiry; expired wait400 after expiry instead
-  of401. No-issuer empty/terminal200 both before activation and after final revoke
-  instead of503. These five discriminator failures are the expected RED. Original
-  six comparisons/rotation/revocation/seven unchanged jobs, no idle touch and zero
-  terminal backends retained. All captures/manifests/hash verification preserved;
-  failures remain INCOMPLETE, never rewritten as qualification PASS.
+Bounded scan precedes mutable state/admission-cut filtering; empty pages can advance.
+Independent libsodium opens the103byte continuation. Original900s lifetime and
+expiry+30s retention survive continuation/restart/A→B issuance; revokeA refusesA,
+B still works, revokeB leaves no issuer. Initial reads and four wait fixtures preserve session timestamps/xmin.
+Current loaded active issuer is required even for empty/terminal pages. Server
+time is sampled after grant AND issuer waits, before token-specific responses.
+Actual live waits return400before expiry; expired waits401after expiry.1.25s SQL
+session fixtures keep guards/audits;500ms fixture heartbeat leaves production5s
+TTL/deadline unchanged. No configurable-login lifetime qualification.
+Named row decoding plus scan/retention/key-selection helpers reduce repetition
+without hiding transaction completion. No generic framework/crate; shared logical
+export types and atomic Rocks admission remain as previously reviewed.
 
-Current correction selects an active loaded/unrevoked issuer on EVERY page under
-existing dataset exclusion, then resamples server time after grant AND issuer
-waits before opening a token. The selected key/deadline is reused for retention;
-no extra duplicate query, no transaction/SQL schema change. Final authority/expiry,
-known COMMIT/rollback and actual socket gates remain. Added issuer-table live/
-expired waits alongside the proven grant discriminator; these additions NOT_RUN.
-Read-only AI review inspected correction and fixtures. Documented SQL limit:
-SET CONSTRAINTS IMMEDIATE runs a deferred lease check early; the actual adapter
-keeps it deferred. Do not claim universal raw-SQL commit-time expiry.
+Four original INCOMPLETE outcomes remain linked from that report: d860 artifact
+binding overwritten by a later Cargo schema test; b93 fixture stdlib import
+shadowing;9f disconnected expiry request without a verdict;785 five expected RED
+failures proving absent-issuer and post-wait expiry defects. f677 corrects both.
+Read-only AI reviewed product/fixture corrections; root verified49safe payloads,
+1349Git files, installed hashes and independent rows/deadlines. Raw-SQL limitation:
+SET CONSTRAINTS IMMEDIATE runs a deferred lease check early; actual Rust leaves
+it deferred. No universal raw-SQL commit-time expiry guarantee.
 
-All four page labs now stopped-retained (full identities in inventory). Latest785 ownership is recorded in the inventory; verify it before reuse.
-No active BigBrotr experiment. Retired ONLY d860 out/build/target and cargo-home:
-3,497,406,464allocated bytes after ownership/mount/root/FD/maps audit.37retained
-source/evidence/native artifact hashes verified; datasets/private state unchanged.
-Initial post-removal audit compared volatile full container State and failed;
-original INCOMPLETE preserved. Follow-up stable projections equal785terminal
-census,815containers/eight unrelated running; no container/volume deletion.
-At21:28:57UTC free went72,233,619,456→75,731,017,728bytes. Preserve8fa compiler cache,
-b93 exact maincc5e58660eae911ed8bc0baf77d80b6278ca043128b79bfcb35620a9a75cb507,
-worker3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353,
-4e original signed producer/assets and all previously inventoried dependencies.
+All five page labs are stopped-retained; full identities in inventory key
+implementation_job_pages_20260927. Latest root export-runtime-f6770e9,
+owner49efbd1cfc6497dd0a3086c72e43eda6, orchestrator2538062/start392686419 now
+absent-or-terminal. Runner exits0; PG wrapper137/noOOM is cleanup, not graceful
+engine shutdown evidence. Own network removed after owner/no-endpoint audit.
+Fresh21:39:52UTC review verifies817stable container projections/eight unrelated
+running, clean sources and unchanged artifacts. No active BigBrotr experiment.
+Free71,776,878,592bytes (~66.8GiB). Current main hash
+ac15753aa08abee07ccc76431b9a407544427ed269c53c09ba4435628ff4f5ec;
+worker3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
 
-Next: exact-Git native build and practical GREEN retry for the two confirmed
-page-authority defects, retaining all original outcomes. Then close remaining
-retention COMMIT-loss/held/replay and cursor/session/delivery checks; introduce
-actual generated client/panel/browser consumer. Aged/mixed measurements remain
-open; no complete list/rotation/M1/Compose release or capacity claim.
+Retired ONLY d860 out/build/target and cargo-home:3,497,406,464allocated bytes
+after ownership/mount/root/FD/maps audit.37retained source/evidence/native hashes
+verified; datasets/private state unchanged. Original post-removal audit failed
+at volatile full State comparison; its INCOMPLETE outcome is retained. Follow-up
+stable projections equal785terminal census. Free72,233,619,456→75,731,017,728bytes
+before the new build. No container/volume deletion. Preserve8fa compiler cache,
+b93 original tested artifacts,4e signed producer/assets and protected dependencies.
+
+Next visible action remains P08-T03 Step3 / thin P09-T09 Step2: generated typed
+client and a session-owned private panel page to reopen exports without a known ID.
+Closed OpenAPI query/response shapes, canonical lossless integer filters, effective
+page size, descending order,128KiB streamed cap and typed400/409/410 errors are the
+next bounded client implementation. Five discriminating tests first failed because listJobs was absent, then pass with
+the dirty implementation; client typecheck and generated drift check pass on
+Node26.4.0. Original .research/implementation/job-pages/client-red.log preserved.
+An initial Ajv standalone length helper used CommonJS require in ESM; the ASCII
+cursor length is now expressed in its bounded regex with identical accepted input,
+avoiding an unnecessary runtime dependency. No actual Node/page-browser evidence yet. Keep current page
+only; explicit next follows even an empty page, never automatic fetch-all/retry.
+
+Remaining native page acceptance includes held/lost retention COMMIT on both sides,
+absolute token expiry/current grant-policy-session revocation, cancellation and
+socket delivery, changed TTL/skew, backdated/tied page workloads and mixed/aged
+measurements. Broader UI/CLI/jobs, M1 clean Compose and selected product stay open.
+Do not repeat unchanged broad suites without a changed risk. Finish evidence review
+and coherent documentation commit/push, then implement the client and actual
+Node/browser consumer while retaining these native gates.

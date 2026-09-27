@@ -290,6 +290,12 @@ both fence orders, ambiguous/held COMMIT and engine restart are exercised.
 Issued-expiry retention, actual page encryption/authorization and complete
 Step1/3 acceptance remain open; no browser/capacity/multiworker claim follows.
 
+The first operational consumer now has [native page evidence](evidence/p08-job-pages-native-20260927.json)
+on f6770e9 for actual encrypted continuation, original absolute lifetime/retention,
+restart, issuer rotation/revocation and session expiry after SQL waits. Additive0816
+preserves0604 checksums. Scientific pins, retention fault/recovery and the remaining
+Step1/3 acceptance are still open; this does not qualify scientific pagination.
+
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;
 `migrations/postgres/0603_read_pins.sql`;
 `contracts/read/v1/cursor-envelope.schema.json`; `config/examples/read.toml`;
