@@ -153,7 +153,9 @@ refuses startup if its actual loaded snapshot omits the active key or a required
 decrypt key. The receipt does not prove distribution to another process or grant
 page access. The [first operational consumer](../implementation/evidence/p08-job-pages-native-20260927.json)
 now has scoped issuance/retention/restart/rotation evidence. Fault, expiry, load
-and full browser acceptance still gate complete pagination.
+and remaining consumer acceptance still gate complete pagination. The
+[thin client/panel matrix](../implementation/evidence/p09-job-pages-consumer-native-20260928.json)
+now qualifies explicit pages and account isolation, not the full fault envelope.
 The [native lifecycle qualification](../implementation/evidence/p06-cursor-lifecycle-native-20260927.json)
 exercises actual CLI/Control rotation, irreversible revocation, missing-active-key
 refusal, both lock orders, unknown-COMMIT retry and PostgreSQL restart. This is a

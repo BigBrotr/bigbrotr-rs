@@ -120,9 +120,14 @@ clamps to200. Repeat the same filters and effective page size with `next_cursor`
 An empty page can still advance; only a null continuation means the listing has
 ended. A fresh listing includes new admissions. Refused/changed/expired cursors
 return400/409/410 respectively and require explicit correction or a new listing.
-The typed client and **Your exports** panel now implement this consumer, with
-practical qualification in progress. They do not automatically fetch every page
-or turn operational metadata into download authority.
+The typed client and **Your exports** panel have
+[scoped installed evidence](../implementation/evidence/p09-job-pages-consumer-native-20260928.json)
+on Chromium/Firefox/WebKit at both mounts: 42 stages and120 independently reconstructed
+pages, real restart, blocked-read logout, other actor and account revocation.
+They do not automatically fetch every page or turn metadata into download authority.
+The original insufficient-headroom setup remains recorded; the lab now checks the
+unchanged 64 GiB completion reserve before actual execution. Full commit/delivery
+fault, expiry, load and accessibility acceptance remains open.
 
 `POST /management/v1/jobs` accepts the closed `ExportJobCommand` in the
 [management contract](../../contracts/management/v1/openapi.yaml). Supply the

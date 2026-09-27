@@ -422,6 +422,15 @@ seven-field projections for seven jobs stay unchanged. Named decoding/scan/reten
 transaction completion. Held/lost retention COMMIT, absolute expiry and changed
 authority/delivery, mixed/aged workloads and full client/UI/CLI acceptance remain
 open. This closes only the report's bounded responsibility, not Step3.
+The [first typed-client/private-panel discovery consumer](evidence/p09-job-pages-consumer-native-20260928.json)
+now adds 42 stages and 120 independent page sets across six actual browser/mount pairs,
+including explicit paging/reopen, live SQL-blocked logout and account revocation.
+It reuses the original Rust ELF with separately identified fresh bundles. The
+[original capacity setup failure](evidence/p09-job-pages-capacity-incomplete-20260928.json)
+and scoped obsolete-cache retirement are preserved. Next acceptance targets actual
+retention COMMIT loss/hold and driver custody, then remaining pagination limits;
+these prevent claiming complete discovery, but require no adjacent scientific
+pagination subsystem.
 
 Role/relay/artifact summaries share the page-size/authorization rules. Roles and
 relays order by immutable role-instance and endpoint ID respectively; artifacts

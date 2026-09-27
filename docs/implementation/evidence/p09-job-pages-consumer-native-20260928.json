@@ -1,0 +1,1166 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P09-T09"
+  ],
+  "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+  "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+  "scope": "Typed client and production private export-discovery panel on Chromium/Firefox/WebKit at root and /control/. Bounded operational metadata only; does not complete any task, full pagination fault/load acceptance, M1 or release.",
+  "implementation": {
+    "contract": "Closed generated JobListQuery/JobPage and typed 400/409/410. Canonical lossless i64/u64, exact filter/order/row bindings; 128 KiB streamed successful page cap, 16 KiB other/error cap; no fetch-all or automatic restart.",
+    "panel": "One session-owned current page, state/UTC-date/page-size filters and explicit next including empty advancing pages. New listing drops previous continuation; filter changes abort and clear without dispatch. Selecting a row requests current detail; reload/logout/account change forget page.",
+    "structure": "Small JobPageModel and JobList component reuse the existing session lifecycle, client bounds, labels and detail lookup. No new framework, crate, browser store or dependency."
+  },
+  "environment": {
+    "target": "Linux amd64 native Tux",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "node": "26.4.0",
+    "pnpm": "9.15.9",
+    "playwright": "1.63.0",
+    "pnpm_lock_sha256": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+    "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94",
+    "pnpm_sha256": "98e6b99a881d64a1cc982c3e60aa260bf02160386b12e74475e06486dc74b090",
+    "bundles_by_source": {
+      "45b7e48c8732301c9487a451c4e34472a4b857bb": {
+        "root": {
+          "manifest_sha256": "547adbdaa33c0048cc7010cf5da2af023bca16dc9b2a6301a69d2a0ba35f44a8",
+          "files": 13,
+          "bytes": 205159
+        },
+        "control": {
+          "manifest_sha256": "95792b60da1067268900329002537ee64a717a8d42b3c348d850c18436b84e91",
+          "files": 13,
+          "bytes": 205193
+        }
+      },
+      "3bdea1f49f812fc9750c7469cef44eae2cdbede3": {
+        "root": {
+          "manifest_sha256": "df3cc442618ff05b0d101d562bff5b373caa17f92b2ef38d93f62d3331aecd3a",
+          "files": 13,
+          "bytes": 205154
+        },
+        "control": {
+          "manifest_sha256": "4aa33924e8358e333e24bb88bf19e2df8a67cf4f428e5033ce4cfb9aaeee753f",
+          "files": 13,
+          "bytes": 205188
+        }
+      }
+    }
+  },
+  "artifact_identity": {
+    "runtime_source": "f6770e99b21e57a6094316caa9b428f175773844",
+    "runtime_tree": "fb401b4852b91ed7029ff501e704f1249b8bc7e9",
+    "runtime_artifacts": {
+      "bigbrotr": "ac15753aa08abee07ccc76431b9a407544427ed269c53c09ba4435628ff4f5ec",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "frontend_changes": {
+      "apps/admin/src/lib/JobList.svelte": {
+        "current": "8b2f2a0ba1543f8f4824a1991e4fd2fc975ac533c367b9585d2093271d276275",
+        "runtime_source": null
+      },
+      "apps/admin/src/lib/JobStatus.svelte": {
+        "current": "903831834b816ead87e5f734ff4d578c45095db72bbaa8220b103e977bc195dc",
+        "runtime_source": "93e9aab967e13eb13fc932d46836f60d7abe497c31124f60d840a225ba025bc6"
+      },
+      "apps/admin/src/lib/jobs.ts": {
+        "current": "557b181759675dd8a519da1f9a1d80b57b77bd3e7f319a9d72e982228825c3c4",
+        "runtime_source": "5ca92aaa9cffb5035c7e09c26058dab9de1c58cbe441f2721d735f85a535c069"
+      },
+      "apps/admin/src/routes/style.css": {
+        "current": "b97b3156b6e0d616f749b5559c09aed7be773804a28e3be4b2868358781f6bdf",
+        "runtime_source": "0470ff61cc22e6761dc16322739c2d987b6e9c18daf21d202ec4b354f1fdbdfc"
+      },
+      "apps/admin/tests/unit/job-pages.test.ts": {
+        "current": "fc0a982a927936285f00d123837162bbafd43914479984a61d3c99488981ad26",
+        "runtime_source": null
+      },
+      "contracts/management/v1/openapi.yaml": {
+        "current": "91fcffa2cfea40e6cab7765b51a34f308156af407653c8281451be0fe0d6d974",
+        "runtime_source": "1942adab43982983b7e443f7e4dfdb9a65b9013716476f6f9f8cfea42d0c86a6"
+      },
+      "packages/api-client/src/generated/management.d.ts": {
+        "current": "84d76cb9914e00ff19d9c334edd8fb2fc3f364dc3571e19e0ae79bf492c26a2f",
+        "runtime_source": "985bec73f09af640a2c2458234bebda9d7f9b5673a67a2c82894a4fb90c4c6a2"
+      },
+      "packages/api-client/src/generated/validators.d.ts": {
+        "current": "7c24da178f44452a00a8fbceeef71eb58197e6783d7d3efa9a38f43591b2112e",
+        "runtime_source": "7b1428201a16be2e472f7b254f3679420630bdd3d9ed7872ccf38e51669181bd"
+      },
+      "packages/api-client/src/generated/validators.js": {
+        "current": "a9873996c43da93f1b205383464a32a7220542af75d9b466ab320e6c19585a7d",
+        "runtime_source": "ca7f4992b77be706ba79e66433cb1b2062cb4c7db78cfeef63885e34459a37de"
+      },
+      "packages/api-client/src/management.ts": {
+        "current": "c91ad8122dcc2cd3b22856e4cf236bdf46aff654621a087726efbebbd07ca09d",
+        "runtime_source": "e51f450e35eb65ae57eab3f6b9ecf1b792cc577b74555408a23796774891a4be"
+      },
+      "packages/api-client/tests/job-pages.test.ts": {
+        "current": "4c6eee3fd99dd2851731100cb80f47672299a486f576758db584d29d5985d7c3",
+        "runtime_source": null
+      },
+      "tools/frontend/management-contract.mjs": {
+        "current": "8a0ce93b662729039b82e1a7166f95f38fe395fdc675197682fdca0d66aa3f40",
+        "runtime_source": "967cdca7fac9dbeaf222dbc66474806d1959b641397a8890d72180d659a80b13"
+      }
+    },
+    "assertion": "Same f677 parent/worker ELF, all remaining product/build inputs equal; current frontend built and verified separately. Original 4e native producer/readers seed the 0813 archive and successful empty export before actual upgrades to 0816. No new Rust test/Clippy/build claim."
+  },
+  "executed": {
+    "native_frontend": "23 client and 26 admin model tests, type/Svelte checks, generated drift, wire/storage oracle checks and two production bundles PASS. Six new client and six new model regressions; recorded pre-implementation RED for missing methods and stale cursor reset. Exact source/native identities retained.",
+    "stages": 42,
+    "independent_page_sets": 120,
+    "node_http_exchanges": 60,
+    "browser_http_responses": 150,
+    "workload": "Each isolated pair starts one actual completed empty export and five signed-event HTTP-accepted requests. Deliberate 256 MiB defers new execution. Six actor-owned jobs, status-only other actor, two-row pages; no new signed-export execution or capacity claim.",
+    "journeys": [
+      "actual-typed-client-pages-and-refusals",
+      "production-page-explicit-discovery-and-detail",
+      "empty-pages-date-filters-and-no-fetch-all",
+      "continuation-survives-control-restart-and-reload-forgets-cursor",
+      "other-account-sees-no-prior-page",
+      "logout-cancels-actual-blocked-page",
+      "actual-account-revocation-clears-page"
+    ],
+    "durable_oracle": "Ten complete retained ledgers including xmin equal at nine command boundaries and final: jobs/admissions/input bounds/export definitions/execution units/artifacts/files/snapshot leases/archive pins/retention claims. Does not assert all database state unchanged: session/audit/key retention effects are separate.",
+    "session_oracle": "Saved SQL projections show unchanged idle/last_seen/xmin for ordinary Node and browser reads between named before/after commands. Immediate restart equality is a runner assertion; no saved extra post-restart session snapshot.",
+    "blocked_read": "Actual Control account-row Lock waiter bound to PID/backend_start after restart. Logout removes the component; the specific continuation records requestfailed, not requestfinished. Release within 3 seconds; parent/socket cleanup and zero backends checked.",
+    "browser_oracle": "Actual responses, complete literal row sets and request terminal events retained; no mock/interception. DOM order/detail focus/no automatic paging/no overflow are executed fixture assertions. At 375 px component screenshot inspected separately for every pair; no full accessibility/device claim.",
+    "storage": "Only existing numeric SvelteKit scroll positions and empty snapshot allowed; native resume IndexedDB store empty after account revocation. No cursor/page persistence."
+  },
+  "original_incomplete": "docs/implementation/evidence/p09-job-pages-capacity-incomplete-20260928.json",
+  "recipes": [
+    "experiments/export-execution/lab.py REVISION TREE --runtime-job-pages-browser f6770e99b21e57a6094316caa9b428f175773844 [ENGINE-MOUNT]",
+    "Exact Git 45b7e48 for four original pairs; 3bdea1f corrects only fixture capacity preflight for Firefox/root and Chromium/control. All other product/build inputs identical, fresh bundles differ in revision attribution. First Chromium/root has no suffix; other pairs have explicit engine-mount suffix. Fresh isolated databases/containers and source/build manifests for each."
+  ],
+  "review": {
+    "root": "Read complete changed owning product/client/model/fixture boundaries and relevant contracts/callers. Independently reconstructed every saved page and ten-ledger comparisons, verified safe payload/source hashes, installed artifacts and static bundle manifests. Reviewed six mobile component captures.",
+    "ai": "Read-only AI product/fixture review corrected five fixture gaps before native execution: SvelteKit storage expectation, discriminating requestfailed, waiter identity, independent lower date bound and staged result preservation/launch deadline. Independent Chromium/root evidence review found no discrepancy and identified assertion-only boundaries recorded above; AI executed no tests/SSH.",
+    "local_monitoring": "First matrix polling wrapper read resources.json before the next laboratory created it and stopped. Original local log retained as consumer-matrix.log; native WebKit/root continued unaffected. Read-only bounded retry fixed polling; resumed log separate. No product/native failure was converted to PASS."
+  },
+  "runs": [
+    {
+      "pair": "chromium-root",
+      "resources": {
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "owner": "f218d0ec130cf59f690cdb132297cf2f",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45b7e48",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "frontend",
+            "id": "ef23e4a77e83e688532d478a074efdd5d34c552d5a26d8630b97fe88bf619148"
+          },
+          {
+            "name": "postgres",
+            "id": "ded8d9ee43d18bee6fc4f19fd3b86364f5f982efa26b0308f81027850cd5f318"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "39984f4afec8774e9c9bc8ff142debe9e62a53189489544f10056a2048cc9875"
+          },
+          {
+            "name": "job-pages-browser",
+            "id": "24204d77dfc445a5a2bb625d42af24dc92fb9602d4b40f1c353d7f406f5d7881"
+          }
+        ],
+        "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "owner_label": "org.bigbrotr.export-execution",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "started_at": "2026-09-27T22:04:05.930905+00:00",
+        "runtime_profile": "job-pages-browser",
+        "adapter_profile": null,
+        "schema_profile": null,
+        "job_pages_browser_pair": "chromium-root",
+        "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+        "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+        "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+        "network_id": "6d45f9be588daf234d2eca2978b188966ca5a42c6245a52f0c4dfbc0bcba922d",
+        "postgres_id": "ded8d9ee43d18bee6fc4f19fd3b86364f5f982efa26b0308f81027850cd5f318",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "39984f4afec8774e9c9bc8ff142debe9e62a53189489544f10056a2048cc9875",
+        "network_state": "removed after owner/no-endpoint audit",
+        "terminal_audit": "terminal-audit.json"
+      },
+      "execution_capacity": null,
+      "orchestrator": {
+        "pid": 2563269,
+        "start_ticks": "392889940",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499"
+      },
+      "capture": {
+        "root": ".research/implementation/job-pages/attempt-45b7e48/capture",
+        "files": 109,
+        "sha256": "98590164f5022c67037779a09eb3beebe3d3ad5a14cc25a45afa8d0fd37015bc",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "source_files": 1355,
+        "manifest_sha256": "99bd8e70731bd166c2d0b5fe82444f65f07c8d894e8bdaddd30417cbdb55b5c6"
+      },
+      "review": {
+        "status": "PASS",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "engine": "chromium",
+        "mount": "root",
+        "page_sets": 20,
+        "stages": 7,
+        "node_exchanges": 10,
+        "browser_exchanges": 25,
+        "ledger_sizes": {
+          "jobs": 6,
+          "job_admissions": 6,
+          "job_input_bounds": 6,
+          "export_jobs": 6,
+          "export_execution_units": 1,
+          "artifacts": 1,
+          "artifact_files": 1,
+          "snapshot_leases": 15,
+          "archive_snapshot_pins": 15,
+          "retention_claims": 15
+        },
+        "blocked_seconds": 1.8739740680903196,
+        "bundles": {
+          "root": {
+            "manifest_sha256": "547adbdaa33c0048cc7010cf5da2af023bca16dc9b2a6301a69d2a0ba35f44a8",
+            "files": 13,
+            "bytes": 205159
+          },
+          "control": {
+            "manifest_sha256": "95792b60da1067268900329002537ee64a717a8d42b3c348d850c18436b84e91",
+            "files": 13,
+            "bytes": 205193
+          }
+        },
+        "capture_manifest_sha256": "99bd8e70731bd166c2d0b5fe82444f65f07c8d894e8bdaddd30417cbdb55b5c6",
+        "container_exits": {
+          "frontend": 0,
+          "job-pages-browser": 0,
+          "rust-visibility": 0,
+          "postgres": 137
+        }
+      },
+      "browser": {
+        "version": "153.0.8010.12",
+        "executables": [
+          {
+            "path": "/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+            "sha256": "ded93a9c9a53a1ae040f08124badcca95c938e9d5015ff340c3b5538c41bf39e"
+          }
+        ],
+        "cases": [
+          {
+            "name": "actual-typed-client-pages-and-refusals",
+            "status": "PASS",
+            "milliseconds": 1354
+          },
+          {
+            "name": "production-page-explicit-discovery-and-detail",
+            "status": "PASS",
+            "milliseconds": 1639
+          },
+          {
+            "name": "empty-pages-date-filters-and-no-fetch-all",
+            "status": "PASS",
+            "milliseconds": 2088
+          },
+          {
+            "name": "continuation-survives-control-restart-and-reload-forgets-cursor",
+            "status": "PASS",
+            "milliseconds": 1630
+          },
+          {
+            "name": "other-account-sees-no-prior-page",
+            "status": "PASS",
+            "milliseconds": 448
+          },
+          {
+            "name": "logout-cancels-actual-blocked-page",
+            "status": "PASS",
+            "milliseconds": 3154
+          },
+          {
+            "name": "actual-account-revocation-clears-page",
+            "status": "PASS",
+            "milliseconds": 1472
+          }
+        ],
+        "screenshot_sha256": "d5a11547d792da3e81faeef34a196469d3abe311e494db3a9e2e7e24e5d908a6"
+      },
+      "terminal": {
+        "status": "PASS_PENDING_CAPTURE",
+        "preexisting_preserved": true,
+        "preexisting_count": 817,
+        "unrelated_running": 8,
+        "cleanup_errors": [],
+        "free_bytes": 71155707904
+      }
+    },
+    {
+      "pair": "chromium-control",
+      "resources": {
+        "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+        "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+        "owner": "08872c840b78feece43151e17d5ce818",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3bdea1f-chromium-control",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "frontend",
+            "id": "3647249c1c5c092b98b070bcaab03ab1f9f4c1a1656d55ff09af292fba81831d"
+          },
+          {
+            "name": "postgres",
+            "id": "2acff56f38210a164ba94bb592f2840a143b94398a8e619a7318ddfc7dba68ae"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "e8dfd30027648dd40f496828779d818e24e704c6087bd233418861cb2a1c1824"
+          },
+          {
+            "name": "job-pages-browser",
+            "id": "3b8662e8d958537674e64a13ee483281a5f05dde73f43a5ef6965aa5aa4c6bb5"
+          }
+        ],
+        "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "owner_label": "org.bigbrotr.export-execution",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "started_at": "2026-09-27T22:25:10.984950+00:00",
+        "runtime_profile": "job-pages-browser",
+        "adapter_profile": null,
+        "schema_profile": null,
+        "job_pages_browser_pair": "chromium-control",
+        "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+        "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+        "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+        "network_id": "8942ecf98cc3263a9e6fddc11c3a4d083705592588c96593b9ee9d897595843b",
+        "postgres_id": "2acff56f38210a164ba94bb592f2840a143b94398a8e619a7318ddfc7dba68ae",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "e8dfd30027648dd40f496828779d818e24e704c6087bd233418861cb2a1c1824",
+        "network_state": "removed after owner/no-endpoint audit",
+        "terminal_audit": "terminal-audit.json"
+      },
+      "execution_capacity": {
+        "reserve": {
+          "applicability": "selected",
+          "default_add_us": "0",
+          "default_from": null,
+          "deployment_locked": true,
+          "reload": "restart",
+          "source": "schema-default",
+          "value": "68719476736"
+        },
+        "growth_bytes": 72351744,
+        "filesystems": [
+          {
+            "path": "/out/signed_normal/export-destination",
+            "block_bytes": 4096,
+            "available_blocks": 17302297,
+            "free_bytes": 70870208512
+          },
+          {
+            "path": "/out/private-grant-http/scratch",
+            "block_bytes": 4096,
+            "available_blocks": 17302297,
+            "free_bytes": 70870208512
+          }
+        ]
+      },
+      "orchestrator": {
+        "pid": 2649106,
+        "start_ticks": "393016447",
+        "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+        "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a"
+      },
+      "capture": {
+        "root": ".research/implementation/job-pages/attempt-3bdea1f-chromium-control/capture",
+        "files": 109,
+        "sha256": "9fca664f646ee473252ef96946c80285c82bbecfdeb7d7dba27674ab088cf380",
+        "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+        "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+        "source_files": 1356,
+        "manifest_sha256": "7d271d340978d5b9f4caec70a3cebf831e73e6cb9529b57f8bcf54725dedb03e"
+      },
+      "review": {
+        "status": "PASS",
+        "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+        "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+        "engine": "chromium",
+        "mount": "control",
+        "page_sets": 20,
+        "stages": 7,
+        "node_exchanges": 10,
+        "browser_exchanges": 25,
+        "ledger_sizes": {
+          "jobs": 6,
+          "job_admissions": 6,
+          "job_input_bounds": 6,
+          "export_jobs": 6,
+          "export_execution_units": 1,
+          "artifacts": 1,
+          "artifact_files": 1,
+          "snapshot_leases": 15,
+          "archive_snapshot_pins": 15,
+          "retention_claims": 15
+        },
+        "blocked_seconds": 1.5345073798671365,
+        "bundles": {
+          "root": {
+            "manifest_sha256": "df3cc442618ff05b0d101d562bff5b373caa17f92b2ef38d93f62d3331aecd3a",
+            "files": 13,
+            "bytes": 205154
+          },
+          "control": {
+            "manifest_sha256": "4aa33924e8358e333e24bb88bf19e2df8a67cf4f428e5033ce4cfb9aaeee753f",
+            "files": 13,
+            "bytes": 205188
+          }
+        },
+        "capture_manifest_sha256": "7d271d340978d5b9f4caec70a3cebf831e73e6cb9529b57f8bcf54725dedb03e",
+        "container_exits": {
+          "frontend": 0,
+          "job-pages-browser": 0,
+          "rust-visibility": 0,
+          "postgres": 137
+        }
+      },
+      "browser": {
+        "version": "153.0.8010.12",
+        "executables": [
+          {
+            "path": "/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+            "sha256": "ded93a9c9a53a1ae040f08124badcca95c938e9d5015ff340c3b5538c41bf39e"
+          }
+        ],
+        "cases": [
+          {
+            "name": "actual-typed-client-pages-and-refusals",
+            "status": "PASS",
+            "milliseconds": 1441
+          },
+          {
+            "name": "production-page-explicit-discovery-and-detail",
+            "status": "PASS",
+            "milliseconds": 1374
+          },
+          {
+            "name": "empty-pages-date-filters-and-no-fetch-all",
+            "status": "PASS",
+            "milliseconds": 1809
+          },
+          {
+            "name": "continuation-survives-control-restart-and-reload-forgets-cursor",
+            "status": "PASS",
+            "milliseconds": 1429
+          },
+          {
+            "name": "other-account-sees-no-prior-page",
+            "status": "PASS",
+            "milliseconds": 332
+          },
+          {
+            "name": "logout-cancels-actual-blocked-page",
+            "status": "PASS",
+            "milliseconds": 3147
+          },
+          {
+            "name": "actual-account-revocation-clears-page",
+            "status": "PASS",
+            "milliseconds": 1198
+          }
+        ],
+        "screenshot_sha256": "46ac9c080632e2fa006e1986fc70272d55bad53c8f970134a33e43c1328d3862"
+      },
+      "terminal": {
+        "status": "PASS_PENDING_CAPTURE",
+        "preexisting_preserved": true,
+        "preexisting_count": 840,
+        "unrelated_running": 8,
+        "cleanup_errors": [],
+        "free_bytes": 70866915328
+      }
+    },
+    {
+      "pair": "firefox-root",
+      "resources": {
+        "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+        "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+        "owner": "2bdf7ae6a1b0a146f924bf6ccd1d2a39",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3bdea1f-firefox-root",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "frontend",
+            "id": "91fb1cd4380be69bd0b9f3d02cf2f10ccf9cdfa86a0e13987ec96e73729051b4"
+          },
+          {
+            "name": "postgres",
+            "id": "b92d3e40bc7c6ef80094c7627688a4de6e4525176b2be1d45a80412a34110291"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "cb7357eb9fb14c380b76cd32dd3dcd15d6d307e62cfc7b163551ea6a51b47c89"
+          },
+          {
+            "name": "job-pages-browser",
+            "id": "6d19a1512148def04a9e1de6859f4d3ba07d5b866ea73b586ef0ec5224530de4"
+          }
+        ],
+        "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "owner_label": "org.bigbrotr.export-execution",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "started_at": "2026-09-27T22:22:47.015121+00:00",
+        "runtime_profile": "job-pages-browser",
+        "adapter_profile": null,
+        "schema_profile": null,
+        "job_pages_browser_pair": "firefox-root",
+        "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+        "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+        "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+        "network_id": "fe2aff9fef0f792d4ef60dba31a43f17cd2242ded2df63daf9605d25474655f0",
+        "postgres_id": "b92d3e40bc7c6ef80094c7627688a4de6e4525176b2be1d45a80412a34110291",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "cb7357eb9fb14c380b76cd32dd3dcd15d6d307e62cfc7b163551ea6a51b47c89",
+        "network_state": "removed after owner/no-endpoint audit",
+        "terminal_audit": "terminal-audit.json"
+      },
+      "execution_capacity": {
+        "reserve": {
+          "applicability": "selected",
+          "default_add_us": "0",
+          "default_from": null,
+          "deployment_locked": true,
+          "reload": "restart",
+          "source": "schema-default",
+          "value": "68719476736"
+        },
+        "growth_bytes": 72351744,
+        "filesystems": [
+          {
+            "path": "/out/signed_normal/export-destination",
+            "block_bytes": 4096,
+            "available_blocks": 17456609,
+            "free_bytes": 71502270464
+          },
+          {
+            "path": "/out/private-grant-http/scratch",
+            "block_bytes": 4096,
+            "available_blocks": 17456609,
+            "free_bytes": 71502270464
+          }
+        ]
+      },
+      "orchestrator": {
+        "pid": 2633890,
+        "start_ticks": "393002049",
+        "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+        "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a"
+      },
+      "capture": {
+        "root": ".research/implementation/job-pages/attempt-3bdea1f-firefox-root/capture",
+        "files": 109,
+        "sha256": "0ea2f0ca852bdd0f48d602c717584f9223a190ba2fae63e74a4b580f9bddb783",
+        "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+        "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+        "source_files": 1356,
+        "manifest_sha256": "ceb1471a8fef679b6f5c4ba09429ba17c1c1d06b6118ea7adf9a596c515b6b5b"
+      },
+      "review": {
+        "status": "PASS",
+        "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+        "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+        "engine": "firefox",
+        "mount": "root",
+        "page_sets": 20,
+        "stages": 7,
+        "node_exchanges": 10,
+        "browser_exchanges": 25,
+        "ledger_sizes": {
+          "jobs": 6,
+          "job_admissions": 6,
+          "job_input_bounds": 6,
+          "export_jobs": 6,
+          "export_execution_units": 1,
+          "artifacts": 1,
+          "artifact_files": 1,
+          "snapshot_leases": 15,
+          "archive_snapshot_pins": 15,
+          "retention_claims": 15
+        },
+        "blocked_seconds": 1.697350926231593,
+        "bundles": {
+          "root": {
+            "manifest_sha256": "df3cc442618ff05b0d101d562bff5b373caa17f92b2ef38d93f62d3331aecd3a",
+            "files": 13,
+            "bytes": 205154
+          },
+          "control": {
+            "manifest_sha256": "4aa33924e8358e333e24bb88bf19e2df8a67cf4f428e5033ce4cfb9aaeee753f",
+            "files": 13,
+            "bytes": 205188
+          }
+        },
+        "capture_manifest_sha256": "ceb1471a8fef679b6f5c4ba09429ba17c1c1d06b6118ea7adf9a596c515b6b5b",
+        "container_exits": {
+          "frontend": 0,
+          "job-pages-browser": 0,
+          "rust-visibility": 0,
+          "postgres": 137
+        }
+      },
+      "browser": {
+        "version": "155.0",
+        "executables": [
+          {
+            "path": "/ms-playwright/firefox-1543/firefox/firefox",
+            "sha256": "062272ac4d851eade5b75db2dc7c14569d96cb3ca38f949337cdc1b74367e35b"
+          }
+        ],
+        "cases": [
+          {
+            "name": "actual-typed-client-pages-and-refusals",
+            "status": "PASS",
+            "milliseconds": 1302
+          },
+          {
+            "name": "production-page-explicit-discovery-and-detail",
+            "status": "PASS",
+            "milliseconds": 1749
+          },
+          {
+            "name": "empty-pages-date-filters-and-no-fetch-all",
+            "status": "PASS",
+            "milliseconds": 1990
+          },
+          {
+            "name": "continuation-survives-control-restart-and-reload-forgets-cursor",
+            "status": "PASS",
+            "milliseconds": 1434
+          },
+          {
+            "name": "other-account-sees-no-prior-page",
+            "status": "PASS",
+            "milliseconds": 432
+          },
+          {
+            "name": "logout-cancels-actual-blocked-page",
+            "status": "PASS",
+            "milliseconds": 2961
+          },
+          {
+            "name": "actual-account-revocation-clears-page",
+            "status": "PASS",
+            "milliseconds": 1062
+          }
+        ],
+        "screenshot_sha256": "5bcbe64f66af582c1eb6bb55be735f5d88110609803748fdbd22210c02042db4"
+      },
+      "terminal": {
+        "status": "PASS_PENDING_CAPTURE",
+        "preexisting_preserved": true,
+        "preexisting_count": 836,
+        "unrelated_running": 8,
+        "cleanup_errors": [],
+        "free_bytes": 71498907648
+      }
+    },
+    {
+      "pair": "firefox-control",
+      "resources": {
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "owner": "c2ea8eab36115482c8810a0189880090",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45b7e48-firefox-control",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "frontend",
+            "id": "b6689f844c32acfd54a3e68c6766209d52d1e3fa3f17db2408f0747da4994949"
+          },
+          {
+            "name": "postgres",
+            "id": "1f48105d9f920e47990926f21f7f3111e7061e751965160e23af4f83a7531b33"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "7ea2b70b8f711fa7090e31bd9cb947c1c66cdb88ce4f072f0eb467c33c7df673"
+          },
+          {
+            "name": "job-pages-browser",
+            "id": "de1657b0c28d7aa8f27b3df5ab78275e8b161851130e1af072c1c7b24d94fbe4"
+          }
+        ],
+        "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "owner_label": "org.bigbrotr.export-execution",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "started_at": "2026-09-27T22:12:20.486112+00:00",
+        "runtime_profile": "job-pages-browser",
+        "adapter_profile": null,
+        "schema_profile": null,
+        "job_pages_browser_pair": "firefox-control",
+        "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+        "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+        "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+        "network_id": "bb93a46b0bb1e677ceee48b0d2010e71267af5bd22b31fbbbafbd9b4a727a49c",
+        "postgres_id": "1f48105d9f920e47990926f21f7f3111e7061e751965160e23af4f83a7531b33",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "7ea2b70b8f711fa7090e31bd9cb947c1c66cdb88ce4f072f0eb467c33c7df673",
+        "network_state": "removed after owner/no-endpoint audit",
+        "terminal_audit": "terminal-audit.json"
+      },
+      "execution_capacity": null,
+      "orchestrator": {
+        "pid": 2608162,
+        "start_ticks": "392939396",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499"
+      },
+      "capture": {
+        "root": ".research/implementation/job-pages/attempt-45b7e48-firefox-control/capture",
+        "files": 109,
+        "sha256": "32b0579acd945753169ba1a986cfc5ba7479c4b94f58a19b1ec5bc8e553c60d5",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "source_files": 1355,
+        "manifest_sha256": "14a501208bac4e48538b49ae070536f9ceb6a01dee88a104a9bffccee320f7a3"
+      },
+      "review": {
+        "status": "PASS",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "engine": "firefox",
+        "mount": "control",
+        "page_sets": 20,
+        "stages": 7,
+        "node_exchanges": 10,
+        "browser_exchanges": 25,
+        "ledger_sizes": {
+          "jobs": 6,
+          "job_admissions": 6,
+          "job_input_bounds": 6,
+          "export_jobs": 6,
+          "export_execution_units": 1,
+          "artifacts": 1,
+          "artifact_files": 1,
+          "snapshot_leases": 15,
+          "archive_snapshot_pins": 15,
+          "retention_claims": 15
+        },
+        "blocked_seconds": 1.4196924669668078,
+        "bundles": {
+          "root": {
+            "manifest_sha256": "547adbdaa33c0048cc7010cf5da2af023bca16dc9b2a6301a69d2a0ba35f44a8",
+            "files": 13,
+            "bytes": 205159
+          },
+          "control": {
+            "manifest_sha256": "95792b60da1067268900329002537ee64a717a8d42b3c348d850c18436b84e91",
+            "files": 13,
+            "bytes": 205193
+          }
+        },
+        "capture_manifest_sha256": "14a501208bac4e48538b49ae070536f9ceb6a01dee88a104a9bffccee320f7a3",
+        "container_exits": {
+          "frontend": 0,
+          "job-pages-browser": 0,
+          "rust-visibility": 0,
+          "postgres": 137
+        }
+      },
+      "browser": {
+        "version": "155.0",
+        "executables": [
+          {
+            "path": "/ms-playwright/firefox-1543/firefox/firefox",
+            "sha256": "062272ac4d851eade5b75db2dc7c14569d96cb3ca38f949337cdc1b74367e35b"
+          }
+        ],
+        "cases": [
+          {
+            "name": "actual-typed-client-pages-and-refusals",
+            "status": "PASS",
+            "milliseconds": 1521
+          },
+          {
+            "name": "production-page-explicit-discovery-and-detail",
+            "status": "PASS",
+            "milliseconds": 1857
+          },
+          {
+            "name": "empty-pages-date-filters-and-no-fetch-all",
+            "status": "PASS",
+            "milliseconds": 2260
+          },
+          {
+            "name": "continuation-survives-control-restart-and-reload-forgets-cursor",
+            "status": "PASS",
+            "milliseconds": 1411
+          },
+          {
+            "name": "other-account-sees-no-prior-page",
+            "status": "PASS",
+            "milliseconds": 539
+          },
+          {
+            "name": "logout-cancels-actual-blocked-page",
+            "status": "PASS",
+            "milliseconds": 2731
+          },
+          {
+            "name": "actual-account-revocation-clears-page",
+            "status": "PASS",
+            "milliseconds": 1290
+          }
+        ],
+        "screenshot_sha256": "1c727a00100b66371e21ed96fb5b2b90caabe3935cef5ec2dd964cda3fff0fc6"
+      },
+      "terminal": {
+        "status": "PASS_PENDING_CAPTURE",
+        "preexisting_preserved": true,
+        "preexisting_count": 829,
+        "unrelated_running": 8,
+        "cleanup_errors": [],
+        "free_bytes": 69265195008
+      }
+    },
+    {
+      "pair": "webkit-root",
+      "resources": {
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "owner": "a544ac63ed6c86972e93bc192553da41",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45b7e48-webkit-root",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "frontend",
+            "id": "fa1303575585a4632a3a116ae672bcd41eb96e7aca93e1bad031dbef8d5ff2ad"
+          },
+          {
+            "name": "postgres",
+            "id": "d01490363382fe2cf14803aea4bfa85f7bf8fb3ee5d0d0960c72e026b9e02137"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "906d5e1a00862aa79c911f443b34e742a09d66956bcf185f26f72ea9ab1e39da"
+          },
+          {
+            "name": "job-pages-browser",
+            "id": "04f7d5eb1363cec25b241b1f1e804c8086ebc1df20bc7e4fb26b5ac333d798af"
+          }
+        ],
+        "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "owner_label": "org.bigbrotr.export-execution",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "started_at": "2026-09-27T22:09:54.770112+00:00",
+        "runtime_profile": "job-pages-browser",
+        "adapter_profile": null,
+        "schema_profile": null,
+        "job_pages_browser_pair": "webkit-root",
+        "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+        "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+        "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+        "network_id": "1405b2e7d36acaac7a4911335de79191a4aea93cb10273bedbe3431bf303488a",
+        "postgres_id": "d01490363382fe2cf14803aea4bfa85f7bf8fb3ee5d0d0960c72e026b9e02137",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "906d5e1a00862aa79c911f443b34e742a09d66956bcf185f26f72ea9ab1e39da",
+        "network_state": "removed after owner/no-endpoint audit",
+        "terminal_audit": "terminal-audit.json"
+      },
+      "execution_capacity": null,
+      "orchestrator": {
+        "pid": 2593235,
+        "start_ticks": "392924827",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499"
+      },
+      "capture": {
+        "root": ".research/implementation/job-pages/attempt-45b7e48-webkit-root/capture",
+        "files": 109,
+        "sha256": "9ab9b5cbf9db0cb6ea947d61a168977985e80dac25951de3da5c14bcc142755d",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "source_files": 1355,
+        "manifest_sha256": "63a32d11dbea63bedb234dc5ee72bdb27ab14c54b5035b50ec3bf6613312a322"
+      },
+      "review": {
+        "status": "PASS",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "engine": "webkit",
+        "mount": "root",
+        "page_sets": 20,
+        "stages": 7,
+        "node_exchanges": 10,
+        "browser_exchanges": 25,
+        "ledger_sizes": {
+          "jobs": 6,
+          "job_admissions": 6,
+          "job_input_bounds": 6,
+          "export_jobs": 6,
+          "export_execution_units": 1,
+          "artifacts": 1,
+          "artifact_files": 1,
+          "snapshot_leases": 15,
+          "archive_snapshot_pins": 15,
+          "retention_claims": 15
+        },
+        "blocked_seconds": 1.5903162490576506,
+        "bundles": {
+          "root": {
+            "manifest_sha256": "547adbdaa33c0048cc7010cf5da2af023bca16dc9b2a6301a69d2a0ba35f44a8",
+            "files": 13,
+            "bytes": 205159
+          },
+          "control": {
+            "manifest_sha256": "95792b60da1067268900329002537ee64a717a8d42b3c348d850c18436b84e91",
+            "files": 13,
+            "bytes": 205193
+          }
+        },
+        "capture_manifest_sha256": "63a32d11dbea63bedb234dc5ee72bdb27ab14c54b5035b50ec3bf6613312a322",
+        "container_exits": {
+          "frontend": 0,
+          "job-pages-browser": 0,
+          "rust-visibility": 0,
+          "postgres": 137
+        }
+      },
+      "browser": {
+        "version": "26.6",
+        "executables": [
+          {
+            "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser",
+            "sha256": "7c71efed38fb0d916f5edb7db9a98cdf218642dd8dce02375730eb9ad5510751"
+          }
+        ],
+        "cases": [
+          {
+            "name": "actual-typed-client-pages-and-refusals",
+            "status": "PASS",
+            "milliseconds": 2023
+          },
+          {
+            "name": "production-page-explicit-discovery-and-detail",
+            "status": "PASS",
+            "milliseconds": 2021
+          },
+          {
+            "name": "empty-pages-date-filters-and-no-fetch-all",
+            "status": "PASS",
+            "milliseconds": 2215
+          },
+          {
+            "name": "continuation-survives-control-restart-and-reload-forgets-cursor",
+            "status": "PASS",
+            "milliseconds": 1640
+          },
+          {
+            "name": "other-account-sees-no-prior-page",
+            "status": "PASS",
+            "milliseconds": 464
+          },
+          {
+            "name": "logout-cancels-actual-blocked-page",
+            "status": "PASS",
+            "milliseconds": 3221
+          },
+          {
+            "name": "actual-account-revocation-clears-page",
+            "status": "PASS",
+            "milliseconds": 1210
+          }
+        ],
+        "screenshot_sha256": "f6d59f29456c0a79e932b4467f5799dd64089a8de281a94084bca8141fec45a1"
+      },
+      "terminal": {
+        "status": "PASS_PENDING_CAPTURE",
+        "preexisting_preserved": true,
+        "preexisting_count": 825,
+        "unrelated_running": 8,
+        "cleanup_errors": [],
+        "free_bytes": 69892591616
+      }
+    },
+    {
+      "pair": "webkit-control",
+      "resources": {
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "owner": "1a4cbc0886da23b26e23d978621494d9",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45b7e48-webkit-control",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "frontend",
+            "id": "df9b8e785d0086c922d2c575c88010958ece6caa649cb8e2f884c650ba15332b"
+          },
+          {
+            "name": "postgres",
+            "id": "ac42451e2edce9af518dcdee87b58da91d742917ed9178d52ef44297345dfa2d"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "4fed9f48311850a564e1c1b2c0173099629fb3a67c1aa73237f9bb4bceecf9bb"
+          },
+          {
+            "name": "job-pages-browser",
+            "id": "9aa4c39797c6aafb445431ab893b33fa16ed608f37b8993cd9383f71ae062e13"
+          }
+        ],
+        "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "owner_label": "org.bigbrotr.export-execution",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "started_at": "2026-09-27T22:07:17.479441+00:00",
+        "runtime_profile": "job-pages-browser",
+        "adapter_profile": null,
+        "schema_profile": null,
+        "job_pages_browser_pair": "webkit-control",
+        "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+        "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+        "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+        "network_id": "3c635e91ed7cd101496f0bbbd4ddedbf69775e9db67083de4be9b917b44912b9",
+        "postgres_id": "ac42451e2edce9af518dcdee87b58da91d742917ed9178d52ef44297345dfa2d",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "4fed9f48311850a564e1c1b2c0173099629fb3a67c1aa73237f9bb4bceecf9bb",
+        "network_state": "removed after owner/no-endpoint audit",
+        "terminal_audit": "terminal-audit.json"
+      },
+      "execution_capacity": null,
+      "orchestrator": {
+        "pid": 2578348,
+        "start_ticks": "392909096",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499"
+      },
+      "capture": {
+        "root": ".research/implementation/job-pages/attempt-45b7e48-webkit-control/capture",
+        "files": 109,
+        "sha256": "861e0da7fac65b020dec6ddbc72739cd111549d649eef6dfe1c236df0d902f1d",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "source_files": 1355,
+        "manifest_sha256": "020e9f217128cf2f16d1db6fe054b91c3eaa090bf577d08430df79f420a4e7f9"
+      },
+      "review": {
+        "status": "PASS",
+        "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+        "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+        "engine": "webkit",
+        "mount": "control",
+        "page_sets": 20,
+        "stages": 7,
+        "node_exchanges": 10,
+        "browser_exchanges": 25,
+        "ledger_sizes": {
+          "jobs": 6,
+          "job_admissions": 6,
+          "job_input_bounds": 6,
+          "export_jobs": 6,
+          "export_execution_units": 1,
+          "artifacts": 1,
+          "artifact_files": 1,
+          "snapshot_leases": 15,
+          "archive_snapshot_pins": 15,
+          "retention_claims": 15
+        },
+        "blocked_seconds": 1.9115453218109906,
+        "bundles": {
+          "root": {
+            "manifest_sha256": "547adbdaa33c0048cc7010cf5da2af023bca16dc9b2a6301a69d2a0ba35f44a8",
+            "files": 13,
+            "bytes": 205159
+          },
+          "control": {
+            "manifest_sha256": "95792b60da1067268900329002537ee64a717a8d42b3c348d850c18436b84e91",
+            "files": 13,
+            "bytes": 205193
+          }
+        },
+        "capture_manifest_sha256": "020e9f217128cf2f16d1db6fe054b91c3eaa090bf577d08430df79f420a4e7f9",
+        "container_exits": {
+          "frontend": 0,
+          "job-pages-browser": 0,
+          "rust-visibility": 0,
+          "postgres": 137
+        }
+      },
+      "browser": {
+        "version": "26.6",
+        "executables": [
+          {
+            "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser",
+            "sha256": "7c71efed38fb0d916f5edb7db9a98cdf218642dd8dce02375730eb9ad5510751"
+          }
+        ],
+        "cases": [
+          {
+            "name": "actual-typed-client-pages-and-refusals",
+            "status": "PASS",
+            "milliseconds": 1551
+          },
+          {
+            "name": "production-page-explicit-discovery-and-detail",
+            "status": "PASS",
+            "milliseconds": 1890
+          },
+          {
+            "name": "empty-pages-date-filters-and-no-fetch-all",
+            "status": "PASS",
+            "milliseconds": 2166
+          },
+          {
+            "name": "continuation-survives-control-restart-and-reload-forgets-cursor",
+            "status": "PASS",
+            "milliseconds": 1313
+          },
+          {
+            "name": "other-account-sees-no-prior-page",
+            "status": "PASS",
+            "milliseconds": 464
+          },
+          {
+            "name": "logout-cancels-actual-blocked-page",
+            "status": "PASS",
+            "milliseconds": 3223
+          },
+          {
+            "name": "actual-account-revocation-clears-page",
+            "status": "PASS",
+            "milliseconds": 1404
+          }
+        ],
+        "screenshot_sha256": "091e4d8d541085b8b90d43a421b200564cacc05ddbf5a94c887a0afe75192d87"
+      },
+      "terminal": {
+        "status": "PASS_PENDING_CAPTURE",
+        "preexisting_preserved": true,
+        "preexisting_count": 821,
+        "unrelated_running": 8,
+        "cleanup_errors": [],
+        "free_bytes": 70524153856
+      }
+    }
+  ],
+  "not_qualified": [
+    "Held/lost retention COMMIT, cancellation/custody and delivery failures; absolute cursor expiry, current policy/grant/session changes, changed TTL/skew; backdated/tied actual pages, mixed/aged workloads and resource exhaustion remain further practical acceptance.",
+    "Only current actor protocol 1 exports; full CLI/job-kind/cancel/create/download journeys and remaining P09 accessibility/BFCache/real Safari/Android/screen-reader tests are unfinished.",
+    "No native Linux arm64, hosted GitHub Actions, release artifact/Compose journey, Docker Hub promotion or production-capacity claim.",
+    "Firefox component captures contain the previously observed Skip-to-session overlay. Contemporaneous viewport/focus evidence is absent, so do not infer its rendering/capture cause or full accessibility from these images.",
+    "PostgreSQL wrappers terminate 137 with no OOM after deadline cleanup. Original databases/private states remain retained; this is not graceful engine shutdown/recovery evidence."
+  ],
+  "live_resource_audit": {
+    "at": "2026-09-27T22:35:48.200586+00:00",
+    "unchanged": 844,
+    "source_clean": true,
+    "artifacts_preserved": true,
+    "free_bytes": 70855983104,
+    "note": "Seven consumer laboratories, including the original failed preparation, stopped-retained; own networks absent; all 844 stable container projections unchanged with eight unrelated running. No active BigBrotr experiment. Scoped b93 cache retirement is linked in the original capacity report."
+  }
+}

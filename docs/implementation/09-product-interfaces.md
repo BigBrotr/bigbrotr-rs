@@ -185,9 +185,17 @@ complete Step 2, general accessibility, job discovery, resume/cancel or download
 
 Actor-owned job discovery now has [bounded native HTTP evidence](evidence/p08-job-pages-native-20260927.json)
 at f6770e9, including empty advancing pages, current session checks and key
-rotation/revocation. The next thin Step2 consumer adds typed-client paging and
-private-panel reopening without a known job ID; neither browser behavior nor
-complete discovery acceptance follows from this backend fixture.
+rotation/revocation. The [thin Step2 client/panel consumer](evidence/p09-job-pages-consumer-native-20260928.json)
+now qualifies reopening without a known job ID on six engine/mount pairs: 42 stages,
+120 independent expected pages, exact typed refusals, explicit empty advancing
+pages, UTC filters, fresh detail and session-owned cancellation. Four pairs use 45b7e48;
+two use identical product inputs at 3bdea1f after a reserve-aware fixture correction.
+The [original capacity failure](evidence/p09-job-pages-capacity-incomplete-20260928.json)
+stays INCOMPLETE; it ran no Firefox/root browser cases. Backend commit/delivery
+faults, absolute expiry and changed authority, backdated/tied pages and mixed/aged
+load still gate complete discovery. Firefox component captures retain a skip-link
+overlay without contemporaneous viewport/focus evidence; full accessibility remains
+open. No whole Step2 completion or production capacity claim.
 
 The resume consumer obtains expected configuration/security revisions from the
 current session observation, and the job revision from its own job observation.

@@ -369,6 +369,13 @@ Reads never touch session idle time, and their socket action window cannot be ex
 covers actual pages, retention, restart/rotation/revocation and post-wait session
 expiry. Held/lost retention COMMIT, delivery faults, absolute expiry, mixed/aged
 load and full client/UI/CLI acceptance remain open; broader job kinds are unqualified.
+The [initial generated-client/private-panel consumer](../implementation/evidence/p09-job-pages-consumer-native-20260928.json)
+now passes the installed six-pair browser matrix with explicit next/new listing,
+UTC date/state filters, fresh detail, restart, other actor, real blocked-read logout
+and account revocation. It holds one current page in session-owned memory and
+never persists its cursor. Ten selected job/artifact/pin ledgers remain unchanged;
+session idle observations have separately named boundaries. This is a thin
+P09-T09 Step 2 consumer, not complete pagination/CLI/accessibility qualification.
 
 The explicit own-export resume API has [scoped installed HTTP evidence](../implementation/evidence/p08-export-resume-http-native-20260924.json);
 its [typed client also has installed HTTP evidence](../implementation/evidence/p08-export-resume-client-native-20260924.json)

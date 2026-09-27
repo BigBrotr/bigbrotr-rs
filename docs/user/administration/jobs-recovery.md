@@ -1,8 +1,10 @@
 # Finding, inspecting and resuming your export
 
 The current private panel can find your exports, inspect their stored state and
-resume a paused export owned by your account. The new listing consumer is under
-practical qualification. Job creation, cancellation and downloads remain unfinished. The [export operations guide](../../operations/export.md)
+resume a paused export owned by your account. The initial listing has
+[scoped installed client/browser evidence](../../implementation/evidence/p09-job-pages-consumer-native-20260928.json);
+fault, load and full accessibility acceptance remain open. Job creation,
+cancellation and downloads remain unfinished. The [export operations guide](../../operations/export.md)
 describes the current API and deployment prerequisites.
 
 Sign in at your instance's private address. In **Your exports**, select **List my

@@ -25750,7 +25750,7 @@
     }
   },
   "implementation_job_pages_20260927": {
-    "state": "original native page labs and five consumer runs stopped-retained; four consumer pairs qualified, one capacity setup incomplete; no active experiment",
+    "state": "all original page and consumer laboratories stopped-retained; bounded qualifications in linked reports, remaining acceptance open",
     "local_root": ".research/implementation/job-pages",
     "base_source": "ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47",
     "scope": "P08-T03 Step3 / P09-T09 Step2 actor-owned export listing and required P06-T03 cursor retention; incomplete",
@@ -26594,9 +26594,197 @@
         },
         "outcome": "INCOMPLETE before Firefox/root browser setup: retained job remained accepted below product64GiBdisk completion reserve; original state preserved",
         "evidence": "docs/implementation/evidence/p09-job-pages-capacity-incomplete-20260928.json"
+      },
+      {
+        "resources": {
+          "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+          "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+          "owner": "2bdf7ae6a1b0a146f924bf6ccd1d2a39",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3bdea1f-firefox-root",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "91fb1cd4380be69bd0b9f3d02cf2f10ccf9cdfa86a0e13987ec96e73729051b4"
+            },
+            {
+              "name": "postgres",
+              "id": "b92d3e40bc7c6ef80094c7627688a4de6e4525176b2be1d45a80412a34110291"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "cb7357eb9fb14c380b76cd32dd3dcd15d6d307e62cfc7b163551ea6a51b47c89"
+            },
+            {
+              "name": "job-pages-browser",
+              "id": "6d19a1512148def04a9e1de6859f4d3ba07d5b866ea73b586ef0ec5224530de4"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T22:22:47.015121+00:00",
+          "runtime_profile": "job-pages-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "job_pages_browser_pair": "firefox-root",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "fe2aff9fef0f792d4ef60dba31a43f17cd2242ded2df63daf9605d25474655f0",
+          "postgres_id": "b92d3e40bc7c6ef80094c7627688a4de6e4525176b2be1d45a80412a34110291",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "cb7357eb9fb14c380b76cd32dd3dcd15d6d307e62cfc7b163551ea6a51b47c89",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "review": {
+          "status": "PASS",
+          "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+          "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+          "engine": "firefox",
+          "mount": "root",
+          "page_sets": 20,
+          "stages": 7,
+          "node_exchanges": 10,
+          "browser_exchanges": 25,
+          "ledger_sizes": {
+            "jobs": 6,
+            "job_admissions": 6,
+            "job_input_bounds": 6,
+            "export_jobs": 6,
+            "export_execution_units": 1,
+            "artifacts": 1,
+            "artifact_files": 1,
+            "snapshot_leases": 15,
+            "archive_snapshot_pins": 15,
+            "retention_claims": 15
+          },
+          "blocked_seconds": 1.697350926231593,
+          "bundles": {
+            "root": {
+              "manifest_sha256": "df3cc442618ff05b0d101d562bff5b373caa17f92b2ef38d93f62d3331aecd3a",
+              "files": 13,
+              "bytes": 205154
+            },
+            "control": {
+              "manifest_sha256": "4aa33924e8358e333e24bb88bf19e2df8a67cf4f428e5033ce4cfb9aaeee753f",
+              "files": 13,
+              "bytes": 205188
+            }
+          },
+          "capture_manifest_sha256": "ceb1471a8fef679b6f5c4ba09429ba17c1c1d06b6118ea7adf9a596c515b6b5b",
+          "container_exits": {
+            "frontend": 0,
+            "job-pages-browser": 0,
+            "rust-visibility": 0,
+            "postgres": 137
+          }
+        },
+        "capture": {
+          "files": 109,
+          "sha256": "0ea2f0ca852bdd0f48d602c717584f9223a190ba2fae63e74a4b580f9bddb783",
+          "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+          "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+          "source_files": 1356
+        }
+      },
+      {
+        "resources": {
+          "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+          "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+          "owner": "08872c840b78feece43151e17d5ce818",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-3bdea1f-chromium-control",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "3647249c1c5c092b98b070bcaab03ab1f9f4c1a1656d55ff09af292fba81831d"
+            },
+            {
+              "name": "postgres",
+              "id": "2acff56f38210a164ba94bb592f2840a143b94398a8e619a7318ddfc7dba68ae"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "e8dfd30027648dd40f496828779d818e24e704c6087bd233418861cb2a1c1824"
+            },
+            {
+              "name": "job-pages-browser",
+              "id": "3b8662e8d958537674e64a13ee483281a5f05dde73f43a5ef6965aa5aa4c6bb5"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T22:25:10.984950+00:00",
+          "runtime_profile": "job-pages-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "job_pages_browser_pair": "chromium-control",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "8942ecf98cc3263a9e6fddc11c3a4d083705592588c96593b9ee9d897595843b",
+          "postgres_id": "2acff56f38210a164ba94bb592f2840a143b94398a8e619a7318ddfc7dba68ae",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "e8dfd30027648dd40f496828779d818e24e704c6087bd233418861cb2a1c1824",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "review": {
+          "status": "PASS",
+          "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+          "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+          "engine": "chromium",
+          "mount": "control",
+          "page_sets": 20,
+          "stages": 7,
+          "node_exchanges": 10,
+          "browser_exchanges": 25,
+          "ledger_sizes": {
+            "jobs": 6,
+            "job_admissions": 6,
+            "job_input_bounds": 6,
+            "export_jobs": 6,
+            "export_execution_units": 1,
+            "artifacts": 1,
+            "artifact_files": 1,
+            "snapshot_leases": 15,
+            "archive_snapshot_pins": 15,
+            "retention_claims": 15
+          },
+          "blocked_seconds": 1.5345073798671365,
+          "bundles": {
+            "root": {
+              "manifest_sha256": "df3cc442618ff05b0d101d562bff5b373caa17f92b2ef38d93f62d3331aecd3a",
+              "files": 13,
+              "bytes": 205154
+            },
+            "control": {
+              "manifest_sha256": "4aa33924e8358e333e24bb88bf19e2df8a67cf4f428e5033ce4cfb9aaeee753f",
+              "files": 13,
+              "bytes": 205188
+            }
+          },
+          "capture_manifest_sha256": "7d271d340978d5b9f4caec70a3cebf831e73e6cb9529b57f8bcf54725dedb03e",
+          "container_exits": {
+            "frontend": 0,
+            "job-pages-browser": 0,
+            "rust-visibility": 0,
+            "postgres": 137
+          }
+        },
+        "capture": {
+          "files": 109,
+          "sha256": "9fca664f646ee473252ef96946c80285c82bbecfdeb7d7dba27674ab088cf380",
+          "source": "3bdea1f49f812fc9750c7469cef44eae2cdbede3",
+          "tree": "f9d0ce4ae480a4762a2e8386d5d0fff72656a19a",
+          "source_files": 1356
+        }
       }
     ],
-    "consumer_state": "five runs stopped-retained: four bounded consumer PASS; one native setup INCOMPLETE, no active experiment",
+    "consumer_state": "seven consumer laboratories stopped-retained: six qualified engine/mount pairs and one original capacity setup INCOMPLETE; no active experiment",
     "retire_b93_cache_20260928": {
       "removed": [
         "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-b93ba83/out/build/target",
@@ -26613,6 +26801,15 @@
       "recipe_sha256": "c41adb47db6da6cc2bd72e413f28d1d2c8b27b1eb1d274f64760fbb101d255c0",
       "original_result": ".research/implementation/job-pages/retire-b93.json",
       "result_sha256": "77c83dfbc27d4664c1e0f78dce09e149dc8f1518ef8397fb86956ba73547cfa3"
+    },
+    "consumer_evidence": "docs/implementation/evidence/p09-job-pages-consumer-native-20260928.json",
+    "consumer_live": {
+      "at": "2026-09-27T22:35:48.200586+00:00",
+      "unchanged": 844,
+      "source_clean": true,
+      "artifacts_preserved": true,
+      "free_bytes": 70855983104,
+      "note": "Seven consumer laboratories, including the original failed preparation, stopped-retained; own networks absent; all 844 stable container projections unchanged with eight unrelated running. No active BigBrotr experiment. Scoped b93 cache retirement is linked in the original capacity report."
     }
   }
 }
