@@ -320,6 +320,49 @@ expiry/accessibility qualification remains open. Bounded listing, broader job ki
 artifact discovery, explicit resume/cancel and their full UI/CLI journeys remain
 selected P08/P09 work. No historical schema checksum changes.
 
+The first job-list profile is actor-owned protocol1 exports at
+`GET /management/v1/jobs`. It uses the same redacted row fields and current
+session, CSRF and `status.read` checks as detail. Allowlisted query parameters
+are `kind=export` (also the omitted default), one `state`, `created_from_us`
+(inclusive), `created_before_us` (exclusive), `page_size` and `cursor`. Times
+are canonical signed64 decimal microseconds. Page size is positive unsigned16,
+default50, clamped to200; continuation binds that effective value. Duplicate,
+unknown, empty and percent-encoded values are refused; tokens use the envelope's
+canonical base64url alphabet. No body or HEAD profile. Repeat the same normalized
+filters with the emitted cursor; changed bindings never silently start a new list.
+
+An actor/creation-time index selects at most effective-page-size+1 candidates,
+before mutable state and the immutable admission cut are tested. This bounds each
+logical scan even after later backdated admissions or state changes. Return at
+most the first page-size scanned candidates that still match. The extra row is
+only a continuation sentinel. An empty page may advance via the last scanned
+key; clients must follow `next_cursor`, not infer completion from item count.
+New listings capture the admission upper bound under dataset serialization.
+The operational list has no scientific pin or frozen membership promise.
+
+Resource `management.jobs/1` uses the shared encrypted envelope with this103byte
+plaintext, in order: version1 byte, export kind1 byte, actor ID16, policy revision
+u64, account grant revision u64, state byte (0all;1accepted,2queued,3running,4paused,
+5cancel_requested,6succeeded,7partial,8failed,9cancelled,10skipped), from-time option9,
+before-time option9, effective page-size u16, admission cut u64, last scanned
+created-time i64/job ID16, original issue-time i64 and expiry-time i64. Integers
+are big-endian. Time options are presence byte0/1 followed by i64; absent bytes
+must be zero. Policy/grant revisions and admission cut are nonzero. Envelope AAD
+already binds dataset, stable keyring and resource. The original issue/expiry
+survive every continuation, even if current TTL changes. A changed policy
+revision still invalidates its binding. Authenticate current access before opening; check current policy/grant bindings, key revocation and
+the retained deadline after opening, then server time again after SQL waits.
+
+Additive0816 supplies the actor index and permits only monotone retention updates
+by the actual current Control backend on an active, unrevoked key. Existing0604
+transition guards remain responsible for activation/revocation. Retain original
+expiry+30seconds before delivery with known COMMIT; missing active key or absent
+schema is unavailable, never implicit provisioning. A page without a new retention
+effect completes by acknowledged rollback. Unknown COMMIT/rollback poisons the
+owner; no token escapes that outcome. Reads never touch session idle time, and
+their socket action window cannot be extended by Control renewal. This profile
+is under implementation; it does not qualify the endpoint or broader job kinds.
+
 The explicit own-export resume API has [scoped installed HTTP evidence](../implementation/evidence/p08-export-resume-http-native-20260924.json);
 its [typed client also has installed HTTP evidence](../implementation/evidence/p08-export-resume-client-native-20260924.json)
 on pinned Node. Initial browser controls now have

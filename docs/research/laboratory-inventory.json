@@ -25748,5 +25748,50 @@
       },
       "preserve": "Retain original a11 native artifact dependency, both original incomplete databases, current database/key states, sources and captures. No compiler cache created."
     }
+  },
+  "implementation_job_pages_20260927": {
+    "state": "local-candidate-preparation; no remote job-page resources allocated",
+    "local_root": ".research/implementation/job-pages",
+    "base_source": "ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47",
+    "scope": "P08-T03 Step3 / P09-T09 Step2 actor-owned export listing and required P06-T03 cursor retention; incomplete",
+    "preflight": {
+      "at": "2026-09-27T20:55:42.143374+00:00",
+      "status": "PASS",
+      "container_projections_preserved": 807,
+      "unrelated_running": 8,
+      "free_bytes": 81010356224,
+      "identities": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-dd406a2",
+          "source": "dd406a2d94468efba3415d221dc762acc712b4e9",
+          "owner": "e8ed697a5ba6bb90be6550c4765242ba",
+          "state": "stopped-retained",
+          "orchestrator": "absent-or-terminal"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-a11bcac",
+          "source": "a11bcac46d7e65e556fb3f350e66518e0b6333e6",
+          "owner": "6a7162f1fdef8bdd84a0eb30b1b7c256",
+          "state": "stopped-retained",
+          "orchestrator": "absent-or-terminal"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-retry-7efaca3",
+          "source": "7efaca3fc548301a75ebd0299b5582a5dc03ab89",
+          "owner": "eb7549df44fa2870a889d771a70ced70",
+          "state": "stopped-retained",
+          "orchestrator": "absent-or-terminal"
+        }
+      ],
+      "binary_sha256": "ba454c8114766a631d4ac0d376c18eb19902910093100a5fbcfa90044421cb00"
+    },
+    "recipe": "experiments/export-execution/lab.py REVISION TREE --runtime-job-pages",
+    "planned_inputs": {
+      "native_seed": "export-checker-fixed-4e6b5c0 (original signed producer and assets only)",
+      "compiler_cache": "job-admission-8fae53a (copied cache, fresh current parent and worker build)",
+      "source": "clean Git candidate; exact revision/tree required before transfer"
+    },
+    "validation": "Mac 4 domain / 30 actual HTTP / 27 schema tests and Clippy PASS. Actual PostgreSQL816/installed-page journey NOT_RUN. Original RED/compile failures retained locally.",
+    "preserve": "All existing owned or unrelated resources unchanged. Do not retire retained lifecycle/qualification/object-storage datasets or original seed artifacts. Tokens/keyfiles/credentials remain private inside the future isolated run."
   }
 }

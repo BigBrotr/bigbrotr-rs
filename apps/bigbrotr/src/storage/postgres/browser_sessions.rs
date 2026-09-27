@@ -215,7 +215,11 @@ pub(super) fn terminal<T>(
             | SessionError::Conflict
             | SessionError::Throttled
             | SessionError::Capacity
-            | SessionError::InvalidInput),
+            | SessionError::InvalidInput
+            | SessionError::CursorInvalid
+            | SessionError::CursorExpired
+            | SessionError::CursorIncompatible
+            | SessionError::CursorUnavailable),
         ) => Ok(Err(e)),
         Err(e) => Err(e),
         Ok(value) => Ok(Ok(value)),

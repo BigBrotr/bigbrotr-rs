@@ -28,6 +28,9 @@ mod export_execution;
 mod export_jobs;
 #[path = "export_resume.rs"]
 mod export_resume;
+#[path = "job_list.rs"]
+mod job_list;
+pub use job_list::AuthorizedJobPage;
 #[path = "job_status.rs"]
 mod job_status;
 pub use job_status::AuthorizedJobStatus;

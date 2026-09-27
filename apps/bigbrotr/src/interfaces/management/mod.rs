@@ -12,6 +12,7 @@ use bigbrotr::{
     management::{
         credentials::HASH_RESERVATION,
         grants::{AllocationSelection, GrantCommand},
+        job_list::CursorLifetime,
         jobs::{ExportCommand, JobCommand, ResumeExportCommand},
         reauthentication::VerifiedReauthentication,
         sessions::{BrowserSecret, SessionError, SessionLifetime, VerifiedLogin},
@@ -208,6 +209,8 @@ pub(super) struct Management {
     delivery: DeliveryGate,
     export_jobs: bool,
     export_resume: bool,
+    job_pages: bool,
+    cursor_lifetime: CursorLifetime,
 }
 
 pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
@@ -263,6 +266,7 @@ impl Management {
         assets: Option<Assets>,
         export_jobs: bool,
         export_resume: bool,
+        job_pages: bool,
     ) -> Result<Self> {
         let address = SocketAddr::new(
             root.text("administration.listen.host")
@@ -307,6 +311,11 @@ impl Management {
             delivery,
             export_jobs,
             export_resume,
+            job_pages,
+            cursor_lifetime: CursorLifetime {
+                ttl_us: root.number("read.cursor.ttl"),
+                skew_us: root.number("read.cursor.clock_skew"),
+            },
         })
     }
 
@@ -402,6 +411,44 @@ impl Management {
                             completion,
                             result.map(Reply::ResumeExport),
                         ))));
+                    }
+                    Operation::JobList {
+                        session,
+                        csrf,
+                        request,
+                        delivery,
+                    } => {
+                        if !self.job_pages {
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::CursorUnavailable),
+                            ))));
+                        }
+                        let action = lease
+                            .begin_action(lease.known_epoch())
+                            .map_err(|e| (4, e.to_string()))?;
+                        let result = sql(
+                            maximum,
+                            owner.list_browser_jobs(
+                                &session,
+                                &csrf,
+                                &request,
+                                self.cursor_lifetime,
+                                &self.budget,
+                            ),
+                        )
+                        .await?;
+                        let result = match result {
+                            Ok(page) => match action.complete(page.remaining()) {
+                                Ok(window) => match delivery.action.bind(window) {
+                                    Ok(()) => Ok(Reply::JobList(page.into_body())),
+                                    Err(_) => Err(SessionError::Unavailable),
+                                },
+                                Err(_) => Err(SessionError::Unavailable),
+                            },
+                            Err(error) => Err(error),
+                        };
+                        return Ok(Execution::Complete(Some(Response(completion, result))));
                     }
                     Operation::JobStatus {
                         session,

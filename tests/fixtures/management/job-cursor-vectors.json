@@ -1,0 +1,18 @@
+{
+  "format": "bigbrotr-job-cursor-vectors/1",
+  "oracle": "Python struct.pack big-endian scalars and literal IDs, independent of Rust decoder/encoder",
+  "resource": "management.jobs/1",
+  "plaintext_hex": "010111111111111111111111111111111111000000000000000500000000000000070401ffffffffffffff9c0100000000000000c80002000000000000002a00000000000000326666666666666666666666666666666600000000000f42400000000035b42b40",
+  "actor": "11111111111111111111111111111111",
+  "policy_revision": 5,
+  "grant_revision": 7,
+  "state": "paused",
+  "created_from_us": -100,
+  "created_before_us": 200,
+  "page_size": 2,
+  "admission_cut": 42,
+  "last_created_at_us": 50,
+  "last_job_id": "66666666666666666666666666666666",
+  "issued_at_us": 1000000,
+  "expires_at_us": 901000000
+}

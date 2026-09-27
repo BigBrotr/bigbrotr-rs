@@ -551,6 +551,7 @@ async fn supervise(
     let mut management = if accepted.flag("administration.enabled") {
         let mut export_jobs = false;
         let mut export_resume = false;
+        let mut job_pages = false;
         tokio::select! {
             biased;
             _ = stop.requested() => return Err((4,"private session startup cancelled".into())),
@@ -560,6 +561,7 @@ async fn supervise(
                     owner.require_scope_grants().await?;
                     export_jobs = owner.export_jobs_available().await?;
                     export_resume = owner.export_resume_available().await?;
+                    job_pages = owner.job_pages_available().await?;
                     if archive.export_destination.is_some() && !export_jobs {
                         return Err(bigbrotr::management::sessions::SessionError::Prerequisite);
                     }
@@ -585,6 +587,7 @@ async fn supervise(
                 archive.management_assets,
                 export_jobs,
                 export_resume,
+                job_pages,
             )
             .await?,
         )

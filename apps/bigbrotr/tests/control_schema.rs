@@ -3,6 +3,32 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn job_pages_require_retention_upgrade_without_changing_applied_lifecycle() {
+    let applied: Vec<_> = plan(&[], 604)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let upgrade =
+        plan(&applied, 816).expect("job pages require explicit retention and index schema");
+    assert_eq!(upgrade.pending.len(), 1);
+    assert_eq!(upgrade.pending[0].name, "0816_job_pages.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 816),
+        Err(MigrationError::MissingPrerequisite(816))
+    );
+    assert!(migrations::require_applied(&applied, 604).is_ok());
+}
+
+#[test]
 fn cursor_lifecycle_requires_an_additive_upgrade_after_job_admission() {
     let applied: Vec<_> = plan(&[], 815)
         .unwrap()

@@ -14,15 +14,16 @@ execution while billing remains blocked. No public release, rename, Linux arm64,
 hosted CI or complete packaged-release qualification is claimed. An active goal
 covers the complete product; a bounded qualification does not complete it.
 
-Main HEAD is unpublished fixture candidate7efaca3fc548301a75ebd0299b5582a5dc03ab89,
-treeef2cc8fa578dd775de152562b2474f1b408bcc1b. Private origin/main is
-e2a66329f01341ee0186335bb38cc930d37810ab, verified by ls-remote this boundary;
-local main is ahead3commits. Product source is a11bcac46d7e65e556fb3f350e66518e0b6333e6,
-tree534850380e2b987a895b54f1b2e846e70b6de66f. All Tux inputs transferred from clean
-Git bundles; no source edits there. No merge/rebase or other contributor edits.
-Root is sole writer/integrator and owns current evidence/task/credentials/inventory/
-checkpoint documentation. catalog_guard_review is a read-only AI evidence reviewer;
-no edits, product tests, SSH or resources. Historical agents remain idle.
+Main HEAD and private origin/main are ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47,
+verified after the lifecycle evidence commit/push. Product qualified source remains
+a11bcac46d7e65e556fb3f350e66518e0b6333e6; fixture retry is7efaca3. All Tux inputs
+came from clean Git bundles, without source edits there. No merge/rebase or other
+contributor edits. Root is sole writer/integrator. Current root-owned dirty work:
+management job_list domain/tests, job metadata serialization, sessions/errors,
+HTTP job tests/transport, additive0816 SQL/manifest/registration/schema tests,
+private-administration contract and this checkpoint. catalog_guard_review completed
+read-only AI lifecycle evidence review and now reviews the dirty page SQL/domain/
+HTTP boundary independently; no edits, tests or SSH. Historical agents remain idle.
 
 Active tasks: P08-T03 Step3 / P08-T04 Step3, thin P09-T09 Step2, and only P06-T03
 Step1/3 cursor prerequisites for actor-owned export discovery. No complete task,
@@ -164,13 +165,38 @@ Preserve Control→dataset/account/session→consumer→job→sorted-source lock
 validate server time after waits, retain buffers/custody through actual driver join,
 poison Control on unknownCOMMIT, and never repoll a consumed JoinHandle.
 
-## Next bounded action
+## Active page implementation and next bounded action
 
-Final retry capture AI review is complete. Report/credentials/task documentation
-are reconciled; affected artifact checks and complete diff review pass. Commit/push
-this qualified responsibility privately. No native suites need repeating for those
-documentation changes. Proceed immediately to the actual actor-owned page consumer:
-read complete management transport/auth/cursor contracts and callers, define its
-bounded resource-specific token fields with independent fixtures, implement its
-page/retention transaction and wire real HTTP/client consumers. Use additive SQL
-for any change to applied0604. Do not stop at this checkpoint or create a new plan.
+The selected initial export list contract is in private-administration.md:
+actor-owned protocol1 exports, bounded page_size+1 candidate scan before mutable
+state/admission filtering, last-scanned continuation, immutable admission cut,
+original absolute expiry and current grants before decryption. This permits an
+empty advancing page without unbounded scans. The fixed103byte confidential payload
+has independent Python-generated fixture bytes. Existing cursor codec/session/
+resource budgets are reused, with no generic backend abstraction or new crate.
+
+Local .research/implementation/job-pages preserves discriminating RED logs:
+new actual HTTP GET returned405 instead of401, schema target816 was unknown.
+Current Mac checks:4domain tests,30actual HTTP tests,27schema tests PASS, and Clippy
+with warnings denied PASS. Original static registry count and test-struct compile
+failures are retained. The Control adapter, explicit GET route, current key checks,
+retention transaction, bounded zeroizing response and startup optional-schema probe
+are wired. Shared list/detail decoding uses named bounded columns; scan and retention
+helpers keep transaction completion visible without a new framework. Library/domain
+structures have real consumers. Applied0604 is unchanged;0816 has NOT_RUN on PG.
+
+The existing export-execution laboratory now has an authored --runtime-job-pages
+profile: fresh current parent+worker builds, original signed seed, actual API export
+acceptance, independent expected page IDs, libsodium1.0.18 decryption, session no-touch,
+actor isolation, maintenance normal/emergency key changes, startup and retention
+SQL refusal. Its new scenarios remain NOT_RUN. Complete fault/aged-load/browser
+acceptance remains open; no full list/rotation/M1 guarantee is closed by local tests.
+Fresh20:55:42UTC read-only Tux census:807unchanged container projections,8unrelated
+running, no BigBrotr lab active,81,010,356,224free bytes. Original stopped lifecycle
+resources/source/ELF still match. No new resource/cache deletion.
+
+Next: review current candidate and obtain its exact clean Git revision for the
+isolated native installed job-page journey. Record all original failures and owned
+resources, then complete fault/aged-state qualification and HTTP-generated-client/
+panel integration. Preserve nonrenewable response custody, after-wait server-time
+checks and unknown COMMIT poisoning. No new plan or owner approval is needed.

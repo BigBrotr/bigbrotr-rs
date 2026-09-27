@@ -11,8 +11,9 @@ sys.path.insert(0, str(SOURCE))
 from tools.build import clean_environment, file_hash, native_toolchain, build_binaries
 from tools.archive_bundle import build_environment
 from tools.ci import execute
-runtime = sys.argv[1:] == ['--runtime']
-assert sys.argv[1:] in ([], ['--runtime'], ['--build-runtime'])
+job_pages = sys.argv[1:] == ['--runtime','--job-pages']
+runtime = job_pages or sys.argv[1:] == ['--runtime']
+assert sys.argv[1:] in ([], ['--runtime'], ['--runtime','--job-pages'], ['--build-runtime'])
 if sys.argv[1:] == ['--build-runtime']:
     import os
     worker=build_binaries(SOURCE,dict(os.environ))
@@ -39,6 +40,8 @@ if runtime:
     assert execute([
         ('installed-build',[sys.executable,__file__,'--build-runtime']),
         ('management-tests',['cargo','test','--locked','--offline','--release','-p','bigbrotr','--bin','bigbrotr']),
+        *([('page-domain',['cargo','test','--locked','--offline','--release','-p','bigbrotr','--lib','management::job_list']),
+           ('page-schema',['cargo','test','--locked','--offline','--release','-p','bigbrotr','--test','control_schema'])] if job_pages else []),
         ('clippy',['cargo','clippy','--locked','--offline','--release','-p','bigbrotr','--bin','bigbrotr','--','-D','warnings']),
     ],checks,SOURCE,env,identity,1800)['status']=='PASS'
     worker=json.loads(Path('/out/runtime-worker.json').read_text())

@@ -24,6 +24,29 @@ fn authenticated() -> String {
 }
 
 #[tokio::test]
+async fn job_listing_requires_session_and_csrf_before_queueing_a_cursor() {
+    let (mut server, address, budget) = server().await;
+    for (headers, expected) in [
+        (String::new(), 401),
+        (
+            format!("Cookie: BigBrotrLocalSession={}\r\n", "11".repeat(32)),
+            403,
+        ),
+    ] {
+        let response = exchange(address, format!(
+            "GET /management/v1/jobs?cursor=not-a-valid-token HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\n{headers}\r\n"
+        )).await;
+        assert!(
+            response.starts_with(&format!("HTTP/1.1 {expected} ")),
+            "{response}"
+        );
+        assert!(server.commands.try_recv().is_err());
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
 async fn job_status_requires_session_csrf_and_a_closed_request_before_queueing() {
     let (mut server, address, budget) = server().await;
     let id = "09".repeat(16);
@@ -455,6 +478,92 @@ async fn resume_route_preserves_exact_revision_receipt_and_known_refusals() {
         } else {
             assert!(!body.contains("acceptance-only"));
         }
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn listing_queue_preserves_normalized_bindings_and_closed_cursor_errors() {
+    let (mut server, address, budget) = server().await;
+    for (failure, status, code) in [
+        (SessionError::CursorInvalid, 400, "invalid_cursor"),
+        (SessionError::CursorExpired, 410, "cursor_expired"),
+        (SessionError::CursorIncompatible, 409, "cursor_incompatible"),
+        (
+            SessionError::CursorUnavailable,
+            503,
+            "authority_unavailable",
+        ),
+    ] {
+        let client = tokio::spawn(exchange(
+            address,
+            format!(
+                "GET /management/v1/jobs?kind=export&state=paused&created_from_us=-1&page_size=300&cursor=abc-_12 HTTP/1.1\r\nHost: {address}\r\n{}\r\n",
+                authenticated()
+            ),
+        ));
+        let received = tokio::time::timeout(Duration::from_secs(1), server.commands.recv())
+            .await
+            .unwrap()
+            .unwrap();
+        let transport::Operation::JobList {
+            session,
+            csrf,
+            request,
+            ..
+        } = received.operation
+        else {
+            panic!("wrong operation");
+        };
+        assert_eq!(session.expose_hex().as_str(), "11".repeat(32));
+        assert_eq!(csrf.expose_hex().as_str(), "22".repeat(32));
+        assert_eq!(request.query.page_size(), 200);
+        assert_eq!(
+            request.query.state(),
+            Some(bigbrotr::export::execution::ExportState::Paused)
+        );
+        assert_eq!(request.query.created_from_us(), Some(-1));
+        assert_eq!(
+            request.cursor.as_deref().map(|v| v.as_str()),
+            Some("abc-_12")
+        );
+        received.completion.finish(Err(failure));
+        let response = client.await.unwrap();
+        let (headers, body) = response.split_once("\r\n\r\n").unwrap();
+        assert!(
+            headers.starts_with(&format!("HTTP/1.1 {status} ")),
+            "{response}"
+        );
+        assert!(headers.contains("cache-control: no-store\r\n"));
+        assert!(!headers.contains("set-cookie:"));
+        let value: serde_json::Value = serde_json::from_str(body).unwrap();
+        assert_eq!(value["error"]["code"], code);
+        assert!(!body.contains("abc-_12"));
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn listing_refuses_ambiguous_filters_bodies_and_head_without_queueing() {
+    let (mut server, address, budget) = server().await;
+    for (method, query, body, status) in [
+        ("HEAD", "", "", 405),
+        ("GET", "?page_size=2&page_size=2", "", 400),
+        ("GET", "?cursor=%61bc", "", 400),
+        ("GET", "?kind=import", "", 400),
+        ("GET", "?state=paused&extra=1", "", 400),
+        ("GET", "", "{}", 400),
+    ] {
+        let response = exchange(address,format!(
+            "{method} /management/v1/jobs{query} HTTP/1.1\r\nHost: {address}\r\nContent-Length: {}\r\n{}\r\n{body}",body.len(),authenticated()
+        )).await;
+        assert!(
+            response.starts_with(&format!("HTTP/1.1 {status} ")),
+            "{response}"
+        );
+        assert!(server.commands.try_recv().is_err());
     }
     server.stop().await.unwrap();
     assert_eq!(budget.snapshot().active_permits(), 0);

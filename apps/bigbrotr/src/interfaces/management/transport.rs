@@ -16,6 +16,7 @@ use axum::{
 use bigbrotr::{
     management::{
         grants::{CommandKey, GrantCommand, GrantReceipt},
+        job_list::{self, JobListRequest, PageBody},
         jobs::{JobCommand, JobObservation, JobReceipt, ResumeExportCommand, ResumeExportReceipt},
         reauthentication::ReauthenticationProof,
         sessions::{BrowserSecret, IssuedSession, SessionError, SessionObservation},
@@ -53,6 +54,12 @@ const SESSION_COOKIE: &str = "BigBrotrLocalSession";
 const CSRF_COOKIE: &str = "BigBrotrLocalCsrf";
 
 pub(super) enum Operation {
+    JobList {
+        session: BrowserSecret,
+        csrf: BrowserSecret,
+        request: JobListRequest,
+        delivery: ConnectionDelivery,
+    },
     ResumeExport {
         session: BrowserSecret,
         csrf: BrowserSecret,
@@ -106,6 +113,7 @@ pub(super) enum Operation {
     },
 }
 pub(super) enum Reply {
+    JobList(PageBody),
     ResumeExport(ResumeExportReceipt),
     JobStatus(Option<JobObservation>),
     Job(JobReceipt),
@@ -234,7 +242,7 @@ impl Server {
                 post(reauthenticate),
             )
             .route("/management/v1/me", get(me))
-            .route("/management/v1/jobs", post(create_job))
+            .route("/management/v1/jobs", post(create_job).get(list_jobs))
             .route("/management/v1/jobs/{job_id}", get(job_status))
             .route("/management/v1/jobs/{job_id}/resume", post(resume_export))
             .route(
@@ -467,6 +475,55 @@ struct ReauthenticationInput {
 struct GrantInput {
     proof_id: bigbrotr_model::ReauthenticationId,
     command: GrantCommand,
+}
+
+async fn list_jobs(
+    State(shared): State<Shared>,
+    Extension(connection): Extension<Connection>,
+    request: Request,
+) -> Response {
+    let grant = match begin_query(&shared, &request) {
+        Ok(grant) => grant,
+        Err(status) => return error(status),
+    };
+    if request.method() != Method::GET {
+        return protect(
+            (
+                StatusCode::METHOD_NOT_ALLOWED,
+                [(header::ALLOW, "GET, POST")],
+            )
+                .into_response(),
+        );
+    }
+    let session = match session(request.headers()) {
+        Ok(value) => value,
+        Err(status) => return error(status),
+    };
+    let Some(csrf) =
+        single(request.headers(), "x-csrf-token").and_then(|v| BrowserSecret::parse_hex(v).ok())
+    else {
+        return error(StatusCode::FORBIDDEN);
+    };
+    let parsed = match job_list::parse_request(request.uri().query().unwrap_or("")) {
+        Ok(value) => value,
+        Err(_) => return error(StatusCode::BAD_REQUEST),
+    };
+    if !matches!(to_bytes(request.into_body(), 0).await, Ok(bytes) if bytes.is_empty()) {
+        return error(StatusCode::BAD_REQUEST);
+    }
+    let delivery = connection.delivery.clone();
+    dispatch(
+        &shared,
+        connection,
+        grant,
+        Operation::JobList {
+            session,
+            csrf,
+            request: parsed,
+            delivery,
+        },
+    )
+    .await
 }
 
 async fn job_status(
@@ -773,12 +830,16 @@ async fn reauthenticate(
 }
 
 fn begin(shared: &Shared, request: &Request) -> Result<OwnedPermit, StatusCode> {
-    shared
-        .boundary
-        .check(request.method(), request.uri(), request.headers())?;
+    let grant = begin_query(shared, request)?;
     if request.uri().query().is_some() {
         return Err(StatusCode::BAD_REQUEST);
     }
+    Ok(grant)
+}
+fn begin_query(shared: &Shared, request: &Request) -> Result<OwnedPermit, StatusCode> {
+    shared
+        .boundary
+        .check(request.method(), request.uri(), request.headers())?;
     shared
         .budget
         .try_acquire(ResourceRequest::data(REQUEST_BYTES, 1, 0).expect("fixed request reservation"))
@@ -972,15 +1033,7 @@ async fn dispatch(
                 "accepted_at_us":receipt.accepted_at_us.to_string(), "created":receipt.created,
                 "execution":"unobserved", "authority":"acceptance-only"}))
         ).into_response()),
-        Ok(Ok(Reply::JobStatus(Some(value)))) => protect(Json(json!({
-            "format":"bigbrotr-job-status/1", "job_id":value.job_id, "kind":"export",
-            "state":value.state, "job_revision":value.job_revision.to_string(),
-            "checkpoint_revision":value.checkpoint_revision.to_string(),
-            "created_at_us":value.created_at_us.to_string(),
-            "completed_at_us":value.completed_at_us.map(|v| v.to_string()),
-            "observed_at_us":value.observed_at_us.to_string(), "reason_code":value.reason,
-            "authority":"observation-only"
-        })).into_response()),
+        Ok(Ok(Reply::JobStatus(Some(value)))) => protect(Json(value).into_response()),
         Ok(Ok(Reply::JobStatus(None))) => failure(StatusCode::NOT_FOUND, "job_unavailable", "Job unavailable to this account.", "check_state"),
         Ok(Ok(Reply::Job(receipt))) => protect((
             if receipt.created { StatusCode::ACCEPTED } else { StatusCode::OK },
@@ -988,6 +1041,11 @@ async fn dispatch(
                 "job_id":receipt.job_id, "accepted_at_us":receipt.accepted_at_us.to_string(),
                 "created":receipt.created, "execution":"unobserved", "authority":"acceptance-only"}))
         ).into_response()),
+        Ok(Ok(Reply::JobList(body))) => {
+            let mut response = Response::new(Body::from(axum::body::Bytes::from_owner(body)));
+            response.headers_mut().insert(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
+            protect(response)
+        },
         Ok(Ok(Reply::History(body))) => {
             let mut response = Response::new(Body::from(axum::body::Bytes::from_owner(*body)));
             response.headers_mut().insert(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
@@ -1039,6 +1097,9 @@ async fn dispatch(
             error(StatusCode::TOO_MANY_REQUESTS)
         }
         Ok(Err(SessionError::InvalidInput)) => error(StatusCode::BAD_REQUEST),
+        Ok(Err(SessionError::CursorInvalid)) => failure(StatusCode::BAD_REQUEST, "invalid_cursor", "Continuation token refused.", "correct_request"),
+        Ok(Err(SessionError::CursorExpired)) => failure(StatusCode::GONE, "cursor_expired", "Continuation expired. Start a new listing.", "check_state"),
+        Ok(Err(SessionError::CursorIncompatible)) => failure(StatusCode::CONFLICT, "cursor_incompatible", "Continuation no longer matches this request or authority.", "check_state"),
         _ => error(StatusCode::SERVICE_UNAVAILABLE),
     }
 }

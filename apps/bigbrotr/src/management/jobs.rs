@@ -174,6 +174,27 @@ pub struct JobObservation {
     pub observed_at_us: i64,
     pub reason: Option<JobReason>,
 }
+impl Serialize for JobObservation {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let mut row = serializer.serialize_struct("JobObservation", 11)?;
+        row.serialize_field("format", "bigbrotr-job-status/1")?;
+        row.serialize_field("job_id", &self.job_id)?;
+        row.serialize_field("kind", "export")?;
+        row.serialize_field("state", &self.state)?;
+        row.serialize_field("job_revision", &self.job_revision.to_string())?;
+        row.serialize_field("checkpoint_revision", &self.checkpoint_revision.to_string())?;
+        row.serialize_field("created_at_us", &self.created_at_us.to_string())?;
+        row.serialize_field(
+            "completed_at_us",
+            &self.completed_at_us.map(|v| v.to_string()),
+        )?;
+        row.serialize_field("observed_at_us", &self.observed_at_us.to_string())?;
+        row.serialize_field("reason_code", &self.reason)?;
+        row.serialize_field("authority", "observation-only")?;
+        row.end()
+    }
+}
 
 /// Never forward arbitrary database diagnostic text to a browser.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]

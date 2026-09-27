@@ -994,6 +994,11 @@ async fn management_stop_cannot_finish_or_release_grants_before_blocking_worker_
         delivery,
         export_jobs: false,
         export_resume: false,
+        job_pages: false,
+        cursor_lifetime: CursorLifetime {
+            ttl_us: 900_000_000,
+            skew_us: 30_000_000,
+        },
     };
     let client = tokio::spawn(exchange(
         address,

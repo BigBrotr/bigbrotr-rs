@@ -125,6 +125,10 @@
     {
       "version": 604,
       "name": "0604_cursor_key_lifecycle.sql"
+    },
+    {
+      "version": 816,
+      "name": "0816_job_pages.sql"
     }
   ],
   "reserved": [
