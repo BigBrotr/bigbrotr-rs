@@ -35,9 +35,15 @@ The original9b02 enrollment build passes51Rust tests/Clippy, but PostgreSQL setu
 failed before migrations because Docker exhausted its automatic address pools.
 The original INCOMPLETE evidence remains unchanged. `retry.py`, executed from
 a clean Git checkout under `cursor-enrollment-retry-SHORT/source`, verifies and
-reuses the original9b02 executable AND original9b02 practical fixture in a fresh
-PostgreSQL lab. It creates no compiler cache and attributes no new build/tests.
+reuses the original9b02 executable with the current practical fixture in a fresh
+PostgreSQL lab after comparing all non-documentation inputs (including the
+generated configuration reference), except the three explicitly changed harness
+files. It creates no compiler cache and attributes no new build/tests.
 Before retry, retire only an independently inventoried unused network; never
-prune networks or change the shared daemon. This retry is authored/NOT_RUN.
+prune networks or change the shared daemon. The wrapper retires only its own
+empty network after stopping its owned containers and preserving metadata.
+Original retry b562027 stopped after106PASS events because its TOML generator
+omitted spaces required by the fixture editing helper. That failure and private
+database/key state remain retained. The corrected fixture retry is NOT_RUN.
 The enrollment selection does not qualify activation,
 worker readiness/distribution or the complete normal/emergency rotation journey.

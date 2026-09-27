@@ -1,0 +1,84 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1/3 / P08-T03 prerequisite",
+  "status": "INCOMPLETE",
+  "source": "b5620272814bec84578da28ded75ccd0c339f5f3",
+  "tree": "6fd528b6441676c57c6e2c0bc3bef9c08b4f59ce",
+  "product_source": "9b02bd9f692ec07f57954b140fcd6efd20220ebe",
+  "fixture_source": "9b02bd9f692ec07f57954b140fcd6efd20220ebe",
+  "scope": "Original enrollment fixture stops on its TOML editing helper during same-key concurrency preparation; no product defect inferred.",
+  "environment": "Native Linux amd64, PostgreSQL16.15, original9b02 ELF with no rebuild/test rerun.",
+  "build": {
+    "binary_sha256": "a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716",
+    "original_report": "docs/implementation/evidence/p06-cursor-enrollment-native-incomplete-20260927.json"
+  },
+  "practical": {
+    "status": "INCOMPLETE",
+    "fixture_status": "FAIL",
+    "recorded_pass_events": 106,
+    "databases": 10,
+    "last_event": "held-same",
+    "failure": "lab.change requires spaces around =; enrollment.prepare authored keyring_ref without spaces. Failure happened while writing the second client configuration before starting that contender.",
+    "executed": [
+      "601\u2192602 upgrade and unchanged initial SQL/xmin",
+      "initial/additional receipts, stable retries after adding/removing local keys, permanent conflict",
+      "fresh mirror/permission rollback,16key initial registration, raw SQL closure/isolation/immutability",
+      "full65536byte stdout pipe exit1 in0.234063227s, fsyncEIO before SQL",
+      "COMMIT loss before forwarding and after server completion, same-key retries with exact prior rows/xmin",
+      "same-key first client held before forwarding COMMIT; contender not started"
+    ],
+    "not_run": [
+      "same/conflicting enrollment contenders",
+      "held-COMMIT process kill",
+      "engine restart and terminal backend census"
+    ],
+    "ambiguous_at_failure": "Do not infer the same-key held transaction terminal SQL outcome from cleanup alone. The original DB/private keys remain retained.",
+    "sql0602": {
+      "applied": true,
+      "sha256": "20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48",
+      "compatibility": "Immutable applied migration; any later SQL correction must be additive."
+    }
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-enrollment-retry-b562027",
+    "owner": "d17528a44ee6af3615b679c87447a7eb",
+    "postgres_owner": "792dd6c86e995b7829e572bb22dcca65",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "id": "b89322cdfb6f24ee379d4d53560290a39ee840323c13e1a9f5942f5f2bde77fd",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_retry_lfgcach-client-cursor-fault",
+        "pid": 0,
+        "exit": 143,
+        "oom": false
+      },
+      {
+        "id": "445148a66e20a3d726ec888b8c28f58dfce55f60efe14ebb2b4609982c148c9a",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_retry_lfgcach-client",
+        "pid": 0,
+        "exit": 143,
+        "oom": false
+      },
+      {
+        "id": "762e1aab6d726f6bee6bcbc2bd10189671c42713215ca097b8f3edbbfc50550b",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_retry_lfgcach",
+        "pid": 0,
+        "exit": 0,
+        "oom": false
+      }
+    ],
+    "preexisting_preserved": 774,
+    "free_before": 98693685248,
+    "free_after": 98448863232,
+    "retirement": "No cache/container/data/volume removed. The empty network was subsequently retired with777container projections unchanged; original metadata retained separately."
+  },
+  "capture": {
+    "local": ".research/implementation/cursor-enrollment/capture-b562027",
+    "payload_files": 67,
+    "tar_sha256": "eb408f19771ac5e409dfea526c8ac319829dd71935b57a5fe3c22cd430794b04",
+    "manifest_sha256": "d464073c0a7de42f48b8c63cba5ade3daf6f2088d24266f460300e9d3656a066",
+    "excluded": "All private keys/credentials/database data remain on Tux."
+  },
+  "review": "Root replays67payloads, original ELF/fixture binding, receipts/SQL binding, recorded old-row/xmin comparisons, fault proxy counters, syscall results and774prior container projections. Raw secret equality/backend absence remain runner observations where present.",
+  "correction": "Exact TOML fragment reproduces helper refusal (RED), adding expected spaces passes exact replacement (GREEN). Current corrected fixture will reuse original9b02 ELF only after unchanged-source input checks; no product rebuild."
+}

@@ -21,10 +21,21 @@ def main():
     revision=lab.command(['git','-C',str(SOURCE),'rev-parse','HEAD']).stdout.strip()
     assert Path(state['source'])==SOURCE and not lab.command(['git','-C',str(SOURCE),'status','--porcelain','--untracked-files=all']).stdout
     info=json.loads(lab.cli(state,'build-info').stdout)
-    assert info==state['build']['build_info'] and info['source']['revision']==revision
+    assert info==state['build']['build_info']
+    if info['source']['revision']!=revision:
+        origin=json.loads((root.parent/'artifact-origin.json').read_text())
+        assert origin['source']==info['source']['revision'] and origin['fixture_revision']==revision
+        # The enclosing exact-Git wrapper verifies all retained build inputs;
+        # independently compare the actual current checkout before using them.
+        manifest=json.loads((Path(origin['root'])/'out/build/source-manifest.json').read_text())
+        assert hashlib.sha256((Path(origin['root'])/'out/build/source-manifest.json').read_bytes()).hexdigest()==info['source']['manifest_sha256']
+        current=lab.command(['git','-C',str(SOURCE),'ls-files']).stdout.splitlines()
+        names={n for n in current if (not n.startswith('docs/') or n.startswith('docs/reference/')) and n not in {'experiments/cursor-registration/README.md','experiments/cursor-registration/retry.py','experiments/cursor-registration/enrollment.py'}}
+        assert names=={n for n in manifest['files_sha256'] if (not n.startswith('docs/') or n.startswith('docs/reference/')) and n not in {'experiments/cursor-registration/README.md','experiments/cursor-registration/retry.py','experiments/cursor-registration/enrollment.py'}}
+        assert all(hashlib.sha256((SOURCE/n).read_bytes()).hexdigest()==manifest['files_sha256'][n] for n in names)
     assert lab.docker('exec',state['client'],'sha256sum','/build/bigbrotr').stdout.split()[0]==state['binary_sha256']
     output=root/'cursor-enrollment.json';assert not output.exists()
-    report=dict(source=revision,binary_sha256=state['binary_sha256'],server=state['server'],status='RUNNING',cases=[],databases=[],fault_containers=[])
+    report=dict(source=revision,binary_source=info['source']['revision'],binary_sha256=state['binary_sha256'],server=state['server'],status='RUNNING',cases=[],databases=[],fault_containers=[])
     vectors=json.loads((SOURCE/'tests/fixtures/read/keyring-vectors.json').read_text())
     wire=bytes.fromhex(vectors['cases'][0]['hex']);key='55'*16
     def save():
@@ -43,7 +54,7 @@ def main():
         text=lab.change(local.read_text(),'postgres.control','password_ref','file:/lab/secrets/application')
         text=lab.change(text,'topology','dataset_id',vectors['dataset_id'])
         directory=root/('keys-'+name);directory.mkdir(mode=0o700);file=directory/'keyring';file.write_bytes(data);file.chmod(0o600)
-        local.write_text(text+f'\n[read.cursor]\nkeyring_ref="file:/lab/{directory.name}/keyring"\n')
+        local.write_text(text+f'\n[read.cursor]\nkeyring_ref = "file:/lab/{directory.name}/keyring"\n')
         result=lab.migrate(state,'apply',path,target=target);record('migration-'+name,result.returncode==0,stderr=result.stderr)
         lab.sql(state,database,'GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT INSERT ON control.datasets,control.config_revisions,control.principals,control.management_audit TO bigbrotr_control; GRANT UPDATE(config_revision) ON control.datasets TO bigbrotr_control;')
         result=lab.cli(state,'config','initialize','--file',path);record('initialize-'+name,result.returncode==0,stderr=result.stderr)

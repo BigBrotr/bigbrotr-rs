@@ -17,7 +17,7 @@
   },
   "practical": {
     "status": "NOT_RUN",
-    "failure": "Docker network creation refused: all predefined address pools have been fully subnetted.",
+    "failure": "Original network creation exited1; its helper suppressed daemon stderr. The subsequent owned reproduction at16:47:53UTC reported all predefined address pools have been fully subnetted.",
     "stage": "Shared PostgreSQL setup, before creating PostgreSQL/client containers or applying any migration. SQL0602 unapplied.",
     "diagnosis": {
       "path": ".research/implementation/cursor-enrollment/network-reproduction.json",
@@ -52,6 +52,6 @@
     "manifest_sha256": "4504265787d38bf7391678b2d73a880f81aba599af3ccbfc12c8c97027d3efb7",
     "excluded": "Private credentials, empty PostgreSQL data directory, compiler caches; retained on Tux."
   },
-  "review": "Root replayed all20payloads,1315Git files, ELF, native51tests/Clippy and773unchanged prior container projections. First offline reader used incorrect .stdout names; corrected to original .log files without changing native evidence.",
+  "review": "Root replayed all20payloads,1315Git files, ELF, native51tests/Clippy and773unchanged prior container projections. First offline reader used incorrect .stdout names; corrected to original .log files without changing native evidence. Independent read-only AI confirms all hashes/counts/projections; clarified original suppressed stderr versus later diagnostic attribution. No AI tests/SSH.",
   "next": "Fresh isolated PostgreSQL lab with original9b02 executable and original9b02 practical fixture, no rebuild or reattribution of Rust tests."
 }

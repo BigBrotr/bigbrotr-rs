@@ -246,7 +246,10 @@ The next bounded prerequisite is explicit additional-key enrollment with an
 actual CLI, additive0602, permanent ID/material bindings and original audit retry.
 The [local enrollment report](evidence/p06-cursor-enrollment-local-20260927.json)
 records48selected tests/Clippy after schema and actual CLI RED. Native enrollment
-is NOT_RUN; runtime lifecycle remains open.
+is INCOMPLETE: the [original network setup refusal](evidence/p06-cursor-enrollment-native-incomplete-20260927.json)
+and [fixture spacing failure after106checks](evidence/p06-cursor-enrollment-fixture-incomplete-20260927.json)
+retain their original outcomes. SQL0602 has been applied and is immutable; the
+remaining concurrency/kill/restart cases and runtime lifecycle remain open.
 Native acceptance must cover upgrade and fresh initial registration, original
 receipts, changed whole files, conflicting material, SQL omissions/mutations,
 concurrent same/conflicting enrollment, both COMMIT-loss sides and restart.

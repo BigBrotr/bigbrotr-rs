@@ -25204,7 +25204,7 @@
     "state": "stopped-retained",
     "build_container": "de8da1cbd82879bccc02e6f66de33038a9d8a8b836f6d4139e632e73c9ed6a0a",
     "binary_sha256": "a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716",
-    "next_action": "Capture original evidence and diagnose network creation failure; no SQL602 applied.",
+    "next_action": "Execute corrected exact-Git fixture using original9b02 ELF; SQL602 is applied and immutable.",
     "native_incomplete_report": "docs/implementation/evidence/p06-cursor-enrollment-native-incomplete-20260927.json",
     "capture": {
       "local": ".research/implementation/cursor-enrollment/capture-9b02bd9",
@@ -25219,6 +25219,28 @@
       "status": "PASS; empty network retired; all774container projections unchanged",
       "metadata": ".research/implementation/cursor-enrollment/network-retirement.json",
       "preserved": "All containers, data, keys, logs, source, artifacts. Future3ba replay requires explicit isolated network provisioning/reconnection."
+    },
+    "retry": {
+      "source": "b5620272814bec84578da28ded75ccd0c339f5f3",
+      "product_source": "9b02bd9f692ec07f57954b140fcd6efd20220ebe",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-enrollment-retry-b562027",
+      "owner": "d17528a44ee6af3615b679c87447a7eb",
+      "postgres_owner": "792dd6c86e995b7829e572bb22dcca65",
+      "state": "stopped-retained",
+      "status": "INCOMPLETE after106PASS events: fixture TOML spacing failure before contender; original evidence retained.",
+      "report": "docs/implementation/evidence/p06-cursor-enrollment-fixture-incomplete-20260927.json",
+      "network_retirement": {
+        "status": "PASS",
+        "metadata": ".research/implementation/cursor-enrollment/retry-network-retirement.json",
+        "containers_preserved": 777
+      },
+      "capture": {
+        "local": ".research/implementation/cursor-enrollment/capture-b562027",
+        "payload_files": 67,
+        "tar_sha256": "eb408f19771ac5e409dfea526c8ac319829dd71935b57a5fe3c22cd430794b04",
+        "manifest_sha256": "d464073c0a7de42f48b8c63cba5ade3daf6f2088d24266f460300e9d3656a066",
+        "excluded": "All private keys/credentials/database data remain on Tux."
+      }
     }
   }
 }

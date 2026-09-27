@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Fresh PostgreSQL qualification after the recorded 9b02 network setup failure.
 
-The executable AND practical fixture retain their original Git identity. This
-wrapper only provisions a new lab; it does not rebuild or reattribute Rust tests.
+The executable retains its original Git identity. The current corrected fixture
+runs only after unchanged build-input checks; no Rust test is reattributed.
 """
 import datetime
 import hashlib
@@ -67,6 +67,10 @@ manifest = json.loads((original/'out/build/source-manifest.json').read_text())
 assert manifest['revision']==product
 for name,digest in manifest['files_sha256'].items():
     assert sha(original/'source'/name)==digest==sha(original/'out/build/source'/name)
+files=cmd('git','-C',str(source),'ls-files').splitlines()
+names={n for n in files if (not n.startswith('docs/') or n.startswith('docs/reference/')) and n not in {'experiments/cursor-registration/README.md','experiments/cursor-registration/retry.py','experiments/cursor-registration/enrollment.py'}}
+assert names=={n for n in manifest['files_sha256'] if (not n.startswith('docs/') or n.startswith('docs/reference/')) and n not in {'experiments/cursor-registration/README.md','experiments/cursor-registration/retry.py','experiments/cursor-registration/enrollment.py'}}
+assert all(sha(source/n)==manifest['files_sha256'][n] for n in names)
 build = original/'out/native-tests'
 assert sha(build/'bigbrotr')=='a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716'
 assert json.loads((build/'result.json').read_text())['status']=='PASS'
@@ -78,24 +82,29 @@ for entry in old['containers']:
     c=next(c for c in prior if c['Id']==entry['id'])
     assert c['Config']['Labels'][old['owner_label']]==old['owner'] and c['State']['Pid']==0
 write(root/'preflight.json',preflight)
+archive=root/'source.tar'
+cmd('git','-C',str(source),'archive','--format=tar','--output',str(archive),revision)
+write(root/'source-manifest.json',dict(revision=revision,tree=cmd('git','-C',str(source),'rev-parse','HEAD^{tree}'),
+    archive_sha256=sha(archive),files_sha256={n:sha(source/n) for n in files}))
 state=dict(source=revision, tree=cmd('git','-C',str(source),'rev-parse','HEAD^{tree}'),
     product_source=product, owner=secrets.token_hex(16), root=str(root), state='running',
     containers=[], qualification='INCOMPLETE', artifact_root=str(original), started_at=preflight['at'])
 write(root/'resources.json',state)
 write(root/'artifact-origin.json',dict(root=str(original), source=product, owner=old['owner'],
     source_manifest_sha256=sha(original/'out/build/source-manifest.json'),
-    binary_sha256=sha(build/'bigbrotr'), fixture_sha256=sha(original/'source/experiments/cursor-registration/enrollment.py'),
-    scope='Original executable and original practical fixture, no compilation, test or Clippy rerun.'))
-sys.path.insert(0,str(original/'source/experiments/control-migrations'))
+    binary_sha256=sha(build/'bigbrotr'),fixture_revision=revision,fixture_sha256=sha(source/'experiments/cursor-registration/enrollment.py'),
+    unchanged_build_inputs={n:manifest['files_sha256'][n] for n in sorted(names)},
+    scope='Original executable, current fixture with unchanged build inputs; no compilation, test or Clippy rerun.'))
+sys.path.insert(0,str(source/'experiments/control-migrations'))
 import lab
 runtime=root/'postgres'
 pg=None
 try:
     run_name='cursor_retry_'+''.join(chr(ord('a')+int(c,16)) for c in revision[:7])
-    lab.setup(runtime,build,original/'source',run_name)
+    lab.setup(runtime,build,source,run_name)
     pg=json.loads((runtime/'resources.json').read_text())
     with (root/'cases.stdout').open('xb') as out, (root/'cases.stderr').open('xb') as err:
-        result=subprocess.run(['python3','-B',str(original/'source/experiments/cursor-registration/enrollment.py'),'--root',str(runtime)],stdout=out,stderr=err,timeout=600)
+        result=subprocess.run(['python3','-B',str(source/'experiments/cursor-registration/enrollment.py'),'--root',str(runtime)],stdout=out,stderr=err,timeout=600)
     state['cases_exit']=result.returncode
     assert result.returncode==0
     assert json.loads((runtime/'cursor-enrollment.json').read_text())['status']=='PASS'
@@ -124,6 +133,22 @@ finally:
                 (root/(name+'.stdout')).write_bytes(logs.stdout);(root/(name+'.stderr')).write_bytes(logs.stderr)
                 state.setdefault('terminals',[]).append(projection(c))
             except BaseException as error:errors.append(dict(resource=name,error=type(error).__name__))
+        # Retain database/container evidence, but do not consume one automatic
+        # subnet per finished lab. Future replay explicitly provisions a network.
+        if not errors:
+            try:
+                inspected=subprocess.run(['docker','network','inspect',pg['network']],capture_output=True,text=True,timeout=60)
+                if inspected.returncode!=0:
+                    raise RuntimeError('owned network observation unavailable')
+                if inspected.returncode==0:
+                    network=json.loads(inspected.stdout)[0]
+                    assert network['Labels'][lab.LABEL]==pg['owner'] and not network['Containers']
+                    state['retired_network']=network
+                    write(root/'resources.json',state)
+                    cmd('docker','network','rm',network['Id'])
+                    assert subprocess.run(['docker','network','inspect',network['Id']],capture_output=True,timeout=60).returncode!=0
+                    state['network_removed']=True
+            except BaseException as error:errors.append(dict(resource='owned-network',error=type(error).__name__))
         pg['state']='cleanup-unresolved' if errors else 'stopped-retained'
         try:write(runtime/'resources.json',pg)
         except OSError as error:errors.append(dict(resource='postgres-resource-record',error=type(error).__name__))

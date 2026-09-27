@@ -20,32 +20,38 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Main HEAD9b02bd9f692ec07f57954b140fcd6efd20220ebe was the last clean unpublished
-candidate; root now owns only retry orchestration/evidence/documentation changes; private origin remains0091fc9b181ec35cefbe6a6133e365f04e7c6e75.
-Root owns additional-key enrollment under inventoried cursor-enrollment.
-Local48tests/Clippy PASS; reviewed SQL/adapter/CLI and independent fixture.
-Native exact-Git run cursor-enrollment-9b02bd9 is now stopped-retained/INCOMPLETE:
-owner203570ac651e0191d5b613262c9b2091, orchestrator2201428/start390954320 absent,
-build containerde8da1cbd82879bccc02e6f66de33038a9d8a8b836f6d4139e632e73c9ed6a0a
-PID0/noOOM/exit0. Native release build34.766s, selected Rust tests and Clippy PASS.
-ELFa943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716;
-source manifest5cb5fa359392a5756e9283ee388a96ecc4199c4e05bcfa0818c851998a4063f9.
-PG setup failed creating its isolated Docker network, before containers, database
-or migration execution; SQL602 remains unapplied/NOT_RUN. PG ownership record
-2a33fafbcedff2bc1668e7cf798be396 retained with empty data and private credentials.
-No cleanup errors; original orchestrator traceback preserved. Native practical
-cases are NOT_RUN. Latest read-only free98734768128bytes (~92GiB), eight unrelated
-running; no active owned orchestrator. Docker exhaustion is reproduced with its
-actual diagnostic; original20payloads,
-1315Git files,51tests/Clippy and773prior projections independently replayed by root.
-See [INCOMPLETE report](evidence/p06-cursor-enrollment-native-incomplete-20260927.json).
-Retired only the completed3ba empty networkb6f4bef; all774container projections
-remain unchanged. Original DB/keys/source/logs retained; future3ba replay needs
-explicit network provisioning/reconnection. New retry.py runs original9b02 ELF
-and original9b02 fixture in a fresh lab, with no build/test rerun or attribution.
-Independent read-only AI found missing PG-record cleanup handling; fixed before
-execution with in-memory identity and isolated cleanup/census failures.
-Protect current9b02/e684 compiler caches and all original source/evidence.
+Main HEADb5620272814bec84578da28ded75ccd0c339f5f3; private origin0091fc9.
+Root owns only the corrected enrollment fixture/retry wrapper and evidence/docs.
+Original9b02 build51tests/Clippy PASS; initial network exhaustion is preserved in
+[INCOMPLETE report](evidence/p06-cursor-enrollment-native-incomplete-20260927.json).
+Root and independent read-only AI verify20payloads/1315Git files/ELF/51tests and
+773prior projections; actual pool-exhaustion stderr comes from later diagnosis.
+Retired only empty3ba networkb6f4bef, preserving all774container projections and
+all original DB/key/source/log/artifact data. Future replay provisions a network.
+
+Retry cursor-enrollment-retry-b562027 is stopped-retained/INCOMPLETE after106PASS
+events across10databases. Source/fixture/ELF remain original9b02; wrapperb562.
+Ownerd17528a44ee6af3615b679c87447a7eb, orchestrator2213778/start391029146,
+three owned containers PID0/noOOM; IDs and PG owner in inventory/report.
+Actual upgrade/fresh/privilege/SQLclosure, both COMMIT-loss sides, output/fsync
+cases passed, then fixture lab.change refused missing spaces around keyring_ref's
+assignment while preparing the same-key contender. Contender/kill/restart NOT_RUN;
+no terminal SQL outcome inferred for the held transaction. Original DBs retained.
+See [fixture INCOMPLETE report](evidence/p06-cursor-enrollment-fixture-incomplete-20260927.json).
+Root verifies67safe payloads, receipt/SQL/xmin/proxy/syscall evidence and774prior
+projections. Original .stdout/.log offline reader correction also retained.
+SQL0602 now applied, SHA20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48;
+immutable from this point. Later SQL fixes must be additive.
+
+Retired only b562's empty network after scope checks; all777container projections
+unchanged. No cache/container/data/volume retirement. New corrected fixture uses
+spaced TOML (helper RED/GREEN), explicit separate fixture/binary identities and
+unchanged input hashes including SQL/fixtures/generated config reference. Same
+original9b02 ELF; no Rust rebuild/test/Clippy reattribution or new compiler cache.
+Reviewed retry cleanup keeps PG identity in memory, records failures and retires
+only its own stopped empty network after preserving metadata. An unavailable
+network inspection is cleanup-unresolved, never PASS. No native retry active yet.
+Protect9b02/e684 caches, original source/evidence and all private failure states.
 
 Current Tux root cursor-rotation-e684915, owner89b64550b3049b02bc61122a16c3efe5,
 is stopped-retained, qualification PASS. Orchestrator2184798/start390803174 is
@@ -119,8 +125,9 @@ has now been applied and is immutable; subsequent corrections need additive DDL.
 Qualification commit d5 records3ba; prepare-key e684915 is now natively qualified.
 Final artifact/handoff checks pass179Markdown/324JSON,123tasks/756steps and the
 same3historical cycle candidates; full qualification diff inspected.
-Next bounded action: commit the reviewed retry wrapper and qualify enrollment with the exact9b02 ELF in a
-fresh isolated lab. No SQL601 edits or claims for unexecuted SQL602 cases.
+Next bounded action: commit corrected fixture/reuse checks and run exact-Git
+retry with original9b02 ELF. Preserve both original INCOMPLETE outcomes. No edits
+to applied SQL0601/0602; remaining concurrency/kill/restart need actual execution.
 Existing task/Step1/M1/product remain open.
 
 Static AI lifecycle review flags: current require_control_owner checks backend/
