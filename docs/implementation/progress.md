@@ -17,16 +17,18 @@ hosted CI or complete packaged-release qualification is claimed.
 Active P08-T03 Step3 / P08-T04 Step3, thin P09-T09 Step2, and P06-T03 Step1/3
 cursor/keyring prerequisites for actor-owned job discovery. No complete task,
 phase, M1 or selected-product completion. Root is sole writer/integrator.
-catalog_guard_review completed independent read-only AI review with no edits,
-product tests, SSH or resource ownership.
+catalog_guard_review, archive_intent_review and fact_codec_review completed
+independent read-only AI reviews with no edits, product tests, SSH or resources.
 
-Main HEAD is unpublished candidate5de46a0aba3c98a1943639bc7814dd17176076cc,
-tree6062a9b0d00d5601e88e4cbaa9a671839b498d06. Private origin/main remains
-32dd92ae11241d25766b3f5c5c9b9064b25c47c8, last verified after its fast-forward
-push. Candidate source was clean and transferred by exact Git bundle, no Tux edits.
-Root owns current edits to P08, export operations, laboratory inventory, this
-checkpoint and the new p08-job-admission-installed-native-20260927.json report.
-No merge/rebase or another contributor's changes.
+Main HEAD and private origin/main are cbe5e397cd14f11ccd66dd2c9f0e9ed9f88bb496,
+verified by ls-remote after the fast-forward push. It records the qualified
+5de46a0aba3c98a1943639bc7814dd17176076cc tree6062a9b0d00d5601e88e4cbaa9a671839b498d06.
+The clean candidate was transferred by exact Git bundle, no Tux edits. Root now owns
+the bounded structural candidate: serve.rs, PostgreSQL export_resume.rs and the
+read/completed-files portion of export_execution.rs, the existing laboratory's
+current compiler-cache/profile reuse wiring, and this checkpoint. No merge/rebase
+or other contributor edits. The next local commit is an unpublished test candidate;
+native qualification is pending, not PASS.
 
 ## Latest qualified responsibility
 
@@ -168,15 +170,82 @@ Monitor findings remain scoped closed absent contrary evidence:
 [MON010](evidence/p01-tls-presence-20260918.json),
 [MON007](evidence/p01-archive-cache-retry-20260918.json).
 
+## Current boundary and next useful journey
+
+The owner's structural observations were taken up after the installed815 boundary,
+without interrupting a run. Targeted review supports readable multiline SQL and
+local decoding in the export adapters, and one shared native-supervision context
+through the runtime dispatch loop. Preserve transaction/lock order, ambiguous
+COMMIT handling, absolute renewal deadlines, consumed stop signals and actual
+joins. These changes introduce no orchestration framework or persistent schema.
+Export historical/running/prepared/written types express real authority/custody
+differences and remain separate. ControlOwner/CatalogIdentity relocation is not
+needed for the next consumer and is deferred to an owning responsibility change.
+Rocks admission review found no concrete defect: payload+dictionary atomicity,
+pre-write inventory flags, historical replay and current certification must stay
+distinct. Do not broaden this edit into an admission rewrite; semantic effect
+helpers are a reasonable later boundary when that code next changes.
+
+The next visible deliverable is actor-owned export discovery in the private panel:
+P08-T03 Step3, P09-T09 Step2, and only the cursor/key lifecycle subset of P06-T03
+Step1/3. Existing authenticated detail/resume, immutable admission cut, session
+client and panel are consumers. Remaining prerequisites are protected activation,
+actual loaded-key readiness, issued-expiry retention/revocation, bounded actor/filter
+pagination, then HTTP/generated-client/panel wiring. Acceptance needs real engines
+and browser: reopen own jobs, exclude later admissions, recheck mutable membership,
+cross-actor/role/session denial, original absolute expiry, restart and key changes.
+No whole scientific read subsystem, generation pin or ReadViewStamp is required.
+
+This useful P08/P09 slice does not qualify or gate M1. P01-T09 remains open:
+production acquisition roles/socket collection, timer publication, actual event
+read/export/restart and dependency-outage journey from a clean extracted Compose
+bundle. Current serve selects Control only; engine probes are not that journey.
+The already implemented standalone export is the P08-T04 early consumer needed
+by M1. Keep those concrete M1 gaps visible while completing the current private
+export responsibility; do not require complete P01–P06 acceptance first.
+
 ## Next bounded action
 
-Finish document/artifact checks and full diff review for the installed815report,
-commit the evidence, fetch/inspect remote and privately fast-forward push verified
-work. Then continue P06-T03 Step1/3 cursor lifecycle needed by P08-T03 discovery:
-read current key ownership/authority contracts and actual enrollment/runtime/codec
-consumers, select one useful activation/rotation responsibility with an actual
-consumer and independent refusal/recovery oracle. Preserve the maximum original
-expiry and cached-key revocation boundaries above. No paginated endpoint before
-its lifecycle authority, and no master plan or task completion inferred from this
-qualification. Root has located the owning P06task; subsequent lifecycle design
-and implementation have NOT begun.
+Installed815capture review, full diff, artifact/handoff checks and coherent commit
+cbe5e39 are complete and privately pushed. Checks report179Markdown/333JSON,
+123tasks/756steps and three unchanged historical prose dependency cycles.
+
+The bounded adapter/supervision improvements are implemented. Independent AI
+diff review found no semantic regression:29SQL strings preserve tokens/order apart
+from four named boolean result aliases; all parameter/projection order, nullable
+decoding and COMMIT paths remain. The existing Supervisor is constructed once;
+all four explicit stopping checks remain. No admission/type-ownership rewrite.
+Rustfmt, diff whitespace and Python syntax checks pass; local Cargo check is still
+compiling native dependencies. Tux19:21:04UTC preflight found92955447296free bytes,
+no active BigBrotr and eight unrelated running containers. Original dependencies
+remain present; no cleanup required before this bounded run. Preflight retained at
+.research/implementation/export-structure/preflight.json.
+
+Next transfer the clean candidate by Git and execute existing installed resume-output
+and shutdown profiles in separate owned databases/containers. Compile once against
+the verified current8fa cache; use the same exact ELFs for the second profile with
+an explicit suffix. Preserve original outputs, signed399byte event, ledger/xmin,
+restart/retry and bounded blocked-renewal SIGTERM observations. No behavior-change
+unit test or broad unchanged suite is added for this refactor. Record practical
+outcomes before publication, then continue P06-T03 Step1/3 lifecycle needed by
+P08-T03 discovery. Root reread the
+complete credentials/authority documents, current enrollment SQL, actual runtime
+key binder/loader and finite CLI, plus the complete owning key-ownership section
+of derived-read-publication (1389–end). The unrelated earlier derivation sections
+were not re-reviewed. Control acquisition/release and initial-policy activation
+were inspected for lock/retry patterns; other Control methods remain outside this
+focused re-review. No lifecycle implementation or new migration has begun.
+
+Bounded design under evaluation: protected CLI activation in a maintenance window,
+using the existing Control advisory transaction lock before the dataset lock,
+refusing unreleased owners even when expired. New runtime starts must validate
+all lifecycle-required keys against their actual loaded snapshot; no extra unused
+worker registry. Historical same-request receipts must remain resolvable after
+subsequent activity, and later issuing/decrypt consumers must persist maximum
+original expiry+30s and check current revocation. These are candidate mechanics,
+not adopted contracts or executed tests. Independent read-only AI is examining
+concurrency/recovery counterexamples while root inspects callers. Next: settle
+the smallest useful activation responsibility, update its existing owning contract/
+task and add a discriminating real-consumer test before product code. Preserve
+applied SQL and all original evidence. No paginated endpoint before lifecycle
+authority; no new master plan or task completion from these qualifications.

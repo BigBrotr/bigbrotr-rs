@@ -611,29 +611,43 @@ async fn supervise(
     let outcome = async {
     let mut refresh_due = Instant::now() + (lease.remaining_validity().map_err(|e| (1,e.to_string()))? / 2)
         .min(heartbeat.saturating_sub(renewed.elapsed()));
+    // The dispatch loop and its native consumers share one authority context.
+    // In particular, a stop consumed by a nested consumer remains visible here.
+    let mut supervisor = native_grants::Supervisor {
+        owner: &mut owner,
+        lease: &mut lease,
+        renewed: &mut renewed,
+        refresh_due: &mut refresh_due,
+        dataset,
+        snapshot,
+        root,
+        stop,
+        management: &mut management,
+        stopping: false,
+    };
     let mut export_after = None;
     let mut export_due = Instant::now();
     loop {
-        lease.check_delivery(lease.known_epoch()).map_err(|e| (1,e.to_string()))?;
+        supervisor.lease.check_delivery(supervisor.lease.known_epoch()).map_err(|e| (1,e.to_string()))?;
         // A slow successful response already consumed part of the request-start
         // lifetime. Neither that delay nor output handling may extend authority.
         tokio::select! {
             biased;
-            _ = stop.requested() => return Ok(()),
+            _ = supervisor.stop.requested() => return Ok(()),
             // Renewal wins a continuously ready queue. HTTP cannot starve it.
-            _ = tokio::time::sleep_until(refresh_due) => {
+            _ = tokio::time::sleep_until(*supervisor.refresh_due) => {
                 let current = {
                     let started = Cell::new(false);
-                    let renew = renewed.elapsed() >= heartbeat;
+                    let renew = supervisor.renewed.elapsed() >= heartbeat;
                     let refresh = async {
                         started.set(true);
-                        collect_refresh(&mut owner, &mut lease, &mut renewed, dataset, root, renew).await
+                        collect_refresh(supervisor.owner, supervisor.lease, supervisor.renewed, dataset, root, renew).await
                     };
                     tokio::pin!(refresh);
                     tokio::select! {
                         biased;
-                        _ = stop.requested() => {
-                            if let Some(management) = &management { management.stop_admission(); }
+                        _ = supervisor.stop.requested() => {
+                            if let Some(management) = supervisor.management.as_ref() { management.stop_admission(); }
                             // Keep the same admitted operation and its original
                             // deadline. Dropping it would poison an otherwise
                             // healthy Control session. Never resume dispatch or
@@ -647,30 +661,25 @@ async fn supervise(
                 if current != snapshot {
                     return Err((4,"accepted policy changed; private runtime restart required".into()));
                 }
-                if let Some(management)=&management {
-                    management.renew_delivery(lease.delivery_window(lease.known_epoch()).map_err(|e| (4,e.to_string()))?)?;
+                if let Some(management) = supervisor.management.as_ref() {
+                    management.renew_delivery(supervisor.lease.delivery_window(supervisor.lease.known_epoch()).map_err(|e| (4,e.to_string()))?)?;
                 }
                 // Preserve this absolute deadline across every HTTP command.
                 // Recreating half of the remaining lifetime for each ready item
                 // would repeatedly postpone renewal under continuous traffic.
-                refresh_due = Instant::now() + (lease.remaining_validity().map_err(|e| (1,e.to_string()))? / 2)
-                    .min(heartbeat.saturating_sub(renewed.elapsed()));
+                *supervisor.refresh_due = Instant::now() + (supervisor.lease.remaining_validity().map_err(|e| (1,e.to_string()))? / 2)
+                    .min(heartbeat.saturating_sub(supervisor.renewed.elapsed()));
             },
             _ = tokio::time::sleep_until(export_due), if execute_exports => {
-                let maximum = duration(root,"renewal_timeout").min(lease.remaining_validity().map_err(|e| (4,e.to_string()))? / 2);
+                let maximum = duration(root,"renewal_timeout").min(supervisor.lease.remaining_validity().map_err(|e| (4,e.to_string()))? / 2);
                 let selected = tokio::select! {
                     biased;
-                    _ = stop.requested() => return Err((4,"export queue lookup cancelled; Control unavailable".into())),
-                    result = tokio::time::timeout(maximum,owner.next_export_job(export_after)) => result.map_err(|_| (4,"export queue lookup deadline".into()))?.map_err(|e| (4,format!("export queue unavailable: {e:?}")))?,
+                    _ = supervisor.stop.requested() => return Err((4,"export queue lookup cancelled; Control unavailable".into())),
+                    result = tokio::time::timeout(maximum,supervisor.owner.next_export_job(export_after)) => result.map_err(|_| (4,"export queue lookup deadline".into()))?.map_err(|e| (4,format!("export queue unavailable: {e:?}")))?,
                 };
                 // Advance even after a known denial; reset only on exhaustion.
                 export_after = selected;
                 if let Some(id) = selected {
-                    let mut supervisor = native_grants::Supervisor {
-                        owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
-                        refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
-                        management: &mut management, stopping: false,
-                    };
                     export_jobs::execute(id,accepted.clone(),shared_budget.clone(),archive.export_destination.as_ref().expect("selected destination").clone(),archive.coordinator.as_ref().expect("selected reader"),&archive.export_custody,&mut supervisor).await?;
                     if supervisor.stopping { return Ok(()); }
                 }
@@ -678,42 +687,27 @@ async fn supervise(
                 // native supervision continues servicing existing Control work.
                 export_due = Instant::now() + Duration::from_millis(250);
             },
-            work = next_management(&mut management) => {
-                lease.check_delivery(lease.known_epoch()).map_err(|e| (4,e.to_string()))?;
-                let maximum = duration(root,"renewal_timeout").min(lease.remaining_validity().map_err(|e| (4,e.to_string()))? / 2);
+            work = next_management(supervisor.management) => {
+                supervisor.lease.check_delivery(supervisor.lease.known_epoch()).map_err(|e| (4,e.to_string()))?;
+                let maximum = duration(root,"renewal_timeout").min(supervisor.lease.remaining_validity().map_err(|e| (4,e.to_string()))? / 2);
                 let response = tokio::select! {
                     biased;
-                    _ = stop.requested() => return Err((4,"private session operation cancelled; outcome unresolved".into())),
-                    result = management.as_mut().expect("management work source").execute(work,&mut owner,&mut lease,maximum,accepted.flag("archive.reader.enabled"),archive.export_destination.as_ref()) => result?,
+                    _ = supervisor.stop.requested() => return Err((4,"private session operation cancelled; outcome unresolved".into())),
+                    result = supervisor.management.as_mut().expect("management work source").execute(work,supervisor.owner,supervisor.lease,maximum,accepted.flag("archive.reader.enabled"),archive.export_destination.as_ref()) => result?,
                 };
                 let response = match response {
                     management::Execution::Complete(response) => response,
                     management::Execution::Resume(work) => {
-                        let mut supervisor = native_grants::Supervisor {
-                            owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
-                            refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
-                            management: &mut management, stopping: false,
-                        };
                         let response = resume_export::execute(work, &shared_budget, &mut supervisor).await?;
                         if supervisor.stopping { return Ok(()); }
                         Some(response)
                     }
                     management::Execution::History(work) => {
-                        let mut supervisor = native_grants::Supervisor {
-                            owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
-                            refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
-                            management: &mut management, stopping: false,
-                        };
                         history::execute(work,accepted.clone(),shared_budget.clone(),archive.coordinator.as_ref(),&mut supervisor).await?;
                         if supervisor.stopping { return Ok(()); }
                         None
                     }
                     management::Execution::Archive(work) => {
-                        let mut supervisor = native_grants::Supervisor {
-                            owner: &mut owner, lease: &mut lease, renewed: &mut renewed,
-                            refresh_due: &mut refresh_due, dataset, snapshot, root, stop,
-                            management: &mut management, stopping: false,
-                        };
                         let response = native_grants::execute(work,accepted.clone(),shared_budget.clone(),
                             archive.coordinator.as_ref().expect("selected local reader"),&mut supervisor).await?;
                         // The nested supervisor consumed the signal. Cleanup is
@@ -724,7 +718,7 @@ async fn supervise(
                 };
                 // Tokio deadlines alone do not detect every suspend/resume.
                 // Keep the response/grant until the authority clock agrees.
-                lease.check_delivery(lease.known_epoch()).map_err(|e| (4,e.to_string()))?;
+                supervisor.lease.check_delivery(supervisor.lease.known_epoch()).map_err(|e| (4,e.to_string()))?;
                 if let Some(response) = response { response.deliver(); }
             },
         }

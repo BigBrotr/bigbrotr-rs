@@ -398,11 +398,50 @@ async fn read(
     dataset: DatasetId,
     job: JobId,
 ) -> Result<Option<ExportJob>, Error> {
-    let row = tx.query_opt("SELECT substring(j.principal_id FROM 1 FOR 17),left(j.state,32),left(j.job_revision::text,21),left(j.checkpoint_revision::text,21),substring(j.result_manifest_digest FROM 1 FOR 33),substring(e.catalog_id FROM 1 FOR 17),left(e.frontier_revision::text,21),f.snapshot_id,left(j.input_topology_generation::text,21),substring(e.event_id FROM 1 FOR 33),substring(e.allocation_domain FROM 1 FOR 17),left(e.ordinal::text,21),substring(e.destination_id FROM 1 FOR 17),substring(e.destination_binding_sha256 FROM 1 FOR 33),left(j.config_revision::text,21),left(j.policy_revision::text,21),substring(u.artifact_id FROM 1 FOR 17),left(u.max_output_bytes::text,21),left(u.max_temporary_bytes::text,21),j.input_complete AND e.dataset_id=j.dataset_id AND e.actor_id=j.principal_id AND f.dataset_id=j.dataset_id AND f.catalog_id=e.catalog_id AND f.topology_generation=j.input_topology_generation AND r.sealed AND r.topology_generation=f.topology_generation AND r.consumer_role='archive' FROM control.jobs j JOIN control.export_jobs e USING(job_id) JOIN control.archive_frontier_snapshots f ON f.consumer_id=e.catalog_id AND f.frontier_revision=e.frontier_revision JOIN control.consumer_frontier_revisions r ON r.consumer_id=f.consumer_id AND r.frontier_revision=f.frontier_revision LEFT JOIN control.export_execution_units u USING(job_id) WHERE j.job_id=$1::bytea AND j.dataset_id=$2::bytea AND j.export_job_protocol=1", &[&&job.as_bytes()[..],&&dataset.as_bytes()[..]]).await.map_err(backend)?;
+    let row = tx
+        .query_opt(
+            "SELECT substring(j.principal_id FROM 1 FOR 17),
+                    left(j.state, 32),
+                    left(j.job_revision::text, 21),
+                    left(j.checkpoint_revision::text, 21),
+                    substring(j.result_manifest_digest FROM 1 FOR 33),
+                    substring(e.catalog_id FROM 1 FOR 17),
+                    left(e.frontier_revision::text, 21),
+                    f.snapshot_id,
+                    left(j.input_topology_generation::text, 21),
+                    substring(e.event_id FROM 1 FOR 33),
+                    substring(e.allocation_domain FROM 1 FOR 17),
+                    left(e.ordinal::text, 21),
+                    substring(e.destination_id FROM 1 FOR 17),
+                    substring(e.destination_binding_sha256 FROM 1 FOR 33),
+                    left(j.config_revision::text, 21),
+                    left(j.policy_revision::text, 21),
+                    substring(u.artifact_id FROM 1 FOR 17),
+                    left(u.max_output_bytes::text, 21),
+                    left(u.max_temporary_bytes::text, 21),
+                    j.input_complete
+                        AND e.dataset_id = j.dataset_id AND e.actor_id = j.principal_id
+                        AND f.dataset_id = j.dataset_id AND f.catalog_id = e.catalog_id
+                        AND f.topology_generation = j.input_topology_generation
+                        AND r.sealed AND r.topology_generation = f.topology_generation
+                        AND r.consumer_role = 'archive' AS valid_input
+             FROM control.jobs j
+             JOIN control.export_jobs e USING(job_id)
+             JOIN control.archive_frontier_snapshots f
+                ON f.consumer_id = e.catalog_id AND f.frontier_revision = e.frontier_revision
+             JOIN control.consumer_frontier_revisions r
+                ON r.consumer_id = f.consumer_id AND r.frontier_revision = f.frontier_revision
+             LEFT JOIN control.export_execution_units u USING(job_id)
+             WHERE j.job_id = $1::bytea AND j.dataset_id = $2::bytea
+                AND j.export_job_protocol = 1",
+            &[&&job.as_bytes()[..], &&dataset.as_bytes()[..]],
+        )
+        .await
+        .map_err(backend)?;
     let Some(row) = row else {
         return Ok(None);
     };
-    if !row.try_get::<_, bool>(19).map_err(metadata)? {
+    if !row.try_get::<_, bool>("valid_input").map_err(metadata)? {
         return Err(Error::InvalidMetadata);
     }
     let state = ExportState::from_code(row.try_get::<_, &str>(1).map_err(metadata)?)
@@ -444,7 +483,28 @@ async fn read(
         .try_into()
         .map_err(|_| Error::InvalidMetadata)?;
     let frontier_revision = revision(&row, 6)?;
-    let rows = tx.query("SELECT coalesce(b.shard_id,f.shard_id)::bigint,coalesce(b.owner_epoch,f.owner_epoch)::text,coalesce(b.last_complete_sequence,f.last_complete_sequence)::text,b.shard_id IS NOT NULL AND f.shard_id IS NOT NULL AND b.last_complete_sequence=f.last_complete_sequence FROM (SELECT * FROM control.job_input_bounds WHERE job_id=$1::bytea) b FULL JOIN (SELECT * FROM control.consumer_frontiers WHERE consumer_id=$2::bytea AND frontier_revision=$3::text::numeric) f USING(shard_id,owner_epoch) ORDER BY 1,coalesce(b.owner_epoch,f.owner_epoch) LIMIT 1025", &[&&job.as_bytes()[..],&&catalog.as_bytes()[..],&frontier_revision.to_string()]).await.map_err(backend)?;
+    let rows = tx
+        .query(
+            "SELECT coalesce(b.shard_id, f.shard_id)::bigint,
+                    coalesce(b.owner_epoch, f.owner_epoch)::text,
+                    coalesce(b.last_complete_sequence, f.last_complete_sequence)::text,
+                    b.shard_id IS NOT NULL AND f.shard_id IS NOT NULL
+                        AND b.last_complete_sequence = f.last_complete_sequence AS matches_frontier
+             FROM (SELECT * FROM control.job_input_bounds WHERE job_id = $1::bytea) b
+             FULL JOIN (
+                SELECT * FROM control.consumer_frontiers
+                WHERE consumer_id = $2::bytea AND frontier_revision = $3::text::numeric
+             ) f USING(shard_id, owner_epoch)
+             ORDER BY 1, coalesce(b.owner_epoch, f.owner_epoch)
+             LIMIT 1025",
+            &[
+                &&job.as_bytes()[..],
+                &&catalog.as_bytes()[..],
+                &frontier_revision.to_string(),
+            ],
+        )
+        .await
+        .map_err(backend)?;
     if rows.len() > 1024 {
         return Err(Error::Capacity);
     }
@@ -453,7 +513,10 @@ async fn read(
         .try_reserve_exact(rows.len())
         .map_err(|_| Error::Capacity)?;
     for row in rows {
-        if !row.try_get::<_, bool>(3).map_err(metadata)? {
+        if !row
+            .try_get::<_, bool>("matches_frontier")
+            .map_err(metadata)?
+        {
             return Err(Error::InvalidMetadata);
         }
         bounds.push(CutBound {
@@ -510,7 +573,33 @@ async fn completed_files(
     tx: &Transaction<'_>,
     job: &ExportJob,
 ) -> Result<Option<crate::export::files::StoredExport>, Error> {
-    let row = tx.query_opt("SELECT substring(a.artifact_id FROM 1 FOR 17),left(a.manifest_bytes::text,21),substring(a.manifest_sha256 FROM 1 FOR 33),left(a.total_bytes::text,21),left(f.byte_count::text,21),left(f.row_count::text,21),substring(f.sha256 FROM 1 FOR 33),a.dataset_id=j.dataset_id AND a.principal_id=j.principal_id AND a.destination_id=e.destination_id AND a.destination_binding_sha256=e.destination_binding_sha256 AND a.manifest_sha256=j.result_manifest_digest AND a.completed_at_us=j.completed_at_us AND a.file_count=1 AND a.manifest_format='bigbrotr-signed-events-export/1' AND f.relative_path='events.jsonl' AND f.format='nostr-jsonl/1' AND (SELECT count(*) FROM control.artifact_files z WHERE z.artifact_id=a.artifact_id)=1 FROM control.artifacts a JOIN control.jobs j USING(job_id) JOIN control.export_jobs e USING(job_id) LEFT JOIN control.artifact_files f ON f.artifact_id=a.artifact_id AND f.file_id='events' WHERE a.job_id=$1::bytea", &[&&job.selection.job.as_bytes()[..]]).await.map_err(backend)?;
+    let row = tx
+        .query_opt(
+            "SELECT substring(a.artifact_id FROM 1 FOR 17),
+                    left(a.manifest_bytes::text, 21),
+                    substring(a.manifest_sha256 FROM 1 FOR 33),
+                    left(a.total_bytes::text, 21),
+                    left(f.byte_count::text, 21),
+                    left(f.row_count::text, 21),
+                    substring(f.sha256 FROM 1 FOR 33),
+                    a.dataset_id = j.dataset_id AND a.principal_id = j.principal_id
+                        AND a.destination_id = e.destination_id
+                        AND a.destination_binding_sha256 = e.destination_binding_sha256
+                        AND a.manifest_sha256 = j.result_manifest_digest
+                        AND a.completed_at_us = j.completed_at_us AND a.file_count = 1
+                        AND a.manifest_format = 'bigbrotr-signed-events-export/1'
+                        AND f.relative_path = 'events.jsonl' AND f.format = 'nostr-jsonl/1'
+                        AND (SELECT count(*) FROM control.artifact_files z
+                             WHERE z.artifact_id = a.artifact_id) = 1 AS valid_output
+             FROM control.artifacts a
+             JOIN control.jobs j USING(job_id)
+             JOIN control.export_jobs e USING(job_id)
+             LEFT JOIN control.artifact_files f ON f.artifact_id = a.artifact_id AND f.file_id = 'events'
+             WHERE a.job_id = $1::bytea",
+            &[&&job.selection.job.as_bytes()[..]],
+        )
+        .await
+        .map_err(backend)?;
     let Some(row) = row else {
         return if job.state == ExportState::Succeeded {
             Err(Error::InvalidMetadata)
@@ -518,30 +607,40 @@ async fn completed_files(
             Ok(None)
         };
     };
+    decode_completed_files(&row, job).map(Some)
+}
+
+fn decode_completed_files(
+    row: &Row,
+    job: &ExportJob,
+) -> Result<crate::export::files::StoredExport, Error> {
     if job.state != ExportState::Succeeded
-        || row.try_get::<_, Option<bool>>(7).map_err(metadata)? != Some(true)
+        || row
+            .try_get::<_, Option<bool>>("valid_output")
+            .map_err(metadata)?
+            != Some(true)
     {
         return Err(Error::InvalidMetadata);
     }
     let unit = job.reservation.ok_or(Error::InvalidMetadata)?;
     let value = crate::export::files::StoredExport {
         data: crate::export::jsonl::JsonlFile {
-            bytes: number(&row, 4)?,
-            rows: number(&row, 5)?,
-            sha256: Digest256::from_bytes(fixed::<32>(&row, 6)?),
+            bytes: number(row, 4)?,
+            rows: number(row, 5)?,
+            sha256: Digest256::from_bytes(fixed::<32>(row, 6)?),
         },
-        manifest_bytes: revision(&row, 1)?,
-        manifest_sha256: Digest256::from_bytes(fixed::<32>(&row, 2)?),
+        manifest_bytes: revision(row, 1)?,
+        manifest_sha256: Digest256::from_bytes(fixed::<32>(row, 2)?),
     };
-    if fixed::<16>(&row, 0)? != *unit.artifact.as_bytes()
+    if fixed::<16>(row, 0)? != *unit.artifact.as_bytes()
         || value.manifest_bytes > 262144
         || value.data.rows > 1
         || (value.data.rows == 0) != (value.data.bytes == 0)
-        || value.data.bytes.checked_add(value.manifest_bytes) != Some(number(&row, 3)?)
-        || number(&row, 3)? > unit.limits.maximum()
+        || value.data.bytes.checked_add(value.manifest_bytes) != Some(number(row, 3)?)
+        || number(row, 3)? > unit.limits.maximum()
         || Some(value.manifest_sha256) != job.result
     {
         return Err(Error::InvalidMetadata);
     }
-    Ok(Some(value))
+    Ok(value)
 }

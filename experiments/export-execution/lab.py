@@ -9,6 +9,8 @@ Resume browser qualification accepts an optional ENGINE-MOUNT after the reused
 runtime revision. Each explicit pair uses its own source/run/container/network
 suffix; prepare that exact Git checkout through the transfer workflow first.
 Each run retains independent database/seed state and exercises its selected engine.
+Other runtime profiles can use their profile name as that suffix, so a second
+isolated run can reuse the same exact product artifacts without recompilation.
 """
 import base64, datetime, hashlib, json, os, re, secrets, shutil, subprocess, sys, tarfile, time, traceback, urllib.request
 from pathlib import Path
@@ -39,22 +41,24 @@ revocation = resume_output or sys.argv[3:4] == ["--runtime-revocation"]
 parking = busy or pause_commits or sys.argv[3:4] == ["--runtime-parking"]
 executor = resume_http or shutdown or parking or revocation or job_status or sys.argv[3:4] == ["--runtime-executor"]
 runtime = responsive or executor
-browser_variant = sys.argv[5] if resume_browser and len(sys.argv)==6 else None
+run_variant = sys.argv[5] if runtime and len(sys.argv)==6 else None
+browser_variant = run_variant if resume_browser else None
 assert browser_variant is None or browser_variant in tuple(engine+'-'+mount for engine in ['chromium','firefox','webkit'] for mount in ['root','control'])
-reuse_runtime = sys.argv[4] if runtime and (len(sys.argv)==5 or browser_variant) else None
+assert run_variant is None or resume_browser or run_variant == sys.argv[3].removeprefix('--runtime-')
+reuse_runtime = sys.argv[4] if runtime and len(sys.argv) in (5, 6) else None
 assert reuse_runtime is None or re.fullmatch("[0-9a-f]{40}", reuse_runtime)
 rollback = sys.argv[3:] == ["--rust-rollback"]
 adapter = resume_adapter or sys.argv[3:] in (["--rust-adapter"], ["--rust-rollback"])
-assert sys.argv[3:] in ([], ["--runtime-resume-expiry"], ["--runtime-resume-revoke"], ["--runtime-resume-locks"], ["--runtime-resume-checker"], ["--runtime-resume-browser"], ["--runtime-resume-client"], ["--runtime-resume-custody"], ["--runtime-resume-commits"], ["--runtime-resume-output"], ["--runtime-resume"], ["--resume-schema"], ["--resume-adapter"], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"], ["--runtime-job-status"], ["--runtime-job-admission"], ["--runtime-job-browser"], ["--runtime-shutdown"]) or (runtime and len(sys.argv)==5) or browser_variant is not None
+assert sys.argv[3:] in ([], ["--runtime-resume-expiry"], ["--runtime-resume-revoke"], ["--runtime-resume-locks"], ["--runtime-resume-checker"], ["--runtime-resume-browser"], ["--runtime-resume-client"], ["--runtime-resume-custody"], ["--runtime-resume-commits"], ["--runtime-resume-output"], ["--runtime-resume"], ["--resume-schema"], ["--resume-adapter"], ["--rust-adapter"], ["--rust-rollback"], ["--runtime-responsive"], ["--runtime-executor"], ["--runtime-parking"], ["--runtime-busy"], ["--runtime-pause-commits"], ["--runtime-revocation"], ["--runtime-job-status"], ["--runtime-job-admission"], ["--runtime-job-browser"], ["--runtime-shutdown"]) or (runtime and len(sys.argv)==5) or run_variant is not None
 compile_current = adapter or (runtime and not reuse_runtime)
 assert all(re.fullmatch('[0-9a-f]{40}', v) for v in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
-run_id = revision[:7] + ('-'+browser_variant if browser_variant else '')
+run_id = revision[:7] + ('-'+run_variant if run_variant else '')
 root = base / 'runs' / (('export-runtime-' if executor else 'export-responsive-' if responsive else 'export-rollback-' if rollback else 'export-adapter-' if adapter else 'export-execution-') + run_id)
 source, out = root / 'source', root / 'out'
 cache_root = base / 'runs/export-checker-fixed-4e6b5c0'
 cache = cache_root / 'out/build'
-compiler_root = base / 'runs/job-admission-8fae53a' if job_admission else cache_root
+compiler_root = base / 'runs/job-admission-8fae53a'
 compiler_cache = compiler_root / 'out/build'
 rust_image = 'sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d'
 pg_image = 'postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94'
@@ -100,7 +104,7 @@ for entry in old['containers']:
     old_container = next(c for c in prior if c['Id'] == entry['id'])
     assert old_container['State']['Status'] == 'exited' and old_container['State']['Pid'] == 0
     assert old_container['Config']['Labels'][old['owner_label']] == old['owner']
-if job_admission:
+if compile_current:
     compiler_state=json.loads((compiler_root/'resources.json').read_text())
     assert compiler_state['owner']=='ec924c93641b331072d124a476144375' and compiler_state['state']=='stopped-retained' and compiler_state['qualification']=='PASS'
     assert compiler_state['source']=='8fae53a883b6e1c258a184204271a7e691c0da81'
@@ -247,7 +251,7 @@ try:
             if name=='cargo-home':
                 assert not any((compiler_cache/name/n).exists() for n in ['credentials','credentials.toml','config','config.toml'])
             subprocess.run(['cp','-a','--reflink=auto',str(compiler_cache/name),str(build/name)],check=True,timeout=120)
-        write(root/'cache-origin.json',dict(root=str(compiler_root),source=compiler_state['source'] if job_admission else artifact_source,
+        write(root/'cache-origin.json',dict(root=str(compiler_root),source=compiler_state['source'],
             source_manifest_sha256=sha(compiler_cache/'source-manifest.json'),scope='Copied compiler caches only; fresh current Rust compilation required. Historical native seed identity is recorded separately.'))
 
     assert shutil.disk_usage(base).free>(8*1024**3 if compile_current else 512*1024**2)
