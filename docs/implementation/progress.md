@@ -1,556 +1,174 @@
 # Current execution checkpoint
 
-Observed 2026-09-27 in the primary Mac workspace (latest Tux timestamps are UTC). Navigation, not evidence or a
-second plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint):
-verify Git, actual artifacts and live resource ownership before continuing.
-Historical detail stays in Git and linked reports; task files own completion.
+Observed 2026-09-27 in the primary Mac workspace; Tux timestamps are UTC.
+Navigation, not evidence or a competing plan. Follow the
+[resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
+Git preserves earlier checkpoint detail; linked reports and the inventory own
+original results. Verify actual revisions, dirty files and resources on resume.
 
-## Mandate and current slice
+## Mandate and active work
 
 The complete selected product remains owner-authorized and INCOMPLETE. Keep
 private bigbrotr-rs, unpublished Cargo packages and the read-only Go neighbor.
-Mac owns edits/Git; Tux runs trusted exact-Git jobs while hosted Actions billing
-is unavailable. No public release, rename or Linux arm64 qualification.
-Active P08-T03 Step3 / P08-T04 Step3, with thin P09-T09 Step2 and the
-P06-T03 Step1/3 cursor/keyring prerequisite. No full
-P02/P06/P08/P09 task or M1 milestone is complete. Continue through the existing
-pipeline, including packaging, acquisition, analytics, public surfaces and website.
-Root is sole writer/integrator. catalog_guard_review is a read-only AI reviewer,
-with no edits/tests/SSH or resource ownership.
+Mac owns edits/Git; trusted exact-Git Tux runs replace unavailable hosted Actions
+execution while its billing issue persists. No public release, repository rename,
+Linux arm64, hosted CI or complete packaged-release qualification is claimed.
 
-## Verified Git and next bounded action
+Active P08-T03 Step3 / P08-T04 Step3, thin P09-T09 Step2, and the P06-T03 Step1/3
+cursor/keyring prerequisite for actor-owned job discovery. No complete task,
+phase, M1 or selected-product completion. Root is sole writer/integrator;
+catalog_guard_review is an independent read-only AI reviewer, with no edits,
+product tests, SSH or resource ownership.
 
-Main HEADb5620272814bec84578da28ded75ccd0c339f5f3; private origin0091fc9.
-Root owns only the corrected enrollment fixture/retry wrapper and evidence/docs.
-Original9b02 build51tests/Clippy PASS; initial network exhaustion is preserved in
-[INCOMPLETE report](evidence/p06-cursor-enrollment-native-incomplete-20260927.json).
-Root and independent read-only AI verify20payloads/1315Git files/ELF/51tests and
-773prior projections; actual pool-exhaustion stderr comes from later diagnosis.
-Retired only empty3ba networkb6f4bef, preserving all774container projections and
-all original DB/key/source/log/artifact data. Future replay provisions a network.
+Last observed main HEAD c6595c8822a1add6248f8aca9890bda5657f0ea0; private origin
+0091fc9b181ec35cefbe6a6133e365f04e7c6e75. Source was clean at exact-Git transfer.
+Root now owns only qualification evidence, P06/recipe documentation, this
+checkpoint and inventory changes. No merge/rebase or other contributor changes.
+Product candidate9b02bd9f692ec07f57954b140fcd6efd20220ebe remains unchanged.
 
-Retry cursor-enrollment-retry-b562027 is stopped-retained/INCOMPLETE after106PASS
-events across10databases. Source/fixture/ELF remain original9b02; wrapperb562.
-Ownerd17528a44ee6af3615b679c87447a7eb, orchestrator2213778/start391029146,
-three owned containers PID0/noOOM; IDs and PG owner in inventory/report.
-Actual upgrade/fresh/privilege/SQLclosure, both COMMIT-loss sides, output/fsync
-cases passed, then fixture lab.change refused missing spaces around keyring_ref's
-assignment while preparing the same-key contender. Contender/kill/restart NOT_RUN;
-no terminal SQL outcome inferred for the held transaction. Original DBs retained.
-See [fixture INCOMPLETE report](evidence/p06-cursor-enrollment-fixture-incomplete-20260927.json).
-Root verifies67safe payloads, receipt/SQL/xmin/proxy/syscall evidence and774prior
-projections. Original .stdout/.log offline reader correction also retained.
-SQL0602 now applied, SHA20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48;
-immutable from this point. Later SQL fixes must be additive.
+## Latest qualified responsibility
 
-Retired only b562's empty network after scope checks; all777container projections
-unchanged. No cache/container/data/volume retirement. New corrected fixture uses
-spaced TOML (helper RED/GREEN), explicit separate fixture/binary identities and
-unchanged input hashes including SQL/fixtures/generated config reference. Same
-original9b02 ELF; no Rust rebuild/test/Clippy reattribution or new compiler cache.
-Reviewed retry cleanup keeps PG identity in memory, records failures and retires
-only its own stopped empty network after preserving metadata. An unavailable
-network inspection is cleanup-unresolved, never PASS. No native retry active yet.
-Protect9b02/e684 caches, original source/evidence and all private failure states.
+Explicit prepared-key enrollment now passes the scoped
+[native report](evidence/p06-cursor-enrollment-native-20260927.json).
+Product9b02 treead6ca8aee111b4e4802decbc1219af73aa7c36cb;
+fixture c6595c8 tree0f967a0d2f705ae74d6daa9812eadeeb3546a9d6.
+Original native build51Rust tests/Clippy PASS. The retry performs no compilation
+or Rust test rerun and verifies875unchanged inputs, including SQL, fixtures and
+the generated configuration reference. Linux amd64/Rust1.98.1/PostgreSQL16.15.
 
-Current Tux root cursor-rotation-e684915, owner89b64550b3049b02bc61122a16c3efe5,
-is stopped-retained, qualification PASS. Orchestrator2184798/start390803174 is
-absent or terminal zombie at fresh census. Container
-5b9393f0c27fe8b74d1553b8330bd4edc552891fbbf1830fd64528ef929433bc PID0/noOOM/exit0.
-Fresh native build34.866s,24Rust tests and selected Clippy PASS; all13actual CLI
-cases PASS. Ordered synchronization/exact old-key preservation, missing/partial/
-cap16/forced flock,8preparers(1success/7Busy),3fsyncEIO+writeENOSPC,3held-fsync
-kills and real65536byte stdoutpipe exit1 in0.211565284s with exact same-key retry.
-See [native addition report](evidence/p06-cursor-key-addition-native-20260927.json).
-ELF2b65d3537ab7b3f147840b07358e20f0e27750c391d1683445672bfde347dadd;
-source manifest41ab416a2326704e99c64550537c3b656d4fd767bb05be1a0e87806ce4cee844.
-Cargo.lock unchanged4f9cbb84. Copied stopped3ba cache/read-only strace509ea.
+155checks across12real databases cover601→602 upgrade/fresh initial mirroring,
+original receipt/material/audit identity, changed local files and stable retries,
+permanent conflicts, raw SQL closure/immutability/isolation, privilege rollback,
+both COMMIT-loss sides, actual dataset lock contention for same/conflicting keys,
+held-COMMIT client kill, fsyncEIO before any connect and PostgreSQL restart.
+An actually full65536byte output pipe exits1 in0.223823434s with durable same-key
+retry. No activation/issuance/readiness, cross-worker pages, power-loss or load
+qualification follows from these small fixtures.
 
-Root verifies104safe payloads,1311Git files,24tests/13cases/28recordedCLIlogs;
-tar56c347caa68e58a0466cb4cba2c9513e4911f2c08cdc4d9aa5df2af32f0f5c19.
-Capture excludes all private key bytes;13keydirectories including failure staging
-remain on Tux. Independent read-only AI confirms tar,104payloads,1311Git files,
-ELF,9report hashes,24tests/13cases/28CLIlogs/8traces and772prior/773later projections.
-No discrepancy,AI tests or SSH. New secret-byte equality and killed-child absence
-are runner assertions; final metadata and pending syscall traces corroborate them.
-Fresh2026-09-27T16:19:16Z census verifies all773container projections unchanged,
-clean source/ELF and all13keydirectory file hashes/inodes/modes against results.
-Eight unrelated running unchanged. Free102307127296bytes (~95.3GiB); native
-preflight105841065984→terminal102308683776bytes includes concurrent writes.
-No deletion/database/network/volume; retain all prior protected resources.
+Root verifies75safe payloads,1318current Git files,875equal inputs, original
+1315file source/ELF linkage, SQL receipts/recorded prior rows+xmin/proxy/syscall
+and terminal resource evidence. Secret-byte equality, some unchanged snapshot/
+pg_dump assertions and backend counts remain runner observations. Capture:
+.research/implementation/cursor-enrollment/capture-c6595c8,
+tar4f02d2f85c466f647914c4b2a7386a70838a325109580c0e8180f0a62181e3b0.
+ELFa943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716;
+original source manifest5cb5fa359392a5756e9283ee388a96ecc4199c4e05bcfa0818c851998a4063f9;
+Cargo.lock4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa.
+Independent AI source/fixture review found and root fixed full prior-row/xmin
+comparison, PASS-after-cleanup and PG-record/network-inspection cleanup holes
+before the successful run. Final read-only AI independently confirms hashes,
+15receipts,SQL/xmin/proxy/concurrency/recovery/restart and777prior/780live container
+projections. No discrepancy, product tests or SSH; cache maintenance outside AI scope.
 
-Latest Tux root cursor-registration-3ba3ceb is stopped-retained, owner
-eb663e23ef210c56bebc0df9c974f84a. Orchestrator2149748/start390551357 is absent or
-terminal zombie at fresh census. Native release build,45Rust tests and Clippy PASS.
-Actual PostgreSQL16.15 qualification passes128checks (127distinct labels) across
-11fresh databases. Source manifestd6b19092e9e77e7d3c48dcc779d2ceb0fb31800492638e1bffb4aeb4b776bb40;
-parent ELFdc8234584f757fbfa2df6566468ac89c1c05b934de996b609eaeb972fad7da78.
-The [native registration report](evidence/p06-cursor-registration-native-20260927.json)
-records full receipt/SQL bindings, unchanged retry xmin, direct SQL omission and
-mutation refusal, both COMMIT-loss sides, concurrent same/conflicting key sets,
-held-COMMIT kill, actual65536byte stdout pipe (exit1 in0.225111s), fsyncEIO before
-connect and PG SIGKILL/restart. No activation/rotation/issuance qualification.
+Both original failures stay separate and unchanged:
 
-All4owned containers PID0/noOOM. PG ownerc3ab42ee0076576e8b4f78aea61ec08f;
-buildc9a52c27c0d9a4a04050e2890c2a6df43b83e95ec9bfd55b924a9518e7c3195c exit0,
-PG2838a0b74578e9ee1103d4fdb3ca591d7573ef023f236dec8bcff061f645ffb6 exit0,
-client361966cb78f22d9ab80d811601d16a7ba6c3b376540284d8370c16e6a8e690ca exit143,
-faulthelpere74da1ffd30545090c9bdf97f22d974fa659e89dcad5158879da0d882ff2ff36 exit137
-(expected killed case). Network retained;11databases/keyfiles/partial EIO state,
-source/ELF/logs and fresh3ba compiler cache retained. No deletions.
+- [9b02 network setup](evidence/p06-cursor-enrollment-native-incomplete-20260927.json):
+  INCOMPLETE before PostgreSQL/migrations. Later owned reproduction supplied the
+  pool-exhaustion diagnostic suppressed by the original helper. Root and AI
+  verified20payloads/1315Git files/51tests and773prior container projections.
+- [b562 fixture](evidence/p06-cursor-enrollment-fixture-incomplete-20260927.json):
+  INCOMPLETE after106PASS events, before starting the same-key contender. Its
+  generated TOML lacked spaces required by lab.change. Exact helper RED/GREEN
+  retained; no product change or inferred final held-transaction outcome.
+  Original67payloads,10databases, keys and failure state retained.
 
-Capture94payloads,1308Git blobs independently replayed, tarSHA
-c75b25f5496b57e01a75a58f42335a598788967496a3c592b5b730739cb33846.
-All768preexisting projections unchanged. Latest live census2026-09-27T15:49:08Z
-verifies all772projections,clean source/ELF,protected key metadata and no live owned
-orchestrator. Free105878368256bytes (~98.6GiB); run preflight109664874496 and
-terminal105879973888bytes, including concurrent writes. Local capture/review/live
-files remain under .research/implementation/cursor-registration; inventory has
-exact resource ownership. Independent read-only AI replay confirms tar,94payloads,
-1308Git files,ELF,all10report artifact hashes,45tests,128events/127names,SQL
-receipt/xmin/proxy/syscall checks and768prior/772later projections. No discrepancy,
-AI tests,SSH or edits; private-key mode/schema/backend assertions remain runner
-observations, not live AI measurements.
+SQL0602 is applied and immutable:
+20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48.
+SQL0601 remains immutable72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026.
+Future corrections require additive migrations and compatibility handling.
+Initial registration still owns its original whole-file receipt; enrollment owns
+permanent individual ID/material bindings and does not grant cursor authority.
+Prior [registration](evidence/p06-cursor-registration-native-20260927.json),
+[local key addition](evidence/p06-cursor-key-addition-native-20260927.json) and
+[keyfile preparation](evidence/p06-cursor-keyring-native-20260925.json) remain
+separately qualified; their exclusions and original observer failures persist.
 
-First offline verifier refused a duplicate blocked-output-retry-no-sql-write
-label. Both original PASS events remain: recover checks SQL/xmin, caller adds
-unchanged key bytes. The observer now checks both explicitly, with original
-source/note retained; no product/fixture/native outcome changed or rerun.
-Local report categorization corrected to19loopback+1metadata proxy tests; total20
-and outcomes unchanged. Independent offline AI verifies all16inputs/63artifacts,
-42Mac tests/Clippy,proxy RED/GREEN and both public binding hashes.
+## Live resources and maintenance
 
-SQL0601 SHA72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026
-has now been applied and is immutable; subsequent corrections need additive DDL.
-Qualification commit d5 records3ba; prepare-key e684915 is now natively qualified.
-Final artifact/handoff checks pass179Markdown/324JSON,123tasks/756steps and the
-same3historical cycle candidates; full qualification diff inspected.
-Next bounded action: commit corrected fixture/reuse checks and run exact-Git
-retry with original9b02 ELF. Preserve both original INCOMPLETE outcomes. No edits
-to applied SQL0601/0602; remaining concurrency/kill/restart need actual execution.
-Existing task/Step1/M1/product remain open.
+The [inventory](../research/laboratory-inventory.json), especially
+implementation_cursor_enrollment_20260927, owns exact IDs and retirement records.
+Tux run root is /home/tux/bigbrotr-implementation-20260917/runs/.
+Current cursor-enrollment-retry-c6595c8 is stopped-retained/PASS, owner
+327a0f16d44c6a540f0326c45ce2836a, PG owner6270b2beecabd918577dc10c94d2aaac.
+Orchestrator2225717/start391077813 absent or terminal zombie at fresh census.
+Three owned containers PID0/noOOM: fault59ff0adc exit137 (expected kill),
+clientbc9f442f exit143, PG04c486d2 exit0. Its empty networkaf1d0fe5 is removed.
+All12databases and14private key directories (including partial EIO staging) stay.
 
-Static AI lifecycle review flags: current require_control_owner checks backend/
-incarnation/state but not lease expiry; readiness needs current time after waits.
-Bind readiness to actual loaded ID+material and full owner incarnation; a successor
-must validate active plus still-required old keys before serving. Runtime currently
-implements only Control, so do not invent an unconsumed distributed registry.
-Persist a monotone per-key maximum original expiry+skew before delivery; retirement
-using today's reduced TTL is unsafe. These are constraints for the next real
-lifecycle consumer, not executed lifecycle evidence or selected new DDL yet.
+Fresh2026-09-27T17:03:27Z census verifies all780container projections, eight
+unrelated running, source/ELF identity, orchestrator absence and protected keyfile
+metadata; .research/implementation/cursor-enrollment/live-final.json.
+No active BigBrotr experiment. Original9b02 build and e684 addition containers
+are stopped-retained; their compiler caches are the current useful generations.
 
-Mac verification:50selected CLI/config/policy/keyring/secret tests pass, plus the
-collision regression and Clippy. Fifteen independent public wire vectors include
-170/842byte valid files, malformed/checksum/count/identity cases; all170one-byte
-mutations refuse. Original initial stub and CLI RED, collision plain-rename RED,
-all succeeding logs and two unavailable Darwin FIFO API compilation errors remain
-under .research/implementation/cursor-keyring. The test now uses the existing
-mkfifo executable, as the secret-file suite already does. Native scope and original observer failure are recorded below.
+Subsequent scoped maintenance removes only these four resolved paths:
 
-Independent read-only AI review found and root corrected first-creation overwrite
-with NOREPLACE, misleading inspected/prepared output and help wording. It rebuilt
-all15public vector bytes offline, but ran no product tests or SSH. Its native
-recipe review found per-thread ENOSPC injection would also break diagnostics;
-the recipe now traces only the main thread for that one write fault, and keeps
-write payloads raw. Both docker log streams will be retained. Parallel preparer
-successes/Busy counts are observations, while explicit Python flock establishes
-forced contention independently. Native recipe was NOT_RUN at its original commit; both exact runs are now terminal below.
+- cursor-keyring-1f251db/out/build/target
+- cursor-keyring-1f251db/out/build/cargo-home
+- cursor-registration-3ba3ceb/out/build/target
+- cursor-registration-3ba3ceb/out/build/cargo-home
 
-The format/operations contract lives in derived-read-publication.md and protected
-credentials. Key loading retains32KiB and zeroizes its owned buffer, without an
-RSS/all-copies erasure claim. Prepare requires a dedicated0700parent and cooperative
-exclusion from external provisioning writers; first publication additionally
-refuses late collisions. Partial staging is retained/refused by preparation;
-inspection can read the last complete final without certifying previous sync.
-No runtime Control/AEAD/issuance/listing is wired or advertised by this slice.
+Allocated bytes retired6822551552; free98100686848→104921726976bytes
+(91.36→97.72GiB, including concurrent writes). All780container projections and
+22retained native/source artifact hashes unchanged. Privileged read-only
+FD/maps/cwd/exe/root audit found0references and0permission errors. No global
+prune, container, volume, dataset or whole-lab deletion. First read-only audit
+refused a wrong historical receipt filename before deletion; corrected path and
+original note retained. Metadata .research/implementation/cursor-enrollment/cache-retirement.json,
+SHA2441d31169c23efc19019894caf1969ff035a5b945c4b0157b9f6be4e7ec545c.
 
-The previous resume qualifications are committed and pushed:
-[revocation during a real filesystem wait](evidence/p08-export-resume-revocation-native-20260924.json)
-at6aac0e9 and [deferred COMMIT session expiry](evidence/p08-export-resume-expiry-native-20260925.json)
-atd3cd5e6. Root and independent read-only AI replayed hashes, manifests, ELF,
-ledger/session/audit/receipt and retained-container projections; scoped PASS.
-They reuse qualified8db ELF after complete unchanged build-input comparison.
-Earlier [account/source row waits](evidence/p08-export-resume-locks-native-20260924.json)
-remain independently qualified at338057b. Do not repeat these scenarios.
+Separately retired only completed empty3ba and b562networks after preserving
+metadata and verifying774/777unchanged container projections. Future replay of
+these retained containers explicitly provisions/reconnects an isolated network.
+Original database/failure/source/key/artifact evidence was not removed or rewritten.
 
-Latest run export-runtime-d3cd5e6 is stopped-retained,
-owner7508fe5a13909e5b6cac432fd5cfb155. Orchestrator570964/start366969022 absent;
-PGfac490da62a3d243b01388f4b2f004838289578a55a9bb742f409fda299cee1d and
-runner2d31071fb54c0b95b85390e60a243d0907e0cec37853f7b06710f92133c72a7d
-PID0/noOOM; network1f019dfce55e940f7d13e33ba464ffd8aed0369a15778eaa1610505aa592de6d
-absent. Original capture attempt-d3cd5e6/capture has29payloads and1269/1260/1110
-current/runtime/seed Git entries, tar SHA
-d878256942bdb0bce07e4bbf5e99c12485a54f44c50b46f6bf8997c9d51d1883.
-Original final-census SHA
-d19faf86b23463e2eb8e1d8d9863e0c4ed36a24110b22b787453c2ab76eb843c.
-A fresh read-only resumption census at2026-09-24T22:19:43Z again verifies all764
-prior lifecycle/mount/network/restart/health projections, eight unrelated running,
-owned terminal resources and actual installed ELF/marker identities. Free
-113241563136bytes. Retained locally as
-.research/implementation/export-execution/resume-expiry-resumption-census.json;
-original evidence is unchanged. No remote experiment or deletion in this slice.
+Preserve current9b02/e684 caches and8dbd3c4/73e6517/4e6b5c0 seed artifacts/caches;
+strace-exit-9b30c35 instrumentation SHA509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458;
+private-history-32dd58d, stopped history-capture-b5c862a and its actual
+installed-publication-61271e2/out/archive-worker dependency. Qualification and
+object-storage datasets/backups/archives/catalogs/indices/failure states remain
+protected. Prior scoped retirements stay in inventory, not reclassified here.
+Check free space, mounts, processes and prepared dependencies before every lab.
+Skip doubtful candidates; never rebuild old experiments just for cleanup.
 
-The P06-T03 Step1 prerequisite for P08-T03 actor-owned job discovery is now active.
-The [dependency probe](../../experiments/cursor-crypto/README.md) and
-[report](../research/evidence/cursor-crypto.json) inspect exact published
-chacha20poly1305 0.11.0 (archive9b89e1c4, sourcee37a978c), using default features
-off, zeroize and AeadInOut's caller-owned detached-tag API. Six exact published
-crates/index entries/full file manifests are retained under
-.research/checkouts/cursor-dependency-audit-20260925. The isolated Cargo.lock is
-not the root product lock. Official sparse index/static archives succeeded after
-earlier API transport failures; no reason to replace the selected dependency.
+Negative worktrees9fa8b98/8effc76/5f1582c/a334ac8 are NEVER merged/pushed.
+Historical dirty private-panel-no-revoke and detached positiveed2a93b stay untouched.
 
-On macOS26.5.2/aarch64-apple-darwin/Rust1.98.1, eleven frozen independent vectors
-match exact encryption/tag/decryption;4915 changed ciphertext/tag/key/nonce/AAD
-calls refuse before mutating caller ciphertext. Expected answers use the expired
-draft A.3.1 plus independent PyNaCl1.6.2/libsodium with recorded native module hash.
-The first run failed only its manually miscounted terminal total5015 versus4915,
-after all crypto assertions; original source/log retained. Independent vector
-arithmetic established4915. Initial Clippy flagged constant chunks_exact; equivalent
-as_chunks parser and final probe/Clippy pass. Neither correction changes crypto
-inputs/answers. Source archive extraction first failed before unpacking because
-local Python3.9 lacks tarfile's filter argument; validated manual extraction
-succeeded and retained its note. No Linux, RNG, keyring or product qualification.
+## Next bounded action and retained constraints
 
-Read-only AI integration review found two concrete contract obligations, now
-clarified in existing owners: operational lists do not fabricate scientific pins,
-and a timestamp-only cut cannot exclude later backdated/equal-time admissions.
-P08 requires a durable transactional admission ordinal/cut alongside immutable
-creation time; an additive migration backfills existing rows under exclusion.
-P06 explicitly splits the early keyring foundation from later scientific pin
-acceptance. No task/step checkbox is closed by this source/API probe. Final
-independent read-only AI review verifies all hashes,117 extracted files, lock/
-features, oracle logic/count and original failures, with no crypto/test/SSH rerun.
-Its byte-count discrepancy equals the60221bytes of added artifact/handoff logs;
-inventory now records a later explicit measurement. No other discrepancy.
-Artifact/handoff/fmt/diff checks pass (177markdown/316JSON; same three preexisting
-cycle candidates). All relevant source and complete changed diff reviewed.
+Final offline evidence review is complete. Commit/push the coherent qualification
+plus inventory update, then inspect the complete actual Control/session/serve
+consumer and owning key lifecycle contracts before the next P06-T03 Step1/3
+readiness/activation responsibility. Initial reads this turn cover the full cursor
+contract section, Control owner1–210 and serve1–170; the remainder still needs
+reading before edits. No new lifecycle design, DDL or implementation is selected.
 
-Latest Tux run cursor-keyring-1f251db is stopped-retained, owner
-ca3561d0e4feb8654200a2e26591abdd. Container8491f36ebe7d0ec1a0270189403e00e877fa00068a1454bf33e6d263c30bc941
-PID0/noOOM/exit1. Native build34.4s,50consumer tests, collision regression and
-Clippy pass. Actual ordered-sync/identical retry passes, then the practical
-observer fails NameError at cases.py185: root inserted ENOSPC assertions into the
-first snapshot block (wire loop), not the later injected-error loop. No product
-failure inferred; all later cases remain NOT_RUN. Original recipe/source/results
-are preserved in1f251db and the [INCOMPLETE report](evidence/p06-cursor-keyring-native-incomplete-20260925.json).
+The current runtime implements only Control: avoid an unused distributed worker
+registry. Readiness must bind actual loaded dataset/ring/ID/material and full
+owner incarnation. Successors must validate active plus still-required old keys.
+require_control_owner currently verifies backend/incarnation/state, not lease
+expiry; eligibility needs current time after waits. Persist monotone maximum
+original issuance expiry+skew before delivery; today's reduced TTL is unsafe for
+retiring old keys. Default900s plus30s allowance, non-sliding original expiry;
+emergency revocation remains authoritative even with keys cached.
 
-Capture-1f251db contains29safe payloads; tar SHA
-90e35dfe2db189bea694c6ffb6a39bf40f4065ea3bb8506f0e00fa9257e76ed3.
-Root replay verifies1289Git files against Git blob IDs/source archive/hash manifest,
-ELF7ebfe502a87cadc101461d5fd5bd823e2e3ee268571bc50db7050fa148cb35c0,
-source manifest5885edb076805e43d3e351aa0c8120b55c3c82f2608b1ab7945127d93d91ab46,
-all four native build/test/Clippy results and766unchanged preexisting projections.
-Eight unrelated running; native preflight free113205817344→109807341568bytes.
-No retirement/network/volume/database. All generated keys and partial files remain
-private on Tux and are excluded from capture. Original8db cache and strace509ea
-remain read-only; this run's fresh compiler cache is retained.
+Actor-owned job discovery remains default50/max200, descending(created_at,job_id),
+kind/state/time filters and current mutable membership. Authenticate current
+actor/status.read/session/CSRF before decrypting; nonrenewable delivery cannot
+touch idle time. Use a durable transactional admission ordinal upper cut, not
+wall-clock/xmin alone. Operational metadata invents no scientific pin/ReadViewStamp.
+No full list, cross-worker, rotation or browser qualification is claimed yet.
 
-The corrected fixture7acfd32 reused that exact1f ELF after838unchanged build/product/
-test inputs, including the generated config reference and other experiment
-fixtures. No second compilation, cache copy or test/Clippy attribution to7ac.
-All15practical cases PASS in the [native report](evidence/p06-cursor-keyring-native-20260925.json):
-ordered sync/retry,15wire vectors, independent Python flock, eight preparers
-(one success/seven Busy), four EIO calls, one main-thread ENOSPC, four SIGKILL
-windows, late external collision and an actually full65536byte stdout pipe.
-Blocked output exits1 in0.214870124s with same durable keys on inspect/retry.
-The original1f NameError/outcome and private failure states remain unchanged.
-
-Corrected root cursor-keyring-7acfd32 is stopped-retained, owner
-2e3e3a6a495abe9e0f84fe863d84e229. Container
-90a49655924167a7d0a64720b75a9556e5005d95f883d280be7904a45df030f1
-PID0/noOOM/exit0; orchestrator618667/start367403811 absent. No DB/network/volume.
-Capture-7acfd32 has176safe payloads; tar SHA
-b4183ecdeb03d141b287aa5f7ed5d9c985719817999ea9d4a027b9df30d81f04.
-Root verifies205payloads across both runs,1289original/1290current Git entries,
-ELF/source/manifests,838inputs, all15result/trace cases and767prior projections.
-Final free109715476480bytes from109770043392; eight unrelated running.
-Independent read-only AI verifies both captures/Git/ELF,838inputs,54CLI responses,
-11traces,15cases, final resources and29live private-directory metadata records.
-No substantive discrepancy; clarified held-open undrained pipe and killed-tracer
-evidence limits. No product tests/SSH/edits by AI.
-
-Fresh read-only live census2026-09-24T23:23:48Z verifies all768container projections,
-both owners/orchestrator absence/ELF and29actual private-key directories: modes,
-links, file formats, hashes and expected preserved/changed inodes. No private key
-bytes transferred. Free109713907712bytes; retained in
-.research/implementation/cursor-keyring/live-final.json SHA
-f3842bde606feb991c0b9c18bca973c82e5f5fd4a31683eb3bcb56cbed25b4c5.
-No cleanup needed before this small reuse run. Keep1f fresh compiler cache for
-next product build; no retirement of original8db/73e or failure/source evidence.
-These syscall failures/process kills are not power-loss/kernel-stall/ACL/shared
-filesystem qualification. SIGKILL child absence is observed by runner and terminal
-container census, not a terminal strace line after its tracer was killed.
-
-Artifact/handoff checks pass:178markdown/319JSON,123tasks/756steps and the same
-three historical cycle candidates. Full changed diff inspected; no new product
-change after native qualification.
-
-P06Step1 envelope codec is implemented locally in read/cursor.rs, with private
-borrowed key access, fixed3072/4096byte buffers and16KiB permit retained through
-returned payload/token. Version1/AAD use the owning contract; public seal always
-gets OS entropy. Ten independent libsodium vectors cover both keys and0..3015byte
-payloads. Initial stub six tests:four FAIL/two PASS; expanded seven tests:five
-FAIL/two PASS; two exact encryption/entropy unit tests FAIL as expected. Original
-sources/logs retained. Current seven codec + seven keyring + two actual CLI tests
-PASS, including4081single-byte token changes and unrelated-key continuity; two
-exact encryption/entropy unit tests PASS. No Control, clock or native cross-worker
-qualification is inferred. Independent read-only AI reviewed the full codec,
-private helpers,7integration/2unit tests and relevant exact source boundaries.
-No concrete defect; no AI suite/SSH execution. Its unrelated-key continuity
-regression is included and passes. Selected Clippy passes below.
-
-Selected local Clippy passes after6m40s native dependency compilation; all owned
-local checks are terminal. Mac free13GiB at last observation. The
-[local envelope report](evidence/p06-cursor-envelope-local-20260925.json) binds11input
-hashes, exact toolchain,47retained evidence files and development parentSHA
-baf881c6360b609cc4ad0bce8d7c8a57a7c4e9a7d5016c8c525887c761ffc947.
-Its embedded source is explicitly unrecorded: trusted builder assertions were
-absent. The first report generator incorrectly expected automatic Git embedding
-and failed; original source/diagnostic note retained, actual source-input hashes
-and local compile/test commands recorded instead. No product/test rerun or source
-identity was invented to correct this observer. No native envelope qualification.
-
-Final artifact/handoff/fmt/diff checks pass:178markdown/320JSON,123tasks/756steps
-and the same three historical cycle candidates.
-Final independent offline AI report review verifies all11 source hashes,47
-retained artifacts, development parent/lock,4081 mutations and original RED/GREEN/
-Clippy logs. No concrete discrepancy, suite execution, SSH or fresh remote census.
-
-Initial registration is committed and native-qualified in3ba3ceb as recorded above:
-root owns read/keyring PreparedKeyring+per-key fingerprints, SQL0601/catalog,
-Control adapter, CLI, tests/independent public hash fixture and contracts. All42
-selected local schema/keyring/codec/CLI/registration tests pass; Clippy passes.
-Initial two stub tests and missing-migration test fail as expected; CLI register
-RED fails because command is absent. Original sources/logs remain in
-.research/implementation/cursor-registration. First fixture generator incorrectly
-looked for keyfile in cursor-vectors; corrected to existing keyring-vectors before
-any product test. First Clippy flags constant chunks_exact in the new test; changed
-to as_chunks and final Clippy passes. No product invariant/test expectation weakened.
-
-Independent read-only AI reviewed complete SQL/adapter/new keyfile boundary and
-CLI custody plus relevant existing triggers. One concrete wording correction:
-initial file fingerprint is the body's terminal checksum, not SHA256 of the
-checksum-appended file. Contract corrected; no other static counterexample.
-SQL omissions, SET CONSTRAINTS, concurrent registrations and unknown COMMIT
-subsequently passed on3ba3ceb; that execution is separate from static review.
-
-The [local registration report](evidence/p06-cursor-registration-local-20260927.json)
-binds actual42tests/Clippy and20proxy tests to exact dirty input hashes.
-Candidate-tests and candidate-clippy reconfirm the final Rust inputs; all local
-checks are terminal. Proxy metadata previously rejected its existing commit_number;
-reader validation and 19loopback plus1metadata test now agree, with original RED retained.
-
-The full selected experiments/cursor-registration recipe ran on3ba3ceb. It covers SQL omissions/mutations, exact receipt vs independent SQL/audit,
-unchanged retry row versions, COMMIT loss on both sides, concurrent same/conflicting
-registrants, process kill, real blocked stdout, fsyncEIO and engine restart.
-Independent AI review found missing full receipt binding and cleanup depending on
-an interruptible report; root corrected both before the first native run. Report
-publication is atomic; owned helper cleanup derives from setup identity. Held
-COMMIT metadata is retained; contention claims only actual registration-lock wait.
-Candidate3ba3ceb is terminal PASS as recorded above; current key lifecycle and
-actor-owned listing remain the next consumers. No Step1/task/M1 completion.
-
-Fresh read-only preflight2026-09-27T15:25:53Z records109701558272free bytes (~102GiB),
-all768 prior container projections unchanged, eight unrelated running, no running
-BigBrotr container. Ports/processes/mounts/networks/volumes/directories retained
-under cursor-registration/preflight-resume-20260927.json; it did not recheck private
-key bytes. No resource created/stopped/retired and no cleanup needed before this
-build. Keep prior1f/8db/73e caches and all private failure states/source/artifacts.
-
-The list remains default50/max200, descending(created_at,job_id), owner/status.read,
-current session/CSRF and nonrenewable delivery, with current mutable-state filters.
-Its encrypted cursor binds principal/policy/filter/page size, durable admission
-upper cut/scan position and original absolute expiry. No archive input authority.
-Normal rotation must retain old keys through their latest original issuance expiry
-plus allowance even after TTL shrinks; emergency revocation remains authoritative
-with keys cached. Cross-worker/restart/rotation, real SQL/HTTP/browser and all
-other P06 acceptance remain owed; source/API PASS cannot close them.
-Further account/grant/CAS orderings, zero/multiple streams, CLI/cancel, mixed
-workloads and full installed/release journeys remain open. No full task/M1 or
-complete-product claim.
-
-## Latest qualified slice
-
-[Blocked resume checking](evidence/p08-export-resume-checker-native-20260924.json)
-passes on 8dbd3c4 with fresh Rust ELF: two rejecting 503 priming requests, actual
-non-main worker openat pending under qualified strace, same Control renewal by
-2505447 us, SIGTERM margin 2.4685 s, exit 4 in 4038.9 ms. Full twelve post-login row+xmin
-ledgers and idle state remain unchanged; exactly one independently attributed
-login audit separates preparation from baseline. One original paused revision7 unit and
-active export retention remain; zero artifacts. Both databases have zero backends, root lock available after
-positive process death, original marker bytes/inode restored. Source/artifacts:
-1260 current / 1110 seed Git entries, 37 payloads, tar
-b0b280642d5d15d3ddab1f55882a78c39e0d312f34956c81cc5aede8f8e90a1e.
-ParentSHA b76d606f28f71dbc2a434567e32df9bb50fc146fcd144d99167407aeae94473a;
-workerSHA unchanged 3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
-Capture attempt-8dbd3c4/capture. Final-censusSHA
-ae975025348c7fb47966f09ed91416b82a5bd34a1f24511aae429ea69c51acf5.
-Independent AI replay confirms hashes, all twelve ledgers and trace/resource
-consistency; no edits/tests/SSH. No new signed output, kernel-stall, expiry,
-continuous custody or packaged-release claim.
-
-Two local observer corrections preserve original native evidence: early trace
-was a partial syscall prefix, with unfinished appended later; offline verifier
-now checks both exact prefix and full terminal trace. New final census initially
-compared unordered mount arrays and dynamic health probe logs; inspected 289 order
-changes and 3 healthy log advances, then verified all mount contents/lifecycle/
-health status/failing streak/network/restart fields. Diagnosis and original
-observer retained; no product/fixture rerun or hidden failure reclassification.
-
-
-[The label-wrapper correction](evidence/p09-skip-button-native-20260924.json)
-passes on1647b5f with original73e Rust ELF and fresh frontend bundles: WebKit/root,
-WebKit/control, Chromium/root and Firefox/control. Root independently verifies
-496payloads,1256current/1246runtime/1110seed Git files per run, both ELF, all assets,
-12SQL ledgers and7attributed session audits per run. Exactly two frontend files
-differ from73e; all other product/build inputs match. The browser/host/trace
-fixtures equal the original4f RED. Five native store cases and7installed recovery
-steps pass per pair. Five focus trials each pass4/4/4/3/3reverseTabs, then visible
-Enter#session/TabSignout. No delayed extra keys or conditional padding are needed.
-Chromium starts from body after lookup; WebKit starts from check-job. This verifies
-the combined span/CSS workaround, not cross-engine button-focus retention or an
-internal WebKit cause. Full accessibility and the changed six-pair matrix remain
-unqualified; prior188 recovery matrix keeps its separate source identity.
-
-All four roots export-runtime-1647b5f-{webkit-root,webkit-control,chromium-root,
-firefox-control} are stopped-retained. Exact owners/containers/captures live in
-inventory implementation_skip_button_fix_20260924. Actual final census after
-captures confirms20owned PID0/noOOM, four networks absent, all orchestrators absent,
-same8unrelated running. Free118387777536bytes; initial root preflight120838275072.
-Both Rust parents per run exited0 with committed Control release, root locks free,
-scratch empty and bothDB0. PG137 is lab teardown, not database graceful shutdown.
-No new Rust compiler caches, no data/container/volume retirement. All current and
-original artifacts remain protected. Root viewed each focused-link and mobile
-capture. Full-page overlay persists despite verified actual viewport geometry;
-no claim of a screenshot-rendering fix. Independent AI review covers root full
-identity/trace plus SQL/resource consistency, and other-pair identity/trace checks;
-final Firefox/report review also found no discrepancy. AI checked all496payloads
-and root full SQL; other three pairs received browser/identity/terminal/report
-checks without repeated full SQL or visual PNG review. No tests/SSH/edits by AI.
-
-Two local observer failures remain recorded without relabeling native results:
-the new offline verifier first failed only at JSON serialization after a local
-variable shadow, then passed after renaming frontend_changes; the sequential
-collector read missing Chromium resources.json before preflight created it.
-The original Chromium lab continued, was inspected and collected without restart.
-Ignored skip-remaining-state.json retains that observer failure. No active helper.
-
-Original [4f activation RED](evidence/p09-skip-activation-native-red-20260924.json),
-[67e startup timeout](evidence/p09-skip-activation-startup-incomplete-20260924.json)
-and [ba5 trace](evidence/p09-skip-link-trace-incomplete-20260924.json) remain retained.
-4f first pointer fails8keys even before screenshots and after separate502/503ms
-waits; no internal starting node observed. The30s launch bound now saves stage and
-failure before teardown, but its timeout branch was not exercised by the green runs.
-
-The earlier [resume matrix](evidence/p09-resume-browser-matrix-native-20260924.json)
-and [original installed recovery](evidence/p09-resume-browser-native-20260924.json)
-own the six scoped old-product engine/mount journeys. Actual signed same-unit
-output, COMMIT-loss sides, held-driver custody, session context and typed client
-reports remain linked from [P08](08-operations.md) and [export operations](../operations/export.md).
-Read their exclusions before reusing a guarantee. No browser trace qualifies
-new signed output, new readers, device power loss or packaged-release acceptance.
-
-Qualified runtime source73e651769e9cd4c82cb0d51731db698eeeadf0f4, owner
-e77b276c5af26eadc38957fdc5efe1cc, treef966090c11255f9cb2279a11d014a5112005e613.
-Original native build/46binarytests/Clippy and15storecases passed; its old browser
-fixture remains INCOMPLETE. ParentSHA
-a3bb9bd6f7b3a7e6140c72f133401c65571e401b6e1eaec424e520b668b2e96c,
-workerSHA3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353.
-Cargo.lockSHA8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122.
-Linux amd64/Rust1.98.1/PostgreSQL16.15; no hosted CI or release qualification.
-
-## Retained invariants and remaining gates
-
-Resume authenticates current actor/session before original key/body history;
-historical resolution precedes today's input/destination/job-state checks. New
-acceptance needs existing export+data.read/history.read/private-export, same unit/
-caps/cut/destination, expected revisions and retained original export pin. No
-roles.control/status.read/new reauthentication requirement. No new reader at
-acceptance. Control→dataset/account/session→consumer→job→sorted source locks.
-Unknown COMMIT poisons Control; retain the original destination Arc and charged
-work through actual transport joins. Never repoll a completed JoinHandle.
-
-ExecutionCustody requires actual RunningExport.prepare/output lock. Pause only
-after native join, fresh-reader release, capture.finish and current Control/job
-CAS. No false park for Busy/pre-output failure, shutdown, unknown worker/SQL,
-panic or filesystem/scratch cleanup failure. Fresh-reader cleanup never releases
-original export retention. Paused jobs are excluded from automatic scans; new
-configuration cannot enlarge their immutable caps. Original pin terminal lifecycle,
-cancel, general listing/discovery and supported formats remain required work.
-
-Five-second native/action windows, separate finite SQL/join allowances, one job
-and250ms scans. Default256MiB export cap cannot fit selected native profile;
-retain512MiB native floor and640MiB fixture worker. Charge parent/native overlap,
-credentials/manifest/output, two logical output copies,64MiB scratch+1MiB metadata.
-fstatvfs is preflight, not a physical quota, cross-process ledger or RSS proof.
-New expiry/lock-wait/grant/CAS interleavings, old-worker
-exclusion, zero/multiple streams, mixed aged workloads, full CLI/UI, packaging/M1
-and complete release journeys remain required before broader qualification.
-
+Preserve existing export invariants: historical receipt resolution precedes
+current admission checks; destination/native custody outlives actual driver joins;
+unknown COMMIT poisons Control; never repoll a completed JoinHandle. Pause only
+after actual native join, reader release, capture.finish and current CAS. Expiry
+alone does not permit GC. Control→dataset/account/session→consumer→job→sorted
+source locking; bounded SQL/action/delivery work and actual cancellation joins.
 Applied0501 SHA14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861
 and0814 SHAc2ddfa56c2b79cc647b34586aee739cd08885e58c4cfa4c965ef7243149d9b1d
-are immutable; corrections need additive migration/compatibility handling.
-WrittenExport proves real observation/catalog/cut/files; StoredExport alone does
-not. Catalog custody→capture barrier→short Control transaction remains the order.
-
-Earlier headless, signed recovery, completion/pause COMMIT, revoked grants,
-filesystem faults, actual storage and source-isolated negative evidence remain
-linked by [export operations](../operations/export.md) and [P08 tasks](08-operations.md).
-Read original reports and exclusions before reusing a guarantee.
-
-Private GET job observation needs own actor/status.read/current session/CSRF,
-returns redacted metadata only, no idle touch or output authority. The panel is
-session-owned, cancels and drops late observations on logout/expiry/replacement.
-[ca44302 browser](evidence/p09-export-status-browser-native-20260924.json) passes
-48journeys in Chromium/Firefox/WebKit at / and /control/ on877ELF. Original3830
-HTML pattern bug andf660 overly strict storage oracle failures remain retained.
-[The original geometry diagnostic](evidence/p09-skip-link-geometry-incomplete-20260924.json)
-retains its INCOMPLETE outcome; the current four-pair correction is above. Full
-natural-expiry/BFCache/accessibility acceptance remains open.
-[Control shutdown](evidence/p01-control-poll-admission-native-20260924.json) retains
-its strengthened877/b3cd proof and original blocked-poll RED; no unrelated reruns.
-
-## Tux resources and maintenance
-
-[Inventory](../research/laboratory-inventory.json) owns all dated resource records.
-Run roots are /home/tux/bigbrotr-implementation-20260917/runs/. Preserve data,
-backups, archives/catalogs/indexes, source, original logs/receipts/manifests/hashes
-and intentionally retained failure states. Process death/expiry is not safe GC.
-No global prune, implicit volume deletion or unrelated workload changes.
-
-Latest retirement removed onlydc6a8d9 out/build/{target,cargo-home} afterdd17842
-qualified actual73e ELF:3334766592allocatedbytes, free122489946112→125822181376.
-All698containers/eight unrelated running unchanged. Exact paths, mount census and
-privileged read-only FD/maps/cwd/exe/root census, original capture/source/ELF
-hash checks before/after are retained under ignored cache-retirement-dc6a8d9.
-Originaldc6 ELF/SQL/logs/source/capture retained; current73e cache supersedes its
-compiler cache. No container/volume/data retirement. Previous4a3c4ce cache
-retirement3334766592bytes and original reports remain inventoried unchanged.
-Earlier45a96e7/016dd6f retirement freed6663274496allocatedbytes, free122178621440→
-128836993024; earlier142cache directories/71runs and1c15/26cd/bf66/f70/cdb/f813
-remain inventoried. Historical outcomes unchanged. Never rebuild merely to clean.
-No container/volume/qualification/object-storage data retirement in these slices.
-
-Protect current 8dbd3c4 and 73e6517 cache/ELF, dd17842 qualification artifacts, retaineddc6/4a ELF,
-useful877/f660 and exact4e6b5c0 seed cache/assets
-(owner3f840fe30a3ffef7f9944c72ea6e38f9). Protect strace-exit-9b30c35 instrumentation,
-reusable private-history-32dd58d, stopped history-capture-b5c862a and its real
-installed-publication-61271e2/out/archive-worker dependency. Pinned Node/pnpm in
-private-panel-no-preload-b6d9d7e may be reused read-only only after archive plus
-every extracted file/link check. Check free space and live mounts/processes before
-each lab; skip doubtful retirement candidates.
-
-Ignored .research/implementation/export-execution/transfer-*.py helpers enforce
-clean Git/bundle/source/tree identity. collect-runtime.py requires owned
-stopped-retained/PID0 containers and captures safe logs/JSON/ELF plus full Git
-manifests. review-resume-{output,commits,custody}.py independently replay current
-captures. All captures remain under attempt-SHA/capture; report records tar hash.
-
-Source-isolated negative worktrees under .research/worktrees are NEVER merged or
-pushed: export-runtime-no-resume9fa8b98, export-rollback-no-reused8effc76,
-export-no-custody5f1582c, history-no-disconnecta334ac8. Detached positiveed2a93b and
-historical dirty private-panel-no-revoke remain untouched.
+remain immutable. Earlier qualifications and limitations are linked from
+[export operations](../operations/export.md) and [P08](08-operations.md).
 
 Monitor findings remain scoped closed absent contrary evidence:
 [MON001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),

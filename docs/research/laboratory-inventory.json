@@ -25187,7 +25187,7 @@
   "implementation_cursor_enrollment_20260927": {
     "local_root": ".research/implementation/cursor-enrollment",
     "source_base": "0091fc9b181ec35cefbe6a6133e365f04e7c6e75",
-    "status": "Native build/tests/Clippy PASS; PostgreSQL network setup failed before migrations: INCOMPLETE, practical cases NOT_RUN.",
+    "status": "Scoped native enrollmentPASS atc6595c8 with unchanged9b02ELF; prior network/fixture failures remain separately INCOMPLETE.",
     "remote_resources_created": true,
     "scope": "Explicit prepared-key enrollment; preserve initial0601 and no activation authority.",
     "local_report": "docs/implementation/evidence/p06-cursor-enrollment-local-20260927.json",
@@ -25204,7 +25204,7 @@
     "state": "stopped-retained",
     "build_container": "de8da1cbd82879bccc02e6f66de33038a9d8a8b836f6d4139e632e73c9ed6a0a",
     "binary_sha256": "a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716",
-    "next_action": "Execute corrected exact-Git fixture using original9b02 ELF; SQL602 is applied and immutable.",
+    "next_action": "P06-T03 Step1/3: inspect actual Control readiness/lifecycle consumer before implementation; no full task completion.",
     "native_incomplete_report": "docs/implementation/evidence/p06-cursor-enrollment-native-incomplete-20260927.json",
     "capture": {
       "local": ".research/implementation/cursor-enrollment/capture-9b02bd9",
@@ -25241,6 +25241,46 @@
         "manifest_sha256": "d464073c0a7de42f48b8c63cba5ade3daf6f2088d24266f460300e9d3656a066",
         "excluded": "All private keys/credentials/database data remain on Tux."
       }
+    },
+    "current_retry": {
+      "source": "c6595c8822a1add6248f8aca9890bda5657f0ea0",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-enrollment-retry-c6595c8",
+      "owner": "327a0f16d44c6a540f0326c45ce2836a",
+      "orchestrator_pid": 2225717,
+      "start_ticks": "391077813",
+      "state": "stopped-retained,155cases12DBPASS; own empty network removed after stops",
+      "binary_source": "9b02bd9f692ec07f57954b140fcd6efd20220ebe",
+      "unchanged_build_inputs": 875,
+      "report": "docs/implementation/evidence/p06-cursor-enrollment-native-20260927.json",
+      "live_census": {
+        "path": ".research/implementation/cursor-enrollment/live-final.json",
+        "at": "2026-09-27T17:03:27.039275+00:00",
+        "unchanged_containers": 780,
+        "unrelated_running": 8,
+        "free_bytes": 98100723712
+      }
+    },
+    "native_report": "docs/implementation/evidence/p06-cursor-enrollment-native-20260927.json",
+    "cache_retirement": {
+      "status": "PASS",
+      "started_at": "2026-09-27T17:07:51.733347+00:00",
+      "finished_at": "2026-09-27T17:07:53.462804+00:00",
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/cursor-keyring-1f251db/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/cursor-keyring-1f251db/out/build/cargo-home",
+        "/home/tux/bigbrotr-implementation-20260917/runs/cursor-registration-3ba3ceb/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/cursor-registration-3ba3ceb/out/build/cargo-home"
+      ],
+      "allocated_cache_bytes": 6822551552,
+      "free_before": 98100686848,
+      "free_after": 104921726976,
+      "containers_preserved": 780,
+      "unrelated_running": 8,
+      "preserved": "All databases/private keys/fault states/captures/source/manifests/native artifacts/logs remain. Current9b02/e684 caches,8db/73e/4e6seed,private-history32dd58d,historycaptureb5c862a and installed-publication61271e2 archive-worker dependency untouched. No container/volume/dataset deletion.",
+      "metadata": ".research/implementation/cursor-enrollment/cache-retirement.json",
+      "sha256": "2441d31169c23efc19019894caf1969ff035a5b945c4b0157b9f6be4e7ec545c",
+      "recipe": ".research/implementation/cursor-enrollment/retire-caches.py",
+      "audit": "All780container projections unchanged; privileged read-only FD/maps/cwd/exe/root probe had0references and0permission errors. Original retained native/source hashes verified before/after. First read-only attempt refused a wrong historical receipt filename before any deletion; note retained."
     }
   }
 }

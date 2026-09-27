@@ -1,0 +1,118 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1/3 / P08-T03 prerequisite",
+  "status": "PASS",
+  "source": "9b02bd9f692ec07f57954b140fcd6efd20220ebe",
+  "tree": "ad6ca8aee111b4e4802decbc1219af73aa7c36cb",
+  "fixture_source": "c6595c8822a1add6248f8aca9890bda5657f0ea0",
+  "fixture_tree": "0f967a0d2f705ae74d6daa9812eadeeb3546a9d6",
+  "scope": "Explicit additional prepared-key enrollment and immutable per-key material binding. No activation/issuance/readiness or complete rotation claim.",
+  "environment": {
+    "os": "Linux amd64",
+    "rust": "1.98.1",
+    "postgres": "16.15",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "published_ports": []
+  },
+  "build": {
+    "binary_sha256": "a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716",
+    "source_manifest_sha256": "5cb5fa359392a5756e9283ee388a96ecc4199c4e05bcfa0818c851998a4063f9",
+    "lockfile_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "native_rust_tests": 51,
+    "clippy": "PASS",
+    "unchanged_inputs": 875,
+    "attribution": "Build51tests/Clippy executed once at9b02; current fixture reuses same ELF after exact input checks. Current1318file Git export is distinct from original1315file source. No compiler cache copied or compilation/test rerun by retry."
+  },
+  "practical": {
+    "checks": 155,
+    "databases": 12,
+    "executed": [
+      "Actual601\u2192602 upgrade preserves initial rows/xmin and mirrors original key/audit/time bindings without new audit; initial enrollment retry returns original receipt.",
+      "Fresh602 initial mirror: missing INSERT privilege rolls back whole registration; grant recovery;16initial materials share original registration audit.",
+      "Additional selected-key enrollment adds exactly one permanent material binding and one exact audit; all prior four-table rows/xmin preserved.",
+      "Same-key retry survives legitimate local additions/removals; original whole-file registration still refuses changes; conflicting permanent material and missing initial ring refuse.",
+      "Raw SQL orphan audit/material, wrong origin/time/subject, early constraints, non-READ-COMMITTED and immutable update/delete/truncate controls; full pg_dump content/schema unchanged on refusal/rollback. Complete transaction with immediate constraints succeeds.",
+      "Actual full65536byte undrained stdout pipe exits1 in0.223823434s after durable enrollment; same-key retry keeps SQL/xmin/key bytes.",
+      "Injected fsyncEIO exits4 before any connect syscall, with unchanged SQL and retained original/staging key state.",
+      "Actual COMMIT proxy loss before forward and after server completion: CLI unknown4; independent SQL/xmin distinguishes rollback/commit; identical retry recovers original binding/audit.",
+      "Actual competing same/conflicting prepared files wait on dataset lock; first commits, same resolves original receipt without new SQL, conflicting material refuses.",
+      "SIGKILL actual client/helper while proxy holds COMMIT before forwarding: exit137, original SQL unchanged; retry creates exactly one material/audit.",
+      "PostgreSQL SIGKILL/restart preserves original receipt and SQL/xmin; zero application/migrator backends observed in each of12databases."
+    ],
+    "limits": [
+      "One Linux amd64 host and pinned engine tuple, small isolated fixtures; no throughput/aged-state/arm64/host-power-loss/kernel-stall claim.",
+      "Raw key-byte equality, some unchanged-snapshot assertions, pg_dump equality and backend counts are runner observations; safe captures expose receipts, full recorded rows/xmin/proxy/syscall metadata without secrets.",
+      "Key delivery/distribution, active key lifecycle, emergency revocation, cross-worker cursor pages, browser/list consumer, packaging and release remain unqualified."
+    ]
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-enrollment-retry-c6595c8",
+    "owner": "327a0f16d44c6a540f0326c45ce2836a",
+    "postgres_owner": "6270b2beecabd918577dc10c94d2aaac",
+    "state": "stopped-retained",
+    "orchestrator_pid": 2225717,
+    "orchestrator_start_ticks": "391077813",
+    "containers": [
+      {
+        "id": "59ff0adc6af478b22a8e01a3b3e79fdbc928c724e7e036413bfa567583075a91",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_retry_mgfjfmi-client-cursor-fault",
+        "pid": 0,
+        "exit": 137,
+        "oom": false
+      },
+      {
+        "id": "bc9f442f6559b65a3307be45347bb35650bcdbbe10d5644c39080099251cbdef",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_retry_mgfjfmi-client",
+        "pid": 0,
+        "exit": 143,
+        "oom": false
+      },
+      {
+        "id": "04c486d2b1f85d8e240eaed68f9857af83290186c8ee69b46d156b189a36c525",
+        "name": "/bigbrotr-implementation-pg-20260917-cursor_retry_mgfjfmi",
+        "pid": 0,
+        "exit": 0,
+        "oom": false
+      }
+    ],
+    "network_removed": "af1d0fe5f7ff8adea6c68aeeca44038f37f8ca7e3a10c3613350008a9f0c2be7",
+    "preexisting_preserved": 777,
+    "free_before": 98406158336,
+    "free_after": 98102263808,
+    "preserved": "All12databases,14private key directories including partial fault state, original failed labs, source/ELF/cache/evidence. Owned empty network retired only after container stops; no database/volume/container deletion."
+  },
+  "capture": {
+    "local": ".research/implementation/cursor-enrollment/capture-c6595c8",
+    "payload_files": 75,
+    "tar_sha256": "4f02d2f85c466f647914c4b2a7386a70838a325109580c0e8180f0a62181e3b0",
+    "manifest_sha256": "6c60f3dc7fa271678f31e88b6084fe842d8c96e2639104fb18845b7d8e4303bc",
+    "original_local": ".research/implementation/cursor-enrollment/capture-9b02bd9",
+    "original_tar_sha256": "a01f9f5031f79da0ff012a4c65f7b9c06bdfd7d7af4bf36b663d17df58f8d05a",
+    "excluded": "Private keys/credentials/database data and compiler caches remain on Tux."
+  },
+  "live_census": {
+    "at": "2026-09-27T17:03:27.039275+00:00",
+    "path": ".research/implementation/cursor-enrollment/live-final.json",
+    "sha256": "7c800c99b8336c67e622fe524f87e907efec7aaaeb1d0d72c0080aff9d5a1f62",
+    "unchanged_containers": 780,
+    "unrelated_running": 8,
+    "protected_key_directories": 14,
+    "free_bytes": 98100723712,
+    "source_clean": true,
+    "orchestrator_absent_or_zombie": true
+  },
+  "original_failures": [
+    "docs/implementation/evidence/p06-cursor-enrollment-native-incomplete-20260927.json",
+    "docs/implementation/evidence/p06-cursor-enrollment-fixture-incomplete-20260927.json"
+  ],
+  "review": "Root independently replays75payloads, current Git export and original source/ELF linkage,875equal inputs, receipt/SQL binding, prior row/xmin preservation, exact proxy counters, lock waits, syscall trace and final resources. Independent read-only AI confirms tar/75payloads/1318Git blobs/875inputs/originalELF,15receipts, SQL/xmin/COMMIT/concurrency/recovery/restart and777prior/780live projections; no discrepancy or AI product tests/SSH. Cache maintenance excluded from AI review.",
+  "compatibility": {
+    "sql0601": "immutable previously applied",
+    "sql0602_sha256": "20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48",
+    "sql0602": "Applied in original b562 attempt, remains byte-identical; future changes require additive migration."
+  }
+}

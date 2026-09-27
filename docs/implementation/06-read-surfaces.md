@@ -245,14 +245,18 @@ readiness/activation/retirement remain required work.
 The next bounded prerequisite is explicit additional-key enrollment with an
 actual CLI, additive0602, permanent ID/material bindings and original audit retry.
 The [local enrollment report](evidence/p06-cursor-enrollment-local-20260927.json)
-records48selected tests/Clippy after schema and actual CLI RED. Native enrollment
-is INCOMPLETE: the [original network setup refusal](evidence/p06-cursor-enrollment-native-incomplete-20260927.json)
+records48selected tests/Clippy after schema and actual CLI RED. The
+[native enrollment report](evidence/p06-cursor-enrollment-native-20260927.json)
+qualifies155checks across12PostgreSQL databases atc6595c8 with unchanged9b02ELF:
+upgrade/fresh registration, material/audit closure, stable receipts, file changes,
+conflicting material, privilege rollback, both COMMIT-loss sides, actual dataset
+lock contention, killed pre-COMMIT client, blocked output/fsync refusal and restart.
+The [original network setup refusal](evidence/p06-cursor-enrollment-native-incomplete-20260927.json)
 and [fixture spacing failure after106checks](evidence/p06-cursor-enrollment-fixture-incomplete-20260927.json)
-retain their original outcomes. SQL0602 has been applied and is immutable; the
-remaining concurrency/kill/restart cases and runtime lifecycle remain open.
-Native acceptance must cover upgrade and fresh initial registration, original
-receipts, changed whole files, conflicting material, SQL omissions/mutations,
-concurrent same/conflicting enrollment, both COMMIT-loss sides and restart.
+retain their separate INCOMPLETE outcomes. SQL0602 has been applied and is
+immutable. Actual runtime readiness/activation/retirement/revocation and the
+remaining Step1/3 consumer acceptance stay open; enrollment grants no issuance.
+
 
 
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;

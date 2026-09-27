@@ -44,6 +44,8 @@ prune networks or change the shared daemon. The wrapper retires only its own
 empty network after stopping its owned containers and preserving metadata.
 Original retry b562027 stopped after106PASS events because its TOML generator
 omitted spaces required by the fixture editing helper. That failure and private
-database/key state remain retained. The corrected fixture retry is NOT_RUN.
+database/key state remain retained. Corrected fixture c6595c8 passes155checks on
+12databases with the same9b02ELF and875unchanged build inputs. See the scoped
+[native report](../../docs/implementation/evidence/p06-cursor-enrollment-native-20260927.json).
 The enrollment selection does not qualify activation,
 worker readiness/distribution or the complete normal/emergency rotation journey.
