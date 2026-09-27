@@ -1,0 +1,160 @@
+{
+  "format": "bigbrotr-cursor-lifecycle-qualification/1",
+  "status": "PASS",
+  "scope": "Protected maintenance-window activation/revocation and actual Control startup readiness; partial P06-T03 Step1/3 prerequisite for P08-T03 Step3 actor-owned job discovery. No page issuance or complete task qualification.",
+  "product": {
+    "source": "a11bcac46d7e65e556fb3f350e66518e0b6333e6",
+    "tree": "534850380e2b987a895b54f1b2e846e70b6de66f",
+    "binary_sha256": "ba454c8114766a631d4ac0d376c18eb19902910093100a5fbcfa90044421cb00",
+    "source_manifest_sha256": "4742224b158542104de61c2b26e97e4a822889755ee9a942ac0f6033f26ddb33",
+    "lockfile_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "migration_0604_sha256": "fa416f1c192641503b71a4d683d56936f39d5d1c398a17f1867de20df0481bc8",
+    "sql_compatibility": "Appends after0815, reserves0603. Parentheses corrected after failed unpublished dd406a2 application; a11bcac604 has applied and is now immutable."
+  },
+  "fixture": {
+    "source": "7efaca3fc548301a75ebd0299b5582a5dc03ab89",
+    "tree": "ef2cc8fa578dd775de152562b2474f1b408bcc1b",
+    "unchanged_build_inputs": 887,
+    "rerun": "Only practical fault cases with original a11 ELF; no compilation/native tests/Clippy rerun or new compiler cache."
+  },
+  "environment": {
+    "version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+  },
+  "native_build": {
+    "source": "a11bcac46d7e65e556fb3f350e66518e0b6333e6",
+    "tests": 57,
+    "failed": 0,
+    "ignored": 0,
+    "clippy": "PASS",
+    "record": ".research/implementation/cursor-lifecycle/capture-a11bcac/out/native-tests/result.json"
+  },
+  "practical": {
+    "original": "124PASS followed by an incorrect Busy refusal oracle; original INCOMPLETE remains in p06-cursor-lifecycle-fault-fixture-incomplete-20260927.json. Original SQL syntax failure remains in p06-cursor-lifecycle-native-incomplete-20260927.json.",
+    "fault_retry": {
+      "status": "PASS",
+      "cases": 67,
+      "databases": [
+        "bb_lifecycle_fault_before",
+        "bb_lifecycle_fault_after",
+        "bb_lifecycle_fault_held",
+        "bb_lifecycle_dataset_wait"
+      ],
+      "process_cleanup_errors": []
+    },
+    "claims": [
+      "Actual815\u2192604 upgrade preserves selected older rows/xmin; fresh604 initialization also executes.",
+      "Stable installation-attributed receipt/audit/digest, exact retry before current lifecycle/live-owner checks; changed requests, stale revisions and no-op activation refuse.",
+      "A\u2192B\u2192A preserves first activation; active revocation removes issuer; inactive revocation leaves issuer; never-active enrolled key can be revoked without local bytes; reactivation is permanent refusal.",
+      "Actual loaded subset missing activeB refuses startup; restoring matching snapshot permits recovery.",
+      "Live Control excludes new maintenance; real SIGKILL plus server-observed lease expiry still refuses transition until valid owner recovery and clean stop.",
+      "Raw SQL enforces exact deferred audit closure, digest/CAS, immutable history, rollback and multirow/immediate constraints; hostile temporary trigger cannot forge first activation.",
+      "Before-forward and after-complete COMMIT fault produce exit4/unknown; identical fresh retry yields new/original receipt respectively, and actual Control starts.",
+      "Held COMMIT keeps SQL invisible and Control acquisition Busy/3; concurrent same pending transition refuses; release permits one committed receipt and historical retry.",
+      "A dataset lock delays transition after it owns Control exclusion; racing acquisition Busy/3, unchanged selected SQL, then release permits transition.",
+      "PostgreSQL SIGKILL/restart preserves selected state/xmin and original receipt; actual fresh Control start/stop succeeds."
+    ],
+    "evidence_limits": [
+      "No-backend final counts and unchanged-state refusal booleans are executed harness assertions; not separate retained SQL snapshots of all backend/owner rows.",
+      "Selected snapshots include9operational/config/key tables, not all database relations.",
+      "No duration/capacity claim follows from tiny key fixtures.",
+      "Runtime file loading and inherited finite output mechanisms retain their earlier documented qualification limits."
+    ]
+  },
+  "review": {
+    "root_capture_review": {
+      "status": "PASS",
+      "scope": "local retained captures, literal receipt/projection/audit/digest expectations and source/container identities; original incomplete outcome unchanged",
+      "runs": [
+        {
+          "source": "a11bcac46d7e65e556fb3f350e66518e0b6333e6",
+          "files_verified": 1339,
+          "capture_payloads": 116,
+          "independent_transition_snapshots": 18,
+          "preexisting_containers_preserved": 800,
+          "free_bytes": 81198194688,
+          "status": "INCOMPLETE",
+          "cases": 125
+        },
+        {
+          "source": "7efaca3fc548301a75ebd0299b5582a5dc03ab89",
+          "files_verified": 1340,
+          "capture_payloads": 64,
+          "independent_transition_snapshots": 11,
+          "preexisting_containers_preserved": 804,
+          "free_bytes": 81012158464,
+          "status": "PASS",
+          "cases": 67
+        }
+      ]
+    },
+    "independent_ai": "Read-only AI reviewed lifecycle SQL/adapter/CLI and evidence. Static trigger-depth counterexample prompted earliest immutable activation and actual capture-relation guards before SQL execution; hostile CTE regression then passed. Evidence review corrected an overclaim about cleanup wrapper exit0: failed held run has no final proxy/application completion or durable snapshot. Final read-only AI review independently verified both captures/source/ELF/input hashes, literal transitions and original actor, preserved rows/xmin, hostile CTE, COMMIT wire counters and post-restart snapshots with no further discrepancy. No tests or remote resource actions by the reviewer."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-retry-7efaca3",
+    "owner": "eb7549df44fa2870a889d771a70ced70",
+    "state": "stopped-retained",
+    "cleanup_errors": [],
+    "network_removed": true,
+    "container_ids": [
+      "66089edf4b2cb4892277a5af4435ec6eaf22e44181cc1cae1f88ec2628e29fc4",
+      "16f047fcbe589041ddc9547811af8e4a7bcf12ea4ee6b41e2263d28634cce122",
+      "03d6c24740411e58cf331ba1218d0ab0a5d19e4c3e181c9628792c337f0aa8cc"
+    ],
+    "container_exits": [
+      143,
+      143,
+      0
+    ],
+    "last_live_observation": {
+      "at": "2026-09-27T20:26:51.482972+00:00",
+      "status": "PASS",
+      "container_projections_preserved": 807,
+      "unrelated_running": 8,
+      "free_bytes": 81010548736,
+      "identities": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-dd406a2",
+          "source": "dd406a2d94468efba3415d221dc762acc712b4e9",
+          "owner": "e8ed697a5ba6bb90be6550c4765242ba",
+          "state": "stopped-retained",
+          "orchestrator": "absent-or-terminal"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-a11bcac",
+          "source": "a11bcac46d7e65e556fb3f350e66518e0b6333e6",
+          "owner": "6a7162f1fdef8bdd84a0eb30b1b7c256",
+          "state": "stopped-retained",
+          "orchestrator": "absent-or-terminal"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-retry-7efaca3",
+          "source": "7efaca3fc548301a75ebd0299b5582a5dc03ab89",
+          "owner": "eb7549df44fa2870a889d771a70ced70",
+          "state": "stopped-retained",
+          "orchestrator": "absent-or-terminal"
+        }
+      ],
+      "binary_sha256": "ba454c8114766a631d4ac0d376c18eb19902910093100a5fbcfa90044421cb00"
+    },
+    "preserve": "All original sources, native artifacts, SQL states, protected keys, captures and evidence retained. No resource deletion except each verified empty owned network."
+  },
+  "capture": {
+    "path": ".research/implementation/cursor-lifecycle/capture-7efaca3",
+    "files": 64,
+    "tar_sha256": "c2502ebf0c679f3f4b4189e9d50b798eaf5a5eb593a783ecd60775ee92ae697b",
+    "manifest_sha256": "095eb3168c953669dc1a26e7ca5cbc9f85bf3dce51ecfbb0fa9dc19acec1afbc"
+  },
+  "not_run": [
+    "cursor issuance/retention writer",
+    "online multiworker rollout",
+    "browser pagination",
+    "host power loss",
+    "capacity and release qualification",
+    "Linux arm64",
+    "packaged release/Compose qualification"
+  ],
+  "next": "Actor-owned bounded job pagination with current session/status.read checks, admission cut, encrypted principal/query/policy/time bindings and durable maximum issued expiry+30s before delivery; then HTTP/client/panel/browser."
+}

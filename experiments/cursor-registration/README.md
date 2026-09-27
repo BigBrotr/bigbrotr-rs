@@ -92,3 +92,9 @@ reusing the exact a11bcac executable after verifying unchanged build inputs.
 Only lifecycle.py, lifecycle_faults.py, retry.py, this README and non-reference
 documentation may differ. It creates no compiler cache and repeats no native
 build/tests; journey and SQL evidence remain attributed to the original run.
+
+The [lifecycle report](../../docs/implementation/evidence/p06-cursor-lifecycle-native-20260927.json)
+now records the completed67fault checks at7efaca3 and separately attributes the
+original124PASS events. Both original failures remain INCOMPLETE. The bounded
+maintenance/readiness responsibility passes; page issuance/retention, browser
+pagination, capacity and online multiworker rollout remain outside this evidence.

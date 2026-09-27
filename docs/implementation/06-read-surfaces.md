@@ -271,7 +271,7 @@ server-observed lease expiry, cancellation/deadline and same-byte recovery.
 A retained prior executable is the negative control for mismatched material.
 Runtime loading does not close activation, retirement/revocation or full readiness.
 
-The next bounded slice selects protected maintenance-window activation/revocation
+The bounded lifecycle slice implements protected maintenance-window activation/revocation
 through additive0604 and actual startup readiness. Reuse Control's existing fence
 before dataset locking; refuse unreleased owners even after expiry. Immutable
 request receipts supply CAS and historical retry before current admission gates;
@@ -280,10 +280,15 @@ head table or unused worker registry. Required practical cases include actual
 Control start/stop/crash recovery, both fence acquisition orders, old receipts
 after rotation/restart, changed requests, rollback and ambiguous COMMIT, missing
 loaded material and raw-SQL audit/projection closure. Retention writes and token
-issuance remain gated on the actual page consumer. No new acceptance result or
-Step1/3 completion follows from this design choice.
-
-
+issuance remain gated on the actual page consumer. The
+[native lifecycle qualification](evidence/p06-cursor-lifecycle-native-20260927.json)
+records57native tests/Clippy at a11bcac,124original practical PASS events and
+67corrected fault checks at7efaca3 using the same executable and887unchanged build
+inputs. Original syntax and fixture failures stay separately INCOMPLETE. Actual
+rotation/revocation, Control readiness/recovery, SQL closure/hostile-trigger refusal,
+both fence orders, ambiguous/held COMMIT and engine restart are exercised.
+Issued-expiry retention, actual page encryption/authorization and complete
+Step1/3 acceptance remain open; no browser/capacity/multiworker claim follows.
 
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;
 `migrations/postgres/0603_read_pins.sql`;

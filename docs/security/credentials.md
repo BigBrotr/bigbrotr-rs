@@ -130,7 +130,7 @@ grants no cursor authority or complete lifecycle readiness. No configured
 root adds no keyfile read or0602 requirement. Synchronous startup file loading
 does not establish a bound on stalled regular-file I/O.
 
-Maintenance lifecycle commands are under qualification in migration0604:
+Maintenance lifecycle commands use migration0604:
 `access cursor-keyring activate-key --file instance.toml --key-id ID --request-id
 ID --expected-revision N`, and the corresponding `revoke-key` operation. Stop
 Control cleanly first, then migrate explicitly. The first expected revision is
@@ -151,3 +151,8 @@ refuses startup if its actual loaded snapshot omits the active key or a required
 decrypt key. The receipt does not prove distribution to another process or grant
 page access. Issuance, retained-expiry writes and complete pagination remain
 separate required consumers; this candidate does not advertise them.
+The [native lifecycle qualification](../implementation/evidence/p06-cursor-lifecycle-native-20260927.json)
+exercises actual CLI/Control rotation, irreversible revocation, missing-active-key
+refusal, both lock orders, unknown-COMMIT retry and PostgreSQL restart. This is a
+maintenance-window qualification; online worker rollout and paginated reads remain
+unqualified until their complete consumers execute.

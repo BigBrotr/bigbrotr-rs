@@ -40,7 +40,7 @@
       "before-forward and after-complete COMMIT-loss with original retry and actual runtime recovery",
       "held COMMIT observed unforwarded; racing runtime refused as Busy"
     ],
-    "limit": "Held scenario ended at the incorrect fixture assertion. Cleanup subsequently saw the application exit0 after proxy completion, but the original fixture did not snapshot that final durable outcome. No completed held-COMMIT, dataset-wait or engine-restart claim from this run."
+    "limit": "Held scenario ended at the incorrect fixture assertion. Cleanup recorded docker-exec wrapper exit0; the retained proxy output ends at held, with no released/receipt, and application output is empty. Final application/proxy completion and durable state were not captured. No completed held-COMMIT, dataset-wait or engine-restart claim from this run."
   },
   "resources": {
     "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-a11bcac",
