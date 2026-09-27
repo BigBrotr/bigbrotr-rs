@@ -438,8 +438,14 @@ including 390 after the conservative timeout bound or signal. Ten full ledgers a
 per-request session state remain unchanged; retention distinguishes held COMMIT
 from held reply. Remote proxy endpoint closure is checked separately. This is
 sampled directory custody, not continuous proof or key-memory inspection. Absolute
-expiry, changed authority, delivery/exhaustion and mixed/aged pages remain open;
-none requires the adjacent scientific pagination subsystem.
+expiry and changed authority now have [scoped native evidence](evidence/p08-job-pages-lifetime-native-20260928.json)
+at 979c8bc: 20 actual page requests, nine independent page sets and eleven expected
+refusals cover non-sliding natural expiry, allowed/refused skew, shorter TTL with
+preserved prior retention, changed policy/grants and three account-triggered session
+revocations. Privileged fixture edits do not qualify production policy/grant editors.
+Delivery/exhaustion, backdated/tied pages and mixed/aged work remain open; none
+requires the adjacent scientific pagination subsystem. The next visible consumer
+is the Step3 CLI over this same authenticated page contract.
 
 Role/relay/artifact summaries share the page-size/authorization rules. Roles and
 relays order by immutable role-instance and endpoint ID respectively; artifacts

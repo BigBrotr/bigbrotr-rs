@@ -1,0 +1,180 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS",
+  "task_ids": [
+    "P08-T03",
+    "P08-T04",
+    "P06-T03"
+  ],
+  "source": "979c8bc47693916c83b13bf21e9642234502a619",
+  "tree": "b259eb5f077d6ff0f163f850b9bc855946733a3d",
+  "scope": "Actual operational page lifetime, configured clock skew, stopped Control policy/TTL change, current dataset grants and account-triggered session revocation. Bounded evidence, not complete discovery, management editors, capacity, M1 or release.",
+  "environment": {
+    "target": "Native Linux amd64 Tux",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runtime_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "oracle": {
+      "version": "1.0.18",
+      "path": "/usr/lib/x86_64-linux-gnu/libsodium.so.23.3.0",
+      "sha256": "85e2e494494f4f50c4b6d2b4ae90e885da1bfdefd52c4cc5767fd10abff62505",
+      "api_source": "https://github.com/jedisct1/libsodium/blob/1.0.18/src/libsodium/include/sodium/crypto_aead_xchacha20poly1305.h"
+    }
+  },
+  "artifacts": {
+    "runtime_source": "f6770e99b21e57a6094316caa9b428f175773844",
+    "runtime_tree": "fb401b4852b91ed7029ff501e704f1249b8bc7e9",
+    "runtime_sha256": {
+      "bigbrotr": "ac15753aa08abee07ccc76431b9a407544427ed269c53c09ba4435628ff4f5ec",
+      "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+    },
+    "source_manifest_sha256": "0f998f3a129f9ba98870757be67f785bf375a8f553ada41f90d539ecb87e7748",
+    "runtime_manifest_sha256": "ce7a7acd38ba4674cffa8ebe72e66ebec945358e2188ad2e6a29e81b379c9021",
+    "input_equivalence": "All non-documentation/experiment build inputs equal except 12 enumerated unused frontend inputs. Reused f677 Rust pair and original 4e signed seed retain their identities. No fresh Rust compilation or frontend execution."
+  },
+  "recipe": "python3 experiments/export-execution/lab.py 979c8bc47693916c83b13bf21e9642234502a619 b259eb5f077d6ff0f163f850b9bc855946733a3d --runtime-job-pages-lifetime f6770e99b21e57a6094316caa9b428f175773844 job-pages-lifetime",
+  "workload": "Fresh signed archive seed, successful empty export, actual upgrade through 0816 and five signed-event HTTP acceptances under deliberate 256 MiB deferral. Six jobs, one in-memory login across two Controls. Accepted policy3 explicitly uses 12-second cursor TTL and two-second skew; policy4 uses five seconds and zero skew. Default production settings are unchanged.",
+  "executed": {
+    "local": "Syntax, artifact, complete diff and actual caller INCOMPLETE/FAIL/PASS propagation checks PASS. No product code change or unrelated suite rerun.",
+    "http_page_exchanges": 20,
+    "independent_page_sets": 9,
+    "refusals": {
+      "future-outside-skew": {
+        "status": 400,
+        "code": "invalid_cursor"
+      },
+      "expired-first": {
+        "status": 410,
+        "code": "cursor_expired"
+      },
+      "expired-continuation": {
+        "status": 410,
+        "code": "cursor_expired"
+      },
+      "old-policy": {
+        "status": 409,
+        "code": "cursor_incompatible"
+      },
+      "zero-skew-expired": {
+        "status": 410,
+        "code": "cursor_expired"
+      },
+      "changed-grant-binding": {
+        "status": 409,
+        "code": "cursor_incompatible"
+      },
+      "revoked-valid-token": {
+        "status": 403,
+        "code": "permission_denied"
+      },
+      "revoked-malformed-token": {
+        "status": 403,
+        "code": "permission_denied"
+      },
+      "restored-stale-binding": {
+        "status": 409,
+        "code": "cursor_incompatible"
+      },
+      "inactive-valid-token": {
+        "status": 401,
+        "code": "authentication_denied"
+      },
+      "inactive-malformed-token": {
+        "status": 401,
+        "code": "authentication_denied"
+      }
+    },
+    "clock_observations": {
+      "first_issue_us": 1790551217599967,
+      "first_expiry_us": 1790551229599967,
+      "future_within_skew_lead_us": 1406932,
+      "future_outside_skew_margin_us": 2913407,
+      "grace_interval_after_expiry_us": [
+        374197,
+        478851
+      ],
+      "expired_first_interval_after_limit_us": [
+        246779,
+        345991
+      ],
+      "zero_skew_interval_after_expiry_us": [
+        283523,
+        363301
+      ]
+    },
+    "ledger_sizes": {
+      "jobs": 6,
+      "job_admissions": 6,
+      "job_input_bounds": 6,
+      "export_jobs": 6,
+      "export_execution_units": 1,
+      "artifacts": 1,
+      "artifact_files": 1,
+      "snapshot_leases": 15,
+      "archive_snapshot_pins": 15,
+      "retention_claims": 15
+    },
+    "session_revocations": 3
+  },
+  "invariants": {
+    "lifetime": "Actual server-issued first cursor and both ordinary/grace continuations retain the original issue and expiry. Reading within the configured two-second grace returns the expected page; first and continued cursors return410 after that same absolute deadline. Full retention row/xmin stays unchanged during this sequence. A fresh listing gets a new 12-second deadline and changes only retention deadline/xmin.",
+    "skew": "The independent documented 103-byte payload and libsodium1.0.18 encryption create two authenticated future-issue fixtures from the actual original token. Within-skew succeeds before its issue instant; outside-skew returns400 while independently observed SQL time remains more than two seconds before issuance. Their other decoded fields match the actual token. This tests envelope clock checks without changing a host clock; it is not clock-jump recovery evidence.",
+    "policy": "Actual Control stops with release, then a privileged isolated SQL fixture appends policy4 and restarts the same installed binary. The old still-unexpired policy3 cursor returns409. Fresh policy4 issuance has five-second TTL and zero-skew expiry returns410 within the old two-second grace interval. The longer prior key retention row and xmin stay identical; a shorter new obligation neither reduces nor unnecessarily rewrites it. This does not qualify a production policy editor or live rollout.",
+    "grants": "Privileged dataset/account-locked fixture changes remove data.read while retaining status.read, remove status.read, then restore it. Exact grant-row deltas and one account grant revision per change are independently checked. Old bindings return409; fresh status-only pages succeed; revoked access returns403 for both an otherwise live token and malformed bytes. Restoring access permits a new list while old bindings remain incompatible. The fixture does not implement or qualify a dataset-grant editor.",
+    "session": "Account deactivation advances authentication revision once and revokes exactly three previously live Alice sessions in the same xmin, with revocation times bounded by independent SQL clocks. Other account/session rows and all idle/last_seen values remain unchanged. Requests with a still-live cursor and malformed bytes then return401 and preserve the new session state. Ordinary read/restart/grant boundaries preserve full projected session timestamps/xmin.",
+    "durable": "Ten complete job/admission/input/export/unit/artifact/file/lease/pin/claim projections including xmin agree at seven saved boundaries and final. Each of nine successful pages matches independently reconstructed full SQL-derived item fields and every decoded binding. Auth/policy/session changes are attributed separately. Both Controls stop with release, parent absent/destination flock available; final actual Control/catalog backend counts are zero."
+  },
+  "review": {
+    "root": "Read actual domain codec, page adapter, request/error and dispatch boundaries plus affected fixtures/guards. Confirmed pinned official libsodium encryption ABI. Preserved preparation logs using distinct lifetime prefixes; checked403literal and grant effects. Independently rechecked captured page sets, clock windows, policy/retention and session transitions, all safe payload hashes, exact Git input and reused ELF identities, and live resources.",
+    "ai": "Read-only pre-run fixture review found three setup/oracle gaps: hard-coded ready3 after policy change, unchanged-session claim after the actual revocation trigger, and missing complete retention comparison after TTL reduction. All corrected and reread; no further concrete blocker in that scope. No AI tests/SSH or post-run evidence review."
+  },
+  "resource": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-979c8bc-job-pages-lifetime",
+    "owner": "a9d04826e11a8afede9c969b6dec179e",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "7127da6d900da44d25b615ec91bd5d5abbc6a96cd72394ebfd012690937a260f"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "bc8ee41734569a2c951b217eff03e81201b6211c0935c36f215098be9ecf8f96"
+      }
+    ],
+    "network_removed": "186db62d2279cc818afc013eca31be94b4e66e894d371fe955810d3bcb9e8d5d",
+    "orchestrator": {
+      "pid": 2703428,
+      "start_ticks": "393338880",
+      "source": "979c8bc47693916c83b13bf21e9642234502a619",
+      "tree": "b259eb5f077d6ff0f163f850b9bc855946733a3d"
+    },
+    "terminal_exits": {
+      "rust-visibility": 0,
+      "postgres": 137
+    },
+    "live": {
+      "at": "2026-09-27T23:21:27.017124+00:00",
+      "unchanged": 850,
+      "orchestrator_absent_or_zombie": true,
+      "source_clean": true,
+      "native_assets_preserved": true,
+      "free_bytes": 72976486400
+    }
+  },
+  "capture": {
+    "root": ".research/implementation/job-pages/attempt-979c8bc-job-pages-lifetime/capture",
+    "files": 39,
+    "sha256": "24c53ab731607baf3f312cea06dd7b2b2d8957a98431baf490353dfaa501c585",
+    "source": "979c8bc47693916c83b13bf21e9642234502a619",
+    "tree": "b259eb5f077d6ff0f163f850b9bc855946733a3d",
+    "source_files": 1364,
+    "manifest_sha256": "1131ed36311ac310a1cbc95fcc3334ee09bc0d46bc6944308e8068a921547eb2",
+    "result_sha256": "fd304576a9d3928ab3304bed7af2dbe5ea334d2fc42e6f086f5fb4adc693a854",
+    "independent_review_sha256": "11d46579a1f8d3a1fb46b20ac8dfcb92d38535e567891f1362525efa433e3f97"
+  },
+  "not_qualified": [
+    "No raw host-clock jumps, expiry/revocation during socket delivery, dropped policy notice/live restrictive rollout, standalone logout boundary or arbitrary grant races qualified by this profile.",
+    "Backdated/tied real pages, delivery/resource exhaustion and mixed/aged workloads remain open, as do complete CLI/browser/accessibility, M1, native arm64 and release journeys.",
+    "PostgreSQL wrapper137 without OOM is owned deadline cleanup, not graceful PostgreSQL restart evidence. Native runner0. All original databases, logs and artifacts retained; secret configuration, key material and token bytes excluded from safe capture."
+  ]
+}

@@ -12,15 +12,16 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Published HEAD and verified origin/main are 9bd39f45e33b40526825b0d9f2b4e16415802fae.
-Its held native run at 9b7da03 is qualified and stopped-retained. Root owns the
-dirty lifetime fixture, shared page preparation/client, lab/runtime wiring and
-this checkpoint. No product, migration or release changes. Read-only AI reviews
-the new fixture; root is the sole writer. No active native experiment.
+Verified origin/main is 9bd39f45e33b40526825b0d9f2b4e16415802fae. Unpublished local
+candidate HEAD is 979c8bc47693916c83b13bf21e9642234502a619, tree
+b259eb5f077d6ff0f163f850b9bc855946733a3d. Its exact native lifetime run is qualified
+and stopped-retained; root owns dirty evidence/inventory/contract/checkpoint updates.
+No product, migration or release changes. Read-only AI completed fixture review;
+root is the sole writer.
 
 Active IDs: P08-T03 Step 3 / P08-T04 Step 3, thin P09-T09 Step 2 and only the
 operational P06-T03 Steps 1/3 cursor prerequisites. No task, phase, M1 or product
-completion. Next backend acceptance: page lifetime and current authority.
+completion. Next visible consumer: P08-T03 Step3 CLI job discovery.
 
 ## Latest qualified user journey
 
@@ -89,13 +90,13 @@ volatile-State audit failure and successful stable-projection follow-up.
 [Inventory](../research/laboratory-inventory.json) key
 implementation_job_pages_20260927 owns exact identities, consumer_runs and
 consumer_live. Seven consumer labs, five earlier native page labs and the new
-COMMIT and held-page labs are stopped-retained. Latest root is
-/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-9b7da03-job-pages-held,
-owner ea127a243a8c73040da3db21f86aea1b, PID2686690/start393242602, now terminal.
-Inventory held_runs owns its exact resources and evidence. At 23:05:14 UTC,
-848 stable container projections matched the terminal audit, eight unrelated
+COMMIT, held-page and lifetime labs are stopped-retained. Latest root is
+/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-979c8bc-job-pages-lifetime,
+owner a9d04826e11a8afede9c969b6dec179e, PID2703428/start393338880, now terminal.
+Inventory lifetime_runs owns its exact resources and evidence. At 23:21:27 UTC,
+850 stable container projections matched the terminal audit, eight unrelated
 containers ran, current source/artifact identities matched and its network was
-absent. Free 73,430,867,968 bytes; check again before the next native run.
+absent. Free 72,976,486,400 bytes; check again before the next native run.
 Owned native runner exits 0; PG wrapper 137/no OOM is deadline cleanup, not graceful
 engine shutdown/recovery evidence. No active BigBrotr experiment at this audit.
 
@@ -179,28 +180,34 @@ atomic result replacement, and deadline samples excluding pre-timeout wait.
 AI ran no tests/SSH; no post-run AI evidence claim. Syntax/artifact/diff checks
 and actual caller INCOMPLETE/FAIL/PASS discrimination pass. Capture under ignored
 attempt-9b7da03-job-pages-held; review-held.py/live-held.py retain the recipes.
-The next bounded lifetime/current-authority fixture is implemented but NOT_RUN.
-It reuses the actual page client and seeds a 12-second TTL/two-second skew in the
-accepted policy. Original actual issuance, non-sliding continuation and natural
-expiry have SQL clock bounds; independently sealed future timestamps distinguish
-allowed skew from refusal. Pinned libsodium 1.0.18 official encryption ABI read.
-Stopped Control policy3→4 changes TTL to five seconds/skew zero; old binding must
-refuse409 and new issuance must reflect the accepted values. Grant removal,
-restoration and account deactivation are explicit privileged fixtures, not new
-production editors. Ten full ledgers and session reads are checked, with the
-account-triggered revocation separately attributed rather than declared unchanged.
-Pre-run AI found a hard-coded ready(3), incorrect session equality after account
-revocation and missing retention comparison after TTL reduction; all fixed.
-Root aligned403 with permission_denied, checks actual grant-row deltas and every
-decoded binding against SQL, and gives new server logs a separate lifetime prefix
-to preserve preparation evidence. Read-only Tux preflight at23:16:01 UTC matches
-848 containers/eight unrelated running, clean sources/artifacts and no owned active
-process/network; free73,430,802,432 bytes exceeds the unchanged66GiB lab preflight.
-Syntax/artifact/diff and nested INCOMPLETE/FAIL/PASS caller checks pass. AI reread
-the corrections and found no further concrete blocker; no tests/SSH. Root also
-bounds changed-policy/grant/account token refusals before their original expiry.
-Commit exact source and run --runtime-job-pages-lifetime with
-the same f677 artifacts. Delivery and mixed/aged workload remain separate.
+The [lifetime report](evidence/p08-job-pages-lifetime-native-20260928.json) now
+qualifies 979c8bc with exact f677 ELFs: 20 actual page requests, nine independently
+reconstructed pages and eleven expected refusals. Actual 12-second issuance and
+continuations retain original expiry; a read 374–479 ms after expiry succeeds under
+two-second skew, then both tokens refuse 410 after the same absolute limit. Two
+independent libsodium 1.0.18 envelopes test future issue times within/outside skew.
+SQL clock bounds distinguish those cases without changing a host clock.
+Stopped Control policy 3→4 changes TTL to five seconds/skew zero: old live token 409,
+new expiry 410 at 284–363 ms after expiry, and full prior retention row/xmin unchanged.
+Current grant removal/restoration yields 409/403/new 200; account deactivation yields
+401 and revokes exactly three live Alice sessions with the account's same xmin.
+These are privileged policy/grant/account fixtures, not production editor claims.
+Ten complete ledgers agree at seven saved boundaries and final. Ordinary session
+reads stay unchanged; revocation effects and new baseline are separately checked.
+Both Controls release, actual parent/lock checks pass and final backends are zero.
+
+Root independently reviewed all 39 safe payloads, 1364 Git files, complete page
+fields/bindings, clock windows, policy/retention/session effects and reused ELF/live
+identities. Three pre-run AI findings fixed: expected restart revision, attribution
+of account-triggered session changes and full retention equality after TTL reduction.
+Root also fixed the 403 literal, checked grant deltas and preserved setup logs under a
+distinct lifetime prefix. Syntax/artifact/diff and actual nested receipt propagation
+checks pass. AI reread fixes; no AI tests/SSH or post-run evidence review. Ignored
+attempt-979c8bc-job-pages-lifetime, review-lifetime.py and live-lifetime.py own captures
+and repeatable checks. No product defect observed. Finish documentation checks/push,
+then inspect and implement the CLI consumer's actual authentication/transport
+boundary. Delivery, backdated/tied and mixed/aged pages remain selected acceptance,
+not a requirement to complete an adjacent scientific subsystem first.
 
 Before the COMMIT run, retired only export-runtime-5de46a0/out/build/{target,cargo-home}
 after source/capture/native-artifact, process FD/maps and mount checks. Inventory
@@ -210,10 +217,10 @@ unrelated running containers preserved. Original source, logs, ELF and database/
 archive/fault states remain. No historical run rebuilt, no container/volume removed.
 Do not rerun any retirement recipe. Check current capacity again before launch.
 
-Further page gates: absolute expiry, changed policy/grant/session and TTL/skew,
-backdated/tied actual pages, delivery/resource exhaustion and mixed/aged workloads.
-Next visible extension after those concrete discovery prerequisites is the
-P08-T03 Step 3 CLI job-list consumer; broader kinds/create/cancel/download and full
+Further page gates: expiry/revocation during socket delivery, backdated/tied actual
+pages, resource exhaustion and mixed/aged workloads. Next visible extension is the
+P08-T03 Step 3 CLI job-list consumer over the qualified page/authority core;
+broader kinds/create/cancel/download and full
 P09-T09 remain selected. No scientific pin/ReadViewStamp subsystem is a prerequisite.
 M1 still requires P01-T09 production acquisition/socket collection, timer
 publication and actual event read/export/restart/dependency-outage from clean

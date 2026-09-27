@@ -27056,6 +27056,89 @@
           "free_bytes": 73430867968
         }
       }
+    ],
+    "lifetime_runs": [
+      {
+        "resources": {
+          "source": "979c8bc47693916c83b13bf21e9642234502a619",
+          "tree": "b259eb5f077d6ff0f163f850b9bc855946733a3d",
+          "owner": "a9d04826e11a8afede9c969b6dec179e",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-979c8bc-job-pages-lifetime",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "postgres",
+              "id": "7127da6d900da44d25b615ec91bd5d5abbc6a96cd72394ebfd012690937a260f"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "bc8ee41734569a2c951b217eff03e81201b6211c0935c36f215098be9ecf8f96"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T23:18:55.315098+00:00",
+          "runtime_profile": "job-pages-lifetime",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+          "network_id": "186db62d2279cc818afc013eca31be94b4e66e894d371fe955810d3bcb9e8d5d",
+          "postgres_id": "7127da6d900da44d25b615ec91bd5d5abbc6a96cd72394ebfd012690937a260f",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "bc8ee41734569a2c951b217eff03e81201b6211c0935c36f215098be9ecf8f96",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "orchestrator": {
+          "pid": 2703428,
+          "start_ticks": "393338880",
+          "source": "979c8bc47693916c83b13bf21e9642234502a619",
+          "tree": "b259eb5f077d6ff0f163f850b9bc855946733a3d"
+        },
+        "capture": {
+          "files": 39,
+          "sha256": "24c53ab731607baf3f312cea06dd7b2b2d8957a98431baf490353dfaa501c585",
+          "source": "979c8bc47693916c83b13bf21e9642234502a619",
+          "tree": "b259eb5f077d6ff0f163f850b9bc855946733a3d",
+          "source_files": 1364
+        },
+        "evidence": "docs/implementation/evidence/p08-job-pages-lifetime-native-20260928.json",
+        "review": {
+          "status": "PASS",
+          "source": "979c8bc47693916c83b13bf21e9642234502a619",
+          "tree": "b259eb5f077d6ff0f163f850b9bc855946733a3d",
+          "page_sets": 9,
+          "refusals": 11,
+          "session_revocations": 3,
+          "ledger_sizes": {
+            "jobs": 6,
+            "job_admissions": 6,
+            "job_input_bounds": 6,
+            "export_jobs": 6,
+            "export_execution_units": 1,
+            "artifacts": 1,
+            "artifact_files": 1,
+            "snapshot_leases": 15,
+            "archive_snapshot_pins": 15,
+            "retention_claims": 15
+          },
+          "capture_manifest_sha256": "1131ed36311ac310a1cbc95fcc3334ee09bc0d46bc6944308e8068a921547eb2",
+          "runtime_artifacts": {
+            "bigbrotr": "ac15753aa08abee07ccc76431b9a407544427ed269c53c09ba4435628ff4f5ec",
+            "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+          }
+        },
+        "live": {
+          "at": "2026-09-27T23:21:27.017124+00:00",
+          "unchanged": 850,
+          "orchestrator_absent_or_zombie": true,
+          "source_clean": true,
+          "native_assets_preserved": true,
+          "free_bytes": 72976486400
+        }
+      }
     ]
   }
 }

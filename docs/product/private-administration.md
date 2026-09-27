@@ -379,8 +379,15 @@ P09-T09 Step 2 consumer, not complete pagination/CLI/accessibility qualification
 The [retention COMMIT-loss report](../implementation/evidence/p08-job-pages-commit-native-20260928.json)
 adds two actual fault schedules: no page escapes either unknown outcome, and fresh
 Control ownership permits a new listing. Only the committed schedule changes key
-retention; continuation retries preserve the original deadline. Held COMMIT/reply,
-continuous custody and remaining expiry/delivery/load acceptance are still open.
+retention; continuation retries preserve the original deadline. The
+[held COMMIT/reply report](../implementation/evidence/p08-job-pages-held-native-20260928.json)
+adds four deadline/SIGTERM schedules with bounded parent termination and sampled
+destination exclusion. It does not observe key memory or prove continuous custody.
+The [lifetime/current-authority report](../implementation/evidence/p08-job-pages-lifetime-native-20260928.json)
+adds actual natural expiry, allowed/refused clock skew, policy/TTL change with
+unchanged prior retention, dataset-grant binding/refusal and account-triggered
+session revocation. These use explicitly attributed privileged fixtures; production
+editors, socket-delivery expiry and remaining aged/load acceptance stay open.
 
 The explicit own-export resume API has [scoped installed HTTP evidence](../implementation/evidence/p08-export-resume-http-native-20260924.json);
 its [typed client also has installed HTTP evidence](../implementation/evidence/p08-export-resume-client-native-20260924.json)
