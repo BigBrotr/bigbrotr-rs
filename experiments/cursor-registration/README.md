@@ -31,5 +31,13 @@ retry after local file changes, permanent material conflicts, raw SQL closure,
 real blocked stdout/fsync failure, both COMMIT-loss sides, concurrent same/conflicting
 keys, killed pre-COMMIT client and engine restart. It retains every original
 outcome and private keyfile; the enclosing owner captures only safe metadata.
-This enrollment selection is authored and NOT_RUN; it does not qualify activation,
+The original9b02 enrollment build passes51Rust tests/Clippy, but PostgreSQL setup
+failed before migrations because Docker exhausted its automatic address pools.
+The original INCOMPLETE evidence remains unchanged. `retry.py`, executed from
+a clean Git checkout under `cursor-enrollment-retry-SHORT/source`, verifies and
+reuses the original9b02 executable AND original9b02 practical fixture in a fresh
+PostgreSQL lab. It creates no compiler cache and attributes no new build/tests.
+Before retry, retire only an independently inventoried unused network; never
+prune networks or change the shared daemon. This retry is authored/NOT_RUN.
+The enrollment selection does not qualify activation,
 worker readiness/distribution or the complete normal/emergency rotation journey.

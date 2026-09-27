@@ -1,0 +1,57 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1/3 / P08-T03 prerequisite",
+  "status": "INCOMPLETE",
+  "source": "9b02bd9f692ec07f57954b140fcd6efd20220ebe",
+  "tree": "ad6ca8aee111b4e4802decbc1219af73aa7c36cb",
+  "environment": "Native Linux amd64, Rust1.98.1, pinned trusted Rust image; networkless fresh release build",
+  "scope": "Additional prepared cursor key enrollment; PostgreSQL scenarios NOT_RUN",
+  "build": {
+    "status": "PASS",
+    "source_manifest_sha256": "5cb5fa359392a5756e9283ee388a96ecc4199c4e05bcfa0818c851998a4063f9",
+    "binary_sha256": "a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716",
+    "git_files_verified": 1315,
+    "selected_rust_tests": 51,
+    "clippy": "PASS",
+    "seconds": 34.766470299102366
+  },
+  "practical": {
+    "status": "NOT_RUN",
+    "failure": "Docker network creation refused: all predefined address pools have been fully subnetted.",
+    "stage": "Shared PostgreSQL setup, before creating PostgreSQL/client containers or applying any migration. SQL0602 unapplied.",
+    "diagnosis": {
+      "path": ".research/implementation/cursor-enrollment/network-reproduction.json",
+      "sha256": "e301d2ecc89fe492219fb22fb3dfa67b43e4a109e3934ce181486d4863341bfa",
+      "exit": 1
+    },
+    "not_run": [
+      "601\u2192602 upgrade and fresh initial mirror",
+      "additional enrollment and permanent material conflicts",
+      "SQL audit/material closure and privilege rollback",
+      "COMMIT loss, lock contention, process kill, blocked stdout and fsync error",
+      "engine restart"
+    ]
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-enrollment-9b02bd9",
+    "owner": "203570ac651e0191d5b613262c9b2091",
+    "state": "stopped-retained",
+    "container": "de8da1cbd82879bccc02e6f66de33038a9d8a8b836f6d4139e632e73c9ed6a0a",
+    "pid": 0,
+    "exit_code": 0,
+    "oom": false,
+    "preexisting_preserved": 773,
+    "free_before": 102269280256,
+    "free_after": 98736332800,
+    "retirement": "No cache, container, data or volume removed in original run. Subsequent separate retirement removes only the empty completed3ba network, preserving all774 container projections."
+  },
+  "capture": {
+    "local": ".research/implementation/cursor-enrollment/capture-9b02bd9",
+    "payload_files": 20,
+    "tar_sha256": "a01f9f5031f79da0ff012a4c65f7b9c06bdfd7d7af4bf36b663d17df58f8d05a",
+    "manifest_sha256": "4504265787d38bf7391678b2d73a880f81aba599af3ccbfc12c8c97027d3efb7",
+    "excluded": "Private credentials, empty PostgreSQL data directory, compiler caches; retained on Tux."
+  },
+  "review": "Root replayed all20payloads,1315Git files, ELF, native51tests/Clippy and773unchanged prior container projections. First offline reader used incorrect .stdout names; corrected to original .log files without changing native evidence.",
+  "next": "Fresh isolated PostgreSQL lab with original9b02 executable and original9b02 practical fixture, no rebuild or reattribution of Rust tests."
+}

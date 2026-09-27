@@ -20,29 +20,32 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Main HEAD/private origin0091fc9b181ec35cefbe6a6133e365f04e7c6e75 verified, clean
-after qualification push. Product e68491570fec7f6df63f4a161dc6ba7a7d9bb491 was
-transferred clean via Git;0091 adds only qualification documentation.
-Root now owns the next explicit additional-key enrollment prerequisite and
-its tests/contracts, under inventoried cursor-enrollment. No native run active.
-Initial0601 remains immutable; new0602 will preserve its original receipt and
-provide permanent per-key material bindings with an actual enroll-key CLI.
-Read-only AI completed SQL/upgrade/ID/audit and Rust/CLI custody review: no
-concrete defect. Initial mirror requires explicit new INSERT/function privileges.
-Schema RED UnknownTarget602 and actual CLI RED usage2 observed;48selected Mac
-tests and Clippy now PASS. Local report p06-cursor-enrollment-local-20260927.json.
-New --enrollment native recipe is parsed/NOT_RUN, using stopped e684 cache;
-SQL upgrade/fresh/privilege/audit cases, output/fsync,COMMIT/concurrency/kill and
-restart still require actual execution. Independent recipe review found two gaps,
-corrected before any run: preserve complete baseline/xmin plus exactly new
-material/audit on acceptance, and publish PASS only after successful cleanup.
-Cleanup attempts are isolated and errors remain INCOMPLETE. Offline fixture
-predicate verifies1positive/10negative controls; not a product/SQL test.
-Targeted AI re-review confirms both corrections; no new counterexample or execution.
-Fresh Tux preflight2026-09-27T16:36:45Z verifies all773prior projections unchanged,
-eight unrelated running,102307016704free bytes; no active BigBrotr lab or deletion.
-Artifact/handoff/fmt/diff pass179Markdown/325JSON,123tasks/756steps; unchanged
-three historical cycle candidates. Native SQL602 is still unapplied/NOT_RUN.
+Main HEAD9b02bd9f692ec07f57954b140fcd6efd20220ebe was the last clean unpublished
+candidate; root now owns only retry orchestration/evidence/documentation changes; private origin remains0091fc9b181ec35cefbe6a6133e365f04e7c6e75.
+Root owns additional-key enrollment under inventoried cursor-enrollment.
+Local48tests/Clippy PASS; reviewed SQL/adapter/CLI and independent fixture.
+Native exact-Git run cursor-enrollment-9b02bd9 is now stopped-retained/INCOMPLETE:
+owner203570ac651e0191d5b613262c9b2091, orchestrator2201428/start390954320 absent,
+build containerde8da1cbd82879bccc02e6f66de33038a9d8a8b836f6d4139e632e73c9ed6a0a
+PID0/noOOM/exit0. Native release build34.766s, selected Rust tests and Clippy PASS.
+ELFa943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716;
+source manifest5cb5fa359392a5756e9283ee388a96ecc4199c4e05bcfa0818c851998a4063f9.
+PG setup failed creating its isolated Docker network, before containers, database
+or migration execution; SQL602 remains unapplied/NOT_RUN. PG ownership record
+2a33fafbcedff2bc1668e7cf798be396 retained with empty data and private credentials.
+No cleanup errors; original orchestrator traceback preserved. Native practical
+cases are NOT_RUN. Latest read-only free98734768128bytes (~92GiB), eight unrelated
+running; no active owned orchestrator. Docker exhaustion is reproduced with its
+actual diagnostic; original20payloads,
+1315Git files,51tests/Clippy and773prior projections independently replayed by root.
+See [INCOMPLETE report](evidence/p06-cursor-enrollment-native-incomplete-20260927.json).
+Retired only the completed3ba empty networkb6f4bef; all774container projections
+remain unchanged. Original DB/keys/source/logs retained; future3ba replay needs
+explicit network provisioning/reconnection. New retry.py runs original9b02 ELF
+and original9b02 fixture in a fresh lab, with no build/test rerun or attribution.
+Independent read-only AI found missing PG-record cleanup handling; fixed before
+execution with in-memory identity and isolated cleanup/census failures.
+Protect current9b02/e684 compiler caches and all original source/evidence.
 
 Current Tux root cursor-rotation-e684915, owner89b64550b3049b02bc61122a16c3efe5,
 is stopped-retained, qualification PASS. Orchestrator2184798/start390803174 is
@@ -116,10 +119,8 @@ has now been applied and is immutable; subsequent corrections need additive DDL.
 Qualification commit d5 records3ba; prepare-key e684915 is now natively qualified.
 Final artifact/handoff checks pass179Markdown/324JSON,123tasks/756steps and the
 same3historical cycle candidates; full qualification diff inspected.
-Next bounded action: finish enrollment recipe review, commit an unpublished
-candidate and execute the exact-Git --enrollment lab using current e684 cache.
-Capture and review original SQL outcomes before any readiness/lifecycle work.
-No SQL601 edits.
+Next bounded action: commit the reviewed retry wrapper and qualify enrollment with the exact9b02 ELF in a
+fresh isolated lab. No SQL601 edits or claims for unexecuted SQL602 cases.
 Existing task/Step1/M1/product remain open.
 
 Static AI lifecycle review flags: current require_control_owner checks backend/

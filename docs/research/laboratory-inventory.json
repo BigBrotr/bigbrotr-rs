@@ -25187,8 +25187,8 @@
   "implementation_cursor_enrollment_20260927": {
     "local_root": ".research/implementation/cursor-enrollment",
     "source_base": "0091fc9b181ec35cefbe6a6133e365f04e7c6e75",
-    "status": "48selected Mac tests and Clippy PASS; native recipe parsed/NOT_RUN. Independent source/recipe review completed; two fixture gaps corrected before native execution.",
-    "remote_resources_created": false,
+    "status": "Native build/tests/Clippy PASS; PostgreSQL network setup failed before migrations: INCOMPLETE, practical cases NOT_RUN.",
+    "remote_resources_created": true,
     "scope": "Explicit prepared-key enrollment; preserve initial0601 and no activation authority.",
     "local_report": "docs/implementation/evidence/p06-cursor-enrollment-local-20260927.json",
     "preflight": {
@@ -25197,6 +25197,28 @@
       "unchanged_containers": 773,
       "running_unrelated": 8,
       "path": ".research/implementation/cursor-enrollment/preflight.json"
+    },
+    "source": "9b02bd9f692ec07f57954b140fcd6efd20220ebe",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-enrollment-9b02bd9",
+    "owner": "203570ac651e0191d5b613262c9b2091",
+    "state": "stopped-retained",
+    "build_container": "de8da1cbd82879bccc02e6f66de33038a9d8a8b836f6d4139e632e73c9ed6a0a",
+    "binary_sha256": "a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716",
+    "next_action": "Capture original evidence and diagnose network creation failure; no SQL602 applied.",
+    "native_incomplete_report": "docs/implementation/evidence/p06-cursor-enrollment-native-incomplete-20260927.json",
+    "capture": {
+      "local": ".research/implementation/cursor-enrollment/capture-9b02bd9",
+      "payload_files": 20,
+      "tar_sha256": "a01f9f5031f79da0ff012a4c65f7b9c06bdfd7d7af4bf36b663d17df58f8d05a",
+      "manifest_sha256": "4504265787d38bf7391678b2d73a880f81aba599af3ccbfc12c8c97027d3efb7",
+      "excluded": "Private credentials, empty PostgreSQL data directory, compiler caches; retained on Tux."
+    },
+    "network_retirement": {
+      "id": "b6f4bef04e0f8a25674430b62b447943d36c67224a88e6b2e442ca11aa4d0d77",
+      "original_run": "cursor-registration-3ba3ceb",
+      "status": "PASS; empty network retired; all774container projections unchanged",
+      "metadata": ".research/implementation/cursor-enrollment/network-retirement.json",
+      "preserved": "All containers, data, keys, logs, source, artifacts. Future3ba replay requires explicit isolated network provisioning/reconnection."
     }
   }
 }
