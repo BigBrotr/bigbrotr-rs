@@ -25411,6 +25411,64 @@
       "excluded": "Secrets, database state, compiler cache retained on Tux."
     },
     "live_at": "2026-09-27T18:25:47.519621+00:00",
-    "free_bytes": 97272025088
+    "free_bytes": 97272025088,
+    "retry": {
+      "source": "8fae53a883b6e1c258a184204271a7e691c0da81",
+      "tree": "1f50b1b9ddfb3796a0389855796608e018eba193",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-admission-8fae53a",
+      "owner": "ec924c93641b331072d124a476144375",
+      "containers": [
+        {
+          "name": "native-build",
+          "id": "0d4c6058c20d3db129c486033ac6ff6dfbca6c541ca39beac4505df6aee2202f"
+        }
+      ],
+      "orchestrator": {
+        "pid": 2322187,
+        "start_ticks": "391597794",
+        "source": "8fae53a883b6e1c258a184204271a7e691c0da81",
+        "tree": "1f50b1b9ddfb3796a0389855796608e018eba193"
+      },
+      "state": "stopped-retained",
+      "status": "Scoped SQL/optional-runtime PASS;95checks/11DB. Real export acceptance/list remain open.",
+      "preflight": ".research/implementation/job-admission/preflight-retry.json",
+      "report": "docs/implementation/evidence/p08-job-admission-native-20260927.json",
+      "binary_sha256": "21cd5a8d5dc1ea1b8ae84e597cc67ef05fc2b87117bcbe5b55e9aa8eacd8f82d",
+      "postgres_resources": {
+        "bigbrotr-implementation-pg-20260917-admission_ipkofdk-client": "e626a3f5c941666c6e6eca4edcd452b427eb655da76408fe85a5a9274f69921f",
+        "bigbrotr-implementation-pg-20260917-admission_ipkofdk": "aaaf7ffcb6a4cf64b07f794d93c57dfe1afec7f1553dd995f00e43d1901962f1"
+      },
+      "retired_empty_network": "ed04c38693905f46243fb7bcfa098a7db4dffc50e6d2816d515ac0deff00003b",
+      "capture": {
+        "path": ".research/implementation/job-admission/capture-8fae53a",
+        "payloads": 57,
+        "source_files": 1329,
+        "tar_sha256": "11d37ea5d07fe1a8f19ddb1d310dd4e062472c6a261e81d2bb7987e1afce20aa",
+        "manifest_sha256": "0eae2a10263ab7dd19117eda422b2c006963eb8ade0b146a8c4c0ec73fa38ef0",
+        "excluded": "Credentials, database files, compiler caches retained in owned Tux root."
+      },
+      "free_bytes": 93421522944,
+      "live_at": "2026-09-27T18:31:10.282258+00:00"
+    },
+    "subsequent_cache_retirement": {
+      "status": "PASS",
+      "finished_at": "2026-09-27T18:36:38.116770+00:00",
+      "metadata": ".research/implementation/job-admission/cache-retirement.json",
+      "sha256": "ac68426c4bc351912957feb2ba195e71c04539afb3e42183597bcb9bad7c8e43",
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/job-admission-e82ae83/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/job-admission-e82ae83/out/build/cargo-home"
+      ],
+      "allocated_bytes": 3485429760,
+      "free_before": 93421490176,
+      "free_after": 96905388032,
+      "container_projections_preserved": 790,
+      "unrelated_running": 8,
+      "retained_file_hashes": 8,
+      "process_references": 0,
+      "permission_errors": 0,
+      "preserved": "All databases/private keys/fault states/captures/source/manifests/native artifacts/logs remain. Current8fa/6474/9b02/e684 caches,8db/73e/4e6seed,private-history32dd58d,historycaptureb5c862a and installed-publication61271e2 archive-worker dependency untouched. No container/volume/dataset deletion.",
+      "note": "Historical run outcomes unchanged; retired only duplicate failed-e82compiler caches after successful8faqualification."
+    }
   }
 }

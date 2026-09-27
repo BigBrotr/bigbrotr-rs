@@ -20,11 +20,11 @@ phase, M1 or selected-product completion. Root is sole writer/integrator;
 catalog_guard_review is an independent read-only AI reviewer, with no edits,
 product tests, SSH or resource ownership.
 
-Main HEAD is unpublished candidatee82ae830ce15530693ecdbadcfff2de463d45da3,
-tree1864e53fed474a0f3c571d59376fb18337b16f80. Private origin/main is675d74785696cf5d2fc5f4941d9103e756f2ee54.
+Main HEAD is unpublished candidate8fae53a883b6e1c258a184204271a7e691c0da81,
+tree1f50b1b9ddfb3796a0389855796608e018eba193. Private origin/main is675d74785696cf5d2fc5f4941d9103e756f2ee54.
 That evidence/documentation commit follows qualified product6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7,
 treea06365c2eae1fc4b5d80d14e5d4fc3606ed382eb. Clean candidatee82was transferred
-by Git bundle, no Tux source edits. Root owns current inventory/checkpoint updates.
+by Git bundle, no Tux source edits. Root owns current retry inventory/checkpoint updates.
 No merge/rebase or another contributor's edits; no815private push yet.
 
 ## Current runtime qualification
@@ -222,14 +222,52 @@ clientcb34065eexit143 andPGdddab6c6exit0 allPID0/noOOM. Empty network19f9a39e
 retired, all11databases/source/native/cache/failure evidence retained. Fresh18:25:47UTC
 census matches787container projections/eight unrelated running, free97272025088bytes.
 Capture41payloads,tarce0c95bb40e4d63a9cfca120157180c758674fbf2ee1ddc629f0b7cd75c78c26.
-Root verifies41payloads/1328Git files and the exact ELF, original row/xmin
-preservation, literal page negatives, seven lock barriers and the startup refusal.
-Fresh18:27:59UTC preflight observes97272020992bytes free and787containers/eight
-unrelated running; no active BigBrotr. Next: commit corrected fixture and original
-incomplete report, then run a new clean exact-Git candidate.
-No product change or claim of passing runtime/restart. Preserve all current caches
-until the retry settles; never modify Tux sources. Complete export acceptance815
-remains required after this SQL foundation qualification.
+Root and independent AI verify the original41payloads/1328Git files and ELF,
+old-row/xmin equality, literal page negative, seven lock barriers and startup refusal.
+Original outcome stays INCOMPLETE. Retry8fae53a now passes the
+[scoped report](evidence/p08-job-admission-native-20260927.json):25Rust tests/Clippy,
+95practical checks/11PG databases. Actual401/503grants and restored401, fiveSIGTERM
+exit0/committed releases,11unchanged restart snapshots and nextordinal8 all pass.
+Root verifies57payloads/1329Git files and485unchanged product inputs, actual raw
+process streams, SQL snapshots, literal rows, lock correlations and terminal states.
+Capture.research/implementation/job-admission/capture-8fae53a,
+tar11d37ea5d07fe1a8f19ddb1d310dd4e062472c6a261e81d2bb7987e1afce20aa;
+ELF21cd5a8d5dc1ea1b8ae84e597cc67ef05fc2b87117bcbe5b55e9aa8eacd8f82d;
+source manifest490845a9551e13b835d01866234ba85db09f1bcef4106790fab5b880d20485e0.
+Independent read-only AI confirms57payloads/1329Gitfiles/485equal inputs,95checks,
+seven lock correlations, five runtime streams and matching released SQL owners,
+11restart snapshots and787prior/790final-live projections. No discrepancy or
+AI remote execution/edits.
+
+Retry/home/tux/bigbrotr-implementation-20260917/runs/job-admission-8fae53a,
+ownerec924c93641b331072d124a476144375, orchestrator2322187/start391597794 absent
+or zombie. Build0d4c6058exit0, cliente626a3f5exit143, PGaaaf7ffcexit0 allPID0/noOOM.
+Own empty network removed; all11databases/source/artifacts/caches/logs retained.
+Fresh18:31:10UTC census matches790container projections/eight unrelated running,
+free93421522944bytes. No active BigBrotr experiment. Native report and inventory
+own full IDs and prior787unchanged container projections.
+
+Subsequent scoped maintenance removes onlye82out/build/target andcargo-home,
+3485429760allocated bytes; free93421490176→96905388032bytes including concurrent
+writes. Privileged read-only FD/maps/cwd/exe/root census found no references or
+permission errors; all790container projections/eight unrelated running and eight
+original native/source/evidence hashes remain unchanged. Current8fa/6474/9b02/e684
+caches and all protected historical assets/database state remain. No container,
+volume, whole-lab or dataset deletion. Metadata.research/implementation/job-admission/cache-retirement.json,
+SHAac68426c4bc351912957feb2ba195e71c04539afb3e42183597bcb9bad7c8e43. Original native outcomes stay unchanged.
+
+Independent review complete. Next: document/diff checks and coherent evidence
+commit; fetch/inspect remote then private fast-forward push. Following bounded
+P08-T03 Step3 acceptance: run actual installed signed export acceptance/identical
+retry under815, observe its command/audit/job/pin plus admission closure. Existing
+export-execution status client already performs a real POST; preserve its old501
+profile and select815explicitly. Its historical4e seedCargo.lock differs from the
+current lock (8984426c… versus4f9cbb84…); original native seed remains verified,
+but a current compatible compiler cache (retained8fa) and fresh installed build
+are required. Do not falsely require old seed dependencies to equal current code.
+No new experiment prepared/started. Read remaining selected harness boundaries,
+record exact artifacts, check space/resources and retire only verified unused caches
+before the next run. No paginated endpoint before cursor lifecycle authority.
 
 The current runtime implements only Control: avoid an unused distributed worker
 registry. Readiness must bind actual loaded dataset/ring/ID/material and full

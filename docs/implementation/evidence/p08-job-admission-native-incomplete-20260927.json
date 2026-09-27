@@ -44,7 +44,7 @@
       "Actual CLI migrations/initialization/activation and deterministic old-row backfill without rewriting original rows/xmin/receipts.",
       "Equal/backdated late jobs are excluded from cut3 while a time-only negative leaks IDs9,20,22.",
       "Identical retry, explicit rollback, missing SELECT/INSERT, three unsupported isolation levels and raw mutation/replacement/truncation refusals.",
-      "Two-row immediate/deferred insertion; two real writers with COMMIT/ROLLBACK/backend death; both writer/cut lock orders with real pg_blocking_pids/incarnation barriers.",
+      "Two-row insertion with only the admission constraint immediate and separately with ALL constraints immediate; two real writers with COMMIT/ROLLBACK/backend death; both writer/cut lock orders with real pg_blocking_pids/incarnation barriers.",
       "1000synthetic rows: actual backward index-only scan, one returned row, three shared hits, one heap fetch,188416total relation bytes. Small warm state, not capacity/aged-load evidence."
     ],
     "failure": {
@@ -108,7 +108,8 @@
   },
   "review": {
     "owner": "Root inspected full changed product/fixture boundaries and captured outcomes; independent AI static review preceded execution and corrected equal-time oracle and failure-output capture. No AI engine execution.",
-    "boundary": "No success inferred for unexecuted runtime/restart cases. Native primary report remains INCOMPLETE."
+    "boundary": "No success inferred for unexecuted runtime/restart cases. Native primary report remains INCOMPLETE.",
+    "independent_ai": "Read-only AI independently rehashed41payloads/tar/1328Git files/ELF/815, compared prior rows/xmin, literal page negative, three writer/four cut outcomes and seven backend/blocker correlations; confirmed exit3 streams/threads,784prior and787final/live projections, three terminal containers and removed empty network. No discrepancy beyond clarified multirow scope; no tests/SSH/edits."
   },
   "next": "Correct only the fixture private-listener DELETE grants and run a new exact-source isolated qualification. Applied815bytes remain immutable."
 }

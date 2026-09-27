@@ -1,0 +1,161 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-27",
+  "status": "PASS",
+  "scope": "P08-T03 Step3 transactional job admission SQL foundation and actual optional Control permission probe; not complete task/product/list or installed export acceptance.",
+  "source": {
+    "revision": "8fae53a883b6e1c258a184204271a7e691c0da81",
+    "tree": "1f50b1b9ddfb3796a0389855796608e018eba193",
+    "product_candidate": "e82ae830ce15530693ecdbadcfff2de463d45da3",
+    "equal_non_document_or_experiment_inputs": 485,
+    "clean_git_transfer": true,
+    "private_candidate": true
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "rust": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "build_cpu": 2,
+    "build_memory_bytes": 6442450944
+  },
+  "artifacts": {
+    "binary_sha256": "21cd5a8d5dc1ea1b8ae84e597cc67ef05fc2b87117bcbe5b55e9aa8eacd8f82d",
+    "source_manifest_sha256": "490845a9551e13b835d01866234ba85db09f1bcef4106790fab5b880d20485e0",
+    "lockfile_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "migration_0815_sha256": "3a562bdf4612c1fee7f5b0b53603cd0579b12316adf1319e730336548ec22e9d",
+    "applied_prior_sql_files_unchanged": 29
+  },
+  "local": {
+    "schema_red": {
+      "exit": 101,
+      "reason": "UnknownTarget(815)",
+      "path": ".research/implementation/job-admission/schema-red.stdout"
+    },
+    "schema_green": {
+      "exit": 0,
+      "passed": 25,
+      "failed": 0,
+      "ignored": 0
+    },
+    "clippy": "PASS",
+    "formatting": "PASS",
+    "fixture_config_offline": "PASS; real config validate, no secret/server access",
+    "note": "Initial helper lookup tried the wrong local binary path and stopped before execution; corrected to .research/targets/product/debug/bigbrotr. Native fixture failed separately as recorded below."
+  },
+  "native": {
+    "build": "PASS",
+    "tests": {
+      "collected": 25,
+      "executed": 25,
+      "failed": 0,
+      "ignored": 0
+    },
+    "clippy": "PASS",
+    "checks": {
+      "executed": 95,
+      "passed": 95,
+      "failed": 0
+    },
+    "databases": 11,
+    "sql_role": "bigbrotr_control for new jobs and contention; migrator for raw immutable guards; observer postgres",
+    "cases": [
+      "Actual migrate apply602\u2192815 and fresh815, initialization/activation, exact ledger hashes and no-op reapply. Original rows/xmin and original ledger rows preserved.",
+      "Literal deterministic old-job assignment; cut3 excludes laterjob9with equal timestamp and jobs20/22with earlier timestamps. Time-only negative includes those three late jobs.",
+      "Identical INSERT ON CONFLICT retry and explicit rollback preserve job/mapping state. Missing SELECT and INSERT independently reject42501; restored grants accept same job ID with ordinal7.",
+      "REPEATABLE READ/SERIALIZABLE/READ UNCOMMITTED rejected25001; raw mapping edit/delete/truncate/caller ordinal/orphan/duplicate refused at specific SQLSTATE.",
+      "Multirow with admission-only immediate and ALL-immediate constraints; empty cut0.",
+      "Real two-writer schedules: COMMIT yields ordinals1/2; ROLLBACK and exact backend termination yield only waiterordinal1. Seven actual lock barriers include four writer/cut-first COMMIT/ROLLBACK schedules.",
+      "Actual serve on602 and815 with sufficient grants reaches authentication401 for nonexistent session; missing mapping SELECT/INSERT independently gives503; restoring grants gives401. Five SIGTERM exits0 and committed owner releases.",
+      "Controlled PostgreSQL restart preserves all11snapshots including mappings/receipts/row versions; next new job has ordinal8."
+    ],
+    "runtime_statuses": {
+      "old": 401,
+      "new": 401,
+      "no_select": 503,
+      "no_insert": 503,
+      "restored": 401
+    },
+    "small_index_observation": {
+      "status": "PASS",
+      "fixture_rows": 1000,
+      "total_relation_bytes": 188416,
+      "node": "Index Only Scan",
+      "direction": "Backward",
+      "index": "job_admissions_admission_ordinal_key",
+      "returned_rows": 1,
+      "shared_hit_blocks": 3,
+      "shared_read_blocks": 0,
+      "heap_fetches": 1,
+      "execution_ms": 0.029,
+      "raw": "postgres/job-admission.json:bounded-backward-index",
+      "limitation": "One small warm query; no throughput/capacity extrapolation."
+    }
+  },
+  "capture": {
+    "path": ".research/implementation/job-admission/capture-8fae53a",
+    "payloads": 57,
+    "source_files": 1329,
+    "tar_sha256": "11d37ea5d07fe1a8f19ddb1d310dd4e062472c6a261e81d2bb7987e1afce20aa",
+    "manifest_sha256": "0eae2a10263ab7dd19117eda422b2c006963eb8ade0b146a8c4c0ec73fa38ef0",
+    "excluded": "Credentials, database files, compiler caches retained in owned Tux root."
+  },
+  "review": {
+    "root": "Root independently checked stored raw identities, literal outcomes, seven lock correlations, five process streams,11restart snapshots, privileges and terminal projections. Runner assertions for full unchanged snapshots after refusals/no-op are not an independent live remeasurement.",
+    "source": "Full changed product/SQL/fixture and actual caller boundaries reviewed;485non-document/experiment Git inputs equal to producte82.",
+    "independent_ai": "Read-only AI independently rehashed57payloads/tar/1329Gitfiles/ELF and485equal product inputs; inspected25tests/Clippy,95unique PASS/11DB, literal pages/admissions, seven backend/blocker correlations, all11restart comparisons and nextordinal8. Five runtime streams/HTTP statuses/exit0 match, with exactly five released SQL owners matching epoch/resource/incarnation.787prior projections preserved;790final/live maps equal, three terminal containers/noOOM, eight unrelated running and owned empty-network removal. No substantive discrepancy; no product tests/SSH/writes. Live process absence remains root observation."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-admission-8fae53a",
+    "owner": "ec924c93641b331072d124a476144375",
+    "postgres_owner": "33de0b3b4a1dc7cd5d6fbc2ed1a6461f",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "id": "0d4c6058c20d3db129c486033ac6ff6dfbca6c541ca39beac4505df6aee2202f",
+        "exit": 0,
+        "pid": 0,
+        "oom": false
+      },
+      {
+        "id": "e626a3f5c941666c6e6eca4edcd452b427eb655da76408fe85a5a9274f69921f",
+        "exit": 143,
+        "pid": 0,
+        "oom": false
+      },
+      {
+        "id": "aaaf7ffcb6a4cf64b07f794d93c57dfe1afec7f1553dd995f00e43d1901962f1",
+        "exit": 0,
+        "pid": 0,
+        "oom": false
+      }
+    ],
+    "removed_empty_network": "ed04c38693905f46243fb7bcfa098a7db4dffc50e6d2816d515ac0deff00003b",
+    "prior_container_projections": 787,
+    "final_and_live_container_projections": 790,
+    "unrelated_running": 8,
+    "live_at": "2026-09-27T18:31:10.282258+00:00",
+    "orchestrator_absent_or_zombie": true,
+    "free_before": 97233092608,
+    "free_after": 93421522944,
+    "space_note": "Includes fresh copied compiler cache and concurrent writes; no container/volume/database/cache deleted. Own empty network retired.",
+    "preserved": "All11databases, source/build/cache/native artifacts/logs. Original incompletee82 remains intact."
+  },
+  "prior_failure": "docs/implementation/evidence/p08-job-admission-native-incomplete-20260927.json",
+  "limits": [
+    "Jobs are synthetic backup metadata. No new real export command/audit/pin acceptance after815 was exercised. That installed consumer remains the next required journey.",
+    "No authenticated actor-owned list, encrypted cursor issuance/lifecycle, rotation or browser qualification follows.",
+    "The1000row index observation is warm/small, with no mixed/aged workload or throughput/capacity claim.",
+    "Refusal/no-op whole-state equality includes runner assertions; root and AI independently compared retained upgrade/restart snapshots, raw terminal streams and the five released owner rows.",
+    "Controlled restart is not host power loss. No public release, full Compose upgrade, native arm64 or hosted Actions result."
+  ],
+  "next": "Qualify the existing installed export acceptance/retry journey on815 with original native archive and current application before closing affected consumer guarantees; then continue cursor lifecycle and real job listing."
+}

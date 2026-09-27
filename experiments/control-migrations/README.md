@@ -183,5 +183,7 @@ Results, SQL responses, observer snapshots and process streams stay in the owned
 run. PASS requires all cases and session cleanup, then the enclosing orchestrator
 positively stops its owned containers, preserves prior container projections and
 retires only its empty network. Databases/source/build/evidence remain retained.
-The new profile is **NOT_RUN** until its separate exact-source report records an
-actual result; source review or AST parsing does not qualify PostgreSQL behavior.
+The [8fae53a report](../../docs/implementation/evidence/p08-job-admission-native-20260927.json)
+records95PASS checks across11databases; the [e82attempt](../../docs/implementation/evidence/p08-job-admission-native-incomplete-20260927.json)
+remains INCOMPLETE after a missing fixture private-listener DELETE grant. Source
+review/AST checks and synthetic metadata do not qualify real export acceptance.

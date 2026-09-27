@@ -381,16 +381,17 @@ The next bounded Step3 prerequisite implements that order in additive0815,
 using the [immutable job admission mapping](../specification/storage-catalog.md#postgresql-operational-relations).
 Actual job INSERT consumes it; no empty list API or extra counter owner is added.
 The compatibility test first fails with UnknownTarget(815), then25schema tests
-and Clippy pass. The [first native attempt](evidence/p08-job-admission-native-incomplete-20260927.json)
-passes67SQL/setup observations but stops at missing fixture session/proof DELETE
-grants before the optional815HTTP probe; runtime/restart remain NOT_RUN.
-Practical acceptance must preserve complete old job/receipt rows,
-exercise simultaneous and multirow inserts, both cut/admission lock orders,
-commit/rollback and connection loss, and exclude backdated/equal-time new jobs
-from a fixed literal expected list. Check missing SELECT and INSERT independently,
-early constraints, forbidden mapping replacement/truncation and unsupported
-isolation. Runtime/grant compatibility and actual index behavior require engine
-evidence. Cursor lifecycle and complete list/client/browser delivery remain open.
+and Clippy pass. The [native SQL/runtime qualification](evidence/p08-job-admission-native-20260927.json)
+passes95checks across11PostgreSQL16.15 databases: unchanged old rows/receipts/xmin,
+backdated/equal-time negative controls, simultaneous/multirow insertion, both
+cut/admission lock orders, rollback/backend death, separate SELECT/INSERT failures,
+immutable mapping, isolation refusal, actual optional401/503gate and restart.
+The [first incomplete attempt](evidence/p08-job-admission-native-incomplete-20260927.json)
+remains recorded separately. Synthetic backup metadata does not qualify new real
+export command/audit/pin acceptance on815: that installed journey is next before
+consolidating the consumer guarantee. The1000row backward-index observation is
+not mixed/aged-load evidence. Cursor lifecycle and complete list/client/browser
+delivery remain open; no whole Step3 completion.
 
 Role/relay/artifact summaries share the page-size/authorization rules. Roles and
 relays order by immutable role-instance and endpoint ID respectively; artifacts

@@ -171,7 +171,6 @@ is private; public read models use allowlisted projections, never table dumps.
 | 0803 saved views | `saved_views(view_id)` | Owner, resource/query, label/revision; reauthorize on every reuse |
 | 0804 artifact publication | `artifact_publications(artifact_id)` and additive publication/user-catalog fields over existing `artifacts`/`artifact_files` | Immutable manifest/files, storage refs, source/policy basis, revision/state/pin; publication independent of signing; no recreation of the shared file inventory |
 | 0813 first export acceptance | Immutable `export_jobs(job_id)` detail over the common job ledger; nullable immutable `jobs.export_job_protocol` and unique `archive_snapshot_pins.export_job_id` | Exact request/query/destination binding, authenticated acceptance and retained complete input cut. New qualified jobs and export pins are accepted atomically; legacy rows remain unqualified and cannot be adopted. |
-
 | 0815 job admission | `job_admissions(job_id)` with unique `admission_ordinal` | Immutable transactional order for the operational listing upper cut; retains compact identity/order through future detail reclamation. |
 
 Migration0815 adds `job_admissions(job_id, admission_ordinal)` for the operational
@@ -192,9 +191,10 @@ after the lock reads the greatest ordinal through its unique index and adds one.
 READ COMMITTED is required. PostgreSQL16's
 [volatile snapshot rules](https://www.postgresql.org/docs/16/xfunc-volatility.html)
 and [row locks](https://www.postgresql.org/docs/16/explicit-locking.html#LOCKING-ROWS)
-supply the intended visibility/serialization; actual concurrent engine tests are
-still required. No sequence, transaction ID, clock or independent mutable counter
-is the listing authority. Rollback rolls back the mapping too.
+supply the intended visibility/serialization. The [scoped native qualification](../implementation/evidence/p08-job-admission-native-20260927.json)
+exercises actual concurrent writer/cut locks, rollback, multirow insertion and
+restart. No sequence, transaction ID, clock or independent mutable counter is the
+listing authority. Rollback rolls back the mapping too.
 
 Mappings cannot be edited, deleted, truncated, or assigned a caller-selected
 ordinal. Every accepted job requires its mapping at commit. Empty history has
