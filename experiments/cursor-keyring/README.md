@@ -67,5 +67,6 @@ new13-case `prepare_key.py` fixture. It checks exact previous-key preservation,
 idempotent complete retry including cap16, missing/partial/lock/concurrent cases,
 four EIO/ENOSPC boundaries, three pending-fsync SIGKILL windows and full stdout.
 Prepared key material remains private under the same keys-directory rule.
-This recipe is authored, not yet native-qualified. It adds no Control enrollment,
-activation, distribution, retirement or full rotation claim.
+The [native addition report](../../docs/implementation/evidence/p06-cursor-key-addition-native-20260927.json)
+records all13cases and24Rust tests PASS at e684915. No Control enrollment,
+activation, distribution, retirement or full rotation claim is added.

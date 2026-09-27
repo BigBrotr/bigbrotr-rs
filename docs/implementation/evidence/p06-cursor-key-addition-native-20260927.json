@@ -1,0 +1,390 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P06-T03 Step1/3 / P08-T03 prerequisite",
+  "status": "PASS within native local key addition scope",
+  "source": {
+    "source": "e68491570fec7f6df63f4a161dc6ba7a7d9bb491",
+    "tree": "ae55773a8511557ee62763b93ae05e54217cf5dd",
+    "source_manifest_sha256": "41ab416a2326704e99c64550537c3b656d4fd767bb05be1a0e87806ce4cee844",
+    "lockfile_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "binary_sha256": "2b65d3537ab7b3f147840b07358e20f0e27750c391d1683445672bfde347dadd",
+    "build_info": {
+      "archive_worker": null,
+      "capabilities": [
+        "event-verification",
+        "config-static"
+      ],
+      "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+        "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+        "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+        "contracts/release/dependencies.json": "14bb6d43630ff5ad0eeaec28236ca138224d5e97603200f456536abbaa2c94c6",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocol_registry_format": "bigbrotr-protocol-versions/1",
+      "protocols": {
+        "event_verifier": "bigbrotr-nip01-verifier/1",
+        "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1",
+        "config_static": "bigbrotr-config-static/1",
+        "doctor": "bigbrotr-doctor/1",
+        "signed_event": "nip01-event/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "41ab416a2326704e99c64550537c3b656d4fd767bb05be1a0e87806ce4cee844",
+        "revision": "e68491570fec7f6df63f4a161dc6ba7a7d9bb491",
+        "state": "builder-supplied",
+        "tree": "ae55773a8511557ee62763b93ae05e54217cf5dd"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    }
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "limits": {
+      "cpu": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512,
+      "network": "none"
+    },
+    "cache": "Copied stopped3ba cache; fresh offline locked release build from exact clean Git source; no edits on Tux."
+  },
+  "checks": {
+    "native": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 34.86559656308964
+      },
+      {
+        "name": "consumers",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "cursor_keyring",
+          "--test",
+          "cursor_keyring_cli",
+          "--test",
+          "cursor_registration",
+          "--test",
+          "read_cursors"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 46.48220767220482
+      },
+      {
+        "name": "collision",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "initial_publication_never"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 16.638552469201386
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--bin",
+          "bigbrotr",
+          "--test",
+          "cursor_keyring",
+          "--test",
+          "cursor_keyring_cli",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.719535055104643
+      }
+    ],
+    "rust_tests": {
+      "total": 24,
+      "keyring": 10,
+      "cli": 4,
+      "registration": 2,
+      "codec": 7,
+      "collision_unit": 1
+    },
+    "practical_cases": [
+      {
+        "name": "append-retry",
+        "status": "PASS"
+      },
+      {
+        "name": "missing-partial",
+        "status": "PASS"
+      },
+      {
+        "name": "capacity",
+        "status": "PASS"
+      },
+      {
+        "name": "locked",
+        "status": "PASS"
+      },
+      {
+        "name": "parallel",
+        "status": "PASS"
+      },
+      {
+        "name": "file-eio",
+        "status": "PASS"
+      },
+      {
+        "name": "directory-eio",
+        "status": "PASS"
+      },
+      {
+        "name": "parent-eio",
+        "status": "PASS"
+      },
+      {
+        "name": "write-enospc",
+        "status": "PASS"
+      },
+      {
+        "name": "kill-before-rename",
+        "status": "PASS"
+      },
+      {
+        "name": "kill-after-rename",
+        "status": "PASS"
+      },
+      {
+        "name": "kill-before-parent-sync",
+        "status": "PASS"
+      },
+      {
+        "name": "blocked-stdout",
+        "status": "PASS"
+      }
+    ],
+    "independent_oracle": "Public two-key wire fixture and separate Python decoder/checksum; compare dataset/ring/prior record bytes/order, explicit new ID, nonzero material, exact218byte result and exact-byte retry. All generated key bytes remain private on Tux.",
+    "publication": "Observed partial file fsync, replacing rename, key directory fsync, parent fsync in order. Existing ID retry re-syncs identical bytes, including cap16. Missing/partial/new-at-capacity refuse without mutation.",
+    "contention": "Explicit independent Python flock forces refusal with unchanged files, then success after unlock. Eight concurrent CLI processes observed1success/7Busy; one resulting key. This scheduling observation does not establish every possible interleaving.",
+    "faults": "Actual first-file/directory/parent fsync EIO and main-thread write ENOSPC. Before rename: original170byte keyfile plus retained staging, same-ID retry refuses and preserves both. After rename: valid218byte final; retry re-syncs identical bytes.",
+    "kills": "SIGKILL while independently observed actual ELF child waits at first,second or third fsync. No acknowledgement; child absent before retry. Before rename retains original+complete partial; later windows retry same final bytes. These are process interruption cases, not host power-loss tests.",
+    "blocked_stdout": {
+      "pipe_bytes": 65536,
+      "held_open_undrained": true,
+      "exit": 1,
+      "elapsed_seconds": 0.21156528405845165,
+      "durable_effect": "218byte new keyfile; next same-ID CLI returns exact same bytes."
+    }
+  },
+  "review": {
+    "root": "Full changed source/fixtures/contracts and complete captured identity/24tests/13cases/28recorded command logs plus killed/blocked process observations inspected. Offline verifier confirms104payloads,1311Git blobs,ELF,source/trace hashes and772unchanged prior projections.",
+    "independent_ai": "Final read-only offline AI replay confirms tar,104payloads,1311Git files,ELF,9report hashes,24tests,13cases,28CLIlogs,8traces,772prior/773terminal projections. No discrepancy, AI product tests or SSH. Secret-byte equality and killed-child absence are runner assertions; preserved metadata and pending syscall traces corroborate their recorded boundaries."
+  },
+  "capture": {
+    "root": ".research/implementation/cursor-rotation/capture-e684915",
+    "tar_sha256": "56c347caa68e58a0466cb4cba2c9513e4911f2c08cdc4d9aa5df2af32f0f5c19",
+    "manifest_sha256": "cb0088b817ec2c3b6fa0e5801065c0cc9f5d9e985974368bd721414ca38ab94c",
+    "payloads": 104,
+    "git_files": 1311,
+    "excluded": "All out/cases/*/keys bytes, compiler caches and unrelated host data; retained on Tux."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-rotation-e684915",
+    "owner": "89b64550b3049b02bc61122a16c3efe5",
+    "orchestrator": {
+      "pid": 2184798,
+      "start_ticks": "390803174",
+      "source": "e68491570fec7f6df63f4a161dc6ba7a7d9bb491",
+      "tree": "ae55773a8511557ee62763b93ae05e54217cf5dd"
+    },
+    "container": {
+      "id": "5b9393f0c27fe8b74d1553b8330bd4edc552891fbbf1830fd64528ef929433bc",
+      "name": "/bigbrotr-cursor-rotation-e684915",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-27T16:16:21.293798084Z",
+        "FinishedAt": "2026-09-27T16:18:03.807321823Z"
+      },
+      "mounts": [
+        {
+          "Type": "bind",
+          "Source": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35/out",
+          "Destination": "/instrument",
+          "Mode": "",
+          "RW": false,
+          "Propagation": "rprivate"
+        },
+        {
+          "Type": "bind",
+          "Source": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-rotation-e684915/out",
+          "Destination": "/out",
+          "Mode": "",
+          "RW": true,
+          "Propagation": "rprivate"
+        },
+        {
+          "Type": "bind",
+          "Source": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-rotation-e684915/out/build/source",
+          "Destination": "/out/build/source",
+          "Mode": "",
+          "RW": false,
+          "Propagation": "rprivate"
+        }
+      ],
+      "networks": {
+        "none": {
+          "IPAMConfig": null,
+          "Links": null,
+          "Aliases": null,
+          "DriverOpts": null,
+          "GwPriority": 0,
+          "NetworkID": "b2e69b2cd9e7ed698a608f62703a485587f1dfbd2b5e1c67bbfdba07bd2d322a",
+          "EndpointID": "",
+          "Gateway": "",
+          "IPAddress": "",
+          "MacAddress": "",
+          "IPPrefixLen": 0,
+          "IPv6Gateway": "",
+          "GlobalIPv6Address": "",
+          "GlobalIPv6PrefixLen": 0,
+          "DNSNames": null
+        }
+      },
+      "restart": {
+        "Name": "no",
+        "MaximumRetryCount": 0
+      }
+    },
+    "state": "stopped-retained",
+    "free_before": 105841065984,
+    "free_after": 102308683776,
+    "fresh_census": {
+      "at": "2026-09-27T16:19:16.885034+00:00",
+      "free_bytes": 102307127296,
+      "unchanged_container_projections": 773,
+      "key_directories": 13,
+      "orchestrator_absent_or_zombie": true,
+      "sha256": "6e3a0e98a5e54b97855251229930a62a2bf75ad1907e79d3da4efd5c98cee8a7"
+    },
+    "retention": "All source/artifacts/logs/failure keyfiles and fresh compiler cache retained. No resource deletion, database, network or volume created;8unrelated running unchanged. Space deltas include concurrent host writes."
+  },
+  "limitations": [
+    "No Control key enrollment/readiness/activation/retirement or full normal/emergency rotation.",
+    "No actual distribution/cross-worker service, paged read consumer or runtime grant.",
+    "No power loss,kernel stall,shared filesystem/ACL,capacity/load qualification,Linux arm64 or packaged release.",
+    "No full task,milestone or product completion."
+  ],
+  "artifacts_sha256": {
+    ".research/implementation/cursor-rotation/capture-e684915/out/native-tests/result.json": "a7f9740b835d03b9e9782f0673d8454a22b1ae776f6d64710e7c8222485e2dc8",
+    ".research/implementation/cursor-rotation/capture-e684915/out/native-tests/artifact.json": "1621067ab094e673e6a8413d8d09b92f97d06101ec63773cc5ec11576cbbda67",
+    ".research/implementation/cursor-rotation/capture-e684915/out/native-tests/complete.json": "b02300c29954644824b596f6e2c6aa8e2d41bb17481bce7b86365e4acb9ae30b",
+    ".research/implementation/cursor-rotation/capture-e684915/out/native-tests/practical/result.json": "ca8266fdd42c276978489eee23eb5e44964c12476a1ea6ef37004a0295ae1928",
+    ".research/implementation/cursor-rotation/capture-e684915/out/cases/result.json": "fdc63b518f1de8164b1dad4129ef0e48714545df8a2593f94fb02a0a1e6052bb",
+    ".research/implementation/cursor-rotation/review.py": "cf77a96d6f2b6da938b114eba53a11ca2922fda4eaa1011268cc326223f281d5",
+    ".research/implementation/cursor-rotation/review.json": "8860e9de475cfe2b28ac33c1eb24ec4240b1ef166119bd8a369bfe3e4bc4c1a0",
+    ".research/implementation/cursor-rotation/live-final.py": "96a55c1bda706f35487b755a635b4163c7f1dca3ce320e3195e9d7d930fb68cb",
+    ".research/implementation/cursor-rotation/live-final.json": "6e3a0e98a5e54b97855251229930a62a2bf75ad1907e79d3da4efd5c98cee8a7"
+  }
+}

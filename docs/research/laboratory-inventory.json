@@ -25144,8 +25144,8 @@
   "implementation_cursor_rotation_20260927": {
     "local_root": ".research/implementation/cursor-rotation",
     "source_base": "d5bc05da0b7d37f60c7d3bb45e66d66a92ad54f9",
-    "status": "23selected Mac tests/Clippy PASS after core+CLI RED;13case native recipe parsed/NOT_RUN.",
-    "remote_resources_created": false,
+    "status": "Native24Rust tests/Clippy and13actual CLI fault/retry cases PASS; stopped-retained. Root and independent read-only AI verified source/ELF/capture within recorded boundaries.",
+    "remote_resources_created": true,
     "contents": "Root-owned local sources/logs for idempotent protected key addition; public fixtures only.",
     "report": "docs/implementation/evidence/p06-cursor-key-addition-local-20260927.json",
     "preflight": {
@@ -25154,6 +25154,34 @@
       "free_bytes": 105878175744,
       "unchanged_containers": 772,
       "running_unrelated": 8
-    }
+    },
+    "source": "e68491570fec7f6df63f4a161dc6ba7a7d9bb491",
+    "tree": "ae55773a8511557ee62763b93ae05e54217cf5dd",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-rotation-e684915",
+    "owner": "89b64550b3049b02bc61122a16c3efe5",
+    "orchestrator": {
+      "pid": 2184798,
+      "start_ticks": "390803174"
+    },
+    "container": "5b9393f0c27fe8b74d1553b8330bd4edc552891fbbf1830fd64528ef929433bc",
+    "native_report": "docs/implementation/evidence/p06-cursor-key-addition-native-20260927.json",
+    "native_artifact_sha256": "2b65d3537ab7b3f147840b07358e20f0e27750c391d1683445672bfde347dadd",
+    "capture": {
+      "root": ".research/implementation/cursor-rotation/capture-e684915",
+      "tar_sha256": "56c347caa68e58a0466cb4cba2c9513e4911f2c08cdc4d9aa5df2af32f0f5c19",
+      "manifest_sha256": "cb0088b817ec2c3b6fa0e5801065c0cc9f5d9e985974368bd721414ca38ab94c",
+      "payloads": 104,
+      "git_files": 1311,
+      "excluded": "All out/cases/*/keys bytes, compiler caches and unrelated host data; retained on Tux."
+    },
+    "fresh_census": {
+      "at": "2026-09-27T16:19:16.885034+00:00",
+      "free_bytes": 102307127296,
+      "unchanged_container_projections": 773,
+      "key_directories": 13,
+      "orchestrator_absent_or_zombie": true,
+      "sha256": "6e3a0e98a5e54b97855251229930a62a2bf75ad1907e79d3da4efd5c98cee8a7"
+    },
+    "retention": "All source/artifacts/logs/failure keyfiles and fresh compiler cache retained. No resource deletion, database, network or volume created;8unrelated running unchanged. Space deltas include concurrent host writes."
   }
 }

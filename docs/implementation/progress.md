@@ -20,31 +20,40 @@ with no edits/tests/SSH or resource ownership.
 
 ## Verified Git and next bounded action
 
-Main HEAD/private origin d5bc05da0b7d37f60c7d3bb45e66d66a92ad54f9 verified,
-clean after qualification push. Product candidate3ba3ceb is natively qualified;
-only documentation changed in d5. Root now owns the next P06-T03 Step1/3 local
-rotation prerequisite: explicit idempotent prepare-key with a caller-selected
-nonzero public key ID, preserving existing ring/keys. This adds no registration,
-activation or runtime authority. New local evidence root cursor-rotation is
-inventoried; no new Tux run. Three stub core tests fail as expected; separate
-actual CLI RED fails at absent subcommand. Original sources/logs retained.
-Implementation now passes23selected tests (10keyring/4CLI/2registration/7codec)
-and selected Clippy. prepare_key appends with a separate fallibly allocated
-Zeroizing buffer, retains32KiB and reuses existing synchronized publication.
-Independent read-only AI reviewed this product delta and all13native cases;
-no blocking counterexample, test execution or SSH by AI;
-no native candidate or qualification yet. The existing keyring lab/native scripts
-have an explicit --rotation selector, taking only copied stopped3ba build caches.
-The new recipe is parsed/NOT_RUN, with EIO/ENOSPC,three held-fsync kills,actual
-blocked stdout,lock/concurrent/max16/missing/partial/exact-byte retry oracles.
-Whole serve/management/Control/keyring/CLI consumers
-and linked cursor/list contracts were read before changes. Read-only AI reviewed
-upcoming readiness/lifecycle constraints below, without tests/SSH/edits.
+Main HEAD e68491570fec7f6df63f4a161dc6ba7a7d9bb491, tree
+ae55773a8511557ee62763b93ae05e54217cf5dd, is the unpublished prepare-key candidate.
+Private origin remains d5bc05da0b7d37f60c7d3bb45e66d66a92ad54f9. Exact clean Git
+inputs transferred by bundle from3ba; root now owns only qualification
+documentation after the terminal native run. Product/local evidence and the13case
+native recipe were independently reviewed; no blocking finding, AI tests or SSH.
+Local23selected tests and Clippy PASS after discriminating core/CLI RED.
+The command adds local bytes idempotently; no Control enrollment/activation.
 
-Fresh read-only preflight2026-09-27T16:14:49Z verifies all772container projections
-unchanged, eight unrelated running and no running BigBrotr container. Free
-105878175744bytes; ports/processes/mounts/networks/volumes/directories retained
-under cursor-rotation/preflight-resume.json. No deletion or resource change.
+Current Tux root cursor-rotation-e684915, owner89b64550b3049b02bc61122a16c3efe5,
+is stopped-retained, qualification PASS. Orchestrator2184798/start390803174 is
+absent or terminal zombie at fresh census. Container
+5b9393f0c27fe8b74d1553b8330bd4edc552891fbbf1830fd64528ef929433bc PID0/noOOM/exit0.
+Fresh native build34.866s,24Rust tests and selected Clippy PASS; all13actual CLI
+cases PASS. Ordered synchronization/exact old-key preservation, missing/partial/
+cap16/forced flock,8preparers(1success/7Busy),3fsyncEIO+writeENOSPC,3held-fsync
+kills and real65536byte stdoutpipe exit1 in0.211565284s with exact same-key retry.
+See [native addition report](evidence/p06-cursor-key-addition-native-20260927.json).
+ELF2b65d3537ab7b3f147840b07358e20f0e27750c391d1683445672bfde347dadd;
+source manifest41ab416a2326704e99c64550537c3b656d4fd767bb05be1a0e87806ce4cee844.
+Cargo.lock unchanged4f9cbb84. Copied stopped3ba cache/read-only strace509ea.
+
+Root verifies104safe payloads,1311Git files,24tests/13cases/28recordedCLIlogs;
+tar56c347caa68e58a0466cb4cba2c9513e4911f2c08cdc4d9aa5df2af32f0f5c19.
+Capture excludes all private key bytes;13keydirectories including failure staging
+remain on Tux. Independent read-only AI confirms tar,104payloads,1311Git files,
+ELF,9report hashes,24tests/13cases/28CLIlogs/8traces and772prior/773later projections.
+No discrepancy,AI tests or SSH. New secret-byte equality and killed-child absence
+are runner assertions; final metadata and pending syscall traces corroborate them.
+Fresh2026-09-27T16:19:16Z census verifies all773container projections unchanged,
+clean source/ELF and all13keydirectory file hashes/inodes/modes against results.
+Eight unrelated running unchanged. Free102307127296bytes (~95.3GiB); native
+preflight105841065984→terminal102308683776bytes includes concurrent writes.
+No deletion/database/network/volume; retain all prior protected resources.
 
 Latest Tux root cursor-registration-3ba3ceb is stopped-retained, owner
 eb663e23ef210c56bebc0df9c974f84a. Orchestrator2149748/start390551357 is absent or
@@ -89,12 +98,14 @@ and outcomes unchanged. Independent offline AI verifies all16inputs/63artifacts,
 
 SQL0601 SHA72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026
 has now been applied and is immutable; subsequent corrections need additive DDL.
-Qualification commit d5 records3ba; current prepare-key changes are separate and
-not yet native-qualified. Final artifact/fmt/diff checks pass179Markdown/323JSON; handoff confirms123tasks/
-756steps and the same3historical cycle candidates.
-Next bounded action: commit the reviewed unpublished prepare-key candidate, then
-run the exact-Git --rotation lab using current3ba cache. No SQL601 edits. Continue
-through Control key enrollment/readiness/lifecycle and actor-owned listing. Existing task/Step1/M1/product remain open.
+Qualification commit d5 records3ba; prepare-key e684915 is now natively qualified.
+Final artifact/handoff checks pass179Markdown/324JSON,123tasks/756steps and the
+same3historical cycle candidates; full qualification diff inspected.
+Next bounded action after qualification commit/private push: implement explicit
+additional key enrollment with immutable ID/material/audit binding, preserving
+applied0601 and its initial whole-file retry contract. Then continue actual
+Control readiness/lifecycle and actor-owned listing. No SQL601 edits.
+Existing task/Step1/M1/product remain open.
 
 Static AI lifecycle review flags: current require_control_owner checks backend/
 incarnation/state but not lease expiry; readiness needs current time after waits.

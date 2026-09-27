@@ -91,7 +91,7 @@ The [native registration qualification](../implementation/evidence/p06-cursor-re
 records actual PostgreSQL atomicity, concurrent retries, COMMIT ambiguity,
 blocked output and restart. Activation and rotation remain required work.
 
-Local rotation preparation is under qualification through `bigbrotr access
+Local rotation preparation is available through `bigbrotr access
 cursor-keyring prepare-key --file instance.toml --key-id ID`, with a stable nonzero
 32-character lowercase hexadecimal ID. Prepare once in one provisioning location
 and distribute those exact protected bytes; repeating the same ID on different
@@ -100,3 +100,7 @@ material, including at the16key cap. Missing/partial files refuse. This command
 neither enrolls the new key in Control nor activates it; initial registration's
 original fingerprint remains immutable. The runtime lifecycle consumer is still
 required before using these additional keys for continuation.
+
+The [native local addition report](../implementation/evidence/p06-cursor-key-addition-native-20260927.json)
+records identical retry and partial-state refusal across syscall errors, process
+interruption and blocked output. It does not qualify distribution or activation.

@@ -238,8 +238,10 @@ lifecycle/activation/rotation and all remaining Step1 acceptance stay open.
 The next local addition command, `prepare-key --key-id`, now passes23selected
 Mac keyring/registration/codec/CLI tests and Clippy. A caller-stable public ID
 makes a lost-response retry preserve the same material; existing keys and ring
-identity remain unchanged. Its13case native fault/retry recipe is authored but
-NOT_RUN; Control enrollment/readiness/activation/retirement are not implemented.
+identity remain unchanged. The [native addition report](evidence/p06-cursor-key-addition-native-20260927.json)
+qualifies24Rust tests and13actual CLI cases at e684915, including EIO/ENOSPC,
+three SIGKILL windows, forced locking and a full output pipe. Control enrollment/
+readiness/activation/retirement remain required work.
 
 
 **Proposed files:** `apps/bigbrotr/src/read/{cursor,keyring,pins}.rs`;
