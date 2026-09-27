@@ -25370,5 +25370,47 @@
       "free_after": 101111894016,
       "preserved": "All9databases/private keys, source/manifests/native artifacts, compiler cache and original outputs retained. No container/volume/data deletion; prior780container projections unchanged."
     }
+  },
+  "implementation_job_admission_20260927": {
+    "local_root": ".research/implementation/job-admission",
+    "source": "e82ae830ce15530693ecdbadcfff2de463d45da3",
+    "tree": "1864e53fed474a0f3c571d59376fb18337b16f80",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/job-admission-e82ae83",
+    "owner": "bd2a876f223a3766bfbac2e9bf11724b",
+    "owner_label": "org.bigbrotr.job-admission-build",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "native-build",
+        "id": "a04dfb801c188ce75bcd8e63d7e2860cfa9605c219115e95019b78e0b1b5afad"
+      }
+    ],
+    "orchestrator": {
+      "pid": 2305160,
+      "start_ticks": "391560887",
+      "source": "e82ae830ce15530693ecdbadcfff2de463d45da3",
+      "tree": "1864e53fed474a0f3c571d59376fb18337b16f80"
+    },
+    "status": "INCOMPLETE after67PASS events: fixture private listener grants omit required DELETE; no runtime/restart result.",
+    "scope": "Transactional job admission mapping; synthetic SQL jobs and actual optional Control permission gate; not complete export/list qualification",
+    "preflight": ".research/implementation/job-admission/preflight-tux.json",
+    "cache_seed": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-runtime-6474cd3",
+    "preserve": "All source, caches, native outputs, logs, receipts and PostgreSQL state; stop only owned resources after completion",
+    "report": "docs/implementation/evidence/p08-job-admission-native-incomplete-20260927.json",
+    "binary_sha256": "c8cdbb138b11b61f666b2685abfbe3d33d20c7b34fc45f02d331fc8a393c38e7",
+    "postgres_resources": {
+      "bigbrotr-implementation-pg-20260917-admission_oickoid-client": "cb34065eccbef3681b6f1bc2898c3ed1c8a40fda139d1b70dc05f08e4382521e",
+      "bigbrotr-implementation-pg-20260917-admission_oickoid": "dddab6c67ca381f92c37fce13d43bc196467be754296b05a5b96ea188b300b20"
+    },
+    "retired_empty_network": "19f9a39e1fc8384278f769176fd0505b4aff41cadebb562e186553e7c88fdfee",
+    "capture": {
+      "path": ".research/implementation/job-admission/capture-e82ae83",
+      "files": 41,
+      "tar_sha256": "ce0c95bb40e4d63a9cfca120157180c758674fbf2ee1ddc629f0b7cd75c78c26",
+      "manifest_sha256": "fa570ea589ca08d6cf859085941bbd0b9298ed383cf2e06e33dcfae22a3d40d6",
+      "excluded": "Secrets, database state, compiler cache retained on Tux."
+    },
+    "live_at": "2026-09-27T18:25:47.519621+00:00",
+    "free_bytes": 97272025088
   }
 }

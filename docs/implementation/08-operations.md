@@ -380,9 +380,11 @@ necessary even for a decryptable token. This list creates no scientific input pi
 The next bounded Step3 prerequisite implements that order in additive0815,
 using the [immutable job admission mapping](../specification/storage-catalog.md#postgresql-operational-relations).
 Actual job INSERT consumes it; no empty list API or extra counter owner is added.
-The compatibility test first fails with UnknownTarget(815). Local schema/probe
-changes are under implementation; native upgrade/acceptance/rollback/concurrency
-are NOT_RUN. Practical acceptance must preserve complete old job/receipt rows,
+The compatibility test first fails with UnknownTarget(815), then25schema tests
+and Clippy pass. The [first native attempt](evidence/p08-job-admission-native-incomplete-20260927.json)
+passes67SQL/setup observations but stops at missing fixture session/proof DELETE
+grants before the optional815HTTP probe; runtime/restart remain NOT_RUN.
+Practical acceptance must preserve complete old job/receipt rows,
 exercise simultaneous and multirow inserts, both cut/admission lock orders,
 commit/rollback and connection loss, and exclude backdated/equal-time new jobs
 from a fixed literal expected list. Check missing SELECT and INSERT independently,

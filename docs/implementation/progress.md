@@ -20,13 +20,12 @@ phase, M1 or selected-product completion. Root is sole writer/integrator;
 catalog_guard_review is an independent read-only AI reviewer, with no edits,
 product tests, SSH or resource ownership.
 
-Main HEAD and private origin/main are675d74785696cf5d2fc5f4941d9103e756f2ee54,
-verified after the fast-forward push. That evidence/documentation commit follows
-qualified product6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7,
-treea06365c2eae1fc4b5d80d14e5d4fc3606ed382eb. Root owns the current uncommitted
-0815migration, catalog/manifest/schema test, export privilege probe, owning P08/storage
-contract updates and shared native qualification fixture. No merge/rebase or
-another contributor's edits. No815candidate commit or remote execution yet.
+Main HEAD is unpublished candidatee82ae830ce15530693ecdbadcfff2de463d45da3,
+tree1864e53fed474a0f3c571d59376fb18337b16f80. Private origin/main is675d74785696cf5d2fc5f4941d9103e756f2ee54.
+That evidence/documentation commit follows qualified product6474cd3d5d4477cd6ab2ee4aa2ced2dce88fbfa7,
+treea06365c2eae1fc4b5d80d14e5d4fc3606ed382eb. Clean candidatee82was transferred
+by Git bundle, no Tux source edits. Root owns current inventory/checkpoint updates.
+No merge/rebase or another contributor's edits; no815private push yet.
 
 ## Current runtime qualification
 
@@ -189,7 +188,7 @@ commits. Deterministic backfill preserves existing jobs/receipts/xmin and does n
 claim original commit order. Existing export startup probes optional mapping
 SELECT and INSERT separately; prior schemas remain valid. Applied SQL is unchanged.
 Root read all0813and the actual transport/consumer boundaries. Independent AI static
-SQL review found no blocker; real concurrency/index behavior remains NOT_RUN.
+SQL review found no blocker; first native concurrency/index observations are below.
 
 Local schema RED failed as expected UnknownTarget(815), exit101; GREEN25tests and
 Clippy pass, fmt check passes. Artifacts under.research/implementation/job-admission/.
@@ -199,18 +198,38 @@ immutable mapping, multirow/immediate checks, two writers and both cut lock orde
 backend death, real serve optional permissions, index observation and PG restart.
 The synthetic job metadata does not claim signed export execution or full list delivery.
 Shared qualification.py retains prior cursor profile entrypoint; new815profile seeds
-from the retained6474cache. Fixture AST and actual offline configuration validation pass; review/real SQL execution is pending.
+from the retained6474cache. Fixture AST and actual offline configuration validation pass; first native execution is below.
 Root is sole writer. Independent read-only AI reviewed complete fixture/resource
 boundaries: root corrected the equal-time negative to latejob9below(200,10), and
 separated failed stop from stream/exit/overflow capture. No additional static blocker.
-No AI execution or resource ownership; all native outcomes remain unknown.
+No AI execution or resource ownership; AI now reviews the original incomplete capture.
 
 Fresh18:19:48UTC preflight observes101110116352bytes free,784containers/eight
 unrelated running, no active BigBrotr experiment; protected paths exist.
-Next: finish fixture review/local checks, commit a clean candidate for exact-Git transfer, run native815qualification,
-preserve every outcome and terminal resource state, then inspect evidence/diff before
-private publication. No paginated endpoint before cursor lifecycle/activation/revocation.
-Never modify Tux source or rebuild old experiments for cleanup.
+Candidatee82native run is stopped-retained/INCOMPLETE. Its build/25Rust tests/Clippy
+pass and67practical events across11databases pass before the old-schema private
+listener refuses its missing DELETE grants (exit3). No optional815HTTP or restart
+outcome was executed. Original result/capture remain in the
+[incomplete report](evidence/p08-job-admission-native-incomplete-20260927.json).
+Root corrects only fixture DELETE on browser_sessions/reauthentication_proofs;
+current product/SQL bytes are unchanged. Applied0815 is now immutable:
+3a562bdf4612c1fee7f5b0b53603cd0579b12316adf1319e730336548ec22e9d.
+
+Run/home/tux/bigbrotr-implementation-20260917/runs/job-admission-e82ae83,
+ownerbd2a876f223a3766bfbac2e9bf11724b, labelorg.bigbrotr.job-admission-build.
+Orchestrator2305160/start391560887 absent or zombie. Builda04dfb80exit0,
+clientcb34065eexit143 andPGdddab6c6exit0 allPID0/noOOM. Empty network19f9a39e
+retired, all11databases/source/native/cache/failure evidence retained. Fresh18:25:47UTC
+census matches787container projections/eight unrelated running, free97272025088bytes.
+Capture41payloads,tarce0c95bb40e4d63a9cfca120157180c758674fbf2ee1ddc629f0b7cd75c78c26.
+Root verifies41payloads/1328Git files and the exact ELF, original row/xmin
+preservation, literal page negatives, seven lock barriers and the startup refusal.
+Fresh18:27:59UTC preflight observes97272020992bytes free and787containers/eight
+unrelated running; no active BigBrotr. Next: commit corrected fixture and original
+incomplete report, then run a new clean exact-Git candidate.
+No product change or claim of passing runtime/restart. Preserve all current caches
+until the retry settles; never modify Tux sources. Complete export acceptance815
+remains required after this SQL foundation qualification.
 
 The current runtime implements only Control: avoid an unused distributed worker
 registry. Readiness must bind actual loaded dataset/ring/ID/material and full

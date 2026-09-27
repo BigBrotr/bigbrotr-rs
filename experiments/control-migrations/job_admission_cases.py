@@ -114,6 +114,10 @@ def main(root):
             text += '\n[administration.listen]\nhost = "127.0.0.1"\nport = 14281\n'
         local.write_text(text)
         migrate(db, path, target)
+        if management:
+            # The real listener expires session/proof rows. Its unrelated
+            # startup prerequisite must hold before testing the optional815gate.
+            lab.sql(state, db, 'GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs TO bigbrotr_control;')
         for args in [('config', 'initialize'), ('config', 'activate-initial', '--request-id', '71'*16, '--expected-revision', '1')]:
             result = lab.cli(state, *args, '--file', path)
             record('-'.join(args[:2])+'-'+name, result.returncode == 0 and not result.stderr,

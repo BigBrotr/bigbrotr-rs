@@ -1,0 +1,114 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-27",
+  "status": "INCOMPLETE",
+  "tasks": [
+    "P08-T03 Step3"
+  ],
+  "source": {
+    "revision": "e82ae830ce15530693ecdbadcfff2de463d45da3",
+    "tree": "1864e53fed474a0f3c571d59376fb18337b16f80",
+    "private_candidate": true,
+    "clean_git_transfer": true
+  },
+  "scope": "Transactional admission SQL foundation; synthetic backup metadata, no complete job-list or real export acceptance claim.",
+  "environment": {
+    "host": "Tux",
+    "architecture": "Linux amd64",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "rust": "1.98.1",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d"
+  },
+  "artifacts": {
+    "binary_sha256": "c8cdbb138b11b61f666b2685abfbe3d33d20c7b34fc45f02d331fc8a393c38e7",
+    "source_manifest_sha256": "99b1c26ff19d02ce4b598defd997763b6f025dbd2a1fa346710a5b9f568d7a4b",
+    "lockfile_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+    "migration_0815_sha256": "3a562bdf4612c1fee7f5b0b53603cd0579b12316adf1319e730336548ec22e9d"
+  },
+  "native_build": {
+    "status": "PASS",
+    "tests": 25,
+    "clippy": "PASS",
+    "raw": "out/native-tests/result.json"
+  },
+  "practical": {
+    "status": "INCOMPLETE",
+    "passed_events": 67,
+    "databases": 11,
+    "observed": [
+      "Actual CLI migrations/initialization/activation and deterministic old-row backfill without rewriting original rows/xmin/receipts.",
+      "Equal/backdated late jobs are excluded from cut3 while a time-only negative leaks IDs9,20,22.",
+      "Identical retry, explicit rollback, missing SELECT/INSERT, three unsupported isolation levels and raw mutation/replacement/truncation refusals.",
+      "Two-row immediate/deferred insertion; two real writers with COMMIT/ROLLBACK/backend death; both writer/cut lock orders with real pg_blocking_pids/incarnation barriers.",
+      "1000synthetic rows: actual backward index-only scan, one returned row, three shared hits, one heap fetch,188416total relation bytes. Small warm state, not capacity/aged-load evidence."
+    ],
+    "failure": {
+      "case": "serve-startup-old",
+      "exit": 3,
+      "stderr": "error: private session prerequisites refused: Prerequisite",
+      "cause": "Fixture grants omit DELETE on browser_sessions and reauthentication_proofs, required by the real private listener before export815probe. Source inspection identifies the existing prerequisite; no product correction is inferred.",
+      "raw": [
+        "postgres/runtime-old.stderr",
+        "postgres/runtime-old.terminal.json",
+        "cases.stderr"
+      ]
+    },
+    "not_run": [
+      "Actual runtime401/503optional815permission outcomes",
+      "PostgreSQL restart and next ordinal after restart",
+      "Installed signed export acceptance after815",
+      "Complete paginated list/cursor lifecycle/browser/arm64/release"
+    ]
+  },
+  "capture": {
+    "path": ".research/implementation/job-admission/capture-e82ae83",
+    "files": 41,
+    "tar_sha256": "ce0c95bb40e4d63a9cfca120157180c758674fbf2ee1ddc629f0b7cd75c78c26",
+    "manifest_sha256": "fa570ea589ca08d6cf859085941bbd0b9298ed383cf2e06e33dcfae22a3d40d6",
+    "excluded": "Secrets, database state, compiler cache retained on Tux."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-admission-e82ae83",
+    "owner": "bd2a876f223a3766bfbac2e9bf11724b",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "id": "a04dfb801c188ce75bcd8e63d7e2860cfa9605c219115e95019b78e0b1b5afad",
+        "exit": 0,
+        "pid": 0,
+        "oom": false
+      },
+      {
+        "id": "cb34065eccbef3681b6f1bc2898c3ed1c8a40fda139d1b70dc05f08e4382521e",
+        "exit": 143,
+        "pid": 0,
+        "oom": false
+      },
+      {
+        "id": "dddab6c67ca381f92c37fce13d43bc196467be754296b05a5b96ea188b300b20",
+        "exit": 0,
+        "pid": 0,
+        "oom": false
+      }
+    ],
+    "removed_empty_network": "19f9a39e1fc8384278f769176fd0505b4aff41cadebb562e186553e7c88fdfee",
+    "original_container_projections_preserved": 784,
+    "final_and_live_container_projections": 787,
+    "unrelated_running": 8,
+    "live_at": "2026-09-27T18:25:47.519621+00:00",
+    "free_before": 101071220736,
+    "free_after": 97272025088,
+    "space_note": "Includes copied compiler cache and concurrent unrelated writes; no cache/container/volume/database deletion.",
+    "preserved": "All11databases, source/build/artifacts/logs/failure state; only owned empty network retired."
+  },
+  "review": {
+    "owner": "Root inspected full changed product/fixture boundaries and captured outcomes; independent AI static review preceded execution and corrected equal-time oracle and failure-output capture. No AI engine execution.",
+    "boundary": "No success inferred for unexecuted runtime/restart cases. Native primary report remains INCOMPLETE."
+  },
+  "next": "Correct only the fixture private-listener DELETE grants and run a new exact-source isolated qualification. Applied815bytes remain immutable."
+}
