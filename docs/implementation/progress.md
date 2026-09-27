@@ -12,15 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-HEAD is candidate 41327e1438c103ad1e1c3fc8fbee08a71b3f64f8, one ahead of
-verified origin/main afa518a2a1968901ee0861131db1c93a8b76da10. Current root-owned
-diff is documentation/evidence/inventory closing its native qualification.
-45b7e48 owns the client/panel; 3bdea1f fixes laboratory capacity; afa518a records
-six-pair evidence. 41327e1 changes only the COMMIT fault fixture and documentation;
-all product Rust remains identical to f677. Commit/push the reviewed evidence and
-verify the actual remote before starting the next candidate. No merge/rebase or
-contributor changes. Read-only AI completed its scoped fixture review; root remains
-the sole writer and integrator.
+Published HEAD and verified origin/main are 0095eff39ac81ee68aad07a58fffa9ea36fb4493.
+Root owns the next dirty fixture-only slice: job_pages_held client/cases and
+lab/runtime dispatch, plus this checkpoint. No product, migration or release
+changes. 41327e1's two COMMIT loss schedules and recovery are qualified and pushed.
+Read-only AI completed the held-fixture review; root is the sole writer.
 
 Active IDs: P08-T03 Step 3 / P08-T04 Step 3, thin P09-T09 Step 2 and only the
 operational P06-T03 Steps 1/3 cursor prerequisites. No task, phase, M1 or product
@@ -162,15 +158,31 @@ block with INCOMPLETE/FAIL/PASS receipts and independently reviewed captured res
 The backend-only profile declares 12 unused frontend changes and reuses exact f677
 ELFs; no fresh Rust/frontend qualification. No product defect was observed.
 
-Next: qualify held COMMIT/reply and cancellation/custody using this existing proxy
-and installed fixture. Read existing export_job_custody_client.py and the actual
-management dispatch: its SQL is bounded by authority even after HTTP disconnect;
-PendingAction starts before SQL, so completion cannot extend delivery validity.
-Retain independent server state and distinguish an intentionally proxy-held remote
-backend from the actual driver's joined local socket. Preserve lock ordering,
-no-token-on-unknown, fencing and bounded cleanup. Do not infer continuous custody
-from the terminal observations above. Absolute expiry/authority/delivery and load
-remain separate acceptance after these held boundaries.
+Next held COMMIT/reply qualification is being implemented: four combinations
+of held frontend COMMIT/backend reply and authority deadline/SIGTERM. The new
+job_pages_held client samples the actual Control socket inode, pidfd/process
+identity and destination flock through driver drain, bounded to eight seconds.
+The host independently compares durable retention, ten ledgers, session idle
+state, exact owner/backend identity and cleanup. A proxy-held frontend COMMIT
+can keep its server endpoint alive after local driver termination; explicitly
+stop that proxy and observe the backend gone before starting another owner.
+The last failed owner remains active-but-absent intentionally in retained SQL.
+
+Read complete serve.rs, its JobList dispatcher/SQL timeout, driver join, 0816 and
+reused socket/custody/proxy helpers. Native tests are NOT_RUN. Three pre-run AI
+findings corrected: uniquely indexed events for the rescanning event() helper,
+atomic result replacement, and post-timeout samples bounded by the installed
+config's actual SQL upper limit. The latter excludes pre-timeout SQL wait from
+the driver-drain interval. Claims concern directory exclusion, not key memory.
+Root reviewed the complete fixture/diff and confirmed config-show microseconds
+and the actual dispatch timeout formula. Syntax/artifact/diff checks pass. The
+actual runtime caller rejects nested INCOMPLETE/FAIL receipts. At 23:02:15 UTC,
+846 stable container projections/eight unrelated running matched, sources and
+artifacts matched, no owned process/network remained and 73,890,435,072 bytes were
+free. Commit a candidate, transfer exact Git and run
+--runtime-job-pages-held with f677 artifacts. Verify current disk first; previous
+run ended with ~68.8 GiB free. Keep all original evidence and protected resources.
+Absolute expiry/authority/delivery and load remain separate acceptance afterward.
 
 Before the COMMIT run, retired only export-runtime-5de46a0/out/build/{target,cargo-home}
 after source/capture/native-artifact, process FD/maps and mount checks. Inventory
