@@ -72,6 +72,15 @@ def main(root, profile=None):
             return json.loads(sql(db,"SELECT jsonb_build_object('states',(SELECT jsonb_agg(state ORDER BY job_id) FROM control.jobs),'units',(SELECT count(*) FROM control.export_execution_units),'artifacts',(SELECT count(*) FROM control.artifacts),'files',(SELECT count(*) FROM control.artifact_files),'readers_active',(SELECT count(*) FROM control.snapshot_leases l JOIN control.archive_snapshot_pins p USING(lease_id) WHERE p.purpose='reader' AND l.state='active'))"))
         result['before'] = observe(); save()
         assert result['before']['states'] == ['accepted'] and result['before']['artifacts'] == 0
+        # Observe through the real container and installed config decoder, after
+        # setup has consumed disk. Keep the default reserve; do not tune it down
+        # to turn a resource-deferred job into a passing execution fixture.
+        growth = 2*policy['settings']['export.artifact.max_bytes'] + 65*1024**2
+        capacity = result['execution_capacity'] = json.loads(command(*client, 'capacity', str(growth)))
+        save()
+        reserve = int(capacity['reserve']['value'])
+        assert reserve == 64*1024**3 and capacity['growth_bytes'] == growth
+        assert all(v['free_bytes'] >= reserve+growth for v in capacity['filesystems']), 'Insufficient actual export completion headroom'
         with (root/'runtime-client.stdout').open('xb') as out,(root/'runtime-client.stderr').open('xb') as err:
             process = subprocess.Popen(client+['run'],stdout=out,stderr=err)
             try:

@@ -143,14 +143,22 @@ The packager refuses symlinks, unknown file types and limits before publishing
 the manifest. The [Control runtime](../user/control-runtime.md) verifies and serves
 it from `administration.assets.directory`; no Node production server is needed.
 
-For the current browser-only research regression, the export laboratory may reuse
-qualified Rust artifacts while changing only `JobStatus.svelte` and `style.css`.
-It records both versions' hashes and requires exact equality of every other
-product/build input. The current frontend is independently rebuilt and checked
-from the current Git source. The reused ELF retains its original build revision;
-this laboratory exception is not a new Rust qualification or release promotion.
-[Four native browser regressions](../implementation/evidence/p09-skip-button-native-20260924.json)
-exercise the corrected label with this exact reuse boundary and fresh bundles.
+The export browser laboratory can reuse a qualified Rust parent/worker pair with
+an explicitly enumerated set of separate frontend inputs. The job-page consumer
+includes its OpenAPI/generator/client/model/component/tests; the earlier label
+regression included only `JobStatus.svelte` and `style.css`. `runtime-reuse.json`
+records both versions' hashes and requires equality of every other product/build
+input. Fresh current-Git frontend builds and native checks own the new bundle;
+the ELF retains its original source identity. This is no Rust qualification or
+release promotion. [Earlier label evidence](../implementation/evidence/p09-skip-button-native-20260924.json)
+retains its narrower scope.
+
+These executor laboratories retain the product's64GiB completion reserve. Their
+preflight adds setup headroom for copied native/frontend/compiler inputs, and the
+execution fixture records installed `config show` plus actual container filesystem
+capacity after setup. [An original insufficient-headroom run](../implementation/evidence/p09-job-pages-capacity-incomplete-20260928.json)
+stopped before browser qualification; its database/result remain unchanged.
+Retire verified obsolete caches rather than lowering the product reserve to pass.
 
 The OpenAPI3.1 [session subset](../../contracts/management/v1/openapi.yaml) owns
 wire types and runtime schemas. After an intentional contract edit, run

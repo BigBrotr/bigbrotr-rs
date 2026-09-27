@@ -96,10 +96,19 @@ preflight = dict(containers=prior, directories=sorted(p.name for p in (base / 'r
                  tcp_wmem=Path('/proc/sys/net/ipv4/tcp_wmem').read_text(), ports=cmd('ss', '-lntup'), processes=cmd('ps', '-eo', 'pid,ppid,stat,comm'),
                  volumes=cmd('docker', 'volume', 'ls'), networks=cmd('docker', 'network', 'ls'),
                  free_bytes=shutil.disk_usage(base).free, architecture=cmd('uname', '-m'))
-assert preflight['architecture'] == 'x86_64' and preflight['free_bytes'] > (12 if compile_current else 4)*1024**3
+required_free = (12 if compile_current else 4) * 1024**3
+if executor:
+    # The retained export uses the unchanged64GiB product completion reserve.
+    # Leave additional room for copied compiler/native/frontend inputs; checking
+    # only their size can admit a lab whose actual export must defer forever.
+    preflight['export_capacity'] = dict(completion_reserve_bytes=64*1024**3,
+        setup_headroom_bytes=(8 if compile_current else 2)*1024**3)
+    required_free = max(required_free, sum(preflight['export_capacity'].values()))
+preflight['required_free_bytes'] = required_free
+write(root / 'preflight.json', preflight)
+assert preflight['architecture'] == 'x86_64' and preflight['free_bytes'] > required_free
 # Copy the exact historical native seed producer, not compiler caches.
 # It establishes the original0813 state; only new SQL is under qualification.
-write(root / 'preflight.json', preflight)
 old = json.loads((cache_root / 'resources.json').read_text())
 assert old['owner'] == '3f840fe30a3ffef7f9944c72ea6e38f9'
 for entry in old['containers']:

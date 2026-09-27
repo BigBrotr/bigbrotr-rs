@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Installed headless runtime, with host-side independent SQL observation."""
 import json
+import os
 from pathlib import Path
 import sys
 import time
@@ -22,6 +23,16 @@ native_bytes="1536MiB"
 '''
     http.CONFIG.write_text(text)
     http.cli('config', 'validate')
+elif sys.argv[1] == 'capacity':
+    assert len(sys.argv) == 3 and sys.argv[2].isdecimal()
+    growth = int(sys.argv[2])
+    reserve = http.cli('config', 'show')['settings']['runtime.disk_completion_reserve_bytes']
+    filesystems = []
+    for path in [Path('/out/signed_normal/export-destination'), http.ROOT/'scratch']:
+        stats = os.statvfs(path)
+        filesystems.append(dict(path=str(path), block_bytes=stats.f_frsize,
+            available_blocks=stats.f_bavail, free_bytes=stats.f_bavail*stats.f_frsize))
+    print(json.dumps(dict(reserve=reserve, growth_bytes=growth, filesystems=filesystems)))
 else:
     assert sys.argv[1] == 'run'
     server = http.Server('executor')

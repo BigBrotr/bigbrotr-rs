@@ -1,0 +1,116 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "INCOMPLETE",
+  "task_ids": [
+    "P08-T03",
+    "P09-T09"
+  ],
+  "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+  "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+  "scope": "Original Firefox/root export-page consumer attempt stopped before browser setup. Preserve failed native preparation and original database; no browser qualification from this run.",
+  "capture": {
+    "root": ".research/implementation/job-pages/attempt-45b7e48-firefox-root/capture",
+    "files": 73,
+    "sha256": "7a9c4501e79e157f2c19aa98042e9d5cedf8208af48e73301cda1d79aaafa9c1",
+    "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+    "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+    "source_files": 1355,
+    "manifest_sha256": "9832ae0144274ce62105579c5f3c81398d007815c4a8b6ce731a8208da8ee3ff"
+  },
+  "environment": {
+    "target": "Linux amd64 native Tux",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runtime_source": "f6770e99b21e57a6094316caa9b428f175773844",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7"
+  },
+  "observed": {
+    "frontend": "Native frontend checks and root/control production bundles PASS.",
+    "seed": "Actual signed archive preparation, independent read and815upgrade passed. Current f677 Control remained live but job stayed accepted for10seconds, zero execution units/artifacts/files. Explicit stop exited0/released; zero remaining backends. Browser and0816page setup NOT_RUN.",
+    "before": {
+      "files": 0,
+      "units": 0,
+      "states": [
+        "accepted"
+      ],
+      "artifacts": 0,
+      "readers_active": 0
+    },
+    "after": {
+      "files": 0,
+      "units": 0,
+      "states": [
+        "accepted"
+      ],
+      "artifacts": 0,
+      "readers_active": 0
+    },
+    "runtime_exit": 0,
+    "terminal": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    },
+    "free_preflight_bytes": 69214044160,
+    "free_terminal_bytes": 68635127808
+  },
+  "diagnosis": {
+    "product_completion_reserve_bytes": 68719476736,
+    "required_export_growth_bytes": 72351744,
+    "configured_override": null,
+    "inference": "Retained config has no reserve override. Product registry default64GiB; check_filesystem_growth refuses when f_bavail*f_frsize minus growth is below reserve, before job reservation. Terminal capacity is below64GiB; read-only follow-up measured68,624,396,288free bytes on the actual destination. This explains accepted/zero-effects without an error. No per-attempt capacity snapshot existed, so do not claim an observed internal branch trace.",
+    "fixture_defect": "ELF-reuse preflight required only4GiB. Frontend/native setup consumed enough to cross the actual64GiB reserve. This run cannot qualify Firefox/root. Neither timeout nor product reserve was reduced.",
+    "correction": "Executor lab preflight requires64GiB plus bounded setup headroom; before execution save actual installed config-show reserve and container statvfs for destination and scratch. Original10s assertion/expected results unchanged."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45b7e48-firefox-root",
+    "owner": "c1877925a6a6cf5b9915e79d5ec3491f",
+    "containers": [
+      {
+        "name": "frontend",
+        "id": "5aa85609190d449ba53ba2381682549d69058ccdcdf411d7cf6d93ff8c0500a7"
+      },
+      {
+        "name": "postgres",
+        "id": "b5cd69257af92e61ffc6a907d59dc09da9482d37233f167682c3fd52664d3b1f"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "3d6a588a815db062817a02a552d7d16bc47a86fc62654c110853a42ab3b6abb7"
+      }
+    ],
+    "state": "stopped-retained",
+    "network_id": "89717ded6b48550ebcb7a44091fe0e000314e0a5b144aa65aa9169b884148699",
+    "network_state": "removed after owner/no-endpoint audit",
+    "orchestrator": {
+      "pid": 2623414,
+      "start_ticks": "392953016",
+      "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+      "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499"
+    },
+    "cleanup_errors": [],
+    "preexisting_preserved": true,
+    "preexisting_count": 833,
+    "unrelated_running": 8,
+    "note": "Owned containers stopped/noOOM; PostgreSQL wrapper137 is deadline cleanup, not graceful recovery evidence."
+  },
+  "maintenance": {
+    "removed": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-b93ba83/out/build/target",
+      "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-b93ba83/out/build/cargo-home"
+    ],
+    "allocated_bytes": 3497406464,
+    "free_before": 68624371712,
+    "free_after": 72120287232,
+    "retained_hashes": 38,
+    "containers_preserved": 836,
+    "unrelated_running": 8,
+    "preserved": "Original b93/f677 native artifacts, all source/evidence/manifests/databases/fault states and every other run;8fa/f677 usable compiler caches remain. Only obsolete b93 target/cargo-home retired after resolved-path, mount, privileged process/FD/maps and retained-hash audits. No container/volume/dataset deletion.",
+    "recipe": ".research/implementation/job-pages/retire-b93-cache.py",
+    "recipe_sha256": "c41adb47db6da6cc2bd72e413f28d1d2c8b27b1eb1d274f64760fbb101d255c0",
+    "original_result": ".research/implementation/job-pages/retire-b93.json",
+    "result_sha256": "77c83dfbc27d4664c1e0f78dce09e149dc8f1518ef8397fb86956ba73547cfa3"
+  },
+  "not_run": [
+    "Firefox/root actual client/browser steps and Chromium/control; four earlier pairs remain separately captured PASS.",
+    "No production capacity, full resource-exhaustion/recovery or release qualification."
+  ]
+}

@@ -14,11 +14,10 @@ execution while billing remains blocked. No public release, rename, Linux arm64,
 hosted CI or complete packaged-release qualification is claimed. An active goal
 covers the complete product; a bounded qualification does not complete it.
 
-Main HEAD is 6274b8f1919507b1745779875db27f4138f0df72, verified equal to private
-origin/main after pushing the qualified native page boundary. Root sole writer;
-no merge/rebase or contributor changes. Dirty next consumer owns OpenAPI/generated
-client/generator, JobList/JobStatus/model/CSS/tests, native consumer fixtures and
-associated docs. A report wording correction records seven job projection fields,
+Main HEAD is45b7e48c8732301c9487a451c4e34472a4b857bb, an unpublished consumer
+candidate one commit ahead of verified private origin/main6274b8f. Root sole
+writer; no merge/rebase or contributor changes. Candidate source was clean for
+exact Git transfer. Only checkpoint/inventory are now dirty to track its run. A report wording correction records seven job projection fields,
 not eight; original experiment outcomes are unchanged. Read-only AI consumer review
 found no concrete counterexample; it executed no tests/browser/SSH.
 
@@ -227,27 +226,59 @@ cc5e60eb3cd8694c392e3009bbe8eb074d4f34a060ab88402efb4411931882b6).
 Native candidate will rebuild the current bundle. Original Ajv ESM-helper and Svelte rune
 name errors were corrected; no new dependency or backend change.
 
-Actual installed Node and Chromium/root consumer qualification is being prepared
-as --runtime-job-pages-browser, using exact f677 Rust ELF/worker with explicitly
-inventoried separate frontend inputs. The preparation shares actual signed
-admission/0816 setup, then stops before unrelated original page-regression cases.
-Fresh production root/control bundles; real HTTP and independent ten-ledger/xmin
-oracle, ordinary read session timestamps, actual Control restart, other actor,
-blocked SQL page/logout and account revocation. These practical cases NOT_RUN yet.
-Root owns new job_pages_browser.mjs/job_pages_browser_cases.py; original fixtures
-and evidence retained. Check full diff/checks and current free space before clean
-candidate commit/exact-Git transfer. Fresh22:03:12UTC audit verifies all817stable
-container projections, no active BigBrotr work and71,776,739,328free bytes.
-AI fixture review found five oracle/diagnostic gaps, all corrected before execution:
-reuse the existing SvelteKit storage oracle; require the held continuation to
-fail rather than finish; bind its SQL waiter to current Control PID/start; isolate
-the lower date bound; save atomic per-stage results before bounded browser launch
-and pending teardown. Syntax/artifact/diff checks pass; these are not practical
-qualification. The two new fixture files and complete product diff are reviewed.
+Installed Node and Chromium/root at45b7e48 now pass seven practical stages and
+20independently reconstructed pages against the f677Rust ELF/worker. Root verified
+109capture payloads/1355Git files, ten complete ledger/xmin snapshots, ordinary
+session boundaries, actual Control restart, other actor, blocked SQL/logout with
+specific requestfailed, account revocation and exact storage oracle. The mobile
+375px component capture is visually inspected; no capacity/full accessibility claim.
+Container cleanup preserves817existing projections/eight unrelated running. Own
+PG wrapper exits137/noOOM; native/browser/frontend0. No graceful PG shutdown claim.
+Safe capture .research/implementation/job-pages/attempt-45b7e48/capture; review.json
+at its parent. Rust/source inputs explicitly separate from12new frontend inputs;
+root/control manifests547adbdaa33c0048cc7010cf5da2af023bca16dc9b2a6301a69d2a0ba35f44a8 /
+95792b60da1067268900329002537ee64a717a8d42b3c348d850c18436b84e91.
+
+Four45b7e48consumer pairs have captured/reviewed PASS: Chromium/root,
+WebKit/root-control and Firefox/control. Firefox/root stopped INCOMPLETE before
+browser setup: actual retained seed stayed accepted during10s, zero units/artifacts;
+Control exited0/released, zero backends. All73capture payloads/1355Git files verified.
+No browser cases ran there. Original DB/artifacts/capture/log remain under
+export-runtime-45b7e48-firefox-root, ownerc1877925a6a6cf5b9915e79d5ec3491f,
+PID2623414/start392953016 now terminal; all owned containers stopped/noOOM, PG137.
+The serial local wrapper stopped on that failure (session72167 ended1); no active
+Tux experiment remains. Chromium/control NOT_RUN. Inventory consumer_active has
+the terminal observation; preserve original failure, not a retry-in-place.
+
+Diagnosis: preflight69,214,044,160free bytes, terminal68,635,127,808bytes after
+fresh frontend/native setup, below unchanged runtime.disk_completion_reserve_bytes
+64GiB (68,719,476,736), even before69MiB export growth. Export destination fstatvfs
+check rejects growth below that reserve before job reservation, leaving accepted.
+The lab preflight only required4GiB for ELF reuse and missed actual execution
+reserve. Verify current fstatvfs/config and retire only audited obsolete compiler
+caches before another run; do not lower product reserve or extend test timeout.
+Fixture now checks reserve+setup growth at preflight and records installed config
+plus destination/scratch capacity before seed execution; native retry pending.
+Original outcome remains INCOMPLETE in the linked capacity report.
+
+AI fixture/evidence review has no product counterexample in completed Chromium/root
+scope; no tests/SSH executed. DOM and immediate post-restart session equality are
+runner assertions; ten-ledger immutability excludes audit/session/key retention.
+Four mobile component captures inspected. Firefox/control includes the previously
+observed Skip-to-session overlay in the capture; contemporaneous viewport/focus
+cause is unmeasured. Retain this accessibility/capture limit, no blind CSS fix.
 
 Remaining native page acceptance includes held/lost retention COMMIT on both sides,
 absolute token expiry/current grant-policy-session revocation, cancellation and
 socket delivery, changed TTL/skew, backdated/tied page workloads and mixed/aged
 measurements. Full browser engine/mount acceptance, CLI/jobs, M1 clean Compose and
-selected product stay open. Next bounded action: verify/commit the consumer, then
-run it on Tux without rebuilding unchanged Rust or repeating unrelated suites.
+selected product stay open. Next bounded action: commit the capacity-fixture correction and original evidence,
+then retry only missing Firefox/root and Chromium/control in new exact-Git labs. Held/lost retention COMMIT remains the
+following backend slice. Root owns the three capacity-fixture changes and associated docs/inventory; product inputs unchanged.
+
+Scoped maintenance completed: only b93 out/build/target and cargo-home removed,
+3,497,406,464allocated bytes.38retained hashes,836stable container projections and
+eight unrelated running workloads preserved. Free68,624,371,712→72,120,287,232bytes
+(~67.2GiB after concurrent writes). All original native artifacts/source/evidence,
+DB/archives/fault states and8fa/f677usable caches retained; no containers/volumes
+removed. Recipe/result hashes and exact paths in inventory/report.

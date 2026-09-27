@@ -25750,7 +25750,7 @@
     }
   },
   "implementation_job_pages_20260927": {
-    "state": "all five runs stopped-retained; bounded native page qualification PASS, remaining acceptance open",
+    "state": "original native page labs and five consumer runs stopped-retained; four consumer pairs qualified, one capacity setup incomplete; no active experiment",
     "local_root": ".research/implementation/job-pages",
     "base_source": "ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47",
     "scope": "P08-T03 Step3 / P09-T09 Step2 actor-owned export listing and required P06-T03 cursor retention; incomplete",
@@ -26168,6 +26168,451 @@
       "source_clean": true,
       "native_assets_preserved": true,
       "free_bytes": 71776878592
+    },
+    "consumer_runs": [
+      {
+        "resources": {
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "owner": "f218d0ec130cf59f690cdb132297cf2f",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45b7e48",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "ef23e4a77e83e688532d478a074efdd5d34c552d5a26d8630b97fe88bf619148"
+            },
+            {
+              "name": "postgres",
+              "id": "ded8d9ee43d18bee6fc4f19fd3b86364f5f982efa26b0308f81027850cd5f318"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "39984f4afec8774e9c9bc8ff142debe9e62a53189489544f10056a2048cc9875"
+            },
+            {
+              "name": "job-pages-browser",
+              "id": "24204d77dfc445a5a2bb625d42af24dc92fb9602d4b40f1c353d7f406f5d7881"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T22:04:05.930905+00:00",
+          "runtime_profile": "job-pages-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "job_pages_browser_pair": "chromium-root",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "6d45f9be588daf234d2eca2978b188966ca5a42c6245a52f0c4dfbc0bcba922d",
+          "postgres_id": "ded8d9ee43d18bee6fc4f19fd3b86364f5f982efa26b0308f81027850cd5f318",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "39984f4afec8774e9c9bc8ff142debe9e62a53189489544f10056a2048cc9875",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "review": {
+          "status": "PASS",
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "engine": "chromium",
+          "mount": "root",
+          "page_sets": 20,
+          "stages": 7,
+          "node_exchanges": 10,
+          "browser_exchanges": 25,
+          "ledger_sizes": {
+            "jobs": 6,
+            "job_admissions": 6,
+            "job_input_bounds": 6,
+            "export_jobs": 6,
+            "export_execution_units": 1,
+            "artifacts": 1,
+            "artifact_files": 1,
+            "snapshot_leases": 15,
+            "archive_snapshot_pins": 15,
+            "retention_claims": 15
+          },
+          "blocked_seconds": 1.8739740680903196,
+          "bundles": {
+            "root": {
+              "manifest_sha256": "547adbdaa33c0048cc7010cf5da2af023bca16dc9b2a6301a69d2a0ba35f44a8",
+              "files": 13,
+              "bytes": 205159
+            },
+            "control": {
+              "manifest_sha256": "95792b60da1067268900329002537ee64a717a8d42b3c348d850c18436b84e91",
+              "files": 13,
+              "bytes": 205193
+            }
+          },
+          "capture_manifest_sha256": "99bd8e70731bd166c2d0b5fe82444f65f07c8d894e8bdaddd30417cbdb55b5c6",
+          "container_exits": {
+            "frontend": 0,
+            "job-pages-browser": 0,
+            "rust-visibility": 0,
+            "postgres": 137
+          }
+        },
+        "capture": {
+          "files": 109,
+          "sha256": "98590164f5022c67037779a09eb3beebe3d3ad5a14cc25a45afa8d0fd37015bc",
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "source_files": 1355
+        }
+      },
+      {
+        "resources": {
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "owner": "1a4cbc0886da23b26e23d978621494d9",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45b7e48-webkit-control",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "df9b8e785d0086c922d2c575c88010958ece6caa649cb8e2f884c650ba15332b"
+            },
+            {
+              "name": "postgres",
+              "id": "ac42451e2edce9af518dcdee87b58da91d742917ed9178d52ef44297345dfa2d"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "4fed9f48311850a564e1c1b2c0173099629fb3a67c1aa73237f9bb4bceecf9bb"
+            },
+            {
+              "name": "job-pages-browser",
+              "id": "9aa4c39797c6aafb445431ab893b33fa16ed608f37b8993cd9383f71ae062e13"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T22:07:17.479441+00:00",
+          "runtime_profile": "job-pages-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "job_pages_browser_pair": "webkit-control",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "3c635e91ed7cd101496f0bbbd4ddedbf69775e9db67083de4be9b917b44912b9",
+          "postgres_id": "ac42451e2edce9af518dcdee87b58da91d742917ed9178d52ef44297345dfa2d",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "4fed9f48311850a564e1c1b2c0173099629fb3a67c1aa73237f9bb4bceecf9bb",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "review": {
+          "status": "PASS",
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "engine": "webkit",
+          "mount": "control",
+          "page_sets": 20,
+          "stages": 7,
+          "node_exchanges": 10,
+          "browser_exchanges": 25,
+          "ledger_sizes": {
+            "jobs": 6,
+            "job_admissions": 6,
+            "job_input_bounds": 6,
+            "export_jobs": 6,
+            "export_execution_units": 1,
+            "artifacts": 1,
+            "artifact_files": 1,
+            "snapshot_leases": 15,
+            "archive_snapshot_pins": 15,
+            "retention_claims": 15
+          },
+          "blocked_seconds": 1.9115453218109906,
+          "bundles": {
+            "root": {
+              "manifest_sha256": "547adbdaa33c0048cc7010cf5da2af023bca16dc9b2a6301a69d2a0ba35f44a8",
+              "files": 13,
+              "bytes": 205159
+            },
+            "control": {
+              "manifest_sha256": "95792b60da1067268900329002537ee64a717a8d42b3c348d850c18436b84e91",
+              "files": 13,
+              "bytes": 205193
+            }
+          },
+          "capture_manifest_sha256": "020e9f217128cf2f16d1db6fe054b91c3eaa090bf577d08430df79f420a4e7f9",
+          "container_exits": {
+            "frontend": 0,
+            "job-pages-browser": 0,
+            "rust-visibility": 0,
+            "postgres": 137
+          }
+        },
+        "capture": {
+          "files": 109,
+          "sha256": "861e0da7fac65b020dec6ddbc72739cd111549d649eef6dfe1c236df0d902f1d",
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "source_files": 1355
+        }
+      },
+      {
+        "resources": {
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "owner": "a544ac63ed6c86972e93bc192553da41",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45b7e48-webkit-root",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "fa1303575585a4632a3a116ae672bcd41eb96e7aca93e1bad031dbef8d5ff2ad"
+            },
+            {
+              "name": "postgres",
+              "id": "d01490363382fe2cf14803aea4bfa85f7bf8fb3ee5d0d0960c72e026b9e02137"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "906d5e1a00862aa79c911f443b34e742a09d66956bcf185f26f72ea9ab1e39da"
+            },
+            {
+              "name": "job-pages-browser",
+              "id": "04f7d5eb1363cec25b241b1f1e804c8086ebc1df20bc7e4fb26b5ac333d798af"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T22:09:54.770112+00:00",
+          "runtime_profile": "job-pages-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "job_pages_browser_pair": "webkit-root",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "1405b2e7d36acaac7a4911335de79191a4aea93cb10273bedbe3431bf303488a",
+          "postgres_id": "d01490363382fe2cf14803aea4bfa85f7bf8fb3ee5d0d0960c72e026b9e02137",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "906d5e1a00862aa79c911f443b34e742a09d66956bcf185f26f72ea9ab1e39da",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "review": {
+          "status": "PASS",
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "engine": "webkit",
+          "mount": "root",
+          "page_sets": 20,
+          "stages": 7,
+          "node_exchanges": 10,
+          "browser_exchanges": 25,
+          "ledger_sizes": {
+            "jobs": 6,
+            "job_admissions": 6,
+            "job_input_bounds": 6,
+            "export_jobs": 6,
+            "export_execution_units": 1,
+            "artifacts": 1,
+            "artifact_files": 1,
+            "snapshot_leases": 15,
+            "archive_snapshot_pins": 15,
+            "retention_claims": 15
+          },
+          "blocked_seconds": 1.5903162490576506,
+          "bundles": {
+            "root": {
+              "manifest_sha256": "547adbdaa33c0048cc7010cf5da2af023bca16dc9b2a6301a69d2a0ba35f44a8",
+              "files": 13,
+              "bytes": 205159
+            },
+            "control": {
+              "manifest_sha256": "95792b60da1067268900329002537ee64a717a8d42b3c348d850c18436b84e91",
+              "files": 13,
+              "bytes": 205193
+            }
+          },
+          "capture_manifest_sha256": "63a32d11dbea63bedb234dc5ee72bdb27ab14c54b5035b50ec3bf6613312a322",
+          "container_exits": {
+            "frontend": 0,
+            "job-pages-browser": 0,
+            "rust-visibility": 0,
+            "postgres": 137
+          }
+        },
+        "capture": {
+          "files": 109,
+          "sha256": "9ab9b5cbf9db0cb6ea947d61a168977985e80dac25951de3da5c14bcc142755d",
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "source_files": 1355
+        }
+      },
+      {
+        "resources": {
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "owner": "c2ea8eab36115482c8810a0189880090",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45b7e48-firefox-control",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "b6689f844c32acfd54a3e68c6766209d52d1e3fa3f17db2408f0747da4994949"
+            },
+            {
+              "name": "postgres",
+              "id": "1f48105d9f920e47990926f21f7f3111e7061e751965160e23af4f83a7531b33"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "7ea2b70b8f711fa7090e31bd9cb947c1c66cdb88ce4f072f0eb467c33c7df673"
+            },
+            {
+              "name": "job-pages-browser",
+              "id": "de1657b0c28d7aa8f27b3df5ab78275e8b161851130e1af072c1c7b24d94fbe4"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T22:12:20.486112+00:00",
+          "runtime_profile": "job-pages-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "job_pages_browser_pair": "firefox-control",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "bb93a46b0bb1e677ceee48b0d2010e71267af5bd22b31fbbbafbd9b4a727a49c",
+          "postgres_id": "1f48105d9f920e47990926f21f7f3111e7061e751965160e23af4f83a7531b33",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "7ea2b70b8f711fa7090e31bd9cb947c1c66cdb88ce4f072f0eb467c33c7df673",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "review": {
+          "status": "PASS",
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "engine": "firefox",
+          "mount": "control",
+          "page_sets": 20,
+          "stages": 7,
+          "node_exchanges": 10,
+          "browser_exchanges": 25,
+          "ledger_sizes": {
+            "jobs": 6,
+            "job_admissions": 6,
+            "job_input_bounds": 6,
+            "export_jobs": 6,
+            "export_execution_units": 1,
+            "artifacts": 1,
+            "artifact_files": 1,
+            "snapshot_leases": 15,
+            "archive_snapshot_pins": 15,
+            "retention_claims": 15
+          },
+          "blocked_seconds": 1.4196924669668078,
+          "bundles": {
+            "root": {
+              "manifest_sha256": "547adbdaa33c0048cc7010cf5da2af023bca16dc9b2a6301a69d2a0ba35f44a8",
+              "files": 13,
+              "bytes": 205159
+            },
+            "control": {
+              "manifest_sha256": "95792b60da1067268900329002537ee64a717a8d42b3c348d850c18436b84e91",
+              "files": 13,
+              "bytes": 205193
+            }
+          },
+          "capture_manifest_sha256": "14a501208bac4e48538b49ae070536f9ceb6a01dee88a104a9bffccee320f7a3",
+          "container_exits": {
+            "frontend": 0,
+            "job-pages-browser": 0,
+            "rust-visibility": 0,
+            "postgres": 137
+          }
+        },
+        "capture": {
+          "files": 109,
+          "sha256": "32b0579acd945753169ba1a986cfc5ba7479c4b94f58a19b1ec5bc8e553c60d5",
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "source_files": 1355
+        }
+      },
+      {
+        "resources": {
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "owner": "c1877925a6a6cf5b9915e79d5ec3491f",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-45b7e48-firefox-root",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "frontend",
+              "id": "5aa85609190d449ba53ba2381682549d69058ccdcdf411d7cf6d93ff8c0500a7"
+            },
+            {
+              "name": "postgres",
+              "id": "b5cd69257af92e61ffc6a907d59dc09da9482d37233f167682c3fd52664d3b1f"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "3d6a588a815db062817a02a552d7d16bc47a86fc62654c110853a42ab3b6abb7"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T22:14:36.643713+00:00",
+          "runtime_profile": "job-pages-browser",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "job_pages_browser_pair": "firefox-root",
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "runtime_artifact_origin": "f6770e99b21e57a6094316caa9b428f175773844",
+          "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+          "network_id": "89717ded6b48550ebcb7a44091fe0e000314e0a5b144aa65aa9169b884148699",
+          "postgres_id": "b5cd69257af92e61ffc6a907d59dc09da9482d37233f167682c3fd52664d3b1f",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "3d6a588a815db062817a02a552d7d16bc47a86fc62654c110853a42ab3b6abb7",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "capture": {
+          "files": 73,
+          "sha256": "7a9c4501e79e157f2c19aa98042e9d5cedf8208af48e73301cda1d79aaafa9c1",
+          "source": "45b7e48c8732301c9487a451c4e34472a4b857bb",
+          "tree": "cec273f9e74d26f0bd09fe7ed89076f06c3f4499",
+          "source_files": 1355
+        },
+        "outcome": "INCOMPLETE before Firefox/root browser setup: retained job remained accepted below product64GiBdisk completion reserve; original state preserved",
+        "evidence": "docs/implementation/evidence/p09-job-pages-capacity-incomplete-20260928.json"
+      }
+    ],
+    "consumer_state": "five runs stopped-retained: four bounded consumer PASS; one native setup INCOMPLETE, no active experiment",
+    "retire_b93_cache_20260928": {
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-b93ba83/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-b93ba83/out/build/cargo-home"
+      ],
+      "allocated_bytes": 3497406464,
+      "free_before": 68624371712,
+      "free_after": 72120287232,
+      "retained_hashes": 38,
+      "containers_preserved": 836,
+      "unrelated_running": 8,
+      "preserved": "Original b93/f677 native artifacts, all source/evidence/manifests/databases/fault states and every other run;8fa/f677 usable compiler caches remain. Only obsolete b93 target/cargo-home retired after resolved-path, mount, privileged process/FD/maps and retained-hash audits. No container/volume/dataset deletion.",
+      "recipe": ".research/implementation/job-pages/retire-b93-cache.py",
+      "recipe_sha256": "c41adb47db6da6cc2bd72e413f28d1d2c8b27b1eb1d274f64760fbb101d255c0",
+      "original_result": ".research/implementation/job-pages/retire-b93.json",
+      "result_sha256": "77c83dfbc27d4664c1e0f78dce09e149dc8f1518ef8397fb86956ba73547cfa3"
     }
   }
 }
