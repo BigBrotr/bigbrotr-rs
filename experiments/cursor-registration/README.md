@@ -82,3 +82,13 @@ state/logs/keys remain retained; only safe metadata is captured. These authored
 cases remain NOT_RUN until the enclosing evidence records their actual outcomes.
 No issuer, retention writer, browser page, online multiworker rollout or release
 qualification follows from this profile.
+
+The original a11bcac executable passes57native Rust tests/Clippy and124practical
+checks, then its fixture incorrectly expects exit4/Unavailable from acquisition
+behind the maintenance lock. The actual refusal is exit3/Busy, before ownership.
+That original incomplete result remains retained. `retry.py --lifecycle` runs
+the corrected fault cases in a new `cursor-lifecycle-retry-SHORT/source` lab,
+reusing the exact a11bcac executable after verifying unchanged build inputs.
+Only lifecycle.py, lifecycle_faults.py, retry.py, this README and non-reference
+documentation may differ. It creates no compiler cache and repeats no native
+build/tests; journey and SQL evidence remain attributed to the original run.

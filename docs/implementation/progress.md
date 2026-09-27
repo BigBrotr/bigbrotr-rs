@@ -20,17 +20,16 @@ phase, M1 or selected-product completion. Root is sole writer/integrator.
 catalog_guard_review, archive_intent_review and fact_codec_review completed
 independent read-only AI reviews with no edits, product tests, SSH or resources.
 
-Main HEAD is unpublished candidate dd406a2d94468efba3415d221dc762acc712b4e9,
-tree076a467ef963a5a0ab274430cace9525a6810c1b. Private origin/main remains
-e2a66329f01341ee0186335bb38cc930d37810ab, verified before candidate commit.
-The qualified product source is 7ee94dbc68a2c396ccf96efce08e7c885a46535f,
-tree 863d7e8a1dde97133599319f1d098bfd248481be. The clean candidate was transferred
-by exact Git bundle; the second profile cloned that same Git revision. No Tux
-source edits. Root owns current report/task/inventory/checkpoint documentation.
-No merge/rebase or other contributor edits. Previous qualification/private push
-are complete. Root owns current lifecycle inventory/checkpoint edits; product,
-contracts and fixtures are in the clean candidate transferred by exact Git.
-The new schema is additive0604 after0815 (0603 remains read pins).
+Main HEAD is unpublished candidate a11bcac46d7e65e556fb3f350e66518e0b6333e6,
+tree534850380e2b987a895b54f1b2e846e70b6de66f. Private origin/main remains
+e2a66329f01341ee0186335bb38cc930d37810ab; local main is ahead two commits.
+The last qualified product source is 7ee94dbc68a2c396ccf96efce08e7c885a46535f.
+Both lifecycle candidates were transferred from clean source by exact Git bundle;
+no Tux source edits. No merge/rebase or other contributor edits. Root owns current
+inventory/checkpoint/evidence documentation. Candidate a11bcac corrects two CASE
+parentheses after dd406a2's failed604 application. Additive0604 follows0815;
+0603 remains reserved for read pins. The corrected604 has now applied in the
+isolated lifecycle lab and must remain checksum-immutable.
 
 ## Latest qualified responsibility
 
@@ -97,6 +96,20 @@ worker3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353;
 source manifest8e1142d4c7ae548740f6fef71739c8d82577b16acec859d4e6f8ba0d38b2a7f4.
 
 ## Live resources and maintenance
+
+STOPPED-RETAINED/INCOMPLETE: cursor-lifecycle-a11bcac, owner
+6a7162f1fdef8bdd84a0eb30b1b7c256, orchestrator2421636/start392237390 terminal.
+57native tests/Clippy pass;124practical checks passed before the fixture wrongly
+expected4/Unavailable from a racing startup. Actual3/Busy is the acquisition-fence
+refusal specified by acquire/owner_error. Root corrected both fixture expectations;
+no product change. Corrected604 applied successfully and is now immutable:
+SHAfa416f1c192641503b71a4d683d56936f39d5d1c398a17f1867de20df0481bc8.
+All four owned containers stopped, PG/build0 and client/helper143, no OOM/cleanup
+errors, empty network removed;800previous container projections preserved.
+At20:18:54UTC free81,198,194,688bytes.116safe captured payloads and1339Git source
+files verified; ELFba454c8114766a631d4ac0d376c18eb19902910093100a5fbcfa90044421cb00.
+See [fixture failure](evidence/p06-cursor-lifecycle-fault-fixture-incomplete-20260927.json).
+Retain original DB/key/proxy states; incomplete held outcome is not rewritten.
 
 STOPPED-RETAINED/INCOMPLETE: cursor-lifecycle-dd406a2 under the same runs root, owner
 e8ed697a5ba6bb90be6550c4765242ba, labelorg.bigbrotr.cursor-lifecycle-build.
@@ -274,8 +287,8 @@ focused re-review. The new schema and real-CLI regressions failed as intended
 (UnknownTarget604/unrecognized activate-key), then34selected Mac tests passed
 (26schema,6CLI,2prepared snapshots), as did Clippy-Dwarnings. Initial compile
 diagnostic used the wrong Digest256 constructor, corrected before GREEN; original
-logs remain under .research/implementation/cursor-lifecycle. No SQL604 or native
-lifecycle case has run yet. Existing applied SQL remains unchanged.
+logs remain under .research/implementation/cursor-lifecycle. These local checks preceded native qualification; see the actual outcomes above.
+Previously applied SQL remains unchanged.
 
 Selected bounded design: protected CLI activation/revocation in a maintenance window,
 using the existing Control advisory transaction lock before the dataset lock,
@@ -300,11 +313,12 @@ qualification follows. Owning architecture/catalog/credentials/P06 task updated.
 Resumption20:05:59UTC verified all796container projections, no active BigBrotr lab,
 original artifacts intact and88,553,316,352free bytes. The lifecycle profile will
 inventory again and use stopped6474compiler cache in a new owned run.
-Candidate dd406a2's original native outcome is preserved as INCOMPLETE above.
-Root owns the two-parenthesis SQL correction plus report/inventory/checkpoint;
-604 has never successfully applied. Next: verify/commit correction, transfer a
-new exact revision and repeat the affected real lifecycle qualification in a
-new isolated lab. Do not infer PASS from the57native Rust tests or static review.
-Preserve
-applied SQL and all original evidence. No paginated endpoint before lifecycle
-authority; no new master plan or task completion from these qualifications.
+Both original lifecycle outcomes remain INCOMPLETE in separate reports above.
+Product SQL604 now applied and stays immutable. Root owns a fixture-only correction
+for exact3/Busy acquisition refusal; existing retry.py gains an explicit lifecycle
+profile that reuses the originala11ELF after comparing every build input except
+four named fixture/readme files and non-reference documentation. No new compiler
+cache or repeated native Rust/Clippy build. Next: commit the corrected fixture,
+transfer exact Git and execute fault cases in a fresh isolated lab, then verify
+raw receipts and cleanup before closing this lifecycle responsibility. No overall
+PASS from earlier124checks. Actor-owned job list and issued-expiry retention follow.

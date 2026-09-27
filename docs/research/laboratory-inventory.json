@@ -25641,6 +25641,38 @@
       "files": 33,
       "tar_sha256": "32f5d0e6e33b3f777b8b8465b4e4cd77a534bbc071219cabdbb19d3f7f8b7280",
       "manifest_sha256": "60374970804bdc42d634d9af2a1b2fa0a6f97a3ef96fdcae27ac465e58fffe53"
+    },
+    "corrected_attempt": {
+      "source": "a11bcac46d7e65e556fb3f350e66518e0b6333e6",
+      "tree": "534850380e2b987a895b54f1b2e846e70b6de66f",
+      "state": "stopped-retained",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-a11bcac",
+      "owner": "6a7162f1fdef8bdd84a0eb30b1b7c256",
+      "owner_label": "org.bigbrotr.cursor-lifecycle-build",
+      "orchestrator": {
+        "pid": 2421636,
+        "start_ticks": "392237390"
+      },
+      "containers": {
+        "build": "fccf59dc9dd134b55c1e1570669393a6d7d18675e5540d76b9def92d93ca4e15",
+        "postgres": "c86e09c14d05f90aabcddd3cbd93c7b29c9ed2c38a0de43cdcc4d3ffea08ba17",
+        "client": "6952c34832c5cd8afc9e5bfc55e34b9b660657c7e0b18b1dba48ce9bbd0b777f",
+        "fault": "212a99852d825c89a4ea111be1c5825195c0d395a3ae5dc941586c53268fd212"
+      },
+      "observed": "fixture expectation defect: acquired-fence refusal is Busy/exit3, not Unavailable/exit4",
+      "free_bytes": 81198194688,
+      "preserve": "Retain original source, build/test output, database states, protected keyfiles and evidence. No deletion in this slice.",
+      "qualification": "INCOMPLETE",
+      "last_observed_at": "2026-09-27T20:18:54.793584+00:00",
+      "cleanup_errors": [],
+      "network_removed": true,
+      "report": "docs/implementation/evidence/p06-cursor-lifecycle-fault-fixture-incomplete-20260927.json",
+      "capture": {
+        "capture": ".research/implementation/cursor-lifecycle/capture-a11bcac",
+        "files": 116,
+        "tar_sha256": "c7f65d33e9c50de8b113dc82008b16189149776dcb877b51cb2b7e195870b9f8",
+        "manifest_sha256": "403ceee70c8d92109d363b41b72947854f8c4ddc673b4f3e585303b984418789"
+      }
     }
   }
 }

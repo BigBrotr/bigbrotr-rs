@@ -25,13 +25,27 @@ class Fixture:
         revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
         assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
         info = json.loads(lab.cli(self.state, 'build-info').stdout)
-        assert info == self.state['build']['build_info'] and info['source']['revision'] == revision
+        assert info == self.state['build']['build_info']
+        if info['source']['revision'] != revision:
+            origin = json.loads((root.parent / 'artifact-origin.json').read_text())
+            assert origin['source'] == info['source']['revision'] and origin['fixture_revision'] == revision
+            manifest_path = Path(origin['root']) / 'out/build/source-manifest.json'
+            assert hashlib.sha256(manifest_path.read_bytes()).hexdigest() == info['source']['manifest_sha256']
+            manifest = json.loads(manifest_path.read_text())
+            changed = {'experiments/cursor-registration/README.md', 'experiments/cursor-registration/retry.py',
+                       'experiments/cursor-registration/lifecycle.py', 'experiments/cursor-registration/lifecycle_faults.py'}
+            def relevant(name):
+                return (not name.startswith('docs/') or name.startswith('docs/reference/')) and name not in changed
+            current = lab.command(['git', '-C', str(SOURCE), 'ls-files']).stdout.splitlines()
+            names = {name for name in current if relevant(name)}
+            assert names == {name for name in manifest['files_sha256'] if relevant(name)}
+            assert all(hashlib.sha256((SOURCE / name).read_bytes()).hexdigest() == manifest['files_sha256'][name] for name in names)
         assert lab.docker('exec', self.state['client'], 'sha256sum', '/build/bigbrotr').stdout.split()[0] == self.state['binary_sha256']
         self.vectors = json.loads((SOURCE / 'tests/fixtures/read/keyring-vectors.json').read_text())
         self.wire = bytes.fromhex(self.vectors['cases'][0]['hex'])
         self.a, self.b = self.wire[42:58].hex(), self.wire[90:106].hex()
         self.processes = []
-        self.report = dict(source=revision, binary_sha256=self.state['binary_sha256'], server=self.state['server'],
+        self.report = dict(source=revision, binary_source=info['source']['revision'], binary_sha256=self.state['binary_sha256'], server=self.state['server'],
                            status='RUNNING', cases=[], databases=[])
         self.fault = self.state['client'] + '-cursor-fault'
         self.save()
@@ -273,19 +287,22 @@ def journey(f):
     f.report['journey'] = dict(database=db, config=path, runtime=runtime)
 
 
-def main(root):
+def main(root, faults_only=False):
     f = Fixture(root)
     try:
         f.setup()
-        journey(f)
-        from lifecycle_sql import cases as sql_cases
+        if not faults_only:
+            journey(f)
+            from lifecycle_sql import cases as sql_cases
+            sql_cases(f)
         from lifecycle_faults import cases as fault_cases
-        sql_cases(f)
         fault_cases(f)
         for database in f.report['databases']:
             f.quiescent(database)
             f.record('no-backends-' + database, lab.sql(f.state, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename IN ('bigbrotr_control','bigbrotr_runtime','bigbrotr_migrator');") == '0')
         f.report['not_run'] = ['cursor issuance/retention writer', 'online multiworker rollout', 'browser pagination', 'host power loss', 'capacity and release qualification']
+        if faults_only:
+            f.report['not_run'].append('unchanged journey and SQL cases retained in original a11bcac result')
         f.report['status'] = 'CHECKS_PASSED'
     except BaseException as error:
         f.report.update(status='INCOMPLETE', failure=str(error))
@@ -297,4 +314,6 @@ def main(root):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', required=True, type=Path)
-    main(parser.parse_args().root.resolve(strict=True))
+    parser.add_argument('--faults-only', action='store_true')
+    args = parser.parse_args()
+    main(args.root.resolve(strict=True), args.faults_only)

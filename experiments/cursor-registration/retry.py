@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fresh PostgreSQL qualification after the recorded 9b02 network setup failure.
+"""Fresh PostgreSQL qualification after a recorded cursor fixture failure.
 
 The executable retains its original Git identity. The current corrected fixture
 runs only after unchanged build-input checks; no Rust test is reattributed.
@@ -16,8 +16,20 @@ import sys
 sys.dont_write_bytecode = True
 source = Path(__file__).resolve().parents[2]
 base = Path('/home/tux/bigbrotr-implementation-20260917/runs')
-original = base / 'cursor-enrollment-9b02bd9'
-product = '9b02bd9f692ec07f57954b140fcd6efd20220ebe'
+assert sys.argv[1:] in [[], ['--lifecycle']]
+lifecycle = sys.argv[1:] == ['--lifecycle']
+family = 'cursor-lifecycle' if lifecycle else 'cursor-enrollment'
+original = base / ('cursor-lifecycle-a11bcac' if lifecycle else 'cursor-enrollment-9b02bd9')
+product = 'a11bcac46d7e65e556fb3f350e66518e0b6333e6' if lifecycle else '9b02bd9f692ec07f57954b140fcd6efd20220ebe'
+fixture = 'lifecycle.py' if lifecycle else 'enrollment.py'
+changed = {'experiments/cursor-registration/README.md', 'experiments/cursor-registration/retry.py',
+           'experiments/cursor-registration/' + fixture}
+if lifecycle:
+    changed.add('experiments/cursor-registration/lifecycle_faults.py')
+
+
+def relevant(name):
+    return (not name.startswith('docs/') or name.startswith('docs/reference/')) and name not in changed
 
 
 def cmd(*args):
@@ -54,27 +66,31 @@ def census():
 
 
 revision = cmd('git','-C',str(source),'rev-parse','HEAD')
-root = base / ('cursor-enrollment-retry-' + revision[:7])
+root = base / (family + '-retry-' + revision[:7])
 assert source == root/'source' and not (root/'resources.json').exists()
 assert not cmd('git','-C',str(source),'status','--porcelain','--untracked-files=all')
 assert cmd('git','-C',str(original/'source'),'rev-parse','HEAD') == product
 assert not cmd('git','-C',str(original/'source'),'status','--porcelain','--untracked-files=all')
 old = json.loads((original/'resources.json').read_text())
-assert old['source']==product and old['owner']=='203570ac651e0191d5b613262c9b2091'
+assert old['source']==product and old['owner']==('6a7162f1fdef8bdd84a0eb30b1b7c256' if lifecycle else '203570ac651e0191d5b613262c9b2091')
 assert old['state']=='stopped-retained' and old['qualification']=='INCOMPLETE' and not old['cleanup_errors']
-assert not (original/'postgres/cursor-enrollment.json').exists()
+if lifecycle:
+    previous = json.loads((original/'postgres/cursor-lifecycle.json').read_text())
+    assert previous['status']=='INCOMPLETE' and previous['failure']=='case failed: transition-fence-refuses-control'
+else:
+    assert not (original/'postgres/cursor-enrollment.json').exists()
 manifest = json.loads((original/'out/build/source-manifest.json').read_text())
 assert manifest['revision']==product
 for name,digest in manifest['files_sha256'].items():
     assert sha(original/'source'/name)==digest==sha(original/'out/build/source'/name)
 files=cmd('git','-C',str(source),'ls-files').splitlines()
-names={n for n in files if (not n.startswith('docs/') or n.startswith('docs/reference/')) and n not in {'experiments/cursor-registration/README.md','experiments/cursor-registration/retry.py','experiments/cursor-registration/enrollment.py'}}
-assert names=={n for n in manifest['files_sha256'] if (not n.startswith('docs/') or n.startswith('docs/reference/')) and n not in {'experiments/cursor-registration/README.md','experiments/cursor-registration/retry.py','experiments/cursor-registration/enrollment.py'}}
+names={n for n in files if relevant(n)}
+assert names=={n for n in manifest['files_sha256'] if relevant(n)}
 assert all(sha(source/n)==manifest['files_sha256'][n] for n in names)
 build = original/'out/native-tests'
-assert sha(build/'bigbrotr')=='a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716'
+assert sha(build/'bigbrotr')==('ba454c8114766a631d4ac0d376c18eb19902910093100a5fbcfa90044421cb00' if lifecycle else 'a943777fd6f064a5682e80fe95f7b8ebe92952c7f2c1fb50f28feb866e640716')
 assert json.loads((build/'result.json').read_text())['status']=='PASS'
-assert sha(original/'out/build/source-manifest.json')=='5cb5fa359392a5756e9283ee388a96ecc4199c4e05bcfa0818c851998a4063f9'
+assert sha(original/'out/build/source-manifest.json')==('4742224b158542104de61c2b26e97e4a822889755ee9a942ac0f6033f26ddb33' if lifecycle else '5cb5fa359392a5756e9283ee388a96ecc4199c4e05bcfa0818c851998a4063f9')
 prior, preflight = census()
 assert preflight['free_bytes']>4*1024**3
 assert not any(c['State']['Running'] and 'bigbrotr' in c['Name'] for c in prior)
@@ -92,7 +108,7 @@ state=dict(source=revision, tree=cmd('git','-C',str(source),'rev-parse','HEAD^{t
 write(root/'resources.json',state)
 write(root/'artifact-origin.json',dict(root=str(original), source=product, owner=old['owner'],
     source_manifest_sha256=sha(original/'out/build/source-manifest.json'),
-    binary_sha256=sha(build/'bigbrotr'),fixture_revision=revision,fixture_sha256=sha(source/'experiments/cursor-registration/enrollment.py'),
+    binary_sha256=sha(build/'bigbrotr'),fixture_revision=revision,fixture_sha256=sha(source/'experiments/cursor-registration'/fixture),
     unchanged_build_inputs={n:manifest['files_sha256'][n] for n in sorted(names)},
     scope='Original executable, current fixture with unchanged build inputs; no compilation, test or Clippy rerun.'))
 sys.path.insert(0,str(source/'experiments/control-migrations'))
@@ -104,10 +120,11 @@ try:
     lab.setup(runtime,build,source,run_name)
     pg=json.loads((runtime/'resources.json').read_text())
     with (root/'cases.stdout').open('xb') as out, (root/'cases.stderr').open('xb') as err:
-        result=subprocess.run(['python3','-B',str(source/'experiments/cursor-registration/enrollment.py'),'--root',str(runtime)],stdout=out,stderr=err,timeout=600)
+        result=subprocess.run(['python3','-B',str(source/'experiments/cursor-registration'/fixture),'--root',str(runtime),
+                               *(['--faults-only'] if lifecycle else [])],stdout=out,stderr=err,timeout=600)
     state['cases_exit']=result.returncode
     assert result.returncode==0
-    assert json.loads((runtime/'cursor-enrollment.json').read_text())['status']=='PASS'
+    assert json.loads((runtime/(family+'.json')).read_text())['status']=='PASS'
     state['qualification']='CHECKS_PASSED'
 except BaseException as error:
     state['failure']=type(error).__name__

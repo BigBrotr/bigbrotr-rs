@@ -1,0 +1,69 @@
+{
+  "format": "bigbrotr-cursor-lifecycle-qualification/1",
+  "status": "INCOMPLETE",
+  "source": "a11bcac46d7e65e556fb3f350e66518e0b6333e6",
+  "tree": "534850380e2b987a895b54f1b2e846e70b6de66f",
+  "environment": {
+    "version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+  },
+  "binary_sha256": "ba454c8114766a631d4ac0d376c18eb19902910093100a5fbcfa90044421cb00",
+  "source_manifest_sha256": "4742224b158542104de61c2b26e97e4a822889755ee9a942ac0f6033f26ddb33",
+  "source_files_verified_against_git": 1339,
+  "migration_0604_sha256": "fa416f1c192641503b71a4d683d56936f39d5d1c398a17f1867de20df0481bc8",
+  "native_build": {
+    "status": "PASS",
+    "tests": 57,
+    "failed": 0,
+    "ignored": 0,
+    "clippy": "PASS"
+  },
+  "practical": {
+    "passed": 124,
+    "failed_case": "transition-fence-refuses-control",
+    "classification": "fixture expectation defect: acquired-fence refusal is Busy/exit3, not Unavailable/exit4",
+    "observed_stderr": "error: Control backend operation failed: Busy\n",
+    "observed_exit": 3,
+    "root_cause": "control_owner.rs acquire returns Busy when pg_try_advisory_lock fails, before creating an owner. serve.rs owner_error maps Busy to3; Unavailable belongs to existing-owner authority loss/cancellation. The fixture incorrectly expected4/Unavailable in two acquisition schedules.",
+    "correction": "Assert exact Busy diagnostic/exit3 and empty stdout in both schedules, retaining SQL unchanged-state checks. Repeat fault cases with the original a11 executable after exact unchanged-input verification, in a fresh lab.",
+    "executed_scope": [
+      "actual815 to604 upgrade preserves selected original rows/xmin",
+      "historical receipt/audit/digest and unchanged retry",
+      "live Control excludes new maintenance; old receipt resolves",
+      "A to B to A preserves first activation; active and never-activated revocation",
+      "actual loaded subset omitting activeB refuses startup, restored snapshot recovers",
+      "SIGKILL and expired-but-unreleased owner refuses maintenance; actual recovered start/stop permits it",
+      "SQL missing/mismatched closure, immutable guards, multirow and immediate constraints, explicit rollback",
+      "hostile temporary trigger first-activation forgery refused with23514 and exact reason",
+      "before-forward and after-complete COMMIT-loss with original retry and actual runtime recovery",
+      "held COMMIT observed unforwarded; racing runtime refused as Busy"
+    ],
+    "limit": "Held scenario ended at the incorrect fixture assertion. Cleanup subsequently saw the application exit0 after proxy completion, but the original fixture did not snapshot that final durable outcome. No completed held-COMMIT, dataset-wait or engine-restart claim from this run."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-a11bcac",
+    "owner": "6a7162f1fdef8bdd84a0eb30b1b7c256",
+    "state": "stopped-retained",
+    "cleanup_errors": [],
+    "preexisting_preserved": 800,
+    "free_bytes": 81198194688,
+    "finished_at": "2026-09-27T20:18:54.855445+00:00",
+    "network_removed": true
+  },
+  "capture": {
+    "capture": ".research/implementation/cursor-lifecycle/capture-a11bcac",
+    "files": 116,
+    "tar_sha256": "c7f65d33e9c50de8b113dc82008b16189149776dcb877b51cb2b7e195870b9f8",
+    "manifest_sha256": "403ceee70c8d92109d363b41b72947854f8c4ddc673b4f3e585303b984418789"
+  },
+  "not_run": [
+    "completed held-COMMIT schedule",
+    "dataset-wait fence schedule",
+    "PostgreSQL restart",
+    "cursor issuance/retention writer",
+    "browser",
+    "capacity and release"
+  ]
+}

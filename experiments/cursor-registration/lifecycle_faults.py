@@ -26,8 +26,12 @@ def cases(f):
             f.record('held-transition-uncommitted', held['commits_seen'] == 1 and held['commits_forwarded'] == 0
                      and f.snapshot(db) == baseline, held=held)
             blocked = f.start(runtime, 'fence-blocked-control')
-            f.record('transition-fence-refuses-control', blocked.wait(10) == 4 and not blocked.stdout
-                     and b'Unavailable' in blocked.stderr, stderr=bytes(blocked.stderr).decode())
+            code = blocked.wait(10)
+            # Acquisition reports Busy (exit3) before an owner exists. Unavailable
+            # describes an existing owner's lost authority, not this exclusion.
+            f.record('transition-fence-refuses-control', code == 3 and not blocked.stdout
+                     and bytes(blocked.stderr) == b'error: Control backend operation failed: Busy\n',
+                     exit=code, stderr=bytes(blocked.stderr).decode())
             f.change('concurrent-same-pending-refuses', db, path, 'activate', f.a, '41'*16, 0, code=3)
             proxy.send('release')
         code = app.wait(15)
@@ -71,9 +75,11 @@ def cases(f):
         assert time.monotonic()<deadline
         time.sleep(.01)
     blocked = f.start(runtime, 'dataset-fenced-control')
-    f.record('dataset-wait-retains-control-fence', blocked.wait(8)==4 and b'Unavailable' in blocked.stderr
+    code = blocked.wait(8)
+    f.record('dataset-wait-retains-control-fence', code==3 and not blocked.stdout
+             and bytes(blocked.stderr)==b'error: Control backend operation failed: Busy\n'
              and f.snapshot(db)==baseline and all(row['blockers'] for row in waiting), observed=waiting,
-             stderr=bytes(blocked.stderr).decode())
+             exit=code, stderr=bytes(blocked.stderr).decode())
     lock.process.stdin.write(b'ROLLBACK;\n')
     lock.process.stdin.close()
     lock.process.stdin=None
