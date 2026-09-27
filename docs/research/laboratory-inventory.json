@@ -25750,7 +25750,7 @@
     }
   },
   "implementation_job_pages_20260927": {
-    "state": "local-candidate-preparation; no remote job-page resources allocated",
+    "state": "first run stopped-retained INCOMPLETE; artifact-selection harness correction prepared",
     "local_root": ".research/implementation/job-pages",
     "base_source": "ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47",
     "scope": "P08-T03 Step3 / P09-T09 Step2 actor-owned export listing and required P06-T03 cursor retention; incomplete",
@@ -25791,7 +25791,189 @@
       "compiler_cache": "job-admission-8fae53a (copied cache, fresh current parent and worker build)",
       "source": "clean Git candidate; exact revision/tree required before transfer"
     },
-    "validation": "Mac 4 domain / 30 actual HTTP / 27 schema tests and Clippy PASS. Actual PostgreSQL816/installed-page journey NOT_RUN. Original RED/compile failures retained locally.",
-    "preserve": "All existing owned or unrelated resources unchanged. Do not retire retained lifecycle/qualification/object-storage datasets or original seed artifacts. Tokens/keyfiles/credentials remain private inside the future isolated run."
+    "validation": "Native binary50/domain4/schema27 and Clippy PASS at d860dfb. Practical SQL816/HTTP NOT_RUN. Original artifact-binding failure retained.",
+    "preserve": "All existing owned or unrelated resources unchanged. Do not retire retained lifecycle/qualification/object-storage datasets or original seed artifacts. Tokens/keyfiles/credentials remain private inside the future isolated run.",
+    "runs": [
+      {
+        "resources": {
+          "source": "d860dfb4709aa5c61b3b9f381998e23cab143d66",
+          "tree": "d86e79ea48d1f4320b87425c521393bdc93c2761",
+          "owner": "251281c4473f1d9f44b693bb559f5749",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-d860dfb",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "postgres",
+              "id": "add4bb7e342fc0129bfe4483dcefaa5c4eea53a3f36aa560fb87bfdfcc7bcbac"
+            },
+            {
+              "name": "rust-visibility",
+              "id": "d683edc9112672b4169a560366d4b5557bd9c6359e7d22f114c7e95d56e74a6c"
+            }
+          ],
+          "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "owner_label": "org.bigbrotr.export-execution",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "started_at": "2026-09-27T21:06:33.481341+00:00",
+          "runtime_profile": "job-pages",
+          "adapter_profile": null,
+          "schema_profile": null,
+          "artifact_origin": "4e6b5c011c067800f52e67365b2b848b7943d4bc",
+          "network_id": "a4c9ff37a67ad5d900bfb2d62fd77c30fa63baeaf850eb7db164b34075dc695f",
+          "postgres_id": "add4bb7e342fc0129bfe4483dcefaa5c4eea53a3f36aa560fb87bfdfcc7bcbac",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "d683edc9112672b4169a560366d4b5557bd9c6359e7d22f114c7e95d56e74a6c",
+          "network_state": "removed after owner/no-endpoint audit",
+          "terminal_audit": "terminal-audit.json"
+        },
+        "terminal": {
+          "status": "INCOMPLETE",
+          "source": "d860dfb4709aa5c61b3b9f381998e23cab143d66",
+          "owner": "251281c4473f1d9f44b693bb559f5749",
+          "cases": {},
+          "failure": {
+            "kind": "AssertionError",
+            "frames": [
+              {
+                "file": "lab.py",
+                "line": 342,
+                "function": "<module>"
+              }
+            ]
+          },
+          "container_terminals": {
+            "postgres": {
+              "id": "add4bb7e342fc0129bfe4483dcefaa5c4eea53a3f36aa560fb87bfdfcc7bcbac",
+              "name": "/bigbrotr-export-execution-d860dfb-postgres",
+              "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+              "lifecycle": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 137,
+                "Error": "",
+                "StartedAt": "2026-09-27T21:06:37.737801733Z",
+                "FinishedAt": "2026-09-27T21:09:10.436423554Z"
+              },
+              "mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-d860dfb/secrets",
+                  "Destination": "/secrets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-d860dfb/pgdata",
+                  "Destination": "/var/lib/postgresql/data",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                }
+              ],
+              "networks": {
+                "bigbrotr-export-execution-d860dfb": {
+                  "IPAMConfig": null,
+                  "Links": null,
+                  "Aliases": null,
+                  "DriverOpts": null,
+                  "GwPriority": 0,
+                  "NetworkID": "a4c9ff37a67ad5d900bfb2d62fd77c30fa63baeaf850eb7db164b34075dc695f",
+                  "EndpointID": "",
+                  "Gateway": "",
+                  "IPAddress": "",
+                  "MacAddress": "",
+                  "IPPrefixLen": 0,
+                  "IPv6Gateway": "",
+                  "GlobalIPv6Address": "",
+                  "GlobalIPv6PrefixLen": 0,
+                  "DNSNames": [
+                    "bigbrotr-export-execution-d860dfb-postgres",
+                    "add4bb7e342f"
+                  ]
+                }
+              },
+              "restart": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+              }
+            },
+            "rust-visibility": {
+              "id": "d683edc9112672b4169a560366d4b5557bd9c6359e7d22f114c7e95d56e74a6c",
+              "name": "/bigbrotr-export-execution-d860dfb-rust-visibility",
+              "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+              "lifecycle": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 143,
+                "Error": "",
+                "StartedAt": "2026-09-27T21:06:39.755395081Z",
+                "FinishedAt": "2026-09-27T21:09:10.707904602Z"
+              },
+              "mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-d860dfb/out/archive-worker",
+                  "Destination": "/assets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-d860dfb/out",
+                  "Destination": "/out",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-d860dfb/out/build/source",
+                  "Destination": "/out/build/source",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-d860dfb/secrets",
+                  "Destination": "/secrets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                }
+              ],
+              "networks": {},
+              "restart": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+              }
+            }
+          },
+          "preexisting_preserved": true,
+          "preexisting_count": 807,
+          "unrelated_running": 8,
+          "source_unchanged": true,
+          "source_checkout_clean": true,
+          "cleanup_errors": [],
+          "original_source_unchanged": true,
+          "host_tcp_wmem_preserved": true,
+          "free_bytes": 77110558720
+        },
+        "outcome": "INCOMPLETE: schema test replaced mutable Cargo binary; final worker binding assertion refused it before practical execution"
+      }
+    ]
   }
 }

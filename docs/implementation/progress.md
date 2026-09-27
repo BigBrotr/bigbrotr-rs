@@ -14,16 +14,13 @@ execution while billing remains blocked. No public release, rename, Linux arm64,
 hosted CI or complete packaged-release qualification is claimed. An active goal
 covers the complete product; a bounded qualification does not complete it.
 
-Main HEAD and private origin/main are ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47,
-verified after the lifecycle evidence commit/push. Product qualified source remains
-a11bcac46d7e65e556fb3f350e66518e0b6333e6; fixture retry is7efaca3. All Tux inputs
-came from clean Git bundles, without source edits there. No merge/rebase or other
-contributor edits. Root is sole writer/integrator. Current root-owned dirty work:
-management job_list domain/tests, job metadata serialization, sessions/errors,
-HTTP job tests/transport, additive0816 SQL/manifest/registration/schema tests,
-private-administration contract and this checkpoint. catalog_guard_review completed
-read-only AI lifecycle evidence review and now reviews the dirty page SQL/domain/
-HTTP boundary independently; no edits, tests or SSH. Historical agents remain idle.
+Main HEAD is unpublished candidate d860dfb4709aa5c61b3b9f381998e23cab143d66,
+tree d86e79ea48d1f4320b87425c521393bdc93c2761. Private origin/main remains
+qualified ef5b8b9f9f487d0582e06f5e97b0b44cfc24be47 (local ahead1). No merge/rebase
+or other contributor changes. Root sole writer/integrator; current dirty files
+are this checkpoint and the inventory's live native-run record. catalog_guard_review
+is independently reviewing the candidate SQL/domain/HTTP boundary read-only;
+no edits, tests or SSH. Historical agents remain idle.
 
 Active tasks: P08-T03 Step3 / P08-T04 Step3, thin P09-T09 Step2, and only P06-T03
 Step1/3 cursor prerequisites for actor-owned export discovery. No complete task,
@@ -195,8 +192,29 @@ Fresh20:55:42UTC read-only Tux census:807unchanged container projections,8unrela
 running, no BigBrotr lab active,81,010,356,224free bytes. Original stopped lifecycle
 resources/source/ELF still match. No new resource/cache deletion.
 
-Next: review current candidate and obtain its exact clean Git revision for the
-isolated native installed job-page journey. Record all original failures and owned
-resources, then complete fault/aged-state qualification and HTTP-generated-client/
-panel integration. Preserve nonrenewable response custody, after-wait server-time
-checks and unknown COMMIT poisoning. No new plan or owner approval is needed.
+Exact Git candidate d860dfb finished INCOMPLETE before practical cases: all five
+native checks passed (50 binary,4 domain,27 schema tests and Clippy), but the schema
+integration build replaced target/release/bigbrotr without the worker binding.
+The final artifact assertion refused archive_worker=null. This is a harness
+artifact-selection failure, not an executed page/SQL outcome. Original logs,
+source, native files and terminal audit remain in export-runtime-d860dfb,
+owner251281c4473f1d9f44b693bb559f5749. PG/runner stopped137/143, noOOM, own empty
+network removed;807prior container projections/eight unrelated running preserved;
+77,110,558,720free bytes at terminal audit. No migration0816 application yet.
+The harness now snapshots the installed parent/worker immediately after their
+ordered build, before tests can replace Cargo's mutable output paths.
+
+Independent AI static review of d860dfb found two open contract defects: empty or
+terminal pages bypass active-issuer lookup; session expiry during require_status
+SQL wait is not checked before cursor opening. Reproduce both through actual
+HTTP/PG before fixing. Require the active loaded/unrevoked issuer on every page;
+recheck session expiry after all pre-decrypt SQL waits. Preserve final expiry and
+socket gates. An additional raw-SQL limit is recorded: SET CONSTRAINTS IMMEDIATE
+can run the deferred0816 lease check early; the Rust adapter keeps it deferred.
+Do not claim universal raw-SQL COMMIT-time expiry from that trigger. Review found
+scan/retention helper boundaries useful; no new orchestration abstraction needed.
+
+Next: rerun the corrected artifact-selection harness on exact Git, preserve and
+inspect practical outcomes, then execute the discriminating expiry/issuer cases
+before product corrections. Complete fault/aged-load/generated client/panel/browser
+acceptance remains open. No whole list, rotation, M1 or release qualification.

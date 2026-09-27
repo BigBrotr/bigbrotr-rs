@@ -18,6 +18,13 @@ if sys.argv[1:] == ['--build-runtime']:
     import os
     worker=build_binaries(SOURCE,dict(os.environ))
     Path('/out/runtime-worker.json').write_text(json.dumps(worker)+'\n')
+    # Cargo integration tests may rebuild the package binary with different
+    # build-script inputs. Preserve the installed pair before running checks.
+    artifacts=Path('/out/runtime-artifacts');artifacts.mkdir()
+    for name in ['bigbrotr','bigbrotr-archive-worker']:
+        shutil.copy2(Path(os.environ['CARGO_TARGET_DIR'])/'release'/name,artifacts/name)
+    info=json.loads(subprocess.check_output([str(artifacts/'bigbrotr'),'build-info'],env={}))
+    assert info['archive_worker']==worker
     sys.exit(0)
 build = SOURCE.parent
 manifest = json.loads((build/'source-manifest.json').read_text())
@@ -45,9 +52,7 @@ if runtime:
         ('clippy',['cargo','clippy','--locked','--offline','--release','-p','bigbrotr','--bin','bigbrotr','--','-D','warnings']),
     ],checks,SOURCE,env,identity,1800)['status']=='PASS'
     worker=json.loads(Path('/out/runtime-worker.json').read_text())
-    artifacts=Path('/out/runtime-artifacts');artifacts.mkdir()
-    for name in ['bigbrotr','bigbrotr-archive-worker']:
-        shutil.copy2(build/'target/release'/name,artifacts/name)
+    artifacts=Path('/out/runtime-artifacts')
     info=json.loads(subprocess.check_output([str(artifacts/'bigbrotr'),'build-info'],env={}))
     assert info['archive_worker']==worker
     assert info['source']==dict(state='builder-supplied',revision=manifest['revision'],tree=manifest['tree'],dirty=False,manifest_sha256=identity['source_manifest_sha256'])
