@@ -189,3 +189,50 @@ fn fresh_enrollment_requires_complete_containment_in_one_matching_root() {
             .is_err()
     );
 }
+
+#[test]
+fn persisted_route_decoder_accepts_only_exact_canonical_version_one_values() {
+    let values = [
+        (vec![0], RouteSelection::Public {}),
+        (vec![1, 4, 0, 0, 0, 0, 0], route("0.0.0.0/0")),
+        (vec![1, 4, 16, 10, 2, 0, 0], route("10.2.0.0/16")),
+        (vec![1, 4, 32, 127, 0, 0, 1], route("127.0.0.1/32")),
+        (
+            vec![
+                1, 6, 128, 0xfd, 0x12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            ],
+            route("fd12::1/128"),
+        ),
+        (
+            vec![1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            route("::/0"),
+        ),
+    ];
+    for (bytes, expected) in values {
+        assert_eq!(
+            RouteSelection::from_canonical_bytes(&bytes).unwrap(),
+            expected
+        );
+        for end in 0..bytes.len() {
+            assert!(RouteSelection::from_canonical_bytes(&bytes[..end]).is_err());
+        }
+        let mut extra = bytes;
+        extra.push(0);
+        assert!(RouteSelection::from_canonical_bytes(&extra).is_err());
+    }
+    for invalid in [
+        vec![2],
+        vec![1, 5, 16, 10, 2, 0, 0],
+        vec![1, 4, 33, 10, 2, 0, 0],
+        vec![1, 4, 16, 10, 2, 0, 1],
+        vec![1, 6, 129, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![
+            1, 6, 16, 0xfd, 0x12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+        ],
+        vec![
+            1, 6, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 127, 0, 0, 1,
+        ],
+    ] {
+        assert!(RouteSelection::from_canonical_bytes(&invalid).is_err());
+    }
+}

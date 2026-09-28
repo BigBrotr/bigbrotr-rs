@@ -40,6 +40,13 @@ pub async fn run(
     mode: &str,
     scope: QualifiedRef,
 ) {
+    if mode.starts_with("source-transport") {
+        crate::ingest_source_transport::run(
+            owner, driver, observer, store, spec, path, budget, mode, scope,
+        )
+        .await;
+        return;
+    }
     let validate = |document: &str, digest| validate_version(document, digest, true);
     let revision = |n: u64| Revision::try_from(n.to_string()).unwrap();
     let hash_budget = ResourceBudget::new(

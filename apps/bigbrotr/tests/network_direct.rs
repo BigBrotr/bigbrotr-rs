@@ -245,8 +245,47 @@ async fn pinned_plaintext_owns_the_socket_and_permit_through_the_operation() {
 }
 
 #[tokio::test(flavor = "current_thread")]
+async fn replacing_an_unsampled_static_owner_check_refuses_before_connect() {
+    static REFUSED: fn() -> bool = || false;
+    static LIVE: fn() -> bool = || true;
+    let dns = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let target = target(listener.local_addr().unwrap().port(), false);
+    let resources = budget(16 * 1024 * 1024, 2);
+    let connector = connector(&dns, resources.clone());
+    for first in [&REFUSED, &LIVE] {
+        let (attempt, _cancel) = DirectAttempt::new(
+            target.clone(),
+            private(&target),
+            window(Duration::from_secs(2)),
+            Instant::now() + Duration::from_secs(2),
+        );
+        let result = connector
+            .run(
+                attempt
+                    .with_liveness_check(first)
+                    .with_liveness_check(&LIVE),
+                async |_| Ok(()),
+            )
+            .await;
+        assert_eq!(result, Err(TransportError::Authority));
+        assert_eq!(resources.snapshot().active_permits(), 0);
+    }
+    assert!(
+        timeout(Duration::from_millis(30), listener.accept())
+            .await
+            .is_err()
+    );
+    assert!(
+        timeout(Duration::from_millis(30), dns.accept())
+            .await
+            .is_err()
+    );
+}
+
+#[tokio::test(flavor = "current_thread")]
 async fn refused_policy_budget_and_cancelled_work_contact_no_peer() {
-    for case in 0..4 {
+    for case in 0..5 {
         let dns = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let target = target(listener.local_addr().unwrap().port(), false);
@@ -267,6 +306,8 @@ async fn refused_policy_budget_and_cancelled_work_contact_no_peer() {
                 Instant::now() + Duration::from_secs(2)
             },
         );
+        let owner_live = || case != 4;
+        let attempt = attempt.with_liveness_check(&owner_live);
         let mut cancel = Some(cancel);
         if case == 2 {
             cancel.take();
@@ -282,6 +323,7 @@ async fn refused_policy_budget_and_cancelled_work_contact_no_peer() {
                 | (1, Err(TransportError::Budget))
                 | (2, Err(TransportError::Cancelled))
                 | (3, Err(TransportError::Deadline))
+                | (4, Err(TransportError::Authority))
         ));
         assert_eq!(resources.snapshot().active_permits(), 0);
         assert!(
@@ -806,6 +848,75 @@ async fn lowering_the_shared_budget_refuses_new_connections_and_drains_the_owner
         })
         .await
         .unwrap();
+    peer.await.unwrap();
+    assert_eq!(resources.snapshot().active_permits(), 0);
+}
+
+#[tokio::test(flavor = "current_thread")]
+async fn observed_owner_loss_refuses_tls_buffers_in_the_same_poll_and_cannot_revive() {
+    use std::sync::atomic::{AtomicBool, Ordering};
+    let live = AtomicBool::new(true);
+    let owner_live = || live.load(Ordering::Acquire);
+    let dns = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let target = target(listener.local_addr().unwrap().port(), true);
+    let resources = budget(16 * 1024 * 1024, 2);
+    let connector = DirectConnector::new(
+        DnsResolver::new(dns.local_addr().unwrap(), resources.clone()).unwrap(),
+        TlsPolicy::new(&[CA.into()]).unwrap(),
+        resources.clone(),
+    );
+    let peer = tokio::spawn(async move {
+        let (socket, _) = listener.accept().await.unwrap();
+        let mut tls = tls_server().accept(socket).await.unwrap();
+        tls.write_all(b"AB").await.unwrap();
+        tls.flush().await.unwrap();
+        let mut byte = [0];
+        assert!(matches!(
+            timeout(Duration::from_secs(1), tls.read(&mut byte))
+                .await
+                .unwrap(),
+            Ok(0) | Err(_)
+        ));
+    });
+    let (attempt, _cancel) = DirectAttempt::new(
+        target.clone(),
+        private(&target),
+        window(Duration::from_secs(2)),
+        Instant::now() + Duration::from_secs(2),
+    );
+    let attempt = attempt.with_liveness_check(&owner_live);
+    let mut refused = false;
+    let result = connector
+        .run(attempt, async |stream| {
+            let mut byte = [0];
+            stream.read_exact(&mut byte).await?;
+            assert_eq!(&byte, b"A");
+            live.store(false, Ordering::Release);
+            // No yield, timer tick or cancel-handle drop occurs before these polls.
+            assert_eq!(
+                stream.read(&mut byte).await.unwrap_err().kind(),
+                io::ErrorKind::PermissionDenied
+            );
+            live.store(true, Ordering::Release);
+            assert_eq!(
+                stream.write(b"forbidden").await.unwrap_err().kind(),
+                io::ErrorKind::PermissionDenied
+            );
+            assert_eq!(
+                stream.flush().await.unwrap_err().kind(),
+                io::ErrorKind::PermissionDenied
+            );
+            assert_eq!(
+                stream.shutdown().await.unwrap_err().kind(),
+                io::ErrorKind::PermissionDenied
+            );
+            refused = true;
+            Ok::<_, io::Error>(())
+        })
+        .await;
+    assert!(refused);
+    assert_eq!(result, Err(TransportError::Authority));
     peer.await.unwrap();
     assert_eq!(resources.snapshot().active_permits(), 0);
 }

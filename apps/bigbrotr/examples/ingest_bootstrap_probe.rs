@@ -25,6 +25,9 @@ use bigbrotr_model::{
 use std::{cell::Cell, io::Write, path::Path, sync::atomic::AtomicBool, time::Duration};
 use tokio_postgres::{Config, NoTls};
 
+#[allow(dead_code)]
+#[path = "support/acquisition_config.rs"]
+mod config;
 #[path = "support/ingest_closing.rs"]
 mod ingest_closing;
 #[path = "support/ingest_event.rs"]
@@ -39,6 +42,8 @@ mod ingest_relay_source;
 mod ingest_snapshot;
 #[path = "support/ingest_source_faults.rs"]
 mod ingest_source_faults;
+#[path = "support/ingest_source_transport.rs"]
+mod ingest_source_transport;
 #[path = "support/ingest_visibility.rs"]
 mod ingest_visibility;
 

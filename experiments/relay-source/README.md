@@ -57,3 +57,17 @@ writer completion, and complete native/input/receipt bytes have an independent
 oracle. The first eight-schedule execution at5efd67b passed with87ad138 artifacts; see
 [scoped qualification](../../docs/implementation/evidence/p02-relay-source-faults-native-20260928.json).
 This does not qualify source issuance, socket custody, load or M1.
+
+`source-transport` through `experiments/network-transport/lab.py` builds the actual
+finite source adapter/probe and runs34 focused network, visibility and accepted
+Sync policy tests plus Clippy. It performs no PostgreSQL scenario automatically.
+Then `transport.py ROOT` borrows the same stopped e06 PostgreSQL, clones the
+initialized template and retains all three new databases/native stores. It uses
+the actual configuration owners, private source/public visibility refusal, a
+successful private operation, second-document refusal and actual Control backend
+termination. The owner-loss case proves enough lease remains to distinguish its
+500ms closure bound from normal expiry. An independent oracle checks all native
+bytes/original inputs; original source-pass/template/report and unrelated container
+projections are checked unchanged. Other retained databases are not rehashed.
+These new cases are prepared but not executed yet. They do not close delayed
+cleanup, concurrent source changes, installed Sync, WebSocket or M1 acceptance.

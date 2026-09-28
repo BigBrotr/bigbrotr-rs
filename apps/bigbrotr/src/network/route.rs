@@ -3,7 +3,7 @@
 use super::{DirectPolicy, PolicyError, Target, address::Prefix};
 use bigbrotr_protocol::endpoint::Endpoint;
 use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
-use std::{fmt, str::FromStr};
+use std::{fmt, net::IpAddr, str::FromStr};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct PrivateNetwork(Prefix);
@@ -56,6 +56,25 @@ pub enum RouteSelection {
 }
 
 impl RouteSelection {
+    /// Decode the exact version-1 operational route. No caller may replace
+    /// a retained route with its own selection. This establishes shape only;
+    /// current roots, enrollment and source visibility still authorize use.
+    pub fn from_canonical_bytes(bytes: &[u8]) -> Result<Self, PolicyError> {
+        let (base, bits) = match bytes {
+            [0] => return Ok(Self::Public {}),
+            [1, 4, bits, a, b, c, d] => (IpAddr::from([*a, *b, *c, *d]), *bits),
+            [1, 6, bits, octets @ ..] if octets.len() == 16 => {
+                let address: [u8; 16] = octets.try_into().expect("checked exact length");
+                (IpAddr::from(address), *bits)
+            }
+            _ => return Err(PolicyError::InvalidPrivateRule),
+        };
+        let prefix = Prefix::new(base, bits).ok_or(PolicyError::InvalidPrivateRule)?;
+        Ok(Self::Private {
+            cidr: PrivateNetwork(prefix),
+        })
+    }
+
     /// Stable exact bytes used by the operational command identity. Public is
     /// [0]; private is [1, address family 4/6, prefix bits, network octets].
     pub fn canonical_bytes(self) -> Vec<u8> {

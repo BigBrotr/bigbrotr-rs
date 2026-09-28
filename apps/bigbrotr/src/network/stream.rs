@@ -14,12 +14,12 @@ use tokio::{
 /// Guarded stream with no escape to its socket or TLS configuration. It is only
 /// borrowed inside DirectConnector::run; the owner drops it before releasing its
 /// connection reservation, including on cancellation or a failed callback.
-pub struct DirectStream {
-    pub(super) inner: Guarded<Wire>,
+pub struct DirectStream<'owner> {
+    pub(super) inner: Guarded<'owner, Wire<'owner>>,
     pub(super) endpoint: Endpoint,
     pub(super) peer: SocketAddr,
 }
-impl DirectStream {
+impl DirectStream<'_> {
     pub fn endpoint(&self) -> &Endpoint {
         &self.endpoint
     }
@@ -28,15 +28,15 @@ impl DirectStream {
     }
 }
 
-pub(super) enum Wire {
-    Plain(Guarded<TcpStream>),
-    Tls(Box<tokio_rustls::client::TlsStream<Guarded<TcpStream>>>),
+pub(super) enum Wire<'owner> {
+    Plain(Guarded<'owner, TcpStream>),
+    Tls(Box<tokio_rustls::client::TlsStream<Guarded<'owner, TcpStream>>>),
 }
-pub(super) struct Guarded<S> {
+pub(super) struct Guarded<'owner, S> {
     pub socket: S,
-    pub gate: Gate,
+    pub gate: Gate<'owner>,
 }
-impl<S: AsyncRead + Unpin> AsyncRead for Guarded<S> {
+impl<S: AsyncRead + Unpin> AsyncRead for Guarded<'_, S> {
     fn poll_read(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,
@@ -47,7 +47,7 @@ impl<S: AsyncRead + Unpin> AsyncRead for Guarded<S> {
         Pin::new(&mut this.socket).poll_read(cx, buf)
     }
 }
-impl<S: AsyncWrite + Unpin> AsyncWrite for Guarded<S> {
+impl<S: AsyncWrite + Unpin> AsyncWrite for Guarded<'_, S> {
     fn poll_write(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,
@@ -68,7 +68,7 @@ impl<S: AsyncWrite + Unpin> AsyncWrite for Guarded<S> {
         Pin::new(&mut this.socket).poll_shutdown(cx)
     }
 }
-impl AsyncRead for Wire {
+impl AsyncRead for Wire<'_> {
     fn poll_read(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,
@@ -80,7 +80,7 @@ impl AsyncRead for Wire {
         }
     }
 }
-impl AsyncWrite for Wire {
+impl AsyncWrite for Wire<'_> {
     fn poll_write(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,
@@ -104,7 +104,7 @@ impl AsyncWrite for Wire {
         }
     }
 }
-impl AsyncRead for DirectStream {
+impl AsyncRead for DirectStream<'_> {
     fn poll_read(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,
@@ -113,7 +113,7 @@ impl AsyncRead for DirectStream {
         Pin::new(&mut self.get_mut().inner).poll_read(cx, buf)
     }
 }
-impl AsyncWrite for DirectStream {
+impl AsyncWrite for DirectStream<'_> {
     fn poll_write(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,

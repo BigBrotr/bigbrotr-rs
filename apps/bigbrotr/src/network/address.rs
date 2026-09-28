@@ -72,13 +72,20 @@ impl Prefix {
         let base: IpAddr = base.parse().ok()?;
         // Mapped destinations use IPv4 rules. Refuse a second spelling for the
         // private prefix instead of silently changing its prefix length.
-        if canonical(base) != base || bits.len() > 1 && bits.starts_with('0') {
+        if bits.len() > 1 && bits.starts_with('0') {
             return None;
         }
         if bits.is_empty() || !bits.bytes().all(|b| b.is_ascii_digit()) {
             return None;
         }
         let bits: u8 = bits.parse().ok()?;
+        Self::new(base, bits)
+    }
+
+    pub(super) fn new(base: IpAddr, bits: u8) -> Option<Self> {
+        if canonical(base) != base {
+            return None;
+        }
         let prefix = Self { base, bits };
         let host_bits_clear = match base {
             IpAddr::V4(address) if bits <= 32 => {

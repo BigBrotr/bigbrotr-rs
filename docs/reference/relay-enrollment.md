@@ -110,3 +110,35 @@ same authenticated actor/key/command resolves that ambiguity.
 
 The [laboratory recipe](../../experiments/relay-enrollment/README.md) distinguishes
 implemented cases from executed evidence. Whole-step and M1 acceptance remain open.
+
+## Finite current source operations
+
+The initial `ControlSession::run_relay_source` consumer holds Control, dataset
+and current enrollment locks through one borrowed direct socket operation. It
+requires migration0020, the exact enabled current/historical generation and route,
+a no-auth access context and its full committed `StoredVisibility` reference.
+It decodes the retained normalized endpoint and canonical route without accepting
+a caller replacement. Public visibility refuses private routes and query-bearing
+URLs; an explicit public query exception is not implemented in this profile.
+
+Both complete accepted documents must be v2 and independently pass the trusted
+source validator. The Sync configuration consumer restores them against actual
+deployment roots, checks selected/enabled Sync, exact fixed-list membership and
+endpoint/host bans, then intersects the selected route with current roots. These
+decisions and the decoded data do not escape as a reusable grant. The current
+consumer is a finite real-engine probe; installed Sync integration remains open.
+
+The local lease starts before schema/lock I/O, uses only positive actual Control
+remainder and never exceeds five seconds or the caller deadline. Each network
+poll additionally checks observed backend loss, including decrypted TLS buffers;
+replacing an attached liveness predicate permanently refuses the attempt. Socket
+and callback work drop before rollback releases locks. Delivery after rollback
+checks the client, original deadline and lease again. Cancellation or uncertain
+cleanup poisons the session until actual driver retirement. Undetected partitions
+remain bounded by the lease; arbitrary synchronous callbacks cannot be preempted.
+
+No persistent format changes accompany this adapter. Subsequent admission still
+needs current source/policy checks; this is not a WebSocket, coverage or complete
+signed-event journey. The new native source-transport profile and three engine
+scenarios are prepared, not yet executed at this checkpoint. Delayed cleanup,
+concurrent changes, installed acquisition and capacity qualification remain open.

@@ -1,3 +1,4 @@
+pub(crate) mod acquisition;
 pub(crate) mod policy;
 mod private_routes;
 mod recipes;

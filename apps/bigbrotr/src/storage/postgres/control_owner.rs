@@ -43,6 +43,9 @@ pub use relay_registry::{EndpointRegistration, RelayRegistryError};
 #[path = "relay_enrollment.rs"]
 mod relay_enrollment;
 pub use relay_enrollment::EnrollmentRoutes;
+#[path = "relay_source.rs"]
+mod relay_source;
+pub use relay_source::{RelaySourceError, RelaySourceRequest};
 #[path = "scope_grants.rs"]
 mod scope_grants;
 pub use scope_grants::ScopeGrantAllocation;

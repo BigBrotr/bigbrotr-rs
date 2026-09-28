@@ -31,10 +31,10 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'registry'
-assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults')
+assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport')
 probe = {'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
          'enrollment':'relay_enrollment_probe', 'enrollment-faults':'relay_enrollment_fault_probe',
-         'visibility':'ingest_bootstrap_probe', 'policy-versions':'ingest_bootstrap_probe', 'relay-source':'ingest_bootstrap_probe', 'relay-source-faults':'ingest_bootstrap_probe'}[mode]
+         'visibility':'ingest_bootstrap_probe', 'policy-versions':'ingest_bootstrap_probe', 'relay-source':'ingest_bootstrap_probe', 'relay-source-faults':'ingest_bootstrap_probe', 'source-transport':'ingest_bootstrap_probe'}[mode]
 if mode == 'relay-source-faults':
     identity['scope'] = 'Source-bound admission/recovery fault probe build only; no engine qualification'
 if mode == 'enrollment-faults':
@@ -74,6 +74,16 @@ if mode == 'relay-source':
     identity['scope'] = 'Operational relay source bindings; no source grant or socket acquisition'
     steps.insert(1, ('catalog', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                '--test','control_schema','--test','migrate_entrypoint']))
+if mode == 'source-transport':
+    identity['scope'] = 'Finite current source transport and policy components; native engine scenarios remain separate'
+    steps[1:1] = [
+        ('network', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                     '--test', 'network_direct', '--test', 'network_policy', '--test', 'network_route_selection']),
+        ('visibility', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                        '--lib', 'source_visibility_never']),
+        ('policy', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                    '--bin', 'bigbrotr', 'config::acquisition::tests']),
+    ]
 result = execute(steps,checks,SOURCE,env,identity,1800)
 assert result['status']=='PASS'
 artifacts=Path('/out/artifacts'); artifacts.mkdir()
@@ -90,5 +100,6 @@ status = {'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_B
           'enrollment':'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
           'enrollment-faults':'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',
           'visibility':'PASS_INGEST_VISIBILITY_BUILD_ONLY', 'policy-versions':'PASS_POLICY_VERSIONS_BUILD_ONLY', 'relay-source':'PASS_RELAY_SOURCE_BUILD_ONLY',
-          'relay-source-faults':'PASS_RELAY_SOURCE_FAULT_BUILD_ONLY'}[mode]
+          'relay-source-faults':'PASS_RELAY_SOURCE_FAULT_BUILD_ONLY',
+          'source-transport':'PASS_SOURCE_TRANSPORT_BUILD_ONLY'}[mode]
 Path('/out/qualification.json').write_text(json.dumps(dict(identity,status=status),indent=2)+'\n')

@@ -12,9 +12,33 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is5efd67b (unpublished verified fixture candidate); origin/main64f3f60
-is pushed to the verified private repository. Root owns pending scoped evidence,
-reference/task/inventory/checkpoint updates. Product a6c28e6 and applied0020 bytes remain unchanged. Previous qualified product5be0dbd remains
+Local main and origin/main are339dbf4, pushed to the verified private repository.
+Root owns the dirty finite source-transport slice: network lifetime/route decoder,
+acquisition visibility restriction, PostgreSQL source consumer/shared enrollment
+check, accepted Sync policy validator, actual engine probe and laboratory profile.
+No applied SQL changed. Product a6c28e6 remains the last native-qualified source
+boundary. Candidate commit/native34-test build and three engine scenarios are next;
+no source-transport native result exists yet. No active experiment.
+
+Mac29 affected network tests, four accepted-policy cases, one visibility case and
+scoped lib/bin/probe/test Clippy passed. Original missing-API REDs are retained.
+Disabling the liveness refusal produced the expected TLS buffered-read failure;
+source restored byte-exact. Static predicate replacement was reproduced (Ok vs
+Authority), then refused permanently. First private-policy test wrongly expected
+policy construction to filter addresses; its corrected independent address check
+passed, with original failure retained. Original unused-helper Clippy failure is
+also retained: actual probe consumes the configuration owner, but installed Sync
+is pending, explicitly annotated. Logs: .research/implementation/source-issuer-20260928.
+
+Read-only source review found cleanup can outlast authority: candidate now checks
+client, explicit deadline and original lease after rollback. Probe roots bind both
+actual deployment IDs. Backend-kill fixture requires over one second remaining
+before a500ms closure bound. Actual delayed-cleanup/deadline schedules still owed;
+never infer those from static review or the first three prepared engine cases.
+Last Tux census07:41:11UTC: old fault/build PIDs absent, only eight unrelated
+containers running,66,489,608KiB free. Latest Mac13,954,128KiB available. Recheck
+before native allocation. Cache retirement is complete below; no further deletion.
+Previous qualified product5be0dbd remains
 recorded below; maintenance and policy-version evidence are committed.
 No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
 05:51:59UTC, PID3018662/start395683262 terminal, owner8b12a62d405821e4949859f225a685a6.
@@ -96,13 +120,14 @@ policy_epoch movement. Provenance-off EventIntent intentionally omits operationa
 IDs, so ambiguous producer/work recovery must retain a bounded source binding
 separately, without allocating archival endpoint/access mappings. History reader
 grants and original enrollment actor/session do not authorize the runtime worker.
-No current issuer/ban consumer or signed acquisition claim exists yet. After this
-focused SQL evidence, implement that minimum current authority/committed scope
+The current issuer/ban consumer is now a dirty candidate, with no native or
+signed acquisition claim yet. Qualify the finite current authority/committed scope
 consumer; full discovery, Monitor and renewable sessions are not prerequisites.
 
 The bounded operational source binding is now qualified through first-wave,
 relational and actual lock/COMMIT/revoked-recovery evidence. Source permission
-and socket attribution remain unimplemented and unqualified. Root owns new
+and socket attribution remain unqualified. The finite source candidate is above;
+prior source-binding work owns
 0020 (four nullable all-or-none immutable operational fields on producer_requests),
 acquisition/relay_source, postgres/producer_sources, reservation/initial_batch
 consumers, catalog/manifest and affected fixture callers. Old applied SQL/native
@@ -227,9 +252,11 @@ unchanged; other old DBs retained but not rehashed. Inventory source.faults;
 ignored .research/implementation/relay-source-faults-5efd67b owns launch/capture/
 root-review. Mac and Tux cache-retirement receipts remain as recorded below.
 
-Next bounded action: commit/push verified evidence, then implement the finite
-current source issuer/ban/committed visibility/route consumer under P02-T01 Step6,
-P03-T01 and P04-T02. Read current owning network gates/callers before design;
+Verified fault evidence is committed/pushed. Next bounded action: review and commit
+the finite source candidate, transfer exact Git for the source-transport native
+build, then run the three prepared actual engine cases. This remains P02-T01
+Step6, P03-T01 and P04-T02; delayed cleanup and concurrent policy/source changes
+need subsequent practical qualification before the responsibility closes. Read current owning network gates/callers before design;
 independent read-only reviewer is checking that boundary. Then wire actual guarded
 socket acquisition into P03-T02 and P01-T09 Step2/M1. Full discovery, Monitor,
 analytics and renewable sessions are not blanket prerequisites. Binding is data,

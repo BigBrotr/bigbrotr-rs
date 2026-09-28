@@ -45,13 +45,13 @@ impl std::error::Error for TransportError {}
 /// Control adapter must first authorize this exact endpoint, route and action;
 /// constructing an ActionWindow establishes only its conservative lifetime.
 /// Dropping the returned handle revokes this attempt permanently.
-pub struct DirectAttempt {
+pub struct DirectAttempt<'owner> {
     target: Target,
     policy: DirectPolicy,
     deadline: Instant,
-    gate: Gate,
+    gate: Gate<'owner>,
 }
-impl DirectAttempt {
+impl DirectAttempt<'static> {
     pub fn new(
         target: Target,
         policy: DirectPolicy,
@@ -68,6 +68,19 @@ impl DirectAttempt {
             },
             cancel,
         )
+    }
+
+    /// Add a borrowed, nonblocking owner-liveness refusal at every work/I/O
+    /// poll. The predicate cannot extend the action or revive a failed gate.
+    /// Attaching another predicate permanently refuses the attempt.
+    /// The transport never outlives its owner; this is not a grant constructor.
+    pub fn with_liveness_check(self, owner_live: &(dyn Fn() -> bool + Sync)) -> DirectAttempt<'_> {
+        DirectAttempt {
+            target: self.target,
+            policy: self.policy,
+            deadline: self.deadline,
+            gate: self.gate.with_liveness_check(owner_live),
+        }
     }
 }
 
@@ -91,10 +104,10 @@ impl DirectConnector {
     /// The async callback borrows, rather than owns, the stream. Its protocol
     /// buffers/CPU must have their own finite bounds; it must cooperate with the
     /// runtime. Cancellation cannot interrupt arbitrary synchronous user code.
-    pub async fn run<T>(
+    pub async fn run<'owner, T>(
         &self,
-        attempt: DirectAttempt,
-        operation: impl for<'a> AsyncFnOnce(&'a mut DirectStream) -> io::Result<T>,
+        attempt: DirectAttempt<'owner>,
+        operation: impl for<'a> AsyncFnOnce(&'a mut DirectStream<'owner>) -> io::Result<T>,
     ) -> Result<T, TransportError> {
         attempt.gate.check()?;
         let _resources = self

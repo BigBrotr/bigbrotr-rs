@@ -33,11 +33,12 @@ impl Drop for CancelAttempt {
 }
 
 #[derive(Clone)]
-pub(super) struct Gate {
+pub(super) struct Gate<'owner> {
     state: Arc<Mutex<State>>,
     stopped: watch::Receiver<()>,
+    owner_live: Option<&'owner (dyn Fn() -> bool + Sync)>,
 }
-impl Gate {
+impl Gate<'static> {
     pub fn new(window: ActionWindow, deadline: Instant) -> (Self, CancelAttempt) {
         let state = Arc::new(Mutex::new(State {
             window,
@@ -49,6 +50,7 @@ impl Gate {
             Self {
                 state: state.clone(),
                 stopped,
+                owner_live: None,
             },
             CancelAttempt {
                 state,
@@ -57,12 +59,31 @@ impl Gate {
         )
     }
 
+    pub fn with_liveness_check(self, owner_live: &(dyn Fn() -> bool + Sync)) -> Gate<'_> {
+        // A static predicate leaves this method callable a second time. Never
+        // allow replacement to discard a restriction that has not been sampled.
+        if self.owner_live.is_some()
+            && let Ok(mut state) = self.state.lock()
+        {
+            state.failed.get_or_insert(TransportError::Authority);
+        }
+        Gate {
+            state: self.state,
+            stopped: self.stopped,
+            owner_live: Some(owner_live),
+        }
+    }
+}
+
+impl Gate<'_> {
     pub fn check(&self) -> Result<(), TransportError> {
         let mut state = self.state.lock().map_err(|_| TransportError::Authority)?;
         if let Some(error) = state.failed {
             return Err(error);
         }
-        let result = if Instant::now() >= state.deadline {
+        let result = if self.owner_live.is_some_and(|live| !live()) {
+            Err(TransportError::Authority)
+        } else if Instant::now() >= state.deadline {
             Err(TransportError::Deadline)
         } else {
             state.window.check().map_err(|_| TransportError::Authority)

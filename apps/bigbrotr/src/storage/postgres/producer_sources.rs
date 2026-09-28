@@ -138,8 +138,16 @@ pub(super) async fn require_current(
     let Some(source) = check.binding else {
         return Ok(());
     };
-    let visibility = check
-        .visibility
+    require_current_enrollment(tx, dataset, source, check.visibility).await
+}
+
+pub(super) async fn require_current_enrollment(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    source: RelaySourceBinding,
+    visibility: Option<QualifiedRef>,
+) -> Result<(), SourceBindingError> {
+    let visibility = visibility
         .filter(|v| v.dataset_id == dataset && v.dictionary_kind == DictionaryKind::VisibilityScope)
         .ok_or(SourceBindingError::Conflict)?;
     const REQUIRE_SOURCE: &str = "
