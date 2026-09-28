@@ -186,8 +186,12 @@ restart acceptance. No existing SQL checksum or native format is changed.
 The [executed first wave](../implementation/evidence/p01-initial-ingest-native-20260928.json)
 qualifies six actual CLI/PostgreSQL/RocksDB cases, including renewal past the
 original deadline, graceful release, sealed zero topology and retained-state
-refusals. Native interruption, ambiguous commits and crash-resumable initialization
-remain pending; this does not complete the role or M1.
+refusals. The [native interruption wave](../implementation/evidence/p01-initial-ingest-interruption-native-20260928.json)
+holds actual open/close syscalls while observing the retained Control fence,
+competing-claim refusal and bounded process death. Close(LOCK) occurs after the
+native OS lock is released; this tests an unfinished destructor and driver
+custody. Other close stages, worker panic, ambiguous commits and crash-resumable
+initialization remain pending; this does not complete the role or M1.
 
 ## Exact dependency source basis
 

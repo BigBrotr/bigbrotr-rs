@@ -28825,6 +28825,81 @@
           "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
         }
       }
+    },
+    "initial_ingest_interruptions": {
+      "status": "STOPPED/RETAINED; four real native interruption cases PASS; root review complete",
+      "local_evidence": ".research/implementation/initial-ingest-interruptions-20260928",
+      "purpose": "P01-T09 Step1/P02-T02 Steps2/3 actual installed native worker and Control custody through bounded shutdown",
+      "launch": {
+        "source": "ec19cb03d4e53f0d5c40419b593cba191c26274c",
+        "tree": "ab84cc1fb313aab0943029165f88aa43b69b4634",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-interruptions-ec19cb0",
+        "pid": 3429621,
+        "start_ticks": "399321661",
+        "bundle_sha256": "d87de334336bed2d114dc670366e580342fa354bdf3d7c66669908e13b1b7aad",
+        "artifact_source": "7ab155ecdcf962d69032b54ae0e4c3d19967b2a6",
+        "artifact_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-7ab155e/out/artifacts"
+      },
+      "engine": {
+        "owner": "a576d1338d3c35dcaacee5e7320a73b0",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "10bca4742753ba41743d28b6756cdef93eac0101767bd6460417bae13a87db07",
+          "name": "bigbrotr-acquisition-binding-ec19cb0"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_ec19cb0_trace_pass",
+          "bb_scope_bind_ec19cb0_initialize_signal",
+          "bb_scope_bind_ec19cb0_initialize_deadline",
+          "bb_scope_bind_ec19cb0_close_signal"
+        ],
+        "status": "PASS_INITIAL_INGEST_INTERRUPTION_WAVE",
+        "started_at": "2026-09-28T15:56:03.168373+00:00",
+        "finished_at": "2026-09-28T15:56:26.605698+00:00"
+      },
+      "instrument": {
+        "source": "9b30c3535c1407294fb95b40df8019ebda6860f9",
+        "owner": "84ac8cbf5292679b8ef7043fed7a2799",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35",
+        "files": {
+          "strace-exit-fixed": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+          "result.json": "cf0317fc8934eb70f3cf2d74ac6ba0680be09366a4ade586aabd95991c6c3abc"
+        }
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "ec19cb03d4e53f0d5c40419b593cba191c26274c",
+        "observed_at": "2026-09-28T15:57:30.205066+00:00",
+        "prior_unchanged": 943,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "client",
+            "id": "10bca4742753ba41743d28b6756cdef93eac0101767bd6460417bae13a87db07",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1562,
+        "artifacts_verified": true,
+        "instrument_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 64319619072,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      },
+      "preserve": "Retain all four clones, partial/complete native stores, original requests, source, trace logs and exact7ab155e binaries. Qualified tracer retained. No new compiler cache.",
+      "next": "Installed SQL cancellation/ambiguous COMMIT and typed acquisition job. No cleanup obligation; do not replay launchers."
     }
   },
   "implementation_relay_registry_20260928": {

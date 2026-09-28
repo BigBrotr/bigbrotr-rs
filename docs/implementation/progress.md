@@ -12,11 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main/private origin isfef5025 (first lifetime qualification pushed); tested
-product revision remains7ab155ecdcf962d69032b54ae0e4c3d19967b2a6. Root owns
-dirty interruption fixtures in experiments/ingest-bootstrap/{interruptions.py,
-interruption_client.py}, bindings.py wiring and this checkpoint. No new product
-code, dependency, build or persistent format change. Native interruption NOT_RUN.
+Mac main is candidateec19cb03d4e53f0d5c40419b593cba191c26274c; private origin
+isfef5025. Product7ab155e and first-wave qualification are already pushed.
+Root owns only current qualification evidence/inventory/checkpoint/reference
+edits. Both first lifetime and native interruption waves passed bounded claims;
+commit/push this qualification, then continue installed SQL custody and typed jobs.
 
 Active P01-T09 Step1/P02-T02 Steps2/3: explicit
 `serve --initialize-ingest --roles control,ingest`, fresh-only under retained
@@ -49,24 +49,35 @@ eight unrelated running, cache free and64,395,231,232B available. Mac last8,284,
 Shared1154757 intermediates now7ab155e; exact binaries separately retained.
 No cleanup obligation; prior cache retirement remains complete.
 
-Next bounded action: finish root/read-only AI review of four prepared native
-interruption cases, commit exact fixture and transfer via Git, reuse separately
-retained7ab155e binaries only after unchanged Rust/build-input comparison. Cases:
-traced healthy stop, actual LOCK openat held for signal/deadline, LOCK close held
-during shutdown. The observer requires real SQL advisory fence/competing Control
-Busy, exact row snapshots, pidfd death and original input/native bytes. Actual
-CLI validates30slease/5srenewal/2sgrace offline; Python syntax passes only.
-Qualified strace9b30c35 owner/artifact/proof reverified, not executed for this
-wave yet. Ignored initial-ingest-interruptions-20260928 owns local preparation.
-Mac8,262,764KiB/Tux62,885,920KiB available; no active BigBrotr lab. Preserve all
-originals; no new compilation cache needed.
-Prelaunch AI/root review corrected the competitor to the explicit initial path
-with a separate absent target. Signal death must precede launch+5s, distinguishing
-it from the earliest ordinary watchdog; late diagnostic output is optional.
-Exact RocksDB11.8.1 UnlockFile releases fcntl before close: the close case tests
-unfinished destructor/Control custody, not continued OS LOCK ownership. Lost/delayed COMMIT, worker panic, initialization recovery and successor
-remain open. Dictionary-only reports remain ready=false/acquisition=not-started.
-Do not mark P01-T09, P02-T02 or M1 complete. No capacity or arm64 claim.
+[Native interruption evidence](evidence/p01-initial-ingest-interruption-native-20260928.json)
+at ec19cb0 reuses exact7ab155e binaries without compilation; complete Rust/build
+inputs are unchanged. Four actual cases PASS: traced healthy stop, LOCK openat
+held for signal/deadline, close(LOCK) held during shutdown. SQL observes the exact
+original Control backend/advisory fence and actual competing claimant Busy. Held
+rows/xmin remain exact through death, without graceful release. Signal exits take
+2.030244s/2.038276s; deadline-only7.000289s. The signal case dies before launch+5s,
+so ordinary watchdog expiry cannot explain it. Root compared1562 Git files/76
+payloads plus original input/native bytes. No engine/setup failure. AI/root review
+corrected competitor selection and optional diagnostic delivery before execution.
+Exact RocksDB11.8.1 unlocks before close: the close case proves unfinished
+native destructor/Control custody, not retained OS LOCK or arbitrary kernel I/O.
+
+All interruption resources STOPPED/RETAINED. Inventory
+implementation_network_20260928.initial_ingest_interruptions and ignored
+.research/implementation/initial-ingest-interruptions-20260928 own exact identities,
+recipes, traces and captures. Run initial-ingest-interruptions-ec19cb0,
+PID3429621/start399321661 terminal; client10bca474 stopped143 and borrowedPG71775507
+stopped0, no OOM. Four bb_scope_bind_ec19cb0_* clones/native partial states remain.
+Audit15:57:30UTC:943 other projections unchanged, eight unrelated running,
+compiler lock free and64,319,619,072B available. No new cache, no cleanup debt.
+Never replay launchers. Instrument9b30c35 is retained and unchanged.
+
+Next bounded action after qualification commit: installed SQL cancellation and
+lost/delayed COMMIT, using the existing finite fault proxy and real lock barriers.
+Read owning startup/registration/bootstrap transaction sequence and recovery
+contract before choosing exact commit numbers. Preserve unknown durable state;
+no retry may silently regenerate initial identities. Worker panic, crash-resumable
+initialization and successor remain open. No M1 or capacity/arm64 claim.
 
 Next user-visible journey remains first signed socket event→durable admission→
 timer archive/index→read/export→restart/resend. Typed finite job authorization

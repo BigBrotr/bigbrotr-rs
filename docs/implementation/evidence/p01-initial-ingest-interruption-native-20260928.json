@@ -1,0 +1,132 @@
+{
+  "format": "bigbrotr-initial-ingest-interruption-native/1",
+  "status": "PASS_SCOPED_INITIAL_NATIVE_INTERRUPTION",
+  "source": "ec19cb03d4e53f0d5c40419b593cba191c26274c",
+  "tree": "ab84cc1fb313aab0943029165f88aa43b69b4634",
+  "product_source": "7ab155ecdcf962d69032b54ae0e4c3d19967b2a6",
+  "tasks": [
+    "P01-T09 Step1",
+    "P02-T02 Steps2/3"
+  ],
+  "local_evidence": ".research/implementation/initial-ingest-interruptions-20260928",
+  "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-interruptions-ec19cb0",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "rocksdb": "rocksdb0.25.0 / librocksdb-sys0.19.0+11.8.1",
+    "client_memory_bytes": 1073741824
+  },
+  "identities": {
+    "source_manifest_sha256": "6561e344b153c6ae5db88761da1b15f38d8c6949108ce7bcddd028bdf519760c",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "binary_sha256": "69a9fc96b71b13d7bb28cb310f3396d188335389ec4f4d515195368ae41a7e2c",
+    "probe_sha256": "8d12dd94a5fd9416564ad0160ac634cd797c22dd62a4a43b361e2973151cc2b4"
+  },
+  "bundle_sha256": "d87de334336bed2d114dc670366e580342fa354bdf3d7c66669908e13b1b7aad",
+  "captured_payload_manifest_sha256": "6f170a7b84104515486ed8780fce2831e5804224bbd03479a226825c39377b3a",
+  "instrument": {
+    "source": "9b30c3535c1407294fb95b40df8019ebda6860f9",
+    "owner": "84ac8cbf5292679b8ef7043fed7a2799",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/strace-exit-9b30c35",
+    "files": {
+      "strace-exit-fixed": "509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458",
+      "result.json": "cf0317fc8934eb70f3cf2d74ac6ba0680be09366a4ade586aabd95991c6c3abc"
+    }
+  },
+  "root_review": {
+    "status": "PASS_BOUNDED_ROOT_REVIEW",
+    "source": "ec19cb03d4e53f0d5c40419b593cba191c26274c",
+    "product_source": "7ab155ecdcf962d69032b54ae0e4c3d19967b2a6",
+    "source_files": 1562,
+    "captured_payloads": 76,
+    "cases": 4,
+    "actual_tables_per_case": 64,
+    "signal_or_hold_to_terminal_seconds": {
+      "initialize-signal": 2.030243783723563,
+      "initialize-deadline": 7.0002885749563575,
+      "close-signal": 2.038276002276689
+    },
+    "no_product_or_dependency_change": true,
+    "terminal_audit": "2026-09-28T15:57:30.205066+00:00"
+  },
+  "checks": [
+    "Exact existing7ab155e application/probe reused, with all changed files confined to docs/experiments. No recompilation or product edit. Both roots clean, source tree and1562 source files compared against Git;76 payloads verified",
+    "Qualified tracer healthy control performs actual initialization/bootstrap, SIGTERM, native close and committed Control release; all12 rows, CBOR request and PostgreSQL receipt match independent literal encoding",
+    "Actual LOCK openat on non-main native thread held60s externally. Separate backend observation matches stored Control PID/start and granted advisory fence; actual competing initial CLI returns Busy with zero mutation and no new target",
+    "Initialize SIGTERM is observed in the actual main-thread trace; death precedes launch+5s, distinguishing it from ordinary watchdog expiry. Exit4 after2.030244s from signal. Deadline-only case has no SIGTERM, exit4 after7.000289s from observed hold",
+    "Actual close(LOCK) during shutdown remains pending on the native worker; SQL fence and competing Busy remain observed. Exit4 after2.038276s from signal. Native rows/original input remain exact",
+    "All held cases retain every64-table row/xmin through terminal process death; Control remains active-state without fabricated graceful release/exclusion. Tracer and tracee reaped without fixture kill. Existing-target retries refuse with exact unchanged rows",
+    "Root terminal audit:943 other projections unchanged, eight unrelated running, borrowed PostgreSQL and own client stopped/no OOM, compiler lock free"
+  ],
+  "cases": [
+    {
+      "name": "trace-pass",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "initialize-signal",
+      "status": "PASS",
+      "exit_code": 4
+    },
+    {
+      "name": "initialize-deadline",
+      "status": "PASS",
+      "exit_code": 4
+    },
+    {
+      "name": "close-signal",
+      "status": "PASS",
+      "exit_code": 4
+    }
+  ],
+  "scope": "Selected actual syscall-entry hold and Control-driver custody only. RocksDB UnlockFile performs fcntl unlock before close(LOCK), so the close case tests unfinished destructor, not continued native OS lock ownership. No arbitrary kernel D-state termination or continuous all-phase proof.",
+  "original_outcomes": [
+    "No native engine or fixture failure in this wave",
+    "Prelaunch AI/root review corrected competitor path, conservative timing against process launch, and diagnostic-loss oracle. Actual offline configuration validation and Python/artifact syntax checks passed."
+  ],
+  "diagnostics": "Hard exit does not drain nonblocking lifecycle output. Diagnostic phrase happened to be observed in all three held runs, but PASS depends on actual trace/process/fence/durable state, not phrase delivery.",
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "ec19cb03d4e53f0d5c40419b593cba191c26274c",
+    "observed_at": "2026-09-28T15:57:30.205066+00:00",
+    "prior_unchanged": 943,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "client",
+        "id": "10bca4742753ba41743d28b6756cdef93eac0101767bd6460417bae13a87db07",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1562,
+    "artifacts_verified": true,
+    "instrument_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 64319619072,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "not_run": [
+    "worker panic and arbitrary uninterruptible kernel I/O",
+    "lost/delayed COMMIT and cancellation lock schedules",
+    "crash-resumable initialization/successor",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ]
+}
