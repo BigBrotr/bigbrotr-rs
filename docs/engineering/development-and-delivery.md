@@ -296,6 +296,13 @@ migration → runtime doctor → start selected roles → owner enrollment and o
 actual useful result. `doctor` and `serve` never initialize or migrate implicitly.
 Interrupted setup preserves secrets, data and completed initialization receipts.
 
+The initial Ingest writer has an explicit same-Control startup path under
+qualification: [serve --initialize-ingest](../reference/ingest-store.md#explicit-initial-owning-lifetime).
+It combines fresh native initialization and that first retained owning lifetime;
+it is not an implicit Serve side effect or a finite initializer whose old identity
+may be reused on restart. Its dictionary-only report is not role/M1 readiness.
+Partial setup remains preserved and refused until explicit recovery is available.
+
 The ordinary upgrade has explicit bounded downtime:
 
 1. Verify the new signed manifest, render the selected Compose/config recipe and

@@ -2,6 +2,61 @@
 use std::{fs, process::Command};
 
 #[test]
+fn explicit_initial_ingest_refuses_omitted_roles_and_unsupported_consumers_before_io() {
+    let directory = tempfile::tempdir().unwrap();
+    let file = directory.path().join("root.toml");
+    let mut config: toml::Table = include_str!("../../../config/recipes/archive-only.toml")
+        .parse()
+        .unwrap();
+    // Static composition still requires Archive; this explicit process selection
+    // starts only the first Control/Ingest lifetime.
+    config["topology"]["local_roles"] =
+        toml::Value::Array(vec!["control".into(), "ingest".into(), "archive".into()]);
+    config["postgres"]["control"]["password_ref"] =
+        "file:/nonexistent/initial-ingest-password".into();
+    let invoke = |roles: &str| {
+        Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
+            .env_clear()
+            .args(["serve", "--file"])
+            .arg(&file)
+            .args(["--initialize-ingest", "--roles", roles])
+            .output()
+            .unwrap()
+    };
+    fs::write(&file, toml::to_string(&config).unwrap()).unwrap();
+    let wrong = invoke("control");
+    assert_eq!(wrong.status.code(), Some(3));
+    assert!(String::from_utf8_lossy(&wrong.stderr).contains("requires exactly"));
+    let administration = invoke("control,ingest");
+    assert_eq!(administration.status.code(), Some(3));
+    assert!(
+        String::from_utf8_lossy(&administration.stderr)
+            .contains("administration and archive reader disabled")
+    );
+    config["administration"]["enabled"] = false.into();
+    let minimal = toml::to_string(&config).unwrap();
+    for selected in [
+        "\n[read.cursor]\nkeyring_ref='file:/nonexistent/ring'\n",
+        "\n[administration.assets]\ndirectory='/nonexistent/assets'\n",
+    ] {
+        fs::write(&file, format!("{minimal}{selected}")).unwrap();
+        let refused = invoke("control,ingest");
+        assert_eq!(refused.status.code(), Some(3));
+        assert!(
+            String::from_utf8_lossy(&refused.stderr).contains("cursor keyring or private assets")
+        );
+        assert!(refused.stdout.is_empty());
+    }
+    fs::write(&file, &minimal).unwrap();
+    let accepted = invoke("control,ingest");
+    assert_eq!(accepted.status.code(), Some(3));
+    assert!(String::from_utf8_lossy(&accepted.stderr).contains("protected PostgreSQL password"));
+    assert!(accepted.stdout.is_empty());
+    assert_eq!(fs::read_to_string(&file).unwrap(), minimal);
+    assert_eq!(fs::read_dir(directory.path()).unwrap().count(), 1);
+}
+
+#[test]
 fn explicit_control_role_reaches_credentials_but_never_activates_other_roles() {
     let directory = tempfile::tempdir().unwrap();
     let file = directory.path().join("root.toml");

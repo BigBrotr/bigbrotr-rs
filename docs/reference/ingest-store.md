@@ -125,7 +125,63 @@ Execution identities and results belong to the slice evidence. These tests do no
 finish P02-T02: signed-event atomic admission, receipt ambiguity and replay,
 producer retirement, crash/ENOSPC/fsync faults, positive stale-owner exclusion,
 backup/restore, mixed/aged workloads and Linux target qualification remain separate
-practical gates. This API is not yet exposed as an installation or recovery CLI.
+practical gates. The explicit first-lifetime CLI below is under qualification;
+restart/handoff and initialization recovery are not yet installation commands.
+
+## Explicit initial owning lifetime
+
+`bigbrotr serve --file ROOT --roles control,ingest --initialize-ingest` explicitly
+selects fresh-only initialization and retains that original Control identity until
+stopped. A separate finite initializer cannot hand this initial writer to a new
+Control process. Ordinary Serve still never creates an Ingest directory. Static
+composition must declare the Archive counterpart; this process selection does
+not start it. Configured administration, archive reader, export destination,
+cursor keyring or private asset prerequisites are refused by this narrow path.
+Both complete accepted documents must also permit the selected profile.
+
+The worker first refuses existing targets and absent/symlink parents, then claims
+Control. A bounded fenced basis read obtains the real accepted snapshot, server
+clock/deadline and absent or sealed empty topology. Registration independently
+rechecks that basis. Fresh OS identities establish the first shard0/resource,
+producer and nine empty allocation namespaces. The producer outstanding limit is
+the smaller ceiling of the two accepted documents, never the startup file seed.
+The existing native initializer commits its complete manifest; the existing
+connected bootstrap then admits exactly the public/private visibility mappings
+with original staged input and PG reservation/outcome. No event is collected.
+
+One dedicated blocking worker exclusively owns store and Control. The parent
+current-thread runtime drives the actual PG connection, signals and phase
+watchdog. Only a closed terminal report leaves the worker. Native store destruction
+precedes Control destruction on normal errors and panic; graceful shutdown closes
+native before explicitly releasing Control, then joins the driver. Cancellation
+does not detach or abort native work. If the worker cannot join within the
+configured shutdown bound, the process exits4 without first aborting the driver,
+releasing the fence or claiming graceful release. Interrupted/ambiguous state is
+preserved. Diagnostics use the existing bounded, nonblocking lifecycle channel.
+
+Between operations the same worker refreshes Control, then renews initial Ingest.
+Every native operation still needs its own fresh authority; scheduling is not a
+grant. Expired Ingest cannot be revived. Changed accepted snapshots stop the
+initial lifetime. An initialized report explicitly has `ready=false` and
+`acquisition=not-started`; maintained dictionaries are not complete Ingest/Sync
+readiness. SIGTERM does not close the source stream, acknowledge producers or
+qualify successor admission.
+
+The explicit small native profile uses32MiB cache,16MiB WBM,2MiB per-CF buffers,
+16MiB WAL target,64 open files and two background jobs, within a128MiB native
+reservation. Bootstrap reserves8MiB payload/4MiB native plus24MiB retained inputs;
+the shared configured application envelope also covers the existing Control
+connection reservation. No second process allowance is borrowed. These are
+reservations/targets, not measured RSS or capacity. No hot identity cache exists
+in this initialization-only path.
+
+Existing/partial native state or a populated source registry is never adopted,
+deleted or reinitialized. The in-memory attempt is preserved through the current
+worker/driver lifetime, but this slice does not promise crash-resumable setup.
+Registry-only interruption can lack the chosen manifest/recovery metadata; retain
+it for explicit recovery and do not generate another initial writer. A bounded
+loader over existing registry, manifest and staged-input records must precede
+restart acceptance. No existing SQL checksum or native format is changed.
 
 ## Exact dependency source basis
 

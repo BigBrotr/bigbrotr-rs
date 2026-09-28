@@ -12,9 +12,51 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is e86439ebb86b6e24f059d781c1e8050d80dcb6bb, the tested unpublished
-candidate; verified private origin/main is 190b6ac571b01393323d622ba2410da80ad983d2.
-Root owns only qualification/inventory/checkpoint documentation changes.
+Mac main/private origin is 62012ecb5324ba1a613a274943973b30ad49ba54; its renewal
+qualification is committed and pushed. Root owns the current dirty initial Ingest
+runtime, basis adapter, executable tests, six-case engine fixture/build profiles
+and owning documentation. No Tux run for these changes has started yet.
+
+Active P01-T09 Step1/P02-T02 Steps2/3: explicit
+`serve --initialize-ingest --roles control,ingest`, fresh-only under retained
+Control. A dedicated blocking worker keeps store and Control until native closes;
+parent runtime retains actual driver, signals and phase watchdog. Bounded join
+failure fail-stops before driver disposal. No live store is returned from a task.
+This is a concrete lifetime responsibility, not a generic actor framework or
+implicit initialization. Dictionary-only reports remain ready=false and acquisition
+absent. Existing native/registry state is preserved/refused; crash-resumable
+initialization and successor admission remain open.
+
+Mac five focused supervisor/flag tests and three actual executable offline tests
+PASS; scoped Clippy PASS before final documentation. Ignored
+.research/implementation/initial-ingest-runtime-20260928 retains the missing-flag
+RED, watchdog RED/green, compilation import failure, entrypoint fixture and product
+failures, Clippy style correction and offline fixture validation. Product tests
+found a wrong export destination key (panic); corrected. Read-only AI/root review
+corrected seed-derived producer count to min of both accepted documents, configured
+cursor/assets omission, and stale cached phase deadline (discriminating RED).
+Custody no longer stores an unnecessary optional Control value. A second
+discriminating RED confirms late native completion cannot reset an expired phase;
+the correction and scoped Clippy pass. Artifact/link and handoff checks pass
+(structure only). Complete changed owners, callers, fixture and document diff
+were reviewed; native qualification is still pending.
+
+Six real CLI/PG/Rocks scenarios are prepared, NOT RUN: live renewal past original
+expiry, sealed empty topology0→1, expired Ingest, accepted administrative refusal,
+retained native target and retained nonempty registry. They compare independently
+encoded original requests/receipts/all12 native rows, all Control table snapshots,
+real release/role retirement and actual drivers. Fixture review corrected safety
+key,5s shared authorization ceiling, multiline TOML arrays and topology-one receipt.
+The actual CLI now validates the generated fixture offline. Native syscall/close
+delay, worker panic, SQL cancellation/lost COMMIT and initialization recovery are
+separate pending guarantees, not PASS. No applied SQL, dependency or format change.
+
+Next bounded action: finish complete changed-file/fixture review, run final scoped
+checks, commit a clean unpublished candidate and transfer exact Git to the initial-ingest
+Tux build profile, then bindings.py --installed-ingest. Recheck space and resource
+ownership first. Do not replay any old launcher or cache deletion. Native prior
+runs are terminal; Mac last8,284,984KiB and Tux63,103,796KiB available at resume,
+eight unrelated containers and neither3381890 nor3384568 present.
 
 The installed-owner review found that Control heartbeat never renews initial
 Ingest's separate scheduling deadline. The new same-Control renewal reuses exact
@@ -44,10 +86,9 @@ bb_scope_bind_e86439e_* clones/stores retained. Terminal audit 14:47:21 UTC foun
 e86439e intermediates; qualified artifacts are separately retained. No cleanup
 obligation. Cache retirement remains complete; never replay launchers/deletions.
 
-Next: commit/push this qualification, then implement explicit first-run native
-startup under retained Control, with bounded worker/native/driver custody.
-Read initial registration construction and initialization retry/recovery boundaries
-before selecting its CLI. Separate initializer→Serve currently cannot reuse the
+Renewal qualification is pushed. The explicit first-run native startup is now
+the active dirty implementation above, with bounded worker/native/driver custody.
+Initial registration construction and partial-state boundaries were reviewed. Separate initializer→Serve currently cannot reuse the
 initial writer. Keep that constraint visible; do not add a parallel plan.
 The renewal's lost/delayed COMMIT, write-cutoff negative control and policy/closing
 races remain pending and must be exercised where the installed lifetime claims them.
@@ -63,7 +104,8 @@ Read-only AI review confirms source dictionaries need full descriptor linkage,
 not equality between operational IDs and archive QualifiedRefs; a static policy
 checker alone cannot establish this or observation custody.
 
-Installed Ingest is currently absent: Serve permits Control only. Initial native
+Ordinary Serve still permits Control only; explicit initial Ingest is under
+qualification as described above. Initial native
 registration and first admission must share one retained Control identity; a
 standalone initializer followed by a new Serve cannot reuse this initial writer.
 M1 requires archived restart recovery, and P01-T09 Step4 additionally resends the

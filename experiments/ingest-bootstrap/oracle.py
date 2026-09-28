@@ -33,18 +33,20 @@ def cbor(value):
     raise TypeError(type(value))
 
 
-def expected(dataset, committed, policy=1):
+def expected(dataset, committed, policy=1, *, domain=bytes([64])*16,
+             slot=bytes([66])*16, owner=bytes([61])*16, incarnation=bytes([63])*16,
+             recovery=bytes([67])*16, topology=0, namespaces=None, recorded_at=123):
     assert len(dataset) == 16 and any(dataset)
     be = lambda n, width=8: n.to_bytes(width, "big")
-    domain = bytes([64]) * 16
-    slot = bytes([66]) * 16
+    namespaces = [(VISIBILITY_KIND, domain)] if namespaces is None else namespaces
     source = lambda n: [dataset, 0, 1, n]
     source_key = lambda n: dataset + be(0, 4) + be(1) + be(n)
     reference = lambda n: [dataset, VISIBILITY_KIND, domain, n]
     ref_key = lambda n: dataset + be(VISIBILITY_KIND, 2) + domain + be(n)
-    manifest = (bytes.fromhex("01010001000100010001") + dataset + be(0)
-                + bytes([61]) * 16 + be(0, 4) + be(1) + bytes([63]) * 16
-                + bytes([67]) * 16 + be(policy) + bytes([1, 1]) + be(VISIBILITY_KIND, 2) + domain)
+    manifest = (bytes.fromhex("01010001000100010001") + dataset + be(topology)
+                + owner + be(0, 4) + be(1) + incarnation
+                + recovery + be(policy) + bytes([1, len(namespaces)])
+                + b''.join(be(kind, 2)+value for kind, value in namespaces))
     rows = [("default", b"\x01\x01", manifest)]
     if not committed:
         return rows, None, []
@@ -54,7 +56,7 @@ def expected(dataset, committed, policy=1):
         descriptor = [1, "visibility", 1, {"class": label}]
         mapping = [reference(n), *descriptor]
         entries.append(["dictionary", 1, mapping])
-        fact = b"bigbrotr/fact/1\0" + cbor([source(n), "dictionary", 1, reference(1), 123, mapping])
+        fact = b"bigbrotr/fact/1\0" + cbor([source(n), "dictionary", 1, reference(1), recorded_at, mapping])
         digest = hashlib.sha256(fact).digest()
         facts.append(fact)
         refs.append([source(n), digest])
@@ -67,7 +69,7 @@ def expected(dataset, committed, policy=1):
     request_id = [slot, 1, 1]
     request = b"bigbrotr/producer-request/1\0" + cbor([request_id, "admit-evidence", 1, [1, reference(1), entries]])
     receipt = b"bigbrotr/receipt/1\0" + cbor([1, request_id, hashlib.sha256(request).digest(),
-        [dataset, 0, 1, bytes([67]) * 16, 1], refs, refs])
+        [dataset, topology, 1, recovery, 1], refs, refs])
     batch_digest = hashlib.sha256(b"bigbrotr/admission-batch/1\0" + cbor([dataset, 0, 1, 1, 2, refs])).digest()
     rows.extend([
         ("default", b"\x01\x02" + dataset + be(0, 4) + be(1), b"\x01\x02" + be(2)),

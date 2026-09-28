@@ -2,6 +2,7 @@
 mod cursor_keys;
 mod export_jobs;
 mod history;
+mod initial_ingest;
 mod native_grants;
 mod resume_export;
 use super::{
@@ -62,9 +63,11 @@ pub(super) fn inspect_receipt(args: &ArgMatches) -> ! {
 
 pub(crate) fn command() -> Command {
     Command::new("serve")
-        .about("Run explicitly assigned roles; the initial runtime implements Control only")
+        .about("Run Control or the explicit initial Control/Ingest lifetime")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
+        .arg(Arg::new("initialize-ingest").long("initialize-ingest").action(clap::ArgAction::SetTrue)
+            .help("Explicit fresh-only native initialization under retained Control; requires exactly control,ingest. Keeps ownership until stopped; acquisition is not started"))
         .after_help("Requires explicit initialization, migrations and initial policy activation. Configured read.cursor.keyring_ref loads existing keys before connecting and requires migration0602 plus SELECT on cursor_keyrings/cursor_key_materials. This verifies enrolled local material only, granting no cursor authority; it applies even to headless Control. Accepted administration.enabled starts the loopback private session and scope-grant API (login, me, logout, reauthentication, grant acceptance); migration0812 and session/grant/audit SQL privileges are required before binding. Grant revocation and historical acceptance retries do not need Archive. Fresh enablement requires explicit archive.reader.enabled, local Control/Archive custody, separate catalog reader credentials and the installed worker bundle. Missing native prerequisites refuse enablement; allocation reads do not authorize history delivery. The initial private GET/POST /v1/resources/event_history profile additionally requires a live session, explicit CSRF and history.read for its exact scope; one exact ID/snapshot, configured resource limits, and a certified archive pin apply. This profile is under qualification. POST /management/v1/jobs accepts private exact-ID signed JSONL export jobs; configured initialized export.destination requires migration0813 and job/pin/source-lock privileges before binding. Historical receipts on the available protocol need no current destination or native reader. Destination checks run on supervised blocking work, retained through Control driver join. Selected export.destination plus archive.reader.enabled also requires migration0501 and execution privileges before startup, including headless Control. POST /management/v1/jobs/{job_id}/resume is under qualification with migration0814 and explicit SQL privileges; it queues the same paused unit after current grants/destination/CAS, without a fresh reader pin. Historical retries preserve the original receipt. The initial automatic exact-ID signed JSONL executor is under qualification; it uses current actor grants and the original retained snapshot. Receipts report acceptance only, never completed restrictive drain. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
@@ -107,6 +110,15 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
                 "invalid role selection: require distinct roles assigned in the deployment root"
                     .into(),
             ));
+        }
+        if args.get_flag("initialize-ingest") {
+            if distinct != BTreeSet::from(["control", "ingest"]) {
+                return Err((
+                    3,
+                    "initial Ingest requires exactly the control,ingest roles".into(),
+                ));
+            }
+            return initial_ingest::run(root, &mut output);
         }
         if distinct.iter().any(|role| *role != "control") {
             return Err((
@@ -941,6 +953,25 @@ fn accepted_policy(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn initial_ingest_startup_requires_an_explicit_flag() {
+        let ordinary = command()
+            .try_get_matches_from(["serve", "--file", "/unused"])
+            .unwrap();
+        assert!(!ordinary.get_flag("initialize-ingest"));
+        let explicit = command()
+            .try_get_matches_from([
+                "serve",
+                "--file",
+                "/unused",
+                "--roles",
+                "control,ingest",
+                "--initialize-ingest",
+            ])
+            .unwrap();
+        assert!(explicit.get_flag("initialize-ingest"));
+    }
 
     #[test]
     fn archive_reader_selection_is_explicit_offline_and_preserves_policy_bytes() {

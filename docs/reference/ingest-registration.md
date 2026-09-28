@@ -59,6 +59,16 @@ admission remain separate work.
 
 ## Same-Control scheduling renewal
 
+The explicit installed first lifetime constructs its attempt from
+`ControlSession::initial_ingest_basis`: a bounded fenced read of both accepted
+documents, the actual Control deadline/server clock, and absent or sealed empty
+topology. Zero is a valid previous topology. Any existing source refuses fresh
+initialization. This observation grants nothing; registration and native dispatch
+still perform their complete checks. Cancellation poisons reuse and the real
+driver remains owned. No server clock or accepted managed limit is invented from
+the startup file. The [installed boundary](ingest-store.md#explicit-initial-owning-lifetime)
+does not yet promise recovery of partial initialization.
+
 The installed initial owner needs its own scheduling renewal: Control heartbeat
 alone does not change the Ingest row. `ControlSession::renew_initial_ingest`
 checks the same complete initial registration and both accepted documents, under
