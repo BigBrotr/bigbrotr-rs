@@ -28606,6 +28606,13 @@
         }
       },
       "report": "docs/implementation/evidence/p03-sync-arrival-policy-native-20260928.json"
+    },
+    "ingest_lease": {
+      "status": "PREPARED LOCAL; native build and engine cases NOT_RUN",
+      "local_evidence": ".research/implementation/ingest-lease-20260928",
+      "purpose": "P02-T01 Step5/P02-T02 Steps2/3 same-Control initial Ingest scheduling renewal for the installed owning lifetime",
+      "preserve": "Reuse exclusively locked network-1154757 compiler cache and stopped PG71775507. Create only exact-source run, new clones/native stores and owned build/client containers; retain all original data and evidence.",
+      "next": "Commit candidate; transfer exact Git revision, build native CLI/probe, then eleven --lease engine schedules."
     }
   },
   "implementation_relay_registry_20260928": {

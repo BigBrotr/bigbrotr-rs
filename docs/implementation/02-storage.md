@@ -67,6 +67,11 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   upgrades remain separate steps.
 - [ ] **Step 5:** Implement compare-and-swap updates for config revisions, owner epochs and
   complete frontiers; preserve missing/zero/empty distinctions.
+  The [same-Control initial Ingest renewal](../reference/ingest-registration.md#same-control-scheduling-renewal)
+  is the scheduling prerequisite for the installed initial owner. It preserves
+  existing identities and reuses the registry/policy locks; it cannot revive an
+  expired owner, grant native exclusion or activate a successor. Native
+  qualification is pending; this does not close the complete CAS/handoff step.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
   policy references; later lifecycle migrations add observations/scheduling.
   The first [private operational identity consumer](../reference/relay-endpoint-registry.md)

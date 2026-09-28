@@ -30,7 +30,8 @@ assert len(sys.argv) in (2, 3, 4) and SOURCE == root / 'source'
 guards = len(sys.argv) == 4 and sys.argv[2] == '--guards'
 refusals = len(sys.argv) == 3 and sys.argv[2] == '--refusals'
 policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
-assert len(sys.argv) == 2 or guards or refusals or policy
+lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
+assert len(sys.argv) == 2 or guards or refusals or policy or lease
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
 build = Path(sys.argv[3]).resolve(strict=True) if guards else root / 'out/artifacts'
@@ -56,12 +57,18 @@ output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-binding'
 client = 'bigbrotr-acquisition-binding-' + revision[:7]
 report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=built,
-    status='RUNNING', wave='policy' if policy else 'guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
+    status='RUNNING', wave='ingest-lease' if lease else 'policy' if policy else 'guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
     client=None, cases=[], databases=[],
     postgres=pg['postgres'], postgres_owner=pg['owner'],
     not_run=['installed Sync/progress/M1', 'measured memory capacity/load/aged-state', 'arm64/release']
         + (['Adapter COMMIT/recovery is not repeated in this raw-helper wave; see50b4136 evidence']
            if guards else ['concurrent scope-policy locks and lost COMMIT recovery']))
+
+
+if lease:
+    report['not_run'] = ['installed Ingest/Sync/M1', 'lost or delayed COMMIT',
+        'renewal-write old-deadline predicate negative control', 'policy/closing lock races',
+        'native worker interruption', 'capacity/load/aged-state', 'arm64/release']
 
 
 def require(condition, reason):
@@ -397,7 +404,10 @@ try:
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
-    if guards:
+    if lease:
+        cases = ['pass','expired','control-expired','closing','draining','policy-first',
+                 'policy-second','delayed','wrong-registration','wrong-control','cancelled']
+    elif guards:
         cases = ['pass']
     elif policy:
         cases = ['pass', 'invalid', 'invalid-retained', 'certify-withdrawn',
@@ -413,7 +423,14 @@ try:
         cases = ['pass','changed','omitted','legacy-adopt','outside-collection','outside-request',
                  'no-source','certify-withdrawn','old-source-schema','old-binding-schema']
     for name in cases:
-        completed = run_case(name)
+        if lease:
+            sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+            from lease import run as run_lease
+            completed = clone(name, 'bb_source_template')
+            report['cases'].append(run_lease(pg, client, output, completed, name, rows))
+            save()
+        else:
+            completed = run_case(name)
     if guards:
         from binding_guards import run_policy_race
 
@@ -454,7 +471,7 @@ try:
         require(rows(completed) == basis_rows, 'signed-parent-changed')
     require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_source_template') == template
         and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')
-    report['status'] = 'PASS_SCOPED_ACQUISITION_BINDING'
+    report['status'] = 'PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'
 except BaseException as error:
     report.update(status='FAIL', failure=type(error).__name__ + ': ' + str(error))
     raise
@@ -483,5 +500,5 @@ finally:
         c['State']['Running'] or c['State']['Pid'] or c['State']['OOMKilled'] for c in report['terminal']):
         report['status'] = 'INCOMPLETE_LAB_AUDIT'
     save()
-require(report['status'] == 'PASS_SCOPED_ACQUISITION_BINDING', 'incomplete-binding')
+require(report['status'] == ('PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'), 'incomplete-binding')
 print(json.dumps(dict(status=report['status'], cases=len(report['cases']))))

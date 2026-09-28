@@ -63,6 +63,8 @@ mod snapshot_leases;
 pub use snapshot_leases::{
     ArchivePinError, ArchivePinReceipt, ArchivePinRequest, ArchiveReadSelection,
 };
+#[path = "ingest_lease.rs"]
+mod ingest_lease;
 #[path = "initial_batch.rs"]
 mod initial_batch;
 #[path = "producer_closing.rs"]

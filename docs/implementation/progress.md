@@ -12,12 +12,34 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is1978574c4f73d59b996ef0bff888bfbfcb525e94, an unpublished coherent
-candidate; private origin/main remains3e5ac2d37822edd465a47d916b0b5132d6a80415.
-Product/fixture changes are committed; root owns only the ongoing inventory and
-checkpoint updates. No other dirty work was present. Last pre-build free space:
-Mac10,245,600 KiB and Tux65,131,319,296 bytes. Cache retirement remains complete;
-no dataset/container cleanup is needed and retained launchers must not be replayed.
+Mac main and verified private origin/main are190b6ac571b01393323d622ba2410da80ad983d2.
+The worktree was clean at resumption. Root owns the following initial Ingest
+lifetime changes. Read-only inspection found no active BigBrotr laboratory or
+compiler process; PG71775507 and the latest build/client remain stopped without
+OOM. Mac has about9.7GiB available; Tux64,877,953,024 bytes. Cache retirement is
+complete; preserve all retained datasets/artifacts and do not replay launchers.
+
+The installed-owner review found a concrete prerequisite: initial Ingest has its
+own scheduling deadline, while Control refresh only renews Control. Implement a
+same-Control, exact-registration renewal for P02-T01 Step5/P02-T02 Steps2/3 before
+wiring a persistent owner. It must check both current policies, preserve the
+initial identity, refuse expired/draining/closing targets and retain consistent
+Control→dataset→Ingest→producer locking. This scheduling update must not grant
+native ownership, perform a handoff or replace the fresh native admission checks.
+Existing PG rows suffice; no new persistent format or migration is selected.
+Actual engine tests must prove continued native reads beyond the original Ingest
+deadline, unchanged native/input state, refused renewals and cancellation custody.
+New ignored work belongs to .research/implementation/ingest-lease-20260928.
+
+The renewal and eleven-case finite consumer are implemented, not yet engine
+qualified. Missing-API RED and Mac scoped Clippy PASS are retained there.
+Artifact/handoff checks have no errors; unchanged dependency-cycle candidates
+remain. Root and read-only AI reviewed the adapter/registry/Control/SQL and new
+oracle; a v1/v2 template mismatch was corrected before launch. The actual lock
+observer clears its PostgreSQL statistics snapshot between polls. No Cargo,
+applied SQL or native format changed. Next bounded action is exact-Git native
+build and bindings.py --lease on fresh clones. Delayed/lost COMMIT, write-cutoff
+negative controls and policy/closing races remain separate pending qualification.
 
 The accepted Sync collection/arrival policy boundary is qualified below
 (P03-T01 Step3/P03-T02 Step3); next are the installed owning lifetime and typed
@@ -68,7 +90,7 @@ client9f4cd6d2 stopped143, PG71775507 stopped0, no OOM. Nine
 bb_scope_bind_1978574_* clones and native inputs/stores remain. Never replay
 launchers. Shared1154757 latest intermediates1978574; artifacts retained separately.
 
-Next bounded action after qualification commit/push: integrate the installed
+After this prerequisite qualification, integrate the installed
 initial Ingest owner with a retained Control lifetime (P01-T09 Step1/P02-T02
 Steps2/3). Read the actual Serve/registry/manifest/bootstrap configuration owners
 and explicit initialization contract, then implement the startup/custody consumer.

@@ -56,3 +56,29 @@ records five executed Linux amd64/PostgreSQL 16.15 scenarios, complete external
 rows and actual COMMIT/lock schedules. Product Control bootstrap, durable policy projection,
 native activation, successor/recovery registration and first signed-event
 admission remain separate work.
+
+## Same-Control scheduling renewal
+
+The installed initial owner needs its own scheduling renewal: Control heartbeat
+alone does not change the Ingest row. `ControlSession::renew_initial_ingest`
+checks the same complete initial registration and both accepted documents, under
+the original dedicated Control backend. It takes Control, dataset, Ingest UPDATE
+and dependent registry/producer locks in that order. It requires both old owner
+deadlines to remain live and sets the Ingest deadline to the current Control
+deadline. Refresh Control first. No new identity, producer state or native data
+is created, and no expired, draining or closing owner is revived.
+
+The suspend-aware operation window starts before coordination I/O, is at most
+five seconds, and is also bounded by the remaining old scheduling deadlines.
+The write rechecks both old deadlines after lock waits. The caller additionally
+bounds I/O and retains its driver, native owner and memory reservations. Failed or
+cancelled coordination poisons session reuse. A lost COMMIT may have renewed
+the row; an expired response does not provide new authority. There is no durable
+heartbeat receipt or claim of server-side expiry fencing at delayed COMMIT.
+
+This operation changes scheduling data only. Actual native exclusion, fresh
+admission/source/policy checks, caller observation custody and successor recovery
+remain independent requirements. It cannot make a standalone initializer's
+registration writable by a later Control process. No applied SQL or native
+format changes. The finite probe and `bindings.py --lease` exercise this boundary;
+native execution evidence is pending, not implied by compilation.

@@ -32,6 +32,8 @@ mod config;
 mod ingest_closing;
 #[path = "support/ingest_event.rs"]
 mod ingest_event;
+#[path = "support/ingest_lease.rs"]
+mod ingest_lease;
 #[path = "support/ingest_recovery.rs"]
 mod ingest_recovery;
 #[path = "support/ingest_recovery_process.rs"]
@@ -217,7 +219,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     let source_mode = mode.starts_with("source-");
     let source_fault = mode.starts_with("source-fault-");
     let direct_config = config.clone();
-    let v2 = mode == "write-v2" || source_mode;
+    let v2 = mode == "write-v2" || source_mode || mode.starts_with("lease-");
     let mode = if mode == "write-v2" { "write" } else { mode };
     let (observer, observer_driver) = config.connect(NoTls).await.unwrap();
     let observer_driver = tokio::spawn(observer_driver);
@@ -263,7 +265,11 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             incarnation: [if mode == "inspect" { 42 } else { 41 }; 16]
                 .try_into()
                 .unwrap(),
-            lease_ttl: Duration::from_secs(60),
+            lease_ttl: Duration::from_secs(if mode == "lease-control-expired" {
+                2
+            } else {
+                60
+            }),
         },
         validate,
         &Cell::new(false),
@@ -531,6 +537,9 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         drop(observer);
         ingest_closing::join(observer_driver, false).await;
         return;
+    } else if mode.starts_with("lease-") {
+        drop(result.unwrap());
+        store = ingest_lease::run(owner, &observer, store, &spec, path, &budget, mode, scope).await;
     } else if mode.starts_with("visibility") {
         let bootstrap = result.unwrap();
         assert_eq!(bootstrap.receipt().batch().unwrap().records().len(), 2);
