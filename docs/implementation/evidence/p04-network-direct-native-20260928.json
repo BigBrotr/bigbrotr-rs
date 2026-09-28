@@ -1,0 +1,188 @@
+{
+  "format": "bigbrotr-network-direct-native/1",
+  "status": "PASS_SCOPED_NATIVE_DIRECT_COMPONENTS",
+  "source": "e38cbbca76c18d82d15aa75d651c8cf1accbb848",
+  "tree": "5282ad6c5cb8d5e93a323e17d4efceba8d86041a",
+  "environment": {
+    "platform": "Tux native Linux amd64",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    }
+  },
+  "scope": "Finite borrowed direct TCP/TLS library operations over actual controlled DNS/TCP/TLS peers. Not an authenticated enrollment grant, installed acquisition, WebSocket, overlay, capacity, arm64 or release qualification.",
+  "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e",
+  "build_checks": [
+    {
+      "name": "compile",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "network_direct",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 45.79601779719815
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--test",
+        "network_direct",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.1196492766030133
+    }
+  ],
+  "test_checks": [
+    {
+      "name": "network_direct",
+      "command": [
+        "/out/artifacts/network_direct",
+        "--test-threads=1"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 1.3703586040064692
+    }
+  ],
+  "outcome": {
+    "direct": "12 PASS,0 failed,0 ignored",
+    "unchanged_components": "32 policy/DNS cases passed at1154757; not repeated for this fixture-only correction",
+    "original": "p04-network-direct-incomplete-20260928.json retains the original11 PASS/1 FAIL direct suite and Linux fixture BrokenPipe",
+    "correction": "One combined small DNS response frame preserves the forbidden follow-up connection oracle. Corrected fixture still fails when only the resumed-work gate is removed; patch/log identities in original report. Product and lock bytes identical between1154757 ande38cbbc."
+  },
+  "executables_sha256": {
+    "network_direct": "b3ca554380d40d31d059be344db950ba14fc49986a1ffb828820e8df8b7f9aca"
+  },
+  "terminal": {
+    "status": "TERMINAL_VERIFIED_DIRECT_COMPONENTS_PASS",
+    "source": "e38cbbca76c18d82d15aa75d651c8cf1accbb848",
+    "owner": "fd84f27c5133a796bc12f35ede8dcf02",
+    "observed_at": "2026-09-28T02:01:51.182978+00:00",
+    "prior_unchanged": 857,
+    "running_unrelated": 8,
+    "owned_stopped": 2,
+    "free_bytes": 67869024256,
+    "source_files": 1406,
+    "dependency_archives": {
+      "tokio-rustls": {
+        "version": "0.26.5",
+        "sha256": "b0c85f2c3ef0b1cd58b36682f4b17aaa995f0e5db534d85692b4903abce21f67"
+      },
+      "rustls": {
+        "version": "0.23.45",
+        "sha256": "0d41d731c7d2f962d1ccc364cec258de3c0e93b38c2fb3ba97ac74513048d634"
+      },
+      "webpki-roots": {
+        "version": "1.0.9",
+        "sha256": "7dcd9d09a39985f5344844e66b0c530a33843579125f23e21e9f0f220850f22a"
+      },
+      "hickory-proto": {
+        "version": "0.26.3",
+        "sha256": "12b92608f679a6fa515dd1d15c1ff89443026e391200a2c840c7afcba482893d"
+      }
+    },
+    "input_sha256": "c44989e559d18f3fdf74199f5e154652d8a97df5cdda7c81e4dd74c62ee82c1d"
+  },
+  "capture": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/network-e38cbbc",
+    "files_sha256": {
+      "resources.json": "9457b351b5c6ddb3b7defb9687e6ba423710cc88bb460251fb045bc2ada3f088",
+      "preflight.json": "fa8a9cfb3b1ee854f4851104ab5d3b297cde536882252686513d062131783c95",
+      "launch.json": "0c235890ca582da02b28e16462361b4acf9b01ca37880b3c2d9856cc89af8748",
+      "orchestrator.log": "a33e3b305726df761a49584f7994a106eb7343c1ea209abe68f2ff45352bf546",
+      "fetch.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "native.log": "795367f8a19f1523046902e2ebe630179c67e55a80b706cf824009e4143b1649",
+      "fetch-terminal.json": "6e240a0dd6a7e941fcce7dbd8c787df8872e59699b29b7c958c99e3fba19ba25",
+      "native-terminal.json": "3e470a5b94359cb32d1187fa3028fe4d90a62e317ea6726a7e7d9070c4b26587",
+      "out/build/source-manifest.json": "cebef0e181ae37556c3da8d33911ccba25b4b3d5946d5eb362ed472a257ca422",
+      "out/build/source.tar": "14be18be22152b4221504a72eef5dd01169f7802347dcb1eb8bd486428afa3dc",
+      "out/build-checks/result.json": "b83726305aa605ba0c3694538aa3ba8c0b36e9e6b45348a827abea70ca5f8ccc",
+      "out/build-checks/compile.log": "d8d6a6634f698aff06376a126ef761abaaad418bf194fc2f80845dd5ba9c3bc8",
+      "out/build-checks/clippy.log": "a4ebafe2a8fc1719c5fb68c7668ee5cc7ea467f469f8b3c3a47d8af55f5ad005",
+      "out/tests/result.json": "0ff42946b244364a12d4bade54e6d02a9777a200ec6f6e14a088771411d4a96e",
+      "out/tests/network_direct.log": "973e1c8ba7704e782efdf9bcef7d3ee3cc1f19b71c24603b98bb5514fb5bab26",
+      "out/artifacts/network_direct": "b3ca554380d40d31d059be344db950ba14fc49986a1ffb828820e8df8b7f9aca",
+      "out/qualification.json": "aa8718fdb9a44f52d8f1f5ad5677602935e215c2010c4fa50069b1d20eaa8667"
+    },
+    "tar_sha256": "3716da2582fbcfc65ff5384207fad6f8aaf60b0d1c29b16432e07c4e67704cfe",
+    "source": "e38cbbca76c18d82d15aa75d651c8cf1accbb848",
+    "source_files_verified": 1406,
+    "captured_bytes": 26246543
+  },
+  "cache": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+    "mode": "Exclusive mutable reuse through host flock and explicit nested target/cargo-home mounts; host lock independently reacquired after termination. Four original1154757 ELFs preserved outside cache and independently rehashed after this run.",
+    "retirement": "No cache, container, volume or laboratory removed during this run."
+  },
+  "review_boundary": "Root reviewed product modules/callers and complete test changes before candidate; independent read-only review reproduced and closed the per-resumption gate defect. Root checked actual native results, exact source archive, dependency archives, artifact and terminal identities. No claim of synchronous callback preemption, recall of kernel-accepted bytes, continuous custody or measured RSS. Shared endpoint/rate quotas and authenticated Control integration remain selected work."
+}

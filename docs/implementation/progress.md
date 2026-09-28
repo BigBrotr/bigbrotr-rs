@@ -12,11 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEAD115475799ce11a841e9aacc814d3576ee00cc6ca is unpublished;
+Verified HEADe38cbbca76c18d82d15aa75d651c8cf1accbb848 is unpublished;
 origin/main4995f3ded25c01690bb12e3a025ae10f2a797e0c remains published/private.
-Root owns the fixture-only correction, native recipe/evidence and checkpoint
-changes. Product TCP/TLS source remains exactly1154757; no history rewrite. Root is sole writer;
+Root owns only the final native evidence/inventory/checkpoint update. Product
+TCP/TLS source remains exactly1154757; no history rewrite. Root is sole writer;
 no active native experiment or agent writer. All applied migrations unchanged.
+Next commit records the verified boundary, then push these coherent commits.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
 with the explicit remaining gates below. No complete task/phase/M1/product claim.
@@ -166,140 +167,79 @@ private-panel-no-revoke and detached ed2a93b untouched. No release secrets neede
 
 ## Next bounded action and remaining gates
 
-P04-T02 direct address policy and bounded TCP DNS are being implemented over
-8fc853e. Static public/private policy preserves full endpoints, canonicalizes
-mapped IPv4, checks all answers and exact private CIDR/port scopes. Known cloud
-metadata requires singleton exceptions; a real failing broad-ULA regression was
-fixed. NAT64 contract now distinguishes standardized prefixes from unobservable
-operator-specific translation; deployment egress qualification remains necessary.
+P04-T02 address policy, bounded TCP DNS and finite direct TCP/TLS components have
+scoped [Mac DNS](evidence/p04-network-components-mac-20260928.json),
+[native DNS](evidence/p04-network-components-native-20260928.json),
+[Mac direct](evidence/p04-network-direct-mac-20260928.json) and
+[native direct](evidence/p04-network-direct-native-20260928.json) evidence.
+32 policy/DNS cases passed natively at1154757; corrected12 direct cases/build/
+Clippy passed at e38cbbc. Product/lock bytes are identical across those revisions.
+No complete P04-T02 step, acquisition service, M1 or capacity claim.
 
-[Mac network report](evidence/p04-network-components-mac-20260928.json) hashes the
-current product/test/lock inputs: 9 policy + 9 DNS lifecycle + 14 DNS semantics
-cases passed, zero failed/ignored, with real loopback TCP peers and independent
-wire bytes. Clippy and cargo-deny 0.20.2 license/source/advisory checks pass.
-Original metadata and DNS REDs remain under ignored
-.research/implementation/network-local-20260928. No installed transport claim.
+The [first native direct run](evidence/p04-network-direct-incomplete-20260928.json)
+retains11PASS/1FAIL: split DNS writes encountered BrokenPipe after the correctly
+expired client closed. The fixture now sends one complete small response frame.
+The corrected fixture still observes a forbidden next DNS connection when only
+the per-resumption gate is removed. Preserve original REDs, Mac127.0.0.2 setup
+failure and detached dirty .research/worktrees/network-direct-no-poll-1154757;
+never merge/push negative controls. Independent read-only review closed the actual
+per-resumption expiry defect. Borrowed stream ownership, concrete plaintext/TLS
+enum and focused lifetime gate avoid raw socket escape and generic orchestration.
+No preemptive synchronous-callback or kernel-accepted-byte recall guarantee.
 
-The six independent DNS findings were reproduced (seven failing tests). Replace
-the high-level resolver with hickory-proto 0.26.3 std only and the same owned Tokio
-TCP exchange. Explicit case-insensitive chains count eight edges across packets;
-only terminal IN A/AAAA answer records contribute, with fatal malformed/limit
-outcomes. A later negative-CNAME bypass was reproduced then corrected before the
-final 32-test result. The old candidate and exact upstream sources/API probe stay
-inventoried; the probe never qualifies the product. No new crate, cache, task,
-provider framework or persistent format. Root reviewed complete modules/tests and
-contract/dependency changes; read-only AI review excludes future integration.
+Native e38cbbc is stopped-retained at
+/home/tux/bigbrotr-implementation-20260917/runs/network-e38cbbc,
+ownerfd84f27c5133a796bc12f35ede8dcf02, PID2807858/start394300512 absent at terminal.
+Fetch a26f5ff65317bd882d0820b0f2638762b48ecdea17d4c15f9594a19b3bfd8f25 and
+native653050b9fa392a37d1c750a37b4f9ab0a93fc5b3180d18cc8ab2c18c4435375e
+exited0/noOOM. Independent audit02:01:51UTC verified857 prior container
+observations unchanged/eight unrelated running,1406 exact Git file hashes,
+17 capture payloads, test ELF, four dependency archives and released cache lock.
+Ignored .research/implementation/network-native-e38cbbc retains all receipts.
 
-[Native component report](evidence/p04-network-components-native-20260928.json)
-qualifies candidate1a2a8be's 32 actual Linux amd64 tests/Clippy only. No ignored
-cases. Original lab terminal audit failed because unordered Mounts/rotating
-Health.Log were compared literally; its original log/state are preserved. The
-projection now sorts full mounts and omits only Health.Log, retaining lifecycle,
-health status and failing streak. Two helper tests plus actual changed-PID/mount
-negative controls pass. Independent terminal reconciliation at01:20:52UTC found
-853 prior normalized observations unchanged, eight unrelated running, both owned
-containers exit0/no OOM and orchestrator absent. No product rerun was necessary
-for this laboratory-only correction. Exact1389 source hashes, Git archive, seven
-new Linux dependency archives and three retained test ELFs independently checked.
+Compiler target/cargo-home are explicit nested mounts from stopped
+network-1154757, exclusively reused under a host lock. Its original source/logs/
+results and four retained ELFs remain verified outside the mutable cache. Protect
+that cache as the current reusable compiler input, plus all earlier dependencies
+above; network-1a2a8be remains stopped-retained in the inventory. No resource was
+removed in this boundary. Latest terminal free67,869,024,256 bytes, below the
+full export preflight/reserve. Recheck space and retire only verified obsolete
+compiler caches or reuse suitable current caches before another large allocation.
 
-Lab network-1a2a8be is stopped-retained, owner
-bac04a9c1ac35f50d762a6120d813546, oldPID2783589/start394034043 terminal.
-Containers fetch e2a023870e4f330b5f186b1149dab038a359a71e03cd089288622fb2f26448a9
-and native df27dd72350304d97f950c6c8a9d0894eed7c1a1bc7e9a25a4179c7255872ebc
-remain stopped. Remote resources.before-reconciliation.json preserves the original
-RUNNING receipt; current resources.json records actual terminal reconciliation.
-Ignored .research/implementation/network-native-1a2a8be captures21 payloads,
-27,452,382 bytes, including original source/archive and test ELFs. Native raw root:
-/home/tux/bigbrotr-implementation-20260917/runs/network-1a2a8be. Only649 compiler
-caches were copied; no archive/DB created or prior resources deleted. Terminal
-free71,847,927,808 bytes; 12 GiB compiler headroom applied to this profile. Recheck
-before another allocation, especially a full export journey requiring64GiB reserve.
+Next useful deliverable: first actual signed socket event through existing durable
+admission/archive/read/export/restart, P01-T09 Step2/M1. Concrete remaining early
+slices are minimal P02-T01 Step6 endpoint/enrollment/route authority, P03-T01 scope
+binding, P04-T02 guarded protocol/quotas, then P03-T02 wire admission. Full discovery,
+Monitor, analytics and later phase acceptance are not prerequisites. Existing Serve
+selects Control only. M1 still needs the installed clean extracted Compose journey,
+timer publication and dependency-outage recovery; component tests do not replace it.
 
-Documentation/diff checks and private push are complete. Active bounded action:
-implement a finite pinned direct TCP/TLS operation under the existing nonrenewable
-ActionWindow, explicit cancellation and caller deadline. Own the connection through
-a borrowing async callback so no raw socket escapes cleanup. This temporal bound
-is not endpoint enrollment or an authenticated action grant. Actual DNS/TCP/TLS
-fixtures precede integration; Control enrollment lookup remains the next concrete
-prerequisite. Exact tokio-rustls0.26.5/rustls0.23.45 source is being inspected;
-reuse these already locked dependencies, no TLS verifier bypass or global provider. No actual relay
-transport, TLS/WS or live Control integration exists yet. Real recursive-resolver
-interoperability, shared quotas and complete P04-T02 remain open. Keep helpers
-inside the current application; no generic orchestration framework is justified.
+Next bounded action after evidence commit/private push: implement the minimum
+P02-T01 Step6 operational registry and authenticated exact endpoint/access/route/
+action binding. Read complete owning schema/naming/config/Control callers first.
+Current operational registry IDs and immutable archive QualifiedRefs are distinct;
+provenance-off must not allocate per-endpoint dictionaries. Initial bootstrap can
+seed the fresh M1 fixture, but ordinary later enrollment needs bounded incremental
+dictionary admission. Do not make PostgreSQL advance a Rocks allocation watermark.
+Reserved0003_relay.sql must append to the existing migration application order;
+never insert into or rewrite the applied prefix. Use exact full endpoint equality,
+not digest-only identity, and cover long incompressible8192-byte endpoints.
 
-Next useful deliverable remains P04-T02 Steps 1–5 -> P03-T02 real socket admission
--> P01-T09 Step 2 first signed-event integration. Consume existing durable archive,
-read and export boundaries; analytics/all relay services are not prerequisites.
-Read complete owning configuration/serve/authority callers before integrating.
-Overlay routes remain selected later acceptance, never silently removed. Current P03-T01/T02 task
-sections were reread: the real producer also needs minimal endpoint enrollment
-(P02-T01's planned0003_relay.sql, currently absent) and scoped work identity
-(P03-T01), not the complete P04-T01 discovery/lifecycle service. Qualify the
-isolated transport first; then implement only these concrete authority/scope
-prerequisites before wiring ordered signed-event admission. Existing Serve still
-selects Control only. Configuration resolve/registry/recipes, full Serve and
-linked admission callers have only been mapped/partially read for the next change;
-complete those owner reads before editing them. A read-only authority integration
-review is active; it owns no files or native resources.
+Read-only authority/identity review remains active, owns no edits/native resources.
+History principal scope grants are not acquisition authorization. DeliveryWindow
+copies do not observe parent invalidation; egress owner must explicitly cancel.
+Management ActionGate Unbound/write-only GuardedSocket is unsuitable unchanged.
+Root has mapped but not fully read current Serve/config/admission owners; complete
+those reads before editing. No authenticated source policy is implied by a
+fixture-constructed DirectPolicy or temporal DirectAttempt.
 
-Latest read-only Tux census at 00:32:25 UTC: 75,675,406,336 bytes free, eight
-unrelated running containers, no BigBrotr build/experiment. Below the existing
-72 GiB full-lab preflight: recheck and retire only verified obsolete compiler
-caches or deliberately reuse a current cache before any large native allocation.
-No remote mutation or new cleanup in this boundary. Protect prior resources above.
-
-Further discovery gates: expiry/revocation during socket delivery, actual
-backdated/tied admissions, resource exhaustion, aged/mixed workloads; broader job
-kinds/create/cancel/download and full P09-T09 remain selected. M1 still requires
-P01-T09 production acquisition/socket collection, timer publication and actual
-signed-event read/export/restart/dependency-outage from clean extracted Compose.
-Current serve selects Control only. Do not finish adjacent subsystems unnecessarily
-before this useful operational consumer, or claim M1 from component evidence.
-
-Read-only authority review confirms missing P02-T01 Step6 minimum registry and
-exact endpoint/route/access/action binding. DeliveryWindow copies do not observe
-parent invalidation; egress must explicitly cancel. Do not reuse management
-ActionGate Unbound or write-only GuardedSocket unchanged. When reserved0003 is
-implemented, append to the migration application order; never alter its applied
-prefix. Root has not yet read all Serve/config owners and will not edit them in
-the isolated transport slice. No new Tux run or cache allocation is active.
-
-Finite direct TCP/TLS candidate over4995 is locally verified:12 actual direct
-cases plus the32 DNS/policy cases, Clippy and dependency-policy checks PASS.
-See evidence/p04-network-direct-mac-20260928.json and ignored
-.research/implementation/network-direct-local-20260928. Actual late-DNS RED
-proved select resumption bypassed the loop check; a per-poll gate fixes it.
-Buffered-TLS cancellation, dropped pending future, shared budget lowering and
-wrong CA/name are exercised. Mac127.0.0.2 was a setup failure; the denied socket
-is now observed at::1. Root/new-module review plus read-only independent review
-closed this defect; no full task claim. Source-only inspection confirmed the
-borrowed stream/permit cleanup; actual native test remains next. Existing locked
-tokio-rustls0.26.5 and webpki-roots1.0.9 become direct dependencies, no new package
-versions. Last Tux census01:43:37UTC:71,847,780,352 bytes free, eight unrelated
-running, no BigBrotr work. Native recipe now copies the stopped1a2 cache, preserving
-its original evidence; no current resources removed. Next: commit reviewed candidate,
-transfer exact Git revision, run44 native component cases, inspect terminal custody.
-
-Native1154757 is terminal (01:50:56UTC), owner8b21a13162699a6038154874c2ac89da,
-PID2800705/start394243848 absent at01:56:47UTC. Fetch4c6e490cf2c052e31e498ab9686cde3ba29638b9e5d0231fb232911a8c8123d3 exited0;
-nativea4d5bbc418168dec49ad2b3f1b5e8e5aaa369c90e859552855d87b602b30b9b8 exited1/noOOM.
-855 prior container observations unchanged; eight unrelated running. Free
-67,949,281,280 bytes. Original22 capture payloads/1405 source hashes/four ELF
-identities verified under .research/implementation/network-native-1154757.
-See evidence/p04-network-direct-incomplete-20260928.json:32 existing native
-cases passed, direct11PASS/1FAIL at a Linux fixture BrokenPipe (split DNS frame).
-Original FAIL retained, no native qualification claim yet. Corrected fixture
-writes one small complete frame; Mac12tests/Clippy PASS. An intentional missing
-poll-check variant with the corrected fixture again failed on an actual forbidden
-DNS connection. Preserve .research/worktrees/network-direct-no-poll-1154757,
-its patch/log hashes and other negative worktrees; never merge/push them.
-
-Next bounded action: commit fixture/native-recipe/evidence correction, transfer
-exact Git source and rerun only the affected12 direct cases natively. Product
-bytes unchanged. To avoid another full cache copy, the runner now exclusively
-reuses1154757 target/cargo-home with an owned host lock and explicit mounts; all
-four original ELFs are retained/hash-checked outside that mutable cache. Source,
-results, databases and other historical artifacts remain untouched. Verify actual
-mount/process state again before launch. No active BigBrotr experiment now.
-A read-only agent studies exact WebSocket sources under ignored
-.research/implementation/network-websocket-audit; no product/native writes.
+Exact WebSocket source audit is retained at
+.research/implementation/network-websocket-audit/{audit.md,inventory.json}.
+Candidate tokio-tungstenite0.29.0 handshake-only does not itself enforce the current
+framing-inclusive message bound: payload caps permit cumulative fragment buffering
+and empty continuation amplification. Resolve this concrete mismatch explicitly
+before protocol integration. Also reject unsolicited extensions, bound outbound
+messages, distinguish local close-code rewrites and require proper close polling.
+No WebSocket dependency/product implementation or actual native protocol evidence yet.
+Overlay routes, renewable sessions, shared host/endpoint/rate/FD quotas, recursive
+DNS interoperability, aged/mixed workloads and full task acceptance remain selected.

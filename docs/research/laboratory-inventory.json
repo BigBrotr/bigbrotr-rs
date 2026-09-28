@@ -27230,7 +27230,7 @@
   "implementation_network_20260928": {
     "owner": "root; Mac sole editor, read-only independent review",
     "base_source": "8fc853e03d14f9eb8a165f7fb44581c6f3ee62f9",
-    "status": "scoped Mac/native DNS and policy components qualified; complete guarded transport remains in progress",
+    "status": "Scoped Mac/native DNS, address policy and finite direct TCP/TLS qualified; complete guarded transport remains in progress",
     "local_tests": ".research/implementation/network-local-20260928",
     "upstream_audit": ".research/implementation/network-dependency-audit",
     "audit_identities": [
@@ -27240,7 +27240,7 @@
     "preserve": "Original REDs, initial probe setup failure, exact upstream archives/source, API probe sources/results and current test logs. Probe binary retained outside shared build cache.",
     "build_cache": ".research/targets/product; normal Cargo cache, inherited by the isolated API probe; no manual cache deletion",
     "executed": "Mac 32 component tests (9 policy, 9 DNS lifecycle, 14 DNS semantics) passed; Clippy and dependency policy passed. Exact inputs/logs in linked report.",
-    "review_open": "Original findings reproduced and corrected; native/recursive interoperability and actual guarded transport consumers remain unqualified.",
+    "review_open": "Authenticated Control enrollment/action binding, shared quotas, WebSocket/HTTP and overlays remain unqualified; no whole task closure.",
     "remote": "No new remote resources or mutation; 2026-09-28T00:32:25Z read-only census 75675406336 bytes free and no active BigBrotr.",
     "evidence": "docs/implementation/evidence/p04-network-components-mac-20260928.json",
     "native_recipe": "experiments/network-transport/lab.py; source1a2a8be native checks passed, original inventory audit INCOMPLETE then independently reconciled; comparator correction tested without repeating unchanged product checks",
@@ -27309,23 +27309,62 @@
         "terminal_verification": ".research/implementation/network-native-1154757/terminal.json",
         "local_capture": ".research/implementation/network-native-1154757",
         "evidence": "docs/implementation/evidence/p04-network-direct-incomplete-20260928.json"
+      },
+      {
+        "source": "e38cbbca76c18d82d15aa75d651c8cf1accbb848",
+        "tree": "5282ad6c5cb8d5e93a323e17d4efceba8d86041a",
+        "owner": "fd84f27c5133a796bc12f35ede8dcf02",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/network-e38cbbc",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "a26f5ff65317bd882d0820b0f2638762b48ecdea17d4c15f9594a19b3bfd8f25"
+          },
+          {
+            "name": "native",
+            "id": "653050b9fa392a37d1c750a37b4f9ab0a93fc5b3180d18cc8ab2c18c4435375e"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T01:59:11.577572+00:00",
+        "qualification": "PASS_SCOPED_NETWORK_COMPONENTS",
+        "inventory_changed": [],
+        "free_bytes_after": 67869040640,
+        "finished_at": "2026-09-28T02:00:03.778858+00:00",
+        "orchestrator": {
+          "source": "e38cbbca76c18d82d15aa75d651c8cf1accbb848",
+          "tree": "5282ad6c5cb8d5e93a323e17d4efceba8d86041a",
+          "pid": 2807858,
+          "start_ticks": "394300512",
+          "bundle_sha256": "1b82878563463fa8bd7279663154703719a9efc0c29b8d068f4d7d02ff44d8fc"
+        },
+        "terminal_verification": ".research/implementation/network-native-e38cbbc/terminal.json",
+        "local_capture": ".research/implementation/network-native-e38cbbc",
+        "evidence": "docs/implementation/evidence/p04-network-direct-native-20260928.json",
+        "observed_terminal_at": "2026-09-28T02:01:51.182978+00:00"
       }
     ],
     "native_evidence": "docs/implementation/evidence/p04-network-components-native-20260928.json",
     "direct_component": {
       "base_source": "4995f3ded25c01690bb12e3a025ae10f2a797e0c",
       "local_capture": ".research/implementation/network-direct-local-20260928",
-      "state": "Native1154757 retained43PASS/1 fixture FAIL; fixture corrected and negative control discriminating; Mac12 affected tests/Clippy PASS. Corrected native run pending.",
+      "state": "Corrected e38cbbc native12 direct cases/build/Clippy PASS; original1154757 failure and negative control preserved.",
       "evidence": "docs/implementation/evidence/p04-network-direct-mac-20260928.json",
       "preserve": "Original missing-API RED, Mac127.0.0.2 setup failure, reproduced DNS resumption expiry RED, final actual TLS/cancellation results and deterministic public-only PKI fixtures",
       "last_read_only_tux_census": {
-        "observed_at": "2026-09-28T01:43:37Z",
-        "free_bytes": 71847780352,
+        "observed_at": "2026-09-28T02:01:51.182978+00:00",
+        "free_bytes": 67869024256,
         "running_unrelated": 8,
         "active_bigbrotr": false
       },
-      "cache_input": "Next native profile exclusively reuses1154757 target/cargo-home via nested mounts and host lock. Original four ELFs hash verified outside caches; results/source/DB untouched. Cache no longer immutable historical build output.",
-      "negative_worktree": ".research/worktrees/network-direct-no-poll-1154757; intentional missing-poll-check variant, never merge/push"
-    }
+      "cache_input": "1154757 target/cargo-home exclusively reused by e38cbbc and retained for subsequent work; all original ELFs/source/results remain outside mutable cache. Verify locks/mounts/processes before reuse or retirement.",
+      "negative_worktree": ".research/worktrees/network-direct-no-poll-1154757; intentional missing-poll-check variant, never merge/push",
+      "native_evidence": "docs/implementation/evidence/p04-network-direct-native-20260928.json"
+    },
+    "websocket_source_audit": ".research/implementation/network-websocket-audit; official exact archives/source only, no product build or native execution"
   }
 }
