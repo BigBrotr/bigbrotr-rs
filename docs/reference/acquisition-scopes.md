@@ -149,3 +149,32 @@ context; the scope ID does not reconstruct a page window. Both complete accepted
 documents must additionally authorize event limits, provenance, ephemeral/history
 policy, endpoint/bans/route and current deployment roots. Installed consumers may
 not substitute the fixture validator or legacy unbound path for those checks.
+
+
+The concrete static Sync policy consumer restores each complete accepted document
+against current deployment roots. It permits explicit selectors whose
+history_since is at least the accepted floor; accepted ephemeral Drop requires
+scope Drop, while a stricter explicit Drop remains valid under Retain. The loaded
+selector is never clamped or replaced. This conservative first profile compares
+the explicit floor, without proving equivalent restrictions from filter since.
+The pre-request collection checker returns the same restricted DirectPolicy as
+the source checker; it supplies no socket, job or enrollment authority.
+
+Prepared admission and certification share the arrival checker. The prepared
+verification limit must equal each accepted ingest.max_event_bytes; a caller
+cannot manufacture a durable size exclusion by choosing a smaller limit.
+Provenance flag and witness presence exactly match the accepted objective.
+Conflicting accepted limits/objectives refuse. Origin, full target visibility,
+observer, clock, witness and received time must match the receiving owner's
+retained observation. Invalid signatures/IDs remain attributable native
+rejections after these checks. Collection/request membership remains owned by
+AcquisitionEventContext, whose same loaded selector/visibility must construct
+the checker. Historical outcome recovery keeps its original authority semantics.
+
+The receiving owner still must establish actual socket custody and committed
+witness linkage: the endpoint descriptor equals the actual normalized source,
+access is the exact no-auth Public/null-label/target-visibility descriptor, and
+observer/clock/method references are the trusted committed mappings. Operational
+IDs are not archive QualifiedRefs. Provenance off creates no endpoint/access/method
+dictionaries or witnesses; operational source binding and receive context remain.
+This checker alone does not close those integration obligations or installed Sync.

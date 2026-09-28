@@ -110,6 +110,10 @@ schedules](evidence/p03-acquisition-binding-recovery-native-20260928.json) prese
 original scoped outcomes after policy advance and withdrawal. [Raw SQL qualification](evidence/p03-acquisition-binding-guards-native-20260928.json)
 now covers23 nested cases and5 helper schedules, independently isolating the
 scope-epoch guard with both lock orders and a discriminating negative clone.
+The concrete [accepted arrival policy](../reference/acquisition-scopes.md) now
+shares source/collection restrictions and exact attribution/limit/provenance checks
+between fresh admission and certification. Its native practical wave is pending;
+static checks alone do not establish socket or committed witness custody.
 Jobs, authorization, progress and installed CLI acceptance
 remain separate parts of Step3 onward; no whole task closes here.
 

@@ -29,7 +29,8 @@ root = Path(sys.argv[1]).resolve(strict=True)
 assert len(sys.argv) in (2, 3, 4) and SOURCE == root / 'source'
 guards = len(sys.argv) == 4 and sys.argv[2] == '--guards'
 refusals = len(sys.argv) == 3 and sys.argv[2] == '--refusals'
-assert len(sys.argv) == 2 or guards or refusals
+policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
+assert len(sys.argv) == 2 or guards or refusals or policy
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
 build = Path(sys.argv[3]).resolve(strict=True) if guards else root / 'out/artifacts'
@@ -55,7 +56,7 @@ output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-binding'
 client = 'bigbrotr-acquisition-binding-' + revision[:7]
 report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=built,
-    status='RUNNING', wave='guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
+    status='RUNNING', wave='policy' if policy else 'guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
     client=None, cases=[], databases=[],
     postgres=pg['postgres'], postgres_owner=pg['owner'],
     not_run=['installed Sync/progress/M1', 'measured memory capacity/load/aged-state', 'arm64/release']
@@ -208,12 +209,59 @@ def refuse_dispatch(db):
     """)
 
 
+def arrival_policy(db, name):
+    """Independent policy documents injected into this fresh clone before ownership.
+
+    This is no management activation/transition claim. The original template and
+    every applied migration remain unchanged; neither expected bytes nor policy
+    fingerprints call the production codec.
+    """
+    before = rows(db)
+    require(not before['owner_epochs'] and not before['producer_requests'], 'policy-fixture-not-empty')
+    expected = json.loads(json.dumps(before))
+    mutations = []
+    for table in ['config_revisions', 'policy_revisions']:
+        require(len(before[table]) == 1, 'policy-fixture-single-revision')
+        document = json.loads((SOURCE / 'experiments/configuration-inspection/policy.json').read_text())
+        document['format'] = 'bigbrotr-product-policy/2'
+        settings = document['settings']
+        settings['relay_policy.banned'] = []
+        settings['sync.provenance'] = 'off'
+        if table == 'config_revisions':
+            if name == 'policy-provenance':
+                settings['sync.provenance'] = 'local_first_witness'
+            if name == 'policy-limit':
+                # Keep import.max_event_bytes <= ingest.max_event_bytes so
+                # full restoration succeeds and only the prepared limit fails.
+                settings['ingest.max_event_bytes'] = 524288
+            if name == 'policy-floor':
+                settings['sync.history_since'] = 1
+            if name == 'policy-ephemeral':
+                settings['sync.ephemeral'] = 'drop'
+        elif name == 'policy-second':
+            settings['sync.provenance'] = 'local_first_witness'
+        encoded = json.dumps(document, separators=(',', ':'), sort_keys=True, ensure_ascii=False).encode()
+        digest = sha(b'bigbrotr/product-policy/2\0' + encoded)
+        expected[table][0].update(document=document, document_digest='\\x' + digest, schema_version=2)
+        mutations.append(f"UPDATE control.{table} SET document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb, "
+                         f"document_digest=decode('{digest}','hex'),schema_version=2")
+    lab.sql(pg, db, 'BEGIN; SET LOCAL session_replication_role=replica; ' + '; '.join(mutations) + '; COMMIT;')
+    after = rows(db)
+    comparable = json.loads(json.dumps(after))
+    for table in ['config_revisions', 'policy_revisions']:
+        comparable[table][0]['xmin'] = before[table][0]['xmin']
+    require(comparable == expected, 'policy-fixture-unexpected-effects')
+    lab.write_json(output / (name + '-policy-setup.json'), dict(before=before, after=after))
+
+
 def run_case(name):
     db = old_source_schema() if name == 'old-source-schema' else clone(name, 'bb_source_template')
     if name != 'old-source-schema':
         upgrade(db, name, target=4 if name == 'old-binding-schema' else 21)
     if name == 'dispatch-refused':
         refuse_dispatch(db)
+    if policy:
+        arrival_policy(db, name)
     if guards:
         fixture = SOURCE / 'experiments/acquisition-scope/binding_guards.sql'
         report['guard_fixture_sha256'] = sha(fixture.read_bytes())
@@ -221,18 +269,34 @@ def run_case(name):
     before = rows(db)
     require(not before['producer_requests'] and not before['owner_epochs'], 'fresh-consumer-prerequisite')
     lab.write_json(output / (name + '-before.json'), before)
-    mode = 'source-scope-' + name
+    mode = ('source-arrival-' if policy else 'source-scope-') + name
     result = lab.docker('exec', client, '/build/ingest_bootstrap_probe', mode, db,
         '/run/secrets/application', '/lab/' + name, check=False, timeout=90)
     (output / (name + '.stdout')).write_text(result.stdout)
     (output / (name + '.stderr')).write_text(result.stderr)
     require(result.returncode == 0 and not result.stderr, 'actual-scope-adapter-' + name)
     messages = [json.loads(line) for line in result.stdout.splitlines()]
-    require(messages[-1]['event'] == 'scope-finished' and messages[-1]['mode'] == mode
+    require(messages[-1]['event'] == 'scope-finished' and messages[-1]['mode'] == 'source-scope-' + name
         and messages[-1]['status'] == 'PASS'
         and messages[-1]['zero_writes'] == (name not in ('invalid', 'dispatch-refused')), 'phase-state-comparison')
     after = rows(db)
     lab.write_json(output / (name + '-after.json'), after)
+    if policy:
+        decisions = [m for m in messages if m['event'] == 'arrival-policy']
+        if name.startswith('policy-'):
+            expected_count = 2 if name == 'policy-second' else 1
+            require(len(decisions) == expected_count and not decisions[-1]['accepted']
+                and all(m['accepted'] for m in decisions[:-1]), 'policy-refusal-phase')
+            require(all(m['operation'] == 'admission' for m in decisions), 'policy-operation')
+            expected_digests = [before[t][0]['document_digest'][2:] for t in ['config_revisions', 'policy_revisions']]
+            require([m['digest'] for m in decisions] == expected_digests[:expected_count], 'actual-accepted-documents')
+        else:
+            require(decisions and all(m['accepted'] for m in decisions), 'unexpected-arrival-policy-refusal')
+            require(any(m['operation'] == 'admission' for m in decisions), 'missing-admission-policy')
+            if name in ('pass', 'invalid-retained'):
+                require(any(m['operation'] == 'certification' for m in decisions), 'missing-certification-policy')
+        for table in ['config_revisions', 'policy_revisions']:
+            require(after[table] == before[table], 'accepted-policy-mutated')
     committed = name in ('pass','changed','omitted','legacy-adopt','certify-withdrawn','invalid-retained')
     dataset = bytes.fromhex(after['datasets'][0]['dataset_id'][2:])
     expected, inputs, receipts = complete_source(dataset, committed)
@@ -335,6 +399,9 @@ try:
     lab.docker('start', ident)
     if guards:
         cases = ['pass']
+    elif policy:
+        cases = ['pass', 'invalid', 'invalid-retained', 'certify-withdrawn',
+                 'policy-provenance', 'policy-limit', 'policy-floor', 'policy-ephemeral', 'policy-second']
     elif refusals:
         cases = ['invalid', 'invalid-retained', 'invalid-withdrawn', 'dispatch-refused']
     else:

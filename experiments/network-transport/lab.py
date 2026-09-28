@@ -21,7 +21,7 @@ assert len(sys.argv) in (3, 4) and profile in (
     'network', 'websocket', 'relay-wire', 'selector', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'ingest-visibility',
     'policy-versions', 'relay-source', 'relay-source-faults',
-    'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery',
+    'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy',
 )
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
@@ -169,6 +169,7 @@ try:
         'acquisition-binding': ['acquisition-binding'],
         'acquisition-binding-refusals': ['acquisition-binding-refusals'],
         'acquisition-binding-recovery': ['acquisition-binding-recovery'],
+        'sync-arrival-policy': ['sync-arrival-policy'],
     }.get(profile, [])
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_path + '/native.py', *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
@@ -192,7 +193,8 @@ try:
                 'acquisition-scope-read': 'PASS_ACQUISITION_SCOPE_READ_BUILD_ONLY',
                 'acquisition-binding': 'PASS_ACQUISITION_BINDING_BUILD_ONLY',
                 'acquisition-binding-refusals': 'PASS_ACQUISITION_BINDING_REFUSAL_BUILD_ONLY',
-                'acquisition-binding-recovery': 'PASS_ACQUISITION_BINDING_RECOVERY_BUILD_ONLY'}[profile]
+                'acquisition-binding-recovery': 'PASS_ACQUISITION_BINDING_RECOVERY_BUILD_ONLY',
+                'sync-arrival-policy': 'PASS_SYNC_ARRIVAL_POLICY_BUILD_ONLY'}[profile]
     assert qualification['source'] == revision and qualification['status'] == expected
     state['qualification'] = qualification['status']
     if profile in ('relay-registry', 'relay-enrollment', 'ingest-visibility', 'policy-versions', 'relay-source'):

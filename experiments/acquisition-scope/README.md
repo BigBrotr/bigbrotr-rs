@@ -145,3 +145,20 @@ original FAIL, distinguishing a discriminating fixture from product qualificatio
 The [9ce248f report](../../docs/implementation/evidence/p03-acquisition-binding-guards-native-20260928.json)
 records23 nested cases and5 helper schedules PASS; the negative remains FAIL. No Rust rebuild,
 management activation, installed Sync, load or complete M1 claim follows.
+
+
+The `sync-arrival-policy` profile builds the actual accepted-policy consumer and
+runs its focused configuration tests plus Clippy. `bindings.py RUN_ROOT --policy`
+selects nine planned actual PG/Rocks cases. Fresh empty clones receive independently
+encoded v2 fixture documents before ownership, with provenance off; this setup is
+not management activation. Admission, exact replay, read-only certification,
+forged-signature rejection and withdrawal retain the existing full-byte oracle.
+Five refusal fixtures isolate provenance, exact verification limit, collection
+floor, ephemeral policy and the second accepted document. They must leave no
+new native event/input/reservation. The limit fixture increases the accepted limit
+so import/admission resource consistency remains valid before the intended check.
+Policy callback digests distinguish both accepted documents from one repeated
+unit input. Original templates, policy setup snapshots and outcomes remain.
+Results decide execution status; these recipes alone are not PASS evidence.
+No actual pre-request collection gate, socket custody, provenance-on committed
+witness linkage, installed Sync, management transition or capacity claim follows.

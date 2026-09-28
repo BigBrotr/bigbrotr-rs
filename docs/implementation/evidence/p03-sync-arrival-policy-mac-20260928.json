@@ -1,0 +1,62 @@
+{
+  "format": "bigbrotr-sync-arrival-policy-mac/1",
+  "status": "PASS_SCOPED_MAC_COMPONENTS",
+  "base_source": "3e5ac2d37822edd465a47d916b0b5132d6a80415",
+  "environment": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+  "local_evidence": ".research/implementation/sync-arrival-policy-20260928",
+  "source_sha256": {
+    "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "3af9fbf4988917a5dc141acee29c92745dea73456101805973b9fdd04763598c",
+    "apps/bigbrotr/examples/support/acquisition_config.rs": "fe895e6f76b441e002099b4cdfdba3d96859faec1fb81c32e9f71c8fa654c06e",
+    "apps/bigbrotr/examples/support/ingest_relay_source.rs": "81bfc465576dffb60842ee71b82bece09b368e16a02b93d573e3461c3fddc5de",
+    "apps/bigbrotr/examples/support/ingest_scope_binding.rs": "2a0d65709787a70cc11a27d67fc6e3bcd62414c1ce79e2a87ff10b144f00cd1e",
+    "apps/bigbrotr/src/config/acquisition.rs": "5059c3dddc7a8e1496fa7d06ba60bad3fb242613aad62c538b8e25a024f5096e",
+    "experiments/acquisition-scope/bindings.py": "72650065cf4c1d37a5943239e512c01e2723f03d80b8b3e8735b08e3e946bd65",
+    "experiments/network-transport/lab.py": "5b60ac4e1bd007b7bec65081472e060b4b19472a60bd8f61e41ab6a01334ab51",
+    "experiments/relay-registry/native.py": "9157b4aee8ae4259eed5d9fc2b615188db4e1e8c363826becb234338ff7c08dd",
+    "apps/bigbrotr/src/config/acquisition_tests.rs": "6b131aed3e2284bb843d7411238345135c28744e3c97b8149bd1c839e4848c0a",
+    "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9"
+  },
+  "logs_sha256": {
+    "artifacts.log": "5f5dd1e7fed91257d16936b20a14c770098a47910a243570473240f8728c64a9",
+    "clippy-2.log": "4145f1780fd25d6741388cf26ae2d40d50d13fa6dcc31f354ad04abeb1a82164",
+    "clippy-3.log": "4452ac1ec6e02682422ad6fdb206d0dee7982045410c5c87a26568a2a48b7b57",
+    "clippy-final.log": "f591e097f22f91dd5c31fbbf7e587d80c0a4e0ed594f9c9012a544f38c52d926",
+    "clippy.log": "98934ae115dde04c5ecad1bf1ccfd47894f0e76f5d4c85ce9ba0d838714b2c28",
+    "collection-red.log": "cb0851093542a373c9d6098fa9318de9e3b9ba0646cf9100ac574cd4084028e1",
+    "green-2.log": "ceda7fb137a19ad0dce214522c64b93104972f7194a00ead7469750c2633b2f5",
+    "green-3.log": "261dde4aa6d1a9d7da80d6f24f8dee943782e1db35e728c1962e27980aa6a2f6",
+    "green-final.log": "ff1e1fde9132c3a4017f54034facc12a7b62393bc612222879437326b37a4131",
+    "green.log": "5f79767aa59b08b60067b7a7ea2a3f6cfb0f50a0ac376db0706c3d2c2f56d7e7",
+    "handoff.log": "d52759bfa5c07e2bcb24dc64e37adfc18872c280311e692a94df3bedfe2b9e19",
+    "negative-limit.log": "9d5aa7ae0c12449e13f20b6f517d35e825a9cb0f78baeb4e97493a153d373609",
+    "red.log": "b8889be7f3c628d37f55359fe6189ff6bf61a398626c43402c7f2af10955520a",
+    "restored-limit.log": "d059d35c966b631b6b7e9a2e916deac54d284112f69dc66119bcc863fa43ddd5"
+  },
+  "checks": [
+    "Eight actual configuration component tests using signed and forged PreparedEvent/PreparedCertification values",
+    "Exact verification limit, floor/drop narrowing, provenance objective, full arrival attribution, selected service, exact endpoints/bans and current private roots",
+    "Scoped binary/probe Clippy, formatting, Python syntax and affected documentation checks",
+    "Replacing exact verification-limit equality with an upper-bound check fails the8-byte case; exact source restored and affected regression passed"
+  ],
+  "negative_control": {
+    "status": "EXPECTED_FAIL",
+    "original_sha256": "5059c3dddc7a8e1496fa7d06ba60bad3fb242613aad62c538b8e25a024f5096e",
+    "negative_sha256": "3466952ad4060cbe9047bc51508ea4b26d8ef1a1dff3290164a10cc5de0191dd",
+    "restored": true,
+    "restored_status": "PASS",
+    "claim": "Allowing a smaller preparation limit incorrectly accepts the8-byte verifier exclusion"
+  },
+  "original_outcomes": [
+    "Missing arrival/collection API REDs retained",
+    "Initial NostrTime accessor guesses and fixture instance type annotation compile errors corrected; original logs retained",
+    "Read-only review caught invalid131072-byte fixture due to import<=ingest;524288 keeps the accepted document valid before the arrival check"
+  ],
+  "review": "Root product/source/contract/consumer and complete changed diff review; independent read-only AI review. Reused explicit policy restoration and focused helpers, no generic traits or new crates. Applied SQL, native formats and Cargo inputs unchanged.",
+  "not_run": [
+    "Nine prepared actual PostgreSQL/RocksDB --policy schedules",
+    "Actual socket pre-request collection gate and source observation custody",
+    "Committed provenance-on dictionary linkage",
+    "Fresh policy transition after reservation and ambiguous outcomes for this consumer",
+    "Installed Sync/job/progress/M1, capacity/aged-state, Linux arm64/release"
+  ]
+}

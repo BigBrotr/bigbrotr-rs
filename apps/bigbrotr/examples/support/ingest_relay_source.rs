@@ -50,7 +50,13 @@ pub async fn run(
         .await;
         return;
     }
-    let validate = |document: &str, digest| validate_version(document, digest, true);
+    let arrival_root = mode
+        .starts_with("source-arrival-")
+        .then(|| crate::config::fixture_root(spec.dataset_id, spec.instance_id));
+    let validate = |document: &str, digest| match &arrival_root {
+        Some(root) => crate::config::validate_fixture_policy(document, digest, root),
+        None => validate_version(document, digest, true),
+    };
     let revision = |n: u64| Revision::try_from(n.to_string()).unwrap();
     let hash_budget = ResourceBudget::new(
         ProcessEnvelope::new(
@@ -168,9 +174,20 @@ pub async fn run(
         matches!(committed.entry().descriptor(), DictionaryDescriptor::Visibility { class } if class.as_str()=="public")
     );
     drop(committed);
-    if mode.starts_with("source-scope-") {
+    if mode.starts_with("source-scope-") || arrival_root.is_some() {
+        let scoped_mode = mode.replace("source-arrival-", "source-scope-");
         let available = scope_binding::run(
-            &mut owner, observer, &mut store, spec, path, budget, mode, source, &command, &session,
+            &mut owner,
+            observer,
+            &mut store,
+            spec,
+            path,
+            budget,
+            &scoped_mode,
+            source,
+            &command,
+            &session,
+            arrival_root.as_ref(),
         )
         .await;
         if available {

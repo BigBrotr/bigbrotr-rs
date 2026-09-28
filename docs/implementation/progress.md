@@ -12,9 +12,52 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is9ce248f9c29d67b4c28ac5ab3474a90e733b1cad, tested candidate not yet
-pushed; private origin/main remains98abd959023b1ac5f85ab267b19eb6255866e225.
-Root owns qualification report, reference/task notes, inventory and checkpoint.
+Mac main and private origin/main are3e5ac2d37822edd465a47d916b0b5132d6a80415,
+verified clean after the SQL-guard qualification push. Root owns subsequent
+implementation and this checkpoint. Resumption verified the borrowed PG/client
+stopped, compiler lock free, the same eight unrelated containers running, Mac
+10,416,496 KiB and Tux65,131,450,368 bytes available. No active experiment or cleanup
+obligation; do not replay retained launchers/deletion recipes.
+
+The next concrete slice is the accepted Sync collection/arrival policy consumer
+(P03-T01 Step3/P03-T02 Step3), followed by the installed owning lifetime and typed
+finite job (P01-T09 Step1, P02-T02 Steps2/3, P03-T01 Steps3/4). Explicit registered
+selectors can use v2 without adding ordinary sync.selectors defaults. Require a
+scope floor at least each accepted history_since; Drop may narrow Retain, but
+Retain cannot widen Drop. Do not rewrite the selector or its identity. Provenance
+and prepared verification limits must exactly match each accepted document.
+Read-only AI review confirms source dictionaries need full descriptor linkage,
+not equality between operational IDs and archive QualifiedRefs; a static policy
+checker alone cannot establish this or observation custody.
+
+Installed Ingest is currently absent: Serve permits Control only. Initial native
+registration and first admission must share one retained Control identity; a
+standalone initializer followed by a new Serve cannot reuse this initial writer.
+M1 requires archived restart recovery, and P01-T09 Step4 additionally resends the
+same event with provenance on/off. Historical positive recovery alone does not
+provide fresh existing-effect certification. Successor/read-only certification
+needs its concrete authority boundary, but full ACK/GC, Discovery or Monitor is
+not a prerequisite to every initial M1 slice. The sole Control borrow spans the
+socket transaction: collect a bounded batch, close/release transport, then obtain
+fresh admission authority. Job authorization and timer publication remain real
+prerequisites; do not report socket receipt as durable job progress.
+
+Root has implemented the bounded static collection/arrival policy checker and
+its actual native probe consumer. [Mac evidence](evidence/p03-sync-arrival-policy-mac-20260928.json)
+records eight focused tests and scoped Clippy PASS. The smaller-verifier-limit
+negative control fails discriminatingly, then restored source passes; original
+API/setup compilation errors remain under ignored
+.research/implementation/sync-arrival-policy-20260928. Root/read-only AI reviewed
+the complete changed owners and fixtures. Review corrected a setup limit that
+would have failed full restoration before arrival. No Cargo/SQL/native-format
+changes. Nine real PG/Rocks schedules are prepared but NOT_RUN. Next bounded
+action: commit candidate, transfer exact Git, build the sync-arrival-policy profile
+with retained1154757 cache, then execute bindings.py RUN_ROOT --policy. Check
+terminal resources and independent native/Control/input/digest results before
+qualification or push. Current local source is root-owned dirty work, no remote
+experiment has started yet. Installed ownership/job/socket/dictionary integration
+remains separate; no complete Sync/task/M1 claim.
+
 Raw binding SQL qualification PASS:23 nested actual-Control cases (18 refusals,
 5 valid controls),5 direct helper lock/isolation schedules and the expected original
 FAIL after removing only the epoch predicate on its own clone. Four positive and

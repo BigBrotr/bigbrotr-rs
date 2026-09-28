@@ -218,7 +218,6 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     let source_fault = mode.starts_with("source-fault-");
     let direct_config = config.clone();
     let v2 = mode == "write-v2" || source_mode;
-    let validate = |document: &str, digest| validate_version(document, digest, v2);
     let mode = if mode == "write-v2" { "write" } else { mode };
     let (observer, observer_driver) = config.connect(NoTls).await.unwrap();
     let observer_driver = tokio::spawn(observer_driver);
@@ -227,11 +226,18 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .unwrap()
         .try_into()
         .unwrap();
-    let instance = <[u8; 16]>::try_from(row.get::<_, &[u8]>(1))
+    let instance: bigbrotr_model::DatasetId = <[u8; 16]>::try_from(row.get::<_, &[u8]>(1))
         .unwrap()
         .try_into()
         .unwrap();
     let now: i64 = row.get(2);
+    let arrival_root = mode
+        .starts_with("source-arrival-")
+        .then(|| crate::config::fixture_root(dataset, *instance.as_bytes()));
+    let validate = |document: &str, digest| match &arrival_root {
+        Some(root) => crate::config::validate_fixture_policy(document, digest, root),
+        None => validate_version(document, digest, v2),
+    };
     if matches!(
         mode,
         "reservation-commit-lost"

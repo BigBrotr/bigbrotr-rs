@@ -27,6 +27,7 @@ pub async fn run(
     source: RelaySourceBinding,
     enrollment: &EnrollmentCommand,
     session: &IssuedSession,
+    policy_root: Option<&crate::config::Resolved>,
 ) -> bool {
     assert!(matches!(
         mode,
@@ -44,6 +45,11 @@ pub async fn run(
             | "source-scope-invalid-withdrawn"
             | "source-scope-invalid-retained"
             | "source-scope-dispatch-refused"
+            | "source-scope-policy-provenance"
+            | "source-scope-policy-limit"
+            | "source-scope-policy-floor"
+            | "source-scope-policy-ephemeral"
+            | "source-scope-policy-second"
     ));
     let visibility = enrollment.visibility;
     let mut event: SignedEvent = serde_json::from_slice(include_bytes!(
@@ -83,6 +89,7 @@ pub async fn run(
             source,
             None,
             intent(),
+            policy_root,
         )
         .await
         .err();
@@ -154,6 +161,7 @@ pub async fn run(
             source,
             Some(AcquisitionEventContext::new(&stored[0], request_predicate.filters()).unwrap()),
             intent(),
+            policy_root,
         )
         .await
         .err();
@@ -191,6 +199,26 @@ pub async fn run(
         cancelled: &cancelled,
     };
     let authorize = |document: &str, digest, candidate: &PreparedEvent| {
+        if let Some(root) = policy_root {
+            let endpoint = Endpoint::parse("wss://source.example/events").unwrap();
+            let context =
+                AcquisitionEventContext::new(&stored[0], request_predicate.filters()).unwrap();
+            let result = crate::config::acquisition::SyncArrivalPolicy {
+                root,
+                endpoint: &endpoint,
+                route: RouteSelection::Public {},
+                selector: context.scope().selector(),
+                visibility: context.scope().scope().visibility(),
+                observation,
+                provenance_enabled: false,
+            }
+            .admission(document, digest, candidate);
+            emit(
+                serde_json::json!({"event":"arrival-policy", "operation":"admission",
+                "digest":hex(&digest), "accepted":result.is_ok()}),
+            );
+            return result;
+        }
         validate_version(document, digest, true)?;
         let expected = if invalid { None } else { Some(&event) };
         if candidate.verified_event().map(|v| v.event()) != expected
@@ -235,6 +263,7 @@ pub async fn run(
                     AcquisitionEventContext::new(&stored[0], request_predicate.filters()).unwrap(),
                 ),
                 intent(),
+                policy_root,
             )
             .await
             .unwrap();
@@ -300,6 +329,7 @@ pub async fn run(
             source,
             Some(AcquisitionEventContext::new(&stored[0], request_predicate.filters()).unwrap()),
             intent(),
+            policy_root,
         )
         .await
         .err();
@@ -327,6 +357,7 @@ pub async fn run(
             source,
             Some(AcquisitionEventContext::new(&stored[0], request_predicate.filters()).unwrap()),
             EventIntent::network(1, visibility, forged, observation).unwrap(),
+            policy_root,
         )
         .await
         .unwrap();
@@ -416,6 +447,7 @@ pub async fn run(
             source,
             Some(AcquisitionEventContext::new(&stored[0], request_predicate.filters()).unwrap()),
             intent(),
+            policy_root,
         )
         .await
         .unwrap();
@@ -434,6 +466,9 @@ pub async fn run(
             "source-scope-no-source" => InitialEventError::Control(OwnerError::InvalidInput),
             "source-scope-invalid-withdrawn" | "source-scope-dispatch-refused" => {
                 InitialEventError::Source(SourceBindingError::Unavailable)
+            }
+            name if name.starts_with("source-scope-policy-") => {
+                InitialEventError::Control(OwnerError::InvalidPolicy)
             }
             _ => unreachable!(),
         };
@@ -476,6 +511,7 @@ async fn certify(
     source: RelaySourceBinding,
     acquisition: Option<AcquisitionEventContext<'_>>,
     intent: EventIntent,
+    policy_root: Option<&crate::config::Resolved>,
 ) -> Result<bigbrotr::storage::rocks::store::StoredCertification, InitialEventError> {
     let limits = CertificationLimits {
         max_fact_bytes: 1024,
@@ -503,6 +539,25 @@ async fn certify(
             },
             grant(budget, limits.required_data_bytes().unwrap(), 0),
             |document, digest, candidate| {
+                if let Some(root) = policy_root {
+                    let context = acquisition.expect("current Sync policy needs exact scope");
+                    let endpoint = Endpoint::parse("wss://source.example/events").unwrap();
+                    let result = crate::config::acquisition::SyncArrivalPolicy {
+                        root,
+                        endpoint: &endpoint,
+                        route: RouteSelection::Public {},
+                        selector: context.scope().selector(),
+                        visibility: context.scope().scope().visibility(),
+                        observation: expected_observation.unwrap(),
+                        provenance_enabled: false,
+                    }
+                    .certification(document, digest, candidate);
+                    emit(
+                        serde_json::json!({"event":"arrival-policy", "operation":"certification",
+                        "digest":hex(&digest), "accepted":result.is_ok()}),
+                    );
+                    return result;
+                }
                 validate_version(document, digest, true)?;
                 let expected = if invalid { None } else { Some(&expected_event) };
                 if candidate.verification_limit_bytes() != 256 * 1024

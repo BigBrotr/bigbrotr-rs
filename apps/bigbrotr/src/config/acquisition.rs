@@ -3,7 +3,14 @@ use super::{Resolved, policy::PolicySeed, private_routes};
 use bigbrotr::{
     network::{BanSet, DirectPolicy, RouteSelection},
     runtime::policy_document::PolicyDocumentVersion,
-    storage::postgres::control_owner::OwnerError,
+    storage::{
+        postgres::control_owner::OwnerError,
+        rocks::store::{PreparedCertification, PreparedEvent},
+    },
+};
+use bigbrotr_model::{
+    EventOrigin, LocalObservation, QualifiedRef,
+    acquisition::{CollectionSelector, EphemeralPolicy},
 };
 use bigbrotr_protocol::endpoint::Endpoint;
 
@@ -20,6 +27,45 @@ pub(crate) fn authorize_sync_source(
     endpoint: &Endpoint,
     route: RouteSelection,
 ) -> Result<DirectPolicy, OwnerError> {
+    source_policy(&restore_sync(root, document, digest)?, endpoint, route)
+}
+
+/// The finite request owner applies the registered intent before any wire work,
+/// using the actual endpoint/route supplied by run_relay_source. No arrival
+/// timestamp or witness is invented before receiving an event.
+#[allow(
+    dead_code,
+    reason = "finite native consumer precedes installed Sync integration"
+)]
+pub(crate) fn authorize_sync_collection(
+    root: &Resolved,
+    document: &str,
+    digest: [u8; 32],
+    endpoint: &Endpoint,
+    route: RouteSelection,
+    selector: &CollectionSelector,
+) -> Result<DirectPolicy, OwnerError> {
+    let accepted = restore_sync(root, document, digest)?;
+    require_collection(&accepted, selector)?;
+    source_policy(&accepted, endpoint, route)
+}
+
+fn require_collection(
+    accepted: &Resolved,
+    selector: &CollectionSelector,
+) -> Result<(), OwnerError> {
+    // Explicit intent may narrow collection, but is never silently clamped to a
+    // different predicate while keeping the original scope identity.
+    if selector.history_since().0 < accepted.number("sync.history_since")
+        || (accepted.text("sync.ephemeral") == Some("drop")
+            && selector.ephemeral() != EphemeralPolicy::Drop)
+    {
+        return Err(OwnerError::InvalidPolicy);
+    }
+    Ok(())
+}
+
+fn restore_sync(root: &Resolved, document: &str, digest: [u8; 32]) -> Result<Resolved, OwnerError> {
     let accepted = PolicySeed::restore(document, digest, root.clone())
         .map_err(|_| OwnerError::InvalidPolicy)?;
     if accepted.policy_version != PolicyDocumentVersion::V2
@@ -28,6 +74,14 @@ pub(crate) fn authorize_sync_source(
     {
         return Err(OwnerError::InvalidPolicy);
     }
+    Ok(accepted)
+}
+
+fn source_policy(
+    accepted: &Resolved,
+    endpoint: &Endpoint,
+    route: RouteSelection,
+) -> Result<DirectPolicy, OwnerError> {
     if accepted.text("sync.endpoints.mode") == Some("fixed")
         && !accepted
             .value("sync.endpoints.urls")
@@ -53,6 +107,102 @@ pub(crate) fn authorize_sync_source(
         )
         .map_err(|_| OwnerError::InvalidPolicy)
 }
+
+/// Immutable attribution retained by the trusted receiving owner. This checker
+/// does not establish socket custody or resolve dictionaries: the consumer must
+/// bind the endpoint/route and full observation references to the actual source,
+/// including committed endpoint/access descriptors when provenance is enabled.
+/// selector and visibility must come from the same loaded scope borrowed by the
+/// operation's AcquisitionEventContext, never an independently supplied predicate.
+/// Control invokes these methods for both accepted documents at each fresh
+/// operation; historical ambiguous-outcome recovery never uses this permission.
+#[allow(
+    dead_code,
+    reason = "finite native consumer precedes installed Sync integration"
+)]
+pub(crate) struct SyncArrivalPolicy<'a> {
+    pub root: &'a Resolved,
+    pub endpoint: &'a Endpoint,
+    pub route: RouteSelection,
+    pub selector: &'a CollectionSelector,
+    pub visibility: QualifiedRef,
+    pub observation: LocalObservation,
+    pub provenance_enabled: bool,
+}
+
+#[allow(
+    dead_code,
+    reason = "finite native consumer precedes installed Sync integration"
+)]
+impl SyncArrivalPolicy<'_> {
+    pub fn admission(
+        &self,
+        document: &str,
+        digest: [u8; 32],
+        event: &PreparedEvent,
+    ) -> Result<(), OwnerError> {
+        let accepted = self.collection(document, digest)?;
+        self.arrival(
+            &accepted,
+            event.verification_limit_bytes(),
+            event.origin(),
+            event.visibility_scope_id(),
+            event.observation(),
+        )
+    }
+
+    pub fn certification(
+        &self,
+        document: &str,
+        digest: [u8; 32],
+        event: &PreparedCertification,
+    ) -> Result<(), OwnerError> {
+        let accepted = self.collection(document, digest)?;
+        self.arrival(
+            &accepted,
+            event.verification_limit_bytes(),
+            event.origin(),
+            event.visibility_scope_id(),
+            event.observation(),
+        )
+    }
+
+    fn collection(&self, document: &str, digest: [u8; 32]) -> Result<Resolved, OwnerError> {
+        let accepted = restore_sync(self.root, document, digest)?;
+        source_policy(&accepted, self.endpoint, self.route)?;
+        require_collection(&accepted, self.selector)?;
+        Ok(accepted)
+    }
+
+    fn arrival(
+        &self,
+        accepted: &Resolved,
+        verification_limit: usize,
+        origin: EventOrigin,
+        visibility: QualifiedRef,
+        observation: Option<&LocalObservation>,
+    ) -> Result<(), OwnerError> {
+        let provenance = accepted.text("sync.provenance") == Some("local_first_witness");
+        if verification_limit as u64 != accepted.number("ingest.max_event_bytes")
+            || origin != EventOrigin::Network
+            || visibility != self.visibility
+            || observation != Some(&self.observation)
+            || self.provenance_enabled != provenance
+            || self.observation.witness.is_some() != provenance
+        {
+            return Err(OwnerError::InvalidPolicy);
+        }
+        // Invalid signatures/IDs retain source attribution and the exact limit.
+        // The native operation owns their explicit rejection; requiring a
+        // VerifiedEvent here would incorrectly replace it with a policy error.
+        // Collection/request membership is checked by AcquisitionEventContext.
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+#[path = "acquisition_tests.rs"]
+mod arrival_tests;
 
 #[cfg(test)]
 mod tests {
