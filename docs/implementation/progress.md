@@ -12,15 +12,33 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is e365b33 (unpublished exact-Git cleanup fixture candidate).
-Origin/main is 2938d23, privately pushed after finite source transport evidence.
-Root owns pending evidence, inventory, reference and checkpoint updates. No other
-writer, merge or rebase. Product source remains 8c4d12c; e365b33 changes fixtures
-and documentation only. Review and commit this evidence, then push ordinary main.
-Never merge or push the negative variant described below.
+Local main and origin/main are c498c48, verified private push after cleanup evidence.
+Root owns the next dirty concurrency fixture: ingest_source_races.rs plus probe
+integration, and a before-forward option/test in rollback_proxy.py. No product or
+SQL change. Proxy missing-option RED, then both loopback cases PASS; scoped Mac
+probe Clippy PASS. Logs: .research/implementation/source-races-20260928. No native
+race execution yet. Seven external race schedules and exact all-table/digest/native
+oracles are now prepared in transport.py; shared locks.py keeps the former fault
+barrier body byte-semantically identical (AST checked). Native source-races profile
+is build/Clippy only. Root and independent read-only AI source/harness review found no launch blocker.
+Both loopback tests and artifact checks PASS; latest scoped Clippy log retained.
+Next: coherent candidate commit, exact-Git native build and seven engine cases. Never merge/push the
+negative variant below. No other writer, merge or rebase.
+
+Independent read-only review derived current-ban digest11509ebf0022969d4d839f118b99bf3b777b9b30737a3a1af34526fb76c324f1
+for7531 canonical bytes, and unmatching /other digest9625e0f3e9452e367da1d52eadfd7779602a943213a64d20412b826a0336316a
+for7529 bytes. Prefix is bigbrotr/product-policy/2\0; all215 original settings
+unchanged plus banned field. Append head2, preserve all head1 fields/xmin; inject
+under dataset lock. Actual valid unbanned target is a positive control for decoder/
+digest refusal; the /other real socket positive counterpart is included. These are inspected/
+independently calculated, not executed policy-race evidence. Product source8c4d12c
+still holds sole &mut ControlSession: injections qualify SQL locks/post-wait reads,
+not concurrent authorized management acceptance or installed revocation delivery.
 
 No active laboratory experiment at the last terminal audit, 08:31:03 UTC.
-Only eight unrelated containers are running. Recheck reality before allocation.
+Resumption census at 10:53 UTC confirms only eight unrelated running containers,
+no build/lab process, 67,594,084,352 free Tux bytes and 13,888,320 KiB on Mac.
+Recheck the full launch preflight before allocation.
 The independent read-only AI reviewer dns_dependency_audit is done; no agent edits.
 
 ## Active slice and next useful journey

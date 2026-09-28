@@ -5,6 +5,7 @@ No new network, compiler cache or dataset retirement. Every clone is retained.
 This is not WebSocket acquisition, native admission from a socket or M1.
 """
 import datetime
+import copy
 import hashlib
 import importlib.util
 import json
@@ -21,6 +22,9 @@ SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE / 'experiments/control-migrations'))
 import lab
 from fault_cases import Process
+import concurrency_cases
+concurrency_cases.ROLE = 'postgres'
+from concurrency_cases import Session
 sys.path.insert(0, str(SOURCE / 'experiments/network-transport'))
 from inventory import projection
 spec = importlib.util.spec_from_file_location('bootstrap_oracle', SOURCE / 'experiments/ingest-bootstrap/oracle.py')
@@ -28,10 +32,12 @@ m = importlib.util.module_from_spec(spec)
 sys.modules['bootstrap_oracle'] = m
 spec.loader.exec_module(m)
 from oracle import complete_source
+from locks import blocked
 
 assert len(sys.argv) in (2, 3)
 cleanup = len(sys.argv) == 3 and sys.argv[2] == '--cleanup'
-assert len(sys.argv) == 2 or cleanup
+races = len(sys.argv) == 3 and sys.argv[2] == '--races'
+assert len(sys.argv) == 2 or cleanup or races
 root = Path(sys.argv[1]).resolve(strict=True)
 assert SOURCE == root / 'source'
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
@@ -47,7 +53,7 @@ pg = lab.load(original)
 assert pg['state'] == 'stopped-retained' and pg['owner'] == '5e69b0f060b1607c25230d1dbd3e5608'
 original_report = (original / 'source-result.json').read_bytes()
 assert json.loads(original_report)['status'] == 'PASS_SCOPED_RELAY_SOURCE_FIRST_WAVE'
-phase = 'cleanup' if cleanup else 'transport'
+phase = 'races' if races else 'cleanup' if cleanup else 'transport'
 output = root / phase
 output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.source-' + phase
@@ -56,8 +62,8 @@ report = dict(format='bigbrotr-source-transport-native/1', phase=phase, source=r
     owner=owner, label=label, status='RUNNING', client=None, postgres=pg['postgres'],
     postgres_owner=pg['owner'], cases=[], databases=[],
     preservation_scope=['bb_source_template', 'bb_source_pass', 'source-result.json'],
-    evidence_limits=['normal release checks changed tables; its previously qualified field semantics are not requalified here'],
-    not_run=(['deadline-check negative control'] if cleanup else ['delayed cleanup reply']) + ['concurrent changes and lock orders',
+    evidence_limits=(['Privileged source/policy injections qualify locks and post-wait reads, not concurrent authenticated management acceptance.'] if races else ['normal release checks changed tables; its previously qualified field semantics are not requalified here']),
+    not_run=([] if races else ['deadline-check negative control'] if cleanup else ['delayed cleanup reply']) + ([] if races else ['concurrent changes and lock orders']) + [
              'installed Sync', 'WebSocket/signed admission/M1', 'load/aged state', 'arm64/release'])
 
 
@@ -84,11 +90,12 @@ def rows(database):
         'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(parts) + ') t'))
 
 
-def verify_final(name, database, final):
+def verify_final(name, database, final, *, original_enrollment=True):
     require(len(final['relay_endpoints']) == 1 and
         final['relay_endpoints'][0]['url_bytes'] == '\\x' + b'ws://127.0.0.1:7447/private'.hex(), 'exact-endpoint')
-    require(len(final['relay_enrollments']) == 2 and
-        all(r['enabled'] and r['generation'] == 1 for r in final['relay_enrollments']), 'two-exact-enrollments')
+    require(len(final['relay_enrollments']) == 2, 'two-enrollments')
+    if original_enrollment:
+        require(all(r['enabled'] and r['generation'] == 1 for r in final['relay_enrollments']), 'original-enrollments')
     require(len(final['network_routes']) == 1 and final['network_routes'][0]['route_bytes'] == '\\x0104207f000001', 'exact-private-route')
     access = final['relay_access_contexts']
     require(len(access) == 2 and {r['ordinal'] for r in access} == {1, 2} and
@@ -265,7 +272,162 @@ def run_cleanup_case(name, target):
     return baseline
 
 
-processes = []
+def policy_fixture(subject):
+    document = json.loads((SOURCE/'experiments/configuration-inspection/policy.json').read_text())
+    document['format'] = 'bigbrotr-product-policy/2'
+    document['settings']['relay_policy.banned'] = [] if subject is None else [{'endpoint':subject}]
+    encoded = json.dumps(document,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
+    digest = sha(b'bigbrotr/product-policy/2\0' + encoded)
+    expected = {None:'5916c8d71ed33b8339c00af4595cb5284d8e149a64875ee9c757e0de39e94ed1',
+        'ws://127.0.0.1:7447/private':'11509ebf0022969d4d839f118b99bf3b777b9b30737a3a1af34526fb76c324f1',
+        'ws://127.0.0.1:7447/other':'9625e0f3e9452e367da1d52eadfd7779602a943213a64d20412b826a0336316a'}[subject]
+    require(digest == expected, 'independent-policy-digest')
+    return document,digest
+
+
+def race_mutation(name, binding):
+    endpoint,access=binding['endpoint'],binding['access']
+    require(all(re.fullmatch('[0-9a-f]{32}',s) for s in (endpoint,access)), 'binding-identity')
+    predicate=f"endpoint_id=decode('{endpoint}','hex') AND access_scope_id=decode('{access}','hex')"
+    if name in ('withdraw','source-withdraw','rollback'):
+        return f'UPDATE control.relay_enrollments SET enabled=false WHERE {predicate};'
+    if name=='generation':
+        return f"""INSERT INTO control.relay_enrollment_changes
+            SELECT (jsonb_populate_record(NULL::control.relay_enrollment_changes,
+                to_jsonb(h)||jsonb_build_object('request_key','\\x'||repeat('98',16),
+                'expected_generation',2,'generation',3,'acceptance_transaction',pg_current_xact_id()::text))).*
+            FROM control.relay_enrollment_changes h WHERE {predicate} AND generation=1;
+            UPDATE control.relay_enrollments SET generation=3,request_key=decode(repeat('98',16),'hex') WHERE {predicate};"""
+    config_subject,policy_subject=race_bans(name)
+    def doc(subject):
+        _,digest=policy_fixture(subject)
+        rules=json.dumps([] if subject is None else [{'endpoint':subject}],separators=(',',':'))
+        return f"jsonb_set(document,'{{settings,relay_policy.banned}}','{rules}'::jsonb)",f"decode('{digest}','hex')"
+    config,config_digest=doc(config_subject);policy,policy_digest=doc(policy_subject)
+    return f"""INSERT INTO control.config_revisions
+        SELECT 2,dataset_id,1,2,authority_mode,{config},{config_digest},accepted_source_digest,accepted_at_us+1,actor_id
+        FROM control.config_revisions WHERE revision=1;
+        INSERT INTO control.policy_revisions
+        SELECT 2,dataset_id,1,2,2,{policy},{policy_digest},accepted_at_us+1,actor_id
+        FROM control.policy_revisions WHERE revision=1;
+        UPDATE control.datasets SET config_revision=2,policy_revision=2;"""
+
+
+def race_bans(name):
+    banned='ws://127.0.0.1:7447/private'
+    if name=='ban': return None,banned
+    if name=='source-ban': return banned,None
+    require(name=='ban-other','ban-case')
+    return ('ws://127.0.0.1:7447/other',)*2
+
+
+def verify_race_change(before, after, binding, name, writer_xid):
+    expected=copy.deepcopy(before)
+    if name=='rollback':
+        require(after==before,'writer-rollback-state')
+        return
+    def selected(rows):
+        return next(r for r in rows if r['endpoint_id']=='\\x'+binding['endpoint'] and r['access_scope_id']=='\\x'+binding['access'])
+    if name in ('withdraw','source-withdraw','generation'):
+        old=selected(expected['relay_enrollments'])
+        old.update(xmin=writer_xid)
+        if name=='generation':
+            old.update(generation=3,request_key='\\x'+'98'*16)
+            additions=[r for r in after['relay_enrollment_changes'] if r not in before['relay_enrollment_changes']]
+            require(len(additions)==1,'generation-history-count')
+            history=selected(before['relay_enrollment_changes'])
+            wanted=dict(history,generation=3,expected_generation=2,request_key='\\x'+'98'*16,
+                xmin=writer_xid,acceptance_transaction=writer_xid)
+            require(additions==[wanted],'exact-enabled-generation-history')
+            expected['relay_enrollment_changes'].append(wanted)
+        else:
+            old['enabled']=False
+    else:
+        config_subject,policy_subject=race_bans(name)
+        expected['datasets'][0].update(config_revision=2,policy_revision=2,xmin=writer_xid)
+        for table,subject in [('config_revisions',config_subject),('policy_revisions',policy_subject)]:
+            document,digest=policy_fixture(subject)
+            original=before[table][0]
+            require(original['document']==policy_fixture(None)[0], 'frozen-initial-policy')
+            wanted=dict(original,revision=2,previous_revision=1,schema_version=2,document=document,
+                document_digest='\\x'+digest,accepted_at_us=original['accepted_at_us']+1,xmin=writer_xid)
+            if table=='policy_revisions':wanted['config_revision']=2
+            expected[table].append(wanted)
+    # Row order may change after a write, but every original field and xmin is
+    # retained unless explicitly attributed above. No unrestricted ignore list.
+    normalize=lambda data:{t:sorted(rows,key=lambda r:json.dumps(r,sort_keys=True)) for t,rows in data.items()}
+    require(normalize(after)==normalize(expected),'exact-race-ledger-effects')
+
+
+def run_race_case(name):
+    database='bb_race_'+revision[:7]+'_'+name.replace('-','_')
+    report['active_case']=name;save()
+    lab.sql(pg,'postgres',f'CREATE DATABASE {database} OWNER bigbrotr_migrator TEMPLATE bb_source_template')
+    report['databases'].append(database)
+    require(rows(database)==template_before,'race-clone-state')
+    source_first=name.startswith('source-')
+    proxy=Process(['docker','exec','-i',client,'python3','-B',
+        '/source/experiments/relay-source/rollback_proxy.py','--upstream-port','5432',
+        '--rollback-number','4' if source_first else '0','--before-forward'],input_pipe=True)
+    processes.append((name+'-proxy',proxy));next_event(proxy,'ready')
+    process=Process(['docker','exec',client,'/build/ingest_bootstrap_probe',
+        'source-transport-race-'+name,database,'/run/secrets/application','/lab/'+name],limit=8*1024**2)
+    processes.append((name+'-probe',process));next_event(process,'initialized')
+    public=next_event(process,'source-transport');require(public['ordinal']==1 and public['result']=='refused-public','public-race-refusal')
+    ready=next_event(process,'race-ready');before=rows(database)
+    require(before=={n:json.loads(v) for n,v in ready['state']['control_tables']},'race-ready-state')
+    proxy.send('status');baseline=next_event(proxy,'status')
+    require([baseline[k] for k in ('rollback_requests','rollback_completions','rollback_released','rollback_ready')]==[3]*4,'race-baseline-rollback')
+    owner=next(r for r in before['owner_epochs'] if r['role']=='control')
+    require(owner['control_backend_pid']==ready['pid'] and owner['state']=='active','race-actual-Control')
+    writer=Session(pg,database,'source-race-'+database,sessions)
+    transaction=writer.execute('BEGIN; SET LOCAL session_replication_role=replica; SELECT pg_current_xact_id()::text;')
+    require(len(transaction['lines'])==1 and transaction['lines'][0].isdigit(),'writer-xid')
+    writer_xid=transaction['lines'][0]
+    mutation='SELECT dataset_id FROM control.datasets FOR UPDATE;'+race_mutation(name,ready['binding'])
+    barriers=[];held=None
+    if not source_first:writer.execute(mutation)
+    (output/(name+'.go')).touch(exist_ok=False)
+    if source_first:
+        next_event(process,'race-peer-ready')
+        writer.start(mutation)
+        barriers.append(blocked(pg,database,writer.backend,ready))
+        (output/(name+'.peer')).touch(exist_ok=False)
+        next_event(process,'race-peer-closed')
+        held=next_event(proxy,'held')
+        require([held[k] for k in ('rollback_requests','rollback_completions','rollback_released','rollback_ready')]==[4,3,3,3],'race-rollback-before-forward')
+        barriers.append(blocked(pg,database,writer.backend,ready))
+        proxy.send('release');next_event(proxy,'released')
+        writer.expect(writer.finish())
+        first=next_event(process,'race-finished')
+        require(first['phase']==0 and first['received'] and {n:json.loads(v) for n,v in first['state']['control_tables']}==before,'source-first-result')
+        writer.execute('COMMIT;')
+        (output/(name+'.retry')).touch(exist_ok=False)
+    else:
+        barriers.append(blocked(pg,database,ready,writer.backend))
+        writer.execute('ROLLBACK;' if name=='rollback' else 'COMMIT;')
+        if name in ('rollback','ban-other'):
+            next_event(process,'race-peer-ready');next_event(process,'race-peer-closed')
+    finished=next_event(process,'race-finished')
+    require(finished['phase']==int(source_first) and finished['received']==(name in ('rollback','ban-other')),'race-outcome')
+    writer.close(lambda:lab.load(original));sessions.remove(writer)
+    after=rows(database)
+    require(after=={n:json.loads(v) for n,v in finished['state']['control_tables']},'race-final-observation')
+    verify_race_change(before,after,ready['binding'],name,writer_xid)
+    (output/(name+'.done')).touch(exist_ok=False)
+    require(process.wait(10)==0 and not process.stderr,'race-probe-failed')
+    receipt=next_event(proxy,'receipt');require(proxy.wait(5)==0 and not proxy.stderr,'race-proxy-failed')
+    count=5 if source_first else 4
+    require([receipt[k] for k in ('rollback_requests','rollback_completions','rollback_released','rollback_ready')]==[count]*4,'race-final-rollback-count')
+    final=rows(database);require(final==after,'race-retirement-effects')
+    verify_final(name,database,final,original_enrollment=False)
+    report['cases'].append(dict(name=name,status='PASS',database=database,binding=ready['binding'],
+        before=before,final=final,writer_xid=writer_xid,barriers=barriers,held=held,receipt=receipt,first=first if source_first else None,
+        finished=finished,full_native_bytes=True,complete_control_tables=64))
+    save()
+
+
+processes, sessions = [], []
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -299,7 +461,10 @@ try:
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
-    if cleanup:
+    if races:
+        for name in ('rollback', 'withdraw', 'generation', 'ban', 'ban-other', 'source-withdraw', 'source-ban'):
+            run_race_case(name)
+    elif cleanup:
         baseline = run_cleanup_case('pass', 0)
         for name in ('expired', 'timeout', 'ready'):
             run_cleanup_case(name, baseline + 1)
@@ -315,6 +480,11 @@ except BaseException as error:
     raise
 finally:
     errors = []
+    for session in sessions:
+        try:
+            session.close(lambda: lab.load(original))
+        except BaseException as error:
+            errors.append('writer:' + type(error).__name__)
     for name, process in processes:
         try:
             process.stop()

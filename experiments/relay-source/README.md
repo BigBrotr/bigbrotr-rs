@@ -86,3 +86,21 @@ isolated354abff variant omitting only the final deadline check failed exactly on
 late value delivery. See [cleanup qualification](../../docs/implementation/evidence/p04-source-cleanup-native-20260928.json).
 The raw negative result stays FAIL, and its skipped post-suite original-data
 comparison is not claimed as passed. Concurrent source/policy schedules remain open.
+
+`source-races` builds the same probe without repeating unchanged component tests.
+`transport.py ROOT --races` prepares seven actual SQL lock schedules: writer-first
+withdrawal, newer enabled generation, policy-document ban, nonmatching ban and
+rollback; source-first withdrawal and configuration-document ban. The private
+socket closes before a held outgoing rollback releases its locks, and a fresh
+invocation must observe the committed change. Actual backend incarnations and
+blocking PIDs identify each barrier. Shared locks.py preserves the original
+source-binding fixture's observed barrier semantics.
+
+Writers are explicit privileged clone-only injections. They qualify SQL locking
+and current-state rechecks, not concurrent authenticated management acceptance:
+the production consumer borrows its sole Control session throughout the action.
+The generation3 fixture lacks a complete command/audit journal. Policy heads2
+preserve original head1 fields/xmin; independent frozen document digests and the
+actual configuration consumer distinguish a real ban from invalid policy bytes.
+The nonmatching /other ban must permit the same /private socket. These schedules
+are prepared, not yet executed or qualified.

@@ -32,6 +32,7 @@ m = importlib.util.module_from_spec(spec)
 sys.modules['bootstrap_oracle'] = m
 spec.loader.exec_module(m)
 from oracle import complete_source
+from locks import blocked
 
 root = Path(sys.argv[1]).resolve(strict=True)
 assert SOURCE == root / 'source'
@@ -122,24 +123,6 @@ def observe(db, ready):
     require(value and value['backend_start'] == ready['backend_start'] and
         value['epoch'] == 1 and value['live'] and value['fenced'], 'actual-Control-custody')
     return value
-
-
-def blocked(db, waiter, holder):
-    deadline = time.monotonic() + 2
-    while True:
-        result = json.loads(lab.sql(pg, db, f"""SELECT json_build_object(
-            'pid',a.pid,'backend_start',a.backend_start::text,'blockers',pg_blocking_pids(a.pid),
-            'holder_start',(SELECT backend_start::text FROM pg_stat_activity WHERE pid={holder['pid']}),
-            'waiting_locks',(SELECT coalesce(json_agg(json_build_object('type',locktype,
-                'mode',mode,'relation',relation::regclass::text)),'[]') FROM pg_locks
-                WHERE pid=a.pid AND NOT granted)) FROM pg_stat_activity a
-            WHERE a.pid={waiter['pid']} AND a.datname='{db}'"""))
-        if result and holder['pid'] in result['blockers'] and result['waiting_locks']:
-            require(result['backend_start'] == waiter['backend_start'] and
-                result['holder_start'] == holder['backend_start'], 'lock-backend-incarnation')
-            return result
-        require(time.monotonic() < deadline, 'lock-barrier-not-observed')
-        time.sleep(.01)
 
 
 def writer_for(db, ready):
@@ -246,7 +229,7 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
         writer.execute(lock + withdrawal)
     (output / (name + '.go')).touch(exist_ok=False)
     if schedule in ('writer_commit', 'writer_rollback'):
-        barriers.append(blocked(db, ready, writer.backend))
+        barriers.append(blocked(pg, db, ready, writer.backend))
         writer.execute('ROLLBACK;' if schedule == 'writer_rollback' else 'COMMIT;')
     elif schedule in ('reservation_first', 'dispatch_first'):
         proxy.event('held', 5)
@@ -254,11 +237,11 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
         wanted_requests = 1 if schedule == 'reservation_first' else 2
         require(len(held['producer_requests']) == wanted_requests and len(held['producer_outcomes']) == 1, 'wrong-held-COMMIT-phase')
         writer.start(lock + (withdrawal + reenroll if schedule == 'reservation_first' else withdrawal))
-        barriers.append(blocked(db, writer.backend, ready))
+        barriers.append(blocked(pg, db, writer.backend, ready))
         proxy.send('release')
         writer.expect(writer.finish())
         if schedule == 'reservation_first':
-            barriers.append(blocked(db, ready, writer.backend))
+            barriers.append(blocked(pg, db, ready, writer.backend))
         writer.execute('COMMIT;')
     if writer:
         writer.close(lambda: lab.load(original / 'pg'))

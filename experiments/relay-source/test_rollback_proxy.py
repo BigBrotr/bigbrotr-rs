@@ -12,6 +12,12 @@ frame = lambda tag, body: tag + struct.pack('!I', len(body) + 4) + body
 
 class RollbackProxyTest(unittest.IsolatedAsyncioTestCase):
     async def test_holds_only_selected_rollback_reply_after_server_completion(self):
+        await self.check_selected_rollback(False)
+
+    async def test_holds_selected_rollback_before_forwarding(self):
+        await self.check_selected_rollback(True)
+
+    async def check_selected_rollback(self, before):
         self.assertTrue(SCRIPT.is_file(), 'rollback proxy is absent')
         sockets, tasks = [], []
         async def backend(reader, writer):
@@ -29,6 +35,7 @@ class RollbackProxyTest(unittest.IsolatedAsyncioTestCase):
         process = await asyncio.create_subprocess_exec(sys.executable, str(SCRIPT),
             '--upstream-port', str(server.sockets[0].getsockname()[1]),
             '--rollback-number', '2', '--listen-port', '0',
+            *(['--before-forward'] if before else []),
             stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
         async def event(wanted):
             while True:
@@ -46,7 +53,7 @@ class RollbackProxyTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(await reader.readexactly(len(expected)), expected)
             writer.write(frame(b'Q', b'ROLLBACK\0')); await writer.drain()
             held = await event('held')
-            self.assertEqual((held['rollback_requests'], held['rollback_completions'], held['rollback_released'], held['rollback_ready']), (2, 2, 1, 1))
+            self.assertEqual((held['rollback_requests'], held['rollback_completions'], held['rollback_released'], held['rollback_ready']), (2, 1 if before else 2, 1, 1))
             with self.assertRaises(asyncio.TimeoutError):
                 await asyncio.wait_for(reader.read(1), .05)
             process.stdin.write(b'release\n'); await process.stdin.drain()

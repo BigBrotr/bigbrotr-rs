@@ -44,16 +44,19 @@ pub async fn run(
     mode: &str,
     scope: QualifiedRef,
 ) {
-    assert!(matches!(
-        mode,
-        "source-transport"
-            | "source-transport-policy-refused"
-            | "source-transport-owner-loss"
-            | "source-transport-cleanup-pass"
-            | "source-transport-cleanup-expired"
-            | "source-transport-cleanup-timeout"
-            | "source-transport-cleanup-ready"
-    ));
+    assert!(
+        mode.starts_with("source-transport-race-")
+            || matches!(
+                mode,
+                "source-transport"
+                    | "source-transport-policy-refused"
+                    | "source-transport-owner-loss"
+                    | "source-transport-cleanup-pass"
+                    | "source-transport-cleanup-expired"
+                    | "source-transport-cleanup-timeout"
+                    | "source-transport-cleanup-ready"
+            )
+    );
     let owner_loss = mode == "source-transport-owner-loss";
     let policy_refused = mode == "source-transport-policy-refused";
     let validate = |doc: &str, digest| validate_version(doc, digest, true);
@@ -172,6 +175,13 @@ pub async fn run(
         };
         if ordinal == 2 && mode.starts_with("source-transport-cleanup-") {
             crate::ingest_source_cleanup::run(
+                &mut owner, observer, &connector, &committed, source, &root, path, mode, &listener,
+            )
+            .await;
+            continue;
+        }
+        if ordinal == 2 && mode.starts_with("source-transport-race-") {
+            crate::ingest_source_races::run(
                 &mut owner, observer, &connector, &committed, source, &root, path, mode, &listener,
             )
             .await;
@@ -296,7 +306,10 @@ pub async fn run(
             .await
             .is_err()
     );
-    if owner_loss || mode.starts_with("source-transport-cleanup-") {
+    if owner_loss
+        || mode.starts_with("source-transport-cleanup-")
+        || mode.starts_with("source-transport-race-")
+    {
         drop(owner);
     } else {
         owner.release().await.unwrap();

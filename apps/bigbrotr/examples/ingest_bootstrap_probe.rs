@@ -44,6 +44,8 @@ mod ingest_snapshot;
 mod ingest_source_cleanup;
 #[path = "support/ingest_source_faults.rs"]
 mod ingest_source_faults;
+#[path = "support/ingest_source_races.rs"]
+mod ingest_source_races;
 #[path = "support/ingest_source_transport.rs"]
 mod ingest_source_transport;
 #[path = "support/ingest_visibility.rs"]
@@ -238,6 +240,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             | "event-bindings-checkpoints-commit-lost"
     ) || source_fault
         || mode.starts_with("source-transport-cleanup-")
+        || mode.starts_with("source-transport-race-")
     {
         // The fault proxy accepts only loopback in the shared PG namespace.
         config.hostaddr("127.0.0.1".parse().unwrap()).port(6543);

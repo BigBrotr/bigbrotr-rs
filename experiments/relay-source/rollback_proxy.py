@@ -23,7 +23,8 @@ class RollbackSession(Session):
     def emit(self, event, **fields):
         super().emit(event, rollback_requests=self.requests,
             rollback_completions=self.completions, rollback_released=self.released,
-            rollback_ready=self.ready, rollback_number=self.args.rollback_number, **fields)
+            rollback_ready=self.ready, rollback_number=self.args.rollback_number,
+            before_forward=self.args.before_forward, **fields)
 
     async def read_frame(self, reader, direction):
         message = await super().read_frame(reader, direction)
@@ -32,9 +33,14 @@ class RollbackSession(Session):
         tag, _, body = message
         if direction == 'frontend' and tag == b'Q' and body == b'ROLLBACK\0':
             self.requests += 1
+            if self.args.before_forward and self.requests == self.args.rollback_number:
+                self.faults += 1
+                self.held = True
+                self.emit('held')
+                await self.hold_gate
         if direction == 'backend' and tag == b'C' and body == b'ROLLBACK\0':
             self.completions += 1
-            if self.completions == self.args.rollback_number:
+            if not self.args.before_forward and self.completions == self.args.rollback_number:
                 self.faults += 1
                 self.held = True
                 self.emit('held')
@@ -53,6 +59,7 @@ def main():
     parser.add_argument('--listen-port', type=bounded_int(0, 65535), default=6543)
     # Zero observes a positive baseline without a hold.
     parser.add_argument('--rollback-number', type=bounded_int(0, 64), required=True)
+    parser.add_argument('--before-forward', action='store_true')
     args = parser.parse_args()
     args.mode, args.commit_number, args.later_commits = 'pass', 64, 0
     args.deadline_seconds = 60
