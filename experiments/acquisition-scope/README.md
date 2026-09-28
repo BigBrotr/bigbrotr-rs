@@ -163,3 +163,18 @@ unit input. Original templates, policy setup snapshots and outcomes remain.
 Results decide execution status; these recipes alone are not PASS evidence.
 No actual pre-request collection gate, socket custody, provenance-on committed
 witness linkage, installed Sync, management transition or capacity claim follows.
+
+
+The `acquisition-jobs` profile builds the finite command/acceptance probe and
+checks the command, migration catalog and actual migration entrypoints. After a
+terminal build, `jobs.py RUN_ROOT` borrows the same stopped owned PG and creates
+new clones of the retained scope basis. It proposes seven actual adapter cases:
+acceptance/exact retry/conflicting key, absent grant, stale revision, disabled
+source, elapsed duration, deferred COMMIT refusal and missing0022. Independent
+Python compares all Control tables/xmin and exact command/digest/job/detail/audit/
+admission-order relationships. `job_guards.sql` checks valid/current and future
+acceptance timestamps through actual final constraints, rolling back all rows;
+a separate clone removes only the future-time predicate and must fail that same
+fixture. Original evidence and states remain. Results, not this recipe, determine
+what ran. Concurrent/lost-COMMIT schedules, claim/dispatch, installed Sync and M1
+remain separate acceptance; no capacity or release claim follows.

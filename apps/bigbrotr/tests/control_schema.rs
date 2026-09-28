@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn finite_acquisition_jobs_require_the_additive_protocol() {
+    let applied: Vec<_> = plan(&[], 21)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next = plan(&applied, 22).expect("finite acquisition requires its own protocol");
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0022_acquisition_jobs.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 22),
+        Err(MigrationError::MissingPrerequisite(22))
+    );
+    assert!(migrations::require_applied(&applied, 21).is_ok());
+}
+
+#[test]
 fn acquisition_binding_is_an_explicit_additive_prerequisite() {
     let applied: Vec<_> = plan(&[], 4)
         .unwrap()

@@ -12,14 +12,60 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is2e2a4e1 (SQL fixture candidate); private origin is c0b194d.
-Root owns qualification evidence/inventory/reference/checkpoint and a one-line
-fixture reporting correction. Product/build inputs remain7ab155e. Twelve actual
-SQL startup cases PASS with no engine/setup failure; full product INCOMPLETE.
-Commit/push this coherent qualification after final diff checks, then implement
-typed finite acquisition job authorization (P03-T01 Steps3/4) and connect the
-real signed socket consumer (P03-T02), retaining this same initial Control owner.
-No native process, lab or compiler task remains active; no cleanup obligation.
+Mac main/private origin is f3c8a1d, SQL qualification committed and pushed.
+Root owns the finite acquisition command/adapter/probe/tests, additive0022 and
+catalog, acquisition-scopes/private-administration contracts, jobs laboratory and
+its build-profile wiring. All are uncommitted WIP. Prior applied SQL is unchanged.
+Product7ab155e remains the latest native-qualified executable; full product is
+INCOMPLETE. Tux laboratories are stopped/retained; no active remote process.
+Mac uses the existing product target only. Last space:8,042,176KiB Mac,
+64,123,129,856B Tux; cache retirement remains complete and must not be replayed.
+
+Active P03-T01 Steps3/4: typed finite acquisition command/acceptance and exact-ID
+claim, consumed by the same initial owner. The new command has scope ID, positive
+canonical-decimal duration≤24h and expected config/policy revisions. The SHA256
+preimage binds dataset/actor/key/scope/duration/revisions. Four Mac command tests
+PASS (independent115byte preimage/vector, closed fields, exact binding, bounds).
+Original missing-module RED and a real positional-array decoding RED are retained
+in .research/implementation/acquisition-jobs-20260928; manual map decoding now
+refuses arrays/unknown fields/duplicates before consuming nested values. This is
+only a command component, not SQL/job/Sync readiness. Mac last8,127,620KiB free;
+existing .research/targets/product reused, no new build cache.
+
+Read-only AI/root dependency review selects existing roles.control for requesting
+bounded work from configured Sync; it grants neither enrollment nor data reading.
+Enrollment still requires policy.change. No history.read/export shortcut or new
+grant family. Append acquisition-specific immutable job detail/protocol after0021;
+never adopt legacy bare acquisition jobs or rewrite applied SQL. Reuse commands,
+audit, jobs,0815 admission ordinals and authenticated historical retry. Acquisition
+has NULL input topology because it creates source facts; no fake Archive pin/cut.
+Use Control→dataset UPDATE→account/session→source/job ordering and actual backend
+fence/final expiry checks, not the generic job trigger's active tuple alone.
+
+Two concrete installed prerequisites were found: the living initial owner rejects
+administration, so a separate sync CLI cannot claim another Control; and fresh
+bootstrap visibility namespaces prevent pre-registering its exact scope. Deliver
+bounded authenticated commands to that same owner, and expose enrollment/scope
+registration after bootstrap. Do not require all Discovery/Monitor/Archive first.
+The socket callback cannot borrow Control again: retain a bounded batch, close
+transport/source transaction, then perform fresh certification/admission. EOSE
+alone never advances progress. Current contracts record these choices without
+claiming engine-qualified SQL or installed acceptance. The adapter now uses the
+actual authenticated session, roles.control, current configured scope and atomic
+command/audit/job/detail. It preserves poisoned connections and unknown COMMIT.
+Mac command4/catalog31/migration-entrypoint3 tests, scoped Clippy, formatting
+and static artifact/document checks pass. Original missing-API, catalog-target and moved-probe-owner
+compilation failures remain in the same ignored evidence directory.
+Read-only AI/root review found a raw SQL future timestamp could extend the
+selected duration;0022 now rejects it at final server-time validation. Proposed
+jobs.py/job_guards.sql cover seven real adapter schedules, valid/future timestamp
+checks and a clone-only single-predicate negative control. They have NOT RUN yet.
+Review confirms reusing the existing final actual-Control fence is sound; no
+extra abstraction or duplicated owner check function is needed. Next bounded
+action: finish fixture review, commit a clean private candidate, run the exact
+native build/PG acceptance journey, retain original outcomes and stop owned
+resources; then exact claim and the same-owner installed command consumer.
+No acquisition dispatch or coverage/M1 guarantee follows from these components.
 
 Active P01-T09 Step1/P02-T02 Steps2/3: explicit
 `serve --initialize-ingest --roles control,ingest`, fresh-only under retained
@@ -101,9 +147,8 @@ audit16:17:42UTC:944 prior projections unchanged, eight unrelated running,
 compiler lock free,64,123,289,600B free; Mac last8,235,568KiB. No new build cache.
 Never replay launchers or cache retirement. Exact7ab155e artifacts remain retained.
 
-Next bounded action: read complete P03-T01 Steps3/4 job contracts and existing
-job/selector/source callers, then implement the smallest typed finite acquisition
-job foundation with independent refusal/rollback tests and real PG acceptance.
+P03-T01 Steps3/4 owning job/source/selector contracts and connected callers were
+read at this boundary; the active command/acceptance work is recorded at the top.
 Do not treat enrollment/history scope as job permission. Preserve Control→policy→
 source lock ordering and finite socket lifetime; release transport before fresh
 native admission. Native worker panic, renewal-specific lost/delayed COMMIT and

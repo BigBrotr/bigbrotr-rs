@@ -21,7 +21,7 @@ assert len(sys.argv) in (3, 4) and profile in (
     'network', 'websocket', 'relay-wire', 'selector', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'ingest-visibility',
     'policy-versions', 'relay-source', 'relay-source-faults',
-    'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest',
+    'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs',
 )
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
@@ -172,6 +172,7 @@ try:
         'sync-arrival-policy': ['sync-arrival-policy'],
         'ingest-lease': ['ingest-lease'],
         'initial-ingest': ['initial-ingest'],
+        'acquisition-jobs': ['acquisition-jobs'],
     }.get(profile, [])
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_path + '/native.py', *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
@@ -198,7 +199,8 @@ try:
                 'acquisition-binding-recovery': 'PASS_ACQUISITION_BINDING_RECOVERY_BUILD_ONLY',
                 'sync-arrival-policy': 'PASS_SYNC_ARRIVAL_POLICY_BUILD_ONLY',
                 'ingest-lease': 'PASS_INITIAL_INGEST_LEASE_BUILD_ONLY',
-                'initial-ingest': 'PASS_INITIAL_INGEST_BUILD_ONLY'}[profile]
+                'initial-ingest': 'PASS_INITIAL_INGEST_BUILD_ONLY',
+                'acquisition-jobs': 'PASS_ACQUISITION_JOBS_BUILD_ONLY'}[profile]
     assert qualification['source'] == revision and qualification['status'] == expected
     state['qualification'] = qualification['status']
     if profile in ('relay-registry', 'relay-enrollment', 'ingest-visibility', 'policy-versions', 'relay-source'):

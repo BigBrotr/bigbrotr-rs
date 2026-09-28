@@ -202,7 +202,7 @@ capacity admission. Audit rows remain retained until that maintenance path exist
 | Action | Initial permission bundle | Additional requirement |
 |---|---|---|
 | Read allowed data/status | Viewer | Resource/input visibility permits that principal |
-| Pause/resume roles; tune approved budgets | Operator | No implicit exposure, new network route or signer activation |
+| Pause/resume roles; request bounded work from configured Sync; tune approved budgets | Operator | No implicit enrollment, data-read permission, exposure, new network route or signer activation; finite Sync acceptance uses the existing dataset `roles.control` action |
 | Import from configured source | Operator with import grant | Allowed source adapter/root; cannot read arbitrary host paths or traverse symlinks |
 | Export public-eligible data | Operator with export grant | Approved destination and current source-generation scope |
 | Export private/auth-scoped data | Explicit private-export grant | Dataset permission plus destination authorization; not inherited from generic job control |

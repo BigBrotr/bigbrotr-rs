@@ -42,6 +42,8 @@ mod relay_registry;
 pub use relay_registry::{EndpointRegistration, RelayRegistryError};
 #[path = "acquisition.rs"]
 mod acquisition;
+#[path = "acquisition_jobs.rs"]
+mod acquisition_jobs;
 pub use acquisition::{ScopeIntent, ScopeRegistration, ScopeRegistrationError};
 #[path = "acquisition_read.rs"]
 mod acquisition_read;

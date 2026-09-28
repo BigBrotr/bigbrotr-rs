@@ -1,4 +1,5 @@
 //! Bounded acquisition inputs. Destination authority remains a separate boundary.
 pub mod import;
+pub mod job;
 pub mod relay_source;
 pub mod scope;

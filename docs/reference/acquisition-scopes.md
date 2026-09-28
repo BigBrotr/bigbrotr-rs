@@ -187,3 +187,55 @@ admission/replay, certification, forged-signature handling, withdrawal and five
 policy refusals, including only the second accepted document. Original native
 bytes, inputs and unchanged failed-operation state are independently compared.
 No actual socket, provenance-on mapping, management transition or M1 claim follows.
+
+## Finite job acceptance profile (implementation in progress)
+
+P03-T01 Steps3/4 use the existing finite `jobs` identity, management command/audit
+receipts and committed admission ordering. The first command names one registered
+scope, a positive `deadline_us` duration of at most24h, and expected configuration
+and policy revisions. All numeric wire fields are canonical decimal strings.
+The CLI's duration syntax resolves to this exact value; retries retain the original
+scope, duration, revisions and command key. The finite duration starts at durable
+acceptance; it bounds this run, not future coverage or a restrictive action lease.
+A delayed dispatch cannot reset it. Checked absolute-deadline arithmetic is required.
+
+The fingerprint is SHA256 over ASCII `bigbrotr/acquisition-job/1` plus NUL,
+dataset16, authenticated actor16, command-key16, scope-ID16, duration-us u64,
+configuration revision u64 and policy revision u64, all integers big endian.
+A digest is neither acceptance nor source authority. Authenticated exact historical
+retry returns the original receipt before checking permission for new work; it
+cannot restart the job, refresh its duration or change its initial inputs.
+
+The existing dataset `roles.control` action permits requesting bounded work from
+an already configured Synchronizer. It does not permit enrollment, new network
+routes, a signer, reading collected data or publishing it. Enrollment retains its
+`policy.change` requirement. `history.read` and export grants do not substitute
+for this operation. Execution independently rechecks current account/action,
+accepted configuration/security documents, scope policy, enrollment, route/bans,
+committed visibility and the actual Control backend fence. Closing the submitting
+HTTP connection or logging out does not cancel an accepted job; cancellation is a
+separate durable command. Account/permission withdrawal still stops fresh work.
+
+A new additive migration will mark participating jobs explicitly and attach their
+immutable scope/duration and authenticated attribution. Existing bare acquisition
+jobs cannot be adopted. Acquisition creates new source facts, so its initial
+`input_topology_generation` is NULL; no fake Archive input cut or export pin is
+required. Later progress must retain its real event-effect dependencies. Acceptance
+is atomic with the command, audit, sealed input and admission ordinal, under
+Control → dataset UPDATE → account/session → source/job lock order. The qualified
+job path must add actual backend fencing and final expiry checks; the generic
+job state trigger alone does not provide them.
+
+Installed integration must deliver requests to the living initial owner. It cannot
+claim a second Control or reopen that owner's native store. The present explicit
+initial profile rejects administration, and its fresh bootstrap allocates new
+visibility namespaces; therefore endpoint enrollment and scope registration must
+become reachable after bootstrap on that same owner. These are concrete early
+integration steps, not a requirement to complete all relay lifecycle services.
+The finite consumer closes its guarded socket/SQL transaction before fresh native
+certification/admission. A bounded retained batch keeps the exact request predicate
+and trusted observation. EOSE alone never advances progress or finishes coverage.
+
+The command component is under test. SQL acceptance/claim, permission/concurrency
+and lost-COMMIT cases, installed commands and the signed socket journey are not yet
+qualified by this profile. No acquisition capability is advertised from these types.

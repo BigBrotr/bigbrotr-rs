@@ -149,6 +149,10 @@
     {
       "version": 21,
       "name": "0021_acquisition_bindings.sql"
+    },
+    {
+      "version": 22,
+      "name": "0022_acquisition_jobs.sql"
     }
   ],
   "reserved": [
