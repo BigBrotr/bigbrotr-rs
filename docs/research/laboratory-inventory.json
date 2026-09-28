@@ -27370,12 +27370,98 @@
   "implementation_relay_registry_20260928": {
     "owner": "root; Mac sole writer, independent read-only review",
     "base_source": "eb4ba5ad5633ad883b94994aa425e5ae8e4f7067",
-    "status": "Local planner/compile evidence only; native exact-Git run not launched",
+    "status": "Original03b0197 stopped-retained;25 engine cases PASS, SQL fixture setup FAIL. Narrow corrected fixture rerun pending, no product or migration change.",
     "local_capture": ".research/implementation/relay-registry-local-20260928",
     "evidence": "docs/implementation/evidence/p02-relay-registry-mac-20260928.json",
     "recipe": "experiments/network-transport/lab.py REVISION TREE relay-registry; experiments/relay-registry/",
     "scope": "Private operational endpoint registration only, not enrollment or dial authority",
     "preserve": "Original missing migration/API REDs, initial probe formatter setup error, local logs, existing network evidence and shared1154757 compiler cache",
-    "native_runs": []
+    "native_runs": [
+      {
+        "source": "03b019794a7b79f9f8a0daaa6a1b6f902c783a3a",
+        "tree": "9eef657b008967612c58b2e383d478fac876df64",
+        "owner": "f70baff09abc2ca222648ffcfe75467b",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registry-03b0197",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "0b2ec1cadf00cc0a69cfcb37758763c6de1e093b86d0c09e2e3641e30cd79e01"
+          },
+          {
+            "name": "native",
+            "id": "3d4ca060e27a4fa86c66ad9874f5bd95da43088e4f8f28356d973c7c1a055d59"
+          },
+          {
+            "name": "client",
+            "id": "5ccc9c1415e8a79330501226ab308be9cbab2ac798611ba305d81f04c0222f2c",
+            "owner_label": "org.bigbrotr.control-migration-lab",
+            "owner": "b49addf3ec7daaef890692e501309e01"
+          },
+          {
+            "name": "postgres",
+            "id": "257b4a60372b91f2669013f5b4ad72545350552d70f6dcc02a47c547484fcbe9",
+            "owner_label": "org.bigbrotr.control-migration-lab",
+            "owner": "b49addf3ec7daaef890692e501309e01"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T02:30:45.558504+00:00",
+        "orchestrator": {
+          "source": "03b019794a7b79f9f8a0daaa6a1b6f902c783a3a",
+          "tree": "9eef657b008967612c58b2e383d478fac876df64",
+          "pid": 2822307,
+          "start_ticks": "394489913",
+          "bundle_sha256": "679473fe652629a7e8b64731f967c4644fb98705d1e76267601d58db62ecfca4"
+        },
+        "local_capture": ".research/implementation/relay-registry-native-03b0197",
+        "postgres_lab": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registry-03b0197/pg",
+          "owner": "b49addf3ec7daaef890692e501309e01",
+          "network": "bigbrotr-implementation-pg-20260917-registry_03b0197"
+        },
+        "terminal": {
+          "status": "TERMINAL_VERIFIED_ORIGINAL_FAILURE_RETAINED",
+          "source": "03b019794a7b79f9f8a0daaa6a1b6f902c783a3a",
+          "owner": "f70baff09abc2ca222648ffcfe75467b",
+          "observed_at": "2026-09-28T02:36:38.349990+00:00",
+          "prior_unchanged": 859,
+          "running_unrelated": 8,
+          "owned_stopped": 4,
+          "free_bytes": 67674144768,
+          "source_files": 1417,
+          "dependency_archives": {
+            "tokio-rustls": {
+              "version": "0.26.5",
+              "sha256": "b0c85f2c3ef0b1cd58b36682f4b17aaa995f0e5db534d85692b4903abce21f67"
+            },
+            "rustls": {
+              "version": "0.23.45",
+              "sha256": "0d41d731c7d2f962d1ccc364cec258de3c0e93b38c2fb3ba97ac74513048d634"
+            },
+            "webpki-roots": {
+              "version": "1.0.9",
+              "sha256": "7dcd9d09a39985f5344844e66b0c530a33843579125f23e21e9f0f220850f22a"
+            },
+            "hickory-proto": {
+              "version": "0.26.3",
+              "sha256": "12b92608f679a6fa515dd1d15c1ff89443026e391200a2c840c7afcba482893d"
+            }
+          },
+          "input_sha256": "d9d59c8c36682a73b647010848a97da32a1076ce63bf2112862ef17ef83a5509",
+          "exits": {
+            "fetch": 0,
+            "native": 0,
+            "client": 143,
+            "postgres": 0
+          }
+        },
+        "report": "docs/implementation/evidence/p02-relay-registry-incomplete-20260928.json",
+        "capture_manifest_sha256": "d8aa8193e35616310f85531bef60ead1751663e141a9a0551eda90d6f9d4c9dd"
+      }
+    ]
   }
 }

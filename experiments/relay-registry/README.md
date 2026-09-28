@@ -43,3 +43,13 @@ Held/lost COMMIT, current-policy changes across a lock wait, fresh-policy succes
 concurrent callers and corrupt overfull buckets remain separate cases. Raw SQL
 forcing deferred constraints early cannot establish commit-time expiry. No
 load/capacity, enrollment, route action permission, socket or M1 claim.
+
+The original03b0197 run retained25 passing cases and a final SQL fixture setup
+failure: `SET ROLE` from a postgres login hides that session's `backend_start`.
+The fixture now connects directly as Control, matching the product. To verify
+only this correction, transfer a clean exact Git checkout and execute its
+`recheck_guards.py` with the original run root as its sole argument. It restarts
+only the ownership-verified PostgreSQL container, contrasts both session shapes,
+runs the eight refusals and rollback, verifies complete retained table contents
+in all three databases and stops PostgreSQL. Its separately named result never
+overwrites the original failure. No compiler cache or new engine copy is needed.

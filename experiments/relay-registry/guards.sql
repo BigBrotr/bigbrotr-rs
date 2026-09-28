@@ -1,6 +1,7 @@
 -- Isolated fixture. The harness deliberately gives this role UPDATE/DELETE/
 -- TRUNCATE only here so invariant checks are exercised beyond privilege refusal.
-SET ROLE bigbrotr_control;
+-- Connect as bigbrotr_control. SET ROLE from a postgres session hides that
+-- session's backend_start and cannot represent the product's actual login.
 BEGIN;
 CREATE TEMP TABLE fixture_counts (executed integer NOT NULL);
 INSERT INTO fixture_counts VALUES (0);

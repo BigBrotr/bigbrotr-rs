@@ -1,0 +1,226 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T01 Step6 endpoint identity subcomponent",
+  "status": "FAIL_FIXTURE_SETUP_AFTER_25_PASS",
+  "source": "03b019794a7b79f9f8a0daaa6a1b6f902c783a3a",
+  "tree": "9eef657b008967612c58b2e383d478fac876df64",
+  "environment": {
+    "version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+  },
+  "outcome": {
+    "passed": 25,
+    "failed": 1,
+    "failure": "actual-sql-guards-and-rollback",
+    "error": "ERROR:  new row for relation \"owner_epochs\" violates check constraint \"control_backend_shape\"\nDETAIL:  Failing row contains (\\x5cf5e537704d66d6e1159a6ea5bf5e7c, 3, \\x1056d11e828baf3e2ae0443e4b228f87, control, \\xc1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1, \\xc2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2, 1, 1790562800218768, active, null, null, null, 1, 7091, null, null).\n",
+    "native_checks": "31 tests, release CLI/probe compilation and Clippy PASS; no complete Step6 claim"
+  },
+  "artifacts": {
+    "binary_sha256": "bc180b9739721d718a6c54d3fef14839a768c54dbd359b9fb2ace345768f032a",
+    "probe_sha256": "e1e30104a0f3bce4a1493934cf7cad753c9afc59262d806671d7edd22823f2f4",
+    "cargo_lock_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+  },
+  "cases": [
+    {
+      "name": "old-prefix-basic",
+      "status": "PASS"
+    },
+    {
+      "name": "independent-old-ledger-basic",
+      "status": "PASS"
+    },
+    {
+      "name": "config-initialize-basic",
+      "status": "PASS"
+    },
+    {
+      "name": "config-activate-initial-basic",
+      "status": "PASS"
+    },
+    {
+      "name": "upgrade-basic",
+      "status": "PASS"
+    },
+    {
+      "name": "idempotent-migration-basic",
+      "status": "PASS"
+    },
+    {
+      "name": "actual-adapter-basic",
+      "status": "PASS"
+    },
+    {
+      "name": "independent-effects-basic",
+      "status": "PASS"
+    },
+    {
+      "name": "old-prefix-collision",
+      "status": "PASS"
+    },
+    {
+      "name": "independent-old-ledger-collision",
+      "status": "PASS"
+    },
+    {
+      "name": "config-initialize-collision",
+      "status": "PASS"
+    },
+    {
+      "name": "config-activate-initial-collision",
+      "status": "PASS"
+    },
+    {
+      "name": "upgrade-collision",
+      "status": "PASS"
+    },
+    {
+      "name": "idempotent-migration-collision",
+      "status": "PASS"
+    },
+    {
+      "name": "actual-adapter-collision",
+      "status": "PASS"
+    },
+    {
+      "name": "independent-effects-collision",
+      "status": "PASS"
+    },
+    {
+      "name": "old-prefix-expired",
+      "status": "PASS"
+    },
+    {
+      "name": "independent-old-ledger-expired",
+      "status": "PASS"
+    },
+    {
+      "name": "config-initialize-expired",
+      "status": "PASS"
+    },
+    {
+      "name": "config-activate-initial-expired",
+      "status": "PASS"
+    },
+    {
+      "name": "upgrade-expired",
+      "status": "PASS"
+    },
+    {
+      "name": "idempotent-migration-expired",
+      "status": "PASS"
+    },
+    {
+      "name": "actual-adapter-expired",
+      "status": "PASS"
+    },
+    {
+      "name": "independent-effects-expired",
+      "status": "PASS"
+    },
+    {
+      "name": "full-url-btree-negative-control",
+      "status": "PASS"
+    },
+    {
+      "name": "actual-sql-guards-and-rollback",
+      "status": "FAIL"
+    }
+  ],
+  "correction": {
+    "product_changed": false,
+    "cause": "Fixture connects as postgres then SET ROLE hides postgres backend_start from ordinary Control role; NULL violates the actual backend shape constraint. Source-derived cause; explicit engine contrast is pending.",
+    "official_documentation": "https://www.postgresql.org/docs/16/monitoring-stats.html#MONITORING-STATS-VIEWS",
+    "change": "Connect psql as bigbrotr_control, matching the real product login; retain eight expected refusals and full rollback oracle.",
+    "rerun": "NOT_RUN; recheck_guards.py targets only retained original SQL fixture and verifies all three database table states"
+  },
+  "not_run": [
+    "enrollment",
+    "route authority",
+    "socket acquisition",
+    "load",
+    "arm64",
+    "held/lost COMMIT",
+    "stale policy after lock wait",
+    "fresh-policy successor",
+    "concurrent callers",
+    "corrupt overfull bucket"
+  ],
+  "capture": {
+    "local": ".research/implementation/relay-registry-native-03b0197",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registry-03b0197",
+    "manifest_sha256": "d8aa8193e35616310f85531bef60ead1751663e141a9a0551eda90d6f9d4c9dd",
+    "source_files_verified": 1417,
+    "files_sha256": {
+      "resources.json": "bb691063be9f890a6595e5893ba564c3056c1d635f4bfc8fa8373bc6b7349792",
+      "preflight.json": "fb5b1c4d8c693feb66596ac758e6fd28c3743b96ca60d49c14306d340e99d740",
+      "launch.json": "33bc70117c14bf2feaa8fbc989b4c980984350b68ca67014f35eae443f55a7b1",
+      "orchestrator.log": "aa981f5213b45a51e1daf52ceac4c1d9be9ef39ab33964edbf16c513200f427c",
+      "fetch.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "fetch-terminal.json": "2c250d123e427c0b9fa0c8aaec3181d08407552d2e8a7f9e915d5183c2496231",
+      "native.log": "2f47ddea4b058ffde0177640b6c556886f683579672656ea49fd955580eb6c68",
+      "native-terminal.json": "3f508400168dc8676e2bd0d2400ec27304f07e635bb479943e5873b33e1ccb21",
+      "out/build/source.tar": "9ba3a4e371c6ec00f223b275d6aeb2a179e0d4d2b21a182d385121e6290da4dc",
+      "out/build/source-manifest.json": "d39d63abe8774e5dbd41f17fdba7ed9070a7c56990de1d00fdbdd51ba382c960",
+      "out/build-checks/result.json": "7d9e8ce33aca14bae94af4fb5f5702b6854f14a990eb7a62f558ef70a0db723a",
+      "out/build-checks/compile.log": "fef738e8c1d2940220d7724482cd676650b2503b095abaf70bfd59d032dfb664",
+      "out/build-checks/catalog.log": "9dd48c73fd84b1def6d22c561ad16004e6e71d567e8f325a67703719b8101ef5",
+      "out/build-checks/clippy.log": "ceae1308dc2564eb409fc70e28661ac7976d4662d795ffef9f2427cb2b20ff6b",
+      "out/artifacts/build-result.json": "29a406c1fc0dbaf078689929c057847439d4b065d3345e3798d12c2ec3467d1f",
+      "out/artifacts/bigbrotr": "bc180b9739721d718a6c54d3fef14839a768c54dbd359b9fb2ace345768f032a",
+      "out/artifacts/relay_registry_probe": "e1e30104a0f3bce4a1493934cf7cad753c9afc59262d806671d7edd22823f2f4",
+      "out/qualification.json": "4afd5c1e83d6cc11492f54ce039377a5288b6db147365acc973f14670eab0756",
+      "pg/resources.json": "81a5e32ba8a146569ad097a9a66bcdb3d1f7690257a6499b3103c9a73866e87d",
+      "pg/registry-result.json": "62fe811c197fc9a05ad2a81f9c59b314b72d8d43ecaea120223e7929b1b08452",
+      "pg/basic.stdout": "b4637e42f688714bfc0c8a18c6c554686af2d6e7d22e8d8c3e2bf6c40d4d1ec8",
+      "pg/basic.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pg/basic-policy.json": "f9342187c6a5a8d4c123e5437717864b9767c43f67197a1fefb917db1506872a",
+      "pg/collision.stdout": "402e7a9f741ca819e93f55965461d71e12e15cc448bff71d1210724b9d020fc9",
+      "pg/collision.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pg/collision-policy.json": "f9342187c6a5a8d4c123e5437717864b9767c43f67197a1fefb917db1506872a",
+      "pg/expired.stdout": "1fb3e2b4f6126e359d66f29ab2acdc65c32759669e943354f570cbe66c07a844",
+      "pg/expired.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pg/expired-policy.json": "f9342187c6a5a8d4c123e5437717864b9767c43f67197a1fefb917db1506872a",
+      "pg/guards.stdout": "6a3cf5192354f71615ac51034b3e97c20eda99643fcaf5bbe6d41ad59bd12167",
+      "pg/guards.stderr": "a69c0b24ae795b0767f757551f4ba0dce376f22abcced3dd2e6fe15ad05c8fc5"
+    }
+  },
+  "terminal": {
+    "status": "TERMINAL_VERIFIED_ORIGINAL_FAILURE_RETAINED",
+    "source": "03b019794a7b79f9f8a0daaa6a1b6f902c783a3a",
+    "owner": "f70baff09abc2ca222648ffcfe75467b",
+    "observed_at": "2026-09-28T02:36:38.349990+00:00",
+    "prior_unchanged": 859,
+    "running_unrelated": 8,
+    "owned_stopped": 4,
+    "free_bytes": 67674144768,
+    "source_files": 1417,
+    "dependency_archives": {
+      "tokio-rustls": {
+        "version": "0.26.5",
+        "sha256": "b0c85f2c3ef0b1cd58b36682f4b17aaa995f0e5db534d85692b4903abce21f67"
+      },
+      "rustls": {
+        "version": "0.23.45",
+        "sha256": "0d41d731c7d2f962d1ccc364cec258de3c0e93b38c2fb3ba97ac74513048d634"
+      },
+      "webpki-roots": {
+        "version": "1.0.9",
+        "sha256": "7dcd9d09a39985f5344844e66b0c530a33843579125f23e21e9f0f220850f22a"
+      },
+      "hickory-proto": {
+        "version": "0.26.3",
+        "sha256": "12b92608f679a6fa515dd1d15c1ff89443026e391200a2c840c7afcba482893d"
+      }
+    },
+    "input_sha256": "d9d59c8c36682a73b647010848a97da32a1076ce63bf2112862ef17ef83a5509",
+    "exits": {
+      "fetch": 0,
+      "native": 0,
+      "client": 143,
+      "postgres": 0
+    }
+  },
+  "review_boundary": "Root inspected complete SQL/adapter/probe/harness; original outcomes, artifacts, sources and DB retained. Does not qualify whole authority/recovery, enrollment, route, acquisition, performance or release."
+}

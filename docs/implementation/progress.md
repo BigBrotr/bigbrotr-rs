@@ -12,12 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEAD and origin/main eb4ba5a (private push complete). Root owns the
-uncommitted first P02-T01 Step6 endpoint-registry slice:0003 SQL, append-only
-migration catalogs, EndpointId, ControlSession adapter and actual-engine probe.
-Local migration RED (UnknownTarget3) then GREEN; API absence RED then compilation
-passed. Native PG scenarios are NOT RUN. No active native experiment or writer
-agent. All previously applied SQL remains unchanged;0003 is still unpublished.
+Verified HEAD03b019794a7b79f9f8a0daaa6a1b6f902c783a3a is an unpublished native
+candidate; origin/main eb4ba5a remains private/published. Working-tree edits are
+the fixture correction, original failure report, checkpoint and inventory, root-owned. All32 earlier SQL
+files match publishedeb4ba5a exactly. New0003 was applied in actual-engine execution;
+once applied with a checksum, extend/fix through a new migration, never rewrite it.
+Root is sole writer. The read-only source/fixture reviews found no launch blocker.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
 with the explicit remaining gates below. No complete task/phase/M1/product claim.
@@ -244,27 +244,41 @@ No WebSocket dependency/product implementation or actual native protocol evidenc
 Overlay routes, renewable sessions, shared host/endpoint/rate/FD quotas, recursive
 DNS interoperability, aged/mixed workloads and full task acceptance remain selected.
 
-Current first registry responsibility: private immutable operational endpoint
-get-or-create, not enrollment/dial permission. Canonical URL bytea with generated
-SHA256 candidate; full equality and bounded64-entry buckets under Control then
-dataset locks avoid B-tree size/collation assumptions. Scalar SQL receipts avoid
-fetching full URL buckets. Historical creation attribution survives owner changes;
-current policy is checked separately. No raw endpoint identity becomes a Rocks
-QualifiedRef. Read-only review of the concrete new SQL/adapter is active. Source
-reads complete for current Control owner/migration/Endpoint/model identity owners;
-full Serve/config are deferred until their real integration consumer. Next: finish
-actual PG16.15 probe/scenarios (long URL, forced collisions/full bucket, stale
-policy, nonowner/immutability, COMMIT/recovery), reuse the existing isolated PG
-lab and exclusively retained1154757 compiler cache after fresh preflight.
-Ignored local evidence:.research/implementation/relay-registry-local-20260928.
+Current registry responsibility: private immutable operational endpoint get-or-create,
+not enrollment or dial permission. Canonical byte equality and bounded64 candidate
+buckets under Control/dataset locks avoid B-tree/collation limits; SQL scalar
+receipts retain original creation attribution through owner replacement. Existing
+Rocks QualifiedRef is not reused. Focused named multiline queries and one decoder
+keep transaction/ambiguous-COMMIT ownership visible; no generic adapter framework.
 
-Local registration check boundary:31 catalog/entrypoint/append tests and Clippy
-passed; docs/artifact/format checks passed. Evidence report
-p02-relay-registry-mac-20260928.json is explicitly planner/compile only. Real PG
-recipe now covers old published ledger, upgrade preservation, exact URL/8192-byte
-identity, forced64-collision capacity, successor original attribution, expired
-COMMIT rejection and eight raw SQL guards/rollback. All native cases NOT RUN.
-Read-only fixture review is active. Latest Tux census02:25:59UTC:67,868,860,416
-bytes free/eight unrelated containers/no BigBrotr. Runner reuses1154757 cache,
-then the existing isolated control-migrations PG harness; no archive bundle needed.
-Next commit is an unpublished exact-source native candidate, not completion.
+Candidate03b0197 completed actual PG16.15 execution:25 recorded cases PASS, final
+SQL fixture setup FAIL. [Original report](evidence/p02-relay-registry-incomplete-20260928.json)
+retains results: old32 checksummed migrations, three upgrades/reapply preservation,
+exact URL/8192 bytes,64 forced candidate collisions/full-bucket repeat/capacity,
+successor attribution, expired-owner commit refusal, independent whole-ledger
+observations and actual oversized full-URL B-tree refusal. Native31 tests,
+release CLI/probe build and Clippy passed. No complete registry authority claim.
+
+Failure occurs before the final guard assertions: fixture postgres login plus
+SET ROLE hides that session's backend_start and violates control_backend_shape.
+Product uses direct Control login and passed. Source-derived cause is under an
+explicit actual-engine contrast; corrected fixture connects directly as Control,
+retaining all eight expected refusals and full rollback assertions. No SQL/product
+change; applied0003 is immutable. Narrow recheck_guards.py will restart only the
+verified owned PG, preserve original report and verify all three retained DBs;
+no rebuild or broad repeated suite. This is the next bounded action.
+
+Original run is stopped-retained at
+/home/tux/bigbrotr-implementation-20260917/runs/relay-registry-03b0197,
+source03b019794a7b79f9f8a0daaa6a1b6f902c783a3a/tree9eef657b008967612c58b2e383d478fac876df64.
+Ownerf70baff09abc2ca222648ffcfe75467b; nested PG ownerb49addf3ec7daaef890692e501309e01.
+At02:36:38UTC independent audit found859 prior projections unchanged/eight unrelated
+running; four owned containers stopped/noOOM (fetch/native/PG0,client143), original
+PID2822307 absent, internal empty network retained and cache lock released.
+31 capture files and1417 exact-source files verified; free67,674,144,768 bytes.
+Ignored .research/implementation/relay-registry-native-03b0197 owns original logs,
+Git bundle, artifacts, collect/terminal recipes and hashes. Preserve this database
+and1154757 shared compiler cache; no cache/container/volume deleted this boundary.
+Remaining registry cases: held/lost COMMIT, policy changes across waits, fresh
+policy successor, concurrent callers and corrupt overfull buckets. Then continue
+minimal enrollment/route authority and signed socket M1 consumer above.

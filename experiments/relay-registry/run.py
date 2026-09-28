@@ -115,7 +115,7 @@ try:
     lab.sql(state,db,'GRANT UPDATE,DELETE,TRUNCATE ON control.relay_endpoints TO bigbrotr_control')
     fixture=(SOURCE/'experiments/relay-registry/guards.sql').read_text()
     result=lab.docker('exec','-i',state['postgres'],'psql','-X','-A','-t','-q','--no-password',
-                     '-U','postgres','-d',db,'-v','ON_ERROR_STOP=1',data=fixture,check=False)
+                     '-U','bigbrotr_control','-d',db,'-v','ON_ERROR_STOP=1',data=fixture,check=False)
     (root/'guards.stdout').write_text(result.stdout); (root/'guards.stderr').write_text(result.stderr)
     summaries=[json.loads(line) for line in result.stdout.splitlines() if line.startswith('{')]
     record('actual-sql-guards-and-rollback',result.returncode==0 and summaries==[
