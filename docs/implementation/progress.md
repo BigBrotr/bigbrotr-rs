@@ -12,12 +12,13 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main candidate6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0 is committed, not
-pushed; origin/main is d1e56ee. Root owns checkpoint/inventory updates after launch;
-no other writer. Tux runs the clean candidate treea90e91dcf29e31fc520446fab362f611881b33e1
-for the committed visibility reader and real initial Control consumer. Prior
-relational qualification at23d7534 used c2eebec artifacts and remains unchanged.
-Exact Git transfer only; no remote source editing.
+Local main and origin/main are95c9f469c0f7e066053d1427a844451468e0da8d, pushed.
+Product/engine source6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0 is qualified below.
+Root owns the current uncommitted policy-v2 slice: config/runtime/network types,
+five PostgreSQL readers and CLI consumers, focused tests, generated config schema/
+reference, owning contract, bootstrap probe and policy-versions native recipe.
+No other writer or active experiment remains. Exact Git transfer only; no remote
+source editing. Prior relational sources/artifacts/evidence are preserved.
 
 Latest root runs/ingest-visibility-6c52067 is stopped-retained, ownerd65bebf992d73cf14ba000d8176d05a8,
 PID2997680/start395446033 terminal. Five native tests, release CLI/probe build,
@@ -67,6 +68,45 @@ and explicit legacy refusal can establish the first issuer; a populated upgrade
 requires authenticated idempotent CAS and owner transition, never rewriting old
 rows or reusing initial activation. The current initial registration/manifest
 binds policy revision1; advancing it cannot silently renew that native authority.
+
+Current ban work: closed endpoint/host matcher, registry entry and explicit
+PolicyDocumentVersion are implemented locally. Restored v1 keeps its original
+field set/digest and removes all new seed bans. New initialization emits v2.
+Legacy comparisons project only implicit schema-default empty bans; explicit []
+or nonempty bans differ. config.schema_version remains independent. Managed
+activation keeps its unused-seed rule. Inspect/initialize report the accepted
+format; historical initialization retry uses its original receipt metadata.
+Control, registration, initialization, activation and inspect require recognized
+format/schema agreement. Existing migrations/rows are unchanged. New issuer,
+populated upgrade and actual restrictive drain remain unimplemented gates.
+
+Observed Mac evidence under .research/implementation/ban-policy-20260928:
+config-bans-red2 (three unknown-key failures), policy-versions-red (two codec
+failures), matcher-red (two missing matcher failures), then config-codec-green
+(55 bin/3 CLI tests), matcher-green (2 matcher/1 header), policy-versions-green
+(3 focused), entrypoints-green2 (3 bans/25 configuration/6 policy seed) and
+clippy2 (lib/bin/bootstrap probe) PASS. Earlier duplicate-TOML and stale generated
+schema failures remain original; generated schema/reference are now regenerated.
+Independent frozen v2 digest5916c8d71ed33b8339c00af4595cb5284d8e149a64875ee9c757e0de39e94ed1,
+7489 compact bytes, extends the unchanged frozen v1 settings with explicit [].
+Native recipe is written, syntax checked, NOT_RUN. Next bounded action: finish
+root review, create an unpublished coherent exact-source candidate and run the
+policy-versions profile on Tux, collecting original old/new CLI, all64-table/xmin,
+Control/Ingest and raw native oracle evidence. Do not advertise codec tests as
+current source authority. A read-only reviewer found no concrete blocker in the
+complete product slice; new native orchestration/probe extension remains root's
+integration responsibility.
+
+Root read complete affected config files, interfaces, initialization/activation/
+configuration/ingest_registry and relevant Control snapshot/callers; new queries
+use focused readable constants without changing lock/COMMIT ordering. No generic
+framework or duplicate URL normalizer was introduced. Exact serde1.0.229 and
+serde_json1.0.151 source inspection confirms header IgnoredAny avoids another
+Value tree, with iterative scratch bounded by the capped input; no RSS claim.
+Whole future source/drain/service owners remain outside this bounded review.
+Fresh Tux inspection: no active BigBrotr experiments, eight unrelated running,
+66,280,689,664bytes free; Mac about2.2GiB. No deletion or remote changes. Recheck
+before allocation. Protect old6c52067 CLI as the native v1 installation input.
 
 Independent read-only next-boundary review confirms the minimal sequence: existing
 Ingest dictionary bootstrap and committed visibility lookup; current endpoint,

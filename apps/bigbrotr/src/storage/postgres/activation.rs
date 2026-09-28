@@ -1,5 +1,6 @@
 //! Explicit first security snapshot. A receipt is never a runtime lease.
 use super::initialization::application_transaction;
+use crate::runtime::policy_document::PolicyDocumentVersion;
 use bigbrotr_model::{DatasetId, PrincipalId};
 use sha2::{Digest, Sha256};
 use std::{cell::Cell, fmt};
@@ -87,14 +88,13 @@ pub async fn activate_initial(
     let [row] = rows.as_slice() else {
         return Err(ActivationError::RevisionConflict);
     };
-    if row.try_get::<_, i32>(0).map_err(backend)? != 1 {
-        return Err(ActivationError::InvalidMetadata);
-    }
     if row.try_get::<_, &str>(1).map_err(backend)? != input.authority_mode {
         return Err(ActivationError::PolicyInvalid);
     }
     let document: &str = row
         .try_get(2)
+        .map_err(|_| ActivationError::InvalidMetadata)?;
+    PolicyDocumentVersion::require_metadata(document, row.try_get(0).map_err(backend)?)
         .map_err(|_| ActivationError::InvalidMetadata)?;
     let document_digest = fixed::<32>(row, 3)?;
     let actor_bytes = fixed::<16>(row, 4)?;
@@ -110,7 +110,7 @@ pub async fn activate_initial(
         .finalize()
         .into();
     let request_id = &input.request_id[..];
-    let rows = tx.query("SELECT substring(m.request_digest FROM 1 FOR 33), substring(m.audit_id FROM 1 FOR 17), m.action='policy.activate-initial' AND m.expected_config_revision=$3::text::numeric AND m.authority_mode=$4 AND m.document_digest=$5::bytea AND m.policy_revision=1 AND p.config_revision=m.expected_config_revision AND p.document_digest=m.document_digest AND p.document=c.document AND p.actor_id=m.actor_id AND p.accepted_at_us=m.accepted_at_us AND a.created_at_us=m.accepted_at_us AND a.outcome='accepted' FROM control.management_commands m JOIN control.policy_revisions p ON p.dataset_id=m.dataset_id AND p.revision=m.policy_revision JOIN control.config_revisions c ON c.dataset_id=m.dataset_id AND c.revision=m.expected_config_revision JOIN control.management_audit a ON a.audit_id=m.audit_id WHERE m.dataset_id=$1::bytea AND m.actor_id=$6::bytea AND m.request_key=$2::bytea LIMIT 2", &[&dataset, &request_id, &revision, &input.authority_mode, &&document_digest[..], &&actor_bytes[..]]).await.map_err(backend)?;
+    let rows = tx.query("SELECT substring(m.request_digest FROM 1 FOR 33), substring(m.audit_id FROM 1 FOR 17), m.action='policy.activate-initial' AND m.expected_config_revision=$3::text::numeric AND m.authority_mode=$4 AND m.document_digest=$5::bytea AND m.policy_revision=1 AND p.config_revision=m.expected_config_revision AND p.document_digest=m.document_digest AND p.document=c.document AND p.schema_version=c.schema_version AND p.actor_id=m.actor_id AND p.accepted_at_us=m.accepted_at_us AND a.created_at_us=m.accepted_at_us AND a.outcome='accepted' FROM control.management_commands m JOIN control.policy_revisions p ON p.dataset_id=m.dataset_id AND p.revision=m.policy_revision JOIN control.config_revisions c ON c.dataset_id=m.dataset_id AND c.revision=m.expected_config_revision JOIN control.management_audit a ON a.audit_id=m.audit_id WHERE m.dataset_id=$1::bytea AND m.actor_id=$6::bytea AND m.request_key=$2::bytea LIMIT 2", &[&dataset, &request_id, &revision, &input.authority_mode, &&document_digest[..], &&actor_bytes[..]]).await.map_err(backend)?;
     if let [row] = rows.as_slice() {
         if fixed::<32>(row, 0)? != request_digest {
             return Err(ActivationError::RequestConflict);

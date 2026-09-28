@@ -493,7 +493,30 @@ async fn snapshot(
     {
         return Err(OwnerError::IncompatibleDeployment);
     }
-    let row = tx.query_opt("SELECT d.config_revision::text, d.policy_revision::text, substring(c.document_digest FROM 1 FOR 33), substring(p.document_digest FROM 1 FOR 33), CASE WHEN octet_length(c.document::text) <= 10485760 THEN c.document::text END, CASE WHEN octet_length(p.document::text) <= 10485760 THEN p.document::text END, c.schema_version = 1 AND p.schema_version = 1 AND c.authority_mode = $2::text AND p.config_revision = c.revision FROM control.datasets d JOIN control.config_revisions c ON c.dataset_id = d.dataset_id AND c.revision = d.config_revision JOIN control.policy_revisions p ON p.dataset_id = d.dataset_id AND p.revision = d.policy_revision WHERE d.dataset_id = $1::bytea", &[&&request.dataset.as_bytes()[..], &request.authority_mode]).await.map_err(backend)?.ok_or(OwnerError::InvalidPolicy)?;
+    const SNAPSHOT: &str = "
+        SELECT d.config_revision::text, d.policy_revision::text,
+               substring(c.document_digest FROM 1 FOR 33),
+               substring(p.document_digest FROM 1 FOR 33),
+               CASE WHEN octet_length(c.document::text) <= 10485760
+                    THEN c.document::text END,
+               CASE WHEN octet_length(p.document::text) <= 10485760
+                    THEN p.document::text END,
+               c.authority_mode = $2::text AND p.config_revision = c.revision,
+               c.schema_version, p.schema_version
+          FROM control.datasets d
+          JOIN control.config_revisions c
+            ON c.dataset_id = d.dataset_id AND c.revision = d.config_revision
+          JOIN control.policy_revisions p
+            ON p.dataset_id = d.dataset_id AND p.revision = d.policy_revision
+         WHERE d.dataset_id = $1::bytea";
+    let row = tx
+        .query_opt(
+            SNAPSHOT,
+            &[&&request.dataset.as_bytes()[..], &request.authority_mode],
+        )
+        .await
+        .map_err(backend)?
+        .ok_or(OwnerError::InvalidPolicy)?;
     if !row.try_get::<_, bool>(6).map_err(backend)? {
         return Err(OwnerError::InvalidPolicy);
     }
@@ -503,14 +526,20 @@ async fn snapshot(
         config_digest: fixed(&row, 2)?,
         policy_digest: fixed(&row, 3)?,
     };
-    validate(
-        row.try_get(4).map_err(|_| OwnerError::InvalidPolicy)?,
-        result.config_digest,
-    )?;
-    validate(
-        row.try_get(5).map_err(|_| OwnerError::InvalidPolicy)?,
-        result.policy_digest,
-    )?;
+    for (document_column, schema_column, digest) in
+        [(4, 7, result.config_digest), (5, 8, result.policy_digest)]
+    {
+        let document: &str = row
+            .try_get(document_column)
+            .map_err(|_| OwnerError::InvalidPolicy)?;
+        crate::runtime::policy_document::PolicyDocumentVersion::require_metadata(
+            document,
+            row.try_get(schema_column)
+                .map_err(|_| OwnerError::InvalidPolicy)?,
+        )
+        .map_err(|_| OwnerError::InvalidPolicy)?;
+        validate(document, digest)?;
+    }
     Ok(result)
 }
 async fn release_epoch(

@@ -20,6 +20,7 @@ pub enum Kind {
     ChoiceSet(&'static [&'static str]),
     Endpoints,
     PrivateRules,
+    Bans,
     RevisitBands,
 }
 
@@ -39,7 +40,7 @@ impl Key {
     pub fn sensitive(&self) -> bool {
         matches!(
             self.kind,
-            Kind::Secret | Kind::Endpoints | Kind::Proxy | Kind::PrivateRules
+            Kind::Secret | Kind::Endpoints | Kind::Proxy | Kind::PrivateRules | Kind::Bans
         )
     }
     pub fn schema(&self) -> Value {
@@ -87,6 +88,17 @@ impl Key {
                         "hostname":{"type":"string","format":"bigbrotr-direct-hostname","maxLength":253},
                         "cidr":{"type":"string","format":"bigbrotr-canonical-cidr","maxLength":43},
                         "port":{"type":"integer","minimum":1,"maximum":65535}
+                    }
+                }
+            }),
+            Kind::Bans => json!({
+                "type":"array", "maxItems":100000, "writeOnly":true,
+                "items":{
+                    "type":"object", "additionalProperties":false,
+                    "oneOf":[{"required":["endpoint"]},{"required":["host"]}],
+                    "properties":{
+                        "endpoint":{"type":"string","format":"bigbrotr-endpoint/1","maxLength":8192},
+                        "host":{"type":"string","format":"bigbrotr-exact-ban-host","maxLength":8192}
                     }
                 }
             }),
@@ -600,6 +612,14 @@ pub fn keys() -> Vec<Key> {
         true,
         "initialization",
         "control",
+        false
+    );
+    add!(
+        "relay_policy.banned",
+        Bans,
+        Vec::<String>::new(),
+        "live-revocation-barrier",
+        "acquisition",
         false
     );
     add!(

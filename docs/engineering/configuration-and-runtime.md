@@ -98,6 +98,51 @@ durable authority must win at restart. Adding settings requires an explicit
 document-version migration before persisted seeds can be reused; this initial
 encoding does not fill in the remaining unimplemented service policy families.
 
+### Acquisition ban-policy document extension
+
+The next selected extension is `bigbrotr-product-policy/2`, with digest domain
+`bigbrotr/product-policy/2\0`. It adds the required ordinary policy setting
+`relay_policy.banned`; it does not add another desired-state authority. Existing
+v1 documents retain their exact closed setting set, bytes, digest and historical
+rows. They remain usable for the already supported non-acquisition operations.
+They cannot authorize acquisition by inventing an empty ban set. This extension
+is implementation work until its actual codec/engine/issuer evidence is recorded.
+
+Ban rules are a set of closed records containing exactly `endpoint` or `host`.
+Endpoints use the existing complete ws/wss identity, including scheme, effective
+port, path and query. Host rules name one DNS host or strict IP literal and apply
+to all ports, schemes and paths at that host; they do not cover subdomains,
+wildcards, CIDRs, DNS aliases or resolved addresses of another hostname. DNS
+hosts use the same IDNA/lowercase/root-dot normalization as endpoint identity,
+with bounded DNS labels. IPv6 host input uses brackets; mapped IPv4 host literals
+compare as IPv4 without changing the stored endpoint normalization version.
+Overlay host names may be banned; this grants no overlay route capability.
+Normalize, sort and deduplicate before encoding. The input array is bounded to
+100,000 entries before deduplication, like existing endpoint sets, and shares the
+10MiB input/compact/JSONB document bounds. Diagnostics redact rule values.
+
+New-format initialization and first activation must agree on schema metadata,
+format and digest domain. Accepted v1 restoration must not import a new ban value
+from the seed file. A populated v1 upgrade is a separate authenticated, idempotent
+expected-revision CAS with an explicitly selected ban set; it never rewrites old
+rows or invokes first activation over runtime history. Advancing the policy
+revision invalidates existing initial Ingest bindings and requires their explicit
+stop/transition. Issuance and both reservation/native-dispatch checks consume
+current bans under dataset serialization. Restrictive changes cancel affected
+actions, with pending/applied state reflecting actual drain. These later consumer
+and upgrade guarantees remain acceptance gates, not consequences of codec tests.
+
+The deployment TOML `config.schema_version` stays independent of persisted policy
+format. New initialization emits v2. For diagnostic comparisons and declarative
+first activation against accepted v1, encode the unchanged candidate using the
+v1 field set and digest domain. Omit only an implicit schema-default empty ban
+set: an explicit file value (including `[]`) selects new semantics and cannot
+match v1. Compare before restoring accepted values. Managed first activation
+still ignores changed seed policy; inspection reports the difference without
+replacing accepted v1. Initialization retry compares against the format and digest
+of its original historical receipt, never today's head or a guessed format. This
+projection grants no acquisition authority and cannot create a new v1 seed.
+
 The finite `config inspect --file PATH` command reads the accepted configuration
 head and document in one PostgreSQL statement, under a read-only transaction and
 shared migration lock. It checks the exact schema ledger and dataset/instance,

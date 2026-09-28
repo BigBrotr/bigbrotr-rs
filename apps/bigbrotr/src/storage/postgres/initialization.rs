@@ -1,5 +1,6 @@
 //! Explicit empty-dataset acceptance. Receipts are data, never runtime authority.
 use super::{migration_runner, migrations};
+use crate::runtime::policy_document::PolicyDocumentVersion;
 use bigbrotr_model::{DatasetId, PrincipalId};
 use sha2::{Digest, Sha256};
 use std::{cell::Cell, fmt};
@@ -47,6 +48,7 @@ pub struct InitializationReceipt {
     pub audit_id: [u8; 16],
     pub document_digest: [u8; 32],
     pub source_digest: [u8; 32],
+    pub policy_version: PolicyDocumentVersion,
 }
 
 /// The finite CLI owns the protected application connection and a reservation
@@ -57,12 +59,14 @@ pub async fn initialize(
     input: InitialConfiguration<'_>,
     commit_started: &Cell<bool>,
 ) -> Result<InitializationReceipt, InitializeError> {
+    let policy_version = PolicyDocumentVersion::from_document(input.document)
+        .map_err(|_| InitializeError::InvalidInput)?;
     if !matches!(input.authority_mode, "managed" | "declarative")
         || input.document.is_empty()
         || input.document.len() > 10 * 1024 * 1024
         || <[u8; 32]>::from(
             Sha256::new()
-                .chain_update(b"bigbrotr/product-policy/1\0")
+                .chain_update(policy_version.digest_domain())
                 .chain_update(input.document.as_bytes())
                 .finalize(),
         ) != input.document_digest
@@ -78,8 +82,24 @@ pub async fn initialize(
     .map_err(backend)?;
     // Read Committed starts this snapshot AFTER the preceding initializer ends.
     // Read the original receipt, never reinterpret current config as a new seed.
-    let rows = tx.query("SELECT substring(d.dataset_id FROM 1 FOR 17), substring(d.instance_id FROM 1 FOR 17), d.config_revision IS NOT NULL, substring(c.actor_id FROM 1 FOR 17), substring(a.audit_id FROM 1 FOR 17), substring(c.document_digest FROM 1 FOR 33), substring(c.accepted_source_digest FROM 1 FOR 33), p.kind = 'installation' AND a.actor_id = c.actor_id AND a.created_at_us = c.accepted_at_us AND p.created_at_us = d.created_at_us AND c.accepted_at_us = d.created_at_us, left(c.authority_mode,12) FROM control.datasets d LEFT JOIN control.config_revisions c ON c.dataset_id = d.dataset_id AND c.revision = 1 LEFT JOIN control.principals p ON p.dataset_id = d.dataset_id AND p.principal_id = c.actor_id LEFT JOIN control.management_audit a ON a.dataset_id = d.dataset_id AND a.action = 'dataset.initialize' AND a.outcome = 'accepted' AND a.config_revision = c.revision LIMIT 2", &[])
-        .await.map_err(backend)?;
+    const ORIGINAL_RECEIPT: &str = "
+        SELECT substring(d.dataset_id FROM 1 FOR 17),
+               substring(d.instance_id FROM 1 FOR 17), d.config_revision IS NOT NULL,
+               substring(c.actor_id FROM 1 FOR 17), substring(a.audit_id FROM 1 FOR 17),
+               substring(c.document_digest FROM 1 FOR 33),
+               substring(c.accepted_source_digest FROM 1 FOR 33),
+               p.kind = 'installation' AND a.actor_id = c.actor_id
+               AND a.created_at_us = c.accepted_at_us AND p.created_at_us = d.created_at_us
+               AND c.accepted_at_us = d.created_at_us,
+               left(c.authority_mode,12), c.schema_version, left(c.document->>'format',64)
+          FROM control.datasets d
+          LEFT JOIN control.config_revisions c ON c.dataset_id = d.dataset_id AND c.revision = 1
+          LEFT JOIN control.principals p ON p.dataset_id = d.dataset_id AND p.principal_id = c.actor_id
+          LEFT JOIN control.management_audit a ON a.dataset_id = d.dataset_id
+               AND a.action = 'dataset.initialize' AND a.outcome = 'accepted'
+               AND a.config_revision = c.revision
+         LIMIT 2";
+    let rows = tx.query(ORIGINAL_RECEIPT, &[]).await.map_err(backend)?;
     if let [row] = rows.as_slice() {
         if fixed::<16>(row, 0)? != *input.dataset.as_bytes()
             || fixed::<16>(row, 1)? != *input.instance.as_bytes()
@@ -110,6 +130,12 @@ pub async fn initialize(
             audit_id: fixed(row, 4)?,
             document_digest: fixed(row, 5)?,
             source_digest: fixed(row, 6)?,
+            policy_version: PolicyDocumentVersion::from_metadata(
+                row.try_get(9).map_err(|_| InitializeError::ExistingState)?,
+                row.try_get(10)
+                    .map_err(|_| InitializeError::ExistingState)?,
+            )
+            .map_err(|_| InitializeError::ExistingState)?,
         };
         tx.rollback().await.map_err(backend)?;
         return Ok(receipt);
@@ -139,8 +165,27 @@ pub async fn initialize(
     .map_err(backend)?;
     tx.execute("INSERT INTO control.principals(principal_id, dataset_id, kind, created_at_us, database_role, local_os_uid) VALUES ($1::bytea, $2::bytea, 'installation', $3::bigint, SESSION_USER, $4::bigint)",
         &[&&actor_bytes[..], &dataset, &now, &i64::from(rustix::process::geteuid().as_raw())]).await.map_err(backend)?;
-    tx.execute("INSERT INTO control.config_revisions(revision, dataset_id, schema_version, authority_mode, document, document_digest, accepted_source_digest, accepted_at_us, actor_id) VALUES (1, $1::bytea, 1, $2::text, $3::text::jsonb, $4::bytea, $5::bytea, $6::bigint, $7::bytea)",
-        &[&dataset, &input.authority_mode, &input.document, &&input.document_digest[..], &&input.source_digest[..], &now, &&actor_bytes[..]]).await.map_err(backend)?;
+    const INSERT_CONFIGURATION: &str = "
+        INSERT INTO control.config_revisions
+            (revision, dataset_id, schema_version, authority_mode, document,
+             document_digest, accepted_source_digest, accepted_at_us, actor_id)
+        VALUES (1, $1::bytea, $2::integer, $3::text, $4::text::jsonb,
+                $5::bytea, $6::bytea, $7::bigint, $8::bytea)";
+    tx.execute(
+        INSERT_CONFIGURATION,
+        &[
+            &dataset,
+            &policy_version.schema_version(),
+            &input.authority_mode,
+            &input.document,
+            &&input.document_digest[..],
+            &&input.source_digest[..],
+            &now,
+            &&actor_bytes[..],
+        ],
+    )
+    .await
+    .map_err(backend)?;
     tx.execute("INSERT INTO control.management_audit(audit_id, dataset_id, actor_id, action, outcome, created_at_us, config_revision) VALUES ($1::bytea, $2::bytea, $3::bytea, 'dataset.initialize', 'accepted', $4::bigint, 1)",
         &[&&audit_id[..], &dataset, &&actor_bytes[..], &now]).await.map_err(backend)?;
     let changed = tx.execute("UPDATE control.datasets SET config_revision = 1 WHERE dataset_id = $1::bytea AND config_revision IS NULL AND policy_revision IS NULL AND topology_generation IS NULL", &[&dataset])
@@ -158,6 +203,7 @@ pub async fn initialize(
         audit_id,
         document_digest: input.document_digest,
         source_digest: input.source_digest,
+        policy_version,
     })
 }
 fn fixed<const N: usize>(row: &Row, index: usize) -> Result<[u8; N], InitializeError> {

@@ -1,14 +1,12 @@
 //! Closed normalized product-policy encoding; a document never grants authority.
 use super::{registry::Kind, resolve::Resolved};
+use bigbrotr::runtime::policy_document::PolicyDocumentVersion;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::{
     collections::BTreeMap,
     io::{self, Write},
 };
-
-const FORMAT: &str = "bigbrotr-product-policy/1";
-const DOMAIN: &[u8] = b"bigbrotr/product-policy/1\0";
 
 struct Count {
     bytes: usize,
@@ -35,15 +33,20 @@ impl Write for Count {
 }
 
 pub(crate) struct PolicySeed {
+    version: PolicyDocumentVersion,
     document: Vec<u8>,
     digest: [u8; 32],
     settings: usize,
 }
 impl PolicySeed {
     pub(crate) fn from_resolved(value: &Resolved) -> Result<Self, String> {
+        Self::for_version(value, value.policy_version)
+    }
+
+    fn for_version(value: &Resolved, version: PolicyDocumentVersion) -> Result<Self, String> {
         let mut settings = BTreeMap::new();
         for key in &value.keys {
-            if !key.root {
+            if !key.root && included(version, &key.name) {
                 // A future registry edit must not make a credential reference
                 // ordinary persisted policy just by changing its root flag.
                 if matches!(key.kind, Kind::Secret) {
@@ -52,32 +55,60 @@ impl PolicySeed {
                 settings.insert(key.name.as_str(), value.value(&key.name));
             }
         }
-        Self::encode(&settings, super::resolve::MAX_CONFIG_BYTES)
+        Self::encode(version, &settings, super::resolve::MAX_CONFIG_BYTES)
     }
 
-    fn encode(settings: &BTreeMap<&str, &Value>, maximum: usize) -> Result<Self, String> {
-        fn write(settings: &BTreeMap<&str, &Value>, mut out: impl Write) -> io::Result<()> {
+    /// Compatibility comparison only, before accepted restoration overwrites the
+    /// candidate. Never use the legacy projection to initialize or grant work.
+    pub(crate) fn matches_accepted(
+        candidate: &Resolved,
+        version: PolicyDocumentVersion,
+        digest: [u8; 32],
+    ) -> Result<bool, String> {
+        if version == PolicyDocumentVersion::V1
+            && let Some(bans) = candidate.values.get("relay_policy.banned")
+            && (candidate.sources.get("relay_policy.banned") != Some(&"schema-default")
+                || !bans.as_array().is_some_and(Vec::is_empty))
+        {
+            // Even explicit [] selects new semantics, not the absence in v1.
+            return Ok(false);
+        }
+        Ok(Self::for_version(candidate, version)?.digest == digest)
+    }
+
+    fn encode(
+        version: PolicyDocumentVersion,
+        settings: &BTreeMap<&str, &Value>,
+        maximum: usize,
+    ) -> Result<Self, String> {
+        fn write(
+            version: PolicyDocumentVersion,
+            settings: &BTreeMap<&str, &Value>,
+            mut out: impl Write,
+        ) -> io::Result<()> {
             out.write_all(b"{\"format\":")?;
-            serde_json::to_writer(&mut out, FORMAT).map_err(io::Error::other)?;
+            serde_json::to_writer(&mut out, version.format()).map_err(io::Error::other)?;
             out.write_all(b",\"settings\":")?;
             serde_json::to_writer(&mut out, settings).map_err(io::Error::other)?;
             out.write_all(b"}")
         }
         let mut count = Count { bytes: 0, maximum };
-        write(settings, &mut count).map_err(|_| "policy seed exceeds 10MiB encoded limit")?;
+        write(version, settings, &mut count)
+            .map_err(|_| "policy seed exceeds 10MiB encoded limit")?;
         // The SQL CHECK and every accepted-document reader bound JSONB text,
         // whose separators and decimal numbers differ from our digest bytes.
-        jsonb_policy_bytes(settings, super::resolve::MAX_CONFIG_BYTES)
+        jsonb_policy_bytes(version, settings, super::resolve::MAX_CONFIG_BYTES)
             .map_err(|_| "policy seed exceeds 10MiB persisted JSONB limit")?;
         let mut document = Vec::new();
         document
             .try_reserve_exact(count.bytes)
             .map_err(|_| "policy seed allocation unavailable")?;
-        write(settings, &mut document).map_err(|_| "policy seed encoding failed")?;
+        write(version, settings, &mut document).map_err(|_| "policy seed encoding failed")?;
         let mut hash = Sha256::new();
-        hash.update(DOMAIN);
+        hash.update(version.digest_domain());
         hash.update(&document);
         Ok(Self {
+            version,
             document,
             digest: hash.finalize().into(),
             settings: settings.len(),
@@ -91,17 +122,18 @@ impl PolicySeed {
         digest: [u8; 32],
         mut root: Resolved,
     ) -> Result<Resolved, String> {
-        if document.len() > super::resolve::MAX_CONFIG_BYTES {
-            return Err("stored policy exceeds encoded limit".into());
-        }
+        let version = PolicyDocumentVersion::from_document(document)?;
         let mut value: Value = serde_json::from_str(document)
             .map_err(|_| "invalid stored policy encoding (values withheld)")?;
         let object = value
             .as_object_mut()
             .ok_or("stored policy must be an object")?;
-        if object.len() != 2 || object.get("format").and_then(Value::as_str) != Some(FORMAT) {
-            return Err("incompatible stored policy format".into());
-        }
+        root.policy_version = version;
+        // v1 has no ban authority. Remove new defaults and explicit seed values
+        // from both effective data and diagnostics instead of default-filling.
+        root.keys.retain(|key| included(version, &key.name));
+        root.values.retain(|name, _| included(version, name));
+        root.sources.retain(|name, _| included(version, name));
         let settings = object
             .get_mut("settings")
             .and_then(Value::as_object_mut)
@@ -143,18 +175,26 @@ impl PolicySeed {
             .iter()
             .map(|byte| format!("{byte:02x}"))
             .collect();
-        json!({"format":FORMAT,"status":"candidate-only","sha256":digest,
+        json!({"format":self.version.format(),"status":"candidate-only","sha256":digest,
             "encoded_bytes":self.document.len().to_string(),"settings":self.settings.to_string()})
     }
+}
+
+fn included(version: PolicyDocumentVersion, key: &str) -> bool {
+    version != PolicyDocumentVersion::V1 || key != "relay_policy.banned"
 }
 
 /// Size only, never an alternative serializer or policy identity. Pinned PG16
 /// JsonbToCStringWorker adds spaces after commas/colons; numeric_out expands
 /// exponent-form finite numbers. Key ordering does not affect the byte count.
-fn jsonb_policy_bytes(settings: &BTreeMap<&str, &Value>, maximum: usize) -> io::Result<usize> {
+fn jsonb_policy_bytes(
+    version: PolicyDocumentVersion,
+    settings: &BTreeMap<&str, &Value>,
+    maximum: usize,
+) -> io::Result<usize> {
     let mut count = Count { bytes: 0, maximum };
     count.write_all(b"{\"format\": ")?;
-    serde_json::to_writer(&mut count, FORMAT).map_err(io::Error::other)?;
+    serde_json::to_writer(&mut count, version.format()).map_err(io::Error::other)?;
     count.write_all(b", \"settings\": {")?;
     for (index, (key, value)) in settings.iter().enumerate() {
         if index > 0 {
@@ -245,10 +285,13 @@ mod tests {
                 "{{\"format\": \"bigbrotr-product-policy/1\", \"settings\": {{\"x\": {rendered}}}}}"
             );
             assert_eq!(
-                jsonb_policy_bytes(&settings, expected.len()).unwrap(),
+                jsonb_policy_bytes(PolicyDocumentVersion::V1, &settings, expected.len()).unwrap(),
                 expected.len()
             );
-            assert!(jsonb_policy_bytes(&settings, expected.len() - 1).is_err());
+            assert!(
+                jsonb_policy_bytes(PolicyDocumentVersion::V1, &settings, expected.len() - 1)
+                    .is_err()
+            );
         }
     }
 
@@ -259,20 +302,142 @@ mod tests {
         let text = json!("é\n\"");
         let settings = BTreeMap::from([("z", &text), ("a", &maximum), ("n", &null)]);
         let expected = "{\"format\":\"bigbrotr-product-policy/1\",\"settings\":{\"a\":18446744073709551615,\"n\":null,\"z\":\"é\\n\\\"\"}}";
-        let seed = PolicySeed::encode(&settings, expected.len()).unwrap();
+        let seed =
+            PolicySeed::encode(PolicyDocumentVersion::V1, &settings, expected.len()).unwrap();
         assert_eq!(seed.document, expected.as_bytes());
         // Independent Python hashlib over the literal UTF-8 document and domain.
         assert_eq!(
             seed.report()["sha256"],
             "1c8054d6d7d21473b7588e39dfbea8f2cabbd58987763c1a022cb7a6ca101a7a"
         );
-        assert!(PolicySeed::encode(&settings, expected.len() - 1).is_err());
-        assert!(PolicySeed::encode(&settings, 0).is_err());
+        assert!(
+            PolicySeed::encode(PolicyDocumentVersion::V1, &settings, expected.len() - 1).is_err()
+        );
+        assert!(PolicySeed::encode(PolicyDocumentVersion::V1, &settings, 0).is_err());
     }
 
     fn root() -> Resolved {
         super::super::resolve::parse(include_str!("../../../../config/recipes/archive-only.toml"))
             .unwrap()
+    }
+
+    #[test]
+    fn policy_versions_v2_requires_explicit_bans_and_its_own_digest_domain() {
+        let mut document: Value = serde_json::from_str(include_str!(
+            "../../../../experiments/configuration-inspection/policy.json"
+        ))
+        .unwrap();
+        document["format"] = json!("bigbrotr-product-policy/2");
+        document["settings"]["relay_policy.banned"] = json!([]);
+        let bytes = serde_json::to_string(&document).unwrap();
+        // Independent Python json (sorted compact keys) and hashlib, over the
+        // original frozen v1 settings plus this explicitly selected empty set.
+        let expected = "5916c8d71ed33b8339c00af4595cb5284d8e149a64875ee9c757e0de39e94ed1";
+        let digest =
+            std::array::from_fn(|i| u8::from_str_radix(&expected[2 * i..2 * i + 2], 16).unwrap());
+        assert_eq!(bytes.len(), 7489);
+        let restored = PolicySeed::restore(&bytes, digest, root()).unwrap();
+        assert_eq!(restored.value("relay_policy.banned"), &json!([]));
+        let seed = PolicySeed::from_resolved(&restored).unwrap();
+        assert_eq!(seed.document(), bytes);
+        assert_eq!(seed.digest(), digest);
+        assert_eq!(seed.report()["format"], "bigbrotr-product-policy/2");
+        let wrong_domain = Sha256::new()
+            .chain_update(b"bigbrotr/product-policy/1\0")
+            .chain_update(&bytes)
+            .finalize()
+            .into();
+        assert!(PolicySeed::restore(&bytes, wrong_domain, root()).is_err());
+        document["settings"]
+            .as_object_mut()
+            .unwrap()
+            .remove("relay_policy.banned");
+        let incomplete = document.to_string();
+        let matching_digest = Sha256::new()
+            .chain_update(b"bigbrotr/product-policy/2\0")
+            .chain_update(&incomplete)
+            .finalize()
+            .into();
+        assert!(PolicySeed::restore(&incomplete, matching_digest, root()).is_err());
+    }
+
+    #[test]
+    fn policy_versions_v1_retains_its_identity_without_inheriting_seed_bans() {
+        let document = include_str!("../../../../experiments/configuration-inspection/policy.json");
+        let expected = "da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9";
+        let digest =
+            std::array::from_fn(|i| u8::from_str_radix(&expected[2 * i..2 * i + 2], 16).unwrap());
+        let mut candidate = root();
+        candidate.values.insert(
+            "relay_policy.banned".into(),
+            json!([{"host":"relay.example"}]),
+        );
+        candidate
+            .sources
+            .insert("relay_policy.banned".into(), "file");
+        let restored = PolicySeed::restore(document, digest, candidate).unwrap();
+        assert!(!restored.values.contains_key("relay_policy.banned"));
+        assert!(!restored.sources.contains_key("relay_policy.banned"));
+        assert!(
+            !restored
+                .keys
+                .iter()
+                .any(|k| k.name == "relay_policy.banned")
+        );
+        let seed = PolicySeed::from_resolved(&restored).unwrap();
+        assert_eq!(seed.digest(), digest);
+        assert_eq!(seed.report()["format"], "bigbrotr-product-policy/1");
+    }
+
+    #[test]
+    fn policy_versions_legacy_comparison_omits_only_implicit_empty_bans() {
+        // The frozen v1 fixture has selected overrides; compare its exact
+        // effective values plus the implicit new default, not today's recipe.
+        let document = include_str!("../../../../experiments/configuration-inspection/policy.json");
+        let expected = "da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9";
+        let digest =
+            std::array::from_fn(|i| u8::from_str_radix(&expected[2 * i..2 * i + 2], 16).unwrap());
+        let legacy = PolicySeed::restore(document, digest, root()).unwrap();
+        let mut candidate = root();
+        for key in &legacy.keys {
+            if !key.root {
+                candidate
+                    .values
+                    .insert(key.name.clone(), legacy.value(&key.name).clone());
+            }
+        }
+        assert!(
+            PolicySeed::matches_accepted(&candidate, PolicyDocumentVersion::V1, digest).unwrap()
+        );
+        assert_ne!(
+            PolicySeed::from_resolved(&candidate).unwrap().digest(),
+            digest
+        );
+        candidate
+            .sources
+            .insert("relay_policy.banned".into(), "file");
+        assert!(
+            !PolicySeed::matches_accepted(&candidate, PolicyDocumentVersion::V1, digest).unwrap()
+        );
+        candidate
+            .sources
+            .insert("relay_policy.banned".into(), "schema-default");
+        candidate.values.insert(
+            "relay_policy.banned".into(),
+            json!([{"host":"relay.example"}]),
+        );
+        assert!(
+            !PolicySeed::matches_accepted(&candidate, PolicyDocumentVersion::V1, digest).unwrap()
+        );
+        candidate
+            .values
+            .insert("relay_policy.banned".into(), json!([]));
+        candidate
+            .values
+            .insert("ingest.max_event_bytes".into(), json!(524288));
+        assert!(
+            !PolicySeed::matches_accepted(&candidate, PolicyDocumentVersion::V1, digest).unwrap()
+        );
     }
 
     #[test]
@@ -326,7 +491,7 @@ mod tests {
             invalid["settings"][name] = value;
             let bytes = invalid.to_string();
             let digest: [u8; 32] = Sha256::new()
-                .chain_update(DOMAIN)
+                .chain_update(PolicyDocumentVersion::CURRENT.digest_domain())
                 .chain_update(bytes.as_bytes())
                 .finalize()
                 .into();
@@ -431,7 +596,7 @@ mod tests {
         injection["settings"]["network.private.rules"] = json!([]);
         let injected = injection.to_string();
         let matching_digest = Sha256::new()
-            .chain_update(DOMAIN)
+            .chain_update(b"bigbrotr/product-policy/1\0")
             .chain_update(&injected)
             .finalize()
             .into();

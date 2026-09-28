@@ -31,10 +31,10 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'registry'
-assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility')
+assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility', 'policy-versions')
 probe = {'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
          'enrollment':'relay_enrollment_probe', 'enrollment-faults':'relay_enrollment_fault_probe',
-         'visibility':'ingest_bootstrap_probe'}[mode]
+         'visibility':'ingest_bootstrap_probe', 'policy-versions':'ingest_bootstrap_probe'}[mode]
 if mode == 'enrollment-faults':
     identity['scope'] = 'Actual enrollment fault probe build only; engine authority qualification is separate'
 checks = Path('/out/build-checks')
@@ -42,7 +42,7 @@ steps = [
     ('compile', ['cargo','build','--locked','--offline','--release','-p','bigbrotr',
                  '--bin','bigbrotr','--example',probe]),
     ('clippy', ['cargo','clippy','--locked','--offline','--release','-p','bigbrotr','--lib',
-                '--example',probe,'--','-D','warnings']),
+                '--bin','bigbrotr','--example',probe,'--','-D','warnings']),
 ]
 if mode == 'registry':
     steps.insert(1, ('catalog', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
@@ -57,6 +57,17 @@ if mode == 'visibility':
     identity['scope'] = 'Committed native visibility lookup; no acquisition permission or release qualification'
     steps.insert(1, ('visibility', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                   '--lib','visibility_tests','--','--test-threads=1']))
+if mode == 'policy-versions':
+    identity['scope'] = 'Policy v1/v2 and exact bans; no populated upgrade or acquisition permission'
+    steps.insert(1, ('codec', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                             '--bin','bigbrotr','config::policy']))
+    steps.insert(2, ('bans', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                            '--lib','network::bans']))
+    steps.insert(3, ('headers', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                               '--lib','runtime::policy_document']))
+    steps.insert(4, ('entrypoints', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                                   '--test','config_bans','--test','policy_seed','--test','config_entrypoint',
+                                   '--test','network_policy']))
 result = execute(steps,checks,SOURCE,env,identity,1800)
 assert result['status']=='PASS'
 artifacts=Path('/out/artifacts'); artifacts.mkdir()
@@ -72,5 +83,5 @@ assert sources()==manifest['files_sha256']
 status = {'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
           'enrollment':'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
           'enrollment-faults':'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',
-          'visibility':'PASS_INGEST_VISIBILITY_BUILD_ONLY'}[mode]
+          'visibility':'PASS_INGEST_VISIBILITY_BUILD_ONLY', 'policy-versions':'PASS_POLICY_VERSIONS_BUILD_ONLY'}[mode]
 Path('/out/qualification.json').write_text(json.dumps(dict(identity,status=status),indent=2)+'\n')

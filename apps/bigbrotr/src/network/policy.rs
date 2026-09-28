@@ -75,6 +75,14 @@ impl Target {
 }
 
 pub(super) fn direct_hostname(host: &str) -> Result<(), PolicyError> {
+    dns_hostname(host)?;
+    if ["onion", "i2p", "loki", "snode"].contains(&host.rsplit('.').next().unwrap()) {
+        return Err(PolicyError::OverlayRouteRequired);
+    }
+    Ok(())
+}
+
+pub(super) fn dns_hostname(host: &str) -> Result<(), PolicyError> {
     if host.len() > 253
         || host.is_empty()
         || !host.split('.').all(|label| {
@@ -88,9 +96,6 @@ pub(super) fn direct_hostname(host: &str) -> Result<(), PolicyError> {
         })
     {
         return Err(PolicyError::InvalidHost);
-    }
-    if ["onion", "i2p", "loki", "snode"].contains(&host.rsplit('.').next().unwrap()) {
-        return Err(PolicyError::OverlayRouteRequired);
     }
     Ok(())
 }

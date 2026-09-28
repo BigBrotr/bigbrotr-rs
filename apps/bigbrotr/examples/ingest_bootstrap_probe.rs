@@ -47,15 +47,23 @@ fn hex(value: &[u8]) -> String {
     value.iter().map(|v| format!("{v:02x}")).collect()
 }
 fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
+    validate_version(document, digest, false)
+}
+fn validate_version(document: &str, digest: [u8; 32], v2: bool) -> Result<(), OwnerError> {
     let value: serde_json::Value =
         serde_json::from_str(document).map_err(|_| OwnerError::InvalidPolicy)?;
-    let expected: serde_json::Value = serde_json::from_str(include_str!(
+    let mut expected: serde_json::Value = serde_json::from_str(include_str!(
         "../../../experiments/configuration-inspection/policy.json"
     ))
     .unwrap();
-    if value != expected
-        || hex(&digest) != "da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9"
-    {
+    let fingerprint = if v2 {
+        expected["format"] = serde_json::json!("bigbrotr-product-policy/2");
+        expected["settings"]["relay_policy.banned"] = serde_json::json!([]);
+        "5916c8d71ed33b8339c00af4595cb5284d8e149a64875ee9c757e0de39e94ed1"
+    } else {
+        "da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9"
+    };
+    if value != expected || hex(&digest) != fingerprint {
         return Err(OwnerError::InvalidPolicy);
     }
     Ok(())
@@ -191,6 +199,11 @@ async fn initialize_fixture(config: Config) {
 }
 
 async fn run(mut config: Config, mode: &str, path: &Path) {
+    // The explicit v2 case retains the independent frozen settings and literal
+    // digest; it does not derive expected policy from the product codec.
+    let v2 = mode == "write-v2";
+    let validate = |document: &str, digest| validate_version(document, digest, v2);
+    let mode = if v2 { "write" } else { mode };
     let (observer, observer_driver) = config.connect(NoTls).await.unwrap();
     let observer_driver = tokio::spawn(observer_driver);
     let row=observer.query_one("SELECT dataset_id,instance_id,(EXTRACT(EPOCH FROM pg_catalog.clock_timestamp())*1000000)::bigint FROM control.datasets",&[]).await.unwrap();

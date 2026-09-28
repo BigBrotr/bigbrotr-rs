@@ -2928,6 +2928,43 @@
           "x-bigbrotr-owner": "validator",
           "x-bigbrotr-reload": "live"
         },
+        "banned": {
+          "default": [],
+          "items": {
+            "additionalProperties": false,
+            "oneOf": [
+              {
+                "required": [
+                  "endpoint"
+                ]
+              },
+              {
+                "required": [
+                  "host"
+                ]
+              }
+            ],
+            "properties": {
+              "endpoint": {
+                "format": "bigbrotr-endpoint/1",
+                "maxLength": 8192,
+                "type": "string"
+              },
+              "host": {
+                "format": "bigbrotr-exact-ban-host",
+                "maxLength": 8192,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "maxItems": 100000,
+          "type": "array",
+          "writeOnly": true,
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "live-revocation-barrier"
+        },
         "candidate_validation": {
           "default": "public",
           "enum": [

@@ -2,6 +2,7 @@ use super::postgres_command;
 use crate::config::{Resolved, policy::PolicySeed};
 use bigbrotr::{
     runtime::OwnedPermit,
+    runtime::policy_document::PolicyDocumentVersion,
     storage::postgres::activation::{self, ActivationError, ActivationRequest},
 };
 use bigbrotr_model::DatasetId;
@@ -44,7 +45,6 @@ pub(crate) fn activate(
         required("postgres.control.password_ref")?,
         512 * 1024 * 1024,
     )?;
-    let candidate = PolicySeed::from_resolved(&root).map_err(|error| (3, error))?;
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
@@ -55,7 +55,12 @@ pub(crate) fn activate(
             .map_err(|_| ActivationError::Backend)?;
         let commit_started = Cell::new(false);
         let validate = |document: &str, digest| {
-            if mode == "declarative" && candidate.digest() != digest {
+            let version = PolicyDocumentVersion::from_document(document)
+                .map_err(|_| ActivationError::PolicyInvalid)?;
+            if mode == "declarative"
+                && !PolicySeed::matches_accepted(&root, version, digest)
+                    .map_err(|_| ActivationError::PolicyInvalid)?
+            {
                 return Err(ActivationError::PolicyInvalid);
             }
             PolicySeed::restore(document, digest, root)

@@ -28112,5 +28112,19 @@
       }
     },
     "evidence": "docs/implementation/evidence/p02-ingest-visibility-native-20260928.json"
+  },
+  "implementation_policy_versions_20260928": {
+    "owner": "root; Mac sole writer; read-only AI product review",
+    "base_source": "95c9f469c0f7e066053d1427a844451468e0da8d",
+    "status": "Local scoped tests pass; exact-Git native compatibility recipe NOT_RUN",
+    "local_capture": ".research/implementation/ban-policy-20260928",
+    "recipe": "experiments/network-transport/lab.py REVISION TREE policy-versions",
+    "preserve": "All original RED/fixture failures and GREEN logs. Legacy6c52067 CLI is a required immutable input. Reuse only network-1154757 exclusive compiler cache; no deletion.",
+    "scope": "Policy v1/v2 and exact ban data; no populated upgrade, acquisition issuer or restrictive-drain qualification",
+    "preflight": {
+      "free_bytes": 66280689664,
+      "running_unrelated_containers": 8,
+      "running_bigbrotr_experiments": 0
+    }
   }
 }

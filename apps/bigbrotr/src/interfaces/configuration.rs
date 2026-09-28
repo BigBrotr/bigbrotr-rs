@@ -72,8 +72,9 @@ fn report(root: Resolved, observation: ConfigurationObservation) -> CliResult<(V
             "deployment authority mode disagrees with accepted Control state".into(),
         ));
     }
-    let seed = PolicySeed::from_resolved(&root).map_err(|error| (3, error))?;
-    let policy_differs = seed.digest() != accepted.document_digest;
+    let policy_differs =
+        !PolicySeed::matches_accepted(&root, accepted.policy_version, accepted.document_digest)
+            .map_err(|error| (3, error))?;
     let hex = |bytes: &[u8]| bytes.iter().map(|b| format!("{b:02x}")).collect::<String>();
     let source_differs = root.document_sha256 != hex(&accepted.source_digest);
     let effective = PolicySeed::restore(&accepted.document, accepted.document_digest, root)
@@ -84,6 +85,7 @@ fn report(root: Resolved, observation: ConfigurationObservation) -> CliResult<(V
         "authority_mode":accepted.authority_mode,"desired_revision":accepted.revision.to_string(),
         "security_revision":accepted.security_revision.map(|n| n.to_string()),"applied_revision":null,
         "accepted_policy_sha256":hex(&accepted.document_digest),"source_file_differs":source_differs,
+        "accepted_policy_format":accepted.policy_version.format(),
         "candidate_policy_differs":policy_differs,"file_policy_use":if accepted.authority_mode == "managed" {"unused-initialization-input"} else {"staged-until-explicit-activation"},
         "activation":"not-performed","authorization":"not-granted","snapshot":"single-statement-observation",
         "settings":metadata["settings"].take()}),
@@ -158,7 +160,8 @@ pub(crate) fn initialize(root: Resolved) -> CliResult<(Value, u8, OwnedPermit)> 
             "installation_actor":receipt.actor,
             "audit_id":receipt.audit_id.iter().map(|b|format!("{b:02x}")).collect::<String>(),
             "initial_policy_sha256":receipt.document_digest.iter().map(|b|format!("{b:02x}")).collect::<String>(),
-            "candidate_policy_differs":receipt.document_digest != seed.digest(),
+            "initial_policy_format":receipt.policy_version.format(),
+            "candidate_policy_differs":!PolicySeed::matches_accepted(&root, receipt.policy_version, receipt.document_digest).map_err(|error|(3,error))?,
             "source_file_differs":receipt.source_digest != *source.as_bytes(),
             "owner_enrollment":"not-performed","runtime_authorization":"not-granted",
             "applied_revision":null,"security_revision":null}),

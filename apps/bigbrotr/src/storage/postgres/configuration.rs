@@ -1,5 +1,6 @@
 //! Bounded observation of accepted configuration. Returned data grants no authority.
 use super::{migration_runner, migrations};
+use crate::runtime::policy_document::PolicyDocumentVersion;
 use bigbrotr_model::DatasetId;
 use std::fmt;
 use tokio_postgres::{Client, IsolationLevel, Row};
@@ -27,6 +28,7 @@ fn backend(_: tokio_postgres::Error) -> InspectError {
 /// Transport data only. The closed configuration schema must still validate the
 /// document and digest against deployment roots before any effective use.
 pub struct AcceptedConfiguration {
+    pub policy_version: PolicyDocumentVersion,
     pub revision: u64,
     pub security_revision: Option<u64>,
     pub authority_mode: String,
@@ -89,22 +91,23 @@ pub async fn inspect(
                 None if security_revision.is_none() => ConfigurationObservation::NoConfiguration,
                 None => return Err(InspectError::InvalidMetadata),
                 Some(revision) => {
-                    if row
-                        .try_get::<_, i32>(4)
-                        .map_err(|_| InspectError::InvalidMetadata)?
-                        != 1
-                    {
-                        return Err(InspectError::IncompatibleSchema);
-                    }
+                    let document: String =
+                        row.try_get(6).map_err(|_| InspectError::InvalidMetadata)?;
+                    let policy_version = PolicyDocumentVersion::require_metadata(
+                        &document,
+                        row.try_get(4).map_err(|_| InspectError::InvalidMetadata)?,
+                    )
+                    .map_err(|_| InspectError::IncompatibleSchema)?;
                     let mode: String = row.try_get(5).map_err(|_| InspectError::InvalidMetadata)?;
                     if !matches!(mode.as_str(), "managed" | "declarative") {
                         return Err(InspectError::InvalidMetadata);
                     }
                     ConfigurationObservation::Accepted(AcceptedConfiguration {
+                        policy_version,
                         revision,
                         security_revision,
                         authority_mode: mode,
-                        document: row.try_get(6).map_err(|_| InspectError::InvalidMetadata)?,
+                        document,
                         document_digest: fixed(row, 7)?,
                         source_digest: fixed(row, 8)?,
                     })

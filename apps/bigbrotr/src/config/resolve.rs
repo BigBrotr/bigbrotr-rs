@@ -1,4 +1,5 @@
 use super::registry::{Key, Kind, keys};
+use bigbrotr::runtime::policy_document::PolicyDocumentVersion;
 use bigbrotr::runtime::{EnvelopeError, ProcessEnvelope, ResourceLimits, WaiterLimits};
 use bigbrotr::runtime::{ownership::OwnershipTiming, policy_authority::PolicyLeaseTtl};
 use bigbrotr_protocol::endpoint::Endpoint;
@@ -33,6 +34,7 @@ pub struct Resolved {
     pub local_roles: BTreeSet<String>,
     pub dependencies: Vec<Value>,
     pub document_sha256: String,
+    pub policy_version: PolicyDocumentVersion,
 }
 
 pub fn parse(input: &str) -> Result<Resolved, String> {
@@ -144,6 +146,7 @@ pub fn parse(input: &str) -> Result<Resolved, String> {
         local_roles,
         dependencies: vec![],
         document_sha256,
+        policy_version: PolicyDocumentVersion::CURRENT,
     };
     result.validate()?;
     Ok(result)
@@ -262,6 +265,7 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
         }
         RevisitBands => revisit_bands(value),
         PrivateRules => super::private_routes::parse(value).map(|(normalized, _)| normalized),
+        Bans => bigbrotr::network::BanSet::parse(value).map(|bans| bans.normalized_value()),
         Ratio => value
             .as_f64()
             .filter(|n| n.is_finite() && (0.0..=1.0).contains(n))

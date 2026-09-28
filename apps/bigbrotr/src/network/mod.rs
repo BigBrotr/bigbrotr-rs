@@ -1,6 +1,7 @@
 //! Guarded acquisition destinations. Static route policy is not runtime authority.
 
 mod address;
+mod bans;
 mod dns;
 mod egress;
 mod lifetime;
@@ -9,6 +10,7 @@ mod route;
 mod stream;
 mod tls;
 
+pub use bans::BanSet;
 pub use dns::{DnsError, DnsFamilyOutcome, DnsResolution, DnsResolver};
 pub use egress::{DirectAttempt, DirectConnector, TransportError};
 pub use lifetime::CancelAttempt;

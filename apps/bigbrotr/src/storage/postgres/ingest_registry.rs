@@ -380,14 +380,32 @@ async fn observe_locked(
     let topology = optional_decimal(&row, 1)?;
     let config_head = optional_decimal(&row, 2)?;
     let policy_head = optional_decimal(&row, 3)?;
-    let row = tx.query_opt("SELECT substring(c.document_digest FROM 1 FOR 33), substring(p.document_digest FROM 1 FOR 33), c.schema_version, p.schema_version FROM control.config_revisions c JOIN control.policy_revisions p ON p.dataset_id = c.dataset_id AND p.config_revision = c.revision WHERE c.dataset_id = $1::bytea AND c.revision = $2::text::numeric AND p.revision = $3::text::numeric", &[dataset, &config, &policy])
-        .await.map_err(backend)?.ok_or(RegistryError::HeadsChanged)?;
+    const POLICY_IDENTITY: &str = "
+        SELECT substring(c.document_digest FROM 1 FOR 33),
+               substring(p.document_digest FROM 1 FOR 33),
+               c.schema_version, p.schema_version,
+               left(c.document->>'format',64), left(p.document->>'format',64)
+          FROM control.config_revisions c
+          JOIN control.policy_revisions p
+            ON p.dataset_id = c.dataset_id AND p.config_revision = c.revision
+         WHERE c.dataset_id = $1::bytea
+           AND c.revision = $2::text::numeric AND p.revision = $3::text::numeric";
+    let row = tx
+        .query_opt(POLICY_IDENTITY, &[dataset, &config, &policy])
+        .await
+        .map_err(backend)?
+        .ok_or(RegistryError::HeadsChanged)?;
+    for (schema_column, format_column) in [(2, 4), (3, 5)] {
+        crate::runtime::policy_document::PolicyDocumentVersion::from_metadata(
+            row.try_get(schema_column).map_err(backend)?,
+            row.try_get(format_column).map_err(backend)?,
+        )
+        .map_err(|_| RegistryError::HeadsChanged)?;
+    }
     if fixed_bytes::<32>(row.try_get::<_, &[u8]>(0).map_err(backend)?)?
         != *s.config_digest.as_bytes()
         || fixed_bytes::<32>(row.try_get::<_, &[u8]>(1).map_err(backend)?)?
             != *s.policy_digest.as_bytes()
-        || row.try_get::<_, i32>(2).map_err(backend)? != 1
-        || row.try_get::<_, i32>(3).map_err(backend)? != 1
     {
         return Err(RegistryError::HeadsChanged);
     }
