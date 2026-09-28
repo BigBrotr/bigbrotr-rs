@@ -12,10 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is candidate7ab155ecdcf962d69032b54ae0e4c3d19967b2a6; private origin
-was62012ecb5324ba1a613a274943973b30ad49ba54 at qualification. Root owns only
-qualification evidence/inventory/checkpoint/reference edits. The candidate has
-passed its first installed lifetime wave; commit/push this bounded result next.
+Mac main/private origin isfef5025 (first lifetime qualification pushed); tested
+product revision remains7ab155ecdcf962d69032b54ae0e4c3d19967b2a6. Root owns
+dirty interruption fixtures in experiments/ingest-bootstrap/{interruptions.py,
+interruption_client.py}, bindings.py wiring and this checkpoint. No new product
+code, dependency, build or persistent format change. Native interruption NOT_RUN.
 
 Active P01-T09 Step1/P02-T02 Steps2/3: explicit
 `serve --initialize-ingest --roles control,ingest`, fresh-only under retained
@@ -48,11 +49,22 @@ eight unrelated running, cache free and64,395,231,232B available. Mac last8,284,
 Shared1154757 intermediates now7ab155e; exact binaries separately retained.
 No cleanup obligation; prior cache retirement remains complete.
 
-Next bounded action after committing qualification: exercise installed lifetime
-interruption at actual native/SQL boundaries, including blocked worker collection,
-retained fence and bounded process exit. Reuse the qualified tracer/fault proxy
-only after exact ownership/hash verification; create fresh cloned states and keep
-originals. Lost/delayed COMMIT, worker panic, initialization recovery and successor
+Next bounded action: finish root/read-only AI review of four prepared native
+interruption cases, commit exact fixture and transfer via Git, reuse separately
+retained7ab155e binaries only after unchanged Rust/build-input comparison. Cases:
+traced healthy stop, actual LOCK openat held for signal/deadline, LOCK close held
+during shutdown. The observer requires real SQL advisory fence/competing Control
+Busy, exact row snapshots, pidfd death and original input/native bytes. Actual
+CLI validates30slease/5srenewal/2sgrace offline; Python syntax passes only.
+Qualified strace9b30c35 owner/artifact/proof reverified, not executed for this
+wave yet. Ignored initial-ingest-interruptions-20260928 owns local preparation.
+Mac8,262,764KiB/Tux62,885,920KiB available; no active BigBrotr lab. Preserve all
+originals; no new compilation cache needed.
+Prelaunch AI/root review corrected the competitor to the explicit initial path
+with a separate absent target. Signal death must precede launch+5s, distinguishing
+it from the earliest ordinary watchdog; late diagnostic output is optional.
+Exact RocksDB11.8.1 UnlockFile releases fcntl before close: the close case tests
+unfinished destructor/Control custody, not continued OS LOCK ownership. Lost/delayed COMMIT, worker panic, initialization recovery and successor
 remain open. Dictionary-only reports remain ready=false/acquisition=not-started.
 Do not mark P01-T09, P02-T02 or M1 complete. No capacity or arm64 claim.
 
@@ -90,8 +102,8 @@ bb_scope_bind_e86439e_* clones/stores retained. Terminal audit 14:47:21 UTC foun
 e86439e intermediates; qualified artifacts are separately retained. No cleanup
 obligation. Cache retirement remains complete; never replay launchers/deletions.
 
-Renewal qualification is pushed. The explicit first-run native startup is now
-the active dirty implementation above, with bounded worker/native/driver custody.
+Renewal and explicit first-run lifetime qualifications are pushed. The native
+interruption fixture above is active, preserving worker/native/driver custody.
 Initial registration construction and partial-state boundaries were reviewed. Separate initializer→Serve currently cannot reuse the
 initial writer. Keep that constraint visible; do not add a parallel plan.
 The renewal's lost/delayed COMMIT, write-cutoff negative control and policy/closing
