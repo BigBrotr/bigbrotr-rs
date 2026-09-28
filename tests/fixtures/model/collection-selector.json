@@ -1,0 +1,21 @@
+{
+  "format": "bigbrotr-collection-selector-vectors/1",
+  "authoring": "Literal RFC 8949 heads/field order, UTF-8 bytes and Python hashlib SHA-256; no product normalization or codec",
+  "vectors": [
+    {
+      "name": "unrestricted",
+      "preimage_hex": "62696762726f74722f636f6c6c656374696f6e2d73656c6563746f722f3100838186f6f6f680f6f6006672657461696e",
+      "sha256": "b9b46eb65141cbab62bbb6ae577a733caebb20af3c7db3b2cbe1dd4414b53517"
+    },
+    {
+      "name": "rich",
+      "preimage_hex": "62696762726f74722f636f6c6c656374696f6e2d73656c6563746f722f3100838186825820aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa5820bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb8158201111111111111111111111111111111111111111111111111111111111111111820019ffff8382614181617a8261658178403030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303082617483606365cc8162c3a9001bffffffffffffffff176464726f70",
+      "sha256": "fdaa319f1a6c3a3e6d98554d29953ebb5dc2fcb1a14d8f45586ce048903f5e99"
+    },
+    {
+      "name": "union-null-before-present",
+      "preimage_hex": "62696762726f74722f636f6c6c656374696f6e2d73656c6563746f722f3100838286f6f6810180f6f686815820aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaf6f680f6f6006672657461696e",
+      "sha256": "236181ea7e8480e4863ce0aad2c34a55ea7f82a2be80bbd4c4c90fbdfb692520"
+    }
+  ]
+}

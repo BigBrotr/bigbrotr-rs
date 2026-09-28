@@ -1,4 +1,5 @@
 //! Lossless signed fields. Deserialization does not establish cryptographic validity.
+pub mod acquisition;
 pub mod admission;
 pub mod archive;
 pub mod codec;

@@ -37,20 +37,25 @@ identity['rustc'] = subprocess.check_output(['rustc', '--version', '--verbose'],
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 assert identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'direct'
-assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire')
+assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire', 'selector')
 tests = {
     'direct': {'network_direct': 12},
-    'websocket': {'network_websocket': 29},
+    'websocket': {'network_websocket': 30},
     'relay-wire': {'network_websocket': 1, 'relay_wire': 8},
+    'selector': {'network_websocket': 2, 'collection_selector': 8, 'selector': 4},
 }[mode]
 packages = ['-p', 'bigbrotr']
-if mode == 'relay-wire':
+if mode in ('relay-wire', 'selector'):
     packages += ['-p', 'bigbrotr-protocol']
+if mode == 'selector':
+    packages += ['-p', 'bigbrotr-model']
 selectors = [arg for name in tests for arg in ['--test', name]]
 if mode == 'websocket':
     identity['scope'] = 'Native bounded WebSocket over actual guarded TCP/TLS; no installed Nostr acquisition, shared service quotas or production capacity claim'
 elif mode == 'relay-wire':
     identity['scope'] = 'Native preserving Nostr relay decoder and signed actual socket corpus; no installed acquisition, request-generation authority, durable admission or coverage claim'
+elif mode == 'selector':
+    identity['scope'] = 'Native bounded collection identity/membership and signed actual socket corpus; no persistent scope registration, installed Sync, durable admission, coverage or capacity claim'
 compile_selectors = selectors + (['--lib'] if mode == 'websocket' else [])
 checks = Path('/out/build-checks')
 build_commands = [
@@ -87,8 +92,10 @@ for line in (checks / 'compile.log').read_text().splitlines():
 expected = set(tests) | ({'network_websocket_input'} if mode == 'websocket' else set())
 assert executables.keys() == expected
 identity['executables_sha256'] = executables
+socket_filter = {'relay-wire': ['nostr::signed_socket_corpus_checks_every_payload_and_preserves_eose_hints', '--exact'],
+                 'selector': ['nostr::']}.get(mode, [])
 commands = [(name, [str(artifacts / name),
-                   *(['nostr::'] if mode == 'relay-wire' and name == 'network_websocket' else []),
+                   *(socket_filter if name == 'network_websocket' else []),
                    '--test-threads=1', '--nocapture']) for name in tests]
 if mode == 'websocket':
     tests['network_websocket_input'] = 2
@@ -102,6 +109,7 @@ assert sources() == manifest['files_sha256']
 assert all(file_hash(artifacts / name) == digest for name, digest in executables.items())
 status = {'direct': 'PASS_SCOPED_NETWORK_COMPONENTS',
           'websocket': 'PASS_SCOPED_WEBSOCKET_COMPONENTS',
-          'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS'}[mode]
+          'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS',
+          'selector': 'PASS_SCOPED_SELECTOR_COMPONENTS'}[mode]
 Path('/out/qualification.json').write_text(json.dumps(
     dict(identity, status=status, tests=tests), indent=2) + '\n')

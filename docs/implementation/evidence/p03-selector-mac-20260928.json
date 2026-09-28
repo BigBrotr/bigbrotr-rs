@@ -1,0 +1,54 @@
+{
+  "format": "bigbrotr-selector-mac/1",
+  "status": "PASS_SCOPED_MAC_COMPONENTS",
+  "base_source": "df226b2438feeec173f2c6f0070f4255466d048c",
+  "environment": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+  "local_evidence": ".research/implementation/acquisition-selector-20260928",
+  "tests": {
+    "collection_selector": 8,
+    "selector_codec": 4,
+    "actual_signed_socket_corpora": 2
+  },
+  "source_sha256": {
+    "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "crates/bigbrotr-model/src/acquisition.rs": "8529a710ecef91a633f65f8966abf1b55d4826020bd2f24b07b1f7d89e864b22",
+    "crates/bigbrotr-model/src/fingerprint/selector.rs": "528fbb91aa7411cbcb27aaea10a863e5d82210a9555bf9c349c7c5bc0480ed3a",
+    "crates/bigbrotr-model/tests/collection_selector.rs": "8cf73d28ec8be38a4518395d0caedaf5fde8f548fc4df9247aea6530bf0e7654",
+    "crates/bigbrotr-protocol/src/selector.rs": "1879acae4c18d32b74f92f679690ad766172c75709ba4d3a8ed80eae731b8a21",
+    "crates/bigbrotr-protocol/src/bounds.rs": "3515864362bd0d44061539c5e06cb153a4ce2cf98b18180f3f2a42ed06289161",
+    "crates/bigbrotr-protocol/tests/selector.rs": "3772f4cf7e13b153906053cc57dec45ed2679452a33d2bc6483255bdb35e3e20",
+    "apps/bigbrotr/tests/network_websocket/nostr.rs": "0cb48997dcd8c3138154dd12b0d5dfa4f57d5b0ad8d215a47d2d64611663c886",
+    "tests/fixtures/model/collection-selector.json": "9cb99edd7c64bfb099a52138d14621b2f183476fbf0494253fb8ca3091b6f373",
+    "tests/fixtures/acquisition/selector-events.json": "64f3d2ad64cf6960aaa9908e8b85b21205ca89786cb2c21dacb3c4e8e4d1938f",
+    "tests/fixtures/acquisition/selector_events.py": "14f30309deb5173bd5c63dfdaa0cd5537be87ce742cf0343381d4444a8f0db70"
+  },
+  "logs_sha256": {
+    "model-protocol-tests.log": "9e403725db28bea2e5fa6618d259f94fc5a499b0c3c040030c5d7618156dca9d",
+    "model-final.log": "5ee2fd4b72df4207cbb6d4244b268981fc396a2922f35d4a3559197bab5ece0c",
+    "socket-first.log": "1752b88c15c9da490afd291a41cc6345d365a6359516d6e75271a627a97320f7",
+    "clippy.log": "0918a17abaf590044b0d0bc8ff2133afda8ace41f2be3057aceac5ca9a8f869d",
+    "fmt-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fixture-check.log": "1fd8a2ea4a2186c81e005cb6dbac50633fbd96fe56749fb3ae98b839816ce78e"
+  },
+  "checks": [
+    "Three independent literal CBOR fingerprint preimages: unrestricted, all fields/Unicode/u64 extremes and discriminating multi-filter typed ordering",
+    "Exact scalar/conjunction/union/first-tag membership; history floor and explicit impossible interval; local ephemeral exclusion distinct from wire request failure",
+    "Per-field and aggregate value/text bounds at equality and one beyond; no empty-list broadening or Boolean simplification",
+    "Strict full-document UTF-8/shape, duplicates including escaped keys, unsigned number spellings, unknown fields and distinct profile/resource failures",
+    "Actual guarded WebSocket: independently signed six-event corpus, literal expected masked REQ, all seven event fields, separate collection/request outcomes and complete Close",
+    "Both affected signed socket corpora and full model/protocol suites passed; original broad run had seven model selector tests, followed by all eight after adding the multi-filter oracle"
+  ],
+  "review": "Root complete new owners/tests/caller/contracts and relevant diff; independent read-only AI review requested multi-filter oracle now added and passing, no further finding within pure boundary. No actual heap measurement.",
+  "structure": "Existing model/protocol crates; shared lexical preflight with representation-specific node cost; streaming fingerprint uses existing encoder/hash. One small literal masked request reader reused by two socket fixtures. No generic backend trait, new crate or policy/migration edit.",
+  "not_qualified": [
+    "Native Linux at this checkpoint",
+    "Persistent scope registration and policy integration",
+    "Installed Sync, producer 32MiB integration, source-bound durable admission, coverage and M1",
+    "Production throughput, peak heap, Linux arm64 or release"
+  ],
+  "original_outcomes": [
+    "Initial missing model API RED",
+    "Initial codec raw-string syntax fixture failure followed by corrected missing API RED",
+    "Actual Serde positional-array acceptance RED, corrected by explicit object-only guard"
+  ]
+}

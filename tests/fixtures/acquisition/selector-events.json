@@ -1,0 +1,160 @@
+{
+  "format": "bigbrotr-selector-signed-fixture/1",
+  "test_keys": "Public integers 1 and 2 only; never real accounts",
+  "authoring": "python-secp256k1 0.14.0",
+  "collection": {
+    "version": 1,
+    "filters": [
+      {
+        "authors": [
+          "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+        ],
+        "#t": [
+          "allowed"
+        ]
+      }
+    ],
+    "history_since": 23,
+    "ephemeral": "drop"
+  },
+  "request": {
+    "version": 1,
+    "filters": [
+      {
+        "authors": [
+          "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+        ],
+        "#t": [
+          "allowed"
+        ],
+        "since": 23,
+        "until": 23
+      }
+    ],
+    "history_since": 0,
+    "ephemeral": "retain"
+  },
+  "events": [
+    {
+      "name": "included",
+      "event": {
+        "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "created_at": 23,
+        "kind": 1,
+        "tags": [
+          [
+            "t",
+            "allowed"
+          ]
+        ],
+        "content": "included",
+        "id": "32be96c6ec271705225aad466eebc4f8352c65960e619164be86eae0d442a791",
+        "sig": "a7f054f4f22d05778e3ecabda6daf07f1d37422b2a31c5dbc8836395b7f7616258632a2adc978a353d1181bd89a51953b1f9a13e51577bf8657c9f2c9eef6d3d"
+      },
+      "canonical_hex": "5b302c2237396265363637656639646362626163353561303632393563653837306230373032396266636462326463653238643935396632383135623136663831373938222c32332c312c5b5b2274222c22616c6c6f776564225d5d2c22696e636c75646564225d",
+      "collection": "included",
+      "request": true
+    },
+    {
+      "name": "ephemeral",
+      "event": {
+        "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "created_at": 23,
+        "kind": 22222,
+        "tags": [
+          [
+            "t",
+            "allowed"
+          ]
+        ],
+        "content": "ephemeral",
+        "id": "3b776b86f5f4bf2fccc8869e82ffd6e85bc57a7fc96e30b3e52077a3e33a28ba",
+        "sig": "4bc107fb1e2dfdc3175f4c7d313be7cdd382e3015efa2b06722afb660c910f8183fa19b443314ba00c7261562bb9a51155b5dffa57a23424fbef6a9592ae9162"
+      },
+      "canonical_hex": "5b302c2237396265363637656639646362626163353561303632393563653837306230373032396266636462326463653238643935396632383135623136663831373938222c32332c32323232322c5b5b2274222c22616c6c6f776564225d5d2c22657068656d6572616c225d",
+      "collection": "ephemeral-excluded",
+      "request": true
+    },
+    {
+      "name": "wrong-author",
+      "event": {
+        "pubkey": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "created_at": 23,
+        "kind": 1,
+        "tags": [
+          [
+            "t",
+            "allowed"
+          ]
+        ],
+        "content": "wrong-author",
+        "id": "3ac1dd47ad27c66939e5ed24e2002e71fcfac11c63254b622b3d54ea8491ce58",
+        "sig": "60adeaeb2fb4e359a954d484eecdbab76dafd84499ec1d325a495b663c269f56b1105d4cd0231c98e4886aee77e2dde57f1e6070aa206dc809f3d0528a4fe0fa"
+      },
+      "canonical_hex": "5b302c2263363034376639343431656437643664333034353430366539356330376364383563373738653462386365663363613761626163303962393563373039656535222c32332c312c5b5b2274222c22616c6c6f776564225d5d2c2277726f6e672d617574686f72225d",
+      "collection": "outside-selector",
+      "request": false
+    },
+    {
+      "name": "wrong-first-tag",
+      "event": {
+        "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "created_at": 23,
+        "kind": 1,
+        "tags": [
+          [
+            "t",
+            "different",
+            "allowed"
+          ]
+        ],
+        "content": "wrong-first-tag",
+        "id": "7815649941b6434d7c525bb633ff461fb7ee341954f1bcb0bce2c9535c2bb7f7",
+        "sig": "b5e263366e5c34dc4a9fc807d9bfac0864dc9e8089ef3e7153e103b3e338ee1ad15965b4d720460fcd85220b2275ea14ed781f6e802e45898ad3dea8bcff4ce2"
+      },
+      "canonical_hex": "5b302c2237396265363637656639646362626163353561303632393563653837306230373032396266636462326463653238643935396632383135623136663831373938222c32332c312c5b5b2274222c22646966666572656e74222c22616c6c6f776564225d5d2c2277726f6e672d66697273742d746167225d",
+      "collection": "outside-selector",
+      "request": false
+    },
+    {
+      "name": "below-floor",
+      "event": {
+        "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "created_at": 22,
+        "kind": 1,
+        "tags": [
+          [
+            "t",
+            "allowed"
+          ]
+        ],
+        "content": "below-floor",
+        "id": "f3d311a93f882cbe00b0e3fb23ef0c22f309e7c05318b01c792d6a45628aec09",
+        "sig": "2b928d95fa8f34da286e0d9e353971135b1abbbdf11bb3a10e8f21264f68f192dfbeb5407ce0266073d45e39c6ecc0ea6b9d158222434179e995024e8c647a48"
+      },
+      "canonical_hex": "5b302c2237396265363637656639646362626163353561303632393563653837306230373032396266636462326463653238643935396632383135623136663831373938222c32322c312c5b5b2274222c22616c6c6f776564225d5d2c2262656c6f772d666c6f6f72225d",
+      "collection": "outside-selector",
+      "request": false
+    },
+    {
+      "name": "outside-request-window",
+      "event": {
+        "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "created_at": 24,
+        "kind": 1,
+        "tags": [
+          [
+            "t",
+            "allowed"
+          ]
+        ],
+        "content": "outside-request-window",
+        "id": "dddc1fd9c72975cf5b5768daf466d01bb6949c1d8acc07cf0f3c88b2c638aba8",
+        "sig": "bc4ed3d0f8838530e605dfc87cb281fa1d0df5154d7dee98aa7178d7a8145f71a6e44731048dab61f67c217ea99edecd9d20356908a37ea70f15bb0b244d8dcc"
+      },
+      "canonical_hex": "5b302c2237396265363637656639646362626163353561303632393563653837306230373032396266636462326463653238643935396632383135623136663831373938222c32342c312c5b5b2274222c22616c6c6f776564225d5d2c226f7574736964652d726571756573742d77696e646f77225d",
+      "collection": "included",
+      "request": false
+    }
+  ]
+}

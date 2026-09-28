@@ -12,13 +12,16 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is candidate 27b7f450f9553d4bf43dfa45800a3208c04d9579, tree
-653b0f5e083b9caf7173dee0c5cebb6300c7afd9. Private origin/main remains verified
-e0c34538de6d42ec49e1212d50c1821d589da0fb (native evidence), following
+Local main and private origin/main are verified at
+df226b2438feeec173f2c6f0070f4255466d048c (native decoder evidence), following
+27b7f450f9553d4bf43dfa45800a3208c04d9579, tree
+653b0f5e083b9caf7173dee0c5cebb6300c7afd9, and earlier
+e0c34538de6d42ec49e1212d50c1821d589da0fb (native WebSocket evidence), following
 593ec3a (test-only lint maintenance) and native-qualified WebSocket
 9fe4ce498c6176c9c3418488c850b0dced57b2d8, tree
 0fe34885a8f9f1353a0a1db1bbb14da0c4769001. Worktree was clean after push;
-root now owns native evidence/inventory/task/checkpoint updates. The exact
+root now owns the dirty pure selector implementation, fixtures, owning contracts and
+this checkpoint. The exact
 candidate owns the preserving relay decoder, signed socket fixture and Mac
 evidence below. No other writer, active lab, migration or persistent-format change.
 
@@ -61,8 +64,8 @@ Ignored start/launch/collect/review scripts preserve the recipe; do not rerun th
 old launcher. Current 1154757 compiler cache is reusable only under its lock.
 Latest Mac free space 12,244,712 KiB; existing cache only.
 
-Next bounded action: publish the audited native decoder evidence, then implement
-the normalized collection selector/scope boundary in P03-T01 Steps1/2/3.
+Next bounded action: qualify the pure selector candidate on native Tux, then
+implement persistent scope binding/registration in P03-T01 Steps1/2/3.
 P01-T03 Steps1/7 and P03-T02 Steps1/3 now have
 [Mac component evidence](evidence/p01-relay-wire-mac-20260928.json): 38 protocol
 tests, 1 compile-fail doctest and 1 actual guarded WebSocket signed corpus PASS,
@@ -95,7 +98,7 @@ Terminal audit10:15:32 UTC verified all 910 prior projections unchanged and eigh
 unrelated running; free66,980,102,144 bytes. No PG or dataset writes.
 Source27b7f45 is clean on Tux; never edit it there.
 
-Next scope prerequisite findings: no general selector exists; current config
+Prior scope prerequisite findings: no general selector existed before this slice; current config
 stores history_since/ephemeral/provenance but lacks sync.selectors. Adding that
 key directly would break immutable accepted policy v1/v2 key sets. Decide an
 explicit registered finite-job selector versus a versioned policy addition before
@@ -105,7 +108,54 @@ filters, single ASCII-letter tag keys and only first tag values. Preserve explic
 time bounds, reject empty lists/unsupported search, exclude generated page limit
 from collection identity. Existing fingerprint recipes have no selector domain;
 add an exact owned recipe and independent literals before persistence. The
-read-only reviewer is finishing the scope/admission dependency map; no edits/build.
+read-only reviewer completed the scope/admission map; no edits/build. Existing
+initial_batch validates PreparedEvent against both accepted documents at reserve
+and dispatch; that trusted boundary must enforce collection membership, also for
+CertifyExisting, without changing historical ambiguous-outcome recovery. Registration
+must not grant network or visibility authority. Reserved migration0004 can append
+after0020 in catalog order; all35 applied SQL checksums remain immutable.
+
+The pure CollectionSelector boundary is implemented and Mac-qualified in the
+next candidate after df226b2, native qualification pending: model acquisition/fingerprint selector modules, strict protocol selector
+codec, tests and independently authored signed fixtures. P03-T01 Steps1/2 and
+P01-T03 Step5 are the active component scope. Normalization sorts/deduplicates
+values and exact conjunctions only; explicit time bounds/history floor and local
+ephemeral exclusion remain distinct. Separate Sync profile limits and exact CBOR
+recipe are in the owning acquisition/identity contracts. No accepted policy key,
+applied SQL, persistent registration or installed Sync has changed.
+
+Local model/protocol suites passed after an observed positional-array decoder
+failure: Serde accepted an array for a named document until an explicit object
+shape guard was added. Missing-API REDs, the original raw-string fixture syntax
+failure and the actual shape failure are preserved under ignored
+.research/implementation/acquisition-selector-20260928. Independent signed fixture
+checks pass. The third literal fingerprint freezes typed multi-filter ordering rather than
+CBOR-byte ordering; all eight model selector regressions pass.
+Read-only review found no additional product defect within the pure boundary and
+requested that distinguishing oracle, now added. No heap-peak or capacity claim.
+
+Both affected actual socket corpora pass: six frozen signed selector events keep
+all signed fields, and independent literal REQ plus collection/request outcomes
+separate ephemeral exclusion and window violation. The existing model/protocol
+suites passed; scoped Clippy, formatting and documentation checks pass. Evidence:
+[eight model/four codec/two socket cases](evidence/p03-selector-mac-20260928.json).
+Only the masked text reader was shared for the two actual peers; existing model,
+protocol, hash and lexical scanner mechanisms remain, with no framework/new crate.
+
+Next bounded action: exact clean candidate Git transfer and native selector profile
+using the existing 1154757 cache lock. Latest Tux census has 65,410,060 KiB free,
+eight unrelated workloads and no cargo/rustc/clang process match; no active lab.
+Latest Mac free 11,633,808 KiB before these incremental tests. Preserve all original
+RED/failure logs. Review native capture/terminal state, commit evidence and push,
+then continue scope registration and explicit accepted-policy compatibility.
+
+Retain the actual-consumer memory risk: the selected 32MiB producer grant cannot
+blindly stack 17MiB WebSocket, 8MiB decode and 8MiB verification reservations.
+The borrowed EVENT retains little decoded ownership; a real consumer must account
+retained capacities and release/resize temporary workspace or reserve a bounded
+combined operation. The 64MiB socket fixture does not qualify the selected 32MiB
+producer. Do not invent an unused API before wiring that consumer. Scope policy
+compatibility/registration remains next, then source-bound admission and M1.
 Never merge/push the earlier negative source-cleanup variant.
 
 ## Active slice and next useful journey

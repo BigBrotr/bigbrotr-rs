@@ -18,7 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
-    'network', 'websocket', 'relay-wire', 'relay-registry', 'relay-registry-faults',
+    'network', 'websocket', 'relay-wire', 'selector', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'ingest-visibility',
     'policy-versions', 'relay-source', 'relay-source-faults',
     'source-transport', 'source-cleanup', 'source-races',
@@ -148,10 +148,11 @@ try:
     assert shutil.disk_usage(base).free > 8 * 1024**3
     state['state'] = 'running'
     write(root / 'resources.json', state)
-    native_path = 'network-transport' if profile in ('network', 'websocket', 'relay-wire') else 'relay-registry'
+    native_path = 'network-transport' if profile in ('network', 'websocket', 'relay-wire', 'selector') else 'relay-registry'
     native_args = {
         'websocket': ['websocket'],
         'relay-wire': ['relay-wire'],
+        'selector': ['selector'],
         'relay-registry-faults': ['faults'],
         'relay-enrollment': ['enrollment'],
         'relay-enrollment-faults': ['enrollment-faults'],
@@ -168,6 +169,7 @@ try:
     expected = {'network': 'PASS_SCOPED_NETWORK_COMPONENTS',
                 'websocket': 'PASS_SCOPED_WEBSOCKET_COMPONENTS',
                 'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS',
+                'selector': 'PASS_SCOPED_SELECTOR_COMPONENTS',
                 'relay-registry': 'PASS_REGISTRY_BUILD_ONLY',
                 'relay-registry-faults': 'PASS_REGISTRY_FAULT_BUILD_ONLY',
                 'relay-enrollment': 'PASS_RELAY_ENROLLMENT_BUILD_ONLY',

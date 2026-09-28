@@ -381,6 +381,44 @@ An acquisition selector is a versioned union of structured Nostr filters, with e
 
 Work is scoped by `(endpoint_id, selector_id, access_scope_id, visibility_scope_id, policy_epoch)`. A scope change starts new evidence; automatic narrowing reuse is an optional optimization requiring a containment proof for unions of conjunctions, not a prerequisite. Ephemeral exclusion is local admission policy and identity. Nostr filters lack a general negative-kind operator; an all-kinds request cannot simply express “all except 20000–29999” without an explicit bounded positive expansion. The implementation must either compile a bounded supported positive filter set or receive-and-drop with an honest wire-policy label. Do not claim that excluded kinds were never requested when the wire uses `{}`.
 
+The initial collection-selector profile owns separate limits from public reads:
+at most 16 input conjunctions, 1,024 input values per list, 16,384 retained values
+and 1 MiB of tag-value UTF-8 across those conjunctions, before union deduplication.
+No value is truncated. Its input JSON and deterministic fingerprint preimage each
+fit 2 MiB. JSON preflight uses depth32/nodes65,536 and an 8 MiB working ceiling,
+with `3 * wire_bytes + 256 * nodes` for the larger filter representation. These
+are bounded initial-profile limits, not measured throughput or new policy keys.
+Owned constructors check list counts/text before sorting; their caller already
+owns and accounts for input capacities. Parsing must reserve its separate grant.
+
+The closed JSON document is `{"version":1,"filters":[{}],"history_since":0,
+"ephemeral":"retain"}`. Every top-level field is required, with no unknown or
+duplicate decoded keys, positional array form or null default. Filters are closed
+objects containing the supported fields below. Normalized serialization uses that
+same shape; it is collection intent, not a relay message or a policy document.
+
+Supported durable fields are exact full IDs/authors, u16 kinds, single ASCII-letter
+tag keys, and optional unsigned since/until. Lowercase #e/#p values are exact
+64-character lowercase hex. Only a tag's first value participates. Reject empty
+lists, duplicate JSON keys, limit/search and unknown fields; do not repair or fold
+strings. Sort/deduplicate field values and exact conjunctions, without Boolean
+subsumption. Explicit time bounds and separate history_since stay in identity;
+matching intersects them. An inverted conjunction remains explicitly impossible,
+never unrestricted. Local ephemeral exclusion is distinct from wire-filter
+mismatch. Generated request narrowing must be checked separately.
+
+The selector fingerprint is `bigbrotr/collection-selector/1\0` plus deterministic
+CBOR `[filters,history_since:u64,ephemeral:text]`, where ephemeral is retain/drop.
+Each filter is `[ids,authors,kinds,tags,since,until]`; absent optional fields are
+null. Present lists are nonempty sets; IDs/authors encode bytes32 and kinds u16.
+Tags are `[[key:text,values:text[]],...]`, sorted by ASCII key. Text values sort by
+unchanged UTF-8 bytes, IDs/authors by raw bytes, kinds numerically. Filters sort
+lexicographically by that typed field tuple: null before present, lists by their
+elements with shorter prefixes first, and tags by key then values. since/until
+use null or u64. The profile adds no new archive dictionary or permission.
+Registration, accepted-policy compatibility and persistent migration remain
+separate boundaries; existing policy v1/v2 documents gain no implicit new key.
+
 Schedule bounded work quanta across every eligible endpoint with a fair queue, favoring oldest unserved scopes without starving live/recent work. Maintain optional live subscriptions only for seated endpoints; show disconnected/unserved intervals when the fleet exceeds capacity. A ten-minute rotation is not proof of continuous all-relay live coverage. Historical traversal yields at request/segment boundaries and is preemptible on a work deadline; it cannot occupy a scarce slot forever because a relay has a large history.
 
 ### Progress and evidence

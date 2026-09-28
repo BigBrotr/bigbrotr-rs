@@ -91,6 +91,13 @@ Paths: `crates/bigbrotr-model/src/acquisition.rs`, `crates/bigbrotr-model/src/co
 `contracts/acquisition/v1/coverage.json`, `apps/bigbrotr/tests/acquisition_scope.rs`,
 `tests/fixtures/acquisition/scopes.json`, `docs/operations/acquisition.md`.
 
+The pure selector component now owns normalization, a versioned independent
+fingerprint and bounded strict JSON, with actual signed WebSocket membership
+checks. It supplies Step2 and part of Step1/P01-T03 Step5; no whole task checkbox
+closes. Persistent scope registration, policy compatibility and the installed
+finite journey remain required. See the [protocol reference](../reference/protocols.md#collection-selector)
+and [Mac component evidence](evidence/p03-selector-mac-20260928.json).
+
 - [ ] **1. Freeze scope values and examples.** Define `AcquisitionScope`, finite `AcquisitionJob`, `TraversalPosition`, `PageOutcome` and `AcquisitionGap` using shared unsigned event time, `Finite(u64)/AfterMax`, access and target visibility identities, policy epoch and SourceCut. Preserve explicit collection since/until; exclude generated page limits/tail windows from selector identity.
 - [ ] **2. Implement normalized filter-union identity and validation.** Sort/deduplicate equivalent field values, reject empty lists and unsupported historical search, and record ephemeral retain/drop policy. Do not infer narrowing containment from string inclusion; initially create fresh evidence for every changed semantic scope.
 - [ ] **3. Add typed PG operations.** Register scope, claim finite work and atomically append gap/evidence effects with Receipt/ExistingProof-backed traversal movement under the ownership epoch. A missing/invalid required basis, expired policy grant, failed gap write or stale owner rejects the whole progress update. Persist bounded classified prefixes with deduplicated dependency closure before acknowledging only mutation requests; proof-only pages require no synthetic receipt. Preserve prior evidence when a scope retires.

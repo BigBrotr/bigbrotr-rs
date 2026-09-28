@@ -124,3 +124,28 @@ same-ID signature, an alternate valid signature and duplicated signed fields.
 It also sends AUTH without eliciting signing and preserves NIP-67 hint combinations.
 This exercises real guarded TCP/WebSocket/decoder/verification, not the installed
 Sync command, generation tracking, durable admission or page completion.
+
+## Collection selector
+
+The internal `selector::decode_selector` and model `CollectionSelector` implement
+`bigbrotr-collection-selector/1`. The exact JSON, normalization, limits and
+fingerprint recipe belong to the [scope contract](../architecture/acquisition-services.md#scope-and-scheduling).
+A selector is immutable data with no unchecked deserializer. It grants no work,
+visibility, source authority or coverage. Unsupported/duplicate constraints fail
+instead of disappearing. Local ephemeral exclusion and membership of the actual
+narrowed wire request are separate results.
+
+The signed socket fixture also sends six independently authored events with fixed
+membership outcomes. An ephemeral event matches the request but is locally
+excluded; a later event matches collection intent but violates its request window.
+Wrong author, first tag value and history floor have separate negative controls.
+The literal peer checks the serialized REQ; Rust verifies every original signature
+and complete signed event before matching. Regenerate fixtures only deliberately:
+ordinary `python3 tests/fixtures/acquisition/selector_events.py` checks the frozen
+bytes with the native crypto library and independent BIP340 equation.
+
+The model tests freeze three independently assembled CBOR preimages/digests,
+including typed multi-filter ordering. JSON tests cover full-document bounds,
+escaped duplicate keys and a positional-array regression observed before the
+object-only check. These are component claims; persistent registration, accepted
+configuration integration and installed Sync remain P03-T01/T02 work.

@@ -1,5 +1,6 @@
 //! Closed profile-1 recipes, not a general CBOR serializer. Only named typed
 //! fields can reach the codec; no generic values, floats or extension bags.
+pub(crate) mod selector;
 use crate::{
     AdmissionBatch, ArchiveBatch, ClockQuality, DictionaryDescriptor, DictionaryEntry, Digest256,
     EventBody, EventId, EventIntent, EventOrigin, EvidenceIntent, EvidenceIntentError,

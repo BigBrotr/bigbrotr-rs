@@ -27549,6 +27549,13 @@
         "compiler_lock_released": true,
         "free_bytes": 66980102144
       }
+    },
+    "selector": {
+      "status": "Mac pure selector and actual signed socket PASS; native pending",
+      "local_evidence": ".research/implementation/acquisition-selector-20260928",
+      "report": "docs/implementation/evidence/p03-selector-mac-20260928.json",
+      "cache": ".research/targets/product; existing compiler cache only",
+      "preserve": "Original RED/failure logs, signed fixtures, expected fingerprints and final checks; no active remote run yet"
     }
   },
   "implementation_relay_registry_20260928": {

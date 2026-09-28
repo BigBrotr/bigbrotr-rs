@@ -47,6 +47,16 @@ impl EventLimits {
 /// Count keys, containers and scalar tokens, including unknown extension values.
 /// Strings are capped by encoded bytes, a conservative bound on decoded UTF-8.
 pub(crate) fn preflight(bytes: &[u8], limits: EventLimits) -> Result<(), EventError> {
+    preflight_with_node_bytes(bytes, limits, 96)
+}
+
+/// A selected typed representation can require a larger per-node working charge.
+/// Keep the same lexical checks rather than maintaining a second JSON scanner.
+pub(crate) fn preflight_with_node_bytes(
+    bytes: &[u8],
+    limits: EventLimits,
+    node_bytes: usize,
+) -> Result<(), EventError> {
     limits.validate()?;
     if bytes.len() > limits.wire_bytes {
         return Err(EventError::WireLimit);
@@ -57,7 +67,7 @@ pub(crate) fn preflight(bytes: &[u8], limits: EventLimits) -> Result<(), EventEr
     let mut escaped = false;
     let mut primitive = false;
     // Strings plus Serde's geometrically grown escape scratch; Vec headers and
-    // minimum capacity/growth are charged 96 bytes per node on 64-bit targets.
+    // minimum capacity/growth use the selected per-node charge on 64-bit targets.
     // This conservative working bound is separate from the caller's wire buffer
     // and from allocator/native/process overhead in the future runtime grant.
     let strings = bytes.len().checked_mul(3).ok_or(EventError::ArenaLimit)?;
@@ -113,7 +123,7 @@ pub(crate) fn preflight(bytes: &[u8], limits: EventLimits) -> Result<(), EventEr
                 return Err(EventError::NodeLimit);
             }
             let estimate = nodes
-                .checked_mul(96)
+                .checked_mul(node_bytes)
                 .and_then(|n| n.checked_add(strings))
                 .ok_or(EventError::ArenaLimit)?;
             if estimate > limits.parse_bytes {

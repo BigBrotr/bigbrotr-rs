@@ -52,6 +52,13 @@ peer independently decodes outgoing masked REQ and Close; no AUTH response is se
 Both profiles use their name as the run-directory prefix and final lab.py argument.
 Neither qualifies installed Sync, source-bound admission or completed coverage.
 
+The `selector` profile runs eight collection-identity/membership tests, four
+strict selector-codec tests and both signed socket corpora. Frozen signed events
+separate local ephemeral exclusion from a request-window violation; the peer
+checks the generated masked REQ against an independent literal. Three independent
+fingerprint vectors include multi-filter typed ordering. The profile qualifies
+no persistent scope registration, installed Sync, coverage or capacity.
+
 Both created containers finish stopped-retained; no pruning or volume deletion
 occurs. Review source/dependency/artifact identities and original logs before
 publishing a concise evidence report and updating the existing inventory.
