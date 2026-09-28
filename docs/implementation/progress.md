@@ -12,13 +12,26 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and origin/main are d1e56eee0fe9f9423c3e4238811ec7e05b6c45ad, pushed.
-Root owns the committed visibility reader, initial Control consumer, native probe,
-focused laboratory profile and documentation changes. No other writer or active
-experiment remains. The product changes are based on d1e56ee; the prior qualified
-enrollment product was dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9.
-Exact c2eebec ELFs qualified the relational fixture at23d7534 without a rebuild.
-All source transfers used clean exact Git; no remote source editing.
+Local main candidate6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0 is committed, not
+pushed; origin/main is d1e56ee. Root owns checkpoint/inventory updates after launch;
+no other writer. Tux runs the clean candidate treea90e91dcf29e31fc520446fab362f611881b33e1
+for the committed visibility reader and real initial Control consumer. Prior
+relational qualification at23d7534 used c2eebec artifacts and remains unchanged.
+Exact Git transfer only; no remote source editing.
+
+Latest root runs/ingest-visibility-6c52067 is stopped-retained, ownerd65bebf992d73cf14ba000d8176d05a8,
+PID2997680/start395446033 terminal. Five native tests, release CLI/probe build,
+Clippy and five actual PG/Rocks scenarios (31 explicit checks) PASS. Independent
+root capture review checks12 native rows/sequence13, all64 Control relations/xmin,
+one original input and literal public/private descriptors. Drivers joined, zero
+remaining probe backends. [Report](evidence/p02-ingest-visibility-native-20260928.json).
+Terminal05:12:41UTC verified877 prior projections unchanged/eight unrelated running,
+1452 clean Git/exported files,34 safe capture payloads and exact ELFs; compiler
+cache lock released. Free66,280,816,640bytes. Fresh internal172.16.240.32/28/PG
+owner49c37b6b0cfee37eb9b193b5bbe56e59, clientbcbe32c13dbe exited143, PGba73388a2673
+exited0; fetch/native exited0, noOOM. All five databases/native stores retained.
+No deletion or unrelated changes. Local .research/implementation/ingest-visibility-20260928
+holds exact bundle/launch/collector/root review; inventory implementation_ingest_visibility_20260928.
 
 ## Active slice and next useful journey
 
@@ -32,23 +45,28 @@ journey, timer publication and dependency-outage recovery. Component evidence do
 not replace those journeys or qualify an entire task/phase/product.
 
 Initial enrollment and scoped command authority/recovery are qualified below.
-The small Ingest-owned committed visibility lookup is in progress, reusing
-existing dictionary mapping/fact validation. Complete native owners, dictionary/
-acquisition contracts and initial Control callers were read. Four actual Mac
-RocksDB tests failed as expected against the unimplemented reader (zero passed,
-four failed; no compilation/setup failure). Original output is retained at
-.research/implementation/relay-enrollment-relations-23d7534/visibility-red.log.
-Reader and real initial Control consumer are implemented. Five actual Mac
-RocksDB regressions and Clippy for the library/probe pass; green3/clippy3 logs
-are retained beside the original RED and two fixture compile failures. Independent
-read-only AI review found an absent-result scratch/permit drop-order issue, now
-corrected. Root reviewed the complete change. Next bounded action: commit the
-candidate, transfer exact Git and run ingest-visibility on Tux with current
-authority, bounded refusal/retry and reopen against both actual engines. This immutable result proves committed mapping, not acquisition
-permission. The focused live-owner relational prerequisite passed below; no
-whole-subsystem barrier added. Connected expiry/cancellation fixtures refuse before
-native dispatch; the native regression separately checks the post-read authority
-callback. No in-FFI preemption or current acquisition permission is claimed.
+The Ingest-owned committed visibility lookup and initial Control consumer are
+qualified for their bounded responsibility. Native fact/dictionary validation and
+CertificationLimits are reused; no second codec, table or generic read framework.
+Independent AI review found an absent-result scratch/permit drop-order issue,
+corrected before native execution. Full changed owners/callers/contracts and diff
+were read by root. Mac original four RED failures and two fixture compilation
+failures remain beside green3/clippy3 logs under the previous relational capture;
+no failed attempt was relabeled. No acquisition permission is inferred.
+
+Next bounded action: implement the current ban-policy prerequisite for the finite
+source issuer using an explicit policy-document extension. Existing v1 bytes and
+digests must remain readable unchanged; absent unimplemented bans cannot mean an
+authorized empty set. Read complete affected config/SQL readers and acceptance
+contracts, then add discriminating frozen-v1/new-version tests before code. This
+is P01-T04 Steps1/5/6 and P02-T01 Steps5/6 consumed by P03-T01/P04-T02, not a full
+discovery/general editor barrier. The selected relay_policy.banned is hot-applied
+ordinary policy; an independently writable ban table or restart-only root would
+change its ownership semantics and is not selected. Fresh new-format initialization
+and explicit legacy refusal can establish the first issuer; a populated upgrade
+requires authenticated idempotent CAS and owner transition, never rewriting old
+rows or reusing initial activation. The current initial registration/manifest
+binds policy revision1; advancing it cannot silently renew that native authority.
 
 Independent read-only next-boundary review confirms the minimal sequence: existing
 Ingest dictionary bootstrap and committed visibility lookup; current endpoint,

@@ -180,6 +180,15 @@ retry or inferred rollback. Current enrollment, route, bans and source-to-scope
 authority remain separate prerequisites for acquisition. This lookup does not
 promise a full-store scrub, Archive fallback, successor access or retention.
 
+[Scoped native evidence](../implementation/evidence/p02-ingest-visibility-native-20260928.json)
+at 6c52067 covers five native mapping tests and five connected PG16.15/RocksDB
+scenarios. All 64 Control relations with xmin, original input, 12 native rows and
+sequence 13 remain unchanged across reads. Reduced-limit retry, close/reopen,
+absent mapping, validator refusal, expiry, cancellation and closing producer are
+exercised. Connected expiry/cancellation occur before native dispatch; the native
+regression separately refuses the post-read callback. No mid-FFI preemption,
+response-loss, policy-epoch transition or capacity claim follows.
+
 The caller reserves its input buffers and bounded PostgreSQL documents. A
 separate transferred permit covers staged values, transient encodings, returned
 receipt and native WriteBatch allocation. Limits are positive and at most 256

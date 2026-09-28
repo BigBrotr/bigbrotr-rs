@@ -46,3 +46,23 @@ must leave exactly the bootstrap state. The application validator checks the
 complete frozen policy plus this exact source, scope, lineage and verification
 limit; it is not an installed source-policy evaluator. The full signed semantic
 fixture is separately exercised by the native Rust writer tests.
+
+## Committed visibility reads
+
+`experiments/network-transport/lab.py REVISION TREE ingest-visibility` reuses the
+inventoried exclusive compiler cache, builds the actual CLI/ingest bootstrap probe,
+runs five focused native tests and Clippy, then invokes `visibility.py LAB BUILD`.
+The exact-Git owner inventories processes, containers, mounts, ports, networks and
+space before allocation, and verifies all prior container projections afterward.
+The fixture requires an unused isolated 172.16.240.32/28 subnet; it refuses overlaps.
+
+Five fresh PG databases/native stores exercise the connected visibility reader:
+public/private/absent descriptors with bounded-limit retry and reopen, expired
+lease, cancellation, policy validator refusal and closing producer. Before/after
+observations include all 64 Control tables with xmin, complete native rows/sequence
+and original producer-input files. The existing independent oracle checks native
+dictionary facts/indexes/counters/manifest/pending bytes; receipt identity is
+preserved by the full-state comparison, not reclassified through an older codec.
+Whole-process exit and zero remaining probe backends are required after driver
+join. The report has 31 explicit checks; it does not qualify acquisition grants,
+installed runtime, mid-FFI cancellation, policy transitions, load or arm64.

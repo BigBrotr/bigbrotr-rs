@@ -28032,7 +28032,7 @@
   "implementation_ingest_visibility_20260928": {
     "owner": "root; Mac sole writer, independent read-only AI review",
     "base_source": "d1e56eee0fe9f9423c3e4238811ec7e05b6c45ad",
-    "status": "Mac five native RocksDB tests and lib/probe Clippy pass; Tux not yet launched",
+    "status": "Scoped committed visibility reader qualified at6c52067; acquisition permission remains unimplemented",
     "local_capture": ".research/implementation/relay-enrollment-relations-23d7534/visibility-*.log",
     "recipe": "experiments/network-transport/lab.py REVISION TREE ingest-visibility",
     "scope": "Immutable committed visibility mapping, not an acquisition grant or Archive pin",
@@ -28041,6 +28041,76 @@
       "free_bytes": 66561556480,
       "running_unrelated_containers": 8,
       "running_bigbrotr_experiments": 0
-    }
+    },
+    "native_run": {
+      "source": "6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0",
+      "tree": "a90e91dcf29e31fc520446fab362f611881b33e1",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-visibility-6c52067",
+      "owner": "d65bebf992d73cf14ba000d8176d05a8",
+      "owner_label": "org.bigbrotr.network-transport",
+      "pid": 2997680,
+      "start_ticks": "395446033",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "f106144ac064fbd109098d22c49b1913342d6e3dd32663291865c26137449f8e"
+        },
+        {
+          "name": "native",
+          "id": "ccad8754fbcc2ed5eb432d43f29e018fb535652c28894c6cbca6d36a11ad82c5"
+        },
+        {
+          "name": "client",
+          "id": "bcbe32c13dbeb0493a64f2b4a163030a926da282e52780d47ee581a6e419b3d7",
+          "owner_label": "org.bigbrotr.control-migration-lab",
+          "owner": "49c37b6b0cfee37eb9b193b5bbe56e59"
+        },
+        {
+          "name": "postgres",
+          "id": "ba73388a2673cf5a2d8cf568d579a0e9a18420769994e4d0c64f8bb61df09029",
+          "owner_label": "org.bigbrotr.control-migration-lab",
+          "owner": "49c37b6b0cfee37eb9b193b5bbe56e59"
+        }
+      ],
+      "local_capture": ".research/implementation/ingest-visibility-20260928",
+      "postgres_owner": "49c37b6b0cfee37eb9b193b5bbe56e59",
+      "network": "bigbrotr-implementation-pg-20260917-visibility_6c52067",
+      "subnet": "172.16.240.32/28",
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0",
+        "observed_at": "2026-09-28T05:12:41.519408+00:00",
+        "prior_unchanged": 877,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "f106144ac064fbd109098d22c49b1913342d6e3dd32663291865c26137449f8e",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "ccad8754fbcc2ed5eb432d43f29e018fb535652c28894c6cbca6d36a11ad82c5",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "bcbe32c13dbeb0493a64f2b4a163030a926da282e52780d47ee581a6e419b3d7",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "ba73388a2673cf5a2d8cf568d579a0e9a18420769994e4d0c64f8bb61df09029",
+            "exit": 0
+          }
+        ],
+        "source_files": 1452,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 66280816640
+      }
+    },
+    "evidence": "docs/implementation/evidence/p02-ingest-visibility-native-20260928.json"
   }
 }

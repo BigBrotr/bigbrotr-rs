@@ -1,0 +1,479 @@
+{
+  "format": "bigbrotr-ingest-visibility-qualification/1",
+  "status": "PASS_SCOPED_INGEST_VISIBILITY",
+  "source": "6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0",
+  "tree": "a90e91dcf29e31fc520446fab362f611881b33e1",
+  "tasks": [
+    "P02-T01 Step6",
+    "P02-T03 committed dictionary prerequisite",
+    "P03-T01 source binding prerequisite"
+  ],
+  "implementation": {
+    "api": "ControlSession::read_initial_visibility",
+    "native": "IngestStore::read_visibility",
+    "persistent_changes": false,
+    "scope": "Read-only exact committed visibility mapping plus dictionary dependency closure; never an acquisition grant"
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+  },
+  "artifacts": {
+    "binary_sha256": "98e1497cc95ad41acd38403ee3eb674b990874d1e1d9588e12169d96164eca68",
+    "probe_sha256": "8047fb6b20fa20718773e098043598c91606f00fe0e6b373ee92bc14890a33dc",
+    "source_manifest_sha256": "edbdffda427841acdc55f3c95e23e3aca558cc06662acbebaac21aeeb272f772"
+  },
+  "checks": [
+    {
+      "name": "compile",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "ingest_bootstrap_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 47.63401271915063
+    },
+    {
+      "name": "visibility",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "visibility_tests",
+        "--",
+        "--test-threads=1"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 17.69024673430249
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--example",
+        "ingest_bootstrap_probe",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.3710675830952823
+    }
+  ],
+  "native_tests": {
+    "passed": 5,
+    "failed": 0,
+    "filtered": 161
+  },
+  "connected": {
+    "scenarios": 5,
+    "explicit_checks": 31,
+    "cases": [
+      {
+        "name": "visibility-migrations",
+        "status": "PASS",
+        "stdout": "{\n  \"applied_count\": \"34\",\n  \"current_version\": \"19\",\n  \"dataset_initialization\": \"not-performed\",\n  \"format\": \"bigbrotr-control-migration/1\",\n  \"release_upgrade_qualification\": \"not-performed\",\n  \"scope\": \"postgres-control\",\n  \"source_version\": null,\n  \"status\": \"applied\",\n  \"steps\": [\n    {\n      \"name\": \"0001_control.sql\",\n      \"sha256\": \"f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be\",\n      \"version\": \"1\"\n    },\n    {\n      \"name\": \"0002_ingest.sql\",\n      \"sha256\": \"6a355b4d0066c60397bc09c7aa1f5d8d27722fbfbf9e9b859f02d55217f80202\",\n      \"version\": \"2\"\n    },\n    {\n      \"name\": \"0801_management_identity.sql\",\n      \"sha256\": \"ff834dc640ae9a26ca69a0aa6d5b5c849a7bb3e6df8c3aeee304d2df6cec66bf\",\n      \"version\": \"801\"\n    },\n    {\n      \"name\": \"0805_owner_enrollment.sql\",\n      \"sha256\": \"aef8356fad6f4439b84e4a98c551c9febb6ab1b12d2d5523c35a3f5cc2bf7e7b\",\n      \"version\": \"805\"\n    },\n    {\n      \"name\": \"0802_management_commands.sql\",\n      \"sha256\": \"c83ae275c68b15195615d81f312bcd87b1a09af4432846ed72f8585ae66644c5\",\n      \"version\": \"802\"\n    },\n    {\n      \"name\": \"0007_control_owner.sql\",\n      \"sha256\": \"31e399a9bbaca5f13c60f65a10b3c3b872de14f62f2b2597632a480b956300fd\",\n      \"version\": \"7\"\n    },\n    {\n      \"name\": \"0008_job_bounds.sql\",\n      \"sha256\": \"f6f33183926b73fa90a0730c86f22b70621247d198f5547e82454fce7762ac40\",\n      \"version\": \"8\"\n    },\n    {\n      \"name\": \"0009_archive_attempts.sql\",\n      \"sha256\": \"2c931bf013bfc6a6ceb3e5c86fcda7b14ea8959c235baa997bce8420c247bc11\",\n      \"version\": \"9\"\n    },\n    {\n      \"name\": \"0010_archive_coordinator.sql\",\n      \"sha256\": \"95665cbb0c7e66159f495de00fe8d73834fcb68a93f01d79dfa2064834294c4b\",\n      \"version\": \"10\"\n    },\n    {\n      \"name\": \"0011_producer_requests.sql\",\n      \"sha256\": \"5243beece99f163b226a6a934661d979ea3dd0cef29d5daff9364c689a4be344\",\n      \"version\": \"11\"\n    },\n    {\n      \"name\": \"0012_producer_outcomes.sql\",\n      \"sha256\": \"22bd904016326fe27dd01de2d31993bdbb47ad0a721e3f327e785594ea7cd677\",\n      \"version\": \"12\"\n    },\n    {\n      \"name\": \"0013_input_bindings.sql\",\n      \"sha256\": \"0a589d9276e7dcdd79eb5726d9be457f3d0391a34b538c3eb3a2236b628b7010\",\n      \"version\": \"13\"\n    },\n    {\n      \"name\": \"0014_import_checkpoints.sql\",\n      \"sha256\": \"cbe6bd5897366d5c56768da79d05ab69a97fe3b5d9f4e208480a5d37cb3e0a65\",\n      \"version\": \"14\"\n    },\n    {\n      \"name\": \"0015_archive_persistence.sql\",\n      \"sha256\": \"0592e2d7148104552ad4aaf41c5b40f91e6119e19c986c6529fb545dc8ac3143\",\n      \"version\": \"15\"\n    },\n    {\n      \"name\": \"0016_archive_frontiers.sql\",\n      \"sha256\": \"7204970dd94740bdf8bde8765788628e2de3ae194e50e9ad932d9b20782de1db\",\n      \"version\": \"16\"\n    },\n    {\n      \"name\": \"0017_archive_snapshot_pins.sql\",\n      \"sha256\": \"99803d4b76d35ea9b1b9619cb3b570ba62ea7a198af5345f0cb8378135ed5e37\",\n      \"version\": \"17\"\n    },\n    {\n      \"name\": \"0018_archive_pin_recovery.sql\",\n      \"sha256\": \"5902a230916f368a54858872909cc619fea010fceb54a204032eef9d8a17e012\",\n      \"version\": \"18\"\n    },\n    {\n      \"name\": \"0806_browser_sessions.sql\",\n      \"sha256\": \"3017bf28531655765ec9e09d10b1512532e8060681dac377e753119050e0b694\",\n      \"version\": \"806\"\n    },\n    {\n      \"name\": \"0807_session_mutation_audit.sql\",\n      \"sha256\": \"a630171bc2f6521204a664723aa201411f90f7fec8343875612ef10224f05f09\",\n      \"version\": \"807\"\n    },\n    {\n      \"name\": \"0808_browser_reauthentication.sql\",\n      \"sha256\": \"1c82d4d601c9623f7c985c8952cb4dcd0248f8bfe1743852ed02a35ec871982d\",\n      \"version\": \"808\"\n    },\n    {\n      \"name\": \"0809_reauthentication_expiry.sql\",\n      \"sha256\": \"0a5f06faf6dc14631bf69de1ff2c0763b6fb9c95b620da30a25e57b2bfe0e964\",\n      \"version\": \"809\"\n    },\n    {\n      \"name\": \"0810_scope_grants.sql\",\n      \"sha256\": \"f1c3e00492ff7aceda38a9a1b87a392f5c873c7847f8ac9eda2b619c39987ebe\",\n      \"version\": \"810\"\n    },\n    {\n      \"name\": \"0811_scope_grant_final_checks.sql\",\n      \"sha256\": \"6a7c414d05d44c330b5c55185a9b189ff071cc103fb24f803946ed1daa8e3c5a\",\n      \"version\": \"811\"\n    },\n    {\n      \"name\": \"0812_export_scope_grants.sql\",\n      \"sha256\": \"f442184875aaa80c5a12ecfc794cf4b22d3ac677ab7d8e15687cf6a06a97c0db\",\n      \"version\": \"812\"\n    },\n    {\n      \"name\": \"0813_export_jobs.sql\",\n      \"sha256\": \"672ee7144046b9c21e13499828d4af3d9325bdedb183b365937d2954b6d06da9\",\n      \"version\": \"813\"\n    },\n    {\n      \"name\": \"0501_artifacts.sql\",\n      \"sha256\": \"14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861\",\n      \"version\": \"501\"\n    },\n    {\n      \"name\": \"0814_export_resume.sql\",\n      \"sha256\": \"c2ddfa56c2b79cc647b34586aee739cd08885e58c4cfa4c965ef7243149d9b1d\",\n      \"version\": \"814\"\n    },\n    {\n      \"name\": \"0601_cursor_keys.sql\",\n      \"sha256\": \"72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026\",\n      \"version\": \"601\"\n    },\n    {\n      \"name\": \"0602_cursor_key_enrollment.sql\",\n      \"sha256\": \"20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48\",\n      \"version\": \"602\"\n    },\n    {\n      \"name\": \"0815_job_admission.sql\",\n      \"sha256\": \"3a562bdf4612c1fee7f5b0b53603cd0579b12316adf1319e730336548ec22e9d\",\n      \"version\": \"815\"\n    },\n    {\n      \"name\": \"0604_cursor_key_lifecycle.sql\",\n      \"sha256\": \"fa416f1c192641503b71a4d683d56936f39d5d1c398a17f1867de20df0481bc8\",\n      \"version\": \"604\"\n    },\n    {\n      \"name\": \"0816_job_pages.sql\",\n      \"sha256\": \"f7ed51d54f735110a1a5a6a4db901568be833c223dcbd723aee02a7a60c3e090\",\n      \"version\": \"816\"\n    },\n    {\n      \"name\": \"0003_relay.sql\",\n      \"sha256\": \"50b1264cb93c7b67e8afee377bf238152c9729fb93f5d2b99419982ec3da7a26\",\n      \"version\": \"3\"\n    },\n    {\n      \"name\": \"0019_relay_enrollment.sql\",\n      \"sha256\": \"ba960ac695914034db5ac3ef9662280bc81390447e9298333b10f2d4f045b233\",\n      \"version\": \"19\"\n    }\n  ],\n  \"target_version\": \"19\"\n}\n",
+        "stderr": ""
+      },
+      {
+        "name": "visibility-initialized",
+        "status": "PASS",
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "name": "visibility-actual-adapter",
+        "status": "PASS",
+        "exit_code": 0,
+        "stderr": ""
+      },
+      {
+        "name": "visibility-all-state-unchanged",
+        "status": "PASS",
+        "native_rows": 12,
+        "sequence": 13,
+        "native_sha256": "2c079c3ae63ed2e7b80a12e4a3936d40ffd275e1e81c9099b695ffeb72a9fa81",
+        "control_sha256": "2638041d867673be20cefb65eae21119133995caea9876c5574115738b740602",
+        "control_tables": 64,
+        "originals": [
+          [
+            "42424242424242424242424242424242-0000000000000001-0000000000000001.cbor",
+            {
+              "bytes": 262,
+              "sha256": "ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940"
+            }
+          ]
+        ]
+      },
+      {
+        "name": "literal-visible-classes",
+        "status": "PASS"
+      },
+      {
+        "name": "visibility-independent-dictionary-bytes",
+        "status": "PASS"
+      },
+      {
+        "name": "visibility-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "visibility-expired-migrations",
+        "status": "PASS",
+        "stdout": "{\n  \"applied_count\": \"34\",\n  \"current_version\": \"19\",\n  \"dataset_initialization\": \"not-performed\",\n  \"format\": \"bigbrotr-control-migration/1\",\n  \"release_upgrade_qualification\": \"not-performed\",\n  \"scope\": \"postgres-control\",\n  \"source_version\": null,\n  \"status\": \"applied\",\n  \"steps\": [\n    {\n      \"name\": \"0001_control.sql\",\n      \"sha256\": \"f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be\",\n      \"version\": \"1\"\n    },\n    {\n      \"name\": \"0002_ingest.sql\",\n      \"sha256\": \"6a355b4d0066c60397bc09c7aa1f5d8d27722fbfbf9e9b859f02d55217f80202\",\n      \"version\": \"2\"\n    },\n    {\n      \"name\": \"0801_management_identity.sql\",\n      \"sha256\": \"ff834dc640ae9a26ca69a0aa6d5b5c849a7bb3e6df8c3aeee304d2df6cec66bf\",\n      \"version\": \"801\"\n    },\n    {\n      \"name\": \"0805_owner_enrollment.sql\",\n      \"sha256\": \"aef8356fad6f4439b84e4a98c551c9febb6ab1b12d2d5523c35a3f5cc2bf7e7b\",\n      \"version\": \"805\"\n    },\n    {\n      \"name\": \"0802_management_commands.sql\",\n      \"sha256\": \"c83ae275c68b15195615d81f312bcd87b1a09af4432846ed72f8585ae66644c5\",\n      \"version\": \"802\"\n    },\n    {\n      \"name\": \"0007_control_owner.sql\",\n      \"sha256\": \"31e399a9bbaca5f13c60f65a10b3c3b872de14f62f2b2597632a480b956300fd\",\n      \"version\": \"7\"\n    },\n    {\n      \"name\": \"0008_job_bounds.sql\",\n      \"sha256\": \"f6f33183926b73fa90a0730c86f22b70621247d198f5547e82454fce7762ac40\",\n      \"version\": \"8\"\n    },\n    {\n      \"name\": \"0009_archive_attempts.sql\",\n      \"sha256\": \"2c931bf013bfc6a6ceb3e5c86fcda7b14ea8959c235baa997bce8420c247bc11\",\n      \"version\": \"9\"\n    },\n    {\n      \"name\": \"0010_archive_coordinator.sql\",\n      \"sha256\": \"95665cbb0c7e66159f495de00fe8d73834fcb68a93f01d79dfa2064834294c4b\",\n      \"version\": \"10\"\n    },\n    {\n      \"name\": \"0011_producer_requests.sql\",\n      \"sha256\": \"5243beece99f163b226a6a934661d979ea3dd0cef29d5daff9364c689a4be344\",\n      \"version\": \"11\"\n    },\n    {\n      \"name\": \"0012_producer_outcomes.sql\",\n      \"sha256\": \"22bd904016326fe27dd01de2d31993bdbb47ad0a721e3f327e785594ea7cd677\",\n      \"version\": \"12\"\n    },\n    {\n      \"name\": \"0013_input_bindings.sql\",\n      \"sha256\": \"0a589d9276e7dcdd79eb5726d9be457f3d0391a34b538c3eb3a2236b628b7010\",\n      \"version\": \"13\"\n    },\n    {\n      \"name\": \"0014_import_checkpoints.sql\",\n      \"sha256\": \"cbe6bd5897366d5c56768da79d05ab69a97fe3b5d9f4e208480a5d37cb3e0a65\",\n      \"version\": \"14\"\n    },\n    {\n      \"name\": \"0015_archive_persistence.sql\",\n      \"sha256\": \"0592e2d7148104552ad4aaf41c5b40f91e6119e19c986c6529fb545dc8ac3143\",\n      \"version\": \"15\"\n    },\n    {\n      \"name\": \"0016_archive_frontiers.sql\",\n      \"sha256\": \"7204970dd94740bdf8bde8765788628e2de3ae194e50e9ad932d9b20782de1db\",\n      \"version\": \"16\"\n    },\n    {\n      \"name\": \"0017_archive_snapshot_pins.sql\",\n      \"sha256\": \"99803d4b76d35ea9b1b9619cb3b570ba62ea7a198af5345f0cb8378135ed5e37\",\n      \"version\": \"17\"\n    },\n    {\n      \"name\": \"0018_archive_pin_recovery.sql\",\n      \"sha256\": \"5902a230916f368a54858872909cc619fea010fceb54a204032eef9d8a17e012\",\n      \"version\": \"18\"\n    },\n    {\n      \"name\": \"0806_browser_sessions.sql\",\n      \"sha256\": \"3017bf28531655765ec9e09d10b1512532e8060681dac377e753119050e0b694\",\n      \"version\": \"806\"\n    },\n    {\n      \"name\": \"0807_session_mutation_audit.sql\",\n      \"sha256\": \"a630171bc2f6521204a664723aa201411f90f7fec8343875612ef10224f05f09\",\n      \"version\": \"807\"\n    },\n    {\n      \"name\": \"0808_browser_reauthentication.sql\",\n      \"sha256\": \"1c82d4d601c9623f7c985c8952cb4dcd0248f8bfe1743852ed02a35ec871982d\",\n      \"version\": \"808\"\n    },\n    {\n      \"name\": \"0809_reauthentication_expiry.sql\",\n      \"sha256\": \"0a5f06faf6dc14631bf69de1ff2c0763b6fb9c95b620da30a25e57b2bfe0e964\",\n      \"version\": \"809\"\n    },\n    {\n      \"name\": \"0810_scope_grants.sql\",\n      \"sha256\": \"f1c3e00492ff7aceda38a9a1b87a392f5c873c7847f8ac9eda2b619c39987ebe\",\n      \"version\": \"810\"\n    },\n    {\n      \"name\": \"0811_scope_grant_final_checks.sql\",\n      \"sha256\": \"6a7c414d05d44c330b5c55185a9b189ff071cc103fb24f803946ed1daa8e3c5a\",\n      \"version\": \"811\"\n    },\n    {\n      \"name\": \"0812_export_scope_grants.sql\",\n      \"sha256\": \"f442184875aaa80c5a12ecfc794cf4b22d3ac677ab7d8e15687cf6a06a97c0db\",\n      \"version\": \"812\"\n    },\n    {\n      \"name\": \"0813_export_jobs.sql\",\n      \"sha256\": \"672ee7144046b9c21e13499828d4af3d9325bdedb183b365937d2954b6d06da9\",\n      \"version\": \"813\"\n    },\n    {\n      \"name\": \"0501_artifacts.sql\",\n      \"sha256\": \"14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861\",\n      \"version\": \"501\"\n    },\n    {\n      \"name\": \"0814_export_resume.sql\",\n      \"sha256\": \"c2ddfa56c2b79cc647b34586aee739cd08885e58c4cfa4c965ef7243149d9b1d\",\n      \"version\": \"814\"\n    },\n    {\n      \"name\": \"0601_cursor_keys.sql\",\n      \"sha256\": \"72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026\",\n      \"version\": \"601\"\n    },\n    {\n      \"name\": \"0602_cursor_key_enrollment.sql\",\n      \"sha256\": \"20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48\",\n      \"version\": \"602\"\n    },\n    {\n      \"name\": \"0815_job_admission.sql\",\n      \"sha256\": \"3a562bdf4612c1fee7f5b0b53603cd0579b12316adf1319e730336548ec22e9d\",\n      \"version\": \"815\"\n    },\n    {\n      \"name\": \"0604_cursor_key_lifecycle.sql\",\n      \"sha256\": \"fa416f1c192641503b71a4d683d56936f39d5d1c398a17f1867de20df0481bc8\",\n      \"version\": \"604\"\n    },\n    {\n      \"name\": \"0816_job_pages.sql\",\n      \"sha256\": \"f7ed51d54f735110a1a5a6a4db901568be833c223dcbd723aee02a7a60c3e090\",\n      \"version\": \"816\"\n    },\n    {\n      \"name\": \"0003_relay.sql\",\n      \"sha256\": \"50b1264cb93c7b67e8afee377bf238152c9729fb93f5d2b99419982ec3da7a26\",\n      \"version\": \"3\"\n    },\n    {\n      \"name\": \"0019_relay_enrollment.sql\",\n      \"sha256\": \"ba960ac695914034db5ac3ef9662280bc81390447e9298333b10f2d4f045b233\",\n      \"version\": \"19\"\n    }\n  ],\n  \"target_version\": \"19\"\n}\n",
+        "stderr": ""
+      },
+      {
+        "name": "visibility-expired-initialized",
+        "status": "PASS",
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "name": "visibility-expired-actual-adapter",
+        "status": "PASS",
+        "exit_code": 0,
+        "stderr": ""
+      },
+      {
+        "name": "visibility-expired-all-state-unchanged",
+        "status": "PASS",
+        "native_rows": 12,
+        "sequence": 13,
+        "native_sha256": "2c079c3ae63ed2e7b80a12e4a3936d40ffd275e1e81c9099b695ffeb72a9fa81",
+        "control_sha256": "fe89caf27ad0c6da468d468f4c804d60cd6cb505c9c5de30d94969ce05162d23",
+        "control_tables": 64,
+        "originals": [
+          [
+            "42424242424242424242424242424242-0000000000000001-0000000000000001.cbor",
+            {
+              "bytes": 262,
+              "sha256": "ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940"
+            }
+          ]
+        ]
+      },
+      {
+        "name": "visibility-expired-independent-dictionary-bytes",
+        "status": "PASS"
+      },
+      {
+        "name": "visibility-expired-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "visibility-cancelled-migrations",
+        "status": "PASS",
+        "stdout": "{\n  \"applied_count\": \"34\",\n  \"current_version\": \"19\",\n  \"dataset_initialization\": \"not-performed\",\n  \"format\": \"bigbrotr-control-migration/1\",\n  \"release_upgrade_qualification\": \"not-performed\",\n  \"scope\": \"postgres-control\",\n  \"source_version\": null,\n  \"status\": \"applied\",\n  \"steps\": [\n    {\n      \"name\": \"0001_control.sql\",\n      \"sha256\": \"f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be\",\n      \"version\": \"1\"\n    },\n    {\n      \"name\": \"0002_ingest.sql\",\n      \"sha256\": \"6a355b4d0066c60397bc09c7aa1f5d8d27722fbfbf9e9b859f02d55217f80202\",\n      \"version\": \"2\"\n    },\n    {\n      \"name\": \"0801_management_identity.sql\",\n      \"sha256\": \"ff834dc640ae9a26ca69a0aa6d5b5c849a7bb3e6df8c3aeee304d2df6cec66bf\",\n      \"version\": \"801\"\n    },\n    {\n      \"name\": \"0805_owner_enrollment.sql\",\n      \"sha256\": \"aef8356fad6f4439b84e4a98c551c9febb6ab1b12d2d5523c35a3f5cc2bf7e7b\",\n      \"version\": \"805\"\n    },\n    {\n      \"name\": \"0802_management_commands.sql\",\n      \"sha256\": \"c83ae275c68b15195615d81f312bcd87b1a09af4432846ed72f8585ae66644c5\",\n      \"version\": \"802\"\n    },\n    {\n      \"name\": \"0007_control_owner.sql\",\n      \"sha256\": \"31e399a9bbaca5f13c60f65a10b3c3b872de14f62f2b2597632a480b956300fd\",\n      \"version\": \"7\"\n    },\n    {\n      \"name\": \"0008_job_bounds.sql\",\n      \"sha256\": \"f6f33183926b73fa90a0730c86f22b70621247d198f5547e82454fce7762ac40\",\n      \"version\": \"8\"\n    },\n    {\n      \"name\": \"0009_archive_attempts.sql\",\n      \"sha256\": \"2c931bf013bfc6a6ceb3e5c86fcda7b14ea8959c235baa997bce8420c247bc11\",\n      \"version\": \"9\"\n    },\n    {\n      \"name\": \"0010_archive_coordinator.sql\",\n      \"sha256\": \"95665cbb0c7e66159f495de00fe8d73834fcb68a93f01d79dfa2064834294c4b\",\n      \"version\": \"10\"\n    },\n    {\n      \"name\": \"0011_producer_requests.sql\",\n      \"sha256\": \"5243beece99f163b226a6a934661d979ea3dd0cef29d5daff9364c689a4be344\",\n      \"version\": \"11\"\n    },\n    {\n      \"name\": \"0012_producer_outcomes.sql\",\n      \"sha256\": \"22bd904016326fe27dd01de2d31993bdbb47ad0a721e3f327e785594ea7cd677\",\n      \"version\": \"12\"\n    },\n    {\n      \"name\": \"0013_input_bindings.sql\",\n      \"sha256\": \"0a589d9276e7dcdd79eb5726d9be457f3d0391a34b538c3eb3a2236b628b7010\",\n      \"version\": \"13\"\n    },\n    {\n      \"name\": \"0014_import_checkpoints.sql\",\n      \"sha256\": \"cbe6bd5897366d5c56768da79d05ab69a97fe3b5d9f4e208480a5d37cb3e0a65\",\n      \"version\": \"14\"\n    },\n    {\n      \"name\": \"0015_archive_persistence.sql\",\n      \"sha256\": \"0592e2d7148104552ad4aaf41c5b40f91e6119e19c986c6529fb545dc8ac3143\",\n      \"version\": \"15\"\n    },\n    {\n      \"name\": \"0016_archive_frontiers.sql\",\n      \"sha256\": \"7204970dd94740bdf8bde8765788628e2de3ae194e50e9ad932d9b20782de1db\",\n      \"version\": \"16\"\n    },\n    {\n      \"name\": \"0017_archive_snapshot_pins.sql\",\n      \"sha256\": \"99803d4b76d35ea9b1b9619cb3b570ba62ea7a198af5345f0cb8378135ed5e37\",\n      \"version\": \"17\"\n    },\n    {\n      \"name\": \"0018_archive_pin_recovery.sql\",\n      \"sha256\": \"5902a230916f368a54858872909cc619fea010fceb54a204032eef9d8a17e012\",\n      \"version\": \"18\"\n    },\n    {\n      \"name\": \"0806_browser_sessions.sql\",\n      \"sha256\": \"3017bf28531655765ec9e09d10b1512532e8060681dac377e753119050e0b694\",\n      \"version\": \"806\"\n    },\n    {\n      \"name\": \"0807_session_mutation_audit.sql\",\n      \"sha256\": \"a630171bc2f6521204a664723aa201411f90f7fec8343875612ef10224f05f09\",\n      \"version\": \"807\"\n    },\n    {\n      \"name\": \"0808_browser_reauthentication.sql\",\n      \"sha256\": \"1c82d4d601c9623f7c985c8952cb4dcd0248f8bfe1743852ed02a35ec871982d\",\n      \"version\": \"808\"\n    },\n    {\n      \"name\": \"0809_reauthentication_expiry.sql\",\n      \"sha256\": \"0a5f06faf6dc14631bf69de1ff2c0763b6fb9c95b620da30a25e57b2bfe0e964\",\n      \"version\": \"809\"\n    },\n    {\n      \"name\": \"0810_scope_grants.sql\",\n      \"sha256\": \"f1c3e00492ff7aceda38a9a1b87a392f5c873c7847f8ac9eda2b619c39987ebe\",\n      \"version\": \"810\"\n    },\n    {\n      \"name\": \"0811_scope_grant_final_checks.sql\",\n      \"sha256\": \"6a7c414d05d44c330b5c55185a9b189ff071cc103fb24f803946ed1daa8e3c5a\",\n      \"version\": \"811\"\n    },\n    {\n      \"name\": \"0812_export_scope_grants.sql\",\n      \"sha256\": \"f442184875aaa80c5a12ecfc794cf4b22d3ac677ab7d8e15687cf6a06a97c0db\",\n      \"version\": \"812\"\n    },\n    {\n      \"name\": \"0813_export_jobs.sql\",\n      \"sha256\": \"672ee7144046b9c21e13499828d4af3d9325bdedb183b365937d2954b6d06da9\",\n      \"version\": \"813\"\n    },\n    {\n      \"name\": \"0501_artifacts.sql\",\n      \"sha256\": \"14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861\",\n      \"version\": \"501\"\n    },\n    {\n      \"name\": \"0814_export_resume.sql\",\n      \"sha256\": \"c2ddfa56c2b79cc647b34586aee739cd08885e58c4cfa4c965ef7243149d9b1d\",\n      \"version\": \"814\"\n    },\n    {\n      \"name\": \"0601_cursor_keys.sql\",\n      \"sha256\": \"72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026\",\n      \"version\": \"601\"\n    },\n    {\n      \"name\": \"0602_cursor_key_enrollment.sql\",\n      \"sha256\": \"20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48\",\n      \"version\": \"602\"\n    },\n    {\n      \"name\": \"0815_job_admission.sql\",\n      \"sha256\": \"3a562bdf4612c1fee7f5b0b53603cd0579b12316adf1319e730336548ec22e9d\",\n      \"version\": \"815\"\n    },\n    {\n      \"name\": \"0604_cursor_key_lifecycle.sql\",\n      \"sha256\": \"fa416f1c192641503b71a4d683d56936f39d5d1c398a17f1867de20df0481bc8\",\n      \"version\": \"604\"\n    },\n    {\n      \"name\": \"0816_job_pages.sql\",\n      \"sha256\": \"f7ed51d54f735110a1a5a6a4db901568be833c223dcbd723aee02a7a60c3e090\",\n      \"version\": \"816\"\n    },\n    {\n      \"name\": \"0003_relay.sql\",\n      \"sha256\": \"50b1264cb93c7b67e8afee377bf238152c9729fb93f5d2b99419982ec3da7a26\",\n      \"version\": \"3\"\n    },\n    {\n      \"name\": \"0019_relay_enrollment.sql\",\n      \"sha256\": \"ba960ac695914034db5ac3ef9662280bc81390447e9298333b10f2d4f045b233\",\n      \"version\": \"19\"\n    }\n  ],\n  \"target_version\": \"19\"\n}\n",
+        "stderr": ""
+      },
+      {
+        "name": "visibility-cancelled-initialized",
+        "status": "PASS",
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "name": "visibility-cancelled-actual-adapter",
+        "status": "PASS",
+        "exit_code": 0,
+        "stderr": ""
+      },
+      {
+        "name": "visibility-cancelled-all-state-unchanged",
+        "status": "PASS",
+        "native_rows": 12,
+        "sequence": 13,
+        "native_sha256": "2c079c3ae63ed2e7b80a12e4a3936d40ffd275e1e81c9099b695ffeb72a9fa81",
+        "control_sha256": "27cbfde20ba2c77b7ce2110161446b8fce5f9e8ad130835f482d5b12354ce9a2",
+        "control_tables": 64,
+        "originals": [
+          [
+            "42424242424242424242424242424242-0000000000000001-0000000000000001.cbor",
+            {
+              "bytes": 262,
+              "sha256": "ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940"
+            }
+          ]
+        ]
+      },
+      {
+        "name": "visibility-cancelled-independent-dictionary-bytes",
+        "status": "PASS"
+      },
+      {
+        "name": "visibility-cancelled-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "visibility-policy-migrations",
+        "status": "PASS",
+        "stdout": "{\n  \"applied_count\": \"34\",\n  \"current_version\": \"19\",\n  \"dataset_initialization\": \"not-performed\",\n  \"format\": \"bigbrotr-control-migration/1\",\n  \"release_upgrade_qualification\": \"not-performed\",\n  \"scope\": \"postgres-control\",\n  \"source_version\": null,\n  \"status\": \"applied\",\n  \"steps\": [\n    {\n      \"name\": \"0001_control.sql\",\n      \"sha256\": \"f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be\",\n      \"version\": \"1\"\n    },\n    {\n      \"name\": \"0002_ingest.sql\",\n      \"sha256\": \"6a355b4d0066c60397bc09c7aa1f5d8d27722fbfbf9e9b859f02d55217f80202\",\n      \"version\": \"2\"\n    },\n    {\n      \"name\": \"0801_management_identity.sql\",\n      \"sha256\": \"ff834dc640ae9a26ca69a0aa6d5b5c849a7bb3e6df8c3aeee304d2df6cec66bf\",\n      \"version\": \"801\"\n    },\n    {\n      \"name\": \"0805_owner_enrollment.sql\",\n      \"sha256\": \"aef8356fad6f4439b84e4a98c551c9febb6ab1b12d2d5523c35a3f5cc2bf7e7b\",\n      \"version\": \"805\"\n    },\n    {\n      \"name\": \"0802_management_commands.sql\",\n      \"sha256\": \"c83ae275c68b15195615d81f312bcd87b1a09af4432846ed72f8585ae66644c5\",\n      \"version\": \"802\"\n    },\n    {\n      \"name\": \"0007_control_owner.sql\",\n      \"sha256\": \"31e399a9bbaca5f13c60f65a10b3c3b872de14f62f2b2597632a480b956300fd\",\n      \"version\": \"7\"\n    },\n    {\n      \"name\": \"0008_job_bounds.sql\",\n      \"sha256\": \"f6f33183926b73fa90a0730c86f22b70621247d198f5547e82454fce7762ac40\",\n      \"version\": \"8\"\n    },\n    {\n      \"name\": \"0009_archive_attempts.sql\",\n      \"sha256\": \"2c931bf013bfc6a6ceb3e5c86fcda7b14ea8959c235baa997bce8420c247bc11\",\n      \"version\": \"9\"\n    },\n    {\n      \"name\": \"0010_archive_coordinator.sql\",\n      \"sha256\": \"95665cbb0c7e66159f495de00fe8d73834fcb68a93f01d79dfa2064834294c4b\",\n      \"version\": \"10\"\n    },\n    {\n      \"name\": \"0011_producer_requests.sql\",\n      \"sha256\": \"5243beece99f163b226a6a934661d979ea3dd0cef29d5daff9364c689a4be344\",\n      \"version\": \"11\"\n    },\n    {\n      \"name\": \"0012_producer_outcomes.sql\",\n      \"sha256\": \"22bd904016326fe27dd01de2d31993bdbb47ad0a721e3f327e785594ea7cd677\",\n      \"version\": \"12\"\n    },\n    {\n      \"name\": \"0013_input_bindings.sql\",\n      \"sha256\": \"0a589d9276e7dcdd79eb5726d9be457f3d0391a34b538c3eb3a2236b628b7010\",\n      \"version\": \"13\"\n    },\n    {\n      \"name\": \"0014_import_checkpoints.sql\",\n      \"sha256\": \"cbe6bd5897366d5c56768da79d05ab69a97fe3b5d9f4e208480a5d37cb3e0a65\",\n      \"version\": \"14\"\n    },\n    {\n      \"name\": \"0015_archive_persistence.sql\",\n      \"sha256\": \"0592e2d7148104552ad4aaf41c5b40f91e6119e19c986c6529fb545dc8ac3143\",\n      \"version\": \"15\"\n    },\n    {\n      \"name\": \"0016_archive_frontiers.sql\",\n      \"sha256\": \"7204970dd94740bdf8bde8765788628e2de3ae194e50e9ad932d9b20782de1db\",\n      \"version\": \"16\"\n    },\n    {\n      \"name\": \"0017_archive_snapshot_pins.sql\",\n      \"sha256\": \"99803d4b76d35ea9b1b9619cb3b570ba62ea7a198af5345f0cb8378135ed5e37\",\n      \"version\": \"17\"\n    },\n    {\n      \"name\": \"0018_archive_pin_recovery.sql\",\n      \"sha256\": \"5902a230916f368a54858872909cc619fea010fceb54a204032eef9d8a17e012\",\n      \"version\": \"18\"\n    },\n    {\n      \"name\": \"0806_browser_sessions.sql\",\n      \"sha256\": \"3017bf28531655765ec9e09d10b1512532e8060681dac377e753119050e0b694\",\n      \"version\": \"806\"\n    },\n    {\n      \"name\": \"0807_session_mutation_audit.sql\",\n      \"sha256\": \"a630171bc2f6521204a664723aa201411f90f7fec8343875612ef10224f05f09\",\n      \"version\": \"807\"\n    },\n    {\n      \"name\": \"0808_browser_reauthentication.sql\",\n      \"sha256\": \"1c82d4d601c9623f7c985c8952cb4dcd0248f8bfe1743852ed02a35ec871982d\",\n      \"version\": \"808\"\n    },\n    {\n      \"name\": \"0809_reauthentication_expiry.sql\",\n      \"sha256\": \"0a5f06faf6dc14631bf69de1ff2c0763b6fb9c95b620da30a25e57b2bfe0e964\",\n      \"version\": \"809\"\n    },\n    {\n      \"name\": \"0810_scope_grants.sql\",\n      \"sha256\": \"f1c3e00492ff7aceda38a9a1b87a392f5c873c7847f8ac9eda2b619c39987ebe\",\n      \"version\": \"810\"\n    },\n    {\n      \"name\": \"0811_scope_grant_final_checks.sql\",\n      \"sha256\": \"6a7c414d05d44c330b5c55185a9b189ff071cc103fb24f803946ed1daa8e3c5a\",\n      \"version\": \"811\"\n    },\n    {\n      \"name\": \"0812_export_scope_grants.sql\",\n      \"sha256\": \"f442184875aaa80c5a12ecfc794cf4b22d3ac677ab7d8e15687cf6a06a97c0db\",\n      \"version\": \"812\"\n    },\n    {\n      \"name\": \"0813_export_jobs.sql\",\n      \"sha256\": \"672ee7144046b9c21e13499828d4af3d9325bdedb183b365937d2954b6d06da9\",\n      \"version\": \"813\"\n    },\n    {\n      \"name\": \"0501_artifacts.sql\",\n      \"sha256\": \"14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861\",\n      \"version\": \"501\"\n    },\n    {\n      \"name\": \"0814_export_resume.sql\",\n      \"sha256\": \"c2ddfa56c2b79cc647b34586aee739cd08885e58c4cfa4c965ef7243149d9b1d\",\n      \"version\": \"814\"\n    },\n    {\n      \"name\": \"0601_cursor_keys.sql\",\n      \"sha256\": \"72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026\",\n      \"version\": \"601\"\n    },\n    {\n      \"name\": \"0602_cursor_key_enrollment.sql\",\n      \"sha256\": \"20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48\",\n      \"version\": \"602\"\n    },\n    {\n      \"name\": \"0815_job_admission.sql\",\n      \"sha256\": \"3a562bdf4612c1fee7f5b0b53603cd0579b12316adf1319e730336548ec22e9d\",\n      \"version\": \"815\"\n    },\n    {\n      \"name\": \"0604_cursor_key_lifecycle.sql\",\n      \"sha256\": \"fa416f1c192641503b71a4d683d56936f39d5d1c398a17f1867de20df0481bc8\",\n      \"version\": \"604\"\n    },\n    {\n      \"name\": \"0816_job_pages.sql\",\n      \"sha256\": \"f7ed51d54f735110a1a5a6a4db901568be833c223dcbd723aee02a7a60c3e090\",\n      \"version\": \"816\"\n    },\n    {\n      \"name\": \"0003_relay.sql\",\n      \"sha256\": \"50b1264cb93c7b67e8afee377bf238152c9729fb93f5d2b99419982ec3da7a26\",\n      \"version\": \"3\"\n    },\n    {\n      \"name\": \"0019_relay_enrollment.sql\",\n      \"sha256\": \"ba960ac695914034db5ac3ef9662280bc81390447e9298333b10f2d4f045b233\",\n      \"version\": \"19\"\n    }\n  ],\n  \"target_version\": \"19\"\n}\n",
+        "stderr": ""
+      },
+      {
+        "name": "visibility-policy-initialized",
+        "status": "PASS",
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "name": "visibility-policy-actual-adapter",
+        "status": "PASS",
+        "exit_code": 0,
+        "stderr": ""
+      },
+      {
+        "name": "visibility-policy-all-state-unchanged",
+        "status": "PASS",
+        "native_rows": 12,
+        "sequence": 13,
+        "native_sha256": "2c079c3ae63ed2e7b80a12e4a3936d40ffd275e1e81c9099b695ffeb72a9fa81",
+        "control_sha256": "243f933a0e636874584d122d874cdd97f0aa06932514b325e9266fda6809666e",
+        "control_tables": 64,
+        "originals": [
+          [
+            "42424242424242424242424242424242-0000000000000001-0000000000000001.cbor",
+            {
+              "bytes": 262,
+              "sha256": "ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940"
+            }
+          ]
+        ]
+      },
+      {
+        "name": "visibility-policy-independent-dictionary-bytes",
+        "status": "PASS"
+      },
+      {
+        "name": "visibility-policy-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "visibility-closing-migrations",
+        "status": "PASS",
+        "stdout": "{\n  \"applied_count\": \"34\",\n  \"current_version\": \"19\",\n  \"dataset_initialization\": \"not-performed\",\n  \"format\": \"bigbrotr-control-migration/1\",\n  \"release_upgrade_qualification\": \"not-performed\",\n  \"scope\": \"postgres-control\",\n  \"source_version\": null,\n  \"status\": \"applied\",\n  \"steps\": [\n    {\n      \"name\": \"0001_control.sql\",\n      \"sha256\": \"f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be\",\n      \"version\": \"1\"\n    },\n    {\n      \"name\": \"0002_ingest.sql\",\n      \"sha256\": \"6a355b4d0066c60397bc09c7aa1f5d8d27722fbfbf9e9b859f02d55217f80202\",\n      \"version\": \"2\"\n    },\n    {\n      \"name\": \"0801_management_identity.sql\",\n      \"sha256\": \"ff834dc640ae9a26ca69a0aa6d5b5c849a7bb3e6df8c3aeee304d2df6cec66bf\",\n      \"version\": \"801\"\n    },\n    {\n      \"name\": \"0805_owner_enrollment.sql\",\n      \"sha256\": \"aef8356fad6f4439b84e4a98c551c9febb6ab1b12d2d5523c35a3f5cc2bf7e7b\",\n      \"version\": \"805\"\n    },\n    {\n      \"name\": \"0802_management_commands.sql\",\n      \"sha256\": \"c83ae275c68b15195615d81f312bcd87b1a09af4432846ed72f8585ae66644c5\",\n      \"version\": \"802\"\n    },\n    {\n      \"name\": \"0007_control_owner.sql\",\n      \"sha256\": \"31e399a9bbaca5f13c60f65a10b3c3b872de14f62f2b2597632a480b956300fd\",\n      \"version\": \"7\"\n    },\n    {\n      \"name\": \"0008_job_bounds.sql\",\n      \"sha256\": \"f6f33183926b73fa90a0730c86f22b70621247d198f5547e82454fce7762ac40\",\n      \"version\": \"8\"\n    },\n    {\n      \"name\": \"0009_archive_attempts.sql\",\n      \"sha256\": \"2c931bf013bfc6a6ceb3e5c86fcda7b14ea8959c235baa997bce8420c247bc11\",\n      \"version\": \"9\"\n    },\n    {\n      \"name\": \"0010_archive_coordinator.sql\",\n      \"sha256\": \"95665cbb0c7e66159f495de00fe8d73834fcb68a93f01d79dfa2064834294c4b\",\n      \"version\": \"10\"\n    },\n    {\n      \"name\": \"0011_producer_requests.sql\",\n      \"sha256\": \"5243beece99f163b226a6a934661d979ea3dd0cef29d5daff9364c689a4be344\",\n      \"version\": \"11\"\n    },\n    {\n      \"name\": \"0012_producer_outcomes.sql\",\n      \"sha256\": \"22bd904016326fe27dd01de2d31993bdbb47ad0a721e3f327e785594ea7cd677\",\n      \"version\": \"12\"\n    },\n    {\n      \"name\": \"0013_input_bindings.sql\",\n      \"sha256\": \"0a589d9276e7dcdd79eb5726d9be457f3d0391a34b538c3eb3a2236b628b7010\",\n      \"version\": \"13\"\n    },\n    {\n      \"name\": \"0014_import_checkpoints.sql\",\n      \"sha256\": \"cbe6bd5897366d5c56768da79d05ab69a97fe3b5d9f4e208480a5d37cb3e0a65\",\n      \"version\": \"14\"\n    },\n    {\n      \"name\": \"0015_archive_persistence.sql\",\n      \"sha256\": \"0592e2d7148104552ad4aaf41c5b40f91e6119e19c986c6529fb545dc8ac3143\",\n      \"version\": \"15\"\n    },\n    {\n      \"name\": \"0016_archive_frontiers.sql\",\n      \"sha256\": \"7204970dd94740bdf8bde8765788628e2de3ae194e50e9ad932d9b20782de1db\",\n      \"version\": \"16\"\n    },\n    {\n      \"name\": \"0017_archive_snapshot_pins.sql\",\n      \"sha256\": \"99803d4b76d35ea9b1b9619cb3b570ba62ea7a198af5345f0cb8378135ed5e37\",\n      \"version\": \"17\"\n    },\n    {\n      \"name\": \"0018_archive_pin_recovery.sql\",\n      \"sha256\": \"5902a230916f368a54858872909cc619fea010fceb54a204032eef9d8a17e012\",\n      \"version\": \"18\"\n    },\n    {\n      \"name\": \"0806_browser_sessions.sql\",\n      \"sha256\": \"3017bf28531655765ec9e09d10b1512532e8060681dac377e753119050e0b694\",\n      \"version\": \"806\"\n    },\n    {\n      \"name\": \"0807_session_mutation_audit.sql\",\n      \"sha256\": \"a630171bc2f6521204a664723aa201411f90f7fec8343875612ef10224f05f09\",\n      \"version\": \"807\"\n    },\n    {\n      \"name\": \"0808_browser_reauthentication.sql\",\n      \"sha256\": \"1c82d4d601c9623f7c985c8952cb4dcd0248f8bfe1743852ed02a35ec871982d\",\n      \"version\": \"808\"\n    },\n    {\n      \"name\": \"0809_reauthentication_expiry.sql\",\n      \"sha256\": \"0a5f06faf6dc14631bf69de1ff2c0763b6fb9c95b620da30a25e57b2bfe0e964\",\n      \"version\": \"809\"\n    },\n    {\n      \"name\": \"0810_scope_grants.sql\",\n      \"sha256\": \"f1c3e00492ff7aceda38a9a1b87a392f5c873c7847f8ac9eda2b619c39987ebe\",\n      \"version\": \"810\"\n    },\n    {\n      \"name\": \"0811_scope_grant_final_checks.sql\",\n      \"sha256\": \"6a7c414d05d44c330b5c55185a9b189ff071cc103fb24f803946ed1daa8e3c5a\",\n      \"version\": \"811\"\n    },\n    {\n      \"name\": \"0812_export_scope_grants.sql\",\n      \"sha256\": \"f442184875aaa80c5a12ecfc794cf4b22d3ac677ab7d8e15687cf6a06a97c0db\",\n      \"version\": \"812\"\n    },\n    {\n      \"name\": \"0813_export_jobs.sql\",\n      \"sha256\": \"672ee7144046b9c21e13499828d4af3d9325bdedb183b365937d2954b6d06da9\",\n      \"version\": \"813\"\n    },\n    {\n      \"name\": \"0501_artifacts.sql\",\n      \"sha256\": \"14d6d74d5458637a10a658b621b0d7510e41dd843d5028402034c26588adc861\",\n      \"version\": \"501\"\n    },\n    {\n      \"name\": \"0814_export_resume.sql\",\n      \"sha256\": \"c2ddfa56c2b79cc647b34586aee739cd08885e58c4cfa4c965ef7243149d9b1d\",\n      \"version\": \"814\"\n    },\n    {\n      \"name\": \"0601_cursor_keys.sql\",\n      \"sha256\": \"72b29b8476244b8e49b9f76e198142726f9f03dc237648f6a7fa7a90cfaed026\",\n      \"version\": \"601\"\n    },\n    {\n      \"name\": \"0602_cursor_key_enrollment.sql\",\n      \"sha256\": \"20ec7cd5e982c8af14c98aa11ba626fd5f2cc9882b2a624e8750c0ad16538f48\",\n      \"version\": \"602\"\n    },\n    {\n      \"name\": \"0815_job_admission.sql\",\n      \"sha256\": \"3a562bdf4612c1fee7f5b0b53603cd0579b12316adf1319e730336548ec22e9d\",\n      \"version\": \"815\"\n    },\n    {\n      \"name\": \"0604_cursor_key_lifecycle.sql\",\n      \"sha256\": \"fa416f1c192641503b71a4d683d56936f39d5d1c398a17f1867de20df0481bc8\",\n      \"version\": \"604\"\n    },\n    {\n      \"name\": \"0816_job_pages.sql\",\n      \"sha256\": \"f7ed51d54f735110a1a5a6a4db901568be833c223dcbd723aee02a7a60c3e090\",\n      \"version\": \"816\"\n    },\n    {\n      \"name\": \"0003_relay.sql\",\n      \"sha256\": \"50b1264cb93c7b67e8afee377bf238152c9729fb93f5d2b99419982ec3da7a26\",\n      \"version\": \"3\"\n    },\n    {\n      \"name\": \"0019_relay_enrollment.sql\",\n      \"sha256\": \"ba960ac695914034db5ac3ef9662280bc81390447e9298333b10f2d4f045b233\",\n      \"version\": \"19\"\n    }\n  ],\n  \"target_version\": \"19\"\n}\n",
+        "stderr": ""
+      },
+      {
+        "name": "visibility-closing-initialized",
+        "status": "PASS",
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "name": "visibility-closing-actual-adapter",
+        "status": "PASS",
+        "exit_code": 0,
+        "stderr": ""
+      },
+      {
+        "name": "visibility-closing-all-state-unchanged",
+        "status": "PASS",
+        "native_rows": 12,
+        "sequence": 13,
+        "native_sha256": "2c079c3ae63ed2e7b80a12e4a3936d40ffd275e1e81c9099b695ffeb72a9fa81",
+        "control_sha256": "23f9b81896f097e3741db46bb78d7fddc7662c4994054bb2c699ca1a8f588ad5",
+        "control_tables": 64,
+        "originals": [
+          [
+            "42424242424242424242424242424242-0000000000000001-0000000000000001.cbor",
+            {
+              "bytes": 262,
+              "sha256": "ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940"
+            }
+          ]
+        ]
+      },
+      {
+        "name": "visibility-closing-independent-dictionary-bytes",
+        "status": "PASS"
+      },
+      {
+        "name": "visibility-closing-drivers-joined",
+        "status": "PASS"
+      }
+    ]
+  },
+  "root_review": {
+    "status": "PASS_ROOT_CAPTURE_REVIEW_ONLY",
+    "source": "6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0",
+    "cases": [
+      {
+        "mode": "visibility",
+        "error": null,
+        "native_rows": 12,
+        "sequence": 13,
+        "control_tables": 64,
+        "native_sha256": "2c079c3ae63ed2e7b80a12e4a3936d40ffd275e1e81c9099b695ffeb72a9fa81"
+      },
+      {
+        "mode": "visibility-expired",
+        "error": "Control(Unavailable)",
+        "native_rows": 12,
+        "sequence": 13,
+        "control_tables": 64,
+        "native_sha256": "2c079c3ae63ed2e7b80a12e4a3936d40ffd275e1e81c9099b695ffeb72a9fa81"
+      },
+      {
+        "mode": "visibility-cancelled",
+        "error": "DeliveryUnknown",
+        "native_rows": 12,
+        "sequence": 13,
+        "control_tables": 64,
+        "native_sha256": "2c079c3ae63ed2e7b80a12e4a3936d40ffd275e1e81c9099b695ffeb72a9fa81"
+      },
+      {
+        "mode": "visibility-policy",
+        "error": "Control(InvalidPolicy)",
+        "native_rows": 12,
+        "sequence": 13,
+        "control_tables": 64,
+        "native_sha256": "2c079c3ae63ed2e7b80a12e4a3936d40ffd275e1e81c9099b695ffeb72a9fa81"
+      },
+      {
+        "mode": "visibility-closing",
+        "error": "Registry(InvalidMetadata)",
+        "native_rows": 12,
+        "sequence": 13,
+        "control_tables": 64,
+        "native_sha256": "2c079c3ae63ed2e7b80a12e4a3936d40ffd275e1e81c9099b695ffeb72a9fa81"
+      }
+    ],
+    "scope": "Independent retained bytes/row identity check; no additional engine executions"
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0",
+    "observed_at": "2026-09-28T05:12:41.519408+00:00",
+    "prior_unchanged": 877,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "f106144ac064fbd109098d22c49b1913342d6e3dd32663291865c26137449f8e",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "ccad8754fbcc2ed5eb432d43f29e018fb535652c28894c6cbca6d36a11ad82c5",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "bcbe32c13dbeb0493a64f2b4a163030a926da282e52780d47ee581a6e419b3d7",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "ba73388a2673cf5a2d8cf568d579a0e9a18420769994e4d0c64f8bb61df09029",
+        "exit": 0
+      }
+    ],
+    "source_files": 1452,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 66280816640
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-visibility-6c52067",
+    "owner": "d65bebf992d73cf14ba000d8176d05a8",
+    "owner_label": "org.bigbrotr.network-transport",
+    "containers": [
+      {
+        "name": "fetch",
+        "id": "f106144ac064fbd109098d22c49b1913342d6e3dd32663291865c26137449f8e"
+      },
+      {
+        "name": "native",
+        "id": "ccad8754fbcc2ed5eb432d43f29e018fb535652c28894c6cbca6d36a11ad82c5"
+      },
+      {
+        "name": "client",
+        "id": "bcbe32c13dbeb0493a64f2b4a163030a926da282e52780d47ee581a6e419b3d7",
+        "owner_label": "org.bigbrotr.control-migration-lab",
+        "owner": "49c37b6b0cfee37eb9b193b5bbe56e59"
+      },
+      {
+        "name": "postgres",
+        "id": "ba73388a2673cf5a2d8cf568d579a0e9a18420769994e4d0c64f8bb61df09029",
+        "owner_label": "org.bigbrotr.control-migration-lab",
+        "owner": "49c37b6b0cfee37eb9b193b5bbe56e59"
+      }
+    ],
+    "postgres_owner": "49c37b6b0cfee37eb9b193b5bbe56e59",
+    "network": "bigbrotr-implementation-pg-20260917-visibility_6c52067",
+    "subnet": "172.16.240.32/28",
+    "state": "stopped-retained",
+    "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757"
+  },
+  "evidence": {
+    "local_capture": ".research/implementation/ingest-visibility-20260928",
+    "capture_tar_sha256": "4f559a4bc617ad5a9ba60ecac7fe6b1b85a1a3504683c10817e0417e10738111",
+    "captured_files": 34,
+    "recipe": "experiments/network-transport/lab.py REVISION TREE ingest-visibility"
+  },
+  "review": {
+    "independent_ai": "Read-only full reader/test/probe review; found absent-result scratch lifetime, corrected before native run",
+    "integrating_owner": "Read complete changed owners/callers/contracts and full diff; independently checked retained capture bytes and all-row comparisons"
+  },
+  "limits": [
+    "Native mapping presence does not authorize acquisition; current source/enrollment/route/bans and request membership remain separate",
+    "Read limit reuses conservative CertificationLimits allowance; no capacity or peak-RSS measurement",
+    "Connected expiry and cancellation occur before native dispatch; native callback regression separately exercises post-read refusal",
+    "All-state equality concerns logical native rows/sequence, input files and SQL rows/xmin, not zero physical engine I/O",
+    "No Archive fallback, pin, successor authority or full-store scrub"
+  ],
+  "not_run": [
+    "current acquisition source grant",
+    "socket admission",
+    "policy epoch transition",
+    "read response loss",
+    "mid-FFI cancellation",
+    "load and aged state",
+    "arm64",
+    "release"
+  ],
+  "mac": {
+    "tests": "5 passed, 0 failed",
+    "clippy": "library and ingest_bootstrap_probe pass",
+    "logs": ".research/implementation/relay-enrollment-relations-23d7534/visibility-{red,green,green2,green3,clippy,clippy2,clippy3}.log",
+    "original_outcomes": "Four meaningful RED failures against the stub; subsequent test import and misplaced fixture branch compile failures preserved, then corrected. No native failure on6c52067."
+  }
+}
