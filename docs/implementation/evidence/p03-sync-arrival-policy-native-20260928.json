@@ -1,0 +1,205 @@
+{
+  "format": "bigbrotr-sync-arrival-policy-native/1",
+  "status": "PASS_SCOPED_NATIVE_POLICY_CONSUMER",
+  "source": "1978574c4f73d59b996ef0bff888bfbfcb525e94",
+  "tree": "25a8d9189b3b3cded0bf3e48e72916d0a95dc5a7",
+  "local_evidence": ".research/implementation/sync-arrival-policy-20260928",
+  "root": "/home/tux/bigbrotr-implementation-20260917/runs/sync-arrival-policy-1978574",
+  "environment": {
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "container_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d"
+  },
+  "identities": {
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "f8bd0f1fcd8fb16bb25bac52975c90db927ff555e7520444cd97c9a6509a9280",
+    "binary_sha256": "233050becf83f8890b9c2c4fda3272d18f8a7e78e98af754692a55e6eafa1134",
+    "probe_sha256": "f2f7b38429414938e1c9766b4c8482b84e08e430d2d4a39bd9f06deb33987709"
+  },
+  "source_bundle_sha256": "e26b549018f58217c6518551a88b8d0c9cf2a15ebc47ac238001ee1315fc18cf",
+  "root_review": {
+    "status": "PASS_ROOT_REVIEW",
+    "source": "1978574c4f73d59b996ef0bff888bfbfcb525e94",
+    "source_files": 1549,
+    "captured_payloads": 110,
+    "cases": 9
+  },
+  "checks": [
+    "Actual release CLI/probe, eight component tests and scoped Clippy passed on native Linux amd64",
+    "Nine real PG/Rocks cases: admission/replay and read-only certification, invalid signature rejection/retry, forged retained-body certification, authenticated withdrawal, and five accepted-policy refusals",
+    "Independent complete native bytes, original CBOR inputs, full scope/source bindings, all66 Control tables/xmin and unchanged accepted documents",
+    "Five refusals: provenance objective, exact prepared limit, collection floor, ephemeral widening, and second accepted document. No request2 input/reservation/outcome or native event appears",
+    "First accepted document passes and second refuses with exact independently encoded digests; no test derives expected policy bytes from the product codec",
+    "Prepared invalid signature passes policy checks and becomes exact attributed native rejection; certification remains read-only",
+    "Unchanged original templates and936 other container projections; all owned processes/containers terminal, compiler lock released"
+  ],
+  "cases": [
+    {
+      "name": "pass",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "invalid",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 17,
+      "original_inputs": 2
+    },
+    {
+      "name": "invalid-retained",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "certify-withdrawn",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "policy-provenance",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "policy-limit",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "policy-floor",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "policy-ephemeral",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "policy-second",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    }
+  ],
+  "fixture_boundary": "Each isolated clone receives independently encoded valid v2 documents before ownership using privileged fixture setup. This does not qualify management activation. The source/observation are fixed trusted fixture values, not actual socket evidence. Provenance is off in native positive cases.",
+  "original_outcomes": [
+    "No product or setup failure during the nine engine schedules",
+    "Mac missing APIs/accessor/type compile failures and exact-limit negative retained separately",
+    "Read-only review corrected invalid limit setup before engine launch"
+  ],
+  "structure": "One current-root restoration/source-policy implementation and focused collection/arrival checks shared by the two concrete prepared types. No generic backend traits, crate or state machine. Same loaded scope feeds membership and policy in the actual fixture; committed source dictionary linkage remains required for installed provenance.",
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "1978574c4f73d59b996ef0bff888bfbfcb525e94",
+    "observed_at": "2026-09-28T14:22:41.051896+00:00",
+    "prior_unchanged": 936,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "342fe9fe01f77687e800109a91fb9635993b2c504d08bce8b5330a6bdeaad9fb",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "881355d58e39aecbffe0968907c9c3d518f30ef031d57b379d442bf4b623c0d7",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "9f4cd6d2860b2fdbb9e94aceba0204968970df1b44994a80c97cbf714b0f4169",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1549,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 64878034944,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "not_run": [
+    "Actual socket pre-request collection gate, trusted observation custody and committed provenance-on source dictionaries",
+    "Installed owning lifetime, authenticated acquisition jobs, ordered progress, timer publication and complete M1",
+    "Post-reservation policy-change discrimination or ambiguous-COMMIT schedules for this new validator (prior underlying boundary evidence remains)",
+    "Whole-process memory/capacity, aged/mixed load, Linux arm64 or release"
+  ]
+}

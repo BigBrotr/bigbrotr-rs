@@ -28497,6 +28497,115 @@
         "free_bytes": 65131544576
       },
       "report": "docs/implementation/evidence/p03-acquisition-binding-guards-native-20260928.json"
+    },
+    "sync_arrival_policy": {
+      "status": "STOPPED/RETAINED; native build and nine policy-consumer schedules PASS; root review complete",
+      "local_evidence": ".research/implementation/sync-arrival-policy-20260928",
+      "launch": {
+        "source": "1978574c4f73d59b996ef0bff888bfbfcb525e94",
+        "tree": "25a8d9189b3b3cded0bf3e48e72916d0a95dc5a7",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/sync-arrival-policy-1978574",
+        "pid": 3358010,
+        "start_ticks": "398742219",
+        "bundle_sha256": "e26b549018f58217c6518551a88b8d0c9cf2a15ebc47ac238001ee1315fc18cf"
+      },
+      "resources": {
+        "source": "1978574c4f73d59b996ef0bff888bfbfcb525e94",
+        "tree": "25a8d9189b3b3cded0bf3e48e72916d0a95dc5a7",
+        "owner": "9ec1d62e0757667ef83ae2a3123c1433",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/sync-arrival-policy-1978574",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "342fe9fe01f77687e800109a91fb9635993b2c504d08bce8b5330a6bdeaad9fb"
+          },
+          {
+            "name": "native",
+            "id": "881355d58e39aecbffe0968907c9c3d518f30ef031d57b379d442bf4b623c0d7"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T14:19:28.655308+00:00",
+        "qualification": "PASS_SYNC_ARRIVAL_POLICY_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 65008529408,
+        "finished_at": "2026-09-28T14:20:49.030723+00:00"
+      },
+      "preserve": "Exact source, original logs/fixtures, shared1154757 compiler cache and stopped PG/template. No additional cache or volume. Do not replay launchers.",
+      "engine_launch": {
+        "source": "1978574c4f73d59b996ef0bff888bfbfcb525e94",
+        "pid": 3361192,
+        "start_ticks": "398753979",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/sync-arrival-policy-1978574"
+      },
+      "engine": {
+        "owner": "d5bea83c832cbd72771377193007b3de",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "9f4cd6d2860b2fdbb9e94aceba0204968970df1b44994a80c97cbf714b0f4169",
+          "name": "bigbrotr-acquisition-binding-1978574"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_1978574_pass",
+          "bb_scope_bind_1978574_invalid",
+          "bb_scope_bind_1978574_invalid_retained",
+          "bb_scope_bind_1978574_certify_withdrawn",
+          "bb_scope_bind_1978574_policy_provenance",
+          "bb_scope_bind_1978574_policy_limit",
+          "bb_scope_bind_1978574_policy_floor",
+          "bb_scope_bind_1978574_policy_ephemeral",
+          "bb_scope_bind_1978574_policy_second"
+        ],
+        "status": "PASS_SCOPED_ACQUISITION_BINDING",
+        "started_at": "2026-09-28T14:21:26.292070+00:00",
+        "finished_at": "2026-09-28T14:21:57.307420+00:00"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "1978574c4f73d59b996ef0bff888bfbfcb525e94",
+        "observed_at": "2026-09-28T14:22:41.051896+00:00",
+        "prior_unchanged": 936,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "342fe9fe01f77687e800109a91fb9635993b2c504d08bce8b5330a6bdeaad9fb",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "881355d58e39aecbffe0968907c9c3d518f30ef031d57b379d442bf4b623c0d7",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "9f4cd6d2860b2fdbb9e94aceba0204968970df1b44994a80c97cbf714b0f4169",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1549,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 64878034944,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      },
+      "report": "docs/implementation/evidence/p03-sync-arrival-policy-native-20260928.json"
     }
   },
   "implementation_relay_registry_20260928": {

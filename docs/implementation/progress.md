@@ -12,15 +12,15 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin/main are3e5ac2d37822edd465a47d916b0b5132d6a80415,
-verified clean after the SQL-guard qualification push. Root owns subsequent
-implementation and this checkpoint. Resumption verified the borrowed PG/client
-stopped, compiler lock free, the same eight unrelated containers running, Mac
-10,416,496 KiB and Tux65,131,450,368 bytes available. No active experiment or cleanup
-obligation; do not replay retained launchers/deletion recipes.
+Mac main is1978574c4f73d59b996ef0bff888bfbfcb525e94, an unpublished coherent
+candidate; private origin/main remains3e5ac2d37822edd465a47d916b0b5132d6a80415.
+Product/fixture changes are committed; root owns only the ongoing inventory and
+checkpoint updates. No other dirty work was present. Last pre-build free space:
+Mac10,245,600 KiB and Tux65,131,319,296 bytes. Cache retirement remains complete;
+no dataset/container cleanup is needed and retained launchers must not be replayed.
 
-The next concrete slice is the accepted Sync collection/arrival policy consumer
-(P03-T01 Step3/P03-T02 Step3), followed by the installed owning lifetime and typed
+The accepted Sync collection/arrival policy boundary is qualified below
+(P03-T01 Step3/P03-T02 Step3); next are the installed owning lifetime and typed
 finite job (P01-T09 Step1, P02-T02 Steps2/3, P03-T01 Steps3/4). Explicit registered
 selectors can use v2 without adding ordinary sync.selectors defaults. Require a
 scope floor at least each accepted history_since; Drop may narrow Retain, but
@@ -50,73 +50,42 @@ API/setup compilation errors remain under ignored
 .research/implementation/sync-arrival-policy-20260928. Root/read-only AI reviewed
 the complete changed owners and fixtures. Review corrected a setup limit that
 would have failed full restoration before arrival. No Cargo/SQL/native-format
-changes. Nine real PG/Rocks schedules are prepared but NOT_RUN. Next bounded
-action: commit candidate, transfer exact Git, build the sync-arrival-policy profile
-with retained1154757 cache, then execute bindings.py RUN_ROOT --policy. Check
-terminal resources and independent native/Control/input/digest results before
-qualification or push. Current local source is root-owned dirty work, no remote
-experiment has started yet. Installed ownership/job/socket/dictionary integration
-remains separate; no complete Sync/task/M1 claim.
+changes. [Native evidence](evidence/p03-sync-arrival-policy-native-20260928.json)
+records release build, eight tests/Clippy and nine actual PG/Rocks schedules PASS
+at1978574. Root compared1,549 exact Git files and110 captured payloads, including
+all native bytes, original inputs and exact accepted-document digests. Refusals
+leave no event reservation/effect; invalid signatures remain native rejections.
+Second-document rejection is observed separately. No product/setup engine failure.
 
-Raw binding SQL qualification PASS:23 nested actual-Control cases (18 refusals,
-5 valid controls),5 direct helper lock/isolation schedules and the expected original
-FAIL after removing only the epoch predicate on its own clone. Four positive and
-one negative actual backend barriers; all66 tables/xmin, complete signed native
-bytes/inputs/receipts independently compared. Root verified1,546 Git source hashes
-and34 payloads. Evidence:
-[binding SQL guards](evidence/p03-acquisition-binding-guards-native-20260928.json).
-No Rust rebuild or product/setup failure. Reused exact50b4136 artifacts after
-all-input comparison. Root/read-only AI reviewed complete changed fixtures and
-constraints; Session now retains an optional actual login for mixed-role cleanup.
-No new product framework or migration. All owned resources stopped; terminal audit
-13:48:01 UTC verified933 other projections unchanged,8 unrelated running,
-65,131,544,576 bytes free. Mac last10,423,820 KiB. Cache retirement remains complete.
-Next bounded implementation: wire the finite full-selector Sync consumer toward
-P01-T09 Step2/M1. First inspect the actual config/admission/transport/CLI owners;
-replace fixture policy validation with both complete accepted documents, including
-event limit, provenance, history/ephemeral intent and current-root restrictions.
-Use the existing selector/scope/source/native owners; no full scheduler/Discovery/
-Monitor prerequisite. Jobs/progress and installed acceptance remain selected work.
-Native
-build and eight actual scoped concurrency/recovery schedules PASS. Root compared
-1,543 exact Git source hashes,81 captured payloads, full native/Control/input bytes,
-11 setup COMMITs and5 real lock barriers. Evidence:
-[scoped recovery](evidence/p03-acquisition-binding-recovery-native-20260928.json).
-No product/setup failure during engine execution; product/SQL/dependencies unchanged.
-Read-only AI review confirmed early InvalidPolicy and historical recovery custody.
-The actual transcript-failure cleanup counterexample is retained separately.
-The raw scope helper boundary is now qualified separately above. Full
-Discovery/Monitor/scheduler remain unnecessary prerequisites for the finite consumer.
-All owned resources stopped; terminal audit13:35:52 UTC verified932 other container
-projections unchanged,8 unrelated running, compiler lock free and65,260,920,832 bytes.
-Mac last10,443,168 KiB available. Cache retirement complete; no cleanup obligation.
-Native refusal-probe build and four actual PG/Rocks schedules PASS at70eea6f.
-Root compared1,542 exact Git source hashes and47 captured payloads, including
-full native bytes and exact permitted PG changes. Evidence:
-[scope refusals](evidence/p03-acquisition-binding-refusals-native-20260928.json).
-No product/setup failure during these engine schedules; product, SQL and
-Cargo inputs remain identical tof403813. Original fixture compile errors remain;
-read-only AI corrected the initial operational Rocks sequence expectation before
-engine launch. All owned resources are stopped; no cleanup obligation.
-Scope binding implementation and first-wave harness are committed; all36 prior SQL
-and Cargo inputs remain unchanged. Mac membership2/catalog30/CLI3 tests and scoped
-Clippy PASS; original RED/setup compile failures remain in ignored
-.research/implementation/acquisition-binding-20260928. Evidence:
-[Mac candidate](evidence/p03-acquisition-binding-mac-20260928.json).
-Native build and eleven actual PG/Rocks binding schedules PASS; root independently
-verified1,541 Git source hashes and97 captured payloads. Evidence:
-[native binding](evidence/p03-acquisition-binding-native-20260928.json).
-No product/setup failure during engine execution. Last terminal audit13:05:07 UTC:
-926 other projections unchanged, eight unrelated running, Tux65,645,105,152 bytes
-free. All owned containers stopped/no OOM and compiler lock released.
-Cache retirement remains complete; recheck space before the next large allocation.
+All owned resources are STOPPED/RETAINED. Audit14:22:41 UTC verified936 other
+projections unchanged, eight unrelated running, compiler lock free and
+64,878,034,944 bytes free. Inventory implementation_network_20260928.sync_arrival_policy
+owns full identities; ignored sync-arrival-policy-20260928 owns original recipes/
+capture/review. Build PID3358010/start398742219 and enginePID3361192/start398753979
+are terminal; build owner9ec1d62e0757667ef83ae2a3123c1433, engineowner
+d5bea83c832cbd72771377193007b3de. Fetch342fe9fe/native881355d5 exited0;
+client9f4cd6d2 stopped143, PG71775507 stopped0, no OOM. Nine
+bb_scope_bind_1978574_* clones and native inputs/stores remain. Never replay
+launchers. Shared1154757 latest intermediates1978574; artifacts retained separately.
+
+Next bounded action after qualification commit/push: integrate the installed
+initial Ingest owner with a retained Control lifetime (P01-T09 Step1/P02-T02
+Steps2/3). Read the actual Serve/registry/manifest/bootstrap configuration owners
+and explicit initialization contract, then implement the startup/custody consumer.
+Authenticated finite jobs, actual guarded socket→arrival custody, committed
+provenance mappings, ordered progress and timer publication remain concrete
+next M1 requirements. The policy helper currently relies on trusted callers to
+use the same loaded scope as AcquisitionEventContext; the first installed consumer
+must preserve that linkage. No whole Sync/task/M1 or capacity claim follows.
+Prior binding/refusal/recovery/raw-SQL qualifications remain pushed at3e5ac2d.
 
 ## Active slice and next useful journey
 
 P03-T01 Steps1/2/3: pure selector is qualified; initial durable registration now has
 six actual-PG schedules and native build evidence. Whole task remains open.
-Reader evidence is committed/pushed. Active implementation is scope-bound
-reservation/admission and read-only certification for P03-T01 Step3/P03-T02 Step3.
+Reader and scope-bound reservation/admission/certification evidence are committed
+and pushed. Active work is their accepted-policy consumer for P03-T01 Step3/
+P03-T02 Step3, with native qualification above.
 Read-only AI review of the complete first-wave fixture found no launch blocker.
 Both concurrent policy lock orders and historical recovery now have scoped evidence.
 Invalid-signature and post-reservation refusal have the separate evidence above.

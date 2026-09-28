@@ -178,3 +178,12 @@ observer/clock/method references are the trusted committed mappings. Operational
 IDs are not archive QualifiedRefs. Provenance off creates no endpoint/access/method
 dictionaries or witnesses; operational source binding and receive context remain.
 This checker alone does not close those integration obligations or installed Sync.
+
+[Mac components](../implementation/evidence/p03-sync-arrival-policy-mac-20260928.json)
+and [nine native cases](../implementation/evidence/p03-sync-arrival-policy-native-20260928.json)
+qualify this static arrival consumer at1978574. Actual PostgreSQL/RocksDB uses
+independently encoded accepted documents with provenance off. It exercises exact
+admission/replay, certification, forged-signature handling, withdrawal and five
+policy refusals, including only the second accepted document. Original native
+bytes, inputs and unchanged failed-operation state are independently compared.
+No actual socket, provenance-on mapping, management transition or M1 claim follows.

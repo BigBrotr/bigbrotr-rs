@@ -112,8 +112,9 @@ now covers23 nested cases and5 helper schedules, independently isolating the
 scope-epoch guard with both lock orders and a discriminating negative clone.
 The concrete [accepted arrival policy](../reference/acquisition-scopes.md) now
 shares source/collection restrictions and exact attribution/limit/provenance checks
-between fresh admission and certification. Its native practical wave is pending;
-static checks alone do not establish socket or committed witness custody.
+between fresh admission and certification. [Nine native cases](evidence/p03-sync-arrival-policy-native-20260928.json)
+qualify that policy consumer, including actual second-document refusal.
+They do not establish socket or committed witness custody.
 Jobs, authorization, progress and installed CLI acceptance
 remain separate parts of Step3 onward; no whole task closes here.
 

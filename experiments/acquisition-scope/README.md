@@ -149,7 +149,8 @@ management activation, installed Sync, load or complete M1 claim follows.
 
 The `sync-arrival-policy` profile builds the actual accepted-policy consumer and
 runs its focused configuration tests plus Clippy. `bindings.py RUN_ROOT --policy`
-selects nine planned actual PG/Rocks cases. Fresh empty clones receive independently
+selects nine actual PG/Rocks cases; the [1978574 report](../../docs/implementation/evidence/p03-sync-arrival-policy-native-20260928.json)
+records all nine PASS. Fresh empty clones receive independently
 encoded v2 fixture documents before ownership, with provenance off; this setup is
 not management activation. Admission, exact replay, read-only certification,
 forged-signature rejection and withdrawal retain the existing full-byte oracle.
