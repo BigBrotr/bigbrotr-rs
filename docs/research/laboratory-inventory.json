@@ -27161,6 +27161,28 @@
       "recipe_sha256": "3eb2f02ee2dbc2c73732f731977619c2689ec0a5641737e9af863ba7bc2b83bd",
       "original_result": ".research/implementation/job-pages/retire-7ee.json",
       "result_sha256": "fb0f23e33c2c25bf46cd9f4baa02222fe5b989a991983e04ac1a1c19c2666638"
+    },
+    "retire_877_cache_20260928": {
+      "at": "2026-09-28T00:06:31.172546+00:00",
+      "source": "877f3d43d0569f67f8b61333e989cb7c91a8866b",
+      "owner": "8ffeb89001b1123d49c279063dcc92c9",
+      "removed": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-877f3d4/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-877f3d4/out/build/cargo-home"
+      ],
+      "allocated_bytes": 3333423104,
+      "free_before": 76436516864,
+      "free_after": 79768420352,
+      "containers_preserved": 850,
+      "unrelated_running": 8,
+      "preserved": "All sources, original evidence, exact native artifacts, database/fault/archival datasets and every other run remain. 877/f677 original native artifacts,8fa/f677 compiler caches and all current consumer labs remain. Only obsolete 877 compilation caches retire. No containers/volumes removed.",
+      "retained_hash_count": 42,
+      "test_executable_copies": 5,
+      "test_identity_scope": "Current cache identities at retirement, not retroactive original-run hashes; separate out/retained-test-artifacts manifest.",
+      "recipe": ".research/implementation/job-pages/retire-877-cache.py",
+      "recipe_sha256": "cd05cddd354c2c199a045da8150ccd351a4283012178091c6fa84ff5d28c3d0e",
+      "original_result": ".research/implementation/job-pages/retire-877.json",
+      "result_sha256": "9267080fb9597cbe13978da7bc4f9cd5e4caa0d5c98f359220b071bc5f91e088"
     }
   }
 }
