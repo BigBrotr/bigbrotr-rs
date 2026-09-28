@@ -12,13 +12,13 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEAD and origin/main 981c42e4a04c058241293f44722054041f792558 are private
-and published; the starting worktree was clean. Root now owns exact route selection
+Private candidate HEAD dae4d456f7b062cc0b5097db4741e52b0525e406 is locally committed;
+origin/main remains published981c42e. The native source was clean at transfer. Root now owns exact route selection
 and the minimum authenticated no-auth enrollment consumer, tests and contracts. The
 registry native qualification used exact 91d5c7e; Cargo.lock and all applied SQL
 remain unchanged. Root is sole writer; independent route/authority review is
 read-only, and the prior native fixture correction/terminal audit is complete.
-No other writer or active native experiment is present.
+No other writer is present. The enrollment build is terminal; engine setup failed as recorded below.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
 with the explicit remaining gates below. No complete task/phase/M1/product claim.
@@ -399,3 +399,25 @@ no BigBrotr/cargo/rustc process, free67,381,985,280bytes. No deletion or allocat
 Next: commit the candidate, transfer exact Git, run the relay-enrollment profile
 with the retained1154757 cache and fresh isolated PG, inspect each original outcome,
 then qualify remaining ambiguity/expiry/concurrency before action consumers.
+
+Exact candidate dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9 is
+stopped-retained at runs/relay-enrollment-dae4d45. Native build,80 tests and Clippy
+PASS; engine setup failed because Docker automatic address pools are exhausted.
+No PostgreSQL/client container or network was created and0019 has NOT_RUN engine
+status. [Original report](evidence/p02-relay-enrollment-incomplete-20260928.json)
+preserves the outcome,19 capture hashes and artifact identities. Terminal audit
+04:00:15UTC verified866 prior container projections unchanged/eight unrelated
+running,1439 source files, both original ELFs, released compiler lock; free
+67,276,222,464bytes. PID2916165/start394990226 is terminal. Compiler owner
+636d8b4982589759a10929c7d7a6d079 retains fetch/native containers exited0/noOOM.
+Inventory implementation_relay_registry_20260928.enrollment owns all resources;
+retain partial pg directory, original artifacts/logs and1154757 cache. No deletion.
+
+Root owns fixture-only correction plus evidence/checkpoint/inventory. It selects
+an explicit internal172.16.240.0/28 only after non-overlap checks, preserves network
+failure diagnostics, independently checks literal original command values and
+isolates the missing-command-detail trigger. No product, lock or SQL changed.
+Next bounded action: commit the correction, transfer exact Git, run only the actual
+engine journey in a fresh owned root using retained dae4d45 ELFs with proved source
+input equality. Inspect each durable outcome before continuing ambiguity/expiry/
+concurrency qualification and current action consumers. No full enrollment/M1 claim.

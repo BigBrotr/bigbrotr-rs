@@ -1,0 +1,85 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T01 Step6 initial no-auth enrollment and P04-T02 selected routes",
+  "status": "INCOMPLETE_ENGINE_SETUP_FAILED",
+  "source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+  "tree": "1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9",
+  "outcome": {
+    "native_tests": 80,
+    "build": "PASS",
+    "clippy": "PASS",
+    "engine": "NOT_RUN",
+    "cause": "Error response from daemon: all predefined address pools have been fully subnetted",
+    "postgres_resources_created": false
+  },
+  "artifacts": {
+    "binary_sha256": "cf94b71276523677ed2fa34be0ebbb12b471122a6e5c7575ee5029c9c1d9b3bf",
+    "probe_sha256": "8096a294edc8446336413430244db9308376a23efca7838b268589fd4050ea8f",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e",
+    "source_manifest_sha256": "5b415a481a0639ca3a28676b2abaa56c1157522c0aae06c282ce8348fecf314a"
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d"
+  },
+  "capture": {
+    "local": ".research/implementation/relay-enrollment-20260928",
+    "remote": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-dae4d45",
+    "files_sha256": {
+      "resources.json": "9537e32dfd0807ab14b3a1869466a2065127a46e610dcb4ec12fef839c8d4ef0",
+      "preflight.json": "6103f0325fe39e71498b671e94f5202aef5c0710a41b58ea432398d16a022c79",
+      "fetch-terminal.json": "f72ba456359060276dc067a539a10bb3ccd29fd342ea7395fa463d4245832cd5",
+      "native-terminal.json": "a9368b5254fd13469a291317098a5828d1e53c1737d058ec413b07b3b97b9e7d",
+      "fetch.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "native.log": "35f74c76f935f257edb2f3a77ed356babd667a7b5cbb1e3d1f0674a5296be210",
+      "orchestrator.log": "92ba8926b4cbd6a600b7deda90acc15e3730458084ecd5d8097fc1ccc7d118d2",
+      "launch.json": "dea7447520deced06c960358856835cabbf02f27511049ab4b2eb0dc87e7dceb",
+      "network-diagnosis.json": "d2478973fa942581ae3f951e683520bfd9332fa78ce537f4b77e8796f3884621",
+      "out/build/source-manifest.json": "5b415a481a0639ca3a28676b2abaa56c1157522c0aae06c282ce8348fecf314a",
+      "out/qualification.json": "2258fa6b4913fdc2258225f42fa7b0db60cd1f8591be2272159bc67c2d277aee",
+      "pg/resources.json": "64704b09bbb71daac1a40a0818d618363d69296bee3503b61f69682835bbafd2",
+      "out/artifacts/bigbrotr": "cf94b71276523677ed2fa34be0ebbb12b471122a6e5c7575ee5029c9c1d9b3bf",
+      "out/artifacts/build-result.json": "c993753726fd04aebd72f56775e1d95729fcf96696eb4ed9f8f55d5bb60fd452",
+      "out/artifacts/relay_enrollment_probe": "8096a294edc8446336413430244db9308376a23efca7838b268589fd4050ea8f",
+      "out/build-checks/clippy.log": "d3be90036b476e80da8e651caf01a9a1897ea5a1034c95014f396ccc61921ce8",
+      "out/build-checks/compile.log": "7a69d42842a51f69aaf5003b653d923fde9ae0d210ecb76277bc64044e6a68ea",
+      "out/build-checks/enrollment.log": "813c56e7394db54979f3f87ff5cf4c5e6d4e9af09a54712ed57ee560eb3cbd7a",
+      "out/build-checks/result.json": "8856c764775af612d8f04aec404b6442acd00793ce19293e86fa830b2b84ebef"
+    },
+    "terminal_sha256": "06e67874188910ebac979aa4df6091351348d37b2f83df1e14d1f6647c996464"
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-09-28T04:00:15.466351+00:00",
+    "source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+    "owner": "636d8b4982589759a10929c7d7a6d079",
+    "prior_unchanged": 866,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      "c1a6feab87108022fe3574694851ed00dd788ab6ae06f1907557120b45ef1ba5",
+      "9234853fc905cc1b072be091e136f84c0390840a344a712b5ac2a5bc54974176"
+    ],
+    "source_files": 1439,
+    "cache_lock_released": true,
+    "original_115_artifacts_preserved": true,
+    "free_bytes": 67276222464
+  },
+  "correction": {
+    "product_changed": false,
+    "network": "Use explicit internal 172.16.240.0/28 only after checking all existing Docker subnets and nondefault host routes for overlap; no resource retirement or daemon change.",
+    "oracles": "Compare literal original route/visibility values and isolate the orphan-command constraint. These assertions had not executed in the first run.",
+    "rerun": "NOT_RUN; reuse exact retained binaries only after proving product/build input equality across fixture-only Git revisions."
+  },
+  "not_run": [
+    "PostgreSQL migration 0019 and enrollment adapter",
+    "held/lost COMMIT",
+    "expiry at accepting COMMIT",
+    "concurrent lock schedules",
+    "installed enrollment and action issuer",
+    "signed socket acquisition and M1",
+    "load/aged state",
+    "arm64 and release"
+  ],
+  "review_boundary": "Root read complete changed fixture, checked all captured payload hashes and actual native result/test counts. Read-only AI identified the two corrected oracle gaps. Build-only evidence does not establish PostgreSQL or complete source authority."
+}

@@ -24,7 +24,7 @@ BEGIN
         INSERT INTO control.management_commands(actor_id,request_key,dataset_id,action,request_digest,
             expected_config_revision,policy_revision,audit_id,accepted_at_us)
             VALUES(p,key,d,'relay.enrollment.change',decode(repeat('00',32),'hex'),config,policy,audit,0);
-        SET CONSTRAINTS ALL IMMEDIATE;
+        SET CONSTRAINTS control.relay_enrollment_command_complete IMMEDIATE;
         RAISE EXCEPTION 'orphan command was accepted';
     EXCEPTION WHEN check_violation THEN
         IF SQLERRM<>'enrollment requires atomic detail' THEN RAISE; END IF;

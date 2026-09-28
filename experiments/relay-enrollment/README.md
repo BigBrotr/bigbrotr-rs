@@ -36,3 +36,13 @@ HTTP/CLI and signed socket integration remain required. This recipe and a passin
 small fixture cannot claim complete enrollment, M1, capacity, arm64 or release
 qualification. Read `pg/enrollment-result.json`, build/test logs and terminal
 resources; outer process exit alone is insufficient.
+
+The first dae4d45 run passed its native build/80 tests/Clippy but could not create
+PostgreSQL's network: Docker's default address pools were fully allocated. No
+engine assertion ran. The corrected fixture explicitly selects172.16.240.0/28,
+checks every existing Docker subnet and nondefault host route for overlap, and
+keeps the network internal with no host ports. It does not retire another lab or
+change Docker daemon defaults. Exact dae4d45 binaries may be reused only when the
+Git diff contains exclusively experiment/documentation changes; report both source
+identities. The correction also isolates the orphan-command trigger and compares
+literal original route/visibility values independently of stored-field hashes.

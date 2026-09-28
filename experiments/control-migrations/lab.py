@@ -7,6 +7,7 @@ Resources are never silently reused or removed. Credentials stay in the owned
 """
 import argparse
 import hashlib
+import ipaddress
 import json
 import os
 from pathlib import Path
@@ -49,7 +50,7 @@ def load(root):
     return state
 
 
-def setup(root, build, source, run_name):
+def setup(root, build, source, run_name, *, subnet=None):
     if source.resolve() != Path(__file__).resolve().parents[2]:
         raise RuntimeError("execute the harness from its selected Git source checkout")
     if command(["git", "-C", str(source), "status", "--porcelain", "--untracked-files=all"]).stdout:
@@ -83,7 +84,30 @@ def setup(root, build, source, run_name):
     common = ["--label", f"{LABEL}={state['owner']}", "--user", f"{os.getuid()}:{os.getgid()}",
               "--cpus", "2", "--pids-limit", "256", "--read-only", "--cap-drop", "ALL",
               "--security-opt", "no-new-privileges", "--tmpfs", "/tmp:rw,exec,nosuid,nodev,size=128m"]
-    docker("network", "create", "--internal", "--label", f"{LABEL}={state['owner']}", state["network"])
+    network_args = []
+    if subnet is not None:
+        selected = ipaddress.ip_network(subnet, strict=True)
+        if selected.version != 4 or not selected.is_private or selected.prefixlen != 28:
+            raise RuntimeError("explicit laboratory subnet must be one private IPv4 /28")
+        network_ids = docker("network", "ls", "-q").stdout.split()
+        networks = json.loads(docker("network", "inspect", *network_ids).stdout)
+        routes = json.loads(command(["ip", "-j", "route", "show", "table", "all"]).stdout)
+        prefixes = [entry["Subnet"] for network in networks for entry in network["IPAM"].get("Config") or []]
+        prefixes += [route["dst"] for route in routes if route.get("dst", "default") != "default"]
+        for value in prefixes:
+            prefix = ipaddress.ip_network(value, strict=False)
+            if prefix.version == selected.version and prefix.overlaps(selected):
+                raise RuntimeError("explicit laboratory subnet overlaps an existing network or route")
+        state["explicit_subnet"] = str(selected)
+        state["network_preflight"] = dict(networks=len(networks), routes=len(routes), overlap=False)
+        write_json(root / "resources.json", state)
+        network_args = ["--subnet", str(selected)]
+    network = docker("network", "create", "--internal", *network_args,
+                     "--label", f"{LABEL}={state['owner']}", state["network"], check=False)
+    if network.returncode:
+        # Unlike SQL errors, this diagnostic cannot contain database credentials.
+        write_json(root / "network-failure.json", dict(exit_code=network.returncode, stderr=network.stderr))
+        raise RuntimeError("isolated network creation failed; see network-failure.json")
     docker("run", "-d", "--name", state["postgres"], *common,
            "--memory", "1536m", "--memory-swap", "1536m", "--network", state["network"],
            "--network-alias", "postgres", "--tmpfs", "/var/run/postgresql:rw,nosuid,nodev,size=16m,mode=0777",

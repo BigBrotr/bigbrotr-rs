@@ -27582,6 +27582,72 @@
         "capture_manifest_sha256": "78bd8c20cce9cc2ce6e22fbfe331802df7a313aa3d009871ec38609d4e065edc"
       },
       "evidence": "docs/implementation/evidence/p02-relay-registry-faults-native-20260928.json"
+    },
+    "enrollment": {
+      "state": "stopped-retained; native build/80 tests/Clippy PASS, engine setup failed before PostgreSQL allocation",
+      "run": {
+        "source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+        "tree": "1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9",
+        "owner": "636d8b4982589759a10929c7d7a6d079",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-dae4d45",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "c1a6feab87108022fe3574694851ed00dd788ab6ae06f1907557120b45ef1ba5"
+          },
+          {
+            "name": "native",
+            "id": "9234853fc905cc1b072be091e136f84c0390840a344a712b5ac2a5bc54974176"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T03:54:08.744134+00:00",
+        "qualification": "PASS_RELAY_ENROLLMENT_BUILD_ONLY",
+        "postgres_lab": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-dae4d45/pg",
+          "owner": "274e41c768688409b7fef70fc62e9ee7",
+          "network": "bigbrotr-implementation-pg-20260917-enrollment_dae4d45"
+        },
+        "inventory_changed": [],
+        "free_bytes_after": 67276283904,
+        "finished_at": "2026-09-28T03:55:24.381371+00:00"
+      },
+      "launch": {
+        "source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+        "tree": "1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-dae4d45",
+        "pid": 2916165,
+        "start_ticks": "394990226",
+        "bundle_sha256": "7af777f99c2ce3ed4c0eadf9396482ad75ea18f491c941b40c5e903664ebf138"
+      },
+      "local_capture": ".research/implementation/relay-enrollment-20260928",
+      "scope": "Initial no-auth enrollment and selected direct routes; held/lost COMMIT, concurrent schedules, complete action issuer and M1 remain open",
+      "protected_inputs": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/target",
+        "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build/cargo-home"
+      ],
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-09-28T04:00:15.466351+00:00",
+        "source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+        "owner": "636d8b4982589759a10929c7d7a6d079",
+        "prior_unchanged": 866,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          "c1a6feab87108022fe3574694851ed00dd788ab6ae06f1907557120b45ef1ba5",
+          "9234853fc905cc1b072be091e136f84c0390840a344a712b5ac2a5bc54974176"
+        ],
+        "source_files": 1439,
+        "cache_lock_released": true,
+        "original_115_artifacts_preserved": true,
+        "free_bytes": 67276222464
+      },
+      "report": "docs/implementation/evidence/p02-relay-enrollment-incomplete-20260928.json",
+      "partial_postgres": "Owned pg directory/secrets retained; network creation failed; no PG/client container or network exists."
     }
   }
 }

@@ -15,10 +15,15 @@ assert source == SOURCE
 revision = lab.command(['git','-C',str(SOURCE),'rev-parse','HEAD']).stdout.strip()
 assert not lab.command(['git','-C',str(SOURCE),'status','--porcelain','--untracked-files=all']).stdout
 receipt = json.loads((build/'build-result.json').read_text())
-assert receipt['source'] == revision
+if receipt['source'] != revision:
+    changed=lab.command(['git','-C',str(SOURCE),'diff','--name-only',receipt['source'],revision]).stdout.splitlines()
+    assert changed and all(name.startswith(('docs/','experiments/')) for name in changed), changed
+    # Reuse exact artifacts only for a fixture/documentation correction. Every
+    # product, lock, migration, build input and tool remains byte-identical.
+
 assert hashlib.sha256((build/'relay_enrollment_probe').read_bytes()).hexdigest() == receipt['probe_sha256']
 report = dict(format='bigbrotr-relay-enrollment-native/1', source=revision, build=receipt,
-              status='RUNNING', cases=[], not_run=['held/lost COMMIT', 'expiry during accepting COMMIT',
+              application_source=receipt['source'],status='RUNNING', cases=[], not_run=['held/lost COMMIT', 'expiry during accepting COMMIT',
               'concurrent lock schedules', 'installed HTTP/CLI enrollment', 'action issuer and restrictive drain',
               'signed socket acquisition', 'load and aged state', 'arm64', 'protected/multi-rule/overlay routes'])
 def save():lab.write_json(root/'enrollment-result.json', report)
@@ -36,7 +41,7 @@ def tables(state,db):
 
 created=False
 try:
-    lab.setup(root,build,SOURCE,'enrollment_'+revision[:7]);created=True
+    lab.setup(root,build,SOURCE,'enrollment_'+revision[:7],subnet='172.16.240.0/28');created=True
     state=lab.load(root);report['server']=state['server'];save()
     db='bb_enrollment'
     lab.sql(state,'postgres',f'CREATE DATABASE {db} OWNER bigbrotr_migrator')
@@ -116,6 +121,10 @@ try:
         data+=bytes.fromhex(row['route_bytes'])
         assert hashlib.sha256(data).hexdigest()==row['digest']
     keyed={int(r['key'][:2],16):r for r in rows}
+    record('independent-original-command-values', len(rows)==5
+        and all(r['domain']=='37'*16 and r['ordinal']==('8' if int(r['key'][:2],16)==7 else '7')
+            and r['route_bytes']==('0104180a020100' if int(r['key'][:2],16) in (1,3) else '00')
+            and r['config']==r['policy']=='1' for r in rows))
     record('independent-command-digests-and-atomic-attribution',set(keyed)=={1,3,4,6,7}
         and all(r['same_xact'] and r['audit'] and r['actor']=='10'*16 for r in rows)
         and [(r['enabled'],r['previous'],r['generation']) for r in rows]==[(True,None,'1'),(False,'1','2'),(True,'2','3'),(True,None,'1'),(True,None,'1')],rows=rows)
