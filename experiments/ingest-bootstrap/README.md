@@ -66,3 +66,29 @@ preserved by the full-state comparison, not reclassified through an older codec.
 Whole-process exit and zero remaining probe backends are required after driver
 join. The report has 31 explicit checks; it does not qualify acquisition grants,
 installed runtime, mid-FFI cancellation, policy transitions, load or arm64.
+
+## Installed first-lifetime SQL interruption
+
+`experiments/acquisition-scope/bindings.py LAB --installed-commits BUILD` runs
+`commits.py` against fresh clones of the inventoried empty source template. It
+reuses qualified CLI/probe artifacts only when every changed source path is
+inside docs/experiments; Rust and all build inputs must remain identical.
+
+Twelve finite scenarios use the actual explicit initial CLI: healthy stop,
+response loss before/after Control claim, registry registration, original-input
+reservation and native-outcome copy, cancellation at reservation/outcome COMMIT,
+and a delayed successful outcome COMMIT. The existing finite loopback proxy
+records exact forwarded/server-complete/client-complete counters. Each held
+transaction has an independently observed backend/session advisory lock and an
+actual competing CLI refused as Busy. Cancellation additionally observes that
+the server transaction can outlive the terminated client until the proxy closes.
+A closed client socket is never reported as server rollback or exclusion.
+
+All 64 tables/xmin, original CBOR inputs and complete RocksDB rows are checked.
+The literal codec oracle uses SQL identities; only the opaque random recovery ID
+is extracted from the original manifest, whose remaining bytes are independently
+reconstructed. Partial initialization is preserved and existing native targets
+refuse fresh initialization before another Control claim. Registry-only cuts
+retain their state without claiming a crash-resumable initializer. Renewal cuts,
+worker panic, successor authority, full M1 and capacity remain separate work.
+This recipe is a test definition, not evidence that these cases have executed.

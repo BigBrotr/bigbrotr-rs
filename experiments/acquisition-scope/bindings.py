@@ -33,13 +33,14 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 installed = len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest'
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
-assert len(sys.argv) == 2 or guards or refusals or policy or lease or installed or interruptions
+commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
+assert len(sys.argv) == 2 or guards or refusals or policy or lease or installed or interruptions or commits
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-build = Path(sys.argv[3]).resolve(strict=True) if guards or interruptions else root / 'out/artifacts'
+build = Path(sys.argv[3]).resolve(strict=True) if guards or interruptions or commits else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == 'ingest_bootstrap_probe'
-if guards or interruptions:
+if guards or interruptions or commits:
     # Reuse only reviewed exact artifacts whose complete Rust/build inputs match.
     changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
     assert changed and all(n.startswith(('docs/', 'experiments/')) for n in changed), changed
@@ -59,7 +60,7 @@ output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-binding'
 client = 'bigbrotr-acquisition-binding-' + revision[:7]
 report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=built,
-    status='RUNNING', wave='installed-interruptions' if interruptions else 'installed-ingest' if installed else 'ingest-lease' if lease else 'policy' if policy else 'guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
+    status='RUNNING', wave='installed-commits' if commits else 'installed-interruptions' if interruptions else 'installed-ingest' if installed else 'ingest-lease' if lease else 'policy' if policy else 'guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
     client=None, cases=[], databases=[],
     postgres=pg['postgres'], postgres_owner=pg['owner'],
     not_run=['installed Sync/progress/M1', 'measured memory capacity/load/aged-state', 'arm64/release']
@@ -75,6 +76,11 @@ if interruptions:
     report['not_run'] = ['worker panic and arbitrary uninterruptible kernel I/O',
         'lost/delayed COMMIT and cancellation lock schedules', 'crash-resumable initialization/successor',
         'installed acquisition/M1', 'capacity/load/aged-state', 'arm64/release']
+
+if commits:
+    report['not_run'] = ['worker panic', 'crash-resumable initialization/successor',
+        'renewal-specific lost COMMIT and policy races', 'installed acquisition/M1',
+        'capacity/load/aged-state', 'arm64/release']
 
 if lease:
     report['not_run'] = ['installed Ingest/Sync/M1', 'lost or delayed COMMIT',
@@ -401,6 +407,8 @@ try:
         from interruptions import prepare_instrument
         instrument = prepare_instrument(root, prior, SOURCE)
         instrument_mount = ['--mount', f'type=bind,src={instrument},dst=/instrument,readonly']
+    if commits:
+        instrument_mount = ['--mount', f'type=bind,src={SOURCE},dst=/source,readonly']
     lab.docker('start', target['Id'])
     deadline = time.monotonic() + 30
     while lab.docker('exec', target['Id'], 'pg_isready', '-U', 'postgres', check=False).returncode:
@@ -421,7 +429,11 @@ try:
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
-    if interruptions:
+    if commits:
+        sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+        from commits import CASES, run as run_commits
+        cases = list(CASES)
+    elif interruptions:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
     elif installed:
         cases = ['pass','zero-topology','expired','policy-admin','existing-directory','registered-only']
@@ -445,7 +457,11 @@ try:
                  'no-source','certify-withdrawn','old-source-schema','old-binding-schema']
     installed_basis = None
     for name in cases:
-        if interruptions:
+        if commits:
+            completed = clone(name, 'bb_source_template')
+            report['cases'].append(run_commits(pg, client, output, completed, name, rows))
+            save()
+        elif interruptions:
             from interruptions import run as run_interruption
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_interruption(pg,client,output,completed,name,rows))
@@ -505,7 +521,7 @@ try:
         require(rows(completed) == basis_rows, 'signed-parent-changed')
     require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_source_template') == template
         and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')
-    report['status'] = 'PASS_INITIAL_INGEST_INTERRUPTION_WAVE' if interruptions else 'PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE' if installed else 'PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'
+    report['status'] = 'PASS_INITIAL_INGEST_COMMIT_WAVE' if commits else 'PASS_INITIAL_INGEST_INTERRUPTION_WAVE' if interruptions else 'PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE' if installed else 'PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'
 except BaseException as error:
     report.update(status='FAIL', failure=type(error).__name__ + ': ' + str(error))
     raise
@@ -534,5 +550,5 @@ finally:
         c['State']['Running'] or c['State']['Pid'] or c['State']['OOMKilled'] for c in report['terminal']):
         report['status'] = 'INCOMPLETE_LAB_AUDIT'
     save()
-require(report['status'] == ('PASS_INITIAL_INGEST_INTERRUPTION_WAVE' if interruptions else 'PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE' if installed else 'PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'), 'incomplete-binding')
+require(report['status'] == ('PASS_INITIAL_INGEST_COMMIT_WAVE' if commits else 'PASS_INITIAL_INGEST_INTERRUPTION_WAVE' if interruptions else 'PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE' if installed else 'PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'), 'incomplete-binding')
 print(json.dumps(dict(status=report['status'], cases=len(report['cases']))))

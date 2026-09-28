@@ -12,11 +12,17 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main/private origin is5b69a2c (native interruption qualification pushed).
-Product7ab155e, first lifetime qualificationfef5025 and interruption fixtureec19cb0
-are committed/pushed. Root owns only this checkpoint and a stale bootstrap-reference
-correction: the explicit initial CLI now consumes bootstrap. No product edits or
-running experiment. Full selected product remains INCOMPLETE.
+Mac main/private origin is c0b194d, verified clean before this work. Product
+7ab155e and its first-lifetime/native-interruption qualifications are pushed.
+Root now owns only the installed SQL fixture, its bindings/README and checkpoint;
+no Rust/build dependency change. The twelve finite cases are written, NOT RUN:
+before/after commits1–4, cancellation at3/4, delayed4 and healthy stop. Full
+registry/reservation/outcome owners were read; proxy counters and independent
+PG/native/original-input observations must verify the source-derived sequence.
+Read-only review is in progress. Next: finish fixture review, make an exact-source
+candidate and run it on Tux using retained7ab155e binaries, without recompilation.
+Fresh Tux preflight:62,812,012KiB free, eight unrelated running containers, no
+active BigBrotr process/lab. Prior cache retirement remains complete.
 
 Active P01-T09 Step1/P02-T02 Steps2/3: explicit
 `serve --initialize-ingest --roles control,ingest`, fresh-only under retained
@@ -79,13 +85,13 @@ contract before choosing exact commit numbers. Preserve unknown durable state;
 no retry may silently regenerate initial identities. Worker panic, crash-resumable
 initialization and successor remain open. No M1 or capacity/arm64 claim.
 
-The next SQL fixture is not written or run. Root read the complete connected
+The next SQL fixture is written and not yet run. Root read the complete connected
 initial_batch.rs and postgres_command.rs, acquire/register wrapper, current
 registration/bootstrap contracts and finite proxy framing/lifetime plus Process
 helper. Source-derived COMMIT sequence to verify against actual proxy counters:
 Control claim1, registration2, original-input reservation3, native outcome copy4,
 Control refresh5, Ingest renewal6. RegistrationAttempt/producer reservation/outcome
-owners still need focused final reading before that fixture. Select real before/
+owners were also read completely before writing this fixture. Select real before/
 after COMMIT cuts and held cancellation, retain original attempts and all durable
 rows/CBOR/native bytes. The proxy must own/reap its actual process, continuously
 drain bounded metadata and distinguish its upstream hold from CLI driver death.
@@ -129,7 +135,7 @@ e86439e intermediates; qualified artifacts are separately retained. No cleanup
 obligation. Cache retirement remains complete; never replay launchers/deletions.
 
 Renewal and explicit first-run lifetime qualifications are pushed. The native
-interruption fixture above is active, preserving worker/native/driver custody.
+interruption fixture above is qualified and stopped; SQL interruption is active.
 Initial registration construction and partial-state boundaries were reviewed. Separate initializer→Serve currently cannot reuse the
 initial writer. Keep that constraint visible; do not add a parallel plan.
 The renewal's lost/delayed COMMIT, write-cutoff negative control and policy/closing
