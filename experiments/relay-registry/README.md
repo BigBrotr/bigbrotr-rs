@@ -53,3 +53,27 @@ only the ownership-verified PostgreSQL container, contrasts both session shapes,
 runs the eight refusals and rollback, verifies complete retained table contents
 in all three databases and stops PostgreSQL. Its separately named result never
 overwrites the original failure. No compiler cache or new engine copy is needed.
+
+The `relay-registry-faults` native profile builds the actual fault probe and CLI
+using the same locked compiler cache. It skips the unchanged catalog suites and
+does not start an engine. After that finite build completes, run the exact
+checkout's `faults.py RUN_ROOT`. It verifies unchanged product/migration inputs
+against03b0197, restarts only that run's verified PostgreSQL and creates new cloned
+fixture databases plus one finite, labeled client. Original database contents
+and results remain unchanged; all new databases and results remain retained.
+
+The existing wire proxy targets COMMIT2: COMMIT1 acquires Control. Cases cover
+normal insertion, both lost-reply outcomes, held cancellation with close/release,
+expiry while held, competing-owner refusal, a real dataset-lock wait across policy
+revision advancement, fresh-policy old/new attribution and corrupt65-row buckets
+for both existing and absent URLs. One existing-identity lookup after scheduling
+expiry distinguishes read identity from network permission. Independent SQL
+checks complete receipt fields, all60 table digests and actual backend locks.
+The retained basic database already has two released owner epochs, so the first
+fault owner is3 and its successor4 even when registration did not commit.
+
+The client shares only the owned PostgreSQL network namespace; its loopback
+authentication boundary is a fixture, not new SCRAM/TLS qualification. The
+earlier bridge-connected adapter evidence remains separate. These cases do not
+establish installed runtime resource reservations or network action authorization.
+Each proposed fault case remains NOT_RUN until an exact-source report records it.

@@ -12,12 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEADc5856efd313db2025334bab966448bc66eb6a918 is the fixture-correction
-candidate after03b0197. origin/main eb4ba5a remains private/published until this
-verified evidence commit is pushed. Root owns only checkpoint/report/inventory
-updates. All32 earlier SQL files match publishedeb4ba5a; applied0003 is immutable.
-Root is sole writer; independent read-only review continues for the next bounded
-failure/concurrency cases. No other writer/native experiment is active.
+Verified HEAD047eb23 is published at origin/main in the private repository.
+Root-owned changes add the next fault probe/recipe, extract its shared fixture
+policy comparator and clarify existing-identity expiry semantics. Product Rust,
+Cargo.lock and all applied SQL remain unchanged from03b0197. No other writer or
+native experiment is active; prelaunch independent fixture review is in progress.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
 with the explicit remaining gates below. No complete task/phase/M1/product claim.
@@ -293,3 +292,25 @@ and1154757 shared compiler cache; no cache/container/volume deleted this boundar
 Remaining registry cases: held/lost COMMIT, policy changes across waits, fresh
 policy successor, concurrent callers and corrupt overfull buckets. Then continue
 minimal enrollment/route authority and signed socket M1 consumer above.
+
+Fault recipe preparation: native profile builds only current CLI/fault probe and
+Clippy, reusing1154757 under the exclusive cache lock; unchanged31 catalog tests
+are not repeated. After compilation, faults.py restarts the separately verified
+original03b0197 PG and creates nine new cloned databases plus one labeled finite
+client, preserving original3DB contents/results. Looped SQL digest observations
+are batched into one query while preserving the original60-table oracle. The
+wire proxy targetsCOMMIT2; new owners begin at epoch3 because the source fixture
+already has two released owners. Current Mac Clippy/format/artifact checks pass;
+all new native fault cases NOT_RUN. Local logs and fresh Tux census are under
+.research/implementation/relay-registry-fault-local-20260928. At02:52:22UTC free
+67,641,020,416 bytes/eight unrelated running/no BigBrotr. No large archive copy or
+cache retirement needed for this finite profile. Next: finish fixture review,
+commit exact native candidate, build, then run and inspect all nine actual cases.
+Prelaunch read-only AI review found one oracle gap: the held-expiry case could
+start already expired. Corrected before execution: a3s scheduling lease must be
+observed live at the actual heldCOMMIT, then expired on the same backend before
+release. Existing-identity lookup likewise waits for independently observed SQL
+expiry rather than a fixed sleep. Root reviewed the correction and full fixture;
+no product defect or additional launch blocker was found. Captured prelaunch
+review is source analysis only, not native execution. Shared fixture validation
+was extracted unchanged; PostgreSQL owner/generic proxy helpers are reused.

@@ -27493,6 +27493,16 @@
           "local_capture": ".research/implementation/relay-guards-c5856ef"
         }
       }
-    ]
+    ],
+    "fault_cases": {
+      "status": "Prepared; NOT_RUN native. Product/migrations unchanged, Mac probe Clippy passed.",
+      "local_capture": ".research/implementation/relay-registry-fault-local-20260928",
+      "recipe": "experiments/network-transport/lab.py REV TREE relay-registry-faults, then exact-source experiments/relay-registry/faults.py RUN_ROOT",
+      "inputs": [
+        "network-1154757/out/build compiler cache with original ELFs preserved",
+        "relay-registry-03b0197/pg retained PostgreSQL and three original fixture databases"
+      ],
+      "scope": "Nine bounded actual-adapter fault/policy/corruption cases; no acquisition, load or release claim"
+    }
   }
 }

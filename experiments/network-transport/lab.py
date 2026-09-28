@@ -17,7 +17,7 @@ sys.dont_write_bytecode = True
 from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
-assert len(sys.argv) in (3, 4) and profile in ('network', 'relay-registry')
+assert len(sys.argv) in (3, 4) and profile in ('network', 'relay-registry', 'relay-registry-faults')
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
 root = base / 'runs' / (profile + '-' + revision[:7])
@@ -143,9 +143,13 @@ try:
     assert shutil.disk_usage(base).free > 8 * 1024**3
     state['state'] = 'running'
     write(root / 'resources.json', state)
-    run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + ('network-transport' if profile == 'network' else profile) + '/native.py'], 1860)
+    native_path = 'network-transport' if profile == 'network' else 'relay-registry'
+    native_args = ['faults'] if profile == 'relay-registry-faults' else []
+    run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_path + '/native.py', *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
-    assert qualification['source'] == revision and qualification['status'] == ('PASS_SCOPED_NETWORK_COMPONENTS' if profile == 'network' else 'PASS_REGISTRY_BUILD_ONLY')
+    expected = {'network': 'PASS_SCOPED_NETWORK_COMPONENTS', 'relay-registry': 'PASS_REGISTRY_BUILD_ONLY',
+                'relay-registry-faults': 'PASS_REGISTRY_FAULT_BUILD_ONLY'}[profile]
+    assert qualification['source'] == revision and qualification['status'] == expected
     state['qualification'] = qualification['status']
     if profile == 'relay-registry':
         subprocess.run(['python3', '-B', str(source / 'experiments/relay-registry/run.py'),

@@ -59,6 +59,12 @@ identity. This is pure get-or-create: it requires no separate command key or
 mutable command history. `created` describes this transaction only and cannot
 reconstruct whether an interrupted earlier caller was the original creator.
 
+An existing-row lookup rolls back its read transaction and has no insertion
+expiry trigger. It may return the retained identity after the scheduling lease
+expires while the actual backend fence and validated policy heads still match.
+This grants no network action: scheduling expiry is distinct from positive owner
+exclusion, and `AuthorityExpired` describes the new insertion's commit check.
+
 The [actual-engine recipe](../../experiments/relay-registry/README.md) separates
 proposed scenarios from executed evidence. Remaining enrollment/route and network
 action authorization preserve their selected task scope; this table cannot stand

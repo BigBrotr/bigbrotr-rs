@@ -30,24 +30,30 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
                 scope='Operational endpoint registration build; no acquisition or release qualification')
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
+faults = len(sys.argv) == 2 and sys.argv[1] == 'faults'
+assert len(sys.argv) == 1 or faults
+probe = 'relay_registry_fault_probe' if faults else 'relay_registry_probe'
 checks = Path('/out/build-checks')
-result = execute([
+steps = [
     ('compile', ['cargo','build','--locked','--offline','--release','-p','bigbrotr',
-                 '--bin','bigbrotr','--example','relay_registry_probe']),
-    ('catalog', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
-                 '--test','relay_registry','--test','control_schema','--test','migrate_entrypoint']),
+                 '--bin','bigbrotr','--example',probe]),
     ('clippy', ['cargo','clippy','--locked','--offline','--release','-p','bigbrotr','--lib',
-                '--test','relay_registry','--example','relay_registry_probe','--','-D','warnings']),
-],checks,SOURCE,env,identity,1800)
+                '--example',probe,'--','-D','warnings']),
+]
+if not faults:
+    steps.insert(1, ('catalog', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                 '--test','relay_registry','--test','control_schema','--test','migrate_entrypoint']))
+result = execute(steps,checks,SOURCE,env,identity,1800)
 assert result['status']=='PASS'
 artifacts=Path('/out/artifacts'); artifacts.mkdir()
-for name,relative in [('bigbrotr','bigbrotr'),('relay_registry_probe','examples/relay_registry_probe')]:
+for name,relative in [('bigbrotr','bigbrotr'),(probe,'examples/'+probe)]:
     shutil.copy2(build/'target/release'/relative,artifacts/name)
 info=json.loads(subprocess.check_output([str(artifacts/'bigbrotr'),'build-info'],env=env))
 assert info['source']==dict(state='builder-supplied',revision=manifest['revision'],tree=manifest['tree'],
                            dirty=False,manifest_sha256=identity['source_manifest_sha256'])
 receipt=dict(identity,format='bigbrotr-registry-build/1',binary_sha256=file_hash(artifacts/'bigbrotr'),
-             probe_sha256=file_hash(artifacts/'relay_registry_probe'),build_info=info)
+             probe_name=probe,probe_sha256=file_hash(artifacts/probe),build_info=info)
 (artifacts/'build-result.json').write_text(json.dumps(receipt,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
-Path('/out/qualification.json').write_text(json.dumps(dict(identity,status='PASS_REGISTRY_BUILD_ONLY'),indent=2)+'\n')
+status = 'PASS_REGISTRY_FAULT_BUILD_ONLY' if faults else 'PASS_REGISTRY_BUILD_ONLY'
+Path('/out/qualification.json').write_text(json.dumps(dict(identity,status=status),indent=2)+'\n')
