@@ -22,6 +22,7 @@ from concurrency_cases import Session
 sys.path.insert(0, str(SOURCE / "experiments/network-transport"))
 from inventory import projection
 
+assert len(sys.argv) in (2, 3)
 root = Path(sys.argv[1]).resolve(strict=True)
 assert SOURCE == root / "source"
 revision = lab.command(["git", "-C", str(SOURCE), "rev-parse", "HEAD"]).stdout.strip()
@@ -46,9 +47,14 @@ assert not lab.command(
         "rust-toolchain.toml",
     ]
 ).stdout
-build = root / "out/artifacts"
+build = Path(sys.argv[2]).resolve(strict=True) if len(sys.argv) == 3 else root / "out/artifacts"
 built = json.loads((build / "build-result.json").read_text())
-assert built["source"] == revision and built["probe_name"] == "relay_enrollment_fault_probe"
+assert built["probe_name"] == "relay_enrollment_fault_probe"
+if built["source"] != revision:
+    changed = lab.command(
+        ["git", "-C", str(SOURCE), "diff", "--name-only", built["source"], revision]
+    ).stdout.splitlines()
+    assert changed and all(name.startswith(("docs/", "experiments/")) for name in changed), changed
 assert (
     hashlib.sha256((build / built["probe_name"]).read_bytes()).hexdigest() == built["probe_sha256"]
 )
@@ -69,6 +75,7 @@ client = "bigbrotr-relay-enrollment-faults-" + revision[:7]
 report = dict(
     format="bigbrotr-relay-enrollment-faults/1",
     source=revision,
+    application_source=built["source"],
     build=built,
     status="RUNNING",
     owner=owner,
@@ -369,6 +376,18 @@ try:
         require(time.monotonic() < deadline, "postgres-readiness")
         time.sleep(0.1)
     require(tables("bb_enrollment") == expected_original, "original-state-before")
+    # The initial enrollment journey acquired Control once. Its baseline differs
+    # from the older registry fixture, which deliberately replaced its owner.
+    baseline_epochs = json.loads(
+        lab.sql(
+            pg,
+            "bb_enrollment",
+            "SELECT json_agg(epoch ORDER BY epoch) FROM control.owner_epochs WHERE role='control'",
+        )
+    )
+    require(baseline_epochs == [1], "original-owner-epochs")
+    report["original_owner_epochs"] = baseline_epochs
+    save()
     shutil.copyfile(original_root / "pg/policy.json", output / "policy.json")
     ident = lab.docker(
         "create",
@@ -459,7 +478,7 @@ try:
         )
         process, token = app(db, mode, 11, ready["listen_port"])
         acquired = event(process, "ready")
-        require(acquired["epoch"] == 3, "first-new-owner-epoch")
+        require(acquired["epoch"] == 2, "first-new-owner-epoch")
         before = tables(db)
         observations = [observe(db, acquired)]
         require(
@@ -524,7 +543,7 @@ try:
         changed = unchanged(before, after, domain_tables if committed else [])
         if committed:
             require(
-                rows[0]["epoch"] == 3 and rows[0]["config"] == rows[0]["policy"] == "1",
+                rows[0]["epoch"] == 2 and rows[0]["config"] == rows[0]["policy"] == "1",
                 "first-attribution",
             )
             for relation in domain_tables:
@@ -535,7 +554,7 @@ try:
             verify_receipt(result, rows, True)
         recovered, recovery_token = app(db, "accept", 13)
         new_owner = event(recovered, "ready")
-        require(new_owner["epoch"] == 4, "recovery-owner-epoch")
+        require(new_owner["epoch"] == 3, "recovery-owner-epoch")
         recovery_before = tables(db)
         go(recovery_token)
         recovery = finish(recovered)
@@ -544,7 +563,7 @@ try:
         recovery_after = tables(db)
         unchanged(recovery_before, recovery_after, [] if committed else domain_tables)
         require(
-            durable == rows if committed else durable[0]["epoch"] == 4,
+            durable == rows if committed else durable[0]["epoch"] == 3,
             "original-receipt-attribution",
         )
         record(
@@ -659,7 +678,7 @@ try:
         rows = enrollment(db)
         verify_receipt(outcome, rows, True)
         require(
-            rows[0]["epoch"] == 3 and rows[0]["config"] == rows[0]["policy"] == "1",
+            rows[0]["epoch"] == 2 and rows[0]["config"] == rows[0]["policy"] == "1",
             "accept-before-writer-attribution",
         )
         after = tables(db)
@@ -760,16 +779,17 @@ finally:
     report["unrelated_changed"] = [
         c["Id"]
         for c in prior
-        if c["Id"] != target["Id"] and projection(c) != projection(after[c["Id"]])
+        if c["Id"] != target["Id"]
+        and (c["Id"] not in after or projection(c) != projection(after[c["Id"]]))
     ]
-    report["terminal"] = [
-        projection(after[i])
-        for i in [target["Id"]] + ([report["client"]["id"]] if report["client"] else [])
-    ]
+    owned_ids = [target["Id"]] + ([report["client"]["id"]] if report["client"] else [])
+    report["missing_owned"] = [i for i in owned_ids if i not in after]
+    report["terminal"] = [projection(after[i]) for i in owned_ids if i in after]
     report["cleanup_errors"] = errors
     if (
         errors
         or report["unrelated_changed"]
+        or report["missing_owned"]
         or any(
             c["State"]["Running"] or c["State"]["Pid"] or c["State"]["OOMKilled"]
             for c in report["terminal"]

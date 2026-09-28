@@ -12,10 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and origin/main are published868954f, clean before this new fault slice.
-Root now owns the actual enrollment fault probe, its clone-database laboratory,
-native profile wiring and recipe/checkpoint edits. No other writer or
-active native experiment remains. Independent route/authority review was read-only.
+Local main candidate c2eebecf5f86bffd94f9c9da500e3ae4855d9c72 is committed but not
+pushed; origin/main remains868954f. Root owns current inventory/checkpoint and
+the pending narrow laboratory audit correction described below. No other writer is present. The native fault run is stopped-retained as recorded below. Independent route/authority review was read-only.
 Product candidate dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9 is unchanged
 through fixture-only325fa01 and49e7ed4. All source transfers were exact clean Git.
 
@@ -36,9 +35,12 @@ actual policy/session/account lock races using the retained successful PostgreSQ
 as a source for separately named clone databases. Reuse the existing protocol
 fault proxy and actual session/Control client; preserve every original database,
 result and artifact. No need to repeat unchanged80 native tests for fixture-only
-work. The new probe passed Mac Clippy; native compilation and all18 engine schedules
-remain NOT_RUN. Read-only independent review is in progress; no Tux allocation
-or process has started for this slice.
+work. The new probe passed Mac Clippy. Independent read-only review found no product
+or scenario blocker, but identified an audit-report KeyError if a prior container
+disappears during cleanup. Correct that narrow local fixture after preserving this
+run. The correction now preserves an incomplete audit for missing unrelated or
+owned IDs; synthetic old/new actual-fragment regression passed. No real container
+disappeared. Original native outcome is the fixture failure recorded below.
 Only after these authority gates, implement the current action issuer and socket
 consumer. Do not postpone useful integration for a complete adjacent subsystem.
 
@@ -193,3 +195,28 @@ recursive DNS interoperability and aged/mixed load remain selected work.
 History reader grants do not authorize acquisition. DeliveryWindow copies need
 explicit parent invalidation; current management ActionGate/write-only socket
 cannot simply be reused for a renewable bidirectional acquisition owner.
+
+Fault candidate c2eebec/tree4575b9497d21ef02f34ca69bde1db8acd2921e8f at
+runs/relay-enrollment-faults-c2eebec is stopped-retained. Native build/Clippy PASS;
+first clone reached actual authenticated session, then the fixture wrongly expected
+epoch3 instead of2. The source database has one historical Control owner, whereas
+the older registry fixture had two. No command gate opened, no fault case qualified.
+[Original failure](evidence/p02-relay-enrollment-faults-incomplete-20260928.json)
+retains outputs and new clone bb_enroll_fault_c2eebec_pass. Product/SQL unchanged.
+
+Terminal audit04:28:18UTC verified871 prior projections unchanged (excluding the
+explicit borrowed PG), eight unrelated running,1444 source files, original ELFs
+and released compiler lock. Compiler owner85f95ebfb38879d01070d306913efbf5;
+PID2961077/start395178465 terminal. Fetch/native0, fault-client143, borrowedPG0;
+noOOM. Fault ownerf1f2b8599720648ee1f5aebdc9ad13e7 is inventoried with its exact client ID. Free66,973,876,224bytes. No deletion.
+Inventory enrollment.faults and ignored .research/implementation/relay-enrollment-faults-c2eebec
+own original resources/captures and local cleanup-regression recipe.49e7ed4 PG is
+stopped again with original database and new named clone retained.
+
+Root owns fixture-only epoch/census corrections. The corrected precondition reads
+original Control epochs and requires literal[1], then expects2 and3 for replacement
+and recovery. Next: commit/transfer exact Git, rerun engine only in a fresh owned
+fault root using exact c2eebec artifacts after proving all product/build inputs
+unchanged. No Rust rebuild or unchanged test suite is needed. Preserve every
+original result and clone; review real18 outcomes and terminal state before closing
+these authority gates. Current action issuer/M1 integration then follows.

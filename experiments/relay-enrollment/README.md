@@ -80,3 +80,14 @@ password and bounded Argon2 reservation. Expiry starts live and is independently
 observed while held; the other authority must remain live. Writers are privileged
 fault injections, not qualification of an installed administration flow. An old
 acceptance does not become current acquisition permission after those changes.
+
+The first c2eebec fault attempt passed native build/Clippy but stopped before the
+first command gate because the fixture copied the registry laboratory's epoch3
+expectation. This enrollment source has only one prior owner; replacements must
+be2 then3. The corrected fixture first requires the literal original epoch list[1].
+Its optional second argument names retained c2eebec artifacts for an engine-only
+rerun; every non-documentation/non-experiment source path must remain equal.
+Original failed result/database remain retained. A static review also corrected
+missing-container cleanup reporting; the saved audit must become incomplete even
+when an unrelated or owned container is absent. Synthetic execution of the actual
+old/new final-census fragments reproduced KeyError and verifies that correction.

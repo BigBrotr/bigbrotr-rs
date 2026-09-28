@@ -27805,7 +27805,104 @@
           "report": "docs/implementation/evidence/p02-relay-enrollment-native-20260928.json",
           "preserve": "Original successful database, credentials protected under owned pg/secrets, artifacts/logs, internal172.16.240.16/28; intended input for isolated fault clones."
         }
-      ]
+      ],
+      "faults": {
+        "state": "stopped-retained; native build/Clippy PASS, first fixture epoch assertion failed before command",
+        "run": {
+          "source": "c2eebecf5f86bffd94f9c9da500e3ae4855d9c72",
+          "tree": "4575b9497d21ef02f34ca69bde1db8acd2921e8f",
+          "owner": "85f95ebfb38879d01070d306913efbf5",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-faults-c2eebec",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "2eb0a77f6f26fb7cd09c0957391ee51a078ea10c1d0d9de1be9ebdbc34bd8844"
+            },
+            {
+              "name": "native",
+              "id": "1381c6f334fc9dd1a9dc07e725499649c9d73b2b2110e58da0e0bea42679157e"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-09-28T04:25:31.138235+00:00",
+          "qualification": "PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 67004981248,
+          "finished_at": "2026-09-28T04:26:19.402221+00:00"
+        },
+        "launch": {
+          "source": "c2eebecf5f86bffd94f9c9da500e3ae4855d9c72",
+          "tree": "4575b9497d21ef02f34ca69bde1db8acd2921e8f",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-faults-c2eebec",
+          "pid": 2961077,
+          "start_ticks": "395178465",
+          "bundle_sha256": "f442d6b80e659f710f31898aa0c167ce657aea62ccd4bf8db98e0d9a304c7d73"
+        },
+        "local_capture": ".research/implementation/relay-enrollment-faults-c2eebec",
+        "borrowed_postgres": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-49e7ed4/pg",
+          "owner": "aa5b1b49157bd12de8aa040cd3076a72",
+          "database": "bb_enrollment",
+          "use": "Read-only original, new explicitly named clones; PG restarted then stopped"
+        },
+        "protected_inputs": [
+          "runs/network-1154757/out/build/target",
+          "runs/network-1154757/out/build/cargo-home"
+        ],
+        "terminal": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "c2eebecf5f86bffd94f9c9da500e3ae4855d9c72",
+          "observed_at": "2026-09-28T04:28:18.223134+00:00",
+          "prior_unchanged": 871,
+          "borrowed_postgres": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "id": "2eb0a77f6f26fb7cd09c0957391ee51a078ea10c1d0d9de1be9ebdbc34bd8844",
+              "exit": 0
+            },
+            {
+              "id": "1381c6f334fc9dd1a9dc07e725499649c9d73b2b2110e58da0e0bea42679157e",
+              "exit": 0
+            },
+            {
+              "id": "5399037d59989508ddd09c3af5bac4d833643cb0b78144006d34f42df8132d32",
+              "exit": 143
+            },
+            {
+              "id": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+              "exit": 0
+            }
+          ],
+          "source_files": 1444,
+          "cache_lock_released": true,
+          "original_115_artifacts_preserved": true,
+          "free_bytes": 66973876224
+        },
+        "fault_resources": {
+          "owner": "f1f2b8599720648ee1f5aebdc9ad13e7",
+          "label": "org.bigbrotr.relay-enrollment-faults",
+          "client": {
+            "id": "5399037d59989508ddd09c3af5bac4d833643cb0b78144006d34f42df8132d32",
+            "name": "bigbrotr-relay-enrollment-faults-c2eebec"
+          },
+          "postgres": "bigbrotr-implementation-pg-20260917-enrollment_49e7ed4",
+          "postgres_owner": "aa5b1b49157bd12de8aa040cd3076a72",
+          "postgres_id": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+          "databases": [
+            "bb_enroll_fault_c2eebec_pass"
+          ],
+          "status": "FAIL",
+          "failure": "RuntimeError: first-new-owner-epoch",
+          "cleanup_errors": [],
+          "unrelated_changed": []
+        },
+        "evidence": "docs/implementation/evidence/p02-relay-enrollment-faults-incomplete-20260928.json"
+      }
     }
   }
 }

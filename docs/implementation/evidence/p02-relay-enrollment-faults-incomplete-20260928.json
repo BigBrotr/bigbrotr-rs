@@ -1,0 +1,107 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T01 Step6 enrollment command fault qualification",
+  "status": "FAIL_FIXTURE_EPOCH_BEFORE_FIRST_COMMAND",
+  "source": "c2eebecf5f86bffd94f9c9da500e3ae4855d9c72",
+  "tree": "4575b9497d21ef02f34ca69bde1db8acd2921e8f",
+  "outcome": {
+    "build": "PASS",
+    "clippy": "PASS",
+    "qualified_fault_cases": 0,
+    "failure": "RuntimeError: first-new-owner-epoch",
+    "observed_ready": {
+      "config": 1,
+      "epoch": 2,
+      "event": "ready",
+      "pid": 73,
+      "policy": 1,
+      "session_expires": 1790598381427888
+    },
+    "expected_epoch_in_original_fixture": 3,
+    "reason": "The retained enrollment fixture acquired Control once (one original owner row), unlike the older registry fixture that replaced its owner. The fault harness copied the latter epoch expectation. This run stopped before releasing the command gate; no enrollment COMMIT fault ran."
+  },
+  "artifacts": {
+    "binary_sha256": "1986ce6540254278f5faedc68e0f5ae1a829c0f77515bc19af0fc6ebe47e5122",
+    "probe_sha256": "e68899aa5020afb51d33edebf2b5a0d514a1068855d8702adb927a918bdceb0f",
+    "source_manifest_sha256": "fc1823096fb1737b0cb2c6aad4e7975b9dbab3f515306a7b535103ce5f885a0c",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+  },
+  "correction": {
+    "product_changed": false,
+    "epoch": "Require literal original Control epoch list [1]; expect first replacement 2 and recovery 3. Actual original-list SQL precondition is required on rerun.",
+    "audit": "Independent static review found missing-container KeyError in cleanup. Actual old/new census fragments were contrasted with synthetic unrelated/owned disappearance; new report preserves INCOMPLETE_LAB_AUDIT. No real container disappeared or was removed.",
+    "reuse": "Retain exact c2eebec ELF; fixture-only corrected Git revision may reuse it after complete path-diff equivalence checks. Native rerun NOT_RUN."
+  },
+  "capture": {
+    "local": ".research/implementation/relay-enrollment-faults-c2eebec",
+    "remote": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-faults-c2eebec",
+    "files_sha256": {
+      "pipeline.json": "d70239eecfb05494b2f4529e3541f8080a2d22b9a4ddea26f639c3cc010f159e",
+      "launch.json": "01c5ff8623f083b3d0989db19800d6725a4726053ab50d1c54b48e67405e7202",
+      "resources.json": "72ee9a88abd7b11161b6de7c23699cd45236de4a36abd18b866b865a9096cc37",
+      "preflight.json": "6909c54bb0593ebc9bc99335cc2365600965fef7df581c573f86986740f4d713",
+      "orchestrator.log": "9bfd7c420c188b8296c0c78775a0126f24c67d8ca8340df27f4c522b75eae10c",
+      "fetch.log": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "native.log": "a79b503dde91a5506b619e78bca322445bdabcf0f68b32aa746b6d001ed381e8",
+      "fetch-terminal.json": "92dee0b095e182f10fa0387faed38b558fd5622b1f32808230223611b3357dec",
+      "native-terminal.json": "8efb2c0e63c1c238b5affdcfbb94293310185ba63f6195bb46db7b95deff0f58",
+      "terminal-audit.json": "d33c24022929014c8d495cd679221dfb932fc9aa9ea6771bf90a5897fdf146a5",
+      "out/build/source-manifest.json": "fc1823096fb1737b0cb2c6aad4e7975b9dbab3f515306a7b535103ce5f885a0c",
+      "out/build-checks/result.json": "5618f4df3ca2d16854ef269c65a450ada3079854b75e488f8a36b5205e5830d4",
+      "out/build-checks/compile.log": "66474e922d177bc8515270f537b7f2086fd6132c21fba7929162d5a750d8cbdb",
+      "out/build-checks/clippy.log": "d3be90036b476e80da8e651caf01a9a1897ea5a1034c95014f396ccc61921ce8",
+      "out/qualification.json": "b57b00c8ed0ef4fe810df2e8072632cc17e0873f6c74e90a4a502cfafc5c0539",
+      "out/artifacts/build-result.json": "612e939c1ee01716e0b12dec4f460c44bf366edefcac15dc417b5069b4fb2016",
+      "out/artifacts/bigbrotr": "1986ce6540254278f5faedc68e0f5ae1a829c0f77515bc19af0fc6ebe47e5122",
+      "out/artifacts/relay_enrollment_fault_probe": "e68899aa5020afb51d33edebf2b5a0d514a1068855d8702adb927a918bdceb0f",
+      "faults/bb_enroll_fault_c2eebec_pass-11.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "faults/bb_enroll_fault_c2eebec_pass-11.stdout": "27c2c3915361a8ca2e1a5b8d6660a0ef6c3de838704d707e27727617c6075bcd",
+      "faults/bb_enroll_fault_c2eebec_pass-proxy.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "faults/bb_enroll_fault_c2eebec_pass-proxy.stdout": "0d4621ea0ecca5cdb988a4e2c084f8d92c505c4d972f123d3db5ca0d82dbaffa",
+      "faults/policy.json": "f9342187c6a5a8d4c123e5437717864b9767c43f67197a1fefb917db1506872a",
+      "faults/preflight.json": "3baba7ff50f824ee097667830a1f94ffc01d197adc6d1a3dce8ff84855fdaf11",
+      "faults/result.json": "89d4e3d571628ee90c851fd778e9ac0259e1783c731793584e6d30d10eb51936"
+    },
+    "cleanup_regression_sha256": "7dfd81e0af30c377a3be03cebbe14e19a1f58b84e93370fe303226d4ef23d003"
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "c2eebecf5f86bffd94f9c9da500e3ae4855d9c72",
+    "observed_at": "2026-09-28T04:28:18.223134+00:00",
+    "prior_unchanged": 871,
+    "borrowed_postgres": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "id": "2eb0a77f6f26fb7cd09c0957391ee51a078ea10c1d0d9de1be9ebdbc34bd8844",
+        "exit": 0
+      },
+      {
+        "id": "1381c6f334fc9dd1a9dc07e725499649c9d73b2b2110e58da0e0bea42679157e",
+        "exit": 0
+      },
+      {
+        "id": "5399037d59989508ddd09c3af5bac4d833643cb0b78144006d34f42df8132d32",
+        "exit": 143
+      },
+      {
+        "id": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+        "exit": 0
+      }
+    ],
+    "source_files": 1444,
+    "cache_lock_released": true,
+    "original_115_artifacts_preserved": true,
+    "free_bytes": 66973876224
+  },
+  "not_run": [
+    "all relational omission/corruption schedules",
+    "installed HTTP/CLI enrollment",
+    "current action issuer/restrictive drain",
+    "signed socket acquisition/M1",
+    "load/aged state",
+    "arm64/release",
+    "all 18 proposed COMMIT and lock schedules"
+  ],
+  "review_boundary": "Root inspected complete new probe/fixture/helper boundaries; independent read-only AI reviewed the same and found the audit edge case. All native source/artifact/capture identities and terminal census verified. Original database contents were checked before cloning, not rechecked after this early failure."
+}
