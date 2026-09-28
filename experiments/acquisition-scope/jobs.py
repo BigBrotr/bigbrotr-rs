@@ -22,10 +22,13 @@ sys.path.insert(0, str(SOURCE / 'experiments/network-transport'))
 from inventory import projection
 
 arguments = sys.argv[1:]
+claims = bool(arguments and arguments[-1] == '--claims')
+if claims: arguments.pop()
 acceptance_first_only = bool(arguments and arguments[-1] == '--acceptance-first')
 if acceptance_first_only: arguments.pop()
 faults = bool(arguments and arguments[-1] == '--faults')
 if faults: arguments.pop()
+assert not (claims and faults)
 assert not acceptance_first_only or faults
 assert len(arguments) in (1, 2)
 root = Path(arguments[0]).resolve(strict=True)
@@ -48,19 +51,21 @@ for name, key in [('bigbrotr', 'binary_sha256'), (built['probe_name'], 'probe_sh
 pg_root = root.parent / 'relay-source-recheck-e06f580/pg'
 pg = lab.load(pg_root)
 assert pg['owner'] == '5e69b0f060b1607c25230d1dbd3e5608' and pg['state'] == 'stopped-retained'
-basis_root = root.parent / ('acquisition-jobs-engine-28a7db9/jobs' if faults else 'acquisition-scope-54d1a18/engine')
-basis = 'bb_acq_job_28a7db9_no_grant' if faults else 'bb_scope_54d1a18_basic'
+qualified_jobs = faults or claims
+basis_root = root.parent / ('acquisition-jobs-engine-28a7db9/jobs' if qualified_jobs else 'acquisition-scope-54d1a18/engine')
+basis = 'bb_acq_job_28a7db9_no_grant' if qualified_jobs else 'bb_scope_54d1a18_basic'
 basis_report = (basis_root / 'result.json').read_bytes()
-assert json.loads(basis_report)['status'] == ('PASS_FINITE_ACQUISITION_ACCEPTANCE' if faults else 'PASS_SCOPED_ACQUISITION_REGISTRATION')
-output = root / ('job-faults' if faults else 'jobs')
+assert json.loads(basis_report)['status'] == ('PASS_FINITE_ACQUISITION_ACCEPTANCE' if qualified_jobs else 'PASS_SCOPED_ACQUISITION_REGISTRATION')
+output = root / ('claims' if claims else 'job-faults' if faults else 'jobs')
 output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-jobs'
 processes, sessions = [], []
 expected_status = 'PASS_FINITE_ACQUISITION_FAULTS' if faults else 'PASS_FINITE_ACQUISITION_ACCEPTANCE'
 if acceptance_first_only: expected_status = 'PASS_ACQUISITION_ACCEPTANCE_FIRST_LOCKS'
+if claims: expected_status = 'PASS_FINITE_ACQUISITION_CLAIMS'
 client = 'bigbrotr-acquisition-jobs-' + revision[:7]
 report = dict(format='bigbrotr-acquisition-jobs/1', source=revision, build=built,
-    status='RUNNING', mode='faults' if faults else 'acceptance',
+    status='RUNNING', mode='claims' if claims else 'faults' if faults else 'acceptance',
     selection='acceptance-first locks only' if acceptance_first_only else 'complete wave',
     owner=owner, label=label, client=None, cases=[], databases=[],
     postgres=pg['postgres'], postgres_owner=pg['owner'],
@@ -73,6 +78,10 @@ if faults:
         'raw SQL relational negatives beyond the qualified timestamp pair',
         'claim/dispatch, installed Sync, socket admission and M1',
         'populated prior-job migration, aged/mixed load, arm64/release']
+if claims:
+    report['not_run'] = ['claim lost/delayed COMMIT, cancellation and concurrent authority writers',
+        'successor/native custody recovery, running/progress and installed command delivery',
+        'socket admission, M1, aged/mixed load, arm64/release']
 
 
 def require(value, reason):
@@ -108,7 +117,7 @@ def prepare(name):
     lab.sql(pg, 'postgres', f'CREATE DATABASE {database} OWNER bigbrotr_migrator TEMPLATE {basis}')
     report['databases'].append(database); save()
     require(rows(database) == basic, 'exact-clone')
-    if faults:
+    if qualified_jobs:
         require(not basic['jobs'] and not basic['acquisition_jobs'] and
             any(r['migration'] == 22 for r in basic['schema_versions']), 'qualified-empty-job-basis')
         lab.sql(pg, database, "INSERT INTO control.principal_grants SELECT dataset_id,principal_id,"
@@ -282,7 +291,8 @@ def probe_event(process, wanted, seconds=10):
 def app(database, mode, nonce, port=5432):
     token = database + '-' + str(nonce)
     process = Process(['docker', 'exec', client, '/build/acquisition_job_probe', database,
-        '/run/secrets/application', '/lab/policy.json', 'fault-' + mode, str(port), str(nonce), '/lab/' + token])
+        '/run/secrets/application', '/lab/policy.json', mode if mode.startswith('claim') else 'fault-' + mode,
+        str(port), str(nonce), '/lab/' + token])
     processes.append((token, process))
     return process, token
 
@@ -554,6 +564,172 @@ def run_faults():
             save()
 
 
+def migrate_claim(database, tag, refused=False):
+    config = lab.config(output, dict(pg, client=client), database, endpoint='127.0.0.1:5432', boundary='loopback')
+    before = snapshot(database, tag + '-upgrade-before')
+    heaps = lab.sql(pg, database, "SELECT jsonb_object_agg(relname,relfilenode) FROM pg_class "
+                    "WHERE relnamespace='control'::regnamespace AND relkind='r'")
+    schema_before = lab.schema_digest(pg, database) if refused else None
+    result = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
+        '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '23')
+    (output / (tag + '-migration.stdout')).write_text(result.stdout)
+    (output / (tag + '-migration.stderr')).write_text(result.stderr)
+    after = snapshot(database, tag + '-upgrade-after')
+    heaps_after = lab.sql(pg, database, "SELECT jsonb_object_agg(relname,relfilenode) FROM pg_class "
+                "WHERE relnamespace='control'::regnamespace AND relkind='r'")
+    lab.write_json(output / (tag + '-heaps.json'), dict(before=json.loads(heaps), after=json.loads(heaps_after)))
+    require(heaps == heaps_after, 'no-heap-rewrite')
+    if refused:
+        schema_after = lab.schema_digest(pg, database)
+        lab.write_json(output / (tag + '-schema.json'), dict(before=schema_before, after=schema_after))
+        record(tag + '-explicit-migration-refusal', result.returncode != 0 and
+            'migration 23 refuses advanced or inconsistent acquisition history' in result.stderr and
+            before == after and schema_before == schema_after)
+        return
+    require(result.returncode == 0, 'claim-migration-CLI')
+    added = [r for r in after['schema_versions'] if r not in before['schema_versions']]
+    record(tag + '-populated-upgrade', before.keys() == after.keys() and
+        all(before[t] == after[t] for t in before if t != 'schema_versions') and
+        all(r in after['schema_versions'] for r in before['schema_versions']) and len(added) == 1 and
+        added[0]['migration'] == 23 and added[0]['checksum'] == '\\x' +
+            sha((SOURCE / 'migrations/postgres/0023_acquisition_claims.sql').read_bytes()))
+    repeated = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
+        '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '23')
+    (output / (tag + '-reapply.stdout')).write_text(repeated.stdout)
+    (output / (tag + '-reapply.stderr')).write_text(repeated.stderr)
+    record(tag + '-reapply', repeated.returncode == 0 and rows(database) == after)
+    lab.sql(pg, database, 'GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
+
+
+def finish_claim(process, mode, receipt):
+    done = probe_event(process, 'done')
+    require(process.wait(10) == 0 and not process.stderr and done == dict(event='done', mode=mode,
+        receipt=receipt, actual_driver_joined=True, after_logout=True), 'claim-driver-joined')
+
+
+def compare_claim(before, after, ready, success):
+    expected = copy.deepcopy(before)
+    require(len(expected['jobs']) == 1 and len(expected['acquisition_jobs']) == 1, 'single-original-job')
+    if success:
+        job = expected['jobs'][0]
+        require(job['state'] == 'accepted' and job['job_revision'] == 1 and job['owner_resource_id'] is None,
+                'accepted-unowned-original')
+        owners = [r for r in before['owner_epochs'] if r['role'] == 'control' and r['state'] == 'active']
+        require(len(owners) == 1 and owners[0]['epoch'] == ready['epoch'] and
+                owners[0]['control_backend_pid'] == ready['pid'], 'actual-claim-owner')
+        owner = owners[0]
+        require(after['jobs'][0]['xmin'] != job['xmin'], 'claim-wrote-one-row')
+        job.update(state='queued', job_revision=2, owner_resource_id=owner['resource_id'],
+            owner_epoch=owner['epoch'], owner_incarnation=owner['process_incarnation'], xmin=after['jobs'][0]['xmin'])
+    require(expected == after, 'exact-all-table-claim-effects')
+
+
+def run_claims():
+    accepted_template = None
+    for name in ['pass', 'permission', 'account', 'disabled', 'policy', 'expired', 'missing']:
+        database, _ = prepare('claim_' + name)
+        mode = {'pass':'claim', 'policy':'claim-policy', 'missing':'claim-missing',
+                'expired':'claim-expired'}.get(name, 'claim-forbidden')
+        process, token = app(database, mode, 80)
+        ready = probe_event(process, 'ready'); live = observe(database, ready)
+        accepted = snapshot(database, name + '-accepted')
+        detail = accepted['acquisition_jobs'][0]
+        require(len(accepted['jobs']) == 1 and ready['receipt']['created'] and
+                accepted['jobs'][0]['job_id'] == '\\x' + ready['receipt']['job_id'] and
+                detail['deadline_at_us'] == ready['receipt']['accepted_at_us'] + detail['duration_us'], 'accepted-exact-receipt')
+        submitted = [s for s in accepted['browser_sessions'] if s['session_id'] == detail['session_id']]
+        require(len(submitted) == 1 and submitted[0]['revoked_at_us'] is not None, 'actual-logout-before-claim')
+        if name != 'missing': migrate_claim(database, name)
+        if name in ('permission', 'policy', 'disabled'):
+            lock, mutation, changed = writer(name)
+            session = Session(pg, database, 'claim-writer-' + name, sessions, role='postgres')
+            before_writer = rows(database)
+            for statement in ['BEGIN;'] + lock + mutation + ['COMMIT;']: session.execute(statement)
+            session.close(lambda: lab.load(pg_root)); sessions.remove(session)
+            compare_writer(before_writer, rows(database), name, changed)
+        elif name == 'account':
+            before_writer = rows(database)
+            lab.sql(pg, database, "BEGIN; SELECT dataset_id FROM control.datasets FOR UPDATE; "
+                "UPDATE control.local_accounts SET active=false WHERE username='alice'; COMMIT;")
+            after_writer = rows(database)
+            expected = copy.deepcopy(before_writer)
+            account = next(r for r in expected['local_accounts'] if r['username'] == 'alice')
+            actual = next(r for r in after_writer['local_accounts'] if r['username'] == 'alice')
+            require(all(s['revoked_at_us'] is not None for s in before_writer['browser_sessions']
+                if s['principal_id'] == account['principal_id']), 'actor-sessions-already-revoked')
+            require(account['active'] and actual['xmin'] != account['xmin'], 'account-disabled-durably')
+            account.update(active=False, authentication_revision=account['authentication_revision']+1,
+                xmin=actual['xmin'])
+            require(expected == after_writer, 'exact-account-disable')
+        elif name == 'expired':
+            deadline = time.monotonic() + 7
+            # Observe the original live interval before migration overhead;
+            # that overhead consumes duration too, without resetting any clock.
+            observations = [live['now_us']]
+            while True:
+                now = int(lab.sql(pg, database, 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+                observations.append(now)
+                if now >= detail['deadline_at_us']: break
+                require(time.monotonic() < deadline, 'job-expiry-not-observed'); time.sleep(.05)
+            require(observations[0] < detail['deadline_at_us'], 'live-before-job-expiry')
+            lab.write_json(output / 'expired-clock.json', observations)
+        before = snapshot(database, name + '-before')
+        go(token); finish_claim(process, mode, ready['receipt']); backends_absent(database)
+        after = snapshot(database, name + '-after')
+        compare_claim(before, after, ready, name == 'pass')
+        record(name + '-actual-claim', True)
+        if name == 'pass':
+            recovery, retry_token = app(database, 'claim-recover', 82)
+            retry_ready = probe_event(recovery, 'ready')
+            require(retry_ready['epoch'] == ready['epoch'] + 1 and not retry_ready['receipt']['created'], 'successor-historical-retry')
+            retry_before = snapshot(database, 'foreign-before'); go(retry_token)
+            finish_claim(recovery, 'claim-recover', retry_ready['receipt']); backends_absent(database)
+            record('foreign-owner-refusal-and-historical-observation', rows(database) == retry_before and
+                rows(database)['jobs'] == after['jobs'])
+        if name == 'missing': accepted_template = database
+    require(accepted_template is not None, 'retained-0022-accepted-template')
+    # Deliberate inconsistent history lives only in this new owned clone.
+    database = 'bb_acq_job_' + revision[:7] + '_advanced'
+    lab.sql(pg, 'postgres', f'CREATE DATABASE {database} OWNER bigbrotr_migrator TEMPLATE {accepted_template}')
+    report['databases'].append(database); save()
+    lab.sql(pg, database, 'BEGIN; SET LOCAL session_replication_role=replica; '
+        'UPDATE control.jobs SET job_revision=2; COMMIT;')
+    migrate_claim(database, 'advanced', refused=True)
+    raw_claim_guards(accepted_template)
+
+
+def raw_claim_guards(template):
+    fixture = SOURCE / 'experiments/acquisition-scope/claim_guards.sql'
+    for negative in (False, True):
+        name = 'raw_claim_negative' if negative else 'raw_claim'
+        database = 'bb_acq_job_' + revision[:7] + '_' + name
+        lab.sql(pg, 'postgres', f'CREATE DATABASE {database} OWNER bigbrotr_migrator TEMPLATE {template}')
+        report['databases'].append(database); save()
+        migrate_claim(database, name)
+        if negative:
+            # Reproduce precisely the reviewed paused-state bypass, without
+            # removing current-owner or direct queued takeover checks.
+            lab.sql(pg, database, """
+                DROP TRIGGER acquisition_claim_owner_guard ON control.jobs;
+                CREATE TRIGGER acquisition_claim_owner_guard BEFORE UPDATE ON control.jobs
+                    FOR EACH ROW WHEN (OLD.acquisition_job_protocol=1 AND OLD.state IN ('queued','running'))
+                    EXECUTE FUNCTION control.guard_acquisition_claim_owner();
+            """)
+        before = snapshot(database, name + '-before')
+        result = lab.docker('exec', '-i', '--env', 'PGOPTIONS=-c statement_timeout=30000 -c lock_timeout=5000',
+            target['Id'], 'psql', '-X', '-A', '-t', '-q', '--no-password', '-U', 'bigbrotr_control',
+            '-d', database, '-v', 'ON_ERROR_STOP=1', data=fixture.read_text(), check=False, timeout=45)
+        (output / (name + '.stdout')).write_text(result.stdout)
+        (output / (name + '.stderr')).write_text(result.stderr)
+        if negative:
+            record(name + '-discriminates', result.returncode != 0 and
+                'paused expected 23514, observed BZ001' in result.stderr)
+        else:
+            record(name + '-SQL-guards', result.returncode == 0 and not result.stderr and
+                '{"status":"PASS","checks":4}' in result.stdout)
+        record(name + '-complete-rollback', rows(database) == before)
+
+
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
 assert target['Config']['Labels'][lab.LABEL] == pg['owner'] and not target['State']['Running']
@@ -573,14 +749,14 @@ try:
     while lab.docker('exec', target['Id'], 'pg_isready', '-U', 'postgres', check=False).returncode:
         require(time.monotonic() < deadline, 'postgres-readiness'); time.sleep(.1)
     basic = rows(basis)
-    require(basic == json.loads((basis_root / ('no-grant-after.json' if faults else 'basic-after.json')).read_text()), 'qualified-basis-unchanged')
+    require(basic == json.loads((basis_root / ('no-grant-after.json' if qualified_jobs else 'basic-after.json')).read_text()), 'qualified-basis-unchanged')
     require(not basic['jobs'], 'empty-job-ledger-basis')
-    if faults:
+    if qualified_jobs:
         # Historical Ingest and Control identities share the role-instance key.
         # Never pick fixture identities solely by looking at Control rows.
         prior_ids = {r['role_instance_id'] for r in basic['role_instances']}
         prior_ids |= {r['process_incarnation'] for r in basic['owner_epochs']}
-        require(all('\\x' + bytes([n]).hex()*16 not in prior_ids for n in (50,51,52,60,64)),
+        require(all('\\x' + bytes([n]).hex()*16 not in prior_ids for n in (50,51,52,60,64,80,82)),
                 'fixture-owner-identity-collision')
     policy = basic['config_revisions'][0]['document']
     require(policy == basic['policy_revisions'][0]['document'] and policy['format'] == 'bigbrotr-product-policy/2', 'fixture-policy')
@@ -595,7 +771,9 @@ try:
         '--mount', f'type=bind,src={SOURCE},dst=/source,readonly', pg['client_image'],
         'python3', '-c', 'import time; time.sleep(600)').stdout.strip()
     report['client'] = dict(id=ident, name=client); save(); lab.docker('start', ident)
-    if faults:
+    if claims:
+        run_claims()
+    elif faults:
         run_faults()
     else:
         for name in ('pass', 'no-grant', 'stale-policy', 'disabled', 'expired', 'rollback', 'old-schema'):

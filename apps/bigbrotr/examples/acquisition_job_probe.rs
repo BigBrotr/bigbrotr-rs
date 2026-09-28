@@ -31,8 +31,9 @@ async fn main() {
 async fn run() {
     let args: Vec<_> = std::env::args().collect();
     assert!(matches!(args.len(), 5 | 8));
-    let fault = args.len() == 8;
     let mode = args[4].as_str();
+    let controlled = args.len() == 8;
+    let fault = controlled && mode.starts_with("fault-");
     if fault {
         assert!(matches!(
             mode,
@@ -58,10 +59,20 @@ async fn run() {
                 | "expired"
                 | "disabled"
                 | "old-schema"
+                | "claim"
+                | "claim-forbidden"
+                | "claim-policy"
+                | "claim-missing"
+                | "claim-recover"
+                | "claim-expired"
         ));
     }
-    let nonce: u8 = if fault { args[6].parse().unwrap() } else { 244 };
-    assert!(!fault || (50..=99).contains(&nonce));
+    let nonce: u8 = if controlled {
+        args[6].parse().unwrap()
+    } else {
+        244
+    };
+    assert!(!controlled || (50..=99).contains(&nonce));
     let expected: Value = serde_json::from_slice(&std::fs::read(&args[3]).unwrap()).unwrap();
     let digest: [u8; 32] = Sha256::new()
         .chain_update(b"bigbrotr/product-policy/2\0")
@@ -80,7 +91,7 @@ async fn run() {
     let mut config = Config::new();
     config
         .host("127.0.0.1")
-        .port(if fault {
+        .port(if controlled {
             args[5].parse().unwrap()
         } else {
             5432
@@ -160,7 +171,12 @@ async fn run() {
         .unwrap();
     let command = AcquisitionCommand {
         scope_id,
-        deadline_us: JobDuration::new(if mode == "expired" { 1 } else { 120_000_000 }).unwrap(),
+        deadline_us: JobDuration::new(match mode {
+            "expired" => 1,
+            "claim-expired" => 5_000_000,
+            _ => 120_000_000,
+        })
+        .unwrap(),
         expected_config_revision: revision(1),
         expected_policy_revision: revision(if mode == "stale-policy" { 2 } else { 1 }),
     };
@@ -205,6 +221,50 @@ async fn run() {
         "rollback" => {
             assert_eq!(result, Err(SessionError::Backend));
             assert!(committed.get());
+        }
+        "claim" | "claim-forbidden" | "claim-policy" | "claim-missing" | "claim-recover"
+        | "claim-expired" => {
+            let receipt = result.unwrap();
+            assert_eq!(receipt.created, mode != "claim-recover");
+            owner
+                .revoke_browser_session(&session.session, &session.csrf)
+                .await
+                .unwrap();
+            if controlled {
+                println!(
+                    "{}",
+                    json!({"event":"ready","pid":row.get::<_,i32>(2),
+                    "epoch":owner.identity().epoch.get(),"receipt":receipt})
+                );
+                gate(&args[7], "go").await;
+            }
+            if matches!(mode, "claim-policy" | "claim-missing") {
+                let started = Cell::new(false);
+                assert_eq!(
+                    owner.claim_acquisition(receipt.job_id, &started).await,
+                    Err(if mode == "claim-policy" {
+                        SessionError::PolicyChanged
+                    } else {
+                        SessionError::Prerequisite
+                    })
+                );
+                assert!(!started.get());
+                assert_eq!(
+                    owner.read_acquisition_job(receipt.job_id).await,
+                    Err(SessionError::Unavailable)
+                );
+            } else {
+                claim_test(&mut owner, receipt.job_id, mode).await;
+            }
+            drop(owner);
+            driver.await.unwrap().unwrap();
+            assert_eq!(budget.snapshot().active_permits(), 0);
+            println!(
+                "{}",
+                json!({"event":"done","mode":mode,"receipt":receipt,
+                "actual_driver_joined":true,"after_logout":true})
+            );
+            return;
         }
         "pass" => {
             let receipt = result.unwrap();
@@ -342,4 +402,48 @@ async fn fault_operation(
         assert!(!absent.get());
     }
     json!({"receipt":receipt,"commit_started":started.get()})
+}
+
+async fn claim_test(owner: &mut ControlSession, job: bigbrotr_model::JobId, mode: &str) {
+    use bigbrotr::management::jobs::JobState;
+    let original = owner.read_acquisition_job(job).await.unwrap().unwrap();
+    let started = Cell::new(false);
+    let result = owner.claim_acquisition(job, &started).await;
+    if matches!(mode, "claim-forbidden" | "claim-recover" | "claim-expired") {
+        assert_eq!(
+            result,
+            Err(if mode != "claim-recover" {
+                SessionError::Forbidden
+            } else {
+                SessionError::Conflict
+            })
+        );
+        assert!(!started.get());
+        assert_eq!(
+            owner.read_acquisition_job(job).await.unwrap(),
+            Some(original)
+        );
+        return;
+    }
+    let claimed = result.unwrap();
+    assert!(started.get());
+    assert_eq!(original.state, JobState::Accepted);
+    assert_eq!(original.revision, 1);
+    assert!(original.owner.is_none());
+    assert_eq!(claimed.state, JobState::Queued);
+    assert_eq!(claimed.revision, 2);
+    assert_eq!(claimed.deadline_at_us, original.deadline_at_us);
+    assert_eq!(claimed.accepted_at_us, original.accepted_at_us);
+    assert_eq!(claimed.checkpoint_revision, 0);
+    assert_eq!(claimed.owner.unwrap().epoch, owner.identity().epoch);
+    let repeated = Cell::new(false);
+    assert_eq!(
+        owner.claim_acquisition(job, &repeated).await.unwrap(),
+        claimed
+    );
+    assert!(!repeated.get());
+    assert_eq!(
+        owner.read_acquisition_job(job).await.unwrap(),
+        Some(claimed)
+    );
 }

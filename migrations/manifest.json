@@ -153,6 +153,10 @@
     {
       "version": 22,
       "name": "0022_acquisition_jobs.sql"
+    },
+    {
+      "version": 23,
+      "name": "0023_acquisition_claims.sql"
     }
   ],
   "reserved": [

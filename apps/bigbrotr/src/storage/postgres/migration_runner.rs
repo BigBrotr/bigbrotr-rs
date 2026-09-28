@@ -22,6 +22,7 @@ pub enum RunError {
     UnqualifiedProducerHistory,
     ProducerOutcomeCapacity,
     UnqualifiedImportCheckpoints,
+    UnqualifiedAcquisitionHistory,
     Plan(migrations::MigrationError),
     CommitUnknown,
 }
@@ -39,6 +40,7 @@ impl fmt::Display for RunError {
             Self::UnqualifiedProducerHistory => f.write_str("control migration 11 refuses pre-ledger ingest history, including closed history; explicit recovery required; no authority was adopted"),
             Self::ProducerOutcomeCapacity => f.write_str("control migration 12 refuses retained inputs without outcome completion capacity; explicit recovery required; no history was rewritten"),
             Self::UnqualifiedImportCheckpoints => f.write_str("control migration 14 refuses import checkpoints without typed closure; explicit recovery required; no history was rewritten"),
+            Self::UnqualifiedAcquisitionHistory => f.write_str("control migration 23 refuses advanced or inconsistent acquisition history; explicit recovery required; no owner was adopted"),
             Self::Plan(error) => error.fmt(f),
             Self::CommitUnknown => f.write_str("migration COMMIT outcome unknown; resolve the same catalog target under migration serialization before retry"),
         }
@@ -127,6 +129,10 @@ pub async fn run(
                 && error.code().is_some_and(|code| code.code() == "55000")
             {
                 RunError::UnqualifiedImportCheckpoints
+            } else if migration.version == 23
+                && error.code().is_some_and(|code| code.code() == "55000")
+            {
+                RunError::UnqualifiedAcquisitionHistory
             } else {
                 backend(error)
             }

@@ -12,10 +12,36 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is unpublished3e03ab8; private origin/main remains9bdc361.
-Root owns qualification/checkpoint/inventory documentation only; no product WIP
-or active tool/remote process. All selected product work remains INCOMPLETE.
+Mac main/private origin is e3eca9e, qualification pushed and verified.
+Root owns exact-ID claim work (P03-T01 Step3). WIP includes a draft0023,
+Control adapter, shared management JobState (ExportState API alias retained),
+historical AcquisitionJob metadata and actual probe/harness cases. Catalog/API RED
+and39 Mac component/catalog/entrypoint checks plus scoped Clippy PASS; native claim
+execution has NOT begun. No new table/dependency and no applied SQL changed.
+
+The bounded claim is accepted→queued, original deadline, current account/dataset
+role/source/policy, deferred COMMIT check and same-owner no-op retry. Historical
+observation supplies no execution permission. Read-only review found direct and
+paused-state SQL owner takeover paths; draft0023 now freezes every populated
+owner tuple and checks current ownership in its authority helper. The planned raw
+negative clone reinstates precisely the paused omission. Root retained visible
+transaction boundaries and extracted one focused queue helper; no generic layer.
+
+The existing jobs laboratory now prepares --claims for populated CLI upgrade,
+logout, actor/grant/source/policy/deadline refusals, schema prerequisite, foreign
+owner and raw SQL rollback/negative cases. These are NOT executed evidence.
+Root/read-only review of adapter, callers and complete fixture is finished;
+review corrected the real account-trigger oracle before launch. Final39 Mac tests,
+scoped Clippy, syntax/artifact/handoff checks PASS. Next: form the clean candidate,
+transfer exact Git, build natively and run claims on new isolated clones. Later qualify lost/delayed COMMIT,
+cancellation and both authority lock orders before closing the claim boundary.
+Initial worker budget still needs explicit recomposition for retained native,
+input/Control, scope/visibility/transport. Claims grant no socket/native authority.
+
+No active remote process. All selected product work remains INCOMPLETE.
 Cache retirement is complete; never replay launch/deletion recipes.
+Latest Mac free7,818,588KiB. Tux preflight63,478,272,000B and only the eight
+unrelated running containers; native runner will repeat full resource inventory.
 
 [Native acquisition fault evidence](evidence/p03-acquisition-jobs-faults-native-20260928.json)
 qualifies thirteen scoped schedules using9888ad5 artifacts. Seven COMMIT schedules
@@ -46,8 +72,8 @@ client76d6eaf8 stopped143; borrowedPG71775507 stopped0, no OOM/cleanup debt.
 Fourteen clones retained. Terminal audit17:19:50UTC found952 prior projections
 unchanged, eight unrelated running, compiler lock free and63,468,011,520B free.
 Shared1154757 intermediates are9888ad5; exact artifacts remain separately retained.
-Next: commit/push this bounded qualification, then implement exact-ID finite job
-claim under current account/action/source/policy and original deadline. Reuse the
+Acceptance qualification is committed/pushed. Exact-ID finite job claim under
+current account/action/source/policy and original deadline is now the WIP above. Reuse the
 existing job revision/owner mechanism; no socket authority from a receipt alone.
 
 Active P03-T01 Steps3/4: finite acquisition acceptance now has additive0022,

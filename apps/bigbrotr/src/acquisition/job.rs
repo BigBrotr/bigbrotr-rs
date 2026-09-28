@@ -126,3 +126,30 @@ impl<'de> Deserialize<'de> for AcquisitionCommand {
         deserializer.deserialize_map(CommandVisitor)
     }
 }
+
+/// Historical job metadata only. Neither a queued state nor this value grants a
+/// socket, native write or takeover. Each execution boundary rechecks authority.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AcquisitionJob {
+    pub id: bigbrotr_model::JobId,
+    pub dataset: DatasetId,
+    pub principal: PrincipalId,
+    pub scope: AcquisitionScopeId,
+    pub duration: JobDuration,
+    pub accepted_at_us: i64,
+    pub deadline_at_us: i64,
+    pub config_revision: u64,
+    pub policy_revision: u64,
+    pub state: crate::management::jobs::JobState,
+    pub revision: u64,
+    pub checkpoint_revision: u64,
+    pub owner: Option<AcquisitionOwner>,
+}
+
+/// Attribution, not positive exclusion of another process or native worker.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct AcquisitionOwner {
+    pub resource: bigbrotr_model::OwnerResourceId,
+    pub epoch: bigbrotr_model::OwnerEpoch,
+    pub incarnation: bigbrotr_model::ProcessIncarnation,
+}

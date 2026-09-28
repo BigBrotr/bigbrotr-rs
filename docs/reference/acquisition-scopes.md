@@ -256,3 +256,37 @@ complete the bounded wave with unchanged artifacts. Session/credential races,
 remaining raw relational negatives, populated prior-job upgrade, claim/dispatch,
 installed commands and signed socket journey remain unqualified. No installed
 acquisition capability follows.
+
+## Initial exact-ID claim (implementation in progress)
+
+`claim_acquisition` resolves one durable JobId in the actual Control dataset.
+It advances accepted revision1 to queued revision2 with checkpoint0 and the
+current owner tuple. It reads actor, scope, accepted time and duration from that
+immutable job; a caller cannot supply a replacement actor or extend its deadline.
+A same-owner queued revision2 retry rechecks authority and writes nothing.
+
+Additive0023 preserves the applied catalog and all existing rows. Its preflight
+refuses advanced or inconsistent qualified acquisition history with an explicit
+recovery diagnostic; it never adopts a previously owned job. Once populated,
+the acquisition owner tuple is immutable across every state, including paused.
+Future successor support must provide native custody exclusion before explicitly
+extending this protocol. A fresh Control epoch alone cannot establish that fact.
+
+The claim locks Control, dataset, account, exact roles.control grant, enrollment
+and job in that order. It requires a current active account and grant, enabled
+source, both accepted v2 Sync policies and the job's original configuration and
+policy revisions at the current head. This initial conservative profile refuses
+all revision changes; later reauthorization requires an explicit design. The
+scope epoch must still match. No browser session or historical credential revision
+is required after acceptance. Time is sampled after waits and checked again by
+the deferred constraint, against the original job deadline and actual owner lease.
+Lost COMMIT remains unknown; cancellation poisons the adapter until actual driver
+custody ends. No receipt alone authorizes retrying native effects.
+
+`read_acquisition_job` returns bounded historical metadata under an actual Control
+session, including after job expiry, permission withdrawal or owner replacement.
+It supplies no execution capability. External status still needs independent
+reader authentication/authorization. Shared job states now live in the management
+domain; the existing ExportState name remains an API alias for its callers.
+Dispatch, source sessions, reservation and certification must each check the job
+again. Native recovery, those integrations and installed Sync remain incomplete.

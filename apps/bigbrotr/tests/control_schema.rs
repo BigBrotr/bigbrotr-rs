@@ -3,6 +3,32 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn acquisition_claims_require_an_additive_guard_after_accepted_jobs() {
+    let applied: Vec<_> = plan(&[], 22)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next =
+        plan(&applied, 23).expect("claim authority must be an explicit additive prerequisite");
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0023_acquisition_claims.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 23),
+        Err(MigrationError::MissingPrerequisite(23))
+    );
+    assert!(migrations::require_applied(&applied, 22).is_ok());
+}
+
+#[test]
 fn finite_acquisition_jobs_require_the_additive_protocol() {
     let applied: Vec<_> = plan(&[], 21)
         .unwrap()

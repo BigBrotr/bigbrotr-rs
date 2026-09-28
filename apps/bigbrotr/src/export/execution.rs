@@ -80,37 +80,8 @@ impl ExportSelection {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum ExportState {
-    Accepted,
-    Queued,
-    Running,
-    Paused,
-    CancelRequested,
-    Succeeded,
-    Partial,
-    Failed,
-    Cancelled,
-    Skipped,
-}
-impl ExportState {
-    pub fn from_code(value: &str) -> Option<Self> {
-        Some(match value {
-            "accepted" => Self::Accepted,
-            "queued" => Self::Queued,
-            "running" => Self::Running,
-            "paused" => Self::Paused,
-            "cancel_requested" => Self::CancelRequested,
-            "succeeded" => Self::Succeeded,
-            "partial" => Self::Partial,
-            "failed" => Self::Failed,
-            "cancelled" => Self::Cancelled,
-            "skipped" => Self::Skipped,
-            _ => return None,
-        })
-    }
-}
+// Keep the established export name while sharing the actual finite-job values.
+pub use crate::management::jobs::JobState as ExportState;
 
 /// Retained logical byte caps. Physical allocation overhead is reserved by the
 /// supervisor separately. A lower new configuration cannot shrink an old unit.

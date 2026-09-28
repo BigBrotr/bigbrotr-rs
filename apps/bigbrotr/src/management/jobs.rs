@@ -10,6 +10,39 @@ use bigbrotr_model::{
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
+/// Shared durable job state, separate from process health and protocol progress.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum JobState {
+    Accepted,
+    Queued,
+    Running,
+    Paused,
+    CancelRequested,
+    Succeeded,
+    Partial,
+    Failed,
+    Cancelled,
+    Skipped,
+}
+impl JobState {
+    pub fn from_code(value: &str) -> Option<Self> {
+        Some(match value {
+            "accepted" => Self::Accepted,
+            "queued" => Self::Queued,
+            "running" => Self::Running,
+            "paused" => Self::Paused,
+            "cancel_requested" => Self::CancelRequested,
+            "succeeded" => Self::Succeeded,
+            "partial" => Self::Partial,
+            "failed" => Self::Failed,
+            "cancelled" => Self::Cancelled,
+            "skipped" => Self::Skipped,
+            _ => return None,
+        })
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum JobCommand {
@@ -166,7 +199,7 @@ pub struct ResumeExportReceipt {
 /// This neither refreshes input grants nor authorizes artifact access or writes.
 pub struct JobObservation {
     pub job_id: JobId,
-    pub state: crate::export::execution::ExportState,
+    pub state: JobState,
     pub job_revision: u64,
     pub checkpoint_revision: u64,
     pub created_at_us: i64,
