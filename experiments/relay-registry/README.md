@@ -2,8 +2,8 @@
 
 P02-T01 Step 6's first actual Control consumer registers immutable private endpoint
 identities. This harness is not an enrollment command, installed acquisition or
-an archive dictionary allocator. All scenarios below are pending until an exact
-revision's report records execution.
+an archive dictionary allocator. The recipes define scenarios; linked reports
+identify their exact executed revisions and outcomes.
 
 The shared native runner accepts a `relay-registry` profile after its exact Git
 revision/tree arguments. It reuses the inventoried 1154757 compiler cache under the
@@ -40,7 +40,7 @@ fixture temporarily grants mutation privileges only to reach the retained-row
 triggers; ordinary registration needs SELECT/INSERT only.
 
 Held/lost COMMIT, current-policy changes across a lock wait, fresh-policy successor,
-concurrent callers and corrupt overfull buckets remain separate cases. Raw SQL
+concurrent callers and corrupt overfull buckets use the fault recipe below. Raw SQL
 forcing deferred constraints early cannot establish commit-time expiry. No
 load/capacity, enrollment, route action permission, socket or M1 claim.
 
@@ -76,4 +76,7 @@ The client shares only the owned PostgreSQL network namespace; its loopback
 authentication boundary is a fixture, not new SCRAM/TLS qualification. The
 earlier bridge-connected adapter evidence remains separate. These cases do not
 establish installed runtime resource reservations or network action authorization.
-Each proposed fault case remains NOT_RUN until an exact-source report records it.
+The [91d5c7e native report](../../docs/implementation/evidence/p02-relay-registry-faults-native-20260928.json)
+records all nine fault schedules passing, including independently observed expiry
+before lookup and live-to-expired transition while COMMIT is held. This qualifies
+the stated component boundaries only; optional or future capabilities remain work.

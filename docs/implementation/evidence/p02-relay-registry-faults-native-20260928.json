@@ -1,0 +1,410 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T01 Step6 private operational endpoint get-or-create subcomponent",
+  "status": "PASS_SCOPED_REGISTRY_AUTHORITY_AND_RECOVERY",
+  "source": "91d5c7e2707e06a71bf9169037a51e496609094f",
+  "tree": "660aafbacc2bed058ea7451448468cdfaed5239a",
+  "product_inputs": "apps/bigbrotr/src, crates, migrations, Cargo.toml/lock and toolchain byte-identical to03b0197; new probe/harness only.",
+  "environment": {
+    "os": "Linux",
+    "architecture": "amd64",
+    "postgres": "16.15",
+    "rustc": "1.98.1",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "builder_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d"
+  },
+  "artifacts": {
+    "cli_sha256": "03c0b0b2f17b5db5ab0a30693da9c38213e983b58f31c4ca854dc90cc3220bdc",
+    "probe_sha256": "bff69dcfd71758fc0ec61e245f24f086aaa6f1072c78833bb63c150b7ef7b349",
+    "source_manifest_sha256": "fa7102ba0d40b013cfafb1a28a5c3e84f6123366164cf62708e905e7dc4cebfd",
+    "cargo_lock_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+  },
+  "validation": {
+    "native": "Release actual CLI/probe and Clippy PASS;9 actual engine schedules PASS. Earlier unchanged31 catalog tests not repeated.",
+    "mac": "Both probes Clippy and formatting PASS; artifact/link checks PASS.",
+    "independent": "External full receipt comparisons,60 complete table counts/hashes per state, observed PostgreSQL lock waits/leases and proxy COMMIT counters. Separate poison/reuse assertions execute inside actual Rust probe.",
+    "original": "All three original database contents and original failure report preserved; nine separately named clones retained.",
+    "read_scope": "Existing identity lookup after scheduling expiry returns original metadata under actual fence/current policy; no insertion or network permission.",
+    "review": "Independent read-only AI reviewed complete fixture/source; root fixed its expiry-oracle finding before native execution and reviewed all source, actual result/effect fields and terminal evidence."
+  },
+  "cases": [
+    {
+      "name": "COMMIT-pass",
+      "status": "PASS",
+      "changed_tables": [
+        "owner_epochs",
+        "relay_endpoints",
+        "role_instances"
+      ],
+      "row_changes": {
+        "owner_epochs": [
+          2,
+          4
+        ],
+        "relay_endpoints": [
+          5,
+          6
+        ],
+        "role_instances": [
+          2,
+          4
+        ]
+      },
+      "commit_counts": {
+        "commits_seen": 2,
+        "commits_forwarded": 2,
+        "server_commit_complete": 2,
+        "client_commit_complete": 2,
+        "faults": 0
+      },
+      "endpoint_present_before_recovery": true,
+      "recovery_created": false,
+      "original_epoch_after_recovery": 3
+    },
+    {
+      "name": "COMMIT-before",
+      "status": "PASS",
+      "changed_tables": [
+        "owner_epochs",
+        "relay_endpoints",
+        "role_instances"
+      ],
+      "row_changes": {
+        "owner_epochs": [
+          2,
+          4
+        ],
+        "relay_endpoints": [
+          5,
+          6
+        ],
+        "role_instances": [
+          2,
+          4
+        ]
+      },
+      "commit_counts": {
+        "commits_seen": 2,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "endpoint_present_before_recovery": false,
+      "recovery_created": true,
+      "original_epoch_after_recovery": 4
+    },
+    {
+      "name": "COMMIT-after",
+      "status": "PASS",
+      "changed_tables": [
+        "owner_epochs",
+        "relay_endpoints",
+        "role_instances"
+      ],
+      "row_changes": {
+        "owner_epochs": [
+          2,
+          4
+        ],
+        "relay_endpoints": [
+          5,
+          6
+        ],
+        "role_instances": [
+          2,
+          4
+        ]
+      },
+      "commit_counts": {
+        "commits_seen": 2,
+        "commits_forwarded": 2,
+        "server_commit_complete": 2,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "endpoint_present_before_recovery": true,
+      "recovery_created": false,
+      "original_epoch_after_recovery": 3
+    },
+    {
+      "name": "COMMIT-cancel_close",
+      "status": "PASS",
+      "changed_tables": [
+        "owner_epochs",
+        "relay_endpoints",
+        "role_instances"
+      ],
+      "row_changes": {
+        "owner_epochs": [
+          2,
+          4
+        ],
+        "relay_endpoints": [
+          5,
+          6
+        ],
+        "role_instances": [
+          2,
+          4
+        ]
+      },
+      "commit_counts": {
+        "commits_seen": 2,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "endpoint_present_before_recovery": false,
+      "recovery_created": true,
+      "original_epoch_after_recovery": 4,
+      "owner_observations": {
+        "count": 2,
+        "first_expired": false,
+        "last_expired": false,
+        "same_backend": true
+      }
+    },
+    {
+      "name": "COMMIT-cancel_release",
+      "status": "PASS",
+      "changed_tables": [
+        "owner_epochs",
+        "relay_endpoints",
+        "role_instances"
+      ],
+      "row_changes": {
+        "owner_epochs": [
+          2,
+          4
+        ],
+        "relay_endpoints": [
+          5,
+          6
+        ],
+        "role_instances": [
+          2,
+          4
+        ]
+      },
+      "commit_counts": {
+        "commits_seen": 2,
+        "commits_forwarded": 2,
+        "server_commit_complete": 2,
+        "client_commit_complete": 2,
+        "faults": 1
+      },
+      "endpoint_present_before_recovery": true,
+      "recovery_created": false,
+      "original_epoch_after_recovery": 3,
+      "owner_observations": {
+        "count": 2,
+        "first_expired": false,
+        "last_expired": false,
+        "same_backend": true
+      }
+    },
+    {
+      "name": "COMMIT-expiry",
+      "status": "PASS",
+      "changed_tables": [
+        "owner_epochs",
+        "relay_endpoints",
+        "role_instances"
+      ],
+      "row_changes": {
+        "owner_epochs": [
+          2,
+          4
+        ],
+        "relay_endpoints": [
+          5,
+          6
+        ],
+        "role_instances": [
+          2,
+          4
+        ]
+      },
+      "commit_counts": {
+        "commits_seen": 2,
+        "commits_forwarded": 2,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "endpoint_present_before_recovery": false,
+      "recovery_created": true,
+      "original_epoch_after_recovery": 4,
+      "owner_observations": {
+        "count": 23,
+        "first_expired": false,
+        "last_expired": true,
+        "same_backend": true
+      }
+    },
+    {
+      "name": "policy-after-lock-wait-and-fresh-successors",
+      "status": "PASS",
+      "changed_tables": [
+        "config_revisions",
+        "datasets",
+        "owner_epochs",
+        "policy_revisions",
+        "relay_endpoints",
+        "role_instances"
+      ],
+      "row_changes": {
+        "config_revisions": [
+          1,
+          2
+        ],
+        "datasets": [
+          1,
+          1
+        ],
+        "owner_epochs": [
+          2,
+          5
+        ],
+        "policy_revisions": [
+          1,
+          2
+        ],
+        "relay_endpoints": [
+          5,
+          6
+        ],
+        "role_instances": [
+          2,
+          5
+        ]
+      },
+      "barrier": {
+        "pid": 847,
+        "start": "2026-09-28 02:56:13.112062+00",
+        "wait_type": "Lock",
+        "wait": "transactionid",
+        "blockers": [
+          854
+        ]
+      },
+      "result": {
+        "commit_started": false,
+        "result": "relay registration failed: PolicyChanged"
+      },
+      "old_receipt_current_issuer_revisions": [
+        2,
+        2
+      ],
+      "old_receipt_original_revisions": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "corrupt-overfull-existing-and-absent",
+      "status": "PASS",
+      "changed_tables": [
+        "owner_epochs",
+        "role_instances"
+      ],
+      "row_changes": {
+        "owner_epochs": [
+          1,
+          3
+        ],
+        "role_instances": [
+          1,
+          3
+        ]
+      }
+    },
+    {
+      "name": "expired-scheduling-lease-identity-only",
+      "status": "PASS",
+      "changed_tables": [
+        "owner_epochs",
+        "role_instances"
+      ],
+      "row_changes": {
+        "owner_epochs": [
+          2,
+          3
+        ],
+        "role_instances": [
+          2,
+          3
+        ]
+      },
+      "owner_observations": {
+        "count": 8,
+        "first_expired": false,
+        "last_expired": true,
+        "same_backend": true
+      }
+    }
+  ],
+  "terminal": {
+    "status": "TERMINAL_VERIFIED_REGISTRY_FAULTS_PASS",
+    "source": "91d5c7e2707e06a71bf9169037a51e496609094f",
+    "owner": "9cbfc074474c4140d7197e390581d550",
+    "observed_at": "2026-09-28T02:57:43.820719+00:00",
+    "prior_unchanged": 864,
+    "running_unrelated": 8,
+    "owned_stopped": 4,
+    "free_bytes": 67382284288,
+    "source_files": 1423,
+    "dependency_archives": {
+      "tokio-rustls": {
+        "version": "0.26.5",
+        "sha256": "b0c85f2c3ef0b1cd58b36682f4b17aaa995f0e5db534d85692b4903abce21f67"
+      },
+      "rustls": {
+        "version": "0.23.45",
+        "sha256": "0d41d731c7d2f962d1ccc364cec258de3c0e93b38c2fb3ba97ac74513048d634"
+      },
+      "webpki-roots": {
+        "version": "1.0.9",
+        "sha256": "7dcd9d09a39985f5344844e66b0c530a33843579125f23e21e9f0f220850f22a"
+      },
+      "hickory-proto": {
+        "version": "0.26.3",
+        "sha256": "12b92608f679a6fa515dd1d15c1ff89443026e391200a2c840c7afcba482893d"
+      }
+    },
+    "input_sha256": "d727fce0fbe3cac7ff00ba3bdde4e78a66393c12b242d000fb951d4f2fd5954e",
+    "compiler_owner": "242ac58ec8ea86b850329f715e314287",
+    "borrowed_postgres_owner": "b49addf3ec7daaef890692e501309e01"
+  },
+  "capture": {
+    "local": ".research/implementation/relay-registry-faults-91d5c7e",
+    "remote": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registry-faults-91d5c7e",
+    "manifest_sha256": "78bd8c20cce9cc2ce6e22fbfe331802df7a313aa3d009871ec38609d4e065edc",
+    "payload_files": 80,
+    "source_files_verified": 1423,
+    "selected_files_sha256": {
+      "faults/result.json": "723d3f6665f1f4ea9a24c7f5640ce5c13659684e05daaead742f83b847099262",
+      "pipeline-result.json": "6b3264e9f062452d2f0e7158d1f7cc3234212771c53ba67c5e5ebd3a3b46db15",
+      "out/artifacts/build-result.json": "5c3af55e76e6c46c36c1f869761fdaac021a54441204e4739d1f3f771117db6c",
+      "out/build-checks/result.json": "f14849a5d64b921a1ea62685a4bfe46a833b5c6faf7f0d49642541161be6551e",
+      "out/build/source-manifest.json": "fa7102ba0d40b013cfafb1a28a5c3e84f6123366164cf62708e905e7dc4cebfd"
+    }
+  },
+  "limitations": [
+    "Component probe, not installed acquisition or runtime resource-reservation qualification.",
+    "Loopback fault fixture does not newly qualify SCRAM/TLS; prior bridge-connected evidence is separate.",
+    "Sampled owner/lock observations and joined driver, not continuous-custody proof or kernel/powerloss guarantee.",
+    "No load/capacity/native-arm64/release claim."
+  ],
+  "next": "Endpoint identity subcomponent closes with basic/corrected-guard evidence. P02-T01 Step6 remains open for access/enrollment, route authority and authenticated acquisition grants; then P03-T01/P04-T02/P03-T02 feed P01-T09 Step2/M1.",
+  "not_run": [
+    "enrollment",
+    "network action grants",
+    "socket acquisition/M1",
+    "load",
+    "arm64",
+    "release"
+  ]
+}

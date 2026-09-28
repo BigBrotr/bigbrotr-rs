@@ -27495,14 +27495,93 @@
       }
     ],
     "fault_cases": {
-      "status": "Prepared; NOT_RUN native. Product/migrations unchanged, Mac probe Clippy passed.",
+      "status": "Stopped-retained;9 exact91d5c7e actual engine cases PASS; independent terminal/resource audit complete.",
       "local_capture": ".research/implementation/relay-registry-fault-local-20260928",
       "recipe": "experiments/network-transport/lab.py REV TREE relay-registry-faults, then exact-source experiments/relay-registry/faults.py RUN_ROOT",
       "inputs": [
         "network-1154757/out/build compiler cache with original ELFs preserved",
         "relay-registry-03b0197/pg retained PostgreSQL and three original fixture databases"
       ],
-      "scope": "Nine bounded actual-adapter fault/policy/corruption cases; no acquisition, load or release claim"
+      "scope": "Nine bounded actual-adapter fault/policy/corruption cases; no acquisition, load or release claim",
+      "run": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registry-faults-91d5c7e",
+        "source": "91d5c7e2707e06a71bf9169037a51e496609094f",
+        "tree": "660aafbacc2bed058ea7451448468cdfaed5239a",
+        "owner": "242ac58ec8ea86b850329f715e314287",
+        "owner_label": "org.bigbrotr.network-transport",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "809215eea62a7d5499e8eb28e51e17833b4c40cae18d3d34d9e4fb7ea1eb1a58"
+          },
+          {
+            "name": "native",
+            "id": "b831b2274e6960784284bb4863e4503cb93fc9669aa1e33decca6e9844eaa94c"
+          }
+        ],
+        "launch": {
+          "source": "91d5c7e2707e06a71bf9169037a51e496609094f",
+          "tree": "660aafbacc2bed058ea7451448468cdfaed5239a",
+          "pid": 2883803,
+          "start_ticks": "394636181",
+          "bundle_sha256": "194b774fd92a1dc32ac73f24bf3ee05d1c3f34518c26daf939a1e2fecbf3a6b1",
+          "pipeline_sha256": "3570b6345c15bd372effe16fd8f8d452fe7027c81be0c93af437857a71e4eabd"
+        },
+        "local_capture": ".research/implementation/relay-registry-faults-91d5c7e",
+        "resources": "resources.json owns compiler; faults/result.json will own client and original PG reuse",
+        "state": "stopped-retained",
+        "fault_owner": "9cbfc074474c4140d7197e390581d550",
+        "fault_label": "org.bigbrotr.relay-registry-faults",
+        "client": {
+          "id": "fa26b1842fe178458224120dd8952a1e6a698cc50b7dc1c211486a9dd98f37d1",
+          "name": "bigbrotr-relay-registry-faults-91d5c7e"
+        },
+        "retained_databases": [
+          "bb_relay_faults_91d5c7e_pass",
+          "bb_relay_faults_91d5c7e_before",
+          "bb_relay_faults_91d5c7e_after",
+          "bb_relay_faults_91d5c7e_cancel_close",
+          "bb_relay_faults_91d5c7e_cancel_release",
+          "bb_relay_faults_91d5c7e_expiry",
+          "bb_relay_faults_91d5c7e_policy",
+          "bb_relay_faults_91d5c7e_overfull",
+          "bb_relay_faults_91d5c7e_lookup_expired"
+        ],
+        "terminal": {
+          "status": "TERMINAL_VERIFIED_REGISTRY_FAULTS_PASS",
+          "source": "91d5c7e2707e06a71bf9169037a51e496609094f",
+          "owner": "9cbfc074474c4140d7197e390581d550",
+          "observed_at": "2026-09-28T02:57:43.820719+00:00",
+          "prior_unchanged": 864,
+          "running_unrelated": 8,
+          "owned_stopped": 4,
+          "free_bytes": 67382284288,
+          "source_files": 1423,
+          "dependency_archives": {
+            "tokio-rustls": {
+              "version": "0.26.5",
+              "sha256": "b0c85f2c3ef0b1cd58b36682f4b17aaa995f0e5db534d85692b4903abce21f67"
+            },
+            "rustls": {
+              "version": "0.23.45",
+              "sha256": "0d41d731c7d2f962d1ccc364cec258de3c0e93b38c2fb3ba97ac74513048d634"
+            },
+            "webpki-roots": {
+              "version": "1.0.9",
+              "sha256": "7dcd9d09a39985f5344844e66b0c530a33843579125f23e21e9f0f220850f22a"
+            },
+            "hickory-proto": {
+              "version": "0.26.3",
+              "sha256": "12b92608f679a6fa515dd1d15c1ff89443026e391200a2c840c7afcba482893d"
+            }
+          },
+          "input_sha256": "d727fce0fbe3cac7ff00ba3bdde4e78a66393c12b242d000fb951d4f2fd5954e",
+          "compiler_owner": "242ac58ec8ea86b850329f715e314287",
+          "borrowed_postgres_owner": "b49addf3ec7daaef890692e501309e01"
+        },
+        "capture_manifest_sha256": "78bd8c20cce9cc2ce6e22fbfe331802df7a313aa3d009871ec38609d4e065edc"
+      },
+      "evidence": "docs/implementation/evidence/p02-relay-registry-faults-native-20260928.json"
     }
   }
 }

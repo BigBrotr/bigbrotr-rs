@@ -12,11 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEAD047eb23 is published at origin/main in the private repository.
-Root-owned changes add the next fault probe/recipe, extract its shared fixture
-policy comparator and clarify existing-identity expiry semantics. Product Rust,
-Cargo.lock and all applied SQL remain unchanged from03b0197. No other writer or
-native experiment is active; prelaunch independent fixture review is in progress.
+Verified HEAD91d5c7e2707e06a71bf9169037a51e496609094f is the tested native fault
+candidate; origin/main047eb23 is private/published until this evidence commit.
+Root owns only the evidence/checkpoint/inventory/reference updates. Product Rust,
+Cargo.lock and all applied SQL remain unchanged from03b0197. Root is sole writer;
+independent fixture review/correction and actual terminal audit are complete.
+No other writer or active native experiment is present.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
 with the explicit remaining gates below. No complete task/phase/M1/product claim.
@@ -270,14 +271,6 @@ closes those identity/guard cases only. Independent terminal audit02:41:19UTC:
 recheckPID2864473 absent, free67,641,085,952 bytes. Both source/output directories
 and local .research/implementation/relay-guards-c5856ef remain retained. No deletions.
 
-Next bounded action: actual adapter lost/held COMMIT, cancellation retaining driver
-custody, current-policy change after a dataset lock wait, successor replay,
-concurrent-owner exclusion and corrupt-overfull refusal. Reuse current native
-compiler cache plus isolated PG/fault proxy; do not rerun unchanged basic suites.
-Preserve independent URL/receipt/whole-ledger assertions and actual lock barriers.
-After those guarantees, implement minimal enrollment/route/action scope for the
-first signed socket event, not an entire adjacent discovery/Monitor subsystem.
-
 Original run is stopped-retained at
 /home/tux/bigbrotr-implementation-20260917/runs/relay-registry-03b0197,
 source03b019794a7b79f9f8a0daaa6a1b6f902c783a3a/tree9eef657b008967612c58b2e383d478fac876df64.
@@ -289,28 +282,51 @@ PID2822307 absent, internal empty network retained and cache lock released.
 Ignored .research/implementation/relay-registry-native-03b0197 owns original logs,
 Git bundle, artifacts, collect/terminal recipes and hashes. Preserve this database
 and1154757 shared compiler cache; no cache/container/volume deleted this boundary.
-Remaining registry cases: held/lost COMMIT, policy changes across waits, fresh
-policy successor, concurrent callers and corrupt overfull buckets. Then continue
-minimal enrollment/route authority and signed socket M1 consumer above.
+Those remaining registry cases are now covered by the fault report below;
+minimal enrollment/route authority and signed socket M1 integration remain.
 
-Fault recipe preparation: native profile builds only current CLI/fault probe and
-Clippy, reusing1154757 under the exclusive cache lock; unchanged31 catalog tests
-are not repeated. After compilation, faults.py restarts the separately verified
-original03b0197 PG and creates nine new cloned databases plus one labeled finite
-client, preserving original3DB contents/results. Looped SQL digest observations
-are batched into one query while preserving the original60-table oracle. The
-wire proxy targetsCOMMIT2; new owners begin at epoch3 because the source fixture
-already has two released owners. Current Mac Clippy/format/artifact checks pass;
-all new native fault cases NOT_RUN. Local logs and fresh Tux census are under
-.research/implementation/relay-registry-fault-local-20260928. At02:52:22UTC free
-67,641,020,416 bytes/eight unrelated running/no BigBrotr. No large archive copy or
-cache retirement needed for this finite profile. Next: finish fixture review,
-commit exact native candidate, build, then run and inspect all nine actual cases.
-Prelaunch read-only AI review found one oracle gap: the held-expiry case could
-start already expired. Corrected before execution: a3s scheduling lease must be
-observed live at the actual heldCOMMIT, then expired on the same backend before
-release. Existing-identity lookup likewise waits for independently observed SQL
-expiry rather than a fixed sleep. Root reviewed the correction and full fixture;
-no product defect or additional launch blocker was found. Captured prelaunch
-review is source analysis only, not native execution. Shared fixture validation
-was extracted unchanged; PostgreSQL owner/generic proxy helpers are reused.
+Endpoint identity authority/recovery is now scoped qualified by
+[actual fault evidence](evidence/p02-relay-registry-faults-native-20260928.json),
+exact91d5c7e (product bytes still03b0197). Nine native schedules passed: normal,
+lost-before/after COMMIT2, cancelled-held close/release, expiry observed live→expired
+while held, actual policy-change lock wait/fresh successor, existing/absent
+corrupt65-bucket refusal, and identity lookup after observed scheduling expiry.
+Three contending actual owner claims stayed Busy with unchanged tables. Fresh
+owners3→4 resolve both mutation outcomes; old receipt attribution remains3 or1,
+new-after-policy insertion uses5/revisions2. All60-table comparisons and original
+three database contents/report bytes agree. Native release build/Clippy passed;
+unchanged31 catalog tests were not rerun. No installed acquisition or capacity claim.
+
+Independent prelaunch AI review found the expiry-oracle gap; root corrected it
+before execution with a3s lease plus live and expired actual-backend observations.
+Both original policy comparators are now one unchanged fixture helper. Root
+reviewed complete sources/diff, actual case/receipt/row effects and terminal state.
+Named SQL/scalar decoder/current concrete owner boundaries remain clear; no
+backend framework or cosmetic supervisor/Rocks rewrite is introduced.
+
+The91d5c7e pipeline is stopped-retained at
+/home/tux/bigbrotr-implementation-20260917/runs/relay-registry-faults-91d5c7e,
+tree660aafbacc2bed058ea7451448468cdfaed5239a. OriginalPID2883803/start394636181
+is absent. Compiler owner242ac58ec8ea86b850329f715e314287; fault client owner
+9cbfc074474c4140d7197e390581d550, IDfa26b1842fe178458224120dd8952a1e6a698cc50b7dc1c211486a9dd98f37d1.
+Borrowed03b0197 PG ownerb49addf3ec7daaef890692e501309e01 is stopped again;
+nine new named clone databases remain for reproducibility, including corruption.
+At02:57:43UTC864 other prior projections were unchanged/eight unrelated running,
+four exercised containers stopped/noOOM (fetch/native/PG0,client143), source1423
+files,80 capture payloads, both ELFs and dependency archives verified; compiler
+lock released. Free67,382,284,288 bytes. No cache/container/volume/data removed.
+Ignored .research/implementation/relay-registry-faults-91d5c7e retains transfer,
+launch, collection/terminal recipes, full results/artifacts and hashes. Protect
+1154757 compiler input and03b0197 PG/source/artifacts, alongside older dependencies.
+
+Next bounded action after this evidence commit/private push: minimal access-context
+and explicit enrollment/route/current-policy authority (P02-T01 Step6), consumed by
+P03-T01 scope and P04-T02 action-bound transport before P03-T02 socket admission.
+Re-read complete concrete enrollment/naming/dictionary/config/Control boundaries;
+map current callers before adding any new schema. Applied0003 remains immutable;
+new relations append a fresh migration. Do not require full discovery/Monitor or
+analytics first. M1 still needs signed socket→durable archive/read/export/restart
+and the installed clean-Compose/dependency-outage journey. Future load/arm64/release
+qualification remains explicit. Acquisition task docs03 through firstT04 were read
+for dependency mapping; remaining tasks and full Serve/config owners must be read
+before editing those integration responsibilities.

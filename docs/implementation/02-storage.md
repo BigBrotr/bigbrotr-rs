@@ -70,8 +70,10 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
   policy references; later lifecycle migrations add observations/scheduling.
   The first [private operational identity consumer](../reference/relay-endpoint-registry.md)
-  appends 0003 after 0816 and is under native qualification. It does not close this
-  step: access/enrollment, routes and authenticated acquisition grants remain.
+  appends 0003 after 0816. [Identity/SQL](evidence/p02-relay-registry-native-20260928.json)
+  and [fault/concurrency](evidence/p02-relay-registry-faults-native-20260928.json)
+  evidence closes that bounded consumer. It does not close this step:
+  access/enrollment, routes and authenticated acquisition grants remain.
 - [ ] **Step 7:** **Practical P02-T01:** real PG transactions race two revision/frontier
   updates, disconnect after commit and retry. Inspect committed rows externally,
   including zero-output progress. Negative control: updating a watermark before
