@@ -12,9 +12,35 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main candidate25e6408; private origin e666f6817fff571450b02a32dd4689b643bbdbbb.
-Root owns qualification/reference/checkpoint/inventory updates only. All owned
+Mac main and private origin7656e8e88245bbe5d21ac291e34be75899d44d55.
+Root is the sole writer for the next observation/source integration slice. All owned
 resources are stopped/retained; no active experiment or cleanup debt.
+
+Active P03-T01 Step3/P03-T02 Steps1/2/3: root-owned committed observation and
+receive-clock implementation plus scoped native fixtures. No new migration,
+codec or dependency. The fixed read reuses native index/digest/dependency checks,
+compares full trusted observer/clock entries and requires every dependency's
+exact target envelope. Cross-scope grants/general dictionary append remain open;
+old two-visibility installed stores cannot manufacture missing observer state.
+Witness descriptors bind exact source URL, no-auth access and method; provenance
+off retains none. Actual session samples realtime before decode, preserving signed
+microseconds, OS resolution and local rollback flag with unknown uncertainty.
+
+Mac6 real Rocks tests,3 clock tests,5 actual socket tests and scoped Clippy PASS.
+Original missing-API RED, ClockError import compile diagnostic and a real distinct
+external-observer/system-clock mismatch regression FAIL are retained under
+.research/implementation/observation-context-20260928. The latter is fixed and
+retested; known conflicting observer clock declarations refuse. Read-only review
+found no other product or probe/oracle launch blocker. Private-on tests a wholly
+restricted envelope with a public-route sample, not a private network socket.
+The cancelled case sets the flag during policy validation; it does not isolate
+pre-native cancellation or future-drop custody.
+Root read complete changed owners and the existing native/PG lifecycle scripts.
+Next bounded action: commit the reviewed unpublished exact-source candidate,
+then run the new observation native profile and six isolated PG/Rocks cases using
+the shared1154757 compiler and stopped71775507 PG. No launch has happened yet.
+Post-read lost/late rollback, actual socket→admission, installed integration,
+load/aged-state, capacity and arm64 remain NOT_RUN for this new boundary.
 
 [Request-session qualification](evidence/p03-request-session-native-20260928.json)
 closes the bounded correlation component at25e6408: five actual socket tests and
@@ -100,11 +126,17 @@ than adding another transport framework. Native store destruction precedes actua
 Control/driver teardown. No product, applied SQL, codec or dependency change was
 needed. Fixture setup timing margins are not authority/capacity guarantees.
 
-Next: commit/push the reviewed request-session qualification, then bind trusted
-retained observations to concrete SyncArrivalPolicy/job-bound admission from
-actual signed frames. WebSocket/session/scope/policy owners were read completely;
-committed dictionary/bootstrap and initial-owner boundaries still need scoped
-complete reading before that integration.
+Next: bind trusted retained observations to concrete SyncArrivalPolicy/job-bound
+admission from actual signed frames. Request-session qualification is committed
+and pushed; remote main matches7656e8e. Complete current bootstrap, admission,
+certification, visibility, native store, initial_batch, initial-owning lifetime,
+model dictionary/arrival/clock and socket/session/scope/policy owners were read.
+The initial installed bootstrap currently persists only visibility, so observer/
+clock allocation and dynamic dictionary custody remain explicit integration needs.
+A read-only reviewer assessed the fixed observation boundary; no secondary
+writer or remote experiment is active. The current candidate and evidence steps
+are recorded above. Current free space is Mac6.9GiB and
+Tux61,775,876,096B; eight unrelated containers remain running.
 The frozen validator in the fault fixture does not qualify that consumer.
 This is P03-T01 Step3/P03-T02 Steps1/2/3. The next user-visible M1 deliverable remains
 signed socket→durable admission→archive/read→restart/resend. Remaining actual

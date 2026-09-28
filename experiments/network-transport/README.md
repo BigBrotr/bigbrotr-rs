@@ -68,3 +68,11 @@ two bounded encoder tests plus scoped Clippy. It retains both exact release test
 executables. Independent peers observe masked REQ/CLOSE, stale and concurrent
 attribution, poisoned-session refusal and socket closure. No PostgreSQL, dataset
 or archive is modified, and the profile claims no installed Sync or coverage.
+
+`observation` uses the existing registry builder to compile the CLI and actual
+Control probe, run six RocksDB, three clock and five socket cases, and retain the
+two exact test executables outside the shared compiler cache. The separate
+`acquisition-scope/bindings.py <root> --observation` engine wave borrows the owned
+stopped PG laboratory, creates six clones and compares complete native/input/
+receipt bytes against independent literals. This is attribution/read qualification,
+not socket admission, late rollback delivery, general dictionary allocation or M1.

@@ -198,6 +198,12 @@ CLOSE/CLOSED, concurrent request attribution, cancellation and credit refusal.
 This supplies the request-correlation part of Steps1/2; actual job/scope/observation
 custody and ordered durable delivery remain required. No whole step closes here.
 
+The [committed observation profile](../reference/acquisition-scopes.md#committed-local-observation-profile)
+adds a fixed dictionary read and actual receive-clock sample without new storage
+formats. Mac native/clock/socket regressions pass; Linux and connected PG evidence
+are pending. Existing two-visibility installations still need actual dictionary
+append/intern and same-owner command delivery before this becomes installed Sync.
+
 - [ ] **1. Add per-connection request generations.** Multiplex one socket per endpoint/auth scope where allowed, allocate unique request IDs, and associate every frame with a request generation and receive sequence. An old handle cannot send CLOSE/NEG-CLOSE for its replacement.
 - [ ] **2. Reserve bytes/items before ownership transfer.** Apply shared 2MiB message and 256KiB admitted-event limits, the producer's 32MiB byte grant and 1024 queued-record ceiling, and bounded verifier pools. Separately cap outstanding mutation requests at 64 under the storage contract; the queue ceiling is not permission for 1024 concurrent durable requests. Include decoded objects, queued frames and join buffers in the same grant. Keep compression disabled unless the tested incremental inflated-byte/ratio path is enabled.
 - [ ] **3. Route each candidate through authoritative admission.** Verify actual payload/signature or its precisely bound verification cache and full collection/request membership. CertifyExisting may prove already retained effects under the exact access/visibility context without a ProducerRequestId; NeedsAdmission creates a fresh persisted strict Admit request. Carry validated Receipt/ExistingProof bases plus policy exclusion, invalid and retryable outcomes; resolve any previously ambiguous mutation by its original request first. No unverified claimed ID becomes permanent suppression.

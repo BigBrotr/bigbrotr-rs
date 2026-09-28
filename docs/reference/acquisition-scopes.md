@@ -179,6 +179,56 @@ IDs are not archive QualifiedRefs. Provenance off creates no endpoint/access/met
 dictionaries or witnesses; operational source binding and receive context remain.
 This checker alone does not close those integration obligations or installed Sync.
 
+### Committed local observation profile
+
+`read_initial_observation` resolves a fixed observer/clock and optional witness
+bundle through the existing native dictionary index, complete fact digests and
+transitive dependencies. It compares both complete trusted observer/clock entries.
+The actual clock must declare `system-utc`; the observer's declared clock must be
+unknown or `system-utc`, including when the two references differ. No operational
+endpoint ID, label or unallocated ordinal substitutes for a committed mapping.
+
+The first profile requires every dependency fact's envelope to have the exact
+target visibility. A second pass over the deduplicated dependency references
+checks this in the same serialized view and shared finite read budget. There is
+no implicit cross-scope dictionary grant. In particular, the existing installed
+bootstrap puts its private visibility mapping in the public envelope; it cannot
+serve as a wholly private observation bundle. A deliberately private initial
+batch can. General append/intern and cross-scope grants remain selected work.
+
+Witness mode requires public no-auth access with null label and exact target
+visibility, plus the fixed event-verification method. At actual receipt, the full
+retained endpoint URL must equal the guarded source's normalized endpoint, and
+known observer/clock route classes must match its selected route. Provenance off
+reads and retains no endpoint/access/witness method references; observer/clock
+and their legitimate descriptor dependencies remain necessary. Descriptor data
+and route attribution grant no current source, job or enrollment authority.
+
+The result retains its read reservation until disposal. The connected reader
+uses the existing initial registration, complete accepted policy documents,
+Control fence and short policy lease. It rolls back before final cancellation,
+connection and deadline checks; failed delivery exposes no retained result. No
+producer request, input, scientific fact, receipt or outcome is written by a read.
+Absence, corrupt state, invalid attribution and insufficient decode limits remain
+distinct outcomes. Native FFI still requires its retained and joined owner worker.
+
+`RelaySession` samples the local realtime clock immediately after a complete
+WebSocket message, before envelope decoding. `ReceiveTime` preserves that sample
+through later parsing/verification. It is application receipt time, not kernel or
+first-byte arrival. Pinned rustix1.1.5 `clock_gettime(Realtime)` and
+`clock_getres(Realtime)` use the existing time feature; no dependency changes.
+UTC microseconds are checked signed values, flooring pre-epoch instants too.
+Resolution rounds up to microseconds, with coarse bit2 above one microsecond;
+uncertainty stays null. Bit0 records regression against the preceding sample in
+that session. No NTP state or rollback across session/restart is inferred, and no
+observation clock controls authority deadlines. Received samples bind to the
+committed clock when constructing the local observation.
+
+Mac checks cover six actual RocksDB cases, three clock cases and five actual
+socket cases. Review found and reproduced the distinct external/system observer
+contradiction before correction. Native amd64/connected engine qualification is
+pending; no socket-to-admission, installed Sync or M1 guarantee closes here.
+
 [Mac components](../implementation/evidence/p03-sync-arrival-policy-mac-20260928.json)
 and [nine native cases](../implementation/evidence/p03-sync-arrival-policy-native-20260928.json)
 qualify this static arrival consumer at1978574. Actual PostgreSQL/RocksDB uses

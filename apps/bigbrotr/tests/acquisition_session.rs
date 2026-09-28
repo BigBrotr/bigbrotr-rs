@@ -218,12 +218,25 @@ async fn multiplexed_frames_keep_their_exact_predicate_and_closed_retires_only_i
             .into_iter()
             .enumerate()
         {
+            let now = || {
+                std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap()
+                    .as_micros()
+            };
+            let before = now();
             let SessionMessage::Relay(received) = session.receive().await?.unwrap() else {
                 panic!("relay")
             };
+            let after = now();
+            assert!((before..=after).contains(&(received.received.received_at().get() as u128)));
             assert_eq!(received.sequence, index as u64 + 1);
             assert_eq!(received.request.map(|r| r.id()), expected);
             if index == 0 {
+                let original_receive = received.received;
+                tokio::time::sleep(std::time::Duration::from_millis(10)).await;
+                assert_eq!(received.received, original_receive);
+                assert!(now() > after);
                 let request = received.request.unwrap();
                 assert!(request.filters() == one);
                 assert_eq!(request.limit(), None);

@@ -34,6 +34,8 @@ mod ingest_closing;
 mod ingest_event;
 #[path = "support/ingest_lease.rs"]
 mod ingest_lease;
+#[path = "support/ingest_observation.rs"]
+mod ingest_observation;
 #[path = "support/ingest_recovery.rs"]
 mod ingest_recovery;
 #[path = "support/ingest_recovery_process.rs"]
@@ -217,6 +219,8 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     // The explicit v2 case retains the independent frozen settings and literal
     // digest; it does not derive expected policy from the product codec.
     let source_mode = mode.starts_with("source-");
+    let observation_mode = mode.starts_with("source-observation-");
+    let witness = observation_mode && mode.ends_with("-on");
     let source_fault = mode.starts_with("source-fault-");
     let direct_config = config.clone();
     let v2 = mode == "write-v2" || source_mode || mode.starts_with("lease-");
@@ -310,7 +314,18 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         config_digest: Digest256::from_bytes(policy.config_digest),
         policy_digest: Digest256::from_bytes(policy.policy_digest),
         previous_topology: None,
-        allocation_domains: if source_mode {
+        allocation_domains: if witness {
+            [
+                (DictionaryKind::Endpoint, 70),
+                (DictionaryKind::Observer, 65),
+                (DictionaryKind::AccessScope, 71),
+                (DictionaryKind::VisibilityScope, 64),
+                (DictionaryKind::Method, 72),
+                (DictionaryKind::Event, 68),
+            ]
+            .map(|(kind, domain)| (kind, [domain; 16].try_into().unwrap()))
+            .to_vec()
+        } else if source_mode {
             vec![
                 (DictionaryKind::Observer, [65; 16].try_into().unwrap()),
                 (
@@ -426,12 +441,20 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             .unwrap(),
         );
     }
+    if observation_mode {
+        ingest_observation::dictionaries(
+            &mut dictionaries,
+            scope,
+            witness,
+            mode == "source-observation-private-on",
+        );
+    }
     let intent = EvidenceIntent::new(
         1,
         scope,
         dictionaries,
         EvidenceIntentLimits {
-            max_entries: 3,
+            max_entries: if witness { 6 } else { 3 },
             max_encoded_intent_bytes: 8192,
             max_validation_scratch_bytes: 1024,
         },
@@ -517,7 +540,24 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             },
         )
         .await;
-    if source_mode {
+    if observation_mode {
+        let bootstrap = result.unwrap();
+        assert_eq!(
+            bootstrap.receipt().batch().unwrap().records().len(),
+            if witness { 6 } else { 3 }
+        );
+        drop(bootstrap);
+        ingest_observation::run(
+            &mut owner, &observer, &mut store, &spec, path, &budget, mode, &intent,
+        )
+        .await;
+        drop(store);
+        drop(owner);
+        drop(observer);
+        ingest_closing::join(driver, false).await;
+        ingest_closing::join(observer_driver, false).await;
+        return;
+    } else if source_mode {
         let bootstrap = result.unwrap();
         assert_eq!(bootstrap.receipt().batch().unwrap().records().len(), 3);
         drop(bootstrap);

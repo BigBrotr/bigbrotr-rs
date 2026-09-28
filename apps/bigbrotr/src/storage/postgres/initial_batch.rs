@@ -7,6 +7,7 @@ use super::super::producer_sources::{self, CurrentSourceCheck, RequestPhase, Sou
 use super::*;
 use crate::{
     acquisition::{
+        observation::{ObservationBindings, StoredObservation},
         relay_source::RelaySourceBinding,
         scope::{AcquisitionEventContext, ScopeEventError},
     },
@@ -146,6 +147,17 @@ pub struct InitialVisibilityRequest<'a> {
     pub cancelled: &'a AtomicBool,
 }
 
+/// Committed local observer/clock and optional no-auth witness descriptors.
+/// Missing mappings are not allocated or guessed by this read operation.
+pub struct InitialObservationRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
+    pub registration: &'a ingest_registry::InitialRegistration,
+    pub bindings: ObservationBindings<'a>,
+    pub limits: CertificationLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
+}
+
 /// Complete event-only JSONL batch supplied by a trusted source/policy consumer.
 /// The prepared events retain their separate memory grants while being staged.
 /// This API binds existing job metadata; it does not accept an operator job.
@@ -173,6 +185,57 @@ pub struct InitialBatchRequest<'a> {
 }
 
 impl ControlSession {
+    /// Run on the same retained native owner as admission. This read establishes
+    /// immutable attribution only; job/source authority is checked separately.
+    pub async fn read_initial_observation(
+        &mut self,
+        store: &mut IngestStore,
+        input: InitialObservationRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<Option<StoredObservation>, InitialEventError> {
+        if input.cancelled.load(Ordering::Relaxed) {
+            return Err(InitialEventError::Native(
+                AdmissionError::AuthorityUnavailable,
+            ));
+        }
+        let identity = *store.manifest().identity();
+        let (tx, mut lease) = self
+            .begin_initial_native_operation(
+                store,
+                InitialIngestContext {
+                    ingest_root: input.ingest_root,
+                    registration: input.registration,
+                    policy_ttl: input.policy_ttl,
+                    request: None,
+                    source: None,
+                    network_event: false,
+                    job: None,
+                },
+                validate,
+            )
+            .await?;
+        let result = store.read_observation(input.bindings, input.limits, permit, || {
+            if input.cancelled.load(Ordering::Relaxed) {
+                return Err(AdmissionError::AuthorityUnavailable);
+            }
+            lease
+                .check_delivery(identity.policy_epoch)
+                .map_err(|_| AdmissionError::AuthorityUnavailable)
+        });
+        tx.rollback()
+            .await
+            .map_err(|_| InitialEventError::DeliveryUnknown)?;
+        if input.cancelled.load(Ordering::Relaxed)
+            || self.client.is_closed()
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        self.available = true;
+        result.map_err(InitialEventError::Native)
+    }
+
     /// Run on the retained native owner worker, like certification. The result
     /// contains immutable data; source authorization remains a separate check.
     pub async fn read_initial_visibility(

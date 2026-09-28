@@ -18,7 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
-    'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
+    'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'ingest-visibility',
     'policy-versions', 'relay-source', 'relay-source-faults',
     'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs', 'acquisition-jobs-faults', 'acquisition-claims',
@@ -158,6 +158,7 @@ try:
         'relay-enrollment': ['enrollment'],
         'relay-enrollment-faults': ['enrollment-faults'],
         'ingest-visibility': ['visibility'],
+        'observation': ['observation'],
         'policy-versions': ['policy-versions'],
         'relay-source': ['relay-source'],
         'relay-source-faults': ['relay-source-faults'],
@@ -189,6 +190,7 @@ try:
                 'relay-enrollment': 'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
                 'relay-enrollment-faults': 'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',
                 'ingest-visibility': 'PASS_INGEST_VISIBILITY_BUILD_ONLY',
+                'observation': 'PASS_OBSERVATION_BUILD_ONLY',
                 'policy-versions': 'PASS_POLICY_VERSIONS_BUILD_ONLY',
                 'relay-source': 'PASS_RELAY_SOURCE_BUILD_ONLY',
                 'relay-source-faults': 'PASS_RELAY_SOURCE_FAULT_BUILD_ONLY',

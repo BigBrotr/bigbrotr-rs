@@ -1,6 +1,7 @@
 //! Bounded request generations on one already authorized endpoint/access socket.
 //! Correlation and EOSE are not admission, job authority or coverage completion.
 use crate::{
+    acquisition::receive_clock::{ReceiveClock, ReceiveTime},
     network::{DirectStream, ReceivedMessage, RelayWebSocket, WebSocketError},
     runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
 };
@@ -20,6 +21,7 @@ pub enum SessionError {
     Exhausted,
     Unavailable,
     InvalidLimits,
+    Clock,
     BinaryMessage,
     Request(RequestEncodeError),
     Envelope(WireError),
@@ -71,6 +73,8 @@ impl<'request> ActiveRequest<'request> {
 pub struct ReceivedRelay<'message, 'request> {
     /// Connection wire order, including intervening WebSocket control messages.
     pub sequence: u64,
+    /// Local complete-message receipt, sampled before envelope parsing.
+    pub received: ReceiveTime,
     pub envelope: RelayEnvelope<'message>,
     /// None means uncorrelated or retired work, never an admission candidate.
     pub request: Option<ActiveRequest<'request>>,
@@ -97,6 +101,7 @@ pub struct RelaySession<'borrow, 'owner, 'request> {
     max_requests: usize,
     limits: EventLimits,
     failed: bool,
+    clock: ReceiveClock,
     // Protocol buffers, registry and borrowed response must retire before credit.
     _permit: OwnedPermit,
 }
@@ -127,6 +132,7 @@ impl<'borrow, 'owner, 'request> RelaySession<'borrow, 'owner, 'request> {
             .map_err(|_| SessionError::Budget)?;
         let mut nonce = [0; 16];
         getrandom::fill(&mut nonce).map_err(|_| SessionError::Unavailable)?;
+        let clock = ReceiveClock::new().map_err(|_| SessionError::Clock)?;
         let socket = RelayWebSocket::connect(stream, resources, limits.wire_bytes)
             .await
             .map_err(SessionError::WebSocket)?;
@@ -139,6 +145,7 @@ impl<'borrow, 'owner, 'request> RelaySession<'borrow, 'owner, 'request> {
             max_requests: count,
             limits,
             failed: false,
+            clock,
             _permit: permit,
         })
     }
@@ -208,6 +215,7 @@ impl<'borrow, 'owner, 'request> RelaySession<'borrow, 'owner, 'request> {
         else {
             return Ok(None);
         };
+        let received = self.clock.sample().map_err(|_| SessionError::Clock)?;
         self.received = self
             .received
             .checked_add(1)
@@ -236,6 +244,7 @@ impl<'borrow, 'owner, 'request> RelaySession<'borrow, 'owner, 'request> {
                 self.failed = false;
                 Ok(Some(SessionMessage::Relay(ReceivedRelay {
                     sequence,
+                    received,
                     envelope,
                     request,
                 })))

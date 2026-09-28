@@ -71,6 +71,9 @@ pub use certification::{
 mod visibility;
 pub use visibility::StoredVisibility;
 
+#[path = "observation.rs"]
+mod observation;
+
 #[cfg(test)]
 #[path = "visibility_tests.rs"]
 mod visibility_tests;
