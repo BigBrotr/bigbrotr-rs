@@ -96,7 +96,8 @@ fingerprint and bounded strict JSON, with actual signed WebSocket membership
 checks. It supplies Step2 and part of Step1/P01-T03 Step5; no whole task checkbox
 closes. Persistent scope registration, policy compatibility and the installed
 finite journey remain required. See the [protocol reference](../reference/protocols.md#collection-selector)
-and [Mac component evidence](evidence/p03-selector-mac-20260928.json).
+and [Mac component evidence](evidence/p03-selector-mac-20260928.json), plus
+[native061890f execution](evidence/p03-selector-native-20260928.json).
 
 - [ ] **1. Freeze scope values and examples.** Define `AcquisitionScope`, finite `AcquisitionJob`, `TraversalPosition`, `PageOutcome` and `AcquisitionGap` using shared unsigned event time, `Finite(u64)/AfterMax`, access and target visibility identities, policy epoch and SourceCut. Preserve explicit collection since/until; exclude generated page limits/tail windows from selector identity.
 - [ ] **2. Implement normalized filter-union identity and validation.** Sort/deduplicate equivalent field values, reject empty lists and unsupported historical search, and record ephemeral retain/drop policy. Do not infer narrowing containment from string inclusion; initially create fresh evidence for every changed semantic scope.

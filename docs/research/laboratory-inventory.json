@@ -27551,11 +27551,69 @@
       }
     },
     "selector": {
-      "status": "Mac pure selector and actual signed socket PASS; native pending",
+      "status": "Mac and native Linux amd64 pure selector/socket component PASS; stopped-retained",
       "local_evidence": ".research/implementation/acquisition-selector-20260928",
       "report": "docs/implementation/evidence/p03-selector-mac-20260928.json",
       "cache": ".research/targets/product; existing compiler cache only",
-      "preserve": "Original RED/failure logs, signed fixtures, expected fingerprints and final checks; no active remote run yet"
+      "preserve": "Exact source/export/manifest, original RED and failure logs, final checks, independent fixtures, capture and qualified test ELFs outside shared 1154757 cache. Cache reusable under its lock; no PG or dataset writes.",
+      "native_report": "docs/implementation/evidence/p03-selector-native-20260928.json",
+      "resources": {
+        "source": "061890f3b07e8775ca99f384c03681c12168a37f",
+        "tree": "eae50ca84e3d66188c54d5e1b159ec048e08b15d",
+        "owner": "fb7190d80ff74a95e403f561bab0f63c",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/selector-061890f",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "a850ffb8887abe80fec2fc99f7c1a173ca219030546b5244f23b7caa9178f60a"
+          },
+          {
+            "name": "native",
+            "id": "58a780d284cf49741356bd760927737c43f382f6e63e1b227442c5ed2fda5588"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T10:47:32.627775+00:00",
+        "qualification": "PASS_SCOPED_SELECTOR_COMPONENTS",
+        "inventory_changed": [],
+        "free_bytes_after": 66874482688,
+        "finished_at": "2026-09-28T10:48:33.229331+00:00"
+      },
+      "launch": {
+        "source": "061890f3b07e8775ca99f384c03681c12168a37f",
+        "tree": "eae50ca84e3d66188c54d5e1b159ec048e08b15d",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/selector-061890f",
+        "pid": 3207901,
+        "start_ticks": "397470616",
+        "bundle_sha256": "5b62119c2ffc7795deeb1d7de620c1a21c8ddb0c5614d4e5579e1889ce8480e9"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "061890f3b07e8775ca99f384c03681c12168a37f",
+        "observed_at": "2026-09-28T10:48:59.932528+00:00",
+        "prior_unchanged": 912,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "a850ffb8887abe80fec2fc99f7c1a173ca219030546b5244f23b7caa9178f60a",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "58a780d284cf49741356bd760927737c43f382f6e63e1b227442c5ed2fda5588",
+            "exit": 0
+          }
+        ],
+        "source_files": 1515,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 66874466304
+      }
     }
   },
   "implementation_relay_registry_20260928": {

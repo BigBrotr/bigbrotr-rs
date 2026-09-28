@@ -1,0 +1,70 @@
+{
+  "format": "bigbrotr-selector-native/1",
+  "status": "PASS_SCOPED_SELECTOR_COMPONENTS",
+  "source": "061890f3b07e8775ca99f384c03681c12168a37f",
+  "tree": "eae50ca84e3d66188c54d5e1b159ec048e08b15d",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "memory_bytes": 6442450944,
+    "network": "none; actual loopback TCP peers"
+  },
+  "source_manifest_sha256": "c03f4a04b69b2d4c2d4dced5f709b4f287f460e86ffd32733d9faa5f43f181d6",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "executables_sha256": {
+    "selector": "e270de19977c8e2ac056a4af94d3a987188e6f6be1ff3a02f4816b3e1944d6fb",
+    "collection_selector": "10a2d8a65424e35cf0831f527d71f06e3b94c2af0882cc64a61ebd80c6239678",
+    "network_websocket": "9a970ddad66f6038a36cd8d30e4ddd613793825c5b6825d7f9fc8c9e390ecc05"
+  },
+  "tests": {
+    "network_websocket": 2,
+    "collection_selector": 8,
+    "selector": 4
+  },
+  "checks": [
+    "Release compilation and scoped Clippy",
+    "Three independent literal fingerprint vectors including typed multi-filter ordering",
+    "Full collection/request matching over actual signed socket corpus with independent expected REQ and complete signed-field comparison",
+    "Strict closed JSON, profile/working bounds, positional-array refusal and value normalization",
+    "Retained first signed socket corpus exercises forged/changed/duplicate payload controls and EOSE hints"
+  ],
+  "review": {
+    "source_files": 1515,
+    "captured_payloads": 15,
+    "capture_manifest_sha256": "f269c897e713590a766f5443d6134fe53fa08287e7d753d968baa4012ae9ccfa",
+    "root_review_sha256": "ac9a06d77b3b261a43618fade5be99f656dad6c953bf0970e51d3973b9a4a565"
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "061890f3b07e8775ca99f384c03681c12168a37f",
+    "observed_at": "2026-09-28T10:48:59.932528+00:00",
+    "prior_unchanged": 912,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "a850ffb8887abe80fec2fc99f7c1a173ca219030546b5244f23b7caa9178f60a",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "58a780d284cf49741356bd760927737c43f382f6e63e1b227442c5ed2fda5588",
+        "exit": 0
+      }
+    ],
+    "source_files": 1515,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 66874466304
+  },
+  "local_evidence": ".research/implementation/acquisition-selector-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/selector-061890f",
+  "scope": "Native bounded collection identity/membership and signed actual socket corpus; no persistent scope registration, installed Sync, durable admission, coverage or capacity claim",
+  "not_qualified": [
+    "Persistent scope registration, accepted policy integration and installed Sync",
+    "Producer 32MiB combined memory grant, source-bound admission and completed coverage",
+    "Full M1, peak heap, mixed/aged capacity or native Linux arm64"
+  ]
+}

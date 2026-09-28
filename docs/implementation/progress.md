@@ -116,7 +116,7 @@ must not grant network or visibility authority. Reserved migration0004 can appen
 after0020 in catalog order; all35 applied SQL checksums remain immutable.
 
 The pure CollectionSelector boundary is implemented and Mac-qualified in the
-next candidate after df226b2, native qualification pending: model acquisition/fingerprint selector modules, strict protocol selector
+candidate061890f, now native-qualified: model acquisition/fingerprint selector modules, strict protocol selector
 codec, tests and independently authored signed fixtures. P03-T01 Steps1/2 and
 P01-T03 Step5 are the active component scope. Normalization sorts/deduplicates
 values and exact conjunctions only; explicit time bounds/history floor and local
@@ -142,12 +142,24 @@ suites passed; scoped Clippy, formatting and documentation checks pass. Evidence
 Only the masked text reader was shared for the two actual peers; existing model,
 protocol, hash and lexical scanner mechanisms remain, with no framework/new crate.
 
-Next bounded action: exact clean candidate Git transfer and native selector profile
-using the existing 1154757 cache lock. Latest Tux census has 65,410,060 KiB free,
-eight unrelated workloads and no cargo/rustc/clang process match; no active lab.
-Latest Mac free 11,633,808 KiB before these incremental tests. Preserve all original
-RED/failure logs. Review native capture/terminal state, commit evidence and push,
-then continue scope registration and explicit accepted-policy compatibility.
+Candidate061890f3b07e8775ca99f384c03681c12168a37f, tree
+eae50ca84e3d66188c54d5e1b159ec048e08b15d, is clean on Tux. Native qualification
+PASS under stopped-retained runs/selector-061890f, ownerfb7190d80ff74a95e403f561bab0f63c,
+PID3207901/start397470616; fetch a850ffb8887abe80fec2fc99f7c1a173ca219030546b5244f23b7caa9178f60a
+and native58a780d284cf49741356bd760927737c43f382f6e63e1b227442c5ed2fda5588.
+Bundle5b62119c2ffc7795deeb1d7de620c1a21c8ddb0c5614d4e5579e1889ce8480e9.
+[Native evidence](evidence/p03-selector-native-20260928.json): eight model,
+four codec and two actual signed socket tests PASS, release build/scoped Clippy.
+Root compared all 1,515 source files to exact Git and 15 captured payload hashes.
+Three qualified test ELFs remain outside the mutable cache. Terminal audit
+10:48:59 UTC found both containers exit0/no OOM, PID terminal, lock released,
+912 prior container projections unchanged and eight unrelated running.
+Free66,874,466,304 bytes; no database/archive writes. The 1154757 cache now has
+061890f intermediates and is reusable under its lock. Mac main is this candidate
+plus the next evidence commit; root owns post-candidate documentation only.
+Next: commit/push evidence, then continue P03-T01 persistent scope registration
+with explicit accepted-policy compatibility. This closes only the pure selector
+component; all installed acquisition and M1 gates remain open.
 
 Retain the actual-consumer memory risk: the selected 32MiB producer grant cannot
 blindly stack 17MiB WebSocket, 8MiB decode and 8MiB verification reservations.
@@ -294,7 +306,7 @@ bundle/launch/capture/root-review recipes, raw outcomes and hash manifests.
 
 Current compiler cache is network-1154757/out/build/{target,cargo-home}, exclusively
 locked by .compiler-cache.lock. Both latest terminal build audits verified release.
-Original ELFs are outside it. It currently contains positive27b7f45 build intermediates;
+Original ELFs are outside it. It currently contains positive061890f build intermediates;
 only exact source rebuilds may use it. No cache output is itself a qualified input.
 
 ## Maintenance and retained dependencies
