@@ -12,47 +12,64 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main candidate a2af1c1515bc6d8a0efb7190c48a4cdb05898508; private origin
-7656e8e88245bbe5d21ac291e34be75899d44d55. Only root-owned evidence/checkpoint
-updates are dirty; product source is the clean candidate exported to Tux.
-Root is the sole writer. Native observation-a2af1c1 build and14 component tests
-PASS; all owned resources are stopped/retained. Build PID3665557/start400926787,
-ownerc13de82251b40b5312f6b4477cea7c45, fetch11786b7a/native2039b999 exit0.
-Engine PID3669192/start400938387, owner85709524b36ba61f8bf50799ba09a13f,
-client1975bc7d stopped143, borrowedPG71775507 stopped0. No cleanup errors,
-missing resources or unrelated changes. Original engine FAIL before observation:
-independent census lacked SELECT on acquisition_jobs after migration. Preserve
-bindings/off.stderr/stdout and its one clone/native bootstrap. Product behavior
-was not exercised. Root-owned fixture correction grants SELECT on the three
-new tables and checks all census privileges before the probe. The retry will
-use new clones/exact Git and unchanged a2af1c1 artifacts, no recompilation.
-Initial free space Mac6,904,504KiB/Tux61,775,720,448B.
+Mac main fixture b0ec196fec730035157760dd912d71a5a9de2191; private origin
+7656e8e88245bbe5d21ac291e34be75899d44d55 pending qualification push. Root sole
+writer; only bounded evidence/inventory/checkpoint updates are dirty. Product
+source a2af1c1515bc6d8a0efb7190c48a4cdb05898508 is built and qualified below.
+All owned resources are stopped/retained; no active experiment or cleanup debt.
 
-Active P03-T01 Step3/P03-T02 Steps1/2/3: root-owned committed observation and
-receive-clock implementation plus scoped native fixtures. No new migration,
-codec or dependency. The fixed read reuses native index/digest/dependency checks,
-compares full trusted observer/clock entries and requires every dependency's
-exact target envelope. Cross-scope grants/general dictionary append remain open;
-old two-visibility installed stores cannot manufacture missing observer state.
-Witness descriptors bind exact source URL, no-auth access and method; provenance
-off retains none. Actual session samples realtime before decode, preserving signed
-microseconds, OS resolution and local rollback flag with unknown uncertainty.
+[Committed observation qualification](evidence/p03-observation-native-20260928.json)
+closes the fixed attribution reader and receive-clock first wave: Mac/native
+six real Rocks tests, three clock tests, five actual socket tests, release build
+and scoped Clippy PASS. Six actual PG/Rocks cases PASS with complete independent
+native/input/receipt comparisons and all 67 operation tables/xmin unchanged.
+Witness-on and wholly private envelopes qualify; private-on uses a public-route
+sample, not a private socket. Negative cases exercise second-policy refusal,
+cancellation during validation and expired preflight. Late/lost rollback,
+future-drop custody, actual socket→admission and installed integration remain open.
 
-Mac6 real Rocks tests,3 clock tests,5 actual socket tests and scoped Clippy PASS.
-Original missing-API RED, ClockError import compile diagnostic and a real distinct
-external-observer/system-clock mismatch regression FAIL are retained under
-.research/implementation/observation-context-20260928. The latter is fixed and
-retested; known conflicting observer clock declarations refuse. Read-only review
-found no other product or probe/oracle launch blocker. Private-on tests a wholly
-restricted envelope with a public-route sample, not a private network socket.
-The cancelled case sets the flag during policy validation; it does not isolate
-pre-native cancellation or future-drop custody.
-Root read complete changed owners and the existing native/PG lifecycle scripts.
-Next bounded action: retain/audit the original setup failure, commit the fixture
-correction, then execute the six-case retry from exact Git using unchanged native
-artifacts. Never replay completed launchers. Inventory owns original identities.
-Post-read lost/late rollback, actual socket→admission, installed integration,
-load/aged-state, capacity and arm64 remain NOT_RUN for this new boundary.
+Original a2af1c1 engine setup FAIL before read lacked census SELECT on a new table.
+Its one clone/bootstrap/stderr remain intact. Fixture-only b0ec196 adds SELECT
+on the three new tables and a full privilege preflight; six new clones reuse
+unchanged a2af1c1 binaries without copying/rebuilding. Original local RED/import
+compile failure and a real distinct external-observer/system-clock contradiction
+regression FAIL are retained; the latter is fixed. Root checked both 1600-file
+Git revisions and 88 captured payloads. No dependency, codec or migration change.
+
+Build observation-a2af1c1 ownerc13de82251b40b5312f6b4477cea7c45,
+PID3665557/start400926787 terminal; fetch11786b7a/native2039b999 stopped0.
+Original engine PID3669192/start400938387 terminal; client1975bc7d stopped143.
+Retry observation-b0ec196 PID3671779/start400956811 terminal;
+client938315a3 stopped143 and borrowedPG71775507 stopped0/no OOM.
+Audit20:29:27UTC found974 prior projections unchanged, eight unrelated running,
+compiler lock free and 61,530,370,048B available. Shared1154757 now holds a2af1c1
+intermediates; qualified artifacts are separately retained. Inventory
+implementation_network_20260928.observation and ignored
+.research/implementation/observation-context-20260928 own exact identities,
+launch recipes, original-failure, retry-capture and root-review. Never replay
+launchers or completed cache retirement. Check disk before further allocation.
+
+Structural review retained the fixed bounded dictionary traversal and visible
+Control transaction. A second bounded pass checks dependency envelopes because
+the generic mapping lookup omits that metadata; changing every traversal caller
+would add unnecessary scope. No orchestration framework or new crate. Known
+contradictory observer clock declarations now refuse even with distinct refs.
+
+Next bounded action, P03-T01 Step3/P03-T02 Steps1/2/3: own an actual correlated
+EVENT under byte/item credit with original sample, predicate, source and job,
+then pass it through concrete SyncArrivalPolicy and job-bound certification/
+admission on the same Control/native owner after source rollback. Never retain
+callback output through an outer side channel if source delivery later fails.
+Strict bounded decoding must preserve invalid signed candidates for explicit
+classification; use the existing parser rather than unchecked Serde.
+
+Next user-visible M1 remains signed socket→durable admission→archive/read→restart/
+resend. Real prerequisites still include dictionary append/intern for installed
+stores (current bootstrap only contains two visibility mappings), same-owner
+command delivery P01-T09 Step1/P02-T02 Steps2/3, and restart custody/recovery.
+These are integration requirements, not an entire Discovery/Monitor subsystem.
+Cross-scope dictionary grants, installed Sync/progress, capacity, load/aged state,
+arm64 and release remain selected and unqualified.
 
 [Request-session qualification](evidence/p03-request-session-native-20260928.json)
 closes the bounded correlation component at25e6408: five actual socket tests and
@@ -74,7 +91,7 @@ first execution PASS; no native retry. Root compared1592 Git files and14 capture
 Run request-session-25e6408 owner76bd46ca70d0c0b33b27fb632deebd76,
 PID3649973/start400724460 terminal; fetch3f6ffd22/native d7b2920b stopped0/no OOM.
 Audit19:51:20UTC found970 prior projections unchanged, eight unrelated running,
-compiler lock free and61,775,929,344B available. Shared1154757 now holds25e6408
+compiler lock free and 61,775,929,344B available. Shared1154757 now holds25e6408
 intermediates; both qualified ELFs are separately retained. Inventory
 implementation_network_20260928.request_session owns exact identities/recipes.
 Mac last7,225,100KiB free. Never replay launchers or completed cache retirement.
@@ -101,7 +118,7 @@ scoped Clippy PASS at375aa05; unchanged component suites were not repeated.
 Retry acquisition-binding-recovery-23701f8: PID3622273/start400612650 terminal,
 client198c77b8 stopped143, borrowedPG71775507 stopped0/no OOM. Eleven new clones
 retained. Audit19:32:32UTC verified968 prior projections unchanged, eight unrelated
-running, compiler lock free and61,875,560,448B available. Original buildowner
+running, compiler lock free and 61,875,560,448B available. Original buildowner
 3b88bcbbc2aa1ed28b242d169b7d50b5, fetchde77ce80/native49d5533a remain stopped0;
 original failed client39b4d2e remains stopped143. Shared1154757 holds375aa05
 intermediates; exact artifacts are retained separately. Inventory
@@ -138,25 +155,6 @@ than adding another transport framework. Native store destruction precedes actua
 Control/driver teardown. No product, applied SQL, codec or dependency change was
 needed. Fixture setup timing margins are not authority/capacity guarantees.
 
-Next: bind trusted retained observations to concrete SyncArrivalPolicy/job-bound
-admission from actual signed frames. Request-session qualification is committed
-and pushed; remote main matches7656e8e. Complete current bootstrap, admission,
-certification, visibility, native store, initial_batch, initial-owning lifetime,
-model dictionary/arrival/clock and socket/session/scope/policy owners were read.
-The initial installed bootstrap currently persists only visibility, so observer/
-clock allocation and dynamic dictionary custody remain explicit integration needs.
-A read-only reviewer assessed the fixed observation boundary; no secondary
-writer or remote experiment is active. The current candidate and evidence steps
-are recorded above. Current free space is Mac6.9GiB and
-Tux61,775,876,096B; eight unrelated containers remain running.
-The frozen validator in the fault fixture does not qualify that consumer.
-This is P03-T01 Step3/P03-T02 Steps1/2/3. The next user-visible M1 deliverable remains
-signed socket→durable admission→archive/read→restart/resend. Remaining actual
-prerequisites include committed dictionary custody, living initial-owner command
-delivery (P01-T09 Step1/P02-T02 Steps2/3) and restart authority. A second Control/
-native store is not a delivery mechanism. No full Discovery/Monitor subsystem is
-prerequisite. Installed Sync, progress, capacity, arm64 and product remain open.
-
 [Native event-effect evidence](evidence/p03-acquisition-execution-native-20260928.json)
 qualifies populated0024 upgrade/reapply and13 PG/Rocks admission/certification
 cases at19945dc. Exact original job binding, current authority and preflight expiry
@@ -165,12 +163,12 @@ and immutable. Its acquisition-binding-19945dc run and14 clones remain retained;
 full source/artifact/resource identities are in implementation_network_20260928.
 
 [Native claim-fault evidence](evidence/p03-acquisition-claim-faults-native-20260928.json)
-qualifies all16 schedules: eight actual COMMIT6 cuts and both policy/grant/source/
+qualifies all 16 schedules: eight actual COMMIT6 cuts and both policy/grant/source/
 account lock orders. Lost responses retain distinct accepted/queued outcomes;
 cancellation poisons reuse while actual Control excludes contenders until joined.
 Original job and owner expiry independently refuse with the other deadline live.
 Fresh Control can claim only still-accepted unexpired work; queued or expired
-work remains historical. Root checked all67 tables/xmin, exact writer deltas,
+work remains historical. Root checked all 67 tables/xmin, exact writer deltas,
 original detail/command/ordinal/deadline,1579 Git files and198 captures. Native
 release build/Clippy and Mac scoped Clippy PASS; unchanged39 tests not repeated.
 No native failure/retry or product/SQL change.0023 remains immutable.
@@ -197,7 +195,7 @@ an alias. Transactions remain visible with focused queue/read/decode helpers.
 qualifies seven actual adapter cases, fresh-owner observation/refusal, populated
 CLI upgrade/reapply and explicit incompatible-history rollback. Same-owner claim
 after actual logout changes only the original job row to queued revision2.
-Actor/grant/source/policy/expiry/schema refusals preserve all67 operation tables.
+Actor/grant/source/policy/expiry/schema refusals preserve all 67 operation tables.
 Raw application SQL tests same-owner/helper/direct/paused cases. A clone retaining
 only the reviewed paused-trigger omission fails precisely expected23514/observedBZ001.
 Root compared1578 exact Git files,137 captures and independent complete adapter
@@ -267,7 +265,7 @@ Control/driver custody and refuses another claimant until joined. Fresh owners
 resolve the original key without duplicate jobs or reset duration. Held owner expiry
 refuses. Both dataset-lock orders have observed backend barriers and exact writer
 row/xmin effects; historical authenticated retry after policy/grant withdrawal
-succeeds while absent intent refuses. Root checked all67 tables, literal intent/
+succeeds while absent intent refuses. Root checked all 67 tables, literal intent/
 job/command/audit/detail/ordinal links,1574 Git files per revision and154 captures.
 Mac/native scoped Clippy and native release build PASS. This is acceptance, not
 claim/dispatch, management activation, installed Sync or capacity qualification.
@@ -299,7 +297,7 @@ explicit.0022 and all earlier qualified SQL must not be rewritten.
 [Native first-wave evidence](evidence/p03-acquisition-jobs-native-20260928.json)
 records7 actual adapter cases plus current/future timestamp guards and a
 single-predicate negative clone. Root compared1573 Git files for all3 revisions
-and122 captures, all67 tables/xmin, literal digest and complete job/command/audit/
+and122 captures, all 67 tables/xmin, literal digest and complete job/command/audit/
 detail/admission linkage.38 Mac/native tests and scoped Clippy PASS. SQL accepts
 one durable job on exact retries and leaves none on six refusal modes. Raw final
 constraints reject future accepted_at; removing that predicate fails the same
@@ -357,7 +355,7 @@ and three actual executable tests/Clippy. Maintained Ingest outlives its origina
 expiry; SIGTERM closes native then records Control release and role retirement.
 Absent topology and sealed zero prefix both work. Accepted counts64/32 override
 file65 to32. Expiry, administrative policy, existing target and populated registry
-are discriminating refusals. Root compared1559 exact Git files and88 captures,
+are discriminating refusals. Root compared1559 exact Git files and 88 captures,
 all64 tables/xmin,12 native rows and original CBOR request/receipt. No native failure.
 Mac original RED/setup/product failures remain retained, never rewritten as PASS.
 

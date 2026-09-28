@@ -29997,7 +29997,7 @@
       "preserve": "Exact source, original local failures/RED logs, native commands/results, manifests and separately retained test ELFs. No new full compiler cache; shared1154757 may be reused only under its existing lock. No PG/dataset changes or retired resource deletion."
     },
     "observation": {
-      "state": "Native14 scoped tests PASS; original engine setup FAIL before read; stopped-retained; retry pending",
+      "state": "Native14 tests and six PG/Rocks cases PASS; original setup FAIL retained; stopped-retained; complete product INCOMPLETE",
       "local_evidence": ".research/implementation/observation-context-20260928",
       "launch": {
         "source": "a2af1c1515bc6d8a0efb7190c48a4cdb05898508",
@@ -30033,7 +30033,7 @@
         "free_bytes_after": 61619367936,
         "finished_at": "2026-09-28T20:25:15.612545+00:00"
       },
-      "preserve": "Original local failures/RED logs, source and artifacts. Exclusive shared1154757 compiler; no dataset or retired-resource deletion.",
+      "preserve": "Original setup failure, all seven clone/native stores, exact source, logs, receipts and independent input bytes. a2af1c1 CLI/probe and two test ELFs remain outside shared1154757 compiler. Retry borrows those artifacts read-only; no duplicate compiler/artifact copy. No retired resource or dataset deletion.",
       "original_engine": {
         "source": "a2af1c1515bc6d8a0efb7190c48a4cdb05898508",
         "status": "FAIL",
@@ -30104,7 +30104,141 @@
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/observation-a2af1c1",
         "pid": 3669192,
         "start_ticks": "400938387"
-      }
+      },
+      "retry_launch": {
+        "source": "b0ec196fec730035157760dd912d71a5a9de2191",
+        "tree": "ee605c2529863a768e9df7eefa95ae14133b8f84",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/observation-b0ec196",
+        "pid": 3671779,
+        "start_ticks": "400956811",
+        "bundle_sha256": "d0d4f31c5cac21431bd4f9b59f851771b28871a3653934414f1cdf3b0b1a61d2"
+      },
+      "retry_engine": {
+        "source": "b0ec196fec730035157760dd912d71a5a9de2191",
+        "status": "PASS_COMMITTED_OBSERVATION_FIRST_WAVE",
+        "owner": "c96b9d3007d091d49c27efea5b453617",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "938315a34c460484f11477379b4de1e0b3151cd97b803970a73e40d9682d5626",
+          "name": "bigbrotr-acquisition-binding-b0ec196"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "databases": [
+          "bb_scope_bind_b0ec196_observation_off",
+          "bb_scope_bind_b0ec196_observation_on",
+          "bb_scope_bind_b0ec196_observation_private_on",
+          "bb_scope_bind_b0ec196_observation_expired",
+          "bb_scope_bind_b0ec196_observation_cancelled",
+          "bb_scope_bind_b0ec196_observation_policy"
+        ],
+        "cases": [
+          {
+            "name": "off",
+            "status": "PASS",
+            "native_rows": 16,
+            "dictionaries": 3,
+            "zero_operation_writes": true
+          },
+          {
+            "name": "on",
+            "status": "PASS",
+            "native_rows": 28,
+            "dictionaries": 6,
+            "zero_operation_writes": true
+          },
+          {
+            "name": "private-on",
+            "status": "PASS",
+            "native_rows": 28,
+            "dictionaries": 6,
+            "zero_operation_writes": true
+          },
+          {
+            "name": "expired",
+            "status": "PASS",
+            "native_rows": 16,
+            "dictionaries": 3,
+            "zero_operation_writes": true
+          },
+          {
+            "name": "cancelled",
+            "status": "PASS",
+            "native_rows": 16,
+            "dictionaries": 3,
+            "zero_operation_writes": true
+          },
+          {
+            "name": "policy",
+            "status": "PASS",
+            "native_rows": 16,
+            "dictionaries": 3,
+            "zero_operation_writes": true
+          }
+        ],
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "started_at": "2026-09-28T20:28:34.687527+00:00",
+        "finished_at": "2026-09-28T20:28:51.548624+00:00",
+        "free_bytes_before": 61619429376,
+        "free_bytes_after": 61530607616
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "b0ec196fec730035157760dd912d71a5a9de2191",
+        "observed_at": "2026-09-28T20:29:27.309730+00:00",
+        "prior_unchanged": 974,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "11786b7ab2055d16cfae852d35c4deeb386ad72328cbe08111f8ec432d2aa407",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "2039b9993a3105c2f74789b6c07ab18ee4f2a014544f144caffe2e2e659f73c7",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "938315a34c460484f11477379b4de1e0b3151cd97b803970a73e40d9682d5626",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1600,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 61530370048,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      },
+      "evidence": "docs/implementation/evidence/p03-observation-native-20260928.json",
+      "capture_manifests": [
+        {
+          "capture": "original-failure",
+          "source": "a2af1c1515bc6d8a0efb7190c48a4cdb05898508",
+          "source_files": 1600,
+          "captured_payloads": 27,
+          "capture_manifest_sha256": "42730078f35127c12946d571d7f0c9053c464637d48e6cc23173d82d56cff266"
+        },
+        {
+          "capture": "retry-capture",
+          "source": "b0ec196fec730035157760dd912d71a5a9de2191",
+          "source_files": 1600,
+          "captured_payloads": 61,
+          "capture_manifest_sha256": "6f2a9baca12519998029862d397437435162f93085a7e8e3e553d189116d5ecc"
+        }
+      ]
     }
   },
   "implementation_relay_registry_20260928": {
