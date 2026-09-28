@@ -69,5 +69,7 @@ termination. The owner-loss case proves enough lease remains to distinguish its
 500ms closure bound from normal expiry. An independent oracle checks all native
 bytes/original inputs; original source-pass/template/report and unrelated container
 projections are checked unchanged. Other retained databases are not rehashed.
-These new cases are prepared but not executed yet. They do not close delayed
-cleanup, concurrent source changes, installed Sync, WebSocket or M1 acceptance.
+These three cases passed at8c4d12c; see the
+[scoped report](../../docs/implementation/evidence/p04-source-transport-native-20260928.json).
+They do not close delayed cleanup, concurrent source changes, installed Sync,
+WebSocket or M1 acceptance.

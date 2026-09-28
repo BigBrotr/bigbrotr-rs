@@ -139,6 +139,7 @@ remain bounded by the lease; arbitrary synchronous callbacks cannot be preempted
 
 No persistent format changes accompany this adapter. Subsequent admission still
 needs current source/policy checks; this is not a WebSocket, coverage or complete
-signed-event journey. The new native source-transport profile and three engine
-scenarios are prepared, not yet executed at this checkpoint. Delayed cleanup,
-concurrent changes, installed acquisition and capacity qualification remain open.
+signed-event journey. The native profile and first three actual engine scenarios
+passed at8c4d12c; see the [bounded report](../implementation/evidence/p04-source-transport-native-20260928.json).
+Delayed cleanup, concurrent changes, installed acquisition and capacity
+qualification remain open.

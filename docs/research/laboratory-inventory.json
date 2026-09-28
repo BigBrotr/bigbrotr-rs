@@ -28426,6 +28426,92 @@
       "evidence": "docs/implementation/evidence/p02-relay-source-faults-native-20260928.json",
       "capture": ".research/implementation/relay-source-faults-5efd67b",
       "retention": "All eight clones/native stores, source and original outputs retained. Borrowed e06 PostgreSQL stopped; no new network/compiler cache and no deletion."
+    },
+    "transport_build": {
+      "state": "stopped-retained",
+      "source": "8c4d12c950077d26f63f046656c087aa16df3a1c",
+      "tree": "d57ff0e8b4800c36f211668baa513129958060d9",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-transport-8c4d12c",
+      "owner": "40faca3eac30ac761278089fc3b1b109",
+      "label": "org.bigbrotr.network-transport",
+      "pid": 3109696,
+      "start_ticks": "396492282",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "c87246afb4a5d33fe22e619d1eef25565c19bd03815fb227b1129c2b53aedbd8"
+        },
+        {
+          "name": "native",
+          "id": "e3bd56d2486d6c8be639a2fd0c6b105020f4eee298edbbe19537f8b2dce10ab6"
+        }
+      ],
+      "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+      "local_evidence": ".research/implementation/source-issuer-20260928",
+      "scope": "34 native component tests/build/Clippy; first3 actual source transport scenarios separately recorded",
+      "result": "PASS_SOURCE_TRANSPORT_BUILD_ONLY",
+      "checks": 5,
+      "tests": 34,
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "8c4d12c950077d26f63f046656c087aa16df3a1c",
+        "observed_at": "2026-09-28T08:06:43.544245+00:00",
+        "prior_unchanged": 896,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "c87246afb4a5d33fe22e619d1eef25565c19bd03815fb227b1129c2b53aedbd8",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "e3bd56d2486d6c8be639a2fd0c6b105020f4eee298edbbe19537f8b2dce10ab6",
+            "exit": 0
+          }
+        ],
+        "source_files": 1479,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 67968942080
+      },
+      "artifacts": {
+        "binary_sha256": "b76fe100b084f12a2ae3fd370fc85d30cbac287be8563c7a18ed115aad4ce20b",
+        "probe_sha256": "2488771a467ad22318e517ae39bb87885dbeaa0d88b163641ec7343a1b0bf627",
+        "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+      }
+    },
+    "transport": {
+      "state": "stopped-retained",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-transport-8c4d12c/transport",
+      "source": "8c4d12c950077d26f63f046656c087aa16df3a1c",
+      "pid": 3115068,
+      "start_ticks": "396508317",
+      "borrowed_pg_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "scope": "Three actual PostgreSQL/RocksDB/current-policy/TCP source scenarios, plus34 native component tests; installed acquisition remains incomplete.",
+      "owner": "ae75ad5a3aea42ed7d7fb560e4209719",
+      "label": "org.bigbrotr.source-transport",
+      "client": {
+        "id": "2d328d6ac7cd2f9ba690e3d3efd3331c58ab29768e54969818911da9936f7598",
+        "name": "bigbrotr-source-transport-8c4d12c"
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "databases": [
+        "bb_transport_8c4d12c_pass",
+        "bb_transport_8c4d12c_policy",
+        "bb_transport_8c4d12c_owner_loss"
+      ],
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-09-28T08:11:49.956280+00:00",
+        "source": "8c4d12c950077d26f63f046656c087aa16df3a1c",
+        "prior_unchanged": 897,
+        "unrelated_running": 8,
+        "source_files": 1479,
+        "free_bytes": 67928887296
+      },
+      "evidence": "docs/implementation/evidence/p04-source-transport-native-20260928.json"
     }
   }
 }

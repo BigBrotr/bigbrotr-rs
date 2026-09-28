@@ -1,0 +1,132 @@
+{
+  "format": "bigbrotr-source-transport-qualification/1",
+  "status": "PASS_SCOPED_SOURCE_TRANSPORT",
+  "source": "8c4d12c950077d26f63f046656c087aa16df3a1c",
+  "tree": "d57ff0e8b4800c36f211668baa513129958060d9",
+  "tasks": [
+    "P02-T01 Step6 finite source authority",
+    "P03-T01 committed visibility binding",
+    "P04-T02 finite guarded transport"
+  ],
+  "scope": "Three actual PostgreSQL/RocksDB/current-policy/TCP source scenarios, plus34 native component tests; installed acquisition remains incomplete.",
+  "cases": [
+    {
+      "name": "pass",
+      "result": "received-private",
+      "native_rows": 16,
+      "control_tables": 64,
+      "release_changed": [
+        "owner_epochs",
+        "role_instances"
+      ]
+    },
+    {
+      "name": "policy",
+      "result": "refused-second-policy",
+      "native_rows": 16,
+      "control_tables": 64,
+      "release_changed": [
+        "owner_epochs",
+        "role_instances"
+      ]
+    },
+    {
+      "name": "owner_loss",
+      "result": "closed-after-backend-loss",
+      "native_rows": 16,
+      "control_tables": 64,
+      "release_changed": []
+    }
+  ],
+  "observations": [
+    "Actual committed public visibility refuses the private route before contact in all three cases; private visibility retains its exact dictionary mapping.",
+    "Both accepted full v2 policy documents are restored against actual roots. Literal request/answer exchange succeeds and the peer observes EOF.",
+    "Trusted callback refusal after the second actual document validation prevents contact; this does not test a concurrent ban change.",
+    "Exact Control PID/backend-start termination closes the peer within500ms while over one second of normal source validity remains. Rollback fails and subsequent policy work refuses; actual driver is joined.",
+    "Independent frozen oracle matches all16 native rows, original input and receipt bytes; no source event is admitted. All64 Control relations and normal release table deltas are checked."
+  ],
+  "artifacts": {
+    "binary_sha256": "b76fe100b084f12a2ae3fd370fc85d30cbac287be8563c7a18ed115aad4ce20b",
+    "probe_sha256": "2488771a467ad22318e517ae39bb87885dbeaa0d88b163641ec7343a1b0bf627",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e",
+    "source_manifest_sha256": "9dcb0c335a13445f18cfff99c8fce2d61b1f143d60173db72ff0d9ae62591576"
+  },
+  "environment": "Tux native Linux x86_64, Rust1.98.1/clang14, actual retained PostgreSQL16.15 and locked RocksDB binding. Release CLI/probe,29 network+4 policy+1 visibility tests and scoped Clippy PASS.",
+  "build_terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "8c4d12c950077d26f63f046656c087aa16df3a1c",
+    "observed_at": "2026-09-28T08:06:43.544245+00:00",
+    "prior_unchanged": 896,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "c87246afb4a5d33fe22e619d1eef25565c19bd03815fb227b1129c2b53aedbd8",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "e3bd56d2486d6c8be639a2fd0c6b105020f4eee298edbbe19537f8b2dce10ab6",
+        "exit": 0
+      }
+    ],
+    "source_files": 1479,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 67968942080
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-09-28T08:11:49.956280+00:00",
+    "source": "8c4d12c950077d26f63f046656c087aa16df3a1c",
+    "prior_unchanged": 897,
+    "unrelated_running": 8,
+    "source_files": 1479,
+    "free_bytes": 67928887296
+  },
+  "resources": {
+    "owner": "ae75ad5a3aea42ed7d7fb560e4209719",
+    "label": "org.bigbrotr.source-transport",
+    "client": {
+      "id": "2d328d6ac7cd2f9ba690e3d3efd3331c58ab29768e54969818911da9936f7598",
+      "name": "bigbrotr-source-transport-8c4d12c"
+    },
+    "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+    "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+    "databases": [
+      "bb_transport_8c4d12c_pass",
+      "bb_transport_8c4d12c_policy",
+      "bb_transport_8c4d12c_owner_loss"
+    ],
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-transport-8c4d12c/transport",
+    "state": "stopped-retained",
+    "pid": 3115068,
+    "start_ticks": "396508317"
+  },
+  "evidence": {
+    "local_capture": ".research/implementation/source-issuer-20260928",
+    "build_tar_sha256": "36e58dc217318f3f36edccbfb3f69c48ace866a5aae999cdf3b0304747a4a734",
+    "transport_tar_sha256": "1b2bb7ec0605397555f6a04e781a8ccd042b9881d47263905eb7571d062e1647",
+    "raw_report_sha256": "29ffe9d7835504f5043f08425dbe85c78c145302e52bb0b5b7ba83586372de04",
+    "manifest_sha256": "96a5caa589d18d9d451c9b308544cdc22220acd21076bd351be0efda34ba5e48",
+    "root_review_sha256": "8c5c7f37c56665c8fc9d8afd5b47c52a2ae59932926b344d6f0cceb0de69f73d",
+    "recipe": "experiments/relay-source/transport.py ROOT"
+  },
+  "review": "Complete changed core owners and callers reviewed by root and independent read-only AI reviewer. Review found replaceable liveness predicate and late cleanup delivery; fixes have discriminating component evidence, while delayed cleanup engine qualification remains open. Root independently checked23 transport payloads and15 build payloads.",
+  "limitations": [
+    "Buffered TLS loss is separately tested by local component fixture; this native source fixture uses TCP.",
+    "Second policy refusal is trusted callback injection, not a current ban update.",
+    "Only three finite scenarios; delayed cleanup, concurrency, installed Sync and M1 remain open.",
+    "normal release checks changed tables; its previously qualified field semantics are not requalified here",
+    "Preservation comparison covers original bb_source_template, bb_source_pass and source-result.json; other retained databases were not rehashed.",
+    "Finite locks intentionally span the bounded network operation; no renewable source session or capacity claim."
+  ],
+  "not_run": [
+    "delayed cleanup reply",
+    "concurrent changes and lock orders",
+    "installed Sync",
+    "WebSocket/signed admission/M1",
+    "load/aged state",
+    "arm64/release"
+  ]
+}

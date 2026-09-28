@@ -12,13 +12,30 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and origin/main are339dbf4, pushed to the verified private repository.
-Root owns the dirty finite source-transport slice: network lifetime/route decoder,
+Local main is8c4d12c (unpublished exact-Git source candidate); origin/main339dbf4
+is pushed privately. Root owns pending evidence/inventory/checkpoint updates.
+The candidate implements the finite source-transport slice: network lifetime/route decoder,
 acquisition visibility restriction, PostgreSQL source consumer/shared enrollment
 check, accepted Sync policy validator, actual engine probe and laboratory profile.
 No applied SQL changed. Product a6c28e6 remains the last native-qualified source
-boundary. Candidate commit/native34-test build and three engine scenarios are next;
-no source-transport native result exists yet. No active experiment.
+boundary. Native34 component tests, release CLI/probe build and Clippy PASS at8c4d12c.
+Build root runs/source-transport-8c4d12c stopped-retained; owner40faca3eac30ac761278089fc3b1b109,
+PID3109696/start396492282 terminal. Audit08:06:43UTC verified896 prior projections,
+eight unrelated running,1479 clean source/exported files,15 safe payload hashes,
+exact ELFs and released1154757 compiler lock. Free67,968,942,080bytes.
+Fetchc87246af/nativee3bd56d2 exited0/noOOM. Original ELFs/cache evidence retained.
+[Three actual engine scenarios](evidence/p04-source-transport-native-20260928.json) PASS at8c4d12c:
+private exchange, injected second-policy refusal and exact Control backend loss.
+Independent root review verifies23 payloads, all16 native rows, original input/receipt,
+all64 Control relations and exact endpoint/private route/visibility identities.
+Public visibility refuses contact in every case; backend loss closes within500ms
+with over one second remaining. Native TCP only; buffered TLS has component evidence.
+Engine PID3115068/start396508317 terminal; audit08:11:49UTC verifies897 other
+container projections unchanged/eight unrelated running and1479 clean source files.
+Client2d328d6ac7cd and borrowed e06 PG7177550705c4 stopped/noOOM; three transport
+clones/native stores retained. Free67,928,887,296bytes. No deletion or new cache/network.
+Delayed cleanup, concurrent policy/source changes and installed acquisition remain open.
+Local .research/implementation/source-issuer-20260928 owns bundle/launch/capture.
 
 Mac29 affected network tests, four accepted-policy cases, one visibility case and
 scoped lib/bin/probe/test Clippy passed. Original missing-API REDs are retained.
@@ -120,9 +137,9 @@ policy_epoch movement. Provenance-off EventIntent intentionally omits operationa
 IDs, so ambiguous producer/work recovery must retain a bounded source binding
 separately, without allocating archival endpoint/access mappings. History reader
 grants and original enrollment actor/session do not authorize the runtime worker.
-The current issuer/ban consumer is now a dirty candidate, with no native or
-signed acquisition claim yet. Qualify the finite current authority/committed scope
-consumer; full discovery, Monitor and renewable sessions are not prerequisites.
+The current issuer/ban consumer is candidate8c4d12c with the first three native
+scenarios qualified above; no signed acquisition claim. Finish delayed cleanup
+and concurrent source/policy qualification; full discovery, Monitor and renewable sessions are not prerequisites.
 
 The bounded operational source binding is now qualified through first-wave,
 relational and actual lock/COMMIT/revoked-recovery evidence. Source permission
@@ -252,12 +269,11 @@ unchanged; other old DBs retained but not rehashed. Inventory source.faults;
 ignored .research/implementation/relay-source-faults-5efd67b owns launch/capture/
 root-review. Mac and Tux cache-retirement receipts remain as recorded below.
 
-Verified fault evidence is committed/pushed. Next bounded action: review and commit
-the finite source candidate, transfer exact Git for the source-transport native
-build, then run the three prepared actual engine cases. This remains P02-T01
-Step6, P03-T01 and P04-T02; delayed cleanup and concurrent policy/source changes
-need subsequent practical qualification before the responsibility closes. Read current owning network gates/callers before design;
-independent read-only reviewer is checking that boundary. Then wire actual guarded
+Verified fault evidence is pushed. Source-transport8c4d12c and this evidence are
+ready for the next coherent private push. Next bounded action: exercise delayed
+rollback/absolute deadline and concurrent policy/source lock schedules with the
+actual source consumer and engines. This remains P02-T01 Step6, P03-T01 and P04-T02;
+no broad unchanged suite or full adjacent subsystem is required. Then wire actual guarded
 socket acquisition into P03-T02 and P01-T09 Step2/M1. Full discovery, Monitor,
 analytics and renewable sessions are not blanket prerequisites. Binding is data,
 not permission; v1 has no acquisition bans and must remain refused for issuance.
