@@ -140,3 +140,6 @@ CREATE TRIGGER zz_source_fixture BEFORE INSERT ON control.producer_requests
 GRANT USAGE ON SCHEMA source_fixture TO bigbrotr_control;
 GRANT INSERT ON source_fixture.results TO bigbrotr_control;
 GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA source_fixture TO bigbrotr_control;
+-- The installed fixture login has no DELETE grant. Give only this isolated
+-- clone the ability to reach the immutable-history trigger being tested.
+GRANT DELETE ON control.producer_requests TO bigbrotr_control;
