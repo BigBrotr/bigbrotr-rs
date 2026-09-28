@@ -1,0 +1,214 @@
+{
+  "format": "bigbrotr-initial-ingest-commit-native/1",
+  "status": "PASS_SCOPED_INITIAL_SQL_INTERRUPTION",
+  "source": "2e2a4e1f454706787d3baa6f109c210a63b00b2f",
+  "tree": "a83c6dcf38c7fe5f5d2f2232e2643b947117844b",
+  "product_source": "7ab155ecdcf962d69032b54ae0e4c3d19967b2a6",
+  "tasks": [
+    "P01-T09 Step1",
+    "P02-T02 Steps2/3"
+  ],
+  "local_evidence": ".research/implementation/initial-ingest-commits-20260928",
+  "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-commits-2e2a4e1",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "rocksdb": "rocksdb0.25.0 / librocksdb-sys0.19.0+11.8.1",
+    "client_memory_bytes": 1073741824
+  },
+  "identities": {
+    "source_manifest_sha256": "6561e344b153c6ae5db88761da1b15f38d8c6949108ce7bcddd028bdf519760c",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "binary_sha256": "69a9fc96b71b13d7bb28cb310f3396d188335389ec4f4d515195368ae41a7e2c",
+    "probe_sha256": "8d12dd94a5fd9416564ad0160ac634cd797c22dd62a4a43b361e2973151cc2b4"
+  },
+  "bundle_sha256": "d085bec742313fbdd5e62786bf52027a33953005dff9a7ebd87c286ee00065b1",
+  "captured_payload_manifest_sha256": "f2481593b2be9ce243905f229fa6ae20a5f095757644c61754bc88a7d87e48d1",
+  "root_review": {
+    "status": "PASS_BOUNDED_ROOT_REVIEW",
+    "source": "2e2a4e1f454706787d3baa6f109c210a63b00b2f",
+    "product_source": "7ab155ecdcf962d69032b54ae0e4c3d19967b2a6",
+    "source_files": 1565,
+    "captured_payloads": 214,
+    "cases": 12,
+    "actual_tables_per_case": 64,
+    "commit_counts": {
+      "commit-pass": 7,
+      "before-1": 0,
+      "after-1": 1,
+      "before-2": 1,
+      "after-2": 2,
+      "before-3": 2,
+      "after-3": 3,
+      "before-4": 3,
+      "after-4": 4,
+      "cancel-reservation": 2,
+      "cancel-outcome": 3,
+      "delayed-outcome": 7
+    },
+    "native_rows": {
+      "commit-pass": 12,
+      "before-1": 0,
+      "after-1": 0,
+      "before-2": 0,
+      "after-2": 0,
+      "before-3": 1,
+      "after-3": 1,
+      "before-4": 12,
+      "after-4": 12,
+      "cancel-reservation": 1,
+      "cancel-outcome": 12,
+      "delayed-outcome": 12
+    },
+    "signal_or_hold_seconds": {
+      "cancel-reservation": 2.022853860165924,
+      "cancel-outcome": 2.019178820773959,
+      "delayed-outcome": 1.075796032
+    },
+    "no_product_or_dependency_change": true,
+    "terminal_audit": "2026-09-28T16:17:42.723272+00:00"
+  },
+  "checks": [
+    "Exact7ab155e CLI/probe reused with complete Rust/build inputs unchanged. No new compilation/cache. Both sources clean;1565 Git files and214 retained payloads independently compared on Mac.",
+    "Actual proxy counters discriminate before/after COMMIT1 Control,2 registry,3 original-input reservation and4 native-outcome copy. Every failed CLI returns4 without initialized or graceful-release report.",
+    "Before reservation COMMIT leaves one manifest and the exact original staged input, without a SQL request. After reservation response loss retains the SQL request but still no native batch. Outcome-copy cuts retain all12 native rows; SQL outcome exists only after actual commit.",
+    "Actual SIGTERM at held reservation/outcome returns in2.022854s/2.019179s, before launch+5s; ordinary phase expiry cannot explain death. Exact CLI and proxy are reaped without fixture kill.",
+    "Held cases independently observe exact original backend PID/start and session advisory fence; actual competing CLI returns Busy without target or any row/xmin mutation. After CLI death the proxy still holds the upstream transaction. Only explicit proxy close ends it; final SQL rows match the original held committed state.",
+    "Healthy control and1.075796s held outcome complete7 commits then native close and explicit Control release. Independent literal oracle compares manifest, all native rows, CBOR input, reservation and outcome identities/digests.",
+    "All64 tables/xmin retained and unaffected relations unchanged. Existing native targets refuse another initialization before Control claim. Registry-only interruptions remain preserved without fabricated recovery authority.",
+    "Terminal audit:944 prior projections unchanged, eight unrelated containers running, own client and borrowed PG stopped/no OOM, compiler lock free."
+  ],
+  "cases": [
+    {
+      "name": "commit-pass",
+      "status": "PASS",
+      "exit_code": 0,
+      "server_completed_commits": 7,
+      "native_rows": 12
+    },
+    {
+      "name": "before-1",
+      "status": "PASS",
+      "exit_code": 4,
+      "server_completed_commits": 0,
+      "native_rows": 0
+    },
+    {
+      "name": "after-1",
+      "status": "PASS",
+      "exit_code": 4,
+      "server_completed_commits": 1,
+      "native_rows": 0
+    },
+    {
+      "name": "before-2",
+      "status": "PASS",
+      "exit_code": 4,
+      "server_completed_commits": 1,
+      "native_rows": 0
+    },
+    {
+      "name": "after-2",
+      "status": "PASS",
+      "exit_code": 4,
+      "server_completed_commits": 2,
+      "native_rows": 0
+    },
+    {
+      "name": "before-3",
+      "status": "PASS",
+      "exit_code": 4,
+      "server_completed_commits": 2,
+      "native_rows": 1
+    },
+    {
+      "name": "after-3",
+      "status": "PASS",
+      "exit_code": 4,
+      "server_completed_commits": 3,
+      "native_rows": 1
+    },
+    {
+      "name": "before-4",
+      "status": "PASS",
+      "exit_code": 4,
+      "server_completed_commits": 3,
+      "native_rows": 12
+    },
+    {
+      "name": "after-4",
+      "status": "PASS",
+      "exit_code": 4,
+      "server_completed_commits": 4,
+      "native_rows": 12
+    },
+    {
+      "name": "cancel-reservation",
+      "status": "PASS",
+      "exit_code": 4,
+      "server_completed_commits": 2,
+      "native_rows": 1
+    },
+    {
+      "name": "cancel-outcome",
+      "status": "PASS",
+      "exit_code": 4,
+      "server_completed_commits": 3,
+      "native_rows": 12
+    },
+    {
+      "name": "delayed-outcome",
+      "status": "PASS",
+      "exit_code": 0,
+      "server_completed_commits": 7,
+      "native_rows": 12
+    }
+  ],
+  "original_outcomes": [
+    "No native engine or fixture failure in this wave.",
+    "Prelaunch AI/root review strengthened cancellation discrimination and independent cleanup attempts. Post-run review corrected future healthy committed-prefix reporting to use actual proxy count; both executed healthy cases already had exactly7 commits, so no retained outcome changes."
+  ],
+  "scope": "Installed first-lifetime startup cuts only. Server transaction custody after CLI death belongs to the deliberate proxy, not a surviving application driver. No native mid-FFI failure, power loss or recovery authority claim.",
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "2e2a4e1f454706787d3baa6f109c210a63b00b2f",
+    "observed_at": "2026-09-28T16:17:42.723272+00:00",
+    "prior_unchanged": 944,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "client",
+        "id": "12e5f80f276efd1405994899122b5b4575236127d2876ed7b4d437ae8922f9b3",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1565,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 64123289600,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "not_run": [
+    "worker panic",
+    "crash-resumable initialization/successor",
+    "renewal-specific lost COMMIT and policy races",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ]
+}

@@ -150,7 +150,7 @@ sys.exit(r.returncode)
     after = rows(database)
     lab.write_json(output/(name+'-after.json'), after)
     healthy = mode=='pass' or action=='release'
-    last_commit = 7 if healthy else number-(mode!='after-complete')
+    last_commit = terminal['receipt']['server_commit_complete'] if healthy else number-(mode!='after-complete')
     assert len(after['owner_epochs'])==len(after['role_instances'])==(2 if last_commit>=2 else last_commit)
     for table in ['source_streams', 'topology_generations', 'topology_streams', 'producer_slots', 'producer_epochs']:
         assert len(after[table])==int(last_commit>=2), table

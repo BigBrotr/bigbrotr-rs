@@ -91,4 +91,5 @@ reconstructed. Partial initialization is preserved and existing native targets
 refuse fresh initialization before another Control claim. Registry-only cuts
 retain their state without claiming a crash-resumable initializer. Renewal cuts,
 worker panic, successor authority, full M1 and capacity remain separate work.
-This recipe is a test definition, not evidence that these cases have executed.
+The [executed SQL wave](../../docs/implementation/evidence/p01-initial-ingest-commit-native-20260928.json)
+records all twelve cases on2e2a4e1 with exact7ab155e artifacts.

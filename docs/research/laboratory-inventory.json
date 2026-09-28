@@ -28900,6 +28900,79 @@
       },
       "preserve": "Retain all four clones, partial/complete native stores, original requests, source, trace logs and exact7ab155e binaries. Qualified tracer retained. No new compiler cache.",
       "next": "Installed SQL cancellation/ambiguous COMMIT and typed acquisition job. No cleanup obligation; do not replay launchers."
+    },
+    "initial_ingest_commits": {
+      "status": "STOPPED/RETAINED; twelve installed SQL interruption cases PASS; root review complete",
+      "local_evidence": ".research/implementation/initial-ingest-commits-20260928",
+      "purpose": "P01-T09 Step1/P02-T02 Steps2/3 installed startup COMMIT/cancellation boundaries",
+      "launch": {
+        "source": "2e2a4e1f454706787d3baa6f109c210a63b00b2f",
+        "tree": "a83c6dcf38c7fe5f5d2f2232e2643b947117844b",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-commits-2e2a4e1",
+        "pid": 3442734,
+        "start_ticks": "399444905",
+        "bundle_sha256": "d085bec742313fbdd5e62786bf52027a33953005dff9a7ebd87c286ee00065b1",
+        "artifact_source": "7ab155ecdcf962d69032b54ae0e4c3d19967b2a6",
+        "artifact_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-7ab155e/out/artifacts"
+      },
+      "engine": {
+        "owner": "63928dfc3548166b1bc4775df2c9dbed",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "12e5f80f276efd1405994899122b5b4575236127d2876ed7b4d437ae8922f9b3",
+          "name": "bigbrotr-acquisition-binding-2e2a4e1"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_2e2a4e1_commit_pass",
+          "bb_scope_bind_2e2a4e1_before_1",
+          "bb_scope_bind_2e2a4e1_after_1",
+          "bb_scope_bind_2e2a4e1_before_2",
+          "bb_scope_bind_2e2a4e1_after_2",
+          "bb_scope_bind_2e2a4e1_before_3",
+          "bb_scope_bind_2e2a4e1_after_3",
+          "bb_scope_bind_2e2a4e1_before_4",
+          "bb_scope_bind_2e2a4e1_after_4",
+          "bb_scope_bind_2e2a4e1_cancel_reservation",
+          "bb_scope_bind_2e2a4e1_cancel_outcome",
+          "bb_scope_bind_2e2a4e1_delayed_outcome"
+        ],
+        "status": "PASS_INITIAL_INGEST_COMMIT_WAVE",
+        "started_at": "2026-09-28T16:16:35.614101+00:00",
+        "finished_at": "2026-09-28T16:17:13.246149+00:00"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "2e2a4e1f454706787d3baa6f109c210a63b00b2f",
+        "observed_at": "2026-09-28T16:17:42.723272+00:00",
+        "prior_unchanged": 944,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "client",
+            "id": "12e5f80f276efd1405994899122b5b4575236127d2876ed7b4d437ae8922f9b3",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1565,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 64123289600,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      },
+      "preserve": "Retain twelve clones, partial/complete native stores, original inputs, source, proxy metadata, logs and exact7ab155e binaries. No new compiler cache.",
+      "next": "Typed finite acquisition job and real signed socket consumer. No cleanup obligation; do not replay launchers."
     }
   },
   "implementation_relay_registry_20260928": {

@@ -190,8 +190,15 @@ refusals. The [native interruption wave](../implementation/evidence/p01-initial-
 holds actual open/close syscalls while observing the retained Control fence,
 competing-claim refusal and bounded process death. Close(LOCK) occurs after the
 native OS lock is released; this tests an unfinished destructor and driver
-custody. Other close stages, worker panic, ambiguous commits and crash-resumable
-initialization remain pending; this does not complete the role or M1.
+custody. The [SQL interruption wave](../implementation/evidence/p01-initial-ingest-commit-native-20260928.json)
+executes twelve actual startup COMMIT/cancellation cases with complete SQL/native
+and original-input observations. Before/after response loss preserves the exact
+committed boundary; no retry regenerates initial native state. Held cancellation
+also demonstrates that the deliberate proxy's server transaction can outlive the
+terminated CLI, until that upstream connection ends. Client death alone does not
+prove server rollback. Other close stages, worker panic, renewal-specific commit
+cuts and crash-resumable initialization remain pending; this does not complete the
+role or M1.
 
 ## Exact dependency source basis
 

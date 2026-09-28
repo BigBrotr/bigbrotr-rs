@@ -12,17 +12,14 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main/private origin is c0b194d, verified clean before this work. Product
-7ab155e and its first-lifetime/native-interruption qualifications are pushed.
-Root now owns only the installed SQL fixture, its bindings/README and checkpoint;
-no Rust/build dependency change. The twelve finite cases are written, NOT RUN:
-before/after commits1–4, cancellation at3/4, delayed4 and healthy stop. Full
-registry/reservation/outcome owners were read; proxy counters and independent
-PG/native/original-input observations must verify the source-derived sequence.
-Read-only review is in progress. Next: finish fixture review, make an exact-source
-candidate and run it on Tux using retained7ab155e binaries, without recompilation.
-Fresh Tux preflight:62,812,012KiB free, eight unrelated running containers, no
-active BigBrotr process/lab. Prior cache retirement remains complete.
+Mac main is2e2a4e1 (SQL fixture candidate); private origin is c0b194d.
+Root owns qualification evidence/inventory/reference/checkpoint and a one-line
+fixture reporting correction. Product/build inputs remain7ab155e. Twelve actual
+SQL startup cases PASS with no engine/setup failure; full product INCOMPLETE.
+Commit/push this coherent qualification after final diff checks, then implement
+typed finite acquisition job authorization (P03-T01 Steps3/4) and connect the
+real signed socket consumer (P03-T02), retaining this same initial Control owner.
+No native process, lab or compiler task remains active; no cleanup obligation.
 
 Active P01-T09 Step1/P02-T02 Steps2/3: explicit
 `serve --initialize-ingest --roles control,ingest`, fresh-only under retained
@@ -78,27 +75,40 @@ Audit15:57:30UTC:943 other projections unchanged, eight unrelated running,
 compiler lock free and64,319,619,072B available. No new cache, no cleanup debt.
 Never replay launchers. Instrument9b30c35 is retained and unchanged.
 
-Next bounded action after qualification commit: installed SQL cancellation and
-lost/delayed COMMIT, using the existing finite fault proxy and real lock barriers.
-Read owning startup/registration/bootstrap transaction sequence and recovery
-contract before choosing exact commit numbers. Preserve unknown durable state;
-no retry may silently regenerate initial identities. Worker panic, crash-resumable
-initialization and successor remain open. No M1 or capacity/arm64 claim.
+[Installed SQL interruption evidence](evidence/p01-initial-ingest-commit-native-20260928.json)
+at2e2a4e1 reuses exact7ab155e binaries. All twelve cases PASS: healthy stop,
+before/after commits1–4, cancellation at reservation3/outcome4 and delayed4.
+Actual proxy counters prove the transaction cuts. Reservation cuts retain one
+manifest plus original staged CBOR, outcome cuts retain12 exact native rows;
+SQL request/outcome presence follows the actual committed prefix. SIGTERM exits
+in2.022854s/2.019179s, both before launch+5s. Actual competing CLI returns Busy.
+Independent SQL observes the proxy's upstream transaction/fence still alive
+after CLI death, then explicit close ends it. This is not a surviving app driver.
+Delayed outcome resumes after1.075796s and releases normally. All64 tables/xmin,
+original inputs and native bytes match; existing targets refuse new initialization.
+Root compared1565 Git files and214 captured payloads. No engine/setup failure.
+AI/root review strengthened cancellation timing and cleanup before launch; the
+post-run healthy-prefix reporting fix uses actual counts (both executed values7).
+No product, dependency or applied format change; no repeated unchanged suite.
 
-The next SQL fixture is written and not yet run. Root read the complete connected
-initial_batch.rs and postgres_command.rs, acquire/register wrapper, current
-registration/bootstrap contracts and finite proxy framing/lifetime plus Process
-helper. Source-derived COMMIT sequence to verify against actual proxy counters:
-Control claim1, registration2, original-input reservation3, native outcome copy4,
-Control refresh5, Ingest renewal6. RegistrationAttempt/producer reservation/outcome
-owners were also read completely before writing this fixture. Select real before/
-after COMMIT cuts and held cancellation, retain original attempts and all durable
-rows/CBOR/native bytes. The proxy must own/reap its actual process, continuously
-drain bounded metadata and distinguish its upstream hold from CLI driver death.
-A closed client socket alone does not prove rollback or unlock. Existing exact
-7ab155e artifacts remain reusable while Rust/build inputs stay unchanged.
-Last fresh preflight: Mac8,242,556KiB/Tux62,812,048KiB available; eight unrelated
-running containers and no active BigBrotr laboratory.
+All SQL resources STOPPED/RETAINED. Inventory
+implementation_network_20260928.initial_ingest_commits and ignored
+.research/implementation/initial-ingest-commits-20260928 own identities/recipes.
+Run initial-ingest-commits-2e2a4e1, owner63928dfc3548166b1bc4775df2c9dbed,
+PID3442734/start399444905 terminal; client12e5f80f stopped143, borrowedPG71775507
+stopped0, no OOM. Twelve bb_scope_bind_2e2a4e1_* clones/stores remain. Terminal
+audit16:17:42UTC:944 prior projections unchanged, eight unrelated running,
+compiler lock free,64,123,289,600B free; Mac last8,235,568KiB. No new build cache.
+Never replay launchers or cache retirement. Exact7ab155e artifacts remain retained.
+
+Next bounded action: read complete P03-T01 Steps3/4 job contracts and existing
+job/selector/source callers, then implement the smallest typed finite acquisition
+job foundation with independent refusal/rollback tests and real PG acceptance.
+Do not treat enrollment/history scope as job permission. Preserve Control→policy→
+source lock ordering and finite socket lifetime; release transport before fresh
+native admission. Native worker panic, renewal-specific lost/delayed COMMIT and
+policy races, crash-resumable setup and successor remain open. Do not advertise
+full Ingest readiness, M1, capacity or arm64 from this boundary.
 
 Next user-visible journey remains first signed socket event→durable admission→
 timer archive/index→read/export→restart/resend. Typed finite job authorization

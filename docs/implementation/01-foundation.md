@@ -450,8 +450,9 @@ and queryable with truthful role readiness, without implicit public publishing.
 - [ ] **Step 1:** Wire actual required owners/adapters into the CLI, rejecting enabled roles
   with unavailable required ports; no success stub for an unimplemented service.
   The explicit [initial Ingest owning lifetime](../reference/ingest-store.md#explicit-initial-owning-lifetime)
-  is under qualification with P02-T02 Steps2/3. It retains native/Control/driver
-  custody and initial dictionary bootstrap, reports acquisition absent and is not
+  has scoped startup/native/SQL-interruption evidence with P02-T02 Steps2/3. It
+  retains native/Control/driver custody and initial dictionary bootstrap, reports
+  acquisition absent and is not
   complete role readiness. Typed finite job authorization and the guarded socket
   consumer remain the next P03-T01 Steps3/4 and P03-T02 dependencies, followed by
   actual timer publication, read and restart/resend acceptance below.
