@@ -111,3 +111,16 @@ upgrade. Root independently checked all native bytes and captured relational
 states, plus source/artifact identities and terminal ownership. Concurrent
 scope-policy locks, invalid signatures, dispatch/lost-COMMIT recovery,
 installed Sync, capacity and M1 still require their own practical evidence.
+
+
+The `acquisition-binding-refusals` build profile compiles the changed probe and
+runs Clippy without repeating unchanged product tests. `bindings.py RUN_ROOT
+--refusals` selects four additional schedules: a literal zero signature produces
+an exact operational rejection whose identical retry writes nothing; certification
+of a retained body still rejects that signature; actual enrollment withdrawal
+refuses even the invalid candidate; and a clone-only scope guard refuses only
+after its reservation exists. The last case must retain original input and one
+reservation while leaving native state and outcomes unchanged. These cases remain
+NOT_RUN until their exact-source native report exists. The initial rejection
+advances operational Rocks state; it must not create scientific facts. The
+independent byte oracle checks both distinctions.

@@ -40,12 +40,23 @@ pub async fn run(
             | "source-scope-certify-withdrawn"
             | "source-scope-old-source-schema"
             | "source-scope-old-binding-schema"
+            | "source-scope-invalid"
+            | "source-scope-invalid-withdrawn"
+            | "source-scope-invalid-retained"
+            | "source-scope-dispatch-refused"
     ));
     let visibility = enrollment.visibility;
-    let event: SignedEvent = serde_json::from_slice(include_bytes!(
+    let mut event: SignedEvent = serde_json::from_slice(include_bytes!(
         "../../../../tests/fixtures/ingest/import-event.jsonl"
     ))
     .unwrap();
+    let invalid = matches!(
+        mode,
+        "source-scope-invalid" | "source-scope-invalid-withdrawn"
+    );
+    if invalid {
+        event.sig = bigbrotr_model::Signature::from_bytes([0; 64]);
+    }
     let observer_ref = QualifiedRef {
         dictionary_kind: DictionaryKind::Observer,
         allocation_domain: [65; 16].try_into().unwrap(),
@@ -181,9 +192,11 @@ pub async fn run(
     };
     let authorize = |document: &str, digest, candidate: &PreparedEvent| {
         validate_version(document, digest, true)?;
-        if candidate
-            .verified_event()
-            .is_none_or(|v| v.event() != &event)
+        let expected = if invalid { None } else { Some(&event) };
+        if candidate.verified_event().map(|v| v.event()) != expected
+            || candidate.verification_limit_bytes() != 256 * 1024
+            || candidate.visibility_scope_id() != visibility
+            || candidate.origin() != bigbrotr_model::EventOrigin::Network
             || candidate.observation() != Some(&observation)
         {
             return Err(OwnerError::InvalidPolicy);
@@ -204,6 +217,7 @@ pub async fn run(
             | "source-scope-omitted"
             | "source-scope-legacy-adopt"
             | "source-scope-certify-withdrawn"
+            | "source-scope-invalid-retained"
     );
     let mut receipt_bytes = None;
     if replay {
@@ -251,7 +265,10 @@ pub async fn run(
         };
         receipt_bytes = Some(receipt.encode_persistent(65536).unwrap());
     }
-    if mode == "source-scope-certify-withdrawn" {
+    if matches!(
+        mode,
+        "source-scope-certify-withdrawn" | "source-scope-invalid-withdrawn"
+    ) {
         owner
             .accept_relay_enrollment(
                 &session.session,
@@ -270,6 +287,8 @@ pub async fn run(
             )
             .await
             .unwrap();
+    }
+    if mode == "source-scope-certify-withdrawn" {
         let before = ingest_snapshot::state(observer, path).await;
         let error = certify(
             owner,
@@ -294,6 +313,36 @@ pub async fn run(
         );
         return false;
     }
+    if mode == "source-scope-invalid-retained" {
+        let before = ingest_snapshot::state(observer, path).await;
+        let mut forged = event.clone();
+        forged.sig = bigbrotr_model::Signature::from_bytes([0; 64]);
+        let result = certify(
+            owner,
+            store,
+            spec,
+            path,
+            budget,
+            &cancelled,
+            source,
+            Some(AcquisitionEventContext::new(&stored[0], request_predicate.filters()).unwrap()),
+            EventIntent::network(1, visibility, forged, observation).unwrap(),
+        )
+        .await
+        .unwrap();
+        assert!(matches!(
+            result.outcome(),
+            CertificationOutcome::Rejected(
+                bigbrotr::storage::rocks::store::RejectionReason::Signature
+            )
+        ));
+        drop(result);
+        assert_eq!(ingest_snapshot::state(observer, path).await, before);
+        emit(
+            serde_json::json!({"event":"scope-finished", "mode":mode, "status":"PASS", "zero_writes":true}),
+        );
+        return true;
+    }
     let before = ingest_snapshot::state(observer, path).await;
     emit(serde_json::json!({"event":"scope-before", "state":before}));
     let selected = match mode {
@@ -314,7 +363,40 @@ pub async fn run(
             authorize,
         )
         .await;
-    if mode == "source-scope-pass" {
+    if mode == "source-scope-invalid" {
+        let result = result.unwrap();
+        assert!(matches!(
+            result.outcome(),
+            AdmissionOutcome::Rejected(bigbrotr::storage::rocks::store::RejectionReason::Signature)
+        ));
+        drop(result);
+        let retained = ingest_snapshot::state(observer, path).await;
+        // Rejection adds an operational record and advances the Rocks sequence.
+        // The independent complete-byte oracle checks unchanged scientific facts.
+        assert_eq!(
+            retained["native_rows"].as_u64().unwrap(),
+            before["native_rows"].as_u64().unwrap() + 1
+        );
+        let retry = owner
+            .admit_initial_event(
+                store,
+                input(Some(0), Some(source)),
+                admission_permit(),
+                authorize,
+            )
+            .await
+            .unwrap();
+        assert!(matches!(
+            retry.outcome(),
+            AdmissionOutcome::Rejected(bigbrotr::storage::rocks::store::RejectionReason::Signature)
+        ));
+        drop(retry);
+        assert_eq!(ingest_snapshot::state(observer, path).await, retained);
+        emit(
+            serde_json::json!({"event":"scope-finished", "mode":mode, "state":retained, "status":"PASS", "zero_writes":false, "retry_zero_writes":true}),
+        );
+        return true;
+    } else if mode == "source-scope-pass" {
         let result = result.unwrap();
         let AdmissionOutcome::Durable(receipt) = result.outcome() else {
             panic!("retry rejected");
@@ -350,14 +432,32 @@ pub async fn run(
                 InitialEventError::Scope(ScopeEventError::OutsideRequest)
             }
             "source-scope-no-source" => InitialEventError::Control(OwnerError::InvalidInput),
+            "source-scope-invalid-withdrawn" | "source-scope-dispatch-refused" => {
+                InitialEventError::Source(SourceBindingError::Unavailable)
+            }
             _ => unreachable!(),
         };
         assert_eq!(result.err(), Some(expected));
     }
     let after = ingest_snapshot::state(observer, path).await;
-    assert_eq!(after, before);
+    if mode == "source-scope-dispatch-refused" {
+        for field in ["native_rows", "native_sha256", "sequence"] {
+            assert_eq!(after[field], before[field]);
+        }
+        let counts = observer
+            .query_one(
+                "SELECT (SELECT count(*) FROM control.producer_requests WHERE request_sequence=2),
+            (SELECT count(*) FROM control.producer_outcomes WHERE request_sequence=2)",
+                &[],
+            )
+            .await
+            .unwrap();
+        assert_eq!((counts.get::<_, i64>(0), counts.get::<_, i64>(1)), (1, 0));
+    } else {
+        assert_eq!(after, before);
+    }
     emit(
-        serde_json::json!({"event":"scope-finished", "mode":mode, "state":after, "status":"PASS", "zero_writes":true}),
+        serde_json::json!({"event":"scope-finished", "mode":mode, "state":after, "status":"PASS", "zero_writes":mode != "source-scope-dispatch-refused"}),
     );
     mode == "source-scope-pass"
 }
@@ -382,6 +482,9 @@ async fn certify(
         max_dependencies: 8,
     };
     let expected_event = intent.event().clone();
+    // This literal invalid fixture preserves the real event ID/body while
+    // replacing only its signature. No verifier output defines the expectation.
+    let invalid = expected_event.sig.as_bytes() == &[0; 64];
     let expected_observation = intent.observation().copied();
     owner
         .certify_initial_event(
@@ -401,10 +504,9 @@ async fn certify(
             grant(budget, limits.required_data_bytes().unwrap(), 0),
             |document, digest, candidate| {
                 validate_version(document, digest, true)?;
+                let expected = if invalid { None } else { Some(&expected_event) };
                 if candidate.verification_limit_bytes() != 256 * 1024
-                    || candidate
-                        .verified_event()
-                        .is_none_or(|event| event.event() != &expected_event)
+                    || candidate.verified_event().map(|event| event.event()) != expected
                     || candidate.observation() != expected_observation.as_ref()
                 {
                     return Err(OwnerError::InvalidPolicy);

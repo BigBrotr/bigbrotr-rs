@@ -26,7 +26,9 @@ sys.path.insert(0, str(SOURCE / 'experiments/network-transport'))
 from inventory import projection
 
 root = Path(sys.argv[1]).resolve(strict=True)
-assert len(sys.argv) == 2 and SOURCE == root / 'source'
+assert len(sys.argv) in (2, 3) and SOURCE == root / 'source'
+refusals = len(sys.argv) == 3
+assert not refusals or sys.argv[2] == '--refusals'
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
 build = root / 'out/artifacts'
@@ -46,7 +48,8 @@ output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-binding'
 client = 'bigbrotr-acquisition-binding-' + revision[:7]
 report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=built,
-    status='RUNNING', owner=owner, label=label, client=None, cases=[], databases=[],
+    status='RUNNING', wave='refusals' if refusals else 'first', owner=owner, label=label,
+    client=None, cases=[], databases=[],
     postgres=pg['postgres'], postgres_owner=pg['owner'],
     not_run=['concurrent scope-policy locks and lost COMMIT recovery', 'installed Sync/progress/M1',
              'measured memory capacity/load/aged-state', 'arm64/release'])
@@ -155,10 +158,54 @@ def old_source_schema():
     return db
 
 
+def rejected_source(dataset):
+    """Literal forged-signature request/rejection; no product codec or dump input."""
+    native, inputs, _ = complete_source(dataset, False)
+    event = json.loads((SOURCE / 'tests/fixtures/ingest/import-event.jsonl').read_bytes())
+    be = lambda n: n.to_bytes(8, 'big')
+    slot = bytes([66]) * 16
+    visibility = [dataset, 4, bytes([64]) * 16, 1]
+    observer = [dataset, 2, bytes([65]) * 16, 1]
+    body = [bytes.fromhex(event['id']), bytes.fromhex(event['pubkey']), event['created_at'],
+            event['kind'], event['tags'], event['content'], bytes(64)]
+    inputs[2] = b'bigbrotr/producer-request/1\0' + oracle.cbor([
+        [slot, 1, 2], 'admit', 1, [1, visibility, body, 'network', None,
+        [456, observer, [observer, 1, None, 0], None]]])
+    rejection = (b'bigbrotr/rejection/1\0' + slot + be(1) + be(2)
+                 + hashlib.sha256(inputs[2]).digest() + dataset + be(1) + b'\x04')
+    marker = b'\x01\x31' + slot + be(1)
+    native = [r for r in native if (r[0], r[1]) != ('receipts', marker)]
+    native += [('receipts', marker, b'\x01\x31' + be(2) + be(0) + be(0)),
+               ('receipts', b'\x01\x30' + slot + be(1) + be(2), rejection)]
+    return sorted(native), inputs, rejection
+
+
+def refuse_dispatch(db):
+    # Key the fault to an existing durable scoped reservation, not call counts.
+    # The actual reservation trigger still checks the real current scope first.
+    lab.sql(pg, db, """
+        ALTER FUNCTION control.require_acquisition_scope(bytea,bytea,bytea,bytea)
+            RENAME TO require_acquisition_scope_original;
+        CREATE FUNCTION control.require_acquisition_scope(d bytea,s bytea,e bytea,a bytea)
+        RETURNS void LANGUAGE plpgsql AS $$ BEGIN
+            IF EXISTS(SELECT 1 FROM control.producer_requests
+                WHERE dataset_id=d AND acquisition_scope_id=s) THEN
+                RAISE EXCEPTION 'acquisition scope is not current for this source'
+                    USING ERRCODE='23514';
+            END IF;
+            PERFORM control.require_acquisition_scope_original(d,s,e,a);
+        END $$;
+        REVOKE ALL ON FUNCTION control.require_acquisition_scope(bytea,bytea,bytea,bytea) FROM PUBLIC;
+        GRANT EXECUTE ON FUNCTION control.require_acquisition_scope(bytea,bytea,bytea,bytea) TO bigbrotr_control;
+    """)
+
+
 def run_case(name):
     db = old_source_schema() if name == 'old-source-schema' else clone(name, 'bb_source_template')
     if name != 'old-source-schema':
         upgrade(db, name, target=4 if name == 'old-binding-schema' else 21)
+    if name == 'dispatch-refused':
+        refuse_dispatch(db)
     before = rows(db)
     require(not before['producer_requests'] and not before['owner_epochs'], 'fresh-consumer-prerequisite')
     lab.write_json(output / (name + '-before.json'), before)
@@ -170,19 +217,39 @@ def run_case(name):
     require(result.returncode == 0 and not result.stderr, 'actual-scope-adapter-' + name)
     messages = [json.loads(line) for line in result.stdout.splitlines()]
     require(messages[-1]['event'] == 'scope-finished' and messages[-1]['mode'] == mode
-        and messages[-1]['status'] == 'PASS' and messages[-1]['zero_writes'], 'phase-state-comparison')
+        and messages[-1]['status'] == 'PASS'
+        and messages[-1]['zero_writes'] == (name not in ('invalid', 'dispatch-refused')), 'phase-state-comparison')
     after = rows(db)
     lab.write_json(output / (name + '-after.json'), after)
-    committed = name in ('pass','changed','omitted','legacy-adopt','certify-withdrawn')
+    committed = name in ('pass','changed','omitted','legacy-adopt','certify-withdrawn','invalid-retained')
     dataset = bytes.fromhex(after['datasets'][0]['dataset_id'][2:])
     expected, inputs, receipts = complete_source(dataset, committed)
+    if name == 'invalid':
+        expected, inputs, rejection = rejected_source(dataset)
+        require(messages[-1]['retry_zero_writes'], 'missing-rejection-retry')
+        outcome = next(r for r in after['producer_outcomes'] if r['request_sequence'] == 2)
+        require(outcome['outcome_bytes'] == '\\x' + rejection.hex()
+            and outcome['outcome_sha256'] == '\\x' + sha(rejection), 'exact-PG-rejection')
+    if name == 'dispatch-refused':
+        _, inputs, _ = complete_source(dataset, True)
+        first = next(m['state'] for m in messages if m['event'] == 'scope-before')
+        last = messages[-1]['state']
+        states = [{n: json.loads(v) for n, v in state['control_tables']} for state in (first, last)]
+        old, new = states
+        require({n for n in old if old[n] != new[n]} == {'producer_requests', 'producer_epochs'}, 'dispatch-effects')
+        require(len(new['producer_requests']) == 2 and old['producer_requests'][0] in new['producer_requests'], 'dispatch-reservation')
+        previous, current = [dict(t['producer_epochs'][0]) for t in states]
+        require(previous.pop('reserved_through_request') == 1 and current.pop('reserved_through_request') == 2, 'dispatch-reserved-prefix')
+        previous.pop('xmin'); current.pop('xmin')
+        require(previous == current and len(new['producer_epochs']) == 1, 'dispatch-producer-mutation')
     dumped = lab.docker('exec', client, '/build/ingest_bootstrap_probe', 'dump', '/lab/' + name)
     (output / (name + '-native.json')).write_text(dumped.stdout)
     actual = [(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in json.loads(dumped.stdout)['rows']]
     require(actual == expected, 'independent-complete-native-bytes-' + name)
     originals = sorted((output / name / 'producer-inputs-v1').glob('*.cbor'))
     require(len(originals) == len(inputs) and all(p.read_bytes() == inputs[int(p.stem[-16:],16)] for p in originals), 'exact-original-inputs')
-    require(len(after['producer_requests']) == len(after['producer_outcomes']) == len(inputs), 'exact-operational-counts')
+    require(len(after['producer_requests']) == len(inputs)
+        and len(after['producer_outcomes']) == (1 if name == 'dispatch-refused' else len(inputs)), 'exact-operational-counts')
     for row in after['producer_requests']:
         sequence = int(row['request_sequence'])
         require(row['request_digest'] == '\\x' + sha(inputs[sequence]) and row['input_bytes'] == len(inputs[sequence]), 'original-request-binding')
@@ -203,7 +270,7 @@ def run_case(name):
         require(documents == {canonical(kinds), canonical([1,2])} and len(after['acquisition_scopes']) == 2, 'literal-retained-selectors')
     if name == 'pass':
         require(any(m.get('event') == 'scope-needs-admission' and m['zero_writes'] for m in messages), 'read-before-admission')
-    if name == 'certify-withdrawn':
+    if name in ('certify-withdrawn', 'invalid-withdrawn'):
         require(sum(not r['enabled'] and r['generation'] == 2 for r in after['relay_enrollments']) == 1, 'actual-withdrawal')
     require(lab.sql(pg, db, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0', 'unjoined-driver')
     report['cases'].append(dict(name=name, status='PASS', actual_pg_rocks=True, complete_native_rows=len(actual), original_inputs=len(inputs)))
@@ -244,13 +311,17 @@ try:
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
-    db = clone('populated', 'bb_scope_54d1a18_basic')
-    before, after = upgrade(db, 'populated')
-    require(before['producer_requests'], 'nonempty-upgrade-workload')
-    report['cases'].append(dict(name='populated-upgrade', status='PASS', prior_rows_xmin_filenodes_unchanged=True))
-    save()
-    for name in ['pass','changed','omitted','legacy-adopt','outside-collection','outside-request',
-                 'no-source','certify-withdrawn','old-source-schema','old-binding-schema']:
+    if refusals:
+        cases = ['invalid', 'invalid-retained', 'invalid-withdrawn', 'dispatch-refused']
+    else:
+        db = clone('populated', 'bb_scope_54d1a18_basic')
+        before, after = upgrade(db, 'populated')
+        require(before['producer_requests'], 'nonempty-upgrade-workload')
+        report['cases'].append(dict(name='populated-upgrade', status='PASS', prior_rows_xmin_filenodes_unchanged=True))
+        save()
+        cases = ['pass','changed','omitted','legacy-adopt','outside-collection','outside-request',
+                 'no-source','certify-withdrawn','old-source-schema','old-binding-schema']
+    for name in cases:
         run_case(name)
     require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_source_template') == template
         and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')

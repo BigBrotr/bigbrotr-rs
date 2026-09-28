@@ -12,10 +12,20 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is f4038134a77828ec2b97ec7b3bddee0b80758b9f (candidate not pushed);
-private origin/main remains3f592bc7ff1cd9c9a1fcab2833bfdd9ba32dd603. Candidate
-was clean at exact-Git transfer. Root owns the qualification report, inventory,
-checkpoint and affected reference/task/laboratory documentation updates.
+Mac main and private origin/main are e21f651931117d74b9c906d4682fb91b09bb25bc,
+verified clean after the native qualification push. Root now extends only the
+scope probe and its existing harness for four discriminating refusal schedules:
+fresh forged signature/retry, forged signature after withdrawal, forged signature
+against an already retained event in certification, and post-reservation scope
+refusal. Product/SQL/dependency bytes are unchanged. The same engine harness has an
+explicit --refusals wave and a two-check build profile; no second laboratory
+framework. Scoped Mac probe Clippy PASS; original incorrect From/TryFrom fixture
+compile failures retained. Read-only AI caught a wrong fixture expectation:
+Rocks latest_sequence_number advances for operational rejection; scientific facts
+stay unchanged and identical retry must write nothing. Corrected before native
+launch. Logs: .research/implementation/acquisition-binding-faults-20260928.
+Four new engine schedules NOT_RUN. Next commit and exact-Git Tux qualification,
+then concurrent locks/historical recovery and raw relational negatives.
 Scope binding implementation and first-wave harness are committed; all36 prior SQL
 and Cargo inputs remain unchanged. Mac membership2/catalog30/CLI3 tests and scoped
 Clippy PASS; original RED/setup compile failures remain in ignored
