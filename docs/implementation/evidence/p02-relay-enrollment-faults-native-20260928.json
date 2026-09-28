@@ -1,0 +1,172 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T01 Step6 enrollment command authority and recovery",
+  "status": "PASS_SCOPED_ENROLLMENT_FAULTS",
+  "source": "4ac4bad0a7fe2cb2fa44a9ca19f1bb49e8dd0f37",
+  "tree": "a88a564f29d4e9be99e65d06e1142f652ae58448",
+  "application_source": "c2eebecf5f86bffd94f9c9da500e3ae4855d9c72",
+  "application_tree": "4575b9497d21ef02f34ca69bde1db8acd2921e8f",
+  "unchanged_product_source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "16.15; fsync/full_page_writes on; verified retained container 6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "outcome": {
+    "status": "PASS_SCOPED_ROOT_REVIEW",
+    "source": "4ac4bad0a7fe2cb2fa44a9ca19f1bb49e8dd0f37",
+    "application_source": "c2eebecf5f86bffd94f9c9da500e3ae4855d9c72",
+    "unchanged_product_source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+    "cases": 18,
+    "relations_per_snapshot": 64,
+    "capture_files": 117,
+    "independent_literal_digests": true,
+    "owner_epochs": [
+      1,
+      2,
+      3
+    ],
+    "scope": "Actual command COMMIT/recovery, isolated expiry causes and observed lock orders; no full relational corruption, installed acquisition or capacity qualification"
+  },
+  "cases": [
+    {
+      "name": "COMMIT-pass",
+      "status": "PASS"
+    },
+    {
+      "name": "COMMIT-before",
+      "status": "PASS"
+    },
+    {
+      "name": "COMMIT-after",
+      "status": "PASS"
+    },
+    {
+      "name": "COMMIT-cancel_close",
+      "status": "PASS"
+    },
+    {
+      "name": "COMMIT-cancel_release",
+      "status": "PASS"
+    },
+    {
+      "name": "COMMIT-owner_expiry",
+      "status": "PASS"
+    },
+    {
+      "name": "COMMIT-session_expiry",
+      "status": "PASS"
+    },
+    {
+      "name": "writer-first-policy",
+      "status": "PASS"
+    },
+    {
+      "name": "writer-first-permission",
+      "status": "PASS"
+    },
+    {
+      "name": "writer-first-revoked",
+      "status": "PASS"
+    },
+    {
+      "name": "writer-first-inactive",
+      "status": "PASS"
+    },
+    {
+      "name": "writer-first-authentication",
+      "status": "PASS"
+    },
+    {
+      "name": "accept-first-policy",
+      "status": "PASS"
+    },
+    {
+      "name": "accept-first-permission",
+      "status": "PASS"
+    },
+    {
+      "name": "accept-first-revoked",
+      "status": "PASS"
+    },
+    {
+      "name": "accept-first-inactive",
+      "status": "PASS"
+    },
+    {
+      "name": "accept-first-authentication",
+      "status": "PASS"
+    },
+    {
+      "name": "writer-rollback",
+      "status": "PASS"
+    }
+  ],
+  "artifacts": {
+    "binary_sha256": "1986ce6540254278f5faedc68e0f5ae1a829c0f77515bc19af0fc6ebe47e5122",
+    "probe_sha256": "e68899aa5020afb51d33edebf2b5a0d514a1068855d8702adb927a918bdceb0f",
+    "source_manifest_sha256": "fc1823096fb1737b0cb2c6aad4e7975b9dbab3f515306a7b535103ce5f885a0c",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+  },
+  "native_checks": "Actual new fault probe/release CLI compiled and Clippy passed at c2eebec. Engine-only corrected4ac4bad reused exact ELFs after complete fixture-only Git path-diff check. No unchanged test suite repeated.",
+  "original_failure": "p02-relay-enrollment-faults-incomplete-20260928.json",
+  "claims": [
+    "Seven exact fourth-COMMIT schedules distinguish received acceptance, unknown before/after commit, cancelled close/release and known owner/session expiry rejection.",
+    "Each expiry starts live; actual owner fence/backend and exact session are observed live then expired, with the other authority still live. Four held schedules retain actual Busy exclusion and unchanged durable rows before release.",
+    "Fresh password-verified sessions and owners2 to3 resolve the exact actor/key/command without rewriting prior acceptance. No original action is re-applied after a committed result.",
+    "Policy head, policy.change permission, session revoke, deactivation and deactivate/reactivate are exercised in both observed row-lock orders; writer rollback admits against unchanged heads.",
+    "Independent literal command digests, exact identity/current state/audit and same-transaction closure, all64-table snapshots, original database/report preservation and zero final Control backends are checked."
+  ],
+  "capture": {
+    "local": ".research/implementation/relay-enrollment-faults-4ac4bad",
+    "remote": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-faults-4ac4bad",
+    "files": 117,
+    "manifest_sha256": "c09bf810bb9c682cd868f86fc1241f415f15b8deae80db1e49212802a85e57f8",
+    "selected_sha256": {
+      "faults/result.json": "feeefd97f5f6874ddbbc343f56e720b7417441a372e52009241cd37c70a67f5a",
+      "faults/preflight.json": "5f48b3cb2c23d72f864586ec9ee9d3ffef8b9bcf7d266bcb3adfd85e3bd369fd",
+      "pipeline.json": "7dfee2420faaea25caf0985a0ba1910b2a95917d3c63003cf95530c739a4754b",
+      "orchestrator.log": "f77f62043a89e0d925371f86d62a1398f3c577f140691da678029e6cfeb45c28",
+      "source-manifest.json": "79d8372c60ee6fc83da1f8e6452f7ba9ed048aa131a055d0d1bf4ac81bc58977",
+      "terminal-audit.json": "2e4c25b6278e8dd2df77c0c8279f52d058ac853ec9f2179d3bc4dffede83c34d"
+    },
+    "review_sha256": "cfa4fc1d78a3f4448e7797339162117978552c72f35916c99cc0a383961ff717"
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "4ac4bad0a7fe2cb2fa44a9ca19f1bb49e8dd0f37",
+    "observed_at": "2026-09-28T04:33:07.923957+00:00",
+    "prior_unchanged": 874,
+    "borrowed_postgres": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "id": "136438fe3149d5643bb9e31bcfe32b8b130b2e6e3c2c20f956254f7bfb04436e",
+        "exit": 143
+      },
+      {
+        "id": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+        "exit": 0
+      }
+    ],
+    "source_files": 1445,
+    "original_report_unchanged": true,
+    "original_artifacts_verified": true,
+    "free_bytes": 66605449216
+  },
+  "review_boundary": "Root reviewed complete new probe/fixture/helper paths and the corrected epoch/census diff, recomputed literal hashes, matched all18 actual case sets/64-table deltas, isolated expiry causes and ownership attribution, and verified all117 capture payloads plus1445 clean source files/artifacts. Independent read-only AI reviewed sources before execution; its missing-container audit finding was fixed with an old/new synthetic-fragment regression. No missing container occurred natively.",
+  "limits": [
+    "Privileged SQL writers are deliberate fault injections, not installed policy/principal management workflows.",
+    "Custody/exclusion claims are the recorded observations and actual joined driver/reacquisition; no continuous sampling or key-memory-erasure claim.",
+    "Raw SQL can force deferred constraints early; that does not establish expiry at a later COMMIT. Product adapter retains deferral."
+  ],
+  "not_run": [
+    "all relational omission/corruption schedules",
+    "installed HTTP/CLI enrollment",
+    "current action issuer/restrictive drain",
+    "signed socket acquisition/M1",
+    "load/aged state",
+    "arm64/release"
+  ]
+}

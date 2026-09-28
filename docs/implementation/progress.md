@@ -12,11 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main candidate c2eebecf5f86bffd94f9c9da500e3ae4855d9c72 is committed but not
-pushed; origin/main remains868954f. Root owns current inventory/checkpoint and
-the pending narrow laboratory audit correction described below. No other writer is present. The native fault run is stopped-retained as recorded below. Independent route/authority review was read-only.
-Product candidate dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9 is unchanged
-through fixture-only325fa01 and49e7ed4. All source transfers were exact clean Git.
+Local main candidate4ac4bad0a7fe2cb2fa44a9ca19f1bb49e8dd0f37 is committed, not yet
+pushed; origin/main remains868954f. Root owns current native evidence/reference/
+recipe/checkpoint/inventory edits. No other writer or active experiment remains.
+Product candidate dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9 is unchanged.
+The fault probe compiled atc2eebec; corrected fixture4ac4bad reused exact artifacts.
+All source transfers were exact clean Git; no remote source editing.
 
 ## Active slice and next useful journey
 
@@ -29,20 +30,17 @@ Existing Serve selects Control only. M1 still needs the clean extracted Compose
 journey, timer publication and dependency-outage recovery. Component evidence does
 not replace those journeys or qualify an entire task/phase/product.
 
-Initial enrollment evidence is committed/pushed. Next bounded action: review and
-run the new exact-Git fault fixture to qualify the new command's held/lost COMMIT, expiry during accepting COMMIT and
-actual policy/session/account lock races using the retained successful PostgreSQL
-as a source for separately named clone databases. Reuse the existing protocol
-fault proxy and actual session/Control client; preserve every original database,
-result and artifact. No need to repeat unchanged80 native tests for fixture-only
-work. The new probe passed Mac Clippy. Independent read-only review found no product
-or scenario blocker, but identified an audit-report KeyError if a prior container
-disappears during cleanup. Correct that narrow local fixture after preserving this
-run. The correction now preserves an incomplete audit for missing unrelated or
-owned IDs; synthetic old/new actual-fragment regression passed. No real container
-disappeared. Original native outcome is the fixture failure recorded below.
-Only after these authority gates, implement the current action issuer and socket
-consumer. Do not postpone useful integration for a complete adjacent subsystem.
+Initial enrollment and scoped command authority/recovery are qualified below.
+Next bounded action after evidence commit/private push: map and implement the
+minimum current acquisition action authority, binding the accepted endpoint,
+AccessScopeId, enrollment generation and RouteId to a committed visibility
+descriptor and current source permission. Read the complete owning P02-T01 Step6,
+P03-T01 and P04-T02 contracts plus current runtime/admission/config consumers first.
+Independent read-only next-boundary review is mapping these exact prerequisites;
+root remains sole writer. Resolve any necessary live-owner relational omission
+case before relying on its invariant, without adding a whole-subsystem barrier.
+No action issuer or signed acquisition claim exists yet. Reuse the qualified
+command, dictionary and guarded transport boundaries instead of a generic framework.
 
 ## Current enrollment implementation and evidence
 
@@ -86,7 +84,8 @@ dataset, account, session, domain; separate READ COMMITTED statements preserve
 post-wait visibility. Raw SQL SET CONSTRAINTS early execution cannot establish
 commit-time expiry. Product keeps initial deferral. Received BB001 is a known
 rejected COMMIT; transport/cancellation stays poisoned/ambiguous until actual
-owner/driver cleanup and fresh authenticated retry. Extended cases remain NOT_RUN.
+owner/driver cleanup and fresh authenticated retry. The18 actual command fault/lock schedules below are now qualified; broader raw
+relational omission/corruption coverage remains explicit, not silently complete.
 
 Structural review: closed route enum, shared immutable Arc root rules (avoids
 up to256 URL clones per attempt), focused scalar decoders and named multiline SQL
@@ -196,27 +195,38 @@ History reader grants do not authorize acquisition. DeliveryWindow copies need
 explicit parent invalidation; current management ActionGate/write-only socket
 cannot simply be reused for a renewable bidirectional acquisition owner.
 
-Fault candidate c2eebec/tree4575b9497d21ef02f34ca69bde1db8acd2921e8f at
-runs/relay-enrollment-faults-c2eebec is stopped-retained. Native build/Clippy PASS;
-first clone reached actual authenticated session, then the fixture wrongly expected
-epoch3 instead of2. The source database has one historical Control owner, whereas
-the older registry fixture had two. No command gate opened, no fault case qualified.
-[Original failure](evidence/p02-relay-enrollment-faults-incomplete-20260928.json)
-retains outputs and new clone bb_enroll_fault_c2eebec_pass. Product/SQL unchanged.
+## Latest command fault qualification
 
-Terminal audit04:28:18UTC verified871 prior projections unchanged (excluding the
-explicit borrowed PG), eight unrelated running,1444 source files, original ELFs
-and released compiler lock. Compiler owner85f95ebfb38879d01070d306913efbf5;
-PID2961077/start395178465 terminal. Fetch/native0, fault-client143, borrowedPG0;
-noOOM. Fault ownerf1f2b8599720648ee1f5aebdc9ad13e7 is inventoried with its exact client ID. Free66,973,876,224bytes. No deletion.
-Inventory enrollment.faults and ignored .research/implementation/relay-enrollment-faults-c2eebec
-own original resources/captures and local cleanup-regression recipe.49e7ed4 PG is
-stopped again with original database and new named clone retained.
+[Fault report](evidence/p02-relay-enrollment-faults-native-20260928.json):18 actual
+PG16.15 schedules PASS at4ac4bad with c2eebec probe/CLI, product bytes stilldae4d45.
+Seven fourth-COMMIT cases cover pass, lost-before/after, held cancellation close/
+release and independently isolated owner/session expiry. Four held cases observe
+Busy owner exclusion, unchanged durable rows and actual backend/session identities.
+Fresh password-verified sessions and owners2→3 resolve exact actor/key/command;
+committed historical receipts never rewrite/reapply. Ten observed lock orders
+cover policy head, permission, session revoke, deactivate and deactivate/reactivate;
+writer rollback preserves heads. Every64-table delta is attributed, literal hashes/
+identity/current-state/audit/xmin match, original database/report is unchanged and
+zero Control backends remain. No continuous-custody/key-erasure/capacity claim.
 
-Root owns fixture-only epoch/census corrections. The corrected precondition reads
-original Control epochs and requires literal[1], then expects2 and3 for replacement
-and recovery. Next: commit/transfer exact Git, rerun engine only in a fresh owned
-fault root using exact c2eebec artifacts after proving all product/build inputs
-unchanged. No Rust rebuild or unchanged test suite is needed. Preserve every
-original result and clone; review real18 outcomes and terminal state before closing
-these authority gates. Current action issuer/M1 integration then follows.
+Original [c2eebec failure](evidence/p02-relay-enrollment-faults-incomplete-20260928.json)
+stopped before the first command gate: copied registry epoch expectation3 was
+wrong for this enrollment fixture's one previous owner. Corrected SQL precondition
+requires literal original epochs[1], then expected2/3. Native build/Clippy passed;
+unchanged80 tests were not repeated. Independent AI review found a cleanup KeyError
+for missing containers; corrected actual census fragments were checked against
+synthetic missing unrelated/owned IDs (old failure, new incomplete audit). No real
+container disappeared. Original failed clone/result/source remain retained.
+
+Latest root runs/relay-enrollment-faults-4ac4bad, source4ac4bad/treea88a564f29d4e9be99e65d06e1142f652ae58448,
+PID2966115/start395213980 terminal, owner178de689c90f10c8884ccd0a5298a6f6.
+Client136438fe3149d5643bb9e31bcfe32b8b130b2e6e3c2c20f956254f7bfb04436e exited143;
+borrowed49e7ed4 PG6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9
+exited0; noOOM. Audit04:33:07UTC verified874 other projections unchanged/eight
+unrelated running,1445 clean source files,117 safe payloads and exact original ELFs.
+Free66,605,449,216bytes; Mac approximately2.8GiB. Recheck before further allocation.
+Inventory enrollment.faults.recheck owns eighteen new clone names and resources;
+original bb_enrollment plus earlier failed c2 clone remain preserved. No deletion,
+new network or new compiler cache. Ignored .research/implementation/relay-enrollment-faults-4ac4bad
+retains transfer/launch/collect/root-review recipes and manifest. Old c2 root owns
+build ELFs/cache-lock audit and original failure; do not rerun old launchers.

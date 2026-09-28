@@ -27584,7 +27584,7 @@
       "evidence": "docs/implementation/evidence/p02-relay-registry-faults-native-20260928.json"
     },
     "enrollment": {
-      "state": "All runs stopped-retained; initial enrollment boundary qualified; COMMIT/race/action/M1 qualification remains open",
+      "state": "All runs stopped-retained; initial enrollment and scoped COMMIT/expiry/lock schedules qualified; installed action/M1 and full relational omission cases remain open",
       "run": {
         "source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
         "tree": "1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9",
@@ -27901,7 +27901,74 @@
           "cleanup_errors": [],
           "unrelated_changed": []
         },
-        "evidence": "docs/implementation/evidence/p02-relay-enrollment-faults-incomplete-20260928.json"
+        "evidence": "docs/implementation/evidence/p02-relay-enrollment-faults-incomplete-20260928.json",
+        "recheck": {
+          "state": "stopped-retained; all18 scoped engine cases PASS",
+          "source": "4ac4bad0a7fe2cb2fa44a9ca19f1bb49e8dd0f37",
+          "tree": "a88a564f29d4e9be99e65d06e1142f652ae58448",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-faults-4ac4bad",
+          "owner": "178de689c90f10c8884ccd0a5298a6f6",
+          "label": "org.bigbrotr.relay-enrollment-faults",
+          "client": {
+            "id": "136438fe3149d5643bb9e31bcfe32b8b130b2e6e3c2c20f956254f7bfb04436e",
+            "name": "bigbrotr-relay-enrollment-faults-4ac4bad"
+          },
+          "postgres_id": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+          "postgres_owner": "aa5b1b49157bd12de8aa040cd3076a72",
+          "databases": [
+            "bb_enroll_fault_4ac4bad_pass",
+            "bb_enroll_fault_4ac4bad_before",
+            "bb_enroll_fault_4ac4bad_after",
+            "bb_enroll_fault_4ac4bad_cancel_close",
+            "bb_enroll_fault_4ac4bad_cancel_release",
+            "bb_enroll_fault_4ac4bad_owner_expiry",
+            "bb_enroll_fault_4ac4bad_session_expiry",
+            "bb_enroll_fault_4ac4bad_policy",
+            "bb_enroll_fault_4ac4bad_permission",
+            "bb_enroll_fault_4ac4bad_revoked",
+            "bb_enroll_fault_4ac4bad_inactive",
+            "bb_enroll_fault_4ac4bad_authentication",
+            "bb_enroll_fault_4ac4bad_accept_first_policy",
+            "bb_enroll_fault_4ac4bad_accept_first_permission",
+            "bb_enroll_fault_4ac4bad_accept_first_revoked",
+            "bb_enroll_fault_4ac4bad_accept_first_inactive",
+            "bb_enroll_fault_4ac4bad_accept_first_authentication",
+            "bb_enroll_fault_4ac4bad_writer_rollback"
+          ],
+          "launch": {
+            "source": "4ac4bad0a7fe2cb2fa44a9ca19f1bb49e8dd0f37",
+            "tree": "a88a564f29d4e9be99e65d06e1142f652ae58448",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-faults-4ac4bad",
+            "pid": 2966115,
+            "start_ticks": "395213980",
+            "bundle_sha256": "976f78f32e3fad508cb3778ed171ffb8f8e7b638bc598ec03324a0a558e61a68"
+          },
+          "terminal": {
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "source": "4ac4bad0a7fe2cb2fa44a9ca19f1bb49e8dd0f37",
+            "observed_at": "2026-09-28T04:33:07.923957+00:00",
+            "prior_unchanged": 874,
+            "borrowed_postgres": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+            "unrelated_running": 8,
+            "owned_stopped": [
+              {
+                "id": "136438fe3149d5643bb9e31bcfe32b8b130b2e6e3c2c20f956254f7bfb04436e",
+                "exit": 143
+              },
+              {
+                "id": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+                "exit": 0
+              }
+            ],
+            "source_files": 1445,
+            "original_report_unchanged": true,
+            "original_artifacts_verified": true,
+            "free_bytes": 66605449216
+          },
+          "local_capture": ".research/implementation/relay-enrollment-faults-4ac4bad",
+          "evidence": "docs/implementation/evidence/p02-relay-enrollment-faults-native-20260928.json",
+          "preserve": "Original49e7ed4 database/report plus18 new clones and earlier failedc2 clone; exactc2 artifacts retained; no network/cache allocation or deletion."
+        }
       }
     }
   }

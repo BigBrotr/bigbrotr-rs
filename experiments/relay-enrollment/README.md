@@ -71,7 +71,7 @@ original database under new names, and creates one isolated client sharing that
 network namespace. All original rows/results must compare equal before and after.
 No new network, archive or compiler cache is needed.
 
-Implemented, NOT_RUN: seven exact fourth-COMMIT schedules (pass, lost before/after,
+Executed at4ac4bad with unchanged c2eebec ELFs: seven exact fourth-COMMIT schedules (pass, lost before/after,
 held cancellation close/release, owner expiry, session expiry), independent full
 row/digest/audit/transaction checks and fresh authenticated recovery; five changes
 (policy head, permission, session revoke, deactivation and deactivate/reactivate)
@@ -91,3 +91,12 @@ Original failed result/database remain retained. A static review also corrected
 missing-container cleanup reporting; the saved audit must become incomplete even
 when an unrelated or owned container is absent. Synthetic execution of the actual
 old/new final-census fragments reproduced KeyError and verifies that correction.
+
+The4ac4bad engine-only rerun passed all18 schedules with the literal source epoch1
+verified before cloning. Both original database and original report remain equal;
+zero Control backends remain. Independent terminal inspection verified all other
+874 container projections unchanged and stopped client/borrowed PostgreSQL with
+no OOM. Sources,117 capture payloads and original ELFs are verified in the
+[scoped native fault report](../../docs/implementation/evidence/p02-relay-enrollment-faults-native-20260928.json).
+This does not qualify every relational omission/corruption, installed acquisition,
+source visibility, load or release scenario.
