@@ -202,7 +202,7 @@ Reload classes: **H** applies atomically to new work on hot reload; lowering lim
 | Key | Default | Unit | Reload | Meaning/validation |
 |---|---|---|---|---|
 | `network.public.enabled` | `true` | bool | H | Public route |
-| `network.private.rules` | `[]` | scoped rules | C | Explicit endpoint/hostname, CIDR and port; no broad implicit localhost mode |
+| `network.private.rules` | `[]` | scoped rules | R | Deployment-owned security ceiling: at most 256 closed endpoint-or-hostname/CIDR/integer-port records. Controlled drain/restart; no enrollment or broad implicit localhost mode |
 | `network.{tor,i2p,lokinet}.enabled` | `false` | bool | H | Enabled route requires a tested adapter and proxy/router settings |
 | `network.{tor,i2p,lokinet}.proxy` | absent | URL/reference | C | No invented reachable proxy default |
 | `network.tls.extra_roots` | `[]` | file paths | C | Strict TLS plus optional custom CAs |

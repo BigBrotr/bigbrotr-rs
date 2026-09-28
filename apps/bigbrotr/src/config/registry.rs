@@ -19,6 +19,7 @@ pub enum Kind {
     Paths,
     ChoiceSet(&'static [&'static str]),
     Endpoints,
+    PrivateRules,
     RevisitBands,
 }
 
@@ -36,7 +37,10 @@ pub struct Key {
 
 impl Key {
     pub fn sensitive(&self) -> bool {
-        matches!(self.kind, Kind::Secret | Kind::Endpoints | Kind::Proxy)
+        matches!(
+            self.kind,
+            Kind::Secret | Kind::Endpoints | Kind::Proxy | Kind::PrivateRules
+        )
     }
     pub fn schema(&self) -> Value {
         let mut value = match self.kind {
@@ -72,6 +76,20 @@ impl Key {
             Kind::Endpoints => {
                 json!({"type":"array","items":{"type":"string","format":"bigbrotr-endpoint/1","maxLength":8192},"maxItems":100000})
             }
+            Kind::PrivateRules => json!({
+                "type":"array", "maxItems":256, "writeOnly":true,
+                "items":{
+                    "type":"object", "additionalProperties":false,
+                    "required":["cidr","port"],
+                    "oneOf":[{"required":["endpoint"]},{"required":["hostname"]}],
+                    "properties":{
+                        "endpoint":{"type":"string","format":"bigbrotr-endpoint/1","maxLength":8192},
+                        "hostname":{"type":"string","format":"bigbrotr-direct-hostname","maxLength":253},
+                        "cidr":{"type":"string","format":"bigbrotr-canonical-cidr","maxLength":43},
+                        "port":{"type":"integer","minimum":1,"maximum":65535}
+                    }
+                }
+            }),
             Kind::RevisitBands => json!({
                 "type":"array", "minItems":1, "maxItems":1024,
                 "items":{"type":"object", "additionalProperties":false,
@@ -511,6 +529,16 @@ pub fn keys() -> Vec<Key> {
         "live",
         "acquisition",
         false
+    );
+    // The deployment operator controls the private destination ceiling, like
+    // overlay proxies and trust roots. It is never an enrollment or a grant.
+    add!(
+        "network.private.rules",
+        PrivateRules,
+        Vec::<String>::new(),
+        "restart",
+        "acquisition",
+        true
     );
     add!(
         "network.websocket_compression",

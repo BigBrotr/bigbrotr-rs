@@ -12,11 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEAD91d5c7e2707e06a71bf9169037a51e496609094f is the tested native fault
-candidate; origin/main047eb23 is private/published until this evidence commit.
-Root owns only the evidence/checkpoint/inventory/reference updates. Product Rust,
-Cargo.lock and all applied SQL remain unchanged from03b0197. Root is sole writer;
-independent fixture review/correction and actual terminal audit are complete.
+Verified HEAD and origin/main a87dbd21a0b17350cbecedac8dc1e95c39a449fa are private
+and published; the starting worktree was clean. Root now owns private-route static
+configuration, tests and matching contract/generated-reference changes. The
+registry native qualification used exact 91d5c7e; Cargo.lock and all applied SQL
+remain unchanged. Root is sole writer; independent route/authority review is
+read-only, and the prior native fixture correction/terminal audit is complete.
 No other writer or active native experiment is present.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
@@ -330,3 +331,32 @@ and the installed clean-Compose/dependency-outage journey. Future load/arm64/rel
 qualification remains explicit. Acquisition task docs03 through firstT04 were read
 for dependency mapping; remaining tasks and full Serve/config owners must be read
 before editing those integration responsibilities.
+
+Current prerequisite within P01-T04/P02-T01 Step6/P04-T02: private destination
+configuration for the controlled socket journey. The previously absent
+network.private.rules is a deployment-locked security ceiling, consistent with
+existing overlay proxy/TLS roots, default empty, controlled restart only. Root and
+read-only reviewer found no contract requiring this key to be managed policy.
+This avoids an unnecessary v1 policy conversion; adding actual managed fields
+later still requires explicit document-version compatibility. Enrollment must
+select/intersect one route, never obtain every configured exception as its grant.
+The owning configuration/acquisition contracts document the refined R behavior.
+No access/enrollment schema has been added and applied0003 is unchanged.
+
+Complete current registry/resolve/policy/Serve/network policy and configuration
+contract files have now been read; broader future service owners remain scoped
+uninspected. Three actual CLI RED cases reject the previously unknown private
+table; .research/implementation/private-route-config-20260928 retains the original
+RED and a subsequent compile failure from using a private module path (corrected
+to existing public reexports). [Scoped Mac evidence](evidence/p01-private-routes-mac-20260928.json)
+records 42 tests, Clippy/format and generated-consumer checks. Exact frozen v1
+policy bytes/digest survive the new root; root injection is refused. Root reviewed
+the full diff/generated content; independent read-only review found no static
+defect. Parser reuses current transport validation; no generic route framework or
+unnecessary policy-version migration. Native/syscall and authenticated integration
+remain unqualified; combine their next exact-Git run with the enrollment consumer.
+The 58,732,168-byte tested Mac development CLI is retained and hashed in the capture,
+not a release artifact. Mac had approximately 3.1GiB free; avoid large new local
+builds and recheck both hosts before allocation. No Tux process or allocation
+launched. Next: commit/push this static slice, then implement the authenticated
+enrollment and exact route/access/visibility action binding for the same M1 journey.

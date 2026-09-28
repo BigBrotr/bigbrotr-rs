@@ -261,6 +261,7 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
             duration(value, matches!(key.kind, DurationZero)).map(Value::from)
         }
         RevisitBands => revisit_bands(value),
+        PrivateRules => super::private_routes::parse(value).map(|(normalized, _)| normalized),
         Ratio => value
             .as_f64()
             .filter(|n| n.is_finite() && (0.0..=1.0).contains(n))

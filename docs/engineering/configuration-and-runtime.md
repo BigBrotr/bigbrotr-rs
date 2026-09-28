@@ -121,6 +121,27 @@ SQL scan/MVCC cost and peak memory remain workload qualification work.
 
 ## Private static deployment roots
 
+`network.private.rules` is an operator-owned destination security ceiling,
+defaulting to `[]`. Each of at most 256 closed records has exactly `endpoint` or
+`hostname`, plus `cidr` and integer `port` (1–65535). Endpoints pass through the
+existing ws/wss normalizer, retaining paths and queries. Hostnames must already
+be exact normalized ASCII DNS names, without wildcards, IP literals or overlay
+suffixes. CIDRs use the shared direct-route validator, including clear host bits
+and no IPv4-mapped second spelling. An endpoint's effective port must match the
+rule's port. Duplicate rules consume the limit; nothing is silently truncated.
+Diagnostics redact the complete array; parse errors withhold input values.
+
+Rules are deployment locked and require controlled drain/shutdown and restart;
+there is no file watcher or live root activation. They are excluded from accepted
+v1 policy bytes, just like existing overlay proxies and TLS roots, so old accepted
+documents keep their exact settings and digest. Injecting rules into that document
+is refused. A private rule creates no identity, enrollment, socket, reader scope,
+publication permission or runtime grant. The acquisition issuer must intersect
+each enrolled route with the current ceiling and revalidate it after restart;
+it must never lend the union of unrelated rules as a route grant. Removed rules
+refuse new work. Private destinations stay ineligible for public publication.
+This static consumer does not complete the enrollment or acquisition issuer.
+
 `administration.assets.directory` defaults to null and selects an optional verified
 private panel bundle for `serve`. `administration.assets.base_path` defaults to
 `/`; its only other initial value is `/control/`. Both are restart-only deployment

@@ -178,6 +178,13 @@ MON-010 offline TLS presence parity is covered by the
 verify-full dependencies require CA and server name, without accessing files or
 servers. Staged unselected dependencies retain syntax-only validation.
 
+The private acquisition destination ceiling now has
+[scoped Mac configuration evidence](evidence/p01-private-routes-mac-20260928.json).
+It is a closed bounded deployment root with controlled restart, not managed
+policy or enrollment. Existing accepted v1 bytes remain unchanged; operational
+route/enrollment and authenticated acquisition are P02-T01 Step6/P04-T02 consumers
+still to implement. No complete step is implied by static validation.
+
 - [ ] **Step 1:** Encode all current service key tables with units/ranges/secret references;
   include operational composition/maximum-unit constraints and reject unknown,
   duplicate, unsafe and ineffective options. Do not retain a six-layer policy

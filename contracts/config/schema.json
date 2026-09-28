@@ -2051,6 +2051,63 @@
           "x-bigbrotr-owner": "acquisition",
           "x-bigbrotr-reload": "connection"
         },
+        "private": {
+          "additionalProperties": false,
+          "properties": {
+            "rules": {
+              "default": [],
+              "items": {
+                "additionalProperties": false,
+                "oneOf": [
+                  {
+                    "required": [
+                      "endpoint"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "hostname"
+                    ]
+                  }
+                ],
+                "properties": {
+                  "cidr": {
+                    "format": "bigbrotr-canonical-cidr",
+                    "maxLength": 43,
+                    "type": "string"
+                  },
+                  "endpoint": {
+                    "format": "bigbrotr-endpoint/1",
+                    "maxLength": 8192,
+                    "type": "string"
+                  },
+                  "hostname": {
+                    "format": "bigbrotr-direct-hostname",
+                    "maxLength": 253,
+                    "type": "string"
+                  },
+                  "port": {
+                    "maximum": 65535,
+                    "minimum": 1,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "cidr",
+                  "port"
+                ],
+                "type": "object"
+              },
+              "maxItems": 256,
+              "type": "array",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "acquisition",
+              "x-bigbrotr-reload": "restart"
+            }
+          },
+          "type": "object"
+        },
         "public": {
           "additionalProperties": false,
           "properties": {

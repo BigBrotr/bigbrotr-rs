@@ -390,4 +390,61 @@ mod tests {
             Some("/nonexistent/private-assets")
         );
     }
+
+    #[test]
+    fn private_destination_roots_preserve_frozen_v1_policy_and_refuse_policy_injection() {
+        // Existing independent PG fixture, predating the new root setting.
+        let document = include_str!("../../../../experiments/configuration-inspection/policy.json");
+        let digest: [u8; 32] = "da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9"
+            .as_bytes()
+            .as_chunks::<2>()
+            .0
+            .iter()
+            .map(|pair| u8::from_str_radix(std::str::from_utf8(pair).unwrap(), 16).unwrap())
+            .collect::<Vec<_>>()
+            .try_into()
+            .unwrap();
+        let original = PolicySeed::restore(document, digest, root()).unwrap();
+        let original_seed = PolicySeed::from_resolved(&original).unwrap();
+        assert_eq!(original_seed.digest(), digest);
+        assert_eq!(original.value("network.private.rules"), &json!([]));
+
+        let candidate = super::super::resolve::parse(&format!(
+            "{}\n[network.private]\nrules=[{{endpoint='ws://127.0.0.1:7447/private',cidr='127.0.0.1/32',port=7447}}]\n",
+            include_str!("../../../../config/recipes/archive-only.toml")
+        )).unwrap();
+        let effective = PolicySeed::restore(document, digest, candidate).unwrap();
+        assert_eq!(
+            effective
+                .value("network.private.rules")
+                .as_array()
+                .unwrap()
+                .len(),
+            1
+        );
+        assert_eq!(effective.sources["network.private.rules"], "file");
+        let restored_seed = PolicySeed::from_resolved(&effective).unwrap();
+        assert_eq!(restored_seed.document(), original_seed.document());
+        assert_eq!(restored_seed.digest(), digest);
+
+        let mut injection: Value = serde_json::from_str(document).unwrap();
+        injection["settings"]["network.private.rules"] = json!([]);
+        let injected = injection.to_string();
+        let matching_digest = Sha256::new()
+            .chain_update(DOMAIN)
+            .chain_update(&injected)
+            .finalize()
+            .into();
+        assert!(PolicySeed::restore(&injected, matching_digest, root()).is_err());
+        // A root addition must not relax the old closed setting set.
+        injection["settings"]
+            .as_object_mut()
+            .unwrap()
+            .remove("network.private.rules");
+        injection["settings"]
+            .as_object_mut()
+            .unwrap()
+            .remove("ranker.enabled");
+        assert!(PolicySeed::restore(&injection.to_string(), digest, root()).is_err());
+    }
 }

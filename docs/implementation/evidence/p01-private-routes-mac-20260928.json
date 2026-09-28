@@ -1,0 +1,110 @@
+{
+  "format": "bigbrotr-private-route-config-evidence/1",
+  "status": "PASS_SCOPED_MAC_STATIC",
+  "observed_at_utc": "2026-09-28T03:17:31.014058+00:00",
+  "tasks": [
+    "P01-T04 static steps 1/3/5 subset",
+    "P02-T01 Step6 prerequisite",
+    "P04-T02 configuration prerequisite"
+  ],
+  "source": {
+    "base_revision": "a87dbd21a0b17350cbecedac8dc1e95c39a449fa",
+    "state": "root-owned working diff; exact changed source hashes below",
+    "files": {
+      "apps/bigbrotr/src/config/mod.rs": "63b7df20af67dec4a4afe279dc3b5f0bffb7a38a1222c2fe68860b1dedb9340b",
+      "apps/bigbrotr/src/config/private_routes.rs": "c2d8891bffb416eea2bc5ab7db1bebfafc52cb259b0c43bd9e16e24fcfbebe10",
+      "apps/bigbrotr/src/config/registry.rs": "fc72df1d41e9a92e2005b8db0f8f8776f05b1b8219eaede50d5ada88e657a9ac",
+      "apps/bigbrotr/src/config/resolve.rs": "d748ca37e514c34ffd14f7796137011094ee3edaec633aab78f75e8373b405b1",
+      "apps/bigbrotr/src/config/policy.rs": "09fe06d62998b4d2fc37a0120d4c298b4989e926867cef254cdebd813b53adcf",
+      "apps/bigbrotr/tests/config_private_routes.rs": "71f99177fd704f3fe1bfe3f3ca5d02348b8f99054886a3d4cf9e7655383f6886",
+      "contracts/config/schema.json": "127dd367d140d35f2db77416d773face70d9413e85e3fe3459480aa7dbe4417e",
+      "docs/reference/configuration.md": "f437092b3d74fa36fd354ccd8b1dd2f4df573bdc84775021a47792dcd348ae15",
+      "Cargo.lock": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e",
+      "experiments/configuration-inspection/policy.json": "15c470b515b014e9c7bb20a73b5e0eb2506a13f8581fe3c9d7140e363ae4f678"
+    }
+  },
+  "environment": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05)"
+  },
+  "capture": ".research/implementation/private-route-config-20260928",
+  "verified_behavior": [
+    "Actual config show accepts closed private destination rules while acquisition is unselected; unknown fields and conflicting subjects fail.",
+    "Integer port range and exact endpoint-port binding; hostname wildcard/IP/overlay refusals; CIDR host-bit/mapped-prefix refusals.",
+    "256 duplicate rules accepted and counted; 257 refused without truncation.",
+    "Existing endpoint normalizer preserves full path/query identity; actual shared direct policy filters independently specified target/address results.",
+    "Entire-array and parse-error redaction; deployment-locked restart metadata; no policy activation.",
+    "Frozen historical v1 policy fixture restores with absent/explicit private roots; exact 215-setting compact identity da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9 unchanged; root injection refused with a matching digest.",
+    "Generated schema/reference and six existing recipes checked through executable entrypoints."
+  ],
+  "review": {
+    "owner": "root integrating owner",
+    "independent": "read-only AI reviewed static parser/callers/contracts and old-policy compatibility; no executions; root reviewed generated diff separately",
+    "structural_choice": "One focused configuration adapter reuses the existing endpoint and direct-rule validators; no second normalizer, version migration or generic route framework. Invalid hostname values are validated before copying diagnostic JSON.",
+    "read_boundary": "Complete config registry/resolve/policy/mod and current network policy owners; complete configuration contract and relevant acquisition/naming/deployment/dictionary authority boundaries. No full future enrollment/runtime consumer qualification."
+  },
+  "original_outcomes": [
+    {
+      "file": "red.log",
+      "outcome": "3 failures: private configuration table not yet supported",
+      "sha256": "5ada35485d8045de92e7b31a45864eb15070a5bed5ed07c03ff30bb60d9968d9"
+    },
+    {
+      "file": "green-cli.log",
+      "outcome": "Compile failure: private module import; corrected to existing public reexports",
+      "sha256": "2ec404fe3424ec976d8587daf1f4a15c2dd16acb67d4bcebe1520ccbdd91801a"
+    }
+  ],
+  "not_qualified": [
+    "Linux/native or syscall observation of this addition; exercise with the next exact-Git route/enrollment journey",
+    "Current enrollment/access/route/action authorization or cancellation after ceiling changes",
+    "Any actual relay socket from configuration, protocol acquisition, M1 or product readiness",
+    "Load/capacity, Linux arm64, hosted GitHub Actions or release"
+  ],
+  "resources": "No Tux operation or allocation in this slice; all prior lab states and owned resources preserved.",
+  "checks": [
+    {
+      "command": "cargo test --locked -p bigbrotr --bin bigbrotr config::",
+      "exit": 0,
+      "tests_passed": 8,
+      "log": "final-config-unit.log",
+      "sha256": "b1075ef9260777b6580a933b2349ddf749f739221ac7f4bc30d38011bea3fbd0"
+    },
+    {
+      "command": "cargo test --locked -p bigbrotr --test config_private_routes",
+      "exit": 0,
+      "tests_passed": 3,
+      "log": "final-private-cli.log",
+      "sha256": "3def4cf712d889307e6a50f0398401c4c608c1f5d4488f12cb07d287e4578d09"
+    },
+    {
+      "command": "cargo test --locked -p bigbrotr --test config_entrypoint --test policy_seed",
+      "exit": 0,
+      "tests_passed": 31,
+      "log": "final-consumers.log",
+      "sha256": "de7309b6b5969c2cd3d4e8a65cbab17cdc4fd4a863507c23ccba71bb6a2527e0"
+    },
+    {
+      "command": "cargo fmt --all --check && cargo clippy --locked -p bigbrotr --bin bigbrotr --test config_private_routes --test policy_seed -- -D warnings",
+      "exit": 0,
+      "log": "clippy.log",
+      "sha256": "a2c223f64d1eaca9845ab9ab6e3d2b911d4623d27897ad45830c6ac91891d9fa"
+    },
+    {
+      "command": "python3 experiments/verify_artifacts.py; git diff --check",
+      "exit": 0,
+      "scope": "local links, fences, JSON examples/evidence, Python syntax and selected evidence hashes; no semantic or product verification",
+      "log": "artifacts.log",
+      "sha256": "34e01af8cf7a9c243579d73e4358dce9e39b659f419e8905de1e1254de1f0b89"
+    }
+  ],
+  "binary": {
+    "path": ".research/implementation/private-route-config-20260928/bigbrotr-mac-debug",
+    "bytes": 58732168,
+    "sha256": "9fee5f0d3ff6bb0d6cb675877b663be59231ab5e37140a69f6e47152c4ced7a2",
+    "qualification": "Mac development binary from identified dirty source, not release artifact",
+    "build_info_sha256": "0400b216f3d890e26494231408750034e7457b6147e483309b7670b355a91d4a"
+  },
+  "tests_passed": 42
+}
