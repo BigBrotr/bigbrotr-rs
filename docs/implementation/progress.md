@@ -413,11 +413,24 @@ running,1439 source files, both original ELFs, released compiler lock; free
 Inventory implementation_relay_registry_20260928.enrollment owns all resources;
 retain partial pg directory, original artifacts/logs and1154757 cache. No deletion.
 
-Root owns fixture-only correction plus evidence/checkpoint/inventory. It selects
-an explicit internal172.16.240.0/28 only after non-overlap checks, preserves network
-failure diagnostics, independently checks literal original command values and
-isolates the missing-command-detail trigger. No product, lock or SQL changed.
-Next bounded action: commit the correction, transfer exact Git, run only the actual
-engine journey in a fresh owned root using retained dae4d45 ELFs with proved source
-input equality. Inspect each durable outcome before continuing ambiguity/expiry/
-concurrency qualification and current action consumers. No full enrollment/M1 claim.
+Candidate325fa01/tree5602c90e1a6100e96a0da49fd4b7765be560818c used unchanged
+dae4d45 ELFs in runs/relay-enrollment-recheck-325fa01. Six actual PG16.15 cases
+PASS: prior33 checksums, initialization/activation, additive0019 upgrade preserving
+all old rows and idempotent reapply.0019 is now applied and its checksum immutable.
+The session probe then failed because the fixture omitted DELETE on browser_sessions,
+required by actual login issuance. [Original login failure](evidence/p02-relay-enrollment-login-incomplete-20260928.json)
+retains logs/data; no enrollment command ran. Root verified the actual caller and
+existing startup privilege contract. Product/SQL need no correction for this error.
+
+The recheck is stopped-retained; owner7151bf8f11c9af68ebd80e3fb2b575ca,
+PID2925615/start395060484 terminal. Audit04:07:45UTC verified868 prior projections
+unchanged/eight unrelated running,1440 source files, client143/PG0/noOOM; free
+67,189,178,368bytes. Retain the database and internal172.16.240.0/28 network.
+Inventory enrollment.engine_runs and ignored .research/implementation/relay-enrollment-recheck-325fa01
+own the original results and recipes. No resource/cache/data removed.
+
+Root owns the narrowly corrected fixture grants and explicit optional subnet input;
+no product, lock, or migration bytes change. Next: commit, transfer exact Git, rerun
+the engine journey using the same dae4d45 ELFs in a fresh owned PG lab with checked
+172.16.240.16/28. Preserve old failure outcomes. Qualify remaining command ambiguity,
+expiry and concurrency before current action consumers; full enrollment/M1 stays open.

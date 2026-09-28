@@ -27647,7 +27647,87 @@
         "free_bytes": 67276222464
       },
       "report": "docs/implementation/evidence/p02-relay-enrollment-incomplete-20260928.json",
-      "partial_postgres": "Owned pg directory/secrets retained; network creation failed; no PG/client container or network exists."
+      "partial_postgres": "Owned pg directory/secrets retained; network creation failed; no PG/client container or network exists.",
+      "engine_runs": [
+        {
+          "run": {
+            "source": "325fa010ca4114f258457b0523e3fda293ca3026",
+            "tree": "5602c90e1a6100e96a0da49fd4b7765be560818c",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-325fa01",
+            "build": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-dae4d45/out/artifacts",
+            "state": "stopped-retained",
+            "started_at": "2026-09-28T04:05:51.375757+00:00",
+            "engine": "FAIL",
+            "exit_code": 1,
+            "postgres_lab": {
+              "format": "bigbrotr-pg-lab/1",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-325fa01/pg",
+              "owner": "7151bf8f11c9af68ebd80e3fb2b575ca",
+              "postgres": "bigbrotr-implementation-pg-20260917-enrollment_325fa01",
+              "client": "bigbrotr-implementation-pg-20260917-enrollment_325fa01-client",
+              "network": "bigbrotr-implementation-pg-20260917-enrollment_325fa01",
+              "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+              "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+              "binary_sha256": "cf94b71276523677ed2fa34be0ebbb12b471122a6e5c7575ee5029c9c1d9b3bf",
+              "source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-325fa01/source",
+              "state": "stopped-retained",
+              "published_ports": [],
+              "harness_revision": "325fa010ca4114f258457b0523e3fda293ca3026",
+              "harness_sha256": "7f5c9d5ed8150b7854329d0a96850a7cede460aa36f58a380eccc48dc9deed29",
+              "explicit_subnet": "172.16.240.0/28",
+              "network_preflight": {
+                "networks": 33,
+                "routes": 261,
+                "overlap": false
+              },
+              "server": {
+                "version": "160015",
+                "fsync": "on",
+                "full_page_writes": "on",
+                "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+              }
+            },
+            "finished_at": "2026-09-28T04:06:16.838545+00:00",
+            "free_bytes": 67189391360,
+            "owned_stopped": [
+              "b593ea74d43c2bb692c0db2fedf301ffe018467ac08f50de81ffd99023031d11",
+              "3fa7aaa505f539df2332e52b3ad41b6d0e3abac749b7d262940537fe16a212e8"
+            ],
+            "prior_changed": []
+          },
+          "terminal": {
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "observed_at": "2026-09-28T04:07:45.817487+00:00",
+            "source": "325fa010ca4114f258457b0523e3fda293ca3026",
+            "owner": "7151bf8f11c9af68ebd80e3fb2b575ca",
+            "prior_unchanged": 868,
+            "unrelated_running": 8,
+            "owned_stopped": [
+              {
+                "id": "b593ea74d43c2bb692c0db2fedf301ffe018467ac08f50de81ffd99023031d11",
+                "exit": 143
+              },
+              {
+                "id": "3fa7aaa505f539df2332e52b3ad41b6d0e3abac749b7d262940537fe16a212e8",
+                "exit": 0
+              }
+            ],
+            "source_files": 1440,
+            "free_bytes": 67189178368
+          },
+          "launch": {
+            "source": "325fa010ca4114f258457b0523e3fda293ca3026",
+            "tree": "5602c90e1a6100e96a0da49fd4b7765be560818c",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-325fa01",
+            "pid": 2925615,
+            "start_ticks": "395060484",
+            "bundle_sha256": "25a6e3f70851ddfad7ef937d7b0c903a4d013583061af2f72dd0465f64b553d7"
+          },
+          "local_capture": ".research/implementation/relay-enrollment-recheck-325fa01",
+          "report": "docs/implementation/evidence/p02-relay-enrollment-login-incomplete-20260928.json",
+          "preserve": "Original migration/application data, failed login result and internal 172.16.240.0/28 network retained; no deletion."
+        }
+      ]
     }
   }
 }

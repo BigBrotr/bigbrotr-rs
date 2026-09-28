@@ -1,0 +1,103 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T01 Step6 no-auth enrollment",
+  "status": "FAIL_FIXTURE_LOGIN_AFTER_6_PASS",
+  "source": "325fa010ca4114f258457b0523e3fda293ca3026",
+  "application_source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+  "environment": {
+    "version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+  },
+  "cases": [
+    {
+      "name": "old33-prefix",
+      "status": "PASS"
+    },
+    {
+      "name": "old-ledger-independent-checksums",
+      "status": "PASS"
+    },
+    {
+      "name": "config-initialize",
+      "status": "PASS"
+    },
+    {
+      "name": "config-activate-initial",
+      "status": "PASS"
+    },
+    {
+      "name": "additive-upgrade-with-retained-content",
+      "status": "PASS"
+    },
+    {
+      "name": "reapply-unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "actual-session-and-control-adapter",
+      "status": "FAIL"
+    }
+  ],
+  "failure": {
+    "error": "\nthread 'main' (49) panicked at apps/bigbrotr/examples/relay_enrollment_probe.rs:101:10:\ncalled `Result::unwrap()` on an `Err` value: Backend\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+    "database_error": "permission denied for table browser_sessions",
+    "cause": "The laboratory granted SELECT/INSERT/UPDATE but omitted DELETE required by actual login issuance to prune expired sessions. The independently inspected product startup prerequisite and earlier real-session fixtures require that privilege.",
+    "product_changed": false,
+    "correction": "Grant the existing browser_sessions/reauthentication_proofs DELETE privileges to this isolated Control role; rerun unchanged application binaries on a fresh laboratory.",
+    "rerun": "NOT_RUN"
+  },
+  "migration0019_sha256": "ba960ac695914034db5ac3ef9662280bc81390447e9298333b10f2d4f045b233",
+  "capture": {
+    "local": ".research/implementation/relay-enrollment-recheck-325fa01",
+    "remote": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-325fa01",
+    "files_sha256": {
+      "launch.json": "b8fe0fa72e3bda66acb7d2a596a1dfbb24ced8aaa618ee47c4f747294de250f7",
+      "resources.json": "1868f7f20fdd37aaafa433e522b47cfef4e2a413e425e5314993d227534ae8b3",
+      "preflight.json": "db63dc2318c6b109bbcdbd345f08e9add374535246aac89948bf26cf547a7777",
+      "orchestrator.log": "b43c6a1cd7fce9902dafffbd547b0aee65d26aa5e5e6a5377d69adfadd3b9c49",
+      "engine.log": "82a52d0f28417181e4a20ad2036c19c3b575e45bb2e6a815fc77e3d4cd5e9eb2",
+      "postgres.log": "f0a223d6a0a7d480e52f4ee32c4aba9e5ef4b52faf2668a4940bb83f952544f7",
+      "source-manifest.json": "3a98f1cfa7b2c6f8b9daa497cace2c862050cf42fd91b916d19d25983d70c9f2",
+      "terminal-audit.json": "14badb7f4b37e0f6c4fded8f2d7dbbbcf6d98d3dbaf22400cf76e60960fbf8bd",
+      "pg/resources.json": "982c4638b6237083fa1b42fb6755f15aa5a9a1a81ab2ad5de0b0d743454d63d4",
+      "pg/enrollment-result.json": "c412be6c62fa38f20f9425ed82a93414fbc3dad15a71205c6f7a7cd283a6e65e",
+      "pg/probe.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pg/probe.stderr": "da6648ba35810de77785716388e6fc3da8c67ac2ea3a78797fb351bbebd62d6d"
+    }
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-09-28T04:07:45.817487+00:00",
+    "source": "325fa010ca4114f258457b0523e3fda293ca3026",
+    "owner": "7151bf8f11c9af68ebd80e3fb2b575ca",
+    "prior_unchanged": 868,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "id": "b593ea74d43c2bb692c0db2fedf301ffe018467ac08f50de81ffd99023031d11",
+        "exit": 143
+      },
+      {
+        "id": "3fa7aaa505f539df2332e52b3ad41b6d0e3abac749b7d262940537fe16a212e8",
+        "exit": 0
+      }
+    ],
+    "source_files": 1440,
+    "free_bytes": 67189178368
+  },
+  "not_run": [
+    "held/lost COMMIT",
+    "expiry during accepting COMMIT",
+    "concurrent lock schedules",
+    "installed HTTP/CLI enrollment",
+    "action issuer and restrictive drain",
+    "signed socket acquisition",
+    "load and aged state",
+    "arm64",
+    "protected/multi-rule/overlay routes",
+    "enrollment command and SQL guards after actual login"
+  ],
+  "review_boundary": "Root verified six actual results, full migration preservation maps, captured source/log hashes, PostgreSQL error and exact caller requirement. No enrollment command executed."
+}

@@ -10,7 +10,9 @@ SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE/'experiments/control-migrations'))
 import lab
 
-root, build, source = map(Path, sys.argv[1:])
+assert len(sys.argv) in (4, 5)
+root, build, source = map(Path, sys.argv[1:4])
+subnet = sys.argv[4] if len(sys.argv) == 5 else '172.16.240.0/28'
 assert source == SOURCE
 revision = lab.command(['git','-C',str(SOURCE),'rev-parse','HEAD']).stdout.strip()
 assert not lab.command(['git','-C',str(SOURCE),'status','--porcelain','--untracked-files=all']).stdout
@@ -41,7 +43,7 @@ def tables(state,db):
 
 created=False
 try:
-    lab.setup(root,build,SOURCE,'enrollment_'+revision[:7],subnet='172.16.240.0/28');created=True
+    lab.setup(root,build,SOURCE,'enrollment_'+revision[:7],subnet=subnet);created=True
     state=lab.load(root);report['server']=state['server'];save()
     db='bb_enrollment'
     lab.sql(state,'postgres',f'CREATE DATABASE {db} OWNER bigbrotr_migrator')
@@ -82,6 +84,7 @@ try:
         INSERT INTO control.principal_grants SELECT dataset_id,principal_id,'policy.change','dataset',dataset_id FROM control.local_accounts;
         GRANT SELECT,INSERT ON control.relay_access_contexts,control.network_routes,control.relay_enrollment_changes TO bigbrotr_control;
         GRANT SELECT,INSERT,UPDATE ON control.relay_enrollments TO bigbrotr_control;
+        GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs TO bigbrotr_control;
         GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;
     """)
     policy=json.loads(lab.sql(state,db,'SELECT document::text FROM control.config_revisions WHERE revision=1'))

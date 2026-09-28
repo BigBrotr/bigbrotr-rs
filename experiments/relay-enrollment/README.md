@@ -46,3 +46,13 @@ change Docker daemon defaults. Exact dae4d45 binaries may be reused only when th
 Git diff contains exclusively experiment/documentation changes; report both source
 identities. The correction also isolates the orphan-command trigger and compares
 literal original route/visibility values independently of stored-field hashes.
+
+The325fa01 recheck applied0019 and passed six migration/initialization cases, then
+failed before the first enrollment at actual login issuance. The laboratory role
+was missing DELETE on browser_sessions, needed for expired-session pruning. The
+fixture now grants that existing session privilege (and reauthentication proof
+pruning) just as the installed session prerequisite requires. Product SQL/Rust did
+not change. Preserve the failed database and logs. A direct engine-only invocation
+may pass a fourth explicit subnet argument to run.py; every selection undergoes
+the same overlap checks. This permits a fresh isolated rerun without removing a
+retained earlier network. Engine-only reruns do not repeat the unchanged80 tests.
