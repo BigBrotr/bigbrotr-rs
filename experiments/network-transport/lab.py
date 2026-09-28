@@ -21,7 +21,7 @@ assert len(sys.argv) in (3, 4) and profile in (
     'network', 'websocket', 'relay-wire', 'selector', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'ingest-visibility',
     'policy-versions', 'relay-source', 'relay-source-faults',
-    'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults',
+    'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read',
 )
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
@@ -165,6 +165,7 @@ try:
         'source-races': ['source-races'],
         'acquisition-scope': ['acquisition-scope'],
         'acquisition-scope-faults': ['acquisition-scope-faults'],
+        'acquisition-scope-read': ['acquisition-scope-read'],
     }.get(profile, [])
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_path + '/native.py', *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
@@ -184,7 +185,8 @@ try:
                 'source-cleanup': 'PASS_SOURCE_CLEANUP_BUILD_ONLY',
                 'source-races': 'PASS_SOURCE_RACES_BUILD_ONLY',
                 'acquisition-scope': 'PASS_ACQUISITION_SCOPE_BUILD_ONLY',
-                'acquisition-scope-faults': 'PASS_ACQUISITION_SCOPE_FAULT_BUILD_ONLY'}[profile]
+                'acquisition-scope-faults': 'PASS_ACQUISITION_SCOPE_FAULT_BUILD_ONLY',
+                'acquisition-scope-read': 'PASS_ACQUISITION_SCOPE_READ_BUILD_ONLY'}[profile]
     assert qualification['source'] == revision and qualification['status'] == expected
     state['qualification'] = qualification['status']
     if profile in ('relay-registry', 'relay-enrollment', 'ingest-visibility', 'policy-versions', 'relay-source'):

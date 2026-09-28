@@ -77,3 +77,16 @@ removing advisory fencing; earlier real COMMIT/cancellation schedules own that
 claim. Review corrected an initially duplicated existing-document collision case
 and made cleanup failures produce incomplete evidence. Isolated actual-finally
 checks cover stop/inspection/inventory failure without claiming engine execution.
+
+The `acquisition-scope-read` profile builds the real scope reader/probe and runs
+the affected codec tests and Clippy. `reads.py RUN_ROOT` is its proposed actual-PG
+qualification:14 fresh clones cover canonical and exact2MiB reads, insufficient
+grants, absent/foreign IDs, historical policy, malformed/noncanonical/profile and
+orphan/zero-epoch metadata, oversized/replay-working limits, cancellation and the
+missing migration. Fault documents and metadata are injected only into new clones;
+these cases qualify reading, not registration or management activation. Expected
+bytes come from literal/Python fixtures. An observed AccessShareLock on the actual
+scope table distinguishes query cancellation from timeout during setup. Compare
+all prior tables/xmin except the explicit Control claim/release state and join
+actual drivers before stopping owned containers. This recipe is NOT_RUN until an
+exact-revision report records its executed results.

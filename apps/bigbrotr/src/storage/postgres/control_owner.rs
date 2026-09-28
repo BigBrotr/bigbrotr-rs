@@ -43,6 +43,9 @@ pub use relay_registry::{EndpointRegistration, RelayRegistryError};
 #[path = "acquisition.rs"]
 mod acquisition;
 pub use acquisition::{ScopeIntent, ScopeRegistration, ScopeRegistrationError};
+#[path = "acquisition_read.rs"]
+mod acquisition_read;
+pub use acquisition_read::ScopeReadError;
 #[path = "relay_enrollment.rs"]
 mod relay_enrollment;
 pub use relay_enrollment::EnrollmentRoutes;

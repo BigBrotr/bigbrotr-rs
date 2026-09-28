@@ -15,6 +15,8 @@ use tokio_postgres::{Config, NoTls};
 
 #[path = "support/acquisition_scope_faults.rs"]
 mod faults;
+#[path = "support/acquisition_scope_reads.rs"]
+mod reads;
 
 fn selector(kinds: Vec<u16>) -> CollectionSelector {
     CollectionSelector::new(
@@ -55,16 +57,18 @@ async fn main() {
 
 async fn run() {
     let args: Vec<_> = std::env::args().collect();
-    assert!(matches!(args.len(), 5 | 8));
+    assert!(matches!(args.len(), 5 | 6 | 8));
     let mode = args[4].as_str();
     assert!(
         mode.starts_with("fault-")
+            || mode.starts_with("read-")
             || matches!(
                 mode,
                 "basic" | "collision" | "rollback" | "expired" | "historical" | "old-schema"
             )
     );
     assert_eq!(args.len() == 8, mode.starts_with("fault-"));
+    assert_eq!(args.len() == 6, mode.starts_with("read-"));
     let expected: Value = serde_json::from_slice(&std::fs::read(&args[3]).unwrap()).unwrap();
     assert_eq!(expected["format"], "bigbrotr-product-policy/2");
     let digest: [u8; 32] = Sha256::new()
@@ -84,7 +88,11 @@ async fn run() {
     let mut config = Config::new();
     config
         .host("127.0.0.1")
-        .port(args.get(5).map_or(5432, |port| port.parse().unwrap()))
+        .port(if mode.starts_with("fault-") {
+            args[5].parse().unwrap()
+        } else {
+            5432
+        })
         .user("bigbrotr_control")
         .dbname(&args[1])
         .password(std::fs::read(&args[2]).unwrap());
@@ -128,11 +136,16 @@ async fn run() {
             )
         })
         .collect();
+    let default_nonce = if mode.starts_with("read-") {
+        241
+    } else if mode == "historical" {
+        231
+    } else {
+        211
+    };
     let first_nonce = args
         .get(6)
-        .map_or(if mode == "historical" { 231 } else { 211 }, |value| {
-            value.parse::<u8>().unwrap()
-        });
+        .map_or(default_nonce, |value| value.parse::<u8>().unwrap());
     assert!(first_nonce > 0);
     let claim = |nonce| ClaimRequest {
         dataset,
@@ -160,6 +173,10 @@ async fn run() {
         return;
     }
     let (mut owner, policy) = acquired.unwrap();
+    if mode.starts_with("read-") {
+        reads::run(owner, driver, mode, &args[5], policy.policy_revision).await;
+        return;
+    }
     if mode.starts_with("fault-") {
         println!(
             "{}",

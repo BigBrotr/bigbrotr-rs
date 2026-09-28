@@ -61,6 +61,7 @@ pub fn encode_selector(selector: &CollectionSelector) -> Result<Vec<u8>, EncodeE
 pub enum DecodeError {
     Bounds(EventError),
     InvalidJson,
+    NonCanonical,
     Unsupported,
     Profile(SelectorError),
 }
@@ -69,6 +70,7 @@ impl fmt::Display for DecodeError {
         match self {
             Self::Bounds(error) => error.fmt(f),
             Self::InvalidJson => f.write_str("invalid-selector-json"),
+            Self::NonCanonical => f.write_str("noncanonical-selector-document"),
             Self::Unsupported => f.write_str("unsupported-selector-profile"),
             Self::Profile(error) => error.fmt(f),
         }
@@ -117,6 +119,32 @@ pub fn decode_selector(input: &[u8]) -> Result<CollectionSelector, DecodeError> 
         .map_err(DecodeError::Profile)?;
     CollectionSelector::new(filters, document.history_since, ephemeral)
         .map_err(DecodeError::Profile)
+}
+
+/// Read profile-1 persisted bytes without repairing a changed representation.
+/// Compare the normalized serialization directly against the borrowed input;
+/// this needs no second encoded document beside the caller's parser reservation.
+pub fn decode_normalized_selector(input: &[u8]) -> Result<CollectionSelector, DecodeError> {
+    struct Compare<'a>(&'a [u8]);
+    impl io::Write for Compare<'_> {
+        fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+            self.0 = self
+                .0
+                .strip_prefix(bytes)
+                .ok_or_else(|| io::Error::other("noncanonical selector"))?;
+            Ok(bytes.len())
+        }
+        fn flush(&mut self) -> io::Result<()> {
+            Ok(())
+        }
+    }
+    let selector = decode_selector(input)?;
+    let mut compare = Compare(input);
+    serde_json::to_writer(&mut compare, &selector).map_err(|_| DecodeError::NonCanonical)?;
+    if !compare.0.is_empty() {
+        return Err(DecodeError::NonCanonical);
+    }
+    Ok(selector)
 }
 
 struct RawFilter(FilterFields);

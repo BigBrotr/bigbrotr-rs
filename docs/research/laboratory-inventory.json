@@ -28005,6 +28005,13 @@
         "source_files": 1530,
         "free_bytes": 66281091072
       }
+    },
+    "acquisition_scope_read": {
+      "status": "Mac codec/compile checks PASS; native build and PG reader NOT_RUN",
+      "local_evidence": ".research/implementation/acquisition-scope-read-20260928",
+      "report": "docs/implementation/evidence/p03-acquisition-scope-read-mac-20260928.json",
+      "cache": ".research/targets/product; existing cache only",
+      "preserve": "Missing-API RED, digest-format compile failure and corrected logs. No active run. Next exact-Git Tux build reuses locked1154757; readers borrow stopped PG71775507 and create fresh clones only."
     }
   },
   "implementation_relay_registry_20260928": {

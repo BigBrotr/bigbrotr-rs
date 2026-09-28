@@ -42,8 +42,8 @@ and checks the same lexical replay budget as decoding. A typed selector can fit
 its model limits while its escaped document exceeds2MiB or the replay working
 ceiling; registration reports Capacity, never truncation or an altered predicate.
 The caller retains grants for selector capacities and encoded bytes. SQL bounds
-stored bytea; the trusted Rust codec owns semantic normalization. A future read
-by scope must bound/decode and compare normalized bytes before using stored intent.
+stored bytea; the trusted Rust codec owns semantic normalization. The internal
+reader below checks persisted intent before its future admission consumer.
 No unchecked stored bytes become acquisition authority.
 
 `acquisition_scopes` is unique over dataset, endpoint, selector, access, full
@@ -68,9 +68,28 @@ old-epoch intent refuses without leaving a selector. A received BB001 is a rejec
 commit; transport uncertainty remains CommitUnknown. Errors/cancellation poison
 the session; its caller retains and joins the driver before retrying.
 
+`read_acquisition_scope` looks up an ID only inside the current Control dataset.
+It returns immutable historical or current intent, not permission. SQL bounds
+the returned document and identity/numeric fields; an orphan selector, wrong
+profile or inconsistent scope is InvalidMetadata. Profile1 decoding compares
+normalized serialization directly against the original bytes without allocating
+a second encoded document. Alternate escaping, order, duplicates or whitespace
+are refused rather than repaired. Parser resource bounds remain Capacity, distinct
+from malformed or noncanonical input.
+
+The reader requires8MiB plus an item before querying and retains that permit in
+`StoredAcquisitionScope` until its selector is dropped. A smaller/missing-item
+reservation refuses before poisoning the session. The connection owner separately
+reserves PG response/framing capacity and keeps that grant through driver closure;
+dropping a query does not release the driver's buffers. Cancellation or a failed
+read after begin poisons reuse. No permit resizing or smaller retained-allocation
+claim is introduced. The32MiB producer queue is distinct from the process-wide
+network/parser envelope. The finite consumer must account their actual overlap.
+Mac codec/compile checks pass; actual-PG reader qualification is still NOT_RUN.
+
 Ordinary `sync.selectors` configuration still needs explicit versioned accepted
 policy integration. Registration adds no fields/defaults to existing v1/v2
 documents. Before execution, the trusted consumer must enforce both complete
 accepted documents, full collection/request membership, current source authority
-and committed visibility. Finite jobs, read-by-scope, progress/effect closure,
+and committed visibility. Finite jobs, scope-bound admission, progress/effect closure,
 installed entrypoints and complete M1 remain selected implementation work.

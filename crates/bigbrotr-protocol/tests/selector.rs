@@ -200,3 +200,50 @@ fn persistent_encoding_is_bounded_and_replayable_without_jsonb_expansion() {
         Some(EncodeError::WorkingLimit)
     );
 }
+
+#[test]
+fn persisted_selector_read_requires_exact_normalized_bytes() {
+    use bigbrotr_protocol::selector::decode_normalized_selector;
+    const NORMAL: &str = concat!(
+        r##"{"version":1,"filters":[{"kinds":[1,2],"#t":["/","\u0000","é"]}],"##,
+        r##""history_since":0,"ephemeral":"retain"}"##
+    );
+    // The literal order above is deliberately wrong: U+0000 sorts before '/'.
+    assert_eq!(
+        decode_normalized_selector(NORMAL.as_bytes()).err(),
+        Some(DecodeError::NonCanonical)
+    );
+    const EXACT: &str = concat!(
+        r##"{"version":1,"filters":[{"kinds":[1,2],"#t":["\u0000","/","é"]}],"##,
+        r##""history_since":0,"ephemeral":"retain"}"##
+    );
+    let retained = decode_normalized_selector(EXACT.as_bytes()).unwrap();
+    assert_eq!(retained.filters()[0].fields().kinds, Some(vec![1, 2]));
+    assert_eq!(retained.filters()[0].fields().tags[&'t'], ["\0", "/", "é"]);
+    for changed in [
+        format!(" {EXACT}"),
+        format!("{EXACT}\n"),
+        EXACT.replace("[1,2]", "[2,1]"),
+        EXACT.replace("[1,2]", "[1,2,2]"),
+        EXACT.replace("é", "\\u00e9"),
+        EXACT.replace("/", "\\/"),
+        EXACT
+            .replace("\"version\":1,", "")
+            .replace("\"history_since\":0", "\"version\":1,\"history_since\":0"),
+    ] {
+        assert!(decode_selector(changed.as_bytes()).is_ok());
+        assert_eq!(
+            decode_normalized_selector(changed.as_bytes()).err(),
+            Some(DecodeError::NonCanonical)
+        );
+    }
+    assert_eq!(
+        decode_normalized_selector(b"[]").err(),
+        Some(DecodeError::InvalidJson)
+    );
+    assert_eq!(
+        decode_normalized_selector(EXACT.replace("\"version\":1", "\"version\":2").as_bytes())
+            .err(),
+        Some(DecodeError::Unsupported)
+    );
+}

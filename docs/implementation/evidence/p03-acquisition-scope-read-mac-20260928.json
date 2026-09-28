@@ -1,0 +1,43 @@
+{
+  "format": "bigbrotr-acquisition-scope-read-mac/1",
+  "status": "PASS_SCOPED_MAC_COMPONENTS",
+  "base_source": "4650310f5e4dc30845a678ebc8b0eba414c43ffd",
+  "environment": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+  "local_evidence": ".research/implementation/acquisition-scope-read-20260928",
+  "source_sha256": {
+    "apps/bigbrotr/src/acquisition/scope.rs": "012c4c8a5267b0fa8e325a9409bb6ee578cc71ec6994b574387069308fca97d6",
+    "apps/bigbrotr/src/storage/postgres/acquisition_read.rs": "85d0ac3b9230e83d38ee6e63a867f2a8ea1183d6cfbe0dfab115933c9788da85",
+    "crates/bigbrotr-protocol/src/selector.rs": "d7b73a79a1b202901c6d799602919c3fa036936a565c50c0ef8a265d82a7e8dc",
+    "crates/bigbrotr-protocol/tests/selector.rs": "59fd18345ab7dab5daa4ef9309e8b7268d57d065ecff4af5d4246ac273672515",
+    "apps/bigbrotr/examples/acquisition_scope_probe.rs": "9430c69b5172b3622547feb9495b1ccaa0e838011bc86f758b4f8aa5e26a3753",
+    "apps/bigbrotr/examples/support/acquisition_scope_reads.rs": "af685f540ad3dc9bbb3f83ee5367ec9ad9dfadea5a92cedb5eb42443b1184eb9",
+    "experiments/acquisition-scope/reads.py": "6e724546cb1abd094dcf0e5d80359e1fdd374979ff0f684649065f8879ead7b3",
+    "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9"
+  },
+  "logs_sha256": {
+    "api-red.log": "ec1b30c104a99d0498755b6018147ff0bea9f1bb2c848e790d63d8378e2039fc",
+    "codec-green.log": "fbcf5094547d2e0d5a56277b01bcce4e759177f393d9c7f7b11f7db0a1c08387",
+    "clippy.log": "e4a0e6dbaf6ed380ad7b1f92733c20d6ad3dcdef41017a6005e12b541d3da3bb",
+    "clippy-final.log": "6cea04cc53448b22b210c40128fd6af19101d39a2c1181f55bee0d2db6d6b5a6",
+    "codec-clippy.log": "05656396facb8d65cec60589c5081fa42e66c6b1460d4b3855859c89653cc473",
+    "fmt.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts.log": "3ee8b658de13f6697989655e2ea58c48d658c8e55f7367cf4b2610ca23f59ed9",
+    "handoff.log": "d52759bfa5c07e2bcb24dc64e37adfc18872c280311e692a94df3bedfe2b9e19"
+  },
+  "checks": [
+    "Six selector codec tests including exact normalized persisted bytes and unchanged prior bounds",
+    "Library and real probe scoped Clippy; affected protocol test Clippy; formatting",
+    "All36 existing SQL files byte-identical to HEAD; no new dependency"
+  ],
+  "original_outcomes": [
+    "Expected missing decoder API RED",
+    "Probe digest LowerHex compile error corrected using existing Digest256",
+    "Read-only AI review found cloned Control identity collision and incomplete old-owner row oracle; corrected before engine launch"
+  ],
+  "review": "Root complete changed files and relevant owners/callers; read-only AI reviewed codec/type/reader/probe/recipe. Selected context remains data, not authority. Conservative8MiB retained permit avoids unsubstantiated smaller capacity or new resize abstraction.",
+  "not_qualified": [
+    "Actual PG reader cases are NOT_RUN",
+    "Scope-bound reservation/dispatch/CertifyExisting and historical mutation recovery integration",
+    "Installed Sync, M1, capacity/mixed/aged-state, arm64/release"
+  ]
+}

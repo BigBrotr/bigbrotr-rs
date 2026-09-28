@@ -12,26 +12,43 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is0eeade4444ca241b7b1f60a3dff9f5993e09710b, tree
-0a4f47bfd9daf073a47aa79cec8f399fa8f688df (SQL guard fixtures); private origin/main
-was4aa1bd3c2ec5717053d8ca5b7e21090317597c72 before the pending evidence push.
-Product/migrations remain byte-identical to first-wave54d1a18. Root owns only
-SQL qualification evidence/inventory and owning status/checkpoint updates.
+Mac main and private origin/main are4650310f5e4dc30845a678ebc8b0eba414c43ffd
+(SQL qualification evidence pushed and verified). Resumption found a clean tree.
+Product/migrations remain byte-identical to first-wave54d1a18. Root owns the next
+scope-loading/admission integration and owning status/checkpoint updates.
 No other writer or active lab. Preserve applied checksums and original states.
+Root dirty scope-reader files, its probe/recipe/build profile, reference and
+inventory/evidence updates are the pending coherent candidate. No SQL/dependency
+changes. Mac six codec tests/scoped Clippy and artifact/handoff checks pass;
+actual-PG reader remains NOT_RUN. Evidence is
+[scope reader Mac](evidence/p03-acquisition-scope-read-mac-20260928.json).
 
 ## Active slice and next useful journey
 
 P03-T01 Steps1/2/3: pure selector is qualified; initial durable registration now has
 six actual-PG schedules and native build evidence. Whole task remains open.
-Next bounded action: commit/push the SQL qualification, then read the complete
-owning source/producer paths and implement the smallest scope loading/binding
-consumer for P03-T01 Step3/P03-T02 Step3. Read-only dns_dependency_audit is mapping
-acquisition/relay_source, postgres/relay_source, producer_sources, initial_batch
-and contracts while root integrates evidence; it is not a writer. Determine from
-actual callers whether persisted source requests require scope identity/new
-additive SQL (0020 and0004 now immutable). Both fresh reserve and dispatch must
+Next bounded action: commit the scope-reader candidate, build exact Git on Tux
+using acquisition-scope-read/locked1154757, then run reads.py on fresh clones of
+retained54d1a18 basic/8c4d12c transport.14 proposed cases distinguish canonical
+bytes, exact2MiB, resource versus metadata failures, namespace isolation, historical
+data, missing schema and cancellation at an observed actual scope-table lock.
+Root/read-only AI review corrected reused Control identity and old-owner row
+oracle before engine launch. Missing-API and digest-format compile failures remain
+under ignored acquisition-scope-read-20260928. The loaded domain value retains
+its8MiB parser permit; normalized comparison streams into the original bytes,
+with no second encoded document. Driver memory stays separately owned. No resize
+API or measured small-capacity claim. After qualification, wire its source
+binding consumer for P03-T01 Step3/P03-T02 Step3. Root and read-only AI review of
+source/producer/recovery paths found that overlapping selectors can otherwise
+reuse identical request/native bytes without retaining which scope reserved them.
+Use an additive acquisition-scope binding on producer_requests; import-only
+producer_input_bindings cannot express it. Compare omissions too; historical NULL
+rows cannot be adopted. 0020 and0004 remain immutable. Both fresh reserve and dispatch must
 check collection/request membership; historical ambiguous recovery remains tied
-to its original intent. CertifyExisting must share those checks. No adjacent
+to its original intent. CertifyExisting currently passes no source context; add
+read-only source/scope checks without inventing a ProducerRequestId. The actual
+policy consumer must check event bytes, provenance, ephemeral/history policy as
+well as endpoint/bans/route against both documents. No adjacent
 subsystem, generic orchestration framework or full scheduling milestone is needed
 before wiring the finite consumer. Scope loading must bound/decode exact persisted
 bytes and preserve Capacity versus inconsistent-state errors.
@@ -41,7 +58,7 @@ event through durable admission/archive/read/export/restart. Concrete path:
 P02-T01 Step6 source identity/enrollment → P03-T01 scope registration/binding →
 P04-T02 guarded transport → P03-T02 source-bound admission. Finite authority,
 WebSocket, preserving decoder and selector membership have component evidence;
-registration needs failure qualification and then an actual consumer. Full
+registration now has scoped failure qualification and needs an actual consumer. Full
 discovery, Monitor, analytics and renewable sessions are not prerequisites.
 Existing Serve selects Control only. Clean extracted Compose, timer publication,
 dependency-outage recovery and invalid-ID/signature controls remain practical M1.
@@ -108,11 +125,12 @@ check both complete accepted documents, collection/request membership, current
 source and committed visibility, including CertifyExisting. Preserve historical
 ambiguous-outcome recovery independently from fresh authority.
 
-Retain the actual-consumer memory risk: selected32MiB producer cannot blindly
-stack17MiB WebSocket +8MiB decode +8MiB verification. Borrowed EVENT ownership is
-small; wire the real consumer and account retained capacities/release or resize
-temporary workspace. The64MiB socket fixture does not qualify32MiB. No unused
-framework/API or memory-capacity claim from this component.
+Retain the actual-consumer memory risk:32MiB bounds the producer queue, not every
+network/parser allocation. One shared budget cannot blindly stack8MiB selector,
+17MiB WebSocket,4MiB direct transport and8MiB verification. Account actual custody
+and distinct process/queue grants; release temporary borrowed EVENT decoding work
+before verification where valid. The64MiB socket fixture does not qualify a32MiB
+process envelope. No unused resizing framework or memory-capacity claim.
 
 [Native fault evidence](evidence/p03-acquisition-scope-faults-native-20260928.json)
 at8951d87: ten actual schedules PASS, release build/scoped Clippy PASS. Root
@@ -253,6 +271,8 @@ were preserved and remaining laboratory files checked. Free bytes before
 No container, volume, dataset or fault state was deleted. Shared blocks, preserved
 hardlinks and concurrent writes explain differences from cache allocation.
 Do not rerun deletion recipes; recheck disk before every large allocation.
+Resumption at4650310 found11,194,412 KiB free on Mac and66,281,021,440 bytes on
+Tux, with no active BigBrotr build/lab and the same eight unrelated containers.
 
 Protect private-history-32dd58d and stopped history-capture-b5c862a, including
 installed-publication-61271e2/out/archive-worker. Qualification/object-storage
