@@ -28351,6 +28351,51 @@
       "launch_start_ticks": "396079712",
       "evidence": "docs/implementation/evidence/p02-relay-source-relations-native-20260928.json",
       "retention": "Keep both new clones, native stores, source and original outputs. Borrowed first-wave PostgreSQL is stopped; no network or compiler allocation, no deletion."
+    },
+    "fault_build": {
+      "source": "87ad138926d164e47a8cd9b653b8bca19759c0a7",
+      "tree": "1d85e51435848f9b24001bf5b5b654f443e27254",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-faults-87ad138",
+      "owner": "6616970ae91becd6adba0b8e4192f4ab",
+      "owner_label": "org.bigbrotr.network-transport",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "fa1d6c90bbd1aa972a92af7d5a59c40a5f580384f30ebd45356b15f8e6be9b13"
+        },
+        {
+          "name": "native",
+          "id": "88a7617e12b142e213c70a52235a384bff3e268f52cc6da902b46b6d590e3d54"
+        }
+      ],
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+      "qualification": "PASS_RELAY_SOURCE_FAULT_BUILD_ONLY",
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "87ad138926d164e47a8cd9b653b8bca19759c0a7",
+        "observed_at": "2026-09-28T07:20:09.049590+00:00",
+        "prior_unchanged": 893,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "fa1d6c90bbd1aa972a92af7d5a59c40a5f580384f30ebd45356b15f8e6be9b13",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "88a7617e12b142e213c70a52235a384bff3e268f52cc6da902b46b6d590e3d54",
+            "exit": 0
+          }
+        ],
+        "source_files": 1472,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 68230729728
+      },
+      "capture": ".research/implementation/relay-source-faults-20260928/capture-build",
+      "retention": "Retain exact source/export, original build logs and CLI/probe artifacts; exclusive compiler cache released. Engine fault schedules not yet run."
     }
   }
 }

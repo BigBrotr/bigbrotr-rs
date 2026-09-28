@@ -77,3 +77,31 @@ def expected_source(dataset, committed):
             [456, reference(2), clock, None]], [4, 5, 6, 7])
     assert len(rows) == (25 if committed else 14)
     return sorted((cf, key, value) for (cf, key), value in rows.items()), inputs
+
+
+def complete_source(dataset, committed, closing=False):
+    """Include literal operational receipts/producer marker for recovery checks."""
+    rows, inputs = expected_source(dataset, committed)
+    be = lambda n: n.to_bytes(8, 'big')
+    slot = bytes([66]) * 16
+    references = {}
+    for cf, key, value in rows:
+        if cf == 'facts' and key[:2] == b'\x01\x20':
+            n = int.from_bytes(key[-8:], 'big')
+            references[n] = [[dataset, 0, 1, n], value[2:34]]
+    receipts = {}
+    batches = [(1, [1, 2, 3], [1, 2, 3])]
+    if committed:
+        batches.append((2, [4, 5, 6, 7], [1, 3, 4, 5, 6, 7]))
+    for sequence, batch, dependencies in batches:
+        receipt = b'bigbrotr/receipt/1\0' + cbor([
+            1, [slot, 1, sequence], hashlib.sha256(inputs[sequence]).digest(),
+            [dataset, 0, 1, bytes([67]) * 16, 1],
+            [references[n] for n in batch], [references[n] for n in dependencies]])
+        receipts[sequence] = receipt
+        rows.append(('receipts', b'\x01\x30' + slot + be(1) + be(sequence), receipt))
+    marker = (b'\x02\x31' if closing else b'\x01\x31') + be(2 if committed else 1) + be(0) + be(0)
+    if closing:
+        marker += b'\x01'
+    rows.append(('receipts', b'\x01\x31' + slot + be(1), marker))
+    return sorted(rows), inputs, receipts

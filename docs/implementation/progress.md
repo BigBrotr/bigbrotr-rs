@@ -12,10 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and origin/main are64f3f60 (scoped relational evidence), pushed to the
-verified private repository. Product a6c28e6 remains unchanged; root owns pending
-fixture-only source-fault probe/lifecycle and build-profile edits. Product
-and applied0020 bytes are unchanged. Previous qualified product5be0dbd remains
+Local main is87ad138 (unpublished fixture candidate); origin/main64f3f60 is
+pushed to the verified private repository. Root owns pending external source-fault
+runner/oracle/docs. Product a6c28e6 and applied0020 bytes remain unchanged. Previous qualified product5be0dbd remains
 recorded below; maintenance and policy-version evidence are committed.
 No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
 05:51:59UTC, PID3018662/start395683262 terminal, owner8b12a62d405821e4949859f225a685a6.
@@ -186,23 +185,27 @@ files and exact original ELFs; free68,339,847,168bytes. Both relational clones/s
 retained; no new compiler cache/network or deletion. Ignored captures match roots;
 inventory relations_initial/relations records identities and original failures.
 
-The next actual source fault probe is now implemented in the owned dirty files:
-apps/bigbrotr/examples/support/ingest_source_faults.rs and its parent/source helper,
-plus build-only relay-source-faults profiles in the existing native/lab runners.
-It joins original Control before real fresh v2 login/enrollment withdrawal and
-historical closing/resolution; source-ready .go gate precedes a fresh2s lease.
-Admission-only/refusal modes serve lock schedules; pass/lost modes serve recovery.
-Mac scoped Clippy passes (clippy.log,clippy2.log under ignored
-.research/implementation/relay-source-faults-20260928); formatter corrections were
-applied. No engine execution or fault driver exists yet. Product source and SQL
-are unchanged. Whole changed fixture/owners/callers read; independent read-only
-fixture review pending. Mac last free14,360,104KiB; Tux last68,339,847,168bytes.
+The new source-fault probe at87ad138 compiled on native amd64, with release CLI
+and scoped Clippy PASS (two build checks, unchanged product tests not repeated).
+Root runs/relay-source-faults-87ad138 stopped07:13:07UTC, owner6616970ae91becd6adba0b8e4192f4ab,
+PID3079808/start396178503 terminal. Audit07:20:09UTC verified893 prior container
+projections/eight unrelated running,1472 exact source/export files, both ELFs and
+released exclusive1154757 compiler lock. Free68,230,729,728bytes. No engine created.
+Ignored .research/implementation/relay-source-faults-20260928/capture-build holds
+verified original logs/receipts. Mac Python3.9 rejected safe extraction's filter
+argument; Python3.14 extracted the same original capture and verified its hashes.
+Independent AI fixture review found no ownership blocker. External driver now
+uses joined-writer snapshots and independent original receipt/recorder oracles.
+Read-only AI review found three fixture expectation issues (initial event, renamed
+xmin row order, release role retirement), corrected before native execution.
+Independent complete-byte oracle matches the retained a6c28e6 native/PG receipts.
+All eight new schedules remain NOT_RUN. Root owns only
+external Python/oracle and documentation edits; no product or migration change.
 
-Next bounded action: commit/build this exact probe on Tux using exclusive1154757
-cache (runner rechecks space/containers/mounts), then implement the external fault
-runner reusing e06f580 PG/template and the existing bounded proxy/Session/Process.
-Run one pass trace to establish actual COMMIT ordinals at source-ready before
-selecting reservation/outcome targets; verify proper PG/native phase independently.
+Next bounded action: finish reviewing/commit the external driver, then execute
+its exact-Git revision with87ad138 ELFs, borrowing the stopped e06f580 PG/template.
+Observe first pass COMMIT count before selecting reservation/outcome targets;
+verify proper PG/native phase independently. No approval needed for this scope.
 Concurrency/COMMIT/recovery must pass before qualifying this persistent boundary.
 Independent review recommends writer-first commit/rollback, reservation-
 first withdrawal+reenrollment (enabled generation3 must reject old generation1 at

@@ -45,3 +45,13 @@ old driver, acquire real fresh Control, authenticate/withdraw the enrollment,
 close the historical native producer and resolve the original request. The
 external driver must independently verify fault position, lock ordering, durable
 rows and all original bytes; these new schedules are not yet executed.
+
+`faults.py ROOT` borrows that same stopped PostgreSQL/template and uses the new
+87ad138 probe only after checking exact product/build input equality. It first
+measures completed setup COMMITs, then selects reservation/outcome ordinals.
+Writer-first commit/rollback, reservation-first enabled generation replacement,
+dispatch-first completion and three lost-COMMIT schedules retain every clone.
+External concurrent writers are labeled privileged state injections; recovery
+withdrawal is a real password/session command. All-table comparison waits for
+writer completion, and complete native/input/receipt bytes have an independent
+oracle. These schedules are implemented but not yet executed.
