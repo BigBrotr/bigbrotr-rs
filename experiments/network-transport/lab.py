@@ -19,7 +19,7 @@ assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
 root = base / 'runs' / ('network-' + revision[:7])
 source = root / 'source'
-cache_root = base / 'runs/export-runtime-6499656'
+cache_root = base / 'runs/network-1a2a8be'
 image = 'sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d'
 label = 'org.bigbrotr.network-transport'
 
@@ -48,8 +48,8 @@ assert Path(__file__).resolve() == source / 'experiments/network-transport/lab.p
 assert not (root / 'resources.json').exists()
 prior = containers()
 old = json.loads((cache_root / 'resources.json').read_text())
-assert old['source'] == '649965662afe6c72ec5f6fe421af4ea34caabda8'
-assert old['owner'] == '4ff815a30b3a667d92717a648436fe2d' and old['state'] == 'stopped-retained'
+assert old['source'] == '1a2a8bed567a479f7641370dbc9c89f06465e7fa'
+assert old['owner'] == 'bac04a9c1ac35f50d762a6120d813546' and old['state'] == 'stopped-retained'
 for entry in old['containers']:
     item = next(c for c in prior if c['Id'] == entry['id'])
     assert item['Config']['Labels'][old['owner_label']] == old['owner']

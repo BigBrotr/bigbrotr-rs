@@ -164,6 +164,31 @@ malformed/limit outcomes remain distinct; success in one family cannot mask a
 fatal failure in the other. These are bounded initial choices to qualify against
 real recursive resolvers, not capacity or full transport claims.
 
+The initial direct TCP/TLS consumer owns one finite operation and lends its
+stream to the protocol callback. A nonrenewable action window, an explicit
+caller deadline and a unique cancellation handle bound DNS, connection, TLS and
+protocol work together. That window is only a local lifetime bound: the Control
+caller must separately authorize the exact endpoint, route, access and action.
+The primitive is not an enrollment API. Check authority before every resumed
+work poll and both beneath TLS (including handshake/flush) and above it (including
+already decrypted data). Sample the suspend-aware window every 50 ms while idle;
+expiry/cancellation drops the owned work before releasing capacity. This cannot
+interrupt arbitrary synchronous callback code or recall bytes already accepted
+by the kernel. No socket/driver task escapes the borrowing callback.
+
+Reserve 4 MiB and one shared budget item before resolution; DNS currently reserves
+another 4 MiB/item while it runs, including its literal fast path. These are
+conservative reservations, not measured RSS limits. Pin the first allowed address
+and make one connection attempt, with no automatic alternate-address retry.
+Each new attempt resolves and filters again. Preserve the complete endpoint and
+authenticate its original hostname/IP, not its CNAME or selected socket address.
+TLS uses bundled public trust roots plus at most 128 extra DER roots/1 MiB,
+ordinary certificate/name/time verification and an explicit crypto provider.
+No ambient client identity, early data, shared resumption cache or verification
+bypass is selected. Bound outgoing TLS buffering to 64 KiB. Host/endpoint quotas,
+FD reserve, renewable service sessions, redirects, WebSocket and installed
+Control/enrollment remain separate required adapter/integration work.
+
 Tor/I2P/Lokinet suffixes select distinct configured routes. Missing adapters are configuration failures when enabled, not relay downtime. Never resolve overlay names through public DNS. Proxy-resolved overlay routes disclose that the worker cannot inspect the final remote IP; restrict permitted suffixes and delegate isolation to the route. A clearnet host sent through a proxy retains local resolved-IP checks and pinned address, unless an explicitly declared remote-resolving route supplies equivalent enforceable policy. An unavailable overlay does not consume the public route's entire worker budget.
 
 One websocket per `(endpoint, auth scope)` multiplexes live, backfill and probe subscriptions where possible. Sharing across different authorization identities is forbidden. Pooling separate processes is optional; a central scheduler still enforces endpoint/host connection and request tokens. Exact hostname, selected IP and registered-domain fairness are different budget keys: no shared-host TLS fact is inferred from a common apex. Public clients must not issue reverse DNS or geography queries for hidden-service endpoints.

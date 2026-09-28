@@ -27276,6 +27276,20 @@
         "free_bytes_after": 71847927808
       }
     ],
-    "native_evidence": "docs/implementation/evidence/p04-network-components-native-20260928.json"
+    "native_evidence": "docs/implementation/evidence/p04-network-components-native-20260928.json",
+    "direct_component": {
+      "base_source": "4995f3ded25c01690bb12e3a025ae10f2a797e0c",
+      "local_capture": ".research/implementation/network-direct-local-20260928",
+      "state": "Mac44tests/Clippy/dependency policy PASS; native candidate preparation",
+      "evidence": "docs/implementation/evidence/p04-network-direct-mac-20260928.json",
+      "preserve": "Original missing-API RED, Mac127.0.0.2 setup failure, reproduced DNS resumption expiry RED, final actual TLS/cancellation results and deterministic public-only PKI fixtures",
+      "last_read_only_tux_census": {
+        "observed_at": "2026-09-28T01:43:37Z",
+        "free_bytes": 71847780352,
+        "running_unrelated": 8,
+        "active_bigbrotr": false
+      },
+      "cache_input": "Verified stopped network-1a2a8be; copy only, no cache or historical dataset retirement in this boundary"
+    }
   }
 }

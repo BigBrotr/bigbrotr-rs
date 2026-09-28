@@ -1,0 +1,17 @@
+{
+  "purpose": "Public, deterministic test-only TLS identities; no production secrets",
+  "server_names": [
+    "fixture.example",
+    "127.0.0.1"
+  ],
+  "validity_utc": [
+    "2026-01-01",
+    "2036-01-01"
+  ],
+  "sha256": {
+    "ca.der": "2a83a667a3ec77d598afb7953c1e2dfbdcd727415548759f82fb9dea1cbb4c49",
+    "server-test-key.der": "c5685bee91d820035964c9155c0a460fe5c41d5f1f5854bede86d6799f405e73",
+    "server.der": "17d074b88894373dd130a002883035377f5c1a2b089c78470a9b074431eadfa3",
+    "wrong-ca.der": "03c024e235c2809fff31309ab25a4dd3a36aeb2a51b5876a0e896e3f2eb3966e"
+  }
+}

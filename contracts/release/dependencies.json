@@ -131,7 +131,7 @@
     {
       "name": "rustls",
       "version": "0.23.45",
-      "purpose": "Verify-full PostgreSQL TLS policy with configured CA roots, optional checked client identity and explicit ring provider",
+      "purpose": "Verify-full PostgreSQL TLS and direct acquisition server authentication, with separate trust configuration and explicit ring provider",
       "license": "Apache-2.0 OR ISC OR MIT",
       "license_notice": "https://github.com/rustls/rustls/tree/2976d90fd1c2db6b518700dd101b714069cfcb17#license",
       "source": "https://docs.rs/rustls/0.23.45/rustls/"
@@ -255,6 +255,28 @@
       ],
       "license": "MIT OR Apache-2.0",
       "source": "https://github.com/hickory-dns/hickory-dns/tree/bd37cafbdd86112a6da32878f8c9bab22e14377e/crates/proto"
+    },
+    {
+      "name": "tokio-rustls",
+      "version": "0.26.5",
+      "purpose": "Owned direct acquisition TLS over a guarded pinned socket; no background driver, early data or ambient connection factory",
+      "default_features": false,
+      "features": [
+        "ring",
+        "tls12"
+      ],
+      "license": "MIT OR Apache-2.0",
+      "source": "https://github.com/rustls/tokio-rustls/tree/f8832d28ce5688f101368e34fc6b49899a8d4293"
+    },
+    {
+      "name": "webpki-roots",
+      "version": "1.0.9",
+      "purpose": "Bundled public trust anchors for direct acquisition TLS, separate from PostgreSQL trust settings",
+      "default_features": false,
+      "features": [],
+      "license": "CDLA-Permissive-2.0",
+      "license_notice": "packaging/archive-worker/notices/webpki-roots-1.0.9.txt",
+      "source": "https://github.com/rustls/webpki-roots/tree/0a553dbc8b3f18ea05c4f881cffa3f2d005d0d30/webpki-roots"
     }
   ],
   "lock": "Cargo.lock",
@@ -273,7 +295,7 @@
     },
     "tls": {
       "connector": "tokio-postgres-rustls 0.14.0 with rustls 0.23.45 and ring 0.17.14",
-      "features": "Explicit ring provider; rustls std/ring/tls12; no native-certs, webpki-roots or dangerous verifier",
+      "features": "PostgreSQL: explicit ring provider, rustls std/ring/tls12, configured roots only; no native-certs, public root store or dangerous verifier. Direct acquisition separately uses webpki-roots plus bounded extra roots; see direct dependencies.",
       "qualified_scope": "Explicit PostgreSQL migration consumer: native Linux amd64 TLS1.3 and CA/server-name/client-certificate positive and negative cases at ffb94a8. Rotation/revocation, arbitrary provider matrices, native arm64 network acceptance and full release remain unqualified.",
       "preserved_license_sources": [
         "https://github.com/briansmith/ring/tree/2723abbca9e83347d82b056d5b239c6604f786df#license",

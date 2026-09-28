@@ -12,14 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified local main HEAD is unpublished candidate
-1a2a8bed567a479f7641370dbc9c89f06465e7fa (tree
-851f2403bfaa4141cfe684e190a23a1e95a8a41a); origin/main last observed
-8fc853e03d14f9eb8a165f7fb44581c6f3ee62f9, private. Product ad5e9e6, native6499656
-and prior evidence8fc853e remain published without rewrite. Candidate sources
-were clean before exact Git transfer; checkpoint/inventory, native evidence and the bounded laboratory comparator fix
-are the current root-owned dirty files after the native run. Root is sole writer. No migration changes. Independent review is
-read-only; original findings and REDs are retained, fixes tested locally.
+Verified HEAD and origin/main are4995f3ded25c01690bb12e3a025ae10f2a797e0c;
+private BigBrotr/bigbrotr-rs, clean main after push. Product1a2a8be and scoped
+native evidence/laboratory fix4995f3d are published without history rewrite.
+Only this checkpoint changes during next-consumer selection. Root is sole writer;
+no active native experiment or agent writer. All applied migrations unchanged.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
 with the explicit remaining gates below. No complete task/phase/M1/product claim.
@@ -218,9 +215,14 @@ caches were copied; no archive/DB created or prior resources deleted. Terminal
 free71,847,927,808 bytes; 12 GiB compiler headroom applied to this profile. Recheck
 before another allocation, especially a full export journey requiring64GiB reserve.
 
-Next bounded action: finish documentation/diff checks and publish candidate plus
-laboratory correction/evidence; then read current authority/configuration/role
-callers before implementing the shared pinned TCP/TLS consumer. No actual relay
+Documentation/diff checks and private push are complete. Active bounded action:
+implement a finite pinned direct TCP/TLS operation under the existing nonrenewable
+ActionWindow, explicit cancellation and caller deadline. Own the connection through
+a borrowing async callback so no raw socket escapes cleanup. This temporal bound
+is not endpoint enrollment or an authenticated action grant. Actual DNS/TCP/TLS
+fixtures precede integration; Control enrollment lookup remains the next concrete
+prerequisite. Exact tokio-rustls0.26.5/rustls0.23.45 source is being inspected;
+reuse these already locked dependencies, no TLS verifier bypass or global provider. No actual relay
 transport, TLS/WS or live Control integration exists yet. Real recursive-resolver
 interoperability, shared quotas and complete P04-T02 remain open. Keep helpers
 inside the current application; no generic orchestration framework is justified.
@@ -229,7 +231,16 @@ Next useful deliverable remains P04-T02 Steps 1–5 -> P03-T02 real socket admis
 -> P01-T09 Step 2 first signed-event integration. Consume existing durable archive,
 read and export boundaries; analytics/all relay services are not prerequisites.
 Read complete owning configuration/serve/authority callers before integrating.
-Overlay routes remain selected later acceptance, never silently removed.
+Overlay routes remain selected later acceptance, never silently removed. Current P03-T01/T02 task
+sections were reread: the real producer also needs minimal endpoint enrollment
+(P02-T01's planned0003_relay.sql, currently absent) and scoped work identity
+(P03-T01), not the complete P04-T01 discovery/lifecycle service. Qualify the
+isolated transport first; then implement only these concrete authority/scope
+prerequisites before wiring ordered signed-event admission. Existing Serve still
+selects Control only. Configuration resolve/registry/recipes, full Serve and
+linked admission callers have only been mapped/partially read for the next change;
+complete those owner reads before editing them. A read-only authority integration
+review is active; it owns no files or native resources.
 
 Latest read-only Tux census at 00:32:25 UTC: 75,675,406,336 bytes free, eight
 unrelated running containers, no BigBrotr build/experiment. Below the existing
@@ -244,3 +255,27 @@ P01-T09 production acquisition/socket collection, timer publication and actual
 signed-event read/export/restart/dependency-outage from clean extracted Compose.
 Current serve selects Control only. Do not finish adjacent subsystems unnecessarily
 before this useful operational consumer, or claim M1 from component evidence.
+
+Read-only authority review confirms missing P02-T01 Step6 minimum registry and
+exact endpoint/route/access/action binding. DeliveryWindow copies do not observe
+parent invalidation; egress must explicitly cancel. Do not reuse management
+ActionGate Unbound or write-only GuardedSocket unchanged. When reserved0003 is
+implemented, append to the migration application order; never alter its applied
+prefix. Root has not yet read all Serve/config owners and will not edit them in
+the isolated transport slice. No new Tux run or cache allocation is active.
+
+Finite direct TCP/TLS candidate over4995 is locally verified:12 actual direct
+cases plus the32 DNS/policy cases, Clippy and dependency-policy checks PASS.
+See evidence/p04-network-direct-mac-20260928.json and ignored
+.research/implementation/network-direct-local-20260928. Actual late-DNS RED
+proved select resumption bypassed the loop check; a per-poll gate fixes it.
+Buffered-TLS cancellation, dropped pending future, shared budget lowering and
+wrong CA/name are exercised. Mac127.0.0.2 was a setup failure; the denied socket
+is now observed at::1. Root/new-module review plus read-only independent review
+closed this defect; no full task claim. Source-only inspection confirmed the
+borrowed stream/permit cleanup; actual native test remains next. Existing locked
+tokio-rustls0.26.5 and webpki-roots1.0.9 become direct dependencies, no new package
+versions. Last Tux census01:43:37UTC:71,847,780,352 bytes free, eight unrelated
+running, no BigBrotr work. Native recipe now copies the stopped1a2 cache, preserving
+its original evidence; no current resources removed. Next: commit reviewed candidate,
+transfer exact Git revision, run44 native component cases, inspect terminal custody.

@@ -296,6 +296,29 @@ remain practical acceptance, with native execution recorded separately from Mac
 library fixtures. No persistent format or applied migration changes. The narrow
 codec does not add an executor, runtime cache or host resolver service.
 
+The finite direct TLS consumer promotes two already locked dependencies to direct
+use without changing package versions: `tokio-rustls` 0.26.5 (`ring`, `tls12`,
+defaults off) and `webpki-roots` 1.0.9 (defaults off). PostgreSQL keeps its separately
+configured roots. The exact [connector source](https://github.com/rustls/tokio-rustls/blob/f8832d28ce5688f101368e34fc6b49899a8d4293/src/client.rs)
+owns the supplied stream throughout the handshake; its
+[handshake future](https://github.com/rustls/tokio-rustls/blob/f8832d28ce5688f101368e34fc6b49899a8d4293/src/common/handshake.rs)
+starts no driver. TLS writes can buffer and require explicit flush. Guard below
+TLS for actual output and above it for decrypted buffered input. Product callers
+receive only a borrowed guarded stream, not the upstream `get_mut`/`into_inner`
+escape hatches. Cancellation drops the future/socket before its resource permit.
+
+Rustls 0.23.45 at `2976d90fd1c2db6b518700dd101b714069cfcb17` limits incoming
+handshake buffering to 64 KiB in `msgs/deframer/buffers.rs`; `set_buffer_limit`
+controls outgoing/pre-handshake buffers, not all process memory. The consumer
+sets that limit to 64 KiB, disables resumption/early data, selects HTTP/1.1 ALPN
+and uses the explicit ring provider and ordinary verifier. Extra roots are bounded
+before parsing. `webpki-roots` comes from
+[0a553dbc8b3f18ea05c4f881cffa3f2d005d0d30](https://github.com/rustls/webpki-roots/tree/0a553dbc8b3f18ea05c4f881cffa3f2d005d0d30/webpki-roots);
+its CDLA-Permissive-2.0 notice already exists in packaging. These source guarantees
+and socket fixtures do not establish capacity, all TLS versions/interoperability
+or installed acquisition authorization. Exact docs.rs pages were unavailable to
+the browser during this inspection; matching downloaded upstream source was read.
+
 Apply hard request-body accounting at the transport/body layer, including custom
 extractors and decompressed bodies. Axum's extractor-local default limit does not
 cover every body consumer. Explicitly cap WebSocket messages, frames, read/write

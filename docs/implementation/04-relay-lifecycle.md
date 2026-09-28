@@ -7,6 +7,12 @@ no complete adapter step or phase is qualified by it. Unchecked steps and exampl
 acceptance commands below remain selected future work. Historical Go behavior
 informs fixtures and design choices, not a compatibility or correctness claim.
 
+The finite direct TCP/TLS extension has [scoped Mac evidence](evidence/p04-network-direct-mac-20260928.json),
+including actual DNS rebinding, SNI/certificate refusals, buffered-data revocation
+and cancellation. Its action window is not an authenticated enrollment grant.
+Native qualification and the remaining P04-T02 service/route/protocol integration
+are recorded separately; no checkbox is closed by this component alone.
+
 Goal: turn attributable mentions into governed endpoint work, establish actual
 protocol evidence, and retain useful measurements with reproducible method,
 route, time and access context. Keep endpoint identity, operator enrollment,

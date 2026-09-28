@@ -1,0 +1,108 @@
+{
+  "format": "bigbrotr-network-component-evidence/1",
+  "status": "PASS_SCOPED_MAC_COMPONENTS",
+  "base_source": "4995f3ded25c01690bb12e3a025ae10f2a797e0c",
+  "source_state": "Root-owned candidate over the base; exact product/fixture/manifest bytes below. Candidate commit binds unchanged bytes.",
+  "environment": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8"
+  },
+  "inputs_sha256": {
+    "Cargo.toml": "81824a1418730e9047c8ebd98044b5069f9ac56fef118748a6d3e8d6fad41dde",
+    "Cargo.lock": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e",
+    "apps/bigbrotr/Cargo.toml": "bdd833e24bc21229c4b500a0bb4df650c449df43cddca91ec6405f1223e2f259",
+    "contracts/release/dependencies.json": "af44110b5c5d58b5dfdaab4c97c37567a4e0d47e3351327a437caf33f0cd3acc",
+    "apps/bigbrotr/src/network/address.rs": "dd071d040f77a7d18666a542926cef901836c17621bc69b38c3e5195623ab0fe",
+    "apps/bigbrotr/src/network/dns/response.rs": "05e3444f4b04c55457356314c76b0b65ca155bcaaab7c9109a04d1ba43a9a291",
+    "apps/bigbrotr/src/network/dns.rs": "def36573715b6e5444b76f3855f324afd9b1f3d19c334412e83bbeff188e108a",
+    "apps/bigbrotr/src/network/egress.rs": "1fa7f51eeb0e04cb30f2752105c54c2c2927445dd93719cb30e19bca7ab89dae",
+    "apps/bigbrotr/src/network/lifetime.rs": "75f3f3edc2064510ebe218b7deb5b714160741c399241b7d24a7f058293f4e59",
+    "apps/bigbrotr/src/network/mod.rs": "289c97e486f0eab84bb43480d5a5ec32f4d28c893426169bde9d40d37113c6c9",
+    "apps/bigbrotr/src/network/policy.rs": "120bf5bea72db1f187856e77c8639cf1a832cb01b27878d89d29192b9288571d",
+    "apps/bigbrotr/src/network/stream.rs": "d43fd1b3b85fc20e4f9cb287161015f664043fb065606a472a896754fbae2bef",
+    "apps/bigbrotr/src/network/tls.rs": "55b2a18305a18c60637a564772592bbcd5c037333f70092b20a80cb0a68f9bf0",
+    "apps/bigbrotr/tests/network_direct.rs": "471c786e689a22204bbfadefde3266727823ab5f912a1033390ca8ebe0ba2c77",
+    "tests/fixtures/relay-lifecycle/transport/README.md": "0938ebc7dd5302607116702c0df8807155f3e63cf240692c06ef11d33ca6b1a2",
+    "tests/fixtures/relay-lifecycle/transport/ca.der": "2a83a667a3ec77d598afb7953c1e2dfbdcd727415548759f82fb9dea1cbb4c49",
+    "tests/fixtures/relay-lifecycle/transport/generate.py": "a4538c363551c88db85a5ecc3216c6cb555050807c24ac0ff6e8ad572863159c",
+    "tests/fixtures/relay-lifecycle/transport/manifest.json": "76a79b944bb2ac4b58ce861411a66578f838e2d5160e2aeff57744cc18c57c25",
+    "tests/fixtures/relay-lifecycle/transport/server-test-key.der": "c5685bee91d820035964c9155c0a460fe5c41d5f1f5854bede86d6799f405e73",
+    "tests/fixtures/relay-lifecycle/transport/server.der": "17d074b88894373dd130a002883035377f5c1a2b089c78470a9b074431eadfa3",
+    "tests/fixtures/relay-lifecycle/transport/wrong-ca.der": "03c024e235c2809fff31309ab25a4dd3a36aeb2a51b5876a0e896e3f2eb3966e"
+  },
+  "tests": {
+    "network_direct": 12,
+    "network_policy": 9,
+    "network_dns": 9,
+    "network_dns_semantics": 14,
+    "failed": 0,
+    "ignored": 0
+  },
+  "checks": {
+    "tests": "cargo test --locked -p bigbrotr --test network_direct --test network_policy --test network_dns --test network_dns_semantics",
+    "clippy": "cargo clippy --locked -p bigbrotr --lib --test network_direct -- -D warnings; PASS after final structural cleanup",
+    "native": "NOT_RUN in this report",
+    "dependency_policy": "cargo-deny0.20.2 licenses/sources/advisories; PASS"
+  },
+  "original_outcomes": [
+    {
+      "log": "red.log",
+      "outcome": "Missing direct transport API before implementation"
+    },
+    {
+      "log": "tls-first.log",
+      "outcome": "7 PASS, one SETUP FAILURE: macOS loopback127.0.0.2 unavailable; corrected fixture uses an actual ::1 denied listener, unchanged route semantics"
+    },
+    {
+      "log": "dns-resume-red.log",
+      "outcome": "FAIL: after action expiry the resumed select branch started the next DNS connection; actual controlled peer observed it"
+    },
+    {
+      "log": "green.log",
+      "outcome": "12 PASS after per-poll gate check, added buffered-TLS/drop/budget cases"
+    },
+    {
+      "log": "final-tests.log",
+      "outcome": "44 PASS with final explicit stream enum dispatch; no new dependency package versions"
+    }
+  ],
+  "review": {
+    "root": "Complete new transport modules/tests and real DNS/authority/budget/dependency boundaries; full Serve/config/Control integration not edited or qualified",
+    "independent": "Read-only source review found the resumed-select DNS defect; root reproduced it then fixed. Rereview read12-test GREEN and relevant new tests; no new concrete finding. Agent did not execute tests.",
+    "structure": "One concrete direct owner, private lifetime gate and concrete IO variants. Removed a local dynamic trait in favor of explicit plaintext/TLS matches. No generic service framework, task spawner, new crate, persistence or applied migration changes."
+  },
+  "limits": {
+    "connection_reservation_bytes": 4194304,
+    "nested_dns_reservation_bytes": 4194304,
+    "items_required_during_dns": 2,
+    "tls_send_buffer_bytes": 65536,
+    "extra_roots_max_count": 128,
+    "extra_roots_max_bytes": 1048576,
+    "idle_authority_sample_ms": 50,
+    "addresses_tried_per_attempt": 1,
+    "memory_claim": "Conservative reservations; no measured RSS/capacity claim",
+    "cancellation": "Checked polling and actual I/O gate; cannot preempt arbitrary synchronous code or recall kernel-accepted bytes"
+  },
+  "remaining_gates": [
+    "Actual Control endpoint/route/access/action authorization and enrollment",
+    "Host/endpoint/rate quotas and process FD reserve",
+    "WebSocket framing and ordered signed-event ingestion",
+    "Guarded HTTP redirects and overlays",
+    "TLS versions/cross-stack interoperability and real recursive resolvers",
+    "Native target evidence, aged/mixed workload capacity and complete M1 installation"
+  ],
+  "raw_capture": ".research/implementation/network-direct-local-20260928",
+  "raw_logs_sha256": {
+    "artifacts.log": "ce55eac53974e9a3858490d5f0da31039bca91353f254f9c416f7fba998166cd",
+    "clippy-final.log": "eb0e229fb8d921d2045b0f7342050a07b01ad71733b7694959c6fc3f20a7d548",
+    "clippy.log": "9a2e9dd8be1a834d435be5051940afd98e39adaf3cd61660d8d97fbca521e8a1",
+    "dependency-policy.log": "245deecd3483cc5322ad2199ecc5c9421e832e3f1e6d2f8419170f3c74bccf46",
+    "dns-resume-red.log": "a852f69c3f1e2a4cd354fcf63bce8e63eba033eeeabd315b21f4a893abf94ec0",
+    "final-tests.log": "73e3cb01fe4f81e0d32e6e56ab199f6a0a2068d04463ce4a923f7cea4f58a437",
+    "first.log": "5e099df2a3836503796ba812a882ac44601b3bb2652947daab2cb3e167c07d44",
+    "green.log": "f48cce9711aa537a14743b2f5c442e9e354df9711e4ebf371a1f0bb3ae2e1352",
+    "handoff.log": "30710a6fd00a4c2ed570b6de0207f3fe5822d0615cc47dac1509f06cc14efc5d",
+    "red.log": "d2d1e631601eaef36b713ec63e353241e9327a5b34d0e763f706e1d4363b151d",
+    "tls-first.log": "fa65d6e4b6e93d7392aeb397743037f77515853a8a6e44af9e415fbf4302d84d"
+  }
+}

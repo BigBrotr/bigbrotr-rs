@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Native DNS/policy component qualification; not installed acquisition acceptance."""
+"""Native direct TCP/TLS/DNS qualification; not installed acquisition acceptance."""
 import json
 from pathlib import Path
 import shutil
@@ -32,11 +32,11 @@ env.update(CARGO_HOME=str(build / 'cargo-home'), CARGO_TARGET_DIR=str(build / 't
 identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolchain=native,
                 lockfile_sha256=file_hash(SOURCE / 'Cargo.lock'),
                 source_manifest_sha256=file_hash(build / 'source-manifest.json'),
-                scope='Native actual TCP DNS and pure destination policy; no installed acquisition, TLS/WS, Control authority or capacity claim')
+                scope='Native actual direct TCP/TLS/DNS and destination policy; no installed acquisition, WebSocket, Control authorization or capacity claim')
 identity['rustc'] = subprocess.check_output(['rustc', '--version', '--verbose'], env=env, text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 assert identity['rustc'].startswith('rustc 1.98.1 ')
-tests = {'network_policy': 9, 'network_dns': 9, 'network_dns_semantics': 14}
+tests = {'network_policy': 9, 'network_dns': 9, 'network_dns_semantics': 14, 'network_direct': 12}
 selectors = [arg for name in tests for arg in ['--test', name]]
 checks = Path('/out/build-checks')
 result = execute([
