@@ -22,13 +22,15 @@ sys.path.insert(0, str(SOURCE / 'experiments/network-transport'))
 from inventory import projection
 
 arguments = sys.argv[1:]
+claim_faults = bool(arguments and arguments[-1] == '--claim-faults')
+if claim_faults: arguments.pop()
 claims = bool(arguments and arguments[-1] == '--claims')
 if claims: arguments.pop()
 acceptance_first_only = bool(arguments and arguments[-1] == '--acceptance-first')
 if acceptance_first_only: arguments.pop()
 faults = bool(arguments and arguments[-1] == '--faults')
 if faults: arguments.pop()
-assert not (claims and faults)
+assert sum([claims, faults, claim_faults]) <= 1
 assert not acceptance_first_only or faults
 assert len(arguments) in (1, 2)
 root = Path(arguments[0]).resolve(strict=True)
@@ -51,21 +53,22 @@ for name, key in [('bigbrotr', 'binary_sha256'), (built['probe_name'], 'probe_sh
 pg_root = root.parent / 'relay-source-recheck-e06f580/pg'
 pg = lab.load(pg_root)
 assert pg['owner'] == '5e69b0f060b1607c25230d1dbd3e5608' and pg['state'] == 'stopped-retained'
-qualified_jobs = faults or claims
+qualified_jobs = faults or claims or claim_faults
 basis_root = root.parent / ('acquisition-jobs-engine-28a7db9/jobs' if qualified_jobs else 'acquisition-scope-54d1a18/engine')
 basis = 'bb_acq_job_28a7db9_no_grant' if qualified_jobs else 'bb_scope_54d1a18_basic'
 basis_report = (basis_root / 'result.json').read_bytes()
 assert json.loads(basis_report)['status'] == ('PASS_FINITE_ACQUISITION_ACCEPTANCE' if qualified_jobs else 'PASS_SCOPED_ACQUISITION_REGISTRATION')
-output = root / ('claims' if claims else 'job-faults' if faults else 'jobs')
+output = root / ('claim-faults' if claim_faults else 'claims' if claims else 'job-faults' if faults else 'jobs')
 output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-jobs'
 processes, sessions = [], []
 expected_status = 'PASS_FINITE_ACQUISITION_FAULTS' if faults else 'PASS_FINITE_ACQUISITION_ACCEPTANCE'
 if acceptance_first_only: expected_status = 'PASS_ACQUISITION_ACCEPTANCE_FIRST_LOCKS'
 if claims: expected_status = 'PASS_FINITE_ACQUISITION_CLAIMS'
+if claim_faults: expected_status = 'PASS_ACQUISITION_CLAIM_FAULTS'
 client = 'bigbrotr-acquisition-jobs-' + revision[:7]
 report = dict(format='bigbrotr-acquisition-jobs/1', source=revision, build=built,
-    status='RUNNING', mode='claims' if claims else 'faults' if faults else 'acceptance',
+    status='RUNNING', mode='claim-faults' if claim_faults else 'claims' if claims else 'faults' if faults else 'acceptance',
     selection='acceptance-first locks only' if acceptance_first_only else 'complete wave',
     owner=owner, label=label, client=None, cases=[], databases=[],
     postgres=pg['postgres'], postgres_owner=pg['owner'],
@@ -82,6 +85,9 @@ if claims:
     report['not_run'] = ['claim lost/delayed COMMIT, cancellation and concurrent authority writers',
         'successor/native custody recovery, running/progress and installed command delivery',
         'socket admission, M1, aged/mixed load, arm64/release']
+if claim_faults:
+    report['not_run'] = ['native custody recovery, running/progress and installed command delivery',
+        'job-bound socket/reservation/certification, M1, aged/mixed load, arm64/release']
 
 
 def require(value, reason):
@@ -304,15 +310,17 @@ def go(token, suffix='go'):
 def finish(process):
     value = probe_event(process, 'done')
     require(process.wait(10) == 0 and not process.stderr and value['actual_driver_joined'], 'actual-probe-joined')
+    if claim_faults: require(value['after_logout'], 'claim-after-logout')
     return value['outcome']
 
 
-def proxy_for(database, mode):
+def proxy_for(database, mode, commit_number=4):
     process = Process(['docker', 'exec', '-i', client, 'python3', '-B',
         '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
-        '--mode', mode, '--commit-number', '4', '--deadline-seconds', '25'], input_pipe=True)
+        '--mode', mode, '--commit-number', str(commit_number), '--deadline-seconds', '25'], input_pipe=True)
     processes.append((database + '-proxy', process))
     ready = process.event('ready', 5)
+    require(ready['commit_number'] == commit_number, 'selected-COMMIT-number')
     require(ready['proxy_sha256'] == sha((SOURCE / 'experiments/control-migrations/fault_proxy.py').read_bytes()), 'actual-proxy-source')
     return process, ready['listen_port']
 
@@ -322,7 +330,7 @@ def proxy_finished(proxy, expected):
     require(proxy.wait(5) == 0 and not proxy.stderr, 'actual-proxy-joined')
     for line in proxy.stdout.splitlines(): safe_event(json.loads(line))
     require([wire[k] for k in ['commits_seen','commits_forwarded','server_commit_complete','client_commit_complete','faults']] == expected,
-            'exact-fourth-COMMIT-cut')
+            'exact-selected-COMMIT-cut')
     return wire
 
 
@@ -427,6 +435,12 @@ def compare_writer(before, after, kind, changed):
         accounts = [r for r in expected['local_accounts'] if r['username'] == 'alice']
         require(len(accounts) == 1, 'single-actor')
         accounts[0]['grant_revision'] += 1; modified.append(accounts[0])
+    elif kind == 'account':
+        account = next(r for r in expected['local_accounts'] if r['username'] == 'alice')
+        require(account['active'] and all(r['revoked_at_us'] is not None for r in before['browser_sessions']
+            if r['principal_id'] == account['principal_id']), 'logged-out-active-actor')
+        account.update(active=False, authentication_revision=account['authentication_revision']+1)
+        modified.append(account)
     else:
         require(kind == 'disabled' and expected['relay_enrollments'] and
                 all(r['enabled'] for r in expected['relay_enrollments']), 'enabled-enrollments')
@@ -459,6 +473,9 @@ def writer(kind):
         mutation = ["DELETE FROM control.principal_grants WHERE action='roles.control';",
                     "UPDATE control.local_accounts SET grant_revision=grant_revision+1 WHERE username='alice';"]
         changed = {'principal_grants','local_accounts'}
+    elif kind == 'account':
+        # Keep the real authentication-generation trigger for this transition.
+        return lock, ["UPDATE control.local_accounts SET active=false WHERE username='alice';"], {'local_accounts'}
     else:
         assert kind == 'disabled'
         mutation = ['UPDATE control.relay_enrollments SET enabled=false;']
@@ -730,6 +747,118 @@ def raw_claim_guards(template):
         record(name + '-complete-rollback', rows(database) == before)
 
 
+def prepare_claim_fault(name):
+    database, _ = prepare(name)
+    config = lab.config(output, dict(pg, client=client), database, endpoint='127.0.0.1:5432', boundary='loopback')
+    result = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
+        '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '23')
+    (output / (name + '-migration.stdout')).write_text(result.stdout)
+    (output / (name + '-migration.stderr')).write_text(result.stderr)
+    require(result.returncode == 0, 'claim-schema-setup')
+    lab.sql(pg, database, 'GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
+    return database
+
+
+def run_claim_faults():
+    schedules = [
+        ('pass','pass','pass',[6,6,6,6,0],True),
+        ('before','before-forward','unknown',[6,5,5,5,1],False),
+        ('after','after-complete','unknown',[6,6,6,5,1],True),
+        ('cancel_close','hold','cancel',[6,5,5,5,1],False),
+        ('cancel_release','hold','cancel',[6,6,6,6,1],True),
+        ('delayed','hold','pass',[6,6,6,6,1],True),
+        ('job_expiry','hold','expiry',[6,6,5,5,1],False),
+        ('owner_expiry','hold','owner-expiry',[6,6,5,5,1],False),
+    ]
+    for name, wire_mode, mode, counts, committed in schedules:
+        database = prepare_claim_fault('commit_' + name)
+        proxy, port = proxy_for(database, wire_mode, 6)
+        process, token = app(database, 'claim-fault-' + mode, 86, port)
+        ready = probe_event(process, 'ready'); observed = [observe(database, ready)]
+        before = snapshot(database, name + '-before')
+        deadline_us = before['acquisition_jobs'][0]['deadline_at_us']
+        require(not observed[0]['expired'] and observed[0]['now_us'] < deadline_us, 'initial-live-claim')
+        go(token)
+        if wire_mode == 'hold':
+            proxy.event('held', 5); observed.append(observe(database, ready))
+            require(rows(database) == before, 'uncommitted-claim-invisible')
+            if mode == 'cancel':
+                require(probe_event(process, 'cancelled', 4)['commit_started'], 'cancelled-during-claim-COMMIT')
+            elif mode in ('expiry','owner-expiry'):
+                limit = time.monotonic()+7
+                while not (observed[-1]['expired'] if mode == 'owner-expiry' else observed[-1]['now_us'] >= deadline_us):
+                    require(time.monotonic()<limit, 'server-expiry-not-observed')
+                    time.sleep(.05); observed.append(observe(database, ready))
+            else:
+                time.sleep(.4)
+            contender, _ = app(database, 'busy', 87)
+            require(probe_event(contender,'busy')['actual_driver_joined'] and
+                contender.wait(5)==0 and not contender.stderr, 'held-Control-excludes-contender')
+            require(rows(database)==before, 'held-claim-custody-preserves-state')
+            proxy.send('close' if name == 'cancel_close' else 'release')
+            if mode == 'cancel': go(token,'finish')
+        outcome = finish(process)
+        wire = proxy_finished(proxy, counts)
+        backends_absent(database)
+        after = snapshot(database, name + '-after')
+        compare_claim(before, after, ready, committed)
+        recovery_mode = 'claim-recover' if committed else 'claim-expired-retry' if mode == 'expiry' else 'claim-retry'
+        recovery, retry_token = app(database, recovery_mode, 88)
+        retry_ready = probe_event(recovery, 'ready')
+        require(retry_ready['epoch'] == ready['epoch']+1 and not retry_ready['receipt']['created'], 'original-accepted-job-recovery')
+        retry_before = snapshot(database, name + '-retry-before')
+        go(retry_token)
+        finish_claim(recovery, recovery_mode, retry_ready['receipt'])
+        backends_absent(database)
+        retry_after = snapshot(database, name + '-retry-after')
+        compare_claim(retry_before, retry_after, retry_ready, not committed and mode != 'expiry')
+        require(all(after[t] == retry_after[t] for t in ['acquisition_jobs','job_admissions','management_commands']), 'recovery-retains-original-intent')
+        report['cases'].append(dict(name='claim-commit-'+name,status='PASS',wire=wire,outcome=outcome,observations=observed,recovery_mode=recovery_mode))
+        save()
+    for first in ['writer','claim']:
+        for kind in ['policy','permission','disabled','account']:
+            name = first + '_' + kind
+            database = prepare_claim_fault(name)
+            proxy, port = proxy_for(database, 'hold', 6) if first == 'claim' else (None, 5432)
+            process, token = app(database, 'claim-fault-' + ('pass' if proxy else kind), 86, port)
+            ready = probe_event(process, 'ready')
+            observe(database, ready)
+            before = snapshot(database, name + '-before')
+            lock, mutation, changed = writer(kind)
+            session = Session(pg, database, 'claim-' + name, sessions, role='postgres')
+            session.execute('BEGIN;')
+            if first == 'writer':
+                for statement in lock + mutation: session.execute(statement)
+                go(token)
+                barrier = blocked(database, ready['pid'], session.backend['pid'])
+            else:
+                go(token)
+                proxy.event('held', 5)
+                session.start(lock[0])
+                barrier = blocked(database, session.backend['pid'], ready['pid'])
+            require(rows(database) == before, 'waiting-authority-not-visible')
+            if first == 'writer': session.execute('COMMIT;')
+            else: proxy.send('release')
+            outcome = finish(process)
+            if first == 'claim':
+                session.expect(session.finish())
+                for statement in lock[1:] + mutation: session.execute(statement)
+                session.execute('COMMIT;')
+                proxy_finished(proxy, [6,6,6,6,1])
+            session.close(lambda: lab.load(pg_root))
+            sessions.remove(session)
+            backends_absent(database)
+            after = snapshot(database, name + '-after')
+            compare_writer(before, after, kind, changed)
+            # Substitute only independently verified writer rows, then compare
+            # the exact one-row claim effect and every unrelated table/xmin.
+            expected = copy.deepcopy(before)
+            for table in changed: expected[table] = after[table]
+            compare_claim(expected, after, ready, first == 'claim')
+            report['cases'].append(dict(name=name, status='PASS', barrier=barrier, outcome=outcome))
+            save()
+
+
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
 assert target['Config']['Labels'][lab.LABEL] == pg['owner'] and not target['State']['Running']
@@ -756,7 +885,7 @@ try:
         # Never pick fixture identities solely by looking at Control rows.
         prior_ids = {r['role_instance_id'] for r in basic['role_instances']}
         prior_ids |= {r['process_incarnation'] for r in basic['owner_epochs']}
-        require(all('\\x' + bytes([n]).hex()*16 not in prior_ids for n in (50,51,52,60,64,80,82)),
+        require(all('\\x' + bytes([n]).hex()*16 not in prior_ids for n in (50,51,52,60,64,80,82,86,87,88)),
                 'fixture-owner-identity-collision')
     policy = basic['config_revisions'][0]['document']
     require(policy == basic['policy_revisions'][0]['document'] and policy['format'] == 'bigbrotr-product-policy/2', 'fixture-policy')
@@ -771,7 +900,9 @@ try:
         '--mount', f'type=bind,src={SOURCE},dst=/source,readonly', pg['client_image'],
         'python3', '-c', 'import time; time.sleep(600)').stdout.strip()
     report['client'] = dict(id=ident, name=client); save(); lab.docker('start', ident)
-    if claims:
+    if claim_faults:
+        run_claim_faults()
+    elif claims:
         run_claims()
     elif faults:
         run_faults()

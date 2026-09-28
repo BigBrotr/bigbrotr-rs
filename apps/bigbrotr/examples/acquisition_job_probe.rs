@@ -34,6 +34,7 @@ async fn run() {
     let mode = args[4].as_str();
     let controlled = args.len() == 8;
     let fault = controlled && mode.starts_with("fault-");
+    let claim_fault = controlled && mode.starts_with("claim-fault-");
     if fault {
         assert!(matches!(
             mode,
@@ -48,6 +49,19 @@ async fn run() {
                 | "fault-replay-permission"
                 | "fault-replay-policy"
                 | "fault-busy"
+        ));
+    } else if claim_fault {
+        assert!(matches!(
+            mode,
+            "claim-fault-pass"
+                | "claim-fault-unknown"
+                | "claim-fault-cancel"
+                | "claim-fault-expiry"
+                | "claim-fault-owner-expiry"
+                | "claim-fault-policy"
+                | "claim-fault-permission"
+                | "claim-fault-account"
+                | "claim-fault-disabled"
         ));
     } else {
         assert!(matches!(
@@ -65,6 +79,8 @@ async fn run() {
                 | "claim-missing"
                 | "claim-recover"
                 | "claim-expired"
+                | "claim-retry"
+                | "claim-expired-retry"
         ));
     }
     let nonce: u8 = if controlled {
@@ -132,7 +148,11 @@ async fn run() {
             authority_mode: "managed".into(),
             role_instance_id: [nonce; 16],
             incarnation: ProcessIncarnation::try_from([nonce; 16]).unwrap(),
-            lease_ttl: Duration::from_secs(if mode == "fault-owner-expiry" { 3 } else { 60 }),
+            lease_ttl: Duration::from_secs(match mode {
+                "fault-owner-expiry" => 3,
+                "claim-fault-owner-expiry" => 5,
+                _ => 60,
+            }),
         },
         validate,
         &claim_started,
@@ -173,7 +193,7 @@ async fn run() {
         scope_id,
         deadline_us: JobDuration::new(match mode {
             "expired" => 1,
-            "claim-expired" => 5_000_000,
+            "claim-expired" | "claim-fault-expiry" | "claim-expired-retry" => 5_000_000,
             _ => 120_000_000,
         })
         .unwrap(),
@@ -222,10 +242,15 @@ async fn run() {
             assert_eq!(result, Err(SessionError::Backend));
             assert!(committed.get());
         }
-        "claim" | "claim-forbidden" | "claim-policy" | "claim-missing" | "claim-recover"
-        | "claim-expired" => {
+        mode if mode.starts_with("claim") => {
             let receipt = result.unwrap();
-            assert_eq!(receipt.created, mode != "claim-recover");
+            assert_eq!(
+                receipt.created,
+                !matches!(
+                    mode,
+                    "claim-recover" | "claim-retry" | "claim-expired-retry"
+                )
+            );
             owner
                 .revoke_browser_session(&session.session, &session.csrf)
                 .await
@@ -237,6 +262,19 @@ async fn run() {
                     "epoch":owner.identity().epoch.get(),"receipt":receipt})
                 );
                 gate(&args[7], "go").await;
+            }
+            if claim_fault {
+                let outcome =
+                    claim_fault_operation(&mut owner, receipt.job_id, mode, &args[7]).await;
+                drop(owner);
+                let driver_ok = driver.await.unwrap().is_ok();
+                assert_eq!(budget.snapshot().active_permits(), 0);
+                println!(
+                    "{}",
+                    json!({"event":"done","outcome":outcome,
+                    "actual_driver_joined":true,"driver_ok":driver_ok,"after_logout":true})
+                );
+                return;
             }
             if matches!(mode, "claim-policy" | "claim-missing") {
                 let started = Cell::new(false);
@@ -409,7 +447,10 @@ async fn claim_test(owner: &mut ControlSession, job: bigbrotr_model::JobId, mode
     let original = owner.read_acquisition_job(job).await.unwrap().unwrap();
     let started = Cell::new(false);
     let result = owner.claim_acquisition(job, &started).await;
-    if matches!(mode, "claim-forbidden" | "claim-recover" | "claim-expired") {
+    if matches!(
+        mode,
+        "claim-forbidden" | "claim-recover" | "claim-expired" | "claim-expired-retry"
+    ) {
         assert_eq!(
             result,
             Err(if mode != "claim-recover" {
@@ -446,4 +487,65 @@ async fn claim_test(owner: &mut ControlSession, job: bigbrotr_model::JobId, mode
         owner.read_acquisition_job(job).await.unwrap(),
         Some(claimed)
     );
+}
+
+async fn claim_fault_operation(
+    owner: &mut ControlSession,
+    job: bigbrotr_model::JobId,
+    mode: &str,
+    prefix: &str,
+) -> Value {
+    let original = owner.read_acquisition_job(job).await.unwrap().unwrap();
+    let started = Cell::new(false);
+    let operation = owner.claim_acquisition(job, &started);
+    if mode == "claim-fault-cancel" {
+        assert!(
+            tokio::time::timeout(Duration::from_secs(2), operation)
+                .await
+                .is_err()
+        );
+        assert!(started.get());
+        assert_eq!(
+            owner.read_acquisition_job(job).await,
+            Err(SessionError::Unavailable)
+        );
+        println!("{}", json!({"event":"cancelled","commit_started":true}));
+        gate(prefix, "finish").await;
+        return json!({"result":"cancelled","commit_started":true});
+    }
+    let result = operation.await;
+    let refusal = match mode {
+        "claim-fault-unknown" => Some((SessionError::CommitUnknown, true, false)),
+        "claim-fault-expiry" => Some((SessionError::Forbidden, true, true)),
+        "claim-fault-owner-expiry" => Some((SessionError::Forbidden, true, true)),
+        "claim-fault-policy" => Some((SessionError::PolicyChanged, false, false)),
+        "claim-fault-permission" | "claim-fault-account" | "claim-fault-disabled" => {
+            Some((SessionError::Forbidden, false, true))
+        }
+        _ => None,
+    };
+    if let Some((error, commit_started, available)) = refusal {
+        assert_eq!(result, Err(error));
+        assert_eq!(started.get(), commit_started);
+        let observed = owner.read_acquisition_job(job).await;
+        if available {
+            assert_eq!(observed, Ok(Some(original)));
+        } else {
+            assert_eq!(observed, Err(SessionError::Unavailable));
+        }
+        return json!({"result":format!("{error:?}"),"commit_started":started.get()});
+    }
+    let claimed = result.unwrap();
+    assert!(started.get());
+    assert_eq!(claimed.state, bigbrotr::management::jobs::JobState::Queued);
+    assert_eq!(claimed.revision, 2);
+    assert_eq!(claimed.deadline_at_us, original.deadline_at_us);
+    assert_eq!(claimed.owner.unwrap().epoch, owner.identity().epoch);
+    // An authority writer may already have won after COMMIT. Only historical
+    // observation follows here; no second fresh claim races the asserted result.
+    assert_eq!(
+        owner.read_acquisition_job(job).await.unwrap(),
+        Some(claimed)
+    );
+    json!({"result":"claimed","commit_started":true})
 }

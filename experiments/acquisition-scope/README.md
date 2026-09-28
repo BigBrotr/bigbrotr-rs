@@ -235,3 +235,14 @@ states remain retained. [Native evidence](../../docs/implementation/evidence/p03
 records all30 first-wave assertions at e7d1c8c, plus39 native checks and Clippy.
 Lost/delayed claim COMMIT, concurrent authority writers, native custody recovery
 and installed dispatch remain subsequent acceptance.
+
+The next `jobs.py RUN_ROOT --claim-faults` wave targets COMMIT6 after actual
+logout. It reuses the `acquisition-jobs-faults` CLI/probe build profile without
+rerunning unchanged component tests. Planned schedules cover before/after loss,
+held cancellation with close/release, delay, original job/owner expiry and both
+policy/grant/enrollment/account lock orders. A fresh Control may claim an original
+still-accepted job, but must only observe/refuse foreign queued work; deadlines
+and immutable intent remain exact. The account writer keeps the real0806 trigger.
+After successful claim in a lock race, only historical observation follows, since
+permission may already have changed. These cases remain unexecuted until a scoped
+evidence report records their actual results.

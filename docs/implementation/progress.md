@@ -12,8 +12,8 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main candidate is e7d1c8c; private origin remains e3eca9e until the qualification
-commit/push. Root owns evidence/checkpoint/inventory documentation only. All native
+Mac main/private origin is a4a9d45, qualification pushed and remote verified.
+Root owns new claim-fault probe/harness WIP plus this checkpoint and fixture docs. All native
 resources below are stopped/retained; no active experiment or cleanup obligation.
 
 P03-T01 Step3 exact-ID claim now has additive0023, accepted→queued under current
@@ -48,10 +48,13 @@ unchanged, eight unrelated running, compiler lock free and63,217,111,040B free.
 Shared1154757 now holds e7d1c8c intermediates; exact artifacts are separately retained.
 Cache retirement remains complete; never replay launch/deletion recipes.
 
-Next: commit/push this bounded qualification, then extend the existing job probe
-and proxy to claim COMMIT6 (Control, login charge, session, acceptance, logout,
-claim). Exercise before/after loss, cancellation with close/release, original job
-and owner expiry, delay and both authority lock orders. Fresh recovery may claim
+The existing job probe/harness now has draft --claim-faults for COMMIT6 (Control,
+login charge, session, acceptance, logout, claim): eight COMMIT schedules and both
+policy/grant/enrollment/account lock orders. NOT EXECUTED. Root corrected the
+owner-expiry expected error from actual0813 BB001; it is Forbidden, not Conflict.
+Scoped Clippy, Python syntax, diff check and root/read-only fixture review PASS.
+No product or applied SQL changes. Next form the clean candidate and use the existing acquisition-jobs-faults
+build profile and exact-Git native runner. Last Mac free7,689,440KiB; check before allocation. Fresh recovery may claim
 an original accepted job, but can only observe/refuse foreign queued work; no
 native custody exclusion is inferred. Keep all original evidence and deadlines.
 The next user-visible M1 deliverable remains signed socket→durable admission→
