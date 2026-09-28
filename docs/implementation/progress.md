@@ -12,15 +12,29 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin/main are98abd959023b1ac5f85ab267b19eb6255866e225,
-verified after qualification push. Root now owns only raw0021 test fixtures,
-the existing binding driver, optional retained role in SQL laboratory Session,
-and related README/checkpoint. New raw guard schedules NOT_RUN. The fixture reuses
-50b4136 artifacts after full input comparison;23 nested Control cases,5 helper
-lock/isolation cases and one discriminating clone are prepared. Root and read-only
-AI review found no launch blocker; corrected this wave's NOT_RUN wording. No
-product/SQL/dependency change. Next: exact-Git transfer, run
-new --guards mode, collect/root-review. Native
+Mac main is9ce248f9c29d67b4c28ac5ab3474a90e733b1cad, tested candidate not yet
+pushed; private origin/main remains98abd959023b1ac5f85ab267b19eb6255866e225.
+Root owns qualification report, reference/task notes, inventory and checkpoint.
+Raw binding SQL qualification PASS:23 nested actual-Control cases (18 refusals,
+5 valid controls),5 direct helper lock/isolation schedules and the expected original
+FAIL after removing only the epoch predicate on its own clone. Four positive and
+one negative actual backend barriers; all66 tables/xmin, complete signed native
+bytes/inputs/receipts independently compared. Root verified1,546 Git source hashes
+and34 payloads. Evidence:
+[binding SQL guards](evidence/p03-acquisition-binding-guards-native-20260928.json).
+No Rust rebuild or product/setup failure. Reused exact50b4136 artifacts after
+all-input comparison. Root/read-only AI reviewed complete changed fixtures and
+constraints; Session now retains an optional actual login for mixed-role cleanup.
+No new product framework or migration. All owned resources stopped; terminal audit
+13:48:01 UTC verified933 other projections unchanged,8 unrelated running,
+65,131,544,576 bytes free. Mac last10,423,820 KiB. Cache retirement remains complete.
+Next bounded implementation: wire the finite full-selector Sync consumer toward
+P01-T09 Step2/M1. First inspect the actual config/admission/transport/CLI owners;
+replace fixture policy validation with both complete accepted documents, including
+event limit, provenance, history/ephemeral intent and current-root restrictions.
+Use the existing selector/scope/source/native owners; no full scheduler/Discovery/
+Monitor prerequisite. Jobs/progress and installed acceptance remain selected work.
+Native
 build and eight actual scoped concurrency/recovery schedules PASS. Root compared
 1,543 exact Git source hashes,81 captured payloads, full native/Control/input bytes,
 11 setup COMMITs and5 real lock barriers. Evidence:
@@ -28,11 +42,8 @@ build and eight actual scoped concurrency/recovery schedules PASS. Root compared
 No product/setup failure during engine execution; product/SQL/dependencies unchanged.
 Read-only AI review confirmed early InvalidPolicy and historical recovery custody.
 The actual transcript-failure cleanup counterexample is retained separately.
-Next bounded action: qualify raw0021 scope/source/identity/immutability constraints,
-both post-wait policy lock orders and rollback without the factory revision guard.
-Reuse stopped PG and exact artifacts; no new build required. Then wire the installed
-finite full-selector consumer toward P01-T09 Step2/M1, including both accepted-policy
-documents. Full Discovery/Monitor/scheduler remain unnecessary prerequisites.
+The raw scope helper boundary is now qualified separately above. Full
+Discovery/Monitor/scheduler remain unnecessary prerequisites for the finite consumer.
 All owned resources stopped; terminal audit13:35:52 UTC verified932 other container
 projections unchanged,8 unrelated running, compiler lock free and65,260,920,832 bytes.
 Mac last10,443,168 KiB available. Cache retirement complete; no cleanup obligation.
@@ -66,7 +77,7 @@ reservation/admission and read-only certification for P03-T01 Step3/P03-T02 Step
 Read-only AI review of the complete first-wave fixture found no launch blocker.
 Both concurrent policy lock orders and historical recovery now have scoped evidence.
 Invalid-signature and post-reservation refusal have the separate evidence above.
-Raw scope SQL negatives/rollback and helper lock isolation remain next.
+Raw scope SQL negatives/rollback and helper lock isolation now have separate evidence.
 Keep original outcomes and existing native oracle; no installed Sync claim yet.
 Current design retains a nullable plain bytea scope ID with exact16/nonzero CHECK,
 complete relay implication and composite source FK. NULL legacy rows are not adopted.
@@ -211,6 +222,16 @@ fixture blocker. Original logs, scripts and failures remain in ignored
 actual8951d87 capture/review). No product change was needed for these schedules.
 
 ## Current owned laboratory resources
+
+acquisition-binding-guards-9ce248f is STOPPED/RETAINED. Inventory
+implementation_network_20260928.acquisition_binding_guards and ignored
+.research/implementation/acquisition-binding-guards-20260928 own source/transfer/
+capture/root-review recipes and originals. PID3339138/start398545312 terminal;
+client54e9cdc0 stopped143/no OOM; PG71775507 stopped0. Seven
+bb_scope_bind_9ce248f_* clones and signed native store retained, including the
+intentionally weakened negative scope function. Retained50b4136 CLI/probe unchanged;
+no new build/cache. Audit above; no cleanup obligation. Never replay launchers.
+
 
 acquisition-binding-recovery-50b4136 is STOPPED/RETAINED. Inventory
 implementation_network_20260928.acquisition_binding_recovery and ignored

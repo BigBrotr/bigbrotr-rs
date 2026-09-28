@@ -28436,6 +28436,67 @@
         }
       },
       "report": "docs/implementation/evidence/p03-acquisition-binding-recovery-native-20260928.json"
+    },
+    "acquisition_binding_guards": {
+      "status": "STOPPED/RETAINED;23 SQL cases and five helper schedules PASS; epoch-only negative remains original FAIL; root review complete",
+      "local_evidence": ".research/implementation/acquisition-binding-guards-20260928",
+      "launch": {
+        "source": "9ce248f9c29d67b4c28ac5ab3474a90e733b1cad",
+        "tree": "c087d09e4df43ddc68075f3765c604c3980d7041",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-guards-9ce248f",
+        "pid": 3339138,
+        "start_ticks": "398545312",
+        "bundle_sha256": "85d46aa99167f02bec11ab05eabfa75c39b1e2ee3f0fe094dbe8db1d0abf6b00"
+      },
+      "reused_artifacts": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-recovery-50b4136/out/artifacts",
+      "preserve": "Original templates/artifacts/reports and seven new clones, including intentional negative scope helper. No build cache, source or dataset deletion.",
+      "engine": {
+        "source": "9ce248f9c29d67b4c28ac5ab3474a90e733b1cad",
+        "owner": "b9e0c797fa32bc7e34d2f9a7dcf848cc",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "54e9cdc04209e963ca426d45586aebdb3562330f89344736e17f58e2c5d0ad7b",
+          "name": "bigbrotr-acquisition-binding-9ce248f"
+        },
+        "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "databases": [
+          "bb_scope_bind_9ce248f_pass",
+          "bb_scope_bind_9ce248f_writer_commit",
+          "bb_scope_bind_9ce248f_writer_rollback",
+          "bb_scope_bind_9ce248f_scope_commit",
+          "bb_scope_bind_9ce248f_scope_rollback",
+          "bb_scope_bind_9ce248f_repeatable",
+          "bb_scope_bind_9ce248f_negative_no_epoch"
+        ],
+        "status": "PASS_SCOPED_ACQUISITION_BINDING",
+        "started_at": "2026-09-28T13:46:39.662881+00:00",
+        "finished_at": "2026-09-28T13:46:55.958945+00:00"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "9ce248f9c29d67b4c28ac5ab3474a90e733b1cad",
+        "observed_at": "2026-09-28T13:48:01.229934+00:00",
+        "prior_unchanged": 933,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "exit": 0
+          },
+          {
+            "id": "54e9cdc04209e963ca426d45586aebdb3562330f89344736e17f58e2c5d0ad7b",
+            "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "exit": 143
+          }
+        ],
+        "source_files": 1546,
+        "artifacts_verified": true,
+        "free_bytes": 65131544576
+      },
+      "report": "docs/implementation/evidence/p03-acquisition-binding-guards-native-20260928.json"
     }
   },
   "implementation_relay_registry_20260928": {

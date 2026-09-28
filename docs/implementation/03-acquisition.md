@@ -107,8 +107,9 @@ qualify populated upgrade, retry/binding refusals and read-only certification.
 [Four refusal schedules](evidence/p03-acquisition-binding-refusals-native-20260928.json)
 cover invalid signatures and post-reservation refusal. [Eight concurrent/recovery
 schedules](evidence/p03-acquisition-binding-recovery-native-20260928.json) preserve
-original scoped outcomes after policy advance and withdrawal. Raw SQL controls
-remain required to isolate the scope-epoch guard from the factory revision check.
+original scoped outcomes after policy advance and withdrawal. [Raw SQL qualification](evidence/p03-acquisition-binding-guards-native-20260928.json)
+now covers23 nested cases and5 helper schedules, independently isolating the
+scope-epoch guard with both lock orders and a discriminating negative clone.
 Jobs, authorization, progress and installed CLI acceptance
 remain separate parts of Step3 onward; no whole task closes here.
 

@@ -139,7 +139,10 @@ A rejected mutation creates an operational outcome while leaving scientific fact
 unchanged; its retry writes nothing. [Eight concurrency/recovery schedules](../implementation/evidence/p03-acquisition-binding-recovery-native-20260928.json)
 pass at50b4136, retaining original scope/input/receipts after policy advancement and
 authenticated withdrawal. The factory rejects stale revisions before the narrower
-scope helper; raw SQL must still isolate that guard.
+scope helper. [Raw SQL qualification](../implementation/evidence/p03-acquisition-binding-guards-native-20260928.json)
+at9ce248f separately covers23 nested cases and5 helper schedules, including both
+lock orders, rollback and isolation refusal. The epoch-only negative clone retains
+its original FAIL. No installed Sync or management activation claim follows.
 The first finite socket consumer can use the registered full selector. Generated
 page/need-list resumption still requires retaining that execution's exact request
 context; the scope ID does not reconstruct a page window. Both complete accepted

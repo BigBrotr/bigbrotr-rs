@@ -1,0 +1,121 @@
+{
+  "format": "bigbrotr-acquisition-binding-guards-native/1",
+  "status": "PASS_SCOPED_ACQUISITION_BINDING_SQL_GUARDS",
+  "source": "9ce248f9c29d67b4c28ac5ab3474a90e733b1cad",
+  "tree": "c087d09e4df43ddc68075f3765c604c3980d7041",
+  "artifact_source": "50b4136946cec324074114f8ca3a3e0f9416198d",
+  "artifact_tree": "dc7e84149d73e9065825235340ec47c2fb1a6470",
+  "unchanged_product_source": "f4038134a77828ec2b97ec7b3bddee0b80758b9f",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "engine": "Retained PostgreSQL16.15, fsync/full_page_writes on; exact same container/image as50b4136",
+    "new_build": false
+  },
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "c0e31b45281b5ea2004e4779db5e55388b3bfd2d4da86f083dcf2372256c6917",
+    "ingest_bootstrap_probe": "84c08a17380bf98ba7a84019a25990afe893e17a730508de51c88586af53208c"
+  },
+  "cases": [
+    {
+      "name": "pass",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "writer_commit",
+      "status": "PASS",
+      "actual_pg": true,
+      "observed_lock_barriers": 1
+    },
+    {
+      "name": "writer_rollback",
+      "status": "PASS",
+      "actual_pg": true,
+      "observed_lock_barriers": 1
+    },
+    {
+      "name": "scope_commit",
+      "status": "PASS",
+      "actual_pg": true,
+      "observed_lock_barriers": 1
+    },
+    {
+      "name": "scope_rollback",
+      "status": "PASS",
+      "actual_pg": true,
+      "observed_lock_barriers": 1
+    },
+    {
+      "name": "repeatable",
+      "status": "PASS",
+      "actual_pg": true,
+      "observed_lock_barriers": 0
+    }
+  ],
+  "relational_checks": {
+    "executed": 23,
+    "exact_message_refusals": 18,
+    "valid_controls": 5,
+    "all66_tables_and_xmin_rolled_back": true
+  },
+  "negative_control": {
+    "database": "bb_scope_bind_9ce248f_negative_no_epoch",
+    "status": "EXPECTED_FAIL",
+    "original_definition_sha256": "d7a694557068b9efb331f5ffe3b0fd2b610e09d2cd6ddc88cdc93ba2dbcafd51",
+    "altered_definition_sha256": "3a4fd9772054af7fff792316a3f6f30f258e5bf899e7745a6137b278ad732cde",
+    "reason": "Writer-first policy commit incorrectly permits original scope when its epoch predicate is removed"
+  },
+  "checks": [
+    "Actual application Control backend executes23 nested SQL cases before its signed reservation commits; original production triggers/constraints remain enabled.",
+    "Non-null scope requires all four relay fields; zero/short/absent scope and wrong/null helper tuple refuse. An overlapping scope, legacy source-only and unbound requests provide positive controls.",
+    "Update, erasure and deletion cannot change retained scope association. Every nested attempt rolls back all66 Control tables and xmin.",
+    "Independent complete native rows, original CBOR inputs, original receipts and actual request/source/scope relations verify the signed parent and exact retry/certification.",
+    "Actual application-login readers and privileged clone-only writers observe both dataset-lock orders with commit/rollback. Four backend-incarnation barriers; a separate repeatable-read refusal.",
+    "Post-wait helper observes committed head2; reader-first helper keeps writer blocked until rollback. Exact old documents/rows/xmin survive; only expected policy head/history changes.",
+    "Negative clone removes only the scope policy-epoch predicate. The same writer-first barrier returns00000 instead of23514 and its original report remains FAIL; not treated as a passing product run.",
+    "Root independently checks1,546 Git source hashes and34 captured payloads. Artifact Rust/build inputs unchanged and actual retained binary hashes match.",
+    "Owned sessions and containers stopped;933 other container projections unchanged. No compiler or cache allocation."
+  ],
+  "review": {
+    "source_files": 1546,
+    "captured_payloads": 34,
+    "capture_manifest_sha256": "9ba971aa8c9a19f1ae4820aded36cca31cca9ae8cbee60bf1a7f6de80c3e50d2",
+    "root_review_sha256": "10d3141a8fe574bd465edbd95f71c4231d8c1f9759a47bb7647acbe28fc87bc8",
+    "ai_review": "Read-only complete affected fixtures and producer constraints; no launch blocker. Corrected NOT_RUN wording before launch. Root removed unrelated nested TRUNCATE before launch because an active parent statement prevents isolating that guard. No product/setup failure during positive engine cases."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "9ce248f9c29d67b4c28ac5ab3474a90e733b1cad",
+    "observed_at": "2026-09-28T13:48:01.229934+00:00",
+    "prior_unchanged": 933,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "exit": 0
+      },
+      {
+        "id": "54e9cdc04209e963ca426d45586aebdb3562330f89344736e17f58e2c5d0ad7b",
+        "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+        "exit": 143
+      }
+    ],
+    "source_files": 1546,
+    "artifacts_verified": true,
+    "free_bytes": 65131544576
+  },
+  "local_evidence": ".research/implementation/acquisition-binding-guards-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-guards-9ce248f",
+  "not_qualified": [
+    "Independent removal of composite-FK/CHECK constraints; effective production guards remain on in the positive fixture",
+    "Management policy activation, renewed adapter COMMIT/cancellation evidence in this raw-helper wave",
+    "Installed finite Sync and complete M1; full accepted-policy event consumer",
+    "Measured process memory capacity, aged/mixed load, native arm64 and release"
+  ]
+}

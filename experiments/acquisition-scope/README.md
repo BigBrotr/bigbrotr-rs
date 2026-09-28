@@ -142,5 +142,6 @@ clone-only policy injections. Actual backend incarnations identify waiting locks
 all tables are compared after joining. A separate negative clone removes only
 the scope-epoch predicate and must fail the same writer-first test. Preserve its
 original FAIL, distinguishing a discriminating fixture from product qualification.
-These new cases are NOT_RUN until native evidence exists. No Rust rebuild,
+The [9ce248f report](../../docs/implementation/evidence/p03-acquisition-binding-guards-native-20260928.json)
+records23 nested cases and5 helper schedules PASS; the negative remains FAIL. No Rust rebuild,
 management activation, installed Sync, load or complete M1 claim follows.
