@@ -32,8 +32,9 @@ migration checks prior rows/checksums and heap filenodes plus identical reapply.
 
 Run results, exact artifact identities and terminal audits determine which cases
 actually executed. Failure logs and clones stay retained. Lost COMMIT/cancellation,
-concurrent locks, corruption/relational negative controls and installed Sync are
-explicit later acceptance, never inferred from this first wave. No capacity,
+concurrent locks and corruption/relational controls have separate evidence below,
+never inferred from this first wave. Installed Sync remains subsequent acceptance.
+No capacity,
 arm64, M1 or release claim follows from these fixtures.
 
 
@@ -60,14 +61,15 @@ For raw SQL acceptance, `guards.py RUN_ROOT` needs a fresh clean exact-Git sourc
 checkout under that root. No Rust build or new container is required. It borrows
 only the stopped owned PG, creates three clones and executes `guards.sql` as the
 actual application login. Clone-only mutation privileges expose row/statement
-checks. Proposed cases cover missing owner (with/without the lock), complete source/visibility
+checks. The [0eeade4 report](../../docs/implementation/evidence/p03-acquisition-scope-guards-native-20260928.json)
+records58 refusals covering missing owner (with/without the lock), complete source/visibility
 relationships, duplicate/profile/document/bucket limits, immutable updates,
 deletes/truncation and READ COMMITTED enforcement. A literal normalized2MiB
 selector and scope provide a positive boundary; the full bucket still permits
 another scope using an existing selector. Every transaction rolls back and all66
 Control tables/xmin must match the independent original. Raw claim setup is a
-fixture, not new Control recovery qualification. These cases remain NOT_RUN until
-the exact native report exists. Original templates and previous reports remain.
+fixture, not new Control recovery qualification. All three actual runs pass.
+Original templates and previous reports remain.
 
 These rollback-only cases qualify immediate guards and durable absence, not the
 deferred COMMIT fence. Pre-owner refusals cannot independently distinguish

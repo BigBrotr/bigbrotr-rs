@@ -12,24 +12,29 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin/main are4aa1bd3c2ec5717053d8ca5b7e21090317597c72,
-verified after push (fault evidence). Product/migrations remain byte-identical to
-first-wave54d1a18. Root owns new SQL guard fixtures/runner and their documentation;
-no other writer or active lab. The raw relational schedules remain NOT_RUN.
-Preserve every applied checksum and original fault/positive clone.
+Mac main is0eeade4444ca241b7b1f60a3dff9f5993e09710b, tree
+0a4f47bfd9daf073a47aa79cec8f399fa8f688df (SQL guard fixtures); private origin/main
+was4aa1bd3c2ec5717053d8ca5b7e21090317597c72 before the pending evidence push.
+Product/migrations remain byte-identical to first-wave54d1a18. Root owns only
+SQL qualification evidence/inventory and owning status/checkpoint updates.
+No other writer or active lab. Preserve applied checksums and original states.
 
 ## Active slice and next useful journey
 
 P03-T01 Steps1/2/3: pure selector is qualified; initial durable registration now has
 six actual-PG schedules and native build evidence. Whole task remains open.
-Next bounded action: review/commit/transfer the SQL-only candidate and execute
-raw relational negatives on new clones using the actual application login.
-Reuse existing psql/session helpers and preserve original54d1a18 templates.
-No new Rust/native build is necessary for SQL-only fixture changes. Verify lack
-of authority, exact access/visibility/enrollment FKs, duplicate/bucket/document
-limits, immutability/truncation and explicit rollback. Then wire bounded scope
-loading/binding into actual source-bound admission/finite Sync. These are the
-remaining responsibilities, not an adjacent subsystem or a new plan.
+Next bounded action: commit/push the SQL qualification, then read the complete
+owning source/producer paths and implement the smallest scope loading/binding
+consumer for P03-T01 Step3/P03-T02 Step3. Read-only dns_dependency_audit is mapping
+acquisition/relay_source, postgres/relay_source, producer_sources, initial_batch
+and contracts while root integrates evidence; it is not a writer. Determine from
+actual callers whether persisted source requests require scope identity/new
+additive SQL (0020 and0004 now immutable). Both fresh reserve and dispatch must
+check collection/request membership; historical ambiguous recovery remains tied
+to its original intent. CertifyExisting must share those checks. No adjacent
+subsystem, generic orchestration framework or full scheduling milestone is needed
+before wiring the finite consumer. Scope loading must bound/decode exact persisted
+bytes and preserve Capacity versus inconsistent-state errors.
 
 Next user-visible deliverable is still P01-T09 Step2/M1: one actual signed socket
 event through durable admission/archive/read/export/restart. Concrete path:
@@ -41,25 +46,18 @@ discovery, Monitor, analytics and renewable sessions are not prerequisites.
 Existing Serve selects Control only. Clean extracted Compose, timer publication,
 dependency-outage recovery and invalid-ID/signature controls remain practical M1.
 
-Prepared raw SQL acceptance: guards.sql/guards.py create three clones of the
-qualified54d1a18 basic/collision templates. Proposed basic30 refusals plus exact
-2MiB JSON and scope, collision26 refusals plus scope from existing selector, and
-REPEATABLE READ2 refusals. Each transaction rolls back owner setup and all writes;
-independent observer compares all66 tables/xmin. Extra mutation privileges exist
-only on clones to reach guards rather than ACL denial. Actual application login
-uses retained PG's local fixture boundary, not new authentication qualification.
-Mac artifact syntax/link check passes; no Rust change/build. Evidence root is
-.research/implementation/acquisition-scope-guards-20260928. Root corrected composite
-PL/pgSQL assignment by inspection before execution. Read-only AI review found
-the first collision case accidentally reused existingkind11; it now uses absent777
-while the second uses an exact existing document. It also found cleanup inspection/
-stop/census errors could leave RUNNING evidence; guarded cleanup now records
-errors/missing-owned and INCOMPLETE_LAB_AUDIT. Isolated actual-finally tests
-cover normal cleanup, inspect/stop/census failure and missing owned resource; all
-save the original outcome or explicit incomplete audit. Reviewer found no further
-blocker. Immediate guards/rollback only: deferred fencing remains owned by the
-prior COMMIT schedules, and missing-owner tests do not independently isolate the
-advisory check. No engine has executed yet.
+The raw relational boundary is now qualified at0eeade4: three application-login
+runs,58 SQL refusals, literal2097152-byte JSON equality and one-byte-over refusal,
+valid scope insertion at full64-selector bucket, then exact rollback of all66
+Control tables/xmin. The absent collision document is kind777; the existing case
+uses stored bytes. Root verified1,530 source hashes and17 captured payloads.
+No Rust rebuild was needed. Extra mutation privileges exist only on the clones.
+These runs cover immediate guards/rollback, not deferred completion or independent
+advisory-check removal. Earlier actual COMMIT schedules own temporal fencing.
+Cleanup's actual finally block separately handled inspect/stop/census failures and
+missing owned resource without discarding the original outcome. Static review
+findings were corrected before first engine execution; all three engine runs PASS.
+Evidence: [raw SQL guards](evidence/p03-acquisition-scope-guards-native-20260928.json).
 
 ## Registration implementation and evidence
 
@@ -101,8 +99,8 @@ Review corrected implicit epoch ambiguity and accidental selector-ID adoption,
 and requested literal JSON order/escaping compatibility now documented/tested.
 Structure retains one visible transaction with named multiline SQL and focused
 lookup/insert helpers, reuses the actual final fence and existing crates, and
-introduces no generic registry framework. Failure/lock acceptance now has the scoped evidence below. Raw relational
-negatives remain NOT_RUN, as do read-by-scope, jobs/progress and installed Sync.
+introduces no generic registry framework. Failure/lock acceptance now has the scoped evidence below. Immediate SQL constraints now have the evidence above. Read-by-scope,
+jobs/progress and installed Sync remain selected unimplemented work.
 
 Ordinary sync.selectors remains selected work requiring explicit accepted-policy
 version integration; no silent legacy defaults. Future execution/admission must
@@ -143,6 +141,16 @@ Inventory implementation_network_20260928.acquisition_scope owns the complete
 identities; ignored .research/implementation/acquisition-scope-20260928 owns
 start/launch/capture/review scripts and original results. Do not rerun old launchers.
 All remote roots are under /home/tux/bigbrotr-implementation-20260917/runs/.
+
+acquisition-scope-guards-0eeade4 is STOPPED/RETAINED; inventory
+implementation_network_20260928.acquisition_scope_guards and ignored
+.research/implementation/acquisition-scope-guards-20260928 own source transfer,
+launch/capture/review recipes and original logs. PID3252803/start397855290 terminal;
+bundlee64a5af0e1e4059cc1ba838a5b9d7c21c52a41a090ea65873afc34409f56e120.
+Three bb_scope_guards_0eeade4_* clones retained; no new container/cache/network.
+PG71775507 is stopped0/no OOM. Audit11:52:57 UTC:921 other projections unchanged,
+eight unrelated running and66,281,091,072 free bytes. No cleanup obligation remains.
+Never replay its launcher. Original scope templates and reports are unchanged.
 
 acquisition-scope-faults-8951d87 is STOPPED/RETAINED; full identities in inventory
 implementation_network_20260928.acquisition_scope_faults. Build owner

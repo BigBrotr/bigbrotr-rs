@@ -1,0 +1,95 @@
+{
+  "format": "bigbrotr-acquisition-scope-guards-native/1",
+  "status": "PASS_SCOPED_ACQUISITION_SQL_GUARDS",
+  "source": "0eeade4444ca241b7b1f60a3dff9f5993e09710b",
+  "tree": "0a4f47bfd9daf073a47aa79cec8f399fa8f688df",
+  "product_source": "54d1a1841b64b60a2c8eed0cde8382c397cf1e30",
+  "environment": {
+    "target": "native Linux amd64",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on"
+    },
+    "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client": "Actual application-login psql inside the owned PostgreSQL container; local fixture trust boundary"
+  },
+  "fixture_sha256": "5790d4d1669ad5646bf798ee987a2a7c58cba2c5ecf48d5c6df78e5b43af0309",
+  "cases": [
+    {
+      "name": "basic",
+      "status": "PASS",
+      "summary": {
+        "status": "PASS",
+        "refusals": 30,
+        "selectors": 3,
+        "scopes": 4,
+        "new_document_length": 2097152,
+        "new_document_sha256": "b626e165e724661d2a4e4353274c0cb010380267220a42eb8ecb139a8c251a27"
+      },
+      "all66_tables_unchanged": true
+    },
+    {
+      "name": "collision",
+      "status": "PASS",
+      "summary": {
+        "status": "PASS",
+        "refusals": 26,
+        "selectors": 64,
+        "scopes": 65,
+        "new_document_length": null,
+        "new_document_sha256": null
+      },
+      "all66_tables_unchanged": true
+    },
+    {
+      "name": "repeatable",
+      "status": "PASS",
+      "summary": {
+        "status": "PASS",
+        "refusals": 2,
+        "selectors": 2,
+        "scopes": 3,
+        "new_document_length": null,
+        "new_document_sha256": null
+      },
+      "all66_tables_unchanged": true
+    }
+  ],
+  "checks": [
+    "58 immediate SQL refusals across three fresh clones: missing owner, uniqueness/nonzero/profile, stale config/policy, complete endpoint/selector/access/visibility relationships, immutable updates/deletes/truncation and READ COMMITTED requirement",
+    "Exactly2097152-byte independently constructed normalized JSON and one scope insert before explicit rollback; one-byte-over document refused",
+    "Full64-row forced candidate bucket rejects a genuinely absent kind777 and an exact existing document; still permits scope insertion using a retained selector",
+    "All66 original tables including xmin compare exactly after each complete rollback, all application backends gone and original templates/reports unchanged"
+  ],
+  "review": {
+    "source_files": 1530,
+    "captured_payloads": 17,
+    "capture_manifest_sha256": "eeddb684c0da22795a14a33376bd1cf817d7d4c5ba6268ed6ccdfe8e60534ef1",
+    "root_review_sha256": "fcb32af2ab0b8c78dc8e2380ccf44a82551da6d143d2c5724250d1e3ae57882a",
+    "ai_review": "Complete new SQL/runner and owning immediate guards inspected read-only. Corrected accidental existing kind11 collision oracle to absent777 and cleanup error recording before first engine launch. No further blocker found.",
+    "cleanup_fixture": "Actual finally block separately exercised with normal cleanup, failed inspect/stop/census and missing owned resource; original outcome saved or INCOMPLETE_LAB_AUDIT. This isolated harness check is not engine-failure qualification."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "0eeade4444ca241b7b1f60a3dff9f5993e09710b",
+    "observed_at": "2026-09-28T11:52:57.589503+00:00",
+    "prior_unchanged": 921,
+    "unrelated_running": 8,
+    "postgres_stopped": true,
+    "no_oom": true,
+    "source_files": 1530,
+    "free_bytes": 66281091072
+  },
+  "local_evidence": ".research/implementation/acquisition-scope-guards-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-guards-0eeade4",
+  "not_qualified": [
+    "installed scope loading/binding, Sync, durable admission/progress/M1",
+    "load/aged-state",
+    "arm64/release",
+    "Rollback-only positive inserts do not execute deferred completion triggers; prior8951d87 fault schedules own COMMIT fencing",
+    "Pre-owner refusals do not independently discriminate removal of advisory-fence checks",
+    "No new Rust compilation, authentication or Control claim/recovery qualification"
+  ],
+  "scope": "Immediate SQL registration constraints and observable complete rollback only."
+}

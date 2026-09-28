@@ -27975,9 +27975,36 @@
       }
     },
     "acquisition_scope_guards": {
-      "status": "Prepared SQL-only fixture/runner; actual PG NOT_RUN",
+      "status": "0eeade4 three actual application-login SQL schedules PASS; stopped-retained",
       "local_evidence": ".research/implementation/acquisition-scope-guards-20260928",
-      "preserve": "Fresh exact-source run and three new clones of scope54d1a18 basic/collision planned. Existing PG71775507 only; no compiler, new container or original database mutation."
+      "preserve": "Exact source, SQL fixture, original observations and complete before/after rows; three clones retained. No compiler, new container/network or original data/ACL mutation. PG stopped0/no OOM; original54d1a18 templates unchanged.",
+      "native_report": "docs/implementation/evidence/p03-acquisition-scope-guards-native-20260928.json",
+      "launch": {
+        "source": "0eeade4444ca241b7b1f60a3dff9f5993e09710b",
+        "tree": "0a4f47bfd9daf073a47aa79cec8f399fa8f688df",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-guards-0eeade4",
+        "pid": 3252803,
+        "start_ticks": "397855290",
+        "bundle_sha256": "e64a5af0e1e4059cc1ba838a5b9d7c21c52a41a090ea65873afc34409f56e120"
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "databases": [
+        "bb_scope_guards_0eeade4_basic",
+        "bb_scope_guards_0eeade4_collision",
+        "bb_scope_guards_0eeade4_repeatable"
+      ],
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "0eeade4444ca241b7b1f60a3dff9f5993e09710b",
+        "observed_at": "2026-09-28T11:52:57.589503+00:00",
+        "prior_unchanged": 921,
+        "unrelated_running": 8,
+        "postgres_stopped": true,
+        "no_oom": true,
+        "source_files": 1530,
+        "free_bytes": 66281091072
+      }
     }
   },
   "implementation_relay_registry_20260928": {

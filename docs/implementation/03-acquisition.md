@@ -95,16 +95,17 @@ The initial [scope registration adapter](../reference/acquisition-scopes.md) add
 explicit epoch-bound identity and additive0004 storage, with
 [six actual-PG schedules](evidence/p03-acquisition-scope-native-20260928.json) passing.
 [Ten native fault schedules](evidence/p03-acquisition-scope-faults-native-20260928.json)
-cover lost COMMIT, cancellation, policy locks and corrupt buckets; raw relational
-acceptance remains pending.
+cover lost COMMIT, cancellation, policy locks and corrupt buckets.
+[Raw SQL acceptance](evidence/p03-acquisition-scope-guards-native-20260928.json) covers58
+immediate refusals, exact2MiB document boundary and complete rollback.
 Jobs, authorization, progress and installed CLI acceptance
 remain separate parts of Step3 onward; no whole task closes here.
 
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership
 checks. It supplies Step2 and part of Step1/P01-T03 Step5; no whole task checkbox
-closes. Persistent scope registration, policy compatibility and the installed
-finite journey remain required. See the [protocol reference](../reference/protocols.md#collection-selector)
+closes. Scope loading/binding, ordinary selector policy integration and the
+installed finite journey remain required. See the [protocol reference](../reference/protocols.md#collection-selector)
 and [Mac component evidence](evidence/p03-selector-mac-20260928.json), plus
 [native061890f execution](evidence/p03-selector-native-20260928.json).
 
