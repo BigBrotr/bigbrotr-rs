@@ -1,8 +1,9 @@
 # Phase 04 — Relay lifecycle implementation plan
 
-Status: planning only. None of the steps or future commands below has executed.
-The coordinator records the owner's requested five substantive revision rounds;
-this document does not authorize product implementation. Historical Go behavior
+Status: implementation active under the owner's 2026-09-17 authorization. P04-T02
+direct address policy and bounded DNS have [scoped Mac component evidence](evidence/p04-network-components-mac-20260928.json);
+no complete adapter step or phase is qualified by it. Unchecked steps and example
+acceptance commands below remain selected future work. Historical Go behavior
 informs fixtures and design choices, not a compatibility or correctness claim.
 
 Goal: turn attributable mentions into governed endpoint work, establish actual
@@ -119,7 +120,7 @@ Paths: `apps/bigbrotr/src/network/egress.rs`, `apps/bigbrotr/src/network/dns.rs`
 - [ ] **3. Apply TLS and redirect policy at the actual socket.** Validate chain and hostname with configured extra roots; reject a global verification bypass. Guard every HTTP redirect, cap at three, reject HTTPS downgrade and cross-origin credential forwarding. Distinguish selected IP, original name, port and handshake policy in reusable facts.
 - [ ] **4. Bound the complete transport lifecycle.** Apply aggregate 128/host route domain, endpoint 1/scope, hostname 4 connections and 2 starts/s burst 4 through the shared socket owner or reconciled Control permits; split hosts have explicit independent quotas, not an implied fleet allocator. Enforce actual process FD reserve, byte/frame/inflation limits and deadlines. Lowered budgets stop new admissions and drain existing work. Compression remains disabled unless bounded incremental decoding is actually implemented and exercised.
 - [ ] **5. Preserve protocol ownership and cancellation.** Expose a connection generation and request-local frame ordering to P03/P04 consumers. Bound all writer/read queues and cancellation joins; stale handles cannot close replacement subscriptions. A stalled application consumer differs from peer silence, and unknown frame attribution interrupts affected evidence conservatively.
-- [ ] **6. Exercise actual adversarial routes.** Mixed public/denied answers use only an allowed pinned IP; a second-answer rebinding, redirect to metadata IP, wrong SNI certificate, private port mismatch and proxy hostname escape all fail before unauthorized traffic. Capture proxy ATYP, DNS queries and socket destinations; mock dial-function success is insufficient.
+- [ ] **6. Exercise actual adversarial routes.** Mixed public/denied answers use only an allowed pinned IP; a second-answer rebinding, redirect to metadata IP, wrong SNI certificate, private port mismatch and proxy hostname escape all fail before unauthorized traffic. Capture proxy ATYP, DNS queries and socket destinations; mock dial-function success is insufficient. Include the bounded DNS codec's independent wire cases: unrelated SRV/additional records, negative RCODE with addresses, conflicting/cyclic CNAMEs across packets, exact eight-edge/64-address/frame limits, local-name refusal, family outcome attribution and peer-observed closure on cancellation.
 - [ ] **7. Run future p04-t02 with controlled DNS, CA, proxy and WS/HTTP servers.** Independent packet/server logs prove which endpoints were contacted and which were never contacted. Repeat budget lowering and cancellation while recording peak connections/FDs/bytes. Document fixture-only loopback rules, proxy enforcement limitations and operator diagnostics without publishing credentials.
 
 ## P04-T03 — Seed deterministic bootstrap and operator files

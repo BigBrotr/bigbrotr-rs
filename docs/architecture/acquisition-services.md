@@ -111,6 +111,59 @@ All websocket, HTTP, TLS, directory, Geo refresh and redirect requests go throug
 
 Use explicit `public`, `private` and overlay route policies rather than inherited global localhost XOR. Public route excludes loopback, private, link-local, carrier NAT, unspecified, multicast, broadcast and reserved address space. Private routes require operator-declared hostname/endpoint plus CIDR/port scope and are ineligible for public publication. Metadata/link-local addresses remain denied unless an exact private policy explicitly names them. The default has no private route. A fixture profile can allow only its loopback relay without exposing public crawling to private addresses.
 
+The initial direct address profile uses the IANA
+[IPv4](https://www.iana.org/assignments/iana-ipv4-special-registry/) and
+[IPv6](https://www.iana.org/assignments/iana-ipv6-special-registry/)
+special-purpose registries (2025-10-09 revisions), and the
+[allocated IPv6 global ranges](https://www.iana.org/assignments/ipv6-unicast-address-assignments/)
+(2025-10-10 revision), inspected on 2026-09-28. Public acquisition excludes all
+listed special-purpose prefixes, including special services marked globally
+reachable, plus multicast and unallocated IPv6 ranges. This conservative policy
+does not infer that a service/transition prefix is an ordinary relay destination.
+Mapped IPv4 is canonicalized before applying IPv4 policy; standardized NAT64,
+Teredo and 6to4 prefixes are excluded. Network-specific translation prefixes
+([RFC 6052](https://www.rfc-editor.org/rfc/rfc6052.html#section-3.4)) and transparent
+destination rewrites cannot be discovered from an address alone. Deployment
+qualification must exclude such routes to protected destinations at its egress
+boundary; the static classifier does not certify arbitrary downstream routing.
+Registry changes require an explicit
+profile/code review; the runtime does not download address policy automatically.
+Private rules match one complete normalized endpoint or one exact normalized
+ASCII hostname, a canonical CIDR without host bits and a nonzero port. A link-local
+exception additionally requires a single-address CIDR (/32 or /128). The same
+requirement covers known cloud service destinations: AWS's
+[fd00:ec2::/32 service range](https://docs.aws.amazon.com/vpc/latest/userguide/subnet-route-tables.html),
+Google's [fd20:ce::254 metadata endpoint](https://docs.cloud.google.com/compute/docs/metadata/querying-metadata),
+Alibaba's [100.100.100.200 metadata endpoint](https://www.alibabacloud.com/help/en/ecs/user-guide/view-instance-metadata/),
+and Azure's [168.63.129.16 platform address](https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16).
+Azure's virtual public address is also excluded from the public route. This finite
+profile does not identify an arbitrary metadata service placed behind another
+address; private-route operators must account for their actual infrastructure.
+Unspecified,
+multicast and limited-broadcast destinations are always refused. A private route
+has 1–256 rules and each resolution supplies at most 64 addresses before filtering
+and deduplication. An over-limit answer set is refused, not silently truncated.
+These are initial finite implementation limits, not measured capacity. Rules and
+identity alone confer no runtime grant, enrollment or permission to publish.
+
+The initial direct DNS stub uses a configured numeric recursive resolver over
+TCP, with no OS fallback, cache, hosts/search expansion or synthetic address
+results. `localhost`, `.invalid`, `.local` and loopback reverse zones require
+separate local/special-use handling and are refused before DNS, including CNAME
+targets; explicit private loopback IP fixtures remain supported. This avoids
+mislabeling local synthesis as an executed DNS observation, consistent with
+[special-use name handling](https://www.rfc-editor.org/rfc/rfc6761.html#section-6.3).
+One shared DNS exchange owner admits no waiter queue. It reserves 4 MiB before
+resolution, bounds each wire frame to 4096 bytes/one question/64 records, and
+returns at most 64 addresses across both families. The caller deadline includes
+all work; each TCP exchange has a two-second ceiling. Eight CNAME edges per
+family permit at most 18 total queries, with case-insensitive cycle detection
+across packets and no implicit SRV/DNAME/SVCB traversal. Only IN address records
+at the terminal answer name contribute results. Negative, unavailable and fatal
+malformed/limit outcomes remain distinct; success in one family cannot mask a
+fatal failure in the other. These are bounded initial choices to qualify against
+real recursive resolvers, not capacity or full transport claims.
+
 Tor/I2P/Lokinet suffixes select distinct configured routes. Missing adapters are configuration failures when enabled, not relay downtime. Never resolve overlay names through public DNS. Proxy-resolved overlay routes disclose that the worker cannot inspect the final remote IP; restrict permitted suffixes and delegate isolation to the route. A clearnet host sent through a proxy retains local resolved-IP checks and pinned address, unless an explicitly declared remote-resolving route supplies equivalent enforceable policy. An unavailable overlay does not consume the public route's entire worker budget.
 
 One websocket per `(endpoint, auth scope)` multiplexes live, backfill and probe subscriptions where possible. Sharing across different authorization identities is forbidden. Pooling separate processes is optional; a central scheduler still enforces endpoint/host connection and request tokens. Exact hostname, selected IP and registered-domain fairness are different budget keys: no shared-host TLS fact is inferred from a common apex. Public clients must not issue reverse DNS or geography queries for hidden-service endpoints.

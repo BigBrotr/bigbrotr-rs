@@ -1,0 +1,209 @@
+{
+  "format": "bigbrotr-network-component-evidence/1",
+  "status": "PASS_SCOPED_MAC_COMPONENTS",
+  "base_source": "8fc853e03d14f9eb8a165f7fb44581c6f3ee62f9",
+  "source_state": "Root-owned candidate over the base; exact modified/new product and fixture inputs hashed below. Candidate commit will bind unchanged bytes.",
+  "environment": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8"
+  },
+  "inputs_sha256": {
+    "Cargo.toml": "d88ebe605d3df3e4a8d163d1c4d5515fb7db999a0c28f5a7a34af5494c9781cd",
+    "Cargo.lock": "a2b31707c2590dbc6106071c679695bfa42aa7828b8c793df4616e1d88b1e3df",
+    "apps/bigbrotr/Cargo.toml": "7fb2499968e9e4bd8e176b25a2d7ef78b079c40f7b71fd2d186a776d03a43901",
+    "apps/bigbrotr/src/lib.rs": "9dfe3d2ebd7b1622bc03ee0a8498104e6087d9fe4aee1188b1a13c772f84c488",
+    "contracts/release/dependencies.json": "1cb491971d5be6d8d4c16e085bcb0884c4c68764c6df1d02cc6c95b514941013",
+    "apps/bigbrotr/src/network/address.rs": "dd071d040f77a7d18666a542926cef901836c17621bc69b38c3e5195623ab0fe",
+    "apps/bigbrotr/src/network/dns/response.rs": "05e3444f4b04c55457356314c76b0b65ca155bcaaab7c9109a04d1ba43a9a291",
+    "apps/bigbrotr/src/network/dns.rs": "def36573715b6e5444b76f3855f324afd9b1f3d19c334412e83bbeff188e108a",
+    "apps/bigbrotr/src/network/mod.rs": "37300438504ffecce92a45e6b06694bb564750e0267d5fbf8a2d18ec80727f45",
+    "apps/bigbrotr/src/network/policy.rs": "120bf5bea72db1f187856e77c8639cf1a832cb01b27878d89d29192b9288571d",
+    "apps/bigbrotr/tests/network_dns.rs": "92ed4822ea7454f9774184ccb610d0774872fa4e3e165d566d25ec5bb4d1a8e1",
+    "apps/bigbrotr/tests/network_dns_semantics.rs": "c64caa0cd11294ad91ef5004892d0b49368758ec823e592fd205b939ad459a34",
+    "apps/bigbrotr/tests/network_policy.rs": "9b159de0f0747353fbe6d44ed6ae8733b08a18257565860157f4f6f2d04e812c"
+  },
+  "tests": {
+    "network_policy": 9,
+    "network_dns": 9,
+    "network_dns_semantics": 14,
+    "failed": 0,
+    "ignored": 0
+  },
+  "checks": {
+    "tests": "cargo test --locked -p bigbrotr --test network_policy --test network_dns --test network_dns_semantics",
+    "clippy": "Selected library and all three network test targets, -D warnings; final alias correction rechecked with selected semantics target",
+    "dependency_policy": "cargo-deny 0.20.2: licenses, sources and advisories passed",
+    "native": "NOT_RUN; candidate native runner prepared separately"
+  },
+  "dependency_additions": [
+    {
+      "name": "combine",
+      "version": "4.6.8",
+      "checksum": "cfc320937d09e6de266b31b9afb480f197d7a861be86be7cb2ea7e5d1bfffc5e"
+    },
+    {
+      "name": "critical-section",
+      "version": "1.2.0",
+      "checksum": "790eea4361631c5e7d22598ecd5723ff611904e3344ce8720784c93e3d83d40b"
+    },
+    {
+      "name": "data-encoding",
+      "version": "2.11.1",
+      "checksum": "4583a4551df46e2792f82ceeac45e850d2e2d5debba0b91f102385cda5b11f06"
+    },
+    {
+      "name": "hickory-proto",
+      "version": "0.26.3",
+      "checksum": "12b92608f679a6fa515dd1d15c1ff89443026e391200a2c840c7afcba482893d"
+    },
+    {
+      "name": "ipnet",
+      "version": "2.12.2",
+      "checksum": "791930b43c0d5973160d90a8f3894509f2b273430f5c5c73b668636d0287c5c0"
+    },
+    {
+      "name": "jni",
+      "version": "0.22.4",
+      "checksum": "5efd9a482cf3a427f00d6b35f14332adc7902ce91efb778580e180ff90fa3498"
+    },
+    {
+      "name": "jni-macros",
+      "version": "0.22.4",
+      "checksum": "a00109accc170f0bdb141fed3e393c565b6f5e072365c3bd58f5b062591560a3"
+    },
+    {
+      "name": "jni-sys",
+      "version": "0.4.1",
+      "checksum": "c6377a88cb3910bee9b0fa88d4f42e1d2da8e79915598f65fb0c7ee14c878af2"
+    },
+    {
+      "name": "jni-sys-macros",
+      "version": "0.4.1",
+      "checksum": "38c0b942f458fe50cdac086d2f946512305e5631e720728f2a61aabcd47a6264"
+    },
+    {
+      "name": "portable-atomic",
+      "version": "1.15.0",
+      "checksum": "05c8b63e8d9609db387f0324918f81d68fe27748f084ef092fb35954d0539a85"
+    },
+    {
+      "name": "rustc_version",
+      "version": "0.4.1",
+      "checksum": "cfcb3a22ef46e85b45de6ee7e79d063319ebb6594faafcf1c225ea92ab6e9b92"
+    },
+    {
+      "name": "same-file",
+      "version": "1.0.6",
+      "checksum": "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502"
+    },
+    {
+      "name": "semver",
+      "version": "1.0.28",
+      "checksum": "8a7852d02fc848982e0c167ef163aaff9cd91dc640ba85e263cb1ce46fae51cd"
+    },
+    {
+      "name": "simd_cesu8",
+      "version": "1.2.0",
+      "checksum": "11031e251abf8611c80f460e19dbdeb54a66db918e49c65a7065b46ac7aec520"
+    },
+    {
+      "name": "simdutf8",
+      "version": "0.1.5",
+      "checksum": "e3a9fe34e3e7a50316060351f37187a3f546bce95496156754b601a5fa71b76e"
+    },
+    {
+      "name": "tracing",
+      "version": "0.1.44",
+      "checksum": "63e71662fa4b2a2c3a26f570f037eb95bb1f85397f3cd8076caed2f026a6d100"
+    },
+    {
+      "name": "tracing-core",
+      "version": "0.1.36",
+      "checksum": "db97caf9d906fbde555dd62fa95ddba9eecfd14cb388e4f491a66d74cd5fb79a"
+    },
+    {
+      "name": "walkdir",
+      "version": "2.5.0",
+      "checksum": "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b"
+    },
+    {
+      "name": "winapi-util",
+      "version": "0.1.11",
+      "checksum": "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
+    }
+  ],
+  "evidence": {
+    ".research/implementation/network-local-20260928/tests-final.log": {
+      "sha256": "22b6b25fc6808e4385ecb343cb0f19d23815ed06f89967f9c8aaca91a04eb5b7",
+      "bytes": 3173
+    },
+    ".research/implementation/network-local-20260928/clippy.log": {
+      "sha256": "288b0235f08bd0f938a8f83819bee63542ec072ecfd104290e4f8bdffd5566e1",
+      "bytes": 745
+    },
+    ".research/implementation/network-local-20260928/clippy-final.log": {
+      "sha256": "fe58fc73eb4b33e6c77955d18e2431c8e587ccef8d156989141b8e70bc16fc7c",
+      "bytes": 175
+    },
+    ".research/implementation/network-local-20260928/dependency-policy.log": {
+      "sha256": "245deecd3483cc5322ad2199ecc5c9421e832e3f1e6d2f8419170f3c74bccf46",
+      "bytes": 39
+    },
+    ".research/implementation/network-local-20260928/metadata-red.log": {
+      "sha256": "3b95b226c630155763aa45835642d83fa8ff595cebf4fbae9c7166072f368fb0",
+      "bytes": 1151
+    },
+    ".research/implementation/network-local-20260928/dns-semantics-red.log": {
+      "sha256": "64d1dd1e94f7de24898a9ec89c8bc72db66ebfbc27c87d71a4f147d846e08868",
+      "bytes": 3693
+    },
+    ".research/implementation/network-local-20260928/dns-header-negative-red.log": {
+      "sha256": "7d5964af68549e1721f6de9f9e7147b800ff92106d3d0afd90a174725651c885",
+      "bytes": 2181
+    },
+    ".research/implementation/network-local-20260928/dns-negative-alias-red.log": {
+      "sha256": "c53957c7371dfd707ef4c6d063395125c38f2e749c204a9360c3a24cc317cbb4",
+      "bytes": 1076
+    },
+    ".research/implementation/network-local-20260928/dns-negative-alias-green.log": {
+      "sha256": "477fd4184623b0ccf53a6e3830c5e10155ca89ac2f44441aa7998d3b29e06c59",
+      "bytes": 1349
+    },
+    ".research/implementation/network-local-20260928/rustc.txt": {
+      "sha256": "e2211d4c0760a2a3b03eab88e42f8848952b7aa2ed649277a8fdbf3ce1838fd4",
+      "bytes": 192
+    },
+    ".research/implementation/network-local-20260928/codec-features.txt": {
+      "sha256": "afc6c0c03c8f65fc8c720c1786bdc46cc4b09a24181cc97e86a7f5b3e462f27b",
+      "bytes": 14771
+    },
+    ".research/implementation/network-local-20260928/linux-graph.txt": {
+      "sha256": "554c2b3dd924be140892811c1c26270e7d0f9927ed8c3c85ee16342677d8fa8d",
+      "bytes": 20198
+    }
+  },
+  "review": {
+    "root": "Complete new policy/address/DNS modules, tests, dependency delta and relevant owning contracts; no production acquisition caller yet.",
+    "independent": "Read-only AI review found metadata broad-rule acceptance and six DNS semantics issues; seven original real-TCP regressions failed. Proto-only correction removed high-level resolver/cache/driver; second review found negative CNAME validation bypass, reproduced then fixed. Original source and failures preserved.",
+    "structural_decision": "Keep finite declarative IP registries. Use a small explicit CNAME chain with maintained wire codec, instead of interposing corrections on a general resolver. No new crate/framework/persistent state."
+  },
+  "bounds": {
+    "dns_frame_bytes": 4096,
+    "records_per_frame": 64,
+    "addresses_per_lookup": 64,
+    "cname_edges_per_family": 8,
+    "maximum_queries": 18,
+    "reserved_bytes": 4194304,
+    "simultaneous_dns_sockets_per_owner": 1,
+    "exchange_seconds": 2,
+    "meaning": "Finite configured implementation limits, not measured capacity or RSS guarantee."
+  },
+  "not_qualified": [
+    "Native Linux (separate exact-revision run pending)",
+    "Real recursive DNS server interoperability",
+    "Pinned destination connection/TLS/WebSocket",
+    "Current Control grants/enrollment/bans and shared transport quotas",
+    "Overlay adapters, redirects, mixed/aged load, fuzzing",
+    "Installed first-event/M1/Compose/release/native Linux arm64"
+  ]
+}

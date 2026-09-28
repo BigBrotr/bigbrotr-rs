@@ -27226,5 +27226,23 @@
       }
     ],
     "cli_state": "Scoped installed CLI consumer qualified; remaining selected acceptance open"
+  },
+  "implementation_network_20260928": {
+    "owner": "root; Mac sole editor, read-only independent review",
+    "base_source": "8fc853e03d14f9eb8a165f7fb44581c6f3ee62f9",
+    "status": "implementation in progress; no native acquisition qualification",
+    "local_tests": ".research/implementation/network-local-20260928",
+    "upstream_audit": ".research/implementation/network-dependency-audit",
+    "audit_identities": [
+      "download-inventory.json",
+      "probe-inventory.json"
+    ],
+    "preserve": "Original REDs, initial probe setup failure, exact upstream archives/source, API probe sources/results and current test logs. Probe binary retained outside shared build cache.",
+    "build_cache": ".research/targets/product; normal Cargo cache, inherited by the isolated API probe; no manual cache deletion",
+    "executed": "Mac 32 component tests (9 policy, 9 DNS lifecycle, 14 DNS semantics) passed; Clippy and dependency policy passed. Exact inputs/logs in linked report.",
+    "review_open": "Original findings reproduced and corrected; native/recursive interoperability and actual guarded transport consumers remain unqualified.",
+    "remote": "No new remote resources or mutation; 2026-09-28T00:32:25Z read-only census 75675406336 bytes free and no active BigBrotr.",
+    "evidence": "docs/implementation/evidence/p04-network-components-mac-20260928.json",
+    "native_recipe": "experiments/network-transport/lab.py; prepared, NOT_RUN. Fresh exact-Git directory, stopped649 cache copy only; original caches and artifacts preserved."
   }
 }

@@ -244,6 +244,17 @@
       ],
       "license": "MIT",
       "source": "https://docs.rs/hyper-util/0.1.20/hyper_util/"
+    },
+    {
+      "name": "hickory-proto",
+      "version": "0.26.3",
+      "purpose": "Bounded DNS wire codec under explicit caller-owned TCP, response binding and finite CNAME traversal; no general resolver or background transport",
+      "default_features": false,
+      "features": [
+        "std"
+      ],
+      "license": "MIT OR Apache-2.0",
+      "source": "https://github.com/hickory-dns/hickory-dns/tree/bd37cafbdd86112a6da32878f8c9bab22e14377e/crates/proto"
     }
   ],
   "lock": "Cargo.lock",

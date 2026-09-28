@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+"""Trusted exact-Git Tux runner; copies one verified stopped compiler cache only."""
+import datetime
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import secrets
+import shutil
+import subprocess
+import sys
+import tarfile
+
+sys.dont_write_bytecode = True
+revision, tree = sys.argv[1:]
+assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
+base = Path('/home/tux/bigbrotr-implementation-20260917')
+root = base / 'runs' / ('network-' + revision[:7])
+source = root / 'source'
+cache_root = base / 'runs/export-runtime-6499656'
+image = 'sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d'
+label = 'org.bigbrotr.network-transport'
+
+
+def command(*args):
+    return subprocess.check_output(args, text=True, timeout=120).strip()
+
+
+def sha(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def write(path, value):
+    path.write_text(json.dumps(value, indent=2) + '\n')
+
+
+def containers():
+    return json.loads(command('docker', 'inspect', *command('docker', 'ps', '-aq').split()))
+
+
+def projection(item):
+    return {key: item[key] for key in ['Id', 'Name', 'Image', 'State', 'Mounts']}
+
+
+assert command('git', '-C', str(source), 'rev-parse', 'HEAD') == revision
+assert command('git', '-C', str(source), 'rev-parse', 'HEAD^{tree}') == tree
+assert not command('git', '-C', str(source), 'status', '--porcelain', '--untracked-files=all')
+assert Path(__file__).resolve() == source / 'experiments/network-transport/lab.py'
+assert not (root / 'resources.json').exists()
+prior = containers()
+old = json.loads((cache_root / 'resources.json').read_text())
+assert old['source'] == '649965662afe6c72ec5f6fe421af4ea34caabda8'
+assert old['owner'] == '4ff815a30b3a667d92717a648436fe2d' and old['state'] == 'stopped-retained'
+for entry in old['containers']:
+    item = next(c for c in prior if c['Id'] == entry['id'])
+    assert item['Config']['Labels'][old['owner_label']] == old['owner']
+    assert item['State']['Status'] == 'exited' and item['State']['Pid'] == 0
+for item in prior:
+    if item['State']['Running']:
+        assert 'bigbrotr' not in item['Name']
+        assert not any(Path(m['Source']).is_relative_to(cache_root) for m in item['Mounts'])
+preflight = dict(observed_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                 containers=[projection(c) for c in prior],
+                 directories=sorted(p.name for p in (base / 'runs').iterdir()),
+                 ports=command('ss', '-lntup'), processes=command('ps', '-eo', 'pid,ppid,stat,comm'),
+                 volumes=command('docker', 'volume', 'ls'), networks=command('docker', 'network', 'ls'),
+                 architecture=command('uname', '-m'), free_bytes=shutil.disk_usage(base).free,
+                 required_free_bytes=12 * 1024**3)
+write(root / 'preflight.json', preflight)
+assert preflight['architecture'] == 'x86_64' and preflight['free_bytes'] > preflight['required_free_bytes']
+# This profile creates no archive/export; its capacity prerequisite is compiler
+# headroom, not the separate product export completion reserve of 64 GiB.
+owner = secrets.token_hex(16)
+state = dict(source=revision, tree=tree, owner=owner, owner_label=label,
+             root=str(root), state='preparing', containers=[], image=image,
+             cache_origin=str(cache_root), started_at=preflight['observed_at'])
+write(root / 'resources.json', state)
+out = root / 'out'
+build = out / 'build'
+build.mkdir(parents=True)
+export = build / 'source'
+export.mkdir()
+archive = build / 'source.tar'
+command('git', '-C', str(source), 'archive', '--format=tar', '--output', str(archive), revision)
+with tarfile.open(archive) as bundle:
+    assert all(not Path(e.name).is_absolute() and '..' not in Path(e.name).parts
+               and (e.isfile() or e.isdir()) for e in bundle.getmembers())
+    bundle.extractall(export, filter='data')
+write(build / 'source-manifest.json', dict(revision=revision, tree=tree, archive_sha256=sha(archive),
+      files_sha256={str(p.relative_to(export)): sha(p) for p in sorted(export.rglob('*')) if p.is_file()}))
+for name in ['target', 'cargo-home']:
+    original = cache_root / 'out/build' / name
+    assert original.is_dir() and not original.is_symlink()
+    if name == 'cargo-home':
+        assert not any((original / p).exists() for p in ['credentials', 'credentials.toml', 'config', 'config.toml'])
+    subprocess.run(['cp', '-a', '--reflink=auto', str(original), str(build / name)], check=True, timeout=120)
+
+
+def run_container(name, network, argv, seconds):
+    ident = command('docker', 'create', '--init', '--name', 'bigbrotr-network-' + revision[:7] + '-' + name,
+                    '--label', label + '=' + owner, '--cpus', '2', '--memory', '6g', '--memory-swap', '6g',
+                    '--pids-limit', '512', '--network', network, '--read-only', '--cap-drop', 'ALL',
+                    '--security-opt', 'no-new-privileges', '--user', f'{os.getuid()}:{os.getgid()}',
+                    '--tmpfs', '/tmp:rw,exec,nosuid,nodev,size=512m',
+                    '--mount', f'type=bind,src={out},dst=/out',
+                    '--mount', f'type=bind,src={export},dst=/out/build/source,readonly', image,
+                    'env', '-i', 'PATH=/usr/local/cargo/bin:/usr/local/bin:/usr/bin:/bin',
+                    'RUSTUP_HOME=/usr/local/rustup', 'CARGO_HOME=/out/build/cargo-home', *argv)
+    state['containers'].append(dict(name=name, id=ident))
+    write(root / 'resources.json', state)
+    command('docker', 'start', ident)
+    try:
+        subprocess.run(['docker', 'wait', ident], check=True, timeout=seconds, stdout=subprocess.DEVNULL)
+    finally:
+        current = json.loads(command('docker', 'inspect', ident))[0]
+        assert current['Config']['Labels'][label] == owner
+        if current['State']['Running']:
+            command('docker', 'kill', ident)
+            current = json.loads(command('docker', 'inspect', ident))[0]
+        (root / (name + '.log')).write_text(command('docker', 'logs', ident) + '\n')
+        write(root / (name + '-terminal.json'), projection(current))
+    assert current['State']['Status'] == 'exited' and current['State']['Pid'] == 0
+    assert current['State']['ExitCode'] == 0 and not current['State']['OOMKilled']
+
+
+try:
+    run_container('fetch', 'bridge', ['cargo', 'fetch', '--locked', '--target', 'x86_64-unknown-linux-gnu',
+                  '--manifest-path', '/out/build/source/Cargo.toml'], 180)
+    assert shutil.disk_usage(base).free > 8 * 1024**3
+    state['state'] = 'running'
+    write(root / 'resources.json', state)
+    run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/network-transport/native.py'], 1860)
+    qualification = json.loads((out / 'qualification.json').read_text())
+    assert qualification['source'] == revision and qualification['status'] == 'PASS_SCOPED_NETWORK_COMPONENTS'
+    state['qualification'] = qualification['status']
+finally:
+    after = {c['Id']: projection(c) for c in containers()}
+    assert all(after[c['Id']] == projection(c) for c in prior)
+    state.update(state='stopped-retained', free_bytes_after=shutil.disk_usage(base).free,
+                 finished_at=datetime.datetime.now(datetime.timezone.utc).isoformat())
+    write(root / 'resources.json', state)
+print(json.dumps(state))

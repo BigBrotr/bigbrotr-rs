@@ -12,22 +12,20 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Main HEAD is 649965662afe6c72ec5f6fe421af4ea34caabda8 (unpublished native fixture
-candidate after product ad5e9e6); last verified origin/main is b4b48841be48df31a06a1b254832673f85c30407.
-Root is sole writer/integrator. Root-owned dirty work: native CLI evidence, user/product/task documentation,
-this checkpoint and inventory. Fixture/product sources remain committed and unchanged.
-Primary source was clean at transfer; no unexpected contributor changes.
-Read-only AI completed the new fixture review and reread both corrections; no
-further scoped blocker found, no edits/SSH/tests. Cursor assertions qualify only
-the fields actually checked, not every envelope binding.
-No product change after ad5e9e6 and no migration change.
+Verified HEAD and origin/main are8fc853e03d14f9eb8a165f7fb44581c6f3ee62f9;
+repository last verified PRIVATE. Product ad5e9e6, native candidate 6499656
+and evidence 8fc853e are published without history rewrite. Root is sole writer.
+Current dirty files are root-owned: Cargo manifests/lock, lib.rs, new network
+modules/tests, acquisition contract, dependency selections and this checkpoint.
+No migration changes or active native experiment. Read-only network/DNS reviews
+completed; new DNS findings below remain open before consumer integration.
 
-Active IDs: P08-T03 Step3 / P08-T04 Step3, thin P09-T09 Step2 and only operational
-P06-T03 Steps1/3 cursor prerequisites. P08-T02 reusable CLI session login/logout is
-the direct prerequisite for P08-T03 discovery. No task, phase, M1 or product
-completion. Next visible deliverable is actual installed CLI discovery with login,
-pagination, restart, current grants and logout. No adjacent scientific subsystem
-is needed for this operational consumer.
+Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
+with the explicit remaining gates below. No complete task/phase/M1/product claim.
+Active selection: P04-T02 guarded network transport for P03-T02 socket admission and
+P01-T09 Step2 first-event integration. Read complete owning contracts and current
+endpoint/authority/budget boundaries before code. Existing P08/P09/P06 work retains
+its narrower evidence; no scientific pagination subsystem prerequisite is added.
 
 ## CLI implementation and local evidence
 
@@ -170,19 +168,49 @@ private-panel-no-revoke and detached ed2a93b untouched. No release secrets neede
 
 ## Next bounded action and remaining gates
 
-Complete native report/documentation checks, review their full diff and push the
-two verified candidates plus evidence commit to private origin/main. Then advance
-M1's missing production acquisition path: P04-T02 Steps1–5 guarded transport is the
-concrete first prerequisite of P03-T02 real socket admission and P01-T09 Step 2.
-Read the complete linked egress/network contracts and current endpoint, budget,
-authority owners before choosing the first direct-route responsibility. Real
-DNS/TLS/WS fixtures must observe destinations and cancellation; no unguarded default
-connector or ready stub. Overlay adapters remain selected later acceptance, not
-silently removed. Existing signed archive/read/export adapters provide consumers;
-no need to finish analytics, every relay service or full historical synchronization
-before the first controlled event. This is task selection, not implemented network
-behavior. Only P01/P03/P04 task sections have been inspected for this next boundary;
-complete owning contracts/upstream sources remain to be read before editing.
+P04-T02 direct address policy and bounded TCP DNS are being implemented over
+8fc853e. Static public/private policy preserves full endpoints, canonicalizes
+mapped IPv4, checks all answers and exact private CIDR/port scopes. Known cloud
+metadata requires singleton exceptions; a real failing broad-ULA regression was
+fixed. NAT64 contract now distinguishes standardized prefixes from unobservable
+operator-specific translation; deployment egress qualification remains necessary.
+
+[Mac network report](evidence/p04-network-components-mac-20260928.json) hashes the
+current product/test/lock inputs: 9 policy + 9 DNS lifecycle + 14 DNS semantics
+cases passed, zero failed/ignored, with real loopback TCP peers and independent
+wire bytes. Clippy and cargo-deny 0.20.2 license/source/advisory checks pass.
+Original metadata and DNS REDs remain under ignored
+.research/implementation/network-local-20260928. No installed transport claim.
+
+The six independent DNS findings were reproduced (seven failing tests). Replace
+the high-level resolver with hickory-proto 0.26.3 std only and the same owned Tokio
+TCP exchange. Explicit case-insensitive chains count eight edges across packets;
+only terminal IN A/AAAA answer records contribute, with fatal malformed/limit
+outcomes. A later negative-CNAME bypass was reproduced then corrected before the
+final 32-test result. The old candidate and exact upstream sources/API probe stay
+inventoried; the probe never qualifies the product. No new crate, cache, task,
+provider framework or persistent format. Root reviewed complete modules/tests and
+contract/dependency changes; read-only AI review excludes future integration.
+
+Next bounded action: review/check and commit this candidate, transfer via Git,
+then execute experiments/network-transport/lab.py on isolated Tux. Native runner
+copies only verified stopped649 compiler caches, uses locked fetch then offline
+network-none builds/tests, hashes retained test ELFs and exact sources. No archive
+or DB is created: 12 GiB compiler headroom applies, not the full export laboratory's
+72 GiB prerequisite. Last census 75,674,923,008 bytes free; recheck at launch.
+No product transport socket, TLS/WS or live Control integration exists yet.
+
+Next useful deliverable remains P04-T02 Steps 1–5 -> P03-T02 real socket admission
+-> P01-T09 Step 2 first signed-event integration. Consume existing durable archive,
+read and export boundaries; analytics/all relay services are not prerequisites.
+Read complete owning configuration/serve/authority callers before integrating.
+Overlay routes remain selected later acceptance, never silently removed.
+
+Latest read-only Tux census at 00:32:25 UTC: 75,675,406,336 bytes free, eight
+unrelated running containers, no BigBrotr build/experiment. Below the existing
+72 GiB full-lab preflight: recheck and retire only verified obsolete compiler
+caches or deliberately reuse a current cache before any large native allocation.
+No remote mutation or new cleanup in this boundary. Protect prior resources above.
 
 Further discovery gates: expiry/revocation during socket delivery, actual
 backdated/tied admissions, resource exhaustion, aged/mixed workloads; broader job

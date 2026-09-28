@@ -254,6 +254,48 @@ this does not qualify the future pooled service or other native targets.
 
 ## HTTP, WebSocket and RPC limits
 
+P04-T02 selects `hickory-proto` 0.26.3 with only `std` for the bounded
+DNS wire codec, from upstream commit `bd37cafbdd86112a6da32878f8c9bab22e14377e`.
+Tokio 1.53.1 `lookup_host` delegates to blocking host resolution; dropping its
+caller cannot bound completion of that work. Hickory's default resolver provider
+also leaves shared background drivers. A first custom-provider candidate removed
+those drivers, but actual independent TCP fixtures then reproduced unrelated SRV
+redirection, NXDOMAIN address success, CNAME/address conflicts, masked chain
+exhaustion, synthetic localhost attribution and empty `Answered` outcomes in the
+high-level resolver. The retained RED logs and candidate source are inventoried
+under `implementation_network_20260928`. The product therefore uses the codec
+without `hickory-resolver`, `hickory-net`, their cache or provider abstractions;
+this is a concrete simplification based on observed behavior, not a second stack.
+
+The [exact decoder](https://github.com/hickory-dns/hickory-dns/blob/bd37cafbdd86112a6da32878f8c9bab22e14377e/crates/proto/src/op/message.rs)
+allocates the declared question count before finding a truncated body. Preflight
+12–4096 bytes, one question and at most 64 total records before decoding. Require
+complete-frame consumption and exact response binding, including the raw reserved
+header bit discarded upstream. Only terminal IN A/AAAA answer records are address
+results. Explicit CNAME traversal is case insensitive, order independent and
+bounded to eight edges per family across packets; reject cycles, conflicting
+aliases and CNAME/address coexistence. SRV/DNAME/SVCB and additional-section
+records cannot redirect acquisition. NXDOMAIN stays negative, contradictory
+address data and unknown error codes are refused, server failure/refusal stays
+unavailable. No result/cache/hosts/search expansion is supplied implicitly.
+
+The caller owns each Tokio TCP exchange and one shared connection reservation
+through actual socket drop. A/AAAA are sequential, at most nine exchanges each,
+two seconds per exchange under one shrinking caller deadline. Fatal name/encoding/
+limit failures stop the whole lookup. The first implementation reserves 4 MiB
+before work; this is a conservative budget, not a measured RSS bound. It starts
+with TCP to one explicitly trusted numeric recursive resolver, never a discovered
+relay as DNS infrastructure. [RFC 7766](https://www.rfc-editor.org/rfc/rfc7766.html#section-5)
+supports TCP queries. Connection reuse remains a measured optimization gate;
+this serialized owner deliberately pays a connection setup per query.
+
+A separate ignored inline UDP/TCP API probe informed the discarded provider
+candidate; it does not qualify the selected product adapter. Actual installed
+resolver compatibility, malformed input, cancellation and shared-budget behavior
+remain practical acceptance, with native execution recorded separately from Mac
+library fixtures. No persistent format or applied migration changes. The narrow
+codec does not add an executor, runtime cache or host resolver service.
+
 Apply hard request-body accounting at the transport/body layer, including custom
 extractors and decompressed bodies. Axum's extractor-local default limit does not
 cover every body consumer. Explicitly cap WebSocket messages, frames, read/write
