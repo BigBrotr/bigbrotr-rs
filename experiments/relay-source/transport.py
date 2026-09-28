@@ -20,6 +20,7 @@ sys.dont_write_bytecode = True
 SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE / 'experiments/control-migrations'))
 import lab
+from fault_cases import Process
 sys.path.insert(0, str(SOURCE / 'experiments/network-transport'))
 from inventory import projection
 spec = importlib.util.spec_from_file_location('bootstrap_oracle', SOURCE / 'experiments/ingest-bootstrap/oracle.py')
@@ -28,6 +29,9 @@ sys.modules['bootstrap_oracle'] = m
 spec.loader.exec_module(m)
 from oracle import complete_source
 
+assert len(sys.argv) in (2, 3)
+cleanup = len(sys.argv) == 3 and sys.argv[2] == '--cleanup'
+assert len(sys.argv) == 2 or cleanup
 root = Path(sys.argv[1]).resolve(strict=True)
 assert SOURCE == root / 'source'
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
@@ -43,16 +47,17 @@ pg = lab.load(original)
 assert pg['state'] == 'stopped-retained' and pg['owner'] == '5e69b0f060b1607c25230d1dbd3e5608'
 original_report = (original / 'source-result.json').read_bytes()
 assert json.loads(original_report)['status'] == 'PASS_SCOPED_RELAY_SOURCE_FIRST_WAVE'
-output = root / 'transport'
+phase = 'cleanup' if cleanup else 'transport'
+output = root / phase
 output.mkdir(mode=0o700)
-owner, label = secrets.token_hex(16), 'org.bigbrotr.source-transport'
-client = 'bigbrotr-source-transport-' + revision[:7]
-report = dict(format='bigbrotr-source-transport-native/1', source=revision, build=built,
+owner, label = secrets.token_hex(16), 'org.bigbrotr.source-' + phase
+client = 'bigbrotr-source-' + phase + '-' + revision[:7]
+report = dict(format='bigbrotr-source-transport-native/1', phase=phase, source=revision, build=built,
     owner=owner, label=label, status='RUNNING', client=None, postgres=pg['postgres'],
     postgres_owner=pg['owner'], cases=[], databases=[],
     preservation_scope=['bb_source_template', 'bb_source_pass', 'source-result.json'],
     evidence_limits=['normal release checks changed tables; its previously qualified field semantics are not requalified here'],
-    not_run=['delayed cleanup reply', 'concurrent changes and lock orders',
+    not_run=(['deadline-check negative control'] if cleanup else ['delayed cleanup reply']) + ['concurrent changes and lock orders',
              'installed Sync', 'WebSocket/signed admission/M1', 'load/aged state', 'arm64/release'])
 
 
@@ -77,6 +82,29 @@ def rows(database):
         f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     return json.loads(lab.sql(pg, database,
         'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(parts) + ') t'))
+
+
+def verify_final(name, database, final):
+    require(len(final['relay_endpoints']) == 1 and
+        final['relay_endpoints'][0]['url_bytes'] == '\\x' + b'ws://127.0.0.1:7447/private'.hex(), 'exact-endpoint')
+    require(len(final['relay_enrollments']) == 2 and
+        all(r['enabled'] and r['generation'] == 1 for r in final['relay_enrollments']), 'two-exact-enrollments')
+    require(len(final['network_routes']) == 1 and final['network_routes'][0]['route_bytes'] == '\\x0104207f000001', 'exact-private-route')
+    access = final['relay_access_contexts']
+    require(len(access) == 2 and {r['ordinal'] for r in access} == {1, 2} and
+        all(r['access_class'] == 'public' and r['dictionary_kind'] == 4 and
+            r['allocation_domain'] == '\\x' + '40'*16 for r in access), 'exact-visibility-refs')
+    dumped = lab.docker('exec', client, '/build/ingest_bootstrap_probe', 'dump', '/lab/' + name)
+    (output / (name + '-native.json')).write_text(dumped.stdout)
+    actual = json.loads(dumped.stdout)['rows']
+    dataset = bytes.fromhex(final['datasets'][0]['dataset_id'][2:])
+    expected_rows, inputs, _ = complete_source(dataset, False)
+    require([(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in actual] == expected_rows,
+        'independent-complete-native-bytes')
+    originals = sorted((output / name / 'producer-inputs-v1').glob('*.cbor'))
+    require(len(originals) == 1 and originals[0].read_bytes() == inputs[1], 'exact-original-input')
+    require(lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0', 'remaining-Control-backends')
+    lab.write_json(output / (name + '-final.json'), final)
 
 
 def run_case(name, mode, expected):
@@ -111,30 +139,133 @@ def run_case(name, mode, expected):
     # A normal release alone changes the owner and role rows after observation.
     changed = [name for name in final if final[name] != latest[name]]
     require(changed == [] if name == 'owner_loss' else set(changed) == {'owner_epochs', 'role_instances'}, 'terminal-effects')
-    require(len(final['relay_endpoints']) == 1 and
-        final['relay_endpoints'][0]['url_bytes'] == '\\x' + b'ws://127.0.0.1:7447/private'.hex(), 'exact-endpoint')
-    require(len(final['relay_enrollments']) == 2 and
-        all(r['enabled'] and r['generation'] == 1 for r in final['relay_enrollments']), 'two-exact-enrollments')
-    require(len(final['network_routes']) == 1 and final['network_routes'][0]['route_bytes'] == '\\x0104207f000001', 'exact-private-route')
-    access = final['relay_access_contexts']
-    require(len(access) == 2 and {r['ordinal'] for r in access} == {1, 2} and
-        all(r['access_class'] == 'public' and r['dictionary_kind'] == 4 and
-            r['allocation_domain'] == '\\x' + '40'*16 for r in access), 'exact-visibility-refs')
-    dumped = lab.docker('exec', client, '/build/ingest_bootstrap_probe', 'dump', '/lab/' + name)
-    (output / (name + '-native.json')).write_text(dumped.stdout)
-    actual = json.loads(dumped.stdout)['rows']
-    dataset = bytes.fromhex(final['datasets'][0]['dataset_id'][2:])
-    expected_rows, inputs, _ = complete_source(dataset, False)
-    require([(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in actual] == expected_rows,
-        'independent-complete-native-bytes')
-    originals = sorted((output / name / 'producer-inputs-v1').glob('*.cbor'))
-    require(len(originals) == 1 and originals[0].read_bytes() == inputs[1], 'exact-original-input')
-    require(lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0', 'remaining-Control-backends')
-    lab.write_json(output / (name + '-final.json'), final)
+    verify_final(name, database, final)
     report['cases'].append(dict(name=name, status='PASS', database=database,
         transcript=kinds, result=expected, full_native_bytes=True, complete_control_tables=64))
     save()
 
+
+def next_event(process, wanted, seconds=10):
+    end = time.monotonic() + seconds
+    with process.condition:
+        while True:
+            require(not process.overflow, 'output-overflow')
+            newline = process.stdout.find(b'\n', process.offset)
+            if newline >= 0:
+                value = json.loads(bytes(process.stdout[process.offset:newline]))
+                process.offset = newline + 1
+                require(value['event'] == wanted, 'unexpected-event:' + value['event'])
+                return value
+            require(time.monotonic() < end and
+                (process.process.poll() is None or process.threads[0].is_alive()), 'missing-event:' + wanted)
+            process.condition.wait(.01)
+
+
+def rollback_status(proxy, wanted):
+    # Each round uses one bounded proxy control. Never exhaust its32-command cap.
+    for _ in range(5):
+        proxy.send('status')
+        state = next_event(proxy, 'status')
+        if state['rollback_ready'] == wanted:
+            return state
+        time.sleep(.01)
+    raise RuntimeError('rollback-ready-not-forwarded')
+
+
+def run_cleanup_case(name, target):
+    database = 'bb_cleanup_' + revision[:7] + '_' + name
+    report['active_case'] = name
+    save()
+    lab.sql(pg, 'postgres', f'CREATE DATABASE {database} OWNER bigbrotr_migrator TEMPLATE bb_source_template')
+    report['databases'].append(database)
+    require(rows(database) == template_before, 'clone-state')
+    proxy = Process(['docker', 'exec', '-i', client, 'python3', '-B',
+        '/source/experiments/relay-source/rollback_proxy.py', '--upstream-port', '5432',
+        '--rollback-number', str(target)], input_pipe=True)
+    processes.append((name + '-proxy', proxy))
+    proxy_ready = next_event(proxy, 'ready')
+    require(proxy_ready['proxy_sha256'] == sha((SOURCE/'experiments/control-migrations/fault_proxy.py').read_bytes()), 'proxy-base-source')
+    process = Process(['docker', 'exec', client, '/build/ingest_bootstrap_probe',
+        'source-transport-cleanup-' + name, database, '/run/secrets/application', '/lab/' + name], limit=8*1024**2)
+    processes.append((name + '-probe', process))
+    next_event(process, 'initialized')
+    public = next_event(process, 'source-transport')
+    require(public['ordinal'] == 1 and public['result'] == 'refused-public', 'public-before-cleanup')
+    ready = next_event(process, 'cleanup-ready')
+    before = rows(database)
+    require(before == {n:json.loads(v) for n,v in ready['state']['control_tables']}, 'ready-state')
+    proxy.send('status')
+    initial = next_event(proxy, 'status')
+    baseline = initial['rollback_requests']
+    require(baseline == initial['rollback_completions'] == initial['rollback_released'] == initial['rollback_ready'], 'setup-rollback-incomplete')
+    require(not target or target == baseline + 1, 'wrong-target-rollback')
+    identity = next(r for r in before['owner_epochs'] if r['role'] == 'control')
+    require(identity['control_backend_pid'] == ready['pid'] and identity['state'] == 'active', 'actual-Control-identity')
+    if name == 'expired':
+        # Explicit privileged injection of a shorter real lease after setup.
+        # The actual product backend retains all production guards.
+        lab.sql(pg, database, "BEGIN; SET LOCAL session_replication_role=replica; "
+            "UPDATE control.owner_epochs SET lease_expires_at_us="
+            "(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint+1500000 WHERE role='control' AND epoch=1; COMMIT;")
+        injected = rows(database)
+        require([n for n in before if before[n] != injected[n]] == ['owner_epochs'], 'lease-injection-effects')
+        changed = next(r for r in injected['owner_epochs'] if r['role'] == 'control')
+        require(changed == dict(identity, xmin=changed['xmin'], lease_expires_at_us=changed['lease_expires_at_us']), 'lease-injection-fields')
+        before = injected
+    started = time.monotonic()
+    (output / (name + '.go')).touch(exist_ok=False)
+    value = next_event(process, 'cleanup-value')
+    peer = next_event(process, 'cleanup-peer-closed')
+    require(value['elapsed_us'] < 500000 and peer['elapsed_us'] < 500000, 'late-socket-setup')
+    held = released = expiry = observation = forwarded = None
+    if target:
+        held = next_event(proxy, 'held')
+        require((held['rollback_requests'], held['rollback_completions'], held['rollback_released'], held['rollback_ready']) == (target,target,target-1,target-1), 'wrong-held-phase')
+        # C arrived from the real engine; its transaction ended before forwarding.
+        observation = json.loads(lab.sql(pg, database, f"SELECT json_build_object('pid',pid,'backend_start',backend_start::text,'state',state,'xact_start',xact_start) FROM pg_stat_activity WHERE pid={ready['pid']}"))
+        require(observation and observation['backend_start']==ready['backend_start'] and observation['state']=='idle' and observation['xact_start'] is None, 'server-rollback-not-complete')
+        if name == 'expired':
+            end = time.monotonic() + 3
+            while True:
+                expiry = int(lab.sql(pg,database,"SELECT lease_expires_at_us-(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint FROM control.owner_epochs WHERE role='control' AND epoch=1"))
+                if expiry <= 0:
+                    break
+                require(time.monotonic() < end, 'owner-expiry-not-observed')
+                time.sleep(.03)
+        if name != 'timeout':
+            proxy.send('release')
+            released = next_event(proxy, 'released')
+            forwarded = rollback_status(proxy, target)
+            if name == 'ready':
+                require(time.monotonic()-started < .5, 'rollback-not-ready-before-deadline')
+    finished = next_event(process, 'cleanup-finished')
+    require(finished['disposed'] and {n:json.loads(v) for n,v in finished['state']['control_tables']} == before, 'cleanup-durable-effects')
+    elapsed = finished['elapsed_us']
+    lower, upper = {'pass':(0,500000),'expired':(1000000,4000000),
+                    'timeout':(750000,2000000),'ready':(1500000,4000000)}[name]
+    require(lower <= elapsed < upper, 'wrong-time-window')
+    if name == 'timeout':
+        proxy.send('release')
+        released = next_event(proxy, 'released')
+        forwarded = rollback_status(proxy,target)
+    (output / (name + '.done')).touch(exist_ok=False)
+    require(process.wait(10) == 0 and not process.stderr, 'cleanup-probe-failed')
+    receipt = next_event(proxy, 'receipt')
+    require(proxy.wait(5) == 0 and not proxy.stderr, 'cleanup-proxy-failed')
+    require(receipt['rollback_requests'] == receipt['rollback_completions'] == receipt['rollback_released'] == receipt['rollback_ready'] == baseline+1, 'final-rollback-count')
+    final = rows(database)
+    require(final == before, 'retirement-durable-effects')
+    verify_final(name, database, final)
+    report['cases'].append(dict(name=name,status='PASS',database=database,baseline=baseline,
+        held=held,released=released,receipt=receipt,expiry_remaining_us=expiry,
+        server_after_rollback=observation,forwarded=forwarded,
+        socket_value_us=value['elapsed_us'],peer_closed_us=peer['elapsed_us'],delivered_or_refused_us=elapsed,
+        complete_control_tables=64,full_native_bytes=True,disposed=True))
+    save()
+    return baseline
+
+
+processes = []
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -162,14 +293,20 @@ try:
         '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges',
         '--mount', f'type=bind,src={output},dst=/lab',
         '--mount', f'type=bind,src={original}/secrets,dst=/run/secrets,readonly',
-        '--mount', f'type=bind,src={build},dst=/build,readonly', pg['client_image'],
+        '--mount', f'type=bind,src={build},dst=/build,readonly',
+        '--mount', f'type=bind,src={SOURCE},dst=/source,readonly', pg['client_image'],
         'python3', '-c', 'import time; time.sleep(300)').stdout.strip()
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
-    run_case('pass', 'source-transport', 'received-private')
-    run_case('policy', 'source-transport-policy-refused', 'refused-second-policy')
-    run_case('owner_loss', 'source-transport-owner-loss', 'closed-after-backend-loss')
+    if cleanup:
+        baseline = run_cleanup_case('pass', 0)
+        for name in ('expired', 'timeout', 'ready'):
+            run_cleanup_case(name, baseline + 1)
+    else:
+        run_case('pass', 'source-transport', 'received-private')
+        run_case('policy', 'source-transport-policy-refused', 'refused-second-policy')
+        run_case('owner_loss', 'source-transport-owner-loss', 'closed-after-backend-loss')
     require(rows('bb_source_template') == template_before and rows('bb_source_pass') == original_before and
         (original / 'source-result.json').read_bytes() == original_report, 'original-input-changed')
     report.update(status='PASS_SCOPED_SOURCE_TRANSPORT', active_case=None, original_inputs_unchanged=True)
@@ -178,6 +315,16 @@ except BaseException as error:
     raise
 finally:
     errors = []
+    for name, process in processes:
+        try:
+            process.stop()
+        except BaseException as error:
+            errors.append(name + ':stop:' + type(error).__name__)
+        try:
+            (output / (name + '.stdout')).write_bytes(process.stdout)
+            (output / (name + '.stderr')).write_bytes(process.stderr)
+        except BaseException as error:
+            errors.append(name + ':logs:' + type(error).__name__)
     owned = [target['Id']] + ([report['client']['id']] if report['client'] else [])
     for ident in reversed(owned):
         try:

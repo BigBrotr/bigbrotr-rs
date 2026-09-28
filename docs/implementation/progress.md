@@ -12,8 +12,15 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is8c4d12c (unpublished exact-Git source candidate); origin/main339dbf4
-is pushed privately. Root owns pending evidence/inventory/checkpoint updates.
+Local main and origin/main are2938d23, verified private push after native evidence.
+Root owns the dirty source-cleanup fixture slice: expanded actual probe, bounded
+rollback reply proxy, existing transport runner and build-only profile. Product8c4d12c
+is unchanged. Mac probe Clippy and proxy loopback test PASS; initial fixture
+loop-instantiation/lifetime/syntax failures retained under
+.research/implementation/source-cleanup-20260928. No engine cleanup result yet.
+Next: review/commit this fixture, exact-Git native build, then positive/expiry/timeout/
+late-ready engine cases and a retained negative deadline-check variant.
+No active laboratory experiment. The first three transport cases are qualified below.
 The candidate implements the finite source-transport slice: network lifetime/route decoder,
 acquisition visibility restriction, PostgreSQL source consumer/shared enrollment
 check, accepted Sync policy validator, actual engine probe and laboratory profile.
@@ -269,8 +276,7 @@ unchanged; other old DBs retained but not rehashed. Inventory source.faults;
 ignored .research/implementation/relay-source-faults-5efd67b owns launch/capture/
 root-review. Mac and Tux cache-retirement receipts remain as recorded below.
 
-Verified fault evidence is pushed. Source-transport8c4d12c and this evidence are
-ready for the next coherent private push. Next bounded action: exercise delayed
+Verified fault and source-transport8c4d12c evidence are pushed through2938d23. Next bounded action: exercise delayed
 rollback/absolute deadline and concurrent policy/source lock schedules with the
 actual source consumer and engines. This remains P02-T01 Step6, P03-T01 and P04-T02;
 no broad unchanged suite or full adjacent subsystem is required. Then wire actual guarded

@@ -73,3 +73,13 @@ These three cases passed at8c4d12c; see the
 [scoped report](../../docs/implementation/evidence/p04-source-transport-native-20260928.json).
 They do not close delayed cleanup, concurrent source changes, installed Sync,
 WebSocket or M1 acceptance.
+
+`source-cleanup` is a build/Clippy-only profile for the same probe. The existing
+`transport.py ROOT --cleanup` runs separate retained clones for a positive control,
+actual shorter owner expiry, ordinary rollback timeout and late-ready delivery.
+Its bounded rollback proxy reuses the existing framing/control engine and holds
+one exact rollback reply after server completion. The source-only future can be
+paused while the real PG driver receives CommandComplete and ReadyForQuery;
+this distinguishes a final delivery check from an ordinary pending timeout.
+Received values have observable disposal. These cases are prepared, not yet
+native-qualified; a deadline-check negative variant remains required.

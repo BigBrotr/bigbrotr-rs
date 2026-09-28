@@ -46,7 +46,13 @@ pub async fn run(
 ) {
     assert!(matches!(
         mode,
-        "source-transport" | "source-transport-policy-refused" | "source-transport-owner-loss"
+        "source-transport"
+            | "source-transport-policy-refused"
+            | "source-transport-owner-loss"
+            | "source-transport-cleanup-pass"
+            | "source-transport-cleanup-expired"
+            | "source-transport-cleanup-timeout"
+            | "source-transport-cleanup-ready"
     ));
     let owner_loss = mode == "source-transport-owner-loss";
     let policy_refused = mode == "source-transport-policy-refused";
@@ -164,6 +170,13 @@ pub async fn run(
             enrollment_generation: receipt.generation.get().try_into().unwrap(),
             route_id: receipt.route_id,
         };
+        if ordinal == 2 && mode.starts_with("source-transport-cleanup-") {
+            crate::ingest_source_cleanup::run(
+                &mut owner, observer, &connector, &committed, source, &root, path, mode, &listener,
+            )
+            .await;
+            continue;
+        }
         let mut validations = 0;
         let started = Instant::now();
         let receive = owner.run_relay_source(
@@ -283,7 +296,7 @@ pub async fn run(
             .await
             .is_err()
     );
-    if owner_loss {
+    if owner_loss || mode.starts_with("source-transport-cleanup-") {
         drop(owner);
     } else {
         owner.release().await.unwrap();
