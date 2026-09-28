@@ -12,12 +12,14 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is 593ec3add82744459b6205ccb6ffbc036d8f88a6 (test-only lint
-maintenance), following native-qualified WebSocket 9fe4ce498c6176c9c3418488c850b0dced57b2d8,
-tree 0fe34885a8f9f1353a0a1db1bbb14da0c4769001. Origin/main remains verified
-a96d300 pending publication of these coherent commits. Root owns only the native
-evidence/task/dependency/inventory/checkpoint documentation updates. No other
-writer, migration or persistent-format change.
+Local main and private origin/main are verified at
+e0c34538de6d42ec49e1212d50c1821d589da0fb (native evidence), following
+593ec3a (test-only lint maintenance) and native-qualified WebSocket
+9fe4ce498c6176c9c3418488c850b0dced57b2d8, tree
+0fe34885a8f9f1353a0a1db1bbb14da0c4769001. Worktree was clean after push;
+root now owns the preserving relay decoder, actual signed socket fixture,
+dependency/contract/runner notes and evidence below. No other writer, active lab,
+migration or persistent-format change.
 
 The finite supplied-stream WebSocket component now has [Mac](evidence/p04-websocket-mac-20260928.json)
 and [native Linux amd64 evidence](evidence/p04-websocket-native-20260928.json):
@@ -58,14 +60,27 @@ Ignored start/launch/collect/review scripts preserve the recipe; do not rerun th
 old launcher. Current 1154757 compiler cache is reusable only under its lock.
 Latest Mac free space 12,244,712 KiB; existing cache only.
 
-Next bounded action: finish publishing the audited component record, then implement
-the preserving Nostr wire boundary needed by P01-T03 Steps1/7 and P03-T02 Steps1/3.
-Reuse the existing bounded JSON preflight and verify_json; distinguish EVENT,
-EOSE hints, CLOSED/AUTH and unrelated control messages before source-bound durable
-admission. The read-only dns_dependency_audit reviewer is mapping pinned owning
-contracts and reusable primitives; no other writer/build/lab. Scope identity and
-installed finite Sync remain subsequent concrete prerequisites, not an entire
-adjacent subsystem. Full M1 and the selected product remain INCOMPLETE.
+Next bounded action: commit the reviewed relay decoder candidate and transfer
+exact Git to a new relay-wire run on Tux, reusing the locked 1154757 compiler cache.
+P01-T03 Steps1/7 and P03-T02 Steps1/3 now have
+[Mac component evidence](evidence/p01-relay-wire-mac-20260928.json): 38 protocol
+tests, 1 compile-fail doctest and 1 actual guarded WebSocket signed corpus PASS,
+plus scoped Clippy. Native qualification is NOT RUN at this checkpoint.
+Original EVENT RawValue and full envelope borrow input unchanged; duplicate
+signed keys survive into strict verification. EOSE missing/empty/unknown and
+contradictory hints remain distinct. The exact pinned serde_json raw_value feature
+adds no package/version or lockfile change. Whole-document preflight is retained.
+Root and read-only dns_dependency_audit review found and closed a public Serde
+bypass: the decode wrapper is now private, with observed RED/GREEN compile-fail
+regression. No other concrete finding within the codec/corpus boundary.
+The peer independently checks REQ/Close and absence of AUTH signing; actual crypto
+rejects altered content, forged signature and duplicate field after a valid same-ID
+event, while an alternate valid signature and subsequent original verify. This
+is no installed Sync, request-generation, durable admission or coverage claim.
+Original failures/checks are retained in .research/implementation/relay-wire-20260928;
+inventory implementation_network_20260928.relay_wire. Scope identity/registration
+and installed finite Sync remain subsequent concrete prerequisites. Full M1 and
+the selected product remain INCOMPLETE. Latest Mac free 11,941,908 KiB.
 Never merge/push the earlier negative source-cleanup variant.
 
 ## Active slice and next useful journey

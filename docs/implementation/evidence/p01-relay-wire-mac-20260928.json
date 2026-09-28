@@ -1,0 +1,49 @@
+{
+  "format": "bigbrotr-relay-wire-mac/1",
+  "status": "PASS_SCOPED_MAC_COMPONENTS",
+  "base_source": "e0c34538de6d42ec49e1212d50c1821d589da0fb",
+  "environment": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+  "local_evidence": ".research/implementation/relay-wire-20260928",
+  "tests": {
+    "protocol_tests": 38,
+    "compile_fail_doctest": 1,
+    "actual_signed_socket_corpus": 1
+  },
+  "source_sha256": {
+    "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "crates/bigbrotr-protocol/Cargo.toml": "edd9e6c0dde38841143756795ca62a053410c0e670ff0e7adddfbebcf66ccc40",
+    "crates/bigbrotr-protocol/src/lib.rs": "8dc01a4a369d691e61f523061b834855b50a816fdf498ff93b54dd135160f6be",
+    "crates/bigbrotr-protocol/src/wire.rs": "daf08cdaa6ff8c5e23c81ac0c009d240fcc493287f32cd97db7fa86b911f600e",
+    "crates/bigbrotr-protocol/tests/relay_wire.rs": "d428ae469da489567715e0851c4b11f0ca0e10af5d3cb21c7509dbe72556166d",
+    "apps/bigbrotr/tests/network_websocket.rs": "60ff51d0dfe9083bbc77e6e6812e57cf28a72b2cf695dfb411245f015e0a16d7",
+    "apps/bigbrotr/tests/network_websocket/nostr.rs": "34a8781865f2c4d000ca5b238f43554c4a4aee22e59349ef7077c4a56e62d294",
+    "apps/bigbrotr/tests/network_websocket/support.rs": "3c5033542f72e175b37244c428e3af2b0b66f5b1bfc61b8f6d665342bc8c44ab",
+    "experiments/identity-contract/signed-fixture.json": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875",
+    "tests/fixtures/protocol/signed-extremes.json": "dfe738600b4b6df4bce59c7a44cfdfc9222c618d518301d8b7fab589d3ac7ec7"
+  },
+  "logs_sha256": {
+    "protocol-tests-final.log": "5bd8156d46063762a1294ad1d8af945e4f281aeeec2b61cbea2b5a4422d7348e",
+    "socket-final.log": "8b4e3ad690f1eee0a70ba831bd4507bcfbfc846ed60c9c7eaf45209f627388c8",
+    "clippy.log": "4d3fb8bd166783f66cdc0a9789e29207dd683fa87ea38041dbed77ceda4a9493",
+    "fmt-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "checks": [
+    "Original EVENT pointer/slice retains duplicate keys and numeric spelling; Value-roundtrip negative control erases a duplicate and would verify",
+    "Required positions, decoded subscription character limits, all-document grammar/UTF-8 and whole-message bounds including extensions",
+    "EOSE missing/empty/unknown/contradictory hints preserved; CLOSED/AUTH/NOTICE/OK remain distinct",
+    "Actual TCP/WebSocket literal peer checks REQ and Close; changed content, false signature and duplicate signed field refuse after prior valid same-ID event; alternate and later original signatures verify",
+    "Public Deserialize bypass compile-fail regression failed before the private wrapper and passed afterward"
+  ],
+  "review": "Root complete codec/bounds/verifier/caller and source review; independent read-only AI review identified public Deserialize bypass, now closed and re-reviewed. No remaining concrete finding within this boundary.",
+  "structure": "One storage-free module, existing JSON preflight and verifier, borrowed RawValue from exact pinned serde_json; no framework, new crate or persistent-format change.",
+  "not_qualified": [
+    "Native target at this checkpoint",
+    "Installed Sync, request-generation membership, source-bound admission and coverage",
+    "M1, production capacity or native Linux arm64"
+  ],
+  "original_outcomes": [
+    "Initial missing wire API and NostrTime accessor fixture error; corrected missing API RED retained",
+    "Public Deserialize bypass RED retained; initial wider protocol invocation also observed that same doctest failure",
+    "First documentation check used nonexistent tools/check_artifacts.py; corrected actual experiments/verify_artifacts.py invocation retained separately"
+  ]
+}

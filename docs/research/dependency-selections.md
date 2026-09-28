@@ -149,6 +149,17 @@ stay unchanged. Stored decoder regression checks exact f64 bits and policy diges
 the native fixture also reads PostgreSQL's expanded numeric JSONB representation.
 This is a concrete decoding correction, not a new JSON document authority.
 
+The preserving relay-envelope decoder also enables `raw_value` on the same
+1.0.151 package. Exact `src/de.rs::deserialize_raw_value`/`ignore_value` and
+`src/read.rs::end_raw_buffer` inspection confirms that a borrowed `RawValue`
+retains the original value slice; it does not materialize a map that discards
+duplicate signed keys. Its iterative skip path still needs BigBrotr's whole-wire
+preflight before parsing. No package/version, serializer or persistent format
+changes. The direct enum deserializer is private so callers cannot bypass those
+limits through Serde. [RawValue's exact-version documentation](https://docs.rs/serde_json/1.0.151/serde_json/value/struct.RawValue.html)
+describes the borrowed representation. The pinned NIP-67 optional string array
+is preserved explicitly; the previously inspected SDK discards those fields.
+
 ## Implemented fingerprint codec slice
 
 P01-T02 selects `minicbor` 2.3.0 with default features disabled and no optional

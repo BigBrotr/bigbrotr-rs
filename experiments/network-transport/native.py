@@ -37,19 +37,32 @@ identity['rustc'] = subprocess.check_output(['rustc', '--version', '--verbose'],
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 assert identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'direct'
-assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket')
-tests = {'network_direct': 12} if mode == 'direct' else {'network_websocket': 28}
+assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire')
+tests = {
+    'direct': {'network_direct': 12},
+    'websocket': {'network_websocket': 29},
+    'relay-wire': {'network_websocket': 1, 'relay_wire': 8},
+}[mode]
+packages = ['-p', 'bigbrotr']
+if mode == 'relay-wire':
+    packages += ['-p', 'bigbrotr-protocol']
 selectors = [arg for name in tests for arg in ['--test', name]]
 if mode == 'websocket':
     identity['scope'] = 'Native bounded WebSocket over actual guarded TCP/TLS; no installed Nostr acquisition, shared service quotas or production capacity claim'
+elif mode == 'relay-wire':
+    identity['scope'] = 'Native preserving Nostr relay decoder and signed actual socket corpus; no installed acquisition, request-generation authority, durable admission or coverage claim'
 compile_selectors = selectors + (['--lib'] if mode == 'websocket' else [])
 checks = Path('/out/build-checks')
-result = execute([
-    ('compile', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+build_commands = [
+    ('compile', ['cargo', 'test', '--locked', '--offline', '--release', *packages,
                  *compile_selectors, '--no-run', '--message-format=json']),
-    ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+    ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', *packages,
                 '--lib', *selectors, '--', '-D', 'warnings']),
-], checks, SOURCE, env, identity, 1800)
+]
+if mode == 'relay-wire':
+    build_commands.append(('bounded-api', ['cargo', 'test', '--locked', '--offline', '--release',
+                                          '-p', 'bigbrotr-protocol', '--doc']))
+result = execute(build_commands, checks, SOURCE, env, identity, 1800)
 assert result['status'] == 'PASS'
 artifacts = Path('/out/artifacts')
 artifacts.mkdir()
@@ -74,7 +87,9 @@ for line in (checks / 'compile.log').read_text().splitlines():
 expected = set(tests) | ({'network_websocket_input'} if mode == 'websocket' else set())
 assert executables.keys() == expected
 identity['executables_sha256'] = executables
-commands = [(name, [str(artifacts / name), '--test-threads=1', '--nocapture']) for name in tests]
+commands = [(name, [str(artifacts / name),
+                   *(['nostr::'] if mode == 'relay-wire' and name == 'network_websocket' else []),
+                   '--test-threads=1', '--nocapture']) for name in tests]
 if mode == 'websocket':
     tests['network_websocket_input'] = 2
     commands.append(('network_websocket_input', [str(artifacts / 'network_websocket_input'), 'network::websocket', '--test-threads=1', '--nocapture']))
@@ -85,5 +100,8 @@ for name, count in tests.items():
     assert f'test result: ok. {count} passed; 0 failed; 0 ignored;' in (Path('/out/tests') / (name + '.log')).read_text()
 assert sources() == manifest['files_sha256']
 assert all(file_hash(artifacts / name) == digest for name, digest in executables.items())
+status = {'direct': 'PASS_SCOPED_NETWORK_COMPONENTS',
+          'websocket': 'PASS_SCOPED_WEBSOCKET_COMPONENTS',
+          'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS'}[mode]
 Path('/out/qualification.json').write_text(json.dumps(
-    dict(identity, status='PASS_SCOPED_WEBSOCKET_COMPONENTS' if mode == 'websocket' else 'PASS_SCOPED_NETWORK_COMPONENTS', tests=tests), indent=2) + '\n')
+    dict(identity, status=status, tests=tests), indent=2) + '\n')

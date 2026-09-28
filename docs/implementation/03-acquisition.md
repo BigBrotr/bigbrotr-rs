@@ -1,9 +1,8 @@
 # Phase 03 — Acquisition implementation plan
 
-Status: planning only. The owner requested at least five substantive review rounds
-before implementation; the coordinator records those rounds across the plan.
-No checkbox is complete, no command below has run, and no product scaffold is
-created by this document. Execute only after the owner starts implementation.
+Status: implementation authorized and in progress. Checkboxes describe complete
+task deliverables; bounded component evidence does not close an entire task.
+Commands marked future remain proposed until their required journeys execute.
 
 Goal: collect complete signed events and optional first local provenance through
 bounded live, linear, NIP-77 and import paths, with truthful scoped coverage and
@@ -119,6 +118,12 @@ Paths: `apps/bigbrotr/src/acquisition/sync/session.rs`, `apps/bigbrotr/src/acqui
 `apps/bigbrotr/src/acquisition/sync/page.rs`, `crates/bigbrotr-protocol/src/wire/relay.rs`,
 `apps/bigbrotr/tests/acquisition_ordering.rs`, `tests/fixtures/acquisition/ordered_frames.jsonl`,
 `tests/acceptance/cases/acquisition.py`, `docs/operations/acquisition.md`.
+
+The first preserving wire primitive is `crates/bigbrotr-protocol/src/wire.rs`,
+with no empty `wire/relay` hierarchy. Its bounded decoder and signed actual socket
+fixture supply part of P01-T03 Steps1/7 and this task's Steps1/3. They do not supply
+request generations, selector membership, ordered durable admission or installed
+Sync; those remain the next integration boundaries. No checkbox closes here.
 
 - [ ] **1. Add per-connection request generations.** Multiplex one socket per endpoint/auth scope where allowed, allocate unique request IDs, and associate every frame with a request generation and receive sequence. An old handle cannot send CLOSE/NEG-CLOSE for its replacement.
 - [ ] **2. Reserve bytes/items before ownership transfer.** Apply shared 2MiB message and 256KiB admitted-event limits, the producer's 32MiB byte grant and 1024 queued-record ceiling, and bounded verifier pools. Separately cap outstanding mutation requests at 64 under the storage contract; the queue ceiling is not permission for 1024 concurrent durable requests. Include decoded objects, queued frames and join buffers in the same grant. Keep compression disabled unless the tested incremental inflated-byte/ratio path is enabled.

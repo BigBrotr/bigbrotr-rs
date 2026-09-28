@@ -27484,6 +27484,13 @@
         "start_ticks": "397108497",
         "bundle_sha256": "73fb4fb16ccd3e84fd2995f7af814d77c645bdf8d8a8dcee4fafb5084e97538e"
       }
+    },
+    "relay_wire": {
+      "status": "Mac decoder and actual signed socket PASS; native pending",
+      "local_evidence": ".research/implementation/relay-wire-20260928",
+      "report": "docs/implementation/evidence/p01-relay-wire-mac-20260928.json",
+      "cache": ".research/targets/product; existing shared Cargo cache",
+      "preserve": "Original RED/failure logs, signed fixtures, final checks and exact source hashes; no new remote laboratory yet"
     }
   },
   "implementation_relay_registry_20260928": {

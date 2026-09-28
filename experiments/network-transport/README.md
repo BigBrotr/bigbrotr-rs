@@ -43,6 +43,15 @@ set; they are not coverage targets. Raw command outcomes, terminal container
 metadata and preflight stay under the run; original failures are preserved.
 `out/qualification.json` is the component result, not a product release manifest.
 
+The `websocket` profile runs the supplied-stream WebSocket integration suite and
+the two private input-buffer tests. `relay-wire` runs only the preserving decoder's
+eight tests and the new signed WebSocket corpus, compiling the actual protocol and
+application crates. It checks changed content, a forged same-ID signature, an
+alternate valid signature, duplicated signed fields and retained EOSE hints. The
+peer independently decodes outgoing masked REQ and Close; no AUTH response is sent.
+Both profiles use their name as the run-directory prefix and final lab.py argument.
+Neither qualifies installed Sync, source-bound admission or completed coverage.
+
 Both created containers finish stopped-retained; no pruning or volume deletion
 occurs. Review source/dependency/artifact identities and original logs before
 publishing a concise evidence report and updating the existing inventory.

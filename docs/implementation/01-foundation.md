@@ -153,6 +153,12 @@ The complete P01-T02 storage mappings, P01-T03 cache/filter/endpoint work and
 controlled WebSocket practical case remain unchecked. `p01-event-cli` is a
 bounded diagnostic acceptance case, not a substitute for that transport scenario.
 
+The preserving `wire.rs` decoder and actual guarded WebSocket signed corpus now
+have [scoped Mac evidence](evidence/p01-relay-wire-mac-20260928.json). Original
+EVENT values, duplicate fields, strict bounds and NIP-67 hints survive. The public
+enum cannot bypass bounded decoding through Serde. This contributes Steps1/7;
+native execution and subsequent installed source-bound admission remain open.
+
 ## P01-T04 — Configuration, defaults and topology resolution
 
 **Depends on:** P01-T01/T02. **Files:** application `src/config/`,

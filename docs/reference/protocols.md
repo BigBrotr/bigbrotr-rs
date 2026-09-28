@@ -17,9 +17,10 @@ an export; callers must check the exit status.
 
 The pinned [NIP baseline](../../contracts/protocol/versions.json) is
 `a2494f4f81d46684e5814a9bf35e2b1df978f955`, verifier
-`bigbrotr-nip01-verifier/1`. Only event verification is advertised. Transport,
-filters, endpoints, cache, durable admission and general NIP conformance remain
-separate P01/P02 responsibilities.
+`bigbrotr-nip01-verifier/1`. Event verification remains the standalone protocol
+entrypoint. The internal relay decoder below is not installed acquisition;
+filters, cache, durable admission and general NIP conformance remain separate
+P01/P02/P03 responsibilities.
 
 The parser requires an object with all seven fields in the
 [structural schema](../../contracts/protocol/nip01-event.json). It rejects duplicate
@@ -83,5 +84,43 @@ cargo test --locked -p bigbrotr-protocol
 
 These tests exercise the real process plus literal canonical byte comparisons,
 known-ID tampering, malformed fields, unknown extensions and resource exclusions.
-The controlled WebSocket peer scenario P01-T03 step 7 is still pending, as are
-P01-T02's actual storage/columnar mappings and P02's durable hostile-input replay.
+The controlled WebSocket peer component of P01-T03 step 7 is described below;
+installed acquisition and durable hostile-input replay remain later acceptance.
+
+## Preserving relay envelope
+
+The storage-free `wire::decode_relay` implements `bigbrotr-relay-envelope/1`
+against the same pinned NIP-01/42/67 revision. It applies the complete JSON
+preflight before decoding, checks all UTF-8 and finishes the entire document.
+The public message enum has no unbounded Serde deserializer. Known required
+positions and types are strict; future trailing fields remain in the borrowed
+original envelope. Unknown message kinds remain explicit unknowns.
+
+EVENT retains its original borrowed `RawValue`, including duplicate signed keys,
+whitespace and numeric spelling. Consumers pass those bytes to `verify_json`;
+deserializing through `serde_json::Value` would erase duplicate keys. A JSON value
+with the wrong event shape still retains its subscription attribution and is
+rejected by the event verifier. Subscription IDs are nonempty and at most 64
+decoded Unicode characters; local request generation remains a separate owner.
+
+EOSE preserves absent versus empty hints, unknown strings, ordering, duplicates
+and contradictory combinations. Explicit null or non-string hints are malformed.
+CLOSED is request-correlated; AUTH challenges, generic NOTICE and OK's event ID
+remain distinct. Parsing none of these grants authority, causes signing, proves
+request membership or advances coverage.
+
+The envelope and event borrow the live message buffer. Ordinary strings borrow
+where possible; escaped strings and hint arrays own bounded memory. The caller
+must retain grants for the wire buffer, decoded envelope and verified event while
+they coexist. The shared `3 * wire_bytes + 96 * nodes` parser estimate covers
+each decode separately, including upstream escape/depth scratch, Vec growth and
+owned hints. It is not a combined grant or an RSS guarantee. `event_bytes` applies
+at subsequent event verification, not to the whole relay envelope.
+
+The actual socket fixture is
+`apps/bigbrotr/tests/network_websocket/nostr.rs`. Its literal peer checks masked
+REQ and Close and sends the frozen signed corpus, changed content, a forged
+same-ID signature, an alternate valid signature and duplicated signed fields.
+It also sends AUTH without eliciting signing and preserves NIP-67 hint combinations.
+This exercises real guarded TCP/WebSocket/decoder/verification, not the installed
+Sync command, generation tracking, durable admission or page completion.

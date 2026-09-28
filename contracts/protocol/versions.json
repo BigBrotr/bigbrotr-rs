@@ -12,7 +12,8 @@
   },
   "protocols": {
     "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
-    "event_verifier": "bigbrotr-nip01-verifier/1"
+    "event_verifier": "bigbrotr-nip01-verifier/1",
+    "relay_envelope_decoder": "bigbrotr-relay-envelope/1"
   },
-  "scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim"
+  "scope": "Strict bounded event JSON and independent ID/BIP340 verification; internal preserving relay-envelope decoder; offline static configuration candidates and incomplete read-only doctor diagnostics. Advertised entrypoint capabilities remain event-verification and config-static; no installed acquisition, source policy, filter or general NIP conformance claim"
 }
