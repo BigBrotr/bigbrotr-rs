@@ -12,6 +12,7 @@ pub fn command() -> clap::Command {
         .subcommand(crate::config::doctor_command())
         .subcommand(crate::interfaces::migrations::command())
         .subcommand(crate::interfaces::access::command())
+        .subcommand(crate::interfaces::jobs::command())
         .subcommand(crate::interfaces::archive::command())
         .subcommand(crate::interfaces::export::command())
         .subcommand(crate::interfaces::serve::command())

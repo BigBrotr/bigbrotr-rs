@@ -459,6 +459,41 @@ recovery metadata. The browser privacy oracle must inspect the exact store as we
 as Web Storage, accepting only this selected metadata; it must not allow arbitrary
 IndexedDB data or cache responses to make a test pass.
 
+### CLI session and job discovery profile
+
+The selected thin CLI uses the existing session HTTP API. `access login --origin
+http://LOOPBACK_IP:PORT --username NAME --password-ref file:/ABSOLUTE/PATH
+--session-output /ABSOLUTE/PATH` prepares a new protected destination before one
+POST. It accepts only literal loopback addresses and nonzero ports; the canonical
+origin omits port80. No hostname resolution, proxy, redirect, automatic retry or
+implicit login is allowed. Remote TLS remains required separate implementation.
+The session file is closed JSON `bigbrotr-cli-session/1`, with only `format`,
+canonical `origin`, `session` and `csrf` (both exact lowercase hex32 secrets).
+It contains no password or cached authority. Maximum file size is1024 bytes.
+
+The destination parent must already exist, belong to the effective user and have
+mode0700. Walk every path component without following symlinks, hold a nonblocking
+exclusive directory lock, and refuse any existing destination. Use a unique0600
+staging file, synchronize its contents, publish without replacement and synchronize
+the directory. Keep ambiguous staging/publication outcomes for explicit inspection;
+never automatically issue replacement credentials. A final file is readable only
+as an owned single-link regular0400/0600 file in that private parent. These are
+POSIX descriptor checks, not filesystem ACL or arbitrary blocked-I/O guarantees.
+
+`access logout --session-ref file:/ABSOLUTE/PATH` sends one authenticated DELETE
+with both original secrets. Keep the local file unchanged, allowing explicit retry
+of a lost response.204 acknowledges remote revocation, not drained work; the operator
+may then remove the obsolete local file. A successful login's synchronized file
+survives failed/blocked stdout and must be reused instead of logging in again.
+
+`jobs list --session-ref file:/ABSOLUTE/PATH` requests one page directly, without
+an idle-extending `/me` call. Its kind/state/time/page-size options use the existing
+wire meanings. `--cursor-ref file:/ABSOLUTE/PATH` loads exact bounded cursor bytes,
+never command-line credential/token values. Output is one validated JSON page;
+repeat the same filters with its next cursor explicitly. No automatic fetch-all,
+new-list fallback, authority caching or token decoding occurs. These are selected
+CLI contracts, not yet qualified implementation claims.
+
 ## Local first-owner transition
 
 The first CLI consumer is `access owner-token issue --username NAME --request-id

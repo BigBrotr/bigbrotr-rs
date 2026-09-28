@@ -12,12 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified origin/main is 9bd39f45e33b40526825b0d9f2b4e16415802fae. Unpublished local
-candidate HEAD is 979c8bc47693916c83b13bf21e9642234502a619, tree
-b259eb5f077d6ff0f163f850b9bc855946733a3d. Its exact native lifetime run is qualified
-and stopped-retained; root owns dirty evidence/inventory/contract/checkpoint updates.
-No product, migration or release changes. Read-only AI completed fixture review;
-root is the sole writer.
+Verified HEAD and origin/main are b4b48841be48df31a06a1b254832673f85c30407;
+the resumed tree was clean. Held/lifetime qualification and evidence are published.
+Root now owns the CLI session/job-list implementation. Read-only AI reviewed the
+proposed authentication/transport boundary, with no edits or test/SSH execution;
+root remains the sole writer. No migration or release changes are needed.
 
 Active IDs: P08-T03 Step 3 / P08-T04 Step 3, thin P09-T09 Step 2 and only the
 operational P06-T03 Steps 1/3 cursor prerequisites. No task, phase, M1 or product
@@ -204,8 +203,7 @@ Root also fixed the 403 literal, checked grant deltas and preserved setup logs u
 distinct lifetime prefix. Syntax/artifact/diff and actual nested receipt propagation
 checks pass. AI reread fixes; no AI tests/SSH or post-run evidence review. Ignored
 attempt-979c8bc-job-pages-lifetime, review-lifetime.py and live-lifetime.py own captures
-and repeatable checks. No product defect observed. Finish documentation checks/push,
-then inspect and implement the CLI consumer's actual authentication/transport
+and repeatable checks. No product defect observed. Documentation checks/push are complete. Implement the CLI consumer's actual authentication/transport
 boundary. Delivery, backdated/tied and mixed/aged pages remain selected acceptance,
 not a requirement to complete an adjacent scientific subsystem first.
 
@@ -226,3 +224,65 @@ M1 still requires P01-T09 production acquisition/socket collection, timer
 publication and actual event read/export/restart/dependency-outage from clean
 extracted Compose. Current serve selects Control only. This thin operational
 consumer neither qualifies M1 nor requires completion of every adjacent subsystem.
+
+CLI next action: P08-T02 reusable local-session login/logout is the direct
+prerequisite for P08-T03 Step3 `jobs list`. Use the existing HTTP session method,
+not PostgreSQL deployment credentials or a new token system. Prepare a private
+no-overwrite session destination before login; store only canonical origin and
+session/CSRF secrets. One direct Hyper1.11.1 connection, bounded headers/body and
+total network deadline; no proxies, redirects, automatic retries or `/me` refresh.
+Logout retains its file for explicit retry of an unknown outcome. Page output is
+one bounded JSON document with explicit protected cursor input. Remote TLS remains
+selected unfinished work. Initial tests must exercise actual executable/socket,
+protected files, no-overwrite races, malformed/slow responses and blocked stdout;
+actual installed PostgreSQL journey follows. No successful CLI evidence exists yet.
+Resumption read-only Tux census still has eight unrelated running containers and
+no matching BigBrotr processes; free72,971,051,008 bytes. Before a new native build,
+verify obsolete cache retirement or sufficient headroom; preserve all prior data.
+
+At the CLI local-test boundary, retired only7ee out/build/{target,cargo-home}
+after complete source/capture/native-artifact, mount, process FD/maps checks.
+Inventory retire_7ee_cache_20260928 retains43 hashes and the separate six copied
+test executables referenced by old logs (identities measured at retirement, not
+retroactive original-run hashes). Removed3,494,223,872 allocated bytes; free
+72,954,765,312→76,447,469,568 bytes with concurrent host writes. All850 container
+projections/eight unrelated running containers preserved. No database/dataset,
+archive, backup, historical evidence, source or existing native artifact deleted;
+8fa/f677 compiler caches remain. Do not rerun the retirement recipe.
+
+CLI implementation now exists (uncommitted): access login/logout and jobs list;
+root is the only writer. Actual Mac checks passed13 CLI session/page tests,
+50 binary tests (including existing HTTP server boundaries) and3 CLI contracts.
+Tests cover protected publication/no-overwrite race, concurrent login exclusion,
+SIGTERM socket/lock cleanup, genuine blocked stdout, six-second held-body expiry,
+closed response/header validation, exact i64/u64, order/duplicates, missing nullable
+fields, exact128KiB and streamed overflow, aliases/redirects and private-file refusal.
+Initial login and jobs tests failed for missing commands. A duplicate Content-Type
+regression failed with exit0 then passed after requiring exactly one header.
+Original timeout fixture failed on Mac's inherited nonblocking accepted socket;
+setting that fixture socket blocking enabled the actual deadline/EOF check. Mutated
+body fixtures recompute Content-Length, preserving the intended decoder negatives.
+Read-only AI reviewed six complete new modules/callers, reread header/fixture/help
+corrections, and found no additional scoped counterexample; it executed no tests.
+Root reread complete modules and actual callers. No current PostgreSQL CLI evidence.
+New Hyper client feature retains1.11.1 and adds only transitive want0.3.1/try-lock0.2.5;
+exact sources/licenses inspected. cargo-deny0.20.2 licenses/sources/advisories passed
+at advisory-db e2111519ba6d14a5da59a7b2e5c8083ae8a37c01. Initial scoped Clippy passed;
+final local capture/checks follow the latest test additions and tiny API cleanup.
+
+Next: finish local capture/diff and form an unpublished coherent candidate, then
+extend the existing export laboratory with CLI login/list/restart/logout using
+actual PostgreSQL and independent page/ledger expectations. Fresh native compile
+needs the two new locked crates supplied through checked downloads before its
+isolated offline build. Current free71.20GiB is BELOW the existing72GiB compile
+preflight; do not weaken it. Evaluate another demonstrably obsolete cache before
+launch, or reuse the latest compiler cache while retiring its superseded predecessor.
+8fa is the lab's current default compiler input; do not delete until that dependency
+is changed/verified. f677 remains the current reusable runtime/compiler baseline.
+No native process launched for this CLI slice.
+
+Final local capture now PASS at .research/implementation/cli-jobs/local-20260928-01:
+all6 selected checks executed, zero failed/NOT_RUN. The
+[evidence](evidence/p08-cli-jobs-mac-20260928.json) binds exact changed product hashes,
+13+50+3 tests, Clippy, formatting and documentation/artifact checks. Still no native
+CLI claim. Candidate commit next, then the existing laboratory's CLI integration.

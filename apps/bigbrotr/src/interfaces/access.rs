@@ -18,8 +18,8 @@ pub fn command() -> Command {
             .value_name("CONFIG")
     };
     let id = |name: &'static str| Arg::new(name).long(name).required(true).value_name("HEX32");
-    Command::new("access")
-        .about("Local account enrollment and inspection through protected Control credentials")
+    let command = Command::new("access")
+        .about("Local account sessions, enrollment and deployment credential tools")
         .subcommand_required(true)
         .disable_help_subcommand(true)
         .subcommand(super::self_inspection::command())
@@ -64,10 +64,14 @@ pub fn command() -> Command {
                         .required(true)
                         .value_name("file:/ABSOLUTE/PATH"),
                 ),
-        )
+        );
+    super::session_client::commands(command)
 }
 type Result<T> = std::result::Result<T, (u8, String)>;
 pub fn execute(matches: &ArgMatches) -> ExitCode {
+    if let Some((action @ ("login" | "logout"), args)) = matches.subcommand() {
+        return super::session_client::execute(action, args);
+    }
     if let Some(args) = matches.subcommand_matches("cursor-keyring") {
         return super::cursor_keyring::execute(args);
     }

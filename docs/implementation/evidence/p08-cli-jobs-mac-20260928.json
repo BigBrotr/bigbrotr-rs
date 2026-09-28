@@ -1,0 +1,171 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-28",
+  "tasks": [
+    "P08-T02",
+    "P08-T03 Step 3"
+  ],
+  "status": "PASS_SCOPED_MAC_CLI_ONLY",
+  "source": {
+    "base_revision": "b4b48841be48df31a06a1b254832673f85c30407",
+    "state": "dirty primary workspace; product inputs individually hashed",
+    "files_sha256": {
+      "Cargo.lock": "e9d3f224f31a1d4fe53ee0993529d697516dd2afb06159ec1b448ed989e478d0",
+      "Cargo.toml": "16b23d245627cc9ce3161ccd38bae59e36a12c6b1d6f3f1c9d48848eaa42c04a",
+      "apps/bigbrotr/src/cli.rs": "e10a4bdb6ff4b39805e921c8d9c8b6cd22dc233b7b821a01d55debe72b1cb9e9",
+      "apps/bigbrotr/src/interfaces/access.rs": "a007bfe52911b41c28a0802192c9410e00a077b74b3ffb60001fce94c22d000f",
+      "apps/bigbrotr/src/interfaces/command_output.rs": "0a9510f829e5218c9b61cd2676d859e7fe578af408c018b9e8367c490d195ca1",
+      "apps/bigbrotr/src/interfaces/jobs.rs": "813983949a50e1b5fb971248a36afe2c065431edd485ab6e1a25edadb3d16399",
+      "apps/bigbrotr/src/interfaces/mod.rs": "4db307f0e4211b403c36b45b2bc2b352c180a6863bfd67868edae0c37bbf97fd",
+      "apps/bigbrotr/src/interfaces/session_client.rs": "b8e85b260b4e70191065adff9b8f5725877afb6e48c1a36ba18dc53a4c3f146e",
+      "apps/bigbrotr/src/main.rs": "f891c4a77a6f9cb30a6f12b01db66db4654c410cde5cd8aef3e5c2c4aa7da2ec",
+      "apps/bigbrotr/src/management/client.rs": "70c0335258370bc7609f8314cdd73f3f0de9f9fcbfdaaffe1c3a814a7fe5026d",
+      "apps/bigbrotr/src/management/client/session_file.rs": "5bab8ae3f01ddb250d53da2ab359d0b83fc04d01a4fe8081c151e3520d610da6",
+      "apps/bigbrotr/src/management/client/validation.rs": "5fff726027f2d8eab1380100be11ed82c22b9867530bb2ac46a825543806d21b",
+      "apps/bigbrotr/src/management/mod.rs": "9d6459b6bbed13eeae8046efa06aea8c6503121c5027d82c8fbf09d31ac42c52",
+      "apps/bigbrotr/tests/cli_sessions.rs": "77f286ba88497b30fe5773fc002145a0bd2018a1d3075d083198926a80c47f91",
+      "contracts/release/dependencies.json": "6f233ab6bfdfb86e8f3cc33775208a7aa094b66d086f8fe3df5e07cf999e0260"
+    }
+  },
+  "environment": {
+    "host": "macOS-26.5.2-arm64-arm-64bit",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)"
+  },
+  "executed": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 1.0276498749999998,
+      "log": ".research/implementation/cli-jobs/local-20260928-01/format.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "cli_sessions",
+        "--test",
+        "cli_contract",
+        "--bin",
+        "bigbrotr"
+      ],
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 29.139586082999998,
+      "log": ".research/implementation/cli-jobs/local-20260928-01/cli-and-http.log",
+      "log_sha256": "3f8d67bf32ec5e70e55e683c04ecb14e14f2864bef8e06d77e1f7cc108d66455"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--bin",
+        "bigbrotr",
+        "--test",
+        "cli_sessions",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 4.224992457999999,
+      "log": ".research/implementation/cli-jobs/local-20260928-01/clippy.log",
+      "log_sha256": "2193b735160601128f13f03704cb001c8e551df97c882df53368b9123ce3bd14"
+    },
+    {
+      "command": [
+        "python3",
+        "experiments/verify_artifacts.py"
+      ],
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 0.8192635420000016,
+      "log": ".research/implementation/cli-jobs/local-20260928-01/artifacts.log",
+      "log_sha256": "4e6319c180d2bdfc4fcc5fca302bb7593046f1cba04be9995b9f222a4e048105"
+    },
+    {
+      "command": [
+        "python3",
+        "experiments/verify_handoff.py",
+        "--output",
+        "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/implementation/cli-jobs/local-20260928-01/handoff.json"
+      ],
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 0.5923640000000034,
+      "log": ".research/implementation/cli-jobs/local-20260928-01/handoff.log",
+      "log_sha256": "a07b24b49fcb86918fc1e849d9e3e04c2fe667ebbd73228bde1f14eda9e01a02"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 0.07768729100000371,
+      "log": ".research/implementation/cli-jobs/local-20260928-01/diff.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "observations": [
+    "13 actual executable/socket/filesystem tests;50 existing binary tests including shared HTTP server boundaries;3 CLI contract tests;zero skipped.",
+    "Login/logout use existing session routes; protected origin-bound credential file, nonblocking parent custody and no-overwrite synchronized publication.",
+    "Actual late destination creation preserves external bytes and issued staging. Concurrent login refuses before a second issuance; SIGTERM closes the socket, releases the lock and preserves unresolved staging.",
+    "A genuinely filled stdout pipe yields exit1 with the issued file retained. This proves bounded termination for that sink, not general filesystem syscall deadlines or power-loss durability.",
+    "Held partial response reaches the six-second total deadline and the independent peer observes EOF. Redirect target receives no connection.",
+    "Job pages preserve signed64/unsigned64 extremes and zero checkpoint; reject inconsistent order, repeated IDs, overflow, unknown/duplicate/missing fields. Exact128KiB succeeds; one extra byte, chunked overflow, truncation and33headers refuse without page output.",
+    "Private files with unsafe modes, hard links, symlinks, extra fields, wrong formats or excessive bytes refuse without network."
+  ],
+  "regressions": [
+    "Initial login tests failed because the command was absent; first implementation passed. Jobs first failed for missing command then passed.",
+    "Duplicate Content-Type actually returned exit0 in the new negative test; requiring exactly one header corrected it.",
+    "Original deadline fixture failed because macOS accepted socket inherited nonblocking mode. Fixture corrected to blocking before testing actual withheld-body timeout; no product deadline failure was established.",
+    "Mutated JSON response fixtures recompute Content-Length so duplicate-field refusal is not accidental truncation."
+  ],
+  "dependency_review": {
+    "hyper": "1.11.1 client feature; existing connection future and explicit limits, no connector/pool/retry",
+    "new_transitive": [
+      "want0.3.1 MIT",
+      "try-lock0.2.5 MIT"
+    ],
+    "sources_inspected": [
+      "Exact local Hyper client/conn/http1.rs",
+      "Exact want0.3.1 production implementation",
+      "Complete try-lock0.2.5 src/lib.rs"
+    ],
+    "cargo_deny": "0.20.2 licenses/sources/advisories PASS",
+    "advisory_database": "e2111519ba6d14a5da59a7b2e5c8083ae8a37c01",
+    "official_source": "https://docs.rs/hyper/1.11.1/hyper/client/conn/http1/struct.Builder.html"
+  },
+  "review": {
+    "root": "Complete owning modules, callers and changed contracts read; integrated diff checked.",
+    "independent_ai": "Read-only static review of six modules/callers; header, fixture and stdout wording corrections reread. No tests, SSH or native evidence assessment by reviewer."
+  },
+  "limitations": [
+    "Independent HTTP test peer only for new CLI; actual Control/PostgreSQL user journey, restart/current grants/revocation and installation NOT_RUN.",
+    "No power-loss, fsync EIO/ENOSPC, arbitrary blocked filesystem I/O, ACL or hostile same-UID namespace qualification. No universal memory erasure or RSS/capacity claim.",
+    "One bounded JSON document may be partially delivered on output failure; consumers must discard stdout after nonzero exit.",
+    "Remote TLS, other job CLI commands, full P08/P09 acceptance, M1 and product remain incomplete."
+  ],
+  "local_result": {
+    "path": ".research/implementation/cli-jobs/local-20260928-01/result.json",
+    "sha256": "01c6c587640bfb9058d1939bd8da6e7b8f40c90fcd5abdc4cfd3f085d8b96f91"
+  }
+}

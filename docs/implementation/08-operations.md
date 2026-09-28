@@ -363,6 +363,15 @@ Existing installed signed revocation/resume/retry/restart and three held-policy-
 SIGTERM schedules pass with the same current binaries. This is scoped maintenance
 evidence; it does not complete discovery, remaining acceptance or M1.
 
+The thin CLI consumer now implements `access login/logout` and `jobs list` on the
+same existing HTTP session/page routes. The [CLI session contract](../product/private-administration.md#cli-session-and-job-discovery-profile)
+owns protected file publication, one-page output and explicit unknown-outcome
+recovery. This is P08-T02 session reuse feeding Step3, without PostgreSQL deployment
+credentials, a new authentication mechanism or scientific read prerequisites.
+Local actual executable/socket tests are in `cli_sessions.rs`; installed engine,
+restart/revocation, cookie binding and independent ledger acceptance remain the
+next qualification boundary. No full task or CLI capability completion is claimed.
+
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending
 (created_at, job_id), an opaque policy-bound cursor and a listing upper cut.

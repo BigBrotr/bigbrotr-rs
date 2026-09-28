@@ -264,6 +264,20 @@ lane. [Axum body limits](https://docs.rs/axum/0.8.9/axum/extract/struct.DefaultB
 and [0.8.9 WS source](https://github.com/tokio-rs/axum/blob/c59208c86fded335cd85e388030ad59347b0e5ae/axum/src/extract/ws.rs)
 define the relevant APIs. A Tower timeout alone does not terminate an engine task.
 
+The finite CLI session/job client enables the already pinned Hyper1.11.1 `client`
+feature, adding only its transitive want0.3.1/try-lock0.2.5 (MIT) pair to Cargo.lock.
+The exact crate sources were inspected: want stores one waker/atomic state per
+channel; try-lock uses an atomic lock with checked ordering in want's calls. No
+client connector, TLS store, DNS, pool, proxy or retry middleware is selected.
+The [HTTP1 builder](https://docs.rs/hyper/1.11.1/hyper/client/conn/http1/struct.Builder.html)
+and local exact `client/conn/http1.rs` define ownership: one connection future is
+polled beside one response receiver; dropping the enclosing timeout drops both.
+Choose32 headers,16KiB transport buffer,16KiB ordinary/error response and128KiB
+successful job page, with one six-second deadline through the streamed body.
+These are logical bounds, not an RSS/capacity claim. Private owned bodies wipe on
+drop; Hyper/header/allocator copies do not acquire an all-memory erasure guarantee.
+Actual executable/socket and native installed acceptance remain required.
+
 Tonic's `Endpoint::timeout` does not set `grpc-timeout`; set the request deadline
 metadata too, propagate the shrinking budget and handle server cancellation.
 Override both client/server encode **and** decode limits to the operations

@@ -67,3 +67,54 @@ covers this recovery journey in Chromium, Firefox and WebKit at `/` and `/contro
 on Linux amd64, including reload after a withheld real acceptance, server restart
 and account revocation. Accessibility, natural session expiry and release
 installation remain open qualification work.
+
+## CLI preview
+
+The thin CLI implements login, logout and one-page export discovery in the
+trusted-host loopback HTTP profile. Its local executable/socket tests do not yet
+qualify the installed PostgreSQL journey. Remote HTTPS and the remaining job
+commands are still being implemented. Use the private panel for the qualified
+resume workflow above.
+
+Use an existing local account and its exact password in an owned0400/0600 regular
+file, without a trailing newline. The new session destination needs an existing
+owned0700 directory. For example, after placing the password in that directory:
+
+```sh
+client_directory="$(pwd -P)/bigbrotr-cli"
+bigbrotr access login --origin http://127.0.0.1:18080 --username alice \
+  --password-ref "file:$client_directory/password" \
+  --session-output "$client_directory/session.json"
+```
+
+The session file is a credential: keep it private. Login refuses to overwrite it.
+If stdout fails after publication, reuse the existing file. Exit4 means issuance
+or local publication could not be confirmed; preserve staging/final files and
+inspect them before an explicit new login. Never overwrite them merely because a
+response was lost. No command automatically retries authentication.
+
+```sh
+umask 077
+bigbrotr jobs list --session-ref "file:$client_directory/session.json" \
+  --page-size 2 > "$client_directory/page.json"
+```
+
+Use the document only when the command exits0; discard partial output after any
+nonzero exit. Optional `--state`, `--created-from-us` (inclusive) and
+`--created-before-us` (exclusive) use one state and exact signed64 decimal Unix
+microseconds. To continue, save `next_cursor` from a successful response as exact
+bytes in an owned0400/0600 file without newline, then repeat the same filters:
+
+```sh
+bigbrotr jobs list --session-ref "file:$client_directory/session.json" \
+  --page-size 2 --cursor-ref "file:$client_directory/cursor" \
+  > "$client_directory/next-page.json"
+bigbrotr access logout --session-ref "file:$client_directory/session.json"
+```
+
+Only `next_cursor:null` means the list has ended. An empty page may still advance.
+The CLI makes no `/me` call and does not keep the session alive. Logout retains the
+file so a lost response can be retried with the same credentials. After successful
+revocation, remove that obsolete local file explicitly when no retry is needed.
+Revocation acknowledgement does not claim that all previously admitted work has
+drained. This CLI needs no PostgreSQL deployment credentials or configuration file.

@@ -24,6 +24,7 @@ fn main() -> ExitCode {
         Some("access") => {
             interfaces::access::execute(matches.subcommand_matches("access").unwrap())
         }
+        Some("jobs") => interfaces::jobs::execute(matches.subcommand_matches("jobs").unwrap()),
         Some("migrate") => {
             interfaces::migrations::execute(matches.subcommand_matches("migrate").unwrap())
         }

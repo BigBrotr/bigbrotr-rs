@@ -223,11 +223,12 @@
     {
       "name": "hyper",
       "version": "1.11.1",
-      "purpose": "Owned HTTP1 connection future with explicit header, buffer and deadline controls",
+      "purpose": "Owned HTTP1 server/client connection future with explicit header, buffer and total deadline controls; direct CLI requests without connector, pool, redirect or retry",
       "default_features": false,
       "features": [
         "http1",
-        "server"
+        "server",
+        "client"
       ],
       "license": "MIT",
       "source": "https://docs.rs/hyper/1.11.1/hyper/"
