@@ -66,7 +66,7 @@ the original dedicated Control backend. It takes Control, dataset, Ingest UPDATE
 and dependent registry/producer locks in that order. It requires both old owner
 deadlines to remain live and sets the Ingest deadline to the current Control
 deadline. Refresh Control first. No new identity, producer state or native data
-is created, and no expired, draining or closing owner is revived.
+is created; expired or draining owners and closing producers are refused.
 
 The suspend-aware operation window starts before coordination I/O, is at most
 five seconds, and is also bounded by the remaining old scheduling deadlines.
@@ -80,5 +80,10 @@ This operation changes scheduling data only. Actual native exclusion, fresh
 admission/source/policy checks, caller observation custody and successor recovery
 remain independent requirements. It cannot make a standalone initializer's
 registration writable by a later Control process. No applied SQL or native
-format changes. The finite probe and `bindings.py --lease` exercise this boundary;
-native execution evidence is pending, not implied by compilation.
+format changes. The finite probe and `bindings.py --lease` have
+[eleven executed native cases](../implementation/evidence/p02-ingest-lease-native-20260928.json)
+at e86439e: actual read after the old deadline, exact sole scheduling-row change,
+complete refusal-state equality, and observed dataset-lock cancellation with
+retained fencing. Root checked original native/input bytes and all 64 Control
+tables. Lost/delayed COMMIT, renewal-write cutoff discrimination and policy/closing
+races remain unexecuted for this method. No installed lifetime claim follows.

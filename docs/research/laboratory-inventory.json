@@ -28608,11 +28608,116 @@
       "report": "docs/implementation/evidence/p03-sync-arrival-policy-native-20260928.json"
     },
     "ingest_lease": {
-      "status": "PREPARED LOCAL; native build and engine cases NOT_RUN",
+      "status": "STOPPED/RETAINED; native build and eleven scheduling-renewal cases PASS; root review complete",
       "local_evidence": ".research/implementation/ingest-lease-20260928",
       "purpose": "P02-T01 Step5/P02-T02 Steps2/3 same-Control initial Ingest scheduling renewal for the installed owning lifetime",
       "preserve": "Reuse exclusively locked network-1154757 compiler cache and stopped PG71775507. Create only exact-source run, new clones/native stores and owned build/client containers; retain all original data and evidence.",
-      "next": "Commit candidate; transfer exact Git revision, build native CLI/probe, then eleven --lease engine schedules."
+      "next": "Installed owning lifetime; retain original evidence and all new clones/native stores. No cleanup obligation.",
+      "launch": {
+        "source": "e86439ebb86b6e24f059d781c1e8050d80dcb6bb",
+        "tree": "5eae50448bc92cebd453b7da664730ecd2d51be3",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-lease-e86439e",
+        "pid": 3381890,
+        "start_ticks": "398891628",
+        "bundle_sha256": "9909d8385cc84e9e66adadf423fc1a3d11c2174ac05a40a136ceddcc2dde9796"
+      },
+      "resources": {
+        "source": "e86439ebb86b6e24f059d781c1e8050d80dcb6bb",
+        "tree": "5eae50448bc92cebd453b7da664730ecd2d51be3",
+        "owner": "030f8e11fde15a174b7160e7d2c75910",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-lease-e86439e",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "1d06069240af8270f099fd7c4400d1629ce4464edcb97e0d61d1f69b14656db8"
+          },
+          {
+            "name": "native",
+            "id": "f1ae68b788f47753bbd2014a44569b72bf53aed714a631fcff159007fe869c3d"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T14:44:22.772199+00:00",
+        "qualification": "PASS_INITIAL_INGEST_LEASE_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 64761389056,
+        "finished_at": "2026-09-28T14:45:28.047596+00:00"
+      },
+      "engine_launch": {
+        "source": "e86439ebb86b6e24f059d781c1e8050d80dcb6bb",
+        "pid": 3384568,
+        "start_ticks": "398903760",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-lease-e86439e"
+      },
+      "engine": {
+        "owner": "44361a5bd5f2e86fbb4b42d7003e3806",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "58aabe36a625892505fc38433936f10d1b5a74a9caace84e3adb7bf3c0b56d8e",
+          "name": "bigbrotr-acquisition-binding-e86439e"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_e86439e_pass",
+          "bb_scope_bind_e86439e_expired",
+          "bb_scope_bind_e86439e_control_expired",
+          "bb_scope_bind_e86439e_closing",
+          "bb_scope_bind_e86439e_draining",
+          "bb_scope_bind_e86439e_policy_first",
+          "bb_scope_bind_e86439e_policy_second",
+          "bb_scope_bind_e86439e_delayed",
+          "bb_scope_bind_e86439e_wrong_registration",
+          "bb_scope_bind_e86439e_wrong_control",
+          "bb_scope_bind_e86439e_cancelled"
+        ],
+        "status": "PASS_INITIAL_INGEST_LEASE",
+        "started_at": "2026-09-28T14:46:24.090753+00:00",
+        "finished_at": "2026-09-28T14:46:49.624600+00:00"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "e86439ebb86b6e24f059d781c1e8050d80dcb6bb",
+        "observed_at": "2026-09-28T14:47:21.977220+00:00",
+        "prior_unchanged": 939,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "1d06069240af8270f099fd7c4400d1629ce4464edcb97e0d61d1f69b14656db8",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "f1ae68b788f47753bbd2014a44569b72bf53aed714a631fcff159007fe869c3d",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "58aabe36a625892505fc38433936f10d1b5a74a9caace84e3adb7bf3c0b56d8e",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1553,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 64619601920,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {

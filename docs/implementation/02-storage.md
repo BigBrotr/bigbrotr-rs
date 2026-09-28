@@ -70,8 +70,10 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   The [same-Control initial Ingest renewal](../reference/ingest-registration.md#same-control-scheduling-renewal)
   is the scheduling prerequisite for the installed initial owner. It preserves
   existing identities and reuses the registry/policy locks; it cannot revive an
-  expired owner, grant native exclusion or activate a successor. Native
-  qualification is pending; this does not close the complete CAS/handoff step.
+  expired owner, grant native exclusion or activate a successor. The
+  [eleven-case native evidence](evidence/p02-ingest-lease-native-20260928.json)
+  qualifies its initial renewal/refusal/cancellation boundary, not the complete
+  CAS/handoff step or installed lifetime.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
   policy references; later lifecycle migrations add observations/scheduling.
   The first [private operational identity consumer](../reference/relay-endpoint-registry.md)

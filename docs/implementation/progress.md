@@ -12,34 +12,45 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and verified private origin/main are190b6ac571b01393323d622ba2410da80ad983d2.
-The worktree was clean at resumption. Root owns the following initial Ingest
-lifetime changes. Read-only inspection found no active BigBrotr laboratory or
-compiler process; PG71775507 and the latest build/client remain stopped without
-OOM. Mac has about9.7GiB available; Tux64,877,953,024 bytes. Cache retirement is
-complete; preserve all retained datasets/artifacts and do not replay launchers.
+Mac main is e86439ebb86b6e24f059d781c1e8050d80dcb6bb, the tested unpublished
+candidate; verified private origin/main is 190b6ac571b01393323d622ba2410da80ad983d2.
+Root owns only qualification/inventory/checkpoint documentation changes.
 
-The installed-owner review found a concrete prerequisite: initial Ingest has its
-own scheduling deadline, while Control refresh only renews Control. Implement a
-same-Control, exact-registration renewal for P02-T01 Step5/P02-T02 Steps2/3 before
-wiring a persistent owner. It must check both current policies, preserve the
-initial identity, refuse expired/draining/closing targets and retain consistent
-Control→dataset→Ingest→producer locking. This scheduling update must not grant
-native ownership, perform a handoff or replace the fresh native admission checks.
-Existing PG rows suffice; no new persistent format or migration is selected.
-Actual engine tests must prove continued native reads beyond the original Ingest
-deadline, unchanged native/input state, refused renewals and cancellation custody.
-New ignored work belongs to .research/implementation/ingest-lease-20260928.
+The installed-owner review found that Control heartbeat never renews initial
+Ingest's separate scheduling deadline. The new same-Control renewal reuses exact
+registration/policy validation and Control→dataset→Ingest UPDATE→producer locks.
+It caps Ingest at Control's deadline and refuses expired/draining/closing targets.
+No new native authority, format, migration or dependency. This is P02-T01 Step5/
+P02-T02 Steps2/3, a concrete P01-T09 Step1 prerequisite.
+[Native evidence](evidence/p02-ingest-lease-native-20260928.json) qualifies eleven
+actual PG/Rocks schedules, release CLI/probe and Clippy. The positive read succeeds
+after the original Ingest expiry; exactly one scheduling row changes. All 64 Control
+tables/xmin, 12 native rows and original request/receipt remain exact on refusals.
+Cancellation observes the actual backend dataset lock and retained advisory fence.
+Root compared 1,553 exact Git files and 81 captured payloads. No engine failure;
+missing-method RED retained. Root/read-only AI reviewed complete owners and fixed
+v1/v2 fixture mismatch before launch. No installed lifetime or successor claim.
 
-The renewal and eleven-case finite consumer are implemented, not yet engine
-qualified. Missing-API RED and Mac scoped Clippy PASS are retained there.
-Artifact/handoff checks have no errors; unchanged dependency-cycle candidates
-remain. Root and read-only AI reviewed the adapter/registry/Control/SQL and new
-oracle; a v1/v2 template mismatch was corrected before launch. The actual lock
-observer clears its PostgreSQL statistics snapshot between polls. No Cargo,
-applied SQL or native format changed. Next bounded action is exact-Git native
-build and bindings.py --lease on fresh clones. Delayed/lost COMMIT, write-cutoff
-negative controls and policy/closing races remain separate pending qualification.
+All new resources are STOPPED/RETAINED. Inventory
+implementation_network_20260928.ingest_lease and ignored
+.research/implementation/ingest-lease-20260928 own full identities, original logs,
+transfer/launch/capture/review recipes. Build owner 030f8e11fde15a174b7160e7d2c75910,
+PID 3381890/start 398891628; engine owner 44361a5bd5f2e86fbb4b42d7003e3806,
+PID 3384568/start 398903760: both terminal. Fetch 1d060692/native f1ae68b7 exited 0;
+client 58aabe36 stopped 143, PG71775507 stopped 0, no OOM. Eleven
+bb_scope_bind_e86439e_* clones/stores retained. Terminal audit 14:47:21 UTC found
+939 other projections unchanged, eight unrelated running, compiler lock free and
+64,619,601,920 bytes available. Mac last 10,096,840 KiB. Shared 1154757 now has
+e86439e intermediates; qualified artifacts are separately retained. No cleanup
+obligation. Cache retirement remains complete; never replay launchers/deletions.
+
+Next: commit/push this qualification, then implement explicit first-run native
+startup under retained Control, with bounded worker/native/driver custody.
+Read initial registration construction and initialization retry/recovery boundaries
+before selecting its CLI. Separate initializer→Serve currently cannot reuse the
+initial writer. Keep that constraint visible; do not add a parallel plan.
+The renewal's lost/delayed COMMIT, write-cutoff negative control and policy/closing
+races remain pending and must be exercised where the installed lifetime claims them.
 
 The accepted Sync collection/arrival policy boundary is qualified below
 (P03-T01 Step3/P03-T02 Step3); next are the installed owning lifetime and typed
@@ -375,7 +386,7 @@ unchanged. No Rocks/archive writes by the registration laboratory.
 Compiler cache network-1154757/out/build/{target,cargo-home} is mutable acceleration,
 exclusively locked by .compiler-cache.lock. Lock verified released. Exact qualified
 CLI/probe and prior ELFs remain outside it; latest intermediates are50b4136.
-No cache output is itself qualified. Prior selector061890f/relay-wire27b7f45/
+Current shared intermediates are e86439e. No cache output is itself qualified. Prior selector061890f/relay-wire27b7f45/
 websocket9fe4ce4 builds and all source transport/cleanup/race labs are terminal;
 complete identities remain in implementation_network_20260928 and
 implementation_relay_source_20260928, with their original evidence below.

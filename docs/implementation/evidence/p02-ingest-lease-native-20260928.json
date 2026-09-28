@@ -1,0 +1,157 @@
+{
+  "format": "bigbrotr-initial-ingest-lease-native/1",
+  "status": "PASS_SCOPED_INITIAL_INGEST_RENEWAL",
+  "source": "e86439ebb86b6e24f059d781c1e8050d80dcb6bb",
+  "tree": "5eae50448bc92cebd453b7da664730ecd2d51be3",
+  "tasks": [
+    "P02-T01 Step5",
+    "P02-T02 Steps2/3",
+    "P01-T09 Step1 prerequisite"
+  ],
+  "local_evidence": ".research/implementation/ingest-lease-20260928",
+  "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-lease-e86439e",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_compiler": "Debian clang 14.0.6; exact tool paths/hashes retained in build-result.json",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "rocksdb": "rocksdb 0.25.0 / librocksdb-sys 0.19.0+11.8.1",
+    "container_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d"
+  },
+  "identities": {
+    "source_manifest_sha256": "ab0745243264b30014fa0a4302c067f07ffb36726f736d4b0761d47b9a749a82",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "binary_sha256": "c306285f8472f2350cedd4df00c5ebe15729f98c76cdc13afb65cc524ecbac7a",
+    "probe_sha256": "d150f84d26e4a85b9f05807da855a4e9ca3dbf8c53c03b9136a82604d783f3b1"
+  },
+  "bundle_sha256": "9909d8385cc84e9e66adadf423fc1a3d11c2174ac05a40a136ceddcc2dde9796",
+  "captured_payload_manifest_sha256": "513abf4af70a2eb2048bb325e967c19b15085b8a29eefd7b4c6a5102979808d6",
+  "root_review": {
+    "status": "PASS_BOUNDED_ROOT_REVIEW",
+    "source": "e86439ebb86b6e24f059d781c1e8050d80dcb6bb",
+    "source_files": 1553,
+    "captured_payloads": 81,
+    "cases": 11,
+    "actual_tables_per_case": 64,
+    "native_rows_per_case": 12,
+    "original_inputs_per_case": 1,
+    "no_dependency_or_persistent_format_change": true,
+    "terminal_audit": "2026-09-28T14:47:21.977220+00:00"
+  },
+  "checks": [
+    "Mac missing-method RED is retained; scoped library/probe Clippy and formatter pass after implementation",
+    "Exact native release CLI/probe build and scoped Clippy pass; no new native unit suite claimed",
+    "Eleven real PostgreSQL/RocksDB schedules pass; every one compares all 64 Control tables/xmin, 12 exact native rows and its original CBOR request/receipt",
+    "Successful renewal changes only the initial Ingest deadline/xmin to the unchanged Control deadline. An actual committed visibility read then succeeds after the original Ingest deadline",
+    "Expired Ingest, expired Control, closing producer, draining Ingest, first/second policy refusal, delayed validation and changed registration/Control identity preserve complete state",
+    "Cancellation waits for the actual backend-incarnation dataset-lock barrier. Reuse is refused while the original advisory fence remains held. Driver termination and all resulting rows are observed",
+    "Root independently compared 1,553 exact Git source hashes and 81 captured payloads; unchanged templates and 939 other container projections; all owned resources stopped without OOM and compiler lock free"
+  ],
+  "cases": [
+    {
+      "name": "pass",
+      "status": "PASS"
+    },
+    {
+      "name": "expired",
+      "status": "PASS"
+    },
+    {
+      "name": "control-expired",
+      "status": "PASS"
+    },
+    {
+      "name": "closing",
+      "status": "PASS"
+    },
+    {
+      "name": "draining",
+      "status": "PASS"
+    },
+    {
+      "name": "policy-first",
+      "status": "PASS"
+    },
+    {
+      "name": "policy-second",
+      "status": "PASS"
+    },
+    {
+      "name": "delayed",
+      "status": "PASS"
+    },
+    {
+      "name": "wrong-registration",
+      "status": "PASS"
+    },
+    {
+      "name": "wrong-control",
+      "status": "PASS"
+    },
+    {
+      "name": "cancelled",
+      "status": "PASS"
+    }
+  ],
+  "scope": "Same-Control scheduling renewal only. Existing metadata and complete current policy checks remain authoritative; the result supplies no native ownership, admission capability or successor authority.",
+  "fixture_boundary": "Trusted isolated finite client with frozen accepted v2 policy; existing template cloned without mutation. Two literal visibility dictionaries and one bootstrap input exercise actual native custody. This wave neither uses a live socket nor tests signed-event admission.",
+  "original_outcomes": [
+    "No native build or engine failure in this wave",
+    "The missing-method compiler RED is retained",
+    "Read-only AI review caught v1 versus retained-v2 fixture validation before launch; root corrected it and the statistics snapshot observer before execution"
+  ],
+  "structure": "One connected method with visible transaction and named multiline SQL; reuse existing policy tracker, registry identity checks and owner locks. No migration, persistent format, dependency, trait or orchestration framework added.",
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "e86439ebb86b6e24f059d781c1e8050d80dcb6bb",
+    "observed_at": "2026-09-28T14:47:21.977220+00:00",
+    "prior_unchanged": 939,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "1d06069240af8270f099fd7c4400d1629ce4464edcb97e0d61d1f69b14656db8",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "f1ae68b788f47753bbd2014a44569b72bf53aed714a631fcff159007fe869c3d",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "58aabe36a625892505fc38433936f10d1b5a74a9caace84e3adb7bf3c0b56d8e",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1553,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 64619601920,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "not_run": [
+    "installed Ingest/Sync/M1",
+    "lost or delayed COMMIT",
+    "renewal-write old-deadline predicate negative control",
+    "policy/closing lock races",
+    "native worker interruption",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ]
+}
