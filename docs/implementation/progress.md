@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is unpublished candidate a6c28e625176ba9835742260c57015c0141e9c7d,
-tree4fae79b4a4a2bde3864c91aa12b18c2ec3834ae1; origin/main remains ac3a302.
-Root owns the fixture-only correction and evidence/documentation below. Product
+Local main is e06f58063e36aa6c62acbb2d882eecfcf52f0e24 (fixture correction),
+tree2807f8fad03f613885a4af3657ca56b457064d64; origin/main remains ac3a302.
+Root owns the pending scoped evidence/checkpoint commit; product a6c28e6 remains. Product
 and applied0020 bytes are unchanged. Previous qualified product5be0dbd remains
 recorded below; maintenance and policy-version evidence are committed.
 No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
@@ -101,7 +101,8 @@ No current issuer/ban consumer or signed acquisition claim exists yet. After thi
 focused SQL evidence, implement that minimum current authority/committed scope
 consumer; full discovery, Monitor and renewable sessions are not prerequisites.
 
-The next source slice is now implemented but NOT YET QUALIFIED. Root owns new
+The source binding is implemented; its first wave is qualified, but the complete
+persistent boundary remains NOT YET QUALIFIED. Root owns new
 0020 (four nullable all-or-none immutable operational fields on producer_requests),
 acquisition/relay_source, postgres/producer_sources, reservation/initial_batch
 consumers, catalog/manifest and affected fixture callers. Old applied SQL/native
@@ -147,14 +148,32 @@ compiler cache released. Free68,708,429,824bytes. PG77dddadac1bf exited0, client
 exited143, noOOM; internal172.16.240.64/28. Preserve original database/native
 store and failure, do not rerun launchers. Inventory implementation_relay_source_20260928.
 
-Next bounded action: commit fixture correction and run fresh first-wave database
-on Tux with exact original a6c28e6 ELFs after Git equality checks (no rebuild).
-Use fresh internal172.16.240.80/28 after overlap/process/container/disk inventory.
-Complete phase-state comparison also closes the review's dispatch-fixture gap.
-Two transaction boundaries, contradictory/omitted binding, unchanged retries,
-concurrency/rollback, import exclusion and ambiguous/revoked-source positive recovery
-remain required before qualifying this persistent boundary. The finite source
-issuer/committed visibility/bans/socket consumer remain subsequent real work.
+Fresh e06f580 first wave PASS69 actual PG/Rocks checks with original a6c28e6
+ELFs, all product/build inputs byte-identical. [Report](evidence/p02-relay-source-native-20260928.json).
+Root capture review compared all64 tables, both upgrade physical identities,
+complete original application data and independent native fact/index/input bytes.
+Eight scenarios have28 committed or16 bootstrap native rows; refusal/retry
+snapshots and phase-specific reservation effects match. Original failed report
+is preserved. No additional product correction was required.
+
+Root runs/relay-source-recheck-e06f580 stopped-retained06:43:58UTC, owner5e69b0f060b1607c25230d1dbd3e5608,
+PID3059889/start396007056 terminal. Terminal06:44:45UTC verifies889 prior
+projections/eight unrelated running,1467 clean source files,59 safe payloads and
+original ELFs. Client2dc3c05e9e85 exited143, PG7177550705c4 exited0/noOOM;
+internal172.16.240.80/28, free68,433,506,304bytes. Ten databases/eight source native
+stores plus upgrade store retained. Ignored .research/implementation/relay-source-recheck-e06f580
+owns launch/collector/root-review. No compiler cache or new network input duplicated.
+
+Next bounded action: complete relational relay/import exclusion and concurrency
+with rollback, then ambiguous/revoked-source positive outcome recovery before
+qualifying this persistent boundary. Reuse the retained native build/database where
+safe. Two real Control sessions cannot independently race: the backend-bound fence
+has one owner. Privileged injected writers must be labeled as lock-freshness tests;
+real enrollment withdrawal remains required for the recovery journey. Same-
+transaction import-before-bound-reservation is a discriminating new-trigger case,
+not replaceable by a committed import winner's old duplicate-row refusal.
+Finite source issuer/committed visibility/bans/socket consumer remain subsequent
+real work on the same P02/P03/P04 to P01-T09 Step2/M1 path.
 
 ## Current enrollment implementation and evidence
 

@@ -1,0 +1,442 @@
+{
+  "format": "bigbrotr-relay-source-qualification/1",
+  "status": "PASS_SCOPED_RELAY_SOURCE_FIRST_WAVE",
+  "source": "a6c28e625176ba9835742260c57015c0141e9c7d",
+  "harness_source": "e06f58063e36aa6c62acbb2d882eecfcf52f0e24",
+  "harness_tree": "2807f8fad03f613885a4af3657ca56b457064d64",
+  "tasks": [
+    "P02-T01 Step6 prerequisite",
+    "P03-T01 source binding prerequisite"
+  ],
+  "implementation": "Immutable optional original operational source tuple; current enrollment rechecked before reservation and dispatch. This is data binding, not source permission.",
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+  },
+  "artifacts": {
+    "binary_sha256": "08e54927129515681b86ec7c42f765175451426d2477c5e61cdf2baf9c24294c",
+    "probe_sha256": "65294bc973a10bc1ec96deb744ea5281c02d15a9650e7d9aa98d3d1c3375cacf",
+    "source_manifest_sha256": "231af6c8e4ca751cbe32e5e3d0539a6c71ce9b7cd72bed46aafb644c7455969a"
+  },
+  "native_build": "Original a6c28e6 build,31 catalog/CLI tests and Clippy passed; no unchanged rebuild for e06f580 fixture correction",
+  "connected": {
+    "checks": 69,
+    "cases": [
+      {
+        "name": "bb_source_upgrade-initial-schema",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_upgrade-initialize",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_upgrade-activate-initial",
+        "status": "PASS"
+      },
+      {
+        "name": "legacy-unbound-real-bootstrap",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_upgrade-domain-column-rewrite",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_upgrade-additive-upgrade",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_upgrade-reapply-unchanged",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_template-initial-schema",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_template-initialize",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_template-activate-initial",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_template-domain-column-rewrite",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_template-additive-upgrade",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_template-reapply-unchanged",
+        "status": "PASS"
+      },
+      {
+        "name": "source-pass-actual-adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "source-pass-complete-phase-state",
+        "status": "PASS"
+      },
+      {
+        "name": "source-pass-independent-complete-native-facts",
+        "status": "PASS"
+      },
+      {
+        "name": "source-pass-independent-original-inputs",
+        "status": "PASS"
+      },
+      {
+        "name": "source-pass-exact-reservation-count",
+        "status": "PASS"
+      },
+      {
+        "name": "source-pass-independent-source-metadata",
+        "status": "PASS"
+      },
+      {
+        "name": "source-pass-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "source-omitted-actual-adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "source-omitted-complete-phase-state",
+        "status": "PASS"
+      },
+      {
+        "name": "source-omitted-independent-complete-native-facts",
+        "status": "PASS"
+      },
+      {
+        "name": "source-omitted-independent-original-inputs",
+        "status": "PASS"
+      },
+      {
+        "name": "source-omitted-exact-reservation-count",
+        "status": "PASS"
+      },
+      {
+        "name": "source-omitted-independent-source-metadata",
+        "status": "PASS"
+      },
+      {
+        "name": "source-omitted-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "source-changed-actual-adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "source-changed-complete-phase-state",
+        "status": "PASS"
+      },
+      {
+        "name": "source-changed-independent-complete-native-facts",
+        "status": "PASS"
+      },
+      {
+        "name": "source-changed-independent-original-inputs",
+        "status": "PASS"
+      },
+      {
+        "name": "source-changed-exact-reservation-count",
+        "status": "PASS"
+      },
+      {
+        "name": "source-changed-independent-source-metadata",
+        "status": "PASS"
+      },
+      {
+        "name": "source-changed-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "source-legacy-adopt-actual-adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "source-legacy-adopt-complete-phase-state",
+        "status": "PASS"
+      },
+      {
+        "name": "source-legacy-adopt-independent-complete-native-facts",
+        "status": "PASS"
+      },
+      {
+        "name": "source-legacy-adopt-independent-original-inputs",
+        "status": "PASS"
+      },
+      {
+        "name": "source-legacy-adopt-exact-reservation-count",
+        "status": "PASS"
+      },
+      {
+        "name": "source-legacy-adopt-independent-source-metadata",
+        "status": "PASS"
+      },
+      {
+        "name": "source-legacy-adopt-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "source-visibility-actual-adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "source-visibility-complete-phase-state",
+        "status": "PASS"
+      },
+      {
+        "name": "source-visibility-independent-complete-native-facts",
+        "status": "PASS"
+      },
+      {
+        "name": "source-visibility-independent-original-inputs",
+        "status": "PASS"
+      },
+      {
+        "name": "source-visibility-exact-reservation-count",
+        "status": "PASS"
+      },
+      {
+        "name": "source-visibility-independent-source-metadata",
+        "status": "PASS"
+      },
+      {
+        "name": "source-visibility-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "source-withdrawn-actual-adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "source-withdrawn-complete-phase-state",
+        "status": "PASS"
+      },
+      {
+        "name": "source-withdrawn-independent-complete-native-facts",
+        "status": "PASS"
+      },
+      {
+        "name": "source-withdrawn-independent-original-inputs",
+        "status": "PASS"
+      },
+      {
+        "name": "source-withdrawn-exact-reservation-count",
+        "status": "PASS"
+      },
+      {
+        "name": "source-withdrawn-independent-source-metadata",
+        "status": "PASS"
+      },
+      {
+        "name": "source-withdrawn-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "source-stale-generation-actual-adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "source-stale-generation-complete-phase-state",
+        "status": "PASS"
+      },
+      {
+        "name": "source-stale-generation-independent-complete-native-facts",
+        "status": "PASS"
+      },
+      {
+        "name": "source-stale-generation-independent-original-inputs",
+        "status": "PASS"
+      },
+      {
+        "name": "source-stale-generation-exact-reservation-count",
+        "status": "PASS"
+      },
+      {
+        "name": "source-stale-generation-independent-source-metadata",
+        "status": "PASS"
+      },
+      {
+        "name": "source-stale-generation-drivers-joined",
+        "status": "PASS"
+      },
+      {
+        "name": "source-dispatch-refused-actual-adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "source-dispatch-refused-complete-phase-state",
+        "status": "PASS"
+      },
+      {
+        "name": "source-dispatch-refused-independent-complete-native-facts",
+        "status": "PASS"
+      },
+      {
+        "name": "source-dispatch-refused-independent-original-inputs",
+        "status": "PASS"
+      },
+      {
+        "name": "source-dispatch-refused-exact-reservation-count",
+        "status": "PASS"
+      },
+      {
+        "name": "source-dispatch-refused-independent-source-metadata",
+        "status": "PASS"
+      },
+      {
+        "name": "source-dispatch-refused-drivers-joined",
+        "status": "PASS"
+      }
+    ]
+  },
+  "root_review": {
+    "status": "PASS_ROOT_CAPTURE_REVIEW_ONLY",
+    "checks": 69,
+    "upgrades": [
+      {
+        "database": "bb_source_upgrade",
+        "rows": 1,
+        "physical_rewrite": "producer_requests",
+        "logical_preservation": true
+      },
+      {
+        "database": "bb_source_template",
+        "rows": 0,
+        "physical_rewrite": "producer_requests",
+        "logical_preservation": true
+      }
+    ],
+    "modes": [
+      {
+        "mode": "source-pass",
+        "native_rows": 28,
+        "requests": 2,
+        "outcomes": 2,
+        "sequence": 31
+      },
+      {
+        "mode": "source-omitted",
+        "native_rows": 28,
+        "requests": 2,
+        "outcomes": 2,
+        "sequence": 31
+      },
+      {
+        "mode": "source-changed",
+        "native_rows": 28,
+        "requests": 2,
+        "outcomes": 2,
+        "sequence": 31
+      },
+      {
+        "mode": "source-legacy-adopt",
+        "native_rows": 28,
+        "requests": 2,
+        "outcomes": 2,
+        "sequence": 31
+      },
+      {
+        "mode": "source-visibility",
+        "native_rows": 16,
+        "requests": 1,
+        "outcomes": 1,
+        "sequence": 17
+      },
+      {
+        "mode": "source-withdrawn",
+        "native_rows": 16,
+        "requests": 1,
+        "outcomes": 1,
+        "sequence": 17
+      },
+      {
+        "mode": "source-stale-generation",
+        "native_rows": 16,
+        "requests": 1,
+        "outcomes": 1,
+        "sequence": 17
+      },
+      {
+        "mode": "source-dispatch-refused",
+        "native_rows": 16,
+        "requests": 2,
+        "outcomes": 1,
+        "sequence": 17
+      }
+    ]
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-09-28T06:44:45.772267+00:00",
+    "source": "e06f58063e36aa6c62acbb2d882eecfcf52f0e24",
+    "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+    "prior_unchanged": 889,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "id": "2dc3c05e9e85ff8cca746bd3b2a6a8196a80a83ba6c9b5d6826ae6ad5dad8b62",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1467,
+    "free_bytes": 68433506304
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580",
+    "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+    "state": "stopped-retained",
+    "build": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-a6c28e6/out/artifacts",
+    "network": "bigbrotr-implementation-pg-20260917-source_e06f580",
+    "subnet": "172.16.240.80/28",
+    "owned_stopped": [
+      "2dc3c05e9e85ff8cca746bd3b2a6a8196a80a83ba6c9b5d6826ae6ad5dad8b62",
+      "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec"
+    ]
+  },
+  "evidence": {
+    "local_capture": ".research/implementation/relay-source-recheck-e06f580",
+    "capture_tar_sha256": "a0e41ff5a134c3f9ae8d3c527918e52f78634dbc09bb784856f84b3ead701a5b",
+    "capture_manifest_sha256": "b7876b18ffed650d00442ba00b97c698058c9988def1d93598660f7740cf3988",
+    "raw_report_sha256": "232233d69be60f19b1d135fdd61e45d957128ccf9ffe109149ccfc991438724c",
+    "recipe": "experiments/relay-source/run.py ROOT BUILD PRIVATE_SUBNET",
+    "root_review_recipe": ".research/implementation/relay-source-recheck-e06f580/review-capture.py"
+  },
+  "review": {
+    "independent_ai": "Reviewed original source-binding owners/callers; no concrete product blocker. Dispatch phase state gap corrected before successful run.",
+    "structure": "Four fields on existing bounded ledger; focused named SQL and phase enum, no new table/framework. Transaction ordering visible.",
+    "original_failure": "p02-relay-source-upgrade-incomplete-20260928.json remains FAIL; constrained-domain physical rewrite now observed separately from complete logical preservation"
+  },
+  "not_run": [
+    "source grant and actual socket attribution",
+    "private source visibility policy and bans",
+    "restrictive drain",
+    "concurrent lock schedules",
+    "lost COMMIT and positive recovery after revocation",
+    "relay/import double binding",
+    "load and aged state",
+    "arm64",
+    "release"
+  ]
+}

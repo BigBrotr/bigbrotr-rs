@@ -28253,7 +28253,7 @@
     "evidence": "docs/implementation/evidence/p01-policy-versions-native-20260928.json"
   },
   "implementation_relay_source_20260928": {
-    "status": "first-wave-incomplete",
+    "status": "first-wave-qualified-persistent-boundary-incomplete",
     "original": {
       "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-a6c28e6",
       "source": "a6c28e625176ba9835742260c57015c0141e9c7d",
@@ -28286,6 +28286,25 @@
       "evidence": "docs/implementation/evidence/p02-relay-source-upgrade-incomplete-20260928.json",
       "retention": "Preserve all source, database, native store, artifacts, original failure and diagnostic. No resources retired.",
       "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757"
+    },
+    "recheck": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580",
+      "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "state": "stopped-retained",
+      "build": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-a6c28e6/out/artifacts",
+      "network": "bigbrotr-implementation-pg-20260917-source_e06f580",
+      "subnet": "172.16.240.80/28",
+      "owned_stopped": [
+        "2dc3c05e9e85ff8cca746bd3b2a6a8196a80a83ba6c9b5d6826ae6ad5dad8b62",
+        "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec"
+      ],
+      "source": "e06f58063e36aa6c62acbb2d882eecfcf52f0e24",
+      "tree": "2807f8fad03f613885a4af3657ca56b457064d64",
+      "application_source": "a6c28e625176ba9835742260c57015c0141e9c7d",
+      "launch_pid": 3059889,
+      "launch_start_ticks": "396007056",
+      "evidence": "docs/implementation/evidence/p02-relay-source-native-20260928.json",
+      "retention": "All ten databases, eight native source stores and upgrade store retained; no deletion. Original failed attempt unchanged."
     }
   }
 }
