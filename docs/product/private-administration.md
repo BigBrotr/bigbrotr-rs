@@ -491,8 +491,11 @@ an idle-extending `/me` call. Its kind/state/time/page-size options use the exis
 wire meanings. `--cursor-ref file:/ABSOLUTE/PATH` loads exact bounded cursor bytes,
 never command-line credential/token values. Output is one validated JSON page;
 repeat the same filters with its next cursor explicitly. No automatic fetch-all,
-new-list fallback, authority caching or token decoding occurs. These are selected
-CLI contracts, not yet qualified implementation claims.
+new-list fallback, authority caching or token decoding occurs. The
+[Mac tests](../implementation/evidence/p08-cli-jobs-mac-20260928.json) and
+[installed Linux amd64 journey](../implementation/evidence/p08-cli-jobs-native-20260928.json)
+qualify their exercised boundaries. Remote TLS, filesystem fault/power-loss,
+remaining job commands and complete operational acceptance remain unfinished.
 
 ## Local first-owner transition
 

@@ -12,10 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Main HEAD is ad5e9e61720fc673e32645b342d8ecebda45a539 (local unpublished CLI
-candidate); last verified origin/main is b4b48841be48df31a06a1b254832673f85c30407.
-Root is sole writer/integrator. Root-owned dirty work: export-execution laboratory
-CLI profile/client/oracles/dependency preparation, this checkpoint and inventory.
+Main HEAD is 649965662afe6c72ec5f6fe421af4ea34caabda8 (unpublished native fixture
+candidate after product ad5e9e6); last verified origin/main is b4b48841be48df31a06a1b254832673f85c30407.
+Root is sole writer/integrator. Root-owned dirty work: native CLI evidence, user/product/task documentation,
+this checkpoint and inventory. Fixture/product sources remain committed and unchanged.
+Primary source was clean at transfer; no unexpected contributor changes.
 Read-only AI completed the new fixture review and reread both corrections; no
 further scoped blocker found, no edits/SSH/tests. Cursor assertions qualify only
 the fields actually checked, not every envelope binding.
@@ -34,7 +35,7 @@ is needed for this operational consumer.
 over b4b to ad5e9e6. Source/result/log identities reverified before commit. Actual
 13 executable/socket/file tests,50 binary tests and3 CLI contracts passed; Clippy,
 formatting, artifact/link checks pass. Capture under ignored
-.research/implementation/cli-jobs/local-20260928-01. No native CLI claim yet.
+.research/implementation/cli-jobs/local-20260928-01. The native journey below is now qualified; this earlier report keeps its Mac-only scope.
 
 Access login/logout reuse HTTP sessions; jobs list emits one validated128KiB page.
 One direct bounded Hyper connection, no proxy/DNS/redirect/retry or idle touch.
@@ -117,41 +118,71 @@ Latest published laboratory is export-runtime-979c8bc-job-pages-lifetime,
 owner a9d04826e11a8afede9c969b6dec179e, oldPID2703428/start393338880 terminal.
 Its39 safe payloads and1364 Git files are verified under ignored
 .research/implementation/job-pages/attempt-979c8bc-job-pages-lifetime.
-Native wrapper exit0, PG137/no OOM means deadline cleanup, not graceful recovery.
+Native wrapper exit 0, PG137/no OOM means deadline cleanup, not graceful recovery.
 
-Current CLI native run NOT_STARTED. Last maintenance census preserved850 stable
+Current CLI native run is stopped-retained at export-runtime-6499656,
+owner 4ff815a30b3a667d92717a648436fe2d, PID 2745227/start393689005 now terminal.
+Exact Git tree 978f9490ba476bce63cf053c64e14c40f994c2f7. Inventory cli_runs owns
+all three stopped containers and removed network. Live terminal census at
+00:22:35UTC preserved 853 projections/eight unrelated running; source/artifact/native
+identities match, no owned OOM, orchestrator absent-or-terminal and network absent.
+Free 75,675,471,872 bytes; recheck before more allocation. Fetch/native exit 0; PG137
+is deadline cleanup only. Preserve this fresh reusable compiler cache and original
+engine/CLI artifacts; existing8fa cache remains a laboratory input until updated.
+
+The [native CLI report](evidence/p08-cli-jobs-native-20260928.json) records 97 native
+tests/Clippy, 22 actual CLI invocations, 14 independent page sets and four refusals.
+Actual protected files bind to the exact SQL sessions and same-xmin issue audits;
+owner epochs 5→6 preserve same-session continuation. Grant revoke/restoration forces
+current refusal/stale-binding refusal and explicit fresh success. Logout revokes
+exactly the saved Alice session; repeat is idempotent and Bob remains usable.
+Ten whole ledgers agree at six saved boundaries; session idle/audit unchanged
+outside attributed issue/logout. No known credential or raw cursor canary in 51 selected
+capture payloads; 1376 exact Git source hashes checked. Root independently reviewed
+capture/complete page fields/clock/ledger/audit/artifact/live effects. Read-only AI
+review was pre-run only. Native tests include the genuine blocked pipe, timeout,
+SIGTERM, file races and bounded response cases; this is not capacity evidence.
+Ignored attempt-6499656, review-cli.py, collect-cli.py and live-cli.py retain recipes
+and original results. Dependency archives match the exact two new locked crates.
+
+Last maintenance census preserved 850 stable
 container projections and eight unrelated running containers, no active BigBrotr.
-Retired only7ee and877 out/build/target and cargo-home, separately verified source,
+Retired only 7ee and877 out/build/target and cargo-home, separately verified source,
 original captures/ELFs, process FD/maps and mount references. Exact inventory keys
 retire_7ee_cache_20260928 and retire_877_cache_20260928 own receipts/recipes/hashes.
-7ee removed3,494,223,872 allocated bytes; free72,954,765,312→76,447,469,568.
-877 removed3,333,423,104 allocated bytes; free76,436,516,864→79,768,420,352.
+7ee removed 3,494,223,872 allocated bytes; free 72,954,765,312→76,447,469,568.
+877 removed 3,333,423,104 allocated bytes; free 76,436,516,864→79,768,420,352.
 Concurrent host writes affect deltas. Six/five referenced test executables copied
 and hashed outside caches before deletion; identities measured at retirement,
 not retroactive original-run hashes. Sources/logs/DB/archive/fault states remain.
 No existing container, volume or whole laboratory removed. Never rerun any old
 retirement recipe (d860,b93,5de,7ee,877). Other caches remain unassessed.
 
-Protect4e6b5c0 seed/native assets and8fa/f677 compiler caches. Lab currently consumes
+Protect 4e6b5c0 seed/native assets and 8fa/f677 compiler caches. Lab currently consumes
 8fa; do not retire before replacing that dependency. f677 parent SHA
 ac15753aa08abee07ccc76431b9a407544427ed269c53c09ba4435628ff4f5ec and worker
 3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353 remain retained.
 Protect private-history-32dd58d and stopped history-capture-b5c862a, including its
 actual dependency installed-publication-61271e2/out/archive-worker. Qualification/
 object-storage datasets/backups/archives/catalogs/indices/fault states untouched.
-Negative worktrees9fa8b98/8effc76/5f1582c/a334ac8 never merge/push; dirty
+Negative worktrees 9fa8b98/8effc76/5f1582c/a334ac8 never merge/push; dirty
 private-panel-no-revoke and detached ed2a93b untouched. No release secrets needed.
 
 ## Next bounded action and remaining gates
 
-Finish fixture review/checks and commit an unpublished native candidate. Transfer
-exact Git through the existing bundle workflow, verify clean source and current
-capacity above unchanged72GiB build preflight, then run --runtime-job-pages-cli.
-Actual executable/native worker, PostgreSQL16.15, signed archive seed and empty
-export precede CLI login/page/restart/grant/logout assertions. Compare independent
-whole job/artifact/pin rows+xmin, session idle and session/audit mutation deltas;
-exclude raw credentials/cursors from capture. Preserve original failure and cleanup
-outcomes. Review source/artifact/capture identities before evidence/push.
+Complete native report/documentation checks, review their full diff and push the
+two verified candidates plus evidence commit to private origin/main. Then advance
+M1's missing production acquisition path: P04-T02 Steps1–5 guarded transport is the
+concrete first prerequisite of P03-T02 real socket admission and P01-T09 Step 2.
+Read the complete linked egress/network contracts and current endpoint, budget,
+authority owners before choosing the first direct-route responsibility. Real
+DNS/TLS/WS fixtures must observe destinations and cancellation; no unguarded default
+connector or ready stub. Overlay adapters remain selected later acceptance, not
+silently removed. Existing signed archive/read/export adapters provide consumers;
+no need to finish analytics, every relay service or full historical synchronization
+before the first controlled event. This is task selection, not implemented network
+behavior. Only P01/P03/P04 task sections have been inspected for this next boundary;
+complete owning contracts/upstream sources remain to be read before editing.
 
 Further discovery gates: expiry/revocation during socket delivery, actual
 backdated/tied admissions, resource exhaustion, aged/mixed workloads; broader job

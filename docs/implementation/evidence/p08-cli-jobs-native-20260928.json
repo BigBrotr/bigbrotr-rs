@@ -1,0 +1,320 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-28",
+  "tasks": [
+    "P08-T02 session consumer",
+    "P08-T03 Step3"
+  ],
+  "status": "PASS_SCOPED_INSTALLED_CLI",
+  "source": {
+    "revision": "649965662afe6c72ec5f6fe421af4ea34caabda8",
+    "tree": "978f9490ba476bce63cf053c64e14c40f994c2f7",
+    "product_commit": "ad5e9e61720fc673e32645b342d8ecebda45a539",
+    "clean_at_transfer": true,
+    "source_files": 1376,
+    "source_manifest_sha256": "d207573c84c4005834adb7fcfd78e8497c56dc9979ca8a79f01d38c9f2a238ca"
+  },
+  "environment": {
+    "host": "Tux native Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    }
+  },
+  "artifacts": {
+    "bigbrotr": "e279bd6ee739e1995b55116711bf52fcabd96b2c6e0956dc16aa899b554193c7",
+    "bigbrotr-archive-worker": "3bb6768d63337ac314a929fca0b8e6ee8b818fbbb98fcba3c1c41c7c983b8353"
+  },
+  "dependencies": {
+    "lockfile_sha256": "e9d3f224f31a1d4fe53ee0993529d697516dd2afb06159ec1b448ed989e478d0",
+    "delta": {
+      "previous_sha256": "4f9cbb84b5a85d7b86960096579ce1a917c518f2f981712b77c6bce4a6e6a0fa",
+      "current_sha256": "e9d3f224f31a1d4fe53ee0993529d697516dd2afb06159ec1b448ed989e478d0",
+      "additions": [
+        {
+          "name": "try-lock",
+          "version": "0.2.5",
+          "checksum": "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
+        },
+        {
+          "name": "want",
+          "version": "0.3.1",
+          "checksum": "bfa7760aed19e106de2c7c0b581b509f2f25d3dacaf737cb82ac61bc6d760b0e",
+          "dependencies": [
+            "try-lock"
+          ]
+        }
+      ],
+      "changed": "Hyper1.11.1 adds want; every other package unchanged"
+    },
+    "downloaded_archives": {
+      "try-lock-0.2.5.crate": {
+        "sha256": "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b",
+        "bytes": 4314,
+        "path": "registry/cache/index.crates.io-1949cf8c6b5b557f/try-lock-0.2.5.crate"
+      },
+      "want-0.3.1.crate": {
+        "sha256": "bfa7760aed19e106de2c7c0b581b509f2f25d3dacaf737cb82ac61bc6d760b0e",
+        "bytes": 6398,
+        "path": "registry/cache/index.crates.io-1949cf8c6b5b557f/want-0.3.1.crate"
+      }
+    },
+    "method": "Copied inventoried 8fa compiler cache; isolated no-credential locked Linux-target cargo fetch, then fresh offline native compilation. Original 4e native producer seeds the signed archive separately."
+  },
+  "executed": {
+    "checks": [
+      {
+        "name": "installed-build",
+        "command": [
+          "/usr/bin/python3",
+          "/out/build/source/experiments/export-execution/native.py",
+          "--build-runtime"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 65.20406328700483
+      },
+      {
+        "name": "management-tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 24.464707239996642
+      },
+      {
+        "name": "page-domain",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "management::job_list"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 17.190986590925604
+      },
+      {
+        "name": "page-schema",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "control_schema"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 33.11227690987289
+      },
+      {
+        "name": "cli-sessions",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "cli_sessions",
+          "--test",
+          "cli_contract"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 13.155676556751132
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 4.8708976758643985
+      }
+    ],
+    "counts": {
+      "collected": 6,
+      "executed": 6,
+      "failed": 0,
+      "not_run": 0
+    },
+    "tests": {
+      "binary": 50,
+      "page_domain": 4,
+      "schema": 27,
+      "cli_contract": 3,
+      "cli_sessions": 13,
+      "failed": 0,
+      "ignored": 0
+    },
+    "cli_invocations": 22,
+    "page_sets": 14,
+    "expected_refusals": 4,
+    "ledger_boundaries": 6,
+    "ledger_sizes": {
+      "jobs": 6,
+      "job_admissions": 6,
+      "job_input_bounds": 6,
+      "export_jobs": 6,
+      "export_execution_units": 1,
+      "artifacts": 1,
+      "artifact_files": 1,
+      "snapshot_leases": 15,
+      "archive_snapshot_pins": 15,
+      "retention_claims": 15
+    }
+  },
+  "observations": [
+    "Actual installed main/worker build and original signed archive independently read. Old retained job completes as an empty export; five real signed-event acceptances remain deferred by deliberate 256 MiB execution budget.",
+    "CLI logins create exactly two sessions and two issue audits. Independent Python SHA256 binds both saved secrets to the exact SQL row, expected username/principal, per-command SQL clock window and shared audit xmin. Plain secrets/digests stay out of capture.",
+    "First/next/final/repeat and empty advancing pages match full independent SQL rows. Inclusive/exclusive time filters have discriminating expected results, including a lower bound above every job time. Other actor has an empty list and cannot use Alice continuation.",
+    "Control owner epochs 5\u21926 with distinct incarnations; same protected session/cursor successfully continues after actual process restart, with unchanged original cursor lifetime.",
+    "Current status.read removal refuses immediately; restoration leaves the original grant-bound token incompatible, while an explicit fresh listing succeeds. These privileged SQL grant fixtures do not qualify a production grant editor.",
+    "Logout changes exactly Alice saved session and adds one same-transaction revocation audit. Repeating logout leaves sessions/audit unchanged; Alice listing refuses, Bob remains usable. Credential files remain byte-identical.",
+    "Ten complete job/artifact/pin ledgers including xmin agree at all six saved boundaries. Read/restart/grant intervals preserve session timestamps/xmin and management audit. Issuance/revocation effects use separate expected baselines.",
+    "Native 13 CLI tests also exercise actual full stdout pipe, partial-body timeout/socket EOF, no-overwrite races, parent locking, unsafe files, SIGTERM and response bounds. All 97 selected tests execute; filtered unrelated domain tests are not claimed.",
+    "Root verified 51 captured payload hashes and 1376 Git source files, complete page fields, clock windows, session/audit deltas and exact main/worker/native identities. Capture refuses known credential/cursor canaries before transfer."
+  ],
+  "review": {
+    "root": "Complete new modules/tests and affected caller/contract boundaries read; source/diff and independent captured page/ledger checks completed.",
+    "independent_ai": "Pre-run read-only static review; lower-bound discrimination and precise saved-credential/session binding gaps corrected and reread. No reviewer tests/SSH/post-run capture review."
+  },
+  "cleanup": {
+    "owner": "4ff815a30b3a667d92717a648436fe2d",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-6499656",
+    "containers": [
+      {
+        "name": "dependency-fetch",
+        "id": "aba4fba3d7563307267929070408a11328b3fedde4dfe5461303de7bb993bba3"
+      },
+      {
+        "name": "postgres",
+        "id": "37c99b400a3ff73f001c32a0486a28ce6a9879fcd72cc546f551094124d672bc"
+      },
+      {
+        "name": "rust-visibility",
+        "id": "89c7bdc9d7ea1dac466bf5b5c4209c2625b0adaf743a1900053f2f65ea15cf8e"
+      }
+    ],
+    "network_id": "47b1d751003f85c8da2b301ea358e678b494cfc821beecba763ff134d53f7106",
+    "network_state": "removed after owner/no-endpoint audit",
+    "prior_containers_preserved": 850,
+    "terminal_census": 853,
+    "unrelated_running": 8,
+    "backends": {
+      "bbpub_control_normal": 0,
+      "bbpub_normal": 0
+    },
+    "native_exit": 0,
+    "fetch_exit": 0,
+    "postgres_wrapper_exit": 137,
+    "oom": false,
+    "free_bytes_at_live_census": 75675471872,
+    "note": "PG137 is deadline cleanup, not graceful shutdown or crash-recovery evidence. All containers stopped-retained; sources/databases/archive/fault states preserved."
+  },
+  "evidence": {
+    "capture": ".research/implementation/job-pages/attempt-6499656/capture",
+    "capture_sha256": "f208ffaa62d00799fbcae82e8b84b36f2f07a89d3a993b3f1892ffadc2c67770",
+    "capture_manifest_sha256": "fd7928d3237e86ac3ea6b69e2493f2c4a1b68a72841f9ebd2a2eabdb34ed31f0",
+    "review": ".research/implementation/job-pages/attempt-6499656/review.json",
+    "review_sha256": "67ac746f9e72f1386b516e1cc1b4007baa32a59ea0ba734ab64fc123bd5bbb39",
+    "live": ".research/implementation/job-pages/cli-terminal-6499656.json",
+    "live_sha256": "912d46bd9b681aaf83f8efc02debbd7c14b2d9f3eb80fa27f3141f1bee049583"
+  },
+  "limitations": [
+    "Bounded six-job trusted-loopback journey; no throughput/RSS/aged/mixed-load or complete production-capacity claim. Existing 64 GiB completion reserve remains unchanged.",
+    "No fresh CLI COMMIT-loss, abrupt PostgreSQL recovery, fsync EIO/ENOSPC or power-loss qualification. Logout retry is after known acknowledgement, not a new lost-reply experiment.",
+    "Cursor oracle checks exercised bindings; full remaining delivery-time expiry/revocation and actual backdated/tied admission pagination acceptance remain open.",
+    "Remote HTTPS, remaining CLI job commands, full P08/P09, clean ordinary Compose installation, native Linux arm64, M1 and selected whole product remain incomplete."
+  ]
+}

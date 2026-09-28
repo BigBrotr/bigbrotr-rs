@@ -27183,6 +27183,48 @@
       "recipe_sha256": "cd05cddd354c2c199a045da8150ccd351a4283012178091c6fa84ff5d28c3d0e",
       "original_result": ".research/implementation/job-pages/retire-877.json",
       "result_sha256": "9267080fb9597cbe13978da7bc4f9cd5e4caa0d5c98f359220b071bc5f91e088"
-    }
+    },
+    "cli_runs": [
+      {
+        "source": "649965662afe6c72ec5f6fe421af4ea34caabda8",
+        "tree": "978f9490ba476bce63cf053c64e14c40f994c2f7",
+        "owner": "4ff815a30b3a667d92717a648436fe2d",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-6499656",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "dependency-fetch",
+            "id": "aba4fba3d7563307267929070408a11328b3fedde4dfe5461303de7bb993bba3"
+          },
+          {
+            "name": "postgres",
+            "id": "37c99b400a3ff73f001c32a0486a28ce6a9879fcd72cc546f551094124d672bc"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "89c7bdc9d7ea1dac466bf5b5c4209c2625b0adaf743a1900053f2f65ea15cf8e"
+          }
+        ],
+        "network_id": "47b1d751003f85c8da2b301ea358e678b494cfc821beecba763ff134d53f7106",
+        "orchestrator": {
+          "pid": 2745227,
+          "start_ticks": "393689005",
+          "source": "649965662afe6c72ec5f6fe421af4ea34caabda8",
+          "tree": "978f9490ba476bce63cf053c64e14c40f994c2f7"
+        },
+        "scope": "Fresh current native compile, 97 tests/Clippy; 22 installed CLI commands, 14 independent pages, 4 refusals, 6 full ledger boundaries; no full task/capacity/Compose/arm64 claim.",
+        "observed_at": "2026-09-28T00:22:35.626962+00:00",
+        "preflight_free_bytes": 79727185920,
+        "required_free_bytes": 77309411328,
+        "live_receipt": ".research/implementation/job-pages/cli-terminal-6499656.json",
+        "qualification": "PASS_SCOPED_INSTALLED_CLI",
+        "evidence": "docs/implementation/evidence/p08-cli-jobs-native-20260928.json",
+        "capture": ".research/implementation/job-pages/attempt-6499656/capture",
+        "network_state": "removed after owner/no-endpoint audit",
+        "terminal_audit_sha256": "c009c39a0d29a772980d1f9df013071463af06414f114d22e503054a25e1750e",
+        "free_bytes_at_terminal": 75686264832
+      }
+    ],
+    "cli_state": "Scoped installed CLI consumer qualified; remaining selected acceptance open"
   }
 }

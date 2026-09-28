@@ -368,9 +368,14 @@ same existing HTTP session/page routes. The [CLI session contract](../product/pr
 owns protected file publication, one-page output and explicit unknown-outcome
 recovery. This is P08-T02 session reuse feeding Step3, without PostgreSQL deployment
 credentials, a new authentication mechanism or scientific read prerequisites.
-Local actual executable/socket tests are in `cli_sessions.rs`; installed engine,
-restart/revocation, cookie binding and independent ledger acceptance remain the
-next qualification boundary. No full task or CLI capability completion is claimed.
+Local actual executable/socket tests are in `cli_sessions.rs`. The
+[installed CLI journey](evidence/p08-cli-jobs-native-20260928.json) at 6499656 now
+executes 97 native tests/Clippy and 22 real CLI commands: 14 independent page sets,
+four refusals, saved-secret/SQL-session binding, restart, current grants and
+idempotent logout. Ten complete ledgers/xmin agree at six boundaries; session idle
+and audit remain unchanged outside explicitly attributed login/logout. This is
+trusted loopback evidence, not remote TLS, other job commands, load or full task
+completion.
 
 Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
 kind/state/created-time filters, default 50/max 200 results, descending
@@ -453,8 +458,8 @@ refusals cover non-sliding natural expiry, allowed/refused skew, shorter TTL wit
 preserved prior retention, changed policy/grants and three account-triggered session
 revocations. Privileged fixture edits do not qualify production policy/grant editors.
 Delivery/exhaustion, backdated/tied pages and mixed/aged work remain open; none
-requires the adjacent scientific pagination subsystem. The next visible consumer
-is the Step3 CLI over this same authenticated page contract.
+requires the adjacent scientific pagination subsystem. The Step3 CLI now has the
+scoped installed evidence above; remaining gates still apply to complete discovery.
 
 Role/relay/artifact summaries share the page-size/authorization rules. Roles and
 relays order by immutable role-instance and endpoint ID respectively; artifacts

@@ -71,10 +71,10 @@ installation remain open qualification work.
 ## CLI preview
 
 The thin CLI implements login, logout and one-page export discovery in the
-trusted-host loopback HTTP profile. Its local executable/socket tests do not yet
-qualify the installed PostgreSQL journey. Remote HTTPS and the remaining job
-commands are still being implemented. Use the private panel for the qualified
-resume workflow above.
+trusted-host loopback HTTP profile. Its [installed Linux amd64 journey](../../implementation/evidence/p08-cli-jobs-native-20260928.json)
+covers login, explicit paging, Control restart, current permissions and logout
+against PostgreSQL. Remote HTTPS and the remaining job commands are still being
+implemented. Use the private panel for the qualified resume workflow above.
 
 Use an existing local account and its exact password in an owned0400/0600 regular
 file, without a trailing newline. The new session destination needs an existing
