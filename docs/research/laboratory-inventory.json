@@ -29525,6 +29525,122 @@
         }
       },
       "evidence": "docs/implementation/evidence/p03-acquisition-claim-faults-native-20260928.json"
+    },
+    "acquisition_execution": {
+      "state": "STOPPED/RETAINED; populated upgrade and13 adapter cases PASS",
+      "source": "19945dc273af93296134e900e10dbb8d24b48e0d",
+      "tree": "a7d0305ee48cb8272eb5de4b4e6ebd50332625c5",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-19945dc",
+      "pid": 3567938,
+      "start_ticks": "400282916",
+      "bundle_sha256": "5c0a8880fa10532cd7774dc23d0fab10a68cca0da0cbd9a13684af89360a3bde",
+      "build_owner": "605de7802785f9e76e42954033faf170",
+      "resources": {
+        "source": "19945dc273af93296134e900e10dbb8d24b48e0d",
+        "tree": "a7d0305ee48cb8272eb5de4b4e6ebd50332625c5",
+        "owner": "605de7802785f9e76e42954033faf170",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-19945dc",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "70dcbf141a0e68b07e110755d853e0099bd3128c16028a325166cdccf982ea00"
+          },
+          {
+            "name": "native",
+            "id": "3b485f6ee9e456be6440ec78074c65e3153de1dc273162ad2507976041ff9a8a"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T18:36:15.626248+00:00",
+        "qualification": "PASS_ACQUISITION_BINDING_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 62689976320,
+        "finished_at": "2026-09-28T18:37:50.088230+00:00"
+      },
+      "local_evidence": ".research/implementation/acquisition-execution-20260928",
+      "cache": "Shared network-1154757 exclusively reused; preserve separately retained artifacts",
+      "retention": "Exact source, artifacts and original results; no dataset deletion; never replay launchers",
+      "next": "No cleanup debt; preserve14 cloned databases/stores, source and exact artifacts. Next job-bound socket deadline/fault and original recovery evidence before installed M1.",
+      "engine_launch": {
+        "source": "19945dc273af93296134e900e10dbb8d24b48e0d",
+        "tree": "a7d0305ee48cb8272eb5de4b4e6ebd50332625c5",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-19945dc",
+        "pid": 3571678,
+        "start_ticks": "400295047"
+      },
+      "engine": {
+        "owner": "3af44796febdaea5ead6312ae1b65649",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "e0ee36a94fd17430ec2aa44dc02dedd3cd17332b2085e8f36589295d27bc6c53",
+          "name": "bigbrotr-acquisition-binding-19945dc"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_19945dc_execution_populated",
+          "bb_scope_bind_19945dc_execution_pass",
+          "bb_scope_bind_19945dc_execution_changed",
+          "bb_scope_bind_19945dc_execution_omitted",
+          "bb_scope_bind_19945dc_execution_unbound",
+          "bb_scope_bind_19945dc_execution_invalid_unbound",
+          "bb_scope_bind_19945dc_execution_certify_unbound",
+          "bb_scope_bind_19945dc_execution_accepted",
+          "bb_scope_bind_19945dc_execution_scope",
+          "bb_scope_bind_19945dc_execution_expired",
+          "bb_scope_bind_19945dc_execution_certify_expired",
+          "bb_scope_bind_19945dc_execution_withdrawn",
+          "bb_scope_bind_19945dc_execution_old_schema",
+          "bb_scope_bind_19945dc_execution_dispatch"
+        ],
+        "status": "PASS_ACQUISITION_EXECUTION_FIRST_WAVE",
+        "started_at": "2026-09-28T18:38:17.008402+00:00",
+        "finished_at": "2026-09-28T18:39:15.647689+00:00"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "19945dc273af93296134e900e10dbb8d24b48e0d",
+        "observed_at": "2026-09-28T18:40:26.220271+00:00",
+        "prior_unchanged": 961,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "70dcbf141a0e68b07e110755d853e0099bd3128c16028a325166cdccf982ea00",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "3b485f6ee9e456be6440ec78074c65e3153de1dc273162ad2507976041ff9a8a",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "e0ee36a94fd17430ec2aa44dc02dedd3cd17332b2085e8f36589295d27bc6c53",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1583,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 62488961024,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      },
+      "evidence": "docs/implementation/evidence/p03-acquisition-execution-native-20260928.json"
     }
   },
   "implementation_relay_registry_20260928": {

@@ -12,9 +12,41 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main/origin are verified3769153. Root owns the uncommitted job-bound
-source/admission implementation, additive0024 and focused fixtures. All owned
-resources are stopped/retained; no active experiment or cleanup obligation.
+Mac main candidate19945dc; private origin3769153 pending the qualification
+commit/push. Root owns documentation/evidence only. All owned resources are
+stopped/retained; no active experiment or cleanup debt.
+
+[Native execution evidence](evidence/p03-acquisition-execution-native-20260928.json)
+qualifies populated0024 upgrade/reapply and13 actual PG/Rocks adapter cases.
+Signed admission binds its original claimed job; exact retry/certification writes
+nothing. Changed/omitted jobs, all-omitted Network origin (including invalid and
+certification), unclaimed/wrong-scope jobs, expired jobs, actual withdrawal and
+missing0024 refuse. A clone-only post-reservation guard leaves original input and
+reservation without native event effects. Independent complete native bytes,
+original CBOR, all operation tables/xmin and upgrade heaps agree.38 Mac/native
+checks and scoped Clippy PASS. Root compared1583 Git files and200 captures.
+No native failure/rerun. Local post-capture review scripts corrected module import,
+audit subject=command key and bootstrap topology=0 expectations against owning
+contracts; originals remain.0024 is now applied/checksummed and immutable.
+
+Run acquisition-binding-19945dc, buildowner605de7802785f9e76e42954033faf170,
+PID3567938/start400282916 terminal; fetch70dcbf14/native3b485f6e exit0.
+Engineowner3af44796febdaea5ead6312ae1b65649, PID3571678/start400295047 terminal;
+cliente0ee36a9 stopped143, borrowedPG71775507 stopped0/no OOM. Fourteen new clones
+and their native stores retained. Audit18:40:26UTC found961 prior projections
+unchanged, eight unrelated running, compiler lock free and62,488,961,024B free.
+Mac last7,532,316KiB. Shared1154757 now holds19945dc intermediates; exact artifacts
+separately retained. Inventory implementation_network_20260928.acquisition_execution
+and ignored .research/implementation/acquisition-execution-20260928 own identities,
+recipes and originals. Never replay launchers or completed cache retirement.
+
+Next: commit/push this bounded qualification; then qualify job-bound actual socket
+remaining duration/cleanup, held reservation COMMIT and original historical
+recovery. Existing source-transport probe has real private socket/native visibility
+and retained source cleanup gates; extend its concrete job consumer without
+rebuilding a second laboratory. Keep policy/Control live longer than the job to
+discriminate its deadline. Native same-owner/running lifecycle, living-owner command
+delivery and complete signed socket→archive/read→restart M1 remain open.
 
 [Native claim-fault evidence](evidence/p03-acquisition-claim-faults-native-20260928.json)
 qualifies all16 schedules: eight actual COMMIT6 cuts and both policy/grant/source/
@@ -93,17 +125,12 @@ omitted. The queued/running eligibility helper rechecks account/action/deadline
 before source/Ingest/producer locks; this does not close scheduler/progress state.
 Both socket and native delivery leases consume the original remaining duration.
 No native codec or recovery change. Existing pre24 foundations remain explicit.
-Mac33 catalog,2 membership and3 actual migration entrypoint checks PASS; scoped
-Clippy PASS. Original UnknownTarget(24) RED is retained. Actual SQL/engine and
-effect regressions are NOT YET EXECUTED. WIP originals are under ignored
-.research/implementation/acquisition-execution-20260928. Root/read-only review found no product blocker. Fixture teardown was corrected
-before launch to close Rocks before Control/driver. Thirteen adapter cases plus
-populated upgrade reuse the existing laboratory and independent native oracle.
-Next: commit the reviewed candidate and run exact-revision native validation
-through the acquisition-binding build profile and bindings.py --execution.
-Socket deadlines/cleanup, held COMMIT, races and historical recovery remain later
-bounded acceptance, not implied by this wave. No experiment is active. Tux
-preflight has62,819,729,408B free and only the eight unrelated running containers.
+The first-wave acceptance above closes only the ordinary job-bound admission/
+certification and upgrade scenarios. Root/read-only review preserved explicit
+transactions, existing helper/lock order and domain-owned attribution without a
+new table, framework or native format. The fixture closes Rocks before Control.
+Socket deadlines/cleanup, held COMMIT, races, legacy adoption and historical
+recovery are not implied by this wave. Exact originals and next action are above.
 The next user-visible M1 deliverable remains signed socket→durable admission→
 publication/read→restart/resend. Remaining concrete prerequisites are job-bound
 execution/source observation (P03-T01 Step3/P03-T02), living initial-owner command

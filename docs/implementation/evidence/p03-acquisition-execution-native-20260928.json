@@ -1,0 +1,193 @@
+{
+  "format": "bigbrotr-acquisition-execution-native/1",
+  "status": "PASS_SCOPED_ACQUISITION_EXECUTION_FIRST_WAVE",
+  "source": "19945dc273af93296134e900e10dbb8d24b48e0d",
+  "tree": "a7d0305ee48cb8272eb5de4b4e6ebd50332625c5",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "6089ccdc9eecb5f939731f6778c62f3e4daee46e1fefcd1a2d20242b011f6ae3",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "9b8c1eaff02eb813c3c8169da7d567867188f956c62b34a8c65287610f0d0bb3",
+    "ingest_bootstrap_probe": "2abcc500e05355a0dca9b4945b107d3dbd293cb391f5beba27e8829d850f7cde"
+  },
+  "build_checks": "Mac and native: 33 catalog, 2 membership, 3 actual migration entrypoint tests PASS; scoped Clippy PASS; native release CLI/probe build PASS",
+  "scenarios": [
+    {
+      "name": "populated-upgrade",
+      "status": "PASS",
+      "prior_rows_xmin_filenodes_unchanged": true
+    },
+    {
+      "name": "pass",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "changed",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "omitted",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "unbound",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "invalid-unbound",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "certify-unbound",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "accepted",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "scope",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "expired",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "certify-expired",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "withdrawn",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "old-schema",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "dispatch",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 2
+    }
+  ],
+  "assertions": [
+    "Actual CLI populated upgrade and reapply preserve all prior Control rows/xmin, applied checksums and heap filenodes; historical job attribution remains NULL",
+    "Real authenticated acceptance and exact claim precede signed admission; original JobId/scope persists on reservation while native formats remain unchanged",
+    "Same-job exact retry and CertifyExisting preserve every operation table/native row/input; another valid claimed job on the same scope and omitted job both refuse",
+    "All-omitted Network source/context refuses before staging, including forged signatures and request-independent certification; accepted but unclaimed and wrong-scope jobs refuse",
+    "Server-observed expired jobs refuse new admission and certification of an already retained event; these are preflight refusals, not expiry during processing/cleanup",
+    "Actual enrollment withdrawal refuses new admission under the original job; explicit binding on schema23 refuses its missing0024 prerequisite",
+    "Clone-only guard first checks actual job authority, then refuses only a prior-transaction reservation. Original input and reservation remain, with no event/native outcome",
+    "Independent fixed-corpus oracle compares every native key/value and original CBOR input, including receipts; literal job digests and original deadline/command/audit/scope relationships are checked",
+    "Root compared1583 exact Git files,200 captures, all13 complete operation states and all14 upgrade row/xmin/heap comparisons; terminal audit preserves961 prior container projections"
+  ],
+  "review": {
+    "source_files": 1583,
+    "captured_payloads": 200,
+    "capture_manifest_sha256": "82e17fc2e9a5c6d9bef8f8a054facef52fbfef9338fb5367a5aee0f494bc57ea",
+    "root_review_sha256": "ca718799c91f8ec8714f8580c5f3bc9a2160cbb3982a0592649daf7ffa8f2c5b",
+    "source_scope": "Root/read-only review of complete changed product, SQL, probe, callers, laboratory and independent native oracle",
+    "prelaunch": "Fixture teardown corrected to close native store before Control/driver; original catalog UnknownTarget(24) RED retained",
+    "post_capture": "Local review-script import and command/audit-key/topology setup expectations corrected against existing contracts; original failures retained. No product/engine change or rerun"
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "19945dc273af93296134e900e10dbb8d24b48e0d",
+    "observed_at": "2026-09-28T18:40:26.220271+00:00",
+    "prior_unchanged": 961,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "70dcbf141a0e68b07e110755d853e0099bd3128c16028a325166cdccf982ea00",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "3b485f6ee9e456be6440ec78074c65e3153de1dc273162ad2507976041ff9a8a",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "e0ee36a94fd17430ec2aa44dc02dedd3cd17332b2085e8f36589295d27bc6c53",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1583,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 62488961024,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/acquisition-execution-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-19945dc",
+  "not_qualified": [
+    "job-bound socket polling and deadline delivery",
+    "lost COMMIT, cancellation, authority races and historical recovery",
+    "raw SQL relational negatives and legacy job adoption",
+    "installed Sync/M1, load/aged-state, native arm64/release"
+  ],
+  "scope": "Bounded job-bound admission/certification and additive migration qualification. Socket, COMMIT/cancellation/concurrency, historical recovery and installed M1 remain open."
+}

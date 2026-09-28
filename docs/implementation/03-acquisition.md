@@ -134,8 +134,9 @@ closes here.
 Active P03-T01 Step3/P03-T02 Step3 now has the additive0024 job-bound consumer
 implementation. New Network socket/admission/certification must use the original
 claimed job, scope and remaining duration; historical outcome recovery stays
-separate. A populated upgrade and13 actual PG/Rocks cases are prepared in
-`bindings.py --execution`; their engine results are not yet available. This does
+separate. A [populated upgrade and13 actual PG/Rocks cases](evidence/p03-acquisition-execution-native-20260928.json)
+now pass at19945dc through `bindings.py --execution`, with independent complete
+native/input and operation-state comparisons. This does
 not close socket deadline/fault qualification, running/progress lifecycle or M1.
 
 The pure selector component now owns normalization, a versioned independent

@@ -337,9 +337,12 @@ lease whose local ticket began before SQL. Waiting, processing and cleanup canno
 reset that duration. Historical positive-outcome lookup/copy does not call this
 fresh-authority helper, even after job expiry or revocation.
 
-The initial practical wave is being prepared; no actual0024 engine result is yet
-claimed. It covers populated upgrade/reapply, signed admission/retry/certification,
+[Native first-wave evidence](../implementation/evidence/p03-acquisition-execution-native-20260928.json)
+now records populated upgrade/reapply and13 adapter cases PASS at19945dc. It covers
+signed admission/retry/certification,
 job substitution/omission, origin omission including forged signatures, unclaimed
 jobs, wrong scope, expiry, withdrawal, old schema and post-reservation refusal.
-Job-bound socket expiry/cleanup, held COMMIT, lock races, historical recovery and
+Complete native bytes, original inputs, operation tables/xmin and upgrade heaps
+match independent expectations. No native failure or retry occurred. Job-bound
+socket expiry/cleanup, held COMMIT, lock races, historical recovery and
 installed integration still require their actual practical evidence.

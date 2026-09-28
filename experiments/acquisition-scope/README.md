@@ -250,7 +250,7 @@ all-table/writer comparisons and retained original databases. No native adoption
 dispatch, installed acquisition or capacity qualification follows.
 
 `bindings.py RUN_ROOT --execution` reuses the `acquisition-binding` build profile
-for additive0024. It proposes a populated upgrade/reapply and13 real PG/Rocks
+for additive0024. It runs a populated upgrade/reapply and13 real PG/Rocks
 adapter cases: signed admission/retry/certification, changed/omitted jobs,
 all-omitted Network inputs including forged signatures and certification,
 unclaimed job, mismatched scope, expired admission/certification, actual enrollment
@@ -261,3 +261,10 @@ oracle; all operation tables/xmin are compared. Original templates stay retained
 Expiry is observed in PostgreSQL before preflight; it is not delayed delivery
 qualification. Socket lifetime, held COMMIT, races, positive historical recovery
 and installed Sync remain subsequent evidence. Results determine execution status.
+
+[Native19945dc evidence](../../docs/implementation/evidence/p03-acquisition-execution-native-20260928.json)
+records all14 cases PASS,38 native checks and Clippy. No engine retry occurred.
+Fourteen databases/stores and original source/artifacts remain; owned containers
+are stopped. Post-capture root review corrected its local import and existing
+command-audit/topology setup expectations, preserving the original script failures.
+No product or engine result was changed for that review.0024 is now immutable.
