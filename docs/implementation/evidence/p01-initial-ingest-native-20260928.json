@@ -1,0 +1,137 @@
+{
+  "format": "bigbrotr-initial-ingest-lifetime-native/1",
+  "status": "PASS_SCOPED_INITIAL_LIFETIME_FIRST_WAVE",
+  "source": "7ab155ecdcf962d69032b54ae0e4c3d19967b2a6",
+  "tree": "370428ad1731924156cf2e6492de79931ab2165c",
+  "tasks": [
+    "P01-T09 Step1",
+    "P02-T02 Steps2/3"
+  ],
+  "local_evidence": ".research/implementation/initial-ingest-runtime-20260928",
+  "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-7ab155e",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "rocksdb": "rocksdb0.25.0 / librocksdb-sys0.19.0+11.8.1",
+    "container_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d"
+  },
+  "identities": {
+    "source_manifest_sha256": "6561e344b153c6ae5db88761da1b15f38d8c6949108ce7bcddd028bdf519760c",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "binary_sha256": "69a9fc96b71b13d7bb28cb310f3396d188335389ec4f4d515195368ae41a7e2c",
+    "probe_sha256": "8d12dd94a5fd9416564ad0160ac634cd797c22dd62a4a43b361e2973151cc2b4"
+  },
+  "bundle_sha256": "c4c87eb7b168bf5b5d36c2a9e775ba846caa696c3db84e919383c28964f6d72f",
+  "captured_payload_manifest_sha256": "310824988d414d547fbfa6615e2d54669a88736877582dbd4b46af9973871740",
+  "root_review": {
+    "status": "PASS_BOUNDED_ROOT_REVIEW",
+    "source": "7ab155ecdcf962d69032b54ae0e4c3d19967b2a6",
+    "source_files": 1559,
+    "captured_payloads": 88,
+    "cases": 6,
+    "actual_tables_per_case": 64,
+    "native_rows_per_initialized_case": 12,
+    "original_inputs_per_initialized_case": 1,
+    "no_dependency_or_persistent_format_change": true,
+    "terminal_audit": "2026-09-28T15:42:01.827794+00:00"
+  },
+  "checks": [
+    "Mac and exact-Git native release: five supervisor/flag tests, three actual executable offline tests and scoped Clippy PASS; formatter/Python syntax/link/handoff checks pass within their structural scope",
+    "Actual explicit CLI initializes under retained Control, creates both visibility dictionaries and keeps Ingest live past its original deadline. SIGTERM closes native, records Control release/exclusion and role retirement, reaps child and terminates the actual SQL driver",
+    "Absent topology creates generation0; sealed empty topology0 advances to1. Literal Python encoding matches all12 native rows, original CBOR input and PG request/outcome exactly. Accepted limits64/32 override file seed65 to32",
+    "Actual Ingest expiry terminates with4 and Unavailable. Accepted administrative policy and existing native target refuse before mutations; populated registry refuses without touching original rows. Same target retry preserves all64 tables/xmin and native rows",
+    "Root compared1559 exact Git source files and88 captured payloads; templates and942 other container projections unchanged. All owned containers stopped, no OOM, exclusive compiler cache released"
+  ],
+  "cases": [
+    {
+      "name": "pass",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "zero-topology",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "expired",
+      "status": "PASS",
+      "exit_code": 4
+    },
+    {
+      "name": "policy-admin",
+      "status": "PASS",
+      "exit_code": 3
+    },
+    {
+      "name": "existing-directory",
+      "status": "PASS",
+      "exit_code": 3
+    },
+    {
+      "name": "registered-only",
+      "status": "PASS",
+      "exit_code": 3
+    }
+  ],
+  "scope": "Explicit initial dictionary-only owning lifetime. ready=false and acquisition=not-started; no socket/event, restart/successor, M1 or capacity qualification.",
+  "original_outcomes": [
+    "No native build or real-engine failure in this wave",
+    "Mac missing-flag, stale watchdog and late-phase REDs retained. Original import compilation error, multiline/static fixture failures, wrong export key product panic and Clippy style failure retained with corrected runs",
+    "Read-only AI/root review corrected accepted-document count, cursor/assets refusals and fixture keys/TTL/topology receipt before native execution"
+  ],
+  "structure": "Separate concrete native owner and supervisor responsibilities; store closes before Control, actual driver stays owned through terminal worker, no live store crosses JoinHandle. Named bounded basis SQL reuses existing locks and snapshots. No new framework, dependency, migration or persistent format.",
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "7ab155ecdcf962d69032b54ae0e4c3d19967b2a6",
+    "observed_at": "2026-09-28T15:42:01.827794+00:00",
+    "prior_unchanged": 942,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "0b9977ad3f321c9491dc7684b50fed4a72b8fd6ddd0174d80d1a2576d19e5fb0",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "c7f38fd46105f3ff3c0aadf361e857c294da85477ca8ca04ea388a08e94a786e",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "d8fd7125817a8d9052a718ca6a3bb5e11e07e31be749e018fa26eb4f736608f5",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1559,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 64395231232,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "not_run": [
+    "native syscall/close delay and worker panic",
+    "lost/delayed COMMIT and cancellation lock schedules",
+    "crash-resumable initialization/successor",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ]
+}

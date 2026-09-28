@@ -12,51 +12,55 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main/private origin is 62012ecb5324ba1a613a274943973b30ad49ba54; its renewal
-qualification is committed and pushed. Root owns the current dirty initial Ingest
-runtime, basis adapter, executable tests, six-case engine fixture/build profiles
-and owning documentation. No Tux run for these changes has started yet.
+Mac main is candidate7ab155ecdcf962d69032b54ae0e4c3d19967b2a6; private origin
+was62012ecb5324ba1a613a274943973b30ad49ba54 at qualification. Root owns only
+qualification evidence/inventory/checkpoint/reference edits. The candidate has
+passed its first installed lifetime wave; commit/push this bounded result next.
 
 Active P01-T09 Step1/P02-T02 Steps2/3: explicit
 `serve --initialize-ingest --roles control,ingest`, fresh-only under retained
-Control. A dedicated blocking worker keeps store and Control until native closes;
-parent runtime retains actual driver, signals and phase watchdog. Bounded join
-failure fail-stops before driver disposal. No live store is returned from a task.
-This is a concrete lifetime responsibility, not a generic actor framework or
-implicit initialization. Dictionary-only reports remain ready=false and acquisition
-absent. Existing native/registry state is preserved/refused; crash-resumable
-initialization and successor admission remain open.
+Control. The dedicated native worker and small supervisor preserve store→Control→
+actual driver disposal order, with bounded collection and fail-stop if unjoined.
+No live store crosses JoinHandle. Complete owners/callers/fixtures were reviewed;
+read-only AI/root review removed optional Control custody, seed-derived limits,
+unsupported consumer omissions and cached/late deadline resets. No generic actor,
+new dependency, persistent format or applied SQL change.
 
-Mac five focused supervisor/flag tests and three actual executable offline tests
-PASS; scoped Clippy PASS before final documentation. Ignored
-.research/implementation/initial-ingest-runtime-20260928 retains the missing-flag
-RED, watchdog RED/green, compilation import failure, entrypoint fixture and product
-failures, Clippy style correction and offline fixture validation. Product tests
-found a wrong export destination key (panic); corrected. Read-only AI/root review
-corrected seed-derived producer count to min of both accepted documents, configured
-cursor/assets omission, and stale cached phase deadline (discriminating RED).
-Custody no longer stores an unnecessary optional Control value. A second
-discriminating RED confirms late native completion cannot reset an expired phase;
-the correction and scoped Clippy pass. Artifact/link and handoff checks pass
-(structure only). Complete changed owners, callers, fixture and document diff
-were reviewed; native qualification is still pending.
+[Native first-wave evidence](evidence/p01-initial-ingest-native-20260928.json)
+qualifies six actual CLI/PG/Rocks scenarios plus native build, five supervisor
+and three actual executable tests/Clippy. Maintained Ingest outlives its original
+expiry; SIGTERM closes native then records Control release and role retirement.
+Absent topology and sealed zero prefix both work. Accepted counts64/32 override
+file65 to32. Expiry, administrative policy, existing target and populated registry
+are discriminating refusals. Root compared1559 exact Git files and88 captures,
+all64 tables/xmin,12 native rows and original CBOR request/receipt. No native failure.
+Mac original RED/setup/product failures remain retained, never rewritten as PASS.
 
-Six real CLI/PG/Rocks scenarios are prepared, NOT RUN: live renewal past original
-expiry, sealed empty topology0→1, expired Ingest, accepted administrative refusal,
-retained native target and retained nonempty registry. They compare independently
-encoded original requests/receipts/all12 native rows, all Control table snapshots,
-real release/role retirement and actual drivers. Fixture review corrected safety
-key,5s shared authorization ceiling, multiline TOML arrays and topology-one receipt.
-The actual CLI now validates the generated fixture offline. Native syscall/close
-delay, worker panic, SQL cancellation/lost COMMIT and initialization recovery are
-separate pending guarantees, not PASS. No applied SQL, dependency or format change.
+All owned resources STOPPED/RETAINED. Inventory
+implementation_network_20260928.initial_ingest and ignored
+.research/implementation/initial-ingest-runtime-20260928 own exact launch/transfer/
+capture/review recipes. Never replay them. Run initial-ingest-7ab155e; build owner
+9b8d3d0f5f91518fc36031f07e6900b0, PID3413101/start399223198; enginePID3416333/
+start399233048: terminal. Fetch0b9977ad/nativec7f38fd4 exited0; clientd8fd7125
+stopped143, borrowedPG71775507 stopped0; no OOM. Six bb_scope_bind_7ab155e_*
+clones/stores retained. Audit15:42:01UTC verified942 other projections unchanged,
+eight unrelated running, cache free and64,395,231,232B available. Mac last8,284,984KiB.
+Shared1154757 intermediates now7ab155e; exact binaries separately retained.
+No cleanup obligation; prior cache retirement remains complete.
 
-Next bounded action: finish complete changed-file/fixture review, run final scoped
-checks, commit a clean unpublished candidate and transfer exact Git to the initial-ingest
-Tux build profile, then bindings.py --installed-ingest. Recheck space and resource
-ownership first. Do not replay any old launcher or cache deletion. Native prior
-runs are terminal; Mac last8,284,984KiB and Tux63,103,796KiB available at resume,
-eight unrelated containers and neither3381890 nor3384568 present.
+Next bounded action after committing qualification: exercise installed lifetime
+interruption at actual native/SQL boundaries, including blocked worker collection,
+retained fence and bounded process exit. Reuse the qualified tracer/fault proxy
+only after exact ownership/hash verification; create fresh cloned states and keep
+originals. Lost/delayed COMMIT, worker panic, initialization recovery and successor
+remain open. Dictionary-only reports remain ready=false/acquisition=not-started.
+Do not mark P01-T09, P02-T02 or M1 complete. No capacity or arm64 claim.
+
+Next user-visible journey remains first signed socket event→durable admission→
+timer archive/index→read/export→restart/resend. Typed finite job authorization
+(P03-T01 Steps3/4), trusted source/observation custody (P03-T02), publication and
+restart authority are concrete remaining dependencies; complete Discovery,
+Monitor, analytics or ACK/GC are not prerequisites to every initial M1 slice.
 
 The installed-owner review found that Control heartbeat never renews initial
 Ingest's separate scheduling deadline. The new same-Control renewal reuses exact

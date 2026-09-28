@@ -183,6 +183,12 @@ it for explicit recovery and do not generate another initial writer. A bounded
 loader over existing registry, manifest and staged-input records must precede
 restart acceptance. No existing SQL checksum or native format is changed.
 
+The [executed first wave](../implementation/evidence/p01-initial-ingest-native-20260928.json)
+qualifies six actual CLI/PostgreSQL/RocksDB cases, including renewal past the
+original deadline, graceful release, sealed zero topology and retained-state
+refusals. Native interruption, ambiguous commits and crash-resumable initialization
+remain pending; this does not complete the role or M1.
+
 ## Exact dependency source basis
 
 The pinned Rust [open implementation](https://github.com/rust-rocksdb/rust-rocksdb/blob/e4aac69f55021e619566b6ca5902665e0ea2af4e/src/db.rs#L630)
