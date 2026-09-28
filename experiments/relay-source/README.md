@@ -125,7 +125,7 @@ Control session performs authenticated source withdrawal at revision2 before
 closing and resolving the original producer. Original scope epoch1, reservation,
 input bytes, receipt and historical outcome attribution must survive. A committed
 reservation without native outcome remains Unresolved. These eight scoped
-schedules are NOT_RUN until their native report exists. Raw relational negatives,
+schedules passed at50b4136; see [the native report](../../docs/implementation/evidence/p03-acquisition-binding-recovery-native-20260928.json). Raw relational negatives,
 installed Sync, process capacity and M1 remain separate acceptance.
 
 Transcript-write or census failure must still reach owned-resource shutdown and

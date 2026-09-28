@@ -12,19 +12,24 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin/main are37a8d0c (full hash verified in Git), clean
-following the qualification push. Root now extends only the existing source fault
-probe/harness and its scoped build profile, with separate scope-mode expectations.
-No product/SQL change. Mac scoped probe Clippy PASS; Python syntax/diff checks
-pass. The actual cleanup block now catches each failed transcript write and census
-failure; isolated before/after execution confirms shutdown and incomplete evidence
-while retaining the original failure. Logs/counterexample:
-.research/implementation/acquisition-binding-recovery-20260928.
-Concurrency/recovery engine schedules NOT_RUN; independent read-only review active.
-Root and reviewer both found the fixture must expect Control(InvalidPolicy) after
-a real head advance: the initial factory snapshot refuses the changed revisions
-before the narrower scope guard. Preserved that product ordering and corrected
-the fixture; raw SQL isolation of the scope guard remains a separate gate.
+Mac main is 50b4136946cec324074114f8ca3a3e0f9416198d; tested candidate not yet pushed.
+Private origin/main remains37a8d0cec8ad6668f93a4502e06e9228c9c95005. Root owns
+qualification report, reference/task notes, inventory and this checkpoint. Native
+build and eight actual scoped concurrency/recovery schedules PASS. Root compared
+1,543 exact Git source hashes,81 captured payloads, full native/Control/input bytes,
+11 setup COMMITs and5 real lock barriers. Evidence:
+[scoped recovery](evidence/p03-acquisition-binding-recovery-native-20260928.json).
+No product/setup failure during engine execution; product/SQL/dependencies unchanged.
+Read-only AI review confirmed early InvalidPolicy and historical recovery custody.
+The actual transcript-failure cleanup counterexample is retained separately.
+Next bounded action: qualify raw0021 scope/source/identity/immutability constraints,
+both post-wait policy lock orders and rollback without the factory revision guard.
+Reuse stopped PG and exact artifacts; no new build required. Then wire the installed
+finite full-selector consumer toward P01-T09 Step2/M1, including both accepted-policy
+documents. Full Discovery/Monitor/scheduler remain unnecessary prerequisites.
+All owned resources stopped; terminal audit13:35:52 UTC verified932 other container
+projections unchanged,8 unrelated running, compiler lock free and65,260,920,832 bytes.
+Mac last10,443,168 KiB available. Cache retirement complete; no cleanup obligation.
 Native refusal-probe build and four actual PG/Rocks schedules PASS at70eea6f.
 Root compared1,542 exact Git source hashes and47 captured payloads, including
 full native bytes and exact permitted PG changes. Evidence:
@@ -33,11 +38,6 @@ No product/setup failure during these engine schedules; product, SQL and
 Cargo inputs remain identical tof403813. Original fixture compile errors remain;
 read-only AI corrected the initial operational Rocks sequence expectation before
 engine launch. All owned resources are stopped; no cleanup obligation.
-Next bounded action: extend the existing source fault probe/harness with retained
-scope context, both real policy lock orders and ambiguous original recovery after
-withdrawal/policy advance. Read producer_closing/recovery and source fault owners
-already; preserve original f403813/70eea6f fixtures/results. Raw SQL negatives also
-remain, then the installed finite socket journey toward M1.
 Scope binding implementation and first-wave harness are committed; all36 prior SQL
 and Cargo inputs remain unchanged. Mac membership2/catalog30/CLI3 tests and scoped
 Clippy PASS; original RED/setup compile failures remain in ignored
@@ -58,9 +58,9 @@ six actual-PG schedules and native build evidence. Whole task remains open.
 Reader evidence is committed/pushed. Active implementation is scope-bound
 reservation/admission and read-only certification for P03-T01 Step3/P03-T02 Step3.
 Read-only AI review of the complete first-wave fixture found no launch blocker.
-Next bounded action: both concurrent policy lock orders and historical recovery
-using actual scope binding. Invalid-signature and post-reservation refusal now
-have the separate scoped evidence above. Raw SQL negatives/rollback also remain.
+Both concurrent policy lock orders and historical recovery now have scoped evidence.
+Invalid-signature and post-reservation refusal have the separate evidence above.
+Raw scope SQL negatives/rollback and helper lock isolation remain next.
 Keep original outcomes and existing native oracle; no installed Sync claim yet.
 Current design retains a nullable plain bytea scope ID with exact16/nonzero CHECK,
 complete relay implication and composite source FK. NULL legacy rows are not adopted.
@@ -71,8 +71,8 @@ staging; relational authority is checked at both phases. No narrowed-page durabl
 resumption is implied by this context. The first socket consumer can request the
 registered full selector. Read-only AI review found certification skipped0020
 prerequisite checks; corrected in the common current-source helper. Both native prerequisite
-regressions now pass. Original ambiguous-outcome recovery is unchanged but new
-scope integration requires the next fault schedules.
+regressions now pass. Original ambiguous-outcome recovery is unchanged; the new scope integration now
+has the eight real-engine schedules above.
 
 Use the qualified loader as the real collection-intent input. Root and read-only AI review of
 source/producer/recovery paths found that overlapping selectors can otherwise
@@ -206,6 +206,18 @@ actual8951d87 capture/review). No product change was needed for these schedules.
 
 ## Current owned laboratory resources
 
+acquisition-binding-recovery-50b4136 is STOPPED/RETAINED. Inventory
+implementation_network_20260928.acquisition_binding_recovery and ignored
+.research/implementation/acquisition-binding-recovery-20260928 own exact source,
+launch/capture/root-review recipes and originals. Build owner3f72a847c3fea06bb67ac65043c4aa48,
+PID3322216/start398436797 terminal; fetchfbe7dc9b/native71f97529 exited0.
+Engine owner442807325cd4c9abd543604ab6ec2d17, PID3326713/start398476516 terminal;
+client63d769a0 stopped143/no OOM, PG71775507 stopped0. Eight
+bb_scope_recovery_50b4136_* databases/native stores remain, including ambiguous
+reservation state. Terminal audit above. Shared compiler latest intermediates50b4136;
+qualified CLI/probe remain outside the cache. Never replay launchers.
+
+
 acquisition-binding-refusals-70eea6f is STOPPED/RETAINED; inventory
 implementation_network_20260928.acquisition_binding_refusals and ignored
 .research/implementation/acquisition-binding-faults-20260928 own launch/capture/
@@ -301,7 +313,7 @@ unchanged. No Rocks/archive writes by the registration laboratory.
 
 Compiler cache network-1154757/out/build/{target,cargo-home} is mutable acceleration,
 exclusively locked by .compiler-cache.lock. Lock verified released. Exact qualified
-CLI/probe and prior ELFs remain outside it; latest intermediates area127c61.
+CLI/probe and prior ELFs remain outside it; latest intermediates are50b4136.
 No cache output is itself qualified. Prior selector061890f/relay-wire27b7f45/
 websocket9fe4ce4 builds and all source transport/cleanup/race labs are terminal;
 complete identities remain in implementation_network_20260928 and

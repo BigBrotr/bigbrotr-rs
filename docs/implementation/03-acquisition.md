@@ -105,9 +105,10 @@ The initial bridge now has an additive0021 collection binding and request-indepe
 source/scope certification adapter. [Eleven actual PG/Rocks schedules](evidence/p03-acquisition-binding-native-20260928.json)
 qualify populated upgrade, retry/binding refusals and read-only certification.
 [Four refusal schedules](evidence/p03-acquisition-binding-refusals-native-20260928.json)
-cover invalid signatures and post-reservation refusal. Concurrent policy changes,
-historical recovery and raw SQL controls remain required before closing the
-affected guarantees.
+cover invalid signatures and post-reservation refusal. [Eight concurrent/recovery
+schedules](evidence/p03-acquisition-binding-recovery-native-20260928.json) preserve
+original scoped outcomes after policy advance and withdrawal. Raw SQL controls
+remain required to isolate the scope-epoch guard from the factory revision check.
 Jobs, authorization, progress and installed CLI acceptance
 remain separate parts of Step3 onward; no whole task closes here.
 

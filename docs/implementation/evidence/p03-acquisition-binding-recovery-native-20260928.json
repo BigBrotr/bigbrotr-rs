@@ -1,0 +1,224 @@
+{
+  "format": "bigbrotr-acquisition-binding-recovery-native/1",
+  "status": "PASS_SCOPED_ACQUISITION_BINDING_RECOVERY",
+  "source": "50b4136946cec324074114f8ca3a3e0f9416198d",
+  "tree": "dc7e84149d73e9065825235340ec47c2fb1a6470",
+  "unchanged_product_source": "f4038134a77828ec2b97ec7b3bddee0b80758b9f",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "1b3a4c0f9b57dba220debcf2e8be65b06c054c12251cf8827faa9d0173359db8",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "c0e31b45281b5ea2004e4779db5e55388b3bfd2d4da86f083dcf2372256c6917",
+    "ingest_bootstrap_probe": "84c08a17380bf98ba7a84019a25990afe893e17a730508de51c88586af53208c"
+  },
+  "cases": [
+    {
+      "name": "pass",
+      "status": "PASS",
+      "observed_lock_barriers": 0,
+      "setup_commits": 11,
+      "wire": {
+        "client_commit_complete": 13,
+        "commit_number": 64,
+        "commits_forwarded": 13,
+        "commits_seen": 13,
+        "faults": 0,
+        "mode": "pass",
+        "server_commit_complete": 13
+      }
+    },
+    {
+      "name": "writer_commit",
+      "status": "PASS",
+      "observed_lock_barriers": 1,
+      "setup_commits": 11,
+      "wire": {
+        "client_commit_complete": 11,
+        "commit_number": 64,
+        "commits_forwarded": 11,
+        "commits_seen": 11,
+        "faults": 0,
+        "mode": "pass",
+        "server_commit_complete": 11
+      }
+    },
+    {
+      "name": "writer_rollback",
+      "status": "PASS",
+      "observed_lock_barriers": 1,
+      "setup_commits": 11,
+      "wire": {
+        "client_commit_complete": 13,
+        "commit_number": 64,
+        "commits_forwarded": 13,
+        "commits_seen": 13,
+        "faults": 0,
+        "mode": "pass",
+        "server_commit_complete": 13
+      }
+    },
+    {
+      "name": "reservation_first",
+      "status": "PASS",
+      "observed_lock_barriers": 2,
+      "setup_commits": 11,
+      "wire": {
+        "client_commit_complete": 12,
+        "commit_number": 12,
+        "commits_forwarded": 12,
+        "commits_seen": 12,
+        "faults": 1,
+        "mode": "hold",
+        "server_commit_complete": 12
+      }
+    },
+    {
+      "name": "dispatch_first",
+      "status": "PASS",
+      "observed_lock_barriers": 1,
+      "setup_commits": 11,
+      "wire": {
+        "client_commit_complete": 13,
+        "commit_number": 13,
+        "commits_forwarded": 13,
+        "commits_seen": 13,
+        "faults": 1,
+        "mode": "hold",
+        "server_commit_complete": 13
+      }
+    },
+    {
+      "name": "reservation_lost",
+      "status": "PASS",
+      "observed_lock_barriers": 0,
+      "setup_commits": 11,
+      "wire": {
+        "client_commit_complete": 11,
+        "commit_number": 12,
+        "commits_forwarded": 12,
+        "commits_seen": 12,
+        "faults": 1,
+        "mode": "after-complete",
+        "server_commit_complete": 12
+      }
+    },
+    {
+      "name": "outcome_before",
+      "status": "PASS",
+      "observed_lock_barriers": 0,
+      "setup_commits": 11,
+      "wire": {
+        "client_commit_complete": 12,
+        "commit_number": 13,
+        "commits_forwarded": 12,
+        "commits_seen": 13,
+        "faults": 1,
+        "mode": "before-forward",
+        "server_commit_complete": 12
+      }
+    },
+    {
+      "name": "outcome_after",
+      "status": "PASS",
+      "observed_lock_barriers": 0,
+      "setup_commits": 11,
+      "wire": {
+        "client_commit_complete": 12,
+        "commit_number": 13,
+        "commits_forwarded": 13,
+        "commits_seen": 13,
+        "faults": 1,
+        "mode": "after-complete",
+        "server_commit_complete": 13
+      }
+    }
+  ],
+  "checks": [
+    "Mac scoped Clippy; exact-source native release CLI/probe build and Clippy. Unchanged product suites not repeated.",
+    "Five actual backend-incarnation lock barriers cover writer-first commit/rollback and reservation/dispatch-first policy advancement.",
+    "Both revision heads advance to2 with exact copies of original document bytes/digests. The post-wait factory snapshot returns InvalidPolicy before the narrower scope helper; no claim of raw scope-guard isolation.",
+    "Original scope epoch1 and exact selector bytes remain immutable; reservation retains scope/source/visibility intent and exact independently encoded original input.",
+    "Positive proxy baseline measures11 completed setup commits; fault ordinals and five wire counters distinguish reservation loss, outcome not committed and outcome committed without reply.",
+    "After original driver join, a fresh actual Control owner at policy2 authenticates and withdraws enrollment, closes the historical producer, then resolves its original outcome.",
+    "Committed reservation without native outcome remains Unresolved. Native success resolves the original receipt repeatedly without rewriting native data; recorder epoch remains1 for existing outcome and2 for recovered outcome.",
+    "All66 tables and xmin, complete independently encoded native rows, original inputs and receipts compared. Original source template, source-pass data and report unchanged.",
+    "Actual drivers joined; owned client and PostgreSQL stopped without OOM. All932 other container projections unchanged; compiler lock released."
+  ],
+  "review": {
+    "source_files": 1543,
+    "captured_payloads": 81,
+    "capture_manifest_sha256": "eb7154deff104912ced7d515d4484c837303ceb66e80d29ec25cdddc255117c2",
+    "root_review_sha256": "1030c17fca7a05b2bc8a818ad56d854b53c64625300d688183ba893cd07ba5c2",
+    "ai_review": "Read-only review of full affected probe/harness and relevant reservation/recovery/lock owners. Confirmed InvalidPolicy expectation, historical driver/native custody and remaining raw SQL boundary. No further launch blocker; no product/setup failure during engine execution."
+  },
+  "original_fixture_outcomes": [
+    "The actual prior finally block failed an isolated transcript-write counterexample and skipped PostgreSQL stop; corrected block reaches stop/save and preserves original failure with INCOMPLETE_LAB_AUDIT. This is lifecycle evidence, not engine acceptance."
+  ],
+  "local_logs_sha256": {
+    "cleanup-fault.json": "2e4f4c588377a017aed0c7fb913cfc276b4eccc029b65c49e348583b03149bf6",
+    "probe-clippy-final.log": "a0c6e41e113927a8a7faac2f6b782155e7fcc1c9734e6b0e6f1da59c84ee3d31",
+    "artifacts-final.log": "c9128f1f902bbf59c1afa9274bf3f439f08ca1fc2b5de75efef528903266c1be",
+    "handoff-final.log": "d52759bfa5c07e2bcb24dc64e37adfc18872c280311e692a94df3bedfe2b9e19"
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "50b4136946cec324074114f8ca3a3e0f9416198d",
+    "observed_at": "2026-09-28T13:35:52.850633+00:00",
+    "prior_unchanged": 932,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "fbe7dc9b9c9cbe954bd974c977ad1b0953d039b097658e3c49fabcb1ba483c14",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "71f97529b1be7a648b0ee78a6712effee932cc2836faaeeee5d355ef26ec898e",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "63d769a04ee269971a20a299603b4380e07368c2245f59065724c063e91767c8",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1543,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 65260920832,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/acquisition-binding-recovery-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-recovery-50b4136",
+  "not_qualified": [
+    "Raw scope guard, full relational negatives and policy lock isolation for that helper",
+    "New cancellation qualification, installed finite Sync, full accepted-policy consumer and M1",
+    "Management policy activation; concurrent writers are privileged clone-only state injections",
+    "Measured process memory capacity, aged/mixed load, native arm64 and release"
+  ],
+  "scope": "Eight actual PG/Rocks concurrency/recovery schedules with retained acquisition scope. No product, SQL or dependency input changed since f403813."
+}

@@ -28328,6 +28328,114 @@
           "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
         }
       }
+    },
+    "acquisition_binding_recovery": {
+      "status": "STOPPED/RETAINED; native build and eight scoped recovery schedules PASS; root review complete",
+      "local_evidence": ".research/implementation/acquisition-binding-recovery-20260928",
+      "launch": {
+        "source": "50b4136946cec324074114f8ca3a3e0f9416198d",
+        "tree": "dc7e84149d73e9065825235340ec47c2fb1a6470",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-recovery-50b4136",
+        "pid": 3322216,
+        "start_ticks": "398436797",
+        "bundle_sha256": "6eeb180df07bf995d7019c18f45c6366c2c2d3fa3a2bba1cd7e5813d0e9cfbaa"
+      },
+      "resources": {
+        "source": "50b4136946cec324074114f8ca3a3e0f9416198d",
+        "tree": "dc7e84149d73e9065825235340ec47c2fb1a6470",
+        "owner": "3f72a847c3fea06bb67ac65043c4aa48",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-recovery-50b4136",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "fbe7dc9b9c9cbe954bd974c977ad1b0953d039b097658e3c49fabcb1ba483c14"
+          },
+          {
+            "name": "native",
+            "id": "71f97529b1be7a648b0ee78a6712effee932cc2836faaeeee5d355ef26ec898e"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T13:28:34.461134+00:00",
+        "qualification": "PASS_ACQUISITION_BINDING_RECOVERY_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 65378701312,
+        "finished_at": "2026-09-28T13:29:39.088727+00:00"
+      },
+      "preserve": "Exact source/bundle/logs and unchanged prior scope/source results, shared compiler and PG templates. Cleanup counterexample retained.",
+      "engine_launch": {
+        "source": "50b4136946cec324074114f8ca3a3e0f9416198d",
+        "pid": 3326713,
+        "start_ticks": "398476516",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-recovery-50b4136"
+      },
+      "engine": {
+        "owner": "442807325cd4c9abd543604ab6ec2d17",
+        "label": "org.bigbrotr.relay-source-faults",
+        "client": {
+          "id": "63d769a04ee269971a20a299603b4380e07368c2245f59065724c063e91767c8",
+          "name": "bigbrotr-relay-source-faults-50b4136"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_recovery_50b4136_pass",
+          "bb_scope_recovery_50b4136_writer_commit",
+          "bb_scope_recovery_50b4136_writer_rollback",
+          "bb_scope_recovery_50b4136_reservation_first",
+          "bb_scope_recovery_50b4136_dispatch_first",
+          "bb_scope_recovery_50b4136_reservation_lost",
+          "bb_scope_recovery_50b4136_outcome_before",
+          "bb_scope_recovery_50b4136_outcome_after"
+        ],
+        "status": "PASS_SCOPED_SOURCE_FAULTS",
+        "started_at": "2026-09-28T13:35:11.663362+00:00",
+        "finished_at": "2026-09-28T13:35:33.735414+00:00"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "50b4136946cec324074114f8ca3a3e0f9416198d",
+        "observed_at": "2026-09-28T13:35:52.850633+00:00",
+        "prior_unchanged": 932,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "fbe7dc9b9c9cbe954bd974c977ad1b0953d039b097658e3c49fabcb1ba483c14",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "71f97529b1be7a648b0ee78a6712effee932cc2836faaeeee5d355ef26ec898e",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "63d769a04ee269971a20a299603b4380e07368c2245f59065724c063e91767c8",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1543,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 65260920832,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      },
+      "report": "docs/implementation/evidence/p03-acquisition-binding-recovery-native-20260928.json"
     }
   },
   "implementation_relay_registry_20260928": {

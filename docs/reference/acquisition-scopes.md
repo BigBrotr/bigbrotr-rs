@@ -136,8 +136,10 @@ Independent byte/state comparisons cover effects and absence of writes.
 pass at70eea6f: exact rejection/retry, forged certification of a retained body,
 invalid input after withdrawal and scope refusal after durable reservation.
 A rejected mutation creates an operational outcome while leaving scientific facts
-unchanged; its retry writes nothing. Concurrent policy changes and historical
-recovery with this binding still require their own evidence.
+unchanged; its retry writes nothing. [Eight concurrency/recovery schedules](../implementation/evidence/p03-acquisition-binding-recovery-native-20260928.json)
+pass at50b4136, retaining original scope/input/receipts after policy advancement and
+authenticated withdrawal. The factory rejects stale revisions before the narrower
+scope helper; raw SQL must still isolate that guard.
 The first finite socket consumer can use the registered full selector. Generated
 page/need-list resumption still requires retaining that execution's exact request
 context; the scope ID does not reconstruct a page window. Both complete accepted
