@@ -369,10 +369,15 @@ result, and it performs no fresh admission. Missing native detail stays unresolv
 no negative resolution, replacement identity or new grant follows from this tuple.
 Reservations/outcomes remain within their existing finite retention envelope.
 
-The first practical wave exercises the actual adapter and engines for populated
-upgrade, exact/changed/omitted retry, legacy adoption refusal, visibility mismatch,
-withdrawal/re-enrollment and an injected source refusal after reservation COMMIT.
-Independent complete native fact/index and original-input bytes are the expected
-results. Concurrency/rollback, relay/import exclusion and lost-COMMIT/revoked-source
-recovery remain required before this persistent boundary is qualified. Test source
-and a passing catalog suite alone do not establish those guarantees.
+The [first practical wave](../implementation/evidence/p02-relay-source-native-20260928.json)
+qualifies populated upgrade, exact/changed/omitted retry, legacy adoption refusal,
+visibility mismatch and post-reservation refusal. [Relational evidence](../implementation/evidence/p02-relay-source-relations-native-20260928.json)
+checks both relay/import insertion orders and exact guard refusals with rollback.
+The [eight lock/fault schedules](../implementation/evidence/p02-relay-source-faults-native-20260928.json)
+qualify both source-lock orders, writer rollback, reservation/outcome ambiguity
+and original recovery after real authenticated withdrawal. Independent complete
+native/input/receipt bytes, all-table effects and original attribution are checked.
+Concurrent writers are explicitly privileged fixture injections; they do not
+establish management authorization. These results close the bounded operational
+binding responsibility. Actual source issuance, bans, routes and socket custody
+remain required before claiming acquisition or the complete M1 journey.

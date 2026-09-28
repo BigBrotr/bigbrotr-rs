@@ -95,9 +95,10 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
 The next P02-T01 Step6/P03-T01 source prerequisite implements additive0020
 [operational request binding](../reference/producer-request-inputs.md#operational-relay-source-binding-0020).
 The adapter checks retained source/visibility and current enrollment before both
-reservation and native dispatch. First practical wave is in
-`experiments/relay-source`; qualification, concurrency/ambiguity and the actual
-issuer remain open. No task step is completed by this implementation alone.
+reservation and native dispatch. First-wave and relational evidence plus the
+[eight actual lock/COMMIT/recovery schedules](evidence/p02-relay-source-faults-native-20260928.json)
+qualify this bounded metadata responsibility. The current issuer, bans, committed
+visibility and socket custody remain open. No complete task step is inferred.
 
 ## P02-T02 — Atomic RocksDB admission and exact identity inventory
 

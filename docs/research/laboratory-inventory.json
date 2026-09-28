@@ -28253,7 +28253,7 @@
     "evidence": "docs/implementation/evidence/p01-policy-versions-native-20260928.json"
   },
   "implementation_relay_source_20260928": {
-    "status": "first-wave-qualified-persistent-boundary-incomplete",
+    "status": "bounded-source-binding-qualified-issuer-socket-incomplete",
     "original": {
       "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-a6c28e6",
       "source": "a6c28e625176ba9835742260c57015c0141e9c7d",
@@ -28396,6 +28396,36 @@
       },
       "capture": ".research/implementation/relay-source-faults-20260928/capture-build",
       "retention": "Retain exact source/export, original build logs and CLI/probe artifacts; exclusive compiler cache released. Engine fault schedules not yet run."
+    },
+    "faults": {
+      "owner": "7cee1417ca2f02301cb0f56960e6d79c",
+      "label": "org.bigbrotr.relay-source-faults",
+      "client": {
+        "id": "3aee0eb0f412d5949999d1cd7442d538287a0e90d012e96dc23b3f9f5ad4b620",
+        "name": "bigbrotr-relay-source-faults-5efd67b"
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "databases": [
+        "bb_source_fault_5efd67b_pass",
+        "bb_source_fault_5efd67b_writer_commit",
+        "bb_source_fault_5efd67b_writer_rollback",
+        "bb_source_fault_5efd67b_reservation_first",
+        "bb_source_fault_5efd67b_dispatch_first",
+        "bb_source_fault_5efd67b_reservation_lost",
+        "bb_source_fault_5efd67b_outcome_before",
+        "bb_source_fault_5efd67b_outcome_after"
+      ],
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-faults-5efd67b",
+      "state": "stopped-retained",
+      "launch_pid": 3086650,
+      "launch_start_ticks": "396247908",
+      "source": "5efd67b4a0538ba6d38e6ddbf08d26d035c3a991",
+      "tree": "b47c588c33589d7b8ac38612c011786f8f8c0f90",
+      "application_source": "87ad138926d164e47a8cd9b653b8bca19759c0a7",
+      "evidence": "docs/implementation/evidence/p02-relay-source-faults-native-20260928.json",
+      "capture": ".research/implementation/relay-source-faults-5efd67b",
+      "retention": "All eight clones/native stores, source and original outputs retained. Borrowed e06 PostgreSQL stopped; no new network/compiler cache and no deletion."
     }
   }
 }

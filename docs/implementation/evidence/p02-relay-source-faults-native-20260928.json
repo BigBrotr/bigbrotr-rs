@@ -1,0 +1,214 @@
+{
+  "format": "bigbrotr-relay-source-fault-qualification/1",
+  "status": "PASS_SCOPED_SOURCE_FAULTS",
+  "source": "5efd67b4a0538ba6d38e6ddbf08d26d035c3a991",
+  "tree": "b47c588c33589d7b8ac38612c011786f8f8c0f90",
+  "application_source": "87ad138926d164e47a8cd9b653b8bca19759c0a7",
+  "product_source": "a6c28e625176ba9835742260c57015c0141e9c7d",
+  "tasks": [
+    "P02-T01 Step6 operational source binding",
+    "P03-T01 original source metadata"
+  ],
+  "scope": "Eight bounded actual PostgreSQL/RocksDB source lock, ambiguous-COMMIT and revoked historical recovery schedules",
+  "cases": [
+    {
+      "name": "pass",
+      "native_rows": 28,
+      "wire": [
+        12,
+        12,
+        12,
+        12,
+        0
+      ],
+      "observed_lock_barriers": 0,
+      "recovery": true
+    },
+    {
+      "name": "writer_commit",
+      "native_rows": 16,
+      "wire": [
+        10,
+        10,
+        10,
+        10,
+        0
+      ],
+      "observed_lock_barriers": 1,
+      "recovery": false
+    },
+    {
+      "name": "writer_rollback",
+      "native_rows": 28,
+      "wire": [
+        12,
+        12,
+        12,
+        12,
+        0
+      ],
+      "observed_lock_barriers": 1,
+      "recovery": false
+    },
+    {
+      "name": "reservation_first",
+      "native_rows": 16,
+      "wire": [
+        11,
+        11,
+        11,
+        11,
+        1
+      ],
+      "observed_lock_barriers": 2,
+      "recovery": false
+    },
+    {
+      "name": "dispatch_first",
+      "native_rows": 28,
+      "wire": [
+        12,
+        12,
+        12,
+        12,
+        1
+      ],
+      "observed_lock_barriers": 1,
+      "recovery": false
+    },
+    {
+      "name": "reservation_lost",
+      "native_rows": 16,
+      "wire": [
+        11,
+        11,
+        11,
+        10,
+        1
+      ],
+      "observed_lock_barriers": 0,
+      "recovery": true
+    },
+    {
+      "name": "outcome_before",
+      "native_rows": 28,
+      "wire": [
+        12,
+        11,
+        11,
+        11,
+        1
+      ],
+      "observed_lock_barriers": 0,
+      "recovery": true
+    },
+    {
+      "name": "outcome_after",
+      "native_rows": 28,
+      "wire": [
+        12,
+        12,
+        12,
+        11,
+        1
+      ],
+      "observed_lock_barriers": 0,
+      "recovery": true
+    }
+  ],
+  "observations": [
+    "Ten completed setup COMMITs observed before the gate; reservation11/outcome12 independently checked against durable rows and native state.",
+    "Writer-first withdrawal commit refuses before reservation; rollback admits. Actual backend-start identities and pg_blocking_pids establish the lock order.",
+    "Reservation-first COMMIT permits injected enabled history/current generation3, then dispatch refuses the retained generation1: original reservation/input remain, no native event or PG outcome.",
+    "Dispatch-first holds the actual outcome COMMIT; writer waits behind admission, then withdraws. All-table final observations occur after writer joins.",
+    "Reservation reply lost after COMMIT retains input/reservation; real fresh authenticated withdrawal and closing leave original request Unresolved with no replacement or negative outcome.",
+    "Outcome COMMIT lost before forwarding retains native receipt; after real withdrawal, positive historical recovery copies the original bytes under recorder2, preserving issuer1.",
+    "Outcome reply lost after server COMMIT preserves original recorder1, timestamp, xmin and bytes. Two identical resolutions leave all64 tables/native/input unchanged.",
+    "Independent complete native oracle checks16 bootstrap or28 committed rows, including original receipt bytes and the exact closing marker. Native sequence17/31 becomes18/32 only at closing."
+  ],
+  "artifacts": {
+    "binary_sha256": "2b233a23232d7c40cceaf03c5596f9ccb12e2e8f72ffe9c8bc6353ccace1f07c",
+    "probe_sha256": "060e82b9cac0c2fff8300d186ed46dae4e84979b82efdb0d940dafab7fc923f2",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+  },
+  "migration_0020_sha256": "357c7eff977e4cdedda73fb1b2b803fbd3ad0703b46f334f1c01b6484cca0ad2",
+  "environment": "Tux native x86_64; retained PostgreSQL16.15 and actual locked RocksDB Rust binding. Native87ad138 release CLI/probe and Clippy PASS; product tests unchanged, not repeated.",
+  "build_terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "87ad138926d164e47a8cd9b653b8bca19759c0a7",
+    "observed_at": "2026-09-28T07:20:09.049590+00:00",
+    "prior_unchanged": 893,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "fa1d6c90bbd1aa972a92af7d5a59c40a5f580384f30ebd45356b15f8e6be9b13",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "88a7617e12b142e213c70a52235a384bff3e268f52cc6da902b46b6d590e3d54",
+        "exit": 0
+      }
+    ],
+    "source_files": 1472,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 68230729728
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-09-28T07:24:25.846151+00:00",
+    "source": "5efd67b4a0538ba6d38e6ddbf08d26d035c3a991",
+    "prior_unchanged": 894,
+    "unrelated_running": 8,
+    "source_files": 1473,
+    "free_bytes": 68085469184
+  },
+  "resources": {
+    "owner": "7cee1417ca2f02301cb0f56960e6d79c",
+    "label": "org.bigbrotr.relay-source-faults",
+    "client": {
+      "id": "3aee0eb0f412d5949999d1cd7442d538287a0e90d012e96dc23b3f9f5ad4b620",
+      "name": "bigbrotr-relay-source-faults-5efd67b"
+    },
+    "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+    "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+    "databases": [
+      "bb_source_fault_5efd67b_pass",
+      "bb_source_fault_5efd67b_writer_commit",
+      "bb_source_fault_5efd67b_writer_rollback",
+      "bb_source_fault_5efd67b_reservation_first",
+      "bb_source_fault_5efd67b_dispatch_first",
+      "bb_source_fault_5efd67b_reservation_lost",
+      "bb_source_fault_5efd67b_outcome_before",
+      "bb_source_fault_5efd67b_outcome_after"
+    ],
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-faults-5efd67b",
+    "state": "stopped-retained",
+    "launch_pid": 3086650,
+    "launch_start_ticks": "396247908"
+  },
+  "evidence": {
+    "local_capture": ".research/implementation/relay-source-faults-5efd67b",
+    "capture_tar_sha256": "44e50cbe8155bd796b1d95b0de1cdee38d8177614bbe86e118058dc2ed79b9f1",
+    "raw_report_sha256": "b89abc8615c2291a6a47721a35921bde2afe4912729de99a0df923f739520197",
+    "manifest_sha256": "011de45aba8e1a2e4c6cf41c9204bded7fa6766c3a200b1abc1f3ee98e05518c",
+    "root_review_sha256": "3166a54441bad87acbe2dd4ded0e12f021730c8922d7dd2c3f1b59ffa86b73f9",
+    "recipe": "experiments/relay-source/faults.py ROOT",
+    "root_review_recipe": ".research/implementation/relay-source-faults-5efd67b/review-capture.py"
+  },
+  "review": "Root complete changed files/callers, transaction semantics and diff; independent read-only AI fixture review. Initial-event ordering, renamed xmin sorting and release retirement expectations corrected before the first native schedule. Root independently checked all56 captured payload hashes, literal receipts, original attribution, actual withdrawal and all64-table phase deltas.",
+  "limitations": [
+    "Concurrent writers explicitly use privileged clone-only state injection, not a second authorized Control owner or management acceptance. Recovery withdrawal separately uses the real password/session API.",
+    "The generation3 injection is a deliberate source-check fixture; missing generation2 and command/audit history are not claimed as a valid management journal.",
+    "Preservation comparison covers original bb_source_pass, bb_source_template and first-wave report bytes; other retained databases were not rehashed."
+  ],
+  "not_run": [
+    "source grant and socket attribution",
+    "private routes and bans",
+    "large ledger upgrade",
+    "load/aged state",
+    "arm64/release"
+  ]
+}

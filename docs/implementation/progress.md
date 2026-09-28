@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is87ad138 (unpublished fixture candidate); origin/main64f3f60 is
-pushed to the verified private repository. Root owns pending external source-fault
-runner/oracle/docs. Product a6c28e6 and applied0020 bytes remain unchanged. Previous qualified product5be0dbd remains
+Local main is5efd67b (unpublished verified fixture candidate); origin/main64f3f60
+is pushed to the verified private repository. Root owns pending scoped evidence,
+reference/task/inventory/checkpoint updates. Product a6c28e6 and applied0020 bytes remain unchanged. Previous qualified product5be0dbd remains
 recorded below; maintenance and policy-version evidence are committed.
 No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
 05:51:59UTC, PID3018662/start395683262 terminal, owner8b12a62d405821e4949859f225a685a6.
@@ -100,8 +100,9 @@ No current issuer/ban consumer or signed acquisition claim exists yet. After thi
 focused SQL evidence, implement that minimum current authority/committed scope
 consumer; full discovery, Monitor and renewable sessions are not prerequisites.
 
-The source binding is implemented; its first wave is qualified, but the complete
-persistent boundary remains NOT YET QUALIFIED. Root owns new
+The bounded operational source binding is now qualified through first-wave,
+relational and actual lock/COMMIT/revoked-recovery evidence. Source permission
+and socket attribution remain unimplemented and unqualified. Root owns new
 0020 (four nullable all-or-none immutable operational fields on producer_requests),
 acquisition/relay_source, postgres/producer_sources, reservation/initial_batch
 consumers, catalog/manifest and affected fixture callers. Old applied SQL/native
@@ -194,38 +195,48 @@ released exclusive1154757 compiler lock. Free68,230,729,728bytes. No engine crea
 Ignored .research/implementation/relay-source-faults-20260928/capture-build holds
 verified original logs/receipts. Mac Python3.9 rejected safe extraction's filter
 argument; Python3.14 extracted the same original capture and verified its hashes.
-Independent AI fixture review found no ownership blocker. External driver now
-uses joined-writer snapshots and independent original receipt/recorder oracles.
-Read-only AI review found three fixture expectation issues (initial event, renamed
-xmin row order, release role retirement), corrected before native execution.
-Independent complete-byte oracle matches the retained a6c28e6 native/PG receipts.
-All eight new schedules remain NOT_RUN. Root owns only
-external Python/oracle and documentation edits; no product or migration change.
+Independent AI review found no product/ownership blocker; it found initial event,
+renamed xmin ordering and release-role-retirement fixture expectation errors,
+corrected before the first engine execution. Root reviewed complete changed
+files/callers, transaction semantics and diff; oracle matches retained prior bytes.
 
-Next bounded action: finish reviewing/commit the external driver, then execute
-its exact-Git revision with87ad138 ELFs, borrowing the stopped e06f580 PG/template.
-Observe first pass COMMIT count before selecting reservation/outcome targets;
-verify proper PG/native phase independently. No approval needed for this scope.
-Concurrency/COMMIT/recovery must pass before qualifying this persistent boundary.
-Independent review recommends writer-first commit/rollback, reservation-
-first withdrawal+reenrollment (enabled generation3 must reject old generation1 at
-dispatch), and dispatch-first held outcome COMMIT. Observe actual pg_blocking_pids
-and backend_start; do not substitute lease expiry for Source(Unavailable). Two real
-Control backends cannot independently race due to backend-bound custody: external
-writers are explicitly privileged state injections, not management authorization.
+[Eight fault/lock schedules](evidence/p02-relay-source-faults-native-20260928.json)
+PASS at5efd67b with87ad138 ELFs (product stilla6c28e6). Setup completed10 COMMITs;
+reservation11/outcome12 positions verified by wire counters AND durable phases.
+Writer-first withdrawal commit refuses, rollback admits; reservation-first permits
+enabled current/history generation3 then rejects retained1 at dispatch; dispatch-
+first writer waits. Five lock barriers use actual backend incarnations. Concurrent
+writers are explicit privileged injections, not a second authorized Control owner.
+Generation3 fixture is deliberately not a complete management journal (no2).
 
-Ambiguity cases: reservation reply lost after commit retains binding/input but no
-native event (closing+resolution must remain Unresolved); outcome COMMIT lost before
-forwarding retains native receipt but no PG copy; outcome reply lost after commit
-preserves original PG recorder/timestamp/xmin. Use REAL password/session enrollment
-withdrawal on fresh Control before closing/recovery, and compare native state after
-the legitimate closing-marker change. Current old helpers assume policyv1/import/
-domain69; adapt to this v2 network observation/domain65, without production hooks.
-Historical registration belongs only in recovery after owner replacement; using it
-for ordinary admission fails InvalidInput before source authority. Derive current
-proxy COMMIT ordinal from executed control flow/observations, not old fourth-COMMIT
-fixtures. Finite issuer/bans/route/socket consumer remain subsequent work on the
-same P02/P03/P04 → P01-T09 Step2/M1 path; full discovery/Monitor are not prerequisites.
+Real fresh Control/password/session withdrawal precedes closing/resolution in
+four cases. Lost reservation reply retains original input/binding but stays
+Unresolved. Lost outcome before COMMIT copies original native bytes under recorder2;
+lost reply after COMMIT preserves recorder1/timestamp/xmin. Positive retries are
+identical; all64-table phase deltas and complete16/28 native rows/receipt bytes
+match independent expectations. Native sequence17/31 only advances to18/32 for
+closing. No new product/SQL change or negative resolution was needed.
+
+Root runs/relay-source-faults-5efd67b stopped07:24:04UTC, owner7cee1417ca2f02301cb0f56960e6d79c,
+PID3086650/start396247908 terminal. Audit07:24:25UTC verified894 other container
+projections/eight unrelated running,1473 clean source files,56 capture payloads and
+exact87ad ELFs. Client3aee0eb0f412 stopped; borrowed e06 PG7177550705c4 stopped/noOOM.
+Free68,085,469,184bytes. Eight clones/native stores and all original evidence
+retained; no new network/cache/deletion. Original source-pass/template/report
+unchanged; other old DBs retained but not rehashed. Inventory source.faults;
+ignored .research/implementation/relay-source-faults-5efd67b owns launch/capture/
+root-review. Mac and Tux cache-retirement receipts remain as recorded below.
+
+Next bounded action: commit/push verified evidence, then implement the finite
+current source issuer/ban/committed visibility/route consumer under P02-T01 Step6,
+P03-T01 and P04-T02. Read current owning network gates/callers before design;
+independent read-only reviewer is checking that boundary. Then wire actual guarded
+socket acquisition into P03-T02 and P01-T09 Step2/M1. Full discovery, Monitor,
+analytics and renewable sessions are not blanket prerequisites. Binding is data,
+not permission; v1 has no acquisition bans and must remain refused for issuance.
+Do not transfer the management write-only ActionGate to renewable bidirectional
+traffic without its owning cancellation/lease model. Private routes, bans and
+trusted socket custody cannot be inferred from these eight metadata schedules.
 
 ## Current enrollment implementation and evidence
 

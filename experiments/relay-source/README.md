@@ -54,4 +54,6 @@ dispatch-first completion and three lost-COMMIT schedules retain every clone.
 External concurrent writers are labeled privileged state injections; recovery
 withdrawal is a real password/session command. All-table comparison waits for
 writer completion, and complete native/input/receipt bytes have an independent
-oracle. These schedules are implemented but not yet executed.
+oracle. The first eight-schedule execution at5efd67b passed with87ad138 artifacts; see
+[scoped qualification](../../docs/implementation/evidence/p02-relay-source-faults-native-20260928.json).
+This does not qualify source issuance, socket custody, load or M1.
