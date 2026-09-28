@@ -12,9 +12,24 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac candidate23701f8; private origin43ffde0. Root owns the qualification evidence
-and documentation. All owned resources are stopped/retained; no active experiment
-or cleanup debt. Complete product remains INCOMPLETE.
+Mac main/origin e666f6817fff571450b02a32dd4689b643bbdbbb, pushed and verified.
+Root owns request-session WIP: acquisition/session.rs, protocol wire/request.rs,
+module exports, focused socket/encoder tests, existing native runner profile and
+owning reference/checkpoint. No other contributor changes. All Tux resources
+remain stopped/retained with no cleanup debt.
+
+Active P03-T02 Steps1/2: bounded per-connection request generations and retained
+exact wire filters/limit. Actual socket tests discriminate stale CLOSE/CLOSED,
+two simultaneous requests with signed input, capacity, cancelled partial read,
+malformed/binary input followed by EOSE and refusal before handshake without
+parser/registry credit. Five Mac socket tests and two protocol vectors PASS;
+scoped Clippy PASS. Original local diagnostics are retained in
+.research/implementation/request-session-20260928: test raw-string syntax, missing
+APIs (red), small-only fixture framing and TCP reset after dropping unread hostile
+data. Corrected fixture accepts only EOF/reset as closure; no product assertion
+was weakened. Native target evidence is NOT_RUN. Root/read-only review found no
+product blocker; existing guarded socket/cancellation owner is reused, with no
+generic scheduler or new dependency. Exact response borrow is not a coverage join.
 
 [Job-effect fault evidence](evidence/p03-job-effect-faults-native-20260928.json)
 qualifies11 schedules at fixture23701f8 using exact375aa05 native artifacts:
@@ -75,10 +90,12 @@ than adding another transport framework. Native store destruction precedes actua
 Control/driver teardown. No product, applied SQL, codec or dependency change was
 needed. Fixture setup timing margins are not authority/capacity guarantees.
 
-Next: finish qualification review/commit/push, then implement the bounded
-retained request/observation consumer feeding concrete SyncArrivalPolicy and
-job-bound admission from actual signed socket frames. Read current WebSocket,
-scope/request, committed dictionary/bootstrap and initial-owner boundaries first.
+Next: commit the reviewed request-session component, transfer clean Git and run
+its7 focused tests/Clippy with the existing Tux request-session profile. Then feed
+retained observations into concrete SyncArrivalPolicy/job-bound admission from
+actual signed frames. WebSocket/session/scope/policy owners were read completely;
+committed dictionary/bootstrap and initial-owner boundaries still need scoped
+complete reading before that integration.
 The frozen validator in the fault fixture does not qualify that consumer.
 This is P03-T01 Step3/P03-T02 Steps1/2/3. The next user-visible M1 deliverable remains
 signed socket→durable admission→archive/read→restart/resend. Remaining actual

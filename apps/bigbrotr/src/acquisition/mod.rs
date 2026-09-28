@@ -3,3 +3,4 @@ pub mod import;
 pub mod job;
 pub mod relay_source;
 pub mod scope;
+pub mod session;

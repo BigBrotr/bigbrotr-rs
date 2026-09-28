@@ -368,3 +368,29 @@ Reservation-only and rejected-COMMIT cases remain Unresolved. The original375aa0
 fixture timing-query failure is preserved; no admission case completed there.
 These fixtures use a frozen policy validator. Concrete arrival-policy/socket
 custody, native successor recovery, progress and installed M1 remain separate work.
+
+## Retained request generations (implementation in progress)
+
+`acquisition::session::RelaySession` multiplexes bounded NIP-01 requests on one
+already authorized guarded WebSocket. It borrows each exact immutable filter
+union and optional limit. IDs combine a random connection nonce and a checked
+monotonic generation; retired/foreign handles emit no CLOSE, and stale CLOSED
+cannot remove another active request. This correlation supplies neither job nor
+scope authority. The receiving owner must retain their association and build
+AcquisitionEventContext from the exact returned filters before event effects.
+
+The encoder measures complete escaped REQ bytes before allocation, preserves an
+explicit `limit:0`, and never modifies collection identity. The session reserves
+registry capacity/items, bounded command storage and the decoder arena before
+handshake, in addition to existing WebSocket/transport reservations. Parsed
+responses borrow that session's credit; transferring work to a queue needs its
+own grant. Receive sequences preserve wire order, and unknown/retired IDs remain
+uncorrelated. Malformed/binary messages, transport failures and cancelled wire
+operations retire the session; a later EOSE cannot repair them. The consumer must
+still join earlier verification/admission before interpreting a page outcome.
+
+This component has actual Mac socket regressions for stale CLOSE/CLOSED,
+multiplexed signed frames, capacity, partial-read cancellation, malformed/binary
+input and pre-handshake credit refusal, plus literal bounded encoder vectors.
+Native amd64 qualification is pending. No installed Sync, trusted observation,
+committed witness linkage, durable event effect or coverage claim follows.

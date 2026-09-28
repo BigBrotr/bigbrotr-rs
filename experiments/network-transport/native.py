@@ -37,15 +37,16 @@ identity['rustc'] = subprocess.check_output(['rustc', '--version', '--verbose'],
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 assert identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'direct'
-assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire', 'selector')
+assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire', 'selector', 'request-session')
 tests = {
     'direct': {'network_direct': 12},
     'websocket': {'network_websocket': 30},
     'relay-wire': {'network_websocket': 1, 'relay_wire': 8},
     'selector': {'network_websocket': 2, 'collection_selector': 8, 'selector': 5},
+    'request-session': {'acquisition_session': 5, 'relay_request': 2},
 }[mode]
 packages = ['-p', 'bigbrotr']
-if mode in ('relay-wire', 'selector'):
+if mode in ('relay-wire', 'selector', 'request-session'):
     packages += ['-p', 'bigbrotr-protocol']
 if mode == 'selector':
     packages += ['-p', 'bigbrotr-model']
@@ -56,6 +57,8 @@ elif mode == 'relay-wire':
     identity['scope'] = 'Native preserving Nostr relay decoder and signed actual socket corpus; no installed acquisition, request-generation authority, durable admission or coverage claim'
 elif mode == 'selector':
     identity['scope'] = 'Native bounded collection identity/membership and signed actual socket corpus; no persistent scope registration, installed Sync, durable admission, coverage or capacity claim'
+elif mode == 'request-session':
+    identity['scope'] = 'Native actual WebSocket request generations, borrowed predicates, bounded encoding and cancellation; no job/scope authority, observation custody, durable admission, progress or installed Sync claim'
 compile_selectors = selectors + (['--lib'] if mode == 'websocket' else [])
 checks = Path('/out/build-checks')
 build_commands = [
@@ -110,6 +113,7 @@ assert all(file_hash(artifacts / name) == digest for name, digest in executables
 status = {'direct': 'PASS_SCOPED_NETWORK_COMPONENTS',
           'websocket': 'PASS_SCOPED_WEBSOCKET_COMPONENTS',
           'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS',
-          'selector': 'PASS_SCOPED_SELECTOR_COMPONENTS'}[mode]
+          'selector': 'PASS_SCOPED_SELECTOR_COMPONENTS',
+          'request-session': 'PASS_SCOPED_REQUEST_SESSION_COMPONENTS'}[mode]
 Path('/out/qualification.json').write_text(json.dumps(
     dict(identity, status=status, tests=tests), indent=2) + '\n')

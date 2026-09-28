@@ -1,4 +1,7 @@
 //! Preserving relay envelopes. Parsing grants no request, source or admission authority.
+mod request;
+pub use request::{RequestEncodeError, encode_request};
+
 use crate::{EventError, EventLimits, bounds::preflight};
 use bigbrotr_model::EventId;
 use serde::{Deserialize, Deserializer, de};
