@@ -28975,7 +28975,7 @@
       "next": "Typed finite acquisition job and real signed socket consumer. No cleanup obligation; do not replay launchers."
     },
     "acquisition_jobs": {
-      "status": "STOPPED/RETAINED native build PASS; engine NOT_RUN",
+      "status": "STOPPED/RETAINED; native build PASS; first engine fixture FAIL on expired-session preservation",
       "local_evidence": ".research/implementation/acquisition-jobs-20260928",
       "purpose": "P03-T01 Steps3/4 atomic finite acquisition acceptance",
       "launch": {
@@ -29013,7 +29013,34 @@
         "finished_at": "2026-09-28T16:47:15.479668+00:00"
       },
       "preserve": "Existing exclusive1154757 compiler cache; retain originals and all previous states. No deletion.",
-      "next": "Fixture review corrected preservation of three existing management commands. Transfer clean fixture revision and reuse exact3e10c2d artifacts after Git input-equivalence verification."
+      "next": "Fresh clone rerun with exact login expiry oracle; original FAIL and accepted database retained; product unchanged.",
+      "original_engine": {
+        "launch": {
+          "source": "ebb607f82d06412b50520381b39fada332b25751",
+          "tree": "8c2088e62bf8729d56fa8813f3293e879d5e1174",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-engine-ebb607f",
+          "pid": 3470155,
+          "start_ticks": "399644099",
+          "bundle_sha256": "0dff23700e687dc58da7437154568c7a2e454d727f9e41639e903ab74c60739e",
+          "artifact_source": "3e10c2d2c129538306910bd648be7e6d0bbf93a3",
+          "artifact_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-3e10c2d/out/artifacts"
+        },
+        "status": "FAIL",
+        "owner": "0a6f6fbd9ed343fbb0847f938063dfcf",
+        "label": "org.bigbrotr.acquisition-jobs",
+        "client": {
+          "id": "08bdd5e66b318a62b07a0f90359381739527689bb7c29e7b12395ae38470d49d",
+          "name": "bigbrotr-acquisition-jobs-ebb607f"
+        },
+        "databases": [
+          "bb_acq_job_ebb607f_pass"
+        ],
+        "failure": "RuntimeError: prior-rows-browser_sessions",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "finished_at": "2026-09-28T16:49:51.351185+00:00",
+        "free_bytes_after": 63969644544
+      }
     }
   },
   "implementation_relay_registry_20260928": {

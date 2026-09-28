@@ -12,21 +12,26 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is private unpublished candidate3e10c2d; origin/main remainsf3c8a1d.
-The finite acquisition command/adapter/probe, additive0022/catalog, contracts and
-laboratory are committed. Root owns checkpoint/inventory and fixture corrections preserving three prior
-management commands; product/SQL inputs remain exactly3e10c2d.
-Product7ab155e remains the latest native-qualified executable. Complete product
-is INCOMPLETE. Build3e10c2d passed and is STOPPED/RETAINED; engine scenarios have NOT RUN.
-Inventory implementation_network_20260928.acquisition_jobs and ignored
-.research/implementation/acquisition-jobs-20260928 retain exact launch/transfer.
-Run acquisition-jobs-3e10c2d, owneracde79aaa7018284f4aba784168caec4,
-PID3465674/start399622776; fetch8f13ca0b and nativee8a782f8. Shared1154757 is
-released after terminal build16:47:15UTC. No BigBrotr laboratory is active.
-Prior labs remain stopped/retained; PG71775507 has not started. Last free Mac
-7,973,312KiB; Tux prelaunch64,123,129,856B. Cache retirement remains complete;
-never replay deletion/launch recipes. Next: transfer a clean fixture revision, verify unchanged product inputs and
-reuse exact3e10c2d artifacts for jobs.py; then exact claim/installed consumer.
+Mac main is unpublished fixture candidateebb607f, product3e10c2d; origin/main
+remainsf3c8a1d. Root owns only fixture session-oracle correction and inventory/
+checkpoint. Native3e10c2d build,38 scoped tests and Clippy PASS. First actual-PG
+engineebb607f FAILED on the fixture's prior-session preservation assertion after
+migration, acceptance/replay and other-table comparison passed. The real login
+removed a session whose absolute and idle expiries both precede issuance; the
+new oracle requires exactly that cleanup plus one new session and preserves any
+still-live original. No product/SQL change. Original failure/DB/logs are retained.
+Inventory implementation_network_20260928.acquisition_jobs owns the full record;
+ignored .research/implementation/acquisition-jobs-20260928 owns recipes/captures.
+
+Build run acquisition-jobs-3e10c2d, owneracde79aaa7018284f4aba784168caec4,
+PID3465674/start399622776 is terminal; fetch8f13ca0b/nativee8a782f8 exit0.
+Engine acquisition-jobs-engine-ebb607f, owner0a6f6fbd9ed343fbb0847f938063dfcf,
+PID3470155/start399644099 is terminal. Client08bdd5e6 stopped143, borrowed
+PG71775507 stopped0; no OOM/cleanup error/unrelated change. Database
+bb_acq_job_ebb607f_pass remains accepted/retained. Final free63,969,644,544B.
+No build or laboratory is active. Cache retirement stays complete. Next bounded
+action: transfer a clean fixture correction and rerun fresh clones with unchanged
+3e10c2d artifacts; qualify acceptance, then exact claim/installed consumer.
 
 Active P03-T01 Steps3/4: typed finite acquisition command/acceptance and exact-ID
 claim, consumed by the same initial owner. The new command has scope ID, positive

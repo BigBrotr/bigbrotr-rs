@@ -182,10 +182,20 @@ def run_case(name):
         require(len(sessions) == 1 and sessions[0]['principal_id'] == actor and
             all(detail[k] == 1 for k in ('actor_credential_revision','actor_authentication_revision','actor_grant_revision')), 'authenticated-attribution')
     record(name + '-other-tables-unchanged', all(after[t] == before[t] for t in before if t not in mutable))
-    # Existing audit/owner/session rows remain immutable; only this probe's
-    # lifecycle and real login may add rows. A refusal adds no acceptance audit.
-    for table in mutable - {'login_buckets'}:
+    # Retain historical audit/owner rows. Login alone retires expired/revoked
+    # sessions; compare that exact set rather than exempting the entire table.
+    for table in mutable - {'login_buckets', 'browser_sessions'}:
         require(all(row in after[table] for row in before[table]), 'prior-rows-' + table)
+    new_sessions = [r for r in after['browser_sessions']
+                    if r['session_id'] not in {b['session_id'] for b in before['browser_sessions']}]
+    require(len(new_sessions) == 1 and new_sessions[0]['principal_id'] == '\\x' + '10' * 16,
+            'single-authenticated-session')
+    issued = new_sessions[0]['issued_at_us']
+    retained_sessions = [r for r in before['browser_sessions']
+        if r['principal_id'] != new_sessions[0]['principal_id'] or
+        (r['revoked_at_us'] is None and min(r['expires_at_us'], r['idle_expires_at_us']) > issued)]
+    require(sorted(after['browser_sessions'], key=lambda r: r['session_id']) ==
+        sorted(retained_sessions + new_sessions, key=lambda r: r['session_id']), 'exact-login-session-cleanup')
     require(not [a for a in after['management_audit'] if a['action'] == 'job.acquisition.accept'] or name == 'pass', 'refusal-audit-absent')
     record(name + '-actual-backends-joined', lab.sql(pg, database,
         "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0')
