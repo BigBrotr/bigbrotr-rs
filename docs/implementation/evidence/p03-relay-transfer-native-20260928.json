@@ -1,0 +1,239 @@
+{
+  "format": "bigbrotr-relay-transfer-native/1",
+  "status": "PASS_SOCKET_ARRIVAL_FIRST_WAVE",
+  "product_source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+  "qualified_source": "a519ed1d97449c5c38def680eede44e7ace59303",
+  "qualified_tree": "fd799d6671cc082af13f9d6fb5f5ede1733d829e",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "client_memory_bytes": 1073741824
+  },
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "source_manifest_sha256": "867e9bc49ff415e18513c6ab76b5f33d2ca691790158645401c0beece93fd83a",
+  "executables_sha256": {
+    "bigbrotr": "0470b1b1d7b429ed9ea78eb89ab6710b85d8cfd445b1c4e58b2b30ce0153362b",
+    "ingest_bootstrap_probe": "2e93489eee16bd0cbd1cb1646e15470fdaaec5b5fe67456a978d66a14e649f22"
+  },
+  "component_build": {
+    "source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+    "tree": "03f3ea8ba333899d352cc7746148e88a0979fba3",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "b557ef4766ccec6a44b57a97323490538e13958838e7c0285b0efb999a898b40",
+    "scope": "Retained EVENT ownership and strict bounded decode; actual PG/Rocks/socket admission remains separate",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "format": "bigbrotr-registry-build/1",
+    "binary_sha256": "7fb96e9ed4b7ae3eb36b91da79a697b29216ff6325496bc40f50cb6279c7fa4a",
+    "probe_name": "ingest_bootstrap_probe",
+    "probe_sha256": "e99d128734624421447ed27c134103bc21fb0cdbb2a330165ecba16fec9e1319",
+    "build_info": {
+      "archive_worker": null,
+      "capabilities": [
+        "event-verification",
+        "config-static"
+      ],
+      "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; internal preserving relay-envelope decoder and bounded collection selector; offline static configuration candidates and incomplete read-only doctor diagnostics. Advertised entrypoint capabilities remain event-verification and config-static; no installed acquisition, source policy or general NIP conformance claim",
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+        "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+        "contracts/protocol/versions.json": "f25d67a448dca1a17b7378d887c4ccce73a715fc7565a626748e06d22fb76385",
+        "contracts/release/dependencies.json": "430dc7baa5bb22954286b56d1cb6aa24b39b87f537e26ece40deed8018834a9b",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocol_registry_format": "bigbrotr-protocol-versions/1",
+      "protocols": {
+        "collection_selector": "bigbrotr-collection-selector/1",
+        "event_verifier": "bigbrotr-nip01-verifier/1",
+        "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+        "relay_envelope_decoder": "bigbrotr-relay-envelope/1"
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1",
+        "config_static": "bigbrotr-config-static/1",
+        "doctor": "bigbrotr-doctor/1",
+        "signed_event": "nip01-event/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "b557ef4766ccec6a44b57a97323490538e13958838e7c0285b0efb999a898b40",
+        "revision": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+        "state": "builder-supplied",
+        "tree": "03f3ea8ba333899d352cc7746148e88a0979fba3"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    },
+    "test_executables_sha256": {
+      "protocol_event": "2ac904652af977e602784baf9e9b6c1e8640ba7a4c6020c22bc991bec96c362d",
+      "acquisition_session": "4a0c7d238445fb0435709e6bcc9888e28d247ff71f572cce7c5c7d19b760fd70"
+    }
+  },
+  "tests": {
+    "decode": 10,
+    "sealed": 1,
+    "session": 7
+  },
+  "cases": [
+    {
+      "name": "signed-forged-duplicate-private-socket",
+      "status": "PASS",
+      "frames": 3,
+      "native_rows": 42,
+      "original_requests": 2,
+      "admitted_events": 1,
+      "clock_bracket_us": [
+        1790629383099453,
+        1790629383660760
+      ],
+      "native_outcome": "five new facts, no invalid witness or duplicate mutation"
+    }
+  ],
+  "assertions": [
+    "RetainedRelayEvent reserves bytes/items before copying original EVENT JSON, carries the original receive sample, sequence, exact immutable predicate and decoding limits, and releases credit after destroying input. Source/job/policy authority remains independent.",
+    "Private ReceivedRelay fields prevent reassigning a saved request to an unknown EVENT. The compile-fail regression actually failed against public fields before the correction. Actual socket tests reject unknown/wrong generations and exhausted credit, preserve forged and valid fields after socket closure, and cancel after an actual capture barrier without delivery or leaked grants.",
+    "decode_event_json extracts existing whole-input preflight, UTF-8/object-only strict Serde parsing. Invalid ID/signature/size and empty-tag candidates remain available for authoritative classification; duplicate keys, trailing documents, positional events, missing fields, non-JSON timestamps, malformed UTF-8 and each parser bound refuse. Existing verification ordering remains unchanged.",
+    "An actual private ws://127.0.0.1:7447/private peer checks the complete REQ shape and sends valid, zero-signature and duplicate EVENTs followed by EOSE. Actual Close ACK, server sending-side shutdown and client EOF complete before source rollback delivers a separately credited batch.",
+    "Actual current source/job authorization, committed private dictionary attribution and concrete SyncArrivalPolicy feed certification/admission on the same Control/native owner. NeedsAdmission alone creates request2; forged signature and Existing duplicate create no mutation. Duplicate proof bytes and page progress are not qualified.",
+    "The independent literal oracle compares all 42 native key/value rows, both original CBOR producer inputs, both PostgreSQL receipts and delivered receipt. The new facts are event dictionary, payload, eligibility, first receive and first provenance. Original signed input hash and bounded independent host timestamps constrain unpredictable input values.",
+    "Root compares all67 tables/xmin before socket and after final delivery. Only request/outcome insertion and the0011-triggered producer reservation counter 1->2 change; the counter shares request2 xmin. Original rows, queued job revision2/checkpoint0 and absent producer checkpoints remain exact. Source and all three certification operations also assert no durable effect.",
+    "Native 18 component tests, release CLI/probe and scoped Clippy PASS at cbc5f25. Corrected a519ed1 changes only fixture/docs/lab profile; its actual build and Clippy PASS without repeating unchanged 18 tests. Root compared both 1603-file exact Git revisions and 54 captured payloads."
+  ],
+  "original_outcomes": {
+    "mac": "Missing-API REDs, sum inference and Clippy diagnostics retained. Actual mutable-field compile-fail RED retained; corrected10 protocol / 7 sockets/1 doctest and scoped Clippy pass.",
+    "engine": "cbc5f25 first engine FAIL with Transport(Deadline): fixture server awaited client EOF without shutting down its own sending side after Close. One original clone/bootstrap and stdout/stderr retained. Corrected peer half-closes and still asserts client EOF; a519ed1 fresh clone passes. No product timing limit changed.",
+    "launcher": "First a519ed1 ignored launcher used relay-transfer directory for relay-arrival profile. Exact path guard rejected before container/cache/data creation. Original source/launch/log retained; corrected launcher transfers the same revision into the matching directory.",
+    "root_review": "Initial additional table-delta review omitted the documented 0011 AFTER INSERT producer reservation counter. Original review script retained; complete owning SQL inspection establishes the exact1->2 counter and same-transaction xmin expectation. Corrected complete-state comparison passes; no engine rerun or product change."
+  },
+  "review": {
+    "captures": [
+      {
+        "capture": "original-failure",
+        "source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+        "source_files": 1603,
+        "captured_payloads": 27,
+        "capture_manifest_sha256": "6cc075863f467e5c80070a7b9bfdd77b160e9ee29d6903afef8a8e1d84089b63"
+      },
+      {
+        "capture": "peer-fixed/capture",
+        "source": "a519ed1d97449c5c38def680eede44e7ace59303",
+        "source_files": 1603,
+        "captured_payloads": 27,
+        "capture_manifest_sha256": "7e7b1d0055ea3436cea589808d78ea97e365034147d0b3d678061559b0d9ad90"
+      }
+    ],
+    "root_review_sha256": "9307e7e87ccc29f4ac48c30344c20690c1eb46138be9515bde234d7a10922839",
+    "structure": "Retain one small session with private attribution and borrowed hot-response limits; owned values copy limits only at transfer. Reuse existing strict parser and native/Control transaction adapters. No generic queue framework, crate, migration or dependency added."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "a519ed1d97449c5c38def680eede44e7ace59303",
+    "observed_at": "2026-09-28T21:03:42.845060+00:00",
+    "prior_unchanged": 980,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "3688691138f084918e0e9d8155e453f2d408a5ba3bccf4ab6faa059610e29f1b",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "c9363f8b48ec28f60f260bf58d5f0a01a946c17d204913990eb8c88370b15fdd",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "f04d177817f6a871a48b046efaf58bb102e8192e095ea9739572b7f1f19c8d1e",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1603,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 61209743360,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/relay-transfer-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-a519ed1",
+  "not_qualified": [
+    "authority changes after receive, lost/late rollback and COMMIT recovery in this composed path",
+    "production scheduler, verifier pool and durable EOSE/progress joins",
+    "installed dictionary append, same-owner command delivery, restart/M1",
+    "load/aged-state, production capacity, arm64 or release",
+    "retained duplicate-proof bytes and durable page dependency checkpoint",
+    "production memory capacity from fixture 16-item/241MiB reservation",
+    "full M1, dashboard/admin/publication/release"
+  ]
+}

@@ -30241,7 +30241,7 @@
       ]
     },
     "relay_transfer": {
-      "state": "Original18 native tests PASS; first engine FAIL from fixture close deadlock; stopped-retained; retry pending",
+      "state": "Native18 component tests and actual PG/Rocks/private-socket first wave PASS; original engine and launcher failures retained; stopped-retained; product INCOMPLETE",
       "launch": {
         "source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
         "tree": "03f3ea8ba333899d352cc7746148e88a0979fba3",
@@ -30277,7 +30277,7 @@
         "finished_at": "2026-09-28T20:56:47.246729+00:00"
       },
       "local_evidence": ".research/implementation/relay-transfer-20260928",
-      "preserve": "Exact Git source, original logs, separately retained artifacts; reuse only inventoried locked1154757 compiler. No dataset deletion.",
+      "preserve": "Original failed clone/bootstrap, corrected one-admission clone/native store, both exact revisions, qualified CLI/probe/test artifacts outside shared1154757, original inputs/receipts/logs and failed pre-resource launcher. No dataset/resource deletion.",
       "original_engine": {
         "format": "bigbrotr-acquisition-binding/1",
         "source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
@@ -30537,7 +30537,148 @@
           "full_page_writes": "on",
           "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
         }
-      }
+      },
+      "retry_launch": {
+        "source": "a519ed1d97449c5c38def680eede44e7ace59303",
+        "tree": "fd799d6671cc082af13f9d6fb5f5ede1733d829e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-a519ed1",
+        "pid": 3693993,
+        "start_ticks": "401152591",
+        "bundle_sha256": "cd479ac0012cc9816606810a46addc3f856672d7c588c50685e4688f319b177e"
+      },
+      "retry_resources": {
+        "source": "a519ed1d97449c5c38def680eede44e7ace59303",
+        "tree": "fd799d6671cc082af13f9d6fb5f5ede1733d829e",
+        "owner": "bbf048249bd289d94234b921971074da",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-a519ed1",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "3688691138f084918e0e9d8155e453f2d408a5ba3bccf4ab6faa059610e29f1b"
+          },
+          {
+            "name": "native",
+            "id": "c9363f8b48ec28f60f260bf58d5f0a01a946c17d204913990eb8c88370b15fdd"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T21:01:12.403177+00:00",
+        "qualification": "PASS_RELAY_ARRIVAL_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 61223690240,
+        "finished_at": "2026-09-28T21:02:23.492386+00:00"
+      },
+      "retry_launcher_failure": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-transfer-a519ed1",
+        "pid": 3693297,
+        "start_ticks": "401144029",
+        "reason": "Local launcher selected relay-transfer prefix for relay-arrival profile; exact path guard rejected before resource creation",
+        "terminal": true,
+        "preserve": "source, bundle, launch and original orchestrator.log"
+      },
+      "retry_engine": {
+        "source": "a519ed1d97449c5c38def680eede44e7ace59303",
+        "status": "PASS_SOCKET_ARRIVAL_FIRST_WAVE",
+        "owner": "5bc0d07249ae8b6b24ae4b170908579d",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "f04d177817f6a871a48b046efaf58bb102e8192e095ea9739572b7f1f19c8d1e",
+          "name": "bigbrotr-acquisition-binding-a519ed1"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "databases": [
+          "bb_scope_bind_a519ed1_socket_pass"
+        ],
+        "cases": [
+          {
+            "name": "signed-forged-duplicate-private-socket",
+            "status": "PASS",
+            "frames": 3,
+            "native_rows": 42,
+            "original_requests": 2,
+            "admitted_events": 1,
+            "clock_bracket_us": [
+              1790629383099453,
+              1790629383660760
+            ],
+            "native_outcome": "five new facts, no invalid witness or duplicate mutation"
+          }
+        ],
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "started_at": "2026-09-28T21:03:01.094856+00:00",
+        "finished_at": "2026-09-28T21:03:05.545885+00:00",
+        "free_bytes_before": 61223673856,
+        "free_bytes_after": 61209968640
+      },
+      "retry_engine_launch": {
+        "source": "a519ed1d97449c5c38def680eede44e7ace59303",
+        "tree": "fd799d6671cc082af13f9d6fb5f5ede1733d829e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-a519ed1",
+        "pid": 3696524,
+        "start_ticks": "401163456"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "a519ed1d97449c5c38def680eede44e7ace59303",
+        "observed_at": "2026-09-28T21:03:42.845060+00:00",
+        "prior_unchanged": 980,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "3688691138f084918e0e9d8155e453f2d408a5ba3bccf4ab6faa059610e29f1b",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "c9363f8b48ec28f60f260bf58d5f0a01a946c17d204913990eb8c88370b15fdd",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "f04d177817f6a871a48b046efaf58bb102e8192e095ea9739572b7f1f19c8d1e",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1603,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 61209743360,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      },
+      "capture_manifests": [
+        {
+          "capture": "original-failure",
+          "source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+          "source_files": 1603,
+          "captured_payloads": 27,
+          "capture_manifest_sha256": "6cc075863f467e5c80070a7b9bfdd77b160e9ee29d6903afef8a8e1d84089b63"
+        },
+        {
+          "capture": "peer-fixed/capture",
+          "source": "a519ed1d97449c5c38def680eede44e7ace59303",
+          "source_files": 1603,
+          "captured_payloads": 27,
+          "capture_manifest_sha256": "7e7b1d0055ea3436cea589808d78ea97e365034147d0b3d678061559b0d9ad90"
+        }
+      ],
+      "evidence": "docs/implementation/evidence/p03-relay-transfer-native-20260928.json"
     }
   },
   "implementation_relay_registry_20260928": {

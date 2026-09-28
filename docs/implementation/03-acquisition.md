@@ -207,16 +207,14 @@ its corrected retry reuses unchanged binaries. Socket-to-admission and late/lost
 read rollback remain separate integration requirements. Existing two-visibility
 installations still need actual dictionary append/intern and same-owner command delivery before this becomes installed Sync.
 
-The next Steps1/2/3 slice owns a correlated EVENT copy under a separate grant and
-exposes strict bounded decoding before authoritative classification. Response
-attribution is immutable. Mac/native10 protocol/7 actual socket tests and the
-sealed-field regression pass at cbc5f25. The first PG/Rocks/private-socket run
-failed because the fixture peer waited for client EOF before closing its own
-sending side. Original evidence remains intact; the corrected peer awaits a
-fresh `bindings.py --socket` run. The independent oracle requires
-exact native/input/receipt bytes for one admission, signature rejection and an
-existing duplicate with zero writes. It does not establish durable page progress,
-retained duplicate proof, a verifier pool or the installed command.
+The [retained EVENT composition](evidence/p03-relay-transfer-native-20260928.json)
+now passes Mac/native 10 protocol / 7 actual socket tests and the sealed-field
+regression. Its corrected actual PG/Rocks/private-socket fixture passes full
+42-row/input/receipt and 67-table comparisons: one admission, signature rejection
+and existing duplicate with zero writes. The original fixture Close deadlock and
+pre-resource launcher failure remain retained. This supplies bounded parts of
+Steps1/2/3; retained duplicate proof, durable page progress, a verifier pool,
+authority-change/cleanup composition and installed commands remain required.
 
 - [ ] **1. Add per-connection request generations.** Multiplex one socket per endpoint/auth scope where allowed, allocate unique request IDs, and associate every frame with a request generation and receive sequence. An old handle cannot send CLOSE/NEG-CLOSE for its replacement.
 - [ ] **2. Reserve bytes/items before ownership transfer.** Apply shared 2MiB message and 256KiB admitted-event limits, the producer's 32MiB byte grant and 1024 queued-record ceiling, and bounded verifier pools. Separately cap outstanding mutation requests at 64 under the storage contract; the queue ceiling is not permission for 1024 concurrent durable requests. Include decoded objects, queued frames and join buffers in the same grant. Keep compression disabled unless the tested incremental inflated-byte/ratio path is enabled.

@@ -12,58 +12,65 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main candidate cbc5f258a1548b95fa7231969635b2fa60b69efb, tree
-03f3ea8ba333899d352cc7746148e88a0979fba3. Private origin remains1f7a470.
-Root sole writer. First native build and all18 tests passed; the original
-connected-engine run FAILED before source delivery with Transport(Deadline).
-The fixture server sent Close then awaited client EOF without half-closing its
-own write side; the client correctly awaited server EOF. Both sides reached close,
-then the source deadline disposed the retained data. Original stderr/stdout/native
-store, clone and all build results are retained. Root fixes only the fixture peer
-with AsyncWriteExt::shutdown before still asserting client EOF; no product change.
-Use the new relay-arrival build-only profile for this Rust fixture change, then a
-fresh exact-Git --socket clone; unchanged18 component tests need not repeat.
+Mac main a519ed1d97449c5c38def680eede44e7ace59303; private origin1f7a470
+pending qualification push. Root sole writer. Only bounded documentation/evidence
+updates dirty. All owned native/engine runs are stopped/retained; no cleanup debt.
 
-Original run relay-transfer-cbc5f25, buildPID3687519/start401117194,
-enginePID3690957/start401129520 terminal. Ownera860030aa47e26108ee85be7340b650b,
-fetchd7f1e47f/native1689fe49 stopped0; engineowner21688869205634333b7b4e5266ff7474,
-client74558625 stopped143, borrowedPG71775507 stopped0. Audit20:58:05UTC verified977 prior projections unchanged/eight unrelated running,
-artifacts intact and compiler lock free; original-failure.tar/capture under ignored
-relay-transfer-20260928. Corrected probe Mac Clippy passes.
-No active experiment. Do not replay original launchers. Last native free61.39GB.
+[Actual relay transfer qualification](evidence/p03-relay-transfer-native-20260928.json)
+closes this bounded P03-T01 Step3/P03-T02 Steps1/2/3 composition. Mac/native10
+protocol tests,7 actual socket tests and1 sealed-field doctest pass. The actual
+private socket sends valid/forged/duplicate frames then EOSE; only the valid frame
+creates request2 and five facts. Root verifies all42 native rows, both original
+inputs/PG receipts and delivered receipt. Complete67-table delta is only request/
+outcome insertion plus0011's reservation counter1→2 in request2's transaction.
+Queued job revision2/checkpoint0 remains exact; no EOSE coverage is inferred.
 
-Active P03-T01 Step3/P03-T02 Steps1/2/3: strict decode_event_json extracts existing
-bounded parsing without crypto authority; RetainedRelayEvent reserves before
-copying original EVENT JSON and retains receive sample, sequence, exact predicate
-and limits. Source/job/policy are still supplied by the retained caller.
-Mac10 protocol tests and7 actual socket tests passed. Read-only review found
-public mutable ReceivedRelay fields could relabel a saved request onto an unknown
-EVENT; the new compile-fail regression actually failed, then private fields and
-read-only accessors fixed it. The doctest and7 socket tests pass; scoped Clippy
-passes after borrowing response limits and an idiomatic fixture loop. Original
-missing-API REDs, sum type inference and Clippy diagnostics remain under
-.research/implementation/relay-transfer-20260928. Final borrowed-limits rerun also passed: seven sockets, one compile-fail doctest
-and combined targeted Clippy. No unchanged broad suite was repeated.
+Product cbc5f25 reserves before EVENT ownership transfer and seals attribution;
+strict decode reuses the existing parser without granting cryptographic validity.
+Read-only review found mutable response fields could relabel unknown input: actual
+compile-fail RED then fixed PASS are preserved. Hot response limits are borrowed,
+owned limits copied only at transfer. No framework/crate/migration/dependency change.
 
-New root-owned examples/support/ingest_socket_arrival.rs compiles via the actual
-bootstrap probe. It plans a real private socket delivering valid/forged/duplicate
-EVENTs then EOSE, retaining a separately credited fixed batch only through the
-successful run_relay_source result. Same Control/native owner certifies each
-under concrete SyncArrivalPolicy and its exact claimed job; only NeedsAdmission
-creates request2. Actual full private observer/witness mappings are bootstrapped
-for the isolated fixture. This is not installed dictionary provisioning.
-New socket-mode probe raises its composed item envelope8→16 for overlapping
-native/input/scope/visibility/observation/network/batch grants; no product default
-or capacity claim changes. Old observation fixture gets only an endpoint parameter
-with the exact prior literal supplied by its existing caller.
-The complete independent 42-row native/input/receipt oracle and relay-transfer
-native profile are ready. Root/read-only review checked ownership, drop order,
-literal dependencies, fixture privileges and artifact collection; the peer now
-requires an exact three-element REQ. Duplicate classification checks Existing and
-zero writes, not retained proof bytes. No new framework or persistent format.
-Next bounded action: commit the reviewed candidate, transfer exact Git to a new
-relay-transfer run and execute five native build checks, then bindings.py --socket. Actual new PG/Rocks/socket execution,
-authority-change/rollback faults and installed integration are NOT_RUN.
+Original engine cbc5f25 FAIL reached Close then deadline: fixture peer awaited
+client EOF without half-closing its own sending side. Original clone/native data,
+logs and18 passing component tests remain. a519ed1 fixes only fixture Close and
+build profile, retains the EOF assertion and passes a fresh clone. Native release
+build/scoped Clippy pass; unchanged18 component tests were not repeated.
+A retry-launcher prefix mismatch was rejected before resources; its original
+source/launch/log remains. Additional root review initially omitted0011's required
+reservation counter; complete owning SQL inspection and exact counter/xmin check
+resolved the oracle mistake without changing product or rerunning engines.
+
+Run relay-arrival-a519ed1: buildPID3693993/start401152591 terminal,
+ownerbbf048249bd289d94234b921971074da, fetch36886911/nativec9363f8b stopped0.
+EnginePID3696524/start401163456 terminal; owner5bc0d07249ae8b6b24ae4b170908579d,
+clientf04d1778 stopped143; borrowedPG71775507 stopped0/no OOM.
+Audit21:03:42UTC verified980 prior projections unchanged, eight unrelated running,
+compiler lock free and61,209,743,360B available. Root checked both1603-file Git
+revisions and54 captures. Inventory implementation_network_20260928.relay_transfer
+and ignored .research/implementation/relay-transfer-20260928 own originals and
+recipes (original-failure/, peer-fixed/capture/). Never replay launchers or cleanup.
+Shared1154757 now holds a519ed1 intermediates; qualified artifacts remain separate.
+
+Next user-visible slice is authenticated command delivery to the living initial
+Ingest owner: P01-T09 Step1/P02-T02 Steps2/3. Reuse existing private Management
+queue and actual access login/logout clients; keep native store and sole Control
+on the current owner thread. Read-only dependency review found two concrete
+constraints: the sole blocking slot is permanently occupied (password hashing
+needs another bounded slot), and four process items cannot fit login beside
+native/input/PG custody. Use the same expanded ledger, explicit supported routes,
+renewal priority and parent-controlled delivery revocation/cleanup. Root must read
+complete owners/callers/contracts before editing. No new plan or command bus.
+
+Next bounded action: finish docs/evidence review, commit/push this qualification,
+then design and implement that same-owner command slice with actual installed CLI
+acceptance after renewal, flood/cancellation and retained-fencing checks.
+Dictionary append/intern P02-T03 Step1 remains a separate immediate consumer;
+installed bootstrap still contains only two visibility mappings. Restart/resend
+P01-T09 Step4 needs explicit successor/recovery P02-T01 Step5/P02-T02 Step4, not
+just historical reads. Authority-change/late-rollback composition and retained
+duplicate-proof/page joins remain P03-T02 acceptance work. No entire Discovery/
+Monitor subsystem, ACK/GC machinery or capacity study blocks fresh command delivery.
 
 [Committed observation qualification](evidence/p03-observation-native-20260928.json)
 closes the fixed attribution reader and receive-clock first wave: Mac/native
@@ -101,14 +108,6 @@ Control transaction. A second bounded pass checks dependency envelopes because
 the generic mapping lookup omits that metadata; changing every traversal caller
 would add unnecessary scope. No orchestration framework or new crate. Known
 contradictory observer clock declarations now refuse even with distinct refs.
-
-Next bounded action, P03-T01 Step3/P03-T02 Steps1/2/3: own an actual correlated
-EVENT under byte/item credit with original sample, predicate, source and job,
-then pass it through concrete SyncArrivalPolicy and job-bound certification/
-admission on the same Control/native owner after source rollback. Never retain
-callback output through an outer side channel if source delivery later fails.
-Strict bounded decoding must preserve invalid signed candidates for explicit
-classification; use the existing parser rather than unchecked Serde.
 
 Next user-visible M1 remains signed socket→durable admission→archive/read→restart/
 resend. Real prerequisites still include dictionary append/intern for installed

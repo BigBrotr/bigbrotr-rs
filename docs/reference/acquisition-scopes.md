@@ -459,13 +459,18 @@ side channel. `decode_event_json` reuses strict bounded parsing without granting
 signature/ID validity; malformed structure is distinct from an invalid signed
 candidate that authoritative certification must classify.
 
-Mac/native ten protocol tests, seven actual socket tests and the attribution
-compile-fail regression pass at cbc5f25. The
-`bindings.py --socket` compose an actual private socket with the same Control/native
-owner, concrete SyncArrivalPolicy and committed observation mappings. Its literal
-oracle expects one admission from valid/forged/duplicate frames, preserving the
-first receive and creating no request for invalid or existing effects. This does
-not qualify retained duplicate-proof bytes, durable EOSE joins, capacity or an
-installed Sync command. The first engine run failed during fixture close: the
-server awaited client EOF without half-closing after Close. Its original failure
-remains retained; a corrected peer and fresh connected-engine retry are pending.
+[Mac/native and actual-engine qualification](../implementation/evidence/p03-relay-transfer-native-20260928.json)
+passes ten protocol tests, seven actual socket tests and the attribution compile-fail
+regression at cbc5f25. The corrected a519ed1 peer composes an actual private socket
+with the same Control/native owner, concrete SyncArrivalPolicy and committed
+observation mappings. The literal oracle compares all 42 native rows, both original
+inputs/PG receipts and delivered receipt. Only the valid frame among valid/forged/
+duplicate frames causes admission; its first receive is preserved. Complete 67-table
+comparison allows only request/outcome insertion and the required 0011 reservation
+counter. Queued job/checkpoint state remains unchanged.
+
+The original engine FAIL is retained: the fixture peer awaited client EOF without
+half-closing after Close. Corrected peer shutdown preserves the client-EOF assertion;
+no product deadline was extended. This qualification does not establish retained
+duplicate-proof bytes, durable EOSE joins, later authority/ambiguous-outcome schedules,
+production capacity or an installed Sync command.
