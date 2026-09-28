@@ -124,3 +124,23 @@ reservation while leaving native state and outcomes unchanged. The [70eea6f repo
 records all four cases PASS. The initial rejection
 advances operational Rocks state; it must not create scientific facts. The
 independent byte oracle checks both distinctions.
+
+
+`bindings.py RUN_ROOT --guards /absolute/retained/out/artifacts` reuses an exact
+CLI/probe only when Git confirms all changes since its build are documentation
+or experiment sources. It creates new clones and one signed-admission native
+store. `binding_guards.sql` runs23 nested cases in that actual Control backend:
+complete-source implication, invalid scope identities, null/wrong helper tuple,
+immutable association and valid bound/overlapping/source-only/unbound controls.
+Every attempt rolls back every Control row and xmin; the real parent then commits
+its original signed admission, checked by the existing complete byte oracle.
+
+Five additional SQL sessions isolate `require_acquisition_scope` from the Rust
+factory revision guard: both dataset-lock orders, commit/rollback and isolation
+refusal. Readers use the application login, writers are explicit privileged
+clone-only policy injections. Actual backend incarnations identify waiting locks;
+all tables are compared after joining. A separate negative clone removes only
+the scope-epoch predicate and must fail the same writer-first test. Preserve its
+original FAIL, distinguishing a discriminating fixture from product qualification.
+These new cases are NOT_RUN until native evidence exists. No Rust rebuild,
+management activation, installed Sync, load or complete M1 claim follows.

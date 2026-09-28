@@ -12,9 +12,15 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is 50b4136946cec324074114f8ca3a3e0f9416198d; tested candidate not yet pushed.
-Private origin/main remains37a8d0cec8ad6668f93a4502e06e9228c9c95005. Root owns
-qualification report, reference/task notes, inventory and this checkpoint. Native
+Mac main and private origin/main are98abd959023b1ac5f85ab267b19eb6255866e225,
+verified after qualification push. Root now owns only raw0021 test fixtures,
+the existing binding driver, optional retained role in SQL laboratory Session,
+and related README/checkpoint. New raw guard schedules NOT_RUN. The fixture reuses
+50b4136 artifacts after full input comparison;23 nested Control cases,5 helper
+lock/isolation cases and one discriminating clone are prepared. Root and read-only
+AI review found no launch blocker; corrected this wave's NOT_RUN wording. No
+product/SQL/dependency change. Next: exact-Git transfer, run
+new --guards mode, collect/root-review. Native
 build and eight actual scoped concurrency/recovery schedules PASS. Root compared
 1,543 exact Git source hashes,81 captured payloads, full native/Control/input bytes,
 11 setup COMMITs and5 real lock barriers. Evidence:

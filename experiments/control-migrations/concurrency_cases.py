@@ -66,8 +66,9 @@ def unchanged_except(state, database, expected):
 
 class Session:
     """One bounded psql pipe; the observer fences backend cleanup separately."""
-    def __init__(self, state, database, name, sessions):
+    def __init__(self, state, database, name, sessions, *, role=None):
         self.state, self.database, self.name = state, database, name
+        self.role = ROLE if role is None else role
         self.backend = None
         self.pending = None
         self.buffer = b""
@@ -77,13 +78,13 @@ class Session:
             ["docker", "exec", "-i", "--env", "PGAPPNAME=" + name, "--env", "PGCONNECT_TIMEOUT=5",
              "--env", "PGOPTIONS=-c statement_timeout=30000 -c lock_timeout=20000 -c idle_in_transaction_session_timeout=60000 -c synchronous_commit=on",
              state["postgres"], "psql", "-X", "-A", "-t", "-q",
-             "--no-password", "-h", "/var/run/postgresql", "-U", ROLE, "-d", database,
+             "--no-password", "-h", "/var/run/postgresql", "-U", self.role, "-d", database,
              "-v", "ON_ERROR_STOP=off", "-v", "VERBOSITY=sqlstate", "-P", "pager=off"],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0)
         sessions.append(self)
         answer = self.execute("SELECT json_build_object('pid',pid,'backend_start',backend_start::text,'database',datname,'user',usename,'application',application_name,'isolation',current_setting('transaction_isolation'),'synchronous_commit',current_setting('synchronous_commit')) FROM pg_stat_activity WHERE pid=pg_backend_pid();")
         self.backend = json.loads(answer["lines"][0])
-        require(self.backend["database"] == database and self.backend["user"] == ROLE
+        require(self.backend["database"] == database and self.backend["user"] == self.role
                 and self.backend["application"] == name and self.backend["isolation"] == "read committed"
                 and self.backend["synchronous_commit"] == "on",
                 "session-identity-mismatch")
@@ -146,7 +147,7 @@ class Session:
                 raise Incomplete("backend-identity-unavailable-for-cleanup")
             b = self.backend
             predicate = (f"pid={b['pid']} AND backend_start='{b['backend_start']}'::timestamptz "
-                         f"AND datname='{self.database}' AND usename='{ROLE}' AND application_name='{self.name}'")
+                         f"AND datname='{self.database}' AND usename='{self.role}' AND application_name='{self.name}'")
             lab.sql(self.state, "postgres", "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE " + predicate + ";")
             deadline = time.monotonic() + 5
             while lab.sql(self.state, "postgres", "SELECT count(*) FROM pg_stat_activity WHERE " + predicate + ";") != "0":

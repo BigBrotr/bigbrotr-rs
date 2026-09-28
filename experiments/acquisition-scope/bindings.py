@@ -26,14 +26,21 @@ sys.path.insert(0, str(SOURCE / 'experiments/network-transport'))
 from inventory import projection
 
 root = Path(sys.argv[1]).resolve(strict=True)
-assert len(sys.argv) in (2, 3) and SOURCE == root / 'source'
-refusals = len(sys.argv) == 3
-assert not refusals or sys.argv[2] == '--refusals'
+assert len(sys.argv) in (2, 3, 4) and SOURCE == root / 'source'
+guards = len(sys.argv) == 4 and sys.argv[2] == '--guards'
+refusals = len(sys.argv) == 3 and sys.argv[2] == '--refusals'
+assert len(sys.argv) == 2 or guards or refusals
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-build = root / 'out/artifacts'
+build = Path(sys.argv[3]).resolve(strict=True) if guards else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
-assert built['source'] == revision and built['probe_name'] == 'ingest_bootstrap_probe'
+assert built['probe_name'] == 'ingest_bootstrap_probe'
+if guards:
+    # Reuse only reviewed exact artifacts whose complete Rust/build inputs match.
+    changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
+    assert changed and all(n.startswith(('docs/', 'experiments/')) for n in changed), changed
+else:
+    assert built['source'] == revision
 sha = lambda value: hashlib.sha256(value).hexdigest()
 for name, key in [('bigbrotr', 'binary_sha256'), (built['probe_name'], 'probe_sha256')]:
     assert sha((build / name).read_bytes()) == built[key]
@@ -48,11 +55,12 @@ output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-binding'
 client = 'bigbrotr-acquisition-binding-' + revision[:7]
 report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=built,
-    status='RUNNING', wave='refusals' if refusals else 'first', owner=owner, label=label,
+    status='RUNNING', wave='guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
     client=None, cases=[], databases=[],
     postgres=pg['postgres'], postgres_owner=pg['owner'],
-    not_run=['concurrent scope-policy locks and lost COMMIT recovery', 'installed Sync/progress/M1',
-             'measured memory capacity/load/aged-state', 'arm64/release'])
+    not_run=['installed Sync/progress/M1', 'measured memory capacity/load/aged-state', 'arm64/release']
+        + (['Adapter COMMIT/recovery is not repeated in this raw-helper wave; see50b4136 evidence']
+           if guards else ['concurrent scope-policy locks and lost COMMIT recovery']))
 
 
 def require(condition, reason):
@@ -206,6 +214,10 @@ def run_case(name):
         upgrade(db, name, target=4 if name == 'old-binding-schema' else 21)
     if name == 'dispatch-refused':
         refuse_dispatch(db)
+    if guards:
+        fixture = SOURCE / 'experiments/acquisition-scope/binding_guards.sql'
+        report['guard_fixture_sha256'] = sha(fixture.read_bytes())
+        lab.sql(pg, db, fixture.read_text())
     before = rows(db)
     require(not before['producer_requests'] and not before['owner_epochs'], 'fresh-consumer-prerequisite')
     lab.write_json(output / (name + '-before.json'), before)
@@ -273,8 +285,18 @@ def run_case(name):
     if name in ('certify-withdrawn', 'invalid-withdrawn'):
         require(sum(not r['enabled'] and r['generation'] == 2 for r in after['relay_enrollments']) == 1, 'actual-withdrawal')
     require(lab.sql(pg, db, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0', 'unjoined-driver')
+    if guards:
+        checks = json.loads(lab.sql(pg, db, 'SELECT json_agg(r ORDER BY position) FROM binding_fixture.results r'))
+        require(len(checks) == 23 and all(c['unchanged'] for c in checks)
+            and len({c['backend_pid'] for c in checks}) == 1
+            and [c['position'] for c in checks] == list(range(1,24)), 'nested-SQL-guards')
+        require(sum(c['sqlstate'] == 'ZX001' for c in checks) == 5
+            and sum(c['sqlstate'] == '23514' for c in checks) == 18, 'guard-control-counts')
+        lab.write_json(output / 'relational-checks.json', checks)
+        report['relational_checks'] = len(checks)
     report['cases'].append(dict(name=name, status='PASS', actual_pg_rocks=True, complete_native_rows=len(actual), original_inputs=len(inputs)))
     save()
+    return db
 
 
 prior = containers()
@@ -311,7 +333,9 @@ try:
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
-    if refusals:
+    if guards:
+        cases = ['pass']
+    elif refusals:
         cases = ['invalid', 'invalid-retained', 'invalid-withdrawn', 'dispatch-refused']
     else:
         db = clone('populated', 'bb_scope_54d1a18_basic')
@@ -322,7 +346,45 @@ try:
         cases = ['pass','changed','omitted','legacy-adopt','outside-collection','outside-request',
                  'no-source','certify-withdrawn','old-source-schema','old-binding-schema']
     for name in cases:
-        run_case(name)
+        completed = run_case(name)
+    if guards:
+        from binding_guards import run_policy_race
+
+        def owned():
+            item = json.loads(lab.docker('inspect', target['Id']).stdout)[0]
+            require(item['Config']['Labels'][lab.LABEL] == pg['owner'] and item['State']['Running'], 'race-pg-owner')
+
+        basis_rows = rows(completed)
+        for name in ['writer_commit', 'writer_rollback', 'scope_commit', 'scope_rollback', 'repeatable']:
+            db = clone(name, completed)
+            report['cases'].append(run_policy_race(pg, db, name, rows, output, owned))
+            save()
+        # Discriminate the scope epoch predicate specifically. Only this new
+        # clone loses it; no source, applied migration or prior outcome changes.
+        from concurrency_cases import Mismatch
+        db = clone('negative_no_epoch', completed)
+        definition = lab.sql(pg, db, "SELECT pg_get_functiondef('control.require_acquisition_scope(bytea,bytea,bytea,bytea)'::regprocedure)")
+        predicate = 'AND s.policy_revision = d.policy_revision'
+        require(definition.count(predicate) == 1, 'negative-control-definition')
+        altered = definition.replace(predicate, 'AND true /* isolated negative control */')
+        lab.sql(pg, db, altered)
+        negative = output / 'negative_no_epoch'
+        negative.mkdir()
+        try:
+            run_policy_race(pg, db, 'writer_commit', rows, negative, owned)
+        except Mismatch as error:
+            require(str(error) == 'unexpected-sqlstate', 'wrong-negative-failure')
+        else:
+            raise RuntimeError('epoch-negative-control-was-not-detected')
+        result = json.loads((negative / 'writer_commit-race.json').read_text())
+        require(result['status'] == 'FAIL' and not result['cleanup_errors']
+            and len(result['barriers']) == 1
+            and result['responses'][-1]['answer']['sqlstate'] == '00000', 'wrong-negative-outcome')
+        report['negative_control'] = dict(database=db, status='EXPECTED_FAIL',
+            original_definition_sha256=sha(definition.encode()), altered_definition_sha256=sha(altered.encode()),
+            reason='Writer-first policy commit incorrectly permits original scope when its epoch predicate is removed')
+        save()
+        require(rows(completed) == basis_rows, 'signed-parent-changed')
     require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_source_template') == template
         and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')
     report['status'] = 'PASS_SCOPED_ACQUISITION_BINDING'
