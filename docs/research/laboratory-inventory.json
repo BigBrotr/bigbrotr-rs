@@ -27274,13 +27274,48 @@
         "original_laboratory_outcome": "INCOMPLETE at original terminal inventory assertion; original resources.json remained running although native exited0",
         "reconciliation": ".research/implementation/network-native-1a2a8be/terminal-reconciliation.json",
         "free_bytes_after": 71847927808
+      },
+      {
+        "source": "115475799ce11a841e9aacc814d3576ee00cc6ca",
+        "tree": "74f99d673a10651b93063c37bba5737a0b68488b",
+        "owner": "8b21a13162699a6038154874c2ac89da",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "4c6e490cf2c052e31e498ab9686cde3ba29638b9e5d0231fb232911a8c8123d3"
+          },
+          {
+            "name": "native",
+            "id": "a4d5bbc418168dec49ad2b3f1b5e8e5aaa369c90e859552855d87b602b30b9b8"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1a2a8be",
+        "started_at": "2026-09-28T01:49:44.942114+00:00",
+        "inventory_changed": [],
+        "free_bytes_after": 67949309952,
+        "finished_at": "2026-09-28T01:50:56.647582+00:00",
+        "orchestrator": {
+          "source": "115475799ce11a841e9aacc814d3576ee00cc6ca",
+          "tree": "74f99d673a10651b93063c37bba5737a0b68488b",
+          "pid": 2800705,
+          "start_ticks": "394243848",
+          "bundle_sha256": "f26f24808ba428c7bbb1356e4a1c3511168e74eee06b7d6598c2b7abb97330af"
+        },
+        "qualification": "INCOMPLETE_NATIVE_DIRECT_FIXTURE",
+        "terminal_verification": ".research/implementation/network-native-1154757/terminal.json",
+        "local_capture": ".research/implementation/network-native-1154757",
+        "evidence": "docs/implementation/evidence/p04-network-direct-incomplete-20260928.json"
       }
     ],
     "native_evidence": "docs/implementation/evidence/p04-network-components-native-20260928.json",
     "direct_component": {
       "base_source": "4995f3ded25c01690bb12e3a025ae10f2a797e0c",
       "local_capture": ".research/implementation/network-direct-local-20260928",
-      "state": "Mac44tests/Clippy/dependency policy PASS; native candidate preparation",
+      "state": "Native1154757 retained43PASS/1 fixture FAIL; fixture corrected and negative control discriminating; Mac12 affected tests/Clippy PASS. Corrected native run pending.",
       "evidence": "docs/implementation/evidence/p04-network-direct-mac-20260928.json",
       "preserve": "Original missing-API RED, Mac127.0.0.2 setup failure, reproduced DNS resumption expiry RED, final actual TLS/cancellation results and deterministic public-only PKI fixtures",
       "last_read_only_tux_census": {
@@ -27289,7 +27324,8 @@
         "running_unrelated": 8,
         "active_bigbrotr": false
       },
-      "cache_input": "Verified stopped network-1a2a8be; copy only, no cache or historical dataset retirement in this boundary"
+      "cache_input": "Next native profile exclusively reuses1154757 target/cargo-home via nested mounts and host lock. Original four ELFs hash verified outside caches; results/source/DB untouched. Cache no longer immutable historical build output.",
+      "negative_worktree": ".research/worktrees/network-direct-no-poll-1154757; intentional missing-poll-check variant, never merge/push"
     }
   }
 }

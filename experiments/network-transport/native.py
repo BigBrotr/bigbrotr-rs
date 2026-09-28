@@ -36,7 +36,7 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc', '--version', '--verbose'], env=env, text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 assert identity['rustc'].startswith('rustc 1.98.1 ')
-tests = {'network_policy': 9, 'network_dns': 9, 'network_dns_semantics': 14, 'network_direct': 12}
+tests = {'network_direct': 12}
 selectors = [arg for name in tests for arg in ['--test', name]]
 checks = Path('/out/build-checks')
 result = execute([

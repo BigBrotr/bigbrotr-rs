@@ -643,8 +643,12 @@ async fn a_dns_reply_after_action_expiry_cannot_start_the_next_family() {
         );
         let mut reply = vec![query[0], query[1], 0x81, 0x80, 0, 1, 0, 0, 0, 0, 0, 0];
         reply.extend_from_slice(&query[12..]);
-        socket.write_u16(reply.len() as u16).await.unwrap();
-        socket.write_all(&reply).await.unwrap();
+        // One small response write: the correct client may close immediately on
+        // readiness after expiry. Splitting length/body introduced a Linux
+        // BrokenPipe fixture race before the forbidden-next-connection oracle.
+        let mut frame = (reply.len() as u16).to_be_bytes().to_vec();
+        frame.extend_from_slice(&reply);
+        socket.write_all(&frame).await.unwrap();
         assert!(
             timeout(Duration::from_millis(100), dns.accept())
                 .await

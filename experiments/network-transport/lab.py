@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Trusted exact-Git Tux runner; copies one verified stopped compiler cache only."""
+"""Trusted exact-Git Tux runner with exclusive reuse of an owned compiler cache."""
 import datetime
+import fcntl
 import hashlib
 import json
 import os
@@ -19,7 +20,7 @@ assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
 root = base / 'runs' / ('network-' + revision[:7])
 source = root / 'source'
-cache_root = base / 'runs/network-1a2a8be'
+cache_root = base / 'runs/network-1154757'
 image = 'sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d'
 label = 'org.bigbrotr.network-transport'
 
@@ -48,8 +49,8 @@ assert Path(__file__).resolve() == source / 'experiments/network-transport/lab.p
 assert not (root / 'resources.json').exists()
 prior = containers()
 old = json.loads((cache_root / 'resources.json').read_text())
-assert old['source'] == '1a2a8bed567a479f7641370dbc9c89f06465e7fa'
-assert old['owner'] == 'bac04a9c1ac35f50d762a6120d813546' and old['state'] == 'stopped-retained'
+assert old['source'] == '115475799ce11a841e9aacc814d3576ee00cc6ca'
+assert old['owner'] == '8b21a13162699a6038154874c2ac89da' and old['state'] == 'stopped-retained'
 for entry in old['containers']:
     item = next(c for c in prior if c['Id'] == entry['id'])
     assert item['Config']['Labels'][old['owner_label']] == old['owner']
@@ -58,6 +59,15 @@ for item in prior:
     if item['State']['Running']:
         assert 'bigbrotr' not in item['Name']
         assert not any(Path(m['Source']).is_relative_to(cache_root) for m in item['Mounts'])
+# This cache is mutable build acceleration, not historical evidence. Verify the
+# original executables are retained separately before sharing it with this run.
+original_result = json.loads((cache_root / 'out/tests/result.json').read_text())
+assert original_result['source'] == old['source']
+for name, digest in original_result['executables_sha256'].items():
+    assert re.fullmatch('[a-z_]+', name)
+    assert sha(cache_root / 'out/artifacts' / name) == digest
+cache_lock = os.open(cache_root / '.compiler-cache.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+fcntl.flock(cache_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
 preflight = dict(observed_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                  containers=[projection(c) for c in prior],
                  directories=sorted(p.name for p in (base / 'runs').iterdir()),
@@ -72,7 +82,8 @@ assert preflight['architecture'] == 'x86_64' and preflight['free_bytes'] > prefl
 owner = secrets.token_hex(16)
 state = dict(source=revision, tree=tree, owner=owner, owner_label=label,
              root=str(root), state='preparing', containers=[], image=image,
-             cache_origin=str(cache_root), started_at=preflight['observed_at'])
+             cache_origin=str(cache_root), cache_mode='exclusive mutable reuse; original evidence retained outside caches',
+             started_at=preflight['observed_at'])
 write(root / 'resources.json', state)
 out = root / 'out'
 build = out / 'build'
@@ -92,7 +103,7 @@ for name in ['target', 'cargo-home']:
     assert original.is_dir() and not original.is_symlink()
     if name == 'cargo-home':
         assert not any((original / p).exists() for p in ['credentials', 'credentials.toml', 'config', 'config.toml'])
-    subprocess.run(['cp', '-a', '--reflink=auto', str(original), str(build / name)], check=True, timeout=120)
+    (build / name).mkdir()
 
 
 def run_container(name, network, argv, seconds):
@@ -102,7 +113,9 @@ def run_container(name, network, argv, seconds):
                     '--security-opt', 'no-new-privileges', '--user', f'{os.getuid()}:{os.getgid()}',
                     '--tmpfs', '/tmp:rw,exec,nosuid,nodev,size=512m',
                     '--mount', f'type=bind,src={out},dst=/out',
-                    '--mount', f'type=bind,src={export},dst=/out/build/source,readonly', image,
+                    '--mount', f'type=bind,src={export},dst=/out/build/source,readonly',
+                    '--mount', f'type=bind,src={cache_root}/out/build/target,dst=/out/build/target',
+                    '--mount', f'type=bind,src={cache_root}/out/build/cargo-home,dst=/out/build/cargo-home', image,
                     'env', '-i', 'PATH=/usr/local/cargo/bin:/usr/local/bin:/usr/bin:/bin',
                     'RUSTUP_HOME=/usr/local/rustup', 'CARGO_HOME=/out/build/cargo-home', *argv)
     state['containers'].append(dict(name=name, id=ident))

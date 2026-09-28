@@ -21,18 +21,24 @@ python3 -B experiments/network-transport/lab.py \
 
 The runner checks clean source, inventories containers/mounts/processes/ports and
 requires 12 GiB free compiler headroom. This profile creates no archive, so it
-does not consume the separate export completion reserve. It copies only the
-verified stopped `network-1a2a8be` compiler/registry caches into its new
-output; originals, databases and historical artifacts stay untouched. Locked
+does not consume the separate export completion reserve. It exclusively reuses the
+verified stopped `network-1154757` compiler/registry caches through explicit nested
+container mounts and a nonblocking host lock. Their original test executables
+must be retained and hash-verified outside the mutable caches. This avoids another
+complete compiler-cache copy for a fixture-only correction. Original source,
+results, databases and historical artifacts stay untouched. Locked
 dependency fetching uses a credential-free container. Build and all tests run
 offline with `--network none`; fixture traffic stays on container loopback.
 Containers have the pinned laboratory image, two CPUs, 6 GiB memory, 512 PIDs,
 an unprivileged user, read-only root/source and no Docker socket or host ports.
 
-The shared `tools/ci.py` executor bounds and joins commands. Four exact test
-executables are retained and hashed outside compiler caches; source hashes are
-checked before/after. Qualification requires 9 policy, 9 DNS lifecycle, 14 DNS
-semantics and 12 direct TCP/TLS tests, zero failed/ignored, and Clippy. Counts bind this fixed fixture
+The shared `tools/ci.py` executor bounds and joins commands. The exact test
+executable is retained and hashed outside compiler caches; source hashes are
+checked before/after. This correction profile requires 12 direct TCP/TLS tests,
+zero failed/ignored, and Clippy. Revision1154757 already executed the unchanged
+32 DNS/policy tests successfully; its direct suite retains the Linux split-response
+BrokenPipe fixture failure. The corrected one-write response must still reject the
+old missing-poll-check interpretation. Counts bind this fixed fixture
 set; they are not coverage targets. Raw command outcomes, terminal container
 metadata and preflight stay under the run; original failures are preserved.
 `out/qualification.json` is the component result, not a product release manifest.

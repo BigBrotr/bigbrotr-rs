@@ -12,10 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEAD and origin/main are4995f3ded25c01690bb12e3a025ae10f2a797e0c;
-private BigBrotr/bigbrotr-rs, clean main after push. Product1a2a8be and scoped
-native evidence/laboratory fix4995f3d are published without history rewrite.
-Only this checkpoint changes during next-consumer selection. Root is sole writer;
+Verified HEAD115475799ce11a841e9aacc814d3576ee00cc6ca is unpublished;
+origin/main4995f3ded25c01690bb12e3a025ae10f2a797e0c remains published/private.
+Root owns the fixture-only correction, native recipe/evidence and checkpoint
+changes. Product TCP/TLS source remains exactly1154757; no history rewrite. Root is sole writer;
 no active native experiment or agent writer. All applied migrations unchanged.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
@@ -279,3 +279,27 @@ versions. Last Tux census01:43:37UTC:71,847,780,352 bytes free, eight unrelated
 running, no BigBrotr work. Native recipe now copies the stopped1a2 cache, preserving
 its original evidence; no current resources removed. Next: commit reviewed candidate,
 transfer exact Git revision, run44 native component cases, inspect terminal custody.
+
+Native1154757 is terminal (01:50:56UTC), owner8b21a13162699a6038154874c2ac89da,
+PID2800705/start394243848 absent at01:56:47UTC. Fetch4c6e490cf2c052e31e498ab9686cde3ba29638b9e5d0231fb232911a8c8123d3 exited0;
+nativea4d5bbc418168dec49ad2b3f1b5e8e5aaa369c90e859552855d87b602b30b9b8 exited1/noOOM.
+855 prior container observations unchanged; eight unrelated running. Free
+67,949,281,280 bytes. Original22 capture payloads/1405 source hashes/four ELF
+identities verified under .research/implementation/network-native-1154757.
+See evidence/p04-network-direct-incomplete-20260928.json:32 existing native
+cases passed, direct11PASS/1FAIL at a Linux fixture BrokenPipe (split DNS frame).
+Original FAIL retained, no native qualification claim yet. Corrected fixture
+writes one small complete frame; Mac12tests/Clippy PASS. An intentional missing
+poll-check variant with the corrected fixture again failed on an actual forbidden
+DNS connection. Preserve .research/worktrees/network-direct-no-poll-1154757,
+its patch/log hashes and other negative worktrees; never merge/push them.
+
+Next bounded action: commit fixture/native-recipe/evidence correction, transfer
+exact Git source and rerun only the affected12 direct cases natively. Product
+bytes unchanged. To avoid another full cache copy, the runner now exclusively
+reuses1154757 target/cargo-home with an owned host lock and explicit mounts; all
+four original ELFs are retained/hash-checked outside that mutable cache. Source,
+results, databases and other historical artifacts remain untouched. Verify actual
+mount/process state again before launch. No active BigBrotr experiment now.
+A read-only agent studies exact WebSocket sources under ignored
+.research/implementation/network-websocket-audit; no product/native writes.

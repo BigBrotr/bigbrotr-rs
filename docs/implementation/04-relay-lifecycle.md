@@ -10,8 +10,10 @@ informs fixtures and design choices, not a compatibility or correctness claim.
 The finite direct TCP/TLS extension has [scoped Mac evidence](evidence/p04-network-direct-mac-20260928.json),
 including actual DNS rebinding, SNI/certificate refusals, buffered-data revocation
 and cancellation. Its action window is not an authenticated enrollment grant.
-Native qualification and the remaining P04-T02 service/route/protocol integration
-are recorded separately; no checkbox is closed by this component alone.
+The [first native run](evidence/p04-network-direct-incomplete-20260928.json)
+retains a DNS fixture BrokenPipe failure; its correction still needs native
+validation. The remaining P04-T02 service/route/protocol integration is recorded
+separately; no checkbox is closed by this component alone.
 
 Goal: turn attributable mentions into governed endpoint work, establish actual
 protocol evidence, and retain useful measurements with reproducible method,
