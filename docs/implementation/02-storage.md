@@ -92,6 +92,13 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
 - [ ] **Step 8:** Document migration privileges, compatibility failures and rollback/forward
   repair semantics; test the actual migration CLI on clean and incompatible DBs.
 
+The next P02-T01 Step6/P03-T01 source prerequisite implements additive0020
+[operational request binding](../reference/producer-request-inputs.md#operational-relay-source-binding-0020).
+The adapter checks retained source/visibility and current enrollment before both
+reservation and native dispatch. First practical wave is in
+`experiments/relay-source`; qualification, concurrency/ambiguity and the actual
+issuer remain open. No task step is completed by this implementation alone.
+
 ## P02-T02 — Atomic RocksDB admission and exact identity inventory
 
 **Depends on:** P01-T02/T03/T05, the P01-T06 authority core and P02-T01. This task supplies the real owner used to finish P01-T06/T07 practical cases.

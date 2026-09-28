@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn relay_source_binding_extends_enrollment_without_adopting_old_reservations() {
+    let applied: Vec<_> = plan(&[], 19)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next = plan(&applied, 20).expect("relay source bindings require an additive migration");
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0020_relay_source_bindings.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 20),
+        Err(MigrationError::MissingPrerequisite(20))
+    );
+    assert!(migrations::require_applied(&applied, 14).is_ok());
+}
+
+#[test]
 fn job_pages_require_retention_upgrade_without_changing_applied_lifecycle() {
     let applied: Vec<_> = plan(&[], 604)
         .unwrap()

@@ -1,5 +1,7 @@
 //! Immutable reservation metadata. No row here is a native admission receipt.
 use super::ingest_registry::ControlOwner;
+use super::producer_sources::{self, RequestPhase, SourceBindingError};
+use crate::acquisition::relay_source::RelaySourceBinding;
 use crate::storage::rocks::store::StagedProducerRequest;
 use bigbrotr_model::{DatasetId, Digest256, ProducerRequestId};
 use tokio_postgres::Transaction;
@@ -9,6 +11,7 @@ pub enum ReservationError {
     Backend,
     Conflict,
     InvalidMetadata,
+    Source(SourceBindingError),
     /// PostgreSQL may have committed; native dispatch has not begun.
     CommitUnknown,
 }
@@ -37,8 +40,24 @@ pub(super) async fn read(
     dataset: DatasetId,
     request: ProducerRequestId,
 ) -> Result<Option<ProducerReservation>, ReservationError> {
-    let row = tx.query_opt("SELECT substring(request_digest FROM 1 FOR 33), input_bytes, substring(manifest_sha256 FROM 1 FOR 33), input_profile FROM control.producer_requests WHERE dataset_id = $1::bytea AND producer_slot_id = $2::bytea AND producer_epoch = $3::text::numeric AND request_sequence = $4::text::numeric",
-        &[&&dataset.as_bytes()[..], &&request.producer_slot_id.as_bytes()[..], &request.producer_epoch.get().to_string(), &request.request_sequence.get().to_string()]).await.map_err(backend)?;
+    const READ: &str = "
+        SELECT substring(request_digest FROM 1 FOR 33), input_bytes,
+            substring(manifest_sha256 FROM 1 FOR 33), input_profile
+        FROM control.producer_requests
+        WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea
+            AND producer_epoch=$3::text::numeric AND request_sequence=$4::text::numeric";
+    let row = tx
+        .query_opt(
+            READ,
+            &[
+                &&dataset.as_bytes()[..],
+                &&request.producer_slot_id.as_bytes()[..],
+                &request.producer_epoch.get().to_string(),
+                &request.request_sequence.get().to_string(),
+            ],
+        )
+        .await
+        .map_err(backend)?;
     row.map(|row| {
         let fixed = |index| -> Result<[u8; 32], ReservationError> {
             row.try_get::<_, &[u8]>(index)
@@ -66,11 +85,33 @@ pub(super) async fn reserve(
     tx: &Transaction<'_>,
     staged: &StagedProducerRequest,
     issuer: ControlOwner,
+    source: Option<RelaySourceBinding>,
 ) -> Result<(), ReservationError> {
     // The bridge already holds the exact owner/registry locks. Upgrade producer
     // serialization before a separate READ COMMITTED observation of prior rows.
-    tx.query_one("SELECT reserved_through_request::text FROM control.producer_epochs WHERE dataset_id = $1::bytea AND producer_slot_id = $2::bytea AND producer_epoch = $3::text::numeric FOR UPDATE",
-        &[&&staged.dataset.as_bytes()[..], &&staged.request.producer_slot_id.as_bytes()[..], &staged.request.producer_epoch.get().to_string()]).await.map_err(backend)?;
+    const LOCK_PRODUCER: &str = "
+        SELECT reserved_through_request::text FROM control.producer_epochs
+        WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea
+            AND producer_epoch=$3::text::numeric FOR UPDATE";
+    tx.query_one(
+        LOCK_PRODUCER,
+        &[
+            &&staged.dataset.as_bytes()[..],
+            &&staged.request.producer_slot_id.as_bytes()[..],
+            &staged.request.producer_epoch.get().to_string(),
+        ],
+    )
+    .await
+    .map_err(backend)?;
+    producer_sources::require_binding(
+        tx,
+        staged.dataset,
+        staged.request,
+        source,
+        RequestPhase::Reservation,
+    )
+    .await
+    .map_err(ReservationError::Source)?;
     if let Some(row) = read(tx, staged.dataset, staged.request).await? {
         if row.digest != staged.digest
             || row.input_bytes != staged.input_bytes
@@ -80,7 +121,64 @@ pub(super) async fn reserve(
         }
         return Ok(());
     }
-    tx.execute("INSERT INTO control.producer_requests(producer_slot_id, producer_epoch, request_sequence, dataset_id, request_digest, input_bytes, input_profile, manifest_sha256, issuer_resource, issuer_epoch, issuer_incarnation, reserved_at_us) VALUES ($1::bytea, $2::text::numeric, $3::text::numeric, $4::bytea, $5::bytea, $6::integer, 1, $7::bytea, $8::bytea, $9::text::numeric, $10::bytea, (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint)",
-        &[&&staged.request.producer_slot_id.as_bytes()[..], &staged.request.producer_epoch.get().to_string(), &staged.request.request_sequence.get().to_string(), &&staged.dataset.as_bytes()[..], &&staged.digest.as_bytes()[..], &(staged.input_bytes as i32), &&staged.manifest_sha256[..], &&issuer.resource_id.as_bytes()[..], &issuer.epoch.get().to_string(), &&issuer.process_incarnation.as_bytes()[..]]).await.map_err(backend)?;
+    if let Some(source) = source {
+        const INSERT: &str = "
+            INSERT INTO control.producer_requests(producer_slot_id, producer_epoch,
+                request_sequence, dataset_id, request_digest, input_bytes, input_profile,
+                manifest_sha256, issuer_resource, issuer_epoch, issuer_incarnation, reserved_at_us,
+                relay_endpoint_id, relay_access_scope_id, relay_enrollment_generation, relay_route_id)
+            VALUES ($1::bytea, $2::text::numeric, $3::text::numeric, $4::bytea, $5::bytea,
+                $6::integer, 1, $7::bytea, $8::bytea, $9::text::numeric, $10::bytea,
+                (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint,
+                $11::bytea, $12::bytea, $13::text::numeric, $14::bytea)";
+        tx.execute(
+            INSERT,
+            &[
+                &&staged.request.producer_slot_id.as_bytes()[..],
+                &staged.request.producer_epoch.get().to_string(),
+                &staged.request.request_sequence.get().to_string(),
+                &&staged.dataset.as_bytes()[..],
+                &&staged.digest.as_bytes()[..],
+                &(staged.input_bytes as i32),
+                &&staged.manifest_sha256[..],
+                &&issuer.resource_id.as_bytes()[..],
+                &issuer.epoch.get().to_string(),
+                &&issuer.process_incarnation.as_bytes()[..],
+                &&source.endpoint_id.as_bytes()[..],
+                &&source.access_scope_id.as_bytes()[..],
+                &source.enrollment_generation.get().to_string(),
+                &&source.route_id.as_bytes()[..],
+            ],
+        )
+        .await
+        .map_err(backend)?;
+        return Ok(());
+    }
+    // Keep the earlier unbound schema usable; bound INSERT has an explicit0020
+    // prerequisite above. Both forms share the same immutable reservation guard.
+    const INSERT_UNBOUND: &str = "
+        INSERT INTO control.producer_requests(producer_slot_id, producer_epoch,
+            request_sequence, dataset_id, request_digest, input_bytes, input_profile,
+            manifest_sha256, issuer_resource, issuer_epoch, issuer_incarnation, reserved_at_us)
+        VALUES ($1::bytea, $2::text::numeric, $3::text::numeric, $4::bytea, $5::bytea,
+            $6::integer, 1, $7::bytea, $8::bytea, $9::text::numeric, $10::bytea,
+            (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint)";
+    tx.execute(
+        INSERT_UNBOUND,
+        &[
+            &&staged.request.producer_slot_id.as_bytes()[..],
+            &staged.request.producer_epoch.get().to_string(),
+            &staged.request.request_sequence.get().to_string(),
+            &&staged.dataset.as_bytes()[..],
+            &&staged.digest.as_bytes()[..],
+            &(staged.input_bytes as i32),
+            &&staged.manifest_sha256[..],
+            &&issuer.resource_id.as_bytes()[..],
+            &issuer.epoch.get().to_string(),
+            &&issuer.process_incarnation.as_bytes()[..],
+        ],
+    )
+    .await
+    .map_err(backend)?;
     Ok(())
 }

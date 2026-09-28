@@ -16,4 +16,5 @@ pub mod migration_runner;
 pub mod migrations;
 pub mod producer_outcomes;
 pub mod producer_requests;
+pub mod producer_sources;
 pub mod transport;

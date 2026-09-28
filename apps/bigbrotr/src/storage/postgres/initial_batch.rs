@@ -3,8 +3,10 @@ use super::super::import_checkpoints::{self, ImportCheckpointError};
 use super::super::input_bindings::{self, ImportBatch, ImportJobBinding, InputBindingError};
 use super::super::producer_outcomes::{self, OutcomeError};
 use super::super::producer_requests::{self, ReservationError};
+use super::super::producer_sources::{self, RequestPhase, RequestSourceCheck, SourceBindingError};
 use super::*;
 use crate::{
+    acquisition::relay_source::RelaySourceBinding,
     runtime::{
         OwnedPermit,
         policy_authority::{LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl},
@@ -30,6 +32,7 @@ pub enum InitialOperationError<E> {
     Registry(ingest_registry::RegistryError),
     Native(E),
     Reservation(ReservationError),
+    Source(SourceBindingError),
     InputBinding(InputBindingError),
     ImportCheckpoint(ImportCheckpointError),
     /// The native result exists; this error never authorizes another request ID.
@@ -59,7 +62,7 @@ struct InitialIngestContext<'a> {
     ingest_root: &'a std::path::Path,
     registration: &'a ingest_registry::InitialRegistration,
     policy_ttl: Duration,
-    request: Option<ProducerRequestId>,
+    request: Option<RequestSourceCheck>,
     job: Option<ImportJobBinding>,
 }
 
@@ -67,6 +70,10 @@ pub struct InitialEventRequest<'a> {
     pub ingest_root: &'a std::path::Path,
     pub registration: &'a ingest_registry::InitialRegistration,
     pub event: PreparedEvent,
+    /// Original operational source, supplied by the trusted acquisition owner.
+    /// None is reserved for imports and legacy unbound fixtures, not an escape
+    /// from current source permission. This data alone is never a socket grant.
+    pub relay_source: Option<RelaySourceBinding>,
     pub provenance_enabled: bool,
     pub recorded_at: ObservedTime,
     pub limits: AdmissionLimits,
@@ -258,7 +265,12 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
-                    request: Some(request),
+                    request: Some(RequestSourceCheck {
+                        request,
+                        binding: None,
+                        visibility: None,
+                        phase: RequestPhase::Reservation,
+                    }),
                     job: None,
                 },
                 &mut validate,
@@ -267,7 +279,7 @@ impl ControlSession {
         let staged = store
             .stage_initial_dictionaries(request, input.intent, input.limits, &permit)
             .map_err(InitialBatchError::Native)?;
-        producer_requests::reserve(&reservation_tx, &staged, spec.control)
+        producer_requests::reserve(&reservation_tx, &staged, spec.control, None)
             .await
             .map_err(InitialBatchError::Reservation)?;
         if input.cancelled.load(Ordering::Relaxed) {
@@ -295,7 +307,12 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
-                    request: Some(request),
+                    request: Some(RequestSourceCheck {
+                        request,
+                        binding: None,
+                        visibility: None,
+                        phase: RequestPhase::Dispatch,
+                    }),
                     job: None,
                 },
                 &mut validate,
@@ -372,6 +389,8 @@ impl ControlSession {
         if input.event.request_id().producer_slot_id != spec.producer_slot_id
             || input.event.request_id().producer_epoch.get() != 1
             || input.limits.max_outstanding_requests > u64::from(spec.outstanding_request_limit)
+            || (input.relay_source.is_some()
+                && !matches!(input.event.origin(), bigbrotr_model::EventOrigin::Network))
         {
             return Err(OwnerError::InvalidInput.into());
         }
@@ -383,7 +402,12 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
-                    request: Some(input.event.request_id()),
+                    request: Some(RequestSourceCheck {
+                        request: input.event.request_id(),
+                        binding: input.relay_source,
+                        visibility: Some(input.event.visibility_scope_id()),
+                        phase: RequestPhase::Reservation,
+                    }),
                     job: None,
                 },
                 |document, digest| validate(document, digest, &input.event),
@@ -393,7 +417,7 @@ impl ControlSession {
             .event
             .stage(store, input.limits, &permit)
             .map_err(InitialEventError::Native)?;
-        producer_requests::reserve(&reservation_tx, &staged, spec.control)
+        producer_requests::reserve(&reservation_tx, &staged, spec.control, input.relay_source)
             .await
             .map_err(InitialEventError::Reservation)?;
         if input.cancelled.load(Ordering::Relaxed) {
@@ -419,7 +443,12 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
-                    request: Some(input.event.request_id()),
+                    request: Some(RequestSourceCheck {
+                        request: input.event.request_id(),
+                        binding: input.relay_source,
+                        visibility: Some(input.event.visibility_scope_id()),
+                        phase: RequestPhase::Dispatch,
+                    }),
                     job: None,
                 },
                 |document, digest| validate(document, digest, &input.event),
@@ -560,7 +589,7 @@ impl ControlSession {
             .await
             .map_err(InitialEventError::InputBinding)?;
         for request in &staged {
-            producer_requests::reserve(&tx, request, spec.control)
+            producer_requests::reserve(&tx, request, spec.control, None)
                 .await
                 .map_err(InitialEventError::Reservation)?;
         }
@@ -627,6 +656,11 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidPolicy.into());
         }
+        if let Some(check) = input.request {
+            producer_sources::require_current(&tx, spec.dataset_id, check)
+                .await
+                .map_err(InitialOperationError::Source)?;
+        }
         if let Some(job) = input.job {
             if job.config_revision != spec.config_revision
                 || job.policy_revision != spec.policy_revision
@@ -642,7 +676,7 @@ impl ControlSession {
                 &tx,
                 spec.dataset_id,
                 spec.control,
-                request,
+                request.request,
                 spec.config_revision,
                 spec.policy_revision,
             )

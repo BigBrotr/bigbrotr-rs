@@ -138,6 +138,7 @@ pub async fn run(
         },
         registration: spec,
         event: prepare(sequence),
+        relay_source: None,
         provenance_enabled: true,
         recorded_at: ObservedTime::new(recorded_at),
         limits: AdmissionLimits {

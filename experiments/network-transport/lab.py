@@ -17,7 +17,7 @@ sys.dont_write_bytecode = True
 from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
-assert len(sys.argv) in (3, 4) and profile in ('network', 'relay-registry', 'relay-registry-faults', 'relay-enrollment', 'relay-enrollment-faults', 'ingest-visibility', 'policy-versions')
+assert len(sys.argv) in (3, 4) and profile in ('network', 'relay-registry', 'relay-registry-faults', 'relay-enrollment', 'relay-enrollment-faults', 'ingest-visibility', 'policy-versions', 'relay-source')
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
 root = base / 'runs' / (profile + '-' + revision[:7])
@@ -144,7 +144,7 @@ try:
     state['state'] = 'running'
     write(root / 'resources.json', state)
     native_path = 'network-transport' if profile == 'network' else 'relay-registry'
-    native_args = {'relay-registry-faults':['faults'], 'relay-enrollment':['enrollment'], 'relay-enrollment-faults':['enrollment-faults'], 'ingest-visibility':['visibility'], 'policy-versions':['policy-versions']}.get(profile, [])
+    native_args = {'relay-registry-faults':['faults'], 'relay-enrollment':['enrollment'], 'relay-enrollment-faults':['enrollment-faults'], 'ingest-visibility':['visibility'], 'policy-versions':['policy-versions'], 'relay-source':['relay-source']}.get(profile, [])
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_path + '/native.py', *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
     expected = {'network': 'PASS_SCOPED_NETWORK_COMPONENTS', 'relay-registry': 'PASS_REGISTRY_BUILD_ONLY',
@@ -152,12 +152,13 @@ try:
                 'relay-enrollment': 'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
                 'relay-enrollment-faults': 'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',
                 'ingest-visibility': 'PASS_INGEST_VISIBILITY_BUILD_ONLY',
-                'policy-versions': 'PASS_POLICY_VERSIONS_BUILD_ONLY'}[profile]
+                'policy-versions': 'PASS_POLICY_VERSIONS_BUILD_ONLY',
+                'relay-source': 'PASS_RELAY_SOURCE_BUILD_ONLY'}[profile]
     assert qualification['source'] == revision and qualification['status'] == expected
     state['qualification'] = qualification['status']
-    if profile in ('relay-registry', 'relay-enrollment', 'ingest-visibility', 'policy-versions'):
+    if profile in ('relay-registry', 'relay-enrollment', 'ingest-visibility', 'policy-versions', 'relay-source'):
         engine_script = 'ingest-bootstrap/visibility.py' if profile == 'ingest-visibility' else profile + '/run.py'
-        engine_args = [] if profile in ('ingest-visibility', 'policy-versions') else [str(source)]
+        engine_args = [] if profile in ('ingest-visibility', 'policy-versions', 'relay-source') else [str(source)]
         subprocess.run(['python3', '-B', str(source / ('experiments/' + engine_script)),
                         str(root / 'pg'), str(out / 'artifacts'), *engine_args], check=True, timeout=300)
         pg = json.loads((root / 'pg/resources.json').read_text())
@@ -170,13 +171,14 @@ try:
             'relay-enrollment': ('enrollment-result.json', 'PASS_INITIAL_ENROLLMENT_BOUNDARY'),
             'ingest-visibility': ('visibility-result.json', 'PASS_SCOPED_INGEST_VISIBILITY'),
             'policy-versions': ('policy-versions-result.json', 'PASS_SCOPED_POLICY_VERSIONS'),
+            'relay-source': ('source-result.json', 'PASS_SCOPED_RELAY_SOURCE_FIRST_WAVE'),
         }[profile]
         engine = json.loads((root / 'pg' / result_name).read_text())
         assert engine['status'] == result_status
         state['qualification'] = engine['status']
 finally:
     pg_receipt = root / 'pg/resources.json'
-    if profile in ('relay-registry', 'relay-enrollment', 'ingest-visibility', 'policy-versions') and pg_receipt.exists():
+    if profile in ('relay-registry', 'relay-enrollment', 'ingest-visibility', 'policy-versions', 'relay-source') and pg_receipt.exists():
         pg = json.loads(pg_receipt.read_text())
         assert pg['root'] == str(root / 'pg') and pg['source'] == str(source)
         assert pg['format'] == 'bigbrotr-pg-lab/1'

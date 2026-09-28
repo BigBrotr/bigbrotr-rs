@@ -137,6 +137,10 @@
     {
       "version": 19,
       "name": "0019_relay_enrollment.sql"
+    },
+    {
+      "version": 20,
+      "name": "0020_relay_source_bindings.sql"
     }
   ],
   "reserved": [

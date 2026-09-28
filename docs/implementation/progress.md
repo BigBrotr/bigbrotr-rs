@@ -12,10 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is5be0dbd344d1ff22c6c849fe2a301c9a55023db8 (qualified candidate);
-origin/main was verified95c9f469c0f7e066053d1427a844451468e0da8d. Product tree
-d0b4e777886fa917a8851b97e8ac44393a9c9ecb completed native qualification.
-Root owns only boundary evidence/task/checkpoint/inventory edits pending commit.
+Local main and origin/main are ac3a302 (boundary evidence and cache retirement),
+pushed after verified private repository identity. Product source5be0dbd344d1ff22c6c849fe2a301c9a55023db8,
+treed0b4e777886fa917a8851b97e8ac44393a9c9ecb completed native qualification.
+Root owns this checkpoint and the current uncommitted relay-source binding slice.
+Maintenance and policy-version inventory/evidence are committed.
 No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
 05:51:59UTC, PID3018662/start395683262 terminal, owner8b12a62d405821e4949859f225a685a6.
 Six build/test/Clippy checks (56 tests) and87 actual PG/Rocks checks PASS;
@@ -28,7 +29,7 @@ PG6ce6e36a6d01 exited0/client934e45345fda exited143/noOOM; internal172.16.240.48
 ownerbe488f5d1bddcc554faa50952df73a6a. All11 databases and both native stores remain.
 Do not rerun old launchers. Local .research/implementation/ban-policy-20260928
 owns exact bundle/launch/collector/root review and original outcomes. Next bounded
-action after recording this boundary: current finite acquisition source authority,
+action: current finite acquisition source authority,
 with v2 bans and committed visibility; keep v1 source issuance explicitly refused.
 
 Latest root runs/ingest-visibility-6c52067 is stopped-retained, ownerd65bebf992d73cf14ba000d8176d05a8,
@@ -99,6 +100,42 @@ grants and original enrollment actor/session do not authorize the runtime worker
 No current issuer/ban consumer or signed acquisition claim exists yet. After this
 focused SQL evidence, implement that minimum current authority/committed scope
 consumer; full discovery, Monitor and renewable sessions are not prerequisites.
+
+The next source slice is now implemented but NOT YET QUALIFIED. Root owns new
+0020 (four nullable all-or-none immutable operational fields on producer_requests),
+acquisition/relay_source, postgres/producer_sources, reservation/initial_batch
+consumers, catalog/manifest and affected fixture callers. Old applied SQL/native
+bytes remain unchanged. Bound rows check exact enabled historical AND current
+generation/route; import exclusion observes after producer locking. Existing
+unbound schemas remain usable under the checked migration ledger; no NULL-row
+adoption or omitted/changed binding is accepted. Reservation and dispatch checks
+are distinct, with missing dispatch reservation refused. Recovery stays positive
+and historical, without newer enrollment permission. No source grant or socket
+consumer is implemented by this data binding alone.
+
+Read-only independent dns_dependency_audit review completed: four-column extension
+preferred to a new table/envelope, with explicit warning about historical-route
+FK incompleteness, source laundering, both transaction rechecks, phase-specific
+absence and import lock ordering. Root implemented those relational/retry bounds;
+actual private-route visibility, bans and trusted socket custody remain issuer
+gates. Do not claim them from the binding.
+
+Mac schema RED (UnknownTarget20), then 28 catalog tests and lib/all-example Clippy
+passed before the new engine fixture. The new source fixture initially failed to
+compile because StoredOutcome exposes outcome(), not receipt(); original log
+preserved and fixture corrected. Final Mac31 catalog/CLI tests and all-example Clippy PASS; artifact/link checks
+PASS. The independent first-wave oracle now emits only non-receipt native rows
+(14 bootstrap/25 committed) and original input bytes; its initial local row-count
+mistake is retained before any native observation. Current ignored evidence root
+.research/implementation/relay-source-20260928. Native new-slice cases NOT_RUN.
+Next: transfer the clean unpublished candidate by Git and execute the first wave
+on Tux's exclusive reusable1154757 cache (fresh measured68,888,199,168bytes free).
+The runner inventories all processes/containers/mounts/routes/volumes before
+allocation; eight unrelated applications remain running. New profile relay-source
+uses a new root/internal172.16.240.64/28; overlap checks precede network creation. Must still cover two transaction
+boundaries, contradictory/omitted bindings, unchanged retries, concurrency/rollback,
+ambiguous outcome/recovery and preservation through0020 before qualifying this
+persistent boundary. Do not conflate planned cases with executed evidence.
 
 ## Current enrollment implementation and evidence
 

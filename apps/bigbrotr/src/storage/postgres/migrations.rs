@@ -25,7 +25,7 @@ impl Migration {
 }
 
 // Application order matches migrations/manifest.json, independent of reserved ID order.
-static MIGRATIONS: [Migration; 34] = [
+static MIGRATIONS: [Migration; 35] = [
     Migration {
         version: 1,
         name: "0001_control.sql",
@@ -294,6 +294,14 @@ static MIGRATIONS: [Migration; 34] = [
         version: 19,
         name: "0019_relay_enrollment.sql",
         sql: include_str!("../../../../../migrations/postgres/0019_relay_enrollment.sql"),
+        reader_min: 1,
+        reader_max: 1,
+        writer_floor: 1,
+    },
+    Migration {
+        version: 20,
+        name: "0020_relay_source_bindings.sql",
+        sql: include_str!("../../../../../migrations/postgres/0020_relay_source_bindings.sql"),
         reader_min: 1,
         reader_max: 1,
         writer_floor: 1,

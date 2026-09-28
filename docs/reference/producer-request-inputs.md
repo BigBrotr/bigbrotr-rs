@@ -303,3 +303,65 @@ detected WAL damage, but a complete-record truncation and an earlier permissive
 recovery cannot be disproved by today's successful open or issued counter alone.
 No negative resolution API, durable noncommit row or retirement permission is
 provided by this fix. Preserve unresolved reservations and their original inputs.
+
+## Operational relay source binding (0020)
+
+P02-T01 Step6 and P03-T01 extend the existing reservation with an optional,
+immutable `(EndpointId, AccessScopeId, enrollment generation, RouteId)` tuple.
+Its dataset is the reservation's dataset. All four fields are present together,
+with a positive generation, or all are absent. Existing rows remain absent;
+there is no backfill or adoption. Migration0020 appends after0019 without changing
+previous SQL, original native request preimages, digests or receipt formats.
+The tuple is operational recovery metadata even when scientific provenance is off;
+it does not allocate endpoint/access/method archive dictionaries.
+
+The trusted source owner supplies attribution for the socket that delivered the
+bytes. Constructing this data is **not** a source grant: the consumer must still
+check current bans, service/selector permission, root route policy and committed
+visibility, and keep socket custody through arrival. Arbitrary caller-selected
+IDs could otherwise attribute a private arrival to another public endpoint. The
+current binding adapter checks the event's visibility reference against its
+immutable no-auth access context; no-auth does not itself imply public visibility.
+The finite issuer, private-route visibility enforcement and actual socket consumer
+remain required integration work.
+
+Initial event admission compares the complete retained tuple, including omission,
+and checks the exact enabled historical and current generation/route under
+Control → dataset → enrollment → Ingest → producer ordering. It repeats these
+checks in both the reservation transaction and the post-COMMIT native dispatch
+transaction. Enrollment changes do not require a policy-epoch change. Absence is
+allowed before initial reservation; it is an error before native dispatch.
+An existing NULL tuple cannot become bound; a bound tuple cannot be omitted or
+changed on retry even when the signed bytes and native request digest are identical.
+A bound event must have network origin. The original trusted full-policy callback
+continues to own source/scope/provenance authorization.
+
+SQL checks source shape and current/historical enrollment before the existing
+producer reservation guard. The route foreign key alone is insufficient: the
+exact historical generation must also name that route and be enabled. A separate
+post-producer-lock check excludes import-position bindings. Import's existing
+producer lock and refusal to attach an already reserved request close the opposite
+insertion order. Unbound import insertion retains its existing lock order and does
+not acquire a dataset lock after a job/producer lock. Product transactions keep
+READ COMMITTED and make a separate observation after waiting for serialization.
+
+Bound requests require explicit0020 migration. Unbound existing consumers remain
+usable at their earlier migration floor: the already checked ledger is observed
+under its shared migration lock before selecting columns introduced by0020. Old
+executables reject the unknown migration. New code still compares omission after
+the upgrade; earlier-schema compatibility cannot bypass a retained binding.
+
+Positive original-outcome recovery continues to use the original immutable
+reservation, synchronized native input and complete native outcome. It does not
+require today's enrollment, bans or route to authorize yesterday's committed
+result, and it performs no fresh admission. Missing native detail stays unresolved;
+no negative resolution, replacement identity or new grant follows from this tuple.
+Reservations/outcomes remain within their existing finite retention envelope.
+
+The first practical wave exercises the actual adapter and engines for populated
+upgrade, exact/changed/omitted retry, legacy adoption refusal, visibility mismatch,
+withdrawal/re-enrollment and an injected source refusal after reservation COMMIT.
+Independent complete native fact/index and original-input bytes are the expected
+results. Concurrency/rollback, relay/import exclusion and lost-COMMIT/revoked-source
+recovery remain required before this persistent boundary is qualified. Test source
+and a passing catalog suite alone do not establish those guarantees.

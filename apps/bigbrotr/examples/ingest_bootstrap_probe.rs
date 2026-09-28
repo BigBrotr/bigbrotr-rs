@@ -33,6 +33,8 @@ mod ingest_event;
 mod ingest_recovery;
 #[path = "support/ingest_recovery_process.rs"]
 mod ingest_recovery_process;
+#[path = "support/ingest_relay_source.rs"]
+mod ingest_relay_source;
 #[path = "support/ingest_snapshot.rs"]
 mod ingest_snapshot;
 #[path = "support/ingest_visibility.rs"]
@@ -201,9 +203,10 @@ async fn initialize_fixture(config: Config) {
 async fn run(mut config: Config, mode: &str, path: &Path) {
     // The explicit v2 case retains the independent frozen settings and literal
     // digest; it does not derive expected policy from the product codec.
-    let v2 = mode == "write-v2";
+    let source_mode = mode.starts_with("source-");
+    let v2 = mode == "write-v2" || source_mode;
     let validate = |document: &str, digest| validate_version(document, digest, v2);
-    let mode = if v2 { "write" } else { mode };
+    let mode = if mode == "write-v2" { "write" } else { mode };
     let (observer, observer_driver) = config.connect(NoTls).await.unwrap();
     let observer_driver = tokio::spawn(observer_driver);
     let row=observer.query_one("SELECT dataset_id,instance_id,(EXTRACT(EPOCH FROM pg_catalog.clock_timestamp())*1000000)::bigint FROM control.datasets",&[]).await.unwrap();
@@ -279,7 +282,16 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         config_digest: Digest256::from_bytes(policy.config_digest),
         policy_digest: Digest256::from_bytes(policy.policy_digest),
         previous_topology: None,
-        allocation_domains: if event_mode {
+        allocation_domains: if source_mode {
+            vec![
+                (DictionaryKind::Observer, [65; 16].try_into().unwrap()),
+                (
+                    DictionaryKind::VisibilityScope,
+                    [64; 16].try_into().unwrap(),
+                ),
+                (DictionaryKind::Event, [68; 16].try_into().unwrap()),
+            ]
+        } else if event_mode {
             vec![
                 (
                     DictionaryKind::VisibilityScope,
@@ -359,6 +371,28 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
                     format_version: 1,
                     source_dataset_id: None,
                     source_artifact_digest: ingest_event::source_digest(mode),
+                }),
+            )
+            .unwrap(),
+        );
+    }
+    if source_mode {
+        dictionaries.push(
+            DictionaryEntry::new(
+                QualifiedRef {
+                    dictionary_kind: DictionaryKind::Observer,
+                    allocation_domain: [65; 16].try_into().unwrap(),
+                    ordinal: Ordinal::new(1).unwrap(),
+                    ..scope
+                },
+                DictionaryDescriptor::Observer(bigbrotr_model::ObserverDescriptor {
+                    clock: Some(bigbrotr_model::ClockSource::SystemUtc),
+                    vantage: Some(DescriptorLabel::new("source-fixture".into()).unwrap()),
+                    software: None,
+                    method_id: None,
+                    public_key: None,
+                    route_class: None,
+                    software_version: None,
                 }),
             )
             .unwrap(),
@@ -455,7 +489,15 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             },
         )
         .await;
-    if mode.starts_with("visibility") {
+    if source_mode {
+        let bootstrap = result.unwrap();
+        assert_eq!(bootstrap.receipt().batch().unwrap().records().len(), 3);
+        drop(bootstrap);
+        ingest_relay_source::run(
+            owner, &observer, &mut store, &spec, path, &budget, mode, scope,
+        )
+        .await;
+    } else if mode.starts_with("visibility") {
         let bootstrap = result.unwrap();
         assert_eq!(bootstrap.receipt().batch().unwrap().records().len(), 2);
         drop(bootstrap);

@@ -92,6 +92,7 @@ pub async fn run(
                         ingest_root: path,
                         registration: spec,
                         event: prepared,
+                        relay_source: None,
                         provenance_enabled: true,
                         recorded_at: ObservedTime::new(if sequence == 2 { 456 } else { 1000 }),
                         limits: AdmissionLimits {
