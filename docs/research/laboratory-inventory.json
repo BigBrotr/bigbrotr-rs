@@ -29749,6 +29749,111 @@
         }
       },
       "evidence": "docs/implementation/evidence/p03-job-source-transport-native-20260928.json"
+    },
+    "job_effect_faults": {
+      "state": "Original fixture375aa05 FAIL before admission; all resources STOPPED/RETAINED; corrected Python retry not run",
+      "local_evidence": ".research/implementation/job-effect-faults-20260928",
+      "original": {
+        "source": "375aa05d5ebaaf6a6af4d927f8c92ec7e529882f",
+        "tree": "d7ba5966a81a899a22688a6663772f44af6ca41d",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-recovery-375aa05",
+        "pid": 3614894,
+        "start_ticks": "400550793",
+        "bundle_sha256": "b5eb6501c7a58af164ba2ff5fc6f7b08ee4de4f8b6978a0af8788b7d14028c19",
+        "build_owner": "3b88bcbbc2aa1ed28b242d169b7d50b5",
+        "resources": {
+          "source": "375aa05d5ebaaf6a6af4d927f8c92ec7e529882f",
+          "tree": "d7ba5966a81a899a22688a6663772f44af6ca41d",
+          "owner": "3b88bcbbc2aa1ed28b242d169b7d50b5",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-recovery-375aa05",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "de77ce80f37e51a39b60b27f2db9223ac1e65c868751f7e1938b4099bf8f5567"
+            },
+            {
+              "name": "native",
+              "id": "49d5533a403c8627c3c6766c28a250be44c69e687bd6d12846c404a7c3d215fd"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-09-28T19:20:54.429305+00:00",
+          "qualification": "PASS_ACQUISITION_BINDING_RECOVERY_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 62147510272,
+          "finished_at": "2026-09-28T19:22:03.149052+00:00"
+        },
+        "engine_launch": {
+          "source": "375aa05d5ebaaf6a6af4d927f8c92ec7e529882f",
+          "tree": "d7ba5966a81a899a22688a6663772f44af6ca41d",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-recovery-375aa05",
+          "pid": 3617319,
+          "start_ticks": "400559966"
+        },
+        "engine": {
+          "owner": "166b2178d60dcba18671d84fc31e94b8",
+          "label": "org.bigbrotr.relay-source-faults",
+          "client": {
+            "id": "39b4d2e649d16b38d8dac29d7e23f72fb9ff24f7b5f6f5f0589274bec5eb4bc0",
+            "name": "bigbrotr-relay-source-faults-375aa05"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_job_recovery_375aa05_pass"
+          ],
+          "status": "FAIL",
+          "failure": "JSONDecodeError: Extra data: line 2 column 1 (char 20)",
+          "started_at": "2026-09-28T19:22:26.200758+00:00",
+          "finished_at": "2026-09-28T19:22:30.147849+00:00"
+        },
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "375aa05d5ebaaf6a6af4d927f8c92ec7e529882f",
+          "observed_at": "2026-09-28T19:23:51.079573+00:00",
+          "prior_unchanged": 967,
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "name": "fetch",
+              "id": "de77ce80f37e51a39b60b27f2db9223ac1e65c868751f7e1938b4099bf8f5567",
+              "exit": 0
+            },
+            {
+              "name": "native",
+              "id": "49d5533a403c8627c3c6766c28a250be44c69e687bd6d12846c404a7c3d215fd",
+              "exit": 0
+            },
+            {
+              "name": "client",
+              "id": "39b4d2e649d16b38d8dac29d7e23f72fb9ff24f7b5f6f5f0589274bec5eb4bc0",
+              "exit": 143
+            },
+            {
+              "name": "postgres",
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            }
+          ],
+          "source_files": 1587,
+          "artifacts_verified": true,
+          "compiler_lock_released": true,
+          "free_bytes": 62153023488,
+          "server": {
+            "version": "160015",
+            "fsync": "on",
+            "full_page_writes": "on",
+            "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+          }
+        },
+        "capture_manifest_sha256": "e14ec807027a5834c1445ee10165d1b0cfb8e216691bcc5f9af8d45eede27a3e"
+      },
+      "preserve": "Original SQL timing-query failure, source, build, pass clone/native/input and all transcripts. No cases completed; post-suite original SQL comparison did not run.",
+      "next": "Correct the fixture to sample one materialized time; reuse exact375aa05 native artifacts in a separate clean Git retry. No product/SQL migration change or rebuild needed."
     }
   },
   "implementation_relay_registry_20260928": {

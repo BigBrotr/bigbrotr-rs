@@ -45,7 +45,13 @@ build = root / 'out/artifacts' if scoped else root.parent / 'relay-source-faults
 built = json.loads((build / 'build-result.json').read_text())
 sha = lambda value: hashlib.sha256(value).hexdigest()
 if scoped:
-    assert built['source'] == revision
+    if built['source'] != revision:
+        # Fixture-only corrections may reuse exact native artifacts. Never
+        # rebuild or overwrite the original failed run merely to retry Python.
+        changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only',
+                               built['source'], revision]).stdout.splitlines()
+        assert changed and all(n.startswith('docs/') or
+            (n.startswith('experiments/') and n.endswith('.py')) for n in changed), changed
 else:
     assert built['source'] == '87ad138926d164e47a8cd9b653b8bca19759c0a7'
     changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
@@ -242,13 +248,14 @@ def verify_native(name, dataset, committed, closing, staged):
 
 def job_remaining(db):
     return json.loads(lab.sql(pg, db, '''
+        WITH sampled AS MATERIALIZED (
+            SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint AS us
+        )
         SELECT json_build_array(a.deadline_at_us-now.us,
             min(o.lease_expires_at_us)-now.us)
         FROM control.acquisition_jobs a JOIN control.owner_epochs o
             ON o.dataset_id=a.dataset_id AND o.epoch=1
-        CROSS JOIN LATERAL (
-            SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint AS us
-        ) now
+        CROSS JOIN sampled now
         GROUP BY a.deadline_at_us, now.us
     '''))
 

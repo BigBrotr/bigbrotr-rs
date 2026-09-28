@@ -12,12 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin43ffde0; source lifetime qualification is committed
-and pushed. Root owns the job-bound fault extension in ingest_source_faults.rs,
-its existing caller and experiments/relay-source/faults.py. All owned resources
-are stopped/retained; no active experiment or cleanup debt.
+Mac candidate375aa05; private origin43ffde0. Root owns a Python-only correction
+to experiments/relay-source/faults.py and the evidence/checkpoint. All owned
+resources are stopped/retained; no active experiment or cleanup debt.
 
-Current uncommitted fixture work extends the existing laboratory to0024 and an
+Candidate375aa05 extends the existing laboratory to0024 and an
 authentic original job: eight concurrency/COMMIT schedules, two observed held
 COMMIT cancellations with explicit release, and a delayed reservation COMMIT
 past the job deadline. Source operation policyTTL5s/owners60s distinguish a2s
@@ -25,11 +24,24 @@ expiry case. Normal jobs are5s; historical recovery waits actual expiry before
 policy2 and authenticated withdrawal. Inputs, reservations, native outcomes and
 PG copies are checked separately. SQL rejection can report conservative
 Reservation(CommitUnknown) with no reservation/native effect and a staged input.
-Actual native close precedes old Control/driver disposal. Root/read-only review
-found no launch blocker. Mac scoped Clippy, Python syntax, formatting and artifact
-checks PASS. No native run yet. Tux preflight found62,277,107,712B available and
-only the same eight unrelated containers running; Mac7,514,652KiB. Ignored
-.research/implementation/job-effect-faults-20260928 owns local checks/next recipes.
+Actual native close precedes old Control/driver disposal. Mac scoped Clippy and
+native release build/Clippy PASS. The engine run FAILED in its first pass setup,
+before the source operation: the unmaterialized volatile clock grouping returned
+multiple JSON rows. No case completed. Preserve the original outcome; this is a
+fixture query failure, not a measured admission failure. Corrected SQL uses one
+materialized timestamp, preserving the original job/owner remaining-time checks.
+No Rust/product/migration change; reuse exact375aa05 artifacts in a separate Git
+retry and verify all changed paths are documentation/Python only.
+
+Original run acquisition-binding-recovery-375aa05: buildowner3b88bcbbc2aa1ed28b242d169b7d50b5,
+PID3614894/start400550793 terminal; fetchde77ce80/native49d5533a exit0.
+EnginePID3617319/start400559966 terminal; client39b4d2e stopped143, PG71775507
+stopped0/no OOM. One clone/native store retained. Audit19:23:51UTC verified967
+prior projections unchanged, eight unrelated running, lock free and62,153,023,488B
+available. Shared1154757 holds375aa05 intermediates; exact artifacts retained.
+Inventory implementation_network_20260928.job_effect_faults and ignored
+.research/implementation/job-effect-faults-20260928 own original-failure capture,
+local checks and launch/collection recipes. Never replay the original launch.
 
 [Native source lifetime evidence](evidence/p03-job-source-transport-native-20260928.json)
 qualifies seven actual socket/preflight/cleanup schedules. Authentic two-second
@@ -60,9 +72,9 @@ than adding another transport framework. Native store destruction precedes actua
 Control/driver teardown. No product, applied SQL, codec or dependency change was
 needed. Fixture setup timing margins are not authority/capacity guarantees.
 
-Next: finish review of the job-bound fault extension, commit a clean candidate
-and run the existing acquisition-binding-recovery build plus faults.py --jobs
-on isolated Tux clones. Preserve exact original requests and resolve historical
+Next: commit the timing-query correction, transfer clean Git and rerun faults.py
+--jobs in a new isolated root with exact375aa05 artifacts, without recompiling.
+Preserve exact original requests and resolve historical
 outcomes after expiry/withdrawal without new authority. Existing frozen fixture
 policy checks qualify binding/recovery, not the concrete SyncArrivalPolicy consumer.
 This is P03-T01 Step3/P03-T02 Step3. The next user-visible M1 deliverable remains
