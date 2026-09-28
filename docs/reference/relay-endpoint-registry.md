@@ -2,7 +2,8 @@
 
 P02-T01 Step 6 begins with one private immutable identity relation. Enrollment,
 source access contexts, route policy and finite network grants are subsequent
-consumers; registration alone permits none of them. This boundary has scoped
+consumers; registration alone permits none of them. The first
+[no-auth enrollment consumer](relay-enrollment.md) adds0019 without changing0003. This boundary has scoped
 native qualification, not an installed acquisition feature. The
 [scoped native report](../implementation/evidence/p02-relay-registry-native-20260928.json)
 records exact identity, capacity, attribution, expired insertion, SQL guards and

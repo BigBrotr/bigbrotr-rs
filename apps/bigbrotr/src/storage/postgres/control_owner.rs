@@ -40,6 +40,9 @@ pub use history::HistoryAuthorization;
 #[path = "relay_registry.rs"]
 mod relay_registry;
 pub use relay_registry::{EndpointRegistration, RelayRegistryError};
+#[path = "relay_enrollment.rs"]
+mod relay_enrollment;
+pub use relay_enrollment::EnrollmentRoutes;
 #[path = "scope_grants.rs"]
 mod scope_grants;
 pub use scope_grants::ScopeGrantAllocation;

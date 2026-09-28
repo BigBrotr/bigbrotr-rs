@@ -563,6 +563,16 @@ creates no audit row or login attempt state. Remote login, rate limits, session
 transactions, rejected-request audit and the restrictive activation barrier remain
 required separate consumers; this command must not be exposed as a remote route.
 
+### Relay enrollment acceptance boundary
+
+The initial [relay enrollment command](../reference/relay-enrollment.md) uses
+current session/CSRF and dataset `policy.change`, retaining exact actor/key
+idempotency, enrollment generation and acceptance-only audit. It records declared
+source visibility intent; it neither changes principal grants nor requires the
+Archive allocation proof belonging to history scope grants. HTTP/CLI integration
+and the restrictive action issuer are not yet exposed. Full selected protected
+and overlay route support remains required.
+
 ### Scope-grant acceptance boundary
 
 The additive0810 schema and explicitly required0811 correction extend the common

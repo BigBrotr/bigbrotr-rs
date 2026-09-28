@@ -1,0 +1,85 @@
+{
+  "format": "bigbrotr-relay-enrollment-mac/1",
+  "status": "PASS_SCOPED_MAC_CHECKS_ONLY",
+  "base": "981c42e4a04c058241293f44722054041f792558",
+  "tested_state": "dirty owned candidate; source hashes below",
+  "scope": "Initial direct route selection, no-auth command, adapter compile and migration catalog. SQL is not engine-qualified.",
+  "tests": {
+    "total": 46,
+    "groups": [
+      27,
+      3,
+      9,
+      5,
+      2
+    ],
+    "log": ".research/implementation/relay-enrollment-20260928/local-tests.log"
+  },
+  "clippy": {
+    "status": "PASS",
+    "log": ".research/implementation/relay-enrollment-20260928/clippy-final.log"
+  },
+  "original_outcomes": {
+    "route_red": "missing RouteSelection",
+    "route_green": "public unit variant unexpectedly accepted extra cidr; fixed as closed empty struct",
+    "command_red": "missing EnrollmentCommand",
+    "clippy": "needless borrow in fixture; corrected",
+    "clippy_2": "fixture used token instead of IssuedSession.session; corrected"
+  },
+  "source_sha256": {
+    "apps/bigbrotr/examples/relay_enrollment_probe.rs": "0e64a43d85c82e573bd372cf9fc8e46cc354477238b67b0ac25e279eec95c460",
+    "apps/bigbrotr/src/management/mod.rs": "5f126e5287003e56343b872f2652b699104e7917094a261e004afef63acb4109",
+    "apps/bigbrotr/src/management/relay_enrollment.rs": "9492842a400344f62397220f93178eadd9a5c9ee95e85cbaa3310d16263f8e03",
+    "apps/bigbrotr/src/network/address.rs": "0cca09453b906b06f01a6070fe36d8ed1ff4e5141cb57dd05f31d266c2a55924",
+    "apps/bigbrotr/src/network/mod.rs": "f10520514281f6ff0110754348b0a4eea8cf642f9b4661d71e4cc804fa8a5d2e",
+    "apps/bigbrotr/src/network/policy.rs": "e17b77938c1e3ca86b9122fe8baefd1070b463c0f260dd6684c63ed061c2a0ae",
+    "apps/bigbrotr/src/network/route.rs": "fb2f41546513a40d57c1c501c1ccc95698e52eb5bbaa67b2bc4bc55947d84fdd",
+    "apps/bigbrotr/src/storage/postgres/control_owner.rs": "18f625f51615c10018a19e882650c6cf46f59c662c2faf903023e826ca41dd1f",
+    "apps/bigbrotr/src/storage/postgres/migrations.rs": "1900cbd0c631a77640aba00194116ceed07d196601880ce5e22c6e54cf25f2a4",
+    "apps/bigbrotr/src/storage/postgres/relay_enrollment.rs": "7f20a9796c8fe99c6010e4f368efa6c7d5dbdca9e5c9f34510c2cdcfdf183020",
+    "apps/bigbrotr/tests/network_route_selection.rs": "9c7535bb91f12be5b07ab87e06baef621911d857dda8cdb4b3d2b066bd9d7dfe",
+    "apps/bigbrotr/tests/relay_enrollment_command.rs": "e92f29b9ee0885061c1cb6a1e41695768354a7be06c70f0ea78ba6c18bd14a15",
+    "crates/bigbrotr-model/src/identity.rs": "7cfedba4429a19729ef147657e459e8977de01b461a1ccca568cae61c09ef40a",
+    "crates/bigbrotr-model/src/lib.rs": "4f9ba11570195c5a8c83c1d594c1caef4a96cb42bc2d1f3de08ec9814142bf5c",
+    "docs/implementation/02-storage.md": "2060bd321858c30d6364fee568451b0d94c611109b1582988f17bb381dcd07b3",
+    "docs/implementation/progress.md": "f24e4135b344abc3d04ddc90565be41bc776e059c9f0053d91bee394c3c39f3c",
+    "docs/product/private-administration.md": "d47b990692968005fa11e4cc67e6226ec069cadbc31036a05f81db90ffc29f95",
+    "docs/reference/relay-endpoint-registry.md": "c526073b076b184e662c815a888cc19f0d147b4bb3b96eec43ae7f388098e0bd",
+    "docs/reference/relay-enrollment.md": "d68d880c49deba7757da6742e4950c497f1a778fd5717129c104db12790fe234",
+    "docs/specification/storage-catalog.md": "9332cfb21d6d7d678579e897a57d3e564306a2bae3833d87260c3b48c7c0d11b",
+    "experiments/network-transport/lab.py": "fdb4e26cbc4cf17e3e3d0db2ec07dc4314ac6540b57c05cf245a10017df51c82",
+    "experiments/relay-enrollment/README.md": "481ca7ac29730c98b1c3bbb1fbcb37c9a3b2cfaf9f6f0ec8af829c2b2c0409a7",
+    "experiments/relay-enrollment/guards.sql": "db6753797e65e932dba6a73daa7b01720245cfcecab74ac18e2e5546dba0efba",
+    "experiments/relay-enrollment/run.py": "d2ec7bf657b9443d1ffab1ba6c650926d892f64ecac0d16f56daeb9d582361cb",
+    "experiments/relay-registry/native.py": "e4bd6c8b33e4e93c2e1b2ce6eee3276657ad50f35e67bf779fd4f9af03c9159b",
+    "migrations/manifest.json": "46413567dd38429f340da3433d8b2a5effdebfe29252ea3a889db77c5623cc34",
+    "migrations/postgres/0019_relay_enrollment.sql": "ba960ac695914034db5ac3ef9662280bc81390447e9298333b10f2d4f045b233"
+  },
+  "logs_sha256": {
+    "adapter-check.log": "9ba10d0d3a098703a0be78acd94e75bfbcf1a90aad07f6f849f1403fa9716a00",
+    "artifacts.log": "c92dc64d611ddbf990d9bebf75b7c6392fb37c2900161e4b3255c894b20cdc90",
+    "clippy-2.log": "7438061573d326f08639b7ffab061dab09e58f1a02a1269a06faa16ae9368792",
+    "clippy-3.log": "cef8508d714dd8f500e6e2bf6019f554169d6f76eef4fb7a76f1f27b04f43836",
+    "clippy-final.log": "99b1cf580f672bc74a90484ca2b5b144822b6a65393cfbfa2454355c0521da27",
+    "clippy.log": "367e5b43d00aa9fa4ce95247a55a56b1227a06059100de72fe70f744e69ece21",
+    "command-green.log": "a5033287351315afd171f09a5e10a265b1b7af1d7710eb25c9d69aac2b354f00",
+    "command-red.log": "c428d3448b0da6c18ff9630f44809d322d7efe3beea7d422f5c53d392211c0ab",
+    "local-tests.log": "1633f5ff388c64469d51d8a5f5800bcb0f3548b7627b8e7af74d08279275682c",
+    "route-green-2.log": "c76f92099af0317a9f1b4fc3f9f3ba72de5fcd763cf1ae652e74520c3ab65ce0",
+    "route-green.log": "6dbc603360db91ef7a8e04050c6710de82b0e0d58ff20a43a5cde9e8ef92d840",
+    "route-red.log": "a626985f2b0ca92d33c7b3dc49489c372fbb32a8ed04336015b4ed6eb8d02e57"
+  },
+  "native": "NOT_RUN",
+  "not_run": [
+    "SQL engine behavior",
+    "held/lost COMMIT",
+    "commit-time session/owner expiry",
+    "concurrency",
+    "installed HTTP/CLI",
+    "socket acquisition",
+    "load/aged state",
+    "arm64",
+    "release"
+  ],
+  "review": "Root complete affected implementation/diff; independent AI read-only review found no concrete defect. Future issuer and full lifecycle remain open."
+}

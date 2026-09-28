@@ -5,4 +5,5 @@ pub mod grants;
 pub mod job_list;
 pub mod jobs;
 pub mod reauthentication;
+pub mod relay_enrollment;
 pub mod sessions;

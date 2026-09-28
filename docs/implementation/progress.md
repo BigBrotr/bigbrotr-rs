@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEAD and origin/main a87dbd21a0b17350cbecedac8dc1e95c39a449fa are private
-and published; the starting worktree was clean. Root now owns private-route static
-configuration, tests and matching contract/generated-reference changes. The
+Verified HEAD and origin/main 981c42e4a04c058241293f44722054041f792558 are private
+and published; the starting worktree was clean. Root now owns exact route selection
+and the minimum authenticated no-auth enrollment consumer, tests and contracts. The
 registry native qualification used exact 91d5c7e; Cargo.lock and all applied SQL
 remain unchanged. Root is sole writer; independent route/authority review is
 read-only, and the prior native fixture correction/terminal audit is complete.
@@ -358,5 +358,44 @@ remain unqualified; combine their next exact-Git run with the enrollment consume
 The 58,732,168-byte tested Mac development CLI is retained and hashed in the capture,
 not a release artifact. Mac had approximately 3.1GiB free; avoid large new local
 builds and recheck both hosts before allocation. No Tux process or allocation
-launched. Next: commit/push this static slice, then implement the authenticated
-enrollment and exact route/access/visibility action binding for the same M1 journey.
+launched. The static slice is committed and pushed as981c42e. Current work adds
+endpoint-bound selected routes and authenticated enrollment for the same M1 journey.
+The initial command uses one public route or one private CIDR, with independent
+deployment-ceiling intersection. Full multi-rule/protected/overlay enrollment stays
+selected and deferred. Fresh private enablement must fit one complete root rule;
+checking one representative IP is insufficient. Root and selected metadata rules
+must each independently permit an exact exception. Withdrawal and historical
+retries do not depend on a removed root exception.
+
+Enrollment uses current session/CSRF and dataset policy.change, not principals.manage
+or an invented eighth permission. Visibility QualifiedRef is declared intent;
+recording it does not require Archive history-grant allocation evidence. Actual
+acquisition must resolve the committed descriptor and current source permission.
+Public/no-auth access identity is dataset plus complete visibility reference;
+changing visibility creates a separate enrollment, never silently withdraws the
+old one. Generation and route identity must bind later actions and revocation.
+Read-only AI review agrees on this bounded design; no native resources allocated.
+Ignored .research/implementation/relay-enrollment-20260928 retains the first route
+selection compile RED. Root owns current network source/test edits; no new SQL
+is applied and no enrollment or acquisition acceptance is claimed yet.
+
+Candidate enrollment implementation now exists in the new0019 migration, typed
+command/adapter and actual-session probe. Applied prefix33 files are unchanged;
+0019 is not yet applied or qualified. Fresh permission is policy.change; atomic
+command/detail/audit/current-state closure and generation tombstones retain
+idempotency. Named multiline SQL preserves the transaction boundary; immutable
+root rules now share Arc storage to avoid up to256 per-attempt URL clones.
+The independent review read complete affected implementations and found no
+concrete defect; raw SET CONSTRAINTS early evaluation is explicitly not a
+commit-time expiry guarantee. The product adapter preserves default deferral.
+
+Mac route5/previous policy9/command2 and control-catalog/CLI tests pass; Clippy
+including the actual-session probe and artifact/link checks pass. Original route
+serde-unit unknown-field failure was fixed with a closed empty public struct
+variant; initial missing module/incorrect fixture session field and needless-borrow
+compile/lint failures remain in the ignored capture. No native result is claimed.
+Read-only Tux census03:40:58UTC found866 containers/eight unrelated running,
+no BigBrotr/cargo/rustc process, free67,381,985,280bytes. No deletion or allocation.
+Next: commit the candidate, transfer exact Git, run the relay-enrollment profile
+with the retained1154757 cache and fresh isolated PG, inspect each original outcome,
+then qualify remaining ambiguity/expiry/concurrency before action consumers.

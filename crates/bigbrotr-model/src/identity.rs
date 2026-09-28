@@ -131,6 +131,9 @@ fixed_hex!(DatasetId, 16, nonzero);
 // Operational canonical relay registration, not an archive dictionary reference
 // or authorization to contact or disclose that endpoint.
 fixed_hex!(EndpointId, 16, nonzero);
+// Operational source context and route identities, not archive QualifiedRefs.
+fixed_hex!(AccessScopeId, 16, nonzero);
+fixed_hex!(RouteId, 16, nonzero);
 // Attribution identity only; parsing never authenticates a principal.
 fixed_hex!(PrincipalId, 16, nonzero);
 // Paired with an authenticated actor in the durable management command ledger.

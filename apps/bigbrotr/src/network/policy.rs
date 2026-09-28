@@ -1,6 +1,6 @@
 use super::address::{self, Prefix};
 use bigbrotr_protocol::endpoint::Endpoint;
-use std::{fmt, net::IpAddr};
+use std::{fmt, net::IpAddr, sync::Arc};
 
 /// Static destination refusal; contains no endpoint path or query.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -138,9 +138,13 @@ impl PrivateRule {
     }
 
     fn allows(&self, target: &Target, address: IpAddr) -> bool {
-        self.port == target.port
+        self.matches(target)
             && self.prefix.contains(address)
             && (!address::exact_exception_required(address) || self.prefix.single_address())
+    }
+
+    fn matches(&self, target: &Target) -> bool {
+        self.port == target.port
             && match &self.subject {
                 PrivateSubject::Endpoint(endpoint) => endpoint == &target.endpoint,
                 PrivateSubject::Hostname(host) => host == &target.host,
@@ -153,12 +157,20 @@ impl PrivateRule {
 /// socket owner in addition to this static destination policy.
 #[derive(Clone, Debug)]
 pub struct DirectPolicy {
-    private: Option<Vec<PrivateRule>>,
+    // Immutable roots are shared across attempts; do not clone up to 256 full
+    // private endpoint strings before each socket's resource admission.
+    private: Option<Arc<[PrivateRule]>>,
+    endpoint: Option<Endpoint>,
+    selection: Option<Prefix>,
 }
 
 impl DirectPolicy {
     pub const fn public() -> Self {
-        Self { private: None }
+        Self {
+            private: None,
+            endpoint: None,
+            selection: None,
+        }
     }
 
     pub fn private(rules: Vec<PrivateRule>) -> Result<Self, PolicyError> {
@@ -166,8 +178,46 @@ impl DirectPolicy {
             return Err(PolicyError::InvalidPrivateRule);
         }
         Ok(Self {
-            private: Some(rules),
+            private: Some(rules.into()),
+            endpoint: None,
+            selection: None,
         })
+    }
+
+    pub(super) fn select_public(endpoint: Endpoint) -> Self {
+        Self {
+            endpoint: Some(endpoint),
+            ..Self::public()
+        }
+    }
+
+    pub(super) fn select_private(
+        &self,
+        endpoint: Endpoint,
+        prefix: Prefix,
+    ) -> Result<Self, PolicyError> {
+        // Accept only deployment ceilings, not an already selected policy. This
+        // prevents a second selection from replacing an earlier restriction.
+        if self.private.is_none() || self.endpoint.is_some() || self.selection.is_some() {
+            return Err(PolicyError::InvalidPrivateRule);
+        }
+        Ok(Self {
+            private: self.private.clone(),
+            endpoint: Some(endpoint),
+            selection: Some(prefix),
+        })
+    }
+
+    pub(super) fn covers(&self, target: &Target, prefix: Prefix) -> bool {
+        self.endpoint.is_none()
+            && self.selection.is_none()
+            && self.private.as_ref().is_some_and(|rules| {
+                rules.iter().any(|rule| {
+                    rule.matches(target) && rule.prefix.contains_prefix(prefix)
+                // A narrower selection cannot upgrade a broad metadata rule.
+                && (!prefix.exact_exception() || rule.prefix.single_address())
+                })
+            })
     }
 
     /// Filters all answers from one bounded resolution. The returned IPs must be
@@ -180,12 +230,23 @@ impl DirectPolicy {
         if answers.len() > 64 {
             return Err(PolicyError::AnswerLimit);
         }
+        if self
+            .endpoint
+            .as_ref()
+            .is_some_and(|endpoint| endpoint != &target.endpoint)
+        {
+            return Err(PolicyError::NoAllowedAddress);
+        }
         let mut addresses = Vec::with_capacity(answers.len());
         let mut excluded = 0;
         for &answer in answers {
             let address = address::canonical(answer);
             let allowed = address::unicast(address)
                 && target.literal.is_none_or(|literal| literal == address)
+                && self.selection.is_none_or(|prefix| {
+                    prefix.contains(address)
+                        && (!address::exact_exception_required(address) || prefix.single_address())
+                })
                 && match &self.private {
                     None => address::public(address),
                     Some(rules) => rules.iter().any(|rule| rule.allows(target, address)),

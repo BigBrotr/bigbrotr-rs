@@ -30,9 +30,10 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
                 scope='Operational endpoint registration build; no acquisition or release qualification')
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
-faults = len(sys.argv) == 2 and sys.argv[1] == 'faults'
-assert len(sys.argv) == 1 or faults
-probe = 'relay_registry_fault_probe' if faults else 'relay_registry_probe'
+mode = sys.argv[1] if len(sys.argv) == 2 else 'registry'
+assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment')
+probe = {'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
+         'enrollment':'relay_enrollment_probe'}[mode]
 checks = Path('/out/build-checks')
 steps = [
     ('compile', ['cargo','build','--locked','--offline','--release','-p','bigbrotr',
@@ -40,9 +41,15 @@ steps = [
     ('clippy', ['cargo','clippy','--locked','--offline','--release','-p','bigbrotr','--lib',
                 '--example',probe,'--','-D','warnings']),
 ]
-if not faults:
+if mode == 'registry':
     steps.insert(1, ('catalog', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                  '--test','relay_registry','--test','control_schema','--test','migrate_entrypoint']))
+if mode == 'enrollment':
+    identity['scope'] = 'Initial no-auth relay enrollment and static routes; no installed acquisition or release qualification'
+    steps.insert(1, ('enrollment', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                 '--test','relay_enrollment_command','--test','network_route_selection',
+                 '--test','network_policy','--test','control_schema','--test','migrate_entrypoint',
+                 '--test','config_private_routes','--test','config_entrypoint','--test','policy_seed']))
 result = execute(steps,checks,SOURCE,env,identity,1800)
 assert result['status']=='PASS'
 artifacts=Path('/out/artifacts'); artifacts.mkdir()
@@ -55,5 +62,6 @@ receipt=dict(identity,format='bigbrotr-registry-build/1',binary_sha256=file_hash
              probe_name=probe,probe_sha256=file_hash(artifacts/probe),build_info=info)
 (artifacts/'build-result.json').write_text(json.dumps(receipt,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
-status = 'PASS_REGISTRY_FAULT_BUILD_ONLY' if faults else 'PASS_REGISTRY_BUILD_ONLY'
+status = {'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
+          'enrollment':'PASS_RELAY_ENROLLMENT_BUILD_ONLY'}[mode]
 Path('/out/qualification.json').write_text(json.dumps(dict(identity,status=status),indent=2)+'\n')

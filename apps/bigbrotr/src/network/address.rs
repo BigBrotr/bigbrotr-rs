@@ -60,7 +60,7 @@ fn v6_contains(base: Ipv6Addr, bits: u8, address: Ipv6Addr) -> bool {
     u128::from(address) & mask == u128::from(base)
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct Prefix {
     base: IpAddr,
     bits: u8,
@@ -104,6 +104,30 @@ impl Prefix {
 
     pub(super) fn single_address(self) -> bool {
         self.bits == if self.base.is_ipv4() { 32 } else { 128 }
+    }
+
+    pub(super) fn contains_prefix(self, other: Self) -> bool {
+        self.bits <= other.bits && self.contains(other.base)
+    }
+
+    pub(super) fn exact_exception(self) -> bool {
+        self.single_address() && exact_exception_required(self.base)
+    }
+
+    pub(super) fn bytes(self) -> Vec<u8> {
+        let mut bytes = Vec::with_capacity(18);
+        bytes.extend_from_slice(&[if self.base.is_ipv4() { 4 } else { 6 }, self.bits]);
+        match self.base {
+            IpAddr::V4(address) => bytes.extend_from_slice(&address.octets()),
+            IpAddr::V6(address) => bytes.extend_from_slice(&address.octets()),
+        }
+        bytes
+    }
+}
+
+impl std::fmt::Display for Prefix {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}/{}", self.base, self.bits)
     }
 }
 

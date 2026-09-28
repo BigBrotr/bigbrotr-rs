@@ -17,7 +17,7 @@ sys.dont_write_bytecode = True
 from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
-assert len(sys.argv) in (3, 4) and profile in ('network', 'relay-registry', 'relay-registry-faults')
+assert len(sys.argv) in (3, 4) and profile in ('network', 'relay-registry', 'relay-registry-faults', 'relay-enrollment')
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
 root = base / 'runs' / (profile + '-' + revision[:7])
@@ -144,27 +144,28 @@ try:
     state['state'] = 'running'
     write(root / 'resources.json', state)
     native_path = 'network-transport' if profile == 'network' else 'relay-registry'
-    native_args = ['faults'] if profile == 'relay-registry-faults' else []
+    native_args = {'relay-registry-faults':['faults'], 'relay-enrollment':['enrollment']}.get(profile, [])
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_path + '/native.py', *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
     expected = {'network': 'PASS_SCOPED_NETWORK_COMPONENTS', 'relay-registry': 'PASS_REGISTRY_BUILD_ONLY',
-                'relay-registry-faults': 'PASS_REGISTRY_FAULT_BUILD_ONLY'}[profile]
+                'relay-registry-faults': 'PASS_REGISTRY_FAULT_BUILD_ONLY',
+                'relay-enrollment': 'PASS_RELAY_ENROLLMENT_BUILD_ONLY'}[profile]
     assert qualification['source'] == revision and qualification['status'] == expected
     state['qualification'] = qualification['status']
-    if profile == 'relay-registry':
-        subprocess.run(['python3', '-B', str(source / 'experiments/relay-registry/run.py'),
+    if profile in ('relay-registry', 'relay-enrollment'):
+        subprocess.run(['python3', '-B', str(source / ('experiments/' + profile + '/run.py')),
                         str(root / 'pg'), str(out / 'artifacts'), str(source)], check=True, timeout=300)
         pg = json.loads((root / 'pg/resources.json').read_text())
         state['postgres_lab'] = dict(root=pg['root'], owner=pg['owner'],
                                     postgres=pg['postgres'], client=pg['client'], network=pg['network'],
                                     state=pg['state'])
         assert pg['state'] == 'stopped-retained'
-        engine = json.loads((root / 'pg/registry-result.json').read_text())
-        assert engine['status'] == 'PASS_SCOPED_ENDPOINT_REGISTRY'
+        engine = json.loads((root / ('pg/registry-result.json' if profile == 'relay-registry' else 'pg/enrollment-result.json')).read_text())
+        assert engine['status'] == ('PASS_SCOPED_ENDPOINT_REGISTRY' if profile == 'relay-registry' else 'PASS_INITIAL_ENROLLMENT_BOUNDARY')
         state['qualification'] = engine['status']
 finally:
     pg_receipt = root / 'pg/resources.json'
-    if profile == 'relay-registry' and pg_receipt.exists():
+    if profile in ('relay-registry', 'relay-enrollment') and pg_receipt.exists():
         pg = json.loads(pg_receipt.read_text())
         assert pg['root'] == str(root / 'pg') and pg['source'] == str(source)
         assert pg['format'] == 'bigbrotr-pg-lab/1'

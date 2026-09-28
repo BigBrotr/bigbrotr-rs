@@ -133,6 +133,10 @@
     {
       "version": 3,
       "name": "0003_relay.sql"
+    },
+    {
+      "version": 19,
+      "name": "0019_relay_enrollment.sql"
     }
   ],
   "reserved": [
