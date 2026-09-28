@@ -136,7 +136,8 @@ Paths: `apps/bigbrotr/src/network/egress.rs`, `apps/bigbrotr/src/network/dns.rs`
   cooperative cancellation under immediately ready empty frames. The
   [dependency counterexample](evidence/p04-websocket-limit-counterexample-20260928.json)
   is a confirmed gap in payload-only configuration, not a passing adapter test.
-  The [Mac consumer evidence](evidence/p04-websocket-mac-20260928.json) covers
+  The [Mac consumer evidence](evidence/p04-websocket-mac-20260928.json) and
+  [native Linux amd64 profile](evidence/p04-websocket-native-20260928.json) cover
   the added framing gate, guarded TCP/TLS, protocol cancellation and actual
   blocked sends. These bounded components do not complete shared quotas,
   renewable service sessions or installed acquisition acceptance.

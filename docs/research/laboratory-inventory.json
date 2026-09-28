@@ -27421,11 +27421,69 @@
       "retention": "Preserve original failure, source and independent lock. No active sockets/processes; no Tux allocation or deletion."
     },
     "websocket_consumer": {
-      "status": "Mac 28 integration and 2 observed-buffer tests PASS; native pending",
+      "status": "Mac and exact-Git native supplied-stream component PASS; installed acquisition/M1 remain open",
       "local_evidence": ".research/implementation/network-websocket-20260928",
       "report": "docs/implementation/evidence/p04-websocket-mac-20260928.json",
       "cache": ".research/targets/product; existing shared Cargo cache",
-      "preserve": "Original REDs, failed/setup runs, counterexample, exact upstream archives/source, metadata and successful logs; no new remote laboratory yet"
+      "preserve": "Original REDs/setup failures, upstream archives, source bundle/checkouts/manifests, logs and both qualified test ELFs outside shared build cache. No PG/dataset writes. Both containers stopped and compiler lock released.",
+      "native_report": "docs/implementation/evidence/p04-websocket-native-20260928.json",
+      "remote": {
+        "source": "9fe4ce498c6176c9c3418488c850b0dced57b2d8",
+        "tree": "0fe34885a8f9f1353a0a1db1bbb14da0c4769001",
+        "owner": "3fd6d7e1813d4d6215ceb2de395b308b",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/websocket-9fe4ce4",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "473960ef1dd13a54d03821377cb48b6c5b61b41d1bd39f51ec78f0053fd7a573"
+          },
+          {
+            "name": "native",
+            "id": "5fca62877aef42a87a3a89cba903b9878f2ff5405bfa74f9a9053623648f193c"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T09:47:11.460774+00:00",
+        "qualification": "PASS_SCOPED_WEBSOCKET_COMPONENTS",
+        "inventory_changed": [],
+        "free_bytes_after": 67083329536,
+        "finished_at": "2026-09-28T09:48:29.240036+00:00"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "9fe4ce498c6176c9c3418488c850b0dced57b2d8",
+        "observed_at": "2026-09-28T09:49:06.713402+00:00",
+        "prior_unchanged": 908,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "473960ef1dd13a54d03821377cb48b6c5b61b41d1bd39f51ec78f0053fd7a573",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "5fca62877aef42a87a3a89cba903b9878f2ff5405bfa74f9a9053623648f193c",
+            "exit": 0
+          }
+        ],
+        "source_files": 1500,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 67083325440
+      },
+      "orchestrator": {
+        "source": "9fe4ce498c6176c9c3418488c850b0dced57b2d8",
+        "tree": "0fe34885a8f9f1353a0a1db1bbb14da0c4769001",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/websocket-9fe4ce4",
+        "pid": 3178860,
+        "start_ticks": "397108497",
+        "bundle_sha256": "73fb4fb16ccd3e84fd2995f7af814d77c645bdf8d8a8dcee4fafb5084e97538e"
+      }
     }
   },
   "implementation_relay_registry_20260928": {

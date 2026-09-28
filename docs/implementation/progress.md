@@ -12,62 +12,61 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is3403377e67ab091edb00e6d2b048202bc66367be (counterexample/decision),
-origin/main is verified a96d300. Root owns dirty Cargo manifests/lock, network/mod,
-new network/websocket.rs and websocket/input.rs, tests/network_websocket.rs and
-this checkpoint. All edits local; no Tux run or other writer. No migration change.
+Local main is 593ec3add82744459b6205ccb6ffbc036d8f88a6 (test-only lint
+maintenance), following native-qualified WebSocket 9fe4ce498c6176c9c3418488c850b0dced57b2d8,
+tree 0fe34885a8f9f1353a0a1db1bbb14da0c4769001. Origin/main remains verified
+a96d300 pending publication of these coherent commits. Root owns only the native
+evidence/task/dependency/inventory/checkpoint documentation updates. No other
+writer, migration or persistent-format change.
 
-Native release build/Clippy and all seven SQL races PASS. Root verified12 build
-and57 engine payloads, complete64-table attribution, all16 native rows/sequence17,
-original input and receipt. Root and independent read-only AI source review found
-no launch blocker. Both proxy loopback tests passed; missing-option RED retained.
-See [race evidence](evidence/p04-source-races-native-20260928.json). Isolated writer
-injections qualify locks/current reads, not concurrent authenticated management
-acceptance or installed revocation delivery. The complete product remains open.
+The finite supplied-stream WebSocket component now has [Mac](evidence/p04-websocket-mac-20260928.json)
+and [native Linux amd64 evidence](evidence/p04-websocket-native-20260928.json):
+28 actual TCP/TLS integration tests plus 2 tests that assert buffered input before
+yield/revocation. Release compilation and scoped native Clippy PASS. Root checked
+all 1,500 exact Git source hashes and 14 captured payloads; qualified test ELFs
+remain outside the shared compiler cache. The library harness is named
+network_websocket_input, never confused with the installed CLI.
 
-No active laboratory at terminal audit08:57:15 UTC: eight unrelated containers,
-906 prior projections unchanged, 1,486 exact source files,67,384,729,600 free bytes.
-Current compiler cache1154757 is released after positive81a35c5 rebuild. All seven
-race clones and original evidence retained. Local resumption census08:53 UTC had
-13,888,320 KiB free on Mac; recheck before the next allocation.
+The consumer borrows DirectStream, reserves 8*limit+1MiB, lends received bytes,
+rejects unsolicited/duplicate negotiation, counts actual framing across fragments,
+validates original close metadata and flushes automatic controls. Consuming local
+Close drives peer acknowledgement and EOF. The selected 2MiB wire cap was tested
+at equality and header-only overflow. Native blocked send delivered one complete
+2097152-byte frame plus 262144 bytes of the cancelled next frame; Mac blocked in
+the first frame at 662148 bytes. Cancellation poisons reuse; buffers retain their
+permit until drop. These are bounded correctness cases, not production capacity.
 
-Active P04-T02/P03-T02 WebSocket consumer is ready for an exact-Git native
-candidate after Mac checks. [Mac evidence](evidence/p04-websocket-mac-20260928.json)
-records28 actual TCP/TLS integration tests and2 tests asserting retained HTTP/frame
-bytes before yield/revocation; scoped Clippy and cargo-deny0.20.2 PASS. Header-only
-overflow refuses before payload, including the selected2MiB cap. Actual blocked
-send delivered662148 bytes of the first2097152-byte frame; cancellation poisons
-reuse and retains its permit until drop. This is no throughput/capacity claim.
+Root and read-only AI review retained the concrete HTTP/frame state machines;
+shared fixture setup was extracted for actual reuse. No generic protocol framework,
+background driver or new crate. Dependency policy passed with cargo-deny 0.20.2;
+exactly 8 packages added, none upgraded. Original counterexample exit101 and all
+RED/setup failures remain in .research/implementation/network-websocket-20260928.
+No product log logger is installed; future bridges must exclude upstream private
+URL/payload targets. The two pre-existing test-only Clippy findings were fixed in
+593ec3a: unchanged keyring test moved after implementation and fixed byte chunks
+used in cursor fixture. BigBrotr --tests Clippy and the 5 affected tests PASS on
+Mac; this is not a claim of complete workspace/release qualification.
 
-The consumer borrows DirectStream, reserves8*limit+1MiB, returns borrowed received
-projections, rejects unsolicited/duplicate handshake negotiation, counts exact
-headers across fragments, validates original close metadata and flushes automatic
-controls. A consuming local close drives peer acknowledgement and EOF. Public
-FrameHeader/Response parsers keep preallocation/HTTP boundaries aligned with the
-selected0.29 dependency. Exactly8 packages added; no previous version upgraded.
-Root and read-only AI review retained these concrete state machines; shared
-fixture setup was extracted for actual reuse, without a protocol framework.
+Native run websocket-9fe4ce4 is STOPPED/RETAINED. Owner
+3fd6d7e1813d4d6215ceb2de395b308b, orchestrator PID3178860/start397108497 terminal.
+Fetch473960ef1dd13a54d03821377cb48b6c5b61b41d1bd39f51ec78f0053fd7a573 and
+native5fca62877aef42a87a3a89cba903b9878f2ff5405bfa74f9a9053623648f193c exited0,
+no OOM. Terminal audit09:49:06 UTC verified 908 prior projections unchanged,
+8 unrelated running, compiler lock released, 67,083,325,440 free bytes. No PG,
+archive or dataset writes. Bundle73fb4fb16ccd3e84fd2995f7af814d77c645bdf8d8a8dcee4fafb5084e97538e.
+Ignored start/launch/collect/review scripts preserve the recipe; do not rerun the
+old launcher. Current 1154757 compiler cache is reusable only under its lock.
+Latest Mac free space 12,244,712 KiB; existing cache only.
 
-Original counterexample exit101 and all RED/setup failures remain in ignored
-.research/implementation/network-websocket-20260928. Broad --tests Clippy also
-exposed pre-existing job_list chunks_exact_to_as_chunks and keyring
-items_after_test_module failures; full workspace Clippy is NOT PASS. Address
-these at the next coherent maintenance boundary. No upstream log logger is
-installed; future logging bridges must exclude private URL/payload targets.
-
-Root also owns the changed native.py/lab.py websocket profile, task/dependency
-notes, Mac evidence and inventory update. The profile executes28 integration+2
-filtered library tests; its network_websocket_input ELF is a test harness, never
-the installed CLI. Latest read-only Tux census67,384,422,400 bytes free,8 unrelated
-containers, no active BigBrotr. Reuse only exclusively locked1154757 compiler
-cache; native profile performs full preflight and source/artifact checks.
-
-Next bounded action: final docs/diff checks, commit this coherent consumer,
-transfer its exact Git revision to a fresh websocket run, execute and audit the
-native profile. Then wire the signed Nostr event journey into source-bound
-admission and installed Sync. No native WS or M1 claim yet. Mac12,845,764 KiB
-available at last check; no new build cache. Never merge/push the earlier
-negative source-cleanup variant.
+Next bounded action: finish publishing the audited component record, then implement
+the preserving Nostr wire boundary needed by P01-T03 Steps1/7 and P03-T02 Steps1/3.
+Reuse the existing bounded JSON preflight and verify_json; distinguish EVENT,
+EOSE hints, CLOSED/AUTH and unrelated control messages before source-bound durable
+admission. The read-only dns_dependency_audit reviewer is mapping pinned owning
+contracts and reusable primitives; no other writer/build/lab. Scope identity and
+installed finite Sync remain subsequent concrete prerequisites, not an entire
+adjacent subsystem. Full M1 and the selected product remain INCOMPLETE.
+Never merge/push the earlier negative source-cleanup variant.
 
 ## Active slice and next useful journey
 
@@ -80,14 +79,15 @@ Existing Serve selects Control only. M1 also needs the clean extracted Compose
 journey, timer publication and dependency-outage recovery. Component evidence
 never replaces those journeys or completes an entire task/phase/product.
 
-The finite authority boundary is qualified by initial transport, cleanup and
-concurrent SQL schedules. It need not complete renewable sessions or all discovery
-before M1. The immediate missing prerequisite is a bounded WebSocket protocol
-consumer over this supplied guarded stream; raw TCP bytes are not a Nostr event.
-Resolve the measured-by-source framing mismatch below, then wire independent
-signed socket fixtures into existing source-bound durable admission and installed
-Sync. Practical M1 acceptance still needs signed invalid-ID/signature controls,
-exact archive/read/export and restart through actual installed entrypoints.
+The finite authority and supplied-stream WebSocket boundaries are qualified by
+actual source transport/cleanup/SQL races and the scoped protocol cases. The next
+missing boundary is the preserving Nostr envelope and collection/request membership,
+followed by source-bound durable admission and installed finite Sync. Raw WebSocket
+text is not yet an admitted Nostr event. P01-T03 Steps1/7 supply the actual signed
+socket verification case; P03-T01 scope identity/registration and P03-T02 ordered
+admission then carry it into M1. Practical M1 still needs signed invalid-ID/signature
+controls, exact archive/read/export and restart through installed entrypoints.
+Full discovery, Monitor and renewable sessions do not gate this finite journey.
 
 Structural review kept one visible Control transaction and borrowed socket owner.
 It extracted the existing backend lock barrier for actual reuse by two laboratories
@@ -204,7 +204,7 @@ bundle/launch/capture/root-review recipes, raw outcomes and hash manifests.
 
 Current compiler cache is network-1154757/out/build/{target,cargo-home}, exclusively
 locked by .compiler-cache.lock. Both latest terminal build audits verified release.
-Original ELFs are outside it. It currently contains positive81a35c5 build intermediates;
+Original ELFs are outside it. It currently contains positive9fe4ce4 build intermediates;
 only exact source rebuilds may use it. No cache output is itself a qualified input.
 
 ## Maintenance and retained dependencies
@@ -272,8 +272,8 @@ WebSocket source audit is retained at
 The raw tokio-tungstenite 0.29.0 handshake-only configuration does not enforce the current
 framing-inclusive message bound: the actual raw-socket counterexample now confirms
 both payload/header and empty-continuation acceptance beyond the selected cap.
-The added consumer has scoped Mac evidence for the required header/handshake
-gates, outgoing/control limits and complete Close; native protocol evidence is
-still pending. Management write-only ActionGate is not a renewable bidirectional source
+The added consumer has scoped Mac/native evidence for required header/handshake
+gates, outgoing/control limits and complete Close. Installed Nostr acquisition
+and broader service/route guarantees remain open. Management write-only ActionGate is not a renewable bidirectional source
 session. History reader grants do not authorize acquisition. DeliveryWindow copies
 need explicit parent invalidation. No arm64, complete release or capacity claim.

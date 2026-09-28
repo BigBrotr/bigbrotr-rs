@@ -1,0 +1,59 @@
+{
+  "format": "bigbrotr-websocket-native/1",
+  "status": "PASS_SCOPED_NATIVE_WEBSOCKET",
+  "source": "9fe4ce498c6176c9c3418488c850b0dced57b2d8",
+  "tree": "0fe34885a8f9f1353a0a1db1bbb14da0c4769001",
+  "host": "Linux x86_64; isolated Docker,2CPU/6GiB,network none; real loopback TCP/TLS sockets",
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+  "container_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "source_manifest_sha256": "8fc6cb93f1ed607ecf4041e544939c5db5b277cdf47090dc5fee14da865a0613",
+  "executables_sha256": {
+    "network_websocket": "9158e0b62f0619c971619846c6488a2250350787b46d38e8f5f87653331816d8",
+    "network_websocket_input": "6497bf6391c4a77c746c0a52a3ac0bf37638fe8f46b34ecb7bcc68ed5408d9e5"
+  },
+  "executables_kind": "Integration-test executable and filtered library-test executable; neither is the installed CLI",
+  "recipe": "experiments/network-transport/lab.py websocket; experiments/network-transport/native.py websocket",
+  "local_evidence": ".research/implementation/network-websocket-20260928",
+  "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/websocket-9fe4ce4",
+  "tests": {
+    "network_websocket": 28,
+    "network_websocket_input": 2
+  },
+  "build": "Release no-run compilation and scoped Clippy passed; 30 executed tests, none ignored, no required case skipped in this bounded profile",
+  "root_review": {
+    "source_files": 1500,
+    "captured_payloads": 14,
+    "sha256": "7ee51dfadc382be6572ab689c159df0a7805f338d24badb7cd119d72f40a2b47"
+  },
+  "blocked_send": {
+    "completed_messages": 1,
+    "wire_bytes": 2359296,
+    "cap": 2097152
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "9fe4ce498c6176c9c3418488c850b0dced57b2d8",
+    "observed_at": "2026-09-28T09:49:06.713402+00:00",
+    "prior_unchanged": 908,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "473960ef1dd13a54d03821377cb48b6c5b61b41d1bd39f51ec78f0053fd7a573",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "5fca62877aef42a87a3a89cba903b9878f2ff5405bfa74f9a9053623648f193c",
+        "exit": 0
+      }
+    ],
+    "source_files": 1500,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 67083325440
+  },
+  "capture_manifest_sha256": "ecb3c6bf702baa1bc2dd3f8e1a799486458f87ec5bcb93253b1cf76f9a5decdc",
+  "remaining": "Installed Nostr acquisition/M1, renewable owners, shared connection quotas/FD reserve, overlays/redirect HTTP, aged/mixed production capacity and native Linux arm64 remain unqualified. This closes only the finite supplied-stream WebSocket component."
+}
