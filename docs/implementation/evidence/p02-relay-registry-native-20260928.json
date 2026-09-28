@@ -1,0 +1,92 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T01 Step6 endpoint identity subcomponent",
+  "status": "PASS_SCOPED_IDENTITY_AND_SQL_GUARDS",
+  "product_source": "03b019794a7b79f9f8a0daaa6a1b6f902c783a3a",
+  "fixture_source": "c5856efd313db2025334bab966448bc66eb6a918",
+  "original_report": "p02-relay-registry-incomplete-20260928.json",
+  "scope": "Combines25 original passing engine cases with corrected SQL fixture; no complete authority/recovery or Step6 claim.",
+  "original_failure": "Preserved unchanged. Actual PG contrast confirms SET ROLE hides the postgres login backend_start; direct Control login sees it.",
+  "fixture_change_only": [
+    "docs/implementation/evidence/p02-relay-registry-incomplete-20260928.json",
+    "docs/implementation/progress.md",
+    "docs/research/laboratory-inventory.json",
+    "experiments/relay-registry/README.md",
+    "experiments/relay-registry/guards.sql",
+    "experiments/relay-registry/recheck_guards.py",
+    "experiments/relay-registry/run.py"
+  ],
+  "backend_visibility": [
+    {
+      "session": "postgres",
+      "role": "bigbrotr_control",
+      "visible": false
+    },
+    {
+      "session": "bigbrotr_control",
+      "role": "bigbrotr_control",
+      "visible": true
+    }
+  ],
+  "guards": [
+    {
+      "status": "PASS",
+      "expected_refusals": 8,
+      "uncommitted_rows": 6
+    }
+  ],
+  "rollback": {
+    "databases": [
+      "basic",
+      "collision",
+      "expired"
+    ],
+    "relations_per_database": {
+      "basic": 60,
+      "collision": 60,
+      "expired": 60
+    },
+    "expectation": "Every complete Control table count/hash matches the original adapter case after-state, before and after corrected rollback; original report hash unchanged."
+  },
+  "migration_0003_sha256": "50b1264cb93c7b67e8afee377bf238152c9729fb93f5d2b99419982ec3da7a26",
+  "terminal": {
+    "status": "TERMINAL_VERIFIED_CORRECTED_SQL_FIXTURE",
+    "source": "c5856efd313db2025334bab966448bc66eb6a918",
+    "tree": "6ade4bcbd5ea1f6735a03e16d2b5ad6a66a78e80",
+    "observed_at": "2026-09-28T02:41:19.691414+00:00",
+    "unchanged_other_containers": 862,
+    "running_unrelated": 8,
+    "free_bytes": 67641085952,
+    "postgres_id": "257b4a60372b91f2669013f5b4ad72545350552d70f6dcc02a47c547484fcbe9",
+    "postgres_exit": 0,
+    "owner": "b49addf3ec7daaef890692e501309e01",
+    "capture_sha256": {
+      "result.json": "1434accdbd8594a37c755735a6868e8a87224b8ccacf626ab1b4ccbf91327d59",
+      "preflight.json": "07e8649dc15608b349afc1776082a71f2bfdf7304fda6bdaa51ad214e162f764",
+      "guards.stdout": "93a9781cf8cfc60e99cd94b8e7635c17f0181e00a705b41ed802df20a051e0f9",
+      "guards.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "terminal-input.json": "666d8f44901e50cb43e067f84d9f51568db942a490ff7ca738291b1eca072dda",
+      "orchestrator.log": "36c09a26a881def95c68023d43f6dea8261d995eaa1f030f685aedd74e9c97fa"
+    },
+    "source_files_sha256": {
+      "experiments/relay-registry/guards.sql": "6177e8efc8a3bbcebc241447fc79753dd92cb92a86f633fdaf2cc689cb12c6ba",
+      "experiments/relay-registry/recheck_guards.py": "6e097c15eaf1f8a938825e5c4f31b8963a5fd753d7730718dfaf74a99efcc98b",
+      "experiments/relay-registry/run.py": "8b5c6210958b6e836bcc3057e4e6091cb21c081f6abb15cb2e0bb634c66ffa08"
+    }
+  },
+  "local_capture": ".research/implementation/relay-guards-c5856ef",
+  "remote_output": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registry-03b0197/guards-recheck-c5856ef",
+  "not_run": [
+    "lost/held COMMIT",
+    "cancellation custody",
+    "policy changes across lock waits",
+    "fresh-policy successor",
+    "concurrent owner admission",
+    "corrupt overfull bucket",
+    "enrollment and route action authority",
+    "socket acquisition and M1",
+    "load/capacity",
+    "arm64 and release"
+  ],
+  "structural_review": "Named multiline SQL, scalar-only lookup and focused fixed-field decoder keep locks and transaction lifetime visible. No additional backend abstraction; operational EndpointId remains separate from archive QualifiedRef."
+}

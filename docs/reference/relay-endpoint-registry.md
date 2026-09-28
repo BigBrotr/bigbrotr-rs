@@ -3,7 +3,10 @@
 P02-T01 Step 6 begins with one private immutable identity relation. Enrollment,
 source access contexts, route policy and finite network grants are subsequent
 consumers; registration alone permits none of them. This boundary is undergoing
-native qualification, not advertised as an installed acquisition feature.
+native qualification, not advertised as an installed acquisition feature. The
+[scoped native report](../implementation/evidence/p02-relay-registry-native-20260928.json)
+records exact identity, capacity, attribution, expired insertion, SQL guards and
+rollback evidence; fault/concurrency cases below are still open.
 
 `EndpointId` is a nonzero 16-byte operational identity scoped to the local dataset.
 It is not an archival ordinal or `QualifiedRef`. Control's typed get-or-create

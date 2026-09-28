@@ -12,12 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEAD03b019794a7b79f9f8a0daaa6a1b6f902c783a3a is an unpublished native
-candidate; origin/main eb4ba5a remains private/published. Working-tree edits are
-the fixture correction, original failure report, checkpoint and inventory, root-owned. All32 earlier SQL
-files match publishedeb4ba5a exactly. New0003 was applied in actual-engine execution;
-once applied with a checksum, extend/fix through a new migration, never rewrite it.
-Root is sole writer. The read-only source/fixture reviews found no launch blocker.
+Verified HEADc5856efd313db2025334bab966448bc66eb6a918 is the fixture-correction
+candidate after03b0197. origin/main eb4ba5a remains private/published until this
+verified evidence commit is pushed. Root owns only checkpoint/report/inventory
+updates. All32 earlier SQL files match publishedeb4ba5a; applied0003 is immutable.
+Root is sole writer; independent read-only review continues for the next bounded
+failure/concurrency cases. No other writer/native experiment is active.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
 with the explicit remaining gates below. No complete task/phase/M1/product claim.
@@ -225,7 +225,7 @@ Reserved0003_relay.sql must append to the existing migration application order;
 never insert into or rewrite the applied prefix. Use exact full endpoint equality,
 not digest-only identity, and cover long incompressible8192-byte endpoints.
 
-Read-only authority/identity review remains active, owns no edits/native resources.
+Read-only authority/identity review owns no edits/native resources.
 History principal scope grants are not acquisition authorization. DeliveryWindow
 copies do not observe parent invalidation; egress owner must explicitly cancel.
 Management ActionGate Unbound/write-only GuardedSocket is unsuitable unchanged.
@@ -261,12 +261,23 @@ release CLI/probe build and Clippy passed. No complete registry authority claim.
 
 Failure occurs before the final guard assertions: fixture postgres login plus
 SET ROLE hides that session's backend_start and violates control_backend_shape.
-Product uses direct Control login and passed. Source-derived cause is under an
-explicit actual-engine contrast; corrected fixture connects directly as Control,
-retaining all eight expected refusals and full rollback assertions. No SQL/product
-change; applied0003 is immutable. Narrow recheck_guards.py will restart only the
-verified owned PG, preserve original report and verify all three retained DBs;
-no rebuild or broad repeated suite. This is the next bounded action.
+Product uses direct Control login and passed. The actual-engine contrast at c5856ef confirms that cause.
+The direct Control login passed all eight expected refusals and rollback; every
+Control relation in all three databases matches the original retained after-state.
+No product/SQL changed, no rebuild or broad suite repeated, original failure
+report unchanged. [Scoped native report](evidence/p02-relay-registry-native-20260928.json)
+closes those identity/guard cases only. Independent terminal audit02:41:19UTC:
+862 other container projections unchanged/eight unrelated running; PG exit0/noOOM,
+recheckPID2864473 absent, free67,641,085,952 bytes. Both source/output directories
+and local .research/implementation/relay-guards-c5856ef remain retained. No deletions.
+
+Next bounded action: actual adapter lost/held COMMIT, cancellation retaining driver
+custody, current-policy change after a dataset lock wait, successor replay,
+concurrent-owner exclusion and corrupt-overfull refusal. Reuse current native
+compiler cache plus isolated PG/fault proxy; do not rerun unchanged basic suites.
+Preserve independent URL/receipt/whole-ledger assertions and actual lock barriers.
+After those guarantees, implement minimal enrollment/route/action scope for the
+first signed socket event, not an entire adjacent discovery/Monitor subsystem.
 
 Original run is stopped-retained at
 /home/tux/bigbrotr-implementation-20260917/runs/relay-registry-03b0197,
