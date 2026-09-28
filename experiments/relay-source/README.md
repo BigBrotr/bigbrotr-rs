@@ -25,3 +25,13 @@ The result lists unexecuted concurrency, import-exclusion, COMMIT/recovery, actu
 source issuance/socket, route/ban policy, load and target-platform gates. Preserve
 failed outcomes and all source/database/native evidence. This finite fixture
 neither certifies general acquisition nor replaces M1's installed socket journey.
+
+`relations.py ROOT` borrows the stopped, owned e06f580 PostgreSQL container and
+clones its empty initialized template. It reuses the exact a6c28e6 executable,
+checks product input equality, preserves original databases/reports, and stops
+only the borrowed PG plus its new client. The test-only SQL hook executes inside
+the actual Control backend. Valid bound/unbound/import controls surround exact
+shape, generation/route, immutable-history and both same-transaction relay/import
+exclusion refusals. All nested attempts roll back every Control relation and
+xmin; the real parent still commits its independently checked signed event.
+This does not qualify concurrency or ambiguous recovery.

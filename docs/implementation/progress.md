@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is e06f58063e36aa6c62acbb2d882eecfcf52f0e24 (fixture correction),
-tree2807f8fad03f613885a4af3657ca56b457064d64; origin/main remains ac3a302.
-Root owns the pending scoped evidence/checkpoint commit; product a6c28e6 remains. Product
+Local main and origin/main are562a442 (first-wave evidence), pushed to verified
+private BigBrotr/bigbrotr-rs. Product a6c28e6 and fixture e06f580 remain exact
+qualified inputs. Root owns the pending relational fixture, not product edits. Product
 and applied0020 bytes are unchanged. Previous qualified product5be0dbd remains
 recorded below; maintenance and policy-version evidence are committed.
 No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
@@ -164,7 +164,11 @@ internal172.16.240.80/28, free68,433,506,304bytes. Ten databases/eight source na
 stores plus upgrade store retained. Ignored .research/implementation/relay-source-recheck-e06f580
 owns launch/collector/root-review. No compiler cache or new network input duplicated.
 
-Next bounded action: complete relational relay/import exclusion and concurrency
+Next bounded action: run the new experiments/relay-source/relations.py ROOT
+fixture on an exact unpublished Git candidate (currently NOT_RUN); it borrows
+the stopped e06f580 PG and original a6c28e6 artifacts, creates one new template
+clone/client/store, and checks17 nested cases in the real Control backend. No
+rebuild or additional network allocation. Then complete concurrency
 with rollback, then ambiguous/revoked-source positive outcome recovery before
 qualifying this persistent boundary. Reuse the retained native build/database where
 safe. Two real Control sessions cannot independently race: the backend-bound fence
