@@ -1,0 +1,165 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T01 Step6 initial no-auth enrollment and P04-T02 route selection",
+  "status": "PASS_INITIAL_ENROLLMENT_BOUNDARY_ONLY",
+  "source": "49e7ed470cbae372cd823cb517fea200581e0cac",
+  "tree": "fddaf9bd16ee08c53090b9f420f6d545dadb5227",
+  "application_source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+  "application_tree": "1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9",
+  "environment": {
+    "version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+  },
+  "outcome": {
+    "status": "PASS_SCOPED_ROOT_REVIEW",
+    "source": "49e7ed470cbae372cd823cb517fea200581e0cac",
+    "application_source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+    "capture_files": 14,
+    "cases": 13,
+    "adapter_cases": 12,
+    "old_control_tables": 60,
+    "current_control_tables": 64,
+    "accepted_commands": 5,
+    "refusals_in_sql": 10,
+    "artifact_inputs_unchanged": true,
+    "scope": "Initial command identity, acceptance, exact digest/state/audit and additive migration; no COMMIT/race/action/M1 qualification"
+  },
+  "cases": [
+    {
+      "name": "old33-prefix",
+      "status": "PASS"
+    },
+    {
+      "name": "old-ledger-independent-checksums",
+      "status": "PASS"
+    },
+    {
+      "name": "config-initialize",
+      "status": "PASS"
+    },
+    {
+      "name": "config-activate-initial",
+      "status": "PASS"
+    },
+    {
+      "name": "additive-upgrade-with-retained-content",
+      "status": "PASS"
+    },
+    {
+      "name": "reapply-unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "actual-session-and-control-adapter",
+      "status": "PASS"
+    },
+    {
+      "name": "independent-original-command-values",
+      "status": "PASS"
+    },
+    {
+      "name": "independent-command-digests-and-atomic-attribution",
+      "status": "PASS"
+    },
+    {
+      "name": "independent-retained-contexts-routes-and-generations",
+      "status": "PASS"
+    },
+    {
+      "name": "whole-ledger-effects-are-contained",
+      "status": "PASS"
+    },
+    {
+      "name": "missing-details-immutability-and-rollback",
+      "status": "PASS"
+    },
+    {
+      "name": "independent-binary-route-validation",
+      "status": "PASS"
+    }
+  ],
+  "adapter_cases": [
+    "private-enable",
+    "historical-retry-with-roots-removed",
+    "changed-key-digest-and-wider-prefix-refused",
+    "withdraw-without-root",
+    "old-enable-does-not-reapply",
+    "reenable-new-route-generation",
+    "stale-cas-noop-and-wrong-csrf-refused",
+    "shared-noauth-context-different-endpoint",
+    "different-visibility-is-another-enrollment",
+    "historical-acceptance-survives-permission-removal-fresh-work-refuses",
+    "expired-session-refused",
+    "audit-failure-rolls-back-poisons-and-joins-driver"
+  ],
+  "artifacts": {
+    "binary_sha256": "cf94b71276523677ed2fa34be0ebbb12b471122a6e5c7575ee5029c9c1d9b3bf",
+    "probe_sha256": "8096a294edc8446336413430244db9308376a23efca7838b268589fd4050ea8f",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e",
+    "source_manifest_sha256": "5b415a481a0639ca3a28676b2abaa56c1157522c0aae06c282ce8348fecf314a"
+  },
+  "migration0019_sha256": "ba960ac695914034db5ac3ef9662280bc81390447e9298333b10f2d4f045b233",
+  "native_checks": "80 native tests, release CLI/probe build and Clippy at dae4d45; unchanged product/build inputs verified across fixture-only revisions, not rebuilt or retested.",
+  "original_failures": [
+    "p02-relay-enrollment-incomplete-20260928.json",
+    "p02-relay-enrollment-login-incomplete-20260928.json"
+  ],
+  "capture": {
+    "local": ".research/implementation/relay-enrollment-recheck-49e7ed4",
+    "remote": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-49e7ed4",
+    "files_sha256": {
+      "launch.json": "018d73169a70a1073ce2190fc872aed8456eeb0b426b66baf4f217d714e46bdb",
+      "resources.json": "9e8e1b987cadaea300920748304424e7e4efce7675ca43f903ef9c1dbe80c728",
+      "preflight.json": "6797a6e53fcb9efaebc61f794d80e14f6464a518efa653fdebab28802009992f",
+      "orchestrator.log": "209b2ce07e6670440f8f4c2c6d71db585f9b7f0603d29b805cbcdad7cc65e537",
+      "engine.log": "393608820abec767a7b20cc61cbc4c26bd5fe125307d1c07e0a8e2a22dcb09de",
+      "postgres.log": "6ff88995146c2ba5f6a068683aa9311429a8f14b542666f91b254e8e0245d590",
+      "source-manifest.json": "294d2227e4e850b938ce08c9f00f7af39fea5aabf4fafa3741341bafff250bd5",
+      "terminal-audit.json": "6f567db111d21ac8b7d0bec11153e3b99501c9c1c4955ca5cbea6b11c937e53a",
+      "pg/resources.json": "5dac8806b0c0c64c71294fd8df6ff79f0fa9bcd620cf9ef54c957aefa53a40d0",
+      "pg/enrollment-result.json": "c78adc898e543dde255b98a67dae0fcd301e63787a0ca5bec68a614512c3ed67",
+      "pg/probe.stdout": "8541bdc606358176b8eb30751c9dd1d1384b4eb06153841181c0cf80aea3f6ff",
+      "pg/probe.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pg/guards.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pg/guards.stderr": "d95d96aa8690d6e58e535000ccd1b1bf251f4ff6818aed64ce9f5ebd49a05e72"
+    },
+    "review_sha256": "9a77a324a382af3420a19b70af0a0e5f753d2d5a031cd90bb8b89af875695957"
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-09-28T04:10:16.278773+00:00",
+    "source": "49e7ed470cbae372cd823cb517fea200581e0cac",
+    "owner": "aa5b1b49157bd12de8aa040cd3076a72",
+    "prior_unchanged": 870,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "id": "bad2235403d07ffe6d73308fa00579d26d81cbd75a9cf088ae5588fba95d0b29",
+        "exit": 143
+      },
+      {
+        "id": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+        "exit": 0
+      }
+    ],
+    "source_files": 1441,
+    "free_bytes": 67101818880
+  },
+  "review_boundary": "Root read complete route/command/adapter/migration/probe/fixtures and relevant callers; independent read-only AI review found two oracle gaps corrected before their first execution. Root rechecked literal original inputs, all five digests and receipts, 60 retained tables/64 final tables, payload/source/artifact identities and live terminal census. Whole-ledger comparisons establish allowed net changes, not absence of every transient write.",
+  "structure": "Closed route enum, shared immutable Arc root rules, focused identity decoders and named multiline SQL retain explicit transaction/custody. No generic orchestration or backend framework.",
+  "not_run": [
+    "held/lost COMMIT",
+    "expiry during accepting COMMIT",
+    "concurrent lock schedules",
+    "installed HTTP/CLI enrollment",
+    "action issuer and restrictive drain",
+    "signed socket acquisition",
+    "load and aged state",
+    "arm64",
+    "protected/multi-rule/overlay routes",
+    "all live-owner relational omission schedules",
+    "all session/account policy-revocation lock orders"
+  ]
+}

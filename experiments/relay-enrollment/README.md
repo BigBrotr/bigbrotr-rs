@@ -18,7 +18,7 @@ then creates a separate PG16.15 internal-network laboratory with no host ports.
 All original outputs, database state and stopped containers remain inventoried;
 no global prune or volume removal is performed.
 
-Implemented, not yet executed: upgrade from the prior33 exact migration checksums,
+Executed at49e7ed4 with unchanged dae4d45 binaries: upgrade from the prior33 exact migration checksums,
 retained whole-table comparisons and idempotent reapply; actual non-superuser
 Control login, independently fixed password verification and actual session;
 private enable, removed-root retry/withdraw, stale/no-op/CSRF/prefix refusals,
@@ -56,3 +56,9 @@ not change. Preserve the failed database and logs. A direct engine-only invocati
 may pass a fourth explicit subnet argument to run.py; every selection undergoes
 the same overlap checks. This permits a fresh isolated rerun without removing a
 retained earlier network. Engine-only reruns do not repeat the unchanged80 tests.
+
+The49e7ed4 rerun passed13 external cases, including12 actual Rust adapter cases,
+ten SQL refusals and12 literal binary-route validation cases. It used a fresh
+internal172.16.240.16/28 and preserved both earlier attempts. See the
+[native report](../../docs/implementation/evidence/p02-relay-enrollment-native-20260928.json).
+No extended COMMIT/concurrency/action or capacity claim follows from this result.

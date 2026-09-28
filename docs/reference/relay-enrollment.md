@@ -2,8 +2,8 @@
 
 P02-T01 Step6 adds a bounded no-auth command over the existing private
 [endpoint registry](relay-endpoint-registry.md). This is a storage/adapter
-implementation awaiting actual-engine qualification, not an installed acquisition
-service. HTTP/CLI integration, restrictive application, socket grants, protected
+implementation with [initial actual-engine evidence](../implementation/evidence/p02-relay-enrollment-native-20260928.json);
+COMMIT/race qualification and the installed acquisition service are incomplete. HTTP/CLI integration, restrictive application, socket grants, protected
 access, multiple selected CIDRs and overlays remain selected work.
 
 `relay.enrollment.change` accepts an existing EndpointId, a complete visibility

@@ -27584,7 +27584,7 @@
       "evidence": "docs/implementation/evidence/p02-relay-registry-faults-native-20260928.json"
     },
     "enrollment": {
-      "state": "stopped-retained; native build/80 tests/Clippy PASS, engine setup failed before PostgreSQL allocation",
+      "state": "All runs stopped-retained; initial enrollment boundary qualified; COMMIT/race/action/M1 qualification remains open",
       "run": {
         "source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
         "tree": "1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9",
@@ -27726,6 +27726,84 @@
           "local_capture": ".research/implementation/relay-enrollment-recheck-325fa01",
           "report": "docs/implementation/evidence/p02-relay-enrollment-login-incomplete-20260928.json",
           "preserve": "Original migration/application data, failed login result and internal 172.16.240.0/28 network retained; no deletion."
+        },
+        {
+          "run": {
+            "source": "49e7ed470cbae372cd823cb517fea200581e0cac",
+            "tree": "fddaf9bd16ee08c53090b9f420f6d545dadb5227",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-49e7ed4",
+            "build": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-dae4d45/out/artifacts",
+            "state": "stopped-retained",
+            "started_at": "2026-09-28T04:09:16.817699+00:00",
+            "engine": "PASS_INITIAL_ENROLLMENT_BOUNDARY",
+            "exit_code": 0,
+            "postgres_lab": {
+              "format": "bigbrotr-pg-lab/1",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-49e7ed4/pg",
+              "owner": "aa5b1b49157bd12de8aa040cd3076a72",
+              "postgres": "bigbrotr-implementation-pg-20260917-enrollment_49e7ed4",
+              "client": "bigbrotr-implementation-pg-20260917-enrollment_49e7ed4-client",
+              "network": "bigbrotr-implementation-pg-20260917-enrollment_49e7ed4",
+              "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+              "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+              "binary_sha256": "cf94b71276523677ed2fa34be0ebbb12b471122a6e5c7575ee5029c9c1d9b3bf",
+              "source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-49e7ed4/source",
+              "state": "stopped-retained",
+              "published_ports": [],
+              "harness_revision": "49e7ed470cbae372cd823cb517fea200581e0cac",
+              "harness_sha256": "7f5c9d5ed8150b7854329d0a96850a7cede460aa36f58a380eccc48dc9deed29",
+              "explicit_subnet": "172.16.240.16/28",
+              "network_preflight": {
+                "networks": 34,
+                "routes": 268,
+                "overlap": false
+              },
+              "server": {
+                "version": "160015",
+                "fsync": "on",
+                "full_page_writes": "on",
+                "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+              }
+            },
+            "finished_at": "2026-09-28T04:09:53.194356+00:00",
+            "free_bytes": 67102019584,
+            "owned_stopped": [
+              "bad2235403d07ffe6d73308fa00579d26d81cbd75a9cf088ae5588fba95d0b29",
+              "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9"
+            ],
+            "prior_changed": []
+          },
+          "terminal": {
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "observed_at": "2026-09-28T04:10:16.278773+00:00",
+            "source": "49e7ed470cbae372cd823cb517fea200581e0cac",
+            "owner": "aa5b1b49157bd12de8aa040cd3076a72",
+            "prior_unchanged": 870,
+            "unrelated_running": 8,
+            "owned_stopped": [
+              {
+                "id": "bad2235403d07ffe6d73308fa00579d26d81cbd75a9cf088ae5588fba95d0b29",
+                "exit": 143
+              },
+              {
+                "id": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+                "exit": 0
+              }
+            ],
+            "source_files": 1441,
+            "free_bytes": 67101818880
+          },
+          "launch": {
+            "source": "49e7ed470cbae372cd823cb517fea200581e0cac",
+            "tree": "fddaf9bd16ee08c53090b9f420f6d545dadb5227",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-recheck-49e7ed4",
+            "pid": 2937390,
+            "start_ticks": "395081029",
+            "bundle_sha256": "d015ff3b070733527eef8e2d2e8d4e2d4d8134d1296686ae87fe72e16cccc943"
+          },
+          "local_capture": ".research/implementation/relay-enrollment-recheck-49e7ed4",
+          "report": "docs/implementation/evidence/p02-relay-enrollment-native-20260928.json",
+          "preserve": "Original successful database, credentials protected under owned pg/secrets, artifacts/logs, internal172.16.240.16/28; intended input for isolated fault clones."
         }
       ]
     }
