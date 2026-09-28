@@ -12,14 +12,15 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and private origin/main are verified at
+Local main is candidate 27b7f450f9553d4bf43dfa45800a3208c04d9579, tree
+653b0f5e083b9caf7173dee0c5cebb6300c7afd9. Private origin/main remains verified
 e0c34538de6d42ec49e1212d50c1821d589da0fb (native evidence), following
 593ec3a (test-only lint maintenance) and native-qualified WebSocket
 9fe4ce498c6176c9c3418488c850b0dced57b2d8, tree
 0fe34885a8f9f1353a0a1db1bbb14da0c4769001. Worktree was clean after push;
-root now owns the preserving relay decoder, actual signed socket fixture,
-dependency/contract/runner notes and evidence below. No other writer, active lab,
-migration or persistent-format change.
+root now owns native evidence/inventory/task/checkpoint updates. The exact
+candidate owns the preserving relay decoder, signed socket fixture and Mac
+evidence below. No other writer, active lab, migration or persistent-format change.
 
 The finite supplied-stream WebSocket component now has [Mac](evidence/p04-websocket-mac-20260928.json)
 and [native Linux amd64 evidence](evidence/p04-websocket-native-20260928.json):
@@ -60,12 +61,15 @@ Ignored start/launch/collect/review scripts preserve the recipe; do not rerun th
 old launcher. Current 1154757 compiler cache is reusable only under its lock.
 Latest Mac free space 12,244,712 KiB; existing cache only.
 
-Next bounded action: commit the reviewed relay decoder candidate and transfer
-exact Git to a new relay-wire run on Tux, reusing the locked 1154757 compiler cache.
+Next bounded action: publish the audited native decoder evidence, then implement
+the normalized collection selector/scope boundary in P03-T01 Steps1/2/3.
 P01-T03 Steps1/7 and P03-T02 Steps1/3 now have
 [Mac component evidence](evidence/p01-relay-wire-mac-20260928.json): 38 protocol
 tests, 1 compile-fail doctest and 1 actual guarded WebSocket signed corpus PASS,
-plus scoped Clippy. Native qualification is NOT RUN at this checkpoint.
+plus scoped Clippy. [Native27b7f45 qualification](evidence/p01-relay-wire-native-20260928.json)
+passes the 8 decoder tests, actual signed socket corpus and compile-fail doctest,
+release build and scoped Clippy. Root compared all 1,505 source files to Git and
+verified 15 captured payloads. Qualified test ELFs remain outside the mutable cache.
 Original EVENT RawValue and full envelope borrow input unchanged; duplicate
 signed keys survive into strict verification. EOSE missing/empty/unknown and
 contradictory hints remain distinct. The exact pinned serde_json raw_value feature
@@ -81,6 +85,27 @@ Original failures/checks are retained in .research/implementation/relay-wire-202
 inventory implementation_network_20260928.relay_wire. Scope identity/registration
 and installed finite Sync remain subsequent concrete prerequisites. Full M1 and
 the selected product remain INCOMPLETE. Latest Mac free 11,941,908 KiB.
+Native root runs/relay-wire-27b7f45, owner b5e770312ad02c0d67064d249eaf6ee1,
+PID3191941/start397262850 terminal. Fetch8cbf818e2728b09d9bd5426dad9a093713b4620f32ddb8109ff6791c1d732e62
+and native2c2ad812730c2f65ca29991d50973767db58360dfe9c90811effcf8d3315a202
+stopped exit0/no OOM, compiler lock released. Preflight10:12:54 UTC recorded
+67,049,791,488 free bytes, 910 previous containers and the same eight unrelated
+running workloads. Bundle3b2979c4ae0070d29d9ed98158f8f148a9b7a34927c0aaa83dbd111b003e8340.
+Terminal audit10:15:32 UTC verified all 910 prior projections unchanged and eight
+unrelated running; free66,980,102,144 bytes. No PG or dataset writes.
+Source27b7f45 is clean on Tux; never edit it there.
+
+Next scope prerequisite findings: no general selector exists; current config
+stores history_since/ephemeral/provenance but lacks sync.selectors. Adding that
+key directly would break immutable accepted policy v1/v2 key sets. Decide an
+explicit registered finite-job selector versus a versioned policy addition before
+changing configuration; never silently fill old accepted documents. Structured
+NIP-01 values use exact 64-hex ids/authors/#e/#p, AND within a filter, OR across
+filters, single ASCII-letter tag keys and only first tag values. Preserve explicit
+time bounds, reject empty lists/unsupported search, exclude generated page limit
+from collection identity. Existing fingerprint recipes have no selector domain;
+add an exact owned recipe and independent literals before persistence. The
+read-only reviewer is finishing the scope/admission dependency map; no edits/build.
 Never merge/push the earlier negative source-cleanup variant.
 
 ## Active slice and next useful journey
@@ -96,7 +121,7 @@ never replaces those journeys or completes an entire task/phase/product.
 
 The finite authority and supplied-stream WebSocket boundaries are qualified by
 actual source transport/cleanup/SQL races and the scoped protocol cases. The next
-missing boundary is the preserving Nostr envelope and collection/request membership,
+missing boundary is collection/request membership using the preserving envelope,
 followed by source-bound durable admission and installed finite Sync. Raw WebSocket
 text is not yet an admitted Nostr event. P01-T03 Steps1/7 supply the actual signed
 socket verification case; P03-T01 scope identity/registration and P03-T02 ordered
@@ -219,7 +244,7 @@ bundle/launch/capture/root-review recipes, raw outcomes and hash manifests.
 
 Current compiler cache is network-1154757/out/build/{target,cargo-home}, exclusively
 locked by .compiler-cache.lock. Both latest terminal build audits verified release.
-Original ELFs are outside it. It currently contains positive9fe4ce4 build intermediates;
+Original ELFs are outside it. It currently contains positive27b7f45 build intermediates;
 only exact source rebuilds may use it. No cache output is itself a qualified input.
 
 ## Maintenance and retained dependencies

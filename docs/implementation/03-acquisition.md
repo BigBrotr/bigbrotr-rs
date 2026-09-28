@@ -124,6 +124,8 @@ with no empty `wire/relay` hierarchy. Its bounded decoder and signed actual sock
 fixture supply part of P01-T03 Steps1/7 and this task's Steps1/3. They do not supply
 request generations, selector membership, ordered durable admission or installed
 Sync; those remain the next integration boundaries. No checkbox closes here.
+The [native27b7f45 run](evidence/p01-relay-wire-native-20260928.json) executes the
+real guarded socket and cryptography, with all seven valid signed fields checked.
 
 - [ ] **1. Add per-connection request generations.** Multiplex one socket per endpoint/auth scope where allowed, allocate unique request IDs, and associate every frame with a request generation and receive sequence. An old handle cannot send CLOSE/NEG-CLOSE for its replacement.
 - [ ] **2. Reserve bytes/items before ownership transfer.** Apply shared 2MiB message and 256KiB admitted-event limits, the producer's 32MiB byte grant and 1024 queued-record ceiling, and bounded verifier pools. Separately cap outstanding mutation requests at 64 under the storage contract; the queue ceiling is not permission for 1024 concurrent durable requests. Include decoded objects, queued frames and join buffers in the same grant. Keep compression disabled unless the tested incremental inflated-byte/ratio path is enabled.

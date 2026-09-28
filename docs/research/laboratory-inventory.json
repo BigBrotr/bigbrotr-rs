@@ -27486,11 +27486,69 @@
       }
     },
     "relay_wire": {
-      "status": "Mac decoder and actual signed socket PASS; native pending",
+      "status": "Mac and native Linux amd64 bounded codec/socket component PASS; stopped-retained",
       "local_evidence": ".research/implementation/relay-wire-20260928",
       "report": "docs/implementation/evidence/p01-relay-wire-mac-20260928.json",
       "cache": ".research/targets/product; existing shared Cargo cache",
-      "preserve": "Original RED/failure logs, signed fixtures, final checks and exact source hashes; no new remote laboratory yet"
+      "preserve": "Exact source/export/manifest, original RED and failure logs, final checks, signed fixtures, capture and separate qualified test ELFs. Shared 1154757 compiler cache may be reused only under its lock; no PG or dataset writes.",
+      "native_report": "docs/implementation/evidence/p01-relay-wire-native-20260928.json",
+      "resources": {
+        "source": "27b7f450f9553d4bf43dfa45800a3208c04d9579",
+        "tree": "653b0f5e083b9caf7173dee0c5cebb6300c7afd9",
+        "owner": "b5e770312ad02c0d67064d249eaf6ee1",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-wire-27b7f45",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "8cbf818e2728b09d9bd5426dad9a093713b4620f32ddb8109ff6791c1d732e62"
+          },
+          {
+            "name": "native",
+            "id": "2c2ad812730c2f65ca29991d50973767db58360dfe9c90811effcf8d3315a202"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T10:12:54.994052+00:00",
+        "qualification": "PASS_SCOPED_RELAY_WIRE_COMPONENTS",
+        "inventory_changed": [],
+        "free_bytes_after": 66980139008,
+        "finished_at": "2026-09-28T10:13:53.500994+00:00"
+      },
+      "launch": {
+        "source": "27b7f450f9553d4bf43dfa45800a3208c04d9579",
+        "tree": "653b0f5e083b9caf7173dee0c5cebb6300c7afd9",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-wire-27b7f45",
+        "pid": 3191941,
+        "start_ticks": "397262850",
+        "bundle_sha256": "3b2979c4ae0070d29d9ed98158f8f148a9b7a34927c0aaa83dbd111b003e8340"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "27b7f450f9553d4bf43dfa45800a3208c04d9579",
+        "observed_at": "2026-09-28T10:15:32.273297+00:00",
+        "prior_unchanged": 910,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "8cbf818e2728b09d9bd5426dad9a093713b4620f32ddb8109ff6791c1d732e62",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "2c2ad812730c2f65ca29991d50973767db58360dfe9c90811effcf8d3315a202",
+            "exit": 0
+          }
+        ],
+        "source_files": 1505,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 66980102144
+      }
     }
   },
   "implementation_relay_registry_20260928": {
