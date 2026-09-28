@@ -29995,6 +29995,116 @@
       "evidence": "docs/implementation/evidence/p03-request-session-native-20260928.json",
       "capture_manifest_sha256": "8ed676d347e07d831d52d5d8fe3ba3a3e59b23294e681ea080771b7d3b16e4b6",
       "preserve": "Exact source, original local failures/RED logs, native commands/results, manifests and separately retained test ELFs. No new full compiler cache; shared1154757 may be reused only under its existing lock. No PG/dataset changes or retired resource deletion."
+    },
+    "observation": {
+      "state": "Native14 scoped tests PASS; original engine setup FAIL before read; stopped-retained; retry pending",
+      "local_evidence": ".research/implementation/observation-context-20260928",
+      "launch": {
+        "source": "a2af1c1515bc6d8a0efb7190c48a4cdb05898508",
+        "tree": "a5e6a79ca41dc932f3659f776fe0722258ad1b41",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/observation-a2af1c1",
+        "pid": 3665557,
+        "start_ticks": "400926787",
+        "bundle_sha256": "21e901fdf5b068910046638bd4c37904aa7520f915194b31a9756964c5276634"
+      },
+      "resources": {
+        "source": "a2af1c1515bc6d8a0efb7190c48a4cdb05898508",
+        "tree": "a5e6a79ca41dc932f3659f776fe0722258ad1b41",
+        "owner": "c13de82251b40b5312f6b4477cea7c45",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/observation-a2af1c1",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "11786b7ab2055d16cfae852d35c4deeb386ad72328cbe08111f8ec432d2aa407"
+          },
+          {
+            "name": "native",
+            "id": "2039b9993a3105c2f74789b6c07ab18ee4f2a014544f144caffe2e2e659f73c7"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T20:23:34.375335+00:00",
+        "qualification": "PASS_OBSERVATION_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 61619367936,
+        "finished_at": "2026-09-28T20:25:15.612545+00:00"
+      },
+      "preserve": "Original local failures/RED logs, source and artifacts. Exclusive shared1154757 compiler; no dataset or retired-resource deletion.",
+      "original_engine": {
+        "source": "a2af1c1515bc6d8a0efb7190c48a4cdb05898508",
+        "status": "FAIL",
+        "failure": "RuntimeError: actual-observation-off",
+        "owner": "85709524b36ba61f8bf50799ba09a13f",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "1975bc7d9e438c39d97dee1a44f7fd005e4d7d4efe281809533a0dc47f7bff2f",
+          "name": "bigbrotr-acquisition-binding-a2af1c1"
+        },
+        "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "databases": [
+          "bb_scope_bind_a2af1c1_observation_off"
+        ],
+        "cases": [],
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "started_at": "2026-09-28T20:25:30.378248+00:00",
+        "finished_at": "2026-09-28T20:25:33.886615+00:00",
+        "free_bytes_before": 61619351552,
+        "free_bytes_after": 61654863872
+      },
+      "original_terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "a2af1c1515bc6d8a0efb7190c48a4cdb05898508",
+        "observed_at": "2026-09-28T20:27:30.336137+00:00",
+        "prior_unchanged": 973,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "11786b7ab2055d16cfae852d35c4deeb386ad72328cbe08111f8ec432d2aa407",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "2039b9993a3105c2f74789b6c07ab18ee4f2a014544f144caffe2e2e659f73c7",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "1975bc7d9e438c39d97dee1a44f7fd005e4d7d4efe281809533a0dc47f7bff2f",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1600,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 61654634496,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      },
+      "engine_launch": {
+        "source": "a2af1c1515bc6d8a0efb7190c48a4cdb05898508",
+        "tree": "a5e6a79ca41dc932f3659f776fe0722258ad1b41",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/observation-a2af1c1",
+        "pid": 3669192,
+        "start_ticks": "400938387"
+      }
     }
   },
   "implementation_relay_registry_20260928": {

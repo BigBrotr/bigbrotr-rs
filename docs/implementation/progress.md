@@ -12,9 +12,21 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin7656e8e88245bbe5d21ac291e34be75899d44d55.
-Root is the sole writer for the next observation/source integration slice. All owned
-resources are stopped/retained; no active experiment or cleanup debt.
+Mac main candidate a2af1c1515bc6d8a0efb7190c48a4cdb05898508; private origin
+7656e8e88245bbe5d21ac291e34be75899d44d55. Only root-owned evidence/checkpoint
+updates are dirty; product source is the clean candidate exported to Tux.
+Root is the sole writer. Native observation-a2af1c1 build and14 component tests
+PASS; all owned resources are stopped/retained. Build PID3665557/start400926787,
+ownerc13de82251b40b5312f6b4477cea7c45, fetch11786b7a/native2039b999 exit0.
+Engine PID3669192/start400938387, owner85709524b36ba61f8bf50799ba09a13f,
+client1975bc7d stopped143, borrowedPG71775507 stopped0. No cleanup errors,
+missing resources or unrelated changes. Original engine FAIL before observation:
+independent census lacked SELECT on acquisition_jobs after migration. Preserve
+bindings/off.stderr/stdout and its one clone/native bootstrap. Product behavior
+was not exercised. Root-owned fixture correction grants SELECT on the three
+new tables and checks all census privileges before the probe. The retry will
+use new clones/exact Git and unchanged a2af1c1 artifacts, no recompilation.
+Initial free space Mac6,904,504KiB/Tux61,775,720,448B.
 
 Active P03-T01 Step3/P03-T02 Steps1/2/3: root-owned committed observation and
 receive-clock implementation plus scoped native fixtures. No new migration,
@@ -36,9 +48,9 @@ restricted envelope with a public-route sample, not a private network socket.
 The cancelled case sets the flag during policy validation; it does not isolate
 pre-native cancellation or future-drop custody.
 Root read complete changed owners and the existing native/PG lifecycle scripts.
-Next bounded action: commit the reviewed unpublished exact-source candidate,
-then run the new observation native profile and six isolated PG/Rocks cases using
-the shared1154757 compiler and stopped71775507 PG. No launch has happened yet.
+Next bounded action: retain/audit the original setup failure, commit the fixture
+correction, then execute the six-case retry from exact Git using unchanged native
+artifacts. Never replay completed launchers. Inventory owns original identities.
 Post-read lost/late rollback, actual socket→admission, installed integration,
 load/aged-state, capacity and arm64 remain NOT_RUN for this new boundary.
 

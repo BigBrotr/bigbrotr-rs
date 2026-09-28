@@ -71,6 +71,13 @@ def run(context):
         (output / f'{name}-migrate.stdout').write_text(upgraded.stdout)
         (output / f'{name}-migrate.stderr').write_text(upgraded.stderr)
         require(upgraded.returncode == 0, 'fixture-current-schema')
+        # The retained template predates these tables. The probe's independent
+        # census needs SELECT after upgrade; this does not grant product writes.
+        lab.sql(pg, database, 'GRANT SELECT ON control.acquisition_selectors,'
+            'control.acquisition_scopes,control.acquisition_jobs TO bigbrotr_control;')
+        require(lab.sql(pg, database, "SELECT bool_and(has_table_privilege('bigbrotr_control',"
+            "format('%I.%I',schemaname,tablename),'SELECT')) FROM pg_tables "
+            "WHERE schemaname='control'") == 't', 'fixture-complete-census-privileges')
         before = rows(database)
         require(len(before) == 67 and not before['owner_epochs'] and not before['producer_requests'], 'fresh-current-clone')
         lab.write_json(output / f'{name}-before.json', before)

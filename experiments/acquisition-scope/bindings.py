@@ -35,14 +35,15 @@ installed = len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest'
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
 execution = len(sys.argv) == 3 and sys.argv[2] == '--execution'
-observation = len(sys.argv) == 3 and sys.argv[2] == '--observation'
+observation = len(sys.argv) in (3, 4) and sys.argv[2] == '--observation'
 assert len(sys.argv) == 2 or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-build = Path(sys.argv[3]).resolve(strict=True) if guards or interruptions or commits else root / 'out/artifacts'
+reuse_build = guards or interruptions or commits or (observation and len(sys.argv) == 4)
+build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == 'ingest_bootstrap_probe'
-if guards or interruptions or commits:
+if reuse_build:
     # Reuse only reviewed exact artifacts whose complete Rust/build inputs match.
     changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
     assert changed and all(n.startswith(('docs/', 'experiments/')) for n in changed), changed
