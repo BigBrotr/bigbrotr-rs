@@ -124,9 +124,12 @@ lock orders, preserving historical exact-key recovery. The original fixture coll
 remains a recorded FAIL; only three affected cases reran.
 [Exact claim first-wave evidence](evidence/p03-acquisition-claims-native-20260928.json)
 now qualifies additive0023 queued ownership, same-owner retry, historical observation,
-populated upgrade and raw direct/paused takeover refusals. Claim COMMIT interruption,
-concurrent authority changes, native recovery, progress and installed CLI acceptance
-remain separate parts of Step3 onward; no whole task closes here.
+populated upgrade and raw direct/paused takeover refusals.
+[Sixteen claim-fault schedules](evidence/p03-acquisition-claim-faults-native-20260928.json)
+qualify actual COMMIT interruption/expiry and both policy/grant/source/account lock
+orders. Job-bound socket/reservation/certification, native recovery, progress and
+installed CLI acceptance remain separate parts of Step3 onward; no whole task
+closes here.
 
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership

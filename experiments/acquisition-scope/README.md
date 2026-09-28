@@ -233,16 +233,18 @@ A separate clone reinstates only the reviewed paused-state trigger omission;
 the same fixture must fail on that last case. Original outcomes and all cloned
 states remain retained. [Native evidence](../../docs/implementation/evidence/p03-acquisition-claims-native-20260928.json)
 records all30 first-wave assertions at e7d1c8c, plus39 native checks and Clippy.
-Lost/delayed claim COMMIT, concurrent authority writers, native custody recovery
-and installed dispatch remain subsequent acceptance.
+Claim COMMIT and concurrent authority writers are covered separately below.
+Native custody recovery and installed dispatch remain subsequent acceptance.
 
-The next `jobs.py RUN_ROOT --claim-faults` wave targets COMMIT6 after actual
+The `jobs.py RUN_ROOT --claim-faults` wave targets COMMIT6 after actual
 logout. It reuses the `acquisition-jobs-faults` CLI/probe build profile without
-rerunning unchanged component tests. Planned schedules cover before/after loss,
+rerunning unchanged component tests. Its schedules cover before/after loss,
 held cancellation with close/release, delay, original job/owner expiry and both
 policy/grant/enrollment/account lock orders. A fresh Control may claim an original
 still-accepted job, but must only observe/refuse foreign queued work; deadlines
 and immutable intent remain exact. The account writer keeps the real0806 trigger.
 After successful claim in a lock race, only historical observation follows, since
-permission may already have changed. These cases remain unexecuted until a scoped
-evidence report records their actual results.
+permission may already have changed. [Native evidence](../../docs/implementation/evidence/p03-acquisition-claim-faults-native-20260928.json)
+records all16 schedules PASS at fef2f2b, with actual six-COMMIT counters, independent
+all-table/writer comparisons and retained original databases. No native adoption,
+dispatch, installed acquisition or capacity qualification follows.

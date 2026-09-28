@@ -29407,6 +29407,124 @@
         }
       },
       "evidence": "docs/implementation/evidence/p03-acquisition-claims-native-20260928.json"
+    },
+    "acquisition_claim_faults": {
+      "state": "STOPPED/RETAINED; sixteen scoped claim schedules PASS",
+      "source": "fef2f2bd6a263ba733821ff9b212b451a3fe3284",
+      "tree": "8de1f82cb3ab97ae1fc8f3ac52015f399b86eff8",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-fef2f2b",
+      "pid": 3536842,
+      "start_ticks": "400092942",
+      "bundle_sha256": "53c51175be0433ab3d9fc28c0223516b438d1afd300ae42d28942fa81faf4770",
+      "build_owner": "6e7e35b4bdd18c5a7b6cc0e52ae93a0f",
+      "engine_launch": {
+        "source": "fef2f2bd6a263ba733821ff9b212b451a3fe3284",
+        "tree": "8de1f82cb3ab97ae1fc8f3ac52015f399b86eff8",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-fef2f2b",
+        "pid": 3539876,
+        "start_ticks": "400111897"
+      },
+      "local_evidence": ".research/implementation/acquisition-claim-faults-20260928",
+      "cache": "Shared network-1154757 exclusively reused; artifacts retained separately",
+      "retention": "Exact source, artifacts, logs and all new PostgreSQL clones; never replay launchers",
+      "next": "No cleanup debt; preserve all16 clones/originals. Next job-bound source and admission consumer, then living-owner installed journey.",
+      "resources": {
+        "source": "fef2f2bd6a263ba733821ff9b212b451a3fe3284",
+        "tree": "8de1f82cb3ab97ae1fc8f3ac52015f399b86eff8",
+        "owner": "6e7e35b4bdd18c5a7b6cc0e52ae93a0f",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-fef2f2b",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "d0d373c8a5f8dc3abb655ee23839414eb3fffbc8f204a4cd08f9e294b546a78f"
+          },
+          {
+            "name": "native",
+            "id": "a889d5fa6dc3fac4a426692ec1516411d7cada5913e8a1adce85f26844f1cddd"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T18:04:35.942140+00:00",
+        "qualification": "PASS_ACQUISITION_JOBS_FAULT_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 63106031616,
+        "finished_at": "2026-09-28T18:05:28.221419+00:00"
+      },
+      "engine": {
+        "owner": "66acfde4e231a535cb78ce864b5aabf9",
+        "label": "org.bigbrotr.acquisition-jobs",
+        "client": {
+          "id": "f99711d6d1e4f175876eda67b1e98e271424cd4a9400f29f329a69020f07cfe0",
+          "name": "bigbrotr-acquisition-jobs-fef2f2b"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_acq_job_fef2f2b_commit_pass",
+          "bb_acq_job_fef2f2b_commit_before",
+          "bb_acq_job_fef2f2b_commit_after",
+          "bb_acq_job_fef2f2b_commit_cancel_close",
+          "bb_acq_job_fef2f2b_commit_cancel_release",
+          "bb_acq_job_fef2f2b_commit_delayed",
+          "bb_acq_job_fef2f2b_commit_job_expiry",
+          "bb_acq_job_fef2f2b_commit_owner_expiry",
+          "bb_acq_job_fef2f2b_writer_policy",
+          "bb_acq_job_fef2f2b_writer_permission",
+          "bb_acq_job_fef2f2b_writer_disabled",
+          "bb_acq_job_fef2f2b_writer_account",
+          "bb_acq_job_fef2f2b_claim_policy",
+          "bb_acq_job_fef2f2b_claim_permission",
+          "bb_acq_job_fef2f2b_claim_disabled",
+          "bb_acq_job_fef2f2b_claim_account"
+        ],
+        "status": "PASS_ACQUISITION_CLAIM_FAULTS",
+        "started_at": "2026-09-28T18:07:45.505234+00:00",
+        "finished_at": "2026-09-28T18:08:43.543641+00:00"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "fef2f2bd6a263ba733821ff9b212b451a3fe3284",
+        "observed_at": "2026-09-28T18:09:20.196931+00:00",
+        "prior_unchanged": 958,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "d0d373c8a5f8dc3abb655ee23839414eb3fffbc8f204a4cd08f9e294b546a78f",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "a889d5fa6dc3fac4a426692ec1516411d7cada5913e8a1adce85f26844f1cddd",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "f99711d6d1e4f175876eda67b1e98e271424cd4a9400f29f329a69020f07cfe0",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1579,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 62819909632,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      },
+      "evidence": "docs/implementation/evidence/p03-acquisition-claim-faults-native-20260928.json"
     }
   },
   "implementation_relay_registry_20260928": {

@@ -1,0 +1,238 @@
+{
+  "format": "bigbrotr-acquisition-claim-faults-native/1",
+  "status": "PASS_SIXTEEN_CLAIM_SCHEDULES",
+  "source": "fef2f2bd6a263ba733821ff9b212b451a3fe3284",
+  "tree": "8de1f82cb3ab97ae1fc8f3ac52015f399b86eff8",
+  "product_boundary": "e7d1c8c28cfaae3214d4724ea838c7fdd9ee2e66",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "0a812c4c30d97e0409101822dbb8bd39dbf23b366a1fea70e62d276c6335d6b9",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "e9669b3002f81e7deca514e2134af566342f8d149546587605277f140463990f",
+    "acquisition_job_probe": "5204f7dcc06dd9b3d57f6e41cdef89f411972af58df1bc94dec9aa0478d15b6b"
+  },
+  "build_checks": "Actual native release CLI/probe and scoped Clippy PASS; same scoped Mac Clippy PASS. Unchanged39 component tests from e7d1c8c were not repeated.",
+  "scenarios": [
+    {
+      "name": "pass",
+      "status": "PASS",
+      "durable_claim": true,
+      "wire_counts": [
+        6,
+        6,
+        6,
+        6,
+        0
+      ],
+      "recovery": "claim-recover"
+    },
+    {
+      "name": "before",
+      "status": "PASS",
+      "durable_claim": false,
+      "wire_counts": [
+        6,
+        5,
+        5,
+        5,
+        1
+      ],
+      "recovery": "claim-retry"
+    },
+    {
+      "name": "after",
+      "status": "PASS",
+      "durable_claim": true,
+      "wire_counts": [
+        6,
+        6,
+        6,
+        5,
+        1
+      ],
+      "recovery": "claim-recover"
+    },
+    {
+      "name": "cancel_close",
+      "status": "PASS",
+      "durable_claim": false,
+      "wire_counts": [
+        6,
+        5,
+        5,
+        5,
+        1
+      ],
+      "recovery": "claim-retry"
+    },
+    {
+      "name": "cancel_release",
+      "status": "PASS",
+      "durable_claim": true,
+      "wire_counts": [
+        6,
+        6,
+        6,
+        6,
+        1
+      ],
+      "recovery": "claim-recover"
+    },
+    {
+      "name": "delayed",
+      "status": "PASS",
+      "durable_claim": true,
+      "wire_counts": [
+        6,
+        6,
+        6,
+        6,
+        1
+      ],
+      "recovery": "claim-recover"
+    },
+    {
+      "name": "job_expiry",
+      "status": "PASS",
+      "durable_claim": false,
+      "wire_counts": [
+        6,
+        6,
+        5,
+        5,
+        1
+      ],
+      "recovery": "claim-expired-retry"
+    },
+    {
+      "name": "owner_expiry",
+      "status": "PASS",
+      "durable_claim": false,
+      "wire_counts": [
+        6,
+        6,
+        5,
+        5,
+        1
+      ],
+      "recovery": "claim-retry"
+    },
+    {
+      "name": "writer_policy",
+      "status": "PASS",
+      "durable_claim": false
+    },
+    {
+      "name": "writer_permission",
+      "status": "PASS",
+      "durable_claim": false
+    },
+    {
+      "name": "writer_disabled",
+      "status": "PASS",
+      "durable_claim": false
+    },
+    {
+      "name": "writer_account",
+      "status": "PASS",
+      "durable_claim": false
+    },
+    {
+      "name": "claim_policy",
+      "status": "PASS",
+      "durable_claim": true
+    },
+    {
+      "name": "claim_permission",
+      "status": "PASS",
+      "durable_claim": true
+    },
+    {
+      "name": "claim_disabled",
+      "status": "PASS",
+      "durable_claim": true
+    },
+    {
+      "name": "claim_account",
+      "status": "PASS",
+      "durable_claim": true
+    }
+  ],
+  "assertions": [
+    "Actual proxy targets COMMIT6 after Control claim, login charge, session issue, acquisition acceptance and logout; exact seen/forwarded/server/client counters distinguish all eight schedules",
+    "Before-forward loss leaves the original job accepted; after-complete loss leaves it queued. Both client outcomes remain unknown; no deadline, command, detail or admission identity is regenerated",
+    "Cancelled COMMIT poisons adapter reuse but keeps actual Control/backend exclusion; a competing owner is Busy until disposal. Explicit close and release have distinct durable accepted/queued results",
+    "Server-observed original job expiry and Control expiry independently reject COMMIT. The other deadline remains live, discriminating the two guards; historical reads remain available after known rollback",
+    "Fresh Control claims only still-accepted unexpired work. It reads/refuses previously queued work and reads/refuses expired accepted work. Original acceptance, duration, detail, command and ordinal stay exact",
+    "Policy, grant, enrollment and account changes execute in both dataset-lock orders with actual PID/backend-incarnation wait barriers. Writer-first refuses claim; claim-first commits under prior authority and then preserves subsequent withdrawal",
+    "Independent all67-table/xmin expected results distinguish exactly one claimed job row from exact writer changes; real0806 account trigger increments authentication generation after prior logout",
+    "Root compared1579 exact Git files and198 captures, every primary/recovery operation pair and all eight exact writer effects; actual app/proxy drivers joined and original basis remained unchanged"
+  ],
+  "review": {
+    "source_files": 1579,
+    "captured_payloads": 198,
+    "capture_manifest_sha256": "c2caf5c14bedf56ac07d3b997596d952269075e61dc704cb0e1a2771cc031e2e",
+    "root_review_sha256": "bfe4f12d84bbfc81a8532cdcf7c603781fd28dd856d6c024b1ed1f87df7ad478",
+    "source_scope": "Root/read-only review of complete changed probe/harness and actual adapter/SQL error/lock contracts; no runtime or applied SQL change",
+    "prelaunch": "Expected owner-expiry error corrected from actual0813 BB001 before execution; no engine failure or fixture retry"
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "fef2f2bd6a263ba733821ff9b212b451a3fe3284",
+    "observed_at": "2026-09-28T18:09:20.196931+00:00",
+    "prior_unchanged": 958,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "d0d373c8a5f8dc3abb655ee23839414eb3fffbc8f204a4cd08f9e294b546a78f",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "a889d5fa6dc3fac4a426692ec1516411d7cada5913e8a1adce85f26844f1cddd",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "f99711d6d1e4f175876eda67b1e98e271424cd4a9400f29f329a69020f07cfe0",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1579,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 62819909632,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/acquisition-claim-faults-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-fef2f2b",
+  "not_qualified": [
+    "native custody recovery, running/progress and installed command delivery",
+    "job-bound socket/reservation/certification, M1, aged/mixed load, arm64/release"
+  ],
+  "scope": "Bounded queued claim interruption/authorization qualification. Metadata is not dispatch authority; native exclusion, running/progress, installed Sync, M1, capacity and release remain separate."
+}

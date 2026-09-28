@@ -295,5 +295,8 @@ again. Native recovery, those integrations and installed Sync remain incomplete.
 now qualifies the initial queued operation at e7d1c8c, including populated upgrade,
 logout, withdrawals, expiry and foreign owner refusal. Raw SQL plus a paused-only
 negative clone discriminate immutable ownership; incompatible history refuses
-without partial migration. Claim COMMIT interruption, concurrent authority changes,
-native successor recovery and installed dispatch still require their own evidence.
+without partial migration. [Sixteen claim-fault schedules](../implementation/evidence/p03-acquisition-claim-faults-native-20260928.json)
+now distinguish actual COMMIT loss/cancellation/expiry and both policy/grant/source/
+account lock orders. The original deadline and immutable job attribution survive
+fresh-owner observation. No queued job is adopted. Job-bound socket/reservation/
+certification, native successor recovery and installed dispatch remain required.

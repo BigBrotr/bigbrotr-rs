@@ -12,9 +12,31 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main/private origin is a4a9d45, qualification pushed and remote verified.
-Root owns new claim-fault probe/harness WIP plus this checkpoint and fixture docs. All native
-resources below are stopped/retained; no active experiment or cleanup obligation.
+Mac main candidate is fef2f2b; private origin remains a4a9d45 pending the
+qualification commit/push. Root owns documentation/evidence only. All owned
+resources are stopped/retained; no active experiment or cleanup obligation.
+
+[Native claim-fault evidence](evidence/p03-acquisition-claim-faults-native-20260928.json)
+qualifies all16 schedules: eight actual COMMIT6 cuts and both policy/grant/source/
+account lock orders. Lost responses retain distinct accepted/queued outcomes;
+cancellation poisons reuse while actual Control excludes contenders until joined.
+Original job and owner expiry independently refuse with the other deadline live.
+Fresh Control can claim only still-accepted unexpired work; queued or expired
+work remains historical. Root checked all67 tables/xmin, exact writer deltas,
+original detail/command/ordinal/deadline,1579 Git files and198 captures. Native
+release build/Clippy and Mac scoped Clippy PASS; unchanged39 tests not repeated.
+No native failure/retry or product/SQL change.0023 remains immutable.
+
+Run acquisition-jobs-faults-fef2f2b, buildowner6e7e35b4bdd18c5a7b6cc0e52ae93a0f,
+PID3536842/start400092942 terminal; fetchd0d373c8/nativea889d5fa exit0.
+Engineowner66acfde4e231a535cb78ce864b5aabf9, PID3539876/start400111897 terminal;
+clientf99711d6 stopped143, borrowedPG71775507 stopped0/no OOM. Sixteen clones
+retained. Audit18:09:20UTC found958 prior projections unchanged, eight unrelated
+running, compiler lock free and62,819,909,632B available. Mac last7,689,440KiB.
+Shared1154757 now holds fef2f2b intermediates; exact artifacts separately retained.
+Inventory implementation_network_20260928.acquisition_claim_faults and ignored
+.research/implementation/acquisition-claim-faults-20260928 own originals/recipes.
+Never replay launchers. Cache retirement remains complete. Product INCOMPLETE.
 
 P03-T01 Step3 exact-ID claim now has additive0023, accepted→queued under current
 actor/grant/source/policy and original deadline, same-owner read-only retry, and
@@ -45,18 +67,28 @@ Engineownera713d0c64c521507e7c01fad09de11e3, PID3521260/start400021818;
 client22fe5d51 stopped143, borrowedPG71775507 stopped0/no OOM. Ten clones retained,
 including deliberate SQL negative. Audit17:54:45UTC found955 prior projections
 unchanged, eight unrelated running, compiler lock free and63,217,111,040B free.
-Shared1154757 now holds e7d1c8c intermediates; exact artifacts are separately retained.
+That wave left e7d1c8c intermediates in shared1154757; exact artifacts remain
+separately retained while the cache now follows the later run above.
 Cache retirement remains complete; never replay launch/deletion recipes.
 
-The existing job probe/harness now has draft --claim-faults for COMMIT6 (Control,
-login charge, session, acceptance, logout, claim): eight COMMIT schedules and both
-policy/grant/enrollment/account lock orders. NOT EXECUTED. Root corrected the
-owner-expiry expected error from actual0813 BB001; it is Forbidden, not Conflict.
-Scoped Clippy, Python syntax, diff check and root/read-only fixture review PASS.
-No product or applied SQL changes. Next form the clean candidate and use the existing acquisition-jobs-faults
-build profile and exact-Git native runner. Last Mac free7,689,440KiB; check before allocation. Fresh recovery may claim
-an original accepted job, but can only observe/refuse foreign queued work; no
-native custody exclusion is inferred. Keep all original evidence and deadlines.
+Next: commit/push the bounded qualification, then connect claimed job authority
+to actual source/admission consumers (P03-T01 Step3/P03-T02). Fresh source work,
+producer reservation, dispatch and CertifyExisting must bind the same JobId/scope,
+current actor/action and original remaining time. Historical ambiguous-outcome
+lookup stays independent from fresh authority. No queued metadata is a socket
+permission. Applied SQL must be extended additively for any persistent binding.
+
+Initial next-boundary inspection read complete relay_source.rs and producer_sources.rs.
+run_relay_source currently caps only policy/Control time and has no job binding.
+InitialEventRequest/InitialCertificationRequest carry source and collection context,
+but no acquisition JobId. InitialIngestContext.job currently means ImportJobBinding;
+do not conflate it. Only initial_batch.rs1–151 and call locations were read at this
+new boundary; read its complete owner/callers/contracts before changing it.
+Preserve Control→dataset→account/grant→source/job→Ingest/producer lock order,
+per-poll finite socket lifetime, socket disposal before native admission and
+historical resolution without fresh permission. First inspect concrete callers,
+choose the smallest job-bound consumer slice, and record its exact acceptance;
+no new abstraction or schema change is yet chosen.
 The next user-visible M1 deliverable remains signed socket→durable admission→
 publication/read→restart/resend. Remaining concrete prerequisites are job-bound
 execution/source observation (P03-T01 Step3/P03-T02), living initial-owner command
