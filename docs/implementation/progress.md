@@ -12,11 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and origin/main are ac3a302 (boundary evidence and cache retirement),
-pushed after verified private repository identity. Product source5be0dbd344d1ff22c6c849fe2a301c9a55023db8,
-treed0b4e777886fa917a8851b97e8ac44393a9c9ecb completed native qualification.
-Root owns this checkpoint and the current uncommitted relay-source binding slice.
-Maintenance and policy-version inventory/evidence are committed.
+Local main is unpublished candidate a6c28e625176ba9835742260c57015c0141e9c7d,
+tree4fae79b4a4a2bde3864c91aa12b18c2ec3834ae1; origin/main remains ac3a302.
+Root owns the fixture-only correction and evidence/documentation below. Product
+and applied0020 bytes are unchanged. Previous qualified product5be0dbd remains
+recorded below; maintenance and policy-version evidence are committed.
 No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
 05:51:59UTC, PID3018662/start395683262 terminal, owner8b12a62d405821e4949859f225a685a6.
 Six build/test/Clippy checks (56 tests) and87 actual PG/Rocks checks PASS;
@@ -127,15 +127,34 @@ preserved and fixture corrected. Final Mac31 catalog/CLI tests and all-example C
 PASS. The independent first-wave oracle now emits only non-receipt native rows
 (14 bootstrap/25 committed) and original input bytes; its initial local row-count
 mistake is retained before any native observation. Current ignored evidence root
-.research/implementation/relay-source-20260928. Native new-slice cases NOT_RUN.
-Next: transfer the clean unpublished candidate by Git and execute the first wave
-on Tux's exclusive reusable1154757 cache (fresh measured68,888,199,168bytes free).
-The runner inventories all processes/containers/mounts/routes/volumes before
-allocation; eight unrelated applications remain running. New profile relay-source
-uses a new root/internal172.16.240.64/28; overlap checks precede network creation. Must still cover two transaction
-boundaries, contradictory/omitted bindings, unchanged retries, concurrency/rollback,
-ambiguous outcome/recovery and preservation through0020 before qualifying this
-persistent boundary. Do not conflate planned cases with executed evidence.
+.research/implementation/relay-source-20260928. Native a6c28e6 build,31 catalog/CLI tests and Clippy passed. First engine wave
+FAILED its populated-upgrade fixture after migration0020 successfully applied.
+[Original failure](evidence/p02-relay-source-upgrade-incomplete-20260928.json).
+PostgreSQL16.15 ATExecAddColumn rewrites constrained-domain additions, including
+NULL defaults: retained request xmin became750 (migration20), outcome stayed744.
+Original full pre-upgrade snapshot was not saved before the failed assertion;
+do not infer complete preservation from the diagnostic. Root corrected the
+fixture to persist snapshots first, check the physical rewrite explicitly, compare
+all original business fields, require all other tables/xmin unchanged and prove
+reapply does not rewrite. The SQL checksum remains immutable. Upgrade requires
+maintenance I/O/space for the retained request ledger; no large-state capacity claim.
+
+Native root runs/relay-source-a6c28e6 is stopped-retained, owner618da2efadbd676d4342733b3a06e236,
+PID3051811/start395948008 terminal. Diagnostic restart of owned PG joined/stopped.
+Terminal06:41:02UTC verified885 prior projections unchanged/eight unrelated running,
+1466 clean source/exported files,20 safe capture payloads and exact ELFs; exclusive
+compiler cache released. Free68,708,429,824bytes. PG77dddadac1bf exited0, client57de51b89c7a
+exited143, noOOM; internal172.16.240.64/28. Preserve original database/native
+store and failure, do not rerun launchers. Inventory implementation_relay_source_20260928.
+
+Next bounded action: commit fixture correction and run fresh first-wave database
+on Tux with exact original a6c28e6 ELFs after Git equality checks (no rebuild).
+Use fresh internal172.16.240.80/28 after overlap/process/container/disk inventory.
+Complete phase-state comparison also closes the review's dispatch-fixture gap.
+Two transaction boundaries, contradictory/omitted binding, unchanged retries,
+concurrency/rollback, import exclusion and ambiguous/revoked-source positive recovery
+remain required before qualifying this persistent boundary. The finite source
+issuer/committed visibility/bans/socket consumer remain subsequent real work.
 
 ## Current enrollment implementation and evidence
 

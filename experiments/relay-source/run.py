@@ -22,15 +22,22 @@ sys.modules['bootstrap_oracle'] = bootstrap_oracle
 spec.loader.exec_module(bootstrap_oracle)
 from oracle import expected_source
 
-root, build = map(Path, sys.argv[1:])
+assert len(sys.argv) in (3, 4)
+root, build = map(Path, sys.argv[1:3])
+subnet = sys.argv[3] if len(sys.argv) == 4 else '172.16.240.64/28'
 assert root.is_absolute() and not root.exists() and not root.is_symlink()
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
 receipt = json.loads((build / 'build-result.json').read_text())
-assert receipt['source'] == revision
+if receipt['source'] != revision:
+    changed = lab.command(['git','-C',str(SOURCE),'diff','--name-only',receipt['source'],revision]).stdout.splitlines()
+    # A fixture/documentation correction can reuse the exact executable; no
+    # product, migration, lockfile, toolchain or other build input may differ.
+    assert changed and all(n.startswith(('docs/','experiments/')) for n in changed), changed
 sha = lambda data: hashlib.sha256(data).hexdigest()
 assert sha((build / 'ingest_bootstrap_probe').read_bytes()) == receipt['probe_sha256']
 report = dict(format='bigbrotr-relay-source-native/1', source=revision, build=receipt,
+    application_source=receipt['source'],
     status='RUNNING', cases=[], not_run=['source grant and actual socket attribution',
     'private source visibility policy and bans', 'restrictive drain', 'concurrent lock schedules',
     'lost COMMIT and positive recovery after revocation', 'relay/import double binding',
@@ -74,26 +81,50 @@ def prepare(database):
 
 
 def upgrade(database, config):
+    def physical_tables():
+        return json.loads(lab.sql(state, database, """
+            SELECT jsonb_object_agg(relname,pg_relation_filenode(c.oid))
+            FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+            WHERE n.nspname='control' AND c.relkind='r'
+        """))
+
     before = rows(database)
+    physical_before = physical_tables()
+    lab.write_json(root / (database + '-upgrade-before.json'), before)
     result = lab.migrate(state, 'apply', config, target=20)
     after = rows(database)
+    physical_after = physical_tables()
+    lab.write_json(root / (database + '-upgrade-after.json'), after)
+    lab.write_json(root / (database + '-upgrade-physical.json'),
+        dict(before=physical_before,after=physical_after))
+    record(database + '-domain-column-rewrite', set(physical_before) == set(physical_after) and
+        {n for n in physical_before if physical_before[n] != physical_after[n]} == {'producer_requests'})
     stripped = json.loads(json.dumps(after))
     for row in stripped['producer_requests']:
         for field in ['relay_endpoint_id','relay_access_scope_id','relay_enrollment_generation','relay_route_id']:
             assert row.pop(field) is None
+    # PostgreSQL16 ATExecAddColumn rewrites constrained-domain columns even
+    # with NULL defaults. Only this table's physical xmin may change; every
+    # original application field and every other relation must be identical.
+    original_requests = [{k:v for k,v in r.items() if k != 'lab_xmin'} for r in before['producer_requests']]
+    retained_requests = [{k:v for k,v in r.items() if k != 'lab_xmin'} for r in stripped['producer_requests']]
+    new_versions = [r for r in after['schema_versions'] if r not in before['schema_versions']]
     record(database + '-additive-upgrade', result.returncode == 0 and
-        all(stripped[n] == before[n] for n in before if n != 'schema_versions') and
-        len(after['schema_versions']) == len(before['schema_versions']) + 1,
+        all(stripped[n] == before[n] for n in before if n not in ('schema_versions','producer_requests')) and
+        sorted(original_requests,key=str) == sorted(retained_requests,key=str) and
+        all(r in after['schema_versions'] for r in before['schema_versions']) and
+        len(new_versions) == 1 and new_versions[0]['migration'] == 20 and
+        new_versions[0]['checksum'] == '\\x357c7eff977e4cdedda73fb1b2b803fbd3ad0703b46f334f1c01b6484cca0ad2' and
+        all(r['lab_xmin'] == new_versions[0]['lab_xmin'] for r in after['producer_requests']),
         stdout=result.stdout, stderr=result.stderr)
-    lab.write_json(root / (database + '-upgrade-before.json'), before)
-    lab.write_json(root / (database + '-upgrade-after.json'), after)
     result = lab.migrate(state, 'apply', config, target=20)
-    record(database + '-reapply-unchanged', result.returncode == 0 and rows(database) == after)
+    record(database + '-reapply-unchanged', result.returncode == 0 and rows(database) == after and
+        physical_tables() == physical_after)
     lab.sql(state, database, 'GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control')
 
 
 try:
-    lab.setup(root, build, SOURCE, 'source_' + revision[:7], subnet='172.16.240.64/28')
+    lab.setup(root, build, SOURCE, 'source_' + revision[:7], subnet=subnet)
     state = lab.load(root); report['server'] = state['server']; save()
     config, _ = prepare('bb_source_upgrade')
     result = lab.docker('exec', state['client'], '/build/ingest_bootstrap_probe', 'write-v2',
@@ -145,6 +176,23 @@ try:
         record(mode + '-actual-adapter', result.returncode == 0 and not result.stderr and
             messages[-1]['event'] == 'source-after' and messages[-1]['status'] == 'PASS',
             exit_code=result.returncode, stderr=result.stderr)
+        phase_before = next(m['state'] for m in messages if m['event'] == 'source-before')
+        phase_after = messages[-1]['state']
+        phase_tables = [{name:json.loads(value) for name,value in phase['control_tables']}
+                        for phase in [phase_before,phase_after]]
+        if mode == 'source-dispatch-refused':
+            old, new = phase_tables
+            assert {n for n in old if old[n] != new[n]} == {'producer_requests','producer_epochs'}
+            assert len(old['producer_requests']) == 1 and len(new['producer_requests']) == 2
+            assert old['producer_requests'][0] in new['producer_requests']
+            assert len(old['producer_epochs']) == len(new['producer_epochs']) == 1
+            a,b = [dict(v['producer_epochs'][0]) for v in phase_tables]
+            assert a.pop('reserved_through_request') == 1 and b.pop('reserved_through_request') == 2
+            a.pop('xmin'); b.pop('xmin'); assert a == b
+            assert all(v in phase_after['originals'] for v in phase_before['originals'])
+        else:
+            assert phase_before == phase_after
+        record(mode + '-complete-phase-state', True)
         after = rows(database)
         lab.write_json(root / (mode + '-before.json'), before)
         lab.write_json(root / (mode + '-after.json'), after)

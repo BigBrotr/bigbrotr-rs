@@ -28251,5 +28251,41 @@
       }
     },
     "evidence": "docs/implementation/evidence/p01-policy-versions-native-20260928.json"
+  },
+  "implementation_relay_source_20260928": {
+    "status": "first-wave-incomplete",
+    "original": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-a6c28e6",
+      "source": "a6c28e625176ba9835742260c57015c0141e9c7d",
+      "tree": "4fae79b4a4a2bde3864c91aa12b18c2ec3834ae1",
+      "owner": "618da2efadbd676d4342733b3a06e236",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "58ff8a1304ab8a350c90078376c857302003b7176c88dd6acf8c8ab34ca1b846"
+        },
+        {
+          "name": "native",
+          "id": "6f4f9589df86e9b863054657f3d0bd51a0ad7e9810532442f634c053980935e0"
+        },
+        {
+          "name": "client",
+          "id": "57de51b89c7a5dd6141855a7f7e3496edb8545e436f81e3bf514d6f05bc64570",
+          "owner_label": "org.bigbrotr.control-migration-lab",
+          "owner": "e2cca1ef566c0a47421f2bf14c462475"
+        },
+        {
+          "name": "postgres",
+          "id": "77dddadac1bff426a55727b82c607553205fccc79101e7d70180ac737fcc80d8",
+          "owner_label": "org.bigbrotr.control-migration-lab",
+          "owner": "e2cca1ef566c0a47421f2bf14c462475"
+        }
+      ],
+      "postgres_lab": "e2cca1ef566c0a47421f2bf14c462475",
+      "evidence": "docs/implementation/evidence/p02-relay-source-upgrade-incomplete-20260928.json",
+      "retention": "Preserve all source, database, native store, artifacts, original failure and diagnostic. No resources retired.",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757"
+    }
   }
 }

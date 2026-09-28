@@ -315,6 +315,17 @@ previous SQL, original native request preimages, digests or receipt formats.
 The tuple is operational recovery metadata even when scientific provenance is off;
 it does not allocate endpoint/access/method archive dictionaries.
 
+On PostgreSQL16, adding these constrained-domain columns rewrites the retained
+`producer_requests` table even with NULL defaults; logical preservation does not
+imply stable tuple `xmin` or a metadata-only upgrade. The exact
+[16.15 implementation](https://github.com/postgres/postgres/blob/REL_16_15/src/backend/commands/tablecmds.c#L6709)
+explains the domain coercion. Plan the explicit migration maintenance window and
+free space for that table and its indexes, plus WAL; the small populated fixture
+does not establish time or disk requirements for a large retained ledger. Preserve
+the applied0020 checksum. Verification compares all original application values
+and other relations, and separately observes the physical rewrite and idempotent
+reapplication.
+
 The trusted source owner supplies attribution for the socket that delivered the
 bytes. Constructing this data is **not** a source grant: the consumer must still
 check current bans, service/selector permission, root route policy and committed

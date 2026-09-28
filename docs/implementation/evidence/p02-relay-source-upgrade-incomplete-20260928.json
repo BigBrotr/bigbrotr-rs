@@ -1,0 +1,262 @@
+{
+  "format": "bigbrotr-relay-source-qualification/1",
+  "status": "FAIL_UPGRADE_FIXTURE",
+  "source": "a6c28e625176ba9835742260c57015c0141e9c7d",
+  "tree": "4fae79b4a4a2bde3864c91aa12b18c2ec3834ae1",
+  "tasks": [
+    "P02-T01 Step6",
+    "P03-T01 source binding"
+  ],
+  "build_checks": {
+    "source": "a6c28e625176ba9835742260c57015c0141e9c7d",
+    "tree": "4fae79b4a4a2bde3864c91aa12b18c2ec3834ae1",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e",
+    "source_manifest_sha256": "231af6c8e4ca751cbe32e5e3d0539a6c71ce9b7cd72bed46aafb644c7455969a",
+    "scope": "Operational relay source bindings; no source grant or socket acquisition",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "format": "bigbrotr-foundation-ci/1",
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "compile",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "ingest_bootstrap_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 49.00262072402984
+      },
+      {
+        "name": "catalog",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "control_schema",
+          "--test",
+          "migrate_entrypoint"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 5.927940736990422
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "ingest_bootstrap_probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 4.221238656900823
+      }
+    ],
+    "counts": {
+      "collected": 3,
+      "executed": 3,
+      "failed": 0,
+      "not_run": 0
+    }
+  },
+  "engine": {
+    "status": "FAIL",
+    "completed": [
+      {
+        "name": "bb_source_upgrade-initial-schema",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_upgrade-initialize",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_upgrade-activate-initial",
+        "status": "PASS"
+      },
+      {
+        "name": "legacy-unbound-real-bootstrap",
+        "status": "PASS"
+      },
+      {
+        "name": "bb_source_upgrade-additive-upgrade",
+        "status": "FAIL"
+      }
+    ],
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "diagnosis": {
+    "migration_applied": true,
+    "checksum": "357c7eff977e4cdedda73fb1b2b803fbd3ad0703b46f334f1c01b6484cca0ad2",
+    "finding": "Fixture incorrectly required unchanged producer_requests xmin through constrained-domain ADD COLUMN. PostgreSQL16 rewrites this table; retained request xmin equals migration20 xmin750, while outcome remains xmin744.",
+    "source": "https://github.com/postgres/postgres/blob/REL_16_15/src/backend/commands/tablecmds.c#L6709",
+    "limitation": "Original assertion ran before saving full before/after rows. Diagnostic evidence supports rewrite, but a corrected fresh run must prove all original business fields and other relations are unchanged."
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "a6c28e625176ba9835742260c57015c0141e9c7d",
+    "observed_at": "2026-09-28T06:41:02.146467+00:00",
+    "prior_unchanged": 885,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "58ff8a1304ab8a350c90078376c857302003b7176c88dd6acf8c8ab34ca1b846",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "6f4f9589df86e9b863054657f3d0bd51a0ad7e9810532442f634c053980935e0",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "57de51b89c7a5dd6141855a7f7e3496edb8545e436f81e3bf514d6f05bc64570",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "77dddadac1bff426a55727b82c607553205fccc79101e7d70180ac737fcc80d8",
+        "exit": 0
+      }
+    ],
+    "source_files": 1466,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 68708429824
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-a6c28e6",
+    "owner": "618da2efadbd676d4342733b3a06e236",
+    "containers": [
+      {
+        "name": "fetch",
+        "id": "58ff8a1304ab8a350c90078376c857302003b7176c88dd6acf8c8ab34ca1b846"
+      },
+      {
+        "name": "native",
+        "id": "6f4f9589df86e9b863054657f3d0bd51a0ad7e9810532442f634c053980935e0"
+      },
+      {
+        "name": "client",
+        "id": "57de51b89c7a5dd6141855a7f7e3496edb8545e436f81e3bf514d6f05bc64570",
+        "owner_label": "org.bigbrotr.control-migration-lab",
+        "owner": "e2cca1ef566c0a47421f2bf14c462475"
+      },
+      {
+        "name": "postgres",
+        "id": "77dddadac1bff426a55727b82c607553205fccc79101e7d70180ac737fcc80d8",
+        "owner_label": "org.bigbrotr.control-migration-lab",
+        "owner": "e2cca1ef566c0a47421f2bf14c462475"
+      }
+    ],
+    "state": "stopped-retained",
+    "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757"
+  },
+  "artifacts": {
+    "binary_sha256": "08e54927129515681b86ec7c42f765175451426d2477c5e61cdf2baf9c24294c",
+    "probe_sha256": "65294bc973a10bc1ec96deb744ea5281c02d15a9650e7d9aa98d3d1c3375cacf",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e",
+    "source_manifest_sha256": "231af6c8e4ca751cbe32e5e3d0539a6c71ce9b7cd72bed46aafb644c7455969a"
+  },
+  "evidence": {
+    "local_capture": ".research/implementation/relay-source-20260928",
+    "captured_files": 20,
+    "capture_tar_sha256": "f42243fa7d6cfd4472a2310f0255ffac403f681a355cd762a40e69ba925b0940",
+    "raw_report_sha256": "62e3c2324437226aefc85a309bb42a2cbaabc627f15e2744b3e134eb8b75a50e"
+  },
+  "not_run": [
+    "source grant and actual socket attribution",
+    "private source visibility policy and bans",
+    "restrictive drain",
+    "concurrent lock schedules",
+    "lost COMMIT and positive recovery after revocation",
+    "relay/import double binding",
+    "load and aged state",
+    "arm64",
+    "release",
+    "first-wave source cases after upgrade"
+  ]
+}
