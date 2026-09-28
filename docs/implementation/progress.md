@@ -12,34 +12,29 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and origin/main are c498c48, verified private push after cleanup evidence.
-Root owns the next dirty concurrency fixture: ingest_source_races.rs plus probe
-integration, and a before-forward option/test in rollback_proxy.py. No product or
-SQL change. Proxy missing-option RED, then both loopback cases PASS; scoped Mac
-probe Clippy PASS. Logs: .research/implementation/source-races-20260928. No native
-race execution yet. Seven external race schedules and exact all-table/digest/native
-oracles are now prepared in transport.py; shared locks.py keeps the former fault
-barrier body byte-semantically identical (AST checked). Native source-races profile
-is build/Clippy only. Root and independent read-only AI source/harness review found no launch blocker.
-Both loopback tests and artifact checks PASS; latest scoped Clippy log retained.
-Next: coherent candidate commit, exact-Git native build and seven engine cases. Never merge/push the
-negative variant below. No other writer, merge or rebase.
+Local main is verified candidate81a35c5dcf8c3188bb198e029ee905cb1dc0b15f,
+tree7efca9e3ec7926039f5020a5b8d91b88224e8ad7; origin/main remains c498c48 until
+the evidence commit. Root owns only evidence/reference/inventory/checkpoint edits.
+No product/SQL/dependency change in this slice. No other writer, merge or rebase.
 
-Independent read-only review derived current-ban digest11509ebf0022969d4d839f118b99bf3b777b9b30737a3a1af34526fb76c324f1
-for7531 canonical bytes, and unmatching /other digest9625e0f3e9452e367da1d52eadfd7779602a943213a64d20412b826a0336316a
-for7529 bytes. Prefix is bigbrotr/product-policy/2\0; all215 original settings
-unchanged plus banned field. Append head2, preserve all head1 fields/xmin; inject
-under dataset lock. Actual valid unbanned target is a positive control for decoder/
-digest refusal; the /other real socket positive counterpart is included. These are inspected/
-independently calculated, not executed policy-race evidence. Product source8c4d12c
-still holds sole &mut ControlSession: injections qualify SQL locks/post-wait reads,
-not concurrent authorized management acceptance or installed revocation delivery.
+Native release build/Clippy and all seven SQL races PASS. Root verified12 build
+and57 engine payloads, complete64-table attribution, all16 native rows/sequence17,
+original input and receipt. Root and independent read-only AI source review found
+no launch blocker. Both proxy loopback tests passed; missing-option RED retained.
+See [race evidence](evidence/p04-source-races-native-20260928.json). Isolated writer
+injections qualify locks/current reads, not concurrent authenticated management
+acceptance or installed revocation delivery. The complete product remains open.
 
-No active laboratory experiment at the last terminal audit, 08:31:03 UTC.
-Resumption census at 10:53 UTC confirms only eight unrelated running containers,
-no build/lab process, 67,594,084,352 free Tux bytes and 13,888,320 KiB on Mac.
-Recheck the full launch preflight before allocation.
-The independent read-only AI reviewer dns_dependency_audit is done; no agent edits.
+No active laboratory at terminal audit08:57:15 UTC: eight unrelated containers,
+906 prior projections unchanged, 1,486 exact source files,67,384,729,600 free bytes.
+Current compiler cache1154757 is released after positive81a35c5 rebuild. All seven
+race clones and original evidence retained. Local resumption census08:53 UTC had
+13,888,320 KiB free on Mac; recheck before the next allocation.
+
+Next: finish evidence/documentation checks and coherent private push, then resolve
+the concrete WebSocket framing-byte bound mismatch and implement its supplied-
+stream consumer for P04-T02/P03-T02. No additional source-race run is required
+without a relevant change/failure. Never merge/push the negative variant below.
 
 ## Active slice and next useful journey
 
@@ -52,23 +47,20 @@ Existing Serve selects Control only. M1 also needs the clean extracted Compose
 journey, timer publication and dependency-outage recovery. Component evidence
 never replaces those journeys or completes an entire task/phase/product.
 
-**Next bounded action after the evidence commit:** qualify actual source/policy
-concurrency with the finite consumer. Read the current producer source lock,
-source transport, policy snapshot and accepted-policy owners/callers first.
-Reuse the exact backend-incarnation/pg_blocking_pids barriers and original byte
-oracle; no second state model. Selected schedules:
+The finite authority boundary is qualified by initial transport, cleanup and
+concurrent SQL schedules. It need not complete renewable sessions or all discovery
+before M1. The immediate missing prerequisite is a bounded WebSocket protocol
+consumer over this supplied guarded stream; raw TCP bytes are not a Nostr event.
+Resolve the measured-by-source framing mismatch below, then wire independent
+signed socket fixtures into existing source-bound durable admission and installed
+Sync. Practical M1 acceptance still needs signed invalid-ID/signature controls,
+exact archive/read/export and restart through actual installed entrypoints.
 
-- Writer first: withdrawal; enabled newer generation with matching history;
-  valid v2 ban. Source waits, then refuses before socket contact after commit.
-  A rolled-back writer provides the positive control.
-- Source first: hold peer response, observe writer blocked by the actual source
-  backend, complete the socket and observe EOF while rollback is held before
-  forwarding. Release locks, commit writer, and require a fresh call to refuse.
-
-Privileged clone-only injections must be labeled, not described as a second
-concurrently authorized Control owner or complete management journal. A value
-already received is data requiring fresh admission, not an escaping grant.
-Then resolve the concrete WebSocket bound mismatch below and connect P03-T02.
+Structural review kept one visible Control transaction and borrowed socket owner.
+It extracted the existing backend lock barrier for actual reuse by two laboratories
+and separated concurrency probe behavior from common setup. No generic lifecycle
+framework or backend trait was introduced. Prior Serve/export/admission structural
+reviews remain scoped; do not infer complete product maintainability from this.
 
 ## Latest source implementation and qualification
 
@@ -145,7 +137,7 @@ proxy loop-instantiation, Rust lifetime and syntax failures remain under
 
 Inventory key implementation_relay_source_20260928 owns complete identities.
 All paths below are under /home/tux/bigbrotr-implementation-20260917/runs/.
-All three roots retain source/export, original logs, manifests and exact ELFs.
+All four roots retain source/export, original logs, manifests and exact ELFs.
 
 - source-transport-8c4d12c: build owner 40faca3eac30ac761278089fc3b1b109,
   PID 3109696/start 396492282 terminal. Engine owner ae75ad5a3aea42ed7d7fb560e4209719,
@@ -162,6 +154,13 @@ All three roots retain source/export, original logs, manifests and exact ELFs.
   projections unchanged, eight unrelated running, 1,483 clean source files;
   67,594,240,000 bytes available then.
 
+- source-races-81a35c5: build owner7d679c19552aa23f8af496007aaa21c8,
+  PID3148629/start396791735 terminal; fetch/native exit0/no OOM; cache lock released.
+  Engine owner1514124a3163aaa330d09ad34cb4eaa7, PID3150938/start396800165 terminal,
+  client45d16964c2cc stopped. Seven bb_race_81a35c5_* clones/native stores retained.
+  All seven schedules PASS; audit08:57:15 verified906 other projections unchanged.
+  Local source-races-20260928 owns bundle/launch/capture/root-review recipes.
+
 All source engines borrow stopped PostgreSQL 7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec,
 name bigbrotr-implementation-pg-20260917-source_e06f580, owner
 5e69b0f060b1607c25230d1dbd3e5608. Its root is relay-source-recheck-e06f580/pg,
@@ -172,7 +171,7 @@ bundle/launch/capture/root-review recipes, raw outcomes and hash manifests.
 
 Current compiler cache is network-1154757/out/build/{target,cargo-home}, exclusively
 locked by .compiler-cache.lock. Both latest terminal build audits verified release.
-Original ELFs are outside it. It currently contains negative-build intermediates;
+Original ELFs are outside it. It currently contains positive81a35c5 build intermediates;
 only exact source rebuilds may use it. No cache output is itself a qualified input.
 
 ## Maintenance and retained dependencies

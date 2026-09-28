@@ -143,5 +143,7 @@ signed-event journey. The native profile and first three actual engine scenarios
 passed at8c4d12c; see the [bounded report](../implementation/evidence/p04-source-transport-native-20260928.json).
 [Actual cleanup schedules](../implementation/evidence/p04-source-cleanup-native-20260928.json)
 qualify shorter owner expiry, rollback timeout and late-ready delivery, including
-a discriminating negative deadline variant. Concurrent changes, installed
-acquisition and capacity qualification remain open.
+a discriminating negative deadline variant. [Seven concurrent SQL schedules](../implementation/evidence/p04-source-races-native-20260928.json)
+qualify post-wait current source/policy reads and locks through socket drop and
+rollback in both orders. Privileged clone-only writers are not concurrently
+authenticated management commands. Installed acquisition and capacity remain open.

@@ -85,7 +85,7 @@ Received values have observable disposal. All four cases passed at e365b33; the
 isolated354abff variant omitting only the final deadline check failed exactly on
 late value delivery. See [cleanup qualification](../../docs/implementation/evidence/p04-source-cleanup-native-20260928.json).
 The raw negative result stays FAIL, and its skipped post-suite original-data
-comparison is not claimed as passed. Concurrent source/policy schedules remain open.
+comparison is not claimed as passed. Later source/policy schedules are recorded below.
 
 `source-races` builds the same probe without repeating unchanged component tests.
 `transport.py ROOT --races` prepares seven actual SQL lock schedules: writer-first
@@ -103,4 +103,5 @@ The generation3 fixture lacks a complete command/audit journal. Policy heads2
 preserve original head1 fields/xmin; independent frozen document digests and the
 actual configuration consumer distinguish a real ban from invalid policy bytes.
 The nonmatching /other ban must permit the same /private socket. These schedules
-are prepared, not yet executed or qualified.
+passed at81a35c5; see the [bounded native report](../../docs/implementation/evidence/p04-source-races-native-20260928.json).
+The result does not complete installed acquisition or qualify production capacity.

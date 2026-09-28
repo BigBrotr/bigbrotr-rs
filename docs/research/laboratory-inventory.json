@@ -28696,6 +28696,91 @@
         "free_bytes": 67648667648
       },
       "assessment": "EXPECTED_NEGATIVE_FAILURE_VERIFIED"
+    },
+    "races": {
+      "source": "81a35c5dcf8c3188bb198e029ee905cb1dc0b15f",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-races-81a35c5",
+      "pid": 3150938,
+      "start_ticks": "396800165",
+      "state": "stopped-retained",
+      "status": "PASS_SCOPED_SOURCE_TRANSPORT",
+      "owner": "1514124a3163aaa330d09ad34cb4eaa7",
+      "label": "org.bigbrotr.source-races",
+      "client": {
+        "id": "45d16964c2ccfb56be33e75998e4e859f8c7b4486ca491a2675bc8492895c290",
+        "name": "bigbrotr-source-races-81a35c5"
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "databases": [
+        "bb_race_81a35c5_rollback",
+        "bb_race_81a35c5_withdraw",
+        "bb_race_81a35c5_generation",
+        "bb_race_81a35c5_ban",
+        "bb_race_81a35c5_ban_other",
+        "bb_race_81a35c5_source_withdraw",
+        "bb_race_81a35c5_source_ban"
+      ],
+      "build": {
+        "source": "81a35c5dcf8c3188bb198e029ee905cb1dc0b15f",
+        "tree": "7efca9e3ec7926039f5020a5b8d91b88224e8ad7",
+        "owner": "7d679c19552aa23f8af496007aaa21c8",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-races-81a35c5",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "e3d9df7dd411432f05ecce37c66b46aa68e407caa7c5073d1a09e81e5f17d1f5"
+          },
+          {
+            "name": "native",
+            "id": "38ee013674d70c9700fca6cfb00ef0796619badfbeb4755416f205fd951b2778"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T08:54:23.838927+00:00",
+        "qualification": "PASS_SOURCE_RACES_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 67481186304,
+        "finished_at": "2026-09-28T08:55:26.649919+00:00"
+      },
+      "build_terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "81a35c5dcf8c3188bb198e029ee905cb1dc0b15f",
+        "observed_at": "2026-09-28T08:55:46.750949+00:00",
+        "prior_unchanged": 905,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "e3d9df7dd411432f05ecce37c66b46aa68e407caa7c5073d1a09e81e5f17d1f5",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "38ee013674d70c9700fca6cfb00ef0796619badfbeb4755416f205fd951b2778",
+            "exit": 0
+          }
+        ],
+        "source_files": 1486,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 67481178112
+      },
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-09-28T08:57:15.416146+00:00",
+        "source": "81a35c5dcf8c3188bb198e029ee905cb1dc0b15f",
+        "prior_unchanged": 906,
+        "unrelated_running": 8,
+        "source_files": 1486,
+        "free_bytes": 67384729600
+      },
+      "evidence": "docs/implementation/evidence/p04-source-races-native-20260928.json",
+      "retention": "Keep all seven clones/native stores, exact source/export, original logs, manifests and ELFs. Borrowed e06 PostgreSQL stopped. No deletion/new network/cache."
     }
   }
 }

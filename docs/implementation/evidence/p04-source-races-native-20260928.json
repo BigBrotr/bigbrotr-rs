@@ -1,0 +1,130 @@
+{
+  "format": "bigbrotr-source-race-qualification/1",
+  "status": "PASS_SCOPED_SOURCE_LOCK_SCHEDULES",
+  "source": "81a35c5dcf8c3188bb198e029ee905cb1dc0b15f",
+  "tree": "7efca9e3ec7926039f5020a5b8d91b88224e8ad7",
+  "product_source": "8c4d12c950077d26f63f046656c087aa16df3a1c",
+  "tasks": [
+    "P02-T01 Step6 finite source authority",
+    "P03-T01 committed source binding",
+    "P04-T02 finite guarded transport"
+  ],
+  "scope": "Seven actual PostgreSQL lock schedules against finite direct source operations; no installed acquisition or capacity claim.",
+  "cases": [
+    {
+      "name": "rollback",
+      "native_rows": 16,
+      "control_tables": 64,
+      "barriers": 1,
+      "changed_tables": []
+    },
+    {
+      "name": "withdraw",
+      "native_rows": 16,
+      "control_tables": 64,
+      "barriers": 1,
+      "changed_tables": [
+        "relay_enrollments"
+      ]
+    },
+    {
+      "name": "generation",
+      "native_rows": 16,
+      "control_tables": 64,
+      "barriers": 1,
+      "changed_tables": [
+        "relay_enrollment_changes",
+        "relay_enrollments"
+      ]
+    },
+    {
+      "name": "ban",
+      "native_rows": 16,
+      "control_tables": 64,
+      "barriers": 1,
+      "changed_tables": [
+        "config_revisions",
+        "datasets",
+        "policy_revisions"
+      ]
+    },
+    {
+      "name": "ban-other",
+      "native_rows": 16,
+      "control_tables": 64,
+      "barriers": 1,
+      "changed_tables": [
+        "config_revisions",
+        "datasets",
+        "policy_revisions"
+      ]
+    },
+    {
+      "name": "source-withdraw",
+      "native_rows": 16,
+      "control_tables": 64,
+      "barriers": 2,
+      "changed_tables": [
+        "relay_enrollments"
+      ]
+    },
+    {
+      "name": "source-ban",
+      "native_rows": 16,
+      "control_tables": 64,
+      "barriers": 2,
+      "changed_tables": [
+        "config_revisions",
+        "datasets",
+        "policy_revisions"
+      ]
+    }
+  ],
+  "observations": [
+    "Writer-first source waits behind the exact writer backend. Committed withdrawal and enabled generation3 refuse Source(Unavailable); rollback permits the literal request/answer and peer EOF.",
+    "A valid current policy-document ban refuses Control(InvalidPolicy). Both current documents independently authorize an unbanned URL; only the selected document rejects the actual endpoint. A nonmatching /other ban in both documents permits the same /private socket.",
+    "Source-first writer is observed blocked during peer response and again after peer EOF while the fourth outgoing ROLLBACK is held before forwarding. The original call returns its value before writer COMMIT; a fresh call refuses after withdrawal or configuration-document ban.",
+    "All nine observed lock barriers verify backend start identity and pg_blocking_pids. Every altered field and xmin across all64 Control tables is attributed to the independently observed writer transaction. Original revision1 documents/history remain unchanged.",
+    "Independent native byte oracle verifies all16 rows, sequence17, original producer input and acceptance receipt in every case. No socket event is admitted by this fixture.",
+    "Template, original source-pass database and original result file remain equal to pre-run observations. All owned containers stopped, actual drivers/writers joined, compiler lock released, and unrelated projections unchanged."
+  ],
+  "artifacts": {
+    "binary_sha256": "93d0fae23ff540a69af7178c2ea6d42bc025a4fc796f4808237eee575a8d49de",
+    "probe_sha256": "48df2c3d83ed2bcbfddb4f9f3aa66619a133735a87dc6ab25f822d49046623c8",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e",
+    "source_manifest_sha256": "40f9cb96056f9ee247772c9083c5c0ac1fd0dee2081a591c7902bbb3cd46d7a6"
+  },
+  "environment": "Tux Linux amd64, Rust1.98.1/clang14, actual PostgreSQL16.15 and locked RocksDB binding. Exact candidate release CLI/probe build and scoped Clippy pass; unchanged component suites not repeated.",
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-09-28T08:57:15.416146+00:00",
+    "source": "81a35c5dcf8c3188bb198e029ee905cb1dc0b15f",
+    "prior_unchanged": 906,
+    "unrelated_running": 8,
+    "source_files": 1486,
+    "free_bytes": 67384729600
+  },
+  "evidence": {
+    "local_capture": ".research/implementation/source-races-20260928",
+    "recipe": "experiments/relay-source/transport.py ROOT --races",
+    "hashes": {
+      "capture-build.tar": "868ee44fa78c174542d8524117384945ad6dc416be66a53833ee38c545a394b7",
+      "capture-races.tar": "043a3ee2c3e427a15d1121e92d9ec783382423e2ed3d93e96f7928cadae2225b",
+      "root-review.json": "85a9ba3128b6d8ad5c383de50f428f5a7300154001d2ad6b7523b81607263cfc"
+    }
+  },
+  "review": "Root full changed fixture/callers/diff review plus independent read-only AI source review; root hash-checked12 build and57 engine payloads and rechecked all seven native/ledger/barrier outcomes. Shared lock helper preserves prior AST body; no product abstraction or SQL migration changed.",
+  "limits": [
+    "Writers are privileged isolated-clone SQL injections. Production source borrows the sole mutable Control session; these are not concurrent authenticated management acceptance or installed revocation-delivery tests.",
+    "Generation3 has matching enabled history/current state but deliberately omits generation2 and complete command/audit journal. It tests stale source binding refusal only.",
+    "Policy revision2 metadata is explicitly synthetic; actual canonical documents/digests, head selection, mixed config/policy checks and locking are exercised.",
+    "Original preservation comparison covers only bb_source_template, bb_source_pass and source-result.json; other retained clones were not rehashed.",
+    "Small finite fixtures do not establish production capacity, shared quotas or synchronous callback preemption."
+  ],
+  "not_run": [
+    "installed Sync",
+    "WebSocket/signed admission/M1",
+    "load/aged state",
+    "arm64/release"
+  ]
+}
