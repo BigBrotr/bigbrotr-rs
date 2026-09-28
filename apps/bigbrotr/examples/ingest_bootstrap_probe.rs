@@ -248,6 +248,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     ) || source_fault
         || mode.starts_with("source-transport-cleanup-")
         || mode.starts_with("source-transport-race-")
+        || mode.starts_with("source-transport-job-")
     {
         // The fault proxy accepts only loopback in the shared PG namespace.
         config.hostaddr("127.0.0.1".parse().unwrap()).port(6543);

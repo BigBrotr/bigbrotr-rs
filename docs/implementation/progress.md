@@ -12,9 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main candidate19945dc; private origin3769153 pending the qualification
-commit/push. Root owns documentation/evidence only. All owned resources are
-stopped/retained; no active experiment or cleanup debt.
+Mac main and private origin are acb2846; the qualification is committed/pushed.
+Root owns the new job-bound socket fixtures in the existing source transport
+laboratory. All owned resources are stopped/retained; no active experiment or
+cleanup debt. Current uncommitted work adds seven actual socket/preflight and
+cleanup schedules; no product SQL or dependency change.
 
 [Native execution evidence](evidence/p03-acquisition-execution-native-20260928.json)
 qualifies populated0024 upgrade/reapply and13 actual PG/Rocks adapter cases.
@@ -40,13 +42,28 @@ separately retained. Inventory implementation_network_20260928.acquisition_execu
 and ignored .research/implementation/acquisition-execution-20260928 own identities,
 recipes and originals. Never replay launchers or completed cache retirement.
 
-Next: commit/push this bounded qualification; then qualify job-bound actual socket
-remaining duration/cleanup, held reservation COMMIT and original historical
-recovery. Existing source-transport probe has real private socket/native visibility
-and retained source cleanup gates; extend its concrete job consumer without
-rebuilding a second laboratory. Keep policy/Control live longer than the job to
-discriminate its deadline. Native same-owner/running lifecycle, living-owner command
-delivery and complete signed socket→archive/read→restart M1 remain open.
+Mac scoped Clippy, formatting, Python syntax and artifact checks pass. The initial
+local Clippy command named a nonexistent feature and did not compile; its original
+output is retained with the corrected check under the ignored root below.
+Root/read-only review found no launch blocker. Timing lower bounds are fixture
+setup guards, not authority guarantees; conservative lease anchoring can close
+earlier than the server's deadline. The existing source-cleanup build profile
+avoids repeating unchanged component suites.
+
+Next: transfer a clean candidate through Git and run the actual source-cleanup build/transport laboratory
+on Tux. Reuse the two committed visibility/enrollment inputs and private ordinal2;
+the earlier public refusal remains separately qualified. Authentic two-second jobs
+must bound five-second calls while Control remains live. Cover immediate success,
+pending read, held ROLLBACK, late-ready delivery, omitted/unclaimed/expired jobs.
+Observe real rollback frames and backend state; compare all67 tables and independent
+native bytes. Close Rocks before Control/driver. Review accepted scope/job setup
+and timing discriminants before launch. Held reservation COMMIT and original
+historical recovery follow. Living-owner command delivery and the complete signed
+socket→archive/read→restart M1 remain open. Latest resumption found no BigBrotr
+process/container active, eight unrelated containers, 62,488,825,856B free on Tux
+and7,433,372KiB on Mac; cache retirement stays complete. Ignored
+.research/implementation/job-source-transport-20260928 owns local checks and the
+new launch recipe; no native source/engine result has been claimed yet.
 
 [Native claim-fault evidence](evidence/p03-acquisition-claim-faults-native-20260928.json)
 qualifies all16 schedules: eight actual COMMIT6 cuts and both policy/grant/source/

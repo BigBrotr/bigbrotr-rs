@@ -1,4 +1,7 @@
 //! Real Control/native visibility, current product policy and a bounded socket.
+#[path = "ingest_source_job.rs"]
+mod job;
+
 use super::*;
 use bigbrotr::{
     acquisition::relay_source::RelaySourceBinding,
@@ -46,6 +49,7 @@ pub async fn run(
 ) {
     assert!(
         mode.starts_with("source-transport-race-")
+            || mode.starts_with("source-transport-job-")
             || matches!(
                 mode,
                 "source-transport"
@@ -173,6 +177,18 @@ pub async fn run(
             enrollment_generation: receipt.generation.get().try_into().unwrap(),
             route_id: receipt.route_id,
         };
+        if mode.starts_with("source-transport-job-") {
+            // Keep the same two committed visibility/enrollment inputs. The
+            // earlier public-route refusal is already qualified separately.
+            if ordinal == 2 {
+                job::run(
+                    &mut owner, observer, &connector, &committed, source, &root, path, mode,
+                    &listener, &session,
+                )
+                .await;
+            }
+            continue;
+        }
         if ordinal == 2 && mode.starts_with("source-transport-cleanup-") {
             crate::ingest_source_cleanup::run(
                 &mut owner, observer, &connector, &committed, source, &root, path, mode, &listener,
@@ -307,9 +323,11 @@ pub async fn run(
             .await
             .is_err()
     );
+    drop(store);
     if owner_loss
         || mode.starts_with("source-transport-cleanup-")
         || mode.starts_with("source-transport-race-")
+        || mode.starts_with("source-transport-job-")
     {
         drop(owner);
     } else {

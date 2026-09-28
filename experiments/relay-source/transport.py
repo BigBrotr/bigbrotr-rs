@@ -37,7 +37,8 @@ from locks import blocked
 assert len(sys.argv) in (2, 3)
 cleanup = len(sys.argv) == 3 and sys.argv[2] == '--cleanup'
 races = len(sys.argv) == 3 and sys.argv[2] == '--races'
-assert len(sys.argv) == 2 or cleanup or races
+jobs = len(sys.argv) == 3 and sys.argv[2] == '--jobs'
+assert len(sys.argv) == 2 or cleanup or races or jobs
 root = Path(sys.argv[1]).resolve(strict=True)
 assert SOURCE == root / 'source'
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
@@ -53,7 +54,7 @@ pg = lab.load(original)
 assert pg['state'] == 'stopped-retained' and pg['owner'] == '5e69b0f060b1607c25230d1dbd3e5608'
 original_report = (original / 'source-result.json').read_bytes()
 assert json.loads(original_report)['status'] == 'PASS_SCOPED_RELAY_SOURCE_FIRST_WAVE'
-phase = 'races' if races else 'cleanup' if cleanup else 'transport'
+phase = 'jobs' if jobs else 'races' if races else 'cleanup' if cleanup else 'transport'
 output = root / phase
 output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.source-' + phase
@@ -83,7 +84,8 @@ def containers():
 def rows(database):
     names = json.loads(lab.sql(pg, database,
         "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    require(len(names) == 64 and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
+    require(len(names) in ((64, 67) if jobs else (64,))
+        and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
         f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     return json.loads(lab.sql(pg, database,
@@ -461,7 +463,10 @@ try:
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
-    if races:
+    if jobs:
+        from job_transport import run as run_jobs
+        run_jobs(globals())
+    elif races:
         for name in ('rollback', 'withdraw', 'generation', 'ban', 'ban-other', 'source-withdraw', 'source-ban'):
             run_race_case(name)
     elif cleanup:
