@@ -12,11 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is candidateec19cb03d4e53f0d5c40419b593cba191c26274c; private origin
-isfef5025. Product7ab155e and first-wave qualification are already pushed.
-Root owns only current qualification evidence/inventory/checkpoint/reference
-edits. Both first lifetime and native interruption waves passed bounded claims;
-commit/push this qualification, then continue installed SQL custody and typed jobs.
+Mac main/private origin is5b69a2c (native interruption qualification pushed).
+Product7ab155e, first lifetime qualificationfef5025 and interruption fixtureec19cb0
+are committed/pushed. Root owns only this checkpoint and a stale bootstrap-reference
+correction: the explicit initial CLI now consumes bootstrap. No product edits or
+running experiment. Full selected product remains INCOMPLETE.
 
 Active P01-T09 Step1/P02-T02 Steps2/3: explicit
 `serve --initialize-ingest --roles control,ingest`, fresh-only under retained
@@ -78,6 +78,21 @@ Read owning startup/registration/bootstrap transaction sequence and recovery
 contract before choosing exact commit numbers. Preserve unknown durable state;
 no retry may silently regenerate initial identities. Worker panic, crash-resumable
 initialization and successor remain open. No M1 or capacity/arm64 claim.
+
+The next SQL fixture is not written or run. Root read the complete connected
+initial_batch.rs and postgres_command.rs, acquire/register wrapper, current
+registration/bootstrap contracts and finite proxy framing/lifetime plus Process
+helper. Source-derived COMMIT sequence to verify against actual proxy counters:
+Control claim1, registration2, original-input reservation3, native outcome copy4,
+Control refresh5, Ingest renewal6. RegistrationAttempt/producer reservation/outcome
+owners still need focused final reading before that fixture. Select real before/
+after COMMIT cuts and held cancellation, retain original attempts and all durable
+rows/CBOR/native bytes. The proxy must own/reap its actual process, continuously
+drain bounded metadata and distinguish its upstream hold from CLI driver death.
+A closed client socket alone does not prove rollback or unlock. Existing exact
+7ab155e artifacts remain reusable while Rust/build inputs stay unchanged.
+Last fresh preflight: Mac8,242,556KiB/Tux62,812,048KiB available; eight unrelated
+running containers and no active BigBrotr laboratory.
 
 Next user-visible journey remains first signed socket event→durable admission→
 timer archive/index→read/export→restart/resend. Typed finite job authorization

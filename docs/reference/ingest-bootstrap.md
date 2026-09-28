@@ -1,8 +1,10 @@
 # Initial native dictionary batch
 
-This is the bounded initial write slice of P02-T02. The selected event admission,
-producer retirement, archive, handoff and installed runtime remain separate work.
-No public endpoint or `serve` role exposes this operation yet.
+This is the bounded initial write slice of P02-T02. The explicit
+[initial Ingest lifetime](ingest-store.md#explicit-initial-owning-lifetime)
+now uses this operation for its first two visibility dictionaries. Its narrow
+qualification does not finish event acquisition, producer retirement, archive,
+handoff or the complete installed runtime. No public endpoint exposes it.
 
 A retained receipt or fact that exceeds a reduced accepted local decode limit
 returns `Limit`; allocation failure returns `Allocation`. Neither is diagnosed
