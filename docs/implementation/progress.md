@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main HEAD49e7ed470cbae372cd823cb517fea200581e0cac is an unpublished candidate;
-origin/main last verified981c42e4a04c058241293f44722054041f792558. Root owns only
-current evidence/reference/recipe/checkpoint/inventory edits. No other writer or
+Local main and origin/main are published868954f, clean before this new fault slice.
+Root now owns the actual enrollment fault probe, its clone-database laboratory,
+native profile wiring and recipe/checkpoint edits. No other writer or
 active native experiment remains. Independent route/authority review was read-only.
 Product candidate dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9 is unchanged
 through fixture-only325fa01 and49e7ed4. All source transfers were exact clean Git.
@@ -30,13 +30,15 @@ Existing Serve selects Control only. M1 still needs the clean extracted Compose
 journey, timer publication and dependency-outage recovery. Component evidence does
 not replace those journeys or qualify an entire task/phase/product.
 
-Next bounded action: commit/push the reviewed initial enrollment evidence, then
-qualify the new command's held/lost COMMIT, expiry during accepting COMMIT and
+Initial enrollment evidence is committed/pushed. Next bounded action: review and
+run the new exact-Git fault fixture to qualify the new command's held/lost COMMIT, expiry during accepting COMMIT and
 actual policy/session/account lock races using the retained successful PostgreSQL
 as a source for separately named clone databases. Reuse the existing protocol
 fault proxy and actual session/Control client; preserve every original database,
 result and artifact. No need to repeat unchanged80 native tests for fixture-only
-work. New probe code still needs compilation/Clippy and real native execution.
+work. The new probe passed Mac Clippy; native compilation and all18 engine schedules
+remain NOT_RUN. Read-only independent review is in progress; no Tux allocation
+or process has started for this slice.
 Only after these authority gates, implement the current action issuer and socket
 consumer. Do not postpone useful integration for a complete adjacent subsystem.
 

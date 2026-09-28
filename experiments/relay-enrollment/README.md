@@ -62,3 +62,21 @@ ten SQL refusals and12 literal binary-route validation cases. It used a fresh
 internal172.16.240.16/28 and preserved both earlier attempts. See the
 [native report](../../docs/implementation/evidence/p02-relay-enrollment-native-20260928.json).
 No extended COMMIT/concurrency/action or capacity claim follows from this result.
+
+The follow-up `relay-enrollment-faults` native build profile compiles the actual
+fault probe and runs Clippy. From its clean exact-Git root, invoke
+`python3 -B experiments/relay-enrollment/faults.py RUN_ROOT` after the build.
+The fixture verifies and restarts only the retained49e7ed4 PostgreSQL, clones its
+original database under new names, and creates one isolated client sharing that
+network namespace. All original rows/results must compare equal before and after.
+No new network, archive or compiler cache is needed.
+
+Implemented, NOT_RUN: seven exact fourth-COMMIT schedules (pass, lost before/after,
+held cancellation close/release, owner expiry, session expiry), independent full
+row/digest/audit/transaction checks and fresh authenticated recovery; five changes
+(policy head, permission, session revoke, deactivation and deactivate/reactivate)
+in both observed lock orders, plus writer rollback. Authentication uses a real
+password and bounded Argon2 reservation. Expiry starts live and is independently
+observed while held; the other authority must remain live. Writers are privileged
+fault injections, not qualification of an installed administration flow. An old
+acceptance does not become current acquisition permission after those changes.

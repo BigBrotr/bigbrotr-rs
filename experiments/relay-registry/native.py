@@ -31,9 +31,11 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'registry'
-assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment')
+assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults')
 probe = {'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
-         'enrollment':'relay_enrollment_probe'}[mode]
+         'enrollment':'relay_enrollment_probe', 'enrollment-faults':'relay_enrollment_fault_probe'}[mode]
+if mode == 'enrollment-faults':
+    identity['scope'] = 'Actual enrollment fault probe build only; engine authority qualification is separate'
 checks = Path('/out/build-checks')
 steps = [
     ('compile', ['cargo','build','--locked','--offline','--release','-p','bigbrotr',
@@ -63,5 +65,6 @@ receipt=dict(identity,format='bigbrotr-registry-build/1',binary_sha256=file_hash
 (artifacts/'build-result.json').write_text(json.dumps(receipt,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
 status = {'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
-          'enrollment':'PASS_RELAY_ENROLLMENT_BUILD_ONLY'}[mode]
+          'enrollment':'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
+          'enrollment-faults':'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY'}[mode]
 Path('/out/qualification.json').write_text(json.dumps(dict(identity,status=status),indent=2)+'\n')
