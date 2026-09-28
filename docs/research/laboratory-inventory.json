@@ -27366,5 +27366,16 @@
       "native_evidence": "docs/implementation/evidence/p04-network-direct-native-20260928.json"
     },
     "websocket_source_audit": ".research/implementation/network-websocket-audit; official exact archives/source only, no product build or native execution"
+  },
+  "implementation_relay_registry_20260928": {
+    "owner": "root; Mac sole writer, independent read-only review",
+    "base_source": "eb4ba5ad5633ad883b94994aa425e5ae8e4f7067",
+    "status": "Local planner/compile evidence only; native exact-Git run not launched",
+    "local_capture": ".research/implementation/relay-registry-local-20260928",
+    "evidence": "docs/implementation/evidence/p02-relay-registry-mac-20260928.json",
+    "recipe": "experiments/network-transport/lab.py REVISION TREE relay-registry; experiments/relay-registry/",
+    "scope": "Private operational endpoint registration only, not enrollment or dial authority",
+    "preserve": "Original missing migration/API REDs, initial probe formatter setup error, local logs, existing network evidence and shared1154757 compiler cache",
+    "native_runs": []
   }
 }

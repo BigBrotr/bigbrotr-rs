@@ -16,7 +16,7 @@ would create an unnecessary second copy of the code.
 | `ProcessIncarnationId` | Fresh process nonce. It is neither a persistent producer slot nor the archive owner epoch. |
 | `RoleInstanceId` / `role_instance_id` | Configured supervised role instance. A replacement process has a new ProcessIncarnationId while retaining the role identity where the deployment intends continuity. |
 | `ProjectionRowId` | `(projection_generation, source_record_id, discriminator)` for a specific projected subrow. |
-| `EndpointId` / `endpoint_id` | Versioned Nostr relay identity. An arbitrary HTTP metadata resource is not a relay. |
+| `EndpointId` / `endpoint_id` | Versioned Nostr relay identity. The operational Control registry uses a nonzero 16-byte ID within its local dataset; immutable archive references remain fully qualified dictionary mappings. Neither representation grants dialing. An arbitrary HTTP metadata resource is not a relay. |
 | `HttpResourceId` / `http_resource_id` | Versioned identity of a guarded HTTP resource descriptor, used by typed non-relay evidence. |
 | `ObserverId` / `observer_id` | Stable attributed measurement authority/vantage; not a process, socket or proof of independent ownership. |
 | `access_scope_id` | Stable authorization context used to contact a source. No credential bytes and no per-challenge identity. |

@@ -37,6 +37,9 @@ pub use job_status::AuthorizedJobStatus;
 #[path = "history.rs"]
 mod history;
 pub use history::HistoryAuthorization;
+#[path = "relay_registry.rs"]
+mod relay_registry;
+pub use relay_registry::{EndpointRegistration, RelayRegistryError};
 #[path = "scope_grants.rs"]
 mod scope_grants;
 pub use scope_grants::ScopeGrantAllocation;

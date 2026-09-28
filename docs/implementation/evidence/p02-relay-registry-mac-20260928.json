@@ -1,0 +1,53 @@
+{
+  "format": "bigbrotr-relay-registry-mac/1",
+  "status": "PASS_LOCAL_PLANNER_AND_COMPILATION_ONLY",
+  "base_source": "eb4ba5ad5633ad883b94994aa425e5ae8e4f7067",
+  "inputs_sha256": {
+    "migrations/postgres/0003_relay.sql": "50b1264cb93c7b67e8afee377bf238152c9729fb93f5d2b99419982ec3da7a26",
+    "migrations/manifest.json": "c3974234da47072beb5446abf54577477802eca8eab584ac8871ca4fc70e1581",
+    "crates/bigbrotr-model/src/identity.rs": "fa24f21e80a8cdb81591c8c31f658e75729a9e6f11dca97eb9b9798cf15b6ca2",
+    "crates/bigbrotr-model/src/lib.rs": "2de1264369b9e9dd3036961c56647e12fe10966d0ad62181d0426dc91bf9b2d0",
+    "apps/bigbrotr/src/storage/postgres/relay_registry.rs": "289660062ac59fa9e3bdd6119dd388f586e213d6f74b126ceed07d147f922dbd",
+    "apps/bigbrotr/src/storage/postgres/control_owner.rs": "46e942307244b447f54efa0c4564e07b8c4c34098760f52c175df3b75b9d1f9e",
+    "apps/bigbrotr/src/storage/postgres/migrations.rs": "78e43dd1510ea0b86da2d81fa1da9e220e32152b8064ca0d174b145f61b6122f",
+    "apps/bigbrotr/tests/relay_registry.rs": "c901a5b84ec878824622c789ab91d69a0f04e4340a3510344fcde492b6115277",
+    "apps/bigbrotr/examples/relay_registry_probe.rs": "82bcc51f1492b537fa670e72e2cbc4798bd25eabfe3fb0815f2c76c5c89cf523",
+    "Cargo.lock": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+  },
+  "evidence_root": ".research/implementation/relay-registry-local-20260928",
+  "logs_sha256": {
+    "adapter-api-red.log": "b47a0ba221f7efed9c71bb5e8deb3e7bef970be6b7daba12b35075375045d681",
+    "adapter-check.log": "8a11928e39a621b7013cfc70e53f8f568bec90d74f8bdd49067a5e68e69a4c27",
+    "adapter-red.log": "9bd6fb656e8aaf5207375ee30a3d1dac34e79d6b01419d1876892072914db8ee",
+    "artifacts.log": "1f89f0e05d0c141f800c5b27e294cdeeaa355e9374b1431282b30aaadbfa1034",
+    "catalog-tests.log": "893c9b3f56dbd5f895606d350147c89933fe4189d5e633120ac9a0f0c3c9fd7d",
+    "clippy-expanded.log": "fc9ce4f8804651ace3de23b1c8f30580186ffe2d2611b0d6b3809759821c580c",
+    "clippy-final.log": "66d01078bf45c56e7fc266d307d180d51e981db9c4eb004b3853dfd203fd71fe",
+    "clippy.log": "18c85c9bac39b50e1518b42c0c2fcbaa0da852cb31b53c863589ba7628b52ed2",
+    "handoff.log": "3551e09870f323e264a18df89b7748d98307385a6e751b62a663bfbb3f8739d1",
+    "migration-green.log": "aaac06a6f2a50e489c17d4cb9410ff1775390bd13dfcdfeb4959e2f123d3d4dc",
+    "migration-red.log": "2c6cd4c91cd4a142abc74bb5790a50254f932810dc467bebb72e1d8a718fb03c"
+  },
+  "executed": [
+    "27 control schema tests,3 actual migration CLI preparation tests,1 new append-order/prerequisite test:31 passed,zero failed/ignored",
+    "Clippy library,new test and real-engine probe:passed",
+    "Format,artifact and handoff checks:passed"
+  ],
+  "red": [
+    "New migration planning test failed UnknownTarget(3) before implementation",
+    "New adapter probe compiled only after register_relay_endpoint existed; initial fixture LowerHex error retained and corrected before API-only RED"
+  ],
+  "not_run": [
+    "PostgreSQL engine execution",
+    "registry adapter execution",
+    "forced collision/capacity/expiry/SQL scenarios",
+    "lost COMMIT/current-policy concurrency/recovery",
+    "enrollment/network routes/grants",
+    "full P02-T01 Step6/M1"
+  ],
+  "review": "Root owning-module and diff review; independent read-only SQL/adapter review found no blocking source defect. Strengthened original attribution oracle; engine evidence still required.",
+  "environment": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)"
+  }
+}

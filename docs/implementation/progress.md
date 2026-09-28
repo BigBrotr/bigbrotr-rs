@@ -12,12 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEADe38cbbca76c18d82d15aa75d651c8cf1accbb848 is unpublished;
-origin/main4995f3ded25c01690bb12e3a025ae10f2a797e0c remains published/private.
-Root owns only the final native evidence/inventory/checkpoint update. Product
-TCP/TLS source remains exactly1154757; no history rewrite. Root is sole writer;
-no active native experiment or agent writer. All applied migrations unchanged.
-Next commit records the verified boundary, then push these coherent commits.
+Verified HEAD and origin/main eb4ba5a (private push complete). Root owns the
+uncommitted first P02-T01 Step6 endpoint-registry slice:0003 SQL, append-only
+migration catalogs, EndpointId, ControlSession adapter and actual-engine probe.
+Local migration RED (UnknownTarget3) then GREEN; API absence RED then compilation
+passed. Native PG scenarios are NOT RUN. No active native experiment or writer
+agent. All previously applied SQL remains unchanged;0003 is still unpublished.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
 with the explicit remaining gates below. No complete task/phase/M1/product claim.
@@ -243,3 +243,28 @@ messages, distinguish local close-code rewrites and require proper close polling
 No WebSocket dependency/product implementation or actual native protocol evidence yet.
 Overlay routes, renewable sessions, shared host/endpoint/rate/FD quotas, recursive
 DNS interoperability, aged/mixed workloads and full task acceptance remain selected.
+
+Current first registry responsibility: private immutable operational endpoint
+get-or-create, not enrollment/dial permission. Canonical URL bytea with generated
+SHA256 candidate; full equality and bounded64-entry buckets under Control then
+dataset locks avoid B-tree size/collation assumptions. Scalar SQL receipts avoid
+fetching full URL buckets. Historical creation attribution survives owner changes;
+current policy is checked separately. No raw endpoint identity becomes a Rocks
+QualifiedRef. Read-only review of the concrete new SQL/adapter is active. Source
+reads complete for current Control owner/migration/Endpoint/model identity owners;
+full Serve/config are deferred until their real integration consumer. Next: finish
+actual PG16.15 probe/scenarios (long URL, forced collisions/full bucket, stale
+policy, nonowner/immutability, COMMIT/recovery), reuse the existing isolated PG
+lab and exclusively retained1154757 compiler cache after fresh preflight.
+Ignored local evidence:.research/implementation/relay-registry-local-20260928.
+
+Local registration check boundary:31 catalog/entrypoint/append tests and Clippy
+passed; docs/artifact/format checks passed. Evidence report
+p02-relay-registry-mac-20260928.json is explicitly planner/compile only. Real PG
+recipe now covers old published ledger, upgrade preservation, exact URL/8192-byte
+identity, forced64-collision capacity, successor original attribution, expired
+COMMIT rejection and eight raw SQL guards/rollback. All native cases NOT RUN.
+Read-only fixture review is active. Latest Tux census02:25:59UTC:67,868,860,416
+bytes free/eight unrelated containers/no BigBrotr. Runner reuses1154757 cache,
+then the existing isolated control-migrations PG harness; no archive bundle needed.
+Next commit is an unpublished exact-source native candidate, not completion.

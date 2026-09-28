@@ -15,10 +15,12 @@ import tarfile
 
 sys.dont_write_bytecode = True
 from inventory import projection
-revision, tree = sys.argv[1:]
+revision, tree = sys.argv[1:3]
+profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
+assert len(sys.argv) in (3, 4) and profile in ('network', 'relay-registry')
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
-root = base / 'runs' / ('network-' + revision[:7])
+root = base / 'runs' / (profile + '-' + revision[:7])
 source = root / 'source'
 cache_root = base / 'runs/network-1154757'
 image = 'sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d'
@@ -107,7 +109,7 @@ for name in ['target', 'cargo-home']:
 
 
 def run_container(name, network, argv, seconds):
-    ident = command('docker', 'create', '--init', '--name', 'bigbrotr-network-' + revision[:7] + '-' + name,
+    ident = command('docker', 'create', '--init', '--name', 'bigbrotr-' + profile + '-' + revision[:7] + '-' + name,
                     '--label', label + '=' + owner, '--cpus', '2', '--memory', '6g', '--memory-swap', '6g',
                     '--pids-limit', '512', '--network', network, '--read-only', '--cap-drop', 'ALL',
                     '--security-opt', 'no-new-privileges', '--user', f'{os.getuid()}:{os.getgid()}',
@@ -141,11 +143,40 @@ try:
     assert shutil.disk_usage(base).free > 8 * 1024**3
     state['state'] = 'running'
     write(root / 'resources.json', state)
-    run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/network-transport/native.py'], 1860)
+    run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + ('network-transport' if profile == 'network' else profile) + '/native.py'], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
-    assert qualification['source'] == revision and qualification['status'] == 'PASS_SCOPED_NETWORK_COMPONENTS'
+    assert qualification['source'] == revision and qualification['status'] == ('PASS_SCOPED_NETWORK_COMPONENTS' if profile == 'network' else 'PASS_REGISTRY_BUILD_ONLY')
     state['qualification'] = qualification['status']
+    if profile == 'relay-registry':
+        subprocess.run(['python3', '-B', str(source / 'experiments/relay-registry/run.py'),
+                        str(root / 'pg'), str(out / 'artifacts'), str(source)], check=True, timeout=300)
+        pg = json.loads((root / 'pg/resources.json').read_text())
+        state['postgres_lab'] = dict(root=pg['root'], owner=pg['owner'],
+                                    postgres=pg['postgres'], client=pg['client'], network=pg['network'],
+                                    state=pg['state'])
+        assert pg['state'] == 'stopped-retained'
+        engine = json.loads((root / 'pg/registry-result.json').read_text())
+        assert engine['status'] == 'PASS_SCOPED_ENDPOINT_REGISTRY'
+        state['qualification'] = engine['status']
 finally:
+    pg_receipt = root / 'pg/resources.json'
+    if profile == 'relay-registry' and pg_receipt.exists():
+        pg = json.loads(pg_receipt.read_text())
+        assert pg['root'] == str(root / 'pg') and pg['source'] == str(source)
+        assert pg['format'] == 'bigbrotr-pg-lab/1'
+        prior_ids = {c['Id'] for c in prior}
+        current = {c['Name'].lstrip('/'): c for c in containers()}
+        for name in ('client', 'postgres'):
+            item = current.get(pg[name])
+            if item is None:
+                continue  # partial setup; no unobserved resource is removed
+            assert item['Id'] not in prior_ids
+            assert item['Config']['Labels']['org.bigbrotr.control-migration-lab'] == pg['owner']
+            if item['State']['Running']:
+                command('docker', 'stop', '--time', '10', item['Id'])
+            state['containers'].append(dict(name=name, id=item['Id'],
+                                           owner_label='org.bigbrotr.control-migration-lab', owner=pg['owner']))
+        state['postgres_lab'] = dict(root=pg['root'], owner=pg['owner'], network=pg['network'])
     after = {c['Id']: projection(c) for c in containers()}
     changed = [c['Id'] for c in prior if after.get(c['Id']) != projection(c)]
     stopped = all(not after[c['id']]['State']['Running'] and after[c['id']]['State']['Pid'] == 0

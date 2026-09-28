@@ -45,7 +45,7 @@ require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
 
-An omitted target selects the latest embedded migration, currently 814. An explicit
+An omitted target selects the latest embedded migration, currently 3 (appended after 0816). An explicit
 target 1 preserves the initial control-only boundary for its historical fixtures.
 Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
 had no source registry, so their exact source authority cannot be inferred.
@@ -332,7 +332,13 @@ parser or successful DDL execution alone does not qualify them.
 `0002_ingest.sql` supplies relational coordination, with closed transitions and
 independent constraint fixtures. Actual engine qualification and typed runtime
 adapters still own the external receipts, fencing and reclamation guarantees.
-`0003_relay.sql` and endpoint/route enrollment remain P02-T01 work. Publication
+`0003_relay.sql` now supplies the first [operational endpoint identity](../reference/relay-endpoint-registry.md)
+consumer after 0816. Its actual-engine qualification is in progress; endpoint/access
+and route enrollment remain P02-T01 work. Older binaries refuse the new unknown
+migration. Apply explicitly, then provision SELECT/INSERT on `relay_endpoints` and
+EXECUTE on `relay_endpoint_candidate(bytea)`, `guard_relay_endpoint()` and
+`require_relay_registration_commit()`, retaining existing Control prerequisites.
+No startup migration, historical-row adoption or backward SQL rewrite occurs. Publication
 references arrive with their actual owner. These remaining boundaries prevent
 marking Step 1 complete and prevent advertising durable job,
 read/export, acquisition or reclamation behavior from this foundation.

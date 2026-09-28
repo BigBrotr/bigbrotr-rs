@@ -129,6 +129,10 @@
     {
       "version": 816,
       "name": "0816_job_pages.sql"
+    },
+    {
+      "version": 3,
+      "name": "0003_relay.sql"
     }
   ],
   "reserved": [

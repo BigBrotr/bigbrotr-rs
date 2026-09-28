@@ -128,6 +128,9 @@ fixed_hex!(PublicKey, 32);
 fixed_hex!(Signature, 64);
 fixed_hex!(Digest256, 32);
 fixed_hex!(DatasetId, 16, nonzero);
+// Operational canonical relay registration, not an archive dictionary reference
+// or authorization to contact or disclose that endpoint.
+fixed_hex!(EndpointId, 16, nonzero);
 // Attribution identity only; parsing never authenticates a principal.
 fixed_hex!(PrincipalId, 16, nonzero);
 // Paired with an authenticated actor in the durable management command ledger.
