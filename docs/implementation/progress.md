@@ -12,14 +12,21 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main/private origin is f3c8a1d, SQL qualification committed and pushed.
-Root owns the finite acquisition command/adapter/probe/tests, additive0022 and
-catalog, acquisition-scopes/private-administration contracts, jobs laboratory and
-its build-profile wiring. All are uncommitted WIP. Prior applied SQL is unchanged.
-Product7ab155e remains the latest native-qualified executable; full product is
-INCOMPLETE. Tux laboratories are stopped/retained; no active remote process.
-Mac uses the existing product target only. Last space:8,042,176KiB Mac,
-64,123,129,856B Tux; cache retirement remains complete and must not be replayed.
+Mac main is private unpublished candidate3e10c2d; origin/main remainsf3c8a1d.
+The finite acquisition command/adapter/probe, additive0022/catalog, contracts and
+laboratory are committed. Root owns checkpoint/inventory and fixture corrections preserving three prior
+management commands; product/SQL inputs remain exactly3e10c2d.
+Product7ab155e remains the latest native-qualified executable. Complete product
+is INCOMPLETE. Build3e10c2d passed and is STOPPED/RETAINED; engine scenarios have NOT RUN.
+Inventory implementation_network_20260928.acquisition_jobs and ignored
+.research/implementation/acquisition-jobs-20260928 retain exact launch/transfer.
+Run acquisition-jobs-3e10c2d, owneracde79aaa7018284f4aba784168caec4,
+PID3465674/start399622776; fetch8f13ca0b and nativee8a782f8. Shared1154757 is
+released after terminal build16:47:15UTC. No BigBrotr laboratory is active.
+Prior labs remain stopped/retained; PG71775507 has not started. Last free Mac
+7,973,312KiB; Tux prelaunch64,123,129,856B. Cache retirement remains complete;
+never replay deletion/launch recipes. Next: transfer a clean fixture revision, verify unchanged product inputs and
+reuse exact3e10c2d artifacts for jobs.py; then exact claim/installed consumer.
 
 Active P03-T01 Steps3/4: typed finite acquisition command/acceptance and exact-ID
 claim, consumed by the same initial owner. The new command has scope ID, positive
@@ -62,8 +69,7 @@ jobs.py/job_guards.sql cover seven real adapter schedules, valid/future timestam
 checks and a clone-only single-predicate negative control. They have NOT RUN yet.
 Review confirms reusing the existing final actual-Control fence is sound; no
 extra abstraction or duplicated owner check function is needed. Next bounded
-action: finish fixture review, commit a clean private candidate, run the exact
-native build/PG acceptance journey, retain original outcomes and stop owned
+action: finish the fixture correction and execute the actual PG acceptance journey, retain original outcomes and stop owned
 resources; then exact claim and the same-owner installed command consumer.
 No acquisition dispatch or coverage/M1 guarantee follows from these components.
 

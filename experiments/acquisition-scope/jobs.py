@@ -19,12 +19,19 @@ sys.path.insert(0, str(SOURCE / 'experiments/network-transport'))
 from inventory import projection
 
 root = Path(sys.argv[1]).resolve(strict=True)
-assert len(sys.argv) == 2 and SOURCE == root / 'source'
+assert len(sys.argv) in (2, 3) and SOURCE == root / 'source'
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-build = root / 'out/artifacts'
+build = Path(sys.argv[2]).resolve(strict=True) if len(sys.argv) == 3 else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
-assert built['source'] == revision and built['probe_name'] == 'acquisition_job_probe'
+assert built['probe_name'] == 'acquisition_job_probe'
+if built['source'] != revision:
+    changes = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
+    assert changes and all(name.startswith('docs/') or name in (
+        'experiments/acquisition-scope/README.md', 'experiments/acquisition-scope/jobs.py',
+        'experiments/acquisition-scope/job_guards.sql') for name in changes)
+    assert len(sys.argv) == 3
+
 sha = lambda value: hashlib.sha256(value).hexdigest()
 for name, key in [('bigbrotr', 'binary_sha256'), (built['probe_name'], 'probe_sha256')]:
     assert sha((build / name).read_bytes()) == built[key]
@@ -141,8 +148,10 @@ def run_case(name):
         mutable |= {'management_commands', 'jobs', 'job_admissions', 'acquisition_jobs'}
         receipt = events[0]['value']
         require(events[0]['event'] == 'receipt' and receipt['created'], 'created-receipt')
-        job, detail, command, admission = [after[t][0] for t in ('jobs', 'acquisition_jobs', 'management_commands', 'job_admissions')]
-        require(all(len(after[t]) == 1 for t in ('jobs','acquisition_jobs','management_commands','job_admissions')), 'single-admission')
+        job, detail, admission = [after[t][0] for t in ('jobs', 'acquisition_jobs', 'job_admissions')]
+        commands = [c for c in after['management_commands'] if c not in before['management_commands']]
+        require(len(commands) == 1 and all(len(after[t]) == 1 for t in ('jobs','acquisition_jobs','job_admissions')), 'single-admission')
+        command = commands[0]
         dataset, actor = before['datasets'][0]['dataset_id'], '\\x' + '10' * 16
         scope = min(s['scope_id'] for s in before['acquisition_scopes'])
         preimage = (b'bigbrotr/acquisition-job/1\0' + bytes.fromhex(dataset[2:]) + bytes.fromhex(actor[2:]) +
@@ -240,7 +249,7 @@ try:
         require(time.monotonic() < deadline, 'postgres-readiness'); time.sleep(.1)
     basic = rows(basis)
     require(basic == json.loads((basis_root / 'basic-after.json').read_text()), 'qualified-basis-unchanged')
-    require(not basic['jobs'] and not basic['management_commands'], 'empty-job-ledger-basis')
+    require(not basic['jobs'], 'empty-job-ledger-basis')
     policy = basic['config_revisions'][0]['document']
     require(policy == basic['policy_revisions'][0]['document'] and policy['format'] == 'bigbrotr-product-policy/2', 'fixture-policy')
     (output / 'policy.json').write_text(json.dumps(policy, sort_keys=True, separators=(',', ':')))

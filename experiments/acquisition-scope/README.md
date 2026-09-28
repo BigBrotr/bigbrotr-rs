@@ -168,7 +168,10 @@ witness linkage, installed Sync, management transition or capacity claim follows
 The `acquisition-jobs` profile builds the finite command/acceptance probe and
 checks the command, migration catalog and actual migration entrypoints. After a
 terminal build, `jobs.py RUN_ROOT` borrows the same stopped owned PG and creates
-new clones of the retained scope basis. It proposes seven actual adapter cases:
+new clones of the retained scope basis, preserving its earlier activation and
+enrollment commands. An optional exact artifact directory permits reuse only
+when Git proves every changed path is documentation or experiments. It proposes
+seven actual adapter cases:
 acceptance/exact retry/conflicting key, absent grant, stale revision, disabled
 source, elapsed duration, deferred COMMIT refusal and missing0022. Independent
 Python compares all Control tables/xmin and exact command/digest/job/detail/audit/

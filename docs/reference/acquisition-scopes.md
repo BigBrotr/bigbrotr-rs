@@ -197,7 +197,9 @@ and policy revisions. All numeric wire fields are canonical decimal strings.
 The CLI's duration syntax resolves to this exact value; retries retain the original
 scope, duration, revisions and command key. The finite duration starts at durable
 acceptance; it bounds this run, not future coverage or a restrictive action lease.
-A delayed dispatch cannot reset it. Checked absolute-deadline arithmetic is required.
+The server samples acceptance time before COMMIT, so waiting for COMMIT also
+consumes the duration. A future acceptance timestamp is refused. A delayed
+dispatch cannot reset the deadline; checked arithmetic is required.
 
 The fingerprint is SHA256 over ASCII `bigbrotr/acquisition-job/1` plus NUL,
 dataset16, authenticated actor16, command-key16, scope-ID16, duration-us u64,

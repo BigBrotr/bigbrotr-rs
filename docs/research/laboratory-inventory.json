@@ -28973,6 +28973,47 @@
       },
       "preserve": "Retain twelve clones, partial/complete native stores, original inputs, source, proxy metadata, logs and exact7ab155e binaries. No new compiler cache.",
       "next": "Typed finite acquisition job and real signed socket consumer. No cleanup obligation; do not replay launchers."
+    },
+    "acquisition_jobs": {
+      "status": "STOPPED/RETAINED native build PASS; engine NOT_RUN",
+      "local_evidence": ".research/implementation/acquisition-jobs-20260928",
+      "purpose": "P03-T01 Steps3/4 atomic finite acquisition acceptance",
+      "launch": {
+        "source": "3e10c2d2c129538306910bd648be7e6d0bbf93a3",
+        "tree": "f54767d2d0ef5675a55ec42d3a3e53c061ce1516",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-3e10c2d",
+        "pid": 3465674,
+        "start_ticks": "399622776",
+        "bundle_sha256": "8a37792adb5ae5ae6b6979f182b7ebb1fe8b27fb4c18dbf81b7c8b3065011ca3"
+      },
+      "resources": {
+        "source": "3e10c2d2c129538306910bd648be7e6d0bbf93a3",
+        "tree": "f54767d2d0ef5675a55ec42d3a3e53c061ce1516",
+        "owner": "acde79aaa7018284f4aba784168caec4",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-3e10c2d",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "8f13ca0beb4a968f4fd8658a33f068d482c1e9fd84dc42aa29ce70c7e3d690e7"
+          },
+          {
+            "name": "native",
+            "id": "e8a782f8ea7bf53abc96431a811ca31c6d1af79d8a76f2a90b2eb44548f9ef8d"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T16:46:14.257295+00:00",
+        "qualification": "PASS_ACQUISITION_JOBS_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 64007917568,
+        "finished_at": "2026-09-28T16:47:15.479668+00:00"
+      },
+      "preserve": "Existing exclusive1154757 compiler cache; retain originals and all previous states. No deletion.",
+      "next": "Fixture review corrected preservation of three existing management commands. Transfer clean fixture revision and reuse exact3e10c2d artifacts after Git input-equivalence verification."
     }
   },
   "implementation_relay_registry_20260928": {
