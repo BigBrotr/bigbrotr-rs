@@ -12,33 +12,26 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin/main areb450d0c3e3a5cac8196c1db1ee0c6a1ce71f1575
-(first-wave evidence, verified pushed), following scope54d1a1841b64b60a2c8eed0cde8382c397cf1e30,
-treeb564ec7453e6f22bc8afe3f2cce5490cef179f4a. Root now owns the dirty fault-mode
-probe/support module, actual-PG fault recipe and build-profile/documentation updates.
-fac23352188ef0a910c7b262573ad8e587d38f76 is the unpublished fault candidate;
-its native build is terminal PASS, engine NOT_RUN. Root owns a cleanup correction
-and evidence/checkpoint updates. No other writer or active lab.
-The proposed ten fault schedules have NOT_RUN;
-Mac probe Clippy passes. Read-only AI review found transcript writes could skip
-PG shutdown on I/O failure; corrected per-transcript catching preserves cleanup.
-The isolated actual-finally fault injection records original skipped shutdown and
-corrected shutdown plus INCOMPLETE_LAB_AUDIT. No further launch blocker found.
-Build-only fac2335 root is retained, owner eb5c9cce8cae7adb28b1357146fcb01b,
-PID3235206/start397749006 terminal, lock released, free66,587,930,624 bytes.
-Commit/transfer the correction before engine launch; never run the old recipe. New outputs belong to ignored acquisition-scope-faults-20260928. New0004 is applied only to retained isolated clones;
-all35 earlier SQL files remain byte-identical. Preserve every applied checksum.
+Mac main is8951d87099df85224e6e65c9fb84e137adef9f02, tree
+0ca3538181d552b8f4c57ebefbf7ffb484214cf3 (cleanup-corrected fault candidate),
+following fac23352188ef0a910c7b262573ad8e587d38f76. Private origin/main was
+b450d0c3e3a5cac8196c1db1ee0c6a1ce71f1575 before the pending fault evidence push.
+Product/migrations are byte-identical to first-wave54d1a18; root owns only
+qualification evidence, inventory, owning status documentation and this checkpoint.
+No other writer, active lab or unjoined local build. Preserve every applied checksum.
 
 ## Active slice and next useful journey
 
 P03-T01 Steps1/2/3: pure selector is qualified; initial durable registration now has
 six actual-PG schedules and native build evidence. Whole task remains open.
-Next bounded action: review/compile and commit the new finite fault probe/recipe,
-then run exact-Git native registration fault qualification (lost COMMIT in both durable outcomes, held
-cancellation with retained driver custody, policy/registration lock ordering and
-corrupt bucket/relational refusals). Reuse the existing finite PostgreSQL wire
-proxy and lock barriers where semantics match. Preserve independent exact-row
-oracles and original failures. No full M1 or capacity claim follows from fixtures.
+Next bounded action: commit/push the ten fault schedules' evidence, then exercise
+raw SQL relational negatives on new clones using the actual application login.
+Reuse existing psql/session helpers and preserve original54d1a18 templates.
+No new Rust/native build is necessary for SQL-only fixture changes. Verify lack
+of authority, exact access/visibility/enrollment FKs, duplicate/bucket/document
+limits, immutability/truncation and explicit rollback. Then wire bounded scope
+loading/binding into actual source-bound admission/finite Sync. These are the
+remaining responsibilities, not an adjacent subsystem or a new plan.
 
 Next user-visible deliverable is still P01-T09 Step2/M1: one actual signed socket
 event through durable admission/archive/read/export/restart. Concrete path:
@@ -90,8 +83,8 @@ Review corrected implicit epoch ambiguity and accidental selector-ID adoption,
 and requested literal JSON order/escaping compatibility now documented/tested.
 Structure retains one visible transaction with named multiline SQL and focused
 lookup/insert helpers, reuses the actual final fence and existing crates, and
-introduces no generic registry framework. Failure/lock/raw relational acceptance
-remains NOT_RUN; so do read-by-scope, jobs/progress and installed Sync.
+introduces no generic registry framework. Failure/lock acceptance now has the scoped evidence below. Raw relational
+negatives remain NOT_RUN, as do read-by-scope, jobs/progress and installed Sync.
 
 Ordinary sync.selectors remains selected work requiring explicit accepted-policy
 version integration; no silent legacy defaults. Future execution/admission must
@@ -105,12 +98,47 @@ small; wire the real consumer and account retained capacities/release or resize
 temporary workspace. The64MiB socket fixture does not qualify32MiB. No unused
 framework/API or memory-capacity claim from this component.
 
+[Native fault evidence](evidence/p03-acquisition-scope-faults-native-20260928.json)
+at8951d87: ten actual schedules PASS, release build/scoped Clippy PASS. Root
+compared1,527 Git source hashes and99 captured payloads. Both lost COMMIT outcomes
+resolve through a new owner; the committed original survives policy advancement
+with requested epoch1. Held cancellation retains actual fencing and competing-owner
+refusal until driver custody ends; close/release yield distinct durable states.
+Server-observed live-to-expired COMMIT refuses. Both dataset-lock orders use real
+backend-incarnation barriers. Stale777 leaves no selector; corrupted65-row buckets
+refuse both existing and absent lookup. Expired lookup returns existing identity
+only. All prior registration rows and original basic/collision templates are
+unchanged. This is not management activation, load or installed acquisition.
+
+Read-only AI review found a laboratory cleanup defect: transcript OSError could
+skip PG shutdown. fac2335 built successfully but its engine was NEVER run. The
+corrected8951d87 catches per-transcript errors; isolated execution of the actual
+finally block retains the original failure and confirms stop plus
+INCOMPLETE_LAB_AUDIT. Reviewer rechecked source and found no further concrete
+fixture blocker. Original logs, scripts and failures remain in ignored
+.research/implementation/acquisition-scope-faults-20260928/ (cleanup-fixed/ owns
+actual8951d87 capture/review). No product change was needed for these schedules.
+
 ## Current owned laboratory resources
 
 Inventory implementation_network_20260928.acquisition_scope owns the complete
 identities; ignored .research/implementation/acquisition-scope-20260928 owns
 start/launch/capture/review scripts and original results. Do not rerun old launchers.
 All remote roots are under /home/tux/bigbrotr-implementation-20260917/runs/.
+
+acquisition-scope-faults-8951d87 is STOPPED/RETAINED; full identities in inventory
+implementation_network_20260928.acquisition_scope_faults. Build owner
+d00c4095ec4bf94aff1e762b01def50f, PID3238123/start397764061 terminal;
+fetch5244b1f56e0bf8267823c9225a1f8b1339cada5a09957ce6d1ca96dce9f87a3e and
+nativec60480be9ab1eece6cf76acebcdba9e76a7f7d75116af36cc73f6ef81f78a32f
+exit0/no OOM. Bundlead9bb07408feb0af2858ea0a8509fd2bce800c37fb05d0d73c621e16e734296b.
+Engine ownerd8265508a83949155633cc619f35f38d, PID3240344/start397770144 terminal;
+client0519cf748641f2ea9b5f4c5058d20254a02ceea28535efcf4133bb76b8571a66 stopped143,
+PG stopped0/no OOM. Ten bb_scope_fault_8951d87_* clones retained including
+intentional65-row corruption. Audit11:38:14 UTC:920 other projections unchanged,
+eight unrelated running, cache lock released,66,354,683,904 free bytes. Mac last
+free11,216,484 KiB. No cleanup obligation remains. fac2335 build-only root retains
+its own artifacts/source; its original lifecycle remains separately inventoried.
 
 acquisition-scope-54d1a18 is STOPPED/RETAINED. Build owner
 ac3418285c3aab8ff43b8b03a2a88dc8, PID3222893/start397662263 terminal;
@@ -135,7 +163,7 @@ unchanged. No Rocks/archive writes by the registration laboratory.
 
 Compiler cache network-1154757/out/build/{target,cargo-home} is mutable acceleration,
 exclusively locked by .compiler-cache.lock. Lock verified released. Exact qualified
-CLI/probe and prior ELFs remain outside it; latest intermediates are54d1a18.
+CLI/probe and prior ELFs remain outside it; latest intermediates are8951d87.
 No cache output is itself qualified. Prior selector061890f/relay-wire27b7f45/
 websocket9fe4ce4 builds and all source transport/cleanup/race labs are terminal;
 complete identities remain in implementation_network_20260928 and

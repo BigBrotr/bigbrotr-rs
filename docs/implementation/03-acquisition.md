@@ -94,7 +94,9 @@ Paths: `crates/bigbrotr-model/src/acquisition.rs`, `crates/bigbrotr-model/src/co
 The initial [scope registration adapter](../reference/acquisition-scopes.md) adds
 explicit epoch-bound identity and additive0004 storage, with
 [six actual-PG schedules](evidence/p03-acquisition-scope-native-20260928.json) passing.
-Lost COMMIT, cancellation and lock/relational acceptance remain pending.
+[Ten native fault schedules](evidence/p03-acquisition-scope-faults-native-20260928.json)
+cover lost COMMIT, cancellation, policy locks and corrupt buckets; raw relational
+acceptance remains pending.
 Jobs, authorization, progress and installed CLI acceptance
 remain separate parts of Step3 onward; no whole task closes here.
 

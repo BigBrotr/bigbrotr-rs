@@ -27722,9 +27722,9 @@
       }
     },
     "acquisition_scope_faults": {
-      "status": "fac2335 native build PASS; engine NOT_RUN because review found transcript-write cleanup defect",
+      "status": "8951d87 native build and ten actual-PG fault schedules PASS; stopped-retained",
       "local_evidence": ".research/implementation/acquisition-scope-faults-20260928",
-      "preserve": "Reuse qualified scope54d1a18 basic/collision only as clone templates. No active remote run. Product and applied SQL unchanged. Original outputs and failed cases must remain retained.",
+      "preserve": "fac2335 build-only and corrected8951d87 sources/artifacts/logs; ten retained clones including deliberate corrupt bucket, original54d1a18 templates, full before/after data and wire receipts. Lock released, all owned containers stopped; no dataset/cache removal.",
       "initial_build": {
         "resources": {
           "source": "fac23352188ef0a910c7b262573ad8e587d38f76",
@@ -27870,7 +27870,109 @@
         },
         "cache_lock": "released"
       },
-      "cleanup_regression": "cleanup-fault.json executes the actual finally block with injected transcript OSError: fac2335 skips PG stop; corrected source stops PG, records failures and marks INCOMPLETE_LAB_AUDIT. No engine qualification from this fixture."
+      "cleanup_regression": "cleanup-fault.json executes the actual finally block with injected transcript OSError: fac2335 skips PG stop; corrected source stops PG, records failures and marks INCOMPLETE_LAB_AUDIT. No engine qualification from this fixture.",
+      "native_report": "docs/implementation/evidence/p03-acquisition-scope-faults-native-20260928.json",
+      "resources": {
+        "source": "8951d87099df85224e6e65c9fb84e137adef9f02",
+        "tree": "0ca3538181d552b8f4c57ebefbf7ffb484214cf3",
+        "owner": "d00c4095ec4bf94aff1e762b01def50f",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-faults-8951d87",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "5244b1f56e0bf8267823c9225a1f8b1339cada5a09957ce6d1ca96dce9f87a3e"
+          },
+          {
+            "name": "native",
+            "id": "c60480be9ab1eece6cf76acebcdba9e76a7f7d75116af36cc73f6ef81f78a32f"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T11:36:27.108034+00:00",
+        "qualification": "PASS_ACQUISITION_SCOPE_FAULT_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 66491011072,
+        "finished_at": "2026-09-28T11:37:16.688165+00:00"
+      },
+      "launch": {
+        "source": "8951d87099df85224e6e65c9fb84e137adef9f02",
+        "tree": "0ca3538181d552b8f4c57ebefbf7ffb484214cf3",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-faults-8951d87",
+        "pid": 3238123,
+        "start_ticks": "397764061",
+        "bundle_sha256": "ad9bb07408feb0af2858ea0a8509fd2bce800c37fb05d0d73c621e16e734296b"
+      },
+      "engine_launch": {
+        "source": "8951d87099df85224e6e65c9fb84e137adef9f02",
+        "pid": 3240344,
+        "start_ticks": "397770144",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-faults-8951d87"
+      },
+      "engine": {
+        "owner": "d8265508a83949155633cc619f35f38d",
+        "label": "org.bigbrotr.acquisition-scope-faults",
+        "client": {
+          "id": "0519cf748641f2ea9b5f4c5058d20254a02ceea28535efcf4133bb76b8571a66",
+          "name": "bigbrotr-acquisition-scope-faults-8951d87"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_fault_8951d87_pass",
+          "bb_scope_fault_8951d87_before",
+          "bb_scope_fault_8951d87_after",
+          "bb_scope_fault_8951d87_cancel_close",
+          "bb_scope_fault_8951d87_cancel_release",
+          "bb_scope_fault_8951d87_expiry",
+          "bb_scope_fault_8951d87_policy_first",
+          "bb_scope_fault_8951d87_registration_first",
+          "bb_scope_fault_8951d87_overfull",
+          "bb_scope_fault_8951d87_lookup_expired"
+        ]
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "8951d87099df85224e6e65c9fb84e137adef9f02",
+        "observed_at": "2026-09-28T11:38:14.827885+00:00",
+        "prior_unchanged": 920,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "5244b1f56e0bf8267823c9225a1f8b1339cada5a09957ce6d1ca96dce9f87a3e",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "c60480be9ab1eece6cf76acebcdba9e76a7f7d75116af36cc73f6ef81f78a32f",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "0519cf748641f2ea9b5f4c5058d20254a02ceea28535efcf4133bb76b8571a66",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1527,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 66354683904,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {

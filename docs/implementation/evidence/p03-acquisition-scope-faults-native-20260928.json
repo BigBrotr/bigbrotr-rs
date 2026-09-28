@@ -1,0 +1,233 @@
+{
+  "format": "bigbrotr-acquisition-scope-faults-native/1",
+  "status": "PASS_SCOPED_ACQUISITION_FAULTS",
+  "source": "8951d87099df85224e6e65c9fb84e137adef9f02",
+  "tree": "0ca3538181d552b8f4c57ebefbf7ffb484214cf3",
+  "product_source": "54d1a1841b64b60a2c8eed0cde8382c397cf1e30",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "1cb0a01ff209214d0c549f60f7c084a2186e0e48a8a3527fd0e0adfe7eeba013",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "96297decb31da84a568080c4585193374bc2ae4e1c0ebf817054a88daa13bb7a",
+    "acquisition_scope_probe": "000007873a20b811ccf309aef6e7a02984ff4543f3112ea8e4253d146a9deb66"
+  },
+  "engine_schedules": [
+    {
+      "name": "COMMIT-pass",
+      "status": "PASS",
+      "wire": {
+        "commits_seen": 2,
+        "commits_forwarded": 2,
+        "server_commit_complete": 2,
+        "client_commit_complete": 2,
+        "faults": 0
+      }
+    },
+    {
+      "name": "COMMIT-before",
+      "status": "PASS",
+      "wire": {
+        "commits_seen": 2,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      }
+    },
+    {
+      "name": "COMMIT-after",
+      "status": "PASS",
+      "wire": {
+        "commits_seen": 2,
+        "commits_forwarded": 2,
+        "server_commit_complete": 2,
+        "client_commit_complete": 1,
+        "faults": 1
+      }
+    },
+    {
+      "name": "COMMIT-cancel_close",
+      "status": "PASS",
+      "wire": {
+        "commits_seen": 2,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "expiry_observed": {
+        "first": false,
+        "last": false,
+        "all_fenced": true
+      }
+    },
+    {
+      "name": "COMMIT-cancel_release",
+      "status": "PASS",
+      "wire": {
+        "commits_seen": 2,
+        "commits_forwarded": 2,
+        "server_commit_complete": 2,
+        "client_commit_complete": 2,
+        "faults": 1
+      },
+      "expiry_observed": {
+        "first": false,
+        "last": false,
+        "all_fenced": true
+      }
+    },
+    {
+      "name": "COMMIT-expiry",
+      "status": "PASS",
+      "wire": {
+        "commits_seen": 2,
+        "commits_forwarded": 2,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "expiry_observed": {
+        "first": false,
+        "last": true,
+        "all_fenced": true
+      }
+    },
+    {
+      "name": "policy-first-lock-order",
+      "status": "PASS",
+      "barrier": {
+        "pid": 750,
+        "backend_start": "2026-09-28 11:37:44.172267+00",
+        "blockers": [
+          764
+        ],
+        "holder_start": "2026-09-28 11:37:44.273188+00",
+        "waiting_locks": [
+          {
+            "type": "transactionid",
+            "mode": "ShareLock",
+            "relation": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "registration-first-lock-order",
+      "status": "PASS",
+      "wire": {
+        "commits_seen": 2,
+        "commits_forwarded": 2,
+        "server_commit_complete": 2,
+        "client_commit_complete": 2,
+        "faults": 1
+      },
+      "barrier": {
+        "pid": 855,
+        "backend_start": "2026-09-28 11:37:45.705271+00",
+        "blockers": [
+          841
+        ],
+        "holder_start": "2026-09-28 11:37:45.532451+00",
+        "waiting_locks": [
+          {
+            "type": "transactionid",
+            "mode": "ShareLock",
+            "relation": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "corrupt-overfull-existing-and-absent",
+      "status": "PASS"
+    },
+    {
+      "name": "expired-identity-lookup-only",
+      "status": "PASS",
+      "expiry_observed": {
+        "first": false,
+        "last": true,
+        "all_fenced": true
+      }
+    }
+  ],
+  "checks": [
+    "Release CLI/probe compilation and scoped Clippy; product and all applied SQL unchanged from54d1a18",
+    "Both lost-COMMIT outcomes independently observed; committed original identity survives fresh policy2 while retry retains policy1",
+    "Held cancellation poisons session; actual Control fence and competing-owner refusal remain until driver custody ends; close/release lead to distinct durable effects",
+    "Live owner expires while COMMIT held; observed server expiry rejects commit without selector/scope",
+    "Both actual dataset-lock orders recorded by backend incarnation; stale head refuses, historical identity replays, new epoch differs and missing stale intent leaves no selector",
+    "Corrupt65-row bucket rejects both existing and absent intent; expired identity lookup inserts nothing",
+    "Complete before/after rows and original registrations preserved, original basic/collision templates/reports unchanged, all drivers joined"
+  ],
+  "review": {
+    "source_files": 1527,
+    "captured_payloads": 99,
+    "capture_manifest_sha256": "2fa1f4adc9534ea06404db422f37fa0482281fe7acf919f28e4c4c3d65583d6b",
+    "root_review_sha256": "7a3c5dc89e4ce9c16dd191d87617baaf685a1b044512647814aa42cf622d66b0",
+    "ai_review": "Complete new probe/harness and reused proxy/process/session/barrier owners inspected read-only; transcript write cleanup defect corrected and source rechecked; no further concrete finding.",
+    "cleanup_regression": "Original fac2335 was build-only, never engine-run. Injected OSError in actual finally skipped PG stop;8951d87 catches both writes, reaches shutdown and records INCOMPLETE_LAB_AUDIT. This isolated cleanup check is not an engine-failure result."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "8951d87099df85224e6e65c9fb84e137adef9f02",
+    "observed_at": "2026-09-28T11:38:14.827885+00:00",
+    "prior_unchanged": 920,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "5244b1f56e0bf8267823c9225a1f8b1339cada5a09957ce6d1ca96dce9f87a3e",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "c60480be9ab1eece6cf76acebcdba9e76a7f7d75116af36cc73f6ef81f78a32f",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "0519cf748641f2ea9b5f4c5058d20254a02ceea28535efcf4133bb76b8571a66",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1527,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 66354683904,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/acquisition-scope-faults-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-faults-8951d87",
+  "not_qualified": [
+    "raw relational negative matrix",
+    "installed Sync, scope loading/admission, progress/M1",
+    "load/aged-state",
+    "arm64/release"
+  ],
+  "scope": "Ten finite registration fault schedules; no management activation, complete acquisition, capacity or release claim."
+}
