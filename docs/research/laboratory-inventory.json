@@ -28305,6 +28305,52 @@
       "launch_start_ticks": "396007056",
       "evidence": "docs/implementation/evidence/p02-relay-source-native-20260928.json",
       "retention": "All ten databases, eight native source stores and upgrade store retained; no deletion. Original failed attempt unchanged."
+    },
+    "relations_initial": {
+      "source": "09057065eae519e6e951a7aef3893f40a87cfe9c",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-relations-0905706",
+      "owner": "6d358db9e04ed66a9eb7ac937d52e113",
+      "label": "org.bigbrotr.relay-source-relations",
+      "client": {
+        "id": "adb26b1534cc0fa72c7c23dca831574795194b952d8b00a6f99102e636fe3e9b",
+        "name": "bigbrotr-relay-source-relations-0905706"
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "database": "bb_source_relations_0905706",
+      "state": "stopped-retained",
+      "status": "FAIL",
+      "reason": "Fixture DELETE lacked permission: actual42501 rather than required23514. Fixed only isolated clone grant; product SQL unchanged.",
+      "capture": ".research/implementation/relay-source-relations-0905706",
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-09-28T06:54:51.379684+00:00",
+        "source": "09057065eae519e6e951a7aef3893f40a87cfe9c",
+        "prior_unchanged": 890,
+        "unrelated_running": 8,
+        "source_files": 1470,
+        "free_bytes": 68387102720
+      }
+    },
+    "relations": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-relations-4a43dae",
+      "owner": "65696eddcf1363f479f7cbe23969792b",
+      "label": "org.bigbrotr.relay-source-relations",
+      "client": {
+        "id": "5df93aab253b49ac5c2543ba9c91902c5db406e23686bb08f68d4f0551b70a73",
+        "name": "bigbrotr-relay-source-relations-4a43dae"
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "database": "bb_source_relations_4a43dae",
+      "state": "stopped-retained",
+      "source": "4a43dae43d34552bd0450fb2f9095c649c2890fc",
+      "tree": "4b039ac928dab3a08ae0e576eee60d7effb80c15",
+      "application_source": "a6c28e625176ba9835742260c57015c0141e9c7d",
+      "launch_pid": 3071714,
+      "launch_start_ticks": "396079712",
+      "evidence": "docs/implementation/evidence/p02-relay-source-relations-native-20260928.json",
+      "retention": "Keep both new clones, native stores, source and original outputs. Borrowed first-wave PostgreSQL is stopped; no network or compiler allocation, no deletion."
     }
   }
 }

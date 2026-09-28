@@ -12,9 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and origin/main are562a442 (first-wave evidence), pushed to verified
-private BigBrotr/bigbrotr-rs. Product a6c28e6 and fixture e06f580 remain exact
-qualified inputs. Root owns the pending relational fixture, not product edits. Product
+Local main is unpublished4a43dae (relational fixture grant correction),
+origin/main562a442 is verified private BigBrotr/bigbrotr-rs. Product a6c28e6 and
+first-wave fixture e06f580 remain exact inputs. Root owns the pending scoped
+relational evidence/checkpoint commit; no product edits. Product
 and applied0020 bytes are unchanged. Previous qualified product5be0dbd remains
 recorded below; maintenance and policy-version evidence are committed.
 No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
@@ -164,20 +165,49 @@ internal172.16.240.80/28, free68,433,506,304bytes. Ten databases/eight source na
 stores plus upgrade store retained. Ignored .research/implementation/relay-source-recheck-e06f580
 owns launch/collector/root-review. No compiler cache or new network input duplicated.
 
-Next bounded action: run the new experiments/relay-source/relations.py ROOT
-fixture on an exact unpublished Git candidate (currently NOT_RUN); it borrows
-the stopped e06f580 PG and original a6c28e6 artifacts, creates one new template
-clone/client/store, and checks17 nested cases in the real Control backend. No
-rebuild or additional network allocation. Then complete concurrency
-with rollback, then ambiguous/revoked-source positive outcome recovery before
-qualifying this persistent boundary. Reuse the retained native build/database where
-safe. Two real Control sessions cannot independently race: the backend-bound fence
-has one owner. Privileged injected writers must be labeled as lock-freshness tests;
-real enrollment withdrawal remains required for the recovery journey. Same-
-transaction import-before-bound-reservation is a discriminating new-trigger case,
-not replaceable by a committed import winner's old duplicate-row refusal.
-Finite source issuer/committed visibility/bans/socket consumer remain subsequent
-real work on the same P02/P03/P04 to P01-T09 Step2/M1 path.
+Relational slice now PASS17 actual cases at4a43dae with original a6c28e6 ELFs:
+13 exact guard refusals plus4 fully constraint-checked valid controls, all64-table
+rows/xmin restored per nested attempt in actual Control backend90. Real parent
+then retains the exact two original requests, outcomes and28 independently checked
+native rows. [Report](evidence/p02-relay-source-relations-native-20260928.json).
+Complete fixture/diff/root capture and independent read-only AI reviews found no
+blocker. Preservation comparison covers bb_source_pass, bb_source_template and
+original first-wave report; other first-wave databases retained but not rehashed.
+
+Initial0905706 attempt remains FAIL: DELETE privilege missing caused42501 before
+the intended immutable23514. Only the isolated clone's test grant was changed.
+Original failed clone/store/logs retained. Original collector failed before capture
+because it read Config from a lifecycle projection; corrected full-inspect audit
+captured/hash-verified original failure. No resource mutation or outcome rewrite.
+Successful root runs/relay-source-relations-4a43dae stopped06:55:47UTC,
+owner65696eddcf1363f479f7cbe23969792b, PID3071714/start396079712 terminal.
+Client5df93aab253b stopped; borrowed e06 PG7177550705c4 stopped/noOOM. Terminal
+06:56:13UTC checked891 other projections/eight unrelated running,1470 clean source
+files and exact original ELFs; free68,339,847,168bytes. Both relational clones/stores
+retained; no new compiler cache/network or deletion. Ignored captures match roots;
+inventory relations_initial/relations records identities and original failures.
+
+Next bounded action: extend the actual source probe for concurrency/COMMIT/recovery,
+then run the remaining source-binding schedules before qualifying this persistent
+boundary. Independent review recommends writer-first commit/rollback, reservation-
+first withdrawal+reenrollment (enabled generation3 must reject old generation1 at
+dispatch), and dispatch-first held outcome COMMIT. Observe actual pg_blocking_pids
+and backend_start; do not substitute lease expiry for Source(Unavailable). Two real
+Control backends cannot independently race due to backend-bound custody: external
+writers are explicitly privileged state injections, not management authorization.
+
+Ambiguity cases: reservation reply lost after commit retains binding/input but no
+native event (closing+resolution must remain Unresolved); outcome COMMIT lost before
+forwarding retains native receipt but no PG copy; outcome reply lost after commit
+preserves original PG recorder/timestamp/xmin. Use REAL password/session enrollment
+withdrawal on fresh Control before closing/recovery, and compare native state after
+the legitimate closing-marker change. Current old helpers assume policyv1/import/
+domain69; adapt to this v2 network observation/domain65, without production hooks.
+Historical registration belongs only in recovery after owner replacement; using it
+for ordinary admission fails InvalidInput before source authority. Derive current
+proxy COMMIT ordinal from executed control flow/observations, not old fourth-COMMIT
+fixtures. Finite issuer/bans/route/socket consumer remain subsequent work on the
+same P02/P03/P04 → P01-T09 Step2/M1 path; full discovery/Monitor are not prerequisites.
 
 ## Current enrollment implementation and evidence
 

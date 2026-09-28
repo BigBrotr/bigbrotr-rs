@@ -1,0 +1,221 @@
+{
+  "format": "bigbrotr-relay-source-relations-qualification/1",
+  "status": "PASS_SCOPED_SOURCE_RELATIONS",
+  "source": "4a43dae43d34552bd0450fb2f9095c649c2890fc",
+  "tree": "4b039ac928dab3a08ae0e576eee60d7effb80c15",
+  "application_source": "a6c28e625176ba9835742260c57015c0141e9c7d",
+  "tasks": [
+    "P02-T01 Step6 source binding prerequisite",
+    "P03-T01 original source metadata"
+  ],
+  "scope": "Thirteen exact relational refusals and four valid controls in the real Control backend; all64-table/xmin rollback, followed by original signed parent admission",
+  "cases": [
+    {
+      "position": 1,
+      "name": "valid-bound-before",
+      "sqlstate": "ZX001",
+      "message": "fixture valid rollback",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 2,
+      "name": "missing-endpoint",
+      "sqlstate": "23514",
+      "message": "producer relay source must be complete",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 3,
+      "name": "missing-access",
+      "sqlstate": "23514",
+      "message": "producer relay source must be complete",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 4,
+      "name": "missing-generation",
+      "sqlstate": "23514",
+      "message": "producer relay source must be complete",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 5,
+      "name": "missing-route",
+      "sqlstate": "23514",
+      "message": "producer relay source must be complete",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 6,
+      "name": "zero-generation",
+      "sqlstate": "23514",
+      "message": "producer relay source must be complete",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 7,
+      "name": "future-generation",
+      "sqlstate": "23514",
+      "message": "relay source enrollment is not current and enabled",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 8,
+      "name": "other-endpoint",
+      "sqlstate": "23514",
+      "message": "relay source enrollment is not current and enabled",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 9,
+      "name": "other-route",
+      "sqlstate": "23514",
+      "message": "relay source enrollment is not current and enabled",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 10,
+      "name": "import-then-bound",
+      "sqlstate": "23514",
+      "message": "producer request cannot bind both relay and import sources",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 11,
+      "name": "bound-then-import",
+      "sqlstate": "23514",
+      "message": "input binding cannot attach an already reserved request",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 12,
+      "name": "change-source",
+      "sqlstate": "23514",
+      "message": "producer request reservations are retained and immutable",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 13,
+      "name": "erase-source",
+      "sqlstate": "23514",
+      "message": "producer request reservations are retained and immutable",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 14,
+      "name": "delete-source",
+      "sqlstate": "23514",
+      "message": "producer request reservations are retained and immutable",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 15,
+      "name": "valid-unbound",
+      "sqlstate": "ZX001",
+      "message": "fixture valid rollback",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 16,
+      "name": "valid-import",
+      "sqlstate": "ZX001",
+      "message": "fixture valid rollback",
+      "backend_pid": 90,
+      "unchanged": true
+    },
+    {
+      "position": 17,
+      "name": "valid-bound-after",
+      "sqlstate": "ZX001",
+      "message": "fixture valid rollback",
+      "backend_pid": 90,
+      "unchanged": true
+    }
+  ],
+  "root_review": {
+    "status": "PASS_ROOT_CAPTURE_REVIEW_ONLY",
+    "cases": 17,
+    "refusals": 13,
+    "valid_controls": 4,
+    "backend": 90,
+    "control_tables": 64,
+    "native_rows": 28,
+    "original_inputs": 2,
+    "scope": "Exact guard messages/SQLSTATE and all-table rollback in native SQL hook; independently checked signed facts/indexes and original request preimages; no concurrency claim"
+  },
+  "artifacts": {
+    "binary_sha256": "08e54927129515681b86ec7c42f765175451426d2477c5e61cdf2baf9c24294c",
+    "probe_sha256": "65294bc973a10bc1ec96deb744ea5281c02d15a9650e7d9aa98d3d1c3375cacf",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+  },
+  "environment": "Tux native x86_64, retained PostgreSQL16.15 with fsync/full_page_writes on; no rebuild",
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-09-28T06:56:13.693324+00:00",
+    "source": "4a43dae43d34552bd0450fb2f9095c649c2890fc",
+    "prior_unchanged": 891,
+    "unrelated_running": 8,
+    "source_files": 1470,
+    "free_bytes": 68339847168
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-relations-4a43dae",
+    "owner": "65696eddcf1363f479f7cbe23969792b",
+    "label": "org.bigbrotr.relay-source-relations",
+    "client": {
+      "id": "5df93aab253b49ac5c2543ba9c91902c5db406e23686bb08f68d4f0551b70a73",
+      "name": "bigbrotr-relay-source-relations-4a43dae"
+    },
+    "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+    "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+    "database": "bb_source_relations_4a43dae",
+    "state": "stopped-retained"
+  },
+  "evidence": {
+    "local_capture": ".research/implementation/relay-source-relations-4a43dae",
+    "capture_tar_sha256": "9545cd40c35dabf036c3af9d7c2741d55d9d872a0b57cbbafd7010676436b7ac",
+    "raw_report_sha256": "93799ee9fe16b1c4a8ebb2d25bcdc14af5d981df86bc70212a74fab881d09d92",
+    "manifest_sha256": "27b40d87281ec9e97a62602b71d215fba293c4426173d8e617632a2bb9ec0049",
+    "recipe": "experiments/relay-source/relations.py ROOT",
+    "root_review_recipe": ".research/implementation/relay-source-relations-4a43dae/review-capture.py"
+  },
+  "original_failure": {
+    "source": "09057065eae519e6e951a7aef3893f40a87cfe9c",
+    "status": "FAIL",
+    "reason": "Fixture DELETE lacked permission: actual42501 rather than required23514. Fixed only isolated clone grant; product SQL unchanged.",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-relations-0905706",
+    "capture": ".research/implementation/relay-source-relations-0905706",
+    "capture_tar_sha256": "339a43272af93c18fd680bb538a30118dac25dfc489b1d3bed5601dd33ce5e6b",
+    "report_sha256": "6bf3b75e36a241ea2236a03377bf4a167107981b97c0151f58a9308cb755f516",
+    "collector_failure": "First collector used projection instead of full inspect for ownership; refused before capture or mutation. Original recipe/error retained; corrected capture independently verified."
+  },
+  "preserved": [
+    "bb_source_pass",
+    "bb_source_template",
+    "original first-wave report bytes"
+  ],
+  "review": "Root complete fixtures/diff and capture review; independent read-only AI review found no blocker. Other first-wave databases are retained but were not rehashed in this run.",
+  "not_run": [
+    "concurrency",
+    "ambiguous COMMIT and recovery",
+    "source grant and socket attribution",
+    "large ledger upgrade",
+    "load/aged state",
+    "arm64/release"
+  ]
+}
