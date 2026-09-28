@@ -329,7 +329,9 @@ finally:
     for name,p in processes:
         try:p.stop()
         except BaseException as error:errors.append('process-'+type(error).__name__)
-        (output/(name+'.stdout')).write_bytes(p.stdout);(output/(name+'.stderr')).write_bytes(p.stderr)
+        for suffix, data in [('.stdout',p.stdout),('.stderr',p.stderr)]:
+            try: (output/(name+suffix)).write_bytes(data)
+            except BaseException as error: errors.append('transcript-'+type(error).__name__)
     try:
         item=json.loads(lab.docker('inspect',target['Id']).stdout)[0]
         require(item['Config']['Labels'][lab.LABEL]==pg['owner'],'postgres-ownership')

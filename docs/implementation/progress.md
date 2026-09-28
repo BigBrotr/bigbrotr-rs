@@ -16,8 +16,17 @@ Mac main and private origin/main areb450d0c3e3a5cac8196c1db1ee0c6a1ce71f1575
 (first-wave evidence, verified pushed), following scope54d1a1841b64b60a2c8eed0cde8382c397cf1e30,
 treeb564ec7453e6f22bc8afe3f2cce5490cef179f4a. Root now owns the dirty fault-mode
 probe/support module, actual-PG fault recipe and build-profile/documentation updates.
-No other writer or active lab. The proposed ten fault schedules have NOT_RUN;
-Mac probe Clippy passes. New outputs belong to ignored acquisition-scope-faults-20260928. New0004 is applied only to retained isolated clones;
+fac23352188ef0a910c7b262573ad8e587d38f76 is the unpublished fault candidate;
+its native build is terminal PASS, engine NOT_RUN. Root owns a cleanup correction
+and evidence/checkpoint updates. No other writer or active lab.
+The proposed ten fault schedules have NOT_RUN;
+Mac probe Clippy passes. Read-only AI review found transcript writes could skip
+PG shutdown on I/O failure; corrected per-transcript catching preserves cleanup.
+The isolated actual-finally fault injection records original skipped shutdown and
+corrected shutdown plus INCOMPLETE_LAB_AUDIT. No further launch blocker found.
+Build-only fac2335 root is retained, owner eb5c9cce8cae7adb28b1357146fcb01b,
+PID3235206/start397749006 terminal, lock released, free66,587,930,624 bytes.
+Commit/transfer the correction before engine launch; never run the old recipe. New outputs belong to ignored acquisition-scope-faults-20260928. New0004 is applied only to retained isolated clones;
 all35 earlier SQL files remain byte-identical. Preserve every applied checksum.
 
 ## Active slice and next useful journey
