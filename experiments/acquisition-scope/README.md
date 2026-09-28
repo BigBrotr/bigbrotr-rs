@@ -181,3 +181,11 @@ a separate clone removes only the future-time predicate and must fail that same
 fixture. Original evidence and states remain. Results, not this recipe, determine
 what ran. Concurrent/lost-COMMIT schedules, claim/dispatch, installed Sync and M1
 remain separate acceptance; no capacity or release claim follows.
+
+[The first-wave report](../../docs/implementation/evidence/p03-acquisition-jobs-native-20260928.json)
+records all seven adapter schedules and the timestamp pair at28a7db9 using exact
+3e10c2d artifacts. The single-predicate negative clone fails as intended. An earlier
+fixture failure wrongly required preserving an expired session removed by actual
+login; that original outcome/database remains. The corrected oracle checks the
+exact expired-session set, and all prior immutable commands/rows remain. All owned
+resources are stopped/retained; no claim/dispatch or installed acquisition follows.

@@ -115,8 +115,11 @@ shares source/collection restrictions and exact attribution/limit/provenance che
 between fresh admission and certification. [Nine native cases](evidence/p03-sync-arrival-policy-native-20260928.json)
 qualify that policy consumer, including actual second-document refusal.
 They do not establish socket or committed witness custody.
-Jobs, authorization, progress and installed CLI acceptance
-remain separate parts of Step3 onward; no whole task closes here.
+[Finite acceptance](evidence/p03-acquisition-jobs-native-20260928.json) now adds
+0022 command/audit/job/detail atomicity and existing0815 admission order. Seven
+actual adapter schedules and the raw timestamp/negative pair qualify that bounded
+acceptance. Concurrent/lost-COMMIT cases, exact claim, progress and installed CLI
+acceptance remain separate parts of Step3 onward; no whole task closes here.
 
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership

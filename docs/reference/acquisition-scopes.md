@@ -218,8 +218,8 @@ committed visibility and the actual Control backend fence. Closing the submittin
 HTTP connection or logging out does not cancel an accepted job; cancellation is a
 separate durable command. Account/permission withdrawal still stops fresh work.
 
-A new additive migration will mark participating jobs explicitly and attach their
-immutable scope/duration and authenticated attribution. Existing bare acquisition
+Additive0022 marks participating jobs explicitly and attaches their immutable
+scope/duration and authenticated attribution. Existing bare acquisition
 jobs cannot be adopted. Acquisition creates new source facts, so its initial
 `input_topology_generation` is NULL; no fake Archive input cut or export pin is
 required. Later progress must retain its real event-effect dependencies. Acceptance
@@ -238,6 +238,14 @@ The finite consumer closes its guarded socket/SQL transaction before fresh nativ
 certification/admission. A bounded retained batch keeps the exact request predicate
 and trusted observation. EOSE alone never advances progress or finishes coverage.
 
-The command component is under test. SQL acceptance/claim, permission/concurrency
-and lost-COMMIT cases, installed commands and the signed socket journey are not yet
-qualified by this profile. No acquisition capability is advertised from these types.
+[Native acceptance evidence](../implementation/evidence/p03-acquisition-jobs-native-20260928.json)
+qualifies seven actual adapter schedules at3e10c2d: acceptance/replay/conflict,
+absent grant, stale policy, disabled source, elapsed duration, deferred COMMIT
+refusal and missing0022. The current/future timestamp pair uses actual final SQL
+constraints; removing only the future-time predicate makes the same fixture fail.
+All Control tables/xmin are compared, including exact login-session cleanup and
+preserved prior commands. The first fixture's expired-session expectation failed;
+its original outcome remains. Fixture28a7db9 reuses unchanged3e10c2d product/build
+inputs. Concurrent locks, lost/delayed COMMIT, historical permission/policy retry,
+populated prior-job upgrade, claim/dispatch, installed commands and signed socket
+journey remain unqualified. No installed acquisition capability follows.

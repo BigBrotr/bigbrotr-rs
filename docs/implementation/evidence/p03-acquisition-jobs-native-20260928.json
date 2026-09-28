@@ -1,0 +1,169 @@
+{
+  "format": "bigbrotr-acquisition-jobs-native/1",
+  "status": "PASS_FINITE_ACQUISITION_ACCEPTANCE_FIRST_WAVE",
+  "source": "3e10c2d2c129538306910bd648be7e6d0bbf93a3",
+  "tree": "f54767d2d0ef5675a55ec42d3a3e53c061ce1516",
+  "fixture_source": "28a7db949df50f529cb8916f3c319cbb705b6e77",
+  "fixture_tree": "68dc1af116d06ef786267681d5d81a0ac0fc66e5",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "016dffcbf70780ae3258e3d2769d4b12af3174656caa83afdb3eedfa55717c02",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "318d047f9003ef0cc81087d98fc854934975118a8bbf162445df5003a2d115f7",
+    "acquisition_job_probe": "e9ebe9f2e73e7698cb025060cfcaba91cbce9f81cf25e778738eb38ba2a84b5a"
+  },
+  "component_tests": {
+    "command": 4,
+    "catalog": 31,
+    "migration_entrypoint": 3,
+    "scoped_clippy": "PASS",
+    "mac": "Same bounded38 tests, Clippy, formatting and static artifact/document checks PASS; original RED/compile outcomes retained"
+  },
+  "scenarios": [
+    {
+      "mode": "pass",
+      "tables": 67,
+      "new_job": true,
+      "status": "PASS"
+    },
+    {
+      "mode": "no-grant",
+      "tables": 67,
+      "new_job": false,
+      "status": "PASS"
+    },
+    {
+      "mode": "stale-policy",
+      "tables": 67,
+      "new_job": false,
+      "status": "PASS"
+    },
+    {
+      "mode": "disabled",
+      "tables": 67,
+      "new_job": false,
+      "status": "PASS"
+    },
+    {
+      "mode": "expired",
+      "tables": 67,
+      "new_job": false,
+      "status": "PASS"
+    },
+    {
+      "mode": "rollback",
+      "tables": 67,
+      "new_job": false,
+      "status": "PASS"
+    },
+    {
+      "mode": "old-schema",
+      "tables": 66,
+      "new_job": false,
+      "status": "PASS"
+    }
+  ],
+  "assertions": [
+    "Actual CLI0022 upgrade/reapply preserves populated prior Control state and checksums; the initial job ledger is empty, so this does not qualify populated prior-job migration",
+    "Actual session/CSRF and roles.control acceptance atomically seals command, audit, job, scope/duration detail and0815 admission ordinal; exact retry leaves one job; changed duration under same key conflicts",
+    "No grant, stale policy, disabled enrollment, expired1us duration, deferred COMMIT rejection and missing schema leave no job/command/admission/audit effect beyond the real login and Control lifecycle",
+    "Independent literal preimage and complete67-table/xmin comparisons; exact expired-session cleanup; original activation/enrollment commands preserved",
+    "Actual application-login raw SQL accepts current timestamp and refuses future timestamp at final constraints; all67 tables roll back exactly",
+    "Clone-only removal of future-time predicate makes the same raw fixture FAIL: expected BB001, observed BZ001; original FAIL retained",
+    "Both original and final engine runs stopped owned clients/PG without OOM, cleanup errors or unrelated changes; actual application backends joined"
+  ],
+  "original_outcomes": {
+    "fixture_failure_source": "ebb607f82d06412b50520381b39fada332b25751",
+    "failure": "prior-rows-browser_sessions: obsolete session had expired before actual login; corrected exact expected set, no product change",
+    "prelaunch_review": "Preserved three pre-existing management commands; no engine executed with the earlier empty-ledger assumption",
+    "product_review": "Added final refusal of future accepted_at_us before native qualification; reused existing actual-Control final fence after inspecting its required columns"
+  },
+  "review": {
+    "source_files": {
+      "3e10c2d2c129538306910bd648be7e6d0bbf93a3": 1573,
+      "ebb607f82d06412b50520381b39fada332b25751": 1573,
+      "28a7db949df50f529cb8916f3c319cbb705b6e77": 1573
+    },
+    "captured_payloads": 122,
+    "capture_manifest_sha256": "337c82ab8bb8d7f51a0184fb90a0968ed147a0d7db7c9ffdb0708ca9eea3bc13",
+    "root_review_sha256": "f849ba7d2e04173d9704506c48574264057b753927249fc38769ee378192554a"
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "28a7db949df50f529cb8916f3c319cbb705b6e77",
+    "observed_at": "2026-09-28T16:53:06.104124+00:00",
+    "prior_unchanged": 948,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "8f13ca0beb4a968f4fd8658a33f068d482c1e9fd84dc42aa29ce70c7e3d690e7",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "e8a782f8ea7bf53abc96431a811ca31c6d1af79d8a76f2a90b2eb44548f9ef8d",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "b5e0d83e2912932833e5ba603d46124b33576261bf62b841861486b5e63716a2",
+        "exit": 143
+      },
+      {
+        "name": "original-client",
+        "id": "08bdd5e66b318a62b07a0f90359381739527689bb7c29e7b12395ae38470d49d",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": {
+      "3e10c2d2c129538306910bd648be7e6d0bbf93a3": 1573,
+      "ebb607f82d06412b50520381b39fada332b25751": 1573,
+      "28a7db949df50f529cb8916f3c319cbb705b6e77": 1573
+    },
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 63806095360,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "changed_since_build": [
+      "docs/implementation/progress.md",
+      "docs/reference/acquisition-scopes.md",
+      "docs/research/laboratory-inventory.json",
+      "experiments/acquisition-scope/README.md",
+      "experiments/acquisition-scope/jobs.py"
+    ]
+  },
+  "local_evidence": ".research/implementation/acquisition-jobs-20260928",
+  "tux_build_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-3e10c2d",
+  "tux_engine_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-engine-28a7db9",
+  "not_qualified": [
+    "concurrent locks, cancellation and lost/delayed COMMIT",
+    "remaining raw SQL relational negatives and historical grant/policy retry",
+    "claim/dispatch, installed Sync, socket admission and M1",
+    "populated prior-job migration, aged/mixed load, arm64/release"
+  ],
+  "scope": "Initial typed acceptance only; no claim/dispatch, source socket authority, coverage, installed Sync, M1 or release capability. Early SET CONSTRAINTS is a raw guard test, not commit-time expiry qualification."
+}

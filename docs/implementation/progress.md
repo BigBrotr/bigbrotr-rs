@@ -12,71 +12,65 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is unpublished fixture candidateebb607f, product3e10c2d; origin/main
-remainsf3c8a1d. Root owns only fixture session-oracle correction and inventory/
-checkpoint. Native3e10c2d build,38 scoped tests and Clippy PASS. First actual-PG
-engineebb607f FAILED on the fixture's prior-session preservation assertion after
-migration, acceptance/replay and other-table comparison passed. The real login
-removed a session whose absolute and idle expiries both precede issuance; the
-new oracle requires exactly that cleanup plus one new session and preserves any
-still-live original. No product/SQL change. Original failure/DB/logs are retained.
-Inventory implementation_network_20260928.acquisition_jobs owns the full record;
-ignored .research/implementation/acquisition-jobs-20260928 owns recipes/captures.
+Mac main is unpublished28a7db9, product3e10c2d; origin/main remainsf3c8a1d.
+Root owns only current evidence/contract/task/checkpoint/inventory documentation.
+No product WIP or active tool/remote process. All selected product work remains
+INCOMPLETE. Cache retirement is complete; never replay launch/deletion recipes.
 
-Build run acquisition-jobs-3e10c2d, owneracde79aaa7018284f4aba784168caec4,
-PID3465674/start399622776 is terminal; fetch8f13ca0b/nativee8a782f8 exit0.
-Engine acquisition-jobs-engine-ebb607f, owner0a6f6fbd9ed343fbb0847f938063dfcf,
-PID3470155/start399644099 is terminal. Client08bdd5e6 stopped143, borrowed
-PG71775507 stopped0; no OOM/cleanup error/unrelated change. Database
-bb_acq_job_ebb607f_pass remains accepted/retained. Final free63,969,644,544B.
-No build or laboratory is active. Cache retirement stays complete. Next bounded
-action: transfer a clean fixture correction and rerun fresh clones with unchanged
-3e10c2d artifacts; qualify acceptance, then exact claim/installed consumer.
+Active P03-T01 Steps3/4: finite acquisition acceptance now has additive0022,
+strict typed duration≤24h/fingerprint and real authenticated Control adapter.
+Existing roles.control narrowly requests configured Sync; no enrollment/read
+permission or source/socket authority is inferred. Exact authenticated retry
+returns only its immutable receipt, without resetting duration. Accepted work has
+NULL input topology and a real0815 admission ordinal; no fake Archive cut/pin.
+Actual owner fencing, lock order, poisoned cancellation and unknown COMMIT remain
+explicit.0022 and all earlier qualified SQL must not be rewritten.
 
-Active P03-T01 Steps3/4: typed finite acquisition command/acceptance and exact-ID
-claim, consumed by the same initial owner. The new command has scope ID, positive
-canonical-decimal duration≤24h and expected config/policy revisions. The SHA256
-preimage binds dataset/actor/key/scope/duration/revisions. Four Mac command tests
-PASS (independent115byte preimage/vector, closed fields, exact binding, bounds).
-Original missing-module RED and a real positional-array decoding RED are retained
-in .research/implementation/acquisition-jobs-20260928; manual map decoding now
-refuses arrays/unknown fields/duplicates before consuming nested values. This is
-only a command component, not SQL/job/Sync readiness. Mac last8,127,620KiB free;
-existing .research/targets/product reused, no new build cache.
+[Native first-wave evidence](evidence/p03-acquisition-jobs-native-20260928.json)
+records7 actual adapter cases plus current/future timestamp guards and a
+single-predicate negative clone. Root compared1573 Git files for all3 revisions
+and122 captures, all67 tables/xmin, literal digest and complete job/command/audit/
+detail/admission linkage.38 Mac/native tests and scoped Clippy PASS. SQL accepts
+one durable job on exact retries and leaves none on six refusal modes. Raw final
+constraints reject future accepted_at; removing that predicate fails the same
+fixture. No engine product change was needed. Original missing-module/API/catalog
+and probe compile failures stay retained. Fixtureebb607f's prior-session assertion
+failed after successful acceptance because login retired an expired session;
+original FAIL/database retained. Corrected28a7db9 uses exact expiry-set expectations
+and unchanged3e10c2d binaries. Prior activation/enrollment commands remain exact.
 
-Read-only AI/root dependency review selects existing roles.control for requesting
-bounded work from configured Sync; it grants neither enrollment nor data reading.
-Enrollment still requires policy.change. No history.read/export shortcut or new
-grant family. Append acquisition-specific immutable job detail/protocol after0021;
-never adopt legacy bare acquisition jobs or rewrite applied SQL. Reuse commands,
-audit, jobs,0815 admission ordinals and authenticated historical retry. Acquisition
-has NULL input topology because it creates source facts; no fake Archive pin/cut.
-Use Control→dataset UPDATE→account/session→source/job ordering and actual backend
-fence/final expiry checks, not the generic job trigger's active tuple alone.
+Inventory implementation_network_20260928.acquisition_jobs and ignored
+.research/implementation/acquisition-jobs-20260928 own source/artifact/workload
+identities, launch/capture/review recipes and original results. All STOPPED/RETAINED:
+build3e10c2d owneracde79aaa7018284f4aba784168caec4 PID3465674/start399622776;
+fetch8f13ca0b/nativee8a782f8 exit0. Final engine28a7db9 owner0440aebe45d2841246debf39c19375c4
+PID3472396/start399655462; clientb5e0d83e stopped143, PG71775507 stopped0/no OOM.
+Nine final clones (including deliberate negative) and originalebb607f_pass remain.
+Terminal audit16:53:06UTC found948 prior projections unchanged, eight unrelated
+running, compiler lock free and63,806,095,360B free. Mac last7,986,200KiB.
+Shared1154757 intermediates are3e10c2d; exact binaries are separately retained.
+No cleanup obligation. Do not restart or overwrite the original experiments.
 
-Two concrete installed prerequisites were found: the living initial owner rejects
-administration, so a separate sync CLI cannot claim another Control; and fresh
-bootstrap visibility namespaces prevent pre-registering its exact scope. Deliver
-bounded authenticated commands to that same owner, and expose enrollment/scope
-registration after bootstrap. Do not require all Discovery/Monitor/Archive first.
-The socket callback cannot borrow Control again: retain a bounded batch, close
-transport/source transaction, then perform fresh certification/admission. EOSE
-alone never advances progress. Current contracts record these choices without
-claiming engine-qualified SQL or installed acceptance. The adapter now uses the
-actual authenticated session, roles.control, current configured scope and atomic
-command/audit/job/detail. It preserves poisoned connections and unknown COMMIT.
-Mac command4/catalog31/migration-entrypoint3 tests, scoped Clippy, formatting
-and static artifact/document checks pass. Original missing-API, catalog-target and moved-probe-owner
-compilation failures remain in the same ignored evidence directory.
-Read-only AI/root review found a raw SQL future timestamp could extend the
-selected duration;0022 now rejects it at final server-time validation. Proposed
-jobs.py/job_guards.sql cover seven real adapter schedules, valid/future timestamp
-checks and a clone-only single-predicate negative control. They have NOT RUN yet.
-Review confirms reusing the existing final actual-Control fence is sound; no
-extra abstraction or duplicated owner check function is needed. Next bounded
-action: finish the fixture correction and execute the actual PG acceptance journey, retain original outcomes and stop owned
-resources; then exact claim and the same-owner installed command consumer.
-No acquisition dispatch or coverage/M1 guarantee follows from these components.
+Root/read-only AI reviewed complete new owners and relevant job/session/SQL
+callers. Future timestamp was a concrete defect corrected before native launch.
+Reusing the existing final Control fence is sound because it uses only dataset
+and actual owner; no new generic abstraction or duplicate helper was introduced.
+Queries in the new adapter are multiline and transaction boundaries stay visible.
+The fixture-only reruns did not recompile unchanged product or repeat broad suites.
+
+Next bounded action: exercise finite acceptance's lost/delayed COMMIT and current
+policy/grant lock schedules with actual PG/probe, then exact-ID claim and same-owner
+installed delivery. These must precede claiming the relevant guarantees complete.
+Raw relational negatives and populated prior-job upgrade remain open. The next
+user-visible M1 slice is signed socket→durable admission→timer publication/read→
+restart/resend. Real prerequisites: typed job claim (P03-T01 Steps3/4), trusted
+observation/source custody (P03-T02), and initial owner command delivery
+(P01-T09 Step1/P02-T02 Steps2/3). Fresh bootstrap chooses visibility namespaces,
+so enrollment/scope registration must reach that living owner after bootstrap.
+A separate CLI cannot claim a second Control. Close guarded transport/source SQL
+before fresh native certification/admission; retain bounded batch/request context.
+EOSE alone never advances traversal. No full Discovery/Monitor subsystem is needed
+before these slices. Installed Sync, coverage, capacity and arm64 remain unqualified.
 
 Active P01-T09 Step1/P02-T02 Steps2/3: explicit
 `serve --initialize-ingest --roles control,ingest`, fresh-only under retained
@@ -201,7 +195,7 @@ e86439e intermediates; qualified artifacts are separately retained. No cleanup
 obligation. Cache retirement remains complete; never replay launchers/deletions.
 
 Renewal and explicit first-run lifetime qualifications are pushed. The native
-interruption fixture above is qualified and stopped; SQL interruption is active.
+interruption and SQL interruption fixtures above are qualified and stopped.
 Initial registration construction and partial-state boundaries were reviewed. Separate initializer→Serve currently cannot reuse the
 initial writer. Keep that constraint visible; do not add a parallel plan.
 The renewal's lost/delayed COMMIT, write-cutoff negative control and policy/closing
