@@ -92,8 +92,10 @@ Paths: `crates/bigbrotr-model/src/acquisition.rs`, `crates/bigbrotr-model/src/co
 `tests/fixtures/acquisition/scopes.json`, `docs/operations/acquisition.md`.
 
 The initial [scope registration adapter](../reference/acquisition-scopes.md) adds
-explicit epoch-bound identity and additive0004 storage, with native engine
-qualification pending. Jobs, authorization, progress and installed CLI acceptance
+explicit epoch-bound identity and additive0004 storage, with
+[six actual-PG schedules](evidence/p03-acquisition-scope-native-20260928.json) passing.
+Lost COMMIT, cancellation and lock/relational acceptance remain pending.
+Jobs, authorization, progress and installed CLI acceptance
 remain separate parts of Step3 onward; no whole task closes here.
 
 The pure selector component now owns normalization, a versioned independent

@@ -19,7 +19,8 @@ Rocks store or archive is edited. No new network, build cache or volume is creat
 The isolated client joins only that PG network namespace with read-only source,
 artifacts and owned fixture-secret mounts; credentials are never printed.
 
-The first wave proposes six cases: normalized retry/restart and distinct
+The [first-wave report](../../docs/implementation/evidence/p03-acquisition-scope-native-20260928.json)
+records six executed cases: normalized retry/restart and distinct
 access/visibility/selector identity; forced candidate collision saturation with
 full-byte equality; scope-FK failure rolling back the provisional selector;
 server-observed owner expiry rejecting COMMIT; explicit missing migration; and

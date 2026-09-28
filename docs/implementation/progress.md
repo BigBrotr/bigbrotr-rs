@@ -12,346 +12,163 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and private origin/main are verified at
-72ce9db50b4177bc1ba988d82ccdecf3265f8835 (selector native evidence), following
-061890f3b07e8775ca99f384c03681c12168a37f (selector implementation),
-df226b2438feeec173f2c6f0070f4255466d048c (native decoder evidence), following
-27b7f450f9553d4bf43dfa45800a3208c04d9579, tree
-653b0f5e083b9caf7173dee0c5cebb6300c7afd9, and earlier
-e0c34538de6d42ec49e1212d50c1821d589da0fb (native WebSocket evidence), following
-593ec3a (test-only lint maintenance) and native-qualified WebSocket
-9fe4ce498c6176c9c3418488c850b0dced57b2d8, tree
-0fe34885a8f9f1353a0a1db1bbb14da0c4769001. Worktree was clean after push;
-root now owns the dirty P03-T01 scope registration implementation, additive0004,
-model/codec regressions, actual-PG probe/recipe and owning documentation. No other
-writer or active lab. Existing35 applied SQL files remain byte-identical to72ce9db;
-new0004 has NOT been applied.
-
-The finite supplied-stream WebSocket component now has [Mac](evidence/p04-websocket-mac-20260928.json)
-and [native Linux amd64 evidence](evidence/p04-websocket-native-20260928.json):
-28 actual TCP/TLS integration tests plus 2 tests that assert buffered input before
-yield/revocation. Release compilation and scoped native Clippy PASS. Root checked
-all 1,500 exact Git source hashes and 14 captured payloads; qualified test ELFs
-remain outside the shared compiler cache. The library harness is named
-network_websocket_input, never confused with the installed CLI.
-
-The consumer borrows DirectStream, reserves 8*limit+1MiB, lends received bytes,
-rejects unsolicited/duplicate negotiation, counts actual framing across fragments,
-validates original close metadata and flushes automatic controls. Consuming local
-Close drives peer acknowledgement and EOF. The selected 2MiB wire cap was tested
-at equality and header-only overflow. Native blocked send delivered one complete
-2097152-byte frame plus 262144 bytes of the cancelled next frame; Mac blocked in
-the first frame at 662148 bytes. Cancellation poisons reuse; buffers retain their
-permit until drop. These are bounded correctness cases, not production capacity.
-
-Root and read-only AI review retained the concrete HTTP/frame state machines;
-shared fixture setup was extracted for actual reuse. No generic protocol framework,
-background driver or new crate. Dependency policy passed with cargo-deny 0.20.2;
-exactly 8 packages added, none upgraded. Original counterexample exit101 and all
-RED/setup failures remain in .research/implementation/network-websocket-20260928.
-No product log logger is installed; future bridges must exclude upstream private
-URL/payload targets. The two pre-existing test-only Clippy findings were fixed in
-593ec3a: unchanged keyring test moved after implementation and fixed byte chunks
-used in cursor fixture. BigBrotr --tests Clippy and the 5 affected tests PASS on
-Mac; this is not a claim of complete workspace/release qualification.
-
-Native run websocket-9fe4ce4 is STOPPED/RETAINED. Owner
-3fd6d7e1813d4d6215ceb2de395b308b, orchestrator PID3178860/start397108497 terminal.
-Fetch473960ef1dd13a54d03821377cb48b6c5b61b41d1bd39f51ec78f0053fd7a573 and
-native5fca62877aef42a87a3a89cba903b9878f2ff5405bfa74f9a9053623648f193c exited0,
-no OOM. Terminal audit09:49:06 UTC verified 908 prior projections unchanged,
-8 unrelated running, compiler lock released, 67,083,325,440 free bytes. No PG,
-archive or dataset writes. Bundle73fb4fb16ccd3e84fd2995f7af814d77c645bdf8d8a8dcee4fafb5084e97538e.
-Ignored start/launch/collect/review scripts preserve the recipe; do not rerun the
-old launcher. Current 1154757 compiler cache is reusable only under its lock.
-Latest Mac free space 12,244,712 KiB; existing cache only.
-
-Next bounded action: finish the candidate review/checkpoint, commit the scope
-registration slice and build exact Git on native Tux with profile acquisition-scope.
-Then execute the six proposed actual-PG cases on new clones; build success alone
-cannot qualify registration.
-P01-T03 Steps1/7 and P03-T02 Steps1/3 now have
-[Mac component evidence](evidence/p01-relay-wire-mac-20260928.json): 38 protocol
-tests, 1 compile-fail doctest and 1 actual guarded WebSocket signed corpus PASS,
-plus scoped Clippy. [Native27b7f45 qualification](evidence/p01-relay-wire-native-20260928.json)
-passes the 8 decoder tests, actual signed socket corpus and compile-fail doctest,
-release build and scoped Clippy. Root compared all 1,505 source files to Git and
-verified 15 captured payloads. Qualified test ELFs remain outside the mutable cache.
-Original EVENT RawValue and full envelope borrow input unchanged; duplicate
-signed keys survive into strict verification. EOSE missing/empty/unknown and
-contradictory hints remain distinct. The exact pinned serde_json raw_value feature
-adds no package/version or lockfile change. Whole-document preflight is retained.
-Root and read-only dns_dependency_audit review found and closed a public Serde
-bypass: the decode wrapper is now private, with observed RED/GREEN compile-fail
-regression. No other concrete finding within the codec/corpus boundary.
-The peer independently checks REQ/Close and absence of AUTH signing; actual crypto
-rejects altered content, forged signature and duplicate field after a valid same-ID
-event, while an alternate valid signature and subsequent original verify. This
-is no installed Sync, request-generation, durable admission or coverage claim.
-Original failures/checks are retained in .research/implementation/relay-wire-20260928;
-inventory implementation_network_20260928.relay_wire. Scope identity/registration
-and installed finite Sync remain subsequent concrete prerequisites. Full M1 and
-the selected product remain INCOMPLETE. Latest Mac free 11,941,908 KiB.
-Native root runs/relay-wire-27b7f45, owner b5e770312ad02c0d67064d249eaf6ee1,
-PID3191941/start397262850 terminal. Fetch8cbf818e2728b09d9bd5426dad9a093713b4620f32ddb8109ff6791c1d732e62
-and native2c2ad812730c2f65ca29991d50973767db58360dfe9c90811effcf8d3315a202
-stopped exit0/no OOM, compiler lock released. Preflight10:12:54 UTC recorded
-67,049,791,488 free bytes, 910 previous containers and the same eight unrelated
-running workloads. Bundle3b2979c4ae0070d29d9ed98158f8f148a9b7a34927c0aaa83dbd111b003e8340.
-Terminal audit10:15:32 UTC verified all 910 prior projections unchanged and eight
-unrelated running; free66,980,102,144 bytes. No PG or dataset writes.
-Source27b7f45 is clean on Tux; never edit it there.
-
-Prior scope prerequisite findings: no general selector existed before this slice; current config
-stores history_since/ephemeral/provenance but lacks sync.selectors. Adding that
-key directly would break immutable accepted policy v1/v2 key sets. Decide an
-explicit registered finite-job selector versus a versioned policy addition before
-changing configuration; never silently fill old accepted documents. Structured
-NIP-01 values use exact 64-hex ids/authors/#e/#p, AND within a filter, OR across
-filters, single ASCII-letter tag keys and only first tag values. Preserve explicit
-time bounds, reject empty lists/unsupported search, exclude generated page limit
-from collection identity. Existing fingerprint recipes have no selector domain;
-add an exact owned recipe and independent literals before persistence. The
-read-only reviewer completed the scope/admission map; no edits/build. Existing
-initial_batch validates PreparedEvent against both accepted documents at reserve
-and dispatch; that trusted boundary must enforce collection membership, also for
-CertifyExisting, without changing historical ambiguous-outcome recovery. Registration
-must not grant network or visibility authority. Reserved migration0004 can append
-after0020 in catalog order; all35 applied SQL checksums remain immutable.
-
-The pure CollectionSelector boundary is implemented and Mac-qualified in the
-candidate061890f, now native-qualified: model acquisition/fingerprint selector modules, strict protocol selector
-codec, tests and independently authored signed fixtures. P03-T01 Steps1/2 and
-P01-T03 Step5 are the active component scope. Normalization sorts/deduplicates
-values and exact conjunctions only; explicit time bounds/history floor and local
-ephemeral exclusion remain distinct. Separate Sync profile limits and exact CBOR
-recipe are in the owning acquisition/identity contracts. No accepted policy key,
-applied SQL, persistent registration or installed Sync has changed.
-
-Local model/protocol suites passed after an observed positional-array decoder
-failure: Serde accepted an array for a named document until an explicit object
-shape guard was added. Missing-API REDs, the original raw-string fixture syntax
-failure and the actual shape failure are preserved under ignored
-.research/implementation/acquisition-selector-20260928. Independent signed fixture
-checks pass. The third literal fingerprint freezes typed multi-filter ordering rather than
-CBOR-byte ordering; all eight model selector regressions pass.
-Read-only review found no additional product defect within the pure boundary and
-requested that distinguishing oracle, now added. No heap-peak or capacity claim.
-
-Both affected actual socket corpora pass: six frozen signed selector events keep
-all signed fields, and independent literal REQ plus collection/request outcomes
-separate ephemeral exclusion and window violation. The existing model/protocol
-suites passed; scoped Clippy, formatting and documentation checks pass. Evidence:
-[eight model/four codec/two socket cases](evidence/p03-selector-mac-20260928.json).
-Only the masked text reader was shared for the two actual peers; existing model,
-protocol, hash and lexical scanner mechanisms remain, with no framework/new crate.
-
-Candidate061890f3b07e8775ca99f384c03681c12168a37f, tree
-eae50ca84e3d66188c54d5e1b159ec048e08b15d, is clean on Tux. Native qualification
-PASS under stopped-retained runs/selector-061890f, ownerfb7190d80ff74a95e403f561bab0f63c,
-PID3207901/start397470616; fetch a850ffb8887abe80fec2fc99f7c1a173ca219030546b5244f23b7caa9178f60a
-and native58a780d284cf49741356bd760927737c43f382f6e63e1b227442c5ed2fda5588.
-Bundle5b62119c2ffc7795deeb1d7de620c1a21c8ddb0c5614d4e5579e1889ce8480e9.
-[Native evidence](evidence/p03-selector-native-20260928.json): eight model,
-four codec and two actual signed socket tests PASS, release build/scoped Clippy.
-Root compared all 1,515 source files to exact Git and 15 captured payload hashes.
-Three qualified test ELFs remain outside the mutable cache. Terminal audit
-10:48:59 UTC found both containers exit0/no OOM, PID terminal, lock released,
-912 prior container projections unchanged and eight unrelated running.
-Free66,874,466,304 bytes; no database/archive writes. The 1154757 cache now has
-061890f intermediates and is reusable under its lock. Mac main and origin/main are72ce9db,
-clean after verified private push. Root now starts P03-T01 persistent registration. This closes only the pure selector
-component; all installed acquisition and M1 gates remain open.
-
-Registration design decision: register explicit finite-job intent under the current
-accepted policy epoch without changing v1/v2 key sets. Registration itself grants
-no acquisition; later socket/admission checks must intersect both accepted history
-and ephemeral restrictions. The planned ordinary sync.selectors setting still
-requires an explicit policy version, not silent legacy default filling. Separate
-reusable selector rows avoid repeating large selector bytes per endpoint; candidate
-hashes only locate bounded buckets, exact normalized bytes decide equality. Scope
-rows retain endpoint, selector, operational access, complete visibility reference
-and policy epoch; enrollment generation/route remain execution binding. Append
-reserved0004 after0020, preserving every applied SQL checksum. Use explicit
-normalized JSON bytes (not JSONB) and bound serialization before allocation; typed
-selectors with an oversized escaped JSON representation must refuse persistence
-without changing their meaning. This is new implementation work, not evidence.
-
-Current registration state (2026-09-28, uncommitted on72ce9db): typed scope/IDs,
-bounded persistent JSON encoder, ControlSession adapter and additive0004 are
-implemented. ScopeIntent explicitly retains requested policy epoch so historical
-exact replay can recover after policy advancement; missing stale intent leaves no
-selector. New random selector IDs never resolve another document's existing scope.
-Profile1 JSON ordering/escaping is frozen in the owning reference. Root and
-read-only AI review inspected the new owners, callers and contracts; no further
-concrete finding within this boundary. No framework/new crate or policy-key edit.
-
-Mac evidence under .research/implementation/acquisition-scope-20260928:
-missing-API REDs retained (the first also had an Ordinal fixture typo), corrected
-one scope and five codec tests PASS, latest29 catalog plus3 migration-entrypoint
-checks PASS, scoped Clippy PASS. A probe-only closure lifetime compile failure is
-retained; corrected module helper passes Clippy. Literal persisted escaping and
-model-valid documents beyond escaped/replay capacity pass discriminating checks.
-Artifact/handoff validation passes (189 Markdown,378 JSON;123 tasks756 steps).
-These are local checks, not engine evidence. No native/PG case has executed yet.
-
-The new probe/runner proposes basic normalized retry/restart, forced collision
-bucket saturation, scope-FK rollback, server-observed expiry, missing migration
-and historical retry. It checks actual CLI populated upgrade/reapply and prior
-rows/heap filenodes. Loss/cancellation, concurrent locks and corruption/raw-SQL
-negative controls remain subsequent required registration acceptance. Reuse only
-stopped ownership-verified PG71775507 and its unchanged transport8c4d12c basis;
-create fresh clones and preserve original reports. Native build reuses1154757
-under its exclusive lock and retains exact artifacts outside it. Latest Mac
-space11,256,420 KiB; maintenance already complete, do not rerun deletion recipes.
-
-Retain the actual-consumer memory risk: the selected 32MiB producer grant cannot
-blindly stack 17MiB WebSocket, 8MiB decode and 8MiB verification reservations.
-The borrowed EVENT retains little decoded ownership; a real consumer must account
-retained capacities and release/resize temporary workspace or reserve a bounded
-combined operation. The 64MiB socket fixture does not qualify the selected 32MiB
-producer. Do not invent an unused API before wiring that consumer. Scope policy
-compatibility/registration remains next, then source-bound admission and M1.
-Never merge/push the earlier negative source-cleanup variant.
+Mac main is54d1a1841b64b60a2c8eed0cde8382c397cf1e30, tree
+b564ec7453e6f22bc8afe3f2cce5490cef179f4a (scope registration), following
+72ce9db50b4177bc1ba988d82ccdecf3265f8835 (selector native evidence; private
+origin/main before the pending evidence push). Root owns only this checkpoint,
+first-wave evidence/inventory and qualification-status documentation updates.
+No other writer or active lab. New0004 is applied only to retained isolated clones;
+all35 earlier SQL files remain byte-identical. Preserve every applied checksum.
 
 ## Active slice and next useful journey
 
-Active P02-T01 Step 6: minimum endpoint/access/enrollment/route authority, consumed
-by P03-T01 scope binding and P04-T02 guarded transport before P03-T02 socket
-admission. Next user-visible deliverable remains P01-T09 Step 2/M1: one actual
-signed socket event through durable admission/archive/read/export/restart.
-Full discovery, Monitor, analytics and renewable sessions are not prerequisites.
-Existing Serve selects Control only. M1 also needs the clean extracted Compose
-journey, timer publication and dependency-outage recovery. Component evidence
-never replaces those journeys or completes an entire task/phase/product.
+P03-T01 Steps1/2/3: pure selector is qualified; initial durable registration now has
+six actual-PG schedules and native build evidence. Whole task remains open.
+Next bounded action: commit/push this first-wave evidence, then implement the
+registration fault qualification (lost COMMIT in both durable outcomes, held
+cancellation with retained driver custody, policy/registration lock ordering and
+corrupt bucket/relational refusals). Reuse the existing finite PostgreSQL wire
+proxy and lock barriers where semantics match. Preserve independent exact-row
+oracles and original failures. No full M1 or capacity claim follows from fixtures.
 
-The finite authority and supplied-stream WebSocket boundaries are qualified by
-actual source transport/cleanup/SQL races and the scoped protocol cases. The selector and collection/request membership are qualified components. The next
-missing boundary is durable scope registration/binding, followed by source-bound
-durable admission and installed finite Sync. Raw WebSocket
-text is not yet an admitted Nostr event. P01-T03 Steps1/7 supply the actual signed
-socket verification case; P03-T01 scope identity/registration and P03-T02 ordered
-admission then carry it into M1. Practical M1 still needs signed invalid-ID/signature
-controls, exact archive/read/export and restart through installed entrypoints.
-Full discovery, Monitor and renewable sessions do not gate this finite journey.
+Next user-visible deliverable is still P01-T09 Step2/M1: one actual signed socket
+event through durable admission/archive/read/export/restart. Concrete path:
+P02-T01 Step6 source identity/enrollment → P03-T01 scope registration/binding →
+P04-T02 guarded transport → P03-T02 source-bound admission. Finite authority,
+WebSocket, preserving decoder and selector membership have component evidence;
+registration needs failure qualification and then an actual consumer. Full
+discovery, Monitor, analytics and renewable sessions are not prerequisites.
+Existing Serve selects Control only. Clean extracted Compose, timer publication,
+dependency-outage recovery and invalid-ID/signature controls remain practical M1.
 
-Structural review kept one visible Control transaction and borrowed socket owner.
-It extracted the existing backend lock barrier for actual reuse by two laboratories
-and separated concurrency probe behavior from common setup. No generic lifecycle
-framework or backend trait was introduced. Prior Serve/export/admission structural
-reviews remain scoped; do not infer complete product maintainability from this.
+## Registration implementation and evidence
 
-## Latest source implementation and qualification
+[Owning reference](../reference/acquisition-scopes.md),
+[Mac components](evidence/p03-acquisition-scope-mac-20260928.json),
+[native build and first-wave PG](evidence/p03-acquisition-scope-native-20260928.json).
+Candidate54d1a18 registers explicit finite-job intent without changing accepted
+policy v1/v2 key sets. Requested policy epoch is retained across ambiguous retries;
+exact existing historical identity resolves before fresh-epoch refusal. Missing
+old intent leaves no selector. New random selector IDs cannot resolve another
+document's scope before insertion. Registration grants no network, admission,
+visibility or coverage authority. Enrollment generation/route belong to execution.
 
-[Owning reference](../reference/relay-enrollment.md),
-[transport evidence](evidence/p04-source-transport-native-20260928.json), and
-[cleanup evidence](evidence/p04-source-cleanup-native-20260928.json).
+Reusable selector rows persist exact profile1 compact JSON bytea, separately from
+the unchanged semantic CBOR fingerprint. SHA256 locates a bounded64-row candidate
+bucket; complete bytes establish equality. Exact field order/escaping is frozen.
+The encoder counts escaped bytes before allocation and checks replay budget;
+model-valid oversized escaped/dense documents refuse with Capacity. Full scope
+uniqueness includes dataset/endpoint/selector/access/full visibility/policy epoch.
+One Control-owned READ COMMITTED transaction holds Control then dataset locks,
+inserts selector+scope and reuses the existing final registration fence. Failure
+or cancellation poisons reuse; caller must retain and join the driver.
 
-8c4d12c implements finite Control-owned source transport. It reuses current and
-historical enabled enrollment checks, decodes immutable exact endpoint/route,
-borrows actual committed StoredVisibility, and restores BOTH complete accepted
-v2 documents against actual roots. Sync enablement, fixed membership, bans and
-route restrictions are checked. Public visibility refuses private routes and
-query-bearing URLs; an explicit public-query exception remains unimplemented.
-There is no reusable grant. No applied migration changed.
+Mac1 scope-value/5 codec/29 catalog/3 migration-entrypoint tests and scoped Clippy
+PASS. Original missing-API REDs, an Ordinal fixture typo and a probe closure
+lifetime failure remain in ignored acquisition-scope-20260928; corrected checks
+pass. Native54d1a18 release CLI/probe, the same38 tests and Clippy PASS.
+Six actual PG schedules yielded32 recorded checks: populated CLI upgrade/reapply
+preserved all64 prior tables, their rows/xmin/heap filenodes and old ledger; normalized
+retry and owner restart;64 forced candidate collisions and65th refusal; wrong
+access/visibility FK rollback; server-observed expiry rejected COMMIT; missing
+migration; historical retry after clone-only policy advance. The latter does not
+qualify management activation. Independent observers compare exact documents,
+full scope relationships and unchanged original transport basis/reports.
+Root compared1,524 exact Git source hashes and52 captured payloads.
 
-The local lease starts before schema/lock I/O, is capped by positive actual
-Control remainder and the caller deadline, and never exceeds five seconds.
-A borrowed nonblocking liveness predicate observes backend loss on every network
-poll, including buffered TLS. Replacing an attached predicate permanently refuses.
-Socket/work drop before rollback; client, original deadline and lease are checked
-again before delivery. Cancellation or uncertain cleanup poisons the session;
-caller retains and joins the actual driver. Undetected partitions remain finite.
-Synchronous arbitrary callbacks cannot be preempted.
+Root and read-only AI review covered new owners, relevant callers and contracts.
+Review corrected implicit epoch ambiguity and accidental selector-ID adoption,
+and requested literal JSON order/escaping compatibility now documented/tested.
+Structure retains one visible transaction with named multiline SQL and focused
+lookup/insert helpers, reuses the actual final fence and existing crates, and
+introduces no generic registry framework. Failure/lock/raw relational acceptance
+remains NOT_RUN; so do read-by-scope, jobs/progress and installed Sync.
 
-The actual policy helper lives in config/acquisition.rs. Its explicit dead-code
-annotation records that the native probe consumes it but installed Sync does not
-yet. Remove the annotation when that installed consumer is wired. Native API
-results are data only; admission must independently recheck source and policy.
+Ordinary sync.selectors remains selected work requiring explicit accepted-policy
+version integration; no silent legacy defaults. Future execution/admission must
+check both complete accepted documents, collection/request membership, current
+source and committed visibility, including CertifyExisting. Preserve historical
+ambiguous-outcome recovery independently from fresh authority.
 
-Native 8c4d12c release CLI/probe, 29 network + 4 policy + 1 visibility tests and
-Clippy PASS. Three actual PG/Rocks/TCP cases PASS: private exchange, injected
-second-policy refusal and exact Control backend termination. Public visibility
-refuses contact in all cases. Backend loss closes within 500 ms with over one
-second of ordinary validity left. Second-policy refusal is callback injection,
-not a concurrent ban update. Buffered TLS is separate component evidence.
-Root verified 15 build and 23 transport payloads, complete 16 native rows,
-original input/receipt and all 64 Control relations.
-
-Native e365b33 builds the expanded cleanup probe and passes Clippy; unchanged
-component suites were not repeated. Four actual cleanup cases PASS. The fourth
-ROLLBACK follows nine COMMITs and three completed setup ROLLBACKs. Actual backend
-is idle after server completion while its response is held. Known positive data
-returns; shorter owner expiry refuses after 1,437,521 us; pending cleanup timeout
-refuses after 751,903 us; ready response resumes after 1,501,251 us and refuses the
-750 ms caller deadline. All received values are observably disposed. All 64 tables
-remain unchanged after the explicitly injected lease/xmin change; native rows,
-sequence 17, original input and receipt match the independent oracle. These small
-fixtures establish no production-capacity claim.
-
-Detached .research/worktrees/source-no-final-deadline-e365b33 has negative commit
-354abff7f766ae8415f5d8dcae833a375756fbaa, tree f577e55ac96cd9b0b151c93d30a69d673b912819.
-Exactly one product file differs: only the final caller deadline check is omitted.
-Its first three cases pass, then late-ready delivery enters Ok(value) and panics
-on expected Some(Deadline) versus None. C/Z had passed while the source future
-paused. Original harness FAIL is retained; root verified the expected negative
-failure, not relabeled success. This excludes an ordinary pending-timeout false
-positive. The failure skips the post-suite original-data comparison; that
-comparison is NOT claimed passed for the negative run. Never merge/push it.
-
-Root verified 12 build payloads per cleanup revision, 36 positive and 34 negative
-engine payloads. Full changed owners/callers/diff and independent AI fixture review
-completed. Review corrected replaceable liveness, late cleanup delivery and a
-harness cleanup exception that could skip container retirement. The expired case
-has a one-second fixture timing guard; SQL-observed expiry is the actual condition.
-A slow setup can fail that guard and must be classified honestly.
-
-Original missing-API REDs, buffered-TLS negative control, replaceable-predicate
-failure, private-policy fixture expectation error and unused-helper lint failure
-remain under .research/implementation/source-issuer-20260928. Initial cleanup
-proxy loop-instantiation, Rust lifetime and syntax failures remain under
-.research/implementation/source-cleanup-20260928. No failure was rewritten.
+Retain the actual-consumer memory risk: selected32MiB producer cannot blindly
+stack17MiB WebSocket +8MiB decode +8MiB verification. Borrowed EVENT ownership is
+small; wire the real consumer and account retained capacities/release or resize
+temporary workspace. The64MiB socket fixture does not qualify32MiB. No unused
+framework/API or memory-capacity claim from this component.
 
 ## Current owned laboratory resources
 
-Inventory key implementation_relay_source_20260928 owns complete identities.
-All paths below are under /home/tux/bigbrotr-implementation-20260917/runs/.
-All four roots retain source/export, original logs, manifests and exact ELFs.
+Inventory implementation_network_20260928.acquisition_scope owns the complete
+identities; ignored .research/implementation/acquisition-scope-20260928 owns
+start/launch/capture/review scripts and original results. Do not rerun old launchers.
+All remote roots are under /home/tux/bigbrotr-implementation-20260917/runs/.
 
-- source-transport-8c4d12c: build owner 40faca3eac30ac761278089fc3b1b109,
-  PID 3109696/start 396492282 terminal. Engine owner ae75ad5a3aea42ed7d7fb560e4209719,
-  PID 3115068/start 396508317 terminal; client 2d328d6ac7cd stopped. Three clones.
-- source-cleanup-e365b33: build owner ac60e16298eb8e2c7300c3f92d5227a6,
-  PID 3124898/start 396617057 terminal; fetch/native stopped exit 0/no OOM.
-  Engine PID 3127323/start 396626332 terminal; four clones/native stores retained.
-  Audit 08:27:36 verified 900 other projections, eight unrelated running, 1,483
-  clean source files; 67,760,959,488 bytes available then.
-- source-cleanup-354abff: negative build owner 419c1d6d2d43269c70d69728edfad7bf,
-  PID 3132329/start 396634932 terminal; fetch/native stopped exit 0/no OOM.
-  Engine PID 3134792/start 396645279 terminal, raw expected FAIL. Four clones,
-  including failed ready state, retained. Audit 08:31:03 verified 903 other
-  projections unchanged, eight unrelated running, 1,483 clean source files;
-  67,594,240,000 bytes available then.
+acquisition-scope-54d1a18 is STOPPED/RETAINED. Build owner
+ac3418285c3aab8ff43b8b03a2a88dc8, PID3222893/start397662263 terminal;
+fetch46599c0063dab4f678a76608d1b665385af97f1217ba93e316de66d8b405c426 and
+nativeb91023eabcdb29913dd5ba5219a4d30ac7360e8128af1238efa156c7f4593fd2
+exited0/no OOM. Bundle
+d04b9c5517a148eac16f251be56bd928d7f5156e77bda0434a9f60bac01c68d5.
+Engine owneraac842beaec809b7dab77725eee4b6a3, PID3226185/start397671267 terminal;
+clientde7296a2b07b261bf31995acac5009a2109e069cf6180352f629c10d735c2193 stopped
+by the harness (exit143/no OOM). Six bb_scope_54d1a18_* clones retained.
+Terminal audit11:22:02 UTC verified915 other container projections unchanged,
+eight unrelated running, compiler lock released and66,684,985,344 free bytes.
+Mac last free11,256,420 KiB. Check space before further allocation.
 
-- source-races-81a35c5: build owner7d679c19552aa23f8af496007aaa21c8,
-  PID3148629/start396791735 terminal; fetch/native exit0/no OOM; cache lock released.
-  Engine owner1514124a3163aaa330d09ad34cb4eaa7, PID3150938/start396800165 terminal,
-  client45d16964c2cc stopped. Seven bb_race_81a35c5_* clones/native stores retained.
-  All seven schedules PASS; audit08:57:15 verified906 other projections unchanged.
-  Local source-races-20260928 owns bundle/launch/capture/root-review recipes.
+Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec
+is stopped exit0/no OOM: namebigbrotr-implementation-pg-20260917-source_e06f580,
+owner5e69b0f060b1607c25230d1dbd3e5608, rootrelay-source-recheck-e06f580/pg,
+internal172.16.240.80/28, PG16.15/fsync/full_page_writes on. Original template,
+source, fault, race and transport clones stay retained. Registration basis is
+bb_transport_8c4d12c_pass; it and source-transport-8c4d12c/transport results are
+unchanged. No Rocks/archive writes by the registration laboratory.
 
-All source engines borrow stopped PostgreSQL 7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec,
-name bigbrotr-implementation-pg-20260917-source_e06f580, owner
-5e69b0f060b1607c25230d1dbd3e5608. Its root is relay-source-recheck-e06f580/pg,
-internal network 172.16.240.80/28. Original template/source-pass and older fault,
-relational, transport and cleanup clones are retained. Never rerun old launchers.
-Local ignored source-issuer-20260928 and source-cleanup-20260928 directories own
-bundle/launch/capture/root-review recipes, raw outcomes and hash manifests.
+Compiler cache network-1154757/out/build/{target,cargo-home} is mutable acceleration,
+exclusively locked by .compiler-cache.lock. Lock verified released. Exact qualified
+CLI/probe and prior ELFs remain outside it; latest intermediates are54d1a18.
+No cache output is itself qualified. Prior selector061890f/relay-wire27b7f45/
+websocket9fe4ce4 builds and all source transport/cleanup/race labs are terminal;
+complete identities remain in implementation_network_20260928 and
+implementation_relay_source_20260928, with their original evidence below.
 
-Current compiler cache is network-1154757/out/build/{target,cargo-home}, exclusively
-locked by .compiler-cache.lock. Both latest terminal build audits verified release.
-Original ELFs are outside it. It currently contains positive061890f build intermediates;
-only exact source rebuilds may use it. No cache output is itself a qualified input.
+## Qualified component chain and unresolved limits
+
+- [WebSocket Mac](evidence/p04-websocket-mac-20260928.json) and
+  [native](evidence/p04-websocket-native-20260928.json): finite borrowed DirectStream,
+  handshake/header/framing limits, selected2MiB equality/overflow, Close ACK+EOF,
+  buffered-input liveness, poisoned cancelled send and retained permits. Native
+  blocked send delivered2097152 bytes then262144 of the next frame; no capacity
+  inference. Upstream raw tokio-tungstenite0.29 counterexample is retained;
+  future log bridges must exclude private URL/payload targets. No compression or
+  renewable shared quota yet. Eight locked packages added, none upgraded.
+- [Preserving decoder Mac](evidence/p01-relay-wire-mac-20260928.json) and
+  [native](evidence/p01-relay-wire-native-20260928.json): borrowed exact EVENT,
+  whole preflight, private Serde wrapper, signed/forged/duplicate negatives,
+  EOSE hint distinctions and no AUTH signing. Original positional/public-Serde
+  failures retained. Native27b7f45 and1505 source hashes verified.
+- [Selector Mac](evidence/p03-selector-mac-20260928.json) and
+  [native](evidence/p03-selector-native-20260928.json): eight model/four original
+  codec/two signed socket tests at061890f. Three literal fingerprints distinguish
+  typed sorting from CBOR byte order. Exact values/AND/OR/first tag, explicit
+  time bounds, floor and local ephemeral exclusion remain separate. No Boolean
+  subsumption, unknown search or filled legacy policy keys. Codec now has fifth
+  persistence regression in54d1a18. No actual peak heap/capacity evidence.
+- [Source transport](evidence/p04-source-transport-native-20260928.json),
+  [cleanup](evidence/p04-source-cleanup-native-20260928.json):8c4d12c actual
+  source/policy locks through finite action, both v2 documents, committed
+  visibility and actual route; local deadline includes all lock/I/O time, at most
+  five seconds. Socket drops before rollback; final lease/liveness/deadline check
+  protects delivery. e365b33 exercises four held-ROLLBACK schedules and observable
+  data disposal;81a35c5 seven SQL races/nine lock barriers also qualified. Raw data
+  returned by this API still needs independent admission checks. Public query
+  exception, renewable sessions and full management policy drain remain open.
+
+Negative source-cleanup354abff7f766ae8415f5d8dcae833a375756fbaa removes only the
+final caller-deadline check. First3 cases pass; fourth late-ready result fails.
+Original FAIL, source and fault state remain retained; post-suite original-data
+comparison did not run after panic. Never merge/push this negative revision.
+Other negative worktrees and original setup/product failures remain preserved.
 
 ## Maintenance and retained dependencies
 

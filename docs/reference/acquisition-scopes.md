@@ -1,7 +1,9 @@
 # Initial acquisition scope registration
 
-P03-T01 Steps1/2/3 now have an internal registration adapter. Native engine
-qualification is pending. This is neither an installed Sync command nor authority
+P03-T01 Steps1/2/3 now have an internal registration adapter.
+The [native first-wave evidence](../implementation/evidence/p03-acquisition-scope-native-20260928.json)
+covers six actual-PG schedules; loss/cancellation/concurrency acceptance is pending.
+This is neither an installed Sync command nor authority
 to request/admit events or advance coverage. The [selector component](protocols.md#collection-selector)
 retains its earlier bounded Mac/native evidence.
 

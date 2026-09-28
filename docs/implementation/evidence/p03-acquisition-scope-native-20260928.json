@@ -1,0 +1,243 @@
+{
+  "format": "bigbrotr-acquisition-scope-native/1",
+  "status": "PASS_SCOPED_ACQUISITION_REGISTRATION",
+  "source": "54d1a1841b64b60a2c8eed0cde8382c397cf1e30",
+  "tree": "b564ec7453e6f22bc8afe3f2cce5490cef179f4a",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "7b7410ed408ccab1d1c521b3a2f759748827d6c657c83fb4a317083d60e65482",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "2b44402300469c9cec2bc5e5ac9e179278dff6dde3044aaa748c5b0ecbe323d7",
+    "acquisition_scope_probe": "2761ded4b68c0061d900c83d5a5e37ccaf512de945e0250457ebb7395657f416"
+  },
+  "component_tests": {
+    "scope_value": 1,
+    "selector_codec": 5,
+    "catalog": 29,
+    "migration_entrypoint": 3
+  },
+  "engine_checks": [
+    {
+      "name": "basic-populated-upgrade",
+      "status": "PASS"
+    },
+    {
+      "name": "basic-repeat-upgrade",
+      "status": "PASS"
+    },
+    {
+      "name": "basic-actual-adapter",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "basic-retained-other-tables",
+      "status": "PASS"
+    },
+    {
+      "name": "basic-independent-durable-effects",
+      "status": "PASS",
+      "selectors": 2,
+      "scopes": 3
+    },
+    {
+      "name": "basic-drivers-joined",
+      "status": "PASS"
+    },
+    {
+      "name": "collision-populated-upgrade",
+      "status": "PASS"
+    },
+    {
+      "name": "collision-repeat-upgrade",
+      "status": "PASS"
+    },
+    {
+      "name": "collision-actual-adapter",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "collision-retained-other-tables",
+      "status": "PASS"
+    },
+    {
+      "name": "collision-independent-durable-effects",
+      "status": "PASS",
+      "selectors": 64,
+      "scopes": 64
+    },
+    {
+      "name": "collision-drivers-joined",
+      "status": "PASS"
+    },
+    {
+      "name": "rollback-populated-upgrade",
+      "status": "PASS"
+    },
+    {
+      "name": "rollback-repeat-upgrade",
+      "status": "PASS"
+    },
+    {
+      "name": "rollback-actual-adapter",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "rollback-retained-other-tables",
+      "status": "PASS"
+    },
+    {
+      "name": "rollback-independent-durable-effects",
+      "status": "PASS",
+      "selectors": 0,
+      "scopes": 0
+    },
+    {
+      "name": "rollback-drivers-joined",
+      "status": "PASS"
+    },
+    {
+      "name": "expired-populated-upgrade",
+      "status": "PASS"
+    },
+    {
+      "name": "expired-repeat-upgrade",
+      "status": "PASS"
+    },
+    {
+      "name": "expired-actual-adapter",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "expired-retained-other-tables",
+      "status": "PASS"
+    },
+    {
+      "name": "expired-independent-durable-effects",
+      "status": "PASS",
+      "selectors": 0,
+      "scopes": 0
+    },
+    {
+      "name": "expired-drivers-joined",
+      "status": "PASS"
+    },
+    {
+      "name": "old-schema-actual-adapter",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "old-schema-retained-other-tables",
+      "status": "PASS"
+    },
+    {
+      "name": "old-schema-drivers-joined",
+      "status": "PASS"
+    },
+    {
+      "name": "historical-actual-adapter",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "historical-retained-other-tables",
+      "status": "PASS"
+    },
+    {
+      "name": "historical-independent-durable-effects",
+      "status": "PASS",
+      "selectors": 2,
+      "scopes": 4
+    },
+    {
+      "name": "historical-drivers-joined",
+      "status": "PASS"
+    },
+    {
+      "name": "retained-basis-unchanged",
+      "status": "PASS"
+    }
+  ],
+  "checks": [
+    "Actual CLI populated0004 upgrade preserved prior64 tables/rows/xmin/heap filenodes and original ledger checksums; exact repeat unchanged",
+    "Actual Control adapter normalized retry and successor restart; separate access/visibility and selector dimensions",
+    "Forced constant candidate digest:64 distinct full documents registered, exact retry resolved and65th refused",
+    "Wrong access/visibility FK rolls back provisional selector; PostgreSQL-observed expiry refuses deferred COMMIT; old schema refuses before mutation",
+    "Explicit historical epoch recovers original scope after revision advance; current epoch creates separate scope and missing old intent leaves no selector",
+    "Independent complete before/after tables and full scope relationships; original transport basis/reports unchanged; all drivers joined"
+  ],
+  "review": {
+    "source_files": 1524,
+    "captured_payloads": 52,
+    "capture_manifest_sha256": "69b7bcae71c1ca286c9eedec346d20b91ad8f50af9ba70a79cee6a23e071ad64",
+    "root_review_sha256": "07f48c29cacdd0d7b562ee96441920a4233db50a5e4e3340adb9002f99ea4793"
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "54d1a1841b64b60a2c8eed0cde8382c397cf1e30",
+    "observed_at": "2026-09-28T11:22:02.135682+00:00",
+    "prior_unchanged": 915,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "46599c0063dab4f678a76608d1b665385af97f1217ba93e316de66d8b405c426",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "b91023eabcdb29913dd5ba5219a4d30ac7360e8128af1238efa156c7f4593fd2",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "de7296a2b07b261bf31995acac5009a2109e069cf6180352f629c10d735c2193",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1524,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 66684985344,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/acquisition-scope-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-54d1a18",
+  "not_qualified": [
+    "lost COMMIT and cancellation schedules",
+    "concurrent policy/registration locks",
+    "corrupt overfull candidate bucket",
+    "raw relational negative matrix",
+    "installed Sync, durable socket admission, coverage/M1",
+    "load/aged state",
+    "arm64/release"
+  ],
+  "scope": "Initial immutable registration only. Fixture validators compare exact retained policy; clone-only revision advancement does not qualify management activation. Registration grants no acquisition."
+}
