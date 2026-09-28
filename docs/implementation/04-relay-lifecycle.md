@@ -1,7 +1,8 @@
 # Phase 04 — Relay lifecycle implementation plan
 
 Status: implementation active under the owner's 2026-09-17 authorization. P04-T02
-direct address policy and bounded DNS have [scoped Mac component evidence](evidence/p04-network-components-mac-20260928.json);
+direct address policy and bounded DNS have [scoped Mac](evidence/p04-network-components-mac-20260928.json)
+and [native component evidence](evidence/p04-network-components-native-20260928.json);
 no complete adapter step or phase is qualified by it. Unchecked steps and example
 acceptance commands below remain selected future work. Historical Go behavior
 informs fixtures and design choices, not a compatibility or correctness claim.

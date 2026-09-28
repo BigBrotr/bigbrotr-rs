@@ -13,6 +13,7 @@ import sys
 import tarfile
 
 sys.dont_write_bytecode = True
+from inventory import projection
 revision, tree = sys.argv[1:]
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
@@ -38,10 +39,6 @@ def write(path, value):
 
 def containers():
     return json.loads(command('docker', 'inspect', *command('docker', 'ps', '-aq').split()))
-
-
-def projection(item):
-    return {key: item[key] for key in ['Id', 'Name', 'Image', 'State', 'Mounts']}
 
 
 assert command('git', '-C', str(source), 'rev-parse', 'HEAD') == revision
@@ -137,8 +134,14 @@ try:
     state['qualification'] = qualification['status']
 finally:
     after = {c['Id']: projection(c) for c in containers()}
-    assert all(after[c['Id']] == projection(c) for c in prior)
-    state.update(state='stopped-retained', free_bytes_after=shutil.disk_usage(base).free,
+    changed = [c['Id'] for c in prior if after.get(c['Id']) != projection(c)]
+    stopped = all(not after[c['id']]['State']['Running'] and after[c['id']]['State']['Pid'] == 0
+                  for c in state['containers'])
+    state.update(state='stopped-retained' if stopped else 'cleanup-required',
+                 inventory_changed=changed, free_bytes_after=shutil.disk_usage(base).free,
                  finished_at=datetime.datetime.now(datetime.timezone.utc).isoformat())
+    if changed or not stopped:
+        state['qualification'] = 'INCOMPLETE_LAB_AUDIT'
     write(root / 'resources.json', state)
+    assert not changed and stopped
 print(json.dumps(state))

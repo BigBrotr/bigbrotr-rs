@@ -12,13 +12,14 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Verified HEAD and origin/main are8fc853e03d14f9eb8a165f7fb44581c6f3ee62f9;
-repository last verified PRIVATE. Product ad5e9e6, native candidate 6499656
-and evidence 8fc853e are published without history rewrite. Root is sole writer.
-Current dirty files are root-owned: Cargo manifests/lock, lib.rs, new network
-modules/tests, acquisition contract, dependency selections and this checkpoint.
-No migration changes or active native experiment. Read-only network/DNS reviews
-completed; new DNS findings below remain open before consumer integration.
+Verified local main HEAD is unpublished candidate
+1a2a8bed567a479f7641370dbc9c89f06465e7fa (tree
+851f2403bfaa4141cfe684e190a23a1e95a8a41a); origin/main last observed
+8fc853e03d14f9eb8a165f7fb44581c6f3ee62f9, private. Product ad5e9e6, native6499656
+and prior evidence8fc853e remain published without rewrite. Candidate sources
+were clean before exact Git transfer; checkpoint/inventory, native evidence and the bounded laboratory comparator fix
+are the current root-owned dirty files after the native run. Root is sole writer. No migration changes. Independent review is
+read-only; original findings and REDs are retained, fixes tested locally.
 
 Closed bounded responsibility: P08-T02 session consumer/P08-T03 Step3 CLI discovery,
 with the explicit remaining gates below. No complete task/phase/M1/product claim.
@@ -192,13 +193,37 @@ inventoried; the probe never qualifies the product. No new crate, cache, task,
 provider framework or persistent format. Root reviewed complete modules/tests and
 contract/dependency changes; read-only AI review excludes future integration.
 
-Next bounded action: review/check and commit this candidate, transfer via Git,
-then execute experiments/network-transport/lab.py on isolated Tux. Native runner
-copies only verified stopped649 compiler caches, uses locked fetch then offline
-network-none builds/tests, hashes retained test ELFs and exact sources. No archive
-or DB is created: 12 GiB compiler headroom applies, not the full export laboratory's
-72 GiB prerequisite. Last census 75,674,923,008 bytes free; recheck at launch.
-No product transport socket, TLS/WS or live Control integration exists yet.
+[Native component report](evidence/p04-network-components-native-20260928.json)
+qualifies candidate1a2a8be's 32 actual Linux amd64 tests/Clippy only. No ignored
+cases. Original lab terminal audit failed because unordered Mounts/rotating
+Health.Log were compared literally; its original log/state are preserved. The
+projection now sorts full mounts and omits only Health.Log, retaining lifecycle,
+health status and failing streak. Two helper tests plus actual changed-PID/mount
+negative controls pass. Independent terminal reconciliation at01:20:52UTC found
+853 prior normalized observations unchanged, eight unrelated running, both owned
+containers exit0/no OOM and orchestrator absent. No product rerun was necessary
+for this laboratory-only correction. Exact1389 source hashes, Git archive, seven
+new Linux dependency archives and three retained test ELFs independently checked.
+
+Lab network-1a2a8be is stopped-retained, owner
+bac04a9c1ac35f50d762a6120d813546, oldPID2783589/start394034043 terminal.
+Containers fetch e2a023870e4f330b5f186b1149dab038a359a71e03cd089288622fb2f26448a9
+and native df27dd72350304d97f950c6c8a9d0894eed7c1a1bc7e9a25a4179c7255872ebc
+remain stopped. Remote resources.before-reconciliation.json preserves the original
+RUNNING receipt; current resources.json records actual terminal reconciliation.
+Ignored .research/implementation/network-native-1a2a8be captures21 payloads,
+27,452,382 bytes, including original source/archive and test ELFs. Native raw root:
+/home/tux/bigbrotr-implementation-20260917/runs/network-1a2a8be. Only649 compiler
+caches were copied; no archive/DB created or prior resources deleted. Terminal
+free71,847,927,808 bytes; 12 GiB compiler headroom applied to this profile. Recheck
+before another allocation, especially a full export journey requiring64GiB reserve.
+
+Next bounded action: finish documentation/diff checks and publish candidate plus
+laboratory correction/evidence; then read current authority/configuration/role
+callers before implementing the shared pinned TCP/TLS consumer. No actual relay
+transport, TLS/WS or live Control integration exists yet. Real recursive-resolver
+interoperability, shared quotas and complete P04-T02 remain open. Keep helpers
+inside the current application; no generic orchestration framework is justified.
 
 Next useful deliverable remains P04-T02 Steps 1–5 -> P03-T02 real socket admission
 -> P01-T09 Step 2 first signed-event integration. Consume existing durable archive,

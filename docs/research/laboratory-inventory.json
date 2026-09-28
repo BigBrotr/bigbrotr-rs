@@ -27230,7 +27230,7 @@
   "implementation_network_20260928": {
     "owner": "root; Mac sole editor, read-only independent review",
     "base_source": "8fc853e03d14f9eb8a165f7fb44581c6f3ee62f9",
-    "status": "implementation in progress; no native acquisition qualification",
+    "status": "scoped Mac/native DNS and policy components qualified; complete guarded transport remains in progress",
     "local_tests": ".research/implementation/network-local-20260928",
     "upstream_audit": ".research/implementation/network-dependency-audit",
     "audit_identities": [
@@ -27243,6 +27243,39 @@
     "review_open": "Original findings reproduced and corrected; native/recursive interoperability and actual guarded transport consumers remain unqualified.",
     "remote": "No new remote resources or mutation; 2026-09-28T00:32:25Z read-only census 75675406336 bytes free and no active BigBrotr.",
     "evidence": "docs/implementation/evidence/p04-network-components-mac-20260928.json",
-    "native_recipe": "experiments/network-transport/lab.py; prepared, NOT_RUN. Fresh exact-Git directory, stopped649 cache copy only; original caches and artifacts preserved."
+    "native_recipe": "experiments/network-transport/lab.py; source1a2a8be native checks passed, original inventory audit INCOMPLETE then independently reconciled; comparator correction tested without repeating unchanged product checks",
+    "native_runs": [
+      {
+        "source": "1a2a8bed567a479f7641370dbc9c89f06465e7fa",
+        "tree": "851f2403bfaa4141cfe684e190a23a1e95a8a41a",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/network-1a2a8be",
+        "owner": "bac04a9c1ac35f50d762a6120d813546",
+        "owner_label": "org.bigbrotr.network-transport",
+        "state": "stopped-retained",
+        "started_at": "2026-09-28T01:14:46.895165+00:00",
+        "orchestrator": {
+          "pid": 2783589,
+          "start_ticks": "394034043"
+        },
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "e2a023870e4f330b5f186b1149dab038a359a71e03cd089288622fb2f26448a9"
+          },
+          {
+            "name": "native",
+            "id": "df27dd72350304d97f950c6c8a9d0894eed7c1a1bc7e9a25a4179c7255872ebc"
+          }
+        ],
+        "local_capture": ".research/implementation/network-native-1a2a8be",
+        "scope": "Native library DNS/policy components only, no actual guarded relay connection or full task claim.",
+        "qualification": "PASS_SCOPED_NATIVE_COMPONENTS_WITH_RECONCILED_LAB_TERMINATION",
+        "observed_terminal_at": "2026-09-28T01:20:52.514066+00:00",
+        "original_laboratory_outcome": "INCOMPLETE at original terminal inventory assertion; original resources.json remained running although native exited0",
+        "reconciliation": ".research/implementation/network-native-1a2a8be/terminal-reconciliation.json",
+        "free_bytes_after": 71847927808
+      }
+    ],
+    "native_evidence": "docs/implementation/evidence/p04-network-components-native-20260928.json"
   }
 }
