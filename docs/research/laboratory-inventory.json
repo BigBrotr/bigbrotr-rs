@@ -29130,6 +29130,65 @@
           "experiments/acquisition-scope/jobs.py"
         ]
       }
+    },
+    "acquisition_jobs_faults": {
+      "state": "STOPPED/RETAINED; original engine fixture FAIL after ten completed cases",
+      "source": "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7",
+      "tree": "97858a348f7fbe0e650374b223f278f790936293",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-9888ad5",
+      "build_owner": "ec4f978a0236aef4e7450b7dddc66049",
+      "pid": 3487270,
+      "start_ticks": "399788590",
+      "bundle_sha256": "6ed0b0aa2dc485693c9aa94ecc1b7b56dd7042e732cc5d39442ce34dc94219a4",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "1ea4849b53793e4facf62dec887e62be16a534ecb84a81fd4364bce261d8ef6c"
+        },
+        {
+          "name": "native",
+          "id": "053abef6a04b48b375b7892cda38e3938b959771e2afc9939c4da2b5407779d6"
+        }
+      ],
+      "local_evidence": ".research/implementation/acquisition-job-faults-20260928",
+      "scope": "Finite acquisition acceptance interruption/lock schedules; engine NOT_RUN",
+      "retention": "Original source, artifacts, logs and any new cloned databases; shared1154757 cache only",
+      "engine_launch": {
+        "source": "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7",
+        "tree": "97858a348f7fbe0e650374b223f278f790936293",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-9888ad5",
+        "pid": 3489716,
+        "start_ticks": "399797749"
+      },
+      "engine": {
+        "owner": "7c974a83511d6330b1c525e7c12b7bc9",
+        "label": "org.bigbrotr.acquisition-jobs",
+        "client": {
+          "id": "047f2cc3737ec679e8e57c2311d5f1252a1e09c44a48a59f33a935da60ea746a",
+          "name": "bigbrotr-acquisition-jobs-9888ad5"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "status": "FAIL",
+        "failure": "RuntimeError: missing-probe-event-ready",
+        "databases": [
+          "bb_acq_job_9888ad5_commit_pass",
+          "bb_acq_job_9888ad5_commit_before",
+          "bb_acq_job_9888ad5_commit_after",
+          "bb_acq_job_9888ad5_commit_cancel_close",
+          "bb_acq_job_9888ad5_commit_cancel_release",
+          "bb_acq_job_9888ad5_commit_delayed",
+          "bb_acq_job_9888ad5_commit_owner_expiry",
+          "bb_acq_job_9888ad5_writer_policy",
+          "bb_acq_job_9888ad5_writer_permission",
+          "bb_acq_job_9888ad5_writer_disabled",
+          "bb_acq_job_9888ad5_acceptance_policy"
+        ],
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "free_bytes_after": 63519145984
+      },
+      "next": "Correct nonce collision; rerun three acceptance-first cases only, retain original failure"
     }
   },
   "implementation_relay_registry_20260928": {

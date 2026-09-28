@@ -22,8 +22,11 @@ sys.path.insert(0, str(SOURCE / 'experiments/network-transport'))
 from inventory import projection
 
 arguments = sys.argv[1:]
+acceptance_first_only = bool(arguments and arguments[-1] == '--acceptance-first')
+if acceptance_first_only: arguments.pop()
 faults = bool(arguments and arguments[-1] == '--faults')
 if faults: arguments.pop()
+assert not acceptance_first_only or faults
 assert len(arguments) in (1, 2)
 root = Path(arguments[0]).resolve(strict=True)
 assert SOURCE == root / 'source'
@@ -54,9 +57,12 @@ output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-jobs'
 processes, sessions = [], []
 expected_status = 'PASS_FINITE_ACQUISITION_FAULTS' if faults else 'PASS_FINITE_ACQUISITION_ACCEPTANCE'
+if acceptance_first_only: expected_status = 'PASS_ACQUISITION_ACCEPTANCE_FIRST_LOCKS'
 client = 'bigbrotr-acquisition-jobs-' + revision[:7]
 report = dict(format='bigbrotr-acquisition-jobs/1', source=revision, build=built,
-    status='RUNNING', mode='faults' if faults else 'acceptance', owner=owner, label=label, client=None, cases=[], databases=[],
+    status='RUNNING', mode='faults' if faults else 'acceptance',
+    selection='acceptance-first locks only' if acceptance_first_only else 'complete wave',
+    owner=owner, label=label, client=None, cases=[], databases=[],
     postgres=pg['postgres'], postgres_owner=pg['owner'],
     not_run=['concurrent locks, cancellation and lost/delayed COMMIT',
              'remaining raw SQL relational negatives and historical grant/policy retry',
@@ -451,7 +457,7 @@ def writer(kind):
 
 
 def run_faults():
-    for name, wire_mode, mode, counts, committed in [
+    commits = [
         ('pass','pass','accept',[4,4,4,4,0],True),
         ('before','before-forward','unknown',[4,3,3,3,1],False),
         ('after','after-complete','unknown',[4,4,4,3,1],True),
@@ -459,7 +465,8 @@ def run_faults():
         ('cancel_release','hold','cancel',[4,4,4,4,1],True),
         ('delayed','hold','accept',[4,4,4,4,1],True),
         ('owner_expiry','hold','owner-expiry',[4,4,3,3,1],False),
-    ]:
+    ]
+    for name, wire_mode, mode, counts, committed in ([] if acceptance_first_only else commits):
         database, _ = prepare('commit_' + name)
         proxy, port = proxy_for(database, wire_mode)
         process, token = app(database, mode, 50, port)
@@ -503,7 +510,7 @@ def run_faults():
             require(all(retry_after[t] == after[t] for t in WORK_TABLES - {'management_audit'}), 'historical-retry-preserves-job')
         report['cases'].append(dict(name='commit-'+name,status='PASS',outcome=outcome,wire=wire,observations=observed,recovery=recovered))
         save()
-    for first in ['writer','acceptance']:
+    for first in (['acceptance'] if acceptance_first_only else ['writer','acceptance']):
         for kind in ['policy','permission','disabled']:
             name = first + '_' + kind
             database, _ = prepare(name)
@@ -538,7 +545,7 @@ def run_faults():
             if first == 'acceptance':
                 receipt_matches(outcome,after,True)
                 recovery_mode = 'replay-' + kind if kind in ('policy','permission') else 'replay'
-                recovery, retry_token = app(database,recovery_mode,62)
+                recovery, retry_token = app(database,recovery_mode,64)
                 probe_event(recovery,'ready'); retry_before=snapshot(database,name+'-retry-before');go(retry_token)
                 recovered=finish(recovery);retry_after=snapshot(database,name+'-retry-after')
                 backends_absent(database)
@@ -568,6 +575,13 @@ try:
     basic = rows(basis)
     require(basic == json.loads((basis_root / ('no-grant-after.json' if faults else 'basic-after.json')).read_text()), 'qualified-basis-unchanged')
     require(not basic['jobs'], 'empty-job-ledger-basis')
+    if faults:
+        # Historical Ingest and Control identities share the role-instance key.
+        # Never pick fixture identities solely by looking at Control rows.
+        prior_ids = {r['role_instance_id'] for r in basic['role_instances']}
+        prior_ids |= {r['process_incarnation'] for r in basic['owner_epochs']}
+        require(all('\\x' + bytes([n]).hex()*16 not in prior_ids for n in (50,51,52,60,64)),
+                'fixture-owner-identity-collision')
     policy = basic['config_revisions'][0]['document']
     require(policy == basic['policy_revisions'][0]['document'] and policy['format'] == 'bigbrotr-product-policy/2', 'fixture-policy')
     (output / 'policy.json').write_text(json.dumps(policy, sort_keys=True, separators=(',', ':')))

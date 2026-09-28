@@ -203,3 +203,10 @@ independent exact row/xmin expectations; they do not qualify management activati
 Every operation compares all67 tables, and actual backend absence follows driver
 joins. Held cancellation retains ownership and refuses a competing claimant.
 Result files decide what executed; no claim/dispatch or installed M1 follows.
+
+The original9888ad5 run completed seven COMMIT and three writer-first cases, then
+failed during acceptance-first recovery: nonce62 reused a retained Ingest role ID.
+That original FAIL and11 clones remain. The fixture now checks all historical
+role/incarnation IDs. `--faults --acceptance-first` selects only the three affected
+lock/recovery cases for a new exact-source run, reusing unchanged9888ad5 artifacts.
+This setup correction changes neither product behavior nor expected job outcomes.

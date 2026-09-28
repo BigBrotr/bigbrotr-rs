@@ -12,21 +12,24 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main/private origin is9bdc361, first-wave qualification committed/pushed.
-Root owns WIP finite acquisition fault probe/harness and its bounded build profile.
-Thirteen planned schedules cover COMMIT4 loss/cancellation/delay/expiry and both
-policy/grant/enrollment lock orders, with exact historical retry. NOT RUN on engines.
-Read-only review found fixture writers needed an explicit privileged clone-only
-role and exact mutation assertions. Both corrected before launch; each SQL
-statement is checked separately so trailing COMMIT cannot hide an earlier error.
-Mac probe Clippy, formatting, syntax and artifact checks PASS. The isolated exact
-writer oracle accepts three positives and rejects nine no-op/partial/extra changes;
-this is fixture checking only. Read-only review found no further launch blocker.
-No product/SQL change or active remote process. Resumption confirmed eight unrelated
-running containers, 63,805,947,904B free on Tux and7,972,968KiB on Mac.
-Next: commit this clean candidate, then exact-Git native
-probe build and these actual PostgreSQL schedules. All selected product work remains
-INCOMPLETE. Cache retirement is complete; never replay launch/deletion recipes.
+Mac main is unpublished9888ad5; private origin/main remains9bdc361.
+Root owns a fixture-only correction plus checkpoint/inventory.9888ad5 native build
+and scoped Clippy PASS; original engine is FAIL, STOPPED/RETAINED. Seven COMMIT
+schedules and three writer-first races passed; acceptance-first policy committed
+but its fresh-owner retry failed before claiming because fixture nonce62 collided
+with retained Ingest role3e. Actual PG unique violation identifies setup failure,
+not product acceptance failure. Original logs,11 clones and exact outcomes remain.
+Engine owner7c974a83511d6330b1c525e7c12b7bc9 PID3489716/start399797749 terminal;
+client047f2cc3 stopped143, borrowedPG71775507 stopped0, no OOM/cleanup/unrelated change.
+Build ec4f978a0236aef4e7450b7dddc66049 and fetch1ea4849b/native053abef6 terminal0.
+The correction checks all historical role/incarnation IDs and uses absent nonce64.
+Next: clean fixture-only candidate, reuse exact9888ad5 artifacts, execute only the
+three acceptance-first schedules in a fresh isolated run. No broad unchanged rerun.
+Ignored .research/implementation/acquisition-job-faults-20260928 owns launch/capture
+receipts; inventory implementation_network_20260928.acquisition_jobs_faults.
+No product/SQL change, no active remote process. Last Tux free63,519,145,984B.
+All selected product work remains INCOMPLETE. Cache retirement is complete;
+never replay launch/deletion recipes.
 
 Active P03-T01 Steps3/4: finite acquisition acceptance now has additive0022,
 strict typed duration≤24h/fingerprint and real authenticated Control adapter.
