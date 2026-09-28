@@ -30239,6 +30239,305 @@
           "capture_manifest_sha256": "6f2a9baca12519998029862d397437435162f93085a7e8e3e553d189116d5ecc"
         }
       ]
+    },
+    "relay_transfer": {
+      "state": "Original18 native tests PASS; first engine FAIL from fixture close deadlock; stopped-retained; retry pending",
+      "launch": {
+        "source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+        "tree": "03f3ea8ba333899d352cc7746148e88a0979fba3",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-transfer-cbc5f25",
+        "pid": 3687519,
+        "start_ticks": "401117194",
+        "bundle_sha256": "fdda50b177f5fcf987cff397277645329d5a168d1f29b825d9172612e5631601"
+      },
+      "resources": {
+        "source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+        "tree": "03f3ea8ba333899d352cc7746148e88a0979fba3",
+        "owner": "a860030aa47e26108ee85be7340b650b",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-transfer-cbc5f25",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "d7f1e47ff848dd90b5def6f3a4100aa5fbe2028b703052ea4b4cde6b429eaaf2"
+          },
+          {
+            "name": "native",
+            "id": "1689fe497ede3ff9cfa09e22dbb443590c61fbb195786da2932c88c126ce50ce"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T20:55:18.445537+00:00",
+        "qualification": "PASS_RELAY_TRANSFER_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 61385392128,
+        "finished_at": "2026-09-28T20:56:47.246729+00:00"
+      },
+      "local_evidence": ".research/implementation/relay-transfer-20260928",
+      "preserve": "Exact Git source, original logs, separately retained artifacts; reuse only inventoried locked1154757 compiler. No dataset deletion.",
+      "original_engine": {
+        "format": "bigbrotr-acquisition-binding/1",
+        "source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+        "build": {
+          "source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+          "tree": "03f3ea8ba333899d352cc7746148e88a0979fba3",
+          "native_toolchain": {
+            "os": "Linux",
+            "architecture": "x86_64",
+            "discovery": "llvm-config",
+            "environment": {
+              "CC": "/usr/lib/llvm-14/bin/clang",
+              "CXX": "/usr/lib/llvm-14/bin/clang++",
+              "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+              "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+              "CARGO_BUILD_JOBS": "2",
+              "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+            },
+            "tools": {
+              "CC": {
+                "path": "/usr/lib/llvm-14/bin/clang",
+                "realpath": "/usr/lib/llvm-14/bin/clang",
+                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+              },
+              "CXX": {
+                "path": "/usr/lib/llvm-14/bin/clang++",
+                "realpath": "/usr/lib/llvm-14/bin/clang",
+                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+              },
+              "AR": {
+                "path": "/usr/lib/llvm-14/bin/llvm-ar",
+                "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+                "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+                "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+              },
+              "LIBCLANG_PATH": {
+                "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+                "version": "Debian clang version 14.0.6"
+              },
+              "discovery": {
+                "path": "/usr/lib/llvm-14/bin/llvm-config",
+                "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+                "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+                "version": "14.0.6"
+              }
+            },
+            "sdk": null
+          },
+          "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+          "source_manifest_sha256": "b557ef4766ccec6a44b57a97323490538e13958838e7c0285b0efb999a898b40",
+          "scope": "Retained EVENT ownership and strict bounded decode; actual PG/Rocks/socket admission remains separate",
+          "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+          "format": "bigbrotr-registry-build/1",
+          "binary_sha256": "7fb96e9ed4b7ae3eb36b91da79a697b29216ff6325496bc40f50cb6279c7fa4a",
+          "probe_name": "ingest_bootstrap_probe",
+          "probe_sha256": "e99d128734624421447ed27c134103bc21fb0cdbb2a330165ecba16fec9e1319",
+          "build_info": {
+            "archive_worker": null,
+            "capabilities": [
+              "event-verification",
+              "config-static"
+            ],
+            "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; internal preserving relay-envelope decoder and bounded collection selector; offline static configuration candidates and incomplete read-only doctor diagnostics. Advertised entrypoint capabilities remain event-verification and config-static; no installed acquisition, source policy or general NIP conformance claim",
+            "debug_info": "false",
+            "format": "bigbrotr-build/1",
+            "inputs_sha256": {
+              "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+              "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+              "contracts/protocol/versions.json": "f25d67a448dca1a17b7378d887c4ccce73a715fc7565a626748e06d22fb76385",
+              "contracts/release/dependencies.json": "430dc7baa5bb22954286b56d1cb6aa24b39b87f537e26ece40deed8018834a9b",
+              "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+            },
+            "optimization": "3",
+            "product": "BigBrotr",
+            "profile_assertion": "release",
+            "protocol_registry_format": "bigbrotr-protocol-versions/1",
+            "protocols": {
+              "collection_selector": "bigbrotr-collection-selector/1",
+              "event_verifier": "bigbrotr-nip01-verifier/1",
+              "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+              "relay_envelope_decoder": "bigbrotr-relay-envelope/1"
+            },
+            "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+            "schemas": {
+              "build_info": "bigbrotr-build/1",
+              "config_static": "bigbrotr-config-static/1",
+              "doctor": "bigbrotr-doctor/1",
+              "signed_event": "nip01-event/1"
+            },
+            "source": {
+              "dirty": false,
+              "manifest_sha256": "b557ef4766ccec6a44b57a97323490538e13958838e7c0285b0efb999a898b40",
+              "revision": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+              "state": "builder-supplied",
+              "tree": "03f3ea8ba333899d352cc7746148e88a0979fba3"
+            },
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "0.1.0-dev"
+          },
+          "test_executables_sha256": {
+            "protocol_event": "2ac904652af977e602784baf9e9b6c1e8640ba7a4c6020c22bc991bec96c362d",
+            "acquisition_session": "4a0c7d238445fb0435709e6bcc9888e28d247ff71f572cce7c5c7d19b760fd70"
+          }
+        },
+        "status": "FAIL",
+        "wave": "socket",
+        "owner": "21688869205634333b7b4e5266ff7474",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "74558625ba519c591d8b061ea01c0d794d856cc2c28cf0b8a7dc49aafea7f01f",
+          "name": "bigbrotr-acquisition-binding-cbc5f25"
+        },
+        "cases": [],
+        "databases": [
+          "bb_scope_bind_cbc5f25_socket_pass"
+        ],
+        "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "not_run": [
+          "authority changes after receive, lost/late rollback and COMMIT recovery in this composed path",
+          "production scheduler, verifier pool and durable EOSE/progress joins",
+          "installed dictionary append, same-owner command delivery, restart/M1",
+          "load/aged-state, production capacity, arm64 or release"
+        ],
+        "started_at": "2026-09-28T20:57:21.733769+00:00",
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "free_bytes_before": 61385379840,
+        "failure": "RuntimeError: actual-socket-admission",
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-28T20:57:21.813122759Z",
+              "FinishedAt": "2026-09-28T20:57:29.722277745Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "74558625ba519c591d8b061ea01c0d794d856cc2c28cf0b8a7dc49aafea7f01f",
+            "Name": "/bigbrotr-acquisition-binding-cbc5f25",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-09-28T20:57:22.718046549Z",
+              "FinishedAt": "2026-09-28T20:57:29.218458688Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-transfer-cbc5f25/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-transfer-cbc5f25/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "unrelated_changed": [],
+        "finished_at": "2026-09-28T20:57:30.503145+00:00",
+        "free_bytes_after": 61390479360
+      },
+      "original_terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "cbc5f258a1548b95fa7231969635b2fa60b69efb",
+        "observed_at": "2026-09-28T20:58:05.108501+00:00",
+        "prior_unchanged": 977,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "d7f1e47ff848dd90b5def6f3a4100aa5fbe2028b703052ea4b4cde6b429eaaf2",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "1689fe497ede3ff9cfa09e22dbb443590c61fbb195786da2932c88c126ce50ce",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "74558625ba519c591d8b061ea01c0d794d856cc2c28cf0b8a7dc49aafea7f01f",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1603,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 61390254080,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {

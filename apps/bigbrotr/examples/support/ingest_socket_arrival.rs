@@ -96,6 +96,9 @@ async fn peer(listener: &TcpListener) {
     socket.read_exact(&mut close).await.unwrap();
     assert_eq!(&close[..2], &[0x88, 0x80]);
     socket.write_all(&[0x88, 0]).await.unwrap();
+    // The server closes its sending side after the Close handshake. Waiting
+    // for client EOF first deadlocks a client that correctly awaits server EOF.
+    socket.shutdown().await.unwrap();
     assert_eq!(socket.read(&mut [0; 1]).await.unwrap(), 0);
 }
 async fn command(socket: &mut TcpStream) -> serde_json::Value {

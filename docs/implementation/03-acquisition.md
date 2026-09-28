@@ -209,9 +209,11 @@ installations still need actual dictionary append/intern and same-owner command 
 
 The next Steps1/2/3 slice owns a correlated EVENT copy under a separate grant and
 exposes strict bounded decoding before authoritative classification. Response
-attribution is immutable. Mac10 protocol/7 actual socket tests and the sealed-field
-regression pass; native `relay-transfer` and the real PG/Rocks/private-socket
-`bindings.py --socket` composition are pending. The independent oracle requires
+attribution is immutable. Mac/native10 protocol/7 actual socket tests and the
+sealed-field regression pass at cbc5f25. The first PG/Rocks/private-socket run
+failed because the fixture peer waited for client EOF before closing its own
+sending side. Original evidence remains intact; the corrected peer awaits a
+fresh `bindings.py --socket` run. The independent oracle requires
 exact native/input/receipt bytes for one admission, signature rejection and an
 existing duplicate with zero writes. It does not establish durable page progress,
 retained duplicate proof, a verifier pool or the installed command.

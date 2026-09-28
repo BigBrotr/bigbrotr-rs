@@ -12,10 +12,25 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin1f7a470a2f62f057a0d814caebaaac0fee35a835 match
-(pushed/ls-remote verified). Root sole writer. Current dirty product/probe/tests
-implement the next relay transfer slice; no new remote run or cleanup debt.
-All earlier owned resources remain stopped/retained.
+Mac main candidate cbc5f258a1548b95fa7231969635b2fa60b69efb, tree
+03f3ea8ba333899d352cc7746148e88a0979fba3. Private origin remains1f7a470.
+Root sole writer. First native build and all18 tests passed; the original
+connected-engine run FAILED before source delivery with Transport(Deadline).
+The fixture server sent Close then awaited client EOF without half-closing its
+own write side; the client correctly awaited server EOF. Both sides reached close,
+then the source deadline disposed the retained data. Original stderr/stdout/native
+store, clone and all build results are retained. Root fixes only the fixture peer
+with AsyncWriteExt::shutdown before still asserting client EOF; no product change.
+Use the new relay-arrival build-only profile for this Rust fixture change, then a
+fresh exact-Git --socket clone; unchanged18 component tests need not repeat.
+
+Original run relay-transfer-cbc5f25, buildPID3687519/start401117194,
+enginePID3690957/start401129520 terminal. Ownera860030aa47e26108ee85be7340b650b,
+fetchd7f1e47f/native1689fe49 stopped0; engineowner21688869205634333b7b4e5266ff7474,
+client74558625 stopped143, borrowedPG71775507 stopped0. Audit20:58:05UTC verified977 prior projections unchanged/eight unrelated running,
+artifacts intact and compiler lock free; original-failure.tar/capture under ignored
+relay-transfer-20260928. Corrected probe Mac Clippy passes.
+No active experiment. Do not replay original launchers. Last native free61.39GB.
 
 Active P03-T01 Step3/P03-T02 Steps1/2/3: strict decode_event_json extracts existing
 bounded parsing without crypto authority; RetainedRelayEvent reserves before

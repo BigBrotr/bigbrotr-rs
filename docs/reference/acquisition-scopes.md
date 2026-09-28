@@ -459,11 +459,13 @@ side channel. `decode_event_json` reuses strict bounded parsing without granting
 signature/ID validity; malformed structure is distinct from an invalid signed
 candidate that authoritative certification must classify.
 
-Mac ten protocol tests, seven actual socket tests and the attribution compile-fail
-regression pass. The pending `relay-transfer` native profile and
+Mac/native ten protocol tests, seven actual socket tests and the attribution
+compile-fail regression pass at cbc5f25. The
 `bindings.py --socket` compose an actual private socket with the same Control/native
 owner, concrete SyncArrivalPolicy and committed observation mappings. Its literal
 oracle expects one admission from valid/forged/duplicate frames, preserving the
 first receive and creating no request for invalid or existing effects. This does
 not qualify retained duplicate-proof bytes, durable EOSE joins, capacity or an
-installed Sync command. Native execution remains NOT_RUN at this candidate.
+installed Sync command. The first engine run failed during fixture close: the
+server awaited client EOF without half-closing after Close. Its original failure
+remains retained; a corrected peer and fresh connected-engine retry are pending.
