@@ -109,6 +109,8 @@ state, digest/audit mismatches, extra identities/audit, immutable identity updat
 old receipt application and a second transition after early constraint evaluation.
 Two valid controls bracket twelve exact SQLSTATE/message refusals. Every attempted
 subtransaction rolls back and compares all64 Control relations; only the real
-parent command may commit. Independent Python bytes supply fixture digests. This
-mode is proposed until its native report exists; it does not repeat the unchanged
-18 COMMIT/lock schedules or qualify current acquisition authority.
+parent command may commit. Independent Python bytes supply fixture digests.
+Executed at23d7534 using exact c2eebec artifacts: all twelve refusals and two valid
+controls passed. See the [native report](../../docs/implementation/evidence/p02-relay-enrollment-relations-native-20260928.json).
+No product/migration correction was needed. The unchanged18 COMMIT/lock schedules
+were not repeated; current acquisition authority remains a separate integration.

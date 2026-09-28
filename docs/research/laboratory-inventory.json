@@ -27969,6 +27969,63 @@
           "evidence": "docs/implementation/evidence/p02-relay-enrollment-faults-native-20260928.json",
           "preserve": "Original49e7ed4 database/report plus18 new clones and earlier failedc2 clone; exactc2 artifacts retained; no network/cache allocation or deletion."
         }
+      },
+      "relations": {
+        "state": "stopped-retained",
+        "source": "23d7534abf78510a9165825e4e656b54287c8955",
+        "tree": "ce30b837c47412d769e875259f64677ac93420fc",
+        "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-relations-23d7534",
+        "local_root": ".research/implementation/relay-enrollment-relations-23d7534",
+        "purpose": "Focused live-owner relational closure before current acquisition authority",
+        "artifacts_from": "relay-enrollment-faults-c2eebec/out/artifacts",
+        "borrowed_postgres": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+        "preflight": {
+          "containers": 876,
+          "unrelated_running": 8,
+          "active_bigbrotr": 0,
+          "free_bytes": 66605346816
+        },
+        "retention": "Preserve source, original outcomes, logs and clone; no deletion or compiler/network allocation.",
+        "launch": {
+          "source": "23d7534abf78510a9165825e4e656b54287c8955",
+          "tree": "ce30b837c47412d769e875259f64677ac93420fc",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-relations-23d7534",
+          "pid": 2987542,
+          "start_ticks": "395314795",
+          "bundle_sha256": "e56b841dc2925417e4364daf4536acc99f1a81b3d15629c8167876698c1c2f68"
+        },
+        "owner": "c563c514e0d2ee753fa58ab5f9e2c044",
+        "label": "org.bigbrotr.relay-enrollment-faults",
+        "client": {
+          "id": "850d322e70f02794ecdb9f4db417227349e6ad46419999814cd51335daee8c30",
+          "name": "bigbrotr-relay-enrollment-faults-23d7534"
+        },
+        "databases": [
+          "bb_enroll_fault_23d7534_relations"
+        ],
+        "terminal": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "23d7534abf78510a9165825e4e656b54287c8955",
+          "observed_at": "2026-09-28T04:48:47.516534+00:00",
+          "prior_unchanged": 875,
+          "borrowed_postgres": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "id": "850d322e70f02794ecdb9f4db417227349e6ad46419999814cd51335daee8c30",
+              "exit": 143
+            },
+            {
+              "id": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+              "exit": 0
+            }
+          ],
+          "source_files": 1447,
+          "original_report_unchanged": true,
+          "original_artifacts_verified": true,
+          "free_bytes": 66561679360
+        },
+        "report": "docs/implementation/evidence/p02-relay-enrollment-relations-native-20260928.json"
       }
     }
   }

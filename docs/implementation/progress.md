@@ -12,11 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main c17869308863999d1f83011559dc791619e3cf67 is pushed and was clean at
-resumption. Root now owns the focused relational SQL fixture and its runner/docs;
-no other writer or active experiment. Product dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9 remains unchanged.
-The fault probe compiled atc2eebec; fixture4ac4bad reused exact artifacts.
-No remote source editing. Current candidate will transfer through Git before execution.
+Local main candidate23d7534abf78510a9165825e4e656b54287c8955 is committed, not yet
+pushed; origin/main remainsc178693. Root owns current evidence/reference/checkpoint/
+inventory edits; no other writer or active experiment remains. Product
+dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9 remains unchanged.
+Exact c2eebec ELFs qualified the relational fixture at23d7534 without a rebuild.
+All source transfers used clean exact Git; no remote source editing.
 
 ## Active slice and next useful journey
 
@@ -30,12 +31,11 @@ journey, timer publication and dependency-outage recovery. Component evidence do
 not replace those journeys or qualify an entire task/phase/product.
 
 Initial enrollment and scoped command authority/recovery are qualified below.
-Next bounded action: exact-Git actual-PG verification of twelve focused relational
-refusals plus valid before/after controls, inside an actual live Control/session
-transaction. This establishes the specific enrollment closure consumed by the next
-issuer; it is not a new whole-subsystem barrier. The fixture reuses c2eebec ELFs,
-clones bb_enrollment, preserves originals, and checks all64 tables after each
-subtransaction. SQL is test-only; all applied migrations stay unchanged.
+Next bounded action after this evidence commit/private push: implement the small
+Ingest-owned committed visibility lookup consumed by current acquisition authority,
+reusing existing dictionary mapping/fact validation. Read complete affected native
+owners, dictionary/acquisition contracts and real callers first. The focused
+live-owner relational prerequisite passed below; no whole-subsystem barrier added.
 
 Independent read-only next-boundary review confirms the minimal sequence: existing
 Ingest dictionary bootstrap and committed visibility lookup; current endpoint,
@@ -92,8 +92,8 @@ dataset, account, session, domain; separate READ COMMITTED statements preserve
 post-wait visibility. Raw SQL SET CONSTRAINTS early execution cannot establish
 commit-time expiry. Product keeps initial deferral. Received BB001 is a known
 rejected COMMIT; transport/cancellation stays poisoned/ambiguous until actual
-owner/driver cleanup and fresh authenticated retry. The18 actual command fault/lock schedules below are now qualified; broader raw
-relational omission/corruption coverage remains explicit, not silently complete.
+owner/driver cleanup and fresh authenticated retry. The18 actual command fault/lock
+schedules and twelve focused relational refusals are qualified below; remaining selected capability gates are still explicit.
 
 Structural review: closed route enum, shared immutable Arc root rules (avoids
 up to256 URL clones per attempt), focused scalar decoders and named multiline SQL
@@ -239,8 +239,29 @@ new network or new compiler cache. Ignored .research/implementation/relay-enroll
 retains transfer/launch/collect/root-review recipes and manifest. Old c2 root owns
 build ELFs/cache-lock audit and original failure; do not rerun old launchers.
 
-Fresh preflight for the relational clone:876 total containers, eight unrelated
-running, no active BigBrotr process/container, borrowed49e7ed4 PostgreSQL stopped
-with verified labels/mounts. Free66,605,346,816bytes. No new compiler/network cache
-or deletion is planned. Original18-case fault schedule AST is unchanged after
-extracting run_faults from shared laboratory setup; independent AI review pending.
+## Latest relational closure qualification
+
+[Native report](evidence/p02-relay-enrollment-relations-native-20260928.json):
+23d7534 fixture reused c2eebec artifacts; actual PG16.15 passed twelve exact
+relational refusals plus valid before/after controls inside backend94/owner2 and
+its real authenticated session. Missing state, generation/route/digest/audit
+mismatch, extra identities/audit, identity mutation, old receipt application and
+second transition after early constraints all refuse with the specific guard's
+message. Each subtransaction restores all64 Control relations; only the real
+parent commits its exact six domain rows. No0019/product correction was needed.
+Root independently recomputed digests and reviewed rows; read-only AI review found
+no blocker. The original18 schedule AST is unchanged; no broad suite repeated.
+
+Root runs/relay-enrollment-relations-23d7534, treece30b837c47412d769e875259f64677ac93420fc,
+PID2987542/start395314795 terminal, ownerc563c514e0d2ee753fa58ab5f9e2c044.
+Client850d322e70f02794ecdb9f4db417227349e6ad46419999814cd51335daee8c30 exited143;
+borrowed49e7ed4 PostgreSQL exited0/noOOM. Clonebb_enroll_fault_23d7534_relations is
+retained with the original and prior fault clones. Terminal04:48:47UTC verified875
+other projections unchanged/eight unrelated running,1447 clean source files,
+14 safe capture payloads and original ELFs/report. Original64-table database
+comparison and zero remaining Control backends passed before shutdown.
+Free66,561,679,360bytes; no compiler/network allocation or deletion. Inventory
+enrollment.relations owns resources; ignored .research/implementation/relay-enrollment-relations-23d7534
+holds exact transfer/collector/root-review and evidence. Local Python3.9 extraction
+rejected the safe filter keyword; Python3.14 safely extracted the existing capture
+and verified every hash. No native rerun or original evidence replacement.

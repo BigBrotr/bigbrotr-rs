@@ -76,8 +76,8 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   The initial [no-auth enrollment command](../reference/relay-enrollment.md)
   appends0019; [actual-engine](evidence/p02-relay-enrollment-native-20260928.json)
   and [COMMIT/lock schedules](evidence/p02-relay-enrollment-faults-native-20260928.json)
-  qualify those bounded command guarantees. Focused live-owner relational checks
-  precede the current acquisition issuer. Installed enrollment, authenticated
+  qualify those bounded command guarantees. [Focused live-owner relational checks](evidence/p02-relay-enrollment-relations-native-20260928.json)
+  cover the closure consumed by the next acquisition issuer. Installed enrollment, authenticated
   acquisition grants, restrictive drain and full routes remain.
 - [ ] **Step 7:** **Practical P02-T01:** real PG transactions race two revision/frontier
   updates, disconnect after commit and retry. Inspect committed rows externally,

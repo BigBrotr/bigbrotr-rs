@@ -1,0 +1,213 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T01 Step6 relational closure before current acquisition authority",
+  "status": "PASS_SCOPED_ENROLLMENT_RELATIONS",
+  "source": "23d7534abf78510a9165825e4e656b54287c8955",
+  "tree": "ce30b837c47412d769e875259f64677ac93420fc",
+  "application_source": "c2eebecf5f86bffd94f9c9da500e3ae4855d9c72",
+  "unchanged_product_source": "dae4d456f7b062cc0b5097db4741e52b0525e406",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "16.15; fsync/full_page_writes on; verified retained container 6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "outcome": {
+    "status": "PASS_SCOPED_ROOT_REVIEW",
+    "source": "23d7534abf78510a9165825e4e656b54287c8955",
+    "application_source": "c2eebecf5f86bffd94f9c9da500e3ae4855d9c72",
+    "refusals": 12,
+    "valid_controls": 2,
+    "relations": 64,
+    "only_actual_parent_committed": true,
+    "capture_files": 14,
+    "scope": "Live-owner relational closure, not current acquisition or capacity"
+  },
+  "cases": [
+    {
+      "name": "valid-before",
+      "message": "fixture valid rollback",
+      "position": 1,
+      "sqlstate": "ZX001",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "missing-current",
+      "message": "enrollment requires exact atomic command audit and state",
+      "position": 2,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "wrong-generation",
+      "message": "enrollment requires its exact atomic command",
+      "position": 3,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "wrong-route",
+      "message": "enrollment requires its exact atomic command",
+      "position": 4,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "wrong-digest",
+      "message": "enrollment requires exact atomic command audit and state",
+      "position": 5,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "wrong-audit-time",
+      "message": "enrollment requires exact atomic command audit and state",
+      "position": 6,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "extra-access",
+      "message": "access identity requires its creating enrollment",
+      "position": 7,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "extra-route",
+      "message": "route identity requires its creating enrollment",
+      "position": 8,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "extra-audit",
+      "message": "enrollment audit is not its command receipt",
+      "position": 9,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "mutate-access",
+      "message": "immutable control history cannot be changed",
+      "position": 10,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "mutate-route",
+      "message": "immutable control history cannot be changed",
+      "position": 11,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "old-receipt",
+      "message": "enrollment requires its exact atomic command",
+      "position": 12,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "early-second-transition",
+      "message": "enrollment must commit before another transition",
+      "position": 13,
+      "sqlstate": "23514",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    },
+    {
+      "name": "valid-after",
+      "message": "fixture valid rollback",
+      "position": 14,
+      "sqlstate": "ZX001",
+      "unchanged": true,
+      "backend_pid": 94,
+      "owner_epoch": 2
+    }
+  ],
+  "artifacts": {
+    "binary_sha256": "1986ce6540254278f5faedc68e0f5ae1a829c0f77515bc19af0fc6ebe47e5122",
+    "probe_sha256": "e68899aa5020afb51d33edebf2b5a0d514a1068855d8702adb927a918bdceb0f"
+  },
+  "claims": [
+    "The actual non-superuser Control backend owns its current fence and password-verified session. A real parent enrollment is fully validated before test-only subtransactions run.",
+    "Twelve targeted relational refusals require exact SQLSTATE/message; two valid independently digested controls bracket them. Missing state, generation/route/digest/audit mismatch, extra access/route/audit, immutable identity mutation, historical reapplication and same-transaction transition after early constraints are exercised.",
+    "Every subtransaction rolls back with all64 Control relations equal. The actual parent alone commits one row in each of six domain relations, independently verified by literal digest, exact identity/audit and same-transaction closure.",
+    "The original bb_enrollment and original report remain equal, zero Control backends remain, and all other875 container projections are unchanged."
+  ],
+  "capture": {
+    "local": ".research/implementation/relay-enrollment-relations-23d7534",
+    "remote": "/home/tux/bigbrotr-implementation-20260917/runs/relay-enrollment-relations-23d7534",
+    "files": 14,
+    "manifest_sha256": "9b10701aebf5d284d6a6f712b6025f4196296732a33b1d28f75e3b1e382cc387",
+    "selected_sha256": {
+      "faults/result.json": "f1eba5ae9fb188f5676b71a85aa26ace2311c7a6ccdfbc1684bb91c9b7219741",
+      "faults/relational-expanded.sql": "4a3ea5d92badaa800e228bb9b4cb8645f8fd110cd3961cfaf98fd398d654920c",
+      "source-manifest.json": "c20a54321a8bb26af3f7848f88487e946cd01bf2668a39204990055f75cfb1a0",
+      "terminal-audit.json": "fd94120f5369588ce7022da85a305688e3ce7c7ba8e91e8f454244f49abef4e0"
+    },
+    "review_sha256": "9966944ab070f8078f2b49a2cf8676cedc54c2d01951308cbb3fda512f3c0652"
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "23d7534abf78510a9165825e4e656b54287c8955",
+    "observed_at": "2026-09-28T04:48:47.516534+00:00",
+    "prior_unchanged": 875,
+    "borrowed_postgres": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "id": "850d322e70f02794ecdb9f4db417227349e6ad46419999814cd51335daee8c30",
+        "exit": 143
+      },
+      {
+        "id": "6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9",
+        "exit": 0
+      }
+    ],
+    "source_files": 1447,
+    "original_report_unchanged": true,
+    "original_artifacts_verified": true,
+    "free_bytes": 66561679360
+  },
+  "review_boundary": "Root read complete new SQL and changed runner, confirmed unchanged original18-case schedule AST, reviewed exact native outcomes/all64-table deltas and recomputed literal digests. Independent read-only AI reviewed complete fixture/shared helpers/cleanup/product triggers/probe before result closure; no blocker found. Test-only hook is not an installed client workflow.",
+  "not_run": [
+    "relational schedules beyond the selected twelve",
+    "installed HTTP/CLI enrollment",
+    "current action issuer/restrictive drain",
+    "signed socket acquisition/M1",
+    "load/aged state",
+    "arm64/release"
+  ],
+  "limits": [
+    "Early constraint evaluation tests relational integrity only, not expiry at a later COMMIT. Existing18 separate COMMIT/lock schedules are not repeated.",
+    "Exact c2eebec artifacts reused after complete fixture/documentation-only source diff. No product or applied migration changed; no new build, compiler cache or Docker network.",
+    "Small bounded fixture establishes no production capacity, arm64, hosted Actions or release claim."
+  ]
+}
