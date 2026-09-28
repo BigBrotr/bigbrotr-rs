@@ -136,6 +136,10 @@ Paths: `apps/bigbrotr/src/network/egress.rs`, `apps/bigbrotr/src/network/dns.rs`
   cooperative cancellation under immediately ready empty frames. The
   [dependency counterexample](evidence/p04-websocket-limit-counterexample-20260928.json)
   is a confirmed gap in payload-only configuration, not a passing adapter test.
+  The [Mac consumer evidence](evidence/p04-websocket-mac-20260928.json) covers
+  the added framing gate, guarded TCP/TLS, protocol cancellation and actual
+  blocked sends. These bounded components do not complete shared quotas,
+  renewable service sessions or installed acquisition acceptance.
 - [ ] **5. Preserve protocol ownership and cancellation.** Expose a connection generation and request-local frame ordering to P03/P04 consumers. Bound all writer/read queues and cancellation joins; stale handles cannot close replacement subscriptions. A stalled application consumer differs from peer silence, and unknown frame attribution interrupts affected evidence conservatively.
 - [ ] **6. Exercise actual adversarial routes.** Mixed public/denied answers use only an allowed pinned IP; a second-answer rebinding, redirect to metadata IP, wrong SNI certificate, private port mismatch and proxy hostname escape all fail before unauthorized traffic. Capture proxy ATYP, DNS queries and socket destinations; mock dial-function success is insufficient. Include the bounded DNS codec's independent wire cases: unrelated SRV/additional records, negative RCODE with addresses, conflicting/cyclic CNAMEs across packets, exact eight-edge/64-address/frame limits, local-name refusal, family outcome attribution and peer-observed closure on cancellation.
 - [ ] **7. Run future p04-t02 with controlled DNS, CA, proxy and WS/HTTP servers.** Independent packet/server logs prove which endpoints were contacted and which were never contacted. Repeat budget lowering and cancellation while recording peak connections/FDs/bytes. Document fixture-only loopback rules, proxy enforcement limitations and operator diagnostics without publishing credentials.

@@ -12,10 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and origin/main are a96d30027ab9cfa08598eb331f9b1b3d7d0abdfa,
-verified private push after the source-race evidence. Root now owns the dirty
-WebSocket counterexample/decision/evidence/inventory/checkpoint files. No product
-or lockfile edits yet. No other writer, merge or rebase.
+Local main is3403377e67ab091edb00e6d2b048202bc66367be (counterexample/decision),
+origin/main is verified a96d300. Root owns dirty Cargo manifests/lock, network/mod,
+new network/websocket.rs and websocket/input.rs, tests/network_websocket.rs and
+this checkpoint. All edits local; no Tux run or other writer. No migration change.
 
 Native release build/Clippy and all seven SQL races PASS. Root verified12 build
 and57 engine payloads, complete64-table attribution, all16 native rows/sequence17,
@@ -31,22 +31,43 @@ Current compiler cache1154757 is released after positive81a35c5 rebuild. All sev
 race clones and original evidence retained. Local resumption census08:53 UTC had
 13,888,320 KiB free on Mac; recheck before the next allocation.
 
-Next: implement the selected supplied-stream WebSocket consumer and discriminating
-framing/handshake tests under P04-T02/P03-T02. Exact 0.29 raw TCP counterexample
-confirmed both18-wire-byte messages pass a16-byte payload configuration; original
-exit101, stdout/stderr, source and standalone lock are retained. Published recipe
-is experiments/network-websocket-counterexample; source ran from identical ignored
-copy. The product dependency graph is unchanged. See the counterexample report.
+Active P04-T02/P03-T02 WebSocket consumer is ready for an exact-Git native
+candidate after Mac checks. [Mac evidence](evidence/p04-websocket-mac-20260928.json)
+records28 actual TCP/TLS integration tests and2 tests asserting retained HTTP/frame
+bytes before yield/revocation; scoped Clippy and cargo-deny0.20.2 PASS. Header-only
+overflow refuses before payload, including the selected2MiB cap. Actual blocked
+send delivered662148 bytes of the first2097152-byte frame; cancellation poisons
+reuse and retains its permit until drop. This is no throughput/capacity claim.
 
-Read-only reviewer found public FrameHeader::parse (actual Cursor.position, not
-canonical len) avoids a second frame parser; Response::try_parse gives the exact
-same HTTP boundary as upstream, preventing LF-only/CRLFCRLF tail bypass. Selected
-requirements are in dependency-selections and P04-T02. Bound headers before full
-payload allocation, keep controls separate without resetting data fragments,
-yield finite work, and expose borrowed str/slices rather than cloneable Message.
-No WebSocket guard/consumer code or native protocol evidence exists yet. Current
-counterexample process/sockets are terminal. Last Mac prebuild13,803,684 KiB free.
-Never merge/push the negative variant below.
+The consumer borrows DirectStream, reserves8*limit+1MiB, returns borrowed received
+projections, rejects unsolicited/duplicate handshake negotiation, counts exact
+headers across fragments, validates original close metadata and flushes automatic
+controls. A consuming local close drives peer acknowledgement and EOF. Public
+FrameHeader/Response parsers keep preallocation/HTTP boundaries aligned with the
+selected0.29 dependency. Exactly8 packages added; no previous version upgraded.
+Root and read-only AI review retained these concrete state machines; shared
+fixture setup was extracted for actual reuse, without a protocol framework.
+
+Original counterexample exit101 and all RED/setup failures remain in ignored
+.research/implementation/network-websocket-20260928. Broad --tests Clippy also
+exposed pre-existing job_list chunks_exact_to_as_chunks and keyring
+items_after_test_module failures; full workspace Clippy is NOT PASS. Address
+these at the next coherent maintenance boundary. No upstream log logger is
+installed; future logging bridges must exclude private URL/payload targets.
+
+Root also owns the changed native.py/lab.py websocket profile, task/dependency
+notes, Mac evidence and inventory update. The profile executes28 integration+2
+filtered library tests; its network_websocket_input ELF is a test harness, never
+the installed CLI. Latest read-only Tux census67,384,422,400 bytes free,8 unrelated
+containers, no active BigBrotr. Reuse only exclusively locked1154757 compiler
+cache; native profile performs full preflight and source/artifact checks.
+
+Next bounded action: final docs/diff checks, commit this coherent consumer,
+transfer its exact Git revision to a fresh websocket run, execute and audit the
+native profile. Then wire the signed Nostr event journey into source-bound
+admission and installed Sync. No native WS or M1 claim yet. Mac12,845,764 KiB
+available at last check; no new build cache. Never merge/push the earlier
+negative source-cleanup variant.
 
 ## Active slice and next useful journey
 
@@ -248,11 +269,11 @@ Prior cache retirements d860/b93/5de/7ee/877 remain historical; never replay the
 
 WebSocket source audit is retained at
 .research/implementation/network-websocket-audit/{audit.md,inventory.json}.
-Candidate tokio-tungstenite 0.29.0 handshake-only does not enforce the current
+The raw tokio-tungstenite 0.29.0 handshake-only configuration does not enforce the current
 framing-inclusive message bound: the actual raw-socket counterexample now confirms
 both payload/header and empty-continuation acceptance beyond the selected cap.
-Resolve before integration; reject unsolicited extensions, bound outgoing messages
-and correctly poll close. No selected WebSocket dependency/native protocol evidence
-yet. Management write-only ActionGate is not a renewable bidirectional source
+The added consumer has scoped Mac evidence for the required header/handshake
+gates, outgoing/control limits and complete Close; native protocol evidence is
+still pending. Management write-only ActionGate is not a renewable bidirectional source
 session. History reader grants do not authorize acquisition. DeliveryWindow copies
 need explicit parent invalidation. No arm64, complete release or capacity claim.

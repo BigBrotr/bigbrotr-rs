@@ -9,6 +9,7 @@ mod policy;
 mod route;
 mod stream;
 mod tls;
+mod websocket;
 
 pub use bans::BanSet;
 pub use dns::{DnsError, DnsFamilyOutcome, DnsResolution, DnsResolver};
@@ -18,3 +19,5 @@ pub use policy::{DirectPolicy, FilteredAddresses, PolicyError, PrivateRule, Targ
 pub use route::{PrivateNetwork, RouteSelection};
 pub use stream::DirectStream;
 pub use tls::TlsPolicy;
+
+pub use websocket::{ReceivedMessage, RelayWebSocket, WebSocketError};

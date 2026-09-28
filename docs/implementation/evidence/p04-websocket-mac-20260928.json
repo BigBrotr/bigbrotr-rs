@@ -1,0 +1,51 @@
+{
+  "format": "bigbrotr-websocket-mac/1",
+  "status": "PASS_SCOPED_MAC_COMPONENTS",
+  "base_source": "3403377e67ab091edb00e6d2b048202bc66367be",
+  "environment": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+  "local_evidence": ".research/implementation/network-websocket-20260928",
+  "tests": {
+    "actual_tcp_tls_integration": 28,
+    "observed_buffered_input": 2
+  },
+  "source_sha256": {
+    "Cargo.toml": "550ef5f11bb995a151cd0023c66c220616cbab714408d33e7b5ade1d76fa08fe",
+    "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "apps/bigbrotr/Cargo.toml": "e6b75cb9559a87fbcf2c0f728b518028369c4fa8b7a29c422295e5a0beadd295",
+    "apps/bigbrotr/src/network/mod.rs": "35c5c58d50d80f99ecd67e4cf24b0f66d4738e7fcfe37effdf06286aa3487618",
+    "apps/bigbrotr/src/network/websocket.rs": "89a5ad56c9f4b8628baf6d935e6c62e5972467576aa2b4887d85cc31f77829a9",
+    "apps/bigbrotr/src/network/websocket/input.rs": "63abea2b8b11df675012cae29ffc8b21cbbf5665f0c38769650a906f5553f9fd",
+    "apps/bigbrotr/src/network/websocket/input/tests.rs": "f0939a1d51394acf2ef2511f70170f4a0fe62920d70644b49a9f4e35e4ca66d9",
+    "apps/bigbrotr/tests/network_websocket.rs": "7ba1f504c6174a347c93ee5de2e349d4234105e0a0b33a3b6f6f4a692163c54e",
+    "apps/bigbrotr/tests/network_websocket/lifetime.rs": "39b1c8d237536f4711f5200e785e279c9ec1311ed059e632be9fa9376214c844",
+    "apps/bigbrotr/tests/network_websocket/support.rs": "3c5033542f72e175b37244c428e3af2b0b66f5b1bfc61b8f6d665342bc8c44ab",
+    "apps/bigbrotr/tests/network_websocket/tls.rs": "fcac6059a6855b40f58fc4a0f2e9b1c270fbe5963bd519ff9cc4b99614f91108"
+  },
+  "logs_sha256": {
+    "mac-integration-final.log": "af8a40b086ccb1b7659b6d7987b31459119ca1f4d9bd99851c0132b2b5559f61",
+    "mac-input-final.log": "47538e6659c493b6a04023c95e8ef9098357cff2682f6a0db9580a005e6854fc",
+    "mac-clippy-final.log": "a7b6854fb083046dfa790039054c4eb1d04115a000a8da2a3d02f7f5892850f4",
+    "dependency-policy.log": "245deecd3483cc5322ad2199ecc5c9421e832e3f1e6d2f8419170f3c74bccf46"
+  },
+  "blocked_send": {
+    "cap": 2097152,
+    "completed_messages": 0,
+    "observed_wire_bytes": 662148,
+    "claim": "Actual kernel backpressure, cancelled incomplete first frame, protocol permit retained until drop; not throughput or production capacity"
+  },
+  "review": "Root complete owning protocol/guard/caller review and independent read-only AI counterexample review; no new blocking finding. Original automatic reply and Close attribution findings reproduced and corrected.",
+  "structure": "Keep the two concrete HTTP/frame state machines and existing borrowed DirectStream owner. Extract fixture setup for actual reuse. No generic transport traits, background drivers or new crate.",
+  "not_qualified": [
+    "Native Linux results at this checkpoint",
+    "Installed Nostr acquisition and M1",
+    "Shared host/endpoint quotas, renewable sessions and overlays",
+    "Production capacity, aged/mixed load or native Linux arm64"
+  ],
+  "original_failures": [
+    "consumer API/fixture compile REDs, missing automatic flush, post-close EOF, automatic reply mask cap and invalid close normalization retained",
+    "handshake byte-limit fixture originally expected FIN only; unread refused bytes can legitimately reset TCP",
+    "budget fixture originally lowered limits before DNS reservation and never contacted peer; owned stalled test terminated, then bounded corrected fixture reached protocol callback",
+    "TLS fixture initial CertificateDer type mismatch fixed",
+    "broad --tests Clippy found pre-existing job_list chunks_exact_to_as_chunks and keyring items_after_test_module; this is not a full workspace Clippy PASS"
+  ]
+}

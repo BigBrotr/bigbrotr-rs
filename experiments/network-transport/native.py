@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Native direct TCP/TLS/DNS qualification; not installed acquisition acceptance."""
+"""Native guarded transport qualification; not installed acquisition acceptance."""
 import json
 from pathlib import Path
 import shutil
@@ -36,12 +36,17 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc', '--version', '--verbose'], env=env, text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 assert identity['rustc'].startswith('rustc 1.98.1 ')
-tests = {'network_direct': 12}
+mode = sys.argv[1] if len(sys.argv) == 2 else 'direct'
+assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket')
+tests = {'network_direct': 12} if mode == 'direct' else {'network_websocket': 28}
 selectors = [arg for name in tests for arg in ['--test', name]]
+if mode == 'websocket':
+    identity['scope'] = 'Native bounded WebSocket over actual guarded TCP/TLS; no installed Nostr acquisition, shared service quotas or production capacity claim'
+compile_selectors = selectors + (['--lib'] if mode == 'websocket' else [])
 checks = Path('/out/build-checks')
 result = execute([
     ('compile', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
-                 *selectors, '--no-run', '--message-format=json']),
+                 *compile_selectors, '--no-run', '--message-format=json']),
     ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                 '--lib', *selectors, '--', '-D', 'warnings']),
 ], checks, SOURCE, env, identity, 1800)
@@ -56,15 +61,24 @@ for line in (checks / 'compile.log').read_text().splitlines():
     if message.get('reason') != 'compiler-artifact' or not message.get('executable'):
         continue
     name = message['target']['name']
-    if name in tests and message['target']['kind'] == ['test']:
+    selected = name in tests and message['target']['kind'] == ['test']
+    selected |= mode == 'websocket' and name == 'bigbrotr' and message['target']['kind'] == ['lib'] and message['profile']['test']
+    if selected:
+        if name == 'bigbrotr':
+            name = 'network_websocket_input'
         assert name not in executables
         executable = Path(message['executable'])
         assert executable.is_relative_to(build / 'target') and not executable.is_symlink()
         shutil.copy2(executable, artifacts / name)
         executables[name] = file_hash(artifacts / name)
-assert executables.keys() == tests.keys()
+expected = set(tests) | ({'network_websocket_input'} if mode == 'websocket' else set())
+assert executables.keys() == expected
 identity['executables_sha256'] = executables
-result = execute([(name, [str(artifacts / name), '--test-threads=1']) for name in tests],
+commands = [(name, [str(artifacts / name), '--test-threads=1', '--nocapture']) for name in tests]
+if mode == 'websocket':
+    tests['network_websocket_input'] = 2
+    commands.append(('network_websocket_input', [str(artifacts / 'network_websocket_input'), 'network::websocket', '--test-threads=1', '--nocapture']))
+result = execute(commands,
                  Path('/out/tests'), SOURCE, env, identity, 60)
 assert result['status'] == 'PASS'
 for name, count in tests.items():
@@ -72,4 +86,4 @@ for name, count in tests.items():
 assert sources() == manifest['files_sha256']
 assert all(file_hash(artifacts / name) == digest for name, digest in executables.items())
 Path('/out/qualification.json').write_text(json.dumps(
-    dict(identity, status='PASS_SCOPED_NETWORK_COMPONENTS', tests=tests), indent=2) + '\n')
+    dict(identity, status='PASS_SCOPED_WEBSOCKET_COMPONENTS' if mode == 'websocket' else 'PASS_SCOPED_NETWORK_COMPONENTS', tests=tests), indent=2) + '\n')

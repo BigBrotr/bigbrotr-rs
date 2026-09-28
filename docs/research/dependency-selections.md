@@ -343,8 +343,17 @@ Reserve protocol buffers separately from TCP/TLS, enforce finite work per poll,
 and check lifetime even when input is already buffered. Expose borrowed string/
 byte projections while their storage remains inside the reserved owner; exposing
 upstream Message or cheaply cloned Bytes would let that storage escape. Outgoing
-messages need their own framing and control limits. These are selected integration
-requirements, not yet implemented or qualified; they add no persistent format.
+messages need their own framing and control limits. The supplied-stream consumer
+now implements these requirements, with [Mac component evidence](../implementation/evidence/p04-websocket-mac-20260928.json).
+It reserves protocol storage separately, lends received bytes, flushes automatic
+replies, and consumes itself while driving a locally initiated Close through
+the peer acknowledgement and EOF. Native qualification and installed Nostr
+acquisition remain separate gates; this adds no persistent format.
+
+The selected upstream uses `log` for request/frame diagnostics. No product
+`log` logger or tracing bridge is currently installed; the wrapper returns static
+error classes and does not format upstream errors. Any future logging bridge must
+exclude these upstream payload/URL targets before enabling it for private routes.
 
 Apply hard request-body accounting at the transport/body layer, including custom
 extractors and decompressed bodies. Axum's extractor-local default limit does not

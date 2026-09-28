@@ -27419,6 +27419,13 @@
       "cache": ".research/targets/product (existing shared Mac build cache)",
       "evidence": "docs/implementation/evidence/p04-websocket-limit-counterexample-20260928.json",
       "retention": "Preserve original failure, source and independent lock. No active sockets/processes; no Tux allocation or deletion."
+    },
+    "websocket_consumer": {
+      "status": "Mac 28 integration and 2 observed-buffer tests PASS; native pending",
+      "local_evidence": ".research/implementation/network-websocket-20260928",
+      "report": "docs/implementation/evidence/p04-websocket-mac-20260928.json",
+      "cache": ".research/targets/product; existing shared Cargo cache",
+      "preserve": "Original REDs, failed/setup runs, counterexample, exact upstream archives/source, metadata and successful logs; no new remote laboratory yet"
     }
   },
   "implementation_relay_registry_20260928": {
