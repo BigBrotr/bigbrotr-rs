@@ -319,6 +319,33 @@ and socket fixtures do not establish capacity, all TLS versions/interoperability
 or installed acquisition authorization. Exact docs.rs pages were unavailable to
 the browser during this inspection; matching downloaded upstream source was read.
 
+The supplied-stream WebSocket candidate remains `tokio-tungstenite` 0.29.0,
+defaults off and only `handshake`, with `futures-util` 0.3.34 (`std`, `sink`).
+The [actual raw-socket counterexample](../implementation/evidence/p04-websocket-limit-counterexample-20260928.json)
+confirms that its payload limits accept a message whose framing exceeds the
+selected total-byte cap, including empty continuations. Keep the existing
+framing-inclusive invariant. Before integrating the consumer, add a bounded
+incoming header gate using the public
+[`FrameHeader::parse`](https://github.com/snapview/tungstenite-rs/blob/c2921718b76f0ed8c69a895397ed981e4a321f6f/src/protocol/frame/frame.rs)
+and actual consumed cursor length. `FrameHeader::len` canonicalizes lengths and
+cannot measure a non-minimal received encoding. Hold the complete header until
+its declared payload plus accumulated data-message framing fits; control frames
+must not reset an unfinished data message. FrameSocket and raw Message::Frame do
+not provide a preallocation incoming-message hook.
+
+Use the same public `Response::try_parse` as the actual handshake to split its
+bounded HTTP prefix from coalesced frame bytes; a CRLFCRLF-only splitter disagrees
+with accepted LF-only HTTP syntax and can expose unchecked tail bytes. Drop the
+preliminary parsed response, preserve the exact prefix for the actual verifier,
+and pass the bounded suffix through the framing gate. Reject unsolicited
+extensions/subprotocols and duplicate critical headers before protocol delivery.
+Reserve protocol buffers separately from TCP/TLS, enforce finite work per poll,
+and check lifetime even when input is already buffered. Expose borrowed string/
+byte projections while their storage remains inside the reserved owner; exposing
+upstream Message or cheaply cloned Bytes would let that storage escape. Outgoing
+messages need their own framing and control limits. These are selected integration
+requirements, not yet implemented or qualified; they add no persistent format.
+
 Apply hard request-body accounting at the transport/body layer, including custom
 extractors and decompressed bodies. Axum's extractor-local default limit does not
 cover every body consumer. Explicitly cap WebSocket messages, frames, read/write

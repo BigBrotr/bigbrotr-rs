@@ -12,10 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is verified candidate81a35c5dcf8c3188bb198e029ee905cb1dc0b15f,
-tree7efca9e3ec7926039f5020a5b8d91b88224e8ad7; origin/main remains c498c48 until
-the evidence commit. Root owns only evidence/reference/inventory/checkpoint edits.
-No product/SQL/dependency change in this slice. No other writer, merge or rebase.
+Local main and origin/main are a96d30027ab9cfa08598eb331f9b1b3d7d0abdfa,
+verified private push after the source-race evidence. Root now owns the dirty
+WebSocket counterexample/decision/evidence/inventory/checkpoint files. No product
+or lockfile edits yet. No other writer, merge or rebase.
 
 Native release build/Clippy and all seven SQL races PASS. Root verified12 build
 and57 engine payloads, complete64-table attribution, all16 native rows/sequence17,
@@ -31,10 +31,22 @@ Current compiler cache1154757 is released after positive81a35c5 rebuild. All sev
 race clones and original evidence retained. Local resumption census08:53 UTC had
 13,888,320 KiB free on Mac; recheck before the next allocation.
 
-Next: finish evidence/documentation checks and coherent private push, then resolve
-the concrete WebSocket framing-byte bound mismatch and implement its supplied-
-stream consumer for P04-T02/P03-T02. No additional source-race run is required
-without a relevant change/failure. Never merge/push the negative variant below.
+Next: implement the selected supplied-stream WebSocket consumer and discriminating
+framing/handshake tests under P04-T02/P03-T02. Exact 0.29 raw TCP counterexample
+confirmed both18-wire-byte messages pass a16-byte payload configuration; original
+exit101, stdout/stderr, source and standalone lock are retained. Published recipe
+is experiments/network-websocket-counterexample; source ran from identical ignored
+copy. The product dependency graph is unchanged. See the counterexample report.
+
+Read-only reviewer found public FrameHeader::parse (actual Cursor.position, not
+canonical len) avoids a second frame parser; Response::try_parse gives the exact
+same HTTP boundary as upstream, preventing LF-only/CRLFCRLF tail bypass. Selected
+requirements are in dependency-selections and P04-T02. Bound headers before full
+payload allocation, keep controls separate without resetting data fragments,
+yield finite work, and expose borrowed str/slices rather than cloneable Message.
+No WebSocket guard/consumer code or native protocol evidence exists yet. Current
+counterexample process/sockets are terminal. Last Mac prebuild13,803,684 KiB free.
+Never merge/push the negative variant below.
 
 ## Active slice and next useful journey
 
@@ -237,7 +249,8 @@ Prior cache retirements d860/b93/5de/7ee/877 remain historical; never replay the
 WebSocket source audit is retained at
 .research/implementation/network-websocket-audit/{audit.md,inventory.json}.
 Candidate tokio-tungstenite 0.29.0 handshake-only does not enforce the current
-framing-inclusive message bound: fragmented/empty continuations amplify buffering.
+framing-inclusive message bound: the actual raw-socket counterexample now confirms
+both payload/header and empty-continuation acceptance beyond the selected cap.
 Resolve before integration; reject unsolicited extensions, bound outgoing messages
 and correctly poll close. No selected WebSocket dependency/native protocol evidence
 yet. Management write-only ActionGate is not a renewable bidirectional source

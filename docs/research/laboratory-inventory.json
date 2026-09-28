@@ -27410,7 +27410,16 @@
       "negative_worktree": ".research/worktrees/network-direct-no-poll-1154757; intentional missing-poll-check variant, never merge/push",
       "native_evidence": "docs/implementation/evidence/p04-network-direct-native-20260928.json"
     },
-    "websocket_source_audit": ".research/implementation/network-websocket-audit; official exact archives/source only, no product build or native execution"
+    "websocket_source_audit": ".research/implementation/network-websocket-audit; official exact archives/source only, no product build or native execution",
+    "websocket_counterexample": {
+      "local_root": ".research/implementation/network-websocket-20260928",
+      "source": "experiments/network-websocket-counterexample",
+      "status": "CONFIRMED_DEPENDENCY_CONTRACT_MISMATCH",
+      "raw_exit": 101,
+      "cache": ".research/targets/product (existing shared Mac build cache)",
+      "evidence": "docs/implementation/evidence/p04-websocket-limit-counterexample-20260928.json",
+      "retention": "Preserve original failure, source and independent lock. No active sockets/processes; no Tux allocation or deletion."
+    }
   },
   "implementation_relay_registry_20260928": {
     "owner": "root; Mac sole writer, independent read-only review",

@@ -1,0 +1,24 @@
+{
+  "format": "bigbrotr-websocket-limit-counterexample/1",
+  "status": "CONFIRMED_DEPENDENCY_CONTRACT_MISMATCH",
+  "raw_exit": 101,
+  "base_source": "a96d30027ab9cfa08598eb331f9b1b3d7d0abdfa",
+  "environment": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+  "observed": {
+    "configured_limit": 16,
+    "exact_wire16_accepted": true,
+    "wire18_payload16_accepted": true,
+    "wire18_payload0_accepted": true
+  },
+  "recipe": "experiments/network-websocket-counterexample",
+  "local_evidence": ".research/implementation/network-websocket-20260928",
+  "hashes": {
+    "counterexample.stdout": "29d318f08e4c96be3b8b8a162b2f9f5a67f914de621cc967a311b4e8e8686b02",
+    "counterexample.stderr": "0193433f65dd5d0e1f88680351c77bf27436678ee2d410d3cb5e941e219bd225",
+    "counterexample/Cargo.toml": "bf78a87442d17f6afc9601c5d5d9378c81a86aae394e23f03a582821c7febc38",
+    "counterexample/Cargo.lock": "d933274d7190da7dc3f17a2d82966ee14ea0ceb7d3093a5cb1bf187bbd1cd063",
+    "counterexample/src/main.rs": "86978c1d9597e7810303471945d42722f1681960fdddb526c5e26e6a6d233bee"
+  },
+  "claim": "Actual raw loopback socket framing only; no handshake, selected product lock, capacity or Tux qualification.",
+  "consequence": "Keep framing-inclusive cap; add a bounded preallocation header gate using public FrameHeader::parse and actual consumed header length. Upstream payload caps alone are insufficient."
+}
