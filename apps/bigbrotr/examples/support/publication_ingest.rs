@@ -319,6 +319,7 @@ pub async fn prepare(
                     registration: &spec,
                     event: prepared,
                     relay_source: None,
+                    acquisition: None,
                     provenance_enabled: true,
                     recorded_at: ObservedTime::new(match bad {
                         "retry" => 99,

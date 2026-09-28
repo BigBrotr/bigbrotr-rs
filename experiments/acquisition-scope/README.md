@@ -93,3 +93,18 @@ The [a127c61 report](../../docs/implementation/evidence/p03-acquisition-scope-re
 records all14 cases PASS. Review corrected a cloned Control identity collision
 and strengthened prior-owner comparison before launch. No product change was
 needed during the actual-engine run; fault databases and raw results remain.
+
+
+The `acquisition-binding` profile builds the real initial PG/Rocks consumer and
+runs affected membership/catalog checks. `bindings.py RUN_ROOT` borrows the owned
+stopped PG and creates fresh clones/stores. It checks populated0021 upgrade and
+reapply without changing prior rows/xmin/heap filenodes, exact/overlapping/omitted
+scope retries, legacy adoption refusal, collection/request exclusions, missing
+source, read-only certification before/after admission and after actual enrollment
+withdrawal, plus0020/0021 missing prerequisites. Native records, original input
+bytes and receipts use the existing independent Python oracle unchanged; selector
+bytes and relational scope bindings have literal expected values. Every refusal
+and certification compares all Control/native/input state. Original templates and
+results remain retained. These scenarios are proposed until their exact-source
+native report exists. Concurrent scope-policy locks, dispatch/lost-COMMIT recovery,
+installed Sync, capacity and M1 still require their own practical evidence.

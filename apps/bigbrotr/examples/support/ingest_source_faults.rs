@@ -125,6 +125,7 @@ pub async fn run(
                 registration: spec,
                 event: prepared,
                 relay_source: Some(source),
+                acquisition: None,
                 provenance_enabled: false,
                 recorded_at: ObservedTime::new(1234),
                 limits: admission,

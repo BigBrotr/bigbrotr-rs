@@ -3,10 +3,13 @@ use super::super::import_checkpoints::{self, ImportCheckpointError};
 use super::super::input_bindings::{self, ImportBatch, ImportJobBinding, InputBindingError};
 use super::super::producer_outcomes::{self, OutcomeError};
 use super::super::producer_requests::{self, ReservationError};
-use super::super::producer_sources::{self, RequestPhase, RequestSourceCheck, SourceBindingError};
+use super::super::producer_sources::{self, CurrentSourceCheck, RequestPhase, SourceBindingError};
 use super::*;
 use crate::{
-    acquisition::relay_source::RelaySourceBinding,
+    acquisition::{
+        relay_source::RelaySourceBinding,
+        scope::{AcquisitionEventContext, ScopeEventError},
+    },
     runtime::{
         OwnedPermit,
         policy_authority::{LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl},
@@ -33,6 +36,7 @@ pub enum InitialOperationError<E> {
     Native(E),
     Reservation(ReservationError),
     Source(SourceBindingError),
+    Scope(ScopeEventError),
     InputBinding(InputBindingError),
     ImportCheckpoint(ImportCheckpointError),
     /// The native result exists; this error never authorizes another request ID.
@@ -57,12 +61,43 @@ impl<E> From<OwnerError> for InitialOperationError<E> {
 pub type InitialBatchError = InitialOperationError<BootstrapError>;
 pub type InitialEventError = InitialOperationError<AdmissionError>;
 
+fn event_source<'a>(
+    binding: Option<RelaySourceBinding>,
+    acquisition: Option<AcquisitionEventContext<'a>>,
+    visibility: QualifiedRef,
+    origin: bigbrotr_model::EventOrigin,
+    event: Option<&bigbrotr_protocol::VerifiedEvent>,
+) -> Result<Option<CurrentSourceCheck<'a>>, InitialEventError> {
+    let Some(binding) = binding else {
+        if acquisition.is_some() {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        return Ok(None);
+    };
+    if !matches!(origin, bigbrotr_model::EventOrigin::Network) {
+        return Err(OwnerError::InvalidInput.into());
+    }
+    if let (Some(context), Some(event)) = (acquisition, event) {
+        context
+            .check(binding, visibility, event.event())
+            .map_err(InitialEventError::Scope)?;
+    }
+    // Invalid signatures still take the native rejection path. They cannot gain
+    // effects; current relational source/scope checks below apply even to them.
+    Ok(Some(CurrentSourceCheck {
+        binding,
+        visibility,
+        scope: acquisition.map(|c| c.scope()),
+    }))
+}
+
 /// Static factory coordinates, not request-supplied authority.
 struct InitialIngestContext<'a> {
     ingest_root: &'a std::path::Path,
     registration: &'a ingest_registry::InitialRegistration,
     policy_ttl: Duration,
-    request: Option<RequestSourceCheck>,
+    request: Option<(ProducerRequestId, RequestPhase)>,
+    source: Option<CurrentSourceCheck<'a>>,
     job: Option<ImportJobBinding>,
 }
 
@@ -74,6 +109,9 @@ pub struct InitialEventRequest<'a> {
     /// None is reserved for imports and legacy unbound fixtures, not an escape
     /// from current source permission. This data alone is never a socket grant.
     pub relay_source: Option<RelaySourceBinding>,
+    /// The actual subscription owner retains this immutable collection/request
+    /// predicate through both phases. None is only for prior unbound consumers.
+    pub acquisition: Option<AcquisitionEventContext<'a>>,
     pub provenance_enabled: bool,
     pub recorded_at: ObservedTime,
     pub limits: AdmissionLimits,
@@ -87,6 +125,8 @@ pub struct InitialCertificationRequest<'a> {
     pub ingest_root: &'a std::path::Path,
     pub registration: &'a ingest_registry::InitialRegistration,
     pub event: PreparedCertification,
+    pub relay_source: Option<RelaySourceBinding>,
+    pub acquisition: Option<AcquisitionEventContext<'a>>,
     pub provenance_enabled: bool,
     pub limits: CertificationLimits,
     pub policy_ttl: Duration,
@@ -154,6 +194,7 @@ impl ControlSession {
                     registration: input.registration,
                     policy_ttl: input.policy_ttl,
                     request: None,
+                    source: None,
                     job: None,
                 },
                 validate,
@@ -195,6 +236,13 @@ impl ControlSession {
                 AdmissionError::AuthorityUnavailable,
             ));
         }
+        let source = event_source(
+            input.relay_source,
+            input.acquisition,
+            input.event.visibility_scope_id(),
+            input.event.origin(),
+            input.event.verified_event(),
+        )?;
         let identity = *store.manifest().identity();
         let (tx, mut lease) = self
             .begin_initial_native_operation(
@@ -204,6 +252,7 @@ impl ControlSession {
                     registration: input.registration,
                     policy_ttl: input.policy_ttl,
                     request: None,
+                    source,
                     job: None,
                 },
                 |document, digest| validate(document, digest, &input.event),
@@ -265,12 +314,8 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
-                    request: Some(RequestSourceCheck {
-                        request,
-                        binding: None,
-                        visibility: None,
-                        phase: RequestPhase::Reservation,
-                    }),
+                    request: Some((request, RequestPhase::Reservation)),
+                    source: None,
                     job: None,
                 },
                 &mut validate,
@@ -279,7 +324,7 @@ impl ControlSession {
         let staged = store
             .stage_initial_dictionaries(request, input.intent, input.limits, &permit)
             .map_err(InitialBatchError::Native)?;
-        producer_requests::reserve(&reservation_tx, &staged, spec.control, None)
+        producer_requests::reserve(&reservation_tx, &staged, spec.control, None, None)
             .await
             .map_err(InitialBatchError::Reservation)?;
         if input.cancelled.load(Ordering::Relaxed) {
@@ -307,12 +352,8 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
-                    request: Some(RequestSourceCheck {
-                        request,
-                        binding: None,
-                        visibility: None,
-                        phase: RequestPhase::Dispatch,
-                    }),
+                    request: Some((request, RequestPhase::Dispatch)),
+                    source: None,
                     job: None,
                 },
                 &mut validate,
@@ -389,11 +430,16 @@ impl ControlSession {
         if input.event.request_id().producer_slot_id != spec.producer_slot_id
             || input.event.request_id().producer_epoch.get() != 1
             || input.limits.max_outstanding_requests > u64::from(spec.outstanding_request_limit)
-            || (input.relay_source.is_some()
-                && !matches!(input.event.origin(), bigbrotr_model::EventOrigin::Network))
         {
             return Err(OwnerError::InvalidInput.into());
         }
+        let source = event_source(
+            input.relay_source,
+            input.acquisition,
+            input.event.visibility_scope_id(),
+            input.event.origin(),
+            input.event.verified_event(),
+        )?;
         let identity = *store.manifest().identity();
         let (reservation_tx, mut reservation_lease) = self
             .begin_initial_native_operation(
@@ -402,12 +448,8 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
-                    request: Some(RequestSourceCheck {
-                        request: input.event.request_id(),
-                        binding: input.relay_source,
-                        visibility: Some(input.event.visibility_scope_id()),
-                        phase: RequestPhase::Reservation,
-                    }),
+                    request: Some((input.event.request_id(), RequestPhase::Reservation)),
+                    source,
                     job: None,
                 },
                 |document, digest| validate(document, digest, &input.event),
@@ -417,9 +459,15 @@ impl ControlSession {
             .event
             .stage(store, input.limits, &permit)
             .map_err(InitialEventError::Native)?;
-        producer_requests::reserve(&reservation_tx, &staged, spec.control, input.relay_source)
-            .await
-            .map_err(InitialEventError::Reservation)?;
+        producer_requests::reserve(
+            &reservation_tx,
+            &staged,
+            spec.control,
+            input.relay_source,
+            input.acquisition.map(|context| context.scope().identity()),
+        )
+        .await
+        .map_err(InitialEventError::Reservation)?;
         if input.cancelled.load(Ordering::Relaxed) {
             return Err(InitialEventError::Native(
                 AdmissionError::AuthorityUnavailable,
@@ -443,12 +491,8 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
-                    request: Some(RequestSourceCheck {
-                        request: input.event.request_id(),
-                        binding: input.relay_source,
-                        visibility: Some(input.event.visibility_scope_id()),
-                        phase: RequestPhase::Dispatch,
-                    }),
+                    request: Some((input.event.request_id(), RequestPhase::Dispatch)),
+                    source,
                     job: None,
                 },
                 |document, digest| validate(document, digest, &input.event),
@@ -559,6 +603,7 @@ impl ControlSession {
                     registration: spec,
                     policy_ttl: input.policy_ttl,
                     request: None,
+                    source: None,
                     job: Some(input.batch.job),
                 },
                 |document, digest| {
@@ -589,7 +634,7 @@ impl ControlSession {
             .await
             .map_err(InitialEventError::InputBinding)?;
         for request in &staged {
-            producer_requests::reserve(&tx, request, spec.control, None)
+            producer_requests::reserve(&tx, request, spec.control, None, None)
                 .await
                 .map_err(InitialEventError::Reservation)?;
         }
@@ -656,7 +701,21 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidPolicy.into());
         }
-        if let Some(check) = input.request {
+        if let Some((request, phase)) = input.request {
+            producer_sources::require_binding(
+                &tx,
+                spec.dataset_id,
+                request,
+                input.source.map(|s| s.binding),
+                input
+                    .source
+                    .and_then(|s| s.scope.map(|scope| scope.identity())),
+                phase,
+            )
+            .await
+            .map_err(InitialOperationError::Source)?;
+        }
+        if let Some(check) = input.source {
             producer_sources::require_current(&tx, spec.dataset_id, check)
                 .await
                 .map_err(InitialOperationError::Source)?;
@@ -671,12 +730,12 @@ impl ControlSession {
                 .await
                 .map_err(InitialOperationError::InputBinding)?;
         }
-        if let Some(request) = input.request {
+        if let Some((request, _)) = input.request {
             input_bindings::lock_request_job(
                 &tx,
                 spec.dataset_id,
                 spec.control,
-                request.request,
+                request,
                 spec.config_revision,
                 spec.policy_revision,
             )

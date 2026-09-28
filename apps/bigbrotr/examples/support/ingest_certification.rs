@@ -80,6 +80,8 @@ pub async fn run(
                     ingest_root: path,
                     registration: spec,
                     event: input,
+                    relay_source: None,
+                    acquisition: None,
                     provenance_enabled: true,
                     limits: CertificationLimits {
                         max_fact_bytes: if *case == "limit" {

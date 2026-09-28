@@ -31,10 +31,10 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'registry'
-assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read')
+assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding')
 probe = {'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
          'enrollment':'relay_enrollment_probe', 'enrollment-faults':'relay_enrollment_fault_probe',
-         'visibility':'ingest_bootstrap_probe', 'policy-versions':'ingest_bootstrap_probe', 'relay-source':'ingest_bootstrap_probe', 'relay-source-faults':'ingest_bootstrap_probe', 'source-transport':'ingest_bootstrap_probe', 'source-cleanup':'ingest_bootstrap_probe', 'source-races':'ingest_bootstrap_probe', 'acquisition-scope':'acquisition_scope_probe', 'acquisition-scope-faults':'acquisition_scope_probe', 'acquisition-scope-read':'acquisition_scope_probe'}[mode]
+         'visibility':'ingest_bootstrap_probe', 'policy-versions':'ingest_bootstrap_probe', 'relay-source':'ingest_bootstrap_probe', 'relay-source-faults':'ingest_bootstrap_probe', 'source-transport':'ingest_bootstrap_probe', 'source-cleanup':'ingest_bootstrap_probe', 'source-races':'ingest_bootstrap_probe', 'acquisition-scope':'acquisition_scope_probe', 'acquisition-scope-faults':'acquisition_scope_probe', 'acquisition-scope-read':'acquisition_scope_probe', 'acquisition-binding':'ingest_bootstrap_probe'}[mode]
 if mode == 'relay-source-faults':
     identity['scope'] = 'Source-bound admission/recovery fault probe build only; no engine qualification'
 if mode == 'source-races':
@@ -94,6 +94,14 @@ if mode == 'acquisition-scope-read':
     identity['scope'] = 'Bounded immutable scope reader build; no engine or admission qualification'
     steps.insert(1, ('selector', ['cargo', 'test', '--locked', '--offline', '--release',
                                  '-p', 'bigbrotr-protocol', '--test', 'selector']))
+if mode == 'acquisition-binding':
+    identity['scope'] = 'Scope-bound reservation/admission/certification build; engine qualification is separate'
+    steps[1:1] = [
+        ('membership', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                        '--lib', 'acquisition::scope::tests']),
+        ('catalog', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                     '--test', 'control_schema', '--test', 'migrate_entrypoint']),
+    ]
 if mode == 'acquisition-scope':
     identity['scope'] = 'Immutable explicit scope registration build only; no engine or installed Sync qualification'
     steps.insert(1, ('catalog', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
@@ -123,5 +131,6 @@ status = {'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_B
           'source-races':'PASS_SOURCE_RACES_BUILD_ONLY',
           'acquisition-scope':'PASS_ACQUISITION_SCOPE_BUILD_ONLY',
           'acquisition-scope-faults':'PASS_ACQUISITION_SCOPE_FAULT_BUILD_ONLY',
-          'acquisition-scope-read':'PASS_ACQUISITION_SCOPE_READ_BUILD_ONLY'}[mode]
+          'acquisition-scope-read':'PASS_ACQUISITION_SCOPE_READ_BUILD_ONLY',
+          'acquisition-binding':'PASS_ACQUISITION_BINDING_BUILD_ONLY'}[mode]
 Path('/out/qualification.json').write_text(json.dumps(dict(identity,status=status),indent=2)+'\n')

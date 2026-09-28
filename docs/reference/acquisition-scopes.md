@@ -98,3 +98,40 @@ documents. Before execution, the trusted consumer must enforce both complete
 accepted documents, full collection/request membership, current source authority
 and committed visibility. Finite jobs, scope-bound admission, progress/effect closure,
 installed entrypoints and complete M1 remain selected implementation work.
+
+
+The initial admission bridge now accepts a borrowed `AcquisitionEventContext`.
+It retains the loaded scope and the actual request predicate through the whole
+reservation/dispatch operation. Before staging it checks exact endpoint/access/
+full visibility, full collection membership and actual request membership;
+collection exclusion, ephemeral exclusion and request exclusion stay distinct.
+The immutable inputs cannot change between these checks and native dispatch.
+Current source and scope policy are separately rechecked under relational locks
+at both phases. Invalid signed inputs still receive native rejection after the
+current relational checks. A scope requires a network source; it cannot be
+attached to an import or silently bypassed by omitting that source.
+
+Additive0021 retains AcquisitionScopeId on `producer_requests`, including with
+provenance off. An exact16/nonzero nullable bytea plus the complete-relay CHECK
+and composite foreign key bind dataset/scope/endpoint/access. Existing rows stay
+NULL and cannot be adopted or retried through a changed/omitted scope. Plain bytea
+avoids the constrained-domain addition mechanism observed in0020; populated
+heap/row preservation must still be measured on native PostgreSQL. The ordered
+trigger checks current scope epoch after dataset serialization, before Ingest/
+producer locks. Unbound imports take no new dataset lock. All prior SQL remains
+immutable; native request/receipt/fact formats are unchanged.
+
+Certification shares the request-independent current-source helper and loaded
+collection/request context. It neither invents a ProducerRequestId nor checks for
+a reservation. Missing0020/0021 prerequisites are explicit, including read-only
+calls. Positive original-outcome recovery continues to resolve historical native
+input even after current source/scope authority is withdrawn; missing outcomes
+remain unresolved. Fresh admission permission is never inferred from recovery.
+
+This is an internal integration candidate, with native qualification pending.
+The first finite socket consumer can use the registered full selector. Generated
+page/need-list resumption still requires retaining that execution's exact request
+context; the scope ID does not reconstruct a page window. Both complete accepted
+documents must additionally authorize event limits, provenance, ephemeral/history
+policy, endpoint/bans/route and current deployment roots. Installed consumers may
+not substitute the fixture validator or legacy unbound path for those checks.

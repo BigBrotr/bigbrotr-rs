@@ -145,6 +145,10 @@
     {
       "version": 4,
       "name": "0004_acquisition.sql"
+    },
+    {
+      "version": 21,
+      "name": "0021_acquisition_bindings.sql"
     }
   ],
   "reserved": [

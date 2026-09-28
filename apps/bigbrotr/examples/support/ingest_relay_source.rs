@@ -24,6 +24,9 @@ use bigbrotr_model::{
 };
 use bigbrotr_protocol::endpoint::Endpoint;
 
+#[path = "ingest_scope_binding.rs"]
+mod scope_binding;
+
 #[allow(
     clippy::too_many_arguments,
     reason = "finite fixture retains actual owner and native handles"
@@ -165,6 +168,19 @@ pub async fn run(
         matches!(committed.entry().descriptor(), DictionaryDescriptor::Visibility { class } if class.as_str()=="public")
     );
     drop(committed);
+    if mode.starts_with("source-scope-") {
+        let available = scope_binding::run(
+            &mut owner, observer, &mut store, spec, path, budget, mode, source, &command, &session,
+        )
+        .await;
+        if available {
+            owner.release().await.unwrap();
+        } else {
+            drop(owner);
+        }
+        crate::ingest_closing::join(driver, false).await;
+        return;
+    }
     if mode.starts_with("source-fault-") {
         crate::ingest_source_faults::run(
             config, owner, driver, observer, store, spec, path, budget, mode, source, command,
@@ -234,6 +250,7 @@ pub async fn run(
         )
         .unwrap(),
         relay_source: binding,
+        acquisition: None,
         provenance_enabled: false,
         recorded_at: ObservedTime::new(1234),
         limits,

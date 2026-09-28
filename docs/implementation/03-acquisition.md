@@ -101,6 +101,9 @@ immediate refusals, exact2MiB document boundary and complete rollback.
 [Scope reading](evidence/p03-acquisition-scope-read-native-20260928.json) now has14
 native cases for exact persisted intent, bounded decoding, retained memory,
 historical/absent identities, corrupt metadata and actual query cancellation.
+The initial bridge now has an additive0021 collection binding and request-independent
+source/scope certification candidate. Its actual PG/Rocks qualification remains
+pending; Mac membership/catalog checks alone do not close this boundary.
 Jobs, authorization, progress and installed CLI acceptance
 remain separate parts of Step3 onward; no whole task closes here.
 

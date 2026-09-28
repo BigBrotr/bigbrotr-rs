@@ -1,0 +1,65 @@
+{
+  "format": "bigbrotr-acquisition-binding-mac/1",
+  "status": "PASS_SCOPED_MAC_COMPONENTS",
+  "base_source": "3f592bc7ff1cd9c9a1fcab2833bfdd9ba32dd603",
+  "environment": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+  "local_evidence": ".research/implementation/acquisition-binding-20260928",
+  "source_sha256": {
+    "apps/bigbrotr/examples/support/ingest_certification.rs": "fab73d04d5feb3e5d28d4d446a43427b7c54131eef3171f1b97c96ce8df779ef",
+    "apps/bigbrotr/examples/support/ingest_closing.rs": "f144f3786b873ec43edb7da97c0b7ff558d60b5e03ed031798d5c0096658038a",
+    "apps/bigbrotr/examples/support/ingest_event.rs": "33002ad952f238cfe51b7d297bf4ab42a7e104775dc08327b5e213a07d6d2338",
+    "apps/bigbrotr/examples/support/ingest_relay_source.rs": "d85c2602ef100df6ee280451e515ef88313fa5019cef61e855015eb33d10ff08",
+    "apps/bigbrotr/examples/support/ingest_source_faults.rs": "e32fed15087ebca7fd276de53d7756112498bcc52a2559f1c77903ab31e23cfd",
+    "apps/bigbrotr/examples/support/publication_ingest.rs": "a34c986492333193b7521fafd0279bc57767d2f4ea298c7813768a4b2fa06f8b",
+    "apps/bigbrotr/src/acquisition/scope.rs": "826b3e224b6c4c7a4ff8957997f8734ac50ff33e1a949cd5148ce91d33ce63a3",
+    "apps/bigbrotr/src/storage/postgres/initial_batch.rs": "99f0f7e3f30de2aa351aa56043b952e52f6e032de8672d6fc0dab7363daf3043",
+    "apps/bigbrotr/src/storage/postgres/migrations.rs": "916a0399988114420e2dfbb8eb94ead8d459da85a518fd512b8a976d041dcc8e",
+    "apps/bigbrotr/src/storage/postgres/producer_requests.rs": "2b16f022c3fbf36aa0ffc6af94862eb43766cb8f2b4f8c0003628958c139144c",
+    "apps/bigbrotr/src/storage/postgres/producer_sources.rs": "efbf47f99544bc292e019c61fe4881b97214ff535994106367eea10561f493e5",
+    "apps/bigbrotr/tests/control_schema.rs": "5d7af92562b81fca90f9a960ca39bba6210a462a0f5572c55cc77e3e1e5b5ef3",
+    "experiments/acquisition-scope/README.md": "3abbc2c065536a048a35cdd8f1e0f50a12e78bd442c6f39eaade9df9d04cb69a",
+    "experiments/network-transport/lab.py": "0eae8baa48703d94773611c81bc4a1d8048ebce0d79c3f553311a26e4e3edc7f",
+    "experiments/relay-registry/native.py": "5d8177073c4107748bf8c1a9e4230bfcec91e11df97dc99b005bcf3d0aa0a07b",
+    "migrations/manifest.json": "ac1a98a1b2f3e667574c23e84016e08e04532f7d6f5a1d0f2cd57bdba0d741d6",
+    "apps/bigbrotr/examples/support/ingest_scope_binding.rs": "30aa77ca41ae300bc888142bd83ec8d9c4c242a725232bf6551ad4f81fadd831",
+    "experiments/acquisition-scope/bindings.py": "88bd0a15216b076cd257310390e7e90ec48f22370f962852816eabc927e79c23",
+    "migrations/postgres/0021_acquisition_bindings.sql": "108a5d0b6a328826b43d48622c820b966a8cf6751b509d669ac9c6e44276688f",
+    "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9"
+  },
+  "logs_sha256": {
+    "api-red-corrected.log": "e6036db2fd086016bf029be4f628beccdadf42af6fb4e09bf0f3d1c8c6a6bdb7",
+    "api-red.log": "ff9c96d09b3ff831d672cea8e0d4a2647595262d44ad4d32393ae029566cafa3",
+    "artifacts.log": "d80ae09986f81d2628cbb0ff05f092e168fcaa730a0faa302572810332a50d59",
+    "catalog-green.log": "f0852ba7c570aff022ceeb1f075bdc96d1d39194fd65ea8fa6b45104eb02bc0e",
+    "catalog-red.log": "a087b100e2351e50547ae882e58ba81dc524909138775d73451c28dc78f94c8d",
+    "clippy-final.log": "179b40240c218ecf0550e3aec85c757d2af1292295fa8ccc902e691ffe87a533",
+    "clippy.log": "df8b303605658de94851674fe4d6a50886a024006932cb0719d798293ed1e5de",
+    "context-final.log": "a4631f23b893ba556c882d19a3dd91b99a28c86ce8adb07e7d7f0f5b60e3ca4b",
+    "context-green.log": "7e44be4ae7d6108575a98321263aeb03b17f65d0f18d41fe8cd749b2cb7c918d",
+    "handoff.log": "d52759bfa5c07e2bcb24dc64e37adfc18872c280311e692a94df3bedfe2b9e19",
+    "lib-check.log": "02af2cfade0dfa9212fbcaa3082c4e0e62bfcb5cf7794619e9d0b8cd87ba7a19",
+    "probe-clippy-fixed.log": "667dd424b74fd03ff6942761c90e28537d79ee8fcb0b724309feaed7f225e4a5",
+    "probe-clippy-prerequisite.log": "ccc084629858ecf33ebbeaea7d6a6eb2c74819da64a7c70a33c63b64e81e9e80",
+    "probe-clippy.log": "337253c7d0280e6d8595f7601d6386c4e9a36e7fdea8672510d3e47b996499c4",
+    "artifacts-final.log": "43c13aec42165d7a62df254ea3775cf5f1e0bae931c5aa15c0a79bfb14f3e340",
+    "handoff-final.log": "d52759bfa5c07e2bcb24dc64e37adfc18872c280311e692a94df3bedfe2b9e19"
+  },
+  "checks": [
+    "Two membership tests using six independently signed events, distinct collection/request exclusions, full source mismatch and retained scope permit",
+    "30 migration catalog and three actual CLI prerequisite/help tests",
+    "Library/probe/affected catalog Clippy; previous all-example/test Clippy after API caller updates",
+    "All36 prior SQL checksums and Cargo inputs unchanged; formatting, Python syntax, documentation checks"
+  ],
+  "original_outcomes": [
+    "Expected missing-API RED and missing migration21 RED",
+    "Fixture PolicyEpoch unwrap typo corrected before confirming pure missing-API RED",
+    "Probe borrowed closure lifetime compile error corrected by selecting its retained scope by index"
+  ],
+  "review": "Root owning product files/callers/contracts and complete diff; read-only AI found missing prerequisite check for source-bound certification and root corrected it. Complete probe/harness/oracle/profile review found no further concrete launch blocker. Native SQL/engine guarantees remain unqualified.",
+  "not_run": [
+    "New0021 actual PostgreSQL constraints/populated physical preservation",
+    "Actual scope-bound reservation/dispatch/CertifyExisting and historic recovery integration",
+    "Native fault/concurrent-lock schedules, installed Sync/M1, capacity/aged-state, arm64/release",
+    "Invalid-signature binding, post-reservation scope refusal, concurrent scope-policy changes and ambiguous recovery"
+  ]
+}

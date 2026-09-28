@@ -12,22 +12,42 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main isa127c6121090a46f4fdd88a6c44c42b9c02d831d, tree
-16a0ce5d235e685b956c78c620e1c5e1bdf6be55 (scope reader); private origin/main
-was4650310f5e4dc30845a678ebc8b0eba414c43ffd before the pending evidence push.
-Root owns only reader qualification evidence/inventory and owning status/checkpoint
-updates. Product candidate is fully committed; no other writer or active lab.
-All36 applied SQL and Cargo inputs are unchanged. Preserve original states.
-Mac and native six codec tests/scoped Clippy pass; actual-PG reader14 cases PASS.
-Evidence: [Mac](evidence/p03-acquisition-scope-read-mac-20260928.json),
-[native reader](evidence/p03-acquisition-scope-read-native-20260928.json).
+Mac main and private origin/main are3f592bc7ff1cd9c9a1fcab2833bfdd9ba32dd603,
+verified clean before this slice. Root now owns dirty scope binding implementation:
+acquisition/scope.rs; postgres initial_batch/producer_sources/producer_requests,
+additive0021/catalog/manifest; affected example callers and new ingest_scope_binding
+probe; control_schema regression. Root also owns bindings.py and the acquisition-binding native build profile.
+No other writer or active lab. All36 applied SQL
+and Cargo inputs remain unchanged. Original outcomes stay preserved under ignored
+.research/implementation/acquisition-binding-20260928. Mac membership2/catalog30/CLI3 tests PASS after missing-API/target RED;
+all prior callers compile under scoped/all-example Clippy. New ten-case actual
+probe Clippy passes; its original closure-lifetime compile failure remains.
+Evidence: [Mac candidate](evidence/p03-acquisition-binding-mac-20260928.json). Native0021 and PG/Rocks scope consumer NOT_RUN; no closure claim.
+Last resumption census: no BigBrotr process/build/container, eight unrelated running,
+Tux65,935,290,368 bytes free. Latest Mac10,604,344 KiB; cache retirement remains complete.
 
 ## Active slice and next useful journey
 
 P03-T01 Steps1/2/3: pure selector is qualified; initial durable registration now has
 six actual-PG schedules and native build evidence. Whole task remains open.
-Next bounded action: commit/push the reader evidence, then implement scope-bound
+Reader evidence is committed/pushed. Active implementation is scope-bound
 reservation/admission and read-only certification for P03-T01 Step3/P03-T02 Step3.
+Read-only AI review of the complete first-wave fixture found no launch blocker.
+Next bounded action: commit the clean candidate, then exact-Git Tux
+qualification of populated upgrade and ten actual signed consumer cases.
+Then add the required invalid-signature, post-reservation scope refusal, concurrent
+policy locks and historical-recovery cases before closing the affected guarantees. No installed Sync claim yet.
+Current design retains a nullable plain bytea scope ID with exact16/nonzero CHECK,
+complete relay implication and composite source FK. NULL legacy rows are not adopted.
+A new ordered trigger observes policy after dataset serialization; import NULL paths
+acquire no late domain locks. Request-independent CurrentSourceCheck is shared with
+certification. Immutable borrowed collection/request predicates are checked before
+staging; relational authority is checked at both phases. No narrowed-page durable
+resumption is implied by this context. The first socket consumer can request the
+registered full selector. Read-only AI review found certification skipped0020
+prerequisite checks; corrected in the common current-source helper. Native prerequisite
+regressions remain required. Original ambiguous-outcome recovery is unchanged.
+
 Use the qualified loader as the real collection-intent input. Root and read-only AI review of
 source/producer/recovery paths found that overlapping selectors can otherwise
 reuse identical request/native bytes without retaining which scope reserved them.

@@ -3,7 +3,7 @@ use super::ingest_registry::ControlOwner;
 use super::producer_sources::{self, RequestPhase, SourceBindingError};
 use crate::acquisition::relay_source::RelaySourceBinding;
 use crate::storage::rocks::store::StagedProducerRequest;
-use bigbrotr_model::{DatasetId, Digest256, ProducerRequestId};
+use bigbrotr_model::{AcquisitionScopeId, DatasetId, Digest256, ProducerRequestId};
 use tokio_postgres::Transaction;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -86,6 +86,7 @@ pub(super) async fn reserve(
     staged: &StagedProducerRequest,
     issuer: ControlOwner,
     source: Option<RelaySourceBinding>,
+    scope: Option<AcquisitionScopeId>,
 ) -> Result<(), ReservationError> {
     // The bridge already holds the exact owner/registry locks. Upgrade producer
     // serialization before a separate READ COMMITTED observation of prior rows.
@@ -108,6 +109,7 @@ pub(super) async fn reserve(
         staged.dataset,
         staged.request,
         source,
+        scope,
         RequestPhase::Reservation,
     )
     .await
@@ -131,27 +133,44 @@ pub(super) async fn reserve(
                 $6::integer, 1, $7::bytea, $8::bytea, $9::text::numeric, $10::bytea,
                 (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint,
                 $11::bytea, $12::bytea, $13::text::numeric, $14::bytea)";
-        tx.execute(
-            INSERT,
-            &[
-                &&staged.request.producer_slot_id.as_bytes()[..],
-                &staged.request.producer_epoch.get().to_string(),
-                &staged.request.request_sequence.get().to_string(),
-                &&staged.dataset.as_bytes()[..],
-                &&staged.digest.as_bytes()[..],
-                &(staged.input_bytes as i32),
-                &&staged.manifest_sha256[..],
-                &&issuer.resource_id.as_bytes()[..],
-                &issuer.epoch.get().to_string(),
-                &&issuer.process_incarnation.as_bytes()[..],
-                &&source.endpoint_id.as_bytes()[..],
-                &&source.access_scope_id.as_bytes()[..],
-                &source.enrollment_generation.get().to_string(),
-                &&source.route_id.as_bytes()[..],
-            ],
-        )
-        .await
-        .map_err(backend)?;
+        const INSERT_SCOPED: &str = "
+            INSERT INTO control.producer_requests(producer_slot_id, producer_epoch,
+                request_sequence, dataset_id, request_digest, input_bytes, input_profile,
+                manifest_sha256, issuer_resource, issuer_epoch, issuer_incarnation, reserved_at_us,
+                relay_endpoint_id, relay_access_scope_id, relay_enrollment_generation, relay_route_id,
+                acquisition_scope_id)
+            VALUES ($1::bytea, $2::text::numeric, $3::text::numeric, $4::bytea, $5::bytea,
+                $6::integer, 1, $7::bytea, $8::bytea, $9::text::numeric, $10::bytea,
+                (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint,
+                $11::bytea, $12::bytea, $13::text::numeric, $14::bytea, $15::bytea)";
+        let epoch = staged.request.producer_epoch.get().to_string();
+        let sequence = staged.request.request_sequence.get().to_string();
+        let owner_epoch = issuer.epoch.get().to_string();
+        let generation = source.enrollment_generation.get().to_string();
+        let scope_bytes = scope.as_ref().map(|s| s.as_bytes().as_slice());
+        let params: &[&(dyn tokio_postgres::types::ToSql + Sync)] = &[
+            &&staged.request.producer_slot_id.as_bytes()[..],
+            &epoch,
+            &sequence,
+            &&staged.dataset.as_bytes()[..],
+            &&staged.digest.as_bytes()[..],
+            &(staged.input_bytes as i32),
+            &&staged.manifest_sha256[..],
+            &&issuer.resource_id.as_bytes()[..],
+            &owner_epoch,
+            &&issuer.process_incarnation.as_bytes()[..],
+            &&source.endpoint_id.as_bytes()[..],
+            &&source.access_scope_id.as_bytes()[..],
+            &generation,
+            &&source.route_id.as_bytes()[..],
+            &scope_bytes,
+        ];
+        let (query, params) = if scope.is_some() {
+            (INSERT_SCOPED, params)
+        } else {
+            (INSERT, &params[..14])
+        };
+        tx.execute(query, params).await.map_err(backend)?;
         return Ok(());
     }
     // Keep the earlier unbound schema usable; bound INSERT has an explicit0020
