@@ -104,8 +104,10 @@ historical/absent identities, corrupt metadata and actual query cancellation.
 The initial bridge now has an additive0021 collection binding and request-independent
 source/scope certification adapter. [Eleven actual PG/Rocks schedules](evidence/p03-acquisition-binding-native-20260928.json)
 qualify populated upgrade, retry/binding refusals and read-only certification.
-Invalid-signature, post-reservation, concurrency/recovery and raw SQL controls
-remain required before closing the affected guarantees.
+[Four refusal schedules](evidence/p03-acquisition-binding-refusals-native-20260928.json)
+cover invalid signatures and post-reservation refusal. Concurrent policy changes,
+historical recovery and raw SQL controls remain required before closing the
+affected guarantees.
 Jobs, authorization, progress and installed CLI acceptance
 remain separate parts of Step3 onward; no whole task closes here.
 

@@ -12,20 +12,23 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin/main are e21f651931117d74b9c906d4682fb91b09bb25bc,
-verified clean after the native qualification push. Root now extends only the
-scope probe and its existing harness for four discriminating refusal schedules:
-fresh forged signature/retry, forged signature after withdrawal, forged signature
-against an already retained event in certification, and post-reservation scope
-refusal. Product/SQL/dependency bytes are unchanged. The same engine harness has an
-explicit --refusals wave and a two-check build profile; no second laboratory
-framework. Scoped Mac probe Clippy PASS; original incorrect From/TryFrom fixture
-compile failures retained. Read-only AI caught a wrong fixture expectation:
-Rocks latest_sequence_number advances for operational rejection; scientific facts
-stay unchanged and identical retry must write nothing. Corrected before native
-launch. Logs: .research/implementation/acquisition-binding-faults-20260928.
-Four new engine schedules NOT_RUN. Next commit and exact-Git Tux qualification,
-then concurrent locks/historical recovery and raw relational negatives.
+Mac main is 70eea6f1c27e347843300de2087d0db2ba197f5a; candidate not pushed. Private origin/main
+remains e21f651931117d74b9c906d4682fb91b09bb25bc. The candidate was clean at
+exact-Git transfer. Root owns the qualification report and affected inventory,
+checkpoint, task, reference and laboratory documentation updates.
+Native refusal-probe build and four actual PG/Rocks schedules PASS at70eea6f.
+Root compared1,542 exact Git source hashes and47 captured payloads, including
+full native bytes and exact permitted PG changes. Evidence:
+[scope refusals](evidence/p03-acquisition-binding-refusals-native-20260928.json).
+No product/setup failure during these engine schedules; product, SQL and
+Cargo inputs remain identical tof403813. Original fixture compile errors remain;
+read-only AI corrected the initial operational Rocks sequence expectation before
+engine launch. All owned resources are stopped; no cleanup obligation.
+Next bounded action: extend the existing source fault probe/harness with retained
+scope context, both real policy lock orders and ambiguous original recovery after
+withdrawal/policy advance. Read producer_closing/recovery and source fault owners
+already; preserve original f403813/70eea6f fixtures/results. Raw SQL negatives also
+remain, then the installed finite socket journey toward M1.
 Scope binding implementation and first-wave harness are committed; all36 prior SQL
 and Cargo inputs remain unchanged. Mac membership2/catalog30/CLI3 tests and scoped
 Clippy PASS; original RED/setup compile failures remain in ignored
@@ -46,9 +49,9 @@ six actual-PG schedules and native build evidence. Whole task remains open.
 Reader evidence is committed/pushed. Active implementation is scope-bound
 reservation/admission and read-only certification for P03-T01 Step3/P03-T02 Step3.
 Read-only AI review of the complete first-wave fixture found no launch blocker.
-Next bounded action: add the required invalid-signature and post-reservation
-scope refusal cases, then both concurrent policy lock orders and historical
-recovery, using actual scope binding. Raw SQL negatives/rollback also remain.
+Next bounded action: both concurrent policy lock orders and historical recovery
+using actual scope binding. Invalid-signature and post-reservation refusal now
+have the separate scoped evidence above. Raw SQL negatives/rollback also remain.
 Keep original outcomes and existing native oracle; no installed Sync claim yet.
 Current design retains a nullable plain bytea scope ID with exact16/nonzero CHECK,
 complete relay implication and composite source FK. NULL legacy rows are not adopted.
@@ -67,10 +70,10 @@ source/producer/recovery paths found that overlapping selectors can otherwise
 reuse identical request/native bytes without retaining which scope reserved them.
 Use an additive acquisition-scope binding on producer_requests; import-only
 producer_input_bindings cannot express it. Compare omissions too; historical NULL
-rows cannot be adopted. 0020 and0004 remain immutable. Both fresh reserve and dispatch must
-check collection/request membership; historical ambiguous recovery remains tied
-to its original intent. CertifyExisting currently passes no source context; add
-read-only source/scope checks without inventing a ProducerRequestId. The actual
+rows cannot be adopted. 0020 and0004 remain immutable. Fresh reserve and dispatch both recheck
+relational authority; borrowed immutable collection/request membership is checked
+before staging. Historical ambiguous recovery remains tied to its original intent.
+Certification now shares the source/scope checks without a ProducerRequestId. The actual
 policy consumer must check event bytes, provenance, ephemeral/history policy as
 well as endpoint/bans/route against both documents. No adjacent
 subsystem, generic orchestration framework or full scheduling milestone is needed
@@ -193,6 +196,20 @@ fixture blocker. Original logs, scripts and failures remain in ignored
 actual8951d87 capture/review). No product change was needed for these schedules.
 
 ## Current owned laboratory resources
+
+acquisition-binding-refusals-70eea6f is STOPPED/RETAINED; inventory
+implementation_network_20260928.acquisition_binding_refusals and ignored
+.research/implementation/acquisition-binding-faults-20260928 own launch/capture/
+root-review recipes and original outcomes. Build owner03308803d1f2cbeb1db2c9e1be50a144,
+PID3310208/start398358972 terminal; fetch9d9a7d32/native6d99f864 exited0.
+Engine owner44dca017ca67833db70a50cb5d77b3e9, PID3312963/start398373524 terminal;
+client6fbef1c5 stopped143/no OOM, PG71775507 stopped0. Four
+bb_scope_bind_70eea6f_* clones/stores retained, including the committed reservation
+without native outcome. Audit13:18:42 UTC verified929 other projections unchanged,
+eight unrelated running, compiler lock released and65,494,368,256 bytes available.
+No cleanup obligation. Shared cache latest intermediates70eea6f; exact artifacts
+remain separately retained. Never replay launchers.
+
 
 acquisition-binding-f403813 is STOPPED/RETAINED. Full identities and retained
 resources: implementation_network_20260928.acquisition_binding; ignored

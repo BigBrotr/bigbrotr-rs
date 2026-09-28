@@ -1,0 +1,133 @@
+{
+  "format": "bigbrotr-acquisition-binding-refusals-native/1",
+  "status": "PASS_SCOPED_ACQUISITION_BINDING_REFUSALS",
+  "source": "70eea6f1c27e347843300de2087d0db2ba197f5a",
+  "tree": "36ae1af27cf5fb26f05d783ba982ff0229cfcad8",
+  "unchanged_product_source": "f4038134a77828ec2b97ec7b3bddee0b80758b9f",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "1ba4e60c2078a42c115f29ee234497191e5b56ad614350b417e9d68011231efb",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "4cc81f0f7d2e9b1f524d63c7bd59323f25392e2a9a422026bf21a44f2eafe8f7",
+    "ingest_bootstrap_probe": "cc47b9113296a3acc5db01780fd4aad620b5557065eec4bfc5fa285691d9d89c"
+  },
+  "cases": [
+    {
+      "name": "invalid",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 17,
+      "original_inputs": 2
+    },
+    {
+      "name": "invalid-retained",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "invalid-withdrawn",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "dispatch-refused",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 2
+    }
+  ],
+  "checks": [
+    "Mac scoped fixture Clippy, exact-source native release CLI/probe build and Clippy; unchanged product suites not repeated",
+    "Literal zero signature retains a real signed body/ID but produces exact native and PG Signature rejection; identical retry preserves all Control/native/input state",
+    "Independent Python CBOR/rejection encoding matches original input, rejection bytes, producer marker and complete unchanged scientific native records",
+    "Certification of an already retained valid body still rejects its forged signature without writes",
+    "Actual authenticated enrollment withdrawal rejects the invalid candidate before reservation/staging; complete state unchanged",
+    "Scope guard refuses only after a committed scoped reservation exists: original input and reservation retained, no outcome or native mutation; only exact producer prefix/reservation changes",
+    "Current/source/scope metadata and literal selector documents independently compared; original templates/reports unchanged",
+    "Actual drivers joined, owned containers stopped without OOM; other container projections unchanged and compiler lock released"
+  ],
+  "review": {
+    "source_files": 1542,
+    "captured_payloads": 47,
+    "capture_manifest_sha256": "766c53c8854c75cf69b26fb57be6fc0060952e6659ee64b364a9d2691f9b606c",
+    "root_review_sha256": "14263345bf526994f9655b5e53c926c2e11f172a8a0f90b31ab2dfa61bfb8ae9",
+    "ai_review": "Read-only complete probe/harness and relevant native APIs. Corrected fixture expectation that operational Rocks sequence would not advance for a fresh rejection; no further blocker. Engine execution found no product or setup failure."
+  },
+  "original_fixture_outcomes": [
+    "From and TryFrom signature conversion compile failures retained; corrected after inspecting explicit Signature::from_bytes",
+    "Rocks latest_sequence_number is operational; first rejection now permits expected writes and only its identical retry asserts zero writes"
+  ],
+  "local_logs_sha256": {
+    "artifacts.log": "da46c50cb72111aa016a8ad0251ac6ae38354fa853add413bc18941262a46195",
+    "handoff.log": "d52759bfa5c07e2bcb24dc64e37adfc18872c280311e692a94df3bedfe2b9e19",
+    "probe-clippy-final.log": "6ce093a5705feba7bdcdd26b49ae2949c66f62b3adb10c11fcce57c954a6a4d8",
+    "probe-clippy-fixed.log": "b6426910c4e9fc52e32c2757356c578e199d0f7956b74d823cfb54b8dbe19404",
+    "probe-clippy.log": "2032df417c09046452aa50a1f17eb468a6755ecff6b4b7d7fa87cd06e149508d"
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "70eea6f1c27e347843300de2087d0db2ba197f5a",
+    "observed_at": "2026-09-28T13:18:42.149935+00:00",
+    "prior_unchanged": 929,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "9d9a7d32bddaf49e3fcd274a0ed93ef281499e45fd40e280c4fb2130766ba16e",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "6d99f8643be0794d34e36ff5160f2e8ec06876c2775d3100cd56066ec014f1e4",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "6fbef1c57e71191a7b0f1c74f50ed7b875db3459686e1f94d2132711362ae31b",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1542,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 65494368256,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/acquisition-binding-faults-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-refusals-70eea6f",
+  "not_qualified": [
+    "Actual concurrent scope-policy lock orders, rollback and historical ambiguous outcome recovery",
+    "Raw SQL negative controls",
+    "Installed finite Sync and M1, full accepted-policy consumer",
+    "Measured memory capacity, aged/mixed load, native arm64 and release"
+  ],
+  "scope": "Four actual-engine refusal schedules; the scoped post-reservation function wrapper is a fault fixture, not a concurrent policy activation. No product/SQL/dependency input changed since f403813."
+}

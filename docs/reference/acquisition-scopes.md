@@ -131,8 +131,12 @@ remain unresolved. Fresh admission permission is never inferred from recovery.
 [Eleven actual PG/Rocks schedules](../implementation/evidence/p03-acquisition-binding-native-20260928.json)
 pass at f403813: upgrade/reapply, exact retry, changed/omitted/legacy binding,
 membership/source refusals, certification and actual withdrawal, and prerequisites.
-Independent byte/state comparisons cover effects and absence of writes. Invalid
-signatures, post-reservation refusal, concurrent policy changes and historical
+Independent byte/state comparisons cover effects and absence of writes.
+[Four further refusal schedules](../implementation/evidence/p03-acquisition-binding-refusals-native-20260928.json)
+pass at70eea6f: exact rejection/retry, forged certification of a retained body,
+invalid input after withdrawal and scope refusal after durable reservation.
+A rejected mutation creates an operational outcome while leaving scientific facts
+unchanged; its retry writes nothing. Concurrent policy changes and historical
 recovery with this binding still require their own evidence.
 The first finite socket consumer can use the registered full selector. Generated
 page/need-list resumption still requires retaining that execution's exact request

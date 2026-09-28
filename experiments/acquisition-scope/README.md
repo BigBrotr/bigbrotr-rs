@@ -120,7 +120,7 @@ an exact operational rejection whose identical retry writes nothing; certificati
 of a retained body still rejects that signature; actual enrollment withdrawal
 refuses even the invalid candidate; and a clone-only scope guard refuses only
 after its reservation exists. The last case must retain original input and one
-reservation while leaving native state and outcomes unchanged. These cases remain
-NOT_RUN until their exact-source native report exists. The initial rejection
+reservation while leaving native state and outcomes unchanged. The [70eea6f report](../../docs/implementation/evidence/p03-acquisition-binding-refusals-native-20260928.json)
+records all four cases PASS. The initial rejection
 advances operational Rocks state; it must not create scientific facts. The
 independent byte oracle checks both distinctions.

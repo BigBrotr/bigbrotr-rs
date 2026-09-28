@@ -28227,6 +28227,107 @@
           "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
         }
       }
+    },
+    "acquisition_binding_refusals": {
+      "status": "70eea6f native build and four actual PG/Rocks refusal schedules PASS; stopped-retained",
+      "local_evidence": ".research/implementation/acquisition-binding-faults-20260928",
+      "launch": {
+        "source": "70eea6f1c27e347843300de2087d0db2ba197f5a",
+        "tree": "36ae1af27cf5fb26f05d783ba982ff0229cfcad8",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-refusals-70eea6f",
+        "pid": 3310208,
+        "start_ticks": "398358972",
+        "bundle_sha256": "1065485bcc1b3f138dfa529cfc727afa82b8fc36093b3b81cc273d03c8b4009c"
+      },
+      "resources": {
+        "source": "70eea6f1c27e347843300de2087d0db2ba197f5a",
+        "tree": "36ae1af27cf5fb26f05d783ba982ff0229cfcad8",
+        "owner": "03308803d1f2cbeb1db2c9e1be50a144",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-refusals-70eea6f",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "9d9a7d32bddaf49e3fcd274a0ed93ef281499e45fd40e280c4fb2130766ba16e"
+          },
+          {
+            "name": "native",
+            "id": "6d99f8643be0794d34e36ff5160f2e8ec06876c2775d3100cd56066ec014f1e4"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T13:15:36.206696+00:00",
+        "qualification": "PASS_ACQUISITION_BINDING_REFUSAL_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 65529573376,
+        "finished_at": "2026-09-28T13:16:40.918805+00:00"
+      },
+      "preserve": "Exact source/artifacts/logs, four clone databases and native stores/original inputs. Dispatch-refused reservation has deliberately missing native outcome. Original templates/f403813 results unchanged. All containers stopped; compiler lock released; no cleanup obligation.",
+      "engine_launch": {
+        "source": "70eea6f1c27e347843300de2087d0db2ba197f5a",
+        "pid": 3312963,
+        "start_ticks": "398373524",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-refusals-70eea6f"
+      },
+      "native_report": "docs/implementation/evidence/p03-acquisition-binding-refusals-native-20260928.json",
+      "engine": {
+        "owner": "44dca017ca67833db70a50cb5d77b3e9",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "6fbef1c57e71191a7b0f1c74f50ed7b875db3459686e1f94d2132711362ae31b",
+          "name": "bigbrotr-acquisition-binding-70eea6f"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_70eea6f_invalid",
+          "bb_scope_bind_70eea6f_invalid_retained",
+          "bb_scope_bind_70eea6f_invalid_withdrawn",
+          "bb_scope_bind_70eea6f_dispatch_refused"
+        ]
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "70eea6f1c27e347843300de2087d0db2ba197f5a",
+        "observed_at": "2026-09-28T13:18:42.149935+00:00",
+        "prior_unchanged": 929,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "9d9a7d32bddaf49e3fcd274a0ed93ef281499e45fd40e280c4fb2130766ba16e",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "6d99f8643be0794d34e36ff5160f2e8ec06876c2775d3100cd56066ec014f1e4",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "6fbef1c57e71191a7b0f1c74f50ed7b875db3459686e1f94d2132711362ae31b",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1542,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 65494368256,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {
