@@ -12,33 +12,23 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin/main are4650310f5e4dc30845a678ebc8b0eba414c43ffd
-(SQL qualification evidence pushed and verified). Resumption found a clean tree.
-Product/migrations remain byte-identical to first-wave54d1a18. Root owns the next
-scope-loading/admission integration and owning status/checkpoint updates.
-No other writer or active lab. Preserve applied checksums and original states.
-Root dirty scope-reader files, its probe/recipe/build profile, reference and
-inventory/evidence updates are the pending coherent candidate. No SQL/dependency
-changes. Mac six codec tests/scoped Clippy and artifact/handoff checks pass;
-actual-PG reader remains NOT_RUN. Evidence is
-[scope reader Mac](evidence/p03-acquisition-scope-read-mac-20260928.json).
+Mac main isa127c6121090a46f4fdd88a6c44c42b9c02d831d, tree
+16a0ce5d235e685b956c78c620e1c5e1bdf6be55 (scope reader); private origin/main
+was4650310f5e4dc30845a678ebc8b0eba414c43ffd before the pending evidence push.
+Root owns only reader qualification evidence/inventory and owning status/checkpoint
+updates. Product candidate is fully committed; no other writer or active lab.
+All36 applied SQL and Cargo inputs are unchanged. Preserve original states.
+Mac and native six codec tests/scoped Clippy pass; actual-PG reader14 cases PASS.
+Evidence: [Mac](evidence/p03-acquisition-scope-read-mac-20260928.json),
+[native reader](evidence/p03-acquisition-scope-read-native-20260928.json).
 
 ## Active slice and next useful journey
 
 P03-T01 Steps1/2/3: pure selector is qualified; initial durable registration now has
 six actual-PG schedules and native build evidence. Whole task remains open.
-Next bounded action: commit the scope-reader candidate, build exact Git on Tux
-using acquisition-scope-read/locked1154757, then run reads.py on fresh clones of
-retained54d1a18 basic/8c4d12c transport.14 proposed cases distinguish canonical
-bytes, exact2MiB, resource versus metadata failures, namespace isolation, historical
-data, missing schema and cancellation at an observed actual scope-table lock.
-Root/read-only AI review corrected reused Control identity and old-owner row
-oracle before engine launch. Missing-API and digest-format compile failures remain
-under ignored acquisition-scope-read-20260928. The loaded domain value retains
-its8MiB parser permit; normalized comparison streams into the original bytes,
-with no second encoded document. Driver memory stays separately owned. No resize
-API or measured small-capacity claim. After qualification, wire its source
-binding consumer for P03-T01 Step3/P03-T02 Step3. Root and read-only AI review of
+Next bounded action: commit/push the reader evidence, then implement scope-bound
+reservation/admission and read-only certification for P03-T01 Step3/P03-T02 Step3.
+Use the qualified loader as the real collection-intent input. Root and read-only AI review of
 source/producer/recovery paths found that overlapping selectors can otherwise
 reuse identical request/native bytes without retaining which scope reserved them.
 Use an additive acquisition-scope binding on producer_requests; import-only
@@ -52,6 +42,21 @@ well as endpoint/bans/route against both documents. No adjacent
 subsystem, generic orchestration framework or full scheduling milestone is needed
 before wiring the finite consumer. Scope loading must bound/decode exact persisted
 bytes and preserve Capacity versus inconsistent-state errors.
+
+The data reader is qualified ata127c61 on14 new real-PG clones: literal exact2MiB,
+one-byte-over, insufficient bytes/items followed by same-session successful retry,
+normalized representation versus malformed/changed/profile/orphan/zero-epoch
+metadata, parser Capacity, absent/foreign scope, historical epoch1 under policy2,
+missing migration and cancellation. An actual AccessShareLock on acquisition_scopes
+was observed by backend incarnation before timeout; all actual drivers joined.
+Every original table/owner row/xmin survived, with exactly one new Control epoch
+and role per clone. Root compared1,536 Git source hashes and87 captured payloads.
+No product defect found during engine execution. Review corrected cloned-owner
+nonce collision and incomplete prior-owner oracle before launch. Original RED
+and digest-format compile failure stay under ignored acquisition-scope-read-20260928.
+The domain value retains its8MiB parser grant; normalized comparison streams into
+original bytes without a second encoded document. Driver memory remains separate.
+No permit resize or smaller-allocation claim. These are data reads, not authority.
 
 Next user-visible deliverable is still P01-T09 Step2/M1: one actual signed socket
 event through durable admission/archive/read/export/restart. Concrete path:
@@ -160,6 +165,21 @@ identities; ignored .research/implementation/acquisition-scope-20260928 owns
 start/launch/capture/review scripts and original results. Do not rerun old launchers.
 All remote roots are under /home/tux/bigbrotr-implementation-20260917/runs/.
 
+acquisition-scope-read-a127c61 is STOPPED/RETAINED; inventory
+implementation_network_20260928.acquisition_scope_read and ignored
+.research/implementation/acquisition-scope-read-20260928 own exact transfer,
+launch/capture/root-review recipes and originals. Build owner
+69957ca5697ee987a7e2db369617e710, PID3266141/start398029969 terminal;
+fetch996004a3b0d5c0e1ff30649a4678135dc2726066d0b4ae36bdd5fb24ab3152e7 and
+nativeba9edd1085395e3ea7b00562d002a13df4506d838b88f27a4bd4a765074376e2 exit0.
+Bundle005dd9665d9d219e7125c9b80bb75568219ffb66af6a57fe038cf2ba19f56702.
+Engine owner9d4c0d77ba5fd7926f76a25f8c2a1874, PID3268932/start398041733 terminal;
+clienta6e975ba2671abdba7bbc1ca4f2a4d9c49dfd8790ae67bb735cdf62b3df446d0 stop143;
+PG71775507 stopped0, no OOM.14 bb_scope_read_a127c61_* clones retained, including
+intentional corruption; original54d1a18/8c4d12c templates unchanged. Audit12:23:49 UTC
+verified923 other projections unchanged, eight unrelated running, cache lock free,
+65,935,470,592 bytes available. Mac last11,029,864 KiB. No cleanup obligation.
+
 acquisition-scope-guards-0eeade4 is STOPPED/RETAINED; inventory
 implementation_network_20260928.acquisition_scope_guards and ignored
 .research/implementation/acquisition-scope-guards-20260928 own source transfer,
@@ -207,7 +227,7 @@ unchanged. No Rocks/archive writes by the registration laboratory.
 
 Compiler cache network-1154757/out/build/{target,cargo-home} is mutable acceleration,
 exclusively locked by .compiler-cache.lock. Lock verified released. Exact qualified
-CLI/probe and prior ELFs remain outside it; latest intermediates are8951d87.
+CLI/probe and prior ELFs remain outside it; latest intermediates area127c61.
 No cache output is itself qualified. Prior selector061890f/relay-wire27b7f45/
 websocket9fe4ce4 builds and all source transport/cleanup/race labs are terminal;
 complete identities remain in implementation_network_20260928 and

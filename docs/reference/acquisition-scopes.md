@@ -85,7 +85,12 @@ dropping a query does not release the driver's buffers. Cancellation or a failed
 read after begin poisons reuse. No permit resizing or smaller retained-allocation
 claim is introduced. The32MiB producer queue is distinct from the process-wide
 network/parser envelope. The finite consumer must account their actual overlap.
-Mac codec/compile checks pass; actual-PG reader qualification is still NOT_RUN.
+[Mac codec/compile checks](../implementation/evidence/p03-acquisition-scope-read-mac-20260928.json)
+and [fourteen actual-PG reader cases](../implementation/evidence/p03-acquisition-scope-read-native-20260928.json)
+pass at a127c61. The latter observes the actual scope-table lock before cancellation,
+checks original rows/xmin, full identity and document bytes, and verifies driver
+joins and reservation lifetime. Clone-only corruption fixtures qualify refusal,
+not registration or policy activation. This is data loading, not installed Sync.
 
 Ordinary `sync.selectors` configuration still needs explicit versioned accepted
 policy integration. Registration adds no fields/defaults to existing v1/v2

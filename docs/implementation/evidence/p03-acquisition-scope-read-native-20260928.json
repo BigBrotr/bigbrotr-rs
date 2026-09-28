@@ -1,0 +1,178 @@
+{
+  "format": "bigbrotr-acquisition-scope-read-native/1",
+  "status": "PASS_SCOPED_ACQUISITION_READ",
+  "source": "a127c6121090a46f4fdd88a6c44c42b9c02d831d",
+  "tree": "16a0ce5d235e685b956c78c620e1c5e1bdf6be55",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "cf5684696182f6c1e53d74836f9aeeb9fba68867381f106b136c29f17af9cfdb",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "b7a06f8c83cdf79f7a5e7f77df2d5a405e697365ec3be3ad5c75a0d059f2e500",
+    "acquisition_scope_probe": "5042ff3317e62147c55aa33cda1a5e078448b8976627eef9349ad852e9b5f11d"
+  },
+  "engine_cases": [
+    {
+      "name": "valid",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "missing",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "foreign",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "historical",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "noncanonical",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "malformed",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "large",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "oversize",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "working",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "profile",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "missing_selector",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "zero_epoch",
+      "status": "PASS",
+      "lock_barrier": null
+    },
+    {
+      "name": "cancel",
+      "status": "PASS",
+      "lock_barrier": {
+        "pid": 963,
+        "backend_start": "2026-09-28 12:22:57.476341+00",
+        "blockers": [
+          962
+        ],
+        "holder_start": "2026-09-28 12:22:57.404692+00",
+        "waiting_locks": [
+          {
+            "type": "relation",
+            "mode": "AccessShareLock",
+            "relation": "control.acquisition_scopes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "old_schema",
+      "status": "PASS",
+      "lock_barrier": null
+    }
+  ],
+  "checks": [
+    "Actual release CLI/probe build, six selector codec tests and scoped Clippy",
+    "Bounded actual-PG lookup, exact full scope dimensions and literal normalized document digest",
+    "One-byte-small and missing-item grants refuse before query; identical retry succeeds on same owner",
+    "Exact2097152-byte document succeeds;2097153 refuses metadata; within-SQL oversized parser work remains Capacity",
+    "Malformed/noncanonical/profile/orphan/zero-epoch metadata refuses without repair; absent and foreign dataset IDs return None",
+    "Historical epoch1 scope still loads after clone-only policy2 advance; grants no current authority",
+    "Actual scope-table AccessShareLock wait observed by backend incarnation before cancellation; poisoned reuse and retained driver join checked",
+    "Loaded data survives Control release under its own permit; reservations drain after all owners drop",
+    "All prior Control data and owner rows/xmin preserved; exactlyone new Control epoch/role per clone; original templates and report unchanged"
+  ],
+  "review": {
+    "source_files": 1536,
+    "captured_payloads": 87,
+    "capture_manifest_sha256": "dcad695b19b361c02f03800286bad5f83ce24710d97889b635953d45fe7d0e12",
+    "root_review_sha256": "6833fc045bcdf48685e6ef279ac2334a7729bd3de333e9dd6538a377620efc10",
+    "ai_review": "Read-only complete loader/type/codec/probe/harness and relevant transaction/budget owners. No product blocker found. Fixture reused nonce and incomplete prior-owner oracle corrected before native launch."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "a127c6121090a46f4fdd88a6c44c42b9c02d831d",
+    "observed_at": "2026-09-28T12:23:49.581598+00:00",
+    "prior_unchanged": 923,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "996004a3b0d5c0e1ff30649a4678135dc2726066d0b4ae36bdd5fb24ab3152e7",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "ba9edd1085395e3ea7b00562d002a13df4506d838b88f27a4bd4a765074376e2",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "a6e975ba2671abdba7bbc1ca4f2a4d9c49dfd8790ae67bb735cdf62b3df446d0",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1536,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 65935470592,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/acquisition-scope-read-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-a127c61",
+  "not_qualified": [
+    "scope-bound admission/CertifyExisting",
+    "installed Sync/progress/M1",
+    "measured memory capacity/load/aged-state",
+    "arm64/release"
+  ],
+  "scope": "Fourteen finite data-loading schedules. Privileged clone-only document/metadata fixtures do not qualify product registration or management activation. No allocation/RSS capacity or release claim."
+}
