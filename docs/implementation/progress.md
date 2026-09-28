@@ -12,20 +12,18 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is8951d87099df85224e6e65c9fb84e137adef9f02, tree
-0ca3538181d552b8f4c57ebefbf7ffb484214cf3 (cleanup-corrected fault candidate),
-following fac23352188ef0a910c7b262573ad8e587d38f76. Private origin/main was
-b450d0c3e3a5cac8196c1db1ee0c6a1ce71f1575 before the pending fault evidence push.
-Product/migrations are byte-identical to first-wave54d1a18; root owns only
-qualification evidence, inventory, owning status documentation and this checkpoint.
-No other writer, active lab or unjoined local build. Preserve every applied checksum.
+Mac main and private origin/main are4aa1bd3c2ec5717053d8ca5b7e21090317597c72,
+verified after push (fault evidence). Product/migrations remain byte-identical to
+first-wave54d1a18. Root owns new SQL guard fixtures/runner and their documentation;
+no other writer or active lab. The raw relational schedules remain NOT_RUN.
+Preserve every applied checksum and original fault/positive clone.
 
 ## Active slice and next useful journey
 
 P03-T01 Steps1/2/3: pure selector is qualified; initial durable registration now has
 six actual-PG schedules and native build evidence. Whole task remains open.
-Next bounded action: commit/push the ten fault schedules' evidence, then exercise
-raw SQL relational negatives on new clones using the actual application login.
+Next bounded action: review/commit/transfer the SQL-only candidate and execute
+raw relational negatives on new clones using the actual application login.
 Reuse existing psql/session helpers and preserve original54d1a18 templates.
 No new Rust/native build is necessary for SQL-only fixture changes. Verify lack
 of authority, exact access/visibility/enrollment FKs, duplicate/bucket/document
@@ -42,6 +40,26 @@ registration needs failure qualification and then an actual consumer. Full
 discovery, Monitor, analytics and renewable sessions are not prerequisites.
 Existing Serve selects Control only. Clean extracted Compose, timer publication,
 dependency-outage recovery and invalid-ID/signature controls remain practical M1.
+
+Prepared raw SQL acceptance: guards.sql/guards.py create three clones of the
+qualified54d1a18 basic/collision templates. Proposed basic30 refusals plus exact
+2MiB JSON and scope, collision26 refusals plus scope from existing selector, and
+REPEATABLE READ2 refusals. Each transaction rolls back owner setup and all writes;
+independent observer compares all66 tables/xmin. Extra mutation privileges exist
+only on clones to reach guards rather than ACL denial. Actual application login
+uses retained PG's local fixture boundary, not new authentication qualification.
+Mac artifact syntax/link check passes; no Rust change/build. Evidence root is
+.research/implementation/acquisition-scope-guards-20260928. Root corrected composite
+PL/pgSQL assignment by inspection before execution. Read-only AI review found
+the first collision case accidentally reused existingkind11; it now uses absent777
+while the second uses an exact existing document. It also found cleanup inspection/
+stop/census errors could leave RUNNING evidence; guarded cleanup now records
+errors/missing-owned and INCOMPLETE_LAB_AUDIT. Isolated actual-finally tests
+cover normal cleanup, inspect/stop/census failure and missing owned resource; all
+save the original outcome or explicit incomplete audit. Reviewer found no further
+blocker. Immediate guards/rollback only: deferred fencing remains owned by the
+prior COMMIT schedules, and missing-owner tests do not independently isolate the
+advisory check. No engine has executed yet.
 
 ## Registration implementation and evidence
 

@@ -27973,6 +27973,11 @@
           "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
         }
       }
+    },
+    "acquisition_scope_guards": {
+      "status": "Prepared SQL-only fixture/runner; actual PG NOT_RUN",
+      "local_evidence": ".research/implementation/acquisition-scope-guards-20260928",
+      "preserve": "Fresh exact-source run and three new clones of scope54d1a18 basic/collision planned. Existing PG71775507 only; no compiler, new container or original database mutation."
     }
   },
   "implementation_relay_registry_20260928": {

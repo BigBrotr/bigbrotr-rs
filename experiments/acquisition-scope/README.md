@@ -54,3 +54,24 @@ negatives and installed acquisition remain subsequent acceptance.
 Read-only review caught transcript-write failure bypassing shutdown before any
 engine ran;8951d87 catches each write failure and still reaches PG cleanup. The
 original fac2335 build-only run and isolated cleanup counterexample remain retained.
+
+
+For raw SQL acceptance, `guards.py RUN_ROOT` needs a fresh clean exact-Git source
+checkout under that root. No Rust build or new container is required. It borrows
+only the stopped owned PG, creates three clones and executes `guards.sql` as the
+actual application login. Clone-only mutation privileges expose row/statement
+checks. Proposed cases cover missing owner (with/without the lock), complete source/visibility
+relationships, duplicate/profile/document/bucket limits, immutable updates,
+deletes/truncation and READ COMMITTED enforcement. A literal normalized2MiB
+selector and scope provide a positive boundary; the full bucket still permits
+another scope using an existing selector. Every transaction rolls back and all66
+Control tables/xmin must match the independent original. Raw claim setup is a
+fixture, not new Control recovery qualification. These cases remain NOT_RUN until
+the exact native report exists. Original templates and previous reports remain.
+
+These rollback-only cases qualify immediate guards and durable absence, not the
+deferred COMMIT fence. Pre-owner refusals cannot independently distinguish
+removing advisory fencing; earlier real COMMIT/cancellation schedules own that
+claim. Review corrected an initially duplicated existing-document collision case
+and made cleanup failures produce incomplete evidence. Isolated actual-finally
+checks cover stop/inspection/inventory failure without claiming engine execution.
