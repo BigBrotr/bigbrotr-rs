@@ -244,7 +244,8 @@
         "base": "a25e0c559ea1575d71775a9bfcc7bd85e133c1ff",
         "owner": "foundation_dependency_audit agent",
         "purpose": "Clearly labeled isolated native binding qualification, root integrates and owns Tux runs",
-        "status": "Retained completed candidate; root integration recorded in Git, no active writes"
+        "status": "Retained completed candidate; root integration recorded in Git, no active writes",
+        "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928; original outcomes, source and data preserved"
       },
       {
         "path": ".research/worktrees/config-acceptance",
@@ -340,7 +341,8 @@
         "base": "b18d386",
         "owner": "fact_codec_review agent",
         "purpose": "First real private Rocks store and native lifetime boundary",
-        "status": "Clean 7ed90e0; combined with d75a9db in root 94a40de. Mac 145 integrated tests/Clippy PASS; root Linux run pending"
+        "status": "Clean 7ed90e0; combined with d75a9db in root 94a40de. Mac 145 integrated tests/Clippy PASS; root Linux run pending",
+        "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928; original outcomes, source and data preserved"
       },
       {
         "path": ".research/worktrees/ingest-control-races",
@@ -1015,6 +1017,48 @@
       "status": "completed",
       "conclusion": "success",
       "scope": "GitHub job/step scheduling observed; all three foundation jobs succeeded, optional native-rocks arm64 job skipped by trigger. New artifact content/trace audit NOT_RUN; no bootstrap/runtime or release qualification inferred."
+    },
+    "cache_retirement_20260928": {
+      "owner": "root; explicit owner-authorized bounded cache retirement",
+      "status": "Completed; implementation resumed at policy5be0dbd qualification",
+      "capture": ".research/implementation/cache-retirement-20260928",
+      "mac": {
+        "removed": [
+          "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/worktrees/rocks-store/.research/implementation/rocks-store/target",
+          "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/worktrees/rocks-binding/.research/target"
+        ],
+        "allocated_cache_bytes": 14524456960,
+        "retained_artifact_files": 111,
+        "retained_artifact_location": "retained-build-artifacts-20260928 beside each removed target, original relative paths and SHA256 manifests",
+        "outside_files_unchanged": 6173,
+        "free_bytes_before": 1943420928,
+        "free_bytes_after": 14954164224,
+        "observed_free_delta_bytes": 13010743296,
+        "original_report_and_binary": "Original native-rocks-binding mac-final-v2 report051d27b2 and binarydef9cb89 retained/hash-verified",
+        "audit": "Clean worktrees; no matching open files/build processes, mounted candidate or active Docker backend; every retained artifact and outside ignored file hash checked after deletion",
+        "receipt": ".research/implementation/cache-retirement-20260928/mac-retired.json",
+        "receipt_sha256": "33b79133978199fef22f2632d8aefaa0385907c9a7de89a81aa3115d3c803a94",
+        "recipe": ".research/implementation/cache-retirement-20260928/mac.py"
+      },
+      "tux": {
+        "removed": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/network-1a2a8be/out/build/target",
+          "/home/tux/bigbrotr-implementation-20260917/runs/network-1a2a8be/out/build/cargo-home"
+        ],
+        "allocated_bytes": 3745701888,
+        "free_before": 65884286976,
+        "free_after": 68888399872,
+        "containers_preserved": 885,
+        "unrelated_running": 8,
+        "retained_artifact_count": 180,
+        "receipt": ".research/implementation/cache-retirement-20260928/tux-retired.json",
+        "receipt_sha256": "e4f2d231971ca91f0e59f54def94873eb6c09283f0026610b2a665083392de0c",
+        "recipe": ".research/implementation/cache-retirement-20260928/tux-network-1a2.py",
+        "retained_location": "/home/tux/bigbrotr-implementation-20260917/runs/network-1a2a8be/out/retained-cache-artifacts-20260928",
+        "audit": "All885 container projections unchanged; privileged host FD/maps/cwd inspection found no candidate use. Existing3 qualified executables and all remaining regular files in retired-cache lab checked across deletion.1154757 owns independent copied cache."
+      },
+      "preserved": "All source, uncommitted work, original logs/results/manifests, datasets/backups/archives/catalogs/indexes/fault states and current inputs. No existing container or volume removed. Current1154757,8fa/f677,649,4e6seed,private-history32dd58d,history-captureb5c862a and installed-publication61271e2 archive-worker stay retained.",
+      "measurement": "Filesystem free-space differences include concurrent writes and shared blocks; retained hardlinks reduce allocation actually reclaimed. No global pruning or old rebuild."
     }
   },
   "owner_enrollment_20260918": {
@@ -27273,7 +27317,8 @@
         "observed_terminal_at": "2026-09-28T01:20:52.514066+00:00",
         "original_laboratory_outcome": "INCOMPLETE at original terminal inventory assertion; original resources.json remained running although native exited0",
         "reconciliation": ".research/implementation/network-native-1a2a8be/terminal-reconciliation.json",
-        "free_bytes_after": 71847927808
+        "free_bytes_after": 71847927808,
+        "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928; compiler caches only, original outcomes unchanged"
       },
       {
         "source": "115475799ce11a841e9aacc814d3576ee00cc6ca",
@@ -28116,7 +28161,7 @@
   "implementation_policy_versions_20260928": {
     "owner": "root; Mac sole writer; read-only AI product review",
     "base_source": "95c9f469c0f7e066053d1427a844451468e0da8d",
-    "status": "Local scoped tests pass; exact-Git native compatibility recipe NOT_RUN",
+    "status": "Qualified bounded native policy compatibility; acquisition issuer/upgrade/drain remain",
     "local_capture": ".research/implementation/ban-policy-20260928",
     "recipe": "experiments/network-transport/lab.py REVISION TREE policy-versions",
     "preserve": "All original RED/fixture failures and GREEN logs. Legacy6c52067 CLI is a required immutable input. Reuse only network-1154757 exclusive compiler cache; no deletion.",
@@ -28125,6 +28170,86 @@
       "free_bytes": 66280689664,
       "running_unrelated_containers": 8,
       "running_bigbrotr_experiments": 0
-    }
+    },
+    "native_run": {
+      "source": "5be0dbd344d1ff22c6c849fe2a301c9a55023db8",
+      "tree": "d0b4e777886fa917a8851b97e8ac44393a9c9ecb",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-5be0dbd",
+      "pid": 3018662,
+      "start_ticks": "395683262",
+      "bundle_sha256": "eb79fbd679b5ab62d0f0c821ee6286c0bfc28fb604d965cc537f6ae0af07e6ca",
+      "owner": "8b12a62d405821e4949859f225a685a6",
+      "owner_label": "org.bigbrotr.network-transport",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "40a1bb2701f7da23689ca6a7f43120f86051b290a142e9ab9bec152f63f24ae6"
+        },
+        {
+          "name": "native",
+          "id": "fba20da3570be63dde49b8ca79cec894043d350a81e27ec44606feb6456e5cd2"
+        },
+        {
+          "name": "client",
+          "id": "934e45345fda1e9a7e8a95142cb0d6bb1c1667a67ad49fca132bf1ffe414c703",
+          "owner_label": "org.bigbrotr.control-migration-lab",
+          "owner": "be488f5d1bddcc554faa50952df73a6a"
+        },
+        {
+          "name": "postgres",
+          "id": "6ce6e36a6d011aa834f77c04777d0d4a7af4558b3263a3000002db795bd66fb1",
+          "owner_label": "org.bigbrotr.control-migration-lab",
+          "owner": "be488f5d1bddcc554faa50952df73a6a"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+      "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+      "started_at": "2026-09-28T05:49:39.104935+00:00",
+      "qualification": "PASS_SCOPED_POLICY_VERSIONS",
+      "postgres_lab": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-5be0dbd/pg",
+        "owner": "be488f5d1bddcc554faa50952df73a6a",
+        "network": "bigbrotr-implementation-pg-20260917-policy_5be0dbd"
+      },
+      "inventory_changed": [],
+      "free_bytes_after": 65884430336,
+      "finished_at": "2026-09-28T05:51:59.746865+00:00",
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "5be0dbd344d1ff22c6c849fe2a301c9a55023db8",
+        "observed_at": "2026-09-28T05:56:13.277237+00:00",
+        "prior_unchanged": 881,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "40a1bb2701f7da23689ca6a7f43120f86051b290a142e9ab9bec152f63f24ae6",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "fba20da3570be63dde49b8ca79cec894043d350a81e27ec44606feb6456e5cd2",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "934e45345fda1e9a7e8a95142cb0d6bb1c1667a67ad49fca132bf1ffe414c703",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "6ce6e36a6d011aa834f77c04777d0d4a7af4558b3263a3000002db795bd66fb1",
+            "exit": 0
+          }
+        ],
+        "source_files": 1458,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 65884389376
+      }
+    },
+    "evidence": "docs/implementation/evidence/p01-policy-versions-native-20260928.json"
   }
 }

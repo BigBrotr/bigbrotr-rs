@@ -12,13 +12,24 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and origin/main are95c9f469c0f7e066053d1427a844451468e0da8d, pushed.
-Product/engine source6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0 is qualified below.
-Root owns the current uncommitted policy-v2 slice: config/runtime/network types,
-five PostgreSQL readers and CLI consumers, focused tests, generated config schema/
-reference, owning contract, bootstrap probe and policy-versions native recipe.
-No other writer or active experiment remains. Exact Git transfer only; no remote
-source editing. Prior relational sources/artifacts/evidence are preserved.
+Local main is5be0dbd344d1ff22c6c849fe2a301c9a55023db8 (qualified candidate);
+origin/main was verified95c9f469c0f7e066053d1427a844451468e0da8d. Product tree
+d0b4e777886fa917a8851b97e8ac44393a9c9ecb completed native qualification.
+Root owns only boundary evidence/task/checkpoint/inventory edits pending commit.
+No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
+05:51:59UTC, PID3018662/start395683262 terminal, owner8b12a62d405821e4949859f225a685a6.
+Six build/test/Clippy checks (56 tests) and87 actual PG/Rocks checks PASS;
+[scoped policy report](evidence/p01-policy-versions-native-20260928.json).
+Terminal audit05:56:13UTC verified881 prior projections/eight unrelated running,
+1458 clean source/exported files, exact current/legacy ELFs and released compiler
+lock. Root verified122 safe payload hashes,35 unchanged calls/16 refusals across
+all64 Control relations, frozen v1/v2 digests and actual durable dictionary bytes.
+PG6ce6e36a6d01 exited0/client934e45345fda exited143/noOOM; internal172.16.240.48/28,
+ownerbe488f5d1bddcc554faa50952df73a6a. All11 databases and both native stores remain.
+Do not rerun old launchers. Local .research/implementation/ban-policy-20260928
+owns exact bundle/launch/collector/root review and original outcomes. Next bounded
+action after recording this boundary: current finite acquisition source authority,
+with v2 bans and committed visibility; keep v1 source issuance explicitly refused.
 
 Latest root runs/ingest-visibility-6c52067 is stopped-retained, ownerd65bebf992d73cf14ba000d8176d05a8,
 PID2997680/start395446033 terminal. Five native tests, release CLI/probe build,
@@ -55,58 +66,26 @@ were read by root. Mac original four RED failures and two fixture compilation
 failures remain beside green3/clippy3 logs under the previous relational capture;
 no failed attempt was relabeled. No acquisition permission is inferred.
 
-Next bounded action: implement the current ban-policy prerequisite for the finite
-source issuer using an explicit policy-document extension. Existing v1 bytes and
-digests must remain readable unchanged; absent unimplemented bans cannot mean an
-authorized empty set. Read complete affected config/SQL readers and acceptance
-contracts, then add discriminating frozen-v1/new-version tests before code. This
-is P01-T04 Steps1/5/6 and P02-T01 Steps5/6 consumed by P03-T01/P04-T02, not a full
-discovery/general editor barrier. The selected relay_policy.banned is hot-applied
-ordinary policy; an independently writable ban table or restart-only root would
-change its ownership semantics and is not selected. Fresh new-format initialization
-and explicit legacy refusal can establish the first issuer; a populated upgrade
-requires authenticated idempotent CAS and owner transition, never rewriting old
-rows or reusing initial activation. The current initial registration/manifest
-binds policy revision1; advancing it cannot silently renew that native authority.
+P01-T04 Steps1/5/6 and P02-T01 Steps5/6 ban-policy prerequisite is qualified for
+fresh v2 and legacy compatibility. Accepted v1 retains original bytes/digest and
+removes new seed bans on restoration; absent authority never means empty bans.
+Managed seed drift remains unused. Declarative explicit empty/nonempty new bans
+refuse initial activation over accepted v1. Format/schema agreement is checked by
+Control, registration, initialization, activation and inspection. Historical
+initialization retry uses its original receipt metadata. Existing migrations and
+rows were not rewritten. Populated authenticated CAS upgrade and restrictive
+owner transition/drain remain selected gates; not prerequisites for a fresh-v2
+first issuer. Initial native registration still binds policy revision1.
 
-Current ban work: closed endpoint/host matcher, registry entry and explicit
-PolicyDocumentVersion are implemented locally. Restored v1 keeps its original
-field set/digest and removes all new seed bans. New initialization emits v2.
-Legacy comparisons project only implicit schema-default empty bans; explicit []
-or nonempty bans differ. config.schema_version remains independent. Managed
-activation keeps its unused-seed rule. Inspect/initialize report the accepted
-format; historical initialization retry uses its original receipt metadata.
-Control, registration, initialization, activation and inspect require recognized
-format/schema agreement. Existing migrations/rows are unchanged. New issuer,
-populated upgrade and actual restrictive drain remain unimplemented gates.
-
-Observed Mac evidence under .research/implementation/ban-policy-20260928:
-config-bans-red2 (three unknown-key failures), policy-versions-red (two codec
-failures), matcher-red (two missing matcher failures), then config-codec-green
-(55 bin/3 CLI tests), matcher-green (2 matcher/1 header), policy-versions-green
-(3 focused), entrypoints-green2 (3 bans/25 configuration/6 policy seed) and
-clippy2 (lib/bin/bootstrap probe) PASS. Earlier duplicate-TOML and stale generated
-schema failures remain original; generated schema/reference are now regenerated.
-Independent frozen v2 digest5916c8d71ed33b8339c00af4595cb5284d8e149a64875ee9c757e0de39e94ed1,
-7489 compact bytes, extends the unchanged frozen v1 settings with explicit [].
-Native recipe is written, syntax checked, NOT_RUN. Next bounded action: finish
-root review, create an unpublished coherent exact-source candidate and run the
-policy-versions profile on Tux, collecting original old/new CLI, all64-table/xmin,
-Control/Ingest and raw native oracle evidence. Do not advertise codec tests as
-current source authority. A read-only reviewer found no concrete blocker in the
-complete product slice; new native orchestration/probe extension remains root's
-integration responsibility.
-
-Root read complete affected config files, interfaces, initialization/activation/
-configuration/ingest_registry and relevant Control snapshot/callers; new queries
-use focused readable constants without changing lock/COMMIT ordering. No generic
-framework or duplicate URL normalizer was introduced. Exact serde1.0.229 and
-serde_json1.0.151 source inspection confirms header IgnoredAny avoids another
-Value tree, with iterative scratch bounded by the capped input; no RSS claim.
-Whole future source/drain/service owners remain outside this bounded review.
-Fresh Tux inspection: no active BigBrotr experiments, eight unrelated running,
-66,280,689,664bytes free; Mac about2.2GiB. No deletion or remote changes. Recheck
-before allocation. Protect old6c52067 CLI as the native v1 installation input.
+Original Mac REDs, duplicate-TOML and stale-generated-schema failures are retained;
+all scoped GREEN and Clippy logs are beside the native capture. Read-only AI review
+found no product blocker and two harness oracle/ownership issues, fixed before
+execution. Root read complete affected config/interface/PostgreSQL owners/callers
+and full diff. Focused named SQL constants preserve transaction ordering; shared
+closed version enum and existing URL normalizer avoid duplicate implementations.
+Exact serde1.0.229/serde_json1.0.151 header source audit establishes no second Value
+tree, with bounded iterative scratch; no measured RSS/capacity claim. Future
+source/drain/service owners remain outside this bounded completed review.
 
 Independent read-only next-boundary review confirms the minimal sequence: existing
 Ingest dictionary bootstrap and committed visibility lookup; current endpoint,
@@ -186,6 +165,27 @@ No failed attempt was relabeled PASS.
 
 ## Native resources and maintenance
 
+Owner-requested maintenance completed before further builds. Inventory key
+implementation_20260917.cache_retirement_20260928 and ignored
+.research/implementation/cache-retirement-20260928 own recipes/manifests/receipts.
+Mac removed only the old rocks-store/.research/implementation/rocks-store/target
+and rocks-binding/.research/target; clean source/worktrees,6173 outside ignored
+files, original reports/databases and111 final executable/library paths retained
+and hash-verified. Original binding report051d27b2/binarydef9cb89 remain. Artifacts
+are beside removed caches in retained-build-artifacts-20260928. No active process,
+open file, candidate mount or Docker backend was observed. Free space immediately
+before1,943,420,928bytes, after14,954,164,224bytes (observed+13,010,743,296).
+
+Tux removed only network-1a2a8be/out/build/{target,cargo-home}; current1154757 is
+an independent later copy, retained. Original3 qualified artifacts and180 cached
+final executables retained outside cache; all remaining lab regular files checked
+across deletion. Privileged process/FD/maps and mount census found no use. All885
+container projections unchanged/eight unrelated running. Free65,884,286,976bytes
+before,68,888,399,872after (observed+3,004,112,896). No existing container, volume,
+dataset or fault state removed. Shared blocks/preserved hardlinks and concurrent
+writes explain differences from cache allocation. Do not rerun deletion recipes.
+Resume the same source-issuer slice; recheck disk before each large allocation.
+
 Inventory key implementation_relay_registry_20260928.enrollment owns all three
 attempts. Every one is stopped-retained; no cache/container/volume/data deleted.
 Original build root runs/relay-enrollment-dae4d45, owner636d8b4982589759a10929c7d7a6d079,
@@ -226,8 +226,8 @@ Prior verified cache retirements d860,b93,5de,7ee,877 are already inventoried;
 never rerun their deletion recipes.7ee freed3,494,223,872 allocated bytes and877
 3,333,423,104 after copying/hash-checking required test ELFs. Original sources,
 logs, DB/fault/archive data remain. No global prune or implicit volume deletion.
-Other old caches are unassessed. Mac last roughly2.7GiB free: avoid large local
-build/copy work and recheck both hosts before large allocations.
+Other old caches remain unassessed. Latest measured space is recorded above;
+recheck both hosts before large allocations.
 
 ## Prior qualified boundaries and retained gates
 

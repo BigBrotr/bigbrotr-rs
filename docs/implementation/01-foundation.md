@@ -185,6 +185,12 @@ policy or enrollment. Existing accepted v1 bytes remain unchanged; operational
 route/enrollment and authenticated acquisition are P02-T01 Step6/P04-T02 consumers
 still to implement. No complete step is implied by static validation.
 
+The [actual v1/v2 policy journey](evidence/p01-policy-versions-native-20260928.json)
+qualifies exact ban data, unchanged legacy document bytes, fresh v2 initialization,
+version-aware readers and original initialization/activation retries. Explicit
+legacy ban candidates remain distinct from absent accepted authority. Populated
+CAS upgrade, policy transition/drain and actual acquisition remain open.
+
 - [ ] **Step 1:** Encode all current service key tables with units/ranges/secret references;
   include operational composition/maximum-unit constraints and reject unknown,
   duplicate, unsafe and ineffective options. Do not retain a six-layer policy

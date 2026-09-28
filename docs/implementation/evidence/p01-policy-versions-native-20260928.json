@@ -1,0 +1,340 @@
+{
+  "format": "bigbrotr-policy-versions-qualification/1",
+  "status": "PASS_SCOPED_POLICY_VERSIONS",
+  "source": "5be0dbd344d1ff22c6c849fe2a301c9a55023db8",
+  "tree": "d0b4e777886fa917a8851b97e8ac44393a9c9ecb",
+  "tasks": [
+    "P01-T04 Steps1/5/6 prerequisite",
+    "P02-T01 Steps5/6 prerequisite",
+    "P03-T01 and P04-T02 source authority consumer"
+  ],
+  "implementation": {
+    "scope": "Explicit policy v2 with exact endpoint/host bans; unchanged accepted v1 bytes and version-aware readers, initialization retries and initial activation",
+    "persistent_migrations_changed": false,
+    "populated_upgrade_implemented": false
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e"
+  },
+  "artifacts": {
+    "binary_sha256": "ecba7eb26b7cd4ba0cbf210f92ca94ef51200a7b90e210afb3cec64ce0996942",
+    "probe_sha256": "09a1df3fad659242894ae4905db6bdb7b2bc164b39fd9abd2429a87e3f78dd79",
+    "source_manifest_sha256": "4bc6da87e9a8a6331e6016992449a26998a89932531e3fa94097c83be7998c17"
+  },
+  "legacy": {
+    "source": "6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0",
+    "binary_sha256": "98e1497cc95ad41acd38403ee3eb674b990874d1e1d9588e12169d96164eca68",
+    "purpose": "Actual previous CLI initializes v1 and refuses v2; retained original artifact, no old rebuild"
+  },
+  "checks": [
+    {
+      "name": "compile",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "ingest_bootstrap_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 48.05333504173905
+    },
+    {
+      "name": "codec",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "config::policy"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 14.89302428998053
+    },
+    {
+      "name": "bans",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "network::bans"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 17.907710660714656
+    },
+    {
+      "name": "headers",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "runtime::policy_document"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 0.11619102489203215
+    },
+    {
+      "name": "entrypoints",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "config_bans",
+        "--test",
+        "policy_seed",
+        "--test",
+        "config_entrypoint",
+        "--test",
+        "network_policy"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 13.34315905207768
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "ingest_bootstrap_probe",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 4.171206967905164
+    }
+  ],
+  "native_tests": {
+    "passed": 56,
+    "failed": 0
+  },
+  "connected": {
+    "explicit_checks": 87,
+    "scenarios": [
+      "Actual old CLI initialization, current inspect/retry/activation/replay for v1 in both authority modes",
+      "Explicit empty/nonempty seed bans differ from accepted v1; declarative refuses, managed still uses accepted policy",
+      "Fresh v2 both modes and old CLI refusal without durable mutations",
+      "Four independent configuration/policy schema-version corruption clones; Control and activation refuse metadata mismatch",
+      "Nonempty v2 normalization including IDNA, mapped IPv4 and exact URL; redacted inspection",
+      "Missing and noncanonical v2 bans with correct digests refuse actual inspection; activation reports PolicyInvalid",
+      "Actual v1/v2 Control/Ingest bootstrap, identical replay, reopen and independently decoded durable facts",
+      "All Control application drivers joined before owned shutdown"
+    ]
+  },
+  "root_review": {
+    "status": "PASS_ROOT_CAPTURE_REVIEW_ONLY",
+    "source": "5be0dbd344d1ff22c6c849fe2a301c9a55023db8",
+    "explicit_cases": 87,
+    "readonly_calls": 35,
+    "refused_calls": 16,
+    "control_tables": 64,
+    "independent_policy_identities": [
+      {
+        "version": 1,
+        "compact_bytes": 7464,
+        "digest": "da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9"
+      },
+      {
+        "version": 2,
+        "compact_bytes": 7489,
+        "digest": "5916c8d71ed33b8339c00af4595cb5284d8e149a64875ee9c757e0de39e94ed1"
+      }
+    ],
+    "native": [
+      {
+        "version": 1,
+        "rows": 12,
+        "changed_control_tables": [
+          "datasets",
+          "owner_epochs",
+          "producer_slots",
+          "role_instances",
+          "source_streams",
+          "producer_epochs",
+          "topology_streams",
+          "producer_outcomes",
+          "producer_requests",
+          "allocation_domains",
+          "topology_generations"
+        ]
+      },
+      {
+        "version": 2,
+        "rows": 12,
+        "changed_control_tables": [
+          "datasets",
+          "owner_epochs",
+          "producer_slots",
+          "role_instances",
+          "source_streams",
+          "producer_epochs",
+          "topology_streams",
+          "producer_outcomes",
+          "producer_requests",
+          "allocation_domains",
+          "topology_generations"
+        ]
+      }
+    ],
+    "scope": "Independent retained output, document digest, receipt and all-row checks; no additional engine executions"
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "5be0dbd344d1ff22c6c849fe2a301c9a55023db8",
+    "observed_at": "2026-09-28T05:56:13.277237+00:00",
+    "prior_unchanged": 881,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "40a1bb2701f7da23689ca6a7f43120f86051b290a142e9ab9bec152f63f24ae6",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "fba20da3570be63dde49b8ca79cec894043d350a81e27ec44606feb6456e5cd2",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "934e45345fda1e9a7e8a95142cb0d6bb1c1667a67ad49fca132bf1ffe414c703",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "6ce6e36a6d011aa834f77c04777d0d4a7af4558b3263a3000002db795bd66fb1",
+        "exit": 0
+      }
+    ],
+    "source_files": 1458,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 65884389376
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-5be0dbd",
+    "owner": "8b12a62d405821e4949859f225a685a6",
+    "owner_label": "org.bigbrotr.network-transport",
+    "containers": [
+      {
+        "name": "fetch",
+        "id": "40a1bb2701f7da23689ca6a7f43120f86051b290a142e9ab9bec152f63f24ae6"
+      },
+      {
+        "name": "native",
+        "id": "fba20da3570be63dde49b8ca79cec894043d350a81e27ec44606feb6456e5cd2"
+      },
+      {
+        "name": "client",
+        "id": "934e45345fda1e9a7e8a95142cb0d6bb1c1667a67ad49fca132bf1ffe414c703",
+        "owner_label": "org.bigbrotr.control-migration-lab",
+        "owner": "be488f5d1bddcc554faa50952df73a6a"
+      },
+      {
+        "name": "postgres",
+        "id": "6ce6e36a6d011aa834f77c04777d0d4a7af4558b3263a3000002db795bd66fb1",
+        "owner_label": "org.bigbrotr.control-migration-lab",
+        "owner": "be488f5d1bddcc554faa50952df73a6a"
+      }
+    ],
+    "state": "stopped-retained",
+    "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+    "postgres_lab": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-5be0dbd/pg",
+      "owner": "be488f5d1bddcc554faa50952df73a6a",
+      "network": "bigbrotr-implementation-pg-20260917-policy_5be0dbd"
+    }
+  },
+  "evidence": {
+    "local_capture": ".research/implementation/ban-policy-20260928",
+    "capture_tar_sha256": "171d72b3d619f93874d0a41393881a034dbde90283382562de19d4cae15ae38e",
+    "capture_manifest_sha256": "9621b1d5386538f1e883970936577e33a04dc86fc599b03167b8ec548479ad02",
+    "raw_report_sha256": "9b3c1d73c61cc0d5730eae7fc150fbfc5559ecfe4a8234d51a3e4269aa2fc167",
+    "captured_files": 122,
+    "recipe": "experiments/network-transport/lab.py REVISION TREE policy-versions",
+    "root_review_recipe": ".research/implementation/ban-policy-20260928/review-capture.py"
+  },
+  "review": {
+    "independent_ai": "Read-only complete product and native recipe review; no product blocker. Specific PolicyInvalid oracle and early existing-root refusal corrected before first native execution.",
+    "integrating_owner": "Complete affected owners/callers and combined diff reviewed; retained CLI outputs, independent digests, native dictionary oracle and all64-table snapshots checked.",
+    "structure": "Closed domain version enum, one shared endpoint normalizer and focused readable SQL constants. Transaction lock/COMMIT ordering unchanged; no generic orchestration or new persistence table."
+  },
+  "mac": {
+    "log_root": ".research/implementation/ban-policy-20260928",
+    "original_red": "Three unknown-key, two codec and two missing-matcher failures preserved",
+    "setup_failures": "Duplicate TOML and stale generated schema failures preserved separately, corrected before native run",
+    "green": "Codec, matcher, header, entrypoint tests and lib/bin/probe Clippy pass"
+  },
+  "limits": [
+    "Policy v1 has no ban authority; absent bans are not authorized empty bans",
+    "Header recognition is not full setting validation; exact serde source audit supports allocation reasoning but no measured RSS/capacity claim",
+    "Native facts oracle excludes nondeterministic receipts; actual application separately checks exact receipt replay",
+    "All-table equality concerns observed logical rows and xmin, not zero transient I/O",
+    "Initial activation/retry qualification is not a populated upgrade or policy transition"
+  ],
+  "not_run": [
+    "populated policy upgrade",
+    "source issuance and restrictive drain",
+    "COMMIT transport faults",
+    "load and aged state",
+    "arm64",
+    "release"
+  ]
+}
