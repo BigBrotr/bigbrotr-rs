@@ -29132,7 +29132,7 @@
       }
     },
     "acquisition_jobs_faults": {
-      "state": "STOPPED/RETAINED; original engine fixture FAIL after ten completed cases",
+      "state": "STOPPED/RETAINED; thirteen scoped schedules PASS across original ten completed and three corrected retries; original overall FAIL preserved",
       "source": "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7",
       "tree": "97858a348f7fbe0e650374b223f278f790936293",
       "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-9888ad5",
@@ -29151,16 +29151,43 @@
         }
       ],
       "local_evidence": ".research/implementation/acquisition-job-faults-20260928",
-      "scope": "Finite acquisition acceptance interruption/lock schedules; engine NOT_RUN",
+      "scope": "Thirteen finite acquisition acceptance interruption/lock schedules executed; claim/dispatch and installed Sync remain unqualified",
       "retention": "Original source, artifacts, logs and any new cloned databases; shared1154757 cache only",
-      "engine_launch": {
+      "next": "No cleanup obligation. Preserve original failed fixture and all14 clones. Next exact-ID claim and same-owner installed consumer; no new cache.",
+      "resources": {
+        "source": "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7",
+        "tree": "97858a348f7fbe0e650374b223f278f790936293",
+        "owner": "ec4f978a0236aef4e7450b7dddc66049",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-9888ad5",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "1ea4849b53793e4facf62dec887e62be16a534ecb84a81fd4364bce261d8ef6c"
+          },
+          {
+            "name": "native",
+            "id": "053abef6a04b48b375b7892cda38e3938b959771e2afc9939c4da2b5407779d6"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T17:13:52.410332+00:00",
+        "qualification": "PASS_ACQUISITION_JOBS_FAULT_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 63695376384,
+        "finished_at": "2026-09-28T17:14:44.278261+00:00"
+      },
+      "original_engine_launch": {
         "source": "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7",
         "tree": "97858a348f7fbe0e650374b223f278f790936293",
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-9888ad5",
         "pid": 3489716,
         "start_ticks": "399797749"
       },
-      "engine": {
+      "original_engine": {
         "owner": "7c974a83511d6330b1c525e7c12b7bc9",
         "label": "org.bigbrotr.acquisition-jobs",
         "client": {
@@ -29169,8 +29196,6 @@
         },
         "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
         "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
-        "status": "FAIL",
-        "failure": "RuntimeError: missing-probe-event-ready",
         "databases": [
           "bb_acq_job_9888ad5_commit_pass",
           "bb_acq_job_9888ad5_commit_before",
@@ -29184,11 +29209,92 @@
           "bb_acq_job_9888ad5_writer_disabled",
           "bb_acq_job_9888ad5_acceptance_policy"
         ],
-        "cleanup_errors": [],
-        "unrelated_changed": [],
-        "free_bytes_after": 63519145984
+        "status": "FAIL",
+        "failure": "RuntimeError: missing-probe-event-ready",
+        "started_at": "2026-09-28T17:15:24.014535+00:00",
+        "finished_at": "2026-09-28T17:16:00.690764+00:00"
       },
-      "next": "Correct nonce collision; rerun three acceptance-first cases only, retain original failure"
+      "retry_launch": {
+        "source": "3e03ab88ca4361314d8a01a1197562baf8634618",
+        "tree": "e50d1ed778814e9f3000e4dfbf560d45e782a734",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-job-locks-3e03ab8",
+        "pid": 3500953,
+        "start_ticks": "399815478",
+        "bundle_sha256": "2ae7b699bb682259ccc7217f682aab88e0f00576f394766cc88b349a4c7f5340",
+        "artifact_source": "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7",
+        "artifact_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-9888ad5/out/artifacts"
+      },
+      "retry_engine": {
+        "owner": "1ef9def89f5fdca11143c9a1a36ad79d",
+        "label": "org.bigbrotr.acquisition-jobs",
+        "client": {
+          "id": "76d6eaf8c30c74fdb329d263d4cbb0e0f4e6961aaa1ede341a6597203019a616",
+          "name": "bigbrotr-acquisition-jobs-3e03ab8"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_acq_job_3e03ab8_acceptance_policy",
+          "bb_acq_job_3e03ab8_acceptance_permission",
+          "bb_acq_job_3e03ab8_acceptance_disabled"
+        ],
+        "status": "PASS_ACQUISITION_ACCEPTANCE_FIRST_LOCKS",
+        "started_at": "2026-09-28T17:18:21.348370+00:00",
+        "finished_at": "2026-09-28T17:18:31.972341+00:00"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "3e03ab88ca4361314d8a01a1197562baf8634618",
+        "observed_at": "2026-09-28T17:19:50.846352+00:00",
+        "prior_unchanged": 952,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "1ea4849b53793e4facf62dec887e62be16a534ecb84a81fd4364bce261d8ef6c",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "053abef6a04b48b375b7892cda38e3938b959771e2afc9939c4da2b5407779d6",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "76d6eaf8c30c74fdb329d263d4cbb0e0f4e6961aaa1ede341a6597203019a616",
+            "exit": 143
+          },
+          {
+            "name": "original-client",
+            "id": "047f2cc3737ec679e8e57c2311d5f1252a1e09c44a48a59f33a935da60ea746a",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": {
+          "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7": 1574,
+          "3e03ab88ca4361314d8a01a1197562baf8634618": 1574
+        },
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 63468011520,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        },
+        "changed_since_build": [
+          "docs/implementation/progress.md",
+          "docs/research/laboratory-inventory.json",
+          "experiments/acquisition-scope/README.md",
+          "experiments/acquisition-scope/jobs.py"
+        ]
+      }
     }
   },
   "implementation_relay_registry_20260928": {

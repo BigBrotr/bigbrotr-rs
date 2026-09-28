@@ -210,3 +210,11 @@ That original FAIL and11 clones remain. The fixture now checks all historical
 role/incarnation IDs. `--faults --acceptance-first` selects only the three affected
 lock/recovery cases for a new exact-source run, reusing unchanged9888ad5 artifacts.
 This setup correction changes neither product behavior nor expected job outcomes.
+
+[Native fault evidence](../../docs/implementation/evidence/p03-acquisition-jobs-faults-native-20260928.json)
+records the thirteen scoped schedules across the original ten completed cases
+and three corrected3e03ab8 retries, with unchanged9888ad5 artifacts. The original
+run remains FAIL; no case is retroactively rewritten. Both clients, build containers
+and borrowed PostgreSQL are stopped; all14 clones remain. No product change was
+needed for these schedules. Session/credential races, remaining SQL negatives,
+claim/dispatch and installed acquisition remain separate acceptance.

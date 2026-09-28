@@ -12,24 +12,43 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is unpublished9888ad5; private origin/main remains9bdc361.
-Root owns a fixture-only correction plus checkpoint/inventory.9888ad5 native build
-and scoped Clippy PASS; original engine is FAIL, STOPPED/RETAINED. Seven COMMIT
-schedules and three writer-first races passed; acceptance-first policy committed
-but its fresh-owner retry failed before claiming because fixture nonce62 collided
-with retained Ingest role3e. Actual PG unique violation identifies setup failure,
-not product acceptance failure. Original logs,11 clones and exact outcomes remain.
-Engine owner7c974a83511d6330b1c525e7c12b7bc9 PID3489716/start399797749 terminal;
-client047f2cc3 stopped143, borrowedPG71775507 stopped0, no OOM/cleanup/unrelated change.
-Build ec4f978a0236aef4e7450b7dddc66049 and fetch1ea4849b/native053abef6 terminal0.
-The correction checks all historical role/incarnation IDs and uses absent nonce64.
-Next: clean fixture-only candidate, reuse exact9888ad5 artifacts, execute only the
-three acceptance-first schedules in a fresh isolated run. No broad unchanged rerun.
-Ignored .research/implementation/acquisition-job-faults-20260928 owns launch/capture
-receipts; inventory implementation_network_20260928.acquisition_jobs_faults.
-No product/SQL change, no active remote process. Last Tux free63,519,145,984B.
-All selected product work remains INCOMPLETE. Cache retirement is complete;
-never replay launch/deletion recipes.
+Mac main is unpublished3e03ab8; private origin/main remains9bdc361.
+Root owns qualification/checkpoint/inventory documentation only; no product WIP
+or active tool/remote process. All selected product work remains INCOMPLETE.
+Cache retirement is complete; never replay launch/deletion recipes.
+
+[Native acquisition fault evidence](evidence/p03-acquisition-jobs-faults-native-20260928.json)
+qualifies thirteen scoped schedules using9888ad5 artifacts. Seven COMMIT schedules
+and three writer-first races passed in the original run. It then FAILED because
+fixture nonce62 collided with retained Ingest role3e before a recovery claim;
+actual PG23505, original logs/11 clones preserved. Fixture-only3e03ab8 verifies
+all historical identities and uses64. Only three affected acceptance-first cases
+reran, all PASS, reusing exact artifacts. No product/SQL change or broad rerun.
+
+Actual proxy counters distinguish both ambiguous outcomes; cancelled COMMIT keeps
+Control/driver custody and refuses another claimant until joined. Fresh owners
+resolve the original key without duplicate jobs or reset duration. Held owner expiry
+refuses. Both dataset-lock orders have observed backend barriers and exact writer
+row/xmin effects; historical authenticated retry after policy/grant withdrawal
+succeeds while absent intent refuses. Root checked all67 tables, literal intent/
+job/command/audit/detail/ordinal links,1574 Git files per revision and154 captures.
+Mac/native scoped Clippy and native release build PASS. This is acceptance, not
+claim/dispatch, management activation, installed Sync or capacity qualification.
+
+All resources STOPPED/RETAINED. Inventory
+implementation_network_20260928.acquisition_jobs_faults and ignored
+.research/implementation/acquisition-job-faults-20260928 own recipes/originals.
+Build9888ad5 ownerec4f978a0236aef4e7450b7dddc66049 PID3487270/start399788590;
+fetch1ea4849b/native053abef6 exit0. Original engineowner7c974a83511d6330b1c525e7c12b7bc9
+PID3489716/start399797749, client047f2cc3 stopped143. Retry3e03ab8
+owner1ef9def89f5fdca11143c9a1a36ad79d PID3500953/start399815478;
+client76d6eaf8 stopped143; borrowedPG71775507 stopped0, no OOM/cleanup debt.
+Fourteen clones retained. Terminal audit17:19:50UTC found952 prior projections
+unchanged, eight unrelated running, compiler lock free and63,468,011,520B free.
+Shared1154757 intermediates are9888ad5; exact artifacts remain separately retained.
+Next: commit/push this bounded qualification, then implement exact-ID finite job
+claim under current account/action/source/policy and original deadline. Reuse the
+existing job revision/owner mechanism; no socket authority from a receipt alone.
 
 Active P03-T01 Steps3/4: finite acquisition acceptance now has additive0022,
 strict typed duration≤24h/fingerprint and real authenticated Control adapter.
@@ -72,9 +91,9 @@ and actual owner; no new generic abstraction or duplicate helper was introduced.
 Queries in the new adapter are multiline and transaction boundaries stay visible.
 The fixture-only reruns did not recompile unchanged product or repeat broad suites.
 
-Next bounded action: exercise finite acceptance's lost/delayed COMMIT and current
-policy/grant lock schedules with actual PG/probe, then exact-ID claim and same-owner
-installed delivery. These must precede claiming the relevant guarantees complete.
+Next bounded action after the qualified acceptance fault wave: exact-ID claim and
+same-owner installed delivery. Claim must recheck the current account/action,
+source/policy and original duration; execution will recheck again at each boundary.
 Raw relational negatives and populated prior-job upgrade remain open. The next
 user-visible M1 slice is signed socket→durable admission→timer publication/read→
 restart/resend. Real prerequisites: typed job claim (P03-T01 Steps3/4), trusted

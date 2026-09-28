@@ -118,8 +118,12 @@ They do not establish socket or committed witness custody.
 [Finite acceptance](evidence/p03-acquisition-jobs-native-20260928.json) now adds
 0022 command/audit/job/detail atomicity and existing0815 admission order. Seven
 actual adapter schedules and the raw timestamp/negative pair qualify that bounded
-acceptance. Concurrent/lost-COMMIT cases, exact claim, progress and installed CLI
-acceptance remain separate parts of Step3 onward; no whole task closes here.
+acceptance. [Thirteen native fault schedules](evidence/p03-acquisition-jobs-faults-native-20260928.json)
+now qualify lost/delayed COMMIT, cancellation, owner expiry and both current-authority
+lock orders, preserving historical exact-key recovery. The original fixture collision
+remains a recorded FAIL; only three affected cases reran. Exact claim, progress,
+remaining authority cases and installed CLI acceptance remain separate parts of
+Step3 onward; no whole task closes here.
 
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership

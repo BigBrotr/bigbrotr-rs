@@ -246,6 +246,13 @@ constraints; removing only the future-time predicate makes the same fixture fail
 All Control tables/xmin are compared, including exact login-session cleanup and
 preserved prior commands. The first fixture's expired-session expectation failed;
 its original outcome remains. Fixture28a7db9 reuses unchanged3e10c2d product/build
-inputs. Concurrent locks, lost/delayed COMMIT, historical permission/policy retry,
-populated prior-job upgrade, claim/dispatch, installed commands and signed socket
-journey remain unqualified. No installed acquisition capability follows.
+inputs. [Thirteen fault schedules](../implementation/evidence/p03-acquisition-jobs-faults-native-20260928.json)
+now cover both lost-COMMIT outcomes, held cancellation with close/release, owner
+expiry, delay and both policy/grant/enrollment lock orders. Historical authenticated
+retry survives withdrawal while absent intent refuses. Exact writer changes and
+all67 tables are independently checked. The original9888ad5 run retains a fixture
+identity-collision FAIL after ten completed cases; three corrected3e03ab8 retries
+complete the bounded wave with unchanged artifacts. Session/credential races,
+remaining raw relational negatives, populated prior-job upgrade, claim/dispatch,
+installed commands and signed socket journey remain unqualified. No installed
+acquisition capability follows.

@@ -1,0 +1,244 @@
+{
+  "format": "bigbrotr-acquisition-jobs-faults-native/1",
+  "status": "PASS_THIRTEEN_SCOPED_SCHEDULES",
+  "source": "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7",
+  "tree": "97858a348f7fbe0e650374b223f278f790936293",
+  "retry_source": "3e03ab88ca4361314d8a01a1197562baf8634618",
+  "retry_tree": "e50d1ed778814e9f3000e4dfbf560d45e782a734",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "9d3790d24e90472f6b95d786a58640ebe9aad1558625a6fb532bdd2baa7eed42",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "b2e445f59c4ab2b44c31509fca82f8a9ca66ceed3b04a986884975ada880819b",
+    "acquisition_job_probe": "ba37d1c627cd897f16f23267e3ed3d3f13d7b73a7136b88e9cbb0f88a2983318"
+  },
+  "build_checks": "Actual native release CLI/probe build and scoped Clippy PASS; unchanged command/catalog suites not repeated",
+  "fixture_checks": "Mac scoped Clippy, formatting, Python syntax and artifact checks PASS; isolated writer oracle three positives/nine no-op/partial/extra negatives discriminate; real engines separately recorded",
+  "scenarios": [
+    {
+      "name": "commit-pass",
+      "status": "PASS",
+      "first_commit_durable": true,
+      "wire_counts": [
+        4,
+        4,
+        4,
+        4,
+        0
+      ],
+      "recovered_created": false
+    },
+    {
+      "name": "commit-before",
+      "status": "PASS",
+      "first_commit_durable": false,
+      "wire_counts": [
+        4,
+        3,
+        3,
+        3,
+        1
+      ],
+      "recovered_created": true
+    },
+    {
+      "name": "commit-after",
+      "status": "PASS",
+      "first_commit_durable": true,
+      "wire_counts": [
+        4,
+        4,
+        4,
+        3,
+        1
+      ],
+      "recovered_created": false
+    },
+    {
+      "name": "commit-cancel_close",
+      "status": "PASS",
+      "first_commit_durable": false,
+      "wire_counts": [
+        4,
+        3,
+        3,
+        3,
+        1
+      ],
+      "recovered_created": true
+    },
+    {
+      "name": "commit-cancel_release",
+      "status": "PASS",
+      "first_commit_durable": true,
+      "wire_counts": [
+        4,
+        4,
+        4,
+        4,
+        1
+      ],
+      "recovered_created": false
+    },
+    {
+      "name": "commit-delayed",
+      "status": "PASS",
+      "first_commit_durable": true,
+      "wire_counts": [
+        4,
+        4,
+        4,
+        4,
+        1
+      ],
+      "recovered_created": false
+    },
+    {
+      "name": "commit-owner_expiry",
+      "status": "PASS",
+      "first_commit_durable": false,
+      "wire_counts": [
+        4,
+        4,
+        3,
+        3,
+        1
+      ],
+      "recovered_created": true
+    },
+    {
+      "name": "writer_policy",
+      "status": "PASS",
+      "claim": "Clone-only exact authority mutation; not management activation"
+    },
+    {
+      "name": "writer_permission",
+      "status": "PASS",
+      "claim": "Clone-only exact authority mutation; not management activation"
+    },
+    {
+      "name": "writer_disabled",
+      "status": "PASS",
+      "claim": "Clone-only exact authority mutation; not management activation"
+    },
+    {
+      "name": "acceptance_policy",
+      "status": "PASS",
+      "claim": "Clone-only exact authority mutation; not management activation"
+    },
+    {
+      "name": "acceptance_permission",
+      "status": "PASS",
+      "claim": "Clone-only exact authority mutation; not management activation"
+    },
+    {
+      "name": "acceptance_disabled",
+      "status": "PASS",
+      "claim": "Clone-only exact authority mutation; not management activation"
+    }
+  ],
+  "assertions": [
+    "COMMIT4 is actual acceptance after Control claim, login bucket charge and session issue; exact proxy counters distinguish before-forward and after-complete ambiguity",
+    "Cancelling an issued COMMIT poisons method reuse while retaining actual driver/Control custody; a competing real claimant is refused; held close/release yield distinct absent/committed effects",
+    "A fresh Control epoch resolves the original exact key: original committed job/ordinal/deadline unchanged, otherwise exactly one new acceptance",
+    "Server-observed owner expiry before held COMMIT refuses; acceptance time is sampled before the held response, so delay consumes its duration",
+    "Both actual dataset-lock orders against exact clone-only policy/grant/enrollment mutations; old writer first refuses new work, committed acceptance first survives later withdrawal as historical receipt",
+    "Fresh authenticated retry after policy/grant withdrawal recovers historical receipt; absent key still refuses",
+    "Independent complete67-table/xmin observations plus literal digest/actor/scope/job/detail/command/audit/admission checks; exact writer changes, original history and basis preserved",
+    "Actual drivers joined, database observers found no remaining application backends; terminal audit verifies all owned containers stopped and unrelated projections unchanged"
+  ],
+  "original_outcome": {
+    "status": "FAIL",
+    "source": "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7",
+    "completed_cases": 10,
+    "failure": "RuntimeError: missing-probe-event-ready",
+    "cause": "Fixture nonce62 collided with retained Ingest role_instance_id3e; PostgreSQL23505 before recovery claim",
+    "correction": "Use nonce64 and preflight all historical role/incarnation IDs; only three acceptance-first cases rerun with unchanged artifacts; original11 clones/logs retained"
+  },
+  "review": {
+    "source_files": {
+      "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7": 1574,
+      "3e03ab88ca4361314d8a01a1197562baf8634618": 1574
+    },
+    "captured_payloads": 154,
+    "capture_manifest_sha256": "4b19c65e57de071e6043b9758200cadfc2a089d82bd61631c988e13fd3353ece",
+    "root_review_sha256": "3bf9302c7707579508b6449d60ccb8a3b1c51dbd72a2459273138de306902124",
+    "prelaunch": "Read-only AI/root review required explicit privileged injection writers, one checked SQL statement at a time and exact writer deltas; no product change"
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "3e03ab88ca4361314d8a01a1197562baf8634618",
+    "observed_at": "2026-09-28T17:19:50.846352+00:00",
+    "prior_unchanged": 952,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "1ea4849b53793e4facf62dec887e62be16a534ecb84a81fd4364bce261d8ef6c",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "053abef6a04b48b375b7892cda38e3938b959771e2afc9939c4da2b5407779d6",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "76d6eaf8c30c74fdb329d263d4cbb0e0f4e6961aaa1ede341a6597203019a616",
+        "exit": 143
+      },
+      {
+        "name": "original-client",
+        "id": "047f2cc3737ec679e8e57c2311d5f1252a1e09c44a48a59f33a935da60ea746a",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": {
+      "9888ad57160f8ab3c6bc77fd844d27a3fa534eb7": 1574,
+      "3e03ab88ca4361314d8a01a1197562baf8634618": 1574
+    },
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 63468011520,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "changed_since_build": [
+      "docs/implementation/progress.md",
+      "docs/research/laboratory-inventory.json",
+      "experiments/acquisition-scope/README.md",
+      "experiments/acquisition-scope/jobs.py"
+    ]
+  },
+  "local_evidence": ".research/implementation/acquisition-job-faults-20260928",
+  "tux_original_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-jobs-faults-9888ad5",
+  "tux_retry_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-job-locks-3e03ab8",
+  "not_qualified": [
+    "session expiry/revocation and credential-reset races",
+    "raw SQL relational negatives beyond the qualified timestamp pair",
+    "claim/dispatch, installed Sync, socket admission and M1",
+    "populated prior-job migration, aged/mixed load, arm64/release"
+  ],
+  "scope": "Finite acquisition acceptance only; no job execution, fresh source/socket authority, installed Sync, coverage, M1, capacity or release claim. Privileged mutation is not management activation."
+}
