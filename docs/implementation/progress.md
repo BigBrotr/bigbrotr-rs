@@ -12,10 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main candidate23d7534abf78510a9165825e4e656b54287c8955 is committed, not yet
-pushed; origin/main remainsc178693. Root owns current evidence/reference/checkpoint/
-inventory edits; no other writer or active experiment remains. Product
-dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9 remains unchanged.
+Local main and origin/main are d1e56eee0fe9f9423c3e4238811ec7e05b6c45ad, pushed.
+Root owns the committed visibility reader, initial Control consumer, native probe,
+focused laboratory profile and documentation changes. No other writer or active
+experiment remains. The product changes are based on d1e56ee; the prior qualified
+enrollment product was dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9.
 Exact c2eebec ELFs qualified the relational fixture at23d7534 without a rebuild.
 All source transfers used clean exact Git; no remote source editing.
 
@@ -31,11 +32,23 @@ journey, timer publication and dependency-outage recovery. Component evidence do
 not replace those journeys or qualify an entire task/phase/product.
 
 Initial enrollment and scoped command authority/recovery are qualified below.
-Next bounded action after this evidence commit/private push: implement the small
-Ingest-owned committed visibility lookup consumed by current acquisition authority,
-reusing existing dictionary mapping/fact validation. Read complete affected native
-owners, dictionary/acquisition contracts and real callers first. The focused
-live-owner relational prerequisite passed below; no whole-subsystem barrier added.
+The small Ingest-owned committed visibility lookup is in progress, reusing
+existing dictionary mapping/fact validation. Complete native owners, dictionary/
+acquisition contracts and initial Control callers were read. Four actual Mac
+RocksDB tests failed as expected against the unimplemented reader (zero passed,
+four failed; no compilation/setup failure). Original output is retained at
+.research/implementation/relay-enrollment-relations-23d7534/visibility-red.log.
+Reader and real initial Control consumer are implemented. Five actual Mac
+RocksDB regressions and Clippy for the library/probe pass; green3/clippy3 logs
+are retained beside the original RED and two fixture compile failures. Independent
+read-only AI review found an absent-result scratch/permit drop-order issue, now
+corrected. Root reviewed the complete change. Next bounded action: commit the
+candidate, transfer exact Git and run ingest-visibility on Tux with current
+authority, bounded refusal/retry and reopen against both actual engines. This immutable result proves committed mapping, not acquisition
+permission. The focused live-owner relational prerequisite passed below; no
+whole-subsystem barrier added. Connected expiry/cancellation fixtures refuse before
+native dispatch; the native regression separately checks the post-read authority
+callback. No in-FFI preemption or current acquisition permission is claimed.
 
 Independent read-only next-boundary review confirms the minimal sequence: existing
 Ingest dictionary bootstrap and committed visibility lookup; current endpoint,

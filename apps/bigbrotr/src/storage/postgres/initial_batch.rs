@@ -14,12 +14,13 @@ use crate::{
         store::{
             AdmissionError, AdmissionLimits, BootstrapError, BootstrapLimits, CertificationLimits,
             IngestStore, PreparedCertification, PreparedEvent, StoredCertification, StoredOutcome,
-            StoredReceipt,
+            StoredReceipt, StoredVisibility,
         },
     },
 };
 use bigbrotr_model::{
-    EvidenceIntent, ObservedTime, PolicyEpoch, ProducerEpoch, ProducerRequestId, RequestSequence,
+    EvidenceIntent, ObservedTime, PolicyEpoch, ProducerEpoch, ProducerRequestId, QualifiedRef,
+    RequestSequence,
 };
 use std::sync::atomic::{AtomicBool, Ordering};
 
@@ -34,8 +35,8 @@ pub enum InitialOperationError<E> {
     /// The native result exists; this error never authorizes another request ID.
     Outcome(OutcomeError),
     /// Native work was dispatched but later cleanup/delivery is unavailable.
-    /// Mutations require original-request resolution; certification is a read
-    /// and must be evaluated again under current authority.
+    /// Mutations require original-request resolution; reads must be evaluated
+    /// again under current authority.
     DeliveryUnknown,
 }
 impl<E: fmt::Debug> fmt::Display for InitialOperationError<E> {
@@ -85,6 +86,17 @@ pub struct InitialCertificationRequest<'a> {
     pub cancelled: &'a AtomicBool,
 }
 
+/// Read one committed descriptor under current initial-owner authority. This
+/// neither grants acquisition permission nor allocates a producer request.
+pub struct InitialVisibilityRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
+    pub registration: &'a ingest_registry::InitialRegistration,
+    pub reference: QualifiedRef,
+    pub limits: CertificationLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
+}
+
 /// Complete event-only JSONL batch supplied by a trusted source/policy consumer.
 /// The prepared events retain their separate memory grants while being staged.
 /// This API binds existing job metadata; it does not accept an operator job.
@@ -112,6 +124,55 @@ pub struct InitialBatchRequest<'a> {
 }
 
 impl ControlSession {
+    /// Run on the retained native owner worker, like certification. The result
+    /// contains immutable data; source authorization remains a separate check.
+    pub async fn read_initial_visibility(
+        &mut self,
+        store: &mut IngestStore,
+        input: InitialVisibilityRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<Option<StoredVisibility>, InitialEventError> {
+        if input.cancelled.load(Ordering::Relaxed) {
+            return Err(InitialEventError::Native(
+                AdmissionError::AuthorityUnavailable,
+            ));
+        }
+        let identity = *store.manifest().identity();
+        let (tx, mut lease) = self
+            .begin_initial_native_operation(
+                store,
+                InitialIngestContext {
+                    ingest_root: input.ingest_root,
+                    registration: input.registration,
+                    policy_ttl: input.policy_ttl,
+                    request: None,
+                    job: None,
+                },
+                validate,
+            )
+            .await?;
+        let result = store.read_visibility(input.reference, input.limits, permit, || {
+            if input.cancelled.load(Ordering::Relaxed) {
+                return Err(AdmissionError::AuthorityUnavailable);
+            }
+            lease
+                .check_delivery(identity.policy_epoch)
+                .map_err(|_| AdmissionError::AuthorityUnavailable)
+        });
+        tx.rollback()
+            .await
+            .map_err(|_| InitialEventError::DeliveryUnknown)?;
+        if input.cancelled.load(Ordering::Relaxed)
+            || self.client.is_closed()
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        self.available = true;
+        result.map_err(InitialEventError::Native)
+    }
+
     /// Same current source/policy/owner checks as admission, with no input
     /// staging, producer reservation or outcome/progress writes. A successful
     /// rollback releases the read transaction before final delivery validation.

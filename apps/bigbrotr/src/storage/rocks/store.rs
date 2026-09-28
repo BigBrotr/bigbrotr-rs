@@ -67,6 +67,14 @@ pub use certification::{
     CertificationLimits, CertificationOutcome, PreparedCertification, StoredCertification,
 };
 
+#[path = "visibility.rs"]
+mod visibility;
+pub use visibility::StoredVisibility;
+
+#[cfg(test)]
+#[path = "visibility_tests.rs"]
+mod visibility_tests;
+
 #[path = "producer_closing.rs"]
 mod producer_closing;
 pub use producer_closing::ProducerClosing;

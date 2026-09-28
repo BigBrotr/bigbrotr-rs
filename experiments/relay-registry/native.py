@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exact-source native registry CLI/probe build; no archive worker qualification."""
+"""Exact-source native Control/Ingest CLI/probe builds; bounded profile checks."""
 import json
 from pathlib import Path
 import shutil
@@ -31,9 +31,10 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'registry'
-assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults')
+assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility')
 probe = {'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
-         'enrollment':'relay_enrollment_probe', 'enrollment-faults':'relay_enrollment_fault_probe'}[mode]
+         'enrollment':'relay_enrollment_probe', 'enrollment-faults':'relay_enrollment_fault_probe',
+         'visibility':'ingest_bootstrap_probe'}[mode]
 if mode == 'enrollment-faults':
     identity['scope'] = 'Actual enrollment fault probe build only; engine authority qualification is separate'
 checks = Path('/out/build-checks')
@@ -52,6 +53,10 @@ if mode == 'enrollment':
                  '--test','relay_enrollment_command','--test','network_route_selection',
                  '--test','network_policy','--test','control_schema','--test','migrate_entrypoint',
                  '--test','config_private_routes','--test','config_entrypoint','--test','policy_seed']))
+if mode == 'visibility':
+    identity['scope'] = 'Committed native visibility lookup; no acquisition permission or release qualification'
+    steps.insert(1, ('visibility', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                                  '--lib','visibility_tests','--','--test-threads=1']))
 result = execute(steps,checks,SOURCE,env,identity,1800)
 assert result['status']=='PASS'
 artifacts=Path('/out/artifacts'); artifacts.mkdir()
@@ -66,5 +71,6 @@ receipt=dict(identity,format='bigbrotr-registry-build/1',binary_sha256=file_hash
 assert sources()==manifest['files_sha256']
 status = {'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
           'enrollment':'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
-          'enrollment-faults':'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY'}[mode]
+          'enrollment-faults':'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',
+          'visibility':'PASS_INGEST_VISIBILITY_BUILD_ONLY'}[mode]
 Path('/out/qualification.json').write_text(json.dumps(dict(identity,status=status),indent=2)+'\n')

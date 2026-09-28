@@ -63,6 +63,7 @@ mod producer_recovery;
 pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest, InitialEventError,
     InitialEventRequest, InitialImportBatchRequest, InitialOperationError,
+    InitialVisibilityRequest,
 };
 pub use producer_closing::{ProducerCloseError, ProducerCloseRequest, ProducerOperationError};
 pub use producer_recovery::{ProducerResolveError, ProducerResolveRequest};

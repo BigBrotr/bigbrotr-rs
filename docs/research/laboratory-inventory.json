@@ -28028,5 +28028,19 @@
         "report": "docs/implementation/evidence/p02-relay-enrollment-relations-native-20260928.json"
       }
     }
+  },
+  "implementation_ingest_visibility_20260928": {
+    "owner": "root; Mac sole writer, independent read-only AI review",
+    "base_source": "d1e56eee0fe9f9423c3e4238811ec7e05b6c45ad",
+    "status": "Mac five native RocksDB tests and lib/probe Clippy pass; Tux not yet launched",
+    "local_capture": ".research/implementation/relay-enrollment-relations-23d7534/visibility-*.log",
+    "recipe": "experiments/network-transport/lab.py REVISION TREE ingest-visibility",
+    "scope": "Immutable committed visibility mapping, not an acquisition grant or Archive pin",
+    "preserve": "Original RED, compile failures and scoped GREEN; reusable compiler cache runs/network-1154757 and original ELFs outside cache. No deletion.",
+    "preflight": {
+      "free_bytes": 66561556480,
+      "running_unrelated_containers": 8,
+      "running_bigbrotr_experiments": 0
+    }
   }
 }

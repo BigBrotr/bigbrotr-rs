@@ -159,6 +159,27 @@ does not scrub all interior receipt/dependency records.
 
 ## Resource and outcome boundary
 
+`ControlSession::read_initial_visibility` reads a committed visibility descriptor
+under the same initial registration, complete policy documents, Control fence and
+short local lease. It resolves the full QualifiedRef through the existing native
+dictionary index, fact digest and transitive dictionary dependency checks. Healthy
+absence returns `None`; a present broken mapping remains `StateMismatch`, and
+insufficient accepted decode limits remain `Limit`. A poisoned native write view
+cannot supply a result. The operation allocates no producer request, synchronized
+input, fact, counter, receipt, SQL outcome or Archive pin.
+
+The returned `StoredVisibility` retains its resource permit and carries immutable
+dictionary data, not source permission or a network grant. It reuses the bounded
+`CertificationLimits` fact/dependency read allowance. Scratch and native pins are
+retired before releasing that allowance, including absence. The caller reserves
+whole PostgreSQL documents separately and retains/joins its native worker and
+driver. The read transaction rolls back before final cancellation/lease/delivery
+validation; a known bounded read refusal permits corrected limits on the same
+current session. Lost read delivery requires fresh evaluation, never mutation
+retry or inferred rollback. Current enrollment, route, bans and source-to-scope
+authority remain separate prerequisites for acquisition. This lookup does not
+promise a full-store scrub, Archive fallback, successor access or retention.
+
 The caller reserves its input buffers and bounded PostgreSQL documents. A
 separate transferred permit covers staged values, transient encodings, returned
 receipt and native WriteBatch allocation. Limits are positive and at most 256

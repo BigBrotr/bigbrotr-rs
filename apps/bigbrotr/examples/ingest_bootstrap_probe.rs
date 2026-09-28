@@ -35,6 +35,8 @@ mod ingest_recovery;
 mod ingest_recovery_process;
 #[path = "support/ingest_snapshot.rs"]
 mod ingest_snapshot;
+#[path = "support/ingest_visibility.rs"]
+mod ingest_visibility;
 
 const MIB: u64 = 1024 * 1024;
 fn emit(value: serde_json::Value) {
@@ -120,12 +122,7 @@ fn setup_preserves_the_independent_frozen_policy_digest() {
 }
 
 async fn setup(mut config: Config, target: u32) {
-    use bigbrotr::storage::postgres::{
-        activation::{ActivationRequest, activate_initial},
-        initialization::{InitialConfiguration, initialize},
-        migration_runner,
-    };
-    use sha2::{Digest, Sha256};
+    use bigbrotr::storage::postgres::migration_runner;
     config.user("postgres");
     let (mut admin, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
@@ -138,6 +135,16 @@ async fn setup(mut config: Config, target: u32) {
     config
         .user("bigbrotr_control")
         .password(std::fs::read("/secrets/bigbrotr_control").unwrap());
+    initialize_fixture(config).await;
+    emit(serde_json::json!({"event":"setup", "target":target}));
+}
+
+async fn initialize_fixture(config: Config) {
+    use bigbrotr::storage::postgres::{
+        activation::{ActivationRequest, activate_initial},
+        initialization::{InitialConfiguration, initialize},
+    };
+    use sha2::{Digest, Sha256};
     let (mut client, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
     let document = fixture_document();
@@ -181,7 +188,6 @@ async fn setup(mut config: Config, target: u32) {
     .unwrap();
     drop(client);
     driver.await.unwrap().unwrap();
-    emit(serde_json::json!({"event":"setup", "target":target}));
 }
 
 async fn run(mut config: Config, mode: &str, path: &Path) {
@@ -436,7 +442,13 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             },
         )
         .await;
-    if event_mode {
+    if mode.starts_with("visibility") {
+        let bootstrap = result.unwrap();
+        assert_eq!(bootstrap.receipt().batch().unwrap().records().len(), 2);
+        drop(bootstrap);
+        store = ingest_visibility::run(owner, &observer, store, &spec, path, &budget, mode, scope)
+            .await;
+    } else if event_mode {
         let bootstrap = result.unwrap();
         assert_eq!(bootstrap.receipt().batch().unwrap().records().len(), 3);
         drop(bootstrap);
@@ -668,6 +680,8 @@ fn main() {
         .block_on(async {
             if let Some(target) = args[1].strip_prefix("setup-") {
                 setup(config, target.parse().unwrap()).await;
+            } else if args[1] == "initialize-fixture" {
+                initialize_fixture(config).await;
             } else if args[1].starts_with("recovery-process-") {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
             } else {

@@ -76,7 +76,7 @@ impl Default for CertificationLimits {
     }
 }
 impl CertificationLimits {
-    fn reads(self) -> Result<AdmissionLimits, AdmissionError> {
+    pub(super) fn reads(self) -> Result<AdmissionLimits, AdmissionError> {
         if self.max_fact_bytes == 0
             || self.max_fact_bytes > 2 * 1024 * 1024
             || !(8..=256).contains(&self.max_dependencies)
