@@ -13,6 +13,9 @@ use sha2::{Digest, Sha256};
 use std::{cell::Cell, collections::BTreeSet, time::Duration};
 use tokio_postgres::{Config, NoTls};
 
+#[path = "support/acquisition_scope_faults.rs"]
+mod faults;
+
 fn selector(kinds: Vec<u16>) -> CollectionSelector {
     CollectionSelector::new(
         vec![
@@ -52,12 +55,16 @@ async fn main() {
 
 async fn run() {
     let args: Vec<_> = std::env::args().collect();
-    assert_eq!(args.len(), 5);
+    assert!(matches!(args.len(), 5 | 8));
     let mode = args[4].as_str();
-    assert!(matches!(
-        mode,
-        "basic" | "collision" | "rollback" | "expired" | "historical" | "old-schema"
-    ));
+    assert!(
+        mode.starts_with("fault-")
+            || matches!(
+                mode,
+                "basic" | "collision" | "rollback" | "expired" | "historical" | "old-schema"
+            )
+    );
+    assert_eq!(args.len() == 8, mode.starts_with("fault-"));
     let expected: Value = serde_json::from_slice(&std::fs::read(&args[3]).unwrap()).unwrap();
     assert_eq!(expected["format"], "bigbrotr-product-policy/2");
     let digest: [u8; 32] = Sha256::new()
@@ -77,6 +84,7 @@ async fn run() {
     let mut config = Config::new();
     config
         .host("127.0.0.1")
+        .port(args.get(5).map_or(5432, |port| port.parse().unwrap()))
         .user("bigbrotr_control")
         .dbname(&args[1])
         .password(std::fs::read(&args[2]).unwrap());
@@ -84,7 +92,7 @@ async fn run() {
     let driver = tokio::spawn(connection);
     let row = client
         .query_one(
-            "SELECT dataset_id::bytea,instance_id::bytea FROM control.datasets",
+            "SELECT dataset_id::bytea,instance_id::bytea,pg_backend_pid() FROM control.datasets",
             &[],
         )
         .await
@@ -120,7 +128,12 @@ async fn run() {
             )
         })
         .collect();
-    let first_nonce = if mode == "historical" { 231 } else { 211 };
+    let first_nonce = args
+        .get(6)
+        .map_or(if mode == "historical" { 231 } else { 211 }, |value| {
+            value.parse::<u8>().unwrap()
+        });
+    assert!(first_nonce > 0);
     let claim = |nonce| ClaimRequest {
         dataset,
         instance,
@@ -129,14 +142,51 @@ async fn run() {
         incarnation: ProcessIncarnation::try_from([nonce; 16]).unwrap(),
         lease_ttl: if mode == "expired" {
             Duration::from_millis(300)
+        } else if mode == "fault-held-expired" {
+            Duration::from_secs(3)
+        } else if mode == "fault-existing-expired" {
+            Duration::from_secs(1)
         } else {
             Duration::from_secs(60)
         },
     };
-    let (mut owner, _) =
-        ControlSession::acquire(client, claim(first_nonce), validate, &Cell::new(false))
-            .await
-            .unwrap();
+    let claim_started = Cell::new(false);
+    let acquired =
+        ControlSession::acquire(client, claim(first_nonce), validate, &claim_started).await;
+    if mode == "fault-busy" {
+        assert!(matches!(acquired, Err(OwnerError::Busy)) && !claim_started.get());
+        driver.await.unwrap().unwrap();
+        println!("{}", json!({"event":"busy","commit_started":false}));
+        return;
+    }
+    let (mut owner, policy) = acquired.unwrap();
+    if mode.starts_with("fault-") {
+        println!(
+            "{}",
+            json!({"event":"ready","pid":row.get::<_,i32>(2),
+            "epoch":owner.identity().epoch.get(),"policy":policy.policy_revision})
+        );
+        let selection = selector(match mode {
+            "fault-overfull" => vec![0],
+            "fault-overfull-new" | "fault-stale" => vec![777],
+            "fault-existing-expired" => vec![1, 2],
+            _ => vec![10],
+        });
+        let epoch = if mode == "fault-current" {
+            policy.policy_revision
+        } else {
+            1
+        };
+        faults::run(
+            owner,
+            driver,
+            mode,
+            &args[7],
+            intent(&selection, endpoint, contexts[0], epoch),
+        )
+        .await;
+        return;
+    }
 
     let base = selector(vec![2, 1, 1]);
     if matches!(mode, "rollback" | "expired" | "old-schema") {

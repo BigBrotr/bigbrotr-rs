@@ -27720,6 +27720,11 @@
           "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
         }
       }
+    },
+    "acquisition_scope_faults": {
+      "status": "Prepared finite fault probe/recipe; Mac scoped Clippy/format/docs PASS; native NOT_RUN",
+      "local_evidence": ".research/implementation/acquisition-scope-faults-20260928",
+      "preserve": "Reuse qualified scope54d1a18 basic/collision only as clone templates. No active remote run. Product and applied SQL unchanged. Original outputs and failed cases must remain retained."
     }
   },
   "implementation_relay_registry_20260928": {

@@ -12,20 +12,20 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is54d1a1841b64b60a2c8eed0cde8382c397cf1e30, tree
-b564ec7453e6f22bc8afe3f2cce5490cef179f4a (scope registration), following
-72ce9db50b4177bc1ba988d82ccdecf3265f8835 (selector native evidence; private
-origin/main before the pending evidence push). Root owns only this checkpoint,
-first-wave evidence/inventory and qualification-status documentation updates.
-No other writer or active lab. New0004 is applied only to retained isolated clones;
+Mac main and private origin/main areb450d0c3e3a5cac8196c1db1ee0c6a1ce71f1575
+(first-wave evidence, verified pushed), following scope54d1a1841b64b60a2c8eed0cde8382c397cf1e30,
+treeb564ec7453e6f22bc8afe3f2cce5490cef179f4a. Root now owns the dirty fault-mode
+probe/support module, actual-PG fault recipe and build-profile/documentation updates.
+No other writer or active lab. The proposed ten fault schedules have NOT_RUN;
+Mac probe Clippy passes. New outputs belong to ignored acquisition-scope-faults-20260928. New0004 is applied only to retained isolated clones;
 all35 earlier SQL files remain byte-identical. Preserve every applied checksum.
 
 ## Active slice and next useful journey
 
 P03-T01 Steps1/2/3: pure selector is qualified; initial durable registration now has
 six actual-PG schedules and native build evidence. Whole task remains open.
-Next bounded action: commit/push this first-wave evidence, then implement the
-registration fault qualification (lost COMMIT in both durable outcomes, held
+Next bounded action: review/compile and commit the new finite fault probe/recipe,
+then run exact-Git native registration fault qualification (lost COMMIT in both durable outcomes, held
 cancellation with retained driver custody, policy/registration lock ordering and
 corrupt bucket/relational refusals). Reuse the existing finite PostgreSQL wire
 proxy and lock barriers where semantics match. Preserve independent exact-row

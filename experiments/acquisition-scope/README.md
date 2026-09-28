@@ -35,3 +35,19 @@ actually executed. Failure logs and clones stay retained. Lost COMMIT/cancellati
 concurrent locks, corruption/relational negative controls and installed Sync are
 explicit later acceptance, never inferred from this first wave. No capacity,
 arm64, M1 or release claim follows from these fixtures.
+
+
+The `acquisition-scope-faults` profile builds the same probe with finite fault
+modes and scoped Clippy; unchanged catalog/value tests need not repeat. After
+its terminal build, `faults.py RUN_ROOT` borrows the verified stopped PG and
+clones only the retained54d1a18 basic/collision databases. It verifies unchanged
+product/SQL inputs. The existing wire proxy targets COMMIT2 (COMMIT1 acquires
+Control). Proposed schedules include a normal proxy control, both lost-response
+outcomes, cancellation with close/release, expiry while held, and competing-owner
+refusal while the driver retains custody. Actual backend-incarnation lock barriers
+exercise both dataset-lock orders. Lost committed identity is retried after policy
+advancement; stale absent intent must leave no selector. Corrupt65-row buckets
+must refuse both existing and absent lookup; expired lookup grants only identity.
+Full before/after observations and original clones remain retained. These recipes
+are NOT_RUN until the exact native report exists; raw relational negatives and
+installed acquisition remain subsequent acceptance.
