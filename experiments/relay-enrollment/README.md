@@ -100,3 +100,15 @@ no OOM. Sources,117 capture payloads and original ELFs are verified in the
 [scoped native fault report](../../docs/implementation/evidence/p02-relay-enrollment-faults-native-20260928.json).
 This does not qualify every relational omission/corruption, installed acquisition,
 source visibility, load or release scenario.
+
+A focused relational mode uses the same retained probe without recompiling:
+`python3 -B experiments/relay-enrollment/faults.py RUN_ROOT ARTIFACT_DIRECTORY relational`.
+It installs a test-only hook in a fresh clone. The actual Control backend/session
+first validates a real parent command, then attempts missing/mismatched current
+state, digest/audit mismatches, extra identities/audit, immutable identity updates,
+old receipt application and a second transition after early constraint evaluation.
+Two valid controls bracket twelve exact SQLSTATE/message refusals. Every attempted
+subtransaction rolls back and compares all64 Control relations; only the real
+parent command may commit. Independent Python bytes supply fixture digests. This
+mode is proposed until its native report exists; it does not repeat the unchanged
+18 COMMIT/lock schedules or qualify current acquisition authority.

@@ -22,7 +22,11 @@ from concurrency_cases import Session
 sys.path.insert(0, str(SOURCE / "experiments/network-transport"))
 from inventory import projection
 
-assert len(sys.argv) in (2, 3)
+relational = len(sys.argv) == 4 and sys.argv[3] == "relational"
+assert len(sys.argv) in (2, 3) or relational
+expected_status = (
+    "PASS_SCOPED_ENROLLMENT_RELATIONS" if relational else "PASS_SCOPED_ENROLLMENT_FAULTS"
+)
 root = Path(sys.argv[1]).resolve(strict=True)
 assert SOURCE == root / "source"
 revision = lab.command(["git", "-C", str(SOURCE), "rev-parse", "HEAD"]).stdout.strip()
@@ -47,7 +51,7 @@ assert not lab.command(
         "rust-toolchain.toml",
     ]
 ).stdout
-build = Path(sys.argv[2]).resolve(strict=True) if len(sys.argv) == 3 else root / "out/artifacts"
+build = Path(sys.argv[2]).resolve(strict=True) if len(sys.argv) >= 3 else root / "out/artifacts"
 built = json.loads((build / "build-result.json").read_text())
 assert built["probe_name"] == "relay_enrollment_fault_probe"
 if built["source"] != revision:
@@ -76,6 +80,7 @@ report = dict(
     format="bigbrotr-relay-enrollment-faults/1",
     source=revision,
     application_source=built["source"],
+    mode="relational" if relational else "faults",
     build=built,
     status="RUNNING",
     owner=owner,
@@ -87,7 +92,9 @@ report = dict(
     postgres_owner=pg["owner"],
     original_report_sha256=hashlib.sha256(original_bytes).hexdigest(),
     not_run=[
-        "all relational omission/corruption schedules",
+        "relational schedules beyond the selected twelve"
+        if relational
+        else "all relational omission/corruption schedules",
         "installed HTTP/CLI enrollment",
         "current action issuer/restrictive drain",
         "signed socket acquisition/M1",
@@ -354,81 +361,125 @@ def mutation_for(kind, observed):
     return lock, mutation, allowed
 
 
-prior = containers()
-target = next(c for c in prior if c["Name"] == "/" + pg["postgres"])
-assert (
-    target["Config"]["Labels"][lab.LABEL] == pg["owner"] and target["State"]["Status"] == "exited"
-)
-assert not any(c["State"]["Running"] and "bigbrotr" in c["Name"] for c in prior)
-assert shutil.disk_usage(root).free > 2 * 1024**3
-assert lab.docker("inspect", client, check=False).returncode != 0
-report.update(
-    started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-    free_bytes_before=shutil.disk_usage(root).free,
-    postgres_id=target["Id"],
-)
-lab.write_json(output / "preflight.json", [projection(c) for c in prior])
-save()
-try:
-    lab.docker("start", target["Id"])
-    deadline = time.monotonic() + 30
-    while lab.docker("exec", target["Id"], "pg_isready", "-U", "postgres", check=False).returncode:
-        require(time.monotonic() < deadline, "postgres-readiness")
-        time.sleep(0.1)
-    require(tables("bb_enrollment") == expected_original, "original-state-before")
-    # The initial enrollment journey acquired Control once. Its baseline differs
-    # from the older registry fixture, which deliberately replaced its owner.
-    baseline_epochs = json.loads(
+def run_relations():
+    db = prepare("relations")
+    identity = json.loads(
         lab.sql(
             pg,
-            "bb_enrollment",
-            "SELECT json_agg(epoch ORDER BY epoch) FROM control.owner_epochs WHERE role='control'",
+            db,
+            """
+        SELECT json_build_object('dataset',encode(dataset_id,'hex'),
+            'endpoint',encode(endpoint_id,'hex')) FROM control.relay_endpoints
+        WHERE url_bytes=convert_to('wss://fixture.example/private?x=1&x=2','UTF8')
+    """,
         )
     )
-    require(baseline_epochs == [1], "original-owner-epochs")
-    report["original_owner_epochs"] = baseline_epochs
-    save()
-    shutil.copyfile(original_root / "pg/policy.json", output / "policy.json")
-    ident = lab.docker(
-        "create",
-        "--init",
-        "--name",
-        client,
-        "--label",
-        label + "=" + owner,
-        "--network",
-        "container:" + pg["postgres"],
-        "--user",
-        f"{os.getuid()}:{os.getgid()}",
-        "--cpus",
-        "2",
-        "--memory",
-        "1g",
-        "--memory-swap",
-        "1g",
-        "--pids-limit",
-        "128",
-        "--read-only",
-        "--cap-drop",
-        "ALL",
-        "--security-opt",
-        "no-new-privileges",
-        "--mount",
-        f"type=bind,src={output},dst=/lab",
-        "--mount",
-        f"type=bind,src={original_root}/pg/secrets,dst=/run/secrets,readonly",
-        "--mount",
-        f"type=bind,src={build},dst=/build,readonly",
-        "--mount",
-        f"type=bind,src={SOURCE},dst=/source,readonly",
-        pg["client_image"],
-        "python3",
-        "-c",
-        "import time; time.sleep(900)",
-    ).stdout.strip()
-    report["client"] = dict(id=ident, name=client)
-    save()
-    lab.docker("start", ident)
+
+    def digest(ordinal, enabled, previous):
+        value = b"bigbrotr/relay-enrollment-change/1\0"
+        value += bytes.fromhex(
+            identity["dataset"]
+            + "10" * 16
+            + "88" * 16
+            + identity["endpoint"]
+            + identity["dataset"]
+            + "0004"
+            + "37" * 16
+        )
+        value += ordinal.to_bytes(8, "big") + bytes([enabled])
+        value += b"".join(n.to_bytes(8, "big") for n in [previous, 1, 1])
+        value += bytes.fromhex("0104180a020300")
+        return hashlib.sha256(value).hexdigest()
+
+    sql = (SOURCE / "experiments/relay-enrollment/relational.sql").read_text()
+    sql = sql.replace("@fresh_digest@", digest(101, True, 0))
+    sql = sql.replace("@withdraw_digest@", digest(99, False, 1))
+    require("@" not in sql, "unexpanded-relational-fixture")
+    (output / "relational-expanded.sql").write_text(sql)
+    lab.sql(pg, db, sql)
+    process, token = app(db, "accept", 11)
+    acquired = event(process, "ready")
+    require(acquired["epoch"] == 2, "relational-owner-epoch")
+    observed = observe(db, acquired)
+    require(
+        not observed["owner_expired"] and not observed["session_expired"],
+        "relational-live-authority",
+    )
+    before = tables(db)
+    go(token)
+    outcome = finish(process)
+    rows = enrollment(db)
+    verify_receipt(outcome, rows, True)
+    results = json.loads(
+        lab.sql(
+            pg,
+            db,
+            """
+        SELECT json_agg(to_jsonb(t) ORDER BY position) FROM enrollment_fixture.results t
+    """,
+        )
+    )
+    expected = [
+        "valid-before",
+        "missing-current",
+        "wrong-generation",
+        "wrong-route",
+        "wrong-digest",
+        "wrong-audit-time",
+        "extra-access",
+        "extra-route",
+        "extra-audit",
+        "mutate-access",
+        "mutate-route",
+        "old-receipt",
+        "early-second-transition",
+        "valid-after",
+    ]
+    require(
+        [r["name"] for r in results] == expected
+        and all(
+            r["unchanged"]
+            and r["backend_pid"] == acquired["pid"]
+            and r["owner_epoch"] == 2
+            and r["sqlstate"] == ("ZX001" if r["name"].startswith("valid-") else "23514")
+            for r in results
+        ),
+        "incomplete-relational-case-set",
+    )
+    after = tables(db)
+    domain_tables = [
+        "relay_access_contexts",
+        "network_routes",
+        "relay_enrollments",
+        "relay_enrollment_changes",
+        "management_commands",
+        "management_audit",
+    ]
+    changed = unchanged(before, after, domain_tables)
+    require(
+        set(changed) == set(domain_tables)
+        and all(after[name]["rows"] == before[name]["rows"] + 1 for name in domain_tables),
+        "relational-extra-durable-effect",
+    )
+    require(
+        rows[0]["epoch"] == 2 and rows[0]["config"] == rows[0]["policy"] == "1",
+        "relational-original-attribution",
+    )
+    record(
+        "live-owner-relational-closure",
+        observations=observed,
+        outcome=outcome,
+        results=results,
+        rows=rows,
+        before=before,
+        after=after,
+        changed=changed,
+        fresh_digest=digest(101, True, 0),
+        withdraw_digest=digest(99, False, 1),
+    )
+
+
+def run_faults():
     domain_tables = [
         "relay_access_contexts",
         "network_routes",
@@ -725,6 +776,87 @@ try:
     )
     writer.close(lambda: lab.load(original_root / "pg"))
     sessions.remove(writer)
+
+
+prior = containers()
+target = next(c for c in prior if c["Name"] == "/" + pg["postgres"])
+assert (
+    target["Config"]["Labels"][lab.LABEL] == pg["owner"] and target["State"]["Status"] == "exited"
+)
+assert not any(c["State"]["Running"] and "bigbrotr" in c["Name"] for c in prior)
+assert shutil.disk_usage(root).free > 2 * 1024**3
+assert lab.docker("inspect", client, check=False).returncode != 0
+report.update(
+    started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    free_bytes_before=shutil.disk_usage(root).free,
+    postgres_id=target["Id"],
+)
+lab.write_json(output / "preflight.json", [projection(c) for c in prior])
+save()
+try:
+    lab.docker("start", target["Id"])
+    deadline = time.monotonic() + 30
+    while lab.docker("exec", target["Id"], "pg_isready", "-U", "postgres", check=False).returncode:
+        require(time.monotonic() < deadline, "postgres-readiness")
+        time.sleep(0.1)
+    require(tables("bb_enrollment") == expected_original, "original-state-before")
+    # The initial enrollment journey acquired Control once. Its baseline differs
+    # from the older registry fixture, which deliberately replaced its owner.
+    baseline_epochs = json.loads(
+        lab.sql(
+            pg,
+            "bb_enrollment",
+            "SELECT json_agg(epoch ORDER BY epoch) FROM control.owner_epochs WHERE role='control'",
+        )
+    )
+    require(baseline_epochs == [1], "original-owner-epochs")
+    report["original_owner_epochs"] = baseline_epochs
+    save()
+    shutil.copyfile(original_root / "pg/policy.json", output / "policy.json")
+    ident = lab.docker(
+        "create",
+        "--init",
+        "--name",
+        client,
+        "--label",
+        label + "=" + owner,
+        "--network",
+        "container:" + pg["postgres"],
+        "--user",
+        f"{os.getuid()}:{os.getgid()}",
+        "--cpus",
+        "2",
+        "--memory",
+        "1g",
+        "--memory-swap",
+        "1g",
+        "--pids-limit",
+        "128",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--mount",
+        f"type=bind,src={output},dst=/lab",
+        "--mount",
+        f"type=bind,src={original_root}/pg/secrets,dst=/run/secrets,readonly",
+        "--mount",
+        f"type=bind,src={build},dst=/build,readonly",
+        "--mount",
+        f"type=bind,src={SOURCE},dst=/source,readonly",
+        pg["client_image"],
+        "python3",
+        "-c",
+        "import time; time.sleep(900)",
+    ).stdout.strip()
+    report["client"] = dict(id=ident, name=client)
+    save()
+    lab.docker("start", ident)
+    if relational:
+        run_relations()
+    else:
+        run_faults()
     require(
         tables("bb_enrollment") == expected_original
         and original_file.read_bytes() == original_bytes,
@@ -738,11 +870,12 @@ try:
         "application-backends-remain",
     )
     require(
-        len(report["cases"]) == 18 and all(c["status"] == "PASS" for c in report["cases"]),
+        len(report["cases"]) == (1 if relational else 18)
+        and all(c["status"] == "PASS" for c in report["cases"]),
         "incomplete-case-set",
     )
     report["active_case"] = None
-    report["status"] = "PASS_SCOPED_ENROLLMENT_FAULTS"
+    report["status"] = expected_status
 except BaseException as error:
     report.update(status="FAIL", failure=type(error).__name__ + ": " + str(error))
     raise
@@ -773,6 +906,9 @@ finally:
         require(item["Config"]["Labels"][lab.LABEL] == pg["owner"], "postgres-owner")
         if item["State"]["Running"]:
             lab.docker("stop", "--time", "10", item["Id"])
+        logs = lab.docker("logs", "--since", report["started_at"], target["Id"])
+        (output / "postgres.stdout").write_text(logs.stdout)
+        (output / "postgres.stderr").write_text(logs.stderr)
     except BaseException as error:
         errors.append("postgres-" + type(error).__name__)
     after = {c["Id"]: c for c in containers()}
@@ -802,4 +938,4 @@ finally:
     )
     save()
 print(json.dumps(dict(status=report["status"], cases=len(report["cases"]), output=str(output))))
-require(report["status"] == "PASS_SCOPED_ENROLLMENT_FAULTS", "incomplete-enrollment-faults")
+require(report["status"] == expected_status, "incomplete-enrollment-qualification")

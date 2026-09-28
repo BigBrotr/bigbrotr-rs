@@ -12,12 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main candidate4ac4bad0a7fe2cb2fa44a9ca19f1bb49e8dd0f37 is committed, not yet
-pushed; origin/main remains868954f. Root owns current native evidence/reference/
-recipe/checkpoint/inventory edits. No other writer or active experiment remains.
-Product candidate dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9 is unchanged.
-The fault probe compiled atc2eebec; corrected fixture4ac4bad reused exact artifacts.
-All source transfers were exact clean Git; no remote source editing.
+Local main c17869308863999d1f83011559dc791619e3cf67 is pushed and was clean at
+resumption. Root now owns the focused relational SQL fixture and its runner/docs;
+no other writer or active experiment. Product dae4d45/tree1bd32d3a9ac0c0bdc7492807f9cd6c854580b9e9 remains unchanged.
+The fault probe compiled atc2eebec; fixture4ac4bad reused exact artifacts.
+No remote source editing. Current candidate will transfer through Git before execution.
 
 ## Active slice and next useful journey
 
@@ -31,16 +30,25 @@ journey, timer publication and dependency-outage recovery. Component evidence do
 not replace those journeys or qualify an entire task/phase/product.
 
 Initial enrollment and scoped command authority/recovery are qualified below.
-Next bounded action after evidence commit/private push: map and implement the
-minimum current acquisition action authority, binding the accepted endpoint,
-AccessScopeId, enrollment generation and RouteId to a committed visibility
-descriptor and current source permission. Read the complete owning P02-T01 Step6,
-P03-T01 and P04-T02 contracts plus current runtime/admission/config consumers first.
-Independent read-only next-boundary review is mapping these exact prerequisites;
-root remains sole writer. Resolve any necessary live-owner relational omission
-case before relying on its invariant, without adding a whole-subsystem barrier.
-No action issuer or signed acquisition claim exists yet. Reuse the qualified
-command, dictionary and guarded transport boundaries instead of a generic framework.
+Next bounded action: exact-Git actual-PG verification of twelve focused relational
+refusals plus valid before/after controls, inside an actual live Control/session
+transaction. This establishes the specific enrollment closure consumed by the next
+issuer; it is not a new whole-subsystem barrier. The fixture reuses c2eebec ELFs,
+clones bb_enrollment, preserves originals, and checks all64 tables after each
+subtransaction. SQL is test-only; all applied migrations stay unchanged.
+
+Independent read-only next-boundary review confirms the minimal sequence: existing
+Ingest dictionary bootstrap and committed visibility lookup; current endpoint,
+AccessScopeId, enrollment generation, RouteId and applicable bans; finite scoped
+connector action; authoritative source recheck in BOTH initial reservation and
+native dispatch transactions. A pre-call lookup races enrollment changes without
+policy_epoch movement. Provenance-off EventIntent intentionally omits operational
+IDs, so ambiguous producer/work recovery must retain a bounded source binding
+separately, without allocating archival endpoint/access mappings. History reader
+grants and original enrollment actor/session do not authorize the runtime worker.
+No current issuer/ban consumer or signed acquisition claim exists yet. After this
+focused SQL evidence, implement that minimum current authority/committed scope
+consumer; full discovery, Monitor and renewable sessions are not prerequisites.
 
 ## Current enrollment implementation and evidence
 
@@ -230,3 +238,9 @@ original bb_enrollment plus earlier failed c2 clone remain preserved. No deletio
 new network or new compiler cache. Ignored .research/implementation/relay-enrollment-faults-4ac4bad
 retains transfer/launch/collect/root-review recipes and manifest. Old c2 root owns
 build ELFs/cache-lock audit and original failure; do not rerun old launchers.
+
+Fresh preflight for the relational clone:876 total containers, eight unrelated
+running, no active BigBrotr process/container, borrowed49e7ed4 PostgreSQL stopped
+with verified labels/mounts. Free66,605,346,816bytes. No new compiler/network cache
+or deletion is planned. Original18-case fault schedule AST is unchanged after
+extracting run_faults from shared laboratory setup; independent AI review pending.
