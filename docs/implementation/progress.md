@@ -12,36 +12,54 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main/private origin is e3eca9e, qualification pushed and verified.
-Root owns exact-ID claim work (P03-T01 Step3). WIP includes a draft0023,
-Control adapter, shared management JobState (ExportState API alias retained),
-historical AcquisitionJob metadata and actual probe/harness cases. Catalog/API RED
-and39 Mac component/catalog/entrypoint checks plus scoped Clippy PASS; native claim
-execution has NOT begun. No new table/dependency and no applied SQL changed.
+Mac main candidate is e7d1c8c; private origin remains e3eca9e until the qualification
+commit/push. Root owns evidence/checkpoint/inventory documentation only. All native
+resources below are stopped/retained; no active experiment or cleanup obligation.
 
-The bounded claim is accepted→queued, original deadline, current account/dataset
-role/source/policy, deferred COMMIT check and same-owner no-op retry. Historical
-observation supplies no execution permission. Read-only review found direct and
-paused-state SQL owner takeover paths; draft0023 now freezes every populated
-owner tuple and checks current ownership in its authority helper. The planned raw
-negative clone reinstates precisely the paused omission. Root retained visible
-transaction boundaries and extracted one focused queue helper; no generic layer.
+P03-T01 Step3 exact-ID claim now has additive0023, accepted→queued under current
+actor/grant/source/policy and original deadline, same-owner read-only retry, and
+bounded historical observation. Foreign-owner work refuses adoption, including
+raw paused transitions. No new table/dependency.0023 is applied/checksummed and
+must not be rewritten. Shared JobState lives in management; ExportState remains
+an alias. Transactions remain visible with focused queue/read/decode helpers.
 
-The existing jobs laboratory now prepares --claims for populated CLI upgrade,
-logout, actor/grant/source/policy/deadline refusals, schema prerequisite, foreign
-owner and raw SQL rollback/negative cases. These are NOT executed evidence.
-Root/read-only review of adapter, callers and complete fixture is finished;
-review corrected the real account-trigger oracle before launch. Final39 Mac tests,
-scoped Clippy, syntax/artifact/handoff checks PASS. Next: form the clean candidate,
-transfer exact Git, build natively and run claims on new isolated clones. Later qualify lost/delayed COMMIT,
-cancellation and both authority lock orders before closing the claim boundary.
-Initial worker budget still needs explicit recomposition for retained native,
-input/Control, scope/visibility/transport. Claims grant no socket/native authority.
+[Native first-wave evidence](evidence/p03-acquisition-claims-native-20260928.json)
+qualifies seven actual adapter cases, fresh-owner observation/refusal, populated
+CLI upgrade/reapply and explicit incompatible-history rollback. Same-owner claim
+after actual logout changes only the original job row to queued revision2.
+Actor/grant/source/policy/expiry/schema refusals preserve all67 operation tables.
+Raw application SQL tests same-owner/helper/direct/paused cases. A clone retaining
+only the reviewed paused-trigger omission fails precisely expected23514/observedBZ001.
+Root compared1578 exact Git files,137 captures and independent complete adapter
+row effects/literal intent; raw rollback uses the original engine assertions and
+transcripts.39 Mac/native tests, release CLI/probe and scoped Clippy PASS.
+No native product or fixture failure; prelaunch review corrected owner freezing
+and the account-trigger oracle. These checks do not qualify claim COMMIT faults,
+concurrency, native recovery, dispatch, installed Sync, M1, capacity or arm64.
 
-No active remote process. All selected product work remains INCOMPLETE.
-Cache retirement is complete; never replay launch/deletion recipes.
-Latest Mac free7,818,588KiB. Tux preflight63,478,272,000B and only the eight
-unrelated running containers; native runner will repeat full resource inventory.
+Inventory implementation_network_20260928.acquisition_claims and ignored
+.research/implementation/acquisition-claim-20260928 own identities/recipes/originals.
+Run acquisition-claims-e7d1c8c, buildowner0dbcb91ebed099c15d63a26f3ac8586c;
+PID3517489/start400008299 terminal; fetch8e2baeb1/native692ea373 exit0.
+Engineownera713d0c64c521507e7c01fad09de11e3, PID3521260/start400021818;
+client22fe5d51 stopped143, borrowedPG71775507 stopped0/no OOM. Ten clones retained,
+including deliberate SQL negative. Audit17:54:45UTC found955 prior projections
+unchanged, eight unrelated running, compiler lock free and63,217,111,040B free.
+Shared1154757 now holds e7d1c8c intermediates; exact artifacts are separately retained.
+Cache retirement remains complete; never replay launch/deletion recipes.
+
+Next: commit/push this bounded qualification, then extend the existing job probe
+and proxy to claim COMMIT6 (Control, login charge, session, acceptance, logout,
+claim). Exercise before/after loss, cancellation with close/release, original job
+and owner expiry, delay and both authority lock orders. Fresh recovery may claim
+an original accepted job, but can only observe/refuse foreign queued work; no
+native custody exclusion is inferred. Keep all original evidence and deadlines.
+The next user-visible M1 deliverable remains signed socket→durable admission→
+publication/read→restart/resend. Remaining concrete prerequisites are job-bound
+execution/source observation (P03-T01 Step3/P03-T02), living initial-owner command
+delivery (P01-T09 Step1/P02-T02 Steps2/3), trusted dictionaries and restart authority.
+Recompose the initial worker's four-item budget before adding retained scope,
+visibility and socket work. No full Discovery/Monitor subsystem is prerequisite.
 
 [Native acquisition fault evidence](evidence/p03-acquisition-jobs-faults-native-20260928.json)
 qualifies thirteen scoped schedules using9888ad5 artifacts. Seven COMMIT schedules

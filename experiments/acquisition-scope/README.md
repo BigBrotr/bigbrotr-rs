@@ -221,7 +221,7 @@ claim/dispatch and installed acquisition remain separate acceptance.
 
 The `acquisition-claims` build profile compiles the same probe plus CLI, finite
 command/catalog/entrypoint tests and scoped Clippy. `jobs.py RUN_ROOT --claims`
-plans actual accepted→queued ownership after logout, same-owner no-op retry,
+exercises actual accepted→queued ownership after logout, same-owner no-op retry,
 account/grant/source/policy/deadline refusals and missing0023. The accepted job is
 upgraded by the real CLI while its Control waits outside any SQL transaction;
 all67 tables/xmin, ledger history and heap filenodes must remain exact. Incompatible
@@ -231,6 +231,7 @@ The successor case observes the original job but cannot adopt it. Raw applicatio
 SQL checks same-owner claim, foreign helper/direct takeover, and paused takeover.
 A separate clone reinstates only the reviewed paused-state trigger omission;
 the same fixture must fail on that last case. Original outcomes and all cloned
-states remain retained. These are proposed scenarios until an evidence report
-records execution. Lost/delayed claim COMMIT, concurrent authority writers, native
-custody recovery and installed dispatch remain subsequent acceptance.
+states remain retained. [Native evidence](../../docs/implementation/evidence/p03-acquisition-claims-native-20260928.json)
+records all30 first-wave assertions at e7d1c8c, plus39 native checks and Clippy.
+Lost/delayed claim COMMIT, concurrent authority writers, native custody recovery
+and installed dispatch remain subsequent acceptance.

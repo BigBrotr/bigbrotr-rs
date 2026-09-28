@@ -1,0 +1,146 @@
+{
+  "format": "bigbrotr-acquisition-claims-native/1",
+  "status": "PASS_EXACT_CLAIM_FIRST_WAVE",
+  "source": "e7d1c8c28cfaae3214d4724ea838c7fdd9ee2e66",
+  "tree": "8f4e67a15ba803cf9661d32b12184695c1875798",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "bc75ec67710803820a7a63c9cb8acb7a72ab652a87a143842b6906db0dea636a",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "45cd362b316602e57c95c5365ced12dd3f941703b46cfd0a2384568f1633097d",
+    "acquisition_job_probe": "5474e1c3fb3ecc8897f3dddb501e4f36c545e049a9333d9106e79a56ae6d368f"
+  },
+  "component_tests": {
+    "command": 4,
+    "catalog": 32,
+    "migration_entrypoint": 3,
+    "scoped_clippy": "PASS",
+    "mac": "Same39 bounded tests and scoped Clippy PASS; original catalog/API RED retained"
+  },
+  "scenarios": [
+    {
+      "name": "pass",
+      "status": "PASS",
+      "durable_claim": true,
+      "original_duration_us": 120000000
+    },
+    {
+      "name": "permission",
+      "status": "PASS",
+      "durable_claim": false,
+      "original_duration_us": 120000000
+    },
+    {
+      "name": "account",
+      "status": "PASS",
+      "durable_claim": false,
+      "original_duration_us": 120000000
+    },
+    {
+      "name": "disabled",
+      "status": "PASS",
+      "durable_claim": false,
+      "original_duration_us": 120000000
+    },
+    {
+      "name": "policy",
+      "status": "PASS",
+      "durable_claim": false,
+      "original_duration_us": 120000000
+    },
+    {
+      "name": "expired",
+      "status": "PASS",
+      "durable_claim": false,
+      "original_duration_us": 5000000
+    },
+    {
+      "name": "missing",
+      "status": "PASS",
+      "durable_claim": false,
+      "original_duration_us": 120000000
+    }
+  ],
+  "assertions": [
+    "Real CLI0023 upgrades an accepted populated job, preserves all67 tables/rows/xmin/heap filenodes and appends one exact checksum; identical reapply writes nothing",
+    "After actual logout, claim advances only the original job row accepted1 to queued2 with actual Control ownership; repeated same-owner claim is read-only and preserves original deadline/checkpoint/detail/command/audit/ordinal",
+    "Grant withdrawal, inactive actor, disabled source, advanced policy, server-observed5s expiry and missing0023 refuse fresh claim; operation snapshots have exact all-table equality",
+    "A fresh Control can read and authenticate exact acceptance retry for historical queued work but cannot adopt it",
+    "Inconsistent prior job revision causes explicit CLI recovery refusal; all rows/xmin/heaps and complete schema digest remain unchanged",
+    "Raw actual application-login SQL accepts same-owner claim and refuses foreign helper, direct and paused takeover; complete rollback checked by engine fixture against all67 tables",
+    "A separate clone restores only the reviewed paused trigger omission; the same fixture fails specifically expected23514 observedBZ001, proving the regression discriminates",
+    "Root independently compared1578 exact Git source hashes and137 captured payloads, seven complete adapter before/after pairs and literal command/job/detail/audit/admission linkage; raw rollback uses original engine assertions/transcripts",
+    "Actual application drivers joined; all owned containers stopped, compiler lock free, unrelated workload projections unchanged"
+  ],
+  "review": {
+    "source_files": 1578,
+    "captured_payloads": 137,
+    "capture_manifest_sha256": "5517f62bd5e93c6bf409775dd797663f86ac10dbb699a851a9a898c2d1faf265",
+    "root_review_sha256": "964571d3b810bc55dde7cb809c7a19d58d44e4364ac9ba115bbadf9aaf82a67a",
+    "structure": "One visible transaction, focused queue/read/decode helpers and existing management-domain JobState with ExportState alias; no new table/dependency/framework",
+    "prelaunch_corrections": [
+      "Freeze every populated SQL owner tuple, including paused, after independently confirming direct/paused takeover paths",
+      "Account oracle expects actual0806 authentication_revision increment and already-revoked sessions; no engine ran with the earlier incorrect oracle"
+    ]
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "e7d1c8c28cfaae3214d4724ea838c7fdd9ee2e66",
+    "observed_at": "2026-09-28T17:54:45.235999+00:00",
+    "prior_unchanged": 955,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "8e2baeb12ebd0201a31d0e1a4313868c74ebe9fbb0d3edf7a083f857b508b08e",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "692ea373c41d8e7b53287f7c5e01b25145df504b370a58725f57ba4096e53268",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "22fe5d5106e6bae678b81e57b56b5b405d43c198e7c3596ef05cb34f9800d3fd",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1578,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 63217111040,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/acquisition-claim-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-claims-e7d1c8c",
+  "not_qualified": [
+    "claim lost/delayed COMMIT, cancellation and concurrent authority writers",
+    "successor/native custody recovery, running/progress and installed command delivery",
+    "socket admission, M1, aged/mixed load, arm64/release"
+  ],
+  "scope": "Exact-ID queued ownership and bounded historical metadata only. No native worker adoption, execution capability, installed Sync, coverage, capacity, arm64 or release qualification. Raw SET CONSTRAINTS tests do not qualify delayed COMMIT expiry."
+}

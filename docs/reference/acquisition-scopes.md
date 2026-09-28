@@ -290,3 +290,10 @@ reader authentication/authorization. Shared job states now live in the managemen
 domain; the existing ExportState name remains an API alias for its callers.
 Dispatch, source sessions, reservation and certification must each check the job
 again. Native recovery, those integrations and installed Sync remain incomplete.
+
+[Native claim evidence](../implementation/evidence/p03-acquisition-claims-native-20260928.json)
+now qualifies the initial queued operation at e7d1c8c, including populated upgrade,
+logout, withdrawals, expiry and foreign owner refusal. Raw SQL plus a paused-only
+negative clone discriminate immutable ownership; incompatible history refuses
+without partial migration. Claim COMMIT interruption, concurrent authority changes,
+native successor recovery and installed dispatch still require their own evidence.
