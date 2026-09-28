@@ -2,10 +2,16 @@
 //! The external laboratory owns wire faults and lock schedules; no product hook.
 use super::*;
 use bigbrotr::{
-    acquisition::{relay_source::RelaySourceBinding, scope::AcquisitionEventContext},
+    acquisition::{
+        job::{AcquisitionCommand, JobDuration},
+        relay_source::RelaySourceBinding,
+        scope::AcquisitionEventContext,
+    },
     management::{
-        credentials::HASH_RESERVATION, grants::Revision, relay_enrollment::EnrollmentCommand,
-        sessions::SessionLifetime,
+        credentials::HASH_RESERVATION,
+        grants::Revision,
+        relay_enrollment::EnrollmentCommand,
+        sessions::{IssuedSession, SessionLifetime},
     },
     storage::{
         postgres::{
@@ -45,14 +51,25 @@ pub async fn run(
     mode: &str,
     source: RelaySourceBinding,
     mut enrollment: EnrollmentCommand,
+    session: &IssuedSession,
 ) {
-    let (scoped, mode) = match mode.strip_prefix("source-fault-scope-") {
-        Some(phase) => (true, phase),
-        None => (false, mode.strip_prefix("source-fault-").unwrap()),
+    let (job_bound, scoped, mode) = match mode.strip_prefix("source-fault-job-") {
+        Some(phase) => (true, true, phase),
+        None => match mode.strip_prefix("source-fault-scope-") {
+            Some(phase) => (false, true, phase),
+            None => (false, false, mode.strip_prefix("source-fault-").unwrap()),
+        },
     };
     assert!(matches!(
         mode,
-        "pass" | "admission" | "reservation-lost" | "outcome-lost" | "source-refused"
+        "pass"
+            | "admission"
+            | "reservation-lost"
+            | "outcome-lost"
+            | "source-refused"
+            | "cancel-reservation"
+            | "cancel-outcome"
+            | "reservation-expired"
     ));
     let retained_scope = if scoped {
         let selector = bigbrotr_protocol::selector::decode_selector(
@@ -82,6 +99,36 @@ pub async fn run(
     } else {
         None
     };
+    let job = if job_bound {
+        let receipt = owner
+            .accept_acquisition(
+                &session.session,
+                &session.csrf,
+                [77; 16].try_into().unwrap(),
+                &AcquisitionCommand {
+                    scope_id: retained_scope.as_ref().unwrap().identity(),
+                    deadline_us: JobDuration::new(if mode == "reservation-expired" {
+                        2_000_000
+                    } else {
+                        5_000_000
+                    })
+                    .unwrap(),
+                    expected_config_revision: Revision::try_from("1".to_owned()).unwrap(),
+                    expected_policy_revision: Revision::try_from("1".to_owned()).unwrap(),
+                },
+                &Cell::new(false),
+            )
+            .await
+            .unwrap();
+        assert!(receipt.created);
+        owner
+            .claim_acquisition(receipt.job_id, &Cell::new(false))
+            .await
+            .unwrap();
+        Some(receipt.job_id)
+    } else {
+        None
+    };
     let validate = |d: &str, h| validate_version(d, h, true);
     let backend = observer
         .query_one(
@@ -98,7 +145,7 @@ pub async fn run(
             "access":hex(source.access_scope_id.as_bytes()),
             "generation":source.enrollment_generation.get(),
             "route":hex(source.route_id.as_bytes()),
-            "scope":retained_scope.as_ref().map(|scope|scope.identity())},
+            "scope":retained_scope.as_ref().map(|scope|scope.identity()), "job":job},
         "state":ingest_snapshot::state(observer,path).await}),
     );
     // This gate precedes the operation's fresh policy lease. It never pauses a
@@ -146,8 +193,9 @@ pub async fn run(
         max_outstanding_requests: 2,
         ..AdmissionLimits::default()
     };
-    let result = owner
-        .admit_initial_event(
+    let interrupted = mode.starts_with("cancel-");
+    let result = {
+        let operation = owner.admit_initial_event(
             &mut store,
             InitialEventRequest {
                 ingest_root: path,
@@ -155,12 +203,18 @@ pub async fn run(
                 event: prepared,
                 relay_source: Some(source),
                 acquisition: retained_scope.as_ref().map(|scope| {
-                    AcquisitionEventContext::new(scope, scope.selector().filters()).unwrap()
+                    match job {
+                        Some(job) => {
+                            AcquisitionEventContext::for_job(job, scope, scope.selector().filters())
+                        }
+                        None => AcquisitionEventContext::new(scope, scope.selector().filters()),
+                    }
+                    .unwrap()
                 }),
                 provenance_enabled: false,
                 recorded_at: ObservedTime::new(1234),
                 limits: admission,
-                policy_ttl: Duration::from_secs(2),
+                policy_ttl: Duration::from_secs(if job_bound { 5 } else { 2 }),
                 cancelled: &cancelled,
             },
             grant(
@@ -179,11 +233,31 @@ pub async fn run(
                 }
                 Ok(())
             },
-        )
-        .await;
+        );
+        if interrupted {
+            assert!(job_bound);
+            tokio::pin!(operation);
+            tokio::select! {
+                _ = &mut operation => panic!("operation completed before observed COMMIT cancellation"),
+                () = wait_gate(path, "cancel") => None,
+            }
+        } else {
+            Some(operation.await)
+        }
+    };
+    if interrupted {
+        assert_eq!(
+            owner.poll_policy(validate).await,
+            Err(OwnerError::Unavailable)
+        );
+        emit(serde_json::json!({"event":"source-cancelled", "unavailable":true}));
+        // The external observer checks actual backend custody, then releases the
+        // held COMMIT. Dropping the operation is not proof that SQL rolled back.
+        wait_gate(path, "finish").await;
+    }
     let expected = match mode {
-        "pass" | "admission" => None,
-        "reservation-lost" => Some(InitialEventError::Reservation(
+        "pass" | "admission" | "cancel-reservation" | "cancel-outcome" => None,
+        "reservation-lost" | "reservation-expired" => Some(InitialEventError::Reservation(
             ReservationError::CommitUnknown,
         )),
         "outcome-lost" => Some(InitialEventError::Outcome(OutcomeError::CommitUnknown)),
@@ -194,33 +268,38 @@ pub async fn run(
         _ => unreachable!(),
     };
     let admitted_receipt = match result {
-        Ok(value) => {
+        Some(Ok(value)) => {
             assert!(expected.is_none());
             let AdmissionOutcome::Durable(receipt) = value.outcome() else {
                 panic!("signed event rejected");
             };
             Some(receipt.encode_persistent(65536).unwrap())
         }
-        Err(error) => {
+        Some(Err(error)) => {
             assert_eq!(Some(error), expected);
+            None
+        }
+        None => {
+            assert!(interrupted);
             None
         }
     };
     emit(
-        serde_json::json!({"event":"source-admission-finished", "error":expected.map(|e|format!("{e:?}")),
+        serde_json::json!({"event":"source-admission-finished", "error":expected.map(|e|format!("{e:?}")), "cancelled":interrupted,
         "receipt":admitted_receipt.as_ref().map(|b|hex(b)),
         "state":ingest_snapshot::state(observer,path).await}),
     );
+    let manifest = *store.manifest();
+    drop(store);
     drop(owner);
     crate::ingest_closing::join(driver, mode.ends_with("-lost")).await;
     if matches!(mode, "source-refused" | "admission") {
-        drop(store);
         emit(serde_json::json!({"event":"source-fault-done","driver_joined":true}));
         return;
     }
     if scoped {
-        // The released Control driver cannot retain locks while the external
-        // laboratory advances policy. Native exclusion stays with this worker.
+        // Both original native and Control owners are closed before historical
+        // recovery. The fresh recovery handle must establish its own native lock.
         emit(serde_json::json!({"event":"scope-recovery-ready", "driver_joined":true}));
         let gate = path.with_extension("recover");
         let deadline = tokio::time::Instant::now() + Duration::from_secs(20);
@@ -306,8 +385,6 @@ pub async fn run(
     emit(
         serde_json::json!({"event":"source-revoked","state":ingest_snapshot::state(observer,path).await}),
     );
-    let manifest = *store.manifest();
-    drop(store);
     let mut recovery =
         IngestRecovery::open(path, manifest, limits(), grant(budget, 0, 128 * MIB)).unwrap();
     let closed = current
@@ -324,7 +401,10 @@ pub async fn run(
         )
         .await
         .unwrap();
-    let unresolved = mode == "reservation-lost";
+    let unresolved = matches!(
+        mode,
+        "reservation-lost" | "cancel-reservation" | "reservation-expired"
+    );
     assert_eq!(closed.issued_through(), if unresolved { 1 } else { 2 });
     let baseline = ingest_snapshot::state(observer, path).await;
     emit(
@@ -406,4 +486,15 @@ pub async fn run(
     }
     crate::ingest_closing::join(driver, false).await;
     emit(serde_json::json!({"event":"source-fault-done","driver_joined":true}));
+}
+
+async fn wait_gate(path: &Path, extension: &str) {
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(20);
+    while !path.with_extension(extension).exists() {
+        assert!(
+            tokio::time::Instant::now() < deadline,
+            "source fault gate expired"
+        );
+        tokio::time::sleep(Duration::from_millis(10)).await;
+    }
 }

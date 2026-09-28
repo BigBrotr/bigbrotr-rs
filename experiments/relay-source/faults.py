@@ -37,7 +37,8 @@ from locks import blocked
 root = Path(sys.argv[1]).resolve(strict=True)
 assert len(sys.argv) in (2, 3) and SOURCE == root / 'source'
 scoped = len(sys.argv) == 3
-assert not scoped or sys.argv[2] == '--scope'
+job_bound = scoped and sys.argv[2] == '--jobs'
+assert not scoped or sys.argv[2] in ('--scope', '--jobs')
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
 build = root / 'out/artifacts' if scoped else root.parent / 'relay-source-faults-87ad138/out/artifacts'
@@ -61,10 +62,15 @@ output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.relay-source-faults'
 client = 'bigbrotr-relay-source-faults-' + revision[:7]
 report = dict(format='bigbrotr-relay-source-faults/1', source=revision, build=built,
-    application_source=built['source'], scoped=scoped, owner=owner, label=label, status='RUNNING',
+    application_source=built['source'], scoped=scoped, job_bound=job_bound, owner=owner, label=label, status='RUNNING',
     client=None, postgres=pg['postgres'], postgres_owner=pg['owner'], cases=[], databases=[],
     original_report_sha256=sha(original_report), not_run=['source grant and socket attribution',
     'private routes and bans', 'large ledger upgrade', 'load/aged state', 'arm64/release'])
+if job_bound:
+    report['not_run'] = ['concrete SyncArrivalPolicy consumer under these faults',
+        'cancelled COMMIT followed by proxy close rather than explicit release',
+        'native syscall/process interruption and successor acquisition',
+        'installed signed socket/M1', 'load/aged state', 'native arm64/release']
 processes, sessions = [], []
 
 
@@ -83,7 +89,7 @@ def containers():
 
 def rows(db):
     names = json.loads(lab.sql(pg, db, "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    assert len(names) in ((64, 66) if scoped else (64,)) and all(re.fullmatch('[a-z_]+', n) for n in names)
+    assert len(names) in ((64, 67) if job_bound else (64, 66) if scoped else (64,)) and all(re.fullmatch('[a-z_]+', n) for n in names)
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
         f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     return json.loads(lab.sql(pg, db, 'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(parts) + ') t'))
@@ -234,8 +240,34 @@ def verify_native(name, dataset, committed, closing, staged):
     return receipts
 
 
-def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baseline=None):
-    db = ('bb_scope_recovery_' if scoped else 'bb_source_fault_') + revision[:7] + '_' + name
+def job_remaining(db):
+    return json.loads(lab.sql(pg, db, '''
+        SELECT json_build_array(a.deadline_at_us-now.us,
+            min(o.lease_expires_at_us)-now.us)
+        FROM control.acquisition_jobs a JOIN control.owner_epochs o
+            ON o.dataset_id=a.dataset_id AND o.epoch=1
+        CROSS JOIN LATERAL (
+            SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint AS us
+        ) now
+        GROUP BY a.deadline_at_us, now.us
+    '''))
+
+
+def wait_job_expiry(db):
+    end = time.monotonic() + 6
+    while True:
+        remaining = job_remaining(db)
+        require(remaining[1] > 5_000_000, 'actual-owners-must-outlive-job')
+        if remaining[0] <= 0:
+            return remaining
+        require(time.monotonic() < end, 'original-job-expiry-not-observed')
+        time.sleep(.03)
+
+
+def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baseline=None,
+             interruption=None):
+    prefix = 'bb_job_recovery_' if job_bound else 'bb_scope_recovery_' if scoped else 'bb_source_fault_'
+    db = prefix + revision[:7] + '_' + name
     require(re.fullmatch('[a-z0-9_]{1,63}', db), 'database-name')
     report['active_case'] = name
     save()
@@ -245,12 +277,19 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
     if scoped:
         config = lab.config(output, dict(pg, client=client), db, endpoint='127.0.0.1:5432', boundary='loopback')
         migrated = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
-            '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '21')
+            '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '24' if job_bound else '21')
         (output / (name + '-migration.stdout')).write_text(migrated.stdout)
         (output / (name + '-migration.stderr')).write_text(migrated.stderr)
         require(migrated.returncode == 0, 'scope-migration')
         lab.sql(pg, db, 'GRANT SELECT,INSERT ON control.acquisition_selectors,control.acquisition_scopes TO bigbrotr_control; '
             'GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
+        if job_bound:
+            lab.sql(pg, db, '''
+                GRANT SELECT, INSERT ON control.acquisition_jobs TO bigbrotr_control;
+                INSERT INTO control.principal_grants
+                    SELECT dataset_id, principal_id, 'roles.control', 'dataset', dataset_id
+                    FROM control.local_accounts WHERE username='alice';
+            ''')
     proxy = Process(['docker', 'exec', '-i', client, 'python3', '-B',
         '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
         '--listen-port', '6543', '--mode', wire_mode, '--commit-number', str(commit),
@@ -260,7 +299,7 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
     proxy_ready = proxy.event('ready', 10)
     require(proxy_ready['proxy_sha256'] == sha((SOURCE / 'experiments/control-migrations/fault_proxy.py').read_bytes()), 'proxy-source')
     process = Process(['docker', 'exec', client, '/build/ingest_bootstrap_probe',
-        ('source-fault-scope-' if scoped else 'source-fault-') + app_mode,
+        ('source-fault-job-' if job_bound else 'source-fault-scope-' if scoped else 'source-fault-') + app_mode,
         db, '/run/secrets/application', '/lab/' + name], limit=8*1024**2)
     processes.append((name + '-probe', process))
     initialized = event(process, 'initialized')
@@ -268,6 +307,10 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
     observation = observe(db, ready)
     before = rows(db)
     require(before == state_rows(ready['state']), 'ready-state-mismatch')
+    if job_bound:
+        require(len(before) == 67 and len(before['jobs']) == len(before['acquisition_jobs']) == 1,
+                'complete-job-state')
+        require(job_remaining(db)[0] > 1_000_000, 'live-original-job-before-dispatch')
     proxy.send('status')
     initial_wire = proxy.event('status', 5)
     count = initial_wire['commits_seen']
@@ -298,14 +341,59 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
     if writer:
         writer.close(lambda: lab.load(original / 'pg'))
         sessions.remove(writer)
+    interruption_evidence = None
+    if interruption:
+        require(job_bound and wire_mode == 'hold', 'job-interruption-profile')
+        held_wire = proxy.event('held', 5)
+        require(held_wire['commits_seen'] == commit and
+            held_wire['commits_forwarded'] == held_wire['server_commit_complete'] ==
+            held_wire['client_commit_complete'] == commit-1, 'held-before-COMMIT')
+        held_rows = rows(db)
+        remaining = None
+        if interruption == 'cancel':
+            (output / (name + '.cancel')).touch(exist_ok=False)
+            cancelled = event(process, 'source-cancelled')
+            require(cancelled['unavailable'], 'cancelled-adapter-reused')
+            custody = observe(db, ready)
+            require(rows(db) == held_rows and job_remaining(db)[0] > 500_000,
+                    'cancel-did-not-abort-or-expire-held-commit')
+        else:
+            require(interruption == 'expired', 'known-interruption')
+            remaining = wait_job_expiry(db)
+            custody = observe(db, ready)
+        proxy.send('release')
+        released = proxy.event('released', 5)
+        forwarded = None
+        if interruption == 'cancel':
+            # The cancelled caller retains its driver while the real transaction
+            # commits. Neither future cancellation nor a file gate is rollback.
+            for _ in range(5):
+                proxy.send('status')
+                forwarded = proxy.event('status', 5)
+                if forwarded['client_commit_complete'] == commit:
+                    break
+                time.sleep(.01)
+            require(forwarded['server_commit_complete'] == forwarded['client_commit_complete'] == commit,
+                    'cancelled-COMMIT-not-completed')
+            (output / (name + '.finish')).touch(exist_ok=False)
+        interruption_evidence = dict(held=held_wire, rows=held_rows, remaining_us=remaining,
+            custody=custody, released=released, forwarded=forwarded)
     admitted = event(process, 'source-admission-finished')
-    recovery = app_mode in ('pass', 'reservation-lost', 'outcome-lost')
+    require(admitted.get('cancelled', False) == (interruption == 'cancel'), 'caller-cancellation-outcome')
+    unresolved = app_mode in ('reservation-lost', 'cancel-reservation', 'reservation-expired')
+    recovery = app_mode in ('pass', 'reservation-lost', 'outcome-lost',
+                           'cancel-reservation', 'cancel-outcome', 'reservation-expired')
     revoked = closed = policy_advanced = None
+    recovery_expiry = None
     resolved = []
     if recovery:
         if scoped:
             released = event(process, 'scope-recovery-ready')
             require(released['driver_joined'], 'old-driver-custody')
+            if job_bound:
+                require(lab.sql(pg, db, f"SELECT count(*) FROM pg_stat_activity WHERE pid={ready['pid']}") == '0',
+                        'original-backend-still-present')
+                recovery_expiry = wait_job_expiry(db)
             lab.sql(pg, db, 'BEGIN; SELECT dataset_id FROM control.datasets FOR UPDATE;' + ADVANCE_POLICY + 'COMMIT;')
             policy_advanced = rows(db)
             admitted_rows = state_rows(admitted['state'])
@@ -314,7 +402,7 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
             (output / (name + '.recover')).touch(exist_ok=False)
         revoked = event(process, 'source-revoked')
         closed = event(process, 'source-closed')
-        for _ in range(1 if app_mode == 'reservation-lost' else 2):
+        for _ in range(1 if unresolved else 2):
             resolved.append(event(process, 'source-resolved'))
     done = event(process, 'source-fault-done')
     require(done['driver_joined'] and process.wait(10) == 0 and not process.stderr, 'probe-terminal')
@@ -324,14 +412,29 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
     lab.write_json(output / (name + '-final.json'), final)
     dataset = bytes.fromhex(final['datasets'][0]['dataset_id'][2:])
     require(initialized['dataset'] == dataset.hex(), 'initialized-dataset')
-    committed = app_mode not in ('source-refused', 'reservation-lost')
-    staged = committed or app_mode == 'reservation-lost' or schedule == 'reservation_first'
-    require(len(final['producer_requests']) == (2 if staged else 1) and
+    committed = app_mode != 'source-refused' and not unresolved
+    reserved = committed or app_mode in ('reservation-lost', 'cancel-reservation') or schedule == 'reservation_first'
+    staged = reserved or app_mode == 'reservation-expired'
+    copied_original = committed and wire_mode != 'before-forward'
+    require(len(final['producer_requests']) == (2 if reserved else 1) and
         len(final['producer_outcomes']) == (2 if committed else 1), 'durable-row-counts')
     receipts = verify_native(name, dataset, committed, recovery, staged)
     first = before['producer_requests'][0]
     require(first in final['producer_requests'] and before['producer_outcomes'][0] in final['producer_outcomes'], 'bootstrap-history-changed')
     binding = ready['binding']
+    if job_bound:
+        job, detail = before['jobs'][0], before['acquisition_jobs'][0]
+        duration = 2_000_000 if app_mode == 'reservation-expired' else 5_000_000
+        require(job['job_id'] == detail['job_id'] == '\\x' + binding['job']
+            and detail['scope_id'] == '\\x' + binding['scope']
+            and detail['actor_id'] == '\\x' + '10'*16
+            and detail['duration_us'] == duration
+            and detail['deadline_at_us'] == job['created_at_us'] + duration,
+            'original-finite-job')
+        require(job['state'] == 'queued' and job['job_revision'] == 2 and job['checkpoint_revision'] == 0
+            and job['owner_epoch'] == 1, 'original-claimed-job')
+        require(before['jobs'] == final['jobs'] and before['acquisition_jobs'] == final['acquisition_jobs'],
+                'no-job-adoption-or-progress-during-recovery')
     if scoped:
         require(re.fullmatch('[0-9a-f]{32}', binding['scope']), 'scope-identity')
         require(len(before['acquisition_scopes']) == len(before['acquisition_selectors']) == 1, 'one-retained-scope')
@@ -345,7 +448,7 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
         require(before['acquisition_selectors'][0]['document'] == '\\x' + document.hex(), 'literal-scope-document')
     if schedule:
         verify_injection(before, final, binding, schedule)
-    if staged:
+    if reserved:
         request = next(r for r in final['producer_requests'] if r['request_sequence'] == 2)
         require(request['relay_endpoint_id'] == '\\x' + binding['endpoint'] and
             request['relay_access_scope_id'] == '\\x' + binding['access'] and
@@ -354,6 +457,8 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
         require(request in state_rows(admitted['state'])['producer_requests'], 'recovery-rebound-reservation')
         if scoped:
             require(request['acquisition_scope_id'] == '\\x' + binding['scope'], 'original-scope-reservation')
+        if job_bound:
+            require(request['acquisition_job_id'] == '\\x' + binding['job'], 'original-job-reservation')
         _, expected_inputs, _ = complete_source(dataset, True)
         require(request['request_digest'] == '\\x' + sha(expected_inputs[2]) and
             request['input_bytes'] == len(expected_inputs[2]) and
@@ -364,7 +469,7 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
         outcome = next(r for r in final['producer_outcomes'] if r['request_sequence'] == 2)
         require(outcome['outcome_bytes'] == '\\x' + receipts[2].hex() and
             outcome['outcome_sha256'] == '\\x' + sha(receipts[2]), 'independent-PG-receipt')
-        recorder = 2 if wire_mode == 'before-forward' else 1
+        recorder = 1 if copied_original else 2
         require(outcome['recorder_epoch'] == recorder and
             outcome['recorder_incarnation'] == '\\x' + bytes([43 if recorder == 2 else 41]).hex()*16 and
             outcome['request_digest'] == request['request_digest'] and
@@ -416,18 +521,24 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
             if schedule != 'writer_rollback': allowed += ['relay_enrollments']
             if schedule == 'reservation_first': allowed += ['relay_enrollment_changes']
         unchanged(before, final, allowed)
-    expected_count = count + (1 if app_mode == 'reservation-lost' or schedule == 'reservation_first' else 2 if committed else 0)
+    expected_count = count + (1 if unresolved or schedule == 'reservation_first' else 2 if committed else 0)
     counters = [wire[k] for k in ('commits_seen', 'commits_forwarded', 'server_commit_complete', 'client_commit_complete', 'faults')]
     wanted = [expected_count] * 4 + [int(wire_mode != 'pass')]
     if wire_mode == 'before-forward':
         wanted[1:4] = [expected_count-1]*3
     elif wire_mode == 'after-complete':
         wanted[3] -= 1
+    elif app_mode == 'reservation-expired':
+        wanted[2:4] = [count, count]
+        require(wire['tags']['backend'].get('45') == 1, 'real-deferred-ErrorResponse')
+        require(state_rows(admitted['state']) == before, 'rejected-COMMIT-changed-ledger')
     require(counters == wanted, 'exact-wire-COMMIT-boundary:' + str(counters) + ':' + str(wanted))
     report['cases'].append(dict(name=name, status='PASS', db=db, baseline_commits=count,
         observation=observation, initial_wire=initial_wire, wire=wire, barriers=barriers,
         admission=admitted, policy_advanced=policy_advanced, revoked=revoked, closed=closed, resolved=resolved,
-        before=before, final=final, complete_native_bytes=True))
+        before=before, final=final, complete_native_bytes=True,
+        effects=dict(staged=staged, reserved=reserved, native_outcome=committed, copied_original=copied_original),
+        interruption=interruption_evidence, recovery_expiry_us=recovery_expiry))
     save()
     return count
 
@@ -480,6 +591,13 @@ try:
     run_case('reservation_lost', 'reservation-lost', 'after-complete', baseline+1, baseline=baseline)
     run_case('outcome_before', 'outcome-lost', 'before-forward', baseline+2, baseline=baseline)
     run_case('outcome_after', 'outcome-lost', 'after-complete', baseline+2, baseline=baseline)
+    if job_bound:
+        run_case('cancel_reservation', 'cancel-reservation', 'hold', baseline+1,
+                 baseline=baseline, interruption='cancel')
+        run_case('cancel_outcome', 'cancel-outcome', 'hold', baseline+2,
+                 baseline=baseline, interruption='cancel')
+        run_case('reservation_expired', 'reservation-expired', 'hold', baseline+1,
+                 baseline=baseline, interruption='expired')
     require(rows('bb_source_pass') == original_before and rows('bb_source_template') == template_before and
         (original / 'pg/source-result.json').read_bytes() == original_report, 'original-input-changed')
     require(lab.sql(pg, 'postgres', "SELECT count(*) FROM pg_stat_activity WHERE usename='bigbrotr_control'") == '0', 'remaining-Control-backends')

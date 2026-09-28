@@ -12,9 +12,24 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main candidate603cc57; private originacb2846 pending this qualification
-commit/push. Root owns documentation/evidence only. All owned resources are
-stopped/retained; no active experiment or cleanup debt.
+Mac main and private origin43ffde0; source lifetime qualification is committed
+and pushed. Root owns the job-bound fault extension in ingest_source_faults.rs,
+its existing caller and experiments/relay-source/faults.py. All owned resources
+are stopped/retained; no active experiment or cleanup debt.
+
+Current uncommitted fixture work extends the existing laboratory to0024 and an
+authentic original job: eight concurrency/COMMIT schedules, two observed held
+COMMIT cancellations with explicit release, and a delayed reservation COMMIT
+past the job deadline. Source operation policyTTL5s/owners60s distinguish a2s
+expiry case. Normal jobs are5s; historical recovery waits actual expiry before
+policy2 and authenticated withdrawal. Inputs, reservations, native outcomes and
+PG copies are checked separately. SQL rejection can report conservative
+Reservation(CommitUnknown) with no reservation/native effect and a staged input.
+Actual native close precedes old Control/driver disposal. Root/read-only review
+found no launch blocker. Mac scoped Clippy, Python syntax, formatting and artifact
+checks PASS. No native run yet. Tux preflight found62,277,107,712B available and
+only the same eight unrelated containers running; Mac7,514,652KiB. Ignored
+.research/implementation/job-effect-faults-20260928 owns local checks/next recipes.
 
 [Native source lifetime evidence](evidence/p03-job-source-transport-native-20260928.json)
 qualifies seven actual socket/preflight/cleanup schedules. Authentic two-second
@@ -45,10 +60,11 @@ than adding another transport framework. Native store destruction precedes actua
 Control/driver teardown. No product, applied SQL, codec or dependency change was
 needed. Fixture setup timing margins are not authority/capacity guarantees.
 
-Next: commit/push this bounded qualification, then connect the original claimed
-job to the existing reservation COMMIT/cancellation/recovery fixture. Read its
-complete consumers before extending it to0024; preserve exact original requests
-and resolve historical outcomes after expiry/withdrawal without new authority.
+Next: finish review of the job-bound fault extension, commit a clean candidate
+and run the existing acquisition-binding-recovery build plus faults.py --jobs
+on isolated Tux clones. Preserve exact original requests and resolve historical
+outcomes after expiry/withdrawal without new authority. Existing frozen fixture
+policy checks qualify binding/recovery, not the concrete SyncArrivalPolicy consumer.
 This is P03-T01 Step3/P03-T02 Step3. The next user-visible M1 deliverable remains
 signed socket→durable admission→archive/read→restart/resend. Concrete remaining
 prerequisites: bounded retained request/observation and dictionary custody,

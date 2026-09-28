@@ -228,6 +228,7 @@ pub async fn run(
     if mode.starts_with("source-fault-") {
         crate::ingest_source_faults::run(
             config, owner, driver, observer, store, spec, path, budget, mode, source, command,
+            &session,
         )
         .await;
         return;
