@@ -189,3 +189,17 @@ fixture failure wrongly required preserving an expired session removed by actual
 login; that original outcome/database remains. The corrected oracle checks the
 exact expired-session set, and all prior immutable commands/rows remain. All owned
 resources are stopped/retained; no claim/dispatch or installed acquisition follows.
+
+
+The `acquisition-jobs-faults` profile builds the changed probe with scoped Clippy;
+unchanged command/catalog suites need not repeat. `jobs.py RUN_ROOT --faults`
+clones only the qualified28a7db9 no-grant basis, after complete original-row checks.
+The existing proxy targets COMMIT4: owner claim, login charge, session issue,
+then acceptance. Seven schedules propose normal, before/after loss, cancelled
+close/release, delay and owner expiry, followed by fresh-owner exact-key recovery.
+Six schedules use observed backend-incarnation lock barriers for both dataset-lock
+orders and policy/grant/enrollment withdrawal. Clone-only privileged writers have
+independent exact row/xmin expectations; they do not qualify management activation.
+Every operation compares all67 tables, and actual backend absence follows driver
+joins. Held cancellation retains ownership and refuses a competing claimant.
+Result files decide what executed; no claim/dispatch or installed M1 follows.

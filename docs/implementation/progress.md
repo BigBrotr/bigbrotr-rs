@@ -12,9 +12,20 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is unpublished28a7db9, product3e10c2d; origin/main remainsf3c8a1d.
-Root owns only current evidence/contract/task/checkpoint/inventory documentation.
-No product WIP or active tool/remote process. All selected product work remains
+Mac main/private origin is9bdc361, first-wave qualification committed/pushed.
+Root owns WIP finite acquisition fault probe/harness and its bounded build profile.
+Thirteen planned schedules cover COMMIT4 loss/cancellation/delay/expiry and both
+policy/grant/enrollment lock orders, with exact historical retry. NOT RUN on engines.
+Read-only review found fixture writers needed an explicit privileged clone-only
+role and exact mutation assertions. Both corrected before launch; each SQL
+statement is checked separately so trailing COMMIT cannot hide an earlier error.
+Mac probe Clippy, formatting, syntax and artifact checks PASS. The isolated exact
+writer oracle accepts three positives and rejects nine no-op/partial/extra changes;
+this is fixture checking only. Read-only review found no further launch blocker.
+No product/SQL change or active remote process. Resumption confirmed eight unrelated
+running containers, 63,805,947,904B free on Tux and7,972,968KiB on Mac.
+Next: commit this clean candidate, then exact-Git native
+probe build and these actual PostgreSQL schedules. All selected product work remains
 INCOMPLETE. Cache retirement is complete; never replay launch/deletion recipes.
 
 Active P03-T01 Steps3/4: finite acquisition acceptance now has additive0022,

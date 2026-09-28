@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Actual finite job acceptance; immutable originals and new PostgreSQL clones."""
 import datetime
+import copy
 import hashlib
 import json
 import os
@@ -15,14 +16,20 @@ sys.dont_write_bytecode = True
 SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE / 'experiments/control-migrations'))
 import lab
+from fault_cases import Process, safe_event
+from concurrency_cases import Session
 sys.path.insert(0, str(SOURCE / 'experiments/network-transport'))
 from inventory import projection
 
-root = Path(sys.argv[1]).resolve(strict=True)
-assert len(sys.argv) in (2, 3) and SOURCE == root / 'source'
+arguments = sys.argv[1:]
+faults = bool(arguments and arguments[-1] == '--faults')
+if faults: arguments.pop()
+assert len(arguments) in (1, 2)
+root = Path(arguments[0]).resolve(strict=True)
+assert SOURCE == root / 'source'
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-build = Path(sys.argv[2]).resolve(strict=True) if len(sys.argv) == 3 else root / 'out/artifacts'
+build = Path(arguments[1]).resolve(strict=True) if len(arguments) == 2 else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == 'acquisition_job_probe'
 if built['source'] != revision:
@@ -30,7 +37,7 @@ if built['source'] != revision:
     assert changes and all(name.startswith('docs/') or name in (
         'experiments/acquisition-scope/README.md', 'experiments/acquisition-scope/jobs.py',
         'experiments/acquisition-scope/job_guards.sql') for name in changes)
-    assert len(sys.argv) == 3
+    assert len(arguments) == 2
 
 sha = lambda value: hashlib.sha256(value).hexdigest()
 for name, key in [('bigbrotr', 'binary_sha256'), (built['probe_name'], 'probe_sha256')]:
@@ -38,21 +45,28 @@ for name, key in [('bigbrotr', 'binary_sha256'), (built['probe_name'], 'probe_sh
 pg_root = root.parent / 'relay-source-recheck-e06f580/pg'
 pg = lab.load(pg_root)
 assert pg['owner'] == '5e69b0f060b1607c25230d1dbd3e5608' and pg['state'] == 'stopped-retained'
-basis_root = root.parent / 'acquisition-scope-54d1a18/engine'
-basis = 'bb_scope_54d1a18_basic'
+basis_root = root.parent / ('acquisition-jobs-engine-28a7db9/jobs' if faults else 'acquisition-scope-54d1a18/engine')
+basis = 'bb_acq_job_28a7db9_no_grant' if faults else 'bb_scope_54d1a18_basic'
 basis_report = (basis_root / 'result.json').read_bytes()
-assert json.loads(basis_report)['status'] == 'PASS_SCOPED_ACQUISITION_REGISTRATION'
-output = root / 'jobs'
+assert json.loads(basis_report)['status'] == ('PASS_FINITE_ACQUISITION_ACCEPTANCE' if faults else 'PASS_SCOPED_ACQUISITION_REGISTRATION')
+output = root / ('job-faults' if faults else 'jobs')
 output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-jobs'
+processes, sessions = [], []
+expected_status = 'PASS_FINITE_ACQUISITION_FAULTS' if faults else 'PASS_FINITE_ACQUISITION_ACCEPTANCE'
 client = 'bigbrotr-acquisition-jobs-' + revision[:7]
 report = dict(format='bigbrotr-acquisition-jobs/1', source=revision, build=built,
-    status='RUNNING', owner=owner, label=label, client=None, cases=[], databases=[],
+    status='RUNNING', mode='faults' if faults else 'acceptance', owner=owner, label=label, client=None, cases=[], databases=[],
     postgres=pg['postgres'], postgres_owner=pg['owner'],
     not_run=['concurrent locks, cancellation and lost/delayed COMMIT',
              'remaining raw SQL relational negatives and historical grant/policy retry',
              'claim/dispatch, installed Sync, socket admission and M1',
              'populated prior-job migration, aged/mixed load, arm64/release'])
+if faults:
+    report['not_run'] = ['session expiry/revocation and credential-reset races',
+        'raw SQL relational negatives beyond the qualified timestamp pair',
+        'claim/dispatch, installed Sync, socket admission and M1',
+        'populated prior-job migration, aged/mixed load, arm64/release']
 
 
 def require(value, reason):
@@ -88,6 +102,12 @@ def prepare(name):
     lab.sql(pg, 'postgres', f'CREATE DATABASE {database} OWNER bigbrotr_migrator TEMPLATE {basis}')
     report['databases'].append(database); save()
     require(rows(database) == basic, 'exact-clone')
+    if faults:
+        require(not basic['jobs'] and not basic['acquisition_jobs'] and
+            any(r['migration'] == 22 for r in basic['schema_versions']), 'qualified-empty-job-basis')
+        lab.sql(pg, database, "INSERT INTO control.principal_grants SELECT dataset_id,principal_id,"
+            "'roles.control','dataset',dataset_id FROM control.local_accounts WHERE username='alice';")
+        return database, rows(database)
     config = lab.config(output, dict(pg, client=client), database, endpoint='127.0.0.1:5432', boundary='loopback')
     def migrate(target):
         result = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
@@ -238,6 +258,294 @@ def raw_timestamp_guards():
         lab.write_json(output / (name + '-after.json'), after)
         record(name + '-complete-rollback', before == after)
 
+def probe_event(process, wanted, seconds=10):
+    deadline = time.monotonic() + seconds
+    with process.condition:
+        while True:
+            require(not process.overflow, 'probe-output-overflow')
+            end = process.stdout.find(b'\n', process.offset)
+            if end >= 0:
+                value = json.loads(bytes(process.stdout[process.offset:end])); process.offset = end + 1
+                require(value.get('event') == wanted, 'probe-event-' + wanted)
+                return value
+            require(time.monotonic() < deadline and
+                (process.process.poll() is None or process.threads[0].is_alive()), 'missing-probe-event-' + wanted)
+            process.condition.wait(.02)
+
+
+def app(database, mode, nonce, port=5432):
+    token = database + '-' + str(nonce)
+    process = Process(['docker', 'exec', client, '/build/acquisition_job_probe', database,
+        '/run/secrets/application', '/lab/policy.json', 'fault-' + mode, str(port), str(nonce), '/lab/' + token])
+    processes.append((token, process))
+    return process, token
+
+
+def go(token, suffix='go'):
+    (output / (token + '.' + suffix)).touch(exist_ok=False)
+
+
+def finish(process):
+    value = probe_event(process, 'done')
+    require(process.wait(10) == 0 and not process.stderr and value['actual_driver_joined'], 'actual-probe-joined')
+    return value['outcome']
+
+
+def proxy_for(database, mode):
+    process = Process(['docker', 'exec', '-i', client, 'python3', '-B',
+        '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
+        '--mode', mode, '--commit-number', '4', '--deadline-seconds', '25'], input_pipe=True)
+    processes.append((database + '-proxy', process))
+    ready = process.event('ready', 5)
+    require(ready['proxy_sha256'] == sha((SOURCE / 'experiments/control-migrations/fault_proxy.py').read_bytes()), 'actual-proxy-source')
+    return process, ready['listen_port']
+
+
+def proxy_finished(proxy, expected):
+    wire = proxy.event('receipt', 5)
+    require(proxy.wait(5) == 0 and not proxy.stderr, 'actual-proxy-joined')
+    for line in proxy.stdout.splitlines(): safe_event(json.loads(line))
+    require([wire[k] for k in ['commits_seen','commits_forwarded','server_commit_complete','client_commit_complete','faults']] == expected,
+            'exact-fourth-COMMIT-cut')
+    return wire
+
+
+def snapshot(database, tag):
+    value = rows(database)
+    lab.write_json(output / (tag + '.json'), value)
+    return value
+
+
+def observe(database, ready):
+    pid = ready['pid']
+    value = json.loads(lab.sql(pg, database, f"""
+        SELECT json_build_object('pid',a.pid,'start',a.backend_start::text,
+            'now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,
+            'expired',o.lease_expires_at_us<=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,
+            'fenced',EXISTS(SELECT 1 FROM pg_locks WHERE pid=a.pid AND locktype='advisory'
+                AND classid=1111651442::oid AND objid=1129599564::oid AND objsubid=2
+                AND mode='ExclusiveLock' AND granted))
+        FROM pg_stat_activity a JOIN control.owner_epochs o ON o.control_backend_pid=a.pid
+            AND o.control_backend_start=a.backend_start WHERE a.pid={pid} AND a.datname='{database}' AND o.state='active'
+    """))
+    require(value and value['pid'] == pid and value['fenced'], 'observed-actual-Control-custody')
+    return value
+
+
+def blocked(database, waiter, holder):
+    deadline = time.monotonic() + 4
+    while True:
+        value = json.loads(lab.sql(pg, database, f"""SELECT json_build_object('pid',pid,'start',backend_start::text,
+            'wait',wait_event_type,'blockers',pg_blocking_pids(pid)) FROM pg_stat_activity
+            WHERE datname='{database}' AND pid={waiter}"""))
+        if value and value['wait'] == 'Lock' and holder in value['blockers']: return value
+        require(time.monotonic() < deadline, 'required-lock-barrier-not-observed')
+        time.sleep(.02)
+
+
+WORK_TABLES = {'jobs', 'acquisition_jobs', 'job_admissions', 'management_commands', 'management_audit'}
+
+
+def compare_work(before, after, created, writer_tables=()):
+    require(before.keys() == after.keys(), 'same-complete-table-set')
+    for table in before:
+        if table not in set(writer_tables) | (WORK_TABLES if created else set()):
+            require(before[table] == after[table], 'unexpected-effect-' + table)
+    if not created: return
+    delta = {t:[row for row in after[t] if row not in before[t]] for t in WORK_TABLES}
+    require(all(len(delta[t]) == 1 and len(after[t]) == len(before[t])+1 and
+                all(row in after[t] for row in before[t]) for t in WORK_TABLES), 'one-atomic-job')
+    job, detail, command, audit, admission = [delta[t][0] for t in
+        ['jobs','acquisition_jobs','management_commands','management_audit','job_admissions']]
+    payload = b'bigbrotr/acquisition-job/1\0'
+    for value in [detail['dataset_id'], '\\x'+'10'*16, '\\x'+'4d'*16, min(s['scope_id'] for s in before['acquisition_scopes'])]:
+        payload += bytes.fromhex(value[2:])
+    payload += (120000000).to_bytes(8,'big') + (1).to_bytes(8,'big')*2
+    require(len({r['xmin'] for r in [job,detail,command,audit,admission]}) == 1 and
+        job['job_id'] == detail['job_id'] == admission['job_id'] and admission['admission_ordinal'] == 1 and
+        job['request_key'] == detail['request_key'] == command['request_key'] == audit['subject_id'] == '\\x'+'4d'*16 and
+        job['request_digest'] == command['request_digest'] == '\\x'+sha(payload) and
+        job['created_at_us'] == command['accepted_at_us'] == audit['created_at_us'] and
+        command['audit_id'] == audit['audit_id'] and command['action'] == audit['action'] == 'job.acquisition.accept' and
+        detail['deadline_at_us'] == command['accepted_at_us']+120000000 and detail['duration_us'] == 120000000 and
+        job['state'] == 'accepted' and job['input_complete'] and job['input_topology_generation'] is None,
+        'independent-complete-acceptance')
+
+
+def receipt_matches(outcome, state, created):
+    require(len(state['jobs']) == 1, 'one-durable-job')
+    job = state['jobs'][0]
+    require(outcome == dict(receipt=dict(command_key='4d'*16, job_id=job['job_id'][2:],
+        accepted_at_us=job['created_at_us'], created=created), commit_started=created), 'exact-recovered-receipt')
+
+
+def backends_absent(database):
+    deadline = time.monotonic() + 5
+    while lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity "
+                 "WHERE datname=current_database() AND usename='bigbrotr_control'") != '0':
+        require(time.monotonic() < deadline, 'application-backend-still-present')
+        time.sleep(.02)
+
+
+def compare_writer(before, after, kind, changed):
+    # Independent expected rows, including exact unchanged history and a single
+    # new transaction for modified rows. Exempting writer tables would hide an
+    # aborted injection followed by psql's successful ROLLBACK at COMMIT.
+    expected = copy.deepcopy({t: before[t] for t in changed})
+    modified = []
+    if kind == 'policy':
+        require(len(expected['datasets']) == 1, 'single-dataset')
+        head = expected['datasets'][0]
+        require(head['config_revision'] == head['policy_revision'] == 1, 'initial-policy-head')
+        head.update(config_revision=2, policy_revision=2); modified.append(head)
+        for table in ['config_revisions', 'policy_revisions']:
+            require(len(expected[table]) == 1 and expected[table][0]['revision'] == 1, 'initial-policy-history')
+            row = copy.deepcopy(expected[table][0])
+            row.update(revision=2, previous_revision=1, accepted_at_us=row['accepted_at_us']+1)
+            if table == 'policy_revisions': row['config_revision'] = 2
+            expected[table].append(row); modified.append(row)
+    elif kind == 'permission':
+        grants = expected['principal_grants']
+        require(sum(r['action'] == 'roles.control' for r in grants) == 1, 'one-request-grant')
+        expected['principal_grants'] = [r for r in grants if r['action'] != 'roles.control']
+        accounts = [r for r in expected['local_accounts'] if r['username'] == 'alice']
+        require(len(accounts) == 1, 'single-actor')
+        accounts[0]['grant_revision'] += 1; modified.append(accounts[0])
+    else:
+        require(kind == 'disabled' and expected['relay_enrollments'] and
+                all(r['enabled'] for r in expected['relay_enrollments']), 'enabled-enrollments')
+        for row in expected['relay_enrollments']:
+            row['enabled'] = False; modified.append(row)
+    new_xmins = {r['xmin'] for t in changed for r in after[t] if r not in before[t]}
+    require(len(new_xmins) == 1, 'single-writer-transaction')
+    xmin = new_xmins.pop()
+    for row in modified:
+        require(row['xmin'] != xmin, 'writer-made-a-durable-change')
+        row['xmin'] = xmin
+    ordered = lambda values: sorted(values, key=lambda r: json.dumps(r, sort_keys=True))
+    require(all(ordered(expected[t]) == ordered(after[t]) for t in changed), 'exact-writer-effects')
+
+
+def writer(kind):
+    # Clone-only privileged fault injection, not management activation. Every
+    # writer first locks dataset, then account/source; never reverse acquisition.
+    lock = ['SELECT dataset_id FROM control.datasets FOR UPDATE;']
+    if kind == 'policy':
+        mutation = ["""INSERT INTO control.config_revisions
+            SELECT revision+1,dataset_id,revision,schema_version,authority_mode,document,document_digest,
+                accepted_source_digest,accepted_at_us+1,actor_id FROM control.config_revisions WHERE revision=1;""",
+            """INSERT INTO control.policy_revisions SELECT revision+1,dataset_id,revision,2,schema_version,
+                document,document_digest,accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=1;""",
+            'UPDATE control.datasets SET config_revision=2,policy_revision=2;']
+        changed = {'datasets','config_revisions','policy_revisions'}
+    elif kind == 'permission':
+        lock.append("SELECT principal_id FROM control.local_accounts WHERE username='alice' FOR UPDATE;")
+        mutation = ["DELETE FROM control.principal_grants WHERE action='roles.control';",
+                    "UPDATE control.local_accounts SET grant_revision=grant_revision+1 WHERE username='alice';"]
+        changed = {'principal_grants','local_accounts'}
+    else:
+        assert kind == 'disabled'
+        mutation = ['UPDATE control.relay_enrollments SET enabled=false;']
+        changed = {'relay_enrollments'}
+    return lock, ['SET LOCAL session_replication_role=replica;'] + mutation, changed
+
+
+def run_faults():
+    for name, wire_mode, mode, counts, committed in [
+        ('pass','pass','accept',[4,4,4,4,0],True),
+        ('before','before-forward','unknown',[4,3,3,3,1],False),
+        ('after','after-complete','unknown',[4,4,4,3,1],True),
+        ('cancel_close','hold','cancel',[4,3,3,3,1],False),
+        ('cancel_release','hold','cancel',[4,4,4,4,1],True),
+        ('delayed','hold','accept',[4,4,4,4,1],True),
+        ('owner_expiry','hold','owner-expiry',[4,4,3,3,1],False),
+    ]:
+        database, _ = prepare('commit_' + name)
+        proxy, port = proxy_for(database, wire_mode)
+        process, token = app(database, mode, 50, port)
+        ready = probe_event(process, 'ready'); observed = [observe(database, ready)]
+        require(not observed[0]['expired'], 'initial-live-owner')
+        before = snapshot(database, name + '-before')
+        go(token)
+        if wire_mode == 'hold':
+            proxy.event('held', 5)
+            observed.append(observe(database, ready))
+            require(rows(database) == before, 'uncommitted-acceptance-invisible')
+            if mode == 'cancel':
+                require(probe_event(process, 'cancelled', 4)['commit_started'], 'cancelled-during-COMMIT')
+            elif mode == 'owner-expiry':
+                deadline = time.monotonic()+5
+                while not observed[-1]['expired']:
+                    require(time.monotonic()<deadline, 'server-expiry-not-observed')
+                    time.sleep(.05); observed.append(observe(database, ready))
+            else:
+                time.sleep(.4)
+            contender, _ = app(database, 'busy', 51)
+            require(probe_event(contender, 'busy')['actual_driver_joined'] and
+                contender.wait(5) == 0 and not contender.stderr, 'competing-owner-refused')
+            require(rows(database) == before, 'held-custody-durable-state')
+            proxy.send('close' if name == 'cancel_close' else 'release')
+            if mode == 'cancel': go(token, 'finish')
+        outcome = finish(process); wire = proxy_finished(proxy, counts)
+        backends_absent(database)
+        after = snapshot(database, name + '-after'); compare_work(before, after, committed)
+        if committed and wire_mode == 'hold':
+            require(after['jobs'][0]['created_at_us'] <= observed[1]['now_us'], 'waiting-consumes-original-duration')
+        if mode == 'accept': receipt_matches(outcome, after, True)
+        recovery, retry_token = app(database, 'replay' if committed else 'accept', 52)
+        retry_ready = probe_event(recovery, 'ready')
+        require(retry_ready['epoch'] == ready['epoch']+1, 'fresh-recovery-owner')
+        retry_before = snapshot(database, name + '-retry-before'); go(retry_token)
+        recovered = finish(recovery); retry_after = snapshot(database, name + '-retry-after')
+        backends_absent(database)
+        compare_work(retry_before, retry_after, not committed); receipt_matches(recovered, retry_after, not committed)
+        if committed:
+            require(all(retry_after[t] == after[t] for t in WORK_TABLES - {'management_audit'}), 'historical-retry-preserves-job')
+        report['cases'].append(dict(name='commit-'+name,status='PASS',outcome=outcome,wire=wire,observations=observed,recovery=recovered))
+        save()
+    for first in ['writer','acceptance']:
+        for kind in ['policy','permission','disabled']:
+            name = first + '_' + kind
+            database, _ = prepare(name)
+            proxy, port = proxy_for(database, 'hold') if first == 'acceptance' else (None,5432)
+            process, token = app(database, 'accept' if proxy else kind, 60, port)
+            ready = probe_event(process, 'ready'); observe(database, ready)
+            initial = snapshot(database, name + '-before')
+            lock, mutation, changed = writer(kind)
+            session = Session(pg, database, 'acquisition-' + name, sessions, role='postgres')
+            session.execute('BEGIN;')
+            if first == 'writer':
+                for statement in lock + mutation: session.execute(statement)
+                go(token)
+                barrier = blocked(database, ready['pid'], session.backend['pid'])
+            else:
+                go(token); proxy.event('held',5)
+                session.start(lock[0])
+                barrier = blocked(database, session.backend['pid'], ready['pid'])
+            require(rows(database) == initial, 'waiting-writer-is-not-visible')
+            if first == 'writer': session.execute('COMMIT;')
+            else: proxy.send('release')
+            outcome = finish(process)
+            if first == 'acceptance':
+                session.expect(session.finish())
+                for statement in lock[1:] + mutation: session.execute(statement)
+                session.execute('COMMIT;')
+                proxy_finished(proxy,[4,4,4,4,1])
+            session.close(lambda:lab.load(pg_root));sessions.remove(session)
+            backends_absent(database)
+            after = snapshot(database, name + '-after'); compare_work(initial,after,first=='acceptance',changed)
+            compare_writer(initial, after, kind, changed)
+            if first == 'acceptance':
+                receipt_matches(outcome,after,True)
+                recovery_mode = 'replay-' + kind if kind in ('policy','permission') else 'replay'
+                recovery, retry_token = app(database,recovery_mode,62)
+                probe_event(recovery,'ready'); retry_before=snapshot(database,name+'-retry-before');go(retry_token)
+                recovered=finish(recovery);retry_after=snapshot(database,name+'-retry-after')
+                backends_absent(database)
+                compare_work(retry_before,retry_after,False);receipt_matches(recovered,retry_after,False)
+            report['cases'].append(dict(name=name,status='PASS',barrier=barrier,outcome=outcome))
+            save()
+
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -258,7 +566,7 @@ try:
     while lab.docker('exec', target['Id'], 'pg_isready', '-U', 'postgres', check=False).returncode:
         require(time.monotonic() < deadline, 'postgres-readiness'); time.sleep(.1)
     basic = rows(basis)
-    require(basic == json.loads((basis_root / 'basic-after.json').read_text()), 'qualified-basis-unchanged')
+    require(basic == json.loads((basis_root / ('no-grant-after.json' if faults else 'basic-after.json')).read_text()), 'qualified-basis-unchanged')
     require(not basic['jobs'], 'empty-job-ledger-basis')
     policy = basic['config_revisions'][0]['document']
     require(policy == basic['policy_revisions'][0]['document'] and policy['format'] == 'bigbrotr-product-policy/2', 'fixture-policy')
@@ -269,18 +577,33 @@ try:
         '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges',
         '--mount', f'type=bind,src={output},dst=/lab',
         '--mount', f'type=bind,src={pg_root}/secrets,dst=/run/secrets,readonly',
-        '--mount', f'type=bind,src={build},dst=/build,readonly', pg['client_image'],
+        '--mount', f'type=bind,src={build},dst=/build,readonly',
+        '--mount', f'type=bind,src={SOURCE},dst=/source,readonly', pg['client_image'],
         'python3', '-c', 'import time; time.sleep(600)').stdout.strip()
     report['client'] = dict(id=ident, name=client); save(); lab.docker('start', ident)
-    for name in ('pass', 'no-grant', 'stale-policy', 'disabled', 'expired', 'rollback', 'old-schema'):
-        run_case(name)
-    raw_timestamp_guards()
+    if faults:
+        run_faults()
+    else:
+        for name in ('pass', 'no-grant', 'stale-policy', 'disabled', 'expired', 'rollback', 'old-schema'):
+            run_case(name)
+        raw_timestamp_guards()
     record('retained-basis-unchanged', rows(basis) == basic and (basis_root / 'result.json').read_bytes() == basis_report)
-    report['status'] = 'PASS_FINITE_ACQUISITION_ACCEPTANCE'
+    report['status'] = expected_status
 except BaseException as error:
     report.update(status='FAIL', failure=type(error).__name__ + ': ' + str(error)); raise
 finally:
     errors = []
+    for token, process in processes:
+        try:
+            if process.process.poll() is None: errors.append('unfinished-process:' + token)
+            process.stop()
+        except BaseException as error: errors.append('process:' + type(error).__name__)
+        for suffix, data in [('.stdout', process.stdout), ('.stderr', process.stderr)]:
+            try: (output / (token + suffix)).write_bytes(data)
+            except BaseException as error: errors.append('transcript:' + type(error).__name__)
+    for session in sessions:
+        try: session.close(lambda: lab.load(pg_root))
+        except BaseException as error: errors.append('session:' + type(error).__name__)
     owned = [target['Id']] + ([report['client']['id']] if report['client'] else [])
     for ident in reversed(owned):
         try:
@@ -307,5 +630,5 @@ finally:
                   free_bytes_after=shutil.disk_usage(root).free)
     if errors: report['status'] = 'INCOMPLETE_LAB_AUDIT'
     save()
-require(report['status'] == 'PASS_FINITE_ACQUISITION_ACCEPTANCE', 'incomplete-jobs')
+require(report['status'] == expected_status, 'incomplete-jobs')
 print(json.dumps(dict(status=report['status'], checks=len(report['cases']))))
