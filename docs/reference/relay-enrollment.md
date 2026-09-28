@@ -141,5 +141,7 @@ No persistent format changes accompany this adapter. Subsequent admission still
 needs current source/policy checks; this is not a WebSocket, coverage or complete
 signed-event journey. The native profile and first three actual engine scenarios
 passed at8c4d12c; see the [bounded report](../implementation/evidence/p04-source-transport-native-20260928.json).
-Delayed cleanup, concurrent changes, installed acquisition and capacity
-qualification remain open.
+[Actual cleanup schedules](../implementation/evidence/p04-source-cleanup-native-20260928.json)
+qualify shorter owner expiry, rollback timeout and late-ready delivery, including
+a discriminating negative deadline variant. Concurrent changes, installed
+acquisition and capacity qualification remain open.

@@ -12,514 +12,217 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main and origin/main are2938d23, verified private push after native evidence.
-Root owns the dirty source-cleanup fixture slice: expanded actual probe, bounded
-rollback reply proxy, existing transport runner and build-only profile. Product8c4d12c
-is unchanged. Mac probe Clippy and proxy loopback test PASS; initial fixture
-loop-instantiation/lifetime/syntax failures retained under
-.research/implementation/source-cleanup-20260928. No engine cleanup result yet.
-Next: review/commit this fixture, exact-Git native build, then positive/expiry/timeout/
-late-ready engine cases and a retained negative deadline-check variant.
-No active laboratory experiment. The first three transport cases are qualified below.
-The candidate implements the finite source-transport slice: network lifetime/route decoder,
-acquisition visibility restriction, PostgreSQL source consumer/shared enrollment
-check, accepted Sync policy validator, actual engine probe and laboratory profile.
-No applied SQL changed. Product a6c28e6 remains the last native-qualified source
-boundary. Native34 component tests, release CLI/probe build and Clippy PASS at8c4d12c.
-Build root runs/source-transport-8c4d12c stopped-retained; owner40faca3eac30ac761278089fc3b1b109,
-PID3109696/start396492282 terminal. Audit08:06:43UTC verified896 prior projections,
-eight unrelated running,1479 clean source/exported files,15 safe payload hashes,
-exact ELFs and released1154757 compiler lock. Free67,968,942,080bytes.
-Fetchc87246af/nativee3bd56d2 exited0/noOOM. Original ELFs/cache evidence retained.
-[Three actual engine scenarios](evidence/p04-source-transport-native-20260928.json) PASS at8c4d12c:
-private exchange, injected second-policy refusal and exact Control backend loss.
-Independent root review verifies23 payloads, all16 native rows, original input/receipt,
-all64 Control relations and exact endpoint/private route/visibility identities.
-Public visibility refuses contact in every case; backend loss closes within500ms
-with over one second remaining. Native TCP only; buffered TLS has component evidence.
-Engine PID3115068/start396508317 terminal; audit08:11:49UTC verifies897 other
-container projections unchanged/eight unrelated running and1479 clean source files.
-Client2d328d6ac7cd and borrowed e06 PG7177550705c4 stopped/noOOM; three transport
-clones/native stores retained. Free67,928,887,296bytes. No deletion or new cache/network.
-Delayed cleanup, concurrent policy/source changes and installed acquisition remain open.
-Local .research/implementation/source-issuer-20260928 owns bundle/launch/capture.
+Local main is e365b33 (unpublished exact-Git cleanup fixture candidate).
+Origin/main is 2938d23, privately pushed after finite source transport evidence.
+Root owns pending evidence, inventory, reference and checkpoint updates. No other
+writer, merge or rebase. Product source remains 8c4d12c; e365b33 changes fixtures
+and documentation only. Review and commit this evidence, then push ordinary main.
+Never merge or push the negative variant described below.
 
-Mac29 affected network tests, four accepted-policy cases, one visibility case and
-scoped lib/bin/probe/test Clippy passed. Original missing-API REDs are retained.
-Disabling the liveness refusal produced the expected TLS buffered-read failure;
-source restored byte-exact. Static predicate replacement was reproduced (Ok vs
-Authority), then refused permanently. First private-policy test wrongly expected
-policy construction to filter addresses; its corrected independent address check
-passed, with original failure retained. Original unused-helper Clippy failure is
-also retained: actual probe consumes the configuration owner, but installed Sync
-is pending, explicitly annotated. Logs: .research/implementation/source-issuer-20260928.
-
-Read-only source review found cleanup can outlast authority: candidate now checks
-client, explicit deadline and original lease after rollback. Probe roots bind both
-actual deployment IDs. Backend-kill fixture requires over one second remaining
-before a500ms closure bound. Actual delayed-cleanup/deadline schedules still owed;
-never infer those from static review or the first three prepared engine cases.
-Last Tux census07:41:11UTC: old fault/build PIDs absent, only eight unrelated
-containers running,66,489,608KiB free. Latest Mac13,954,128KiB available. Recheck
-before native allocation. Cache retirement is complete below; no further deletion.
-Previous qualified product5be0dbd remains
-recorded below; maintenance and policy-version evidence are committed.
-No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
-05:51:59UTC, PID3018662/start395683262 terminal, owner8b12a62d405821e4949859f225a685a6.
-Six build/test/Clippy checks (56 tests) and87 actual PG/Rocks checks PASS;
-[scoped policy report](evidence/p01-policy-versions-native-20260928.json).
-Terminal audit05:56:13UTC verified881 prior projections/eight unrelated running,
-1458 clean source/exported files, exact current/legacy ELFs and released compiler
-lock. Root verified122 safe payload hashes,35 unchanged calls/16 refusals across
-all64 Control relations, frozen v1/v2 digests and actual durable dictionary bytes.
-PG6ce6e36a6d01 exited0/client934e45345fda exited143/noOOM; internal172.16.240.48/28,
-ownerbe488f5d1bddcc554faa50952df73a6a. All11 databases and both native stores remain.
-Do not rerun old launchers. Local .research/implementation/ban-policy-20260928
-owns exact bundle/launch/collector/root review and original outcomes. Next bounded
-action: current finite acquisition source authority,
-with v2 bans and committed visibility; keep v1 source issuance explicitly refused.
-
-Latest root runs/ingest-visibility-6c52067 is stopped-retained, ownerd65bebf992d73cf14ba000d8176d05a8,
-PID2997680/start395446033 terminal. Five native tests, release CLI/probe build,
-Clippy and five actual PG/Rocks scenarios (31 explicit checks) PASS. Independent
-root capture review checks12 native rows/sequence13, all64 Control relations/xmin,
-one original input and literal public/private descriptors. Drivers joined, zero
-remaining probe backends. [Report](evidence/p02-ingest-visibility-native-20260928.json).
-Terminal05:12:41UTC verified877 prior projections unchanged/eight unrelated running,
-1452 clean Git/exported files,34 safe capture payloads and exact ELFs; compiler
-cache lock released. Free66,280,816,640bytes. Fresh internal172.16.240.32/28/PG
-owner49c37b6b0cfee37eb9b193b5bbe56e59, clientbcbe32c13dbe exited143, PGba73388a2673
-exited0; fetch/native exited0, noOOM. All five databases/native stores retained.
-No deletion or unrelated changes. Local .research/implementation/ingest-visibility-20260928
-holds exact bundle/launch/collector/root review; inventory implementation_ingest_visibility_20260928.
+No active laboratory experiment at the last terminal audit, 08:31:03 UTC.
+Only eight unrelated containers are running. Recheck reality before allocation.
+The independent read-only AI reviewer dns_dependency_audit is done; no agent edits.
 
 ## Active slice and next useful journey
 
-Active P02-T01 Step6: minimum endpoint/access/enrollment/route authority, consumed
+Active P02-T01 Step 6: minimum endpoint/access/enrollment/route authority, consumed
 by P03-T01 scope binding and P04-T02 guarded transport before P03-T02 socket
-admission. Next user-visible deliverable remains P01-T09 Step2/M1: one actual
-signed socket event through existing durable admission/archive/read/export/restart.
-Full discovery, Monitor, analytics and later phase acceptance are not prerequisites.
-Existing Serve selects Control only. M1 still needs the clean extracted Compose
-journey, timer publication and dependency-outage recovery. Component evidence does
-not replace those journeys or qualify an entire task/phase/product.
+admission. Next user-visible deliverable remains P01-T09 Step 2/M1: one actual
+signed socket event through durable admission/archive/read/export/restart.
+Full discovery, Monitor, analytics and renewable sessions are not prerequisites.
+Existing Serve selects Control only. M1 also needs the clean extracted Compose
+journey, timer publication and dependency-outage recovery. Component evidence
+never replaces those journeys or completes an entire task/phase/product.
 
-Initial enrollment and scoped command authority/recovery are qualified below.
-The Ingest-owned committed visibility lookup and initial Control consumer are
-qualified for their bounded responsibility. Native fact/dictionary validation and
-CertificationLimits are reused; no second codec, table or generic read framework.
-Independent AI review found an absent-result scratch/permit drop-order issue,
-corrected before native execution. Full changed owners/callers/contracts and diff
-were read by root. Mac original four RED failures and two fixture compilation
-failures remain beside green3/clippy3 logs under the previous relational capture;
-no failed attempt was relabeled. No acquisition permission is inferred.
+**Next bounded action after the evidence commit:** qualify actual source/policy
+concurrency with the finite consumer. Read the current producer source lock,
+source transport, policy snapshot and accepted-policy owners/callers first.
+Reuse the exact backend-incarnation/pg_blocking_pids barriers and original byte
+oracle; no second state model. Selected schedules:
 
-P01-T04 Steps1/5/6 and P02-T01 Steps5/6 ban-policy prerequisite is qualified for
-fresh v2 and legacy compatibility. Accepted v1 retains original bytes/digest and
-removes new seed bans on restoration; absent authority never means empty bans.
-Managed seed drift remains unused. Declarative explicit empty/nonempty new bans
-refuse initial activation over accepted v1. Format/schema agreement is checked by
-Control, registration, initialization, activation and inspection. Historical
-initialization retry uses its original receipt metadata. Existing migrations and
-rows were not rewritten. Populated authenticated CAS upgrade and restrictive
-owner transition/drain remain selected gates; not prerequisites for a fresh-v2
-first issuer. Initial native registration still binds policy revision1.
+- Writer first: withdrawal; enabled newer generation with matching history;
+  valid v2 ban. Source waits, then refuses before socket contact after commit.
+  A rolled-back writer provides the positive control.
+- Source first: hold peer response, observe writer blocked by the actual source
+  backend, complete the socket and observe EOF while rollback is held before
+  forwarding. Release locks, commit writer, and require a fresh call to refuse.
 
-Original Mac REDs, duplicate-TOML and stale-generated-schema failures are retained;
-all scoped GREEN and Clippy logs are beside the native capture. Read-only AI review
-found no product blocker and two harness oracle/ownership issues, fixed before
-execution. Root read complete affected config/interface/PostgreSQL owners/callers
-and full diff. Focused named SQL constants preserve transaction ordering; shared
-closed version enum and existing URL normalizer avoid duplicate implementations.
-Exact serde1.0.229/serde_json1.0.151 header source audit establishes no second Value
-tree, with bounded iterative scratch; no measured RSS/capacity claim. Future
-source/drain/service owners remain outside this bounded completed review.
+Privileged clone-only injections must be labeled, not described as a second
+concurrently authorized Control owner or complete management journal. A value
+already received is data requiring fresh admission, not an escaping grant.
+Then resolve the concrete WebSocket bound mismatch below and connect P03-T02.
 
-Independent read-only next-boundary review confirms the minimal sequence: existing
-Ingest dictionary bootstrap and committed visibility lookup; current endpoint,
-AccessScopeId, enrollment generation, RouteId and applicable bans; finite scoped
-connector action; authoritative source recheck in BOTH initial reservation and
-native dispatch transactions. A pre-call lookup races enrollment changes without
-policy_epoch movement. Provenance-off EventIntent intentionally omits operational
-IDs, so ambiguous producer/work recovery must retain a bounded source binding
-separately, without allocating archival endpoint/access mappings. History reader
-grants and original enrollment actor/session do not authorize the runtime worker.
-The current issuer/ban consumer is candidate8c4d12c with the first three native
-scenarios qualified above; no signed acquisition claim. Finish delayed cleanup
-and concurrent source/policy qualification; full discovery, Monitor and renewable sessions are not prerequisites.
+## Latest source implementation and qualification
 
-The bounded operational source binding is now qualified through first-wave,
-relational and actual lock/COMMIT/revoked-recovery evidence. Source permission
-and socket attribution remain unqualified. The finite source candidate is above;
-prior source-binding work owns
-0020 (four nullable all-or-none immutable operational fields on producer_requests),
-acquisition/relay_source, postgres/producer_sources, reservation/initial_batch
-consumers, catalog/manifest and affected fixture callers. Old applied SQL/native
-bytes remain unchanged. Bound rows check exact enabled historical AND current
-generation/route; import exclusion observes after producer locking. Existing
-unbound schemas remain usable under the checked migration ledger; no NULL-row
-adoption or omitted/changed binding is accepted. Reservation and dispatch checks
-are distinct, with missing dispatch reservation refused. Recovery stays positive
-and historical, without newer enrollment permission. No source grant or socket
-consumer is implemented by this data binding alone.
+[Owning reference](../reference/relay-enrollment.md),
+[transport evidence](evidence/p04-source-transport-native-20260928.json), and
+[cleanup evidence](evidence/p04-source-cleanup-native-20260928.json).
 
-Read-only independent dns_dependency_audit review completed: four-column extension
-preferred to a new table/envelope, with explicit warning about historical-route
-FK incompleteness, source laundering, both transaction rechecks, phase-specific
-absence and import lock ordering. Root implemented those relational/retry bounds;
-actual private-route visibility, bans and trusted socket custody remain issuer
-gates. Do not claim them from the binding.
+8c4d12c implements finite Control-owned source transport. It reuses current and
+historical enabled enrollment checks, decodes immutable exact endpoint/route,
+borrows actual committed StoredVisibility, and restores BOTH complete accepted
+v2 documents against actual roots. Sync enablement, fixed membership, bans and
+route restrictions are checked. Public visibility refuses private routes and
+query-bearing URLs; an explicit public-query exception remains unimplemented.
+There is no reusable grant. No applied migration changed.
 
-Mac schema RED (UnknownTarget20), then 28 catalog tests and lib/all-example Clippy
-passed before the new engine fixture. The new source fixture initially failed to
-compile because StoredOutcome exposes outcome(), not receipt(); original log
-preserved and fixture corrected. Final Mac31 catalog/CLI tests and all-example Clippy PASS; artifact/link checks
-PASS. The independent first-wave oracle now emits only non-receipt native rows
-(14 bootstrap/25 committed) and original input bytes; its initial local row-count
-mistake is retained before any native observation. Current ignored evidence root
-.research/implementation/relay-source-20260928. Native a6c28e6 build,31 catalog/CLI tests and Clippy passed. First engine wave
-FAILED its populated-upgrade fixture after migration0020 successfully applied.
-[Original failure](evidence/p02-relay-source-upgrade-incomplete-20260928.json).
-PostgreSQL16.15 ATExecAddColumn rewrites constrained-domain additions, including
-NULL defaults: retained request xmin became750 (migration20), outcome stayed744.
-Original full pre-upgrade snapshot was not saved before the failed assertion;
-do not infer complete preservation from the diagnostic. Root corrected the
-fixture to persist snapshots first, check the physical rewrite explicitly, compare
-all original business fields, require all other tables/xmin unchanged and prove
-reapply does not rewrite. The SQL checksum remains immutable. Upgrade requires
-maintenance I/O/space for the retained request ledger; no large-state capacity claim.
+The local lease starts before schema/lock I/O, is capped by positive actual
+Control remainder and the caller deadline, and never exceeds five seconds.
+A borrowed nonblocking liveness predicate observes backend loss on every network
+poll, including buffered TLS. Replacing an attached predicate permanently refuses.
+Socket/work drop before rollback; client, original deadline and lease are checked
+again before delivery. Cancellation or uncertain cleanup poisons the session;
+caller retains and joins the actual driver. Undetected partitions remain finite.
+Synchronous arbitrary callbacks cannot be preempted.
 
-Native root runs/relay-source-a6c28e6 is stopped-retained, owner618da2efadbd676d4342733b3a06e236,
-PID3051811/start395948008 terminal. Diagnostic restart of owned PG joined/stopped.
-Terminal06:41:02UTC verified885 prior projections unchanged/eight unrelated running,
-1466 clean source/exported files,20 safe capture payloads and exact ELFs; exclusive
-compiler cache released. Free68,708,429,824bytes. PG77dddadac1bf exited0, client57de51b89c7a
-exited143, noOOM; internal172.16.240.64/28. Preserve original database/native
-store and failure, do not rerun launchers. Inventory implementation_relay_source_20260928.
+The actual policy helper lives in config/acquisition.rs. Its explicit dead-code
+annotation records that the native probe consumes it but installed Sync does not
+yet. Remove the annotation when that installed consumer is wired. Native API
+results are data only; admission must independently recheck source and policy.
 
-Fresh e06f580 first wave PASS69 actual PG/Rocks checks with original a6c28e6
-ELFs, all product/build inputs byte-identical. [Report](evidence/p02-relay-source-native-20260928.json).
-Root capture review compared all64 tables, both upgrade physical identities,
-complete original application data and independent native fact/index/input bytes.
-Eight scenarios have28 committed or16 bootstrap native rows; refusal/retry
-snapshots and phase-specific reservation effects match. Original failed report
-is preserved. No additional product correction was required.
+Native 8c4d12c release CLI/probe, 29 network + 4 policy + 1 visibility tests and
+Clippy PASS. Three actual PG/Rocks/TCP cases PASS: private exchange, injected
+second-policy refusal and exact Control backend termination. Public visibility
+refuses contact in all cases. Backend loss closes within 500 ms with over one
+second of ordinary validity left. Second-policy refusal is callback injection,
+not a concurrent ban update. Buffered TLS is separate component evidence.
+Root verified 15 build and 23 transport payloads, complete 16 native rows,
+original input/receipt and all 64 Control relations.
 
-Root runs/relay-source-recheck-e06f580 stopped-retained06:43:58UTC, owner5e69b0f060b1607c25230d1dbd3e5608,
-PID3059889/start396007056 terminal. Terminal06:44:45UTC verifies889 prior
-projections/eight unrelated running,1467 clean source files,59 safe payloads and
-original ELFs. Client2dc3c05e9e85 exited143, PG7177550705c4 exited0/noOOM;
-internal172.16.240.80/28, free68,433,506,304bytes. Ten databases/eight source native
-stores plus upgrade store retained. Ignored .research/implementation/relay-source-recheck-e06f580
-owns launch/collector/root-review. No compiler cache or new network input duplicated.
+Native e365b33 builds the expanded cleanup probe and passes Clippy; unchanged
+component suites were not repeated. Four actual cleanup cases PASS. The fourth
+ROLLBACK follows nine COMMITs and three completed setup ROLLBACKs. Actual backend
+is idle after server completion while its response is held. Known positive data
+returns; shorter owner expiry refuses after 1,437,521 us; pending cleanup timeout
+refuses after 751,903 us; ready response resumes after 1,501,251 us and refuses the
+750 ms caller deadline. All received values are observably disposed. All 64 tables
+remain unchanged after the explicitly injected lease/xmin change; native rows,
+sequence 17, original input and receipt match the independent oracle. These small
+fixtures establish no production-capacity claim.
 
-Relational slice now PASS17 actual cases at4a43dae with original a6c28e6 ELFs:
-13 exact guard refusals plus4 fully constraint-checked valid controls, all64-table
-rows/xmin restored per nested attempt in actual Control backend90. Real parent
-then retains the exact two original requests, outcomes and28 independently checked
-native rows. [Report](evidence/p02-relay-source-relations-native-20260928.json).
-Complete fixture/diff/root capture and independent read-only AI reviews found no
-blocker. Preservation comparison covers bb_source_pass, bb_source_template and
-original first-wave report; other first-wave databases retained but not rehashed.
+Detached .research/worktrees/source-no-final-deadline-e365b33 has negative commit
+354abff7f766ae8415f5d8dcae833a375756fbaa, tree f577e55ac96cd9b0b151c93d30a69d673b912819.
+Exactly one product file differs: only the final caller deadline check is omitted.
+Its first three cases pass, then late-ready delivery enters Ok(value) and panics
+on expected Some(Deadline) versus None. C/Z had passed while the source future
+paused. Original harness FAIL is retained; root verified the expected negative
+failure, not relabeled success. This excludes an ordinary pending-timeout false
+positive. The failure skips the post-suite original-data comparison; that
+comparison is NOT claimed passed for the negative run. Never merge/push it.
 
-Initial0905706 attempt remains FAIL: DELETE privilege missing caused42501 before
-the intended immutable23514. Only the isolated clone's test grant was changed.
-Original failed clone/store/logs retained. Original collector failed before capture
-because it read Config from a lifecycle projection; corrected full-inspect audit
-captured/hash-verified original failure. No resource mutation or outcome rewrite.
-Successful root runs/relay-source-relations-4a43dae stopped06:55:47UTC,
-owner65696eddcf1363f479f7cbe23969792b, PID3071714/start396079712 terminal.
-Client5df93aab253b stopped; borrowed e06 PG7177550705c4 stopped/noOOM. Terminal
-06:56:13UTC checked891 other projections/eight unrelated running,1470 clean source
-files and exact original ELFs; free68,339,847,168bytes. Both relational clones/stores
-retained; no new compiler cache/network or deletion. Ignored captures match roots;
-inventory relations_initial/relations records identities and original failures.
+Root verified 12 build payloads per cleanup revision, 36 positive and 34 negative
+engine payloads. Full changed owners/callers/diff and independent AI fixture review
+completed. Review corrected replaceable liveness, late cleanup delivery and a
+harness cleanup exception that could skip container retirement. The expired case
+has a one-second fixture timing guard; SQL-observed expiry is the actual condition.
+A slow setup can fail that guard and must be classified honestly.
 
-The new source-fault probe at87ad138 compiled on native amd64, with release CLI
-and scoped Clippy PASS (two build checks, unchanged product tests not repeated).
-Root runs/relay-source-faults-87ad138 stopped07:13:07UTC, owner6616970ae91becd6adba0b8e4192f4ab,
-PID3079808/start396178503 terminal. Audit07:20:09UTC verified893 prior container
-projections/eight unrelated running,1472 exact source/export files, both ELFs and
-released exclusive1154757 compiler lock. Free68,230,729,728bytes. No engine created.
-Ignored .research/implementation/relay-source-faults-20260928/capture-build holds
-verified original logs/receipts. Mac Python3.9 rejected safe extraction's filter
-argument; Python3.14 extracted the same original capture and verified its hashes.
-Independent AI review found no product/ownership blocker; it found initial event,
-renamed xmin ordering and release-role-retirement fixture expectation errors,
-corrected before the first engine execution. Root reviewed complete changed
-files/callers, transaction semantics and diff; oracle matches retained prior bytes.
+Original missing-API REDs, buffered-TLS negative control, replaceable-predicate
+failure, private-policy fixture expectation error and unused-helper lint failure
+remain under .research/implementation/source-issuer-20260928. Initial cleanup
+proxy loop-instantiation, Rust lifetime and syntax failures remain under
+.research/implementation/source-cleanup-20260928. No failure was rewritten.
 
-[Eight fault/lock schedules](evidence/p02-relay-source-faults-native-20260928.json)
-PASS at5efd67b with87ad138 ELFs (product stilla6c28e6). Setup completed10 COMMITs;
-reservation11/outcome12 positions verified by wire counters AND durable phases.
-Writer-first withdrawal commit refuses, rollback admits; reservation-first permits
-enabled current/history generation3 then rejects retained1 at dispatch; dispatch-
-first writer waits. Five lock barriers use actual backend incarnations. Concurrent
-writers are explicit privileged injections, not a second authorized Control owner.
-Generation3 fixture is deliberately not a complete management journal (no2).
+## Current owned laboratory resources
 
-Real fresh Control/password/session withdrawal precedes closing/resolution in
-four cases. Lost reservation reply retains original input/binding but stays
-Unresolved. Lost outcome before COMMIT copies original native bytes under recorder2;
-lost reply after COMMIT preserves recorder1/timestamp/xmin. Positive retries are
-identical; all64-table phase deltas and complete16/28 native rows/receipt bytes
-match independent expectations. Native sequence17/31 only advances to18/32 for
-closing. No new product/SQL change or negative resolution was needed.
+Inventory key implementation_relay_source_20260928 owns complete identities.
+All paths below are under /home/tux/bigbrotr-implementation-20260917/runs/.
+All three roots retain source/export, original logs, manifests and exact ELFs.
 
-Root runs/relay-source-faults-5efd67b stopped07:24:04UTC, owner7cee1417ca2f02301cb0f56960e6d79c,
-PID3086650/start396247908 terminal. Audit07:24:25UTC verified894 other container
-projections/eight unrelated running,1473 clean source files,56 capture payloads and
-exact87ad ELFs. Client3aee0eb0f412 stopped; borrowed e06 PG7177550705c4 stopped/noOOM.
-Free68,085,469,184bytes. Eight clones/native stores and all original evidence
-retained; no new network/cache/deletion. Original source-pass/template/report
-unchanged; other old DBs retained but not rehashed. Inventory source.faults;
-ignored .research/implementation/relay-source-faults-5efd67b owns launch/capture/
-root-review. Mac and Tux cache-retirement receipts remain as recorded below.
+- source-transport-8c4d12c: build owner 40faca3eac30ac761278089fc3b1b109,
+  PID 3109696/start 396492282 terminal. Engine owner ae75ad5a3aea42ed7d7fb560e4209719,
+  PID 3115068/start 396508317 terminal; client 2d328d6ac7cd stopped. Three clones.
+- source-cleanup-e365b33: build owner ac60e16298eb8e2c7300c3f92d5227a6,
+  PID 3124898/start 396617057 terminal; fetch/native stopped exit 0/no OOM.
+  Engine PID 3127323/start 396626332 terminal; four clones/native stores retained.
+  Audit 08:27:36 verified 900 other projections, eight unrelated running, 1,483
+  clean source files; 67,760,959,488 bytes available then.
+- source-cleanup-354abff: negative build owner 419c1d6d2d43269c70d69728edfad7bf,
+  PID 3132329/start 396634932 terminal; fetch/native stopped exit 0/no OOM.
+  Engine PID 3134792/start 396645279 terminal, raw expected FAIL. Four clones,
+  including failed ready state, retained. Audit 08:31:03 verified 903 other
+  projections unchanged, eight unrelated running, 1,483 clean source files;
+  67,594,240,000 bytes available then.
 
-Verified fault and source-transport8c4d12c evidence are pushed through2938d23. Next bounded action: exercise delayed
-rollback/absolute deadline and concurrent policy/source lock schedules with the
-actual source consumer and engines. This remains P02-T01 Step6, P03-T01 and P04-T02;
-no broad unchanged suite or full adjacent subsystem is required. Then wire actual guarded
-socket acquisition into P03-T02 and P01-T09 Step2/M1. Full discovery, Monitor,
-analytics and renewable sessions are not blanket prerequisites. Binding is data,
-not permission; v1 has no acquisition bans and must remain refused for issuance.
-Do not transfer the management write-only ActionGate to renewable bidirectional
-traffic without its owning cancellation/lease model. Private routes, bans and
-trusted socket custody cannot be inferred from these eight metadata schedules.
+All source engines borrow stopped PostgreSQL 7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec,
+name bigbrotr-implementation-pg-20260917-source_e06f580, owner
+5e69b0f060b1607c25230d1dbd3e5608. Its root is relay-source-recheck-e06f580/pg,
+internal network 172.16.240.80/28. Original template/source-pass and older fault,
+relational, transport and cleanup clones are retained. Never rerun old launchers.
+Local ignored source-issuer-20260928 and source-cleanup-20260928 directories own
+bundle/launch/capture/root-review recipes, raw outcomes and hash manifests.
 
-## Current enrollment implementation and evidence
+Current compiler cache is network-1154757/out/build/{target,cargo-home}, exclusively
+locked by .compiler-cache.lock. Both latest terminal build audits verified release.
+Original ELFs are outside it. It currently contains negative-build intermediates;
+only exact source rebuilds may use it. No cache output is itself a qualified input.
 
-[Reference](../reference/relay-enrollment.md),
-[Mac report](evidence/p02-relay-enrollment-mac-20260928.json) and
-[native report](evidence/p02-relay-enrollment-native-20260928.json) own this boundary.
-Actual PG16.15 at49e7ed4 using exact dae4d45 ELFs passed13 external cases, including
-12 actual Rust adapter cases, ten SQL refusals and12 literal route-codec cases.
-Five accepted commands have independently checked original values/digests,
-generations, context/route reuse and atomic audit/xmin. Upgrade preserves60 old
-Control relations;64 final relations agree with expected effects. Native80 tests,
-release CLI/probe build and Clippy passed atdae4d45. Source/build input equality
-across the fixture-only revisions is checked; no broad unchanged suite repeated.
+## Maintenance and retained dependencies
 
-The bounded command requires actual browser session/CSRF and dataset policy.change.
-No-auth AccessScopeId identity is dataset plus full visibility QualifiedRef;
-changing visibility creates another enrollment, never withdraws the old one.
-Visibility is declared intent and may be unresolved while Archive is unavailable.
-Actual acquisition must resolve the committed dictionary and source permission;
-private intake cannot become public eligibility. Provenance-off must not allocate
-per-endpoint archival mappings merely for operational registry identities.
-
-Fresh private enablement must fit one complete root rule and one canonical CIDR;
-public/private are separate. Withdrawal and historical retries ignore removed
-root exceptions. Both selected and root policy independently require exact
-metadata/link-local exceptions. Deployment network.private.rules is a locked,
-default-empty restart boundary; it does not require a new managed-policy document
-version. Its existing frozen v1 policy bytes/digest remain unchanged.
-
-Enrollment tombstones retain CAS generations; no-op, stale generation, mismatched
-withdrawal route and unknown withdrawal refuse. Historical actor/key/digest retry
-authenticates now but returns original acceptance without reapplying enablement.
-Future actions must bind current enrollment generation and RouteId as well as
-policy; acceptance is not completed restrictive drain or a socket grant.
-
-New0019 appends after0003 and is now applied/checksummed: never rewrite it or any
-of the prior33 migrations. Its exact checksum is in the native report. Deferred
-command/detail/audit/current-state/identity closure rechecks current session,
-account revisions, permission, owner and heads. Adapter lock order is Control,
-dataset, account, session, domain; separate READ COMMITTED statements preserve
-post-wait visibility. Raw SQL SET CONSTRAINTS early execution cannot establish
-commit-time expiry. Product keeps initial deferral. Received BB001 is a known
-rejected COMMIT; transport/cancellation stays poisoned/ambiguous until actual
-owner/driver cleanup and fresh authenticated retry. The18 actual command fault/lock
-schedules and twelve focused relational refusals are qualified below; remaining selected capability gates are still explicit.
-
-Structural review: closed route enum, shared immutable Arc root rules (avoids
-up to256 URL clones per attempt), focused scalar decoders and named multiline SQL
-keep the transaction visible. No generic orchestration/backend framework or
-cosmetic Rocks/supervisor rewrite was justified. Root read complete owners and
-relevant callers; independent AI review found two fixture oracle gaps, corrected
-before those assertions first executed. Whole-ledger checks prove allowed net
-changes, not zero transient writes for every refusal. Full future service owners
-remain uninspected until that responsibility is edited.
-
-Original failures remain: [automatic network pool exhaustion](evidence/p02-relay-enrollment-incomplete-20260928.json)
-after native build, before PG allocation; [missing fixture login privilege](evidence/p02-relay-enrollment-login-incomplete-20260928.json)
-after six migration cases. Corrected explicit subnet checks every Docker subnet
-and nondefault host route; no daemon changes or other lab retirement. Corrected
-Control fixture grants match existing session startup/pruning requirements.
-Mac original route serde-unit unknown-field RED was fixed with an empty closed
-public struct variant. Other original compile/lint/setup failures stay captured.
-No failed attempt was relabeled PASS.
-
-## Native resources and maintenance
-
-Owner-requested maintenance completed before further builds. Inventory key
+Owner-requested cache retirement is COMPLETE. Inventory
 implementation_20260917.cache_retirement_20260928 and ignored
-.research/implementation/cache-retirement-20260928 own recipes/manifests/receipts.
-Mac removed only the old rocks-store/.research/implementation/rocks-store/target
-and rocks-binding/.research/target; clean source/worktrees,6173 outside ignored
-files, original reports/databases and111 final executable/library paths retained
-and hash-verified. Original binding report051d27b2/binarydef9cb89 remain. Artifacts
-are beside removed caches in retained-build-artifacts-20260928. No active process,
-open file, candidate mount or Docker backend was observed. Free space immediately
-before1,943,420,928bytes, after14,954,164,224bytes (observed+13,010,743,296).
+.research/implementation/cache-retirement-20260928 own manifests and receipts.
 
-Tux removed only network-1a2a8be/out/build/{target,cargo-home}; current1154757 is
-an independent later copy, retained. Original3 qualified artifacts and180 cached
-final executables retained outside cache; all remaining lab regular files checked
-across deletion. Privileged process/FD/maps and mount census found no use. All885
-container projections unchanged/eight unrelated running. Free65,884,286,976bytes
-before,68,888,399,872after (observed+3,004,112,896). No existing container, volume,
-dataset or fault state removed. Shared blocks/preserved hardlinks and concurrent
-writes explain differences from cache allocation. Do not rerun deletion recipes.
-Resume the same source-issuer slice; recheck disk before each large allocation.
+Mac removed only old rocks-store/.research/implementation/rocks-store/target and
+rocks-binding/.research/target. Clean source/worktrees, 6,173 outside files and
+111 final executable/library paths were preserved/hash-verified; retained artifacts
+are beside the removed targets. Free bytes before 1,943,420,928, after
+14,954,164,224: observed +13,010,743,296 (about 12.1 GiB). Latest pre-cleanup-fixture
+Mac reading was 13,930,864 KiB available. No local datasets or uncommitted work lost.
 
-Inventory key implementation_relay_registry_20260928.enrollment owns all three
-attempts. Every one is stopped-retained; no cache/container/volume/data deleted.
-Original build root runs/relay-enrollment-dae4d45, owner636d8b4982589759a10929c7d7a6d079,
-PID2916165/start394990226 terminal; fetch/native exited0/noOOM. Original19 safe
-capture payloads and1439 Git files verified; partial pg directory retained, no
-PG/client/network created. Ignored .research/implementation/relay-enrollment-20260928.
-
-Failed-login root runs/relay-enrollment-recheck-325fa01 retains database,
-internal172.16.240.0/28 and original logs; owner7151bf8f11c9af68ebd80e3fb2b575ca,
-PID2925615/start395060484 terminal, client143/PG0/noOOM. Audit verified868 prior
-projections unchanged/eight unrelated running. Do not rerun its original launcher.
-
-Successful root runs/relay-enrollment-recheck-49e7ed4 retains the intended fault
-clone input bb_enrollment, protected credentials, internal172.16.240.16/28,
-source49e7ed4/treefddaf9bd16ee08c53090b9f420f6d545dadb5227 and all original output.
-Owneraa5b1b49157bd12de8aa040cd3076a72; PID2937390/start395081029 terminal.
-Clientbad2235403d07ffe6d73308fa00579d26d81cbd75a9cf088ae5588fba95d0b29 exited143;
-PG6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9 exited0; noOOM.
-Audit04:10:16UTC verified870 prior projections unchanged/eight unrelated running,
-1441 source files and14 captured payloads. Free67,101,818,880bytes; recheck before
-allocation. Ignored .research/implementation/relay-enrollment-recheck-49e7ed4
-retains Git bundle, launch/wrapper/collect/root-review recipes and hashes.
-
-Current reusable compiler input: runs/network-1154757/out/build/{target,cargo-home},
-exclusive .compiler-cache.lock, original four ELFs preserved outside cache. Latest
-lock audit released. Also protect 4e6b5c0 seed/native assets,8fa/f677 compiler inputs,
-649 cache, networke38/1a2 sources/evidence, and03b0197 PG/source/artifacts with all
-nine91d5 fault clones including deliberately corrupted state. Other dependencies
-remain inventoried; never assume old revision means unused.
+Tux removed only network-1a2a8be/out/build/{target,cargo-home}. Independent later
+1154757 remains. Original three qualified artifacts plus 180 cached final ELFs
+were preserved and remaining laboratory files checked. Free bytes before
+65,884,286,976, after 68,888,399,872: observed +3,004,112,896 (about 2.8 GiB).
+No container, volume, dataset or fault state was deleted. Shared blocks, preserved
+hardlinks and concurrent writes explain differences from cache allocation.
+Do not rerun deletion recipes; recheck disk before every large allocation.
 
 Protect private-history-32dd58d and stopped history-capture-b5c862a, including
 installed-publication-61271e2/out/archive-worker. Qualification/object-storage
-datasets/backups/archives/catalogs/indices/fault states stay untouched. Negative
-worktrees9fa8b98/8effc76/5f1582c/a334ac8/network-direct-no-poll-1154757 never merge or
-push; dirty private-panel-no-revoke and detacheded2a93b remain untouched.
+datasets/backups/archives/catalogs/indices/fault states stay untouched. Also retain
+4e6b5c0 seed/native assets, 8fa/f677 compiler inputs, 649 cache, network e38/1a2
+source/evidence and 03b0197 PG/source/artifacts including deliberately corrupt
+91d5 fault clones. Full ownership/lifecycle records remain in the inventory.
+Negative worktrees 9fa8b98/8effc76/5f1582c/a334ac8/network-direct-no-poll-1154757
+never merge/push; dirty private-panel-no-revoke and detached ed2a93b stay untouched.
+Prior cache retirements d860/b93/5de/7ee/877 remain historical; never replay them.
 
-Prior verified cache retirements d860,b93,5de,7ee,877 are already inventoried;
-never rerun their deletion recipes.7ee freed3,494,223,872 allocated bytes and877
-3,333,423,104 after copying/hash-checking required test ELFs. Original sources,
-logs, DB/fault/archive data remain. No global prune or implicit volume deletion.
-Other old caches remain unassessed. Latest measured space is recorded above;
-recheck both hosts before large allocations.
+## Relevant qualified foundations and remaining gates
 
-## Prior qualified boundaries and retained gates
+- [Policy versions](evidence/p01-policy-versions-native-20260928.json): 56 native
+  tests and 87 engine checks. Fresh v2 bans and exact legacy v1 restoration;
+  v1 source issuance refuses. Populated CAS upgrade/drain remains selected work.
+- [Committed visibility](evidence/p02-ingest-visibility-native-20260928.json):
+  actual dictionary bytes and retained memory permit; no permission inferred.
+- [Source binding](evidence/p02-relay-source-native-20260928.json),
+  [relations](evidence/p02-relay-source-relations-native-20260928.json), and
+  [eight fault schedules](evidence/p02-relay-source-faults-native-20260928.json):
+  both reservation and dispatch recheck exact current/historical source; original
+  ambiguous recovery stays historical. Source data is not socket permission.
+  Applied 0020 and all prior SQL checksums are immutable. Populated constrained-
+  domain upgrade physically rewrites requests; maintenance I/O/space is required.
+- [Enrollment](evidence/p02-relay-enrollment-native-20260928.json),
+  [18 command schedules](evidence/p02-relay-enrollment-faults-native-20260928.json),
+  [relations](evidence/p02-relay-enrollment-relations-native-20260928.json): real
+  session/CSRF, CAS, roots, immutable history and exact current state. Acceptance
+  is not completed restrictive drain or a socket grant. Applied 0019 immutable.
+- [DNS/policy](evidence/p04-network-components-native-20260928.json) and
+  [direct TCP/TLS](evidence/p04-network-direct-native-20260928.json) remain bounded
+  component evidence. Shared quotas, overlays/protected routes, renewable sessions,
+  recursive DNS interoperability and aged/mixed load remain selected work.
+- Installed 0815 export, cursor lifecycle, export structural review, CLI and browser
+  page evidence remain relevant under evidence/. Applied 0815/0816/0604 immutable.
+  Five signed-event exports are deliberately deferred under 256 MiB, not executed.
+  MON-001/002/004/005/006/007/009/010 retain prior scoped closure absent new evidence.
+  Full browser accessibility/device/BFCache/capacity and release journeys remain open.
 
-- [Registry](evidence/p02-relay-registry-native-20260928.json) and
-  [faults](evidence/p02-relay-registry-faults-native-20260928.json): exact endpoint
-  identity/8192-byte URL, bounded64 digest-candidate bucket, scalar original
-  attribution; nine actual COMMIT/policy/expiry/corruption schedules at91d5c7e.
-  Initial03b0197 SQL fixture SET ROLE failure is preserved separately.
-- [DNS](evidence/p04-network-components-native-20260928.json) and
-  [direct TCP/TLS](evidence/p04-network-direct-native-20260928.json):32+12 bounded
-  native cases. Per-resumption expiry gate closes the actual missed poll defect;
-  callback cannot escape guarded socket. No synchronous preemption/kernel-byte
-  recall claim. BrokenPipe/split-frame fixture failure remains preserved.
-- [CLI](evidence/p08-cli-jobs-native-20260928.json):97 native tests/Clippy,22 actual
-  invocations,14 independent page sets/four refusals, real protected session files,
-  exact issue/logout attribution, owner replacement and current authorization.
-  Genuine blocked stdout/timeout/SIGTERM verified. Remote TLS/other CLI commands
-  still selected. No universal filesystem syscall/powerloss/key-erasure claim.
-- [Pages](evidence/p08-job-pages-native-20260927.json),
-  [browser](evidence/p09-job-pages-consumer-native-20260928.json),
-  [COMMIT](evidence/p08-job-pages-commit-native-20260928.json),
-  [held](evidence/p08-job-pages-held-native-20260928.json) and
-  [lifetime](evidence/p08-job-pages-lifetime-native-20260928.json) retain exact
-  installed-client and engine scopes. Capacity failure remains original; five
-  signed-event exports are deliberately deferred under256MiB and do not execute.
-  Full accessibility/device/BFCache/capacity qualification remains open.
-- [Installed0815 export](evidence/p08-job-admission-installed-native-20260927.json),
-  [cursor lifecycle](evidence/p06-cursor-lifecycle-native-20260927.json) and
-  [structural review](evidence/p08-export-structure-native-20260927.json) remain
-  relevant. Applied0815/0816/0604 and all other prefix migrations immutable.
-  MON001/002/004/005/006/007/009/010 retain scoped closure in prior reports absent
-  contrary evidence. No bounded closure means complete selected product.
-
-Exact WebSocket source audit is retained at
+WebSocket source audit is retained at
 .research/implementation/network-websocket-audit/{audit.md,inventory.json}.
-Candidate tokio-tungstenite0.29.0 handshake-only does not enforce the current
+Candidate tokio-tungstenite 0.29.0 handshake-only does not enforce the current
 framing-inclusive message bound: fragmented/empty continuations amplify buffering.
-Resolve that concrete mismatch before protocol integration; reject unsolicited
-extensions, bound outbound messages and correctly poll close. No selected
-WebSocket dependency or actual native protocol evidence yet. Overlay/multi-rule/
-protected routes, renewable sessions, shared host/endpoint/rate/FD quotas,
-recursive DNS interoperability and aged/mixed load remain selected work.
-History reader grants do not authorize acquisition. DeliveryWindow copies need
-explicit parent invalidation; current management ActionGate/write-only socket
-cannot simply be reused for a renewable bidirectional acquisition owner.
-
-## Latest command fault qualification
-
-[Fault report](evidence/p02-relay-enrollment-faults-native-20260928.json):18 actual
-PG16.15 schedules PASS at4ac4bad with c2eebec probe/CLI, product bytes stilldae4d45.
-Seven fourth-COMMIT cases cover pass, lost-before/after, held cancellation close/
-release and independently isolated owner/session expiry. Four held cases observe
-Busy owner exclusion, unchanged durable rows and actual backend/session identities.
-Fresh password-verified sessions and owners2→3 resolve exact actor/key/command;
-committed historical receipts never rewrite/reapply. Ten observed lock orders
-cover policy head, permission, session revoke, deactivate and deactivate/reactivate;
-writer rollback preserves heads. Every64-table delta is attributed, literal hashes/
-identity/current-state/audit/xmin match, original database/report is unchanged and
-zero Control backends remain. No continuous-custody/key-erasure/capacity claim.
-
-Original [c2eebec failure](evidence/p02-relay-enrollment-faults-incomplete-20260928.json)
-stopped before the first command gate: copied registry epoch expectation3 was
-wrong for this enrollment fixture's one previous owner. Corrected SQL precondition
-requires literal original epochs[1], then expected2/3. Native build/Clippy passed;
-unchanged80 tests were not repeated. Independent AI review found a cleanup KeyError
-for missing containers; corrected actual census fragments were checked against
-synthetic missing unrelated/owned IDs (old failure, new incomplete audit). No real
-container disappeared. Original failed clone/result/source remain retained.
-
-Latest root runs/relay-enrollment-faults-4ac4bad, source4ac4bad/treea88a564f29d4e9be99e65d06e1142f652ae58448,
-PID2966115/start395213980 terminal, owner178de689c90f10c8884ccd0a5298a6f6.
-Client136438fe3149d5643bb9e31bcfe32b8b130b2e6e3c2c20f956254f7bfb04436e exited143;
-borrowed49e7ed4 PG6fa7937e4f8838b78757d48e569ca29fd9586d02237026f2d654fa4626b8a1e9
-exited0; noOOM. Audit04:33:07UTC verified874 other projections unchanged/eight
-unrelated running,1445 clean source files,117 safe payloads and exact original ELFs.
-Free66,605,449,216bytes; Mac approximately2.8GiB. Recheck before further allocation.
-Inventory enrollment.faults.recheck owns eighteen new clone names and resources;
-original bb_enrollment plus earlier failed c2 clone remain preserved. No deletion,
-new network or new compiler cache. Ignored .research/implementation/relay-enrollment-faults-4ac4bad
-retains transfer/launch/collect/root-review recipes and manifest. Old c2 root owns
-build ELFs/cache-lock audit and original failure; do not rerun old launchers.
-
-## Latest relational closure qualification
-
-[Native report](evidence/p02-relay-enrollment-relations-native-20260928.json):
-23d7534 fixture reused c2eebec artifacts; actual PG16.15 passed twelve exact
-relational refusals plus valid before/after controls inside backend94/owner2 and
-its real authenticated session. Missing state, generation/route/digest/audit
-mismatch, extra identities/audit, identity mutation, old receipt application and
-second transition after early constraints all refuse with the specific guard's
-message. Each subtransaction restores all64 Control relations; only the real
-parent commits its exact six domain rows. No0019/product correction was needed.
-Root independently recomputed digests and reviewed rows; read-only AI review found
-no blocker. The original18 schedule AST is unchanged; no broad suite repeated.
-
-Root runs/relay-enrollment-relations-23d7534, treece30b837c47412d769e875259f64677ac93420fc,
-PID2987542/start395314795 terminal, ownerc563c514e0d2ee753fa58ab5f9e2c044.
-Client850d322e70f02794ecdb9f4db417227349e6ad46419999814cd51335daee8c30 exited143;
-borrowed49e7ed4 PostgreSQL exited0/noOOM. Clonebb_enroll_fault_23d7534_relations is
-retained with the original and prior fault clones. Terminal04:48:47UTC verified875
-other projections unchanged/eight unrelated running,1447 clean source files,
-14 safe capture payloads and original ELFs/report. Original64-table database
-comparison and zero remaining Control backends passed before shutdown.
-Free66,561,679,360bytes; no compiler/network allocation or deletion. Inventory
-enrollment.relations owns resources; ignored .research/implementation/relay-enrollment-relations-23d7534
-holds exact transfer/collector/root-review and evidence. Local Python3.9 extraction
-rejected the safe filter keyword; Python3.14 safely extracted the existing capture
-and verified every hash. No native rerun or original evidence replacement.
+Resolve before integration; reject unsolicited extensions, bound outgoing messages
+and correctly poll close. No selected WebSocket dependency/native protocol evidence
+yet. Management write-only ActionGate is not a renewable bidirectional source
+session. History reader grants do not authorize acquisition. DeliveryWindow copies
+need explicit parent invalidation. No arm64, complete release or capacity claim.

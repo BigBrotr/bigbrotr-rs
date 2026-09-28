@@ -28512,6 +28512,190 @@
         "free_bytes": 67928887296
       },
       "evidence": "docs/implementation/evidence/p04-source-transport-native-20260928.json"
+    },
+    "cleanup_build": {
+      "source": "e365b33ef68ee052856a91fa8a44e80b877fe6a2",
+      "tree": "a227bfd7ef1d6d6994c4c5447cd8121e79a6dbab",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-cleanup-e365b33",
+      "pid": 3124898,
+      "start_ticks": "396617057",
+      "bundle_sha256": "9b2ab38d275070c740faa290ab1bfc6f68c303a450abecef8fa9d87d395426eb",
+      "state": "stopped-retained",
+      "profile": "source-cleanup",
+      "scope": "actual source cleanup probe build only; engine schedules pending",
+      "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+      "local_evidence": ".research/implementation/source-cleanup-20260928",
+      "owner": "ac60e16298eb8e2c7300c3f92d5227a6",
+      "owner_label": "org.bigbrotr.network-transport",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "e42d4b4a63b71ccf69e234276383e203aaee677cbbc1fe881c00b4ef3a72e59f"
+        },
+        {
+          "name": "native",
+          "id": "7868afda7d1b66349d853a290f5546d56985502a3537f65d7a9912a8cc1e77b4"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+      "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+      "started_at": "2026-09-28T08:25:17.071438+00:00",
+      "qualification": "PASS_SOURCE_CLEANUP_BUILD_ONLY",
+      "inventory_changed": [],
+      "free_bytes_after": 67816022016,
+      "finished_at": "2026-09-28T08:26:19.411459+00:00",
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "e365b33ef68ee052856a91fa8a44e80b877fe6a2",
+        "observed_at": "2026-09-28T08:26:48.413548+00:00",
+        "prior_unchanged": 899,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "e42d4b4a63b71ccf69e234276383e203aaee677cbbc1fe881c00b4ef3a72e59f",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "7868afda7d1b66349d853a290f5546d56985502a3537f65d7a9912a8cc1e77b4",
+            "exit": 0
+          }
+        ],
+        "source_files": 1483,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 67816009728
+      }
+    },
+    "cleanup": {
+      "source": "e365b33ef68ee052856a91fa8a44e80b877fe6a2",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-cleanup-e365b33",
+      "pid": 3127323,
+      "start_ticks": "396626332",
+      "state": "stopped-retained",
+      "borrowed_pg_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "scope": "Known rollback delivery, shorter actual owner lease, ordinary cleanup timeout and late-ready caller deadline; no complete acquisition claim.",
+      "status": "PASS_SCOPED_SOURCE_TRANSPORT",
+      "owner": "eeab98e6639e4e5905636ec67bcd4de7",
+      "label": "org.bigbrotr.source-cleanup",
+      "client": {
+        "id": "8342ffc2d5e7813ce33b84fd047d92752bba2655300e499b25f3ecd9b1c131fa",
+        "name": "bigbrotr-source-cleanup-e365b33"
+      },
+      "databases": [
+        "bb_cleanup_e365b33_pass",
+        "bb_cleanup_e365b33_expired",
+        "bb_cleanup_e365b33_timeout",
+        "bb_cleanup_e365b33_ready"
+      ],
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-09-28T08:27:36.707984+00:00",
+        "source": "e365b33ef68ee052856a91fa8a44e80b877fe6a2",
+        "prior_unchanged": 900,
+        "unrelated_running": 8,
+        "source_files": 1483,
+        "free_bytes": 67760959488
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "evidence": "docs/implementation/evidence/p04-source-cleanup-native-20260928.json",
+      "retention": "Keep all clones, original output, source and artifacts. No deletion/new network/cache. Borrowed e06 PostgreSQL stopped."
+    },
+    "cleanup_negative": {
+      "worktree": ".research/worktrees/source-no-final-deadline-e365b33",
+      "source": "354abff7f766ae8415f5d8dcae833a375756fbaa",
+      "tree": "f577e55ac96cd9b0b151c93d30a69d673b912819",
+      "state": "stopped-retained",
+      "scope": "Single final caller deadline refusal deliberately omitted; never merge/push.",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-cleanup-354abff",
+      "pid": 3132329,
+      "start_ticks": "396634932",
+      "bundle_sha256": "d4125b0c742c52aa338dcf4d89b7c33ff7d5abf8763ae6a03f400166a0a31ced",
+      "owner": "9f28936ca0f9b5bc3ef8a0a1b03d073d",
+      "label": "org.bigbrotr.source-cleanup",
+      "client": {
+        "id": "1efde2d3e2c5405e3dcaf68f7b34beedc3e380da304c39de359bf228eddbaf2c",
+        "name": "bigbrotr-source-cleanup-354abff"
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "databases": [
+        "bb_cleanup_354abff_pass",
+        "bb_cleanup_354abff_expired",
+        "bb_cleanup_354abff_timeout",
+        "bb_cleanup_354abff_ready"
+      ],
+      "status": "FAIL",
+      "evidence": "docs/implementation/evidence/p04-source-cleanup-native-20260928.json",
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-09-28T08:31:03.321086+00:00",
+        "source": "354abff7f766ae8415f5d8dcae833a375756fbaa",
+        "prior_unchanged": 903,
+        "unrelated_running": 8,
+        "source_files": 1483,
+        "free_bytes": 67594240000
+      },
+      "retention": "Keep all clones, original output, source and artifacts. No deletion/new network/cache. Borrowed e06 PostgreSQL stopped.",
+      "engine_launch": {
+        "source": "354abff7f766ae8415f5d8dcae833a375756fbaa",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-cleanup-354abff",
+        "pid": 3134792,
+        "start_ticks": "396645279"
+      },
+      "build": {
+        "source": "354abff7f766ae8415f5d8dcae833a375756fbaa",
+        "tree": "f577e55ac96cd9b0b151c93d30a69d673b912819",
+        "owner": "419c1d6d2d43269c70d69728edfad7bf",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-cleanup-354abff",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "4aea2646c8ed9e120fcfaf4d2d74989ba975de93b41d181ac549ff316dd46172"
+          },
+          {
+            "name": "native",
+            "id": "c83206cf8d9a9d002ba4299556599454bf2fc35b9cf42fc7a78849a898138b41"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T08:28:15.810363+00:00",
+        "qualification": "PASS_SOURCE_CLEANUP_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 67648692224,
+        "finished_at": "2026-09-28T08:29:18.217595+00:00"
+      },
+      "build_terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "354abff7f766ae8415f5d8dcae833a375756fbaa",
+        "observed_at": "2026-09-28T08:29:57.894194+00:00",
+        "prior_unchanged": 902,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "4aea2646c8ed9e120fcfaf4d2d74989ba975de93b41d181ac549ff316dd46172",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "c83206cf8d9a9d002ba4299556599454bf2fc35b9cf42fc7a78849a898138b41",
+            "exit": 0
+          }
+        ],
+        "source_files": 1483,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 67648667648
+      },
+      "assessment": "EXPECTED_NEGATIVE_FAILURE_VERIFIED"
     }
   }
 }

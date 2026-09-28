@@ -1,0 +1,142 @@
+{
+  "format": "bigbrotr-source-cleanup-qualification/1",
+  "status": "PASS_SCOPED_CLEANUP_WITH_DISCRIMINATING_NEGATIVE",
+  "source": "e365b33ef68ee052856a91fa8a44e80b877fe6a2",
+  "tree": "a227bfd7ef1d6d6994c4c5447cd8121e79a6dbab",
+  "product_source": "8c4d12c950077d26f63f046656c087aa16df3a1c",
+  "tasks": [
+    "P02-T01 Step6 finite source authority",
+    "P03-T01 committed source binding",
+    "P04-T02 finite guarded transport"
+  ],
+  "scope": "Known rollback delivery, shorter actual owner lease, ordinary cleanup timeout and late-ready caller deadline; no complete acquisition claim.",
+  "cases": [
+    {
+      "name": "pass",
+      "native_rows": 16,
+      "control_tables": 64,
+      "elapsed_us": 4065,
+      "peer_closed_us": 4012,
+      "rollback_ordinal": 4,
+      "disposed": true
+    },
+    {
+      "name": "expired",
+      "native_rows": 16,
+      "control_tables": 64,
+      "elapsed_us": 1437521,
+      "peer_closed_us": 4652,
+      "rollback_ordinal": 4,
+      "disposed": true
+    },
+    {
+      "name": "timeout",
+      "native_rows": 16,
+      "control_tables": 64,
+      "elapsed_us": 751903,
+      "peer_closed_us": 4370,
+      "rollback_ordinal": 4,
+      "disposed": true
+    },
+    {
+      "name": "ready",
+      "native_rows": 16,
+      "control_tables": 64,
+      "elapsed_us": 1501251,
+      "peer_closed_us": 4328,
+      "rollback_ordinal": 4,
+      "disposed": true
+    }
+  ],
+  "observations": [
+    "Actual driver setup completes9 COMMITs and3 ROLLBACKs. Targeted fourth rollback reaches PostgreSQL CommandComplete before holding the reply; exact backend is observed idle with no transaction.",
+    "Positive case returns literal answer after known rollback. Expired case shortens only actual Control lease/xmin by privileged clone injection, observes database expiry, then releases reply before5s outer limit. Product returns Control(Unavailable) and disposes the received value.",
+    "Ordinary750ms deadline fires while rollback is held; received value is disposed, session refuses further policy work, and driver receives released C/Z before explicit retirement.",
+    "Late-ready case forwards rollback C/Z before750ms deadline while only the source future is paused. PG driver remains active; source resumes at1500ms with valid5s policy and long Control lease, refuses Transport(Deadline) and disposes its value.",
+    "Negative354abff removes only final explicit deadline check. Identical late-ready fixture instead enters Ok(value) and panics on Some(Deadline) versus None. Original harness FAIL and logs retained; this distinguishes the check from ordinary timeout behavior.",
+    "All positive cases preserve all64 Control relations after the labeled lease injection, complete16 native rows/sequence17/original input/receipt, and exact endpoint/private-route/committed visibility bindings. Peer closes within5ms in these small fixtures."
+  ],
+  "artifacts": {
+    "binary_sha256": "be34f4ce254e2adcd98b6c611da2e4c46cd3a879775a90fff747839755f14bcd",
+    "probe_sha256": "be17cae392fa45afd2822ecc114f617f9f18a38c33c0367bcb4e686572393149",
+    "lockfile_sha256": "fc34a30dbc2eacf52bec37146dacef25b3ffbf857069dbc2bf6c0e1499c9842e",
+    "source_manifest_sha256": "e278fe4d29b9a8f9c2198b8353daf8b6a0e41ab30c96b7354d573ccf3d8baf47"
+  },
+  "environment": "Tux native Linux x86_64, Rust1.98.1/clang14; actual PostgreSQL16.15 and locked RocksDB binding. Both exact revisions compile release CLI/probe and pass scoped Clippy. Unchanged34 component tests not repeated.",
+  "negative": {
+    "source": "354abff7f766ae8415f5d8dcae833a375756fbaa",
+    "tree": "f577e55ac96cd9b0b151c93d30a69d673b912819",
+    "status": "EXPECTED_NEGATIVE_FAILURE_VERIFIED",
+    "raw_status": "FAIL",
+    "raw_failure": "RuntimeError: missing-event:cleanup-finished",
+    "probe_sha256": "5b55e55e8d8e5784299a938caf3f4893c6f6886e8de16710709338d2e9b3bb16",
+    "review": {
+      "status": "EXPECTED_NEGATIVE_FAILURE_VERIFIED",
+      "source": "354abff7f766ae8415f5d8dcae833a375756fbaa",
+      "payloads": 34,
+      "changed_product_files": [
+        "apps/bigbrotr/src/storage/postgres/relay_source.rs"
+      ],
+      "assertion": "Probe entered Ok(value) branch while expecting Transport(Deadline); only final explicit deadline check omitted.",
+      "wire_events": [
+        "ready",
+        "status",
+        "held",
+        "released",
+        "status",
+        "receipt"
+      ],
+      "rollback_ready_after_hold_ns": 97898008,
+      "evidence_limits": [
+        "Raw harness status remains FAIL; the original failure is not relabeled PASS.",
+        "Failure prevents post-suite comparison of original template/source-pass databases; no unchanged-original-data claim for this negative run.",
+        "Negative output is excluded from main and remote publication."
+      ]
+    },
+    "never_merge_or_push": true
+  },
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-09-28T08:27:36.707984+00:00",
+    "source": "e365b33ef68ee052856a91fa8a44e80b877fe6a2",
+    "prior_unchanged": 900,
+    "unrelated_running": 8,
+    "source_files": 1483,
+    "free_bytes": 67760959488
+  },
+  "negative_terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-09-28T08:31:03.321086+00:00",
+    "source": "354abff7f766ae8415f5d8dcae833a375756fbaa",
+    "prior_unchanged": 903,
+    "unrelated_running": 8,
+    "source_files": 1483,
+    "free_bytes": 67594240000
+  },
+  "evidence": {
+    "local_capture": ".research/implementation/source-cleanup-20260928",
+    "recipe": "experiments/relay-source/transport.py ROOT --cleanup",
+    "hashes": {
+      "capture-build.tar": "19ecc09013401e3aeccf7f60aaa8e41b1eacbb25bd13a9dffc17a0805974bf47",
+      "capture-cleanup.tar": "db64dd86ee5a918dfb4bb5def3376734e1b4a0682b403ba36111168ef5d968e8",
+      "capture-negative-build.tar": "927e602a8dac43e92f8b7b204b8fef2b7da8564c2dde85276389214b2c215537",
+      "capture-negative-cleanup.tar": "281e4536dbab852cf81c48161c7f6e9906ad39f62a54d13a42adf103c4df76ce",
+      "root-review.json": "b3b9670c10fb65aca4aad96a4a9f6ec4615c6e934ee630c5cddba1a0943ec046",
+      "negative-root-review.json": "02c52d8376adf7b2466badc1244cf9d250976fb772149d6cdad07359aad6ea8d"
+    }
+  },
+  "review": "Root complete changed owners/callers/diff and independent read-only AI fixture review. Cleanup now records process/log failures before continuing owned-container retirement. Initial proxy loop/lifetime/syntax fixture failures retained. Twelve build payloads per revision,36 positive and34 negative engine payloads hash-checked. No original failure rewritten.",
+  "limits": [
+    "Four small finite schedules do not establish production capacity or synchronous preemption.",
+    "Shortened owner lease is an explicitly privileged isolated clone injection, not a supported management mutation.",
+    "Expired-case1s lower bound is a fixture timing guard; actual SQL-observed expiry establishes the condition. It may reject an excessively delayed setup.",
+    "Positive original-data preservation covers bb_source_template, bb_source_pass and original source-result.json only. Negative expected failure skips the post-suite original-data comparison; no preservation claim for that unexecuted comparison."
+  ],
+  "not_run": [
+    "concurrent source/policy lock schedules",
+    "installed Sync",
+    "WebSocket/signed admission/M1",
+    "load/aged state",
+    "arm64/release"
+  ]
+}

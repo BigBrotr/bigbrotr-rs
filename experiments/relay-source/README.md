@@ -81,5 +81,8 @@ Its bounded rollback proxy reuses the existing framing/control engine and holds
 one exact rollback reply after server completion. The source-only future can be
 paused while the real PG driver receives CommandComplete and ReadyForQuery;
 this distinguishes a final delivery check from an ordinary pending timeout.
-Received values have observable disposal. These cases are prepared, not yet
-native-qualified; a deadline-check negative variant remains required.
+Received values have observable disposal. All four cases passed at e365b33; the
+isolated354abff variant omitting only the final deadline check failed exactly on
+late value delivery. See [cleanup qualification](../../docs/implementation/evidence/p04-source-cleanup-native-20260928.json).
+The raw negative result stays FAIL, and its skipped post-suite original-data
+comparison is not claimed as passed. Concurrent source/policy schedules remain open.
