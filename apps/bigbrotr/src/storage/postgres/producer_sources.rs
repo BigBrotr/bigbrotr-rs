@@ -1,7 +1,9 @@
 //! Immutable operational source binding, separate from native scientific bytes.
-use crate::acquisition::{relay_source::RelaySourceBinding, scope::StoredAcquisitionScope};
+use crate::acquisition::{
+    job::AcquisitionJobBinding, relay_source::RelaySourceBinding, scope::StoredAcquisitionScope,
+};
 use bigbrotr_model::{
-    AcquisitionScopeId, DatasetId, DictionaryKind, ProducerRequestId, QualifiedRef,
+    AcquisitionScopeId, DatasetId, DictionaryKind, JobId, ProducerRequestId, QualifiedRef,
 };
 use tokio_postgres::Transaction;
 
@@ -33,15 +35,83 @@ pub(super) struct CurrentSourceCheck<'a> {
     pub binding: RelaySourceBinding,
     pub visibility: QualifiedRef,
     pub scope: Option<&'a StoredAcquisitionScope>,
+    pub job: Option<AcquisitionJobBinding>,
 }
 
-async fn installed(tx: &Transaction<'_>) -> Result<(bool, bool), SourceBindingError> {
+/// A Network origin cannot escape job checks by omitting every source field.
+/// Bootstrap/import have no source obligation; historical recovery never calls
+/// this fresh-effect preflight. Earlier qualified foundations remain usable.
+pub(super) async fn require_event_source(
+    tx: &Transaction<'_>,
+    network: bool,
+    source: Option<CurrentSourceCheck<'_>>,
+) -> Result<(), SourceBindingError> {
+    if network
+        && installed(tx).await?.2
+        && !source.is_some_and(|s| s.scope.is_some() && s.job.is_some())
+    {
+        return Err(SourceBindingError::Conflict);
+    }
+    Ok(())
+}
+
+/// Establish job locks before enrollment/Ingest/producer locks. The returned
+/// duration is sampled by PostgreSQL after waits. Consumers cap a lease whose
+/// local refresh ticket began before SQL, so later I/O cannot extend this time.
+pub(super) async fn require_job(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    source: RelaySourceBinding,
+    binding: Option<AcquisitionJobBinding>,
+) -> Result<Option<std::time::Duration>, SourceBindingError> {
+    let job_installed = installed(tx).await?.2;
+    let Some(binding) = binding else {
+        return if job_installed {
+            Err(SourceBindingError::Conflict)
+        } else {
+            Ok(None)
+        };
+    };
+    if !job_installed {
+        return Err(SourceBindingError::Prerequisite);
+    }
+    const REQUIRE_JOB: &str = "
+        SELECT control.require_acquisition_execution(
+            $1::bytea, $2::bytea, $3::bytea, $4::bytea, $5::bytea)";
+    let remaining: i64 = tx
+        .query_one(
+            REQUIRE_JOB,
+            &[
+                &&dataset.as_bytes()[..],
+                &&binding.job.as_bytes()[..],
+                &&binding.scope.as_bytes()[..],
+                &&source.endpoint_id.as_bytes()[..],
+                &&source.access_scope_id.as_bytes()[..],
+            ],
+        )
+        .await
+        .map_err(|error| match error.code().map(|code| code.code()) {
+            Some("BB001") => SourceBindingError::Unavailable,
+            Some("23514") => SourceBindingError::Conflict,
+            _ => SourceBindingError::Backend,
+        })?
+        .try_get(0)
+        .map_err(backend)?;
+    let remaining = u64::try_from(remaining)
+        .ok()
+        .filter(|v| *v > 0)
+        .ok_or(SourceBindingError::Unavailable)?;
+    Ok(Some(std::time::Duration::from_micros(remaining)))
+}
+
+async fn installed(tx: &Transaction<'_>) -> Result<(bool, bool, bool), SourceBindingError> {
     // application_transaction has already checked the complete immutable ledger
     // and holds the shared migration lock. Older unbound consumers remain usable.
     let row = tx
         .query_one(
             "SELECT EXISTS (SELECT 1 FROM control.schema_versions WHERE migration=20),
-            EXISTS (SELECT 1 FROM control.schema_versions WHERE migration=21)",
+            EXISTS (SELECT 1 FROM control.schema_versions WHERE migration=21),
+            EXISTS (SELECT 1 FROM control.schema_versions WHERE migration=24)",
             &[],
         )
         .await
@@ -49,6 +119,7 @@ async fn installed(tx: &Transaction<'_>) -> Result<(bool, bool), SourceBindingEr
     Ok((
         row.try_get(0).map_err(backend)?,
         row.try_get(1).map_err(backend)?,
+        row.try_get(2).map_err(backend)?,
     ))
 }
 
@@ -74,6 +145,16 @@ const MATCH_VISIBILITY: &str = "
         AND allocation_domain=$3::bytea AND ordinal=$4::text::numeric
     FROM control.relay_access_contexts
     WHERE dataset_id=$1::bytea AND access_scope_id=$2::bytea";
+const MATCH_JOB_BINDING: &str = "
+    SELECT relay_endpoint_id IS NOT DISTINCT FROM $5::bytea
+        AND relay_access_scope_id IS NOT DISTINCT FROM $6::bytea
+        AND relay_enrollment_generation IS NOT DISTINCT FROM $7::text::numeric
+        AND relay_route_id IS NOT DISTINCT FROM $8::bytea
+        AND acquisition_scope_id IS NOT DISTINCT FROM $9::bytea
+        AND acquisition_job_id IS NOT DISTINCT FROM $10::bytea
+    FROM control.producer_requests
+    WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea
+        AND producer_epoch=$3::text::numeric AND request_sequence=$4::text::numeric";
 
 /// Compare omissions too: a bound request cannot be retried through the legacy
 /// unbound path, and a legacy row cannot be adopted by a new relay binding.
@@ -83,12 +164,13 @@ pub(super) async fn require_binding(
     request: ProducerRequestId,
     binding: Option<RelaySourceBinding>,
     scope: Option<AcquisitionScopeId>,
+    job: Option<JobId>,
     phase: RequestPhase,
 ) -> Result<(), SourceBindingError> {
     let epoch = request.producer_epoch.get().to_string();
     let sequence = request.request_sequence.get().to_string();
-    let (source_installed, scope_installed) = installed(tx).await?;
-    if scope.is_some() && !scope_installed {
+    let (source_installed, scope_installed, job_installed) = installed(tx).await?;
+    if (scope.is_some() && !scope_installed) || (job.is_some() && !job_installed) {
         return Err(SourceBindingError::Prerequisite);
     }
     let row = if source_installed {
@@ -101,6 +183,7 @@ pub(super) async fn require_binding(
         let generation = binding.map(|s| s.enrollment_generation.get().to_string());
         let route = binding.as_ref().map(|s| s.route_id.as_bytes().as_slice());
         let scope = scope.as_ref().map(|s| s.as_bytes().as_slice());
+        let job = job.as_ref().map(|j| j.as_bytes().as_slice());
         let dataset = &dataset.as_bytes()[..];
         let producer = &request.producer_slot_id.as_bytes()[..];
         let params: &[&(dyn tokio_postgres::types::ToSql + Sync)] = &[
@@ -113,9 +196,12 @@ pub(super) async fn require_binding(
             &generation,
             &route,
             &scope,
+            &job,
         ];
-        let (query, params) = if scope_installed {
-            (MATCH_SCOPED_BINDING, params)
+        let (query, params) = if job_installed {
+            (MATCH_JOB_BINDING, params)
+        } else if scope_installed {
+            (MATCH_SCOPED_BINDING, &params[..9])
         } else {
             (MATCH_BINDING, &params[..8])
         };
@@ -158,7 +244,7 @@ pub(super) async fn require_current(
     dataset: DatasetId,
     check: CurrentSourceCheck<'_>,
 ) -> Result<(), SourceBindingError> {
-    let (source_installed, scope_installed) = installed(tx).await?;
+    let (source_installed, scope_installed, _) = installed(tx).await?;
     if !source_installed || (check.scope.is_some() && !scope_installed) {
         return Err(SourceBindingError::Prerequisite);
     }

@@ -124,6 +124,7 @@ pub async fn run(
         let success = phase == 0 && (source_first || matches!(schedule, "rollback" | "ban-other"));
         let receive = owner.run_relay_source(
             RelaySourceRequest {
+                acquisition: None,
                 source,
                 visibility,
                 policy_ttl: Duration::from_secs(5),

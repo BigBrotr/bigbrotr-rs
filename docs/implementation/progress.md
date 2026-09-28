@@ -12,8 +12,8 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main candidate is fef2f2b; private origin remains a4a9d45 pending the
-qualification commit/push. Root owns documentation/evidence only. All owned
+Mac main/origin are verified3769153. Root owns the uncommitted job-bound
+source/admission implementation, additive0024 and focused fixtures. All owned
 resources are stopped/retained; no active experiment or cleanup obligation.
 
 [Native claim-fault evidence](evidence/p03-acquisition-claim-faults-native-20260928.json)
@@ -71,24 +71,39 @@ That wave left e7d1c8c intermediates in shared1154757; exact artifacts remain
 separately retained while the cache now follows the later run above.
 Cache retirement remains complete; never replay launch/deletion recipes.
 
-Next: commit/push the bounded qualification, then connect claimed job authority
+Active: connect claimed job authority
 to actual source/admission consumers (P03-T01 Step3/P03-T02). Fresh source work,
 producer reservation, dispatch and CertifyExisting must bind the same JobId/scope,
 current actor/action and original remaining time. Historical ambiguous-outcome
 lookup stays independent from fresh authority. No queued metadata is a socket
 permission. Applied SQL must be extended additively for any persistent binding.
 
-Initial next-boundary inspection read complete relay_source.rs and producer_sources.rs.
-run_relay_source currently caps only policy/Control time and has no job binding.
-InitialEventRequest/InitialCertificationRequest carry source and collection context,
-but no acquisition JobId. InitialIngestContext.job currently means ImportJobBinding;
-do not conflate it. Only initial_batch.rs1–151 and call locations were read at this
-new boundary; read its complete owner/callers/contracts before changing it.
+The original source/admission APIs lacked job binding. That gap now has the
+additive implementation below; InitialIngestContext.job still means ImportJobBinding
+and is not conflated with acquisition. Complete initial_batch, producer reservation/source/outcome/recovery owners,
+import binding, source transport, acquisition scope contracts and0020/21/23 were
+read. The concrete probe callers and existing laboratory are being extended.
 Preserve Control→dataset→account/grant→source/job→Ingest/producer lock order,
 per-poll finite socket lifetime, socket disposal before native admission and
-historical resolution without fresh permission. First inspect concrete callers,
-choose the smallest job-bound consumer slice, and record its exact acceptance;
-no new abstraction or schema change is yet chosen.
+historical resolution without fresh permission.
+Additive0024 adds one nullable immutable job reference with an exact scope FK.
+Legacy rows remain historical; all new relay work at24 requires a claimed job.
+Prepared Network origin enforces the obligation even when all source fields are
+omitted. The queued/running eligibility helper rechecks account/action/deadline
+before source/Ingest/producer locks; this does not close scheduler/progress state.
+Both socket and native delivery leases consume the original remaining duration.
+No native codec or recovery change. Existing pre24 foundations remain explicit.
+Mac33 catalog,2 membership and3 actual migration entrypoint checks PASS; scoped
+Clippy PASS. Original UnknownTarget(24) RED is retained. Actual SQL/engine and
+effect regressions are NOT YET EXECUTED. WIP originals are under ignored
+.research/implementation/acquisition-execution-20260928. Root/read-only review found no product blocker. Fixture teardown was corrected
+before launch to close Rocks before Control/driver. Thirteen adapter cases plus
+populated upgrade reuse the existing laboratory and independent native oracle.
+Next: commit the reviewed candidate and run exact-revision native validation
+through the acquisition-binding build profile and bindings.py --execution.
+Socket deadlines/cleanup, held COMMIT, races and historical recovery remain later
+bounded acceptance, not implied by this wave. No experiment is active. Tux
+preflight has62,819,729,408B free and only the eight unrelated running containers.
 The next user-visible M1 deliverable remains signed socket→durable admission→
 publication/read→restart/resend. Remaining concrete prerequisites are job-bound
 execution/source observation (P03-T01 Step3/P03-T02), living initial-owner command

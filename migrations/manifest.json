@@ -157,6 +157,10 @@
     {
       "version": 23,
       "name": "0023_acquisition_claims.sql"
+    },
+    {
+      "version": 24,
+      "name": "0024_acquisition_execution.sql"
     }
   ],
   "reserved": [

@@ -24,6 +24,8 @@ use bigbrotr_model::{
 };
 use bigbrotr_protocol::endpoint::Endpoint;
 
+#[path = "ingest_job_binding.rs"]
+mod job_binding;
 #[path = "ingest_scope_binding.rs"]
 mod scope_binding;
 
@@ -50,8 +52,7 @@ pub async fn run(
         .await;
         return;
     }
-    let arrival_root = mode
-        .starts_with("source-arrival-")
+    let arrival_root = (mode.starts_with("source-arrival-") || mode.starts_with("source-job-"))
         .then(|| crate::config::fixture_root(spec.dataset_id, spec.instance_id));
     let validate = |document: &str, digest| match &arrival_root {
         Some(root) => crate::config::validate_fixture_policy(document, digest, root),
@@ -174,6 +175,32 @@ pub async fn run(
         matches!(committed.entry().descriptor(), DictionaryDescriptor::Visibility { class } if class.as_str()=="public")
     );
     drop(committed);
+    if mode.starts_with("source-job-") {
+        let available = job_binding::run(
+            &mut owner,
+            observer,
+            &mut store,
+            spec,
+            path,
+            budget,
+            mode,
+            source,
+            &command,
+            &session,
+            arrival_root.as_ref().unwrap(),
+        )
+        .await;
+        // Native close must finish while actual Control and its driver are
+        // retained, including after a poisoned admission transaction.
+        drop(store);
+        if available {
+            owner.release().await.unwrap();
+        } else {
+            drop(owner);
+        }
+        crate::ingest_closing::join(driver, false).await;
+        return;
+    }
     if mode.starts_with("source-scope-") || arrival_root.is_some() {
         let scoped_mode = mode.replace("source-arrival-", "source-scope-");
         let available = scope_binding::run(

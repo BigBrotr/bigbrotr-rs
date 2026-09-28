@@ -233,8 +233,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .try_into()
         .unwrap();
     let now: i64 = row.get(2);
-    let arrival_root = mode
-        .starts_with("source-arrival-")
+    let arrival_root = (mode.starts_with("source-arrival-") || mode.starts_with("source-job-"))
         .then(|| crate::config::fixture_root(dataset, *instance.as_bytes()));
     let validate = |document: &str, digest| match &arrival_root {
         Some(root) => crate::config::validate_fixture_policy(document, digest, root),

@@ -2,7 +2,10 @@
 //! socket poll; neither a prepared visibility mapping nor copied IDs grant work.
 use super::{ControlSession, OwnerError, backend, require, snapshot, transaction_error};
 use crate::{
-    acquisition::relay_source::{RelaySourceBinding, source_visibility_allowed},
+    acquisition::{
+        job::AcquisitionJobBinding,
+        relay_source::{RelaySourceBinding, source_visibility_allowed},
+    },
     network::{
         DirectAttempt, DirectConnector, DirectPolicy, DirectStream, RouteSelection, Target,
         TransportError,
@@ -46,6 +49,8 @@ impl From<OwnerError> for RelaySourceError {
 
 pub struct RelaySourceRequest<'a> {
     pub source: RelaySourceBinding,
+    /// Required at schema24; the original job and scope are checked under locks.
+    pub acquisition: Option<AcquisitionJobBinding>,
     /// Previously resolved through actual native admission; borrowing retains
     /// its memory permit. The locked access context must name this exact mapping.
     pub visibility: &'a StoredVisibility,
@@ -94,6 +99,14 @@ impl ControlSession {
                 .map_err(transaction_error)?;
             let result = async {
                 require(&tx, self.request.dataset, self.identity).await?;
+                let job_remaining = producer_sources::require_job(
+                    &tx,
+                    self.request.dataset,
+                    input.source,
+                    input.acquisition,
+                )
+                .await
+                .map_err(RelaySourceError::Source)?;
                 producer_sources::require_current_enrollment(
                     &tx,
                     self.request.dataset,
@@ -146,7 +159,10 @@ impl ControlSession {
                             dataset: self.request.dataset,
                             process_incarnation: self.request.incarnation,
                             policy_epoch: epoch,
-                            ttl: input.policy_ttl.min(Duration::from_micros(remaining)),
+                            ttl: input
+                                .policy_ttl
+                                .min(Duration::from_micros(remaining))
+                                .min(job_remaining.unwrap_or(input.policy_ttl)),
                         },
                     )
                     .map_err(|_| OwnerError::Unavailable)?;

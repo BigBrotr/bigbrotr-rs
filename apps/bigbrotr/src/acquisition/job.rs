@@ -5,6 +5,14 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::num::NonZeroU64;
 
+/// Immutable attribution carried by a finite source operation. SQL rechecks
+/// current authority; constructing this value grants no execution permission.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct AcquisitionJobBinding {
+    pub job: bigbrotr_model::JobId,
+    pub scope: AcquisitionScopeId,
+}
+
 /// Profile1 bounds one requested run to at most24h. It does not bound future
 /// coverage or extend the much shorter renewable action-authorization window.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

@@ -191,6 +191,7 @@ pub async fn run(
         let started = Instant::now();
         let receive = owner.run_relay_source(
             RelaySourceRequest {
+                acquisition: None,
                 source,
                 visibility: &committed,
                 policy_ttl: Duration::from_secs(2),

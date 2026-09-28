@@ -88,6 +88,7 @@ fn event_source<'a>(
         binding,
         visibility,
         scope: acquisition.map(|c| c.scope()),
+        job: acquisition.and_then(|c| c.job()),
     }))
 }
 
@@ -98,6 +99,7 @@ struct InitialIngestContext<'a> {
     policy_ttl: Duration,
     request: Option<(ProducerRequestId, RequestPhase)>,
     source: Option<CurrentSourceCheck<'a>>,
+    network_event: bool,
     job: Option<ImportJobBinding>,
 }
 
@@ -195,6 +197,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
+                    network_event: false,
                     job: None,
                 },
                 validate,
@@ -253,6 +256,10 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source,
+                    network_event: matches!(
+                        input.event.origin(),
+                        bigbrotr_model::EventOrigin::Network
+                    ),
                     job: None,
                 },
                 |document, digest| validate(document, digest, &input.event),
@@ -316,6 +323,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: Some((request, RequestPhase::Reservation)),
                     source: None,
+                    network_event: false,
                     job: None,
                 },
                 &mut validate,
@@ -324,7 +332,7 @@ impl ControlSession {
         let staged = store
             .stage_initial_dictionaries(request, input.intent, input.limits, &permit)
             .map_err(InitialBatchError::Native)?;
-        producer_requests::reserve(&reservation_tx, &staged, spec.control, None, None)
+        producer_requests::reserve(&reservation_tx, &staged, spec.control, None, None, None)
             .await
             .map_err(InitialBatchError::Reservation)?;
         if input.cancelled.load(Ordering::Relaxed) {
@@ -354,6 +362,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: Some((request, RequestPhase::Dispatch)),
                     source: None,
+                    network_event: false,
                     job: None,
                 },
                 &mut validate,
@@ -450,6 +459,10 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: Some((input.event.request_id(), RequestPhase::Reservation)),
                     source,
+                    network_event: matches!(
+                        input.event.origin(),
+                        bigbrotr_model::EventOrigin::Network
+                    ),
                     job: None,
                 },
                 |document, digest| validate(document, digest, &input.event),
@@ -465,6 +478,10 @@ impl ControlSession {
             spec.control,
             input.relay_source,
             input.acquisition.map(|context| context.scope().identity()),
+            input
+                .acquisition
+                .and_then(|context| context.job())
+                .map(|binding| binding.job),
         )
         .await
         .map_err(InitialEventError::Reservation)?;
@@ -493,6 +510,10 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: Some((input.event.request_id(), RequestPhase::Dispatch)),
                     source,
+                    network_event: matches!(
+                        input.event.origin(),
+                        bigbrotr_model::EventOrigin::Network
+                    ),
                     job: None,
                 },
                 |document, digest| validate(document, digest, &input.event),
@@ -604,6 +625,7 @@ impl ControlSession {
                     policy_ttl: input.policy_ttl,
                     request: None,
                     source: None,
+                    network_event: false,
                     job: Some(input.batch.job),
                 },
                 |document, digest| {
@@ -634,7 +656,7 @@ impl ControlSession {
             .await
             .map_err(InitialEventError::InputBinding)?;
         for request in &staged {
-            producer_requests::reserve(&tx, request, spec.control, None, None)
+            producer_requests::reserve(&tx, request, spec.control, None, None, None)
                 .await
                 .map_err(InitialEventError::Reservation)?;
         }
@@ -710,16 +732,27 @@ impl ControlSession {
                 input
                     .source
                     .and_then(|s| s.scope.map(|scope| scope.identity())),
+                input.source.and_then(|s| s.job).map(|binding| binding.job),
                 phase,
             )
             .await
             .map_err(InitialOperationError::Source)?;
         }
-        if let Some(check) = input.source {
+        producer_sources::require_event_source(&tx, input.network_event, input.source)
+            .await
+            .map_err(InitialOperationError::Source)?;
+        let job_remaining = if let Some(check) = input.source {
+            let remaining =
+                producer_sources::require_job(&tx, spec.dataset_id, check.binding, check.job)
+                    .await
+                    .map_err(InitialOperationError::Source)?;
             producer_sources::require_current(&tx, spec.dataset_id, check)
                 .await
                 .map_err(InitialOperationError::Source)?;
-        }
+            remaining
+        } else {
+            None
+        };
         if let Some(job) = input.job {
             if job.config_revision != spec.config_revision
                 || job.policy_revision != spec.policy_revision
@@ -760,7 +793,10 @@ impl ControlSession {
                     dataset: spec.dataset_id,
                     process_incarnation: spec.process_incarnation,
                     policy_epoch: PolicyEpoch::new(policy.policy_revision),
-                    ttl: input.policy_ttl.min(Duration::from_micros(remaining)),
+                    ttl: input
+                        .policy_ttl
+                        .min(Duration::from_micros(remaining))
+                        .min(job_remaining.unwrap_or(input.policy_ttl)),
                 },
             )
             .map_err(|_| OwnerError::Unavailable)?;

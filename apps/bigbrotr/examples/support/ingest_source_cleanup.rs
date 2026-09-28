@@ -72,6 +72,7 @@ pub async fn run(
     let (result, ()) = {
         let receive = owner.run_relay_source(
             RelaySourceRequest {
+                acquisition: None,
                 source,
                 visibility,
                 policy_ttl: Duration::from_secs(5),

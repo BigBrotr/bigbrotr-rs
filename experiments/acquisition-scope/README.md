@@ -248,3 +248,16 @@ permission may already have changed. [Native evidence](../../docs/implementation
 records all16 schedules PASS at fef2f2b, with actual six-COMMIT counters, independent
 all-table/writer comparisons and retained original databases. No native adoption,
 dispatch, installed acquisition or capacity qualification follows.
+
+`bindings.py RUN_ROOT --execution` reuses the `acquisition-binding` build profile
+for additive0024. It proposes a populated upgrade/reapply and13 real PG/Rocks
+adapter cases: signed admission/retry/certification, changed/omitted jobs,
+all-omitted Network inputs including forged signatures and certification,
+unclaimed job, mismatched scope, expired admission/certification, actual enrollment
+withdrawal, missing0024 and a refusal only after durable reservation. The latter
+uses the row's transaction identity to keep immediate/deferred reservation checks
+intact. Complete native bytes and staged inputs use the original independent
+oracle; all operation tables/xmin are compared. Original templates stay retained.
+Expiry is observed in PostgreSQL before preflight; it is not delayed delivery
+qualification. Socket lifetime, held COMMIT, races, positive historical recovery
+and installed Sync remain subsequent evidence. Results determine execution status.

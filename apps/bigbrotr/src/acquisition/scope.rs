@@ -1,4 +1,5 @@
 //! Retained collection intent. Loading this data grants no source or admission authority.
+use super::job::AcquisitionJobBinding;
 use super::relay_source::RelaySourceBinding;
 use crate::runtime::OwnedPermit;
 use bigbrotr_model::{
@@ -23,6 +24,7 @@ pub enum ScopeEventError {
 pub struct AcquisitionEventContext<'a> {
     scope: &'a StoredAcquisitionScope,
     request: &'a [Filter],
+    job: Option<bigbrotr_model::JobId>,
 }
 impl<'a> AcquisitionEventContext<'a> {
     pub fn new(
@@ -32,7 +34,30 @@ impl<'a> AcquisitionEventContext<'a> {
         if request.is_empty() || request.len() > MAX_FILTERS {
             return Err(ScopeEventError::InvalidRequest);
         }
-        Ok(Self { scope, request })
+        Ok(Self {
+            scope,
+            request,
+            job: None,
+        })
+    }
+
+    /// Current acquisition carries the accepted job through every event effect.
+    /// The jobless constructor is only usable by earlier schema foundations.
+    pub fn for_job(
+        job: bigbrotr_model::JobId,
+        scope: &'a StoredAcquisitionScope,
+        request: &'a [Filter],
+    ) -> Result<Self, ScopeEventError> {
+        let mut context = Self::new(scope, request)?;
+        context.job = Some(job);
+        Ok(context)
+    }
+
+    pub fn job(self) -> Option<AcquisitionJobBinding> {
+        self.job.map(|job| AcquisitionJobBinding {
+            job,
+            scope: self.scope.identity(),
+        })
     }
 
     pub fn scope(self) -> &'a StoredAcquisitionScope {

@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn acquisition_execution_requires_its_own_persistent_binding() {
+    let applied: Vec<_> = plan(&[], 23)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next = plan(&applied, 24).expect("execution must bind the authorizing job additively");
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0024_acquisition_execution.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 24),
+        Err(MigrationError::MissingPrerequisite(24))
+    );
+    assert!(migrations::require_applied(&applied, 23).is_ok());
+}
+
+#[test]
 fn acquisition_claims_require_an_additive_guard_after_accepted_jobs() {
     let applied: Vec<_> = plan(&[], 22)
         .unwrap()

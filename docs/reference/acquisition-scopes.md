@@ -300,3 +300,46 @@ now distinguish actual COMMIT loss/cancellation/expiry and both policy/grant/sou
 account lock orders. The original deadline and immutable job attribution survive
 fresh-owner observation. No queued job is adopted. Job-bound socket/reservation/
 certification, native successor recovery and installed dispatch remain required.
+
+## Job-bound source and event effects (implementation in progress)
+
+Additive0024 retains the finite JobId on each new relay reservation, with a
+composite foreign key to its exact dataset/scope. Native input, receipt and fact
+formats do not change. Existing NULL-job reservations remain immutable historical
+inputs; no migration or retry adopts them. A populated upgrade adds a nullable
+plain bytea and constraints, without changing earlier checksums. Operators must
+upgrade before using the new job-bound consumer. Older source writers fail closed
+on new relay reservations after24; explicit unbound bootstrap/import still work.
+
+At24, every fresh Network admission and certification requires source, loaded
+scope and job, including invalid signatures and requests omitting all source
+fields. `AcquisitionEventContext::for_job` retains the original job alongside the
+actual collection/request predicate. The jobless constructor supports only earlier
+qualified foundations. Both reservation and dispatch compare stored job identity,
+including omission, before any native effect. A previously source-bound NULL-job
+request cannot authorize fresh dispatch; resolve a possible original outcome
+through the unchanged historical recovery protocol.
+
+Socket operations carry the same JobId/scope pair. Each socket, reservation,
+dispatch and CertifyExisting rechecks current account/action, exact same-owner
+queued/running job, scope/source, original duration and current policies. Queued
+eligibility is not a capability and does not claim the unfinished running/progress
+lifecycle. Accepted, paused, cancelling, terminal or foreign-owner work refuses.
+Both complete accepted documents, committed visibility, route/bans and actual
+source observation remain separate required checks.
+
+The job helper takes Control, dataset, actor/grant, enrollment and job locks
+before Ingest/producer. The new INSERT trigger precedes the existing source
+trigger; deferred INSERT validation checks the original deadline again at ordinary
+COMMIT. As with earlier guards, forcing constraints early does not establish a
+commit-time guarantee. Returned PostgreSQL remaining time caps the socket/native
+lease whose local ticket began before SQL. Waiting, processing and cleanup cannot
+reset that duration. Historical positive-outcome lookup/copy does not call this
+fresh-authority helper, even after job expiry or revocation.
+
+The initial practical wave is being prepared; no actual0024 engine result is yet
+claimed. It covers populated upgrade/reapply, signed admission/retry/certification,
+job substitution/omission, origin omission including forged signatures, unclaimed
+jobs, wrong scope, expiry, withdrawal, old schema and post-reservation refusal.
+Job-bound socket expiry/cleanup, held COMMIT, lock races, historical recovery and
+installed integration still require their actual practical evidence.

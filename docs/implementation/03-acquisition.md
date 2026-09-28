@@ -131,6 +131,13 @@ orders. Job-bound socket/reservation/certification, native recovery, progress an
 installed CLI acceptance remain separate parts of Step3 onward; no whole task
 closes here.
 
+Active P03-T01 Step3/P03-T02 Step3 now has the additive0024 job-bound consumer
+implementation. New Network socket/admission/certification must use the original
+claimed job, scope and remaining duration; historical outcome recovery stays
+separate. A populated upgrade and13 actual PG/Rocks cases are prepared in
+`bindings.py --execution`; their engine results are not yet available. This does
+not close socket deadline/fault qualification, running/progress lifecycle or M1.
+
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership
 checks. It supplies Step2 and part of Step1/P01-T03 Step5; no whole task checkbox
