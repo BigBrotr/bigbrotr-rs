@@ -353,5 +353,18 @@ closes with Authority; held and already-ready rollback responses cannot deliver
 data after job expiry. Actual backend state, C/Z frames, peer EOF and value disposal
 distinguish these paths. Missing, unclaimed and preexpired jobs never connect.
 Every operation preserves all67 tables/xmin, complete native bytes and original
-input. These finite fixtures establish no production capacity. Held reservation
-COMMIT, lock races, historical recovery and installed integration remain open.
+input. These finite fixtures establish no production capacity.
+
+[Eleven job-effect fault schedules](../implementation/evidence/p03-job-effect-faults-native-20260928.json)
+now qualify reservation/outcome COMMIT loss, policy lock races, held-COMMIT
+cancellation and historical recovery at23701f8 using exact375aa05 artifacts.
+Cancellation poisons adapter reuse while its actual driver retains custody;
+explicit release can still commit. A reservation delayed beyond the original job
+deadline is rejected by PostgreSQL: its staged input remains, with no reservation,
+native outcome or prefix movement. The adapter conservatively reports CommitUnknown.
+After expiry, policy advancement and authenticated withdrawal, fresh Control
+recovers only original native outcomes, never new authority or job ownership.
+Reservation-only and rejected-COMMIT cases remain Unresolved. The original375aa05
+fixture timing-query failure is preserved; no admission case completed there.
+These fixtures use a frozen policy validator. Concrete arrival-policy/socket
+custody, native successor recovery, progress and installed M1 remain separate work.

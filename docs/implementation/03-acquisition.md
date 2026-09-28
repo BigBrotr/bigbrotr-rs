@@ -139,8 +139,13 @@ now pass at19945dc through `bindings.py --execution`, with independent complete
 native/input and operation-state comparisons. [Seven actual socket schedules](evidence/p03-job-source-transport-native-20260928.json)
 now pass at603cc57: pending read expiry, held/late-ready rollback delivery and
 binding refusals while Control stays live. The source closes before rollback and
-expired values are disposed; complete operation state stays unchanged. Reservation
-COMMIT/recovery, running/progress lifecycle and installed M1 remain open.
+expired values are disposed; complete operation state stays unchanged.
+[Eleven job-effect fault schedules](evidence/p03-job-effect-faults-native-20260928.json)
+now qualify held/lost reservation and outcome COMMITs, policy races, cancellation,
+deferred job expiry and exact historical recovery after expiry/withdrawal. The
+fixture-only retry23701f8 reuses375aa05 binaries and preserves its original setup
+failure. No product migration changed. Concrete arrival-policy/socket custody,
+running/progress lifecycle and installed M1 remain open.
 
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership

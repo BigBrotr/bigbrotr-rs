@@ -12,36 +12,39 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac candidate375aa05; private origin43ffde0. Root owns a Python-only correction
-to experiments/relay-source/faults.py and the evidence/checkpoint. All owned
-resources are stopped/retained; no active experiment or cleanup debt.
+Mac candidate23701f8; private origin43ffde0. Root owns the qualification evidence
+and documentation. All owned resources are stopped/retained; no active experiment
+or cleanup debt. Complete product remains INCOMPLETE.
 
-Candidate375aa05 extends the existing laboratory to0024 and an
-authentic original job: eight concurrency/COMMIT schedules, two observed held
-COMMIT cancellations with explicit release, and a delayed reservation COMMIT
-past the job deadline. Source operation policyTTL5s/owners60s distinguish a2s
-expiry case. Normal jobs are5s; historical recovery waits actual expiry before
-policy2 and authenticated withdrawal. Inputs, reservations, native outcomes and
-PG copies are checked separately. SQL rejection can report conservative
-Reservation(CommitUnknown) with no reservation/native effect and a staged input.
-Actual native close precedes old Control/driver disposal. Mac scoped Clippy and
-native release build/Clippy PASS. The engine run FAILED in its first pass setup,
-before the source operation: the unmaterialized volatile clock grouping returned
-multiple JSON rows. No case completed. Preserve the original outcome; this is a
-fixture query failure, not a measured admission failure. Corrected SQL uses one
-materialized timestamp, preserving the original job/owner remaining-time checks.
-No Rust/product/migration change; reuse exact375aa05 artifacts in a separate Git
-retry and verify all changed paths are documentation/Python only.
+[Job-effect fault evidence](evidence/p03-job-effect-faults-native-20260928.json)
+qualifies11 schedules at fixture23701f8 using exact375aa05 native artifacts:
+policy lock races, reservation/outcome COMMIT loss, both held-COMMIT cancellations,
+deferred job expiry and historical recovery after expiry/policy advancement/
+authenticated withdrawal. Inputs, reservations, native outcomes and PG copies stay
+distinct. Rejected deferred COMMIT leaves staged CBOR but no reservation/native
+outcome; the existing API conservatively returns Reservation(CommitUnknown).
+Actual native close precedes old Control/driver disposal. Recovery neither adopts
+the old job nor grants fresh authority. All67 tables/xmin, full native/input/receipt
+bytes and original job fingerprints were compared. Root checked1587 exact Git
+files and130 captures; five actual lock barriers and original inputs pass.
 
-Original run acquisition-binding-recovery-375aa05: buildowner3b88bcbbc2aa1ed28b242d169b7d50b5,
-PID3614894/start400550793 terminal; fetchde77ce80/native49d5533a exit0.
-EnginePID3617319/start400559966 terminal; client39b4d2e stopped143, PG71775507
-stopped0/no OOM. One clone/native store retained. Audit19:23:51UTC verified967
-prior projections unchanged, eight unrelated running, lock free and62,153,023,488B
-available. Shared1154757 holds375aa05 intermediates; exact artifacts retained.
-Inventory implementation_network_20260928.job_effect_faults and ignored
-.research/implementation/job-effect-faults-20260928 own original-failure capture,
-local checks and launch/collection recipes. Never replay the original launch.
+Original375aa05 failed before any source admission because the volatile clock
+query returned multiple JSON rows. Its FAIL, first clone/native input and all logs
+remain intact; its post-suite SQL comparison was NOT_RUN.23701f8 changes only
+Python/documentation and samples one materialized timestamp. No Rust, migration,
+dependency change or rebuild. Mac scoped Clippy and native release CLI/probe plus
+scoped Clippy PASS at375aa05; unchanged component suites were not repeated.
+
+Retry acquisition-binding-recovery-23701f8: PID3622273/start400612650 terminal,
+client198c77b8 stopped143, borrowedPG71775507 stopped0/no OOM. Eleven new clones
+retained. Audit19:32:32UTC verified968 prior projections unchanged, eight unrelated
+running, compiler lock free and61,875,560,448B available. Original buildowner
+3b88bcbbc2aa1ed28b242d169b7d50b5, fetchde77ce80/native49d5533a remain stopped0;
+original failed client39b4d2e remains stopped143. Shared1154757 holds375aa05
+intermediates; exact artifacts are retained separately. Inventory
+implementation_network_20260928.job_effect_faults and ignored
+.research/implementation/job-effect-faults-20260928 own recipes, original-failure,
+retry-capture and root-review. Never replay launchers or completed cache retirement.
 
 [Native source lifetime evidence](evidence/p03-job-source-transport-native-20260928.json)
 qualifies seven actual socket/preflight/cleanup schedules. Authentic two-second
@@ -72,18 +75,17 @@ than adding another transport framework. Native store destruction precedes actua
 Control/driver teardown. No product, applied SQL, codec or dependency change was
 needed. Fixture setup timing margins are not authority/capacity guarantees.
 
-Next: commit the timing-query correction, transfer clean Git and rerun faults.py
---jobs in a new isolated root with exact375aa05 artifacts, without recompiling.
-Preserve exact original requests and resolve historical
-outcomes after expiry/withdrawal without new authority. Existing frozen fixture
-policy checks qualify binding/recovery, not the concrete SyncArrivalPolicy consumer.
-This is P03-T01 Step3/P03-T02 Step3. The next user-visible M1 deliverable remains
-signed socket→durable admission→archive/read→restart/resend. Concrete remaining
-prerequisites: bounded retained request/observation and dictionary custody,
-living initial-owner command delivery (P01-T09 Step1/P02-T02 Steps2/3), and
-restart authority. A second Control/native store is not a delivery mechanism.
-No full Discovery/Monitor subsystem is prerequisite. Installed Sync, progress,
-capacity, arm64 and the complete product remain INCOMPLETE.
+Next: finish qualification review/commit/push, then implement the bounded
+retained request/observation consumer feeding concrete SyncArrivalPolicy and
+job-bound admission from actual signed socket frames. Read current WebSocket,
+scope/request, committed dictionary/bootstrap and initial-owner boundaries first.
+The frozen validator in the fault fixture does not qualify that consumer.
+This is P03-T01 Step3/P03-T02 Steps1/2/3. The next user-visible M1 deliverable remains
+signed socket→durable admission→archive/read→restart/resend. Remaining actual
+prerequisites include committed dictionary custody, living initial-owner command
+delivery (P01-T09 Step1/P02-T02 Steps2/3) and restart authority. A second Control/
+native store is not a delivery mechanism. No full Discovery/Monitor subsystem is
+prerequisite. Installed Sync, progress, capacity, arm64 and product remain open.
 
 [Native event-effect evidence](evidence/p03-acquisition-execution-native-20260928.json)
 qualifies populated0024 upgrade/reapply and13 PG/Rocks admission/certification

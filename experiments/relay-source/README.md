@@ -132,3 +132,17 @@ Transcript-write or census failure must still reach owned-resource shutdown and
 produce incomplete evidence. The actual cleanup block is independently exercised
 with failing transcript writes; preserve that fixture result alongside native
 outcomes. It is lifecycle evidence only, not a storage-engine result.
+
+`faults.py ROOT --jobs` extends the scoped schedules to migration0024 and actual
+finite job acceptance/claim. It adds observed held-COMMIT cancellation at both
+reservation and outcome, plus a reservation COMMIT released after actual job
+expiry while owner leases remain live. Recovery waits for original driver closure
+and job expiry before policy advancement and authenticated withdrawal. Keep staged
+input, relational reservation, native outcome and PostgreSQL outcome copy distinct.
+The first375aa05 run failed before admission because its timing query emitted
+multiple rows; preserve that original. Fixture23701f8 materializes one clock and
+passes all11 schedules with the exact375aa05 binaries, without rebuilding. Scoped
+reuse verifies hashes and permits only documentation/Python Git differences.
+See [job-effect qualification](../../docs/implementation/evidence/p03-job-effect-faults-native-20260928.json)
+for executed boundaries and exclusions. This frozen-validator fixture does not
+replace concrete SyncArrivalPolicy/socket custody or the installed M1 journey.
