@@ -2,7 +2,7 @@
 //! The external laboratory owns wire faults and lock schedules; no product hook.
 use super::*;
 use bigbrotr::{
-    acquisition::relay_source::RelaySourceBinding,
+    acquisition::{relay_source::RelaySourceBinding, scope::AcquisitionEventContext},
     management::{
         credentials::HASH_RESERVATION, grants::Revision, relay_enrollment::EnrollmentCommand,
         sessions::SessionLifetime,
@@ -11,7 +11,7 @@ use bigbrotr::{
         postgres::{
             control_owner::{
                 EnrollmentRoutes, InitialEventError, InitialEventRequest, ProducerCloseRequest,
-                ProducerResolveError, ProducerResolveRequest,
+                ProducerResolveError, ProducerResolveRequest, ScopeIntent,
             },
             producer_outcomes::OutcomeError,
             producer_requests::ReservationError,
@@ -46,14 +46,42 @@ pub async fn run(
     source: RelaySourceBinding,
     mut enrollment: EnrollmentCommand,
 ) {
+    let (scoped, mode) = match mode.strip_prefix("source-fault-scope-") {
+        Some(phase) => (true, phase),
+        None => (false, mode.strip_prefix("source-fault-").unwrap()),
+    };
     assert!(matches!(
         mode,
-        "source-fault-pass"
-            | "source-fault-admission"
-            | "source-fault-reservation-lost"
-            | "source-fault-outcome-lost"
-            | "source-fault-source-refused"
+        "pass" | "admission" | "reservation-lost" | "outcome-lost" | "source-refused"
     ));
+    let retained_scope = if scoped {
+        let selector = bigbrotr_protocol::selector::decode_selector(
+            br#"{"version":1,"filters":[{"kinds":[1]}],"history_since":0,"ephemeral":"retain"}"#,
+        )
+        .unwrap();
+        let registered = owner
+            .register_acquisition_scope(
+                ScopeIntent {
+                    selector: &selector,
+                    endpoint: source.endpoint_id,
+                    access: source.access_scope_id,
+                    visibility: enrollment.visibility,
+                    policy_epoch: bigbrotr_model::PolicyEpoch::new(1),
+                },
+                &Cell::new(false),
+            )
+            .await
+            .unwrap();
+        Some(
+            owner
+                .read_acquisition_scope(registered.identity, grant(budget, 8 * MIB, 0))
+                .await
+                .unwrap()
+                .unwrap(),
+        )
+    } else {
+        None
+    };
     let validate = |d: &str, h| validate_version(d, h, true);
     let backend = observer
         .query_one(
@@ -69,7 +97,8 @@ pub async fn run(
             "endpoint":hex(source.endpoint_id.as_bytes()),
             "access":hex(source.access_scope_id.as_bytes()),
             "generation":source.enrollment_generation.get(),
-            "route":hex(source.route_id.as_bytes())},
+            "route":hex(source.route_id.as_bytes()),
+            "scope":retained_scope.as_ref().map(|scope|scope.identity())},
         "state":ingest_snapshot::state(observer,path).await}),
     );
     // This gate precedes the operation's fresh policy lease. It never pauses a
@@ -125,7 +154,9 @@ pub async fn run(
                 registration: spec,
                 event: prepared,
                 relay_source: Some(source),
-                acquisition: None,
+                acquisition: retained_scope.as_ref().map(|scope| {
+                    AcquisitionEventContext::new(scope, scope.selector().filters()).unwrap()
+                }),
                 provenance_enabled: false,
                 recorded_at: ObservedTime::new(1234),
                 limits: admission,
@@ -151,16 +182,15 @@ pub async fn run(
         )
         .await;
     let expected = match mode {
-        "source-fault-pass" | "source-fault-admission" => None,
-        "source-fault-reservation-lost" => Some(InitialEventError::Reservation(
+        "pass" | "admission" => None,
+        "reservation-lost" => Some(InitialEventError::Reservation(
             ReservationError::CommitUnknown,
         )),
-        "source-fault-outcome-lost" => {
-            Some(InitialEventError::Outcome(OutcomeError::CommitUnknown))
-        }
-        "source-fault-source-refused" => {
-            Some(InitialEventError::Source(SourceBindingError::Unavailable))
-        }
+        "outcome-lost" => Some(InitialEventError::Outcome(OutcomeError::CommitUnknown)),
+        // This initial factory is bound to the original accepted revisions.
+        // Its post-wait snapshot refuses an advanced head before scope checks.
+        "source-refused" if scoped => Some(InitialEventError::Control(OwnerError::InvalidPolicy)),
+        "source-refused" => Some(InitialEventError::Source(SourceBindingError::Unavailable)),
         _ => unreachable!(),
     };
     let admitted_receipt = match result {
@@ -183,13 +213,34 @@ pub async fn run(
     );
     drop(owner);
     crate::ingest_closing::join(driver, mode.ends_with("-lost")).await;
-    if matches!(
-        mode,
-        "source-fault-source-refused" | "source-fault-admission"
-    ) {
+    if matches!(mode, "source-refused" | "admission") {
         drop(store);
         emit(serde_json::json!({"event":"source-fault-done","driver_joined":true}));
         return;
+    }
+    if scoped {
+        // The released Control driver cannot retain locks while the external
+        // laboratory advances policy. Native exclusion stays with this worker.
+        emit(serde_json::json!({"event":"scope-recovery-ready", "driver_joined":true}));
+        let gate = path.with_extension("recover");
+        let deadline = tokio::time::Instant::now() + Duration::from_secs(20);
+        while !gate.exists() {
+            assert!(
+                tokio::time::Instant::now() < deadline,
+                "scope recovery gate expired"
+            );
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+        let row = observer
+            .query_one(
+                "SELECT config_revision::text,policy_revision::text FROM control.datasets",
+                &[],
+            )
+            .await
+            .unwrap();
+        assert_eq!((row.get::<_, &str>(0), row.get::<_, &str>(1)), ("2", "2"));
+        enrollment.expected_config_revision = Revision::try_from("2".to_owned()).unwrap();
+        enrollment.expected_policy_revision = Revision::try_from("2".to_owned()).unwrap();
     }
 
     // Positive historical resolution must survive actual source revocation.
@@ -273,7 +324,7 @@ pub async fn run(
         )
         .await
         .unwrap();
-    let unresolved = mode == "source-fault-reservation-lost";
+    let unresolved = mode == "reservation-lost";
     assert_eq!(closed.issued_through(), if unresolved { 1 } else { 2 });
     let baseline = ingest_snapshot::state(observer, path).await;
     emit(

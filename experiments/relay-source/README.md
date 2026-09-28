@@ -44,7 +44,7 @@ the specific expected source or ambiguous-COMMIT result. Recovery modes join the
 old driver, acquire real fresh Control, authenticate/withdraw the enrollment,
 close the historical native producer and resolve the original request. The
 external driver must independently verify fault position, lock ordering, durable
-rows and all original bytes; these new schedules are not yet executed.
+rows and all original bytes; their scoped execution is recorded below.
 
 `faults.py ROOT` borrows that same stopped PostgreSQL/template and uses the new
 87ad138 probe only after checking exact product/build input equality. It first
@@ -105,3 +105,30 @@ actual configuration consumer distinguish a real ban from invalid policy bytes.
 The nonmatching /other ban must permit the same /private socket. These schedules
 passed at81a35c5; see the [bounded native report](../../docs/implementation/evidence/p04-source-races-native-20260928.json).
 The result does not complete installed acquisition or qualify production capacity.
+
+
+The `acquisition-binding-recovery` profile builds the same probe with retained
+scope context and scoped Clippy. `faults.py ROOT --scope` selects eight schedules
+on fresh upgraded clones using that root's exact executable. It adds one literal
+kind1 scope before measuring setup COMMITs. Concurrent writers advance both
+configuration and policy heads to2 under the real dataset lock; complete document
+bytes/digests stay unchanged. Writer-first commit/rollback and reservation/dispatch
+first schedules retain observed backend-incarnation barriers. They qualify locking
+and rechecks, not management policy activation. This initial factory is bound to
+its original configuration/policy revisions: the post-wait snapshot returns
+InvalidPolicy before the narrower scope-epoch guard. Raw SQL schedules must
+separately exercise that guard; these races cannot be claimed as its isolation test.
+
+For normal and lost-COMMIT recovery, the probe first joins the original Control
+driver and then waits while the external fixture advances policy. A fresh real
+Control session performs authenticated source withdrawal at revision2 before
+closing and resolving the original producer. Original scope epoch1, reservation,
+input bytes, receipt and historical outcome attribution must survive. A committed
+reservation without native outcome remains Unresolved. These eight scoped
+schedules are NOT_RUN until their native report exists. Raw relational negatives,
+installed Sync, process capacity and M1 remain separate acceptance.
+
+Transcript-write or census failure must still reach owned-resource shutdown and
+produce incomplete evidence. The actual cleanup block is independently exercised
+with failing transcript writes; preserve that fixture result alongside native
+outcomes. It is lifecycle evidence only, not a storage-engine result.

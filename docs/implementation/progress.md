@@ -12,10 +12,19 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main is 70eea6f1c27e347843300de2087d0db2ba197f5a; candidate not pushed. Private origin/main
-remains e21f651931117d74b9c906d4682fb91b09bb25bc. The candidate was clean at
-exact-Git transfer. Root owns the qualification report and affected inventory,
-checkpoint, task, reference and laboratory documentation updates.
+Mac main and private origin/main are37a8d0c (full hash verified in Git), clean
+following the qualification push. Root now extends only the existing source fault
+probe/harness and its scoped build profile, with separate scope-mode expectations.
+No product/SQL change. Mac scoped probe Clippy PASS; Python syntax/diff checks
+pass. The actual cleanup block now catches each failed transcript write and census
+failure; isolated before/after execution confirms shutdown and incomplete evidence
+while retaining the original failure. Logs/counterexample:
+.research/implementation/acquisition-binding-recovery-20260928.
+Concurrency/recovery engine schedules NOT_RUN; independent read-only review active.
+Root and reviewer both found the fixture must expect Control(InvalidPolicy) after
+a real head advance: the initial factory snapshot refuses the changed revisions
+before the narrower scope guard. Preserved that product ordering and corrected
+the fixture; raw SQL isolation of the scope guard remains a separate gate.
 Native refusal-probe build and four actual PG/Rocks schedules PASS at70eea6f.
 Root compared1,542 exact Git source hashes and47 captured payloads, including
 full native bytes and exact permitted PG changes. Evidence:

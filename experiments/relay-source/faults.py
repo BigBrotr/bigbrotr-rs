@@ -35,15 +35,20 @@ from oracle import complete_source
 from locks import blocked
 
 root = Path(sys.argv[1]).resolve(strict=True)
-assert SOURCE == root / 'source'
+assert len(sys.argv) in (2, 3) and SOURCE == root / 'source'
+scoped = len(sys.argv) == 3
+assert not scoped or sys.argv[2] == '--scope'
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-build = root.parent / 'relay-source-faults-87ad138/out/artifacts'
+build = root / 'out/artifacts' if scoped else root.parent / 'relay-source-faults-87ad138/out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 sha = lambda value: hashlib.sha256(value).hexdigest()
-assert built['source'] == '87ad138926d164e47a8cd9b653b8bca19759c0a7'
-changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
-assert changed and all(n.startswith(('docs/', 'experiments/')) for n in changed), changed
+if scoped:
+    assert built['source'] == revision
+else:
+    assert built['source'] == '87ad138926d164e47a8cd9b653b8bca19759c0a7'
+    changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
+    assert changed and all(n.startswith(('docs/', 'experiments/')) for n in changed), changed
 for name, key in [('bigbrotr', 'binary_sha256'), ('ingest_bootstrap_probe', 'probe_sha256')]:
     assert sha((build / name).read_bytes()) == built[key]
 original = root.parent / 'relay-source-recheck-e06f580'
@@ -56,7 +61,7 @@ output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.relay-source-faults'
 client = 'bigbrotr-relay-source-faults-' + revision[:7]
 report = dict(format='bigbrotr-relay-source-faults/1', source=revision, build=built,
-    application_source=built['source'], owner=owner, label=label, status='RUNNING',
+    application_source=built['source'], scoped=scoped, owner=owner, label=label, status='RUNNING',
     client=None, postgres=pg['postgres'], postgres_owner=pg['owner'], cases=[], databases=[],
     original_report_sha256=sha(original_report), not_run=['source grant and socket attribution',
     'private routes and bans', 'large ledger upgrade', 'load/aged state', 'arm64/release'])
@@ -78,7 +83,7 @@ def containers():
 
 def rows(db):
     names = json.loads(lab.sql(pg, db, "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    assert len(names) == 64 and all(re.fullmatch('[a-z_]+', n) for n in names)
+    assert len(names) in ((64, 66) if scoped else (64,)) and all(re.fullmatch('[a-z_]+', n) for n in names)
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
         f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     return json.loads(lab.sql(pg, db, 'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(parts) + ') t'))
@@ -132,6 +137,8 @@ def writer_for(db, ready):
     require(re.fullmatch('[0-9a-f]{32}', endpoint), 'endpoint-shape')
     predicate = f"endpoint_id=decode('{endpoint}','hex')"
     lock = 'SELECT dataset_id FROM control.datasets FOR UPDATE;'
+    if scoped:
+        return writer, lock, ADVANCE_POLICY, ''
     withdrawal = f'UPDATE control.relay_enrollments SET enabled=false WHERE {predicate};'
     # Exact current/historical generation3 exists and is enabled; only old source
     # generation1 is stale. Replica injection bypasses command/audit authorization
@@ -147,7 +154,42 @@ def writer_for(db, ready):
     return writer, lock, withdrawal, reenroll
 
 
+ADVANCE_POLICY = """
+    INSERT INTO control.config_revisions
+        SELECT 2,dataset_id,1,2,authority_mode,document,document_digest,accepted_source_digest,
+            accepted_at_us+1,actor_id FROM control.config_revisions WHERE revision=1;
+    INSERT INTO control.policy_revisions
+        SELECT 2,dataset_id,1,2,2,document,document_digest,accepted_at_us+1,actor_id
+        FROM control.policy_revisions WHERE revision=1;
+    UPDATE control.datasets SET config_revision=2,policy_revision=2;
+"""
+
+
+def verify_policy(before, after):
+    require(len(before['datasets']) == len(after['datasets']) == 1, 'single-policy-dataset')
+    require(after['datasets'] == [dict(before['datasets'][0], config_revision=2,
+        policy_revision=2, xmin=after['datasets'][0]['xmin'])], 'exact-policy-advance')
+    for table in ('config_revisions', 'policy_revisions'):
+        require(len(before[table]) == 1 and all(r in after[table] for r in before[table]), 'retained-policy-document')
+        added = [r for r in after[table] if r not in before[table]]
+        require(len(added) == 1, 'policy-row-count')
+        expected = dict(before[table][0], revision=2, previous_revision=1,
+            accepted_at_us=before[table][0]['accepted_at_us']+1, xmin=added[0]['xmin'])
+        if table == 'policy_revisions': expected['config_revision'] = 2
+        require(added == [expected], 'exact-copied-policy')
+    require(before['acquisition_scopes'] == after['acquisition_scopes']
+        and before['acquisition_selectors'] == after['acquisition_selectors'], 'scope-rebound-after-policy')
+
+
 def verify_injection(before, final, binding, schedule):
+    if scoped:
+        policy_tables = ['datasets', 'config_revisions', 'policy_revisions']
+        if schedule == 'writer_rollback':
+            require(all(before[t] == final[t] for t in policy_tables), 'policy-rollback')
+        else:
+            verify_policy(before, final)
+        unchanged(before, final, policy_tables + ['producer_epochs', 'producer_requests', 'producer_outcomes'])
+        return
     endpoint = '\\x' + binding['endpoint']
     selected = lambda table: next(r for r in table if r['endpoint_id'] == endpoint)
     expected = copy.deepcopy(selected(before['relay_enrollments']))
@@ -193,13 +235,22 @@ def verify_native(name, dataset, committed, closing, staged):
 
 
 def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baseline=None):
-    db = 'bb_source_fault_' + revision[:7] + '_' + name
+    db = ('bb_scope_recovery_' if scoped else 'bb_source_fault_') + revision[:7] + '_' + name
     require(re.fullmatch('[a-z0-9_]{1,63}', db), 'database-name')
     report['active_case'] = name
     save()
     lab.sql(pg, 'postgres', f'CREATE DATABASE {db} OWNER bigbrotr_migrator TEMPLATE bb_source_template')
     report['databases'].append(db)
     require(rows(db) == template_before, 'clone-state')
+    if scoped:
+        config = lab.config(output, dict(pg, client=client), db, endpoint='127.0.0.1:5432', boundary='loopback')
+        migrated = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
+            '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '21')
+        (output / (name + '-migration.stdout')).write_text(migrated.stdout)
+        (output / (name + '-migration.stderr')).write_text(migrated.stderr)
+        require(migrated.returncode == 0, 'scope-migration')
+        lab.sql(pg, db, 'GRANT SELECT,INSERT ON control.acquisition_selectors,control.acquisition_scopes TO bigbrotr_control; '
+            'GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
     proxy = Process(['docker', 'exec', '-i', client, 'python3', '-B',
         '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
         '--listen-port', '6543', '--mode', wire_mode, '--commit-number', str(commit),
@@ -209,7 +260,8 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
     proxy_ready = proxy.event('ready', 10)
     require(proxy_ready['proxy_sha256'] == sha((SOURCE / 'experiments/control-migrations/fault_proxy.py').read_bytes()), 'proxy-source')
     process = Process(['docker', 'exec', client, '/build/ingest_bootstrap_probe',
-        'source-fault-' + app_mode, db, '/run/secrets/application', '/lab/' + name], limit=8*1024**2)
+        ('source-fault-scope-' if scoped else 'source-fault-') + app_mode,
+        db, '/run/secrets/application', '/lab/' + name], limit=8*1024**2)
     processes.append((name + '-probe', process))
     initialized = event(process, 'initialized')
     ready = event(process, 'source-ready')
@@ -248,9 +300,18 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
         sessions.remove(writer)
     admitted = event(process, 'source-admission-finished')
     recovery = app_mode in ('pass', 'reservation-lost', 'outcome-lost')
-    revoked = closed = None
+    revoked = closed = policy_advanced = None
     resolved = []
     if recovery:
+        if scoped:
+            released = event(process, 'scope-recovery-ready')
+            require(released['driver_joined'], 'old-driver-custody')
+            lab.sql(pg, db, 'BEGIN; SELECT dataset_id FROM control.datasets FOR UPDATE;' + ADVANCE_POLICY + 'COMMIT;')
+            policy_advanced = rows(db)
+            admitted_rows = state_rows(admitted['state'])
+            verify_policy(admitted_rows, policy_advanced)
+            unchanged(admitted_rows, policy_advanced, ['datasets', 'config_revisions', 'policy_revisions'])
+            (output / (name + '.recover')).touch(exist_ok=False)
         revoked = event(process, 'source-revoked')
         closed = event(process, 'source-closed')
         for _ in range(1 if app_mode == 'reservation-lost' else 2):
@@ -271,6 +332,17 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
     first = before['producer_requests'][0]
     require(first in final['producer_requests'] and before['producer_outcomes'][0] in final['producer_outcomes'], 'bootstrap-history-changed')
     binding = ready['binding']
+    if scoped:
+        require(re.fullmatch('[0-9a-f]{32}', binding['scope']), 'scope-identity')
+        require(len(before['acquisition_scopes']) == len(before['acquisition_selectors']) == 1, 'one-retained-scope')
+        original_scope = before['acquisition_scopes'][0]
+        require(original_scope['scope_id'] == '\\x' + binding['scope'] and original_scope['policy_revision'] == 1
+            and original_scope['endpoint_id'] == '\\x' + binding['endpoint']
+            and original_scope['access_scope_id'] == '\\x' + binding['access'], 'original-scope-source')
+        require(before['acquisition_scopes'] == final['acquisition_scopes']
+            and before['acquisition_selectors'] == final['acquisition_selectors'], 'immutable-scope-history')
+        document = b'{"version":1,"filters":[{"kinds":[1]}],"history_since":0,"ephemeral":"retain"}'
+        require(before['acquisition_selectors'][0]['document'] == '\\x' + document.hex(), 'literal-scope-document')
     if schedule:
         verify_injection(before, final, binding, schedule)
     if staged:
@@ -280,6 +352,8 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
             request['relay_route_id'] == '\\x' + binding['route'] and
             request['relay_enrollment_generation'] == 1 and request['issuer_epoch'] == 1, 'original-source-reservation')
         require(request in state_rows(admitted['state'])['producer_requests'], 'recovery-rebound-reservation')
+        if scoped:
+            require(request['acquisition_scope_id'] == '\\x' + binding['scope'], 'original-scope-reservation')
         _, expected_inputs, _ = complete_source(dataset, True)
         require(request['request_digest'] == '\\x' + sha(expected_inputs[2]) and
             request['input_bytes'] == len(expected_inputs[2]) and
@@ -308,7 +382,7 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
         require(not enrollment['enabled'] and enrollment['generation'] == 2 and
             len(revoked_rows['relay_enrollment_changes']) == len(before['relay_enrollment_changes']) + 1,
             'actual-authenticated-withdrawal')
-        unchanged(admitted_rows, revoked_rows, ['role_instances', 'owner_epochs', 'login_buckets',
+        unchanged(policy_advanced if scoped else admitted_rows, revoked_rows, ['role_instances', 'owner_epochs', 'login_buckets',
             'browser_sessions', 'management_audit', 'management_commands',
             'relay_enrollment_changes', 'relay_enrollments'])
         close_rows = state_rows(closed['state'])
@@ -336,10 +410,11 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
                 'exact-current-role-retirement')
     else:
         allowed = ['producer_epochs', 'producer_requests', 'producer_outcomes'] if staged else []
-        if schedule != 'writer_rollback':
-            allowed += ['relay_enrollments']
-        if schedule == 'reservation_first':
-            allowed += ['relay_enrollment_changes']
+        if scoped:
+            if schedule != 'writer_rollback': allowed += ['datasets', 'config_revisions', 'policy_revisions']
+        else:
+            if schedule != 'writer_rollback': allowed += ['relay_enrollments']
+            if schedule == 'reservation_first': allowed += ['relay_enrollment_changes']
         unchanged(before, final, allowed)
     expected_count = count + (1 if app_mode == 'reservation-lost' or schedule == 'reservation_first' else 2 if committed else 0)
     counters = [wire[k] for k in ('commits_seen', 'commits_forwarded', 'server_commit_complete', 'client_commit_complete', 'faults')]
@@ -351,7 +426,7 @@ def run_case(name, app_mode, wire_mode='pass', commit=64, schedule=None, baselin
     require(counters == wanted, 'exact-wire-COMMIT-boundary:' + str(counters) + ':' + str(wanted))
     report['cases'].append(dict(name=name, status='PASS', db=db, baseline_commits=count,
         observation=observation, initial_wire=initial_wire, wire=wire, barriers=barriers,
-        admission=admitted, revoked=revoked, closed=closed, resolved=resolved,
+        admission=admitted, policy_advanced=policy_advanced, revoked=revoked, closed=closed, resolved=resolved,
         before=before, final=final, complete_native_bytes=True))
     save()
     return count
@@ -432,8 +507,11 @@ finally:
             process.stop()
         except BaseException as error:
             errors.append('process-' + type(error).__name__)
-        (output / (name + '.stdout')).write_bytes(process.stdout)
-        (output / (name + '.stderr')).write_bytes(process.stderr)
+        for suffix, transcript in [('stdout', process.stdout), ('stderr', process.stderr)]:
+            try:
+                (output / (name + '.' + suffix)).write_bytes(transcript)
+            except BaseException as error:
+                errors.append('transcript-' + type(error).__name__)
     try:
         item = json.loads(lab.docker('inspect', target['Id']).stdout)[0]
         require(item['Config']['Labels'][lab.LABEL] == pg['owner'], 'postgres-owner')
@@ -444,7 +522,11 @@ finally:
         (output / 'postgres.stderr').write_text(logs.stderr)
     except BaseException as error:
         errors.append('postgres-' + type(error).__name__)
-    current = {c['Id']: projection(c) for c in containers()}
+    try:
+        current = {c['Id']: projection(c) for c in containers()}
+    except BaseException as error:
+        current = {}
+        errors.append('inventory-' + type(error).__name__)
     owned = [target['Id']] + ([report['client']['id']] if report['client'] else [])
     report.update(cleanup_errors=errors, missing_owned=[i for i in owned if i not in current],
         terminal=[current[i] for i in owned if i in current],
