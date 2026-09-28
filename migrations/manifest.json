@@ -141,6 +141,10 @@
     {
       "version": 20,
       "name": "0020_relay_source_bindings.sql"
+    },
+    {
+      "version": 4,
+      "name": "0004_acquisition.sql"
     }
   ],
   "reserved": [

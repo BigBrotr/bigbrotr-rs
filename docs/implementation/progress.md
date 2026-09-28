@@ -13,6 +13,8 @@ blocked. No public release, rename, native Linux arm64 or complete release claim
 The active unbudgeted goal covers the whole selected product, not this slice.
 
 Local main and private origin/main are verified at
+72ce9db50b4177bc1ba988d82ccdecf3265f8835 (selector native evidence), following
+061890f3b07e8775ca99f384c03681c12168a37f (selector implementation),
 df226b2438feeec173f2c6f0070f4255466d048c (native decoder evidence), following
 27b7f450f9553d4bf43dfa45800a3208c04d9579, tree
 653b0f5e083b9caf7173dee0c5cebb6300c7afd9, and earlier
@@ -20,10 +22,10 @@ e0c34538de6d42ec49e1212d50c1821d589da0fb (native WebSocket evidence), following
 593ec3a (test-only lint maintenance) and native-qualified WebSocket
 9fe4ce498c6176c9c3418488c850b0dced57b2d8, tree
 0fe34885a8f9f1353a0a1db1bbb14da0c4769001. Worktree was clean after push;
-root now owns the dirty pure selector implementation, fixtures, owning contracts and
-this checkpoint. The exact
-candidate owns the preserving relay decoder, signed socket fixture and Mac
-evidence below. No other writer, active lab, migration or persistent-format change.
+root now owns the dirty P03-T01 scope registration implementation, additive0004,
+model/codec regressions, actual-PG probe/recipe and owning documentation. No other
+writer or active lab. Existing35 applied SQL files remain byte-identical to72ce9db;
+new0004 has NOT been applied.
 
 The finite supplied-stream WebSocket component now has [Mac](evidence/p04-websocket-mac-20260928.json)
 and [native Linux amd64 evidence](evidence/p04-websocket-native-20260928.json):
@@ -64,8 +66,10 @@ Ignored start/launch/collect/review scripts preserve the recipe; do not rerun th
 old launcher. Current 1154757 compiler cache is reusable only under its lock.
 Latest Mac free space 12,244,712 KiB; existing cache only.
 
-Next bounded action: qualify the pure selector candidate on native Tux, then
-implement persistent scope binding/registration in P03-T01 Steps1/2/3.
+Next bounded action: finish the candidate review/checkpoint, commit the scope
+registration slice and build exact Git on native Tux with profile acquisition-scope.
+Then execute the six proposed actual-PG cases on new clones; build success alone
+cannot qualify registration.
 P01-T03 Steps1/7 and P03-T02 Steps1/3 now have
 [Mac component evidence](evidence/p01-relay-wire-mac-20260928.json): 38 protocol
 tests, 1 compile-fail doctest and 1 actual guarded WebSocket signed corpus PASS,
@@ -155,11 +159,51 @@ Three qualified test ELFs remain outside the mutable cache. Terminal audit
 10:48:59 UTC found both containers exit0/no OOM, PID terminal, lock released,
 912 prior container projections unchanged and eight unrelated running.
 Free66,874,466,304 bytes; no database/archive writes. The 1154757 cache now has
-061890f intermediates and is reusable under its lock. Mac main is this candidate
-plus the next evidence commit; root owns post-candidate documentation only.
-Next: commit/push evidence, then continue P03-T01 persistent scope registration
-with explicit accepted-policy compatibility. This closes only the pure selector
+061890f intermediates and is reusable under its lock. Mac main and origin/main are72ce9db,
+clean after verified private push. Root now starts P03-T01 persistent registration. This closes only the pure selector
 component; all installed acquisition and M1 gates remain open.
+
+Registration design decision: register explicit finite-job intent under the current
+accepted policy epoch without changing v1/v2 key sets. Registration itself grants
+no acquisition; later socket/admission checks must intersect both accepted history
+and ephemeral restrictions. The planned ordinary sync.selectors setting still
+requires an explicit policy version, not silent legacy default filling. Separate
+reusable selector rows avoid repeating large selector bytes per endpoint; candidate
+hashes only locate bounded buckets, exact normalized bytes decide equality. Scope
+rows retain endpoint, selector, operational access, complete visibility reference
+and policy epoch; enrollment generation/route remain execution binding. Append
+reserved0004 after0020, preserving every applied SQL checksum. Use explicit
+normalized JSON bytes (not JSONB) and bound serialization before allocation; typed
+selectors with an oversized escaped JSON representation must refuse persistence
+without changing their meaning. This is new implementation work, not evidence.
+
+Current registration state (2026-09-28, uncommitted on72ce9db): typed scope/IDs,
+bounded persistent JSON encoder, ControlSession adapter and additive0004 are
+implemented. ScopeIntent explicitly retains requested policy epoch so historical
+exact replay can recover after policy advancement; missing stale intent leaves no
+selector. New random selector IDs never resolve another document's existing scope.
+Profile1 JSON ordering/escaping is frozen in the owning reference. Root and
+read-only AI review inspected the new owners, callers and contracts; no further
+concrete finding within this boundary. No framework/new crate or policy-key edit.
+
+Mac evidence under .research/implementation/acquisition-scope-20260928:
+missing-API REDs retained (the first also had an Ordinal fixture typo), corrected
+one scope and five codec tests PASS, latest29 catalog plus3 migration-entrypoint
+checks PASS, scoped Clippy PASS. A probe-only closure lifetime compile failure is
+retained; corrected module helper passes Clippy. Literal persisted escaping and
+model-valid documents beyond escaped/replay capacity pass discriminating checks.
+Artifact/handoff validation passes (189 Markdown,378 JSON;123 tasks756 steps).
+These are local checks, not engine evidence. No native/PG case has executed yet.
+
+The new probe/runner proposes basic normalized retry/restart, forced collision
+bucket saturation, scope-FK rollback, server-observed expiry, missing migration
+and historical retry. It checks actual CLI populated upgrade/reapply and prior
+rows/heap filenodes. Loss/cancellation, concurrent locks and corruption/raw-SQL
+negative controls remain subsequent required registration acceptance. Reuse only
+stopped ownership-verified PG71775507 and its unchanged transport8c4d12c basis;
+create fresh clones and preserve original reports. Native build reuses1154757
+under its exclusive lock and retains exact artifacts outside it. Latest Mac
+space11,256,420 KiB; maintenance already complete, do not rerun deletion recipes.
 
 Retain the actual-consumer memory risk: the selected 32MiB producer grant cannot
 blindly stack 17MiB WebSocket, 8MiB decode and 8MiB verification reservations.
@@ -182,9 +226,9 @@ journey, timer publication and dependency-outage recovery. Component evidence
 never replaces those journeys or completes an entire task/phase/product.
 
 The finite authority and supplied-stream WebSocket boundaries are qualified by
-actual source transport/cleanup/SQL races and the scoped protocol cases. The next
-missing boundary is collection/request membership using the preserving envelope,
-followed by source-bound durable admission and installed finite Sync. Raw WebSocket
+actual source transport/cleanup/SQL races and the scoped protocol cases. The selector and collection/request membership are qualified components. The next
+missing boundary is durable scope registration/binding, followed by source-bound
+durable admission and installed finite Sync. Raw WebSocket
 text is not yet an admitted Nostr event. P01-T03 Steps1/7 supply the actual signed
 socket verification case; P03-T01 scope identity/registration and P03-T02 ordered
 admission then carry it into M1. Practical M1 still needs signed invalid-ID/signature

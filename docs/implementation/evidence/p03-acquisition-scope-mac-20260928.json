@@ -1,0 +1,51 @@
+{
+  "format": "bigbrotr-acquisition-scope-mac/1",
+  "status": "PASS_SCOPED_MAC_COMPONENTS",
+  "base_source": "72ce9db50b4177bc1ba988d82ccdecf3265f8835",
+  "environment": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+  "local_evidence": ".research/implementation/acquisition-scope-20260928",
+  "tests": {
+    "scope_value": 1,
+    "selector_codec": 5,
+    "catalog": 29,
+    "migration_entrypoint": 3
+  },
+  "source_sha256": {
+    "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "migrations/postgres/0004_acquisition.sql": "24c8ae2276807ea1034ce1f410248a4614c8ba211eca272af6c9bd27097a7313",
+    "apps/bigbrotr/src/storage/postgres/acquisition.rs": "d0fb7c124e38f500cb316eafed3fa5c415132ea92c64fc7230b4ba5d827eca61",
+    "apps/bigbrotr/examples/acquisition_scope_probe.rs": "8af51842d77c700700b436d609441de944d3d863201230a4986d4fd14bbf4b30",
+    "crates/bigbrotr-model/src/acquisition.rs": "01d1cc82e7dbbe6c2c2965fcdb024e9cad8f5ac44ea9598828186997b25941ed",
+    "crates/bigbrotr-model/src/identity.rs": "a9b47e8028cb321028b72c3efed6ab2eb839643c1bab11cb73de28ac1fc74756",
+    "crates/bigbrotr-model/tests/acquisition_scope.rs": "8e2ba7bcf4b3e85ebebf524f66ed368a11d14ff6fc8b6a4e41e75b49d9417740",
+    "crates/bigbrotr-protocol/src/selector.rs": "6c4e9293b2d1821b959b6ce1dbecafdbb8e6411dda33f4166665ab5c717c0b91",
+    "crates/bigbrotr-protocol/tests/selector.rs": "e9339a0e5d5b65a6aeff537cbb62fcfa52f1198ff27854eb5e8fef4e81c24093",
+    "apps/bigbrotr/tests/control_schema.rs": "3fe14fe7709630d52893c83113369f09d5a41e3543878a7d0445590ce1070dbc",
+    "experiments/acquisition-scope/run.py": "89aed732d8e5cdeaa3f75c4818ef457b37f16c666d9b1e72e02ea8b7872c2ed7"
+  },
+  "logs_sha256": {
+    "api-red2.log": "28dd69ea5066cf995cf4a199407a0e921455196ba9ec279191f6d8d1e409747c",
+    "api-green2.log": "07bc7c23ea01563543fe3696df9dfe900e86013af2b71aec8b1f99910326ccbe",
+    "persistent-encoding.log": "15a8ebb30b3c64b4608e732193e75e794dbdc5f7ab89a29592102d4fda409126",
+    "clippy-final.log": "a3177722b4cbcc738d3fe6ef0361130e6dd36f6300cac46fad93b9c24b9c0178",
+    "catalog-final.log": "8beb26b92a4f545a99372ec3761e2c531c1fa089ce14b00cfdad5f877844f8df",
+    "fmt-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "checks": [
+    "Checked local scope tuple and explicit positive policy epoch",
+    "Literal normalized JSON and all control escaping; model-valid escaped output and replay capacity refusals",
+    "Append0004 after0020; all35 applied SQL byte-identical to base; catalog prerequisite refusal",
+    "Scoped Clippy for owners/tests/probe; formatting"
+  ],
+  "review": "Root complete new adapter/SQL/model/encoder/probe/recipe and relevant callers/contracts; independent read-only AI review requested exact JSON ordering/escaping freeze, now documented and covered. Requested policy epoch is retained for ambiguous replay; random selector PK collision cannot adopt another document.",
+  "not_qualified": [
+    "Actual PostgreSQL migration/registration/restart/failures; native Linux build",
+    "Lost COMMIT/cancellation and concurrent locks",
+    "Raw relational/corruption negatives",
+    "Installed Sync and M1; actual memory/load/aged-state; arm64/release"
+  ],
+  "original_outcomes": [
+    "Missing new API RED (first also had a fixture Ordinal typo)",
+    "Probe closure lifetime compile failure, corrected with focused module helper"
+  ]
+}

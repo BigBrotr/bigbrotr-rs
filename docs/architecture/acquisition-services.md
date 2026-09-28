@@ -419,6 +419,13 @@ use null or u64. The profile adds no new archive dictionary or permission.
 Registration, accepted-policy compatibility and persistent migration remain
 separate boundaries; existing policy v1/v2 documents gain no implicit new key.
 
+The initial operational [registration boundary](../reference/acquisition-scopes.md)
+persists exact versioned normalized JSON bytes separately from the CBOR semantic
+fingerprint. A scope names an explicit policy epoch, retained across ambiguous
+retries; registration grants no acquisition. Existing accepted policy v1/v2 keys
+stay unchanged. Ordinary selector configuration still requires explicit versioned
+integration before being advertised.
+
 Schedule bounded work quanta across every eligible endpoint with a fair queue, favoring oldest unserved scopes without starving live/recent work. Maintain optional live subscriptions only for seated endpoints; show disconnected/unserved intervals when the fleet exceeds capacity. A ten-minute rotation is not proof of continuous all-relay live coverage. Historical traversal yields at request/segment boundaries and is preemptible on a work deadline; it cannot occupy a scarce slot forever because a relay has a large history.
 
 ### Progress and evidence

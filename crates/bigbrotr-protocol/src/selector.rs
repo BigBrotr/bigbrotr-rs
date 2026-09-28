@@ -7,7 +7,55 @@ use bigbrotr_model::{
     },
 };
 use serde::{Deserialize, Deserializer, de};
-use std::fmt;
+use std::{fmt, io};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EncodeError {
+    EncodedLimit,
+    WorkingLimit,
+    Allocation,
+}
+impl fmt::Display for EncodeError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            Self::EncodedLimit => "selector-document-limit",
+            Self::WorkingLimit => "selector-replay-working-limit",
+            Self::Allocation => "selector-document-allocation-unavailable",
+        })
+    }
+}
+impl std::error::Error for EncodeError {}
+
+/// Normalized profile-1 bytes for exact persistent comparison. Counts JSON
+/// escaping before allocating output and ensures the result fits replay bounds.
+/// The caller retains grants for the owned selector and resulting document.
+pub fn encode_selector(selector: &CollectionSelector) -> Result<Vec<u8>, EncodeError> {
+    struct Count(usize);
+    impl io::Write for Count {
+        fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+            self.0 = self
+                .0
+                .checked_add(bytes.len())
+                .filter(|n| *n <= EventLimits::default().wire_bytes)
+                .ok_or_else(|| io::Error::other("selector document limit"))?;
+            Ok(bytes.len())
+        }
+        fn flush(&mut self) -> io::Result<()> {
+            Ok(())
+        }
+    }
+    let mut count = Count(0);
+    serde_json::to_writer(&mut count, selector).map_err(|_| EncodeError::EncodedLimit)?;
+    let mut output = Vec::new();
+    output
+        .try_reserve_exact(count.0)
+        .map_err(|_| EncodeError::Allocation)?;
+    serde_json::to_writer(&mut output, selector)
+        .expect("checked typed selector and reserved output");
+    preflight_with_node_bytes(&output, EventLimits::default(), 256)
+        .map_err(|_| EncodeError::WorkingLimit)?;
+    Ok(output)
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DecodeError {

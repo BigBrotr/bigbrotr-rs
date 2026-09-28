@@ -131,6 +131,9 @@ fixed_hex!(DatasetId, 16, nonzero);
 // Operational canonical relay registration, not an archive dictionary reference
 // or authorization to contact or disclose that endpoint.
 fixed_hex!(EndpointId, 16, nonzero);
+// Operational collection/scope registrations, neither digests nor permissions.
+fixed_hex!(SelectorId, 16, nonzero);
+fixed_hex!(AcquisitionScopeId, 16, nonzero);
 // Operational source context and route identities, not archive QualifiedRefs.
 fixed_hex!(AccessScopeId, 16, nonzero);
 fixed_hex!(RouteId, 16, nonzero);

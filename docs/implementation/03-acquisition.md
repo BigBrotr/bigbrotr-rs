@@ -91,6 +91,11 @@ Paths: `crates/bigbrotr-model/src/acquisition.rs`, `crates/bigbrotr-model/src/co
 `contracts/acquisition/v1/coverage.json`, `apps/bigbrotr/tests/acquisition_scope.rs`,
 `tests/fixtures/acquisition/scopes.json`, `docs/operations/acquisition.md`.
 
+The initial [scope registration adapter](../reference/acquisition-scopes.md) adds
+explicit epoch-bound identity and additive0004 storage, with native engine
+qualification pending. Jobs, authorization, progress and installed CLI acceptance
+remain separate parts of Step3 onward; no whole task closes here.
+
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership
 checks. It supplies Step2 and part of Step1/P01-T03 Step5; no whole task checkbox

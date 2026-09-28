@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn acquisition_registration_appends_without_rewriting_source_bindings() {
+    let applied: Vec<_> = plan(&[], 20)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next = plan(&applied, 4).unwrap();
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0004_acquisition.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 4),
+        Err(MigrationError::MissingPrerequisite(4))
+    );
+    assert!(migrations::require_applied(&applied, 20).is_ok());
+}
+
+#[test]
 fn relay_source_binding_extends_enrollment_without_adopting_old_reservations() {
     let applied: Vec<_> = plan(&[], 19)
         .unwrap()

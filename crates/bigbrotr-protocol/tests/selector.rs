@@ -139,3 +139,64 @@ fn independently_signed_events_match_the_full_collection_and_extra_request_filte
         decode_selector(document(r##"[{"kinds":[1],"#t":["é"],"since":2}]"##).as_bytes()).unwrap();
     assert!(!request.filters()[0].matches(event.event()));
 }
+
+#[test]
+fn persistent_encoding_is_bounded_and_replayable_without_jsonb_expansion() {
+    use bigbrotr_model::{
+        NostrTime,
+        acquisition::{CollectionSelector, EphemeralPolicy, Filter, FilterFields},
+    };
+    use bigbrotr_protocol::selector::{EncodeError, encode_selector};
+    use std::collections::BTreeMap;
+    let original =
+        decode_selector(document(r##"[{"#t":["é","\u0000","a"],"kinds":[2,1]}]"##).as_bytes())
+            .unwrap();
+    let bytes = encode_selector(&original).unwrap();
+    assert_eq!(bytes, "{\"version\":1,\"filters\":[{\"kinds\":[1,2],\"#t\":[\"\\u0000\",\"a\",\"é\"]}],\"history_since\":0,\"ephemeral\":\"retain\"}".as_bytes());
+    assert_eq!(decode_selector(&bytes).unwrap().digest(), original.digest());
+    let escaped = decode_selector(
+        document(r##"[{"#t":["é","/","\\","\"","\u0000","\b","\t","\n","\f","\r"]}]"##).as_bytes(),
+    )
+    .unwrap();
+    assert_eq!(encode_selector(&escaped).unwrap(), concat!(
+        r##"{"version":1,"filters":[{"#t":["\u0000","\b","\t","\n","\f","\r","\"","/","\\","é"]}],"##,
+        r##""history_since":0,"ephemeral":"retain"}"##
+    ).as_bytes());
+    let large = CollectionSelector::new(
+        vec![
+            Filter::new(FilterFields {
+                tags: BTreeMap::from([('t', vec!["\0".repeat(1024 * 1024)])]),
+                ..FilterFields::default()
+            })
+            .unwrap(),
+        ],
+        NostrTime(0),
+        EphemeralPolicy::Retain,
+    )
+    .unwrap();
+    // Valid typed intent, but its six-byte JSON escapes exceed the document cap.
+    assert_eq!(
+        encode_selector(&large).err(),
+        Some(EncodeError::EncodedLimit)
+    );
+    let filters = (0..16)
+        .map(|group| {
+            Filter::new(FilterFields {
+                tags: BTreeMap::from([(
+                    't',
+                    (0..1024)
+                        .map(|item| format!("{group:02}-{item:04}{}", "\u{1}".repeat(16)))
+                        .collect(),
+                )]),
+                ..FilterFields::default()
+            })
+            .unwrap()
+        })
+        .collect();
+    let dense = CollectionSelector::new(filters, NostrTime(0), EphemeralPolicy::Retain).unwrap();
+    assert!(serde_json::to_vec(&dense).unwrap().len() < 2 * 1024 * 1024);
+    assert_eq!(
+        encode_selector(&dense).err(),
+        Some(EncodeError::WorkingLimit)
+    );
+}

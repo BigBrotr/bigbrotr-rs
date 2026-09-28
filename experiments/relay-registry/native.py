@@ -31,10 +31,10 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'registry'
-assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport', 'source-cleanup', 'source-races')
+assert len(sys.argv) in (1, 2) and mode in ('registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope')
 probe = {'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
          'enrollment':'relay_enrollment_probe', 'enrollment-faults':'relay_enrollment_fault_probe',
-         'visibility':'ingest_bootstrap_probe', 'policy-versions':'ingest_bootstrap_probe', 'relay-source':'ingest_bootstrap_probe', 'relay-source-faults':'ingest_bootstrap_probe', 'source-transport':'ingest_bootstrap_probe', 'source-cleanup':'ingest_bootstrap_probe', 'source-races':'ingest_bootstrap_probe'}[mode]
+         'visibility':'ingest_bootstrap_probe', 'policy-versions':'ingest_bootstrap_probe', 'relay-source':'ingest_bootstrap_probe', 'relay-source-faults':'ingest_bootstrap_probe', 'source-transport':'ingest_bootstrap_probe', 'source-cleanup':'ingest_bootstrap_probe', 'source-races':'ingest_bootstrap_probe', 'acquisition-scope':'acquisition_scope_probe'}[mode]
 if mode == 'relay-source-faults':
     identity['scope'] = 'Source-bound admission/recovery fault probe build only; no engine qualification'
 if mode == 'source-races':
@@ -88,6 +88,13 @@ if mode == 'source-transport':
         ('policy', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
                     '--bin', 'bigbrotr', 'config::acquisition::tests']),
     ]
+if mode == 'acquisition-scope':
+    identity['scope'] = 'Immutable explicit scope registration build only; no engine or installed Sync qualification'
+    steps.insert(1, ('catalog', ['cargo', 'test', '--locked', '--offline', '--release', '-p', 'bigbrotr',
+                               '--test', 'control_schema', '--test', 'migrate_entrypoint']))
+    steps.insert(2, ('scope-values', ['cargo', 'test', '--locked', '--offline', '--release',
+                                    '-p', 'bigbrotr-model', '-p', 'bigbrotr-protocol',
+                                    '--test', 'acquisition_scope', '--test', 'selector']))
 result = execute(steps,checks,SOURCE,env,identity,1800)
 assert result['status']=='PASS'
 artifacts=Path('/out/artifacts'); artifacts.mkdir()
@@ -107,5 +114,6 @@ status = {'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_B
           'relay-source-faults':'PASS_RELAY_SOURCE_FAULT_BUILD_ONLY',
           'source-transport':'PASS_SOURCE_TRANSPORT_BUILD_ONLY',
           'source-cleanup':'PASS_SOURCE_CLEANUP_BUILD_ONLY',
-          'source-races':'PASS_SOURCE_RACES_BUILD_ONLY'}[mode]
+          'source-races':'PASS_SOURCE_RACES_BUILD_ONLY',
+          'acquisition-scope':'PASS_ACQUISITION_SCOPE_BUILD_ONLY'}[mode]
 Path('/out/qualification.json').write_text(json.dumps(dict(identity,status=status),indent=2)+'\n')

@@ -40,6 +40,9 @@ pub use history::HistoryAuthorization;
 #[path = "relay_registry.rs"]
 mod relay_registry;
 pub use relay_registry::{EndpointRegistration, RelayRegistryError};
+#[path = "acquisition.rs"]
+mod acquisition;
+pub use acquisition::{ScopeIntent, ScopeRegistration, ScopeRegistrationError};
 #[path = "relay_enrollment.rs"]
 mod relay_enrollment;
 pub use relay_enrollment::EnrollmentRoutes;

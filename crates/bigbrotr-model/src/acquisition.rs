@@ -1,5 +1,8 @@
 //! Collection intent and membership. No signature, source or acquisition authority.
-use crate::{EventId, NostrTime, PublicKey, SignedEvent};
+use crate::{
+    AccessScopeId, DatasetId, DictionaryKind, EndpointId, EventId, NostrTime, PolicyEpoch,
+    PublicKey, QualifiedRef, SelectorId, SignedEvent,
+};
 use serde::{Serialize, Serializer, ser::SerializeMap};
 use std::{collections::BTreeMap, fmt};
 
@@ -273,5 +276,69 @@ impl Serialize for CollectionSelector {
         map.serialize_entry("history_since", &self.history_since())?;
         map.serialize_entry("ephemeral", self.ephemeral().as_str())?;
         map.end()
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct InvalidScope;
+impl fmt::Display for InvalidScope {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("acquisition scope requires local visibility and a positive policy epoch")
+    }
+}
+impl std::error::Error for InvalidScope {}
+
+/// Stable collection context. Enrollment generation and route belong to each
+/// execution; this value neither grants work nor proves committed registration.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct AcquisitionScope {
+    dataset: DatasetId,
+    endpoint: EndpointId,
+    selector: SelectorId,
+    access: AccessScopeId,
+    visibility: QualifiedRef,
+    policy_epoch: PolicyEpoch,
+}
+impl AcquisitionScope {
+    pub fn new(
+        dataset: DatasetId,
+        endpoint: EndpointId,
+        selector: SelectorId,
+        access: AccessScopeId,
+        visibility: QualifiedRef,
+        policy_epoch: PolicyEpoch,
+    ) -> Result<Self, InvalidScope> {
+        if visibility.dataset_id != dataset
+            || visibility.dictionary_kind != DictionaryKind::VisibilityScope
+            || policy_epoch.get() == 0
+        {
+            return Err(InvalidScope);
+        }
+        Ok(Self {
+            dataset,
+            endpoint,
+            selector,
+            access,
+            visibility,
+            policy_epoch,
+        })
+    }
+    pub fn dataset(self) -> DatasetId {
+        self.dataset
+    }
+    pub fn endpoint(self) -> EndpointId {
+        self.endpoint
+    }
+    pub fn selector(self) -> SelectorId {
+        self.selector
+    }
+    pub fn access(self) -> AccessScopeId {
+        self.access
+    }
+    pub fn visibility(self) -> QualifiedRef {
+        self.visibility
+    }
+    pub fn policy_epoch(self) -> PolicyEpoch {
+        self.policy_epoch
     }
 }

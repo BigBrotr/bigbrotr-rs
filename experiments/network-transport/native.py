@@ -42,7 +42,7 @@ tests = {
     'direct': {'network_direct': 12},
     'websocket': {'network_websocket': 30},
     'relay-wire': {'network_websocket': 1, 'relay_wire': 8},
-    'selector': {'network_websocket': 2, 'collection_selector': 8, 'selector': 4},
+    'selector': {'network_websocket': 2, 'collection_selector': 8, 'selector': 5},
 }[mode]
 packages = ['-p', 'bigbrotr']
 if mode in ('relay-wire', 'selector'):

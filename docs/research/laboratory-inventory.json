@@ -27614,6 +27614,13 @@
         "compiler_lock_released": true,
         "free_bytes": 66874466304
       }
+    },
+    "acquisition_scope": {
+      "status": "Mac bounded value/encoding/catalog checks PASS; native build/engine NOT_RUN",
+      "local_evidence": ".research/implementation/acquisition-scope-20260928",
+      "report": "docs/implementation/evidence/p03-acquisition-scope-mac-20260928.json",
+      "cache": ".research/targets/product; existing cache only",
+      "preserve": "Original missing-API and probe compile failures; source/fixture/check logs. No active remote run. Proposed exact-Git build reuses locked1154757; engine borrows stopped PG71775507 and creates new clones only."
     }
   },
   "implementation_relay_registry_20260928": {
