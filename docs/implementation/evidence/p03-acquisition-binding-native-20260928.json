@@ -1,0 +1,170 @@
+{
+  "format": "bigbrotr-acquisition-binding-native/1",
+  "status": "PASS_SCOPED_ACQUISITION_BINDING",
+  "source": "f4038134a77828ec2b97ec7b3bddee0b80758b9f",
+  "tree": "728637d64d3643c7bcb993bf9abf33879a7059fd",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "a08ade1bb26153d1d5eb386ce6f22fe82fa04edae4c61d75ec5a5d96dac7003c",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "a225dcf0fcfbfc5d5b92db2a82fcf5e065bc15d04875e8792f72cc5e850d9227",
+    "ingest_bootstrap_probe": "66175d4b8a57227e1827b534dc3d4872632b3adf71ff669972b437ebb81ae433"
+  },
+  "cases": [
+    {
+      "name": "populated-upgrade",
+      "status": "PASS",
+      "prior_rows_xmin_filenodes_unchanged": true
+    },
+    {
+      "name": "pass",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "changed",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "omitted",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "legacy-adopt",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "outside-collection",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "outside-request",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "no-source",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "certify-withdrawn",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 28,
+      "original_inputs": 2
+    },
+    {
+      "name": "old-source-schema",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    },
+    {
+      "name": "old-binding-schema",
+      "status": "PASS",
+      "actual_pg_rocks": true,
+      "complete_native_rows": 16,
+      "original_inputs": 1
+    }
+  ],
+  "checks": [
+    "Actual release CLI/probe build, two signed membership tests, 30 catalog/three CLI tests and scoped Clippy",
+    "Actual populated0021 CLI upgrade/reapply preserves old rows/xmin, heap filenodes and previous migration ledger; old reservations remain NULL",
+    "Real scope-bound reservation/dispatch, identical retry with unchanged complete native records, original bytes and receipt",
+    "Changed overlapping selector, omitted binding and historical NULL adoption refuse without writes",
+    "Collection/request membership and missing-source refusals leave Control/native/input state unchanged",
+    "CertifyExisting before admission returns NeedsAdmission and afterward Existing without reservation or writes",
+    "Actual authenticated enrollment withdrawal invalidates certification without changing durable data",
+    "Missing0020/0021 prerequisites on read-only certification remain typed Prerequisite, not backend failures",
+    "Independent complete-byte Python oracle compares every native fact/index/receipt/marker and original input; literal selector bytes and source foreign keys checked",
+    "Original templates/reports and unrelated container projections unchanged; actual drivers joined, owned containers stopped and shared compiler lock released"
+  ],
+  "review": {
+    "source_files": 1541,
+    "captured_payloads": 97,
+    "capture_manifest_sha256": "a7329ae4ed29d6d3f9c45570a74073260297152294ed6260bcef1ceafcbb9e64",
+    "root_review_sha256": "e6806812e11d1a1a74eb496e94b3492b4e5da57f413e6af5fe2fb8025302a066",
+    "ai_review": "Read-only owning code/callers/contracts and complete probe/harness/oracle/profile. Missing prerequisite in certification corrected before native launch; no product or setup failure during these eleven engine schedules."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "f4038134a77828ec2b97ec7b3bddee0b80758b9f",
+    "observed_at": "2026-09-28T13:05:07.269396+00:00",
+    "prior_unchanged": 926,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "0d42bfbdd077308345b0b4214315d9464189423cf3a2b86ceb96489225654fa8",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "d5bc35b966293058ad6a6c335234660553447c330e1e7803bf7bcf7cfca9621f",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "3765fb9a24fb6621238ce8468e98211f2ede79119387b8d00fb0623231ed65c9",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1541,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 65645105152,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/acquisition-binding-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-binding-f403813",
+  "not_qualified": [
+    "Invalid-signature binding, post-reservation scope refusal, concurrent scope-policy locks and ambiguous historical recovery",
+    "Raw relational negative controls and rollback",
+    "Installed finite Sync, accepted-policy consumer, M1 and all selected later acquisition capabilities",
+    "Measured process capacity, aged/mixed load, native arm64 and release"
+  ],
+  "scope": "Eleven bounded actual-engine schedules. Fixed signed input and laboratory source attribution are not an installed socket journey. Existing historical recovery code is unchanged but its new scope-binding integration still needs fault evidence."
+}

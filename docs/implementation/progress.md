@@ -12,19 +12,22 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin/main are3f592bc7ff1cd9c9a1fcab2833bfdd9ba32dd603,
-verified clean before this slice. Root now owns dirty scope binding implementation:
-acquisition/scope.rs; postgres initial_batch/producer_sources/producer_requests,
-additive0021/catalog/manifest; affected example callers and new ingest_scope_binding
-probe; control_schema regression. Root also owns bindings.py and the acquisition-binding native build profile.
-No other writer or active lab. All36 applied SQL
-and Cargo inputs remain unchanged. Original outcomes stay preserved under ignored
-.research/implementation/acquisition-binding-20260928. Mac membership2/catalog30/CLI3 tests PASS after missing-API/target RED;
-all prior callers compile under scoped/all-example Clippy. New ten-case actual
-probe Clippy passes; its original closure-lifetime compile failure remains.
-Evidence: [Mac candidate](evidence/p03-acquisition-binding-mac-20260928.json). Native0021 and PG/Rocks scope consumer NOT_RUN; no closure claim.
-Last resumption census: no BigBrotr process/build/container, eight unrelated running,
-Tux65,935,290,368 bytes free. Latest Mac10,604,344 KiB; cache retirement remains complete.
+Mac main is f4038134a77828ec2b97ec7b3bddee0b80758b9f (candidate not pushed);
+private origin/main remains3f592bc7ff1cd9c9a1fcab2833bfdd9ba32dd603. Candidate
+was clean at exact-Git transfer. Root owns the qualification report, inventory,
+checkpoint and affected reference/task/laboratory documentation updates.
+Scope binding implementation and first-wave harness are committed; all36 prior SQL
+and Cargo inputs remain unchanged. Mac membership2/catalog30/CLI3 tests and scoped
+Clippy PASS; original RED/setup compile failures remain in ignored
+.research/implementation/acquisition-binding-20260928. Evidence:
+[Mac candidate](evidence/p03-acquisition-binding-mac-20260928.json).
+Native build and eleven actual PG/Rocks binding schedules PASS; root independently
+verified1,541 Git source hashes and97 captured payloads. Evidence:
+[native binding](evidence/p03-acquisition-binding-native-20260928.json).
+No product/setup failure during engine execution. Last terminal audit13:05:07 UTC:
+926 other projections unchanged, eight unrelated running, Tux65,645,105,152 bytes
+free. All owned containers stopped/no OOM and compiler lock released.
+Cache retirement remains complete; recheck space before the next large allocation.
 
 ## Active slice and next useful journey
 
@@ -33,10 +36,10 @@ six actual-PG schedules and native build evidence. Whole task remains open.
 Reader evidence is committed/pushed. Active implementation is scope-bound
 reservation/admission and read-only certification for P03-T01 Step3/P03-T02 Step3.
 Read-only AI review of the complete first-wave fixture found no launch blocker.
-Next bounded action: commit the clean candidate, then exact-Git Tux
-qualification of populated upgrade and ten actual signed consumer cases.
-Then add the required invalid-signature, post-reservation scope refusal, concurrent
-policy locks and historical-recovery cases before closing the affected guarantees. No installed Sync claim yet.
+Next bounded action: add the required invalid-signature and post-reservation
+scope refusal cases, then both concurrent policy lock orders and historical
+recovery, using actual scope binding. Raw SQL negatives/rollback also remain.
+Keep original outcomes and existing native oracle; no installed Sync claim yet.
 Current design retains a nullable plain bytea scope ID with exact16/nonzero CHECK,
 complete relay implication and composite source FK. NULL legacy rows are not adopted.
 A new ordered trigger observes policy after dataset serialization; import NULL paths
@@ -45,8 +48,9 @@ certification. Immutable borrowed collection/request predicates are checked befo
 staging; relational authority is checked at both phases. No narrowed-page durable
 resumption is implied by this context. The first socket consumer can request the
 registered full selector. Read-only AI review found certification skipped0020
-prerequisite checks; corrected in the common current-source helper. Native prerequisite
-regressions remain required. Original ambiguous-outcome recovery is unchanged.
+prerequisite checks; corrected in the common current-source helper. Both native prerequisite
+regressions now pass. Original ambiguous-outcome recovery is unchanged but new
+scope integration requires the next fault schedules.
 
 Use the qualified loader as the real collection-intent input. Root and read-only AI review of
 source/producer/recovery paths found that overlapping selectors can otherwise
@@ -179,6 +183,20 @@ fixture blocker. Original logs, scripts and failures remain in ignored
 actual8951d87 capture/review). No product change was needed for these schedules.
 
 ## Current owned laboratory resources
+
+acquisition-binding-f403813 is STOPPED/RETAINED. Full identities and retained
+resources: implementation_network_20260928.acquisition_binding; ignored
+.research/implementation/acquisition-binding-20260928 owns transfer/launch/capture/
+review recipes and originals. Never replay launchers. Build owner
+48f0924f54f9d1fe3a59b502f3a2af26, PID3290484/start398274305 terminal; fetch0d42bfbd
+and natived5bc35b9 exit0. Bundle7e887698af098880e779375b19282494f372e94d43f15e4969062226517a1c98.
+Engine owner953ca24bfa772b252ef0a31223bbcdf2, PID3294509/start398290816 terminal;
+client3765fb9a stopped143/no OOM; borrowed PG71775507 stopped0. Eleven
+bb_scope_bind_f403813_* databases and ten native stores/original inputs retained.
+Audit13:05:07 UTC verified926 other projections unchanged and65,645,105,152 bytes
+available. No cleanup obligation. Shared cache now contains f403813 intermediates;
+exact qualified CLI/probe remain outside it.
+
 
 Inventory implementation_network_20260928.acquisition_scope owns the complete
 identities; ignored .research/implementation/acquisition-scope-20260928 owns

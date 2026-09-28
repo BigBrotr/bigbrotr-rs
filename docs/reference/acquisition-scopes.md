@@ -96,8 +96,8 @@ Ordinary `sync.selectors` configuration still needs explicit versioned accepted
 policy integration. Registration adds no fields/defaults to existing v1/v2
 documents. Before execution, the trusted consumer must enforce both complete
 accepted documents, full collection/request membership, current source authority
-and committed visibility. Finite jobs, scope-bound admission, progress/effect closure,
-installed entrypoints and complete M1 remain selected implementation work.
+and committed visibility. Finite jobs, progress/effect closure, installed entrypoints and complete M1
+remain selected implementation work; the initial admission bridge is below.
 
 
 The initial admission bridge now accepts a borrowed `AcquisitionEventContext`.
@@ -115,8 +115,8 @@ Additive0021 retains AcquisitionScopeId on `producer_requests`, including with
 provenance off. An exact16/nonzero nullable bytea plus the complete-relay CHECK
 and composite foreign key bind dataset/scope/endpoint/access. Existing rows stay
 NULL and cannot be adopted or retried through a changed/omitted scope. Plain bytea
-avoids the constrained-domain addition mechanism observed in0020; populated
-heap/row preservation must still be measured on native PostgreSQL. The ordered
+avoids the constrained-domain addition mechanism observed in0020. The actual
+populated PostgreSQL upgrade preserved prior rows/xmin and heap filenodes. The ordered
 trigger checks current scope epoch after dataset serialization, before Ingest/
 producer locks. Unbound imports take no new dataset lock. All prior SQL remains
 immutable; native request/receipt/fact formats are unchanged.
@@ -128,7 +128,12 @@ calls. Positive original-outcome recovery continues to resolve historical native
 input even after current source/scope authority is withdrawn; missing outcomes
 remain unresolved. Fresh admission permission is never inferred from recovery.
 
-This is an internal integration candidate, with native qualification pending.
+[Eleven actual PG/Rocks schedules](../implementation/evidence/p03-acquisition-binding-native-20260928.json)
+pass at f403813: upgrade/reapply, exact retry, changed/omitted/legacy binding,
+membership/source refusals, certification and actual withdrawal, and prerequisites.
+Independent byte/state comparisons cover effects and absence of writes. Invalid
+signatures, post-reservation refusal, concurrent policy changes and historical
+recovery with this binding still require their own evidence.
 The first finite socket consumer can use the registered full selector. Generated
 page/need-list resumption still requires retaining that execution's exact request
 context; the scope ID does not reconstruct a page window. Both complete accepted

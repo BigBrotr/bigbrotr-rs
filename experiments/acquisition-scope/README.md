@@ -105,6 +105,9 @@ withdrawal, plus0020/0021 missing prerequisites. Native records, original input
 bytes and receipts use the existing independent Python oracle unchanged; selector
 bytes and relational scope bindings have literal expected values. Every refusal
 and certification compares all Control/native/input state. Original templates and
-results remain retained. These scenarios are proposed until their exact-source
-native report exists. Concurrent scope-policy locks, dispatch/lost-COMMIT recovery,
+results remain retained. The [f403813 report](../../docs/implementation/evidence/p03-acquisition-binding-native-20260928.json)
+records all eleven schedules PASS, including a physically unchanged populated
+upgrade. Root independently checked all native bytes and captured relational
+states, plus source/artifact identities and terminal ownership. Concurrent
+scope-policy locks, invalid signatures, dispatch/lost-COMMIT recovery,
 installed Sync, capacity and M1 still require their own practical evidence.
