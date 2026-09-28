@@ -29,9 +29,11 @@ use bigbrotr_protocol::endpoint::Endpoint;
     reason = "finite fixture retains actual owner and native handles"
 )]
 pub async fn run(
+    config: Config,
     mut owner: ControlSession,
+    driver: tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>,
     observer: &tokio_postgres::Client,
-    store: &mut IngestStore,
+    mut store: IngestStore,
     spec: &InitialRegistration,
     path: &Path,
     budget: &ResourceBudget,
@@ -137,7 +139,7 @@ pub async fn run(
     };
     let committed = owner
         .read_initial_visibility(
-            store,
+            &mut store,
             InitialVisibilityRequest {
                 ingest_root: path,
                 registration: spec,
@@ -156,6 +158,13 @@ pub async fn run(
         matches!(committed.entry().descriptor(), DictionaryDescriptor::Visibility { class } if class.as_str()=="public")
     );
     drop(committed);
+    if mode.starts_with("source-fault-") {
+        crate::ingest_source_faults::run(
+            config, owner, driver, observer, store, spec, path, budget, mode, source, command,
+        )
+        .await;
+        return;
+    }
     if matches!(mode, "source-withdrawn" | "source-stale-generation") {
         command.enabled = false;
         command.expected_generation = Some(revision(1));
@@ -250,7 +259,7 @@ pub async fn run(
         };
         let result = owner
             .admit_initial_event(
-                store,
+                &mut store,
                 input(binding, scope),
                 grant(
                     budget,
@@ -285,7 +294,7 @@ pub async fn run(
     };
     let result = owner
         .admit_initial_event(
-            store,
+            &mut store,
             input(selected, visibility),
             grant(
                 budget,
@@ -341,4 +350,5 @@ pub async fn run(
     } else {
         drop(owner);
     }
+    crate::ingest_closing::join(driver, false).await;
 }

@@ -12,10 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Local main is unpublished4a43dae (relational fixture grant correction),
-origin/main562a442 is verified private BigBrotr/bigbrotr-rs. Product a6c28e6 and
-first-wave fixture e06f580 remain exact inputs. Root owns the pending scoped
-relational evidence/checkpoint commit; no product edits. Product
+Local main and origin/main are64f3f60 (scoped relational evidence), pushed to the
+verified private repository. Product a6c28e6 remains unchanged; root owns pending
+fixture-only source-fault probe/lifecycle and build-profile edits. Product
 and applied0020 bytes are unchanged. Previous qualified product5be0dbd remains
 recorded below; maintenance and policy-version evidence are committed.
 No active experiment. Native runs/policy-versions-5be0dbd stopped-retained at
@@ -187,9 +186,25 @@ files and exact original ELFs; free68,339,847,168bytes. Both relational clones/s
 retained; no new compiler cache/network or deletion. Ignored captures match roots;
 inventory relations_initial/relations records identities and original failures.
 
-Next bounded action: extend the actual source probe for concurrency/COMMIT/recovery,
-then run the remaining source-binding schedules before qualifying this persistent
-boundary. Independent review recommends writer-first commit/rollback, reservation-
+The next actual source fault probe is now implemented in the owned dirty files:
+apps/bigbrotr/examples/support/ingest_source_faults.rs and its parent/source helper,
+plus build-only relay-source-faults profiles in the existing native/lab runners.
+It joins original Control before real fresh v2 login/enrollment withdrawal and
+historical closing/resolution; source-ready .go gate precedes a fresh2s lease.
+Admission-only/refusal modes serve lock schedules; pass/lost modes serve recovery.
+Mac scoped Clippy passes (clippy.log,clippy2.log under ignored
+.research/implementation/relay-source-faults-20260928); formatter corrections were
+applied. No engine execution or fault driver exists yet. Product source and SQL
+are unchanged. Whole changed fixture/owners/callers read; independent read-only
+fixture review pending. Mac last free14,360,104KiB; Tux last68,339,847,168bytes.
+
+Next bounded action: commit/build this exact probe on Tux using exclusive1154757
+cache (runner rechecks space/containers/mounts), then implement the external fault
+runner reusing e06f580 PG/template and the existing bounded proxy/Session/Process.
+Run one pass trace to establish actual COMMIT ordinals at source-ready before
+selecting reservation/outcome targets; verify proper PG/native phase independently.
+Concurrency/COMMIT/recovery must pass before qualifying this persistent boundary.
+Independent review recommends writer-first commit/rollback, reservation-
 first withdrawal+reenrollment (enabled generation3 must reject old generation1 at
 dispatch), and dispatch-first held outcome COMMIT. Observe actual pg_blocking_pids
 and backend_start; do not substitute lease expiry for Source(Unavailable). Two real

@@ -37,6 +37,8 @@ mod ingest_recovery_process;
 mod ingest_relay_source;
 #[path = "support/ingest_snapshot.rs"]
 mod ingest_snapshot;
+#[path = "support/ingest_source_faults.rs"]
+mod ingest_source_faults;
 #[path = "support/ingest_visibility.rs"]
 mod ingest_visibility;
 
@@ -204,6 +206,8 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     // The explicit v2 case retains the independent frozen settings and literal
     // digest; it does not derive expected policy from the product codec.
     let source_mode = mode.starts_with("source-");
+    let source_fault = mode.starts_with("source-fault-");
+    let direct_config = config.clone();
     let v2 = mode == "write-v2" || source_mode;
     let validate = |document: &str, digest| validate_version(document, digest, v2);
     let mode = if mode == "write-v2" { "write" } else { mode };
@@ -225,7 +229,8 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             | "outcome-commit-lost"
             | "event-bindings-commit-lost"
             | "event-bindings-checkpoints-commit-lost"
-    ) {
+    ) || source_fault
+    {
         // The fault proxy accepts only loopback in the shared PG namespace.
         config.hostaddr("127.0.0.1".parse().unwrap()).port(6543);
     }
@@ -494,9 +499,21 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         assert_eq!(bootstrap.receipt().batch().unwrap().records().len(), 3);
         drop(bootstrap);
         ingest_relay_source::run(
-            owner, &observer, &mut store, &spec, path, &budget, mode, scope,
+            direct_config,
+            owner,
+            driver,
+            &observer,
+            store,
+            &spec,
+            path,
+            &budget,
+            mode,
+            scope,
         )
         .await;
+        drop(observer);
+        ingest_closing::join(observer_driver, false).await;
+        return;
     } else if mode.starts_with("visibility") {
         let bootstrap = result.unwrap();
         assert_eq!(bootstrap.receipt().batch().unwrap().records().len(), 2);

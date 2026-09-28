@@ -35,3 +35,13 @@ shape, generation/route, immutable-history and both same-transaction relay/impor
 exclusion refusals. All nested attempts roll back every Control relation and
 xmin; the real parent still commits its independently checked signed event.
 This does not qualify concurrency or ambiguous recovery.
+
+The `relay-source-faults` native profile builds the expanded probe and runs Clippy
+only. It does not run or qualify engine schedules. `source-fault-*` probe modes
+route only the original Control connection through the owned loopback proxy,
+emit an observed backend/binding/state before a finite file gate, and then check
+the specific expected source or ambiguous-COMMIT result. Recovery modes join the
+old driver, acquire real fresh Control, authenticate/withdraw the enrollment,
+close the historical native producer and resolve the original request. The
+external driver must independently verify fault position, lock ordering, durable
+rows and all original bytes; these new schedules are not yet executed.

@@ -17,7 +17,7 @@ sys.dont_write_bytecode = True
 from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
-assert len(sys.argv) in (3, 4) and profile in ('network', 'relay-registry', 'relay-registry-faults', 'relay-enrollment', 'relay-enrollment-faults', 'ingest-visibility', 'policy-versions', 'relay-source')
+assert len(sys.argv) in (3, 4) and profile in ('network', 'relay-registry', 'relay-registry-faults', 'relay-enrollment', 'relay-enrollment-faults', 'ingest-visibility', 'policy-versions', 'relay-source', 'relay-source-faults')
 assert all(re.fullmatch('[0-9a-f]{40}', value) for value in [revision, tree])
 base = Path('/home/tux/bigbrotr-implementation-20260917')
 root = base / 'runs' / (profile + '-' + revision[:7])
@@ -144,7 +144,7 @@ try:
     state['state'] = 'running'
     write(root / 'resources.json', state)
     native_path = 'network-transport' if profile == 'network' else 'relay-registry'
-    native_args = {'relay-registry-faults':['faults'], 'relay-enrollment':['enrollment'], 'relay-enrollment-faults':['enrollment-faults'], 'ingest-visibility':['visibility'], 'policy-versions':['policy-versions'], 'relay-source':['relay-source']}.get(profile, [])
+    native_args = {'relay-registry-faults':['faults'], 'relay-enrollment':['enrollment'], 'relay-enrollment-faults':['enrollment-faults'], 'ingest-visibility':['visibility'], 'policy-versions':['policy-versions'], 'relay-source':['relay-source'], 'relay-source-faults':['relay-source-faults']}.get(profile, [])
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_path + '/native.py', *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
     expected = {'network': 'PASS_SCOPED_NETWORK_COMPONENTS', 'relay-registry': 'PASS_REGISTRY_BUILD_ONLY',
@@ -153,7 +153,8 @@ try:
                 'relay-enrollment-faults': 'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',
                 'ingest-visibility': 'PASS_INGEST_VISIBILITY_BUILD_ONLY',
                 'policy-versions': 'PASS_POLICY_VERSIONS_BUILD_ONLY',
-                'relay-source': 'PASS_RELAY_SOURCE_BUILD_ONLY'}[profile]
+                'relay-source': 'PASS_RELAY_SOURCE_BUILD_ONLY',
+                'relay-source-faults': 'PASS_RELAY_SOURCE_FAULT_BUILD_ONLY'}[profile]
     assert qualification['source'] == revision and qualification['status'] == expected
     state['qualification'] = qualification['status']
     if profile in ('relay-registry', 'relay-enrollment', 'ingest-visibility', 'policy-versions', 'relay-source'):
