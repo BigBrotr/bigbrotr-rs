@@ -123,6 +123,20 @@ pub fn write_canonical(
 }
 
 pub fn verify_json(bytes: &[u8], limits: EventLimits) -> Result<VerifiedEvent, EventError> {
+    let event = decode_event_json(bytes, limits)?;
+    // Keep the wire path's structural error ordering after bounded parsing.
+    if event.tags.iter().any(Vec::is_empty) {
+        return Err(EventError::EmptyTag);
+    }
+    verify_owned(event, limits.event_bytes)
+}
+
+/// Decode the complete signed fields under the existing wire/parser bounds.
+/// This grants no ID, signature, normalized-size or semantic validity. Invalid
+/// candidates stay available for an attributed rejection by the real consumer.
+/// The caller must reserve `parse_bytes` before decoding and retain its grant
+/// for the owned buffers; the input wire bytes require a separate reservation.
+pub fn decode_event_json(bytes: &[u8], limits: EventLimits) -> Result<SignedEvent, EventError> {
     preflight(bytes, limits)?;
     // IgnoredAny skips unknown string values without checking their raw UTF-8.
     // An ignored extension must not turn non-UTF-8 input into accepted JSON text.
@@ -133,12 +147,7 @@ pub fn verify_json(bytes: &[u8], limits: EventLimits) -> Result<VerifiedEvent, E
     }
     // Derive rejects duplicate/missing known fields. Unknown top-level keys are
     // bounded above and ignored, as NIP-01 excludes them from signed content.
-    let event: SignedEvent = serde_json::from_slice(bytes).map_err(|_| EventError::InvalidJson)?;
-    // Keep the wire path's structural error ordering after bounded parsing.
-    if event.tags.iter().any(Vec::is_empty) {
-        return Err(EventError::EmptyTag);
-    }
-    verify_owned(event, limits.event_bytes)
+    serde_json::from_slice(bytes).map_err(|_| EventError::InvalidJson)
 }
 
 /// Verify an already owned event without serializing and parsing another buffer.

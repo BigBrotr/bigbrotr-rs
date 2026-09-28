@@ -234,3 +234,116 @@ fn owned_verification_bounds_work_before_hashing_or_crypto() {
         EventError::EmptyTag
     );
 }
+
+#[test]
+fn bounded_decode_preserves_invalid_candidates_without_granting_verification() {
+    use bigbrotr_protocol::decode_event_json;
+    let original = fixture()["events"]["timestamp-zero"]["event"].clone();
+    for (field, value, error) in [
+        ("sig", json!("00".repeat(64)), EventError::InvalidSignature),
+        ("content", json!("altered"), EventError::EventIdMismatch),
+        ("tags", json!([[]]), EventError::EmptyTag),
+    ] {
+        let mut changed = original.clone();
+        changed[field] = value;
+        let decoded = decode_event_json(
+            &serde_json::to_vec(&changed).unwrap(),
+            EventLimits::default(),
+        )
+        .unwrap();
+        assert_eq!(serde_json::to_value(&decoded).unwrap(), changed);
+        assert_eq!(verify_owned(decoded, 256 * 1024).unwrap_err(), error);
+    }
+    let bytes = serde_json::to_vec(&original).unwrap();
+    let limits = EventLimits {
+        event_bytes: 1,
+        ..EventLimits::default()
+    };
+    let decoded = decode_event_json(&bytes, limits).unwrap();
+    assert_eq!(serde_json::to_value(&decoded).unwrap(), original);
+    assert_eq!(
+        verify_owned(decoded, limits.event_bytes).unwrap_err(),
+        EventError::EventSizeLimit
+    );
+}
+
+#[test]
+fn bounded_decode_keeps_strict_shape_utf8_and_duplicate_key_rules() {
+    use bigbrotr_protocol::decode_event_json;
+    let original = fixture()["events"]["timestamp-zero"]["event"].clone();
+    let text = serde_json::to_string(&original).unwrap();
+    for text in [
+        format!("{{\"\\u0069d\":{},{}", original["id"], &text[1..]),
+        format!("{text}{{}}"),
+        serde_json::to_string(&json!([
+            original["id"],
+            original["pubkey"],
+            0,
+            1,
+            [],
+            "",
+            original["sig"]
+        ]))
+        .unwrap(),
+        text.replace("\"created_at\":0", "\"created_at\":-0"),
+        text.replace("\"sig\":", "\"missing_sig\":"),
+    ] {
+        assert_eq!(
+            decode_event_json(text.as_bytes(), EventLimits::default()).unwrap_err(),
+            EventError::InvalidJson
+        );
+    }
+    let mut bytes = format!("{{\"extension\":\"x\",{}", &text[1..]).into_bytes();
+    bytes[14] = 0xff;
+    assert_eq!(
+        decode_event_json(&bytes, EventLimits::default()).unwrap_err(),
+        EventError::InvalidJson
+    );
+}
+
+#[test]
+fn bounded_decode_refuses_resource_limits_before_event_fields() {
+    use bigbrotr_protocol::decode_event_json;
+    for (limits, error) in [
+        (
+            EventLimits {
+                wire_bytes: 1,
+                ..EventLimits::default()
+            },
+            EventError::WireLimit,
+        ),
+        (
+            EventLimits {
+                parse_bytes: 1,
+                ..EventLimits::default()
+            },
+            EventError::ArenaLimit,
+        ),
+        (
+            EventLimits {
+                string_bytes: 1,
+                ..EventLimits::default()
+            },
+            EventError::StringLimit,
+        ),
+        (
+            EventLimits {
+                nodes: 1,
+                ..EventLimits::default()
+            },
+            EventError::NodeLimit,
+        ),
+        (
+            EventLimits {
+                depth: 1,
+                ..EventLimits::default()
+            },
+            EventError::DepthLimit,
+        ),
+    ] {
+        assert_eq!(
+            decode_event_json(br#"{"unknown":[0]}"#, limits).unwrap_err(),
+            error
+        );
+    }
+}

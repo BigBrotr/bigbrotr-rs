@@ -448,3 +448,22 @@ All seven tests and scoped Clippy pass; original local fixture failures remain
 preserved. The partial-frame barrier observes peer writes, not codec internals.
 No installed Sync, trusted observation, committed witness linkage, durable event
 effect or coverage claim follows.
+
+The next bounded transfer uses `ReceivedRelay::retain_event` to reserve byte/item
+credit before copying the original EVENT value. Its receive sample, sequence,
+request predicate and decoding limits remain immutable; private response fields
+prevent callers from relabeling an uncorrelated frame. The copied input drops
+before its grant. The caller retains source, scope and job separately and may
+deliver the result only through successful guarded source cleanup, never an outer
+side channel. `decode_event_json` reuses strict bounded parsing without granting
+signature/ID validity; malformed structure is distinct from an invalid signed
+candidate that authoritative certification must classify.
+
+Mac ten protocol tests, seven actual socket tests and the attribution compile-fail
+regression pass. The pending `relay-transfer` native profile and
+`bindings.py --socket` compose an actual private socket with the same Control/native
+owner, concrete SyncArrivalPolicy and committed observation mappings. Its literal
+oracle expects one admission from valid/forged/duplicate frames, preserving the
+first receive and creating no request for invalid or existing effects. This does
+not qualify retained duplicate-proof bytes, durable EOSE joins, capacity or an
+installed Sync command. Native execution remains NOT_RUN at this candidate.

@@ -117,21 +117,21 @@ async fn retired_handle_cannot_close_its_replacement_at_the_actual_wire_boundary
         let SessionMessage::Relay(stale) = session.receive().await?.unwrap() else {
             panic!("relay message")
         };
-        assert_eq!(stale.sequence, 1);
-        assert!(stale.request.is_none());
+        assert_eq!(stale.sequence(), 1);
+        assert!(stale.request().is_none());
         let SessionMessage::Relay(stale) = session.receive().await?.unwrap() else {
             panic!("relay message")
         };
-        assert_eq!(stale.sequence, 2);
-        assert!(stale.request.is_none());
+        assert_eq!(stale.sequence(), 2);
+        assert!(stale.request().is_none());
         let SessionMessage::Relay(current) = session.receive().await?.unwrap() else {
             panic!("relay message")
         };
-        assert_eq!(current.sequence, 3);
-        let request = current.request.unwrap();
+        assert_eq!(current.sequence(), 3);
+        let request = current.request().unwrap();
         assert_eq!(request.id(), new);
         assert!(request.filters() == second);
-        let RelayMessage::Eose { hints, .. } = current.envelope.message() else {
+        let RelayMessage::Eose { hints, .. } = current.envelope().message() else {
             panic!("EOSE")
         };
         assert_eq!(hints.as_ref().unwrap(), &["more", "auth"]);
@@ -229,18 +229,18 @@ async fn multiplexed_frames_keep_their_exact_predicate_and_closed_retires_only_i
                 panic!("relay")
             };
             let after = now();
-            assert!((before..=after).contains(&(received.received.received_at().get() as u128)));
-            assert_eq!(received.sequence, index as u64 + 1);
-            assert_eq!(received.request.map(|r| r.id()), expected);
+            assert!((before..=after).contains(&(received.received().received_at().get() as u128)));
+            assert_eq!(received.sequence(), index as u64 + 1);
+            assert_eq!(received.request().map(|r| r.id()), expected);
             if index == 0 {
-                let original_receive = received.received;
+                let original_receive = received.received();
                 tokio::time::sleep(std::time::Duration::from_millis(10)).await;
-                assert_eq!(received.received, original_receive);
+                assert_eq!(received.received(), original_receive);
                 assert!(now() > after);
-                let request = received.request.unwrap();
+                let request = received.request().unwrap();
                 assert!(request.filters() == one);
                 assert_eq!(request.limit(), None);
-                let RelayMessage::Event { json, .. } = received.envelope.message() else {
+                let RelayMessage::Event { json, .. } = received.envelope().message() else {
                     panic!("EVENT")
                 };
                 let _verification = resources
@@ -255,8 +255,8 @@ async fn multiplexed_frames_keep_their_exact_predicate_and_closed_retires_only_i
                 assert!(request.filters()[0].matches(verified.event()));
             }
             if index == 2 {
-                assert!(received.request.unwrap().filters() == two);
-                assert_eq!(received.request.unwrap().limit(), Some(3));
+                assert!(received.request().unwrap().filters() == two);
+                assert_eq!(received.request().unwrap().limit(), Some(3));
             }
         }
         assert!(!session.close_request(first).await?);
@@ -426,5 +426,220 @@ async fn parser_registry_credit_is_required_before_the_websocket_handshake() {
     });
     let (result, ()) = tokio::join!(consumer, peer);
     result.unwrap();
+    assert_eq!(resources.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn retained_event_keeps_wire_bytes_generation_and_clock_after_socket_closure() {
+    use bigbrotr::{
+        acquisition::session::CaptureError,
+        runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits},
+    };
+    let support::Connection {
+        listener,
+        resources,
+        connector,
+        attempt,
+        cancel: _cancel,
+    } = support::connection().await;
+    let address = listener.local_addr().unwrap();
+    let original: Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/ingest/import-event.jsonl"
+    ))
+    .unwrap();
+    let mut forged = original.clone();
+    forged["sig"] = serde_json::json!("00".repeat(64));
+    let originals = [
+        serde_json::to_string(&forged).unwrap(),
+        serde_json::to_string(&original).unwrap(),
+    ];
+    let filters = [Filter::new(FilterFields::default()).unwrap()];
+    let peer = async {
+        let (mut stream, _) = listener.accept().await.unwrap();
+        let response = support::handshake(&mut stream, address).await;
+        stream.write_all(response.as_bytes()).await.unwrap();
+        let first = request(&mut stream).await;
+        let second = request(&mut stream).await;
+        let id = first[1].as_str().unwrap();
+        frame(
+            &mut stream,
+            &format!(r#"["EVENT","unknown",{}]"#, originals[0]),
+        )
+        .await;
+        for event in &originals {
+            frame(&mut stream, &format!(r#"["EVENT","{id}",{event}]"#)).await;
+        }
+        frame(&mut stream, &format!(r#"["EOSE","{id}"]"#)).await;
+        assert_eq!(request(&mut stream).await, serde_json::json!(["CLOSE", id]));
+        assert_eq!(
+            request(&mut stream).await,
+            serde_json::json!(["CLOSE", second[1]])
+        );
+        let mut close = [0; 6];
+        stream.read_exact(&mut close).await.unwrap();
+        assert_eq!(&close[..2], &[0x88, 0x80]);
+        stream.write_all(&[0x88, 0]).await.unwrap();
+        stream.shutdown().await.unwrap();
+    };
+    let poor = ResourceBudget::new(
+        ProcessEnvelope::new(
+            1,
+            0,
+            ResourceLimits::new(1, 1, 0, 0),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    let consumer = connector.run(attempt, async |stream| {
+        let mut session = RelaySession::connect(
+            stream,
+            &resources,
+            EventLimits::default(),
+            2.try_into().unwrap(),
+        )
+        .await?;
+        let id = session.open(&filters, None).await?;
+        let other = session.open(&filters, Some(1)).await?;
+        let SessionMessage::Relay(unknown) = session.receive().await?.unwrap() else {
+            panic!("EVENT")
+        };
+        assert_eq!(
+            unknown.retain_event(id, &resources).err(),
+            Some(CaptureError::Uncorrelated)
+        );
+        let mut captured = Vec::new();
+        for (index, original) in originals.iter().enumerate() {
+            let SessionMessage::Relay(message) = session.receive().await?.unwrap() else {
+                panic!("EVENT")
+            };
+            let baseline = resources.snapshot().used().data_bytes();
+            assert_eq!(
+                message.retain_event(other, &resources).err(),
+                Some(CaptureError::Uncorrelated)
+            );
+            assert_eq!(
+                message.retain_event(id, &poor).err(),
+                Some(CaptureError::Budget)
+            );
+            assert_eq!(poor.snapshot().active_permits(), 0);
+            let sample = message.received();
+            let retained = message.retain_event(id, &resources).unwrap();
+            assert_eq!(retained.json(), original.as_bytes());
+            assert_eq!(retained.received(), sample);
+            assert_eq!(retained.sequence(), index as u64 + 2);
+            assert_eq!(retained.request().id(), id);
+            assert!(retained.request().filters() == filters);
+            assert_eq!(retained.request().limit(), None);
+            assert_eq!(
+                resources.snapshot().used().data_bytes(),
+                baseline + retained.reserved_bytes()
+            );
+            captured.push(retained);
+        }
+        let SessionMessage::Relay(eose) = session.receive().await?.unwrap() else {
+            panic!("EOSE")
+        };
+        assert_eq!(
+            eose.retain_event(id, &resources).err(),
+            Some(CaptureError::NotEvent)
+        );
+        assert!(session.close_request(id).await?);
+        assert!(session.close_request(other).await?);
+        session.close().await?;
+        Ok(captured)
+    });
+    let (result, ()) = tokio::join!(consumer, peer);
+    let captured = result.unwrap();
+    assert_eq!(resources.snapshot().active_permits(), 2);
+    assert_eq!(
+        resources.snapshot().used().data_bytes(),
+        captured.iter().map(|e| e.reserved_bytes()).sum::<u64>()
+    );
+    for (index, event) in captured.iter().enumerate() {
+        let _decode = resources
+            .try_acquire(ResourceRequest::data(event.limits().parse_bytes as u64, 1, 0).unwrap())
+            .unwrap();
+        let decoded = bigbrotr_protocol::decode_event_json(event.json(), event.limits()).unwrap();
+        assert_eq!(
+            serde_json::to_value(&decoded).unwrap(),
+            if index == 0 {
+                forged.clone()
+            } else {
+                original.clone()
+            }
+        );
+        let result = bigbrotr_protocol::verify_owned(decoded, event.limits().event_bytes);
+        if index == 0 {
+            assert_eq!(
+                result.unwrap_err(),
+                bigbrotr_protocol::EventError::InvalidSignature
+            );
+        } else {
+            result.unwrap();
+        }
+    }
+    drop(captured);
+    assert_eq!(resources.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn cancellation_drops_captured_input_before_source_delivery() {
+    let support::Connection {
+        listener,
+        resources,
+        connector,
+        attempt,
+        cancel,
+    } = support::connection().await;
+    let address = listener.local_addr().unwrap();
+    let filters = [Filter::new(FilterFields::default()).unwrap()];
+    let (captured, ready) = tokio::sync::oneshot::channel();
+    let peer = async {
+        let (mut stream, _) = listener.accept().await.unwrap();
+        let response = support::handshake(&mut stream, address).await;
+        stream.write_all(response.as_bytes()).await.unwrap();
+        let req = request(&mut stream).await;
+        let id = req[1].as_str().unwrap();
+        frame(
+            &mut stream,
+            &format!(
+                r#"["EVENT","{id}",{}]"#,
+                include_str!("../../../tests/fixtures/ingest/import-event.jsonl").trim()
+            ),
+        )
+        .await;
+        closed_socket(&mut stream).await;
+    };
+    let consumer = connector.run(attempt, async |stream| {
+        let mut session = RelaySession::connect(
+            stream,
+            &resources,
+            EventLimits::default(),
+            1.try_into().unwrap(),
+        )
+        .await?;
+        let id = session.open(&filters, None).await?;
+        let SessionMessage::Relay(message) = session.receive().await?.unwrap() else {
+            panic!("EVENT")
+        };
+        let event = message.retain_event(id, &resources).unwrap();
+        captured.send(event.reserved_bytes()).unwrap();
+        std::future::pending::<()>().await;
+        Ok(event)
+    });
+    let interrupt = async {
+        let bytes = ready.await.unwrap();
+        assert!(resources.snapshot().used().data_bytes() >= bytes);
+        drop(cancel);
+    };
+    let (result, (), ()) = tokio::time::timeout(std::time::Duration::from_secs(2), async {
+        tokio::join!(consumer, peer, interrupt)
+    })
+    .await
+    .unwrap();
+    assert!(matches!(
+        result,
+        Err(bigbrotr::network::TransportError::Cancelled)
+    ));
     assert_eq!(resources.snapshot().active_permits(), 0);
 }

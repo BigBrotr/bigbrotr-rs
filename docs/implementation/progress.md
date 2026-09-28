@@ -12,11 +12,43 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main fixture b0ec196fec730035157760dd912d71a5a9de2191; private origin
-7656e8e88245bbe5d21ac291e34be75899d44d55 pending qualification push. Root sole
-writer; only bounded evidence/inventory/checkpoint updates are dirty. Product
-source a2af1c1515bc6d8a0efb7190c48a4cdb05898508 is built and qualified below.
-All owned resources are stopped/retained; no active experiment or cleanup debt.
+Mac main and private origin1f7a470a2f62f057a0d814caebaaac0fee35a835 match
+(pushed/ls-remote verified). Root sole writer. Current dirty product/probe/tests
+implement the next relay transfer slice; no new remote run or cleanup debt.
+All earlier owned resources remain stopped/retained.
+
+Active P03-T01 Step3/P03-T02 Steps1/2/3: strict decode_event_json extracts existing
+bounded parsing without crypto authority; RetainedRelayEvent reserves before
+copying original EVENT JSON and retains receive sample, sequence, exact predicate
+and limits. Source/job/policy are still supplied by the retained caller.
+Mac10 protocol tests and7 actual socket tests passed. Read-only review found
+public mutable ReceivedRelay fields could relabel a saved request onto an unknown
+EVENT; the new compile-fail regression actually failed, then private fields and
+read-only accessors fixed it. The doctest and7 socket tests pass; scoped Clippy
+passes after borrowing response limits and an idiomatic fixture loop. Original
+missing-API REDs, sum type inference and Clippy diagnostics remain under
+.research/implementation/relay-transfer-20260928. Final borrowed-limits rerun also passed: seven sockets, one compile-fail doctest
+and combined targeted Clippy. No unchanged broad suite was repeated.
+
+New root-owned examples/support/ingest_socket_arrival.rs compiles via the actual
+bootstrap probe. It plans a real private socket delivering valid/forged/duplicate
+EVENTs then EOSE, retaining a separately credited fixed batch only through the
+successful run_relay_source result. Same Control/native owner certifies each
+under concrete SyncArrivalPolicy and its exact claimed job; only NeedsAdmission
+creates request2. Actual full private observer/witness mappings are bootstrapped
+for the isolated fixture. This is not installed dictionary provisioning.
+New socket-mode probe raises its composed item envelope8→16 for overlapping
+native/input/scope/visibility/observation/network/batch grants; no product default
+or capacity claim changes. Old observation fixture gets only an endpoint parameter
+with the exact prior literal supplied by its existing caller.
+The complete independent 42-row native/input/receipt oracle and relay-transfer
+native profile are ready. Root/read-only review checked ownership, drop order,
+literal dependencies, fixture privileges and artifact collection; the peer now
+requires an exact three-element REQ. Duplicate classification checks Existing and
+zero writes, not retained proof bytes. No new framework or persistent format.
+Next bounded action: commit the reviewed candidate, transfer exact Git to a new
+relay-transfer run and execute five native build checks, then bindings.py --socket. Actual new PG/Rocks/socket execution,
+authority-change/rollback faults and installed integration are NOT_RUN.
 
 [Committed observation qualification](evidence/p03-observation-native-20260928.json)
 closes the fixed attribution reader and receive-clock first wave: Mac/native

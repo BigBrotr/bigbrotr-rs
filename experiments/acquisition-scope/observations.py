@@ -7,7 +7,7 @@ import hashlib
 import json
 
 
-def expected(dataset, witness, private, cbor):
+def expected(dataset, witness, private, cbor, endpoint='wss://source.example/events'):
     be = lambda n, width=8: n.to_bytes(width, 'big')
     sha = lambda value: hashlib.sha256(value).digest()
     domains = {2: bytes([65])*16, 4: bytes([64])*16, 8: bytes([68])*16}
@@ -27,7 +27,7 @@ def expected(dataset, witness, private, cbor):
         (2, 1, 'observer', {'clock':'system-utc', 'vantage':'source-fixture', 'software':None,
             'method_id':None, 'public_key':None, 'route_class':None, 'software_version':None})]
     if witness:
-        definitions += [(1, 1, 'endpoint', {'url':'wss://source.example/events'}),
+        definitions += [(1, 1, 'endpoint', {'url':endpoint}),
             (3, 1, 'access-scope', {'class':'public', 'label':None, 'visibility_scope_id':scope}),
             (5, 1, 'event-verification', {
                 'input':'nip01-event/1', 'algorithm':'sha256-bip340',

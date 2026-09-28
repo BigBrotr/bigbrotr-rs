@@ -25,6 +25,7 @@ pub fn dictionaries(
     scope: QualifiedRef,
     witness: bool,
     private: bool,
+    endpoint: &str,
 ) {
     if private {
         for (index, class) in ["private", "public"].into_iter().enumerate() {
@@ -42,9 +43,7 @@ pub fn dictionaries(
             (
                 DictionaryKind::Endpoint,
                 70,
-                DictionaryDescriptor::Endpoint(
-                    EndpointDescriptor::new("wss://source.example/events".into()).unwrap(),
-                ),
+                DictionaryDescriptor::Endpoint(EndpointDescriptor::new(endpoint.into()).unwrap()),
             ),
             (
                 DictionaryKind::AccessScope,

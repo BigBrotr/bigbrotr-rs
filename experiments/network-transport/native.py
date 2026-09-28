@@ -43,7 +43,7 @@ tests = {
     'websocket': {'network_websocket': 30},
     'relay-wire': {'network_websocket': 1, 'relay_wire': 8},
     'selector': {'network_websocket': 2, 'collection_selector': 8, 'selector': 5},
-    'request-session': {'acquisition_session': 5, 'relay_request': 2},
+    'request-session': {'acquisition_session': 7, 'relay_request': 2},
 }[mode]
 packages = ['-p', 'bigbrotr']
 if mode in ('relay-wire', 'selector', 'request-session'):

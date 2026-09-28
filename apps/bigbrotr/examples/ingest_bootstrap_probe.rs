@@ -44,6 +44,8 @@ mod ingest_recovery_process;
 mod ingest_relay_source;
 #[path = "support/ingest_snapshot.rs"]
 mod ingest_snapshot;
+#[path = "support/ingest_socket_arrival.rs"]
+mod ingest_socket_arrival;
 #[path = "support/ingest_source_cleanup.rs"]
 mod ingest_source_cleanup;
 #[path = "support/ingest_source_faults.rs"]
@@ -220,7 +222,8 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     // digest; it does not derive expected policy from the product codec.
     let source_mode = mode.starts_with("source-");
     let observation_mode = mode.starts_with("source-observation-");
-    let witness = observation_mode && mode.ends_with("-on");
+    let socket_mode = mode.starts_with("source-socket-");
+    let witness = socket_mode || (observation_mode && mode.ends_with("-on"));
     let source_fault = mode.starts_with("source-fault-");
     let direct_config = config.clone();
     let v2 = mode == "write-v2" || source_mode || mode.starts_with("lease-");
@@ -441,12 +444,17 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             .unwrap(),
         );
     }
-    if observation_mode {
+    if observation_mode || socket_mode {
         ingest_observation::dictionaries(
             &mut dictionaries,
             scope,
             witness,
-            mode == "source-observation-private-on",
+            socket_mode || mode == "source-observation-private-on",
+            if socket_mode {
+                "ws://127.0.0.1:7447/private"
+            } else {
+                "wss://source.example/events"
+            },
         );
     }
     let intent = EvidenceIntent::new(
@@ -464,7 +472,8 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         ProcessEnvelope::new(
             241 * MIB,
             0,
-            ResourceLimits::new(96 * MIB, 8, 144 * MIB, MIB),
+            // Socket work overlaps retained scope/visibility/observation grants.
+            ResourceLimits::new(96 * MIB, if socket_mode { 16 } else { 8 }, 144 * MIB, MIB),
             WaiterLimits::new(1, 1),
         )
         .unwrap(),
@@ -540,7 +549,22 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             },
         )
         .await;
-    if observation_mode {
+    if socket_mode {
+        assert_eq!(
+            result.unwrap().receipt().batch().unwrap().records().len(),
+            6
+        );
+        ingest_socket_arrival::run(
+            &mut owner, &observer, &mut store, &spec, path, &budget, mode, &intent,
+        )
+        .await;
+        drop(store);
+        drop(owner);
+        drop(observer);
+        ingest_closing::join(driver, false).await;
+        ingest_closing::join(observer_driver, false).await;
+        return;
+    } else if observation_mode {
         let bootstrap = result.unwrap();
         assert_eq!(
             bootstrap.receipt().batch().unwrap().records().len(),

@@ -207,6 +207,15 @@ its corrected retry reuses unchanged binaries. Socket-to-admission and late/lost
 read rollback remain separate integration requirements. Existing two-visibility
 installations still need actual dictionary append/intern and same-owner command delivery before this becomes installed Sync.
 
+The next Steps1/2/3 slice owns a correlated EVENT copy under a separate grant and
+exposes strict bounded decoding before authoritative classification. Response
+attribution is immutable. Mac10 protocol/7 actual socket tests and the sealed-field
+regression pass; native `relay-transfer` and the real PG/Rocks/private-socket
+`bindings.py --socket` composition are pending. The independent oracle requires
+exact native/input/receipt bytes for one admission, signature rejection and an
+existing duplicate with zero writes. It does not establish durable page progress,
+retained duplicate proof, a verifier pool or the installed command.
+
 - [ ] **1. Add per-connection request generations.** Multiplex one socket per endpoint/auth scope where allowed, allocate unique request IDs, and associate every frame with a request generation and receive sequence. An old handle cannot send CLOSE/NEG-CLOSE for its replacement.
 - [ ] **2. Reserve bytes/items before ownership transfer.** Apply shared 2MiB message and 256KiB admitted-event limits, the producer's 32MiB byte grant and 1024 queued-record ceiling, and bounded verifier pools. Separately cap outstanding mutation requests at 64 under the storage contract; the queue ceiling is not permission for 1024 concurrent durable requests. Include decoded objects, queued frames and join buffers in the same grant. Keep compression disabled unless the tested incremental inflated-byte/ratio path is enabled.
 - [ ] **3. Route each candidate through authoritative admission.** Verify actual payload/signature or its precisely bound verification cache and full collection/request membership. CertifyExisting may prove already retained effects under the exact access/visibility context without a ProducerRequestId; NeedsAdmission creates a fresh persisted strict Admit request. Carry validated Receipt/ExistingProof bases plus policy exclusion, invalid and retryable outcomes; resolve any previously ambiguous mutation by its original request first. No unverified claimed ID becomes permanent suppression.

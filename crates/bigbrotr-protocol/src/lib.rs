@@ -6,7 +6,7 @@ mod bounds;
 pub mod event;
 
 pub use bounds::EventLimits;
-pub use event::{EventError, VerifiedEvent, verify_json, verify_owned};
+pub use event::{EventError, VerifiedEvent, decode_event_json, verify_json, verify_owned};
 pub mod archive_batch;
 pub mod archive_receipt;
 pub mod endpoint;

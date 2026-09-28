@@ -31,8 +31,8 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'registry'
-assert len(sys.argv) in (1, 2) and mode in ('observation', 'registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs', 'acquisition-jobs-faults', 'acquisition-claims')
-probe = {'observation':'ingest_bootstrap_probe', 'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
+assert len(sys.argv) in (1, 2) and mode in ('relay-transfer', 'observation', 'registry', 'faults', 'enrollment', 'enrollment-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs', 'acquisition-jobs-faults', 'acquisition-claims')
+probe = {'relay-transfer':'ingest_bootstrap_probe', 'observation':'ingest_bootstrap_probe', 'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
          'enrollment':'relay_enrollment_probe', 'enrollment-faults':'relay_enrollment_fault_probe',
          'visibility':'ingest_bootstrap_probe', 'policy-versions':'ingest_bootstrap_probe', 'relay-source':'ingest_bootstrap_probe', 'relay-source-faults':'ingest_bootstrap_probe', 'source-transport':'ingest_bootstrap_probe', 'source-cleanup':'ingest_bootstrap_probe', 'source-races':'ingest_bootstrap_probe', 'acquisition-scope':'acquisition_scope_probe', 'acquisition-scope-faults':'acquisition_scope_probe', 'acquisition-scope-read':'acquisition_scope_probe', 'acquisition-binding':'ingest_bootstrap_probe', 'acquisition-binding-refusals':'ingest_bootstrap_probe', 'acquisition-binding-recovery':'ingest_bootstrap_probe', 'sync-arrival-policy':'ingest_bootstrap_probe', 'ingest-lease':'ingest_bootstrap_probe', 'initial-ingest':'ingest_bootstrap_probe', 'acquisition-jobs':'acquisition_job_probe', 'acquisition-jobs-faults':'acquisition_job_probe', 'acquisition-claims':'acquisition_job_probe'}[mode]
 if mode == 'relay-source-faults':
@@ -76,6 +76,18 @@ if mode == 'observation':
         ('session', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                      '--test','acquisition_session','--message-format=json','--','--test-threads=1']),
     ]
+if mode == 'relay-transfer':
+    identity['scope'] = 'Retained EVENT ownership and strict bounded decode; actual PG/Rocks/socket admission remains separate'
+    steps[1:1] = [
+        ('decode', ['cargo','test','--locked','--offline','--release','-p','bigbrotr-protocol',
+                    '--test','event','--message-format=json']),
+        ('sealed', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                    '--doc','acquisition::session::ReceivedRelay']),
+        ('session', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                     '--test','acquisition_session','--message-format=json','--','--test-threads=1']),
+    ]
+    clippy = steps[-1][1]
+    clippy[clippy.index('--'):clippy.index('--')] = ['-p','bigbrotr-protocol','--test','event','--test','acquisition_session']
 if mode == 'registry':
     steps.insert(1, ('catalog', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                  '--test','relay_registry','--test','control_schema','--test','migrate_entrypoint']))
@@ -153,9 +165,12 @@ assert info['source']==dict(state='builder-supplied',revision=manifest['revision
                            dirty=False,manifest_sha256=identity['source_manifest_sha256'])
 receipt=dict(identity,format='bigbrotr-registry-build/1',binary_sha256=file_hash(artifacts/'bigbrotr'),
              probe_name=probe,probe_sha256=file_hash(artifacts/probe),build_info=info)
-if mode == 'observation':
+if mode in ('observation', 'relay-transfer'):
     executables = {}
-    for name, count in [('observations', 6), ('clock', 3), ('session', 5)]:
+    test_counts = [('observations', 6), ('clock', 3), ('session', 7)] if mode == 'observation' else [('decode', 10), ('session', 7)]
+    if mode == 'relay-transfer':
+        assert '1 passed; 0 failed; 0 ignored;' in (checks / 'sealed.log').read_text()
+    for name, count in test_counts:
         content = (checks / (name + '.log')).read_text()
         assert f'test result: ok. {count} passed; 0 failed; 0 ignored;' in content
         for line in content.splitlines():
@@ -167,16 +182,16 @@ if mode == 'observation':
             if target['kind'] not in (['lib'], ['test']): continue
             source = Path(message['executable'])
             assert source.is_relative_to(build / 'target') and not source.is_symlink()
-            filename = 'observation_components' if target['kind'] == ['lib'] else target['name']
+            filename = 'observation_components' if target['kind'] == ['lib'] else ('protocol_event' if target['name'] == 'event' else target['name'])
             if filename not in executables: shutil.copy2(source, artifacts / filename)
             digest = file_hash(artifacts / filename)
             assert digest == file_hash(source)
             executables[filename] = digest
-    assert set(executables) == {'observation_components', 'acquisition_session'}
+    assert set(executables) == ({'observation_components', 'acquisition_session'} if mode == 'observation' else {'protocol_event', 'acquisition_session'})
     receipt['test_executables_sha256'] = executables
 (artifacts/'build-result.json').write_text(json.dumps(receipt,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
-status = {'observation':'PASS_OBSERVATION_BUILD_ONLY', 'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
+status = {'relay-transfer':'PASS_RELAY_TRANSFER_BUILD_ONLY', 'observation':'PASS_OBSERVATION_BUILD_ONLY', 'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
           'enrollment':'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
           'enrollment-faults':'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',
           'visibility':'PASS_INGEST_VISIBILITY_BUILD_ONLY', 'policy-versions':'PASS_POLICY_VERSIONS_BUILD_ONLY', 'relay-source':'PASS_RELAY_SOURCE_BUILD_ONLY',

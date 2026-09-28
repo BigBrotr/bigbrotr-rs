@@ -70,14 +70,115 @@ impl<'request> ActiveRequest<'request> {
     }
 }
 
+/// Session attribution cannot be relabeled before capture.
+/// ```compile_fail
+/// use bigbrotr::acquisition::session::{ReceivedRelay, ActiveRequest};
+/// fn relabel<'a>(message: &mut ReceivedRelay<'_, 'a>, saved: ActiveRequest<'a>) {
+///     message.request = Some(saved);
+/// }
+/// ```
 pub struct ReceivedRelay<'message, 'request> {
     /// Connection wire order, including intervening WebSocket control messages.
-    pub sequence: u64,
+    sequence: u64,
     /// Local complete-message receipt, sampled before envelope parsing.
-    pub received: ReceiveTime,
-    pub envelope: RelayEnvelope<'message>,
+    received: ReceiveTime,
+    envelope: RelayEnvelope<'message>,
     /// None means uncorrelated or retired work, never an admission candidate.
-    pub request: Option<ActiveRequest<'request>>,
+    request: Option<ActiveRequest<'request>>,
+    limits: &'message EventLimits,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CaptureError {
+    NotEvent,
+    Uncorrelated,
+    Budget,
+}
+
+/// One owned EVENT value with its original local receive sample and exact
+/// request predicate. This is neither verified data nor source/job authority.
+/// Keep the scope/filter owner alive; preparation needs its own decoding grant.
+pub struct RetainedRelayEvent<'request> {
+    json: Vec<u8>,
+    sequence: u64,
+    received: ReceiveTime,
+    request: ActiveRequest<'request>,
+    limits: EventLimits,
+    // Release credit only after the copied input is destroyed.
+    permit: OwnedPermit,
+}
+impl<'request> ReceivedRelay<'_, 'request> {
+    pub fn sequence(&self) -> u64 {
+        self.sequence
+    }
+    pub fn received(&self) -> ReceiveTime {
+        self.received
+    }
+    pub fn envelope(&self) -> &RelayEnvelope<'_> {
+        &self.envelope
+    }
+    pub fn request(&self) -> Option<ActiveRequest<'request>> {
+        self.request
+    }
+    /// Reserve the copied input before allocating it. A failed reservation leaves
+    /// the borrowed response available for bounded backpressure or interruption.
+    /// Return this value through the guarded source result, never an outer side
+    /// channel that could survive a failed source rollback/delivery check.
+    pub fn retain_event(
+        &self,
+        expected: RequestId,
+        resources: &ResourceBudget,
+    ) -> Result<RetainedRelayEvent<'request>, CaptureError> {
+        let RelayMessage::Event { json, .. } = self.envelope.message() else {
+            return Err(CaptureError::NotEvent);
+        };
+        let request = self
+            .request
+            .filter(|request| request.id == expected)
+            .ok_or(CaptureError::Uncorrelated)?;
+        let input = json.get().as_bytes();
+        let bytes = input
+            .len()
+            .checked_add(size_of::<RetainedRelayEvent<'_>>())
+            .ok_or(CaptureError::Budget)?;
+        let permit = resources
+            .try_acquire(
+                ResourceRequest::data(bytes as u64, 1, 0).map_err(|_| CaptureError::Budget)?,
+            )
+            .map_err(|_| CaptureError::Budget)?;
+        let mut json = Vec::new();
+        json.try_reserve_exact(input.len())
+            .map_err(|_| CaptureError::Budget)?;
+        json.extend_from_slice(input);
+        Ok(RetainedRelayEvent {
+            json,
+            sequence: self.sequence,
+            received: self.received,
+            request,
+            limits: *self.limits,
+            permit,
+        })
+    }
+}
+impl<'request> RetainedRelayEvent<'request> {
+    pub fn json(&self) -> &[u8] {
+        &self.json
+    }
+    pub fn sequence(&self) -> u64 {
+        self.sequence
+    }
+    pub fn received(&self) -> ReceiveTime {
+        self.received
+    }
+    pub fn request(&self) -> ActiveRequest<'request> {
+        self.request
+    }
+    pub fn limits(&self) -> EventLimits {
+        self.limits
+    }
+    pub fn reserved_bytes(&self) -> u64 {
+        self.permit.request().units().data_bytes()
+    }
 }
 pub enum SessionMessage<'message, 'request> {
     Relay(ReceivedRelay<'message, 'request>),
@@ -247,6 +348,7 @@ impl<'borrow, 'owner, 'request> RelaySession<'borrow, 'owner, 'request> {
                     received,
                     envelope,
                     request,
+                    limits: &self.limits,
                 })))
             }
             ReceivedMessage::Binary(_) => Err(SessionError::BinaryMessage),
