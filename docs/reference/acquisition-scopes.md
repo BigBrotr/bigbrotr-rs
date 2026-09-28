@@ -379,8 +379,9 @@ cannot remove another active request. This correlation supplies neither job nor
 scope authority. The receiving owner must retain their association and build
 AcquisitionEventContext from the exact returned filters before event effects.
 
-The encoder measures complete escaped REQ bytes before allocation, preserves an
-explicit `limit:0`, and never modifies collection identity. The session reserves
+The encoder follows the pinned [NIP-01 request flow](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md#from-client-to-relay-sending-events-and-creating-subscriptions).
+It measures complete escaped REQ bytes before allocation, preserves an explicit
+`limit:0`, and never modifies collection identity. The session reserves
 registry capacity/items, bounded command storage and the decoder arena before
 handshake, in addition to existing WebSocket/transport reservations. Parsed
 responses borrow that session's credit; transferring work to a queue needs its
@@ -389,8 +390,11 @@ uncorrelated. Malformed/binary messages, transport failures and cancelled wire
 operations retire the session; a later EOSE cannot repair them. The consumer must
 still join earlier verification/admission before interpreting a page outcome.
 
-This component has actual Mac socket regressions for stale CLOSE/CLOSED,
+This component has [actual Mac/native amd64 qualification](../implementation/evidence/p03-request-session-native-20260928.json)
+at25e6408 for stale CLOSE/CLOSED,
 multiplexed signed frames, capacity, partial-read cancellation, malformed/binary
 input and pre-handshake credit refusal, plus literal bounded encoder vectors.
-Native amd64 qualification is pending. No installed Sync, trusted observation,
-committed witness linkage, durable event effect or coverage claim follows.
+All seven tests and scoped Clippy pass; original local fixture failures remain
+preserved. The partial-frame barrier observes peer writes, not codec internals.
+No installed Sync, trusted observation, committed witness linkage, durable event
+effect or coverage claim follows.

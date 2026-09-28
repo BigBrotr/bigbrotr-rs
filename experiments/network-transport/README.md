@@ -62,3 +62,9 @@ no persistent scope registration, installed Sync, coverage or capacity.
 Both created containers finish stopped-retained; no pruning or volume deletion
 occurs. Review source/dependency/artifact identities and original logs before
 publishing a concise evidence report and updating the existing inventory.
+
+`request-session` runs only the five actual-socket request-generation tests and
+two bounded encoder tests plus scoped Clippy. It retains both exact release test
+executables. Independent peers observe masked REQ/CLOSE, stale and concurrent
+attribution, poisoned-session refusal and socket closure. No PostgreSQL, dataset
+or archive is modified, and the profile claims no installed Sync or coverage.

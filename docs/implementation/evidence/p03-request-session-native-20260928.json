@@ -1,0 +1,80 @@
+{
+  "format": "bigbrotr-request-session-native/1",
+  "status": "PASS_SCOPED_REQUEST_SESSION_COMPONENTS",
+  "source": "25e6408dedfb37a1c137f0db301c4f2abcfb348f",
+  "tree": "068407da6363dad81b500415a65f91773072769c",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "memory_bytes": 6442450944,
+    "network": "none; actual loopback TCP/WebSocket peers"
+  },
+  "source_manifest_sha256": "c41a5b18f5d3235871ed75cc4d04a8d3e45078720d5b5489e45d6d796459a9bf",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "executables_sha256": {
+    "relay_request": "20568433c8945f230f31eee75617fa3c7e614862b5dd803a32c5621f1a179aa1",
+    "acquisition_session": "49f8724e8de82d0dcc0a801ddff87f63a223bb2b47398a6f96d6045a3ca4e679"
+  },
+  "tests": {
+    "acquisition_session": 5,
+    "relay_request": 2
+  },
+  "assertions": [
+    "Independent RFC6455 peer decodes exact masked REQ/CLOSE commands. Retired handles emit no CLOSE; stale EOSE/CLOSED cannot correlate to or retire the replacement. Connection nonce and checked counter prevent ID reuse.",
+    "Two simultaneous requests retain distinct exact filters/limits. A third exceeds capacity without an extra frame. Actual frozen signed EVENT is independently compared across all fields and cryptographically verified; unknown or server-closed IDs remain uncorrelated.",
+    "Peer sends a partial frame before cancellation of a pending receive. Later receive/open/close all refuse and the owned socket closes without more bytes. This barrier does not instrument consumption inside the codec.",
+    "Malformed EVENT envelope and binary input poison the session; a following EOSE cannot clear the failure. Peer observes EOF or TCP reset, and any additional outgoing byte fails.",
+    "Insufficient parser/registry reservation refuses before any HTTP handshake bytes. Every test returns resource permits to zero.",
+    "Literal encoder vectors preserve exact escaped UTF-8, inclusive u64 boundaries, filter unions and explicit limit0 versus absent limit. Exact byte boundary passes and one byte less refuses before output allocation; invalid identifiers/unions refuse.",
+    "Release compile and scoped Clippy pass, then both exact retained test ELFs execute offline. Root compares1592 Git files and14 captured payloads; no native failure/retry or PostgreSQL/dataset mutation."
+  ],
+  "review": {
+    "source_files": 1592,
+    "captured_payloads": 14,
+    "capture_manifest_sha256": "8ed676d347e07d831d52d5d8fe3ba3a3e59b23294e681ea080771b7d3b16e4b6",
+    "root_review_sha256": "2cbd7fbd09f68aacbfff86f9e3dcfed844c9cf0bce1f0d3c2ee1ce8a233310d4",
+    "source_scope": "Complete session/encoder/tests and relevant WebSocket, guarded lifetime, scope/selector and accepted-policy owners; read-only review found no blocker or warranted lifecycle refactor. Borrowed parsing does not itself join page work.",
+    "upstream": [
+      "NIP-01 at a2494f4f81d46684e5814a9bf35e2b1df978f955, client/relay request flow and explicit limit0",
+      "serde1.0.229 src/private/ser.rs FlatMapSerializer::serialize_map and FlatMapSerializeMap delegate entries without buffering a second filter map; serde_json1.0.151"
+    ],
+    "original_outcomes": "Mac initial test syntax error, missing-API RED results, small-only fixture framing FAIL and EOF-only fixture FAIL retained. Corrected framing and EOF/reset closure assertions pass. No measured product defect or native failure in this wave."
+  },
+  "local_checks": "Mac2 encoder tests and5 actual socket tests, formatting, scoped Clippy and repository artifact checks PASS; unchanged broad suites not repeated.",
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "25e6408dedfb37a1c137f0db301c4f2abcfb348f",
+    "observed_at": "2026-09-28T19:51:20.975909+00:00",
+    "prior_unchanged": 970,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "3f6ffd22592489d19401b5d27ba4f142f3cf74bb661773273db79326824a07e6",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "d7b2920b89210abd22429bd61db4e86c0c1faa7ca6b68f9b58a98b6dfb364961",
+        "exit": 0
+      }
+    ],
+    "source_files": 1592,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 61775929344
+  },
+  "local_evidence": ".research/implementation/request-session-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/request-session-25e6408",
+  "scope": "Native actual WebSocket request generations, borrowed predicates, bounded encoding and cancellation; no job/scope authority, observation custody, durable admission, progress or installed Sync claim",
+  "not_qualified": [
+    "Actual Control job/scope and source-policy integration with this session",
+    "Trusted receive time/observer/clock and committed witness descriptors",
+    "Ordered durable admission, EOSE joins, page progress and installed Sync/M1",
+    "NEG-CLOSE and authenticated subscriptions",
+    "Cancellation of an in-flight send in this wave",
+    "Load/aged state, production capacity, native Linux arm64 or release"
+  ]
+}

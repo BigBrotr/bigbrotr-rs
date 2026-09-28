@@ -191,6 +191,13 @@ Sync; those remain the next integration boundaries. No checkbox closes here.
 The [native27b7f45 run](evidence/p01-relay-wire-native-20260928.json) executes the
 real guarded socket and cryptography, with all seven valid signed fields checked.
 
+The first bounded session now retains exact filters/limits and per-connection
+generations over the existing guarded WebSocket. [Native25e6408 qualification](evidence/p03-request-session-native-20260928.json)
+executes five real socket tests and two literal encoder tests, including stale
+CLOSE/CLOSED, concurrent request attribution, cancellation and credit refusal.
+This supplies the request-correlation part of Steps1/2; actual job/scope/observation
+custody and ordered durable delivery remain required. No whole step closes here.
+
 - [ ] **1. Add per-connection request generations.** Multiplex one socket per endpoint/auth scope where allowed, allocate unique request IDs, and associate every frame with a request generation and receive sequence. An old handle cannot send CLOSE/NEG-CLOSE for its replacement.
 - [ ] **2. Reserve bytes/items before ownership transfer.** Apply shared 2MiB message and 256KiB admitted-event limits, the producer's 32MiB byte grant and 1024 queued-record ceiling, and bounded verifier pools. Separately cap outstanding mutation requests at 64 under the storage contract; the queue ceiling is not permission for 1024 concurrent durable requests. Include decoded objects, queued frames and join buffers in the same grant. Keep compression disabled unless the tested incremental inflated-byte/ratio path is enabled.
 - [ ] **3. Route each candidate through authoritative admission.** Verify actual payload/signature or its precisely bound verification cache and full collection/request membership. CertifyExisting may prove already retained effects under the exact access/visibility context without a ProducerRequestId; NeedsAdmission creates a fresh persisted strict Admit request. Carry validated Receipt/ExistingProof bases plus policy exclusion, invalid and retryable outcomes; resolve any previously ambiguous mutation by its original request first. No unverified claimed ID becomes permanent suppression.

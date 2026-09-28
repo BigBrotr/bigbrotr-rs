@@ -29931,6 +29931,70 @@
         "capture_manifest_sha256": "7836f517ce26941ebf92893f5aac3b4ee7f3285e4680f26cb0cdf7f39d48c1c1",
         "evidence": "docs/implementation/evidence/p03-job-effect-faults-native-20260928.json"
       }
+    },
+    "request_session": {
+      "state": "Mac/native scoped component PASS; stopped-retained; complete product INCOMPLETE",
+      "local_evidence": ".research/implementation/request-session-20260928",
+      "resources": {
+        "source": "25e6408dedfb37a1c137f0db301c4f2abcfb348f",
+        "tree": "068407da6363dad81b500415a65f91773072769c",
+        "owner": "76bd46ca70d0c0b33b27fb632deebd76",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/request-session-25e6408",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "3f6ffd22592489d19401b5d27ba4f142f3cf74bb661773273db79326824a07e6"
+          },
+          {
+            "name": "native",
+            "id": "d7b2920b89210abd22429bd61db4e86c0c1faa7ca6b68f9b58a98b6dfb364961"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T19:49:51.121903+00:00",
+        "qualification": "PASS_SCOPED_REQUEST_SESSION_COMPONENTS",
+        "inventory_changed": [],
+        "free_bytes_after": 61775945728,
+        "finished_at": "2026-09-28T19:50:47.566526+00:00"
+      },
+      "launch": {
+        "source": "25e6408dedfb37a1c137f0db301c4f2abcfb348f",
+        "tree": "068407da6363dad81b500415a65f91773072769c",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/request-session-25e6408",
+        "pid": 3649973,
+        "start_ticks": "400724460",
+        "bundle_sha256": "0c4953802199377c3b147c9547f1b21990a3b456c20eae0412e3db860152d699"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "25e6408dedfb37a1c137f0db301c4f2abcfb348f",
+        "observed_at": "2026-09-28T19:51:20.975909+00:00",
+        "prior_unchanged": 970,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "3f6ffd22592489d19401b5d27ba4f142f3cf74bb661773273db79326824a07e6",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "d7b2920b89210abd22429bd61db4e86c0c1faa7ca6b68f9b58a98b6dfb364961",
+            "exit": 0
+          }
+        ],
+        "source_files": 1592,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 61775929344
+      },
+      "evidence": "docs/implementation/evidence/p03-request-session-native-20260928.json",
+      "capture_manifest_sha256": "8ed676d347e07d831d52d5d8fe3ba3a3e59b23294e681ea080771b7d3b16e4b6",
+      "preserve": "Exact source, original local failures/RED logs, native commands/results, manifests and separately retained test ELFs. No new full compiler cache; shared1154757 may be reused only under its existing lock. No PG/dataset changes or retired resource deletion."
     }
   },
   "implementation_relay_registry_20260928": {

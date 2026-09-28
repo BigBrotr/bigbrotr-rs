@@ -12,24 +12,34 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main/origin e666f6817fff571450b02a32dd4689b643bbdbbb, pushed and verified.
-Root owns request-session WIP: acquisition/session.rs, protocol wire/request.rs,
-module exports, focused socket/encoder tests, existing native runner profile and
-owning reference/checkpoint. No other contributor changes. All Tux resources
-remain stopped/retained with no cleanup debt.
+Mac main candidate25e6408; private origin e666f6817fff571450b02a32dd4689b643bbdbbb.
+Root owns qualification/reference/checkpoint/inventory updates only. All owned
+resources are stopped/retained; no active experiment or cleanup debt.
 
-Active P03-T02 Steps1/2: bounded per-connection request generations and retained
-exact wire filters/limit. Actual socket tests discriminate stale CLOSE/CLOSED,
-two simultaneous requests with signed input, capacity, cancelled partial read,
-malformed/binary input followed by EOSE and refusal before handshake without
-parser/registry credit. Five Mac socket tests and two protocol vectors PASS;
-scoped Clippy PASS. Original local diagnostics are retained in
-.research/implementation/request-session-20260928: test raw-string syntax, missing
-APIs (red), small-only fixture framing and TCP reset after dropping unread hostile
-data. Corrected fixture accepts only EOF/reset as closure; no product assertion
-was weakened. Native target evidence is NOT_RUN. Root/read-only review found no
-product blocker; existing guarded socket/cancellation owner is reused, with no
-generic scheduler or new dependency. Exact response borrow is not a coverage join.
+[Request-session qualification](evidence/p03-request-session-native-20260928.json)
+closes the bounded correlation component at25e6408: five actual socket tests and
+two protocol vectors PASS on Mac/native amd64, with scoped Clippy and release
+build. Distinct generations retain exact borrowed predicates/limit; stale CLOSE/
+CLOSED cannot retire the replacement. Capacity, signed two-request routing,
+pending-read cancellation after partial peer writes, malformed/binary followed
+by EOSE and pre-handshake credit refusal are discriminated. Received envelopes
+retain their parser credit but do not themselves join prior page work. Root and
+read-only review retained a small session owner and existing guarded socket;
+no scheduler framework, product migration or dependency change. Actual Control
+job/scope/observation custody and ordered durable admission remain next.
+
+Original local diagnostics are retained in
+.research/implementation/request-session-20260928: raw-string syntax, missing-API
+REDs, small-only peer framing and EOF-only expectation after unread hostile bytes.
+Corrected fixture allows only EOF/reset closure with no further output. Native
+first execution PASS; no native retry. Root compared1592 Git files and14 captures.
+Run request-session-25e6408 owner76bd46ca70d0c0b33b27fb632deebd76,
+PID3649973/start400724460 terminal; fetch3f6ffd22/native d7b2920b stopped0/no OOM.
+Audit19:51:20UTC found970 prior projections unchanged, eight unrelated running,
+compiler lock free and61,775,929,344B available. Shared1154757 now holds25e6408
+intermediates; both qualified ELFs are separately retained. Inventory
+implementation_network_20260928.request_session owns exact identities/recipes.
+Mac last7,225,100KiB free. Never replay launchers or completed cache retirement.
 
 [Job-effect fault evidence](evidence/p03-job-effect-faults-native-20260928.json)
 qualifies11 schedules at fixture23701f8 using exact375aa05 native artifacts:
@@ -90,9 +100,8 @@ than adding another transport framework. Native store destruction precedes actua
 Control/driver teardown. No product, applied SQL, codec or dependency change was
 needed. Fixture setup timing margins are not authority/capacity guarantees.
 
-Next: commit the reviewed request-session component, transfer clean Git and run
-its7 focused tests/Clippy with the existing Tux request-session profile. Then feed
-retained observations into concrete SyncArrivalPolicy/job-bound admission from
+Next: commit/push the reviewed request-session qualification, then bind trusted
+retained observations to concrete SyncArrivalPolicy/job-bound admission from
 actual signed frames. WebSocket/session/scope/policy owners were read completely;
 committed dictionary/bootstrap and initial-owner boundaries still need scoped
 complete reading before that integration.
