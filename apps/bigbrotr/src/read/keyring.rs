@@ -333,33 +333,6 @@ fn publish(
         .map_err(|_| KeyringError::Filesystem)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn initial_publication_never_replaces_a_file_created_after_the_absence_check() {
-        let root = tempfile::tempdir().unwrap();
-        let directory = File::open(root.path()).unwrap();
-        flock(&directory, FlockOperation::NonBlockingLockExclusive).unwrap();
-        assert!(!root.path().join("keys").exists());
-        std::fs::write(root.path().join("staging"), b"prepared public fixture").unwrap();
-        // An external provisioning tool can write despite this advisory lock.
-        std::fs::write(root.path().join("keys"), b"preserve external fixture").unwrap();
-        assert_eq!(
-            publish(&directory, "staging", std::ffi::OsStr::new("keys"), false),
-            Err(KeyringError::Filesystem)
-        );
-        assert_eq!(
-            std::fs::read(root.path().join("keys")).unwrap(),
-            b"preserve external fixture"
-        );
-        assert_eq!(
-            std::fs::read(root.path().join("staging")).unwrap(),
-            b"prepared public fixture"
-        );
-    }
-}
-
 fn fresh(dataset: DatasetId) -> Result<Zeroizing<Vec<u8>>, KeyringError> {
     let mut bytes = Zeroizing::new(Vec::new());
     bytes
@@ -424,5 +397,32 @@ fn secret_error(error: SecretError) -> KeyringError {
             KeyringError::Permissions
         }
         SecretError::Open | SecretError::Read => KeyringError::Filesystem,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn initial_publication_never_replaces_a_file_created_after_the_absence_check() {
+        let root = tempfile::tempdir().unwrap();
+        let directory = File::open(root.path()).unwrap();
+        flock(&directory, FlockOperation::NonBlockingLockExclusive).unwrap();
+        assert!(!root.path().join("keys").exists());
+        std::fs::write(root.path().join("staging"), b"prepared public fixture").unwrap();
+        // An external provisioning tool can write despite this advisory lock.
+        std::fs::write(root.path().join("keys"), b"preserve external fixture").unwrap();
+        assert_eq!(
+            publish(&directory, "staging", std::ffi::OsStr::new("keys"), false),
+            Err(KeyringError::Filesystem)
+        );
+        assert_eq!(
+            std::fs::read(root.path().join("keys")).unwrap(),
+            b"preserve external fixture"
+        );
+        assert_eq!(
+            std::fs::read(root.path().join("staging")).unwrap(),
+            b"prepared public fixture"
+        );
     }
 }
