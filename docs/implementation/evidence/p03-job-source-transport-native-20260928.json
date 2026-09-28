@@ -1,0 +1,160 @@
+{
+  "format": "bigbrotr-job-source-transport-native/1",
+  "status": "PASS_SCOPED_JOB_SOURCE_TRANSPORT",
+  "source": "603cc57ecf12ba4ddd15b9a15ba3d5fd23652dfa",
+  "tree": "0bc33e7c5867d8a2a14e511a3de65b28daea3b2e",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "engine_client_memory_bytes": 1073741824,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "source_manifest_sha256": "a8877872c5817f9ca4315e2836cc39518f3c2bbab3d892e42188a14d61917026",
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts_sha256": {
+    "bigbrotr": "a5cc053d418276c7811d3971e48c7dc4aa3a8277ca1e2f7b9098a8f54c52a2a8",
+    "ingest_bootstrap_probe": "2d40a25fed7b9aef439575b286578cf30923d29f2f41b9fd7da4657d4d39651a"
+  },
+  "build_checks": "Mac scoped Clippy and formatting PASS; native release CLI/probe and scoped Clippy PASS. Unchanged component suites were not repeated.",
+  "scenarios": [
+    {
+      "name": "pass",
+      "elapsed_us": 15867,
+      "remaining_us": [
+        1753664,
+        59432649
+      ],
+      "peer_closed_us": 5988
+    },
+    {
+      "name": "pending",
+      "elapsed_us": 1867859,
+      "remaining_us": [
+        -23612,
+        57670390
+      ],
+      "peer_closed_us": 1857693
+    },
+    {
+      "name": "held",
+      "elapsed_us": 1868601,
+      "remaining_us": [
+        -105873,
+        57595052
+      ],
+      "peer_closed_us": 5583
+    },
+    {
+      "name": "ready",
+      "elapsed_us": 3011799,
+      "remaining_us": [
+        -1242185,
+        56452170
+      ],
+      "peer_closed_us": 5761
+    },
+    {
+      "name": "omitted",
+      "elapsed_us": 54411,
+      "remaining_us": [
+        1707845,
+        59404200
+      ],
+      "peer_closed_us": null
+    },
+    {
+      "name": "unclaimed",
+      "elapsed_us": 55564,
+      "remaining_us": [
+        1744296,
+        59437570
+      ],
+      "peer_closed_us": null
+    },
+    {
+      "name": "expired",
+      "elapsed_us": 54716,
+      "remaining_us": [
+        -53428,
+        57644649
+      ],
+      "peer_closed_us": null
+    }
+  ],
+  "assertions": [
+    "Actual authenticated two-second job acceptance and same-Control claim precede private source work. Both policy TTL and outer deadline are five seconds; actual Control has over56 seconds remaining at every result.",
+    "Immediate request/answer succeeds; pending socket I/O ends with Transport(Authority), exact request bytes and observed peer EOF before the outer deadline.",
+    "Held ROLLBACK C/Z: actual PostgreSQL backend is already idle with no transaction, socket closed, then original job expiry is observed before releasing the response. Delivery returns Control(Unavailable) and drops the received value.",
+    "Late-ready C/Z: actual ROLLBACK completes and frames reach the driver within500ms; only the source future pauses until3s. Final delivery refuses the expired job and drops its value.",
+    "Omitted and unclaimed bindings return exact source Conflict; an already expired job returns source Unavailable. None connects to the listening peer.",
+    "Every operation preserves all67 Control tables including xmin, native sequence17/all16 key-value rows and the sole original bootstrap CBOR input. No source progress is inferred from socket success.",
+    "Root independently compares literal selector bytes, full scope/source/visibility linkage and big-endian job fingerprint/original duration,1586 exact Git source files and96 captured payload hashes.",
+    "Store destruction precedes actual Control/driver teardown. Proxy rollback counters and absent application backends are checked; terminal audit preserves964 prior container projections."
+  ],
+  "review": {
+    "source_files": 1586,
+    "captured_payloads": 96,
+    "capture_manifest_sha256": "8b16b0884e1ee180dfb6b0c20dd1581db5ef05f7872ab56af2174db73af9d008",
+    "root_review_sha256": "2037c930da9166c9c53654c635b22ac1c5f9a6bb3c626c0826f0aeedd1b0ea48",
+    "source_scope": "Root/read-only review of complete new fixtures, changed callers, actual source adapter, connector, both proxy layers and independent native oracle",
+    "original_outcomes": "No native failure or retry. Initial Mac command named a nonexistent feature and did not compile; initial formatting and missing artifact-script path diagnostics are retained with corrected passing commands. Prelaunch review corrected a source error import and proxy timestamp key."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "603cc57ecf12ba4ddd15b9a15ba3d5fd23652dfa",
+    "observed_at": "2026-09-28T19:03:18.053734+00:00",
+    "prior_unchanged": 964,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "82958c313aa343557db4f48858e341f63081ccaf8d0bcceeff08b6ffe81b54a2",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "6100847a22402d97da473f1bf61aeb5893812305d63455d3e98fb2018d1cfb56",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "efc57a6db43c151db93bf1873e7ad89f4628fcd0d7504985c957a8518ad78f85",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1586,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 62277238784,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/job-source-transport-20260928",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/source-cleanup-603cc57",
+  "not_qualified": [
+    "job-bound reservation COMMIT faults, cancellation and historical recovery",
+    "installed Sync/M1",
+    "load/aged state",
+    "native arm64/release",
+    "product mutation negative controls in this wave",
+    "throughput or production capacity"
+  ],
+  "scope": "Bounded actual job source lifetime and cleanup qualification. Reservation faults/recovery, installed Sync and complete M1 remain open; timing margins are fixture setup guards, not general capacity guarantees."
+}

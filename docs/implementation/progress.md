@@ -12,58 +12,57 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin are acb2846; the qualification is committed/pushed.
-Root owns the new job-bound socket fixtures in the existing source transport
-laboratory. All owned resources are stopped/retained; no active experiment or
-cleanup debt. Current uncommitted work adds seven actual socket/preflight and
-cleanup schedules; no product SQL or dependency change.
+Mac main candidate603cc57; private originacb2846 pending this qualification
+commit/push. Root owns documentation/evidence only. All owned resources are
+stopped/retained; no active experiment or cleanup debt.
 
-[Native execution evidence](evidence/p03-acquisition-execution-native-20260928.json)
-qualifies populated0024 upgrade/reapply and13 actual PG/Rocks adapter cases.
-Signed admission binds its original claimed job; exact retry/certification writes
-nothing. Changed/omitted jobs, all-omitted Network origin (including invalid and
-certification), unclaimed/wrong-scope jobs, expired jobs, actual withdrawal and
-missing0024 refuse. A clone-only post-reservation guard leaves original input and
-reservation without native event effects. Independent complete native bytes,
-original CBOR, all operation tables/xmin and upgrade heaps agree.38 Mac/native
-checks and scoped Clippy PASS. Root compared1583 Git files and200 captures.
-No native failure/rerun. Local post-capture review scripts corrected module import,
-audit subject=command key and bootstrap topology=0 expectations against owning
-contracts; originals remain.0024 is now applied/checksummed and immutable.
+[Native source lifetime evidence](evidence/p03-job-source-transport-native-20260928.json)
+qualifies seven actual socket/preflight/cleanup schedules. Authentic two-second
+jobs bound five-second calls while Control remains live. Pending read closes in
+1.857693s; held and late-ready rollback delivery refuse and dispose received data.
+The late-ready case resumes at3s after actual C/Z forwarding within500ms and
+server-idle rollback. Omitted/unclaimed/preexpired jobs never connect. All67
+operation tables/xmin,16 native rows/sequence17 and original CBOR stay exact.
+Root compared1586 Git files and96 captures, literal selector/scope linkage and
+independent job digests. No native failure/retry. Mac scoped Clippy, native release
+CLI/probe and scoped Clippy PASS; unchanged component suites were not repeated.
+Original local command/format/path diagnostics remain retained, not product FAILs.
 
-Run acquisition-binding-19945dc, buildowner605de7802785f9e76e42954033faf170,
-PID3567938/start400282916 terminal; fetch70dcbf14/native3b485f6e exit0.
-Engineowner3af44796febdaea5ead6312ae1b65649, PID3571678/start400295047 terminal;
-cliente0ee36a9 stopped143, borrowedPG71775507 stopped0/no OOM. Fourteen new clones
-and their native stores retained. Audit18:40:26UTC found961 prior projections
-unchanged, eight unrelated running, compiler lock free and62,488,961,024B free.
-Mac last7,532,316KiB. Shared1154757 now holds19945dc intermediates; exact artifacts
-separately retained. Inventory implementation_network_20260928.acquisition_execution
-and ignored .research/implementation/acquisition-execution-20260928 own identities,
+Run source-cleanup-603cc57, buildowner3a98172aec9e219bf4dad946ac3f1542,
+PID3598180/start400432741 terminal; fetch82958c31/native6100847a exit0.
+Engineowner6a2451a13349651c46b33e124020585d, PID3600570/start400441432 terminal;
+clientefc57a6d stopped143, borrowedPG71775507 stopped0/no OOM. Seven new databases
+and native stores retained. Audit19:03:18UTC found964 prior container projections
+unchanged, eight unrelated running, compiler lock free and62,277,238,784B free.
+Mac last7,500,868KiB. Shared1154757 now holds603cc57 intermediates; exact artifacts
+are separately retained. Inventory implementation_network_20260928.job_source_transport
+and ignored .research/implementation/job-source-transport-20260928 own identities,
 recipes and originals. Never replay launchers or completed cache retirement.
 
-Mac scoped Clippy, formatting, Python syntax and artifact checks pass. The initial
-local Clippy command named a nonexistent feature and did not compile; its original
-output is retained with the corrected check under the ignored root below.
-Root/read-only review found no launch blocker. Timing lower bounds are fixture
-setup guards, not authority guarantees; conservative lease anchoring can close
-earlier than the server's deadline. The existing source-cleanup build profile
-avoids repeating unchanged component suites.
+Root/read-only review retained the existing source loop, rollback proxy, lifecycle
+and independent native oracle. A focused fixture helper owns job timing rather
+than adding another transport framework. Native store destruction precedes actual
+Control/driver teardown. No product, applied SQL, codec or dependency change was
+needed. Fixture setup timing margins are not authority/capacity guarantees.
 
-Next: transfer a clean candidate through Git and run the actual source-cleanup build/transport laboratory
-on Tux. Reuse the two committed visibility/enrollment inputs and private ordinal2;
-the earlier public refusal remains separately qualified. Authentic two-second jobs
-must bound five-second calls while Control remains live. Cover immediate success,
-pending read, held ROLLBACK, late-ready delivery, omitted/unclaimed/expired jobs.
-Observe real rollback frames and backend state; compare all67 tables and independent
-native bytes. Close Rocks before Control/driver. Review accepted scope/job setup
-and timing discriminants before launch. Held reservation COMMIT and original
-historical recovery follow. Living-owner command delivery and the complete signed
-socket→archive/read→restart M1 remain open. Latest resumption found no BigBrotr
-process/container active, eight unrelated containers, 62,488,825,856B free on Tux
-and7,433,372KiB on Mac; cache retirement stays complete. Ignored
-.research/implementation/job-source-transport-20260928 owns local checks and the
-new launch recipe; no native source/engine result has been claimed yet.
+Next: commit/push this bounded qualification, then connect the original claimed
+job to the existing reservation COMMIT/cancellation/recovery fixture. Read its
+complete consumers before extending it to0024; preserve exact original requests
+and resolve historical outcomes after expiry/withdrawal without new authority.
+This is P03-T01 Step3/P03-T02 Step3. The next user-visible M1 deliverable remains
+signed socket→durable admission→archive/read→restart/resend. Concrete remaining
+prerequisites: bounded retained request/observation and dictionary custody,
+living initial-owner command delivery (P01-T09 Step1/P02-T02 Steps2/3), and
+restart authority. A second Control/native store is not a delivery mechanism.
+No full Discovery/Monitor subsystem is prerequisite. Installed Sync, progress,
+capacity, arm64 and the complete product remain INCOMPLETE.
+
+[Native event-effect evidence](evidence/p03-acquisition-execution-native-20260928.json)
+qualifies populated0024 upgrade/reapply and13 PG/Rocks admission/certification
+cases at19945dc. Exact original job binding, current authority and preflight expiry
+are qualified; historical recovery remains separate.0024 is applied/checksummed
+and immutable. Its acquisition-binding-19945dc run and14 clones remain retained;
+full source/artifact/resource identities are in implementation_network_20260928.
 
 [Native claim-fault evidence](evidence/p03-acquisition-claim-faults-native-20260928.json)
 qualifies all16 schedules: eight actual COMMIT6 cuts and both policy/grant/source/

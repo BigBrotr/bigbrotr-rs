@@ -298,8 +298,9 @@ negative clone discriminate immutable ownership; incompatible history refuses
 without partial migration. [Sixteen claim-fault schedules](../implementation/evidence/p03-acquisition-claim-faults-native-20260928.json)
 now distinguish actual COMMIT loss/cancellation/expiry and both policy/grant/source/
 account lock orders. The original deadline and immutable job attribution survive
-fresh-owner observation. No queued job is adopted. Job-bound socket/reservation/
-certification, native successor recovery and installed dispatch remain required.
+fresh-owner observation. No queued job is adopted. The initial job-bound consumers
+and their bounded evidence are below; native successor recovery and installed
+dispatch remain required.
 
 ## Job-bound source and event effects (implementation in progress)
 
@@ -343,6 +344,14 @@ signed admission/retry/certification,
 job substitution/omission, origin omission including forged signatures, unclaimed
 jobs, wrong scope, expiry, withdrawal, old schema and post-reservation refusal.
 Complete native bytes, original inputs, operation tables/xmin and upgrade heaps
-match independent expectations. No native failure or retry occurred. Job-bound
-socket expiry/cleanup, held COMMIT, lock races, historical recovery and
-installed integration still require their actual practical evidence.
+match independent expectations. No native failure or retry occurred.
+
+[Seven native source schedules](../implementation/evidence/p03-job-source-transport-native-20260928.json)
+at603cc57 now qualify actual job-bound socket lifetime and cleanup. An authentic
+two-second job bounds a five-second call while Control remains live. Pending I/O
+closes with Authority; held and already-ready rollback responses cannot deliver
+data after job expiry. Actual backend state, C/Z frames, peer EOF and value disposal
+distinguish these paths. Missing, unclaimed and preexpired jobs never connect.
+Every operation preserves all67 tables/xmin, complete native bytes and original
+input. These finite fixtures establish no production capacity. Held reservation
+COMMIT, lock races, historical recovery and installed integration remain open.

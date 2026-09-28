@@ -127,8 +127,8 @@ now qualifies additive0023 queued ownership, same-owner retry, historical observ
 populated upgrade and raw direct/paused takeover refusals.
 [Sixteen claim-fault schedules](evidence/p03-acquisition-claim-faults-native-20260928.json)
 qualify actual COMMIT interruption/expiry and both policy/grant/source/account lock
-orders. Job-bound socket/reservation/certification, native recovery, progress and
-installed CLI acceptance remain separate parts of Step3 onward; no whole task
+orders. Job-bound consumers are tracked below; native recovery, progress and
+installed CLI acceptance remain separate parts of Step3 onward. No whole task
 closes here.
 
 Active P03-T01 Step3/P03-T02 Step3 now has the additive0024 job-bound consumer
@@ -136,8 +136,11 @@ implementation. New Network socket/admission/certification must use the original
 claimed job, scope and remaining duration; historical outcome recovery stays
 separate. A [populated upgrade and13 actual PG/Rocks cases](evidence/p03-acquisition-execution-native-20260928.json)
 now pass at19945dc through `bindings.py --execution`, with independent complete
-native/input and operation-state comparisons. This does
-not close socket deadline/fault qualification, running/progress lifecycle or M1.
+native/input and operation-state comparisons. [Seven actual socket schedules](evidence/p03-job-source-transport-native-20260928.json)
+now pass at603cc57: pending read expiry, held/late-ready rollback delivery and
+binding refusals while Control stays live. The source closes before rollback and
+expired values are disposed; complete operation state stays unchanged. Reservation
+COMMIT/recovery, running/progress lifecycle and installed M1 remain open.
 
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership

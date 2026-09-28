@@ -29641,6 +29641,114 @@
         }
       },
       "evidence": "docs/implementation/evidence/p03-acquisition-execution-native-20260928.json"
+    },
+    "job_source_transport": {
+      "state": "STOPPED/RETAINED; seven actual job-bound socket/preflight and cleanup schedules PASS",
+      "source": "603cc57ecf12ba4ddd15b9a15ba3d5fd23652dfa",
+      "tree": "0bc33e7c5867d8a2a14e511a3de65b28daea3b2e",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-cleanup-603cc57",
+      "pid": 3598180,
+      "start_ticks": "400432741",
+      "bundle_sha256": "435fbea03bc2dddd21cc901a92d1a40b4960ed0063e58a9dab0aa6dd9a00c37b",
+      "build_owner": "3a98172aec9e219bf4dad946ac3f1542",
+      "resources": {
+        "source": "603cc57ecf12ba4ddd15b9a15ba3d5fd23652dfa",
+        "tree": "0bc33e7c5867d8a2a14e511a3de65b28daea3b2e",
+        "owner": "3a98172aec9e219bf4dad946ac3f1542",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-cleanup-603cc57",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "82958c313aa343557db4f48858e341f63081ccaf8d0bcceeff08b6ffe81b54a2"
+          },
+          {
+            "name": "native",
+            "id": "6100847a22402d97da473f1bf61aeb5893812305d63455d3e98fb2018d1cfb56"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-09-28T19:01:13.927783+00:00",
+        "qualification": "PASS_SOURCE_CLEANUP_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 62359261184,
+        "finished_at": "2026-09-28T19:02:22.266725+00:00"
+      },
+      "local_evidence": ".research/implementation/job-source-transport-20260928",
+      "cache": "Shared network-1154757 exclusively reused; qualified artifacts retained separately",
+      "retention": "Seven database/native clones, original transcripts, exact Git source and artifacts retained; no deletion or cleanup debt; never replay launchers",
+      "engine_launch": {
+        "source": "603cc57ecf12ba4ddd15b9a15ba3d5fd23652dfa",
+        "tree": "0bc33e7c5867d8a2a14e511a3de65b28daea3b2e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-cleanup-603cc57",
+        "pid": 3600570,
+        "start_ticks": "400441432"
+      },
+      "engine": {
+        "owner": "6a2451a13349651c46b33e124020585d",
+        "label": "org.bigbrotr.source-jobs",
+        "client": {
+          "id": "efc57a6db43c151db93bf1873e7ad89f4628fcd0d7504985c957a8518ad78f85",
+          "name": "bigbrotr-source-jobs-603cc57"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_job_transport_603cc57_pass",
+          "bb_job_transport_603cc57_pending",
+          "bb_job_transport_603cc57_held",
+          "bb_job_transport_603cc57_ready",
+          "bb_job_transport_603cc57_omitted",
+          "bb_job_transport_603cc57_unclaimed",
+          "bb_job_transport_603cc57_expired"
+        ],
+        "status": "PASS_SCOPED_SOURCE_TRANSPORT",
+        "started_at": "2026-09-28T19:02:40.867291+00:00",
+        "finished_at": "2026-09-28T19:03:07.421996+00:00"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "source": "603cc57ecf12ba4ddd15b9a15ba3d5fd23652dfa",
+        "observed_at": "2026-09-28T19:03:18.053734+00:00",
+        "prior_unchanged": 964,
+        "unrelated_running": 8,
+        "owned_stopped": [
+          {
+            "name": "fetch",
+            "id": "82958c313aa343557db4f48858e341f63081ccaf8d0bcceeff08b6ffe81b54a2",
+            "exit": 0
+          },
+          {
+            "name": "native",
+            "id": "6100847a22402d97da473f1bf61aeb5893812305d63455d3e98fb2018d1cfb56",
+            "exit": 0
+          },
+          {
+            "name": "client",
+            "id": "efc57a6db43c151db93bf1873e7ad89f4628fcd0d7504985c957a8518ad78f85",
+            "exit": 143
+          },
+          {
+            "name": "postgres",
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "exit": 0
+          }
+        ],
+        "source_files": 1586,
+        "artifacts_verified": true,
+        "compiler_lock_released": true,
+        "free_bytes": 62277238784,
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        }
+      },
+      "evidence": "docs/implementation/evidence/p03-job-source-transport-native-20260928.json"
     }
   },
   "implementation_relay_registry_20260928": {
