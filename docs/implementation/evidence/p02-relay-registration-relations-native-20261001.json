@@ -1,0 +1,248 @@
+{
+  "format": "bigbrotr-relay-registration-relational-acceptance/1",
+  "status": "PASS_BOUNDED_REGISTRATION_RELATIONAL_GUARDS",
+  "fixture": "da875345e7b797bec28559fb9e4cb361f3af3eb2",
+  "product": "00600af97d24f7e445f7e6706180ddae0cb32fda",
+  "source_files": 1627,
+  "capture_payloads": 17,
+  "same_owner_checks": [
+    {
+      "position": 1,
+      "name": "valid-before",
+      "sqlstate": "ZX001",
+      "message": "fixture valid rollback",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 2,
+      "name": "missing-detail",
+      "sqlstate": "23514",
+      "message": "relay command requires atomic registration detail",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 3,
+      "name": "missing-command",
+      "sqlstate": "23503",
+      "message": "insert or update on table \"relay_registration_commands\" violates foreign key constraint \"relay_registration_commands_actor_id_request_key_fkey\"",
+      "constraint_name": "relay_registration_commands_actor_id_request_key_fkey",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 4,
+      "name": "missing-audit",
+      "sqlstate": "23503",
+      "message": "insert or update on table \"management_commands\" violates foreign key constraint \"management_commands_audit_id_dataset_id_actor_id_action_ex_fkey\"",
+      "constraint_name": "management_commands_audit_id_dataset_id_actor_id_action_ex_fkey",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 5,
+      "name": "wrong-endpoint",
+      "sqlstate": "23514",
+      "message": "relay registration requires exact command, audit and policy heads",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 6,
+      "name": "wrong-audit-time",
+      "sqlstate": "23514",
+      "message": "relay registration requires exact command, audit and policy heads",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 7,
+      "name": "extra-audit",
+      "sqlstate": "23514",
+      "message": "relay registration audit is not its command receipt",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 8,
+      "name": "old-owner",
+      "sqlstate": "23514",
+      "message": "Control owner belongs to another backend or is inactive",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 9,
+      "name": "absent-session",
+      "sqlstate": "23514",
+      "message": "relay command requires its authenticated session",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 10,
+      "name": "revoked-session",
+      "sqlstate": "BB001",
+      "message": "relay registration authentication or owner expired before commit",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 11,
+      "name": "credential-revision",
+      "sqlstate": "BB001",
+      "message": "relay registration authentication or owner expired before commit",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 12,
+      "name": "authentication-revision",
+      "sqlstate": "BB001",
+      "message": "relay registration authentication or owner expired before commit",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 13,
+      "name": "grant-revision",
+      "sqlstate": "BB001",
+      "message": "relay registration authentication or owner expired before commit",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 14,
+      "name": "mutate-detail",
+      "sqlstate": "23514",
+      "message": "immutable control history cannot be changed",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 15,
+      "name": "delete-detail",
+      "sqlstate": "23514",
+      "message": "immutable control history cannot be changed",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 16,
+      "name": "valid-after",
+      "sqlstate": "ZX001",
+      "message": "fixture valid rollback",
+      "constraint_name": "",
+      "backend_pid": 177,
+      "owner_epoch": 2,
+      "unchanged": true
+    }
+  ],
+  "separate_truncate": {
+    "name": "truncate-detail",
+    "sqlstate": "23514",
+    "backend_pid": 234
+  },
+  "pruned_historical_sessions": 1,
+  "all_control_tables": 68,
+  "original_populated_basis_unchanged": true,
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-01T21:06:30.065636+00:00",
+    "owned_stopped": [
+      {
+        "id": "8cc839abf0fe12f368f162d2c1d6587b3b03880481f9c1abd2f2372639eede51",
+        "owner": "cd19e67a062a9e11eb536fffa0cdf4d1",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 1005,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 59176341504
+  },
+  "not_run": [
+    "installed HTTP COMMIT ambiguity",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ],
+  "tasks": [
+    "P02-T01 Step6 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "fixture_tree": "f11b38afba88f0771759801c2cfe937d964f6f9a",
+  "product_tree": "6e131923a3c9a34731663ad943a9c1546d508e25",
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1",
+    "clang": "14.0.6",
+    "postgres": "16.15",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_cpus": 2,
+    "client_memory_bytes": 1073741824,
+    "swap_additional_bytes": 0,
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944
+  },
+  "artifacts": {
+    "Cargo_lock_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "40f10f13cdcb809473dd3214b8e8b5b449270c36903c93a666cdb57d89d0f919",
+    "bigbrotr_sha256": "8a6673649a3eb39816db2fc493ac1708c5fedc25bae1a07884c0d46c36e0ec10",
+    "relay_registration_fault_probe_sha256": "c1769531c77fb595d1724c4617f9b6a522f8a04386fee565534af019d850cfd8",
+    "capture_manifest_sha256": "e694d60ce5a3d61014d342f00f1da9441dcd12d1fc845456d5ce65209bfae24d",
+    "root_review_sha256": "785e84d7ebf4ca85e2bd48a96497864ffc4c8c42e63992512b4630ae74fb720b"
+  },
+  "scope": "Sixteen rollback subtransactions in the actual authenticated Control registration plus one separate actual-Control TRUNCATE. Parent closure and two positive controls distinguish unrelated setup failures. No product/dependency/applied SQL changes, new build or performance claim.",
+  "verification": {
+    "relations": "Exact SQLSTATE/message for malformed detail, audit, endpoint, owner, session and all three actor revisions; immediate FK errors identify both participating tables. Update/delete and separate TRUNCATE require the immutable-history error. Every rollback compares all68 tables with xmin.",
+    "durable_effects": "The real parent appends one command/detail/audit for the unchanged existing endpoint; independent literal digest and retained original owner2 acceptance checked. No speculative command persists.",
+    "session_cleanup": "Real password login prunes one historical revoked session. All three immutable registration details referencing it remain exactly unchanged, exercising deliberate absence of a durable session FK.",
+    "preservation": "1627 exact Git source files and17 captured payloads hash-verified. Populated source equals original qualified45f7593 rows/xmin and retains physical heap files after cloning. Owned client/PG stopped without OOM,1005 prior container projections unchanged,8 unrelated running, compiler lock free."
+  },
+  "review": {
+    "kind": "read-only AI source review plus root original-artifact review",
+    "finding": "TRUNCATE was moved outside the active INSERT before execution so the table-in-use check cannot mask the immutable trigger. No remaining concrete blocker found. Reviewer ran no engines.",
+    "original_outcome": "Native fixtureda87534 passed all16 hook checks plus the separate TRUNCATE. No failed engine execution in this wave. Original artifacts retained."
+  },
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.relay_registration.relation_engine",
+    "local": ".research/implementation/relay-registration-20261001/relation-engine",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-relations-da87534"
+  }
+}

@@ -141,5 +141,7 @@ attribution were checked. The held actual owner rejects a competing acquisition.
 [Eleven authority race schedules](../implementation/evidence/p02-relay-registration-races-native-20261001.json)
 qualify both lock orders, writer rollback and exact historical retry after changed
 heads/grants under a fresh adapter owner. The initial installed owner still stops
-on changed policy. Raw relational negatives and installed HTTP ambiguity remain
-NOT_RUN. These small fixtures do not establish installed acquisition, capacity or M1.
+on changed policy. [Live-owner relational checks](../implementation/evidence/p02-relay-registration-relations-native-20261001.json)
+qualify command/detail/audit linkage, current attribution, immutable history and
+historical session pruning. Installed HTTP ambiguity remains NOT_RUN. These small
+fixtures do not establish installed acquisition, capacity or M1.

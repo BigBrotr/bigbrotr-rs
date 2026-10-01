@@ -178,7 +178,7 @@ Product7011acd/fixture45f7593 passed all seven cases; the [bounded report](../..
 records exact artifacts, complete retained-state review and stopped resources.
 The native build alone does not qualify SQL. The fault consumer below separately
 qualifies deferred expiry and lost/cancelled COMMIT for an existing endpoint.
-Raw relational negatives remain; current-authority races have separate evidence below. The
+Raw relational and current-authority races have separate evidence below. The
 initial installed lifetime cannot survive a changed accepted policy; historical
 retry across changed heads belongs to a fresh adapter owner until successor
 recovery is implemented.
@@ -196,7 +196,7 @@ original populated source. Exact00600af/fixturec54c6bd passed these seven schedu
 see the [bounded fault report](../../docs/implementation/evidence/p02-relay-registration-faults-native-20261001.json).
 The first cc1a4e8 probe had a source-reviewed v1/v2 fixture incompatibility; its
 build-only result remains retained, with no engine executed on it. Concurrent
-writers have the separate evidence below; raw relational and installed HTTP ambiguity remain.
+writers/raw relational checks have separate evidence below; installed HTTP ambiguity remains.
 
 
 `--registration-races BUILD` first repeats the seven COMMIT cases affected by the
@@ -213,7 +213,7 @@ records the11 new cases and7 affected regressions. Privileged
 clone-only writers are fault injections, not installed administration workflows.
 
 
-`--registration-relations BUILD` proposes16 rollback subtransactions inside the
+`--registration-relations BUILD` executes16 rollback subtransactions inside the
 actual authenticated registration over an existing endpoint. A clone-only hook
 first validates the real parent, then checks missing command/detail/audit, endpoint
 digest mismatch, audit linkage, old owner, absent/revoked session, all three actor
@@ -223,6 +223,7 @@ so PostgreSQL's table-in-use refusal cannot mask the immutable history guard.
 Expected command bytes are independently encoded in Python. All68 Control tables
 including xmin must remain identical after each attempt. Actual login also prunes
 the old revoked session while preserving its durable receipts, exercising the
-intentional absence of a session FK. Only one real new command remains. These
-scenarios are NOT_RUN until an exact engine report is recorded; no migration or
-product code changes are part of this fixture.
+intentional absence of a session FK. Only one real new command remains.
+[Exact00600af/fixtureda87534 passed](../../docs/implementation/evidence/p02-relay-registration-relations-native-20261001.json)
+the16 hook checks and separate TRUNCATE, with unchanged original populated source
+and stopped owned resources. No migration or product code changed in this wave.

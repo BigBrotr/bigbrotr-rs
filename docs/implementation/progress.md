@@ -12,10 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main/origin54c1983 is pushed; race fixture41d508a and evidence consolidated.
-Root sole writer. Current dirty work is the clone-only registration relational
-controller/SQL, bindings selection, recipe documentation and this checkpoint.
-No active owned lab/native job at20:56:12UTC. Requested cache cleanup complete.
+Mac mainda875345e7b797bec28559fb9e4cb361f3af3eb2, origin54c1983 last observed.
+Root sole writer. Test-only relational candidate qualified with unchanged00600af
+ELFs. Current dirty work is evidence/task/reference docs, inventory and checkpoint.
+No active owned lab/native job at21:06:30UTC. Requested cache cleanup complete.
 
 ## Active slice and next bounded action
 
@@ -65,11 +65,22 @@ xmin checked. Fresh owner3 after policy/grant change recovers original owner2
 receipt with zero mutations. Root verified1624 source files/183 captures. No
 product/dependency/applied SQL changed. Concrete process helpers shared by two
 controllers; no generic orchestration. AI source review found no blocker and
-executed no engines. Raw relational refusals and installed HTTP ambiguity remain
-required; optional expiry predicate negative controls can discriminate the guard.
+executed no engines.
+[Live-owner relational report](evidence/p02-relay-registration-relations-native-20261001.json):
+fixtureda87534 passed16 rollback checks plus separate actual-Control TRUNCATE.
+Real parent validates first, before/after positives pass, exact guards/FKs and all68
+relations/xmin remain checked. Real login prunes the old revoked session while
+preserving all3 original registration details. Root verified1627 Git files/17
+captures. No production changes. TRUNCATE moved outside active INSERT before the
+run to avoid table-in-use masking; AI found no further blocker. Installed HTTP
+ambiguity remains required; actual adapter expiry is already qualified.
 No complete task, M1, capacity or arm64 claim follows.
 
 Latest owned resources STOPPED/RETAINED:
+- runs/registration-relations-da87534 PID1314735/start427098614 terminal;
+  ownercd19e67a062a9e11eb536fffa0cdf4d1, client8cc839ab stopped143,
+  borrowedPG71775507 stopped0/no OOM. Audit21:06:30UTC:1005 prior projections
+  unchanged,8 unrelated running, compiler lock free,59,176,341,504B free.
 - runs/registration-races-41d508a PID1291707/start427010658 terminal;
   ownera7d8b1b10a98786b41e15f638ee02f3b, client8de397ec stopped143,
   borrowedPG71775507 stopped0/no OOM. Audit20:56:12UTC:1004 prior projections
@@ -85,19 +96,18 @@ Latest owned resources STOPPED/RETAINED:
 
 Inventory implementation_network_20260928.relay_registration and ignored
 .research/implementation/relay-registration-20261001 own native/, engine/,
-fault-native/, fault-native-fixed/, fault-engine/ and race-engine/ including raw captures,
+fault-native/, fault-native-fixed/, fault-engine/, race-engine/ and relation-engine/
+including raw captures,
 source/artifact manifests, controllers, launch receipts and root-review scripts.
 Never replay completed launchers or old cache deletion. Mac last4,731,548KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: review the new registration_relations.py/.sql and bindings
-selection, commit a test-only candidate, then run --registration-relations with
-unchanged00600af binaries in a fresh clone. Sixteen SQL subtransactions validate
-the real parent before malformed attempts, match exact errors/FK targets and check
-all68 tables/xmin after each rollback; separate actual-Control TRUNCATE avoids
-the active INSERT masking its immutable guard. Real login must prune the old revoked
-session without touching retained registration history. No product/migration edit,
-new compilation or engine execution yet. Preserve any original failure unchanged.
+Next bounded action: consolidate/push relational evidence, then exercise installed
+HTTP registration ambiguity/cancellation with the actual initial CLI. Reuse qualified
+registration configuration/native bootstrap and bounded wire proxy; observe command
+rows and native custody, then resolve the original command via fresh adapter owner.
+Initial successor still absent, so do not claim installed restart recovery. Read the
+actual supervisor/dispatch and fixture callers before selecting exact fault cuts.
 
 The next user-visible consumer after closing these bounded registration guarantees
 is installed immutable scope/finite-job command delivery, under the task IDs below.

@@ -32090,6 +32090,50 @@
         "capture_manifest_sha256": "5826a653bff56f2fb675fccdb2064d9576ffc68d5947574dc8292d6faf6645f6",
         "report": "docs/implementation/evidence/p02-relay-registration-races-native-20261001.json",
         "status": "PASS_BOUNDED_STOPPED_RETAINED"
+      },
+      "relation_engine": {
+        "launch": {
+          "source": "da875345e7b797bec28559fb9e4cb361f3af3eb2",
+          "tree": "f11b38afba88f0771759801c2cfe937d964f6f9a",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-relations-da87534",
+          "pid": 1314735,
+          "start_ticks": "427098614",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-00600af/out/artifacts",
+          "bundle_sha256": "cc6d555f567db090002cdf3d3a51dfada9cd23ee3d16e4fc2f923309b228f863"
+        },
+        "status": "PASS_BOUNDED_STOPPED_RETAINED",
+        "local": ".research/implementation/relay-registration-20261001/relation-engine",
+        "owner": "cd19e67a062a9e11eb536fffa0cdf4d1",
+        "client": {
+          "id": "8cc839abf0fe12f368f162d2c1d6587b3b03880481f9c1abd2f2372639eede51",
+          "name": "bigbrotr-acquisition-binding-da87534"
+        },
+        "databases": [
+          "bb_scope_bind_da87534_register_relations"
+        ],
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T21:06:30.065636+00:00",
+          "owned_stopped": [
+            {
+              "id": "8cc839abf0fe12f368f162d2c1d6587b3b03880481f9c1abd2f2372639eede51",
+              "owner": "cd19e67a062a9e11eb536fffa0cdf4d1",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1005,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 59176341504
+        },
+        "report": "docs/implementation/evidence/p02-relay-registration-relations-native-20261001.json",
+        "capture_manifest_sha256": "e694d60ce5a3d61014d342f00f1da9441dcd12d1fc845456d5ce65209bfae24d",
+        "root_review_sha256": "785e84d7ebf4ca85e2bd48a96497864ffc4c8c42e63992512b4630ae74fb720b"
       }
     }
   },

@@ -100,7 +100,9 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   qualify actual adapter cancellation/loss/expiry and exact fresh-owner recovery.
   [Eleven authority races](evidence/p02-relay-registration-races-native-20261001.json)
   add both lock orders, rollback and historical retry after changed heads/grants.
-  Raw relational schedules, CLI enrollment, complete acquisition/restrictive
+  [Live-owner relational checks](evidence/p02-relay-registration-relations-native-20261001.json)
+  verify atomic linkage, current attribution, immutable history and session pruning.
+  Installed HTTP ambiguity, CLI enrollment, complete acquisition/restrictive
   drain and full routes remain; no whole-step completion follows.
 - [ ] **Step 7:** **Practical P02-T01:** real PG transactions race two revision/frontier
   updates, disconnect after commit and retry. Inspect committed rows externally,
