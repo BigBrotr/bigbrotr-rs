@@ -170,8 +170,11 @@ permission writer follows account locking and atomic grant_revision advancement;
 it does not qualify arbitrary privileged bare grant deletion. [Relational evidence](../implementation/evidence/p03-scope-command-relations-native-20261002.json)
 now covers twenty rolled-back actual-Control attempts, including a valid alternate
 scope, missing receipt/authentication, immutable history and separate TRUNCATE.
-Historical session cleanup preserves receipts. Installed HTTP ambiguity remains
-NOT_RUN for this consumer. The adapter fault report also records six actual-engine
+Historical session cleanup preserves receipts. [Installed HTTP fault evidence](../implementation/evidence/p03-initial-scopes-faults-native-20261002.json)
+now covers nominal first-scope acceptance, both COMMIT losses, admitted client reset/
+exact retry and timely signal while PostgreSQL custody is retained. All five scope
+effects and original native bytes are checked; fresh SQL-owner recovery does not
+adopt native Ingest. The adapter fault report also records six actual-engine
 internal helper regressions,
 including64 candidate collisions, rollback and historical identity.
 The padded maximum body exercises the HTTP envelope, not a maximum canonical

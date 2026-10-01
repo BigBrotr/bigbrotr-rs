@@ -354,4 +354,9 @@ endpoint HTTP profile also needs five affected regressions at this exact fixture
 its original7011acd/00600af evidence remains historical. Two concrete client/oracle
 helpers own scope-specific setup and expected rows; the finite lifetime/proxy stays
 shared. Eight local actual-parser checks pass, including receipt-format separation.
-New scope/endpoint HTTP engines are NOT_RUN.
+Exact7363a12/0733326 CLI/probe and e4c2825 native inspector passed all five scope
+and five endpoint cases. The [bounded installed report](../../docs/implementation/evidence/p03-initial-scopes-faults-native-20261002.json)
+records all69 SQL tables,12 native rows/original CBOR and source/artifact identities.
+Scope signal HTTP closure1.369s precedes the earliest2.5s command deadline;
+signal-to-reap2.132s, with upstream custody observed after CLI death. No installed
+successor, capacity or full acquisition claim follows.

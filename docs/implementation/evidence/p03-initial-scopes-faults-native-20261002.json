@@ -1,0 +1,335 @@
+{
+  "format": "bigbrotr-installed-scope-command-fault-acceptance/1",
+  "status": "PASS_BOUNDED_INSTALLED_SCOPE_COMMAND_FAULTS",
+  "fixture": "7363a12a420b39d9d089c8e4aee58f04d374efb2",
+  "product": "07333269469bcf93cf1c1d0a1b72d624249b238a",
+  "source_files": 1649,
+  "capture_payloads": 206,
+  "cases": [
+    {
+      "name": "scope-http-pass",
+      "committed": true,
+      "wire": [
+        12,
+        12,
+        12,
+        12,
+        0
+      ],
+      "http": {
+        "status": 202,
+        "body": {
+          "accepted_at_us": "1790897974465396",
+          "authority": "identity-only",
+          "command_key": "31313131313131313131313131313131",
+          "created": true,
+          "format": "bigbrotr-acquisition-scope-registration/1",
+          "scope_id": "832ed42c63c459983cc3e86072f212b4"
+        }
+      },
+      "cli_exit": 0,
+      "signal_sent_seconds": null,
+      "http_closed_seconds": null,
+      "signal_to_reap_seconds": null
+    },
+    {
+      "name": "scope-http-before",
+      "committed": false,
+      "wire": [
+        11,
+        10,
+        10,
+        10,
+        1
+      ],
+      "http": {
+        "closed": "RemoteDisconnected"
+      },
+      "cli_exit": 4,
+      "signal_sent_seconds": null,
+      "http_closed_seconds": null,
+      "signal_to_reap_seconds": null
+    },
+    {
+      "name": "scope-http-after",
+      "committed": true,
+      "wire": [
+        11,
+        11,
+        11,
+        10,
+        1
+      ],
+      "http": {
+        "closed": "RemoteDisconnected"
+      },
+      "cli_exit": 4,
+      "signal_sent_seconds": null,
+      "http_closed_seconds": null,
+      "signal_to_reap_seconds": null
+    },
+    {
+      "name": "scope-http-disconnect",
+      "committed": true,
+      "wire": [
+        12,
+        12,
+        12,
+        12,
+        1
+      ],
+      "http": {
+        "status": 200,
+        "body": {
+          "accepted_at_us": "1790897990826545",
+          "authority": "identity-only",
+          "command_key": "31313131313131313131313131313131",
+          "created": false,
+          "format": "bigbrotr-acquisition-scope-registration/1",
+          "scope_id": "8a6bfbc78c1c6b05f42f2b2ce70aed44"
+        }
+      },
+      "cli_exit": 0,
+      "signal_sent_seconds": null,
+      "http_closed_seconds": null,
+      "signal_to_reap_seconds": null
+    },
+    {
+      "name": "scope-http-signal",
+      "committed": false,
+      "wire": [
+        11,
+        10,
+        10,
+        10,
+        1
+      ],
+      "http": {
+        "closed": "RemoteDisconnected"
+      },
+      "cli_exit": 4,
+      "signal_sent_seconds": 1.3688358813524246,
+      "http_closed_seconds": 1.3688590452075005,
+      "signal_to_reap_seconds": 2.1319383699446917
+    }
+  ],
+  "control_tables": 69,
+  "native_rows": 12,
+  "original_basis_unchanged": true,
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-01T23:41:08.413087+00:00",
+    "owned_stopped": [
+      {
+        "id": "db0234172d8234c90ca0414e21c3f8feb0fe661b6503df49aaa1d951b1f89912",
+        "owner": "a926a3afc0de8e001f58e56a42eacbe7",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 1026,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 57194938368
+  },
+  "not_run": [
+    "installed successor recovery",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ],
+  "tasks": [
+    "P03-T01 Steps1/2/3 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "fixture_tree": "4b3d310581f42ce44db4bebbb05f7db68d3c33f4",
+  "product_tree": "4069a0e1b1309b68f0ed8774c1d0e5735749bd80",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1 (48a229cea)",
+    "clang": "14.0.6",
+    "postgres": "16.15",
+    "rocksdb": "11.8.1",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2"
+  },
+  "artifacts": {
+    "binary_sha256": "352029da8dec7e377101a3181d89bb335683f8c36be87a64ef3db74614d02851",
+    "probe_sha256": "b6d96b964bc4a2e04c9b1b4d40ae5274d8fcccab9ab5b0cc358118a7e8f90a52",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "fbcde268a128fe5294d1aac183269a507dd288aaa3e0668bf7597283b4e816a0",
+    "native_inspector": {
+      "source": "e4c282542532aa95ca30b8ea252b527230d614b8",
+      "probe_sha256": "c34be5a35dbc2f6efdfeb9f137518b09f8759494331fb7a73b95f1cfa9de1afa",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-e4c2825/out/artifacts"
+    },
+    "fixture_source_manifest_sha256": "e13762b7130f7aef7324f5acb22340f7c1caaf99cbceba7d0f21af953450a010",
+    "capture_manifest_sha256": "6d37b22189bfe6aaf2a2616d736cb0b8bc602f5745c9b2225ef000eff6897767",
+    "root_review_sha256": "ef94e2a8bc21927d1579e801782cafc67f6060aad510a2f5e5be26253341406a"
+  },
+  "endpoint_regression": {
+    "status": "PASS_BOUNDED_INSTALLED_REGISTRATION_FAULTS",
+    "cases": [
+      {
+        "name": "register-http-pass",
+        "committed": true,
+        "wire": [
+          10,
+          10,
+          10,
+          10,
+          0
+        ],
+        "http": {
+          "status": 202,
+          "body": {
+            "accepted_at_us": "1790897821723365",
+            "authority": "identity-only",
+            "command_key": "31313131313131313131313131313131",
+            "created": true,
+            "endpoint_id": "1a8bc920b23c3ce02f1d754fbd0f8b21",
+            "format": "bigbrotr-relay-registration/1"
+          }
+        },
+        "cli_exit": 0,
+        "signal_sent_seconds": null,
+        "http_closed_seconds": null,
+        "signal_to_reap_seconds": null
+      },
+      {
+        "name": "register-http-before",
+        "committed": false,
+        "wire": [
+          9,
+          8,
+          8,
+          8,
+          1
+        ],
+        "http": {
+          "closed": "RemoteDisconnected"
+        },
+        "cli_exit": 4,
+        "signal_sent_seconds": null,
+        "http_closed_seconds": null,
+        "signal_to_reap_seconds": null
+      },
+      {
+        "name": "register-http-after",
+        "committed": true,
+        "wire": [
+          9,
+          9,
+          9,
+          8,
+          1
+        ],
+        "http": {
+          "closed": "RemoteDisconnected"
+        },
+        "cli_exit": 4,
+        "signal_sent_seconds": null,
+        "http_closed_seconds": null,
+        "signal_to_reap_seconds": null
+      },
+      {
+        "name": "register-http-disconnect",
+        "committed": true,
+        "wire": [
+          10,
+          10,
+          10,
+          10,
+          1
+        ],
+        "http": {
+          "status": 200,
+          "body": {
+            "accepted_at_us": "1790897837532522",
+            "authority": "identity-only",
+            "command_key": "31313131313131313131313131313131",
+            "created": false,
+            "endpoint_id": "2413cb68db7b90c1198610e30ff3bb46",
+            "format": "bigbrotr-relay-registration/1"
+          }
+        },
+        "cli_exit": 0,
+        "signal_sent_seconds": null,
+        "http_closed_seconds": null,
+        "signal_to_reap_seconds": null
+      },
+      {
+        "name": "register-http-signal",
+        "committed": false,
+        "wire": [
+          9,
+          8,
+          8,
+          8,
+          1
+        ],
+        "http": {
+          "closed": "RemoteDisconnected"
+        },
+        "cli_exit": 4,
+        "signal_sent_seconds": 1.0989287290722132,
+        "http_closed_seconds": 1.0989479143172503,
+        "signal_to_reap_seconds": 2.100838616490364
+      }
+    ],
+    "control_tables": 69,
+    "native_rows": 12,
+    "capture_payloads": 191,
+    "terminal": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-01T23:38:59.230406+00:00",
+      "owned_stopped": [
+        {
+          "id": "56687feab335df104c48b902a813590cad3587f14baab28fada10d05e4ac9bfa",
+          "owner": "23699a72d1f22f31460ba7a848566505",
+          "exit": 143
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 1025,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 57305509888
+    },
+    "root_review_sha256": "6612d17e079338e700986c9de503db105c976d85f8dd17b8786db8ebcce370c6"
+  },
+  "scope": "Actual initial CLI, real password login, URL/enrollment prerequisites and first scope over the same Control/native owner. Five scope schedules plus five affected endpoint regressions using qualified0733326 CLI/probe and e4c2825 native inspector. Explicit migration26, no product/dependency/applied SQL changes or rebuild.",
+  "verification": {
+    "cut": "Nontransactional clone-only log marker at actual scope detail INSERT binds COMMIT11 after ten completed transactions. Endpoint regression retains cut9 after eight. Complete all69-table durable observations, not marker/logs, determine actual effects.",
+    "atomicity": "Fresh scope acceptance adds exactly selector/scope/command/detail/audit or nothing. Full literal normalized document/digest, candidate bytes, identity bindings and owner attribution independently checked. Existing endpoint/enrollment and all unrelated rows/xmin remain exact. Setup HTTP receipts bind to exact SQL rows.",
+    "http": "Nominal202, before/after COMMIT losses with actual HTTP closure, admitted client reset then exact200 retry, and timely SIGTERM during held COMMIT. Parser retains any delivered success status even across partial headers/body and refuses it on ambiguity. Eight local parser cases passed including cross-format negatives.",
+    "custody": "Observed held PostgreSQL PID/start/advisory fence and actual Busy contender. Signal closes HTTP1.368859s after pre-start CLOCK_BOOTTIME sample, before earliest2.5s command timeout; reap2.131938s after signal. Original server transaction remains positively observed after CLI death until proxy closure.",
+    "recovery": "Fresh SQL owner2 retries original stored command body/key after positive driver retirement. Committed rows return original owner1 receipt/time without mutation; absent scope/command created once with owner2 attribution. Native Ingest is never adopted. Actual reinitialization of retained native directory refuses exit3 without SQL writes.",
+    "native": "All12 native rows and original staged CBOR plus request digest/outcome bytes match independent literal encoding. Healthy shutdown releases Control after native close. Faulted state and initialization remain retained.",
+    "preservation": "1649 exact Git files per fixture and206 scope/191 endpoint capture payloads verified. Retained populated source unchanged by rows/xmin/heap files. Owned client/PG stopped without OOM,8 unrelated running, compiler lock free."
+  },
+  "review": {
+    "kind": "Read-only AI source review and root original-artifact review",
+    "result": "No concrete setup, false-PASS or lifetime blocker found. AI read complete changed controllers/clients and real dispatch lifetime, checked cut and timing discrimination; ran no engines. Root checked original complete SQL/native/captured HTTP and terminal observations.",
+    "structure": "Finite controller and actual HTTP parser shared with endpoint profile. Two concrete scope helpers own prerequisite HTTP commands and independent fresh-identity expectations; no product abstraction/framework introduced.",
+    "original_outcome": "All ten cases passed; no engine/fixture failure in this wave. Prior historical failures remain untouched. This bounded claim does not complete acquisition/M1, native successor, capacity, arm64 or release."
+  },
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.scope_registration",
+    "local": ".research/implementation/scope-registration-20261001/http-fault-engine",
+    "endpoint_local": ".research/implementation/scope-registration-20261001/endpoint-http-regression",
+    "remote_roots": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/scope-http-faults-7363a12",
+      "/home/tux/bigbrotr-implementation-20260917/runs/registration-http-faults-7363a12"
+    ]
+  }
+}
