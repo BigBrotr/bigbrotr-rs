@@ -93,6 +93,7 @@ def run(pg, client, output, database, name, rows):
         (directory / 'validate.stdout').write_text(validated.stdout)
         (directory / 'validate.stderr').write_text(validated.stderr)
         assert validated.returncode == 0, validated.stderr
+        cli_started = time.monotonic()
         prefix = start(client, config, output, name)
         first = wait_for(lambda: messages(prefix) or Path(str(prefix)+'.terminal.json').exists(), 'installed startup')
         assert isinstance(first, list) and len(first) == 1 and first[0]['state'] == 'initialized'
@@ -133,6 +134,12 @@ def run(pg, client, output, database, name, rows):
             else:
                 signal_time = time.monotonic()
                 stop(client, prefix)
+                result['start_to_signal_sent_seconds'] = time.monotonic() - cli_started
+                # Refresh starts after cli_started. With TTL5s, any phase using
+                # half the remaining lease has a deadline at least2.5s after
+                # that lower bound. A later signal could merely hit driver drain
+                # after an earlier command timeout and cannot qualify this case.
+                assert result['start_to_signal_sent_seconds'] < 2.0, 'signal too late to isolate cancellation'
                 ended = terminal(prefix)
                 result['signal_to_reap_seconds'] = time.monotonic() - signal_time
                 assert result['signal_to_reap_seconds'] < 3.5 and ended['exit_code'] == 4
@@ -162,6 +169,8 @@ def run(pg, client, output, database, name, rows):
             assert len(reports) == 1 and Path(str(prefix)+'.stderr').read_bytes()
             if mode == 'signal':
                 assert 'closed' in http_answer
+                assert Path(str(prefix)+'.stderr').read_text() == (
+                    'error: initial Ingest cancelled; original attempt may need recovery\n')
         wire = proxy.event('receipt', 5)
         assert proxy.wait(5) == 0 and not proxy.stderr
         counts = [wire[k] for k in ('commits_seen','commits_forwarded','server_commit_complete',

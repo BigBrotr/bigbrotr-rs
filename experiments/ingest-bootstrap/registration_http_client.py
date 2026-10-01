@@ -12,20 +12,28 @@ import time
 
 def read_outcome(connection, mode):
     observed = {}
+    response = http.client.HTTPResponse(connection)
+    wanted = 202 if mode == 'pass' else 200 if mode == 'disconnect' else 503
     try:
-        response = http.client.HTTPResponse(connection)
         response.begin()
         # A success status remains a false success even if its body is lost.
         # Check it before any body read can fail and retain it in the evidence.
         observed['status'] = response.status
-        wanted = 202 if mode == 'pass' else 200 if mode == 'disconnect' else 503
         assert response.status == wanted, 'unexpected command response status'
         data = response.read(4097)
         assert len(data) <= 4096 and response.read(1) == b''
+        # Bounded HTTPResponse.read deliberately allows premature fixed-length
+        # EOF. An outstanding declared length still means an interrupted body.
+        if response.length is not None and response.length > 0:
+            raise http.client.IncompleteRead(data, response.length)
         observed['body'] = json.loads(data)
     except (http.client.RemoteDisconnected, http.client.IncompleteRead,
             ConnectionResetError, BrokenPipeError) as error:
         # Socket closure is observable ambiguity, never inferred rollback.
+        # begin() can parse the status and then lose the connection in headers.
+        if isinstance(response.status, int):
+            observed['status'] = response.status
+            assert response.status == wanted, 'unexpected command response status'
         observed['closed'] = type(error).__name__
     if mode in ('pass', 'disconnect'):
         assert observed['status'] == (202 if mode == 'pass' else 200)

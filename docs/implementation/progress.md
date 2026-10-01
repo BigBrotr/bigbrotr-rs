@@ -12,11 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main626cbc3, origin6367097; root sole writer. Candidate626cbc3 is retained
-as original fixture setup FAIL: authorization_ttl30s exceeded the actual5s ceiling,
-before installed CLI startup. Current dirty work corrects fixture TTL, preserves
-HTTP status across body loss, adds discriminating oracle regressions and records
-this outcome. No product/build/cache changes. Owned terminal audit21:21:41UTC.
+Mac main47ed56b, origin6367097; root sole writer. Original626cbc3 setup FAIL is
+retained. Corrected47ed56b executed five installed HTTP schedules PASS, but final
+qualification awaits the stronger real-parser negatives and explicit signal timing
+below. Dirty work only changes fixture/oracle, inventory and this checkpoint.
+No product/build/cache changes. Owned terminal audit21:31:03UTC.
 
 ## Active slice and next bounded action
 
@@ -103,22 +103,24 @@ source/artifact manifests, controllers, launch receipts and root-review scripts.
 Never replay completed launchers or old cache deletion. Mac last4,688,548KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: commit corrected five-case registration_http_faults fixture,
-then run exact candidate with unchanged00600af CLI/probe and retained7011acd native
-inspector. Original626cbc3/capture contains21 hash-verified payloads and a terminal
-audit only: client526f8250 stopped143, borrowedPG stopped0,1006 prior projections
-unchanged,8 unrelated running, compiler lock free,59,142,426,624B free. No HTTP
-schedule ran; validation correctly refused30s authorization. Corrected5s respects
-the production ceiling; command duration remains bounded by actual residual lease.
-Oracle RED (3 failures/1 error) reproduced forgotten success headers/reset and
-truncated-body classification; GREEN5 tests after retaining/checking status before
-body reads. Both logs remain in http-fault-engine/. No product invariant weakened.
-Startup6+login2 COMMITs and the clone-only nontransactional insertion marker must
-positively identify COMMIT9, or the schedule fails. Wire loss may yield503 or
-EOF/reset, never2xx even with lost body. Timely admitted disconnect must allow
-acceptance/exact same-owner retry. SIGTERM requires CLI death before proxy close.
-Full68-table/native12-row/original-CBOR checks and refused retained-store restart
-remain required. Original failed attempt and SQL clone stay retained.
+Next bounded action: commit/re-run the strengthened HTTP fault oracle and signal
+cut, reusing unchanged00600af CLI/probe and7011acd native inspector. Original626cbc3
+refused invalid30s authorization before CLI startup.47ed56b corrected5s and passed
+all5 engine schedules; original166 payloads are hash-verified in http-fault-fixed/.
+Terminal audit21:31:03UTC: clientc5ac6c22 stopped143, borrowedPG stopped0,1007 prior
+projections unchanged,8 unrelated running, compiler lock free,59,049,816,064B free.
+AI follow-up found remaining oracle gaps: actual HTTPResponse.begin can retain
+status before headers reset, and bounded read allows short Content-Length without
+raising. Actual parser over independent wire bytes now reproduces RED3 failures/
+1 error and GREEN7 after retaining partial-header status and checking remaining
+length. No mock parser remains; complete malformed JSON still fails.
+The signal case must additionally prove SIGTERM sent <2s after launch, before the
+earliest2.5s half-lease deadline, and require exact cancellation stderr; otherwise
+an earlier timeout followed by driver drain can mimic cancellation. First run's
+signal outcome remains provisional for that specific causal claim. All original
+outputs remain unchanged. New candidate schedules are NOT_RUN. Startup6+login2,
+actual insertion marker, all68 SQL relations/native12/originalCBOR and fresh-owner
+historical receipt recovery remain mandatory. No installed successor claim.
 
 The next user-visible consumer after closing these bounded registration guarantees
 is installed immutable scope/finite-job command delivery, under the task IDs below.

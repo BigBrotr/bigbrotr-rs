@@ -32176,6 +32176,51 @@
           "free_bytes": 59142426624
         },
         "failure": "Fixture authorization_ttl=30s refused during config validation; installed CLI and HTTP schedules NOT_RUN."
+      },
+      "http_fault_fixed": {
+        "launch": {
+          "source": "47ed56b81969a6119af71ff5af9990fc0d487397",
+          "tree": "7103ba81f9074ebc30d2bea80eb0f9fac2063472",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-http-faults-47ed56b",
+          "pid": 1327876,
+          "start_ticks": "427237127",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-00600af/out/artifacts",
+          "bundle_sha256": "f5a5e6f08fb1988fc3fdf8b8a61cbfdfd7089d46e960858cec636c3e9a2e2304"
+        },
+        "local": ".research/implementation/relay-registration-20261001/http-fault-fixed",
+        "status": "PASS_INSTALLED_REGISTRATION_FAULTS",
+        "owner": "c66f0ba6ce97fcf32ff18e65a271983b",
+        "client": {
+          "id": "c5ac6c2253e028dbda3705b0b61f22a5f27d660d4fd28938d844683b4a5336d8",
+          "name": "bigbrotr-acquisition-binding-47ed56b"
+        },
+        "databases": [
+          "bb_scope_bind_47ed56b_register_http_pass",
+          "bb_scope_bind_47ed56b_register_http_before",
+          "bb_scope_bind_47ed56b_register_http_after",
+          "bb_scope_bind_47ed56b_register_http_disconnect",
+          "bb_scope_bind_47ed56b_register_http_signal"
+        ],
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T21:31:03.262019+00:00",
+          "owned_stopped": [
+            {
+              "id": "c5ac6c2253e028dbda3705b0b61f22a5f27d660d4fd28938d844683b4a5336d8",
+              "owner": "c66f0ba6ce97fcf32ff18e65a271983b",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1007,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 59049816064
+        }
       }
     }
   },

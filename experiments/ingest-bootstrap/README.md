@@ -241,4 +241,10 @@ all68 Control relations,12 original native rows and staged CBOR. The qualified70
 native inspector is reused separately from the00600af CLI/SQL probe, with hashes
 and all affected build inputs checked. No installed successor is inferred from
 fresh adapter recovery; actual reinitialization of the retained store must refuse.
-These scenarios are NOT_RUN until an exact engine report is recorded.
+Original626cbc3 failed config validation before startup (fixture30s exceeded the
+actual5s authorization ceiling). Corrected47ed56b ran all five schedules; final
+qualification awaits a stronger oracle that preserves status even during header
+reset and uses actual HTTP parsing for truncated-body controls. The signal cut
+must be sent within2s of launch, before the earliest2.5s command deadline, so an
+earlier timeout followed by driver drain cannot masquerade as SIGTERM cancellation.
+Original outputs remain retained; final evidence is not inferred from that run.
