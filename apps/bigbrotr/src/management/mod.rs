@@ -1,4 +1,5 @@
 //! Shared private management operations. Stored identities/grants are not leases.
+pub mod acquisition_scope;
 pub mod client;
 pub mod credentials;
 pub mod grants;

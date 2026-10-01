@@ -100,6 +100,68 @@ and committed visibility. Finite jobs, progress/effect closure, installed entryp
 remain selected implementation work; the initial admission bridge is below.
 
 
+## Authenticated scope registration consumer (implementation in progress)
+
+The initial owner implements `POST /management/v1/acquisition-scopes` with closed
+JSON endpoint_id, access_scope_id, full visibility, selector (the profile1 object
+above), expected_config_revision and expected_policy_revision. Session, CSRF,
+Origin and canonical Idempotency-Key follow the existing private boundary.
+Fresh acceptance requires dataset `roles.control`: this registers explicit finite
+work intent, without changing configured selectors/defaults, enrollment, routes,
+visibility grants or accepted policy. Changing those policies still requires its
+own authority. Neither enabled Sync nor native dictionary append is needed to
+register this identity. Execution retains all separate current checks.
+
+The scope epoch is exactly the command's original expected_policy_revision; there
+is no independently variable epoch field or substitution with the latest head.
+Semantic normalization precedes the digest. SHA256 covers ASCII
+`bigbrotr/acquisition-scope-registration/1` plus NUL, bytes16 dataset, actor, key,
+endpoint, access, visibility dataset, uint16 visibility kind4, bytes16 visibility
+domain, uint64 ordinal/config/policy, uint32 canonical document length and its
+complete bytes, all integers big endian. Generated selector/scope IDs and candidate
+hashes cannot substitute for the original tuple or complete document.
+
+Use one transaction-local scope identity operation for the existing internal
+adapter and the authenticated consumer. Authentication, fresh grant/CAS checks,
+identity selection, command, audit and immutable detail referencing the resulting
+scope share Control → dataset → account/session serialization. Existing scope
+attribution is untouched. Add0026 without rewriting0004 or earlier checksums; no
+second selector document or registry. Deferred validation must cover the accepted
+session/account/grant and live owner even when the scope already existed. Durable
+history has no session FK, so ordinary expired-session cleanup preserves receipts.
+
+Fresh command202 and exact historical retry200 return command_key, scope_id,
+accepted_at_us as a decimal string, created and `authority=identity-only` with
+format `bigbrotr-acquisition-scope-registration/1`. Created describes the command,
+not the scope's first creator. Authenticate before original actor/key resolution;
+new permission/CAS follows it. Same-key different normalized intent conflicts.
+No idle touch, cookies, job dispatch, native effect or coverage is implied. Missing
+endpoint/access/visibility dependencies are ordinary transactional refusal, not an
+SQL exception that accidentally terminates the owner. Ambiguous/cancelled work
+still poisons Control until actual driver retirement.
+
+The HTTP envelope is at most2MiB+1KiB; selector input and canonical document each
+retain the existing2MiB ceiling. Parse a borrowed raw selector through the existing
+codec, with no generic JSON tree or competing normalizer. Reserve14MiB+64KiB for
+one request before body collection: two wire-sized buffers,8MiB parser/normalized
+selector,2MiB canonical document and fixed envelope slack. Keep that grant through
+queue/SQL/cancellation until all command allocations drop; this is a conservative
+reservation, not a measured allocator/RSS claim. Smaller requests retain the
+existing64KiB allowance. All private body collectors now copy each DATA frame into
+one preallocated capped buffer and immediately drop the frame; a byte-only limit
+on an accumulating frame list did not bound per-frame memory. Abandoned queued
+commands drop selector allocations before releasing their request credit. Probe
+schema/table/function prerequisites before bind.
+
+Practical acceptance first connects real login → URL → enrollment → scope/retry
+on the same installed owner, compares every SQL/native effect, and exercises
+closed/oversize input, resource refusal, absent/mismatched source identities,
+session/CSRF/action/CAS refusal and missing prerequisites before bind. Lost/held
+COMMIT, concurrent authority changes and raw relational negatives must qualify the
+new durable boundary before dependent job delivery is consolidated. This section
+records the selected implementation; these new consumer scenarios are NOT_RUN.
+
+
 The initial admission bridge now accepts a borrowed `AcquisitionEventContext`.
 It retains the loaded scope and the actual request predicate through the whole
 reservation/dispatch operation. Before staging it checks exact endpoint/access/

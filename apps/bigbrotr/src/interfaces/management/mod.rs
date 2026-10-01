@@ -418,9 +418,35 @@ impl Management {
                 completion,
             }) => {
                 if completion.abandoned() {
+                    // Pattern bindings otherwise drop completion first. Dispose
+                    // large selector buffers before returning their reservation.
+                    drop(operation);
                     return Ok(Execution::Complete(None));
                 }
                 match operation {
+                    Operation::AcquisitionScope {
+                        session,
+                        csrf,
+                        key,
+                        command,
+                    } => {
+                        if self.enrollment.is_none() {
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::Forbidden),
+                            ))));
+                        }
+                        let commit = std::cell::Cell::new(false);
+                        let result = sql(
+                            maximum,
+                            owner.accept_acquisition_scope(&session, &csrf, key, &command, &commit),
+                        )
+                        .await?;
+                        return Ok(Execution::Complete(Some(Response(
+                            completion,
+                            result.map(Reply::AcquisitionScope),
+                        ))));
+                    }
                     Operation::RelayRegistration {
                         session,
                         csrf,

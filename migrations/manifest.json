@@ -165,6 +165,10 @@
     {
       "version": 25,
       "name": "0025_relay_registration.sql"
+    },
+    {
+      "version": 26,
+      "name": "0026_acquisition_scope_commands.sql"
     }
   ],
   "reserved": [

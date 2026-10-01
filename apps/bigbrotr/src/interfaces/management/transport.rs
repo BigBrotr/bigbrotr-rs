@@ -7,7 +7,7 @@ use super::{
 };
 use axum::{
     Extension, Json, Router,
-    body::{Body, to_bytes},
+    body::Body,
     extract::{Request, State},
     http::{HeaderMap, HeaderValue, Method, StatusCode, header},
     response::{IntoResponse, Response},
@@ -15,6 +15,7 @@ use axum::{
 };
 use bigbrotr::{
     management::{
+        acquisition_scope::{self, ScopeCommand, ScopeReceipt},
         grants::{CommandKey, GrantCommand, GrantReceipt},
         job_list::{self, JobListRequest, PageBody},
         jobs::{JobCommand, JobObservation, JobReceipt, ResumeExportCommand, ResumeExportReceipt},
@@ -25,6 +26,7 @@ use bigbrotr::{
     },
     runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
 };
+use futures_util::StreamExt;
 use hyper::server::conn::http1;
 use hyper_util::{
     rt::{TokioIo, TokioTimer},
@@ -59,6 +61,12 @@ const SESSION_COOKIE: &str = "BigBrotrLocalSession";
 const CSRF_COOKIE: &str = "BigBrotrLocalCsrf";
 
 pub(super) enum Operation {
+    AcquisitionScope {
+        session: BrowserSecret,
+        csrf: BrowserSecret,
+        key: CommandKey,
+        command: ScopeCommand,
+    },
     RelayRegistration {
         session: BrowserSecret,
         csrf: BrowserSecret,
@@ -130,6 +138,7 @@ pub(super) enum Operation {
     },
 }
 pub(super) enum Reply {
+    AcquisitionScope(ScopeReceipt),
     RelayRegistration(RegistrationReceipt),
     RelayEnrollment(EnrollmentReceipt),
     JobList(PageBody),
@@ -294,6 +303,7 @@ impl Server {
             .route("/management/v1/me", get(me));
         if matches!(profile, Profile::Initial { .. }) {
             router = router
+                .route("/management/v1/acquisition-scopes", post(register_scope))
                 .route("/management/v1/relay-endpoints", post(register_relay))
                 .route("/management/v1/relay-enrollments", post(enroll_relay));
         }
@@ -458,7 +468,7 @@ async fn history_query(
             return error(StatusCode::PAYLOAD_TOO_LARGE);
         }
         let result = bigbrotr_protocol::read::decode_get(request.uri().query().unwrap_or(""));
-        if !matches!(to_bytes(request.into_body(), 0).await, Ok(bytes) if bytes.is_empty()) {
+        if !matches!(bounded_body(request.into_body(), 0).await, Ok(bytes) if bytes.is_empty()) {
             return error(StatusCode::BAD_REQUEST);
         }
         result
@@ -472,9 +482,9 @@ async fn history_query(
         }) {
             return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
         }
-        let bytes = match to_bytes(request.into_body(), shared.history.bytes).await {
+        let bytes = match bounded_body(request.into_body(), shared.history.bytes).await {
             Ok(value) => value,
-            Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+            Err(status) => return error(status),
         };
         bigbrotr_protocol::read::decode_post(&bytes)
     } else {
@@ -572,7 +582,7 @@ async fn list_jobs(
         Ok(value) => value,
         Err(_) => return error(StatusCode::BAD_REQUEST),
     };
-    if !matches!(to_bytes(request.into_body(), 0).await, Ok(bytes) if bytes.is_empty()) {
+    if !matches!(bounded_body(request.into_body(), 0).await, Ok(bytes) if bytes.is_empty()) {
         return error(StatusCode::BAD_REQUEST);
     }
     let delivery = connection.delivery.clone();
@@ -620,7 +630,7 @@ async fn job_status(
     else {
         return error(StatusCode::BAD_REQUEST);
     };
-    if !matches!(to_bytes(request.into_body(), 0).await, Ok(bytes) if bytes.is_empty()) {
+    if !matches!(bounded_body(request.into_body(), 0).await, Ok(bytes) if bytes.is_empty()) {
         return error(StatusCode::BAD_REQUEST);
     }
     let delivery = connection.delivery.clone();
@@ -677,9 +687,9 @@ async fn resume_export(
     }) {
         return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
     }
-    let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
+    let bytes = match bounded_body(request.into_body(), BODY_BYTES).await {
         Ok(bytes) => bytes,
-        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+        Err(status) => return error(status),
     };
     let command = match serde_json::from_slice::<ResumeExportCommand>(&bytes) {
         Ok(command) => command,
@@ -721,6 +731,63 @@ fn mutation_credentials(
     Ok((session, csrf, key))
 }
 
+/// Keep one bounded contiguous buffer, not one retained Bytes allocation per
+/// peer-controlled DATA frame. The caller holds its request reservation first.
+async fn bounded_body(body: Body, limit: usize) -> Result<Vec<u8>, StatusCode> {
+    let mut bytes = Vec::new();
+    bytes
+        .try_reserve_exact(limit)
+        .map_err(|_| StatusCode::TOO_MANY_REQUESTS)?;
+    let mut stream = body.into_data_stream();
+    while let Some(frame) = stream.next().await {
+        let frame = frame.map_err(|_| StatusCode::PAYLOAD_TOO_LARGE)?;
+        if frame.len() > limit - bytes.len() {
+            return Err(StatusCode::PAYLOAD_TOO_LARGE);
+        }
+        bytes.extend_from_slice(&frame);
+    }
+    Ok(bytes)
+}
+
+async fn register_scope(
+    State(shared): State<Shared>,
+    Extension(connection): Extension<Connection>,
+    request: Request,
+) -> Response {
+    let grant = match begin_reserved(&shared, &request, acquisition_scope::REQUEST_BYTES) {
+        Ok(grant) => grant,
+        Err(status) => return error(status),
+    };
+    let (session, csrf, key) = match mutation_credentials(request.headers()) {
+        Ok(credentials) => credentials,
+        Err(status) => return error(status),
+    };
+    let bytes = match bounded_body(request.into_body(), acquisition_scope::BODY_BYTES).await {
+        Ok(bytes) => bytes,
+        Err(status) => return error(status),
+    };
+    let command = match ScopeCommand::decode(&bytes) {
+        Ok(command) => command,
+        Err(SessionError::Capacity) => return error(StatusCode::TOO_MANY_REQUESTS),
+        Err(_) => return error(StatusCode::BAD_REQUEST),
+    };
+    drop(bytes);
+    // The larger permit moves with the canonical document and normalized selector
+    // until actual queued/SQL work drops, including after HTTP abandonment.
+    dispatch(
+        &shared,
+        connection,
+        grant,
+        Operation::AcquisitionScope {
+            session,
+            csrf,
+            key,
+            command,
+        },
+    )
+    .await
+}
+
 async fn register_relay(
     State(shared): State<Shared>,
     Extension(connection): Extension<Connection>,
@@ -734,9 +801,9 @@ async fn register_relay(
         Ok(credentials) => credentials,
         Err(status) => return error(status),
     };
-    let bytes = match to_bytes(request.into_body(), REGISTRATION_BODY_BYTES).await {
+    let bytes = match bounded_body(request.into_body(), REGISTRATION_BODY_BYTES).await {
         Ok(bytes) => bytes,
-        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+        Err(status) => return error(status),
     };
     let command = match serde_json::from_slice::<RegistrationCommand>(&bytes) {
         Ok(command) => command,
@@ -771,9 +838,9 @@ async fn enroll_relay(
         Ok(credentials) => credentials,
         Err(status) => return error(status),
     };
-    let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
+    let bytes = match bounded_body(request.into_body(), BODY_BYTES).await {
         Ok(bytes) => bytes,
-        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+        Err(status) => return error(status),
     };
     let command = match serde_json::from_slice::<EnrollmentCommand>(&bytes) {
         Ok(command) => command,
@@ -828,9 +895,9 @@ async fn create_job(
     }) {
         return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
     }
-    let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
+    let bytes = match bounded_body(request.into_body(), BODY_BYTES).await {
         Ok(bytes) => bytes,
-        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+        Err(status) => return error(status),
     };
     let command: JobCommand = match serde_json::from_slice(&bytes) {
         Ok(value) => value,
@@ -904,9 +971,9 @@ async fn change_grant(
     }) {
         return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
     }
-    let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
+    let bytes = match bounded_body(request.into_body(), BODY_BYTES).await {
         Ok(bytes) => bytes,
-        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+        Err(status) => return error(status),
     };
     let input: GrantInput = match serde_json::from_slice(&bytes) {
         Ok(input) => input,
@@ -961,9 +1028,9 @@ async fn reauthenticate(
     }) {
         return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
     }
-    let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
+    let bytes = match bounded_body(request.into_body(), BODY_BYTES).await {
         Ok(bytes) => bytes,
-        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+        Err(status) => return error(status),
     };
     let input: ReauthenticationInput = match serde_json::from_slice(&bytes) {
         Ok(input) => input,
@@ -991,11 +1058,23 @@ async fn reauthenticate(
 }
 
 fn begin(shared: &Shared, request: &Request) -> Result<OwnedPermit, StatusCode> {
-    let grant = begin_query(shared, request)?;
+    begin_reserved(shared, request, REQUEST_BYTES)
+}
+fn begin_reserved(
+    shared: &Shared,
+    request: &Request,
+    bytes: u64,
+) -> Result<OwnedPermit, StatusCode> {
+    shared
+        .boundary
+        .check(request.method(), request.uri(), request.headers())?;
     if request.uri().query().is_some() {
         return Err(StatusCode::BAD_REQUEST);
     }
-    Ok(grant)
+    shared
+        .budget
+        .try_acquire(ResourceRequest::data(bytes, 1, 0).expect("fixed request reservation"))
+        .map_err(|_| StatusCode::TOO_MANY_REQUESTS)
 }
 fn begin_query(shared: &Shared, request: &Request) -> Result<OwnedPermit, StatusCode> {
     shared
@@ -1073,9 +1152,9 @@ async fn login(
     }) {
         return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
     }
-    let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
+    let bytes = match bounded_body(request.into_body(), BODY_BYTES).await {
         Ok(bytes) => bytes,
-        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+        Err(status) => return error(status),
     };
     let input: LoginInput = match serde_json::from_slice(&bytes) {
         Ok(input) => input,
@@ -1187,6 +1266,14 @@ async fn dispatch(
         return error(StatusCode::TOO_MANY_REQUESTS);
     }
     match receive.await {
+        Ok(Ok(Reply::AcquisitionScope(receipt))) => protect((
+            if receipt.created { StatusCode::ACCEPTED } else { StatusCode::OK },
+            Json(json!({
+                "format":"bigbrotr-acquisition-scope-registration/1", "command_key":receipt.command_key,
+                "scope_id":receipt.scope_id, "accepted_at_us":receipt.accepted_at_us.to_string(),
+                "created":receipt.created, "authority":"identity-only"
+            })),
+        ).into_response()),
         Ok(Ok(Reply::RelayRegistration(receipt))) => protect((
             if receipt.created { StatusCode::ACCEPTED } else { StatusCode::OK },
             Json(json!({
@@ -1380,6 +1467,43 @@ fn failure(status: StatusCode, code: &str, message: &str, retry: &str) -> Respon
 #[cfg(test)]
 mod terminal_tests {
     use super::*;
+    #[tokio::test]
+    async fn body_collector_releases_each_frame_before_accepting_the_next() {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        struct Fragment(Arc<AtomicUsize>);
+        impl AsRef<[u8]> for Fragment {
+            fn as_ref(&self) -> &[u8] {
+                b" "
+            }
+        }
+        impl Drop for Fragment {
+            fn drop(&mut self) {
+                self.0.fetch_sub(1, Ordering::SeqCst);
+            }
+        }
+        let live = Arc::new(AtomicUsize::new(0));
+        let peak = Arc::new(AtomicUsize::new(0));
+        let (tracked_live, tracked_peak) = (live.clone(), peak.clone());
+        let body = Body::from_stream(futures_util::stream::iter((0..65536).map(move |_| {
+            let count = tracked_live.fetch_add(1, Ordering::SeqCst) + 1;
+            tracked_peak.fetch_max(count, Ordering::SeqCst);
+            Ok::<_, std::convert::Infallible>(axum::body::Bytes::from_owner(Fragment(
+                tracked_live.clone(),
+            )))
+        })));
+        let bytes = bounded_body(body, acquisition_scope::BODY_BYTES)
+            .await
+            .unwrap();
+        assert_eq!(bytes.len(), 65536);
+        assert!(bytes.iter().all(|b| *b == b' '));
+        assert_eq!(live.load(Ordering::SeqCst), 0);
+        assert_eq!(
+            peak.load(Ordering::SeqCst),
+            1,
+            "retaining one allocation per frame defeats the byte reservation"
+        );
+    }
+
     #[tokio::test]
     async fn only_positive_http_completion_or_all_joined_releases_delivery() {
         for normal in [true, false] {

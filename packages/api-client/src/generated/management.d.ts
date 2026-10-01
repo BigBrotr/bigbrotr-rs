@@ -175,7 +175,7 @@ export interface paths {
         put?: never;
         /**
          * Accept a direct relay enrollment change
-         * @description Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Public enablement intersects both complete accepted policy documents; private enablement must fit a complete deployment root. Migration0025 (including enrollment prerequisites) and all required table and function privileges must be available before the initial listener binds. Historical retry authenticates the current actor then resolves before fresh permission, CAS and root checks. A lost response requires the identical original key and body. This command consumes an existing EndpointId; relay-endpoints supplies authenticated URL registration. No installed acquisition or restrictive drain claim. Native installed qualification is scoped to the referenced initial HTTP journey.
+         * @description Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Public enablement intersects both complete accepted policy documents; private enablement must fit a complete deployment root. Migration0026 (including enrollment prerequisites) and all required table and function privileges must be available before the initial listener binds. Historical retry authenticates the current actor then resolves before fresh permission, CAS and root checks. A lost response requires the identical original key and body. This command consumes an existing EndpointId; relay-endpoints supplies authenticated URL registration. No installed acquisition or restrictive drain claim. Native installed qualification is scoped to the referenced initial HTTP journey.
          */
         post: operations["changeRelayEnrollment"];
         delete?: never;
@@ -195,9 +195,29 @@ export interface paths {
         put?: never;
         /**
          * Accept an immutable relay endpoint identity
-         * @description Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Migration0025 and required table/function privileges must be available before binding. Equivalent normalized URLs share an EndpointId, including under a different command key. Historical retry authenticates the current actor and resolves the original normalized command before fresh permission and CAS checks. After a lost response use the identical original key and body; never retry mutations automatically. No cookies, idle refresh, enrollment, DNS, socket or native dictionary work. Native installed qualification covers the bounded HTTP journey; COMMIT fault qualification remains separate.
+         * @description Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Migration0026 and required table/function privileges must be available before binding. Equivalent normalized URLs share an EndpointId, including under a different command key. Historical retry authenticates the current actor and resolves the original normalized command before fresh permission and CAS checks. After a lost response use the identical original key and body; never retry mutations automatically. No cookies, idle refresh, enrollment, DNS, socket or native dictionary work. Native installed qualification covers the bounded HTTP journey; COMMIT fault qualification remains separate.
          */
         post: operations["registerRelayEndpoint"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/management/v1/acquisition-scopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept an immutable acquisition scope identity
+         * @description Available on the explicit initial Ingest owner with administration enabled. Migration0026 and selected table/function privileges are required before bind. Exact Origin, current session, explicit CSRF and one canonical Idempotency-Key; no query or HEAD. Fresh acceptance requires dataset roles.control and exact expected config/policy revisions. Scope epoch equals the original expected policy revision. Missing or mismatched enrollment/access/visibility is a conflict, without stopping the owner. Authenticate historical actor/key retry before fresh permission and CAS; normalized equivalent selectors preserve the same receipt. Preserve the exact original command after response loss; no automatic mutation retry. No cookies, idle refresh, enrollment changes, network dispatch, native writes, visibility grants or coverage. Implementation and native qualification are in progress.
+         */
+        post: operations["registerAcquisitionScope"];
         delete?: never;
         options?: never;
         head?: never;
@@ -606,6 +626,53 @@ export interface components {
             created: boolean;
             /** @constant */
             authority: "identity-only";
+        };
+        /** @description Profile1 conjunction. Full lowercase64-hex IDs/authors; tags have exactly one ASCII letter. Empty object selects all structurally matching events. Duplicate keys and unsupported fields (including limit/search) refuse. Optional null list/time fields mean absent. Value lists are sorted and deduplicated. Actual profile also bounds total values/text, not only individual fields. */
+        AcquisitionFilter: {
+            ids?: string[] | null;
+            authors?: string[] | null;
+            kinds?: number[] | null;
+            /** @description Exact Nostr uint64 seconds as a JSON integer. JavaScript Number cannot represent all accepted values; use lossless serialization for values above9007199254740991. */
+            since?: number | null;
+            /** @description Exact Nostr uint64 seconds as a JSON integer. JavaScript Number cannot represent all accepted values; use lossless serialization for values above9007199254740991. */
+            until?: number | null;
+            "#e"?: string[];
+            "#p"?: string[];
+        } & {
+            [key: string]: string[];
+        };
+        /** @description Existing profile1 collection intent, with no acquisition authority. Server normalizes filter unions/lists, compares complete canonical bytes and enforces16384 total values,1MiB UTF-8 tag text,2MiB selector input/canonical document and finite parser work. Character/count schema bounds do not replace these byte or semantic checks. */
+        CollectionSelector: {
+            /** @constant */
+            version: 1;
+            filters: components["schemas"]["AcquisitionFilter"][];
+            /** @description Exact Nostr uint64 seconds as a JSON integer. JavaScript Number cannot represent all accepted values; use lossless serialization for values above9007199254740991. */
+            history_since: number;
+            /** @enum {string} */
+            ephemeral: "retain" | "drop";
+        };
+        /** @description Closed identity-only command. Complete UTF-8 body at most2098176bytes; selector at most2097152bytes. Duplicate keys refuse.14MiB+64KiB request reservation stays with queued/SQL work after HTTP disconnect; capacity refusal is429. Scope epoch is the exact expected policy revision. */
+        AcquisitionScopeCommand: {
+            endpoint_id: string;
+            access_scope_id: string;
+            visibility: components["schemas"]["ScopeGrantCommand"]["scope"];
+            selector: components["schemas"]["CollectionSelector"];
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_config_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_policy_revision: string;
+        };
+        /** @description Original authenticated command acceptance, preserving immutable scope attribution. created reflects this command, including an existing scope; retry returns original identity/time with created=false. No execution, read or visibility authority. */
+        AcquisitionScopeReceipt: {
+            /** @constant */
+            format: "bigbrotr-acquisition-scope-registration/1";
+            command_key: string;
+            /** @description Original positive Unix microseconds, maximum9223372036854775807; exact decimal string. */
+            accepted_at_us: string;
+            created: boolean;
+            /** @constant */
+            authority: "identity-only";
+            scope_id: string;
         };
         /**
          * Initial exact-ID history QueryRequest
@@ -1677,6 +1744,116 @@ export interface operations {
                 };
             };
             /** @description Command or revision conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Body byte limit */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description JSON required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    registerAcquisitionScope: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AcquisitionScopeCommand"];
+            };
+        };
+        responses: {
+            /** @description Identical authenticated actor/key/body returns only the original receipt; no cookies or idle refresh. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AcquisitionScopeReceipt"];
+                };
+            };
+            /** @description Fresh command accepted atomically, including an already registered scope; created describes command acceptance. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AcquisitionScopeReceipt"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary or dataset permission denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Command/revision conflict or missing/mismatched source tuple */
             409: {
                 headers: {
                     [name: string]: unknown;

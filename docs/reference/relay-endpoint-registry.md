@@ -131,8 +131,9 @@ on product7011acd/fixture45f7593: explicit populated upgrade/reapply, normalized
 create/retry, existing identity under another key, denied session/CSRF/permission/
 CAS, maximum and malformed URLs, missing grants/schema before bind, and URL→enroll→
 withdraw→historical receipts. Complete Control/native originals and the populated
-upgrade source remain unchanged where required. Schema0025 and its table/function
-privileges are required before the selected initial administration listener binds.
+upgrade source remain unchanged where required. That qualified revision required
+schema0025. The selected initial profile now requires0026 for its scope consumer, including all preceding table/function
+privileges, before binding.
 
 [Seven actual adapter fault schedules](../implementation/evidence/p02-relay-registration-faults-native-20261001.json)
 now qualify lost/held COMMIT, cancellation, owner/session expiry for an existing

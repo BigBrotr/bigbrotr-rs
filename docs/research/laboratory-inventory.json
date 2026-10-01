@@ -1219,7 +1219,7 @@
     "followups": {
       "populated_upgrade": "PASS bb_owner_upgrade; preserves all25 old relations with additive NULL audit fields, four new empty tables, stable initialization receipt and downgrade refusal",
       "engine_crash": "PASS actual PostgreSQL SIGKILL/137, restart and all10 complete database dumps unchanged; not host power loss",
-      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562\u20130.0930477711s; not mixed workload or cgroup peak",
+      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562–0.0930477711s; not mixed workload or cgroup peak",
       "credential_oracle": "PASS six observed native password hashes against pinned PHC C oracle on Mac"
     },
     "native_evidence": "docs/implementation/evidence/p08-owner-enrollment-native-20260918.json",
@@ -32314,6 +32314,27 @@
         "root_review_sha256": "6caa31cb3ea2ebaeac387b9c3dc75fe36afe208664b92fe4193bd6ae8898ed00",
         "capture_manifest_sha256": "c61feb22dee0e09ed435a496c15d794de27ab36d4982205e0a925e2693299623"
       }
+    },
+    "scope_registration": {
+      "local": ".research/implementation/scope-registration-20261001",
+      "status": "MAC_COMPONENTS_PASS_NATIVE_NOT_RUN",
+      "base": "25191470ad72f947a94675c969a7cfaadd525cf4",
+      "remote_resources": [],
+      "findings": [
+        "nested visibility arrays: RED/GREEN",
+        "abandoned command drop order: actual Rust reproducer and explicit drop",
+        "per-DATA-frame accumulation: RED65536/GREEN1 retained frames; common bounded collector"
+      ],
+      "checks": {
+        "management": 54,
+        "domain": 4,
+        "catalog": 35,
+        "schema": 2,
+        "clippy": "PASS",
+        "typescript_and_generation": "PASS",
+        "native": "NOT_RUN"
+      },
+      "next": "Exact-Git initial-ingest native build, then installed scope SQL/HTTP/upgrade journey."
     }
   },
   "implementation_relay_registry_20260928": {

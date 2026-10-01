@@ -1,5 +1,5 @@
 //! Immutable operational scope registration. No job, network or coverage grant.
-use super::{ControlSession, fixed, fresh_id, number, require, transaction_error};
+use super::{ControlSession, PolicySnapshot, fixed, fresh_id, number, require, transaction_error};
 use crate::storage::postgres::{
     ingest_registry::ControlOwner, initialization::application_transaction,
 };
@@ -158,82 +158,20 @@ impl ControlSession {
         {
             return Err(ScopeRegistrationError::PolicyChanged);
         }
-        let (selector, new_selector) = choose_selector(&tx, context.dataset, &document).await?;
-        let scope = AcquisitionScope::new(
+        let registration = register_in_locked_transaction(
+            &tx,
             context.dataset,
-            input.endpoint,
-            selector,
-            input.access,
-            input.visibility,
-            input.policy_epoch,
+            context.owner,
+            self.validated_policy,
+            input,
+            &document,
         )
-        .map_err(|_| ScopeRegistrationError::InvalidInput)?;
-        let endpoint = input.endpoint.as_bytes().as_slice();
-        let selector = selector.as_bytes().as_slice();
-        let access = input.access.as_bytes().as_slice();
-        let domain = input.visibility.allocation_domain.as_bytes().as_slice();
-        let ordinal = input.visibility.ordinal.get().to_string();
-        let policy = input.policy_epoch.get().to_string();
-        // A newly generated ID is not a registered selector. Never let an
-        // accidental PK collision resolve another selector's existing scope.
-        let rows = if new_selector {
-            Vec::new()
-        } else {
-            tx.query(
-                FIND_SCOPE,
-                &[
-                    &dataset, &endpoint, &selector, &access, &domain, &ordinal, &policy,
-                ],
-            )
-            .await
-            .map_err(backend)?
-        };
-        if let [row] = rows.as_slice() {
-            let identity = AcquisitionScopeId::try_from(
-                fixed::<16>(row, 0).map_err(|_| ScopeRegistrationError::InvalidMetadata)?,
-            )
-            .map_err(|_| ScopeRegistrationError::InvalidMetadata)?;
+        .await?;
+        if !registration.created {
             tx.rollback().await.map_err(backend)?;
             self.available = true;
-            return Ok(ScopeRegistration {
-                identity,
-                scope,
-                created: false,
-            });
+            return Ok(registration);
         }
-        if !rows.is_empty() {
-            return Err(ScopeRegistrationError::InvalidMetadata);
-        }
-        // Exact historical identity resolves before fresh-epoch checks. A lost
-        // COMMIT followed by policy change cannot create a replacement scope.
-        if input.policy_epoch.get() != context.policy {
-            return Err(ScopeRegistrationError::PolicyChanged);
-        }
-        if new_selector {
-            insert_selector(&tx, &context, scope.selector(), &document).await?;
-        }
-        let identity =
-            AcquisitionScopeId::try_from(fresh_id().map_err(|_| ScopeRegistrationError::Entropy)?)
-                .map_err(|_| ScopeRegistrationError::Entropy)?;
-        tx.execute(
-            INSERT_SCOPE,
-            &[
-                &&identity.as_bytes()[..],
-                &dataset,
-                &endpoint,
-                &selector,
-                &access,
-                &domain,
-                &ordinal,
-                &policy,
-                &context.config.to_string(),
-                &&context.owner.resource_id.as_bytes()[..],
-                &context.owner.epoch.get().to_string(),
-                &&context.owner.process_incarnation.as_bytes()[..],
-            ],
-        )
-        .await
-        .map_err(backend)?;
         commit_started.set(true);
         tx.commit().await.map_err(|error| {
             if error.code() == Some(&SqlState::from_code("BB001")) {
@@ -243,12 +181,113 @@ impl ControlSession {
             }
         })?;
         self.available = true;
-        Ok(ScopeRegistration {
+        Ok(registration)
+    }
+}
+
+/// Both callers already own the Control fence and serialized current dataset.
+/// The supplied document is the existing codec's complete canonical selector.
+/// The caller commits or rolls back; this helper cannot end its transaction.
+pub(super) async fn register_in_locked_transaction(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    owner: ControlOwner,
+    policy: PolicySnapshot,
+    input: ScopeIntent<'_>,
+    document: &[u8],
+) -> Result<ScopeRegistration, ScopeRegistrationError> {
+    if input.visibility.dataset_id != dataset
+        || input.visibility.dictionary_kind != DictionaryKind::VisibilityScope
+        || input.policy_epoch.get() == 0
+    {
+        return Err(ScopeRegistrationError::InvalidInput);
+    }
+    let context = Attribution {
+        dataset,
+        config: policy.config_revision,
+        policy: policy.policy_revision,
+        owner,
+    };
+    let dataset = context.dataset.as_bytes().as_slice();
+    let (selector, new_selector) = choose_selector(tx, context.dataset, document).await?;
+    let scope = AcquisitionScope::new(
+        context.dataset,
+        input.endpoint,
+        selector,
+        input.access,
+        input.visibility,
+        input.policy_epoch,
+    )
+    .map_err(|_| ScopeRegistrationError::InvalidInput)?;
+    let endpoint = input.endpoint.as_bytes().as_slice();
+    let selector = selector.as_bytes().as_slice();
+    let access = input.access.as_bytes().as_slice();
+    let domain = input.visibility.allocation_domain.as_bytes().as_slice();
+    let ordinal = input.visibility.ordinal.get().to_string();
+    let policy = input.policy_epoch.get().to_string();
+    // A newly generated ID is not a registered selector. Never let an
+    // accidental PK collision resolve another selector's existing scope.
+    let rows = if new_selector {
+        Vec::new()
+    } else {
+        tx.query(
+            FIND_SCOPE,
+            &[
+                &dataset, &endpoint, &selector, &access, &domain, &ordinal, &policy,
+            ],
+        )
+        .await
+        .map_err(backend)?
+    };
+    if let [row] = rows.as_slice() {
+        let identity = AcquisitionScopeId::try_from(
+            fixed::<16>(row, 0).map_err(|_| ScopeRegistrationError::InvalidMetadata)?,
+        )
+        .map_err(|_| ScopeRegistrationError::InvalidMetadata)?;
+        return Ok(ScopeRegistration {
             identity,
             scope,
-            created: true,
-        })
+            created: false,
+        });
     }
+    if !rows.is_empty() {
+        return Err(ScopeRegistrationError::InvalidMetadata);
+    }
+    // Exact historical identity resolves before fresh-epoch checks. A lost
+    // COMMIT followed by policy change cannot create a replacement scope.
+    if input.policy_epoch.get() != context.policy {
+        return Err(ScopeRegistrationError::PolicyChanged);
+    }
+    if new_selector {
+        insert_selector(tx, &context, scope.selector(), document).await?;
+    }
+    let identity =
+        AcquisitionScopeId::try_from(fresh_id().map_err(|_| ScopeRegistrationError::Entropy)?)
+            .map_err(|_| ScopeRegistrationError::Entropy)?;
+    tx.execute(
+        INSERT_SCOPE,
+        &[
+            &&identity.as_bytes()[..],
+            &dataset,
+            &endpoint,
+            &selector,
+            &access,
+            &domain,
+            &ordinal,
+            &policy,
+            &context.config.to_string(),
+            &&context.owner.resource_id.as_bytes()[..],
+            &context.owner.epoch.get().to_string(),
+            &&context.owner.process_incarnation.as_bytes()[..],
+        ],
+    )
+    .await
+    .map_err(backend)?;
+    Ok(ScopeRegistration {
+        identity,
+        scope,
+        created: true,
+    })
 }
 
 async fn choose_selector(

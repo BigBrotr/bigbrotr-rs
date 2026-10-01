@@ -1204,7 +1204,7 @@
       "post": {
         "operationId": "changeRelayEnrollment",
         "summary": "Accept a direct relay enrollment change",
-        "description": "Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Public enablement intersects both complete accepted policy documents; private enablement must fit a complete deployment root. Migration0025 (including enrollment prerequisites) and all required table and function privileges must be available before the initial listener binds. Historical retry authenticates the current actor then resolves before fresh permission, CAS and root checks. A lost response requires the identical original key and body. This command consumes an existing EndpointId; relay-endpoints supplies authenticated URL registration. No installed acquisition or restrictive drain claim. Native installed qualification is scoped to the referenced initial HTTP journey.",
+        "description": "Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Public enablement intersects both complete accepted policy documents; private enablement must fit a complete deployment root. Migration0026 (including enrollment prerequisites) and all required table and function privileges must be available before the initial listener binds. Historical retry authenticates the current actor then resolves before fresh permission, CAS and root checks. A lost response requires the identical original key and body. This command consumes an existing EndpointId; relay-endpoints supplies authenticated URL registration. No installed acquisition or restrictive drain claim. Native installed qualification is scoped to the referenced initial HTTP journey.",
         "parameters": [
           {
             "name": "X-CSRF-Token",
@@ -1355,7 +1355,7 @@
       "post": {
         "operationId": "registerRelayEndpoint",
         "summary": "Accept an immutable relay endpoint identity",
-        "description": "Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Migration0025 and required table/function privileges must be available before binding. Equivalent normalized URLs share an EndpointId, including under a different command key. Historical retry authenticates the current actor and resolves the original normalized command before fresh permission and CAS checks. After a lost response use the identical original key and body; never retry mutations automatically. No cookies, idle refresh, enrollment, DNS, socket or native dictionary work. Native installed qualification covers the bounded HTTP journey; COMMIT fault qualification remains separate.",
+        "description": "Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Migration0026 and required table/function privileges must be available before binding. Equivalent normalized URLs share an EndpointId, including under a different command key. Historical retry authenticates the current actor and resolves the original normalized command before fresh permission and CAS checks. After a lost response use the identical original key and body; never retry mutations automatically. No cookies, idle refresh, enrollment, DNS, socket or native dictionary work. Native installed qualification covers the bounded HTTP journey; COMMIT fault qualification remains separate.",
         "parameters": [
           {
             "name": "X-CSRF-Token",
@@ -1495,6 +1495,157 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RelayRegistrationReceipt"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/v1/acquisition-scopes": {
+      "post": {
+        "operationId": "registerAcquisitionScope",
+        "summary": "Accept an immutable acquisition scope identity",
+        "description": "Available on the explicit initial Ingest owner with administration enabled. Migration0026 and selected table/function privileges are required before bind. Exact Origin, current session, explicit CSRF and one canonical Idempotency-Key; no query or HEAD. Fresh acceptance requires dataset roles.control and exact expected config/policy revisions. Scope epoch equals the original expected policy revision. Missing or mismatched enrollment/access/visibility is a conflict, without stopping the owner. Authenticate historical actor/key retry before fresh permission and CAS; normalized equivalent selectors preserve the same receipt. Preserve the exact original command after response loss; no automatic mutation retry. No cookies, idle refresh, enrollment changes, network dispatch, native writes, visibility grants or coverage. Implementation and native qualification are in progress.",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$",
+              "not": {
+                "const": "00000000000000000000000000000000"
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcquisitionScopeCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary or dataset permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Command/revision conflict or missing/mismatched source tuple",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Fresh command accepted atomically, including an already registered scope; created describes command acceptance.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcquisitionScopeReceipt"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical authenticated actor/key/body returns only the original receipt; no cookies or idle refresh.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcquisitionScopeReceipt"
                 }
               }
             }
@@ -2885,6 +3036,225 @@
           }
         },
         "description": "Immutable original command acceptance; created=true for a fresh command, including one naming an existing endpoint. Historical retry returns created=false with the original identity and time. This receipt grants no enrollment, route, visibility or network authority."
+      },
+      "AcquisitionFilter": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ids": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "minItems": 1,
+            "maxItems": 1024,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "authors": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "minItems": 1,
+            "maxItems": 1024,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "kinds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "minItems": 1,
+            "maxItems": 1024,
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535
+            }
+          },
+          "since": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "exclusiveMaximum": 18446744073709551616,
+            "description": "Exact Nostr uint64 seconds as a JSON integer. JavaScript Number cannot represent all accepted values; use lossless serialization for values above9007199254740991."
+          },
+          "until": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "exclusiveMaximum": 18446744073709551616,
+            "description": "Exact Nostr uint64 seconds as a JSON integer. JavaScript Number cannot represent all accepted values; use lossless serialization for values above9007199254740991."
+          },
+          "#e": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1024,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "#p": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1024,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "patternProperties": {
+          "^#[A-Za-df-oq-z]$": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1024,
+            "items": {
+              "type": "string",
+              "maxLength": 1048576
+            }
+          }
+        },
+        "description": "Profile1 conjunction. Full lowercase64-hex IDs/authors; tags have exactly one ASCII letter. Empty object selects all structurally matching events. Duplicate keys and unsupported fields (including limit/search) refuse. Optional null list/time fields mean absent. Value lists are sorted and deduplicated. Actual profile also bounds total values/text, not only individual fields."
+      },
+      "CollectionSelector": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "filters",
+          "history_since",
+          "ephemeral"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "const": 1
+          },
+          "filters": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 16,
+            "items": {
+              "$ref": "#/components/schemas/AcquisitionFilter"
+            }
+          },
+          "history_since": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMaximum": 18446744073709551616,
+            "description": "Exact Nostr uint64 seconds as a JSON integer. JavaScript Number cannot represent all accepted values; use lossless serialization for values above9007199254740991."
+          },
+          "ephemeral": {
+            "type": "string",
+            "enum": [
+              "retain",
+              "drop"
+            ]
+          }
+        },
+        "description": "Existing profile1 collection intent, with no acquisition authority. Server normalizes filter unions/lists, compares complete canonical bytes and enforces16384 total values,1MiB UTF-8 tag text,2MiB selector input/canonical document and finite parser work. Character/count schema bounds do not replace these byte or semantic checks."
+      },
+      "AcquisitionScopeCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "endpoint_id",
+          "access_scope_id",
+          "visibility",
+          "selector",
+          "expected_config_revision",
+          "expected_policy_revision"
+        ],
+        "properties": {
+          "endpoint_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "access_scope_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/ScopeGrantCommand/properties/scope"
+          },
+          "selector": {
+            "$ref": "#/components/schemas/CollectionSelector"
+          },
+          "expected_config_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "expected_policy_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          }
+        },
+        "description": "Closed identity-only command. Complete UTF-8 body at most2098176bytes; selector at most2097152bytes. Duplicate keys refuse.14MiB+64KiB request reservation stays with queued/SQL work after HTTP disconnect; capacity refusal is429. Scope epoch is the exact expected policy revision."
+      },
+      "AcquisitionScopeReceipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format",
+          "command_key",
+          "scope_id",
+          "accepted_at_us",
+          "created",
+          "authority"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "bigbrotr-acquisition-scope-registration/1"
+          },
+          "command_key": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "accepted_at_us": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Original positive Unix microseconds, maximum9223372036854775807; exact decimal string."
+          },
+          "created": {
+            "type": "boolean"
+          },
+          "authority": {
+            "type": "string",
+            "const": "identity-only"
+          },
+          "scope_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          }
+        },
+        "description": "Original authenticated command acceptance, preserving immutable scope attribution. created reflects this command, including an existing scope; retry returns original identity/time with created=false. No execution, read or visibility authority."
       }
     },
     "securitySchemes": {

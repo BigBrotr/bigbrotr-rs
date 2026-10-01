@@ -121,7 +121,7 @@ above; session cookie, explicit CSRF header and one canonical `Idempotency-Key`
 are required. The8KiB body, connection/request limits and original Control/native
 custody are shared with the existing dispatcher. No second command connection or
 network worker starts. The selected initial administration profile requires
-migration0025, including0019 enrollment and each required table/function privilege,
+migration0026, including0019 enrollment and each required table/function privilege,
 before binding. Earlier session-only installations must explicitly migrate first.
 
 Public enablement requires both complete accepted policy documents. Private route

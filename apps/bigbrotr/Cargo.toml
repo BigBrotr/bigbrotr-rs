@@ -36,7 +36,7 @@ rocksdb.workspace = true
 rustix = { workspace = true, features = ["time"] }
 rustls.workspace = true
 serde.workspace = true
-serde_json.workspace = true
+serde_json = { workspace = true, features = ["raw_value"] }
 sha2.workspace = true
 tempfile.workspace = true
 tokio.workspace = true

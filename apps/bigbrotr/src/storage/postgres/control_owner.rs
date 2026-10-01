@@ -46,6 +46,8 @@ mod acquisition;
 mod acquisition_claims;
 #[path = "acquisition_jobs.rs"]
 mod acquisition_jobs;
+#[path = "acquisition_scope_commands.rs"]
+mod acquisition_scope_commands;
 #[path = "relay_registration.rs"]
 mod relay_registration;
 pub use acquisition::{ScopeIntent, ScopeRegistration, ScopeRegistrationError};

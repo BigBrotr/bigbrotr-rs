@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-10-01 in the primary Mac workspace; Tux timestamps are UTC.
+Observed 2026-10-02 in the primary Mac workspace; Tux timestamps are UTC.
 Navigation, not evidence or another plan. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -12,12 +12,56 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac mainb61fcee, origin6367097; root sole writer. Current dirty work consolidates
-installed registration fault qualification, owning references, task links and
-inventory. No product/build/cache changes in this wave. Owned terminal audit
-21:37:30UTC. All required original outcomes remain retained.
+Mac main/origin2519147 pushed; root sole writer. Preparing an unpublished candidate
+for exact-revision native testing. Dirty scope responsibility spans domain and
+PostgreSQL acceptance, additive0026/catalog/manifest, initial-owner startup and
+Management HTTP dispatch, independent domain/catalog/HTTP/schema tests, OpenAPI/
+generated types, linked references and this checkpoint/inventory. The exact file
+list is git status; all changes are root-owned. Existing applied SQL/checksums
+and Cargo.lock are unchanged. No native build or engine run for this slice yet.
+Mac54 Management tests,4 domain tests,35 catalog tests,2 schema cases, Clippy,
+TypeScript/generation and artifact structural checks PASS. No active local tests.
+Tux resources remain at the retained21:37:30UTC audit below; re-inventory before use.
 
 ## Active slice and next bounded action
+
+P03-T01 Steps1/2/3 and P01-T09 Steps1/2: authenticated immutable scope registration
+for the living initial owner, then finite-job delivery. The selected contract is
+in acquisition-scopes.md: roles.control for explicit intent, original expected
+policy revision as scope epoch. Reuse the real transaction-local identity helper;
+no duplicate selector storage or registry. Additive0026 detail references the
+immutable scope, with atomic command/audit and deferred live session/account/
+grant/owner checks even for an already existing scope. No session FK. Missing
+source tuples refuse with healthy Conflict before an FK exception. Historical
+actor/key resolution precedes fresh permission/CAS after authentication.
+
+HTTP POST /management/v1/acquisition-scopes, exact schema26 and privileges before
+initial listener bind are implemented but engine/installed qualification NOT_RUN.
+The 2MiB+1KiB body and existing selector codec reserve14MiB+64KiB through queue/SQL.
+Closed borrowed RawValue envelope, full canonical document and independent literal
+SHA fixture; no generic selector Value tree, Clone or second normalizer.
+
+Read-only AI review found three concrete resource/shape issues, all reproduced:
+- Nested visibility array accepted by derived QualifiedRef; actual RED then local
+  RawValue/object check GREEN, with shared model representation unchanged.
+- Abandoned destructured work drops completion before operation. Standalone actual
+  Rust drop-order fixture observed this; explicit drop(operation) preserves credit
+  until selector allocations retire. No production timing/capacity claim.
+- Axum0.8.9/http-body-util0.1.5 collector retains every DATA frame. Actual65,536
+  one-byte owned frames peaked at65,536 retained, failing the bound. Common capped
+  contiguous collector now peaks at1; all private routes reuse it without changing
+  byte limits. Actual64KiB one-byte HTTP chunk journey, maximum envelope, bodyless
+  capacity refusal, competing request refusal and disconnected credit lifetime PASS.
+Exact local upstream collection/raw deserialization source inspected. No new
+version/dependency; explicit raw_value was already feature-unified by protocol.
+
+AI found no further concrete SQL counterexample, but current grant serialization
+follows the existing account-lock/grant-revision writer discipline; no arbitrary
+raw grant deletion exclusion has been established. Preserve that qualification
+boundary and evaluate it during real concurrency work. New SQL/upgrade/recovery,
+old internal scope helper regression and native resource behavior are NOT_RUN.
+Evidence: ignored .research/implementation/scope-registration-20261001, inventoried
+implementation_network_20260928.scope_registration; original RED logs retained.
 
 P02-T01 Step6/P01-T09 Steps1/2 remain partial. Authenticated URL registration has
 additive0025, a concrete transaction-local registry helper, current session/CSRF,
@@ -125,27 +169,21 @@ source/artifact manifests, controllers, launch receipts and root-review scripts.
 Never replay completed launchers or old cache deletion. Mac last4,675,100KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: integrate evidence/commit/push, then implement the smallest
-authenticated immutable scope command for P03-T01 Steps1/2/3 and P01-T09 Steps1/2.
-Read complete scope/management contracts and callers before sharing the existing
-transaction-local selector/scope identity operation. The internal adapter's
-separate transaction has no actor/session/CSRF/key and cannot safely follow an
-HTTP auth precheck. Preserve tuple-based internal retry and applied0004 unchanged;
-choose only concrete command/audit storage needed for atomic authenticated retry.
-Next practical acceptance: real login → URL registration → enrollment → scope
-identity/retry, all on the living initial owner, with refusals and unchanged native
-bootstrap; then finite-job command delivery. No native dictionary append is needed
-just to register intent. Its later event consumer still needs committed observation
-mappings and ordinary accepted selector policy. Root is the sole integrating owner;
-AI dependency review is read-only, no tests/engines run by that reviewer.
+Next bounded action: commit reviewed candidate, transfer exact Git revision and
+build initial-ingest profile on the exclusively locked1154757 cache after full
+remote inventory/space verification. In parallel local work, implement the real
+installed login→URL→enroll→scope/retry fixture over isolated SQL clones, preserving
+all rows/xmin/native bytes and populated25→26 upgrade/reapply evidence. Then new
+COMMIT/concurrency/relational schedules and affected internal scope regression,
+before consolidating finite-job delivery. No new master plan or task completion.
 
 ## Next useful journey and remaining prerequisites
 
 M1/P01-T09 remains INCOMPLETE: one actual signed socket event through installed
 same-owner admission, timer archive/index/read/export and restart/resend. The
 qualified component chain includes enrollment, finite acquisition acceptance/
-claim, guarded source transport and socket→native transfer. Next consumers are
-this URL command, immutable acquisition scope and finite-job command delivery.
+claim, guarded source transport and socket→native transfer. URL registration has bounded installed qualification; next consumers are
+immutable acquisition scope and finite-job command delivery.
 Dictionary append/intern P02-T03 Step1 is needed because fresh bootstrap contains
 only two visibility mappings. Successor/recovery P02-T01 Step5/P02-T02 Step4 is
 needed for P01-T09 Step4; initial writer custody cannot be adopted by another Serve.

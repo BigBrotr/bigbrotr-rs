@@ -576,8 +576,12 @@ application or socket authority. The companion
 [URL registration command](../reference/relay-endpoint-registry.md#authenticated-registration-consumer)
 now accepts normalized identities with original actor/key receipts on that same
 owner; its bounded installed journey also enrolls and withdraws the returned ID.
-The ordinary Serve profile, CLI commands, full protected/overlay routes and
-registration COMMIT fault qualification remain required.
+The ordinary Serve profile, CLI commands and full protected/overlay routes remain
+required. Bounded registration COMMIT and installed signal qualification are linked
+in the owning registry reference. The next initial-owner consumer registers an
+[immutable acquisition scope](../reference/acquisition-scopes.md#authenticated-scope-registration-consumer-implementation-in-progress)
+with dataset `roles.control`, without changing enrollment or visibility grants;
+its native acceptance remains in progress.
 The [initial HTTP boundary](../reference/relay-enrollment.md#initial-owner-http-consumer)
 has bounded native qualification, including refusal before bind when SQL function
 execution privileges are missing.

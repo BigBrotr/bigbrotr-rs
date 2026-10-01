@@ -3,6 +3,32 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn authenticated_scope_registration_appends_after_existing_command_history() {
+    let applied: Vec<_> = plan(&[], 25)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next =
+        plan(&applied, 26).expect("scope acceptance requires an additive authenticated protocol");
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0026_acquisition_scope_commands.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 26),
+        Err(MigrationError::MissingPrerequisite(26))
+    );
+    assert!(migrations::require_applied(&applied, 25).is_ok());
+}
+
+#[test]
 fn browser_relay_registration_requires_an_additive_receipt_protocol() {
     let applied: Vec<_> = plan(&[], 24)
         .unwrap()

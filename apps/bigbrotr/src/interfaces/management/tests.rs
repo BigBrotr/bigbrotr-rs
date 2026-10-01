@@ -6,6 +6,8 @@ mod grants;
 mod jobs;
 #[path = "profile_tests.rs"]
 mod profiles;
+#[path = "scope_tests.rs"]
+mod scopes;
 
 #[tokio::test]
 async fn private_history_requires_session_before_admitting_read_work() {
