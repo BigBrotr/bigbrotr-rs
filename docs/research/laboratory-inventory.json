@@ -32221,6 +32221,51 @@
           "compiler_lock_released": true,
           "free_bytes": 59049816064
         }
+      },
+      "http_fault_qualified": {
+        "launch": {
+          "source": "4db23a02fbb53c8d9d0e2135d11d70105e2e45cf",
+          "tree": "03bef73f5ca3d4ebe8b930ffc6d7cf26f2b79658",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-http-faults-4db23a0",
+          "pid": 1339764,
+          "start_ticks": "427261761",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-00600af/out/artifacts",
+          "bundle_sha256": "9b3fc1296a0f72a2a51d3605a68b68933ef1035b5b4d5cbbe1ab413e33dc49d4"
+        },
+        "local": ".research/implementation/relay-registration-20261001/http-fault-qualified",
+        "status": "PASS_INSTALLED_REGISTRATION_FAULTS",
+        "owner": "0e298acb16b9c9819fac0478e7a1302c",
+        "client": {
+          "id": "4d529ae403ea395570a1f30d81dee697d0a9d664649caf55669906d767d490ca",
+          "name": "bigbrotr-acquisition-binding-4db23a0"
+        },
+        "databases": [
+          "bb_scope_bind_4db23a0_register_http_pass",
+          "bb_scope_bind_4db23a0_register_http_before",
+          "bb_scope_bind_4db23a0_register_http_after",
+          "bb_scope_bind_4db23a0_register_http_disconnect",
+          "bb_scope_bind_4db23a0_register_http_signal"
+        ],
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T21:35:28.943353+00:00",
+          "owned_stopped": [
+            {
+              "id": "4d529ae403ea395570a1f30d81dee697d0a9d664649caf55669906d767d490ca",
+              "owner": "0e298acb16b9c9819fac0478e7a1302c",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1008,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 58942144512
+        }
       }
     }
   },

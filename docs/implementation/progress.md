@@ -12,7 +12,7 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main47ed56b, origin6367097; root sole writer. Original626cbc3 setup FAIL is
+Mac main4db23a0, origin6367097; root sole writer. Original626cbc3 setup FAIL is
 retained. Corrected47ed56b executed five installed HTTP schedules PASS, but final
 qualification awaits the stronger real-parser negatives and explicit signal timing
 below. Dirty work only changes fixture/oracle, inventory and this checkpoint.
@@ -103,24 +103,20 @@ source/artifact manifests, controllers, launch receipts and root-review scripts.
 Never replay completed launchers or old cache deletion. Mac last4,688,548KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: commit/re-run the strengthened HTTP fault oracle and signal
-cut, reusing unchanged00600af CLI/probe and7011acd native inspector. Original626cbc3
-refused invalid30s authorization before CLI startup.47ed56b corrected5s and passed
-all5 engine schedules; original166 payloads are hash-verified in http-fault-fixed/.
-Terminal audit21:31:03UTC: clientc5ac6c22 stopped143, borrowedPG stopped0,1007 prior
-projections unchanged,8 unrelated running, compiler lock free,59,049,816,064B free.
-AI follow-up found remaining oracle gaps: actual HTTPResponse.begin can retain
-status before headers reset, and bounded read allows short Content-Length without
-raising. Actual parser over independent wire bytes now reproduces RED3 failures/
-1 error and GREEN7 after retaining partial-header status and checking remaining
-length. No mock parser remains; complete malformed JSON still fails.
-The signal case must additionally prove SIGTERM sent <2s after launch, before the
-earliest2.5s half-lease deadline, and require exact cancellation stderr; otherwise
-an earlier timeout followed by driver drain can mimic cancellation. First run's
-signal outcome remains provisional for that specific causal claim. All original
-outputs remain unchanged. New candidate schedules are NOT_RUN. Startup6+login2,
-actual insertion marker, all68 SQL relations/native12/originalCBOR and fresh-owner
-historical receipt recovery remain mandatory. No installed successor claim.
+Next bounded action: commit/run only the tightened SIGTERM schedule with
+--registration-http-signal and unchanged00600af CLI/probe plus7011acd inspector.
+4db23a0 repeated all5 schedules PASS with the corrected actual HTTP parser; root
+review checks source/captures, all68 tables, exact native12/CBOR, independent receipt
+digests and original populated source. Signal sent1.158s after launch/reaped2.048s
+later, but an additional causal check is warranted: observe HTTP closure before
+2s using CLOCK_BOOTTIME, matching production's suspend-aware clock. This excludes
+an unprocessed signal followed by watchdog expiry. Only that case is rerun; other
+four schedules are unchanged. SIGTERM result remains provisional for this causal
+claim until new output exists. Exact earlier failures/reviews remain retained.
+Original626cbc3 refused invalid30s authorization;47ed56b passed with incomplete
+parser negatives. Real-parser RED3 failures/1 error and GREEN7 in http-fault-fixed/
+cover partial-header status and bounded read EOF; complete malformed JSON fails.
+No product invariants, binaries, migrations or dependency versions changed.
 
 The next user-visible consumer after closing these bounded registration guarantees
 is installed immutable scope/finite-job command delivery, under the task IDs below.

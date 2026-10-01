@@ -33,7 +33,8 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
-registration_http_faults = len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults'
+registration_http_signal = len(sys.argv) == 4 and sys.argv[2] == '--registration-http-signal'
+registration_http_faults = registration_http_signal or (len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults')
 registration_relations = len(sys.argv) == 4 and sys.argv[2] == '--registration-relations'
 registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races'
 registration_faults = registration_http_faults or registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
@@ -133,7 +134,7 @@ if registration_relations:
         'capacity/load/aged-state', 'arm64/release']
 
 if registration_http_faults:
-    report['wave'] = 'installed-registration-faults'
+    report['wave'] = 'installed-registration-signal' if registration_http_signal else 'installed-registration-faults'
     report['native_inspector'] = dict(source=inspected['source'], probe_sha256=inspected['probe_sha256'],
         root=str(native_inspector))
     report['not_run'] = ['installed successor recovery', 'installed acquisition/M1',
@@ -547,8 +548,10 @@ try:
         if registration_http_faults:
             from registration_http_faults import CASES as HTTP_CASES, run as run_registration_http_fault
             registration_runs = {case: run_registration_http_fault for case in HTTP_CASES}
+            if registration_http_signal:
+                registration_runs = {'register-http-signal': run_registration_http_fault}
         cases = list(registration_runs)
-        require(len(cases) == (5 if registration_http_faults else 1 if registration_relations else 18 if registration_races else 7),
+        require(len(cases) == (1 if registration_http_signal else 5 if registration_http_faults else 1 if registration_relations else 18 if registration_races else 7),
             'registration-case-set')
     elif socket:
         from socket_arrival import run as run_socket

@@ -93,7 +93,7 @@ def run(pg, client, output, database, name, rows):
         (directory / 'validate.stdout').write_text(validated.stdout)
         (directory / 'validate.stderr').write_text(validated.stderr)
         assert validated.returncode == 0, validated.stderr
-        cli_started = time.monotonic()
+        cli_started = time.clock_gettime(time.CLOCK_BOOTTIME)
         prefix = start(client, config, output, name)
         first = wait_for(lambda: messages(prefix) or Path(str(prefix)+'.terminal.json').exists(), 'installed startup')
         assert isinstance(first, list) and len(first) == 1 and first[0]['state'] == 'initialized'
@@ -114,6 +114,7 @@ def run(pg, client, output, database, name, rows):
         assert [status[k] for k in ('commits_seen', 'commits_forwarded',
             'server_commit_complete', 'client_commit_complete')] == [8,8,8,8]
         go(directory / 'send')
+        http_answer = None
         if wire_mode == 'hold':
             proxy.event('held', 5)
             assert rows(database) == before
@@ -132,21 +133,25 @@ def run(pg, client, output, database, name, rows):
                 accepted_state = snapshot('retry-before')
                 go(directory / 'retry')
             else:
-                signal_time = time.monotonic()
+                signal_time = time.clock_gettime(time.CLOCK_BOOTTIME)
                 stop(client, prefix)
-                result['start_to_signal_sent_seconds'] = time.monotonic() - cli_started
+                result['start_to_signal_sent_seconds'] = time.clock_gettime(time.CLOCK_BOOTTIME) - cli_started
                 # Refresh starts after cli_started. With TTL5s, any phase using
                 # half the remaining lease has a deadline at least2.5s after
                 # that lower bound. A later signal could merely hit driver drain
                 # after an earlier command timeout and cannot qualify this case.
                 assert result['start_to_signal_sent_seconds'] < 2.0, 'signal too late to isolate cancellation'
+                http_answer = event(http, 'done', 1)['outcome']
+                result['start_to_http_closed_seconds'] = time.clock_gettime(time.CLOCK_BOOTTIME) - cli_started
+                assert 'closed' in http_answer and result['start_to_http_closed_seconds'] < 2.0
                 ended = terminal(prefix)
-                result['signal_to_reap_seconds'] = time.monotonic() - signal_time
+                result['signal_to_reap_seconds'] = time.clock_gettime(time.CLOCK_BOOTTIME) - signal_time
                 assert result['signal_to_reap_seconds'] < 3.5 and ended['exit_code'] == 4
                 assert rows(database) == before
                 result['upstream_after_cli_death'] = require_held(pg, database, before)
                 proxy.send('close')
-        http_answer = event(http, 'done', 10)['outcome']
+        if http_answer is None:
+            http_answer = event(http, 'done', 10)['outcome']
         assert http.wait(5) == 0 and not http.stderr
         healthy = mode in ('pass', 'disconnect')
         if healthy:

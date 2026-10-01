@@ -248,3 +248,10 @@ reset and uses actual HTTP parsing for truncated-body controls. The signal cut
 must be sent within2s of launch, before the earliest2.5s command deadline, so an
 earlier timeout followed by driver drain cannot masquerade as SIGTERM cancellation.
 Original outputs remain retained; final evidence is not inferred from that run.
+
+`--registration-http-signal BUILD` repeats only the affected cancellation case.
+It observes HTTP closure within2s of launch on CLOCK_BOOTTIME, before the earliest
+2.5s half-lease deadline, and then joins the CLI before closing the held PG proxy.
+This distinguishes processed signal cancellation from a watchdog timeout or merely
+transmitting a signal during driver drain. Four unaffected schedules remain in the
+4db23a0 capture; the focused rerun does not claim to execute them again.
