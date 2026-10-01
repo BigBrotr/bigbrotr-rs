@@ -33,6 +33,7 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
+registration_faults = len(sys.argv) == 4 and sys.argv[2] == '--registration-faults'
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
 enrollment_http = enrollment_functions or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments')
@@ -43,13 +44,13 @@ commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
 execution = len(sys.argv) == 3 and sys.argv[2] == '--execution'
 observation = len(sys.argv) in (3, 4) and sys.argv[2] == '--observation'
 socket = len(sys.argv) in (3, 4) and sys.argv[2] == '--socket'
-assert len(sys.argv) == 2 or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket
+assert len(sys.argv) == 2 or registration_faults or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-reuse_build = guards or interruptions or commits or ((observation or socket or sessions or enrollment_http or registration_http) and len(sys.argv) == 4)
+reuse_build = registration_faults or guards or interruptions or commits or ((observation or socket or sessions or enrollment_http or registration_http) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
-assert built['probe_name'] == 'ingest_bootstrap_probe'
+assert built['probe_name'] == ('relay_registration_fault_probe' if registration_faults else 'ingest_bootstrap_probe')
 if reuse_build:
     # Reuse only reviewed exact artifacts whose complete Rust/build inputs match.
     changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
@@ -98,6 +99,12 @@ if enrollment_http:
     report['not_run'] = ['installed authenticated URL registration', 'CLI enrollment command',
         'concurrent authenticated withdrawal versus source action', 'installed acquisition/M1',
         'capacity/load/aged-state', 'arm64/release']
+
+if registration_faults:
+    report['wave'] = 'registration-adapter-faults'
+    report['not_run'] = ['registration concurrent authority writers and raw relational refusal',
+        'historical recovery after changed heads/grants', 'installed HTTP COMMIT ambiguity',
+        'installed acquisition/M1', 'capacity/load/aged-state', 'arm64/release']
 
 if registration_http:
     report['wave'] = 'installed-relay-registration'
@@ -426,6 +433,9 @@ if session_faults:
 if enrollment_http:
     success_status = 'PASS_INITIAL_ENROLLMENT_HTTP_WAVE'
 
+if registration_faults:
+    success_status = 'PASS_REGISTRATION_COMMIT_FAULTS'
+
 if registration_http:
     success_status = 'PASS_INITIAL_REGISTRATION_HTTP_WAVE'
 
@@ -449,7 +459,7 @@ try:
         from interruptions import prepare_instrument
         instrument = prepare_instrument(root, prior, SOURCE)
         instrument_mount = ['--mount', f'type=bind,src={instrument},dst=/instrument,readonly']
-    if commits:
+    if commits or registration_faults:
         instrument_mount = ['--mount', f'type=bind,src={SOURCE},dst=/source,readonly']
     lab.docker('start', target['Id'])
     deadline = time.monotonic() + 30
@@ -460,11 +470,16 @@ try:
     template = rows('bb_source_template')
     require(basic == json.loads((basis / 'basic-after.json').read_text()), 'original-scope-basis')
     require(not template['producer_requests'] and not template['owner_epochs'], 'original-template-preconditions')
-    registration_basis = 'bb_scope_bind_917c76b_enrollment_journey'
-    if registration_http:
+    registration_basis = ('bb_scope_bind_45f7593_registration_journey' if registration_faults
+        else 'bb_scope_bind_917c76b_enrollment_journey')
+    if registration_http or registration_faults:
         registration_original = dict(database=registration_basis,
             rows=rows(registration_basis), physical=physical(registration_basis))
         require(registration_original['rows']['relay_enrollment_changes'], 'populated-registration-basis')
+        if registration_faults:
+            original_capture = root.parent / 'initial-registration-45f7593/bindings/registration-journey-after.json'
+            require(registration_original['rows'] == json.loads(original_capture.read_text()),
+                'retained-registration-basis-differs-from-qualified-capture')
         lab.write_json(output / 'registration-basis-before.json', registration_original)
     ident = lab.docker('create', '--init', '--name', client, '--label', label + '=' + owner,
         '--network', 'container:' + pg['postgres'], '--user', f'{os.getuid()}:{os.getgid()}',
@@ -477,7 +492,11 @@ try:
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
-    if socket:
+    if registration_faults:
+        sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+        from registration_faults import CASES, run as run_registration_fault
+        cases = list(CASES)
+    elif socket:
         from socket_arrival import run as run_socket
         run_socket(globals())
         cases = []
@@ -529,7 +548,11 @@ try:
                  'no-source','certify-withdrawn','old-source-schema','old-binding-schema']
     installed_basis = None
     for name in cases:
-        if commits:
+        if registration_faults:
+            completed = clone(name, registration_basis)
+            report['cases'].append(run_registration_fault(pg, client, output, completed, name, rows))
+            save()
+        elif commits:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_commits(pg, client, output, completed, name, rows))
             save()
@@ -603,7 +626,7 @@ try:
         require(rows(completed) == basis_rows, 'signed-parent-changed')
     require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_source_template') == template
         and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')
-    if registration_http:
+    if registration_http or registration_faults:
         final_original = dict(database=registration_basis,
             rows=rows(registration_basis), physical=physical(registration_basis))
         lab.write_json(output / 'registration-basis-after.json', final_original)

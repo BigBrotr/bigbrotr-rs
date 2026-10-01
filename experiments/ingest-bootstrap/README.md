@@ -182,3 +182,16 @@ concurrent revocation and lost/cancelled COMMIT need separate schedules. The
 initial installed lifetime cannot survive a changed accepted policy; historical
 retry across changed heads belongs to a fresh adapter owner until successor
 recovery is implemented.
+
+
+`--registration-faults BUILD` uses a separately compiled finite actual registration
+adapter probe and the existing bounded PostgreSQL wire proxy. Seven proposed
+cases select exactly the fourth COMMIT: pass, loss before/after completion,
+cancelled hold closed/released, owner expiry and session expiry. The retained
+installed registration journey is cloned with its existing endpoint; every command
+must leave that original identity unchanged. All68 Control tables/xmin, independent
+literal digest/receipt and real Busy contender are checked, followed by fresh-owner
+recovery. The common host inventories/stops owned resources and preserves the
+original populated source. These schedules remain NOT_RUN until an engine report
+is recorded. Concurrent writers/raw relational and installed HTTP ambiguity are
+separate required cases.

@@ -308,3 +308,13 @@ and one document, while retained installed basis has two different v2 documents.
 No engine launched. Corrected probe now compares the two exact retained v2
 documents/digests independently, leaving the historical helper unchanged. Build
 the corrected exact revision before engine schedules.
+
+Corrected native00600af is STOPPED/RETAINED: runs/relay-registration-faults-00600af,
+PID1273319/start426887139, ownere6b55e4ae99e106fb6a81391365fabdb; fetchd3d43bd0/
+native50976444 stopped0, compile/Clippy PASS at20:31:10UTC, no prior container
+changes and59,702,202,368B free. Both cc1a/00600 manifests/logs captured and exact
+Git source checked. New independent controller registration_faults.py selects7
+fourth-COMMIT schedules through existing bindings host/clones/cleanup. No engine
+started yet; root dirty work is recipe/controller, inventory/checkpoint. Next:
+commit fixture, run --registration-faults with exact00600af binaries on clones of
+bb_scope_bind_45f7593_registration_journey; preserve the original rows/heap files.

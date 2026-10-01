@@ -31888,6 +31888,44 @@
           "free_bytes_after": 59816673280,
           "finished_at": "2026-10-01T20:28:34.205857+00:00"
         }
+      },
+      "fault_native_fixed": {
+        "launch": {
+          "source": "00600af97d24f7e445f7e6706180ddae0cb32fda",
+          "tree": "6e131923a3c9a34731663ad943a9c1546d508e25",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-00600af",
+          "pid": 1273319,
+          "start_ticks": "426887139",
+          "bundle_sha256": "afca83adfd9a1ddb64e550a8516744ee66a34b7f2e067eecf2c7479cc635ba21"
+        },
+        "resources": {
+          "source": "00600af97d24f7e445f7e6706180ddae0cb32fda",
+          "tree": "6e131923a3c9a34731663ad943a9c1546d508e25",
+          "owner": "e6b55e4ae99e106fb6a81391365fabdb",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-00600af",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "d3d43bd064f95dc903525b42d7b39999f4190dded569d790ad14241f4757b33b"
+            },
+            {
+              "name": "native",
+              "id": "50976444f174b694c184281dae5af4fc6cdab7cc7a486f42223ec6e454bbdf0a"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-01T20:30:17.870761+00:00",
+          "qualification": "PASS_RELAY_REGISTRATION_FAULT_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 59702202368,
+          "finished_at": "2026-10-01T20:31:10.689054+00:00"
+        },
+        "probe_sha256": "c1769531c77fb595d1724c4617f9b6a522f8a04386fee565534af019d850cfd8",
+        "status": "native compile/Clippy PASS only; engine pending"
       }
     }
   },
