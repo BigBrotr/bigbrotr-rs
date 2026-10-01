@@ -120,9 +120,9 @@ to its existing loopback session router. Its closed body is `EnrollmentCommand`
 above; session cookie, explicit CSRF header and one canonical `Idempotency-Key`
 are required. The8KiB body, connection/request limits and original Control/native
 custody are shared with the existing dispatcher. No second command connection or
-network worker starts. Migration0019 and each required table/function privilege
-are checked before binding. Earlier session-only installations must explicitly
-migrate first.
+network worker starts. The selected initial administration profile requires
+migration0025, including0019 enrollment and each required table/function privilege,
+before binding. Earlier session-only installations must explicitly migrate first.
 
 Public enablement requires both complete accepted policy documents. Private route
 ceilings come only from deployment roots; caller bytes cannot replace them.
@@ -137,9 +137,10 @@ Existing domain errors retain401/403/409/429; unresolved backend/COMMIT state st
 the owner without delivering an acceptance receipt. A successful retry after
 withdrawal returns the historical receipt without re-enabling the source.
 
-This input consumes an already registered EndpointId. The internal URL registry
-operation is not a browser-authenticated registration command. Installed endpoint
-creation, CLI enrollment and complete acquisition remain separate required work.
+This input consumes an already registered EndpointId. The companion authenticated
+[URL registration command](relay-endpoint-registry.md#authenticated-registration-consumer)
+now supplies that identity on the same initial owner, with bounded installed
+qualification. CLI enrollment and complete acquisition remain separate work.
 Native product438067f/fixture17c6ea0 exercised actual enable/retry/withdraw,
 historical retry after withdrawal, accepted public-policy intersection, private
 root bounds, permission refusal and missing table privilege before bind. All64
@@ -149,8 +150,8 @@ retained. Corrected917c76b refuses all three missing function grants before bind
 and repeats the valid HTTP journey successfully. The linked report retains exact
 source/artifact identities, original failure and practical limits.
 P02-T01 Step6/P01-T09 Step1 remain
-partial; neither this fixture nor its internal endpoint setup proves installed
-URL registration or complete acquisition.
+partial. This earlier fixture used internal endpoint setup; the later linked
+registration journey covers installed URL creation, with complete acquisition open.
 
 ## Finite current source operations
 

@@ -128,6 +128,7 @@ complete the workflows promised by P08/P09:
 | `GET /management/v1/secret-references`; `PUT /management/v1/secret-references/{reference_id}` | Discover/register allowed protected provider handles; no raw secret upload or arbitrary filesystem browser |
 | `GET /management/v1/configuration` and `/configuration/revisions`; `POST /configuration/previews` and `/configuration/revisions` under the same prefix | Redacted effective state, validated change preview and atomic revision; CLI config show/validate/preview/apply |
 | `GET /management/v1/roles`; `POST /management/v1/roles/{role_instance_id}/commands` | Typed start/pause/drain/resume/stop for already configured supervised roles |
+| `POST /management/v1/relay-endpoints` | Authenticated normalized URL registration; initial Ingest owner, dataset policy.change, exact expected heads and identity-only receipt |
 | `POST /management/v1/relay-enrollments` | Guarded source intent; initial Ingest owner consumes an existing EndpointId, with dataset policy.change, exact generation and acceptance-only receipt |
 | `GET /management/v1/relays`; `POST /management/v1/jobs` | Operational registry view and typed finite work; enrollment/repair operations use their existing guarded domain commands |
 | `GET /management/v1/jobs` and `/jobs/{job_id}`; `POST /jobs/{job_id}/cancel` or `/resume` under the same prefix | Discover durable work, status, cooperative cancellation and resumption of paused work; CLI jobs list/status/cancel/resume |
@@ -166,10 +167,14 @@ errors. Grant/reauthentication browser consumers remain required; these artifact
 do not advertise the whole table above.
 
 The explicit initial Ingest owner additionally exposes
-`POST /management/v1/relay-enrollments`, using the same current session/CSRF
-boundary and dataset `policy.change` action. Its closed generated command/receipt
-types preserve complete visibility and exact revisions. It consumes an existing
-endpoint; accepted intent is neither committed visibility proof nor a socket grant.
+`POST /management/v1/relay-endpoints` and `/management/v1/relay-enrollments`, using
+the same current session/CSRF boundary and dataset `policy.change` action.
+[URL registration](../reference/relay-endpoint-registry.md#authenticated-registration-consumer)
+returns an immutable operational EndpointId, with a17KiB closed JSON body and
+8192-byte endpoint bound; it neither enrolls nor grants network authority.
+Migration0025 and required SQL privileges are checked before this listener binds.
+The generated enrollment command/receipt types preserve complete visibility and
+exact revisions. Enrollment consumes an existing endpoint; accepted intent is neither committed visibility proof nor a socket grant.
 The [owning enrollment contract](../reference/relay-enrollment.md) defines roots,
 historical retry and its bounded qualification. The ordinary Serve profile does
 not expose this command yet. CLI/browser command consumers remain selected work.

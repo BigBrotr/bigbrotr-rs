@@ -31554,12 +31554,303 @@
         }
       },
       "not_run": [
-        "PostgreSQL migration/constraint/adapter/HTTP cases",
-        "COMMIT recovery, cancellation, expiry, concurrency",
+        "registration adapter COMMIT recovery/cancellation/expiry/concurrency",
+        "raw relational refusal/rollback",
+        "CLI registration command",
         "installed acquisition/M1",
-        "capacity/load/aged state",
-        "arm64/release"
-      ]
+        "capacity/load/aged-state",
+        "arm64/release",
+        "Fresh-command expiry for an existing endpoint and historical retry after grant/head change remain distinct required schedules.",
+        "Initial policy change stops the installed owner; fresh-owner adapter recovery is not initial native successor support.",
+        "Ordinary Serve registration/enrollment, protected/multiple-CIDR/overlay routes and complete restrictive drain remain selected work.",
+        "Small fixtures establish no capacity, aged-state or mixed-load guarantee."
+      ],
+      "engine": {
+        "launch": {
+          "source": "45f75931c0bfddd60f6453c6b3afa2d037dc502f",
+          "tree": "dbc70a84908e88a75db755cae7769601cf6b955f",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-registration-45f7593",
+          "pid": 1255041,
+          "start_ticks": "426774373",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-7011acd/out/artifacts",
+          "bundle_sha256": "38dc11dc0cd85f488a6af8c20beecbf8773f66ff2438436ac7b8de70022b9d97"
+        },
+        "observed": {
+          "format": "bigbrotr-acquisition-binding/1",
+          "source": "45f75931c0bfddd60f6453c6b3afa2d037dc502f",
+          "build": {
+            "source": "7011acd1782e9fe36b5e7c67188aae5c40fe70da",
+            "tree": "9f12b08d33d060485854acbf66b77bab572b5662",
+            "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+            "source_manifest_sha256": "5ef8f5151c23e6d403462b77aa5800b2b5c5f13644efd4913bf4f420fc6aaaef",
+            "binary_sha256": "dac6ab7560e537af75895eaf44adb20c7a1b2e8b17bb1b5ce0f5fb50299b76a4",
+            "probe_name": "ingest_bootstrap_probe",
+            "probe_sha256": "af76f38f2eca2559ef746f678e0bbdf2ab035b8d19a6ac2287611d7a9b360f29"
+          },
+          "status": "PASS_INITIAL_REGISTRATION_HTTP_WAVE",
+          "wave": "installed-relay-registration",
+          "owner": "d726083ce9a3fd3180e4c59cbe78b799",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "c30f4a2d81fdc82ce02e235341675fe3e3de4d600d464b300e6c18ef3e6497ec",
+            "name": "bigbrotr-acquisition-binding-45f7593"
+          },
+          "cases": [
+            {
+              "name": "registration-upgrade",
+              "status": "PASS",
+              "actual_migration": true,
+              "original_rows_xmin_filenodes": true,
+              "control_tables": 68
+            },
+            {
+              "name": "registration-journey",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_http": true,
+              "startup_refusal": false,
+              "control_tables": 68,
+              "terminal": {
+                "pid": 50,
+                "start_ticks": "426774962",
+                "config": "/lab/bb_scope_bind_45f7593_registration_journey.toml",
+                "prefix": "/lab/registration-journey",
+                "exit_code": 0,
+                "elapsed_seconds": 1.266445147804916,
+                "forced": false,
+                "reaped": true
+              }
+            },
+            {
+              "name": "registration-permission",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_http": true,
+              "startup_refusal": false,
+              "control_tables": 68,
+              "terminal": {
+                "pid": 151,
+                "start_ticks": "426775379",
+                "config": "/lab/bb_scope_bind_45f7593_registration_permission.toml",
+                "prefix": "/lab/registration-permission",
+                "exit_code": 0,
+                "elapsed_seconds": 0.764857872389257,
+                "forced": false,
+                "reaped": true
+              }
+            },
+            {
+              "name": "registration-prerequisite",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_http": false,
+              "startup_refusal": true,
+              "control_tables": 68,
+              "terminal": {
+                "pid": 252,
+                "start_ticks": "426775707",
+                "config": "/lab/bb_scope_bind_45f7593_registration_prerequisite.toml",
+                "prefix": "/lab/registration-prerequisite",
+                "exit_code": 4,
+                "elapsed_seconds": 0.16387334372848272,
+                "forced": false,
+                "reaped": true
+              }
+            },
+            {
+              "name": "registration-candidate",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_http": false,
+              "startup_refusal": true,
+              "control_tables": 68,
+              "terminal": {
+                "pid": 341,
+                "start_ticks": "426776011",
+                "config": "/lab/bb_scope_bind_45f7593_registration_candidate.toml",
+                "prefix": "/lab/registration-candidate",
+                "exit_code": 4,
+                "elapsed_seconds": 0.1641338998451829,
+                "forced": false,
+                "reaped": true
+              }
+            },
+            {
+              "name": "registration-digest",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_http": false,
+              "startup_refusal": true,
+              "control_tables": 68,
+              "terminal": {
+                "pid": 430,
+                "start_ticks": "426776307",
+                "config": "/lab/bb_scope_bind_45f7593_registration_digest.toml",
+                "prefix": "/lab/registration-digest",
+                "exit_code": 4,
+                "elapsed_seconds": 0.1640055514872074,
+                "forced": false,
+                "reaped": true
+              }
+            },
+            {
+              "name": "registration-schema",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_http": false,
+              "startup_refusal": true,
+              "control_tables": 64,
+              "terminal": {
+                "pid": 507,
+                "start_ticks": "426776503",
+                "config": "/lab/bb_scope_bind_45f7593_registration_schema.toml",
+                "prefix": "/lab/registration-schema",
+                "exit_code": 4,
+                "elapsed_seconds": 0.1638341611251235,
+                "forced": false,
+                "reaped": true
+              }
+            }
+          ],
+          "databases": [
+            "bb_scope_bind_45f7593_registration_upgrade",
+            "bb_scope_bind_45f7593_registration_journey",
+            "bb_scope_bind_45f7593_registration_permission",
+            "bb_scope_bind_45f7593_registration_prerequisite",
+            "bb_scope_bind_45f7593_registration_candidate",
+            "bb_scope_bind_45f7593_registration_digest",
+            "bb_scope_bind_45f7593_registration_schema"
+          ],
+          "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "not_run": [
+            "registration adapter COMMIT recovery/cancellation/expiry/concurrency",
+            "raw relational refusal/rollback",
+            "CLI registration command",
+            "installed acquisition/M1",
+            "capacity/load/aged-state",
+            "arm64/release"
+          ],
+          "started_at": "2026-10-01T20:11:30.275896+00:00",
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "free_bytes_before": 60037742592,
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "terminal": [
+            {
+              "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+              "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 0,
+                "Error": "",
+                "StartedAt": "2026-10-01T20:11:30.360424822Z",
+                "FinishedAt": "2026-10-01T20:11:54.589610197Z"
+              },
+              "Mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                  "Destination": "/run/secrets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                  "Destination": "/var/lib/postgresql/data",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                }
+              ]
+            },
+            {
+              "Id": "c30f4a2d81fdc82ce02e235341675fe3e3de4d600d464b300e6c18ef3e6497ec",
+              "Name": "/bigbrotr-acquisition-binding-45f7593",
+              "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+              "State": {
+                "Status": "exited",
+                "Running": false,
+                "Paused": false,
+                "Restarting": false,
+                "OOMKilled": false,
+                "Dead": false,
+                "Pid": 0,
+                "ExitCode": 143,
+                "Error": "",
+                "StartedAt": "2026-10-01T20:11:31.535516463Z",
+                "FinishedAt": "2026-10-01T20:11:52.178797564Z"
+              },
+              "Mounts": [
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-7011acd/out/artifacts",
+                  "Destination": "/build",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/initial-registration-45f7593/bindings",
+                  "Destination": "/lab",
+                  "Mode": "",
+                  "RW": true,
+                  "Propagation": "rprivate"
+                },
+                {
+                  "Type": "bind",
+                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                  "Destination": "/run/secrets",
+                  "Mode": "",
+                  "RW": false,
+                  "Propagation": "rprivate"
+                }
+              ]
+            }
+          ],
+          "unrelated_changed": [],
+          "finished_at": "2026-10-01T20:11:55.364763+00:00",
+          "free_bytes_after": 59934584832,
+          "original_result": ".research/implementation/relay-registration-20261001/engine/result-observed.json"
+        },
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T20:12:29.219510+00:00",
+          "owned_stopped": [
+            {
+              "id": "c30f4a2d81fdc82ce02e235341675fe3e3de4d600d464b300e6c18ef3e6497ec",
+              "owner": "d726083ce9a3fd3180e4c59cbe78b799",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 998,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 59934572544
+        },
+        "review": {
+          "status": "PASS_BOUNDED_INSTALLED_REGISTRATION",
+          "source_files": 1619,
+          "captured_payloads": 129,
+          "root_review_sha256": "7a058f78066d31240eb3d8c71e48da8ec7fe00dfc962f7a9789fbc3f1be6559b"
+        }
+      },
+      "report": "docs/implementation/evidence/p02-initial-registration-http-native-20261001.json"
     }
   },
   "implementation_relay_registry_20260928": {

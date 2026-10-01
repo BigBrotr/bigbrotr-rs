@@ -73,9 +73,9 @@ proposed scenarios from executed evidence. Remaining enrollment/route and networ
 action authorization preserve their selected task scope; this table cannot stand
 in for those grants, public reader visibility or archival dictionary allocation.
 
-## Authenticated registration consumer (implementation in progress)
+## Authenticated registration consumer
 
-The initial private owner will expose `POST /management/v1/relay-endpoints` with
+The initial private owner exposes `POST /management/v1/relay-endpoints` with
 closed JSON `url`, `expected_config_revision` and `expected_policy_revision`.
 It requires the existing current session, explicit CSRF, exact Origin and one
 canonical Idempotency-Key. Fresh acceptance requires dataset `policy.change` and
@@ -126,10 +126,16 @@ business refusal rolls back all provisional effects; ambiguous/cancelled backend
 work poisons Control until its real driver retires. The startup prerequisite
 probe checks required table and directly called function privileges before bind.
 
-P02-T01 Step6/P01-T09 Steps1/2 acceptance will exercise normalized create/retry,
-existing identity under another key, exact historical retry after grant/head
-change, denied session/CSRF/permission/CAS, maximum and malformed URL inputs,
-missing SQL grants, cancellation/expiry and lost COMMIT with original data
-preserved. The installed enrollment journey will register its URL through this
-consumer instead of the isolated fixture helper. New practical cases are NOT_RUN;
-this section is a selected implementation contract, not executed qualification.
+P02-T01 Step6/P01-T09 Steps1/2 have [bounded installed evidence](../implementation/evidence/p02-initial-registration-http-native-20261001.json)
+on product7011acd/fixture45f7593: explicit populated upgrade/reapply, normalized
+create/retry, existing identity under another key, denied session/CSRF/permission/
+CAS, maximum and malformed URLs, missing grants/schema before bind, and URL→enroll→
+withdraw→historical receipts. Complete Control/native originals and the populated
+upgrade source remain unchanged where required. Schema0025 and its table/function
+privileges are required before the selected initial administration listener binds.
+
+Raw relational negatives, historical retry after grant/head change, cancellation,
+expiry (including fresh commands for existing endpoints), lock races and lost
+COMMIT remain NOT_RUN for this consumer. The initial owner stops on changed policy;
+fresh-owner historical recovery must be qualified separately. Neither these small
+fixtures nor the receipt establishes installed acquisition, capacity or M1.

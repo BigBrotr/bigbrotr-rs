@@ -139,11 +139,12 @@ not start it. Configured archive reader, export destination, cursor keyring or
 private asset prerequisites are refused by this narrow path.
 Both complete accepted documents must also permit the selected profile.
 
-Accepted administration enables login, self inspection, logout and the initial
-[relay enrollment command](relay-enrollment.md#initial-owner-http-consumer)
+Accepted administration enables login, self inspection, logout,
+[URL registration](relay-endpoint-registry.md#authenticated-registration-consumer)
+and the initial [relay enrollment command](relay-enrollment.md#initial-owner-http-consumer)
 on the configured loopback listener. This reuses the ordinary Management dispatcher;
-migration0809 session prerequisites and migration0019 enrollment table/function
-privileges are required before binding. Initial Ingest has no reauthentication,
+migration0025, including session/enrollment prerequisites and required table/
+function privileges, is required before binding. Initial Ingest has no reauthentication,
 grant, job, history or asset routes yet. The initialized record identifies
 `initial-source-commands`; session access and enrollment acceptance do not imply
 native admission permission. A disabled managed seed cannot override the two

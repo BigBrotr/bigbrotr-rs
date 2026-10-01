@@ -457,8 +457,10 @@ and queryable with truthful role readiness, without implicit public publishing.
   consumer now have bounded component/engine evidence. Same-owner installed
   session delivery has [bounded installed fault evidence](evidence/p01-initial-session-faults-native-20261001.json),
   and [initial enrollment HTTP](evidence/p02-initial-enrollment-http-native-20261001.json)
-  now accepts existing endpoints with exact historical retry. Authenticated URL
-  registration and scope/job command consumers,
+  now accepts existing endpoints with exact historical retry. Authenticated
+  [URL registration](evidence/p02-initial-registration-http-native-20261001.json)
+  adds explicit populated upgrade and URL→enroll→withdraw/retry. Registration
+  fault schedules and installed scope/job command consumers,
   dictionary append and successor recovery remain real integration prerequisites.
   Then qualify actual timer publication, read and restart/resend below; no complete
   adjacent Discovery/Monitor subsystem is a prerequisite for this small journey.

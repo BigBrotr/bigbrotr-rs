@@ -572,8 +572,12 @@ source visibility intent; it neither changes principal grants nor requires the
 Archive allocation proof belonging to history scope grants. The explicit initial
 Ingest owner exposes `POST /management/v1/relay-enrollments` for an already
 registered EndpointId; fresh acceptance202 and historical retry200 have no
-application or socket authority. The ordinary Serve profile, authenticated URL
-registration, CLI enrollment and full protected/overlay routes remain required.
+application or socket authority. The companion
+[URL registration command](../reference/relay-endpoint-registry.md#authenticated-registration-consumer)
+now accepts normalized identities with original actor/key receipts on that same
+owner; its bounded installed journey also enrolls and withdraws the returned ID.
+The ordinary Serve profile, CLI commands, full protected/overlay routes and
+registration COMMIT fault qualification remain required.
 The [initial HTTP boundary](../reference/relay-enrollment.md#initial-owner-http-consumer)
 has bounded native qualification, including refusal before bind when SQL function
 execution privileges are missing.

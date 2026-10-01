@@ -156,7 +156,7 @@ Corrected917c76b passed all three refusals and the valid journey. The
 records both waves and the original failure. No whole-step, M1 or release claim
 follows from these cases.
 
-## Installed authenticated URL registration (under qualification)
+## Installed authenticated URL registration
 
 `--installed-registrations BUILD` uses the actual initial CLI, session dispatcher
 and additive0025. The frozen20 template and populated917c76b enrollment clone
@@ -174,8 +174,9 @@ and missing migration before bind. All native bootstrap bytes/original CBOR and
 receipts remain independently checked; registration itself writes no native facts.
 The host oracle uses literal expected URLs and independent command hash bytes.
 
-These new engine cases are NOT_RUN until linked executed evidence is recorded.
-The native candidate build alone does not qualify SQL. Deferred expiry for a
+Product7011acd/fixture45f7593 passed all seven cases; the [bounded report](../../docs/implementation/evidence/p02-initial-registration-http-native-20261001.json)
+records exact artifacts, complete retained-state review and stopped resources.
+The native build alone does not qualify SQL. Deferred expiry for a
 fresh command referencing an existing endpoint, raw relational negatives,
 concurrent revocation and lost/cancelled COMMIT need separate schedules. The
 initial installed lifetime cannot survive a changed accepted policy; historical

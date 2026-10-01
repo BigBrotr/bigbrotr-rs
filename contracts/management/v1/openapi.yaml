@@ -1204,7 +1204,7 @@
       "post": {
         "operationId": "changeRelayEnrollment",
         "summary": "Accept a direct relay enrollment change",
-        "description": "Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Public enablement intersects both complete accepted policy documents; private enablement must fit a complete deployment root. Migration0019 and all required table and function privileges must be available before the initial listener binds. Historical retry authenticates the current actor then resolves before fresh permission, CAS and root checks. A lost response requires the identical original key and body. No endpoint creation, installed acquisition or restrictive drain claim. Native installed qualification is scoped to the referenced initial HTTP journey.",
+        "description": "Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Public enablement intersects both complete accepted policy documents; private enablement must fit a complete deployment root. Migration0025 (including enrollment prerequisites) and all required table and function privileges must be available before the initial listener binds. Historical retry authenticates the current actor then resolves before fresh permission, CAS and root checks. A lost response requires the identical original key and body. This command consumes an existing EndpointId; relay-endpoints supplies authenticated URL registration. No installed acquisition or restrictive drain claim. Native installed qualification is scoped to the referenced initial HTTP journey.",
         "parameters": [
           {
             "name": "X-CSRF-Token",
@@ -1344,6 +1344,157 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RelayEnrollmentReceipt"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/v1/relay-endpoints": {
+      "post": {
+        "operationId": "registerRelayEndpoint",
+        "summary": "Accept an immutable relay endpoint identity",
+        "description": "Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Migration0025 and required table/function privileges must be available before binding. Equivalent normalized URLs share an EndpointId, including under a different command key. Historical retry authenticates the current actor and resolves the original normalized command before fresh permission and CAS checks. After a lost response use the identical original key and body; never retry mutations automatically. No cookies, idle refresh, enrollment, DNS, socket or native dictionary work. Native installed qualification covers the bounded HTTP journey; COMMIT fault qualification remains separate.",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$",
+              "not": {
+                "const": "00000000000000000000000000000000"
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RelayRegistrationCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary or dataset permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Command or revision conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Fresh command accepted atomically, even when the endpoint already exists; created describes the command receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelayRegistrationReceipt"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical authenticated actor/key/body returns only the original receipt; no cookies or idle refresh.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelayRegistrationReceipt"
                 }
               }
             }
@@ -2661,6 +2812,79 @@
           }
         },
         "description": "Immutable original acceptance. Historical retry returns created=false and may describe an earlier enabled generation after withdrawal; it never reapplies that state or establishes restrictive drain."
+      },
+      "RelayRegistrationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "url",
+          "expected_config_revision",
+          "expected_policy_revision"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192,
+            "description": "Input to the single endpoint-v1 normalizer: an absolute ws/wss URL, including uppercase scheme spelling; no credentials, fragment or forbidden host. Both input and normalized identity are limited to8192 UTF-8 bytes by the server. maxLength is only a character bound, not the byte or semantic validator. Normalization preserves query bytes/order and explicitly empty query."
+          },
+          "expected_config_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "expected_policy_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          }
+        },
+        "description": "Identity-only intent in the installed dataset. Unknown fields and duplicate JSON keys are refused. The complete UTF-8 JSON request body is limited to17408bytes (17KiB), allowing an8192-byte endpoint with escaped quotes. Equivalent normalized URLs produce the same command digest; raw JSON spelling is not command identity."
+      },
+      "RelayRegistrationReceipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format",
+          "command_key",
+          "endpoint_id",
+          "accepted_at_us",
+          "created",
+          "authority"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "bigbrotr-relay-registration/1"
+          },
+          "command_key": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "endpoint_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "accepted_at_us": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Original positive Unix microseconds, maximum9223372036854775807; exact decimal string."
+          },
+          "created": {
+            "type": "boolean"
+          },
+          "authority": {
+            "type": "string",
+            "const": "identity-only"
+          }
+        },
+        "description": "Immutable original command acceptance; created=true for a fresh command, including one naming an existing endpoint. Historical retry returns created=false with the original identity and time. This receipt grants no enrollment, route, visibility or network authority."
       }
     },
     "securitySchemes": {

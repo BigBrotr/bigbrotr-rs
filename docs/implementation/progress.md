@@ -12,7 +12,7 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main7011acd1782e9fe36b5e7c67188aae5c40fe70da is an unpublished candidate;
+Mac main45f75931c0bfddd60f6453c6b3afa2d037dc502f is an unpublished fixture candidate;
 private origin remains22f5b68a3fa31e8cf1daafcc2cc398297c3fa1c1. The enrollment
 slice is pushed; registration is under qualification. Root sole writer.
 P02-T01 Step6/P01-T09 Step1 initial enrollment HTTP bounded integration now has
@@ -90,9 +90,9 @@ Read-only AI review covered complete changed owners/SQL/callers and found no
 remaining concrete defect. It specifically checked SQL/Rust digest equivalence,
 existing-endpoint expiry, historical authentication before fresh grant/CAS,
 lock order, registry wrapper poisoning and startup function privileges. Root
-reviewed the combined implementation/diff. This is source/component evidence,
-not PostgreSQL qualification. Raw constraints, installed command effects,
-expiry/cancellation, lock races and lost COMMIT are NOT_RUN for0025.
+reviewed the combined implementation/diff. The first installed engine wave below qualifies bounded HTTP effects and upgrade.
+Raw constraints, expiry/cancellation, lock races and lost COMMIT remain NOT_RUN
+for0025.
 
 Native exact7011acd build is STOPPED/RETAINED: PID1246952/start426709715 terminal,
 root runs/initial-ingest-7011acd, full owner/container state in inventory
@@ -102,17 +102,33 @@ relaunch it. All6 profile checks PASS, including88 native tests and scoped Clipp
 60,073,537,536B free and no prior container projection changes. Fetch953fc363 and
 nativef1c1d4cf stopped0; ownerd832ab31c1f4e81a992ce1673b125ad9. Latest state is
 native/resources-final.json. Shared1154757 now holds7011acd intermediates; exact
-qualified CLI/probe are separate. No PG engine run has started.
+qualified CLI/probe are separate.
 
-Root dirty work: installed registration client/fixture, inventory and checkpoint.
-Root/AI fixture review added full retained enrollment-source rows/filenodes before
-and after the wave, and distinguishes actual HTTP from startup refusals. No product
-change or weakened assertion. Next bounded action: commit the installed
-URL→enrollment HTTP fixture and run exact Git on new clones migrated through25. Preserve
-original64-table template/all prior outcomes and use full SQL/native independent
-oracles. Engine effects/SQL/faults remain NOT_RUN. Expiry of a fresh command for an
-already-existing endpoint must be discriminated in subsequent adapter schedules.
-Check disk and live resources before allocations. Cleanup remains complete.
+Engine45f7593 with exact7011acd binaries is STOPPED/RETAINED: PID1255041/
+start426774373 terminal, root runs/initial-registration-45f7593,
+ownerd726083ce9a3fd3180e4c59cbe78b799, clientc30f4a2d stopped143;
+borrowedPG71775507 stopped0/no OOM. Seven cases PASS: populated explicit upgrade/
+reapply, URL→enroll→withdraw→historical receipts, permission denial, missing detail
+INSERT, candidate/digest EXECUTE and old-schema refusal before bind. Root verified
+1619 exact Git files,129 captured payloads, all68 SQL tables,12 native rows/original
+CBOR, independent3 registration/2 enrollment digests and no mutation from historical
+retry. Six upgrades preserve all old rows/xmin/heap files; populated original
+source remains unchanged. This is no COMMIT/cancellation/expiry qualification.
+Audit20:12:29UTC:998 prior container projections unchanged,8 unrelated running,
+compiler lock released,59,934,572,544B free. Original engine/result, root-review.json
+and terminal audit are under ignored relay-registration-20261001/engine/.
+Never relaunch completed recipes. Mac resumption observed4,767,008KiB available.
+
+Root dirty work: qualification report, inventory/checkpoint, OpenAPI/generated types
+and owning docs. [Bounded report](evidence/p02-initial-registration-http-native-20261001.json)
+now records originals, versions and limits. Generated drift/TypeScript checks,
+23 client tests,7 actual receipts/7 errors,2 command shapes and8 malformed schema
+controls PASS; artifact/handoff structure checks PASS. Read-only AI review found
+no schema/doc mismatch; root reviewed the complete changed diff. Report itself is
+root-reviewed, not independently engine-executed by the AI reviewer.
+Next bounded action: commit/push this qualified slice, then implement actual adapter
+fault schedules, especially expired fresh acceptance for an existing endpoint.
+Keep raw relational and other not-run schedules explicit; no whole-step/M1 closure.
 
 ## Next useful journey and remaining prerequisites
 
@@ -190,7 +206,7 @@ bb_scope_54d1a18_basic and original transport/source/fault clones. Secrets stay
 under protected pg/secrets and never enter Git. Clone and verify before experiments.
 
 Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latest917c76b intermediates;
+acceleration, exclusively locked by .compiler-cache.lock. Latest7011acd intermediates;
 qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
 clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
 owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.

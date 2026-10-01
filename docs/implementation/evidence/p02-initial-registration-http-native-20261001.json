@@ -1,0 +1,228 @@
+{
+  "format": "bigbrotr-initial-registration-http-acceptance/1",
+  "status": "PASS_BOUNDED_INSTALLED_REGISTRATION",
+  "observed_at": "2026-10-01T20:12:29.219510+00:00",
+  "tasks": [
+    "P02-T01 Step6 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "scope": "Installed initial-owner URL registration followed by enrollment, withdrawal and historical receipts; explicit populated upgrade/reapply. No new command COMMIT-fault or complete acquisition/M1 claim.",
+  "source": {
+    "product": "7011acd1782e9fe36b5e7c67188aae5c40fe70da",
+    "product_tree": "9f12b08d33d060485854acbf66b77bab572b5662",
+    "fixture": "45f75931c0bfddd60f6453c6b3afa2d037dc502f",
+    "fixture_tree": "dbc70a84908e88a75db755cae7769601cf6b955f",
+    "reuse": "Exact7011acd artifacts; fixture45f7593 changes only experiments/docs. Both ELF hashes checked;1617 build and1619 fixture Git files verified."
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1 (48a229cea)",
+    "clang": "14.0.6",
+    "postgres": "16.15",
+    "rocksdb": "11.8.1",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "runtime_cgroup": {
+      "cpus": 2,
+      "memory_bytes": 1073741824,
+      "swap_additional_bytes": 0
+    },
+    "build_cgroup": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "network": "none after locked fetch"
+    }
+  },
+  "artifacts": {
+    "Cargo_lock_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "5ef8f5151c23e6d403462b77aa5800b2b5c5f13644efd4913bf4f420fc6aaaef",
+    "bigbrotr_sha256": "dac6ab7560e537af75895eaf44adb20c7a1b2e8b17bb1b5ce0f5fb50299b76a4",
+    "ingest_bootstrap_probe_sha256": "af76f38f2eca2559ef746f678e0bbdf2ab035b8d19a6ac2287611d7a9b360f29"
+  },
+  "upgrade": {
+    "cases": [
+      {
+        "name": "registration-upgrade",
+        "old_tables": 64,
+        "new_tables": 68,
+        "rows_xmin_filenodes_preserved": true
+      },
+      {
+        "name": "registration-journey",
+        "old_tables": 64,
+        "new_tables": 68,
+        "rows_xmin_filenodes_preserved": true
+      },
+      {
+        "name": "registration-permission",
+        "old_tables": 64,
+        "new_tables": 68,
+        "rows_xmin_filenodes_preserved": true
+      },
+      {
+        "name": "registration-prerequisite",
+        "old_tables": 64,
+        "new_tables": 68,
+        "rows_xmin_filenodes_preserved": true
+      },
+      {
+        "name": "registration-candidate",
+        "old_tables": 64,
+        "new_tables": 68,
+        "rows_xmin_filenodes_preserved": true
+      },
+      {
+        "name": "registration-digest",
+        "old_tables": 64,
+        "new_tables": 68,
+        "rows_xmin_filenodes_preserved": true
+      }
+    ],
+    "populated_source": "bb_scope_bind_917c76b_enrollment_journey",
+    "original_unchanged": true,
+    "effects": "Actual CLI upgrades20\u219225 and reapplies idempotently. All64 old tables retain rows/xmin/heap filenodes, allowing only new nullable columns absent\u2192NULL. Four new empty tables and six ledger entries:0004/0021/0022/0023/0024/0025. Populated source includes endpoint/enrollment/native producer evidence; its before/after SQL and physical snapshots match. All40 prior migration bytes/order unchanged."
+  },
+  "cases": [
+    {
+      "name": "registration-journey",
+      "control_tables": 68,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "http_statuses": [
+          401,
+          401,
+          409,
+          400,
+          202,
+          200,
+          409,
+          202,
+          202,
+          400,
+          202,
+          202,
+          200,
+          200,
+          200,
+          200,
+          200,
+          401
+        ],
+        "independent_registration_digests": 3,
+        "independent_enrollment_digests": 2,
+        "historical_retry_zero_user_mutations": true
+      }
+    },
+    {
+      "name": "registration-permission",
+      "control_tables": 68,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "http_statuses": [
+          401,
+          401,
+          403,
+          401
+        ]
+      }
+    },
+    {
+      "name": "registration-prerequisite",
+      "control_tables": 68,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "startup_refused_before_bind": true,
+        "exit_code": 4
+      }
+    },
+    {
+      "name": "registration-candidate",
+      "control_tables": 68,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "startup_refused_before_bind": true,
+        "exit_code": 4
+      }
+    },
+    {
+      "name": "registration-digest",
+      "control_tables": 68,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "startup_refused_before_bind": true,
+        "exit_code": 4
+      }
+    },
+    {
+      "name": "registration-schema",
+      "control_tables": 64,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "startup_refused_before_bind": true,
+        "exit_code": 4
+      }
+    }
+  ],
+  "verification": {
+    "native": "All6 actual profile steps PASS: release CLI/probe;3 entrypoint,6 initial lifetime,39 Management,34 catalog,3 registration and3 migration tests (88 total), scoped Clippy.",
+    "mac": "47 Management,34 catalog and3 domain tests, scoped lib/bin Clippy and formatting passed before candidate. After engine qualification: generated contract drift/TypeScript checks,23 API-client tests,7 captured registration receipts+7 errors,2 valid command shapes and8 malformed schema controls PASS.",
+    "expected_results": "Independent literal normalized URLs/digests, complete Control tables/xmin and12 native rows/original CBOR/receipt in each initialized case. Three exact registration and two enrollment digests, actor/session/owner/audit linkage, no SQL mutations during historical retries. Two endpoint identities, three registration commands, two enrollment commands in the positive journey.",
+    "negative_controls": "HTTP401 missing/wrong session-CSRF,409 stale CAS/different query under same key,400 bad scheme/8193-byte URL; principals.manage-only403. Missing detail INSERT, candidate/digest EXECUTE and migration25 each exit4 before bind. Original native initialization remains intact."
+  },
+  "review": {
+    "source_files": 1619,
+    "captured_payloads": 129,
+    "capture_manifest_sha256": "67fb0dd8d997d83043b211b311d269d77c54ce77f7387bf057fc18ca3f63b81b",
+    "root_review_sha256": "7a058f78066d31240eb3d8c71e48da8ec7fe00dfc962f7a9789fbc3f1be6559b",
+    "scope": "Read-only AI review of changed owners/SQL/callers found16KiB body cap insufficient for valid8192-byte quote-bearing URL. Root actual HTTP RED observes413 for16436-byte compact JSON;17KiB correction passes. Other original compiler missing-API/UnknownTarget25 and HTTP405vs401 REDs retained. Root verified all source/capture manifests and complete independent SQL/native oracles. AI did not run engines."
+  },
+  "structure": "One concrete transaction-local registry helper serves original get-or-create and authenticated command. One immutable detail table supplies authenticated deferred checks even when endpoint already exists. Existing Management queue and Control/native owner remain. Shared header helper removes duplicate source-command parsing; no generic framework, backend trait, new crate or dependency. Applied0025 is now immutable.",
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-01T20:12:29.219510+00:00",
+    "owned_stopped": [
+      {
+        "id": "c30f4a2d81fdc82ce02e235341675fe3e3de4d600d464b300e6c18ef3e6497ec",
+        "owner": "d726083ce9a3fd3180e4c59cbe78b799",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 998,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 59934572544
+  },
+  "limitations": [
+    "registration adapter COMMIT recovery/cancellation/expiry/concurrency",
+    "raw relational refusal/rollback",
+    "CLI registration command",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release",
+    "Fresh-command expiry for an existing endpoint and historical retry after grant/head change remain distinct required schedules.",
+    "Initial policy change stops the installed owner; fresh-owner adapter recovery is not initial native successor support.",
+    "Ordinary Serve registration/enrollment, protected/multiple-CIDR/overlay routes and complete restrictive drain remain selected work.",
+    "Small fixtures establish no capacity, aged-state or mixed-load guarantee."
+  ],
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.relay_registration",
+    "ignored_local_root": ".research/implementation/relay-registration-20261001",
+    "remote_roots": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-7011acd",
+      "/home/tux/bigbrotr-implementation-20260917/runs/initial-registration-45f7593"
+    ],
+    "outcome": "No product/engine failure in this seven-case wave. Original REDs retained locally; no expected result weakened. Historical labs, populated source and separate qualified artifacts retained."
+  }
+}
