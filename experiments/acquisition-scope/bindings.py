@@ -33,8 +33,9 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
+enrollment_http = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments'
 sessions = session_hash or session_faults or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions')
-installed = sessions or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
+installed = sessions or enrollment_http or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
 execution = len(sys.argv) == 3 and sys.argv[2] == '--execution'
@@ -43,7 +44,7 @@ socket = len(sys.argv) in (3, 4) and sys.argv[2] == '--socket'
 assert len(sys.argv) == 2 or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-reuse_build = guards or interruptions or commits or ((observation or socket or sessions) and len(sys.argv) == 4)
+reuse_build = guards or interruptions or commits or ((observation or socket or sessions or enrollment_http) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == 'ingest_bootstrap_probe'
@@ -88,6 +89,12 @@ if session_faults:
     report['wave'] = 'installed-session-faults'
     report['not_run'] = ['worker panic', 'renewal-specific ambiguous COMMIT and policy races',
         'crash-resumable initialization/successor', 'installed acquisition/M1',
+        'capacity/load/aged-state', 'arm64/release']
+
+if enrollment_http:
+    report['wave'] = 'installed-relay-enrollment'
+    report['not_run'] = ['installed authenticated URL registration', 'CLI enrollment command',
+        'concurrent authenticated withdrawal versus source action', 'installed acquisition/M1',
         'capacity/load/aged-state', 'arm64/release']
 
 if interruptions:
@@ -408,6 +415,8 @@ def run_case(name):
 success_status = 'PASS_INITIAL_SESSION_HASH_CASE' if session_hash else 'PASS_INITIAL_SESSION_FIRST_WAVE' if sessions else 'PASS_SOCKET_ARRIVAL_FIRST_WAVE' if socket else 'PASS_COMMITTED_OBSERVATION_FIRST_WAVE' if observation else 'PASS_ACQUISITION_EXECUTION_FIRST_WAVE' if execution else 'PASS_INITIAL_INGEST_COMMIT_WAVE' if commits else 'PASS_INITIAL_INGEST_INTERRUPTION_WAVE' if interruptions else 'PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE' if installed else 'PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'
 if session_faults:
     success_status = 'PASS_INITIAL_SESSION_FAULT_WAVE'
+if enrollment_http:
+    success_status = 'PASS_INITIAL_ENROLLMENT_HTTP_WAVE'
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -469,6 +478,8 @@ try:
         cases = list(CASES)
     elif interruptions:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
+    elif enrollment_http:
+        cases = ['enrollment-journey', 'enrollment-permission', 'enrollment-prerequisite']
     elif sessions:
         if session_faults:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
@@ -508,7 +519,9 @@ try:
             save()
         elif installed:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-            if sessions:
+            if enrollment_http:
+                from enrollments import run as run_installed
+            elif sessions:
                 from sessions import run as run_installed
             else:
                 from installed import run as run_installed

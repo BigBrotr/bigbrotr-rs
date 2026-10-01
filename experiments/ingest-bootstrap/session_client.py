@@ -13,7 +13,7 @@ import sys
 import time
 
 directory, mode = Path(sys.argv[1]), sys.argv[2]
-assert directory.is_absolute() and mode in ('journey', 'hash-stop', 'hash-disconnect', 'renewal')
+assert directory.is_absolute() and mode in ('journey', 'hash-stop', 'hash-disconnect', 'renewal', 'enrollment')
 origin = 'http://127.0.0.1:18081'
 password = 'Independent owner password 2026'
 
@@ -40,7 +40,7 @@ def cli(*args):
     return json.loads(result.stdout)
 
 
-def login():
+def login(expected_actions=('policy.change',)):
     credential = directory / 'password.private'
     with os.fdopen(os.open(credential, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as stream:
         stream.write(password)
@@ -56,7 +56,7 @@ def login():
     observed = json.loads(body)
     assert observed['format'] == 'bigbrotr-session/1'
     assert observed['principal_id'] == '10' * 16 and observed['authority'] == 'observation-only'
-    assert observed['stored_actions'] == ['policy.change']
+    assert observed['stored_actions'] == list(expected_actions)
     return logged_in, session, saved, auth, observed
 
 
@@ -178,11 +178,61 @@ def interrupt_hash(disconnect=False):
     return dict(worker=sample, socket_bytes=0, signal='SIGTERM during running password work')
 
 
+def enrollment():
+    inputs = json.loads((directory / 'command-input.json').read_text())
+    permitted = inputs['permitted']
+    logged_in, session, saved, auth, _ = login(
+        ('policy.change',) if permitted else ('principals.manage',))
+    command = inputs['command']
+    observations = []
+    def change(value, key, status):
+        code, body = request('POST', '/management/v1/relay-enrollments', value,
+                             {**auth, 'Idempotency-Key': key})
+        answer = json.loads(body)
+        observations.append(dict(status=code, body=answer))
+        assert code == status, (code, answer)
+        return answer
+    if permitted:
+        private = json.loads(json.dumps(command))
+        private['route']['cidr'] = '127.0.0.0/8'
+        change(private, '81' * 16, 403)
+        public = dict(command, route={'class': 'public'})
+        change(public, '82' * 16, 403)  # second accepted policy disables public
+        first = change(command, '83' * 16, 202)
+        assert first['format'] == 'bigbrotr-relay-enrollment/1'
+        assert first['endpoint_id'] == command['endpoint_id']
+        assert first['generation'] == '1' and first['created'] and first['enabled']
+        assert first['authority'] == 'acceptance-only' and first['application'] == 'unobserved'
+        historical = change(command, '83' * 16, 200)
+        assert historical == dict(first, created=False)
+        change(command, '84' * 16, 409)  # new key cannot ignore current generation
+        withdrawn = dict(command, enabled=False, expected_generation='1')
+        last = change(withdrawn, '85' * 16, 202)
+        assert last['generation'] == '2' and last['created'] and not last['enabled']
+        assert all(last[k] == first[k] for k in ('endpoint_id', 'access_scope_id', 'route_id'))
+        def barrier(name):
+            (directory / (name + '.json')).write_text(json.dumps(observations, indent=2))
+            deadline = time.monotonic() + 5
+            while not (directory / (name + '.continue')).exists():
+                assert time.monotonic() < deadline, 'independent enrollment observer'
+                time.sleep(.01)
+        barrier('before-replay')
+        assert change(command, '83' * 16, 200) == historical
+        assert change(withdrawn, '85' * 16, 200) == dict(last, created=False)
+        barrier('after-replay')
+    else:
+        change(command, '83' * 16, 403)
+    logged_out = logout(session, saved, auth)
+    return dict(permitted=permitted, observations=observations, login=logged_in, logout=logged_out)
+
+
 if mode == 'journey':
     result = journey()
 elif mode == 'renewal':
     logged_in, session, saved, auth, _ = login()
     result = dict(login=logged_in, logout=logout(session, saved, auth))
+elif mode == 'enrollment':
+    result = enrollment()
 else:
     result = interrupt_hash(disconnect=mode == 'hash-disconnect')
 with (directory / 'client-result.json').open('x') as stream:

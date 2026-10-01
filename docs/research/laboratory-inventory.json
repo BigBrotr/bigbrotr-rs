@@ -31323,6 +31323,45 @@
         },
         "evidence": "docs/implementation/evidence/p01-initial-session-faults-native-20261001.json"
       }
+    },
+    "initial_relay_commands": {
+      "state": "Native build PASS; installed HTTP cases pending. Source438067f remains unpublished.",
+      "launch": {
+        "source": "438067fd47cf538078cb2688360af359af14a8e4",
+        "tree": "c93b5499a7ac7444ee4f2f146de57619a21563b6",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-438067f",
+        "pid": 1210057,
+        "start_ticks": "426406228",
+        "bundle_sha256": "57c9fc41e9a823b9c41cc0d94800a2090517c1fc3aa6e1a26f20931bb3ae90d9"
+      },
+      "resources": {
+        "source": "438067fd47cf538078cb2688360af359af14a8e4",
+        "tree": "c93b5499a7ac7444ee4f2f146de57619a21563b6",
+        "owner": "ea4c560535654ecf874a08b103ad99b3",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-438067f",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "a7957ed6ae9946ee29db03fe3c14b39accd566ddc0441f5f5dbbf0f570bdc286"
+          },
+          {
+            "name": "native",
+            "id": "2c7cc3186c832cb42b842d2087c3ede91e8b1383ff673aa7ab1c84403daea8ac"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-01T19:10:08.765517+00:00",
+        "qualification": "PASS_INITIAL_INGEST_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 60557307904,
+        "finished_at": "2026-10-01T19:11:46.594204+00:00"
+      },
+      "local_evidence": ".research/implementation/initial-relay-commands-20261001",
+      "preserve": "Exact source and artifacts, shared1154757 cache, and all new cloned engine states. No dataset or cache deletion."
     }
   },
   "implementation_relay_registry_20260928": {

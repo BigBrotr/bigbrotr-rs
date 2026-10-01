@@ -12,19 +12,28 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin6aa4059cff575ebe426c3d4512f2aca566f8523e match
-(private repository, push and ls-remote verified).
+Mac main438067fd47cf538078cb2688360af359af14a8e4 is an unpublished candidate;
+private origin remains6aa4059cff575ebe426c3d4512f2aca566f8523e.
 Root sole writer. Product23e1923/tree40f5f11527ce515632f8c92542749a1c08498148
 passed native release CLI/probe, Clippy and42 tests (3 entrypoints,6 initial,33 HTTP).
 Mac41 changed tests and scoped Clippy pass. Both session qualification waves are
 committed/pushed. Starting P02-T01 Step6/P01-T09 Step1 installed enrollment command;
-dirty work is the initial enrollment HTTP/dispatcher, accepted route intersection,
-schema/privilege startup probe, tests and isolated endpoint fixture, session fixture
-profile label, owning reference and this checkpoint. Actual HTTP RED405 vs401 is
+product candidate includes initial enrollment HTTP/dispatcher, accepted route
+intersection, schema/privilege startup probe, tests and isolated endpoint fixture.
+Dirty work is bindings.py, new enrollments.py, session_client.py, inventory and
+this checkpoint. Actual HTTP RED405 vs401 is
 retained; the first erroneous --exact short filter collected0 and is NOT evidence.
 Mac36 Management tests and scoped lib/bin/probe Clippy PASS; one initial compile
 failure from a test struct's missing new field is preserved and corrected.
 No SQL migration, persistent digest, dependency or native format changes.
+Native438067f/treec93b5499a7ac7444ee4f2f146de57619a21563b6 build profile PASS,
+all5 steps executed; actual installed enrollment cases remain NOT_RUN.
+Run initial-ingest-438067f PID1210057/start426406228 terminal;
+ownerea4c560535654ecf874a08b103ad99b3, fetcha7957ed6/native2c7cc318 stopped.
+Resource report19:11:46UTC retains unchanged prior projections and60,557,307,904B
+free. Inventory initial_relay_commands owns resources; ignored initial-relay-
+commands-20261001/native owns original launch and build receipt. Compiler cache
+now holds438067f intermediates; final artifacts are separately retained.
 All three new native cases PASS with unchanged qualified binaries; Python parsing
 passes. Root reviewed all1609 Git files and61 captured payload hashes plus the
 independent native/input/SQL and real client/FD/syscall observations.
@@ -90,9 +99,10 @@ original-failure/, retry/, audit-fixed/, hash-diagnostic/ and hash-fixed/. Never
 replay these completed launchers. Mac last5,459,800KiB; check disk before allocation.
 The requested earlier cache retirement remains complete and inventoried.
 
-Next bounded action: create an unpublished candidate and run its existing
-initial-ingest native build profile; then implement the installed HTTP fixture
-against fresh clones with actual internal endpoint preparation and real login.
+Next bounded action: review/commit the fixture-only wave and run
+--installed-enrollments with reused438067f artifacts on fresh exact-Git clones.
+The three cases are enrollment-journey, enrollment-permission and
+enrollment-prerequisite; real registry setup leaves a released predecessor Control.
 Require enable/retry/withdraw/historical-retry, policy/root and permission refusals,
 startup privilege refusal and unchanged native bootstrap/full SQL deltas. Update
 the OpenAPI contract (not yet inspected for this extension) and affected reference
