@@ -12,16 +12,26 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main/origin995df9c pushed, private repository verified. Installed scope
-HTTP/upgrade qualification committed. Root sole writer. Dirty next slice extends
-apps/bigbrotr/examples/relay_registration_fault_probe.rs with an explicit optional
-scope command, shared registration_faults.py schedules, new independent
-scope_command_faults.py oracle and bindings.py --scope-command-faults profile.
-No product/applied SQL/build dependency changes. Formatting/AST pass; compilation
-and actual new fault schedules NOT_RUN. AI read-only fixture review in progress.
-Next candidate native build uses existing relay-registration-faults profile and
-exclusive1154757 cache, then seven old endpoint regressions plus seven scope
-COMMIT schedules over separate retained45f7593/5e7dbab clones. No active build/engine.
+Mac main07333269469bcf93cf1c1d0a1b72d624249b238a, tree4069a0e1b1309b68f0ed8774c1d0e5735749bd80,
+origin995df9c; unpublished candidate ahead1. Root sole writer. Extended endpoint/
+scope finite probe builds and passes Clippy on native Tux.1642 exact Git files,
+9 captured build payloads and actual ELF hashes verified. AI bounded source review
+found no blocker and ran no engines. Dirty only checkpoint/inventory and one
+bindings.py client-name separation, so retained old endpoint and new scope profiles
+can coexist under the same revision. No product/applied SQL/dependency changes.
+
+Tux build runs/relay-registration-faults-0733326 STOPPED/RETAINED,
+PID1402321/start427699940 terminal, owner8195091e5438bfb63c0a9b83d6c527c3.
+Fetche3b503b0/nativecc5c6c13 exited0/noOOM, cache lock released. Audit22:48:26UTC:
+58,449,850,368B free,1015 prior projections unchanged,8 unrelated running.
+Same root now runs seven affected endpoint engine regressions, PID1405607/
+start427721198, owner3a539e420901ebd97e29e7422dc2fbf3, clientabd5c4542cc7e319765c53d9b661a69767abf02f6362ba89a260aa3d207be39f
+and borrowedPG71775507 ACTIVE. Original45f7593 source is clone-only. Do not start
+another engine until this retires. Local scope-registration-20261001/fault-native
+owns native/checks and launch-regression.stdout; remote bindings/result.json is
+currently RUNNING. Never replay launchers. New scope engine schedules NOT_RUN.
+Next join endpoint regression, terminal-audit/capture, then exact new fixture Git
+clone for --scope-command-faults using unchanged0733326 artifacts.
 
 Latest runs/initial-scopes-5e7dbab STOPPED/RETAINED, PID1385287/start427622888,
 ownerfc22ac011fad045b81622ae40bfdab2b, client0964b0f0105981f8ad2db96077218ced71002692f4dcbe15720bb2e5d24c59ce

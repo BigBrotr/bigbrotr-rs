@@ -88,7 +88,8 @@ assert json.loads(basis_report)['status'] == 'PASS_SCOPED_ACQUISITION_REGISTRATI
 output = root / 'bindings'
 output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-binding'
-client = 'bigbrotr-acquisition-binding-' + revision[:7]
+client = ('bigbrotr-scope-command-binding-' if scope_command_faults
+          else 'bigbrotr-acquisition-binding-') + revision[:7]
 report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=built,
     status='RUNNING', wave='installed-session-hash' if session_hash else 'installed-sessions' if sessions else 'socket' if socket else 'observation' if observation else 'execution' if execution else 'installed-commits' if commits else 'installed-interruptions' if interruptions else 'installed-ingest' if installed else 'ingest-lease' if lease else 'policy' if policy else 'guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
     client=None, cases=[], databases=[],

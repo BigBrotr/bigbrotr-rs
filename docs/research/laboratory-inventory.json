@@ -32414,6 +32414,52 @@
           "source_files_verified": 1640,
           "captured_payloads_verified": 157,
           "local": ".research/implementation/scope-registration-20261001/engine-fixed"
+        },
+        {
+          "source": "07333269469bcf93cf1c1d0a1b72d624249b238a",
+          "tree": "4069a0e1b1309b68f0ed8774c1d0e5735749bd80",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-0733326",
+          "pid": 1402321,
+          "start_ticks": "427699940",
+          "bundle_sha256": "ad41fb7702a6bb48a612363e8546a6b7fd3f7906d30ceec8557634e48c5da613",
+          "state": "BUILD_STOPPED_RETAINED_ENDPOINT_REGRESSION_RUNNING",
+          "owner": "8195091e5438bfb63c0a9b83d6c527c3",
+          "fetch_container": "e3b503b097ab7765e887c89667ba9b7b0f0b1bdb3c88aeba8067626ef43bb9d2",
+          "native_container": "cc5c6c13e9381b592a1734dca3ee0546c2e9f1240ad945fdd6b9556f84de91dc",
+          "local": ".research/implementation/scope-registration-20261001/fault-native",
+          "prelaunch_free_bytes": 58566070272,
+          "qualification": "PASS_RELAY_REGISTRATION_FAULT_BUILD_ONLY",
+          "build_review": {
+            "status": "PASS_BUILD_ONLY_ROOT_REVIEW",
+            "source": "07333269469bcf93cf1c1d0a1b72d624249b238a",
+            "source_files": 1642,
+            "captured_files": 9,
+            "terminal": {
+              "status": "PASS_BUILD_TERMINAL_AUDIT_ONLY",
+              "observed_at": "2026-10-01T22:48:26.713276+00:00",
+              "owned_stopped": [
+                "e3b503b097ab7765e887c89667ba9b7b0f0b1bdb3c88aeba8067626ef43bb9d2",
+                "cc5c6c13e9381b592a1734dca3ee0546c2e9f1240ad945fdd6b9556f84de91dc"
+              ],
+              "prior_unchanged": 1015,
+              "unrelated_running": 8,
+              "compiler_lock_released": true,
+              "artifact_hashes_verified": true,
+              "free_bytes": 58449850368
+            }
+          },
+          "engine": {
+            "source": "07333269469bcf93cf1c1d0a1b72d624249b238a",
+            "tree": "4069a0e1b1309b68f0ed8774c1d0e5735749bd80",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-0733326",
+            "pid": 1405607,
+            "start_ticks": "427721198",
+            "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-0733326/out/artifacts",
+            "scope": "seven affected endpoint fault regressions",
+            "owner": "3a539e420901ebd97e29e7422dc2fbf3",
+            "client": "abd5c4542cc7e319765c53d9b661a69767abf02f6362ba89a260aa3d207be39f",
+            "state": "RUNNING"
+          }
         }
       ],
       "findings": [
@@ -32430,7 +32476,7 @@
         "typescript_and_generation": "PASS",
         "native": "PASS build/components only"
       },
-      "next": "Build extended finite registration/scope fault probe; run seven old endpoint regressions and seven scope COMMIT schedules against separate preserved clones. No active lab.",
+      "next": "Join seven0733326 endpoint fault regressions, retire/audit, then new isolated scope-command fault wave with same qualified build.",
       "candidate": "e4c282542532aa95ca30b8ea252b527230d614b8",
       "fixture_review": "Read-only AI found unbound HTTP receipts and overly broad startup-refusal write allowance; corrected before engine run. Maximum padded HTTP body does not qualify maximum canonical selector.",
       "evidence": "docs/implementation/evidence/p03-initial-scopes-http-native-20261002.json"
