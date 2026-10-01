@@ -56,7 +56,7 @@ def observe(pg, database, ready):
     return value
 
 
-def receipt(state, ready):
+def receipt(state, ready, acceptance_account=None):
     commands = [r for r in state['management_commands'] if r['actor_id'] == ACTOR and r['request_key'] == KEY]
     if not commands:
         assert not any(r['request_key'] == KEY for r in state['relay_registration_commands'])
@@ -67,7 +67,9 @@ def receipt(state, ready):
     endpoint, = [r for r in state['relay_endpoints'] if r['endpoint_id'] == detail['endpoint_id']]
     audit, = [r for r in state['management_audit'] if r['audit_id'] == command['audit_id']]
     owner, = [r for r in state['owner_epochs'] if r['resource_id'] == detail['owner_resource_id'] and r['epoch'] == detail['owner_epoch']]
-    account, = [r for r in state['local_accounts'] if r['principal_id'] == ACTOR]
+    account = acceptance_account
+    if account is None:
+        account, = [r for r in state['local_accounts'] if r['principal_id'] == ACTOR]
     session, = [r for r in state['browser_sessions'] if r['session_id'] == detail['session_id']]
     dataset = state['datasets'][0]['dataset_id']
     digest = hashlib.sha256(b'bigbrotr/relay-registration/1\0' + bytes.fromhex(dataset[2:] + '10'*16 + '31'*16)
@@ -97,11 +99,7 @@ def effects(before, after, committed):
         assert len(after[table]) == len(before[table]) + 1
 
 
-def run(pg, client, output, database, name, rows):
-    proxy_mode, mode, expected_wire, committed = CASES[name]
-    directory = output / name
-    directory.mkdir(mode=0o700)
-    original = rows(database)
+def prepare(directory, original):
     assert len(original) == 68 and [r['epoch'] for r in original['owner_epochs'] if r['role'] == 'control'] == [1]
     endpoint, = [r for r in original['relay_endpoints'] if r['url_bytes'] == '\\x' + URL.hex()]
     assert endpoint['owner_epoch'] == 1 and receipt(original, {}) is None
@@ -112,6 +110,59 @@ def run(pg, client, output, database, name, rows):
         assert document['format'] == 'bigbrotr-product-policy/2'
         assert original[table][0]['document_digest'] == '\\x' + hashlib.sha256(b'bigbrotr/product-policy/2\0' + encoded).hexdigest()
     lab.write_json(directory / 'policies.json', documents)
+    return endpoint
+
+
+def start_probe(client, database, directory, mode, nonce, processes, port=5432):
+    token = directory / str(nonce)
+    process = Process(['docker', 'exec', client, '/build/relay_registration_fault_probe',
+        database, '/run/secrets/application', '/lab/' + directory.name + '/policies.json',
+        mode, str(port), str(nonce), '/lab/' + directory.name + '/' + str(nonce)])
+    processes.append((str(nonce), process))
+    return process, token
+
+
+def go(token, suffix='go'):
+    Path(str(token) + '.' + suffix).touch(exist_ok=False)
+
+
+def finish(process):
+    answer = event(process, 'done')
+    assert process.wait(10) == 0 and not process.stderr and answer['driver_joined']
+    return answer['outcome']
+
+
+def start_proxy(client, mode, processes):
+    proxy = Process(['docker', 'exec', '-i', client, 'python3', '-B',
+        '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
+        '--mode', mode, '--commit-number', '4', '--deadline-seconds', '40'], input_pipe=True)
+    processes.append(('proxy', proxy))
+    ready = proxy.event('ready', 10)
+    assert ready['proxy_sha256'] == hashlib.sha256(
+        (Path(__file__).resolve().parents[1] / 'control-migrations/fault_proxy.py').read_bytes()).hexdigest()
+    return proxy, ready
+
+
+def retire(directory, processes, result):
+    cleanup_errors = []
+    for label, process in processes:
+        try:
+            process.stop()
+        except BaseException as error:
+            cleanup_errors.append(label + '-' + type(error).__name__)
+        (directory / (label + '.stdout')).write_bytes(process.stdout)
+        (directory / (label + '.stderr')).write_bytes(process.stderr)
+    result['cleanup_errors'] = cleanup_errors
+    if cleanup_errors:
+        result['status'] = 'INCOMPLETE_CLEANUP'
+    lab.write_json(directory / 'result.json', result)
+
+
+def run(pg, client, output, database, name, rows):
+    proxy_mode, mode, expected_wire, committed = CASES[name]
+    directory = output / name
+    directory.mkdir(mode=0o700)
+    endpoint = prepare(directory, rows(database))
     processes = []
     result = dict(name=name, status='RUNNING', preexisting_endpoint=endpoint, committed_expected=committed)
 
@@ -120,30 +171,11 @@ def run(pg, client, output, database, name, rows):
         lab.write_json(directory / (label + '.json'), value)
         return value
 
-    def app(operation, nonce, port=5432):
-        token = f'{name}/{nonce}'
-        process = Process(['docker', 'exec', client, '/build/relay_registration_fault_probe',
-            database, '/run/secrets/application', '/lab/' + name + '/policies.json',
-            operation, str(port), str(nonce), '/lab/' + token])
-        processes.append((str(nonce), process))
-        return process, token
-
-    def go(token, suffix='go'):
-        (output / (token + '.' + suffix)).touch(exist_ok=False)
-
-    def finish(process):
-        answer = event(process, 'done')
-        assert process.wait(10) == 0 and not process.stderr and answer['driver_joined']
-        return answer['outcome']
+    def app(mode, nonce, port=5432):
+        return start_probe(client, database, directory, mode, nonce, processes, port)
 
     try:
-        proxy = Process(['docker', 'exec', '-i', client, 'python3', '-B',
-            '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
-            '--mode', proxy_mode, '--commit-number', '4', '--deadline-seconds', '40'], input_pipe=True)
-        processes.append(('proxy', proxy))
-        proxy_ready = proxy.event('ready', 10)
-        assert proxy_ready['proxy_sha256'] == hashlib.sha256(
-            (Path(__file__).resolve().parents[1] / 'control-migrations/fault_proxy.py').read_bytes()).hexdigest()
+        proxy, proxy_ready = start_proxy(client, proxy_mode, processes)
         process, token = app(mode, 11, proxy_ready['listen_port'])
         ready = event(process, 'ready')
         assert ready['epoch'] == 2 and ready['config'] == ready['policy'] == 1
@@ -202,17 +234,6 @@ def run(pg, client, output, database, name, rows):
         result.update(status='FAIL', failure=type(error).__name__ + ': ' + str(error))
         raise
     finally:
-        cleanup_errors = []
-        for label, process in processes:
-            try:
-                process.stop()
-            except BaseException as error:
-                cleanup_errors.append(label + '-' + type(error).__name__)
-            (directory / (label + '.stdout')).write_bytes(process.stdout)
-            (directory / (label + '.stderr')).write_bytes(process.stderr)
-        result['cleanup_errors'] = cleanup_errors
-        if cleanup_errors:
-            result['status'] = 'INCOMPLETE_CLEANUP'
-        lab.write_json(directory / 'result.json', result)
+        retire(directory, processes, result)
     assert result['status'] == 'PASS'
     return result

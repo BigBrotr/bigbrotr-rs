@@ -12,11 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac mainc54c6bd522836413b9368339713952345bb60776 is three unpublished test-only
-candidates ahead of private origin877b73ca24b8c6e9d31453c2d9e792c21413fce9.
-No product/SQL change after877b73c. Root sole writer; current dirty work is bounded
-fault evidence/report, owning docs, inventory and this checkpoint. No active lab
-or native job at the latest terminal audit. Requested cache cleanup is complete.
+Mac main/originfd442d8658703a5f7faca681aadf7dc8908f8118 is pushed and private.
+No product/SQL change since877b73c. Root sole writer; current dirty work is the
+registration_races controller, concrete probe helper extraction/bindings selection,
+recipe documentation and this checkpoint. No active lab/native job at the latest
+terminal audit. Requested cache cleanup remains complete.
 
 ## Active slice and next bounded action
 
@@ -80,12 +80,29 @@ source/artifact manifests, controllers, launch receipts and root-review scripts.
 Never replay completed launchers or old cache deletion. Mac last4,767,008KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: review/commit/push the fault qualification, then implement
-concurrent policy/grant/session writers in both observed lock orders, original
-receipt recovery after changed heads/grants and the relational/expiry negative
-controls. Reuse00600af binaries only for experiment/docs-only deltas. The next
-user-visible consumer is installed immutable scope/finite-job command delivery;
-these bounded registration guarantees must be closed before propagating them.
+Next bounded action: review and commit test-only concurrency controller, then
+rerun the7 COMMIT schedules affected by shared probe helper extraction and run11
+new writer/accept-first/rollback cases with exact00600af artifacts. The new expected
+writer changes are literal (including0806 authentication revision/revocation); both
+lock orders must be observed via actual backend incarnations. Accept-first policy/
+permission also recover the original receipt under new owner3/current heads or
+lost grants, with zero writes. Read-only AI source review found no concrete blocker; engines NOT_RUN. One combined
+--registration-races wave runs7 affected COMMIT cases plus11 new races to preserve
+the existing one-client-per-revision laboratory naming and lifecycle.
+
+After concurrency, raw relational closure remains required. A read-only reviewer
+proposed a clone-only zz_* AFTER INSERT detail hook, restricted to real key31:
+validate the parent, speculative key88/audit89 attempts in rollback subtransactions,
+force exact constraints and compare all68 tables/xmin. Missing detail/command/audit,
+wrong endpoint digest/audit, extra audit, old owner, absent/revoked session and actor
+revision mismatches need distinct guards plus positive controls. Preserve deliberate
+absence of durable session FK. Do not change immutable session expiry columns to
+simulate expiry:0806 would reject before0025. Original7 real COMMIT schedules prove
+actual expiry; separate predicate-negative controls remain optional discriminators.
+No raw engine implementation/execution has happened yet; current contracts govern.
+
+The next user-visible consumer after closing these bounded registration guarantees
+is installed immutable scope/finite-job command delivery, under the task IDs below.
 
 ## Next useful journey and remaining prerequisites
 

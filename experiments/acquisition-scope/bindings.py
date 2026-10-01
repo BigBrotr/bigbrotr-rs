@@ -33,7 +33,8 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
-registration_faults = len(sys.argv) == 4 and sys.argv[2] == '--registration-faults'
+registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races'
+registration_faults = registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
 enrollment_http = enrollment_functions or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments')
@@ -101,10 +102,15 @@ if enrollment_http:
         'capacity/load/aged-state', 'arm64/release']
 
 if registration_faults:
-    report['wave'] = 'registration-adapter-faults'
+    report['wave'] = 'registration-authority-races' if registration_races else 'registration-adapter-faults'
     report['not_run'] = ['registration concurrent authority writers and raw relational refusal',
         'historical recovery after changed heads/grants', 'installed HTTP COMMIT ambiguity',
         'installed acquisition/M1', 'capacity/load/aged-state', 'arm64/release']
+
+if registration_races:
+    report['not_run'] = ['raw relational refusal/expiry negative controls',
+        'installed HTTP COMMIT ambiguity', 'installed acquisition/M1',
+        'capacity/load/aged-state', 'arm64/release']
 
 if registration_http:
     report['wave'] = 'installed-relay-registration'
@@ -434,7 +440,7 @@ if enrollment_http:
     success_status = 'PASS_INITIAL_ENROLLMENT_HTTP_WAVE'
 
 if registration_faults:
-    success_status = 'PASS_REGISTRATION_COMMIT_FAULTS'
+    success_status = 'PASS_REGISTRATION_AUTHORITY_RACES' if registration_races else 'PASS_REGISTRATION_COMMIT_FAULTS'
 
 if registration_http:
     success_status = 'PASS_INITIAL_REGISTRATION_HTTP_WAVE'
@@ -494,8 +500,14 @@ try:
     lab.docker('start', ident)
     if registration_faults:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-        from registration_faults import CASES, run as run_registration_fault
-        cases = list(CASES)
+        from registration_faults import CASES as COMMIT_CASES, run as run_registration_fault
+        registration_runs = {case: run_registration_fault for case in COMMIT_CASES}
+        if registration_races:
+            from registration_races import CASES as RACE_CASES, run as run_registration_race
+            require(not set(COMMIT_CASES) & set(RACE_CASES), 'duplicate-registration-case')
+            registration_runs.update({case: run_registration_race for case in RACE_CASES})
+        cases = list(registration_runs)
+        require(len(cases) == (18 if registration_races else 7), 'registration-case-set')
     elif socket:
         from socket_arrival import run as run_socket
         run_socket(globals())
@@ -550,7 +562,7 @@ try:
     for name in cases:
         if registration_faults:
             completed = clone(name, registration_basis)
-            report['cases'].append(run_registration_fault(pg, client, output, completed, name, rows))
+            report['cases'].append(registration_runs[name](pg, client, output, completed, name, rows))
             save()
         elif commits:
             completed = clone(name, 'bb_source_template')

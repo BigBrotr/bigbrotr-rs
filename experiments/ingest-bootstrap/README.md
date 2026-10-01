@@ -197,3 +197,15 @@ see the [bounded fault report](../../docs/implementation/evidence/p02-relay-regi
 The first cc1a4e8 probe had a source-reviewed v1/v2 fixture incompatibility; its
 build-only result remains retained, with no engine executed on it. Concurrent
 writers/raw relational and installed HTTP ambiguity remain separate required cases.
+
+
+`--registration-races BUILD` first repeats the seven COMMIT cases affected by the
+shared probe helper extraction, then proposes five current-authority writers (policy heads,
+dataset permission, session revocation, deactivation and deactivate/reactivate)
+in both positively observed lock orders, plus writer rollback. It reuses the same
+exact registration probe. Expected writer changes are literal and all68 relations/
+xmin remain checked; a committed acceptance keeps its original actor revisions.
+Policy/permission writers after acceptance also require exact historical recovery
+under a fresh current owner, without new command or domain writes. These eleven
+cases are NOT_RUN until a linked engine report records execution. Privileged
+clone-only writers are fault injections, not installed administration workflows.
