@@ -12,30 +12,28 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac maind44e3e052aafb0687502f0cb9bbca58decbe5dbd is unpublished; private origin
+Mac main4a00f643bc49133ccae87a0fa201eac71f0c9186 is unpublished; private origin
 remains022f57c. Root sole writer. Product23e1923/tree40f5f11527ce515632f8c92542749a1c08498148
 passed native release CLI/probe, Clippy and42 tests (3 entrypoints,6 initial,33 HTTP).
-First engine23e1923 FAIL: Python HTTP module shadowed after actual login.
-Fixture-onlyd44e3e0 reuses exact binaries and reached login/logout,2559 successful
-concurrent Me requests over8.036s and persisted renewal beyond the original Ingest
-deadline. Its additional audit oracle then FAILed: the retained template already
-contains dataset.initialize and policy.activate-initial, so total audit count2
-is wrong. Fix the expected delta: preserve both original rows/xmin plus exactly
-session issue/revoke, with actor/subject linkage. Refusal/hash cases must likewise
-preserve existing audit rows rather than require an empty table. No product fix.
-Both original clones, source/bundles, bootstrap/session states and logs remain;
-neither failed run has a graceful CLI terminal record after container cleanup.
-All owned resources stopped/no OOM, cleanup/unrelated-change lists empty.
+The first namespace and second audit-baseline fixture FAILs remain preserved.
+Fixture4a00f64 reused exact binaries: actual installed journey and capacity cases
+PASS, including independent12-row native/original-input/receipt comparison,
+64-table comparison, exact Control/backend identity and renewals under12 clients.
+Third case FAILed before signalling: the fixture did not observe a newly created
+running password thread. Cause unknown; no hash-stop guarantee yet. The next
+bounded action is one hash-only diagnostic clone capturing actual task identities
+and CPU states; do not weaken its success assertion or rerun the two passed cases.
+All three original roots/clones/source/bundles/logs remain; completed journey and
+capacity CLI processes were reaped, while failed cases have no terminal receipt
+after container cleanup. All owned containers stopped/no OOM; no cleanup debt.
 Build initial-ingest-23e1923 PID1171824/start426088424 terminal,
 ownerbcc697daac1a328b0cddc93013f3c501; fetch14c29218/native1034e5e6 exited0.
-First enginePID1175520/start426104901 client1d18f224 exited143; retry
-initial-sessions-d44e3e0 PID1178379/start426124694 client35c6fc53 exited143,
-owner45fc9c408697fd90c239a581540735ea. BorrowedPG71775507 stopped0.
-Inventory implementation_network_20260928.initial_sessions and ignored
-.research/implementation/initial-management-20260928 retain original-failure/
-and retry/original-failure/. Root-owned dirty: expected-audit fixture, inventory,
-this checkpoint. Next native run must use a fresh exact-Git clone and unchanged
-23e1923 artifacts. Mac last5,478,808KiB; Tux last60,966,793,216B free.
+Latest engine initial-sessions-4a00f64 PID1180980/start426137934 terminal,
+ownere602e5b9e8b77953598ba7f0efe651f6; client9883e975 exited143 and
+borrowedPG71775507 stopped0. Inventory implementation_network_20260928.initial_sessions
+and ignored .research/implementation/initial-management-20260928 own all launches
+and captures. Root dirty: hash diagnostic/selection fixture, inventory, checkpoint.
+Mac last5,478,808KiB; Tux last60,879,101,952B free. No new product change.
 
 Root read complete initial worker/supervision, Management dispatcher, HTTP transport
 and delivery gate, relevant ordinary-Serve renewal/dispatch and owning initial-store
@@ -55,9 +53,9 @@ exit4, including backend loss. Original REDs/logs remain under ignored
 Serve/initial worker, command/profile tests, CLI test, owning docs and the installed
 session fixture/build profile. No other contributor changes were observed.
 Practical installed qualification remains pending; no new readiness claim.
-Next bounded action: commit the audit-baseline correction, transfer exact Git into a new
-run and execute --installed-sessions with the original23e1923 artifacts. Do not
-repeat unchanged native builds/tests or reuse the failed database. The
+Next bounded action: execute the diagnostic --installed-sessions-hash selection
+from a fresh exact-Git source with the original23e1923 artifacts. Preserve its
+observations before deciding how to identify the real running password worker. The
 three proposed cases cover installed CLI login/logout and twelve concurrent Me
 clients across original expiry, shared-payload refusal and SIGTERM during an
 observed running password hash. Complete SQL/native oracles retain original

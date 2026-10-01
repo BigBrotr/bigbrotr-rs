@@ -30681,7 +30681,7 @@
       "evidence": "docs/implementation/evidence/p03-relay-transfer-native-20260928.json"
     },
     "initial_sessions": {
-      "state": "Native42 tests PASS; original namespace fixture FAIL and second audit-baseline fixture FAIL retained; all owned resources stopped. Product unchanged.",
+      "state": "Native42 tests PASS; installed journey/capacity PASS at4a00f64; hash worker observation failed before signalling. All original outcomes/states retained and owned containers stopped.",
       "launch": {
         "source": "23e1923224fba13b768fa6823493b066e7af5d82",
         "tree": "40f5f11527ce515632f8c92542749a1c08498148",
@@ -30910,6 +30910,149 @@
               {
                 "Type": "bind",
                 "Source": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-d44e3e0/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ]
+      },
+      "audit_fixed": {
+        "launch": {
+          "source": "4a00f643bc49133ccae87a0fa201eac71f0c9186",
+          "tree": "1f9cb15203a20bc9b20d5e9367b7796ba3a87f47",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-4a00f64",
+          "pid": 1180980,
+          "start_ticks": "426137934",
+          "bundle_sha256": "0015539f1aa3ae00d69cdb106103f557e109a15038ec6c7239766abad0e7288b",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-23e1923/out/artifacts"
+        },
+        "status": "FAIL",
+        "failure": "AssertionError: actual-session-client-sessions-hash-stop",
+        "cases": [
+          {
+            "name": "sessions-journey",
+            "status": "PASS",
+            "actual_cli": true,
+            "actual_pg_rocks": true,
+            "control_tables": 64,
+            "terminal": {
+              "pid": 26,
+              "start_ticks": "426138255",
+              "config": "/lab/bb_scope_bind_4a00f64_sessions_journey.toml",
+              "prefix": "/lab/sessions-journey",
+              "exit_code": 0,
+              "elapsed_seconds": 9.127644818276167,
+              "forced": false,
+              "reaped": true
+            }
+          },
+          {
+            "name": "sessions-capacity",
+            "status": "PASS",
+            "actual_cli": true,
+            "actual_pg_rocks": true,
+            "control_tables": 64,
+            "terminal": {
+              "pid": 126,
+              "start_ticks": "426139327",
+              "config": "/lab/bb_scope_bind_4a00f64_sessions_capacity.toml",
+              "prefix": "/lab/sessions-capacity",
+              "exit_code": 3,
+              "elapsed_seconds": 0.16383115854114294,
+              "forced": false,
+              "reaped": true
+            }
+          }
+        ],
+        "owner": "e602e5b9e8b77953598ba7f0efe651f6",
+        "client": {
+          "id": "9883e975a044cf286b977dc53eda1499856e9fcdb1e7f442456169abd56e02ca",
+          "name": "bigbrotr-acquisition-binding-4a00f64"
+        },
+        "databases": [
+          "bb_scope_bind_4a00f64_sessions_journey",
+          "bb_scope_bind_4a00f64_sessions_capacity",
+          "bb_scope_bind_4a00f64_sessions_hash_stop"
+        ],
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-01T18:25:25.954867151Z",
+              "FinishedAt": "2026-10-01T18:25:45.800196193Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "9883e975a044cf286b977dc53eda1499856e9fcdb1e7f442456169abd56e02ca",
+            "Name": "/bigbrotr-acquisition-binding-4a00f64",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-01T18:25:26.859637446Z",
+              "FinishedAt": "2026-10-01T18:25:44.720401174Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-23e1923/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-4a00f64/bindings",
                 "Destination": "/lab",
                 "Mode": "",
                 "RW": true,

@@ -100,6 +100,11 @@ def hash_stop():
     assert process.joinpath('cmdline').read_bytes().split(b'\0')[:4] == [
         b'/build/bigbrotr', b'serve', b'--file', identity['config'].encode()]
     before = {p.name for p in process.joinpath('task').iterdir()}
+    def tasks():
+        return {p.name: p.joinpath('stat').read_text().split()[:22]
+                for p in process.joinpath('task').iterdir()}
+    initial_tasks = tasks()
+    new_tasks = {}
     body = json.dumps({'username': 'alice', 'password': password}).encode()
     connection = socket.create_connection(('127.0.0.1', 18081), 2)
     connection.sendall((f'POST /management/v1/sessions HTTP/1.1\r\nHost: 127.0.0.1:18081\r\n'
@@ -107,11 +112,15 @@ def hash_stop():
     deadline = time.monotonic() + 3
     sample = None
     while sample is None:
-        assert time.monotonic() < deadline, 'no running password worker observed'
+        if time.monotonic() >= deadline:
+            with (directory / 'hash-observation.json').open('x') as stream:
+                json.dump(dict(initial=initial_tasks, new=new_tasks, terminal=tasks()), stream, indent=2)
+            raise AssertionError('no running password worker observed')
         for task in process.joinpath('task').iterdir():
             if task.name in before:
                 continue
             stat = task.joinpath('stat').read_text().split()
+            new_tasks[task.name] = stat[:22]
             if stat[1] == '(tokio-runtime-w)' and stat[2] == 'R' and int(stat[13]) > 0:
                 # The initial runtime has exactly two blocking slots: its
                 # permanent native owner and this newly started password worker.

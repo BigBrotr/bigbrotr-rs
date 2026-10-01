@@ -31,7 +31,8 @@ guards = len(sys.argv) == 4 and sys.argv[2] == '--guards'
 refusals = len(sys.argv) == 3 and sys.argv[2] == '--refusals'
 policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
-sessions = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions'
+session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
+sessions = session_hash or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions')
 installed = sessions or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -458,7 +459,7 @@ try:
     elif interruptions:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
     elif sessions:
-        cases = ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+        cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
     elif installed:
         cases = ['pass','zero-topology','expired','policy-archive','existing-directory','registered-only']
     elif lease:
