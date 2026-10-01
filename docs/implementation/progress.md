@@ -12,58 +12,75 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main9b9a3a62c82d0081b92a2c3eb57c860c8c7f68f0 is unpublished; private origin
+Mac main0ac54d1d5ec9c72c2625f4e8bc89680c9ab7e826 is unpublished; private origin
 remains022f57c. Root sole writer. Product23e1923/tree40f5f11527ce515632f8c92542749a1c08498148
 passed native release CLI/probe, Clippy and42 tests (3 entrypoints,6 initial,33 HTTP).
-The first namespace and second audit-baseline fixture FAILs remain preserved.
-Fixture4a00f64 reused exact binaries: actual installed journey and capacity cases
-PASS, including independent12-row native/original-input/receipt comparison,
-64-table comparison, exact Control/backend identity and renewals under12 clients.
-Third case FAILed before signalling. Diagnostic9b9a3a6 captured a new task38
-consuming6 user ticks named tokio-rt-worker, whereas the fixture assumed
-tokio-runtime-w. Exact local Tokio1.53.1 builder.rs:309 confirms the observed name.
-Correct only that name; retain new-thread/running/positive-CPU requirements.
-No hash-stop guarantee yet; do not rerun the two already passed cases.
-All three original roots/clones/source/bundles/logs remain; completed journey and
-capacity CLI processes were reaped, while failed cases have no terminal receipt
-after container cleanup. All owned containers stopped/no OOM; no cleanup debt.
-Build initial-ingest-23e1923 PID1171824/start426088424 terminal,
-ownerbcc697daac1a328b0cddc93013f3c501; fetch14c29218/native1034e5e6 exited0.
-Latest engine initial-sessions-4a00f64 PID1180980/start426137934 terminal,
-ownere602e5b9e8b77953598ba7f0efe651f6; client9883e975 exited143 and
-borrowedPG71775507 stopped0. Inventory implementation_network_20260928.initial_sessions
-and ignored .research/implementation/initial-management-20260928 own all launches
-and captures. Root dirty: hash diagnostic/selection fixture, inventory, checkpoint.
-Diagnostic initial-sessions-9b9a3a6 PID1185623/start426158112 is terminal;
-owner1ff4fcda6275246bdd313cbcb659da73, cliente8845949 stopped, no cleanup errors
-or unrelated changes. Mac last5,478,808KiB. No new product change.
+Mac41 changed tests, scoped Clippy and document checks pass. Current dirty work is
+the bounded qualification report, owning docs/README, this checkpoint and inventory;
+no uncommitted product change. Ready for evidence review/commit/private push.
 
-Root read complete initial worker/supervision, Management dispatcher, HTTP transport
-and delivery gate, relevant ordinary-Serve renewal/dispatch and owning initial-store
-contract. The existing HTTP command queue is reused. Added an explicit Sessions versus
-Operational route profile (ordinary Serve unchanged), a cloneable revocation/stop
-handle for parent supervision, one additional bounded blocking hash slot and shared
-item accounting. Keep actual password/socket join before native close/Control release
-on normal and error paths. A command may not move the absolute renewal deadline.
-The same-owner command loop is integrated. Mac three real HTTP profile/parent-stop/capacity
-tests, five lifecycle tests and three actual CLI entrypoint tests pass. Publication
-after the supervisor snapshot closes HTTP while the worker remains blocked.
-Scoped Clippy and document/handoff checks pass; Python fixtures parse and the
-complete diff is reviewed. All33 changed HTTP route regressions also pass, including the ordinary profile. Independent read-only review found no
-authority/custody blocker; startup prerequisite failures now preserve incomplete
-exit4, including backend loss. Original REDs/logs remain under ignored
-.research/implementation/initial-management-20260928. Root owns dirty Management,
-Serve/initial worker, command/profile tests, CLI test, owning docs and the installed
-session fixture/build profile. No other contributor changes were observed.
-Practical installed qualification remains pending; no new readiness claim.
-Next bounded action: commit the measured thread-name fixture correction and run
-only --installed-sessions-hash on a fresh exact-Git clone with23e1923 artifacts.
-Keep the diagnostic FAIL and actual task observations unchanged. The
-three proposed cases cover installed CLI login/logout and twelve concurrent Me
-clients across original expiry, shared-payload refusal and SIGTERM during an
-observed running password hash. Complete SQL/native oracles retain original
-bootstrap evidence. Delayed renewal, disconnected-client and blocked-native-close
-HTTP behavior remain required next fault cases, not PASS. No new command bus.
+[Initial private-session first wave](evidence/p01-initial-sessions-native-20261001.json)
+qualifies P01-T09 Step1/P02-T02 Steps2/3 only to this bounded scope. Same-owner
+installed login/logout, incorrect credentials,2573 successful Me responses from12
+clients in8.036s, persisted renewal beyond original Ingest expiry, shared-payload
+refusal before bind and SIGTERM during an observed running hash all pass. The
+actual CLI keeps ready=false/acquisition=not-started. Root verified all12 native
+rows and original input/receipt in each case, all64 SQL tables, stable Control/
+backend identity under traffic and exact preserved audit history plus issue/revoke.
+
+Successes are composed from two exact fixture revisions using unchanged23e1923
+artifacts:4a00f64 journey/capacity and0ac54d1 hash-only. Original FAILs remain:
+23e1923 Python namespace shadowing;d44e3e0 overlooked initialization audit history;
+4a00f64 unobserved hash thread;9b9a3a6 diagnostic confirmed the fixture's wrong
+thread name. Pinned Tokio1.53.1 builder.rs:309 matches observed tokio-rt-worker.
+Only the name changed; new-task/running/positive-CPU predicates remained. No
+product fix, repeated native build or rerun of already passed cases. Failed
+container cleanup is not claimed as graceful CLI release. All original states,
+sources, logs and partial outcomes are retained.
+
+Structural review retains existing Management queue/dispatcher and shared budget;
+one focused command module owns initial policy refresh/dispatch, with an explicit
+Sessions profile, parent revocation and one additional bounded password slot.
+No framework/crate/migration/codec changes. Read-only product review found no
+custody/authority blocker; its startup error classification finding was corrected
+to incomplete exit4. Root reviewed the final fixture and complete changed diff.
+No selected role/task/M1 completion checkbox is advanced by this bounded evidence.
+
+All owned runs are stopped/retained. Build initial-ingest-23e1923
+PID1171824/start426088424 terminal, ownerbcc697daac1a328b0cddc93013f3c501;
+fetch14c29218/native1034e5e6 exited0. Successful final hash engine
+initial-sessions-0ac54d1 PID1188105/start426172224 terminal,
+owner83de07692991b1841b8d8385784b8102; clientdc16c012 exited143,
+borrowedPG71775507 stopped0/no OOM. Terminal audit2026-10-01T18:33:26UTC verified
+987 prior container projections unchanged, eight unrelated running, compiler
+lock free and60,781,060,096B available. Root compared all1608 tracked files in
+each of five exact revisions and135 captured payloads. Shared1154757 holds23e1923
+intermediates; qualified CLI/probe remain outside the cache.
+Inventory implementation_network_20260928.initial_sessions and ignored
+.research/implementation/initial-management-20260928 own capture/, root-review,
+original-failure/, retry/, audit-fixed/, hash-diagnostic/ and hash-fixed/. Never
+replay these completed launchers. Mac last5,478,808KiB; check disk before allocation.
+The requested earlier cache retirement remains complete and inventoried.
+
+Next bounded action: finish this evidence commit/push, then implement the remaining
+installed fault wave on fresh exact-Git clones, reusing23e1923 binaries if Rust is
+unchanged. Required cases: delayed valid renewal consuming request-start validity,
+disconnected credentials while real hash work remains active (no late issuance),
+and session HTTP stopped while qualified tracer holds native close and actual
+Control excludes a competitor. Read complete owning fixture/client/proxy before
+changing it. Existing interruption_client.py and interruptions.py were read in
+full; the qualified strace instrument can be reused with verified identities.
+Renewal-specific ambiguous COMMIT, panic and restart remain separately unqualified.
+No extra broad unchanged suites or new master plan.
+
+Next user-visible M1 deliverable remains a signed socket event through installed
+same-owner command selection/admission, timer archive/read/export and restart.
+After these session lifetime faults, implement authenticated endpoint/enrollment,
+immutable acquisition scope and finite-job command consumers, dictionary append
+P02-T03 Step1, then successor/recovery P02-T01 Step5/P02-T02 Step4 for P01-T09 Step4.
+The current bootstrap has only two visibility mappings; session access grants no
+admission authority. Whole Discovery/Monitor or ACK/GC is not a prerequisite to
+fresh command delivery. Product, website, packaging and release remain INCOMPLETE.
 
 [Actual relay transfer qualification](evidence/p03-relay-transfer-native-20260928.json)
 closes this bounded P03-T01 Step3/P03-T02 Steps1/2/3 composition. Mac/native10

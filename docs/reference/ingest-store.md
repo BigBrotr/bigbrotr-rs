@@ -220,6 +220,16 @@ prove server rollback. Other close stages, worker panic, renewal-specific commit
 cuts and crash-resumable initialization remain pending; this does not complete the
 role or M1.
 
+The [initial private-session first wave](../implementation/evidence/p01-initial-sessions-native-20261001.json)
+qualifies actual installed login/logout and incorrect credentials, renewals under
+12 concurrent self-inspection clients beyond the original scheduling expiry,
+shared-memory refusal before binding, and SIGTERM during observed password work.
+Native/input/receipt and64-table comparisons preserve the original owner and
+bootstrap. Fixture failures and corrected independent audit expectations remain
+recorded. Delayed renewals, disconnected clients and the session listener during
+blocked native close remain the next required fault wave; no complete role or
+capacity claim follows.
+
 ## Exact dependency source basis
 
 The pinned Rust [open implementation](https://github.com/rust-rocksdb/rust-rocksdb/blob/e4aac69f55021e619566b6ca5902665e0ea2af4e/src/db.rs#L630)

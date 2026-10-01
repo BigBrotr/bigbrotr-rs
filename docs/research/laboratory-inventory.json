@@ -30681,7 +30681,7 @@
       "evidence": "docs/implementation/evidence/p03-relay-transfer-native-20260928.json"
     },
     "initial_sessions": {
-      "state": "Native42 tests PASS; installed journey/capacity PASS at4a00f64; hash worker observation failed before signalling. All original outcomes/states retained and owned containers stopped.",
+      "state": "Bounded initial-session first wave PASS across4a00f64 journey/capacity and0ac54d1 hash-only case, using unchanged23e1923 artifacts. Original fixture FAILs retained; all owned resources stopped. Later fault wave still required.",
       "launch": {
         "source": "23e1923224fba13b768fa6823493b066e7af5d82",
         "tree": "40f5f11527ce515632f8c92542749a1c08498148",
@@ -31174,7 +31174,105 @@
           }
         ],
         "finding": "New running hash worker was named tokio-rt-worker, not the assumed tokio-runtime-w. Task38 consumed6 user ticks; correction preserves the new-thread/running/positive-CPU predicate."
-      }
+      },
+      "hash_fixed": {
+        "launch": {
+          "source": "0ac54d1d5ec9c72c2625f4e8bc89680c9ab7e826",
+          "tree": "f0f73a109a10624c7a851e3d3da500311cf8a56b",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-0ac54d1",
+          "pid": 1188105,
+          "start_ticks": "426172224",
+          "bundle_sha256": "fa5b0245b56ca28ccf4b6ec03bda9ff870e889d7c694f79c832e49562023181a",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-23e1923/out/artifacts"
+        },
+        "owner": "83de07692991b1841b8d8385784b8102",
+        "client": {
+          "id": "dc16c01278d666a5cd04f736d1718a4eef68bd041d4e7e08a93c390694501732",
+          "name": "bigbrotr-acquisition-binding-0ac54d1"
+        },
+        "databases": [
+          "bb_scope_bind_0ac54d1_sessions_hash_stop"
+        ],
+        "status": "PASS_INITIAL_SESSION_HASH_CASE"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-10-01T18:33:26.869746+00:00",
+        "sources": [
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-23e1923",
+            "source": "23e1923224fba13b768fa6823493b066e7af5d82",
+            "files": 1608
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-d44e3e0",
+            "source": "d44e3e052aafb0687502f0cb9bbca58decbe5dbd",
+            "files": 1608
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-4a00f64",
+            "source": "4a00f643bc49133ccae87a0fa201eac71f0c9186",
+            "files": 1608
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-9b9a3a6",
+            "source": "9b9a3a62c82d0081b92a2c3eb57c860c8c7f68f0",
+            "files": 1608
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-0ac54d1",
+            "source": "0ac54d1d5ec9c72c2625f4e8bc89680c9ab7e826",
+            "files": 1608
+          }
+        ],
+        "owned_stopped": [
+          {
+            "id": "1d18f224ff4b228349369b2a82e19a8a9f557ebc450051f0c6f50ca8ecc25cbd",
+            "owner": "ce67dea75a49f0adf0b7442d6bb89b64",
+            "exit": 143
+          },
+          {
+            "id": "35c6fc534b3826e2881223f7b3876e89e968405b2853058c44efc5759b3b38c9",
+            "owner": "45fc9c408697fd90c239a581540735ea",
+            "exit": 143
+          },
+          {
+            "id": "9883e975a044cf286b977dc53eda1499856e9fcdb1e7f442456169abd56e02ca",
+            "owner": "e602e5b9e8b77953598ba7f0efe651f6",
+            "exit": 143
+          },
+          {
+            "id": "e88459491411e66c5b71c6231fb512e767e2853222b6d41cc60920bb8bb49d1a",
+            "owner": "1ff4fcda6275246bdd313cbcb659da73",
+            "exit": 143
+          },
+          {
+            "id": "dc16c01278d666a5cd04f736d1718a4eef68bd041d4e7e08a93c390694501732",
+            "owner": "83de07692991b1841b8d8385784b8102",
+            "exit": 143
+          },
+          {
+            "id": "14c29218b0b6dbcf36fc4f5a5af9dd35876d6e6e60dc7e7008482f12e2acf0fc",
+            "owner": "bcc697daac1a328b0cddc93013f3c501",
+            "exit": 0
+          },
+          {
+            "id": "1034e5e64ee534ecde8c215bdd472175a1b91e6abbf0abd5c251a3efd5d4adc5",
+            "owner": "bcc697daac1a328b0cddc93013f3c501",
+            "exit": 0
+          },
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "exit": 0
+          }
+        ],
+        "prior_unchanged": 987,
+        "unrelated_running": 8,
+        "compiler_lock_released": true,
+        "free_bytes": 60781060096
+      },
+      "evidence_report": "docs/implementation/evidence/p01-initial-sessions-native-20261001.json"
     }
   },
   "implementation_relay_registry_20260928": {

@@ -103,7 +103,7 @@ CLI entrypoint tests. `experiments/acquisition-scope/bindings.py LAB
 BUILD reuses exact artifacts only when every intervening change is in docs or
 experiments; product/build input changes require a new build.
 
-The proposed three-case first wave exercises actual access login/logout and
+The three-case first wave exercises actual access login/logout and
 incorrect credentials, twelve concurrent self-inspection clients for eight
 seconds across the original scheduling expiry, shared-payload refusal before
 listener binding, and SIGTERM during an observed running password worker. The
@@ -118,7 +118,9 @@ The disabled startup administration seed deliberately differs from the two
 accepted enabled documents. The old `policy-admin` refusal fixture is superseded
 by this selected behavior; the headless first-lifetime matrix now uses a selected
 archive-reader policy to test unsupported consumers. Historical outcomes retain
-their original source and meaning. These commands are a recipe, not executed
-evidence; the qualification report must record actual results. Slow renewals,
+their original source and meaning. The [executed first wave](../../docs/implementation/evidence/p01-initial-sessions-native-20261001.json)
+records product23e1923 with successful cases on fixtures4a00f64 and0ac54d1, plus
+all original fixture failures. Hash-only retries use `--installed-sessions-hash`
+with the same build-reuse restriction; they do not rerun the already passed cases. Slow renewals,
 disconnected clients and a session listener during blocked native close require
 their separate fault wave; the small concurrent fixture is not a capacity claim.

@@ -1,0 +1,317 @@
+{
+  "format": "bigbrotr-initial-session-acceptance/1",
+  "observed_at": "2026-10-01T18:33:26.869746+00:00",
+  "status": "PASS_BOUNDED_FIRST_WAVE_WITH_ORIGINAL_FIXTURE_FAILURES_RETAINED",
+  "tasks": [
+    "P01-T09 Step1 (partial)",
+    "P02-T02 Steps2/3 (partial)"
+  ],
+  "scope": "Installed session-only Management consumer under the original live initial native/Control owner; readiness remains false. No complete Ingest, acquisition, restart or M1 claim.",
+  "source": {
+    "product": "23e1923224fba13b768fa6823493b066e7af5d82",
+    "tree": "40f5f11527ce515632f8c92542749a1c08498148",
+    "successful_fixture_revisions": [
+      "0ac54d1d5ec9c72c2625f4e8bc89680c9ab7e826",
+      "4a00f643bc49133ccae87a0fa201eac71f0c9186"
+    ],
+    "later_changes": "Only docs/experiments differ from the qualified product revision; no rebuild or repeated component tests for fixture-only corrections."
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64"
+    },
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "engines": "Retained isolated PostgreSQL16.15 template; real pinned RocksDB11.8.1 binding.64 Control tables including xmin. No server/version substitution.",
+    "runtime_cgroup": {
+      "cpus": 2,
+      "memory_bytes": 1073741824,
+      "swap_additional_bytes": 0
+    },
+    "build_cgroup": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "network": "none after locked fetch"
+    }
+  },
+  "artifacts": {
+    "Cargo.lock_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "eb06e83ff858f67e57c25c67a2573aee5fae98b26673db8e601f5eedd159b705",
+    "bigbrotr_sha256": "8bbeb4ec681812b8b329362cf886a78b516dea710013132dba613164e73e5c35",
+    "ingest_bootstrap_probe_sha256": "2e93489eee16bd0cbd1cb1646e15470fdaaec5b5fe67456a978d66a14e649f22"
+  },
+  "checks": {
+    "Mac": {
+      "management_http": 33,
+      "initial_lifetime": 5,
+      "actual_entrypoint": 3,
+      "clippy": "PASS",
+      "documentation_links_tasks": "PASS"
+    },
+    "native": {
+      "release_cli_and_probe": "PASS",
+      "management_http": 33,
+      "initial_lifetime_and_flag": 6,
+      "actual_entrypoint": 3,
+      "clippy": "PASS",
+      "executed_build_steps": 5,
+      "not_run_build_steps": 0
+    },
+    "new_discriminators": [
+      "Only login/me/logout queue in initial profile; other selected routes refuse.",
+      "Parent socket revocation preserves retained command memory until owner drop.",
+      "Parent sees shutdown publication after its cached watch snapshot, despite blocked worker.",
+      "Insufficient shared bytes and items refuse before an occupied listener is attempted."
+    ]
+  },
+  "practical_cases": [
+    {
+      "name": "sessions-journey",
+      "source": "4a00f643bc49133ccae87a0fa201eac71f0c9186",
+      "control_tables": 64,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "clients": 12,
+        "responses": 2573,
+        "statuses": [
+          "200"
+        ],
+        "elapsed_seconds": 8.035996800288558,
+        "server_now": 1790879137441672,
+        "original_deadline": 1790879134577282,
+        "renewed_leases": [
+          1790879142592370,
+          1790879142592370
+        ]
+      }
+    },
+    {
+      "name": "sessions-capacity",
+      "source": "4a00f643bc49133ccae87a0fa201eac71f0c9186",
+      "control_tables": 64,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "selected_payload_bytes": 603979776,
+        "listener_not_bound": true,
+        "bootstrap_preserved": true
+      }
+    },
+    {
+      "name": "sessions-hash-stop",
+      "source": "0ac54d1d5ec9c72c2625f4e8bc89680c9ab7e826",
+      "control_tables": 64,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "status": "PASS",
+        "mode": "hash-stop",
+        "worker": {
+          "tid": 38,
+          "name": "(tokio-rt-worker)",
+          "state": "R",
+          "user_ticks": 1,
+          "start_ticks": "426172587",
+          "prior_tasks": [
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31"
+          ]
+        },
+        "socket_bytes": 0,
+        "signal": "SIGTERM during running password work"
+      }
+    }
+  ],
+  "original_runs": [
+    {
+      "source": "23e1923224fba13b768fa6823493b066e7af5d82",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-23e1923",
+      "status": "FAIL",
+      "failure": "AssertionError: actual-session-client-sessions-journey",
+      "cases": []
+    },
+    {
+      "source": "0ac54d1d5ec9c72c2625f4e8bc89680c9ab7e826",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-0ac54d1",
+      "status": "PASS_INITIAL_SESSION_HASH_CASE",
+      "failure": null,
+      "cases": [
+        {
+          "name": "sessions-hash-stop",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "source": "4a00f643bc49133ccae87a0fa201eac71f0c9186",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-4a00f64",
+      "status": "FAIL",
+      "failure": "AssertionError: actual-session-client-sessions-hash-stop",
+      "cases": [
+        {
+          "name": "sessions-journey",
+          "status": "PASS"
+        },
+        {
+          "name": "sessions-capacity",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "source": "9b9a3a62c82d0081b92a2c3eb57c860c8c7f68f0",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-9b9a3a6",
+      "status": "FAIL",
+      "failure": "AssertionError: actual-session-client-sessions-hash-stop",
+      "cases": []
+    },
+    {
+      "source": "d44e3e052aafb0687502f0cb9bbca58decbe5dbd",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-d44e3e0",
+      "status": "FAIL",
+      "failure": "AssertionError: ",
+      "cases": []
+    }
+  ],
+  "failure_analysis": [
+    "First Python client shadowed http module after actual CLI login; no product failure inferred.",
+    "Second audit oracle counted total audit rows instead of preserving initialization/activation history and adding exactly issue/revoke. Its successful client workload did not close the entire case.",
+    "Third run passed journey/capacity, then failed to identify a running hash worker before signalling. A separate diagnostic retained actual task identities and CPU counters.",
+    "Observed pinned Tokio1.53.1 default is tokio-rt-worker (builder.rs:309), not the assumed tokio-runtime-w. Correcting only the name preserves the new-task/running/positive-user-CPU discriminator; the hash-only rerun passed."
+  ],
+  "review": {
+    "changed_owners": "Initial native lifetime/supervisor, focused command loop, Management profile/dispatcher, socket delivery and real session prerequisites/callers.",
+    "structure": "Reuse existing HTTP queue and authority tracker; separate the initial command loop from native initialization. Shared ledger and one extra bounded hash slot. No new framework, crate, migration or codec.",
+    "independent_review": "Read-only product custody/authority review found no blocker; its prerequisite error-classification observation was corrected to incomplete exit4. Final fixture/oracle review performed by root.",
+    "source_integrity": [
+      {
+        "source": "9b9a3a62c82d0081b92a2c3eb57c860c8c7f68f0",
+        "files": 1608
+      },
+      {
+        "source": "23e1923224fba13b768fa6823493b066e7af5d82",
+        "files": 1608
+      },
+      {
+        "source": "0ac54d1d5ec9c72c2625f4e8bc89680c9ab7e826",
+        "files": 1608
+      },
+      {
+        "source": "d44e3e052aafb0687502f0cb9bbca58decbe5dbd",
+        "files": 1608
+      },
+      {
+        "source": "4a00f643bc49133ccae87a0fa201eac71f0c9186",
+        "files": 1608
+      }
+    ],
+    "captured_payloads_verified": 135,
+    "expected_results": "Independent literal native CBOR/key/value/input/receipt oracle plus complete SQL state deltas, preserved audit rows/xmin and literal session action/actor/subject assertions."
+  },
+  "limitations": [
+    "late renewal",
+    "disconnected credentials",
+    "HTTP during blocked native close",
+    "worker panic",
+    "successor/restart",
+    "installed acquisition/M1",
+    "capacity/aged state",
+    "arm64/release",
+    "No production throughput/RSS claim from12 clients for8 seconds. Native reservation128MiB and shared budget are targets, not measured peak memory.",
+    "No renewal-specific ambiguous COMMIT, policy transition, password-worker panic or grace-expiry qualification in this wave.",
+    "Failed fixture container cleanup lacks a CLI terminal receipt; it is not claimed as graceful release.",
+    "No public release, image promotion or native arm64 qualification."
+  ],
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.initial_sessions",
+    "ignored_local_root": ".research/implementation/initial-management-20260928",
+    "original_capture_manifest_sha256": "aa6fbe4257e013a46dd0d2a454443b1ed62379267d1dd1bb0bf8bed650610f62",
+    "root_review_sha256": "0bdf7fac07ed7a9fa022fa8af4322ddad9b87534700758bc9b57184ba12a2495",
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-01T18:33:26.869746+00:00",
+      "sources": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-23e1923",
+          "source": "23e1923224fba13b768fa6823493b066e7af5d82",
+          "files": 1608
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-d44e3e0",
+          "source": "d44e3e052aafb0687502f0cb9bbca58decbe5dbd",
+          "files": 1608
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-4a00f64",
+          "source": "4a00f643bc49133ccae87a0fa201eac71f0c9186",
+          "files": 1608
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-9b9a3a6",
+          "source": "9b9a3a62c82d0081b92a2c3eb57c860c8c7f68f0",
+          "files": 1608
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-0ac54d1",
+          "source": "0ac54d1d5ec9c72c2625f4e8bc89680c9ab7e826",
+          "files": 1608
+        }
+      ],
+      "owned_stopped": [
+        {
+          "id": "1d18f224ff4b228349369b2a82e19a8a9f557ebc450051f0c6f50ca8ecc25cbd",
+          "owner": "ce67dea75a49f0adf0b7442d6bb89b64",
+          "exit": 143
+        },
+        {
+          "id": "35c6fc534b3826e2881223f7b3876e89e968405b2853058c44efc5759b3b38c9",
+          "owner": "45fc9c408697fd90c239a581540735ea",
+          "exit": 143
+        },
+        {
+          "id": "9883e975a044cf286b977dc53eda1499856e9fcdb1e7f442456169abd56e02ca",
+          "owner": "e602e5b9e8b77953598ba7f0efe651f6",
+          "exit": 143
+        },
+        {
+          "id": "e88459491411e66c5b71c6231fb512e767e2853222b6d41cc60920bb8bb49d1a",
+          "owner": "1ff4fcda6275246bdd313cbcb659da73",
+          "exit": 143
+        },
+        {
+          "id": "dc16c01278d666a5cd04f736d1718a4eef68bd041d4e7e08a93c390694501732",
+          "owner": "83de07692991b1841b8d8385784b8102",
+          "exit": 143
+        },
+        {
+          "id": "14c29218b0b6dbcf36fc4f5a5af9dd35876d6e6e60dc7e7008482f12e2acf0fc",
+          "owner": "bcc697daac1a328b0cddc93013f3c501",
+          "exit": 0
+        },
+        {
+          "id": "1034e5e64ee534ecde8c215bdd472175a1b91e6abbf0abd5c251a3efd5d4adc5",
+          "owner": "bcc697daac1a328b0cddc93013f3c501",
+          "exit": 0
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 987,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 60781060096
+    }
+  }
+}
