@@ -95,8 +95,10 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   startup refusals, with the original failed probe retained. Authenticated
   [URL registration](evidence/p02-initial-registration-http-native-20261001.json)
   now supplies that ID on the same owner;0025 preserves earlier applied SQL,
-  with explicit populated upgrade and full retained-state checks. Registration
-  fault/raw relational schedules, CLI enrollment, complete acquisition/restrictive
+  with explicit populated upgrade and full retained-state checks.
+  [Seven registration COMMIT schedules](evidence/p02-relay-registration-faults-native-20261001.json)
+  qualify actual adapter cancellation/loss/expiry and exact fresh-owner recovery.
+  Concurrent writers/raw relational schedules, CLI enrollment, complete acquisition/restrictive
   drain and full routes remain; no whole-step completion follows.
 - [ ] **Step 7:** **Practical P02-T01:** real PG transactions race two revision/frontier
   updates, disconnect after commit and retry. Inspect committed rows externally,

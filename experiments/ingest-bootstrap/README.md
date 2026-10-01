@@ -176,9 +176,9 @@ The host oracle uses literal expected URLs and independent command hash bytes.
 
 Product7011acd/fixture45f7593 passed all seven cases; the [bounded report](../../docs/implementation/evidence/p02-initial-registration-http-native-20261001.json)
 records exact artifacts, complete retained-state review and stopped resources.
-The native build alone does not qualify SQL. Deferred expiry for a
-fresh command referencing an existing endpoint, raw relational negatives,
-concurrent revocation and lost/cancelled COMMIT need separate schedules. The
+The native build alone does not qualify SQL. The fault consumer below separately
+qualifies deferred expiry and lost/cancelled COMMIT for an existing endpoint.
+Raw relational negatives and concurrent revocation still need schedules. The
 initial installed lifetime cannot survive a changed accepted policy; historical
 retry across changed heads belongs to a fresh adapter owner until successor
 recovery is implemented.
@@ -192,6 +192,8 @@ installed registration journey is cloned with its existing endpoint; every comma
 must leave that original identity unchanged. All68 Control tables/xmin, independent
 literal digest/receipt and real Busy contender are checked, followed by fresh-owner
 recovery. The common host inventories/stops owned resources and preserves the
-original populated source. These schedules remain NOT_RUN until an engine report
-is recorded. Concurrent writers/raw relational and installed HTTP ambiguity are
-separate required cases.
+original populated source. Exact00600af/fixturec54c6bd passed these seven schedules;
+see the [bounded fault report](../../docs/implementation/evidence/p02-relay-registration-faults-native-20261001.json).
+The first cc1a4e8 probe had a source-reviewed v1/v2 fixture incompatibility; its
+build-only result remains retained, with no engine executed on it. Concurrent
+writers/raw relational and installed HTTP ambiguity remain separate required cases.

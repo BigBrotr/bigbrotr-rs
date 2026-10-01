@@ -31554,16 +31554,14 @@
         }
       },
       "not_run": [
-        "registration adapter COMMIT recovery/cancellation/expiry/concurrency",
-        "raw relational refusal/rollback",
-        "CLI registration command",
+        "registration concurrent authority writers and raw relational refusal",
+        "historical recovery after changed heads/grants",
+        "installed HTTP COMMIT ambiguity",
         "installed acquisition/M1",
         "capacity/load/aged-state",
         "arm64/release",
-        "Fresh-command expiry for an existing endpoint and historical retry after grant/head change remain distinct required schedules.",
-        "Initial policy change stops the installed owner; fresh-owner adapter recovery is not initial native successor support.",
-        "Ordinary Serve registration/enrollment, protected/multiple-CIDR/overlay routes and complete restrictive drain remain selected work.",
-        "Small fixtures establish no capacity, aged-state or mixed-load guarantee."
+        "CLI registration/enrollment commands",
+        "Ordinary Serve command routes, protected/multiple-CIDR/overlay routes and complete restrictive drain"
       ],
       "engine": {
         "launch": {
@@ -31925,7 +31923,80 @@
           "finished_at": "2026-10-01T20:31:10.689054+00:00"
         },
         "probe_sha256": "c1769531c77fb595d1724c4617f9b6a522f8a04386fee565534af019d850cfd8",
-        "status": "native compile/Clippy PASS only; engine pending"
+        "status": "compile/Clippy PASS; exact artifacts used by c54c6bd engine wave"
+      },
+      "fault_engine": {
+        "launch": {
+          "source": "c54c6bd522836413b9368339713952345bb60776",
+          "tree": "a8842679ccce7ba22e98dce06d3ec77ea90f5ba3",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-commit-c54c6bd",
+          "pid": 1277970,
+          "start_ticks": "426928266",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-00600af/out/artifacts",
+          "bundle_sha256": "fbf777418261f6ba7766589db2699f58f0dcc8d6dd210707ad150291f49eb214"
+        },
+        "observed": {
+          "status": "PASS_REGISTRATION_COMMIT_FAULTS",
+          "failure": null,
+          "owner": "4e317aa3812e315638a6cd2a9439ff4b",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "3db2f3b4f4ebb4a4bbcb029d32fefb3ca4236e89cb0303a805497fc09ee4c3f2",
+            "name": "bigbrotr-acquisition-binding-c54c6bd"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_c54c6bd_register_pass",
+            "bb_scope_bind_c54c6bd_register_before",
+            "bb_scope_bind_c54c6bd_register_after",
+            "bb_scope_bind_c54c6bd_register_cancel_close",
+            "bb_scope_bind_c54c6bd_register_cancel_release",
+            "bb_scope_bind_c54c6bd_register_owner_expiry",
+            "bb_scope_bind_c54c6bd_register_session_expiry"
+          ],
+          "started_at": "2026-10-01T20:37:09.191635+00:00",
+          "finished_at": "2026-10-01T20:37:39.635879+00:00",
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 59564511232
+        },
+        "case_statuses": {
+          "register-pass": "PASS",
+          "register-before": "PASS",
+          "register-after": "PASS",
+          "register-cancel-close": "PASS",
+          "register-cancel-release": "PASS",
+          "register-owner-expiry": "PASS",
+          "register-session-expiry": "PASS"
+        },
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T20:38:02.792291+00:00",
+          "owned_stopped": [
+            {
+              "id": "3db2f3b4f4ebb4a4bbcb029d32fefb3ca4236e89cb0303a805497fc09ee4c3f2",
+              "owner": "4e317aa3812e315638a6cd2a9439ff4b",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1003,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 59564498944
+        },
+        "review": {
+          "status": "PASS_BOUNDED_REGISTRATION_COMMIT_FAULTS",
+          "source_files": 1622,
+          "capture_payloads": 99
+        },
+        "report": "docs/implementation/evidence/p02-relay-registration-faults-native-20261001.json"
       }
     }
   },

@@ -9,134 +9,83 @@ Navigation, not evidence or another plan. Follow the
 Complete selected product remains owner-authorized and INCOMPLETE. Keep private
 bigbrotr-rs, unpublished Cargo and the read-only Go neighbor. Mac owns edits/Git;
 trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
-blocked. No public release, rename, native Linux arm64 or complete release claim.
-The active unbudgeted goal covers the whole selected product, not this slice.
+blocked. No public release, rename, native arm64 or complete release claim.
+The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main/origin877b73ca24b8c6e9d31453c2d9e792c21413fce9 is pushed and private.
-Registration's bounded installed HTTP/upgrade qualification is recorded; its fault
-schedules remain open. Root sole writer. No active native/engine jobs at the latest
-read-only audit; shared1154757 cache is retained and available.
-P02-T01 Step6/P01-T09 Step1 initial enrollment HTTP bounded integration now has
-[native evidence](evidence/p02-initial-enrollment-http-native-20261001.json).
-Both438067f and917c76b built actual release CLI/probe,45 native tests and scoped
-Clippy; all5 profile steps executed. Mac36 changed Management tests/Clippy on438067f,
-formatting on917c76b, generated API/type checks and23 API-client tests PASS.
-Actual command/five captured receipts and malformed schema controls also checked.
-Original HTTP RED405vs401 retained; erroneous zero-test filter is NOT evidence.
-
-Fixture17c6ea0 on438067f passed journey, permission and missing table privilege.
-Root checked67 captures/1612 Git files, all64 SQL tables/xmin, exact command digest/
-audit/session/owner linkage and independent12-row native/input/receipt oracle.
-Historical enable retry after withdrawal leaves all user state unchanged.
-Public refusal discriminates the second accepted document; private broader CIDR
-and principals.manage-only requests refuse403. No socket/admission authority inferred.
-
-Read-only AI review found a P2 missing function EXECUTE startup probe. Actual
-438067f/fixture9c7f75c confirmed route EXECUTE=false yet initialized listener bound.
-The test stopped the exact CLI normally; original FAIL/state/logs remain. It sent
-no command; it proves premature binding, not data loss or observed command failure.
-Root added checks for relay_route_valid, relay_enrollment_digest and command_u64_bytes.
-AI recheck found the correction/contracts coherent and one fixture preflight edge:
-exact same-revision build reuse wrongly required nonempty diff. Corrected without
-accepting differing product/build inputs. No migration/codec/dependency changes.
-
-Exact917c76b/tree469dbac1a7c16e0b9d7f098fc2e0fb035a8983a3 passes all three missing
-EXECUTE refusals before bind plus the full permitted journey. Root verified79
-captures/1612 source files and the same complete SQL/native/receipt oracles.
-OpenAPI/generated types, owning reference and task consumers now match this scope.
-Existing Management queue, request/connection budget and original Control remain;
-no generic command framework or second owner. Earlier adapter COMMIT/locks are
-reused with their original scope; this wave does not requalify installed ambiguity.
-Read-only AI review did not run engines or audit all historical migrations/native
-internals; root reviewed original artifacts and complete affected diff.
-
-All owned runs STOPPED/RETAINED. Native initial-ingest-917c76b PID1226611/
-start426522775 terminal, owner0ba886d9abf54780a55e8226d77a74f5;
-fetchb6b8da06/nativee4057bf4 stopped0. Engine initial-enrollment-917c76b
-PID1230202/start426536902 terminal, owner710f009983251eaf227fc7cef9574b4e,
-clientcd81fd2c stopped143; PG71775507 stopped0/no OOM. Audit19:32:42UTC verifies995
-prior projections unchanged,8 unrelated running, compiler lock free and
-60,209,369,088B available. Shared1154757 holds917c76b intermediates; exact qualified
-artifacts are separate. Earlier438067f/17c6ea0/9c7f75c resources/evidence retained.
-Inventory initial_relay_commands and ignored initial-relay-commands-20261001 own
-native/, engine/, function-red/, native-fixed/, function-fixed/ and original recipes.
-Never replay completed launchers or old cache deletion. Mac last5,224,280KiB free;
-check before allocation. Requested cleanup remains complete and inventoried.
-Local review/collector field-name mistakes and original stderr are preserved;
-no engine assertion or expected result was weakened. api-draft copies were restored;
-there is no outstanding draft product work. Earlier checkpoint's30 client count was
-a transcription error; actual terminal log is23 and report uses23.
+Mac mainc54c6bd522836413b9368339713952345bb60776 is three unpublished test-only
+candidates ahead of private origin877b73ca24b8c6e9d31453c2d9e792c21413fce9.
+No product/SQL change after877b73c. Root sole writer; current dirty work is bounded
+fault evidence/report, owning docs, inventory and this checkpoint. No active lab
+or native job at the latest terminal audit. Requested cache cleanup is complete.
 
 ## Active slice and next bounded action
 
-P02-T01 Step 6 / P01-T09 Steps 1/2: authenticated endpoint registration now has
-a committed candidate domain, additive0025, Control adapter, shared transaction-local
-registry helper and actual initial-owner HTTP consumer. Root owns all dirty files.
-Earlier applied SQL/checksums remain unchanged. No dependency or native codec change.
-One immutable detail table supplies authenticated acceptance even for an existing
-endpoint; original endpoint attribution stays exact. No durable session FK,
-second URL registry or generic orchestration framework. A concrete shared header
-helper removes duplication between the two source commands. HTTP registration
-uses17KiB inside the existing64KiB request grant; endpoint identity remains8192bytes.
+P02-T01 Step6/P01-T09 Steps1/2 remain partial. Authenticated URL registration has
+additive0025, a concrete transaction-local registry helper, current session/CSRF,
+policy.change/CAS and the installed initial-owner HTTP consumer. One immutable
+detail supplies command/audit linkage and deferred authentication even for an
+existing endpoint. Original endpoint attribution is never rewritten. No session
+FK, second registry, generic command framework, new crate or dependency. Applied
+0025 and all earlier SQL/checksums are immutable. The selected initial profile
+requires25 and table/function privileges before bind; runtime never applies DDL.
 
-Mac:47 changed Management tests,34 catalog tests,3 registration command tests and
-scoped lib/bin Clippy PASS. Original missing-API, UnknownTarget(25) and HTTP405vs401
-REDs remain under ignored relay-registration-20261001. Independent digest golden
-matches read-only AI recomputation. The actual HTTP negative control with16KiB
-returns413 for the valid8192-byte escaped-query URL (16436-byte JSON); restored17KiB
-passes. The first negative used only a queue timeout; the stronger response
-observation is separately retained. No published source contains the negative.
+[Installed HTTP/upgrade report](evidence/p02-initial-registration-http-native-20261001.json):
+product7011acd/fixture45f7593, seven cases PASS. URL→enroll→withdraw→historical
+receipts, principals.manage-only refusal, missing table/function/schema before
+bind and populated explicit20→25/reapply. Root verified1619 Git files,129 captures,
+all68 SQL tables,12 native rows/original CBOR, exact3 registration/2 enrollment
+digests and unchanged original upgrade source. Six upgrades preserve old rows/
+xmin/heap files. OpenAPI/generated types and docs match:17KiB JSON,8192-byte URL,
+identity-only receipt. Mac47 Management/34 catalog/3 domain tests and Clippy;
+native88 tests/6 profile steps; TypeScript/generation/23 client tests and actual
+7 receipts/7 errors with8 malformed schema controls PASS. Original REDs retained.
+Read-only AI review caught16KiB body cap; actual valid16436-byte JSON got413;
+17KiB correction passes. This bounded wave does not qualify COMMIT faults.
 
-Read-only AI review covered complete changed owners/SQL/callers and found no
-remaining concrete defect. It specifically checked SQL/Rust digest equivalence,
-existing-endpoint expiry, historical authentication before fresh grant/CAS,
-lock order, registry wrapper poisoning and startup function privileges. Root
-reviewed the combined implementation/diff. The first installed engine wave below qualifies bounded HTTP effects and upgrade.
-Raw constraints, expiry/cancellation, lock races and lost COMMIT remain NOT_RUN
-for0025.
+[Actual adapter fault report](evidence/p02-relay-registration-faults-native-20261001.json):
+actual00600af/fixturec54c6bd, seven exact fourth-COMMIT schedules PASS. Lost before/
+after completion, cancelled hold closed/released and isolated owner/session expiry
+all preserve the existing endpoint and resolve the same command under fresh owner3.
+Committed commands keep original owner2 receipt/time; absent commands accept once.
+All68 Control tables/xmin and independent literal digest/audit/actor/session/owner
+checks pass. Held custody rejects a real Busy contender before release. Explicit
+expiry returns Denied/usable session; ambiguity/cancellation poison until the real
+driver retires. This is SQL-only adapter evidence; native Ingest is not reopened.
+Root verified1622 Git files/99 captures and populated source rows/heap files.
 
-Native exact7011acd build is STOPPED/RETAINED: PID1246952/start426709715 terminal,
-root runs/initial-ingest-7011acd, full owner/container state in inventory
-implementation_network_20260928.relay_registration and ignored native/. Do not
-relaunch it. All6 profile checks PASS, including88 native tests and scoped Clippy. Root verified
-1617 exact source files and captured check manifests. Finished20:02:32UTC with
-60,073,537,536B free and no prior container projection changes. Fetch953fc363 and
-nativef1c1d4cf stopped0; ownerd832ab31c1f4e81a992ce1673b125ad9. Latest state is
-native/resources-final.json. Shared1154757 now holds7011acd intermediates; exact
-qualified CLI/probe are separate.
+Read-only AI review found the first fault probe's historical one-document v1
+validator incompatible with two retained v2 documents. cc1a4e8 build/Clippy result
+is retained; it never ran an engine.00600af compares the two exact v2 documents
+independently. Both builds compiled/Clippy PASS;1621 source files match Git.
+No production defect inferred or invariant weakened. Reviewer read complete changed
+probe/controller/callers, did no engine execution; root reviewed original artifacts.
+Concurrent authority writers, historical retry after changed heads/grants, raw
+relational refusals/expiry negative controls and installed HTTP ambiguity remain
+required. No complete task, M1, capacity or arm64 claim follows.
 
-Engine45f7593 with exact7011acd binaries is STOPPED/RETAINED: PID1255041/
-start426774373 terminal, root runs/initial-registration-45f7593,
-ownerd726083ce9a3fd3180e4c59cbe78b799, clientc30f4a2d stopped143;
-borrowedPG71775507 stopped0/no OOM. Seven cases PASS: populated explicit upgrade/
-reapply, URL→enroll→withdraw→historical receipts, permission denial, missing detail
-INSERT, candidate/digest EXECUTE and old-schema refusal before bind. Root verified
-1619 exact Git files,129 captured payloads, all68 SQL tables,12 native rows/original
-CBOR, independent3 registration/2 enrollment digests and no mutation from historical
-retry. Six upgrades preserve all old rows/xmin/heap files; populated original
-source remains unchanged. This is no COMMIT/cancellation/expiry qualification.
-Audit20:12:29UTC:998 prior container projections unchanged,8 unrelated running,
-compiler lock released,59,934,572,544B free. Original engine/result, root-review.json
-and terminal audit are under ignored relay-registration-20261001/engine/.
-Never relaunch completed recipes. Mac resumption observed4,767,008KiB available.
+Latest owned resources STOPPED/RETAINED:
+- runs/registration-commit-c54c6bd PID1277970/start426928266 terminal;
+  owner4e317aa3812e315638a6cd2a9439ff4b, client3db2f3b4 stopped143,
+  borrowedPG71775507 stopped0/no OOM. Audit20:38:02UTC:1003 prior projections
+  unchanged,8 unrelated running, compiler lock free,59,564,498,944B free.
+- runs/relay-registration-faults-00600af PID1273319/start426887139 terminal;
+  ownere6b55e4ae99e106fb6a81391365fabdb, fetchd3d43bd0/native50976444 stopped0.
+  Shared1154757 now holds00600af intermediates; qualified binaries are separate.
+  Earliercc1a/7011/45f7593 resources remain retained with original reports.
 
-The pushed qualification report, inventory, OpenAPI/generated types and owning
-docs are reconciled. [Bounded report](evidence/p02-initial-registration-http-native-20261001.json)
-now records originals, versions and limits. Generated drift/TypeScript checks,
-23 client tests,7 actual receipts/7 errors,2 command shapes and8 malformed schema
-controls PASS; artifact/handoff structure checks PASS. Read-only AI review found
-no schema/doc mismatch; root reviewed the complete changed diff. Report itself is
-root-reviewed, not independently engine-executed by the AI reviewer.
-Active test-only work at unpublishedcc1a4e8: finite relay_registration_fault_probe and a native
-build profile, reusing existing actual Control/session APIs and fourth-COMMIT wire
-proxy. No product/SQL changes. Fixed original heads permit historical resolution
-under a later owner with changed heads. The probe targets the existing installed
-endpoint so deferred authentication cannot hide behind a new-endpoint trigger.
-Next bounded action: native compile/Clippy on exact candidate using shared1154757,
-then isolated clones for COMMIT loss/cancellation/owner/session expiry and exact
-fresh-owner recovery. Concurrency/raw relational cases remain required separately.
-No whole-step/M1 closure. Latest read-only Tux audit: prior two owned processes
-absent, client/PG stopped without OOM, same8 unrelated containers,59,934,281,728B free.
+Inventory implementation_network_20260928.relay_registration and ignored
+.research/implementation/relay-registration-20261001 own native/, engine/,
+fault-native/, fault-native-fixed/ and fault-engine/ including raw captures,
+source/artifact manifests, controllers, launch receipts and root-review scripts.
+Never replay completed launchers or old cache deletion. Mac last4,767,008KiB free;
+check before allocations. No cleanup debt.
+
+Next bounded action: review/commit/push the fault qualification, then implement
+concurrent policy/grant/session writers in both observed lock orders, original
+receipt recovery after changed heads/grants and the relational/expiry negative
+controls. Reuse00600af binaries only for experiment/docs-only deltas. The next
+user-visible consumer is installed immutable scope/finite-job command delivery;
+these bounded registration guarantees must be closed before propagating them.
 
 ## Next useful journey and remaining prerequisites
 
@@ -214,7 +163,7 @@ bb_scope_54d1a18_basic and original transport/source/fault clones. Secrets stay
 under protected pg/secrets and never enter Git. Clone and verify before experiments.
 
 Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latest7011acd intermediates;
+acceleration, exclusively locked by .compiler-cache.lock. Latest00600af intermediates;
 qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
 clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
 owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.
@@ -297,24 +246,3 @@ gates, outgoing/control limits and complete Close. Installed Nostr acquisition
 and broader service/route guarantees remain open. Management write-only ActionGate is not a renewable bidirectional source
 session. History reader grants do not authorize acquisition. DeliveryWindow copies
 need explicit parent invalidation. No arm64, complete release or capacity claim.
-
-Current build receipt: runs/relay-registration-faults-cc1a4e8 PID1270400/
-start426871504, owner83041e3a9eb0585ebabeb6489744bd68; fetchb889c0c3 stopped,
-native4e60195c now stopped0; compile/Clippy-only PASS at20:28:34UTC, no prior
-container changes and59,816,673,280B free. Inventory relay_registration.fault_native
-and ignored fault-native/ own the exact launch. Do not relaunch. Read-only AI
-review identified a fixture incompatibility: historical helper validates only v1
-and one document, while retained installed basis has two different v2 documents.
-No engine launched. Corrected probe now compares the two exact retained v2
-documents/digests independently, leaving the historical helper unchanged. Build
-the corrected exact revision before engine schedules.
-
-Corrected native00600af is STOPPED/RETAINED: runs/relay-registration-faults-00600af,
-PID1273319/start426887139, ownere6b55e4ae99e106fb6a81391365fabdb; fetchd3d43bd0/
-native50976444 stopped0, compile/Clippy PASS at20:31:10UTC, no prior container
-changes and59,702,202,368B free. Both cc1a/00600 manifests/logs captured and exact
-Git source checked. New independent controller registration_faults.py selects7
-fourth-COMMIT schedules through existing bindings host/clones/cleanup. No engine
-started yet; root dirty work is recipe/controller, inventory/checkpoint. Next:
-commit fixture, run --registration-faults with exact00600af binaries on clones of
-bb_scope_bind_45f7593_registration_journey; preserve the original rows/heap files.

@@ -1,0 +1,201 @@
+{
+  "format": "bigbrotr-relay-registration-fault-acceptance/1",
+  "status": "PASS_BOUNDED_REGISTRATION_COMMIT_FAULTS",
+  "fixture": "c54c6bd522836413b9368339713952345bb60776",
+  "product": "00600af97d24f7e445f7e6706180ddae0cb32fda",
+  "source_files": 1622,
+  "capture_payloads": 99,
+  "cases": [
+    {
+      "name": "register-pass",
+      "status": "PASS",
+      "all_control_tables": 68,
+      "wire_counts": [
+        4,
+        4,
+        4,
+        4,
+        0
+      ],
+      "committed": true,
+      "recovery_created": false,
+      "endpoint_unchanged": true,
+      "scope": "original receipt recovered"
+    },
+    {
+      "name": "register-before",
+      "status": "PASS",
+      "all_control_tables": 68,
+      "wire_counts": [
+        4,
+        3,
+        3,
+        3,
+        1
+      ],
+      "committed": false,
+      "recovery_created": true,
+      "endpoint_unchanged": true,
+      "scope": "one fresh acceptance on recovery"
+    },
+    {
+      "name": "register-after",
+      "status": "PASS",
+      "all_control_tables": 68,
+      "wire_counts": [
+        4,
+        4,
+        4,
+        3,
+        1
+      ],
+      "committed": true,
+      "recovery_created": false,
+      "endpoint_unchanged": true,
+      "scope": "original receipt recovered"
+    },
+    {
+      "name": "register-cancel-close",
+      "status": "PASS",
+      "all_control_tables": 68,
+      "wire_counts": [
+        4,
+        3,
+        3,
+        3,
+        1
+      ],
+      "committed": false,
+      "recovery_created": true,
+      "endpoint_unchanged": true,
+      "scope": "one fresh acceptance on recovery"
+    },
+    {
+      "name": "register-cancel-release",
+      "status": "PASS",
+      "all_control_tables": 68,
+      "wire_counts": [
+        4,
+        4,
+        4,
+        4,
+        1
+      ],
+      "committed": true,
+      "recovery_created": false,
+      "endpoint_unchanged": true,
+      "scope": "original receipt recovered"
+    },
+    {
+      "name": "register-owner-expiry",
+      "status": "PASS",
+      "all_control_tables": 68,
+      "wire_counts": [
+        4,
+        4,
+        3,
+        3,
+        1
+      ],
+      "committed": false,
+      "recovery_created": true,
+      "endpoint_unchanged": true,
+      "scope": "isolated expiry observed before release; SQL rejected COMMIT and session remained usable"
+    },
+    {
+      "name": "register-session-expiry",
+      "status": "PASS",
+      "all_control_tables": 68,
+      "wire_counts": [
+        4,
+        4,
+        3,
+        3,
+        1
+      ],
+      "committed": false,
+      "recovery_created": true,
+      "endpoint_unchanged": true,
+      "scope": "isolated expiry observed before release; SQL rejected COMMIT and session remained usable"
+    }
+  ],
+  "original_populated_basis_unchanged": true,
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-01T20:38:02.792291+00:00",
+    "owned_stopped": [
+      {
+        "id": "3db2f3b4f4ebb4a4bbcb029d32fefb3ca4236e89cb0303a805497fc09ee4c3f2",
+        "owner": "4e317aa3812e315638a6cd2a9439ff4b",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 1003,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 59564498944
+  },
+  "not_run": [
+    "registration concurrent authority writers and raw relational refusal",
+    "historical recovery after changed heads/grants",
+    "installed HTTP COMMIT ambiguity",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ],
+  "tasks": [
+    "P02-T01 Step6 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "scope": "Actual registration adapter over a preexisting endpoint. Seven exact fourth-COMMIT schedules and fresh authenticated owner recovery. PostgreSQL state/driver guarantees only; no installed HTTP fault or whole-feature claim.",
+  "fixture_tree": "a8842679ccce7ba22e98dce06d3ec77ea90f5ba3",
+  "product_tree": "6e131923a3c9a34731663ad943a9c1546d508e25",
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1",
+    "clang": "14.0.6",
+    "postgres": "16.15",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_cpus": 2,
+    "client_memory_bytes": 1073741824,
+    "swap_additional_bytes": 0,
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944
+  },
+  "artifacts": {
+    "Cargo_lock_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "40f10f13cdcb809473dd3214b8e8b5b449270c36903c93a666cdb57d89d0f919",
+    "bigbrotr_sha256": "8a6673649a3eb39816db2fc493ac1708c5fedc25bae1a07884c0d46c36e0ec10",
+    "relay_registration_fault_probe_sha256": "c1769531c77fb595d1724c4617f9b6a522f8a04386fee565534af019d850cfd8",
+    "capture_manifest_sha256": "804e7247caae25591c4f0c202dc7bf88a3f1fe9a19f10e7ad9289ae302024c50",
+    "root_review_sha256": "daae128e81660763c271d6383d84eeaadf767ab3cc9ddd844666f022a9a0b86e"
+  },
+  "verification": {
+    "native": "Exact00600af release CLI/probe compilation and scoped Clippy passed. No repeated unchanged unit suites.1621 build files match Git; fixture1622 files and99 payloads independently verified.",
+    "durable_effects": "Every command/recovery compares all68 Control relations including xmin. Fresh committed command adds exactly one command, registration detail and audit; every original row remains. Endpoint identity/bytes/original attribution unchanged. Exact command/detail/audit/digest linkage and current actor/session/Control attribution independently checked against literal URL/key/heads.",
+    "custody": "All four held schedules reject an actual competing owner before release and preserve invisible provisional rows. Cancellation poisons the session and retains the driver until the finish barrier. Each expiry starts live and is independently observed with the other authority still live. Known rejected COMMIT returns Denied and restores availability.",
+    "recovery": "New actual Control epoch3 authenticates afresh and uses the identical original key/body. Completed commands return the original epoch2 identity/time with no changes; absent commands accept once under epoch3. Native Ingest is never opened by this SQL-only probe.",
+    "preservation": "Populated source equals qualified45f7593 capture before cloning and remains identical by rows/xmin/heap filenodes afterward. Existing basic/template sources and their report remain unchanged. No product, dependency or applied SQL changed during this wave."
+  },
+  "review": {
+    "kind": "read-only AI source review plus root original-artifact review",
+    "finding": "The first probe reused a one-document v1 fixture validator against two distinct retained v2 policies. Found before any engine run. cc1a4e8 compilation/Clippy result retained as build-only;00600af compares both exact v2 documents/digests independently, leaving historical helper unchanged. No product defect inferred.",
+    "controller": "Read-only review found no concrete blocker in seven schedule/oracle wiring. Root inspected full affected sources/diff and verified original captures. Reviewer did not execute engines."
+  },
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.relay_registration",
+    "local": ".research/implementation/relay-registration-20261001",
+    "remote_roots": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-cc1a4e8",
+      "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-00600af",
+      "/home/tux/bigbrotr-implementation-20260917/runs/registration-commit-c54c6bd"
+    ],
+    "original_outcome": "All seven engine cases PASS; no product/engine/fixture execution failure in this wave. First incompatible validator never reached PostgreSQL."
+  }
+}

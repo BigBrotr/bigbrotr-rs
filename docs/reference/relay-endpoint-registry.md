@@ -134,8 +134,12 @@ withdraw→historical receipts. Complete Control/native originals and the popula
 upgrade source remain unchanged where required. Schema0025 and its table/function
 privileges are required before the selected initial administration listener binds.
 
-Raw relational negatives, historical retry after grant/head change, cancellation,
-expiry (including fresh commands for existing endpoints), lock races and lost
-COMMIT remain NOT_RUN for this consumer. The initial owner stops on changed policy;
-fresh-owner historical recovery must be qualified separately. Neither these small
+[Seven actual adapter fault schedules](../implementation/evidence/p02-relay-registration-faults-native-20261001.json)
+now qualify lost/held COMMIT, cancellation, owner/session expiry for an existing
+endpoint and exact fresh-owner recovery. All68 Control tables and original
+attribution were checked. The held actual owner rejects a competing acquisition.
+Raw relational negatives, historical retry after grant/head change, concurrent
+authority writers and installed HTTP ambiguity remain NOT_RUN. The initial owner
+stops on changed policy; historical recovery across changed heads/grants still
+needs a separate fresh-owner schedule. Neither these small
 fixtures nor the receipt establishes installed acquisition, capacity or M1.
