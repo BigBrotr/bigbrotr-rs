@@ -128,6 +128,7 @@ complete the workflows promised by P08/P09:
 | `GET /management/v1/secret-references`; `PUT /management/v1/secret-references/{reference_id}` | Discover/register allowed protected provider handles; no raw secret upload or arbitrary filesystem browser |
 | `GET /management/v1/configuration` and `/configuration/revisions`; `POST /configuration/previews` and `/configuration/revisions` under the same prefix | Redacted effective state, validated change preview and atomic revision; CLI config show/validate/preview/apply |
 | `GET /management/v1/roles`; `POST /management/v1/roles/{role_instance_id}/commands` | Typed start/pause/drain/resume/stop for already configured supervised roles |
+| `POST /management/v1/relay-enrollments` | Guarded source intent; initial Ingest owner consumes an existing EndpointId, with dataset policy.change, exact generation and acceptance-only receipt |
 | `GET /management/v1/relays`; `POST /management/v1/jobs` | Operational registry view and typed finite work; enrollment/repair operations use their existing guarded domain commands |
 | `GET /management/v1/jobs` and `/jobs/{job_id}`; `POST /jobs/{job_id}/cancel` or `/resume` under the same prefix | Discover durable work, status, cooperative cancellation and resumption of paused work; CLI jobs list/status/cancel/resume |
 | `GET` / `POST /management/v1/saved-views`; `PUT` / `DELETE /management/v1/saved-views/{view_id}` | Owner-scoped saved query and revision; reuse reauthorizes |
@@ -163,6 +164,15 @@ routes remain separate required implementation. Generated types cover this actua
 subset; the current frontend runtime validators cover session observations and
 errors. Grant/reauthentication browser consumers remain required; these artifacts
 do not advertise the whole table above.
+
+The explicit initial Ingest owner additionally exposes
+`POST /management/v1/relay-enrollments`, using the same current session/CSRF
+boundary and dataset `policy.change` action. Its closed generated command/receipt
+types preserve complete visibility and exact revisions. It consumes an existing
+endpoint; accepted intent is neither committed visibility proof nor a socket grant.
+The [owning enrollment contract](../reference/relay-enrollment.md) defines roots,
+historical retry and its bounded qualification. The ordinary Serve profile does
+not expose this command yet. CLI/browser command consumers remain selected work.
 
 The initial `POST /management/v1/jobs` consumer accepts only an exact-ID private
 signed-event export using the shared QueryRequest and approved destination

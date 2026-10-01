@@ -31325,7 +31325,7 @@
       }
     },
     "initial_relay_commands": {
-      "state": "First installed HTTP wave PASS/stopped-retained; function privilege startup review finding under reproduction. Unpublished candidates.",
+      "state": "First wave PASS; missing route EXECUTE startup defect confirmed on9c7f75c, all resources stopped-retained. Probe correction pending native qualification.",
       "launch": {
         "source": "438067fd47cf538078cb2688360af359af14a8e4",
         "tree": "c93b5499a7ac7444ee4f2f146de57619a21563b6",
@@ -31399,6 +31399,49 @@
           "enrollment-prerequisite"
         ],
         "status": "PASS_INITIAL_ENROLLMENT_HTTP_WAVE"
+      },
+      "function_red": {
+        "launch": {
+          "source": "9c7f75c38823bfb5e9e081fcad1fd7a33650c4de",
+          "tree": "f37a9bdf417c40238247084713318f9e73c81b6a",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-enrollment-9c7f75c",
+          "pid": 1223320,
+          "start_ticks": "426500500",
+          "bundle_sha256": "394cce766fb4a4aa7a94b7c284f20877a82f329555363b8013106cf02f5b8388",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-438067f/out/artifacts"
+        },
+        "outcome": {
+          "status": "CONFIRMED_PRODUCT_STARTUP_COUNTEREXAMPLE",
+          "source": "9c7f75c38823bfb5e9e081fcad1fd7a33650c4de",
+          "source_files": 1612,
+          "captured_payloads": 21,
+          "result": "RuntimeError: missing enrollment prerequisite still bound the listener: enrollment-function-route",
+          "not_run": [
+            "enrollment-function-digest",
+            "enrollment-function-u64"
+          ],
+          "terminal_audit": {
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "observed_at": "2026-10-01T19:26:54.436878+00:00",
+            "owned_stopped": [
+              {
+                "id": "cb797d21152e35b36d3cccea1717f87c57c787ec25e298ebaf723486da90cba1",
+                "owner": "027d005c345054a2c31fc373da6bdc5d",
+                "exit": 143
+              },
+              {
+                "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+                "exit": 0
+              }
+            ],
+            "prior_unchanged": 992,
+            "unrelated_running": 8,
+            "compiler_lock_released": true,
+            "free_bytes": 60437438464
+          }
+        },
+        "local_evidence": ".research/implementation/initial-relay-commands-20261001/function-red"
       }
     }
   },

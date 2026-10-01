@@ -101,6 +101,13 @@ impl ControlSession {
             .query_one(
                 "
             SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege))
+                AND has_function_privilege(CURRENT_USER,
+                    'control.relay_route_valid(bytea)', 'EXECUTE')
+                AND has_function_privilege(CURRENT_USER,
+                    'control.relay_enrollment_digest(control.relay_enrollment_changes,control.management_commands)',
+                    'EXECUTE')
+                AND has_function_privilege(CURRENT_USER,
+                    'control.command_u64_bytes(control.u64)', 'EXECUTE')
             FROM (VALUES
                 ('control.relay_endpoints',ARRAY['SELECT']),
                 ('control.relay_access_contexts',ARRAY['SELECT','INSERT']),

@@ -134,3 +134,22 @@ owner, followed by bounded process death. Complete native/input/SQL oracles rema
 in force. No product build was repeated for these fixture-only changes. Worker
 panic, renewal-specific ambiguous COMMIT, successor recovery and capacity remain
 separate acceptance work.
+
+## Installed initial relay enrollment
+
+`--installed-enrollments [BUILD]` uses the real initial CLI/session dispatcher and
+existing enrollment adapter. Isolated actual registry setup registers one endpoint
+before startup; this is explicitly not authenticated URL registration evidence.
+The three cases cover enable/retry/withdraw/historical retry with complete SQL
+snapshots, public-policy intersection/private roots, principals.manage-only refusal,
+and missing table INSERT before bind. Complete bootstrap native/input/receipt
+oracles remain independent. Product438067f/fixture17c6ea0 passed this bounded wave.
+
+`--installed-enrollment-functions BUILD` tests each required EXECUTE privilege
+separately, followed by the permitted journey: route validation, enrollment digest
+and its uint64 encoder. Each refusal must
+refuse before binding without command/session effects; actual native initialization
+is preserved. On438067f, fixture9c7f75c detected the missing route-function probe:
+the listener initialized despite revoked EXECUTE. Original failure and graceful
+cleanup are retained; remaining two cases were not reached. The correction is
+under qualification. No whole-step, M1 or release claim follows from these cases.

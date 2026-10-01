@@ -12,7 +12,7 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main17c6ea0e3e533ff7dd4d970e2cd5a523b77396c2 is unpublished;
+Mac main9c7f75c38823bfb5e9e081fcad1fd7a33650c4de is unpublished;
 private origin remains6aa4059cff575ebe426c3d4512f2aca566f8523e. Root sole writer.
 Active P02-T01 Step6/P01-T09 Step1 installed enrollment HTTP consumer.
 Product438067f/treec93b5499a7ac7444ee4f2f146de57619a21563b6 built natively;
@@ -36,26 +36,35 @@ all sources, exact artifacts, launch/capture/review recipes and original outcome
 No current experiment. Shared1154757 intermediates438067f; artifacts separate.
 Mac5.0GiB free; check before builds. Prior cache retirement remains complete.
 
-Read-only AI review found a P2 startup gap: require_relay_enrollment tests table
+Read-only AI review found a P2 startup gap: require_relay_enrollment tested table
 privileges but not EXECUTE for relay_route_valid, relay_enrollment_digest and its
-command_u64_bytes dependency. Missing EXECUTE can bind then fail a fresh command.
-Source-derived, not yet executed. Root is adding three installed missing-function
-cases to the existing fixture before changing product. Reuse438067f for RED, then
-repair the probe and run exact native candidate; no applied SQL change required.
-No other concrete reviewer defect in the bounded product/caller/fixture boundary.
-Full earlier migrations/native internals and remote artifacts were not AI-reviewed;
-root reviewed originals. Initial independent review script misspelled the account
-table; corrected local script with original KeyError recorded, no oracle weakened.
+command_u64_bytes dependency. Actual438067f CLI/fixture9c7f75c confirmed the route
+case: EXECUTE=false yet initialized listener bound. The test stopped the exact CLI
+normally; original FAIL/state/logs remain. Other two cases were not reached.
+No command was submitted by this counterexample; it proves premature binding.
+Root verified source/capture identities and actual report, revocation and terminal.
+Run initial-enrollment-9c7f75c PID1223320/start426500500 terminal;
+owner027d005c345054a2c31fc373da6bdc5d/clientcb797d21 stopped143; PG71775507 stopped0.
+Audit19:26:54UTC:992 prior projections unchanged,8 unrelated running, compiler lock
+free,60,437,438,464B free. function-red/ owns originals and collection recipes.
+Initial collector misspelled result.failure as error; failed archive/stderr retained,
+corrected collector changed no product/experiment outcome. No experiment active.
 
-OpenAPI and generated management.d.ts drafts are preserved under ignored
-initial-relay-commands-20261001/api-draft/ with their original repo-relative paths.
-Root temporarily restored only those two owned drafts to HEAD, keeping the RED
-fixture revision free of compiled/non-fixture changes. Restore drafts after the
-function privilege correction. Remaining reference consumers still need updating.
-Dirty files: enrollments.py, bindings.py, this checkpoint and inventory, root-owned.
-Next bounded action: commit/run --installed-enrollment-functions on438067f to
-observe missing-EXECUTE startup counterexample; then correct and qualify all three
-function dependencies plus a valid HTTP journey. Do not replay completed launchers.
+Root adds all three function privilege checks without SQL changes, updates the
+OpenAPI/generated command types and relevant reference consumers. Drafts were
+restored from api-draft/; those preserved copies are no longer outstanding work.
+Mac formatting, generated contract/type checks and30 client tests PASS. No repeat native
+build yet. Earlier local review-script account table typo is recorded separately.
+Read-only AI recheck found the fix/signatures and contract coherent; its fixture
+finding (same-revision reuse wrongly required nonempty diff) is corrected while
+retaining the exact docs/experiments-only restriction for different revisions. No other concrete reviewer
+finding in the bounded production/caller/fixture scope; whole native/migration
+history was not independently reviewed. Root is the integrating owner.
+Dirty files are root-owned product probe/comment, OpenAPI/generated type,
+reference/experiment docs, inventory and this checkpoint. Next: commit the
+correction candidate, run scoped native build then all three missing-function
+cases and the valid installed HTTP journey on fresh clones. Preserve original
+17c6ea0 successes and9c7f75c failure. No SQL checksum or persistent format changes.
 Whole selected product/M1 remains INCOMPLETE; no broader acceptance box advances.
 
 [Installed session faults](evidence/p01-initial-session-faults-native-20261001.json)

@@ -164,6 +164,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/management/v1/relay-enrollments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept a direct relay enrollment change
+         * @description Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Public enablement intersects both complete accepted policy documents; private enablement must fit a complete deployment root. Migration0019 and all required table and function privileges must be available before the initial listener binds. Historical retry authenticates the current actor then resolves before fresh permission, CAS and root checks. A lost response requires the identical original key and body. No endpoint creation, installed acquisition or restrictive drain claim. Native installed qualification is scoped to the referenced initial HTTP journey.
+         */
+        post: operations["changeRelayEnrollment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -505,6 +525,46 @@ export interface components {
             observed_at_us: string;
             /** @constant */
             authority: "observation-only";
+        };
+        RelayEnrollmentRoute: {
+            /** @constant */
+            class: "public";
+        } | {
+            /** @constant */
+            class: "private";
+            /** @description IPv4 or IPv6 network/prefix with clear host bits; mapped IPv6 refused. Equivalent IPv6 spellings normalize to identical command bytes. The server parses and validates the complete prefix. */
+            cidr: string;
+        };
+        /** @description Declared source intent for an already registered endpoint in the installed dataset. First enablement requires explicit null expected_generation; existing transitions require the exact current generation. Withdrawal must retain the route. Visibility must name this dataset and kind4; this command does not prove the native mapping or grant network/data authority. Unknown fields and duplicate JSON keys are refused by the server. The complete UTF-8 request body is limited to8192bytes. */
+        RelayEnrollmentCommand: {
+            endpoint_id: string;
+            visibility: components["schemas"]["ScopeGrantCommand"]["scope"];
+            route: components["schemas"]["RelayEnrollmentRoute"];
+            enabled: boolean;
+            expected_generation: string | null;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_config_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_policy_revision: string;
+        } & unknown;
+        /** @description Immutable original acceptance. Historical retry returns created=false and may describe an earlier enabled generation after withdrawal; it never reapplies that state or establishes restrictive drain. */
+        RelayEnrollmentReceipt: {
+            /** @constant */
+            format: "bigbrotr-relay-enrollment/1";
+            command_key: string;
+            endpoint_id: string;
+            access_scope_id: string;
+            route_id: string;
+            enabled: boolean;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            generation: string;
+            /** @description Original positive Unix microseconds, maximum9223372036854775807; exact decimal string. */
+            accepted_at_us: string;
+            created: boolean;
+            /** @constant */
+            application: "unobserved";
+            /** @constant */
+            authority: "acceptance-only";
         };
         /**
          * Initial exact-ID history QueryRequest
@@ -1347,6 +1407,116 @@ export interface operations {
                 };
             };
             /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Command or revision conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Body byte limit */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description JSON required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    changeRelayEnrollment: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RelayEnrollmentCommand"];
+            };
+        };
+        responses: {
+            /** @description Identical authenticated actor/key/body returns only the original receipt; no cookies or idle refresh. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RelayEnrollmentReceipt"];
+                };
+            };
+            /** @description Fresh enrollment transition accepted atomically; no cookies or network work. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RelayEnrollmentReceipt"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary, dataset permission or current route policy denied */
             403: {
                 headers: {
                     [name: string]: unknown;

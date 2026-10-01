@@ -1199,6 +1199,157 @@
           }
         }
       }
+    },
+    "/management/v1/relay-enrollments": {
+      "post": {
+        "operationId": "changeRelayEnrollment",
+        "summary": "Accept a direct relay enrollment change",
+        "description": "Available on the explicit initial Ingest owner only, with administration enabled; the ordinary Serve profile does not expose this route. Exact Origin, live session, explicit CSRF and one canonical Idempotency-Key required; no query or HEAD. Fresh commands require dataset policy.change and exact expected config/policy revisions. Public enablement intersects both complete accepted policy documents; private enablement must fit a complete deployment root. Migration0019 and all required table and function privileges must be available before the initial listener binds. Historical retry authenticates the current actor then resolves before fresh permission, CAS and root checks. A lost response requires the identical original key and body. No endpoint creation, installed acquisition or restrictive drain claim. Native installed qualification is scoped to the referenced initial HTTP journey.",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$",
+              "not": {
+                "const": "00000000000000000000000000000000"
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RelayEnrollmentCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary, dataset permission or current route policy denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Command or revision conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Fresh enrollment transition accepted atomically; no cookies or network work.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelayEnrollmentReceipt"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Identical authenticated actor/key/body returns only the original receipt; no cookies or idle refresh.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelayEnrollmentReceipt"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2320,6 +2471,196 @@
           }
         },
         "description": "At most effective_page_size current actor-owned export observations, descending(created_at_us,job_id). Empty pages may advance: next_cursor null alone means completion. Candidate scan is bounded before current mutable filters/admission-cut checks. No scientific snapshot, frozen membership, input/output or execution authority. JSON response max128KiB; no automatic fetch-all."
+      },
+      "RelayEnrollmentRoute": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "class"
+            ],
+            "properties": {
+              "class": {
+                "type": "string",
+                "const": "public"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "class",
+              "cidr"
+            ],
+            "properties": {
+              "class": {
+                "type": "string",
+                "const": "private"
+              },
+              "cidr": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 43,
+                "description": "IPv4 or IPv6 network/prefix with clear host bits; mapped IPv6 refused. Equivalent IPv6 spellings normalize to identical command bytes. The server parses and validates the complete prefix."
+              }
+            }
+          }
+        ]
+      },
+      "RelayEnrollmentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "endpoint_id",
+          "visibility",
+          "route",
+          "enabled",
+          "expected_generation",
+          "expected_config_revision",
+          "expected_policy_revision"
+        ],
+        "properties": {
+          "endpoint_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/ScopeGrantCommand/properties/scope"
+          },
+          "route": {
+            "$ref": "#/components/schemas/RelayEnrollmentRoute"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "expected_generation": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[1-9][0-9]{0,19}$",
+                "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "expected_config_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "expected_policy_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "enabled": {
+                  "const": false
+                }
+              },
+              "required": [
+                "enabled"
+              ]
+            },
+            "then": {
+              "properties": {
+                "expected_generation": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]{0,19}$",
+                  "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+                }
+              }
+            }
+          }
+        ],
+        "description": "Declared source intent for an already registered endpoint in the installed dataset. First enablement requires explicit null expected_generation; existing transitions require the exact current generation. Withdrawal must retain the route. Visibility must name this dataset and kind4; this command does not prove the native mapping or grant network/data authority. Unknown fields and duplicate JSON keys are refused by the server. The complete UTF-8 request body is limited to8192bytes."
+      },
+      "RelayEnrollmentReceipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format",
+          "command_key",
+          "endpoint_id",
+          "access_scope_id",
+          "route_id",
+          "enabled",
+          "generation",
+          "accepted_at_us",
+          "created",
+          "application",
+          "authority"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "bigbrotr-relay-enrollment/1"
+          },
+          "command_key": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "endpoint_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "access_scope_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "route_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "generation": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "accepted_at_us": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "description": "Original positive Unix microseconds, maximum9223372036854775807; exact decimal string."
+          },
+          "created": {
+            "type": "boolean"
+          },
+          "application": {
+            "type": "string",
+            "const": "unobserved"
+          },
+          "authority": {
+            "type": "string",
+            "const": "acceptance-only"
+          }
+        },
+        "description": "Immutable original acceptance. Historical retry returns created=false and may describe an earlier enabled generation after withdrawal; it never reapplies that state or establishes restrictive drain."
       }
     },
     "securitySchemes": {

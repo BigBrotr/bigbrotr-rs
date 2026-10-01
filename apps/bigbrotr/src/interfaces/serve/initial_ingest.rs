@@ -81,7 +81,7 @@ impl Cancellation {
 }
 
 fn selected(root: &Resolved) -> Result<()> {
-    // This initial owner supports only the session command surface. Archive
+    // This initial owner supports sessions and enrollment commands. Archive
     // consumers still require their own supervisor and cannot be silently omitted.
     if !root.local("control")
         || !root.local("ingest")

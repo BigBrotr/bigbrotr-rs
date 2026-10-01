@@ -52,7 +52,7 @@ assert built['probe_name'] == 'ingest_bootstrap_probe'
 if reuse_build:
     # Reuse only reviewed exact artifacts whose complete Rust/build inputs match.
     changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', built['source'], revision]).stdout.splitlines()
-    assert changed and all(n.startswith(('docs/', 'experiments/')) for n in changed), changed
+    assert all(n.startswith(('docs/', 'experiments/')) for n in changed), changed
 else:
     assert built['source'] == revision
 sha = lambda value: hashlib.sha256(value).hexdigest()
@@ -480,7 +480,7 @@ try:
     elif interruptions:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
     elif enrollment_http:
-        cases = (['enrollment-function-route', 'enrollment-function-digest', 'enrollment-function-u64']
+        cases = (['enrollment-function-route', 'enrollment-function-digest', 'enrollment-function-u64', 'enrollment-journey']
             if enrollment_functions else ['enrollment-journey', 'enrollment-permission', 'enrollment-prerequisite'])
     elif sessions:
         if session_faults:

@@ -569,9 +569,14 @@ The initial [relay enrollment command](../reference/relay-enrollment.md) uses
 current session/CSRF and dataset `policy.change`, retaining exact actor/key
 idempotency, enrollment generation and acceptance-only audit. It records declared
 source visibility intent; it neither changes principal grants nor requires the
-Archive allocation proof belonging to history scope grants. HTTP/CLI integration
-and the restrictive action issuer are not yet exposed. Full selected protected
-and overlay route support remains required.
+Archive allocation proof belonging to history scope grants. The explicit initial
+Ingest owner exposes `POST /management/v1/relay-enrollments` for an already
+registered EndpointId; fresh acceptance202 and historical retry200 have no
+application or socket authority. The ordinary Serve profile, authenticated URL
+registration, CLI enrollment and full protected/overlay routes remain required.
+The [initial HTTP boundary](../reference/relay-enrollment.md#initial-owner-http-consumer-under-qualification)
+is under practical qualification, including refusal before bind when SQL function
+execution privileges are missing.
 
 ### Scope-grant acceptance boundary
 

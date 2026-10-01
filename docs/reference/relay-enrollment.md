@@ -119,7 +119,7 @@ to its existing loopback session router. Its closed body is `EnrollmentCommand`
 above; session cookie, explicit CSRF header and one canonical `Idempotency-Key`
 are required. The8KiB body, connection/request limits and original Control/native
 custody are shared with the existing dispatcher. No second command connection or
-network worker starts. Migration0019 and each required table privilege are checked
+network worker starts. Migration0019 and each required table/function privilege are checked
 before binding. Earlier session-only installations must explicitly migrate first.
 
 Public enablement requires both complete accepted policy documents. Private route
@@ -138,8 +138,14 @@ withdrawal returns the historical receipt without re-enabling the source.
 This input consumes an already registered EndpointId. The internal URL registry
 operation is not a browser-authenticated registration command. Installed endpoint
 creation, CLI enrollment and complete acquisition remain separate required work.
-Local transport tests do not qualify durable effects; native installed cases are
-pending in P02-T01 Step6/P01-T09 Step1.
+Native product438067f/fixture17c6ea0 exercised actual enable/retry/withdraw,
+historical retry after withdrawal, accepted public-policy intersection, private
+root bounds, permission refusal and missing table privilege before bind. All64
+SQL tables and12 bootstrap native rows were checked. A review then exposed a
+missing function-privilege startup check; its real counterexample on9c7f75c is
+retained and the correction is being qualified. P02-T01 Step6/P01-T09 Step1 remain
+partial; neither this fixture nor its internal endpoint setup proves installed
+URL registration or complete acquisition.
 
 ## Finite current source operations
 
