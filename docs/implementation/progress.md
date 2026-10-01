@@ -12,11 +12,23 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main7104b2d6e1777e9c8fca9141f096f26dcd248b90, tree8e451e44ba30d8ca17912e5739e5389cb2e8ad86,
-origin995df9c; two unpublished verified fixture candidates. Root sole writer.
-Dirty only bounded fault evidence/docs/checkpoint/inventory. Actual0733326 build
-and seven affected endpoint regressions PASS;7104b2d scope wave passes seven more.
-No product/applied SQL/dependency changes. No active build or engine.
+Mac main/origin4e95a1f327aefa4dab91279bb2456778a183aacf pushed,
+treedfbf50f51d036ec88170e101c4236932db27cf06. Root sole writer. Dirty only
+supplemental internal helper evidence/docs/checkpoint/inventory. No product/applied
+SQL/dependency change or active build/engine. Actual0733326 build/endpoint faults,
+7104b2d scope faults and now4e95a1f internal helper regression PASS within their
+separate claims. Next bounded work: current-authority races/raw relational negatives,
+then installed HTTP ambiguity before finite-job delivery.
+
+Latest runs/acquisition-scope-faults-4e95a1f STOPPED/RETAINED:
+native PID1424898/start427761161 terminal, ownerb216e89dc1a41c2595a350b4a09610f7,
+fetch33e34ac6/nativef874f0ab exited0/noOOM, source1643files/9 build captures verified.
+Internal engine PID1427674/start427775241 terminal, owner4f4136c8ac7ea84f0317abccf8826b97,
+clientd141914989519c13d561ca2cd307d0ed4483c431db719a1c088dd1d38b866b02
+stopped143; borrowedPG71775507 stopped0. Six scenarios/32 checks;1643 Git files and
+47 engine captures root-verified. Full terminal timestamp/space and unchanged
+inventory in scope-registration-20261001/internal-regression/root-review.json.
+Native and engine audits kept separately. Cache latest4e95a1f, lock free.
 
 Latest runs/scope-command-faults-7104b2d STOPPED/RETAINED, PID1414924/
 start427735387, owner8e2def83b94181d79d66c3dafa19427a, cliente824d8cf9e117e8d054a9604a4d92913c470e37ba13d80d1a749631413613940
@@ -94,8 +106,7 @@ first-owner enrollment inserts new grants; current scope-grant editing serialize
 through account locks and atomically increments grant_revision. The actual adapter
 locks the account UPDATE,0026 independently SHARE. Keep0026 unchanged and qualify
 normative writer races; arbitrary privileged grant DML remains outside the claim.
-Establish its protocol when implementing the dataset-grant editor. New concurrency/raw relational cases, old internal scope helper regression and
-native resource capacity remain NOT_RUN; HTTP/upgrade and adapter COMMIT are qualified below.
+Establish its protocol when implementing the dataset-grant editor. New concurrency/raw relational cases, native resource capacity remain NOT_RUN; HTTP/upgrade and adapter COMMIT are qualified below.
 Evidence: ignored .research/implementation/scope-registration-20261001, inventoried
 implementation_network_20260928.scope_registration; original RED logs retained.
 
@@ -229,13 +240,21 @@ SQL-only recovery does not adopt native Ingest. One explicit probe command varia
 and the existing finite schedule are shared; independent semantic oracles remain.
 No product or migration changed. AI bounded source review found no further blocker.
 
-Next bounded action: build the current internal acquisition_scope_probe using the
-existing acquisition-scope-faults native build-only profile and exclusively locked
-1154757 cache; execute experiments/acquisition-scope/run.py over six isolated cases
-for the extracted identity helper. Complete current acquisition.rs/probe/run.py were
-read; prior exact-v2 source fixture remains valid. Then current-authority races,
-raw relational negatives and installed HTTP ambiguity before finite-job delivery.
-No need whole Discovery/Monitor for these remaining durable prerequisites.
+The fault report now also records4e95a1f internal helper regression: six actual
+PG scenarios/32 checks passed with the newly built acquisition_scope_probe. Exact
+basic/reordered/wider identities,64 forced candidate collisions plus capacity,
+rollback, expiry, old-schema refusal and historical policy epoch preserve complete
+64/66-table state outside expected effects. No affected helper regression remains
+pending; broader current-user authority/relational qualification is still separate.
+
+Next bounded action: extend the existing registration_races.py concrete schedule
+for scope acceptance with explicit roles.control writer and independent scope
+receipt/effects oracle. Both lock orders and writer rollback must be positively
+observed; original heads/grants receipt recovery remains historical. Complete
+registration_races.py/registration_relations.py and acquisition.rs/probe/run.py were
+read; relational SQL fixture still needs its complete read before adaptation.
+Preserve account-lock/grant-revision writer discipline; no arbitrary bare grant
+DML claim. Reuse qualified0733326 probe for experiments/docs-only fixture revisions.
 
 ## Next useful journey and remaining prerequisites
 
@@ -313,7 +332,7 @@ bb_scope_54d1a18_basic and original transport/source/fault clones. Secrets stay
 under protected pg/secrets and never enter Git. Clone and verify before experiments.
 
 Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latest0733326 intermediates;
+acceleration, exclusively locked by .compiler-cache.lock. Latest4e95a1f intermediates;
 qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
 clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
 owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.

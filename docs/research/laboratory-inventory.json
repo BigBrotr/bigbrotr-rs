@@ -32518,6 +32518,73 @@
           "source_files_verified": 1642,
           "captured_payloads_verified": 106,
           "local": ".research/implementation/scope-registration-20261001/fault-engine"
+        },
+        {
+          "source": "4e95a1f327aefa4dab91279bb2456778a183aacf",
+          "tree": "dfbf50f51d036ec88170e101c4236932db27cf06",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-faults-4e95a1f",
+          "pid": 1424898,
+          "start_ticks": "427761161",
+          "bundle_sha256": "06d28e2ec00d66457c76bad35efc4d39a6057d798be00b98ec91a55143ccedf1",
+          "state": "STOPPED_RETAINED",
+          "owner": "b216e89dc1a41c2595a350b4a09610f7",
+          "fetch_container": "33e34ac64e13e0b442f98e6f8348218a435006bcbdf7b86e74d7dede9c89a243",
+          "native_container": "f874f0abfbc41537b9efdb05ceccfc350d3816bc163c37163ff5ecb21b35a7c0",
+          "build_review": {
+            "status": "PASS_BUILD_ONLY_ROOT_REVIEW",
+            "source": "4e95a1f327aefa4dab91279bb2456778a183aacf",
+            "source_files": 1643,
+            "captured_files": 9,
+            "terminal": {
+              "status": "PASS_BUILD_TERMINAL_AUDIT_ONLY",
+              "observed_at": "2026-10-01T22:57:43.157194+00:00",
+              "owned_stopped": [
+                "33e34ac64e13e0b442f98e6f8348218a435006bcbdf7b86e74d7dede9c89a243",
+                "f874f0abfbc41537b9efdb05ceccfc350d3816bc163c37163ff5ecb21b35a7c0"
+              ],
+              "prior_unchanged": 1019,
+              "unrelated_running": 8,
+              "compiler_lock_released": true,
+              "artifact_hashes_verified": true,
+              "free_bytes": 58100039680
+            }
+          },
+          "engine": {
+            "source": "4e95a1f327aefa4dab91279bb2456778a183aacf",
+            "tree": "dfbf50f51d036ec88170e101c4236932db27cf06",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-faults-4e95a1f",
+            "pid": 1427674,
+            "start_ticks": "427775241",
+            "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-faults-4e95a1f/out/artifacts",
+            "scope": "six affected internal scope identity regression scenarios",
+            "owner": "4f4136c8ac7ea84f0317abccf8826b97",
+            "client": "d141914989519c13d561ca2cd307d0ed4483c431db719a1c088dd1d38b866b02",
+            "state": "STOPPED_RETAINED",
+            "qualification": "PASS_SCOPED_ACQUISITION_REGISTRATION",
+            "audit": {
+              "status": "PASS_TERMINAL_AUDIT_ONLY",
+              "observed_at": "2026-10-01T22:59:25.517863+00:00",
+              "owned_stopped": [
+                {
+                  "id": "d141914989519c13d561ca2cd307d0ed4483c431db719a1c088dd1d38b866b02",
+                  "owner": "4f4136c8ac7ea84f0317abccf8826b97",
+                  "exit": 143
+                },
+                {
+                  "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                  "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+                  "exit": 0
+                }
+              ],
+              "prior_unchanged": 1020,
+              "unrelated_running": 8,
+              "compiler_lock_released": true,
+              "free_bytes": 58033922048
+            }
+          },
+          "source_files_verified": 1643,
+          "captured_payloads_verified": 47,
+          "local": ".research/implementation/scope-registration-20261001/internal-regression"
         }
       ],
       "findings": [
@@ -32534,7 +32601,7 @@
         "typescript_and_generation": "PASS",
         "native": "PASS build/components only"
       },
-      "next": "Rebuild internal acquisition_scope_probe against extracted helper and run affected six-case engine regression, then scope authority races/raw relations and installed ambiguity before finite-job delivery.",
+      "next": "Scope current-authority races/raw relational negatives and installed HTTP ambiguity, then finite-job delivery.",
       "candidate": "e4c282542532aa95ca30b8ea252b527230d614b8",
       "fixture_review": "Read-only AI found unbound HTTP receipts and overly broad startup-refusal write allowance; corrected before engine run. Maximum padded HTTP body does not qualify maximum canonical selector.",
       "evidence": "docs/implementation/evidence/p03-initial-scopes-http-native-20261002.json",

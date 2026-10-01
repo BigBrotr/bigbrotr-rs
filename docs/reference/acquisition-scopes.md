@@ -164,8 +164,9 @@ qualifies the bounded login/registration/retry and prerequisite journey on nativ
 Linux amd64. The [adapter fault wave](../implementation/evidence/p03-scope-command-faults-native-20261002.json)
 qualifies lost/cancelled COMMIT and isolated owner/session expiry for new commands
 over an existing scope, with fresh-owner exact recovery. Concurrent authority
-changes, raw relational negatives, installed HTTP ambiguity and the affected
-internal scope regression remain NOT_RUN for this consumer.
+changes, raw relational negatives and installed HTTP ambiguity remain NOT_RUN
+for this consumer. The same report records six actual-engine internal helper
+regressions, including64 candidate collisions, rollback and historical identity.
 The padded maximum body exercises the HTTP envelope, not a maximum canonical
 selector or production memory bound. Applied0026 is now immutable.
 

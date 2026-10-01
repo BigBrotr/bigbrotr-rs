@@ -218,7 +218,6 @@
     "scope current-authority races and raw relational refusal",
     "historical recovery after changed heads/grants",
     "installed scope HTTP COMMIT ambiguity",
-    "internal scope helper regression",
     "finite-job delivery/installed acquisition/M1",
     "capacity/load/aged-state",
     "arm64/release",
@@ -231,12 +230,89 @@
     "ignored_local_root": ".research/implementation/scope-registration-20261001",
     "remote_roots": [
       "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-0733326",
-      "/home/tux/bigbrotr-implementation-20260917/runs/scope-command-faults-7104b2d"
+      "/home/tux/bigbrotr-implementation-20260917/runs/scope-command-faults-7104b2d",
+      "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-faults-4e95a1f"
     ],
     "original_sources_preserved": [
       "bb_scope_bind_45f7593_registration_journey",
       "bb_scope_bind_5e7dbab_scope_journey"
     ],
     "outcome": "Seven scope cases and seven affected endpoint regressions PASS. No engine failure or expected-result weakening. Resources stopped/retained; no dataset or volume removed."
+  },
+  "internal_helper_regression": {
+    "observed_at": "2026-10-01T22:59:25.517863+00:00",
+    "status": "PASS_BOUNDED_INTERNAL_SCOPE_REGRESSION",
+    "source": "4e95a1f327aefa4dab91279bb2456778a183aacf",
+    "tree": "dfbf50f51d036ec88170e101c4236932db27cf06",
+    "binary_sha256": "16493dd0eda02fafd4818924f21662fe4e0d1163d809122942f57a468f9d3580",
+    "probe_sha256": "ac5bcf40def08076c6efb2b73d91d8fd9c5c0258f120035f079a259a1f45ab3c",
+    "scenarios": [
+      {
+        "name": "basic",
+        "control_tables": 66,
+        "selectors": 2,
+        "scopes": 3,
+        "other_tables_xmin_unchanged": true
+      },
+      {
+        "name": "collision",
+        "control_tables": 66,
+        "selectors": 64,
+        "scopes": 64,
+        "other_tables_xmin_unchanged": true
+      },
+      {
+        "name": "rollback",
+        "control_tables": 66,
+        "selectors": 0,
+        "scopes": 0,
+        "other_tables_xmin_unchanged": true
+      },
+      {
+        "name": "expired",
+        "control_tables": 66,
+        "selectors": 0,
+        "scopes": 0,
+        "other_tables_xmin_unchanged": true
+      },
+      {
+        "name": "old-schema",
+        "control_tables": 64,
+        "refusal": "Prerequisite",
+        "no_identity_tables": true
+      },
+      {
+        "name": "historical",
+        "control_tables": 66,
+        "selectors": 2,
+        "scopes": 4,
+        "other_tables_xmin_unchanged": true
+      }
+    ],
+    "executed_checks": 32,
+    "source_files": 1643,
+    "captured_payloads": 47,
+    "root_review_sha256": "ad27959157bdb90342fe7e7f8ae53f4e585459887dfdd44cb27f8690dc2a1bdb",
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-01T22:59:25.517863+00:00",
+      "owned_stopped": [
+        {
+          "id": "d141914989519c13d561ca2cd307d0ed4483c431db719a1c088dd1d38b866b02",
+          "owner": "4f4136c8ac7ea84f0317abccf8826b97",
+          "exit": 143
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 1020,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 58033922048
+    },
+    "scope": "Six original internal scope scenarios rebuilt against the extracted identity helper: equivalent/new identities,64 candidate collisions/capacity,rollback,expiry,old schema and historical policy epoch. Actual Control adapter/PG and complete64/66 relations; no browser or native successor claim."
   }
 }
