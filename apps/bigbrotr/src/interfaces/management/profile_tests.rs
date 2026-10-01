@@ -196,6 +196,18 @@ fn enrollment_input() -> serde_json::Value {
     })
 }
 
+#[tokio::test]
+async fn initial_relay_registration_requires_session_before_accepting_input() {
+    let (mut server, address, budget, _) = sessions().await;
+    let response = exchange(address, format!(
+        "POST /management/v1/relay-endpoints HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{{}}"
+    )).await;
+    assert!(response.starts_with("HTTP/1.1 401 "), "{response}");
+    assert!(server.commands.try_recv().is_err());
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
 fn enrollment_request(address: SocketAddr, headers: &str, body: &str) -> String {
     format!(
         "POST /management/v1/relay-enrollments HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n{headers}\r\n{body}",
@@ -323,6 +335,151 @@ async fn enrollment_transport_refuses_ambiguous_authority_and_invalid_shapes_bef
         (auth.clone(), "x".repeat(8193), 413),
     ] {
         let response = exchange(address, enrollment_request(address, &headers, &input)).await;
+        assert!(
+            response.starts_with(&format!("HTTP/1.1 {status} ")),
+            "{response}"
+        );
+        assert!(server.commands.try_recv().is_err());
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+fn registration_request(address: SocketAddr, headers: &str, body: &str) -> String {
+    format!(
+        "POST /management/v1/relay-endpoints HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n{headers}\r\n{body}",
+        body.len()
+    )
+}
+
+#[tokio::test]
+async fn registration_transport_preserves_normalized_identity_and_escaped_maximum() {
+    use bigbrotr::management::relay_registration::RegistrationReceipt;
+    let (mut server, address, budget, _) = sessions().await;
+    let prefix = "wss://example.test/?";
+    let maximum = format!("{prefix}{}", "\"".repeat(8192 - prefix.len()));
+    for (url, normalized) in [
+        (
+            "WSS://EXAMPLE.test.:443/a/../%62?b=2&a=%7e",
+            "wss://example.test/b?b=2&a=%7e",
+        ),
+        (maximum.as_str(), maximum.as_str()),
+    ] {
+        let body = serde_json::json!({
+            "url":url, "expected_config_revision":"2", "expected_policy_revision":"3"
+        })
+        .to_string();
+        if url == maximum {
+            assert_eq!(body.len(), 16436);
+        }
+        for created in [true, false] {
+            let mut client = tokio::spawn(exchange(
+                address,
+                registration_request(address, &enrollment_auth(), &body),
+            ));
+            let received = tokio::time::timeout(Duration::from_secs(1), async {
+                tokio::select! {
+                    command = server.commands.recv() => command.unwrap(),
+                    response = &mut client => panic!("valid command refused before dispatch: {}", response.unwrap()),
+                }
+            }).await.unwrap();
+            let transport::Operation::RelayRegistration {
+                session,
+                csrf,
+                key,
+                command,
+            } = received.operation
+            else {
+                panic!("wrong queued operation");
+            };
+            assert_eq!(session.expose_hex().as_str(), "11".repeat(32));
+            assert_eq!(csrf.expose_hex().as_str(), "22".repeat(32));
+            assert_eq!(key.to_string(), "08".repeat(16));
+            assert_eq!(command.url.as_str(), normalized);
+            assert_eq!(command.expected_config_revision.get(), 2);
+            assert_eq!(command.expected_policy_revision.get(), 3);
+            received
+                .completion
+                .finish(Ok(transport::Reply::RelayRegistration(
+                    RegistrationReceipt {
+                        command_key: key,
+                        endpoint_id: "44".repeat(16).parse().unwrap(),
+                        accepted_at_us: i64::MAX,
+                        created,
+                    },
+                )));
+            let response = client.await.unwrap();
+            let (headers, returned) = response.split_once("\r\n\r\n").unwrap();
+            assert!(headers.starts_with(if created {
+                "HTTP/1.1 202 "
+            } else {
+                "HTTP/1.1 200 "
+            }));
+            assert!(
+                !headers.contains("set-cookie:") && headers.contains("cache-control: no-store\r\n")
+            );
+            assert_eq!(
+                serde_json::from_str::<serde_json::Value>(returned).unwrap(),
+                serde_json::json!({
+                    "format":"bigbrotr-relay-registration/1", "command_key":"08".repeat(16),
+                    "endpoint_id":"44".repeat(16), "accepted_at_us":"9223372036854775807",
+                    "created":created, "authority":"identity-only"
+                })
+            );
+        }
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn registration_transport_refuses_ambiguous_authority_and_invalid_input() {
+    let (mut server, address, budget, _) = sessions().await;
+    let input = serde_json::json!({
+        "url":"wss://example.test/", "expected_config_revision":"2", "expected_policy_revision":"3"
+    });
+    let body = input.to_string();
+    let auth = enrollment_auth();
+    let key = format!("Idempotency-Key: {}\r\n", "08".repeat(16));
+    let csrf = format!("X-CSRF-Token: {}\r\n", "22".repeat(32));
+    for (headers, body, status) in [
+        (auth.replace(&csrf, ""), body.clone(), 403),
+        (format!("{auth}{csrf}"), body.clone(), 403),
+        (auth.replace(&key, ""), body.clone(), 400),
+        (format!("{auth}{key}"), body.clone(), 400),
+        (auth.clone(), body.replace("wss:", "https:"), 400),
+        (
+            auth.clone(),
+            body.replace("example.test/", "example.test/#fragment"),
+            400,
+        ),
+        (
+            auth.clone(),
+            body.replace("example.test/", "user:secret@example.test/"),
+            400,
+        ),
+        (
+            auth.clone(),
+            body.replace(
+                "example.test/",
+                &format!("example.test/{}", "x".repeat(8192)),
+            ),
+            400,
+        ),
+        (
+            auth.clone(),
+            body.replace("\"url\":", "\"actor_id\":\"forged\",\"url\":"),
+            400,
+        ),
+        (
+            auth.clone(),
+            body.replace("\"url\":", "\"url\":\"wss://other.test/\",\"url\":"),
+            400,
+        ),
+        (auth.clone(), body.replace("\"2\"", "2"), 400),
+        (auth.clone(), "x".repeat(17409), 413),
+    ] {
+        let response = exchange(address, registration_request(address, &headers, &body)).await;
         assert!(
             response.starts_with(&format!("HTTP/1.1 {status} ")),
             "{response}"

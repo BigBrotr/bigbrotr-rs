@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn browser_relay_registration_requires_an_additive_receipt_protocol() {
+    let applied: Vec<_> = plan(&[], 24)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next = plan(&applied, 25).expect("browser acceptance must have its own receipt protocol");
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0025_relay_registration.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 25),
+        Err(MigrationError::MissingPrerequisite(25))
+    );
+    assert!(migrations::require_applied(&applied, 24).is_ok());
+}
+
+#[test]
 fn acquisition_execution_requires_its_own_persistent_binding() {
     let applied: Vec<_> = plan(&[], 23)
         .unwrap()

@@ -148,6 +148,12 @@ pub(super) async fn maintain(
                     4,
                     format!("initial relay enrollment prerequisites unavailable: {e:?}"),
                 )
+            })?;
+            state.owner.require_relay_registration().await.map_err(|e| {
+                (
+                    4,
+                    format!("initial relay registration prerequisites unavailable: {e:?}"),
+                )
             })
         })
         .await?;

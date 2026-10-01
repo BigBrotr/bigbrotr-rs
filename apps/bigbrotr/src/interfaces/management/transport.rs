@@ -20,6 +20,7 @@ use bigbrotr::{
         jobs::{JobCommand, JobObservation, JobReceipt, ResumeExportCommand, ResumeExportReceipt},
         reauthentication::ReauthenticationProof,
         relay_enrollment::{EnrollmentCommand, EnrollmentReceipt},
+        relay_registration::{RegistrationCommand, RegistrationReceipt},
         sessions::{BrowserSecret, IssuedSession, SessionError, SessionObservation},
     },
     runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
@@ -50,11 +51,20 @@ pub(super) const QUEUE: usize = 16;
 pub(super) const CONNECTION_BYTES: u64 = 128 * 1024;
 pub(super) const REQUEST_BYTES: u64 = 64 * 1024;
 const BODY_BYTES: usize = 8 * 1024;
+// An 8192-byte endpoint may double when JSON escapes its query. The remaining
+// 1 KiB admits the closed command envelope under the existing 64 KiB request grant.
+const REGISTRATION_BODY_BYTES: usize = 17 * 1024;
 const CONNECTION_TIME: Duration = Duration::from_secs(5);
 const SESSION_COOKIE: &str = "BigBrotrLocalSession";
 const CSRF_COOKIE: &str = "BigBrotrLocalCsrf";
 
 pub(super) enum Operation {
+    RelayRegistration {
+        session: BrowserSecret,
+        csrf: BrowserSecret,
+        key: CommandKey,
+        command: RegistrationCommand,
+    },
     RelayEnrollment {
         session: BrowserSecret,
         csrf: BrowserSecret,
@@ -120,6 +130,7 @@ pub(super) enum Operation {
     },
 }
 pub(super) enum Reply {
+    RelayRegistration(RegistrationReceipt),
     RelayEnrollment(EnrollmentReceipt),
     JobList(PageBody),
     ResumeExport(ResumeExportReceipt),
@@ -282,7 +293,9 @@ impl Server {
             .route("/management/v1/sessions/current", delete(logout))
             .route("/management/v1/me", get(me));
         if matches!(profile, Profile::Initial { .. }) {
-            router = router.route("/management/v1/relay-enrollments", post(enroll_relay));
+            router = router
+                .route("/management/v1/relay-endpoints", post(register_relay))
+                .route("/management/v1/relay-enrollments", post(enroll_relay));
         }
         if matches!(profile, Profile::Operational { .. }) {
             router = router
@@ -688,6 +701,63 @@ async fn resume_export(
     .await
 }
 
+fn mutation_credentials(
+    headers: &HeaderMap,
+) -> Result<(BrowserSecret, BrowserSecret, CommandKey), StatusCode> {
+    let session = session(headers)?;
+    let csrf = single(headers, "x-csrf-token")
+        .and_then(|value| BrowserSecret::parse_hex(value).ok())
+        .ok_or(StatusCode::FORBIDDEN)?;
+    let key = single(headers, "idempotency-key")
+        .and_then(|value| std::str::from_utf8(value).ok())
+        .and_then(|value| value.parse::<CommandKey>().ok())
+        .ok_or(StatusCode::BAD_REQUEST)?;
+    if !single(headers, "content-type").is_some_and(|value| {
+        value.eq_ignore_ascii_case(b"application/json")
+            || value.eq_ignore_ascii_case(b"application/json; charset=utf-8")
+    }) {
+        return Err(StatusCode::UNSUPPORTED_MEDIA_TYPE);
+    }
+    Ok((session, csrf, key))
+}
+
+async fn register_relay(
+    State(shared): State<Shared>,
+    Extension(connection): Extension<Connection>,
+    request: Request,
+) -> Response {
+    let grant = match begin(&shared, &request) {
+        Ok(grant) => grant,
+        Err(status) => return error(status),
+    };
+    let (session, csrf, key) = match mutation_credentials(request.headers()) {
+        Ok(credentials) => credentials,
+        Err(status) => return error(status),
+    };
+    let bytes = match to_bytes(request.into_body(), REGISTRATION_BODY_BYTES).await {
+        Ok(bytes) => bytes,
+        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+    };
+    let command = match serde_json::from_slice::<RegistrationCommand>(&bytes) {
+        Ok(command) => command,
+        Err(_) => return error(StatusCode::BAD_REQUEST),
+    };
+    drop(bytes);
+    // Shape only; Control separately checks the installed dataset and authority.
+    dispatch(
+        &shared,
+        connection,
+        grant,
+        Operation::RelayRegistration {
+            session,
+            csrf,
+            key,
+            command,
+        },
+    )
+    .await
+}
+
 async fn enroll_relay(
     State(shared): State<Shared>,
     Extension(connection): Extension<Connection>,
@@ -697,27 +767,10 @@ async fn enroll_relay(
         Ok(grant) => grant,
         Err(status) => return error(status),
     };
-    let session = match session(request.headers()) {
-        Ok(session) => session,
+    let (session, csrf, key) = match mutation_credentials(request.headers()) {
+        Ok(credentials) => credentials,
         Err(status) => return error(status),
     };
-    let Some(csrf) =
-        single(request.headers(), "x-csrf-token").and_then(|v| BrowserSecret::parse_hex(v).ok())
-    else {
-        return error(StatusCode::FORBIDDEN);
-    };
-    let Some(key) = single(request.headers(), "idempotency-key")
-        .and_then(|v| std::str::from_utf8(v).ok())
-        .and_then(|v| v.parse::<CommandKey>().ok())
-    else {
-        return error(StatusCode::BAD_REQUEST);
-    };
-    if !single(request.headers(), "content-type").is_some_and(|v| {
-        v.eq_ignore_ascii_case(b"application/json")
-            || v.eq_ignore_ascii_case(b"application/json; charset=utf-8")
-    }) {
-        return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
-    }
     let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
         Ok(bytes) => bytes,
         Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
@@ -1134,6 +1187,14 @@ async fn dispatch(
         return error(StatusCode::TOO_MANY_REQUESTS);
     }
     match receive.await {
+        Ok(Ok(Reply::RelayRegistration(receipt))) => protect((
+            if receipt.created { StatusCode::ACCEPTED } else { StatusCode::OK },
+            Json(json!({
+                "format":"bigbrotr-relay-registration/1", "command_key":receipt.command_key,
+                "endpoint_id":receipt.endpoint_id, "accepted_at_us":receipt.accepted_at_us.to_string(),
+                "created":receipt.created, "authority":"identity-only"
+            })),
+        ).into_response()),
         Ok(Ok(Reply::RelayEnrollment(receipt))) => protect((
             if receipt.created { StatusCode::ACCEPTED } else { StatusCode::OK },
             Json(json!({

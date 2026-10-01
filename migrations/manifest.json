@@ -161,6 +161,10 @@
     {
       "version": 24,
       "name": "0024_acquisition_execution.sql"
+    },
+    {
+      "version": 25,
+      "name": "0025_relay_registration.sql"
     }
   ],
   "reserved": [

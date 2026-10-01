@@ -72,3 +72,64 @@ The [actual-engine recipe](../../experiments/relay-registry/README.md) separates
 proposed scenarios from executed evidence. Remaining enrollment/route and network
 action authorization preserve their selected task scope; this table cannot stand
 in for those grants, public reader visibility or archival dictionary allocation.
+
+## Authenticated registration consumer (implementation in progress)
+
+The initial private owner will expose `POST /management/v1/relay-endpoints` with
+closed JSON `url`, `expected_config_revision` and `expected_policy_revision`.
+It requires the existing current session, explicit CSRF, exact Origin and one
+canonical Idempotency-Key. Fresh acceptance requires dataset `policy.change` and
+both expected heads. This records an immutable identity only; enrollment, roots,
+visibility, bans and actual network authorization keep their separate checks.
+No DNS, socket, archive dictionary or enrollment work occurs during registration.
+
+Reuse the existing normalizer and exact candidate bucket lookup inside the same
+Control/dataset/account/session transaction. A browser precheck followed by the
+unauthenticated registry method would lose that transaction boundary; duplicating
+the registry would risk divergent normalization/collision behavior. Extract only
+the existing transaction-local identity operation for both concrete callers.
+
+The internal get-or-create contract above keeps its original URL-based retry.
+The browser consumer adds the existing actor/key management receipt and audit,
+plus one immutable registration detail linking the endpoint and accepting
+session/account revisions/Control identity. This record supplies attributable
+historical retry and deferred acceptance checks; it is not a second endpoint
+registry. Append migration0025 after0024, without altering earlier SQL/checksums,
+endpoint IDs, existing history or codec. Existing rows are not retrospectively
+assigned browser actors. Runtime never migrates implicitly.
+
+The new command digest is SHA256 of `bigbrotr/relay-registration/1\0`, then
+bytes16 dataset, authenticated actor and command key, two big-endian uint64
+expected config/policy revisions, big-endian uint16 normalization version1,
+big-endian uint32 normalized URL byte length and those exact UTF-8 bytes. Text
+normalization equivalent under endpoint v1 yields the same command digest;
+query bytes/order and explicitly empty query remain significant. IDs, revisions
+and URL bytes are independent of JSON formatting. The URL is at most8192bytes;
+the HTTP body is at most17408bytes including its closed envelope. Endpoint input
+validation does not grant routing or authority.
+
+A fresh accepted command returns202 with `bigbrotr-relay-registration/1`, its
+command_key, endpoint_id, decimal-string accepted_at_us, created=true and
+`authority=identity-only`. `created` describes the command receipt, not whether
+this command originally created the endpoint. Another key may accept an already
+registered identity without changing its original registration attribution.
+Historical retry authenticates the current actor/CSRF, resolves the exact original
+key/digest before fresh grant/CAS checks, and returns200 with created=false. No
+idle-session touch or cookies. Permission loss prevents new commands, while a
+live actor can resolve the original acceptance. Lost COMMIT resolves with the
+same key/body under fresh ownership; it must not invent another endpoint.
+
+Acceptance retains the established lock order and actual Control fence through
+synchronized COMMIT. Deferred checks require matching command/detail/audit, current
+heads, live accepting account/session revisions and scheduling authority. Known
+business refusal rolls back all provisional effects; ambiguous/cancelled backend
+work poisons Control until its real driver retires. The startup prerequisite
+probe checks required table and directly called function privileges before bind.
+
+P02-T01 Step6/P01-T09 Steps1/2 acceptance will exercise normalized create/retry,
+existing identity under another key, exact historical retry after grant/head
+change, denied session/CSRF/permission/CAS, maximum and malformed URL inputs,
+missing SQL grants, cancellation/expiry and lost COMMIT with original data
+preserved. The installed enrollment journey will register its URL through this
+consumer instead of the isolated fixture helper. New practical cases are NOT_RUN;
+this section is a selected implementation contract, not executed qualification.

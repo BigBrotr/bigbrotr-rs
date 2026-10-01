@@ -4,10 +4,10 @@ use super::{ControlSession, fixed, fresh_id, number, require, transaction_error}
 use crate::storage::postgres::{
     ingest_registry::ControlOwner, initialization::application_transaction,
 };
-use bigbrotr_model::{EndpointId, OwnerEpoch, OwnerResourceId, ProcessIncarnation};
+use bigbrotr_model::{DatasetId, EndpointId, OwnerEpoch, OwnerResourceId, ProcessIncarnation};
 use bigbrotr_protocol::endpoint::Endpoint;
 use std::{cell::Cell, fmt};
-use tokio_postgres::{Row, error::SqlState};
+use tokio_postgres::{Row, Transaction, error::SqlState};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RelayRegistryError {
@@ -116,58 +116,19 @@ impl ControlSession {
         {
             return Err(RelayRegistryError::PolicyChanged);
         }
-        let url = endpoint.as_str().as_bytes();
-        let count: i64 = tx
-            .query_one(CANDIDATE_COUNT, &[&dataset, &url])
-            .await
-            .map_err(backend)?
-            .try_get(0)
-            .map_err(|_| RelayRegistryError::InvalidMetadata)?;
-        if !(0..=64).contains(&count) {
-            return Err(RelayRegistryError::InvalidMetadata);
-        }
-        let existing = tx
-            .query(FIND_EXACT, &[&dataset, &url])
-            .await
-            .map_err(backend)?;
-        if let [row] = existing.as_slice() {
-            let result = decode(row, false)?;
+        let result = register_in_locked_transaction(
+            &tx,
+            self.request.dataset,
+            self.identity,
+            self.validated_policy,
+            endpoint,
+        )
+        .await?;
+        if !result.created {
             tx.rollback().await.map_err(backend)?;
             self.available = true;
             return Ok(result);
         }
-        if !existing.is_empty() {
-            return Err(RelayRegistryError::InvalidMetadata);
-        }
-        if count == 64 {
-            return Err(RelayRegistryError::Capacity);
-        }
-        // Generate only after absence. A random PK collision refuses this
-        // transaction; never hide another invariant with ON CONFLICT DO NOTHING.
-        let identity = fresh_id().map_err(|_| RelayRegistryError::Entropy)?;
-        tx.execute(
-            INSERT,
-            &[
-                &&identity[..],
-                &dataset,
-                &url,
-                &self.validated_policy.config_revision.to_string(),
-                &self.validated_policy.policy_revision.to_string(),
-                &&self.identity.resource_id.as_bytes()[..],
-                &self.identity.epoch.get().to_string(),
-                &&self.identity.process_incarnation.as_bytes()[..],
-            ],
-        )
-        .await
-        .map_err(backend)?;
-        let rows = tx
-            .query(FIND_EXACT, &[&dataset, &url])
-            .await
-            .map_err(backend)?;
-        let [row] = rows.as_slice() else {
-            return Err(RelayRegistryError::InvalidMetadata);
-        };
-        let result = decode(row, true)?;
         commit_started.set(true);
         tx.commit().await.map_err(|error| {
             if error.code() == Some(&SqlState::from_code("BB001")) {
@@ -179,6 +140,69 @@ impl ControlSession {
         self.available = true;
         Ok(result)
     }
+}
+
+/// Concrete transaction-local registry operation. The caller already holds the
+/// actual Control fence and dataset lock and validated the current policy heads.
+/// It retains responsibility for authentication, COMMIT, rollback and poisoning.
+/// Both callers use this same bounded byte-exact collision lookup.
+pub(super) async fn register_in_locked_transaction(
+    tx: &Transaction<'_>,
+    dataset_id: DatasetId,
+    owner: ControlOwner,
+    policy: super::PolicySnapshot,
+    endpoint: &Endpoint,
+) -> Result<EndpointRegistration, RelayRegistryError> {
+    let dataset = &dataset_id.as_bytes()[..];
+    let url = endpoint.as_str().as_bytes();
+    let count: i64 = tx
+        .query_one(CANDIDATE_COUNT, &[&dataset, &url])
+        .await
+        .map_err(backend)?
+        .try_get(0)
+        .map_err(|_| RelayRegistryError::InvalidMetadata)?;
+    if !(0..=64).contains(&count) {
+        return Err(RelayRegistryError::InvalidMetadata);
+    }
+    let existing = tx
+        .query(FIND_EXACT, &[&dataset, &url])
+        .await
+        .map_err(backend)?;
+    if let [row] = existing.as_slice() {
+        return decode(row, false);
+    }
+    if !existing.is_empty() {
+        return Err(RelayRegistryError::InvalidMetadata);
+    }
+    if count == 64 {
+        return Err(RelayRegistryError::Capacity);
+    }
+    // Generate only after absence. A random PK collision refuses this
+    // transaction; never hide another invariant with ON CONFLICT DO NOTHING.
+    let identity = fresh_id().map_err(|_| RelayRegistryError::Entropy)?;
+    tx.execute(
+        INSERT,
+        &[
+            &&identity[..],
+            &dataset,
+            &url,
+            &policy.config_revision.to_string(),
+            &policy.policy_revision.to_string(),
+            &&owner.resource_id.as_bytes()[..],
+            &owner.epoch.get().to_string(),
+            &&owner.process_incarnation.as_bytes()[..],
+        ],
+    )
+    .await
+    .map_err(backend)?;
+    let rows = tx
+        .query(FIND_EXACT, &[&dataset, &url])
+        .await
+        .map_err(backend)?;
+    let [row] = rows.as_slice() else {
+        return Err(RelayRegistryError::InvalidMetadata);
+    };
+    decode(row, true)
 }
 
 fn decode(row: &Row, created: bool) -> Result<EndpointRegistration, RelayRegistryError> {

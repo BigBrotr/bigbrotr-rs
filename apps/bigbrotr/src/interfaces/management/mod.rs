@@ -421,6 +421,30 @@ impl Management {
                     return Ok(Execution::Complete(None));
                 }
                 match operation {
+                    Operation::RelayRegistration {
+                        session,
+                        csrf,
+                        key,
+                        command,
+                    } => {
+                        if self.enrollment.is_none() {
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::Forbidden),
+                            ))));
+                        }
+                        let commit = std::cell::Cell::new(false);
+                        let result = sql(
+                            maximum,
+                            owner
+                                .accept_relay_registration(&session, &csrf, key, &command, &commit),
+                        )
+                        .await?;
+                        return Ok(Execution::Complete(Some(Response(
+                            completion,
+                            result.map(Reply::RelayRegistration),
+                        ))));
+                    }
                     Operation::RelayEnrollment {
                         session,
                         csrf,
