@@ -60,9 +60,9 @@ def run(pg, client, output, database, name, rows):
         endpoint='127.0.0.1:5432', boundary='loopback')
     config_path = output / Path(config).name
     text = configuration(config_path.read_text(), original, name)
-    # Observe the selected ninth COMMIT before any periodic renewal. The held
-    # command remains bounded by5s and the actual HTTP connection by5s as well.
-    for key, value in [('lease_ttl', '30s'), ('authorization_ttl', '30s'),
+    # Authorization still expires within the actual five-second ceiling.
+    # Counts and the server marker reject a renewal mistakenly used as the cut.
+    for key, value in [('lease_ttl', '30s'), ('authorization_ttl', '5s'),
                        ('heartbeat_interval', '10s'), ('renewal_timeout', '5s')]:
         text = set_value(text, 'runtime', key, value)
     direct = '/lab/' + name + '-direct.toml'

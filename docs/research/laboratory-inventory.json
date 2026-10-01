@@ -32134,6 +32134,48 @@
         "report": "docs/implementation/evidence/p02-relay-registration-relations-native-20261001.json",
         "capture_manifest_sha256": "e694d60ce5a3d61014d342f00f1da9441dcd12d1fc845456d5ce65209bfae24d",
         "root_review_sha256": "785e84d7ebf4ca85e2bd48a96497864ffc4c8c42e63992512b4630ae74fb720b"
+      },
+      "http_fault_engine": {
+        "launch": {
+          "source": "626cbc3235a9e7dc52da7a962ba892ec89b219d6",
+          "tree": "341fa531584d5afb9cb1f137c7332b8d125fd39c",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-http-faults-626cbc3",
+          "pid": 1322378,
+          "start_ticks": "427184365",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-00600af/out/artifacts",
+          "bundle_sha256": "6d50dcbbb6cf3a5b1e896018edf6d1ad364de1cd9ab82c4f919f4b9e8fe01d65"
+        },
+        "local": ".research/implementation/relay-registration-20261001/http-fault-engine",
+        "status": "FAIL",
+        "owner": "e77dadc286cb22f404d9fcce8b981bce",
+        "client": {
+          "id": "526f8250b06c5a7da61bd1001f4ace599979e9f3291393f3c64a890b1560266b",
+          "name": "bigbrotr-acquisition-binding-626cbc3"
+        },
+        "databases": [
+          "bb_scope_bind_626cbc3_register_http_pass"
+        ],
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T21:21:41.960540+00:00",
+          "owned_stopped": [
+            {
+              "id": "526f8250b06c5a7da61bd1001f4ace599979e9f3291393f3c64a890b1560266b",
+              "owner": "e77dadc286cb22f404d9fcce8b981bce",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1006,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 59142426624
+        },
+        "failure": "Fixture authorization_ttl=30s refused during config validation; installed CLI and HTTP schedules NOT_RUN."
       }
     }
   },

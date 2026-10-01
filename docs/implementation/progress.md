@@ -12,10 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main/origin6367097 is pushed; relational fixtureda87534 and evidence consolidated.
-Root sole writer. Current dirty work is installed HTTP fault client/controller,
-inspector argument in existing native oracle, bindings selection, recipe docs and
-this checkpoint. Latest owned terminal audit21:06:30UTC. No new build/cache.
+Mac main626cbc3, origin6367097; root sole writer. Candidate626cbc3 is retained
+as original fixture setup FAIL: authorization_ttl30s exceeded the actual5s ceiling,
+before installed CLI startup. Current dirty work corrects fixture TTL, preserves
+HTTP status across body loss, adds discriminating oracle regressions and records
+this outcome. No product/build/cache changes. Owned terminal audit21:21:41UTC.
 
 ## Active slice and next bounded action
 
@@ -99,22 +100,25 @@ Inventory implementation_network_20260928.relay_registration and ignored
 fault-native/, fault-native-fixed/, fault-engine/, race-engine/ and relation-engine/
 including raw captures,
 source/artifact manifests, controllers, launch receipts and root-review scripts.
-Never replay completed launchers or old cache deletion. Mac last4,731,548KiB free;
+Never replay completed launchers or old cache deletion. Mac last4,688,548KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: review/commit the five-case registration_http_faults controller,
+Next bounded action: commit corrected five-case registration_http_faults fixture,
 then run exact candidate with unchanged00600af CLI/probe and retained7011acd native
-inspector (separate manifest/hash and unchanged actual product inputs). Startup6+
-login2 COMMITs must be positively observed before targeting9; a clone-only
-nontransactional server marker proves actual detail insertion before the fault.
-Independent full SQL/native rows determine the outcome. Larger valid timer bounds keep the hold separate from timeout. Wire loss may yield503 or EOF/reset,
-never2xx. Client reset after SQL admission must allow timely acceptance and exact
-same-owner HTTP retry. SIGTERM waits for actual CLI death before proxy close;
-upstream PG fence can survive the CLI and must be observed/retired before recovery.
+inspector. Original626cbc3/capture contains21 hash-verified payloads and a terminal
+audit only: client526f8250 stopped143, borrowedPG stopped0,1006 prior projections
+unchanged,8 unrelated running, compiler lock free,59,142,426,624B free. No HTTP
+schedule ran; validation correctly refused30s authorization. Corrected5s respects
+the production ceiling; command duration remains bounded by actual residual lease.
+Oracle RED (3 failures/1 error) reproduced forgotten success headers/reset and
+truncated-body classification; GREEN5 tests after retaining/checking status before
+body reads. Both logs remain in http-fault-engine/. No product invariant weakened.
+Startup6+login2 COMMITs and the clone-only nontransactional insertion marker must
+positively identify COMMIT9, or the schedule fails. Wire loss may yield503 or
+EOF/reset, never2xx even with lost body. Timely admitted disconnect must allow
+acceptance/exact same-owner retry. SIGTERM requires CLI death before proxy close.
 Full68-table/native12-row/original-CBOR checks and refused retained-store restart
-are required. AI source audit read actual supervisor/dispatch/transport/storage;
-no product defect found, identified timing/fence distinctions reflected in fixture.
-New controller engine NOT_RUN; preserve original failed outcomes unchanged.
+remain required. Original failed attempt and SQL clone stay retained.
 
 The next user-visible consumer after closing these bounded registration guarantees
 is installed immutable scope/finite-job command delivery, under the task IDs below.

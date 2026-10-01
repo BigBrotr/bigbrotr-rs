@@ -10,64 +10,23 @@ import subprocess
 import sys
 import time
 
-directory, mode = Path(sys.argv[1]), sys.argv[2]
-assert directory.is_absolute() and mode in ('pass', 'before', 'after', 'disconnect', 'signal')
-origin = 'http://127.0.0.1:18081'
-
-
-def emit(event, **fields):
-    print(json.dumps(dict(event=event, **fields)), flush=True)
-
-
-def gate(name):
-    deadline = time.monotonic() + 20
-    while not (directory / (name + '.go')).exists():
-        assert time.monotonic() < deadline, 'controller barrier deadline'
-        time.sleep(.01)
-
-
-password = directory / 'password.private'
-with os.fdopen(os.open(password, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as stream:
-    stream.write('Independent owner password 2026')
-session_file = directory / 'session.private'
-login = subprocess.run(['/build/bigbrotr', 'access', 'login', '--origin', origin,
-    '--username', 'alice', '--password-ref', 'file:' + str(password),
-    '--session-output', str(session_file)], capture_output=True, env={}, timeout=5)
-assert login.returncode == 0 and not login.stderr, 'actual CLI login failed'
-saved = json.loads(session_file.read_text())
-assert saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == origin
-assert session_file.stat().st_mode & 0o777 == 0o600
-assert all(saved[k].encode() not in login.stdout for k in ('session', 'csrf'))
-body = json.dumps(dict(url='WS://127.0.0.1:7447/a/../installed-fixture',
-    expected_config_revision='1', expected_policy_revision='1')).encode()
-header = (f'POST /management/v1/relay-endpoints HTTP/1.1\r\nHost: 127.0.0.1:18081\r\n'
-    f'Origin: {origin}\r\nContent-Type: application/json\r\nContent-Length: {len(body)}\r\n'
-    f'Cookie: BigBrotrLocalSession={saved["session"]}\r\nX-CSRF-Token: {saved["csrf"]}\r\n'
-    f'Idempotency-Key: {"31" * 16}\r\nConnection: close\r\n\r\n').encode()
-emit('authenticated')
-gate('send')
-connection = socket.create_connection(('127.0.0.1', 18081), 3)
-connection.settimeout(12)
-try:
-    connection.sendall(header + body)
-    if mode == 'disconnect':
-        gate('disconnect')
-        connection.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
-        connection.close()
-        emit('disconnected')
-        gate('retry')
-        connection = socket.create_connection(('127.0.0.1', 18081), 3)
-        connection.settimeout(5)
-        connection.sendall(header + body)
+def read_outcome(connection, mode):
+    observed = {}
     try:
         response = http.client.HTTPResponse(connection)
         response.begin()
+        # A success status remains a false success even if its body is lost.
+        # Check it before any body read can fail and retain it in the evidence.
+        observed['status'] = response.status
+        wanted = 202 if mode == 'pass' else 200 if mode == 'disconnect' else 503
+        assert response.status == wanted, 'unexpected command response status'
         data = response.read(4097)
         assert len(data) <= 4096 and response.read(1) == b''
-        observed = dict(status=response.status, body=json.loads(data))
-    except (http.client.RemoteDisconnected, ConnectionResetError, BrokenPipeError) as error:
+        observed['body'] = json.loads(data)
+    except (http.client.RemoteDisconnected, http.client.IncompleteRead,
+            ConnectionResetError, BrokenPipeError) as error:
         # Socket closure is observable ambiguity, never inferred rollback.
-        observed = dict(closed=type(error).__name__)
+        observed['closed'] = type(error).__name__
     if mode in ('pass', 'disconnect'):
         assert observed['status'] == (202 if mode == 'pass' else 200)
         receipt = observed['body']
@@ -76,6 +35,63 @@ try:
         assert receipt['created'] == (mode == 'pass')
     else:
         assert 'closed' in observed or observed['status'] == 503, 'ambiguous command reported success'
-    emit('done', outcome=observed)
-finally:
-    connection.close()
+    return observed
+
+
+def main():
+    directory, mode = Path(sys.argv[1]), sys.argv[2]
+    assert directory.is_absolute() and mode in ('pass', 'before', 'after', 'disconnect', 'signal')
+    origin = 'http://127.0.0.1:18081'
+
+
+    def emit(event, **fields):
+        print(json.dumps(dict(event=event, **fields)), flush=True)
+
+
+    def gate(name):
+        deadline = time.monotonic() + 20
+        while not (directory / (name + '.go')).exists():
+            assert time.monotonic() < deadline, 'controller barrier deadline'
+            time.sleep(.01)
+
+
+    password = directory / 'password.private'
+    with os.fdopen(os.open(password, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as stream:
+        stream.write('Independent owner password 2026')
+    session_file = directory / 'session.private'
+    login = subprocess.run(['/build/bigbrotr', 'access', 'login', '--origin', origin,
+        '--username', 'alice', '--password-ref', 'file:' + str(password),
+        '--session-output', str(session_file)], capture_output=True, env={}, timeout=5)
+    assert login.returncode == 0 and not login.stderr, 'actual CLI login failed'
+    saved = json.loads(session_file.read_text())
+    assert saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == origin
+    assert session_file.stat().st_mode & 0o777 == 0o600
+    assert all(saved[k].encode() not in login.stdout for k in ('session', 'csrf'))
+    body = json.dumps(dict(url='WS://127.0.0.1:7447/a/../installed-fixture',
+        expected_config_revision='1', expected_policy_revision='1')).encode()
+    header = (f'POST /management/v1/relay-endpoints HTTP/1.1\r\nHost: 127.0.0.1:18081\r\n'
+        f'Origin: {origin}\r\nContent-Type: application/json\r\nContent-Length: {len(body)}\r\n'
+        f'Cookie: BigBrotrLocalSession={saved["session"]}\r\nX-CSRF-Token: {saved["csrf"]}\r\n'
+        f'Idempotency-Key: {"31" * 16}\r\nConnection: close\r\n\r\n').encode()
+    emit('authenticated')
+    gate('send')
+    connection = socket.create_connection(('127.0.0.1', 18081), 3)
+    connection.settimeout(12)
+    try:
+        connection.sendall(header + body)
+        if mode == 'disconnect':
+            gate('disconnect')
+            connection.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
+            connection.close()
+            emit('disconnected')
+            gate('retry')
+            connection = socket.create_connection(('127.0.0.1', 18081), 3)
+            connection.settimeout(5)
+            connection.sendall(header + body)
+        emit('done', outcome=read_outcome(connection, mode))
+    finally:
+        connection.close()
+
+
+if __name__ == "__main__":
+    main()
