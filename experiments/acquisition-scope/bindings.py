@@ -33,9 +33,10 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
+registration_http_faults = len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults'
 registration_relations = len(sys.argv) == 4 and sys.argv[2] == '--registration-relations'
 registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races'
-registration_faults = registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
+registration_faults = registration_http_faults or registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
 enrollment_http = enrollment_functions or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments')
@@ -62,6 +63,19 @@ else:
 sha = lambda value: hashlib.sha256(value).hexdigest()
 for name, key in [('bigbrotr', 'binary_sha256'), (built['probe_name'], 'probe_sha256')]:
     assert sha((build / name).read_bytes()) == built[key]
+native_inspector = None
+if registration_http_faults:
+    # Reuse the separately retained, qualified native inspector. No product or
+    # codec changed; the later Rust addition is solely the SQL fault example.
+    native_inspector = root.parent / 'initial-ingest-7011acd/out/artifacts'
+    inspected = json.loads((native_inspector / 'build-result.json').read_text())
+    assert inspected['source'] == '7011acd1782e9fe36b5e7c67188aae5c40fe70da'
+    assert inspected['probe_name'] == 'ingest_bootstrap_probe'
+    assert sha((native_inspector / 'ingest_bootstrap_probe').read_bytes()) == inspected['probe_sha256']
+    changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', inspected['source'], revision]).stdout.splitlines()
+    assert all(n.startswith(('docs/', 'experiments/', 'contracts/', 'packages/api-client/'))
+        or n == 'apps/bigbrotr/examples/relay_registration_fault_probe.rs' for n in changed), changed
+
 pg_root = root.parent / 'relay-source-recheck-e06f580/pg'
 pg = lab.load(pg_root)
 assert pg['owner'] == '5e69b0f060b1607c25230d1dbd3e5608' and pg['state'] == 'stopped-retained'
@@ -116,6 +130,13 @@ if registration_races:
 if registration_relations:
     report['wave'] = 'registration-relational-guards'
     report['not_run'] = ['installed HTTP COMMIT ambiguity', 'installed acquisition/M1',
+        'capacity/load/aged-state', 'arm64/release']
+
+if registration_http_faults:
+    report['wave'] = 'installed-registration-faults'
+    report['native_inspector'] = dict(source=inspected['source'], probe_sha256=inspected['probe_sha256'],
+        root=str(native_inspector))
+    report['not_run'] = ['installed successor recovery', 'installed acquisition/M1',
         'capacity/load/aged-state', 'arm64/release']
 
 if registration_http:
@@ -451,6 +472,9 @@ if registration_faults:
 if registration_relations:
     success_status = 'PASS_REGISTRATION_RELATIONAL_GUARDS'
 
+if registration_http_faults:
+    success_status = 'PASS_INSTALLED_REGISTRATION_FAULTS'
+
 if registration_http:
     success_status = 'PASS_INITIAL_REGISTRATION_HTTP_WAVE'
 
@@ -476,6 +500,8 @@ try:
         instrument_mount = ['--mount', f'type=bind,src={instrument},dst=/instrument,readonly']
     if commits or registration_faults:
         instrument_mount = ['--mount', f'type=bind,src={SOURCE},dst=/source,readonly']
+    if native_inspector is not None:
+        instrument_mount += ['--mount', f'type=bind,src={native_inspector},dst=/native-inspect,readonly']
     lab.docker('start', target['Id'])
     deadline = time.monotonic() + 30
     while lab.docker('exec', target['Id'], 'pg_isready', '-U', 'postgres', check=False).returncode:
@@ -518,8 +544,11 @@ try:
         if registration_relations:
             from registration_relations import CASES as RELATIONAL_CASES, run as run_registration_relation
             registration_runs = {case: run_registration_relation for case in RELATIONAL_CASES}
+        if registration_http_faults:
+            from registration_http_faults import CASES as HTTP_CASES, run as run_registration_http_fault
+            registration_runs = {case: run_registration_http_fault for case in HTTP_CASES}
         cases = list(registration_runs)
-        require(len(cases) == (1 if registration_relations else 18 if registration_races else 7),
+        require(len(cases) == (5 if registration_http_faults else 1 if registration_relations else 18 if registration_races else 7),
             'registration-case-set')
     elif socket:
         from socket_arrival import run as run_socket
@@ -574,7 +603,7 @@ try:
     installed_basis = None
     for name in cases:
         if registration_faults:
-            completed = clone(name, registration_basis)
+            completed = clone(name, 'bb_source_template' if registration_http_faults else registration_basis)
             report['cases'].append(registration_runs[name](pg, client, output, completed, name, rows))
             save()
         elif commits:

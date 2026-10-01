@@ -227,3 +227,18 @@ intentional absence of a session FK. Only one real new command remains.
 [Exact00600af/fixtureda87534 passed](../../docs/implementation/evidence/p02-relay-registration-relations-native-20261001.json)
 the16 hook checks and separate TRUNCATE, with unchanged original populated source
 and stopped owned resources. No migration or product code changed in this wave.
+
+
+`--registration-http-faults BUILD` proposes five actual initial-CLI schedules:
+nominal acceptance, lost ninth COMMIT before/after forwarding, admitted HTTP
+client reset followed by timely COMMIT and exact HTTP retry, and SIGTERM during
+held COMMIT followed by explicit proxy close. Eight preceding commits must be
+observed after real CLI login; a clone-only server log marker at the actual detail
+INSERT proves that periodic renewal did not silently change the fault cut. Logs
+identify that boundary only; independent SQL/native state determines the outcome. The last schedule observes the retained upstream backend after CLI death,
+then positively retires it before fresh-owner receipt recovery. Every case checks
+all68 Control relations,12 original native rows and staged CBOR. The qualified7011acd
+native inspector is reused separately from the00600af CLI/SQL probe, with hashes
+and all affected build inputs checked. No installed successor is inferred from
+fresh adapter recovery; actual reinitialization of the retained store must refuse.
+These scenarios are NOT_RUN until an exact engine report is recorded.

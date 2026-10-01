@@ -12,10 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac mainda875345e7b797bec28559fb9e4cb361f3af3eb2, origin54c1983 last observed.
-Root sole writer. Test-only relational candidate qualified with unchanged00600af
-ELFs. Current dirty work is evidence/task/reference docs, inventory and checkpoint.
-No active owned lab/native job at21:06:30UTC. Requested cache cleanup complete.
+Mac main/origin6367097 is pushed; relational fixtureda87534 and evidence consolidated.
+Root sole writer. Current dirty work is installed HTTP fault client/controller,
+inspector argument in existing native oracle, bindings selection, recipe docs and
+this checkpoint. Latest owned terminal audit21:06:30UTC. No new build/cache.
 
 ## Active slice and next bounded action
 
@@ -102,12 +102,19 @@ source/artifact manifests, controllers, launch receipts and root-review scripts.
 Never replay completed launchers or old cache deletion. Mac last4,731,548KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: consolidate/push relational evidence, then exercise installed
-HTTP registration ambiguity/cancellation with the actual initial CLI. Reuse qualified
-registration configuration/native bootstrap and bounded wire proxy; observe command
-rows and native custody, then resolve the original command via fresh adapter owner.
-Initial successor still absent, so do not claim installed restart recovery. Read the
-actual supervisor/dispatch and fixture callers before selecting exact fault cuts.
+Next bounded action: review/commit the five-case registration_http_faults controller,
+then run exact candidate with unchanged00600af CLI/probe and retained7011acd native
+inspector (separate manifest/hash and unchanged actual product inputs). Startup6+
+login2 COMMITs must be positively observed before targeting9; a clone-only
+nontransactional server marker proves actual detail insertion before the fault.
+Independent full SQL/native rows determine the outcome. Larger valid timer bounds keep the hold separate from timeout. Wire loss may yield503 or EOF/reset,
+never2xx. Client reset after SQL admission must allow timely acceptance and exact
+same-owner HTTP retry. SIGTERM waits for actual CLI death before proxy close;
+upstream PG fence can survive the CLI and must be observed/retired before recovery.
+Full68-table/native12-row/original-CBOR checks and refused retained-store restart
+are required. AI source audit read actual supervisor/dispatch/transport/storage;
+no product defect found, identified timing/fence distinctions reflected in fixture.
+New controller engine NOT_RUN; preserve original failed outcomes unchanged.
 
 The next user-visible consumer after closing these bounded registration guarantees
 is installed immutable scope/finite-job command delivery, under the task IDs below.

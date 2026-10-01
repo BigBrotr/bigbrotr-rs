@@ -102,7 +102,8 @@ def terminal(prefix):
     return result
 
 
-def native_oracle(pg, client, output, database, name, state, report, suffix=''):
+def native_oracle(pg, client, output, database, name, state, report, suffix='',
+                  probe='/build/ingest_bootstrap_probe'):
     owner = next(r for r in state['owner_epochs'] if r['role']=='ingest')
     assert report['owner_resource_id']==owner['resource_id'][2:]
     dataset = bytes.fromhex(state['datasets'][0]['dataset_id'][2:])
@@ -120,7 +121,7 @@ def native_oracle(pg, client, output, database, name, state, report, suffix=''):
         owner=bytes.fromhex(owner['resource_id'][2:]),incarnation=bytes.fromhex(owner['process_incarnation'][2:]),
         recovery=recovery,topology=int(report['topology_generation']),namespaces=domains,
         recorded_at=owner['acquired_at_us'])
-    dumped = lab.docker('exec',client,'/build/ingest_bootstrap_probe','dump','/lab/'+name+'/store')
+    dumped = lab.docker('exec',client,probe,'dump','/lab/'+name+'/store')
     with (output/(name+suffix+'-native.json')).open('x') as capture:
         capture.write(dumped.stdout)
     actual = [(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in json.loads(dumped.stdout)['rows']]
