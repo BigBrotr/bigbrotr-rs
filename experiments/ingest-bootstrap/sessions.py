@@ -78,7 +78,13 @@ def run(pg, client, output, database, name, rows):
             assert {t for t in initial if initial[t] != current[t]} <= {
                 'owner_epochs', 'browser_sessions', 'login_buckets', 'management_audit'}
             assert len(current['browser_sessions']) == 1 and current['browser_sessions'][0]['revoked_at_us'] is not None
-            assert len(current['management_audit']) == 2
+            assert all(row in current['management_audit'] for row in initial['management_audit'])
+            added = [row for row in current['management_audit'] if row not in initial['management_audit']]
+            assert sorted(row['action'] for row in added) == ['browser.session.issue', 'browser.session.revoke']
+            session = current['browser_sessions'][0]
+            assert all(row['actor_id'] == session['principal_id']
+                       and row['subject_id'] == session['session_id']
+                       and row['outcome'] == 'accepted' for row in added)
             lab.write_json(output / (name + '-renewed.json'), dict(original_deadline=original_deadline,
                 server_now=now, leases=renewed, initial=initial, current=current))
             stop(client, prefix)
@@ -102,7 +108,7 @@ def run(pg, client, output, database, name, rows):
         from commits import native_oracle as retained_oracle
         retained_oracle(client, output, name, after, committed=True, outcome=True)
     if name != 'sessions-journey':
-        assert not after['browser_sessions'] and not after['management_audit']
+        assert not after['browser_sessions'] and after['management_audit'] == before['management_audit']
     allowed = {'datasets', 'owner_epochs', 'role_instances', 'topology_generations', 'topology_streams',
                'source_streams', 'allocation_domains', 'producer_slots', 'producer_epochs',
                'producer_requests', 'producer_outcomes', 'browser_sessions', 'login_buckets',
