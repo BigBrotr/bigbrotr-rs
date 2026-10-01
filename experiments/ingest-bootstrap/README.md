@@ -299,4 +299,7 @@ no changes across all69 tables. Same-key recovery under fresh owner3 must return
 the original owner2 receipt when committed. Isolated owner/session expiry must
 refuse even for an already existing scope. Native Ingest is not adopted/reopened.
 The changed shared fixture also requires the seven old endpoint schedules against
-the retained45f7593 source. Build and engine execution are pending.
+the retained45f7593 source. Exact0733326 build/endpoint regression and7104b2d scope
+fixture passed all fourteen cases; the [bounded report](../../docs/implementation/evidence/p03-scope-command-faults-native-20261002.json)
+retains exact identities and terminal inventories. Current-authority races and raw
+relational negatives remain separate work.

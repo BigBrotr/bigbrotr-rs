@@ -1,0 +1,242 @@
+{
+  "format": "bigbrotr-scope-command-commit-acceptance/1",
+  "status": "PASS_BOUNDED_SCOPE_COMMAND_COMMIT_FAULTS",
+  "observed_at": "2026-10-01T22:52:54.730613+00:00",
+  "tasks": [
+    "P03-T01 Steps1/2/3 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "scope": "Actual authenticated scope adapter over an existing immutable scope: lost/cancelled fourth COMMIT, independent owner/session expiry and fresh-owner exact recovery. SQL-only; no native successor or installed HTTP fault claim.",
+  "source": {
+    "product": "07333269469bcf93cf1c1d0a1b72d624249b238a",
+    "product_tree": "4069a0e1b1309b68f0ed8774c1d0e5735749bd80",
+    "fixture": "7104b2d6e1777e9c8fca9141f096f26dcd248b90",
+    "fixture_tree": "8e451e44ba30d8ca17912e5739e5389cb2e8ad86",
+    "reuse": "Only docs/experiments differ between build and scope fixture. Existing installed production behavior remains e4c2825;0733326 extends only its finite example probe."
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1 (48a229cea)",
+    "clang": "14.0.6",
+    "postgres": "16.15",
+    "rocksdb": "11.8.1",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2"
+  },
+  "artifacts": {
+    "binary_sha256": "352029da8dec7e377101a3181d89bb335683f8c36be87a64ef3db74614d02851",
+    "probe_sha256": "b6d96b964bc4a2e04c9b1b4d40ae5274d8fcccab9ab5b0cc358118a7e8f90a52",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "fbcde268a128fe5294d1aac183269a507dd288aaa3e0668bf7597283b4e816a0"
+  },
+  "cases": [
+    {
+      "name": "scope-command-pass",
+      "status": "PASS",
+      "all_control_tables": 69,
+      "wire_counts": [
+        4,
+        4,
+        4,
+        4,
+        0
+      ],
+      "committed": true,
+      "recovery_created": false,
+      "original_identity_unchanged": true,
+      "scope": "original receipt recovered"
+    },
+    {
+      "name": "scope-command-before",
+      "status": "PASS",
+      "all_control_tables": 69,
+      "wire_counts": [
+        4,
+        3,
+        3,
+        3,
+        1
+      ],
+      "committed": false,
+      "recovery_created": true,
+      "original_identity_unchanged": true,
+      "scope": "one fresh acceptance on recovery"
+    },
+    {
+      "name": "scope-command-after",
+      "status": "PASS",
+      "all_control_tables": 69,
+      "wire_counts": [
+        4,
+        4,
+        4,
+        3,
+        1
+      ],
+      "committed": true,
+      "recovery_created": false,
+      "original_identity_unchanged": true,
+      "scope": "original receipt recovered"
+    },
+    {
+      "name": "scope-command-cancel-close",
+      "status": "PASS",
+      "all_control_tables": 69,
+      "wire_counts": [
+        4,
+        3,
+        3,
+        3,
+        1
+      ],
+      "committed": false,
+      "recovery_created": true,
+      "original_identity_unchanged": true,
+      "scope": "one fresh acceptance on recovery"
+    },
+    {
+      "name": "scope-command-cancel-release",
+      "status": "PASS",
+      "all_control_tables": 69,
+      "wire_counts": [
+        4,
+        4,
+        4,
+        4,
+        1
+      ],
+      "committed": true,
+      "recovery_created": false,
+      "original_identity_unchanged": true,
+      "scope": "original receipt recovered"
+    },
+    {
+      "name": "scope-command-owner-expiry",
+      "status": "PASS",
+      "all_control_tables": 69,
+      "wire_counts": [
+        4,
+        4,
+        3,
+        3,
+        1
+      ],
+      "committed": false,
+      "recovery_created": true,
+      "original_identity_unchanged": true,
+      "scope": "isolated expiry observed before release; SQL rejected COMMIT and session remained usable"
+    },
+    {
+      "name": "scope-command-session-expiry",
+      "status": "PASS",
+      "all_control_tables": 69,
+      "wire_counts": [
+        4,
+        4,
+        3,
+        3,
+        1
+      ],
+      "committed": false,
+      "recovery_created": true,
+      "original_identity_unchanged": true,
+      "scope": "isolated expiry observed before release; SQL rejected COMMIT and session remained usable"
+    }
+  ],
+  "affected_regression": {
+    "status": "PASS_BOUNDED_REGISTRATION_COMMIT_FAULTS",
+    "source": "07333269469bcf93cf1c1d0a1b72d624249b238a",
+    "cases": [
+      "register-pass",
+      "register-before",
+      "register-after",
+      "register-cancel-close",
+      "register-cancel-release",
+      "register-owner-expiry",
+      "register-session-expiry"
+    ],
+    "control_tables": 68,
+    "captured_payloads": 99,
+    "terminal": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-01T22:50:59.754542+00:00",
+      "owned_stopped": [
+        {
+          "id": "abd5c4542cc7e319765c53d9b661a69767abf02f6362ba89a260aa3d207be39f",
+          "owner": "3a539e420901ebd97e29e7422dc2fbf3",
+          "exit": 143
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 1016,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 58352992256
+    }
+  },
+  "expected_results": "All69 Control tables including xmin are compared. Only one command/detail/audit triple may appear; selector/scope/endpoint/source and their original attribution remain unchanged. Independent literal selector and SHA preimage bind every receipt to actor/session/owner and audit. Fresh owner3 returns original owner2 receipt/time when committed, otherwise creates exactly once.",
+  "fault_observations": "Exact proxy counters distinguish forwarding, server completion and client completion. Held transactions have observed backend incarnation and actual Control advisory custody; a real contender refuses Busy. Isolated owner/session expiry is observed separately before COMMIT release and rejects with available session. Cancellation/unknown outcomes retain poisoned ownership until actual driver join.",
+  "verification": {
+    "native": "Release CLI/probe build48.06s and scoped Clippy4.26s PASS on Tux.1642 exact source files and9 captured build payloads verified; no redundant unchanged unit suite.",
+    "source_files": 1642,
+    "captured_payloads": 106,
+    "root_review_sha256": "31b5395ac67296ebf440360307cdb14c959f6b5776ecb168dc1e2cbd089da4f8",
+    "capture_manifest_sha256": "b15923f56bbfb2aaaec429d58089395fad0f9f39a9dc5bc37ac0f3d02f0442db",
+    "source_manifest_sha256": "c32e632ed38bf3d96ab6678511dfc342e9d3e420968bbab4e8d697d1982f91da"
+  },
+  "review": {
+    "scope": "Read-only AI reviewed complete changed finite probe/controllers/oracles and callers; no concrete blocker found. Root verified actual manifests, source archive, all durable snapshots, receipts, wire transcripts and terminal inventories.",
+    "grant_protocol": "Bounded source review found no supported bare dataset-grant DELETE/UPDATE consumer. First-owner enrollment inserts new grants; current scope-grant editing locks accounts and advances grant_revision. Retain0026 and qualify races using that protocol; arbitrary privileged grant DML is not covered.",
+    "structure": "One explicit endpoint/scope command variant reuses the existing finite probe lifetime and wire schedules. Each responsibility keeps its own independent semantic oracle. Separate scope container name allows retained profiles to coexist. No product abstraction, migration, dependency or native format changed."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-01T22:52:54.730613+00:00",
+    "owned_stopped": [
+      {
+        "id": "e824d8cf9e117e8d054a9604a4d92913c470e37ba13d80d1a749631413613940",
+        "owner": "8e2def83b94181d79d66c3dafa19427a",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 1017,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 58215923712
+  },
+  "limitations": [
+    "scope current-authority races and raw relational refusal",
+    "historical recovery after changed heads/grants",
+    "installed scope HTTP COMMIT ambiguity",
+    "internal scope helper regression",
+    "finite-job delivery/installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release",
+    "Acceptance after arbitrary raw grant-table DML is not qualified.",
+    "These cases use an already existing scope; new-identity atomicity and relational guards have separate qualification.",
+    "No production capacity, aged-state or native arm64 evidence follows."
+  ],
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.scope_registration",
+    "ignored_local_root": ".research/implementation/scope-registration-20261001",
+    "remote_roots": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-0733326",
+      "/home/tux/bigbrotr-implementation-20260917/runs/scope-command-faults-7104b2d"
+    ],
+    "original_sources_preserved": [
+      "bb_scope_bind_45f7593_registration_journey",
+      "bb_scope_bind_5e7dbab_scope_journey"
+    ],
+    "outcome": "Seven scope cases and seven affected endpoint regressions PASS. No engine failure or expected-result weakening. Resources stopped/retained; no dataset or volume removed."
+  }
+}

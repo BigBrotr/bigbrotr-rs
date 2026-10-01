@@ -161,8 +161,11 @@ COMMIT, concurrent authority changes and raw relational negatives must qualify t
 new durable boundary before dependent job delivery is consolidated. This section
 records the selected implementation. The [installed HTTP/upgrade wave](../implementation/evidence/p03-initial-scopes-http-native-20261002.json)
 qualifies the bounded login/registration/retry and prerequisite journey on native
-Linux amd64. COMMIT faults, concurrent authority changes, raw relational negatives
-and the affected internal scope regression remain NOT_RUN for this consumer.
+Linux amd64. The [adapter fault wave](../implementation/evidence/p03-scope-command-faults-native-20261002.json)
+qualifies lost/cancelled COMMIT and isolated owner/session expiry for new commands
+over an existing scope, with fresh-owner exact recovery. Concurrent authority
+changes, raw relational negatives, installed HTTP ambiguity and the affected
+internal scope regression remain NOT_RUN for this consumer.
 The padded maximum body exercises the HTTP envelope, not a maximum canonical
 selector or production memory bound. Applied0026 is now immutable.
 

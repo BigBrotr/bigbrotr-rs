@@ -32317,7 +32317,7 @@
     },
     "scope_registration": {
       "local": ".research/implementation/scope-registration-20261001",
-      "status": "BOUNDED_INSTALLED_HTTP_UPGRADE_PASS_FAULTS_PENDING",
+      "status": "BOUNDED_HTTP_UPGRADE_AND_ADAPTER_COMMIT_PASS",
       "base": "25191470ad72f947a94675c969a7cfaadd525cf4",
       "remote_resources": [
         {
@@ -32422,7 +32422,7 @@
           "pid": 1402321,
           "start_ticks": "427699940",
           "bundle_sha256": "ad41fb7702a6bb48a612363e8546a6b7fd3f7906d30ceec8557634e48c5da613",
-          "state": "BUILD_STOPPED_RETAINED_ENDPOINT_REGRESSION_RUNNING",
+          "state": "STOPPED_RETAINED",
           "owner": "8195091e5438bfb63c0a9b83d6c527c3",
           "fetch_container": "e3b503b097ab7765e887c89667ba9b7b0f0b1bdb3c88aeba8067626ef43bb9d2",
           "native_container": "cc5c6c13e9381b592a1734dca3ee0546c2e9f1240ad945fdd6b9556f84de91dc",
@@ -32458,8 +32458,66 @@
             "scope": "seven affected endpoint fault regressions",
             "owner": "3a539e420901ebd97e29e7422dc2fbf3",
             "client": "abd5c4542cc7e319765c53d9b661a69767abf02f6362ba89a260aa3d207be39f",
-            "state": "RUNNING"
+            "state": "STOPPED_RETAINED",
+            "qualification": "PASS_BOUNDED_REGISTRATION_COMMIT_FAULTS",
+            "audit": {
+              "status": "PASS_TERMINAL_AUDIT_ONLY",
+              "observed_at": "2026-10-01T22:50:59.754542+00:00",
+              "owned_stopped": [
+                {
+                  "id": "abd5c4542cc7e319765c53d9b661a69767abf02f6362ba89a260aa3d207be39f",
+                  "owner": "3a539e420901ebd97e29e7422dc2fbf3",
+                  "exit": 143
+                },
+                {
+                  "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                  "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+                  "exit": 0
+                }
+              ],
+              "prior_unchanged": 1016,
+              "unrelated_running": 8,
+              "compiler_lock_released": true,
+              "free_bytes": 58352992256
+            },
+            "captured_payloads_verified": 99
           }
+        },
+        {
+          "source": "7104b2d6e1777e9c8fca9141f096f26dcd248b90",
+          "tree": "8e451e44ba30d8ca17912e5739e5389cb2e8ad86",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/scope-command-faults-7104b2d",
+          "pid": 1414924,
+          "start_ticks": "427735387",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-0733326/out/artifacts",
+          "bundle_sha256": "bc706536b66db4ca0ad99755b2a738d4a3168b1861f98989cd45256c33a5826d",
+          "state": "STOPPED_RETAINED",
+          "owner": "8e2def83b94181d79d66c3dafa19427a",
+          "client": "e824d8cf9e117e8d054a9604a4d92913c470e37ba13d80d1a749631413613940",
+          "qualification": "PASS_SCOPE_COMMAND_ADAPTER_FAULTS",
+          "audit": {
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "observed_at": "2026-10-01T22:52:54.730613+00:00",
+            "owned_stopped": [
+              {
+                "id": "e824d8cf9e117e8d054a9604a4d92913c470e37ba13d80d1a749631413613940",
+                "owner": "8e2def83b94181d79d66c3dafa19427a",
+                "exit": 143
+              },
+              {
+                "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+                "exit": 0
+              }
+            ],
+            "prior_unchanged": 1017,
+            "unrelated_running": 8,
+            "compiler_lock_released": true,
+            "free_bytes": 58215923712
+          },
+          "source_files_verified": 1642,
+          "captured_payloads_verified": 106,
+          "local": ".research/implementation/scope-registration-20261001/fault-engine"
         }
       ],
       "findings": [
@@ -32476,10 +32534,11 @@
         "typescript_and_generation": "PASS",
         "native": "PASS build/components only"
       },
-      "next": "Join seven0733326 endpoint fault regressions, retire/audit, then new isolated scope-command fault wave with same qualified build.",
+      "next": "Rebuild internal acquisition_scope_probe against extracted helper and run affected six-case engine regression, then scope authority races/raw relations and installed ambiguity before finite-job delivery.",
       "candidate": "e4c282542532aa95ca30b8ea252b527230d614b8",
       "fixture_review": "Read-only AI found unbound HTTP receipts and overly broad startup-refusal write allowance; corrected before engine run. Maximum padded HTTP body does not qualify maximum canonical selector.",
-      "evidence": "docs/implementation/evidence/p03-initial-scopes-http-native-20261002.json"
+      "evidence": "docs/implementation/evidence/p03-initial-scopes-http-native-20261002.json",
+      "fault_evidence": "docs/implementation/evidence/p03-scope-command-faults-native-20261002.json"
     }
   },
   "implementation_relay_registry_20260928": {
