@@ -33,10 +33,11 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
+registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
 enrollment_http = enrollment_functions or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments')
 sessions = session_hash or session_faults or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions')
-installed = sessions or enrollment_http or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
+installed = registration_http or sessions or enrollment_http or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
 execution = len(sys.argv) == 3 and sys.argv[2] == '--execution'
@@ -45,7 +46,7 @@ socket = len(sys.argv) in (3, 4) and sys.argv[2] == '--socket'
 assert len(sys.argv) == 2 or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-reuse_build = guards or interruptions or commits or ((observation or socket or sessions or enrollment_http) and len(sys.argv) == 4)
+reuse_build = guards or interruptions or commits or ((observation or socket or sessions or enrollment_http or registration_http) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == 'ingest_bootstrap_probe'
@@ -98,6 +99,12 @@ if enrollment_http:
         'concurrent authenticated withdrawal versus source action', 'installed acquisition/M1',
         'capacity/load/aged-state', 'arm64/release']
 
+if registration_http:
+    report['wave'] = 'installed-relay-registration'
+    report['not_run'] = ['registration adapter COMMIT recovery/cancellation/expiry/concurrency',
+        'raw relational refusal/rollback', 'CLI registration command', 'installed acquisition/M1',
+        'capacity/load/aged-state', 'arm64/release']
+
 if interruptions:
     report['not_run'] = ['worker panic and arbitrary uninterruptible kernel I/O',
         'lost/delayed COMMIT and cancellation lock schedules', 'crash-resumable initialization/successor',
@@ -130,7 +137,7 @@ def containers():
 def rows(db):
     names = json.loads(lab.sql(pg, db,
         "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    require(len(names) in (64, 66, 67) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
+    require(len(names) in (64, 66, 67, 68) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
              f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     return json.loads(lab.sql(pg, db, 'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(parts) + ') t'))
@@ -419,6 +426,9 @@ if session_faults:
 if enrollment_http:
     success_status = 'PASS_INITIAL_ENROLLMENT_HTTP_WAVE'
 
+if registration_http:
+    success_status = 'PASS_INITIAL_REGISTRATION_HTTP_WAVE'
+
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
 assert target['Config']['Labels'][lab.LABEL] == pg['owner'] and not target['State']['Running']
@@ -450,6 +460,12 @@ try:
     template = rows('bb_source_template')
     require(basic == json.loads((basis / 'basic-after.json').read_text()), 'original-scope-basis')
     require(not template['producer_requests'] and not template['owner_epochs'], 'original-template-preconditions')
+    registration_basis = 'bb_scope_bind_917c76b_enrollment_journey'
+    if registration_http:
+        registration_original = dict(database=registration_basis,
+            rows=rows(registration_basis), physical=physical(registration_basis))
+        require(registration_original['rows']['relay_enrollment_changes'], 'populated-registration-basis')
+        lab.write_json(output / 'registration-basis-before.json', registration_original)
     ident = lab.docker('create', '--init', '--name', client, '--label', label + '=' + owner,
         '--network', 'container:' + pg['postgres'], '--user', f'{os.getuid()}:{os.getgid()}',
         '--cpus', '2', '--memory', '1g', '--memory-swap', '1g', '--pids-limit', '128', '--read-only',
@@ -479,6 +495,10 @@ try:
         cases = list(CASES)
     elif interruptions:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
+    elif registration_http:
+        sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+        from registrations import CASES
+        cases = list(CASES)
     elif enrollment_http:
         cases = (['enrollment-function-route', 'enrollment-function-digest', 'enrollment-function-u64', 'enrollment-journey']
             if enrollment_functions else ['enrollment-journey', 'enrollment-permission', 'enrollment-prerequisite'])
@@ -521,13 +541,17 @@ try:
             save()
         elif installed:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-            if enrollment_http:
+            if registration_http:
+                from registrations import run as run_installed
+            elif enrollment_http:
                 from enrollments import run as run_installed
             elif sessions:
                 from sessions import run as run_installed
             else:
                 from installed import run as run_installed
-            completed = clone(name, installed_basis if name == 'registered-only' else 'bb_source_template')
+            template_name = (registration_basis if name == 'registration-upgrade'
+                else installed_basis if name == 'registered-only' else 'bb_source_template')
+            completed = clone(name, template_name)
             report['cases'].append(run_installed(pg,client,output,completed,name,rows))
             if name == 'pass': installed_basis = completed
             save()
@@ -579,6 +603,11 @@ try:
         require(rows(completed) == basis_rows, 'signed-parent-changed')
     require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_source_template') == template
         and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')
+    if registration_http:
+        final_original = dict(database=registration_basis,
+            rows=rows(registration_basis), physical=physical(registration_basis))
+        lab.write_json(output / 'registration-basis-after.json', final_original)
+        require(final_original == registration_original, 'retained-enrollment-original-changed')
     report['status'] = success_status
 except BaseException as error:
     report.update(status='FAIL', failure=type(error).__name__ + ': ' + str(error))

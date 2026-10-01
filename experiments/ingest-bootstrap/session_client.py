@@ -13,7 +13,7 @@ import sys
 import time
 
 directory, mode = Path(sys.argv[1]), sys.argv[2]
-assert directory.is_absolute() and mode in ('journey', 'hash-stop', 'hash-disconnect', 'renewal', 'enrollment')
+assert directory.is_absolute() and mode in ('journey', 'hash-stop', 'hash-disconnect', 'renewal', 'enrollment', 'registration')
 origin = 'http://127.0.0.1:18081'
 password = 'Independent owner password 2026'
 
@@ -231,6 +231,9 @@ if mode == 'journey':
 elif mode == 'renewal':
     logged_in, session, saved, auth, _ = login()
     result = dict(login=logged_in, logout=logout(session, saved, auth))
+elif mode == 'registration':
+    from registration_client import run
+    result = run(directory, request, login, logout)
 elif mode == 'enrollment':
     result = enrollment()
 else:

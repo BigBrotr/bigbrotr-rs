@@ -12,8 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin are22f5b68a3fa31e8cf1daafcc2cc398297c3fa1c1;
-the qualified enrollment slice is pushed. Root sole writer.
+Mac main7011acd1782e9fe36b5e7c67188aae5c40fe70da is an unpublished candidate;
+private origin remains22f5b68a3fa31e8cf1daafcc2cc398297c3fa1c1. The enrollment
+slice is pushed; registration is under qualification. Root sole writer.
 P02-T01 Step6/P01-T09 Step1 initial enrollment HTTP bounded integration now has
 [native evidence](evidence/p02-initial-enrollment-http-native-20261001.json).
 Both438067f and917c76b built actual release CLI/probe,45 native tests and scoped
@@ -68,7 +69,7 @@ a transcription error; actual terminal log is23 and report uses23.
 ## Active slice and next bounded action
 
 P02-T01 Step 6 / P01-T09 Steps 1/2: authenticated endpoint registration now has
-an uncommitted domain, additive0025, Control adapter, shared transaction-local
+a committed candidate domain, additive0025, Control adapter, shared transaction-local
 registry helper and actual initial-owner HTTP consumer. Root owns all dirty files.
 Earlier applied SQL/checksums remain unchanged. No dependency or native codec change.
 One immutable detail table supplies authenticated acceptance even for an existing
@@ -93,19 +94,25 @@ reviewed the combined implementation/diff. This is source/component evidence,
 not PostgreSQL qualification. Raw constraints, installed command effects,
 expiry/cancellation, lock races and lost COMMIT are NOT_RUN for0025.
 
-Next: commit this tested candidate for exact-Git Tux native CLI/probe build using
-the existing initial-ingest profile (now also registration/catalog/CLI migration
-checks). Build once, then prepare installed URL→enrollment HTTP cases with an
-independent full SQL/native oracle. Explicitly migrate new clones through25 and
-preserve original64-table template and all historical outcomes. Do not push or
-claim the SQL protocol qualified before required engine evidence. Subsequent
-adapter fault cases must discriminate expired acceptance of an existing endpoint.
+Native exact7011acd build is STOPPED/RETAINED: PID1246952/start426709715 terminal,
+root runs/initial-ingest-7011acd, full owner/container state in inventory
+implementation_network_20260928.relay_registration and ignored native/. Do not
+relaunch it. All6 profile checks PASS, including88 native tests and scoped Clippy. Root verified
+1617 exact source files and captured check manifests. Finished20:02:32UTC with
+60,073,537,536B free and no prior container projection changes. Fetch953fc363 and
+nativef1c1d4cf stopped0; ownerd832ab31c1f4e81a992ce1673b125ad9. Latest state is
+native/resources-final.json. Shared1154757 now holds7011acd intermediates; exact
+qualified CLI/probe are separate. No PG engine run has started.
 
-Read-only resumption audit19:46:45UTC: latest recorded build/engine PIDs absent,
-eight unrelated containers only, compiler lock free,60,209,053,696B free. Mac latest
-4,990,228KiB available. No new lab resource started or removed in this slice.
-Check disk and live inventory again before allocation. Existing completed cleanup
-stays completed; never replay old launchers or deletion recipes.
+Root dirty work: installed registration client/fixture, inventory and checkpoint.
+Root/AI fixture review added full retained enrollment-source rows/filenodes before
+and after the wave, and distinguishes actual HTTP from startup refusals. No product
+change or weakened assertion. Next bounded action: commit the installed
+URL→enrollment HTTP fixture and run exact Git on new clones migrated through25. Preserve
+original64-table template/all prior outcomes and use full SQL/native independent
+oracles. Engine effects/SQL/faults remain NOT_RUN. Expiry of a fresh command for an
+already-existing endpoint must be discriminated in subsequent adapter schedules.
+Check disk and live resources before allocations. Cleanup remains complete.
 
 ## Next useful journey and remaining prerequisites
 
@@ -169,7 +176,7 @@ Every old run below is STOPPED/RETAINED at its recorded audit, not freshly re-ru
   [faults](evidence/p03-acquisition-jobs-faults-native-20260928.json):0022 finite
   intent, independent original digest/admission ordinal, receipt expiry and
   ambiguous retry. Fixture nonce collision retained; only affected cases reran.
-- [Scope reader](evidence/p03-acquisition-scope-native-20260928.json),
+- [Scope registration](evidence/p03-acquisition-scope-native-20260928.json),
   [scope faults](evidence/p03-acquisition-scope-faults-native-20260928.json) and
   [raw SQL](evidence/p03-acquisition-scope-guards-native-20260928.json): exact
   selectors/scopes, candidate collision/refusal, historical identities and

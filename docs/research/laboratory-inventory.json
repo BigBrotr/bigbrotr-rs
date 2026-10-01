@@ -31513,6 +31513,53 @@
         "status": "PASS_BOUNDED_INITIAL_ENROLLMENT_HTTP"
       },
       "report": "docs/implementation/evidence/p02-initial-enrollment-http-native-20261001.json"
+    },
+    "relay_registration": {
+      "scope": "Authenticated URL registration and installed enrollment integration; engine qualification pending",
+      "local_root": ".research/implementation/relay-registration-20261001",
+      "native": {
+        "launch": {
+          "source": "7011acd1782e9fe36b5e7c67188aae5c40fe70da",
+          "tree": "9f12b08d33d060485854acbf66b77bab572b5662",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-7011acd",
+          "pid": 1246952,
+          "start_ticks": "426709715",
+          "bundle_sha256": "3ffb9df6cf74337d4e267ec6f9fd2b28f85cbc70e715567c561f9b2d6aae9a5f"
+        },
+        "resources": {
+          "source": "7011acd1782e9fe36b5e7c67188aae5c40fe70da",
+          "tree": "9f12b08d33d060485854acbf66b77bab572b5662",
+          "owner": "d832ab31c1f4e81a992ce1673b125ad9",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-7011acd",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "953fc363a52a05c709bb30428e682b2e8f19da688d826edbe9e61952e82b024d"
+            },
+            {
+              "name": "native",
+              "id": "f1c1d4cf88aec7ea0876ea4029acf0a51af51fff00221f76e808189f0bfcfce6"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-01T20:00:43.598791+00:00",
+          "qualification": "PASS_INITIAL_INGEST_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 60073537536,
+          "finished_at": "2026-10-01T20:02:32.236943+00:00"
+        }
+      },
+      "not_run": [
+        "PostgreSQL migration/constraint/adapter/HTTP cases",
+        "COMMIT recovery, cancellation, expiry, concurrency",
+        "installed acquisition/M1",
+        "capacity/load/aged state",
+        "arm64/release"
+      ]
     }
   },
   "implementation_relay_registry_20260928": {
