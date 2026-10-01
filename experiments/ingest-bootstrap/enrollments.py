@@ -9,7 +9,13 @@ from sessions import configuration
 
 
 def run(pg, client, output, database, name, rows):
-    assert name in ('enrollment-journey', 'enrollment-permission', 'enrollment-prerequisite')
+    functions = {
+        'enrollment-function-route': 'control.relay_route_valid(bytea)',
+        'enrollment-function-digest': 'control.relay_enrollment_digest(control.relay_enrollment_changes,control.management_commands)',
+        'enrollment-function-u64': 'control.command_u64_bytes(control.u64)',
+    }
+    assert name in ('enrollment-journey', 'enrollment-permission', 'enrollment-prerequisite') or name in functions
+    prerequisite = name == 'enrollment-prerequisite' or name in functions
     for filename in ('installed_client.py', 'session_client.py'):
         if not (output / filename).exists():
             shutil.copy2(Path(__file__).with_name(filename), output / filename)
@@ -43,6 +49,11 @@ def run(pg, client, output, database, name, rows):
         lab.sql(pg, database, "UPDATE control.principal_grants SET action='principals.manage'")
     if name == 'enrollment-prerequisite':
         lab.sql(pg, database, 'REVOKE INSERT ON control.relay_enrollment_changes FROM bigbrotr_control')
+    if name in functions:
+        signature = functions[name]
+        lab.sql(pg, database, f'REVOKE EXECUTE ON FUNCTION {signature} FROM bigbrotr_control')
+        assert lab.sql(pg, database, f"SELECT has_function_privilege('bigbrotr_control','{signature}','EXECUTE')") == 'f'
+        lab.write_json(output / (name + '-revoked.json'), dict(function=signature, app_execute=False))
     before = rows(database)
     lab.write_json(output / (name + '-before.json'), before)
     state = dict(pg, client=client)
@@ -63,7 +74,15 @@ def run(pg, client, output, database, name, rows):
     directory = output / name
     directory.mkdir(mode=0o700)
     prefix = start(client, config, output, name)
-    if name == 'enrollment-prerequisite':
+    if prerequisite:
+        wait_for(lambda: messages(prefix) or Path(str(prefix)+'.terminal.json').exists(), 'prerequisite outcome')
+        if messages(prefix):
+            # Preserve the counterexample and stop the exact CLI normally. The
+            # missing privilege is known; binding itself violates the contract.
+            stop(client, prefix)
+            terminal(prefix)
+            lab.write_json(output / (name + '-unexpected-after.json'), rows(database))
+            raise RuntimeError('missing enrollment prerequisite still bound the listener: ' + name)
         ended = terminal(prefix)
         assert ended['exit_code'] == 4 and not messages(prefix)
         assert 'initial relay enrollment prerequisites unavailable: Prerequisite' in Path(str(prefix)+'.stderr').read_text()

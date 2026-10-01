@@ -12,31 +12,51 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main438067fd47cf538078cb2688360af359af14a8e4 is an unpublished candidate;
-private origin remains6aa4059cff575ebe426c3d4512f2aca566f8523e.
-Root sole writer. Product23e1923/tree40f5f11527ce515632f8c92542749a1c08498148
-passed native release CLI/probe, Clippy and42 tests (3 entrypoints,6 initial,33 HTTP).
-Mac41 changed tests and scoped Clippy pass. Both session qualification waves are
-committed/pushed. Starting P02-T01 Step6/P01-T09 Step1 installed enrollment command;
-product candidate includes initial enrollment HTTP/dispatcher, accepted route
-intersection, schema/privilege startup probe, tests and isolated endpoint fixture.
-Dirty work is bindings.py, new enrollments.py, session_client.py, inventory and
-this checkpoint. Actual HTTP RED405 vs401 is
-retained; the first erroneous --exact short filter collected0 and is NOT evidence.
-Mac36 Management tests and scoped lib/bin/probe Clippy PASS; one initial compile
-failure from a test struct's missing new field is preserved and corrected.
-No SQL migration, persistent digest, dependency or native format changes.
-Native438067f/treec93b5499a7ac7444ee4f2f146de57619a21563b6 build profile PASS,
-all5 steps executed; actual installed enrollment cases remain NOT_RUN.
-Run initial-ingest-438067f PID1210057/start426406228 terminal;
+Mac main17c6ea0e3e533ff7dd4d970e2cd5a523b77396c2 is unpublished;
+private origin remains6aa4059cff575ebe426c3d4512f2aca566f8523e. Root sole writer.
+Active P02-T01 Step6/P01-T09 Step1 installed enrollment HTTP consumer.
+Product438067f/treec93b5499a7ac7444ee4f2f146de57619a21563b6 built natively;
+all5 build steps PASS. Mac36 Management tests and scoped Clippy PASS. Original
+HTTP RED405vs401 is retained; erroneous zero-test filter is NOT evidence.
+
+Actual fixture17c6ea0 HTTP journey, permission refusal and missing table privilege
+startup refusal PASS. Root checked67 captured payloads,1612 Git files, independent
+12-row native/input/receipt oracle, all64 SQL tables/xmin and exact command digests,
+audit/session/owner linkage. Historical enable retry after withdrawal leaves all
+user state unchanged. Public refusal discriminates the second accepted document;
+private broader CIDR and principals.manage-only requests refuse403.
+Engine initial-enrollment-17c6ea0 PID1214839/start426438112 terminal,
+owner815898bacbf21f5927275f98c00086b9; client2bfac04f stopped143,
+PG71775507 stopped0/no OOM. Audit19:20:17UTC verifies991 prior projections unchanged,
+eight unrelated running, compiler lock free and60,484,120,576B available.
+Build initial-ingest-438067f PID1210057/start426406228 terminal;
 ownerea4c560535654ecf874a08b103ad99b3, fetcha7957ed6/native2c7cc318 stopped.
-Resource report19:11:46UTC retains unchanged prior projections and60,557,307,904B
-free. Inventory initial_relay_commands owns resources; ignored initial-relay-
-commands-20261001/native owns original launch and build receipt. Compiler cache
-now holds438067f intermediates; final artifacts are separately retained.
-All three new native cases PASS with unchanged qualified binaries; Python parsing
-passes. Root reviewed all1609 Git files and61 captured payload hashes plus the
-independent native/input/SQL and real client/FD/syscall observations.
+Inventory initial_relay_commands and ignored initial-relay-commands-20261001 own
+all sources, exact artifacts, launch/capture/review recipes and original outcomes.
+No current experiment. Shared1154757 intermediates438067f; artifacts separate.
+Mac5.0GiB free; check before builds. Prior cache retirement remains complete.
+
+Read-only AI review found a P2 startup gap: require_relay_enrollment tests table
+privileges but not EXECUTE for relay_route_valid, relay_enrollment_digest and its
+command_u64_bytes dependency. Missing EXECUTE can bind then fail a fresh command.
+Source-derived, not yet executed. Root is adding three installed missing-function
+cases to the existing fixture before changing product. Reuse438067f for RED, then
+repair the probe and run exact native candidate; no applied SQL change required.
+No other concrete reviewer defect in the bounded product/caller/fixture boundary.
+Full earlier migrations/native internals and remote artifacts were not AI-reviewed;
+root reviewed originals. Initial independent review script misspelled the account
+table; corrected local script with original KeyError recorded, no oracle weakened.
+
+OpenAPI and generated management.d.ts drafts are preserved under ignored
+initial-relay-commands-20261001/api-draft/ with their original repo-relative paths.
+Root temporarily restored only those two owned drafts to HEAD, keeping the RED
+fixture revision free of compiled/non-fixture changes. Restore drafts after the
+function privilege correction. Remaining reference consumers still need updating.
+Dirty files: enrollments.py, bindings.py, this checkpoint and inventory, root-owned.
+Next bounded action: commit/run --installed-enrollment-functions on438067f to
+observe missing-EXECUTE startup counterexample; then correct and qualify all three
+function dependencies plus a valid HTTP journey. Do not replay completed launchers.
+Whole selected product/M1 remains INCOMPLETE; no broader acceptance box advances.
 
 [Installed session faults](evidence/p01-initial-session-faults-native-20261001.json)
 qualify slow valid initial renewal (3.003s consumed within5s authority), disconnected
@@ -98,24 +118,6 @@ Inventory implementation_network_20260928.initial_sessions and ignored
 original-failure/, retry/, audit-fixed/, hash-diagnostic/ and hash-fixed/. Never
 replay these completed launchers. Mac last5,459,800KiB; check disk before allocation.
 The requested earlier cache retirement remains complete and inventoried.
-
-Next bounded action: review/commit the fixture-only wave and run
---installed-enrollments with reused438067f artifacts on fresh exact-Git clones.
-The three cases are enrollment-journey, enrollment-permission and
-enrollment-prerequisite; real registry setup leaves a released predecessor Control.
-Require enable/retry/withdraw/historical-retry, policy/root and permission refusals,
-startup privilege refusal and unchanged native bootstrap/full SQL deltas. Update
-the OpenAPI contract (not yet inspected for this extension) and affected reference
-consumers before qualification/publication. No engine outcome claimed yet.
-Read relay registry/enrollment references and complete adapters, Management owner,
-initial command loop, profile tests and existing clients. Internal URL registration
-has no browser authentication: it needs its own ingress, not direct exposure of
-that storage method. Enrollment already binds session/CSRF, policy.change, exact
-key/generation and deferred acceptance. Supply private roots and the intersection
-of both accepted public-route flags; initial policy digests remain fixed. Qualify
-actual installed HTTP effects/retry/refusal before calling this consumer complete.
-Endpoint registration, scope/job commands, CLI and M1 remain separate required work.
-Renewal-specific ambiguous COMMIT, panic and restart remain unqualified.
 
 Next user-visible M1 deliverable remains a signed socket event through installed
 same-owner command selection/admission, timer archive/read/export and restart.

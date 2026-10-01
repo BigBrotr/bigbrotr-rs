@@ -33,7 +33,8 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
-enrollment_http = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments'
+enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
+enrollment_http = enrollment_functions or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments')
 sessions = session_hash or session_faults or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions')
 installed = sessions or enrollment_http or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
@@ -479,7 +480,8 @@ try:
     elif interruptions:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
     elif enrollment_http:
-        cases = ['enrollment-journey', 'enrollment-permission', 'enrollment-prerequisite']
+        cases = (['enrollment-function-route', 'enrollment-function-digest', 'enrollment-function-u64']
+            if enrollment_functions else ['enrollment-journey', 'enrollment-permission', 'enrollment-prerequisite'])
     elif sessions:
         if session_faults:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']

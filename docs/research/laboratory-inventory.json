@@ -31325,7 +31325,7 @@
       }
     },
     "initial_relay_commands": {
-      "state": "Native build PASS; installed HTTP cases pending. Source438067f remains unpublished.",
+      "state": "First installed HTTP wave PASS/stopped-retained; function privilege startup review finding under reproduction. Unpublished candidates.",
       "launch": {
         "source": "438067fd47cf538078cb2688360af359af14a8e4",
         "tree": "c93b5499a7ac7444ee4f2f146de57619a21563b6",
@@ -31361,7 +31361,45 @@
         "finished_at": "2026-10-01T19:11:46.594204+00:00"
       },
       "local_evidence": ".research/implementation/initial-relay-commands-20261001",
-      "preserve": "Exact source and artifacts, shared1154757 cache, and all new cloned engine states. No dataset or cache deletion."
+      "preserve": "Exact source and artifacts, shared1154757 cache, and all new cloned engine states. No dataset or cache deletion.",
+      "engine": {
+        "launch": {
+          "source": "17c6ea0e3e533ff7dd4d970e2cd5a523b77396c2",
+          "tree": "d2221fd7fb20e3adf349565d338bed0d0bcf68d5",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-enrollment-17c6ea0",
+          "pid": 1214839,
+          "start_ticks": "426438112",
+          "bundle_sha256": "1734987abdc614666d73a16755a2e32ab7f66bd8bcf7adcf781002bb62d38ab9",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-438067f/out/artifacts"
+        },
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T19:20:17.851769+00:00",
+          "owned_stopped": [
+            {
+              "id": "2bfac04f570c952139343daced446f8758fc9ac8838a6b800a7010f16b3502a6",
+              "owner": "815898bacbf21f5927275f98c00086b9",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 991,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 60484120576
+        },
+        "review": ".research/implementation/initial-relay-commands-20261001/engine/root-review.json",
+        "cases": [
+          "enrollment-journey",
+          "enrollment-permission",
+          "enrollment-prerequisite"
+        ],
+        "status": "PASS_INITIAL_ENROLLMENT_HTTP_WAVE"
+      }
     }
   },
   "implementation_relay_registry_20260928": {
