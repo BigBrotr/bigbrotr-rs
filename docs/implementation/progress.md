@@ -12,21 +12,20 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main062f82d, origin2519147; two unpublished candidates. Producte4c2825
-native build passes. Fixture062f82d reached real upgrade and complete HTTP journey,
-then FAIL: final count omitted the one preexisting policy activation command.
-Root corrected only the fixture to preserve that exact old row and require the
-six new keys. Actual captures independently pass all9 scope receipt comparisons;
-mutated scope IDs/times/created flags are rejected. Original FAIL remains retained.
-No product/SQL/build input changed; no active build/engine. Next commit correction
-and rerun the installed wave with unchanged e4c2825 artifacts.
+Mac main5e7dbab, origin2519147; three unpublished coherent candidates. Producte4c2825
+native build and installed HTTP/upgrade wave PASS within its bounded report.
+Root verified1640 exact fixture Git files/157 original payloads, all69 Control
+relations,12 native rows/originalCBOR and9 HTTP scope receipts against SQL/schema.
+Dirty now only evidence/docs/checkpoint/inventory; sole root writer. No active
+build or engine. Original062f82d FAIL (fixture omitted existing activation command)
+remains retained;5e7dbab preserves the old row and counts six new commands.
 
-runs/initial-scopes-062f82d STOPPED/RETAINED, PID1380604/start427607283,
-owner60b2d68613555938ac23e5eacc1a992e, client362c231da7b560827ac7e2c1d01c47771e283a5049fdce3ece67036418a303fc
-stopped143; borrowedPG stopped0/noOOM. Audit22:31:19UTC:58,717,696,000B free,
-1012 prior projections unchanged,8 unrelated running, compiler lock free.
-Original45 captures/logs under scope-registration-20261001/engine/capture;
-oracle-controls.json records offline controls, not a rerun or engine PASS.
+Latest runs/initial-scopes-5e7dbab STOPPED/RETAINED, PID1385287/start427622888,
+ownerfc22ac011fad045b81622ae40bfdab2b, client0964b0f0105981f8ad2db96077218ced71002692f4dcbe15720bb2e5d24c59ce
+stopped143; borrowedPG stopped0/noOOM. Audit22:33:44UTC:58,566,393,856B free,
+1013 prior projections unchanged,8 unrelated running, compiler lock free.
+Originals scope-registration-20261001/engine-fixed/capture; prior062f82d capture
+and three actual-capture receipt mutation controls in engine/. Never replay launchers.
 
 Tux exact-Git e4c2825 native build is PASS_BUILD_ONLY and STOPPED/RETAINED:
 runs/initial-ingest-e4c2825, PID1370048/start427513649 terminal,
@@ -57,7 +56,7 @@ source tuples refuse with healthy Conflict before an FK exception. Historical
 actor/key resolution precedes fresh permission/CAS after authentication.
 
 HTTP POST /management/v1/acquisition-scopes, exact schema26 and privileges before
-initial listener bind are implemented but engine/installed qualification NOT_RUN.
+initial listener bind have bounded actual installed qualification.
 The 2MiB+1KiB body and existing selector codec reserve14MiB+64KiB through queue/SQL.
 Closed borrowed RawValue envelope, full canonical document and independent literal
 SHA fixture; no generic selector Value tree, Clone or second normalizer.
@@ -79,8 +78,8 @@ version/dependency; explicit raw_value was already feature-unified by protocol.
 AI found no further concrete SQL counterexample, but current grant serialization
 follows the existing account-lock/grant-revision writer discipline; no arbitrary
 raw grant deletion exclusion has been established. Preserve that qualification
-boundary and evaluate it during real concurrency work. New SQL/upgrade/recovery,
-old internal scope helper regression and native resource behavior are NOT_RUN.
+boundary and evaluate it during real concurrency work. New recovery/concurrency/raw relational cases, old internal scope helper regression
+and native resource capacity remain NOT_RUN; HTTP/upgrade is qualified below.
 Evidence: ignored .research/implementation/scope-registration-20261001, inventoried
 implementation_network_20260928.scope_registration; original RED logs retained.
 
@@ -187,20 +186,29 @@ fault-native/, fault-native-fixed/, fault-engine/, race-engine/, relation-engine
 and http-fault-engine/, http-fault-fixed/, http-fault-qualified/, http-signal/,
 including raw captures,
 source/artifact manifests, controllers, launch receipts and root-review scripts.
-Never replay completed launchers or old cache deletion. Mac last4,675,100KiB free;
+Never replay completed launchers or old cache deletion. Mac last4,153,004KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: finish the installed
-login→URL→enroll→scope/retry fixture with actual CLI/password login, all SQL/native
-effects and populated25→26/reapply preservation; use existing bindings.py isolated
-clone/retirement infrastructure with a new bounded scope profile. Complete bindings.py, registrations.py, session_client.py/sessions.py, installed.py,
-new scopes.py/scope_client.py and native build/launch recipe were read. AI fixture
-review found HTTP receipts unbound to SQL and broad refusal write allowances; both
-corrected before engine execution. Maximum padded HTTP envelope is not a maximum
-canonical-selector claim. Next commit fixture, transfer exact Git and execute
---installed-scopes using the separate qualified e4c2825 artifacts. Grant writer discipline caveat above remains for
-concurrency qualification. New COMMIT/concurrency/relational schedules and affected
-internal scope regression follow before dependent finite-job consolidation.
+[Installed scope HTTP/upgrade report](evidence/p03-initial-scopes-http-native-20261002.json):
+e4c2825/fixture5e7dbab seven cases PASS. Populated25→26/reapply preserves old rows/
+xmin/heap files; actual password login→URL→private enrollment→normalized scope,
+three command keys/nine wire receipts, registration after withdrawal, zero-mutation
+historical retry, policy.change-only refusal and four prebind prerequisites.
+All original native bytes stay unchanged. The maximum2098176-byte padded envelope
+and65536 one-byte chunks are wire/collection evidence, not selector/RSS capacity.
+AI fixture review found unbound HTTP receipts and broad refusal write allowance;
+corrected before run. First fixture count missed original policy activation,
+retainedFAIL corrected by exact old-row preservation and delta. No product failure.
+Structure: concrete existing identity helper, same queue/owner, one auth detail;
+no new framework/crate/normalizer. New common collector fixes measured frame retention.
+Applied0026 now immutable.
+
+Next bounded action: review actual scope/registration fault probes and reuse the
+existing finite wire-proxy/independent SQL machinery for authenticated scope lost/
+held COMMIT, current authority races and raw relational rollback. Check grant writer
+serialization caveat above. Build affected internal acquisition_scope_probe against
+current helper and rerun its relevant engine regression before finite-job delivery.
+No need whole Discovery/Monitor to complete these remaining durable prerequisites.
 
 ## Next useful journey and remaining prerequisites
 

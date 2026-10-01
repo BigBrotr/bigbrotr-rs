@@ -32317,7 +32317,7 @@
     },
     "scope_registration": {
       "local": ".research/implementation/scope-registration-20261001",
-      "status": "NATIVE_BUILD_COMPONENTS_PASS_ENGINES_NOT_RUN",
+      "status": "BOUNDED_INSTALLED_HTTP_UPGRADE_PASS_FAULTS_PENDING",
       "base": "25191470ad72f947a94675c969a7cfaadd525cf4",
       "remote_resources": [
         {
@@ -32378,6 +32378,42 @@
             "free_bytes": 58717696000
           },
           "local": ".research/implementation/scope-registration-20261001/engine"
+        },
+        {
+          "source": "5e7dbab3c822390cce7302f402ee4f8eff4f8662",
+          "tree": "9f2bce791b91ea0803bf7d02361e36de8bcfbba9",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-scopes-5e7dbab",
+          "pid": 1385287,
+          "start_ticks": "427622888",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-e4c2825/out/artifacts",
+          "bundle_sha256": "99b88772b5bedaddfe8477c1e14caea0c7bd99b1f5804ee05d8dae1f73cb371d",
+          "state": "STOPPED_RETAINED",
+          "owner": "fc22ac011fad045b81622ae40bfdab2b",
+          "client": "0964b0f0105981f8ad2db96077218ced71002692f4dcbe15720bb2e5d24c59ce",
+          "qualification": "PASS_INITIAL_SCOPE_HTTP_WAVE",
+          "audit": {
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "observed_at": "2026-10-01T22:33:44.124102+00:00",
+            "owned_stopped": [
+              {
+                "id": "0964b0f0105981f8ad2db96077218ced71002692f4dcbe15720bb2e5d24c59ce",
+                "owner": "fc22ac011fad045b81622ae40bfdab2b",
+                "exit": 143
+              },
+              {
+                "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+                "exit": 0
+              }
+            ],
+            "prior_unchanged": 1013,
+            "unrelated_running": 8,
+            "compiler_lock_released": true,
+            "free_bytes": 58566393856
+          },
+          "source_files_verified": 1640,
+          "captured_payloads_verified": 157,
+          "local": ".research/implementation/scope-registration-20261001/engine-fixed"
         }
       ],
       "findings": [
@@ -32394,9 +32430,10 @@
         "typescript_and_generation": "PASS",
         "native": "PASS build/components only"
       },
-      "next": "Rerun installed scope wave from corrected exact Git fixture; original062f82d FAIL retained, no product change.",
+      "next": "Qualify actual authenticated scope COMMIT/authority/relational boundary and affected internal helper before finite-job delivery.",
       "candidate": "e4c282542532aa95ca30b8ea252b527230d614b8",
-      "fixture_review": "Read-only AI found unbound HTTP receipts and overly broad startup-refusal write allowance; corrected before engine run. Maximum padded HTTP body does not qualify maximum canonical selector."
+      "fixture_review": "Read-only AI found unbound HTTP receipts and overly broad startup-refusal write allowance; corrected before engine run. Maximum padded HTTP body does not qualify maximum canonical selector.",
+      "evidence": "docs/implementation/evidence/p03-initial-scopes-http-native-20261002.json"
     }
   },
   "implementation_relay_registry_20260928": {

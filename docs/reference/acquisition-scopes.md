@@ -159,7 +159,12 @@ closed/oversize input, resource refusal, absent/mismatched source identities,
 session/CSRF/action/CAS refusal and missing prerequisites before bind. Lost/held
 COMMIT, concurrent authority changes and raw relational negatives must qualify the
 new durable boundary before dependent job delivery is consolidated. This section
-records the selected implementation; these new consumer scenarios are NOT_RUN.
+records the selected implementation. The [installed HTTP/upgrade wave](../implementation/evidence/p03-initial-scopes-http-native-20261002.json)
+qualifies the bounded login/registration/retry and prerequisite journey on native
+Linux amd64. COMMIT faults, concurrent authority changes, raw relational negatives
+and the affected internal scope regression remain NOT_RUN for this consumer.
+The padded maximum body exercises the HTTP envelope, not a maximum canonical
+selector or production memory bound. Applied0026 is now immutable.
 
 
 The initial admission bridge now accepts a borrowed `AcquisitionEventContext`.

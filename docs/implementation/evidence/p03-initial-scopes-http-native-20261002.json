@@ -1,0 +1,244 @@
+{
+  "format": "bigbrotr-initial-scope-http-acceptance/1",
+  "status": "PASS_BOUNDED_INSTALLED_SCOPES",
+  "observed_at": "2026-10-01T22:33:44.124102+00:00",
+  "tasks": [
+    "P03-T01 Steps1/2/3 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "scope": "Installed initial-owner authenticated immutable scope acceptance after URL registration/enrollment, historical retry and populated upgrade/reapply. Durable fault/concurrency qualification remains open.",
+  "source": {
+    "product": "e4c282542532aa95ca30b8ea252b527230d614b8",
+    "product_tree": "6619a9a464d421bb87afbe88441cdc14682d901f",
+    "fixture": "5e7dbab3c822390cce7302f402ee4f8eff4f8662",
+    "fixture_tree": "9f2bce791b91ea0803bf7d02361e36de8bcfbba9",
+    "reuse": "Only docs/experiments differ; actual separate CLI/probe hashes and clean exact source verified."
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1 (48a229cea)",
+    "clang": "14.0.6",
+    "postgres": "16.15",
+    "rocksdb": "11.8.1",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2"
+  },
+  "artifacts": {
+    "binary_sha256": "a48d49ae1ddbdf5dadc853f81e412dd3e7c34653feeb37fa293ecabbeab19d45",
+    "probe_sha256": "c34be5a35dbc2f6efdfeb9f137518b09f8759494331fb7a73b95f1cfa9de1afa",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "86c9a6ee1a4cbb82865fc42663c53961df3a6b3b4c96449037ecc8f42f444d10"
+  },
+  "upgrades": {
+    "cases": [
+      {
+        "name": "scope-upgrade",
+        "old_tables": 68,
+        "new_tables": 69,
+        "rows_xmin_filenodes_preserved": true
+      },
+      {
+        "name": "scope-journey",
+        "old_tables": 68,
+        "new_tables": 69,
+        "rows_xmin_filenodes_preserved": true
+      },
+      {
+        "name": "scope-permission",
+        "old_tables": 68,
+        "new_tables": 69,
+        "rows_xmin_filenodes_preserved": true
+      },
+      {
+        "name": "scope-prerequisite",
+        "old_tables": 68,
+        "new_tables": 69,
+        "rows_xmin_filenodes_preserved": true
+      },
+      {
+        "name": "scope-candidate",
+        "old_tables": 68,
+        "new_tables": 69,
+        "rows_xmin_filenodes_preserved": true
+      },
+      {
+        "name": "scope-digest",
+        "old_tables": 68,
+        "new_tables": 69,
+        "rows_xmin_filenodes_preserved": true
+      }
+    ],
+    "populated_source": "bb_scope_bind_45f7593_registration_journey",
+    "original_unchanged": true,
+    "effects": "Actual25→26 and idempotent reapply preserve all68 old relations/rows/xmin/heap filenodes. One new empty detail table and exact migration26 checksum. Original qualified source and its native producer evidence remain unchanged."
+  },
+  "cases": [
+    {
+      "name": "scope-journey",
+      "control_tables": 69,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "http_statuses": [
+          202,
+          202,
+          401,
+          401,
+          403,
+          409,
+          409,
+          409,
+          409,
+          400,
+          400,
+          409,
+          409,
+          400,
+          202,
+          200,
+          409,
+          202,
+          202,
+          202,
+          200,
+          200,
+          200,
+          200,
+          413,
+          200,
+          401
+        ],
+        "independent_scope_digests": 3,
+        "wire_receipts_bound_to_sql": 9,
+        "historical_retry_zero_user_mutations": true
+      }
+    },
+    {
+      "name": "scope-permission",
+      "control_tables": 69,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "http_statuses": [
+          202,
+          202,
+          401,
+          401,
+          403,
+          403,
+          401
+        ]
+      }
+    },
+    {
+      "name": "scope-prerequisite",
+      "control_tables": 69,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "startup_refused_before_bind": true,
+        "exit_code": 4
+      }
+    },
+    {
+      "name": "scope-candidate",
+      "control_tables": 69,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "startup_refused_before_bind": true,
+        "exit_code": 4
+      }
+    },
+    {
+      "name": "scope-digest",
+      "control_tables": 69,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "startup_refused_before_bind": true,
+        "exit_code": 4
+      }
+    },
+    {
+      "name": "scope-schema",
+      "control_tables": 68,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "startup_refused_before_bind": true,
+        "exit_code": 4
+      }
+    }
+  ],
+  "verification": {
+    "native": "Six profile steps PASS,108 tests and scoped Clippy;1638 build source files and12 captured payloads verified.",
+    "mac": "54 Management,4 domain,35 catalog,2 schema tests, Clippy, TypeScript/generated types and structural checks PASS. Fragmented actual HTTP and owned-frame resource regressions included.",
+    "captured_schema": {
+      "status": "PASS",
+      "captured_success_receipts": 9,
+      "captured_errors": 20,
+      "scope": "Actual captured HTTP responses against selected schema; semantic bytes independently checked by root SQL/native review"
+    },
+    "expected": "Literal canonical document and three independent command digests; all69 Control tables/xmin, complete12 native rows and original CBOR. Nine scope wire receipts match exact SQL IDs/timestamps/created flags. Historical retry changes only owner lease renewal.",
+    "negative": "Missing/wrong session/CSRF, closed/positional visibility, absent endpoint/access/mismatched visibility, foreign dataset, stale heads, same-key changed selector, missing roles.control, body limit and startup prerequisites."
+  },
+  "review": {
+    "source_files": 1640,
+    "captured_payloads": 157,
+    "capture_manifest_sha256": "414b7ebfc48000a2944487fcba87668a1a3b6b653376ca1f4e068dd534210ffe",
+    "root_review_sha256": "f1691796da38d7751c8a64c56d84a798996694b34c43a221b29a63f127aa32d2",
+    "findings": [
+      "Nested visibility positional array accepted: actual RED then shape gate GREEN.",
+      "Abandoned work drop order: actual Rust reproducer and explicit command drop before credit.",
+      "Actual old collector retains65536 single-byte DATA frames; corrected contiguous collector peak1.",
+      "AI fixture review: wire receipts were unbound to SQL and refusal allowance too broad; corrected before engine execution.",
+      "Original062f82d FAIL omitted existing policy activation in final count. Corrected delta preserves old row; all original outputs retained. Corrupt scope ID/time/created controls rejected using actual captures."
+    ],
+    "boundary": "AI source review did not execute engines. Root reviewed actual captures/source identities. Grant serialization currently follows account-lock/grant-revision writer discipline; arbitrary raw grant deletion remains unqualified."
+  },
+  "structure": "One concrete transaction-local scope identity helper serves internal registration and authenticated acceptance. The existing Management queue/current owner performs the command, with one immutable deferred-auth detail and no duplicated selector document, new crate, generic backend trait or orchestration framework. Common body collection bounds frame retention. Applied0026 and prior SQL are immutable.",
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-01T22:33:44.124102+00:00",
+    "owned_stopped": [
+      {
+        "id": "0964b0f0105981f8ad2db96077218ced71002692f4dcbe15720bb2e5d24c59ce",
+        "owner": "fc22ac011fad045b81622ae40bfdab2b",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 1013,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 58566393856
+  },
+  "limitations": [
+    "scope COMMIT recovery/cancellation/expiry/concurrency",
+    "raw relational refusal/rollback",
+    "internal scope adapter regression",
+    "finite-job delivery/installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release",
+    "Maximum padded HTTP envelope is not maximum canonical-selector acceptance or a measured allocator/RSS bound.",
+    "Current arbitrary raw grant deletion exclusion is not established.",
+    "Initial installed policy change stops the owner; fresh adapter recovery is not native successor support.",
+    "Complete selected acquisition/M1, ordinary Serve scope commands, dashboard/admin journey, capacity and release remain incomplete."
+  ],
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.scope_registration",
+    "ignored_local_root": ".research/implementation/scope-registration-20261001",
+    "remote_roots": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-e4c2825",
+      "/home/tux/bigbrotr-implementation-20260917/runs/initial-scopes-062f82d",
+      "/home/tux/bigbrotr-implementation-20260917/runs/initial-scopes-5e7dbab"
+    ],
+    "original_failure": "062f82d fixture count failure, not product/SQL failure; preserved in engine/capture. No invariant or expected durable effect weakened."
+  }
+}

@@ -278,7 +278,10 @@ acceptance or production capacity measurement. First062f82d execution passed the
 populated upgrade and HTTP requests but failed its final command count: it omitted
 the template's original policy activation. The correction preserves the exact old
 row and counts only new keys. Original FAIL/captures remain retained; three mutated
-receipt controls reject false scope IDs, timestamps and created flags. Rerun pending.
+receipt controls reject false scope IDs, timestamps and created flags.
+Exact5e7dbab/unchangede4c2825 artifacts passed all seven cases; the
+[bounded report](../../docs/implementation/evidence/p03-initial-scopes-http-native-20261002.json)
+records all69 relations,12 native rows/original CBOR and stopped resources.
 
 Read-only AI fixture review identified unbound HTTP receipts and an overly broad
 startup-refusal write allowance; both were corrected before engine execution.
