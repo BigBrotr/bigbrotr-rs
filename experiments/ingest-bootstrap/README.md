@@ -257,3 +257,26 @@ driver drain. Four unaffected schedules remain in4db23a0; the focused rerun does
 claim to execute them again. Complete SQL/native originals and source/artifact
 identities were independently checked. Installed successor/acquisition/M1 and
 capacity/release acceptance remain open.
+
+
+## Installed immutable acquisition scopes
+
+`experiments/acquisition-scope/bindings.py LAB --installed-scopes BUILD` proposes
+seven cases using the exact initial-owner CLI and native inspector. It reuses the
+existing isolated clone/lifecycle infrastructure. Populated25→26 and exact reapply
+must preserve old rows/xmin/heap files. The actual password-login journey registers
+one URL, enrolls private visibility, registers a normalized selector under three
+keys (including after withdrawal), then replays each receipt. Every successful
+HTTP receipt is compared with its exact SQL command/detail; complete SQL snapshots
+require no retry mutation except lease renewal. The independent literal document,
+command digests, original attribution and twelve native bootstrap rows/CBOR remain
+checked. Policy-change-only authority refuses scope registration; missing INSERT,
+candidate/digest EXECUTE and schema refuse before listener bind with no registry
+writes. The maximum padded body tests the2098176-byte HTTP envelope, and65536
+one-byte chunks test fragmented collection; neither is a maximum canonical-selector
+acceptance or production capacity measurement. Engine execution is pending.
+
+Read-only AI fixture review identified unbound HTTP receipts and an overly broad
+startup-refusal write allowance; both were corrected before engine execution.
+COMMIT faults/current-authority races/raw relational checks and the affected
+internal scope adapter regression remain separate required qualification.

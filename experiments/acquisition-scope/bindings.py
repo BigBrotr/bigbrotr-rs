@@ -38,11 +38,12 @@ registration_http_faults = registration_http_signal or (len(sys.argv) == 4 and s
 registration_relations = len(sys.argv) == 4 and sys.argv[2] == '--registration-relations'
 registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races'
 registration_faults = registration_http_faults or registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
+scope_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-scopes'
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
 enrollment_http = enrollment_functions or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments')
 sessions = session_hash or session_faults or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions')
-installed = registration_http or sessions or enrollment_http or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
+installed = scope_http or registration_http or sessions or enrollment_http or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
 execution = len(sys.argv) == 3 and sys.argv[2] == '--execution'
@@ -51,7 +52,7 @@ socket = len(sys.argv) in (3, 4) and sys.argv[2] == '--socket'
 assert len(sys.argv) == 2 or registration_faults or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-reuse_build = registration_faults or guards or interruptions or commits or ((observation or socket or sessions or enrollment_http or registration_http) and len(sys.argv) == 4)
+reuse_build = registration_faults or guards or interruptions or commits or ((observation or socket or sessions or enrollment_http or registration_http or scope_http) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == ('relay_registration_fault_probe' if registration_faults else 'ingest_bootstrap_probe')
@@ -146,6 +147,12 @@ if registration_http:
         'raw relational refusal/rollback', 'CLI registration command', 'installed acquisition/M1',
         'capacity/load/aged-state', 'arm64/release']
 
+if scope_http:
+    report['wave'] = 'installed-acquisition-scope'
+    report['not_run'] = ['scope COMMIT recovery/cancellation/expiry/concurrency',
+        'raw relational refusal/rollback', 'internal scope adapter regression',
+        'finite-job delivery/installed acquisition/M1', 'capacity/load/aged-state', 'arm64/release']
+
 if interruptions:
     report['not_run'] = ['worker panic and arbitrary uninterruptible kernel I/O',
         'lost/delayed COMMIT and cancellation lock schedules', 'crash-resumable initialization/successor',
@@ -178,7 +185,7 @@ def containers():
 def rows(db):
     names = json.loads(lab.sql(pg, db,
         "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    require(len(names) in (64, 66, 67, 68) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
+    require(len(names) in (64, 66, 67, 68, 69) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
              f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     return json.loads(lab.sql(pg, db, 'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(parts) + ') t'))
@@ -478,6 +485,8 @@ if registration_http_faults:
 
 if registration_http:
     success_status = 'PASS_INITIAL_REGISTRATION_HTTP_WAVE'
+if scope_http:
+    success_status = 'PASS_INITIAL_SCOPE_HTTP_WAVE'
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -512,13 +521,13 @@ try:
     template = rows('bb_source_template')
     require(basic == json.loads((basis / 'basic-after.json').read_text()), 'original-scope-basis')
     require(not template['producer_requests'] and not template['owner_epochs'], 'original-template-preconditions')
-    registration_basis = ('bb_scope_bind_45f7593_registration_journey' if registration_faults
+    registration_basis = ('bb_scope_bind_45f7593_registration_journey' if registration_faults or scope_http
         else 'bb_scope_bind_917c76b_enrollment_journey')
-    if registration_http or registration_faults:
+    if registration_http or registration_faults or scope_http:
         registration_original = dict(database=registration_basis,
             rows=rows(registration_basis), physical=physical(registration_basis))
         require(registration_original['rows']['relay_enrollment_changes'], 'populated-registration-basis')
-        if registration_faults:
+        if registration_faults or scope_http:
             original_capture = root.parent / 'initial-registration-45f7593/bindings/registration-journey-after.json'
             require(registration_original['rows'] == json.loads(original_capture.read_text()),
                 'retained-registration-basis-differs-from-qualified-capture')
@@ -571,6 +580,10 @@ try:
         cases = list(CASES)
     elif interruptions:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
+    elif scope_http:
+        sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+        from scopes import CASES
+        cases = list(CASES)
     elif registration_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from registrations import CASES
@@ -621,7 +634,9 @@ try:
             save()
         elif installed:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-            if registration_http:
+            if scope_http:
+                from scopes import run as run_installed
+            elif registration_http:
                 from registrations import run as run_installed
             elif enrollment_http:
                 from enrollments import run as run_installed
@@ -629,7 +644,7 @@ try:
                 from sessions import run as run_installed
             else:
                 from installed import run as run_installed
-            template_name = (registration_basis if name == 'registration-upgrade'
+            template_name = (registration_basis if name in ('registration-upgrade', 'scope-upgrade')
                 else installed_basis if name == 'registered-only' else 'bb_source_template')
             completed = clone(name, template_name)
             report['cases'].append(run_installed(pg,client,output,completed,name,rows))
@@ -683,7 +698,7 @@ try:
         require(rows(completed) == basis_rows, 'signed-parent-changed')
     require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_source_template') == template
         and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')
-    if registration_http or registration_faults:
+    if registration_http or registration_faults or scope_http:
         final_original = dict(database=registration_basis,
             rows=rows(registration_basis), physical=physical(registration_basis))
         lab.write_json(output / 'registration-basis-after.json', final_original)

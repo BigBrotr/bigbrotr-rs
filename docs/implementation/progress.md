@@ -12,16 +12,30 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main/origin2519147 pushed; root sole writer. Preparing an unpublished candidate
-for exact-revision native testing. Dirty scope responsibility spans domain and
-PostgreSQL acceptance, additive0026/catalog/manifest, initial-owner startup and
-Management HTTP dispatch, independent domain/catalog/HTTP/schema tests, OpenAPI/
-generated types, linked references and this checkpoint/inventory. The exact file
-list is git status; all changes are root-owned. Existing applied SQL/checksums
-and Cargo.lock are unchanged. No native build or engine run for this slice yet.
-Mac54 Management tests,4 domain tests,35 catalog tests,2 schema cases, Clippy,
-TypeScript/generation and artifact structural checks PASS. No active local tests.
-Tux resources remain at the retained21:37:30UTC audit below; re-inventory before use.
+Mac main e4c282542532aa95ca30b8ea252b527230d614b8, tree6619a9a464d421bb87afbe88441cdc14682d901f;
+origin/main2519147, unpublished candidate ahead1. Candidate is reviewed scope domain/
+SQL/HTTP/schema responsibility; native qualification pending. Dirty after candidate: checkpoint/inventory plus root-owned installed scope fixture in
+experiments/acquisition-scope/bindings.py and ingest-bootstrap/{session_client,scope_client,scopes}.py
+and its README. Fixture written/reviewed, not engine-executed. Root sole writer. Existing applied
+SQL/checksums and Cargo.lock unchanged. Mac54 Management,4 domain,35 catalog,
+2 schema cases, Clippy, TypeScript/generation and structural checks PASS; no active
+local build. Actual schema26/installed SQL remains NOT_RUN.
+
+Tux exact-Git e4c2825 native build is PASS_BUILD_ONLY and STOPPED/RETAINED:
+runs/initial-ingest-e4c2825, PID1370048/start427513649 terminal,
+owneraf00cee56119ffdd03b327b6f8d2b228. Fetchd4dc9fad/native3ec3bf02 exited0/noOOM;
+shared1154757 compiler lock free, latest e4c2825 intermediates. Complete1638 Git
+source files and12 captured check payloads verified; actual CLI/probe SHA verified.
+Native Rust1.98.1/clang14/Rocks11.8.1 amd64, six profile steps passed. Actual schema26
+SQL and installed scope journey NOT_RUN. Original stdout/logs retained in
+.research/implementation/scope-registration-20261001/native/checks.
+CLI SHA a48d49ae1ddbdf5dadc853f81e412dd3e7c34653feeb37fa293ecabbeab19d45;
+ingest probe SHA c34be5a35dbc2f6efdfeb9f137518b09f8759494331fb7a73b95f1cfa9de1afa.
+Source manifest SHA86c9a6ee1a4cbb82865fc42663c53961df3a6b3b4c96449037ecc8f42f444d10.
+Terminal audit22:18:07UTC:58,766,950,400B free; prior container projections unchanged.
+Never rerun launch-native.py. Native collection first hit Mac system Python3.9's
+unsupported tarfile filter keyword; existing capture was then verified/extracted
+with /opt/homebrew/bin/python3.14. No engine or original result changed.
 
 ## Active slice and next bounded action
 
@@ -169,13 +183,17 @@ source/artifact manifests, controllers, launch receipts and root-review scripts.
 Never replay completed launchers or old cache deletion. Mac last4,675,100KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: commit reviewed candidate, transfer exact Git revision and
-build initial-ingest profile on the exclusively locked1154757 cache after full
-remote inventory/space verification. In parallel local work, implement the real
-installed login→URL→enroll→scope/retry fixture over isolated SQL clones, preserving
-all rows/xmin/native bytes and populated25→26 upgrade/reapply evidence. Then new
-COMMIT/concurrency/relational schedules and affected internal scope regression,
-before consolidating finite-job delivery. No new master plan or task completion.
+Next bounded action: finish the installed
+login→URL→enroll→scope/retry fixture with actual CLI/password login, all SQL/native
+effects and populated25→26/reapply preservation; use existing bindings.py isolated
+clone/retirement infrastructure with a new bounded scope profile. Complete bindings.py, registrations.py, session_client.py/sessions.py, installed.py,
+new scopes.py/scope_client.py and native build/launch recipe were read. AI fixture
+review found HTTP receipts unbound to SQL and broad refusal write allowances; both
+corrected before engine execution. Maximum padded HTTP envelope is not a maximum
+canonical-selector claim. Next commit fixture, transfer exact Git and execute
+--installed-scopes using the separate qualified e4c2825 artifacts. Grant writer discipline caveat above remains for
+concurrency qualification. New COMMIT/concurrency/relational schedules and affected
+internal scope regression follow before dependent finite-job consolidation.
 
 ## Next useful journey and remaining prerequisites
 
@@ -253,7 +271,7 @@ bb_scope_54d1a18_basic and original transport/source/fault clones. Secrets stay
 under protected pg/secrets and never enter Git. Clone and verify before experiments.
 
 Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latest00600af intermediates;
+acceleration, exclusively locked by .compiler-cache.lock. Lateste4c2825 intermediates;
 qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
 clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
 owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.

@@ -32317,9 +32317,34 @@
     },
     "scope_registration": {
       "local": ".research/implementation/scope-registration-20261001",
-      "status": "MAC_COMPONENTS_PASS_NATIVE_NOT_RUN",
+      "status": "NATIVE_BUILD_COMPONENTS_PASS_ENGINES_NOT_RUN",
       "base": "25191470ad72f947a94675c969a7cfaadd525cf4",
-      "remote_resources": [],
+      "remote_resources": [
+        {
+          "source": "e4c282542532aa95ca30b8ea252b527230d614b8",
+          "tree": "6619a9a464d421bb87afbe88441cdc14682d901f",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-e4c2825",
+          "pid": 1370048,
+          "start_ticks": "427513649",
+          "bundle_sha256": "fedce9b6229b927f7b2a6499136e0dab2c58b2e9b41ee35f208f6df9a4eec3db",
+          "state": "STOPPED_RETAINED",
+          "owner": "af00cee56119ffdd03b327b6f8d2b228",
+          "fetch_container": "d4dc9fad5552451bb4eb0bade0e9c4ecc78d70faea3537265fd72e02ed1e7f4e",
+          "native_container": "3ec3bf022c30fa7743f9fa4faee4a04ee1265cf76c5fab3024d122590d6f8071",
+          "compiler_cache": "runs/network-1154757/out/build",
+          "preflight_free_bytes": 58904268800,
+          "preflight_owned_processes": 0,
+          "unrelated_running_containers": 8,
+          "scope": "build/components only; scope engines NOT_RUN",
+          "qualification": "PASS_INITIAL_INGEST_BUILD_ONLY",
+          "terminal_audit": "2026-10-01T22:18:07.661814+00:00",
+          "free_bytes_after": 58766950400,
+          "unrelated_changed": [],
+          "source_files_verified": 1638,
+          "captured_payloads_verified": 12,
+          "artifact_hashes_verified": true
+        }
+      ],
       "findings": [
         "nested visibility arrays: RED/GREEN",
         "abandoned command drop order: actual Rust reproducer and explicit drop",
@@ -32332,9 +32357,11 @@
         "schema": 2,
         "clippy": "PASS",
         "typescript_and_generation": "PASS",
-        "native": "NOT_RUN"
+        "native": "PASS build/components only"
       },
-      "next": "Exact-Git initial-ingest native build, then installed scope SQL/HTTP/upgrade journey."
+      "next": "Commit exact installed scope fixture and run seven SQL/HTTP/upgrade cases using separate e4c2825 artifacts.",
+      "candidate": "e4c282542532aa95ca30b8ea252b527230d614b8",
+      "fixture_review": "Read-only AI found unbound HTTP receipts and overly broad startup-refusal write allowance; corrected before engine run. Maximum padded HTTP body does not qualify maximum canonical selector."
     }
   },
   "implementation_relay_registry_20260928": {
