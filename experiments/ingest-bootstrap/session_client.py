@@ -121,10 +121,11 @@ def hash_stop():
                 continue
             stat = task.joinpath('stat').read_text().split()
             new_tasks[task.name] = stat[:22]
-            if stat[1] == '(tokio-runtime-w)' and stat[2] == 'R' and int(stat[13]) > 0:
+            # Pinned Tokio1.53.1 Builder default, independently observed in /proc.
+            if stat[1] == '(tokio-rt-worker)' and stat[2] == 'R' and int(stat[13]) > 0:
                 # The initial runtime has exactly two blocking slots: its
                 # permanent native owner and this newly started password worker.
-                sample = dict(tid=int(task.name), state=stat[2], user_ticks=int(stat[13]),
+                sample = dict(tid=int(task.name), name=stat[1], state=stat[2], user_ticks=int(stat[13]),
                               start_ticks=stat[21], prior_tasks=sorted(before))
                 os.kill(identity['pid'], signal.SIGSTOP)
                 break

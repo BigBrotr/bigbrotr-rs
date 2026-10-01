@@ -31069,6 +31069,111 @@
             ]
           }
         ]
+      },
+      "hash_diagnostic": {
+        "launch": {
+          "source": "9b9a3a62c82d0081b92a2c3eb57c860c8c7f68f0",
+          "tree": "4e436a000dc47f933e6809f9e89386ee6b758e2c",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-9b9a3a6",
+          "pid": 1185623,
+          "start_ticks": "426158112",
+          "bundle_sha256": "0341cff99c942474bfaa8297768bf526d9ad10b23e06d93b1a66c70536891182",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-23e1923/out/artifacts"
+        },
+        "status": "FAIL",
+        "owner": "1ff4fcda6275246bdd313cbcb659da73",
+        "client": {
+          "id": "e88459491411e66c5b71c6231fb512e767e2853222b6d41cc60920bb8bb49d1a",
+          "name": "bigbrotr-acquisition-binding-9b9a3a6"
+        },
+        "databases": [
+          "bb_scope_bind_9b9a3a6_sessions_hash_stop"
+        ],
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-01T18:28:47.744499061Z",
+              "FinishedAt": "2026-10-01T18:28:54.156912694Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "e88459491411e66c5b71c6231fb512e767e2853222b6d41cc60920bb8bb49d1a",
+            "Name": "/bigbrotr-acquisition-binding-9b9a3a6",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-01T18:28:48.654926207Z",
+              "FinishedAt": "2026-10-01T18:28:53.698234754Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-23e1923/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-9b9a3a6/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "finding": "New running hash worker was named tokio-rt-worker, not the assumed tokio-runtime-w. Task38 consumed6 user ticks; correction preserves the new-thread/running/positive-CPU predicate."
       }
     }
   },

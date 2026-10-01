@@ -12,17 +12,18 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main4a00f643bc49133ccae87a0fa201eac71f0c9186 is unpublished; private origin
+Mac main9b9a3a62c82d0081b92a2c3eb57c860c8c7f68f0 is unpublished; private origin
 remains022f57c. Root sole writer. Product23e1923/tree40f5f11527ce515632f8c92542749a1c08498148
 passed native release CLI/probe, Clippy and42 tests (3 entrypoints,6 initial,33 HTTP).
 The first namespace and second audit-baseline fixture FAILs remain preserved.
 Fixture4a00f64 reused exact binaries: actual installed journey and capacity cases
 PASS, including independent12-row native/original-input/receipt comparison,
 64-table comparison, exact Control/backend identity and renewals under12 clients.
-Third case FAILed before signalling: the fixture did not observe a newly created
-running password thread. Cause unknown; no hash-stop guarantee yet. The next
-bounded action is one hash-only diagnostic clone capturing actual task identities
-and CPU states; do not weaken its success assertion or rerun the two passed cases.
+Third case FAILed before signalling. Diagnostic9b9a3a6 captured a new task38
+consuming6 user ticks named tokio-rt-worker, whereas the fixture assumed
+tokio-runtime-w. Exact local Tokio1.53.1 builder.rs:309 confirms the observed name.
+Correct only that name; retain new-thread/running/positive-CPU requirements.
+No hash-stop guarantee yet; do not rerun the two already passed cases.
 All three original roots/clones/source/bundles/logs remain; completed journey and
 capacity CLI processes were reaped, while failed cases have no terminal receipt
 after container cleanup. All owned containers stopped/no OOM; no cleanup debt.
@@ -33,7 +34,9 @@ ownere602e5b9e8b77953598ba7f0efe651f6; client9883e975 exited143 and
 borrowedPG71775507 stopped0. Inventory implementation_network_20260928.initial_sessions
 and ignored .research/implementation/initial-management-20260928 own all launches
 and captures. Root dirty: hash diagnostic/selection fixture, inventory, checkpoint.
-Mac last5,478,808KiB; Tux last60,879,101,952B free. No new product change.
+Diagnostic initial-sessions-9b9a3a6 PID1185623/start426158112 is terminal;
+owner1ff4fcda6275246bdd313cbcb659da73, cliente8845949 stopped, no cleanup errors
+or unrelated changes. Mac last5,478,808KiB. No new product change.
 
 Root read complete initial worker/supervision, Management dispatcher, HTTP transport
 and delivery gate, relevant ordinary-Serve renewal/dispatch and owning initial-store
@@ -53,9 +56,9 @@ exit4, including backend loss. Original REDs/logs remain under ignored
 Serve/initial worker, command/profile tests, CLI test, owning docs and the installed
 session fixture/build profile. No other contributor changes were observed.
 Practical installed qualification remains pending; no new readiness claim.
-Next bounded action: execute the diagnostic --installed-sessions-hash selection
-from a fresh exact-Git source with the original23e1923 artifacts. Preserve its
-observations before deciding how to identify the real running password worker. The
+Next bounded action: commit the measured thread-name fixture correction and run
+only --installed-sessions-hash on a fresh exact-Git clone with23e1923 artifacts.
+Keep the diagnostic FAIL and actual task observations unchanged. The
 three proposed cases cover installed CLI login/logout and twelve concurrent Me
 clients across original expiry, shared-payload refusal and SIGTERM during an
 observed running password hash. Complete SQL/native oracles retain original
