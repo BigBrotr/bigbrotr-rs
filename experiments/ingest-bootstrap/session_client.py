@@ -17,7 +17,7 @@ origin = 'http://127.0.0.1:18081'
 password = 'Independent owner password 2026'
 
 
-def http(method, path, body=None, headers=None):
+def request(method, path, body=None, headers=None):
     connection = http.client.HTTPConnection('127.0.0.1', 18081, timeout=3)
     try:
         fields = {'Origin': origin, **(headers or {})}
@@ -50,28 +50,28 @@ def journey():
     assert saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == origin
     assert session.stat().st_mode & 0o777 == 0o600
     auth = {'Cookie': 'BigBrotrLocalSession=' + saved['session'], 'X-CSRF-Token': saved['csrf']}
-    status, body = http('GET', '/management/v1/me', headers=auth)
+    status, body = request('GET', '/management/v1/me', headers=auth)
     assert status == 200
     observed = json.loads(body)
     assert observed['format'] == 'bigbrotr-session/1'
     assert observed['principal_id'] == '10' * 16 and observed['authority'] == 'observation-only'
     assert observed['stored_actions'] == ['policy.change']
-    assert http('GET', '/management/v1/me')[0] == 401
-    assert http('POST', '/management/v1/sessions',
+    assert request('GET', '/management/v1/me')[0] == 401
+    assert request('POST', '/management/v1/sessions',
                 {'username': 'alice', 'password': 'deliberately incorrect'})[0] == 401
     for method, path, status in [
         ('GET', '/v1/resources/event_history', 404),
         ('POST', '/management/v1/jobs', 405),
         ('POST', '/management/v1/sessions/current/reauthenticate', 405),
     ]:
-        assert http(method, path, headers=auth)[0] == status
+        assert request(method, path, headers=auth)[0] == status
 
     started = time.monotonic()
     deadline = started + 8
     def reader():
         counts = {}
         while time.monotonic() < deadline:
-            status, body = http('GET', '/management/v1/me', headers=auth)
+            status, body = request('GET', '/management/v1/me', headers=auth)
             assert status in (200, 429, 503), (status, body)
             if status == 200:
                 current = json.loads(body)
@@ -87,7 +87,7 @@ def journey():
     assert sum(c.get(200, 0) for c in counts) >= 24
     logged_out = cli('logout', '--session-ref', 'file:' + str(session))
     assert json.loads(session.read_text()) == saved
-    assert http('GET', '/management/v1/me', headers=auth)[0] == 401
+    assert request('GET', '/management/v1/me', headers=auth)[0] == 401
     assert all(secret not in json.dumps([logged_in, logged_out]) for secret in (saved['session'], saved['csrf']))
     return dict(login=logged_in, logout=logged_out, readers=counts, elapsed_seconds=elapsed,
                 unauthenticated=401, incorrect_password=401, revoked_session=401)

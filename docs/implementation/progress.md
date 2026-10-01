@@ -12,12 +12,25 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin022f57c5c6534501174b718d6ff4f8629a332a73 match
-(push/ls-remote verified). Root sole writer. Preparing an unpublished same-owner
-private-session candidate; no native experiment started. Last Mac free5,478,808KiB.
-Tux read-only recheck found61,209,513,984B free and only eight unrelated containers
-running. Detailed ownership/cache/mount/port inventory is enforced before launch.
-All owned native/engine runs are stopped/retained; no cleanup debt.
+Mac main23e1923224fba13b768fa6823493b066e7af5d82 is an unpublished candidate;
+private origin remains022f57c (ls-remote verified). Root sole writer. Its exact
+product/fixture tree40f5f11527ce515632f8c92542749a1c08498148 was native built:
+release CLI/probe, Clippy and42 tests PASS (3 entrypoints,6 initial,33 HTTP).
+The first installed engine FAIL is a Python name shadowing error after actual
+login, before the independent HTTP client. Product initialized/listened correctly;
+no installed-session acceptance is claimed. Original clone/bootstrap/session,
+source and logs remain intact. All owned containers are now stopped/no OOM;
+original CLI terminal record is absent because fixture cleanup stopped the client
+container. Do not infer graceful release from that cleanup.
+Native initial-ingest-23e1923 buildPID1171824/start426088424 terminal,
+ownerbcc697daac1a328b0cddc93013f3c501; fetch14c29218/native1034e5e6 exited0.
+EnginePID1175520/start426104901 terminal; ownerce67dea75a49f0adf0b7442d6bb89b64,
+client1d18f224 exited143 and borrowedPG71775507 exited0. No cleanup debt reported.
+Inventory implementation_network_20260928.initial_sessions and ignored
+.research/implementation/initial-management-20260928 own exact receipts and
+original-failure/. Current root-owned dirty files are the Python client/helper
+reuse option, this checkpoint and inventory. No Rust change; reuse the original
+qualified binaries for a new exact-Git fixture revision. Mac last5,478,808KiB free.
 
 Root read complete initial worker/supervision, Management dispatcher, HTTP transport
 and delivery gate, relevant ordinary-Serve renewal/dispatch and owning initial-store
@@ -37,8 +50,9 @@ exit4, including backend loss. Original REDs/logs remain under ignored
 Serve/initial worker, command/profile tests, CLI test, owning docs and the installed
 session fixture/build profile. No other contributor changes were observed.
 Practical installed qualification remains pending; no new readiness claim.
-Next bounded action: commit the reviewed candidate, transfer exact Git into a new
-initial-ingest run, build/test natively and execute --installed-sessions. The
+Next bounded action: commit the fixture correction, transfer exact Git into a new
+run and execute --installed-sessions with the original23e1923 artifacts. Do not
+repeat unchanged native builds/tests or reuse the failed database. The
 three proposed cases cover installed CLI login/logout and twelve concurrent Me
 clients across original expiry, shared-payload refusal and SIGTERM during an
 observed running password hash. Complete SQL/native oracles retain original

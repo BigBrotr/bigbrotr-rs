@@ -31,8 +31,8 @@ guards = len(sys.argv) == 4 and sys.argv[2] == '--guards'
 refusals = len(sys.argv) == 3 and sys.argv[2] == '--refusals'
 policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
-sessions = len(sys.argv) == 3 and sys.argv[2] == '--installed-sessions'
-installed = len(sys.argv) == 3 and sys.argv[2] in ('--installed-ingest', '--installed-sessions')
+sessions = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions'
+installed = sessions or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
 execution = len(sys.argv) == 3 and sys.argv[2] == '--execution'
@@ -41,7 +41,7 @@ socket = len(sys.argv) in (3, 4) and sys.argv[2] == '--socket'
 assert len(sys.argv) == 2 or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-reuse_build = guards or interruptions or commits or ((observation or socket) and len(sys.argv) == 4)
+reuse_build = guards or interruptions or commits or ((observation or socket or sessions) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == 'ingest_bootstrap_probe'

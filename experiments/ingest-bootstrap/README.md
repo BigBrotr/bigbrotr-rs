@@ -99,7 +99,9 @@ records all twelve cases on2e2a4e1 with exact7ab155e artifacts.
 `experiments/network-transport/lab.py REVISION TREE initial-ingest` builds the
 actual CLI/native probe and runs the changed initial lifetime, HTTP profile and
 CLI entrypoint tests. `experiments/acquisition-scope/bindings.py LAB
---installed-sessions` then uses fresh isolated template clones.
+--installed-sessions [BUILD]` then uses fresh isolated template clones. Optional
+BUILD reuses exact artifacts only when every intervening change is in docs or
+experiments; product/build input changes require a new build.
 
 The proposed three-case first wave exercises actual access login/logout and
 incorrect credentials, twelve concurrent self-inspection clients for eight
