@@ -7,8 +7,49 @@ from installed import (configure, messages, native_oracle, policy_setup, set_val
                        start, stop, terminal, wait_for)
 
 
+def configuration(text, before, name):
+    text = configure(text, before, name)
+    text = set_value(text, 'administration.listen', 'port', 18081)
+    if name != 'sessions-capacity':
+        for key, value in [('payload_bytes', '704MiB'), ('baseline_bytes', '64MiB'),
+                           ('native_bytes', '192MiB'), ('completion_reserve_bytes', '64MiB')]:
+            text = set_value(text, 'runtime.processes.application', key, value)
+    return text
+
+
+def delay_first_renewal(pg, database):
+    # Only this new clone gets a fault trigger. No applied migration, product
+    # function, expected native byte or historical database is changed.
+    lab.sql(pg, database, """
+        CREATE SCHEMA session_fixture;
+        CREATE TABLE session_fixture.renewal (
+            singleton boolean PRIMARY KEY CHECK(singleton),
+            calls integer NOT NULL, started_us bigint, completed_us bigint);
+        INSERT INTO session_fixture.renewal VALUES(true,0,NULL,NULL);
+        GRANT USAGE ON SCHEMA session_fixture TO bigbrotr_control;
+        GRANT SELECT,UPDATE ON session_fixture.renewal TO bigbrotr_control;
+        CREATE FUNCTION session_fixture.delay_renewal() RETURNS trigger
+        LANGUAGE plpgsql AS $$ DECLARE n integer; BEGIN
+            UPDATE session_fixture.renewal SET calls=calls+1 RETURNING calls INTO n;
+            IF n=1 THEN
+                UPDATE session_fixture.renewal SET started_us=
+                    (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint;
+                PERFORM pg_sleep(3);
+                UPDATE session_fixture.renewal SET completed_us=
+                    (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint;
+            END IF;
+            RETURN NEW;
+        END $$;
+        CREATE TRIGGER fixture_delay_control_renewal
+        BEFORE UPDATE OF lease_expires_at_us ON control.owner_epochs
+        FOR EACH ROW WHEN(OLD.role='control')
+        EXECUTE FUNCTION session_fixture.delay_renewal();
+    """)
+
+
 def run(pg, client, output, database, name, rows):
-    assert name in ('sessions-journey', 'sessions-capacity', 'sessions-hash-stop')
+    assert name in ('sessions-journey', 'sessions-capacity', 'sessions-hash-stop',
+                    'sessions-slow-renewal', 'sessions-disconnect')
     for filename in ('installed_client.py', 'session_client.py'):
         target = output / filename
         if not target.exists():
@@ -21,14 +62,13 @@ def run(pg, client, output, database, name, rows):
     state = dict(pg, client=client)
     config = lab.config(output, state, database, endpoint='127.0.0.1:5432', boundary='loopback')
     path = output / Path(config).name
-    text = configure(path.read_text(), before, name)
-    text = set_value(text, 'administration.listen', 'port', 18081)
+    text = configuration(path.read_text(), before, name)
     # Retain the disabled startup seed: both accepted documents, not that seed,
     # decide whether this managed listener is selected.
-    if name != 'sessions-capacity':
-        for key, value in [('payload_bytes', '704MiB'), ('baseline_bytes', '64MiB'),
-                           ('native_bytes', '192MiB'), ('completion_reserve_bytes', '64MiB')]:
-            text = set_value(text, 'runtime.processes.application', key, value)
+    if name == 'sessions-slow-renewal':
+        for key, value in [('lease_ttl', '30s'), ('heartbeat_interval', '4s'), ('renewal_timeout', '4s')]:
+            text = set_value(text, 'runtime', key, value)
+        delay_first_renewal(pg, database)
     path.write_text(text)
     validated = lab.cli(state, 'config', 'validate', '--file', config)
     (output / (name + '-validate.stdout')).write_text(validated.stdout)
@@ -55,7 +95,20 @@ def run(pg, client, output, database, name, rows):
         lab.write_json(output / (name + '-initialized.json'), initial)
         owner = next(r for r in initial['owner_epochs'] if r['role'] == 'control')
         original_deadline = next(r['lease_expires_at_us'] for r in initial['owner_epochs'] if r['role'] == 'ingest')
-        mode = 'journey' if name == 'sessions-journey' else 'hash-stop'
+        if name == 'sessions-slow-renewal':
+            def renewed_after_original_authority():
+                sampled = json.loads(lab.sql(pg, database, """
+                    SELECT json_build_object('now_us',
+                        (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,
+                        'delay',row_to_json(r)) FROM session_fixture.renewal r
+                """))
+                return sampled if sampled['now_us'] > sampled['delay']['started_us'] + 5_000_000 else None
+            observed = wait_for(renewed_after_original_authority, 'request-start expiry', 8)
+            assert observed['delay']['completed_us'] - observed['delay']['started_us'] >= 3_000_000
+            assert observed['delay']['calls'] >= 2
+            lab.write_json(output / (name + '-delay.json'), observed)
+        mode = {'sessions-journey': 'journey', 'sessions-hash-stop': 'hash-stop',
+                'sessions-disconnect': 'hash-disconnect', 'sessions-slow-renewal': 'renewal'}[name]
         result = lab.docker('exec', client, 'python3', '/lab/session_client.py', '/lab/' + name, mode,
                             check=False, timeout=20)
         (output / (name + '-client.stdout')).write_text(result.stdout)
@@ -63,11 +116,13 @@ def run(pg, client, output, database, name, rows):
         assert result.returncode == 0, 'actual-session-client-' + name
         observation = json.loads((output / name / 'client-result.json').read_text())
         assert observation['status'] == 'PASS'
-        if mode == 'journey':
+        if mode != 'hash-stop':
             current = rows(database)
             now = int(lab.sql(pg, database, 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
             renewed = [r['lease_expires_at_us'] for r in current['owner_epochs']]
-            assert now > original_deadline and len(renewed) == 2 and min(renewed) > now
+            assert len(renewed) == 2 and min(renewed) > now
+            if mode == 'journey':
+                assert now > original_deadline
             current_owner = next(r for r in current['owner_epochs'] if r['role'] == 'control')
             assert all(current_owner[k] == owner[k] for k in [
                 'control_backend_pid', 'control_backend_start', 'process_incarnation', 'resource_id', 'epoch'])
@@ -107,7 +162,7 @@ def run(pg, client, output, database, name, rows):
         assert next(r for r in after['owner_epochs'] if r['role'] == 'control')['state'] == 'active'
         from commits import native_oracle as retained_oracle
         retained_oracle(client, output, name, after, committed=True, outcome=True)
-    if name != 'sessions-journey':
+    if name in ('sessions-capacity', 'sessions-hash-stop'):
         assert not after['browser_sessions'] and after['management_audit'] == before['management_audit']
     allowed = {'datasets', 'owner_epochs', 'role_instances', 'topology_generations', 'topology_streams',
                'source_streams', 'allocation_domains', 'producer_slots', 'producer_epochs',

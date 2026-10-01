@@ -32,7 +32,8 @@ refusals = len(sys.argv) == 3 and sys.argv[2] == '--refusals'
 policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
-sessions = session_hash or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions')
+session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
+sessions = session_hash or session_faults or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions')
 installed = sessions or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -81,6 +82,12 @@ if installed:
 if sessions:
     report['not_run'] = ['session listener during blocked native close', 'late/delayed renewal and disconnected clients',
         'worker panic', 'crash-resumable initialization/successor', 'installed acquisition/M1',
+        'capacity/load/aged-state', 'arm64/release']
+
+if session_faults:
+    report['wave'] = 'installed-session-faults'
+    report['not_run'] = ['worker panic', 'renewal-specific ambiguous COMMIT and policy races',
+        'crash-resumable initialization/successor', 'installed acquisition/M1',
         'capacity/load/aged-state', 'arm64/release']
 
 if interruptions:
@@ -399,6 +406,8 @@ def run_case(name):
 
 
 success_status = 'PASS_INITIAL_SESSION_HASH_CASE' if session_hash else 'PASS_INITIAL_SESSION_FIRST_WAVE' if sessions else 'PASS_SOCKET_ARRIVAL_FIRST_WAVE' if socket else 'PASS_COMMITTED_OBSERVATION_FIRST_WAVE' if observation else 'PASS_ACQUISITION_EXECUTION_FIRST_WAVE' if execution else 'PASS_INITIAL_INGEST_COMMIT_WAVE' if commits else 'PASS_INITIAL_INGEST_INTERRUPTION_WAVE' if interruptions else 'PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE' if installed else 'PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'
+if session_faults:
+    success_status = 'PASS_INITIAL_SESSION_FAULT_WAVE'
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -415,7 +424,7 @@ lab.write_json(output / 'preflight.json', dict(containers=[projection(c) for c i
 save()
 try:
     instrument_mount = []
-    if interruptions:
+    if interruptions or session_faults:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from interruptions import prepare_instrument
         instrument = prepare_instrument(root, prior, SOURCE)
@@ -461,7 +470,10 @@ try:
     elif interruptions:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
     elif sessions:
-        cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+        if session_faults:
+            cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
+        else:
+            cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
     elif installed:
         cases = ['pass','zero-topology','expired','policy-archive','existing-directory','registered-only']
     elif lease:
@@ -488,10 +500,11 @@ try:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_commits(pg, client, output, completed, name, rows))
             save()
-        elif interruptions:
+        elif interruptions or (session_faults and name == 'close-signal'):
             from interruptions import run as run_interruption
             completed = clone(name, 'bb_source_template')
-            report['cases'].append(run_interruption(pg,client,output,completed,name,rows))
+            report['cases'].append(run_interruption(pg,client,output,completed,name,rows,
+                                                   sessions=session_faults))
             save()
         elif installed:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))

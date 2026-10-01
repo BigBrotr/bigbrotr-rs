@@ -7,12 +7,13 @@ import os
 from pathlib import Path
 import signal
 import socket
+import struct
 import subprocess
 import sys
 import time
 
 directory, mode = Path(sys.argv[1]), sys.argv[2]
-assert directory.is_absolute() and mode in ('journey', 'hash-stop')
+assert directory.is_absolute() and mode in ('journey', 'hash-stop', 'hash-disconnect', 'renewal')
 origin = 'http://127.0.0.1:18081'
 password = 'Independent owner password 2026'
 
@@ -39,7 +40,7 @@ def cli(*args):
     return json.loads(result.stdout)
 
 
-def journey():
+def login():
     credential = directory / 'password.private'
     with os.fdopen(os.open(credential, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as stream:
         stream.write(password)
@@ -56,6 +57,18 @@ def journey():
     assert observed['format'] == 'bigbrotr-session/1'
     assert observed['principal_id'] == '10' * 16 and observed['authority'] == 'observation-only'
     assert observed['stored_actions'] == ['policy.change']
+    return logged_in, session, saved, auth, observed
+
+
+def logout(session, saved, auth):
+    logged_out = cli('logout', '--session-ref', 'file:' + str(session))
+    assert json.loads(session.read_text()) == saved
+    assert request('GET', '/management/v1/me', headers=auth)[0] == 401
+    return logged_out
+
+
+def journey():
+    logged_in, session, saved, auth, observed = login()
     assert request('GET', '/management/v1/me')[0] == 401
     assert request('POST', '/management/v1/sessions',
                 {'username': 'alice', 'password': 'deliberately incorrect'})[0] == 401
@@ -85,15 +98,13 @@ def journey():
     elapsed = time.monotonic() - started
     assert all(c.get(200, 0) > 0 for c in counts), counts
     assert sum(c.get(200, 0) for c in counts) >= 24
-    logged_out = cli('logout', '--session-ref', 'file:' + str(session))
-    assert json.loads(session.read_text()) == saved
-    assert request('GET', '/management/v1/me', headers=auth)[0] == 401
+    logged_out = logout(session, saved, auth)
     assert all(secret not in json.dumps([logged_in, logged_out]) for secret in (saved['session'], saved['csrf']))
     return dict(login=logged_in, logout=logged_out, readers=counts, elapsed_seconds=elapsed,
                 unauthenticated=401, incorrect_password=401, revoked_session=401)
 
 
-def hash_stop():
+def interrupt_hash(disconnect=False):
     identity = json.loads(Path(str(directory) + '.pid.json').read_text())
     process = Path('/proc') / str(identity['pid'])
     assert process.joinpath('stat').read_text().split()[21] == identity['start_ticks']
@@ -132,9 +143,30 @@ def hash_stop():
         time.sleep(.001)
     try:
         assert process.joinpath('stat').read_text().split()[21] == identity['start_ticks']
-        os.kill(identity['pid'], signal.SIGTERM)
+        if disconnect:
+            # Reset the actual in-flight credential request while its hash and
+            # server are paused. The original request cannot receive a reply.
+            connection.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
+            connection.close()
+        else:
+            os.kill(identity['pid'], signal.SIGTERM)
     finally:
         os.kill(identity['pid'], signal.SIGCONT)
+    if disconnect:
+        deadline = time.monotonic() + 2
+        while True:
+            stat = process.joinpath('task', str(sample['tid']), 'stat').read_text().split()
+            assert stat[21] == sample['start_ticks']
+            if stat[2] == 'S' and int(stat[13]) > sample['user_ticks']:
+                break
+            assert time.monotonic() < deadline, 'password work did not become terminal'
+            time.sleep(.001)
+        # A new successful login proves the one hash slot was actually collected.
+        # The host requires exactly one issued/revoked session and its two audits,
+        # so late issuance for the abandoned first request cannot be hidden.
+        logged_in, session, saved, auth, _ = login()
+        logged_out = logout(session, saved, auth)
+        return dict(worker=sample, disconnected=True, login=logged_in, logout=logged_out)
     connection.settimeout(4)
     try:
         received = connection.recv(65536)
@@ -146,7 +178,13 @@ def hash_stop():
     return dict(worker=sample, socket_bytes=0, signal='SIGTERM during running password work')
 
 
-result = journey() if mode == 'journey' else hash_stop()
+if mode == 'journey':
+    result = journey()
+elif mode == 'renewal':
+    logged_in, session, saved, auth, _ = login()
+    result = dict(login=logged_in, logout=logout(session, saved, auth))
+else:
+    result = interrupt_hash(disconnect=mode == 'hash-disconnect')
 with (directory / 'client-result.json').open('x') as stream:
     json.dump(dict(status='PASS', mode=mode, **result), stream, indent=2)
 print(json.dumps(dict(status='PASS', mode=mode)))

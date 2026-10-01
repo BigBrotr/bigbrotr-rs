@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import select
 import signal
+import socket
 import subprocess
 import sys
 import time
@@ -14,6 +15,8 @@ import time
 config, prefix = map(Path, sys.argv[1:3])
 mode = sys.argv[3]
 assert mode in ['trace-pass','initialize-signal','initialize-deadline','close-signal']
+assert len(sys.argv) == 4 or (len(sys.argv) == 5 and sys.argv[4] == '--session-http' and mode == 'close-signal')
+session_http = len(sys.argv) == 5
 tracer = Path('/instrument/strace-exit-fixed')
 assert hashlib.sha256(tracer.read_bytes()).hexdigest() == '509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458'
 trace = Path(str(prefix)+'.trace')
@@ -57,6 +60,7 @@ with Path(str(prefix)+'.stdout').open('xb') as out, Path(str(prefix)+'.stderr').
     process = subprocess.Popen(command,env={},stdout=out,stderr=err,start_new_session=True)
 parent = None
 parent_fd = None
+connection = None
 try:
     children = Path(f'/proc/{process.pid}/task/{process.pid}/children')
     parent = int(wait(lambda: children.read_text().strip(), 'tracee-child', 2))
@@ -88,10 +92,41 @@ try:
 
     if mode in ['trace-pass','close-signal']:
         wait(initialized,'initialization',8)
+        if session_http:
+            connection = socket.create_connection(('127.0.0.1', 18081), 1)
+            connection.sendall(b'GET /management/v1/me HTTP/1.1\r\nHost: 127.0.0.1:18081\r\n')
+            remote = f'0100007F:{connection.getsockname()[1]:04X}'
+            def accepted_socket():
+                for line in Path(f'/proc/{parent}/net/tcp').read_text().splitlines()[1:]:
+                    row = line.split()
+                    if row[1] == '0100007F:46A1' and row[2] == remote and row[3] == '01':
+                        inode = row[9]
+                        for fd in Path(f'/proc/{parent}/fd').iterdir():
+                            try:
+                                if os.readlink(fd) == f'socket:[{inode}]':
+                                    return dict(fd=int(fd.name), inode=inode, remote=remote)
+                            except FileNotFoundError:
+                                pass
+                return None
+            result['http_accepted'] = wait(accepted_socket, 'accepted partial HTTP connection', 1)
         if mode=='close-signal':send()
     if mode!='trace-pass':
         blocked=wait(held,'pending-native-syscall',2)
         result['blocked']=blocked
+        if session_http:
+            connection.settimeout(.25)
+            try:
+                received = connection.recv(1)
+            except ConnectionResetError:
+                received = b''
+            assert received == b'', 'partial HTTP connection outlived native-close entry'
+            connection.close()
+            connection = None
+            with socket.socket() as refused:
+                refused.settimeout(.25)
+                assert refused.connect_ex(('127.0.0.1',18081)) != 0
+            result['http_stopped'] = dict(socket_bytes=0, new_connection_refused=True,
+                observed_monotonic=time.monotonic())
         publish('.waiting.json',dict(identity,**blocked))
         wait(lambda: Path(str(prefix)+'.continue').exists(),'independent SQL observer',1.25)
         assert held()['tid']==blocked['tid'] and not poll.poll(0)
@@ -130,6 +165,8 @@ try:
         result['terminal']['elapsed_from_signal_or_hold']=elapsed
     result['status']='PASS'
 finally:
+    if connection is not None:
+        connection.close()
     forced=False
     try:
         if parent_fd is not None:

@@ -35,15 +35,20 @@ def prepare_instrument(root, prior, source):
     return target
 
 
-def run(pg,client,output,database,name,rows):
+def run(pg,client,output,database,name,rows,*,sessions=False):
     script=output/'interruption_client.py'
     if not script.exists():shutil.copy2(Path(__file__).with_name(script.name),script)
-    policy_setup(pg,database,name,rows,output)
+    assert not sessions or name == 'close-signal'
+    policy_setup(pg,database,name,rows,output,administration=sessions)
     before=rows(database);lab.write_json(output/(name+'-before.json'),before)
     state=dict(pg,client=client)
     config=lab.config(output,state,database,endpoint='127.0.0.1:5432',boundary='loopback')
     path=output/Path(config).name
-    text=configure(path.read_text(),before,name)
+    if sessions:
+        from sessions import configuration
+        text=configuration(path.read_text(),before,name)
+    else:
+        text=configure(path.read_text(),before,name)
     for key,value in [('lease_ttl','30s'),('renewal_timeout','5s')]:text=set_value(text,'runtime',key,value)
     path.write_text(text)
     validated=lab.cli(state,'config','validate','--file',config)
@@ -55,7 +60,8 @@ def run(pg,client,output,database,name,rows):
     assert lab.cli(state,'config','validate','--file',competing_config).returncode==0
     (output/name).mkdir(mode=0o700)
     prefix=output/name
-    lab.docker('exec','-d',client,'python3','/lab/interruption_client.py',config,'/lab/'+name,name)
+    arguments = ['--session-http'] if sessions else []
+    lab.docker('exec','-d',client,'python3','/lab/interruption_client.py',config,'/lab/'+name,name,*arguments)
     if name!='trace-pass':
         barrier=Path(str(prefix)+'.waiting.json');terminal=Path(str(prefix)+'.terminal.json')
         wait_for(lambda:barrier.exists() or terminal.exists(),'native barrier',10)

@@ -12,12 +12,14 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main0ac54d1d5ec9c72c2625f4e8bc89680c9ab7e826 is unpublished; private origin
-remains022f57c. Root sole writer. Product23e1923/tree40f5f11527ce515632f8c92542749a1c08498148
+Mac main and private origin88ce4beffc05870f28e80b654676c1af1fa34bc0 match
+(push/ls-remote and repository privacy verified). Root sole writer. Product23e1923/tree40f5f11527ce515632f8c92542749a1c08498148
 passed native release CLI/probe, Clippy and42 tests (3 entrypoints,6 initial,33 HTTP).
-Mac41 changed tests, scoped Clippy and document checks pass. Current dirty work is
-the bounded qualification report, owning docs/README, this checkpoint and inventory;
-no uncommitted product change. Ready for evidence review/commit/private push.
+Mac41 changed tests, scoped Clippy and document checks pass. The qualification is
+committed/pushed. Root's pending fixture-only candidate changes this checkpoint,
+acquisition-scope/bindings.py and ingest-bootstrap's sessions/session_client and
+interruptions/interruption_client. No product change. Python parsing passes;
+the three new native cases are NOT_RUN until exact-Git execution below.
 
 [Initial private-session first wave](evidence/p01-initial-sessions-native-20261001.json)
 qualifies P01-T09 Step1/P02-T02 Steps2/3 only to this bounded scope. Same-owner
@@ -59,12 +61,11 @@ intermediates; qualified CLI/probe remain outside the cache.
 Inventory implementation_network_20260928.initial_sessions and ignored
 .research/implementation/initial-management-20260928 own capture/, root-review,
 original-failure/, retry/, audit-fixed/, hash-diagnostic/ and hash-fixed/. Never
-replay these completed launchers. Mac last5,478,808KiB; check disk before allocation.
+replay these completed launchers. Mac last5,459,800KiB; check disk before allocation.
 The requested earlier cache retirement remains complete and inventoried.
 
-Next bounded action: finish this evidence commit/push, then implement the remaining
-installed fault wave on fresh exact-Git clones, reusing23e1923 binaries if Rust is
-unchanged. Required cases: delayed valid renewal consuming request-start validity,
+Next bounded action: commit and run the remaining installed fault wave on fresh
+exact-Git clones, reusing23e1923 binaries. Required cases: delayed valid renewal consuming request-start validity,
 disconnected credentials while real hash work remains active (no late issuance),
 and session HTTP stopped while qualified tracer holds native close and actual
 Control excludes a competitor. Read complete owning fixture/client/proxy before
@@ -72,6 +73,13 @@ changing it. Existing interruption_client.py and interruptions.py were read in
 full; the qualified strace instrument can be reused with verified identities.
 Renewal-specific ambiguous COMMIT, panic and restart remain separately unqualified.
 No extra broad unchanged suites or new master plan.
+
+Resumption inspection confirms only those owned edits, Mac5,456,060KiB available
+and Tux60,780,916,736B available. No BigBrotr native/build process or container is
+active; eight unrelated containers remain running and the compiler lock is free.
+The delayed-renewal trigger affects only a new clone, hash disconnection resets
+the actual paused request, and the native-close case must observe a process-owned
+accepted socket before signalling. Original evidence and cache retirement remain.
 
 Next user-visible M1 deliverable remains a signed socket event through installed
 same-owner command selection/admission, timer archive/read/export and restart.
@@ -117,25 +125,6 @@ revisions and54 captures. Inventory implementation_network_20260928.relay_transf
 and ignored .research/implementation/relay-transfer-20260928 own originals and
 recipes (original-failure/, peer-fixed/capture/). Never replay launchers or cleanup.
 Shared1154757 now holds a519ed1 intermediates; qualified artifacts remain separate.
-
-Next user-visible slice is authenticated command delivery to the living initial
-Ingest owner: P01-T09 Step1/P02-T02 Steps2/3. Reuse existing private Management
-queue and actual access login/logout clients; keep native store and sole Control
-on the current owner thread. Read-only dependency review found two concrete
-constraints: the sole blocking slot is permanently occupied (password hashing
-needs another bounded slot), and four process items cannot fit login beside
-native/input/PG custody. Use the same expanded ledger, explicit supported routes,
-renewal priority and parent-controlled delivery revocation/cleanup. Root must read
-complete owners/callers/contracts before editing. No new plan or command bus.
-
-The relay qualification is committed/pushed. Current same-owner command acceptance
-must cover installed renewal, flood/cancellation and retained-fencing checks.
-Dictionary append/intern P02-T03 Step1 remains a separate immediate consumer;
-installed bootstrap still contains only two visibility mappings. Restart/resend
-P01-T09 Step4 needs explicit successor/recovery P02-T01 Step5/P02-T02 Step4, not
-just historical reads. Authority-change/late-rollback composition and retained
-duplicate-proof/page joins remain P03-T02 acceptance work. No entire Discovery/
-Monitor subsystem, ACK/GC machinery or capacity study blocks fresh command delivery.
 
 [Committed observation qualification](evidence/p03-observation-native-20260928.json)
 closes the fixed attribution reader and receive-clock first wave: Mac/native
