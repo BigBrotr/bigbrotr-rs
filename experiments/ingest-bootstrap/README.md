@@ -287,3 +287,16 @@ Read-only AI fixture review identified unbound HTTP receipts and an overly broad
 startup-refusal write allowance; both were corrected before engine execution.
 COMMIT faults/current-authority races/raw relational checks and the affected
 internal scope adapter regression remain separate required qualification.
+
+
+`--scope-command-faults BUILD` proposes seven actual authenticated scope-adapter
+fourth-COMMIT schedules, borrowing the existing finite proxy/lifetime controller.
+The probe's optional final `scope` argument selects the actual scope API; its old
+endpoint path remains. Scope expected results are independently encoded in
+scope_command_faults.py. Clone the retained5e7dbab scope journey, keep its original
+selector/scope attribution unchanged, and require atomic command/detail/audit or
+no changes across all69 tables. Same-key recovery under fresh owner3 must return
+the original owner2 receipt when committed. Isolated owner/session expiry must
+refuse even for an already existing scope. Native Ingest is not adopted/reopened.
+The changed shared fixture also requires the seven old endpoint schedules against
+the retained45f7593 source. Build and engine execution are pending.

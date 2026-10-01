@@ -1,10 +1,11 @@
-//! Finite actual authenticated registration client. File barriers belong only to its native lab.
+//! Finite authenticated endpoint/scope command client. File barriers are lab-only.
 use bigbrotr::{
     management::{
+        acquisition_scope::ScopeCommand,
         credentials::HASH_RESERVATION,
         grants::Revision,
         relay_registration::RegistrationCommand,
-        sessions::{SessionError, SessionLifetime},
+        sessions::{BrowserSecret, SessionError, SessionLifetime},
     },
     runtime::{
         OwnedPermit, ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
@@ -61,6 +62,34 @@ async fn gate(path: &str, suffix: &str) {
 fn revision(value: u64) -> Revision {
     Revision::try_from(value.to_string()).unwrap()
 }
+
+// Two real command consumers share only the finite fault/lifetime schedule.
+// Independent Python oracles reconstruct their distinct persisted meanings.
+enum Command {
+    Endpoint(RegistrationCommand),
+    Scope(ScopeCommand),
+}
+impl Command {
+    async fn accept(
+        &self,
+        owner: &mut ControlSession,
+        token: &BrowserSecret,
+        csrf: &BrowserSecret,
+        key: CommandKey,
+        started: &Cell<bool>,
+    ) -> Result<serde_json::Value, SessionError> {
+        match self {
+            Self::Endpoint(command) => owner
+                .accept_relay_registration(token, csrf, key, command, started)
+                .await
+                .map(|receipt| serde_json::json!(receipt)),
+            Self::Scope(command) => owner
+                .accept_acquisition_scope(token, csrf, key, command, started)
+                .await
+                .map(|receipt| serde_json::json!(receipt)),
+        }
+    }
+}
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     tokio::time::timeout(Duration::from_secs(45), run())
@@ -69,7 +98,9 @@ async fn main() {
 }
 async fn run() {
     let args: Vec<_> = std::env::args().collect();
-    assert_eq!(args.len(), 8);
+    assert!(matches!(args.len(), 8 | 9));
+    let scope = args.get(8).is_some_and(|value| value == "scope");
+    assert_eq!(args.len() == 9, scope);
     let mode = args[4].as_str();
     let nonce: u8 = args[6].parse().unwrap();
     assert!((10..=99).contains(&nonce));
@@ -120,7 +151,11 @@ async fn run() {
     }
     let (mut owner, policy) = claimed.unwrap();
     owner.require_browser_sessions().await.unwrap();
-    owner.require_relay_registration().await.unwrap();
+    if scope {
+        owner.require_acquisition_scope().await.unwrap();
+    } else {
+        owner.require_relay_registration().await.unwrap();
+    }
     let challenge = owner
         .begin_browser_login("alice", "127.0.0.1".parse().unwrap())
         .await
@@ -139,13 +174,18 @@ async fn run() {
         .unwrap();
     // Fixed original command heads permit historical retry after a new owner
     // has accepted changed heads; they must not silently rebase the old intent.
-    let command = RegistrationCommand {
-        url: bigbrotr_protocol::endpoint::Endpoint::parse(
-            "WS://127.0.0.1:7447/a/../installed-fixture",
-        )
-        .unwrap(),
-        expected_config_revision: revision(1),
-        expected_policy_revision: revision(1),
+    let command = if scope {
+        let path = Path::new(&args[3]).with_file_name("command.json");
+        Command::Scope(ScopeCommand::decode(&std::fs::read(path).unwrap()).unwrap())
+    } else {
+        Command::Endpoint(RegistrationCommand {
+            url: bigbrotr_protocol::endpoint::Endpoint::parse(
+                "WS://127.0.0.1:7447/a/../installed-fixture",
+            )
+            .unwrap(),
+            expected_config_revision: revision(1),
+            expected_policy_revision: revision(1),
+        })
     };
     let key = CommandKey::try_from([49; 16]).unwrap();
     println!(
@@ -161,13 +201,7 @@ async fn run() {
     let outcome = if mode == "cancel" {
         let result = tokio::time::timeout(
             Duration::from_secs(2),
-            owner.accept_relay_registration(
-                &session.session,
-                &session.csrf,
-                key,
-                &command,
-                &started,
-            ),
+            command.accept(&mut owner, &session.session, &session.csrf, key, &started),
         )
         .await;
         assert!(result.is_err() && started.get());
@@ -182,8 +216,8 @@ async fn run() {
         gate(&args[7], "finish").await;
         serde_json::json!({"result":"cancelled","commit_started":true})
     } else {
-        let result = owner
-            .accept_relay_registration(&session.session, &session.csrf, key, &command, &started)
+        let result = command
+            .accept(&mut owner, &session.session, &session.csrf, key, &started)
             .await;
         let expected = match mode {
             "unknown" => Some((SessionError::CommitUnknown, true, false)),
@@ -208,7 +242,7 @@ async fn run() {
             serde_json::json!({"result":error.to_string(),"commit_started":commit,"available":available})
         } else {
             let receipt = result.unwrap();
-            assert_eq!(started.get(), receipt.created);
+            assert_eq!(started.get(), receipt["created"].as_bool().unwrap());
             serde_json::json!({"receipt":receipt,"commit_started":started.get()})
         }
     };

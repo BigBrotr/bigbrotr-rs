@@ -12,13 +12,16 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main5e7dbab, origin2519147; three unpublished coherent candidates. Producte4c2825
-native build and installed HTTP/upgrade wave PASS within its bounded report.
-Root verified1640 exact fixture Git files/157 original payloads, all69 Control
-relations,12 native rows/originalCBOR and9 HTTP scope receipts against SQL/schema.
-Dirty now only evidence/docs/checkpoint/inventory; sole root writer. No active
-build or engine. Original062f82d FAIL (fixture omitted existing activation command)
-remains retained;5e7dbab preserves the old row and counts six new commands.
+Mac main/origin995df9c pushed, private repository verified. Installed scope
+HTTP/upgrade qualification committed. Root sole writer. Dirty next slice extends
+apps/bigbrotr/examples/relay_registration_fault_probe.rs with an explicit optional
+scope command, shared registration_faults.py schedules, new independent
+scope_command_faults.py oracle and bindings.py --scope-command-faults profile.
+No product/applied SQL/build dependency changes. Formatting/AST pass; compilation
+and actual new fault schedules NOT_RUN. AI read-only fixture review in progress.
+Next candidate native build uses existing relay-registration-faults profile and
+exclusive1154757 cache, then seven old endpoint regressions plus seven scope
+COMMIT schedules over separate retained45f7593/5e7dbab clones. No active build/engine.
 
 Latest runs/initial-scopes-5e7dbab STOPPED/RETAINED, PID1385287/start427622888,
 ownerfc22ac011fad045b81622ae40bfdab2b, client0964b0f0105981f8ad2db96077218ced71002692f4dcbe15720bb2e5d24c59ce
@@ -77,8 +80,13 @@ version/dependency; explicit raw_value was already feature-unified by protocol.
 
 AI found no further concrete SQL counterexample, but current grant serialization
 follows the existing account-lock/grant-revision writer discipline; no arbitrary
-raw grant deletion exclusion has been established. Preserve that qualification
-boundary and evaluate it during real concurrency work. New recovery/concurrency/raw relational cases, old internal scope helper regression
+raw grant deletion exclusion has been established. Bounded follow-up AI source/
+contract review found no supported bare dataset-grant DELETE/UPDATE consumer:
+first-owner enrollment inserts new grants; current scope-grant editing serializes
+through account locks and atomically increments grant_revision. The actual adapter
+locks the account UPDATE,0026 independently SHARE. Keep0026 unchanged and qualify
+normative writer races; arbitrary privileged grant DML remains outside the claim.
+Establish its protocol when implementing the dataset-grant editor. New recovery/concurrency/raw relational cases, old internal scope helper regression
 and native resource capacity remain NOT_RUN; HTTP/upgrade is qualified below.
 Evidence: ignored .research/implementation/scope-registration-20261001, inventoried
 implementation_network_20260928.scope_registration; original RED logs retained.

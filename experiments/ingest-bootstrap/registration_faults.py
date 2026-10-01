@@ -103,6 +103,11 @@ def prepare(directory, original):
     assert len(original) == 68 and [r['epoch'] for r in original['owner_epochs'] if r['role'] == 'control'] == [1]
     endpoint, = [r for r in original['relay_endpoints'] if r['url_bytes'] == '\\x' + URL.hex()]
     assert endpoint['owner_epoch'] == 1 and receipt(original, {}) is None
+    write_policies(directory, original)
+    return endpoint
+
+
+def write_policies(directory, original):
     documents = [original[t][0]['document'] for t in ('config_revisions', 'policy_revisions')]
     assert documents[0] != documents[1]
     for table, document in zip(('config_revisions', 'policy_revisions'), documents):
@@ -110,14 +115,14 @@ def prepare(directory, original):
         assert document['format'] == 'bigbrotr-product-policy/2'
         assert original[table][0]['document_digest'] == '\\x' + hashlib.sha256(b'bigbrotr/product-policy/2\0' + encoded).hexdigest()
     lab.write_json(directory / 'policies.json', documents)
-    return endpoint
 
 
-def start_probe(client, database, directory, mode, nonce, processes, port=5432):
+def start_probe(client, database, directory, mode, nonce, processes, port=5432, *, scope=False):
     token = directory / str(nonce)
     process = Process(['docker', 'exec', client, '/build/relay_registration_fault_probe',
         database, '/run/secrets/application', '/lab/' + directory.name + '/policies.json',
-        mode, str(port), str(nonce), '/lab/' + directory.name + '/' + str(nonce)])
+        mode, str(port), str(nonce), '/lab/' + directory.name + '/' + str(nonce),
+        *(['scope'] if scope else [])])
     processes.append((str(nonce), process))
     return process, token
 
@@ -158,13 +163,18 @@ def retire(directory, processes, result):
     lab.write_json(directory / 'result.json', result)
 
 
-def run(pg, client, output, database, name, rows):
-    proxy_mode, mode, expected_wire, committed = CASES[name]
+def run(pg, client, output, database, name, rows, *, scope=False):
+    if scope:
+        from scope_command_faults import CASES as cases, prepare as prepare_case, receipt as receipt_case, effects as effects_case
+    else:
+        cases, prepare_case, receipt_case, effects_case = CASES, prepare, receipt, effects
+    proxy_mode, mode, expected_wire, committed = cases[name]
     directory = output / name
     directory.mkdir(mode=0o700)
-    endpoint = prepare(directory, rows(database))
+    original = prepare_case(directory, rows(database))
     processes = []
-    result = dict(name=name, status='RUNNING', preexisting_endpoint=endpoint, committed_expected=committed)
+    result = dict(name=name, status='RUNNING', committed_expected=committed)
+    result['preexisting_scope' if scope else 'preexisting_endpoint'] = original
 
     def capture(label):
         value = rows(database)
@@ -172,7 +182,7 @@ def run(pg, client, output, database, name, rows):
         return value
 
     def app(mode, nonce, port=5432):
-        return start_probe(client, database, directory, mode, nonce, processes, port)
+        return start_probe(client, database, directory, mode, nonce, processes, port, scope=scope)
 
     try:
         proxy, proxy_ready = start_proxy(client, proxy_mode, processes)
@@ -202,7 +212,7 @@ def run(pg, client, output, database, name, rows):
             contender, _ = app('busy', 12)
             assert event(contender, 'busy')['commit_started'] is False
             assert contender.wait(10) == 0 and not contender.stderr and rows(database) == before
-            proxy.send('close' if name == 'register-cancel-close' else 'release')
+            proxy.send('close' if name.endswith('-cancel-close') else 'release')
             if mode == 'cancel':
                 go(token, 'finish')
         outcome = finish(process)
@@ -211,8 +221,8 @@ def run(pg, client, output, database, name, rows):
         assert [wire[k] for k in ('commits_seen', 'commits_forwarded', 'server_commit_complete',
             'client_commit_complete', 'faults')] == expected_wire
         after = capture('after')
-        effects(before, after, committed)
-        accepted = receipt(after, ready)
+        effects_case(before, after, committed)
+        accepted = receipt_case(after, ready)
         assert (accepted is not None) == committed
         if mode == 'accept':
             assert outcome == dict(receipt=dict(accepted, created=True), commit_started=True)
@@ -223,13 +233,13 @@ def run(pg, client, output, database, name, rows):
         go(recovery_token)
         recovered = finish(recovery)
         recovery_after = capture('recovery-after')
-        effects(recovery_before, recovery_after, not committed)
-        durable = receipt(recovery_after, ready if committed else recovered_owner)
+        effects_case(recovery_before, recovery_after, not committed)
+        durable = receipt_case(recovery_after, ready if committed else recovered_owner)
         assert durable is not None and (not committed or durable == accepted)
         assert recovered == dict(receipt=dict(durable, created=not committed), commit_started=not committed)
         assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
         result.update(status='PASS', ready=ready, observations=observations, outcome=outcome, wire=wire,
-            recovery_owner=recovered_owner, recovered=recovered, durable=durable, complete_control_tables=68)
+            recovery_owner=recovered_owner, recovered=recovered, durable=durable, complete_control_tables=len(before))
     except BaseException as error:
         result.update(status='FAIL', failure=type(error).__name__ + ': ' + str(error))
         raise

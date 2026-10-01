@@ -37,7 +37,8 @@ registration_http_signal = len(sys.argv) == 4 and sys.argv[2] == '--registration
 registration_http_faults = registration_http_signal or (len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults')
 registration_relations = len(sys.argv) == 4 and sys.argv[2] == '--registration-relations'
 registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races'
-registration_faults = registration_http_faults or registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
+scope_command_faults = len(sys.argv) == 4 and sys.argv[2] == '--scope-command-faults'
+registration_faults = scope_command_faults or registration_http_faults or registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
 scope_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-scopes'
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
@@ -152,6 +153,13 @@ if scope_http:
     report['not_run'] = ['scope COMMIT recovery/cancellation/expiry/concurrency',
         'raw relational refusal/rollback', 'internal scope adapter regression',
         'finite-job delivery/installed acquisition/M1', 'capacity/load/aged-state', 'arm64/release']
+
+if scope_command_faults:
+    report['wave'] = 'scope-command-adapter-faults'
+    report['not_run'] = ['scope current-authority races and raw relational refusal',
+        'historical recovery after changed heads/grants', 'installed scope HTTP COMMIT ambiguity',
+        'internal scope helper regression', 'finite-job delivery/installed acquisition/M1',
+        'capacity/load/aged-state', 'arm64/release']
 
 if interruptions:
     report['not_run'] = ['worker panic and arbitrary uninterruptible kernel I/O',
@@ -487,6 +495,8 @@ if registration_http:
     success_status = 'PASS_INITIAL_REGISTRATION_HTTP_WAVE'
 if scope_http:
     success_status = 'PASS_INITIAL_SCOPE_HTTP_WAVE'
+if scope_command_faults:
+    success_status = 'PASS_SCOPE_COMMAND_ADAPTER_FAULTS'
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -523,12 +533,16 @@ try:
     require(not template['producer_requests'] and not template['owner_epochs'], 'original-template-preconditions')
     registration_basis = ('bb_scope_bind_45f7593_registration_journey' if registration_faults or scope_http
         else 'bb_scope_bind_917c76b_enrollment_journey')
+    if scope_command_faults:
+        registration_basis = 'bb_scope_bind_5e7dbab_scope_journey'
     if registration_http or registration_faults or scope_http:
         registration_original = dict(database=registration_basis,
             rows=rows(registration_basis), physical=physical(registration_basis))
         require(registration_original['rows']['relay_enrollment_changes'], 'populated-registration-basis')
         if registration_faults or scope_http:
             original_capture = root.parent / 'initial-registration-45f7593/bindings/registration-journey-after.json'
+            if scope_command_faults:
+                original_capture = root.parent / 'initial-scopes-5e7dbab/bindings/scope-journey-after.json'
             require(registration_original['rows'] == json.loads(original_capture.read_text()),
                 'retained-registration-basis-differs-from-qualified-capture')
         lab.write_json(output / 'registration-basis-before.json', registration_original)
@@ -559,6 +573,10 @@ try:
             registration_runs = {case: run_registration_http_fault for case in HTTP_CASES}
             if registration_http_signal:
                 registration_runs = {'register-http-signal': run_registration_http_fault}
+        if scope_command_faults:
+            from functools import partial
+            from scope_command_faults import CASES as SCOPE_CASES
+            registration_runs = {case: partial(run_registration_fault, scope=True) for case in SCOPE_CASES}
         cases = list(registration_runs)
         require(len(cases) == (1 if registration_http_signal else 5 if registration_http_faults else 1 if registration_relations else 18 if registration_races else 7),
             'registration-case-set')
