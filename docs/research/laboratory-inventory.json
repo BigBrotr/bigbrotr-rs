@@ -32343,6 +32343,41 @@
           "source_files_verified": 1638,
           "captured_payloads_verified": 12,
           "artifact_hashes_verified": true
+        },
+        {
+          "source": "062f82d381151b2945b9a6c88c0edaf0740671be",
+          "tree": "71fc800c5b012076f2a649fc40dd7d7f84d0586a",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-scopes-062f82d",
+          "pid": 1380604,
+          "start_ticks": "427607283",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-e4c2825/out/artifacts",
+          "bundle_sha256": "38b1355e46227c8302a9c9a06b8021f44d8709ab35b5ecfa5e8cebfadcb996a2",
+          "state": "STOPPED_RETAINED",
+          "owner": "60b2d68613555938ac23e5eacc1a992e",
+          "client": "362c231da7b560827ac7e2c1d01c47771e283a5049fdce3ece67036418a303fc",
+          "result": "FAIL fixture counted preexisting policy activation as new command",
+          "populated_upgrade": "PASS",
+          "audit": {
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "observed_at": "2026-10-01T22:31:19.821357+00:00",
+            "owned_stopped": [
+              {
+                "id": "362c231da7b560827ac7e2c1d01c47771e283a5049fdce3ece67036418a303fc",
+                "owner": "60b2d68613555938ac23e5eacc1a992e",
+                "exit": 143
+              },
+              {
+                "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+                "exit": 0
+              }
+            ],
+            "prior_unchanged": 1012,
+            "unrelated_running": 8,
+            "compiler_lock_released": true,
+            "free_bytes": 58717696000
+          },
+          "local": ".research/implementation/scope-registration-20261001/engine"
         }
       ],
       "findings": [
@@ -32359,7 +32394,7 @@
         "typescript_and_generation": "PASS",
         "native": "PASS build/components only"
       },
-      "next": "Commit exact installed scope fixture and run seven SQL/HTTP/upgrade cases using separate e4c2825 artifacts.",
+      "next": "Rerun installed scope wave from corrected exact Git fixture; original062f82d FAIL retained, no product change.",
       "candidate": "e4c282542532aa95ca30b8ea252b527230d614b8",
       "fixture_review": "Read-only AI found unbound HTTP receipts and overly broad startup-refusal write allowance; corrected before engine run. Maximum padded HTTP body does not qualify maximum canonical selector."
     }

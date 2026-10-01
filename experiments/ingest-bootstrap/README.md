@@ -274,7 +274,11 @@ checked. Policy-change-only authority refuses scope registration; missing INSERT
 candidate/digest EXECUTE and schema refuse before listener bind with no registry
 writes. The maximum padded body tests the2098176-byte HTTP envelope, and65536
 one-byte chunks test fragmented collection; neither is a maximum canonical-selector
-acceptance or production capacity measurement. Engine execution is pending.
+acceptance or production capacity measurement. First062f82d execution passed the
+populated upgrade and HTTP requests but failed its final command count: it omitted
+the template's original policy activation. The correction preserves the exact old
+row and counts only new keys. Original FAIL/captures remain retained; three mutated
+receipt controls reject false scope IDs, timestamps and created flags. Rerun pending.
 
 Read-only AI fixture review identified unbound HTTP receipts and an overly broad
 startup-refusal write allowance; both were corrected before engine execution.

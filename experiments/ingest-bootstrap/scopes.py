@@ -248,8 +248,10 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         else:
             assert len(after['relay_enrollment_changes'])==1
             assert after['relay_enrollments'][0]['generation']==1 and after['relay_enrollments'][0]['enabled']
-        assert len(after['management_commands'])==len(keys)
-        assert {r['request_key'][2:] for r in after['management_commands']}==keys
+        assert all(r in after['management_commands'] for r in before['management_commands'])
+        added=[r for r in after['management_commands'] if r not in before['management_commands']]
+        assert len(added)==len(keys)
+        assert {r['request_key'][2:] for r in added}==keys
     assert {t for t in before if before[t]!=after[t]}<=allowed
     assert lab.sql(pg,database,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'")=='0'
     return dict(name=name,status='PASS',actual_cli=True,actual_http=initialized is not None,

@@ -12,14 +12,21 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main e4c282542532aa95ca30b8ea252b527230d614b8, tree6619a9a464d421bb87afbe88441cdc14682d901f;
-origin/main2519147, unpublished candidate ahead1. Candidate is reviewed scope domain/
-SQL/HTTP/schema responsibility; native qualification pending. Dirty after candidate: checkpoint/inventory plus root-owned installed scope fixture in
-experiments/acquisition-scope/bindings.py and ingest-bootstrap/{session_client,scope_client,scopes}.py
-and its README. Fixture written/reviewed, not engine-executed. Root sole writer. Existing applied
-SQL/checksums and Cargo.lock unchanged. Mac54 Management,4 domain,35 catalog,
-2 schema cases, Clippy, TypeScript/generation and structural checks PASS; no active
-local build. Actual schema26/installed SQL remains NOT_RUN.
+Mac main062f82d, origin2519147; two unpublished candidates. Producte4c2825
+native build passes. Fixture062f82d reached real upgrade and complete HTTP journey,
+then FAIL: final count omitted the one preexisting policy activation command.
+Root corrected only the fixture to preserve that exact old row and require the
+six new keys. Actual captures independently pass all9 scope receipt comparisons;
+mutated scope IDs/times/created flags are rejected. Original FAIL remains retained.
+No product/SQL/build input changed; no active build/engine. Next commit correction
+and rerun the installed wave with unchanged e4c2825 artifacts.
+
+runs/initial-scopes-062f82d STOPPED/RETAINED, PID1380604/start427607283,
+owner60b2d68613555938ac23e5eacc1a992e, client362c231da7b560827ac7e2c1d01c47771e283a5049fdce3ece67036418a303fc
+stopped143; borrowedPG stopped0/noOOM. Audit22:31:19UTC:58,717,696,000B free,
+1012 prior projections unchanged,8 unrelated running, compiler lock free.
+Original45 captures/logs under scope-registration-20261001/engine/capture;
+oracle-controls.json records offline controls, not a rerun or engine PASS.
 
 Tux exact-Git e4c2825 native build is PASS_BUILD_ONLY and STOPPED/RETAINED:
 runs/initial-ingest-e4c2825, PID1370048/start427513649 terminal,
