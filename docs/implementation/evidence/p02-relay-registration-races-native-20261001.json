@@ -1,0 +1,193 @@
+{
+  "format": "bigbrotr-relay-registration-race-acceptance/1",
+  "status": "PASS_BOUNDED_REGISTRATION_AUTHORITY_RACES",
+  "fixture": "41d508ab76829ad27d198b83ae883ba02a05db4e",
+  "product": "00600af97d24f7e445f7e6706180ddae0cb32fda",
+  "source_files": 1624,
+  "capture_payloads": 183,
+  "affected_commit_cases": 7,
+  "cases": [
+    {
+      "name": "register-writer-policy",
+      "status": "PASS",
+      "order": "writer",
+      "writer": "policy",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": false,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "register-writer-permission",
+      "status": "PASS",
+      "order": "writer",
+      "writer": "permission",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": false,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "register-writer-revoked",
+      "status": "PASS",
+      "order": "writer",
+      "writer": "revoked",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": false,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "register-writer-inactive",
+      "status": "PASS",
+      "order": "writer",
+      "writer": "inactive",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": false,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "register-writer-authentication",
+      "status": "PASS",
+      "order": "writer",
+      "writer": "authentication",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": false,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "register-accept-policy",
+      "status": "PASS",
+      "order": "accept",
+      "writer": "policy",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": true,
+      "historical_retry_zero_writes": true
+    },
+    {
+      "name": "register-accept-permission",
+      "status": "PASS",
+      "order": "accept",
+      "writer": "permission",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": true,
+      "historical_retry_zero_writes": true
+    },
+    {
+      "name": "register-accept-revoked",
+      "status": "PASS",
+      "order": "accept",
+      "writer": "revoked",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": true,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "register-accept-inactive",
+      "status": "PASS",
+      "order": "accept",
+      "writer": "inactive",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": true,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "register-accept-authentication",
+      "status": "PASS",
+      "order": "accept",
+      "writer": "authentication",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": true,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "register-rollback",
+      "status": "PASS",
+      "order": "rollback",
+      "writer": "policy",
+      "lock_barrier": true,
+      "all_control_tables": 68,
+      "command_committed": true,
+      "historical_retry_zero_writes": false
+    }
+  ],
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-01T20:56:12.992156+00:00",
+    "owned_stopped": [
+      {
+        "id": "8de397ec0a42ec096853417f292d0cc59904d4b7d8add828d58242a0e1ab2c86",
+        "owner": "a7d8b1b10a98786b41e15f638ee02f3b",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 1004,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 59194380288
+  },
+  "not_run": [
+    "raw relational refusal/expiry negative controls",
+    "installed HTTP COMMIT ambiguity",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ],
+  "tasks": [
+    "P02-T01 Step6 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "fixture_tree": "08aa87bf3d1efc77d84f65fa0f92b93c58dbc07e",
+  "product_tree": "6e131923a3c9a34731663ad943a9c1546d508e25",
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1",
+    "clang": "14.0.6",
+    "postgres": "16.15",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_cpus": 2,
+    "client_memory_bytes": 1073741824,
+    "swap_additional_bytes": 0,
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944
+  },
+  "artifacts": {
+    "Cargo_lock_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "40f10f13cdcb809473dd3214b8e8b5b449270c36903c93a666cdb57d89d0f919",
+    "bigbrotr_sha256": "8a6673649a3eb39816db2fc493ac1708c5fedc25bae1a07884c0d46c36e0ec10",
+    "relay_registration_fault_probe_sha256": "c1769531c77fb595d1724c4617f9b6a522f8a04386fee565534af019d850cfd8",
+    "capture_manifest_sha256": "5826a653bff56f2fb675fccdb2064d9576ffc68d5947574dc8292d6faf6645f6",
+    "root_review_sha256": "7c3ac9565bc2bce0186491af7edbd898dc0da66a7516ebb38c1e34f4b7a4a567"
+  },
+  "scope": "Actual adapter and five privileged clone-only authority writers in both lock orders, plus writer rollback. Reused exact00600af artifacts; seven COMMIT schedules rerun because process helpers moved. No product, dependency or applied SQL changes.",
+  "verification": {
+    "authority": "Positive backend PID/start-time lock barriers establish both orders. Writer-first gives PolicyChanged/Forbidden/Denied before COMMIT; accept-first retains the original receipt and acceptance account revisions. Actual account triggers advance authentication and revoke sessions as independently expected.",
+    "durable_effects": "All68 relations including xmin compared. Independent literal writer changes are separated from exactly three appended command/detail/audit rows. Every old endpoint remains byte-identical. Rollback removes writer changes and accepts once.",
+    "recovery": "After accepted command then policy-head or grant change, new current owner3 authenticates and retries the original key/body. Exact original owner2 endpoint/time returned with all68 relations unchanged. This is fresh adapter recovery; installed initial owner still stops on policy change.",
+    "preservation": "Populated source matches its original45f7593 qualified capture and remains identical by rows/xmin/heap filenodes.1624 source files match Git;183 captured payloads hash-verified. Terminal census verifies owned containers stopped without OOM,1004 prior projections unchanged,8 unrelated running, compiler lock free."
+  },
+  "review": {
+    "kind": "read-only AI source review and root original-artifact review",
+    "result": "No concrete blocker found; independent expected rows and actual positive lock barriers reviewed. AI did not execute engines. Root reran both captured-state oracles and inspected original transcripts/outcomes.",
+    "structure": "One concrete process helper set is shared by the two controllers; no generic orchestration framework. Product transaction and domain ownership unchanged."
+  },
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.relay_registration.race_engine",
+    "local": ".research/implementation/relay-registration-20261001/race-engine",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-races-41d508a",
+    "original_outcome": "18 executed cases PASS (7 affected COMMIT schedules and11 new races); no engine or fixture failure in this wave."
+  }
+}

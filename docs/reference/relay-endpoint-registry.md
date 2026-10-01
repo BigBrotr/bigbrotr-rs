@@ -138,8 +138,8 @@ privileges are required before the selected initial administration listener bind
 now qualify lost/held COMMIT, cancellation, owner/session expiry for an existing
 endpoint and exact fresh-owner recovery. All68 Control tables and original
 attribution were checked. The held actual owner rejects a competing acquisition.
-Raw relational negatives, historical retry after grant/head change, concurrent
-authority writers and installed HTTP ambiguity remain NOT_RUN. The initial owner
-stops on changed policy; historical recovery across changed heads/grants still
-needs a separate fresh-owner schedule. Neither these small
-fixtures nor the receipt establishes installed acquisition, capacity or M1.
+[Eleven authority race schedules](../implementation/evidence/p02-relay-registration-races-native-20261001.json)
+qualify both lock orders, writer rollback and exact historical retry after changed
+heads/grants under a fresh adapter owner. The initial installed owner still stops
+on changed policy. Raw relational negatives and installed HTTP ambiguity remain
+NOT_RUN. These small fixtures do not establish installed acquisition, capacity or M1.

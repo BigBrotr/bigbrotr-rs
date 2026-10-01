@@ -12,11 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main/originfd442d8658703a5f7faca681aadf7dc8908f8118 is pushed and private.
-No product/SQL change since877b73c. Root sole writer; current dirty work is the
-registration_races controller, concrete probe helper extraction/bindings selection,
-recipe documentation and this checkpoint. No active lab/native job at the latest
-terminal audit. Requested cache cleanup remains complete.
+Mac main41d508ab76829ad27d198b83ae883ba02a05db4e, originfd442d8 at last fetch.
+Root sole writer. Test-only race controller qualified with unchanged00600af ELFs;
+current dirty files are its evidence/task/reference docs, inventory and checkpoint.
+No active owned lab/native job at20:56:12UTC. Requested cache cleanup complete.
 
 ## Active slice and next bounded action
 
@@ -59,11 +58,22 @@ is retained; it never ran an engine.00600af compares the two exact v2 documents
 independently. Both builds compiled/Clippy PASS;1621 source files match Git.
 No production defect inferred or invariant weakened. Reviewer read complete changed
 probe/controller/callers, did no engine execution; root reviewed original artifacts.
-Concurrent authority writers, historical retry after changed heads/grants, raw
-relational refusals/expiry negative controls and installed HTTP ambiguity remain
-required. No complete task, M1, capacity or arm64 claim follows.
+[Authority race report](evidence/p02-relay-registration-races-native-20261001.json):
+fixture41d508a/actual00600af passed11 new schedules and7 affected COMMIT regressions.
+Both lock orders positively observed; literal writer effects and all68 relations/
+xmin checked. Fresh owner3 after policy/grant change recovers original owner2
+receipt with zero mutations. Root verified1624 source files/183 captures. No
+product/dependency/applied SQL changed. Concrete process helpers shared by two
+controllers; no generic orchestration. AI source review found no blocker and
+executed no engines. Raw relational refusals and installed HTTP ambiguity remain
+required; optional expiry predicate negative controls can discriminate the guard.
+No complete task, M1, capacity or arm64 claim follows.
 
 Latest owned resources STOPPED/RETAINED:
+- runs/registration-races-41d508a PID1291707/start427010658 terminal;
+  ownera7d8b1b10a98786b41e15f638ee02f3b, client8de397ec stopped143,
+  borrowedPG71775507 stopped0/no OOM. Audit20:56:12UTC:1004 prior projections
+  unchanged,8 unrelated running, compiler lock free,59,194,380,288B free.
 - runs/registration-commit-c54c6bd PID1277970/start426928266 terminal;
   owner4e317aa3812e315638a6cd2a9439ff4b, client3db2f3b4 stopped143,
   borrowedPG71775507 stopped0/no OOM. Audit20:38:02UTC:1003 prior projections
@@ -75,22 +85,16 @@ Latest owned resources STOPPED/RETAINED:
 
 Inventory implementation_network_20260928.relay_registration and ignored
 .research/implementation/relay-registration-20261001 own native/, engine/,
-fault-native/, fault-native-fixed/ and fault-engine/ including raw captures,
+fault-native/, fault-native-fixed/, fault-engine/ and race-engine/ including raw captures,
 source/artifact manifests, controllers, launch receipts and root-review scripts.
-Never replay completed launchers or old cache deletion. Mac last4,767,008KiB free;
+Never replay completed launchers or old cache deletion. Mac last4,731,548KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: review and commit test-only concurrency controller, then
-rerun the7 COMMIT schedules affected by shared probe helper extraction and run11
-new writer/accept-first/rollback cases with exact00600af artifacts. The new expected
-writer changes are literal (including0806 authentication revision/revocation); both
-lock orders must be observed via actual backend incarnations. Accept-first policy/
-permission also recover the original receipt under new owner3/current heads or
-lost grants, with zero writes. Read-only AI source review found no concrete blocker; engines NOT_RUN. One combined
---registration-races wave runs7 affected COMMIT cases plus11 new races to preserve
-the existing one-client-per-revision laboratory naming and lifecycle.
+Next bounded action: consolidate/push the qualified race slice, then implement
+raw relational refusals in a clone using the existing actual adapter probe and
+independent expected command digest. No additional compilation is needed.
 
-After concurrency, raw relational closure remains required. A read-only reviewer
+Raw relational closure remains required. A read-only reviewer
 proposed a clone-only zz_* AFTER INSERT detail hook, restricted to real key31:
 validate the parent, speculative key88/audit89 attempts in rollback subtransactions,
 force exact constraints and compare all68 tables/xmin. Missing detail/command/audit,

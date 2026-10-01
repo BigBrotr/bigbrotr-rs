@@ -178,7 +178,7 @@ Product7011acd/fixture45f7593 passed all seven cases; the [bounded report](../..
 records exact artifacts, complete retained-state review and stopped resources.
 The native build alone does not qualify SQL. The fault consumer below separately
 qualifies deferred expiry and lost/cancelled COMMIT for an existing endpoint.
-Raw relational negatives and concurrent revocation still need schedules. The
+Raw relational negatives remain; current-authority races have separate evidence below. The
 initial installed lifetime cannot survive a changed accepted policy; historical
 retry across changed heads belongs to a fresh adapter owner until successor
 recovery is implemented.
@@ -196,16 +196,18 @@ original populated source. Exact00600af/fixturec54c6bd passed these seven schedu
 see the [bounded fault report](../../docs/implementation/evidence/p02-relay-registration-faults-native-20261001.json).
 The first cc1a4e8 probe had a source-reviewed v1/v2 fixture incompatibility; its
 build-only result remains retained, with no engine executed on it. Concurrent
-writers/raw relational and installed HTTP ambiguity remain separate required cases.
+writers have the separate evidence below; raw relational and installed HTTP ambiguity remain.
 
 
 `--registration-races BUILD` first repeats the seven COMMIT cases affected by the
-shared probe helper extraction, then proposes five current-authority writers (policy heads,
+shared probe helper extraction, then exercises five current-authority writers (policy heads,
 dataset permission, session revocation, deactivation and deactivate/reactivate)
 in both positively observed lock orders, plus writer rollback. It reuses the same
 exact registration probe. Expected writer changes are literal and all68 relations/
 xmin remain checked; a committed acceptance keeps its original actor revisions.
 Policy/permission writers after acceptance also require exact historical recovery
-under a fresh current owner, without new command or domain writes. These eleven
-cases are NOT_RUN until a linked engine report records execution. Privileged
+under a fresh current owner, without new command or domain writes.
+Exact00600af/fixture41d508a passed all18 schedules; the
+[bounded race report](../../docs/implementation/evidence/p02-relay-registration-races-native-20261001.json)
+records the11 new cases and7 affected regressions. Privileged
 clone-only writers are fault injections, not installed administration workflows.

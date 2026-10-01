@@ -31997,6 +31997,99 @@
           "capture_payloads": 99
         },
         "report": "docs/implementation/evidence/p02-relay-registration-faults-native-20261001.json"
+      },
+      "race_engine": {
+        "launch": {
+          "source": "41d508ab76829ad27d198b83ae883ba02a05db4e",
+          "tree": "08aa87bf3d1efc77d84f65fa0f92b93c58dbc07e",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-races-41d508a",
+          "pid": 1291707,
+          "start_ticks": "427010658",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-00600af/out/artifacts",
+          "bundle_sha256": "b0c3fb6ad32aed85a736a3ae2e87e2d80b16466895a8bf05368117b876dfa269"
+        },
+        "observed": {
+          "status": "PASS_REGISTRATION_AUTHORITY_RACES",
+          "failure": null,
+          "owner": "a7d8b1b10a98786b41e15f638ee02f3b",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "8de397ec0a42ec096853417f292d0cc59904d4b7d8add828d58242a0e1ab2c86",
+            "name": "bigbrotr-acquisition-binding-41d508a"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_41d508a_register_pass",
+            "bb_scope_bind_41d508a_register_before",
+            "bb_scope_bind_41d508a_register_after",
+            "bb_scope_bind_41d508a_register_cancel_close",
+            "bb_scope_bind_41d508a_register_cancel_release",
+            "bb_scope_bind_41d508a_register_owner_expiry",
+            "bb_scope_bind_41d508a_register_session_expiry",
+            "bb_scope_bind_41d508a_register_writer_policy",
+            "bb_scope_bind_41d508a_register_writer_permission",
+            "bb_scope_bind_41d508a_register_writer_revoked",
+            "bb_scope_bind_41d508a_register_writer_inactive",
+            "bb_scope_bind_41d508a_register_writer_authentication",
+            "bb_scope_bind_41d508a_register_accept_policy",
+            "bb_scope_bind_41d508a_register_accept_permission",
+            "bb_scope_bind_41d508a_register_accept_revoked",
+            "bb_scope_bind_41d508a_register_accept_inactive",
+            "bb_scope_bind_41d508a_register_accept_authentication",
+            "bb_scope_bind_41d508a_register_rollback"
+          ],
+          "started_at": "2026-10-01T20:50:53.137609+00:00",
+          "finished_at": "2026-10-01T20:51:50.683203+00:00",
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 59194421248
+        },
+        "case_statuses": {
+          "register-pass": "PASS",
+          "register-before": "PASS",
+          "register-after": "PASS",
+          "register-cancel-close": "PASS",
+          "register-cancel-release": "PASS",
+          "register-owner-expiry": "PASS",
+          "register-session-expiry": "PASS",
+          "register-writer-policy": "PASS",
+          "register-writer-permission": "PASS",
+          "register-writer-revoked": "PASS",
+          "register-writer-inactive": "PASS",
+          "register-writer-authentication": "PASS",
+          "register-accept-policy": "PASS",
+          "register-accept-permission": "PASS",
+          "register-accept-revoked": "PASS",
+          "register-accept-inactive": "PASS",
+          "register-accept-authentication": "PASS",
+          "register-rollback": "PASS"
+        },
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T20:56:12.992156+00:00",
+          "owned_stopped": [
+            {
+              "id": "8de397ec0a42ec096853417f292d0cc59904d4b7d8add828d58242a0e1ab2c86",
+              "owner": "a7d8b1b10a98786b41e15f638ee02f3b",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1004,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 59194380288
+        },
+        "root_review_sha256": "7c3ac9565bc2bce0186491af7edbd898dc0da66a7516ebb38c1e34f4b7a4a567",
+        "capture_manifest_sha256": "5826a653bff56f2fb675fccdb2064d9576ffc68d5947574dc8292d6faf6645f6",
+        "report": "docs/implementation/evidence/p02-relay-registration-races-native-20261001.json",
+        "status": "PASS_BOUNDED_STOPPED_RETAINED"
       }
     }
   },
