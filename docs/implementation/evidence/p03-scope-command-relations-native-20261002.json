@@ -1,0 +1,325 @@
+{
+  "format": "bigbrotr-scope-command-relational-acceptance/1",
+  "status": "PASS_BOUNDED_SCOPE_COMMAND_RELATIONAL_GUARDS",
+  "fixture": "5f956b3e51066c1318381ec761d45a8e7609ede3",
+  "product": "07333269469bcf93cf1c1d0a1b72d624249b238a",
+  "source_files": 1646,
+  "capture_payloads": 18,
+  "same_owner_checks": [
+    {
+      "position": 1,
+      "name": "valid-before",
+      "sqlstate": "ZX001",
+      "message": "fixture valid rollback",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 2,
+      "name": "missing-detail",
+      "sqlstate": "23514",
+      "message": "scope command requires atomic registration detail",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 3,
+      "name": "missing-command",
+      "sqlstate": "23503",
+      "message": "insert or update on table \"acquisition_scope_commands\" violates foreign key constraint \"acquisition_scope_commands_actor_id_request_key_fkey\"",
+      "constraint_name": "acquisition_scope_commands_actor_id_request_key_fkey",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 4,
+      "name": "missing-audit",
+      "sqlstate": "23503",
+      "message": "insert or update on table \"management_commands\" violates foreign key constraint \"management_commands_audit_id_dataset_id_actor_id_action_ex_fkey\"",
+      "constraint_name": "management_commands_audit_id_dataset_id_actor_id_action_ex_fkey",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 5,
+      "name": "wrong-scope",
+      "sqlstate": "23514",
+      "message": "scope registration requires exact command, audit and policy heads",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 6,
+      "name": "wrong-audit-time",
+      "sqlstate": "23514",
+      "message": "scope registration requires exact command, audit and policy heads",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 7,
+      "name": "extra-audit",
+      "sqlstate": "23514",
+      "message": "scope registration audit is not its command receipt",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 8,
+      "name": "old-owner",
+      "sqlstate": "23514",
+      "message": "Control owner belongs to another backend or is inactive",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 9,
+      "name": "absent-session",
+      "sqlstate": "23514",
+      "message": "scope command requires its authenticated session",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 10,
+      "name": "revoked-session",
+      "sqlstate": "BB001",
+      "message": "scope registration authentication or owner expired before commit",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 11,
+      "name": "credential-revision",
+      "sqlstate": "BB001",
+      "message": "scope registration authentication or owner expired before commit",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 12,
+      "name": "authentication-revision",
+      "sqlstate": "BB001",
+      "message": "scope registration authentication or owner expired before commit",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 13,
+      "name": "grant-revision",
+      "sqlstate": "BB001",
+      "message": "scope registration authentication or owner expired before commit",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 14,
+      "name": "mutate-detail",
+      "sqlstate": "23514",
+      "message": "immutable control history cannot be changed",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 15,
+      "name": "delete-detail",
+      "sqlstate": "23514",
+      "message": "immutable control history cannot be changed",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 16,
+      "name": "valid-new-scope",
+      "sqlstate": "ZX001",
+      "message": "fixture valid rollback",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 17,
+      "name": "new-scope-missing-detail",
+      "sqlstate": "23514",
+      "message": "scope command requires atomic registration detail",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 18,
+      "name": "new-scope-revoked-session",
+      "sqlstate": "BB001",
+      "message": "scope registration authentication or owner expired before commit",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 19,
+      "name": "missing-grant",
+      "sqlstate": "BB001",
+      "message": "scope registration authentication or owner expired before commit",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    },
+    {
+      "position": 20,
+      "name": "valid-after",
+      "sqlstate": "ZX001",
+      "message": "fixture valid rollback",
+      "constraint_name": "",
+      "backend_pid": 178,
+      "owner_epoch": 2,
+      "unchanged": true
+    }
+  ],
+  "separate_truncate": {
+    "name": "truncate-detail",
+    "sqlstate": "23514",
+    "backend_pid": 237
+  },
+  "pruned_historical_sessions": 1,
+  "all_control_tables": 69,
+  "original_populated_basis_unchanged": true,
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-01T23:24:22.777358+00:00",
+    "owned_stopped": [
+      {
+        "id": "700e88cf3c1e74419995401d48b8744f85f6e927dd9efacac9143ae0ab806f73",
+        "owner": "9930322e5914f9bd1b3ac8490437b3b2",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 1024,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 57408913408
+  },
+  "not_run": [
+    "installed scope HTTP COMMIT ambiguity",
+    "finite-job delivery/installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ],
+  "tasks": [
+    "P03-T01 Steps1/2/3 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "fixture_tree": "7115c07b355205838c8b94d934fc2b639bc09eac",
+  "product_tree": "4069a0e1b1309b68f0ed8774c1d0e5735749bd80",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1 (48a229cea)",
+    "clang": "14.0.6",
+    "postgres": "16.15",
+    "rocksdb": "11.8.1",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2"
+  },
+  "artifacts": {
+    "binary_sha256": "352029da8dec7e377101a3181d89bb335683f8c36be87a64ef3db74614d02851",
+    "probe_sha256": "b6d96b964bc4a2e04c9b1b4d40ae5274d8fcccab9ab5b0cc358118a7e8f90a52",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "fbcde268a128fe5294d1aac183269a507dd288aaa3e0668bf7597283b4e816a0",
+    "fixture_source_manifest_sha256": "d3ccd926b6fffb4d3a9c7e0f251063f9313d80e5e2f5d0da0bdd574ca87950b9",
+    "capture_manifest_sha256": "9b8c6e0e2a94d152901696a23939ba32746ccf202a526b5eb1959439658a8f93",
+    "root_review_sha256": "a817025b410e0862fc103fe6154d893c0d44d7b85eb0796d4f789bbc483ac88e"
+  },
+  "endpoint_regression": {
+    "status": "PASS_BOUNDED_REGISTRATION_RELATIONAL_GUARDS",
+    "same_owner_checks": 16,
+    "separate_truncate": {
+      "name": "truncate-detail",
+      "sqlstate": "23514",
+      "backend_pid": 236
+    },
+    "all_control_tables": 68,
+    "capture_payloads": 17,
+    "terminal": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-01T23:23:07.240617+00:00",
+      "owned_stopped": [
+        {
+          "id": "6929127c41cd862c18e4e05315d49e37cd31b363101cb602e1d46dd9090d26a6",
+          "owner": "49f9cd2436b37f239b2ff0ae524f8f38",
+          "exit": 143
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 1023,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 57461248000
+    },
+    "root_review_sha256": "10e8cee42f6388010b97688d3a96af54574baa2279b3f9240e78f538ae1ef7a8"
+  },
+  "scope": "Twenty rolled-back attempts inside the actual Control scope command, plus separate actual-Control TRUNCATE. Parent closure and positive original/alternate controls discriminate unrelated setup failures. Existing endpoint profile rerun because its controller gained the scope mode. No product, dependency, applied SQL or build changes.",
+  "verification": {
+    "relations": "Exact SQLSTATE/message and FK table identities. Missing command/detail/audit, valid-but-wrong scope digest, audit time/link, old owner, absent/revoked session, all actor revisions, missing roles.control and immutable update/delete/TRUNCATE. All69 relations including xmin must match after each rollback.",
+    "alternate_identity": "A real alternate selector with literal kinds3 bytes and scope is inserted under the current owner inside four attempts. Correct full-document digest passes; old digest, missing detail and revoked session refuse. New identity rows and any provisional command/audit never survive rollback.",
+    "durable_effects": "The parent adds exactly one command/detail/audit over the unchanged original scope/selector. Independent literal digest, original identity attribution and owner2 receipt checked. Forced constraint checks test relational closure; separate fault schedules own commit-time expiry evidence.",
+    "session_cleanup": "Actual password login prunes the old revoked session while all three scope receipt details remain exact, exercising intentional absence of session FK.",
+    "preservation": "Each1646-file source manifest matches Git.18 scope and17 endpoint original payloads hash-verified. Populated45/5e source rows/xmin/heap files unchanged. Owned client/PG stopped without OOM,8 unrelated running, compiler lock released."
+  },
+  "review": {
+    "kind": "Read-only AI source review and root original-artifact review",
+    "result": "No concrete setup or false-PASS defect found; AI read complete changed fixtures and owning0026/0004/adapters, but ran no engines. Root inspected original rows, literal digest, all guard messages, rollback snapshots and terminal inventory.",
+    "structure": "Concrete shared process controller; separate scope SQL expectations and independently encoded literal original/alternate documents. No product orchestration or new adapter abstraction.",
+    "limit": "Same-transaction missing-grant fault does not establish serialization against arbitrary concurrent privileged grant DML."
+  },
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.scope_registration",
+    "local": ".research/implementation/scope-registration-20261001/relation-engine",
+    "endpoint_local": ".research/implementation/scope-registration-20261001/endpoint-relation-regression",
+    "remote_roots": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/scope-command-relations-5f956b3",
+      "/home/tux/bigbrotr-implementation-20260917/runs/registration-relations-5f956b3"
+    ],
+    "original_outcome": "All20 scope and16 endpoint rollback checks plus two separate TRUNCATE refusals PASS. No engine or fixture failure; originals retained. Complete M1, capacity, native successor, arm64 and release remain unqualified."
+  }
+}

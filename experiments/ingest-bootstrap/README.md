@@ -331,4 +331,7 @@ immutable mutation/deletion, with positives before/after. Direct grant deletion
 is clone-only fault injection in the same transaction, not a concurrent supported
 writer protocol. Real login prunes historical sessions without removing receipts.
 The common controller preserves the existing endpoint profile, whose affected
-sixteen checks/TRUNCATE must also be rerun. New relational engines are NOT_RUN.
+sixteen checks/TRUNCATE were also rerun. Exact5f956b3/unchanged0733326 artifacts
+passed all checks; the [bounded relational report](../../docs/implementation/evidence/p03-scope-command-relations-native-20261002.json)
+records original captures and stopped resources. Forced constraint checks qualify
+relational closure, not COMMIT-time expiry; the separate fault wave owns that claim.

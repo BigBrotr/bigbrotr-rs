@@ -12,14 +12,23 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main/origin1a2e649 pushed after qualified7a22f94 race fixture. Root sole
-writer. Dirty experiments add explicit scope profile to the relational controller,
-a distinct literal scope SQL oracle and --scope-command-relations. Twenty rollback
-checks plus separate TRUNCATE are proposed; new engines NOT_RUN. Python rendering/
-AST and whitespace checks are local-only. Read-only AI fixture review found no
-concrete setup/false-PASS defect and ran no engines. Forced constraint checks do
-not replace separate COMMIT-time expiry evidence. No product/applied SQL/dependency change.
-No active build or engine; native0733326 artifacts reusable. Mac about4GiB free.
+Mac main5f956b3e51066c1318381ec761d45a8e7609ede3 candidate, origin1a2e649;
+tree7115c07b355205838c8b94d934fc2b639bc09eac. Root sole writer. Dirty documentation
+records completed scope relational qualification. No product/applied SQL/dependency
+change, no active build/engine. Native0733326 artifacts reused with exact input and
+ELF checks. Mac about4GiB free; check before allocation.
+
+Latest runs/scope-command-relations-5f956b3 STOPPED/RETAINED,
+PID1470989/start427927243, owner9930322e5914f9bd1b3ac8490437b3b2,
+client700e88cf3c1e74419995401d48b8744f85f6e927dd9efacac9143ae0ab806f73
+stopped143; borrowedPG71775507 stopped0/noOOM. Audit2026-10-01T23:24:22.777358+00:00:
+57408913408B free,1024 prior projections unchanged,8 unrelated running, compiler lock free.
+Scope20 rollback checks/separateTRUNCATE and affected endpoint16/TRUNCATE passed;
+each1646 Git files checked,18scope/17endpoint payloads verified. Prior endpoint
+PID1468198/start427914990, owner49f9cd2436b37f239b2ff0ae524f8f38,
+client6929127c stopped143. Original45/5e populated sources unchanged.
+Ignored scope-registration-20261001/relation-engine and endpoint-relation-regression
+own originals/launchers; never replay completed launchers.
 
 Latest runs/scope-command-races-7a22f94 STOPPED/RETAINED, PID1454977/start427868076,
 owner241256e39158d14a746408c82f5686c5, client2804f21cc22d68d5d4a5d1533b39509647f7f4187bc76377abc75a9a95e06390
@@ -119,7 +128,7 @@ first-owner enrollment inserts new grants; current scope-grant editing serialize
 through account locks and atomically increments grant_revision. The actual adapter
 locks the account UPDATE,0026 independently SHARE. Keep0026 unchanged and qualify
 normative writer races; arbitrary privileged grant DML remains outside the claim.
-Establish its protocol when implementing the dataset-grant editor. Concurrency is now qualified below; raw relational cases and native resource capacity remain NOT_RUN.
+Establish its protocol when implementing the dataset-grant editor. Concurrency and raw relational cases are qualified below; native resource capacity remains NOT_RUN.
 Evidence: ignored .research/implementation/scope-registration-20261001, inventoried
 implementation_network_20260928.scope_registration; original RED logs retained.
 
@@ -271,16 +280,28 @@ controller with separate scope oracle; no generic orchestration. AI found no
 concrete source blocker and ran no engines. Account-lock/grant-revision writer
 protocol retained; arbitrary privileged bare grant DML remains outside the claim.
 
-Next bounded action: finish review/commit the written scope relational fixture,
-then run new scope and affected endpoint relational profiles on native PG.
-Read complete registration_relations.py/.sql,0026 and0004; reuse the existing
-finite process controller with distinct semantic SQL expectations. Retained5e
-basis has one scope, so wrong-scope testing needs an explicit valid alternate
-selector/scope inside the rolled-back attempt, not a nonexistent second row.
-Check complete69-table rollback, positive before/after and preserved receipts
-when real login prunes historical sessions. Reuse qualified0733326 artifacts for
-experiments/docs-only fixture commits. Then finite-job delivery; no adjacent
-whole subsystem prerequisite has been added.
+[Scope relational report](evidence/p03-scope-command-relations-native-20261002.json):
+fixture5f956b3/actual0733326 passed20 nested rollback checks plus separateTRUNCATE,
+and16 affected endpoint checks/TRUNCATE. Exact SQLSTATE/message/FK identities,
+valid alternate selector/scope, wrong digest, missing detail/revoked session,
+missing roles.control and complete69-table rollback checked. Real login prunes
+historical session while three original scope receipts remain exact. Independent
+AI found no concrete source blocker and ran no engines. No product, migration or
+dependency changed. Forced constraint evaluation does not replace separate
+COMMIT-time expiry evidence. Concrete controller shared; scope SQL oracle separate.
+
+Next bounded action: installed scope HTTP COMMIT ambiguity using the actual
+initial owner and finite proxy; then finite-job delivery. Read complete
+registration_http_faults.py and registration_http_client.py; inspected initial
+scope setup and read the scope adapter. Reuse finite fault lifetime and independent semantic oracles.
+The current CLI requires26, so the old endpoint-only HTTP fixture's upgrade25 and
+7011acd native-inspector source-diff guard need deliberate adaptation before reuse.
+Qualifiede4c2825 native inspector matches current product inputs;0733326 CLI/probe
+remain reusable for experiments/docs-only commits. Scope HTTP setup needs real
+URL/enrollment plus roles.control; select the actual later COMMIT with positive
+server insertion marker, preserve auth5s ceiling and prove timely signal closure.
+No new build needed. Original initialized native bytes and all69SQL rows remain
+required; SQL-only recovery does not establish installed successor custody.
 
 ## Next useful journey and remaining prerequisites
 
