@@ -31325,7 +31325,7 @@
       }
     },
     "initial_relay_commands": {
-      "state": "First wave PASS; missing route EXECUTE startup defect confirmed on9c7f75c, all resources stopped-retained. Probe correction pending native qualification.",
+      "state": "Both installed HTTP waves PASS/stopped-retained; missing function EXECUTE defect reproduced then corrected/qualified. Whole selected feature remains partial.",
       "launch": {
         "source": "438067fd47cf538078cb2688360af359af14a8e4",
         "tree": "c93b5499a7ac7444ee4f2f146de57619a21563b6",
@@ -31442,7 +31442,77 @@
           }
         },
         "local_evidence": ".research/implementation/initial-relay-commands-20261001/function-red"
-      }
+      },
+      "native_fixed": {
+        "launch": {
+          "source": "917c76b9fe47cc40dbb6b25f0c7d4892462cac50",
+          "tree": "469dbac1a7c16e0b9d7f098fc2e0fb035a8983a3",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-917c76b",
+          "pid": 1226611,
+          "start_ticks": "426522775",
+          "bundle_sha256": "598e55e25f9416366afbcfe166adb8e67dee107894db079e0364893fc1fdf150"
+        },
+        "resources": {
+          "source": "917c76b9fe47cc40dbb6b25f0c7d4892462cac50",
+          "tree": "469dbac1a7c16e0b9d7f098fc2e0fb035a8983a3",
+          "owner": "0ba886d9abf54780a55e8226d77a74f5",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-917c76b",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "b6b8da06e63dd6545ed89e3fb88de143c6b29666cb6cdb94a958f81bb2c113b4"
+            },
+            {
+              "name": "native",
+              "id": "e4057bf4f54aa765eaa2213f4c976958287970386f8a305681fea75abb3aedb6"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-01T19:29:34.244594+00:00",
+          "qualification": "PASS_INITIAL_INGEST_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 60304535552,
+          "finished_at": "2026-10-01T19:31:12.267465+00:00"
+        }
+      },
+      "function_fixed": {
+        "launch": {
+          "source": "917c76b9fe47cc40dbb6b25f0c7d4892462cac50",
+          "tree": "469dbac1a7c16e0b9d7f098fc2e0fb035a8983a3",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-enrollment-917c76b",
+          "pid": 1230202,
+          "start_ticks": "426536902",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-917c76b/out/artifacts",
+          "source_transport": "Git clone of exact native candidate already transferred by bundle"
+        },
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T19:32:42.626185+00:00",
+          "owned_stopped": [
+            {
+              "id": "cd81fd2ce0f292bea4617d9fe82c56fb1604a7e73784a7d26b69a772d7fb3634",
+              "owner": "710f009983251eaf227fc7cef9574b4e",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 995,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 60209369088
+        },
+        "review": ".research/implementation/initial-relay-commands-20261001/function-fixed/root-review.json",
+        "status": "PASS_BOUNDED_INITIAL_ENROLLMENT_HTTP"
+      },
+      "report": "docs/implementation/evidence/p02-initial-enrollment-http-native-20261001.json"
     }
   },
   "implementation_relay_registry_20260928": {

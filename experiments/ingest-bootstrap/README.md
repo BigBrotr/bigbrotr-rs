@@ -147,9 +147,11 @@ oracles remain independent. Product438067f/fixture17c6ea0 passed this bounded wa
 
 `--installed-enrollment-functions BUILD` tests each required EXECUTE privilege
 separately, followed by the permitted journey: route validation, enrollment digest
-and its uint64 encoder. Each refusal must
-refuse before binding without command/session effects; actual native initialization
+and its uint64 encoder. Each missing-privilege case must refuse before binding without command/session effects; actual native initialization
 is preserved. On438067f, fixture9c7f75c detected the missing route-function probe:
 the listener initialized despite revoked EXECUTE. Original failure and graceful
-cleanup are retained; remaining two cases were not reached. The correction is
-under qualification. No whole-step, M1 or release claim follows from these cases.
+cleanup are retained; remaining two cases were not reached in that failed run.
+Corrected917c76b passed all three refusals and the valid journey. The
+[bounded report](../../docs/implementation/evidence/p02-initial-enrollment-http-native-20261001.json)
+records both waves and the original failure. No whole-step, M1 or release claim
+follows from these cases.

@@ -12,60 +12,69 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main9c7f75c38823bfb5e9e081fcad1fd7a33650c4de is unpublished;
+Mac main917c76b9fe47cc40dbb6b25f0c7d4892462cac50 is an unpublished candidate;
 private origin remains6aa4059cff575ebe426c3d4512f2aca566f8523e. Root sole writer.
-Active P02-T01 Step6/P01-T09 Step1 installed enrollment HTTP consumer.
-Product438067f/treec93b5499a7ac7444ee4f2f146de57619a21563b6 built natively;
-all5 build steps PASS. Mac36 Management tests and scoped Clippy PASS. Original
-HTTP RED405vs401 is retained; erroneous zero-test filter is NOT evidence.
+P02-T01 Step6/P01-T09 Step1 initial enrollment HTTP bounded integration now has
+[native evidence](evidence/p02-initial-enrollment-http-native-20261001.json).
+Both438067f and917c76b built actual release CLI/probe,45 native tests and scoped
+Clippy; all5 profile steps executed. Mac36 changed Management tests/Clippy on438067f,
+formatting on917c76b, generated API/type checks and23 API-client tests PASS.
+Actual command/five captured receipts and malformed schema controls also checked.
+Original HTTP RED405vs401 retained; erroneous zero-test filter is NOT evidence.
 
-Actual fixture17c6ea0 HTTP journey, permission refusal and missing table privilege
-startup refusal PASS. Root checked67 captured payloads,1612 Git files, independent
-12-row native/input/receipt oracle, all64 SQL tables/xmin and exact command digests,
-audit/session/owner linkage. Historical enable retry after withdrawal leaves all
-user state unchanged. Public refusal discriminates the second accepted document;
-private broader CIDR and principals.manage-only requests refuse403.
-Engine initial-enrollment-17c6ea0 PID1214839/start426438112 terminal,
-owner815898bacbf21f5927275f98c00086b9; client2bfac04f stopped143,
-PG71775507 stopped0/no OOM. Audit19:20:17UTC verifies991 prior projections unchanged,
-eight unrelated running, compiler lock free and60,484,120,576B available.
-Build initial-ingest-438067f PID1210057/start426406228 terminal;
-ownerea4c560535654ecf874a08b103ad99b3, fetcha7957ed6/native2c7cc318 stopped.
+Fixture17c6ea0 on438067f passed journey, permission and missing table privilege.
+Root checked67 captures/1612 Git files, all64 SQL tables/xmin, exact command digest/
+audit/session/owner linkage and independent12-row native/input/receipt oracle.
+Historical enable retry after withdrawal leaves all user state unchanged.
+Public refusal discriminates the second accepted document; private broader CIDR
+and principals.manage-only requests refuse403. No socket/admission authority inferred.
+
+Read-only AI review found a P2 missing function EXECUTE startup probe. Actual
+438067f/fixture9c7f75c confirmed route EXECUTE=false yet initialized listener bound.
+The test stopped the exact CLI normally; original FAIL/state/logs remain. It sent
+no command; it proves premature binding, not data loss or observed command failure.
+Root added checks for relay_route_valid, relay_enrollment_digest and command_u64_bytes.
+AI recheck found the correction/contracts coherent and one fixture preflight edge:
+exact same-revision build reuse wrongly required nonempty diff. Corrected without
+accepting differing product/build inputs. No migration/codec/dependency changes.
+
+Exact917c76b/tree469dbac1a7c16e0b9d7f098fc2e0fb035a8983a3 passes all three missing
+EXECUTE refusals before bind plus the full permitted journey. Root verified79
+captures/1612 source files and the same complete SQL/native/receipt oracles.
+OpenAPI/generated types, owning reference and task consumers now match this scope.
+Existing Management queue, request/connection budget and original Control remain;
+no generic command framework or second owner. Earlier adapter COMMIT/locks are
+reused with their original scope; this wave does not requalify installed ambiguity.
+Read-only AI review did not run engines or audit all historical migrations/native
+internals; root reviewed original artifacts and complete affected diff.
+
+All owned runs STOPPED/RETAINED. Native initial-ingest-917c76b PID1226611/
+start426522775 terminal, owner0ba886d9abf54780a55e8226d77a74f5;
+fetchb6b8da06/nativee4057bf4 stopped0. Engine initial-enrollment-917c76b
+PID1230202/start426536902 terminal, owner710f009983251eaf227fc7cef9574b4e,
+clientcd81fd2c stopped143; PG71775507 stopped0/no OOM. Audit19:32:42UTC verifies995
+prior projections unchanged,8 unrelated running, compiler lock free and
+60,209,369,088B available. Shared1154757 holds917c76b intermediates; exact qualified
+artifacts are separate. Earlier438067f/17c6ea0/9c7f75c resources/evidence retained.
 Inventory initial_relay_commands and ignored initial-relay-commands-20261001 own
-all sources, exact artifacts, launch/capture/review recipes and original outcomes.
-No current experiment. Shared1154757 intermediates438067f; artifacts separate.
-Mac5.0GiB free; check before builds. Prior cache retirement remains complete.
+native/, engine/, function-red/, native-fixed/, function-fixed/ and original recipes.
+Never replay completed launchers or old cache deletion. Mac last5,224,280KiB free;
+check before allocation. Requested cleanup remains complete and inventoried.
+Local review/collector field-name mistakes and original stderr are preserved;
+no engine assertion or expected result was weakened. api-draft copies were restored;
+there is no outstanding draft product work. Earlier checkpoint's30 client count was
+a transcription error; actual terminal log is23 and report uses23.
 
-Read-only AI review found a P2 startup gap: require_relay_enrollment tested table
-privileges but not EXECUTE for relay_route_valid, relay_enrollment_digest and its
-command_u64_bytes dependency. Actual438067f CLI/fixture9c7f75c confirmed the route
-case: EXECUTE=false yet initialized listener bound. The test stopped the exact CLI
-normally; original FAIL/state/logs remain. Other two cases were not reached.
-No command was submitted by this counterexample; it proves premature binding.
-Root verified source/capture identities and actual report, revocation and terminal.
-Run initial-enrollment-9c7f75c PID1223320/start426500500 terminal;
-owner027d005c345054a2c31fc373da6bdc5d/clientcb797d21 stopped143; PG71775507 stopped0.
-Audit19:26:54UTC:992 prior projections unchanged,8 unrelated running, compiler lock
-free,60,437,438,464B free. function-red/ owns originals and collection recipes.
-Initial collector misspelled result.failure as error; failed archive/stderr retained,
-corrected collector changed no product/experiment outcome. No experiment active.
-
-Root adds all three function privilege checks without SQL changes, updates the
-OpenAPI/generated command types and relevant reference consumers. Drafts were
-restored from api-draft/; those preserved copies are no longer outstanding work.
-Mac formatting, generated contract/type checks and30 client tests PASS. No repeat native
-build yet. Earlier local review-script account table typo is recorded separately.
-Read-only AI recheck found the fix/signatures and contract coherent; its fixture
-finding (same-revision reuse wrongly required nonempty diff) is corrected while
-retaining the exact docs/experiments-only restriction for different revisions. No other concrete reviewer
-finding in the bounded production/caller/fixture scope; whole native/migration
-history was not independently reviewed. Root is the integrating owner.
-Dirty files are root-owned product probe/comment, OpenAPI/generated type,
-reference/experiment docs, inventory and this checkpoint. Next: commit the
-correction candidate, run scoped native build then all three missing-function
-cases and the valid installed HTTP journey on fresh clones. Preserve original
-17c6ea0 successes and9c7f75c failure. No SQL checksum or persistent format changes.
-Whole selected product/M1 remains INCOMPLETE; no broader acceptance box advances.
+Current dirty files are root-owned qualification report, task/reference/experiment
+documentation, inventory and this checkpoint. Next bounded action: finish affected
+document checks/final diff, commit and push this qualified private slice. Then
+implement installed authenticated URL registration for P02-T01 Step6/P01-T09 Steps1/2:
+read the existing immutable get-or-create registry and private mutation/audit
+contracts, keep auth/current revision/commit semantics in one visible transaction,
+and qualify actual URL creation/normalized retry/refusals before using it to replace
+the isolated endpoint fixture. Existing registration has no browser authority;
+a separate precheck followed by unauthenticated mutation is insufficient.
+Whole selected product/M1 remains INCOMPLETE; no broader checkbox advances.
 
 [Installed session faults](evidence/p01-initial-session-faults-native-20261001.json)
 qualify slow valid initial renewal (3.003s consumed within5s authority), disconnected
@@ -130,7 +139,7 @@ The requested earlier cache retirement remains complete and inventoried.
 
 Next user-visible M1 deliverable remains a signed socket event through installed
 same-owner command selection/admission, timer archive/read/export and restart.
-After these session lifetime faults, implement authenticated endpoint/enrollment,
+After this bounded enrollment consumer, implement authenticated endpoint creation,
 immutable acquisition scope and finite-job command consumers, dictionary append
 P02-T03 Step1, then successor/recovery P02-T01 Step5/P02-T02 Step4 for P01-T09 Step4.
 The current bootstrap has only two visibility mappings; session access grants no

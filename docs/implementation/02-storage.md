@@ -89,9 +89,12 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   qualifies exact native mapping/dependency resolution under initial Control
   authority; immutable descriptor data is not a source grant. The
   [policy-version prerequisite](evidence/p01-policy-versions-native-20260928.json)
-  qualifies fresh explicit bans and legacy compatibility. Installed enrollment,
-  current source binding/ban enforcement, acquisition grants, restrictive drain
-  and full routes remain.
+  qualifies fresh explicit bans and legacy compatibility. The
+  [initial-owner installed enrollment HTTP](evidence/p02-initial-enrollment-http-native-20261001.json)
+  qualifies existing-endpoint enable/retry/withdraw and table/function privilege
+  startup refusals, with the original failed probe retained. Authenticated endpoint
+  creation, CLI enrollment, complete acquisition/restrictive drain and full routes
+  remain; no whole-step completion follows.
 - [ ] **Step 7:** **Practical P02-T01:** real PG transactions race two revision/frontier
   updates, disconnect after commit and retry. Inspect committed rows externally,
   including zero-output progress. Negative control: updating a watermark before

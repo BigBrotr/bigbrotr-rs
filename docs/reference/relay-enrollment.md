@@ -6,8 +6,9 @@ implementation with [initial actual-engine evidence](../implementation/evidence/
 [COMMIT/expiry/lock-order evidence](../implementation/evidence/p02-relay-enrollment-faults-native-20260928.json)
 qualifies those command boundaries. [Focused relational evidence](../implementation/evidence/p02-relay-enrollment-relations-native-20260928.json)
 adds twelve live-owner omissions/mismatches with valid controls and complete
-rollback checks. The initial-owner HTTP consumer below is under practical
-qualification. The installed acquisition service, CLI integration,
+rollback checks. The initial-owner HTTP consumer has
+[bounded native qualification](../implementation/evidence/p02-initial-enrollment-http-native-20261001.json).
+The installed acquisition service, CLI integration,
 restrictive application, socket grants, protected
 access, multiple selected CIDRs and overlays remain selected work.
 
@@ -112,15 +113,16 @@ same authenticated actor/key/command resolves that ambiguity.
 The [laboratory recipe](../../experiments/relay-enrollment/README.md) distinguishes
 implemented cases from executed evidence. Whole-step and M1 acceptance remain open.
 
-## Initial-owner HTTP consumer (under qualification)
+## Initial-owner HTTP consumer
 
 The explicit initial Ingest owner adds `POST /management/v1/relay-enrollments`
 to its existing loopback session router. Its closed body is `EnrollmentCommand`
 above; session cookie, explicit CSRF header and one canonical `Idempotency-Key`
 are required. The8KiB body, connection/request limits and original Control/native
 custody are shared with the existing dispatcher. No second command connection or
-network worker starts. Migration0019 and each required table/function privilege are checked
-before binding. Earlier session-only installations must explicitly migrate first.
+network worker starts. Migration0019 and each required table/function privilege
+are checked before binding. Earlier session-only installations must explicitly
+migrate first.
 
 Public enablement requires both complete accepted policy documents. Private route
 ceilings come only from deployment roots; caller bytes cannot replace them.
@@ -143,7 +145,10 @@ historical retry after withdrawal, accepted public-policy intersection, private
 root bounds, permission refusal and missing table privilege before bind. All64
 SQL tables and12 bootstrap native rows were checked. A review then exposed a
 missing function-privilege startup check; its real counterexample on9c7f75c is
-retained and the correction is being qualified. P02-T01 Step6/P01-T09 Step1 remain
+retained. Corrected917c76b refuses all three missing function grants before bind
+and repeats the valid HTTP journey successfully. The linked report retains exact
+source/artifact identities, original failure and practical limits.
+P02-T01 Step6/P01-T09 Step1 remain
 partial; neither this fixture nor its internal endpoint setup proves installed
 URL registration or complete acquisition.
 

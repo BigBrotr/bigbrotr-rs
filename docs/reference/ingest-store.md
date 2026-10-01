@@ -140,7 +140,7 @@ private asset prerequisites are refused by this narrow path.
 Both complete accepted documents must also permit the selected profile.
 
 Accepted administration enables login, self inspection, logout and the initial
-[relay enrollment command](relay-enrollment.md#initial-owner-http-consumer-under-qualification)
+[relay enrollment command](relay-enrollment.md#initial-owner-http-consumer)
 on the configured loopback listener. This reuses the ordinary Management dispatcher;
 migration0809 session prerequisites and migration0019 enrollment table/function
 privileges are required before binding. Initial Ingest has no reauthentication,

@@ -1,0 +1,281 @@
+{
+  "format": "bigbrotr-initial-enrollment-http-acceptance/1",
+  "status": "PASS_BOUNDED_INITIAL_ENROLLMENT_HTTP",
+  "observed_at": "2026-10-01T19:32:42.626185+00:00",
+  "tasks": [
+    "P02-T01 Step6 (partial)",
+    "P01-T09 Step1 (partial)"
+  ],
+  "scope": "Installed initial-owner HTTP acceptance for an existing endpoint, same Control/native custody, exact historical receipts and startup prerequisites. No installed authenticated URL registration, network action or M1 claim.",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1 (48a229cea)",
+    "postgres": "16.15",
+    "rocksdb": "11.8.1",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "runtime_cgroup": {
+      "cpus": 2,
+      "memory_bytes": 1073741824,
+      "swap_additional_bytes": 0
+    },
+    "build_cgroup": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "network": "none after locked fetch"
+    }
+  },
+  "waves": [
+    {
+      "fixture": "17c6ea0e3e533ff7dd4d970e2cd5a523b77396c2",
+      "fixture_tree": "d2221fd7fb20e3adf349565d338bed0d0bcf68d5",
+      "product": "438067fd47cf538078cb2688360af359af14a8e4",
+      "product_tree": "c93b5499a7ac7444ee4f2f146de57619a21563b6",
+      "status": "PASS_BOUNDED_INITIAL_ENROLLMENT_HTTP",
+      "cases": [
+        {
+          "name": "enrollment-journey",
+          "control_tables": 64,
+          "native_rows": 12,
+          "original_inputs": 1,
+          "workload": {
+            "http_statuses": [
+              403,
+              403,
+              202,
+              200,
+              409,
+              202,
+              200,
+              200
+            ],
+            "exact_command_digests": 2,
+            "historical_retry_all_user_rows_unchanged": true,
+            "accepted_policy_intersection_refusal": true,
+            "private_root_refusal": true
+          }
+        },
+        {
+          "name": "enrollment-permission",
+          "control_tables": 64,
+          "native_rows": 12,
+          "original_inputs": 1,
+          "workload": {
+            "http_statuses": [
+              403
+            ],
+            "granted_action": "principals.manage",
+            "required_action": "policy.change",
+            "domain_writes": 0
+          }
+        },
+        {
+          "name": "enrollment-prerequisite",
+          "control_tables": 64,
+          "native_rows": 12,
+          "original_inputs": 1,
+          "workload": {
+            "missing_privilege": "INSERT control.relay_enrollment_changes",
+            "exit_code": 4,
+            "no_initialized_record": true
+          }
+        }
+      ],
+      "artifacts": {
+        "Cargo_lock_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+        "source_manifest_sha256": "3a517b2fe217bfedb68ce9509363e59239395f5966b49a248096efe7309281c5",
+        "bigbrotr_sha256": "57894953af4ae25eeb0a18836c6bed45220605ecf28894ce3d4a1ea331cbd00e",
+        "ingest_bootstrap_probe_sha256": "b2e0ff28fc99c80775254a5e1fe9e66c3b6768116a5e497516e5257e24146dd4"
+      },
+      "review": {
+        "source_files": 1612,
+        "captured_payloads": 67,
+        "capture_manifest_sha256": "e65e2fc2e0421410ae639c45370e47becf259ec010d237e1b3a2b59a2d923ca0",
+        "root_review_sha256": "c907ed934702e95fe18aff2fe107b278df069705ad981dc1a8428ac7c6de7823"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-10-01T19:20:17.851769+00:00",
+        "owned_stopped": [
+          {
+            "id": "2bfac04f570c952139343daced446f8758fc9ac8838a6b800a7010f16b3502a6",
+            "owner": "815898bacbf21f5927275f98c00086b9",
+            "exit": 143
+          },
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "exit": 0
+          }
+        ],
+        "prior_unchanged": 991,
+        "unrelated_running": 8,
+        "compiler_lock_released": true,
+        "free_bytes": 60484120576
+      }
+    },
+    {
+      "fixture": "917c76b9fe47cc40dbb6b25f0c7d4892462cac50",
+      "fixture_tree": "469dbac1a7c16e0b9d7f098fc2e0fb035a8983a3",
+      "product": "917c76b9fe47cc40dbb6b25f0c7d4892462cac50",
+      "product_tree": "469dbac1a7c16e0b9d7f098fc2e0fb035a8983a3",
+      "status": "PASS_BOUNDED_INITIAL_ENROLLMENT_HTTP",
+      "cases": [
+        {
+          "name": "enrollment-function-route",
+          "control_tables": 64,
+          "native_rows": 12,
+          "original_inputs": 1,
+          "workload": {
+            "missing_privilege": "EXECUTE control.relay_route_valid(bytea)",
+            "exit_code": 4,
+            "no_initialized_record": true
+          }
+        },
+        {
+          "name": "enrollment-function-digest",
+          "control_tables": 64,
+          "native_rows": 12,
+          "original_inputs": 1,
+          "workload": {
+            "missing_privilege": "EXECUTE control.relay_enrollment_digest(control.relay_enrollment_changes,control.management_commands)",
+            "exit_code": 4,
+            "no_initialized_record": true
+          }
+        },
+        {
+          "name": "enrollment-function-u64",
+          "control_tables": 64,
+          "native_rows": 12,
+          "original_inputs": 1,
+          "workload": {
+            "missing_privilege": "EXECUTE control.command_u64_bytes(control.u64)",
+            "exit_code": 4,
+            "no_initialized_record": true
+          }
+        },
+        {
+          "name": "enrollment-journey",
+          "control_tables": 64,
+          "native_rows": 12,
+          "original_inputs": 1,
+          "workload": {
+            "http_statuses": [
+              403,
+              403,
+              202,
+              200,
+              409,
+              202,
+              200,
+              200
+            ],
+            "exact_command_digests": 2,
+            "historical_retry_all_user_rows_unchanged": true,
+            "accepted_policy_intersection_refusal": true,
+            "private_root_refusal": true
+          }
+        }
+      ],
+      "artifacts": {
+        "Cargo_lock_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+        "source_manifest_sha256": "3937ffe1143ab2289fa79aad0396d0412f5333fa54267370a57221bc1b97b843",
+        "bigbrotr_sha256": "2d07781aed936ba0acd5dba79a95dfef0323bf92a1aaa39ecf07255ad9a24cb9",
+        "ingest_bootstrap_probe_sha256": "647cdb3a77d945698572d77036aea8fab653425df5c8b9b0cb7ca2639c7e4811"
+      },
+      "review": {
+        "source_files": 1612,
+        "captured_payloads": 79,
+        "capture_manifest_sha256": "af4affbdb8fec4eebbd9b373ac7306c6ecd67d120ca8944ce523e400765688dc",
+        "root_review_sha256": "c7536ede292cf5d2890aa2fe8c9c52da67721b68c3965e2c3c7133481784ec93"
+      },
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-10-01T19:32:42.626185+00:00",
+        "owned_stopped": [
+          {
+            "id": "cd81fd2ce0f292bea4617d9fe82c56fb1604a7e73784a7d26b69a772d7fb3634",
+            "owner": "710f009983251eaf227fc7cef9574b4e",
+            "exit": 143
+          },
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "exit": 0
+          }
+        ],
+        "prior_unchanged": 995,
+        "unrelated_running": 8,
+        "compiler_lock_released": true,
+        "free_bytes": 60209369088
+      }
+    }
+  ],
+  "verification": {
+    "mac": "36 Management tests and scoped lib/bin/probe Clippy on438067f; formatting on917c76b; contract generation/check, TypeScript check and23 API-client tests. Actual captured command/five receipts validate against the new schema; missing CAS, wrong kind, numeric receipt generation and false authority controls refuse.",
+    "native": "Both438067f and917c76b: release CLI/probe,3 entrypoint+6 initial lifetime+36 Management tests, scoped Clippy; all5 profile steps executed and passed. Native originals/logs/manifests retained separately.",
+    "expected_results": "Independent12-row native/input/receipt oracle in each successful engine case; all64 SQL tables/xmin and two exact command digests reconstructed independently. Actor/session/Control/audit/linkage and exact historical receipts checked. Both accepted public documents intentionally differ; larger private CIDR and permission-only negative controls leave no command effects."
+  },
+  "confirmed_review_defect": {
+    "priority": "P2",
+    "finding": "Startup checked enrollment table privileges but omitted required function EXECUTE privileges.",
+    "counterexample": {
+      "status": "CONFIRMED_PRODUCT_STARTUP_COUNTEREXAMPLE",
+      "source": "9c7f75c38823bfb5e9e081fcad1fd7a33650c4de",
+      "source_files": 1612,
+      "captured_payloads": 21,
+      "result": "RuntimeError: missing enrollment prerequisite still bound the listener: enrollment-function-route",
+      "not_run": [
+        "enrollment-function-digest",
+        "enrollment-function-u64"
+      ],
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-10-01T19:26:54.436878+00:00",
+        "owned_stopped": [
+          {
+            "id": "cb797d21152e35b36d3cccea1717f87c57c787ec25e298ebaf723486da90cba1",
+            "owner": "027d005c345054a2c31fc373da6bdc5d",
+            "exit": 143
+          },
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "exit": 0
+          }
+        ],
+        "prior_unchanged": 992,
+        "unrelated_running": 8,
+        "compiler_lock_released": true,
+        "free_bytes": 60437438464
+      }
+    },
+    "scope": "Revoking route validator EXECUTE still published initialized listener on438067f. No command submitted in that counterexample; it proves premature binding, not observed data loss or later command failure. Other two revocations were not reached in RED.",
+    "correction": "917c76b checks relay_route_valid, relay_enrollment_digest and command_u64_bytes before binding. Each revocation separately yields exit4/no listener; valid installed journey still succeeds. No applied SQL changes.",
+    "review": "Read-only AI review identified the gap and rechecked the fix/contracts. Root reproduced, reviewed full affected diff and validated artifacts. Reviewer did not run engines or inspect original remote artifacts. Same-revision fixture reuse guard was corrected without accepting differing product/build inputs."
+  },
+  "structure": "Reuse the existing Management queue, original Control transaction and request/connection budget. Initial command owner supplies immutable accepted public-route intersection and deployment private roots. No second connection, generic command framework, new crate, dependency or migration.",
+  "limitations": [
+    "installed authenticated URL registration",
+    "CLI enrollment command",
+    "concurrent authenticated withdrawal versus source action",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release",
+    "Ordinary Serve enrollment route, protected/multi-CIDR/overlay support and complete restrictive drain remain selected work.",
+    "Operational endpoint was prepared by an explicitly isolated actual registry fixture, before the installed owner started.",
+    "Initial native state remains fresh-only; this wave does not qualify successor recovery or installed command COMMIT ambiguity. Earlier adapter COMMIT/lock qualifications retain their original scope."
+  ],
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.initial_relay_commands",
+    "ignored_local_root": ".research/implementation/initial-relay-commands-20261001",
+    "remote_roots": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/initial-enrollment-17c6ea0",
+      "/home/tux/bigbrotr-implementation-20260917/runs/initial-enrollment-9c7f75c",
+      "/home/tux/bigbrotr-implementation-20260917/runs/initial-enrollment-917c76b"
+    ],
+    "source_reuse": "First wave uses17c6ea0 docs/experiment delta over438067f. Corrected wave uses exact917c76b source and artifacts. No binaries rebuilt for documentation-only qualification.",
+    "setup_failures": "Local review script first used nonexistent local_principals; corrected to actual retained principal/account/credential tables. First RED collector used error instead of result.failure; corrected collector retained original FAIL. Original stderr/partial archive retained; no product assertion weakened."
+  }
+}

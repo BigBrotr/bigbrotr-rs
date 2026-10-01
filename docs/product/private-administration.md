@@ -574,8 +574,8 @@ Ingest owner exposes `POST /management/v1/relay-enrollments` for an already
 registered EndpointId; fresh acceptance202 and historical retry200 have no
 application or socket authority. The ordinary Serve profile, authenticated URL
 registration, CLI enrollment and full protected/overlay routes remain required.
-The [initial HTTP boundary](../reference/relay-enrollment.md#initial-owner-http-consumer-under-qualification)
-is under practical qualification, including refusal before bind when SQL function
+The [initial HTTP boundary](../reference/relay-enrollment.md#initial-owner-http-consumer)
+has bounded native qualification, including refusal before bind when SQL function
 execution privileges are missing.
 
 ### Scope-grant acceptance boundary
