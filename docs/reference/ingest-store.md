@@ -226,9 +226,14 @@ qualifies actual installed login/logout and incorrect credentials, renewals unde
 shared-memory refusal before binding, and SIGTERM during observed password work.
 Native/input/receipt and64-table comparisons preserve the original owner and
 bootstrap. Fixture failures and corrected independent audit expectations remain
-recorded. Delayed renewals, disconnected clients and the session listener during
-blocked native close remain the next required fault wave; no complete role or
-capacity claim follows.
+recorded. The [installed session fault wave](../implementation/evidence/p01-initial-session-faults-native-20261001.json)
+also qualifies a slow valid initial renewal consuming3.003s of5s request-start
+authority, actual disconnection during password work without late issuance, and
+session HTTP shutdown during held native close. In that close schedule HTTP was
+observed stopped5.45ms after SIGTERM and process death after2.017s; Control still
+refused the competing owner before process exit. Original bootstrap and all
+unrelated SQL rows remain unchanged. These bounded observations do not qualify
+worker panic, renewal-specific ambiguous COMMIT, successor recovery or capacity.
 
 ## Exact dependency source basis
 

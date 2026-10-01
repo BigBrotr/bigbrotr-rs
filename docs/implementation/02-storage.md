@@ -159,8 +159,9 @@ One owner serializes exact identity decisions for each writable directory.
   [native evidence](evidence/p02-owned-event-native-20260918.json) record its scope.
   The initial writer now serializes native decisions and moves verified owned
   input through the connected Control bridge. The installed initial owner now
-  retains native/Control custody; its same-owner private session consumer is under
-  qualification. Concurrent producer dispatch remains unimplemented; sequential
+  retains native/Control custody; its same-owner private session consumer has
+  [bounded installed fault evidence](evidence/p01-initial-session-faults-native-20261001.json).
+  Concurrent producer dispatch remains unimplemented; sequential
   fixtures do not qualify that concurrency boundary.
 - [ ] **Step 4:** Implement NewFacts/AlreadyDurable/Excluded/Invalid/Retryable,
   RequestConflict and IncompatibleSchema outcomes and

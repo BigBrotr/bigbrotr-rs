@@ -12,14 +12,34 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main and private origin88ce4beffc05870f28e80b654676c1af1fa34bc0 match
-(push/ls-remote and repository privacy verified). Root sole writer. Product23e1923/tree40f5f11527ce515632f8c92542749a1c08498148
+Mac main aeaf88ed703374398c128c2e335cf6095f2e8b38 is an unpublished fixture
+candidate; private origin remains88ce4beffc05870f28e80b654676c1af1fa34bc0.
+Root sole writer. Product23e1923/tree40f5f11527ce515632f8c92542749a1c08498148
 passed native release CLI/probe, Clippy and42 tests (3 entrypoints,6 initial,33 HTTP).
-Mac41 changed tests, scoped Clippy and document checks pass. The qualification is
-committed/pushed. Root's pending fixture-only candidate changes this checkpoint,
-acquisition-scope/bindings.py and ingest-bootstrap's sessions/session_client and
-interruptions/interruption_client. No product change. Python parsing passes;
-the three new native cases are NOT_RUN until exact-Git execution below.
+Mac41 changed tests and scoped Clippy pass. The first-wave qualification is
+committed/pushed. Dirty work is the new fault-wave report, owning reference/task
+docs and experiment README, this checkpoint and inventory. No product change.
+All three new native cases PASS with unchanged qualified binaries; Python parsing
+passes. Root reviewed all1609 Git files and61 captured payload hashes plus the
+independent native/input/SQL and real client/FD/syscall observations.
+
+[Installed session faults](evidence/p01-initial-session-faults-native-20261001.json)
+qualify slow valid initial renewal (3.003s consumed within5s authority), disconnected
+running password work with no abandoned-session issuance, and HTTP stopped during
+held native close. Subsequent login/logout succeeds in both command cases. The
+close case positively observes a process-owned accepted socket; HTTP is observed
+closed5.45ms after SIGTERM, Control refuses a competitor and process exits4 after
+2.017s. No forced fixture kill, false graceful release or native OS-lock claim.
+All12 native rows, original input/receipt and64 SQL tables retain exact invariants.
+No product changes or broad unit/native rebuild; existing mechanisms suffice.
+
+Fault run initial-sessions-aeaf88e PID1198422/start426299690 terminal,
+ownere05213840c7602eaa00ef06e28dac247; client8293942a stopped143,
+borrowedPG71775507 stopped0/no OOM. Audit2026-10-01T18:53:50UTC verifies988 prior
+projections unchanged, eight unrelated running, compiler lock free and60,690,825,216B
+available. Inventory initial_sessions.fault_wave and ignored initial-management-
+20260928/faults own exact source/bundle, capture, launch/collection/review recipes.
+Do not replay them or historical cache retirement. No experiment remains active.
 
 [Initial private-session first wave](evidence/p01-initial-sessions-native-20261001.json)
 qualifies P01-T09 Step1/P02-T02 Steps2/3 only to this bounded scope. Same-owner
@@ -64,22 +84,12 @@ original-failure/, retry/, audit-fixed/, hash-diagnostic/ and hash-fixed/. Never
 replay these completed launchers. Mac last5,459,800KiB; check disk before allocation.
 The requested earlier cache retirement remains complete and inventoried.
 
-Next bounded action: commit and run the remaining installed fault wave on fresh
-exact-Git clones, reusing23e1923 binaries. Required cases: delayed valid renewal consuming request-start validity,
-disconnected credentials while real hash work remains active (no late issuance),
-and session HTTP stopped while qualified tracer holds native close and actual
-Control excludes a competitor. Read complete owning fixture/client/proxy before
-changing it. Existing interruption_client.py and interruptions.py were read in
-full; the qualified strace instrument can be reused with verified identities.
-Renewal-specific ambiguous COMMIT, panic and restart remain separately unqualified.
-No extra broad unchanged suites or new master plan.
-
-Resumption inspection confirms only those owned edits, Mac5,456,060KiB available
-and Tux60,780,916,736B available. No BigBrotr native/build process or container is
-active; eight unrelated containers remain running and the compiler lock is free.
-The delayed-renewal trigger affects only a new clone, hash disconnection resets
-the actual paused request, and the native-close case must observe a process-owned
-accepted socket before signalling. Original evidence and cache retirement remain.
+Next bounded action: finish the fault evidence checks/commit/private push, then
+read the existing authenticated relay enrollment/endpoint and acquisition-scope
+command contracts and their real adapters/callers. Wire the smallest initial-owner
+command consumer needed for first socket admission, preserving authority, retries,
+single Control custody and the shared ledger. Renewal-specific ambiguous COMMIT,
+panic and restart remain separately unqualified. No new plan or broad unchanged suite.
 
 Next user-visible M1 deliverable remains a signed socket event through installed
 same-owner command selection/admission, timer archive/read/export and restart.

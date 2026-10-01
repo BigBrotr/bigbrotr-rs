@@ -1,0 +1,160 @@
+{
+  "format": "bigbrotr-initial-session-fault-acceptance/1",
+  "status": "PASS_BOUNDED_INITIAL_SESSION_FAULT_WAVE",
+  "observed_at": "2026-10-01T18:53:50.257298+00:00",
+  "tasks": [
+    "P01-T09 Step1 (partial)",
+    "P02-T02 Steps2/3 (partial)"
+  ],
+  "scope": "Three actual installed session lifetime faults under the original native/Control owner. No complete Ingest, acquisition, restart or M1 claim.",
+  "source": {
+    "product": "23e1923224fba13b768fa6823493b066e7af5d82",
+    "fixture": "aeaf88ed703374398c128c2e335cf6095f2e8b38",
+    "fixture_tree": "01eb4b362206cacc7a77fadaabbc34fdd9715da5",
+    "build_reuse": "Only docs/experiments changed; exact qualified binaries reused without rebuild or repeated unchanged unit suites."
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64"
+    },
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "engines": "Retained isolated PostgreSQL16.15 template; real pinned RocksDB11.8.1 binding.64 Control tables including xmin. No server/version substitution.",
+    "runtime_cgroup": {
+      "cpus": 2,
+      "memory_bytes": 1073741824,
+      "swap_additional_bytes": 0
+    },
+    "build_cgroup": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "network": "none after locked fetch"
+    }
+  },
+  "artifacts": {
+    "Cargo.lock_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "eb06e83ff858f67e57c25c67a2573aee5fae98b26673db8e601f5eedd159b705",
+    "bigbrotr_sha256": "8bbeb4ec681812b8b329362cf886a78b516dea710013132dba613164e73e5c35",
+    "ingest_bootstrap_probe_sha256": "2e93489eee16bd0cbd1cb1646e15470fdaaec5b5fe67456a978d66a14e649f22"
+  },
+  "practical_cases": [
+    {
+      "name": "sessions-slow-renewal",
+      "source": "aeaf88ed703374398c128c2e335cf6095f2e8b38",
+      "control_tables": 64,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "delay_us": 3003434,
+        "authority_ttl_us": 5000000,
+        "actual_renewal_calls": 2,
+        "observed_after_original_authority_us": 5105905,
+        "subsequent_cli_login_logout": true
+      }
+    },
+    {
+      "name": "sessions-disconnect",
+      "source": "aeaf88ed703374398c128c2e335cf6095f2e8b38",
+      "control_tables": 64,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "worker": {
+          "tid": 126,
+          "name": "(tokio-rt-worker)",
+          "state": "R",
+          "user_ticks": 1,
+          "start_ticks": "426300788",
+          "prior_tasks": [
+            "114",
+            "115",
+            "116",
+            "117",
+            "118",
+            "119"
+          ]
+        },
+        "disconnected": true,
+        "issued_sessions": 1,
+        "issued_for_subsequent_login_only": true
+      }
+    },
+    {
+      "name": "close-signal",
+      "source": "aeaf88ed703374398c128c2e335cf6095f2e8b38",
+      "control_tables": 64,
+      "native_rows": 12,
+      "original_inputs": 1,
+      "workload": {
+        "http_stop_after_signal_seconds": 0.005447867326438427,
+        "process_exit_after_signal_seconds": 2.017031834460795,
+        "http_accepted": {
+          "fd": 21,
+          "inode": "176045155",
+          "remote": "0100007F:C408"
+        },
+        "blocked": {
+          "tid": 213,
+          "syscall": "close",
+          "entry_wall": 1790880756.100937,
+          "observed_monotonic": 4263010.23550812,
+          "line": "213   1790880756.100937 close(14</lab/close-signal/store/LOCK>"
+        },
+        "control_competitor_refused": true
+      }
+    }
+  ],
+  "review": {
+    "source_integrity": [
+      {
+        "source": "aeaf88ed703374398c128c2e335cf6095f2e8b38",
+        "files": 1609
+      }
+    ],
+    "captured_payloads": 61,
+    "expected_results": "Root checked complete64-table SQL deltas/xmin, exact independent12-row native CBOR/key/value/input/receipt oracle, actual CLI/session and syscall/FD observations. All original source/evidence retained.",
+    "structure": "Reuse existing installed policy setup, native oracle, qualified tracer and Control competitor. No product framework, migration, codec or dependency changes."
+  },
+  "limitations": [
+    "worker panic",
+    "renewal-specific ambiguous COMMIT and policy races",
+    "crash-resumable initialization/successor",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release",
+    "close(LOCK) follows Rocks OS unlock: this proves unfinished native destructor and retained Control custody, not continued native OS-lock ownership.",
+    "A single bounded fault schedule is not a capacity, arbitrary kernel I/O or timing-distribution claim.",
+    "Slow renewal is an initial valid refresh delayed3s within5s request-start authority; no delayed COMMIT loss or expired response is injected in this case."
+  ],
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.initial_sessions.fault_wave",
+    "ignored_local_root": ".research/implementation/initial-management-20260928/faults",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-aeaf88e",
+    "capture_manifest_sha256": "3b9c3442f1fd2ba858ab3cb377abcc8dd9b81c97a2991124f6b176c21119b23e",
+    "root_review_sha256": "3e75d1ee563b42d9be32983df024a5f78cd7d9ae8ca8d32a226f54e580e26eaf",
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-01T18:53:50.257298+00:00",
+      "owned_stopped": [
+        {
+          "id": "8293942ab8e1b074ab517b774eb00faf15ab21205cc4ddf8e52d30c74086a1ee",
+          "owner": "e05213840c7602eaa00ef06e28dac247",
+          "exit": 143
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 988,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 60690825216
+    }
+  }
+}

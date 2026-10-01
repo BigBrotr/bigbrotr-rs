@@ -121,6 +121,16 @@ archive-reader policy to test unsupported consumers. Historical outcomes retain
 their original source and meaning. The [executed first wave](../../docs/implementation/evidence/p01-initial-sessions-native-20261001.json)
 records product23e1923 with successful cases on fixtures4a00f64 and0ac54d1, plus
 all original fixture failures. Hash-only retries use `--installed-sessions-hash`
-with the same build-reuse restriction; they do not rerun the already passed cases. Slow renewals,
-disconnected clients and a session listener during blocked native close require
-their separate fault wave; the small concurrent fixture is not a capacity claim.
+with the same build-reuse restriction; they do not rerun the already passed cases.
+
+`--installed-sessions-faults BUILD` runs the separate
+[executed fault wave](../../docs/implementation/evidence/p01-initial-session-faults-native-20261001.json).
+An isolated clone's trigger delays the first Control renewal three seconds within
+five seconds of request-start authority. A disconnected running hash must leave
+no session; a subsequent real login/logout proves the slot can be reused. The
+close case observes an accepted process-owned partial HTTP socket, then holds the
+actual native destructor: HTTP must close while Control still excludes a competing
+owner, followed by bounded process death. Complete native/input/SQL oracles remain
+in force. No product build was repeated for these fixture-only changes. Worker
+panic, renewal-specific ambiguous COMMIT, successor recovery and capacity remain
+separate acceptance work.

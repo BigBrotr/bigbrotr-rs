@@ -30681,7 +30681,7 @@
       "evidence": "docs/implementation/evidence/p03-relay-transfer-native-20260928.json"
     },
     "initial_sessions": {
-      "state": "Bounded initial-session first wave PASS across4a00f64 journey/capacity and0ac54d1 hash-only case, using unchanged23e1923 artifacts. Original fixture FAILs retained; all owned resources stopped. Later fault wave still required.",
+      "state": "Bounded initial-session first wave and three installed lifetime faults PASS using unchanged23e1923 artifacts. Original fixture FAILs retained; all owned resources stopped. Acquisition/restart/M1 remain incomplete.",
       "launch": {
         "source": "23e1923224fba13b768fa6823493b066e7af5d82",
         "tree": "40f5f11527ce515632f8c92542749a1c08498148",
@@ -31272,7 +31272,57 @@
         "compiler_lock_released": true,
         "free_bytes": 60781060096
       },
-      "evidence_report": "docs/implementation/evidence/p01-initial-sessions-native-20261001.json"
+      "evidence_report": "docs/implementation/evidence/p01-initial-sessions-native-20261001.json",
+      "fault_wave": {
+        "state": "stopped-retained",
+        "launch": {
+          "source": "aeaf88ed703374398c128c2e335cf6095f2e8b38",
+          "tree": "01eb4b362206cacc7a77fadaabbc34fdd9715da5",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-sessions-aeaf88e",
+          "pid": 1198422,
+          "start_ticks": "426299690",
+          "bundle_sha256": "c98b22bbac8d3b9a4b72942f05b301a238ddd27a0ff899bbf64e34f09610576f",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-23e1923/out/artifacts"
+        },
+        "owner": "e05213840c7602eaa00ef06e28dac247",
+        "owner_label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "8293942ab8e1b074ab517b774eb00faf15ab21205cc4ddf8e52d30c74086a1ee",
+          "name": "bigbrotr-acquisition-binding-aeaf88e"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_aeaf88e_sessions_slow_renewal",
+          "bb_scope_bind_aeaf88e_sessions_disconnect",
+          "bb_scope_bind_aeaf88e_close_signal"
+        ],
+        "status": "PASS_INITIAL_SESSION_FAULT_WAVE",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "local_evidence": ".research/implementation/initial-management-20260928/faults",
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T18:53:50.257298+00:00",
+          "owned_stopped": [
+            {
+              "id": "8293942ab8e1b074ab517b774eb00faf15ab21205cc4ddf8e52d30c74086a1ee",
+              "owner": "e05213840c7602eaa00ef06e28dac247",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 988,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 60690825216
+        },
+        "evidence": "docs/implementation/evidence/p01-initial-session-faults-native-20261001.json"
+      }
     }
   },
   "implementation_relay_registry_20260928": {
