@@ -241,17 +241,19 @@ all68 Control relations,12 original native rows and staged CBOR. The qualified70
 native inspector is reused separately from the00600af CLI/SQL probe, with hashes
 and all affected build inputs checked. No installed successor is inferred from
 fresh adapter recovery; actual reinitialization of the retained store must refuse.
-Original626cbc3 failed config validation before startup (fixture30s exceeded the
-actual5s authorization ceiling). Corrected47ed56b ran all five schedules; final
-qualification awaits a stronger oracle that preserves status even during header
-reset and uses actual HTTP parsing for truncated-body controls. The signal cut
-must be sent within2s of launch, before the earliest2.5s command deadline, so an
-earlier timeout followed by driver drain cannot masquerade as SIGTERM cancellation.
-Original outputs remain retained; final evidence is not inferred from that run.
+[Native installed fault evidence](../../docs/implementation/evidence/p02-initial-registration-faults-native-20261001.json)
+now qualifies four unchanged4db23a0 schedules plus the focusedb61fcee signal case.
+Original626cbc3 config setup failure (fixture30s exceeded actual5s authorization)
+and47ed56b preliminary output remain retained. Actual-parser negative controls
+reproduce partial-header status loss and short fixed-length EOF before correction;
+seven corrected regressions pass on Mac and Tux. No product code changed.
 
 `--registration-http-signal BUILD` repeats only the affected cancellation case.
 It observes HTTP closure within2s of launch on CLOCK_BOOTTIME, before the earliest
 2.5s half-lease deadline, and then joins the CLI before closing the held PG proxy.
-This distinguishes processed signal cancellation from a watchdog timeout or merely
-transmitting a signal during driver drain. Four unaffected schedules remain in the
-4db23a0 capture; the focused rerun does not claim to execute them again.
+The observed closure was1.367s, and signal-to-reap2.141s. This distinguishes processed
+signal cancellation from a watchdog timeout or merely transmitting a signal during
+driver drain. Four unaffected schedules remain in4db23a0; the focused rerun does not
+claim to execute them again. Complete SQL/native originals and source/artifact
+identities were independently checked. Installed successor/acquisition/M1 and
+capacity/release acceptance remain open.

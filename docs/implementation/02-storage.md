@@ -102,8 +102,11 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   add both lock orders, rollback and historical retry after changed heads/grants.
   [Live-owner relational checks](evidence/p02-relay-registration-relations-native-20261001.json)
   verify atomic linkage, current attribution, immutable history and session pruning.
-  Installed HTTP ambiguity, CLI enrollment, complete acquisition/restrictive
-  drain and full routes remain; no whole-step completion follows.
+  [Installed HTTP fault schedules](evidence/p02-initial-registration-faults-native-20261001.json)
+  now qualify actual ninth-COMMIT loss, admitted client reset/retry and timely
+  SIGTERM with full SQL/native preservation and fresh adapter receipt recovery.
+  CLI enrollment, installed successor, complete acquisition/restrictive drain
+  and full routes remain; no whole-step completion follows.
 - [ ] **Step 7:** **Practical P02-T01:** real PG transactions race two revision/frontier
   updates, disconnect after commit and retry. Inspect committed rows externally,
   including zero-output progress. Negative control: updating a watermark before

@@ -143,5 +143,10 @@ qualify both lock orders, writer rollback and exact historical retry after chang
 heads/grants under a fresh adapter owner. The initial installed owner still stops
 on changed policy. [Live-owner relational checks](../implementation/evidence/p02-relay-registration-relations-native-20261001.json)
 qualify command/detail/audit linkage, current attribution, immutable history and
-historical session pruning. Installed HTTP ambiguity remains NOT_RUN. These small
-fixtures do not establish installed acquisition, capacity or M1.
+historical session pruning. [Installed HTTP fault schedules](../implementation/evidence/p02-initial-registration-faults-native-20261001.json)
+now qualify lost command COMMIT before/after completion, admitted client reset with
+same-owner HTTP retry and timely SIGTERM. HTTP closure is observed before the
+command deadline; actual CLI termination precedes proxy retirement. Complete SQL/
+native evidence distinguishes accepted from absent intent. Fresh adapter receipt
+recovery does not reopen or adopt the native store. These small fixtures do not
+establish installed successor, acquisition, capacity or M1.

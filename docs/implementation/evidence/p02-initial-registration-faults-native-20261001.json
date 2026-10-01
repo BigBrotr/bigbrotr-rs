@@ -1,0 +1,228 @@
+{
+  "format": "bigbrotr-initial-registration-fault-acceptance/1",
+  "status": "PASS_BOUNDED_INSTALLED_REGISTRATION_FAULTS",
+  "tasks": [
+    "P02-T01 Step6 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "product": "00600af97d24f7e445f7e6706180ddae0cb32fda",
+  "product_tree": "6e131923a3c9a34731663ad943a9c1546d508e25",
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1",
+    "clang": "14.0.6",
+    "postgres": "16.15",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_cpus": 2,
+    "client_memory_bytes": 1073741824,
+    "swap_additional_bytes": 0,
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944
+  },
+  "artifacts": {
+    "Cargo_lock_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "40f10f13cdcb809473dd3214b8e8b5b449270c36903c93a666cdb57d89d0f919",
+    "bigbrotr_sha256": "8a6673649a3eb39816db2fc493ac1708c5fedc25bae1a07884c0d46c36e0ec10",
+    "relay_registration_fault_probe_sha256": "c1769531c77fb595d1724c4617f9b6a522f8a04386fee565534af019d850cfd8",
+    "native_inspector": {
+      "source": "7011acd1782e9fe36b5e7c67188aae5c40fe70da",
+      "probe_sha256": "af76f38f2eca2559ef746f678e0bbdf2ab035b8d19a6ac2287611d7a9b360f29",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-7011acd/out/artifacts"
+    },
+    "http_parser_native_log_sha256": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae"
+  },
+  "cases": [
+    {
+      "name": "register-http-pass",
+      "committed": true,
+      "wire": [
+        10,
+        10,
+        10,
+        10,
+        0
+      ],
+      "http": {
+        "status": 202,
+        "body": {
+          "accepted_at_us": "1790890368998699",
+          "authority": "identity-only",
+          "command_key": "31313131313131313131313131313131",
+          "created": true,
+          "endpoint_id": "a4e66e28e6f6a64fbf3c01278fa98832",
+          "format": "bigbrotr-relay-registration/1"
+        }
+      },
+      "cli_exit": 0,
+      "signal_sent_seconds": null,
+      "signal_to_reap_seconds": null
+    },
+    {
+      "name": "register-http-before",
+      "committed": false,
+      "wire": [
+        9,
+        8,
+        8,
+        8,
+        1
+      ],
+      "http": {
+        "closed": "RemoteDisconnected"
+      },
+      "cli_exit": 4,
+      "signal_sent_seconds": null,
+      "signal_to_reap_seconds": null
+    },
+    {
+      "name": "register-http-after",
+      "committed": true,
+      "wire": [
+        9,
+        9,
+        9,
+        8,
+        1
+      ],
+      "http": {
+        "closed": "RemoteDisconnected"
+      },
+      "cli_exit": 4,
+      "signal_sent_seconds": null,
+      "signal_to_reap_seconds": null
+    },
+    {
+      "name": "register-http-disconnect",
+      "committed": true,
+      "wire": [
+        10,
+        10,
+        10,
+        10,
+        1
+      ],
+      "http": {
+        "status": 200,
+        "body": {
+          "accepted_at_us": "1790890382286786",
+          "authority": "identity-only",
+          "command_key": "31313131313131313131313131313131",
+          "created": false,
+          "endpoint_id": "ded66bedcb53a1561dc49bf919b1d40a",
+          "format": "bigbrotr-relay-registration/1"
+        }
+      },
+      "cli_exit": 0,
+      "signal_sent_seconds": null,
+      "signal_to_reap_seconds": null
+    },
+    {
+      "name": "register-http-signal",
+      "committed": false,
+      "wire": [
+        9,
+        8,
+        8,
+        8,
+        1
+      ],
+      "http": {
+        "closed": "RemoteDisconnected"
+      },
+      "cli_exit": 4,
+      "signal_sent_seconds": 1.3673190847039223,
+      "http_closed_seconds": 1.3673433503136039,
+      "signal_to_reap_seconds": 2.1412578746676445
+    }
+  ],
+  "control_tables": 68,
+  "native_rows": 12,
+  "scope": "Actual installed initial Control/Ingest owner with real CLI password login, authenticated HTTP registration and finite PostgreSQL wire interruption. Identity-only command, no acquisition/readiness or installed successor claim.",
+  "verification": {
+    "cut": "Eight completed startup/login COMMITs before send; exactly one clone-only nontransactional insertion marker names the actual registered transaction/backend. Ninth-COMMIT wire counts distinguish forwarding and completion. All effects checked separately against actual SQL rows/xmin.",
+    "state": "All68 Control tables, independent literal command digest and audit/session/owner attribution; fresh owner2 exact-key receipt recovery makes no changes if committed and accepts exactly once if absent. Healthy same-owner HTTP retry changes no rows. All12 native rows and original staged CBOR match independent literal encodings.",
+    "cancellation": "CLOCK_BOOTTIME signal sent and HTTP closure observed1.367s after launch, before earliest2.5s half-lease deadline. Exact cancellation error; actual CLI reaped2.141s after signal, before proxy closure. Actual upstream PG backend remained held and rejected a Busy contender; explicit close retires it before SQL-only fresh-owner recovery.",
+    "lifecycle": "Nominal and disconnected-client acceptance end with actual graceful native close/Control release. Ambiguous and cancelled work exits4 without a graceful claim. Reinitialization of retained native target refuses with no SQL writes. Original qualified populated source rows/xmin and heap identities unchanged.",
+    "oracle": "Actual HTTPResponse over independent wire bytes rejects parsed200/202 even when headers/body reset, retains503 status after reset, detects incomplete Content-Length, rejects complete malformed JSON/oversize. Seven regressions pass on Mac Python3.14 and Tux Python3; RED originals retained."
+  },
+  "review": {
+    "kind": "Read-only AI source review plus integrating owner review of original captures",
+    "findings": "Fixture30s TTL corrected to actual5s ceiling. Reviewer found partial-header status loss and bounded-read short EOF; both reproduced before correction. Signal-only repeat adds suspend-aware early HTTP-closure observation; four unaffected schedules are not repeated. No product/migration/dependency change.",
+    "structure": "Uses existing finite proxy/process wrapper, common laboratory inventory and native oracle; no generic orchestration or second product implementation. Owning native supervisor/dispatch/driver semantics reviewed.",
+    "original_outcomes": [
+      "626cbc3 config setup FAIL before installed CLI; preserved21 capture payloads.",
+      "47ed56b all5 engine cases passed; incomplete parser negatives and signal causal claim superseded. Original166 payloads retained.",
+      "4db23a0 all5 engine cases passed; source1631/captures166 independently verified. First four qualify unchanged; signal observation tightened separately.",
+      "b61fcee focused signal schedule passed; source1631/captures41 independently verified."
+    ]
+  },
+  "not_run": [
+    "installed successor recovery",
+    "installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ],
+  "evidence": [
+    {
+      "local": ".research/implementation/relay-registration-20261001/http-fault-qualified",
+      "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-http-faults-4db23a0",
+      "fixture": "4db23a02fbb53c8d9d0e2135d11d70105e2e45cf",
+      "tree": "03bef73f5ca3d4ebe8b930ffc6d7cf26f2b79658",
+      "source_files": 1631,
+      "capture_payloads": 166,
+      "capture_manifest_sha256": "0faec23d5bfd16ca20ece64904292db11f9e1101e4a732b639754383a17fd974",
+      "root_review_sha256": "cd76703d98821d758cd7d9b3333e97e46c65aa1158ec301fb91acbf4641a81d3",
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-10-01T21:35:28.943353+00:00",
+        "owned_stopped": [
+          {
+            "id": "4d529ae403ea395570a1f30d81dee697d0a9d664649caf55669906d767d490ca",
+            "owner": "0e298acb16b9c9819fac0478e7a1302c",
+            "exit": 143
+          },
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "exit": 0
+          }
+        ],
+        "prior_unchanged": 1008,
+        "unrelated_running": 8,
+        "compiler_lock_released": true,
+        "free_bytes": 58942144512
+      }
+    },
+    {
+      "local": ".research/implementation/relay-registration-20261001/http-signal",
+      "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-http-faults-b61fcee",
+      "fixture": "b61fcee0e6e836c21dd71fdb8d950884baa236ef",
+      "tree": "a6dd949c9b321297314f7049f26b015231268981",
+      "source_files": 1631,
+      "capture_payloads": 41,
+      "capture_manifest_sha256": "c61feb22dee0e09ed435a496c15d794de27ab36d4982205e0a925e2693299623",
+      "root_review_sha256": "6caa31cb3ea2ebaeac387b9c3dc75fe36afe208664b92fe4193bd6ae8898ed00",
+      "terminal": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-10-01T21:37:30.519016+00:00",
+        "owned_stopped": [
+          {
+            "id": "e5e2b421502e28f47bc9d75220b764cb4bd9877d9adef77b9217d766f6b854ce",
+            "owner": "ff200438168d4a1f78cffce264164a04",
+            "exit": 143
+          },
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "exit": 0
+          }
+        ],
+        "prior_unchanged": 1009,
+        "unrelated_running": 8,
+        "compiler_lock_released": true,
+        "free_bytes": 58904743936
+      }
+    }
+  ]
+}

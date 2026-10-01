@@ -32265,7 +32265,54 @@
           "unrelated_running": 8,
           "compiler_lock_released": true,
           "free_bytes": 58942144512
-        }
+        },
+        "report": "docs/implementation/evidence/p02-initial-registration-faults-native-20261001.json",
+        "root_review_sha256": "cd76703d98821d758cd7d9b3333e97e46c65aa1158ec301fb91acbf4641a81d3",
+        "capture_manifest_sha256": "0faec23d5bfd16ca20ece64904292db11f9e1101e4a732b639754383a17fd974"
+      },
+      "http_signal": {
+        "launch": {
+          "source": "b61fcee0e6e836c21dd71fdb8d950884baa236ef",
+          "tree": "a6dd949c9b321297314f7049f26b015231268981",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-http-faults-b61fcee",
+          "pid": 1351524,
+          "start_ticks": "427284975",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-00600af/out/artifacts",
+          "bundle_sha256": "2aa6a3d2f1d62cb781a973b8da1f8536f1afdf5ad57afb6bcc0227e981d1fb32"
+        },
+        "local": ".research/implementation/relay-registration-20261001/http-signal",
+        "status": "PASS_INSTALLED_REGISTRATION_FAULTS",
+        "owner": "ff200438168d4a1f78cffce264164a04",
+        "client": {
+          "id": "e5e2b421502e28f47bc9d75220b764cb4bd9877d9adef77b9217d766f6b854ce",
+          "name": "bigbrotr-acquisition-binding-b61fcee"
+        },
+        "databases": [
+          "bb_scope_bind_b61fcee_register_http_signal"
+        ],
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-01T21:37:30.519016+00:00",
+          "owned_stopped": [
+            {
+              "id": "e5e2b421502e28f47bc9d75220b764cb4bd9877d9adef77b9217d766f6b854ce",
+              "owner": "ff200438168d4a1f78cffce264164a04",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1009,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 58904743936
+        },
+        "report": "docs/implementation/evidence/p02-initial-registration-faults-native-20261001.json",
+        "root_review_sha256": "6caa31cb3ea2ebaeac387b9c3dc75fe36afe208664b92fe4193bd6ae8898ed00",
+        "capture_manifest_sha256": "c61feb22dee0e09ed435a496c15d794de27ab36d4982205e0a925e2693299623"
       }
     }
   },

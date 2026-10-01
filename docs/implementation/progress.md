@@ -12,11 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main4db23a0, origin6367097; root sole writer. Original626cbc3 setup FAIL is
-retained. Corrected47ed56b executed five installed HTTP schedules PASS, but final
-qualification awaits the stronger real-parser negatives and explicit signal timing
-below. Dirty work only changes fixture/oracle, inventory and this checkpoint.
-No product/build/cache changes. Owned terminal audit21:31:03UTC.
+Mac mainb61fcee, origin6367097; root sole writer. Current dirty work consolidates
+installed registration fault qualification, owning references, task links and
+inventory. No product/build/cache changes in this wave. Owned terminal audit
+21:37:30UTC. All required original outcomes remain retained.
 
 ## Active slice and next bounded action
 
@@ -73,11 +72,33 @@ Real parent validates first, before/after positives pass, exact guards/FKs and a
 relations/xmin remain checked. Real login prunes the old revoked session while
 preserving all3 original registration details. Root verified1627 Git files/17
 captures. No production changes. TRUNCATE moved outside active INSERT before the
-run to avoid table-in-use masking; AI found no further blocker. Installed HTTP
-ambiguity remains required; actual adapter expiry is already qualified.
-No complete task, M1, capacity or arm64 claim follows.
+run to avoid table-in-use masking; AI found no further blocker. Actual adapter
+expiry is already qualified.
+[Installed HTTP fault report](evidence/p02-initial-registration-faults-native-20261001.json):
+4db23a0 five cases plus focusedb61fcee signal repeat pass with unchanged00600af CLI/
+probe and7011acd native inspector. Nominal202, lost COMMIT before/after (actual
+HTTP closure), admitted client reset/exact200 retry and timely cancellation.
+First4 schedules plus tightened signal qualify this boundary. Positive ninth-COMMIT
+insertion marker, all68 SQL tables/xmin,12 literal native rows/originalCBOR and
+fresh-owner2 receipt recovery checked. Signal/HTTP closure1.367s after launch on
+CLOCK_BOOTTIME, before earliest2.5s deadline; reap2.141s after signal, before proxy
+retirement. Actual held backend and Busy contender distinguish custody.
+Root verified1631 source files for each fixture and166+41 original payloads.
+AI review found fixture30s TTL and HTTP parser status/short-read gaps; original
+626cbc3 setup FAIL and47ed56b preliminary PASS preserved. Actual-parser negatives
+RED3 failures/1 error then GREEN7 on Mac and Tux. No product invariant weakened.
+Reuse existing concrete helpers/oracles; no orchestration framework. No complete
+task, M1, installed successor, capacity or arm64 claim follows.
 
 Latest owned resources STOPPED/RETAINED:
+- runs/registration-http-faults-b61fcee PID1351524/start427284975 terminal;
+  ownerff200438168d4a1f78cffce264164a04, cliente5e2b421 stopped143,
+  borrowedPG71775507 stopped0/no OOM. Audit21:37:30UTC:1009 prior projections
+  unchanged,8 unrelated running, compiler lock free,58,904,743,936B free.
+- runs/registration-http-faults-4db23a0 PID1339764/start427261761 terminal;
+  owner0e298acb16b9c9819fac0478e7a1302c, client4d529ae4 stopped143,
+  borrowedPG stopped0. Earlier47ed56b/626cbc3 artifacts and clones retained.
+
 - runs/registration-relations-da87534 PID1314735/start427098614 terminal;
   ownercd19e67a062a9e11eb536fffa0cdf4d1, client8cc839ab stopped143,
   borrowedPG71775507 stopped0/no OOM. Audit21:06:30UTC:1005 prior projections
@@ -97,29 +118,26 @@ Latest owned resources STOPPED/RETAINED:
 
 Inventory implementation_network_20260928.relay_registration and ignored
 .research/implementation/relay-registration-20261001 own native/, engine/,
-fault-native/, fault-native-fixed/, fault-engine/, race-engine/ and relation-engine/
+fault-native/, fault-native-fixed/, fault-engine/, race-engine/, relation-engine/
+and http-fault-engine/, http-fault-fixed/, http-fault-qualified/, http-signal/,
 including raw captures,
 source/artifact manifests, controllers, launch receipts and root-review scripts.
-Never replay completed launchers or old cache deletion. Mac last4,688,548KiB free;
+Never replay completed launchers or old cache deletion. Mac last4,675,100KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: commit/run only the tightened SIGTERM schedule with
---registration-http-signal and unchanged00600af CLI/probe plus7011acd inspector.
-4db23a0 repeated all5 schedules PASS with the corrected actual HTTP parser; root
-review checks source/captures, all68 tables, exact native12/CBOR, independent receipt
-digests and original populated source. Signal sent1.158s after launch/reaped2.048s
-later, but an additional causal check is warranted: observe HTTP closure before
-2s using CLOCK_BOOTTIME, matching production's suspend-aware clock. This excludes
-an unprocessed signal followed by watchdog expiry. Only that case is rerun; other
-four schedules are unchanged. SIGTERM result remains provisional for this causal
-claim until new output exists. Exact earlier failures/reviews remain retained.
-Original626cbc3 refused invalid30s authorization;47ed56b passed with incomplete
-parser negatives. Real-parser RED3 failures/1 error and GREEN7 in http-fault-fixed/
-cover partial-header status and bounded read EOF; complete malformed JSON fails.
-No product invariants, binaries, migrations or dependency versions changed.
-
-The next user-visible consumer after closing these bounded registration guarantees
-is installed immutable scope/finite-job command delivery, under the task IDs below.
+Next bounded action: integrate evidence/commit/push, then implement the smallest
+authenticated immutable scope command for P03-T01 Steps1/2/3 and P01-T09 Steps1/2.
+Read complete scope/management contracts and callers before sharing the existing
+transaction-local selector/scope identity operation. The internal adapter's
+separate transaction has no actor/session/CSRF/key and cannot safely follow an
+HTTP auth precheck. Preserve tuple-based internal retry and applied0004 unchanged;
+choose only concrete command/audit storage needed for atomic authenticated retry.
+Next practical acceptance: real login → URL registration → enrollment → scope
+identity/retry, all on the living initial owner, with refusals and unchanged native
+bootstrap; then finite-job command delivery. No native dictionary append is needed
+just to register intent. Its later event consumer still needs committed observation
+mappings and ordinary accepted selector policy. Root is the sole integrating owner;
+AI dependency review is read-only, no tests/engines run by that reviewer.
 
 ## Next useful journey and remaining prerequisites
 

@@ -279,10 +279,11 @@ job path must add actual backend fencing and final expiry checks; the generic
 job state trigger alone does not provide them.
 
 Installed integration must deliver requests to the living initial owner. It cannot
-claim a second Control or reopen that owner's native store. The present explicit
-initial profile rejects administration, and its fresh bootstrap allocates new
-visibility namespaces; therefore endpoint enrollment and scope registration must
-become reachable after bootstrap on that same owner. These are concrete early
+claim a second Control or reopen that owner's native store. The explicit initial
+profile now serves authenticated session, URL registration and endpoint enrollment
+commands after bootstrap on that same owner. Its fresh
+bootstrap allocates new visibility namespaces; immutable scope registration and
+finite-job delivery remain the next installed consumers. These are concrete early
 integration steps, not a requirement to complete all relay lifecycle services.
 The finite consumer closes its guarded socket/SQL transaction before fresh native
 certification/admission. A bounded retained batch keeps the exact request predicate
