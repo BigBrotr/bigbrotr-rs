@@ -12,10 +12,33 @@ use bigbrotr::{
     storage::postgres::control_owner::{ClaimRequest, ControlSession, OwnerError},
 };
 use bigbrotr_model::{CommandKey, DatasetId, ProcessIncarnation};
+use sha2::{Digest, Sha256};
 use std::{cell::Cell, path::Path, time::Duration};
 use tokio_postgres::{Config, NoTls};
-#[path = "support/relay_policy.rs"]
-mod relay_policy;
+
+// This fixture authenticates the two exact retained documents independently.
+// It is not the product closed-policy parser and grants no network authority.
+fn validate_fixture_policy(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
+    let supplied: serde_json::Value =
+        serde_json::from_str(document).map_err(|_| OwnerError::InvalidPolicy)?;
+    let documents: [serde_json::Value; 2] = serde_json::from_slice(
+        &std::fs::read(std::env::args().nth(3).expect("fixture policies path"))
+            .expect("fixture policies"),
+    )
+    .expect("two independent fixture policies");
+    if !documents.contains(&supplied) {
+        return Err(OwnerError::InvalidPolicy);
+    }
+    let expected: [u8; 32] = Sha256::new()
+        .chain_update(b"bigbrotr/product-policy/2\0")
+        .chain_update(serde_json::to_vec(&supplied).unwrap())
+        .finalize()
+        .into();
+    if digest != expected {
+        return Err(OwnerError::InvalidPolicy);
+    }
+    Ok(())
+}
 
 fn permit() -> OwnedPermit {
     ResourceBudget::new(
@@ -81,7 +104,7 @@ async fn run() {
             incarnation: ProcessIncarnation::try_from([nonce; 16]).unwrap(),
             lease_ttl: Duration::from_secs(if mode == "owner-expiry" { 3 } else { 30 }),
         },
-        relay_policy::validate,
+        validate_fixture_policy,
         &claim_started,
     )
     .await;

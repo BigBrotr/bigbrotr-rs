@@ -31850,7 +31850,45 @@
           "root_review_sha256": "7a058f78066d31240eb3d8c71e48da8ec7fe00dfc962f7a9789fbc3f1be6559b"
         }
       },
-      "report": "docs/implementation/evidence/p02-initial-registration-http-native-20261001.json"
+      "report": "docs/implementation/evidence/p02-initial-registration-http-native-20261001.json",
+      "fault_native": {
+        "launch": {
+          "source": "cc1a4e82859c4524a103764891babdff3868bedd",
+          "tree": "22e36165cf9d085d6af513569fc05d5d9751fccb",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-cc1a4e8",
+          "pid": 1270400,
+          "start_ticks": "426871504",
+          "bundle_sha256": "6925b94a1bab616be6052f11abb24a0fb1d5d1a3b7b28042ca246796734a366b"
+        },
+        "status": "compile/Clippy PASS only; fixture v1 validator incompatible with retained v2 basis; no engine launched",
+        "review_finding": "Probe fixture policy helper accepts v1 and one document, incompatible with two retained v2 documents. Preserve this compile result; correct only fixture validator and rebuild before engines.",
+        "resources": {
+          "source": "cc1a4e82859c4524a103764891babdff3868bedd",
+          "tree": "22e36165cf9d085d6af513569fc05d5d9751fccb",
+          "owner": "83041e3a9eb0585ebabeb6489744bd68",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-cc1a4e8",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "b889c0c3bc0d5495af31f12dad36133f41a8086c7a36d56a737751e1e800dafe"
+            },
+            {
+              "name": "native",
+              "id": "4e60195c81051b69679935ec37159b001c261f8953823d0921f192cf40589ac1"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-01T20:27:41.548784+00:00",
+          "qualification": "PASS_RELAY_REGISTRATION_FAULT_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 59816673280,
+          "finished_at": "2026-10-01T20:28:34.205857+00:00"
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {

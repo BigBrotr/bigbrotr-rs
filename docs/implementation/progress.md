@@ -127,7 +127,7 @@ now records originals, versions and limits. Generated drift/TypeScript checks,
 controls PASS; artifact/handoff structure checks PASS. Read-only AI review found
 no schema/doc mismatch; root reviewed the complete changed diff. Report itself is
 root-reviewed, not independently engine-executed by the AI reviewer.
-Active test-only work: new finite relay_registration_fault_probe and a native
+Active test-only work at unpublishedcc1a4e8: finite relay_registration_fault_probe and a native
 build profile, reusing existing actual Control/session APIs and fourth-COMMIT wire
 proxy. No product/SQL changes. Fixed original heads permit historical resolution
 under a later owner with changed heads. The probe targets the existing installed
@@ -297,3 +297,14 @@ gates, outgoing/control limits and complete Close. Installed Nostr acquisition
 and broader service/route guarantees remain open. Management write-only ActionGate is not a renewable bidirectional source
 session. History reader grants do not authorize acquisition. DeliveryWindow copies
 need explicit parent invalidation. No arm64, complete release or capacity claim.
+
+Current build receipt: runs/relay-registration-faults-cc1a4e8 PID1270400/
+start426871504, owner83041e3a9eb0585ebabeb6489744bd68; fetchb889c0c3 stopped,
+native4e60195c now stopped0; compile/Clippy-only PASS at20:28:34UTC, no prior
+container changes and59,816,673,280B free. Inventory relay_registration.fault_native
+and ignored fault-native/ own the exact launch. Do not relaunch. Read-only AI
+review identified a fixture incompatibility: historical helper validates only v1
+and one document, while retained installed basis has two different v2 documents.
+No engine launched. Corrected probe now compares the two exact retained v2
+documents/digests independently, leaving the historical helper unchanged. Build
+the corrected exact revision before engine schedules.
