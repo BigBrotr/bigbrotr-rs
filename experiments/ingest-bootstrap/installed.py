@@ -33,12 +33,14 @@ def set_value(text, section, key, value):
     return text+'\n'+marker+line
 
 
-def policy_setup(pg, database, name, rows, output):
+def policy_setup(pg, database, name, rows, output, administration=False):
     before = rows(database)
     statements = []
     for table in ['config_revisions', 'policy_revisions']:
         document = before[table][0]['document']
-        document['settings']['administration.enabled'] = name == 'policy-admin'
+        document['settings']['administration.enabled'] = administration
+        if name == 'policy-archive':
+            document['settings']['archive.reader.enabled'] = True
         document['settings']['ingest.producer_outstanding_requests'] = 64 if table == 'config_revisions' else 32
         encoded = json.dumps(document, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
         digest = hashlib.sha256(b'bigbrotr/product-policy/2\0'+encoded).hexdigest()
@@ -233,7 +235,7 @@ def run(pg,client,output,database,name,rows):
     else:
         ended = terminal(prefix)
         assert ended['exit_code']==3 and not messages(prefix)
-        reason = {'policy-admin':'Control backend operation failed: InvalidPolicy',
+        reason = {'policy-archive':'Control backend operation failed: InvalidPolicy',
                   'registered-only':'Control backend operation failed: IncompatibleDeployment',
                   'existing-directory':'initial Ingest target exists or cannot be inspected'}[name]
         assert reason in Path(str(prefix)+'.stderr').read_text(), 'wrong-refusal-reason'
@@ -253,7 +255,7 @@ def run(pg,client,output,database,name,rows):
         if name=='existing-directory':
             assert list((output/name/'store').iterdir())==[output/name/'store/sentinel']
             assert (output/name/'store/sentinel').read_bytes()==b'original partial state'
-        if name=='policy-admin':
+        if name=='policy-archive':
             assert not (output/name/'store').exists()
     lab.write_json(output/(name+'-after.json'),after)
     assert lab.sql(pg,database,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'")=='0'

@@ -158,9 +158,10 @@ One owner serializes exact identity decisions for each writable directory.
   [Mac](evidence/p02-owned-event-mac-20260918.json) and
   [native evidence](evidence/p02-owned-event-native-20260918.json) record its scope.
   The initial writer now serializes native decisions and moves verified owned
-  input through the connected Control bridge. Concurrent producer dispatch and
-  the installed owner worker remain unimplemented; sequential fixtures do not
-  qualify that concurrency boundary.
+  input through the connected Control bridge. The installed initial owner now
+  retains native/Control custody; its same-owner private session consumer is under
+  qualification. Concurrent producer dispatch remains unimplemented; sequential
+  fixtures do not qualify that concurrency boundary.
 - [ ] **Step 4:** Implement NewFacts/AlreadyDurable/Excluded/Invalid/Retryable,
   RequestConflict and IncompatibleSchema outcomes and
   ambiguous receipt resolution plus RetiredRequest. Same ProducerRequestId with

@@ -4,6 +4,8 @@ use super::*;
 mod grants;
 #[path = "job_tests.rs"]
 mod jobs;
+#[path = "profile_tests.rs"]
+mod profiles;
 
 #[tokio::test]
 async fn private_history_requires_session_before_admitting_read_work() {

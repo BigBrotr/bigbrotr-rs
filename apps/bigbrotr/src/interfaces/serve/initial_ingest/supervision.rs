@@ -49,12 +49,20 @@ pub(super) async fn collect(
         };
         if let Some(reason) = reason {
             cancellation.request();
+            // Use the latest publication after setting cancellation. The worker
+            // publishes first, then checks that same atomic flag before dispatch.
+            if let Some(shutdown) = &observed.borrow().shutdown {
+                shutdown.stop_admission();
+            }
             match tokio::time::timeout(grace, &mut *worker).await {
                 Ok(terminal) => break (terminal, reason != "stop" && reason != "owner ended"),
                 Err(_) => return Collected::Unjoined,
             }
         }
     };
+    if let Some(shutdown) = &observed.borrow().shutdown {
+        shutdown.stop_admission();
+    }
 
     Collected::Joined {
         terminal,
@@ -77,6 +85,7 @@ mod tests {
         let (progress, mut observed) = watch::channel(Progress {
             deadline: Instant::now() - Duration::from_secs(1),
             initialized: Some(json!({"state":"initialized"})),
+            shutdown: None,
         });
         let mut worker = tokio::spawn(async { Ok(json!({"state":"closed"})) });
         tokio::task::yield_now().await;
@@ -118,6 +127,7 @@ mod tests {
         let (_progress, mut observed) = watch::channel(Progress {
             deadline: Instant::now() + Duration::from_secs(60),
             initialized: None,
+            shutdown: None,
         });
         let result = collect(
             &mut worker,
@@ -149,6 +159,7 @@ mod tests {
         let (_progress, mut observed) = watch::channel(Progress {
             deadline: Instant::now() + Duration::from_secs(60),
             initialized: None,
+            shutdown: None,
         });
         let result = collect(
             &mut worker,
@@ -166,5 +177,108 @@ mod tests {
         // neither drops its driver while this result remains unresolved.
         release.send(()).unwrap();
         worker.await.unwrap().unwrap();
+    }
+
+    #[tokio::test]
+    async fn stop_revokes_a_listener_published_after_the_supervisor_snapshot() {
+        use crate::interfaces::management::{Management, Profile};
+        use bigbrotr::runtime::policy_authority::{
+            LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl,
+        };
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+
+        let mut root = crate::config::load(
+            &std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../config/recipes/archive-only.toml"),
+        )
+        .unwrap();
+        let reserved = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = reserved.local_addr().unwrap();
+        root.values
+            .insert("administration.listen.port".into(), json!(address.port()));
+        let budget = super::super::budget(&root).unwrap();
+        let dataset = "01010101010101010101010101010101".parse().unwrap();
+        let incarnation = "02020202020202020202020202020202".parse().unwrap();
+        let epoch = bigbrotr_model::PolicyEpoch::new(1);
+        let ttl = Duration::from_secs(5);
+        let mut lease = PolicyLeaseTracker::new(
+            dataset,
+            incarnation,
+            epoch,
+            PolicyLeaseTtl::new(ttl).unwrap(),
+        )
+        .unwrap();
+        let ticket = lease.begin_refresh().unwrap();
+        lease
+            .complete_refresh(
+                &ticket,
+                LeaseResponse {
+                    dataset,
+                    process_incarnation: incarnation,
+                    policy_epoch: epoch,
+                    ttl,
+                },
+            )
+            .unwrap();
+        drop(reserved);
+        let mut management = Management::start(
+            &root,
+            budget.clone(),
+            lease.delivery_window(epoch).unwrap(),
+            None,
+            Profile::Sessions,
+        )
+        .await
+        .unwrap();
+        let shutdown = management.shutdown_handle();
+        let client = tokio::spawn(async move {
+            let mut socket = tokio::net::TcpStream::connect(address).await.unwrap();
+            socket.write_all(format!(
+                "GET /management/v1/me HTTP/1.1\r\nHost: {address}\r\nCookie: BigBrotrLocalSession={}\r\n\r\n",
+                "11".repeat(32),
+            ).as_bytes()).await.unwrap();
+            let mut bytes = Vec::new();
+            socket.read_to_end(&mut bytes).await.unwrap();
+            bytes
+        });
+        // The real queued request is a barrier: HTTP owns a live connection,
+        // while the dispatcher retains the request and its memory reservation.
+        let work = tokio::time::timeout(Duration::from_secs(1), management.next())
+            .await
+            .unwrap();
+        let cancel = Cancellation::new();
+        let (release, wait) = std::sync::mpsc::sync_channel(1);
+        let mut worker = tokio::task::spawn_blocking(move || {
+            wait.recv().unwrap();
+            Ok(json!({"state":"closed"}))
+        });
+        let (progress, mut observed) = watch::channel(Progress {
+            deadline: Instant::now() + Duration::from_secs(60),
+            initialized: Some(json!({"state":"initialized"})),
+            shutdown: None,
+        });
+        let result = collect(
+            &mut worker,
+            &mut observed,
+            &cancel,
+            async {},
+            Duration::from_millis(10),
+            // collect already copied Progress; this publication must still be
+            // seen when the immediately ready stop wins its biased select.
+            |_| progress.send_modify(|p| p.shutdown = Some(shutdown.clone())),
+        )
+        .await;
+        let still_running = !worker.is_finished();
+        let closed = tokio::time::timeout(Duration::from_secs(1), client).await;
+        release.send(()).unwrap();
+        worker.await.unwrap().unwrap();
+        management.stop(Duration::from_secs(1)).await.unwrap();
+        assert!(matches!(result, Collected::Unjoined));
+        assert!(still_running);
+        assert!(cancel.requested.load(Ordering::Acquire));
+        assert!(closed.unwrap().unwrap().is_empty());
+        assert_eq!(budget.snapshot().active_permits(), 1);
+        drop(work);
+        assert_eq!(budget.snapshot().active_permits(), 0);
     }
 }

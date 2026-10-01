@@ -1,9 +1,10 @@
 //! Explicit first lifetime. The worker never returns a live native handle.
+mod commands;
 mod supervision;
 use super::{Result, Stop, duration, owner_error};
 use crate::{
     config::Resolved,
-    interfaces::{lifecycle_output::LifecycleOutput, postgres_command},
+    interfaces::{lifecycle_output::LifecycleOutput, management, postgres_command},
 };
 use bigbrotr::{
     runtime::{
@@ -55,6 +56,7 @@ struct Custody {
 struct Progress {
     deadline: Instant,
     initialized: Option<Value>,
+    shutdown: Option<management::Shutdown>,
 }
 struct Cancellation {
     requested: AtomicBool,
@@ -79,17 +81,16 @@ impl Cancellation {
 }
 
 fn selected(root: &Resolved) -> Result<()> {
-    // This explicit first-lifetime slice cannot silently omit an enabled private
-    // listener or consume an archive destination without its owning supervisor.
+    // This initial owner supports only the session command surface. Archive
+    // consumers still require their own supervisor and cannot be silently omitted.
     if !root.local("control")
         || !root.local("ingest")
-        || root.flag("administration.enabled")
         || root.flag("archive.reader.enabled")
         || root.text("export.destination.root").is_some()
         || root.text("read.cursor.keyring_ref").is_some()
         || root.text("administration.assets.directory").is_some()
     {
-        return Err((3, "initial Ingest needs local Control/Ingest with administration and archive reader disabled and no export destination, cursor keyring or private assets".into()));
+        return Err((3, "initial Ingest needs local Control/Ingest with archive reader disabled and no export destination, cursor keyring or private assets".into()));
     }
     Ok(())
 }
@@ -116,7 +117,9 @@ fn budget(root: &Resolved) -> Result<ResourceBudget> {
         n("baseline_bytes"),
         ResourceLimits::new(
             n("payload_bytes"),
-            4,
+            // Native, retained producer inputs and Control coexist with the
+            // bounded session connections, queued requests and one hash worker.
+            3 + management::SESSION_ITEMS,
             n("native_bytes"),
             n("completion_reserve_bytes"),
         ),
@@ -156,7 +159,8 @@ pub(super) fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
     let grace = duration(&root, "graceful_shutdown_timeout");
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
-        .max_blocking_threads(1)
+        // One permanently occupied native owner and one bounded password task.
+        .max_blocking_threads(2)
         .build()
         .map_err(|_| (1, "initial Ingest runtime unavailable".into()))?;
     let outcome = runtime.block_on(async {
@@ -170,14 +174,14 @@ pub(super) fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
         let cancellation = Arc::new(Cancellation::new());
         let worker_cancel = cancellation.clone();
         let (progress, mut observed) = watch::channel(Progress {
-            deadline: Instant::now() + timeout, initialized: None,
+            deadline: Instant::now() + timeout, initialized: None, shutdown: None,
         });
         let handle = tokio::runtime::Handle::current();
         let mut worker = tokio::task::spawn_blocking(move || {
             // The parent keeps driving current-thread I/O/timers while this
             // owner parks on async SQL or blocks in native open/write/close.
             let _inputs = inputs;
-            handle.block_on(own(root, client, native, bootstrap, progress, worker_cancel))
+            handle.block_on(own(root, client, native, bootstrap, budget, progress, worker_cancel))
         });
         let (terminal, interrupted) = match supervision::collect(&mut worker, &mut observed,
             &cancellation, stop.requested(), grace, |report| output.emit(report, false)).await {
@@ -243,6 +247,7 @@ async fn own(
     client: tokio_postgres::Client,
     native: OwnedPermit,
     bootstrap: OwnedPermit,
+    budget: ResourceBudget,
     progress: watch::Sender<Progress>,
     cancellation: Arc<Cancellation>,
 ) -> Result<Value> {
@@ -456,43 +461,16 @@ async fn own(
         "topology_generation":spec.target_topology().unwrap().get().to_string(), "public_scope":public,
         "native_profile":1,"native_allowance_bytes":128*MIB,"dictionary_count":2,
         "acquisition":"not-started","ready":false});
-    // Refresh both scheduling rows before reporting a maintained lifetime.
-    loop {
-        phase(&progress, timeout)?;
-        bounded(timeout, &cancellation, async {
-            let current = custody
-                .owner
-                .refresh(|doc, digest| validate(&root, doc, digest))
-                .await
-                .map_err(owner_error)?;
-            if current != accepted {
-                return Err((4, "accepted policy changed; initial Ingest stopped".into()));
-            }
-            custody
-                .owner
-                .renew_initial_ingest(
-                    &spec,
-                    ttl,
-                    |doc, digest| validate(&root, doc, digest),
-                    &Cell::new(false),
-                )
-                .await
-                .map_err(owner_error)
-        })
-        .await?;
-        // Polling policy and scheduling renewal share one serial owner. The
-        // next period is smaller than the accepted authorization window.
-        let period = (ttl / 2).min(duration(&root, "heartbeat_interval"));
-        phase(&progress, period + timeout)?;
-        progress.send_modify(|value| {
-            value.initialized = Some(report.clone());
-        });
-        tokio::select! {
-            biased;
-            _ = cancellation.wait() => break,
-            _ = tokio::time::sleep(period) => {},
-        }
-    }
+    commands::maintain(
+        &mut custody.owner,
+        &spec,
+        &root,
+        &budget,
+        &progress,
+        &cancellation,
+        report,
+    )
+    .await?;
     phase(&progress, duration(&root, "graceful_shutdown_timeout"))?;
     drop(custody.store.take());
     tokio::time::timeout(
@@ -517,6 +495,7 @@ mod tests {
         let (progress, _observed) = watch::channel(Progress {
             deadline: expired,
             initialized: None,
+            shutdown: None,
         });
         let _ = phase(&progress, std::time::Duration::from_secs(5));
         assert_eq!(progress.borrow().deadline, expired);

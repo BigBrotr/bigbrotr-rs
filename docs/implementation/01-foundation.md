@@ -454,8 +454,11 @@ and queryable with truthful role readiness, without implicit public publishing.
   retains native/Control/driver custody and initial dictionary bootstrap, reports
   acquisition absent and is not
   complete role readiness. Typed finite job authorization and the guarded socket
-  consumer remain the next P03-T01 Steps3/4 and P03-T02 dependencies, followed by
-  actual timer publication, read and restart/resend acceptance below.
+  consumer now have bounded component/engine evidence. Same-owner installed
+  session delivery is under qualification; endpoint/scope/job command consumers,
+  dictionary append and successor recovery remain real integration prerequisites.
+  Then qualify actual timer publication, read and restart/resend below; no complete
+  adjacent Discovery/Monitor subsystem is a prerequisite for this small journey.
 - [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.
 - [ ] **Step 3:** Query the full event through the actual local read entrypoint available in

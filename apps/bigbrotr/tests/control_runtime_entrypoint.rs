@@ -30,9 +30,9 @@ fn explicit_initial_ingest_refuses_omitted_roles_and_unsupported_consumers_befor
     let administration = invoke("control,ingest");
     assert_eq!(administration.status.code(), Some(3));
     assert!(
-        String::from_utf8_lossy(&administration.stderr)
-            .contains("administration and archive reader disabled")
+        String::from_utf8_lossy(&administration.stderr).contains("protected PostgreSQL password")
     );
+    assert!(administration.stdout.is_empty());
     config["administration"]["enabled"] = false.into();
     let minimal = toml::to_string(&config).unwrap();
     for selected in [

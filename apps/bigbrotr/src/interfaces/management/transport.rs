@@ -1,7 +1,7 @@
 //! Owned HTTP1 connections. The Control supervisor consumes bounded commands;
 //! HTTP tasks never borrow its connection, policy tracker or archive custody.
 use super::{
-    Assets, BrowserBoundary,
+    Assets, BrowserBoundary, Profile,
     boundary::single,
     delivery::{ActionGate, DeliveryGate, GuardedSocket},
 };
@@ -201,10 +201,11 @@ impl Server {
         delivery: DeliveryGate,
         assets: Option<Assets>,
         history: HistoryLimits,
+        profile: Profile,
     ) -> io::Result<Self> {
         BrowserBoundary::loopback(address).map_err(io::Error::other)?;
         let listener = TcpListener::bind(address).await?;
-        Self::from_listener_limits(listener, budget, delivery, assets, history)
+        Self::from_listener_limits(listener, budget, delivery, assets, history, profile)
     }
     #[cfg(test)]
     pub(super) fn from_listener(
@@ -213,7 +214,34 @@ impl Server {
         delivery: DeliveryGate,
         assets: Option<Assets>,
     ) -> io::Result<Self> {
-        Self::from_listener_limits(listener, budget, delivery, assets, HistoryLimits::default())
+        Self::from_listener_profile(
+            listener,
+            budget,
+            delivery,
+            assets,
+            Profile::Operational {
+                export_jobs: true,
+                export_resume: true,
+                job_pages: true,
+            },
+        )
+    }
+    #[cfg(test)]
+    pub(super) fn from_listener_profile(
+        listener: TcpListener,
+        budget: ResourceBudget,
+        delivery: DeliveryGate,
+        assets: Option<Assets>,
+        profile: Profile,
+    ) -> io::Result<Self> {
+        Self::from_listener_limits(
+            listener,
+            budget,
+            delivery,
+            assets,
+            HistoryLimits::default(),
+            profile,
+        )
     }
     fn from_listener_limits(
         listener: TcpListener,
@@ -221,7 +249,14 @@ impl Server {
         delivery: DeliveryGate,
         assets: Option<Assets>,
         history: HistoryLimits,
+        profile: Profile,
     ) -> io::Result<Self> {
+        if matches!(profile, Profile::Sessions) && assets.is_some() {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "session profile has no assets",
+            ));
+        }
         let boundary =
             BrowserBoundary::loopback(listener.local_addr()?).map_err(io::Error::other)?;
         let (sender, commands) = mpsc::channel(QUEUE);
@@ -234,27 +269,29 @@ impl Server {
             history,
             history_slots: Arc::new(tokio::sync::Semaphore::new(history.queue)),
         };
-        let router = Router::new()
+        let mut router = Router::new()
             .route("/management/v1/sessions", post(login))
             .route("/management/v1/sessions/current", delete(logout))
-            .route(
-                "/management/v1/sessions/current/reauthenticate",
-                post(reauthenticate),
-            )
-            .route("/management/v1/me", get(me))
-            .route("/management/v1/jobs", post(create_job).get(list_jobs))
-            .route("/management/v1/jobs/{job_id}", get(job_status))
-            .route("/management/v1/jobs/{job_id}/resume", post(resume_export))
-            .route(
-                "/v1/resources/event_history",
-                get(history_query).post(history_query),
-            )
-            .route(
-                "/management/v1/principals/{principal_id}/grants",
-                put(change_grant),
-            )
-            .fallback(static_asset)
-            .with_state(state.clone());
+            .route("/management/v1/me", get(me));
+        if matches!(profile, Profile::Operational { .. }) {
+            router = router
+                .route(
+                    "/management/v1/sessions/current/reauthenticate",
+                    post(reauthenticate),
+                )
+                .route("/management/v1/jobs", post(create_job).get(list_jobs))
+                .route("/management/v1/jobs/{job_id}", get(job_status))
+                .route("/management/v1/jobs/{job_id}/resume", post(resume_export))
+                .route(
+                    "/v1/resources/event_history",
+                    get(history_query).post(history_query),
+                )
+                .route(
+                    "/management/v1/principals/{principal_id}/grants",
+                    put(change_grant),
+                );
+        }
+        let router = router.fallback(static_asset).with_state(state.clone());
         let task = tokio::spawn(serve(listener, router, state.budget, stopped, delivery));
         Ok(Self {
             commands,
@@ -265,6 +302,9 @@ impl Server {
     /// Signal admission/IO shutdown before waiting for expensive owned work.
     pub fn request_stop(&self) {
         self.shutdown.send_replace(true);
+    }
+    pub fn stop_signal(&self) -> watch::Sender<bool> {
+        self.shutdown.clone()
     }
     /// All connection futures own their IO and grant and are collected here.
     /// Hash work belongs to the Control supervisor and must be joined separately.

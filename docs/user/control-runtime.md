@@ -54,6 +54,14 @@ subset never starts the omitted roles. It opens no native store and makes no
 acquisition, publication or data-read readiness claim. The complete
 product and the ordinary Compose installation remain in development.
 
+The explicit `--initialize-ingest --roles control,ingest` path additionally
+creates and retains a fresh native owner; see the
+[initial owning lifetime](../reference/ingest-store.md#explicit-initial-owning-lifetime).
+Its optional private listener supports only login, self inspection and logout,
+using the same `access login`/`access logout` clients. It refuses selected archive
+read/export/assets and reports `ready=false`, `acquisition=not-started`. This is
+still a fresh-only path: it cannot adopt or restart an existing native directory.
+
 To serve the initial private panel from that same listener, build the
 [static bundle](../development/build.md#private-browser-consumer) and set deployment
 roots before starting Control:

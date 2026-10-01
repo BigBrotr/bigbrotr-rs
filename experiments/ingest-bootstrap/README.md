@@ -93,3 +93,30 @@ retain their state without claiming a crash-resumable initializer. Renewal cuts,
 worker panic, successor authority, full M1 and capacity remain separate work.
 The [executed SQL wave](../../docs/implementation/evidence/p01-initial-ingest-commit-native-20260928.json)
 records all twelve cases on2e2a4e1 with exact7ab155e artifacts.
+
+## Installed initial private sessions
+
+`experiments/network-transport/lab.py REVISION TREE initial-ingest` builds the
+actual CLI/native probe and runs the changed initial lifetime, HTTP profile and
+CLI entrypoint tests. `experiments/acquisition-scope/bindings.py LAB
+--installed-sessions` then uses fresh isolated template clones.
+
+The proposed three-case first wave exercises actual access login/logout and
+incorrect credentials, twelve concurrent self-inspection clients for eight
+seconds across the original scheduling expiry, shared-payload refusal before
+listener binding, and SIGTERM during an observed running password worker. The
+last case observes a newly created second Tokio blocking thread consuming CPU;
+the first blocking slot is already held by the native owner. It briefly stops
+that exact process, queues SIGTERM and resumes it, then requires empty HTTP
+delivery, no session issuance, actual reaping and ordered graceful release.
+
+The independent native oracle still requires exactly the original twelve rows,
+bootstrap input and receipt; all Control tables/xmin are retained for comparison.
+The disabled startup administration seed deliberately differs from the two
+accepted enabled documents. The old `policy-admin` refusal fixture is superseded
+by this selected behavior; the headless first-lifetime matrix now uses a selected
+archive-reader policy to test unsupported consumers. Historical outcomes retain
+their original source and meaning. These commands are a recipe, not executed
+evidence; the qualification report must record actual results. Slow renewals,
+disconnected clients and a session listener during blocked native close require
+their separate fault wave; the small concurrent fixture is not a capacity claim.

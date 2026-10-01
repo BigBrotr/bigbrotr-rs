@@ -28,6 +28,7 @@ use tokio::task::JoinSet;
 use transport::{Command, Completion, Operation, Reply, Server};
 
 type Result<T> = std::result::Result<T, (u8, String)>;
+pub(super) const SESSION_ITEMS: u64 = 1 + transport::CONNECTIONS as u64 + transport::QUEUE as u64;
 enum VerifiedPassword {
     Login(VerifiedLogin),
     Reauthentication(VerifiedReauthentication),
@@ -202,6 +203,32 @@ pub(super) enum Execution {
     Resume(ResumeWork),
 }
 
+/// The initial native owner exposes session commands before its other concrete
+/// command consumers are installed. Ordinary Control retains its existing API.
+#[derive(Clone, Copy)]
+pub(super) enum Profile {
+    Sessions,
+    Operational {
+        export_jobs: bool,
+        export_resume: bool,
+        job_pages: bool,
+    },
+}
+
+/// Parent supervision can revoke IO and stop admission while the native owner
+/// is blocked. Joining sockets and password work still belongs to Management.
+#[derive(Clone)]
+pub(super) struct Shutdown {
+    delivery: DeliveryGate,
+    server: tokio::sync::watch::Sender<bool>,
+}
+impl Shutdown {
+    pub fn stop_admission(&self) {
+        self.delivery.revoke();
+        self.server.send_replace(true);
+    }
+}
+
 pub(super) struct Management {
     server: Server,
     hashes: JoinSet<HashResult>,
@@ -217,10 +244,7 @@ pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
     let n = |name: &str| root.number(&format!("runtime.processes.application.{name}"));
     // One Control, one hash, optional assets/keys, and separate connection/
     // request ownership. Counts never supply an additional memory allowance.
-    let items = 3
-        + u64::from(root.text("read.cursor.keyring_ref").is_some())
-        + transport::CONNECTIONS as u64
-        + transport::QUEUE as u64;
+    let items = 2 + SESSION_ITEMS + u64::from(root.text("read.cursor.keyring_ref").is_some());
     if root.flag("archive.reader.enabled") {
         // Control, manager, secrets, native output, hash and HTTP all use this
         // same ledger; a second application payload allowance is never created.
@@ -264,9 +288,7 @@ impl Management {
         budget: ResourceBudget,
         window: DeliveryWindow,
         assets: Option<Assets>,
-        export_jobs: bool,
-        export_resume: bool,
-        job_pages: bool,
+        profile: Profile,
     ) -> Result<Self> {
         let address = SocketAddr::new(
             root.text("administration.listen.host")
@@ -301,9 +323,18 @@ impl Management {
             delivery.clone(),
             assets,
             transport::HistoryLimits::configured(root),
+            profile,
         )
         .await
         .map_err(|_| (1, "private management listener unavailable".into()))?;
+        let (export_jobs, export_resume, job_pages) = match profile {
+            Profile::Sessions => (false, false, false),
+            Profile::Operational {
+                export_jobs,
+                export_resume,
+                job_pages,
+            } => (export_jobs, export_resume, job_pages),
+        };
         Ok(Self {
             server,
             hashes: JoinSet::new(),
@@ -688,6 +719,12 @@ impl Management {
     pub fn stop_admission(&self) {
         self.delivery.revoke();
         self.server.request_stop();
+    }
+    pub fn shutdown_handle(&self) -> Shutdown {
+        Shutdown {
+            delivery: self.delivery.clone(),
+            server: self.server.stop_signal(),
+        }
     }
     pub async fn stop(&mut self, grace: Duration) -> Result<()> {
         self.stop_admission();

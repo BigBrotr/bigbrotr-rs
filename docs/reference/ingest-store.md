@@ -135,9 +135,17 @@ selects fresh-only initialization and retains that original Control identity unt
 stopped. A separate finite initializer cannot hand this initial writer to a new
 Control process. Ordinary Serve still never creates an Ingest directory. Static
 composition must declare the Archive counterpart; this process selection does
-not start it. Configured administration, archive reader, export destination,
-cursor keyring or private asset prerequisites are refused by this narrow path.
+not start it. Configured archive reader, export destination, cursor keyring or
+private asset prerequisites are refused by this narrow path.
 Both complete accepted documents must also permit the selected profile.
+
+Accepted administration enables only login, self inspection and logout on the
+configured loopback listener. This reuses the ordinary Management dispatcher and
+session prerequisites (migration0809 and its SQL privileges). Initial Ingest has
+no reauthentication, grant, job, history or asset routes yet. The initialized
+record identifies `initial-sessions-only`; session access does not imply any
+native admission permission. A disabled managed seed cannot override the two
+accepted documents. Changed accepted snapshots stop this initial lifetime.
 
 The worker first refuses existing targets and absent/symlink parents, then claims
 Control. A bounded fenced basis read obtains the real accepted snapshot, server
@@ -159,6 +167,14 @@ configured shutdown bound, the process exits4 without first aborting the driver,
 releasing the fence or claiming graceful release. Interrupted/ambiguous state is
 preserved. Diagnostics use the existing bounded, nonblocking lifecycle channel.
 
+HTTP runs on the parent runtime; one additional blocking slot holds at most one
+password hash. Parent cancellation revokes the socket delivery gate and stops new
+connections even while native work is blocked. The worker joins HTTP/password work
+before normal native close and explicit Control release. A fixed renewal deadline
+wins a ready command queue; processing requests cannot postpone it. Both renewal
+responses consume the request-start authority window, and only a timely pair may
+renew delivery. Commands and socket writes independently check remaining authority.
+
 Between operations the same worker refreshes Control, then renews initial Ingest.
 Every native operation still needs its own fresh authority; scheduling is not a
 grant. Expired Ingest cannot be revived. Changed accepted snapshots stop the
@@ -171,8 +187,12 @@ The explicit small native profile uses32MiB cache,16MiB WBM,2MiB per-CF buffers,
 16MiB WAL target,64 open files and two background jobs, within a128MiB native
 reservation. Bootstrap reserves8MiB payload/4MiB native plus24MiB retained inputs;
 the shared configured application envelope also covers the existing Control
-connection reservation. No second process allowance is borrowed. These are
-reservations/targets, not measured RSS or capacity. No hot identity cache exists
+connection reservation. No second process allowance is borrowed. This ledger is
+shared with session request/connection/hash reservations; startup refuses before
+binding if one complete login cannot coexist with retained native/input/Control
+work. The item ceiling is36 (three retained owners,16 connections,16 requests and
+one hash); it is a simultaneous ownership ceiling, not a throughput guarantee.
+These are reservations/targets, not measured RSS or capacity. No hot identity cache exists
 in this initialization-only path.
 
 Existing/partial native state or a populated source registry is never adopted,

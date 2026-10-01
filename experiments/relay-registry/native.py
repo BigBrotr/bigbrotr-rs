@@ -66,6 +66,8 @@ if mode == 'initial-ingest':
                                    '--test','control_runtime_entrypoint']))
     steps.insert(2, ('explicit', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                 '--bin','bigbrotr','initial_ingest']))
+    steps.insert(3, ('sessions', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                                '--bin','bigbrotr','interfaces::management::tests']))
 if mode == 'ingest-lease':
     identity['scope'] = 'Same-Control initial Ingest scheduling renewal build; actual engine and installed lifetime qualification remain separate'
 if mode == 'observation':

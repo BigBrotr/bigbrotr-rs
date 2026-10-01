@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-28 in the primary Mac workspace; Tux timestamps are UTC.
+Observed 2026-10-01 in the primary Mac workspace; Tux timestamps are UTC.
 Navigation, not evidence or another plan. Follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 
@@ -12,9 +12,38 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main a519ed1d97449c5c38def680eede44e7ace59303; private origin1f7a470
-pending qualification push. Root sole writer. Only bounded documentation/evidence
-updates dirty. All owned native/engine runs are stopped/retained; no cleanup debt.
+Mac main and private origin022f57c5c6534501174b718d6ff4f8629a332a73 match
+(push/ls-remote verified). Root sole writer. Preparing an unpublished same-owner
+private-session candidate; no native experiment started. Last Mac free5,478,808KiB.
+Tux read-only recheck found61,209,513,984B free and only eight unrelated containers
+running. Detailed ownership/cache/mount/port inventory is enforced before launch.
+All owned native/engine runs are stopped/retained; no cleanup debt.
+
+Root read complete initial worker/supervision, Management dispatcher, HTTP transport
+and delivery gate, relevant ordinary-Serve renewal/dispatch and owning initial-store
+contract. The existing HTTP command queue is reused. Added an explicit Sessions versus
+Operational route profile (ordinary Serve unchanged), a cloneable revocation/stop
+handle for parent supervision, one additional bounded blocking hash slot and shared
+item accounting. Keep actual password/socket join before native close/Control release
+on normal and error paths. A command may not move the absolute renewal deadline.
+The same-owner command loop is integrated. Mac three real HTTP profile/parent-stop/capacity
+tests, five lifecycle tests and three actual CLI entrypoint tests pass. Publication
+after the supervisor snapshot closes HTTP while the worker remains blocked.
+Scoped Clippy and document/handoff checks pass; Python fixtures parse and the
+complete diff is reviewed. All33 changed HTTP route regressions also pass, including the ordinary profile. Independent read-only review found no
+authority/custody blocker; startup prerequisite failures now preserve incomplete
+exit4, including backend loss. Original REDs/logs remain under ignored
+.research/implementation/initial-management-20260928. Root owns dirty Management,
+Serve/initial worker, command/profile tests, CLI test, owning docs and the installed
+session fixture/build profile. No other contributor changes were observed.
+Practical installed qualification remains pending; no new readiness claim.
+Next bounded action: commit the reviewed candidate, transfer exact Git into a new
+initial-ingest run, build/test natively and execute --installed-sessions. The
+three proposed cases cover installed CLI login/logout and twelve concurrent Me
+clients across original expiry, shared-payload refusal and SIGTERM during an
+observed running password hash. Complete SQL/native oracles retain original
+bootstrap evidence. Delayed renewal, disconnected-client and blocked-native-close
+HTTP behavior remain required next fault cases, not PASS. No new command bus.
 
 [Actual relay transfer qualification](evidence/p03-relay-transfer-native-20260928.json)
 closes this bounded P03-T01 Step3/P03-T02 Steps1/2/3 composition. Mac/native10
@@ -62,9 +91,8 @@ native/input/PG custody. Use the same expanded ledger, explicit supported routes
 renewal priority and parent-controlled delivery revocation/cleanup. Root must read
 complete owners/callers/contracts before editing. No new plan or command bus.
 
-Next bounded action: finish docs/evidence review, commit/push this qualification,
-then design and implement that same-owner command slice with actual installed CLI
-acceptance after renewal, flood/cancellation and retained-fencing checks.
+The relay qualification is committed/pushed. Current same-owner command acceptance
+must cover installed renewal, flood/cancellation and retained-fencing checks.
 Dictionary append/intern P02-T03 Step1 remains a separate immediate consumer;
 installed bootstrap still contains only two visibility mappings. Restart/resend
 P01-T09 Step4 needs explicit successor/recovery P02-T01 Step5/P02-T02 Step4, not
