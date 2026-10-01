@@ -12,15 +12,23 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main/origin62fa706288eba768f5a609093a155d848657b855 pushed,
-treeccf8338839a7ca32c14799491dece3fee300ca2a. Root sole writer. Dirty next fixture
-slice: registration_races.py gains explicit scope profile and roles.control writer;
-bindings.py --scope-command-races selects eleven actual authority schedules.
-README/checkpoint/inventory accompany it. AST/whitespace checks PASS; new race
-engine NOT_RUN. Read-only AI fixture review found no concrete blocker; it ran no
-engines and did not qualify arbitrary bare grant DML. No product/applied SQL/
-dependency changes; no active build or engine. Reuse exact0733326 artifacts after
-new experiments/docs-only fixture commit. Current Mac free4,104,096KiB.
+Mac main7a22f9471932743602de3e784f56a98299a592ab candidate, origin62fa706;
+tree7426447bbf7aa3225055823014d86ff7020b27fe. Root sole writer. Dirty documentation
+records completed scope race qualification; no product/applied SQL/dependency
+changes and no active build/engine. Native0733326 artifacts reused after exact
+experiments/docs-only diff and ELF hash checks. Mac free4,086,436KiB.
+
+Latest runs/scope-command-races-7a22f94 STOPPED/RETAINED, PID1454977/start427868076,
+owner241256e39158d14a746408c82f5686c5, client2804f21cc22d68d5d4a5d1533b39509647f7f4187bc76377abc75a9a95e06390
+stopped143; borrowedPG71775507 stopped0/noOOM. Audit2026-10-01T23:14:34.240103+00:00:
+57493684224B free,1022 prior projections unchanged,8 unrelated running, compiler lock free.
+Eleven scope races and18 affected endpoint cases PASS. Each1643 Git files checked;
+102scope/183endpoint payloads verified. Prior endpoint PID1437014/start427856284,
+ownerd72169108338b0df2b971dd66aaaf831, clientdb2373a1 stopped143. Original45/5e
+populated sources unchanged. Ignored scope-registration-20261001/race-engine and
+endpoint-race-regression own originals/launchers; never replay completed launchers.
+Local review first used Python3.9 without tomllib; unchanged captures passed under
+Python3.14, with no engine rerun or outcome rewrite.
 
 Latest runs/acquisition-scope-faults-4e95a1f STOPPED/RETAINED:
 native PID1424898/start427761161 terminal, ownerb216e89dc1a41c2595a350b4a09610f7,
@@ -108,7 +116,7 @@ first-owner enrollment inserts new grants; current scope-grant editing serialize
 through account locks and atomically increments grant_revision. The actual adapter
 locks the account UPDATE,0026 independently SHARE. Keep0026 unchanged and qualify
 normative writer races; arbitrary privileged grant DML remains outside the claim.
-Establish its protocol when implementing the dataset-grant editor. New concurrency/raw relational cases, native resource capacity remain NOT_RUN; HTTP/upgrade and adapter COMMIT are qualified below.
+Establish its protocol when implementing the dataset-grant editor. Concurrency is now qualified below; raw relational cases and native resource capacity remain NOT_RUN.
 Evidence: ignored .research/implementation/scope-registration-20261001, inventoried
 implementation_network_20260928.scope_registration; original RED logs retained.
 
@@ -249,14 +257,27 @@ rollback, expiry, old-schema refusal and historical policy epoch preserve comple
 64/66-table state outside expected effects. No affected helper regression remains
 pending; broader current-user authority/relational qualification is still separate.
 
-Next bounded action: finish review of the written registration_races.py scope
-profile, commit exact fixture and run eleven scope authority schedules plus the
-affected existing endpoint race profile, preserving both populated source clones. Both lock orders and writer rollback must be positively
-observed; original heads/grants receipt recovery remains historical. Complete
-registration_races.py/registration_relations.py and acquisition.rs/probe/run.py were
-read; registration_relations.sql was also read completely for the following adaptation.
-Preserve account-lock/grant-revision writer discipline; no arbitrary bare grant
-DML claim. Reuse qualified0733326 probe for experiments/docs-only fixture revisions.
+[Scope authority race report](evidence/p03-scope-command-races-native-20261002.json):
+fixture7a22f94/actual0733326 passed11 new scope schedules and18 affected endpoint
+cases. Both lock orders positively observed for policy, roles.control, revocation,
+account activity and authentication changes; writer rollback accepts once.
+All69 tables/xmin plus literal writer changes and command triple checked.
+Fresh owner3 after policy/grant change returns original owner2 receipt with zero
+mutations. No product, migration or dependency changed. One concrete race
+controller with separate scope oracle; no generic orchestration. AI found no
+concrete source blocker and ran no engines. Account-lock/grant-revision writer
+protocol retained; arbitrary privileged bare grant DML remains outside the claim.
+
+Next bounded action: implement clone-only scope relational negatives using the
+real authenticated Control transaction, then installed HTTP COMMIT ambiguity.
+Read complete registration_relations.py/.sql,0026 and0004; reuse the existing
+finite process controller with distinct semantic SQL expectations. Retained5e
+basis has one scope, so wrong-scope testing needs an explicit valid alternate
+selector/scope inside the rolled-back attempt, not a nonexistent second row.
+Check complete69-table rollback, positive before/after and preserved receipts
+when real login prunes historical sessions. Reuse qualified0733326 artifacts for
+experiments/docs-only fixture commits. Then finite-job delivery; no adjacent
+whole subsystem prerequisite has been added.
 
 ## Next useful journey and remaining prerequisites
 

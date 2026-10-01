@@ -163,10 +163,14 @@ records the selected implementation. The [installed HTTP/upgrade wave](../implem
 qualifies the bounded login/registration/retry and prerequisite journey on native
 Linux amd64. The [adapter fault wave](../implementation/evidence/p03-scope-command-faults-native-20261002.json)
 qualifies lost/cancelled COMMIT and isolated owner/session expiry for new commands
-over an existing scope, with fresh-owner exact recovery. Concurrent authority
-changes, raw relational negatives and installed HTTP ambiguity remain NOT_RUN
-for this consumer. The same report records six actual-engine internal helper
-regressions, including64 candidate collisions, rollback and historical identity.
+over an existing scope, with fresh-owner exact recovery. The [authority race wave](../implementation/evidence/p03-scope-command-races-native-20261002.json)
+qualifies both lock orders for policy, permission and account/session changes,
+writer rollback and exact historical recovery after changed heads/grants. Its
+permission writer follows account locking and atomic grant_revision advancement;
+it does not qualify arbitrary privileged bare grant deletion. Raw relational
+negatives and installed HTTP ambiguity remain NOT_RUN for this consumer. The
+adapter fault report also records six actual-engine internal helper regressions,
+including64 candidate collisions, rollback and historical identity.
 The padded maximum body exercises the HTTP envelope, not a maximum canonical
 selector or production memory bound. Applied0026 is now immutable.
 

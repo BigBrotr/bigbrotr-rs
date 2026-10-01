@@ -1,0 +1,225 @@
+{
+  "format": "bigbrotr-scope-command-race-acceptance/1",
+  "status": "PASS_BOUNDED_SCOPE_COMMAND_AUTHORITY_RACES",
+  "fixture": "7a22f9471932743602de3e784f56a98299a592ab",
+  "product": "07333269469bcf93cf1c1d0a1b72d624249b238a",
+  "source_files": 1643,
+  "capture_payloads": 102,
+  "cases": [
+    {
+      "name": "scope-command-writer-policy",
+      "status": "PASS",
+      "order": "writer",
+      "writer": "policy",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": false,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "scope-command-writer-permission",
+      "status": "PASS",
+      "order": "writer",
+      "writer": "permission",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": false,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "scope-command-writer-revoked",
+      "status": "PASS",
+      "order": "writer",
+      "writer": "revoked",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": false,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "scope-command-writer-inactive",
+      "status": "PASS",
+      "order": "writer",
+      "writer": "inactive",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": false,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "scope-command-writer-authentication",
+      "status": "PASS",
+      "order": "writer",
+      "writer": "authentication",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": false,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "scope-command-accept-policy",
+      "status": "PASS",
+      "order": "accept",
+      "writer": "policy",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": true,
+      "historical_retry_zero_writes": true
+    },
+    {
+      "name": "scope-command-accept-permission",
+      "status": "PASS",
+      "order": "accept",
+      "writer": "permission",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": true,
+      "historical_retry_zero_writes": true
+    },
+    {
+      "name": "scope-command-accept-revoked",
+      "status": "PASS",
+      "order": "accept",
+      "writer": "revoked",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": true,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "scope-command-accept-inactive",
+      "status": "PASS",
+      "order": "accept",
+      "writer": "inactive",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": true,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "scope-command-accept-authentication",
+      "status": "PASS",
+      "order": "accept",
+      "writer": "authentication",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": true,
+      "historical_retry_zero_writes": false
+    },
+    {
+      "name": "scope-command-rollback",
+      "status": "PASS",
+      "order": "rollback",
+      "writer": "policy",
+      "lock_barrier": true,
+      "all_control_tables": 69,
+      "command_committed": true,
+      "historical_retry_zero_writes": false
+    }
+  ],
+  "terminal": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-01T23:14:34.240103+00:00",
+    "owned_stopped": [
+      {
+        "id": "2804f21cc22d68d5d4a5d1533b39509647f7f4187bc76377abc75a9a95e06390",
+        "owner": "241256e39158d14a746408c82f5686c5",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 1022,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 57493684224
+  },
+  "not_run": [
+    "scope raw relational refusal",
+    "installed scope HTTP COMMIT ambiguity",
+    "finite-job delivery/installed acquisition/M1",
+    "capacity/load/aged-state",
+    "arm64/release"
+  ],
+  "tasks": [
+    "P03-T01 Steps1/2/3 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "fixture_tree": "7426447bbf7aa3225055823014d86ff7020b27fe",
+  "product_tree": "4069a0e1b1309b68f0ed8774c1d0e5735749bd80",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1 (48a229cea)",
+    "clang": "14.0.6",
+    "postgres": "16.15",
+    "rocksdb": "11.8.1",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2"
+  },
+  "artifacts": {
+    "binary_sha256": "352029da8dec7e377101a3181d89bb335683f8c36be87a64ef3db74614d02851",
+    "probe_sha256": "b6d96b964bc4a2e04c9b1b4d40ae5274d8fcccab9ab5b0cc358118a7e8f90a52",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "fbcde268a128fe5294d1aac183269a507dd288aaa3e0668bf7597283b4e816a0",
+    "race_source_manifest_sha256": "6630c386ce4e80c4f4d30be248e0a4af96e86e98f913d12c06a2ac22ca3cb7ae",
+    "capture_manifest_sha256": "7214ff5af01d052a9831fbce3913f8641fb903c64383601f9727694e590b12e2",
+    "root_review_sha256": "2b607c2dc4c743c0e9ab06ada0f770fa41735688b64ee54414ee968980edf4ea"
+  },
+  "endpoint_regression": {
+    "status": "PASS_BOUNDED_REGISTRATION_AUTHORITY_RACES",
+    "cases": 18,
+    "authority_cases": 11,
+    "commit_cases": 7,
+    "capture_payloads": 183,
+    "all_control_tables": 68,
+    "terminal": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-01T23:13:15.566858+00:00",
+      "owned_stopped": [
+        {
+          "id": "db2373a1bfb02ac2b5cd5db82a1dde1e85d8109041df639a4ee8ef5b540b4187",
+          "owner": "d72169108338b0df2b971dd66aaaf831",
+          "exit": 143
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 1021,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 57660936192
+    },
+    "root_review_sha256": "7a1097bf72b09c35c75de6da7261514f91eb7fd079ed83653d69f1ad719b1c42",
+    "fault_review_sha256": "2088db769f2ea9ae0ccac22f4554b6ed22cdbb6eed7dac3eaf1360de66204a40"
+  },
+  "scope": "Actual scope adapter against five privileged clone-only authority writers in both observed lock orders, plus writer rollback. Reuses qualified0733326 artifacts; no product, dependency or applied SQL changed. Existing endpoint profile rerun because its controller gained the scope branch.",
+  "verification": {
+    "authority": "Backend PID/start and pg_blocking_pids establish both lock orders. Writer-first rejects before command COMMIT; accept-first preserves the original accepted account revisions and receipt. Permission writer locks account and atomically advances grant_revision; arbitrary bare grant DML is outside this claim.",
+    "durable_effects": "All69 relations including xmin compared against literal writer changes and exactly three appended command/detail/audit rows. Original endpoint, selector and scope stay exact. Writer rollback permits one acceptance without writer effects.",
+    "recovery": "After accepted scope command then policy-head or roles.control withdrawal, actual fresh owner3 authenticates and resolves original actor/key with original expected revisions. Original owner2 receipt/time returns with every relation unchanged. SQL-only historical recovery supplies no native adoption or fresh job authority.",
+    "preservation": "Both populated45f7593 and5e7dbab source snapshots and heap filenodes remain exact. Each1643-file source manifest matches Git.183 endpoint and102 scope capture payloads hash-verified. All owned containers stopped without OOM;8 unrelated running and compiler lock free."
+  },
+  "review": {
+    "kind": "Read-only AI fixture/source review and root original-artifact review",
+    "result": "No concrete blocker found in bounded source review; AI ran no engine. Root inspected full changed controller/callers, SQL authority contract and original captures. Existing account-lock/grant-revision writer discipline retained; no unsupported direct-grant-DML guarantee inferred.",
+    "structure": "One concrete finite race controller, explicit scope semantic oracle and roles.control mutation. No product framework or new adapter abstraction.",
+    "local_review_environment": "First local capture review used system Python3.9 and failed importing tomllib before assertions. Unchanged captured payloads reviewed successfully with Python3.14; no engine rerun or changed result."
+  },
+  "evidence": {
+    "inventory": "docs/research/laboratory-inventory.json: implementation_network_20260928.scope_registration",
+    "local": ".research/implementation/scope-registration-20261001/race-engine",
+    "endpoint_local": ".research/implementation/scope-registration-20261001/endpoint-race-regression",
+    "remote_roots": [
+      "/home/tux/bigbrotr-implementation-20260917/runs/registration-races-7a22f94",
+      "/home/tux/bigbrotr-implementation-20260917/runs/scope-command-races-7a22f94"
+    ],
+    "original_outcome": "All29 executed cases PASS; no engine/fixture failure. No full task, M1, installed successor, capacity, arm64 or release qualification."
+  }
+}

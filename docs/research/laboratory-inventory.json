@@ -32317,7 +32317,7 @@
     },
     "scope_registration": {
       "local": ".research/implementation/scope-registration-20261001",
-      "status": "BOUNDED_HTTP_UPGRADE_AND_ADAPTER_COMMIT_PASS",
+      "status": "BOUNDED_HTTP_COMMIT_AND_AUTHORITY_RACES_PASS",
       "base": "25191470ad72f947a94675c969a7cfaadd525cf4",
       "remote_resources": [
         {
@@ -32585,6 +32585,78 @@
           "source_files_verified": 1643,
           "captured_payloads_verified": 47,
           "local": ".research/implementation/scope-registration-20261001/internal-regression"
+        },
+        {
+          "source": "7a22f9471932743602de3e784f56a98299a592ab",
+          "tree": "7426447bbf7aa3225055823014d86ff7020b27fe",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/registration-races-7a22f94",
+          "pid": 1437014,
+          "start_ticks": "427856284",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-0733326/out/artifacts",
+          "bundle_sha256": "2b9aa8981840b5f791ee3fb74d83f203ebc5b13cae4eef272d791f538e29eed5",
+          "state": "STOPPED_RETAINED",
+          "owner": "d72169108338b0df2b971dd66aaaf831",
+          "client": "db2373a1bfb02ac2b5cd5db82a1dde1e85d8109041df639a4ee8ef5b540b4187",
+          "qualification": "PASS_REGISTRATION_AUTHORITY_RACES",
+          "audit": {
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "observed_at": "2026-10-01T23:13:15.566858+00:00",
+            "owned_stopped": [
+              {
+                "id": "db2373a1bfb02ac2b5cd5db82a1dde1e85d8109041df639a4ee8ef5b540b4187",
+                "owner": "d72169108338b0df2b971dd66aaaf831",
+                "exit": 143
+              },
+              {
+                "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+                "exit": 0
+              }
+            ],
+            "prior_unchanged": 1021,
+            "unrelated_running": 8,
+            "compiler_lock_released": true,
+            "free_bytes": 57660936192
+          },
+          "source_files_verified": 1643,
+          "captured_payloads_verified": 183,
+          "local": ".research/implementation/scope-registration-20261001/endpoint-race-regression"
+        },
+        {
+          "source": "7a22f9471932743602de3e784f56a98299a592ab",
+          "tree": "7426447bbf7aa3225055823014d86ff7020b27fe",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/scope-command-races-7a22f94",
+          "pid": 1454977,
+          "start_ticks": "427868076",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-0733326/out/artifacts",
+          "bundle_sha256": "2b9aa8981840b5f791ee3fb74d83f203ebc5b13cae4eef272d791f538e29eed5",
+          "state": "STOPPED_RETAINED",
+          "owner": "241256e39158d14a746408c82f5686c5",
+          "client": "2804f21cc22d68d5d4a5d1533b39509647f7f4187bc76377abc75a9a95e06390",
+          "qualification": "PASS_SCOPE_COMMAND_AUTHORITY_RACES",
+          "audit": {
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "observed_at": "2026-10-01T23:14:34.240103+00:00",
+            "owned_stopped": [
+              {
+                "id": "2804f21cc22d68d5d4a5d1533b39509647f7f4187bc76377abc75a9a95e06390",
+                "owner": "241256e39158d14a746408c82f5686c5",
+                "exit": 143
+              },
+              {
+                "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+                "exit": 0
+              }
+            ],
+            "prior_unchanged": 1022,
+            "unrelated_running": 8,
+            "compiler_lock_released": true,
+            "free_bytes": 57493684224
+          },
+          "source_files_verified": 1643,
+          "captured_payloads_verified": 102,
+          "local": ".research/implementation/scope-registration-20261001/race-engine"
         }
       ],
       "findings": [
@@ -32601,11 +32673,12 @@
         "typescript_and_generation": "PASS",
         "native": "PASS build/components only"
       },
-      "next": "Review/commit scope race fixture and run eleven new authority schedules plus affected endpoint race profile using exact0733326 artifacts. No active lab.",
+      "next": "Scope raw relational refusal and installed HTTP COMMIT ambiguity before finite-job delivery; no active lab.",
       "candidate": "e4c282542532aa95ca30b8ea252b527230d614b8",
       "fixture_review": "Read-only AI found unbound HTTP receipts and overly broad startup-refusal write allowance; corrected before engine run. Maximum padded HTTP body does not qualify maximum canonical selector.",
       "evidence": "docs/implementation/evidence/p03-initial-scopes-http-native-20261002.json",
-      "fault_evidence": "docs/implementation/evidence/p03-scope-command-faults-native-20261002.json"
+      "fault_evidence": "docs/implementation/evidence/p03-scope-command-faults-native-20261002.json",
+      "race_evidence": "docs/implementation/evidence/p03-scope-command-races-native-20261002.json"
     }
   },
   "implementation_relay_registry_20260928": {
