@@ -12,11 +12,13 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main5f956b3e51066c1318381ec761d45a8e7609ede3 candidate, origin1a2e649;
-tree7115c07b355205838c8b94d934fc2b639bc09eac. Root sole writer. Dirty documentation
-records completed scope relational qualification. No product/applied SQL/dependency
-change, no active build/engine. Native0733326 artifacts reused with exact input and
-ELF checks. Mac about4GiB free; check before allocation.
+Mac main/origin6e11f08468d8bc9027515b22e0466f2499dd5c4f pushed,
+treeaeb3c74a5ddddd80f1f927a7aa15e8f8ef5c7e5a. Root sole writer. Dirty experiments
+extend installed HTTP faults with explicit scope mode, scope setup client/oracle,
+current schema26/nativee4 inspector and eight parser regressions. README/checkpoint/
+inventory accompany it. New engine NOT_RUN, no active build/lab. Mac4,080,560KiB free.
+No product/applied SQL/dependency changed. Actual0733326 CLI/probe reused only after
+exact source-input and ELF checks; e4c2825 owns the matching native inspector.
 
 Latest runs/scope-command-relations-5f956b3 STOPPED/RETAINED,
 PID1470989/start427927243, owner9930322e5914f9bd1b3ac8490437b3b2,
@@ -290,18 +292,21 @@ AI found no concrete source blocker and ran no engines. No product, migration or
 dependency changed. Forced constraint evaluation does not replace separate
 COMMIT-time expiry evidence. Concrete controller shared; scope SQL oracle separate.
 
-Next bounded action: installed scope HTTP COMMIT ambiguity using the actual
-initial owner and finite proxy; then finite-job delivery. Read complete
-registration_http_faults.py and registration_http_client.py; inspected initial
-scope setup and read the scope adapter. Reuse finite fault lifetime and independent semantic oracles.
-The current CLI requires26, so the old endpoint-only HTTP fixture's upgrade25 and
-7011acd native-inspector source-diff guard need deliberate adaptation before reuse.
-Qualifiede4c2825 native inspector matches current product inputs;0733326 CLI/probe
-remain reusable for experiments/docs-only commits. Scope HTTP setup needs real
-URL/enrollment plus roles.control; select the actual later COMMIT with positive
-server insertion marker, preserve auth5s ceiling and prove timely signal closure.
-No new build needed. Original initialized native bytes and all69SQL rows remain
-required; SQL-only recovery does not establish installed successor custody.
+Next bounded action: review/commit the written installed scope HTTP fault fixture,
+then execute five scope and five affected endpoint HTTP cases on Tux. Root read
+complete registration_http_faults.py, registration_http_client.py, scopes.py,
+scope_client.py, actual probe and scope adapter; new concrete setup/oracle helpers
+are in scope_http_client.py and scope_http_faults.py. Bindings --scope-http-faults
+uses qualified0733326 CLI/probe plus e4c2825 native inspector after exact source/
+artifact checks. Current initial profile requires explicit26 for both endpoints
+and scopes; historical25-only fixture retains its old artifact identities.
+Actual login→URL91→enrollment92 precedes scope31, selecting COMMIT11 with positive
+server INSERT marker and ten prior complete commits. Five-table identity/receipt
+atomicity, original native bytes/all69SQL rows, timely signal before2s under the
+unchanged5s authority ceiling and fresh SQL-owner exact retry remain required.
+No installed successor custody follows from SQL recovery. Local8 parser checks,
+AST/whitespace PASS; read-only AI fixture review requested, engines NOT_RUN.
+Then finite-job delivery; no adjacent whole-subsystem prerequisite has been added.
 
 ## Next useful journey and remaining prerequisites
 

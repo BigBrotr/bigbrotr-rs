@@ -33,8 +33,9 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
+scope_http_faults = len(sys.argv) == 4 and sys.argv[2] == '--scope-http-faults'
 registration_http_signal = len(sys.argv) == 4 and sys.argv[2] == '--registration-http-signal'
-registration_http_faults = registration_http_signal or (len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults')
+registration_http_faults = scope_http_faults or registration_http_signal or (len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults')
 scope_command_relations = len(sys.argv) == 4 and sys.argv[2] == '--scope-command-relations'
 registration_relations = scope_command_relations or (len(sys.argv) == 4 and sys.argv[2] == '--registration-relations')
 registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races'
@@ -72,9 +73,9 @@ native_inspector = None
 if registration_http_faults:
     # Reuse the separately retained, qualified native inspector. No product or
     # codec changed; the later Rust addition is solely the SQL fault example.
-    native_inspector = root.parent / 'initial-ingest-7011acd/out/artifacts'
+    native_inspector = root.parent / 'initial-ingest-e4c2825/out/artifacts'
     inspected = json.loads((native_inspector / 'build-result.json').read_text())
-    assert inspected['source'] == '7011acd1782e9fe36b5e7c67188aae5c40fe70da'
+    assert inspected['source'] == 'e4c282542532aa95ca30b8ea252b527230d614b8'
     assert inspected['probe_name'] == 'ingest_bootstrap_probe'
     assert sha((native_inspector / 'ingest_bootstrap_probe').read_bytes()) == inspected['probe_sha256']
     changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', inspected['source'], revision]).stdout.splitlines()
@@ -90,7 +91,7 @@ assert json.loads(basis_report)['status'] == 'PASS_SCOPED_ACQUISITION_REGISTRATI
 output = root / 'bindings'
 output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-binding'
-client = ('bigbrotr-scope-command-binding-' if scope_command_faults
+client = ('bigbrotr-scope-command-binding-' if scope_command_faults or scope_http_faults
           else 'bigbrotr-acquisition-binding-') + revision[:7]
 report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=built,
     status='RUNNING', wave='installed-session-hash' if session_hash else 'installed-sessions' if sessions else 'socket' if socket else 'observation' if observation else 'execution' if execution else 'installed-commits' if commits else 'installed-interruptions' if interruptions else 'installed-ingest' if installed else 'ingest-lease' if lease else 'policy' if policy else 'guards' if guards else 'refusals' if refusals else 'first', owner=owner, label=label,
@@ -150,6 +151,9 @@ if registration_http:
     report['not_run'] = ['registration adapter COMMIT recovery/cancellation/expiry/concurrency',
         'raw relational refusal/rollback', 'CLI registration command', 'installed acquisition/M1',
         'capacity/load/aged-state', 'arm64/release']
+
+if scope_http_faults:
+    report['wave'] = 'installed-scope-command-faults'
 
 if scope_http:
     report['wave'] = 'installed-acquisition-scope'
@@ -512,6 +516,9 @@ if scope_command_faults:
 if scope_command_races:
     success_status = 'PASS_SCOPE_COMMAND_AUTHORITY_RACES'
 
+if scope_http_faults:
+    success_status = 'PASS_INSTALLED_SCOPE_COMMAND_FAULTS'
+
 if scope_command_relations:
     success_status = 'PASS_SCOPE_COMMAND_RELATIONAL_GUARDS'
 
@@ -588,6 +595,10 @@ try:
         if registration_http_faults:
             from registration_http_faults import CASES as HTTP_CASES, run as run_registration_http_fault
             registration_runs = {case: run_registration_http_fault for case in HTTP_CASES}
+            if scope_http_faults:
+                from functools import partial
+                from scope_http_faults import CASES as SCOPE_HTTP_CASES
+                registration_runs = {case: partial(run_registration_http_fault, scope=True) for case in SCOPE_HTTP_CASES}
             if registration_http_signal:
                 registration_runs = {'register-http-signal': run_registration_http_fault}
         if scope_command_faults:

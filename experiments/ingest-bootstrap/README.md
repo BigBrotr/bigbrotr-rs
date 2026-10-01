@@ -335,3 +335,23 @@ sixteen checks/TRUNCATE were also rerun. Exact5f956b3/unchanged0733326 artifacts
 passed all checks; the [bounded relational report](../../docs/implementation/evidence/p03-scope-command-relations-native-20261002.json)
 records original captures and stopped resources. Forced constraint checks qualify
 relational closure, not COMMIT-time expiry; the separate fault wave owns that claim.
+
+
+`--scope-http-faults BUILD` proposes five installed first-scope schedules: nominal
+acceptance, lost COMMIT before/after forwarding, accepted client reset/exact retry,
+and timely signal during a held COMMIT. The actual password client registers URL91
+and enrollment92 before the scope command31, so the positively marked scope INSERT
+must belong to COMMIT11 with exactly ten preceding completed transactions. Its
+independent oracle requires either all five new selector/scope/command/detail/audit
+rows or none, exact canonical bytes/attribution, complete69-table snapshots and
+original twelve native rows/CBOR. A fresh SQL owner retries the same saved intent;
+it does not reopen/adopt native Ingest. The five-second authority ceiling and
+signal/HTTP-closure-before2s assertion stay unchanged.
+
+The shared HTTP controller now explicitly upgrades25→26 and borrows the qualified
+e4c2825 native inspector, matching the current0733326 CLI/probe inputs. The old
+endpoint HTTP profile also needs five affected regressions at this exact fixture;
+its original7011acd/00600af evidence remains historical. Two concrete client/oracle
+helpers own scope-specific setup and expected rows; the finite lifetime/proxy stays
+shared. Eight local actual-parser checks pass, including receipt-format separation.
+New scope/endpoint HTTP engines are NOT_RUN.

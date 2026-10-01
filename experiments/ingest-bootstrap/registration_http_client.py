@@ -10,7 +10,7 @@ import subprocess
 import sys
 import time
 
-def read_outcome(connection, mode):
+def read_outcome(connection, mode, *, scope=False):
     observed = {}
     response = http.client.HTTPResponse(connection)
     wanted = 202 if mode == 'pass' else 200 if mode == 'disconnect' else 503
@@ -38,7 +38,7 @@ def read_outcome(connection, mode):
     if mode in ('pass', 'disconnect'):
         assert observed['status'] == (202 if mode == 'pass' else 200)
         receipt = observed['body']
-        assert receipt['format'] == 'bigbrotr-relay-registration/1'
+        assert receipt['format'] == ('bigbrotr-acquisition-scope-registration/1' if scope else 'bigbrotr-relay-registration/1')
         assert receipt['authority'] == 'identity-only' and receipt['command_key'] == '31' * 16
         assert receipt['created'] == (mode == 'pass')
     else:
@@ -48,6 +48,8 @@ def read_outcome(connection, mode):
 
 def main():
     directory, mode = Path(sys.argv[1]), sys.argv[2]
+    scope = len(sys.argv) == 4 and sys.argv[3] == 'scope'
+    assert len(sys.argv) == (4 if scope else 3)
     assert directory.is_absolute() and mode in ('pass', 'before', 'after', 'disconnect', 'signal')
     origin = 'http://127.0.0.1:18081'
 
@@ -75,9 +77,16 @@ def main():
     assert saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == origin
     assert session_file.stat().st_mode & 0o777 == 0o600
     assert all(saved[k].encode() not in login.stdout for k in ('session', 'csrf'))
-    body = json.dumps(dict(url='WS://127.0.0.1:7447/a/../installed-fixture',
-        expected_config_revision='1', expected_policy_revision='1')).encode()
-    header = (f'POST /management/v1/relay-endpoints HTTP/1.1\r\nHost: 127.0.0.1:18081\r\n'
+    if scope:
+        from scope_http_client import prepare
+        command = prepare(directory, origin, saved)
+        path = 'acquisition-scopes'
+    else:
+        command = dict(url='WS://127.0.0.1:7447/a/../installed-fixture',
+            expected_config_revision='1', expected_policy_revision='1')
+        path = 'relay-endpoints'
+    body = json.dumps(command).encode()
+    header = (f'POST /management/v1/{path} HTTP/1.1\r\nHost: 127.0.0.1:18081\r\n'
         f'Origin: {origin}\r\nContent-Type: application/json\r\nContent-Length: {len(body)}\r\n'
         f'Cookie: BigBrotrLocalSession={saved["session"]}\r\nX-CSRF-Token: {saved["csrf"]}\r\n'
         f'Idempotency-Key: {"31" * 16}\r\nConnection: close\r\n\r\n').encode()
@@ -96,7 +105,7 @@ def main():
             connection = socket.create_connection(('127.0.0.1', 18081), 3)
             connection.settimeout(5)
             connection.sendall(header + body)
-        emit('done', outcome=read_outcome(connection, mode))
+        emit('done', outcome=read_outcome(connection, mode, scope=scope))
     finally:
         connection.close()
 

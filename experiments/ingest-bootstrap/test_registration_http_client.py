@@ -1,6 +1,7 @@
 """Use actual HTTP parsing so the oracle cannot forget a partially delivered status."""
 import http.client
 import io
+import json
 import unittest
 from registration_http_client import read_outcome
 
@@ -58,6 +59,18 @@ class OracleTests(unittest.TestCase):
     def test_oversize_is_not_transport_ambiguity(self):
         with self.assertRaises(AssertionError):
             self.read(503, body=b' ' * 4097)
+
+    def test_scope_and_endpoint_success_formats_are_distinct(self):
+        for scope in (False, True):
+            receipt = dict(format='bigbrotr-acquisition-scope-registration/1' if scope
+                else 'bigbrotr-relay-registration/1', authority='identity-only',
+                command_key='31' * 16, created=True)
+            body = json.dumps(receipt).encode()
+            wire = f'HTTP/1.1 202 Created\r\nContent-Length: {len(body)}\r\n\r\n'.encode() + body
+            with self.subTest(scope=scope):
+                self.assertEqual(read_outcome(Wire(wire), 'pass', scope=scope), dict(status=202, body=receipt))
+                with self.assertRaises(AssertionError):
+                    read_outcome(Wire(wire), 'pass', scope=not scope)
 
 
 if __name__ == '__main__':

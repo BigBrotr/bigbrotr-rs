@@ -26,10 +26,28 @@ def effects(before, after, created):
             assert all(row in after[table] for row in before[table])
 
 
-def run(pg, client, output, database, name, rows):
-    mode = CASES[name]
+def run(pg, client, output, database, name, rows, *, scope=False):
+    if scope:
+        from scope_http_faults import CASES as cases, effects as effects_case, receipt as receipt_case, prepare
+        detail_table = 'acquisition_scope_commands'
+        selected_commit = 11
+    else:
+        cases, effects_case, receipt_case = CASES, effects, receipt
+        detail_table = 'relay_registration_commands'
+        selected_commit = 9
+    mode = cases[name]
     upgrade(pg, client, output, database, name, rows)
+    # The current initial owner requires schema26 even for endpoint commands.
+    # Historical25-only evidence retains its original CLI/fixture revision.
+    from scopes import upgrade as upgrade_scopes
+    upgrade_scopes(pg, client, output, database, name, rows)
     policy_setup(pg, database, name, rows, output, administration=True)
+    if scope:
+        lab.sql(pg, database, """
+            INSERT INTO control.principal_grants
+                SELECT dataset_id,principal_id,'roles.control','dataset',dataset_id
+                FROM control.local_accounts
+        """)
     # A clone-only nontransactional marker proves that the selected COMMIT
     # belongs to this registration even if a slow lab lets a renewal become due.
     # Durable effects are still checked independently from all Control rows.
@@ -45,7 +63,7 @@ def run(pg, client, output, database, name, rows):
             EXECUTE FUNCTION registration_wire_fixture.cut();
         GRANT USAGE ON SCHEMA registration_wire_fixture TO bigbrotr_control;
         GRANT EXECUTE ON FUNCTION registration_wire_fixture.cut() TO bigbrotr_control;
-    """)
+    """.replace('control.relay_registration_commands', 'control.' + detail_table))
     log_since = datetime.datetime.now(datetime.timezone.utc).isoformat()
     original = rows(database)
     assert not original['owner_epochs'] and not original['relay_endpoints']
@@ -65,6 +83,13 @@ def run(pg, client, output, database, name, rows):
     for key, value in [('lease_ttl', '30s'), ('authorization_ttl', '5s'),
                        ('heartbeat_interval', '10s'), ('renewal_timeout', '5s')]:
         text = set_value(text, 'runtime', key, value)
+    if scope:
+        # Accepted private routing requires the same explicit startup root as
+        # the separately qualified URL/enrollment/scope journey.
+        rule = [dict(endpoint='ws://127.0.0.1:7447/installed-fixture', cidr='127.0.0.1/32', port=7447)]
+        text = set_value(text, 'network.private', 'rules', rule)
+        assert text.count(json.dumps(rule)) == 1
+        text = text.replace(json.dumps(rule), '[{endpoint="ws://127.0.0.1:7447/installed-fixture",cidr="127.0.0.1/32",port=7447}]')
     direct = '/lab/' + name + '-direct.toml'
     (output / Path(direct).name).write_text(text)
     processes = []
@@ -81,7 +106,7 @@ def run(pg, client, output, database, name, rows):
             'signal':'hold', 'disconnect':'hold', 'pass':'pass'}[mode]
         proxy = Process(['docker', 'exec', '-i', client, 'python3', '-B',
             '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
-            '--mode', wire_mode, '--commit-number', '9', '--later-commits', '4',
+            '--mode', wire_mode, '--commit-number', str(selected_commit), '--later-commits', '4',
             '--deadline-seconds', '40'], input_pipe=True)
         processes.append(('proxy', proxy))
         proxy_ready = proxy.event('ready', 5)
@@ -100,11 +125,15 @@ def run(pg, client, output, database, name, rows):
         initialized = first[0]
         assert not initialized['ready'] and initialized['acquisition'] == 'not-started'
         assert initialized['listeners'][0]['profile'] == 'initial-source-commands'
+        if scope:
+            lab.write_json(directory / 'visibility.json', dict(initialized['public_scope'], ordinal='2'))
         http = Process(['docker', 'exec', client, 'python3', '-B',
-            '/source/experiments/ingest-bootstrap/registration_http_client.py', '/lab/' + name, mode])
+            '/source/experiments/ingest-bootstrap/registration_http_client.py', '/lab/' + name, mode] + (['scope'] if scope else []))
         processes.append(('http', http))
         event(http, 'authenticated')
         before = snapshot('before')
+        if scope:
+            prepare(before, directory, initialized)
         control, = [r for r in before['owner_epochs'] if r['role'] == 'control']
         session, = before['browser_sessions']
         ready = dict(epoch=1, pid=control['control_backend_pid'], session_expires=session['expires_at_us'])
@@ -112,7 +141,7 @@ def run(pg, client, output, database, name, rows):
         proxy.send('status')
         status = proxy.event('status', 5)
         assert [status[k] for k in ('commits_seen', 'commits_forwarded',
-            'server_commit_complete', 'client_commit_complete')] == [8,8,8,8]
+            'server_commit_complete', 'client_commit_complete')] == [selected_commit - 1] * 4
         go(directory / 'send')
         http_answer = None
         if wire_mode == 'hold':
@@ -129,7 +158,7 @@ def run(pg, client, output, database, name, rows):
                 assert rows(database) == before
                 proxy.send('release')
                 proxy.event('released', 3)
-                wait_for(lambda: rows(database)['relay_registration_commands'], 'known COMMIT', 3)
+                wait_for(lambda: rows(database)[detail_table], 'known COMMIT', 3)
                 accepted_state = snapshot('retry-before')
                 go(directory / 'retry')
             else:
@@ -156,10 +185,10 @@ def run(pg, client, output, database, name, rows):
         healthy = mode in ('pass', 'disconnect')
         if healthy:
             accepted_state = snapshot('accepted')
-            effects(before, accepted_state, True)
-            original_receipt = receipt(accepted_state, ready)
+            effects_case(before, accepted_state, True)
+            original_receipt = receipt_case(accepted_state, ready)
             response = dict(original_receipt, accepted_at_us=str(original_receipt['accepted_at_us']),
-                created=mode == 'pass', format='bigbrotr-relay-registration/1', authority='identity-only')
+                created=mode == 'pass', format='bigbrotr-acquisition-scope-registration/1' if scope else 'bigbrotr-relay-registration/1', authority='identity-only')
             assert http_answer == dict(status=202 if mode == 'pass' else 200, body=response)
             if mode == 'disconnect':
                 assert accepted_state == json.loads((directory / 'retry-before.json').read_text())
@@ -180,14 +209,16 @@ def run(pg, client, output, database, name, rows):
         assert proxy.wait(5) == 0 and not proxy.stderr
         counts = [wire[k] for k in ('commits_seen','commits_forwarded','server_commit_complete',
                                     'client_commit_complete','faults')]
-        wanted = [10,10,10,10,int(mode=='disconnect')] if healthy else [9,8,8,8,1] if mode in ('before','signal') else [9,9,9,8,1]
+        wanted = ([selected_commit + 1] * 4 + [int(mode == 'disconnect')] if healthy
+            else [selected_commit] + [selected_commit - 1] * 3 + [1] if mode in ('before','signal')
+            else [selected_commit] * 3 + [selected_commit - 1, 1])
         assert counts == wanted, counts
         wait_for(lambda: not backend(pg, database), 'original backend retired', 3)
         logs = lab.docker('logs', '--since', log_since, pg['postgres'])
         marker = f'bigbrotr registration cut db={database} pid={ready["pid"]}'
         markers = [line for line in (logs.stdout + logs.stderr).splitlines() if marker in line]
         assert len(markers) == 1 and markers[0].endswith(marker), 'wrong registration COMMIT cut'
-        lab.write_json(directory / 'commit-cut.json', dict(marker=markers[0], before=status, selected=9))
+        lab.write_json(directory / 'commit-cut.json', dict(marker=markers[0], before=status, selected=selected_commit))
         after = snapshot('after')
         committed = mode in ('pass', 'disconnect', 'after')
         if healthy:
@@ -198,8 +229,8 @@ def run(pg, client, output, database, name, rows):
             assert final_control['state'] == 'released' and final_control['exclusion_method'] == 'storage_fenced'
             assert final_control['released_at_us'] is not None and final_control['exclusion_digest'] is not None
         else:
-            effects(before, after, committed)
-        accepted = receipt(after, ready)
+            effects_case(before, after, committed)
+        accepted = receipt_case(after, ready)
         assert (accepted is not None) == committed
         native_oracle(pg, client, output, database, name, after, initialized,
             probe='/native-inspect/ingest_bootstrap_probe')
@@ -210,21 +241,21 @@ def run(pg, client, output, database, name, rows):
             (directory / 'restart.stderr').write_text(retry.stderr)
             assert retry.returncode == 3 and not retry.stdout and 'target exists' in retry.stderr
             assert rows(database) == after
-        recovery, token = start_probe(client, database, directory, 'accept', 13, processes)
+        recovery, token = start_probe(client, database, directory, 'accept', 13, processes, scope=scope)
         recovered_owner = event(recovery, 'ready')
         assert recovered_owner['epoch'] == 2
         before_retry = snapshot('recovery-before')
         go(token)
         recovered = finish(recovery)
         after_retry = snapshot('recovery-after')
-        effects(before_retry, after_retry, not committed)
-        durable = receipt(after_retry, ready if committed else recovered_owner)
+        effects_case(before_retry, after_retry, not committed)
+        durable = receipt_case(after_retry, ready if committed else recovered_owner)
         assert recovered == dict(receipt=dict(durable, created=not committed), commit_started=not committed)
         assert not committed or durable == accepted
         assert not backend(pg, database)
         result.update(status='PASS', initialized=initialized, ready=ready, http=http_answer,
             terminal=ended, wire=wire, committed=committed, recovery_owner=recovered_owner,
-            recovered=recovered, durable=durable, all_control_tables=68, native_rows=12)
+            recovered=recovered, durable=durable, all_control_tables=69, native_rows=12)
     except BaseException as error:
         result.update(status='FAIL', failure=type(error).__name__ + ': ' + str(error))
         raise
