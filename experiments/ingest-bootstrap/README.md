@@ -211,3 +211,18 @@ Exact00600af/fixture41d508a passed all18 schedules; the
 [bounded race report](../../docs/implementation/evidence/p02-relay-registration-races-native-20261001.json)
 records the11 new cases and7 affected regressions. Privileged
 clone-only writers are fault injections, not installed administration workflows.
+
+
+`--registration-relations BUILD` proposes16 rollback subtransactions inside the
+actual authenticated registration over an existing endpoint. A clone-only hook
+first validates the real parent, then checks missing command/detail/audit, endpoint
+digest mismatch, audit linkage, old owner, absent/revoked session, all three actor
+revisions and immutable update/delete, with valid controls before/after.
+A separate actual-Control SQL session checks TRUNCATE outside the active INSERT
+so PostgreSQL's table-in-use refusal cannot mask the immutable history guard.
+Expected command bytes are independently encoded in Python. All68 Control tables
+including xmin must remain identical after each attempt. Actual login also prunes
+the old revoked session while preserving its durable receipts, exercising the
+intentional absence of a session FK. Only one real new command remains. These
+scenarios are NOT_RUN until an exact engine report is recorded; no migration or
+product code changes are part of this fixture.

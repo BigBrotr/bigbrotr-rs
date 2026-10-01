@@ -33,8 +33,9 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
+registration_relations = len(sys.argv) == 4 and sys.argv[2] == '--registration-relations'
 registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races'
-registration_faults = registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
+registration_faults = registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
 enrollment_http = enrollment_functions or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments')
@@ -110,6 +111,11 @@ if registration_faults:
 if registration_races:
     report['not_run'] = ['raw relational refusal/expiry negative controls',
         'installed HTTP COMMIT ambiguity', 'installed acquisition/M1',
+        'capacity/load/aged-state', 'arm64/release']
+
+if registration_relations:
+    report['wave'] = 'registration-relational-guards'
+    report['not_run'] = ['installed HTTP COMMIT ambiguity', 'installed acquisition/M1',
         'capacity/load/aged-state', 'arm64/release']
 
 if registration_http:
@@ -442,6 +448,9 @@ if enrollment_http:
 if registration_faults:
     success_status = 'PASS_REGISTRATION_AUTHORITY_RACES' if registration_races else 'PASS_REGISTRATION_COMMIT_FAULTS'
 
+if registration_relations:
+    success_status = 'PASS_REGISTRATION_RELATIONAL_GUARDS'
+
 if registration_http:
     success_status = 'PASS_INITIAL_REGISTRATION_HTTP_WAVE'
 
@@ -506,8 +515,12 @@ try:
             from registration_races import CASES as RACE_CASES, run as run_registration_race
             require(not set(COMMIT_CASES) & set(RACE_CASES), 'duplicate-registration-case')
             registration_runs.update({case: run_registration_race for case in RACE_CASES})
+        if registration_relations:
+            from registration_relations import CASES as RELATIONAL_CASES, run as run_registration_relation
+            registration_runs = {case: run_registration_relation for case in RELATIONAL_CASES}
         cases = list(registration_runs)
-        require(len(cases) == (18 if registration_races else 7), 'registration-case-set')
+        require(len(cases) == (1 if registration_relations else 18 if registration_races else 7),
+            'registration-case-set')
     elif socket:
         from socket_arrival import run as run_socket
         run_socket(globals())

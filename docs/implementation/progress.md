@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main41d508ab76829ad27d198b83ae883ba02a05db4e, originfd442d8 at last fetch.
-Root sole writer. Test-only race controller qualified with unchanged00600af ELFs;
-current dirty files are its evidence/task/reference docs, inventory and checkpoint.
+Mac main/origin54c1983 is pushed; race fixture41d508a and evidence consolidated.
+Root sole writer. Current dirty work is the clone-only registration relational
+controller/SQL, bindings selection, recipe documentation and this checkpoint.
 No active owned lab/native job at20:56:12UTC. Requested cache cleanup complete.
 
 ## Active slice and next bounded action
@@ -90,20 +90,14 @@ source/artifact manifests, controllers, launch receipts and root-review scripts.
 Never replay completed launchers or old cache deletion. Mac last4,731,548KiB free;
 check before allocations. No cleanup debt.
 
-Next bounded action: consolidate/push the qualified race slice, then implement
-raw relational refusals in a clone using the existing actual adapter probe and
-independent expected command digest. No additional compilation is needed.
-
-Raw relational closure remains required. A read-only reviewer
-proposed a clone-only zz_* AFTER INSERT detail hook, restricted to real key31:
-validate the parent, speculative key88/audit89 attempts in rollback subtransactions,
-force exact constraints and compare all68 tables/xmin. Missing detail/command/audit,
-wrong endpoint digest/audit, extra audit, old owner, absent/revoked session and actor
-revision mismatches need distinct guards plus positive controls. Preserve deliberate
-absence of durable session FK. Do not change immutable session expiry columns to
-simulate expiry:0806 would reject before0025. Original7 real COMMIT schedules prove
-actual expiry; separate predicate-negative controls remain optional discriminators.
-No raw engine implementation/execution has happened yet; current contracts govern.
+Next bounded action: review the new registration_relations.py/.sql and bindings
+selection, commit a test-only candidate, then run --registration-relations with
+unchanged00600af binaries in a fresh clone. Sixteen SQL subtransactions validate
+the real parent before malformed attempts, match exact errors/FK targets and check
+all68 tables/xmin after each rollback; separate actual-Control TRUNCATE avoids
+the active INSERT masking its immutable guard. Real login must prune the old revoked
+session without touching retained registration history. No product/migration edit,
+new compilation or engine execution yet. Preserve any original failure unchanged.
 
 The next user-visible consumer after closing these bounded registration guarantees
 is installed immutable scope/finite-job command delivery, under the task IDs below.
