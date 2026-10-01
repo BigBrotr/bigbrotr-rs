@@ -12,11 +12,14 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main7a22f9471932743602de3e784f56a98299a592ab candidate, origin62fa706;
-tree7426447bbf7aa3225055823014d86ff7020b27fe. Root sole writer. Dirty documentation
-records completed scope race qualification; no product/applied SQL/dependency
-changes and no active build/engine. Native0733326 artifacts reused after exact
-experiments/docs-only diff and ELF hash checks. Mac free4,086,436KiB.
+Mac main/origin1a2e649 pushed after qualified7a22f94 race fixture. Root sole
+writer. Dirty experiments add explicit scope profile to the relational controller,
+a distinct literal scope SQL oracle and --scope-command-relations. Twenty rollback
+checks plus separate TRUNCATE are proposed; new engines NOT_RUN. Python rendering/
+AST and whitespace checks are local-only. Read-only AI fixture review found no
+concrete setup/false-PASS defect and ran no engines. Forced constraint checks do
+not replace separate COMMIT-time expiry evidence. No product/applied SQL/dependency change.
+No active build or engine; native0733326 artifacts reusable. Mac about4GiB free.
 
 Latest runs/scope-command-races-7a22f94 STOPPED/RETAINED, PID1454977/start427868076,
 owner241256e39158d14a746408c82f5686c5, client2804f21cc22d68d5d4a5d1533b39509647f7f4187bc76377abc75a9a95e06390
@@ -268,8 +271,8 @@ controller with separate scope oracle; no generic orchestration. AI found no
 concrete source blocker and ran no engines. Account-lock/grant-revision writer
 protocol retained; arbitrary privileged bare grant DML remains outside the claim.
 
-Next bounded action: implement clone-only scope relational negatives using the
-real authenticated Control transaction, then installed HTTP COMMIT ambiguity.
+Next bounded action: finish review/commit the written scope relational fixture,
+then run new scope and affected endpoint relational profiles on native PG.
 Read complete registration_relations.py/.sql,0026 and0004; reuse the existing
 finite process controller with distinct semantic SQL expectations. Retained5e
 basis has one scope, so wrong-scope testing needs an explicit valid alternate

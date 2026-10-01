@@ -313,5 +313,22 @@ account and updates grant_revision atomically; arbitrary bare grant DML is outsi
 this claim. Literal writer effects are compared independently from the complete
 scope command/digest oracle. Fresh-owner recovery after changed heads or permission
 must return the original receipt without durable changes. The existing endpoint
-race profile also needs its affected regression. No new production or probe build
-is needed; actual race execution is pending.
+race profile also has its affected regression. Exact7a22f94/unchanged0733326 artifacts
+passed eleven scope and eighteen endpoint cases; the [bounded report](../../docs/implementation/evidence/p03-scope-command-races-native-20261002.json)
+records complete state and terminal ownership checks. No product/probe rebuild was needed.
+
+
+`--scope-command-relations BUILD` proposes twenty rollback subtransactions inside
+an actual authenticated scope command, followed by separate actual-Control TRUNCATE.
+The retained scope journey supplies one immutable identity; wrong-scope testing
+creates a valid alternate selector/scope inside the speculative subtransaction,
+with a literal different document. Positive alternate-identity acceptance and
+missing-detail/revoked-session negatives require complete69-table rollback.
+Independent original/alternate command hashes distinguish semantic mismatch from
+an absent FK. Other checks cover exact audit linkage, missing command/detail/audit,
+old owner, current session and all actor revisions, missing roles.control and
+immutable mutation/deletion, with positives before/after. Direct grant deletion
+is clone-only fault injection in the same transaction, not a concurrent supported
+writer protocol. Real login prunes historical sessions without removing receipts.
+The common controller preserves the existing endpoint profile, whose affected
+sixteen checks/TRUNCATE must also be rerun. New relational engines are NOT_RUN.

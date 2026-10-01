@@ -35,10 +35,11 @@ session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
 registration_http_signal = len(sys.argv) == 4 and sys.argv[2] == '--registration-http-signal'
 registration_http_faults = registration_http_signal or (len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults')
-registration_relations = len(sys.argv) == 4 and sys.argv[2] == '--registration-relations'
+scope_command_relations = len(sys.argv) == 4 and sys.argv[2] == '--scope-command-relations'
+registration_relations = scope_command_relations or (len(sys.argv) == 4 and sys.argv[2] == '--registration-relations')
 registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races'
 scope_command_races = len(sys.argv) == 4 and sys.argv[2] == '--scope-command-races'
-scope_command_faults = scope_command_races or (len(sys.argv) == 4 and sys.argv[2] == '--scope-command-faults')
+scope_command_faults = scope_command_relations or scope_command_races or (len(sys.argv) == 4 and sys.argv[2] == '--scope-command-faults')
 registration_faults = scope_command_faults or registration_http_faults or registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
 scope_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-scopes'
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
@@ -166,6 +167,11 @@ if scope_command_races:
     report['wave'] = 'scope-command-authority-races'
     report['not_run'] = ['scope raw relational refusal', 'installed scope HTTP COMMIT ambiguity',
         'finite-job delivery/installed acquisition/M1', 'capacity/load/aged-state', 'arm64/release']
+
+if scope_command_relations:
+    report['wave'] = 'scope-command-relational-guards'
+    report['not_run'] = ['installed scope HTTP COMMIT ambiguity', 'finite-job delivery/installed acquisition/M1',
+        'capacity/load/aged-state', 'arm64/release']
 
 if interruptions:
     report['not_run'] = ['worker panic and arbitrary uninterruptible kernel I/O',
@@ -506,6 +512,9 @@ if scope_command_faults:
 if scope_command_races:
     success_status = 'PASS_SCOPE_COMMAND_AUTHORITY_RACES'
 
+if scope_command_relations:
+    success_status = 'PASS_SCOPE_COMMAND_RELATIONAL_GUARDS'
+
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
 assert target['Config']['Labels'][lab.LABEL] == pg['owner'] and not target['State']['Running']
@@ -585,6 +594,9 @@ try:
             from functools import partial
             from scope_command_faults import CASES as SCOPE_CASES
             registration_runs = {case: partial(run_registration_fault, scope=True) for case in SCOPE_CASES}
+        if scope_command_relations:
+            from scope_command_relations import CASES as SCOPE_RELATIONAL_CASES
+            registration_runs = {case: partial(run_registration_relation, scope=True) for case in SCOPE_RELATIONAL_CASES}
         if scope_command_races:
             from registration_races import SCOPE_CASES as SCOPE_RACE_CASES, run as run_scope_race
             registration_runs = {case: partial(run_scope_race, scope=True) for case in SCOPE_RACE_CASES}
