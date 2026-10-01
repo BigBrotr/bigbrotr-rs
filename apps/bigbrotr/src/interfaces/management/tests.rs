@@ -1001,6 +1001,7 @@ async fn management_stop_cannot_finish_or_release_grants_before_blocking_worker_
             ttl_us: 900_000_000,
             skew_us: 30_000_000,
         },
+        enrollment: None,
     };
     let client = tokio::spawn(exchange(
         address,

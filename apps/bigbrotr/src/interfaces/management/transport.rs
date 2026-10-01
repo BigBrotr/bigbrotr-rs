@@ -19,6 +19,7 @@ use bigbrotr::{
         job_list::{self, JobListRequest, PageBody},
         jobs::{JobCommand, JobObservation, JobReceipt, ResumeExportCommand, ResumeExportReceipt},
         reauthentication::ReauthenticationProof,
+        relay_enrollment::{EnrollmentCommand, EnrollmentReceipt},
         sessions::{BrowserSecret, IssuedSession, SessionError, SessionObservation},
     },
     runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
@@ -54,6 +55,12 @@ const SESSION_COOKIE: &str = "BigBrotrLocalSession";
 const CSRF_COOKIE: &str = "BigBrotrLocalCsrf";
 
 pub(super) enum Operation {
+    RelayEnrollment {
+        session: BrowserSecret,
+        csrf: BrowserSecret,
+        key: CommandKey,
+        command: EnrollmentCommand,
+    },
     JobList {
         session: BrowserSecret,
         csrf: BrowserSecret,
@@ -113,6 +120,7 @@ pub(super) enum Operation {
     },
 }
 pub(super) enum Reply {
+    RelayEnrollment(EnrollmentReceipt),
     JobList(PageBody),
     ResumeExport(ResumeExportReceipt),
     JobStatus(Option<JobObservation>),
@@ -251,10 +259,10 @@ impl Server {
         history: HistoryLimits,
         profile: Profile,
     ) -> io::Result<Self> {
-        if matches!(profile, Profile::Sessions) && assets.is_some() {
+        if matches!(profile, Profile::Initial { .. }) && assets.is_some() {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidInput,
-                "session profile has no assets",
+                "initial profile has no assets",
             ));
         }
         let boundary =
@@ -273,6 +281,9 @@ impl Server {
             .route("/management/v1/sessions", post(login))
             .route("/management/v1/sessions/current", delete(logout))
             .route("/management/v1/me", get(me));
+        if matches!(profile, Profile::Initial { .. }) {
+            router = router.route("/management/v1/relay-enrollments", post(enroll_relay));
+        }
         if matches!(profile, Profile::Operational { .. }) {
             router = router
                 .route(
@@ -677,6 +688,63 @@ async fn resume_export(
     .await
 }
 
+async fn enroll_relay(
+    State(shared): State<Shared>,
+    Extension(connection): Extension<Connection>,
+    request: Request,
+) -> Response {
+    let grant = match begin(&shared, &request) {
+        Ok(grant) => grant,
+        Err(status) => return error(status),
+    };
+    let session = match session(request.headers()) {
+        Ok(session) => session,
+        Err(status) => return error(status),
+    };
+    let Some(csrf) =
+        single(request.headers(), "x-csrf-token").and_then(|v| BrowserSecret::parse_hex(v).ok())
+    else {
+        return error(StatusCode::FORBIDDEN);
+    };
+    let Some(key) = single(request.headers(), "idempotency-key")
+        .and_then(|v| std::str::from_utf8(v).ok())
+        .and_then(|v| v.parse::<CommandKey>().ok())
+    else {
+        return error(StatusCode::BAD_REQUEST);
+    };
+    if !single(request.headers(), "content-type").is_some_and(|v| {
+        v.eq_ignore_ascii_case(b"application/json")
+            || v.eq_ignore_ascii_case(b"application/json; charset=utf-8")
+    }) {
+        return error(StatusCode::UNSUPPORTED_MEDIA_TYPE);
+    }
+    let bytes = match to_bytes(request.into_body(), BODY_BYTES).await {
+        Ok(bytes) => bytes,
+        Err(_) => return error(StatusCode::PAYLOAD_TOO_LARGE),
+    };
+    let command = match serde_json::from_slice::<EnrollmentCommand>(&bytes) {
+        Ok(command) => command,
+        Err(_) => return error(StatusCode::BAD_REQUEST),
+    };
+    drop(bytes);
+    // Shape only; Control separately checks the installed dataset and authority.
+    if command.validate(command.visibility.dataset_id).is_err() {
+        return error(StatusCode::BAD_REQUEST);
+    }
+    dispatch(
+        &shared,
+        connection,
+        grant,
+        Operation::RelayEnrollment {
+            session,
+            csrf,
+            key,
+            command,
+        },
+    )
+    .await
+}
+
 async fn create_job(
     State(shared): State<Shared>,
     Extension(connection): Extension<Connection>,
@@ -1066,6 +1134,16 @@ async fn dispatch(
         return error(StatusCode::TOO_MANY_REQUESTS);
     }
     match receive.await {
+        Ok(Ok(Reply::RelayEnrollment(receipt))) => protect((
+            if receipt.created { StatusCode::ACCEPTED } else { StatusCode::OK },
+            Json(json!({
+                "format":"bigbrotr-relay-enrollment/1", "command_key":receipt.command_key,
+                "endpoint_id":receipt.endpoint_id, "access_scope_id":receipt.access_scope_id,
+                "route_id":receipt.route_id, "enabled":receipt.enabled,
+                "generation":receipt.generation, "accepted_at_us":receipt.accepted_at_us.to_string(),
+                "created":receipt.created, "application":"unobserved", "authority":"acceptance-only"
+            })),
+        ).into_response()),
         Ok(Ok(Reply::ResumeExport(receipt))) => protect((
             if receipt.created { StatusCode::ACCEPTED } else { StatusCode::OK },
             Json(json!({"format":"bigbrotr-export-resume/1", "command_key":receipt.command_key,

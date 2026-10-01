@@ -226,7 +226,9 @@ mod tests {
             budget.clone(),
             lease.delivery_window(epoch).unwrap(),
             None,
-            Profile::Sessions,
+            Profile::Initial {
+                public_routes: true,
+            },
         )
         .await
         .unwrap();

@@ -14,6 +14,14 @@ use bigbrotr_model::{
 };
 use bigbrotr_protocol::endpoint::Endpoint;
 
+/// Deployment roots for accepting enrollment intent. No Sync selection or
+/// network action is implied; accepted public enablement is supplied separately.
+pub(crate) fn enrollment_roots(root: &Resolved) -> Result<Option<DirectPolicy>, OwnerError> {
+    private_routes::parse(root.value("network.private.rules"))
+        .map(|(_, policy)| policy)
+        .map_err(|_| OwnerError::InvalidPolicy)
+}
+
 /// Called for each complete accepted document while Control holds the policy
 /// and enrollment locks. This computes static restrictions, not a socket grant.
 #[allow(

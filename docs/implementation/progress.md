@@ -12,13 +12,19 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main aeaf88ed703374398c128c2e335cf6095f2e8b38 is an unpublished fixture
-candidate; private origin remains88ce4beffc05870f28e80b654676c1af1fa34bc0.
+Mac main and private origin6aa4059cff575ebe426c3d4512f2aca566f8523e match
+(private repository, push and ls-remote verified).
 Root sole writer. Product23e1923/tree40f5f11527ce515632f8c92542749a1c08498148
 passed native release CLI/probe, Clippy and42 tests (3 entrypoints,6 initial,33 HTTP).
-Mac41 changed tests and scoped Clippy pass. The first-wave qualification is
-committed/pushed. Dirty work is the new fault-wave report, owning reference/task
-docs and experiment README, this checkpoint and inventory. No product change.
+Mac41 changed tests and scoped Clippy pass. Both session qualification waves are
+committed/pushed. Starting P02-T01 Step6/P01-T09 Step1 installed enrollment command;
+dirty work is the initial enrollment HTTP/dispatcher, accepted route intersection,
+schema/privilege startup probe, tests and isolated endpoint fixture, session fixture
+profile label, owning reference and this checkpoint. Actual HTTP RED405 vs401 is
+retained; the first erroneous --exact short filter collected0 and is NOT evidence.
+Mac36 Management tests and scoped lib/bin/probe Clippy PASS; one initial compile
+failure from a test struct's missing new field is preserved and corrected.
+No SQL migration, persistent digest, dependency or native format changes.
 All three new native cases PASS with unchanged qualified binaries; Python parsing
 passes. Root reviewed all1609 Git files and61 captured payload hashes plus the
 independent native/input/SQL and real client/FD/syscall observations.
@@ -84,12 +90,22 @@ original-failure/, retry/, audit-fixed/, hash-diagnostic/ and hash-fixed/. Never
 replay these completed launchers. Mac last5,459,800KiB; check disk before allocation.
 The requested earlier cache retirement remains complete and inventoried.
 
-Next bounded action: finish the fault evidence checks/commit/private push, then
-read the existing authenticated relay enrollment/endpoint and acquisition-scope
-command contracts and their real adapters/callers. Wire the smallest initial-owner
-command consumer needed for first socket admission, preserving authority, retries,
-single Control custody and the shared ledger. Renewal-specific ambiguous COMMIT,
-panic and restart remain separately unqualified. No new plan or broad unchanged suite.
+Next bounded action: create an unpublished candidate and run its existing
+initial-ingest native build profile; then implement the installed HTTP fixture
+against fresh clones with actual internal endpoint preparation and real login.
+Require enable/retry/withdraw/historical-retry, policy/root and permission refusals,
+startup privilege refusal and unchanged native bootstrap/full SQL deltas. Update
+the OpenAPI contract (not yet inspected for this extension) and affected reference
+consumers before qualification/publication. No engine outcome claimed yet.
+Read relay registry/enrollment references and complete adapters, Management owner,
+initial command loop, profile tests and existing clients. Internal URL registration
+has no browser authentication: it needs its own ingress, not direct exposure of
+that storage method. Enrollment already binds session/CSRF, policy.change, exact
+key/generation and deferred acceptance. Supply private roots and the intersection
+of both accepted public-route flags; initial policy digests remain fixed. Qualify
+actual installed HTTP effects/retry/refusal before calling this consumer complete.
+Endpoint registration, scope/job commands, CLI and M1 remain separate required work.
+Renewal-specific ambiguous COMMIT, panic and restart remain unqualified.
 
 Next user-visible M1 deliverable remains a signed socket event through installed
 same-owner command selection/admission, timer archive/read/export and restart.

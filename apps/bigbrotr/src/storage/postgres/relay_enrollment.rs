@@ -85,6 +85,43 @@ const UPDATE_ENROLLMENT: &str = "
         AND e.generation=d.expected_generation";
 
 impl ControlSession {
+    /// Check selected installed-command prerequisites before binding HTTP. This
+    /// read transaction grants no user authority and preserves every stored row.
+    pub async fn require_relay_enrollment(&mut self) -> Result<(), SessionError> {
+        self.begin_operation()
+            .map_err(|_| SessionError::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 19)
+            .await
+            .map_err(|_| SessionError::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| SessionError::Unavailable)?;
+        lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
+        let row = tx
+            .query_one(
+                "
+            SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege))
+            FROM (VALUES
+                ('control.relay_endpoints',ARRAY['SELECT']),
+                ('control.relay_access_contexts',ARRAY['SELECT','INSERT']),
+                ('control.network_routes',ARRAY['SELECT','INSERT']),
+                ('control.relay_enrollments',ARRAY['SELECT','INSERT','UPDATE']),
+                ('control.relay_enrollment_changes',ARRAY['SELECT','INSERT']),
+                ('control.management_commands',ARRAY['SELECT','INSERT'])
+            ) t(name,privileges)
+            CROSS JOIN LATERAL unnest(t.privileges) p(privilege)",
+                &[],
+            )
+            .await
+            .map_err(backend)?;
+        if !row.try_get::<_, bool>(0).map_err(metadata)? {
+            return Err(SessionError::Prerequisite);
+        }
+        tx.rollback().await.map_err(backend)?;
+        self.available = true;
+        Ok(())
+    }
+
     /// Caller owns its deadline, cancellation, transport driver and reservation.
     /// A lost COMMIT or cancelled operation poisons the session; resolve on a
     /// freshly acquired owner with the same authenticated actor/key/command.

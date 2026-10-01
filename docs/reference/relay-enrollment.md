@@ -6,8 +6,9 @@ implementation with [initial actual-engine evidence](../implementation/evidence/
 [COMMIT/expiry/lock-order evidence](../implementation/evidence/p02-relay-enrollment-faults-native-20260928.json)
 qualifies those command boundaries. [Focused relational evidence](../implementation/evidence/p02-relay-enrollment-relations-native-20260928.json)
 adds twelve live-owner omissions/mismatches with valid controls and complete
-rollback checks. The installed acquisition service, HTTP/CLI
-integration, restrictive application, socket grants, protected
+rollback checks. The initial-owner HTTP consumer below is under practical
+qualification. The installed acquisition service, CLI integration,
+restrictive application, socket grants, protected
 access, multiple selected CIDRs and overlays remain selected work.
 
 `relay.enrollment.change` accepts an existing EndpointId, a complete visibility
@@ -110,6 +111,35 @@ same authenticated actor/key/command resolves that ambiguity.
 
 The [laboratory recipe](../../experiments/relay-enrollment/README.md) distinguishes
 implemented cases from executed evidence. Whole-step and M1 acceptance remain open.
+
+## Initial-owner HTTP consumer (under qualification)
+
+The explicit initial Ingest owner adds `POST /management/v1/relay-enrollments`
+to its existing loopback session router. Its closed body is `EnrollmentCommand`
+above; session cookie, explicit CSRF header and one canonical `Idempotency-Key`
+are required. The8KiB body, connection/request limits and original Control/native
+custody are shared with the existing dispatcher. No second command connection or
+network worker starts. Migration0019 and each required table privilege are checked
+before binding. Earlier session-only installations must explicitly migrate first.
+
+Public enablement requires both complete accepted policy documents. Private route
+ceilings come only from deployment roots; caller bytes cannot replace them.
+Initial policy digests stay fixed for the lifetime, so a changed snapshot stops
+the owner. The ordinary Serve profile does not yet expose this consumer.
+
+Fresh acceptance returns202; exact historical retry returns200. The closed
+`bigbrotr-relay-enrollment/1` response has command_key, endpoint_id, access_scope_id,
+route_id, enabled, decimal-string generation/accepted_at_us, created,
+`application=unobserved` and `authority=acceptance-only`. It sets no cookies.
+Existing domain errors retain401/403/409/429; unresolved backend/COMMIT state stops
+the owner without delivering an acceptance receipt. A successful retry after
+withdrawal returns the historical receipt without re-enabling the source.
+
+This input consumes an already registered EndpointId. The internal URL registry
+operation is not a browser-authenticated registration command. Installed endpoint
+creation, CLI enrollment and complete acquisition remain separate required work.
+Local transport tests do not qualify durable effects; native installed cases are
+pending in P02-T01 Step6/P01-T09 Step1.
 
 ## Finite current source operations
 

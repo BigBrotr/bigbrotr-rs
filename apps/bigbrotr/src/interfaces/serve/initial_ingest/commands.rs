@@ -11,6 +11,7 @@ struct CommandOwner<'a> {
     cancellation: &'a Cancellation,
     lease: PolicyLeaseTracker,
     administration: Option<bool>,
+    public_routes: bool,
 }
 
 fn authority(error: LeaseError) -> (u8, String) {
@@ -42,6 +43,7 @@ impl CommandOwner<'_> {
         let ticket = self.lease.begin_refresh().map_err(authority)?;
         let started = Instant::now();
         let mut administration = true;
+        let mut public_routes = true;
         let snapshot = bounded(maximum, self.cancellation, async {
             let snapshot = self
                 .owner
@@ -49,6 +51,7 @@ impl CommandOwner<'_> {
                     let restored = super::super::accepted_policy(self.root, doc, digest)?;
                     selected(&restored).map_err(|_| OwnerError::InvalidPolicy)?;
                     administration &= restored.flag("administration.enabled");
+                    public_routes &= restored.flag("network.public.enabled");
                     Ok(())
                 })
                 .await
@@ -91,6 +94,7 @@ impl CommandOwner<'_> {
             )
             .map_err(authority)?;
         self.administration = Some(administration);
+        self.public_routes = public_routes;
         Ok(started)
     }
 
@@ -126,6 +130,7 @@ pub(super) async fn maintain(
         cancellation,
         lease,
         administration: None,
+        public_routes: false,
     };
     let started = state.renew().await?;
     let mut management = if state.administration == Some(true) {
@@ -136,6 +141,12 @@ pub(super) async fn maintain(
                 (
                     4,
                     format!("initial session prerequisites unavailable: {e:?}"),
+                )
+            })?;
+            state.owner.require_relay_enrollment().await.map_err(|e| {
+                (
+                    4,
+                    format!("initial relay enrollment prerequisites unavailable: {e:?}"),
                 )
             })
         })
@@ -151,7 +162,9 @@ pub(super) async fn maintain(
                 budget.clone(),
                 window,
                 None,
-                management::Profile::Sessions,
+                management::Profile::Initial {
+                    public_routes: state.public_routes,
+                },
             )
             .await?,
         )
@@ -179,7 +192,7 @@ pub(super) async fn maintain(
                 "kind": "private-session-http",
                 "host": root.text("administration.listen.host"),
                 "port": root.number("administration.listen.port"),
-                "profile": "initial-sessions-only"
+                "profile": "initial-source-commands"
             }])
         } else {
             json!([])

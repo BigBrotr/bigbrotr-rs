@@ -56,6 +56,8 @@ mod ingest_source_races;
 mod ingest_source_transport;
 #[path = "support/ingest_visibility.rs"]
 mod ingest_visibility;
+#[path = "support/installed_relay_setup.rs"]
+mod installed_relay_setup;
 
 const MIB: u64 = 1024 * 1024;
 fn emit(value: serde_json::Value) {
@@ -844,6 +846,10 @@ fn main() {
                 setup(config, target.parse().unwrap()).await;
             } else if args[1] == "initialize-fixture" {
                 initialize_fixture(config).await;
+            } else if args[1] == "installed-relay-setup" {
+                tokio::time::timeout(Duration::from_secs(10), installed_relay_setup::run(config))
+                    .await
+                    .unwrap();
             } else if args[1].starts_with("recovery-process-") {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
             } else {

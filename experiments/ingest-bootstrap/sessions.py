@@ -90,7 +90,7 @@ def run(pg, client, output, database, name, rows):
         initialized = first[0]
         assert initialized['ready'] is False and initialized['acquisition'] == 'not-started'
         assert initialized['listeners'] == [dict(kind='private-session-http', host='127.0.0.1',
-                                                 port=18081, profile='initial-sessions-only')]
+                                                 port=18081, profile='initial-source-commands')]
         initial = rows(database)
         lab.write_json(output / (name + '-initialized.json'), initial)
         owner = next(r for r in initial['owner_epochs'] if r['role'] == 'control')

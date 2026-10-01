@@ -18,7 +18,7 @@ use bigbrotr::{
         sessions::{BrowserSecret, SessionError, SessionLifetime, VerifiedLogin},
     },
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits},
-    storage::postgres::control_owner::{ControlSession, ScopeGrantAllocation},
+    storage::postgres::control_owner::{ControlSession, EnrollmentRoutes, ScopeGrantAllocation},
 };
 use bigbrotr_model::{CommandKey, JobId, QualifiedRef, ReauthenticationId};
 use boundary::BrowserBoundary;
@@ -203,11 +203,13 @@ pub(super) enum Execution {
     Resume(ResumeWork),
 }
 
-/// The initial native owner exposes session commands before its other concrete
-/// command consumers are installed. Ordinary Control retains its existing API.
+/// Initial-owner policy heads are fixed for its lifetime. Public enrollment
+/// requires both accepted documents; private roots come from the deployment.
 #[derive(Clone, Copy)]
 pub(super) enum Profile {
-    Sessions,
+    Initial {
+        public_routes: bool,
+    },
     Operational {
         export_jobs: bool,
         export_resume: bool,
@@ -238,6 +240,12 @@ pub(super) struct Management {
     export_resume: bool,
     job_pages: bool,
     cursor_lifetime: CursorLifetime,
+    enrollment: Option<EnrollmentPolicy>,
+}
+
+struct EnrollmentPolicy {
+    public_enabled: bool,
+    private_ceiling: Option<bigbrotr::network::DirectPolicy>,
 }
 
 pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
@@ -290,6 +298,14 @@ impl Management {
         assets: Option<Assets>,
         profile: Profile,
     ) -> Result<Self> {
+        let enrollment = match profile {
+            Profile::Initial { public_routes } => Some(EnrollmentPolicy {
+                public_enabled: public_routes,
+                private_ceiling: crate::config::acquisition::enrollment_roots(root)
+                    .map_err(|_| (3, "invalid deployment enrollment roots".into()))?,
+            }),
+            Profile::Operational { .. } => None,
+        };
         let address = SocketAddr::new(
             root.text("administration.listen.host")
                 .ok_or_else(|| (3, "missing private listener host".into()))?
@@ -328,7 +344,7 @@ impl Management {
         .await
         .map_err(|_| (1, "private management listener unavailable".into()))?;
         let (export_jobs, export_resume, job_pages) = match profile {
-            Profile::Sessions => (false, false, false),
+            Profile::Initial { .. } => (false, false, false),
             Profile::Operational {
                 export_jobs,
                 export_resume,
@@ -347,6 +363,7 @@ impl Management {
                 ttl_us: root.number("read.cursor.ttl"),
                 skew_us: root.number("read.cursor.clock_skew"),
             },
+            enrollment,
         })
     }
 
@@ -404,6 +421,39 @@ impl Management {
                     return Ok(Execution::Complete(None));
                 }
                 match operation {
+                    Operation::RelayEnrollment {
+                        session,
+                        csrf,
+                        key,
+                        command,
+                    } => {
+                        let Some(routes) = &self.enrollment else {
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::Forbidden),
+                            ))));
+                        };
+                        let commit = std::cell::Cell::new(false);
+                        let result = sql(
+                            maximum,
+                            owner.accept_relay_enrollment(
+                                &session,
+                                &csrf,
+                                key,
+                                &command,
+                                EnrollmentRoutes {
+                                    public_enabled: routes.public_enabled,
+                                    private_ceiling: routes.private_ceiling.as_ref(),
+                                },
+                                &commit,
+                            ),
+                        )
+                        .await?;
+                        return Ok(Execution::Complete(Some(Response(
+                            completion,
+                            result.map(Reply::RelayEnrollment),
+                        ))));
+                    }
                     Operation::ResumeExport {
                         session,
                         csrf,
