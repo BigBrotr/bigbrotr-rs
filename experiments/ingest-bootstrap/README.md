@@ -303,3 +303,15 @@ the retained45f7593 source. Exact0733326 build/endpoint regression and7104b2d sc
 fixture passed all fourteen cases; the [bounded report](../../docs/implementation/evidence/p03-scope-command-faults-native-20261002.json)
 retains exact identities and terminal inventories. Current-authority races and raw
 relational negatives remain separate work.
+
+
+`--scope-command-races BUILD` proposes eleven scope acceptance schedules using
+registration_races.py with an explicit scope profile. Policy heads, roles.control,
+session revocation, account deactivation and deactivate/reactivate each run in
+both observed lock orders, plus writer rollback. The permission writer locks the
+account and updates grant_revision atomically; arbitrary bare grant DML is outside
+this claim. Literal writer effects are compared independently from the complete
+scope command/digest oracle. Fresh-owner recovery after changed heads or permission
+must return the original receipt without durable changes. The existing endpoint
+race profile also needs its affected regression. No new production or probe build
+is needed; actual race execution is pending.

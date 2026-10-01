@@ -12,13 +12,15 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mac main/origin4e95a1f327aefa4dab91279bb2456778a183aacf pushed,
-treedfbf50f51d036ec88170e101c4236932db27cf06. Root sole writer. Dirty only
-supplemental internal helper evidence/docs/checkpoint/inventory. No product/applied
-SQL/dependency change or active build/engine. Actual0733326 build/endpoint faults,
-7104b2d scope faults and now4e95a1f internal helper regression PASS within their
-separate claims. Next bounded work: current-authority races/raw relational negatives,
-then installed HTTP ambiguity before finite-job delivery.
+Mac main/origin62fa706288eba768f5a609093a155d848657b855 pushed,
+treeccf8338839a7ca32c14799491dece3fee300ca2a. Root sole writer. Dirty next fixture
+slice: registration_races.py gains explicit scope profile and roles.control writer;
+bindings.py --scope-command-races selects eleven actual authority schedules.
+README/checkpoint/inventory accompany it. AST/whitespace checks PASS; new race
+engine NOT_RUN. Read-only AI fixture review found no concrete blocker; it ran no
+engines and did not qualify arbitrary bare grant DML. No product/applied SQL/
+dependency changes; no active build or engine. Reuse exact0733326 artifacts after
+new experiments/docs-only fixture commit. Current Mac free4,104,096KiB.
 
 Latest runs/acquisition-scope-faults-4e95a1f STOPPED/RETAINED:
 native PID1424898/start427761161 terminal, ownerb216e89dc1a41c2595a350b4a09610f7,
@@ -39,7 +41,7 @@ Prior endpoint0733326 PID1405607/start427721198 terminal, owner3a539e420901ebd97
 clientabd5c454 stopped143;1642 Git files/99 captures checked. Original retained45/5e
 sources unchanged. Native0733326 build owner8195091e5438bfb63c0a9b83d6c527c3,
 fetch/nativee3b503b0/cc5c6c13 stopped0;1642 files/9 captures/ELFs verified. Cache
-latest0733326; no active process. Local scope-registration-20261001/{fault-native,
+then held0733326 intermediates; no active process. Local scope-registration-20261001/{fault-native,
 endpoint-regression,fault-engine} owns originals. Build and engine terminal audits
 have separate filenames; never replay launchers.
 
@@ -53,10 +55,10 @@ and three actual-capture receipt mutation controls in engine/. Never replay laun
 Tux exact-Git e4c2825 native build is PASS_BUILD_ONLY and STOPPED/RETAINED:
 runs/initial-ingest-e4c2825, PID1370048/start427513649 terminal,
 owneraf00cee56119ffdd03b327b6f8d2b228. Fetchd4dc9fad/native3ec3bf02 exited0/noOOM;
-shared1154757 compiler lock free, latest e4c2825 intermediates. Complete1638 Git
+shared1154757 compiler lock free at that audit, then holding e4c2825 intermediates. Complete1638 Git
 source files and12 captured check payloads verified; actual CLI/probe SHA verified.
-Native Rust1.98.1/clang14/Rocks11.8.1 amd64, six profile steps passed. Actual schema26
-SQL and installed scope journey NOT_RUN. Original stdout/logs retained in
+Native Rust1.98.1/clang14/Rocks11.8.1 amd64, six profile steps passed. That build
+alone exercised no schema26 SQL; later installed evidence is recorded below. Original stdout/logs retained in
 .research/implementation/scope-registration-20261001/native/checks.
 CLI SHA a48d49ae1ddbdf5dadc853f81e412dd3e7c34653feeb37fa293ecabbeab19d45;
 ingest probe SHA c34be5a35dbc2f6efdfeb9f137518b09f8759494331fb7a73b95f1cfa9de1afa.
@@ -247,12 +249,12 @@ rollback, expiry, old-schema refusal and historical policy epoch preserve comple
 64/66-table state outside expected effects. No affected helper regression remains
 pending; broader current-user authority/relational qualification is still separate.
 
-Next bounded action: extend the existing registration_races.py concrete schedule
-for scope acceptance with explicit roles.control writer and independent scope
-receipt/effects oracle. Both lock orders and writer rollback must be positively
+Next bounded action: finish review of the written registration_races.py scope
+profile, commit exact fixture and run eleven scope authority schedules plus the
+affected existing endpoint race profile, preserving both populated source clones. Both lock orders and writer rollback must be positively
 observed; original heads/grants receipt recovery remains historical. Complete
 registration_races.py/registration_relations.py and acquisition.rs/probe/run.py were
-read; relational SQL fixture still needs its complete read before adaptation.
+read; registration_relations.sql was also read completely for the following adaptation.
 Preserve account-lock/grant-revision writer discipline; no arbitrary bare grant
 DML claim. Reuse qualified0733326 probe for experiments/docs-only fixture revisions.
 

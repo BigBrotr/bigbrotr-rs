@@ -12,9 +12,10 @@ from registration_faults import (
 KINDS = ('policy', 'permission', 'revoked', 'inactive', 'authentication')
 CASES = {f'register-{order}-{kind}': (order, kind) for order in ('writer', 'accept') for kind in KINDS}
 CASES['register-rollback'] = ('rollback', 'policy')
+SCOPE_CASES = {name.replace('register-', 'scope-command-', 1): case for name, case in CASES.items()}
 
 
-def mutation(kind, session):
+def mutation(kind, session, *, scope=False):
     if kind == 'policy':
         return ('SELECT dataset_id FROM control.datasets FOR UPDATE;', '''
             INSERT INTO control.config_revisions
@@ -33,7 +34,8 @@ def mutation(kind, session):
             {'browser_sessions'})
     lock = "SELECT principal_id FROM control.local_accounts WHERE username='alice' FOR UPDATE;"
     if kind == 'permission':
-        return (lock, "DELETE FROM control.principal_grants WHERE action='policy.change'; UPDATE control.local_accounts SET grant_revision=grant_revision+1 WHERE username='alice';",
+        action = 'roles.control' if scope else 'policy.change'
+        return (lock, f"DELETE FROM control.principal_grants WHERE action='{action}'; UPDATE control.local_accounts SET grant_revision=grant_revision+1 WHERE username='alice';",
             {'local_accounts', 'principal_grants'})
     change = "UPDATE control.local_accounts SET active=false WHERE username='alice';"
     if kind == 'authentication':
@@ -58,7 +60,7 @@ def blocked(pg, database, waiter, holder):
         time.sleep(.02)
 
 
-def writer_effects(before, after, kind, session):
+def writer_effects(before, after, kind, session, *, scope=False):
     """Literal changes, including automatic account-authentication revocation."""
     expected = copy.deepcopy(before)
     if kind == 'policy':
@@ -73,7 +75,8 @@ def writer_effects(before, after, kind, session):
             new['xmin'] = actual['xmin']
             expected[table].append(new)
     elif kind == 'permission':
-        expected['principal_grants'] = [r for r in before['principal_grants'] if r['action'] != 'policy.change']
+        action = 'roles.control' if scope else 'policy.change'
+        expected['principal_grants'] = [r for r in before['principal_grants'] if r['action'] != action]
         assert len(expected['principal_grants']) == len(before['principal_grants']) - 1
         expected['local_accounts'][0]['grant_revision'] += 1
         expected['local_accounts'][0]['xmin'] = after['local_accounts'][0]['xmin']
@@ -92,13 +95,21 @@ def writer_effects(before, after, kind, session):
     assert ordered(after) == ordered(expected), 'writer effects differ from literal mutation'
 
 
-def run(pg, client, output, database, name, rows):
-    order, kind = CASES[name]
+def run(pg, client, output, database, name, rows, *, scope=False):
+    if scope:
+        from scope_command_faults import (
+            DOMAIN_TABLES as domain_tables, effects as effects_case,
+            prepare as prepare_case, receipt as receipt_case,
+        )
+    else:
+        domain_tables, effects_case, prepare_case, receipt_case = DOMAIN_TABLES, effects, prepare, receipt
+    order, kind = (SCOPE_CASES if scope else CASES)[name]
     directory = output / name
     directory.mkdir(mode=0o700)
-    endpoint = prepare(directory, rows(database))
+    original = prepare_case(directory, rows(database))
     processes, writers = [], []
-    result = dict(name=name, status='RUNNING', order=order, writer_kind=kind, preexisting_endpoint=endpoint)
+    result = dict(name=name, status='RUNNING', order=order, writer_kind=kind)
+    result['preexisting_scope' if scope else 'preexisting_endpoint'] = original
 
     def snapshot(label):
         state = rows(database)
@@ -116,14 +127,14 @@ def run(pg, client, output, database, name, rows):
             proxy, proxy_ready = start_proxy(client, 'hold', processes)
             port = proxy_ready['listen_port']
         mode = kind if order == 'writer' else 'accept'
-        process, token = start_probe(client, database, directory, mode, 11, processes, port)
+        process, token = start_probe(client, database, directory, mode, 11, processes, port, scope=scope)
         ready = event(process, 'ready')
         assert ready['epoch'] == 2 and ready['config'] == ready['policy'] == 1
         initial = snapshot('before')
         observed = observe(pg, database, ready)
         assert not observed['owner_expired'] and not observed['session_expired']
         actor, = [r for r in initial['local_accounts'] if r['principal_id'] == ACTOR]
-        lock, change, allowed = mutation(kind, observed['session'])
+        lock, change, allowed = mutation(kind, observed['session'], scope=scope)
         if order == 'accept':
             go(token)
             proxy.event('held', 10)
@@ -156,24 +167,24 @@ def run(pg, client, output, database, name, rows):
         writers.remove(writer)
         after = snapshot('after')
         committed = order != 'writer'
-        accepted = receipt(after, ready, actor)
+        accepted = receipt_case(after, ready, actor)
         assert (accepted is not None) == committed
         if committed:
             assert outcome == dict(receipt=dict(accepted, created=True), commit_started=True)
         if order == 'rollback':
-            effects(initial, after, True)
+            effects_case(initial, after, True)
         else:
             # Separate immutable command additions from the explicit writer's
             # literal effects; every remaining relation and old row stays exact.
-            command_only = {t: after[t] if t in DOMAIN_TABLES else initial[t] for t in initial}
-            effects(initial, command_only, committed)
+            command_only = {t: after[t] if t in domain_tables else initial[t] for t in initial}
+            effects_case(initial, command_only, committed)
             writer_only = {t: after[t] if t in allowed else initial[t] for t in initial}
-            assert {t for t in initial if initial[t] != after[t]} == allowed | (DOMAIN_TABLES if committed else set())
-            writer_effects(initial, writer_only, kind, observed['session'])
+            assert {t for t in initial if initial[t] != after[t]} == allowed | (domain_tables if committed else set())
+            writer_effects(initial, writer_only, kind, observed['session'], scope=scope)
         result.update(ready=ready, observation=observed, barrier=barrier, outcome=outcome,
             committed=committed, exact_writer_effects=True)
         if order == 'accept' and kind in ('policy', 'permission'):
-            recovery, recovery_token = start_probe(client, database, directory, 'accept', 13, processes)
+            recovery, recovery_token = start_probe(client, database, directory, 'accept', 13, processes, scope=scope)
             recovered_owner = event(recovery, 'ready')
             assert recovered_owner['epoch'] == 3
             assert recovered_owner['config'] == recovered_owner['policy'] == (2 if kind == 'policy' else 1)
@@ -182,7 +193,7 @@ def run(pg, client, output, database, name, rows):
             recovered = finish(recovery)
             after_retry = snapshot('recovery-after')
             assert before_retry == after_retry, 'historical recovery changed data'
-            assert receipt(after_retry, ready, actor) == accepted
+            assert receipt_case(after_retry, ready, actor) == accepted
             assert recovered == dict(receipt=dict(accepted, created=False), commit_started=False)
             result.update(recovery_owner=recovered_owner, recovered=recovered)
         assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
