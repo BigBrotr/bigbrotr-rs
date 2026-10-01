@@ -12,9 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native Linux arm64 or complete release claim.
 The active unbudgeted goal covers the whole selected product, not this slice.
 
-Mac main45f75931c0bfddd60f6453c6b3afa2d037dc502f is an unpublished fixture candidate;
-private origin remains22f5b68a3fa31e8cf1daafcc2cc398297c3fa1c1. The enrollment
-slice is pushed; registration is under qualification. Root sole writer.
+Mac main/origin877b73ca24b8c6e9d31453c2d9e792c21413fce9 is pushed and private.
+Registration's bounded installed HTTP/upgrade qualification is recorded; its fault
+schedules remain open. Root sole writer. No active native/engine jobs at the latest
+read-only audit; shared1154757 cache is retained and available.
 P02-T01 Step6/P01-T09 Step1 initial enrollment HTTP bounded integration now has
 [native evidence](evidence/p02-initial-enrollment-http-native-20261001.json).
 Both438067f and917c76b built actual release CLI/probe,45 native tests and scoped
@@ -119,16 +120,23 @@ compiler lock released,59,934,572,544B free. Original engine/result, root-review
 and terminal audit are under ignored relay-registration-20261001/engine/.
 Never relaunch completed recipes. Mac resumption observed4,767,008KiB available.
 
-Root dirty work: qualification report, inventory/checkpoint, OpenAPI/generated types
-and owning docs. [Bounded report](evidence/p02-initial-registration-http-native-20261001.json)
+The pushed qualification report, inventory, OpenAPI/generated types and owning
+docs are reconciled. [Bounded report](evidence/p02-initial-registration-http-native-20261001.json)
 now records originals, versions and limits. Generated drift/TypeScript checks,
 23 client tests,7 actual receipts/7 errors,2 command shapes and8 malformed schema
 controls PASS; artifact/handoff structure checks PASS. Read-only AI review found
 no schema/doc mismatch; root reviewed the complete changed diff. Report itself is
 root-reviewed, not independently engine-executed by the AI reviewer.
-Next bounded action: commit/push this qualified slice, then implement actual adapter
-fault schedules, especially expired fresh acceptance for an existing endpoint.
-Keep raw relational and other not-run schedules explicit; no whole-step/M1 closure.
+Active test-only work: new finite relay_registration_fault_probe and a native
+build profile, reusing existing actual Control/session APIs and fourth-COMMIT wire
+proxy. No product/SQL changes. Fixed original heads permit historical resolution
+under a later owner with changed heads. The probe targets the existing installed
+endpoint so deferred authentication cannot hide behind a new-endpoint trigger.
+Next bounded action: native compile/Clippy on exact candidate using shared1154757,
+then isolated clones for COMMIT loss/cancellation/owner/session expiry and exact
+fresh-owner recovery. Concurrency/raw relational cases remain required separately.
+No whole-step/M1 closure. Latest read-only Tux audit: prior two owned processes
+absent, client/PG stopped without OOM, same8 unrelated containers,59,934,281,728B free.
 
 ## Next useful journey and remaining prerequisites
 
