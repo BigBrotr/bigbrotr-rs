@@ -12,11 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is `851d116`, six unpublished candidates ahead of pushed `bfe6d26`.
-Root owns only the closing evidence/reference/task/inventory/checkpoint edits.
-All new build and engine waves are stopped/retained; no parallel writer. Next
-commit the reviewed qualification, push normally and verify remote equality.
-The checkpoint cannot contain its own future commit hash.
+Primary main and origin/main were verified clean and equal at `cd03ae5`.
+Root now owns a signed-recovery fixture plus its bindings-runner dispatch and this
+checkpoint. No product or build input changes. All previous waves remain stopped;
+no parallel writer. Commit the fixture, transfer exact Git source and reuse the
+qualified5512161 artifacts in a new owned lab. The checkpoint cannot contain its
+own future commit hash.
 
 ## Active responsibility and next bounded action
 
@@ -69,10 +70,14 @@ New consumer, original initial lifetime/supervision, close/resolve and historica
 loaders plus changed fixtures/callers reviewed. Unchanged ordinary read/export
 runtime was not re-audited; no independent AI review at this boundary.
 
-Next bounded action: extend the installed signed-event journey with this explicit
-positive recovery command, independently checking original signed input/body,
-receipt/provenance and complete native/SQL state after stop. Existing installed
-Sync/Archive fixtures supply the source; do not invent fixture-supplied old authority.
+Next bounded action: execute the committed signed-recovery fixture against isolated
+copies of retained installed-archive-export-b7b60f9. Its original client was freshly
+verified stopped, its report SHA08ec9000 and complete69-table capture remain present.
+The fixture copies only the small native store/event, independently reconstructs
+all49 rows/four inputs, selects original issuer from immutable reservations, then
+runs full recovery, exact retry and missing event-outcome copy. Preserve original
+32-table catalog,69-table Control and native/archive/export files; no original lab
+mount in the new client. No export rerun or local Rust build. Result remains NOT_RUN.
 Then implement durable source/producer/domain closure and explicit successor using
 the existing P02 contracts. No adjacent analytics or complete acquisition subsystem
 is needed first. Full restart/resend remains M1's visible acceptance.

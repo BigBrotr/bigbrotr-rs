@@ -63,7 +63,8 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
-ingest_recovery = ingest_recovery_interruptions or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
+ingest_recovery_signed = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-signed'
+ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
 ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
 initial_ingest = ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
@@ -808,7 +809,8 @@ try:
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
     elif ingest_recovery:
-        cases = ['positive-recovery-interruptions' if ingest_recovery_interruptions else 'positive-recovery']
+        cases = ['positive-recovery-signed' if ingest_recovery_signed
+            else 'positive-recovery-interruptions' if ingest_recovery_interruptions else 'positive-recovery']
     elif ingest_history:
         cases = ['history']
     elif ingest_windows:
@@ -852,9 +854,13 @@ try:
             save()
         elif ingest_recovery:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-            from installed_recovery import run as run_recovery
-            completed = clone(name, 'bb_source_template')
-            report['cases'].append(run_recovery(pg,client,output,completed,name,rows,clone))
+            if ingest_recovery_signed:
+                from installed_signed_recovery import run as run_signed_recovery
+                report['cases'].append(run_signed_recovery(pg,client,output,rows,clone))
+            else:
+                from installed_recovery import run as run_recovery
+                completed = clone(name, 'bb_source_template')
+                report['cases'].append(run_recovery(pg,client,output,completed,name,rows,clone))
             save()
         elif ingest_history:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -958,7 +964,7 @@ try:
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
     if ingest_recovery:
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
-            and len(report['cases'][0]['cases']) == (3 if ingest_recovery_interruptions else 9), 'positive-recovery-case-set')
+            and len(report['cases'][0]['cases']) == (3 if ingest_recovery_interruptions or ingest_recovery_signed else 9), 'positive-recovery-case-set')
     if ingest_history:
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
             and len(report['cases'][0]['cases']) == 10, 'historical-lookup-case-set')
