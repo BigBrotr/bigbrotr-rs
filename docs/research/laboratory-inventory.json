@@ -36848,7 +36848,115 @@
         }
       },
       "preserve": "Exact source/captures/logs/manifests, all installed stores and original request inputs, complete PG clones including deliberate pending/missing rows. Borrowed PG and all clients/builds stopped. Shared1154757 cache retained. No dataset, cache, container or unrelated resource deleted.",
-      "next": "Installed signed-event recovery, then source/producer/domain closure and explicit successor for M1"
+      "next": "Installed signed-event recovery, then source/producer/domain closure and explicit successor for M1",
+      "source_closure": {
+        "status": "First wave passed; fault qualification pending",
+        "builds": {
+          "entrypoint_red": {
+            "source": "77512178f969208b062536592f8c16a6269aac86",
+            "tree": "502b1f95cf96cba6969033799014aa52f5b5b378",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-7751217",
+            "owner": "6f7346e20253b0607112e93bdf473616",
+            "owner_label": "org.bigbrotr.network-transport",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "7eac5dbb834dcdabb88e5e05ec9e68d081516f7b78a6d5cfc999d404a810601b"
+              },
+              {
+                "name": "native",
+                "id": "44115ca465637e36f63e710e65e74143d8ec26d95e9010534930aba23b5b0d15"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "inventory_changed": [],
+            "free_bytes_after": 69006155776,
+            "capture": {
+              "label": "source-closure-cli-red",
+              "source": "77512178f969208b062536592f8c16a6269aac86",
+              "files": 1704,
+              "captures": 12,
+              "capture_sha256": "75feeea063692b4313f4b2dcdab23a162ab97abd44dfb85be37343b07a6ec258"
+            }
+          },
+          "candidate": {
+            "source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+            "tree": "95b992baa43f3ca7867face5d90ab21201a86eb1",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-f873d92",
+            "owner": "9557406a5f1252263e54e1b1bee17a6e",
+            "owner_label": "org.bigbrotr.network-transport",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "1c1e19be3a8c1babbe51178c5f27589f0d328fdb2f30d036d88a728159bfe638"
+              },
+              {
+                "name": "native",
+                "id": "be2ddaea47b782be0c0f843a297d67aee25e44d951eb396c0543025f90d1e5f8"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "inventory_changed": [],
+            "free_bytes_after": 68842946560,
+            "capture": {
+              "label": "source-closure-cli-green",
+              "source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+              "files": 1707,
+              "captures": 16,
+              "capture_sha256": "28c0e5340c3716bfdcf87b7b4c5d579da47b6db9fe84c3c35b22c2e68ff1eeb9"
+            }
+          }
+        },
+        "engine": {
+          "source": "d90b7189b69565461f7181db2d268d9fbd5099a4",
+          "status": "PASS_INSTALLED_INITIAL_SOURCE_CLOSURE",
+          "owner": "77dc304d3949abb624c3a6db151a2cff",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "ceb0445950bfcc55b3485159fb54001a1bb86d4f565ca63e3a7037a05e6fb963",
+            "name": "bigbrotr-acquisition-binding-d90b718"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_d90b718_signed_recovery",
+            "bb_scope_bind_d90b718_signed_copy",
+            "bb_scope_bind_d90b718_source_cut_conflict"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 68755337216,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-d90b718",
+          "state": "stopped-retained",
+          "capture": {
+            "label": "source-closure-engine-first",
+            "source": "d90b7189b69565461f7181db2d268d9fbd5099a4",
+            "build_source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+            "status": "PASS_INSTALLED_INITIAL_SOURCE_CLOSURE",
+            "captures": 44,
+            "capture_sha256": "0c12ffefb8a80f36fd9c7ae6ac835ddade93140350e45de31f843b8b2c981d46",
+            "cases": [
+              {
+                "name": "source-closure-signed",
+                "status": "PASS"
+              }
+            ]
+          },
+          "source_archive_sha256": "c29ce584117a8ee135fd5169f68014dee4af09bba4876e49e28812d4abe73c58",
+          "retained_seed": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9",
+          "source_preserved": {
+            "control": true,
+            "catalog": true,
+            "files": true,
+            "report": true
+          }
+        },
+        "preserve": "Original RED, exact builds and source, complete captures, all signed stores/inputs and PostgreSQL clones including deliberately incompatible job cut. No dataset or volume deletion."
+      }
     }
   },
   "implementation_relay_registry_20260928": {

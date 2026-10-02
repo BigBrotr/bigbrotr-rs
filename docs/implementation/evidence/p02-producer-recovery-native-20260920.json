@@ -1262,5 +1262,168 @@
       "Installed Rejected/AlreadyDurable outcomes, crash/COMMIT ambiguity and blocked native I/O not exercised by this wave.",
       "Positive recovery deliberately leaves the source open and producer closing. Missing detail remains unresolved; no absence proof, ACK/GC, retirement, successor or full M1 restart/resend claim."
     ]
+  },
+  "initial_source_closure_20261002": {
+    "status": "PASS_FIRST_WAVE_SOURCE_CLOSURE; fault qualification pending",
+    "scope": "P01-T09 Step4/P02-T01 Step5/P02-T02 Step4: explicit positive initial source closure, not producer/domain retirement or successor",
+    "product": {
+      "source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+      "tree": "95b992baa43f3ca7867face5d90ab21201a86eb1",
+      "binary_sha256": "0c9d287e04cef5f039a201077d0b116cf229c7958f9095e66ae1b99892ac1d78",
+      "probe_sha256": "282f5a81f3203947a86467afb936fafc46add9636dcf265586e8548a133d12a5",
+      "test_executables_sha256": {
+        "source_closure_components": "7ebce82a13cbcbd799bd0ad177e8dc036a40d6fddab65bf9f83b84e249baf7a0"
+      },
+      "native_tests_passed": {
+        "source-closure": 3
+      },
+      "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+      "source_manifest_sha256": "0d9662570141654bf5e454f5637eec410f307aea6c3a90532c6cfda31d7aa84f"
+    },
+    "fixture": {
+      "revision": "d90b7189b69565461f7181db2d268d9fbd5099a4",
+      "source_files": 1707,
+      "source_archive_sha256": "c29ce584117a8ee135fd5169f68014dee4af09bba4876e49e28812d4abe73c58"
+    },
+    "environment": {
+      "target": "x86_64-unknown-linux-gnu",
+      "rustc": "1.98.1",
+      "rocksdb": "0.25.0 / 11.8.1",
+      "postgres": "16.15 with fsync/full_page_writes enabled",
+      "native_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "runner": "Tux, no hosted Actions",
+      "client_limits": "2CPU/1GiB/128PIDs",
+      "declared_recovery_envelope": "1536MiB total; 1GiB payload,256MiB native,128MiB baseline,32MiB completion; reservations are not RSS/capacity claims"
+    },
+    "implementation": [
+      "ingest recover --close-source retains default recovery and adds a native-custody-borrowing positive prefix witness. It consumes every original request in order, requires contiguous NewFacts and compares native source counter/last key and the single native producer. No receipt vector or new native format.",
+      "Typed Control source closure takes source UPDATE before producer UPDATE, verifies the complete fixed-size PostgreSQL outcome digest prefix against the native witness, and commits existing monotone source transitions. The current full policy/lease/cancellation, original registry, driver and native custody remain required.",
+      "Exact closed retries compare bound/digest and preserve closed_at/xmin. The original topology and its historical NULL handoff remain immutable. No new migration or persistent ledger. Producer/domain/owner retirement, workflow gaps, ACK/GC and successor remain separate."
+    ],
+    "build_checks": [
+      "release CLI/probe",
+      "4 actual entrypoint tests",
+      "3 actual RocksDB source-prefix tests",
+      "Clippy -D warnings"
+    ],
+    "installed_cases": [
+      {
+        "name": "signed-recovery",
+        "status": "PASS",
+        "native_rows": 49,
+        "original_requests": 4,
+        "control_tables": 69,
+        "seconds": 0.1718982206657529,
+        "new_event_outcome_copy": false,
+        "source_closed": true,
+        "expected_refusal": null
+      },
+      {
+        "name": "signed-recovery-retry",
+        "status": "PASS",
+        "native_rows": 49,
+        "original_requests": 4,
+        "control_tables": 69,
+        "seconds": 0.21637007221579552,
+        "new_event_outcome_copy": false,
+        "source_closed": true,
+        "expected_refusal": null
+      },
+      {
+        "name": "signed-recovery-copy",
+        "status": "PASS",
+        "native_rows": 49,
+        "original_requests": 4,
+        "control_tables": 69,
+        "seconds": 0.21987184695899487,
+        "new_event_outcome_copy": true,
+        "source_closed": true,
+        "expected_refusal": null
+      },
+      {
+        "name": "source-cut-conflict",
+        "status": "PASS",
+        "native_rows": 49,
+        "original_requests": 4,
+        "control_tables": 69,
+        "seconds": 0.22306691110134125,
+        "new_event_outcome_copy": false,
+        "source_closed": false,
+        "expected_refusal": "Backend"
+      }
+    ],
+    "closure_sha256": "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501",
+    "review": {
+      "owner": "root",
+      "replay": {
+        "status": "PASS_SCOPED_SOURCE_CLOSURE_REPLAY",
+        "cases": 4,
+        "closure_digest": "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501",
+        "independent_native_rows": 49,
+        "original_inputs": 4,
+        "control_tables": 69,
+        "original_catalog_tables": 32
+      },
+      "boundary": "New native witness and PG transaction, changed registry/recovery/CLI boundaries and signed fixture reviewed. Complete original closure/positive resolution/history/registry owners and owning contracts read. Unchanged ordinary Serve dispatch and full Archive implementation not re-audited; no independent AI review."
+    },
+    "retained_source": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9",
+      "revision": "b7b60f9283e3d3c72421c4df665dcd0b42c41798",
+      "owner": "df63ed47a165a536aa0937277bfb4caa",
+      "result_sha256": "08ec9000df8e5cf9facfd20d67cbf379f14a4c492fe36dedebb1b35e44ca63d0",
+      "preserved": {
+        "control": true,
+        "catalog": true,
+        "files": true,
+        "report": true
+      }
+    },
+    "captures": {
+      "entrypoint_red": {
+        "label": "source-closure-cli-red",
+        "source": "77512178f969208b062536592f8c16a6269aac86",
+        "files": 1704,
+        "captures": 12,
+        "capture_sha256": "75feeea063692b4313f4b2dcdab23a162ab97abd44dfb85be37343b07a6ec258"
+      },
+      "build": {
+        "label": "source-closure-cli-green",
+        "source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+        "files": 1707,
+        "captures": 16,
+        "capture_sha256": "28c0e5340c3716bfdcf87b7b4c5d579da47b6db9fe84c3c35b22c2e68ff1eeb9"
+      },
+      "engine": {
+        "label": "source-closure-engine-first",
+        "source": "d90b7189b69565461f7181db2d268d9fbd5099a4",
+        "build_source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+        "status": "PASS_INSTALLED_INITIAL_SOURCE_CLOSURE",
+        "captures": 44,
+        "capture_sha256": "0c12ffefb8a80f36fd9c7ae6ac835ddade93140350e45de31f843b8b2c981d46",
+        "cases": [
+          {
+            "name": "source-closure-signed",
+            "status": "PASS"
+          }
+        ]
+      }
+    },
+    "original_red": "7751217: existing three entrypoint tests PASS; explicit close-source option exits2 rather than4. Product engine not run in RED. Original logs retained unchanged.",
+    "terminal": {
+      "state": "STOPPED_RETAINED",
+      "owner": "77dc304d3949abb624c3a6db151a2cff",
+      "client": {
+        "id": "ceb0445950bfcc55b3485159fb54001a1bb86d4f565ca63e3a7037a05e6fb963",
+        "name": "bigbrotr-acquisition-binding-d90b718"
+      },
+      "free_bytes_after": 68755337216,
+      "cleanup_errors": [],
+      "unrelated_changed": []
+    },
+    "not_run": [
+      "Source-closure ambiguous COMMIT, pre-commit cancellation, concurrency and process crash schedules remain next qualification work.",
+      "Installed zero prefix/AlreadyDurable/Rejected combinations and larger/aged/mixed workloads not run by this installed wave; native prefix tests have narrower scope.",
+      "No full initial producer/domain retirement, explicit workflow abandonment, ACK/GC, successor, M1 restart/resend, native arm64 or release qualification."
+    ]
   }
 }

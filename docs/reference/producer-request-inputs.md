@@ -471,5 +471,10 @@ Source closure leaves producer/domain retirement, workflow abandonment, ACK/GC,
 Ingest owner release and successor activation to their explicit later operations.
 The original topology remains immutable, including its historical NULL handoff;
 a later topology must carry the closed predecessor's exact bound. This extension
-has a candidate implementation but is not qualified yet; preceding measurements
-do not cover it.
+passes the first scoped wave with product `f873d92` and fixture `d90b718`: three
+actual native prefix cases and four installed signed cases (close at12, identical
+retry, missing event outcome copy, incompatible retained job bound13). The
+[initial-source supplement](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+retains all49 native rows/four original inputs,69-table comparisons and the
+independent closure digest. COMMIT ambiguity, cancellation and concurrent source
+locks remain required qualification; this does not complete retirement or M1.
