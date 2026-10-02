@@ -169,8 +169,9 @@ def run_case(name):
             mutate(db, f'UPDATE control.relay_enrollments SET enabled=false WHERE {bound};')
             expected['source'] = None
         elif name == 'source_changed':
-            route_id, route_bytes = 'ee' * 16, '0104207f000001'
-            require(not any(r['route_id'] == '\\x' + route_id for r in basic['network_routes']), 'new-route-collision')
+            route_id, route_bytes = 'ee' * 16, '0104087f000000'
+            require(not any(r['route_id'] == '\\x' + route_id or r['route_bytes'] == '\\x' + route_bytes
+                for r in basic['network_routes']), 'new-route-collision')
             mutate(db, f"""
                 INSERT INTO control.network_routes
                     SELECT decode('{route_id}','hex'),dataset_id,endpoint_id,route_version,
