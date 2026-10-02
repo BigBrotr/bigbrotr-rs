@@ -192,14 +192,14 @@ fn explicit_ingest_recovery_preserves_missing_store_before_credentials() {
     config["storage"]["ingest_root"] = store.to_str().unwrap().into();
     config["postgres"]["control"]["password_ref"] = "file:/nonexistent/recovery-password".into();
     fs::write(&file, toml::to_string(&config).unwrap()).unwrap();
-    for close_source in [false, true] {
+    for flag in [None, Some("--close-source"), Some("--abandon-acquisition")] {
         let mut command = Command::new(env!("CARGO_BIN_EXE_bigbrotr"));
         command
             .env_clear()
             .args(["ingest", "recover", "--file"])
             .arg(&file);
-        if close_source {
-            command.arg("--close-source");
+        if let Some(flag) = flag {
+            command.arg(flag);
         }
         let result = command.output().unwrap();
         assert_eq!(result.status.code(), Some(4));

@@ -12,10 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is `d824180`, one unpublished fixture candidate after pushedc0210f7.
-Root owns its evidence/reference/task/inventory/checkpoint update. No parallel
-writer or active experiment. Commit/push this bounded result, then implement the
-initial producer/domain/workflow retirement prerequisite. No Mac Rust build.
+Primary main is clean `f996628`, verified equal to origin/main. Both source fault
+and lock waves are committed/pushed. Root owns the next initial workflow recovery
+slice; no parallel writer or active experiment. No Mac Rust build.
 
 ## Active responsibility and next bounded action
 
@@ -125,14 +124,29 @@ and captured effects. Existing report lock_wave and inventory lock_engine own
 identities. Engined824180 stopped/retained, ownerbe172782/clientab1bb6b9, borrowedPG
 stopped; no OOM/cleanup/unrelated changes. Tux68,613,382,144B free.
 
-Next bounded action: design/implement the initial producer/domain/workflow
-retirement required before explicit successor activation. Read the complete
-owning storage/operations/registry contracts and actual SQL guards first. Reuse
-the ephemeral resolved-source witness and existing retained source closure where
-possible; no ACK, missing-detail noncommit or reclaim permission is implied.
+Next bounded action: implement explicit initial acquisition abandonment under
+the retained resolved-source witness before producer/domain retirement. SQL0011
+deliberately refuses nonempty retirement; do not edit applied migrations. Initial
+Sync may leave queued jobs with admitted facts, or no mutation requests at all.
+Select all jobs claimed by the original Control, not only request-linked jobs.
+The finite initial consumer's socket callback cannot outlive its borrowed native
+owner; actual native exclusion plus current Control fencing is required. A PG
+fence alone is not process/socket termination. Use the selected acquisition_gaps
+relation for explicit whole-intent uncertainty, retain scientific facts and old
+claim attribution, and complete cancellation atomically. No ACK/GC or source
+coverage is implied. Exact retry must preserve original gap attribution.
 M1/P01-T09 Step4 restart/resend remains the next useful journey, specifically
 P02-T01 Step5/P02-T02 Step4 prerequisites. Source closure is now a bounded
 qualified consumer; broad capacity/negative resolution remain distinct work.
+
+Independent read-only AI review atf996628 found no actionable defect in the
+source-closure boundary. Reviewer inspected complete new modules, recovery/shared
+supervisor, registry/history and close/resolve/outcome-copy owners, relevant SQL
+guards/contracts, and retained captures. It independently matched four capture
+archive hashes and the four-request closure digest. No new engine execution;
+ordinary Serve/Archive, native internals and live resources were not re-audited.
+Root verified no active BigBrotr containers; Tux68,613,324,800B and Mac9,322,616KiB
+free on resumption. The retirement/workflow/successor gates remain open.
 
 The scoped Mac incremental cache retirement
 is complete (inventory cache_retirement_20260928.mac_incremental_20261002).
