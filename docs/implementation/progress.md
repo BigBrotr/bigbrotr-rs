@@ -12,29 +12,35 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mainf8015bce53a5b35ca92f0acec509935c1d9d0260; origin/main9e22986. Root sole writer.
-Unpublishedba14196/f8015bc preserve original bootstrap1 and append self-scoped
-private3/request2 before initialized report. Three dirty experiment files owned
-by root: installed.py extracts the literal oracle; commits.py/commit_client.py
-extend COMMIT cuts through private reservation5/outcome6 (19 cases, NOT_RUN).
+Maina3123a2daeb2100fd5a93c3c19218b0fe6b872a3; origin/main9e22986. Root sole writer.
+Four unpublished commits: preserve bootstrap1 and append self-scoped private3 as
+request2 before initialized report; independent lifetime/COMMIT fixtures updated.
+Actual f8015bc CLI/probe: build,123 selected native tests and Clippy PASS.
+Fixturee41e255: nine installed lifetime cases PASS,17 native rows/two original
+inputs/receipts, both topology0/1, renewal/expiry/refusal and three window negatives.
+Fixturea3123a2: nineteen startup COMMIT cases PASS through both transactions of
+private request2; retained12/17 native rows and exact original inputs/SQL outcomes.
+Cancellation retains observed server transaction/Control exclusion after CLI death.
+All resources STOPPED/RETAINED. Latest audit2026-10-02T03:30:52UTC:1065 prior
+unchanged,eight unrelated,compiler lock free,54,313,238,528B free. Clientcfcbd659
+stopped143/PG71775507 stopped0; preserve all nineteen clones/native fault states.
+Build root initial-ingest-f8015bc; lifetime initial-private-e41e255; faults
+initial-private-faults-a3123a2. Full PID/start/owners/artifacts in inventory
+implementation_network_20260928.initial_private_scope. Originals under
+.research/implementation/initial-private-scope-20261002/{red,native,lifetime,faults}.
+Native buildELFs separately retained; Mac3.3GiB free, no local Rust build.
 
-Native f8015bc build and six selected build/test/Clippy checks PASS. Terminal
-build audit2026-10-02T03:21:25UTC:1062 prior unchanged,eight unrelated running,
-compiler lock free,54,872,432,640B free. Build owner1fb757d94b4eba72b29202b0bc45c92e;
-fetch48653c3e/nativea4656a52 stopped0/noOOM. Actual CLI0d821d67/probe88c177cd
-retained outside shared cache. Mac3,383,052KiB free; no local Rust build.
-First f8015bc installed engine wave STOPPED/RETAINED with fixture FAIL: exactly17
-native rows, but literal receipt2 expected Ingest process incarnation rather than
-recovery generation. Corrected fixture also uses actual topology rather than0.
-Root replay of original capture PASS, three complete-metadata mutation negatives
-reject;1668 Git files/captures verified. Original FAIL remains, later8 NOT_RUN.
-First launcher setup path failure before engines retained separately; corrected
-enginePID1685752/start429360372. Client6c51c32c stopped143; PG71775507 stopped0.
-Audit03:23:54UTC:1063 prior unchanged,eight unrelated,compiler lock free,
-54,857,125,888B free. No active experiment. Next exact-Git corrected nine-case
-lifetime wave, then nineteen startup COMMIT cases reusing qualifiedf8015bc artifacts.
-Originals .research/implementation/initial-private-scope-20261002/{red,native}.
-Inventory initial_private_scope owns both failures, build and terminal identities.
+Initial f801 engine fixture FAIL preserved: receipt2 oracle confused process
+incarnation/recovery generation and hardcoded topology0. Corrected complete replay
+PASS plus3 metadata negatives. First launcher nonexistent-path setup failure is
+separate from that engine outcome. Root verified1668 Git files/126 lifetime captures;
+fault source/capture review finishing. AI review found five stale refusal helper
+callers (including root-found enrollment); corrected plus two stale request counts.
+No additional product blocker in bounded read-only review; reviewer ran no engines.
+Next inspect fault capture review, run affected installed session/capacity regression,
+finish existing evidence/contract/task updates and push coherent verified work.
+Then continue bounded installed finite job selection/dispatch P03-T01 Steps3/4,
+P03-T02 and M1/P01-T09. No successor, acquisition, capacity or release claim yet.
 
 Installed private-scope RED ran exactc0fb44e CLI against fixtureba14196: original12
 native rows versus independent17 expected. CLI stopped cleanly; original source,

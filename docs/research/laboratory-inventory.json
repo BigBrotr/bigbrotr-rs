@@ -33794,7 +33794,7 @@
       }
     },
     "initial_private_scope": {
-      "status": "NATIVE_BUILD_PASS_INSTALLED_FIXTURE_CORRECTED_PENDING_RERUN",
+      "status": "NINE_LIFETIME_AND_NINETEEN_STARTUP_COMMIT_CASES_PASS_SESSION_REGRESSION_PENDING",
       "local": ".research/implementation/initial-private-scope-20261002",
       "red": {
         "source": "ba1419646310e1b59d4c7d9ed4a5a88fa614e69f",
@@ -33976,6 +33976,181 @@
           ]
         },
         "captures_verified": 37
+      },
+      "lifetime": {
+        "source": "e41e255f8fe275689b797d25dd862c3946029c68",
+        "build_source": "f8015bce53a5b35ca92f0acec509935c1d9d0260",
+        "launch": {
+          "source": "e41e255f8fe275689b797d25dd862c3946029c68",
+          "tree": "50e116f9d39875a48fb6612f9b9add3264369a4e",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-private-e41e255",
+          "pid": 1690585,
+          "start_ticks": "429388916",
+          "bundle_sha256": "4c52ba95a8900f19800aade6c30417885a1f58d12d5b73afbaaa0354ef2b9ab1"
+        },
+        "owner": "1ec3b95d578e2c49bdf5a009d6766300",
+        "client": {
+          "id": "ca05f8d8c80d8895f13c6460f7cd152cad36ec36fbd43d8e5cae5ef46731bbc1",
+          "name": "bigbrotr-acquisition-binding-e41e255"
+        },
+        "databases": [
+          "bb_scope_bind_e41e255_pass",
+          "bb_scope_bind_e41e255_zero_topology",
+          "bb_scope_bind_e41e255_expired",
+          "bb_scope_bind_e41e255_policy_archive",
+          "bb_scope_bind_e41e255_existing_directory",
+          "bb_scope_bind_e41e255_registered_only",
+          "bb_scope_bind_e41e255_window_local",
+          "bb_scope_bind_e41e255_window_config",
+          "bb_scope_bind_e41e255_window_policy"
+        ],
+        "result": "PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE",
+        "cases": 9,
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "e41e255f8fe275689b797d25dd862c3946029c68",
+          "observed_at": "2026-10-02T03:28:39.240388+00:00",
+          "prior_unchanged": 1064,
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "name": "fetch",
+              "id": "48653c3ebaee591a8ebd08fec56f86c1853aebb8f4dc963ad9ac25cbd2a928ed",
+              "exit": 0
+            },
+            {
+              "name": "native",
+              "id": "a4656a52c5b2fec9a95777c353bf2874bf89a4e99af14d172fa3abd3ae6cbca8",
+              "exit": 0
+            },
+            {
+              "name": "client",
+              "id": "ca05f8d8c80d8895f13c6460f7cd152cad36ec36fbd43d8e5cae5ef46731bbc1",
+              "exit": 143
+            },
+            {
+              "name": "postgres",
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            }
+          ],
+          "source_files": {
+            "e41e255f8fe275689b797d25dd862c3946029c68": 1668,
+            "f8015bce53a5b35ca92f0acec509935c1d9d0260": 1668
+          },
+          "build_reuse_changed": [
+            "docs/implementation/progress.md",
+            "docs/research/laboratory-inventory.json",
+            "experiments/ingest-bootstrap/commit_client.py",
+            "experiments/ingest-bootstrap/commits.py",
+            "experiments/ingest-bootstrap/installed.py"
+          ],
+          "artifacts_verified": true,
+          "compiler_lock_released": true,
+          "free_bytes": 54680764416,
+          "server": {
+            "version": "160015",
+            "fsync": "on",
+            "full_page_writes": "on",
+            "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+          }
+        },
+        "captures_verified": 126
+      },
+      "faults": {
+        "source": "a3123a2daeb2100fd5a93c3c19218b0fe6b872a3",
+        "build_source": "f8015bce53a5b35ca92f0acec509935c1d9d0260",
+        "launch": {
+          "source": "a3123a2daeb2100fd5a93c3c19218b0fe6b872a3",
+          "tree": "4b204f1d32f9f71315a0f84085739997a4613002",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-private-faults-a3123a2",
+          "pid": 1700839,
+          "start_ticks": "429402327",
+          "bundle_sha256": "11ac798c99ebb2d9aa6aca8a13a37734675d50b7657cd34b87cecc68f7a8d843"
+        },
+        "owner": "66241d296244e1e6831f8f02203d3f67",
+        "client": {
+          "id": "cfcbd65930fc5615052fdd50c6d240673da898c79405d9e07678e24d247a7bbd",
+          "name": "bigbrotr-acquisition-binding-a3123a2"
+        },
+        "databases": [
+          "bb_scope_bind_a3123a2_commit_pass",
+          "bb_scope_bind_a3123a2_before_1",
+          "bb_scope_bind_a3123a2_after_1",
+          "bb_scope_bind_a3123a2_before_2",
+          "bb_scope_bind_a3123a2_after_2",
+          "bb_scope_bind_a3123a2_before_3",
+          "bb_scope_bind_a3123a2_after_3",
+          "bb_scope_bind_a3123a2_before_4",
+          "bb_scope_bind_a3123a2_after_4",
+          "bb_scope_bind_a3123a2_before_5",
+          "bb_scope_bind_a3123a2_after_5",
+          "bb_scope_bind_a3123a2_before_6",
+          "bb_scope_bind_a3123a2_after_6",
+          "bb_scope_bind_a3123a2_cancel_reservation",
+          "bb_scope_bind_a3123a2_cancel_outcome",
+          "bb_scope_bind_a3123a2_delayed_outcome",
+          "bb_scope_bind_a3123a2_cancel_private_reservation",
+          "bb_scope_bind_a3123a2_cancel_private_outcome",
+          "bb_scope_bind_a3123a2_delayed_private_outcome"
+        ],
+        "result": "PASS_INITIAL_INGEST_COMMIT_WAVE",
+        "cases": 19,
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "a3123a2daeb2100fd5a93c3c19218b0fe6b872a3",
+          "observed_at": "2026-10-02T03:30:52.413609+00:00",
+          "prior_unchanged": 1065,
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "name": "fetch",
+              "id": "48653c3ebaee591a8ebd08fec56f86c1853aebb8f4dc963ad9ac25cbd2a928ed",
+              "exit": 0
+            },
+            {
+              "name": "native",
+              "id": "a4656a52c5b2fec9a95777c353bf2874bf89a4e99af14d172fa3abd3ae6cbca8",
+              "exit": 0
+            },
+            {
+              "name": "client",
+              "id": "cfcbd65930fc5615052fdd50c6d240673da898c79405d9e07678e24d247a7bbd",
+              "exit": 143
+            },
+            {
+              "name": "postgres",
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            }
+          ],
+          "source_files": {
+            "a3123a2daeb2100fd5a93c3c19218b0fe6b872a3": 1668,
+            "f8015bce53a5b35ca92f0acec509935c1d9d0260": 1668
+          },
+          "build_reuse_changed": [
+            "docs/implementation/progress.md",
+            "docs/research/laboratory-inventory.json",
+            "experiments/ingest-bootstrap/commit_client.py",
+            "experiments/ingest-bootstrap/commits.py",
+            "experiments/ingest-bootstrap/enrollments.py",
+            "experiments/ingest-bootstrap/initial_jobs.py",
+            "experiments/ingest-bootstrap/installed.py",
+            "experiments/ingest-bootstrap/registrations.py",
+            "experiments/ingest-bootstrap/scopes.py",
+            "experiments/ingest-bootstrap/sessions.py"
+          ],
+          "artifacts_verified": true,
+          "compiler_lock_released": true,
+          "free_bytes": 54313238528,
+          "server": {
+            "version": "160015",
+            "fsync": "on",
+            "full_page_writes": "on",
+            "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+          }
+        },
+        "captures_verified": 375
       }
     }
   },

@@ -295,7 +295,9 @@ resolvable namespaced references and unchanged original bytes.
   socket journey after the original bootstrap, plus nine actual append COMMIT
   ambiguity/cancellation/recovery schedules. The same report now qualifies bounded
   read-only intern preparation and its three-case actual-engine signed socket
-  consumer. Installed archive/export closure remains required.
+  consumer. Its installed startup consumer now preserves original bootstrap and
+  explicitly appends a private root, with nine lifetime/window and nineteen COMMIT
+  cases. Finite execution and installed archive/export closure remain required.
 - [ ] **Step 2:** Create A06 objects keyed by visibility namespace and digest; verify bytes
   on first creation and reject conflicting bytes under the same identity.
 - [ ] **Step 3:** Separate document object bytes from each fetched/type/method occurrence;

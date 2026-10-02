@@ -74,10 +74,11 @@ installed runtime, mid-FFI cancellation, policy transitions, load or arm64.
 reuses qualified CLI/probe artifacts only when every changed source path is
 inside docs/experiments; Rust and all build inputs must remain identical.
 
-Twelve finite scenarios use the actual explicit initial CLI: healthy stop,
+Nineteen finite scenarios use the actual explicit initial CLI: healthy stop,
 response loss before/after Control claim, registry registration, original-input
 reservation and native-outcome copy, cancellation at reservation/outcome COMMIT,
-and a delayed successful outcome COMMIT. The existing finite loopback proxy
+and a delayed successful outcome COMMIT for each of bootstrap request1 and
+self-scoped private append request2. The existing finite loopback proxy
 records exact forwarded/server-complete/client-complete counters. Each held
 transaction has an independently observed backend/session advisory lock and an
 actual competing CLI refused as Busy. Cancellation additionally observes that
@@ -92,7 +93,9 @@ refuse fresh initialization before another Control claim. Registry-only cuts
 retain their state without claiming a crash-resumable initializer. Renewal cuts,
 worker panic, successor authority, full M1 and capacity remain separate work.
 The [executed SQL wave](../../docs/implementation/evidence/p01-initial-ingest-commit-native-20260928.json)
-records all twelve cases on2e2a4e1 with exact7ab155e artifacts.
+records the original twelve cases on2e2a4e1 with exact7ab155e artifacts. The
+[private append report](../../docs/implementation/evidence/p02-dictionary-append-native-20261002.json)
+adds the seven request2 cases and nine installed lifetime/window cases onf8015bc.
 
 ## Installed initial private sessions
 
@@ -112,8 +115,9 @@ the first blocking slot is already held by the native owner. It briefly stops
 that exact process, queues SIGTERM and resumes it, then requires empty HTTP
 delivery, no session issuance, actual reaping and ordered graceful release.
 
-The independent native oracle still requires exactly the original twelve rows,
-bootstrap input and receipt; all Control tables/xmin are retained for comparison.
+The current independent native oracle requires17 rows and both original inputs/
+receipts after private append. Historical session waves below retain their original
+12-row bootstrap contract; all Control tables/xmin are retained for comparison.
 The disabled startup administration seed deliberately differs from the two
 accepted enabled documents. The old `policy-admin` refusal fixture is superseded
 by this selected behavior; the headless first-lifetime matrix now uses a selected

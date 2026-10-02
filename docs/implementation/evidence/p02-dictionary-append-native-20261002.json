@@ -587,5 +587,227 @@
       "Structure retains one concrete native preparation and the existing two-transaction append. No generic backend adapter, new ledger/schema or alternate allocation path."
     ],
     "local_evidence": ".research/implementation/dictionary-preparation-20261002"
+  },
+  "installed_private_scope": {
+    "status": "PASS_BOUNDED_INSTALLED_PRIVATE_STARTUP",
+    "tasks": [
+      "P02-T03 Step1",
+      "P03-T01 Steps3/4 prerequisite",
+      "P01-T09 M1 prerequisite"
+    ],
+    "product_source": "f8015bce53a5b35ca92f0acec509935c1d9d0260",
+    "product_tree": "45e58dd847d9e3e1c0d7a1026021d6b0d7839f48",
+    "binary_sha256": "0d821d677e1702a3ac41663b501e7efe84d77780ea038770fb369de5929655aa",
+    "probe_sha256": "88c177cdc2a747da36dadee9bf9146da01cccdcaa1648af60a592afa80428780",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "platform": "Native Linux amd64, Rust1.98.1, PostgreSQL16.15, RocksDB11.8.1",
+    "build": "123 selected native tests, actual CLI/probe and Clippy PASS; six executed build checks",
+    "behavior": [
+      "Original public1/private2 bootstrap request1 bytes and receipt preserved. Explicit self-scoped private3 request2 completes before publication.",
+      "Both accepted documents and local selected profile require two outstanding slots before initialization; no ACK or automatic existing-directory upgrade.",
+      "One dictionary initializer groups semantic startup work; same concrete Control/native custody, phase watchdog and explicit two-transaction append remain visible. No generic orchestration layer, new schema or new persistent format."
+    ],
+    "lifetime": {
+      "source": "e41e255f8fe275689b797d25dd862c3946029c68",
+      "cases": 9,
+      "result": "PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE",
+      "review": {
+        "status": "PASS_CAPTURE_REVIEW",
+        "source_files": 1668,
+        "captured_files": 126,
+        "checks": [
+          {
+            "case": "pass",
+            "native_rows": 17,
+            "inputs": 2,
+            "receipts": 2,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "zero-topology",
+            "native_rows": 17,
+            "inputs": 2,
+            "receipts": 2,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "expired",
+            "native_rows": 17,
+            "inputs": 2,
+            "receipts": 2,
+            "status": "PASS_CAPTURE_REVIEW"
+          }
+        ]
+      }
+    },
+    "faults": {
+      "source": "a3123a2daeb2100fd5a93c3c19218b0fe6b872a3",
+      "cases": 19,
+      "result": "PASS_INITIAL_INGEST_COMMIT_WAVE",
+      "review": {
+        "status": "PASS_CAPTURE_REVIEW",
+        "source_files": 1668,
+        "captured_files": 375,
+        "checks": [
+          {
+            "case": "commit-pass",
+            "native_rows": 17,
+            "committed_prefix": 9,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "before-1",
+            "native_rows": 0,
+            "committed_prefix": 0,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "after-1",
+            "native_rows": 0,
+            "committed_prefix": 1,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "before-2",
+            "native_rows": 0,
+            "committed_prefix": 1,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "after-2",
+            "native_rows": 0,
+            "committed_prefix": 2,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "before-3",
+            "native_rows": 1,
+            "committed_prefix": 2,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "after-3",
+            "native_rows": 1,
+            "committed_prefix": 3,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "before-4",
+            "native_rows": 12,
+            "committed_prefix": 3,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "after-4",
+            "native_rows": 12,
+            "committed_prefix": 4,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "before-5",
+            "native_rows": 12,
+            "committed_prefix": 4,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "after-5",
+            "native_rows": 12,
+            "committed_prefix": 5,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "before-6",
+            "native_rows": 17,
+            "committed_prefix": 5,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "after-6",
+            "native_rows": 17,
+            "committed_prefix": 6,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "cancel-reservation",
+            "native_rows": 1,
+            "committed_prefix": 2,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "cancel-outcome",
+            "native_rows": 12,
+            "committed_prefix": 3,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "delayed-outcome",
+            "native_rows": 17,
+            "committed_prefix": 9,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "cancel-private-reservation",
+            "native_rows": 12,
+            "committed_prefix": 4,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "cancel-private-outcome",
+            "native_rows": 17,
+            "committed_prefix": 5,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "delayed-private-outcome",
+            "native_rows": 17,
+            "committed_prefix": 9,
+            "tables": 64,
+            "status": "PASS_CAPTURE_REVIEW"
+          }
+        ]
+      },
+      "held_cancellation_signal_to_death_seconds": [
+        2.021036,
+        2.02277,
+        2.021594,
+        2.020935
+      ],
+      "proof": "Independently observed original Control backend/advisory custody and Busy contender; CLI death before startup watchdog, held transaction still visible after client death until proxy closes. Before/after COMMIT5/6 distinguishes original input, native effect and SQL outcome."
+    },
+    "original_failures": [
+      "ba14196 fixture with unchangedc0 CLI: expected private append absent,12 rows instead of17.",
+      "Initial f801 launcher wrong script path failed before engines; corrected invocation retained separately.",
+      "First f801 engine oracle used process incarnation instead of recovery generation in receipt2, and fixed topology0; corrected literal oracle replay of retained capture PASS. Other8 cases had not run."
+    ],
+    "review": [
+      "Read-only AI review found stale helper signatures; root also found enrollment caller and stale two request counts. Updated five callers and bound against explicit completed two-request oracle.",
+      "Root complete-source/diff review, original captures,1668 Git source files per fixture,126 lifetime and375 fault captures verified; independent native/input/receipt replays and3 metadata mutation negatives.",
+      "Affected installed session/capacity regression still pending; earlier historical session reports keep their original build and12-row contract."
+    ],
+    "not_qualified": [
+      "Installed finite job execution/progress, archive/read/export and M1",
+      "Crash-resumable initial setup/successor, worker panic, renewal-specific ambiguous COMMIT/policy races",
+      "Production capacity, mixed/aged workloads, native arm64/release"
+    ],
+    "inventory": "implementation_network_20260928.initial_private_scope",
+    "local_evidence": ".research/implementation/initial-private-scope-20261002"
   }
 }
