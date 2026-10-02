@@ -116,6 +116,7 @@ async fn job_status_preserves_closed_metadata_and_never_sets_session_cookies() {
             .completion
             .finish(Ok(transport::Reply::JobStatus((!missing).then_some(
                 JobObservation {
+                    kind: bigbrotr::management::jobs::JobKind::Export,
                     job_id: job,
                     state: ExportState::Paused,
                     job_revision: u64::MAX,
@@ -565,6 +566,17 @@ async fn listing_refuses_ambiguous_filters_bodies_and_head_without_queueing() {
         );
         assert!(server.commands.try_recv().is_err());
     }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn operational_profile_refuses_valid_acquisition_before_queueing() {
+    let (mut server, address, budget) = server().await;
+    let body = r#"{"kind":"acquisition","scope_id":"04040404040404040404040404040404","deadline_us":"120000000","expected_config_revision":"5","expected_policy_revision":"6"}"#;
+    let response = exchange(address, request(address, &authenticated(), body)).await;
+    assert!(response.starts_with("HTTP/1.1 400 "), "{response}");
+    assert!(server.commands.try_recv().is_err());
     server.stop().await.unwrap();
     assert_eq!(budget.snapshot().active_permits(), 0);
 }

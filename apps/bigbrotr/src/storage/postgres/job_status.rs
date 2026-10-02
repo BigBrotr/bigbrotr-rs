@@ -3,12 +3,9 @@ use super::{
     ControlSession, application_transaction, browser_reauthentication::authenticated_session,
     browser_sessions::*, require,
 };
-use crate::{
-    export::execution::ExportState,
-    management::{
-        jobs::{JobObservation, JobReason},
-        sessions::{BrowserSecret, SessionError},
-    },
+use crate::management::{
+    jobs::{JobKind, JobObservation, JobReason, JobState},
+    sessions::{BrowserSecret, SessionError},
 };
 use bigbrotr_model::{DatasetId, JobId, PrincipalId};
 use std::time::Duration;
@@ -36,9 +33,26 @@ impl ControlSession {
         csrf: &BrowserSecret,
         job: JobId,
     ) -> Result<AuthorizedJobStatus, SessionError> {
+        self.observe_browser_job_kind(token, csrf, job, JobKind::Export)
+            .await
+    }
+
+    /// The installed listener chooses its supported protocol, never the URL or
+    /// a stored actor grant. Authorization and actor ownership still apply.
+    pub async fn observe_browser_job_kind(
+        &mut self,
+        token: &BrowserSecret,
+        csrf: &BrowserSecret,
+        job: JobId,
+        kind: JobKind,
+    ) -> Result<AuthorizedJobStatus, SessionError> {
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 813)
+        let schema = match kind {
+            JobKind::Export => 813,
+            JobKind::Acquisition => 22,
+        };
+        let tx = application_transaction(&mut self.client, schema)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -57,9 +71,14 @@ impl ControlSession {
             require_status(&tx, self.request.dataset, current.principal).await?;
             // Ownership is filtered in SQL, even for administrators. No source
             // selection, destination or payload enters the response.
-            let row = tx
-                .query_opt(
-                    "SELECT substring(job_id FROM 1 FOR 17) AS job_id,
+            // Keep the old export query compatible with pre0022 installations:
+            // it must not refer to the later acquisition protocol column.
+            let protocol = match kind {
+                JobKind::Export => "kind='export' AND export_job_protocol=1",
+                JobKind::Acquisition => "kind='acquisition' AND acquisition_job_protocol=1",
+            };
+            let query = format!(
+                "SELECT substring(job_id FROM 1 FOR 17) AS job_id,
                     left(state,32) AS state, left(job_revision::text,21) AS job_revision,
                     left(checkpoint_revision::text,21) AS checkpoint_revision,
                     created_at_us, completed_at_us,
@@ -68,7 +87,11 @@ impl ControlSession {
                          ELSE 'other' END AS reason
                  FROM control.jobs
                  WHERE job_id=$1::bytea AND dataset_id=$2::bytea AND principal_id=$3::bytea
-                    AND kind='export' AND export_job_protocol=1",
+                    AND {protocol}"
+            );
+            let row = tx
+                .query_opt(
+                    &query,
                     &[
                         &&job.as_bytes()[..],
                         &&self.request.dataset.as_bytes()[..],
@@ -83,7 +106,10 @@ impl ControlSession {
                 .checked_sub(time)
                 .filter(|v| *v > 0)
                 .ok_or(SessionError::Denied)?;
-            let observation = row.as_ref().map(|row| decode(row, time)).transpose()?;
+            let observation = row
+                .as_ref()
+                .map(|row| decode(row, time, kind))
+                .transpose()?;
             Ok(AuthorizedJobStatus {
                 observation,
                 remaining: Duration::from_micros(remaining as u64),
@@ -124,7 +150,11 @@ pub(super) async fn require_status(
 
 /// Named aliases keep list/detail projections visibly equivalent while refusing
 /// corrupt metadata. SQL bounds every variable-width value before allocation.
-pub(super) fn decode(row: &Row, observed_at_us: i64) -> Result<JobObservation, SessionError> {
+pub(super) fn decode(
+    row: &Row,
+    observed_at_us: i64,
+    kind: JobKind,
+) -> Result<JobObservation, SessionError> {
     let job: &[u8] = row.try_get("job_id").map_err(metadata)?;
     let job_id =
         JobId::try_from(<[u8; 16]>::try_from(job).map_err(|_| SessionError::InvalidMetadata)?)
@@ -148,8 +178,9 @@ pub(super) fn decode(row: &Row, observed_at_us: i64) -> Result<JobObservation, S
         _ => return Err(SessionError::InvalidMetadata),
     };
     Ok(JobObservation {
+        kind,
         job_id,
-        state: ExportState::from_code(row.try_get("state").map_err(metadata)?)
+        state: JobState::from_code(row.try_get("state").map_err(metadata)?)
             .ok_or(SessionError::InvalidMetadata)?,
         job_revision,
         checkpoint_revision: number("checkpoint_revision")?,

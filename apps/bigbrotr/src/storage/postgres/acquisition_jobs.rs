@@ -17,6 +17,46 @@ use std::cell::Cell;
 use tokio_postgres::Transaction;
 
 impl ControlSession {
+    /// The initial listener probes its finite acceptance/status dependencies
+    /// after session and scope prerequisites, before binding. No implicit DDL.
+    pub async fn require_acquisition_jobs(&mut self) -> Result<(), SessionError> {
+        self.begin_operation()
+            .map_err(|_| SessionError::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 22)
+            .await
+            .map_err(|_| SessionError::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| SessionError::Unavailable)?;
+        lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
+        let valid: bool = tx.query_one("
+            SELECT bool_and(has_table_privilege(CURRENT_USER, t.name, p.privilege))
+                AND has_any_column_privilege(CURRENT_USER, 'control.relay_enrollments', 'UPDATE')
+                AND has_function_privilege(CURRENT_USER,
+                    'control.acquisition_command_digest(control.acquisition_jobs,control.management_commands)', 'EXECUTE')
+                AND has_function_privilege(CURRENT_USER,
+                    'control.command_u64_bytes(control.u64)', 'EXECUTE')
+            FROM (VALUES
+                ('control.jobs', ARRAY['SELECT','INSERT','UPDATE']),
+                ('control.acquisition_jobs', ARRAY['SELECT','INSERT']),
+                ('control.job_admissions', ARRAY['SELECT','INSERT']),
+                ('control.job_input_bounds', ARRAY['SELECT']),
+                ('control.topology_streams', ARRAY['SELECT']),
+                ('control.acquisition_scopes', ARRAY['SELECT']),
+                ('control.relay_enrollments', ARRAY['SELECT']),
+                ('control.management_commands', ARRAY['SELECT','INSERT']),
+                ('control.management_audit', ARRAY['SELECT','INSERT'])
+            ) t(name, privileges)
+            CROSS JOIN LATERAL unnest(t.privileges) p(privilege)
+        ", &[]).await.map_err(backend)?.try_get(0).map_err(metadata)?;
+        if !valid {
+            return Err(SessionError::Prerequisite);
+        }
+        tx.rollback().await.map_err(backend)?;
+        self.available = true;
+        Ok(())
+    }
+
     /// Authenticate before resolving historical keys. Fresh permission checks
     /// apply only to new work; replay never updates a job or its deadline.
     pub async fn accept_acquisition(

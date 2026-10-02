@@ -199,6 +199,7 @@ fn maximum_page_has_literal_wire_fields_and_keeps_its_memory_until_body_drop() {
         .unwrap();
     let items = (0..200)
         .map(|_| JobObservation {
+            kind: crate::management::jobs::JobKind::Export,
             job_id: JobId::try_from([0xaa; 16]).unwrap(),
             state: ExportState::CancelRequested,
             job_revision: u64::MAX,

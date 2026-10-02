@@ -257,3 +257,9 @@ test('resume validates closed commands before transport and leaves unknown resul
   const conflict = createManagementClient({ cookie: () => `BigBrotrLocalCsrf=${'a'.repeat(64)}`, fetch: async () => json({ error: { status: 409, code: 'command_conflict', message: 'Command key or expected revision conflicts with current state.', retry_class: 'check_state', correlation_id: null } }, 409) });
   await assert.rejects(conflict.resumeExport(job.job_id, resumeReceipt.command_key, resumeCommand), (error: unknown) => error instanceof ManagementFailure && error.api?.status === 409);
 });
+
+test('finite acquisition detail keeps its kind without widening the export listing', async () => {
+  const acquisition = { ...job, kind: 'acquisition', state: 'accepted', reason_code: null };
+  const api = createManagementClient({ cookie: () => `BigBrotrLocalCsrf=${'a'.repeat(64)}`, fetch: async () => json(acquisition) });
+  assert.deepEqual(await api.jobStatus(job.job_id), acquisition);
+});

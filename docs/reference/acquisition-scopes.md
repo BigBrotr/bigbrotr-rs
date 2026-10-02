@@ -361,10 +361,10 @@ job state trigger alone does not provide them.
 
 Installed integration must deliver requests to the living initial owner. It cannot
 claim a second Control or reopen that owner's native store. The explicit initial
-profile now serves authenticated session, URL registration and endpoint enrollment
-commands after bootstrap on that same owner. Its fresh
-bootstrap allocates new visibility namespaces; immutable scope registration and
-finite-job delivery remain the next installed consumers. These are concrete early
+profile serves authenticated session, URL registration, enrollment and immutable
+scope commands after bootstrap on that same owner. Its fresh bootstrap allocates
+new visibility namespaces. Finite-job HTTP acceptance/status are now implemented
+and awaiting installed engine qualification. These are concrete early
 integration steps, not a requirement to complete all relay lifecycle services.
 The finite consumer closes its guarded socket/SQL transaction before fresh native
 certification/admission. A bounded retained batch keeps the exact request predicate
@@ -388,6 +388,43 @@ complete the bounded wave with unchanged artifacts. Session/credential races,
 remaining raw relational negatives, populated prior-job upgrade, claim/dispatch,
 installed commands and signed socket journey remain unqualified. No installed
 acquisition capability follows.
+
+### Installed finite acceptance and status (qualification in progress)
+
+The initial owner adds `POST /management/v1/jobs` with `kind=acquisition` and
+exactly the scope/duration/expected heads above. It uses the common8KiB closed
+job envelope and64KiB retained request credit. Operational Serve still accepts
+only export; each listener refuses the other valid kind before queueing. Neither
+mixed variant fields nor a positional array is accepted. No new registry,
+backend trait, owner process, dependency or persistent migration is introduced.
+
+Acceptance202 and exact historical200 use `bigbrotr-job-acceptance/1`, with
+command_key, job_id, original decimal accepted_at_us, created,
+execution=unobserved and authority=acceptance-only. The existing0022 transaction
+owns all durable effects, including0815 admission ordering. The live initial
+queue retains Control/native custody through completion and uncertain shutdown.
+Before HTTP bind, probe finite-job table/function privileges, including the
+admission insertion and acquisition digest; no runtime migration or partial API.
+
+`GET /management/v1/jobs/{job_id}` on that listener observes only the current
+actor's protocol1 acquisition job with separate dataset `status.read`, session
+and explicit CSRF. Missing, foreign and unsupported kinds share404. The common
+redacted status has kind=acquisition and no scope, selection, deadline, source,
+counts or data authority. It does not touch idle activity. Its nonrenewable
+session window begins before SQL and gates actual writes; Control renewal cannot
+extend it. Account/action withdrawal is independently rechecked. Revoked work
+permission does not hide the actor's accepted status when status.read remains.
+The ordinary export path still works before0022 and never queries its columns.
+Export listing stays export-only; generated detail validation accepts both kinds.
+Older closed clients may reject acquisition observations and must be upgraded
+before using this new profile; export wire bytes and all applied SQL stay stable.
+
+The practical next wave exercises real CLI login → URL → enrollment → scope →
+finite acceptance/retry/status, original deadline/command/audit/admission ordinal,
+no extra native effects, grant withdrawal and missing privileges before bind.
+Installed COMMIT/cancellation/authority races, other actors, session changes and
+actual execution/progress remain required. No acceptance-only result qualifies
+complete Sync, M1 or production capacity.
 
 ## Initial exact-ID claim (implementation in progress)
 

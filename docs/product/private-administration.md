@@ -300,7 +300,9 @@ accept an arbitrary shell command, secret file path or unsigned executable plugi
 A role's ability to start a job is distinct from authority over the job's data.
 
 The initial `GET /management/v1/jobs/{job_id}` observation profile exposes only
-the authenticated actor's own protocol1 export job. It requires a current browser
+the authenticated actor's own protocol1 job: export on ordinary Serve, acquisition
+on the explicit initial Ingest owner. The latter consumer is under installed
+qualification in the [finite acquisition contract](../reference/acquisition-scopes.md#installed-finite-acceptance-and-status-qualification-in-progress). It requires a current browser
 session, explicit CSRF and dataset `status.read`. Ownership is the visibility
 rule for this redacted operational receipt: revoking input/export grants does not
 hide whether the actor's already accepted work paused or finished. Other actors'

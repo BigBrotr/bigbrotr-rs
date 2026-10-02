@@ -3,7 +3,7 @@ use super::{
     ControlSession, application_transaction, browser_reauthentication::authenticated_session,
     browser_sessions::*, job_status, require,
 };
-use crate::management::jobs::JobObservation;
+use crate::management::jobs::{JobKind, JobObservation};
 use crate::{
     management::{
         job_list::{
@@ -341,7 +341,7 @@ async fn scan_jobs(
     let observed_at_us = now(tx).await?;
     let mut scanned = None;
     for row in rows.iter().take(count) {
-        let observation = job_status::decode(row, observed_at_us)?;
+        let observation = job_status::decode(row, observed_at_us, JobKind::Export)?;
         let ordinal = revision(row, 7)?;
         scanned = Some(Position {
             created_at_us: observation.created_at_us,

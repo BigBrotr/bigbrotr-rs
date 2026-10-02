@@ -12,13 +12,29 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Last observed Mac main7363a12a420b39d9d089c8e4aee58f04d374efb2 candidate,
-tree4b3d310581f42ce44db4bebbb05f7db68d3c33f4; origin6e11f08. Root sole writer.
-Dirty documentation records completed installed HTTP scope fault qualification;
-no product/applied SQL/dependency changed. No active build/engine. Mac last
-4,080,560KiB free; check before allocation. Read-only AI reviewer finished and
-ran no engines. Resolve current Git after the evidence commit; do not assume
-this pre-commit observation is still HEAD. Older checkpoint detail remains in Git.
+Last observed main/origin c067f03781e714fe2be04e75530134199e022fbc,
+tree4218690f5a4b6faf84a8906673153b991c3b8d87. Root-owned dirty finite-job
+HTTP/domain/status/preflight, generated contracts/client tests, documentation and
+installed fixture are in progress. No unrelated work was changed. Mac has about
+3.4GiB available; use Tux for the next native build. Fresh Tux observation:
+57,194,618,880 bytes free, eight unrelated containers running, no BigBrotr engine
+or compiler process. Do not replay completed cleanup/launch recipes.
+
+Active P03-T01 Steps3/4 and P01-T09 Steps1/2: initial-owner finite acceptance and
+actor-owned bounded status now share the existing queue, Control transaction and
+0022 command contract. No dispatch/native admission is implied. Scoped Mac tests:
+58 management transport, 7 management domain, 4 acquisition domain; client24 and
+schema1 PASS; scoped clippy, TypeScript and generated schema checks PASS. Logs and preserved RED outcomes are under
+.research/implementation/initial-jobs-20261002. Native/installed wave NOT_RUN.
+Read-only review found no concrete product blocker; its missing valid cross-profile
+and acquisition-status wire tests were added. Fixture review found incomplete
+all-table comparisons around initial refusals and logout; closed with prior/refusal
+barriers and exact logout/Control-release oracles. Read-only review confirmed the
+fix without running engines. The four-case installed wave remains NOT_RUN. Elapsed job/session expiry, foreign actor,
+concurrent authority and installed ambiguous acceptance are still unexecuted in
+this new consumer. Next: finish fixture/full diff checks, commit exact candidate,
+build on isolated Tux using the retained compiler cache, then execute installed
+login→URL→enrollment→scope→job/retry/status and pre-bind privilege refusals.
 
 ## Current bounded qualification and resources
 

@@ -175,6 +175,7 @@ impl Completion {
 
 #[derive(Clone)]
 struct Shared {
+    profile: Profile,
     boundary: BrowserBoundary,
     budget: ResourceBudget,
     commands: mpsc::Sender<Command>,
@@ -290,6 +291,7 @@ impl Server {
         let (sender, commands) = mpsc::channel(QUEUE);
         let (shutdown, stopped) = watch::channel(false);
         let state = Shared {
+            profile,
             boundary,
             budget,
             commands: sender,
@@ -303,6 +305,8 @@ impl Server {
             .route("/management/v1/me", get(me));
         if matches!(profile, Profile::Initial { .. }) {
             router = router
+                .route("/management/v1/jobs", post(create_job))
+                .route("/management/v1/jobs/{job_id}", get(job_status))
                 .route("/management/v1/acquisition-scopes", post(register_scope))
                 .route("/management/v1/relay-endpoints", post(register_relay))
                 .route("/management/v1/relay-enrollments", post(enroll_relay));
@@ -906,8 +910,12 @@ async fn create_job(
     drop(bytes);
     // Reject unsupported shapes here; Control separately binds the authenticated
     // actor, installed dataset, revisions and exact native/destination proofs.
-    let validation = match &command {
-        JobCommand::Export(command) => command.validate(command.query.scope.dataset_id),
+    let validation = match (&command, shared.profile) {
+        (JobCommand::Export(command), Profile::Operational { .. }) => {
+            command.validate(command.query.scope.dataset_id).map(|_| ())
+        }
+        (JobCommand::Acquisition(_), Profile::Initial { .. }) => Ok(()),
+        _ => Err(SessionError::InvalidInput),
     };
     if let Err(error_kind) = validation {
         return error(if error_kind == SessionError::Capacity {

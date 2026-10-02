@@ -3,6 +3,7 @@ use super::{
     grants::{AllocationSelection, Revision},
     sessions::SessionError,
 };
+use crate::acquisition::job::AcquisitionCommand;
 use bigbrotr_model::{
     CommandKey, DatasetId, DestinationId, Digest256, EventId, JobId, PrincipalId,
     read::QueryRequest,
@@ -47,6 +48,7 @@ impl JobState {
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum JobCommand {
     Export(ExportCommand),
+    Acquisition(AcquisitionCommand),
 }
 
 impl<'de> Deserialize<'de> for JobCommand {
@@ -65,6 +67,8 @@ impl<'de> Deserialize<'de> for JobCommand {
             Query,
             Allocation,
             Destination,
+            ScopeId,
+            DeadlineUs,
             ExpectedConfigRevision,
             ExpectedPolicyRevision,
         }
@@ -72,6 +76,8 @@ impl<'de> Deserialize<'de> for JobCommand {
         enum Kind {
             #[serde(rename = "export")]
             Export,
+            #[serde(rename = "acquisition")]
+            Acquisition,
         }
         fn field<'de, M: MapAccess<'de>, T: Deserialize<'de>>(
             map: &mut M,
@@ -97,9 +103,11 @@ impl<'de> Deserialize<'de> for JobCommand {
                     mut query,
                     mut allocation,
                     mut destination,
+                    mut scope_id,
+                    mut deadline_us,
                     mut expected_config_revision,
                     mut expected_policy_revision,
-                ) = (None::<Kind>, None, None, None, None, None, None);
+                ) = (None::<Kind>, None, None, None, None, None, None, None, None);
                 while let Some(key) = map.next_key::<Field>()? {
                     match key {
                         Field::Kind => field(&mut map, &mut kind, "kind")?,
@@ -107,6 +115,8 @@ impl<'de> Deserialize<'de> for JobCommand {
                         Field::Query => field(&mut map, &mut query, "query")?,
                         Field::Allocation => field(&mut map, &mut allocation, "allocation")?,
                         Field::Destination => field(&mut map, &mut destination, "destination")?,
+                        Field::ScopeId => field(&mut map, &mut scope_id, "scope_id")?,
+                        Field::DeadlineUs => field(&mut map, &mut deadline_us, "deadline_us")?,
                         Field::ExpectedConfigRevision => field(
                             &mut map,
                             &mut expected_config_revision,
@@ -119,18 +129,45 @@ impl<'de> Deserialize<'de> for JobCommand {
                         )?,
                     }
                 }
-                kind.ok_or_else(|| M::Error::missing_field("kind"))?;
-                Ok(JobCommand::Export(ExportCommand {
-                    format: format.ok_or_else(|| M::Error::missing_field("format"))?,
-                    query: query.ok_or_else(|| M::Error::missing_field("query"))?,
-                    allocation: allocation.ok_or_else(|| M::Error::missing_field("allocation"))?,
-                    destination: destination
-                        .ok_or_else(|| M::Error::missing_field("destination"))?,
-                    expected_config_revision: expected_config_revision
-                        .ok_or_else(|| M::Error::missing_field("expected_config_revision"))?,
-                    expected_policy_revision: expected_policy_revision
-                        .ok_or_else(|| M::Error::missing_field("expected_policy_revision"))?,
-                }))
+                let kind = kind.ok_or_else(|| M::Error::missing_field("kind"))?;
+                let expected_config_revision = expected_config_revision
+                    .ok_or_else(|| M::Error::missing_field("expected_config_revision"))?;
+                let expected_policy_revision = expected_policy_revision
+                    .ok_or_else(|| M::Error::missing_field("expected_policy_revision"))?;
+                match kind {
+                    Kind::Acquisition => {
+                        if format.is_some()
+                            || query.is_some()
+                            || allocation.is_some()
+                            || destination.is_some()
+                        {
+                            return Err(M::Error::custom("export fields in acquisition command"));
+                        }
+                        Ok(JobCommand::Acquisition(AcquisitionCommand {
+                            scope_id: scope_id
+                                .ok_or_else(|| M::Error::missing_field("scope_id"))?,
+                            deadline_us: deadline_us
+                                .ok_or_else(|| M::Error::missing_field("deadline_us"))?,
+                            expected_config_revision,
+                            expected_policy_revision,
+                        }))
+                    }
+                    Kind::Export => {
+                        if scope_id.is_some() || deadline_us.is_some() {
+                            return Err(M::Error::custom("acquisition fields in export command"));
+                        }
+                        Ok(JobCommand::Export(ExportCommand {
+                            format: format.ok_or_else(|| M::Error::missing_field("format"))?,
+                            query: query.ok_or_else(|| M::Error::missing_field("query"))?,
+                            allocation: allocation
+                                .ok_or_else(|| M::Error::missing_field("allocation"))?,
+                            destination: destination
+                                .ok_or_else(|| M::Error::missing_field("destination"))?,
+                            expected_config_revision,
+                            expected_policy_revision,
+                        }))
+                    }
+                }
             }
         }
         deserializer.deserialize_map(CommandVisitor)
@@ -195,9 +232,18 @@ pub struct ResumeExportReceipt {
     pub created: bool,
 }
 
-/// Redacted operational metadata of the authenticated actor's own export.
+/// The implemented typed job protocols. Other historical kinds stay unavailable.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum JobKind {
+    Export,
+    Acquisition,
+}
+
+/// Redacted operational metadata of the authenticated actor's own job.
 /// This neither refreshes input grants nor authorizes artifact access or writes.
 pub struct JobObservation {
+    pub kind: JobKind,
     pub job_id: JobId,
     pub state: JobState,
     pub job_revision: u64,
@@ -213,7 +259,7 @@ impl Serialize for JobObservation {
         let mut row = serializer.serialize_struct("JobObservation", 11)?;
         row.serialize_field("format", "bigbrotr-job-status/1")?;
         row.serialize_field("job_id", &self.job_id)?;
-        row.serialize_field("kind", "export")?;
+        row.serialize_field("kind", &self.kind)?;
         row.serialize_field("state", &self.state)?;
         row.serialize_field("job_revision", &self.job_revision.to_string())?;
         row.serialize_field("checkpoint_revision", &self.checkpoint_revision.to_string())?;
@@ -315,6 +361,7 @@ impl JobCommand {
     ) -> Result<Digest256, SessionError> {
         match self {
             Self::Export(command) => command.digest(dataset, actor, key),
+            Self::Acquisition(command) => Ok(command.digest(dataset, actor, key)),
         }
     }
 }

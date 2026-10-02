@@ -179,7 +179,7 @@ The [owning enrollment contract](../reference/relay-enrollment.md) defines roots
 historical retry and its bounded qualification. The ordinary Serve profile does
 not expose this command yet. CLI/browser command consumers remain selected work.
 
-The initial `POST /management/v1/jobs` consumer accepts only an exact-ID private
+On ordinary Serve, `POST /management/v1/jobs` accepts an exact-ID private
 signed-event export using the shared QueryRequest and approved destination
 binding. Its [operator contract](../operations/export.md) specifies immutable
 acceptance202, historical retry200 and unavailable dependencies; the generated
@@ -190,6 +190,12 @@ operation and permits historical receipt resolution when813 is available.
 Destination custody outlives cancelled SQL through actual driver join;
 filesystem observation runs outside the asynchronous Control transaction. This
 route is under native qualification and reports no execution/artifact readiness.
+
+The explicit initial Ingest owner instead accepts `kind=acquisition` over an
+existing scope, using the same typed jobs route and original deadline/revision
+contract. Its actor-owned detail status reports kind=acquisition; listing remains
+export-only on ordinary Serve. [Finite acceptance/status](../reference/acquisition-scopes.md#installed-finite-acceptance-and-status-qualification-in-progress)
+is under installed qualification. Neither receipt nor status grants execution.
 
 The selected next history consumer mounts the same
 `/v1/resources/event_history` resource on the private origin with a browser-session

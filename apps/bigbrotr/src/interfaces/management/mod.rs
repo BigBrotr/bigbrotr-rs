@@ -13,7 +13,7 @@ use bigbrotr::{
         credentials::HASH_RESERVATION,
         grants::{AllocationSelection, GrantCommand},
         job_list::CursorLifetime,
-        jobs::{ExportCommand, JobCommand, ResumeExportCommand},
+        jobs::{ExportCommand, JobCommand, JobKind, ResumeExportCommand},
         reauthentication::VerifiedReauthentication,
         sessions::{BrowserSecret, SessionError, SessionLifetime, VerifiedLogin},
     },
@@ -424,6 +424,29 @@ impl Management {
                     return Ok(Execution::Complete(None));
                 }
                 match operation {
+                    Operation::Job {
+                        session,
+                        csrf,
+                        key,
+                        command: JobCommand::Acquisition(command),
+                    } => {
+                        if self.enrollment.is_none() {
+                            return Ok(Execution::Complete(Some(Response(
+                                completion,
+                                Err(SessionError::Forbidden),
+                            ))));
+                        }
+                        let commit = std::cell::Cell::new(false);
+                        let result = sql(
+                            maximum,
+                            owner.accept_acquisition(&session, &csrf, key, &command, &commit),
+                        )
+                        .await?;
+                        return Ok(Execution::Complete(Some(Response(
+                            completion,
+                            result.map(Reply::Job),
+                        ))));
+                    }
                     Operation::AcquisitionScope {
                         session,
                         csrf,
@@ -587,7 +610,7 @@ impl Management {
                         job,
                         delivery,
                     } => {
-                        if !self.export_jobs {
+                        if !self.export_jobs && self.enrollment.is_none() {
                             return Ok(Execution::Complete(Some(Response(
                                 completion,
                                 Err(SessionError::ArchiveUnavailable),
@@ -596,8 +619,16 @@ impl Management {
                         let action = lease
                             .begin_action(lease.known_epoch())
                             .map_err(|e| (4, e.to_string()))?;
-                        let result =
-                            sql(maximum, owner.observe_browser_job(&session, &csrf, job)).await?;
+                        let kind = if self.enrollment.is_some() {
+                            JobKind::Acquisition
+                        } else {
+                            JobKind::Export
+                        };
+                        let result = sql(
+                            maximum,
+                            owner.observe_browser_job_kind(&session, &csrf, job, kind),
+                        )
+                        .await?;
                         let result = match result {
                             Ok(status) => {
                                 // Renewing the enclosing Control lease must not

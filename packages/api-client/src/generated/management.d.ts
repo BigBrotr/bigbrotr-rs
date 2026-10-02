@@ -114,8 +114,8 @@ export interface paths {
         get: operations["listJobs"];
         put?: never;
         /**
-         * Accept a private signed event export job
-         * @description Exact Origin, current session, explicit CSRF and Idempotency-Key. Body max8192bytes. New work requires dataset data.read and all three exact-scope actions history.read, export and private-export, expected config/policy revisions, retained native allocation and configured initialized destination. Deployment selection requires migration0813 and job/pin/source-lock privileges before binding. A schema without813 or insufficient job privileges disables this route; existing812 session/history operation remains available. On the available protocol, an identical historical retry needs a live actor session but no current destination, native read or action grants; it never executes work or refreshes pins. A lost reply requires the identical original key/body. Initial transport is under qualification, not a completed exporter. No publication side effect.
+         * Accept selected finite work
+         * @description Closed8KiB typed finite work. Operational Serve accepts export; the explicit initial Ingest owner accepts acquisition. Other kinds/profile combinations refuse400. Session/CSRF/Origin and Idempotency-Key are required. Fresh202 and exact historical200 return acceptance only. Acquisition requires roles.control; scope/duration/expected heads remain immutable across retries. No automatic execution or native effect is implied.
          */
         post: operations["acceptJob"];
         delete?: never;
@@ -132,8 +132,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Inspect your export job
-         * @description Live browser session, explicit CSRF, current dataset status.read and authenticated actor ownership. GET only, canonical raw ID, no body or query. Requires available0813 job protocol; no archive/native/destination access. Input grants may have been revoked: this exposes only the actor's redacted operational receipt. Missing and other actors' jobs both404. No idle-session touch, background renewal or execution authority. Response socket uses a nonrenewable action window started before SQL. At most one bounded row.
+         * Inspect your selected job
+         * @description Actor-owned protocol1 operational status: export on ordinary Serve, acquisition on the explicit initial owner. Current session, CSRF and status.read required. Foreign/missing/unsupported job IDs all return404. No activity refresh, scope, selector, duration, source, artifact or execution authority. The original authenticated delivery deadline constrains actual socket writes.
          */
         get: operations["observeJob"];
         put?: never;
@@ -491,13 +491,13 @@ export interface components {
             /** @constant */
             authority: "acceptance-only";
         };
-        /** @description One actor-owned durable export observation. State is not worker liveness; no input, output, filesystem, execution or download authority. Completion time is present exactly for terminal states; paused/cancel_requested/partial/failed/cancelled/skipped require a redacted reason. Listing and artifact discovery remain separate consumers. */
+        /** @description One actor-owned durable job observation (export on operational Serve, acquisition on the initial owner). State is not worker liveness; no input, output, filesystem, execution or download authority. Completion time is present exactly for terminal states; paused/cancel_requested/partial/failed/cancelled/skipped require a redacted reason. Listing and artifact discovery remain separate consumers. */
         JobObservation: {
             /** @constant */
             format: "bigbrotr-job-status/1";
             job_id: string;
-            /** @constant */
-            kind: "export";
+            /** @enum {string} */
+            kind: "export" | "acquisition";
             /** @enum {string} */
             state: "accepted" | "queued" | "running" | "paused" | "cancel_requested" | "succeeded" | "partial" | "failed" | "cancelled" | "skipped";
             /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
@@ -558,7 +558,10 @@ export interface components {
         JobPage: {
             /** @constant */
             format: "bigbrotr-job-list/1";
-            items: components["schemas"]["JobObservation"][];
+            items: (components["schemas"]["JobObservation"] & {
+                /** @constant */
+                kind?: "export";
+            })[];
             next_cursor: components["schemas"]["JobCursor"] | null;
             effective_page_size: number;
             /** @description Canonical signed int64 Unix microseconds. Never round through JavaScript Number. */
@@ -673,6 +676,18 @@ export interface components {
             /** @constant */
             authority: "identity-only";
             scope_id: string;
+        };
+        /** @description Initial-owner finite configured Sync intent over one registered scope. Requires current session/CSRF, roles.control and original expected heads. Acceptance grants no socket, data access or coverage; installed execution remains in progress. */
+        AcquisitionJobCommand: {
+            /** @constant */
+            kind: "acquisition";
+            scope_id: string;
+            /** @description Original duration in microseconds, from1 through86400000000 (24h). Starts at acceptance, including COMMIT waiting; retries never extend it. */
+            deadline_us: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_config_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            expected_policy_revision: string;
         };
         /**
          * Initial exact-ID history QueryRequest
@@ -1282,7 +1297,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ExportJobCommand"];
+                "application/json": components["schemas"]["ExportJobCommand"] | components["schemas"]["AcquisitionJobCommand"];
             };
         };
         responses: {

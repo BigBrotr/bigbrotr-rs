@@ -32,12 +32,12 @@ async fn initial_profile_preserves_sessions_and_refuses_other_unwired_operations
     for (method, path, status) in [
         ("GET", "/v1/resources/event_history", 404),
         ("POST", "/v1/resources/event_history", 405),
-        ("GET", "/management/v1/jobs", 404),
-        ("POST", "/management/v1/jobs", 405),
+        ("GET", "/management/v1/jobs", 405),
+        ("POST", "/management/v1/jobs", 401),
         (
             "GET",
             "/management/v1/jobs/01010101010101010101010101010101",
-            404,
+            401,
         ),
         (
             "POST",
@@ -97,6 +97,74 @@ async fn initial_profile_preserves_sessions_and_refuses_other_unwired_operations
         ));
         command.completion.finish(Err(SessionError::Denied));
         assert!(client.await.unwrap().starts_with("HTTP/1.1 401 "));
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn initial_jobs_keep_exact_input_receipt_and_owned_queue_credit() {
+    let (mut server, address, budget, _) = sessions().await;
+    let body = r#"{"kind":"acquisition","scope_id":"04040404040404040404040404040404","deadline_us":"120000000","expected_config_revision":"5","expected_policy_revision":"6"}"#;
+    for created in [true, false] {
+        let client = tokio::spawn(exchange(
+            address,
+            format!(
+                "POST /management/v1/jobs HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Type: application/json\r\nCookie: BigBrotrLocalSession={}\r\nX-CSRF-Token: {}\r\nIdempotency-Key: {}\r\nContent-Length: {}\r\n\r\n{body}",
+                "11".repeat(32),
+                "22".repeat(32),
+                "08".repeat(16),
+                body.len()
+            ),
+        ));
+        let queued = tokio::time::timeout(Duration::from_secs(1), server.commands.recv())
+            .await
+            .unwrap()
+            .unwrap();
+        let transport::Operation::Job {
+            session,
+            csrf,
+            key,
+            command,
+        } = queued.operation
+        else {
+            panic!("wrong operation")
+        };
+        assert_eq!(session.expose_hex().as_str(), "11".repeat(32));
+        assert_eq!(csrf.expose_hex().as_str(), "22".repeat(32));
+        assert_eq!(key.to_string(), "08".repeat(16));
+        assert_eq!(
+            serde_json::to_value(command).unwrap(),
+            serde_json::from_str::<serde_json::Value>(body).unwrap()
+        );
+        assert_eq!(budget.snapshot().active_permits(), 2);
+        queued.completion.finish(Ok(transport::Reply::Job(
+            bigbrotr::management::jobs::JobReceipt {
+                command_key: key,
+                job_id: [9; 16].try_into().unwrap(),
+                accepted_at_us: 1234567,
+                created,
+            },
+        )));
+        let answer = client.await.unwrap();
+        let (headers, bytes) = answer.split_once("\r\n\r\n").unwrap();
+        assert!(
+            headers.starts_with(if created {
+                "HTTP/1.1 202 "
+            } else {
+                "HTTP/1.1 200 "
+            }),
+            "{answer}"
+        );
+        assert!(!headers.contains("set-cookie:"));
+        assert!(headers.contains("cache-control: no-store"));
+        assert_eq!(
+            serde_json::from_str::<serde_json::Value>(bytes).unwrap(),
+            serde_json::json!({
+                "format":"bigbrotr-job-acceptance/1", "command_key":"08".repeat(16), "job_id":"09".repeat(16),
+                "accepted_at_us":"1234567", "created":created, "execution":"unobserved", "authority":"acceptance-only"
+            })
+        );
     }
     server.stop().await.unwrap();
     assert_eq!(budget.snapshot().active_permits(), 0);
@@ -486,6 +554,112 @@ async fn registration_transport_refuses_ambiguous_authority_and_invalid_input() 
         );
         assert!(server.commands.try_recv().is_err());
     }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn initial_job_refusals_never_reach_the_owner() {
+    let (mut server, address, budget, _) = sessions().await;
+    let value = serde_json::json!({"kind":"acquisition", "scope_id":"04".repeat(16), "deadline_us":"120000000", "expected_config_revision":"1", "expected_policy_revision":"1"});
+    let auth = format!(
+        "Cookie: BigBrotrLocalSession={}\r\nX-CSRF-Token: {}\r\nIdempotency-Key: {}\r\n",
+        "11".repeat(32),
+        "22".repeat(32),
+        "08".repeat(16)
+    );
+    for (body, headers, expected) in [
+        (value.to_string(), String::new(), 401),
+        (
+            value.to_string(),
+            format!("Cookie: BigBrotrLocalSession={}\r\n", "11".repeat(32)),
+            403,
+        ),
+        (
+            value.to_string(),
+            auth.replace("Idempotency-Key:", "Missing-Key:"),
+            400,
+        ),
+        (
+            value.to_string().replace("120000000", "01"),
+            auth.clone(),
+            400,
+        ),
+        (
+            value.to_string().replace("120000000", "86400000001"),
+            auth.clone(),
+            400,
+        ),
+        (
+            value.to_string().replace("acquisition", "export"),
+            auth.clone(),
+            400,
+        ),
+        (
+            value.to_string().replace('}', ",\"path\":\"/tmp/never\"}"),
+            auth.clone(),
+            400,
+        ),
+        (" ".repeat(8193), auth.clone(), 413),
+    ] {
+        let answer = exchange(address, format!("POST /management/v1/jobs HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Type: application/json\r\n{headers}Content-Length: {}\r\n\r\n{body}", body.len())).await;
+        assert!(
+            answer.starts_with(&format!("HTTP/1.1 {expected} ")),
+            "{answer}"
+        );
+        assert!(server.commands.try_recv().is_err());
+    }
+    let exports: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../tests/fixtures/management/export-command.json"
+    ))
+    .unwrap();
+    let body = exports["vectors"][0]["command"].to_string();
+    let answer = exchange(address, format!("POST /management/v1/jobs HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Type: application/json\r\n{auth}Content-Length: {}\r\n\r\n{body}", body.len())).await;
+    assert!(answer.starts_with("HTTP/1.1 400 "), "{answer}");
+    assert!(server.commands.try_recv().is_err());
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn initial_status_uses_the_same_bounded_job_observation_route() {
+    let (mut server, address, budget, _) = sessions().await;
+    let client = tokio::spawn(exchange(
+        address,
+        format!(
+            "GET /management/v1/jobs/{} HTTP/1.1\r\nHost: {address}\r\nCookie: BigBrotrLocalSession={}\r\nX-CSRF-Token: {}\r\n\r\n",
+            "09".repeat(16),
+            "11".repeat(32),
+            "22".repeat(32)
+        ),
+    ));
+    let received = tokio::time::timeout(Duration::from_secs(1), server.commands.recv())
+        .await
+        .unwrap()
+        .unwrap();
+    let transport::Operation::JobStatus { job, .. } = received.operation else {
+        panic!("wrong operation")
+    };
+    assert_eq!(job.to_string(), "09".repeat(16));
+    received
+        .completion
+        .finish(Ok(transport::Reply::JobStatus(Some(
+            bigbrotr::management::jobs::JobObservation {
+                kind: JobKind::Acquisition,
+                job_id: job,
+                state: bigbrotr::management::jobs::JobState::Accepted,
+                job_revision: 1,
+                checkpoint_revision: 0,
+                created_at_us: 123,
+                completed_at_us: None,
+                observed_at_us: 456,
+                reason: None,
+            },
+        ))));
+    let answer = client.await.unwrap();
+    assert!(answer.starts_with("HTTP/1.1 200 "), "{answer}");
+    assert!(answer.contains("\"kind\":\"acquisition\""));
+    assert!(!answer.contains("set-cookie:"));
     server.stop().await.unwrap();
     assert_eq!(budget.snapshot().active_permits(), 0);
 }

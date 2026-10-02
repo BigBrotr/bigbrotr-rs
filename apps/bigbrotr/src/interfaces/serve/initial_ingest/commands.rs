@@ -164,6 +164,12 @@ pub(super) async fn maintain(
                     4,
                     format!("initial acquisition scope prerequisites unavailable: {e:?}"),
                 )
+            })?;
+            state.owner.require_acquisition_jobs().await.map_err(|e| {
+                (
+                    4,
+                    format!("initial acquisition job prerequisites unavailable: {e:?}"),
+                )
             })
         })
         .await?;

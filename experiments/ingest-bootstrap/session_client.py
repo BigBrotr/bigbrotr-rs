@@ -13,7 +13,7 @@ import sys
 import time
 
 directory, mode = Path(sys.argv[1]), sys.argv[2]
-assert directory.is_absolute() and mode in ('journey', 'hash-stop', 'hash-disconnect', 'renewal', 'enrollment', 'registration', 'scope')
+assert directory.is_absolute() and mode in ('journey', 'hash-stop', 'hash-disconnect', 'renewal', 'enrollment', 'registration', 'scope', 'jobs')
 origin = 'http://127.0.0.1:18081'
 password = 'Independent owner password 2026'
 
@@ -74,7 +74,7 @@ def journey():
                 {'username': 'alice', 'password': 'deliberately incorrect'})[0] == 401
     for method, path, status in [
         ('GET', '/v1/resources/event_history', 404),
-        ('POST', '/management/v1/jobs', 405),
+        ('POST', '/management/v1/jobs', 400),  # Selected route, missing command/key.
         ('POST', '/management/v1/sessions/current/reauthenticate', 405),
     ]:
         assert request(method, path, headers=auth)[0] == status
@@ -231,6 +231,9 @@ if mode == 'journey':
 elif mode == 'renewal':
     logged_in, session, saved, auth, _ = login()
     result = dict(login=logged_in, logout=logout(session, saved, auth))
+elif mode == 'jobs':
+    from job_client import run
+    result = run(directory, request, login, logout)
 elif mode == 'scope':
     from scope_client import run
     result = run(directory, request, login, logout)

@@ -42,12 +42,13 @@ registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races
 scope_command_races = len(sys.argv) == 4 and sys.argv[2] == '--scope-command-races'
 scope_command_faults = scope_command_relations or scope_command_races or (len(sys.argv) == 4 and sys.argv[2] == '--scope-command-faults')
 registration_faults = scope_command_faults or registration_http_faults or registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
+jobs_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-jobs'
 scope_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-scopes'
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
 enrollment_http = enrollment_functions or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments')
 sessions = session_hash or session_faults or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions')
-installed = scope_http or registration_http or sessions or enrollment_http or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
+installed = jobs_http or scope_http or registration_http or sessions or enrollment_http or (len(sys.argv) == 3 and sys.argv[2] == '--installed-ingest')
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
 execution = len(sys.argv) == 3 and sys.argv[2] == '--execution'
@@ -56,7 +57,7 @@ socket = len(sys.argv) in (3, 4) and sys.argv[2] == '--socket'
 assert len(sys.argv) == 2 or registration_faults or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-reuse_build = registration_faults or guards or interruptions or commits or ((observation or socket or sessions or enrollment_http or registration_http or scope_http) and len(sys.argv) == 4)
+reuse_build = registration_faults or guards or interruptions or commits or ((observation or socket or sessions or enrollment_http or registration_http or scope_http or jobs_http) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == ('relay_registration_fault_probe' if registration_faults else 'ingest_bootstrap_probe')
@@ -154,6 +155,11 @@ if registration_http:
 
 if scope_http_faults:
     report['wave'] = 'installed-scope-command-faults'
+
+if jobs_http:
+    report['wave'] = 'installed-finite-acquisition-jobs'
+    report['not_run'] = ['installed job COMMIT/cancellation/authority races', 'foreign actor and session/credential changes',
+        'job delivery/execution/progress/recovery/M1', 'capacity/load/aged-state', 'arm64/release']
 
 if scope_http:
     report['wave'] = 'installed-acquisition-scope'
@@ -509,6 +515,8 @@ if registration_http_faults:
 
 if registration_http:
     success_status = 'PASS_INITIAL_REGISTRATION_HTTP_WAVE'
+if jobs_http:
+    success_status = 'PASS_INITIAL_FINITE_JOB_HTTP_WAVE'
 if scope_http:
     success_status = 'PASS_INITIAL_SCOPE_HTTP_WAVE'
 if scope_command_faults:
@@ -632,6 +640,10 @@ try:
         cases = list(CASES)
     elif interruptions:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
+    elif jobs_http:
+        sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+        from initial_jobs import CASES
+        cases = list(CASES)
     elif scope_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from scopes import CASES
@@ -686,7 +698,9 @@ try:
             save()
         elif installed:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-            if scope_http:
+            if jobs_http:
+                from initial_jobs import run as run_installed
+            elif scope_http:
                 from scopes import run as run_installed
             elif registration_http:
                 from registrations import run as run_installed

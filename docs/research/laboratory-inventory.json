@@ -1219,7 +1219,7 @@
     "followups": {
       "populated_upgrade": "PASS bb_owner_upgrade; preserves all25 old relations with additive NULL audit fields, four new empty tables, stable initialization receipt and downgrade refusal",
       "engine_crash": "PASS actual PostgreSQL SIGKILL/137, restart and all10 complete database dumps unchanged; not host power loss",
-      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562–0.0930477711s; not mixed workload or cgroup peak",
+      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562\u20130.0930477711s; not mixed workload or cgroup peak",
       "credential_oracle": "PASS six observed native password hashes against pinned PHC C oracle on Mac"
     },
     "native_evidence": "docs/implementation/evidence/p08-owner-enrollment-native-20260918.json",
@@ -32825,6 +32825,35 @@
       "race_evidence": "docs/implementation/evidence/p03-scope-command-races-native-20261002.json",
       "relation_evidence": "docs/implementation/evidence/p03-scope-command-relations-native-20261002.json",
       "installed_fault_evidence": "docs/implementation/evidence/p03-initial-scopes-faults-native-20261002.json"
+    },
+    "initial_jobs": {
+      "owner": "root sole writer; existing initial_enrollment_review read-only, no engines",
+      "status": "IMPLEMENTATION_IN_PROGRESS_NATIVE_NOT_RUN",
+      "base_source": "c067f03781e714fe2be04e75530134199e022fbc",
+      "local": ".research/implementation/initial-jobs-20261002",
+      "checks": {
+        "management": 58,
+        "management_domain": 7,
+        "acquisition_domain": 4,
+        "client": 24,
+        "command_schema": 1,
+        "clippy": "PASS scoped"
+      },
+      "fixture": "experiments/ingest-bootstrap/initial_jobs.py; installed acceptance/status and three missing-privilege startup refusals",
+      "not_run": [
+        "new native build/installed engine",
+        "foreign actor and elapsed expiry",
+        "installed acceptance COMMIT/cancellation",
+        "installed job execution/progress/M1",
+        "capacity/aged-state/arm64/release"
+      ],
+      "preflight": {
+        "mac_free": "about3.4GiB",
+        "tux_free_bytes": 57194618880,
+        "active_bigbrotr_engines": 0,
+        "unrelated_running_containers": 8
+      },
+      "next": "Commit exact candidate then reuse exclusive retained native compiler and run isolated --installed-jobs clones."
     }
   },
   "implementation_relay_registry_20260928": {

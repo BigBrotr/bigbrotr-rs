@@ -162,3 +162,99 @@ fn unsupported_projection_is_refused_before_loading_its_vector() {
     assert!(serde_json::from_reader::<_, JobCommand>(&mut reader).is_err());
     assert!(reader.position() <= value_start as u64 + 1);
 }
+
+#[test]
+fn finite_acquisition_uses_the_same_typed_job_envelope_and_original_digest() {
+    let body = r#"{"scope_id":"04040404040404040404040404040404","deadline_us":"120000000","expected_config_revision":"5","expected_policy_revision":"6","kind":"acquisition"}"#;
+    let command: JobCommand = serde_json::from_str(body).unwrap();
+    assert_eq!(
+        serde_json::to_value(&command).unwrap(),
+        serde_json::from_str::<Value>(body).unwrap()
+    );
+    assert_eq!(
+        command
+            .digest(
+                [1; 16].try_into().unwrap(),
+                [2; 16].try_into().unwrap(),
+                [3; 16].try_into().unwrap()
+            )
+            .unwrap()
+            .to_string(),
+        "9f03583ab32e8152a0b96190c83af4f3096386c1e9d6405fed978bce13a80301"
+    );
+
+    // Neither kind may accept fields from the other variant, even before kind.
+    for (field, value) in [
+        ("format", serde_json::json!("signed-events-jsonl")),
+        ("query", vectors()["vectors"][0]["command"]["query"].clone()),
+        (
+            "allocation",
+            vectors()["vectors"][0]["command"]["allocation"].clone(),
+        ),
+        (
+            "destination",
+            vectors()["vectors"][0]["command"]["destination"].clone(),
+        ),
+    ] {
+        let mut changed: Value = serde_json::from_str(body).unwrap();
+        changed[field] = value;
+        assert!(
+            serde_json::from_value::<JobCommand>(changed).is_err(),
+            "{field}"
+        );
+    }
+    for (field, value) in [
+        ("scope_id", "04040404040404040404040404040404"),
+        ("deadline_us", "1"),
+    ] {
+        let mut changed = vectors()["vectors"][0]["command"].clone();
+        changed[field] = value.into();
+        assert!(
+            serde_json::from_value::<JobCommand>(changed).is_err(),
+            "{field}"
+        );
+    }
+    for duration in [
+        serde_json::json!(0),
+        serde_json::json!("0"),
+        serde_json::json!("01"),
+        serde_json::json!("86400000001"),
+    ] {
+        let mut changed: Value = serde_json::from_str(body).unwrap();
+        changed["deadline_us"] = duration;
+        assert!(serde_json::from_value::<JobCommand>(changed).is_err());
+    }
+    assert!(
+        serde_json::from_str::<JobCommand>(&body.replace(
+            "\"kind\":\"acquisition\"",
+            "\"kind\":\"acquisition\",\"kind\":\"acquisition\""
+        ))
+        .is_err()
+    );
+    assert!(serde_json::from_str::<JobCommand>("[]").is_err());
+}
+
+#[test]
+fn acquisition_status_is_typed_redacted_and_keeps_exact_revision_strings() {
+    use bigbrotr::management::jobs::{JobKind, JobObservation, JobState};
+    let observation = JobObservation {
+        kind: JobKind::Acquisition,
+        job_id: [9; 16].try_into().unwrap(),
+        state: JobState::Accepted,
+        job_revision: 1,
+        checkpoint_revision: 0,
+        created_at_us: i64::MIN,
+        completed_at_us: None,
+        observed_at_us: i64::MAX,
+        reason: None,
+    };
+    assert_eq!(
+        serde_json::to_value(observation).unwrap(),
+        serde_json::json!({
+            "format":"bigbrotr-job-status/1", "job_id":"09".repeat(16), "kind":"acquisition",
+            "state":"accepted", "job_revision":"1", "checkpoint_revision":"0",
+            "created_at_us":"-9223372036854775808", "completed_at_us":null,
+            "observed_at_us":"9223372036854775807", "reason_code":null, "authority":"observation-only"
+        })
+    );
+}

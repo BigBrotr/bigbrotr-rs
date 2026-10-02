@@ -59,6 +59,7 @@ test('list checks row visibility filters, descending order, exact times, limits 
     { items: [{ ...row, created_at_us: '9007199254740992' }] },
     { items: [{ ...row, created_at_us: '9007199254740994' }] },
     { items: [{ ...row, reason_code: null }] },
+    { items: [{ ...row, kind: 'acquisition' }] },
     { items: [{ ...row, created_at_us: '9223372036854775808' }] }
   ]) {
     const api = createManagementClient({ cookie: () => `BigBrotrLocalCsrf=${csrf}`, fetch: async () => json({ ...page, ...patch }) });

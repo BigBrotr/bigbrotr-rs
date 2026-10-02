@@ -623,8 +623,8 @@
     "/management/v1/jobs": {
       "post": {
         "operationId": "acceptJob",
-        "summary": "Accept a private signed event export job",
-        "description": "Exact Origin, current session, explicit CSRF and Idempotency-Key. Body max8192bytes. New work requires dataset data.read and all three exact-scope actions history.read, export and private-export, expected config/policy revisions, retained native allocation and configured initialized destination. Deployment selection requires migration0813 and job/pin/source-lock privileges before binding. A schema without813 or insufficient job privileges disables this route; existing812 session/history operation remains available. On the available protocol, an identical historical retry needs a live actor session but no current destination, native read or action grants; it never executes work or refreshes pins. A lost reply requires the identical original key/body. Initial transport is under qualification, not a completed exporter. No publication side effect.",
+        "summary": "Accept selected finite work",
+        "description": "Closed8KiB typed finite work. Operational Serve accepts export; the explicit initial Ingest owner accepts acquisition. Other kinds/profile combinations refuse400. Session/CSRF/Origin and Idempotency-Key are required. Fresh202 and exact historical200 return acceptance only. Acquisition requires roles.control; scope/duration/expected heads remain immutable across retries. No automatic execution or native effect is implied.",
         "parameters": [
           {
             "name": "X-CSRF-Token",
@@ -653,7 +653,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ExportJobCommand"
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ExportJobCommand"
+                  },
+                  {
+                    "$ref": "#/components/schemas/AcquisitionJobCommand"
+                  }
+                ]
               }
             }
           }
@@ -929,8 +936,8 @@
     "/management/v1/jobs/{job_id}": {
       "get": {
         "operationId": "observeJob",
-        "summary": "Inspect your export job",
-        "description": "Live browser session, explicit CSRF, current dataset status.read and authenticated actor ownership. GET only, canonical raw ID, no body or query. Requires available0813 job protocol; no archive/native/destination access. Input grants may have been revoked: this exposes only the actor's redacted operational receipt. Missing and other actors' jobs both404. No idle-session touch, background renewal or execution authority. Response socket uses a nonrenewable action window started before SQL. At most one bounded row.",
+        "summary": "Inspect your selected job",
+        "description": "Actor-owned protocol1 operational status: export on ordinary Serve, acquisition on the explicit initial owner. Current session, CSRF and status.read required. Foreign/missing/unsupported job IDs all return404. No activity refresh, scope, selector, duration, source, artifact or execution authority. The original authenticated delivery deadline constrains actual socket writes.",
         "parameters": [
           {
             "name": "job_id",
@@ -2524,7 +2531,10 @@
           },
           "kind": {
             "type": "string",
-            "const": "export"
+            "enum": [
+              "export",
+              "acquisition"
+            ]
           },
           "state": {
             "type": "string",
@@ -2590,7 +2600,7 @@
             "const": "observation-only"
           }
         },
-        "description": "One actor-owned durable export observation. State is not worker liveness; no input, output, filesystem, execution or download authority. Completion time is present exactly for terminal states; paused/cancel_requested/partial/failed/cancelled/skipped require a redacted reason. Listing and artifact discovery remain separate consumers."
+        "description": "One actor-owned durable job observation (export on operational Serve, acquisition on the initial owner). State is not worker liveness; no input, output, filesystem, execution or download authority. Completion time is present exactly for terminal states; paused/cancel_requested/partial/failed/cancelled/skipped require a redacted reason. Listing and artifact discovery remain separate consumers."
       },
       "ResumeExportCommand": {
         "type": "object",
@@ -2744,7 +2754,20 @@
             "type": "array",
             "maxItems": 200,
             "items": {
-              "$ref": "#/components/schemas/JobObservation"
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/JobObservation"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "const": "export"
+                    }
+                  }
+                }
+              ]
             }
           },
           "next_cursor": {
@@ -3255,6 +3278,46 @@
           }
         },
         "description": "Original authenticated command acceptance, preserving immutable scope attribution. created reflects this command, including an existing scope; retry returns original identity/time with created=false. No execution, read or visibility authority."
+      },
+      "AcquisitionJobCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "scope_id",
+          "deadline_us",
+          "expected_config_revision",
+          "expected_policy_revision"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "acquisition"
+          },
+          "scope_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "deadline_us": {
+            "type": "string",
+            "pattern": "^([1-9][0-9]{0,9}|[1-7][0-9]{10}|8[0-5][0-9]{9}|86[0-3][0-9]{8}|86400000000)$",
+            "description": "Original duration in microseconds, from1 through86400000000 (24h). Starts at acceptance, including COMMIT waiting; retries never extend it."
+          },
+          "expected_config_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "expected_policy_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          }
+        },
+        "description": "Initial-owner finite configured Sync intent over one registered scope. Requires current session/CSRF, roles.control and original expected heads. Acceptance grants no socket, data access or coverage; installed execution remains in progress."
       }
     },
     "securitySchemes": {
