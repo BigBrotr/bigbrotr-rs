@@ -118,7 +118,9 @@ may still update housekeeping files as described above. The
 records 12 actual RocksDB tests, build and Clippy at `20e0e5e` on Linux amd64.
 This includes independent second-process lock refusal/release, full historical
 identity and unchanged logical rows. The connected registry loader has separate
-bounded evidence; installed recovery remains unfinished.
+bounded evidence. The explicit [positive recovery command](producer-request-inputs.md#explicit-installed-positive-recovery)
+now consumes both under a joined native owner; source closure, successor and full
+restart remain unfinished.
 
 A new process obtains a fresh incarnation, so its new expected manifest does not
 match an old one automatically. Restart, handoff, restore and policy/topology
@@ -151,7 +153,9 @@ finish P02-T02: signed-event atomic admission, receipt ambiguity and replay,
 producer retirement, crash/ENOSPC/fsync faults, positive stale-owner exclusion,
 backup/restore, mixed/aged workloads and Linux target qualification remain separate
 practical gates. The explicit first-lifetime CLI below is under qualification;
-restart/handoff and initialization recovery are not yet installation commands.
+ordinary restart/handoff and partial-initialization repair are not implemented.
+The separate `ingest recover` command closes an initial producer and resolves its
+retained positive outcomes; it cannot resume fresh admission.
 
 ## Explicit initial owning lifetime
 

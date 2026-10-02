@@ -186,14 +186,22 @@ One owner serializes exact identity decisions for each writable directory.
   producer epoch, bounded outstanding window, contiguous acknowledgement and
   fenced retirement/GC contract; restart
   cannot reuse a request identity or forget unresolved effects.
-  The installed restart path now needs a bounded historical manifest/registry
+  The installed restart path uses a bounded historical manifest/registry
   loader before invoking the existing positive-only recovery resolver. The
   [historical inspection contract](../reference/ingest-store.md#historical-manifest-inspection)
   keeps exclusive native custody and exact retained identity; 12 actual native tests
   pass at `20e0e5e`. The [registry lookup](../reference/ingest-registration.md#historical-registration-lookup)
   at `fc695d2` passes ten actual PostgreSQL/Rocks cases from installed stores, with
   all 69 tables/17 native rows preserved and original heads/null/zero distinguished.
-  Installed closing/resolution, successor admission and full restart remain open.
+  The [installed positive recovery command](../reference/producer-request-inputs.md#explicit-installed-positive-recovery)
+  at `5512161` has nine actual PG/Rocks cases and three interruption cases with
+  fixture `851d116`: two original dictionary requests, exact 17 rows/69 tables,
+  original copies/retries and missing input/reservation refusals. It captures the
+  PG reserved-through bound separately from native issued, so a pending reservation
+  cannot be silently omitted. Signal/deadline and saturated diagnostics terminate
+  in bounded time; server-query lifetime remains distinct from driver join.
+  Signed-event recovery through this command, source/producer retirement,
+  successor admission and full restart remain open.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and

@@ -411,5 +411,20 @@ the number actually resolved, after native close, Control release and driver
 join. This is not readiness, a durable recovery checkpoint, an absence proof,
 source closure, ACK, retirement or successor activation. Failures can leave a
 native barrier or committed outcome copy; preserve state and retry the same root.
-Implementation and installed practical qualification are in progress under
-P01-T09 Step4/P02-T01 Step5/P02-T02 Step4.
+The [installed supplement](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+records nine original-state cases plus three interruption/diagnostic cases with
+product `5512161` and final fixture `851d116`. Two actual installed dictionary
+requests and all 17 native rows/69 Control tables are checked, including missing
+copies/inputs/reservations, pending reservation beyond issued, held native owner,
+changed heads, retries, SIGTERM, query deadline and a filled 64 KiB stdout pipe.
+This is bounded P01-T09 Step4/P02-T01 Step5/P02-T02 Step4 evidence. Signed-event
+recovery through this command and the later source/successor journey remain open.
+
+SIGTERM and deadline terminated the tested CLI in about 2.22s and 3.08s with no
+state changes; the configured operation/shutdown limits were 1s/2s. The driver has
+a separate 2s drain. A PostgreSQL backend still waited on the fixture lock after
+each process exit and terminated after unlock: transport shutdown does not promise
+synchronous server-query cancellation. Saturated stdout terminated in about 0.32s
+with exit1 after verified durable effects; diagnostics are not a recovery receipt.
+These measurements do not qualify blocked native syscalls, COMMIT ambiguity,
+production capacity or another target architecture.

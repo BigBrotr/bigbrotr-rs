@@ -792,5 +792,355 @@
     "NewFacts has actual separate-process/held-lock/backend-loss evidence; Rejected and AlreadyDurable use fresh Control within the same process.",
     "No in-FFI crash, host/power loss, ENOSPC, physically exhausted budgets, aged mixed-workload capacity, RSS/I/O envelope or native Linuxarm64 claim.",
     "No full installed M1 read/export/restart journey, ordinary Compose release journey, hosted Actions or Docker Hub promotion. All selected later product work remains active."
-  ]
+  ],
+  "installed_positive_recovery_20261002": {
+    "status": "PASS_SCOPED_INSTALLED_POSITIVE_RECOVERY",
+    "observed_at": "2026-10-02",
+    "scope": "P01-T09 Step4/P02-T01 Step5/P02-T02 Step4: installed positive-only original producer recovery; two dictionary requests, not signed-event successor/M1 or full task qualification",
+    "source": {
+      "revision": "5512161a860c5a0e0944128e83b846ca4e251aa0",
+      "tree": "ab168dbabd10f67a1238774e4afec9ef3973c2be",
+      "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+      "source_manifest_sha256": "75a74b4e78810d34d05c078509d4be97293e5e7d9aa1d0f9b059a151990c4656",
+      "fixture_revision": "851d1163f681d873b13808332fa707e0c88b906e",
+      "fixture_only_changes": "docs/ and experiments/; exact unchanged product artifacts verified before both runs"
+    },
+    "environment": {
+      "target": "x86_64-unknown-linux-gnu",
+      "rustc": "1.98.1",
+      "rocksdb": "0.25.0 / 11.8.1",
+      "postgres": "16.15 with fsync/full_page_writes enabled",
+      "native_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "runner": "Tux, no hosted Actions",
+      "client_limits": "2CPU/1GiB/128PIDs",
+      "declared_recovery_envelope": "1536MiB total; 1GiB payload,256MiB native,128MiB baseline,32MiB completion; reservations are not RSS/capacity claims"
+    },
+    "artifacts": {
+      "binary_sha256": "bd2db3daa0ab43a750107c281c83f8a9b67ec98e65775182adf70eb1195c8d42",
+      "probe_sha256": "fd4238bcc004770757cd866d3832c07b66d806956ea820db421827460114d4c3",
+      "probe_name": "ingest_bootstrap_probe"
+    },
+    "implementation": [
+      "Explicit ingest recover --file ROOT opens the configured existing native store exclusively before protected Control preparation/connection and a fresh claim. Historical manifest and registry reconstruct attribution; current accepted policy authorizes effects.",
+      "InitialProducerClosing retains the native barrier grant and PG reserved-through captured under existing producer UPDATE. Native issued may be smaller; all original sequences1..reserved are streamed through the existing positive-only resolver. An issued counter above PG bounds refuses.",
+      "One blocking worker owns native open/read/write/close. The existing collector handles signals/deadlines; a one-shot transfer retains the actual driver and grant in the parent through native completion/panic. A retained progress sender prevents normal completion from being mistaken for interruption.",
+      "No persistent format/migration, new ledger, dependency or framework. The existing v2 producer barrier is the sole new native value; copied outcomes preserve original attribution/bytes or record fresh recovery attribution separately."
+    ],
+    "build": {
+      "status": "PASS",
+      "checks": [
+        "release CLI and finite probe build",
+        "4 actual control_runtime_entrypoint tests",
+        "Clippy -D warnings"
+      ],
+      "capture": {
+        "label": "recovery-cli-custody",
+        "source": "5512161a860c5a0e0944128e83b846ca4e251aa0",
+        "files": 1702,
+        "captures": 15,
+        "capture_sha256": "d4c8f48895147e68f668d8a8ac721c3b80567de08f3b4fbfde6c9c86dfd58515"
+      }
+    },
+    "installed_cases": [
+      {
+        "name": "recovery-pass",
+        "status": "PASS",
+        "expected": "positive-outcomes-resolved",
+        "control_tables": 69,
+        "native_rows": 17
+      },
+      {
+        "name": "recovery-retry",
+        "status": "PASS",
+        "expected": "positive-outcomes-resolved",
+        "control_tables": 69,
+        "native_rows": 17
+      },
+      {
+        "name": "recovery-copy",
+        "status": "PASS",
+        "expected": "positive-outcomes-resolved",
+        "control_tables": 69,
+        "native_rows": 17
+      },
+      {
+        "name": "recovery-pending",
+        "status": "PASS",
+        "expected": "Unresolved",
+        "control_tables": 69,
+        "native_rows": 17
+      },
+      {
+        "name": "recovery-hole",
+        "status": "PASS",
+        "expected": "Unresolved",
+        "control_tables": 69,
+        "native_rows": 17
+      },
+      {
+        "name": "recovery-input",
+        "status": "PASS",
+        "expected": "Input(",
+        "control_tables": 69,
+        "native_rows": 17
+      },
+      {
+        "name": "recovery-held",
+        "status": "PASS",
+        "expected": "exclusive open failed",
+        "control_tables": 69,
+        "native_rows": 17
+      },
+      {
+        "name": "recovery-policy",
+        "status": "PASS",
+        "expected": "InvalidPolicy",
+        "control_tables": 69,
+        "native_rows": 17
+      },
+      {
+        "name": "recovery-heads",
+        "status": "PASS",
+        "expected": "positive-outcomes-resolved",
+        "control_tables": 69,
+        "native_rows": 17
+      },
+      {
+        "name": "recovery-stdout",
+        "status": "PASS",
+        "expected": "positive-outcomes-resolved",
+        "control_tables": 69,
+        "native_rows": 17
+      },
+      {
+        "name": "recovery_signal",
+        "status": "PASS",
+        "actual_backend_lock": true,
+        "unchanged_control_tables": 69,
+        "native_rows": 17,
+        "terminal": {
+          "pid": 419,
+          "start_ticks": "432023765",
+          "config": "/lab/bb_scope_bind_851d116_recovery_signal.toml",
+          "prefix": "/lab/recovery_signal",
+          "exit_code": 4,
+          "elapsed_seconds": 2.219642319716513,
+          "forced": false,
+          "reaped": true
+        },
+        "seconds_after_observed_block": 2.1431058114394546,
+        "application_backends_before_fixture_unlock": 1
+      },
+      {
+        "name": "recovery_deadline",
+        "status": "PASS",
+        "actual_backend_lock": true,
+        "unchanged_control_tables": 69,
+        "native_rows": 17,
+        "terminal": {
+          "pid": 549,
+          "start_ticks": "432024122",
+          "config": "/lab/bb_scope_bind_851d116_recovery_deadline.toml",
+          "prefix": "/lab/recovery_deadline",
+          "exit_code": 4,
+          "elapsed_seconds": 3.0751075884327292,
+          "forced": false,
+          "reaped": true
+        },
+        "seconds_after_observed_block": 2.960325913503766,
+        "application_backends_before_fixture_unlock": 1
+      }
+    ],
+    "measurements": {
+      "blocked_stdout": {
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "",
+        "filled_bytes": 65536,
+        "elapsed_seconds": 0.315331251360476
+      },
+      "signal": {
+        "name": "recovery_signal",
+        "status": "PASS",
+        "actual_backend_lock": true,
+        "unchanged_control_tables": 69,
+        "native_rows": 17,
+        "terminal": {
+          "pid": 419,
+          "start_ticks": "432023765",
+          "config": "/lab/bb_scope_bind_851d116_recovery_signal.toml",
+          "prefix": "/lab/recovery_signal",
+          "exit_code": 4,
+          "elapsed_seconds": 2.219642319716513,
+          "forced": false,
+          "reaped": true
+        },
+        "seconds_after_observed_block": 2.1431058114394546,
+        "application_backends_before_fixture_unlock": 1
+      },
+      "deadline": {
+        "name": "recovery_deadline",
+        "status": "PASS",
+        "actual_backend_lock": true,
+        "unchanged_control_tables": 69,
+        "native_rows": 17,
+        "terminal": {
+          "pid": 549,
+          "start_ticks": "432024122",
+          "config": "/lab/bb_scope_bind_851d116_recovery_deadline.toml",
+          "prefix": "/lab/recovery_deadline",
+          "exit_code": 4,
+          "elapsed_seconds": 3.0751075884327292,
+          "forced": false,
+          "reaped": true
+        },
+        "seconds_after_observed_block": 2.960325913503766,
+        "application_backends_before_fixture_unlock": 1
+      }
+    },
+    "review": {
+      "owner": "root",
+      "complete_native_rows": 17,
+      "control_tables": 69,
+      "original_inputs_per_seed": 2,
+      "replay": {
+        "status": "PASS_CAPTURE_REPLAY",
+        "cases": [
+          "recovery-pass",
+          "recovery-retry",
+          "recovery-copy",
+          "recovery-pending",
+          "recovery-hole",
+          "recovery-input",
+          "recovery-held",
+          "recovery-policy",
+          "recovery-heads",
+          "recovery-stdout",
+          "recovery_signal",
+          "recovery_deadline"
+        ],
+        "original_tables_each": 69,
+        "native_rows_each": 17,
+        "independent_seed_oracles": 2,
+        "original_request_inputs": 4
+      },
+      "boundary": "Complete new consumer, original initial lifetime/supervision, native/PG close and resolution, historical loaders and changed fixtures/callers reviewed. Ordinary Serve read/export dispatch, HTTP clients and unrelated stores were not re-audited; no independent AI review.",
+      "artifact_rehash": "Both qualified artifacts separately rehashed on Tux after the final engine wave; source/capture hashes compared locally with exact Git blobs.",
+      "structural_decision": "A focused finite consumer reuses existing policy/connection/native supervision rather than growing the ordinary Serve loop. Closing returns both existing ledgers\u2019 bounds as an attributed observation, not another persistent recovery state machine."
+    },
+    "preserved_failures": [
+      {
+        "source": "e4d8eaa",
+        "result": "Expected entrypoint RED: exit2 for absent command instead of4; other3 process tests pass. No product recovery ran.",
+        "capture": {
+          "label": "recovery-cli-red",
+          "source": "e4d8eaa3d3e8e34e521055ed61d1635eb6d5cb9a",
+          "files": 1700,
+          "captures": 12,
+          "capture_sha256": "32a8ef44e8d5fe035d47c4e331483b01d653e70fbe8717b98c8b4f209fb35123"
+        }
+      },
+      {
+        "source": "89dd8fe",
+        "result": "Compile failure: RequestInputError has Debug but no Display; fixed only diagnostic formatting; engine/tests/Clippy not run.",
+        "capture": {
+          "label": "recovery-cli-green",
+          "source": "89dd8fe2d7c95728344887f04bcd33024c17ac39",
+          "files": 1702,
+          "captures": 11,
+          "capture_sha256": "2a1e03196ea495b300b307a336beee14d0ebf2341cac29cbf0d635279d981530"
+        }
+      },
+      {
+        "source": "354e192",
+        "result": "Build/4 tests/Clippy pass; installed native barrier and all outcomes plus Control release commit, then command wrongly reports cancellation. Worker dropped its only progress sender before join; parent now retains it. Other cases did not run.",
+        "capture": {
+          "label": "recovery-engine-first",
+          "source": "354e192b03c2a8d6c3bbbe1104cf939802e6de16",
+          "build_source": "354e192b03c2a8d6c3bbbe1104cf939802e6de16",
+          "status": "FAIL",
+          "captures": 38,
+          "capture_sha256": "f40e5f51145950e6512db29ac9f270b5ede0324c8428c4f39c5a1bbad0c9def7",
+          "cases": []
+        }
+      },
+      {
+        "source": "336bb43",
+        "result": "Original run remains FAIL. Saturated stdout and SIGTERM assertions passed. Natural timeout returned4 safely but fixture required deadline wording; watchdog sets shared cancellation. Corrected expectation requires configured1s and no fixture signal; product artifact unchanged.",
+        "capture": {
+          "label": "recovery-interruptions",
+          "source": "336bb438066892b088bdf115fcb7a0bf9c84f070",
+          "build_source": "5512161a860c5a0e0944128e83b846ca4e251aa0",
+          "status": "FAIL",
+          "captures": 62,
+          "capture_sha256": "2b97bc225e13a2c55dd695a35b24f3e43ef89fdbd618f32a8e8b35d414750a6e",
+          "cases": []
+        }
+      }
+    ],
+    "terminal": {
+      "state": "STOPPED_RETAINED",
+      "resources": "docs/research/laboratory-inventory.json implementation_network_20260928.installed_ingest_recovery",
+      "tux_free_bytes": 69147979776,
+      "mac_free_kib": 2308344,
+      "cleanup_errors": [],
+      "unrelated_changes": [],
+      "cache": "shared1154757 released; no cache/dataset/container deletion this boundary"
+    },
+    "captures": {
+      "first_product_failure": {
+        "label": "recovery-engine-first",
+        "source": "354e192b03c2a8d6c3bbbe1104cf939802e6de16",
+        "build_source": "354e192b03c2a8d6c3bbbe1104cf939802e6de16",
+        "status": "FAIL",
+        "captures": 38,
+        "capture_sha256": "f40e5f51145950e6512db29ac9f270b5ede0324c8428c4f39c5a1bbad0c9def7",
+        "cases": []
+      },
+      "nine_cases": {
+        "label": "recovery-engine-custody",
+        "source": "5512161a860c5a0e0944128e83b846ca4e251aa0",
+        "build_source": "5512161a860c5a0e0944128e83b846ca4e251aa0",
+        "status": "PASS_INSTALLED_POSITIVE_RECOVERY",
+        "captures": 92,
+        "capture_sha256": "8c40ad6c02476a776ccd14d5bf50c4a3e69639a056854756f0f2b1ad84fd1c71",
+        "cases": [
+          {
+            "name": "positive-recovery",
+            "status": "PASS"
+          }
+        ]
+      },
+      "interruption_fixture_failure": {
+        "label": "recovery-interruptions",
+        "source": "336bb438066892b088bdf115fcb7a0bf9c84f070",
+        "build_source": "5512161a860c5a0e0944128e83b846ca4e251aa0",
+        "status": "FAIL",
+        "captures": 62,
+        "capture_sha256": "2b97bc225e13a2c55dd695a35b24f3e43ef89fdbd618f32a8e8b35d414750a6e",
+        "cases": []
+      },
+      "interruptions": {
+        "label": "recovery-interruptions-final",
+        "source": "851d1163f681d873b13808332fa707e0c88b906e",
+        "build_source": "5512161a860c5a0e0944128e83b846ca4e251aa0",
+        "status": "PASS_INSTALLED_POSITIVE_RECOVERY",
+        "captures": 67,
+        "capture_sha256": "ea3da91369d6e3dd98ad1997ecdd7aee17b750cabbf47c5163b53c26c96ff1db",
+        "cases": [
+          {
+            "name": "positive-recovery-interruptions",
+            "status": "PASS"
+          }
+        ]
+      }
+    },
+    "limitations": [
+      "Signed-event/AlreadyDurable/Rejected recovery through this installed command remains NOT_RUN; earlier resolver-level evidence does not substitute for that journey.",
+      "Two original dictionary requests/17 rows per seed are not mixed/aged/load or capacity evidence. Native filesystem housekeeping may change even when logical rows do not.",
+      "Signal/deadline cases block the historical dataset read before fresh Control acquisition. Later claim/native/COMMIT cancellation, blocked native FFI/close, worker panic, crashes, ENOSPC and ambiguous commits are NOT_RUN for this installed composition.",
+      "Both interrupted commands had one PostgreSQL backend still waiting before the fixture released its table lock. The Rust driver joins/aborts after its2s drain; transport closure is not synchronous server-query cancellation. Backends terminate after unlock, with all69 tables and17 native rows unchanged.",
+      "No negative outcome from missing detail, WAL provenance guarantee, ACK/GC, source closure, retirement, successor, full M1, arm64 or release qualification."
+    ]
+  }
 }
