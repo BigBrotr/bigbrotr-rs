@@ -480,5 +480,9 @@ independent closure digest. Fixture `10c2eca` adds actual UPDATE/SIGTERM rollbac
 and COMMIT/deadline recovery: the latter commits after the client exits, and the
 identical retry preserves the exact retained closure. Both retries check positive
 Control fencing. Server query termination is observed separately from CLI/driver
-termination. Concurrent source locks remain required qualification; this does not
-complete retirement or M1.
+termination. Fixture `d824180` qualifies both current-schema concurrent orders:
+a job cut13 committed first prevents closure12; closure12 committed first makes
+job13 COMMIT refuse and roll back. Migration0815's earlier dataset lock remains
+active, and the historical topology NULL remains unchanged. The competing job
+writer is a privileged relational fixture, not authenticated acceptance. These
+bounded results do not complete producer/domain retirement, successor or M1.

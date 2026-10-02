@@ -204,7 +204,12 @@ One owner serializes exact identity decisions for each writable directory.
   original requests from the retained signed acquisition/Archive/export journey,
   identical retry and missing event-outcome copy: all 49 native rows/four inputs
   and 69 Control tables checked, original 32-table catalog and files preserved.
-  Source/producer retirement, successor admission and full restart remain open.
+  Explicit initial source closure at `f873d92` adds the complete positive native
+  prefix and retained closure digest. The same report records signed first-wave,
+  UPDATE/SIGTERM rollback, COMMIT/deadline followed by durable commit and identical
+  retry, plus both actual current-schema job/closure lock orders (`d824180`).
+  These bounded guarantees leave producer/domain/workflow retirement, successor
+  admission and full restart open.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and

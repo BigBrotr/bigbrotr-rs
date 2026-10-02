@@ -12,13 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is `c0210f7`, pushed. Root owns the source/job lock fixture and this
-checkpoint; no active experiment or parallel writer. Two planned schedules use
-all current SQL triggers and the actual source-close CLI: job13 commits first and
-refuses closure12, or closure12 commits first and rejects job13. Migration0815's
-earlier dataset lock remains active. This is relational-job concurrency, not
-full authenticated acceptance. Commit/transfer exact candidate and launch with
-launch-source-locks.py; same f873d92 artifacts. No Mac Rust build.
+Primary main is `d824180`, one unpublished fixture candidate after pushedc0210f7.
+Root owns its evidence/reference/task/inventory/checkpoint update. No parallel
+writer or active experiment. Commit/push this bounded result, then implement the
+initial producer/domain/workflow retirement prerequisite. No Mac Rust build.
 
 ## Active responsibility and next bounded action
 
@@ -93,7 +90,7 @@ independent signed oracle plus digest. Original entrypoint RED7751217 stays FAIL
 (exit2 for missing option vs4; other3 tests pass), retained12 captures/SHA75feeea0.
 Report initial_source_closure_20261002 and inventory installed_ingest_recovery.
 source_closure own identities/results. UPDATE/COMMIT faults are qualified below;
-concurrent source locks remain.
+both current-schema job/closure schedules are qualified below.
 
 The implementation keeps the native closing grant and borrows actual exclusion
 through an ephemeral positive prefix witness. Every original request is consumed
@@ -117,8 +114,27 @@ fault_wave and inventory fault_engine own details. Engine10c2eca stopped/retaine
 ownerf34ec1d6/client2bc50311, borrowedPG stopped, no OOM/cleanup/unrelated changes;
 Tux68,667,346,944B free. Original evidence and both fault clones remain retained.
 
-Next bounded action: qualify concurrent job/source lock schedules in the actual
-source-closure consumer, reusing f873d92 artifacts and exact new fixture Git. The scoped Mac incremental cache retirement
+Fixtured824180/tree97d3e5e adds both current-schema concurrent orders with all
+triggers active. The earlier0815 dataset lock serializes job13-first (accepted,
+then source12 refuses) and closure12-first (commits, then job13 COMMIT refuses23514
+and rolls back). Actual source CLI, privileged relational job writer; not another
+HTTP acceptance qualification. Full69 tables/49 native rows/four inputs checked,
+old topology NULL and original catalog/files preserved. Root checked1709 source
+files/40 captures (SHAdd103b31) and replayed the complete independent native oracle
+and captured effects. Existing report lock_wave and inventory lock_engine own
+identities. Engined824180 stopped/retained, ownerbe172782/clientab1bb6b9, borrowedPG
+stopped; no OOM/cleanup/unrelated changes. Tux68,613,382,144B free.
+
+Next bounded action: design/implement the initial producer/domain/workflow
+retirement required before explicit successor activation. Read the complete
+owning storage/operations/registry contracts and actual SQL guards first. Reuse
+the ephemeral resolved-source witness and existing retained source closure where
+possible; no ACK, missing-detail noncommit or reclaim permission is implied.
+M1/P01-T09 Step4 restart/resend remains the next useful journey, specifically
+P02-T01 Step5/P02-T02 Step4 prerequisites. Source closure is now a bounded
+qualified consumer; broad capacity/negative resolution remain distinct work.
+
+The scoped Mac incremental cache retirement
 is complete (inventory cache_retirement_20260928.mac_incremental_20261002).
 Only .research/targets/product/debug/incremental was deleted:31,848 regenerable
 files,12,318,892,032 allocated bytes. Immediate free bytes1,319,854,080→9,757,089,792;

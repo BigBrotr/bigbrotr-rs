@@ -1264,7 +1264,7 @@
     ]
   },
   "initial_source_closure_20261002": {
-    "status": "PASS_FIRST_WAVE_AND_UPDATE_CANCEL_COMMIT_RECOVERY; concurrent source-lock qualification pending",
+    "status": "PASS_SCOPED_INITIAL_SOURCE_CLOSURE_AND_FAULT_LOCK_RECOVERY; not full retirement or M1",
     "scope": "P01-T09 Step4/P02-T01 Step5/P02-T02 Step4: explicit positive initial source closure, not producer/domain retirement or successor",
     "product": {
       "source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
@@ -1421,7 +1421,7 @@
       "unrelated_changed": []
     },
     "not_run": [
-      "Concurrent job/source lock schedules and process crash schedules remain required; actual UPDATE/SIGTERM and COMMIT/deadline/identical retry are qualified by fault_wave.",
+      "Abrupt process-kill/native-delay/ENOSPC schedules for this composition remain outside these waves; actual source UPDATE/SIGTERM, COMMIT/deadline/retry and both current-schema job/closure orders are qualified separately below.",
       "Installed zero prefix/AlreadyDurable/Rejected combinations and larger/aged/mixed workloads not run by this installed wave; native prefix tests have narrower scope.",
       "No full initial producer/domain retirement, explicit workflow abandonment, ACK/GC, successor, M1 restart/resend, native arm64 or release qualification."
     ],
@@ -1541,10 +1541,146 @@
         "unrelated_changed": []
       },
       "remaining": [
-        "Concurrent job/source lock schedules for this typed consumer.",
+        "Concurrent job/source lock schedules subsequently qualified by lock_wave; original fault execution unchanged.",
         "Installed zero/AlreadyDurable/Rejected compositions, process-kill/native-delay/resource/capacity/aged/mixed cases remain outside this wave.",
         "Producer/domain retirement, workflow abandonment, ACK/GC, successor and M1/release remain incomplete."
       ]
+    },
+    "lock_wave": {
+      "status": "PASS_INSTALLED_INITIAL_SOURCE_CLOSURE_LOCKS",
+      "fixture": "d824180134e15495d523396754b46f1269f67b71",
+      "tree": "97d3e5e361835ef2f4ae892ffac5d26411d9c5b1",
+      "product_source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+      "binary_sha256": "0c9d287e04cef5f039a201077d0b116cf229c7958f9095e66ae1b99892ac1d78",
+      "probe_sha256": "282f5a81f3203947a86467afb936fafc46add9636dcf265586e8548a133d12a5",
+      "source_files": 1709,
+      "source_archive_sha256": "7e5452d48b2316f3bccfb944b8a04feb3e354078145f86a6244d43e6fc8af111",
+      "cases": [
+        {
+          "name": "source_job_first",
+          "status": "PASS",
+          "terminal": {
+            "pid": 79,
+            "start_ticks": "432581573",
+            "config": "/lab/bb_scope_bind_d824180_source_job_first.toml",
+            "prefix": "/lab/source_job_first",
+            "exit_code": 4,
+            "elapsed_seconds": 0.2141712075099349,
+            "forced": false,
+            "reaped": true
+          },
+          "locks": {
+            "job_blocks_cli": [
+              {
+                "pid": 210,
+                "backend_start": "2026-10-02T12:19:21.669821+00:00",
+                "query": "SELECT substring(instance_id FROM 1 FOR 17) FROM control.datasets\n              WHERE dataset_id = $1::bytea FOR SHARE",
+                "blockers": [
+                  184
+                ],
+                "wait_event": "transactionid"
+              }
+            ]
+          },
+          "source_closed": false,
+          "job13_committed": true,
+          "control_tables": 69,
+          "native_rows": 49,
+          "original_requests": 4,
+          "qualification": "Installed source consumer versus privileged relational job writer; all product triggers active"
+        },
+        {
+          "name": "source_source_first",
+          "status": "PASS",
+          "terminal": {
+            "pid": 150,
+            "start_ticks": "432581752",
+            "config": "/lab/bb_scope_bind_d824180_source_source_first.toml",
+            "prefix": "/lab/source_source_first",
+            "exit_code": 0,
+            "elapsed_seconds": 0.2643980225548148,
+            "forced": false,
+            "reaped": true
+          },
+          "locks": {
+            "source_commit": [
+              {
+                "pid": 346,
+                "backend_start": "2026-10-02T12:19:23.459596+00:00",
+                "query": "COMMIT",
+                "blockers": [
+                  338
+                ],
+                "wait_event": "advisory"
+              }
+            ],
+            "cli_blocks_job": [
+              {
+                "pid": 322,
+                "backend_start": "2026-10-02T12:19:23.157938+00:00",
+                "query": "INSERT INTO control.jobs(job_id,dataset_id,principal_id,request_key,request_digest,\n        kind,config_revision,policy_revision,created_at_us,input_topology_generation)\n    SELECT decode('fafafafafafafafafafafafafafafafa','hex'),dataset_id,decode('fafafafafafafafafafafafafafafafa','hex'),decode('fbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfb','hex'),\n        decode('fcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfc','hex'),'export',config_revision,policy_revision,1,topology_generation\n      FROM control.datasets;",
+                "blockers": [
+                  346
+                ],
+                "wait_event": "transactionid"
+              }
+            ],
+            "job_commit": {
+              "sqlstate": "23514",
+              "rows": 0,
+              "lines": [
+                "ERROR:  23514"
+              ]
+            }
+          },
+          "source_closed": true,
+          "job13_committed": false,
+          "control_tables": 69,
+          "native_rows": 49,
+          "original_requests": 4,
+          "qualification": "Installed source consumer versus privileged relational job writer; all product triggers active"
+        }
+      ],
+      "capture": {
+        "label": "source-closure-locks-first",
+        "source": "d824180134e15495d523396754b46f1269f67b71",
+        "build_source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+        "status": "PASS_INSTALLED_INITIAL_SOURCE_CLOSURE_LOCKS",
+        "captures": 40,
+        "capture_sha256": "dd103b315fa5c992ec36cd4d4ea20e5a584c25ef69a11b639fc4be327bae6360",
+        "cases": [
+          {
+            "name": "source-closure-signed",
+            "status": "PASS"
+          }
+        ]
+      },
+      "local_replay": {
+        "status": "PASS_SOURCE_CLOSURE_LOCK_CAPTURE_REPLAY",
+        "cases": 2,
+        "independent_native_rows": 49,
+        "original_inputs": 4,
+        "control_tables": 69,
+        "closure_digest": "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501"
+      },
+      "interpretation": "All current product triggers active, including0815. The earlier dataset admission lock serializes the actual schedules: job13 first commits and closure12 refuses; closure12 first commits and job13 COMMIT refuses23514/rolls back. Historical topology NULL unchanged. Actual typed source consumer versus privileged relational job writer, not another authenticated job acceptance qualification.",
+      "preserved": {
+        "control": true,
+        "catalog": true,
+        "files": true,
+        "report": true
+      },
+      "terminal": {
+        "state": "STOPPED_RETAINED",
+        "owner": "be172782a0fa25f71f87bc4fa8eb24a4",
+        "client": {
+          "id": "ab1bb6b9c2b1da4f7653ae61111b6200bea406e0c630b64c8bf59008fb8947c9",
+          "name": "bigbrotr-acquisition-binding-d824180"
+        },
+        "free_bytes_after": 68613382144,
+        "cleanup_errors": [],
+        "unrelated_changed": []
+      }
     }
   }
 }
