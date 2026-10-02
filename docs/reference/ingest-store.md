@@ -169,8 +169,9 @@ registration/native initialization. No event is collected. The
 [private append evidence](../implementation/evidence/p02-dictionary-append-native-20261002.json)
 qualifies nine installed lifetime/window cases and nineteen startup COMMIT cuts;
 older evidence below still refers to the original two-map lifetime. Existing
-directories are not upgraded or adopted. Installed session regression remains
-separate; full acquisition, restart and M1 remain unfinished.
+directories are not upgraded or adopted. The three-case installed session
+regression also passes with explicit current-schema preparation; full acquisition,
+restart and M1 remain unfinished.
 
 One dedicated blocking worker exclusively owns store and Control. The parent
 current-thread runtime drives the actual PG connection, signals and phase

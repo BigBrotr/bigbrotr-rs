@@ -795,12 +795,13 @@
     "original_failures": [
       "ba14196 fixture with unchangedc0 CLI: expected private append absent,12 rows instead of17.",
       "Initial f801 launcher wrong script path failed before engines; corrected invocation retained separately.",
-      "First f801 engine oracle used process incarnation instead of recovery generation in receipt2, and fixed topology0; corrected literal oracle replay of retained capture PASS. Other8 cases had not run."
+      "First f801 engine oracle used process incarnation instead of recovery generation in receipt2, and fixed topology0; corrected literal oracle replay of retained capture PASS. Other8 cases had not run.",
+      "a9257aa old session fixture lacked current25/26 schema/grants; actual CLI refused before binding. Corrected8083261 explicitly upgraded only new clones and added exact null acquisition attribution expectations."
     ],
     "review": [
       "Read-only AI review found stale helper signatures; root also found enrollment caller and stale two request counts. Updated five callers and bound against explicit completed two-request oracle.",
       "Root complete-source/diff review, original captures,1668 Git source files per fixture,126 lifetime and375 fault captures verified; independent native/input/receipt replays and3 metadata mutation negatives.",
-      "Affected installed session/capacity regression still pending; earlier historical session reports keep their original build and12-row contract."
+      "Affected three-case installed session/capacity regression PASS at8083261. Earlier historical session reports keep their original builds and12-row contract."
     ],
     "not_qualified": [
       "Installed finite job execution/progress, archive/read/export and M1",
@@ -808,6 +809,46 @@
       "Production capacity, mixed/aged workloads, native arm64/release"
     ],
     "inventory": "implementation_network_20260928.initial_private_scope",
-    "local_evidence": ".research/implementation/initial-private-scope-20261002"
+    "local_evidence": ".research/implementation/initial-private-scope-20261002",
+    "sessions": {
+      "source": "8083261622ac03bf1f548cee9899be292cb83545",
+      "cases": 3,
+      "result": "PASS_INITIAL_SESSION_FIRST_WAVE",
+      "review": {
+        "status": "PASS_CAPTURE_REVIEW",
+        "source_files": 1668,
+        "captured_files": 101,
+        "checks": [
+          {
+            "case": "sessions-journey",
+            "native_rows": 17,
+            "inputs": 2,
+            "receipts": 2,
+            "tables": 69,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "sessions-capacity",
+            "native_rows": 17,
+            "inputs": 2,
+            "receipts": 2,
+            "tables": 69,
+            "status": "PASS_CAPTURE_REVIEW"
+          },
+          {
+            "case": "sessions-hash-stop",
+            "native_rows": 17,
+            "inputs": 2,
+            "receipts": 2,
+            "tables": 69,
+            "status": "PASS_CAPTURE_REVIEW"
+          }
+        ]
+      },
+      "me_successes": 2538,
+      "readers": 12,
+      "elapsed_seconds": 8.034675107337534,
+      "scope": "Actual login/logout/incorrect credentials, shared-memory refusal before listener bind, SIGTERM during observed password work without issuance;69 SQL tables and17 native rows/two inputs/receipts."
+    }
   }
 }

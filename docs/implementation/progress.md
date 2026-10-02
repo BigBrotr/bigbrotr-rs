@@ -12,40 +12,57 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Maina3123a2daeb2100fd5a93c3c19218b0fe6b872a3; origin/main9e22986. Root sole writer.
-Four unpublished commits: preserve bootstrap1 and append self-scoped private3 as
-request2 before initialized report; independent lifetime/COMMIT fixtures updated.
-Actual f8015bc CLI/probe: build,123 selected native tests and Clippy PASS.
-Fixturee41e255: nine installed lifetime cases PASS,17 native rows/two original
-inputs/receipts, both topology0/1, renewal/expiry/refusal and three window negatives.
-Fixturea3123a2: nineteen startup COMMIT cases PASS through both transactions of
-private request2; retained12/17 native rows and exact original inputs/SQL outcomes.
-Cancellation retains observed server transaction/Control exclusion after CLI death.
-All resources STOPPED/RETAINED. Latest audit2026-10-02T03:30:52UTC:1065 prior
-unchanged,eight unrelated,compiler lock free,54,313,238,528B free. Clientcfcbd659
-stopped143/PG71775507 stopped0; preserve all nineteen clones/native fault states.
-Build root initial-ingest-f8015bc; lifetime initial-private-e41e255; faults
-initial-private-faults-a3123a2. Full PID/start/owners/artifacts in inventory
-implementation_network_20260928.initial_private_scope. Originals under
-.research/implementation/initial-private-scope-20261002/{red,native,lifetime,faults}.
-Native buildELFs separately retained; Mac3.3GiB free, no local Rust build.
+Main8083261622ac03bf1f548cee9899be292cb83545; origin/main9e22986 before evidence push.
+Root sole writer. Initial private-scope boundary now qualified: actualf8015bc
+CLI/probe build,123 selected native tests/Clippy; nine installed lifetime/window
+casese41e255, nineteen startup COMMIT casesa3123a2 and three installed session
+regressions8083261 PASS. Original12-row bootstrap retained, explicit private3
+request2 adds self-scoped root; report publishes only after outcome delivery.
+No persistent format/migration changes; existing directories never adopted.
 
-Initial f801 engine fixture FAIL preserved: receipt2 oracle confused process
-incarnation/recovery generation and hardcoded topology0. Corrected complete replay
-PASS plus3 metadata negatives. First launcher nonexistent-path setup failure is
-separate from that engine outcome. Root verified1668 Git files/126 lifetime captures;
-fault1668 source files/375 captures and nineteen retained-case replays PASS. AI review found five stale refusal helper
-callers (including root-found enrollment); corrected plus two stale request counts.
-No additional product blocker in bounded read-only review; reviewer ran no engines.
-Session regressiona9257aa retained fixture/setup FAIL: old session template lacks
-current25/26 listener prerequisites; actual CLI correctly refused before binding.
-No active engine after audit03:35:55UTC (1066 prior unchanged, eight unrelated,
-54,337,552,384B free). Updated fixture explicitly migrates/grants fresh clones and
-expects schema24 nullable attribution columns; originals remain untouched.
-Next run corrected affected installed session/capacity regression,
-finish existing evidence/contract/task updates and push coherent verified work.
-Then continue bounded installed finite job selection/dispatch P03-T01 Steps3/4,
-P03-T02 and M1/P01-T09. No successor, acquisition, capacity or release claim yet.
+All resources STOPPED/RETAINED. Latest audit2026-10-02T03:37:45UTC:1067 prior
+unchanged,eight unrelated,compiler lock free,54,250,500,096B free. Session client
+2d3229a7 stopped143/PG71775507 stopped0/noOOM. Buildinitial-ingest-f8015bc;
+lifetimeinitial-private-e41e255;faultsinitial-private-faults-a3123a2;
+sessioninitial-private-sessions-8083261. Full identities in inventory
+implementation_network_20260928.initial_private_scope. Preserve all clones/stores.
+Originals .research/implementation/initial-private-scope-20261002/
+{red,native,lifetime,faults,sessions,sessions-fixed}. ELFs separate from sharedcache.
+Mac3,328,964KiB free; no local Rust build. Root verified1668 Git files per fixture,
+126 lifetime/375 fault/session captures and complete native/input/receipt replays;
+three metadata mutation negatives reject. Latest planning artifact check PASS.
+
+Original failures remain: unchangedc0 CLI misses private append; firstf801 setup
+launcher used wrong path before engines; initialf801 receipt2 oracle confused
+process incarnation/recovery and topology; a9257aa session fixture lacked current
+schema/grants and correctly refused before bind. Corrected clones alone upgraded.
+AI review found stale helper callers; all five corrected plus stale row counts.
+No bounded product blocker in read-only review; reviewer ran no engines.
+Structure groups dictionary initialization only; preserves atomic native append,
+Control/driver custody, explicit transactions, cancellation and ambiguity stop.
+Existing dictionary append report owns bounded evidence; P02-T03/M1 remain open.
+
+Next user-visible deliverable is installed finite signed-event dispatch, P03-T01
+Steps3/4/P03-T02 and M1/P01-T09. Concrete next action: implement bounded candidate
+selection and source metadata loading, then wire the same native owner. Reuse
+job_admissions ordinal with a fixed upper pass cut/keyset cursor; advance known
+refusals, never treat scan state as coverage. Return one bounded candidate, then
+existing claim remains authority. Source read supplies exact current enrollment
+identity/route/canonical endpoint; existing socket and both native phases must
+recheck it. No new persistent queue/counter/trait. Relevant claims/read/source/
+policy/migrations and actual maintain loop read; no full scheduler claim yet.
+
+Explicit control,ingest,sync selection must be distinct from configured local
+placement; preserve acceptance-only control,ingest. Execution probes23/24 authority
+functions/grant-row lock privileges even without HTTP. First observation/event
+need at least4 window slots (bootstrap/private already1/2), no repeated empty
+append on every poll. Keep scope8MiB/metadata/observation/event grants and absolute
+renewal due across bounded steps. Quiet socket quanta must return through cleanup
+and SQL rollback BEFORE hard deadline; outer timeout poisons owner and cannot be
+normal idle polling. Uncertain effects stop with original input. Practical next
+consumer: older refused job plus valid job, enrollment change before socket,
+quiet quantum with usable renewal, actual signed/forged/duplicate arrivals. EOSE
+never means completion/coverage. Successor and archive/read/export remain M1 work.
 
 Installed private-scope RED ran exactc0fb44e CLI against fixtureba14196: original12
 native rows versus independent17 expected. CLI stopped cleanly; original source,
