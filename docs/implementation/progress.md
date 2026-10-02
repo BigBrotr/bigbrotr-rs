@@ -128,9 +128,14 @@ accepted32 succeeds; accepted configuration1 or accepted policy1 refuses before
 registration), preserve original native17 rows/two requests and full SQL effects.
 The focused --installed-ingest-windows fixture now checks accepted configuration1,
 accepted policy1 and staged local1 in that order, preserving the full refusal
-census on failed initialization. Local AST/mode checks pass; actual baseline is
-NOT_RUN. Next run this exact candidate against retained product3a7f884, before
-changing product code. Do not weaken accepted bounds or silently reuse the old
+census on failed initialization. Baseline fixture12759f8/product3a7f884 is original FAIL as expected: staged
+window1 exits3 before initialization; accepted configuration1/policy1 both refuse
+InvalidPolicy. All64 template Control tables/xmin remain identical in all three
+cases.31 captures hash-verified under initial-archive-20261002/window-red; owned
+client ab625502/owner0fce88885fa262227d539d1f87fede79 and borrowed PG stopped,
+no OOM/cleanup/unrelated changes. The fixture now explicitly upgrades each new
+window clone to current69-table schema before seeding policy; original template
+is untouched. Next repeat the baseline on that current schema, before product fix. Do not weaken accepted bounds or silently reuse the old
 nine-case window qualification. No new cache/build is needed for the baseline.
 
 M1 remains INCOMPLETE: online indexing, successor/replay, restart/resend/provenance-

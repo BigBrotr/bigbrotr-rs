@@ -212,6 +212,14 @@ def configure(text,before,name):
 
 
 def run(pg,client,output,database,name,rows):
+    if name in ('window-local','window-config','window-policy'):
+        # Compare authority against the same current schema used by installed
+        # consumers, preserving the retained older template and migration ledger.
+        from registrations import upgrade as upgrade_registry
+        from scopes import upgrade as upgrade_scopes
+        upgrade_registry(pg,client,output,database,name,rows)
+        upgrade_scopes(pg,client,output,database,name,rows)
+        assert len(rows(database))==69
     script = output/'installed_client.py'
     if not script.exists():
         shutil.copy2(Path(__file__).with_name('installed_client.py'),script)
