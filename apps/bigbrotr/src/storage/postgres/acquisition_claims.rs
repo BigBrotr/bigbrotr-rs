@@ -48,6 +48,33 @@ const SCAN_ADMISSIONS: &str = "
     FROM batch b ORDER BY b.admission_ordinal";
 
 impl ControlSession {
+    /// Execution is selected independently of the private listener. Check its
+    /// schema, function and row-lock permissions before publishing startup.
+    pub async fn require_acquisition_execution(&mut self) -> Result<(), Error> {
+        self.begin_operation().map_err(|_| Error::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 24)
+            .await
+            .map_err(|_| Error::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| Error::Unavailable)?;
+        let valid: bool = tx
+            .query_one(EXECUTION_PRIVILEGES, &[])
+            .await
+            .map_err(backend)?
+            .try_get(0)
+            .map_err(metadata)?;
+        if !valid {
+            return Err(Error::Prerequisite);
+        }
+        tx.rollback().await.map_err(backend)?;
+        if self.client.is_closed() {
+            return Err(Error::Unavailable);
+        }
+        self.available = true;
+        Ok(())
+    }
+
     /// Nominate from at most32 admissions, before eligibility filtering. No claim,
     /// source action, lease renewal or scientific progress is produced here.
     pub async fn nominate_acquisition(
@@ -201,6 +228,32 @@ impl ControlSession {
         }
     }
 }
+
+const EXECUTION_PRIVILEGES: &str = "
+    SELECT bool_and(has_table_privilege(CURRENT_USER, t.name, 'SELECT'))
+        AND bool_and(NOT t.row_lock OR has_any_column_privilege(CURRENT_USER, t.name, 'UPDATE'))
+        AND has_table_privilege(CURRENT_USER, 'control.jobs', 'UPDATE')
+        AND has_function_privilege(CURRENT_USER,
+            'control.require_acquisition_job_authority(bytea,bytea)', 'EXECUTE')
+        AND has_function_privilege(CURRENT_USER,
+            'control.require_acquisition_execution(bytea,bytea,bytea,bytea,bytea)', 'EXECUTE')
+    FROM (VALUES
+        ('control.datasets', true),
+        ('control.local_accounts', true),
+        ('control.principal_grants', true),
+        ('control.relay_enrollments', true),
+        ('control.jobs', true),
+        ('control.owner_epochs', false),
+        ('control.acquisition_jobs', false),
+        ('control.job_admissions', false),
+        ('control.acquisition_scopes', false),
+        ('control.acquisition_selectors', false),
+        ('control.relay_endpoints', false),
+        ('control.network_routes', false),
+        ('control.relay_access_contexts', false),
+        ('control.config_revisions', false),
+        ('control.policy_revisions', false)
+    ) t(name, row_lock)";
 
 async fn queue(
     tx: &Transaction<'_>,

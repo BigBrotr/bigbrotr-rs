@@ -26,7 +26,10 @@ fn explicit_initial_ingest_refuses_omitted_roles_and_unsupported_consumers_befor
     fs::write(&file, toml::to_string(&config).unwrap()).unwrap();
     let wrong = invoke("control");
     assert_eq!(wrong.status.code(), Some(3));
-    assert!(String::from_utf8_lossy(&wrong.stderr).contains("requires exactly"));
+    assert!(
+        String::from_utf8_lossy(&wrong.stderr)
+            .contains("requires control,ingest or control,ingest,sync roles")
+    );
     let administration = invoke("control,ingest");
     assert_eq!(administration.status.code(), Some(3));
     assert!(

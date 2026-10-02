@@ -2,6 +2,7 @@
 mod commands;
 mod dictionaries;
 mod supervision;
+mod sync;
 use super::{Result, Stop, duration, owner_error};
 use crate::{
     config::Resolved,
@@ -121,7 +122,7 @@ fn native_limits() -> RocksNativeLimits {
     .expect("checked initial native profile")
 }
 
-fn budget(root: &Resolved) -> Result<ResourceBudget> {
+fn budget(root: &Resolved, sync: bool) -> Result<ResourceBudget> {
     let n = |field: &str| root.number(&format!("runtime.processes.application.{field}"));
     let envelope = ProcessEnvelope::new(
         n("memory_max_bytes"),
@@ -130,7 +131,7 @@ fn budget(root: &Resolved) -> Result<ResourceBudget> {
             n("payload_bytes"),
             // Native, retained producer inputs and Control coexist with the
             // bounded session connections, queued requests and one hash worker.
-            3 + management::SESSION_ITEMS,
+            3 + management::SESSION_ITEMS + if sync { sync::ITEMS } else { 0 },
             n("native_bytes"),
             n("completion_reserve_bytes"),
         ),
@@ -154,9 +155,9 @@ fn required<'a>(root: &'a Resolved, key: &str) -> Result<&'a str> {
         .ok_or_else(|| (3, format!("{key}: required for initial Ingest")))
 }
 
-pub(super) fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
+pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> Result<()> {
     selected(&root)?;
-    let budget = budget(&root)?;
+    let budget = budget(&root, sync)?;
     let initial = InitialGrants {
         native: grant(&budget, 0, native_limits().native_allowance_bytes())?,
         bootstrap: grant(&budget, 8 * MIB, 4 * MIB)?,
@@ -195,7 +196,7 @@ pub(super) fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
             // The parent keeps driving current-thread I/O/timers while this
             // owner parks on async SQL or blocks in native open/write/close.
             let _inputs = inputs;
-            handle.block_on(own(root, client, initial, budget, progress, worker_cancel))
+            handle.block_on(own(root, sync, client, initial, budget, progress, worker_cancel))
         });
         let (terminal, interrupted) = match supervision::collect(&mut worker, &mut observed,
             &cancellation, stop.requested(), grace, |report| output.emit(report, false)).await {
@@ -258,12 +259,18 @@ fn phase(progress: &watch::Sender<Progress>, timeout: std::time::Duration) -> Re
 
 async fn own(
     root: Resolved,
+    sync_selected: bool,
     client: tokio_postgres::Client,
     initial: InitialGrants,
     budget: ResourceBudget,
     progress: watch::Sender<Progress>,
     cancellation: Arc<Cancellation>,
 ) -> Result<Value> {
+    // Public CA file I/O belongs to this supervised blocking owner. A stalled
+    // regular file cannot prevent the parent from handling signals/deadlines.
+    let mut sync = sync_selected
+        .then(|| sync::Sync::prepare(&root, &budget))
+        .transpose()?;
     let path = Path::new(required(&root, "storage.ingest_root")?);
     if !path.is_absolute()
         || !path
@@ -308,6 +315,9 @@ async fn own(
             |doc, digest| {
                 let restored = super::accepted_policy(&root, doc, digest)?;
                 selected(&restored).map_err(|_| OwnerError::InvalidPolicy)?;
+                if let Some(sync) = &mut sync {
+                    sync.accept(&restored)?;
+                }
                 outstanding =
                     outstanding.min(restored.number("ingest.producer_outstanding_requests"));
                 Ok(())
@@ -420,9 +430,10 @@ async fn own(
         "recovery_generation":manifest.identity().recovery_generation,
         "topology_generation":spec.target_topology().unwrap().get().to_string(), "public_scope":public, "private_scope":private,
         "native_profile":1,"native_allowance_bytes":128*MIB,"dictionary_count":3,
-        "acquisition":"not-started","ready":false});
+        "acquisition":if sync.is_some() { "finite-initial" } else { "not-started" },"ready":false});
     commands::maintain(
-        &mut custody.owner,
+        &mut custody,
+        sync.as_mut(),
         &spec,
         &root,
         &budget,

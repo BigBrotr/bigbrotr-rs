@@ -2,6 +2,7 @@
 //! HTTP and password tasks run on the parent runtime; neither borrows native state.
 use super::*;
 use bigbrotr::runtime::policy_authority::{LeaseError, PolicyLeaseTracker, PolicyLeaseTtl};
+use std::time::Duration;
 
 struct CommandOwner<'a> {
     owner: &'a mut ControlSession,
@@ -12,6 +13,7 @@ struct CommandOwner<'a> {
     lease: PolicyLeaseTracker,
     administration: Option<bool>,
     public_routes: bool,
+    sync: Option<&'a mut sync::Sync>,
 }
 
 fn authority(error: LeaseError) -> (u8, String) {
@@ -50,6 +52,9 @@ impl CommandOwner<'_> {
                 .refresh(|doc, digest| {
                     let restored = super::super::accepted_policy(self.root, doc, digest)?;
                     selected(&restored).map_err(|_| OwnerError::InvalidPolicy)?;
+                    if let Some(sync) = self.sync.as_deref_mut() {
+                        sync.accept(&restored)?;
+                    }
                     administration &= restored.flag("administration.enabled");
                     public_routes &= restored.flag("network.public.enabled");
                     Ok(())
@@ -107,7 +112,8 @@ impl CommandOwner<'_> {
 }
 
 pub(super) async fn maintain(
-    owner: &mut ControlSession,
+    custody: &mut Custody,
+    sync: Option<&mut sync::Sync>,
     spec: &InitialRegistration,
     root: &Resolved,
     budget: &ResourceBudget,
@@ -115,6 +121,8 @@ pub(super) async fn maintain(
     cancellation: &Cancellation,
     mut report: Value,
 ) -> Result<()> {
+    let Custody { store, owner } = custody;
+    let store = store.as_mut().expect("initialized native owner");
     let lease = PolicyLeaseTracker::new(
         spec.dataset_id,
         owner.identity().process_incarnation,
@@ -131,8 +139,26 @@ pub(super) async fn maintain(
         lease,
         administration: None,
         public_routes: false,
+        sync,
     };
     let started = state.renew().await?;
+    if state.sync.is_some() {
+        let maximum = state.maximum()?;
+        phase(progress, maximum)?;
+        bounded(maximum, cancellation, async {
+            state
+                .owner
+                .require_acquisition_execution()
+                .await
+                .map_err(|e| {
+                    (
+                        4,
+                        format!("initial acquisition execution prerequisites unavailable: {e:?}"),
+                    )
+                })
+        })
+        .await?;
+    }
     let mut management = if state.administration == Some(true) {
         let maximum = state.maximum()?;
         phase(progress, maximum)?;
@@ -220,6 +246,7 @@ pub(super) async fn maintain(
             json!([])
         };
         let mut due = state.next_renewal(started)?;
+        let mut dispatch_due = Instant::now() + sync::INTERVAL;
         state.idle_phase(due)?;
         progress.send_modify(|value| value.initialized = Some(report));
         loop {
@@ -227,6 +254,11 @@ pub(super) async fn maintain(
                 .lease
                 .check_delivery(state.lease.known_epoch())
                 .map_err(authority)?;
+            // Avoid starting a new bounded operation with only a timer tick
+            // left. This advances renewal; it never extends the old authority.
+            if due.saturating_duration_since(Instant::now()) < Duration::from_millis(100) {
+                due = Instant::now();
+            }
             tokio::select! {
                 biased;
                 _ = cancellation.wait() => return Ok(()),
@@ -241,8 +273,22 @@ pub(super) async fn maintain(
                         management.renew_delivery(window)?;
                     }
                 },
+                _ = tokio::time::sleep_until(dispatch_due), if state.sync.is_some() => {
+                    let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
+                    phase(progress, maximum)?;
+                    bounded(maximum, cancellation,
+                        state.sync.as_deref_mut().expect("selected Sync").dispatch(sync::Dispatch {
+                            owner: state.owner, store, spec, root, budget, cancel: cancellation,
+                            deadline: Instant::now() + maximum,
+                        }),
+                    ).await?;
+                    // A timed gap lets HTTP run even under continuous work;
+                    // the priority timer prevents continuous HTTP starving Sync.
+                    dispatch_due = Instant::now() + sync::INTERVAL;
+                    state.idle_phase(due)?;
+                },
                 work = super::super::next_management(&mut management) => {
-                    let maximum = state.maximum()?;
+                    let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
                     phase(progress, maximum)?;
                     let execution = bounded(
                         maximum,

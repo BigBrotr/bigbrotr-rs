@@ -12,10 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main HEAD ef248a8b2c53c7c5f15e48bad35275337947e241 is three coherent
-unpublished commits ahead of origin/main85b6d0dbb7ec6325c6514aabb34ddb1489f5afd9.
-Root is sole writer; documentation/evidence/inventory changes close this boundary.
-No merge/rebase or other contributor's dirty files. Recheck before resuming.
+Primary main HEAD a523c546cf546da307cc24168fc9245eb260a367 was clean and aligned
+with origin/main at resumption. Root now owns uncommitted installed Sync Rust,
+entrypoint-test and this checkpoint work. Agent installed_sync_fixture owns only
+its assigned Python fixtures in .research/worktrees/installed-sync-fixture-a523c54,
+detached from a523c54; integration and Tux mutation remain root-owned. No merge or
+rebase; preserve all unrelated historical worktrees. Recheck before resuming.
 
 ## Active responsibility and next action
 
@@ -26,12 +28,22 @@ archive/index/read/export and restart. No full Discovery/Monitor prerequisite.
 
 Candidate nomination, scope/source metadata reads, dictionary preparation/append,
 committed observation, guarded source socket and certification/admission components
-are available. The concrete installed wiring is still NOT_IMPLEMENTED. Ordinary
+are available. Concrete installed wiring is now IN_PROGRESS, not qualified. Ordinary
 Serve remains Control-only; initial control,ingest accepts private source/scope/job
 commands but reports acquisition=not-started/ready=false. Do not advertise Sync
-until actual installed acceptance passes. Exact next action: define the installed
-signed/forged/duplicate socket fixture, then integrate serial finite dispatch in
-initial_ingest/commands while borrowing its retained native store.
+until actual installed acceptance passes. Root added finite dispatch, configured
+transport, committed observation reuse and current certification/admission under
+the retained store; no Rust build has run yet. Exact next action: integrate and
+review the independent Python fixture, then commit an unpublished exact-source
+candidate and run the existing initial-ingest native build profile on Tux.
+
+Actual early role RED used retained ef248a8 CLI SHA399e5b160dba9b238901ce413bd38280d436ac620ba60797188abab6a1096794:
+serve --initialize-ingest --roles control,ingest,sync on archive-only root exited3,
+`initial Ingest requires exactly the control,ingest roles`, empty stdout. This was
+before credentials/native work, not the whole signed-event journey. Originals:
+.research/implementation/installed-sync-20261002/role-red.{json,stdout,stderr}.
+Full independent installed signed/quiet/prerequisite scenarios remain NOT_RUN.
+Latest Mac3,215,112KiB free; no local Rust build or new cache deletion.
 
 Read complete initial_ingest.rs/commands.rs/dictionaries.rs, acquisition session,
 observation/source/claim/domain/nomination owners, dictionary preparation and concrete

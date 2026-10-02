@@ -41,10 +41,6 @@ pub(crate) fn authorize_sync_source(
 /// The finite request owner applies the registered intent before any wire work,
 /// using the actual endpoint/route supplied by run_relay_source. No arrival
 /// timestamp or witness is invented before receiving an event.
-#[allow(
-    dead_code,
-    reason = "finite native consumer precedes installed Sync integration"
-)]
 pub(crate) fn authorize_sync_collection(
     root: &Resolved,
     document: &str,
@@ -124,10 +120,6 @@ fn source_policy(
 /// operation's AcquisitionEventContext, never an independently supplied predicate.
 /// Control invokes these methods for both accepted documents at each fresh
 /// operation; historical ambiguous-outcome recovery never uses this permission.
-#[allow(
-    dead_code,
-    reason = "finite native consumer precedes installed Sync integration"
-)]
 pub(crate) struct SyncArrivalPolicy<'a> {
     pub root: &'a Resolved,
     pub endpoint: &'a Endpoint,
@@ -138,10 +130,6 @@ pub(crate) struct SyncArrivalPolicy<'a> {
     pub provenance_enabled: bool,
 }
 
-#[allow(
-    dead_code,
-    reason = "finite native consumer precedes installed Sync integration"
-)]
 impl SyncArrivalPolicy<'_> {
     pub fn admission(
         &self,
