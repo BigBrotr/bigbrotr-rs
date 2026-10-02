@@ -32,6 +32,8 @@ mod config;
 mod ingest_closing;
 #[path = "support/ingest_dictionary_append.rs"]
 mod ingest_dictionary_append;
+#[path = "support/ingest_dictionary_faults.rs"]
+mod ingest_dictionary_faults;
 #[path = "support/ingest_event.rs"]
 mod ingest_event;
 #[path = "support/ingest_lease.rs"]
@@ -227,11 +229,12 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     let source_mode = mode.starts_with("source-");
     let observation_mode = mode.starts_with("source-observation-");
     let socket_mode = mode.starts_with("source-socket-");
-    let dictionary_append = mode == "source-socket-dictionary-append";
-    let witness = socket_mode || (observation_mode && mode.ends_with("-on"));
+    let dictionary_fault = mode.starts_with("dictionary-fault-");
+    let dictionary_append = mode == "source-socket-dictionary-append" || dictionary_fault;
+    let witness = socket_mode || dictionary_fault || (observation_mode && mode.ends_with("-on"));
     let source_fault = mode.starts_with("source-fault-");
     let direct_config = config.clone();
-    let v2 = mode == "write-v2" || source_mode || mode.starts_with("lease-");
+    let v2 = mode == "write-v2" || source_mode || dictionary_fault || mode.starts_with("lease-");
     let mode = if mode == "write-v2" { "write" } else { mode };
     let (observer, observer_driver) = config.connect(NoTls).await.unwrap();
     let observer_driver = tokio::spawn(observer_driver);
@@ -258,6 +261,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             | "event-bindings-commit-lost"
             | "event-bindings-checkpoints-commit-lost"
     ) || source_fault
+        || dictionary_fault
         || mode.starts_with("source-transport-cleanup-")
         || mode.starts_with("source-transport-race-")
         || mode.starts_with("source-transport-job-")
@@ -556,7 +560,25 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             },
         )
         .await;
-    if socket_mode {
+    if dictionary_fault {
+        drop(result.unwrap());
+        ingest_dictionary_faults::run(
+            direct_config,
+            owner,
+            driver,
+            &observer,
+            store,
+            &spec,
+            path,
+            &budget,
+            mode,
+            &intent,
+        )
+        .await;
+        drop(observer);
+        ingest_closing::join(observer_driver, false).await;
+        return;
+    } else if socket_mode {
         assert_eq!(
             result.unwrap().receipt().batch().unwrap().records().len(),
             if dictionary_append { 2 } else { 6 }

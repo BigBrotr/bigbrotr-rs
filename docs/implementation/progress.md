@@ -12,8 +12,15 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main 8f5950cb4b492d21c97475e6686d462f02736647, origin 5483db8; root sole writer.
-Dirty documentation/evidence records the completed bounded dictionary qualification.
+Main/origin 045f6fedc80da2f0566926b24071d5c7ff55b1aa, root sole writer.
+Private repository verified and bounded qualification pushed without history rewrite.
+Dirty next fixture: dictionary-faults adds nine actual-wire schedules around append
+reservation/outcome COMMIT (before-forward/after-complete), cancellation while held,
+and AlreadyDurable outcome loss. New Control epoch2 closes the historical native
+producer and resolves exactly request2/3. Reserved-only effects remain Unresolved.
+The original loopback proxy and isolated clone/container lifecycle are reused;
+no product code or persistent contract changed. Python syntax/fmt PASS; native
+build and engine schedules NOT_RUN. Independent fixture review pending.
 [P02 dictionary append evidence](evidence/p02-dictionary-append-native-20261002.json):
 product af058bc has 8 append + 5 bootstrap + 11 native recovery tests PASS, build
 and Clippy PASS. Connected 8f5950c has two actual PG16.15/Rocks11.8.1 socket cases

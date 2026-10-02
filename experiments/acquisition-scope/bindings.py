@@ -59,10 +59,11 @@ commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
 execution = len(sys.argv) == 3 and sys.argv[2] == '--execution'
 observation = len(sys.argv) in (3, 4) and sys.argv[2] == '--observation'
 socket = len(sys.argv) in (3, 4) and sys.argv[2] == '--socket'
-assert len(sys.argv) == 2 or registration_faults or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket
+dictionary_faults = len(sys.argv) in (3, 4) and sys.argv[2] == '--dictionary-faults'
+assert len(sys.argv) == 2 or registration_faults or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket or dictionary_faults
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-reuse_build = registration_faults or guards or interruptions or commits or ((observation or socket or sessions or enrollment_http or registration_http or scope_http or jobs_http) and len(sys.argv) == 4)
+reuse_build = registration_faults or guards or interruptions or commits or ((observation or socket or dictionary_faults or sessions or enrollment_http or registration_http or scope_http or jobs_http) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == ('relay_registration_fault_probe' if registration_faults else 'ingest_bootstrap_probe')
@@ -551,6 +552,9 @@ if source_http_regression:
 
 if scope_command_relations:
     success_status = 'PASS_SCOPE_COMMAND_RELATIONAL_GUARDS'
+if dictionary_faults:
+    report['wave'] = 'dictionary-append-faults'
+    success_status = 'PASS_DICTIONARY_APPEND_COMMIT_FAULTS'
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -572,7 +576,7 @@ try:
         from interruptions import prepare_instrument
         instrument = prepare_instrument(root, prior, SOURCE)
         instrument_mount = ['--mount', f'type=bind,src={instrument},dst=/instrument,readonly']
-    if commits or registration_faults:
+    if commits or registration_faults or dictionary_faults:
         instrument_mount = ['--mount', f'type=bind,src={SOURCE},dst=/source,readonly']
     if native_inspector is not None:
         instrument_mount += ['--mount', f'type=bind,src={native_inspector},dst=/native-inspect,readonly']
@@ -652,6 +656,10 @@ try:
         cases = list(registration_runs)
         require(len(cases) == (2 if source_http_regression else 11 if scope_command_races else 1 if registration_http_signal else 5 if registration_http_faults else 1 if registration_relations else 18 if registration_races else 7),
             'registration-case-set')
+    elif dictionary_faults:
+        from dictionary_faults import run as run_dictionary_faults
+        run_dictionary_faults(globals())
+        cases = []
     elif socket:
         from socket_arrival import run as run_socket
         run_socket(globals())

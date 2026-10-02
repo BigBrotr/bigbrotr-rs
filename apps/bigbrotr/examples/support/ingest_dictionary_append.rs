@@ -6,7 +6,7 @@ use bigbrotr::storage::{
 };
 use bigbrotr_model::{ClockSource, ObserverDescriptor, RequestSequence};
 
-fn private_intent(bootstrap: &EvidenceIntent) -> EvidenceIntent {
+pub(super) fn private_intent(bootstrap: &EvidenceIntent) -> EvidenceIntent {
     let visibility = QualifiedRef {
         ordinal: Ordinal::new(3).unwrap(),
         ..bootstrap.visibility_scope_id()
