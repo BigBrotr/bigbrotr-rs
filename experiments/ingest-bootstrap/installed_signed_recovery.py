@@ -37,8 +37,8 @@ def census(home):
     return result
 
 
-def run(pg, client, output, rows, clone, close_source=False, faults=False):
-    assert not faults or close_source
+def run(pg, client, output, rows, clone, close_source=False, schedules=None):
+    assert schedules in (None, 'faults', 'locks') and (not schedules or close_source)
     basis = output.parent.parent / SEED / 'bindings'
     home = basis / 'archive-export'
     assert digest(basis / 'result.json') == RESULT_SHA256
@@ -224,7 +224,10 @@ def run(pg, client, output, rows, clone, close_source=False, faults=False):
         lab.write_json(output / 'signed-recovery-cases.json', cases)
 
     try:
-        if faults:
+        if schedules == 'locks':
+            from source_closure_locks import run as run_locks
+            run_locks(pg, client, output, rows, prepare, check_native, cases, closure_digest)
+        elif schedules == 'faults':
             from source_closure_faults import run as run_faults
             run_faults(pg, client, output, rows, prepare, check_native, invoke, cases, closure_digest)
         else:
@@ -236,7 +239,7 @@ def run(pg, client, output, rows, clone, close_source=False, faults=False):
                 'DELETE FROM control.producer_outcomes WHERE request_sequence=4; COMMIT;')
             assert len(rows(database)['producer_outcomes']) == 3
             invoke(database, config, directory, 'signed-recovery-copy', copy=True)
-        if close_source and not faults:
+        if close_source and not schedules:
             database, config, directory = prepare('source_cut_conflict')
             # Only this isolated clone has an existing job cut above the final
             # native bound. Source closure must roll back, preserving that cut.

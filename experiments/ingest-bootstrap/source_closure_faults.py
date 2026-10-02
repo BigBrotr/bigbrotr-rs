@@ -49,7 +49,7 @@ os.kill(r['pid'],signal.SIGTERM)
     lab.docker('exec', client, 'python3', '-c', script)
 
 
-def assert_effects(before, after, closed, digest):
+def assert_effects(before, after, closed, digest, released=False):
     changed = {'owner_epochs', 'role_instances', 'producer_epochs'}
     if closed:
         changed.add('source_streams')
@@ -62,8 +62,9 @@ def assert_effects(before, after, closed, digest):
     owner, = [r for r in after['owner_epochs'] if r not in before['owner_epochs']]
     role, = [r for r in after['role_instances'] if r not in before['role_instances']]
     assert owner['role'] == role['role'] == 'control'
-    assert owner['state'] == 'active' and owner['released_at_us'] is None
-    assert role['retired_at_us'] is None
+    assert owner['state'] == ('released' if released else 'active')
+    assert (owner['released_at_us'] is not None) == released
+    assert (role['retired_at_us'] is not None) == released
     assert owner['epoch'] == max(r['epoch'] for r in before['owner_epochs'] if r['role'] == 'control') + 1
     old, new = dict(before['producer_epochs'][0]), dict(after['producer_epochs'][0])
     assert old.pop('state') == 'open' and new.pop('state') == 'closing'

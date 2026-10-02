@@ -12,10 +12,13 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is `10c2eca`, one unpublished fixture candidate after pushed2d7a53e.
-Root owns its bounded evidence/reference/inventory/checkpoint update. No parallel
-writer or active experiment. Commit/push this reviewed result, then implement the
-focused source/job lock fixture with the same f873d92 product. No Mac Rust build.
+Primary main is `c0210f7`, pushed. Root owns the source/job lock fixture and this
+checkpoint; no active experiment or parallel writer. Two planned schedules use
+all current SQL triggers and the actual source-close CLI: job13 commits first and
+refuses closure12, or closure12 commits first and rejects job13. Migration0815's
+earlier dataset lock remains active. This is relational-job concurrency, not
+full authenticated acceptance. Commit/transfer exact candidate and launch with
+launch-source-locks.py; same f873d92 artifacts. No Mac Rust build.
 
 ## Active responsibility and next bounded action
 
