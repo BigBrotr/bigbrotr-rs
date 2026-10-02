@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Light fixture checks only; these cannot qualify the installed product journey."""
 import ast
+import errno
 import importlib.util
 import json
 from pathlib import Path
@@ -18,7 +19,7 @@ bootstrap = importlib.util.module_from_spec(spec)
 sys.modules['bootstrap_oracle'] = bootstrap
 spec.loader.exec_module(bootstrap)
 from installed_sync_oracle import decode, expected
-from installed_sync_client import no_connections, read_frame, refusal_frames
+from installed_sync_client import no_connections, read_frame, refusal_frames, relay_listener
 
 files = [*Path(__file__).parent.glob('installed_sync*.py'), Path(__file__).with_name('installed_client.py'),
     Path(__file__).with_name('session_client.py'), SOURCE/'experiments/acquisition-scope/bindings.py']
@@ -90,6 +91,42 @@ for bad in [bytes.fromhex('8100'), bytes.fromhex('818001'), bytes.fromhex('81807
         pass
     else:
         raise AssertionError('unmasked/truncated WebSocket frame accepted')
+# Complete a real server-initiated TCP close before immediately reusing the
+# exact endpoint. Merely closing an unused listener cannot expose TIME_WAIT.
+address = ('127.0.0.1', 0)
+for _ in range(3):
+    with relay_listener(address) as listener:
+        address = listener.getsockname()
+        with socket.create_connection(address, timeout=1) as peer:
+            with listener.accept()[0] as accepted:
+                accepted.settimeout(1)
+                accepted.sendall(b'x')
+                assert peer.recv(1) == b'x'
+                accepted.shutdown(socket.SHUT_WR)
+                assert peer.recv(1) == b''
+                peer.shutdown(socket.SHUT_WR)
+                assert accepted.recv(1) == b''
+
+# Reuse must never hide a live listener, whether or not that listener also
+# opted into address reuse. Preserve it and prove it still accepts afterward.
+for incumbent_reuse in (False, True):
+    with socket.socket() as incumbent:
+        if incumbent_reuse:
+            incumbent.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        incumbent.bind(('127.0.0.1', 0)); incumbent.listen(1); incumbent.settimeout(1)
+        address = incumbent.getsockname()
+        try:
+            unexpected = relay_listener(address)
+        except OSError as error:
+            assert error.errno == errno.EADDRINUSE, error
+        else:
+            unexpected.close()
+            raise AssertionError('fixture hid a live listener conflict')
+        with socket.create_connection(address, timeout=1) as peer:
+            with incumbent.accept()[0] as accepted:
+                accepted.sendall(b'y')
+                assert peer.recv(1) == b'y'
+
 # Exercise the refusal observer itself on local ephemeral sockets. Injecting
 # one TCP connection must fail even without a WebSocket handshake or EVENT.
 for connect in (False, True):
@@ -120,4 +157,5 @@ for connect in (False, True):
 print(json.dumps(dict(status='PASS_FIXTURE_ONLY', ast_files=len(files), embedded_python=embedded, constructed=counts,
     malformed_cbor_cases=len(malformed), websocket_cases=5, no_dial_observer_cases=2,
     peer_refusal_sequence_cases=2,
+    sequential_listener_cases=3, live_listener_conflicts=2,
     not_run=['actual CLI', 'PostgreSQL', 'RocksDB', 'product WebSocket', 'renewal', 'signal shutdown'])))

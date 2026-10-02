@@ -179,6 +179,22 @@ def no_connections(directory, listener, finished, errors):
             finished_at_us=time.time_ns()//1000, connections=connections))
 
 
+def relay_listener(address=('127.0.0.1', 7447)):
+    listener = socket.socket()
+    try:
+        # Completed rounds can leave accepted sockets in TIME_WAIT across cases
+        # sharing this namespace. REUSEADDR permits restart, not a second live
+        # listener; deliberately do not enable REUSEPORT or retry another port.
+        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listener.bind(address)
+        listener.listen(2)
+        listener.settimeout(.1)
+        return listener
+    except BaseException:
+        listener.close()
+        raise
+
+
 def run(directory, request, login, logout):
     refusals = directory.name == 'sync-peer-refusals'
     signed = directory.name == 'sync-signed' or refusals
@@ -211,8 +227,7 @@ def run(directory, request, login, logout):
     assert enrollment['generation'] == '1' and enrollment['enabled'] is True
     scope = call('acquisition-scopes', dict(endpoint_id=endpoint['endpoint_id'], access_scope_id=enrollment['access_scope_id'],
         visibility=visibility, selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'), **revisions), 'a1'*16)
-    listener = socket.socket()
-    listener.bind(('127.0.0.1', 7447)); listener.listen(2); listener.settimeout(.1)
+    listener = relay_listener()
     finished, errors = threading.Event(), []
     worker = threading.Thread(target=no_connections if visibility_refusal else relay,
         args=(directory, listener, finished, errors) if visibility_refusal else (directory, listener, finished, errors, signed, refusals))
