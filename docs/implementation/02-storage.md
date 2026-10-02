@@ -292,8 +292,9 @@ resolvable namespaced references and unchanged original bytes.
   in real Parquet readback: the pinned binding needs parent/child null masks.
   [Fixed-reference append evidence](evidence/p02-dictionary-append-native-20261002.json)
   qualifies native atomic append/replay and a connected private observation/signed
-  socket journey after the original bootstrap. Intern preparation, append-specific
-  COMMIT recovery and installed archive/export closure remain required.
+  socket journey after the original bootstrap, plus nine actual append COMMIT
+  ambiguity/cancellation/recovery schedules. Intern preparation and installed
+  archive/export closure remain required.
 - [ ] **Step 2:** Create A06 objects keyed by visibility namespace and digest; verify bytes
   on first creation and reject conflicting bytes under the same identity.
 - [ ] **Step 3:** Separate document object bytes from each fetched/type/method occurrence;

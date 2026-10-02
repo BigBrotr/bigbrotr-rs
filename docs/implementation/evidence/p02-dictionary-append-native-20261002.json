@@ -1,6 +1,6 @@
 {
   "format": "bigbrotr-dictionary-append-native/1",
-  "status": "PASS_COMPONENTS_AND_CONNECTED_POSITIVE_JOURNEY",
+  "status": "PASS_COMPONENTS_CONNECTED_JOURNEY_AND_COMMIT_FAULTS",
   "tasks": [
     "P02-T03 Step1",
     "P02-T02 Steps2/4",
@@ -91,7 +91,9 @@
     "e28610e": "62 native PASS/5 fixture/setup FAIL: four unordered-namespace cases before engine initialization and one packaged-worker case without its required bundle. These are not reclassified PASS.",
     "af058bc": "8 append +5 bootstrap +11 recovery PASS, build/Clippy PASS.",
     "1c99ca3": "Build/Clippy PASS; engine NOT_RUN after pre-engine fixture review.",
-    "8f5950c": "Build/Clippy PASS; two actual connected cases PASS."
+    "8f5950c": "Build/Clippy PASS; two actual connected cases PASS.",
+    "424a4f2": "Actual CLI/probe build and Clippy PASS; original Python oracle not run against engines after pre-execution review.",
+    "89359ab": "Fixture-only changes reused424 artifacts after complete build-input diff and hash checks; nine PG/Rocks fault cases PASS."
   },
   "terminal_audit": {
     "status": "PASS_TERMINAL_AUDIT_ONLY",
@@ -136,10 +138,184 @@
   "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-8f5950c",
   "not_qualified": [
     "Dictionary intern/preparation and installed acquisition execution",
-    "Append-specific lost/cancelled COMMIT and fresh-owner recovery against PostgreSQL",
     "Native syscall/process interruption for this new append path",
     "Packaged archive/read/export closure for appended dictionaries",
     "Successor, ACK/GC, retirement and full M1",
     "Load/aged-state, capacity, native arm64 or release"
-  ]
+  ],
+  "commit_faults": {
+    "status": "PASS_DICTIONARY_APPEND_COMMIT_FAULTS",
+    "build_source": "424a4f25c640fdf8bfac9b9ff227d5c55c8c740e",
+    "fixture_source": "89359ab92b44cea70b1d7b36ae4ab4df107c5016",
+    "fixture_tree": "82f8fc0a49a5cf3572f00a8ab37c4969a162f913",
+    "cli_sha256": "65e83d0fbd26e28c5c8cec3aa119d2f6568a90227e03aa6301c3d09a60fd3bc8",
+    "probe_sha256": "c9fd7f9ac56ce555fb74b6493048f1f0d84eae7eb079273f64906bfe74a17d51",
+    "cases": [
+      {
+        "name": "pass",
+        "result": "NewFacts",
+        "wire_counts": [
+          6,
+          6,
+          6,
+          6
+        ],
+        "native_rows": 33,
+        "original_or_recovery_copy": "original"
+      },
+      {
+        "name": "reservation-before",
+        "result": "Unresolved",
+        "wire_counts": [
+          5,
+          4,
+          4,
+          4
+        ],
+        "native_rows": 12,
+        "original_or_recovery_copy": "missing"
+      },
+      {
+        "name": "reservation-after",
+        "result": "Unresolved",
+        "wire_counts": [
+          5,
+          5,
+          5,
+          4
+        ],
+        "native_rows": 12,
+        "original_or_recovery_copy": "missing"
+      },
+      {
+        "name": "outcome-before",
+        "result": "NewFacts",
+        "wire_counts": [
+          6,
+          5,
+          5,
+          5
+        ],
+        "native_rows": 33,
+        "original_or_recovery_copy": "recovered"
+      },
+      {
+        "name": "outcome-after",
+        "result": "NewFacts",
+        "wire_counts": [
+          6,
+          6,
+          6,
+          5
+        ],
+        "native_rows": 33,
+        "original_or_recovery_copy": "original"
+      },
+      {
+        "name": "cancel-reservation",
+        "result": "Unresolved",
+        "wire_counts": [
+          5,
+          5,
+          5,
+          5
+        ],
+        "native_rows": 12,
+        "original_or_recovery_copy": "missing"
+      },
+      {
+        "name": "cancel-outcome",
+        "result": "NewFacts",
+        "wire_counts": [
+          6,
+          6,
+          6,
+          6
+        ],
+        "native_rows": 33,
+        "original_or_recovery_copy": "original"
+      },
+      {
+        "name": "reuse-before",
+        "result": "AlreadyDurable",
+        "wire_counts": [
+          8,
+          7,
+          7,
+          7
+        ],
+        "native_rows": 34,
+        "original_or_recovery_copy": "recovered"
+      },
+      {
+        "name": "reuse-after",
+        "result": "AlreadyDurable",
+        "wire_counts": [
+          8,
+          8,
+          8,
+          7
+        ],
+        "native_rows": 34,
+        "original_or_recovery_copy": "original"
+      }
+    ],
+    "assertions": [
+      "Nine actual PG-wire schedules cover pass, reservation/outcome before-forward and after-complete loss, cancellation with positively held COMMIT, and AlreadyDurable outcome loss on both sides of COMMIT.",
+      "Cancellation retains the actual original backend/advisory custody and unchanged SQL until external release of the held COMMIT. The original native store closes before Control/driver join; a fresh fenced Control epoch2 exclusively opens historical native recovery and closes its producer.",
+      "Independent literal expected native rows, original staged CBOR and original outcome bytes match every case. Reservation-only states remain Unresolved without outcome inference or writes; positive original recovery and exact second replay change no native byte or sequence.",
+      "All 67 Control tables/xmin are compared across operation, acquisition/closing, each resolution and final release. Complete reservation/input/manifest/issuer and outcome/recorder metadata are checked, including Unresolved requests. Exact owner exclusions, role retirement and closing deltas are allowed; all other rows are invariant.",
+      "Root verified all 1666 Git files for build and fixture and all 131 captures. Two retained actual reservations and ten changed-metadata negatives, plus nine replayed captures and four transition-mutation negatives passed. These are bounded fixture checks, not capacity measurements."
+    ],
+    "review": "Independent read-only AI review found two oracle gaps: Unresolved reservation metadata and recovery lifecycle transitions. Both were corrected before engine execution; root reviewed the complete diff and actual captures. No new product defect found in this bounded wave.",
+    "local": ".research/implementation/dictionary-append-20261002/faults-engine",
+    "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/dictionary-faults-89359ab",
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "source": "89359ab92b44cea70b1d7b36ae4ab4df107c5016",
+      "observed_at": "2026-10-02T02:31:31.064874+00:00",
+      "prior_unchanged": 1052,
+      "unrelated_running": 8,
+      "owned_stopped": [
+        {
+          "name": "fetch",
+          "id": "bda25fd3506201840696986abff6630c627ea4ddb7e90ce00556d27455bbc094",
+          "exit": 0
+        },
+        {
+          "name": "native",
+          "id": "0be1992aa059452161b4cd8b0f9496a4b0f976e5d6db76a4d88c233603dc4675",
+          "exit": 0
+        },
+        {
+          "name": "client",
+          "id": "48760bf36449825b75d735f8e2af598a50a23f93330bbc88edc505fd523b0730",
+          "exit": 143
+        },
+        {
+          "name": "postgres",
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "exit": 0
+        }
+      ],
+      "source_files": {
+        "89359ab92b44cea70b1d7b36ae4ab4df107c5016": 1666,
+        "424a4f25c640fdf8bfac9b9ff227d5c55c8c740e": 1666
+      },
+      "build_reuse_changed": [
+        "docs/implementation/progress.md",
+        "docs/research/laboratory-inventory.json",
+        "experiments/acquisition-scope/dictionary_faults.py"
+      ],
+      "artifacts_verified": true,
+      "compiler_lock_released": true,
+      "free_bytes": 55492608000,
+      "server": {
+        "version": "160015",
+        "fsync": "on",
+        "full_page_writes": "on",
+        "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+      }
+    }
+  }
 }

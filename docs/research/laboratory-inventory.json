@@ -33146,9 +33146,9 @@
       }
     },
     "dictionary_append": {
-      "status": "PASS_COMPONENTS_AND_CONNECTED_POSITIVE_JOURNEY",
+      "status": "PASS_COMPONENTS_CONNECTED_JOURNEY_AND_COMMIT_FAULTS",
       "local": ".research/implementation/dictionary-append-20261002",
-      "scope": "P02-T03 fixed-reference append/replay and connected positive journey; append COMMIT faults and installed consumers remain unqualified",
+      "scope": "P02-T03 fixed-reference append/replay, connected positive journey and append COMMIT recovery; intern preparation and installed consumers remain unqualified",
       "red": {
         "launch": {
           "source": "f2a161817ae77d0bba95df89a794dbd2cfcf6cae",
@@ -33180,7 +33180,7 @@
           "free_bytes": 56470331392
         }
       },
-      "next": "Append-specific reservation/outcome COMMIT ambiguity and fresh-owner positive historical recovery; then bounded intern preparation and installed finite consumer.",
+      "next": "Bounded read-only intern preparation, fixing complete references before immutable staging; then installed finite consumer.",
       "bootstrap_red": {
         "launch": {
           "source": "ab57a2ce3d0b6eb3f304481272d7b6596dea740a",
@@ -33448,7 +33448,7 @@
         },
         "owner": "7ce8f1542e70b766763e2a0ca5f6fa38",
         "state": "stopped-retained",
-        "result": "Actual CLI/probe build and Clippy PASS; engines NOT_RUN; independent review gaps corrected in the fixture before execution.",
+        "result": "Actual CLI/probe build and Clippy PASS; qualified engines use fixture89359ab after independent review corrections.",
         "audit": {
           "status": "PASS_BUILD_TERMINAL_AUDIT_ONLY",
           "observed_at": "2026-10-02T02:25:56.226123+00:00",
@@ -33461,6 +33461,84 @@
           "compiler_lock_released": true,
           "artifact_hashes_verified": true,
           "free_bytes": 55671824384
+        }
+      },
+      "fault_engine": {
+        "launch": {
+          "source": "89359ab92b44cea70b1d7b36ae4ab4df107c5016",
+          "tree": "82f8fc0a49a5cf3572f00a8ab37c4969a162f913",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/dictionary-faults-89359ab",
+          "pid": 1636211,
+          "start_ticks": "429044860",
+          "bundle_sha256": "a93daebad1f596d8c4758f8597d8e47d6dcdbe6fe779a4576cb2e88e8fb0b081"
+        },
+        "owner": "0b18218df5a388c3b633d04094c5b409",
+        "client": {
+          "id": "48760bf36449825b75d735f8e2af598a50a23f93330bbc88edc505fd523b0730",
+          "name": "bigbrotr-acquisition-binding-89359ab"
+        },
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_89359ab_dictionary_pass",
+          "bb_scope_bind_89359ab_dictionary_reservation_before",
+          "bb_scope_bind_89359ab_dictionary_reservation_after",
+          "bb_scope_bind_89359ab_dictionary_outcome_before",
+          "bb_scope_bind_89359ab_dictionary_outcome_after",
+          "bb_scope_bind_89359ab_dictionary_cancel_reservation",
+          "bb_scope_bind_89359ab_dictionary_cancel_outcome",
+          "bb_scope_bind_89359ab_dictionary_reuse_before",
+          "bb_scope_bind_89359ab_dictionary_reuse_after"
+        ],
+        "state": "stopped-retained",
+        "result": "PASS_DICTIONARY_APPEND_COMMIT_FAULTS",
+        "case_count": 9,
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "89359ab92b44cea70b1d7b36ae4ab4df107c5016",
+          "observed_at": "2026-10-02T02:31:31.064874+00:00",
+          "prior_unchanged": 1052,
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "name": "fetch",
+              "id": "bda25fd3506201840696986abff6630c627ea4ddb7e90ce00556d27455bbc094",
+              "exit": 0
+            },
+            {
+              "name": "native",
+              "id": "0be1992aa059452161b4cd8b0f9496a4b0f976e5d6db76a4d88c233603dc4675",
+              "exit": 0
+            },
+            {
+              "name": "client",
+              "id": "48760bf36449825b75d735f8e2af598a50a23f93330bbc88edc505fd523b0730",
+              "exit": 143
+            },
+            {
+              "name": "postgres",
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            }
+          ],
+          "source_files": {
+            "89359ab92b44cea70b1d7b36ae4ab4df107c5016": 1666,
+            "424a4f25c640fdf8bfac9b9ff227d5c55c8c740e": 1666
+          },
+          "build_reuse_changed": [
+            "docs/implementation/progress.md",
+            "docs/research/laboratory-inventory.json",
+            "experiments/acquisition-scope/dictionary_faults.py"
+          ],
+          "artifacts_verified": true,
+          "compiler_lock_released": true,
+          "free_bytes": 55492608000,
+          "server": {
+            "version": "160015",
+            "fsync": "on",
+            "full_page_writes": "on",
+            "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+          }
         }
       }
     }

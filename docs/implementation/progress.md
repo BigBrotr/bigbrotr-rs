@@ -12,20 +12,25 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main 424a4f25c640fdf8bfac9b9ff227d5c55c8c740e; origin/main 045f6fe, root sole writer.
-Private repository verified; bounded positive qualification pushed without rewrite.
-Candidate424 adds nine dictionary COMMIT schedules with actual retained wire
-custody and fresh-Control recovery. Native build and Clippy PASS, engines NOT_RUN.
-Build runs/relay-arrival-424a4f2 STOPPED/RETAINED, PID1630723/start428991056,
-owner7ce8f1542e70b766763e2a0ca5f6fa38. Audit02:25:56UTC:1051 prior projections
-unchanged, eight unrelated running, compiler lock free,55,671,824,384B free.
-Qualified artifacts remain outside the shared cache. No local Rust build.
-Dirty fixture-only follow-up closes two confirmed independent AI review gaps:
-complete reservation metadata on Unresolved, and exact acquisition/closing/release
-SQL deltas. No product changes. Two retained real reservations and ten altered
-metadata negative controls PASS locally; Python syntax/diff checks PASS. Lifecycle
-checks and nine actual engine schedules remain NOT_RUN. Originals under the same
-ignored dictionary-append-20261002/faults directory; no ongoing experiment.
+Main 89359ab92b44cea70b1d7b36ae4ab4df107c5016; origin/main045f6fe, root sole writer.
+Dirty evidence/checkpoint update only. Complete selected product remains INCOMPLETE.
+Nine actual dictionary COMMIT cases PASS at fixture89359ab using exact424a4f2
+CLI/probe (build/Clippy PASS). Covers both reservation/outcome COMMIT sides,
+cancellation with positively held actual backend custody, and AlreadyDurable loss.
+Fresh Control2 closes the old native producer; original requests resolve exactly
+or remain Unresolved. All67 SQL tables/xmin, complete metadata and every native
+row/original CBOR/receipt were compared. Independent AI review found two fixture
+oracle gaps; both corrected before engines. Root verified1666 Git files per source,
+131 captures, nine capture replays and14 targeted mutation negatives.
+
+runs/dictionary-faults-89359ab STOPPED/RETAINED: PID1636211/start429044860,
+owner0b18218df5a388c3b633d04094c5b409, client48760bf3 stopped143;
+borrowedPG71775507 stopped0/noOOM. Audit02:31:31UTC:1052 prior projections unchanged,
+eight unrelated running, compiler lock free,55,492,608,000B free. Build424 resources
+also stopped; original qualified ELFs remain outside the cache. No local Rust build.
+Originals .research/implementation/dictionary-append-20261002/{faults,faults-engine}.
+No active experiment. Inventory dictionary_append and the report below own full
+identities. This closes the bounded COMMIT responsibility, not P02-T03/M1/product.
 [P02 dictionary append evidence](evidence/p02-dictionary-append-native-20261002.json):
 product af058bc has 8 append + 5 bootstrap + 11 native recovery tests PASS, build
 and Clippy PASS. Connected 8f5950c has two actual PG16.15/Rocks11.8.1 socket cases
@@ -35,7 +40,8 @@ private ordinal 3 enrollment/scope/job → signed event, forged signature, dupli
 The latter preserves all 48 native rows/four original inputs/four receipts against
 an independent literal oracle. All 67 SQL tables/xmin have exact permitted deltas
 at append/reuse/event boundaries. All 1663 source files and 39 captures verified.
-This does not qualify installed execution, intern preparation or append COMMIT faults.
+This does not qualify installed execution or intern preparation; the subsequent
+append-specific COMMIT wave above has its own exact artifacts and assertions.
 
 Latest runs/relay-arrival-8f5950c is STOPPED/RETAINED. Build PID 1620206/start428911083,
 owner 472ba18882f2a22c3998c4d4b5ac2d0b; engine PID 1622943/start428922394,
@@ -95,10 +101,10 @@ accepted enrollment/scope/job. Bootstrap allocation advancement and historical
 Evidence dispatch are now corrected and native-qualified. Default local_first_witness
 still requires visibility, observer/clock, endpoint, access and method.
 
-Next bounded action: append-specific reservation/outcome COMMIT loss/cancellation
-and fresh-Control original-request recovery, reusing the existing wire-fault lab.
-Then bounded read-only intern preparation must fix all refs before staging; current
-API deliberately consumes fixed refs. M1 still needs installed finite dispatch,
+Next bounded action: bounded read-only intern preparation must fix all refs before
+staging; the qualified append API deliberately consumes fixed refs. Read complete
+descriptor/envelope/candidate/allocation contracts and callers before adding this
+consumer. Test equality/collisions, same-kind allocation, bounds and no-write preview. M1 still needs installed finite dispatch,
 socket admission through timer archive/read/export, finite CLI and successor/restart.
 Full Discovery/Monitor is not a prerequisite. No task step or complete product
 claim follows from these small fixtures; no load/capacity/arm64/release claim.

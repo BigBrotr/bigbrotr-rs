@@ -209,5 +209,8 @@ post-bootstrap evidence needs its own closing-producer recovery path. Dedicated
 dictionary scratch and receipt limits cover more than five mappings. Read-only
 recovery reserves its closure/receipt scratch separately from write construction;
 existing event-only recovery grants remain sufficient for their original profile.
-Preparation/interning, the installed observation consumer and actual failure/recovery evidence
-remain required before this responsibility or P02-T03 Step1 can be marked complete.
+The [append evidence](../implementation/evidence/p02-dictionary-append-native-20261002.json)
+records actual reservation/outcome COMMIT loss, cancellation and fresh-Control
+historical recovery. Preparation/interning, native interruption of this append
+path and the installed observation/archive consumer remain required before this
+responsibility or P02-T03 Step1 can be marked complete.
