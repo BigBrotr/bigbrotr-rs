@@ -12,11 +12,13 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main observed at e7d1eae73e031701ad48b2e1d11eb69b0fb4e179 above
-origin/main 95c6cfc (verified pushed/private). The accompanying evidence/reference/checkpoint commit belongs
-to root; inspect actual HEAD and remote before resuming. Agent installed_sync_fixture
+Primary main observed at 527ee4adedee964f6d1bf318d41612a1defd3f25, clean and equal to
+origin/main before this candidate. Root is preparing the separate worker-budget
+regression/build slice; inspect actual HEAD and remote before resuming. Agent installed_sync_fixture
 owns only assigned Python files in .research/worktrees/installed-sync-fixture-a523c54.
-Its commit e8dca7d was integrated as e7d1eae; its worktree is clean and idle.
+Its commit e8dca7d was integrated as e7d1eae. It now owns installed_archive*.py and
+the necessary isolated acquisition-scope fixture modes, based on 527ee4a; no Rust
+or Tux mutations. The read-only integration reviewer completed the budget API review.
 Root owns all Rust, docs, integration and Tux mutations. No merge/rebase. Preserve
 historical worktrees and reconcile unexpected dirty paths before editing.
 
@@ -31,6 +33,15 @@ adapters. Connect their real owner/custody requirements without completing all
 Discovery/Monitor or P03 scheduling first. Full M1 additionally needs online indexing
 and successor/recovery for restart (P02-T01 Step5/P02-T02 Step4); initial custody
 cannot be adopted by a fresh Serve. No readiness or release claim is made.
+
+Immediate prerequisite: qualify separate application/native worker budgets with
+actual child custody and prelaunch exhaustion controls. A test-only candidate
+first exercises the previous single-budget refusal; no product correction yet.
+The new archive-worker-budgets runner reuses the exclusive compiler cache and
+read-only pinned assets from installed-publication-61271e2, builds the worker from
+exact source and embeds its identity into the CLI. All results remain NOT_RUN
+until actual execution. Mac3,117,900KiB and Tux52,197,474,304B free at preflight;
+only eight unrelated containers running, no active BigBrotr work. No deletions.
 
 Next bounded action: implement explicit initial Archive publication, consuming the
 existing complete PendingBatch, retained attempt/FreshWriter, native worker and

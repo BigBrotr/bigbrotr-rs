@@ -398,7 +398,7 @@ fn unsafe_roots_partial_history_and_inode_replacement_fail_closed() {
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 #[test]
 #[ignore = "Requires the exact native worker bundle; the native harness explicitly executes this case"]
-fn native_worker_alone_retains_custody_after_coordinator_descriptors_close() {
+fn native_worker_retains_custody_and_separate_process_budgets_until_reaped() {
     use crate::{runtime::*, storage::archive::*};
     use sha2::{Digest, Sha256};
     use std::sync::atomic::AtomicBool;
@@ -424,9 +424,18 @@ fn native_worker_alone_retains_custody_after_coordinator_descriptors_close() {
     let cancelled = AtomicBool::new(false);
     let budget = ResourceBudget::new(
         ProcessEnvelope::new(
-            513 * MIB,
+            MIB,
             0,
-            ResourceLimits::new(0, 1, 512 * MIB, MIB),
+            ResourceLimits::new(0, 1, 0, MIB),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    let native_budget = ResourceBudget::new(
+        ProcessEnvelope::new(
+            512 * MIB,
+            0,
+            ResourceLimits::new(0, 1, 512 * MIB, 0),
             WaiterLimits::new(0, 0),
         )
         .unwrap(),
@@ -484,8 +493,10 @@ fn native_worker_alone_retains_custody_after_coordinator_descriptors_close() {
         Err(LifetimeError::Occupied)
     ));
     assert!(budget.snapshot().active_permits() > 0);
+    assert_eq!(native_budget.snapshot().active_permits(), 1);
     drop(process); // actual supervisor terminates/reaps before releasing grants
     assert!(!Path::new(&format!("/proc/{pid}")).exists());
     assert_eq!(budget.snapshot().active_permits(), 0);
+    assert_eq!(native_budget.snapshot().active_permits(), 0);
     drop(recover_released(&root, &request, &identity));
 }

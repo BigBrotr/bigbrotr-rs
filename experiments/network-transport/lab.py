@@ -18,7 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
-    'acquisition-transport', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
+    'archive-worker-budgets', 'acquisition-transport', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'relay-registration-faults', 'ingest-visibility',
     'policy-versions', 'relay-source', 'relay-source-faults',
     'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs', 'acquisition-jobs-faults', 'acquisition-claims',
@@ -114,6 +114,13 @@ for name in ['target', 'cargo-home']:
 
 
 def run_container(name, network, argv, seconds):
+    archive_mount = []
+    if profile == 'archive-worker-budgets' and name == 'native':
+        # Retained assets are read-only build inputs. The old executable is not
+        # reused: the exact source builds a worker before binding its parent.
+        bundle = base / 'runs/installed-publication-61271e2/out/archive-worker'
+        assert bundle.is_dir() and bundle.resolve() == bundle
+        archive_mount = ['--mount', f'type=bind,src={bundle},dst=/archive-inputs,readonly']
     ident = command('docker', 'create', '--init', '--name', 'bigbrotr-' + profile + '-' + revision[:7] + '-' + name,
                     '--label', label + '=' + owner, '--cpus', '2', '--memory', '6g', '--memory-swap', '6g',
                     '--pids-limit', '512', '--network', network, '--read-only', '--cap-drop', 'ALL',
@@ -122,7 +129,7 @@ def run_container(name, network, argv, seconds):
                     '--mount', f'type=bind,src={out},dst=/out',
                     '--mount', f'type=bind,src={export},dst=/out/build/source,readonly',
                     '--mount', f'type=bind,src={cache_root}/out/build/target,dst=/out/build/target',
-                    '--mount', f'type=bind,src={cache_root}/out/build/cargo-home,dst=/out/build/cargo-home', image,
+                    '--mount', f'type=bind,src={cache_root}/out/build/cargo-home,dst=/out/build/cargo-home', *archive_mount, image,
                     'env', '-i', 'PATH=/usr/local/cargo/bin:/usr/local/bin:/usr/bin:/bin',
                     'RUSTUP_HOME=/usr/local/rustup', 'CARGO_HOME=/out/build/cargo-home', *argv)
     state['containers'].append(dict(name=name, id=ident))
@@ -183,9 +190,11 @@ try:
         'acquisition-jobs-faults': ['acquisition-jobs-faults'],
         'acquisition-claims': ['acquisition-claims'],
     }.get(profile, [])
-    run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_path + '/native.py', *native_args], 1860)
+    native_script = ('archive-engine/worker_budgets_native.py' if profile == 'archive-worker-budgets'
+                     else native_path + '/native.py')
+    run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_script, *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
-    expected = {'acquisition-transport': 'PASS_ACQUISITION_TRANSPORT_ROOTS', 'dictionary-append': 'PASS_DICTIONARY_APPEND_COMPONENTS', 'network': 'PASS_SCOPED_NETWORK_COMPONENTS',
+    expected = {'archive-worker-budgets': 'PASS_ARCHIVE_WORKER_BUDGETS', 'acquisition-transport': 'PASS_ACQUISITION_TRANSPORT_ROOTS', 'dictionary-append': 'PASS_DICTIONARY_APPEND_COMPONENTS', 'network': 'PASS_SCOPED_NETWORK_COMPONENTS',
                 'websocket': 'PASS_SCOPED_WEBSOCKET_COMPONENTS',
                 'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS',
                 'selector': 'PASS_SCOPED_SELECTOR_COMPONENTS',
