@@ -16,6 +16,13 @@ passes all 12 affected cases and Clippy; unchanged product inputs retain the pri
 32 policy/DNS results. The remaining P04-T02 service/route/protocol integration is recorded
 separately; no checkbox is closed by this component alone.
 
+The same native report's `configured_transport` supplement qualifies the explicit
+DNS deployment root and sequential DER-file loading at ef248a8: seven actual
+CLI/filesystem tests, fourteen direct socket regressions and seven affected
+PostgreSQL settings regressions pass. Generated schema/reference match the CLI.
+This supplies bounded parts of P04-T02 Steps1/3 for installed P03 integration;
+the actual Sync constructor, dispatch and complete adapter remain open.
+
 Goal: turn attributable mentions into governed endpoint work, establish actual
 protocol evidence, and retain useful measurements with reproducible method,
 route, time and access context. Keep endpoint identity, operator enrollment,

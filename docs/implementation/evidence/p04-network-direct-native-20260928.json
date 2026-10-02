@@ -184,5 +184,274 @@
     "mode": "Exclusive mutable reuse through host flock and explicit nested target/cargo-home mounts; host lock independently reacquired after termination. Four original1154757 ELFs preserved outside cache and independently rehashed after this run.",
     "retirement": "No cache, container, volume or laboratory removed during this run."
   },
-  "review_boundary": "Root reviewed product modules/callers and complete test changes before candidate; independent read-only review reproduced and closed the per-resumption gate defect. Root checked actual native results, exact source archive, dependency archives, artifact and terminal identities. No claim of synchronous callback preemption, recall of kernel-accepted bytes, continuous custody or measured RSS. Shared endpoint/rate quotas and authenticated Control integration remain selected work."
+  "review_boundary": "Root reviewed product modules/callers and complete test changes before candidate; independent read-only review reproduced and closed the per-resumption gate defect. Root checked actual native results, exact source archive, dependency archives, artifact and terminal identities. No claim of synchronous callback preemption, recall of kernel-accepted bytes, continuous custody or measured RSS. Shared endpoint/rate quotas and authenticated Control integration remain selected work.",
+  "configured_transport": {
+    "status": "PASS_CONFIGURED_TRANSPORT_COMPONENTS",
+    "source": "ef248a8b2c53c7c5f15e48bad35275337947e241",
+    "tree": "2abc38795ae337c4cd105da5bf9f25bbf49917f6",
+    "tasks": [
+      "P03-T01 Steps3/4",
+      "P03-T02",
+      "P04-T02 Steps1/3"
+    ],
+    "scope": "Numeric DNS deployment root, bounded sequential operator DER trust loading, actual CLI and direct socket consumers. Installed Sync selection/dispatch remains the next integration; no job, native event, coverage, capacity, arm64 or release qualification.",
+    "environment": {
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "native_toolchain": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "discovery": "llvm-config",
+        "environment": {
+          "CC": "/usr/lib/llvm-14/bin/clang",
+          "CXX": "/usr/lib/llvm-14/bin/clang++",
+          "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+          "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+          "CARGO_BUILD_JOBS": "2",
+          "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+        },
+        "tools": {
+          "CC": {
+            "path": "/usr/lib/llvm-14/bin/clang",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "CXX": {
+            "path": "/usr/lib/llvm-14/bin/clang++",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "AR": {
+            "path": "/usr/lib/llvm-14/bin/llvm-ar",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+            "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+            "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+          },
+          "LIBCLANG_PATH": {
+            "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+            "version": "Debian clang version 14.0.6"
+          },
+          "discovery": {
+            "path": "/usr/lib/llvm-14/bin/llvm-config",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+            "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+            "version": "14.0.6"
+          }
+        },
+        "sdk": null
+      },
+      "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+      "source_manifest_sha256": "9a8d335c48a4d96594611a80ac80fce511e5b62f27e3279c3c8449ff9b8f0665"
+    },
+    "build_checks": [
+      {
+        "name": "compile",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "acquisition_transport",
+          "--test",
+          "network_direct",
+          "--test",
+          "postgres_connection_settings",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 60.97283153422177
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--test",
+          "acquisition_transport",
+          "--test",
+          "network_direct",
+          "--test",
+          "postgres_connection_settings",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.6702763829380274
+      }
+    ],
+    "test_checks": [
+      {
+        "name": "acquisition_transport",
+        "command": [
+          "/out/artifacts/acquisition_transport",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.11409926600754261
+      },
+      {
+        "name": "network_direct",
+        "command": [
+          "/out/artifacts/network_direct",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 1.5215851459652185
+      },
+      {
+        "name": "postgres_connection_settings",
+        "command": [
+          "/out/artifacts/postgres_connection_settings",
+          "--test-threads=1",
+          "--nocapture"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 1.4169976580888033
+      }
+    ],
+    "tests": {
+      "acquisition_transport": 7,
+      "network_direct": 14,
+      "postgres_connection_settings": 7
+    },
+    "executables_sha256": {
+      "acquisition_transport": "1c226ad9659c1a9850ffdf107c031709af10a91d6a8b652431b7da1178d6a802",
+      "network_direct": "2de3ed795bedb3b1f9b933ec8011458913bff8fab7a690978b146a33ddd19964",
+      "postgres_connection_settings": "27bb7e99d7d8927f242e7ec2df74d1b594daccea916b82e19b756566d1bf6450",
+      "bigbrotr": "399e5b160dba9b238901ce413bd38280d436ac620ba60797188abab6a1096794"
+    },
+    "validation": [
+      "Actual CLI offline explicit IPv4/IPv6 resolver and unchanged persisted policy identity; malformed/unspecified/multicast/broadcast/zone and mapped-address refusals even when acquisition is unselected.",
+      "Actual CLI accepts 128 nonexistent DER paths offline and rejects 129; exact generated schema/reference byte comparisons.",
+      "Actual file reader rejects malformed, PEM, concatenated/trailing DER, oversized inputs, missing/nonregular/FIFO and symlink components. Identical budget remains reusable after errors.",
+      "Valid 128-file load versus valid 129-file refusal; 4194303-byte reservation refuses, 4194304 accepts; shared credit survives original policy and file destruction until surviving clone drops.",
+      "Synthetic long-serial trusted-anchor parser fixture: 100 valid parser inputs below1MiB succeed;128 over1MiB refuse. This is not a signature-valid certificate or a peer-credential fixture.",
+      "Actual independent DNS/TLS peer validates original name/path/query with configured DER file removed before handshake; wrong CA and wrong original name refuse before protocol callback.",
+      "Fourteen direct transport regressions and seven PostgreSQL connection settings regressions preserve socket/cancellation gates and existing CA read errors."
+    ],
+    "dependency_inspection": {
+      "rustls": "0.23.45 src/webpki/anchors.rs add converts to owned trust anchor",
+      "webpki": "0.103.15 src/cert.rs and trust_anchor.rs read_all reject trailing DER including v1 fallback",
+      "pki_types": "1.15.1 src/lib.rs TrustAnchor::to_owned copies subject, SPKI and optional constraints only",
+      "observed": "Exact cached dependency sources on Tux, read-only independent AI review; no dependency version change"
+    },
+    "structure": "One existing public-file reader extracted unchanged behind exact PostgreSQL error mapping; sequential root loading reuses it. No generic adapter, service framework, schema migration or persistent format added. The 4MiB grant is logical, not a measured allocator/RSS limit; regular-file I/O still needs runtime supervision.",
+    "review": {
+      "kind": "independent read-only AI review plus integrating-owner diff/capture review",
+      "findings": [
+        "129-path assertion originally ran after deleting its valid input, masking guard deletion; fixed before final ef248a8 execution."
+      ],
+      "remaining": "No concrete blocker in reviewed component. Unchanged configuration CLI/recipes/private-route modules and entire generated documents not reread by reviewer; actual generated bytes independently checked by CLI test. Runtime dispatch outside scope."
+    },
+    "prior_runs": {
+      "red": {
+        "source": "25a5cbe102973b7f95198d33896a37cbebc6fa48",
+        "status": "FAIL_EXPECTED_RED",
+        "detail": "Actual CLI unknown DNS table;129-root list exits0 rather than3; one negative syntax test passes. Original logs unchanged."
+      },
+      "intermediate": {
+        "source": "e151ee1596be222da25fc3f1ce0120da87b1570c",
+        "status": "PASS_SCOPED_COMPONENTS_WITH_REVIEW_GAP",
+        "detail": "27 tests pass;129-path masking corrected and generated consumer checks added for final revision."
+      }
+    },
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-02T04:48:03.504976+00:00",
+      "runs": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-25a5cbe",
+          "source": "25a5cbe102973b7f95198d33896a37cbebc6fa48",
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "prior_unchanged": 1083,
+          "exact_source_files": 1670,
+          "owned_stopped": [
+            "c07e50d1dbc58aa3fac535fa96c378b1fbf1638a8013c134a15ff26a4615e627",
+            "1cf7226fb6507232f2f63ddad42bb680b5224d4fa8af33de31b6129194ab18cb"
+          ]
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-e151ee1",
+          "source": "e151ee1596be222da25fc3f1ce0120da87b1570c",
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "prior_unchanged": 1085,
+          "exact_source_files": 1671,
+          "owned_stopped": [
+            "dadac9f7714c21293bc3f198e416c4e3e87aeaebe8e3c6d3bca6e82e28e0ecac",
+            "7a371a8be4b3f18381179f4512bdff14a19fd40e365d18484264331798083e4a"
+          ]
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-ef248a8",
+          "source": "ef248a8b2c53c7c5f15e48bad35275337947e241",
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "prior_unchanged": 1087,
+          "exact_source_files": 1671,
+          "owned_stopped": [
+            "8cca43aa37eb4f7794086c01d6c13f56e029f23a006c155ea305df13c012514e",
+            "bb46e6da5e6f73e7ac8462dee0c77a685ea6478b7775379a98f5c213e7ef34e6"
+          ]
+        }
+      ],
+      "compiler_lock_released": true,
+      "unrelated_running": 8,
+      "free_bytes": 53138620416
+    },
+    "local_originals": ".research/implementation/acquisition-transport-20261002",
+    "captures": [
+      {
+        "label": "red",
+        "source": "25a5cbe102973b7f95198d33896a37cbebc6fa48",
+        "files": 1670,
+        "captures": 15,
+        "capture_sha256": "e27c3f6c0005a4ea80070e7584e4af5bd80f537a1026778a03d58c13c6da6298"
+      },
+      {
+        "label": "native",
+        "source": "e151ee1596be222da25fc3f1ce0120da87b1570c",
+        "files": 1671,
+        "captures": 18,
+        "capture_sha256": "269694014efe681e68871a4f1e3fea2a86f3e93da0564c19a8caa7ea574ef83f"
+      },
+      {
+        "label": "final",
+        "source": "ef248a8b2c53c7c5f15e48bad35275337947e241",
+        "files": 1671,
+        "captures": 18,
+        "capture_sha256": "5e7b2de588a59cfa10be44ba93481fd979325f537ef79a12814436e4d5e8a837"
+      }
+    ],
+    "remaining": [
+      "Installed explicit Sync constructor and memory ledger, migration23/24 execution preflight, finite fair dispatch under absolute renewal deadlines, quiet cutoff before source rollback, observation reuse, signed/forged/duplicate same-owner durable admission.",
+      "Complete M1 archive/index/read/export/restart, full acquisition quotas/renewable scheduling/overlays and capacity qualifications remain open."
+    ]
+  }
 }

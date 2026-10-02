@@ -10,519 +10,173 @@ Complete selected product remains owner-authorized and INCOMPLETE. Keep private
 bigbrotr-rs, unpublished Cargo and the read-only Go neighbor. Mac owns edits/Git;
 trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
-The active unbudgeted goal covers the whole product, not the current slice.
+The active unbudgeted goal covers the whole product, not this slice.
 
-Main85b6d0dbb7ec6325c6514aabb34ddb1489f5afd9 matches origin/main; clean on
-resumption. Root is the sole writer. This published boundary closes bounded
-candidate nomination. Native build,
-selector tests and Clippy PASS; all four actual PostgreSQL cases PASS. Sparse
-32-excluded prefix/adjacent candidates/same-owner versus foreign tuples, late67
-outside cut66 then next pass, empty, u64max and actual blocked-query cancellation.
-All67 tables and complete original60s owner metadata checked;1669 Git files and42
-captures verified. Read-only review corrected two oracle gaps before GREEN. No new
-schema/queue/trait; ephemeral cursor is not coverage. Physical I/O/capacity unclaimed.
-Originaleb96 RED fails Unavailable instead of Capacity before barrier;83d076d build
-passes but engines NOT_RUN because timestamp fixture was strengthened before launch.
-
-runs/acquisition-scope-read-0b64181 STOPPED/RETAINED: buildPID1765898/start429724139,
-enginePID1768262/start429732105;engine ownerb4bc19292f7eac84603a89cc3a27ee87,
-client4d6a2462 stopped143/PG71775507 stopped0/noOOM. Audit04:25:43UTC:1081 prior
-unchanged,eight unrelated,compiler lock released,53,490,069,504B free. All exact
-identities in inventory acquisition_scope_read.candidate_nomination; original
-.research/implementation/acquisition-source-read-20261002/{candidate-red,candidate-native,candidate-final}.
-Resumption: Mac3,283,532KiB and Tux53,490,028,544B available; no local Rust build.
-Eight unrelated containers remain running; no actual cargo/rustc/lab process
-observed. No new cache or dataset deletion.
-
-Next user-visible work: actual installed signed/forged/duplicate socket→same-owner
-admission, P03-T01 Steps3/4 and P03-T02, then M1 archive/read/export/restart. Connect
-explicit control,ingest,sync to the living initial owner and native store; preserve
-acceptance-only control,ingest. Candidate/read prerequisites are now available.
-Read entire initial_ingest.rs and commands.rs; top-level serve role dispatch; exact
-source/claim/domain/nomination owners, concrete arrival consumer/session, observation
-and dictionary preparation owners. Independent read-only review completed; no
-engines run by reviewer. Concrete remaining wiring includes a real configured DNS
-resolver (no root key currently exists) and bounded custom CA loading. Existing
-network.tls.extra_roots is already deployment-owned; adding the resolver root must
-preserve accepted policy bytes. Define discriminating installed transport/dispatch
-fixtures before implementation, using actual sockets and native/SQL effects.
-Keep renewal due across bounded steps and leave cleanup before hard source timeout;
-quiet read must not routinely poison Control. First observation request3/event4
-needs four slots and retained grants; don't appendAlreadyDurable on every poll.
-Consumer acceptance must include older refused job followed by valid work and
-source change before socket. No Archive/Discovery/Monitor completion prerequisite.
-
-The previous boundary closes the bounded source-metadata reader, not M1.
-Exact native build/selector tests/Clippy PASS; eight actual PostgreSQL cases PASS.
-Independent capture review checks all66 tables, original60s Control lease and
-complete claim/release metadata; three metadata mutation negatives reject.
-Root verified1668 exact source files/51 captures. Read-only AI review found three
-fixture gaps and a duplicate-route setup error; all corrected before GREEN.
-Original4a98c5d RED remains: Unavailable instead of Capacity, later cases NOT_RUN.
-Original local review mistake64 vs66 and Python3.9 timestamp parser limitation
-are retained; Python3.14 capture replay passes without changing engine captures.
-
-runs/acquisition-scope-read-a1dc662 STOPPED/RETAINED: buildPID1743041/start429599030,
-owner5e016fa558b501133076827cec796aa5;enginePID1745917/start429610714,
-owner59e4c792247d178edc308864d170ad73. Exact engine owner/IDs live in inventory
-implementation_network_20260928.acquisition_scope_read.current_source_metadata.
-Clientd9a4b49f stopped143/PG71775507 stopped0/noOOM. Audit04:06:29UTC:1073 prior
-unchanged,eight unrelated running,compiler lock released,53,918,429,184B free.
-No local Rust build. Local originals under
-.research/implementation/acquisition-source-read-20261002/{red,native}.
-Next: bounded candidate nomination via existing0815 admission ordinal, then
-explicit installed Sync dispatch. Metadata reader shares existing endpoint/route
-decoding; no new persistent format/trait/queue or source authority. Cursor progress
-must distinguish no eligible row in this32-row batch from end-of-pass; selecting
-ordinal N advances only through N. Claim/source/native checks remain authoritative.
-
-Root sole writer. Initial private-scope boundary now qualified: actualf8015bc
-CLI/probe build,123 selected native tests/Clippy; nine installed lifetime/window
-casese41e255, nineteen startup COMMIT casesa3123a2 and three installed session
-regressions8083261 PASS. Original12-row bootstrap retained, explicit private3
-request2 adds self-scoped root; report publishes only after outcome delivery.
-No persistent format/migration changes; existing directories never adopted.
-
-All resources STOPPED/RETAINED. Latest audit2026-10-02T03:37:45UTC:1067 prior
-unchanged,eight unrelated,compiler lock free,54,250,500,096B free. Session client
-2d3229a7 stopped143/PG71775507 stopped0/noOOM. Buildinitial-ingest-f8015bc;
-lifetimeinitial-private-e41e255;faultsinitial-private-faults-a3123a2;
-sessioninitial-private-sessions-8083261. Full identities in inventory
-implementation_network_20260928.initial_private_scope. Preserve all clones/stores.
-Originals .research/implementation/initial-private-scope-20261002/
-{red,native,lifetime,faults,sessions,sessions-fixed}. ELFs separate from sharedcache.
-Mac3,328,964KiB free; no local Rust build. Root verified1668 Git files per fixture,
-126 lifetime/375 fault/session captures and complete native/input/receipt replays;
-three metadata mutation negatives reject. Latest planning artifact check PASS.
-
-Original failures remain: unchangedc0 CLI misses private append; firstf801 setup
-launcher used wrong path before engines; initialf801 receipt2 oracle confused
-process incarnation/recovery and topology; a9257aa session fixture lacked current
-schema/grants and correctly refused before bind. Corrected clones alone upgraded.
-AI review found stale helper callers; all five corrected plus stale row counts.
-No bounded product blocker in read-only review; reviewer ran no engines.
-Structure groups dictionary initialization only; preserves atomic native append,
-Control/driver custody, explicit transactions, cancellation and ambiguity stop.
-Existing dictionary append report owns bounded evidence; P02-T03/M1 remain open.
-
-Next user-visible deliverable is installed finite signed-event dispatch, P03-T01
-Steps3/4/P03-T02 and M1/P01-T09. Concrete next action: implement bounded candidate
-selection and source metadata loading, then wire the same native owner. Reuse
-job_admissions ordinal with a fixed upper pass cut/keyset cursor; advance known
-refusals, never treat scan state as coverage. Return one bounded candidate, then
-existing claim remains authority. Source read supplies exact current enrollment
-identity/route/canonical endpoint; existing socket and both native phases must
-recheck it. No new persistent queue/counter/trait. Relevant claims/read/source/
-policy/migrations and actual maintain loop read; no full scheduler claim yet.
-
-Explicit control,ingest,sync selection must be distinct from configured local
-placement; preserve acceptance-only control,ingest. Execution probes23/24 authority
-functions/grant-row lock privileges even without HTTP. First observation/event
-need at least4 window slots (bootstrap/private already1/2), no repeated empty
-append on every poll. Keep scope8MiB/metadata/observation/event grants and absolute
-renewal due across bounded steps. Quiet socket quanta must return through cleanup
-and SQL rollback BEFORE hard deadline; outer timeout poisons owner and cannot be
-normal idle polling. Uncertain effects stop with original input. Practical next
-consumer: older refused job plus valid job, enrollment change before socket,
-quiet quantum with usable renewal, actual signed/forged/duplicate arrivals. EOSE
-never means completion/coverage. Successor and archive/read/export remain M1 work.
-
-Installed private-scope RED ran exactc0fb44e CLI against fixtureba14196: original12
-native rows versus independent17 expected. CLI stopped cleanly; original source,
-32 captures and1667 Git files verified. No later case ran. runs/initial-private-ba14196
-STOPPED/RETAINED:PID1672908/start429289592,owner55e5394c4e9097fbfcf08f6c3c552168,
-client29d0eadc stopped143/PG71775507 stopped0/noOOM. Audit03:13:58UTC:1060 prior
-unchanged,eight unrelated running,compiler lock free,55,009,288,192B free.
-
-Dedicated dictionaries module keeps both operations explicit; startup reserves
-all grants before mutation. Both accepted documents/local selected profile refuse
-fewer than2 window slots. Next inspect nine actual installed cases, then qualify
-appended reservation/outcome COMMIT cuts including cancellation under held custody.
-Do not claim installed private scope until actual CLI/native/SQL results match.
-This is P02-T03/P03-T01/M1 work, no new visibility API.
-18ed28a preparation native GREEN:13 append/preparation,5 bootstrap,11 recovery
-PASS; actual CLI/probe build and Clippy PASS. Intentional818 RED remains retained.
-runs/dictionary-append-18ed28a STOPPED/RETAINED:PID1656405/start429175471,
-owner1ad289bb5258f14bb92779f34670e517; audit02:56:45UTC,1056 prior unchanged,
-eight unrelated running, compiler lock free,55,229,480,960B free.1667 Git files
-verified; artifacts separate from shared cache. Mac3,411,732KiB free; no localbuild.
-Local .research/implementation/dictionary-preparation-20261002/{red,native}.
-Inventory dictionary_preparation and dictionary append evidence own exact hashes.
-
-Concrete read-only DictionaryPreparation borrows native store, bounds complete
-owned capacities/candidate reads, requires explicit target visibility and retains
-its grant with fixed EvidenceIntent. No new schema/crate/trait/ledger. Existing
-stage remains authoritative for request/window/actual recorded time. Read-only AI
-review requested mixed existing/new same-kind and missing transitive-method cases;
-both pass natively. Repeated descriptors use transient scratch, not duplicate
-retained capacity. This closes the bounded native preparation, not P02-T03/M1.
-
-Connected c0fb44e PASS (CLI/probe build/Clippy and three actual-engine cases):
-original42-row socket, fixed48-row private append and new50-row prepared consumer.
-Explicit private3 append2 → readonly intern four descriptors/dedupe → append3 →
-AlreadyDurable4 → same-owner reopen/replay → signed/forged/duplicate socket event5.
-Five exact original inputs/receipts and67 SQL tables/xmin retain permitted deltas.
-Root verified1667 Git files,52 captures, all three independent literal oracles,
-eight SQL transitions and three discriminating mutations. Read-only AI review
-found no bounded blocker; it did not run engines. No new product schema/ledger/
-trait/framework: existing native owner, preparation and PG append remain visible.
-
-runs/relay-arrival-c0fb44e STOPPED/RETAINED: buildPID1662791/start429233155,
-owner9837c77cd14e0fca1431067000746c06; enginePID1665276/start429242317,
-owner7901ed7b96146c937e32bf880ec87413. Client9c627f15 stopped143, borrowedPG71775507
-stopped0/noOOM. Audit03:03:39UTC:1059 prior unchanged,eight unrelated running,
-compiler lock free,55,064,731,648B free. Qualified ELFs outsidecache; no localbuild.
-Inventory dictionary_preparation owns exact IDs/hashes. Original captures under
-.research/implementation/dictionary-preparation-20261002/{red,native,connected}.
-No active build/engine at that audit. This closes bounded preparation, not M1.
-
-Next bounded action: connect installed finite execution P03-T01 Steps3/4 and
-P03-T02 to the existing living owner/command loop, using current job/source checks
-and bounded preparation. Initial owner/commands/supervision, complete acquisition
-reference and actual claim/scope readers were read; execution selection and source
-metadata loading still need their owning callers/contracts checked. Define only
-needed next read/dispatch boundary, with independent SQL and installed signed
-socket acceptance. Do not require Discovery/Monitor. M1/P01-T09 Steps1/2 still
-needs timer archive/index/read/export; restart additionally needs successor.
-Nine actual dictionary COMMIT cases PASS at fixture89359ab using exact424a4f2
-CLI/probe (build/Clippy PASS). Covers both reservation/outcome COMMIT sides,
-cancellation with positively held actual backend custody, and AlreadyDurable loss.
-Fresh Control2 closes the old native producer; original requests resolve exactly
-or remain Unresolved. All67 SQL tables/xmin, complete metadata and every native
-row/original CBOR/receipt were compared. Independent AI review found two fixture
-oracle gaps; both corrected before engines. Root verified1666 Git files per source,
-131 captures, nine capture replays and14 targeted mutation negatives.
-
-runs/dictionary-faults-89359ab STOPPED/RETAINED: PID1636211/start429044860,
-owner0b18218df5a388c3b633d04094c5b409, client48760bf3 stopped143;
-borrowedPG71775507 stopped0/noOOM. Audit02:31:31UTC:1052 prior projections unchanged,
-eight unrelated running, compiler lock free,55,492,608,000B free. Build424 resources
-also stopped; original qualified ELFs remain outside the cache. No local Rust build.
-Originals .research/implementation/dictionary-append-20261002/{faults,faults-engine}.
-No active experiment. Inventory dictionary_append and the report below own full
-identities. This closes the bounded COMMIT responsibility, not P02-T03/M1/product.
-[P02 dictionary append evidence](evidence/p02-dictionary-append-native-20261002.json):
-product af058bc has 8 append + 5 bootstrap + 11 native recovery tests PASS, build
-and Clippy PASS. Connected 8f5950c has two actual PG16.15/Rocks11.8.1 socket cases
-PASS: original 42-row regression, and original two-map bootstrap → five private ordinal 3
-mappings → exact retry/AlreadyDurable → same-owner native reopen/replay → explicit
-private ordinal 3 enrollment/scope/job → signed event, forged signature, duplicate.
-The latter preserves all 48 native rows/four original inputs/four receipts against
-an independent literal oracle. All 67 SQL tables/xmin have exact permitted deltas
-at append/reuse/event boundaries. All 1663 source files and 39 captures verified.
-This does not qualify installed execution or intern preparation; the subsequent
-append-specific COMMIT wave above has its own exact artifacts and assertions.
-
-Latest runs/relay-arrival-8f5950c is STOPPED/RETAINED. Build PID 1620206/start428911083,
-owner 472ba18882f2a22c3998c4d4b5ac2d0b; engine PID 1622943/start428922394,
-owner 89d186945b81be33cd25b02c216156fb. Client 504a9962 stopped 143; borrowed PG71775507
-stopped 0/no OOM. Audit 02:10:24UTC: 1049 prior projections unchanged, eight unrelated
-running, compiler lock free, 55,808,135,168B free. Mac about 3.3 GiB free; no local
-Rust build. Inventory implementation_network_20260928.dictionary_append owns full
-IDs and artifacts. Originals .research/implementation/dictionary-append-20261002/
-{red,bootstrap-red,native,native-fixed,connected,connected-fixed}. Qualified ELFs
-are outside caches. Earlier f2a compile failure, ab57 bootstrap regression RED and
-e286: 62 PASS/5 fixture/setup FAIL remain unchanged. The 1c99 client built but did not run
-engines; pre-engine review corrected two SQL oracle gaps. Packaged archive worker
-qualification still requires its actual worker and is not declared passed.
-
-Read-only AI review and root review found no additional concrete product defect.
-Preparation now shares complete validation with dispatch, using actual recorded
-time; read-only recovery preserves existing 40 MiB event grants. The native batch
-and explicit two PG transactions remain visible; no generic framework or new
-schema/format/event allocator. Fixture named bindings replace fragile dictionary
-indices. Native preview refusal leaves identity unstaged, but the connected adapter
-poisons Control after coordination starts; recovery must not reuse that session.
-
-Bounded installed finite acceptance/status/COMMIT integration is qualified;
-P03-T01 Steps3/4 and P01-T09 Steps1/2 remain partial because execution/progress,
-finite CLI and restart are not implemented. Five marked-COMMIT12 job cases PASS
-at791e1a3;1658 Git files/216 captures verified. Exact69-table/xmin and12 native
-bootstrap rows/original CBOR; historical job120s deadline/ordinal preserved.
-SIGTERM closes HTTP1.037665s after pre-start sample (earliest timeout2.5s),
-reaps2.102615s after signal; actual upstream transaction remains held until proxy
-closure. Fresh SQL-owner recovery never adopts native Ingest. Two affected
-endpoint/scope positive HTTP + original retry regressions PASS at5046876;
-1659 Git files/81 captures verified. Complete report:
-evidence/p03-initial-jobs-faults-native-20261002.json. Raw captures in
-.research/implementation/initial-jobs-20261002/{faults,source-regression}.
-Read-only review caught original-versus-new session attribution missing from the
-fixture; fixed before engines. Python3.14 eight wire checks, four retained capture
-regressions and four synthetic oracle negatives PASS. Initial systemPython3.9
-setup failures are preserved separately; no engine failure in these waves.
-Structure: shared concrete fault/lifetime schedule, separate independent command
-oracles, one typed probe variant; no new product framework/state/migration.
-
-Latest runs/source-http-regression-5046876 STOPPED/RETAINED:
-PID1584427/start428581315, ownerfd2b6d7c2f85c967017aee96944a6cf5,
-client484b413fc69c1b1c2b7db7ac34f5837528fd074428dd5aa7b7ed7ef7ea5c839c stopped143;
-borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T01:13:12.878102UTC:
-1036 prior projections unchanged, eight unrelated running, compiler lock free,
-56,558,542,848B free. Prior job-http-faults-791e1a3 and native build
-relay-registration-faults-66a8718 also STOPPED/RETAINED with exact owners, PIDs,
-artifacts/audits in inventory.initial_jobs.http_faults. Preserve all7 clones/stores.
-
-Active P02-T03 Step1/P02-T02 prerequisite for P03-T01 Steps3/4 and M1/P01-T09.
-The complete bootstrap/admission/observation/store/closing/recovery/PG owners,
-keys, model intent and dictionary contracts were read, plus exact cached official
-rocksdb0.25.0 batch/write implementation. Original private2 retains a public fact
-envelope; new private3 must be explicitly selected, never substituted into an
-accepted enrollment/scope/job. Bootstrap allocation advancement and historical
-Evidence dispatch are now corrected and native-qualified. Default local_first_witness
-still requires visibility, observer/clock, endpoint, access and method.
-
-The fixed-reference append and bounded preparation are now qualified as above.
-M1 still needs installed finite dispatch, socket admission through timer archive/
-read/export, finite CLI and successor/restart. Full Discovery/Monitor is not a
-prerequisite. No whole task or capacity/arm64/release claim follows from fixtures.
-
-Compatibility run runs/job-status-compat-de7347d is STOPPED/RETAINED:
-PID1558991/start428452303, owner5b0fcc0dca17226bfb649de3b2185974,
-client73009350b258df5e6286369b18bf090b7a4090dd02b754b51b32bfe31b384493 stopped143;
-borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T00:55:01.403334UTC:
-1032 prior projections unchanged, eight unrelated running, compiler lock free,
-56,871,165,952B free. Mac3,504,112KiB free. No active engine/build.
-Ordinary Control-only Serve on the original64-table pre0022 schema passes real
-login, two SQL-backed job-unavailable404 and valid acquisition400. No native or
-archive store opens. All rows/xmin, logout and Control release were checked;
-1656 Git files/25 original captures verified. No positive export row claim.
-Read-only AI fixture review and root capture review found no bounded blocker.
-Local helper import setup failed before comparisons; AST-selected replay passed.
-Original captures: .research/implementation/initial-jobs-20261002/compat.
-
-Actor supplementf12205c and expiry supplementcf4f48e are STOPPED/RETAINED;
-complete identities, actual captures and terminal audits are in the same
-finite HTTP report and inventory.initial_jobs. Idle expiry remains isolated by
-11,662,665us before absolute cutoff after all401 replies. Absolute fixture has
-coincident cutoffs and does not isolate redundant predicates. Product defaults
-remain8h absolute/30min idle. No credential-reset or job-deadline qualification.
-
-Active P03-T01 Steps3/4 and P01-T09 Steps1/2: initial-owner finite acceptance and
-actor-owned status use the existing queue/Control transaction/0022 command. No
-new migration, dispatcher, backend trait or native owner. Domain JobKind now owns
-the typed observation; export-only listing and pre0022 SQL selection stay explicit.
-The closed map decoder grows declaratively instead of buffering generic values.
-No further structural rewrite was justified for this bounded responsibility.
-
-[Installed finite HTTP evidence](evidence/p03-initial-jobs-http-native-20261002.json)
-qualifies ce85c0c: real CLI login→URL→enrollment→scope→job/retry/status, original
-120s deadline/admission ordinal and69-table/xmin checks; role/status withdrawal,
-logout and three pre-bind privilege refusals. Every store has the independent12
-bootstrap rows/original CBOR. 22 observed scope/job/status requests, not load.
-Native123 selected tests + build/Clippy PASS. Mac58 transport +11 domain and25
-client/schema checks PASS; TypeScript/generation/Clippy PASS. Original RED logs
-and captures remain in .research/implementation/initial-jobs-20261002/{native,engine}.
-Read-only review requested missing cross-profile/status tests and identified
-missing refusal/logout comparisons; both were corrected before engine execution.
-Root checked the original capture, all1653 Git files/117 payloads, literal command
-and durable job fields, and two mutation controls for the repaired fixture oracle.
-
-runs/initial-ingest-ce85c0c is STOPPED/RETAINED. BuildPID1520549/start428269266,
-enginePID1527068/start428287177 terminal; build ownerd0241e3facc61f7ccb73a5ac9537660a;
-engine ownerb9a5a3e6a82a6163845ac2fe44373183, clientfcfbf4da15965f3a82def0ec74c9c9f8e7bc1601e515de0232fffba55f1a0b93 stopped143;
-borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T00:24:32.214242UTC found1029
-prior projections unchanged, eight unrelated running, compiler lock free and
-57,030,197,248B free. Preserve all four clones/stores and separate artifacts.
-CLIsha1f7bc3bb8da926a8d30281af77a60bfcfe47e3c38c261f4afdca4e7cf74a7559;
-probesha7ad5a6aade5807ae8efd9eadbf30ffc061e000e40c197769132c6fac8a9dd791.
-
-## Current bounded qualification and resources
-
-Latest runs/scope-http-faults-7363a12 STOPPED/RETAINED:
-PID1491644/start428022235, ownera926a3afc0de8e001f58e56a42eacbe7,
-clientdb0234172d8234c90ca0414e21c3f8feb0fe661b6503df49aaa1d951b1f89912
-stopped143; borrowedPG71775507 stopped0/noOOM. Audit2026-10-01T23:41:08.413087UTC:
-57,194,938,368B free,1026 prior projections unchanged,8 unrelated running,
-compiler lock free. Five scope cases PASS;1649 Git files/206 captures verified.
-Prior runs/registration-http-faults-7363a12 PID1478295/start428006947 terminal,
-owner23699a72d1f22f31460ba7a848566505, client56687fea stopped143;
-five endpoint regressions PASS,1649 Git files/191 captures checked.
-
-Actual CLI/probe07333269469bcf93cf1c1d0a1b72d624249b238a are retained separately
-from cache under runs/relay-registration-faults-0733326/out/artifacts.
-CLI SHA352029da8dec7e377101a3181d89bb335683f8c36be87a64ef3db74614d02851;
-probeSHAb6d96b964bc4a2e04c9b1b4d40ae5274d8fcccab9ab5b0cc358118a7e8f90a52.
-The matching native inspector is runs/initial-ingest-e4c2825/out/artifacts,
-sourcee4c282542532aa95ca30b8ea252b527230d614b8,
-probeSHAc34be5a35dbc2f6efdfeb9f137518b09f8759494331fb7a73b95f1cfa9de1afa.
-Reuse gates verify complete build-input differences and actual ELF hashes.
-All current engines used PostgreSQL16.15 and Linuxamd64; no new build was needed.
-
-Inventory implementation_network_20260928.scope_registration owns all current
-run identities, original outcomes and terminal audits. Ignored originals are in
-.research/implementation/scope-registration-20261001/{native,engine,engine-fixed,
-fault-native,endpoint-regression,fault-engine,internal-regression,
-endpoint-race-regression,race-engine,endpoint-relation-regression,relation-engine,
-endpoint-http-regression,http-fault-engine}. Never replay completed launchers.
-Use /opt/homebrew/bin/python3.14 for local imports/tar extraction; system3.9 lacks
-tomllib and tarfile filter support. Original local setup errors remain distinct
-from engine outcomes.
-
-All earlier scope resources are STOPPED/RETAINED at their recorded audits:
-5f956b3 relational,7a22f94 race,4e95a1f internal regression,7104b2d scope COMMIT,
-0733326 build/endpoint COMMIT,5e7dbab installed HTTP/upgrade,e4c2825 native build.
-Original062f82d fixture FAIL is retained: final count omitted the preexisting
-policy activation; corrected5e preserves its exact row and counts only new keys.
-No engine failure occurred in the new race/relational/HTTP fault waves.
+Primary main HEAD ef248a8b2c53c7c5f15e48bad35275337947e241 is three coherent
+unpublished commits ahead of origin/main85b6d0dbb7ec6325c6514aabb34ddb1489f5afd9.
+Root is sole writer; documentation/evidence/inventory changes close this boundary.
+No merge/rebase or other contributor's dirty files. Recheck before resuming.
 
 ## Active responsibility and next action
 
-P03-T01 Steps1/2/3 and P01-T09 Steps1/2 have bounded authenticated scope
-registration qualification. The actual initial owner accepts
-POST /management/v1/acquisition-scopes after explicit26/privilege checks. Session,
-CSRF, Origin, roles.control and original expected heads bind an immutable command.
-Historical actor/key resolution follows current authentication but precedes new
-permission/CAS. Scope registration is identity-only; no job, native fact, idle
-session touch or coverage follows. It works after enrollment withdrawal without
-granting execution. Complete contract: [acquisition scopes](../reference/acquisition-scopes.md).
+Next user-visible deliverable: explicitly selected initial Control/Ingest/Sync
+receives a real signed socket event and durably admits it under the same living
+native owner. P03-T01 Steps3/4 and P03-T02 Steps1/2/3/5; M1/P01-T09 then needs actual
+archive/index/read/export and restart. No full Discovery/Monitor prerequisite.
 
-Structure: one concrete transaction-local identity helper serves internal and
-browser registration; same queue and Control owner, one immutable authenticated
-detail, no duplicated registry/framework/crate. Applied0026 and all prior SQL are
-immutable. No session FK, so pruning historical sessions preserves durable receipts.
-The existing account-lock/grant_revision writer protocol is retained. Arbitrary
-privileged concurrent bare grant deletion is outside the qualified claim; define
-the supported protocol when adding a dataset-grant editor. Existing supported
-scope-grant writers serialize account changes, and first-owner enrollment creates
-new grants atomically. No current supported bare dataset-grant DELETE consumer
-was found in the bounded source audit.
+Candidate nomination, scope/source metadata reads, dictionary preparation/append,
+committed observation, guarded source socket and certification/admission components
+are available. The concrete installed wiring is still NOT_IMPLEMENTED. Ordinary
+Serve remains Control-only; initial control,ingest accepts private source/scope/job
+commands but reports acquisition=not-started/ready=false. Do not advertise Sync
+until actual installed acceptance passes. Exact next action: define the installed
+signed/forged/duplicate socket fixture, then integrate serial finite dispatch in
+initial_ingest/commands while borrowing its retained native store.
 
-The request uses closed borrowed RawValue plus the existing selector codec.
-Body2MiB+1KiB, selector/canonical2MiB, reservation14MiB+64KiB through queue/SQL/
-cancellation. Three earlier concrete findings were reproduced and fixed:
-visibility arrays rejected; abandoned operation allocations dropped before credit;
-common body collection changed from retaining65,536 tiny DATA frames to peak1.
-No allocator/RSS capacity claim follows from those component counters or a padded
-maximum HTTP body. No new dependency version was introduced.
+Read complete initial_ingest.rs/commands.rs/dictionaries.rs, acquisition session,
+observation/source/claim/domain/nomination owners, dictionary preparation and concrete
+examples/support/ingest_socket_arrival.rs. Relevant native-operation methods and
+owning acquisition contracts were read; remaining changed callers must be read
+before editing. Independent read-only integration review completed; no engines
+were run by the reviewer. Preserve these concrete requirements:
 
-Executed evidence:
-- [Installed HTTP/upgrade](evidence/p03-initial-scopes-http-native-20261002.json):
-  producte4c2825/fixture5e7dbab, seven cases. Populated25→26/reapply, actual login→
-  URL→enrollment→normalized scope/replay, nine exact wire receipts, refusals and
-  missing prerequisites. All69 SQL tables and12 native rows/original CBOR checked.
-- [Adapter COMMIT and internal helper](evidence/p03-scope-command-faults-native-20261002.json):
-  actual0733326/fixture7104b2d, seven scope and seven affected endpoint cases.
-  Lost/cancelled COMMIT, isolated owner/session expiry, held custody/Busy contender
-  and exact fresh-owner recovery. Supplement4e95a1f: six internal scenarios/32
-  checks,64 candidate collisions, rollback, old-schema and historical identity.
-- [Authority races](evidence/p03-scope-command-races-native-20261002.json):
-  fixture7a22f94, eleven scope plus eighteen affected endpoint cases. Both observed
-  lock orders for policy/permission/session/account writers, rollback and historical
-  retry after changed heads/grants. Original selector/scope attribution unchanged.
-- [Relational closure](evidence/p03-scope-command-relations-native-20261002.json):
-  fixture5f956b3, twenty scope rollback checks plus separateTRUNCATE, sixteen
-  endpoint regressions/TRUNCATE. Valid alternate selector/scope, wrong digest,
-  missing receipt/session/grant, exact errors and complete69-table rollback.
-  Forced constraints establish relational closure, not COMMIT-time expiry.
-- [Installed HTTP faults](evidence/p03-initial-scopes-faults-native-20261002.json):
-  fixture7363a12 with0733326 CLI/probe ande4 inspector; five scope/five endpoint
-  cases. Positively marked COMMIT11 after real URL/enrollment setup. Five scope
-  effects or none; original native bytes and all69 SQL tables/xmin checked.
-  SIGTERM HTTP closure1.368859s after pre-start sample, before earliest2.5s command
-  timeout; reap2.131938s after signal. Upstream transaction positively retained
-  after CLI death until proxy closure. Fresh SQL-owner2 exact retry does not adopt
-  native Ingest; actual retained-directory initialization refuses without SQL writes.
+- Carry explicit --roles selection through initial_ingest::run; configured local
+  placement/sync.enabled alone must never activate an omitted Sync role. Preserve
+  acceptance-only control,ingest. Selected Sync needs >=4 outstanding slots:
+  bootstrap1/private2/observation3/event4. Receipts do not free producer slots.
+- Prepare one shared DirectConnector from validated network.dns.resolver and
+  network.tls.extra_roots. Presence is required only for explicit runtime Sync.
+  No fixture resolver127.0.0.1:9 or silent empty-root fallback. File loading runs
+  under supervised startup; O_NONBLOCK does not time-bound stalled regular files.
+- Account for TLS4MiB, scope8MiB, source128KiB, dictionary/visibility/observation,
+  session/retained frames and native effects in the same process budget. Current
+  item budget3+SESSION_ITEMS only covers existing initial/HTTP responsibilities.
+- Selected execution must probe migrations23/24, authority functions and actual
+  account/grant/enrollment/job row-lock privileges even without administration.
+  Acceptance-only require_acquisition_jobs22 is insufficient for execution.
+- Keep the original absolute renewal due through every scheduling/preparation/
+  socket/effect step. Bound new work by remaining time or renew first. Use a timed
+  finite scheduling opportunity so HTTP and acquisition cannot starve each other.
+- Nominate one job using existing admission ordinal/cut; claim remains authority.
+  Advance known refused/expired work. Stop on ambiguous COMMIT/poisoned owner;
+  never issue a new request to replace an uncertain original effect.
+- Build dictionary descriptors with prepare_dictionaries in exact scope visibility.
+  read_initial_observation first; reuse Some without append. On None append fixed
+  intent once and reread. Avoid consuming AlreadyDurable requests every poll.
+- Bound the entire WebSocket callback (handshake/open/receive/close) by a soft
+  cutoff computed before SQL/connect, leaving cleanup/rollback before hard source
+  deadline. Cancelled receive poisons RelaySession: drop it, never reuse/close it.
+  Normal idle returns through socket destruction and SQL rollback. Outer source
+  timeout/cancellation still fail-stops Control; stalled pre-callback DNS/TCP/TLS
+  is not ordinary idle. Retained events return only through successful source
+  delivery; keep loaded scope/source attribution through certification/admission.
 
-Read-only AI reviews found no remaining concrete fixture blocker and executed no
-engines. Root reviewed complete affected source, actual transcripts, durable rows,
-independent literal native/command bytes and exact source/artifact identities.
-These results close this bounded acceptance responsibility; full acquisition and
-production capacity remain unfinished. Original URL registration reports remain
-under evidence/p02-*-registration-*.json with their historical identities.
+Practical next acceptance uses actual private HTTP URL registration/enrollment,
+scope registration against published private_scope, finite job acceptance and a
+real independent relay. Expect exact REQ, one signed event, forged signature,
+duplicate and EOSE; attribution request3 and only event request4. Repeat dispatch
+with identical descriptors to prove dictionary reuse. No EOSE coverage inference.
+Include source change before socket, quiet cutoff with usable renewal and an older
+refused job followed by valid work. For expiry, actually accept an unclaimed job
+in the SQL-only setup, observe its deadline elapsed before initial startup, then
+submit valid work through installed HTTP. Do not alter immutable deadlines or
+invent an already-expired accepted command.
 
-The next finite consumer described at the previous scope boundary now has the
-bounded acceptance/status evidence above. Its remaining authority/fault gates
-stay explicit before claiming complete installed job behavior.
+## Latest qualified boundary
 
-## Next useful journey and remaining prerequisites
+Configured transport component P04-T02 Steps1/3 supplies the actual selected
+transport inputs for that next installed consumer. Product ef248a8, tree
+2abc38795ae337c4cd105da5bf9f25bbf49917f6: native build/Clippy and28 tests PASS
+(7 CLI/filesystem,14 actual direct DNS/TLS,7 PostgreSQL settings). Explicit numeric
+DNS root is offline-validated and excluded from policy bytes. Runtime DER paths
+are read sequentially with128 files/1MiB total and retained shared4MiB logical
+grant. Existing public-file reader extracted unchanged behind PG error mapping;
+no schema migration, service framework or duplicate file implementation.
 
-M1/P01-T09 remains INCOMPLETE: one actual signed socket event through installed
-same-owner admission, timer archive/index/read/export and restart/resend. The
-qualified component chain includes enrollment, finite acquisition acceptance/
-claim, guarded source transport and socket→native transfer. URL and immutable scope registration have bounded installed qualification;
-finite-job command delivery has bounded installed acceptance/status evidence;
-actual execution is the next product consumer.
-Dictionary append/intern P02-T03 Step1 is needed because fresh bootstrap contains
-only two visibility mappings. Successor/recovery P02-T01 Step5/P02-T02 Step4 is
-needed for P01-T09 Step4; initial writer custody cannot be adopted by another Serve.
-Full Discovery/Monitor, analytics or ACK/GC is not a prerequisite to every fresh
-M1 slice. Session access, identity registration and enrollment receipts grant no
-socket/admission authority. Complete dashboard/admin/website/blog/packaging/
-CI/CD/release journeys remain selected work, not removed scope.
+Actual TLS succeeds with loaded CA files removed before handshake; wrong roots
+and original names fail before protocol callback. Tests cover malformed/PEM/
+trailing/concatenated DER, FIFO/symlinks/nonregular/oversize, exact grant threshold,
+surviving clone, valid128 versus129 and aggregate-byte refusal. Generated schema/
+reference exactly match CLI. Synthetic long-serial root tests exercise parsing
+and aggregate size only, not a valid certificate signature. Exact upstream
+rustls0.23.45/webpki0.103.15/pki-types1.15.1 inspected by read-only reviewer.
 
-The initial installed owner keeps ready=false/acquisition=not-started. Ordinary
-Serve remains Control-only. Initial command selection requires explicit schema
-upgrade; runtime never applies DDL. Original installed export0815/0816 evidence
-remains valid within its scope. Five signed-event exports under256MiB are NOT_RUN.
-No capacity, busy-fleet, nativearm64 or release claim follows from small fixtures.
+Evidence: [direct native report](evidence/p04-network-direct-native-20260928.json)
+configured_transport supplement; inventory implementation_network_20260928.
+configured_transport. Original captures:
+.research/implementation/acquisition-transport-20261002/{red,native,final}.
+Root verified1670/1671/1671 exact Git files and15/18/18 captures. RED25a5cbe has
+actual unknown DNS table and129-path acceptance failures. Intermediatee151ee1
+passes27 tests but its129-path assertion could be masked by missing input; final
+fixed that gap and added generated-consumer check. Original outcomes unchanged.
+AI review found no remaining concrete component blocker and ran no engines.
+Unchanged config CLI/recipe/private-route modules and entire generated docs were
+not reread by that reviewer. Installed constructor/dispatch remain outside scope.
 
-## Relevant recent qualification and retained resources
+All three runs STOPPED/RETAINED. Final runs/acquisition-transport-ef248a8:
+PID1787542/start429865328, owner8b4c69a5391580975c319f9363d90acd;
+fetch8cca43aa/nativebb46e6da stopped0/noOOM. Audit04:48:03.504976UTC:
+1087 prior projections unchanged,8 unrelated running,compilerlock released,
+53,138,620,416B free. Final CLI SHA399e5b160dba9b238901ce413bd38280d436ac620ba60797188abab6a1096794.
+Latest Mac3,262,848KiB free; no local Rust build. No dataset/container/cache deletion.
 
-Historical details are in their original reports and the laboratory inventory,
-not repeated as competing current statuses here. The previous long checkpoint is
-retained in Git22f5b68 and ignored relay-registration-20261001/checkpoint-before-consolidation.md.
-Every old run below is STOPPED/RETAINED at its recorded audit, not freshly re-run.
+## Relevant completed prerequisites
 
-- [Initial session faults](evidence/p01-initial-session-faults-native-20261001.json):
-  slow valid renewal3.003s within5s, disconnected actual password work without
-  abandoned issuance, positively observed HTTP closure during held native close.
-  Control custody retained; timed exit4 after2.017s. Rocks unlocks before close,
-  so this proves unfinished destructor/Control custody, not retained native OS LOCK.
-- [Initial sessions](evidence/p01-initial-sessions-native-20261001.json): same-owner
-  login/logout, incorrect credential,2573 Me responses/12 clients/8.036s, renewal,
-  capacity and actual hash interruption. Original fixture failures retained.
-- [Installed initial Ingest](evidence/p01-initial-ingest-native-20260928.json),
-  [native interruption](evidence/p01-initial-ingest-interruption-native-20260928.json)
-  and [SQL interruption](evidence/p01-initial-ingest-commit-native-20260928.json):
-  actual retained Control→native lifetime, original bootstrap and ambiguity states.
-  Worker panic, renewal-specific lost/delayed COMMIT/policy races and successor
-  remain open; previous launcher scripts must never be replayed.
-- [Relay transfer](evidence/p03-relay-transfer-native-20260928.json): actual signed
-  EVENT/forgery/duplicate socket→same-owner admission, all42 native rows and complete
-  request/receipt SQL. No EOSE progress inference. Peer fixture half-close failure
-  and correction retained. [Committed observations](evidence/p03-observation-native-20260928.json)
-  and [request sessions](evidence/p03-request-session-native-20260928.json) keep their
-  distinct bounded claims.
-- [Acquisition execution](evidence/p03-acquisition-execution-native-20260928.json),
-  [job-effect faults](evidence/p03-job-effect-faults-native-20260928.json) and
-  [source transport](evidence/p03-job-source-transport-native-20260928.json):0024
-  scope/job binding, independent current authority, historical recovery and finite
-  delivery. Applied0024 is immutable. Actual ambiguous native effects remain
-  distinct from new authority; close Rocks before disposing Control/driver.
-- [Claims](evidence/p03-acquisition-claims-native-20260928.json) and
-  [claim faults](evidence/p03-acquisition-claim-faults-native-20260928.json):0023
-  accepted→queued, same-owner retry, original deadline and complete concurrent
-  current actor/policy/source constraints. No foreign-owner adoption.
-- [Job acceptance](evidence/p03-acquisition-jobs-native-20260928.json) and
-  [faults](evidence/p03-acquisition-jobs-faults-native-20260928.json):0022 finite
-  intent, independent original digest/admission ordinal, receipt expiry and
-  ambiguous retry. Fixture nonce collision retained; only affected cases reran.
-- [Scope registration](evidence/p03-acquisition-scope-native-20260928.json),
-  [scope faults](evidence/p03-acquisition-scope-faults-native-20260928.json) and
-  [raw SQL](evidence/p03-acquisition-scope-guards-native-20260928.json): exact
-  selectors/scopes, candidate collision/refusal, historical identities and
-  independent literal codec.0020/0004/0021 and earlier qualified SQL are immutable.
+These bounded reports remain applicable; no broad suite rerun is needed without
+new changes or concerns. Full historical detail lives in evidence/inventory/Git,
+not a second backlog or duplicated checkpoint transcript.
+
+- Nomination0b64181: four real PostgreSQL cases, all67 tables/xmin and full60s
+  Control metadata. Sparse32 excluded prefix, adjacent candidates, exact current
+  owner tuple, late67 excluded from cut66 then next pass, empty/u64max and actual
+  blocked-query cancellation. Ephemeral scan is not coverage. Sourcea1dc662:
+  eight actual reader cases including concurrent enrollment change, bounded URL/
+  route and cancellation. Original REDs retained. Both supplements are in
+  [scope reads](evidence/p03-acquisition-scope-read-native-20260928.json).
+- Private initial scopef8015bc: explicit request2/private3 preserves original
+  bootstrap1/public1/private2. Build123 selected tests/Clippy; actual lifetime9,
+  startup COMMIT19 and sessions3 cases PASS. All17 native rows and exact original
+  inputs/receipts verified. [Dictionary append report](evidence/p02-dictionary-append-native-20261002.json)
+  owns installed_private_scope. Existing directories are never adopted.
+- Dictionary preparation18ed28a and connectedc0fb44e: bounded native interning,
+  explicit private attribution and signed/forged/duplicate actual socket consumer;
+  full50-row native/input/receipt and67-table comparisons. No persistent format,
+  trait or extra ledger. [Dictionary append report](evidence/p02-dictionary-append-native-20261002.json).
+- Installed scope/source registration and finite job acceptance/status are
+  qualified bounded command responsibilities. Actual execution is next. Original
+  endpoint/scope/job command, authority-race and COMMIT reports retain precise
+  custody/refusal/ambiguity results. No receipt grants a socket or adoption.
+- Original installed0815/0816 export journeys remain relevant. Five signed-event
+  exports under256MiB are NOT_RUN. MON-001/002/004/005/006/007/009/010 retain prior
+  scoped closure absent new evidence. No current review finding is silently waived.
+
+M1/P01-T09 remains INCOMPLETE. Restart additionally needs successor/recovery
+P02-T01 Step5/P02-T02 Step4; initial writer custody cannot be adopted by another
+Serve. Full archive/index/read/export integration, production capacity, browser/
+admin/dashboard/website/blog, packaging/CI/CD/release journeys remain selected.
+No complete acquisition task or phase checkbox closes at this boundary.
+
+## Retained lab resources
+
+Runs root /home/tux/bigbrotr-implementation-20260917/runs/. Shared compiler cache
+network-1154757/out/build/{target,cargo-home}, owner8b21a13162699a6038154874c2ac89da,
+uses exclusive .compiler-cache.lock. Latest ef248a8 intermediates; qualified ELFs
+are separate. Native image7e946a0c, Rust1.98.1,clang14/Rocks11.8.1,amd64 only.
+All exact IDs/manifests/owners are in the existing laboratory inventory. Check
+space/process/container/mount/cache dependencies before the next large allocation.
 
 Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec
-(namebigbrotr-implementation-pg-20260917-source_e06f580) is retained under owner
-5e69b0f060b1607c25230d1dbd3e5608 at runs/relay-source-recheck-e06f580/pg.
-PG16.15/fsync/full_page_writes on; stopped at latest audit. Protect bb_source_template,
-bb_scope_54d1a18_basic, bb_transport_8c4d12c_pass,
-bb_scope_bind_45f7593_registration_journey, bb_scope_bind_5e7dbab_scope_journey
-and every original transport/source/fault clone. Secrets stay
-under protected pg/secrets and never enter Git. Clone and verify before experiments.
+(namebigbrotr-implementation-pg-20260917-source_e06f580), owner
+5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, remains stopped.
+PG16.15/fsync/full_page_writes on. Preserve bb_source_template and every prior
+scope/source/transport/fault clone, exact native states and protected pg/secrets.
+Clone/verify before experiments; never publish secrets or repeat completed launchers.
 
-Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latestc0fb44e intermediates;
-qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
-clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
-owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.
-
-Eight unrelated running containers at last audit: inspirehep-reindex-db/mq/cache/es,
-ollama, fileshare-lan, fileshare-tailnet and tgdataset-mongo. No authority to prune
-these. All run paths are under /home/tux/bigbrotr-implementation-20260917/runs/;
-full owners, hashes, process incarnations and lifecycle receipts remain in
-implementation_network_20260928 and implementation_relay_source_20260928 inventory.
+Eight unrelated running containers remain inspirehep-reindex-db/mq/cache/es,
+ollama,fileshare-lan,fileshare-tailnet,tgdataset-mongo. Preserve their state.
+Retain strace-exit-9b30c35 original instrument/traces and historical negative/dirty
+worktrees. All prior runs are STOPPED/RETAINED only at their dated audits; verify
+live ownership before reuse. No release or native arm64 qualification exists.
 
 ## Maintenance and retained dependencies
 
@@ -556,43 +210,3 @@ source/evidence and 03b0197 PG/source/artifacts including deliberately corrupt
 Negative worktrees 9fa8b98/8effc76/5f1582c/a334ac8/network-direct-no-poll-1154757
 never merge/push; dirty private-panel-no-revoke and detached ed2a93b stay untouched.
 Prior cache retirements d860/b93/5de/7ee/877 remain historical; never replay them.
-
-## Relevant qualified foundations and remaining gates
-
-- [Policy versions](evidence/p01-policy-versions-native-20260928.json): 56 native
-  tests and 87 engine checks. Fresh v2 bans and exact legacy v1 restoration;
-  v1 source issuance refuses. Populated CAS upgrade/drain remains selected work.
-- [Committed visibility](evidence/p02-ingest-visibility-native-20260928.json):
-  actual dictionary bytes and retained memory permit; no permission inferred.
-- [Source binding](evidence/p02-relay-source-native-20260928.json),
-  [relations](evidence/p02-relay-source-relations-native-20260928.json), and
-  [eight fault schedules](evidence/p02-relay-source-faults-native-20260928.json):
-  both reservation and dispatch recheck exact current/historical source; original
-  ambiguous recovery stays historical. Source data is not socket permission.
-  Applied 0020 and all prior SQL checksums are immutable. Populated constrained-
-  domain upgrade physically rewrites requests; maintenance I/O/space is required.
-- [Enrollment](evidence/p02-relay-enrollment-native-20260928.json),
-  [18 command schedules](evidence/p02-relay-enrollment-faults-native-20260928.json),
-  [relations](evidence/p02-relay-enrollment-relations-native-20260928.json): real
-  session/CSRF, CAS, roots, immutable history and exact current state. Acceptance
-  is not completed restrictive drain or a socket grant. Applied 0019 immutable.
-- [DNS/policy](evidence/p04-network-components-native-20260928.json) and
-  [direct TCP/TLS](evidence/p04-network-direct-native-20260928.json) remain bounded
-  component evidence. Shared quotas, overlays/protected routes, renewable sessions,
-  recursive DNS interoperability and aged/mixed load remain selected work.
-- Installed 0815 export, cursor lifecycle, export structural review, CLI and browser
-  page evidence remain relevant under evidence/. Applied 0815/0816/0604 immutable.
-  Five signed-event exports are deliberately deferred under 256 MiB, not executed.
-  MON-001/002/004/005/006/007/009/010 retain prior scoped closure absent new evidence.
-  Full browser accessibility/device/BFCache/capacity and release journeys remain open.
-
-WebSocket source audit is retained at
-.research/implementation/network-websocket-audit/{audit.md,inventory.json}.
-The raw tokio-tungstenite 0.29.0 handshake-only configuration does not enforce the current
-framing-inclusive message bound: the actual raw-socket counterexample now confirms
-both payload/header and empty-continuation acceptance beyond the selected cap.
-The added consumer has scoped Mac/native evidence for required header/handshake
-gates, outgoing/control limits and complete Close. Installed Nostr acquisition
-and broader service/route guarantees remain open. Management write-only ActionGate is not a renewable bidirectional source
-session. History reader grants do not authorize acquisition. DeliveryWindow copies
-need explicit parent invalidation. No arm64, complete release or capacity claim.

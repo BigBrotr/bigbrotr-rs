@@ -34620,6 +34620,195 @@
           ]
         }
       }
+    },
+    "configured_transport": {
+      "status": "ef248a8 configured transport component checks PASS; all stopped-retained",
+      "local_evidence": ".research/implementation/acquisition-transport-20261002",
+      "terminal_audit": {
+        "status": "PASS_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-10-02T04:48:03.504976+00:00",
+        "runs": [
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-25a5cbe",
+            "source": "25a5cbe102973b7f95198d33896a37cbebc6fa48",
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "prior_unchanged": 1083,
+            "exact_source_files": 1670,
+            "owned_stopped": [
+              "c07e50d1dbc58aa3fac535fa96c378b1fbf1638a8013c134a15ff26a4615e627",
+              "1cf7226fb6507232f2f63ddad42bb680b5224d4fa8af33de31b6129194ab18cb"
+            ]
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-e151ee1",
+            "source": "e151ee1596be222da25fc3f1ce0120da87b1570c",
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "prior_unchanged": 1085,
+            "exact_source_files": 1671,
+            "owned_stopped": [
+              "dadac9f7714c21293bc3f198e416c4e3e87aeaebe8e3c6d3bca6e82e28e0ecac",
+              "7a371a8be4b3f18381179f4512bdff14a19fd40e365d18484264331798083e4a"
+            ]
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-ef248a8",
+            "source": "ef248a8b2c53c7c5f15e48bad35275337947e241",
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "prior_unchanged": 1087,
+            "exact_source_files": 1671,
+            "owned_stopped": [
+              "8cca43aa37eb4f7794086c01d6c13f56e029f23a006c155ea305df13c012514e",
+              "bb46e6da5e6f73e7ac8462dee0c77a685ea6478b7775379a98f5c213e7ef34e6"
+            ]
+          }
+        ],
+        "compiler_lock_released": true,
+        "unrelated_running": 8,
+        "free_bytes": 53138620416
+      },
+      "preserve": "Exact clean sources, original RED/result logs and final ELFs outside exclusive shared cache. No new database/dataset, no deletion, no local Rust build.",
+      "runs": {
+        "red": {
+          "resources": {
+            "source": "25a5cbe102973b7f95198d33896a37cbebc6fa48",
+            "tree": "df862d40180042d2b2134967fce9cb0acaee6392",
+            "owner": "2bee6822ceb0a600e178a86c08231004",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-25a5cbe",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "c07e50d1dbc58aa3fac535fa96c378b1fbf1638a8013c134a15ff26a4615e627"
+              },
+              {
+                "name": "native",
+                "id": "1cf7226fb6507232f2f63ddad42bb680b5224d4fa8af33de31b6129194ab18cb"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-02T04:38:50.926421+00:00",
+            "inventory_changed": [],
+            "free_bytes_after": 53397991424,
+            "finished_at": "2026-10-02T04:39:40.160740+00:00"
+          },
+          "launch": {
+            "source": "25a5cbe102973b7f95198d33896a37cbebc6fa48",
+            "tree": "df862d40180042d2b2134967fce9cb0acaee6392",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-25a5cbe",
+            "pid": 1779995,
+            "start_ticks": "429818443",
+            "bundle_sha256": "ef534b496de0d833944d87fe7142f8553d51395fc9eb2043b4f806e29f2ff148"
+          },
+          "terminal_audit": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-25a5cbe",
+            "source": "25a5cbe102973b7f95198d33896a37cbebc6fa48",
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "prior_unchanged": 1083,
+            "exact_source_files": 1670,
+            "owned_stopped": [
+              "c07e50d1dbc58aa3fac535fa96c378b1fbf1638a8013c134a15ff26a4615e627",
+              "1cf7226fb6507232f2f63ddad42bb680b5224d4fa8af33de31b6129194ab18cb"
+            ]
+          }
+        },
+        "native": {
+          "resources": {
+            "source": "e151ee1596be222da25fc3f1ce0120da87b1570c",
+            "tree": "2d31acedd111befbc81f8854eb013c5a02447320",
+            "owner": "0c1631d0696a47951b51fa0f62fd73a3",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-e151ee1",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "dadac9f7714c21293bc3f198e416c4e3e87aeaebe8e3c6d3bca6e82e28e0ecac"
+              },
+              {
+                "name": "native",
+                "id": "7a371a8be4b3f18381179f4512bdff14a19fd40e365d18484264331798083e4a"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-02T04:44:04.077370+00:00",
+            "qualification": "PASS_ACQUISITION_TRANSPORT_ROOTS",
+            "inventory_changed": [],
+            "free_bytes_after": 53264105472,
+            "finished_at": "2026-10-02T04:45:14.010297+00:00"
+          },
+          "launch": {
+            "source": "e151ee1596be222da25fc3f1ce0120da87b1570c",
+            "tree": "2d31acedd111befbc81f8854eb013c5a02447320",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-e151ee1",
+            "pid": 1783570,
+            "start_ticks": "429849757",
+            "bundle_sha256": "0689fc46d6b5239760fbbe0bc954468411a8b98099d3d3471e01b86b11c77580"
+          },
+          "terminal_audit": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-e151ee1",
+            "source": "e151ee1596be222da25fc3f1ce0120da87b1570c",
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "prior_unchanged": 1085,
+            "exact_source_files": 1671,
+            "owned_stopped": [
+              "dadac9f7714c21293bc3f198e416c4e3e87aeaebe8e3c6d3bca6e82e28e0ecac",
+              "7a371a8be4b3f18381179f4512bdff14a19fd40e365d18484264331798083e4a"
+            ]
+          }
+        },
+        "final": {
+          "resources": {
+            "source": "ef248a8b2c53c7c5f15e48bad35275337947e241",
+            "tree": "2abc38795ae337c4cd105da5bf9f25bbf49917f6",
+            "owner": "8b4c69a5391580975c319f9363d90acd",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-ef248a8",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "8cca43aa37eb4f7794086c01d6c13f56e029f23a006c155ea305df13c012514e"
+              },
+              {
+                "name": "native",
+                "id": "bb46e6da5e6f73e7ac8462dee0c77a685ea6478b7775379a98f5c213e7ef34e6"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-02T04:46:39.763007+00:00",
+            "qualification": "PASS_ACQUISITION_TRANSPORT_ROOTS",
+            "inventory_changed": [],
+            "free_bytes_after": 53138640896,
+            "finished_at": "2026-10-02T04:47:49.496574+00:00"
+          },
+          "launch": {
+            "source": "ef248a8b2c53c7c5f15e48bad35275337947e241",
+            "tree": "2abc38795ae337c4cd105da5bf9f25bbf49917f6",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-ef248a8",
+            "pid": 1787542,
+            "start_ticks": "429865328",
+            "bundle_sha256": "25d57334214074482ee893aacb7fab62f490b4cd1eb9991f4aee47e07d342f5a"
+          },
+          "terminal_audit": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-transport-ef248a8",
+            "source": "ef248a8b2c53c7c5f15e48bad35275337947e241",
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "prior_unchanged": 1087,
+            "exact_source_files": 1671,
+            "owned_stopped": [
+              "8cca43aa37eb4f7794086c01d6c13f56e029f23a006c155ea305df13c012514e",
+              "bb46e6da5e6f73e7ac8462dee0c77a685ea6478b7775379a98f5c213e7ef34e6"
+            ]
+          }
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {
