@@ -12,14 +12,18 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main candidate f12205c9746eeeb69e59a4f66546a73978473ec3,
-tree92cd64bde8cbcdabd855a525bbf4b90b0c156058; origin b8bf90e. Root sole writer.
-Only evidence/docs dirty after the foreign-actor qualification. Product ce85c0c
-is unchanged. Two actual CLI logins confirm identities/actions: Bob has status.read,
-but Alice's existing job is404 and its same-key acceptance403; Alice detail stays200.
-All69 tables and Bob's complete account/credential/grant/session rows/xmin checked.
-Read-only review caught xmin-dependent account ordering; corrected by immutable ID
-before engines.51 captures/1654 Git files verified. Native12 bootstrap rows remain.
+Main/origin0fe2e99, root sole writer. Previous ce85c0c product and four-case
+qualification plus f12205c actor supplement are committed/pushed privately.
+Dirty fixture extension selects two session-expiry cases. It shortens issuance
+in isolated clones to8s idle and20s/8s absolute, preserving ordinary constraints;
+it waits for actual PostgreSQL time and requires expired detail, identical retry
+and new-key acceptance401 with all69 tables unchanged apart from lease renewal.
+Installed8h absolute/30min idle defaults and all product bytes stay unchanged.
+Python syntax/artifact checks PASS. Read-only review required a second PG clock
+observation after all401 replies to keep idle expiry strictly before the absolute
+ceiling; added. New engines remain NOT_RUN.
+Next: finish review, exact-Git fixture commit, reuse ce85c0c artifacts for
+--installed-job-expiry, preserve original captures and all clone states.
 
 runs/initial-job-actors-f12205c STOPPED/RETAINED: PID1539780/start428352503,
 owner0ea8d69acf38c068ddbeaf7c6feb1010,

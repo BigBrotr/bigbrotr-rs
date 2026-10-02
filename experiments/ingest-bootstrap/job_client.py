@@ -64,6 +64,15 @@ def run(directory, request, login, logout):
     call('GET','jobs/'+'78'*16,expected=404)
     call('GET',path,expected=401,credentials={})
     call('GET',path,expected=403,credentials={'Cookie':auth['Cookie']})
+    if directory.name in ('jobs-idle-expiry', 'jobs-absolute-expiry'):
+        barrier('before-expiry')  # Observer waits for actual PostgreSQL time.
+        call('GET',path,expected=401)
+        call('POST','jobs',command,'b1'*16,401)
+        call('POST','jobs',command,'b2'*16,401)
+        barrier('expired-refusals')
+        logged_out=logout(session,saved,auth)
+        call('GET',path,expected=401)
+        return dict(login=logged_in,logout=logged_out,observations=observations)
     barrier('replayed')  # Observer withdraws roles.control, preserving status.read.
     assert call('POST','jobs',command,'b1'*16)==dict(receipt,created=False)
     call('POST','jobs',command,'b2'*16,403)

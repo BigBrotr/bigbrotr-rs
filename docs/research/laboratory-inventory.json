@@ -32953,6 +32953,12 @@
         },
         "source_files_verified": 1654,
         "captured_payloads_verified": 51
+      },
+      "expiry_extension": {
+        "status": "FIXTURE_REVIEW_PENDING_ENGINE_NOT_RUN",
+        "scope": "Stored idle/absolute expiry through actual installed job HTTP; valid short clone-only issuance with ordinary guards enabled; unchanged defaults",
+        "local": ".research/implementation/initial-jobs-20261002/expiry",
+        "build_origin": "runs/initial-ingest-ce85c0c/out/artifacts"
       }
     }
   },

@@ -11,6 +11,7 @@ from scopes import upgrade as upgrade_scopes
 
 CASES = ['jobs-journey', 'jobs-detail-privilege', 'jobs-admission-privilege', 'jobs-digest-privilege']
 ACTOR_CASES = ['jobs-other-actor']
+EXPIRY_CASES = ['jobs-idle-expiry', 'jobs-absolute-expiry']
 EFFECTS = {'jobs', 'acquisition_jobs', 'job_admissions', 'management_commands', 'management_audit'}
 
 
@@ -113,7 +114,7 @@ def acceptance(before, after, observations):
 
 
 def run(pg,client,output,database,name,rows):
-    assert name in CASES + ACTOR_CASES
+    assert name in CASES + ACTOR_CASES + EXPIRY_CASES
     upgrade_registry(pg,client,output,database,name,rows)
     upgrade_scopes(pg,client,output,database,name,rows)
     # Explicit consumer grants on this clone. These are not applied migrations.
@@ -146,6 +147,25 @@ def run(pg,client,output,database,name,rows):
             COMMIT;
         """)
     policy_setup(pg,database,name,rows,output,administration=True)
+    if name in EXPIRY_CASES:
+        # Short valid issuance in this clone only. Ordinary session guards and
+        # audit constraints run afterwards. Defaults stay8h absolute/30min idle;
+        # this tests reads against stored expiry, not configurable login TTL.
+        absolute_us = 20_000_000 if name=='jobs-idle-expiry' else 8_000_000
+        lab.sql(pg,database,f"""
+            CREATE SCHEMA job_expiry_fixture;
+            CREATE FUNCTION job_expiry_fixture.shorten() RETURNS trigger
+            LANGUAGE plpgsql SET search_path=pg_catalog AS $$ BEGIN
+                NEW.expires_at_us := NEW.issued_at_us + {absolute_us};
+                NEW.idle_window_us := 8000000;
+                NEW.idle_expires_at_us := NEW.issued_at_us + 8000000;
+                RETURN NEW;
+            END $$;
+            CREATE TRIGGER aa_job_expiry_fixture BEFORE INSERT ON control.browser_sessions
+                FOR EACH ROW EXECUTE FUNCTION job_expiry_fixture.shorten();
+            GRANT USAGE ON SCHEMA job_expiry_fixture TO bigbrotr_control;
+            GRANT EXECUTE ON FUNCTION job_expiry_fixture.shorten() TO bigbrotr_control;
+        """)
     faults={
         'jobs-detail-privilege':'REVOKE INSERT ON control.acquisition_jobs FROM bigbrotr_control',
         'jobs-admission-privilege':'REVOKE INSERT ON control.job_admissions FROM bigbrotr_control',
@@ -192,7 +212,10 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
 '''
         lab.docker('exec','-d',client,'python3','-c',wrapper,'/lab/'+name)
         previous=None;accepted=None
-        for stage in ('before-refusals','before-acceptance','accepted','replayed','permission-withdrawn','status-withdrawn'):
+        stages = ('before-refusals','before-acceptance','accepted') + (
+            ('before-expiry','expired-refusals') if name in EXPIRY_CASES
+            else ('replayed','permission-withdrawn','status-withdrawn'))
+        for stage in stages:
             wait_for(lambda:(directory/(stage+'.json')).exists() or (directory/'client-exit.json').exists(),stage,18)
             assert (directory/(stage+'.json')).exists(),(directory/'client.stderr').read_text()
             current=rows(database);lab.write_json(output/(name+'-'+stage+'-sql.json'),current)
@@ -201,6 +224,32 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                 acceptance(previous,current,observed);accepted=current
             elif previous is not None:
                 unchanged(previous,current)
+            if stage=='before-expiry':
+                session,=current['browser_sessions']
+                assert session['idle_window_us']==8000000
+                assert session['expires_at_us']-session['issued_at_us']==absolute_us
+                end=min(session['idle_expires_at_us'],session['expires_at_us'])
+                clock=lambda:int(lab.sql(pg,database,
+                    'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+                started=clock();assert started<end, 'no live session before expiry wait'
+                def expired_time():
+                    now=clock()
+                    return now if now>=end else None
+                observed_now=wait_for(expired_time,'stored session expiry',12)
+                if name=='jobs-idle-expiry':
+                    assert observed_now<session['expires_at_us']
+                else:
+                    assert end==session['expires_at_us']
+                lab.write_json(output/(name+'-expiry-clock.json'),dict(started_at_us=started,
+                    observed_at_us=observed_now,expires_at_us=session['expires_at_us'],
+                    idle_expires_at_us=session['idle_expires_at_us']))
+            if stage=='expired-refusals':
+                # Bound the whole HTTP refusal interval, not only its start:
+                # absolute expiry must not accidentally explain the idle case.
+                finished=clock();assert finished>=end
+                if name=='jobs-idle-expiry': assert finished<session['expires_at_us']
+                lab.write_json(output/(name+'-expiry-refusals-clock.json'),dict(
+                    observed_at_us=finished,stored_end_us=end,absolute_end_us=session['expires_at_us']))
             if stage in ('replayed','permission-withdrawn'):
                 action='roles.control' if stage=='replayed' else 'status.read'
                 lab.sql(pg,database,f"""BEGIN;
