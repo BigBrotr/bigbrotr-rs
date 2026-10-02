@@ -544,5 +544,9 @@ an ordinary-job grant regression introduced by0027. Additive0028 removes its
 redundant deferred jobs UPDATE trigger; the deferred gap INSERT check and terminal
 job immutability retain atomicity. The prior six abandonment observations remain
 valid for their scoped recovery grants. Product20ce916 now passes ordinary26/28 HTTP acceptance and28 signed Sync with
-old grants, plus27 startup refusal for both consumers. Raw gap atomicity and
-abandonment interruption/count verification remain pending; see the same report.
+old grants, plus27 startup refusal for both consumers. Fixture0137713 adds actual28
+abandonment/retry, eight raw incomplete/immutable transaction refusals, and a
+discriminating missing-trigger negative. All70 rows/xmin roll back on refusal.
+The original64fda0f SET ROLE fixture setup failure remains recorded; the correction
+uses a real application login with explicitly synthetic backend preparation.
+Abandonment interruption/count verification remains pending; see the same report.

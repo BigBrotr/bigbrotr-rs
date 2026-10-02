@@ -52,15 +52,17 @@ def assert_abandoned(before, after, digest):
     return len(gaps)
 
 
-def duplicate_intent(pg, database, state, claimed):
+def duplicate_intent(pg, database, state, claimed, *, serial=0):
     """Independent complete typed command/job copy, with no producer request."""
     original, = [r for r in state['jobs'] if r['kind'] == 'acquisition']
     detail, = state['acquisition_jobs']
     command, = [r for r in state['management_commands']
         if r['actor_id'] == detail['actor_id'] and r['request_key'] == detail['request_key']]
     audit, = [r for r in state['management_audit'] if r['audit_id'] == command['audit_id']]
-    ordinal = max(r['admission_ordinal'] for r in state['job_admissions']) + (1 if claimed else 2)
-    job, key, audit_id = ['\\x' + byte * 16 for byte in (('d1','d2','d3') if claimed else ('e1','e2','e3'))]
+    assert type(serial) is int and 0 <= serial < 65 and (claimed or serial == 0)
+    ordinal = max(r['admission_ordinal'] for r in state['job_admissions']) + (1 if claimed else 2) + serial
+    job, key, audit_id = ['\\x' + (int(byte * 16, 16) + serial).to_bytes(16, 'big').hex()
+        for byte in (('d1','d2','d3') if claimed else ('e1','e2','e3'))]
     b = lambda value: bytes.fromhex(value[2:])
     preimage = b'bigbrotr/acquisition-job/1\0' + b(detail['dataset_id']) + b(detail['actor_id'])
     preimage += b(key) + b(detail['scope_id']) + detail['duration_us'].to_bytes(8, 'big')
@@ -86,11 +88,12 @@ def duplicate_intent(pg, database, state, claimed):
     return job
 
 
-def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized, *, guards=False):
+def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized, *, wave='first'):
+    assert wave in ('first', 'guards', 'limits')
     def upgrade(database, config, name):
         before = rows(database)
         assert len(before) == 69 and 'acquisition_gaps' not in before
-        target = '28' if guards else '27'
+        target = '27' if wave == 'first' else '28'
         response = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
             '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', target)
         lab.write_json(output / (name + '-migration.json'), dict(returncode=response.returncode,
@@ -101,7 +104,7 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
         assert all(after[t] == before[t] for t in before if t != 'schema_versions')
         added = [r for r in after['schema_versions'] if r not in before['schema_versions']]
         wanted = {27: '0027_acquisition_abandonment.sql'}
-        if guards:
+        if wave != 'first':
             wanted[28] = '0028_acquisition_gap_guard.sql'
         assert {r['migration'] for r in added} == set(wanted) and len(added) == len(wanted)
         for row in added:
@@ -153,12 +156,17 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
             expected_refusal=error, seconds=elapsed))
         lab.write_json(output / 'signed-recovery-cases.json', cases)
 
+    if wave == 'limits':
+        from acquisition_abandonment_limits import run as run_limits
+        run_limits(pg, client, output, rows, prepare, upgrade, invoke, cases)
+        return
+
     database, config, directory = prepare('abandon_signed')
     upgrade(database, config, directory.name)
     invoke(database, config, directory, 'abandon-signed')
     invoke(database, config, directory, 'abandon-signed-retry')
 
-    if guards:
+    if wave == 'guards':
         from acquisition_gap_guards import run as run_guards
         run_guards(pg, client, output, rows, prepare, check_native, upgrade, cases, digest)
         return

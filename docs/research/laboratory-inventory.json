@@ -37317,6 +37317,42 @@
             "cases": []
           },
           "preserve": "Original fixture setup FAIL; product cancellation/retry captures and all source/native/database states retained."
+        },
+        "guard_fixed": {
+          "source": "013771325c37498d68240f9b87dc843257c26b0c",
+          "status": "PASS_INSTALLED_ACQUISITION_GAP_GUARDS",
+          "owner": "4bbe2fc09e2732e1e5fe0b1063a941c6",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "99062cd40ec4bba635204380ea095ceed97acf4c2ea532a02cda41aff827d67c",
+            "name": "bigbrotr-acquisition-binding-0137713"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_0137713_abandon_signed",
+            "bb_scope_bind_0137713_gap_relations"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 67762077696,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-0137713",
+          "state": "stopped-retained",
+          "capture": {
+            "label": "gap-guards-login",
+            "source": "013771325c37498d68240f9b87dc843257c26b0c",
+            "build_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+            "status": "PASS_INSTALLED_ACQUISITION_GAP_GUARDS",
+            "captures": 59,
+            "capture_sha256": "548d25764298a0298a6b5b60fc72a61543f68000b2b920728212871c728112a2",
+            "cases": [
+              {
+                "name": "acquisition-abandonment-signed",
+                "status": "PASS"
+              }
+            ]
+          },
+          "preserve": "Retain deliberately broken gap_relations clone after negative control. Its gap INSERT completion trigger is intentionally absent; never reuse as a valid product environment."
         }
       }
     }
