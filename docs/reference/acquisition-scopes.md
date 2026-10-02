@@ -364,7 +364,7 @@ claim a second Control or reopen that owner's native store. The explicit initial
 profile serves authenticated session, URL registration, enrollment and immutable
 scope commands after bootstrap on that same owner. Its fresh bootstrap allocates
 new visibility namespaces. Finite-job HTTP acceptance/status are now implemented
-and awaiting installed engine qualification. These are concrete early
+with bounded installed engine evidence below. These are concrete early
 integration steps, not a requirement to complete all relay lifecycle services.
 The finite consumer closes its guarded socket/SQL transaction before fresh native
 certification/admission. A bounded retained batch keeps the exact request predicate
@@ -389,7 +389,7 @@ remaining raw relational negatives, populated prior-job upgrade, claim/dispatch,
 installed commands and signed socket journey remain unqualified. No installed
 acquisition capability follows.
 
-### Installed finite acceptance and status (qualification in progress)
+### Installed finite acceptance and status
 
 The initial owner adds `POST /management/v1/jobs` with `kind=acquisition` and
 exactly the scope/duration/expected heads above. It uses the common8KiB closed
@@ -419,9 +419,11 @@ Export listing stays export-only; generated detail validation accepts both kinds
 Older closed clients may reject acquisition observations and must be upgraded
 before using this new profile; export wire bytes and all applied SQL stay stable.
 
-The practical next wave exercises real CLI login → URL → enrollment → scope →
-finite acceptance/retry/status, original deadline/command/audit/admission ordinal,
-no extra native effects, grant withdrawal and missing privileges before bind.
+[Native ce85c0c evidence](../implementation/evidence/p03-initial-jobs-http-native-20261002.json)
+records four installed cases: real CLI login → URL → enrollment → scope → finite
+acceptance/retry/status and three missing-privilege startup refusals. All69 SQL
+tables/xmin and12 native bootstrap rows/original CBOR were checked. The original
+deadline, command, audit and admission ordinal survive retries and grant withdrawal.
 Installed COMMIT/cancellation/authority races, other actors, session changes and
 actual execution/progress remain required. No acceptance-only result qualifies
 complete Sync, M1 or production capacity.

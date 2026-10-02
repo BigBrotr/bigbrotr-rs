@@ -32828,7 +32828,7 @@
     },
     "initial_jobs": {
       "owner": "root sole writer; existing initial_enrollment_review read-only, no engines",
-      "status": "IMPLEMENTATION_IN_PROGRESS_NATIVE_NOT_RUN",
+      "status": "PASS_BOUNDED_INSTALLED_ACCEPTANCE_STATUS",
       "base_source": "c067f03781e714fe2be04e75530134199e022fbc",
       "local": ".research/implementation/initial-jobs-20261002",
       "checks": {
@@ -32837,15 +32837,19 @@
         "acquisition_domain": 4,
         "client": 24,
         "command_schema": 1,
-        "clippy": "PASS scoped"
+        "clippy": "PASS scoped",
+        "client_and_schema": 25,
+        "typescript_and_generation": "PASS"
       },
       "fixture": "experiments/ingest-bootstrap/initial_jobs.py; installed acceptance/status and three missing-privilege startup refusals",
       "not_run": [
-        "new native build/installed engine",
-        "foreign actor and elapsed expiry",
-        "installed acceptance COMMIT/cancellation",
-        "installed job execution/progress/M1",
-        "capacity/aged-state/arm64/release"
+        "installed job COMMIT/cancellation/authority races",
+        "foreign actor and session/credential changes",
+        "job delivery/execution/progress/recovery/M1",
+        "capacity/load/aged-state",
+        "arm64/release",
+        "Elapsed job/session expiry, credential reset and foreign-actor status through installed HTTP",
+        "Ordinary pre0022 export real-engine regression for shared detail decoder remains pending"
       ],
       "preflight": {
         "mac_free": "about3.4GiB",
@@ -32853,7 +32857,63 @@
         "active_bigbrotr_engines": 0,
         "unrelated_running_containers": 8
       },
-      "next": "Commit exact candidate then reuse exclusive retained native compiler and run isolated --installed-jobs clones."
+      "next": "Installed authority/expiry and acceptance faults; pre0022 export regression; then connect finite job execution without a second native/Control owner.",
+      "candidate": "ce85c0c223134c83faf68aebb455aa4f014a7509",
+      "native": {
+        "source": "ce85c0c223134c83faf68aebb455aa4f014a7509",
+        "tree": "8f1db88a865a8b4b036b63e807e8718a9f1d45c6",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-ce85c0c",
+        "pid": 1520549,
+        "start_ticks": "428269266",
+        "bundle_sha256": "59c073c4376f7c7b66a6c54518f4943bd3a854781a99c5b27f7361060cd9686a",
+        "owner": "d0241e3facc61f7ccb73a5ac9537660a",
+        "state": "STOPPED_RETAINED",
+        "audit": {
+          "status": "PASS_BUILD_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T00:23:12.511838+00:00",
+          "owned_stopped": [
+            "63af05983602f6bca876d17ac8247cb32cba7ecb86efe0f8f32cb1bce964c987",
+            "91bf9bcbfc2d5d6bed728655f71e4dede645097f0d5913bf634fd6d4e3cff39f"
+          ],
+          "prior_unchanged": 1028,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "artifact_hashes_verified": true,
+          "free_bytes": 57057259520
+        }
+      },
+      "engine": {
+        "source": "ce85c0c223134c83faf68aebb455aa4f014a7509",
+        "tree": "8f1db88a865a8b4b036b63e807e8718a9f1d45c6",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-ce85c0c",
+        "pid": 1527068,
+        "start_ticks": "428287177",
+        "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-ce85c0c/out/artifacts",
+        "state": "STOPPED_RETAINED",
+        "owner": "b9a5a3e6a82a6163845ac2fe44373183",
+        "client": "fcfbf4da15965f3a82def0ec74c9c9f8e7bc1601e515de0232fffba55f1a0b93",
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T00:24:32.214242+00:00",
+          "owned_stopped": [
+            {
+              "id": "fcfbf4da15965f3a82def0ec74c9c9f8e7bc1601e515de0232fffba55f1a0b93",
+              "owner": "b9a5a3e6a82a6163845ac2fe44373183",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1029,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 57030197248
+        }
+      },
+      "evidence": "docs/implementation/evidence/p03-initial-jobs-http-native-20261002.json"
     }
   },
   "implementation_relay_registry_20260928": {

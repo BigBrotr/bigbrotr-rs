@@ -1,0 +1,186 @@
+{
+  "format": "bigbrotr-initial-finite-job-http/1",
+  "status": "PASS_BOUNDED_INSTALLED_ACCEPTANCE_STATUS",
+  "observed_at": "2026-10-02T00:24:32.214242+00:00",
+  "tasks": [
+    "P03-T01 Steps3/4 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "scope": "Same living initial Control/native owner accepts finite acquisition intent and observes actor-owned status. No execution, progress, coverage, M1 or capacity claim.",
+  "source": {
+    "product_and_fixture": "ce85c0c223134c83faf68aebb455aa4f014a7509",
+    "tree": "8f1db88a865a8b4b036b63e807e8718a9f1d45c6",
+    "clean_git_files_verified": 1653
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1",
+    "clang": "14.0.6",
+    "rocksdb": "11.8.1",
+    "postgres": "Retained PostgreSQL16.15 image; original engine configuration unchanged",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_memory_bytes": 1073741824,
+    "build_memory_bytes": 6442450944,
+    "cpus": 2
+  },
+  "artifacts": {
+    "binary_sha256": "1f7bc3bb8da926a8d30281af77a60bfcfe47e3c38c261f4afdca4e7cf74a7559",
+    "probe_sha256": "7ad5a6aade5807ae8efd9eadbf30ffc061e000e40c197769132c6fac8a9dd791",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "ebbc7f72cc2eab3305e1cdb200cd80989d95449a68b60538299960ba1cffc70e"
+  },
+  "checks": {
+    "native_release_build": "PASS",
+    "native_scoped_clippy": "PASS",
+    "native_tests": {
+      "management_transport": 58,
+      "initial_lifecycle": 6,
+      "runtime_entrypoint": 3,
+      "commands_schema_migrations": 56
+    },
+    "mac": {
+      "management_transport": 58,
+      "management_domain": 7,
+      "acquisition_domain": 4,
+      "client_and_schema": 25,
+      "scoped_clippy": "PASS",
+      "typescript_and_generation": "PASS"
+    },
+    "practical_cases": [
+      {
+        "name": "jobs-journey",
+        "status": "PASS",
+        "actual_cli": true,
+        "actual_http": true,
+        "before_bind_refusal": false,
+        "control_tables": 69,
+        "terminal": {
+          "pid": 50,
+          "start_ticks": "428287704",
+          "config": "/lab/bb_scope_bind_ce85c0c_jobs_journey.toml",
+          "prefix": "/lab/jobs-journey",
+          "exit_code": 0,
+          "elapsed_seconds": 2.7695270646363497,
+          "forced": false,
+          "reaped": true
+        }
+      },
+      {
+        "name": "jobs-detail-privilege",
+        "status": "PASS",
+        "actual_cli": true,
+        "actual_http": false,
+        "before_bind_refusal": true,
+        "control_tables": 69,
+        "terminal": {
+          "pid": 163,
+          "start_ticks": "428288356",
+          "config": "/lab/bb_scope_bind_ce85c0c_jobs_detail_privilege.toml",
+          "prefix": "/lab/jobs-detail-privilege",
+          "exit_code": 4,
+          "elapsed_seconds": 0.16383775882422924,
+          "forced": false,
+          "reaped": true
+        }
+      },
+      {
+        "name": "jobs-admission-privilege",
+        "status": "PASS",
+        "actual_cli": true,
+        "actual_http": false,
+        "before_bind_refusal": true,
+        "control_tables": 69,
+        "terminal": {
+          "pid": 264,
+          "start_ticks": "428288727",
+          "config": "/lab/bb_scope_bind_ce85c0c_jobs_admission_privilege.toml",
+          "prefix": "/lab/jobs-admission-privilege",
+          "exit_code": 4,
+          "elapsed_seconds": 0.1638442613184452,
+          "forced": false,
+          "reaped": true
+        }
+      },
+      {
+        "name": "jobs-digest-privilege",
+        "status": "PASS",
+        "actual_cli": true,
+        "actual_http": false,
+        "before_bind_refusal": true,
+        "control_tables": 69,
+        "terminal": {
+          "pid": 365,
+          "start_ticks": "428289106",
+          "config": "/lab/bb_scope_bind_ce85c0c_jobs_digest_privilege.toml",
+          "prefix": "/lab/jobs-digest-privilege",
+          "exit_code": 4,
+          "elapsed_seconds": 0.16378851886838675,
+          "forced": false,
+          "reaped": true
+        }
+      }
+    ]
+  },
+  "assertions": [
+    "Real CLI login and independent HTTP URL/enrollment/scope setup followed by closed finite command; 22 observed scope/job/status requests plus actual login/logout.",
+    "Fresh202 and three historical200 receipts preserve original job identity, 120000000us duration, deadline, command digest and ordinal1; changed body409. Independent literal digest and all job/detail/admission columns. Five durable effects have the same PostgreSQL transaction identity.",
+    "All69 SQL tables/xmin compared across malformed/auth/CSRF/stale heads/unknown scope refusals, acceptance, historical retry, grant withdrawal, logout and release; only specific writer/lifecycle changes allowed. Two local mutation controls detect unwanted idle touch and logout side effects.",
+    "Revoked roles.control refuses new work403 but identical historical retry200 and status200 survive while status.read remains. Removing status.read then refuses detail403; historical receipt still200. Revoked session refuses detail401. Unknown ID404.",
+    "Actual0025/0026 upgrades and reapply on each clone preserve prior rows/xmin/heap filenodes; no applied migration changed. Three missing privileges separately refuse before HTTP bind and before initialized output, exit4 with no job/session effect.",
+    "All four stores retain exactly the independent12 bootstrap native rows and original producer-input CBOR. Acceptance itself grants no native admission or socket.",
+    "Successful journey gracefully reaps exit0 and releases Control with exact independent exclusion digest; all application backends joined; owned engine containers stopped with no OOM and1029 unrelated prior projections unchanged."
+  ],
+  "review": {
+    "status": "PASS_BOUNDED_ROOT_CAPTURE_REVIEW",
+    "source": "ce85c0c223134c83faf68aebb455aa4f014a7509",
+    "tables": 69,
+    "native_rows_per_case": 12,
+    "scenarios": 4,
+    "http_observations": 22,
+    "same_transaction_five_job_effects": true,
+    "original_job_unchanged_through_logout_release": true,
+    "negative_oracle_checks": [
+      "refusal idle touch detected",
+      "logout extra job change detected"
+    ],
+    "native_and_capture_manifest_sha256": {
+      "native/checks/checks-manifest.json": "78cb27d6ca661e7c9a3f3b5c2154400b52f8666d453f4be184705918f65a0f1a",
+      "engine/capture/capture-manifest.json": "19b68570bdf7b164a8eecbe11180fef58c1c6b3a7396c42cb6cf3d91d59c583b"
+    },
+    "captured_payloads_verified": 117,
+    "root_review_sha256": "8536dbd57ac18a033cdc2ddf125b42db4e51b32fa190dd4cb865cd5dd195fd59",
+    "independent_review": "Read-only AI product review requested valid cross-profile/status wire tests; added. Fixture review identified missing refusal/logout comparisons; fixed before engines. No reported remaining blocker in reviewed scope."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-02T00:24:32.214242+00:00",
+    "owned_stopped": [
+      {
+        "id": "fcfbf4da15965f3a82def0ec74c9c9f8e7bc1601e515de0232fffba55f1a0b93",
+        "owner": "b9a5a3e6a82a6163845ac2fe44373183",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 1029,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 57030197248
+  },
+  "local_evidence": ".research/implementation/initial-jobs-20261002",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-ce85c0c",
+  "not_qualified": [
+    "installed job COMMIT/cancellation/authority races",
+    "foreign actor and session/credential changes",
+    "job delivery/execution/progress/recovery/M1",
+    "capacity/load/aged-state",
+    "arm64/release",
+    "Elapsed job/session expiry, credential reset and foreign-actor status through installed HTTP",
+    "Ordinary pre0022 export real-engine regression for shared detail decoder remains pending"
+  ]
+}

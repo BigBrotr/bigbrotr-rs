@@ -12,29 +12,49 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Last observed main/origin c067f03781e714fe2be04e75530134199e022fbc,
-tree4218690f5a4b6faf84a8906673153b991c3b8d87. Root-owned dirty finite-job
-HTTP/domain/status/preflight, generated contracts/client tests, documentation and
-installed fixture are in progress. No unrelated work was changed. Mac has about
-3.4GiB available; use Tux for the next native build. Fresh Tux observation:
-57,194,618,880 bytes free, eight unrelated containers running, no BigBrotr engine
-or compiler process. Do not replay completed cleanup/launch recipes.
+Current main candidate ce85c0c223134c83faf68aebb455aa4f014a7509,
+tree8f1db88a865a8b4b036b63e807e8718a9f1d45c6; origin c067f03. Root sole writer.
+Dirty evidence/docs record the completed four-case installed job wave. No active
+build/engine. Resolve Git again after evidence commit/push; never assume this
+pre-commit checkpoint is still HEAD. Mac3,535,508KiB free at last observation.
 
 Active P03-T01 Steps3/4 and P01-T09 Steps1/2: initial-owner finite acceptance and
-actor-owned bounded status now share the existing queue, Control transaction and
-0022 command contract. No dispatch/native admission is implied. Scoped Mac tests:
-58 management transport, 7 management domain, 4 acquisition domain; client24 and
-schema1 PASS; scoped clippy, TypeScript and generated schema checks PASS. Logs and preserved RED outcomes are under
-.research/implementation/initial-jobs-20261002. Native/installed wave NOT_RUN.
-Read-only review found no concrete product blocker; its missing valid cross-profile
-and acquisition-status wire tests were added. Fixture review found incomplete
-all-table comparisons around initial refusals and logout; closed with prior/refusal
-barriers and exact logout/Control-release oracles. Read-only review confirmed the
-fix without running engines. The four-case installed wave remains NOT_RUN. Elapsed job/session expiry, foreign actor,
-concurrent authority and installed ambiguous acceptance are still unexecuted in
-this new consumer. Next: finish fixture/full diff checks, commit exact candidate,
-build on isolated Tux using the retained compiler cache, then execute installed
-login→URL→enrollment→scope→job/retry/status and pre-bind privilege refusals.
+actor-owned status use the existing queue/Control transaction/0022 command. No
+new migration, dispatcher, backend trait or native owner. Domain JobKind now owns
+the typed observation; export-only listing and pre0022 SQL selection stay explicit.
+The closed map decoder grows declaratively instead of buffering generic values.
+No further structural rewrite was justified for this bounded responsibility.
+
+[Installed finite HTTP evidence](evidence/p03-initial-jobs-http-native-20261002.json)
+qualifies ce85c0c: real CLI login→URL→enrollment→scope→job/retry/status, original
+120s deadline/admission ordinal and69-table/xmin checks; role/status withdrawal,
+logout and three pre-bind privilege refusals. Every store has the independent12
+bootstrap rows/original CBOR. 22 observed scope/job/status requests, not load.
+Native123 selected tests + build/Clippy PASS. Mac58 transport +11 domain and25
+client/schema checks PASS; TypeScript/generation/Clippy PASS. Original RED logs
+and captures remain in .research/implementation/initial-jobs-20261002/{native,engine}.
+Read-only review requested missing cross-profile/status tests and identified
+missing refusal/logout comparisons; both were corrected before engine execution.
+Root checked the original capture, all1653 Git files/117 payloads, literal command
+and durable job fields, and two mutation controls for the repaired fixture oracle.
+
+runs/initial-ingest-ce85c0c is STOPPED/RETAINED. BuildPID1520549/start428269266,
+enginePID1527068/start428287177 terminal; build ownerd0241e3facc61f7ccb73a5ac9537660a;
+engine ownerb9a5a3e6a82a6163845ac2fe44373183, clientfcfbf4da15965f3a82def0ec74c9c9f8e7bc1601e515de0232fffba55f1a0b93 stopped143;
+borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T00:24:32.214242UTC found1029
+prior projections unchanged, eight unrelated running, compiler lock free and
+57,030,197,248B free. Preserve all four clones/stores and separate artifacts.
+CLIsha1f7bc3bb8da926a8d30281af77a60bfcfe47e3c38c261f4afdca4e7cf74a7559;
+probesha7ad5a6aade5807ae8efd9eadbf30ffc061e000e40c197769132c6fac8a9dd791.
+
+Next bounded action: installed job authority/expiry and acceptance COMMIT faults,
+plus bounded pre0022 export status regression because its decoder is shared.
+Reuse exact ce85c0c artifacts only for fixture/docs-only revisions. Prior adapter
+acceptance13 fault schedules remain relevant; target the new HTTP consumer and
+session/credential/foreign-actor boundaries rather than mechanically rerunning
+unaffected matrices. Then connect finite job delivery and dictionary allocation to
+the existing guarded socket/admission consumer. Full execution/progress/recovery,
+P03-T01 Steps3/4/7 and M1 remain INCOMPLETE; no adjacent subsystem expansion needed.
 
 ## Current bounded qualification and resources
 
@@ -140,19 +160,9 @@ These results close this bounded acceptance responsibility; full acquisition and
 production capacity remain unfinished. Original URL registration reports remain
 under evidence/p02-*-registration-*.json with their historical identities.
 
-Next bounded action: map and read existing finite-job domain/PG adapters and the
-initial management queue, then expose authenticated acceptance and bounded status
-through that same living owner (P03-T01 Steps3/4, P01-T09 Steps1/2). Existing
-acquisition::job, postgres/acquisition_jobs/claims and job-bound socket/admission
-consumers are available; do not duplicate them or claim a second Control owner.
-Read the current finite command/permission and status contracts before choosing
-HTTP/CLI integration. Practical next journey: login→URL→enrollment→scope→finite
-job/retry/status, exact job/admission ordinal/command/audit, authorization/refusal,
-ambiguous acceptance and no premature socket or coverage claim. Then connect the
-already qualified guarded socket/admission consumer and preserve its finite
-deadline. Full P03-T01 Steps3/4/7 and M1 still require execution/progress/recovery.
-Root reread complete P03-T01/T02 and the M1–M5 milestone table at this boundary.
-Do not require whole Discovery/Monitor or analytics before this concrete consumer.
+The next finite consumer described at the previous scope boundary now has the
+bounded acceptance/status evidence above. Its remaining authority/fault gates
+stay explicit before claiming complete installed job behavior.
 
 ## Next useful journey and remaining prerequisites
 
@@ -160,7 +170,8 @@ M1/P01-T09 remains INCOMPLETE: one actual signed socket event through installed
 same-owner admission, timer archive/index/read/export and restart/resend. The
 qualified component chain includes enrollment, finite acquisition acceptance/
 claim, guarded source transport and socket→native transfer. URL and immutable scope registration have bounded installed qualification;
-finite-job command delivery is the next consumer.
+finite-job command delivery has bounded installed acceptance/status evidence;
+actual execution is the next product consumer.
 Dictionary append/intern P02-T03 Step1 is needed because fresh bootstrap contains
 only two visibility mappings. Successor/recovery P02-T01 Step5/P02-T02 Step4 is
 needed for P01-T09 Step4; initial writer custody cannot be adopted by another Serve.

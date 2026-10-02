@@ -194,8 +194,8 @@ route is under native qualification and reports no execution/artifact readiness.
 The explicit initial Ingest owner instead accepts `kind=acquisition` over an
 existing scope, using the same typed jobs route and original deadline/revision
 contract. Its actor-owned detail status reports kind=acquisition; listing remains
-export-only on ordinary Serve. [Finite acceptance/status](../reference/acquisition-scopes.md#installed-finite-acceptance-and-status-qualification-in-progress)
-is under installed qualification. Neither receipt nor status grants execution.
+export-only on ordinary Serve. [Finite acceptance/status](../reference/acquisition-scopes.md#installed-finite-acceptance-and-status)
+has bounded installed evidence; neither receipt nor status grants execution.
 
 The selected next history consumer mounts the same
 `/v1/resources/event_history` resource on the private origin with a browser-session
