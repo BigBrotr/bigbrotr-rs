@@ -32995,10 +32995,42 @@
         "captured_payloads_verified": 92
       },
       "export_compatibility": {
-        "status": "FIXTURE_REVIEW_PENDING_ENGINE_NOT_RUN",
+        "status": "PASS_STOPPED_RETAINED",
         "scope": "Ordinary Serve job status query against original pre0022 schema, no native/archive consumer; no positive export requalification",
         "local": ".research/implementation/initial-jobs-20261002/compat",
-        "build_origin": "runs/initial-ingest-ce85c0c/out/artifacts"
+        "build_origin": "runs/initial-ingest-ce85c0c/out/artifacts",
+        "source": "de7347dfa422b15938363e49592deb0a441e55ab",
+        "launch": {
+          "source": "de7347dfa422b15938363e49592deb0a441e55ab",
+          "tree": "8a346a8b493d793c66938940d9fd50891ac9195e",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-status-compat-de7347d",
+          "pid": 1558991,
+          "start_ticks": "428452303",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-ce85c0c/out/artifacts",
+          "bundle_sha256": "7e8fd92d85ae8949510ab44d026f620160172c1ed90f356a43fa5ce2527d37ad"
+        },
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T00:55:01.403334+00:00",
+          "owned_stopped": [
+            {
+              "id": "73009350b258df5e6286369b18bf090b7a4090dd02b754b51b32bfe31b384493",
+              "owner": "5b0fcc0dca17226bfb649de3b2185974",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1032,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 56871165952
+        },
+        "result": "bindings/result.json",
+        "capture_manifest_sha256": "00ef639ac02757bf15de8d64ebfa87dcea9ad4e229b6d57d07e5c4ccd771dff0"
       }
     }
   },

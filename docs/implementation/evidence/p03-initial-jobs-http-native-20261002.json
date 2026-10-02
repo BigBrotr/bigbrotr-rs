@@ -180,8 +180,7 @@
     "job delivery/execution/progress/recovery/M1",
     "capacity/load/aged-state",
     "arm64/release",
-    "Elapsed job deadline and credential reset through installed HTTP",
-    "Ordinary pre0022 export real-engine regression for shared detail decoder remains pending"
+    "Elapsed job deadline and credential reset through installed HTTP"
   ],
   "actor_supplement": {
     "status": "PASS_BOUNDED_ACTOR_REVIEW",
@@ -292,5 +291,40 @@
     "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-job-expiry-cf4f48e",
     "capture_manifest_sha256": "34b1e7c67c34c2e19863ccae37357de2b0984a7032660636fa99ea8e412077ee",
     "review": "Read-only reviewer required the final idle-window clock bound; added before engines. Root checked original timestamps/all-table captures; no engine failure."
+  },
+  "compatibility_supplement": {
+    "status": "PASS_BOUNDED_PRE0022_CAPTURE_REVIEW",
+    "source": "de7347dfa422b15938363e49592deb0a441e55ab",
+    "product": "ce85c0c223134c83faf68aebb455aa4f014a7509",
+    "control_tables": 64,
+    "http_observations": 3,
+    "source_files_verified": 1656,
+    "captured_payloads_verified": 25,
+    "scope": "Actual ordinary Serve with Control only on unchanged original pre0022 schema; real CLI login, two SQL-backed unavailable404 and valid acquisition400. Exact64-table/xmin read, logout and release checks. No positive export row, native store or archive execution claim.",
+    "fixture_tree": "8a346a8b493d793c66938940d9fd50891ac9195e",
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-02T00:55:01.403334+00:00",
+      "owned_stopped": [
+        {
+          "id": "73009350b258df5e6286369b18bf090b7a4090dd02b754b51b32bfe31b384493",
+          "owner": "5b0fcc0dca17226bfb649de3b2185974",
+          "exit": 143
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 1032,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 56871165952
+    },
+    "local": ".research/implementation/initial-jobs-20261002/compat",
+    "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/job-status-compat-de7347d",
+    "capture_manifest_sha256": "00ef639ac02757bf15de8d64ebfa87dcea9ad4e229b6d57d07e5c4ccd771dff0",
+    "review": "Read-only AI source review and root original capture review; no remaining blocker. Local helper import setup failed before comparisons; selected AST helper replay passed. Engine had no failure."
   }
 }

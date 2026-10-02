@@ -12,46 +12,38 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main/origin e72ce1b; root sole writer. Previous expiry/actor/HTTP evidence is
-committed and privately pushed. Root-owned dirty compatibility fixture selects
-ordinary Serve with only Control, no native/archive opening, on original pre0022
-64-table template (813 present; acquisition job table/column absent). Real login,
-two job-unavailable404 reads and valid acquisition400 must leave all SQL rows
-unchanged through reads; exact logout/Control release are checked separately.
-This targets old-schema query compatibility, not positive export row/execution.
-Changed fixtures: new control_status{,_client}.py, explicit optional control-only
-installed wrapper, session-client mode, shared release oracle role cardinality,
-and bindings profile. Product ce85c0c unchanged. Python/artifact checks and actual
-prior capture release-oracle regression PASS; read-only review pending. New engine
-NOT_RUN. No active engine/build. Next: finish review, exact-Git fixture candidate,
-execute --installed-export-status reusing ce85c0c artifacts, collect original
-64-table evidence, then installed acquisition acceptance COMMIT/cancellation.
+Main candidate de7347dfa422b15938363e49592deb0a441e55ab,
+tree8a346a8b493d793c66938940d9fd50891ac9195e; origine72ce1b; root sole writer.
+Only root-owned evidence/inventory/checkpoint edits are pending. Productce85c0c
+is unchanged. Previous acceptance/actor/expiry supplements are privately pushed.
 
-runs/initial-job-expiry-cf4f48e STOPPED/RETAINED: PID1546106/start428394544,
-owner0fd080efde84ae2cf60494c578f29e5f,
-clientd27eb3e756c500c86684dbdeee31a3cfdf7311211e1c7cb8806e9f1b8afe25a9 stopped143;
-borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T00:42:33.638870UTC:
-1031 prior projections unchanged, eight unrelated running, compiler lock free,
-56,899,330,048B free. No active engine/build. Exact artifacts remain ce85c0c.
-Next: record/push bounded expiry evidence, then bounded pre0022 ordinary export
-status compatibility and installed acquisition acceptance COMMIT/cancellation.
-Existing ordinary Serve's job detail does not need an archive/destination consumer;
-inspect its startup requirements and retained pre0022 template before choosing the
-smallest real HTTP regression. Avoid a whole export rebuild/qualification for this
-shared status decoder. Full execution/dictionary/recovery and M1 remain unfinished.
+Compatibility run runs/job-status-compat-de7347d is STOPPED/RETAINED:
+PID1558991/start428452303, owner5b0fcc0dca17226bfb649de3b2185974,
+client73009350b258df5e6286369b18bf090b7a4090dd02b754b51b32bfe31b384493 stopped143;
+borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T00:55:01.403334UTC:
+1032 prior projections unchanged, eight unrelated running, compiler lock free,
+56,871,165,952B free. Mac3,504,112KiB free. No active engine/build.
+Ordinary Control-only Serve on the original64-table pre0022 schema passes real
+login, two SQL-backed job-unavailable404 and valid acquisition400. No native or
+archive store opens. All rows/xmin, logout and Control release were checked;
+1656 Git files/25 original captures verified. No positive export row claim.
+Read-only AI fixture review and root capture review found no bounded blocker.
+Local helper import setup failed before comparisons; AST-selected replay passed.
+Original captures: .research/implementation/initial-jobs-20261002/compat.
 
-runs/initial-job-actors-f12205c STOPPED/RETAINED: PID1539780/start428352503,
-owner0ea8d69acf38c068ddbeaf7c6feb1010,
-client1a4ab824d18e028f944f7da388cd01275085425fa6c1cc2454b164719b017cdc stopped143;
-borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T00:35:09.705074UTC:
-1030 prior projections unchanged, eight unrelated running, lock free,
-56,987,025,408B free. Original four-case ce85c0c artifacts/clones remain retained.
-Mac last3,535,508KiB free. No active build/engine.
-Next: record/push this bounded supplement, then verify elapsed session expiry
-through the installed job consumer. Keep the current30min default; a clearly
-labeled clone-only short valid issuance fixture can exercise real PostgreSQL
-clock expiry without changing product or disabling session guards. Afterwards,
-installed acceptance COMMIT/cancellation and bounded pre0022 export regression.
+Actor supplementf12205c and expiry supplementcf4f48e are STOPPED/RETAINED;
+complete identities, actual captures and terminal audits are in the same
+finite HTTP report and inventory.initial_jobs. Idle expiry remains isolated by
+11,662,665us before absolute cutoff after all401 replies. Absolute fixture has
+coincident cutoffs and does not isolate redundant predicates. Product defaults
+remain8h absolute/30min idle. No credential-reset or job-deadline qualification.
+
+Next: commit/push this bounded compatibility evidence, then installed acquisition
+acceptance COMMIT/cancellation on exact ce85c0c artifacts where build inputs match.
+Reuse known finite proxy/custody mechanics, independently check five job effects,
+original deadline and retry identity; avoid mechanically rerunning old adapter
+matrices. At next product build fix serve --initialize-ingest help (still claims
+only login/me/logout). Full execution/dictionary/recovery and M1 remain unfinished.
 
 Active P03-T01 Steps3/4 and P01-T09 Steps1/2: initial-owner finite acceptance and
 actor-owned status use the existing queue/Control transaction/0022 command. No
@@ -278,7 +270,7 @@ and every original transport/source/fault clone. Secrets stay
 under protected pg/secrets and never enter Git. Clone and verify before experiments.
 
 Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latest4e95a1f intermediates;
+acceleration, exclusively locked by .compiler-cache.lock. Latestce85c0c intermediates;
 qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
 clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
 owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.
