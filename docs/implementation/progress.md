@@ -12,17 +12,28 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mainf2a161817ae77d0bba95df89a794dbd2cfcf6cae (unpublished native candidate),
-origin5483db8; root sole writer. Root owns compilation-fix/inventory/checkpoint
-edits. Native runs/dictionary-append-f2a1618 STOPPED/RETAINED: first compile failed
-on the Endpoint module path; no new native test executed. Original result/logs and
-all exact source files are captured under
-.research/implementation/dictionary-append-20261002/red. Terminal audit01:35:39UTC
-found1038 prior container projections unchanged, eight unrelated running, compiler
-lock free and56,470,331,392B free. BuildPID1598424/start428709188 terminal;
-owner83f63b70ce527ed632f42b636939823a. Exact container identities are in inventory
-implementation_network_20260928.dictionary_append. No local Rust build. Fix the
-path and run the regression; expected bootstrap replay failure has NOT_RUN.
+Mainab57a2ce3d0b6eb3f304481272d7b6596dea740a, origin5483db8; unpublished native
+candidates, root sole writer. Dirty root-owned dictionary append/tests, bootstrap
+replay, recovery, PG staging, profile, owning contract, inventory/checkpoint.
+Atab57a2c the native regression compiled and then FAILED precisely at bootstrap
+replay after successful append/reuse/reopen (StateMismatch, test114). Original
+log/source manifest and retained testELFshae99c3dde7ff94f2d0b13d11e43ed9dded56870f27f797daea72c5129a2571fa5
+are under runs/dictionary-append-ab57a2c/out/artifacts and local
+.research/implementation/dictionary-append-20261002/bootstrap-red. Initialf2a1618
+compile failure (wrong Endpoint import) remains in siblingred; it ran no native test.
+
+Both runs STOPPED/RETAINED. LatestPID1600433/start428726940 terminal,
+owner23ea790b65d896ebdcda40ce0b037cbf; audit01:38:08UTC:1040 prior projections
+unchanged, eight unrelated running, compiler lock free,56,363,855,872B free.
+Exact owners/containers/source identities are in inventory.dictionary_append.
+No local Rust build. Current draft fixes bootstrap monotone allocation replay and
+post-bootstrap historical evidence dispatch. The complete pre-staging preview
+now uses the actual recorded timestamp; read-only replay has its own scratch floor
+instead of imposing the >48MiB write floor on existing40MiB event recovery callers.
+These two defects were found in independent read-only AI review and corrected
+before the next engine run. New regressions and all affected native store tests
+are NOT_RUN on the current draft. Next: review diff, exact-Git native candidate,
+then real PG append/observation/signed-event consumer and intern preparation.
 
 Bounded installed finite acceptance/status/COMMIT integration is qualified;
 P03-T01 Steps3/4 and P01-T09 Steps1/2 remain partial because execution/progress,
@@ -69,8 +80,8 @@ provenance off is not silently selected to reduce this responsibility.
 
 Next bounded action: run the native candidate regression, then finish positive historical replay
 through existing native atomic batch and PG reservation/outcome ownership. A fixed-reference append draft and connected PG method now exist; native tests
-have NOT_RUN. Bootstrap allocation replay and recovery dispatch are deliberately
-not changed yet, so the new reopen regression should expose the former. No
+have NOT_RUN. Bootstrap allocation replay and recovery dispatch now have candidate fixes;
+the original observed regression is preserved and the new draft is unqualified. No
 new event allocator, persistent format or SQL ledger is currently justified.
 Allocated refs must be fixed before staging because they belong to the request
 digest. Validate original bootstrap replay after append, same-request replay,

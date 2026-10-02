@@ -22,7 +22,7 @@ impl ProducerRecoveryLimits {
         Ok(self
             .bootstrap
             .required_data_bytes()?
-            .max(self.event.required_data_bytes()?))
+            .max(self.event.required_dictionary_replay_data_bytes()?))
     }
 }
 
@@ -116,11 +116,15 @@ impl IngestRecovery {
         authority()?;
         let (outcome, copy) = match intent {
             MutationIntent::Evidence(ref intent) => {
-                let receipt = self
-                    .store
-                    .replay_bootstrap(request, intent, limits.bootstrap)
-                    .map_err(AdmissionError::from)?
-                    .ok_or(ProducerRecoveryError::Unresolved)?;
+                let receipt = if request.request_sequence.get() == 1 {
+                    self.store
+                        .replay_bootstrap(request, intent, limits.bootstrap)
+                        .map_err(AdmissionError::from)?
+                } else {
+                    self.store
+                        .replay_dictionary_append(request, intent, limits.event)?
+                }
+                .ok_or(ProducerRecoveryError::Unresolved)?;
                 let copy = NativeOutcomeCopy::receipt(&receipt, self.manifest())
                     .map_err(AdmissionError::from)?;
                 (AdmissionOutcome::Durable(receipt), copy)

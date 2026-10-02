@@ -605,11 +605,13 @@ impl IngestStore {
                 .map_err(|_| BootstrapError::EngineRead)?
                 .ok_or(BootstrapError::StateMismatch)?;
             let matches = match entry.key.as_bytes()[..2] {
-                // Later admissions may advance the source and issued counters.
+                // Later admissions may advance source, allocation and issued counters.
                 // This verifies the retained bootstrap, not a complete later cut
                 // or a contiguous producer checkpoint. No ACK/GC exists yet.
-                [1, 2] => {
-                    value.len() == 10 && value[..2] == [1, 2] && value[2..] >= entry.value[2..]
+                [1, 2] | [1, 3] => {
+                    value.len() == 10
+                        && value[..2] == entry.value[..2]
+                        && value[2..] >= entry.value[2..]
                 }
                 [1, 0x31] => {
                     let state = super::producer_closing::ProducerState::decode(&value)?;

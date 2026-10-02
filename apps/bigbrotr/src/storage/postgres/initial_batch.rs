@@ -543,7 +543,13 @@ impl ControlSession {
             )
             .await?;
         let staged = store
-            .stage_dictionary_append(request, input.intent, input.limits, &permit)
+            .stage_dictionary_append(
+                request,
+                input.intent,
+                input.recorded_at,
+                input.limits,
+                &permit,
+            )
             .map_err(InitialEventError::Native)?;
         producer_requests::reserve(&reservation_tx, &staged, spec.control, None, None, None)
             .await

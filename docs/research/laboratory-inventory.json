@@ -33146,7 +33146,7 @@
       }
     },
     "dictionary_append": {
-      "status": "DRAFT_COMPILE_FAILURE_RETAINED",
+      "status": "BOOTSTRAP_REGRESSION_REPRODUCED_RETAINED",
       "local": ".research/implementation/dictionary-append-20261002",
       "scope": "P02-T03 fixed-reference append/replay prerequisite; no installed or recovery qualification",
       "red": {
@@ -33180,7 +33180,39 @@
           "free_bytes": 56470331392
         }
       },
-      "next": "Correct compilation, execute the bootstrap-after-append regression before changing bootstrap replay."
+      "next": "Preserve original failure; implement monotone bootstrap replay, append recovery and pre-reservation validation, then broader native regressions.",
+      "bootstrap_red": {
+        "launch": {
+          "source": "ab57a2ce3d0b6eb3f304481272d7b6596dea740a",
+          "tree": "04ad6ccd4494114de0aee1d72b0ef964cfaefcb4",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/dictionary-append-ab57a2c",
+          "pid": 1600433,
+          "start_ticks": "428726940",
+          "bundle_sha256": "65f933b691518474ef05b94d7ceece9a1ef4ef6032cfd7296d0314f12056b2c5"
+        },
+        "owner": "23ea790b65d896ebdcda40ce0b037cbf",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "bec07f386faacf5b38f7774e340a6e5ba35fd1dee28a04eb6f86d5c320fd9b58"
+          },
+          {
+            "name": "native",
+            "id": "7588625f3046a305e973e626f27e42f3c253310859cbb16f4da4449f28c2e123"
+          }
+        ],
+        "source_files_verified": 1661,
+        "result": "Actual native append and AlreadyDurable reuse succeeded; unchanged bootstrap after reopen failed StateMismatch at line114. No test skipped; compile succeeded. CLI build and Clippy NOT_RUN.",
+        "audit": {
+          "status": "TERMINAL_BOOTSTRAP_REGRESSION_RETAINED",
+          "observed_at": "2026-10-02T01:38:08.559684+00:00",
+          "prior_unchanged": 1040,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "test_executable_sha256": "e99c3dde7ff94f2d0b13d11e43ed9dded56870f27f797daea72c5129a2571fa5",
+          "free_bytes": 56363855872
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {

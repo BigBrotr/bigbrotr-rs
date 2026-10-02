@@ -15,10 +15,15 @@ impl AdmissionLimits {
     /// to event scratch, retain up to four closure/member vectors during replay,
     /// the larger staged entry table, and overlapping dictionary/input decoding.
     pub fn required_dictionary_data_bytes(self) -> Result<u64, AdmissionError> {
-        Ok(self.required_data_bytes()?
-            + (4 * self.max_batch_bytes
-                + Prepared::entry_allocation_bytes(self.max_dependencies)
-                + 3 * self.max_dependencies * size_of::<FactRef>()) as u64)
+        Ok(self.required_dictionary_replay_data_bytes()?
+            + (4 * self.max_batch_bytes + Prepared::entry_allocation_bytes(self.max_dependencies))
+                as u64)
+    }
+    /// Read-only replay retains the original receipt and reconstructs closure and
+    /// members. Event decoding scratch already covers the transient native reads;
+    /// no staged write table or newly encoded input overlaps this operation.
+    pub(super) fn required_dictionary_replay_data_bytes(self) -> Result<u64, AdmissionError> {
+        Ok(self.required_data_bytes()? + (3 * self.max_dependencies * size_of::<FactRef>()) as u64)
     }
 }
 
@@ -38,12 +43,16 @@ impl IngestStore {
         &mut self,
         request: ProducerRequestId,
         intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
         limits: AdmissionLimits,
         permit: &OwnedPermit,
     ) -> Result<super::StagedProducerRequest, AdmissionError> {
         require_permit(permit, limits)?;
-        self.validate_dictionary_append(request, intent, limits)?;
-        self.require_open_producer(request)?;
+        // Validate all allocation and closure choices before the immutable PG
+        // reservation, including the actual timestamp's variable-width encoding.
+        // This read-only preview emits no fact. The caller retains this exclusive
+        // owner and the same recorded_at through both PG phases.
+        drop(self.prepare_dictionary_operation(request, intent, recorded_at, limits)?);
         let bytes = encode_input(request, intent, limits)?;
         self.stage_producer_request(request, intent.request_digest(request), &bytes)
             .map_err(AdmissionError::RequestInput)
@@ -66,6 +75,29 @@ impl IngestStore {
     ) -> Result<StoredReceipt, AdmissionError> {
         require_permit(&permit, limits)?;
         authority()?;
+        let (writes, receipt) =
+            self.prepare_dictionary_operation(request, intent, recorded_at, limits)?;
+        let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
+        authority()?;
+        if let Some(writes) = writes {
+            let input = encode_input(request, intent, limits)?;
+            self.retain_request_input(request, &input)
+                .map_err(AdmissionError::RequestInput)?;
+            drop(input);
+            self.commit_prepared(writes, || {
+                authority().map_err(|_| BootstrapError::AuthorityUnavailable)
+            })?;
+        }
+        Ok(StoredReceipt::new(receipt, copy, permit))
+    }
+
+    fn prepare_dictionary_operation(
+        &self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+    ) -> Result<(Option<Prepared>, Receipt), AdmissionError> {
         self.validate_dictionary_append(request, intent, limits)?;
         let state = self
             .producer_state(request.producer_slot_id, request.producer_epoch)?
@@ -81,9 +113,7 @@ impl IngestStore {
             if sequence > state.issued {
                 return Err(AdmissionError::StateMismatch);
             }
-            let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
-            authority()?;
-            return Ok(StoredReceipt::new(receipt, copy, permit));
+            return Ok((None, receipt));
         }
         if sequence <= state.issued {
             return Err(AdmissionError::StateMismatch);
@@ -281,16 +311,7 @@ impl IngestStore {
                 ],
             )?,
         )?;
-        let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
-        let input = encode_input(request, intent, limits)?;
-        authority()?;
-        self.retain_request_input(request, &input)
-            .map_err(AdmissionError::RequestInput)?;
-        drop(input);
-        self.commit_prepared(writes, || {
-            authority().map_err(|_| BootstrapError::AuthorityUnavailable)
-        })?;
-        Ok(StoredReceipt::new(receipt, copy, permit))
+        Ok((Some(writes), receipt))
     }
 
     /// Positive historical resolution, including while the producer is closing.

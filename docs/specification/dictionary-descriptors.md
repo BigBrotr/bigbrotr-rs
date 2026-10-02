@@ -183,7 +183,11 @@ The initial owner may append fixed-reference `EvidenceIntent` requests after
 request1. This uses the same v1 inputs, facts, keys and receipts; applied SQL and
 original bootstrap bytes remain unchanged. The next producer request, complete
 mapping/visibility values and allocated references must be retained before PG
-reservation. An ambiguous retry cannot rerun interning to select new identities.
+reservation. Preview validates the complete fixed plan, including the real
+recorded timestamp's variable-width encoding, before staging or PG reservation.
+It emits no facts and retains the same exclusive native owner across both phases;
+dispatch rechecks the plan and current authority. An ambiguous retry cannot rerun
+interning to select new identities.
 Event mappings remain owned by event admission. Dictionary-only input cannot
 allocate them or confer event eligibility, acquisition permission or job progress.
 
@@ -202,6 +206,8 @@ Positive replay validates the original receipt's complete input effects and
 closure, retaining its original time, membership and dependencies. Bootstrap
 replay must tolerate later allocation advancement without rewriting its receipt;
 post-bootstrap evidence needs its own closing-producer recovery path. Dedicated
-dictionary scratch and receipt limits cover more than five mappings. Preparation/
-interning, the installed observation consumer and actual failure/recovery evidence
+dictionary scratch and receipt limits cover more than five mappings. Read-only
+recovery reserves its closure/receipt scratch separately from write construction;
+existing event-only recovery grants remain sufficient for their original profile.
+Preparation/interning, the installed observation consumer and actual failure/recovery evidence
 remain required before this responsibility or P02-T03 Step1 can be marked complete.
