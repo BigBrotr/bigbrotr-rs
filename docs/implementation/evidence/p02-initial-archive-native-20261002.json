@@ -211,5 +211,52 @@
     "No installed timer publication/frontier/read/export/restart qualification yet",
     "No new unknown-termination, native peak RSS, capacity, aged/mixed workload, arm64, hosted Actions or release claim"
   ],
-  "evidence_root": ".research/implementation/initial-archive-20261002"
+  "evidence_root": ".research/implementation/initial-archive-20261002",
+  "startup": {
+    "source": "273d47b46fed6f826a88dcba502e14018633e8b5",
+    "tree": "c62b03134edaf9c45543072c2ea72d174c4c32ad",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-worker-budgets-273d47b",
+    "owner": "e7f1c104a44f347b04c60f21c81f1d4b",
+    "containers": [
+      {
+        "name": "fetch",
+        "id": "1731b4091bcd7bb069d905bcfb1ccf7e1d9def34d6aed2cca43037ce90984643"
+      },
+      {
+        "name": "native",
+        "id": "80ca872d8e97b6a666c3a540424233a3889c4066defc1d387c763de164ca8460"
+      }
+    ],
+    "status": "PASS",
+    "build_and_clippy": "PASS",
+    "tests": {
+      "native-custody": 1,
+      "worker-budgets": 2,
+      "cut-admission": 1,
+      "initial-supervision": 6
+    },
+    "artifacts": {
+      "cli": "89cbb3d0e08db896a403cb2be0c171464d6d13c9565ce6a6a677ab0ab54a9c1a",
+      "probe": "7d333ce7c319544c1b38cbbbbdddcfad4368e6a096f85130cf34d8b4e06a946e",
+      "worker": {
+        "bytes": 14421792,
+        "sha256": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+      },
+      "tests": {
+        "archive_worker_components": "c543113fb81f55c21c96bbf42b72c74c9dbde8c7fe464f154e68034688a71f6c",
+        "initial_supervision_components": "3d5851fad690e9489dc31be8240108c032c64603f977ecb5d229b603894cca17"
+      }
+    },
+    "capture": {
+      "label": "startup",
+      "source": "273d47b46fed6f826a88dcba502e14018633e8b5",
+      "files": 1686,
+      "captures": 21,
+      "capture_sha256": "5befeb1af772ae1df6590142356f9b7d2609616bf6d5555e5c7bb3f2f7733aba"
+    },
+    "cleanup": "stopped-retained",
+    "unrelated_changed": [],
+    "free_bytes_after": 51006136320,
+    "limitation": "Joined preparation and owned cut API; actual installed publisher remains NOT_RUN"
+  }
 }

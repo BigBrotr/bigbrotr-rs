@@ -62,6 +62,55 @@ struct Input<'a> {
     catalog_id: bigbrotr_model::OwnerResourceId,
     expected: &'a CutRead,
 }
+impl CatalogRoute<'_> {
+    /// Size the complete native cut request before issuing a publication intent.
+    /// No I/O or publication authority; later FD growth is conservatively sized.
+    pub fn validate_cut(
+        &self,
+        expected: &CutRead,
+        identity: &CatalogIdentity,
+        credential: CatalogReaderCredentials<'_>,
+    ) -> Result<(), ReceiptError> {
+        expected.validate(usize::MAX).map_err(input_error)?;
+        prepare_input(expected, identity, self, credential, true).map(|_| ())
+    }
+}
+fn prepare_input(
+    expected: &CutRead,
+    identity: &CatalogIdentity,
+    route: &CatalogRoute<'_>,
+    credential: CatalogReaderCredentials<'_>,
+    allow_fd_growth: bool,
+) -> Result<
+    (
+        zeroize::Zeroizing<String>,
+        Option<super::client_identity::NativeTlsHandoff>,
+    ),
+    ReceiptError,
+> {
+    let (dsn, tls) = receipts::reader_connection(
+        expected.dataset_id,
+        identity,
+        route,
+        credential,
+        allow_fd_growth,
+        "bigbrotr-archive-cut",
+    )?;
+    let input = Input {
+        catalog: super::bootstrap::Input {
+            dsn: &dsn,
+            data_root: identity.root(),
+        },
+        catalog_id: identity.catalog(),
+        expected,
+    };
+    input
+        .catalog
+        .validate()
+        .map_err(ReceiptError::Preparation)?;
+    receipts::wire_fits(&input)?;
+    Ok((dsn, tls))
+}
 impl Preparation<'_> {
     /// One native transaction for all supplied complete inputs. The caller holds
     /// real custody and catalog stabilization throughout observation and binding.
@@ -83,14 +132,7 @@ impl Preparation<'_> {
                 ResourceRequest::data(1 << 20, 1, 0).map_err(|_| ReceiptError::ResourceLimit)?,
             )
             .map_err(|_| ReceiptError::ResourceLimit)?;
-        let (dsn, tls) = receipts::reader_connection(
-            expected.dataset_id,
-            identity,
-            route,
-            credential,
-            false,
-            "bigbrotr-archive-cut",
-        )?;
+        let (dsn, tls) = prepare_input(&expected, identity, route, credential, false)?;
         let input = Input {
             catalog: super::bootstrap::Input {
                 dsn: &dsn,
@@ -99,11 +141,6 @@ impl Preparation<'_> {
             catalog_id: identity.catalog(),
             expected: &expected,
         };
-        input
-            .catalog
-            .validate()
-            .map_err(ReceiptError::Preparation)?;
-        receipts::wire_fits(&input)?;
         let mut process = self
             .start_reader(
                 "inspect-cut",
@@ -150,6 +187,55 @@ mod tests {
         ))
         .unwrap();
         serde_json::from_value(v["read"].clone()).unwrap()
+    }
+    #[test]
+    fn complete_cut_wire_preflight_refuses_before_publication() {
+        use crate::storage::{
+            archive::CatalogTls, postgres::connection_settings::PlaintextBoundary,
+        };
+        use bigbrotr_protocol::{archive_cut::CutBound, archive_receipt::ReceiptRange};
+        let route = CatalogRoute {
+            address: "127.0.0.1".parse().unwrap(),
+            port: 443,
+            database: "archive",
+            tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+        };
+        let mut read = read();
+        let identity =
+            CatalogIdentity::local(read.dataset_id, [90; 16].try_into().unwrap(), "/archive/")
+                .unwrap();
+        let credential = || CatalogReaderCredentials {
+            login: "reader",
+            password: "fixture-only",
+        };
+        assert_eq!(route.validate_cut(&read, &identity, credential()), Ok(()));
+        read.receipts.truncate(1);
+        read.bounds = (0..1024)
+            .map(|shard_id| CutBound {
+                shard_id,
+                owner_epoch: 1,
+                complete_through: 1,
+            })
+            .collect();
+        read.receipts[0].input_ranges = (0..1024)
+            .map(|shard_id| ReceiptRange {
+                shard_id,
+                owner_epoch: 1,
+                first_sequence: 1,
+                last_sequence: 1,
+            })
+            .collect();
+        read.receipts[0].record_count = 1024;
+        assert_eq!(read.validate(1024), Ok(1024));
+        assert_eq!(
+            route.validate_cut(&read, &identity, credential()),
+            Err(ReceiptError::ResourceLimit)
+        );
+        read.bounds[0].complete_through = 2;
+        assert_eq!(
+            route.validate_cut(&read, &identity, credential()),
+            Err(ReceiptError::InvalidInput)
+        );
     }
     #[test]
     fn cut_admission_charges_all_records_and_keeps_input_errors_distinct() {

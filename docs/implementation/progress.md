@@ -12,14 +12,31 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main/origin observed at9985bd309f0a336a551415ba2186b3c784c705f5.
-The following candidate changes joined startup preparation and transfers owned
-ReaderCustody into inspect_cut; native build/tests and the positive installed
-Archive journey are still NOT_RUN. Keep this candidate unpublished until verified.
-Agent5d2bf84 was integrated as165a33a; its isolated worktree now owns only the
-positive Python Archive fixture. Existing reviewer is inspecting this lifecycle
-diff read-only. Root owns all Rust, docs, integration and Tux
+Primary main273d47b46fed6f826a88dcba502e14018633e8b5 above origin/main9985bd3.
+Candidate273d47b is now native build/Clippy PASS with6 startup supervisor tests,
+one cut admission and3 worker budget/custody cases.21 captures/1686 source files
+matched exactly. Run archive-worker-budgets-273d47b is stopped/retained, no OOM or
+unrelated changes; evidence startup supplement, local initial-archive/startup.
+Current uncommitted product wiring adds initial_ingest/archive{,/native}.rs,
+changes commands/startup/role selection and adds a read-only persistence
+prerequisite adapter. It is NOT_COMPILED/NOT_RUN. Do not confuse this with273d47b.
+Agentc8fdea5 owns the complete positive Python Archive fixture in its clean
+isolated worktree; not integrated yet. Existing read-only reviewer now inspects
+the concrete Archive wiring. Root owns all Rust, docs, integration and Tux
 mutations. Preserve historical/negative/dirty worktrees; no merge/rebase.
+
+Review boundary update: the three new integration findings are addressed in the
+uncompiled candidate: mandatory reader/worker/catalog checks occur on the joined
+startup preparer; migration16, mutation privileges and absent prior Archive
+consumer/owner/attempt history precede fresh Ingest registration; both accepted
+initial windows are capped at protocol128, with exact prospective complete-cut
+wire/allocation preflight before issuance/publication. Reader roots/native TLS
+are retained once; concrete native/catalog helpers remain local to this owner.
+New regressions cover transport failure collecting its blocking work, window129
+refusal and oversized complete-cut refusal. These are NOT_RUN until Tux compiles.
+The positive fixture's complete owning Python files and independent controls have
+now been reviewed; c8fdea5 is still separate. Current Tux51,005,939,712B and
+Mac3,072,316KiB free, no active BigBrotr job; eight unrelated containers unchanged.
 
 ## Active responsibility and next action
 
@@ -59,6 +76,16 @@ and its protected manager.secret; these are actual initialized resources.
 Latest Tux free bytes: 51379843072. No local Rust build or cache/dataset deletion. Fresh preflight free bytes
 51,379,703,808 on Tux and3,088,960KiB on Mac; no active compiler/lab process.
 
+Dirty wiring uses per-attempt actual catalog futures polled alongside their
+operation, without a spawned/detachable catalog driver. A driver failure must
+collect its work (which may own a blocking child) before returning. Publication
+prepares files/credentials/scratch under the renewal supervisor before issuance,
+uses one complete pending batch, then sealed capture; retained input/attempts are
+never ACKed/reclaimed. First timer is accepted30s; available batches drain with
+250ms gaps. Both accepted documents constrain the fixed file profile and delay;
+application/native budgets stay distinct. This is implementation under review,
+not executed publication evidence.
+
 Structural decision for next wiring: use joined two-phase blocking preparation
 under the existing progress/cancellation supervisor, including Control credential/
 TLS file reads. Make collect's successful value generic; keep a parent watch
@@ -72,14 +99,12 @@ with the coordinator. Never add unsafe Sync or share the coordinator by Arc.
 A focused CommandOwner native-wait helper must renew both Control/Ingest and
 service HTTP while keeping original publication deadlines. Every error after
 spawn must cancel and actually join before return; no early ? may detach work.
-Two-phase prepare and owned cut custody are implemented in this candidate, not
-yet compiled or practically qualified. The post-connect phase check precedes
+Two-phase prepare and owned cut custody compile/pass the scoped273d47b checks. The post-connect phase check precedes
 driver spawn, so refusal cannot detach a live transport. Publisher wait and
-Archive wiring remain the next implementation.
+Archive wiring are dirty and remain unverified.
 
-Next bounded action: qualify the joined preparation/cut API on exact-Git Tux
-using the existing archive-worker-budgets runner (now also six startup supervisor
-cases and cut admission), then implement explicit initial Archive publication, consuming the
+Next bounded action: finish review/compile of the explicit initial Archive wiring,
+integrate positivefixturec8fdea5, then execute signed publication/capture on Tux, consuming the
 existing complete PendingBatch, retained attempt/FreshWriter, native worker and
 captured-frontier adapters. The installed role refusal negative already exists; connect the 30-second formation timer, complete pending batches,
 joined publication and snapshot-bound frontier. Subsequent controlled restart
@@ -267,7 +292,7 @@ No complete acquisition task or phase checkbox closes at this boundary.
 
 Runs root /home/tux/bigbrotr-implementation-20260917/runs/. Shared compiler cache
 network-1154757/out/build/{target,cargo-home}, owner8b21a13162699a6038154874c2ac89da,
-uses exclusive .compiler-cache.lock. Latest66c7393 intermediates; qualified ELFs
+uses exclusive .compiler-cache.lock. Latest273d47b intermediates; qualified ELFs
 are separate. Native image7e946a0c, Rust1.98.1,clang14/Rocks11.8.1,amd64 only.
 All exact IDs/manifests/owners are in the existing laboratory inventory. Check
 space/process/container/mount/cache dependencies before the next large allocation.

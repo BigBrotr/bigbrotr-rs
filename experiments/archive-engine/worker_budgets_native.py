@@ -125,5 +125,5 @@ assert verify_bundle(bundle, native_target()) == assets
 assert file_hash(bundle / 'bigbrotr-archive-worker') == worker_identity['sha256']
 assert result['status'] == 'PASS'
 assert counts.get('native-custody') == 1 and counts.get('worker-budgets', 0) > 0
-assert counts.get('cut-admission') == 1 and counts.get('initial-supervision', 0) >= 6
+assert counts.get('cut-admission') == 2 and counts.get('initial-supervision', 0) >= 8
 Path('/out/qualification.json').write_text(json.dumps(dict(identity, status='PASS_ARCHIVE_WORKER_BUDGETS'), indent=2) + '\n')

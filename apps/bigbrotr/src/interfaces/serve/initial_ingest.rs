@@ -1,4 +1,5 @@
 //! Explicit first lifetime. The worker never returns a live native handle.
+mod archive;
 mod commands;
 mod dictionaries;
 mod supervision;
@@ -48,6 +49,7 @@ const MIB: u64 = 1024 * 1024;
 
 struct InitialGrants {
     sync: Option<sync::Sync>,
+    archive: Option<archive::Archive>,
     native: OwnedPermit,
     bootstrap: OwnedPermit,
     private_scope: OwnedPermit,
@@ -64,6 +66,7 @@ struct PreparedInitial {
 struct Custody {
     store: Option<IngestStore>,
     sync: Option<sync::Sync>,
+    archive: Option<archive::Archive>,
     owner: ControlSession,
 }
 
@@ -96,8 +99,8 @@ impl Cancellation {
 }
 
 fn selected(root: &Resolved) -> Result<()> {
-    // This initial owner supports sessions and enrollment commands. Archive
-    // consumers still require their own supervisor and cannot be silently omitted.
+    // Initial publication is explicit; readers and export still use the ordinary
+    // Control consumer after this fresh native owner has stopped.
     if !root.local("control")
         || !root.local("ingest")
         || root.flag("archive.reader.enabled")
@@ -131,8 +134,18 @@ fn native_limits() -> RocksNativeLimits {
     .expect("checked initial native profile")
 }
 
-fn budget(root: &Resolved, sync: bool) -> Result<ResourceBudget> {
+fn budget(root: &Resolved, sync: bool, archive: bool) -> Result<ResourceBudget> {
     let n = |field: &str| root.number(&format!("runtime.processes.application.{field}"));
+    let items = (3 + management::SESSION_ITEMS + if sync { sync::ITEMS } else { 0 })
+        .checked_add(if archive { archive::ITEMS } else { 0 })
+        .and_then(|items| {
+            items.checked_add(if archive {
+                root.number("ingest.producer_outstanding_requests")
+            } else {
+                0
+            })
+        })
+        .ok_or_else(|| (3, "initial Ingest item reservation overflow".into()))?;
     let envelope = ProcessEnvelope::new(
         n("memory_max_bytes"),
         n("baseline_bytes"),
@@ -140,7 +153,7 @@ fn budget(root: &Resolved, sync: bool) -> Result<ResourceBudget> {
             n("payload_bytes"),
             // Native, retained producer inputs and Control coexist with the
             // bounded session connections, queued requests and one hash worker.
-            3 + management::SESSION_ITEMS + if sync { sync::ITEMS } else { 0 },
+            items,
             n("native_bytes"),
             n("completion_reserve_bytes"),
         ),
@@ -164,11 +177,17 @@ fn required<'a>(root: &'a Resolved, key: &str) -> Result<&'a str> {
         .ok_or_else(|| (3, format!("{key}: required for initial Ingest")))
 }
 
-pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> Result<()> {
+pub(super) fn run(
+    root: Resolved,
+    sync: bool,
+    archive: bool,
+    output: &mut LifecycleOutput,
+) -> Result<()> {
     selected(&root)?;
-    let budget = budget(&root, sync)?;
+    let budget = budget(&root, sync, archive)?;
     let initial = InitialGrants {
         sync: None,
+        archive: None,
         native: grant(&budget, 0, native_limits().native_allowance_bytes())?,
         bootstrap: grant(&budget, 8 * MIB, 4 * MIB)?,
         private_scope: dictionaries::reserve_private(&budget)?,
@@ -178,8 +197,8 @@ pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> R
     let grace = duration(&root, "graceful_shutdown_timeout");
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
-        // One permanently occupied native owner and one bounded password task.
-        .max_blocking_threads(2)
+        // Native owner, one finite Archive worker and bounded password work.
+        .max_blocking_threads(if archive { 3 } else { 2 })
         .build()
         .map_err(|_| (1, "initial Ingest runtime unavailable".into()))?;
     let outcome = runtime.block_on(async {
@@ -192,8 +211,11 @@ pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> R
         });
         let prepare_root = root.clone();
         let prepare_budget = budget.clone();
+        let prepare_cancel = cancellation.clone();
+        let prepare_deadline = progress.borrow().deadline;
         let mut preparation = tokio::task::spawn_blocking(move || {
-            prepare(&prepare_root, &prepare_budget, initial, sync)
+            prepare(&prepare_root, &prepare_budget, initial, sync, archive,
+                prepare_deadline, &prepare_cancel.requested)
         });
         let prepared = match supervision::collect(&mut preparation, &mut observed,
             &cancellation, stop.requested(), grace, |_| {}).await {
@@ -221,6 +243,11 @@ pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> R
             result = transport::connect(prepared) => result.map_err(|e| (1, e.to_string()))?,
         };
         phase(&progress, timeout)?;
+        let connection: transport::Driver = match &initial.archive {
+            Some(archive) => Box::pin(archive.coordinator.retain_connection(connection)
+                .map_err(|e| (4, format!("initial Archive Control custody refused: {e:?}")))?),
+            None => connection,
+        };
         let driver = tokio::spawn(connection);
         let worker_cancel = cancellation.clone();
         let handle = tokio::runtime::Handle::current();
@@ -254,12 +281,17 @@ pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> R
 }
 
 /// All startup file reads run on the joined preparer, under the independent
-/// parent's signal/deadline watchdog. No connection or native handle exists yet.
+/// parent's signal/deadline watchdog. Archive probes own and destroy their actual
+/// catalog transports here; no Ingest handle or Control claim exists yet.
+#[allow(clippy::too_many_arguments)]
 fn prepare(
     root: &Resolved,
     budget: &ResourceBudget,
     mut initial: InitialGrants,
     sync: bool,
+    archive: bool,
+    deadline: Instant,
+    cancelled: &AtomicBool,
 ) -> Result<PreparedInitial> {
     let (connection, control_grant) = postgres_command::prepare_control_shared(
         root,
@@ -269,6 +301,9 @@ fn prepare(
     )?;
     initial.sync = sync
         .then(|| sync::Sync::prepare(root, budget))
+        .transpose()?;
+    initial.archive = archive
+        .then(|| archive::Archive::prepare(root, budget, deadline, cancelled))
         .transpose()?;
     let path = Path::new(required(root, "storage.ingest_root")?);
     if !path.is_absolute()
@@ -340,6 +375,7 @@ async fn own(
     cancellation: Arc<Cancellation>,
 ) -> Result<Value> {
     let mut sync = initial.sync;
+    let mut archive = initial.archive;
     let path = Path::new(required(&root, "storage.ingest_root")?);
     let dataset: DatasetId = required(&root, "topology.dataset_id")?
         .parse()
@@ -370,6 +406,9 @@ async fn own(
                 if let Some(sync) = &mut sync {
                     sync.accept(&restored)?;
                 }
+                if let Some(archive) = &mut archive {
+                    archive.accept(&restored)?;
+                }
                 outstanding =
                     outstanding.min(restored.number("ingest.producer_outstanding_requests"));
                 Ok(())
@@ -383,6 +422,7 @@ async fn own(
     let mut custody = Custody {
         store: None,
         sync,
+        archive,
         owner,
     };
     phase(&progress, timeout)?;
@@ -399,6 +439,10 @@ async fn own(
             4,
             "accepted policy changed during initial Ingest startup".into(),
         ));
+    }
+    if let Some(archive) = &custody.archive {
+        phase(&progress, timeout)?;
+        bounded(timeout, &cancellation, archive.require(&mut custody.owner)).await?;
     }
     let mut domains = Vec::with_capacity(9);
     for kind in 1..=9 {

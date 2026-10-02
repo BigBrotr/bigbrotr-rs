@@ -4,16 +4,17 @@ use super::*;
 use bigbrotr::runtime::policy_authority::{LeaseError, PolicyLeaseTracker, PolicyLeaseTtl};
 use std::time::Duration;
 
-struct CommandOwner<'a> {
-    owner: &'a mut ControlSession,
-    spec: &'a InitialRegistration,
-    root: &'a Resolved,
+pub(super) struct CommandOwner<'a> {
+    pub(super) owner: &'a mut ControlSession,
+    pub(super) spec: &'a InitialRegistration,
+    pub(super) root: &'a Resolved,
     progress: &'a watch::Sender<Progress>,
-    cancellation: &'a Cancellation,
+    pub(super) cancellation: &'a Cancellation,
     lease: PolicyLeaseTracker,
     administration: Option<bool>,
     public_routes: bool,
     sync: Option<&'a mut sync::Sync>,
+    archive_selected: bool,
 }
 
 fn authority(error: LeaseError) -> (u8, String) {
@@ -21,7 +22,14 @@ fn authority(error: LeaseError) -> (u8, String) {
 }
 
 impl CommandOwner<'_> {
-    fn maximum(&mut self) -> Result<std::time::Duration> {
+    pub(super) fn operation_window(&mut self, deadline: Instant) -> Result<Duration> {
+        let maximum = self
+            .maximum()?
+            .min(deadline.saturating_duration_since(Instant::now()));
+        phase(self.progress, maximum)?;
+        Ok(maximum)
+    }
+    pub(super) fn maximum(&mut self) -> Result<std::time::Duration> {
         Ok(duration(self.root, "renewal_timeout")
             .min(self.lease.remaining_validity().map_err(authority)? / 2))
     }
@@ -54,6 +62,9 @@ impl CommandOwner<'_> {
                     selected(&restored).map_err(|_| OwnerError::InvalidPolicy)?;
                     if let Some(sync) = self.sync.as_deref_mut() {
                         sync.accept(&restored)?;
+                    }
+                    if self.archive_selected {
+                        archive::validate(&restored).map_err(|_| OwnerError::InvalidPolicy)?;
                     }
                     administration &= restored.flag("administration.enabled");
                     public_routes &= restored.flag("network.public.enabled");
@@ -109,6 +120,130 @@ impl CommandOwner<'_> {
             due.saturating_duration_since(Instant::now()) + duration(self.root, "renewal_timeout"),
         )
     }
+
+    async fn command(
+        &mut self,
+        work: management::Work,
+        management: &mut Option<management::Management>,
+        due: Instant,
+    ) -> Result<()> {
+        let maximum = self
+            .maximum()?
+            .min(due.saturating_duration_since(Instant::now()));
+        phase(self.progress, maximum)?;
+        let execution = bounded(
+            maximum,
+            self.cancellation,
+            management.as_mut().expect("command source").execute(
+                work,
+                self.owner,
+                &mut self.lease,
+                maximum,
+                false,
+                None,
+            ),
+        )
+        .await?;
+        let management::Execution::Complete(response) = execution else {
+            return Err((4, "unexpected operation on initial session surface".into()));
+        };
+        if !self.cancellation.requested.load(Ordering::Acquire) {
+            self.lease
+                .check_delivery(self.lease.known_epoch())
+                .map_err(authority)?;
+            self.idle_phase(due)?;
+            if let Some(response) = response {
+                response.deliver();
+            }
+        }
+        Ok(())
+    }
+
+    /// Only independent catalog/native work belongs here. Original Control and
+    /// Ingest renewal stays serialized, with its original due time. A ready
+    /// result wins HTTP traffic; no renewal extends the external deadline.
+    pub(super) async fn external<T>(
+        &mut self,
+        due: &mut Instant,
+        management: &mut Option<management::Management>,
+        deadline: Instant,
+        work: impl Future<Output = Result<T>>,
+    ) -> Result<T> {
+        tokio::pin!(work);
+        loop {
+            self.lease
+                .check_delivery(self.lease.known_epoch())
+                .map_err(authority)?;
+            phase(
+                self.progress,
+                (deadline.min(*due + duration(self.root, "renewal_timeout")))
+                    .saturating_duration_since(Instant::now()),
+            )?;
+            tokio::select! {
+                biased;
+                _ = self.cancellation.wait() => return Err((4, "initial Archive cancelled; retain original outcome".into())),
+                _ = tokio::time::sleep_until(deadline) => return Err((4, "initial Archive deadline; retain original outcome".into())),
+                _ = tokio::time::sleep_until(*due) => {
+                    let started = self.renew().await?;
+                    *due = self.next_renewal(started)?;
+                    if let Some(management) = management.as_ref() {
+                        management.renew_delivery(self.lease.delivery_window(self.lease.known_epoch()).map_err(authority)?)?;
+                    }
+                },
+                result = &mut work => return result,
+                work = super::super::next_management(management) => self.command(work, management, (*due).min(deadline)).await?,
+            }
+        }
+    }
+
+    /// Dropping a blocking handle is not termination. Every failed renewal,
+    /// command, signal or deadline still cancels and collects the same worker.
+    pub(super) async fn blocking<T: Send + 'static>(
+        &mut self,
+        due: &mut Instant,
+        management: &mut Option<management::Management>,
+        deadline: Instant,
+        work: impl FnOnce(&AtomicBool) -> Result<T> + Send + 'static,
+    ) -> Result<T> {
+        self.lease
+            .check_delivery(self.lease.known_epoch())
+            .map_err(authority)?;
+        if self.cancellation.requested.load(Ordering::Acquire) || Instant::now() >= deadline {
+            return Err((4, "initial Archive admission cancelled or expired".into()));
+        }
+        let cancel = Arc::new(AtomicBool::new(false));
+        let worker_cancel = cancel.clone();
+        let mut worker = tokio::task::spawn_blocking(move || work(&worker_cancel));
+        let outcome = self
+            .external(due, management, deadline, async { Ok((&mut worker).await) })
+            .await;
+        cancel.store(true, Ordering::Release);
+        match outcome {
+            Ok(terminal) => terminal.map_err(|_| {
+                (
+                    4,
+                    "initial Archive worker panicked; preserve retained state".into(),
+                )
+            })?,
+            Err(error) => {
+                if let Some(management) = management.as_ref() {
+                    management.stop_admission();
+                }
+                if tokio::time::timeout(
+                    duration(self.root, "graceful_shutdown_timeout"),
+                    &mut worker,
+                )
+                .await
+                .is_err()
+                {
+                    // The independent parent cannot release Control underneath
+                    // an unjoined thread/native call. No cleanup is claimed.
+                    std::process::exit(4);
+                }
+                Err(error)
+            }
+        }
+    }
 }
 
 pub(super) async fn maintain(
@@ -120,7 +255,12 @@ pub(super) async fn maintain(
     cancellation: &Cancellation,
     mut report: Value,
 ) -> Result<()> {
-    let Custody { store, sync, owner } = custody;
+    let Custody {
+        store,
+        sync,
+        archive,
+        owner,
+    } = custody;
     let store = store.as_mut().expect("initialized native owner");
     let lease = PolicyLeaseTracker::new(
         spec.dataset_id,
@@ -139,6 +279,7 @@ pub(super) async fn maintain(
         administration: None,
         public_routes: false,
         sync: sync.as_mut(),
+        archive_selected: archive.is_some(),
     };
     let started = state.renew().await?;
     if state.sync.is_some() {
@@ -246,6 +387,7 @@ pub(super) async fn maintain(
         };
         let mut due = state.next_renewal(started)?;
         let mut dispatch_due = Instant::now() + sync::INTERVAL;
+        let mut publish_due = Instant::now() + archive.as_ref().map_or(Duration::ZERO, archive::Archive::delay);
         state.idle_phase(due)?;
         progress.send_modify(|value| value.initialized = Some(report));
         loop {
@@ -272,6 +414,17 @@ pub(super) async fn maintain(
                         management.renew_delivery(window)?;
                     }
                 },
+                _ = tokio::time::sleep_until(publish_due), if archive.is_some() => {
+                    let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
+                    phase(progress, maximum)?;
+                    let archive = archive.as_mut().expect("selected Archive");
+                    let published = archive.publish(store, budget, &mut state, &mut due,
+                        &mut management, &cancellation.requested).await?;
+                    // Drain available complete batches without another formation
+                    // delay, but allow management/renewal between each pass.
+                    publish_due = Instant::now() + if published { sync::INTERVAL } else { archive.delay() };
+                    state.idle_phase(due)?;
+                },
                 _ = tokio::time::sleep_until(dispatch_due), if state.sync.is_some() => {
                     let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
                     phase(progress, maximum)?;
@@ -291,29 +444,7 @@ pub(super) async fn maintain(
                     state.idle_phase(due)?;
                 },
                 work = super::super::next_management(&mut management) => {
-                    let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
-                    phase(progress, maximum)?;
-                    let execution = bounded(
-                        maximum,
-                        cancellation,
-                        management.as_mut().expect("command source").execute(
-                            work, state.owner, &mut state.lease, maximum, false, None,
-                        ),
-                    ).await?;
-                    let management::Execution::Complete(response) = execution else {
-                        return Err((4, "unexpected operation on initial session surface".into()));
-                    };
-                    if cancellation.requested.load(Ordering::Acquire) {
-                        return Ok(());
-                    }
-                    state.lease
-                        .check_delivery(state.lease.known_epoch())
-                        .map_err(authority)?;
-                    // Keep due unchanged: an always-ready queue cannot defer renewal.
-                    state.idle_phase(due)?;
-                    if let Some(response) = response {
-                        response.deliver();
-                    }
+                    state.command(work, &mut management, due).await?;
                 },
             }
         }

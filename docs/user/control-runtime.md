@@ -69,6 +69,28 @@ Follow the initial owning lifetime's transport, policy and resource requirements
 Accepted jobs still report queued: this consumer does not claim durable traversal
 progress, job completion or complete acquisition readiness.
 
+Explicit `--roles control,ingest,sync,archive` also selects the initial local
+publisher, currently under qualification. Initialize the catalog, local state and
+coordinator separately first. This fresh-only profile requires migration0016,
+Archive mutation privileges, an empty initial catalog and no prior Archive
+attempt/consumer history. Configure the dedicated SELECT-only catalog reader's
+`read_user` and `read_password_ref` even though HTTP archive reads remain disabled.
+The packaged worker, private scratch root and separate native allowance are required.
+Both accepted documents must select the fixed native file profile (64,000-row
+groups, zstd-3, 256MiB target and at least512MiB per worker), agree on its worker
+allowance/publish delay, and keep the initial producer window at most128 requests.
+
+The accepted formation timer starts one complete pending batch at a time; available
+batches then drain with250ms gaps. Every publication keeps its original retained
+input/attempt, joins the actual native worker, seals the writer and captures the
+complete source prefix before committing a frontier. Control/Ingest renewal and
+private commands continue during joined worker waits. Application and child
+native grants remain separate. The full cut's wire/allocation bounds can refuse
+further publication; this is a bounded initial profile, not a capacity guarantee.
+No producer ACK, pending reclaim, source closure, index readiness or native restart
+adoption is added. Stop this initial lifetime before using the ordinary Control
+read/export consumer with its explicit deployment roots and permissions.
+
 To serve the initial private panel from that same listener, build the
 [static bundle](../development/build.md#private-browser-consumer) and set deployment
 roots before starting Control:
