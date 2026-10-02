@@ -12,8 +12,15 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main 89359ab92b44cea70b1d7b36ae4ab4df107c5016; origin/main045f6fe, root sole writer.
-Dirty evidence/checkpoint update only. Complete selected product remains INCOMPLETE.
+Main/origin e6f8cafff825f5a9852aba4fa3b6ba75960b1c5b, private qualification pushed.
+Root sole writer. Dirty next slice: four native dictionary-preparation regressions
+and an intentional refusing API stub, plus the owning descriptor contract. Native
+RED NOT_RUN; no product preparation claim. Tests target read-only fixed plans,
+same-kind/duplicate reuse, exact envelopes, capacity/cancellation and candidate
+collision/orphan/exhaustion. Design review supports a concrete builder borrowing
+IngestStore and a sealed intent retaining its grant; no new crate/trait/ledger.
+finish seals only values; existing staging checks request/window/actual timestamp.
+This is P02-T03 Step1 for installed P03-T01 Steps3/4; M1 stays incomplete.
 Nine actual dictionary COMMIT cases PASS at fixture89359ab using exact424a4f2
 CLI/probe (build/Clippy PASS). Covers both reservation/outcome COMMIT sides,
 cancellation with positively held actual backend custody, and AlreadyDurable loss.

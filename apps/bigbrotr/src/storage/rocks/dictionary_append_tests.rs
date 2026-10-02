@@ -852,3 +852,311 @@ fn exhausted_allocation_refuses_before_staging_without_reusing_an_ordinal() {
     );
     assert_eq!(rows(&store), before);
 }
+
+#[test]
+fn dictionary_preparation_reuses_full_values_and_reserves_same_kind_ordinals_without_writes() {
+    use std::sync::atomic::AtomicBool;
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("db");
+    let b = budget();
+    let mut store = IngestStore::initialize(
+        &path,
+        installed_manifest(),
+        native(),
+        grant(&b, 0, 128 * MIB),
+    )
+    .unwrap();
+    boot_installed(&mut store, &b);
+    let public = reference(DictionaryKind::VisibilityScope, 1);
+    let descriptors = [
+        observer(1).descriptor().clone(),
+        observer(2).descriptor().clone(),
+        DictionaryDescriptor::EventVerification,
+    ];
+    let cancelled = AtomicBool::new(false);
+    let before = rows(&store);
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    assert_eq!(
+        preparation.intern(descriptors[0].clone()).unwrap(),
+        reference(DictionaryKind::Observer, 1)
+    );
+    assert_eq!(
+        preparation.intern(descriptors[1].clone()).unwrap(),
+        reference(DictionaryKind::Observer, 2)
+    );
+    assert_eq!(
+        preparation.intern(descriptors[0].clone()).unwrap(),
+        reference(DictionaryKind::Observer, 1)
+    );
+    assert_eq!(
+        preparation.intern(descriptors[2].clone()).unwrap(),
+        reference(DictionaryKind::Method, 1)
+    );
+    let prepared = preparation.finish().unwrap();
+    assert_eq!(
+        prepared.intent().dictionaries(),
+        &[
+            observer(1),
+            observer(2),
+            DictionaryEntry::new(
+                reference(DictionaryKind::Method, 1),
+                DictionaryDescriptor::EventVerification
+            )
+            .unwrap()
+        ]
+    );
+    assert_eq!(rows(&store), before);
+    assert!(
+        !path
+            .join("producer-inputs-v1")
+            .read_dir()
+            .unwrap()
+            .any(|p| p
+                .unwrap()
+                .file_name()
+                .to_string_lossy()
+                .ends_with("0000000000000002.cbor"))
+    );
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        4 * MIB,
+        "sealed mappings retain their grant"
+    );
+    let receipt = append(&mut store, &b, 2, prepared.intent()).unwrap();
+    assert_eq!(receipt.receipt().batch().unwrap().records().len(), 3);
+    drop(receipt);
+    drop(prepared);
+    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    drop(store);
+    let mut store = IngestStore::reopen(
+        &path,
+        installed_manifest(),
+        native(),
+        grant(&b, 0, 128 * MIB),
+    )
+    .unwrap();
+    let before = rows(&store);
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    for (descriptor, wanted) in descriptors.into_iter().zip([
+        reference(DictionaryKind::Observer, 1),
+        reference(DictionaryKind::Observer, 2),
+        reference(DictionaryKind::Method, 1),
+    ]) {
+        assert_eq!(preparation.intern(descriptor).unwrap(), wanted);
+    }
+    let prepared = preparation.finish().unwrap();
+    assert_eq!(rows(&store), before);
+    let result = append(&mut store, &b, 3, prepared.intent()).unwrap();
+    assert!(result.receipt().batch().is_none());
+}
+
+#[test]
+fn dictionary_preparation_does_not_reuse_a_matching_private_fact_for_a_public_plan() {
+    use std::sync::atomic::AtomicBool;
+    let root = tempfile::tempdir().unwrap();
+    let b = budget();
+    let mut store = IngestStore::initialize(
+        &root.path().join("db"),
+        installed_manifest(),
+        native(),
+        grant(&b, 0, 128 * MIB),
+    )
+    .unwrap();
+    boot_installed(&mut store, &b);
+    drop(append(&mut store, &b, 2, &private_bundle()).unwrap());
+    let before = rows(&store);
+    let cancelled = AtomicBool::new(false);
+    assert_eq!(
+        store
+            .prepare_dictionaries(
+                reference(DictionaryKind::VisibilityScope, 2),
+                limits(),
+                grant(&b, 4 * MIB, 0),
+                &cancelled
+            )
+            .err()
+            .unwrap(),
+        AdmissionError::InvalidInput
+    );
+    let mut preparation = store
+        .prepare_dictionaries(
+            reference(DictionaryKind::VisibilityScope, 1),
+            limits(),
+            grant(&b, 4 * MIB, 0),
+            &cancelled,
+        )
+        .unwrap();
+    assert_eq!(
+        preparation
+            .intern(observer(1).descriptor().clone())
+            .unwrap(),
+        reference(DictionaryKind::Observer, 3)
+    );
+    assert_eq!(
+        preparation
+            .intern(observer(2).descriptor().clone())
+            .unwrap(),
+        reference(DictionaryKind::Observer, 4)
+    );
+    assert_eq!(
+        preparation
+            .intern(DictionaryDescriptor::EventVerification)
+            .unwrap(),
+        reference(DictionaryKind::Method, 2)
+    );
+    let prepared = preparation.finish().unwrap();
+    assert_eq!(rows(&store), before);
+    drop(append(&mut store, &b, 3, prepared.intent()).unwrap());
+    for (key, value) in before {
+        if key.0 == "facts" {
+            assert_eq!(rows(&store).get(&key), Some(&value));
+        }
+    }
+}
+
+#[test]
+fn dictionary_preparation_bounds_owned_capacity_cancellation_and_invalid_descriptors() {
+    use std::sync::atomic::{AtomicBool, Ordering};
+    let root = tempfile::tempdir().unwrap();
+    let b = budget();
+    let mut store = IngestStore::initialize(
+        &root.path().join("db"),
+        installed_manifest(),
+        native(),
+        grant(&b, 0, 128 * MIB),
+    )
+    .unwrap();
+    boot_installed(&mut store, &b);
+    let public = reference(DictionaryKind::VisibilityScope, 1);
+    let before = rows(&store);
+    let cancelled = AtomicBool::new(false);
+    assert_eq!(
+        store
+            .prepare_dictionaries(public, limits(), grant(&b, 1, 0), &cancelled)
+            .err()
+            .unwrap(),
+        AdmissionError::InsufficientReservation
+    );
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    let mut oversized = String::with_capacity(5 * MIB as usize);
+    oversized.push_str("wss://relay.example/");
+    assert_eq!(
+        preparation.intern(DictionaryDescriptor::Endpoint(
+            EndpointDescriptor::new(oversized).unwrap()
+        )),
+        Err(AdmissionError::Limit)
+    );
+    assert_eq!(
+        preparation.intern(DictionaryDescriptor::Endpoint(
+            EndpointDescriptor::new("wss://RELAY.example:443/".into()).unwrap()
+        )),
+        Err(AdmissionError::InvalidInput)
+    );
+    assert_eq!(
+        preparation.intern(DictionaryDescriptor::Visibility {
+            class: DescriptorLabel::new("public".into()).unwrap()
+        }),
+        Err(AdmissionError::InvalidInput)
+    );
+    assert_eq!(
+        preparation.intern(DictionaryDescriptor::Event(EventId::from_bytes([1; 32]))),
+        Err(AdmissionError::InvalidInput)
+    );
+    cancelled.store(true, Ordering::Relaxed);
+    assert_eq!(
+        preparation.intern(DictionaryDescriptor::EventVerification),
+        Err(AdmissionError::AuthorityUnavailable)
+    );
+    assert_eq!(
+        preparation.finish().err().unwrap(),
+        AdmissionError::AuthorityUnavailable
+    );
+    assert_eq!(rows(&store), before);
+    assert_eq!(b.snapshot().used().data_bytes(), 0);
+}
+
+#[test]
+fn dictionary_preparation_treats_hash_hits_as_bounded_candidates_not_identity_or_absence() {
+    use crate::storage::rocks::keys::IngestKey;
+    use sha2::{Digest, Sha256};
+    use std::sync::atomic::AtomicBool;
+    let root = tempfile::tempdir().unwrap();
+    let b = budget();
+    let mut store = IngestStore::initialize(
+        &root.path().join("db"),
+        installed_manifest(),
+        native(),
+        grant(&b, 0, 128 * MIB),
+    )
+    .unwrap();
+    boot_installed(&mut store, &b);
+    let public = reference(DictionaryKind::VisibilityScope, 1);
+    drop(append(&mut store, &b, 2, &evidence(public, vec![observer(1)])).unwrap());
+    let wanted = observer(2);
+    let descriptor = wanted.encode_descriptor(8192).unwrap();
+    let digest = Digest256::from_bytes(Sha256::digest(&descriptor).into());
+    let key = |ordinal| {
+        IngestKey::DictionaryReverseCandidate {
+            dataset_id: public.dataset_id,
+            dictionary_kind: DictionaryKind::Observer,
+            descriptor_digest: digest,
+            reference: reference(DictionaryKind::Observer, ordinal),
+        }
+        .encode()
+        .unwrap()
+    };
+    let mut collision = vec![1, 5];
+    collision.extend_from_slice(&observer(1).encode_descriptor(8192).unwrap());
+    store.db.put(key(1).as_bytes(), &collision).unwrap();
+    let cancelled = AtomicBool::new(false);
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    assert_eq!(
+        preparation.intern(wanted.descriptor().clone()).unwrap(),
+        wanted.reference()
+    );
+    drop(preparation);
+    // Full descriptor equality with a missing primary mapping must fail closed.
+    let mut orphan = vec![1, 5];
+    orphan.extend_from_slice(&descriptor);
+    store.db.put(key(2).as_bytes(), orphan).unwrap();
+    let before = rows(&store);
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    assert_eq!(
+        preparation.intern(wanted.descriptor().clone()),
+        Err(AdmissionError::StateMismatch)
+    );
+    drop(preparation);
+    assert_eq!(rows(&store), before);
+    store.db.delete(key(2).as_bytes()).unwrap();
+    for ordinal in 100..261 {
+        store.db.put(key(ordinal).as_bytes(), &collision).unwrap();
+    }
+    let before = rows(&store);
+    let mut preparation = store
+        .prepare_dictionaries(
+            public,
+            AdmissionLimits {
+                max_dependencies: 8,
+                ..limits()
+            },
+            grant(&b, 4 * MIB, 0),
+            &cancelled,
+        )
+        .unwrap();
+    assert_eq!(
+        preparation.intern(wanted.descriptor().clone()),
+        Err(AdmissionError::Limit)
+    );
+    drop(preparation);
+    assert_eq!(rows(&store), before);
+}

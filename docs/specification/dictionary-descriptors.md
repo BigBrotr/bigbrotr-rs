@@ -214,3 +214,29 @@ records actual reservation/outcome COMMIT loss, cancellation and fresh-Control
 historical recovery. Preparation/interning, native interruption of this append
 path and the installed observation/archive consumer remain required before this
 responsibility or P02-T03 Step1 can be marked complete.
+
+### Initial-owner dictionary preparation
+
+The next installed observation consumer prepares a caller-ordered set under an
+explicit, already committed visibility reference. Preparation borrows the same
+exclusive native owner, does not write or reserve a producer request, and retains
+its bounded memory grant with the sealed `EvidenceIntent`. Sealing fixes values
+and references only. The existing pre-staging preview remains authoritative for
+the chosen request sequence, window, real recorded time and complete closure.
+
+Reverse hashes only select bounded candidates. Reuse requires full canonical
+descriptor equality, a matching primary dictionary fact in the exact target
+envelope, and the current allocation namespace. Different envelopes require
+distinct mappings. Candidate exhaustion is a resource error, never absence;
+malformed matching mappings fail closed. Prepared identical descriptors reuse one
+entry; multiple new descriptors of one kind receive distinct consecutive
+provisional ordinals. A failed preparation cannot advance a durable counter, and
+a failed individual intern cannot consume a provisional ordinal.
+
+This consumer does not intern visibility labels or event IDs. Visibility remains
+an explicit identity and cannot silently replace an accepted scope; event mapping
+allocation remains atomic with event admission. Owned descriptor capacities,
+entry tables, encoding/decoding scratch and bounded candidate work count against
+the preparation limits. Cancellation abandons only the read-only plan. Once an
+input is staged, retries use that complete original input rather than preparing
+different references after an ambiguous outcome.

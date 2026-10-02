@@ -56,6 +56,9 @@ mod wal_recovery_tests;
 mod admission;
 #[path = "dictionary_append.rs"]
 mod dictionary_append;
+#[path = "dictionary_preparation.rs"]
+mod dictionary_preparation;
+pub use dictionary_preparation::{DictionaryPreparation, PreparedDictionaries};
 #[cfg(test)]
 #[path = "dictionary_append_tests.rs"]
 mod dictionary_append_tests;
