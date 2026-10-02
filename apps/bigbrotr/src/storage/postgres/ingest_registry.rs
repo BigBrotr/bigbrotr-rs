@@ -17,6 +17,10 @@ const LOCK_MIGRATIONS: i32 = 0x4d49_4752;
 const LOCK_REGISTRATION: i32 = 0x494e_4752;
 const MAX_DOMAINS: usize = 9;
 
+#[path = "ingest_history.rs"]
+mod history;
+pub use history::load_historical;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RegistryError {
     InvalidInput,

@@ -12,8 +12,8 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary maina10455c is pushed. Root owns the historical-registry contract and
-actual-engine probe fixture; product loader is not implemented yet;
+Primary main2e69b67 is one unpublished candidate ahead of pusheda10455c. Root
+owns the historical-registry loader, engine fixtures and evidence/inventory edits;
 no merge/rebase or active BigBrotr build/lab. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
@@ -183,9 +183,13 @@ are stopped/retained, no OOM/unrelated changes. GREEN owner8709104e341845596562d
 root ingest-recovery-20e0e5e. Tux70,842,552,320B free; no local build/cache deletion.
 Structural decision: one shared existing-open path; fixed manifest decoding stays
 under native exclusion, without another receipt, trait or persistent format.
-Next compile the missing-loader RED through the existing initial-ingest build
-profile (unchanged native tests need no repeat), implement the bounded lookup,
-then run actual PostgreSQL fixtures using installed initialized stores. No fresh
+Native RED2e69b67 now fails E0425 at absent load_historical. Original launch setup
+failure used the wrong profile root; preflight refused before engine work, logs
+retained. Corrected initial-ingest-2e69b67 owner579cbfc5d275d43622bdb834803951bc
+is stopped/retained;11 captures/1698 source files verified. Tux70,712,152,064B free.
+Loader implementation and ten-case real PG/Rocks fixture are now written but
+NOT_RUN. Next commit/build with initial-ingest profile, then run bindings.py
+--ingest-history using its exact new artifacts. No unchanged native test rerun. No fresh
 admission or installed recovery command is qualified by a metadata read. Read source/topology/allocation/producer
 DDL and reservation guard; complete registry and close/resolve owners inspected.
 Registry loader and source/topology/producer SQL reading follow this native boundary. Source epoch closure,

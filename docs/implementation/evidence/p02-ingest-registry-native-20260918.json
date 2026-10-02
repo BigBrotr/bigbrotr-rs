@@ -230,5 +230,38 @@
     ".research/implementation/ingest-registry/audit_build.py": "ef5e1f330a83ced10514b365ae40b77fa9e5971b168b033e50b7f92fcbbe2822",
     ".research/implementation/ingest-registry/observe_build_remote.py": "786057a84ba6f85069a8f1315428faab236f7fa219de7906b38bb61f694893ed"
   },
-  "post_run_review": "After the exact2032042 run, root added a fail-closed runner exit check: a cleanup-detected OOM/incomplete stop must exit nonzero as well as record FAIL. The executed run independently verified stopped=true/OOM=false; this post-run guard is source-reviewed/Python-syntax-checked, not an injected OOM test."
+  "post_run_review": "After the exact2032042 run, root added a fail-closed runner exit check: a cleanup-detected OOM/incomplete stop must exit nonzero as well as record FAIL. The executed run independently verified stopped=true/OOM=false; this post-run guard is source-reviewed/Python-syntax-checked, not an injected OOM test.",
+  "historical_lookup_20261002": {
+    "status": "IMPLEMENTATION_PENDING_ENGINE_VERIFICATION",
+    "scope": "P02-T02 Step4/P01-T09 Step4 prerequisite: exclusive native manifest plus bounded original registry attribution; no recovery effect or successor activation",
+    "red": {
+      "label": "registry-red-actual",
+      "source": "2e69b67aca5ef7853eb42e2076e1fb75d33b75f7",
+      "files": 1698,
+      "captures": 11,
+      "capture_sha256": "c1f940487e94b6c9c1542c51dad61eb136272808882eeecff695aede6fcd8f8c",
+      "tree": "800235d431dad07b70a733644be29da1e1330d3a",
+      "status": "FAIL",
+      "reason": "Actual native compile E0425: absent load_historical; no PostgreSQL fixture ran."
+    },
+    "setup_failure": {
+      "raw_root": ".research/implementation/ingest-recovery-20261002/registry-red",
+      "status": "FAIL_SETUP_BEFORE_NATIVE",
+      "reason": "Ignored launcher used the wrong profile directory; exact-source preflight refused before containers/cache work. Corrected launcher creates a new initial-ingest directory; original log retained."
+    },
+    "planned_cases": [
+      "installed original complete registration and identical retry",
+      "wrong configured instance",
+      "new current config/policy heads retain original attribution",
+      "missing slot/domain, mismatched source incarnation, unknown policy schema, ambiguous second slot",
+      "absent versus zero predecessor"
+    ],
+    "not_run": [
+      "PostgreSQL cases under new implementation",
+      "Actual blocked-query cancellation",
+      "Closing/resolution from loaded registration and installed recovery",
+      "Successor, recovery provenance, mixed/aged capacity, arm64/release"
+    ],
+    "review": "Shared complete registry observer validates the reconstructed tuple; historical reads return no grant and roll back before returning. Named bounded query/decoders keep SQL and transaction order visible. No persistent format, schema or backend abstraction added. Recovery is not a hot path; no indexed/capacity claim for the owner-to-producer lookup."
+  }
 }

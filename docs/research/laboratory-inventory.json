@@ -36278,6 +36278,45 @@
           "rocks_store": "79623d2bb0a9f23cadd5ebd68ecb731b5adde8e183c5fa9e3ea9405ce2bf6651"
         }
       }
+    },
+    "ingest_history": {
+      "owner": "root",
+      "status": "RED_RETAINED_IMPLEMENTATION_PENDING",
+      "raw_root": ".research/implementation/ingest-recovery-20261002",
+      "red": {
+        "source": "2e69b67aca5ef7853eb42e2076e1fb75d33b75f7",
+        "tree": "800235d431dad07b70a733644be29da1e1330d3a",
+        "owner": "579cbfc5d275d43622bdb834803951bc",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-2e69b67",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "52adda3da606123486d84024999d2137d061bd508707faece605f1e5aebb893a"
+          },
+          {
+            "name": "native",
+            "id": "08bd85e73a22e90fa00059be56bad98afdfe741c1557e1b4251a97176de27948"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-02T09:39:27.492618+00:00",
+        "inventory_changed": [],
+        "free_bytes_after": 70712152064,
+        "finished_at": "2026-10-02T09:40:18.376001+00:00",
+        "capture": {
+          "label": "registry-red-actual",
+          "source": "2e69b67aca5ef7853eb42e2076e1fb75d33b75f7",
+          "files": 1698,
+          "captures": 11,
+          "capture_sha256": "c1f940487e94b6c9c1542c51dad61eb136272808882eeecff695aede6fcd8f8c"
+        }
+      },
+      "setup_failure_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-2e69b67",
+      "preserve": "All RED and setup failure sources/logs. No PostgreSQL work yet. Reuse shared1154757 compiler only under its lock; retain exact build artifacts outside it."
     }
   },
   "implementation_relay_registry_20260928": {
