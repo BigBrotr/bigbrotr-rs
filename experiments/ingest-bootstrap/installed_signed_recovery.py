@@ -4,6 +4,7 @@ The original laboratory is never mounted in the client. Its catalog, Control
 tables and native/archive files are checked before and after the experiment.
 Expected signed bytes come from the independent installed Sync oracle.
 """
+import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -36,7 +37,7 @@ def census(home):
     return result
 
 
-def run(pg, client, output, rows, clone):
+def run(pg, client, output, rows, clone, close_source=False):
     basis = output.parent.parent / SEED / 'bindings'
     home = basis / 'archive-export'
     assert digest(basis / 'result.json') == RESULT_SHA256
@@ -77,7 +78,7 @@ def run(pg, client, output, rows, clone):
     oracle_state = dict(original, owner_epochs=[r for r in original['owner_epochs']
         if r['role'] != 'control' or r == issuer])
     assert issuer['epoch'] < max(r['epoch'] for r in original['owner_epochs'] if r['role'] == 'control')
-    evidence, _ = native(client, output, seed.name, oracle_state, initialized,
+    evidence, expected_source = native(client, output, seed.name, oracle_state, initialized,
         transcript, issuer['released_at_us'])
     assert evidence['native_rows'] == 49 and evidence['original_requests'] == 4
     lab.write_json(output / 'signed-seed-oracle.json', dict(initialized=initialized,
@@ -89,6 +90,20 @@ def run(pg, client, output, rows, clone):
     assert bytes.fromhex(marker['value']) == b'\x01\x31' + (4).to_bytes(8, 'big') + bytes(16)
     marker['value'] = (b'\x02\x31' + (4).to_bytes(8, 'big') + bytes(16) + b'\x01').hex()
     inputs = {p.name: p.read_bytes() for p in (seed / 'store/producer-inputs-v1').iterdir()}
+    # Independent fixed-width closure preimage; no product closure/digest is an
+    # expected input. The preceding oracle checked these full native/input bytes.
+    manifest, = [v for cf, k, v in expected_source['native'] if cf == 'default' and k == b'\x01\x01']
+    closure = hashlib.sha256(b'bigbrotr/initial-source-closure/1\0')
+    closure.update(hashlib.sha256(manifest).digest())
+    closure.update(bytes.fromhex(initialized['producer_slot_id']))
+    closure.update((1).to_bytes(8, 'big'))
+    closure.update((4).to_bytes(8, 'big'))
+    for sequence, (original_input, receipt) in enumerate(zip(expected_source['inputs'], expected_source['receipts']), 1):
+        closure.update(sequence.to_bytes(8, 'big'))
+        closure.update(hashlib.sha256(original_input).digest())
+        closure.update(hashlib.sha256(receipt).digest())
+    closure.update((12).to_bytes(8, 'big'))
+    closure_digest = closure.hexdigest()
     cases = []
 
     def prepare(name):
@@ -121,11 +136,12 @@ def run(pg, client, output, rows, clone):
         assert valid.returncode == 0, valid.stderr
         return database, config, directory
 
-    def invoke(database, config, directory, name, copy=False):
+    def invoke(database, config, directory, name, copy=False, error=None):
         before = rows(database)
         lab.write_json(output / (name + '-before.json'), before)
         started = time.monotonic()
-        response = lab.cli(dict(pg, client=client), 'ingest', 'recover', '--file', config)
+        flags = ['--close-source'] if close_source else []
+        response = lab.cli(dict(pg, client=client), 'ingest', 'recover', '--file', config, *flags)
         elapsed = time.monotonic() - started
         lab.write_json(output / (name + '-response.json'), dict(returncode=response.returncode,
             stdout=response.stdout, stderr=response.stderr, elapsed_seconds=elapsed))
@@ -137,15 +153,23 @@ def run(pg, client, output, rows, clone):
         (output / (name + '-native.json')).write_text(dumped.stdout)
         assert json.loads(dumped.stdout) == wanted, (name, 'complete native effects')
         assert inputs == {p.name: p.read_bytes() for p in (directory / 'store/producer-inputs-v1').iterdir()}
-        assert response.returncode == 0 and not response.stderr, (name, response.stderr)
-        result, = [json.loads(line) for line in response.stdout.splitlines()]
-        assert result == dict(format='bigbrotr-ingest-recovery/1', state='positive-outcomes-resolved',
+        result = dict(format='bigbrotr-ingest-recovery/1', state='source-closed' if close_source else 'positive-outcomes-resolved',
             dataset_id=initialized['dataset_id'], owner_resource_id=initialized['owner_resource_id'],
             producer_slot_id=initialized['producer_slot_id'], producer_epoch='1', issued_through='4',
             reserved_through='4', resolved_requests='4', native='closed', owner_release='committed', ready=False)
+        if close_source:
+            result['source_closure'] = dict(last_complete_sequence='12', sha256=closure_digest)
+        if error:
+            assert response.returncode == 4 and not response.stdout and error in response.stderr, response
+        else:
+            assert response.returncode == 0 and not response.stderr, (name, response.stderr)
+            actual, = [json.loads(line) for line in response.stdout.splitlines()]
+            assert actual == result, actual
         changed = {'owner_epochs', 'role_instances', 'producer_epochs'}
         if copy:
             changed.add('producer_outcomes')
+        if close_source and not error:
+            changed.add('source_streams')
         for table in before.keys() - changed:
             assert before[table] == after[table], (name, table)
         old, new = dict(before['producer_epochs'][0]), dict(after['producer_epochs'][0])
@@ -158,11 +182,23 @@ def run(pg, client, output, rows, clone):
             assert all(r in after[table] for r in before[table])
             assert len(after[table]) == len(before[table]) + 1
         current, = [r for r in after['owner_epochs'] if r not in before['owner_epochs']]
-        assert current['role'] == 'control' and current['state'] == 'released'
+        assert current['role'] == 'control' and current['state'] == ('active' if error else 'released')
         assert current['epoch'] == max(r['epoch'] for r in before['owner_epochs'] if r['role'] == 'control') + 1
-        assert current['released_at_us'] is not None
+        assert (current['released_at_us'] is None) == bool(error)
         role, = [r for r in after['role_instances'] if r not in before['role_instances']]
-        assert role['role'] == 'control' and role['retired_at_us'] is not None
+        assert role['role'] == 'control' and (role['retired_at_us'] is None) == bool(error)
+        if close_source and not error:
+            old, new = dict(before['source_streams'][0]), dict(after['source_streams'][0])
+            if old['state'] == 'closed':
+                assert old == new, 'closed retry changed retained attribution or xmin'
+            else:
+                assert old.pop('state') == 'open' and new.pop('state') == 'closed'
+                assert old.pop('closed_at_us') is None
+                assert current['acquired_at_us'] <= new.pop('closed_at_us') <= current['released_at_us']
+                assert old.pop('last_complete_sequence') is None and new.pop('last_complete_sequence') == 12
+                assert old.pop('closure_digest') is None and new.pop('closure_digest') == '\\x' + closure_digest
+                old.pop('xmin'); new.pop('xmin')
+                assert old == new
         if copy:
             assert all(r in after['producer_outcomes'] for r in before['producer_outcomes'])
             added, = [r for r in after['producer_outcomes'] if r not in before['producer_outcomes']]
@@ -175,7 +211,8 @@ def run(pg, client, output, rows, clone):
             assert current['acquired_at_us'] <= added['recorded_at_us'] <= current['released_at_us']
         assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
         cases.append(dict(name=name, status='PASS', native_rows=49, original_requests=4,
-            control_tables=len(after), seconds=elapsed, new_event_outcome_copy=copy))
+            control_tables=len(after), seconds=elapsed, new_event_outcome_copy=copy,
+            source_closed=close_source and not error, expected_refusal=error))
         lab.write_json(output / 'signed-recovery-cases.json', cases)
 
     try:
@@ -187,13 +224,23 @@ def run(pg, client, output, rows, clone):
             'DELETE FROM control.producer_outcomes WHERE request_sequence=4; COMMIT;')
         assert len(rows(database)['producer_outcomes']) == 3
         invoke(database, config, directory, 'signed-recovery-copy', copy=True)
+        if close_source:
+            database, config, directory = prepare('source_cut_conflict')
+            # Only this isolated clone has an existing job cut above the final
+            # native bound. Source closure must roll back, preserving that cut.
+            lab.sql(pg, database, 'BEGIN; SET LOCAL session_replication_role=replica; '
+                'UPDATE control.job_input_bounds SET last_complete_sequence=13 '
+                'WHERE last_complete_sequence=12; COMMIT;')
+            assert any(r['last_complete_sequence'] == 13 for r in rows(database)['job_input_bounds'])
+            invoke(database, config, directory, 'source-cut-conflict', error='Backend')
     finally:
         preserved = dict(control=rows(DATABASE) == original,
             catalog=catalog_rows(pg, DATABASE + '_cat') == catalog,
             files=census(home) == files, report=digest(basis / 'result.json') == RESULT_SHA256)
         lab.write_json(output / 'signed-source-preserved.json', preserved)
         assert all(preserved.values()), preserved
-    return dict(name='positive-recovery-signed', status='PASS', cases=cases,
+    return dict(name='source-closure-signed' if close_source else 'positive-recovery-signed', status='PASS', cases=cases,
         source_lab=str(basis.parent), source_revision=SOURCE, source_owner=OWNER,
         source_result_sha256=RESULT_SHA256, source_preserved=preserved, oracle=evidence,
-        scope='installed signed positive recovery; successor and M1 restart/resend remain separate')
+        scope='installed initial source closure' if close_source else 'installed signed positive recovery',
+        excluded='producer/domain retirement, successor and M1 restart/resend')

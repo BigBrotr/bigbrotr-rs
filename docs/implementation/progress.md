@@ -12,11 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is `7751217`, one unpublished source-closure contract/entrypoint
-candidate beyond pushed `cde43a4`. Root owns the native prefix witness, typed PG
-source closure, explicit CLI option, scoped native tests/build selection and this
-checkpoint. No parallel writer. Commit the candidate and run its exact-revision
-Tux build with shared1154757 cache; no Mac Rust build.
+Primary main is `f873d92`, two unpublished candidates beyond pushed `cde43a4`.
+Root owns only the source-closure installed signed fixture/dispatch and this
+checkpoint. Build and native tests are stopped/retained; no parallel writer.
+Commit the fixture, transfer exact Git and reuse the qualified f873d92 artifacts
+in a new owned engine lab. No Mac Rust build.
 
 ## Active responsibility and next bounded action
 
@@ -79,9 +79,10 @@ Root verified1704 source files/36 captures and replayed the independent full nat
 oracle. Report signed_event_recovery_20261002 and inventory engines.signed_event
 retain exact identities. No source closure/retirement/successor or M1 claim.
 
-Next bounded action: build/execute the source-closure candidate on Tux, then extend
-the retained signed fixture for actual source closure, exact retry, a missing
-outcome copy and incompatible retained job bounds. Actual entrypoint RED7751217
+Next bounded action: execute the committed retained signed fixture for actual
+source closure, exact retry, a missing outcome copy and incompatible retained job
+bounds. Candidate f873d92 builds and passes all4 CLI entrypoint tests,3 native
+prefix tests and Clippy. Build captures16/SHA28c0e534; exact1707 source files checked. Actual entrypoint RED7751217
 passed its discrimination: existing three tests pass, selected new option exits2
 instead of4. Build/12captures retained under source-closure-cli-red; SHA75feeea0.
 The draft implements explicit `ingest recover --close-source --file ROOT` through
@@ -91,7 +92,7 @@ PG checks the complete ordered outcome digest prefix against that witness, takes
 source UPDATE before producer UPDATE and uses existing open→closing→closed rows.
 Exact closed retries preserve time/xmin. No SQL migration/native format/new ledger.
 Default recovery retains its preceding contract. Build/unit/connected outcomes
-for this candidate are NOT_RUN; COMMIT ambiguity, source lock cancellation and
+for the connected source-closure journey are NOT_RUN; COMMIT ambiguity, source lock cancellation and
 native failure cases still require appropriate practical evidence. The selected
 digest/compatibility meaning is in producer-request-inputs. No source/producer/
 domain retirement or successor qualification follows from writing this candidate.
