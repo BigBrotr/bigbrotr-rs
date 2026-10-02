@@ -424,7 +424,12 @@ records four installed cases: real CLI login → URL → enrollment → scope �
 acceptance/retry/status and three missing-privilege startup refusals. All69 SQL
 tables/xmin and12 native bootstrap rows/original CBOR were checked. The original
 deadline, command, audit and admission ordinal survive retries and grant withdrawal.
-Installed COMMIT/cancellation/authority races, other actors, session changes and
+The f12205c fixture supplement reuses ce85c0c artifacts: a second real CLI session
+with status.read cannot observe the first actor's existing job (404) or recover
+its same-key acceptance (403). The first actor still observes200; all69 tables
+and the other account/credential/session/grant rows remain exact. This seeded
+account fixture does not qualify account enrollment.
+Installed COMMIT/cancellation/authority races, session changes and
 actual execution/progress remain required. No acceptance-only result qualifies
 complete Sync, M1 or production capacity.
 

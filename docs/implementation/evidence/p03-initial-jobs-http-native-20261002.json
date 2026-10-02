@@ -176,11 +176,50 @@
   "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-ce85c0c",
   "not_qualified": [
     "installed job COMMIT/cancellation/authority races",
-    "foreign actor and session/credential changes",
+    "session/credential changes",
     "job delivery/execution/progress/recovery/M1",
     "capacity/load/aged-state",
     "arm64/release",
-    "Elapsed job/session expiry, credential reset and foreign-actor status through installed HTTP",
+    "Elapsed job/session expiry and credential reset through installed HTTP",
     "Ordinary pre0022 export real-engine regression for shared detail decoder remains pending"
-  ]
+  ],
+  "actor_supplement": {
+    "status": "PASS_BOUNDED_ACTOR_REVIEW",
+    "source": "f12205c9746eeeb69e59a4f66546a73978473ec3",
+    "product": "ce85c0c223134c83faf68aebb455aa4f014a7509",
+    "control_tables": 69,
+    "native_rows": 12,
+    "http_observations": 24,
+    "bob_account_credentials_grant_session_preserved": true,
+    "single_alice_job": true,
+    "captured_payloads_verified": 51,
+    "git_files_verified": 1654,
+    "tree": "8f1db88a865a8b4b036b63e807e8718a9f1d45c6",
+    "fixture_tree": "92cd64bde8cbcdabd855a525bbf4b90b0c156058",
+    "scope": "Clone-only second account fixture with ordinary constraints; two actual CLI logins and exact /me identity/actions. Bob status.read gets404 on Alice existing job and403 for same-key acceptance; Alice still gets200. No account-enrollment qualification.",
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-02T00:35:09.705074+00:00",
+      "owned_stopped": [
+        {
+          "id": "1a4ab824d18e028f944f7da388cd01275085425fa6c1cc2454b164719b017cdc",
+          "owner": "0ea8d69acf38c068ddbeaf7c6feb1010",
+          "exit": 143
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 1030,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 56987025408
+    },
+    "root": ".research/implementation/initial-jobs-20261002/actors",
+    "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-job-actors-f12205c",
+    "capture_manifest_sha256": "eeb8c9a748e92a5f035ffaae01e802968d35dfa12bab73fb37b247c6b7832eb6",
+    "review": "Read-only review caught xmin-dependent capture ordering; fixed principal-keyed comparison before engines. Two local AST-selection setup errors are separate from engine PASS."
+  }
 }

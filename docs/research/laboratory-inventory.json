@@ -32915,11 +32915,44 @@
       },
       "evidence": "docs/implementation/evidence/p03-initial-jobs-http-native-20261002.json",
       "actor_extension": {
-        "status": "FIXTURE_READY_ENGINE_NOT_RUN",
+        "status": "PASS_STOPPED_RETAINED",
         "local": ".research/implementation/initial-jobs-20261002/actors",
         "build_origin": "runs/initial-ingest-ce85c0c/out/artifacts",
         "scope": "Two actual CLI sessions; foreign status404 and actor-namespaced receipt403 with all-table comparisons",
-        "review": "Corrected xmin-dependent account ordering; keyed comparison preserves Bob xmin; local mutation check PASS; no product change"
+        "review": "Corrected xmin-dependent account ordering; keyed comparison preserves Bob xmin; local mutation check PASS; no product change",
+        "launch": {
+          "source": "f12205c9746eeeb69e59a4f66546a73978473ec3",
+          "tree": "92cd64bde8cbcdabd855a525bbf4b90b0c156058",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-job-actors-f12205c",
+          "pid": 1539780,
+          "start_ticks": "428352503",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-ce85c0c/out/artifacts",
+          "bundle_sha256": "1f135611b3280bc105018935ca724c7dad452a589d054e3d59acfcd4f3436372"
+        },
+        "owner": "0ea8d69acf38c068ddbeaf7c6feb1010",
+        "client": "1a4ab824d18e028f944f7da388cd01275085425fa6c1cc2454b164719b017cdc",
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T00:35:09.705074+00:00",
+          "owned_stopped": [
+            {
+              "id": "1a4ab824d18e028f944f7da388cd01275085425fa6c1cc2454b164719b017cdc",
+              "owner": "0ea8d69acf38c068ddbeaf7c6feb1010",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1030,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 56987025408
+        },
+        "source_files_verified": 1654,
+        "captured_payloads_verified": 51
       }
     }
   },

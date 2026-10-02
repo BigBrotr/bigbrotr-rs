@@ -12,20 +12,27 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main/origin b8bf90e (resolve full SHA before transfer), root sole writer. The
-ce85c0c product and its installed evidence are committed/pushed privately.
-Root-owned dirty fixture extension adds one foreign-actor installed case using
-two actual CLI logins, actor-filtered complete session/account comparisons and
-Bob's status.read against Alice's existing job. No product/dependency/SQL change.
-Python syntax/artifact checks and repaired original capture oracle pass. Read-only
-review found xmin-dependent array ordering in the account writer oracle; fixed
-by principal-keyed comparison preserving the other account row/xmin. A small
-mutation check discriminates reordered correct updates and unwanted Bob rewrites.
-Two local AST-selection setup errors were corrected; no engine had run. This
-extension has no remaining reported review blocker; its engine is NOT_RUN. No active lab/build.
-Mac last3,535,508KiB free; Tux last57,030,197,248B. Next: review and commit bounded
-fixture, transfer exact Git to a new run, execute --installed-job-actors reusing
-ce85c0c artifacts without rebuilding; preserve original four-case evidence.
+Main candidate f12205c9746eeeb69e59a4f66546a73978473ec3,
+tree92cd64bde8cbcdabd855a525bbf4b90b0c156058; origin b8bf90e. Root sole writer.
+Only evidence/docs dirty after the foreign-actor qualification. Product ce85c0c
+is unchanged. Two actual CLI logins confirm identities/actions: Bob has status.read,
+but Alice's existing job is404 and its same-key acceptance403; Alice detail stays200.
+All69 tables and Bob's complete account/credential/grant/session rows/xmin checked.
+Read-only review caught xmin-dependent account ordering; corrected by immutable ID
+before engines.51 captures/1654 Git files verified. Native12 bootstrap rows remain.
+
+runs/initial-job-actors-f12205c STOPPED/RETAINED: PID1539780/start428352503,
+owner0ea8d69acf38c068ddbeaf7c6feb1010,
+client1a4ab824d18e028f944f7da388cd01275085425fa6c1cc2454b164719b017cdc stopped143;
+borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T00:35:09.705074UTC:
+1030 prior projections unchanged, eight unrelated running, lock free,
+56,987,025,408B free. Original four-case ce85c0c artifacts/clones remain retained.
+Mac last3,535,508KiB free. No active build/engine.
+Next: record/push this bounded supplement, then verify elapsed session expiry
+through the installed job consumer. Keep the current30min default; a clearly
+labeled clone-only short valid issuance fixture can exercise real PostgreSQL
+clock expiry without changing product or disabling session guards. Afterwards,
+installed acceptance COMMIT/cancellation and bounded pre0022 export regression.
 
 Active P03-T01 Steps3/4 and P01-T09 Steps1/2: initial-owner finite acceptance and
 actor-owned status use the existing queue/Control transaction/0022 command. No
