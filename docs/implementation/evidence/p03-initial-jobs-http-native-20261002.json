@@ -180,7 +180,7 @@
     "job delivery/execution/progress/recovery/M1",
     "capacity/load/aged-state",
     "arm64/release",
-    "Elapsed job/session expiry and credential reset through installed HTTP",
+    "Elapsed job deadline and credential reset through installed HTTP",
     "Ordinary pre0022 export real-engine regression for shared detail decoder remains pending"
   ],
   "actor_supplement": {
@@ -221,5 +221,76 @@
     "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-job-actors-f12205c",
     "capture_manifest_sha256": "eeb8c9a748e92a5f035ffaae01e802968d35dfa12bab73fb37b247c6b7832eb6",
     "review": "Read-only review caught xmin-dependent capture ordering; fixed principal-keyed comparison before engines. Two local AST-selection setup errors are separate from engine PASS."
+  },
+  "expiry_supplement": {
+    "status": "PASS_BOUNDED_EXPIRY_CAPTURE_REVIEW",
+    "source": "cf4f48e8bf5f41bf721c0521b7c0ebcdd9d6b83e",
+    "product": "ce85c0c223134c83faf68aebb455aa4f014a7509",
+    "control_tables": 69,
+    "native_rows_per_case": 12,
+    "cases": [
+      {
+        "name": "jobs-idle-expiry",
+        "status": "PASS",
+        "before": {
+          "started_at_us": 1790901698162666,
+          "observed_at_us": 1790901705242013,
+          "expires_at_us": 1790901717121945,
+          "idle_expires_at_us": 1790901705139776
+        },
+        "after": {
+          "observed_at_us": 1790901705459280,
+          "stored_end_us": 1790901705139776,
+          "absolute_end_us": 1790901717121945
+        },
+        "http_observations": 20,
+        "idle_isolation_headroom_us": 11662665
+      },
+      {
+        "name": "jobs-absolute-expiry",
+        "status": "PASS",
+        "before": {
+          "started_at_us": 1790901710851628,
+          "observed_at_us": 1790901717834678,
+          "expires_at_us": 1790901717815659,
+          "idle_expires_at_us": 1790901717815659
+        },
+        "after": {
+          "observed_at_us": 1790901718169955,
+          "stored_end_us": 1790901717815659,
+          "absolute_end_us": 1790901717815659
+        },
+        "http_observations": 20,
+        "idle_isolation_headroom_us": null
+      }
+    ],
+    "source_files_verified": 1654,
+    "captured_payloads_verified": 92,
+    "fixture_tree": "a260987d68f487a8eec9cf0f2caa1d37e18657bb",
+    "scope": "Actual installed login with clone-only BEFORE INSERT shortening to valid8s idle/20s absolute or8s/8s. All ordinary constraints enabled; unchanged8h absolute/30min idle defaults. Actual PG clock crosses stored expiry; GET status and historical/new acceptance401 leave all69 tables unchanged except owner lease renewal. Absolute case has coincident stored cutoffs and does not isolate redundant predicates. No credential-reset/race or configurable-TTL claim.",
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-02T00:42:33.638870+00:00",
+      "owned_stopped": [
+        {
+          "id": "d27eb3e756c500c86684dbdeee31a3cfdf7311211e1c7cb8806e9f1b8afe25a9",
+          "owner": "0fd080efde84ae2cf60494c578f29e5f",
+          "exit": 143
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 1031,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 56899330048
+    },
+    "local": ".research/implementation/initial-jobs-20261002/expiry",
+    "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-job-expiry-cf4f48e",
+    "capture_manifest_sha256": "34b1e7c67c34c2e19863ccae37357de2b0984a7032660636fa99ea8e412077ee",
+    "review": "Read-only reviewer required the final idle-window clock bound; added before engines. Root checked original timestamps/all-table captures; no engine failure."
   }
 }

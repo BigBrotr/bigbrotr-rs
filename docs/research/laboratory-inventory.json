@@ -32955,10 +32955,44 @@
         "captured_payloads_verified": 51
       },
       "expiry_extension": {
-        "status": "FIXTURE_REVIEW_PENDING_ENGINE_NOT_RUN",
+        "status": "PASS_STOPPED_RETAINED",
         "scope": "Stored idle/absolute expiry through actual installed job HTTP; valid short clone-only issuance with ordinary guards enabled; unchanged defaults",
         "local": ".research/implementation/initial-jobs-20261002/expiry",
-        "build_origin": "runs/initial-ingest-ce85c0c/out/artifacts"
+        "build_origin": "runs/initial-ingest-ce85c0c/out/artifacts",
+        "launch": {
+          "source": "cf4f48e8bf5f41bf721c0521b7c0ebcdd9d6b83e",
+          "tree": "a260987d68f487a8eec9cf0f2caa1d37e18657bb",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-job-expiry-cf4f48e",
+          "pid": 1546106,
+          "start_ticks": "428394544",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-ce85c0c/out/artifacts",
+          "bundle_sha256": "f80604a90004262bd74a4fd7e83430bb867913457cd0023c13111a1205a8a061"
+        },
+        "review": "Read-only reviewer required post-response PG clock for idle isolation; added before engine.",
+        "owner": "0fd080efde84ae2cf60494c578f29e5f",
+        "client": "d27eb3e756c500c86684dbdeee31a3cfdf7311211e1c7cb8806e9f1b8afe25a9",
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T00:42:33.638870+00:00",
+          "owned_stopped": [
+            {
+              "id": "d27eb3e756c500c86684dbdeee31a3cfdf7311211e1c7cb8806e9f1b8afe25a9",
+              "owner": "0fd080efde84ae2cf60494c578f29e5f",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1031,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 56899330048
+        },
+        "source_files_verified": 1654,
+        "captured_payloads_verified": 92
       }
     }
   },

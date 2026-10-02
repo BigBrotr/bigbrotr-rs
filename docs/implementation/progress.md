@@ -12,18 +12,30 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main/origin0fe2e99, root sole writer. Previous ce85c0c product and four-case
-qualification plus f12205c actor supplement are committed/pushed privately.
-Dirty fixture extension selects two session-expiry cases. It shortens issuance
-in isolated clones to8s idle and20s/8s absolute, preserving ordinary constraints;
-it waits for actual PostgreSQL time and requires expired detail, identical retry
-and new-key acceptance401 with all69 tables unchanged apart from lease renewal.
-Installed8h absolute/30min idle defaults and all product bytes stay unchanged.
-Python syntax/artifact checks PASS. Read-only review required a second PG clock
-observation after all401 replies to keep idle expiry strictly before the absolute
-ceiling; added. New engines remain NOT_RUN.
-Next: finish review, exact-Git fixture commit, reuse ce85c0c artifacts for
---installed-job-expiry, preserve original captures and all clone states.
+Main candidate cf4f48e8bf5f41bf721c0521b7c0ebcdd9d6b83e,
+treea260987d68f487a8eec9cf0f2caa1d37e18657bb; origin0fe2e99. Root sole writer.
+Only evidence/docs dirty after the two-case expiry qualification. Productce85c0c
+unchanged. Both idle expiry and absolute ceiling refuse installed GET and
+historical/new acceptance401 after real PG clock observation. All69 SQL tables
+stay exact except lease renewal; native12 bootstrap rows/CBOR remain. Idle replies
+completed11,662,665us before absolute expiry. Absolute case has coincident stored
+cutoffs, not independent redundant-predicate proof. Clone-only valid short issuance
+keeps ordinary guards; product defaults remain8h absolute/30min idle. No TTL-setting
+or credential-reset/race qualification. Root verified1654 Git files/92 captures;
+read-only review's post-response clock requirement was fixed before execution.
+
+runs/initial-job-expiry-cf4f48e STOPPED/RETAINED: PID1546106/start428394544,
+owner0fd080efde84ae2cf60494c578f29e5f,
+clientd27eb3e756c500c86684dbdeee31a3cfdf7311211e1c7cb8806e9f1b8afe25a9 stopped143;
+borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T00:42:33.638870UTC:
+1031 prior projections unchanged, eight unrelated running, compiler lock free,
+56,899,330,048B free. No active engine/build. Exact artifacts remain ce85c0c.
+Next: record/push bounded expiry evidence, then bounded pre0022 ordinary export
+status compatibility and installed acquisition acceptance COMMIT/cancellation.
+Existing ordinary Serve's job detail does not need an archive/destination consumer;
+inspect its startup requirements and retained pre0022 template before choosing the
+smallest real HTTP regression. Avoid a whole export rebuild/qualification for this
+shared status decoder. Full execution/dictionary/recovery and M1 remain unfinished.
 
 runs/initial-job-actors-f12205c STOPPED/RETAINED: PID1539780/start428352503,
 owner0ea8d69acf38c068ddbeaf7c6feb1010,

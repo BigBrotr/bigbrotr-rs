@@ -429,7 +429,13 @@ with status.read cannot observe the first actor's existing job (404) or recover
 its same-key acceptance (403). The first actor still observes200; all69 tables
 and the other account/credential/session/grant rows remain exact. This seeded
 account fixture does not qualify account enrollment.
-Installed COMMIT/cancellation/authority races, session changes and
+The cf4f48e supplement observes real PostgreSQL clock expiry in two isolated
+short valid issuance fixtures, keeping ordinary session/audit guards enabled.
+Expired status and historical/new acceptance all refuse401 without idle touch or
+job mutation. The idle case completes11.66s before the absolute ceiling; the
+absolute case has coincident stored cutoffs. Defaults remain8h absolute/30min idle;
+this does not qualify configurable TTL or independently isolate redundant guards.
+Installed COMMIT/cancellation/authority races, credential changes and
 actual execution/progress remain required. No acceptance-only result qualifies
 complete Sync, M1 or production capacity.
 
