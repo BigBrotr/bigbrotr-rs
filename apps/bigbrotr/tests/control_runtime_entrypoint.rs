@@ -192,20 +192,25 @@ fn explicit_ingest_recovery_preserves_missing_store_before_credentials() {
     config["storage"]["ingest_root"] = store.to_str().unwrap().into();
     config["postgres"]["control"]["password_ref"] = "file:/nonexistent/recovery-password".into();
     fs::write(&file, toml::to_string(&config).unwrap()).unwrap();
-    let result = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
-        .env_clear()
-        .args(["ingest", "recover", "--file"])
-        .arg(&file)
-        .output()
-        .unwrap();
-    assert_eq!(result.status.code(), Some(4));
-    assert!(result.stdout.is_empty());
-    let error = String::from_utf8_lossy(&result.stderr);
-    assert!(
-        error.contains("initialized store or CURRENT is absent"),
-        "{error}"
-    );
-    assert!(!error.contains("protected PostgreSQL password"));
-    assert!(!store.exists());
+    for close_source in [false, true] {
+        let mut command = Command::new(env!("CARGO_BIN_EXE_bigbrotr"));
+        command
+            .env_clear()
+            .args(["ingest", "recover", "--file"])
+            .arg(&file);
+        if close_source {
+            command.arg("--close-source");
+        }
+        let result = command.output().unwrap();
+        assert_eq!(result.status.code(), Some(4));
+        assert!(result.stdout.is_empty());
+        let error = String::from_utf8_lossy(&result.stderr);
+        assert!(
+            error.contains("initialized store or CURRENT is absent"),
+            "{error}"
+        );
+        assert!(!error.contains("protected PostgreSQL password"));
+        assert!(!store.exists());
+    }
     assert_eq!(fs::read_dir(&root).unwrap().count(), 1);
 }

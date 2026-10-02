@@ -434,3 +434,41 @@ synchronous server-query cancellation. Saturated stdout terminated in about 0.32
 with exit1 after verified durable effects; diagnostics are not a recovery receipt.
 These measurements do not qualify blocked native syscalls, COMMIT ambiguity,
 production capacity or another target architecture.
+
+### Initial source closure extension (under implementation)
+
+The next P02-T01 Step5/P02-T02 Step4 consumer adds explicit
+`ingest recover --close-source --file ROOT`. The default command retains its
+positive-outcome-only behavior. The extension requires the initial single
+producer and complete retained positive resolution of every reserved request;
+it cannot turn missing input/detail or an unissued reservation into noncommit.
+
+An ephemeral bounded accumulator consumes the opaque native recovery results in
+original request order under continuous native exclusion. NewFacts batches must
+cover the source contiguously from one; AlreadyDurable/Rejected do not advance
+that source bound. The final bound must equal the native source counter. Zero
+is an explicit empty prefix. No vector of all receipts, duplicate outcome ledger,
+native format change or receipt reclamation is needed for this responsibility.
+
+The source closure digest is SHA-256 over ASCII
+`bigbrotr/initial-source-closure/1` plus NUL, the native manifest SHA-256 (32 bytes),
+producer slot (16 bytes), producer epoch and reserved-through (each unsigned
+BE64), then each ordered request sequence (BE64), input digest (32 bytes) and
+original outcome SHA-256 (32 bytes), followed by the final source bound (BE64).
+The count binds the fixed-width request entries; the manifest binds the source,
+topology and original allocation namespaces. This digest attests the resolved
+initial prefix; it is not a backup, restored-state or absent-tail proof.
+
+Current Control and complete accepted policy authorize a transaction using the
+existing source row and monotone open→closing→closed transitions. It rechecks the
+original producer/reservation bound under established owner/source/producer locks,
+preserves authoritative job/frontier caps, and stores only the verified bound and
+digest. Exact closed retries compare the complete retained closure without
+rewriting its time/xmin. Unknown COMMIT requires the same exclusive historical
+inspection and positive resolution before retry; it cannot activate a successor.
+
+Source closure leaves producer/domain retirement, workflow abandonment, ACK/GC,
+Ingest owner release and successor activation to their explicit later operations.
+The original topology remains immutable, including its historical NULL handoff;
+a later topology must carry the closed predecessor's exact bound. This extension
+is not implemented or qualified yet; the preceding measurements do not cover it.

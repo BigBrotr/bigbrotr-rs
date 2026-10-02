@@ -12,11 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is `e8317e9`, one candidate ahead of pushed `cd03ae5`.
-Root owns the closing signed-recovery evidence/reference/task/inventory/checkpoint
-edits. No product/build inputs changed and no parallel writer. Commit the reviewed
-qualification, push normally and verify remote equality before the next slice.
-The checkpoint cannot contain its own future commit hash.
+Primary main and origin/main were clean and equal at `cde43a4` after publishing the
+signed-recovery qualification. Root now owns the next explicit source-closure
+contract, actual entrypoint RED and checkpoint; no parallel writer. Commit this
+candidate and execute the exact-revision Tux build with the shared compiler cache.
+No Mac Rust build. The checkpoint cannot contain its own future commit hash.
 
 ## Active responsibility and next bounded action
 
@@ -79,10 +79,19 @@ Root verified1704 source files/36 captures and replayed the independent full nat
 oracle. Report signed_event_recovery_20261002 and inventory engines.signed_event
 retain exact identities. No source closure/retirement/successor or M1 claim.
 
-Next bounded action: read the current source/producer/domain closure contracts and
-existing native/PG closing/recovery boundaries, then implement the smallest durable
-closure prerequisite for explicit successor. The event remains served/exported by
-already qualified retained Archive; whole adjacent services are not prerequisites.
+Next bounded action: execute the actual entrypoint RED for explicit
+`ingest recover --close-source --file ROOT`, then implement its bounded positive
+source-closure consumer. The current source/producer/domain contracts and native/
+PG close/recovery/registry/history owners have been read. A rolling ephemeral
+native witness must consume every original positive outcome, cover NewFacts
+batches contiguously, match the native source counter and preserve zero. Existing
+source metadata stores the final bound/digest; no new native format or outcome
+ledger. Exact retry/ambiguous COMMIT must revalidate under exclusion. Default
+recovery stays unchanged. Source closure is not producer/domain retirement,
+workflow abandonment, ACK/GC or successor activation. The selected digest and
+compatibility/locking meaning are in the owning producer-request-inputs reference.
+The extension is NOT_IMPLEMENTED/NOT_RUN. M1 still requires the later explicit
+successor and unchanged signed resend/provenance-off journey.
 Full restart/resend remains M1's visible acceptance.
 
 The first12 cases use two dictionary requests; the later three exercise one signed
