@@ -12,6 +12,17 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
+Current candidate1c99ca3a0bcb70f0a1bc50a7892275a1f12117cd extends the connected
+fixture. Native runs/relay-arrival-1c99ca3 build completed; terminal audit pending.
+Before engine execution, independent fixture review caught two oracle gaps:
+reservation advances producer_epochs as well as adding request/outcome rows;
+append needs its own before-state so a wrong first write cannot become baseline.
+Dirty fixture correction now compares exactly one reservation counter/xmin change
+and one original request/outcome addition at each append/reuse/event boundary,
+preserving every other row. Retained old socket census plus three discriminating
+mutations validate that check locally. Corrected fixture needs its own native build.
+No PG engine has run for this candidate yet. Earlier bounded native qualification:
+
 Main af058bc69165c385d0e0aa0d43e49c194b1cd0ca, origin5483db8; four unpublished
 native candidates, root sole writer. Tree17775769822adf3c0fa41a0f78f0f8d26faabb80
 was clean at resumption. Latest runs/dictionary-append-af058bc STOPPED/RETAINED,

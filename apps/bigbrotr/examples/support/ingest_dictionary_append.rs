@@ -96,6 +96,9 @@ pub async fn run(
         )
     };
     let validate = |d: &str, h| validate_version(d, h, true);
+    emit(
+        serde_json::json!({"event":"dictionary-before","state":ingest_snapshot::state(observer,path).await}),
+    );
     let first = owner
         .append_initial_dictionaries(&mut store, input(2, 234), permit(), validate)
         .await

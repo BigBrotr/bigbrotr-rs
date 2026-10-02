@@ -86,6 +86,29 @@ def run(context):
         case(context, appended)
 
 
+def event_control(before_event, after_event, request_sequence, require):
+    require(len(before_event) == len(after_event) == 67
+        and before_event.keys() == after_event.keys()
+        and all(before_event[t] == after_event[t] for t in before_event
+                if t not in ('producer_requests', 'producer_outcomes', 'producer_epochs')),
+        'event-only-expected-control-tables-change')
+    for table in ('producer_requests', 'producer_outcomes'):
+        original_rows = json.loads(before_event[table])
+        actual_rows = json.loads(after_event[table])
+        require(len(actual_rows) == len(original_rows)+1
+            and all(r in actual_rows for r in original_rows), 'original-control-rows-xmin-preserved')
+    before_producers = json.loads(before_event['producer_epochs'])
+    after_producers = json.loads(after_event['producer_epochs'])
+    require(len(before_producers) == len(after_producers) == 1, 'single-fixture-producer')
+    before, after = before_producers[0], after_producers[0]
+    require(int(before['reserved_through_request']) == request_sequence-1
+        and int(after['reserved_through_request']) == request_sequence
+        and before['xmin'] != after['xmin']
+        and {k:v for k,v in before.items() if k not in ('reserved_through_request', 'xmin')}
+            == {k:v for k,v in after.items() if k not in ('reserved_through_request', 'xmin')},
+        'only-producer-reservation-bound-advances')
+
+
 def case(context, appended):
     lab, pg, client, output, source, rows, clone, report, save, require, oracle = (
         context[k] for k in ('lab','pg','client','output','SOURCE','rows','clone','report','save','require','oracle'))
@@ -149,15 +172,7 @@ def case(context, appended):
     require(messages[-1]['event'] == 'socket-finished' and messages[-1]['status'] == 'PASS','completed-consumer')
     before_event = dict(identity['state']['control_tables'])
     after_event = dict(messages[-1]['state']['control_tables'])
-    require(len(before_event) == len(after_event) == 67
-        and all(before_event[t] == after_event[t] for t in before_event
-                if t not in ('producer_requests', 'producer_outcomes')),
-        'event-only-two-control-tables-change')
-    for table in ('producer_requests', 'producer_outcomes'):
-        original_rows = json.loads(before_event[table])
-        actual_rows = json.loads(after_event[table])
-        require(len(actual_rows) == len(original_rows)+1
-            and all(r in actual_rows for r in original_rows), 'original-control-rows-xmin-preserved')
+    event_control(before_event, after_event, request_sequence, require)
     requests = sorted(after['producer_requests'], key=lambda r:int(r['request_sequence']))
     for sequence, (row, original) in enumerate(zip(requests, inputs), 1):
         require(int(row['request_sequence']) == sequence
@@ -171,8 +186,13 @@ def case(context, appended):
         and int(after['acquisition_scopes'][0]['visibility_ordinal']) == (3 if appended else 1),
         'explicit-selected-visibility')
     if appended:
+        initial = next(m for m in messages if m['event'] == 'dictionary-before')
         created = next(m for m in messages if m['event'] == 'dictionary-appended')
         reopened = next(m for m in messages if m['event'] == 'dictionary-reopened')
+        event_control(dict(initial['state']['control_tables']),
+            dict(created['state']['control_tables']), 2, require)
+        event_control(dict(created['state']['control_tables']),
+            dict(reopened['state']['control_tables']), 3, require)
         require(created['receipt'] == receipts[1].hex()
             and reopened['bootstrap_receipt'] == receipts[0].hex()
             and reopened['reuse_receipt'] == receipts[2].hex(), 'append-reopen-original-receipts')
