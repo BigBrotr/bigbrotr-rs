@@ -36316,7 +36316,39 @@
         }
       },
       "setup_failure_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-2e69b67",
-      "preserve": "All RED and setup failure sources/logs. No PostgreSQL work yet. Reuse shared1154757 compiler only under its lock; retain exact build artifacts outside it."
+      "preserve": "All RED and setup failure sources/logs. No PostgreSQL work yet. Reuse shared1154757 compiler only under its lock; retain exact build artifacts outside it.",
+      "first_build": {
+        "source": "f35882c3b9209b8ef533e4e5ff0bf2954aad9512",
+        "tree": "c46f05888c5bb5a4cf3d197aa523b796dead2aff",
+        "owner": "e0f78cb56e06cc13144f1c3e2a16947f",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-f35882c",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "a508a2b5c6d4d6a6b4febff5937e5e2d1aa4d3df009d5ed3fc99483ce9a1e05c"
+          },
+          {
+            "name": "native",
+            "id": "eeee4bd44bdb80a86a8971218d12a5df7f0aa13e8b46afd53a5e8e3134bacc58"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-02T09:46:44.409265+00:00",
+        "inventory_changed": [],
+        "free_bytes_after": 70620258304,
+        "finished_at": "2026-10-02T09:48:04.090583+00:00",
+        "capture": {
+          "label": "registry-green",
+          "source": "f35882c3b9209b8ef533e4e5ff0bf2954aad9512",
+          "files": 1700,
+          "captures": 12,
+          "capture_sha256": "6faef82425e6d695501098e57078b618e0b05c76efb2901692882180950d29d7"
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {

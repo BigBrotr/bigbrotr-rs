@@ -262,6 +262,15 @@
       "Closing/resolution from loaded registration and installed recovery",
       "Successor, recovery provenance, mixed/aged capacity, arm64/release"
     ],
-    "review": "Shared complete registry observer validates the reconstructed tuple; historical reads return no grant and roll back before returning. Named bounded query/decoders keep SQL and transaction order visible. No persistent format, schema or backend abstraction added. Recovery is not a hot path; no indexed/capacity claim for the owner-to-producer lookup."
+    "review": "Shared complete registry observer validates the reconstructed tuple; historical reads return no grant and roll back before returning. Named bounded query/decoders keep SQL and transaction order visible. No persistent format, schema or backend abstraction added. Recovery is not a hot path; no indexed/capacity claim for the owner-to-producer lookup.",
+    "first_build": {
+      "label": "registry-green",
+      "source": "f35882c3b9209b8ef533e4e5ff0bf2954aad9512",
+      "files": 1700,
+      "captures": 12,
+      "capture_sha256": "6faef82425e6d695501098e57078b618e0b05c76efb2901692882180950d29d7",
+      "status": "FAIL",
+      "reason": "Compile passed. The initial-ingest profile also ran entrypoint tests; one expected obsolete role-selection wording predating Archive support. Two passed, one failed; remaining checks NOT_RUN. Corrected the exact expected message and added four other omitted-role refusals without changing product behavior."
+    }
   }
 }
