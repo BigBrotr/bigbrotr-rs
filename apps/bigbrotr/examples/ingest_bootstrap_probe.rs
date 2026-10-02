@@ -36,6 +36,8 @@ mod ingest_dictionary_append;
 mod ingest_dictionary_faults;
 #[path = "support/ingest_event.rs"]
 mod ingest_event;
+#[path = "support/ingest_history.rs"]
+mod ingest_history;
 #[path = "support/ingest_lease.rs"]
 mod ingest_lease;
 #[path = "support/ingest_observation.rs"]
@@ -878,7 +880,11 @@ fn main() {
     assert_eq!(args.len(), 5);
     let mut config = Config::new();
     config
-        .host("postgres")
+        .host(if args[1].starts_with("history-") {
+            "127.0.0.1"
+        } else {
+            "postgres"
+        })
         .dbname(&args[2])
         .user("bigbrotr_control")
         .password(std::fs::read(&args[3]).unwrap())
@@ -898,6 +904,8 @@ fn main() {
                 tokio::time::timeout(Duration::from_secs(10), installed_relay_setup::run(config))
                     .await
                     .unwrap();
+            } else if args[1].starts_with("history-") {
+                ingest_history::run(config, &args[1], Path::new(&args[4])).await;
             } else if args[1].starts_with("recovery-process-") {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
             } else {

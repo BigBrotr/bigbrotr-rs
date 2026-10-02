@@ -57,6 +57,32 @@ rows and actual COMMIT/lock schedules. Product Control bootstrap, durable policy
 native activation, successor/recovery registration and first signed-event
 admission remain separate work.
 
+## Historical registration lookup (implementation in progress)
+
+The installed recovery consumer must reconstruct the original registration from
+the exclusively held native manifest and retained PostgreSQL rows. The selected
+`load_historical` read takes an `IngestRecovery` and configured instance, uses the
+existing migration/registration serialization, and returns checked attribution
+only. It performs no COMMIT or DML and releases its transaction by confirmed
+rollback. Callers retain the bounded native worker, application connection and
+driver through cancellation or completion.
+
+The original manifest selects dataset, Ingest tuple, shard, topology, policy and
+allocation domains. Its policy revision selects the original configuration and
+both digests; current dataset heads must never substitute for that history. A
+bounded producer lookup requires exactly one initial slot, with an excess-row
+discriminator. The slot identifies its original registering Control tuple.
+Complete existing registration checks validate all reconstructed fields, including
+source, topology membership, domain set and policy schema. Missing, ambiguous or
+inconsistent rows refuse; absent predecessor stays distinct from generation zero.
+The retained scheduling expiry may reflect renewal and is not an authority grant.
+
+This initial loader refuses noninitial owner epochs. It does not close a producer,
+resolve missing outcomes, establish recovery provenance or activate a successor.
+Existing connected recovery revalidates the complete registration under fresh
+Control authority before any effect. No SQL migration or native format changes.
+Actual PostgreSQL fixtures are required before this read is qualified.
+
 ## Same-Control scheduling renewal
 
 The explicit installed first lifetime constructs its attempt from

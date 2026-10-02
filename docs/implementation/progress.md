@@ -12,8 +12,8 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main20e0e5e is two unpublished candidates ahead of pushed18e10df.
-Root owns the historical-inspection evidence/inventory/reference/checkpoint edits;
+Primary maina10455c is pushed. Root owns the historical-registry contract and
+actual-engine probe fixture; product loader is not implemented yet;
 no merge/rebase or active BigBrotr build/lab. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
@@ -183,8 +183,10 @@ are stopped/retained, no OOM/unrelated changes. GREEN owner8709104e341845596562d
 root ingest-recovery-20e0e5e. Tux70,842,552,320B free; no local build/cache deletion.
 Structural decision: one shared existing-open path; fixed manifest decoding stays
 under native exclusion, without another receipt, trait or persistent format.
-Next implement the bounded historical registry loader and its actual PostgreSQL
-fixture, then connect installed recovery. Read source/topology/allocation/producer
+Next compile the missing-loader RED through the existing initial-ingest build
+profile (unchanged native tests need no repeat), implement the bounded lookup,
+then run actual PostgreSQL fixtures using installed initialized stores. No fresh
+admission or installed recovery command is qualified by a metadata read. Read source/topology/allocation/producer
 DDL and reservation guard; complete registry and close/resolve owners inspected.
 Registry loader and source/topology/producer SQL reading follow this native boundary. Source epoch closure,
 recovery provenance, old-owner exclusion, bounded retained-input set and exact
