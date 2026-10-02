@@ -6,8 +6,11 @@ use super::{
     require,
 };
 use crate::{
-    acquisition::job::{AcquisitionJob, AcquisitionOwner, JobDuration},
+    acquisition::job::{
+        AcquisitionCandidate, AcquisitionJob, AcquisitionOwner, AcquisitionScan, JobDuration,
+    },
     management::{jobs::JobState, sessions::SessionError as Error},
+    runtime::OwnedPermit,
 };
 use bigbrotr_model::{AcquisitionScopeId, DatasetId, JobId, OwnerEpoch, PrincipalId};
 use std::cell::Cell;
@@ -22,16 +25,114 @@ fn backend(error: tokio_postgres::Error) -> Error {
     }
 }
 
+const ADMISSION_CUT: &str = "
+    SELECT left(coalesce((SELECT admission_ordinal FROM control.job_admissions
+        ORDER BY admission_ordinal DESC LIMIT 1),0)::text,21)";
+
+const SCAN_ADMISSIONS: &str = "
+    WITH batch AS MATERIALIZED (
+        SELECT job_id,admission_ordinal FROM control.job_admissions
+        WHERE admission_ordinal > $1::text::numeric AND admission_ordinal <= $2::text::numeric
+        ORDER BY admission_ordinal LIMIT 32
+    )
+    SELECT substring(b.job_id FROM 1 FOR 17),left(b.admission_ordinal::text,21),
+        (SELECT CASE WHEN j.dataset_id=$3::bytea AND j.kind='acquisition'
+            AND j.acquisition_job_protocol=1 AND j.checkpoint_revision=0
+            AND j.input_complete AND j.input_topology_generation IS NULL
+            AND ((j.state='accepted' AND j.job_revision=1
+                    AND j.owner_resource_id IS NULL AND j.owner_epoch IS NULL AND j.owner_incarnation IS NULL)
+                OR (j.state='queued' AND j.job_revision=2
+                    AND j.owner_resource_id=$4::bytea AND j.owner_epoch=$5::text::numeric
+                    AND j.owner_incarnation=$6::bytea))
+         THEN true ELSE false END FROM control.jobs j WHERE j.job_id=b.job_id)
+    FROM batch b ORDER BY b.admission_ordinal";
+
 impl ControlSession {
     /// Nominate from at most32 admissions, before eligibility filtering. No claim,
     /// source action, lease renewal or scientific progress is produced here.
     pub async fn nominate_acquisition(
         &mut self,
-        _scan: Option<crate::acquisition::job::AcquisitionScan>,
-        _permit: crate::runtime::OwnedPermit,
-    ) -> Result<crate::acquisition::job::AcquisitionCandidate, Error> {
-        // Intentional RED for the independent actual-engine scan fixture.
-        Err(Error::Unavailable)
+        scan: Option<AcquisitionScan>,
+        permit: OwnedPermit,
+    ) -> Result<AcquisitionCandidate, Error> {
+        if permit.request().units().data_bytes() < AcquisitionScan::REQUIRED_BYTES
+            || permit.request().units().items() == 0
+        {
+            return Err(Error::Capacity);
+        }
+        if scan.is_some_and(|scan| scan.after_ordinal >= scan.admission_cut) {
+            return Err(Error::InvalidInput);
+        }
+        self.begin_operation().map_err(|_| Error::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 23)
+            .await
+            .map_err(|_| Error::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| Error::Unavailable)?;
+        let mut scan = match scan {
+            Some(scan) => scan,
+            None => {
+                // Committed admission order is monotone under0815's dataset
+                // lock. New admissions cannot enter this fixed pass afterward.
+                let row = tx.query_one(ADMISSION_CUT, &[]).await.map_err(backend)?;
+                let text: &str = row.try_get(0).map_err(metadata)?;
+                let admission_cut = text
+                    .parse::<u64>()
+                    .ok()
+                    .filter(|n| n.to_string() == text)
+                    .ok_or(Error::InvalidMetadata)?;
+                AcquisitionScan {
+                    admission_cut,
+                    after_ordinal: 0,
+                }
+            }
+        };
+        // Materialize32 indexed admission positions before inspecting jobs.
+        // Correlated primary-key lookups avoid a join over unbounded history.
+        let rows = tx
+            .query(
+                SCAN_ADMISSIONS,
+                &[
+                    &scan.after_ordinal.to_string(),
+                    &scan.admission_cut.to_string(),
+                    &&self.request.dataset.as_bytes()[..],
+                    &&self.identity.resource_id.as_bytes()[..],
+                    &self.identity.epoch.get().to_string(),
+                    &&self.identity.process_incarnation.as_bytes()[..],
+                ],
+            )
+            .await
+            .map_err(backend)?;
+        if rows.len() > 32 {
+            return Err(Error::InvalidMetadata);
+        }
+        let mut job = None;
+        for row in &rows {
+            let ordinal = revision(row, 1)?;
+            if ordinal <= scan.after_ordinal || ordinal > scan.admission_cut {
+                return Err(Error::InvalidMetadata);
+            }
+            scan.after_ordinal = ordinal;
+            if row.try_get::<_, bool>(2).map_err(metadata)? {
+                job = Some(
+                    fixed::<16>(row, 0)?
+                        .try_into()
+                        .map_err(|_| Error::InvalidMetadata)?,
+                );
+                break;
+            }
+        }
+        if job.is_none() && rows.len() < 32 {
+            scan.after_ordinal = scan.admission_cut;
+        }
+        drop(rows);
+        tx.rollback().await.map_err(backend)?;
+        if self.client.is_closed() {
+            return Err(Error::Unavailable);
+        }
+        self.available = true;
+        Ok(AcquisitionCandidate { scan, job })
     }
 
     /// Internal historical lookup, including after expiry/withdrawal/owner loss.

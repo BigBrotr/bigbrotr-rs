@@ -12,14 +12,20 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mainf705055f27875828ee5a2c17c0badfe4721aef65 equals origin/main (push verified).
-Root-owned nomination candidate is dirty: acquisition/job.rs operational cut and
-result, acquisition_claims.rs deliberate Unavailable RED stub, new example support
-acquisition_candidates.rs and existing reads.py --candidates. No schema change.
-Next commit/transfer exact source for acquisition-scope-read native build, execute
-four candidate cases to observe the missing implementation, then implement the
-bounded32-admission query. Data-loading fixtures do not qualify job acceptance;
-actual expired-claim/next-valid consumption remains required in installed dispatch.
+Maineb96e7412fbfd2bd6922f15dd2c81da800661a84 is one unpublished RED
+candidate ahead of origin/mainf705055f27875828ee5a2c17c0badfe4721aef65.
+Root-owned GREEN candidate now implements nomination in acquisition_claims.rs;
+reads.py fixes baseline preservation and non-monotone job-ID/time oracles. Exact
+eb96e74 native build/Clippy PASS. Actual candidates_sparse RED failed with
+Unavailable instead of Capacity; controller records missing-probe-event because
+the assertion precedes its barrier. Other candidate cases NOT_RUN.
+runs/acquisition-scope-read-eb96e74 buildPID1755270/start429681234,
+enginePID1757938/start429689701; terminal result stopped both PG/client, cleanup
+empty. Original .research/implementation/acquisition-source-read-20261002/candidate-red.
+Next: commit/transfer GREEN, run all four actual candidate cases. Materialized32
+admission batch plus correlated job-key lookup; no physical I/O or capacity claim.
+The fixture deliberately seeds scheduling metadata. Actual expired-claim→next-valid
+consumption remains required in the immediately following installed dispatcher.
 
 The previous boundary closes the bounded source-metadata reader, not M1.
 Exact native build/selector tests/Clippy PASS; eight actual PostgreSQL cases PASS.

@@ -139,14 +139,15 @@ def verify_source_owner(before, after, backend, start_us, end_us, released):
 def seed_candidate(db, ordinal, *, kind='acquisition', state='accepted', revision=1,
                    protocol=1, owner_epoch=None, incarnation=None, resource=None, checkpoint=0):
     """Clone-only scheduling metadata, not a qualified acceptance/claim journey."""
-    identity = f'{ordinal:032x}'
+    identity = {33:'e3'*16,34:'d4'*16,35:'c5'*16,67:'a7'*16}.get(ordinal,f'{ordinal:032x}')
+    created = 1000-ordinal if ordinal<1000 else 1
     decode = lambda value: "decode('%s','hex')" % value if value else 'NULL'
     mutate(db, f"""
         INSERT INTO control.jobs(job_id,dataset_id,principal_id,request_key,request_digest,
             kind,config_revision,policy_revision,created_at_us,state,job_revision,checkpoint_revision,
             owner_resource_id,owner_epoch,owner_incarnation,input_complete,acquisition_job_protocol)
         SELECT decode('{identity}','hex'),dataset_id,decode(repeat('10',16),'hex'),
-            decode('{identity}','hex'),decode(repeat('00',32),'hex'),'{kind}',1,1,1,'{state}',
+            decode('{identity}','hex'),decode(repeat('00',32),'hex'),'{kind}',1,1,{created},'{state}',
             {revision},{checkpoint},{decode(resource)},{owner_epoch or 'NULL'},
             {decode(incarnation)},true,{protocol if protocol is not None else 'NULL'}
         FROM control.datasets;
@@ -164,13 +165,13 @@ def prepare_candidates(db, name, expected):
     require(not rows(db)['jobs'], 'empty-job-fixture')
     expected.update(cancel=name=='candidates_cancel', append=name=='candidates_sparse')
     step = lambda cut, after, job=None, restart=False: dict(
-        restart=restart, result=dict(cut=cut, after=after, job=f'{job:032x}' if job else None))
+        restart=restart, result=dict(cut=cut, after=after, job=job))
     if name == 'candidates_empty':
         expected['steps'] = [step(0,0)]
     elif name == 'candidates_max':
         maximum = 18446744073709551615
         seed_candidate(db, maximum)
-        expected['steps'] = [step(maximum,maximum,maximum)]
+        expected['steps'] = [step(maximum,maximum,'0000000000000000ffffffffffffffff')]
     elif name == 'candidates_cancel':
         seed_candidate(db, 1)
     else:
@@ -190,8 +191,8 @@ def prepare_candidates(db, name, expected):
             if ordinal==41: options = dict(checkpoint=1)
             if ordinal==42: options = dict(revision=2)
             seed_candidate(db, ordinal, **options)
-        expected['steps'] = [step(66,32),step(66,33,33),step(66,34,34),step(66,35,35),step(66,66),
-            step(67,32,restart=True),step(67,33,33),step(67,34,34),step(67,35,35),step(67,67,67)]
+        expected['steps'] = [step(66,32),step(66,33,'e3'*16),step(66,34,'d4'*16),step(66,35,'c5'*16),step(66,66),
+            step(67,32,restart=True),step(67,33,'e3'*16),step(67,34,'d4'*16),step(67,35,'c5'*16),step(67,67,'a7'*16)]
 
 
 def run_case(name):
@@ -335,6 +336,16 @@ def run_case(name):
         inputs = rows(db)
         # External fixture insertion is the only new job/admission. Preserve the
         # original before capture and separately record this read baseline.
+        for table in ('jobs','job_admissions'):
+            require(all(row in inputs[table] for row in before[table])
+                and len(inputs[table])==len(before[table])+1, 'scan-mutated-before-append')
+        added_job = next(row for row in inputs['jobs'] if row not in before['jobs'])
+        added_admission = next(row for row in inputs['job_admissions'] if row not in before['job_admissions'])
+        original_job = next(row for row in before['jobs'] if row['job_id']=='\\x'+'e3'*16)
+        new_id = '\\x'+'a7'*16
+        require(added_job == dict(original_job,job_id=new_id,request_key=new_id,created_at_us=933,xmin=added_job['xmin'])
+            and added_admission == dict(job_id=new_id,admission_ordinal=67,xmin=added_job['xmin']),
+            'unexpected-late-admission')
         before['jobs'] = inputs['jobs']
         before['job_admissions'] = inputs['job_admissions']
         lab.write_json(output / (name+'-read-baseline.json'), before)
