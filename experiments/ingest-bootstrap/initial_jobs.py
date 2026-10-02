@@ -43,14 +43,16 @@ def logged_out(before, after):
         reason=None, requester_database_role=None, requester_os_uid=None)
 
 
-def released(before, after):
+def released(before, after, *, initial=True):
     # Only Control retires. Initial Ingest remains registered for explicit recovery.
     assert set(before) == set(after)
     for table in before:
         if table not in ('owner_epochs', 'role_instances'):
             assert before[table] == after[table], table
-    assert len(before['owner_epochs']) == len(after['owner_epochs']) == 2
-    assert len(before['role_instances']) == len(after['role_instances']) == 2
+    count = 2 if initial else 1
+    assert len(before['owner_epochs']) == len(after['owner_epochs']) == count
+    assert len(before['role_instances']) == len(after['role_instances']) == count
+    assert {r['role'] for r in before['owner_epochs']} == ({'control','ingest'} if initial else {'control'})
     for old in before['owner_epochs']:
         new, = [r for r in after['owner_epochs'] if r['resource_id'] == old['resource_id']]
         omit = {'xmin', 'lease_expires_at_us'}

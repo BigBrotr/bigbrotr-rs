@@ -32993,6 +32993,12 @@
         },
         "source_files_verified": 1654,
         "captured_payloads_verified": 92
+      },
+      "export_compatibility": {
+        "status": "FIXTURE_REVIEW_PENDING_ENGINE_NOT_RUN",
+        "scope": "Ordinary Serve job status query against original pre0022 schema, no native/archive consumer; no positive export requalification",
+        "local": ".research/implementation/initial-jobs-20261002/compat",
+        "build_origin": "runs/initial-ingest-ce85c0c/out/artifacts"
       }
     }
   },

@@ -44,7 +44,8 @@ scope_command_faults = scope_command_relations or scope_command_races or (len(sy
 registration_faults = scope_command_faults or registration_http_faults or registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
 job_actors = len(sys.argv) == 4 and sys.argv[2] == '--installed-job-actors'
 job_expiry = len(sys.argv) == 4 and sys.argv[2] == '--installed-job-expiry'
-jobs_http = job_actors or job_expiry or (len(sys.argv) == 4 and sys.argv[2] == '--installed-jobs')
+export_status = len(sys.argv) == 4 and sys.argv[2] == '--installed-export-status'
+jobs_http = export_status or job_actors or job_expiry or (len(sys.argv) == 4 and sys.argv[2] == '--installed-jobs')
 scope_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-scopes'
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
@@ -164,6 +165,11 @@ if jobs_http:
     report['not_run'] = ['installed job COMMIT/cancellation/authority races',
         'session/credential changes' if job_actors else 'foreign actor and session/credential changes',
         'job delivery/execution/progress/recovery/M1', 'capacity/load/aged-state', 'arm64/release']
+
+if export_status:
+    report['wave'] = 'ordinary-export-status-pre0022'
+    report['not_run'] = ['positive export row decoding/execution (prior evidence remains separate)',
+        'installed acquisition COMMIT/cancellation', 'capacity/load/aged-state', 'arm64/release']
 
 if scope_http:
     report['wave'] = 'installed-acquisition-scope'
@@ -521,6 +527,8 @@ if registration_http:
     success_status = 'PASS_INITIAL_REGISTRATION_HTTP_WAVE'
 if jobs_http:
     success_status = 'PASS_INITIAL_FINITE_JOB_HTTP_WAVE'
+if export_status:
+    success_status = 'PASS_PRE0022_EXPORT_STATUS_QUERY'
 if scope_http:
     success_status = 'PASS_INITIAL_SCOPE_HTTP_WAVE'
 if scope_command_faults:
@@ -644,6 +652,10 @@ try:
         cases = list(CASES)
     elif interruptions:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
+    elif export_status:
+        sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+        from control_status import CASES
+        cases = list(CASES)
     elif jobs_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from initial_jobs import ACTOR_CASES, CASES, EXPIRY_CASES
@@ -702,7 +714,9 @@ try:
             save()
         elif installed:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-            if jobs_http:
+            if export_status:
+                from control_status import run as run_installed
+            elif jobs_http:
                 from initial_jobs import run as run_installed
             elif scope_http:
                 from scopes import run as run_installed

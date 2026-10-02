@@ -8,7 +8,9 @@ import subprocess
 import sys
 import time
 
-config, prefix = map(Path, sys.argv[1:])
+assert len(sys.argv) in (3, 4) and (len(sys.argv)==3 or sys.argv[3]=='control')
+config, prefix = map(Path, sys.argv[1:3])
+roles = ['--roles','control'] if len(sys.argv)==4 else ['--initialize-ingest','--roles','control,ingest']
 assert config.is_absolute() and prefix.is_absolute()
 
 
@@ -23,8 +25,7 @@ def publish(suffix, value):
 
 started = time.monotonic()
 with Path(str(prefix)+'.stdout').open('xb') as out, Path(str(prefix)+'.stderr').open('xb') as err:
-    child = subprocess.Popen(['/build/bigbrotr','serve','--file',str(config),
-                              '--initialize-ingest','--roles','control,ingest'],
+    child = subprocess.Popen(['/build/bigbrotr','serve','--file',str(config),*roles],
                              stdout=out, stderr=err, env={})
     identity = dict(pid=child.pid, start_ticks=Path(f'/proc/{child.pid}/stat').read_text().split()[21],
                     config=str(config), prefix=str(prefix))

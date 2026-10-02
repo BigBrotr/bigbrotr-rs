@@ -12,17 +12,20 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main candidate cf4f48e8bf5f41bf721c0521b7c0ebcdd9d6b83e,
-treea260987d68f487a8eec9cf0f2caa1d37e18657bb; origin0fe2e99. Root sole writer.
-Only evidence/docs dirty after the two-case expiry qualification. Productce85c0c
-unchanged. Both idle expiry and absolute ceiling refuse installed GET and
-historical/new acceptance401 after real PG clock observation. All69 SQL tables
-stay exact except lease renewal; native12 bootstrap rows/CBOR remain. Idle replies
-completed11,662,665us before absolute expiry. Absolute case has coincident stored
-cutoffs, not independent redundant-predicate proof. Clone-only valid short issuance
-keeps ordinary guards; product defaults remain8h absolute/30min idle. No TTL-setting
-or credential-reset/race qualification. Root verified1654 Git files/92 captures;
-read-only review's post-response clock requirement was fixed before execution.
+Main/origin e72ce1b; root sole writer. Previous expiry/actor/HTTP evidence is
+committed and privately pushed. Root-owned dirty compatibility fixture selects
+ordinary Serve with only Control, no native/archive opening, on original pre0022
+64-table template (813 present; acquisition job table/column absent). Real login,
+two job-unavailable404 reads and valid acquisition400 must leave all SQL rows
+unchanged through reads; exact logout/Control release are checked separately.
+This targets old-schema query compatibility, not positive export row/execution.
+Changed fixtures: new control_status{,_client}.py, explicit optional control-only
+installed wrapper, session-client mode, shared release oracle role cardinality,
+and bindings profile. Product ce85c0c unchanged. Python/artifact checks and actual
+prior capture release-oracle regression PASS; read-only review pending. New engine
+NOT_RUN. No active engine/build. Next: finish review, exact-Git fixture candidate,
+execute --installed-export-status reusing ce85c0c artifacts, collect original
+64-table evidence, then installed acquisition acceptance COMMIT/cancellation.
 
 runs/initial-job-expiry-cf4f48e STOPPED/RETAINED: PID1546106/start428394544,
 owner0fd080efde84ae2cf60494c578f29e5f,

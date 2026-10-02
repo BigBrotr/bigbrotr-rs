@@ -13,7 +13,7 @@ import sys
 import time
 
 directory, mode = Path(sys.argv[1]), sys.argv[2]
-assert directory.is_absolute() and mode in ('journey', 'hash-stop', 'hash-disconnect', 'renewal', 'enrollment', 'registration', 'scope', 'jobs')
+assert directory.is_absolute() and mode in ('journey', 'hash-stop', 'hash-disconnect', 'renewal', 'enrollment', 'registration', 'scope', 'jobs', 'export-compat')
 origin = 'http://127.0.0.1:18081'
 password = 'Independent owner password 2026'
 
@@ -233,6 +233,9 @@ elif mode == 'renewal':
     result = dict(login=logged_in, logout=logout(session, saved, auth))
 elif mode == 'jobs':
     from job_client import run
+    result = run(directory, request, login, logout)
+elif mode == 'export-compat':
+    from control_status_client import run
     result = run(directory, request, login, logout)
 elif mode == 'scope':
     from scope_client import run
