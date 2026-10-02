@@ -704,7 +704,8 @@ try:
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
     elif installed:
-        cases = ['pass','zero-topology','expired','policy-archive','existing-directory','registered-only']
+        cases = ['pass','zero-topology','expired','policy-archive','existing-directory','registered-only',
+                 'window-local','window-config','window-policy']
     elif lease:
         cases = ['pass','expired','control-expired','closing','draining','policy-first',
                  'policy-second','delayed','wrong-registration','wrong-control','cancelled']

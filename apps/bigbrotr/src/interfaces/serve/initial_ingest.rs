@@ -1,5 +1,6 @@
 //! Explicit first lifetime. The worker never returns a live native handle.
 mod commands;
+mod dictionaries;
 mod supervision;
 use super::{Result, Stop, duration, owner_error};
 use crate::{
@@ -12,21 +13,19 @@ use bigbrotr::{
     },
     storage::{
         postgres::{
-            control_owner::{ClaimRequest, ControlSession, InitialBatchRequest, OwnerError},
+            control_owner::{ClaimRequest, ControlSession, OwnerError},
             ingest_registry::{InitialRegistration, RegistrationAttempt, RegistrationObservation},
             transport,
         },
         rocks::{
             RocksNativeLimits, RocksNativeSettings,
             manifest::{AllocationNamespaces, IngestManifest, ManifestIdentity},
-            store::{BootstrapLimits, IngestStore},
+            store::IngestStore,
         },
     },
 };
 use bigbrotr_model::{
-    DatasetId, DescriptorLabel, DictionaryDescriptor, DictionaryEntry, DictionaryKind, Digest256,
-    EvidenceIntent, EvidenceIntentLimits, ObservedTime, Ordinal, OwnerEpoch, PolicyEpoch,
-    QualifiedRef, RecoveryGenerationId,
+    DatasetId, DictionaryKind, Digest256, OwnerEpoch, PolicyEpoch, RecoveryGenerationId,
 };
 use serde_json::{Value, json};
 use std::{
@@ -45,8 +44,14 @@ use tokio::{
 
 const MIB: u64 = 1024 * 1024;
 
+struct InitialGrants {
+    native: OwnedPermit,
+    bootstrap: OwnedPermit,
+    private_scope: OwnedPermit,
+}
+
 /// Field order also protects unwind: native close completes before Client Drop.
-/// This value is constructed and destroyed only on the blocking owner thread.
+/// Construct and destroy this value only on the blocking owner thread.
 struct Custody {
     store: Option<IngestStore>,
     owner: ControlSession,
@@ -91,6 +96,12 @@ fn selected(root: &Resolved) -> Result<()> {
         || root.text("administration.assets.directory").is_some()
     {
         return Err((3, "initial Ingest needs local Control/Ingest with archive reader disabled and no export destination, cursor keyring or private assets".into()));
+    }
+    if root.number("ingest.producer_outstanding_requests") < 2 {
+        return Err((
+            3,
+            "initial Ingest needs two outstanding requests for bootstrap and private scope".into(),
+        ));
     }
     Ok(())
 }
@@ -146,8 +157,11 @@ fn required<'a>(root: &'a Resolved, key: &str) -> Result<&'a str> {
 pub(super) fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
     selected(&root)?;
     let budget = budget(&root)?;
-    let native = grant(&budget, 0, native_limits().native_allowance_bytes())?;
-    let bootstrap = grant(&budget, 8 * MIB, 4 * MIB)?;
+    let initial = InitialGrants {
+        native: grant(&budget, 0, native_limits().native_allowance_bytes())?,
+        bootstrap: grant(&budget, 8 * MIB, 4 * MIB)?,
+        private_scope: dictionaries::reserve_private(&budget)?,
+    };
     let inputs = grant(&budget, 24 * MIB, 0)?;
     let (prepared, control_grant) = postgres_command::prepare_control_shared(
         &root,
@@ -181,7 +195,7 @@ pub(super) fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
             // The parent keeps driving current-thread I/O/timers while this
             // owner parks on async SQL or blocks in native open/write/close.
             let _inputs = inputs;
-            handle.block_on(own(root, client, native, bootstrap, budget, progress, worker_cancel))
+            handle.block_on(own(root, client, initial, budget, progress, worker_cancel))
         });
         let (terminal, interrupted) = match supervision::collect(&mut worker, &mut observed,
             &cancellation, stop.requested(), grace, |report| output.emit(report, false)).await {
@@ -245,8 +259,7 @@ fn phase(progress: &watch::Sender<Progress>, timeout: std::time::Duration) -> Re
 async fn own(
     root: Resolved,
     client: tokio_postgres::Client,
-    native: OwnedPermit,
-    bootstrap: OwnedPermit,
+    initial: InitialGrants,
     budget: ResourceBudget,
     progress: watch::Sender<Progress>,
     cancellation: Arc<Cancellation>,
@@ -285,7 +298,6 @@ async fn own(
         lease_ttl: duration(&root, "lease_ttl"),
     };
     let timeout = duration(&root, "renewal_timeout");
-    let ttl = duration(&root, "authorization_ttl");
     let commit = Cell::new(false);
     let mut outstanding = u64::MAX;
     phase(&progress, timeout)?;
@@ -390,76 +402,24 @@ async fn own(
         ));
     }
     custody.store = Some(
-        IngestStore::initialize(path, manifest, native_limits(), native)
+        IngestStore::initialize(path, manifest, native_limits(), initial.native)
             .map_err(|e| (4, e.to_string()))?,
     );
-    let public = QualifiedRef {
-        dataset_id: dataset,
-        dictionary_kind: DictionaryKind::VisibilityScope,
-        allocation_domain: manifest
-            .allocation_namespaces()
-            .domain(DictionaryKind::VisibilityScope)
-            .unwrap(),
-        ordinal: Ordinal::new(1).unwrap(),
-    };
-    let dictionaries = ["public", "private"]
-        .into_iter()
-        .enumerate()
-        .map(|(index, label)| {
-            DictionaryEntry::new(
-                QualifiedRef {
-                    ordinal: Ordinal::new(index as u64 + 1).unwrap(),
-                    ..public
-                },
-                DictionaryDescriptor::Visibility {
-                    class: DescriptorLabel::new(label.into()).unwrap(),
-                },
-            )
-            .unwrap()
-        })
-        .collect();
-    let intent = EvidenceIntent::new(
-        1,
-        public,
-        dictionaries,
-        EvidenceIntentLimits {
-            max_entries: 2,
-            max_encoded_intent_bytes: 8192,
-            max_validation_scratch_bytes: 1024,
-        },
+    let (public, private) = dictionaries::initialize(
+        &mut custody,
+        &spec,
+        &root,
+        &progress,
+        &cancellation,
+        initial.bootstrap,
+        initial.private_scope,
     )
-    .map_err(|e| (3, format!("initial dictionaries refused: {e:?}")))?;
-    phase(&progress, timeout)?;
-    let receipt = bounded(timeout, &cancellation, async {
-        custody
-            .owner
-            .bootstrap_initial_dictionaries(
-                custody.store.as_mut().unwrap(),
-                InitialBatchRequest {
-                    ingest_root: path,
-                    registration: &spec,
-                    intent: &intent,
-                    recorded_at: ObservedTime::new(spec.created_at_us),
-                    limits: BootstrapLimits {
-                        max_mappings: 2,
-                        max_batch_bytes: MIB as usize,
-                    },
-                    policy_ttl: ttl,
-                    cancelled: &cancellation.requested,
-                },
-                bootstrap,
-                |doc, digest| validate(&root, doc, digest),
-            )
-            .await
-            .map_err(|e| (4, e.to_string()))
-    })
     .await?;
-    drop(receipt);
     let report = json!({"format":"bigbrotr-initial-ingest/1","state":"initialized",
         "dataset_id":dataset,"owner_resource_id":spec.ingest_resource_id,"producer_slot_id":spec.producer_slot_id,
         "recovery_generation":manifest.identity().recovery_generation,
-        "topology_generation":spec.target_topology().unwrap().get().to_string(), "public_scope":public,
-        "native_profile":1,"native_allowance_bytes":128*MIB,"dictionary_count":2,
+        "topology_generation":spec.target_topology().unwrap().get().to_string(), "public_scope":public, "private_scope":private,
+        "native_profile":1,"native_allowance_bytes":128*MIB,"dictionary_count":3,
         "acquisition":"not-started","ready":false});
     commands::maintain(
         &mut custody.owner,

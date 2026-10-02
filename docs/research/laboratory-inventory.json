@@ -33792,6 +33792,85 @@
           "captured_files_verified": 52
         }
       }
+    },
+    "initial_private_scope": {
+      "status": "IMPLEMENTING_AFTER_INSTALLED_RED",
+      "local": ".research/implementation/initial-private-scope-20261002",
+      "red": {
+        "source": "ba1419646310e1b59d4c7d9ed4a5a88fa614e69f",
+        "build_source": "c0fb44e0f71c6527ab028faef5a398927993ae97",
+        "launch": {
+          "source": "ba1419646310e1b59d4c7d9ed4a5a88fa614e69f",
+          "tree": "bfe9df046860732f2868e80f308640d9109ab925",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-private-ba14196",
+          "pid": 1672908,
+          "start_ticks": "429289592",
+          "bundle_sha256": "fd4e94a39bc79cf23d138bf640a1f985fe9da73bc053edd25bc15c9fbc213506"
+        },
+        "owner": "55e5394c4e9097fbfcf08f6c3c552168",
+        "client": {
+          "id": "29d0eadc60f0bfaed89c2bc85e607c31e69d43cc3746c81f3ce1cf2e2d30b6a0",
+          "name": "bigbrotr-acquisition-binding-ba14196"
+        },
+        "databases": [
+          "bb_scope_bind_ba14196_pass"
+        ],
+        "result": "Expected missing private append: actual installed CLI stopped cleanly with12 original rows; independent17-row expectation failed. Remaining cases NOT_RUN.",
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "ba1419646310e1b59d4c7d9ed4a5a88fa614e69f",
+          "observed_at": "2026-10-02T03:13:58.442480+00:00",
+          "prior_unchanged": 1060,
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "name": "fetch",
+              "id": "b64e1b0fa9f7266b736bc9e8221ca394c6b7d783b32df4c8d855d658f8fb131f",
+              "exit": 0
+            },
+            {
+              "name": "native",
+              "id": "a648bfa003088750b3bd74a5fa7f8ff3d65596df96f19d00820243a85b9e5d6c",
+              "exit": 0
+            },
+            {
+              "name": "client",
+              "id": "29d0eadc60f0bfaed89c2bc85e607c31e69d43cc3746c81f3ce1cf2e2d30b6a0",
+              "exit": 143
+            },
+            {
+              "name": "postgres",
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            }
+          ],
+          "source_files": {
+            "ba1419646310e1b59d4c7d9ed4a5a88fa614e69f": 1667,
+            "c0fb44e0f71c6527ab028faef5a398927993ae97": 1667
+          },
+          "build_reuse_changed": [
+            "docs/implementation/02-storage.md",
+            "docs/implementation/evidence/p02-dictionary-append-native-20261002.json",
+            "docs/implementation/progress.md",
+            "docs/reference/ingest-store.md",
+            "docs/research/laboratory-inventory.json",
+            "docs/specification/dictionary-descriptors.md",
+            "experiments/acquisition-scope/bindings.py",
+            "experiments/ingest-bootstrap/installed.py"
+          ],
+          "artifacts_verified": true,
+          "compiler_lock_released": true,
+          "free_bytes": 55009288192,
+          "server": {
+            "version": "160015",
+            "fsync": "on",
+            "full_page_writes": "on",
+            "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+          }
+        },
+        "source_files_verified": 1667,
+        "captures_verified": 32
+      }
     }
   },
   "implementation_relay_registry_20260928": {

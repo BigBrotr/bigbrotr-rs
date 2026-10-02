@@ -12,15 +12,22 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main9e22986d4de23c094cce37cf1ce35506886de82d; origin/main identical, verified.
-Root sole writer. Dirty installed private-scope contract/oracle; product unchanged.
-Next run the independent17-row/five-new-key expectation against retainedc0fb44e
-CLI on isolated PG/Rocks (expected RED), then implement startup private3 append2.
-Preserve original bootstrap input/receipt. Publish private_scope only after outcome;
-refuse accepted outstanding windows below2 before registry/native work.
-This is a concrete prerequisite for a local private signed socket, since public
-visibility on a private route is forbidden. It is P02-T03/P03-T01/M1 work, not a
-new visibility-management subsystem. No build/engine active at last audit below.
+Mainba1419646310e1b59d4c7d9ed4a5a88fa614e69f; origin/main9e22986. Root sole writer.
+Installed private-scope RED ran exactc0fb44e CLI against fixtureba14196: original12
+native rows versus independent17 expected. CLI stopped cleanly; original source,
+32 captures and1667 Git files verified. No later case ran. runs/initial-private-ba14196
+STOPPED/RETAINED:PID1672908/start429289592,owner55e5394c4e9097fbfcf08f6c3c552168,
+client29d0eadc stopped143/PG71775507 stopped0/noOOM. Audit03:13:58UTC:1060 prior
+unchanged,eight unrelated running,compiler lock free,55,009,288,192B free.
+
+Dirty product: same-owner startup preserves bootstrap1 then fixed private3 append2;
+report publishes private_scope only after durable delivery. Dedicated dictionaries
+module keeps both operations explicit; startup reserves all grants before mutation.
+Both accepted documents/local selected profile refuse fewer than2 window slots.
+Added local/config/policy single-slot practical negatives; build/engine NOT_RUN.
+Next exact-Git native build, then nine installed lifetime cases and appended
+reservation/outcome COMMIT cuts. Do not claim installed private scope until actual
+CLI/native/SQL results match. This is P02-T03/P03-T01/M1 work, no new visibility API.
 18ed28a preparation native GREEN:13 append/preparation,5 bootstrap,11 recovery
 PASS; actual CLI/probe build and Clippy PASS. Intentional818 RED remains retained.
 runs/dictionary-append-18ed28a STOPPED/RETAINED:PID1656405/start429175471,

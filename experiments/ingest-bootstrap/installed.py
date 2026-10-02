@@ -42,6 +42,8 @@ def policy_setup(pg, database, name, rows, output, administration=False):
         if name == 'policy-archive':
             document['settings']['archive.reader.enabled'] = True
         document['settings']['ingest.producer_outstanding_requests'] = 64 if table == 'config_revisions' else 32
+        if (name == 'window-config' and table == 'config_revisions') or (name == 'window-policy' and table == 'policy_revisions'):
+            document['settings']['ingest.producer_outstanding_requests'] = 1
         encoded = json.dumps(document, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
         digest = hashlib.sha256(b'bigbrotr/product-policy/2\0'+encoded).hexdigest()
         statements.append(f"UPDATE control.{table} SET document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb, document_digest=decode('{digest}','hex')")
@@ -192,6 +194,8 @@ def configure(text,before,name):
         ('runtime.processes.application','completion_reserve_bytes','32MiB'),
     ]:
         text = set_value(text,section,key,value)
+    if name == 'window-local':
+        text = set_value(text, 'ingest', 'producer_outstanding_requests', 1)
     return text
 
 
@@ -275,7 +279,10 @@ def run(pg,client,output,database,name,rows):
         assert ended['exit_code']==3 and not messages(prefix)
         reason = {'policy-archive':'Control backend operation failed: InvalidPolicy',
                   'registered-only':'Control backend operation failed: IncompatibleDeployment',
-                  'existing-directory':'initial Ingest target exists or cannot be inspected'}[name]
+                  'existing-directory':'initial Ingest target exists or cannot be inspected',
+                  'window-local':'initial Ingest needs two outstanding requests',
+                  'window-config':'Control backend operation failed: InvalidPolicy',
+                  'window-policy':'Control backend operation failed: InvalidPolicy'}[name]
         assert reason in Path(str(prefix)+'.stderr').read_text(), 'wrong-refusal-reason'
         after = rows(database)
         if name=='registered-only':
@@ -293,7 +300,7 @@ def run(pg,client,output,database,name,rows):
         if name=='existing-directory':
             assert list((output/name/'store').iterdir())==[output/name/'store/sentinel']
             assert (output/name/'store/sentinel').read_bytes()==b'original partial state'
-        if name=='policy-archive':
+        if name in ('policy-archive','window-local','window-config','window-policy'):
             assert not (output/name/'store').exists()
     lab.write_json(output/(name+'-after.json'),after)
     assert lab.sql(pg,database,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'")=='0'
