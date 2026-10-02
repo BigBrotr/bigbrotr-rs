@@ -63,11 +63,17 @@ def run(pg, client, output, database, name, rows, setup, initialized, before):
         lab.write_json(output / (name + '-ordinary-after.json'), rows(database))
     assert ended['exit_code'] == 0 and not Path(str(prefix) + '.stderr').read_text()
     after = rows(database)
+    final_catalog = catalog_rows(pg, setup['resource']['catalog_database'])
+    final_roles = global_roles(pg)
+    final_files = {n: files(home / n) for n in ('data', 'state')}
+    lab.write_json(output / (name + '-ordinary-catalog.json'), final_catalog)
+    lab.write_json(output / (name + '-ordinary-roles.json'), final_roles)
+    lab.write_json(output / (name + '-ordinary-files.json'), final_files)
     from installed_archive_export_oracle import validate
     product = validate(before, after, home, initialized, setup['resource']['catalog_id'])
-    assert catalog_rows(pg, setup['resource']['catalog_database']) == catalog
-    assert global_roles(pg) == roles
-    assert {n: files(home / n) for n in ('data', 'state')} == archives
+    assert final_catalog == catalog
+    assert final_roles == roles
+    assert final_files == archives
     assert not list((home / 'scratch').iterdir())
     for db in (database, setup['resource']['catalog_database']):
         assert lab.sql(pg, db, 'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()') == '0'

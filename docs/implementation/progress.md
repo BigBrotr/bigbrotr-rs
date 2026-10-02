@@ -93,12 +93,23 @@ Root installed-archive-export-49b8113, owner8b7fb9e8c64cc800395f7a7bb1e68436,
 client9bd0c5b331ad27cb72a9528026ec9781d6a0eeb344ecbfd3abfc9d8ff2cfd46d.
 All owned processes/PG stopped-retained, no OOM/cleanup/unrelated changes.
 
-Next bounded action: rerun only --installed-archive-export using documented1GiB
-read and export operation caps in both initial accepted fixture documents.
-Product/1GiB application/2GiB native envelopes and256MiB output cap unchanged;
-five exports under256MiB remain required and unqualified. No old data changed.
-Three scoped permissions use real reauthentication/grant HTTP. Compare all69
-Control tables, original archive bytes, signed JSONL and complete manifest.
+Fixture0d38738 with documented1GiB read/export caps completed actual signed
+history, HTTP export acceptance/retry and succeeded job with353-byte JSONL.
+Final host oracle failed because it required the revoked old browser session to
+survive new login; browser_sessions::issue explicitly deletes revoked sessions.
+Original engine status remains FAIL.247 captures/hash8f96ba3c784987a6220d5ec25f4d8f66dc0bd49179dd49a508cc115f9f40f391
+under ignored initial-archive-20261002/export-native-profile are retained; all1697
+Git files/four original Archive headers verified. Corrected local export oracle
+replay PASS with seven negative controls, unchanged original files/SQL captures.
+353-byte SHA71fcfc6cf6ea29b2464cfe9f41aa749180b4f458b79b44779f94bc65880eefa9.
+Both latest labs/borrowed PG stopped, no cleanup errors or unrelated changes.
+
+Next bounded action: one focused final installed export run with corrected
+session-retirement expectation and captures of final catalog/roles/files before
+assertions. No product changes/rebuild;1GiB application/2GiB native envelopes,
+256MiB output cap,1GiB read/export operation caps. This closes only the selected
+tiny installed journey, not five exports under256MiB or full M1. Preserve original
+FAIL outcomes; record actual final result before task/docs/inventory closure.
 
 Next useful deliverable: ordinary Control restart serving/exporting this same
 archived signed event, P01-T09 Step3 with P08-T04 Step3 and existing private

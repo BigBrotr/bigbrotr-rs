@@ -12,8 +12,16 @@ def validate(before, after, home, initialized, catalog_id):
     assert set(before) == set(after) and len(after) == 69
     assert all(before[t] == after[t] for t in before.keys() - mutable)
     for table in ('owner_epochs', 'role_instances', 'jobs', 'job_admissions',
-        'management_audit', 'management_commands', 'browser_sessions'):
+        'management_audit', 'management_commands'):
         assert all(r in after[table] for r in before[table]), table
+    # Login removes the actor's previously revoked session. Audit history stays
+    # immutable; session retention must not be confused with scientific history.
+    old_session, = before['browser_sessions']
+    session, = after['browser_sessions']
+    assert old_session['revoked_at_us'] is not None and session['revoked_at_us'] is not None
+    assert old_session['session_id'] != session['session_id']
+    assert old_session['principal_id'] == session['principal_id'] == '\\x' + '10'*16
+    assert session['issued_at_us'] >= old_session['revoked_at_us']
     owners = [r for r in after['owner_epochs'] if r not in before['owner_epochs']]
     owner, = owners
     assert owner['role'] == 'control' and owner['state'] == 'released'
