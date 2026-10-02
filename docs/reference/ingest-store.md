@@ -95,7 +95,7 @@ through completion and join it before replacement. Timing out or dropping an
 async join handle cannot release these resources or prove native exclusion.
 There is no unsafe interrupt or fictitious cancellation guarantee in this API.
 
-### Historical manifest inspection (implementation in progress)
+### Historical manifest inspection
 
 The installed recovery consumer needs the original manifest from the actual store,
 without manufacturing an expected old process incarnation. The selected bounded
@@ -112,8 +112,12 @@ The next registry loader must compare all original registration coordinates and
 policy digests before the existing closing/resolution methods can act. Neither
 inspection nor a matching historical row permits successor admission, infers a
 missing request's outcome or certifies recovery provenance. Native engine open
-may still update housekeeping files as described above. The new native tests
-are proposed evidence until their exact revision executes on the actual binding.
+may still update housekeeping files as described above. The
+[native inspection evidence](../implementation/evidence/p02-ingest-store-linux-20260918.json)
+records 12 actual RocksDB tests, build and Clippy at20e0e5e on Linux amd64.
+This includes independent second-process lock refusal/release, full historical
+identity and unchanged logical rows. The registry loader and installed recovery
+remain separate unfinished consumers.
 
 A new process obtains a fresh incarnation, so its new expected manifest does not
 match an old one automatically. Restart, handoff, restore and policy/topology

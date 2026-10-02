@@ -92,7 +92,7 @@
   "lifecycle": "Container stopped-retained after successful run. Root later updated resources.json from planned-build-and-tests to observed completed-build-and-workspace-tests; the audit preserves its earlier observation.",
   "historical_inspection_20261002": {
     "scope": "P02-T02 Step4 prerequisite for P01-T09 Step4: retained manifest inspection under exclusive native custody, not installed restart or successor authority",
-    "status": "IMPLEMENTATION_PENDING_NATIVE_VERIFICATION",
+    "status": "PASS_NATIVE_INSPECTION_ONLY",
     "red": {
       "label": "inspect-red",
       "source": "986c0f38cdd5b2554c2db56e1736fdd4df8c318c",
@@ -114,10 +114,29 @@
       "inspection": "open_cf_descriptors_internal/open_raw and DBCommon drop inspected in the exact cached source. Binding open creates the directory before FFI, so application preflight remains required; no new exclusion guarantee is inferred."
     },
     "not_run": [
-      "Positive historical inspection under the new implementation",
       "Connected historical registry loader and installed recovery",
       "Successor activation, signed resend/replay, recovery provenance and complete M1",
-      "Native arm64, mixed/aged workloads, capacity or release qualification"
-    ]
+      "Native arm64, mixed/aged workloads, capacity or release qualification",
+      "macOS-specific case-alias fixture excluded on Linux; no new Mac build or platform qualification"
+    ],
+    "green": {
+      "label": "inspect-green",
+      "source": "20e0e5e60527b0041c4ea0e202dade17af874d6c",
+      "files": 1697,
+      "captures": 15,
+      "capture_sha256": "764cdcc6f8c4514a5b2d3e912bbdb860797872b729e799b6d5e5e789c40818d4",
+      "tree": "58ea843025746e0ff119c0161f86a8983c9ed9e5",
+      "status": "PASS",
+      "checks": "12 actual RocksDB tests, release CLI/probe build and Clippy -D warnings",
+      "binary_sha256": "b2fd501f5f37c54f68adcb953f268ce292de169644e4823109617ccb418f173e",
+      "probe_sha256": "0888e6b69243f5ab23e5d668a1f475b75b030456afeecb0f5278ee2454a2c0e4",
+      "test_executables_sha256": {
+        "rocks_store": "79623d2bb0a9f23cadd5ebd68ecb731b5adde8e183c5fa9e3ea9405ce2bf6651"
+      },
+      "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+      "source_manifest_sha256": "f1eb2ff672ca8471311dbc2b2bbe3d2303f3ab860bbf452b4b35ff2afa26c950",
+      "raw_root": ".research/implementation/ingest-recovery-20261002/inspect-green"
+    },
+    "review": "Root read complete native owner, manifest and regression fixtures plus relevant recovery callers; actual terminal/test results and exact source/capture hashes checked. Final executables separately rehashed on Tux. Tests retain complete logical application rows; temporary test DBs are removed by tempfile, and native housekeeping may change. No independent AI review in this boundary."
   }
 }

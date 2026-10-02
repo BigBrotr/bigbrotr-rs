@@ -36206,7 +36206,7 @@
     },
     "ingest_recovery_inspection": {
       "owner": "root",
-      "status": "RED_RETAINED_IMPLEMENTATION_PENDING",
+      "status": "PASS_NATIVE_INSPECTION_ONLY",
       "raw_root": ".research/implementation/ingest-recovery-20261002",
       "evidence": "docs/implementation/evidence/p02-ingest-store-linux-20260918.json",
       "red": {
@@ -36241,7 +36241,43 @@
           "capture_sha256": "cc914e3cdea5a1e3c7bf56e67c08233797e985984ab55180cbe46bdc7a20f4d5"
         }
       },
-      "preserve": "Original source, logs and terminal receipts; shared network-1154757 cache remains under its exclusive lock. No native fixture data existed because the RED failed compilation."
+      "preserve": "Original source, logs and terminal receipts; shared network-1154757 cache remains under its exclusive lock. No native fixture data existed because the RED failed compilation.",
+      "green": {
+        "source": "20e0e5e60527b0041c4ea0e202dade17af874d6c",
+        "tree": "58ea843025746e0ff119c0161f86a8983c9ed9e5",
+        "owner": "8709104e341845596562d6210773c5be",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-20e0e5e",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "1465fdadd54f7305ab4c824e964f699809a91b20d7917cb31b59eb6cec722dea"
+          },
+          {
+            "name": "native",
+            "id": "1d8672a3bd4b321c10080b5fc752780d83fa31725d0c862677c91c16c6bfcebb"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-02T09:31:27.938271+00:00",
+        "qualification": "PASS_INGEST_RECOVERY_INSPECTION",
+        "inventory_changed": [],
+        "free_bytes_after": 70842552320,
+        "finished_at": "2026-10-02T09:32:54.840614+00:00",
+        "capture": {
+          "label": "inspect-green",
+          "source": "20e0e5e60527b0041c4ea0e202dade17af874d6c",
+          "files": 1697,
+          "captures": 15,
+          "capture_sha256": "764cdcc6f8c4514a5b2d3e912bbdb860797872b729e799b6d5e5e789c40818d4"
+        },
+        "retained_artifacts": {
+          "rocks_store": "79623d2bb0a9f23cadd5ebd68ecb731b5adde8e183c5fa9e3ea9405ce2bf6651"
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {

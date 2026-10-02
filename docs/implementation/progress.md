@@ -12,8 +12,8 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main986c0f3 is one unpublished candidate ahead of pushed18e10df.
-Root owns the historical-inspection implementation and its evidence/inventory edits;
+Primary main20e0e5e is two unpublished candidates ahead of pushed18e10df.
+Root owns the historical-inspection evidence/inventory/reference/checkpoint edits;
 no merge/rebase or active BigBrotr build/lab. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
@@ -172,14 +172,20 @@ dataset, missing/unknown/oversized manifest and resource refusal. A focused
 ingest-recovery profile reuses the existing exact-source/cache/terminal runner.
 Actual native RED986c0f3 failed compilation at the absent inspect API (exit101);
 no engine tests ran. Eleven captured files and all1697 source files matched hashes.
-The shared existing-open implementation is now written; rustfmt/diff checks pass,
-but native GREEN is NOT_RUN. Next commit the reviewed candidate and run the same
-focused ingest-recovery profile on Tux, retaining strict identity/no-admission rules.
+Native GREEN20e0e5e/tree58ea8430 passes12 actual RocksDB tests, CLI/probe build
+and Clippy. Independent child process refuses held LOCK and succeeds after drop;
+full historical identity and logical rows survive. Strict reopen still checks
+all coordinates, and no recovery-to-admission conversion exists. Root verified
+all1697 source files/15 captures and retained test/CLI/probe executable hashes.
 Report: p02-ingest-store-linux-20260918.json historical_inspection_20261002; inventory
-implementation_network_20260928.ingest_recovery_inspection. RED root
-ingest-recovery-986c0f3 owner746d3afe07d9f203856447bc43553133 is stopped/retained.
-Fresh resumption check: no BigBrotr build/lab active,8 unrelated containers;
-Tux71,009,042,432B free and Mac2,709,032KiB. No local Rust build/cache deletion.
+implementation_network_20260928.ingest_recovery_inspection. Both RED and GREEN
+are stopped/retained, no OOM/unrelated changes. GREEN owner8709104e341845596562d6210773c5be,
+root ingest-recovery-20e0e5e. Tux70,842,552,320B free; no local build/cache deletion.
+Structural decision: one shared existing-open path; fixed manifest decoding stays
+under native exclusion, without another receipt, trait or persistent format.
+Next implement the bounded historical registry loader and its actual PostgreSQL
+fixture, then connect installed recovery. Read source/topology/allocation/producer
+DDL and reservation guard; complete registry and close/resolve owners inspected.
 Registry loader and source/topology/producer SQL reading follow this native boundary. Source epoch closure,
 recovery provenance, old-owner exclusion, bounded retained-input set and exact
 COMMIT ambiguity must remain explicit; do not infer noncommit from missing detail.
