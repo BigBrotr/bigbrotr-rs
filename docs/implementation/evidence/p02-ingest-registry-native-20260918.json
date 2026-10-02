@@ -290,6 +290,15 @@
       "capture_sha256": "3c3c8a5573c8a49e2840e8e05d6fc4b0d6ec847735b49c43eccba5e150c13f38",
       "status": "PASS",
       "checks": "release build, three actual CLI tests, Clippy"
+    },
+    "fixture_compile_87ed207": {
+      "label": "registry-build-roots",
+      "source": "87ed207f6e6fc4d70f969c7bc82806c2782a8cbd",
+      "files": 1700,
+      "captures": 11,
+      "capture_sha256": "0b2c660252b69a2d96ab6af975950f4a02068d70848de8a90d8a804967c3d77a",
+      "status": "FAIL",
+      "reason": "Fixture referenced a nonexistent model InstanceId. Compile E0425; no engines ran. Parse the configured plain nonzero16-byte instance in the finite fixture. Product loader unchanged."
     }
   }
 }

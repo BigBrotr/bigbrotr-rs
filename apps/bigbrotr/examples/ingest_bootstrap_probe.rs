@@ -917,10 +917,7 @@ fn main() {
                     &args[1],
                     Path::new(&args[4]),
                     args[5].parse().unwrap(),
-                    *args[6]
-                        .parse::<bigbrotr_model::InstanceId>()
-                        .unwrap()
-                        .as_bytes(),
+                    ingest_history::configured_instance(&args[6]),
                 )
                 .await;
             } else if args[1].starts_with("recovery-process-") {

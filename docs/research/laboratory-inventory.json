@@ -36408,6 +36408,38 @@
           "capture_sha256": "58b072217c524d7c27d57fa89f01fb6eed53918bdfad633f20763a69bfd8d09e",
           "cases": []
         }
+      },
+      "fixture_compile_87ed207": {
+        "source": "87ed207f6e6fc4d70f969c7bc82806c2782a8cbd",
+        "tree": "1155ecc6827238118bf69540b85e574e60003437",
+        "owner": "c9580f6b28361df2ef1a35da6530eba9",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-87ed207",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "046544ff5ff97a8b7ed60e0248625434cc3f5e03c816e20e9b1e420541d26357"
+          },
+          {
+            "name": "native",
+            "id": "f64b61796667653e2c8e3e05046e2ab8a6ce2eebfeb85795f7c71ecb6b93d5c8"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-02T09:55:43.149349+00:00",
+        "inventory_changed": [],
+        "free_bytes_after": 70342434816,
+        "finished_at": "2026-10-02T09:56:33.985619+00:00",
+        "capture": {
+          "label": "registry-build-roots",
+          "source": "87ed207f6e6fc4d70f969c7bc82806c2782a8cbd",
+          "files": 1700,
+          "captures": 11,
+          "capture_sha256": "0b2c660252b69a2d96ab6af975950f4a02068d70848de8a90d8a804967c3d77a"
+        }
       }
     }
   },

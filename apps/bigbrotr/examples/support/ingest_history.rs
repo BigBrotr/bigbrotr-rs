@@ -60,3 +60,11 @@ pub async fn run(
     drop(recovery);
     emit(message);
 }
+
+// The configured instance is a plain nonzero16-byte value, not a model ID type.
+pub fn configured_instance(text: &str) -> [u8; 16] {
+    assert!(text.len() == 32 && text.bytes().all(|b| b.is_ascii_hexdigit()));
+    let bytes = std::array::from_fn(|i| u8::from_str_radix(&text[2 * i..2 * i + 2], 16).unwrap());
+    assert_ne!(bytes, [0; 16]);
+    bytes
+}

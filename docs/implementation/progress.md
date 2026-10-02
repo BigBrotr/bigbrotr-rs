@@ -12,7 +12,7 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main17dd712 is three unpublished candidates ahead of pusheda10455c. Root
+Primary main87ed207 is four unpublished candidates ahead of pusheda10455c. Root
 owns the historical-registry loader, engine fixtures and evidence/inventory edits;
 no merge/rebase or active BigBrotr build/lab. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
@@ -201,7 +201,9 @@ fixture arguments only; product guard remains unchanged. All69 tables/native row
 unchanged across refusal. Engine STOPPED/RETAINED owner ee5d94864d996fe7217c5d91a6522c8a,
 root ingest-history-engine-17dd712;36 captures/1700 source files verified. No OOM
 or unrelated changes; Tux70,434,107,392B. Next rebuild corrected probe and execute
-the ten-case wave; registry outcomes still NOT_RUN. No fresh
+the ten-case wave; registry outcomes still NOT_RUN. Candidate87ed207 failed
+compilation because the fixture referred to a nonexistent InstanceId; corrected
+to a bounded plain16-byte decoder. Original11 captures retained, no engine run. No fresh
 admission or installed recovery command is qualified by a metadata read. Read source/topology/allocation/producer
 DDL and reservation guard; complete registry and close/resolve owners inspected.
 Registry loader and source/topology/producer SQL reading follow this native boundary. Source epoch closure,
