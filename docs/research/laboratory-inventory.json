@@ -37167,7 +37167,7 @@
           },
           "source_archive_sha256": "712f366cf41483cce06caa8fc1bfb411e0d762580eada747bb01ea4e270a929e"
         },
-        "next": "Qualify additive0028 ordinary job compatibility and retained gap atomicity, then abandonment fault/limit cases and producer/domain retirement",
+        "next": "Actual abandonment INSERT/SIGTERM and COMMIT/deadline recovery, then initial producer/domain retirement",
         "ordinary_job_red": {
           "source": "b14489ddedb1599e67f5d80176d93ae4dd3c7e8f",
           "status": "FAIL",
@@ -37353,6 +37353,42 @@
             ]
           },
           "preserve": "Retain deliberately broken gap_relations clone after negative control. Its gap INSERT completion trigger is intentionally absent; never reuse as a valid product environment."
+        },
+        "limit_engine": {
+          "source": "97f9a8d7419326c026893d0e3161efc69073aa45",
+          "status": "PASS_INSTALLED_ACQUISITION_ABANDONMENT_LIMITS",
+          "owner": "b540b44b0fec26d95c48ee80cef212a3",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "900447f3f66ab8052020c6d65b3846ed6b27d56447cf704017c05857d263146c",
+            "name": "bigbrotr-acquisition-binding-97f9a8d"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_97f9a8d_abandon_limit_64",
+            "bb_scope_bind_97f9a8d_abandon_limit_65",
+            "bb_scope_bind_97f9a8d_gap_populated_upgrade"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 67656880128,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-97f9a8d",
+          "state": "stopped-retained",
+          "capture": {
+            "label": "abandonment-limits",
+            "source": "97f9a8d7419326c026893d0e3161efc69073aa45",
+            "build_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+            "status": "PASS_INSTALLED_ACQUISITION_ABANDONMENT_LIMITS",
+            "captures": 55,
+            "capture_sha256": "287658455609bba7bcdee1f6e6dfb141f58907ae3e611516b73e622e3934d577",
+            "cases": [
+              {
+                "name": "acquisition-abandonment-signed",
+                "status": "PASS"
+              }
+            ]
+          }
         }
       }
     }

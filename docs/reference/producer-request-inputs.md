@@ -546,7 +546,11 @@ job immutability retain atomicity. The prior six abandonment observations remain
 valid for their scoped recovery grants. Product20ce916 now passes ordinary26/28 HTTP acceptance and28 signed Sync with
 old grants, plus27 startup refusal for both consumers. Fixture0137713 adds actual28
 abandonment/retry, eight raw incomplete/immutable transaction refusals, and a
-discriminating missing-trigger negative. All70 rows/xmin roll back on refusal.
+discriminating missing-trigger negative. All70 tables retain their rows/xmin on refusal.
 The original64fda0f SET ROLE fixture setup failure remains recorded; the correction
 uses a real application login with explicitly synthetic backend preparation.
-Abandonment interruption/count verification remains pending; see the same report.
+Fixture97f9a8d also checks the64/65 boundary, including64 retained gaps plus one
+queued intent, and preserving populated27→28 migration/reapply/recovery. Excessive
+history refuses without partial job/gap writes. The additional jobs are synthetic
+complete relational inputs, not a throughput measurement. Abandonment interruption
+verification remains pending; see the same report.

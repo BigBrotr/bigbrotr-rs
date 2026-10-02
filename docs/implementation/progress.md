@@ -12,8 +12,8 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is0137713, seven unpublished coherent candidates after pushedf996628.
-Root owns the next count/upgrade fixture and bounded evidence update; no parallel writer or active
+Primary main is97f9a8d, eight unpublished coherent candidates after pushedf996628.
+Root owns the interruption fixture and bounded evidence update; no parallel writer or active
 experiment. The0027 ordinary job grant regression is confirmed by fixtureb14489d
 and corrected additively in20ce916; original FAIL37captures/SHAbb5b21d1 is retained.
 No applied SQL/checksum was changed. New0028 removes only the redundant deferred
@@ -49,6 +49,13 @@ origin replication is restored before all DML. Root matched1714 source files,
 raw effects. Original setup FAIL remains. Preserve the deliberately broken
 bb_scope_bind_0137713_gap_relations clone; never reuse it as a valid deployment.
 Engine/borrowedPG stopped, no OOM/cleanup/unrelated changes; Tux67,762,077,696B free.
+Fixture97f9a8d PASS6 count/upgrade cases with unchanged20ce916:64 queued+retry,
+65 queued refusal,64 retained gaps+1 queued refusal, populated27→28 migration/
+reapply and CLI recovery. No partial job/gap writes; prior rows/xmin/filenodes
+preserved. Added intents are explicitly synthetic complete records. Root checked
+1715 exact source files,55 captures/SHA28765845 and replayed all49 native rows/four
+original inputs and gap/job effects. Original seed plus bff0bc3 parent preserved.
+Engine/borrowedPG stopped, no cleanup/unrelated change; Tux67,656,880,128B free.
 No Mac Rust build.
 
 ## Active responsibility and next bounded action
@@ -184,11 +191,11 @@ Build257d232 and enginebff0bc3 STOPPED/RETAINED, shared1154757 released, borrowe
 stopped; no OOM/cleanup/unrelated changes. Engine ownerd410b6ca/client732716e9,
 Tux68,230,946,816B free. Preserve all original/synthetic/refusal clones and captures.
 
-Next bounded action: run exact-revision count/upgrade fixture with unchanged20ce916
-artifacts. Require64 queued jobs+exact retry,65 queued refusal,64 retained gaps+1
-queued refusal, and preserving populated27→28 migration/reapply/CLI retry. Additional
-jobs are declared synthetic complete intents with independent command digests.
-Then abandonment INSERT/COMMIT interruption recovery before producer retirement.
+Next bounded action: run exact-revision abandonment INSERT/SIGTERM and COMMIT/
+deadline schedules using unchanged20ce916 artifacts. Reuse the already qualified
+barrier/process/retry machinery with separate gap/job effect expectations. Require
+joined bounded CLI, observed server outcome, unchanged native scientific bytes,
+fresh positive Control fence and identical retry in both durable outcomes.
 
 Then initial producer/domain retirement: SQL0011 deliberately refuses nonempty
 retirement; its additive replacement must check complete outcomes and workflow

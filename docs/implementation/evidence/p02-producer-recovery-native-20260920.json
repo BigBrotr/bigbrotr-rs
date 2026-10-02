@@ -1913,9 +1913,8 @@
         "https://www.postgresql.org/docs/16/sql-set-constraints.html"
       ],
       "not_run": [
-        "populated27 gap history upgrade to28",
         "concurrent migration between preflight and acceptance/claim",
-        "abandonment interruptions/ambiguous COMMIT and64/65 count boundary"
+        "abandonment interruptions/ambiguous COMMIT"
       ],
       "fixed": {
         "source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
@@ -2277,6 +2276,105 @@
           "files": true,
           "report": true
         }
+      }
+    },
+    "limit_wave": {
+      "status": "PASS_INSTALLED_ACQUISITION_ABANDONMENT_LIMITS",
+      "source": "97f9a8d7419326c026893d0e3161efc69073aa45",
+      "product_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+      "capture": {
+        "label": "abandonment-limits",
+        "source": "97f9a8d7419326c026893d0e3161efc69073aa45",
+        "build_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+        "status": "PASS_INSTALLED_ACQUISITION_ABANDONMENT_LIMITS",
+        "captures": 55,
+        "capture_sha256": "287658455609bba7bcdee1f6e6dfb141f58907ae3e611516b73e622e3934d577",
+        "cases": [
+          {
+            "name": "acquisition-abandonment-signed",
+            "status": "PASS"
+          }
+        ]
+      },
+      "source_files": 1715,
+      "source_archive_sha256": "5d879dee2f50bd24058eda16c37d1bed610af8de2b187806ddccd000fb6db604",
+      "cases": [
+        {
+          "name": "abandon-limit-64",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_abandoned": 64,
+          "expected_refusal": null,
+          "seconds": 0.3060043267905712
+        },
+        {
+          "name": "abandon-limit-64-retry",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_abandoned": 64,
+          "expected_refusal": null,
+          "seconds": 0.1962196845561266
+        },
+        {
+          "name": "abandon-limit-mixed-65",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_abandoned": null,
+          "expected_refusal": "InsufficientReservation",
+          "seconds": 0.18550052028149366
+        },
+        {
+          "name": "abandon-limit-65",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_abandoned": null,
+          "expected_refusal": "InsufficientReservation",
+          "seconds": 0.21918360982090235
+        },
+        {
+          "name": "gap-populated-upgrade",
+          "status": "PASS",
+          "control_tables": 70,
+          "prior_rows_xmin_filenodes_preserved": true,
+          "exact_reapply": true
+        },
+        {
+          "name": "gap-populated-upgrade-retry",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_abandoned": 1,
+          "expected_refusal": null,
+          "seconds": 0.2331641437485814
+        }
+      ],
+      "local_replay": {
+        "status": "PASS_ABANDONMENT_LIMIT_CAPTURE_REPLAY",
+        "cases": 6,
+        "independent_native_rows": 49,
+        "original_inputs": 4,
+        "control_tables": 70,
+        "closure_digest": "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501"
+      },
+      "scope": "Actual CLI64 queued intents+unchanged retry;65 queued and64 retained gaps+1 claim refuse InsufficientReservation with unchanged jobs/gaps. Extra intents are synthetic complete relational rows with independent command digests, not another HTTP acceptance qualification. Actual populated27\u219228 migration/reapply preserves70-table rows/xmin/filenodes; original gap/job remains exact after CLI recovery.",
+      "seed_preserved": {
+        "control": true,
+        "catalog": true,
+        "files": true,
+        "report": true
+      },
+      "populated_parent_preserved": {
+        "database": "bb_scope_bind_bff0bc3_abandon_signed",
+        "preserved": true
       }
     }
   }

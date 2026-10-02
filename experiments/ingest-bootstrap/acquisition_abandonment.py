@@ -38,7 +38,8 @@ def assert_abandoned(before, after, digest):
             issuer_epoch=current[1], issuer_incarnation=current[2], owner_role='control',
             abandoned_at_us=gap['abandoned_at_us'], reason=REASON, xmin=gap['xmin'])
         assert gap == wanted
-        assert max(source['closed_at_us'], owner['acquired_at_us']) <= gap['abandoned_at_us'] <= owner['released_at_us']
+        end = owner['released_at_us'] if owner['released_at_us'] is not None else owner['lease_expires_at_us']
+        assert max(source['closed_at_us'], owner['acquired_at_us']) <= gap['abandoned_at_us'] <= end
     jobs = {r['job_id']: r for r in after['jobs']}
     assert len(jobs) == len(before['jobs'])
     for row in before['jobs']:
@@ -89,7 +90,7 @@ def duplicate_intent(pg, database, state, claimed, *, serial=0):
 
 
 def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized, *, wave='first'):
-    assert wave in ('first', 'guards', 'limits')
+    assert wave in ('first', 'guards', 'limits', 'faults')
     def upgrade(database, config, name):
         before = rows(database)
         assert len(before) == 69 and 'acquisition_gaps' not in before
@@ -119,7 +120,7 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
         lab.sql(pg, database, 'GRANT SELECT,INSERT ON control.acquisition_gaps TO bigbrotr_control; '
             'GRANT EXECUTE ON FUNCTION control.guard_acquisition_gap(),control.require_acquisition_gap_complete() TO bigbrotr_control;')
 
-    def invoke(database, config, directory, name, expected=1, error=None):
+    def invoke(database, config, directory, name, expected=1, error=None, reclaims_control=False):
         before = rows(database)
         lab.write_json(output / (name + '-before.json'), before)
         started = time.monotonic()
@@ -130,6 +131,16 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
         after = rows(database)
         lab.write_json(output / (name + '-after.json'), after)
         check_native(directory, name)
+        comparison = before
+        if reclaims_control:
+            from source_closure_faults import assert_reclaimed
+            current = max((r for r in after['owner_epochs'] if r['role'] == 'control'), key=lambda r: r['epoch'])
+            assert_reclaimed(before, after, current)
+            # The separate oracle checked the exact prior-owner fence. Compare
+            # every other effect against that observed monotone transition.
+            comparison = dict(before,
+                owner_epochs=[r for r in after['owner_epochs'] if r != current],
+                role_instances=[r for r in after['role_instances'] if r['role_instance_id'] != current['role_instance_id']])
         if error:
             assert response.returncode == 4 and not response.stdout and error in response.stderr, response
             assert before.get('acquisition_gaps') == after.get('acquisition_gaps')
@@ -143,10 +154,10 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
                 reserved_through='4', resolved_requests='4', native='closed', owner_release='committed', ready=False,
                 source_closure=dict(last_complete_sequence='12', sha256=digest),
                 acquisition_abandonment=dict(jobs=str(expected), reason=REASON, coverage='unknown'))
-            assert assert_abandoned(before, after, digest) == expected
+            assert assert_abandoned(comparison, after, digest) == expected
         # Check these two effects separately above, then reuse the complete
         # established Control/source/native oracle for every other table.
-        isolated = dict(before, jobs=after['jobs'])
+        isolated = dict(comparison, jobs=after['jobs'])
         if 'acquisition_gaps' in before:
             isolated['acquisition_gaps'] = after['acquisition_gaps']
         assert_effects(isolated, after, True, digest, released=not error)
@@ -155,6 +166,16 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
             original_requests=4, expected_abandoned=None if error else expected,
             expected_refusal=error, seconds=elapsed))
         lab.write_json(output / 'signed-recovery-cases.json', cases)
+
+    if wave == 'faults':
+        from source_closure_faults import run as run_faults
+        def prepare_abandonment(name):
+            database, config, directory = prepare(name)
+            upgrade(database, config, name)
+            return database, config, directory
+        run_faults(pg, client, output, rows, prepare_abandonment, check_native, invoke, cases, digest,
+            abandon_acquisition=True)
+        return
 
     if wave == 'limits':
         from acquisition_abandonment_limits import run as run_limits
