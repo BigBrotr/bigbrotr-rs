@@ -166,8 +166,11 @@ signed/forged/duplicate and malformed/out-of-selector WebSocket input, complete
 native/input/receipt expectations, quiet renewal/shutdown, public-envelope
 isolation and headless execution-prerequisite refusals. The original fixture
 bind failure is retained. Two focused unsupported-visibility schedules also pass
-with no native mutation or socket. Full-window behavior remains separate
-qualification; the [checkpoint](progress.md) records current corrections
+with no native mutation or socket. Two focused four-slot window cases now preserve
+all original requests/receipts/native rows after a distinct signed event and a
+new source requiring attribution, with continued existing-event rounds, renewal,
+HTTP and quiet shutdown. This is bounded deferral evidence, not ACK/reclamation or
+physical-WAL qualification; the [checkpoint](progress.md) records current corrections
 and actual outcomes. No task checkbox closes before its remaining progress, CLI,
 recovery and journey criteria.
 

@@ -224,8 +224,10 @@ the independent hard deadline. A stall can stop this initial process.
 
 The [nine-case native first wave](../implementation/evidence/p03-initial-sync-native-20261002.json)
 qualifies signed admission, duplicate/refusal behavior, quiet renewal/shutdown,
-public-envelope isolation and headless missing-prerequisite refusal. It does not
-qualify the remaining scheduling, full-window, failure/recovery or capacity work.
+public-envelope isolation and headless missing-prerequisite refusal. Two focused
+four-slot cases also qualify deferral of new events and source attribution while
+existing events, renewal and HTTP remain usable. Complete scheduling,
+failure/recovery and capacity work remain open.
 Receipts do not free outstanding slots. Jobs remain queued with no EOSE coverage,
 checkpoint advance or completion claim. This path still cannot restart or adopt
 an existing store, serve archive reads or export; M1 remains incomplete.

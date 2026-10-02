@@ -12,11 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main observed at2b976c326a8eb9a4c1f0bbf350224346a71ea83a above
-origin/main a523c54. The accompanying evidence/reference/checkpoint commit belongs
+Primary main observed at e7d1eae73e031701ad48b2e1d11eb69b0fb4e179 above
+origin/main 95c6cfc (verified pushed/private). The accompanying evidence/reference/checkpoint commit belongs
 to root; inspect actual HEAD and remote before resuming. Agent installed_sync_fixture
 owns only assigned Python files in .research/worktrees/installed-sync-fixture-a523c54.
-Its commits through2509c82 were integrated; it is extending focused window fixtures.
+Its commit e8dca7d was integrated as e7d1eae; its worktree is clean and idle.
 Root owns all Rust, docs, integration and Tux mutations. No merge/rebase. Preserve
 historical worktrees and reconcile unexpected dirty paths before editing.
 
@@ -24,24 +24,39 @@ historical worktrees and reconcile unexpected dirty paths before editing.
 
 The installed first signed socket event now reaches durable admission under the
 same native/Control owner. Bounded qualification covers P03-T01 Steps3/4 and
-P03-T02 Steps1/2/3/5, not those complete tasks. After the current window check,
+P03-T02 Steps1/2/3/5, not those complete tasks. The focused window check passed;
 next useful deliverable is that event reaching actual archive publication and
-read/export: P01-T09 Steps2/3, consuming P02-T04 Steps2–5 and the existing read/export
+read/export: P01-T09 Steps2/3, consuming P02-T04 Steps2–6 and the existing read/export
 adapters. Connect their real owner/custody requirements without completing all
 Discovery/Monitor or P03 scheduling first. Full M1 additionally needs online indexing
 and successor/recovery for restart (P02-T01 Step5/P02-T02 Step4); initial custody
 cannot be adopted by a fresh Serve. No readiness or release claim is made.
 
-Current next action: integrate/review the agent's optional
-`bindings.py ROOT --installed-sync-window BUILD` extension and run its two cases
-against retained e4ee0f5 artifacts only if complete Rust/build inputs still match.
-Set both accepted/root window4, observe original event filling requests1–4, then
-exercise a distinct valid signed event and a new endpoint requiring attribution.
-Require exact original49 rows/four inputs/receipts, no ACK/fifth request, zero
-new-endpoint TCP, real job claim, continued existing-event certification, renewal,
-HTTP and shutdown. Agent owns Python only; root reviews all oracles and runs Tux.
-Current agent work is NOT_RUN. Source-change and isolated transport-failure
-installed cases also remain NOT_RUN; their existing adapter evidence stays scoped.
+Next bounded action: implement explicit initial Archive publication, consuming the
+existing complete PendingBatch, retained attempt/FreshWriter, native worker and
+captured-frontier adapters. First add an actual installed negative with Archive
+selected; then connect the 30-second formation timer, complete pending batches,
+joined publication and snapshot-bound frontier. Subsequent controlled restart
+into ordinary Control can use existing private archive read/export consumers.
+The reader flag/credentials/destination are deployment roots, so this transition
+does not need a new managed-policy mutation or an invented activation command.
+Source-change and isolated transport-failure installed Sync cases remain NOT_RUN;
+their existing adapter evidence stays scoped.
+
+Read-only integration review and root inspection identified concrete requirements:
+PendingBatch owns bytes/permit and can move off the Rocks owner; synchronous
+publication on that owner would starve initial Control/Ingest renewal. Preserve
+CommandOwner::renew and the worker's independent original deadline; never detach
+a spawn_blocking handle on timeout. Initial owner, publisher and bounded password
+work need distinct available blocking slots. Current archive worker admission
+charges child native and parent control bytes to one combined budget; initial
+Rocks already uses the application's native lane. Split those concrete admissions
+without creating a second application allowance. Keep local/catalog/Control
+custody through actual joins and retain unresolved intents on every failure.
+Receipt alone is insufficient: CatalogCapture/inspect_cut/publish_archive_frontier
+must establish the complete cut before the existing readers can consume it.
+No generic orchestration framework or merger of both management supervisors is
+needed for this first useful sequential journey. No implementation is claimed yet.
 
 [Installed Sync evidence](evidence/p03-initial-sync-native-20261002.json) owns:
 
@@ -65,6 +80,17 @@ installed cases also remain NOT_RUN; their existing adapter evidence stays scope
   SIGTERM0.055300023s. This qualifies the observed suspension schedule only.
   A pre-start SQL seed was rejected as a fixture design: fresh namespace/scope
   identities do not exist before installed bootstrap. No deadline/guard was edited.
+- Fixture e7d1eae/tree 7df3abfa4d83d48579dae1c51328e52628e7faa9 reuses exact
+  e4ee0f5 binaries; both four-slot cases PASS. After original requests1–4 are
+  observed durable, a distinct signed kind1 event creates no fifth request;
+  a new endpoint/scope/job is claimed queued2 but performs no attribution append
+  or 7448 TCP. Later original-event rounds, renewal, HTTP/status/logout and quiet
+  SIGTERM pass; 17 socket rounds each, termination 0.055174797/0.055507269s.
+  All 49 native rows/four original inputs/receipts and producer rows/xmin survive.
+  Root replayed both complete oracles and all 69-table transitions from 163 captures
+  and matched exact source archives. Local replay initially omitted the new clock
+  argument; the corrected invocation used original renewed.json, without rerunning
+  or changing the native evidence. No ACK, physical-WAL or capacity claim.
 
 Original failures are retained: ef248a8 CLI refused explicit Sync selection;
 557d572 compile failed AcquireError→StdError; c460bba first signed case passed but
@@ -91,7 +117,7 @@ new persistent format, alternate allocator or duplicate implementation was added
 Full changed owners and relevant callers were read; read-only AI review found and
 root corrected pre-attribution privacy leakage, missing headless helpers/history,
 peer-local fatal errors, full-window dictionary deferral and visibility isolation.
-Full-window behavior still needs the active fixture; static review does not close it.
+The two focused window cases now exercise the earlier deferral correction.
 
 Preserve these invariants in subsequent work:
 
@@ -114,7 +140,7 @@ Preserve these invariants in subsequent work:
 No Tux run is active at this checkpoint. All four builds, failed/corrected engine
 waves and borrowed PG are STOPPED/RETAINED with empty unrelated-change/cleanup
 reports. Inventory: implementation_network_20260928.installed_sync. Latest observed
-Tux52,287,676,416B free; Mac3,145,928KiB. No local Rust build or new cache deletion.
+Tux52,197,584,896B free; Mac3,121,816KiB. No local Rust build or new cache deletion.
 Keep the retained e4ee0f5 CLI/probe artifacts outside the shared mutable cache.
 
 ## Latest qualified boundary
@@ -202,7 +228,7 @@ space/process/container/mount/cache dependencies before the next large allocatio
 
 Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec
 (namebigbrotr-implementation-pg-20260917-source_e06f580), owner
-5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, is stopped after the focused visibility wave.
+5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, is stopped after the focused window wave.
 PG16.15/fsync/full_page_writes on. Preserve bb_source_template and every prior
 scope/source/transport/fault clone, exact native states and protected pg/secrets.
 Clone/verify before experiments; never publish secrets or repeat completed launchers.

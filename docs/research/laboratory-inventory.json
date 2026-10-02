@@ -35269,6 +35269,73 @@
             ]
           },
           "outcome": "PASS_INSTALLED_SYNC_NATURAL_EXPIRY"
+        },
+        "window": {
+          "source": "e7d1eae73e031701ad48b2e1d11eb69b0fb4e179",
+          "status": "PASS_INSTALLED_SYNC_FULL_WINDOW",
+          "owner": "282066b85967e66be485717eaadaed9d",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "54e973bb2c322e0bd553b2a26cd59e8e6b91e6ffb0537b85c7383b68dfd2841e",
+            "name": "bigbrotr-acquisition-binding-e7d1eae"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_e7d1eae_sync_window_event",
+            "bb_scope_bind_e7d1eae_sync_window_source"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_before": 52249452544,
+          "free_bytes_after": 52197584896,
+          "state": "stopped-retained",
+          "launch": {
+            "source": "e7d1eae73e031701ad48b2e1d11eb69b0fb4e179",
+            "tree": "7df3abfa4d83d48579dae1c51328e52628e7faa9",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-sync-e7d1eae",
+            "pid": 1878357,
+            "start_ticks": "430356393",
+            "build_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-e4ee0f5/out/artifacts",
+            "binary_sha256": "ed1f50603752837ccc286bb074cedbd3f4165527cb56c222bb76718678ddf3bf",
+            "probe_sha256": "ed33c5edce32c05195a3a879df169fb9d0206fe469328873967140e3a612ceb2",
+            "changed": [
+              "docs/implementation/01-foundation.md",
+              "docs/implementation/03-acquisition.md",
+              "docs/implementation/evidence/p03-initial-sync-native-20261002.json",
+              "docs/implementation/progress.md",
+              "docs/reference/ingest-store.md",
+              "docs/research/laboratory-inventory.json",
+              "docs/user/control-runtime.md",
+              "experiments/acquisition-scope/bindings.py",
+              "experiments/ingest-bootstrap/installed_sync.py",
+              "experiments/ingest-bootstrap/installed_sync_checks.py",
+              "experiments/ingest-bootstrap/installed_sync_client.py",
+              "experiments/ingest-bootstrap/installed_sync_expiry.py",
+              "experiments/ingest-bootstrap/installed_sync_window.py"
+            ],
+            "bundle_sha256": "0481c0c46feb861688a4a8e07766aef8db45f520ddf65828196aca63534c6d11"
+          },
+          "capture": {
+            "label": "window",
+            "source": "e7d1eae73e031701ad48b2e1d11eb69b0fb4e179",
+            "build_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "status": "PASS_INSTALLED_SYNC_FULL_WINDOW",
+            "captures": 163,
+            "capture_sha256": "a82ea2c05f95e9dcb354bd090ca91a7a18f0b39bd8455381f72288062338da01",
+            "cases": [
+              {
+                "name": "sync-window-event",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-window-source",
+                "status": "PASS"
+              }
+            ]
+          },
+          "outcome": "PASS_INSTALLED_SYNC_FULL_WINDOW"
         }
       }
     }

@@ -141,7 +141,6 @@
     "durable EOSE/progress, restart/archive/read/export/M1",
     "capacity/load/aged-state",
     "arm64/release",
-    "Full producer-window deferral under installed load",
     "Isolated DNS/TCP/TLS/transport failure followed by healthy candidate"
   ],
   "inventory": "implementation_network_20260928.installed_sync",
@@ -375,6 +374,96 @@
       "receipts": 4,
       "expired_unchanged": true,
       "suspension_seconds": 0.6588817369192839
+    }
+  },
+  "full_window": {
+    "status": "PASS_INSTALLED_SYNC_FULL_WINDOW",
+    "fixture_source": "e7d1eae73e031701ad48b2e1d11eb69b0fb4e179",
+    "fixture_tree": "7df3abfa4d83d48579dae1c51328e52628e7faa9",
+    "product_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+    "binary_sha256": "ed1f50603752837ccc286bb074cedbd3f4165527cb56c222bb76718678ddf3bf",
+    "cases": [
+      {
+        "name": "sync-window-event",
+        "status": "PASS",
+        "native_rows": 49,
+        "original_requests": 4,
+        "websocket_rounds": 17,
+        "same_owner_renewed": true,
+        "signal_seconds": 0.055174797,
+        "full_window": {
+          "limit": 4,
+          "filled_requests": 4,
+          "later_claim_observed": false,
+          "source_command_count": 0,
+          "original_rows_xmin_unchanged": true,
+          "later_signed_rounds": 2,
+          "all_original_rounds": 1
+        }
+      },
+      {
+        "name": "sync-window-source",
+        "status": "PASS",
+        "native_rows": 49,
+        "original_requests": 4,
+        "websocket_rounds": 17,
+        "same_owner_renewed": true,
+        "signal_seconds": 0.055507269,
+        "full_window": {
+          "limit": 4,
+          "filled_requests": 4,
+          "later_claim_observed": true,
+          "source_command_count": 4,
+          "original_rows_xmin_unchanged": true,
+          "deferred_source_tcp_connections": 0,
+          "later_signed_rounds": 2,
+          "all_original_rounds": 2
+        }
+      }
+    ],
+    "semantics": "Accepted and root window4 fill with bootstrap/private-scope/attribution/event. A distinct frozen valid kind1 event creates no fifth request. A new HTTP endpoint/scope/job is claimed queued2 but cannot append attribution or dial7448. Both then complete later original-event rounds, status/logout, renewal and quiet SIGTERM. Complete49 native rows/four original inputs/four receipts and producer rows/xmin are preserved; no ACK or physical-WAL claim.",
+    "capture": {
+      "label": "window",
+      "source": "e7d1eae73e031701ad48b2e1d11eb69b0fb4e179",
+      "build_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+      "status": "PASS_INSTALLED_SYNC_FULL_WINDOW",
+      "captures": 163,
+      "capture_sha256": "a82ea2c05f95e9dcb354bd090ca91a7a18f0b39bd8455381f72288062338da01",
+      "cases": [
+        {
+          "name": "sync-window-event",
+          "status": "PASS"
+        },
+        {
+          "name": "sync-window-source",
+          "status": "PASS"
+        }
+      ]
+    },
+    "replay": {
+      "status": "PASS_BOUNDED_CAPTURE_REPLAY",
+      "checks": [
+        {
+          "name": "sync-window-event",
+          "tables": 69,
+          "native_rows": 49,
+          "original_inputs": 4,
+          "receipts": 4,
+          "window": 4,
+          "producer_xmin_unchanged": true
+        },
+        {
+          "name": "sync-window-source",
+          "tables": 69,
+          "native_rows": 49,
+          "original_inputs": 4,
+          "receipts": 4,
+          "window": 4,
+          "producer_xmin_unchanged": true
+        }
+      ],
+      "source_archive_sha256": "cf71017dc076df13751b6cb649ce556253821e58cbb5c3d851f9c6f316f87c7a",
+      "initial_replay_error": "TypeError: omitted not_before clock argument in local replay invocation; corrected from original renewed.json. No native run or evidence changed."
     }
   }
 }
