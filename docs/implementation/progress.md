@@ -12,22 +12,22 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the slice below.
 
-Primary `main` is unpublished candidate `f36a09e`; private `origin/main` is
-`54ad09d`, the pushed qualified abandonment boundary. Root owns dirty retirement
-changes in CLI recovery, PG registry/closing/outcome adapters, native closing and
-source witnesses, migration0029/catalog, focused native tests and build recipe.
-These product edits have NOT been compiled or exercised. No parallel writer or
-active BigBrotr experiment. The read-only reviewer completed the design review;
-it did not review these dirty edits. No Mac Rust builds.
+Primary `main` is unpublished candidate64f60b0; private `origin/main` remains
+54ad09d. Root now owns the installed retirement fixture and evidence/checkpoint
+updates. No parallel writer; independent read-only review is in progress.
+Native build64f60b0/tree6d54e7cc passed release CLI/probe,4 entrypoints,35 catalog,
+23 actual native prefix/closing/recovery tests and Clippy on Tux Linux amd64.
+Capture1717 source files/18 outputs SHA c301b638201c2061fe6f22a8570be5dc941271cef2bdc5a6e5c2bdda5a95121a.
+Build runs/ingest-history-64f60b0, ownerc66acbb9c60847ce83cb81a4c4166bf4,
+fetch7cad675d/native df10ca6a stopped-retained; shared compiler lock released.
+Free after67,324,588,032 B. No migration0029 or installed retirement execution yet.
+Original expected entrypoint RED f36a09e remains in the recovery report/inventory.
 
-Exact f36a09e/tree1694bd8 Tux entrypoint RED is retained at
-runs/ingest-history-f36a09e (owner46539116b772155de227b154eeac6926).
-Compilation passed; entrypoints3 passed/1 failed as expected: unknown
---retire-initial returns2 instead of reaching absent-store inspection with4.
-Later catalog/native/Clippy checks did NOT run. Captured1715 source files/12
-outputs at .research/implementation/ingest-recovery-20261002/retirement-entrypoint-red,
-capture SHA6aa2656acfe1d845a6eb117437b14f8b6df97939ce9461001a1316c34d96677a.
-Stopped build04bee77f/fetch50cdc5db retained; shared compiler lock released.
+The first installed fixture has ten cases and uses exact64f60b0 artifacts against
+clones of the signed b7b60f9 seed. It adds a discriminating clock-regression case:
+review found that retirement could commit a timestamp older than source closure,
+then refuse its own completed retry. Reproduce and preserve the original result,
+then correct the final timestamp predicate; no qualification claim yet.
 
 ## Active responsibility and next bounded action
 
@@ -38,10 +38,9 @@ Ingest release and explicit successor. Whole Discovery/Monitor/Ranker services
 are not prerequisites. No whole task or phase checkbox closes here.
 
 Initial acquisition abandonment now has its bounded qualification below.
-Next: finish review of the dirty retirement implementation and owning contract,
-record the RED evidence/inventory, format and commit an unpublished candidate.
-Run the ingest-history native build, then installed signed retirement/retry,
-refusal, migration and interruption schedules against actual PostgreSQL/Rocks.
+Next: run the installed signed retirement/retry/refusal/migration fixture,
+including the expected clock-regression RED; correct confirmed failures, then
+qualify rollback/ambiguous COMMIT and authority/lock schedules.
 SQL0011 deliberately rejects every nonempty retirement; replace that rule only
 additively, checking complete original outcomes and workflow obligations. Keep
 retirement, ACK/GC and successor semantics distinct. A retry after retirement
@@ -53,7 +52,7 @@ Inspected for this next action: complete0002/0011/0013/0014/0020/0021/0023/0024/
 PG/native producer closing, source resolution, connected recovery and historical
 registry, plus retirement/operations contracts. Initial registry currently hardcodes
 epoch1 and reads domains across the owner resource; successor must account for
-that persistent history without adopting old custody. SQL0029 is drafted but has
+that persistent history without adopting old custody. SQL0029 is committed in the unpublished candidate but has
 not been applied anywhere. Original migration checksums remain unchanged.
 
 Selected bounded route: `ingest recover --retire-initial` requires the prior

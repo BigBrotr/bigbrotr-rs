@@ -38,7 +38,7 @@ def census(home):
 
 
 def run(pg, client, output, rows, clone, close_source=False, schedules=None):
-    assert schedules in (None, 'faults', 'locks', 'abandon', 'abandon-guards', 'abandon-limits', 'abandon-faults') and (not schedules or close_source)
+    assert schedules in (None, 'retire', 'faults', 'locks', 'abandon', 'abandon-guards', 'abandon-limits', 'abandon-faults') and (not schedules or close_source)
     basis = output.parent.parent / SEED / 'bindings'
     home = basis / 'archive-export'
     assert digest(basis / 'result.json') == RESULT_SHA256
@@ -224,7 +224,10 @@ def run(pg, client, output, rows, clone, close_source=False, schedules=None):
         lab.write_json(output / 'signed-recovery-cases.json', cases)
 
     try:
-        if schedules in ('abandon', 'abandon-guards', 'abandon-limits', 'abandon-faults'):
+        if schedules == 'retire':
+            from initial_retirement import run as run_retirement
+            run_retirement(pg, client, output, rows, prepare, check_native, cases, closure_digest, initialized)
+        elif schedules in ('abandon', 'abandon-guards', 'abandon-limits', 'abandon-faults'):
             from acquisition_abandonment import run as run_abandonment
             run_abandonment(pg, client, output, rows, prepare, check_native, cases, closure_digest, initialized,
                 wave={'abandon': 'first', 'abandon-guards': 'guards', 'abandon-limits': 'limits', 'abandon-faults': 'faults'}[schedules])
@@ -258,8 +261,8 @@ def run(pg, client, output, rows, clone, close_source=False, schedules=None):
             files=census(home) == files, report=digest(basis / 'result.json') == RESULT_SHA256)
         lab.write_json(output / 'signed-source-preserved.json', preserved)
         assert all(preserved.values()), preserved
-    return dict(name='acquisition-abandonment-signed' if schedules in ('abandon', 'abandon-guards', 'abandon-limits', 'abandon-faults') else 'source-closure-signed' if close_source else 'positive-recovery-signed', status='PASS', cases=cases,
+    return dict(name='initial-retirement-signed' if schedules == 'retire' else 'acquisition-abandonment-signed' if schedules in ('abandon', 'abandon-guards', 'abandon-limits', 'abandon-faults') else 'source-closure-signed' if close_source else 'positive-recovery-signed', status='PASS', cases=cases,
         source_lab=str(basis.parent), source_revision=SOURCE, source_owner=OWNER,
         source_result_sha256=RESULT_SHA256, source_preserved=preserved, oracle=evidence,
-        scope='installed initial acquisition abandonment' if schedules in ('abandon', 'abandon-guards', 'abandon-limits', 'abandon-faults') else 'installed initial source closure' if close_source else 'installed signed positive recovery',
-        excluded='producer/domain retirement, successor and M1 restart/resend')
+        scope='installed initial retirement' if schedules == 'retire' else 'installed initial acquisition abandonment' if schedules in ('abandon', 'abandon-guards', 'abandon-limits', 'abandon-faults') else 'installed initial source closure' if close_source else 'installed signed positive recovery',
+        excluded='successor, ACK/GC and full M1 restart/resend' if schedules == 'retire' else 'producer/domain retirement, successor and M1 restart/resend')

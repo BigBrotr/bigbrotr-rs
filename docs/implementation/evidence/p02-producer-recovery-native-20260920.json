@@ -2508,6 +2508,36 @@
       "Refusals including zero-request workflow and native unbound Event",
       "Populated additive migration/reapply",
       "Actual rollback, ambiguous COMMIT and authority/lock schedules"
-    ]
+    ],
+    "product_source": "64f60b0b7497c17ece6ad28a99fd3da370528a47",
+    "product_tree": "6d54e7cc8bbab5cb9337b173a6db08e14983bccb",
+    "build": {
+      "binary_sha256": "878ee2e15eae0356f0a41186077069f88991d257283fc126310e63d3e8c6068a",
+      "probe_sha256": "abbbccd9a89a1ce809cee92ed3580ffcc3fc09e88db766557c59a42ee6590e16",
+      "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+      "native_tests_passed": {
+        "source-closure": 3,
+        "producer-closing": 9,
+        "producer-recovery": 11
+      },
+      "test_executables_sha256": {
+        "source_closure_components": "53eba03eee781b7585539eb4f9092f99d477118933b9dfa127ca87c362aa9280"
+      },
+      "capture": {
+        "label": "retirement-native-first",
+        "source": "64f60b0b7497c17ece6ad28a99fd3da370528a47",
+        "files": 1717,
+        "captures": 18,
+        "capture_sha256": "c301b638201c2061fe6f22a8570be5dc941271cef2bdc5a6e5c2bdda5a95121a"
+      },
+      "checks": [
+        "Release CLI/probe",
+        "4 actual CLI entrypoints",
+        "35 migration catalog tests",
+        "23 actual native tests",
+        "Clippy warnings denied"
+      ]
+    },
+    "review_pending": "Clock regression can currently commit a retirement timestamp older than source closure, then refuse its identical retry; practical reproduction added before correction."
   }
 }

@@ -37461,7 +37461,40 @@
           },
           "result": "EXPECTED_RED: unknown --retire-initial returns2 instead of native missing-root refusal4; other3 entrypoint cases pass; later checks NOT_RUN"
         },
-        "preserve": "Original source, failed logs/capture and artifacts; mutable shared1154757 compiler remains owned/exclusive. No datasets or containers deleted."
+        "preserve": "Original source, failed logs/capture and artifacts; mutable shared1154757 compiler remains owned/exclusive. No datasets or containers deleted.",
+        "build": {
+          "source": "64f60b0b7497c17ece6ad28a99fd3da370528a47",
+          "tree": "6d54e7cc8bbab5cb9337b173a6db08e14983bccb",
+          "owner": "c66acbb9c60847ce83cb81a4c4166bf4",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-64f60b0",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "7cad675d7aae94567dc8b1049173bfb5e3a54ebbaceb297c0cffeb5fe83501fe"
+            },
+            {
+              "name": "native",
+              "id": "df10ca6a3520e143da98504b43a2e93655854e46125cc1f06d7d12676d6f0149"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-02T14:41:31.940146+00:00",
+          "qualification": "PASS_INGEST_HISTORY_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 67324588032,
+          "finished_at": "2026-10-02T14:43:24.209184+00:00",
+          "capture": {
+            "label": "retirement-native-first",
+            "source": "64f60b0b7497c17ece6ad28a99fd3da370528a47",
+            "files": 1717,
+            "captures": 18,
+            "capture_sha256": "c301b638201c2061fe6f22a8570be5dc941271cef2bdc5a6e5c2bdda5a95121a"
+          }
+        }
       }
     }
   },
