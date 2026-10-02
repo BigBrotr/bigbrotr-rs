@@ -24,6 +24,7 @@ from installed_sync_oracle import decode, expected
 from installed_sync_client import REFUSED_VISIBILITIES, no_connections, read_frame, refusal_frames, relay_listener
 from installed_sync_expiry import DURATION_US, KEY, preserve_expired, validate_expired_acceptance
 from installed_sync import validate_queued
+from installed_sync_window import window_frames
 
 files = [*Path(__file__).parent.glob('installed_sync*.py'), Path(__file__).with_name('installed_client.py'),
     Path(__file__).with_name('session_client.py'), SOURCE/'experiments/acquisition-scope/bindings.py']
@@ -137,6 +138,14 @@ except AssertionError:
     pass
 else:
     raise AssertionError('modified frozen selector artifact accepted')
+for distinct in (True, False):
+    values, labels = window_frames(event, selector_artifact, distinct=distinct)
+    assert len(values) == len(labels) == 3
+    assert values[0] is event and values[2] is event
+    assert values[1]['kind'] == 1
+    assert (values[1]['id'] != event['id']) == distinct
+    assert labels == (['signed', 'distinct-signed', 'duplicate'] if distinct else ['signed', 'duplicate', 'duplicate'])
+assert json.dumps(event, sort_keys=True) == original_event
 counts = []
 for received in [None, 300]:
     rows, inputs, receipts = expected(state, report, event, 200, received, 400 if received else None)
@@ -244,5 +253,6 @@ print(json.dumps(dict(status='PASS_FIXTURE_ONLY', ast_files=len(files), embedded
     sequential_listener_cases=3, live_listener_conflicts=2,
     focused_visibility_cases=2,
     expiry_oracle_cases=6,
+    full_window_frame_cases=2,
     not_run=['actual CLI', 'PostgreSQL', 'RocksDB', 'product WebSocket', 'renewal', 'signal shutdown',
         'exact-owned process suspension and natural SQL expiry'])))

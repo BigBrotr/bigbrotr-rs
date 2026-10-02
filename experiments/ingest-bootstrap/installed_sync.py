@@ -18,11 +18,13 @@ from initial_jobs import released, unchanged, validate_job
 from installed_sync_oracle import ENDPOINT, SIGNED_SHA256, decode, expected
 from installed_sync_client import REFUSED_VISIBILITIES
 
-EVENT_CASES = ('sync-signed', 'sync-peer-refusals', 'sync-expired-before-valid')
+EVENT_CASES = ('sync-signed', 'sync-peer-refusals', 'sync-expired-before-valid',
+    'sync-window-event', 'sync-window-source')
 CASES = ['sync-signed', 'sync-quiet', 'sync-function', 'sync-lock', 'sync-public-visibility',
     'sync-source-function', 'sync-scope-function', 'sync-change-read', 'sync-peer-refusals']
 VISIBILITY_CASES = ['sync-absent-visibility', 'sync-bootstrap-private-visibility']
 EXPIRY_CASES = ['sync-expired-before-valid']
+WINDOW_CASES = ['sync-window-event', 'sync-window-source']
 SOURCE = Path(__file__).resolve().parents[2]
 EXECUTION = 'control.require_acquisition_execution(bytea,bytea,bytea,bytea,bytea)'
 BOOTSTRAP = {'datasets', 'owner_epochs', 'role_instances', 'topology_generations', 'topology_streams',
@@ -33,10 +35,11 @@ COMMANDS = {'browser_sessions', 'login_buckets', 'management_audit', 'management
     'acquisition_scope_commands', 'jobs', 'acquisition_jobs', 'job_admissions'}
 
 
-def validate_queued(state, observations, *, ordinal=1):
+def validate_queued(state, observations, *, ordinal=1, key='b1'*16, total_jobs=None):
     assert ordinal in (1, 2)
-    assert all(len(state[table]) == ordinal for table in ('jobs', 'acquisition_jobs', 'job_admissions'))
-    receipt, = [r['body'] for r in observations if r['path'] == 'jobs' and r['key'] == 'b1'*16]
+    assert all(len(state[table]) == (ordinal if total_jobs is None else total_jobs)
+        for table in ('jobs', 'acquisition_jobs', 'job_admissions'))
+    receipt, = [r['body'] for r in observations if r['path'] == 'jobs' and r['key'] == key]
     job, = [r for r in state['jobs'] if r['job_id'] == '\\x'+receipt['job_id']]
     owner, = [r for r in state['owner_epochs'] if r['role'] == 'control']
     assert job['state'] == 'queued' and job['job_revision'] == 2 and job['checkpoint_revision'] == 0
@@ -54,10 +57,10 @@ def validate_queued(state, observations, *, ordinal=1):
     accepted['job_admissions'][0]['admission_ordinal'] = 1
     accepted['jobs'][0].update(state='accepted', job_revision=1, owner_resource_id=None,
         owner_epoch=None, owner_incarnation=None)
-    validate_job(accepted, receipt)
+    validate_job(accepted, receipt, key=key)
 
 
-def validate_source(state, report, observations, *, ordinal=3):
+def validate_source(state, report, observations, *, ordinal=3, url=ENDPOINT, nonces=('91', '92', 'a1')):
     assert ordinal in (1, 2, 3, 99)
     visibility = dict(report['public_scope'], ordinal=str(ordinal))
     assert report['private_scope'] == dict(report['public_scope'], ordinal='3')
@@ -66,7 +69,7 @@ def validate_source(state, report, observations, *, ordinal=3):
     endpoint, = state['relay_endpoints']; access, = state['relay_access_contexts']
     enrollment, = state['relay_enrollments']; route, = state['network_routes']
     scope, = state['acquisition_scopes']; selector, = state['acquisition_selectors']
-    assert bytes.fromhex(endpoint['url_bytes'][2:]).decode() == ENDPOINT
+    assert bytes.fromhex(endpoint['url_bytes'][2:]).decode() == url
     canonical = b'{"version":1,"filters":[{"kinds":[1]}],"history_since":0,"ephemeral":"retain"}'
     assert selector['document'] == '\\x'+canonical.hex()
     assert selector['candidate_digest'] == '\\x'+hashlib.sha256(canonical).hexdigest()
@@ -98,9 +101,9 @@ def validate_source(state, report, observations, *, ordinal=3):
     be = lambda n: n.to_bytes(8, 'big')
     qualified = raw(dataset)+b'\0\4'+raw(scope['visibility_domain'])+be(ordinal)
     for path, table, action, nonce in [
-            ('relay-endpoints', 'relay_registration_commands', 'relay.endpoint.register', '91'),
-            ('relay-enrollments', 'relay_enrollment_changes', 'relay.enrollment.change', '92'),
-            ('acquisition-scopes', 'acquisition_scope_commands', 'acquisition.scope.register', 'a1')]:
+            ('relay-endpoints', 'relay_registration_commands', 'relay.endpoint.register', nonces[0]),
+            ('relay-enrollments', 'relay_enrollment_changes', 'relay.enrollment.change', nonces[1]),
+            ('acquisition-scopes', 'acquisition_scope_commands', 'acquisition.scope.register', nonces[2])]:
         key = bytes.fromhex(nonce*16)
         detail, = state[table]
         command, = [r for r in state['management_commands'] if r['request_key'] == '\\x'+key.hex()]
@@ -116,8 +119,8 @@ def validate_source(state, report, observations, *, ordinal=3):
             owner['resource_id'], owner['epoch'], owner['process_incarnation'])
         prefix = raw(dataset)+raw(actor['principal_id'])+key
         if path == 'relay-endpoints':
-            url = ENDPOINT.encode()
-            preimage = b'bigbrotr/relay-registration/1\0'+prefix+be(1)*2+b'\0\1'+len(url).to_bytes(4, 'big')+url
+            encoded_url = url.encode()
+            preimage = b'bigbrotr/relay-registration/1\0'+prefix+be(1)*2+b'\0\1'+len(encoded_url).to_bytes(4, 'big')+encoded_url
         elif path == 'relay-enrollments':
             preimage = (b'bigbrotr/relay-enrollment-change/1\0'+prefix+raw(endpoint['endpoint_id'])
                 +qualified+b'\1'+be(0)+be(1)*2+bytes.fromhex('0104207f000001'))
@@ -137,7 +140,7 @@ def validate_source(state, report, observations, *, ordinal=3):
         assert int(wire['accepted_at_us']) == command['accepted_at_us']
 
 
-def native(client, output, name, state, initialized, transcript, completed_us):
+def native(client, output, name, state, initialized, transcript, completed_us, *, window=32, primary_scope=None):
     directory = output/name
     dumped = lab.docker('exec', client, '/build/ingest_bootstrap_probe', 'dump', '/lab/'+name+'/store')
     (output/(name+'-native.json')).write_text(dumped.stdout)
@@ -157,7 +160,11 @@ def native(client, output, name, state, initialized, transcript, completed_us):
         assert type(value) is int
         return value
     dictionary_time = recorded(4)
-    job, = [r for r in state['jobs'] if r['state'] == 'queued']
+    scope, = [r for r in state['acquisition_scopes'] if primary_scope is None or r['scope_id'] == primary_scope]
+    source, = [r for r in state['relay_enrollments'] if
+        (r['endpoint_id'], r['access_scope_id']) == (scope['endpoint_id'], scope['access_scope_id'])]
+    job, = [r for r in state['jobs'] if r['state'] == 'queued' and any(
+        detail['job_id'] == r['job_id'] and detail['scope_id'] == scope['scope_id'] for detail in state['acquisition_jobs'])]
     assert job['created_at_us'] <= dictionary_time <= transcript[0]['connected_at_us']
     received = recorded_at = None
     if signed:
@@ -188,11 +195,10 @@ def native(client, output, name, state, initialized, transcript, completed_us):
         if sequence < 4:
             assert all(row[k] is None for k in columns)
         else:
-            source, = state['relay_enrollments']; scope, = state['acquisition_scopes']
             assert tuple(row[k] for k in columns) == (source['endpoint_id'], source['access_scope_id'],
                 source['generation'], source['route_id'], scope['scope_id'], job['job_id'])
     assert state['producer_epochs'][0]['reserved_through_request'] == len(inputs)
-    assert state['producer_epochs'][0]['outstanding_request_limit'] == 32
+    assert state['producer_epochs'][0]['outstanding_request_limit'] == window
     assert state['source_streams'][0]['state'] == 'open'
     control, = [r for r in state['owner_epochs'] if r['role'] == 'control']
     manifest = next(v for cf, k, v in wanted if cf == 'default' and k == b'\x01\x01')
@@ -260,8 +266,9 @@ while True:
 
 
 def run(pg, client, output, database, name, rows):
-    assert name in CASES + VISIBILITY_CASES + EXPIRY_CASES
+    assert name in CASES + VISIBILITY_CASES + EXPIRY_CASES + WINDOW_CASES
     expiry = name in EXPIRY_CASES
+    full_window = name in WINDOW_CASES
     visibility_refusal = name in REFUSED_VISIBILITIES
     visibility_ordinal = REFUSED_VISIBILITIES.get(name, 3)
     upgrade_registry(pg, client, output, database, name, rows)
@@ -281,6 +288,9 @@ def run(pg, client, output, database, name, rows):
         'sync-scope-function': 'control.require_acquisition_scope(bytea,bytea,bytea,bytea)'}
     fault = name in functions or name in ('sync-lock', 'sync-change-read')
     policy_setup(pg, database, name, rows, output, administration=not fault)
+    if full_window:
+        from installed_sync_window import configure_window
+        configure_window(pg, database, rows, output, name)
     if name in functions:
         signature = functions[name]
         lab.sql(pg, database, 'REVOKE EXECUTE ON FUNCTION '+signature+' FROM bigbrotr_control')
@@ -302,25 +312,32 @@ def run(pg, client, output, database, name, rows):
     text = configuration(path.read_text(), before, name)
     if expiry:
         text = set_value(text, 'runtime', 'renewal_timeout', '2s')
+    if full_window:
+        text = set_value(text, 'ingest', 'producer_outstanding_requests', 4)
     text = set_value(text, 'topology', 'local_roles', ['control', 'ingest', 'sync', 'archive'])
     text = set_value(text, 'network.dns', 'resolver', '127.0.0.1:9')
     text = set_value(text, 'network.tls', 'extra_roots', [])
     rules = [dict(endpoint=ENDPOINT, cidr='127.0.0.1/32', port=7447)]
+    if name == 'sync-window-source':
+        from installed_sync_window import SECOND_ENDPOINT
+        rules.append(dict(endpoint=SECOND_ENDPOINT, cidr='127.0.0.1/32', port=7448))
     text = set_value(text, 'network.private', 'rules', rules)
-    text = text.replace(json.dumps(rules), '[{endpoint="'+ENDPOINT+'",cidr="127.0.0.1/32",port=7447}]')
+    text = text.replace(json.dumps(rules), '['+','.join('{endpoint="'+rule['endpoint']
+        +'",cidr="'+rule['cidr']+'",port='+str(rule['port'])+'}' for rule in rules)+']')
     path.write_text(text)
     validated = lab.cli(state, 'config', 'validate', '--file', config)
     (output/(name+'-validate.stdout')).write_text(validated.stdout)
     (output/(name+'-validate.stderr')).write_text(validated.stderr)
     assert validated.returncode == 0, validated.stderr
-    for filename in ('installed_client.py', 'session_client.py', 'installed_sync_client.py', 'installed_sync_expiry.py'):
+    for filename in ('installed_client.py', 'session_client.py', 'installed_sync_client.py',
+            'installed_sync_expiry.py', 'installed_sync_window.py'):
         target = output/filename
         if not target.exists():
             shutil.copy2(Path(__file__).with_name(filename), target)
         assert target.read_bytes() == Path(__file__).with_name(filename).read_bytes()
     directory = output/name; directory.mkdir(mode=0o700)
     shutil.copy2(SOURCE/'tests/fixtures/ingest/import-event.jsonl', directory/'event.jsonl')
-    if name == 'sync-peer-refusals':
+    if name == 'sync-peer-refusals' or full_window:
         from installed_sync_client import REFUSAL_SHA256
         artifact = SOURCE/'tests/fixtures/acquisition/selector-events.json'
         assert hashlib.sha256(artifact.read_bytes()).hexdigest() == REFUSAL_SHA256
@@ -463,7 +480,13 @@ finally:
         preserve_expired(expired_original, current)
         later, = [r for r in current['jobs'] if r['state'] == 'queued']
         assert later['created_at_us'] >= expiry_evidence['resume_observed_at_us']
+    primary_scope = current['acquisition_scopes'][0]['scope_id']
     (directory/'submitted.continue').write_text('observed\n')
+    window_evidence = None
+    if full_window:
+        from installed_sync_window import observe_window
+        current, window_evidence = observe_window(pg, database, output, name, rows,
+            current, initialized, stage, now)
     stage('commands-finished')
     before_stop = rows(database); lab.write_json(output/(name+'-before-stop.json'), before_stop)
     from initial_jobs import logged_out
@@ -493,7 +516,9 @@ finally:
     assert sorted(r['action'] for r in after['management_audit'] if r not in before['management_audit']) == sorted([
         'browser.session.issue', 'browser.session.revoke', 'relay.endpoint.register',
         'relay.enrollment.change', 'acquisition.scope.register', 'job.acquisition.accept']
-        + (['job.acquisition.accept'] if expiry else []))
+        + (['job.acquisition.accept'] if expiry else [])
+        + (['relay.endpoint.register', 'relay.enrollment.change', 'acquisition.scope.register',
+            'job.acquisition.accept'] if name == 'sync-window-source' else []))
     transcript = [json.loads(p.read_text()) for p in sorted(directory.glob('relay-closed-*.json'))]
     assert not (directory/'relay-error.json').exists()
     assert len(list(directory.glob('relay-open-*.json'))) == len(transcript)
@@ -520,10 +545,15 @@ finally:
         if name == 'sync-peer-refusals':
             assert all(trace['frames'] == ['malformed-event', 'signed-outside-selector', 'signed', 'EOSE']
                 for trace in transcript[:2])
-        native_result = native(client, output, name, after, initialized, transcript, time.time_ns()//1000)
+        native_result = native(client, output, name, after, initialized, transcript, time.time_ns()//1000,
+            window=4 if full_window else 32, primary_scope=primary_scope)
+    if name == 'sync-window-source':
+        from installed_sync_window import validate_monitor
+        window_evidence['deferred_source_monitor'] = validate_monitor(directory, after)
     assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
     return dict(name=name, status='PASS', actual_cli=True, actual_http=True, actual_pg_rocks=True,
         websocket_rounds=len(transcript), same_owner_renewed=True, signal_seconds=signal_elapsed,
         selected_quiet_signal=selected_quiet,
         natural_expiry=expiry_evidence,
+        full_window=window_evidence,
         terminal=ended, **native_result)

@@ -55,7 +55,8 @@ enrollment_http = enrollment_functions or (len(sys.argv) in (3, 4) and sys.argv[
 sessions = session_hash or session_faults or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions')
 installed_sync_visibility = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-visibility'
 installed_sync_expiry = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-expiry'
-installed_sync = installed_sync_visibility or installed_sync_expiry or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync')
+installed_sync_window = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-window'
+installed_sync = installed_sync_visibility or installed_sync_expiry or installed_sync_window or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync')
 initial_ingest = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest'
 installed = installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
@@ -119,7 +120,8 @@ if installed:
 
 if installed_sync:
     report['wave'] = ('installed-sync-visibility' if installed_sync_visibility
-        else 'installed-sync-expiry' if installed_sync_expiry else 'installed-finite-sync')
+        else 'installed-sync-expiry' if installed_sync_expiry
+        else 'installed-sync-window' if installed_sync_window else 'installed-finite-sync')
     report['not_run'] = ['source change before socket', 'missing migration execution refusal',
         'absence of physical WAL appends for redundant native writes',
         'lost/delayed COMMIT and cancellation lock schedules',
@@ -127,12 +129,14 @@ if installed_sync:
         'capacity/load/aged-state', 'arm64/release']
     if not installed_sync_expiry:
         report['not_run'].append('older naturally expired accepted job followed by valid work')
-    if installed_sync_visibility or installed_sync_expiry:
+    if installed_sync_visibility or installed_sync_expiry or installed_sync_window:
         report['not_run'].append('nine-case installed Sync first wave not repeated in this focused wave')
     if not installed_sync_visibility:
         report['not_run'].append('missing/unsupported native visibility refuses before preparation')
     if installed_sync_expiry:
         report['not_run'].append('expiry without exact-owned process suspension injection')
+    if not installed_sync_window:
+        report['not_run'].append('full initial producer window and later attribution/event deferral')
 
 if sessions:
     report['not_run'] = ['session listener during blocked native close', 'late/delayed renewal and disconnected clients',
@@ -540,6 +544,7 @@ success_status = 'PASS_INITIAL_SESSION_HASH_CASE' if session_hash else 'PASS_INI
 if installed_sync:
     success_status = ('PASS_INSTALLED_SYNC_VISIBILITY' if installed_sync_visibility
         else 'PASS_INSTALLED_SYNC_NATURAL_EXPIRY' if installed_sync_expiry
+        else 'PASS_INSTALLED_SYNC_FULL_WINDOW' if installed_sync_window
         else 'PASS_INSTALLED_FINITE_SYNC_FIRST_WAVE')
 if session_faults:
     success_status = 'PASS_INITIAL_SESSION_FAULT_WAVE'
@@ -709,9 +714,10 @@ try:
         cases = list(CASES)
     elif installed_sync:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-        from installed_sync import CASES, EXPIRY_CASES, VISIBILITY_CASES
+        from installed_sync import CASES, EXPIRY_CASES, VISIBILITY_CASES, WINDOW_CASES
         selected_sync_cases = (VISIBILITY_CASES if installed_sync_visibility
-            else EXPIRY_CASES if installed_sync_expiry else CASES)
+            else EXPIRY_CASES if installed_sync_expiry
+            else WINDOW_CASES if installed_sync_window else CASES)
         cases = list(selected_sync_cases)
     elif jobs_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))

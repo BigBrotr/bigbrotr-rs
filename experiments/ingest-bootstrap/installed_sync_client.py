@@ -70,10 +70,11 @@ def send_frame(connection, value):
     connection.sendall(header+body)
 
 
-def relay(directory, listener, finished, errors, signed, refusals=False):
+def relay(directory, listener, finished, errors, signed, refusals=False, window=False):
     request_ids = set()
     try:
         number = 0
+        window_rounds = 0
         while not finished.is_set():
             try:
                 connection, remote = listener.accept()
@@ -114,9 +115,17 @@ def relay(directory, listener, finished, errors, signed, refusals=False):
                 assert command[2] == {'kinds': [1], 'limit': 3}
                 trace.update(request=command, request_at_us=time.time_ns()//1000)
                 publish(directory, f'relay-open-{number:03}.json', trace)
-                if signed and number <= 2:
+                window_ready = window and (directory/'window-release').exists() and window_rounds < 2
+                if signed and (number <= 2 or window_ready):
                     event = json.loads((directory/'event.jsonl').read_bytes())
-                    if refusals:
+                    if window_ready and number > 2:
+                        from installed_sync_window import window_frames
+                        window_rounds += 1
+                        values, labels = window_frames(event, (directory/'selector-events.json').read_bytes(),
+                            distinct=directory.name == 'sync-window-event' and window_rounds == 1)
+                        trace.update(frames=labels+['EOSE'], window_sequence=window_rounds,
+                            window_event_ids=[value['id'] for value in values])
+                    elif refusals:
                         values = refusal_frames(event, (directory/'selector-events.json').read_bytes())
                         trace['frames'] = ['malformed-event', 'signed-outside-selector', 'signed', 'EOSE']
                         trace['outside_event_id'] = values[1]['id']
@@ -200,7 +209,8 @@ def relay_listener(address=('127.0.0.1', 7447)):
 def run(directory, request, login, logout):
     refusals = directory.name == 'sync-peer-refusals'
     expiry = directory.name == 'sync-expired-before-valid'
-    signed = directory.name == 'sync-signed' or refusals or expiry
+    window = directory.name in ('sync-window-event', 'sync-window-source')
+    signed = directory.name == 'sync-signed' or refusals or expiry or window
     visibility_refusal = directory.name in REFUSED_VISIBILITIES
     assert signed or visibility_refusal or directory.name == 'sync-quiet'
     observations = []
@@ -233,8 +243,9 @@ def run(directory, request, login, logout):
     listener = relay_listener()
     finished, errors = threading.Event(), []
     worker = threading.Thread(target=no_connections if visibility_refusal else relay,
-        args=(directory, listener, finished, errors) if visibility_refusal else (directory, listener, finished, errors, signed, refusals))
+        args=(directory, listener, finished, errors) if visibility_refusal else (directory, listener, finished, errors, signed, refusals, window))
     worker.start()
+    deferred_worker = None
     try:
         barrier('prepared')
         if expiry:
@@ -254,11 +265,42 @@ def run(directory, request, login, logout):
             created_at_us=receipt['accepted_at_us'], completed_at_us=None, observed_at_us=observed['observed_at_us'],
             reason_code=None, authority='observation-only')
         assert int(observed['observed_at_us']) >= int(receipt['accepted_at_us'])
+        if window:
+            deferred_receipt = None
+            if directory.name == 'sync-window-source':
+                from installed_sync_window import SECOND_ENDPOINT
+                monitored = directory/'deferred-source'; monitored.mkdir()
+                deferred_listener = relay_listener(('127.0.0.1', 7448))
+                deferred_worker = threading.Thread(target=no_connections,
+                    args=(monitored, deferred_listener, finished, errors))
+                deferred_worker.start()
+                other = call('relay-endpoints', dict(url=SECOND_ENDPOINT, **revisions), '93'*16)
+                other_enrollment = call('relay-enrollments', dict(endpoint_id=other['endpoint_id'], visibility=visibility,
+                    route={'class': 'private', 'cidr': '127.0.0.1/32'}, enabled=True,
+                    expected_generation=None, **revisions), '94'*16)
+                other_scope = call('acquisition-scopes', dict(endpoint_id=other['endpoint_id'],
+                    access_scope_id=other_enrollment['access_scope_id'], visibility=visibility,
+                    selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'),
+                    **revisions), 'a2'*16)
+                deferred_receipt = call('jobs', dict(kind='acquisition', scope_id=other_scope['scope_id'],
+                    deadline_us='120000000', **revisions), 'b2'*16)
+            barrier('window-commands')
+            if deferred_receipt:
+                status, raw = request('GET', '/management/v1/jobs/'+deferred_receipt['job_id'], headers=auth)
+                deferred_status = json.loads(raw)
+                assert status == 200 and deferred_status == dict(observed,
+                    job_id=deferred_receipt['job_id'], created_at_us=deferred_receipt['accepted_at_us'],
+                    observed_at_us=deferred_status['observed_at_us'])
+                assert int(deferred_status['observed_at_us']) >= int(deferred_receipt['accepted_at_us'])
+                publish(directory, 'window-job-status.json', deferred_status)
         logged_out = logout(session, saved, auth)
         barrier('commands-finished')  # Host stops Serve while our relay remains available.
     finally:
         finished.set()
         worker.join(4)
         assert not worker.is_alive(), 'relay worker did not join'
+        if deferred_worker is not None:
+            deferred_worker.join(1)
+            assert not deferred_worker.is_alive(), 'deferred-source monitor did not join'
     assert not errors, errors
     return dict(login=logged_in, logout=logged_out, observations=observations, job_status=observed)
