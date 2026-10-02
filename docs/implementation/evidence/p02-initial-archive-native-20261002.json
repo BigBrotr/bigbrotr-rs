@@ -1,7 +1,7 @@
 {
   "format": "bigbrotr-initial-archive-native/1",
   "observed_date": "2026-10-02",
-  "scope": "P01-T09 Steps1-3/P02-T04 Steps2-6 bounded initial service composition: actual signed socket admission, timer publication, full captured frontier and independent native census. Ordinary read/export restart and full M1 remain incomplete.",
+  "scope": "P01-T09 Steps1-3/P02-T04 Steps2-6/P08-T04 Step3 bounded installed composition: actual signed socket admission, timer publication, full captured frontier, independent native census, ordinary Control restart/private history and signed JSONL export. Full M1 remains incomplete.",
   "environment": {
     "host": "Tux Linux amd64",
     "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
@@ -691,10 +691,249 @@
     "bounds": "One known signed event, four original complete batches/source prefix12, snapshot5, 65 HTTP status observations; staged managed publisher=false/window129 correctly uses accepted publisher=true/window32. 1GiB application/2GiB native deployment; no capacity claim."
   },
   "not_run": [
-    "Ordinary Control restart and installed history/export of this new archive",
     "Ingest successor/replay adoption, online indexing and full M1 bundle/outage journeys",
     "Initial publisher crash, signal during native publication/cut, lost COMMIT and dependency/resource exhaustion schedules",
     "Installed prior-empty-frontier and missing-frontier-privilege startup refusals (new SQL gate source-reviewed only)",
-    "Load, aged-state, mixed-workload capacity, native arm64 and release qualification"
-  ]
+    "Load, aged-state, mixed-workload capacity, native arm64 and release qualification",
+    "Five signed exports under256MiB; complete filters/formats/retention lifecycle"
+  ],
+  "installed_export": {
+    "status": "PASS_SCOPED",
+    "product": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+    "cli_sha256": "2629e6e3972a0ad910432261cc1e1f1986ea441108e5aaf8acbb4bd832059ab5",
+    "worker": {
+      "bytes": 14421792,
+      "sha256": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+    },
+    "runs": {
+      "export-first": {
+        "source": "49b811357f2bf79d181efb164cef2ed5226a233c",
+        "tree": "dd66813c26761e809f8c4afbd664457b454a876e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-49b8113",
+        "owner": "8b7fb9e8c64cc800395f7a7bb1e68436",
+        "client": "9bd0c5b331ad27cb72a9528026ec9781d6a0eeb344ecbfd3abfc9d8ff2cfd46d",
+        "status": "FAIL",
+        "finding": "Fixture retained documented-insufficient64MiB history cap: actual429 after three valid grants, before export acceptance.",
+        "capture": {
+          "label": "export-first",
+          "source": "49b811357f2bf79d181efb164cef2ed5226a233c",
+          "build_source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "status": "FAIL",
+          "captures": 244,
+          "capture_sha256": "8b1aa320b09b050654d7ea671a680944e3af4d6ae4c4d47785ac68c08783bacc",
+          "cases": []
+        },
+        "source_files": 1697,
+        "source_archive_sha256": "f61d7baf5aefd3c9ceb047c6fb03e9e6f89e5a120b1d2237127f25c2187a2200",
+        "databases": [
+          "bb_scope_bind_49b8113_archive_export",
+          "bb_scope_bind_49b8113_archive_export_cat"
+        ],
+        "cleanup": "STOPPED/RETAINED",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "free_bytes_after": 72145813504
+      },
+      "export-native-profile": {
+        "source": "0d38738b5af80acf2490432f2bfefef5c8016748",
+        "tree": "59569c2bafe928048c20d270c12515a781a161cc",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-0d38738",
+        "owner": "6f56cfcc211ee4a3a4cd3f2cbf7474f1",
+        "client": "db4644028808c953210af92304ba111e79fa6a7d217b05f87114b8e7f075496f",
+        "status": "FAIL",
+        "finding": "Signed history/export completed; fixture incorrectly required revoked session retention across login. Original FAIL unchanged; corrected capture replay passes with seven oracle-only negative controls.",
+        "capture": {
+          "label": "export-native-profile",
+          "source": "0d38738b5af80acf2490432f2bfefef5c8016748",
+          "build_source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "status": "FAIL",
+          "captures": 247,
+          "capture_sha256": "8f96ba3c784987a6220d5ec25f4d8f66dc0bd49179dd49a508cc115f9f40f391",
+          "cases": []
+        },
+        "source_files": 1697,
+        "source_archive_sha256": "f21b509d8088bea34b65020f6fab5fd145e6c5d75db2e18f38e3a2bca8394945",
+        "databases": [
+          "bb_scope_bind_0d38738_archive_export",
+          "bb_scope_bind_0d38738_archive_export_cat"
+        ],
+        "cleanup": "STOPPED/RETAINED",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "free_bytes_after": 72074641408
+      },
+      "export-final": {
+        "source": "03f8c6bb124f108875f05a5839c7b8e0e2af2988",
+        "tree": "ca0bcd6881efdd458f9dfddb0826cc41e04d8b61",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-03f8c6b",
+        "owner": "3407279e4ff7157bf91ed6956da9cbce",
+        "client": "16462ce15585aff78aa17ea99534f0be79cfff9640b0bbb271eb7de9aa5ecddc",
+        "status": "FAIL",
+        "finding": "Signed history/export and durable output/catalog/role/file checks passed; fixture incorrectly required empty scratch rather than original publication directories. Original FAIL unchanged.",
+        "capture": {
+          "label": "export-final",
+          "source": "03f8c6bb124f108875f05a5839c7b8e0e2af2988",
+          "build_source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "status": "FAIL",
+          "captures": 250,
+          "capture_sha256": "bea61739dcf4cfc2f11fc0460ee831c4e24d7c0789340569a27a5e9fd0f6b637",
+          "cases": []
+        },
+        "source_files": 1697,
+        "source_archive_sha256": "0bbbec0c4547df24ea6b3c60970d1d3ce6e2d7f5b17de279b8da7161510a76c9",
+        "databases": [
+          "bb_scope_bind_03f8c6b_archive_export",
+          "bb_scope_bind_03f8c6b_archive_export_cat"
+        ],
+        "cleanup": "STOPPED/RETAINED",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "free_bytes_after": 72007172096
+      },
+      "export-complete": {
+        "source": "b7b60f9283e3d3c72421c4df665dcd0b42c41798",
+        "tree": "e4e16479e0b5e914d968dd41dc9e2fce0e75fa28",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9",
+        "owner": "df63ed47a165a536aa0937277bfb4caa",
+        "client": "f3436207fb310923cc3e6ab0fabfe3f0b59cfb6a173c4b835c0835d7c3bb1120",
+        "status": "PASS_INSTALLED_ARCHIVE_EXPORT",
+        "finding": "Complete installed signed socket/admission/publication, ordinary restart/history/export and original-state checks pass.",
+        "capture": {
+          "label": "export-complete",
+          "source": "b7b60f9283e3d3c72421c4df665dcd0b42c41798",
+          "build_source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "status": "PASS_INSTALLED_ARCHIVE_EXPORT",
+          "captures": 253,
+          "capture_sha256": "cdece952fc8e6dac926915628739bcf76211d77300ef0343d7683d0febc2a195",
+          "cases": [
+            {
+              "name": "archive-export",
+              "status": "PASS"
+            }
+          ]
+        },
+        "source_files": 1697,
+        "source_archive_sha256": "2f190c1913c82ac8d4819d84791451ba2d67f32f401ce1754e5b3d6bd5ad577d",
+        "databases": [
+          "bb_scope_bind_b7b60f9_archive_export",
+          "bb_scope_bind_b7b60f9_archive_export_cat"
+        ],
+        "cleanup": "STOPPED/RETAINED",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "free_bytes_after": 71939858432
+      }
+    },
+    "final_fixture": "b7b60f9283e3d3c72421c4df665dcd0b42c41798",
+    "native_rows": 49,
+    "complete_batches": 4,
+    "http_status_observations": 64,
+    "initial_signal_seconds": 0.055129168,
+    "initial_terminal": {
+      "pid": 193,
+      "start_ticks": "431291415",
+      "config": "/lab/bb_scope_bind_b7b60f9_archive_export.toml",
+      "prefix": "/lab/archive-export",
+      "exit_code": 0,
+      "elapsed_seconds": 39.513169227167964,
+      "forced": false,
+      "reaped": true
+    },
+    "ordinary_terminal": {
+      "pid": 1272,
+      "start_ticks": "431295957",
+      "config": "/lab/bb_scope_bind_b7b60f9_archive_export.toml",
+      "prefix": "/lab/archive-export-ordinary",
+      "exit_code": 0,
+      "elapsed_seconds": 4.880961419083178,
+      "forced": false,
+      "reaped": true
+    },
+    "output": {
+      "job_id": "ad4a71cc312e410eb1b9da7092b66b2a",
+      "artifact_id": "c241242f2045d68db511fccbc2ed7748",
+      "jsonl_bytes": 353,
+      "jsonl_sha256": "71fcfc6cf6ea29b2464cfe9f41aa749180b4f458b79b44779f94bc65880eefa9",
+      "manifest_sha256": "d4bd9c5801f1b7f8b3b2491bc2deec868d6d54713bfc00d709293c136dacde18",
+      "manifest": {
+        "format": "bigbrotr-signed-events-export/1",
+        "artifact_id": "c241242f2045d68db511fccbc2ed7748",
+        "job_id": "ad4a71cc312e410eb1b9da7092b66b2a",
+        "visibility": "private",
+        "fidelity": "full-signed-events",
+        "origin": "retained-scoped-archive",
+        "source": {
+          "cut": {
+            "dataset_id": "309d9507c5b5c39e9947e1406482d519",
+            "topology_generation": "0",
+            "bounds": [
+              {
+                "stream": {
+                  "shard_id": 0,
+                  "owner_epoch": "1"
+                },
+                "last_complete_sequence": "12"
+              }
+            ]
+          },
+          "catalog_id": "a3ec26144e77672bafba3ea0841c6637",
+          "frontier_revision": "4",
+          "snapshot_id": "5"
+        },
+        "selection": {
+          "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+          "scope": {
+            "allocation_domain": "8b0202d228b4ab60c5cc83e8907321e5",
+            "dataset_id": "309d9507c5b5c39e9947e1406482d519",
+            "dictionary_kind": 4,
+            "ordinal": "3"
+          }
+        },
+        "accepted_revisions": {
+          "configuration": "1",
+          "policy": "1"
+        },
+        "included_families": [
+          "signed-events"
+        ],
+        "excluded_families": [
+          "internal-payload-envelopes",
+          "eligibility-facts",
+          "first-local-receive",
+          "relay-provenance",
+          "imported-claims",
+          "measurements",
+          "documents",
+          "dictionaries",
+          "coverage",
+          "derived-results",
+          "deployment-state"
+        ],
+        "files": [
+          {
+            "file_id": "events",
+            "path": "events.jsonl",
+            "format": "nostr-jsonl/1",
+            "bytes": "353",
+            "rows": "1",
+            "sha256": "71fcfc6cf6ea29b2464cfe9f41aa749180b4f458b79b44779f94bc65880eefa9"
+          }
+        ]
+      },
+      "export_pin_retained": true,
+      "all_fresh_readers_released": true,
+      "original_acquisition_and_publication_unchanged": true
+    },
+    "capacity": {
+      "reserve": 68719476736,
+      "growth": 605028352,
+      "free": 71978323968
+    },
+    "read_and_export_operation_caps_bytes": 1073741824,
+    "application_envelope_bytes": 1073741824,
+    "native_envelope_bytes": 2147483648,
+    "artifact_cap_bytes": 268435456,
+    "review": "Complete fixture owners and affected product read/grant/export callers inspected. Root independently replayed49 native rows/four original inputs/headers/full scientific census and export oracle from captures; all1697 Git files matched. No product code, migration or persistent format changed. Seven oracle-only mutations reject lost active session, changed source prefix, missing grant, wrong manifest digest, retained reader, missing outcome and changed signed content. First local replay invocation omitted setup.catalog; corrected invocation used unchanged captures.",
+    "limitations": "One signed event/source prefix12/snapshot5; no capacity or broader recovery qualification. Original64MiB setup refusal and two oracle expectation failures remain FAIL.1GiB read/export caps do not qualify five exports under256MiB. Ten original empty preparation directories remain unchanged; ordinary read/export leaves no new scratch."
+  }
 }

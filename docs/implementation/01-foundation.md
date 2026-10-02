@@ -472,8 +472,11 @@ and queryable with truthful role readiness, without implicit public publishing.
   unfinished; the first event does not require complete adjacent services.
   The [initial Archive journey](evidence/p02-initial-archive-native-20261002.json)
   now qualifies timer-driven complete-batch publication and native full readback
-  of that signed event under product3a7f884/fixture640897e. Ordinary Control
-  history/export restart, indexing and Ingest restart/resend below remain open;
+  of that signed event under product `3a7f884`/fixture `640897e`. Fixture `b7b60f9` now
+  extends the same product through ordinary Control restart, explicit scope grants,
+  private history and a 353-byte signed JSONL export with independently verified
+  manifest/inventory. This uses documented 1 GiB read/export operation caps; five
+  exports under 256 MiB remain unqualified. Indexing and Ingest restart/resend remain open;
   complete adjacent Discovery/Monitor is not a prerequisite for this journey.
 - [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.

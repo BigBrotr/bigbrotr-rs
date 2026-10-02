@@ -424,7 +424,7 @@ agree. Identical retry returns200/original receipt; twelve selected ledgers and
 original output hashes remain unchanged through authorization checks and Control
 restart. Historical4e seed and8fa compiler-cache identities remain separate from
 the freshly built current artifacts. The new signed job deliberately stays accepted
-under256MiB; its execution and815COMMIT-loss schedules remain unqualified here.
+under 256 MiB; its execution and815COMMIT-loss schedules remain unqualified here.
 No complete list, cursor lifecycle, browser or release guarantee follows.
 
 The [installed page qualification](evidence/p08-job-pages-native-20260927.json)
@@ -477,6 +477,15 @@ listing; mutable artifact state follows the same page-read-time rule.
 - [ ] **Step 3:** implement pinned, policy-rechecked export chunks and atomic final manifest publication. The first signed export creates the shared 0501 artifact/file inventory; later analytics 0502 and publication 0804 extend it. Include referenced deduplicated monitoring documents and dictionaries; cancelled/failed files remain incomplete and cannot be listed as public datasets. Public publishing of an export is a separate grant/command, not a side effect of creating it.
 - [ ] **Step 4:** propose `cargo test -p bigbrotr --test portable_artifacts` with ordered/repeated tags, empty values, timestamp zero/u64 maximum, conflicting duplicate IDs, private claims, missing document and signature-invalid legacy rows. Negative control: edit one content byte without updating its signed ID/signature; the independent signature verifier must reject it even if a file checksum was recomputed.
 - [ ] **Step 5:** proposed `portable-artifacts` scenario imports a fixture twice, interrupts/resumes a unit, exports full and projected views, stops BigBrotr and all catalogs, then opens the result in a separately invoked pinned DuckDB. Compare signed fields and exact IDs with `export_oracle.py`'s source manifest, verify standalone document joins, and prove the projection cannot pass the full-event importer.
+
+The [installed first-event extension](evidence/p02-initial-archive-native-20261002.json)
+now connects real signed socket acquisition and fresh native publication to ordinary
+Control restart, reauthenticated scope grants, private history and one complete
+signed JSONL export (product `3a7f884`, fixture `b7b60f9`). Its 353-byte file, complete
+manifest, all 69 Control tables and original archive state are independently checked.
+It uses documented 1 GiB read/export operation caps; five signed exports under 256 MiB,
+broader formats/filters and retention/recovery remain required. Original setup and
+oracle failures stay recorded. This is scoped Step 3 evidence, not task completion.
 
 **Failure contract:** partial source coverage is attributed; bad units are quarantined/reported under selected import policy. A policy revocation terminates or restricts new export chunks; already delivered files cannot be recalled. Job result distinguishes complete requested scope, partial scope and failed execution.
 

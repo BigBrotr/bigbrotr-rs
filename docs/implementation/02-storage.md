@@ -409,9 +409,12 @@ Three real reader-prerequisite refusals precede all Ingest effects. An actual
 empty native cut authenticates retained reader credentials before fresh startup;
 accepted policy, not a managed seed, selects the initial profile. Complete-cut
 wire/allocation preflight precedes issuance. Earlier role-refusal, wrong-password
-and fixture-OID failures remain historical evidence. Ordinary read/export restart,
-initial publisher failure schedules and broader M1 remain open; no task checkbox
-closes from this bounded composition.
+and fixture-OID failures remain historical evidence. Fixture `b7b60f9` now adds
+ordinary Control restart, three explicit scope grants, signed history and a 353-byte
+JSONL export with full manifest/SQL checks; original native facts, catalog, roles
+and scratch are preserved. It uses 1 GiB read/export operation caps, not the pending
+256MiB acceptance. Initial publisher failure schedules and broader M1 remain open;
+no task checkbox closes from this bounded composition.
 
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,

@@ -36005,6 +36005,75 @@
           "released_original_control": "verified"
         },
         "bounds": "One known signed event, four original complete batches/source prefix12, snapshot5, 65 HTTP status observations; staged managed publisher=false/window129 correctly uses accepted publisher=true/window32. 1GiB application/2GiB native deployment; no capacity claim."
+      },
+      "installed_export_20261002": {
+        "status": "PASS_SCOPED; all four runs stopped-retained",
+        "report": "docs/implementation/evidence/p02-initial-archive-native-20261002.json",
+        "product": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+        "final_fixture": "b7b60f9283e3d3c72421c4df665dcd0b42c41798",
+        "runs": {
+          "export-first": {
+            "source": "49b811357f2bf79d181efb164cef2ed5226a233c",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-49b8113",
+            "owner": "8b7fb9e8c64cc800395f7a7bb1e68436",
+            "client": "9bd0c5b331ad27cb72a9528026ec9781d6a0eeb344ecbfd3abfc9d8ff2cfd46d",
+            "status": "FAIL",
+            "databases": [
+              "bb_scope_bind_49b8113_archive_export",
+              "bb_scope_bind_49b8113_archive_export_cat"
+            ],
+            "cleanup": "STOPPED/RETAINED",
+            "cleanup_errors": [],
+            "unrelated_changed": [],
+            "free_bytes_after": 72145813504
+          },
+          "export-native-profile": {
+            "source": "0d38738b5af80acf2490432f2bfefef5c8016748",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-0d38738",
+            "owner": "6f56cfcc211ee4a3a4cd3f2cbf7474f1",
+            "client": "db4644028808c953210af92304ba111e79fa6a7d217b05f87114b8e7f075496f",
+            "status": "FAIL",
+            "databases": [
+              "bb_scope_bind_0d38738_archive_export",
+              "bb_scope_bind_0d38738_archive_export_cat"
+            ],
+            "cleanup": "STOPPED/RETAINED",
+            "cleanup_errors": [],
+            "unrelated_changed": [],
+            "free_bytes_after": 72074641408
+          },
+          "export-final": {
+            "source": "03f8c6bb124f108875f05a5839c7b8e0e2af2988",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-03f8c6b",
+            "owner": "3407279e4ff7157bf91ed6956da9cbce",
+            "client": "16462ce15585aff78aa17ea99534f0be79cfff9640b0bbb271eb7de9aa5ecddc",
+            "status": "FAIL",
+            "databases": [
+              "bb_scope_bind_03f8c6b_archive_export",
+              "bb_scope_bind_03f8c6b_archive_export_cat"
+            ],
+            "cleanup": "STOPPED/RETAINED",
+            "cleanup_errors": [],
+            "unrelated_changed": [],
+            "free_bytes_after": 72007172096
+          },
+          "export-complete": {
+            "source": "b7b60f9283e3d3c72421c4df665dcd0b42c41798",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9",
+            "owner": "df63ed47a165a536aa0937277bfb4caa",
+            "client": "f3436207fb310923cc3e6ab0fabfe3f0b59cfb6a173c4b835c0835d7c3bb1120",
+            "status": "PASS_INSTALLED_ARCHIVE_EXPORT",
+            "databases": [
+              "bb_scope_bind_b7b60f9_archive_export",
+              "bb_scope_bind_b7b60f9_archive_export_cat"
+            ],
+            "cleanup": "STOPPED/RETAINED",
+            "cleanup_errors": [],
+            "unrelated_changed": [],
+            "free_bytes_after": 71939858432
+          }
+        },
+        "preserve": "All captures/source/signed stores/producer inputs/data/state/scratch/export artifacts and protected credentials. Original FAIL outcomes unchanged. Shared compiler1154757 and product3a7f884 artifacts remain independent inputs. Borrowed PostgreSQL stopped; no existing container or dataset deleted."
       }
     }
   },

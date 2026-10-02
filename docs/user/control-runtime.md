@@ -71,7 +71,8 @@ progress, job completion or complete acquisition readiness.
 
 Explicit `--roles control,ingest,sync,archive` also selects the initial local
 publisher. Its [bounded signed native journey](../implementation/evidence/p02-initial-archive-native-20261002.json)
-passes; complete recovery, read/export restart and capacity remain under qualification. Initialize the catalog, local state and
+passes, including ordinary Control restart/private history and one signed JSONL
+export. Complete recovery and capacity remain under qualification. Initialize the catalog, local state and
 coordinator separately first. This fresh-only profile requires migration0016,
 Archive mutation privileges, an empty initial catalog and no prior Archive
 attempt/consumer history. Configure the dedicated SELECT-only catalog reader's
@@ -92,7 +93,13 @@ native grants remain separate. The full cut's wire/allocation bounds can refuse
 further publication; this is a bounded initial profile, not a capacity guarantee.
 No producer ACK, pending reclaim, source closure, index readiness or native restart
 adoption is added. Stop this initial lifetime before using the ordinary Control
-read/export consumer with its explicit deployment roots and permissions.
+read/export consumer with its explicit deployment roots and permissions. The tiny
+installed journey enables `archive.reader.enabled`, initializes a separate private
+export destination, then grants `history.read`, `export` and `private-export` through
+reauthenticated commands. Dataset `data.read` remains separate. Follow the
+[history](api/history.md) and [export](../operations/export.md) memory requirements;
+that native journey uses 1 GiB read/export operation caps. Its retained signed JSONL
+is portable; the export retention pin still needs its future lifecycle consumer.
 
 To serve the initial private panel from that same listener, build the
 [static bundle](../development/build.md#private-browser-consumer) and set deployment

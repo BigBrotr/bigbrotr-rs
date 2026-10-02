@@ -12,8 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main0b6818a (bounded cache retirement) is pushed; root-owned installed
-export fixture/checkpoint edits are pending. No merge/rebase or active remote job. Product3a7f884 is now
+Primary mainb7b60f9283e3d3c72421c4df665dcd0b42c41798 is above pushed
+origin/main0b6818a. Root-owned evidence/inventory/task/user-doc/checkpoint updates
+are dirty; no merge/rebase or active remote job. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
 three Python files differ. The positive installed signed publication journey PASS
@@ -81,71 +82,66 @@ and recipe are under existing ignored cache-retirement-20260928; inventory
 implementation_20260917.cache_retirement_20260928.tux_export_20261002 owns details.
 Do not rerun this recipe. Mac3,013,836KiB free: no local Rust build.
 
-Installed export fixture49b8113, product3a7f884: FAIL after full publication,
-ordinary Control restart and three real reauthenticated scope grants. History
-returned429 because the fixture retained its64MiB read.execution cap below the
-existing740,425,728B native profile admission. Only three released reader pins,
-no export job; normal Control stop exit0. This is a fixture setup failure, not
-weakened product protection. Original244 captures remain under ignored
-initial-archive-20261002/export-first; capture SHA
-8b1aa320b09b050654d7ea671a680944e3af4d6ae4c4d47785ac68c08783bacc.
-Root installed-archive-export-49b8113, owner8b7fb9e8c64cc800395f7a7bb1e68436,
-client9bd0c5b331ad27cb72a9528026ec9781d6a0eeb344ecbfd3abfc9d8ff2cfd46d.
-All owned processes/PG stopped-retained, no OOM/cleanup/unrelated changes.
+The next installed consumer is now qualified for this small journey:
+product3a7f884/tree82a658df, fixtureb7b60f9/treee4e16479. After the original
+publisher stops, ordinary --roles control authenticates three separate scope
+grants, reads the complete signed event and completes one exact-ID JSONL export.
+The file is353 bytes, SHA71fcfc6cf6ea29b2464cfe9f41aa749180b4f458b79b44779f94bc65880eefa9;
+complete manifest/SQL inventory and original49 native rows/four requests/headers
+match independent oracles. All69 tables checked; old scientific/acquisition rows,
+32 catalog tables/global roles/archive data/state remain unchanged. Ordinary
+read/export releases its fresh readers and leaves no new scratch; its original
+export pin remains active. Ten original empty preparation directories survive.
+Initial SIGTERM termination0.055129168s; ordinary Control lifetime4.880961419s,
+exit0. 253 capture files/all1697 source files/four headers verified and replayed.
 
-Fixture0d38738 with documented1GiB read/export caps completed actual signed
-history, HTTP export acceptance/retry and succeeded job with353-byte JSONL.
-Final host oracle failed because it required the revoked old browser session to
-survive new login; browser_sessions::issue explicitly deletes revoked sessions.
-Original engine status remains FAIL.247 captures/hash8f96ba3c784987a6220d5ec25f4d8f66dc0bd49179dd49a508cc115f9f40f391
-under ignored initial-archive-20261002/export-native-profile are retained; all1697
-Git files/four original Archive headers verified. Corrected local export oracle
-replay PASS with seven negative controls, unchanged original files/SQL captures.
-353-byte SHA71fcfc6cf6ea29b2464cfe9f41aa749180b4f458b79b44779f94bc65880eefa9.
-Both latest labs/borrowed PG stopped, no cleanup errors or unrelated changes.
+Original failures remain FAIL:49b8113 left the read cap64MiB below its documented
+740,425,728B native admission, so history429 preceded export;0d38738 completed
+signed export but its final oracle wrongly required revoked browser sessions to
+survive new login;03f8c6b completed export/catalog/roles/file checks but expected
+empty scratch instead of original preparation directories. Corrected oracle-only
+replay rejects seven altered captures; no product protection was changed. A local
+replay invocation omitted setup.catalog; corrected invocation used original captures.
+Evidence/inventory: existing initial Archive report installed_export and
+implementation_network_20260928.initial_archive.installed_export_20261002.
+Ignored captures: initial-archive-20261002/{export-first,export-native-profile,
+export-final,export-complete}. No Rust rebuild; exact3a artifacts are reused.
+Read and export operation caps are1GiB, application1GiB/native2GiB, output256MiB.
+Five exports under256MiB remain NOT_RUN, not qualified by this path.
 
-Next bounded action: one focused final installed export run with corrected
-session-retirement expectation and captures of final catalog/roles/files before
-assertions. No product changes/rebuild;1GiB application/2GiB native envelopes,
-256MiB output cap,1GiB read/export operation caps. This closes only the selected
-tiny installed journey, not five exports under256MiB or full M1. Preserve original
-FAIL outcomes; record actual final result before task/docs/inventory closure.
+Structural decision at this boundary: reuse existing ordinary Control, grant,
+history and export adapters unchanged. Focused fixture client/host/oracle files
+express the new real consumer without a product framework or migration. Complete
+owning files and affected callers were inspected; transaction/custody/COMMIT
+semantics were not refactored during this integration qualification.
 
-Next useful deliverable: ordinary Control restart serving/exporting this same
-archived signed event, P01-T09 Step3 with P08-T04 Step3 and existing private
-history/export consumers. Extend the focused --installed-archive-signed fixture
-through stopped initial owner→explicit reader/destination roots→ordinary
---roles control→authenticated scoped history→signed JSONL export and independent
-bytes/manifest inspection. Reader credentials/flag/destination are deployment
-roots, not managed-policy activation. Grant commands must use existing explicit
-reauthentication/action semantics; do not mutate policy to fake activation. Read
-existing export-execution and private grant fixtures/contracts before adapting
-that real journey. Repeating this affected end-to-end path is necessary; no
-adjacent full Discovery/Monitor prerequisite or broad unchanged suite.
+Next useful M1 deliverable remains Ingest restart/resend with unchanged original
+admission, P01-T09 Step4, needing P02-T01 Step5/P02-T02 Step4 positive exclusion,
+original-request resolution and successor activation, not full adjacent services.
+Before extending that startup pattern, resolve the recorded managed-seed boundary:
+initial_ingest::selected(root) checks window>=2 before restoring accepted policy,
+although the registry marks that window as managed policy and registration uses
+only accepted minima. The current narrow ingest-store.md also says local profile
+must permit2, so update that contract explicitly if moving this check to accepted
+validation. Next bounded action: three actual installed cases (staged file1 with
+accepted32 succeeds; accepted configuration1 or accepted policy1 refuses before
+registration), preserve original native17 rows/two requests and full SQL effects.
+Run the discriminating baseline before product change; do not weaken accepted
+bounds or silently reuse the old nine-case window qualification.
 
-Remaining M1 work includes online indexing, initial Ingest successor/replay
-P02-T01 Step5/P02-T02 Step4, restart/resend/provenance-off, outages and bundle
-installation. Initial native custody cannot be adopted by fresh Serve. Publisher
-signal/crash/COMMIT/dependency/resource cases remain NOT_RUN for this composition;
-existing adapter evidence remains scoped. Five signed exports under256MiB are
-still NOT_RUN. A further source observation to check at the next startup change:
-selected(root) still enforces the old minimum producer window2 before accepted
-restoration; a managed staged window1 may be an unrelated early refusal. No
-unexecuted case is closed or whole task checkbox checked.
+M1 remains INCOMPLETE: online indexing, successor/replay, restart/resend/provenance-
+off, outages and bundle installation. Initial native custody cannot be adopted by
+fresh Serve. Publisher signal/crash/COMMIT/dependency/resource cases remain
+NOT_RUN for this composition; prior-empty-frontier/missing-frontier-privilege
+startup negatives still need installed evidence. No whole-task checkbox closed.
 
-All latest Tux runs STOPPED/RETAINED; no OOM, cleanup errors or unrelated changes.
-Product build root archive-worker-budgets-3a7f884 owner48a81820eef00c42f8cf252c2bac5851,
-ELFs retained outside shared cache. Positive root installed-archive-640897e owner
-32ff925b5b1776290f0e3d9b24d5f023, clientd4f2bb92305725d9451f4ed93a5e1d4a3f292f60b21f04c59052990535c18f50.
-Preserve its bindings/archive-signed/{store,data,state,scratch}, protected files,
-Control bb_scope_bind_640897e_archive_signed and corresponding _cat database.
-Preserve original2ae1866 and3a7f884 fault states. Latest free Tux49,929,715,712B,
-Mac3,027,152KiB; eight unrelated containers unchanged. This publication audit
-predates the completed cache retirement above. No local Rust builds or dataset
-deletions. 222 positive captures, four supplemental raw
-headers and exact source archive verified; original capture tar stays immutable.
-Build capture21files/all1694Git files matched; three-reader matrix376 captures
-retained. All detailed identities and scope limitations are in evidence/inventory.
+All latest Tux labs/borrowed PG STOPPED/RETAINED; no OOM/cleanup errors/unrelated
+changes. Latest root installed-archive-export-b7b60f9, owner and exact IDs in
+inventory; preserve all four export labs, signed stores/data/state/scratch/outputs,
+protected credentials and catalog/Control clones. Product build remains
+archive-worker-budgets-3a7f884 owner48a81820eef00c42f8cf252c2bac5851, retained ELFs
+outside shared cache. Tux71,939,813,376B free, Mac2,817,332KiB; eight unrelated
+containers unchanged. No local Rust build. Recheck headroom before next allocation.
 
 [Installed Sync evidence](evidence/p03-initial-sync-native-20261002.json) owns:
 
