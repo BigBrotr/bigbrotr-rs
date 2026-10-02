@@ -2099,6 +2099,51 @@
         "interpretation": "Real26/28 acceptance/replay/status and28 signed Sync run with no gap SELECT grant;27 refuses before bind for acceptance and for Sync with administration disabled. All69/70 SQL tables and complete49 signed native rows/four original inputs checked.",
         "review": "Independent read-only AI review20ce916 found no new actionable issue in complete changed product/fixture files, relevant callers and guards. No build or engine execution by reviewer.",
         "review_boundary": "Concurrent migration27 between preflight and first mutation is statically covered by transaction checks/shared migration lock, not executed by this fixture."
+      },
+      "guard_fixture_original": {
+        "status": "FAIL_FIXTURE_SETUP",
+        "source": "64fda0f6d4bf3d669f8e01cd222d7e49af12e0f0",
+        "build_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+        "capture": {
+          "label": "gap-guards",
+          "source": "64fda0f6d4bf3d669f8e01cd222d7e49af12e0f0",
+          "build_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+          "status": "FAIL",
+          "captures": 40,
+          "capture_sha256": "7c8710594aa56680f6c9cfcafd25698a27b5ecdb48bbd2a6b3a55766a71dfdc1",
+          "cases": []
+        },
+        "source_files": 1714,
+        "source_archive_sha256": "472f8f2d2c6d9e5f5c0f2797c60024b6b4eb063fbd5a72fcb83081cce594c06d",
+        "completed": [
+          {
+            "name": "abandon-signed",
+            "status": "PASS",
+            "control_tables": 70,
+            "native_rows": 49,
+            "original_requests": 4,
+            "expected_abandoned": 1,
+            "expected_refusal": null,
+            "seconds": 0.18995047081261873
+          },
+          {
+            "name": "abandon-signed-retry",
+            "status": "PASS",
+            "control_tables": 70,
+            "native_rows": 49,
+            "original_requests": 4,
+            "expected_abandoned": 1,
+            "expected_refusal": null,
+            "seconds": 0.18899174686521292
+          }
+        ],
+        "failure": "First raw gap case refused its synthetic Control backend before reaching the intended atomicity check. SET ROLE is not an application login; backend_start visibility differs. Original app cancellation/retry already passed. Corrected fixture connects with the real application login and a transaction-local, fixture-only privileged setup function.",
+        "original_seed_preserved": {
+          "control": true,
+          "catalog": true,
+          "files": true,
+          "report": true
+        }
       }
     }
   }

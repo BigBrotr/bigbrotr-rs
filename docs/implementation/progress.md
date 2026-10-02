@@ -12,8 +12,8 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is20ce916, five unpublished coherent candidates after pushedf996628.
-Root owns the next raw gap fixture/evidence update; no parallel writer or active
+Primary main is64fda0f, six unpublished coherent candidates after pushedf996628.
+Root owns the raw gap fixture setup correction/evidence update; no parallel writer or active
 experiment. The0027 ordinary job grant regression is confirmed by fixtureb14489d
 and corrected additively in20ce916; original FAIL37captures/SHAbb5b21d1 is retained.
 No applied SQL/checksum was changed. New0028 removes only the redundant deferred
@@ -33,8 +33,15 @@ unexecuted boundaries. Report ordinary_job_grants owns exact identities.
 
 Build owner46f33d08/nativea1c91c2a and engine20ce916/borrowedPG STOPPED_RETAINED,
 shared1154757 released; no OOM/cleanup/unrelated changes. Tux67,865,391,104B free.
-Current fixture adds actual28 abandonment/retry plus raw incomplete/immutable gap
-counterexamples and a deliberate missing-trigger negative control. No Mac Rust build.
+Original guard fixture64fda0f retains FAIL_SETUP: actual28 abandonment/retry passed,
+but its first raw case used SET ROLE and failed actual-backend identity before
+reaching the intended invariant. Preserve40 captures/SHA7c871059 and1714 source
+files/SHA472f8f2d; original signed source preserved. Engine/borrowedPG stopped with
+no cleanup/unrelated changes. Corrected fixture connects as the application login,
+using a transaction-local privileged fixture function only for synthetic backend
+setup. It explicitly checks backend visibility and restored origin replication
+before raw DML. No product guard is disabled during tested operations.
+No Mac Rust build.
 
 ## Active responsibility and next bounded action
 
@@ -169,7 +176,7 @@ Build257d232 and enginebff0bc3 STOPPED/RETAINED, shared1154757 released, borrowe
 stopped; no OOM/cleanup/unrelated changes. Engine ownerd410b6ca/client732716e9,
 Tux68,230,946,816B free. Preserve all original/synthetic/refusal clones and captures.
 
-Next bounded action: run the new clean-Git gap guard fixture using the unchanged
+Next bounded action: run the corrected clean-Git gap guard fixture using the unchanged
 20ce916 artifacts. Require actual28 cancellation+gap COMMIT/retry, raw incomplete
 transactions/early constraints/terminal mutations refused with full rollback,
 and the deliberately removed gap trigger detected. Then abandonment INSERT/COMMIT

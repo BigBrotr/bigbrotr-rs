@@ -1,8 +1,9 @@
 """Real relational counterexamples after actual signed source closure.
 
 Only the current Control backend/lease is synthetic, inside each transaction.
-The privileged setup ends before application-role gap/job writes and every
-negative rolls it back. This does not qualify native exclusion or owner adoption.
+A fixture-only privileged function returns before application-login gap/job
+writes and every negative rolls it back. This does not qualify native exclusion,
+owner adoption or password authentication (the isolated socket uses local trust).
 """
 import json
 
@@ -13,7 +14,14 @@ from source_closure_faults import assert_effects
 SETUP = """
     BEGIN;
     SELECT pg_advisory_xact_lock(1111651442, 1129599564);
-    SET LOCAL session_replication_role=replica;
+    SELECT gap_guard_fixture.prepare_backend();
+"""
+
+PREPARE_BACKEND = """
+    CREATE SCHEMA gap_guard_fixture;
+    CREATE FUNCTION gap_guard_fixture.prepare_backend() RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog
+    SET session_replication_role=replica AS $$ BEGIN
     UPDATE control.role_instances SET retired_at_us=NULL
         WHERE role_instance_id=(SELECT role_instance_id FROM control.owner_epochs
             WHERE role='control' ORDER BY epoch DESC LIMIT 1);
@@ -23,8 +31,10 @@ SETUP = """
         control_backend_pid=pg_backend_pid(),
         control_backend_start=(SELECT backend_start FROM pg_stat_activity WHERE pid=pg_backend_pid())
         WHERE role='control' AND epoch=(SELECT max(epoch) FROM control.owner_epochs WHERE role='control');
-    SET LOCAL session_replication_role=origin;
-    SET LOCAL ROLE bigbrotr_control;
+    END $$;
+    REVOKE ALL ON FUNCTION gap_guard_fixture.prepare_backend() FROM PUBLIC;
+    GRANT USAGE ON SCHEMA gap_guard_fixture TO bigbrotr_control;
+    GRANT EXECUTE ON FUNCTION gap_guard_fixture.prepare_backend() TO bigbrotr_control;
 """
 
 INSERT = """
@@ -75,6 +85,21 @@ def run(pg, client, output, rows, prepare, check_native, upgrade, cases, digest)
     check_native(directory, 'gap-relations-source')
     # Broader fixture DML grants isolate immutable-history guards from privilege
     # refusal. Ordinary runtime provisioning remains unchanged.
+    lab.sql(pg, database, PREPARE_BACKEND)
+    (output / 'gap-guard-prepare-backend.sql').write_text(PREPARE_BACKEND)
+    # Discriminate the original fixture setup error. SET ROLE hides the login's
+    # backend_start; a real application login sees its own backend identity.
+    diagnostic = lab.sql(pg, database, """
+        BEGIN;
+        SET LOCAL ROLE bigbrotr_control;
+        SELECT json_build_object('login',session_user,'role',current_user,
+            'backend_visible',backend_start IS NOT NULL)
+        FROM pg_stat_activity WHERE pid=pg_backend_pid();
+        ROLLBACK;
+    """)
+    diagnostic = json.loads(diagnostic)
+    assert diagnostic == dict(login='postgres', role='bigbrotr_control', backend_visible=False)
+    lab.write_json(output / 'gap-set-role-diagnostic.json', diagnostic)
     lab.sql(pg, database, 'GRANT UPDATE,DELETE,TRUNCATE ON control.acquisition_gaps TO bigbrotr_control; '
         'GRANT DELETE ON control.jobs TO bigbrotr_control;')
     assert rows(database) == after
@@ -94,13 +119,21 @@ def run(pg, client, output, rows, prepare, check_native, upgrade, cases, digest)
         ('gap-history-truncate', complete + 'TRUNCATE control.acquisition_gaps;', history),
     ]
     def execute(name, statement):
-        sql = SETUP + statement + '\nCOMMIT;'
+        sql = SETUP + """
+            SELECT json_build_object('login',session_user,'role',current_user,
+                'backend_visible',backend_start IS NOT NULL,
+                'replication_role',current_setting('session_replication_role'))
+            FROM pg_stat_activity WHERE pid=pg_backend_pid();
+        """ + statement + '\nCOMMIT;'
         (output / (name + '.sql')).write_text(sql)
         answer = lab.docker('exec', '-i', pg['postgres'], 'psql', '-X', '-A', '-t', '-q',
             '--no-password', '-v', 'ON_ERROR_STOP=1', '-v', 'VERBOSITY=verbose',
-            '-U', 'postgres', '-d', database, data=sql, check=False)
+            '-U', 'bigbrotr_control', '-d', database, data=sql, check=False)
         lab.write_json(output / (name + '-response.json'), dict(returncode=answer.returncode,
             stdout=answer.stdout, stderr=answer.stderr))
+        identity, = [json.loads(line) for line in answer.stdout.splitlines() if line.startswith('{')]
+        assert identity == dict(login='bigbrotr_control', role='bigbrotr_control',
+            backend_visible=True, replication_role='origin')
         return answer
     for name, statement, reason in schedules:
         answer = execute(name, statement)

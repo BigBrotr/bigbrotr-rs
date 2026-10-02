@@ -37286,6 +37286,37 @@
               }
             ]
           }
+        },
+        "guard_fixture_original": {
+          "source": "64fda0f6d4bf3d669f8e01cd222d7e49af12e0f0",
+          "status": "FAIL",
+          "owner": "63c2d96197523632f349ad1767111226",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "57bd8f15bfecc508e375cfaf0a1103758e93454a1b0073bb6b702e89e77345b6",
+            "name": "bigbrotr-acquisition-binding-64fda0f"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_64fda0f_abandon_signed",
+            "bb_scope_bind_64fda0f_gap_relations"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 67841474560,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-64fda0f",
+          "state": "stopped-retained",
+          "capture": {
+            "label": "gap-guards",
+            "source": "64fda0f6d4bf3d669f8e01cd222d7e49af12e0f0",
+            "build_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+            "status": "FAIL",
+            "captures": 40,
+            "capture_sha256": "7c8710594aa56680f6c9cfcafd25698a27b5ecdb48bbd2a6b3a55766a71dfdc1",
+            "cases": []
+          },
+          "preserve": "Original fixture setup FAIL; product cancellation/retry captures and all source/native/database states retained."
         }
       }
     }
