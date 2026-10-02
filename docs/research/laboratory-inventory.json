@@ -35338,6 +35338,142 @@
           "outcome": "PASS_INSTALLED_SYNC_FULL_WINDOW"
         }
       }
+    },
+    "initial_archive": {
+      "status": "STOPPED/RETAINED; worker budgets and virgin installed setup qualified, publication incomplete",
+      "evidence": "docs/implementation/evidence/p02-initial-archive-native-20261002.json",
+      "local_evidence": ".research/implementation/initial-archive-20261002",
+      "budgets": {
+        "budget-red": {
+          "source": "0d0a04f4d5f8b517020d571ac3d9a0f7c056ecc1",
+          "tree": "269a70691e2a048ef302c70ec56e7879f315e378",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-worker-budgets-0d0a04f",
+          "owner": "87b7a2b6631570b0ba508aa12b2ee4a7",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "9b302201aefafca446f767b24ba408b63be070d994c69a0b4e8e06cb3dad6d15"
+            },
+            {
+              "name": "native",
+              "id": "d88b44c96976625d3806e3a730a9bafe06238c754b1bf3bc8cf9c2502bea4ab4"
+            }
+          ],
+          "status": "FAIL",
+          "cleanup": "STOPPED/RETAINED",
+          "free_bytes_after": 51781001216,
+          "capture": {
+            "label": "budget-red",
+            "source": "0d0a04f4d5f8b517020d571ac3d9a0f7c056ecc1",
+            "files": 1682,
+            "captures": 17,
+            "capture_sha256": "2277625cbf6d34577bea9f392a432fac6a969cf1495c2ed935b74494dc4b825c"
+          }
+        },
+        "budget-green": {
+          "source": "66c73932e36f917248fd4867676a92e3ec213907",
+          "tree": "747ed7659bd97b7c16442a1567262997a7c4a54f",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-worker-budgets-66c7393",
+          "owner": "36280a5a77d7c3ae96eafdb00eecfbea",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "9b571e7840f5c32ce66caced496620d7c98814edf07a36c1ce5a805f4a104f45"
+            },
+            {
+              "name": "native",
+              "id": "fd7012347927cbeab4525ab4ccef8f5b21a9cf256c60788bfd2c230461415871"
+            }
+          ],
+          "status": "PASS",
+          "cleanup": "STOPPED/RETAINED",
+          "free_bytes_after": 51416592384,
+          "capture": {
+            "label": "budget-green",
+            "source": "66c73932e36f917248fd4867676a92e3ec213907",
+            "files": 1682,
+            "captures": 19,
+            "capture_sha256": "65e0ce0e6b01e752383a5f70b9876fbe8793f3c09f14105d4bec20903cdcc594"
+          }
+        }
+      },
+      "setup": {
+        "launch": {
+          "source": "165a33a441d4e7ed85bd5cbfdf465623fa83e946",
+          "tree": "318109e8b4fb9c0e11bf4e331b28d59eaf8f776a",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-165a33a",
+          "pid": 1906799,
+          "start_ticks": "430537006",
+          "build_source": "66c73932e36f917248fd4867676a92e3ec213907",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/archive-worker-budgets-66c7393/out/artifacts",
+          "binary_sha256": "0f91e8803faaf56d00ba316bf1bc328b80c375e6290a44a971277b76c732181d",
+          "probe_sha256": "6004b91a47f518a5e728c0c4cafc7ab5a324ff55514e4b8238cc2ba78ba44637",
+          "worker_identity": {
+            "bytes": 14421792,
+            "sha256": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+          },
+          "changed": [
+            "experiments/acquisition-scope/bindings.py",
+            "experiments/ingest-bootstrap/installed_archive.py",
+            "experiments/ingest-bootstrap/installed_archive_checks.py",
+            "experiments/ingest-bootstrap/installed_archive_oracle.py",
+            "experiments/ingest-bootstrap/installed_client.py"
+          ],
+          "bundle_sha256": "a7245e5f1f8e397eb941612430b1fe18e2a7cfc150df06800daf5ea56451bc20"
+        },
+        "owner": "2d2ef33eabd653737be037cb339084c0",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "dd4ca87451850ecee822422a1f841ea8b590c5c84d7e61677657317a0e8c7e78",
+          "name": "bigbrotr-acquisition-binding-165a33a"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_165a33a_archive_setup_refusal",
+          "bb_scope_bind_165a33a_archive_setup_refusal_cat"
+        ],
+        "archive_resources": [
+          {
+            "control_database": "bb_scope_bind_165a33a_archive_setup_refusal",
+            "catalog_database": "bb_scope_bind_165a33a_archive_setup_refusal_cat",
+            "manager": "bb_archive_b185c0e27c19bb38437834f2",
+            "home": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-165a33a/bindings/archive-setup-refusal",
+            "catalog_id": "1f0dc64672e137f920709ec6baf181e6",
+            "state": "setup-retained",
+            "roles": {
+              "manager": "bb_archive_b185c0e27c19bb38437834f2",
+              "manager_oid": 58712,
+              "bootstrap": "bb_init_4ecbddeafd24a3df95fea1de06a2985a",
+              "bootstrap_oid": 58715,
+              "reservation": "bb_init_database_58713",
+              "bootstrap_retired": true
+            },
+            "config": "/lab/bb_scope_bind_165a33a_archive_setup_refusal.toml",
+            "binding_sha256": "5ee8b46aa0c88567b531c48a268a507ccd15de9b0d32c1fd34e5dda54823edd0"
+          }
+        ],
+        "status": "PASS_INSTALLED_ARCHIVE_SETUP_EXPECTED_ROLE_REFUSAL",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "free_bytes_before": 51378921472,
+        "free_bytes_after": 51379843072,
+        "capture": {
+          "label": "setup",
+          "source": "165a33a441d4e7ed85bd5cbfdf465623fa83e946",
+          "build_source": "66c73932e36f917248fd4867676a92e3ec213907",
+          "status": "PASS_INSTALLED_ARCHIVE_SETUP_EXPECTED_ROLE_REFUSAL",
+          "captures": 48,
+          "capture_sha256": "c7a03055ebe6b2787ee15ce870c309eb89e957f18ff370095ca320d4c1f58681",
+          "cases": [
+            {
+              "name": "archive-setup-refusal",
+              "status": "PASS"
+            }
+          ]
+        }
+      },
+      "retained": "Exact source, artifacts, original RED and all logs/results; catalog/data/state/scratch and protected manager.secret retained; no cache/dataset/container deletion"
     }
   },
   "implementation_relay_registry_20260928": {

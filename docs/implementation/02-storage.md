@@ -400,6 +400,15 @@ restart/commit/manager-loss/cancellation cases using fixture `4bdc20f` and harne
 checked independently. Preserved harness failures remain INCOMPLETE. Source
 handoff, actual pins and served read/export remain open; no checkbox closes.
 
+The installed first-event composition now has [separate-process worker admission
+and virgin setup evidence](evidence/p02-initial-archive-native-20261002.json):
+`66c7393` passes real child custody/reap and two exhaustion cases; fixture `165a33a`
+uses its authenticated CLI/worker for actual catalog, state and coordinator
+initialization with identical retry. Explicit initial Archive selection still
+refuses before mutation. The next consumer is timer-driven complete pending-batch
+publication under the initial Ingest owner, then the existing captured frontier
+and read/export paths. This prerequisite closes no task or milestone checkbox.
+
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,
 `contracts/archive/v1/batch.json`, `packaging/archive-worker/`,

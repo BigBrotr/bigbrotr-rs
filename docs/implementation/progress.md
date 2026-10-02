@@ -12,15 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main observed at 527ee4adedee964f6d1bf318d41612a1defd3f25, clean and equal to
-origin/main before this candidate. Root is preparing the separate worker-budget
-regression/build slice; inspect actual HEAD and remote before resuming. Agent installed_sync_fixture
-owns only assigned Python files in .research/worktrees/installed-sync-fixture-a523c54.
-Its commit e8dca7d was integrated as e7d1eae. It now owns installed_archive*.py and
-the necessary isolated acquisition-scope fixture modes, based on 527ee4a; no Rust
-or Tux mutations. The read-only integration reviewer completed the budget API review.
-Root owns all Rust, docs, integration and Tux mutations. No merge/rebase. Preserve
-historical worktrees and reconcile unexpected dirty paths before editing.
+Primary main observed at165a33a441d4e7ed85bd5cbfdf465623fa83e946 above
+origin/main527ee4a before this evidence commit. Product66c7393 and fixture165a33a
+are verified as scoped below; push with the accompanying evidence commit.
+Agent5d2bf84 was integrated as165a33a; its isolated worktree is clean/idle.
+Read-only review is complete. Root owns all Rust, docs, integration and Tux
+mutations. Preserve historical/negative/dirty worktrees; no merge/rebase.
 
 ## Active responsibility and next action
 
@@ -34,23 +31,45 @@ Discovery/Monitor or P03 scheduling first. Full M1 additionally needs online ind
 and successor/recovery for restart (P02-T01 Step5/P02-T02 Step4); initial custody
 cannot be adopted by a fresh Serve. No readiness or release claim is made.
 
-Immediate prerequisite in qualification: separate application/native WorkerBudgets
-for publish_pending/inspect_cut. Actual test-only0d0a04f/tree269a70691e2a048ef302c70ec56e7879f315e378
-compiled the authenticated worker/CLI/probes and passed Clippy; its new real-child
-test failed Unavailable under the original single-budget API. No child launched.
-17 captures/source1682 files verified at .research/implementation/initial-archive-20261002/budget-red.
-Original outcome remains FAIL; run archive-worker-budgets-0d0a04f STOPPED/RETAINED,
-owner/resources in its resources.json, no OOM/unrelated changes, free51,781,001,216B.
-Root's candidate now splits child native/item and parent128KiB control admissions;
-inspect_cut retains its1MiB result grant in application. Existing combined-budget
-callers use the identical budget twice. Process/reap/unknown-termination logic is
-unchanged. Read-only review found no concrete blocker. Actual green and cut-specific
-separate-budget integration remain NOT_RUN; byte-exhaustion controls use2 slots so
-native byte capacity, not item capacity, decides the refusal.
-The runner uses exclusive shared compiler cache and read-only pinned assets from
-installed-publication-61271e2; it builds the worker from exact source before binding
-its hash in the parent. Agent5d2bf84 installed Archive setup/refusal fixture awaits
-root review/integration. No new local Rust build or cache/dataset deletion.
+The worker-budget prerequisite is now scoped PASS: product66c7393/tree747ed7659bd97b7c16442a1567262997a7c4a54f
+builds authenticated worker/CLI/probes and passes Clippy, one actual native
+custody/reap case and two prelaunch byte-exhaustion controls. Application native=0,
+child data/control=0; exact128KiB control/512MiB native grants persist until reap.
+Original0d0a04f/tree269a70691e2a048ef302c70ec56e7879f315e378 remains expected RED:
+build/Clippy passed, old single-budget launch refused Unavailable before child.
+Root matched all1682 Git files and17/19 captured files respectively. No Process/
+reap/TerminationUnknown behavior changed; old consumers use the same budget twice.
+Separate-budget cut grant integration is still NOT_RUN.
+
+Fixture165a33a/tree318109e8b4fb9c0e11bf4e331b28d59eaf8f776a reuses exact66c7393
+artifacts with only Python changes. Actual installed catalog initialize,
+state-initialize, coordinator-initialize and identical retry PASS; all32 native
+catalog tables/69Control tables, roles, checksums, local binding/files and original
+issuer attribution checked. Explicit initial Archive selection still exits3 with
+no mutation: expected integration RED, not a publication success.48 captures and
+identical Mac/Tux source archives verified; no credential bytes copied. See
+[initial Archive report](evidence/p02-initial-archive-native-20261002.json), inventory
+implementation_network_20260928.initial_archive and ignored
+.research/implementation/initial-archive-20261002/{budget-red,budget-green,setup}.
+All three runs are STOPPED/RETAINED with no OOM/unrelated changes or cleanup errors.
+Preserve installed-archive-165a33a/bindings/archive-setup-refusal/{data,state,scratch}
+and its protected manager.secret; these are actual initialized resources.
+Latest Tux free bytes: 51379843072. No local Rust build or cache/dataset deletion.
+
+Structural decision for next wiring: use joined two-phase blocking preparation
+under the existing progress/cancellation supervisor, including Control credential/
+TLS file reads. Make collect's successful value generic; keep a parent watch
+sender between phases and check cancellation/deadline after preparer joins.
+Return owned LocalCoordinator (not Arc: embedded Cells are non-Sync); parent
+attaches its descriptor clone to the unpolled Control driver before moving the
+coordinator into the native owner. Parent retains driver/permit through join/panic.
+inspect_cut should consume owned ReaderCustody, like existing event/visibility
+readers, so the native worker can move independently while CatalogCapture stays
+with the coordinator. Never add unsafe Sync or share the coordinator by Arc.
+A focused CommandOwner native-wait helper must renew both Control/Ingest and
+service HTTP while keeping original publication deadlines. Every error after
+spawn must cancel and actually join before return; no early ? may detach work.
+These lifecycle changes are reviewed design, not implemented yet.
 
 Next bounded action: implement explicit initial Archive publication, consuming the
 existing complete PendingBatch, retained attempt/FreshWriter, native worker and
@@ -157,8 +176,8 @@ Preserve these invariants in subsequent work:
   quiet cancellation drops protocol/socket and completes rollback; native/hard
   deadlines retain the parent watchdog and fail-stop behavior.
 
-No Tux run is active at this checkpoint. All four builds, failed/corrected engine
-waves and borrowed PG are STOPPED/RETAINED with empty unrelated-change/cleanup
+No Tux run is active at this checkpoint. Installed Sync builds/engine waves
+and borrowed PG are STOPPED/RETAINED with empty unrelated-change/cleanup
 reports. Inventory: implementation_network_20260928.installed_sync. Latest observed
 Tux52,197,584,896B free; Mac3,121,816KiB. No local Rust build or new cache deletion.
 Keep the retained e4ee0f5 CLI/probe artifacts outside the shared mutable cache.

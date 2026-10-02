@@ -119,6 +119,16 @@ Validation checks the decoder floor, not a measured process RSS ceiling. CPU/PID
 composition, filesystem reservations and maximum-unit memory qualification still
 gate the deployed worker role. The caller owns its temporary-disk reservation.
 
+Publication and cut inspection accept `WorkerBudgets` with explicit application
+and child-native lanes. This allows the application to retain Rocks without a
+second application allowance. The child uses its native/item grant; the parent
+uses 128 KiB control and cut inspection retains its 1 MiB result grant in the
+application lane. Existing finite commands explicitly reuse their validated
+combined budget. The [native budget qualification](../implementation/evidence/p02-initial-archive-native-20261002.json)
+at `66c7393` observes actual worker custody and both grants through reap, plus
+prelaunch exhaustion controls; the original single-budget refusal is retained.
+Separate-budget cut observation and the installed timer publisher remain unqualified.
+
 Before exec, the parent hashes the expected executable and the compiled target's
 library/extensions. The expected executable identity must come from an
 authenticated release or a trusted exact-source build; the API never reads its
