@@ -174,5 +174,192 @@
     "measured memory capacity/load/aged-state",
     "arm64/release"
   ],
-  "scope": "Fourteen finite data-loading schedules. Privileged clone-only document/metadata fixtures do not qualify product registration or management activation. No allocation/RSS capacity or release claim."
+  "scope": "Fourteen finite data-loading schedules. Privileged clone-only document/metadata fixtures do not qualify product registration or management activation. No allocation/RSS capacity or release claim.",
+  "current_source_metadata": {
+    "status": "PASS_SCOPED_ACQUISITION_READ",
+    "source": "a1dc662ae53b4a001704234f8cd1998202e6b087",
+    "tree": "1b36d39986582b59008f3b993b9bbdf91c3f8435",
+    "scope": "Eight bounded current-source metadata schedules; no socket action, installed Sync, capacity or release qualification.",
+    "red": {
+      "source": "4a98c5d5e8ca4d66de99c400ded6c0c457908333",
+      "status": "EXPECTED_FAIL",
+      "case": "source_valid",
+      "observed": "Unavailable instead of Capacity with the deliberate missing implementation; remaining cases NOT_RUN."
+    },
+    "source_manifest_sha256": "e0b062c997c98853e586f32b900a4904c3985baa246f68728cfd0c750b4dc570",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "artifacts_sha256": {
+      "bigbrotr": "29a1ff02bc8316a7cd0b491514cf7ecdd53cf5d9a0995d8d243fe1b915567c12",
+      "acquisition_scope_probe": "99b25a77ac89fb7061fe90f298a55fa3d103e7066e4601fc956ee161952a64d2"
+    },
+    "native_checks": [
+      {
+        "name": "compile",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "acquisition_scope_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 48.098168436437845
+      },
+      {
+        "name": "selector",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-protocol",
+          "--test",
+          "selector"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 5.423039622604847
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "acquisition_scope_probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 4.52213516458869
+      }
+    ],
+    "cases": [
+      {
+        "name": "source_valid",
+        "status": "PASS",
+        "lock_barrier": null
+      },
+      {
+        "name": "source_disabled",
+        "status": "PASS",
+        "lock_barrier": null
+      },
+      {
+        "name": "source_changed",
+        "status": "PASS",
+        "lock_barrier": null
+      },
+      {
+        "name": "source_missing",
+        "status": "PASS",
+        "lock_barrier": null
+      },
+      {
+        "name": "source_long",
+        "status": "PASS",
+        "lock_barrier": null
+      },
+      {
+        "name": "source_bad_url",
+        "status": "PASS",
+        "lock_barrier": null
+      },
+      {
+        "name": "source_bad_route",
+        "status": "PASS",
+        "lock_barrier": null
+      },
+      {
+        "name": "source_cancel",
+        "status": "PASS",
+        "lock_barrier": {
+          "pid": 767,
+          "backend_start": "2026-10-02 04:04:23.115745+00",
+          "blockers": [
+            758
+          ],
+          "holder_start": "2026-10-02 04:04:23.008579+00",
+          "waiting_locks": [
+            {
+              "type": "relation",
+              "mode": "AccessShareLock",
+              "relation": "control.network_routes"
+            }
+          ]
+        }
+      }
+    ],
+    "checks": [
+      "Exact dataset/endpoint/access and enabled enrollment; current generation plus second distinct route while original retained.",
+      "Independent128KiB/one-item threshold, identical reduced-credit retry, retained metadata credit through Control release.",
+      "Canonical8192-byte URL succeeds; noncanonical URL and malformed route refuse InvalidMetadata and poison reuse.",
+      "Missing/disabled enrollment returns None; no enrollment or source mutation.",
+      "Cancellation after positively observed network_routes AccessShareLock wait; unavailable reuse and actual driver join.",
+      "All66 tables and prior rows/xmin compared. Only one original60s Control claim and optional release, complete backend/timestamp/exclusion metadata verified."
+    ],
+    "review": {
+      "status": "PASS_CAPTURE_REVIEW_ONLY",
+      "cases": 8,
+      "owner_metadata_mutation_negatives": 3,
+      "source_files": 1668,
+      "capture_files": 51,
+      "source": "a1dc662ae53b4a001704234f8cd1998202e6b087",
+      "capture_manifest_sha256": "9abdbee2221242c1dc432f7b67a8cf553296afaea6fbe8e70aeaf5af82672a8c"
+    },
+    "ai_review": "Read-only complete owning files/callers/contracts. Fixed independent threshold, route discrimination and owner metadata gaps; distinct-route unique-index setup error caught before engine execution. No remaining bounded blocker; reviewer ran no engines.",
+    "local_review_corrections": "Original review-first.py retained: local capture replay initially assumed64 instead of actual66 tables. Reran on installed Python3.14 because Mac system3.9 rejects PostgreSQL +00 timestamp syntax. Original engine captures unchanged; eight replays and three owner-metadata mutation negatives pass.",
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-02T04:06:29.034769+00:00",
+      "source": "a1dc662ae53b4a001704234f8cd1998202e6b087",
+      "owned_stopped": [
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "exit": 0
+        },
+        {
+          "id": "d9a4b49f5086ce71305d11dff45636cebcd3714acf501b90f689eb3f625b221b",
+          "exit": 143
+        }
+      ],
+      "prior_unchanged": 1073,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "artifact_hashes_verified": true,
+      "source_files": 1668,
+      "captured_files": 51,
+      "free_bytes": 53918429184
+    },
+    "local_evidence": ".research/implementation/acquisition-source-read-20261002",
+    "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-a1dc662",
+    "not_qualified": [
+      "Installed finite Sync scheduling and dispatch",
+      "New persistent progress or successor recovery",
+      "Capacity/RSS or aged/mixed-workload claim",
+      "Native arm64 or release"
+    ]
+  }
 }

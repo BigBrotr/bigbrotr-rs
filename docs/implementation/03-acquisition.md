@@ -101,6 +101,9 @@ immediate refusals, exact2MiB document boundary and complete rollback.
 [Scope reading](evidence/p03-acquisition-scope-read-native-20260928.json) now has14
 native cases for exact persisted intent, bounded decoding, retained memory,
 historical/absent identities, corrupt metadata and actual query cancellation.
+Its a1dc662 supplement adds eight current source-metadata cases, with retained
+credit, current generation/route, exact66-table effects and actual cancellation.
+Installed candidate selection and dispatch remain open.
 The initial bridge now has an additive0021 collection binding and request-independent
 source/scope certification adapter. [Eleven actual PG/Rocks schedules](evidence/p03-acquisition-binding-native-20260928.json)
 qualify populated upgrade, retry/binding refusals and read-only certification.

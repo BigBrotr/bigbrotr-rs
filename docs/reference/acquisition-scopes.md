@@ -497,13 +497,20 @@ and their bounded evidence are below; native successor recovery and installed
 dispatch remain required.
 
 The installed dispatcher also needs a bounded current source metadata read for
-its exact loaded scope. This implementation slice is not yet qualified. The read
+its exact loaded scope. The read
 retains generation, route identity and canonical endpoint under one metadata
 reservation; it grants no source action. A later change must make old bindings
 fail the existing socket/admission checks, never silently replace retained arrival
 attribution. Missing/disabled enrollment returns no candidate, while inconsistent
 stored metadata remains a distinct error. Cancellation poisons the Control session
 until its actual driver custody ends. No persistent format or migration changes.
+The [current-source supplement](../implementation/evidence/p03-acquisition-scope-read-native-20260928.json)
+qualifies eight actual PostgreSQL schedules at a1dc662: exact tuple, second route,
+missing/disabled source, canonical8192-byte URL, malformed metadata and actual
+blocked-query cancellation. The independent128KiB/item threshold supports same-owner
+retry before coordination. All66 tables and complete permitted Control metadata
+were checked, including an unchanged60s lease. This closes only the metadata
+reader; installed selection and dispatch remain required.
 
 ## Job-bound source and event effects (implementation in progress)
 

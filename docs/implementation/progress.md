@@ -12,22 +12,31 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main4a98c5d5e8ca4d66de99c400ded6c0c457908333 is one unpublished RED
-candidate ahead of origin/main628cfd412765694a94c4789009c9d4dcd57f1943.
-Clean tree verified on resumption. The source-read build/Clippy passed on native
-Tux; actual PostgreSQL source_valid FAILED as intended: Unavailable instead of
-Capacity. Other source cases NOT_RUN. Original result/stderr/preflight retained
-under runs/acquisition-scope-read-4a98c5d/reads and local
-.research/implementation/acquisition-source-read-20261002/red/reads.
-Build owner5fddb6a51f70619d1bc26c298dffe2ab; engine ownerdd0c7a82a1f8eab888ceea1566541111,
-clientd5071a6e stopped143 and borrowed PG71775507 stopped0/noOOM, prior unchanged.
-Latest run ended03:50:47UTC with54,158,467,072B free. Mac3,322,780KiB free;
-no local Rust build. Preserve all originals, no cache deletion needed for this run.
-The current candidate implements the bounded source reader using the existing
-destination decoder and strengthens all three oracles. Native build and eight
-source cases for this GREEN candidate remain NOT_RUN; next run exact Git. Read-only reviewer identified these
-fixture gaps; no claim that source loading is qualified yet. No schema change.
-Candidate selection and explicit installed Sync integration remain afterward.
+Maina1dc662ae53b4a001704234f8cd1998202e6b087 is three unpublished coherent
+commits ahead of origin/main628cfd412765694a94c4789009c9d4dcd57f1943.
+Current documentation changes close the bounded source-metadata reader, not M1.
+Exact native build/selector tests/Clippy PASS; eight actual PostgreSQL cases PASS.
+Independent capture review checks all66 tables, original60s Control lease and
+complete claim/release metadata; three metadata mutation negatives reject.
+Root verified1668 exact source files/51 captures. Read-only AI review found three
+fixture gaps and a duplicate-route setup error; all corrected before GREEN.
+Original4a98c5d RED remains: Unavailable instead of Capacity, later cases NOT_RUN.
+Original local review mistake64 vs66 and Python3.9 timestamp parser limitation
+are retained; Python3.14 capture replay passes without changing engine captures.
+
+runs/acquisition-scope-read-a1dc662 STOPPED/RETAINED: buildPID1743041/start429599030,
+owner5e016fa558b501133076827cec796aa5;enginePID1745917/start429610714,
+owner59e4c792247d178edc308864d170ad73. Exact engine owner/IDs live in inventory
+implementation_network_20260928.acquisition_scope_read.current_source_metadata.
+Clientd9a4b49f stopped143/PG71775507 stopped0/noOOM. Audit04:06:29UTC:1073 prior
+unchanged,eight unrelated running,compiler lock released,53,918,429,184B free.
+No local Rust build. Local originals under
+.research/implementation/acquisition-source-read-20261002/{red,native}.
+Next: bounded candidate nomination via existing0815 admission ordinal, then
+explicit installed Sync dispatch. Metadata reader shares existing endpoint/route
+decoding; no new persistent format/trait/queue or source authority. Cursor progress
+must distinguish no eligible row in this32-row batch from end-of-pass; selecting
+ordinal N advances only through N. Claim/source/native checks remain authoritative.
 
 Root sole writer. Initial private-scope boundary now qualified: actualf8015bc
 CLI/probe build,123 selected native tests/Clippy; nine installed lifetime/window

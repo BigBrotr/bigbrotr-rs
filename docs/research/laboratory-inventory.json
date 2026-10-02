@@ -28119,9 +28119,10 @@
         }
       },
       "current_source_metadata": {
-        "status": "4a98c5d actual-engine RED observed; product implementation in progress",
+        "status": "a1dc662 eight actual source metadata cases PASS; stopped-retained",
         "local_evidence": ".research/implementation/acquisition-source-read-20261002",
-        "resources": {
+        "preserve": "Original RED result/stderr, cloned database, exact source, separately retained CLI/probe and build manifest. Existing scope/transport templates unchanged. No deletion.",
+        "red_resources": {
           "source": "4a98c5d5e8ca4d66de99c400ded6c0c457908333",
           "tree": "76e890c78e62bba7b9d1039eb1f24ef138e865a7",
           "owner": "5fddb6a51f70619d1bc26c298dffe2ab",
@@ -28147,7 +28148,7 @@
           "free_bytes_after": 54132285440,
           "finished_at": "2026-10-02T03:49:48.810234+00:00"
         },
-        "engine": {
+        "red_engine": {
           "owner": "dd0c7a82a1f8eab888ceea1566541111",
           "label": "org.bigbrotr.acquisition-scope-read",
           "client": {
@@ -28167,7 +28168,95 @@
           "cleanup_errors": [],
           "unrelated_changed": []
         },
-        "preserve": "Original RED result/stderr, cloned database, exact source, separately retained CLI/probe and build manifest. Existing scope/transport templates unchanged. No deletion."
+        "resources": {
+          "source": "a1dc662ae53b4a001704234f8cd1998202e6b087",
+          "tree": "1b36d39986582b59008f3b993b9bbdf91c3f8435",
+          "owner": "5e016fa558b501133076827cec796aa5",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-a1dc662",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "9d70cbc5c824cb4e91479c2cfee53ba1c0c3c244464dd5adbf8710cabd58cea6"
+            },
+            {
+              "name": "native",
+              "id": "7043677cc5ad3ed16f3d5bf1c906c0164eb05cd9ebb2e0b1c1596778b592a006"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-02T04:02:16.797634+00:00",
+          "qualification": "PASS_ACQUISITION_SCOPE_READ_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 54039576576,
+          "finished_at": "2026-10-02T04:03:16.854533+00:00"
+        },
+        "launch": {
+          "source": "a1dc662ae53b4a001704234f8cd1998202e6b087",
+          "tree": "1b36d39986582b59008f3b993b9bbdf91c3f8435",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-a1dc662",
+          "pid": 1743041,
+          "start_ticks": "429599030",
+          "bundle_sha256": "7dfc4fc3a30d90e9ffc99023bb5f4df868daaed820b999c2fd64c85a71d7142f"
+        },
+        "engine_launch": {
+          "source": "a1dc662ae53b4a001704234f8cd1998202e6b087",
+          "tree": "1b36d39986582b59008f3b993b9bbdf91c3f8435",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-a1dc662",
+          "pid": 1745917,
+          "start_ticks": "429610714"
+        },
+        "engine": {
+          "owner": "59e4c792247d178edc308864d170ad73",
+          "label": "org.bigbrotr.acquisition-scope-read",
+          "client": {
+            "id": "d9a4b49f5086ce71305d11dff45636cebcd3714acf501b90f689eb3f625b221b",
+            "name": "bigbrotr-acquisition-scope-read-a1dc662"
+          },
+          "databases": [
+            "bb_scope_read_a1dc662_source_valid",
+            "bb_scope_read_a1dc662_source_disabled",
+            "bb_scope_read_a1dc662_source_changed",
+            "bb_scope_read_a1dc662_source_missing",
+            "bb_scope_read_a1dc662_source_long",
+            "bb_scope_read_a1dc662_source_bad_url",
+            "bb_scope_read_a1dc662_source_bad_route",
+            "bb_scope_read_a1dc662_source_cancel"
+          ],
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "status": "PASS_SCOPED_ACQUISITION_READ",
+          "started_at": "2026-10-02T04:04:13.635345+00:00",
+          "finished_at": "2026-10-02T04:04:29.489522+00:00",
+          "free_bytes_after": 53918445568,
+          "cleanup_errors": [],
+          "unrelated_changed": []
+        },
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T04:06:29.034769+00:00",
+          "source": "a1dc662ae53b4a001704234f8cd1998202e6b087",
+          "owned_stopped": [
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            },
+            {
+              "id": "d9a4b49f5086ce71305d11dff45636cebcd3714acf501b90f689eb3f625b221b",
+              "exit": 143
+            }
+          ],
+          "prior_unchanged": 1073,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "artifact_hashes_verified": true,
+          "source_files": 1668,
+          "captured_files": 51,
+          "free_bytes": 53918429184
+        }
       }
     },
     "acquisition_binding": {
