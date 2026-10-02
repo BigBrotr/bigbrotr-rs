@@ -81,8 +81,13 @@ a fresh Control owner. Selected command `ingest recover --file ROOT` in the exis
 Owning CLI/runtime/native close/recovery/registry files and callers read; entrypoint
 RED fixture added before implementation. Closing must capture PG reserved-through
 under the same producer lock: native issued-through alone omits pending reservations.
-Next run the entrypoint RED, then wire the joined existing supervision and an
-independent installed engine fixture. Keep the complete original request set bounded;
+The entrypoint RED ran at `e4d8eaa`: 3 previous tests pass, the new
+case fails exit2 versus4 because the command is absent. Original 12 captures and
+1700-file source manifest verified under recovery-cli-red; build stopped/retained.
+The command and nine-case installed fixture are now candidates: native-first open,
+current policy, original PG reserved bound, per-request replay, driver custody via
+one-shot transfer to the existing supervisor. No API or fixture result is yet PASS.
+Next exact-Git build (CLI test, Clippy), then actual installed engine wave. Keep the complete original request set bounded;
 missing reservation/input/receipt stays Unresolved. Test unchanged retries,
 current-policy changes, cancellation/driver joining and held native exclusion.
 Do not make a read, lease expiry or old directory writable by ordinary Serve.

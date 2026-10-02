@@ -88,7 +88,9 @@ pub use initial_batch::{
     InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
     InitialVisibilityRequest,
 };
-pub use producer_closing::{ProducerCloseError, ProducerCloseRequest, ProducerOperationError};
+pub use producer_closing::{
+    InitialProducerClosing, ProducerCloseError, ProducerCloseRequest, ProducerOperationError,
+};
 pub use producer_recovery::{ProducerResolveError, ProducerResolveRequest};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

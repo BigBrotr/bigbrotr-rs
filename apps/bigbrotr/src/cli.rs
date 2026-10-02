@@ -16,6 +16,7 @@ pub fn command() -> clap::Command {
         .subcommand(crate::interfaces::archive::command())
         .subcommand(crate::interfaces::export::command())
         .subcommand(crate::interfaces::serve::command())
+        .subcommand(crate::interfaces::serve::ingest_command())
         .subcommand(clap::Command::new("event")
             .about("Inspect a signed event without admitting it to storage")
             .subcommand_required(true)

@@ -21,6 +21,14 @@ pub async fn run(
     let _metadata = grant(&budget, 64 * 1024, 0);
     let recovery =
         IngestRecovery::inspect(path, dataset, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
+    if mode == "history-hold" {
+        emit(serde_json::json!({"event":"native-held"}));
+        let mut line = String::new();
+        std::io::stdin().read_line(&mut line).unwrap();
+        assert_eq!(line, "release\n");
+        drop(recovery);
+        return;
+    }
     let (mut client, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
     let instance = if mode == "history-wrong-instance" {

@@ -52,6 +52,24 @@ impl<E> From<OwnerError> for ProducerOperationError<E> {
 
 pub type ProducerCloseError = ProducerOperationError<BootstrapError>;
 
+/// Both ends are needed: a durable reservation can precede a native admission.
+/// This retained observation is not a resolved prefix or retirement permission.
+pub struct InitialProducerClosing {
+    native: ProducerClosing,
+    reserved_through: u64,
+}
+impl InitialProducerClosing {
+    pub fn native(&self) -> &ProducerClosing {
+        &self.native
+    }
+    pub fn issued_through(&self) -> u64 {
+        self.native.issued_through()
+    }
+    pub fn reserved_through(&self) -> u64 {
+        self.reserved_through
+    }
+}
+
 impl ControlSession {
     /// Installs/verifies the native barrier before confirming PG's scheduling
     /// veto. This does not resolve retained outcomes, advance ACK, close the
@@ -63,7 +81,7 @@ impl ControlSession {
         input: ProducerCloseRequest<'_>,
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
-    ) -> Result<ProducerClosing, ProducerCloseError> {
+    ) -> Result<InitialProducerClosing, ProducerCloseError> {
         if input.cancelled.load(Ordering::Relaxed) {
             return Err(ProducerCloseError::Native(
                 BootstrapError::AuthorityUnavailable,
@@ -79,6 +97,23 @@ impl ControlSession {
                 validate,
             )
             .await?;
+        // begin_producer_recovery already holds producer UPDATE. Closing and
+        // reservations serialize on that row; a later reservation must see the
+        // closing veto. Do not derive the recovery interval from native issued.
+        const BOUND: &str = "
+            SELECT reserved_through_request::text
+            FROM control.producer_epochs
+            WHERE producer_slot_id=$1::bytea AND producer_epoch=1";
+        let row = tx
+            .query_one(BOUND, &[&&spec.producer_slot_id.as_bytes()[..]])
+            .await
+            .map_err(backend)?;
+        let reserved_through = row
+            .try_get::<_, &str>(0)
+            .ok()
+            .and_then(|s| s.parse::<u64>().ok())
+            .filter(|n| *n <= u64::from(spec.outstanding_request_limit))
+            .ok_or(OwnerError::InvalidMetadata)?;
         let closed = recovery
             .close_producer(
                 spec.producer_slot_id,
@@ -94,6 +129,10 @@ impl ControlSession {
                 },
             )
             .map_err(ProducerCloseError::Native)?;
+        if closed.issued_through() > reserved_through {
+            // The native barrier may now be durable; preserve it on refusal.
+            return Err(OwnerError::InvalidMetadata.into());
+        }
         // Already-closing PG rows still require the native operation above. Do
         // not rewrite them or mistake PG's state for an attested native bound.
         tx.execute("UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=$1::bytea AND producer_epoch=1 AND state='open'", &[&&spec.producer_slot_id.as_bytes()[..]]).await.map_err(backend)?;
@@ -110,7 +149,10 @@ impl ControlSession {
             return Err(ProducerCloseError::DeliveryUnknown);
         }
         self.available = true;
-        Ok(closed)
+        Ok(InitialProducerClosing {
+            native: closed,
+            reserved_through,
+        })
     }
 
     /// Shared current-Control / immutable historical-target lock and lease order.

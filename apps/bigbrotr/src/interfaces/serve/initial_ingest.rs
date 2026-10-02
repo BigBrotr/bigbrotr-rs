@@ -2,6 +2,7 @@
 mod archive;
 mod commands;
 mod dictionaries;
+pub(super) mod recovery;
 mod supervision;
 mod sync;
 use super::{Result, Stop, duration, owner_error};

@@ -45,6 +45,25 @@ enum Operation {
     Serve,
     InitializeCoordinator,
     InspectReceipt,
+    RecoverIngest,
+}
+
+pub(crate) fn ingest_command() -> Command {
+    Command::new("ingest")
+        .about("Explicit recovery of a retained local Ingest store")
+        .subcommand_required(true)
+        .disable_help_subcommand(true)
+        .subcommand(Command::new("recover")
+            .about("Close the initial producer and resolve all original positive outcomes")
+            .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
+            .after_help("Stop the original native owner first. Requires local Control/Ingest, the existing native store, retained original inputs and an initialized Control database. Uses fresh Control authority and current accepted policy. Preserves unresolved reservations; never infers noncommit. Starts no listener or acquisition. This positive-only recovery does not close source streams, acknowledge, retire or activate a successor. Exit: 0 all original positive outcomes verified and owner released, 1 I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled/unresolved/unknown outcome. Retry the same root after inspecting retained state."))
+}
+
+pub(crate) fn recover_ingest(args: &ArgMatches) -> ! {
+    execute_operation(
+        args.subcommand_matches("recover").unwrap(),
+        Operation::RecoverIngest,
+    )
 }
 
 pub(super) fn coordinator_command() -> Command {
@@ -81,6 +100,9 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
     };
     let outcome = (|| {
         let root = crate::config::load(Path::new(args.get_one::<String>("file").unwrap()))?;
+        if matches!(operation, Operation::RecoverIngest) {
+            return initial_ingest::recovery::run(root, &mut output);
+        }
         if matches!(operation, Operation::InitializeCoordinator) {
             root.catalog_identity().map_err(|e| (3, e))?;
             if !root.local("control") {

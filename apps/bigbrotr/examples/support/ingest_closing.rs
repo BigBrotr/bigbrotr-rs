@@ -246,8 +246,8 @@ pub async fn run(
         } else {
             let closed = result.unwrap_or_else(|e| panic!("unexpected closing error: {e:?}"));
             assert_eq!(closed.issued_through(), issued);
-            assert_eq!(closed.manifest(), &manifest);
-            assert_eq!(closed.producer_slot_id(), spec.producer_slot_id);
+            assert_eq!(closed.native().manifest(), &manifest);
+            assert_eq!(closed.native().producer_slot_id(), spec.producer_slot_id);
             emit(
                 serde_json::json!({"event":"producer-closed", "attempt":attempt,
                 "issued":closed.issued_through(), "current_control_epoch":current.identity().epoch.get(),
