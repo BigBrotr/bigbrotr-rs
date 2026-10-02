@@ -1332,5 +1332,8 @@ mod producer_closing_tests;
 #[path = "producer_recovery_tests.rs"]
 mod producer_recovery_tests;
 
+#[path = "source_closure_tests.rs"]
+mod source_closure_tests;
+
 #[path = "observation_tests.rs"]
 mod observation_tests;

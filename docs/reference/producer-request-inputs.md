@@ -471,4 +471,5 @@ Source closure leaves producer/domain retirement, workflow abandonment, ACK/GC,
 Ingest owner release and successor activation to their explicit later operations.
 The original topology remains immutable, including its historical NULL handoff;
 a later topology must carry the closed predecessor's exact bound. This extension
-is not implemented or qualified yet; the preceding measurements do not cover it.
+has a candidate implementation but is not qualified yet; preceding measurements
+do not cover it.

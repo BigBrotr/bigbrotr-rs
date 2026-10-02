@@ -82,6 +82,8 @@ mod initial_batch;
 mod producer_closing;
 #[path = "producer_recovery.rs"]
 mod producer_recovery;
+#[path = "source_closure.rs"]
+mod source_closure;
 pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest,
     InitialDictionaryAppendRequest, InitialEventError, InitialEventRequest,
@@ -92,6 +94,7 @@ pub use producer_closing::{
     InitialProducerClosing, ProducerCloseError, ProducerCloseRequest, ProducerOperationError,
 };
 pub use producer_recovery::{ProducerResolveError, ProducerResolveRequest};
+pub use source_closure::SourceCloseError;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OwnerError {

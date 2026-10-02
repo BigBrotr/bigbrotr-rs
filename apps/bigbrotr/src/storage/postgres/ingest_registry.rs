@@ -337,7 +337,7 @@ fn nonzero_id(value: &[u8]) -> Result<[u8; 16], RegistryError> {
     }
     Ok(value)
 }
-fn decimal(value: &str) -> Result<u64, RegistryError> {
+pub(super) fn decimal(value: &str) -> Result<u64, RegistryError> {
     if value.is_empty()
         || value.len() > 20
         || (value.len() > 1 && value.starts_with('0'))
@@ -355,13 +355,20 @@ fn optional_decimal(row: &Row, column: usize) -> Result<Option<u64>, RegistryErr
 }
 
 async fn observe(tx: &Transaction<'_>, s: &InitialRegistration) -> Result<Observed, RegistryError> {
-    observe_locked(tx, s, false).await
+    observe_locked(tx, s, RegistryLocks::Inspect).await
+}
+
+#[derive(Clone, Copy)]
+pub(super) enum RegistryLocks {
+    Inspect,
+    Producer,
+    Source,
 }
 
 async fn observe_locked(
     tx: &Transaction<'_>,
     s: &InitialRegistration,
-    closing: bool,
+    locks: RegistryLocks,
 ) -> Result<Observed, RegistryError> {
     let dataset = &s.dataset_id.as_bytes().as_slice();
     let resource = &s.ingest_resource_id.as_bytes().as_slice();
@@ -432,8 +439,23 @@ async fn observe_locked(
         .await.map_err(backend)?)?;
     let role_row = presence(tx.query_opt("SELECT dataset_id = $1::bytea AND role = 'ingest' AND created_at_us = $3::bigint, retired_at_us IS NULL FROM control.role_instances WHERE role_instance_id = $2::bytea FOR SHARE", &[dataset, role, &s.created_at_us])
         .await.map_err(backend)?)?;
-    let stream = presence(tx.query_opt("SELECT owner_resource_id = $3::bytea AND owner_role = 'ingest' AND owner_incarnation = $4::bytea AND opened_at_us = $5::bigint, CASE state WHEN 'open' THEN true WHEN 'closing' THEN false WHEN 'closed' THEN false END FROM control.source_streams WHERE dataset_id = $1::bytea AND shard_id = $2::bigint AND owner_epoch = 1 FOR SHARE", &[dataset, &shard, resource, incarnation, &s.created_at_us])
-        .await.map_err(backend)?)?;
+    // Source closure takes UPDATE here, before the producer lock. Upgrading a
+    // prior SHARE after locking the producer would invert the source-cut order.
+    let source_sql = format!("
+        SELECT owner_resource_id = $3::bytea AND owner_role = 'ingest'
+               AND owner_incarnation = $4::bytea AND opened_at_us = $5::bigint,
+               CASE state WHEN 'open' THEN true WHEN 'closing' THEN false WHEN 'closed' THEN false END
+          FROM control.source_streams
+         WHERE dataset_id = $1::bytea AND shard_id = $2::bigint AND owner_epoch = 1 {}",
+        if matches!(locks, RegistryLocks::Source) { "FOR UPDATE" } else { "FOR SHARE" });
+    let stream = presence(
+        tx.query_opt(
+            &source_sql,
+            &[dataset, &shard, resource, incarnation, &s.created_at_us],
+        )
+        .await
+        .map_err(backend)?,
+    )?;
     let generation = presence(tx.query_opt("SELECT previous_generation IS NOT DISTINCT FROM $3::text::numeric AND created_at_us = $4::bigint AND sealed, sealed FROM control.topology_generations WHERE dataset_id = $1::bytea AND generation = $2::text::numeric FOR SHARE", &[dataset, &target, &previous, &s.created_at_us])
         .await.map_err(backend)?)?;
     let members = tx.query("SELECT shard_id::bigint, left(owner_epoch::text,21), handoff_last_complete_sequence IS NULL FROM control.topology_streams WHERE dataset_id = $1::bytea AND topology_generation = $2::text::numeric LIMIT 2", &[dataset, &target])
@@ -477,7 +499,11 @@ async fn observe_locked(
         .await.map_err(backend)?)?;
     let producer_sql = format!(
         "SELECT dataset_id = $1::bytea AND producer_role_instance_id = $3::bytea AND producer_role = 'ingest' AND producer_incarnation = $4::bytea AND owner_resource_id = $5::bytea AND owner_epoch = 1 AND owner_role = 'ingest' AND owner_incarnation = $4::bytea AND outstanding_request_limit = $6::bigint AND opened_at_us = $7::bigint, CASE state WHEN 'open' THEN true WHEN 'closing' THEN false WHEN 'retired' THEN false END FROM control.producer_epochs WHERE producer_slot_id = $2::bytea AND producer_epoch = 1 {}",
-        if closing { "FOR UPDATE" } else { "FOR SHARE" }
+        if matches!(locks, RegistryLocks::Inspect) {
+            "FOR SHARE"
+        } else {
+            "FOR UPDATE"
+        }
     );
     let producer = presence(
         tx.query_opt(
@@ -545,10 +571,11 @@ pub(super) async fn require_initial_registration(
 pub(super) async fn require_closing_registration(
     tx: &Transaction<'_>,
     specification: &InitialRegistration,
+    locks: RegistryLocks,
 ) -> Result<(), RegistryError> {
     specification.validate()?;
     if !matches!(
-        observe_locked(tx, specification, true).await?.observation,
+        observe_locked(tx, specification, locks).await?.observation,
         RegistrationObservation::Matching { .. }
     ) {
         return Err(RegistryError::InvalidMetadata);

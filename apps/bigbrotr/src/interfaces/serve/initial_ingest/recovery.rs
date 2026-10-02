@@ -54,6 +54,7 @@ fn replay_grants(budget: &ResourceBudget) -> Result<(OwnedPermit, OwnedPermit)> 
 
 pub(in crate::interfaces::serve) fn run(
     root: Resolved,
+    close_source: bool,
     output: &mut LifecycleOutput,
 ) -> Result<()> {
     if !root.local("control") || !root.local("ingest") {
@@ -87,7 +88,7 @@ pub(in crate::interfaces::serve) fn run(
         let worker_progress = progress.clone();
         let handle = tokio::runtime::Handle::current();
         let mut worker = tokio::task::spawn_blocking(move || {
-            handle.block_on(own(root, budget, worker_progress, worker_cancel, send_driver))
+            handle.block_on(own(root, budget, worker_progress, worker_cancel, send_driver, close_source))
         });
         let (terminal, interrupted) = match supervision::collect(
             &mut worker, &mut observed, &cancellation, stop.requested(), grace, |_| {},
@@ -119,14 +120,12 @@ async fn own(
     progress: watch::Sender<Progress>,
     cancellation: Arc<Cancellation>,
     driver_custody: oneshot::Sender<(postgres_command::DriverHandle, OwnedPermit)>,
+    close_source: bool,
 ) -> Result<Value> {
     let path = Path::new(required(&root, "storage.ingest_root")?);
     let dataset: DatasetId = required(&root, "topology.dataset_id")?
         .parse()
         .map_err(|_| (3, "invalid dataset".into()))?;
-    let instance: DatasetId = required(&root, "topology.instance_id")?
-        .parse()
-        .map_err(|_| (3, "invalid instance".into()))?;
     let timeout = duration(&root, "renewal_timeout");
     if cancellation.requested.load(Ordering::Acquire) {
         return Err((4, "Ingest recovery cancelled before native open".into()));
@@ -171,7 +170,7 @@ async fn own(
         &cancellation,
         &mut recovery,
         client,
-        instance,
+        close_source,
     )
     .await;
     // The only blocking native destructor stays on this joined owner thread.
@@ -195,8 +194,11 @@ async fn connected(
     cancellation: &Cancellation,
     recovery: &mut IngestRecovery,
     mut client: tokio_postgres::Client,
-    instance: DatasetId,
+    close_source: bool,
 ) -> Result<(ControlSession, Value)> {
+    let instance: DatasetId = required(root, "topology.instance_id")?
+        .parse()
+        .map_err(|_| (3, "invalid instance".into()))?;
     let timeout = duration(root, "renewal_timeout");
     let path = Path::new(required(root, "storage.ingest_root")?);
     let validate =
@@ -245,7 +247,19 @@ async fn connected(
     .await?;
     let issued = closed.issued_through();
     let reserved = closed.reserved_through();
-    drop(closed);
+    let mut prefix = if close_source {
+        if issued != reserved {
+            return Err((4, "source closure has unresolved reserved requests".into()));
+        }
+        Some(
+            closed
+                .source_resolution(recovery)
+                .map_err(|e| (4, e.to_string()))?,
+        )
+    } else {
+        drop(closed);
+        None
+    };
     let mut resolved = 0_u64;
     for sequence in 1..=reserved {
         phase(progress, timeout)?;
@@ -280,16 +294,46 @@ async fn connected(
                 .map_err(|e| (4, e.to_string()))
         })
         .await?;
+        if let Some(prefix) = &mut prefix {
+            prefix.record(&result).map_err(|e| (4, e.to_string()))?;
+        }
         drop(result);
         resolved += 1;
     }
-    Ok((
-        owner,
-        json!({"format":"bigbrotr-ingest-recovery/1",
+    let mut report = json!({"format":"bigbrotr-ingest-recovery/1",
         "state":"positive-outcomes-resolved", "dataset_id":spec.dataset_id,
         "owner_resource_id":spec.ingest_resource_id, "producer_slot_id":spec.producer_slot_id,
         "producer_epoch":"1", "issued_through":issued.to_string(),
         "reserved_through":reserved.to_string(), "resolved_requests":resolved.to_string(),
-        "native":"closed", "owner_release":"committed", "ready":false}),
-    ))
+        "native":"closed", "owner_release":"committed", "ready":false});
+    if let Some(prefix) = prefix {
+        let source = prefix.finish().map_err(|e| (4, e.to_string()))?;
+        phase(progress, timeout)?;
+        bounded(timeout, cancellation, async {
+            owner.refresh(validate).await.map_err(owner_error)
+        })
+        .await?;
+        phase(progress, timeout)?;
+        bounded(timeout, cancellation, async {
+            owner
+                .close_initial_source(
+                    &source,
+                    ProducerCloseRequest {
+                        ingest_root: path,
+                        registration: &spec,
+                        policy_ttl: duration(root, "authorization_ttl"),
+                        cancelled: &cancellation.requested,
+                    },
+                    grant(budget, 64 * 1024, 0)?,
+                    validate,
+                )
+                .await
+                .map_err(|e| (4, e.to_string()))
+        })
+        .await?;
+        report["state"] = json!("source-closed");
+        report["source_closure"] = json!({"last_complete_sequence":source.last_complete_sequence().to_string(),
+            "sha256":bigbrotr_model::Digest256::from_bytes(source.digest())});
+    }
+    Ok((owner, report))
 }

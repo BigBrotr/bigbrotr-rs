@@ -12,11 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main and origin/main were clean and equal at `cde43a4` after publishing the
-signed-recovery qualification. Root now owns the next explicit source-closure
-contract, actual entrypoint RED and checkpoint; no parallel writer. Commit this
-candidate and execute the exact-revision Tux build with the shared compiler cache.
-No Mac Rust build. The checkpoint cannot contain its own future commit hash.
+Primary main is `7751217`, one unpublished source-closure contract/entrypoint
+candidate beyond pushed `cde43a4`. Root owns the native prefix witness, typed PG
+source closure, explicit CLI option, scoped native tests/build selection and this
+checkpoint. No parallel writer. Commit the candidate and run its exact-revision
+Tux build with shared1154757 cache; no Mac Rust build.
 
 ## Active responsibility and next bounded action
 
@@ -79,19 +79,22 @@ Root verified1704 source files/36 captures and replayed the independent full nat
 oracle. Report signed_event_recovery_20261002 and inventory engines.signed_event
 retain exact identities. No source closure/retirement/successor or M1 claim.
 
-Next bounded action: execute the actual entrypoint RED for explicit
-`ingest recover --close-source --file ROOT`, then implement its bounded positive
-source-closure consumer. The current source/producer/domain contracts and native/
-PG close/recovery/registry/history owners have been read. A rolling ephemeral
-native witness must consume every original positive outcome, cover NewFacts
-batches contiguously, match the native source counter and preserve zero. Existing
-source metadata stores the final bound/digest; no new native format or outcome
-ledger. Exact retry/ambiguous COMMIT must revalidate under exclusion. Default
-recovery stays unchanged. Source closure is not producer/domain retirement,
-workflow abandonment, ACK/GC or successor activation. The selected digest and
-compatibility/locking meaning are in the owning producer-request-inputs reference.
-The extension is NOT_IMPLEMENTED/NOT_RUN. M1 still requires the later explicit
-successor and unchanged signed resend/provenance-off journey.
+Next bounded action: build/execute the source-closure candidate on Tux, then extend
+the retained signed fixture for actual source closure, exact retry, a missing
+outcome copy and incompatible retained job bounds. Actual entrypoint RED7751217
+passed its discrimination: existing three tests pass, selected new option exits2
+instead of4. Build/12captures retained under source-closure-cli-red; SHA75feeea0.
+The draft implements explicit `ingest recover --close-source --file ROOT` through
+a rolling native witness under borrowed exclusive custody, strict original order,
+contiguous NewFacts, exact single native producer and final source counter/key.
+PG checks the complete ordered outcome digest prefix against that witness, takes
+source UPDATE before producer UPDATE and uses existing open→closing→closed rows.
+Exact closed retries preserve time/xmin. No SQL migration/native format/new ledger.
+Default recovery retains its preceding contract. Build/unit/connected outcomes
+for this candidate are NOT_RUN; COMMIT ambiguity, source lock cancellation and
+native failure cases still require appropriate practical evidence. The selected
+digest/compatibility meaning is in producer-request-inputs. No source/producer/
+domain retirement or successor qualification follows from writing this candidate.
 Full restart/resend remains M1's visible acceptance.
 
 The first12 cases use two dictionary requests; the later three exercise one signed

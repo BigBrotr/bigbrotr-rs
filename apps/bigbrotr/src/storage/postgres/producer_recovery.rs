@@ -58,6 +58,7 @@ impl ControlSession {
                 input.ingest_root,
                 input.registration,
                 input.policy_ttl,
+                ingest_registry::RegistryLocks::Producer,
                 validate,
             )
             .await?;

@@ -53,9 +53,11 @@ steps = [
                 '--bin','bigbrotr','--example',probe,'--','-D','warnings']),
 ]
 if mode == 'ingest-history':
-    identity['scope'] = 'Historical registry lookup build and actual CLI refusal regression; PostgreSQL verification remains separate'
+    identity['scope'] = 'Historical recovery/source closure build, native prefix checks and actual CLI refusals; connected PostgreSQL qualification remains separate'
     steps.insert(1, ('entrypoints', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                    '--test','control_runtime_entrypoint']))
+    steps.insert(2, ('source-closure', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                                      '--lib','source_closure_tests','--message-format=json','--','--test-threads=1']))
 if mode == 'ingest-recovery':
     identity['scope'] = 'Exclusive historical native inspection; registry loader, installed recovery and successor remain separate'
     steps.insert(0, ('rocks-store', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
@@ -215,12 +217,14 @@ if mode in ('observation', 'relay-transfer'):
             executables[filename] = digest
     assert set(executables) == ({'observation_components', 'acquisition_session'} if mode == 'observation' else {'protocol_event', 'acquisition_session'})
     receipt['test_executables_sha256'] = executables
-if mode in ('dictionary-append', 'ingest-recovery'):
+if mode in ('dictionary-append', 'ingest-recovery', 'ingest-history'):
     import re
     counts, executables = {}, set()
-    selections = ['rocks-store'] if mode == 'ingest-recovery' else ['dictionary-append', 'bootstrap', 'recovery']
+    selections = (['rocks-store'] if mode == 'ingest-recovery' else ['source-closure'] if mode == 'ingest-history'
+                  else ['dictionary-append', 'bootstrap', 'recovery'])
     target_kind = ['test'] if mode == 'ingest-recovery' else ['lib']
-    retained_name = 'rocks_store' if mode == 'ingest-recovery' else 'dictionary_components'
+    retained_name = ('rocks_store' if mode == 'ingest-recovery' else 'source_closure_components' if mode == 'ingest-history'
+                     else 'dictionary_components')
     for name in selections:
         content = (checks / (name + '.log')).read_text()
         summary = re.search(r'test result: ok\. ([1-9][0-9]*) passed; 0 failed; 0 ignored;', content)

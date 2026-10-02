@@ -97,6 +97,10 @@ pub use producer_recovery::{
     ProducerRecoveryError, ProducerRecoveryLimits, ResolvedProducerRequest,
 };
 
+#[path = "source_closure.rs"]
+mod source_closure;
+pub use source_closure::{ResolvedSource, SourceResolution};
+
 #[cfg(test)]
 #[path = "admission_tests.rs"]
 mod admission_tests;

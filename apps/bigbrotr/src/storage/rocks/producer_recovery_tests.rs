@@ -2,7 +2,7 @@
 use super::*;
 use bigbrotr_model::codec::{FactDecodeLimits, request::RequestDecodeLimits};
 
-fn recovery_limits() -> ProducerRecoveryLimits {
+pub(super) fn recovery_limits() -> ProducerRecoveryLimits {
     ProducerRecoveryLimits {
         input: RequestDecodeLimits {
             values: FactDecodeLimits {

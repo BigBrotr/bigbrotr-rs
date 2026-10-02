@@ -7,7 +7,7 @@ use crate::{
     },
     storage::rocks::{
         manifest::AllocationNamespaces,
-        store::{BootstrapError, IngestRecovery, ProducerClosing},
+        store::{BootstrapError, IngestRecovery, ProducerClosing, SourceResolution},
     },
 };
 use bigbrotr_model::{PolicyEpoch, ProducerEpoch};
@@ -68,6 +68,13 @@ impl InitialProducerClosing {
     pub fn reserved_through(&self) -> u64 {
         self.reserved_through
     }
+    pub fn source_resolution(
+        self,
+        recovery: &IngestRecovery,
+    ) -> Result<SourceResolution<'_>, BootstrapError> {
+        self.native
+            .source_resolution(recovery, self.reserved_through)
+    }
 }
 
 impl ControlSession {
@@ -94,6 +101,7 @@ impl ControlSession {
                 input.ingest_root,
                 spec,
                 input.policy_ttl,
+                ingest_registry::RegistryLocks::Producer,
                 validate,
             )
             .await?;
@@ -163,6 +171,7 @@ impl ControlSession {
         ingest_root: &Path,
         spec: &ingest_registry::InitialRegistration,
         policy_ttl: Duration,
+        locks: ingest_registry::RegistryLocks,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
         let identity = *recovery.manifest().identity();
@@ -202,7 +211,7 @@ impl ControlSession {
             .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;
         let policy = snapshot(&tx, &self.request, &mut validate).await?;
-        ingest_registry::require_closing_registration(&tx, spec)
+        ingest_registry::require_closing_registration(&tx, spec, locks)
             .await
             .map_err(ProducerOperationError::Registry)?;
         // Old Ingest scheduling expiry cannot prevent monotone recovery. Actual
