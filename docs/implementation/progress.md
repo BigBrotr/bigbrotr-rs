@@ -12,87 +12,110 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main HEAD a523c546cf546da307cc24168fc9245eb260a367 was clean and aligned
-with origin/main at resumption. Root now owns uncommitted installed Sync Rust,
-entrypoint-test and this checkpoint work. Agent installed_sync_fixture owns only
-its assigned Python fixtures in .research/worktrees/installed-sync-fixture-a523c54,
-detached from a523c54; integration and Tux mutation remain root-owned. No merge or
-rebase; preserve all unrelated historical worktrees. Recheck before resuming.
+Primary main observed at2b976c326a8eb9a4c1f0bbf350224346a71ea83a above
+origin/main a523c54. The accompanying evidence/reference/checkpoint commit belongs
+to root; inspect actual HEAD and remote before resuming. Agent installed_sync_fixture
+owns only assigned Python files in .research/worktrees/installed-sync-fixture-a523c54.
+Its commits through2509c82 were integrated; it is extending focused window fixtures.
+Root owns all Rust, docs, integration and Tux mutations. No merge/rebase. Preserve
+historical worktrees and reconcile unexpected dirty paths before editing.
 
 ## Active responsibility and next action
 
-Next user-visible deliverable: explicitly selected initial Control/Ingest/Sync
-receives a real signed socket event and durably admits it under the same living
-native owner. P03-T01 Steps3/4 and P03-T02 Steps1/2/3/5; M1/P01-T09 then needs actual
-archive/index/read/export and restart. No full Discovery/Monitor prerequisite.
+The installed first signed socket event now reaches durable admission under the
+same native/Control owner. Bounded qualification covers P03-T01 Steps3/4 and
+P03-T02 Steps1/2/3/5, not those complete tasks. After the current window check,
+next useful deliverable is that event reaching actual archive publication and
+read/export: P01-T09 Steps2/3, consuming P02-T04 Steps2–5 and the existing read/export
+adapters. Connect their real owner/custody requirements without completing all
+Discovery/Monitor or P03 scheduling first. Full M1 additionally needs online indexing
+and successor/recovery for restart (P02-T01 Step5/P02-T02 Step4); initial custody
+cannot be adopted by a fresh Serve. No readiness or release claim is made.
 
-Candidate nomination, scope/source metadata reads, dictionary preparation/append,
-committed observation, guarded source socket and certification/admission components
-are available. Concrete installed wiring is now IN_PROGRESS, not qualified. Ordinary
-Serve remains Control-only; initial control,ingest accepts private source/scope/job
-commands but reports acquisition=not-started/ready=false. Do not advertise Sync
-until actual installed acceptance passes. Root added finite dispatch, configured
-transport, committed observation reuse and current certification/admission under
-the retained store; no Rust build has run yet. Exact next action: integrate and
-review the independent Python fixture, then commit an unpublished exact-source
-candidate and run the existing initial-ingest native build profile on Tux.
+Current next action: integrate/review the agent's optional
+`bindings.py ROOT --installed-sync-window BUILD` extension and run its two cases
+against retained e4ee0f5 artifacts only if complete Rust/build inputs still match.
+Set both accepted/root window4, observe original event filling requests1–4, then
+exercise a distinct valid signed event and a new endpoint requiring attribution.
+Require exact original49 rows/four inputs/receipts, no ACK/fifth request, zero
+new-endpoint TCP, real job claim, continued existing-event certification, renewal,
+HTTP and shutdown. Agent owns Python only; root reviews all oracles and runs Tux.
+Current agent work is NOT_RUN. Source-change and isolated transport-failure
+installed cases also remain NOT_RUN; their existing adapter evidence stays scoped.
 
-Actual early role RED used retained ef248a8 CLI SHA399e5b160dba9b238901ce413bd38280d436ac620ba60797188abab6a1096794:
-serve --initialize-ingest --roles control,ingest,sync on archive-only root exited3,
-`initial Ingest requires exactly the control,ingest roles`, empty stdout. This was
-before credentials/native work, not the whole signed-event journey. Originals:
-.research/implementation/installed-sync-20261002/role-red.{json,stdout,stderr}.
-Full independent installed signed/quiet/prerequisite scenarios remain NOT_RUN.
-Latest Mac3,215,112KiB free; no local Rust build or new cache deletion.
+[Installed Sync evidence](evidence/p03-initial-sync-native-20261002.json) owns:
 
-Read complete initial_ingest.rs/commands.rs/dictionaries.rs, acquisition session,
-observation/source/claim/domain/nomination owners, dictionary preparation and concrete
-examples/support/ingest_socket_arrival.rs. Relevant native-operation methods and
-owning acquisition contracts were read; remaining changed callers must be read
-before editing. Independent read-only integration review completed; no engines
-were run by the reviewer. Preserve these concrete requirements:
+- Productc460bba/tree0d0475721b8b29af2e506bbeefa60b4747964c9b compiled/Clippy PASS.
+  Fixtureb61f345 passes nine actual CLI/HTTP/PG/Rocks cases: signed/forged/duplicate,
+  malformed/signed-out-of-selector/valid, quiet, public-envelope no-dial and five
+  isolated headless prerequisite refusals. Complete native49/35/17-row oracles,
+  exact inputs/receipts, all69 SQL tables/xmin and same-owner renewal are checked.
+  Quiet SIGTERM-to-observed-termination0.0538–0.0543s, exit0. No EOSE/checkpoint/ACK.
+- Producte4ee0f5/treee98d46a5a1f56998393ac929626a3db54457ff38 compiled/Clippy PASS.
+  Both absent visibility99 and unsupported original private2/public1-envelope
+  cases preserve17 native rows/two inputs, zero TCP, renewal/status/logout/exit0.
+  The fix yields only completed-read None and initial read-only preparation
+  InvalidInput. Corruption, resource, authority and uncertain-delivery errors stay
+  fatal. Reviewer inspected reachable error mappings; engines were root-owned.
+- Fixture2b976c3 uses the same e4ee0f5 binaries. Real500ms HTTP acceptance was
+  observed accepted/unowned before natural PostgreSQL expiry. Exact-owned SIGSTOP
+  lasted0.658881737s, SIGCONT occurred within original leases. All69 tables equal
+  across expiry; original acceptance/xmin and absent producer attribution survive
+  later120s job at admissionordinal2, valid event/49rows/four requests and quiet
+  SIGTERM0.055300023s. This qualifies the observed suspension schedule only.
+  A pre-start SQL seed was rejected as a fixture design: fresh namespace/scope
+  identities do not exist before installed bootstrap. No deadline/guard was edited.
 
-- Carry explicit --roles selection through initial_ingest::run; configured local
-  placement/sync.enabled alone must never activate an omitted Sync role. Preserve
-  acceptance-only control,ingest. Selected Sync needs >=4 outstanding slots:
-  bootstrap1/private2/observation3/event4. Receipts do not free producer slots.
-- Prepare one shared DirectConnector from validated network.dns.resolver and
-  network.tls.extra_roots. Presence is required only for explicit runtime Sync.
-  No fixture resolver127.0.0.1:9 or silent empty-root fallback. File loading runs
-  under supervised startup; O_NONBLOCK does not time-bound stalled regular files.
-- Account for TLS4MiB, scope8MiB, source128KiB, dictionary/visibility/observation,
-  session/retained frames and native effects in the same process budget. Current
-  item budget3+SESSION_ITEMS only covers existing initial/HTTP responsibilities.
-- Selected execution must probe migrations23/24, authority functions and actual
-  account/grant/enrollment/job row-lock privileges even without administration.
-  Acceptance-only require_acquisition_jobs22 is insufficient for execution.
-- Keep the original absolute renewal due through every scheduling/preparation/
-  socket/effect step. Bound new work by remaining time or renew first. Use a timed
-  finite scheduling opportunity so HTTP and acquisition cannot starve each other.
-- Nominate one job using existing admission ordinal/cut; claim remains authority.
-  Advance known refused/expired work. Stop on ambiguous COMMIT/poisoned owner;
-  never issue a new request to replace an uncertain original effect.
-- Build dictionary descriptors with prepare_dictionaries in exact scope visibility.
-  read_initial_observation first; reuse Some without append. On None append fixed
-  intent once and reread. Avoid consuming AlreadyDurable requests every poll.
-- Bound the entire WebSocket callback (handshake/open/receive/close) by a soft
-  cutoff computed before SQL/connect, leaving cleanup/rollback before hard source
-  deadline. Cancelled receive poisons RelaySession: drop it, never reuse/close it.
-  Normal idle returns through socket destruction and SQL rollback. Outer source
-  timeout/cancellation still fail-stops Control; stalled pre-callback DNS/TCP/TLS
-  is not ordinary idle. Retained events return only through successful source
-  delivery; keep loaded scope/source attribution through certification/admission.
+Original failures are retained: ef248a8 CLI refused explicit Sync selection;
+557d572 compile failed AcquireError→StdError; c460bba first signed case passed but
+next quiet fixture bind failed EADDRINUSE (whole wave FAIL). Original namespace
+was already stopped, so TIME_WAIT was not directly inspected there. Local real
+established-connection RED/GREEN justified SO_REUSEADDR; three sequential rebinds
+pass and two live-listener conflicts still refuse.717d6ec/c460bba absent-visibility
+RED exited4 after1.015s; its second case was NOT_RUN due fail-fast. No original
+result was relabeled. Earlier28ca931 build/Clippy+123 tests predates later fixes;
+unchanged broad suites were not mechanically repeated.
 
-Practical next acceptance uses actual private HTTP URL registration/enrollment,
-scope registration against published private_scope, finite job acceptance and a
-real independent relay. Expect exact REQ, one signed event, forged signature,
-duplicate and EOSE; attribution request3 and only event request4. Repeat dispatch
-with identical descriptors to prove dictionary reuse. No EOSE coverage inference.
-Include source change before socket, quiet cutoff with usable renewal and an older
-refused job followed by valid work. For expiry, actually accept an unclaimed job
-in the SQL-only setup, observe its deadline elapsed before initial startup, then
-submit valid work through installed HTTP. Do not alter immutable deadlines or
-invent an already-expired accepted command.
+Root hash-verified exact source archives and captures, replayed all three first-wave
+event/quiet native oracles and the expiry oracle against original CBOR/receipts and
+SQL.322 first-wave captures,23 input files,74 visibility captures and67 expiry
+captures retained. All exact identities in evidence/inventory; originals under
+.research/implementation/installed-sync-20261002. Evidence is bounded to these
+actual small workloads, not capacity or aged-state acceptance.
+
+Structural decision: native Custody retains concrete optional Sync, whose Dispatch
+borrows existing Control/store/spec/budget/cancellation. Observation preparation
+and finite protocol receive have focused modules. Existing transaction adapters
+retain reservation/commit/rollback semantics; no generic scheduler/backend trait,
+new persistent format, alternate allocator or duplicate implementation was added.
+Full changed owners and relevant callers were read; read-only AI review found and
+root corrected pre-attribution privacy leakage, missing headless helpers/history,
+peer-local fatal errors, full-window dictionary deferral and visibility isolation.
+Full-window behavior still needs the active fixture; static review does not close it.
+
+Preserve these invariants in subsequent work:
+
+- Explicit selected roles activate Sync; configured enablement alone does not.
+  Both accepted documents require Sync, at least4 outstanding slots and <=256KiB
+  events. The acceptance-only control,ingest profile stays available.
+- Prepare configured numeric DNS and DER roots under the supervised owner. Reserve
+  TLS4MiB, source/scope, visibility, dictionary, frames and effects in the same
+  budget;16 added logical items are not an RSS/capacity promise.
+- Probe actual migration catalog and execution/source/scope/history privileges
+  before startup publication, even without administration.
+- Keep original absolute renewal due through preparation, socket and effects.
+ 250ms gaps permit HTTP; renewal has priority. Pre-callback DNS/TCP/TLS only have
+  the hard deadline; no graceful soft-cutoff guarantee is claimed there.
+- Reuse committed observation without producer requests. Receipts never free slots.
+  Unknown outcomes stop the owner and retain original effect identity. Cooperative
+  quiet cancellation drops protocol/socket and completes rollback; native/hard
+  deadlines retain the parent watchdog and fail-stop behavior.
+
+No Tux run is active at this checkpoint. All four builds, failed/corrected engine
+waves and borrowed PG are STOPPED/RETAINED with empty unrelated-change/cleanup
+reports. Inventory: implementation_network_20260928.installed_sync. Latest observed
+Tux52,287,676,416B free; Mac3,145,928KiB. No local Rust build or new cache deletion.
+Keep the retained e4ee0f5 CLI/probe artifacts outside the shared mutable cache.
 
 ## Latest qualified boundary
 
@@ -172,14 +195,14 @@ No complete acquisition task or phase checkbox closes at this boundary.
 
 Runs root /home/tux/bigbrotr-implementation-20260917/runs/. Shared compiler cache
 network-1154757/out/build/{target,cargo-home}, owner8b21a13162699a6038154874c2ac89da,
-uses exclusive .compiler-cache.lock. Latest ef248a8 intermediates; qualified ELFs
+uses exclusive .compiler-cache.lock. Latest e4ee0f5 intermediates; qualified ELFs
 are separate. Native image7e946a0c, Rust1.98.1,clang14/Rocks11.8.1,amd64 only.
 All exact IDs/manifests/owners are in the existing laboratory inventory. Check
 space/process/container/mount/cache dependencies before the next large allocation.
 
 Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec
 (namebigbrotr-implementation-pg-20260917-source_e06f580), owner
-5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, remains stopped.
+5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, is stopped after the focused visibility wave.
 PG16.15/fsync/full_page_writes on. Preserve bb_source_template and every prior
 scope/source/transport/fault clone, exact native states and protected pg/secrets.
 Clone/verify before experiments; never publish secrets or repeat completed launchers.

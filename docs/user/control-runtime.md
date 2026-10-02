@@ -48,8 +48,9 @@ case is advertised. The [eleven native command/startup cases](../implementation/
 pass at `5050999`. Older inventory evidence below retains its original revision and
 scope; neither result enables Archive dispatch.
 
-Omitting `--roles` uses the root's explicit assignment. This initial slice refuses
-any selected role other than Control before opening credentials. Selecting a
+Omitting `--roles` uses the root's explicit assignment. Without
+`--initialize-ingest`, this slice refuses any selected role other than Control
+before opening credentials. Selecting a
 subset never starts the omitted roles. It opens no native store and makes no
 acquisition, publication or data-read readiness claim. The complete
 product and the ordinary Compose installation remain in development.
@@ -57,10 +58,16 @@ product and the ordinary Compose installation remain in development.
 The explicit `--initialize-ingest --roles control,ingest` path additionally
 creates and retains a fresh native owner; see the
 [initial owning lifetime](../reference/ingest-store.md#explicit-initial-owning-lifetime).
-Its optional private listener supports only login, self inspection and logout,
-using the same `access login`/`access logout` clients. It refuses selected archive
+Its optional private listener supports login, self inspection, logout, source
+registration/enrollment, acquisition scope registration and finite job acceptance/status.
+It uses the same `access login`/`access logout` clients and refuses selected archive
 read/export/assets and reports `ready=false`, `acquisition=not-started`. This is
 still a fresh-only path: it cannot adopt or restart an existing native directory.
+Explicit `--roles control,ingest,sync` additionally selects the bounded initial
+socket consumer under that same owner and reports `acquisition=finite-initial`.
+Follow the initial owning lifetime's transport, policy and resource requirements.
+Accepted jobs still report queued: this consumer does not claim durable traversal
+progress, job completion or complete acquisition readiness.
 
 To serve the initial private panel from that same listener, build the
 [static bundle](../development/build.md#private-browser-consumer) and set deployment

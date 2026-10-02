@@ -34809,6 +34809,468 @@
           }
         }
       }
+    },
+    "installed_sync": {
+      "status": "IN_PROGRESS",
+      "local_root": ".research/implementation/installed-sync-20261002",
+      "native_support": "Linux amd64 only; nine installed cases PASS at c460bba plus two focused visibility cases at e4ee0f5; full task incomplete",
+      "runs": {
+        "build-1": {
+          "resources": {
+            "source": "557d5729495eca8c7779cddc14c6d0d40626265b",
+            "tree": "1843abc1795084aef76538cd56aea025264916fc",
+            "owner": "e66d3b37b7e3371cf7e7635544b30d0c",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-557d572",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "e2c1779f5b59aa4e4b9bd118bb5713004cf14eba52e33f74e50024746f6e33d7"
+              },
+              {
+                "name": "native",
+                "id": "71dc6e72a77bb605eb75181276c9116bdd59a4a7808acce7139d12c8bdacc694"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-02T05:14:09.954689+00:00",
+            "inventory_changed": [],
+            "free_bytes_after": 53048754176,
+            "finished_at": "2026-10-02T05:14:46.808322+00:00"
+          },
+          "launch": {
+            "source": "557d5729495eca8c7779cddc14c6d0d40626265b",
+            "tree": "1843abc1795084aef76538cd56aea025264916fc",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-557d572",
+            "pid": 1801542,
+            "start_ticks": "430030345",
+            "bundle_sha256": "b57d7ae24dbc2aff9669bfc7bc71746d0d82f16069a2df4e2272c428d337e11f"
+          },
+          "capture": {
+            "label": "build-1",
+            "source": "557d5729495eca8c7779cddc14c6d0d40626265b",
+            "files": 1678,
+            "captures": 11,
+            "capture_sha256": "897ce3a4aa63b079cf64be294270918c4365f8c067083653728cad6ed8153472"
+          },
+          "outcome": "FAIL_COMPILE: AcquireError has no StdError conversion; original output retained"
+        },
+        "build-2": {
+          "resources": {
+            "source": "28ca93127321071319d91b933b71bb8588d5b5ea",
+            "tree": "43a2a9c79eed3fbd2c15f4f3f1eca078c804c1b4",
+            "owner": "27d670b6bdd57f5125c5def164b3d384",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-28ca931",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "044ba492e079cc1649cbc189d9624af4798665dfadabe8698c74c63529e8e528"
+              },
+              {
+                "name": "native",
+                "id": "7da6f0b8d1fe4189a81eafe078e4d8b941356d424756af9bc273631009ae535d"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-02T05:17:35.044887+00:00",
+            "qualification": "PASS_INITIAL_INGEST_BUILD_ONLY",
+            "inventory_changed": [],
+            "free_bytes_after": 52908376064,
+            "finished_at": "2026-10-02T05:19:42.575055+00:00"
+          },
+          "launch": {
+            "source": "28ca93127321071319d91b933b71bb8588d5b5ea",
+            "tree": "43a2a9c79eed3fbd2c15f4f3f1eca078c804c1b4",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-28ca931",
+            "pid": 1804240,
+            "start_ticks": "430050855",
+            "bundle_sha256": "5eae76e6a8305bd8bd4efd4476ba372c3f783b9a0e0588efa6d40f2158c17046"
+          },
+          "capture": {
+            "label": "build-2",
+            "source": "28ca93127321071319d91b933b71bb8588d5b5ea",
+            "files": 1678,
+            "captures": 18,
+            "capture_sha256": "b6d1fc7d8de6d3077ef5d21f894db8c4a46627a7465ba6517f8489db548a29ed"
+          },
+          "outcome": "PASS_BUILD_CLIPPY_123_SELECTED_TESTS_ONLY; later reviewed corrections require updated build"
+        },
+        "build-3": {
+          "launch": {
+            "source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+            "tree": "0d0475721b8b29af2e506bbeefa60b4747964c9b",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-c460bba",
+            "pid": 1811941,
+            "start_ticks": "430087474",
+            "bundle_sha256": "00ea8093ce02687f100a95341fa38e2248e8c7129767270f85429894954e01d2"
+          },
+          "outcome": "PASS_BUILD_CLIPPY_ONLY; unchanged broad unit suites not repeated",
+          "resources": {
+            "source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+            "tree": "0d0475721b8b29af2e506bbeefa60b4747964c9b",
+            "owner": "42bbd44ea3b992840324b085a394c855",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-c460bba",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "9db91bb89de02bd11ba8ea760553315d61f1aa8fdfb51d770dbfe32b98cf0f20"
+              },
+              {
+                "name": "native",
+                "id": "43f21fb623655103a6365f30b7810bc8c40749a1bc21b86f47c770175096993a"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-02T05:23:41.245090+00:00",
+            "qualification": "PASS_RELAY_ARRIVAL_BUILD_ONLY",
+            "inventory_changed": [],
+            "free_bytes_after": 52769161216,
+            "finished_at": "2026-10-02T05:24:59.620665+00:00"
+          },
+          "capture": {
+            "label": "build-3",
+            "source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+            "files": 1678,
+            "captures": 14,
+            "capture_sha256": "47b9dc0411990dfcc571bc8efeca42db14fba4dec8247eac64c689c4487bac7c"
+          }
+        },
+        "engine-1": {
+          "source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+          "status": "FAIL",
+          "owner": "c0146a7b7aa36b360f978529a53205b3",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "663f6a5c1cb00b921d449e7a606836023588e2f258e99373ed29189f1f505f87",
+            "name": "bigbrotr-acquisition-binding-c460bba"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_c460bba_sync_signed",
+            "bb_scope_bind_c460bba_sync_quiet"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_before": 52769144832,
+          "free_bytes_after": 52728770560,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-c460bba",
+          "state": "stopped-retained",
+          "outcome": "sync-signed PASS; sync-quiet fixture setup EADDRINUSE; remaining cases NOT_RUN",
+          "capture": {
+            "label": "engine-1",
+            "source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+            "build_source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+            "status": "FAIL",
+            "captures": 88,
+            "capture_sha256": "24cbd9b0b97254f24d269757b0a4f5f69fc4a5e98650117f3032299b40b0faf5",
+            "cases": [
+              {
+                "name": "sync-signed",
+                "status": "PASS"
+              }
+            ]
+          }
+        },
+        "engine-2": {
+          "launch": {
+            "source": "b61f3459772724a02b9f2c89ac5bbf15e0ceb903",
+            "tree": "7483193cd6d0aa19d17a3633fa2a0f85c1a4e968",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-sync-b61f345",
+            "pid": 1823905,
+            "start_ticks": "430149165",
+            "build_source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+            "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-c460bba/out/artifacts",
+            "binary_sha256": "2b87b8665b061419b35b90c6509eeaf4faacb9cf0f4de4303c1c62a25dc26171",
+            "probe_sha256": "ed33c5edce32c05195a3a879df169fb9d0206fe469328873967140e3a612ceb2",
+            "changed": [
+              "experiments/ingest-bootstrap/installed_sync.py",
+              "experiments/ingest-bootstrap/installed_sync_checks.py",
+              "experiments/ingest-bootstrap/installed_sync_client.py"
+            ],
+            "bundle_sha256": "6c55a09b5f48c09482f0fc1ef59e7e1949da78fc967d3f730623dcf63f971cb9"
+          },
+          "outcome": "PASS_INSTALLED_FINITE_SYNC_FIRST_WAVE",
+          "source": "b61f3459772724a02b9f2c89ac5bbf15e0ceb903",
+          "status": "PASS_INSTALLED_FINITE_SYNC_FIRST_WAVE",
+          "owner": "d14b578f4346321c809756cdaad8fa2c",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "e64fbc9107a8395f628f9ed9e6a9517260640ef6c3d0937988a0a5f699f0775a",
+            "name": "bigbrotr-acquisition-binding-b61f345"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_b61f345_sync_signed",
+            "bb_scope_bind_b61f345_sync_quiet",
+            "bb_scope_bind_b61f345_sync_function",
+            "bb_scope_bind_b61f345_sync_lock",
+            "bb_scope_bind_b61f345_sync_public_visibility",
+            "bb_scope_bind_b61f345_sync_source_function",
+            "bb_scope_bind_b61f345_sync_scope_function",
+            "bb_scope_bind_b61f345_sync_change_read",
+            "bb_scope_bind_b61f345_sync_peer_refusals"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_before": 52691300352,
+          "free_bytes_after": 52507635712,
+          "state": "stopped-retained",
+          "capture": {
+            "label": "engine-2",
+            "source": "b61f3459772724a02b9f2c89ac5bbf15e0ceb903",
+            "build_source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+            "status": "PASS_INSTALLED_FINITE_SYNC_FIRST_WAVE",
+            "captures": 322,
+            "capture_sha256": "725dfcbb44deb51604bd9f281b381b0665e956c80f48513cc4d40e90ea2519ad",
+            "cases": [
+              {
+                "name": "sync-signed",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-quiet",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-function",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-lock",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-public-visibility",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-source-function",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-scope-function",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-change-read",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-peer-refusals",
+                "status": "PASS"
+              }
+            ]
+          }
+        },
+        "visibility-red": {
+          "source": "717d6ec2fa05a86257fba523e2962f8432e3144c",
+          "status": "FAIL",
+          "owner": "6e0898df7c3d558ba5b7b59a720c45e0",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "cad2473c90b641bf0cac087e643d10537432bed0c3a256341c2440e2066d4399",
+            "name": "bigbrotr-acquisition-binding-717d6ec"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_717d6ec_sync_absent_visibility"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_before": 52470140928,
+          "free_bytes_after": 52522151936,
+          "state": "stopped-retained",
+          "launch": {
+            "source": "717d6ec2fa05a86257fba523e2962f8432e3144c",
+            "tree": "a165c015d49b919c9aacc3a262820749fc9b8768",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-sync-717d6ec",
+            "pid": 1850123,
+            "start_ticks": "430191230",
+            "build_source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+            "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-c460bba/out/artifacts",
+            "binary_sha256": "2b87b8665b061419b35b90c6509eeaf4faacb9cf0f4de4303c1c62a25dc26171",
+            "probe_sha256": "ed33c5edce32c05195a3a879df169fb9d0206fe469328873967140e3a612ceb2",
+            "changed": [
+              "experiments/acquisition-scope/bindings.py",
+              "experiments/ingest-bootstrap/installed_sync.py",
+              "experiments/ingest-bootstrap/installed_sync_checks.py",
+              "experiments/ingest-bootstrap/installed_sync_client.py"
+            ],
+            "bundle_sha256": "f3d9aa0032238c58d11dd9dcfe1979b4c6737a32fd264a70850187fd10661a9c"
+          },
+          "capture": {
+            "label": "visibility-red",
+            "source": "717d6ec2fa05a86257fba523e2962f8432e3144c",
+            "build_source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+            "status": "FAIL",
+            "captures": 30,
+            "capture_sha256": "5252820a1543f91584e26f9e77560892d92e86490dba3d9c9dda8051afe78b94",
+            "cases": []
+          },
+          "outcome": "FAIL: AssertionError: initial owner ended early"
+        },
+        "build-4": {
+          "resources": {
+            "source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "tree": "e98d46a5a1f56998393ac929626a3db54457ff38",
+            "owner": "586f224d55beee8ce04ba1e382e8e047",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-e4ee0f5",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "1f06174b9e03bc4187a8bb7977c74ef342706eee66c95ab28ba97944d45de9b9"
+              },
+              {
+                "name": "native",
+                "id": "50e01b905bafcae3d92f927a699f5d0a861198ccd9d1bbb3ce1c07a55895a684"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-02T05:42:43.759720+00:00",
+            "qualification": "PASS_RELAY_ARRIVAL_BUILD_ONLY",
+            "inventory_changed": [],
+            "free_bytes_after": 52383035392,
+            "finished_at": "2026-10-02T05:44:02.113605+00:00"
+          },
+          "launch": {
+            "source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "tree": "e98d46a5a1f56998393ac929626a3db54457ff38",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-e4ee0f5",
+            "pid": 1853443,
+            "start_ticks": "430201726",
+            "bundle_sha256": "7fb8dc37aab2f37c2439bdc3d9cc0f653a37d13e084585d3c4dcbae38bef35e0"
+          },
+          "capture": {
+            "label": "build-4",
+            "source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "files": 1678,
+            "captures": 14,
+            "capture_sha256": "b830ea52a1abea97bc6e5f6ea321f0b47a16ddc9454ae956836d606703ce7b99"
+          },
+          "outcome": "PASS_BUILD_CLIPPY_ONLY"
+        },
+        "visibility-green": {
+          "launch": {
+            "source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-e4ee0f5",
+            "pid": 1856280,
+            "start_ticks": "430217116",
+            "build_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "binary_sha256": "ed1f50603752837ccc286bb074cedbd3f4165527cb56c222bb76718678ddf3bf",
+            "probe_sha256": "ed33c5edce32c05195a3a879df169fb9d0206fe469328873967140e3a612ceb2"
+          },
+          "outcome": "PASS_INSTALLED_SYNC_VISIBILITY",
+          "source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+          "status": "PASS_INSTALLED_SYNC_VISIBILITY",
+          "owner": "0b6eda914d1cecc60a5512b6f34bba7d",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "1a4636c47b15614c409cd08a594fff9f41dc2f05818fe54080177da121c95dae",
+            "name": "bigbrotr-acquisition-binding-e4ee0f5"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_e4ee0f5_sync_absent_visibility",
+            "bb_scope_bind_e4ee0f5_sync_bootstrap_private_visibility"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_before": 52382994432,
+          "free_bytes_after": 52330508288,
+          "state": "stopped-retained",
+          "capture": {
+            "label": "visibility-green",
+            "source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "build_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "status": "PASS_INSTALLED_SYNC_VISIBILITY",
+            "captures": 74,
+            "capture_sha256": "cef2e6fd26fa1dc22cf153822a3bda17919337a218ac096cc9c5b4271f46e1d3",
+            "cases": [
+              {
+                "name": "sync-absent-visibility",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-bootstrap-private-visibility",
+                "status": "PASS"
+              }
+            ]
+          }
+        },
+        "expiry": {
+          "source": "2b976c326a8eb9a4c1f0bbf350224346a71ea83a",
+          "status": "PASS_INSTALLED_SYNC_NATURAL_EXPIRY",
+          "owner": "4bea563573fdf41305cdadb7862cfc13",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "93627d41ec2576fbfd7ecaab954569dc428673c15db4e9c448026cc72c9377ff",
+            "name": "bigbrotr-acquisition-binding-2b976c3"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_2b976c3_sync_expired_before_valid"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_before": 52292984832,
+          "free_bytes_after": 52287676416,
+          "state": "stopped-retained",
+          "launch": {
+            "source": "2b976c326a8eb9a4c1f0bbf350224346a71ea83a",
+            "tree": "b9c346fdacf9c91532eb8f47118f0433bf2acd91",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-sync-2b976c3",
+            "pid": 1866311,
+            "start_ticks": "430242038",
+            "build_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-e4ee0f5/out/artifacts",
+            "binary_sha256": "ed1f50603752837ccc286bb074cedbd3f4165527cb56c222bb76718678ddf3bf",
+            "probe_sha256": "ed33c5edce32c05195a3a879df169fb9d0206fe469328873967140e3a612ceb2",
+            "changed": [
+              "experiments/acquisition-scope/bindings.py",
+              "experiments/ingest-bootstrap/installed_sync.py",
+              "experiments/ingest-bootstrap/installed_sync_checks.py",
+              "experiments/ingest-bootstrap/installed_sync_client.py",
+              "experiments/ingest-bootstrap/installed_sync_expiry.py"
+            ],
+            "bundle_sha256": "f09875e3bc7d9f0ffafa3042869b2c321eb3a485e614c1aa29eff96ed5c237b9"
+          },
+          "capture": {
+            "label": "expiry",
+            "source": "2b976c326a8eb9a4c1f0bbf350224346a71ea83a",
+            "build_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+            "status": "PASS_INSTALLED_SYNC_NATURAL_EXPIRY",
+            "captures": 67,
+            "capture_sha256": "6b4f636a3cdfbe2685d86bab84302e9aafd289538270d81c8a88826743a79bd8",
+            "cases": [
+              {
+                "name": "sync-expired-before-valid",
+                "status": "PASS"
+              }
+            ]
+          },
+          "outcome": "PASS_INSTALLED_SYNC_NATURAL_EXPIRY"
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {

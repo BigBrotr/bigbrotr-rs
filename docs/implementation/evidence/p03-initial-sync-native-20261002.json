@@ -1,0 +1,380 @@
+{
+  "format": "bigbrotr-initial-sync-native/1",
+  "status": "PASS_BOUNDED_FIRST_WAVE",
+  "tasks": [
+    "P03-T01 Steps3/4",
+    "P03-T02 Steps1/2/3/5",
+    "P01-T09 M1 prerequisite"
+  ],
+  "product_source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+  "product_tree": "0d0475721b8b29af2e506bbeefa60b4747964c9b",
+  "fixture_source": "b61f3459772724a02b9f2c89ac5bbf15e0ceb903",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1",
+    "rocksdb": "11.8.1",
+    "postgres": "16.15",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_memory_bytes": 1073741824,
+    "client_cpus": 2
+  },
+  "artifacts": {
+    "binary_sha256": "2b87b8665b061419b35b90c6509eeaf4faacb9cf0f4de4303c1c62a25dc26171",
+    "probe_sha256": "ed33c5edce32c05195a3a879df169fb9d0206fe469328873967140e3a612ceb2",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9"
+  },
+  "builds": {
+    "557d572": "FAIL_COMPILE: AcquireError lacked StdError conversion; original output retained",
+    "28ca931": "PASS_BUILD_CLIPPY_AND_123_SELECTED_TESTS; before later peer/prerequisite corrections",
+    "c460bba": "PASS_BUILD_CLIPPY_ONLY; later corrections covered by actual cases below"
+  },
+  "cases": [
+    {
+      "name": "sync-signed",
+      "status": "PASS",
+      "native_rows": 49,
+      "original_requests": 4,
+      "websocket_rounds": 13,
+      "same_owner_renewed": true,
+      "signal_seconds": 0.054257332,
+      "exit_code": 0
+    },
+    {
+      "name": "sync-quiet",
+      "status": "PASS",
+      "native_rows": 35,
+      "original_requests": 3,
+      "websocket_rounds": 13,
+      "same_owner_renewed": true,
+      "signal_seconds": 0.053769741,
+      "exit_code": 0
+    },
+    {
+      "name": "sync-function",
+      "status": "PASS",
+      "before_bind_refusal": true,
+      "administration_enabled": false,
+      "exit_code": 4
+    },
+    {
+      "name": "sync-lock",
+      "status": "PASS",
+      "before_bind_refusal": true,
+      "administration_enabled": false,
+      "exit_code": 4
+    },
+    {
+      "name": "sync-public-visibility",
+      "status": "PASS",
+      "native_rows": 17,
+      "original_requests": 2,
+      "websocket_rounds": 0,
+      "same_owner_renewed": true,
+      "signal_seconds": 0.18346217554062605,
+      "tcp_connections": 0,
+      "exit_code": 0
+    },
+    {
+      "name": "sync-source-function",
+      "status": "PASS",
+      "before_bind_refusal": true,
+      "administration_enabled": false,
+      "exit_code": 4
+    },
+    {
+      "name": "sync-scope-function",
+      "status": "PASS",
+      "before_bind_refusal": true,
+      "administration_enabled": false,
+      "exit_code": 4
+    },
+    {
+      "name": "sync-change-read",
+      "status": "PASS",
+      "before_bind_refusal": true,
+      "administration_enabled": false,
+      "exit_code": 4
+    },
+    {
+      "name": "sync-peer-refusals",
+      "status": "PASS",
+      "native_rows": 49,
+      "original_requests": 4,
+      "websocket_rounds": 14,
+      "same_owner_renewed": true,
+      "signal_seconds": 0.054281337,
+      "exit_code": 0
+    }
+  ],
+  "assertions": [
+    "Actual CLI with explicit control,ingest,sync; authenticated HTTP registers URL, enrollment and immutable scope, then accepts a finite job. Same living native/Control owner performs dispatch.",
+    "Literal independent WebSocket peer checks complete REQ and sends frozen signed, forged-signature and duplicate events. Another case sends malformed correlated JSON, unchanged signed kind22222 outside kinds1, then valid kind1. Each sequence repeats; only one valid event creates request4.",
+    "Independent complete bytes match native49 rows/four original CBOR inputs/four PostgreSQL receipts for event cases,35/three/three for quiet. Bootstrap private3 remains explicit; no EOSE progress or slot ACK is inferred.",
+    "All69 Control tables/xmin are compared at workflow boundaries, preserving prior rows and checking exact admitted source/scope/job attribution, commands/audits, queued revision2/checkpoint0 and original owner tuple.",
+    "Quiet protocol receives outlive the original scheduling lease through same-owner renewals. Signal is delivered to verified PID/start/cmd during an observed fresh quiet request with no completion; EOF follows signal, exit0 and native closed/owner release committed are required.",
+    "Private-route source in public1 visibility opens zero TCP connections and preserves17 original native rows/two requests across renewal, status/logout and shutdown.",
+    "Five single prerequisite removals with administration disabled refuse execution before listener publication/bind, exit4 and retain exactly the completed native bootstrap. These cases isolate execution/source/scope functions, principal grant row-lock permission and enrollment-change SELECT.",
+    "Root independently replayed three complete event/quiet oracles against retained captures and23 original inputs;322 capture files and exact Git source archive were hash-verified. The original failed wave remains FAIL."
+  ],
+  "review": {
+    "kind": "Independent read-only AI review and integrating root source/diff/capture review",
+    "structure": "Concrete Sync state belongs to native Custody; observation preparation and finite protocol receive have focused modules. Shared Dispatch borrows the existing owner/budget; transaction and ambiguous-outcome semantics remain in existing adapters. No generic orchestrator, additional database, persistent format or backend trait.",
+    "findings": [
+      "Attribution visibility must be checked before append, not only before dial; fixed and actual public1 negative passes.",
+      "Known completed-rollback peer refusals and local malformed/out-of-selector events must yield; isolated content case passes. Transport-failure isolation remains NOT_RUN.",
+      "Selected execution needs source/scope helpers and enrollment history even with administration disabled; five practical refusals pass.",
+      "Full producer-window dictionary deferral fixed; this32-slot wave does not exercise exhaustion.",
+      "Unallocated/unsupported visibility finding reproduced againstc460bba. Correctede4ee0f5 passes both actual cases, preserving original bootstrap and current owner."
+    ]
+  },
+  "original_outcomes": {
+    "engine-1": "c460bba signed case PASS, then sync-quiet setup EADDRINUSE; whole wave FAIL. Stopped namespace prevents original TIME_WAIT inspection. Local established-connection RED/GREEN reproduces mechanism; reuse fix still rejects live listeners.",
+    "engine-2": "PASS_INSTALLED_FINITE_SYNC_FIRST_WAVE",
+    "visibility-red": "717d6ec fixture/c460bba CLI: absent visibility99 causes whole-owner exit4; bootstrap private2 NOT_RUN due fail-fast."
+  },
+  "not_qualified": [
+    "source change before socket",
+    "missing migration execution refusal",
+    "absence of physical WAL appends for redundant native writes",
+    "lost/delayed COMMIT and cancellation lock schedules",
+    "durable EOSE/progress, restart/archive/read/export/M1",
+    "capacity/load/aged-state",
+    "arm64/release",
+    "Full producer-window deferral under installed load",
+    "Isolated DNS/TCP/TLS/transport failure followed by healthy candidate"
+  ],
+  "inventory": "implementation_network_20260928.installed_sync",
+  "local_evidence": ".research/implementation/installed-sync-20261002",
+  "captures": {
+    "build-1": {
+      "label": "build-1",
+      "source": "557d5729495eca8c7779cddc14c6d0d40626265b",
+      "files": 1678,
+      "captures": 11,
+      "capture_sha256": "897ce3a4aa63b079cf64be294270918c4365f8c067083653728cad6ed8153472"
+    },
+    "build-2": {
+      "label": "build-2",
+      "source": "28ca93127321071319d91b933b71bb8588d5b5ea",
+      "files": 1678,
+      "captures": 18,
+      "capture_sha256": "b6d1fc7d8de6d3077ef5d21f894db8c4a46627a7465ba6517f8489db548a29ed"
+    },
+    "build-3": {
+      "label": "build-3",
+      "source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+      "files": 1678,
+      "captures": 14,
+      "capture_sha256": "47b9dc0411990dfcc571bc8efeca42db14fba4dec8247eac64c689c4487bac7c"
+    },
+    "engine-1": {
+      "label": "engine-1",
+      "source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+      "build_source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+      "status": "FAIL",
+      "captures": 88,
+      "capture_sha256": "24cbd9b0b97254f24d269757b0a4f5f69fc4a5e98650117f3032299b40b0faf5",
+      "cases": [
+        {
+          "name": "sync-signed",
+          "status": "PASS"
+        }
+      ]
+    },
+    "engine-2": {
+      "label": "engine-2",
+      "source": "b61f3459772724a02b9f2c89ac5bbf15e0ceb903",
+      "build_source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+      "status": "PASS_INSTALLED_FINITE_SYNC_FIRST_WAVE",
+      "captures": 322,
+      "capture_sha256": "725dfcbb44deb51604bd9f281b381b0665e956c80f48513cc4d40e90ea2519ad",
+      "cases": [
+        {
+          "name": "sync-signed",
+          "status": "PASS"
+        },
+        {
+          "name": "sync-quiet",
+          "status": "PASS"
+        },
+        {
+          "name": "sync-function",
+          "status": "PASS"
+        },
+        {
+          "name": "sync-lock",
+          "status": "PASS"
+        },
+        {
+          "name": "sync-public-visibility",
+          "status": "PASS"
+        },
+        {
+          "name": "sync-source-function",
+          "status": "PASS"
+        },
+        {
+          "name": "sync-scope-function",
+          "status": "PASS"
+        },
+        {
+          "name": "sync-change-read",
+          "status": "PASS"
+        },
+        {
+          "name": "sync-peer-refusals",
+          "status": "PASS"
+        }
+      ]
+    },
+    "visibility-red": {
+      "label": "visibility-red",
+      "source": "717d6ec2fa05a86257fba523e2962f8432e3144c",
+      "build_source": "c460bbad2bb3b3fca92c5e7c28a71e3fc5ef10f9",
+      "status": "FAIL",
+      "captures": 30,
+      "capture_sha256": "5252820a1543f91584e26f9e77560892d92e86490dba3d9c9dda8051afe78b94",
+      "cases": []
+    }
+  },
+  "capture_replay": {
+    "status": "PASS_BOUNDED_CAPTURE_REPLAY",
+    "checks": [
+      {
+        "case": "sync-signed",
+        "native_rows": 49,
+        "original_inputs": 4,
+        "receipts": 4,
+        "tables": 69,
+        "status": "PASS_CAPTURE_REPLAY"
+      },
+      {
+        "case": "sync-quiet",
+        "native_rows": 35,
+        "original_inputs": 3,
+        "receipts": 3,
+        "tables": 69,
+        "status": "PASS_CAPTURE_REPLAY"
+      },
+      {
+        "case": "sync-peer-refusals",
+        "native_rows": 49,
+        "original_inputs": 4,
+        "receipts": 4,
+        "tables": 69,
+        "status": "PASS_CAPTURE_REPLAY"
+      }
+    ],
+    "source_archive_sha256": "fb51701597ccfda73e60638033c2e7be945e0a9f6b4f924b78679718f37ba14a"
+  },
+  "visibility_isolation": {
+    "status": "PASS_INSTALLED_SYNC_VISIBILITY",
+    "product_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+    "product_tree": "e98d46a5a1f56998393ac929626a3db54457ff38",
+    "binary_sha256": "ed1f50603752837ccc286bb074cedbd3f4165527cb56c222bb76718678ddf3bf",
+    "cases": [
+      {
+        "name": "sync-absent-visibility",
+        "status": "PASS",
+        "native_rows": 17,
+        "original_requests": 2,
+        "requested_visibility_ordinal": 99,
+        "tcp_connections": 0,
+        "same_owner_renewed": true,
+        "signal_seconds": 0.1426378572359681
+      },
+      {
+        "name": "sync-bootstrap-private-visibility",
+        "status": "PASS",
+        "native_rows": 17,
+        "original_requests": 2,
+        "requested_visibility_ordinal": 2,
+        "tcp_connections": 0,
+        "same_owner_renewed": true,
+        "signal_seconds": 0.1297772340476513
+      }
+    ],
+    "semantics": "Yield absent mappings only after completed validated read rollback; yield InvalidInput only from initial read-only preparation. No scope allocation/relabel, mutation, socket, swallowed corruption or unknown outcome.",
+    "review": "Read-only AI reviewer inspected reachable native decoding/index/closure error mappings and found no counterexample; actual engines executed by root.",
+    "build_capture": {
+      "label": "build-4",
+      "source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+      "files": 1678,
+      "captures": 14,
+      "capture_sha256": "b830ea52a1abea97bc6e5f6ea321f0b47a16ddc9454ae956836d606703ce7b99"
+    },
+    "engine_capture": {
+      "label": "visibility-green",
+      "source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+      "build_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+      "status": "PASS_INSTALLED_SYNC_VISIBILITY",
+      "captures": 74,
+      "capture_sha256": "cef2e6fd26fa1dc22cf153822a3bda17919337a218ac096cc9c5b4271f46e1d3",
+      "cases": [
+        {
+          "name": "sync-absent-visibility",
+          "status": "PASS"
+        },
+        {
+          "name": "sync-bootstrap-private-visibility",
+          "status": "PASS"
+        }
+      ]
+    }
+  },
+  "natural_expiry": {
+    "status": "PASS_INSTALLED_SYNC_NATURAL_EXPIRY",
+    "fixture_source": "2b976c326a8eb9a4c1f0bbf350224346a71ea83a",
+    "product_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+    "case": {
+      "name": "sync-expired-before-valid",
+      "native_rows": 49,
+      "original_requests": 4,
+      "websocket_rounds": 8,
+      "same_owner_renewed": true,
+      "signal_seconds": 0.055300023,
+      "natural_expiry": {
+        "accepted_live_at_us": 1790920172837676,
+        "original_deadline_at_us": 1790920173019157,
+        "expired_observed_at_us": 1790920173070086,
+        "resume_observed_at_us": 1790920173310723,
+        "stopped": {
+          "pid": 50,
+          "start_ticks": "430242571",
+          "stopped_at_us": 1790920172529381
+        },
+        "resumed": {
+          "resumed_at_us": 1790920173188203,
+          "suspension_seconds": 0.6588817369192839
+        },
+        "expired_job_id": "22bfd635ebf109a153f4255da2a29b93"
+      }
+    },
+    "semantics": "Real500ms HTTP job observed accepted/unowned before deadline; exact-owned SIGSTOP prevents claiming during natural PostgreSQL expiry, then SIGCONT within original leases. All69 SQL tables equal across expiry, old acceptance/xmin and absent attribution retained through later120s job at admissionordinal2, valid signed arrival and shutdown.",
+    "limitation": "Expiry without owned-process suspension injection was not executed. No pre-start namespace was invented and no timestamp/guard was modified.",
+    "capture": {
+      "label": "expiry",
+      "source": "2b976c326a8eb9a4c1f0bbf350224346a71ea83a",
+      "build_source": "e4ee0f58e25ebeeaff7cdac42fc55b87cbc66175",
+      "status": "PASS_INSTALLED_SYNC_NATURAL_EXPIRY",
+      "captures": 67,
+      "capture_sha256": "6b4f636a3cdfbe2685d86bab84302e9aafd289538270d81c8a88826743a79bd8",
+      "cases": [
+        {
+          "name": "sync-expired-before-valid",
+          "status": "PASS"
+        }
+      ]
+    },
+    "replay": {
+      "status": "PASS_BOUNDED_CAPTURE_REPLAY",
+      "tables": 69,
+      "native_rows": 49,
+      "original_inputs": 4,
+      "receipts": 4,
+      "expired_unchanged": true,
+      "suspension_seconds": 0.6588817369192839
+    }
+  }
+}

@@ -159,13 +159,17 @@ exact SQL-owner retry. These close that bounded command integration; Step4's
 finite CLI execution/gaps and Step7 restart journey remain incomplete. The next
 installed event consumer now uses available dictionary append/intern and retained
 observation components; it does not require completion of Discovery or Monitor.
-The explicit initial Control/Ingest/Sync wiring is under native qualification
-(P03-T01 Steps3/4 and P03-T02 Steps1/2/3/5). Its independent installed fixture
-uses actual HTTP registration/acceptance, signed/forged/duplicate WebSocket input,
-complete native/input/receipt expectations, quiet renewal/shutdown and headless
-execution-prerequisite refusals. Planned checks are not PASS evidence; the current
-[checkpoint](progress.md) records candidate revisions and actual outcomes. No task
-checkbox closes before its remaining progress, CLI, recovery and journey criteria.
+The explicit initial Control/Ingest/Sync wiring has a
+[nine-case native first wave](evidence/p03-initial-sync-native-20261002.json)
+(P03-T01 Steps3/4 and P03-T02 Steps1/2/3/5): actual HTTP registration/acceptance,
+signed/forged/duplicate and malformed/out-of-selector WebSocket input, complete
+native/input/receipt expectations, quiet renewal/shutdown, public-envelope
+isolation and headless execution-prerequisite refusals. The original fixture
+bind failure is retained. Two focused unsupported-visibility schedules also pass
+with no native mutation or socket. Full-window behavior remains separate
+qualification; the [checkpoint](progress.md) records current corrections
+and actual outcomes. No task checkbox closes before its remaining progress, CLI,
+recovery and journey criteria.
 
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership

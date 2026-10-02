@@ -142,12 +142,12 @@ Both complete accepted documents must also permit the selected profile.
 Accepted administration enables login, self inspection, logout,
 [URL registration](relay-endpoint-registry.md#authenticated-registration-consumer),
 the initial [relay enrollment command](relay-enrollment.md#initial-owner-http-consumer),
-and [immutable acquisition scope registration](acquisition-scopes.md#authenticated-scope-registration-consumer-implementation-in-progress)
-on the configured loopback listener. The scope consumer remains under native
-qualification. This reuses the ordinary Management dispatcher;
+and [immutable acquisition scope registration](acquisition-scopes.md#authenticated-scope-registration-consumer-implementation-in-progress),
+finite job acceptance and status on the configured loopback listener.
+This reuses the ordinary Management dispatcher;
 migration0026, including session/enrollment prerequisites and required table/
 function privileges, is required before binding. Initial Ingest has no reauthentication,
-grant, job, history or asset routes yet. The initialized record identifies
+grant, history or asset routes yet. The initialized record identifies
 `initial-source-commands`; session access and enrollment acceptance do not imply
 native admission permission. A disabled managed seed cannot override the two
 accepted documents. Changed accepted snapshots stop this initial lifetime.
@@ -165,7 +165,7 @@ fact envelope. Only after its durable PG/native outcome is delivered does the
 initialized report publish `private_scope` and dictionary_count=3; accepted
 scopes/jobs are never silently rebound. Both complete accepted policies and the
 local profile must permit at least two outstanding producer requests before any
-registration/native initialization. No event is collected. The
+registration/native initialization. This role selection collects no events. The
 [private append evidence](../implementation/evidence/p02-dictionary-append-native-20261002.json)
 qualifies nine installed lifetime/window cases and nineteen startup COMMIT cuts;
 older evidence below still refers to the original two-map lifetime. Existing
@@ -199,6 +199,37 @@ initial lifetime. An initialized report explicitly has `ready=false` and
 readiness. SIGTERM does not close the source stream, acknowledge producers or
 qualify successor admission.
 
+Adding explicit Sync selects the finite initial executor:
+
+```sh
+bigbrotr serve --file ROOT --roles control,ingest,sync --initialize-ingest
+```
+
+Declare local Sync placement, configure the numeric `network.dns.resolver` and
+any required DER `network.tls.extra_roots`, and accept `sync.enabled=true` in
+both stored documents. This profile requires at least four outstanding producer
+slots and `ingest.max_event_bytes` at most 256 KiB. It checks execution migrations
+and privileges even when administration is disabled. The initialized record
+then reports `acquisition=finite-initial, ready=false`. Configured enablement
+alone never starts an omitted role.
+
+Use the published private3 scope for an enrolled private relay. The same owner
+nominates accepted finite jobs, resolves current source authority and receives
+bounded WebSocket quanta. It interns committed attribution and admits valid
+missing effects with original producer requests. Invalid signatures, malformed
+events, duplicates and events outside the exact selector do not add effects.
+Each quantum retains at most three events and examines at most 32 frames; idle
+receive has a soft cutoff at most 500 ms. DNS/connect/TLS and native work retain
+the independent hard deadline. A stall can stop this initial process.
+
+The [nine-case native first wave](../implementation/evidence/p03-initial-sync-native-20261002.json)
+qualifies signed admission, duplicate/refusal behavior, quiet renewal/shutdown,
+public-envelope isolation and headless missing-prerequisite refusal. It does not
+qualify the remaining scheduling, full-window, failure/recovery or capacity work.
+Receipts do not free outstanding slots. Jobs remain queued with no EOSE coverage,
+checkpoint advance or completion claim. This path still cannot restart or adopt
+an existing store, serve archive reads or export; M1 remains incomplete.
+
 The explicit small native profile uses32MiB cache,16MiB WBM,2MiB per-CF buffers,
 16MiB WAL target,64 open files and two background jobs, within a128MiB native
 reservation. Bootstrap reserves8MiB payload/4MiB native plus24MiB retained inputs;
@@ -207,7 +238,8 @@ connection reservation. No second process allowance is borrowed. This ledger is
 shared with session request/connection/hash reservations; startup refuses before
 binding if one complete login cannot coexist with retained native/input/Control
 work. The item ceiling is36 (three retained owners,16 connections,16 requests and
-one hash); it is a simultaneous ownership ceiling, not a throughput guarantee.
+one hash), plus 16 slots when Sync is explicitly selected; it is a simultaneous
+ownership ceiling, not a throughput guarantee.
 These are reservations/targets, not measured RSS or capacity. No hot identity cache exists
 in this initialization-only path.
 

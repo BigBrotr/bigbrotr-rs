@@ -451,9 +451,9 @@ and queryable with truthful role readiness, without implicit public publishing.
   with unavailable required ports; no success stub for an unimplemented service.
   The explicit [initial Ingest owning lifetime](../reference/ingest-store.md#explicit-initial-owning-lifetime)
   has scoped startup/native/SQL-interruption evidence with P02-T02 Steps2/3. It
-  retains native/Control/driver custody and initial dictionary bootstrap, reports
-  acquisition absent and is not
-  complete role readiness. Typed finite job authorization and the guarded socket
+  retains native/Control/driver custody and initial dictionary bootstrap. Omitting
+  Sync reports acquisition absent; neither profile claims complete role readiness.
+  Typed finite job authorization and the guarded socket
   consumer now have bounded component/engine evidence. Same-owner installed
   session delivery has [bounded installed fault evidence](evidence/p01-initial-session-faults-native-20261001.json),
   and [initial enrollment HTTP](evidence/p02-initial-enrollment-http-native-20261001.json)
@@ -465,8 +465,11 @@ and queryable with truthful role readiness, without implicit public publishing.
   Installed scope and finite-job acceptance/status now have
   [bounded HTTP evidence](evidence/p03-initial-jobs-http-native-20261002.json) and
   [COMMIT/cancellation evidence](evidence/p03-initial-jobs-faults-native-20261002.json).
-  Actual finite execution, dictionary append and successor recovery remain real
-  integration prerequisites.
+  The [installed finite Sync first wave](evidence/p03-initial-sync-native-20261002.json)
+  now connects actual HTTP intent, socket arrival, committed dictionary append
+  and signed admission under that same native owner, with quiet cancellation and
+  bounded refusal evidence. Full scheduling/progress and successor recovery remain
+  unfinished; the first event does not require complete adjacent services.
   Then qualify actual timer publication, read and restart/resend below; no complete
   adjacent Discovery/Monitor subsystem is a prerequisite for this small journey.
 - [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
