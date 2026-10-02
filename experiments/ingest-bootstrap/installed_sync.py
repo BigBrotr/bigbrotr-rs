@@ -18,10 +18,11 @@ from initial_jobs import released, unchanged, validate_job
 from installed_sync_oracle import ENDPOINT, SIGNED_SHA256, decode, expected
 from installed_sync_client import REFUSED_VISIBILITIES
 
-EVENT_CASES = ('sync-signed', 'sync-peer-refusals')
+EVENT_CASES = ('sync-signed', 'sync-peer-refusals', 'sync-expired-before-valid')
 CASES = ['sync-signed', 'sync-quiet', 'sync-function', 'sync-lock', 'sync-public-visibility',
     'sync-source-function', 'sync-scope-function', 'sync-change-read', 'sync-peer-refusals']
 VISIBILITY_CASES = ['sync-absent-visibility', 'sync-bootstrap-private-visibility']
+EXPIRY_CASES = ['sync-expired-before-valid']
 SOURCE = Path(__file__).resolve().parents[2]
 EXECUTION = 'control.require_acquisition_execution(bytea,bytea,bytea,bytea,bytea)'
 BOOTSTRAP = {'datasets', 'owner_epochs', 'role_instances', 'topology_generations', 'topology_streams',
@@ -32,9 +33,11 @@ COMMANDS = {'browser_sessions', 'login_buckets', 'management_audit', 'management
     'acquisition_scope_commands', 'jobs', 'acquisition_jobs', 'job_admissions'}
 
 
-def validate_queued(state, observations):
-    receipt, = [r['body'] for r in observations if r['path'] == 'jobs']
-    job, = state['jobs']
+def validate_queued(state, observations, *, ordinal=1):
+    assert ordinal in (1, 2)
+    assert all(len(state[table]) == ordinal for table in ('jobs', 'acquisition_jobs', 'job_admissions'))
+    receipt, = [r['body'] for r in observations if r['path'] == 'jobs' and r['key'] == 'b1'*16]
+    job, = [r for r in state['jobs'] if r['job_id'] == '\\x'+receipt['job_id']]
     owner, = [r for r in state['owner_epochs'] if r['role'] == 'control']
     assert job['state'] == 'queued' and job['job_revision'] == 2 and job['checkpoint_revision'] == 0
     assert (job['owner_resource_id'], job['owner_epoch'], job['owner_incarnation']) == (
@@ -42,6 +45,13 @@ def validate_queued(state, observations):
     # Existing independent accepted-row oracle validates every remaining column,
     # digest, original deadline, command/audit, session, scope and receipt.
     accepted = copy.deepcopy(state)
+    for table in ('jobs', 'acquisition_jobs', 'job_admissions'):
+        accepted[table] = [r for r in accepted[table] if r['job_id'] == job['job_id']]
+        assert len(accepted[table]) == 1
+    assert accepted['job_admissions'][0]['admission_ordinal'] == ordinal
+    # The shared first-job oracle fixes ordinal1; separately validate this
+    # scenario's true ordinal before projecting its one target job into it.
+    accepted['job_admissions'][0]['admission_ordinal'] = 1
     accepted['jobs'][0].update(state='accepted', job_revision=1, owner_resource_id=None,
         owner_epoch=None, owner_incarnation=None)
     validate_job(accepted, receipt)
@@ -147,7 +157,7 @@ def native(client, output, name, state, initialized, transcript, completed_us):
         assert type(value) is int
         return value
     dictionary_time = recorded(4)
-    job, = state['jobs']
+    job, = [r for r in state['jobs'] if r['state'] == 'queued']
     assert job['created_at_us'] <= dictionary_time <= transcript[0]['connected_at_us']
     received = recorded_at = None
     if signed:
@@ -250,7 +260,8 @@ while True:
 
 
 def run(pg, client, output, database, name, rows):
-    assert name in CASES + VISIBILITY_CASES
+    assert name in CASES + VISIBILITY_CASES + EXPIRY_CASES
+    expiry = name in EXPIRY_CASES
     visibility_refusal = name in REFUSED_VISIBILITIES
     visibility_ordinal = REFUSED_VISIBILITIES.get(name, 3)
     upgrade_registry(pg, client, output, database, name, rows)
@@ -289,6 +300,8 @@ def run(pg, client, output, database, name, rows):
     config = lab.config(output, state, database, endpoint='127.0.0.1:5432', boundary='loopback')
     path = output/Path(config).name
     text = configuration(path.read_text(), before, name)
+    if expiry:
+        text = set_value(text, 'runtime', 'renewal_timeout', '2s')
     text = set_value(text, 'topology', 'local_roles', ['control', 'ingest', 'sync', 'archive'])
     text = set_value(text, 'network.dns', 'resolver', '127.0.0.1:9')
     text = set_value(text, 'network.tls', 'extra_roots', [])
@@ -300,7 +313,7 @@ def run(pg, client, output, database, name, rows):
     (output/(name+'-validate.stdout')).write_text(validated.stdout)
     (output/(name+'-validate.stderr')).write_text(validated.stderr)
     assert validated.returncode == 0, validated.stderr
-    for filename in ('installed_client.py', 'session_client.py', 'installed_sync_client.py'):
+    for filename in ('installed_client.py', 'session_client.py', 'installed_sync_client.py', 'installed_sync_expiry.py'):
         target = output/filename
         if not target.exists():
             shutil.copy2(Path(__file__).with_name(filename), target)
@@ -370,6 +383,43 @@ finally:
     assert len(prepared['management_audit']) == len(initial['management_audit'])+4
     validate_source(prepared, initialized, observations, ordinal=visibility_ordinal)
     (directory/'prepared.continue').write_text('observed\n')
+    expired_original = expiry_evidence = None
+    if expiry:
+        from installed_sync_expiry import KEY, preserve_expired, validate_expired_acceptance
+        observed = stage('expiry-accepted')
+        accepted = rows(database); lab.write_json(output/(name+'-short-accepted.json'), accepted)
+        receipt, = [r['body'] for r in observed if r['path'] == 'jobs' and r['key'] == KEY]
+        deadline = validate_expired_acceptance(accepted, receipt)
+        clock = lambda: int(lab.sql(pg, database, 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        live = clock()
+        assert live < deadline, 'FAIL_SETUP: short job no longer live at first stopped observation'
+        unchanged(prepared, accepted, ('jobs', 'acquisition_jobs', 'job_admissions', 'management_commands', 'management_audit'))
+        for table in ('management_commands', 'management_audit'):
+            assert len(accepted[table]) == len(prepared[table])+1
+            assert all(r in accepted[table] for r in prepared[table])
+        assert len(accepted['producer_requests']) == len(accepted['producer_outcomes']) == 2
+        observed_clock = wait_for(lambda: (now if (now := clock()) >= deadline else None), 'natural short-job expiry', 1)
+        expired_original = rows(database)
+        lab.write_json(output/(name+'-short-expired.json'), expired_original)
+        assert expired_original == accepted, 'stopped owner changed SQL during expiry'
+        assert not list(directory.glob('relay-open-*.json')), 'expired job contacted peer'
+        assert min(r['lease_expires_at_us'] for r in accepted['owner_epochs']) > observed_clock
+        (directory/'expiry-accepted.continue').write_text('original deadline elapsed\n')
+        stage('expiry-continued')
+        resumed = json.loads((directory/'expiry-resumed.json').read_text())
+        stopped = json.loads((directory/'expiry-stopped.json').read_text())
+        resume_clock = clock()
+        assert stopped['stopped_at_us'] <= live < deadline <= observed_clock <= resumed['resumed_at_us'] <= resume_clock
+        assert resumed['suspension_seconds'] < 1.5
+        assert min(r['lease_expires_at_us'] for r in accepted['owner_epochs']) > resume_clock
+        prepared = rows(database); lab.write_json(output/(name+'-short-resumed.json'), prepared)
+        unchanged(expired_original, prepared)
+        preserve_expired(expired_original, prepared)
+        expiry_evidence = dict(accepted_live_at_us=live, original_deadline_at_us=deadline,
+            expired_observed_at_us=observed_clock, resume_observed_at_us=resume_clock,
+            stopped=stopped, resumed=resumed, expired_job_id=receipt['job_id'])
+        lab.write_json(output/(name+'-expiry-clock.json'), expiry_evidence)
+        (directory/'expiry-continued.continue').write_text('resume authority observed\n')
     observations = stage('submitted')
     wanted_count = 2 if visibility_refusal else 4 if name in EVENT_CASES else 3
     def completed():
@@ -406,7 +456,13 @@ finally:
     old, = prepared['producer_epochs']; new, = current['producer_epochs']
     strip = lambda r: {k: v for k, v in r.items() if k not in ('reserved_through_request', 'xmin')}
     assert strip(old) == strip(new) and old['reserved_through_request'] == 2 and new['reserved_through_request'] == wanted_count
-    validate_source(current, initialized, observations, ordinal=visibility_ordinal); validate_queued(current, observations)
+    validate_source(current, initialized, observations, ordinal=visibility_ordinal)
+    validate_queued(current, observations, ordinal=2 if expiry else 1)
+    if expiry:
+        assert len(current['jobs']) == len(current['acquisition_jobs']) == len(current['job_admissions']) == 2
+        preserve_expired(expired_original, current)
+        later, = [r for r in current['jobs'] if r['state'] == 'queued']
+        assert later['created_at_us'] >= expiry_evidence['resume_observed_at_us']
     (directory/'submitted.continue').write_text('observed\n')
     stage('commands-finished')
     before_stop = rows(database); lab.write_json(output/(name+'-before-stop.json'), before_stop)
@@ -430,11 +486,14 @@ finally:
     assert json.loads((directory/'client-exit.json').read_text())['exit_code'] == 0, (directory/'client.stderr').read_text()
     after = rows(database); lab.write_json(output/(name+'-after.json'), after)
     released(before_stop, after)
+    if expiry:
+        preserve_expired(expired_original, after)
     assert {t for t in before if before[t] != after[t]} <= BOOTSTRAP | COMMANDS
     assert len(after['owner_epochs']) == len(after['role_instances']) == 2
     assert sorted(r['action'] for r in after['management_audit'] if r not in before['management_audit']) == sorted([
         'browser.session.issue', 'browser.session.revoke', 'relay.endpoint.register',
-        'relay.enrollment.change', 'acquisition.scope.register', 'job.acquisition.accept'])
+        'relay.enrollment.change', 'acquisition.scope.register', 'job.acquisition.accept']
+        + (['job.acquisition.accept'] if expiry else []))
     transcript = [json.loads(p.read_text()) for p in sorted(directory.glob('relay-closed-*.json'))]
     assert not (directory/'relay-error.json').exists()
     assert len(list(directory.glob('relay-open-*.json'))) == len(transcript)
@@ -466,4 +525,5 @@ finally:
     return dict(name=name, status='PASS', actual_cli=True, actual_http=True, actual_pg_rocks=True,
         websocket_rounds=len(transcript), same_owner_renewed=True, signal_seconds=signal_elapsed,
         selected_quiet_signal=selected_quiet,
+        natural_expiry=expiry_evidence,
         terminal=ended, **native_result)

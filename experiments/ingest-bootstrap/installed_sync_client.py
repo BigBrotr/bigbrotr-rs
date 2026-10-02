@@ -199,7 +199,8 @@ def relay_listener(address=('127.0.0.1', 7447)):
 
 def run(directory, request, login, logout):
     refusals = directory.name == 'sync-peer-refusals'
-    signed = directory.name == 'sync-signed' or refusals
+    expiry = directory.name == 'sync-expired-before-valid'
+    signed = directory.name == 'sync-signed' or refusals or expiry
     visibility_refusal = directory.name in REFUSED_VISIBILITIES
     assert signed or visibility_refusal or directory.name == 'sync-quiet'
     observations = []
@@ -212,9 +213,9 @@ def run(directory, request, login, logout):
         assert status == 202 and answer['created'] and answer['command_key'] == key, (status, answer)
         return answer
 
-    def barrier(name):
+    def barrier(name, deadline=None):
         publish(directory, name+'.json', observations)
-        deadline = time.monotonic()+22
+        deadline = time.monotonic()+22 if deadline is None else deadline
         while not (directory/(name+'.continue')).exists():
             assert not errors, errors
             assert time.monotonic() < deadline, name
@@ -236,6 +237,13 @@ def run(directory, request, login, logout):
     worker.start()
     try:
         barrier('prepared')
+        if expiry:
+            from installed_sync_expiry import DURATION_US, KEY, suspended_cli
+            call('jobs', dict(kind='acquisition', scope_id=scope['scope_id'],
+                deadline_us=str(DURATION_US), **revisions), KEY)
+            with suspended_cli(directory, publish) as deadline:
+                barrier('expiry-accepted', deadline)
+            barrier('expiry-continued')
         receipt = call('jobs', dict(kind='acquisition', scope_id=scope['scope_id'], deadline_us='120000000', **revisions), 'b1'*16)
         assert receipt['execution'] == 'unobserved' and receipt['authority'] == 'acceptance-only'
         barrier('submitted')
