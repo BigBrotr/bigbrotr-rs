@@ -82,9 +82,12 @@ pub(in crate::interfaces::serve) fn run(
         // panic in the native owner cannot detach its driver or release its grant.
         let (send_driver, receive_driver) = oneshot::channel();
         let worker_cancel = cancellation.clone();
+        // Keep the sender alive through collection. A normal worker return must
+        // not close the watch first and trigger the collector's cancellation.
+        let worker_progress = progress.clone();
         let handle = tokio::runtime::Handle::current();
         let mut worker = tokio::task::spawn_blocking(move || {
-            handle.block_on(own(root, budget, progress, worker_cancel, send_driver))
+            handle.block_on(own(root, budget, worker_progress, worker_cancel, send_driver))
         });
         let (terminal, interrupted) = match supervision::collect(
             &mut worker, &mut observed, &cancellation, stop.requested(), grace, |_| {},

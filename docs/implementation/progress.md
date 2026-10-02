@@ -89,7 +89,13 @@ current policy, original PG reserved bound, per-request replay, driver custody v
 one-shot transfer to the existing supervisor. No API or fixture result is yet PASS.
 Candidate89dd8fe failed compilation: RequestInputError has Debug but no Display.
 Original build/captures retained; CLI tests/Clippy/engine NOT_RUN. Correct only
-the diagnostic formatting, then rebuild exact Git and run the installed wave. Keep the complete original request set bounded;
+the diagnostic formatting.354e192 compiled, all4 entrypoint tests and Clippy
+passed. Its first installed engine case failed: complete positive resolution and
+Control release committed, but the worker dropped its sole progress sender before
+join collection; that requested cleanup cancellation and the new consumer treated
+it as an operator interruption. Native/SQL original captures preserved; no other
+case executed. Keep a sender in the parent through collection (no change to shared
+supervision semantics), then run a new exact-Git build and new isolated wave. Keep the complete original request set bounded;
 missing reservation/input/receipt stays Unresolved. Test unchanged retries,
 current-policy changes, cancellation/driver joining and held native exclusion.
 Do not make a read, lease expiry or old directory writable by ordinary Serve.
