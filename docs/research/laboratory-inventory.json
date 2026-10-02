@@ -1058,7 +1058,51 @@
         "audit": "All885 container projections unchanged; privileged host FD/maps/cwd inspection found no candidate use. Existing3 qualified executables and all remaining regular files in retired-cache lab checked across deletion.1154757 owns independent copied cache."
       },
       "preserved": "All source, uncommitted work, original logs/results/manifests, datasets/backups/archives/catalogs/indexes/fault states and current inputs. No existing container or volume removed. Current1154757,8fa/f677,649,4e6seed,private-history32dd58d,history-captureb5c862a and installed-publication61271e2 archive-worker stay retained.",
-      "measurement": "Filesystem free-space differences include concurrent writes and shared blocks; retained hardlinks reduce allocation actually reclaimed. No global pruning or old rebuild."
+      "measurement": "Filesystem free-space differences include concurrent writes and shared blocks; retained hardlinks reduce allocation actually reclaimed. No global pruning or old rebuild.",
+      "tux_export_20261002": {
+        "status": "PASS; bounded compiler-cache retirement before installed signed export",
+        "removed": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-a11bcac/out/build/target",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-a11bcac/out/build/cargo-home",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-dd406a2/out/build/target",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-dd406a2/out/build/cargo-home",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-runtime-6474cd3/out/build/target",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-runtime-6474cd3/out/build/cargo-home",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-enrollment-9b02bd9/out/build/target",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-enrollment-9b02bd9/out/build/cargo-home",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-rotation-e684915/out/build/target",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-rotation-e684915/out/build/cargo-home",
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-8dbd3c4/out/build/target",
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-8dbd3c4/out/build/cargo-home",
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-responsive-46ac18b/out/build/target",
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-responsive-46ac18b/out/build/cargo-home",
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-1a80a48/out/build/target",
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-1a80a48/out/build/cargo-home"
+        ],
+        "free_before": 49929592832,
+        "free_after": 72217153536,
+        "observed_free_delta_bytes": 22287560704,
+        "containers_preserved": 1117,
+        "unrelated_running": 8,
+        "retained_artifact_count": 1305,
+        "outside_regular_files_unchanged": 34371,
+        "retained_locations": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-a11bcac/out/retained-cache-artifacts-20261002",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-dd406a2/out/retained-cache-artifacts-20261002",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-runtime-6474cd3/out/retained-cache-artifacts-20261002",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-enrollment-9b02bd9/out/retained-cache-artifacts-20261002",
+          "/home/tux/bigbrotr-implementation-20260917/runs/cursor-rotation-e684915/out/retained-cache-artifacts-20261002",
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-runtime-8dbd3c4/out/retained-cache-artifacts-20261002",
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-responsive-46ac18b/out/retained-cache-artifacts-20261002",
+          "/home/tux/bigbrotr-implementation-20260917/runs/export-adapter-1a80a48/out/retained-cache-artifacts-20261002"
+        ],
+        "recipe": ".research/implementation/cache-retirement-20260928/tux-export-20261002.py",
+        "recipe_sha256": "cb56b027964fcbbb724e41b3c58ec91e2c33cbed5bfcbaab7714ea65210afb77",
+        "receipt": ".research/implementation/cache-retirement-20260928/tux-export-retired-20261002.json",
+        "receipt_sha256": "d99c5d59e590c7480c6b6336207fb46f5ec08ffe6d2cd4a8a0fa4050f9da8c0b",
+        "audit": "Explicit canonical paths, stopped owned mounts, clean exact source revisions; privileged host FD/maps/cwd audit before preservation and deletion. Final ELF hashes preserved outside cache; all outside regular files and all1117 container projections unchanged across deletion. Original outcomes and every dataset/fault state retained. No existing container, volume, shared current cache or dataset deleted.",
+        "measurement": "Filesystem free difference includes concurrent writes and shared blocks; retained ELF hardlinks remain allocated. No old rebuild or global prune. Existing export64GiB reserve remains unchanged."
+      }
     }
   },
   "owner_enrollment_20260918": {
@@ -20348,7 +20392,8 @@
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
       "container_id": "ec3b896707062878106134b3e9fd48ca5108641d9d255541b1f5a02c886c376b",
       "network_state": "removed after owner/no-endpoint audit",
-      "terminal_audit": "terminal-audit.json"
+      "terminal_audit": "terminal-audit.json",
+      "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928.tux_export_20261002; compiler caches only, original outcomes unchanged"
     },
     "status": "PASS_SCOPED_CAPTURED",
     "report": "docs/implementation/evidence/p08-export-adapter-native-20260924.json",
@@ -20763,7 +20808,8 @@
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
       "container_id": "6408b94a065b52515114fb3b1fa35a79b849a0fae2edb5db4fdda52656b4c2b9",
       "network_state": "removed after owner/no-endpoint audit",
-      "terminal_audit": "terminal-audit.json"
+      "terminal_audit": "terminal-audit.json",
+      "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928.tux_export_20261002; compiler caches only, original outcomes unchanged"
     },
     "status": "PASS_SCOPED_CAPTURED",
     "local_capture": ".research/implementation/export-execution/attempt-46ac18b/capture",
@@ -24749,7 +24795,8 @@
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
       "container_id": "41f8706566154d0a1e5cb997d8e08f7ad6a38bd10b2f3cf451a8f74a93efd996",
       "network_state": "removed after owner/no-endpoint audit",
-      "terminal_audit": "terminal-audit.json"
+      "terminal_audit": "terminal-audit.json",
+      "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928.tux_export_20261002; compiler caches only, original outcomes unchanged"
     },
     "orchestrator": {
       "pid": 514029,
@@ -25412,7 +25459,8 @@
       "preexisting_preserved": 780,
       "free_before": 104881614848,
       "free_after": 101111894016,
-      "preserved": "All9databases/private keys, source/manifests/native artifacts, compiler cache and original outputs retained. No container/volume/data deletion; prior780container projections unchanged."
+      "preserved": "All9databases/private keys, source/manifests/native artifacts, compiler cache and original outputs retained. No container/volume/data deletion; prior780container projections unchanged.",
+      "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928.tux_export_20261002; compiler caches only, original outcomes unchanged"
     }
   },
   "implementation_job_admission_20260927": {
@@ -25716,7 +25764,8 @@
         "files": 116,
         "tar_sha256": "c7f65d33e9c50de8b113dc82008b16189149776dcb877b51cb2b7e195870b9f8",
         "manifest_sha256": "403ceee70c8d92109d363b41b72947854f8c4ddc673b4f3e585303b984418789"
-      }
+      },
+      "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928.tux_export_20261002; compiler caches only, original outcomes unchanged"
     },
     "fault_retry": {
       "source": "7efaca3fc548301a75ebd0299b5582a5dc03ab89",
@@ -25771,14 +25820,16 @@
             "source": "dd406a2d94468efba3415d221dc762acc712b4e9",
             "owner": "e8ed697a5ba6bb90be6550c4765242ba",
             "state": "stopped-retained",
-            "orchestrator": "absent-or-terminal"
+            "orchestrator": "absent-or-terminal",
+            "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928.tux_export_20261002; compiler caches only, original outcomes unchanged"
           },
           {
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-a11bcac",
             "source": "a11bcac46d7e65e556fb3f350e66518e0b6333e6",
             "owner": "6a7162f1fdef8bdd84a0eb30b1b7c256",
             "state": "stopped-retained",
-            "orchestrator": "absent-or-terminal"
+            "orchestrator": "absent-or-terminal",
+            "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928.tux_export_20261002; compiler caches only, original outcomes unchanged"
           },
           {
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-retry-7efaca3",
@@ -25791,7 +25842,8 @@
         "binary_sha256": "ba454c8114766a631d4ac0d376c18eb19902910093100a5fbcfa90044421cb00"
       },
       "preserve": "Retain original a11 native artifact dependency, both original incomplete databases, current database/key states, sources and captures. No compiler cache created."
-    }
+    },
+    "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928.tux_export_20261002; compiler caches only, original outcomes unchanged"
   },
   "implementation_job_pages_20260927": {
     "state": "all original page and consumer laboratories stopped-retained; bounded qualifications in linked reports, remaining acceptance open",
@@ -25810,14 +25862,16 @@
           "source": "dd406a2d94468efba3415d221dc762acc712b4e9",
           "owner": "e8ed697a5ba6bb90be6550c4765242ba",
           "state": "stopped-retained",
-          "orchestrator": "absent-or-terminal"
+          "orchestrator": "absent-or-terminal",
+          "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928.tux_export_20261002; compiler caches only, original outcomes unchanged"
         },
         {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-a11bcac",
           "source": "a11bcac46d7e65e556fb3f350e66518e0b6333e6",
           "owner": "6a7162f1fdef8bdd84a0eb30b1b7c256",
           "state": "stopped-retained",
-          "orchestrator": "absent-or-terminal"
+          "orchestrator": "absent-or-terminal",
+          "subsequent_cache_retirement": "implementation_20260917.cache_retirement_20260928.tux_export_20261002; compiler caches only, original outcomes unchanged"
         },
         {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-lifecycle-retry-7efaca3",

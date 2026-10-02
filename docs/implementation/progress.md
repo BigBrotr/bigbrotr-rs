@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main640897ee576c65efe484abc6b55ad7ff78b98592 above origin/main9985bd3
-(last remote read verified). Only root-owned evidence/task/user-doc/checkpoint
-updates are dirty. No merge/rebase or active remote job. Product3a7f884 is now
+Primary main88bc995df300ee52c3394b5fa66bb65499a32b76 equals origin/main,
+verified after resumption; clean before this root-owned checkpoint update.
+No merge/rebase or active remote job. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
 three Python files differ. The positive installed signed publication journey PASS
@@ -69,6 +69,19 @@ Application/native budgets remain separate; HTTP/password work has its own slot.
 First publication follows the accepted30s timer; pending batches drain with250ms
 gaps. Immutable retained reader material and full-cut construction are reused.
 
+Export disk prerequisite now satisfied by bounded cache retirement, without
+lowering its64GiB reserve. Removed only out/build/{target,cargo-home} under
+cursor-lifecycle-a11bcac/dd406a2, cursor-runtime-6474cd3,
+cursor-enrollment-9b02bd9, cursor-rotation-e684915, export-runtime-8dbd3c4,
+export-responsive-46ac18b and export-adapter-1a80a48. Free before49,929,592,832B,
+after72,217,153,536B (observed+22,287,560,704B, concurrent writes included).
+All1117 container projections unchanged;8 unrelated running. Final ELFs retained
+outside caches and all remaining regular files hash-verified. Original outcomes,
+source, all datasets/fault states and protected/current inputs preserved. Receipt
+and recipe are under existing ignored cache-retirement-20260928; inventory
+implementation_20260917.cache_retirement_20260928.tux_export_20261002 owns details.
+Do not rerun this recipe. Mac3,013,836KiB free: no local Rust build.
+
 Next useful deliverable: ordinary Control restart serving/exporting this same
 archived signed event, P01-T09 Step3 with P08-T04 Step3 and existing private
 history/export consumers. Extend the focused --installed-archive-signed fixture
@@ -98,8 +111,9 @@ ELFs retained outside shared cache. Positive root installed-archive-640897e owne
 Preserve its bindings/archive-signed/{store,data,state,scratch}, protected files,
 Control bb_scope_bind_640897e_archive_signed and corresponding _cat database.
 Preserve original2ae1866 and3a7f884 fault states. Latest free Tux49,929,715,712B,
-Mac3,027,152KiB; eight unrelated containers unchanged. No local Rust builds or
-additional cache/dataset deletions. 222 positive captures, four supplemental raw
+Mac3,027,152KiB; eight unrelated containers unchanged. This publication audit
+predates the completed cache retirement above. No local Rust builds or dataset
+deletions. 222 positive captures, four supplemental raw
 headers and exact source archive verified; original capture tar stays immutable.
 Build capture21files/all1694Git files matched; three-reader matrix376 captures
 retained. All detailed identities and scope limitations are in evidence/inventory.
