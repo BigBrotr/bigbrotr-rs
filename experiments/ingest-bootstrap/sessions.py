@@ -50,6 +50,17 @@ def delay_first_renewal(pg, database):
 def run(pg, client, output, database, name, rows):
     assert name in ('sessions-journey', 'sessions-capacity', 'sessions-hash-stop',
                     'sessions-slow-renewal', 'sessions-disconnect')
+    # This current combined command surface requires explicit schema/grants even
+    # when this wave exercises only login. The retained template stays unchanged.
+    from registrations import upgrade as upgrade_registry
+    from scopes import upgrade as upgrade_scopes
+    upgrade_registry(pg, client, output, database, name, rows)
+    upgrade_scopes(pg, client, output, database, name, rows)
+    lab.sql(pg, database, """
+        GRANT SELECT,INSERT ON control.acquisition_jobs TO bigbrotr_control;
+        GRANT EXECUTE ON FUNCTION control.acquisition_command_digest(
+            control.acquisition_jobs,control.management_commands) TO bigbrotr_control;
+    """)
     for filename in ('installed_client.py', 'session_client.py'):
         target = output / filename
         if not target.exists():

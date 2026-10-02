@@ -69,6 +69,8 @@ def native_oracle(client, output, name, state, number, healthy, last_commit):
             issuer_resource=control['resource_id'], issuer_epoch=control['epoch'],
             issuer_incarnation=control['process_incarnation'], relay_endpoint_id=None,
             relay_access_scope_id=None, relay_enrollment_generation=None, relay_route_id=None)
+        if any(r['migration'] == 24 for r in state['schema_versions']):
+            wanted_request.update(acquisition_scope_id=None, acquisition_job_id=None)
         assert {k:v for k,v in row.items() if k not in ('xmin','reserved_at_us')} == wanted_request
         assert int(row['xmin']) > 0
         assert control['acquired_at_us'] <= row['reserved_at_us'] < control['lease_expires_at_us']

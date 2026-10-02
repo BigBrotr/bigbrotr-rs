@@ -34151,6 +34151,84 @@
           }
         },
         "captures_verified": 375
+      },
+      "session_setup_failure": {
+        "source": "a9257aacc09f9e295bf8ae3fa133e8ed957779bb",
+        "launch": {
+          "source": "a9257aacc09f9e295bf8ae3fa133e8ed957779bb",
+          "tree": "f81d887c759ebc6755c1a03a5f181b5d6c740415",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-private-sessions-a9257aa",
+          "pid": 1721086,
+          "start_ticks": "429431816",
+          "bundle_sha256": "9891559a8f8bde2a4ddc78c571b5448333aea28cf9bbf25adb851fde149a30f7"
+        },
+        "owner": "be3f5d3410b497eb200e40ea9019a7d2",
+        "client": {
+          "id": "05176133039e7d343a6b1a43d276d16d0168afe8a4aefcdb9bbc8db1c6d81de9",
+          "name": "bigbrotr-acquisition-binding-a9257aa"
+        },
+        "databases": [
+          "bb_scope_bind_a9257aa_sessions_journey"
+        ],
+        "result": "FAIL original session fixture lacks now-required25/26 schema/privileges; actual CLI refused before listener. No session cases marked PASS. Corrected fixture explicitly migrates/grants only fresh clones.",
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "a9257aacc09f9e295bf8ae3fa133e8ed957779bb",
+          "observed_at": "2026-10-02T03:35:55.096399+00:00",
+          "prior_unchanged": 1066,
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "name": "fetch",
+              "id": "48653c3ebaee591a8ebd08fec56f86c1853aebb8f4dc963ad9ac25cbd2a928ed",
+              "exit": 0
+            },
+            {
+              "name": "native",
+              "id": "a4656a52c5b2fec9a95777c353bf2874bf89a4e99af14d172fa3abd3ae6cbca8",
+              "exit": 0
+            },
+            {
+              "name": "client",
+              "id": "05176133039e7d343a6b1a43d276d16d0168afe8a4aefcdb9bbc8db1c6d81de9",
+              "exit": 143
+            },
+            {
+              "name": "postgres",
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            }
+          ],
+          "source_files": {
+            "a9257aacc09f9e295bf8ae3fa133e8ed957779bb": 1668,
+            "f8015bce53a5b35ca92f0acec509935c1d9d0260": 1668
+          },
+          "build_reuse_changed": [
+            "docs/implementation/02-storage.md",
+            "docs/implementation/evidence/p02-dictionary-append-native-20261002.json",
+            "docs/implementation/progress.md",
+            "docs/reference/ingest-store.md",
+            "docs/research/laboratory-inventory.json",
+            "experiments/ingest-bootstrap/README.md",
+            "experiments/ingest-bootstrap/commit_client.py",
+            "experiments/ingest-bootstrap/commits.py",
+            "experiments/ingest-bootstrap/enrollments.py",
+            "experiments/ingest-bootstrap/initial_jobs.py",
+            "experiments/ingest-bootstrap/installed.py",
+            "experiments/ingest-bootstrap/registrations.py",
+            "experiments/ingest-bootstrap/scopes.py",
+            "experiments/ingest-bootstrap/sessions.py"
+          ],
+          "artifacts_verified": true,
+          "compiler_lock_released": true,
+          "free_bytes": 54337552384,
+          "server": {
+            "version": "160015",
+            "fsync": "on",
+            "full_page_writes": "on",
+            "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+          }
+        }
       }
     }
   },

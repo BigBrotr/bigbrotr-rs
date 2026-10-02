@@ -34,10 +34,15 @@ Initial f801 engine fixture FAIL preserved: receipt2 oracle confused process
 incarnation/recovery generation and hardcoded topology0. Corrected complete replay
 PASS plus3 metadata negatives. First launcher nonexistent-path setup failure is
 separate from that engine outcome. Root verified1668 Git files/126 lifetime captures;
-fault source/capture review finishing. AI review found five stale refusal helper
+fault1668 source files/375 captures and nineteen retained-case replays PASS. AI review found five stale refusal helper
 callers (including root-found enrollment); corrected plus two stale request counts.
 No additional product blocker in bounded read-only review; reviewer ran no engines.
-Next inspect fault capture review, run affected installed session/capacity regression,
+Session regressiona9257aa retained fixture/setup FAIL: old session template lacks
+current25/26 listener prerequisites; actual CLI correctly refused before binding.
+No active engine after audit03:35:55UTC (1066 prior unchanged, eight unrelated,
+54,337,552,384B free). Updated fixture explicitly migrates/grants fresh clones and
+expects schema24 nullable attribution columns; originals remain untouched.
+Next run corrected affected installed session/capacity regression,
 finish existing evidence/contract/task updates and push coherent verified work.
 Then continue bounded installed finite job selection/dispatch P03-T01 Steps3/4,
 P03-T02 and M1/P01-T09. No successor, acquisition, capacity or release claim yet.
