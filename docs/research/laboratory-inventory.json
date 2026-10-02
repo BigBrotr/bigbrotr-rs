@@ -37494,6 +37494,46 @@
             "captures": 18,
             "capture_sha256": "c301b638201c2061fe6f22a8570be5dc941271cef2bdc5a6e5c2bdda5a95121a"
           }
+        },
+        "engine_clock_failure": {
+          "source": "6bc200557a9a31bb3c4cf0b92a2f7732faac2e99",
+          "status": "FAIL",
+          "owner": "57694cfb44ed7741c9b0b223f0e24811",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "5611dfbf17f513fb9e8427593787d78d955071ce5c63b164c64d200cc108d647",
+            "name": "bigbrotr-acquisition-binding-6bc2005"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_6bc2005_retire_signed",
+            "bb_scope_bind_6bc2005_retire_pending",
+            "bb_scope_bind_6bc2005_retire_missing_copy",
+            "bb_scope_bind_6bc2005_retire_unbound_event",
+            "bb_scope_bind_6bc2005_retire_mixed",
+            "bb_scope_bind_6bc2005_retire_old_schema",
+            "bb_scope_bind_6bc2005_retire_revoked",
+            "bb_scope_bind_6bc2005_retire_no_request_job",
+            "bb_scope_bind_6bc2005_retire_clock_regressed"
+          ],
+          "started_at": "2026-10-02T14:49:18.155258+00:00",
+          "finished_at": "2026-10-02T14:49:59.007980+00:00",
+          "free_bytes_before": 67284971520,
+          "free_bytes_after": 67118084096,
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-6bc2005",
+          "capture": {
+            "label": "retirement-engine-first",
+            "source": "6bc200557a9a31bb3c4cf0b92a2f7732faac2e99",
+            "build_source": "64f60b0b7497c17ece6ad28a99fd3da370528a47",
+            "status": "FAIL",
+            "captures": 144,
+            "capture_sha256": "346d3cad74115db826d8a122885d2ec399d3970beb924885dd80e0363a02f786",
+            "cases": []
+          },
+          "preserve": "Original failed clock fixture including durable incompatible retirement, nine prior scoped cases, signed seed unchanged; no cleanup except stopping exact owned client/borrowed PG."
         }
       }
     }

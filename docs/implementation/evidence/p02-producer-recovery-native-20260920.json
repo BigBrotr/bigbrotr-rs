@@ -2538,6 +2538,117 @@
         "Clippy warnings denied"
       ]
     },
-    "review_pending": "Clock regression can currently commit a retirement timestamp older than source closure, then refuse its identical retry; practical reproduction added before correction."
+    "review_pending": "Confirmed clock-regression defect is corrected by rejecting now < locked source.closed_at_us before any terminal UPDATE; corrected build/engine qualification pending.",
+    "original_engine_failure": {
+      "capture": {
+        "label": "retirement-engine-first",
+        "source": "6bc200557a9a31bb3c4cf0b92a2f7732faac2e99",
+        "build_source": "64f60b0b7497c17ece6ad28a99fd3da370528a47",
+        "status": "FAIL",
+        "captures": 144,
+        "capture_sha256": "346d3cad74115db826d8a122885d2ec399d3970beb924885dd80e0363a02f786",
+        "cases": []
+      },
+      "cases_before_failure": [
+        {
+          "name": "retire-signed",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "seconds": 0.20031563751399517
+        },
+        {
+          "name": "retire-signed-retry",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "seconds": 0.13762565795332193
+        },
+        {
+          "name": "retire-pending",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Backend",
+          "seconds": 0.18570895679295063
+        },
+        {
+          "name": "retire-missing-copy",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Conflict",
+          "seconds": 0.17910961713641882
+        },
+        {
+          "name": "retire-unbound-event",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Conflict",
+          "seconds": 0.18919051717966795
+        },
+        {
+          "name": "retire-mixed",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "InvalidMetadata",
+          "seconds": 0.1427281992509961
+        },
+        {
+          "name": "retire-old-schema",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "IncompatibleDeployment",
+          "seconds": 0.14134523272514343
+        },
+        {
+          "name": "retire-revoked",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "seconds": 0.2016318691894412
+        },
+        {
+          "name": "retire-no-request-job",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": "Backend",
+          "seconds": 0.18857434391975403
+        }
+      ],
+      "source_preserved": {
+        "control": true,
+        "catalog": true,
+        "files": true,
+        "report": true
+      },
+      "replay": {
+        "status": "PASS_CAPTURED_INITIAL_RETIREMENT_CASES_ONLY",
+        "cases": 9,
+        "native_rows": 49,
+        "original_inputs": 4,
+        "control_tables": 70,
+        "closure_digest": "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501"
+      },
+      "failure": "Actual retirement returned0 and committed retired_at_us below the already retained source.closed_at_us. Final clock case failed its required refusal; first9 cases passed. Completed retry of this bad state was not separately executed in this run.",
+      "retired_at_us": 1790952594527468,
+      "source_closed_at_us": 1790952654135022
+    }
   }
 }

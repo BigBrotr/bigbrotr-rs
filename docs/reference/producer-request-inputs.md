@@ -591,7 +591,9 @@ avoid scanning unrelated job histories; retained gaps are bounded at64.
 Under Control then dataset UPDATE, lock Ingest/role/domains before source and
 producer. One final SQL transaction retires the producer, closes every allocation
 domain, releases Ingest with `storage_fenced` and retires its role. Each shares the
-same observed database timestamp and previously resolved source digest. Ordinary
+same observed database timestamp and previously resolved source digest. If the
+current wall clock precedes the already committed source closure, refuse before
+any terminal UPDATE; never commit a shape that completed retry would reject. Ordinary
 closing/admission still refuse retired/released history. Only this explicit mode
 can observe completion, revalidating the whole native/SQL witness and terminal
 state without rewriting original timestamps, attribution or row versions. Mixed
@@ -612,5 +614,7 @@ and all inputs/receipts/facts remain. No capacity is reclaimed and no successor
 is activated. Cancellation or unknown COMMIT requires the same root/mode; a
 committed terminal result survives client loss. The
 [retirement evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
-currently records only the actual entrypoint RED. Native/engine, complete retry,
-refusal, migration and interruption qualification remain required.
+records native component/build success at64f60b0 and nine installed scoped cases
+before the original6bc2005 clock-regression failure. That run committed a terminal
+time older than source closure. The correction and its discriminating refusal
+are awaiting actual requalification; interruption/locking acceptance remains.

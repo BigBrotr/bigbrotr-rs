@@ -271,15 +271,22 @@ impl ControlSession {
             return Err(OwnerError::InvalidMetadata.into());
         }
         if prepared {
-            let now: i64 = tx
+            let clock = tx
                 .query_one(
-                    "SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint",
-                    &[],
+                    "SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,
+                            closed_at_us FROM control.source_streams
+                     WHERE dataset_id=$1::bytea AND shard_id=$2::bigint AND owner_epoch=1",
+                    &[dataset, &i64::from(spec.shard_id)],
                 )
                 .await
-                .map_err(backend)?
-                .try_get(0)
                 .map_err(backend)?;
+            let now: i64 = clock.try_get(0).map_err(backend)?;
+            let closed_at: i64 = clock.try_get(1).map_err(backend)?;
+            // Wall clocks can regress between independent operations. Never
+            // commit a terminal shape that our completed retry would refuse.
+            if now < closed_at {
+                return Err(OwnerError::InvalidMetadata.into());
+            }
             let changed = tx
                 .execute(
                     "UPDATE control.producer_epochs SET state='retired',retired_at_us=$2::bigint,

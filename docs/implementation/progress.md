@@ -12,22 +12,28 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the slice below.
 
-Primary `main` is unpublished candidate64f60b0; private `origin/main` remains
-54ad09d. Root now owns the installed retirement fixture and evidence/checkpoint
-updates. No parallel writer; independent read-only review is in progress.
-Native build64f60b0/tree6d54e7cc passed release CLI/probe,4 entrypoints,35 catalog,
-23 actual native prefix/closing/recovery tests and Clippy on Tux Linux amd64.
-Capture1717 source files/18 outputs SHA c301b638201c2061fe6f22a8570be5dc941271cef2bdc5a6e5c2bdda5a95121a.
-Build runs/ingest-history-64f60b0, ownerc66acbb9c60847ce83cb81a4c4166bf4,
-fetch7cad675d/native df10ca6a stopped-retained; shared compiler lock released.
-Free after67,324,588,032 B. No migration0029 or installed retirement execution yet.
-Original expected entrypoint RED f36a09e remains in the recovery report/inventory.
+Primary `main` is unpublished fixture6bc2005, built product64f60b0;
+private `origin/main` remains54ad09d. Root owns the clock-regression correction
+and evidence/checkpoint updates. No parallel writer or active BigBrotr experiment.
+Native64f60b0 passed release CLI/probe,4 entrypoints,35 catalog,23 actual native
+tests and Clippy; capture1717 source files/18 outputs SHA c301b638.
 
-The first installed fixture has ten cases and uses exact64f60b0 artifacts against
-clones of the signed b7b60f9 seed. It adds a discriminating clock-regression case:
-review found that retirement could commit a timestamp older than source closure,
-then refuse its own completed retry. Reproduce and preserve the original result,
-then correct the final timestamp predicate; no qualification claim yet.
+Installed fixture6bc2005 ran all ten cases: first9 passed; final clock case
+correctly detected a product defect (CLI incorrectly returned0 and committed
+retirement before the retained source closure timestamp). The original result
+remains FAIL,144 captures SHA346d3cad;1718 source files/SHAf49cfee7. Root replayed
+all nine successful 70-table/49-native-row/four-input cases independently.
+All original seed Control/catalog/files preserved. Preserve the failed clock
+clone; no retry of its incompatible completed state was executed yet.
+Runs/ingest-recovery-engine-6bc2005 is stopped-retained, free67,118,084,096 B;
+report/inventory hold full owner/container/database identities. Shared compiler
+1154757 is released; no Mac Rust builds.
+
+The uncommitted correction checks the locked source's closed_at_us against the
+actual current SQL timestamp before any terminal UPDATE. Independent review
+confirmed this closes the static counterexample; it needs corrected build and
+actual ten-case rerun. Applied0029 is unchanged. Next run then extends actual
+rollback/ambiguous-COMMIT recovery, zero-request producer and lock obligations.
 
 ## Active responsibility and next bounded action
 
@@ -38,9 +44,8 @@ Ingest release and explicit successor. Whole Discovery/Monitor/Ranker services
 are not prerequisites. No whole task or phase checkbox closes here.
 
 Initial acquisition abandonment now has its bounded qualification below.
-Next: run the installed signed retirement/retry/refusal/migration fixture,
-including the expected clock-regression RED; correct confirmed failures, then
-qualify rollback/ambiguous COMMIT and authority/lock schedules.
+Next: build the corrected exact candidate on Tux, rerun the installed ten-case
+fixture, then qualify rollback/ambiguous COMMIT and authority/lock schedules.
 SQL0011 deliberately rejects every nonempty retirement; replace that rule only
 additively, checking complete original outcomes and workflow obligations. Keep
 retirement, ACK/GC and successor semantics distinct. A retry after retirement
@@ -52,8 +57,7 @@ Inspected for this next action: complete0002/0011/0013/0014/0020/0021/0023/0024/
 PG/native producer closing, source resolution, connected recovery and historical
 registry, plus retirement/operations contracts. Initial registry currently hardcodes
 epoch1 and reads domains across the owner resource; successor must account for
-that persistent history without adopting old custody. SQL0029 is committed in the unpublished candidate but has
-not been applied anywhere. Original migration checksums remain unchanged.
+that persistent history without adopting old custody. SQL0029 has been applied to isolated signed clones. Original migration checksums remain unchanged.
 
 Selected bounded route: `ingest recover --retire-initial` requires the prior
 explicit source closure and whole-intent abandonment. A dedicated read-only native
