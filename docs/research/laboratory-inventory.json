@@ -37167,7 +37167,7 @@
           },
           "source_archive_sha256": "712f366cf41483cce06caa8fc1bfb411e0d762580eada747bb01ea4e270a929e"
         },
-        "next": "Actual abandonment INSERT/SIGTERM and COMMIT/deadline recovery, then initial producer/domain retirement",
+        "next": "Explicit initial producer/domain retirement and completed-retirement observation under native exclusion, then successor/M1 restart/resend; no ACK/GC yet",
         "ordinary_job_red": {
           "source": "b14489ddedb1599e67f5d80176d93ae4dd3c7e8f",
           "status": "FAIL",
@@ -37382,6 +37382,42 @@
             "status": "PASS_INSTALLED_ACQUISITION_ABANDONMENT_LIMITS",
             "captures": 55,
             "capture_sha256": "287658455609bba7bcdee1f6e6dfb141f58907ae3e611516b73e622e3934d577",
+            "cases": [
+              {
+                "name": "acquisition-abandonment-signed",
+                "status": "PASS"
+              }
+            ]
+          }
+        },
+        "fault_engine": {
+          "source": "3ef37770771cbaecb3a0f5908bd06ebd60bd366a",
+          "status": "PASS_INSTALLED_ACQUISITION_ABANDONMENT_FAULTS",
+          "owner": "3ddbbd0a353ac84696d9d35129c7d5f2",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "fa8e73d9e3a0920bead6aa813fbdda081758656b79030131b7b1ddb33ca225ed",
+            "name": "bigbrotr-acquisition-binding-3ef3777"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_3ef3777_abandon_insert_signal",
+            "bb_scope_bind_3ef3777_abandon_commit_deadline"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_before": 67617497088,
+          "free_bytes_after": 67584491520,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-3ef3777",
+          "state": "stopped-retained",
+          "capture": {
+            "label": "abandonment-faults",
+            "source": "3ef37770771cbaecb3a0f5908bd06ebd60bd366a",
+            "build_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+            "status": "PASS_INSTALLED_ACQUISITION_ABANDONMENT_FAULTS",
+            "captures": 62,
+            "capture_sha256": "1059f5b5a2654415bfeca0ff8bbffb1d634bf97d4293ed4ce24f146896eca954",
             "cases": [
               {
                 "name": "acquisition-abandonment-signed",

@@ -6,378 +6,182 @@ Navigation, not evidence or another plan. Follow the
 
 ## Mandate and Git
 
-Complete selected product remains owner-authorized and INCOMPLETE. Keep private
+The complete selected product remains owner-authorized and INCOMPLETE. Keep private
 bigbrotr-rs, unpublished Cargo and the read-only Go neighbor. Mac owns edits/Git;
 trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
-The active unbudgeted goal covers the whole product, not this slice.
+The active unbudgeted goal covers the whole product, not the slice below.
 
-Primary main is97f9a8d, eight unpublished coherent candidates after pushedf996628.
-Root owns the interruption fixture and bounded evidence update; no parallel writer or active
-experiment. The0027 ordinary job grant regression is confirmed by fixtureb14489d
-and corrected additively in20ce916; original FAIL37captures/SHAbb5b21d1 is retained.
-No applied SQL/checksum was changed. New0028 removes only the redundant deferred
-jobs UPDATE trigger; gap INSERT still checks complete cancellation and both rows
-stay immutable. A focused schema guard under the migration lock refuses27 without28
-before bind and before acceptance/claim writes; earlier schemas stay eligible.
-
-Corrective20ce916 build PASS: release CLI/probe,12 actual Rocks store tests,Clippy.
-Launcher default selected ingest-recovery, so no repeated catalog/entrypoint tests
-are claimed. Five installed cases PASS:26/28 ordinary acceptance/replay/status,
-28 signed Sync without gap SELECT, and27 startup refusal for both consumers (Sync
-administration disabled). All69/70 SQL tables/49 signed native rows/four original
-inputs checked. Root matched1713 source files,15build/218engine captures (SHAf325f5e7/
-90a2a973), replayed SQL/native/receipt oracles. Independent read-only AI review found
-no further actionable issue; raw gap atomicity and concurrent migration remain
-unexecuted boundaries. Report ordinary_job_grants owns exact identities.
-
-Build owner46f33d08/nativea1c91c2a and engine20ce916/borrowedPG STOPPED_RETAINED,
-shared1154757 released; no OOM/cleanup/unrelated changes. Tux67,865,391,104B free.
-Original guard fixture64fda0f retains FAIL_SETUP: actual28 abandonment/retry passed,
-but its first raw case used SET ROLE and failed actual-backend identity before
-reaching the intended invariant. Preserve40 captures/SHA7c871059 and1714 source
-files/SHA472f8f2d; original signed source preserved. Engine/borrowedPG stopped with
-no cleanup/unrelated changes. Corrected fixture connects as the application login,
-using a transaction-local privileged fixture function only for synthetic backend
-setup. It explicitly checks backend visibility and restored origin replication
-before raw DML. No product guard is disabled during tested operations.
-Corrected fixture0137713 PASS: actual28 signed abandonment/retry,8 raw23514
-refusals with complete70-table/xmin rollback, deliberate missing-trigger negative
-committing an incomplete gap as expected. Real application login sees backend_start;
-origin replication is restored before all DML. Root matched1714 source files,
-59 captures/SHA548d2576 and replayed complete49-row/four-input native bytes and all
-raw effects. Original setup FAIL remains. Preserve the deliberately broken
-bb_scope_bind_0137713_gap_relations clone; never reuse it as a valid deployment.
-Engine/borrowedPG stopped, no OOM/cleanup/unrelated changes; Tux67,762,077,696B free.
-Fixture97f9a8d PASS6 count/upgrade cases with unchanged20ce916:64 queued+retry,
-65 queued refusal,64 retained gaps+1 queued refusal, populated27→28 migration/
-reapply and CLI recovery. No partial job/gap writes; prior rows/xmin/filenodes
-preserved. Added intents are explicitly synthetic complete records. Root checked
-1715 exact source files,55 captures/SHA28765845 and replayed all49 native rows/four
-original inputs and gap/job effects. Original seed plus bff0bc3 parent preserved.
-Engine/borrowedPG stopped, no cleanup/unrelated change; Tux67,656,880,128B free.
-No Mac Rust build.
+Primary `main` is `3ef3777`, nine unpublished coherent candidates after pushed `f996628`.
+Root owns only the final evidence/reference/task/checkpoint update. No parallel
+writer or active BigBrotr experiment. Fresh fetch still finds `origin/main` at `f996628`;
+GitHub confirms BigBrotr/bigbrotr-rs private. Review/check and commit/push this
+qualified boundary, then continue the next bounded action. No Mac Rust builds.
 
 ## Active responsibility and next bounded action
 
-M1/P01-T09 Step4 needs restart/resend with unchanged first admission and provenance
-off. Its concrete prerequisites remain P02-T01 Step5/P02-T02 Step4: original
-request resolution, source/producer/domain closure and explicit successor.
-Whole Discovery/Monitor/Ranker services are not prerequisites for this journey.
+The next useful journey is M1/P01-T09 Step4: restart/resend of the real signed
+event with unchanged first admission and provenance off. Concrete prerequisites
+remain P02-T01 Step5/P02-T02 Step4: initial producer/domain retirement, positive
+Ingest release and explicit successor. Whole Discovery/Monitor/Ranker services
+are not prerequisites. No whole task or phase checkbox closes here.
 
-`ingest recover --file ROOT` now implements the finite positive recovery consumer.
-Product `5512161`/tree `ab168dba`, final fixture `851d116`/tree `06beec5e`:
+Initial acquisition abandonment now has its bounded qualification below.
+Next: read the remaining retirement/checkpoint/domain/owner contracts and callers,
+then implement explicit initial retirement under the retained native/source witness.
+SQL0011 deliberately rejects every nonempty retirement; replace that rule only
+additively, checking complete original outcomes and workflow obligations. Keep
+retirement, ACK/GC and successor semantics distinct. A retry after retirement
+needs a dedicated completed observation; do not relax admission or the historical
+closing loader's deliberate retired/released refusal. Existing native marker is
+v2, issued4/ACK0/retired0; no reclamation or negative outcome is implemented.
 
-- Native exclusion and manifest inspection precede protected Control preparation,
-  connection and fresh claim. The original registry supplies attribution; current
-  accepted policy authorizes closing/resolution. No listeners or acquisition.
-- Closing captures PG reserved-through under the existing producer UPDATE lock,
-  separately from native issued-through. Stream every original sequence through
-  the positive resolver with bounded grants. Missing detail is never noncommit.
-- The existing supervisor owns the actual driver/grant through worker completion,
-  panic or fail-stop; the worker closes RocksDB before successful Control release.
-  A retained parent progress sender avoids a false cancellation on normal return.
-- Release build, 4 actual CLI tests and Clippy pass. Nine installed PG 16.15/Rocks 11.8.1
-  cases pass: complete two-request resolution, identical retry, missing PG copy
-  restored, reserved 3/native 2 unresolved, missing reservation/input refusal, real
-  held native owner, bad current policy refusal, new heads/window 1 retaining the
-  original two outcomes. All 69 tables/xmin and 17 native rows checked per case.
-- Three additional cases use the same artifacts. A filled 65536-byte stdout pipe
-  yields exit 1 in 0.315s after complete durable effects. Actual dataset-lock waits
-  end with SIGTERM in 2.220s or natural deadline in 3.075s, exit 4/unforced, with all
-  SQL/native state unchanged. One server backend still waits before fixture unlock;
-  joining/aborting the Rust driver is not synchronous PostgreSQL query cancellation.
-- Root verified 1702/1703 exact source files, 92+67 final captures, separately rehashed
-  CLI `bd2db3da`/probe `fd4238bc` onTux, replayed all 12 captured comparisons and both
-  independent full 17-row/two-input native seed oracles. Full identities in the report.
+Already inspected for this next action: complete0011, current PG/native producer
+closing and relevant P02 task text. Remaining0002 domain/checkpoint/owner rules,
+import0014 obligations, recovery/native format contracts and actual callers need
+complete scoped reading before design/code. Initial registry currently hardcodes
+epoch1 and reads domains across the owner resource; successor must account for
+that persistent history without adopting old custody. No new retirement design
+or migration is implemented yet.
 
-Evidence: [producer recovery report](evidence/p02-producer-recovery-native-20260920.json)
-installed_positive_recovery_20261002. Inventory implementation_network_20260928.
-installed_ingest_recovery. Ignored recipes/captures are under
-.research/implementation/ingest-recovery-20261002, labels recovery-cli-* and
-recovery-engine-*/recovery-interruptions*. Preserve all original failures:
-`e4d8eaa` expected missing-command RED; `89dd8fe` compile diagnostic Display mistake;
-354e192 successful durable recovery followed by false cancellation from early
-watch closure;336bb43 fixture wrongly rejected cancellation wording on natural
-watchdog expiry. Neither original engine FAIL was relabeled.
+## Qualified initial abandonment boundary
 
-Structural decision: a focused finite consumer reuses the existing native profile,
-policy/connection helpers and supervisor rather than expanding ordinary Serve's
-read/export dispatch. A typed closing observation retains the native permit and
-both bounds; no ledger, migration, native format, dependency or generic framework.
-New consumer, original initial lifetime/supervision, close/resolve and historical
-loaders plus changed fixtures/callers reviewed. Unchanged ordinary read/export
-runtime was not re-audited; no independent AI review at this boundary.
+Owner: [producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
+initial_acquisition_abandonment_20261002; existing inventory
+implementation_network_20260928.installed_ingest_recovery.acquisition_abandonment.
+Recipes/captures: .research/implementation/ingest-recovery-20261002.
 
-Signed recovery fixture `e8317e9`/tree9af09847 now passes with the unchanged5512161
-CLI/probe. Three actual cases resolve all four original requests from retained
-installed-archive-export-b7b60f9, repeat exactly and restore only the missing PG
-event outcome with fresh recorder attribution. Complete49-row/four-input oracle,
-all69 Control tables/xmin and unchanged original32-table catalog/files checked.
-Elapsed CLI times0.163/0.136/0.223s are tiny-workload observations, not capacity.
-Root verified1704 source files/36 captures and replayed the independent full native
-oracle. Report signed_event_recovery_20261002 and inventory engines.signed_event
-retain exact identities. No source closure/retirement/successor or M1 claim.
+Product257d232 introduced `ingest recover --abandon-acquisition --file ROOT` and
+0027. It first resolves all original positive outcomes and closes the source,
+then atomically cancels the original Control's queued checkpoint-zero jobs with
+immutable whole-intent gaps. This includes jobs with no mutation request; unclaimed
+accepted jobs remain untouched. At most64 old claims plus retained gaps. It keeps
+the actual exclusive native witness and current Control fence, dataset UPDATE
+before registry/source/producer/job locks, original attribution on retries, bounded
+work/cancellation and ambiguous-COMMIT semantics. No native format, dependency,
+scientific ledger, ACK/GC or successor change.
 
-Source-closure product `f873d92`/tree95b992ba and fixture `d90b718`/treec0967a13
-pass the first native/installed wave: release CLI/probe,4 entrypoint tests,3 actual
-Rocks prefix cases,Clippy and four PG/Rocks installed signed cases. Source closes
-at12, exact retry keeps time/xmin, missing event outcome copies identically, and
-an existing job cut13 refuses/rolls back source closure. All49 native rows/four
-inputs and69 Control tables checked; original32-table catalog/files preserved.
-The independent fixed-width digest is9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501.
-Root checked1707 source files,16 build/44 engine captures and replayed the full
-independent signed oracle plus digest. Original entrypoint RED7751217 stays FAIL
-(exit2 for missing option vs4; other3 tests pass), retained12 captures/SHA75feeea0.
-Report initial_source_closure_20261002 and inventory installed_ingest_recovery.
-source_closure own identities/results. UPDATE/COMMIT faults are qualified below;
-both current-schema job/closure schedules are qualified below.
+Product20ce916/tree3a21bb5d adds corrective0028, leaving0027/checksums unchanged.
+It removes a redundant deferred jobs UPDATE trigger that forced ordinary acceptance
+to read the recovery gap table. Gap INSERT's deferred complete-terminal check and
+terminal job/gap immutability retain the invariant. One focused schema helper under
+the existing migration lock refuses27 without28 before acceptance/execution startup
+and acceptance/claim writes. Earlier schemas retain their floors and grants.
+No blanket grant, security-definer product function or generic compatibility layer.
 
-The implementation keeps the native closing grant and borrows actual exclusion
-through an ephemeral positive prefix witness. Every original request is consumed
-in order; NewFacts cover a contiguous source, matching its native counter/last key
-and the single native producer. PG compares all ordered outcome digests, takes
-source UPDATE before producer UPDATE, and uses existing monotone source states.
-No SQL migration, native format or duplicate persistent ledger. Default recovery
-is unchanged; source closure is not producer/domain retirement, workflow gaps,
-ACK/GC, Ingest release or successor activation.
+Actual evidence, all Linux amd64 PG16.15/Rocks11.8.1:
 
-Fixture10c2eca/treee4e780d0 qualifies four additional real cases with unchanged
-f873d92 artifacts: UPDATE blocked+SIGTERM exits4/unforced in2.323s and rolls back;
-COMMIT blocked+natural deadline exits4/unforced in3.175s, then PG commits after
-client death. Both exact retries pass; committed closure time/xmin stays unchanged,
-and fresh Control positively fences the prior owner with an independently checked
-digest. Full49 native rows/four inputs,69 tables and unchanged original32-table
-catalog/files checked. Both server backends remain blocked until fixture unlock.
-Root checked1708 exact source files/58 captures (SHA8271494c), replayed the full
-signed/native/digest oracle and captured effects. Existing source-closure report
-fault_wave and inventory fault_engine own details. Engine10c2eca stopped/retained,
-ownerf34ec1d6/client2bc50311, borrowedPG stopped, no OOM/cleanup/unrelated changes;
-Tux68,667,346,944B free. Original evidence and both fault clones remain retained.
+-257d232 build: release CLI/probe,4 entrypoints,35 migration catalog tests,
+ 3 actual Rocks prefix cases,Clippy. Fixturebff0bc3 passes six initial cases:
+ signed abandonment/retry, synthetic zero-request claimed plus unclaimed intent,
+ revoked actor/grants, advanced checkpoint and missing0027 refusal.
+-20ce916 build: release CLI/probe,12 actual Rocks store tests,Clippy. The launcher
+ default selected ingest-recovery, so no new catalog/entrypoint execution is claimed.
+ CLI SHAfb476ec023d8cb98e1215af4dfbe58ad6dc185ed6803c7d29d637d9ec74250a3;
+ probe SHAd3e7b8daf87493e955d12eb22825664fe5c88613ffded7777fc964f19dd5c0cd.
+ Its five installed cases pass26/28 HTTP acceptance/replay/status and28 signed Sync
+ without gap SELECT;27 refuses before bind for acceptance and Sync independently.
+-0137713 passes actual28 abandonment/retry, eight raw23514 refusals with complete
+ 70-table/xmin rollback and a missing-trigger negative that commits an incomplete
+ gap as expected. The fixture-only synthetic backend setup ends before real
+ application-login DML; origin replication is explicitly checked. No product
+ security-definer or permission change. Preserve its deliberately broken clone.
+-97f9a8d passes six count/upgrade cases:64 queued+identical retry,65 queued refusal,
+ 64 retained gaps+1 queued refusal, populated27→28 migration/reapply and CLI retry.
+ Added intents are synthetic complete records with independent command digests.
+ Prior rows/xmin/filenodes and the retained bff0bc3 parent remain unchanged.
+-3ef3777 passes four INSERT/COMMIT schedules: actual INSERT blocked+SIGTERM exits4
+ unforced/reaped in2.374s and rolls back; COMMIT blocked+natural deadline exits4
+ unforced/reaped in3.174s, then commits after client death. Both exact retries pass
+ with fresh positive Control fencing after natural lease expiry. Both server
+ backends remain waiting until fixture unlock: joining the Rust driver/process
+ is not synchronous PostgreSQL cancellation.
 
-Fixtured824180/tree97d3e5e adds both current-schema concurrent orders with all
-triggers active. The earlier0815 dataset lock serializes job13-first (accepted,
-then source12 refuses) and closure12-first (commits, then job13 COMMIT refuses23514
-and rolls back). Actual source CLI, privileged relational job writer; not another
-HTTP acceptance qualification. Full69 tables/49 native rows/four inputs checked,
-old topology NULL and original catalog/files preserved. Root checked1709 source
-files/40 captures (SHAdd103b31) and replayed the complete independent native oracle
-and captured effects. Existing report lock_wave and inventory lock_engine own
-identities. Engined824180 stopped/retained, ownerbe172782/clientab1bb6b9, borrowedPG
-stopped; no OOM/cleanup/unrelated changes. Tux68,613,382,144B free.
+All applicable cases compare70 Control tables,49 native rows/four original inputs
+and original32-table catalog/files. The independent closure digest remains
+9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501.
+Root matched exact source manifests/capture hashes and replayed the SQL/native/
+receipt/gap oracles. Latest62 captures SHA1059f5b5,1715 source files/SHAca87636b;
+prior detailed identities are in the report/inventory rather than copied here.
 
-Product257d232/tree7e8e78aa adds explicit --abandon-acquisition with additive0027.
-It reuses the ephemeral source witness and extracted exact PG prefix comparison;
-a focused adapter takes dataset UPDATE before registry/source/producer/job locks.
-Original queued→cancel_requested→cancelled and immutable whole-intent gaps commit
-atomically. Original claim is retained in each gap; current Control owns only the
-terminal transition. No old SQL, native format, dependency or ACK/GC change.
-A native witness excludes this initial local Sync callback, which borrows its
-native owner and cannot retain a socket; a PG fence alone remains insufficient.
+Preserve original failures:48d298a entrypoint RED; b14489d real ordinary acceptance
+regression (listener bound, then disconnect/CLI Backend; PG gap-table permission
+error);64fda0f raw fixture setup failure (SET ROLE hides the real login backend's
+start time). No original FAIL was relabeled. Independent read-only AI review found
+the ordinary grant regression; follow-up20ce916 found no further actionable issue
+in complete changed product/fixture files and relevant callers/guards. No new
+engine execution by that reviewer. Concurrent migration between preflight and
+first mutation is statically guarded but was not separately executed.
 
-Release CLI/probe,4 entrypoint/35 migration-catalog tests,3 actual Rocks prefix
-cases and Clippy PASS. Fixturebff0bc3/tree4478b5e8 passes6 real installed cases:
-original signed job and identical retry; synthetic queued job with no mutation
-plus an unchanged unclaimed job; revoked actor/grants; advanced checkpoint and
-missing0027 refusal. Refusals retain the earlier committed source closure.
-All70 tables (69 for missing0027),49 native rows/four original inputs compared;
-original32-table catalog/files preserved. Root matched1711build/1712fixture files,
-16build/68engine captures (SHAb91a1745/c6e8b95e), replayed full independent signed
-native bytes, source digest and job/gap effects. Existing producer recovery report
-initial_acquisition_abandonment_20261002 and matching inventory own identities.
-Entry-point RED48d298a remains FAIL (exit2 for missing option vs4),3 other tests
-PASS,12 captures/SHAe050608e. No historical outcome was rewritten.
-Build257d232 and enginebff0bc3 STOPPED/RETAINED, shared1154757 released, borrowedPG
-stopped; no OOM/cleanup/unrelated changes. Engine ownerd410b6ca/client732716e9,
-Tux68,230,946,816B free. Preserve all original/synthetic/refusal clones and captures.
+Structural decision: focused recovery adapter and shared exact-prefix comparison;
+finite consumer uses the existing joined supervisor. The two SQL interruption
+sites now share process/barrier/retry machinery with separate explicit effect
+oracles. Ordinary Serve/read/export orchestration and unrelated native internals
+were not re-audited or cosmetically rewritten. Blocked native calls, crashes/ENOSPC,
+aged/mixed/load, general acquisition progress, retirement, successor, ACK/GC and
+full M1 remain outside this bounded qualification.
 
-Next bounded action: run exact-revision abandonment INSERT/SIGTERM and COMMIT/
-deadline schedules using unchanged20ce916 artifacts. Reuse the already qualified
-barrier/process/retry machinery with separate gap/job effect expectations. Require
-joined bounded CLI, observed server outcome, unchanged native scientific bytes,
-fresh positive Control fence and identical retry in both durable outcomes.
+## Earlier useful journey and prerequisites
 
-Then initial producer/domain retirement: SQL0011 deliberately refuses nonempty
-retirement; its additive replacement must check complete outcomes and workflow
-obligations. Exact retry after retirement cannot relax admission/recovery guards.
-M1/P01-T09 Step4 restart/resend remains the useful journey, with P02-T01 Step5/
-P02-T02 Step4 prerequisites. Source closure has its separate bounded qualification;
-no whole subsystem, task checkbox, capacity or full product claim closes here.
+[Initial Archive evidence](evidence/p02-initial-archive-native-20261002.json)
+qualifies product3a7f884/fixtureb7b60f9 signed acquisition→durable admission→timer
+publication→captured frontier→ordinary private history→JSONL export. All49 native
+rows/four requests/twelve scientific rows/four batch headers match independent
+encodings; frontier snapshot5, export353B SHA71fcfc6c. Original seed is retained.
+M1 still needs successor/replay, provenance-off restart, online indexing, outages
+and installed bundle journeys. Five exports under256MiB remain NOT_RUN.
 
-Independent read-only AI review atf996628 found no actionable defect in the
-source-closure boundary. Reviewer inspected complete new modules, recovery/shared
-supervisor, registry/history and close/resolve/outcome-copy owners, relevant SQL
-guards/contracts, and retained captures. It independently matched four capture
-archive hashes and the four-request closure digest. No new engine execution;
-ordinary Serve/Archive, native internals and live resources were not re-audited.
-Root verified no active BigBrotr containers; Tux68,613,324,800B and Mac9,322,616KiB
-free on resumption. The retirement/workflow/successor gates remain open.
+The same producer recovery report separately qualifies positive recovery5512161
+with fixture851d116 and signed suppl e8317e9; source closuref873d92 with d90b718,
+UPDATE/COMMIT faults10c2eca and current-schema job-cut racesd824180. The latter's
+0815 dataset lock correctly serializes both job13/source12 orders; it does not
+claim an isolated source-row lock. Their original failures/captures remain.
+Native inspection20e0e5e and registryfc695d2 retain separate bounded evidence.
+No unchanged broad suite should be rerun without a new risk or change.
+MON-001/002/004/005/006/007/009/010 retain earlier scoped closures absent new evidence.
 
-The scoped Mac incremental cache retirement
-is complete (inventory cache_retirement_20260928.mac_incremental_20261002).
-Only .research/targets/product/debug/incremental was deleted:31,848 regenerable
-files,12,318,892,032 allocated bytes. Immediate free bytes1,319,854,080→9,757,089,792;
-delayed APFS reclamation/concurrent writes can change later readings. All336,527
-outside target entries and all worktree HEAD/dirty states were checked unchanged.
-Final executables/libraries, original evidence and datasets remain. Old rocks
-cache paths and18 previously retired Tux cache paths remain absent; Tux68,755,234,816B
-free,1162 retained containers/eight unrelated running. Shared1154757/protected
-history/publication dependencies remain. No new Tux deletion or global prune.
-Do not repeat completed four-case work without a change/risk justification.
-Full restart/resend remains M1's visible acceptance.
+Full analytics/ranking, public/private/browser surfaces, website/blog, packaging,
+CI/CD and release journeys remain selected work. No complete product claim.
 
-The first12 cases use two dictionary requests; the later three exercise one signed
-event/four original requests. Installed Rejected/AlreadyDurable remain NOT_RUN.
-Additional native interruption, blocked FFI/close, worker panic, crashes/ENOSPC
-and aged/mixed/load remain NOT_RUN for this composition.
-Strict WAL reopening does not exclude silent complete-tail loss. No new negative
-outcome, ACK/GC, retirement, successor or release/arm64 claim.
-No task checkbox closes at this boundary.
+## Live resources, protected inputs and maintenance
 
-Historical prerequisites remain qualified separately: native inspection `20e0e5e`
-(12 actual binding tests), registry `fc695d2` (10 actual PG/Rocks metadata-only cases,
-null/zero predecessor and original heads). Their reports and inventory entries
-retain the original evidence; do not repeat those broad suites without new risk.
+Fresh final check: no BigBrotr container/build/process active; eight unrelated
+containers remain inspirehep-reindex-db/mq/cache/es, ollama, fileshare-lan,
+fileshare-tailnet and tgdataset-mongo. Mac 6,281,448 KiB and Tux 67,584,389,120 B free.
+Check space before each large allocation; Tux remains below the old export run's
+64GiB+577MiB reserve. Do not lower it to fit another export experiment.
 
-## Latest resources and maintenance
+Latest engine runs/ingest-recovery-engine-3ef3777 is STOPPED_RETAINED,
+owner3ddbbd0a353ac84696d9d35129c7d5f2/clientfa8e73d9e3a0920bead6aa813fbdda081758656b79030131b7b1ddb33ca225ed.
+No OOM/cleanup/unrelated changes. Retain both fault clones and all original evidence.
+Build runs/ingest-recovery-20ce916 is stopped, shared compiler1154757 released.
+The shared cache is network-1154757/out/build/{target,cargo-home},
+owner8b21a13162699a6038154874c2ac89da, protected by exclusive .compiler-cache.lock.
+Rust1.98.1/clang14/native image7e946a0c; qualified ELFs live outside caches.
 
-Build runs/ingest-history-5512161, engine ingest-recovery-engine-5512161 and
-interruption engine ingest-recovery-engine-851d116 and signed engine
-ingest-recovery-engine-e8317e9 are STOPPED/RETAINED (owner30961472, client5a95ea91).
-Borrowed PG 71775507 stopped, shared compiler 1154757 released, no OOM, cleanup
-errors or unrelated changes. Exact owners/IDs in the inventory. Eight unrelated
-containers remain running. Latest signed engine Tux69,098,418,176B free (before69,108,961,280);
-Mac resumption2,286,616KiB free before small captures.
-New source builds ingest-history-7751217/f873d92 and engine
-ingest-recovery-engine-d90b718 are STOPPED/RETAINED. Engine owner77dc304d/clientceb04459,
-borrowedPG stopped and shared1154757 released; final Tux68,755,337,216B free.
-No Mac Rust build. The later Mac-only retirement is recorded above. Check space before the next allocation;
-current Tux headroom is below the prior export experiment's 64 GiB+577 MiB reserve.
+Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec,
+owner5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, is stopped.
+PG16.15/fsync/full_page_writes on. Preserve secrets, bb_source_template, every
+prior fault clone and especially intentionally broken0137713_gap_relations.
+Do not reuse that negative database as a valid deployment.
+Original signed seed installed-archive-export-b7b60f9 and its32-table catalog/files,
+bff0bc3 populated gap parent, source-closure/fault/job-lock clones remain retained.
 
-Owner-requested cache retirement remains complete; do not replay deletions.
-The later 16 target/cargo-home removals and retained 1305 ELF/34371 outside-file
-checks remain in cache_retirement_20260928.tux_export_20261002. Observed free
-space increased 49,929,592,832B→72,217,153,536B at that earlier boundary, including
-shared blocks/concurrent writes. All datasets and protected dependencies remain.
+Owner-requested cache retirement is COMPLETE; never replay deletion scripts.
+Inventory implementation_20260917.cache_retirement_20260928 owns receipts.
+Latest Mac removal was only .research/targets/product/debug/incremental:
+31,848 regenerable files,12,318,892,032 allocated bytes; immediate free bytes
+1,319,854,080→9,757,089,792 (later APFS/concurrent writes change readings).
+All336,527 outside entries/worktree states preserved. Earlier rocks-store and
+rocks-binding targets stay absent; their111 final executable/library paths remain.
+Tux's earlier scoped retirement recovered observed22,287,560,704B from16 caches,
+then3,004,112,896B from network-1a2a8be build caches. Required artifacts preserved;
+no datasets, containers or volumes deleted in this current boundary.
 
-## Latest useful installed journey
-
-P01-T09 Steps1–3/P02-T04 Steps2–6/P08-T04 Step3 have bounded signed acquisition→
-durable admission→timer publication→captured frontier→ordinary private history→
-JSONL export evidence. Product3a7f884/tree82a658df, final fixtureb7b60f9/treee4e16479.
-All 49 native rows/four requests/twelve scientific rows and four batch headers
-match independent encodings. Complete source batches1–2,3,4–7,8–12 yield snapshot 5.
-After publisher stop, ordinary --roles control uses three explicit scope grants
-and exports 353 bytes SHA71fcfc6cf6ea29b2464cfe9f41aa749180b4f458b79b44779f94bc65880eefa9.
-All 69 Control/32 catalog tables and retained filesystem state are checked.
-Initial SIGTERM termination 0.055129168s; ordinary lifetime 4.880961419s, exit 0.
-Read/export operation caps 1 GiB; five exports under 256 MiB remain NOT_RUN.
-[Initial Archive report](evidence/p02-initial-archive-native-20261002.json) and
-inventory initial_archive.installed_export_20261002 own original failures and
-qualified artifacts. Preserve all four export labs and original preparation dirs.
-
-Managed-window correction14d18e1/tree043acc86 also passes native build/Clippy/13
-scoped tests and three installed cases on 69-table schema: file seed 1 with accepted
-configuration 64/security 32 initializes/renews effective 32, then identical fresh
-initialization refuses unchanged. Accepted configuration 1/policy 1 still refuses.
-[Dictionary report](evidence/p02-dictionary-append-native-20261002.json)
-installed_private_scope.managed_window owns results and original compile/REDs.
-Renewal retains accepted-profile validation; declarative edits still stage at Serve.
-No generic orchestration framework or transaction/custody refactor was introduced.
-
-M1 remains INCOMPLETE: online indexing, successor/replay, restart/resend/provenance
-off, outages and bundle installation. Publisher crash/COMMIT/dependency/resource
-cases and prior-frontier/missing-frontier-privilege startup cases remain NOT_RUN
-for this composition. Full analytics/ranking, public/private/browser surfaces,
-website/blog, packaging/CI/CD and release journeys remain selected work.
-
-## Relevant completed prerequisites
-
-These bounded reports remain applicable; no broad suite rerun is needed without
-new changes or concerns. Full historical detail lives in evidence/inventory/Git,
-not a second backlog or duplicated checkpoint transcript.
-
-- Nomination0b64181: four real PostgreSQL cases, all67 tables/xmin and full60s
-  Control metadata. Sparse32 excluded prefix, adjacent candidates, exact current
-  owner tuple, late67 excluded from cut66 then next pass, empty/u64max and actual
-  blocked-query cancellation. Ephemeral scan is not coverage. Sourcea1dc662:
-  eight actual reader cases including concurrent enrollment change, bounded URL/
-  route and cancellation. Original REDs retained. Both supplements are in
-  [scope reads](evidence/p03-acquisition-scope-read-native-20260928.json).
-- Private initial scopef8015bc: explicit request2/private3 preserves original
-  bootstrap1/public1/private2. Build123 selected tests/Clippy; actual lifetime9,
-  startup COMMIT19 and sessions3 cases PASS. All17 native rows and exact original
-  inputs/receipts verified. [Dictionary append report](evidence/p02-dictionary-append-native-20261002.json)
-  owns installed_private_scope. Existing directories are never adopted.
-- Dictionary preparation18ed28a and connectedc0fb44e: bounded native interning,
-  explicit private attribution and signed/forged/duplicate actual socket consumer;
-  full50-row native/input/receipt and67-table comparisons. No persistent format,
-  trait or extra ledger. [Dictionary append report](evidence/p02-dictionary-append-native-20261002.json).
-- Installed scope/source registration and finite job acceptance/status are
-  qualified bounded command responsibilities. Actual execution is next. Original
-  endpoint/scope/job command, authority-race and COMMIT reports retain precise
-  custody/refusal/ambiguity results. No receipt grants a socket or adoption.
-- Original installed0815/0816 export journeys remain relevant. Five signed-event
-  exports under 256 MiB are NOT_RUN. MON-001/002/004/005/006/007/009/010 retain prior
-  scoped closure absent new evidence. No current review finding is silently waived.
-
-M1/P01-T09 remains INCOMPLETE. Restart additionally needs successor/recovery
-P02-T01 Step5/P02-T02 Step4; initial writer custody cannot be adopted by another
-Serve. Full archive/index/read/export integration, production capacity, browser/
-admin/dashboard/website/blog, packaging/CI/CD/release journeys remain selected.
-No complete acquisition task or phase checkbox closes at this boundary.
-
-## Retained lab resources
-
-Runs root /home/tux/bigbrotr-implementation-20260917/runs/. Shared compiler cache
-network-1154757/out/build/{target,cargo-home}, owner8b21a13162699a6038154874c2ac89da,
-uses exclusive .compiler-cache.lock. Latestf873d92 intermediates; qualified ELFs
-are separate. Native image7e946a0c, Rust1.98.1,clang14/Rocks11.8.1,amd64 only.
-All exact IDs/manifests/owners are in the existing laboratory inventory. Check
-space/process/container/mount/cache dependencies before the next large allocation.
-
-Borrowed PG 7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec
-(namebigbrotr-implementation-pg-20260917-source_e06f580), owner
-5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, is stopped after the historical registry wave.
-PG16.15/fsync/full_page_writes on. Preserve bb_source_template and every prior
-scope/source/transport/fault clone, exact native states and protected pg/secrets.
-Clone/verify before experiments; never publish secrets or repeat completed launchers.
-
-Eight unrelated running containers remain inspirehep-reindex-db/mq/cache/es,
-ollama,fileshare-lan,fileshare-tailnet,tgdataset-mongo. Preserve their state.
-Retain strace-exit-9b30c35 original instrument/traces and historical negative/dirty
-worktrees. All prior runs are STOPPED/RETAINED only at their dated audits; verify
-live ownership before reuse. No release or native arm64 qualification exists.
-
-## Maintenance and retained dependencies
-
-Owner-requested cache retirement is COMPLETE. Inventory
-implementation_20260917.cache_retirement_20260928 and ignored
-.research/implementation/cache-retirement-20260928 own manifests and receipts.
-
-Mac removed only old rocks-store/.research/implementation/rocks-store/target and
-rocks-binding/.research/target. Clean source/worktrees, 6,173 outside files and
-111 final executable/library paths were preserved/hash-verified; retained artifacts
-are beside the removed targets. Free bytes before 1,943,420,928, after
-14,954,164,224: observed +13,010,743,296 (about 12.1 GiB). Latest pre-cleanup-fixture
-Mac reading was 13,930,864 KiB available. No local datasets or uncommitted work lost.
-
-Tux removed only network-1a2a8be/out/build/{target,cargo-home}. Independent later
-1154757 remains. Original three qualified artifacts plus 180 cached final ELFs
-were preserved and remaining laboratory files checked. Free bytes before
-65,884,286,976, after 68,888,399,872: observed +3,004,112,896 (about 2.8 GiB).
-No container, volume, dataset or fault state was deleted. Shared blocks, preserved
-hardlinks and concurrent writes explain differences from cache allocation.
-Do not rerun deletion recipes; recheck disk before every large allocation.
-Resumption at4650310 found11,194,412 KiB free on Mac and66,281,021,440 bytes on
-Tux, with no active BigBrotr build/lab and the same eight unrelated containers.
-
-Protect private-history-32dd58d and stopped history-capture-b5c862a, including
+Protect private-history-32dd58d and history-capture-b5c862a's dependency
 installed-publication-61271e2/out/archive-worker. Qualification/object-storage
-datasets/backups/archives/catalogs/indices/fault states stay untouched. Also retain
-4e6b5c0 seed/native assets, 8fa/f677 compiler inputs, 649 cache, network e38/1a2
-source/evidence and 03b0197 PG/source/artifacts including deliberately corrupt
-91d5 fault clones. Full ownership/lifecycle records remain in the inventory.
-Negative worktrees 9fa8b98/8effc76/5f1582c/a334ac8/network-direct-no-poll-1154757
-never merge/push; dirty private-panel-no-revoke and detached ed2a93b stay untouched.
-Prior cache retirements d860/b93/5de/7ee/877 remain historical; never replay them.
+datasets/backups/archives/catalogs/indices/fault states remain untouched. Preserve
+4e6b5c0 assets,8fa/f677 inputs,649 cache,network e38/1a2 evidence,03b0197 artifacts
+and deliberately corrupt91d5 clones. Negative worktrees9fa8b98/8effc76/5f1582c/
+a334ac8/network-direct-no-poll-1154757 never merge/push; dirty private-panel-no-revoke
+and detacheded2a93b remain untouched. Inventory owns full resource identities.

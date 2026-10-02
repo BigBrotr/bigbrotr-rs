@@ -536,8 +536,8 @@ uses product `257d232` and fixture `bff0bc3`: real additive migration/reapply,
 original signed job abandonment and identical retry, a synthetic zero-request
 queued intent plus untouched unclaimed intent, revoked historical actor/grants,
 and advanced checkpoint/missing0027 refusal. It checks70 tables/49 native rows
-and preserves the original signed catalog/files. Abandonment INSERT/COMMIT
-interruption recovery, relational negatives and64/65 limit remain NOT_RUN.
+and preserves the original signed catalog/files. Later qualified guard, limit and
+interruption supplements are recorded below; the first-wave outcome is unchanged.
 
 Independent review and an installed HTTP reproduction at fixtureb14489d identified
 an ordinary-job grant regression introduced by0027. Additive0028 removes its
@@ -552,5 +552,11 @@ uses a real application login with explicitly synthetic backend preparation.
 Fixture97f9a8d also checks the64/65 boundary, including64 retained gaps plus one
 queued intent, and preserving populated27→28 migration/reapply/recovery. Excessive
 history refuses without partial job/gap writes. The additional jobs are synthetic
-complete relational inputs, not a throughput measurement. Abandonment interruption
-verification remains pending; see the same report.
+complete relational inputs, not a throughput measurement. Fixture3ef3777 adds actual
+INSERT/SIGTERM rollback and COMMIT/deadline followed by durable completion after
+client death. Both same-root retries positively fence the prior Control and
+preserve original gap/job/source attribution. All70 tables/49 native rows/four
+inputs and original catalog/files are checked. CLI termination is bounded in these
+schedules; server backends wait until the fixture unlocks. Blocked native calls,
+crash/ENOSPC, aged/load, producer/domain retirement and successor remain separate
+acceptance. See the same report for exact artifacts and original failures.

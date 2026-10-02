@@ -1913,8 +1913,7 @@
         "https://www.postgresql.org/docs/16/sql-set-constraints.html"
       ],
       "not_run": [
-        "concurrent migration between preflight and acceptance/claim",
-        "abandonment interruptions/ambiguous COMMIT"
+        "concurrent migration between preflight and acceptance/claim"
       ],
       "fixed": {
         "source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
@@ -2376,6 +2375,115 @@
         "database": "bb_scope_bind_bff0bc3_abandon_signed",
         "preserved": true
       }
-    }
+    },
+    "fault_wave": {
+      "status": "PASS_INSTALLED_ACQUISITION_ABANDONMENT_FAULTS",
+      "source": "3ef37770771cbaecb3a0f5908bd06ebd60bd366a",
+      "product_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+      "capture": {
+        "label": "abandonment-faults",
+        "source": "3ef37770771cbaecb3a0f5908bd06ebd60bd366a",
+        "build_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+        "status": "PASS_INSTALLED_ACQUISITION_ABANDONMENT_FAULTS",
+        "captures": 62,
+        "capture_sha256": "1059f5b5a2654415bfeca0ff8bbffb1d634bf97d4293ed4ce24f146896eca954",
+        "cases": [
+          {
+            "name": "acquisition-abandonment-signed",
+            "status": "PASS"
+          }
+        ]
+      },
+      "source_files": 1715,
+      "source_archive_sha256": "ca87636b93b6b6e06f8a06e0c43f07c1cd4f3655da6307e332e287b6e41ba2ee",
+      "cases": [
+        {
+          "name": "abandon_insert_signal",
+          "status": "PASS",
+          "terminal": {
+            "pid": 91,
+            "start_ticks": "433147976",
+            "config": "/lab/bb_scope_bind_3ef3777_abandon_insert_signal.toml",
+            "prefix": "/lab/abandon_insert_signal",
+            "exit_code": 4,
+            "elapsed_seconds": 2.3735025944188237,
+            "forced": false,
+            "reaped": true
+          },
+          "native_rows": 49,
+          "original_requests": 4,
+          "control_tables": 70,
+          "source_closed": true,
+          "seconds_after_observed_block": 2.105852283537388,
+          "backends_after_client": 1,
+          "schedule": "SIGTERM during INSERT; rollback",
+          "acquisition_abandoned": false
+        },
+        {
+          "name": "abandon_insert_signal-retry",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_abandoned": 1,
+          "expected_refusal": null,
+          "seconds": 0.19907251000404358
+        },
+        {
+          "name": "abandon_commit_deadline",
+          "status": "PASS",
+          "terminal": {
+            "pid": 297,
+            "start_ticks": "433148848",
+            "config": "/lab/bb_scope_bind_3ef3777_abandon_commit_deadline.toml",
+            "prefix": "/lab/abandon_commit_deadline",
+            "exit_code": 4,
+            "elapsed_seconds": 3.1735453978180885,
+            "forced": false,
+            "reaped": true
+          },
+          "native_rows": 49,
+          "original_requests": 4,
+          "control_tables": 70,
+          "source_closed": true,
+          "seconds_after_observed_block": 2.9638973800465465,
+          "backends_after_client": 1,
+          "schedule": "deadline during COMMIT; durable after client death",
+          "acquisition_abandoned": true
+        },
+        {
+          "name": "abandon_commit_deadline-retry",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_abandoned": 1,
+          "expected_refusal": null,
+          "seconds": 0.20529091823846102
+        }
+      ],
+      "local_replay": {
+        "status": "PASS_ABANDONMENT_FAULT_CAPTURE_REPLAY",
+        "cases": 4,
+        "independent_native_rows": 49,
+        "original_inputs": 4,
+        "control_tables": 70,
+        "closure_digest": "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501",
+        "semantics": "INSERT rollback and COMMIT durable after client death; exact fresh-Control retry and original gap/job/source preservation"
+      },
+      "seed_preserved": {
+        "control": true,
+        "catalog": true,
+        "files": true,
+        "report": true
+      },
+      "interpretation": "Actual INSERT blocked then SIGTERM: CLI reaped unforced in2.374s, SQL rolls back after barrier release. Actual COMMIT blocked then natural deadline: CLI reaped unforced in3.174s; gap/cancelled job commit after client death. Both exact retries pass and positively fence prior Control after natural lease expiry. All70 tables/49 native rows/four original inputs checked; original catalog/files preserved. Both backends remain waiting after CLI exit until fixture unlock; no synchronous server-cancellation claim.",
+      "not_run": [
+        "producer/domain retirement, successor, ACK/GC and full M1",
+        "blocked native calls/crash/ENOSPC, capacity/load/aged-state",
+        "arm64/release"
+      ]
+    },
+    "qualified_boundary": "Initial whole-intent abandonment only: signed seed/retry, no-request intents, historical authority loss, advanced/missing schema refusal, ordinary job compatibility, raw atomicity/immutability, finite64/65 counts, populated corrective upgrade and INSERT/COMMIT recovery. Full acquisition, producer/domain retirement, ACK/GC, successor and M1 remain incomplete."
   }
 }
