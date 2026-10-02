@@ -211,13 +211,13 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         assert messages(prefix)[-1]['owner_release']=='committed'
     after=rows(database);lab.write_json(output/(name+'-after.json'),after)
     assert len(after['owner_epochs'])==len(after['role_instances'])==2
-    assert len(after['producer_requests'])==len(after['producer_outcomes'])==1
+    assert len(after['producer_requests'])==len(after['producer_outcomes'])==2
     if initialized:
         native_oracle(pg,client,output,database,name,after,initialized)
         assert len(after['browser_sessions'])==1 and after['browser_sessions'][0]['revoked_at_us'] is not None
     else:
         from commits import native_oracle as retained_oracle
-        retained_oracle(client,output,name,after,committed=True,outcome=True)
+        retained_oracle(client,output,name,after,number=6,healthy=True,last_commit=6)
         assert not after['browser_sessions']
     audits=[r for r in after['management_audit'] if r not in before['management_audit']]
     expected=[] if not initialized else ['browser.session.issue','browser.session.revoke','relay.endpoint.register','relay.enrollment.change']

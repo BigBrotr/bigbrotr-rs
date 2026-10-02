@@ -58,7 +58,8 @@ def native_oracle(client, output, name, state, number, healthy, last_commit):
     assert [p.read_bytes() for p in inputs] == expected_inputs
     requests = sorted(state['producer_requests'], key=lambda r:int(r['request_sequence']))
     outcomes = sorted(state['producer_outcomes'], key=lambda r:int(r['request_sequence']))
-    control = next(r for r in state['owner_epochs'] if r['role'] == 'control')
+    control = max((r for r in state['owner_epochs'] if r['role'] == 'control'),
+                  key=lambda r:r['epoch'])
     common = dict(dataset_id='\\x'+dataset.hex(), producer_slot_id='\\x'+slot.hex(),
                   producer_epoch=1, manifest_sha256='\\x'+hashlib.sha256(manifest).hexdigest())
     for sequence, (row, original) in enumerate(zip(requests, expected_inputs), 1):

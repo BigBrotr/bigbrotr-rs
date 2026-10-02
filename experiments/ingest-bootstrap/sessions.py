@@ -150,7 +150,7 @@ def run(pg, client, output, database, name, rows):
     after = rows(database)
     lab.write_json(output / (name + '-after.json'), after)
     assert len(after['owner_epochs']) == 2 and len(after['role_instances']) == 2
-    assert len(after['producer_requests']) == len(after['producer_outcomes']) == 1
+    assert len(after['producer_requests']) == len(after['producer_outcomes']) == 2
     if initialized:
         native_oracle(pg, client, output, database, name, after, initialized)
         control = next(r for r in after['owner_epochs'] if r['role'] == 'control')
@@ -161,7 +161,7 @@ def run(pg, client, output, database, name, rows):
         assert (output / name / 'store/CURRENT').is_file()
         assert next(r for r in after['owner_epochs'] if r['role'] == 'control')['state'] == 'active'
         from commits import native_oracle as retained_oracle
-        retained_oracle(client, output, name, after, committed=True, outcome=True)
+        retained_oracle(client, output, name, after, number=6, healthy=True, last_commit=6)
     if name in ('sessions-capacity', 'sessions-hash-stop'):
         assert not after['browser_sessions'] and after['management_audit'] == before['management_audit']
     allowed = {'datasets', 'owner_epochs', 'role_instances', 'topology_generations', 'topology_streams',

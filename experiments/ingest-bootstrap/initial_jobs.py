@@ -304,7 +304,7 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         assert sorted(r['action'] for r in after['management_audit'] if r not in before['management_audit'])==sorted(actions)
     else:
         from commits import native_oracle as retained_oracle
-        retained_oracle(client,output,name,after,committed=True,outcome=True)
+        retained_oracle(client,output,name,after,number=6,healthy=True,last_commit=6)
         for table in EFFECTS: assert after[table]==before[table],table
         assert not after['browser_sessions']
     assert lab.sql(pg,database,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'")=='0'

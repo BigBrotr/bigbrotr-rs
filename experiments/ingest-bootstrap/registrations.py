@@ -168,7 +168,7 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         assert len(after['browser_sessions']) == 1 and after['browser_sessions'][0]['revoked_at_us'] is not None
     else:
         from commits import native_oracle as retained_oracle
-        retained_oracle(client, output, name, after, committed=True, outcome=True)
+        retained_oracle(client, output, name, after, number=6, healthy=True, last_commit=6)
         assert not after['browser_sessions']
     audits = [r for r in after['management_audit'] if r not in before['management_audit']]
     expected = [] if not initialized else ['browser.session.issue', 'browser.session.revoke']
