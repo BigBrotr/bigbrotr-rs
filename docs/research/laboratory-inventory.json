@@ -33144,6 +33144,43 @@
           "local": ".research/implementation/initial-jobs-20261002/source-regression"
         }
       }
+    },
+    "dictionary_append": {
+      "status": "DRAFT_COMPILE_FAILURE_RETAINED",
+      "local": ".research/implementation/dictionary-append-20261002",
+      "scope": "P02-T03 fixed-reference append/replay prerequisite; no installed or recovery qualification",
+      "red": {
+        "launch": {
+          "source": "f2a161817ae77d0bba95df89a794dbd2cfcf6cae",
+          "tree": "bd772a46873ac267a816666ac5ab3f7f54db761b",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/dictionary-append-f2a1618",
+          "pid": 1598424,
+          "start_ticks": "428709188",
+          "bundle_sha256": "913597d1f617974ff88844c398b4bb7f8b76b74aebcaf967cbdec8c3b3de457f"
+        },
+        "owner": "83f63b70ce527ed632f42b636939823a",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "150f8337f50a047f75a18c68ecca346bd25fe8e94ea5d6e567bacc2b1d7ea431"
+          },
+          {
+            "name": "native",
+            "id": "fdafe0e02dcf8db8aa9665fd8540fa3b8c2cab0ce61fe0ddcfee9575e2879fc5"
+          }
+        ],
+        "source_files_verified": 1661,
+        "failure": "Endpoint imported from crate root instead of endpoint module; no native test executed",
+        "audit": {
+          "status": "TERMINAL_COMPILE_FAILURE_RETAINED",
+          "observed_at": "2026-10-02T01:35:39.386098+00:00",
+          "prior_unchanged": 1038,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 56470331392
+        }
+      },
+      "next": "Correct compilation, execute the bootstrap-after-append regression before changing bootstrap replay."
     }
   },
   "implementation_relay_registry_20260928": {

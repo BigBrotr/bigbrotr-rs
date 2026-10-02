@@ -431,7 +431,7 @@ impl IngestStore {
                 return Err(AdmissionError::InvalidInput);
             }
             if let DictionaryDescriptor::Endpoint(endpoint) = entry.descriptor() {
-                let normalized = bigbrotr_protocol::Endpoint::parse(endpoint.url())
+                let normalized = bigbrotr_protocol::endpoint::Endpoint::parse(endpoint.url())
                     .map_err(|_| AdmissionError::InvalidInput)?;
                 if normalized.as_str() != endpoint.url() {
                     return Err(AdmissionError::InvalidInput);

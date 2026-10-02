@@ -12,13 +12,17 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main/origin5483db8f3256cf11e13d45973548b09e41416448; clean at resumption,
-root sole writer. Root owns the dictionary append/PG bridge/regression/profile and owning-contract edits. The integrated finite job
-fault/shared-source evidence is committed and pushed. Native candidate66a8718
-built the extended helper/CLI and scoped Clippy PASS; core productce85c0c is
-unchanged. Fresh read-only inspection at2026-10-02T01:20UTC found no active
-BigBrotr lab/build, the same eight unrelated running containers, Mac3,469,836KiB
-and Tux56,558,247,936B free. No local Rust build or new large allocation.
+Mainf2a161817ae77d0bba95df89a794dbd2cfcf6cae (unpublished native candidate),
+origin5483db8; root sole writer. Root owns compilation-fix/inventory/checkpoint
+edits. Native runs/dictionary-append-f2a1618 STOPPED/RETAINED: first compile failed
+on the Endpoint module path; no new native test executed. Original result/logs and
+all exact source files are captured under
+.research/implementation/dictionary-append-20261002/red. Terminal audit01:35:39UTC
+found1038 prior container projections unchanged, eight unrelated running, compiler
+lock free and56,470,331,392B free. BuildPID1598424/start428709188 terminal;
+owner83f63b70ce527ed632f42b636939823a. Exact container identities are in inventory
+implementation_network_20260928.dictionary_append. No local Rust build. Fix the
+path and run the regression; expected bootstrap replay failure has NOT_RUN.
 
 Bounded installed finite acceptance/status/COMMIT integration is qualified;
 P03-T01 Steps3/4 and P01-T09 Steps1/2 remain partial because execution/progress,
