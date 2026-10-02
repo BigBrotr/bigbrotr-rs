@@ -37,7 +37,8 @@ def census(home):
     return result
 
 
-def run(pg, client, output, rows, clone, close_source=False):
+def run(pg, client, output, rows, clone, close_source=False, faults=False):
+    assert not faults or close_source
     basis = output.parent.parent / SEED / 'bindings'
     home = basis / 'archive-export'
     assert digest(basis / 'result.json') == RESULT_SHA256
@@ -136,7 +137,15 @@ def run(pg, client, output, rows, clone, close_source=False):
         assert valid.returncode == 0, valid.stderr
         return database, config, directory
 
-    def invoke(database, config, directory, name, copy=False, error=None):
+    def check_native(directory, name):
+        dumped = lab.docker('exec', client, '/build/ingest_bootstrap_probe', 'dump',
+            '/lab/' + directory.name + '/store')
+        assert dumped.returncode == 0 and not dumped.stderr
+        (output / (name + '-native.json')).write_text(dumped.stdout)
+        assert json.loads(dumped.stdout) == wanted, (name, 'complete native effects')
+        assert inputs == {p.name: p.read_bytes() for p in (directory / 'store/producer-inputs-v1').iterdir()}
+
+    def invoke(database, config, directory, name, copy=False, error=None, reclaims_control=False):
         before = rows(database)
         lab.write_json(output / (name + '-before.json'), before)
         started = time.monotonic()
@@ -147,12 +156,7 @@ def run(pg, client, output, rows, clone, close_source=False):
             stdout=response.stdout, stderr=response.stderr, elapsed_seconds=elapsed))
         after = rows(database)
         lab.write_json(output / (name + '-after.json'), after)
-        dumped = lab.docker('exec', client, '/build/ingest_bootstrap_probe', 'dump',
-            '/lab/' + directory.name + '/store')
-        assert dumped.returncode == 0 and not dumped.stderr
-        (output / (name + '-native.json')).write_text(dumped.stdout)
-        assert json.loads(dumped.stdout) == wanted, (name, 'complete native effects')
-        assert inputs == {p.name: p.read_bytes() for p in (directory / 'store/producer-inputs-v1').iterdir()}
+        check_native(directory, name)
         result = dict(format='bigbrotr-ingest-recovery/1', state='source-closed' if close_source else 'positive-outcomes-resolved',
             dataset_id=initialized['dataset_id'], owner_resource_id=initialized['owner_resource_id'],
             producer_slot_id=initialized['producer_slot_id'], producer_epoch='1', issued_through='4',
@@ -179,14 +183,18 @@ def run(pg, client, output, rows, clone, close_source=False):
         old.pop('xmin'); new.pop('xmin')
         assert old == new
         for table in ('owner_epochs', 'role_instances'):
-            assert all(r in after[table] for r in before[table])
             assert len(after[table]) == len(before[table]) + 1
-        current, = [r for r in after['owner_epochs'] if r not in before['owner_epochs']]
+            if not reclaims_control:
+                assert all(r in after[table] for r in before[table])
+        previous_epoch = max(r['epoch'] for r in before['owner_epochs'] if r['role'] == 'control')
+        current, = [r for r in after['owner_epochs'] if r['role'] == 'control' and r['epoch'] == previous_epoch + 1]
         assert current['role'] == 'control' and current['state'] == ('active' if error else 'released')
-        assert current['epoch'] == max(r['epoch'] for r in before['owner_epochs'] if r['role'] == 'control') + 1
         assert (current['released_at_us'] is None) == bool(error)
-        role, = [r for r in after['role_instances'] if r not in before['role_instances']]
+        role, = [r for r in after['role_instances'] if r['role_instance_id'] == current['role_instance_id']]
         assert role['role'] == 'control' and (role['retired_at_us'] is None) == bool(error)
+        if reclaims_control:
+            from source_closure_faults import assert_reclaimed
+            assert_reclaimed(before, after, current)
         if close_source and not error:
             old, new = dict(before['source_streams'][0]), dict(after['source_streams'][0])
             if old['state'] == 'closed':
@@ -216,15 +224,19 @@ def run(pg, client, output, rows, clone, close_source=False):
         lab.write_json(output / 'signed-recovery-cases.json', cases)
 
     try:
-        database, config, directory = prepare('signed_recovery')
-        invoke(database, config, directory, 'signed-recovery')
-        invoke(database, config, directory, 'signed-recovery-retry')
-        database, config, directory = prepare('signed_copy')
-        lab.sql(pg, database, 'BEGIN; SET LOCAL session_replication_role=replica; '
-            'DELETE FROM control.producer_outcomes WHERE request_sequence=4; COMMIT;')
-        assert len(rows(database)['producer_outcomes']) == 3
-        invoke(database, config, directory, 'signed-recovery-copy', copy=True)
-        if close_source:
+        if faults:
+            from source_closure_faults import run as run_faults
+            run_faults(pg, client, output, rows, prepare, check_native, invoke, cases, closure_digest)
+        else:
+            database, config, directory = prepare('signed_recovery')
+            invoke(database, config, directory, 'signed-recovery')
+            invoke(database, config, directory, 'signed-recovery-retry')
+            database, config, directory = prepare('signed_copy')
+            lab.sql(pg, database, 'BEGIN; SET LOCAL session_replication_role=replica; '
+                'DELETE FROM control.producer_outcomes WHERE request_sequence=4; COMMIT;')
+            assert len(rows(database)['producer_outcomes']) == 3
+            invoke(database, config, directory, 'signed-recovery-copy', copy=True)
+        if close_source and not faults:
             database, config, directory = prepare('source_cut_conflict')
             # Only this isolated clone has an existing job cut above the final
             # native bound. Source closure must roll back, preserving that cut.

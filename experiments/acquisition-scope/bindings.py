@@ -63,7 +63,8 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
-ingest_source_closure = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-source-closure'
+ingest_source_faults = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-source-faults'
+ingest_source_closure = ingest_source_faults or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-source-closure')
 ingest_recovery_signed = ingest_source_closure or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-signed')
 ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
@@ -137,6 +138,11 @@ if ingest_source_closure:
     report['wave'] = 'installed-initial-source-closure'
     report['not_run'] = ['producer/domain retirement, workflow abandonment, successor, ACK/GC and full M1',
         'source-close COMMIT ambiguity/cancellation and blocked native syscall', 'capacity/load/aged-state', 'arm64/release']
+
+if ingest_source_faults:
+    report['wave'] = 'installed-initial-source-closure-faults'
+    report['not_run'] = ['producer/domain retirement, workflow abandonment, successor, ACK/GC and full M1',
+        'concurrent job/source lock schedules and blocked native syscall', 'capacity/load/aged-state', 'arm64/release']
 
 if ingest_history:
     report['wave'] = 'ingest-history'
@@ -596,6 +602,8 @@ if ingest_recovery:
     success_status = 'PASS_INSTALLED_POSITIVE_RECOVERY'
 if ingest_source_closure:
     success_status = 'PASS_INSTALLED_INITIAL_SOURCE_CLOSURE'
+if ingest_source_faults:
+    success_status = 'PASS_INSTALLED_INITIAL_SOURCE_CLOSURE_FAULTS'
 if ingest_history:
     success_status = 'PASS_HISTORICAL_INGEST_LOOKUP'
 if ingest_windows:
@@ -864,7 +872,8 @@ try:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
             if ingest_recovery_signed:
                 from installed_signed_recovery import run as run_signed_recovery
-                report['cases'].append(run_signed_recovery(pg,client,output,rows,clone,close_source=ingest_source_closure))
+                report['cases'].append(run_signed_recovery(pg,client,output,rows,clone,
+                    close_source=ingest_source_closure, faults=ingest_source_faults))
             else:
                 from installed_recovery import run as run_recovery
                 completed = clone(name, 'bb_source_template')

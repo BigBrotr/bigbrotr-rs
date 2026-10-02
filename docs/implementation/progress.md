@@ -12,10 +12,13 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is `b18959c`, clean and equal to origin/main at resumption.
-Root owns this bounded cache-retirement inventory/checkpoint update; no parallel
-writer or active Tux experiment. First-wave source-closure evidence is committed
-and pushed. No Mac Rust build. Next work is the focused source-closure fault fixture.
+Primary main is `2d7a53e`, pushed. Root owns the focused source-closure fault
+fixture and this checkpoint; no parallel writer or active Tux experiment.
+The fixture adds isolated SQL UPDATE/SIGTERM and deferred-COMMIT/deadline barriers,
+full native/69-table comparisons and identical retries including real Control
+fencing. Not yet executed. Commit this candidate, transfer exact Git and use
+launch-source-faults.py with a fresh label; reuse qualified f873d92 artifacts.
+No Mac Rust build.
 
 ## Active responsibility and next bounded action
 

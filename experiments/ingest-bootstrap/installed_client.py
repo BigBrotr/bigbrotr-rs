@@ -8,13 +8,15 @@ import subprocess
 import sys
 import time
 
-assert len(sys.argv) in (3, 4) and (len(sys.argv)==3 or sys.argv[3] in ('control', 'sync', 'archive', 'recovery'))
+assert len(sys.argv) in (3, 4) and (len(sys.argv)==3 or sys.argv[3] in ('control', 'sync', 'archive', 'recovery', 'source-closure'))
 config, prefix = map(Path, sys.argv[1:3])
 mode = sys.argv[3] if len(sys.argv)==4 else 'initial'
 roles = ['--roles','control'] if mode=='control' else [
     '--initialize-ingest','--roles','control,ingest,sync,archive' if mode=='archive' else 'control,ingest,sync' if mode=='sync' else 'control,ingest']
-command = (['ingest','recover','--file',str(config)] if mode=='recovery'
+command = (['ingest','recover','--file',str(config)] if mode in ('recovery', 'source-closure')
            else ['serve','--file',str(config),*roles])
+if mode == 'source-closure':
+    command.append('--close-source')
 assert config.is_absolute() and prefix.is_absolute()
 
 
