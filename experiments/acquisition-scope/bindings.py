@@ -59,7 +59,8 @@ installed_sync_window = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-
 installed_sync = installed_sync_visibility or installed_sync_expiry or installed_sync_window or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync')
 installed_archive_setup = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-setup'
 installed_archive_signed = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-signed'
-installed_archive_publication = installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
+installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-export'
+installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 initial_ingest = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest'
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
@@ -136,6 +137,12 @@ if installed_archive_publication:
 
 if installed_archive_signed:
     report['not_run'].append('three reader startup refusals not repeated in this focused wave')
+
+if installed_archive_export:
+    report['wave'] = 'installed-archive-export'
+    report['not_run'] = ['M1 successor/replay/indexing', 'five signed exports under256MiB',
+        'durable EOSE/progress', 'publication crash/COMMIT/cancellation/unknown outcomes',
+        'earlier Sync/reader refusal waves not repeated', 'capacity/load/aged-state', 'arm64/release']
 
 if installed_sync:
     report['wave'] = ('installed-sync-visibility' if installed_sync_visibility
@@ -564,6 +571,8 @@ if installed_archive_setup:
     success_status = 'PASS_INSTALLED_ARCHIVE_SETUP_EXPECTED_ROLE_REFUSAL'
 if installed_archive_publication:
     success_status = 'PASS_INSTALLED_ARCHIVE_PUBLICATION'
+if installed_archive_export:
+    success_status = 'PASS_INSTALLED_ARCHIVE_EXPORT'
 if installed_sync:
     success_status = ('PASS_INSTALLED_SYNC_VISIBILITY' if installed_sync_visibility
         else 'PASS_INSTALLED_SYNC_NATURAL_EXPIRY' if installed_sync_expiry
@@ -617,6 +626,8 @@ assert lab.docker('inspect', client, check=False).returncode != 0
 report.update(started_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
     postgres_id=target['Id'], free_bytes_before=shutil.disk_usage(root).free)
 assert report['free_bytes_before'] > 2 * 1024**3
+if installed_archive_export:
+    assert report['free_bytes_before'] > 64 * 1024**3 + 577 * 1024**2, 'export completion headroom'
 lab.write_json(output / 'preflight.json', dict(containers=[projection(c) for c in prior],
     processes=lab.command(['ps', '-eo', 'pid,ppid,stat,comm']).stdout,
     ports=lab.command(['ss', '-lntup']).stdout, volumes=lab.docker('volume', 'ls').stdout,
@@ -740,6 +751,8 @@ try:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from installed_archive_journey import CASES as ARCHIVE_PUBLICATION_CASES
         ARCHIVE_PUBLICATION_CASES = ['archive-signed'] if installed_archive_signed else ARCHIVE_PUBLICATION_CASES
+        if installed_archive_export:
+            ARCHIVE_PUBLICATION_CASES = ['archive-export']
         cases = list(ARCHIVE_PUBLICATION_CASES)
     elif installed_archive_setup:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))

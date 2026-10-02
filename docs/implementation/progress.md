@@ -12,9 +12,8 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main88bc995df300ee52c3394b5fa66bb65499a32b76 equals origin/main,
-verified after resumption; clean before this root-owned checkpoint update.
-No merge/rebase or active remote job. Product3a7f884 is now
+Primary main0b6818a (bounded cache retirement) is pushed; root-owned installed
+export fixture/checkpoint edits are pending. No merge/rebase or active remote job. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
 three Python files differ. The positive installed signed publication journey PASS
@@ -81,6 +80,17 @@ source, all datasets/fault states and protected/current inputs preserved. Receip
 and recipe are under existing ignored cache-retirement-20260928; inventory
 implementation_20260917.cache_retirement_20260928.tux_export_20261002 owns details.
 Do not rerun this recipe. Mac3,013,836KiB free: no local Rust build.
+
+Current bounded action: run the new --installed-archive-export fixture through
+Git on Tux, reusing exact3a7f884 product artifacts. New ordinary client/oracle and
+host driver extend the original signed path; AST/fixture checks pass, real engine
+journey NOT_RUN. Only this new isolated fixture seeds explicit export.memory=1GiB
+in both accepted documents before startup; it preserves the1GiB application/2GiB
+native process envelopes and256MiB output cap. This follows the already documented
+native export profile; five exports under256MiB remain required and unqualified.
+Three scope permissions use actual reauthentication/grant HTTP after ordinary
+restart. Compare all69 tables, original archive bytes, signed JSONL and complete
+manifest. Preserve failed output before any correction.
 
 Next useful deliverable: ordinary Control restart serving/exporting this same
 archived signed event, P01-T09 Step3 with P08-T04 Step3 and existing private

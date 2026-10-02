@@ -60,7 +60,7 @@ def provision_reader(pg, output, name, setup, save):
 
 
 def run(pg, client, output, database, name, rows, **context):
-    assert name in CASES
+    assert name in CASES or name == 'archive-export'
     setup = prepare(pg, client, output, database, name, rows, **context)
     directory = setup['home']; prefix = output / name
     reader = provision_reader(pg, output, name, setup, context['save'])
@@ -77,6 +77,13 @@ def run(pg, client, output, database, name, rows, **context):
     assert all(before[t] == setup['control'][t] for t in before if t != 'principal_grants')
     assert len(before['principal_grants']) == len(setup['control']['principal_grants']) + 2
     assert all(r in before['principal_grants'] for r in setup['control']['principal_grants'])
+    if name == 'archive-export':
+        lab.sql(pg, database, """
+            INSERT INTO control.principal_grants SELECT dataset_id,principal_id,a,'dataset',dataset_id
+            FROM control.local_accounts CROSS JOIN (VALUES ('data.read'),('principals.manage')) v(a);
+        """)
+        before = rows(database)
+        assert len(before['principal_grants']) == len(setup['control']['principal_grants']) + 4
     path = output / Path(setup['config']).name
     text = path.read_text()
     text = set_value(text, 'postgres.catalog', 'read_user', reader)
@@ -84,7 +91,7 @@ def run(pg, client, output, database, name, rows, **context):
     rules = [dict(endpoint=ENDPOINT, cidr='127.0.0.1/32', port=7447)]
     text = set_value(text, 'network.private', 'rules', rules)
     text = text.replace(json.dumps(rules), '[{endpoint="' + ENDPOINT + '",cidr="127.0.0.1/32",port=7447}]')
-    if name == 'archive-signed':
+    if name in ('archive-signed', 'archive-export'):
         # This managed file is a staged seed, not the accepted policy. Actual
         # startup must restore accepted publisher=true/window32 before effects.
         text = set_value(text, 'archive.publisher', 'enabled', False)
@@ -112,7 +119,7 @@ def run(pg, client, output, database, name, rows, **context):
     lab.docker('exec', '-d', client, 'python3', '/lab/installed_client.py', setup['config'], '/lab/' + name, 'archive')
     wait_for(lambda: Path(str(prefix) + '.pid.json').exists(), 'Archive CLI start')
     first = wait_for(lambda: messages(prefix) or Path(str(prefix) + '.terminal.json').exists(), 'Archive initialized')
-    if name != 'archive-signed':
+    if name not in ('archive-signed', 'archive-export'):
         observed = rows(database)
         catalog = catalog_rows(pg, setup['resource']['catalog_database'])
         lab.write_json(output / (name + '-refusal-control.json'), observed)
@@ -263,16 +270,18 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
     assert {r['roleid'] for r in new_members} == {r['oid'] for r in added}
     assert all(int(r['member']) == setup['resource']['roles']['manager_oid'] and r['admin_option']
         and not r['inherit_option'] and not r['set_option'] for r in new_members)
-    lab.write_json(output / (name + '-final-catalog.json'), final_catalog)
-    lab.write_json(output / (name + '-final-roles.json'), roles)
     statuses = json.loads((directory / 'status-observations.json').read_text())
     assert len(statuses) >= 2 and int(statuses[-1]['observed_at_us']) >= now
     assert int(statuses[0]['observed_at_us']) < original_deadline < int(statuses[-1]['observed_at_us'])
     for db in (database, setup['resource']['catalog_database']):
         assert lab.sql(pg, db, 'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()') == '0'
+    export = None
+    if name == 'archive-export':
+        from installed_archive_export import run as run_export
+        export = run_export(pg, client, output, database, name, rows, setup, initialized, after)
     return dict(name=name, status='PASS', actual_cli=True, actual_http=True, actual_pg_rocks_archive=True,
         complete_scientific_rows=12, complete_archive_batches=4, retained_inputs=retained,
         frontier_snapshot=5, same_owner_renewed=True, archive_owner_retained_and_expired=True,
         http_status_observations=len(statuses),
         signal_seconds=signal_seconds, selected_quiet_signal=signal, websocket_rounds=len(transcript),
-        terminal=ended, **native_evidence)
+        terminal=ended, export=export, **native_evidence)

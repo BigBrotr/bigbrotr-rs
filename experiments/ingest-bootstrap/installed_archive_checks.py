@@ -34,11 +34,11 @@ runner = ast.parse((SOURCE / 'experiments/acquisition-scope/bindings.py').read_t
 start = next(i for i,n in enumerate(runner.body) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='guards' for t in n.targets))
 end = next(i for i,n in enumerate(runner.body) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='revision' for t in n.targets))
 flags = compile(ast.Module(body=runner.body[start:end],type_ignores=[]), '<runner flags>', 'exec')
-for mode in ('--installed-archive', '--installed-archive-signed', '--installed-archive-setup', '--installed-sync', '--installed-sync-window'):
+for mode in ('--installed-archive', '--installed-archive-signed', '--installed-archive-export', '--installed-archive-setup', '--installed-sync', '--installed-sync-window'):
     selected = {'sys':SimpleNamespace(argv=['bindings.py','/unused',mode])}
     exec(flags,selected)
     assert selected['installed_archive'] == mode.startswith('--installed-archive')
-    assert selected['installed_archive_publication'] == (mode in ('--installed-archive', '--installed-archive-signed'))
+    assert selected['installed_archive_publication'] == (mode in ('--installed-archive', '--installed-archive-signed', '--installed-archive-export'))
     assert selected['installed_archive_setup'] == (mode=='--installed-archive-setup')
     assert selected['installed_sync'] == mode.startswith('--installed-sync')
 assert CASES == ['archive-setup-refusal']
@@ -94,7 +94,7 @@ with tempfile.TemporaryDirectory(prefix='bigbrotr-archive-fixture-') as temp:
         finally:
             path.chmod(0o500)
 assert rejected == 5
-print(json.dumps(dict(status='PASS_FIXTURE_CHECKS_ONLY', ast_files=len(checked), embedded_python=embedded, runner_modes=5, native_rows=49,
+print(json.dumps(dict(status='PASS_FIXTURE_CHECKS_ONLY', ast_files=len(checked), embedded_python=embedded, runner_modes=6, native_rows=49,
     independent_complete_batches=4, scientific_facts=12, asset_negative_controls=rejected, **frontier_checks,
     not_run=['installed CLI', 'PostgreSQL catalog initialization', 'authenticated native worker',
         'role-selected process refusal', 'Archive publication/frontier/read/export'])))

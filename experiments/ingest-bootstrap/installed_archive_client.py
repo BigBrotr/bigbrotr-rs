@@ -40,7 +40,10 @@ def run(directory):
     auth = {'Cookie': 'BigBrotrLocalSession=' + saved['session'], 'X-CSRF-Token': saved['csrf']}
     status, me = request('GET', '/management/v1/me', headers=auth)
     assert status == 200 and me['principal_id'] == '10'*16
-    assert me['stored_actions'] == ['policy.change', 'roles.control', 'status.read']
+    actions = ['policy.change', 'roles.control', 'status.read']
+    if directory.name == 'archive-export':
+        actions = ['data.read', 'policy.change', 'principals.manage', 'roles.control', 'status.read']
+    assert me['stored_actions'] == actions
     observations, statuses, errors = [], [], []
     def call(path, value, key):
         status, answer = request('POST', '/management/v1/' + path, value, {**auth, 'Idempotency-Key': key})
