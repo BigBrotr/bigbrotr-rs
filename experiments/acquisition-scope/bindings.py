@@ -58,8 +58,10 @@ installed_sync_expiry = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-
 installed_sync_window = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-window'
 installed_sync = installed_sync_visibility or installed_sync_expiry or installed_sync_window or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync')
 installed_archive_setup = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-setup'
+installed_archive_publication = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive'
+installed_archive = installed_archive_setup or installed_archive_publication
 initial_ingest = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest'
-installed = installed_archive_setup or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
+installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
 execution = len(sys.argv) == 3 and sys.argv[2] == '--execution'
@@ -69,7 +71,7 @@ dictionary_faults = len(sys.argv) in (3, 4) and sys.argv[2] == '--dictionary-fau
 assert len(sys.argv) == 2 or registration_faults or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket or dictionary_faults
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-reuse_build = registration_faults or guards or interruptions or commits or ((installed_archive_setup or installed_sync or initial_ingest or observation or socket or dictionary_faults or sessions or enrollment_http or registration_http or scope_http or jobs_http) and len(sys.argv) == 4)
+reuse_build = registration_faults or guards or interruptions or commits or ((installed_archive or installed_sync or initial_ingest or observation or socket or dictionary_faults or sessions or enrollment_http or registration_http or scope_http or jobs_http) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == ('relay_registration_fault_probe' if registration_faults else 'ingest_bootstrap_probe')
@@ -124,6 +126,12 @@ if installed_archive_setup:
     report['not_run'] = ['installed Archive publication (baseline role selection refuses)',
         'same-owner signed socket event/archive frontier/read/export/restart/M1',
         'publication crash/COMMIT/cancellation/unknown outcomes', 'capacity/load/aged-state', 'arm64/release']
+
+if installed_archive_publication:
+    report['wave'] = 'installed-archive-publication'
+    report['not_run'] = ['ordinary serve restart/read/export/M1', 'durable EOSE/progress',
+        'publication crash/COMMIT/cancellation/unknown outcomes', 'nine-case Sync wave not repeated',
+        'capacity/load/aged-state', 'arm64/release']
 
 if installed_sync:
     report['wave'] = ('installed-sync-visibility' if installed_sync_visibility
@@ -550,6 +558,8 @@ def run_case(name):
 success_status = 'PASS_INITIAL_SESSION_HASH_CASE' if session_hash else 'PASS_INITIAL_SESSION_FIRST_WAVE' if sessions else 'PASS_SOCKET_ARRIVAL_FIRST_WAVE' if socket else 'PASS_COMMITTED_OBSERVATION_FIRST_WAVE' if observation else 'PASS_ACQUISITION_EXECUTION_FIRST_WAVE' if execution else 'PASS_INITIAL_INGEST_COMMIT_WAVE' if commits else 'PASS_INITIAL_INGEST_INTERRUPTION_WAVE' if interruptions else 'PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE' if installed else 'PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'
 if installed_archive_setup:
     success_status = 'PASS_INSTALLED_ARCHIVE_SETUP_EXPECTED_ROLE_REFUSAL'
+if installed_archive_publication:
+    success_status = 'PASS_INSTALLED_ARCHIVE_PUBLICATION'
 if installed_sync:
     success_status = ('PASS_INSTALLED_SYNC_VISIBILITY' if installed_sync_visibility
         else 'PASS_INSTALLED_SYNC_NATURAL_EXPIRY' if installed_sync_expiry
@@ -645,8 +655,8 @@ try:
         lab.write_json(output / 'registration-basis-before.json', registration_original)
     ident = lab.docker('create', '--init', '--name', client, '--label', label + '=' + owner,
         '--network', 'container:' + pg['postgres'], '--user', f'{os.getuid()}:{os.getgid()}',
-        '--cpus', '2', '--memory', '3g' if installed_archive_setup else '1g',
-        '--memory-swap', '3g' if installed_archive_setup else '1g', '--pids-limit', '128', '--read-only',
+        '--cpus', '2', '--memory', '3g' if installed_archive else '1g',
+        '--memory-swap', '3g' if installed_archive else '1g', '--pids-limit', '128', '--read-only',
         '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges',
         '--mount', f'type=bind,src={output},dst=/lab',
         '--mount', f'type=bind,src={pg_root}/secrets,dst=/run/secrets,readonly',
@@ -722,6 +732,10 @@ try:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from control_status import CASES
         cases = list(CASES)
+    elif installed_archive_publication:
+        sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+        from installed_archive_journey import CASES as ARCHIVE_PUBLICATION_CASES
+        cases = list(ARCHIVE_PUBLICATION_CASES)
     elif installed_archive_setup:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from installed_archive import CASES as ARCHIVE_SETUP_CASES
@@ -792,7 +806,9 @@ try:
             save()
         elif installed:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-            if installed_archive_setup:
+            if installed_archive_publication:
+                from installed_archive_journey import run as run_installed
+            elif installed_archive_setup:
                 from installed_archive import run as run_installed
             elif installed_sync:
                 from installed_sync import run as run_installed
@@ -813,7 +829,7 @@ try:
             template_name = (registration_basis if name in ('registration-upgrade', 'scope-upgrade')
                 else installed_basis if name == 'registered-only' else 'bb_source_template')
             completed = clone(name, template_name)
-            archive_context = dict(resources=report, save=save, build=build, built=built) if installed_archive_setup else {}
+            archive_context = dict(resources=report, save=save, build=build, built=built) if installed_archive else {}
             report['cases'].append(run_installed(pg,client,output,completed,name,rows,**archive_context))
             if name == 'pass': installed_basis = completed
             save()
@@ -870,6 +886,10 @@ try:
             rows=rows(registration_basis), physical=physical(registration_basis))
         lab.write_json(output / 'registration-basis-after.json', final_original)
         require(final_original == registration_original, 'retained-enrollment-original-changed')
+    if installed_archive_publication:
+        require({r['name'] for r in report['cases']} == set(ARCHIVE_PUBLICATION_CASES)
+            and len(report['cases']) == len(ARCHIVE_PUBLICATION_CASES)
+            and all(r['status'] == 'PASS' for r in report['cases']), 'installed-archive-publication-complete-case-set')
     if installed_archive_setup:
         require({r['name'] for r in report['cases']} == set(ARCHIVE_SETUP_CASES)
             and len(report['cases']) == len(ARCHIVE_SETUP_CASES)

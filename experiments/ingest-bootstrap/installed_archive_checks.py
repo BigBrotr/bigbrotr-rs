@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+from types import SimpleNamespace
 
 sys.dont_write_bytecode = True
 SOURCE = Path(__file__).resolve().parents[2]
@@ -17,11 +18,29 @@ sys.modules['bootstrap_oracle'] = bootstrap
 spec.loader.exec_module(bootstrap)
 from installed_archive import CASES, verify_file
 from installed_archive_oracle import expected
+from installed_archive_frontier_checks import check as check_frontiers
 
 checked = [*Path(__file__).parent.glob('installed_archive*.py'),
     Path(__file__).with_name('installed_client.py'), SOURCE / 'experiments/acquisition-scope/bindings.py']
+embedded = 0
 for path in checked:
-    ast.parse(path.read_text())
+    parsed = ast.parse(path.read_text())
+    for node in ast.walk(parsed):
+        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'wrapper' for t in node.targets):
+            ast.parse(ast.literal_eval(node.value)); embedded += 1
+from installed_archive_journey import CASES as PUBLICATION_CASES
+assert PUBLICATION_CASES == ['archive-signed']
+runner = ast.parse((SOURCE / 'experiments/acquisition-scope/bindings.py').read_text())
+start = next(i for i,n in enumerate(runner.body) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='guards' for t in n.targets))
+end = next(i for i,n in enumerate(runner.body) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='revision' for t in n.targets))
+flags = compile(ast.Module(body=runner.body[start:end],type_ignores=[]), '<runner flags>', 'exec')
+for mode in ('--installed-archive', '--installed-archive-setup', '--installed-sync', '--installed-sync-window'):
+    selected = {'sys':SimpleNamespace(argv=['bindings.py','/unused',mode])}
+    exec(flags,selected)
+    assert selected['installed_archive'] == mode.startswith('--installed-archive')
+    assert selected['installed_archive_publication'] == (mode=='--installed-archive')
+    assert selected['installed_archive_setup'] == (mode=='--installed-archive-setup')
+    assert selected['installed_sync'] == mode.startswith('--installed-sync')
 assert CASES == ['archive-setup-refusal']
 state = dict(datasets=[dict(dataset_id='\\x' + '01'*16)], owner_epochs=[dict(role='ingest',
     resource_id='\\x' + '02'*16, process_incarnation='\\x' + '03'*16, acquired_at_us=100)],
@@ -36,6 +55,7 @@ assert [(b['first'], b['last']) for b in value['batches']] == [(1, 2), (3, 3), (
 assert [len(b['facts']) for b in value['batches']] == [2, 1, 4, 5]
 assert len({b['archive_digest'] for b in value['batches']}) == 4
 assert all(b['admission_digest'] != b['archive_digest'] for b in value['batches'])
+frontier_checks = check_frontiers(value)
 rows = value['tables']
 assert [r['visibility_scope_id']['ordinal'] for r in rows['dictionaries']] == [1, 1, 3, 3, 3, 3, 3, 3]
 assert rows['dictionaries'][1]['descriptor_value']['class'] == 'private'
@@ -74,7 +94,7 @@ with tempfile.TemporaryDirectory(prefix='bigbrotr-archive-fixture-') as temp:
         finally:
             path.chmod(0o500)
 assert rejected == 5
-print(json.dumps(dict(status='PASS_FIXTURE_CHECKS_ONLY', ast_files=len(checked), native_rows=49,
-    independent_complete_batches=4, scientific_facts=12, asset_negative_controls=rejected,
+print(json.dumps(dict(status='PASS_FIXTURE_CHECKS_ONLY', ast_files=len(checked), embedded_python=embedded, runner_modes=4, native_rows=49,
+    independent_complete_batches=4, scientific_facts=12, asset_negative_controls=rejected, **frontier_checks,
     not_run=['installed CLI', 'PostgreSQL catalog initialization', 'authenticated native worker',
         'role-selected process refusal', 'Archive publication/frontier/read/export'])))
