@@ -237,11 +237,16 @@ const EXECUTION_PRIVILEGES: &str = "
             'control.require_acquisition_job_authority(bytea,bytea)', 'EXECUTE')
         AND has_function_privilege(CURRENT_USER,
             'control.require_acquisition_execution(bytea,bytea,bytea,bytea,bytea)', 'EXECUTE')
+        AND has_function_privilege(CURRENT_USER,
+            'control.require_relay_source(bytea,bytea,bytea,numeric,bytea)', 'EXECUTE')
+        AND has_function_privilege(CURRENT_USER,
+            'control.require_acquisition_scope(bytea,bytea,bytea,bytea)', 'EXECUTE')
     FROM (VALUES
         ('control.datasets', true),
         ('control.local_accounts', true),
         ('control.principal_grants', true),
         ('control.relay_enrollments', true),
+        ('control.relay_enrollment_changes', false),
         ('control.jobs', true),
         ('control.owner_epochs', false),
         ('control.acquisition_jobs', false),
@@ -251,6 +256,7 @@ const EXECUTION_PRIVILEGES: &str = "
         ('control.relay_endpoints', false),
         ('control.network_routes', false),
         ('control.relay_access_contexts', false),
+        ('control.producer_input_bindings', false),
         ('control.config_revisions', false),
         ('control.policy_revisions', false)
     ) t(name, row_lock)";

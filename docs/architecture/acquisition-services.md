@@ -438,6 +438,44 @@ integration before being advertised.
 
 Schedule bounded work quanta across every eligible endpoint with a fair queue, favoring oldest unserved scopes without starving live/recent work. Maintain optional live subscriptions only for seated endpoints; show disconnected/unserved intervals when the fleet exceeds capacity. A ten-minute rotation is not proof of continuous all-relay live coverage. Historical traversal yields at request/segment boundaries and is preemptible on a work deadline; it cannot occupy a scarce slot forever because a relay has a large history.
 
+The installed initial-owner integration is under qualification. Explicit
+`serve --initialize-ingest --roles control,ingest,sync` selects a serial finite
+consumer; `control,ingest` retains acceptance-only behavior. It requires the
+configured numeric DNS root, accepted Sync enablement, at least four outstanding
+producer slots, and an admitted-event limit no larger than256KiB. Before startup
+publication, migration0024 and its complete checksum-verified catalog prefix,
+execution functions, SELECT and actual row-lock privileges are required even
+without administration. Startup reports `acquisition=finite-initial, ready=false`.
+
+This bounded profile nominates one original finite job from an indexed32-admission
+batch, claims it under current authority, and retains the exact scope/source
+through receipt. A250ms scheduling gap gives private commands an opportunity;
+renewal always has priority and new work retains the original renewal deadline.
+The socket quantum requests at most three events per filter, retains at most
+three correlated EVENTs, and examines at most32 frames. A soft cutoff of at most
+500ms, computed before source SQL/connect, leaves half the remaining operation
+window for socket destruction, rollback and effects. It does not establish
+production throughput or a live-subscription service. TLS, selector/source,
+visibility/observation, retained frames, parsing and native work use the same
+process budget, with separate owned grants; their logical bounds are not RSS.
+
+Committed visibility must permit the actual source before attribution dictionaries
+are prepared or appended. A private route or query-bearing URL cannot write its
+attribution into a public envelope merely because enrollment accepted that intent.
+The locked source check still repeats before dialing. Identical descriptors reuse
+the committed observation without another producer request. Certification rejects
+invalid signatures and identifies existing effects; only NeedsAdmission allocates
+a new request. Original uncertain effects stop the owner and remain recovery
+inputs. Receipt copying does not acknowledge or recycle outstanding slots.
+
+Cancellation asks a quiet protocol callback to retire its complete session and
+lets the source adapter finish socket destruction and SQL rollback; the outer
+hard deadline and independent native-owner watchdog remain effective. Failed or
+ambiguous native/SQL operations do not become graceful-release claims. This
+initial consumer persists neither EOSE coverage nor job completion/progress and
+does not resume a prior native owner. Full scheduling, progress, recovery and
+the installed archive/read/export/restart journey remain required.
+
 ### Progress and evidence
 
 There is no scalar global complete flag. Preserve three separate concepts:

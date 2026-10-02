@@ -157,8 +157,15 @@ ordinary status compatibility. [Five installed job fault schedules](evidence/p03
 cover COMMIT ambiguity, admitted disconnect and bounded signal handling with
 exact SQL-owner retry. These close that bounded command integration; Step4's
 finite CLI execution/gaps and Step7 restart journey remain incomplete. The next
-installed event consumer requires dictionary append for its actual observation
-and witness references, not completion of Discovery or Monitor.
+installed event consumer now uses available dictionary append/intern and retained
+observation components; it does not require completion of Discovery or Monitor.
+The explicit initial Control/Ingest/Sync wiring is under native qualification
+(P03-T01 Steps3/4 and P03-T02 Steps1/2/3/5). Its independent installed fixture
+uses actual HTTP registration/acceptance, signed/forged/duplicate WebSocket input,
+complete native/input/receipt expectations, quiet renewal/shutdown and headless
+execution-prerequisite refusals. Planned checks are not PASS evidence; the current
+[checkpoint](progress.md) records candidate revisions and actual outcomes. No task
+checkbox closes before its remaining progress, CLI, recovery and journey criteria.
 
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership

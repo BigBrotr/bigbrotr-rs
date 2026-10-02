@@ -13,7 +13,7 @@ use bigbrotr::{
         scope::{AcquisitionEventContext, StoredAcquisitionScope},
     },
     management::sessions::SessionError,
-    network::{DirectConnector, DnsResolver, TlsPolicy},
+    network::{DirectConnector, DnsResolver, TlsPolicy, TransportError},
     storage::{
         postgres::{
             control_owner::{
@@ -249,12 +249,26 @@ impl Sync {
                 | RelaySourceError::Visibility
                 | RelaySourceError::Control(OwnerError::InvalidPolicy),
             ) => return Ok(()),
+            // These errors can only return after the source adapter finished
+            // rollback. A refused/offline/malformed peer yields this candidate;
+            // it cannot stop HTTP or block the next admission in the scan.
+            Err(RelaySourceError::Transport(
+                TransportError::Budget
+                | TransportError::Dns(_)
+                | TransportError::Policy(_)
+                | TransportError::Connect
+                | TransportError::Tls
+                | TransportError::Operation,
+            )) => return Ok(()),
             Err(e) => return Err(error(e)),
         };
         if work.stopped() {
             return Ok(());
         }
         for (captured, observation) in &arrivals.events {
+            if work.stopped() {
+                return Ok(());
+            }
             let context =
                 AcquisitionEventContext::for_job(job.id, &scope, captured.request().filters())
                     .map_err(error)?;
@@ -273,14 +287,25 @@ impl Sync {
             let prepared_bytes = captured.limits().parse_bytes as u64 + 4 * max_event_bytes as u64;
             let prepare = || -> Result<_> {
                 let permit = grant(work.budget, prepared_bytes, 0)?;
-                let decoded =
-                    decode_event_json(captured.json(), captured.limits()).map_err(error)?;
+                let Ok(decoded) = decode_event_json(captured.json(), captured.limits()) else {
+                    return Ok(None);
+                };
+                // Peer data outside the exact intent is a local refusal before
+                // any SQL/native operation, never a poisoned Control owner.
+                if context
+                    .check(source.binding(), scope.scope().visibility(), &decoded)
+                    .is_err()
+                {
+                    return Ok(None);
+                }
                 let intent =
                     EventIntent::network(1, scope.scope().visibility(), decoded, *observation)
                         .map_err(error)?;
-                Ok((intent, permit))
+                Ok(Some((intent, permit)))
             };
-            let (intent, permit) = prepare()?;
+            let Some((intent, permit)) = prepare()? else {
+                continue;
+            };
             let prepared =
                 PreparedCertification::new(intent, max_event_bytes, permit).map_err(error)?;
             let ttl = work.remaining()?;
@@ -315,7 +340,7 @@ impl Sync {
                 // This owner can keep serving/certifying without new mutations.
                 return Ok(());
             }
-            let (intent, permit) = prepare()?;
+            let (intent, permit) = prepare()?.ok_or_else(|| error("retained input changed"))?;
             let event = PreparedEvent::new(
                 ProducerRequestId {
                     producer_slot_id: work.spec.producer_slot_id,
