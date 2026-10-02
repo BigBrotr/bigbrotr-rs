@@ -118,6 +118,9 @@ impl Key {
                 "x-bigbrotr-intervals":"start_age < end_age; ordered disjoint half-open intervals"
             }),
         };
+        if self.name == "network.tls.extra_roots" {
+            value["maxItems"] = json!(128);
+        }
         if !self.default.is_null() {
             value["default"] = self.default.clone();
         }

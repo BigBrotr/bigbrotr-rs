@@ -39,7 +39,7 @@ assert identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'direct'
 assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire', 'selector', 'request-session', 'acquisition-transport')
 tests = {
-    'acquisition-transport': {'acquisition_transport': 6, 'network_direct': 14, 'postgres_connection_settings': 7},
+    'acquisition-transport': {'acquisition_transport': 7, 'network_direct': 14, 'postgres_connection_settings': 7},
     'direct': {'network_direct': 12},
     'websocket': {'network_websocket': 30},
     'relay-wire': {'network_websocket': 1, 'relay_wire': 8},

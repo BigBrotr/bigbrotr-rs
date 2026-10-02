@@ -1873,6 +1873,20 @@
           "x-bigbrotr-owner": "acquisition",
           "x-bigbrotr-reload": "connection"
         },
+        "dns": {
+          "additionalProperties": false,
+          "properties": {
+            "resolver": {
+              "format": "bigbrotr-numeric-dns-resolver",
+              "maxLength": 64,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "acquisition",
+              "x-bigbrotr-reload": "restart"
+            }
+          },
+          "type": "object"
+        },
         "endpoint_connections": {
           "default": 1,
           "oneOf": [
@@ -2131,7 +2145,7 @@
                 "maxLength": 8192,
                 "type": "string"
               },
-              "maxItems": 100000,
+              "maxItems": 128,
               "type": "array",
               "uniqueItems": true,
               "x-bigbrotr-deployment-locked": true,

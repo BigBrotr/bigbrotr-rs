@@ -108,6 +108,28 @@ fn root_paths_are_bounded_without_reading_certificates_offline() {
 }
 
 #[test]
+fn actual_cli_matches_the_generated_transport_consumers() {
+    for (command, expected) in [
+        (
+            "schema",
+            include_bytes!("../../../contracts/config/schema.json").as_slice(),
+        ),
+        (
+            "reference",
+            include_bytes!("../../../docs/reference/configuration.md").as_slice(),
+        ),
+    ] {
+        let output = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
+            .args(["config", command])
+            .env_clear()
+            .output()
+            .unwrap();
+        assert!(output.status.success());
+        assert_eq!(output.stdout, expected, "{command}");
+    }
+}
+
+#[test]
 fn actual_der_roots_retain_one_grant_through_all_tls_copies() {
     let directory = tempfile::tempdir().unwrap();
     let path = directory.path().canonicalize().unwrap().join("ca.der");
@@ -127,6 +149,7 @@ fn actual_der_roots_retain_one_grant_through_all_tls_copies() {
     assert_eq!(budget.snapshot().active_permits(), 1);
     drop(copy);
     assert_eq!(budget.snapshot().active_permits(), 0);
+    fs::write(&path, CA).unwrap();
     assert!(matches!(
         TlsPolicy::from_der_files(&vec![path.as_path(); 129], grant(&budget, 4_194_304)),
         Err(TransportError::TlsConfiguration)
