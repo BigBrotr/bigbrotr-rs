@@ -97,6 +97,44 @@ def mutate(db, sql):
 DOCUMENT = b'{"version":1,"filters":[{"kinds":[1,2]}],"history_since":0,"ephemeral":"retain"}'
 
 
+def verify_source_owner(before, after, backend, start_us, end_us, released):
+    """Only the probe's one claim and optional release may change Control state."""
+    owner = next(r for r in after['owner_epochs'] if r not in before['owner_epochs'])
+    role = next(r for r in after['role_instances'] if r not in before['role_instances'])
+    prior = max((r for r in before['owner_epochs'] if r['role'] == 'control'), key=lambda r: r['epoch'])
+    require(prior['state'] == 'released', 'fixture-owner-not-released')
+    nonce = '\\x' + 'f1' * 16
+    # Backend identity comes from a query on the actual connection before claim;
+    # server clock bounds constrain timestamps without deriving them from the reader.
+    require(type(backend['pid']) is int and backend['pid'] > 0, 'backend-identity')
+    parse_time = datetime.datetime.fromisoformat
+    require(parse_time(owner['control_backend_start']) == parse_time(backend['start']), 'backend-start')
+    backend_us = int(parse_time(backend['start']).timestamp() * 1000000)
+    require(start_us <= backend_us <= role['created_at_us'] <= owner['acquired_at_us'] <= end_us,
+        'claim-clock-bounds')
+    require(role['xmin'] == owner['xmin'] and role['xmin'].isdigit(), 'owner-transaction')
+    expected_owner = dict(resource_id=prior['resource_id'], epoch=prior['epoch'] + 1,
+        dataset_id=prior['dataset_id'], role='control', role_instance_id=nonce,
+        process_incarnation=nonce, acquired_at_us=owner['acquired_at_us'],
+        lease_expires_at_us=owner['acquired_at_us'] + 60_000_000,
+        state='released' if released else 'active', released_at_us=None,
+        exclusion_method=None, exclusion_digest=None, control_fence_version=1,
+        control_backend_pid=backend['pid'], control_backend_start=owner['control_backend_start'],
+        archive_frontier_protocol=None, xmin=role['xmin'])
+    expected_role = dict(role_instance_id=nonce, dataset_id=prior['dataset_id'], role='control',
+        created_at_us=role['created_at_us'], retired_at_us=None, xmin=role['xmin'])
+    if released:
+        require(owner['acquired_at_us'] <= owner['released_at_us'] <= role['retired_at_us'] <= end_us,
+            'release-clock-bounds')
+        digest = sha(b'bigbrotr/control-exclusion/1\0' + bytes.fromhex(prior['dataset_id'][2:])
+            + bytes.fromhex(prior['resource_id'][2:]) + (prior['epoch'] + 1).to_bytes(8, 'big')
+            + bytes.fromhex('f1' * 32))
+        expected_owner.update(released_at_us=owner['released_at_us'], exclusion_method='storage_fenced',
+            exclusion_digest='\\x' + digest)
+        expected_role['retired_at_us'] = role['retired_at_us']
+    require(owner == expected_owner and role == expected_role, 'complete-owner-metadata')
+
+
 def run_case(name):
     db = 'bb_scope_read_' + revision[:7] + '_' + name
     require(re.fullmatch('[a-z0-9_]{1,63}', db), 'database-name')
@@ -131,8 +169,18 @@ def run_case(name):
             mutate(db, f'UPDATE control.relay_enrollments SET enabled=false WHERE {bound};')
             expected['source'] = None
         elif name == 'source_changed':
-            mutate(db, f'UPDATE control.relay_enrollments SET generation=generation+1 WHERE {bound};')
+            route_id, route_bytes = 'ee' * 16, '0104207f000001'
+            require(not any(r['route_id'] == '\\x' + route_id for r in basic['network_routes']), 'new-route-collision')
+            mutate(db, f"""
+                INSERT INTO control.network_routes
+                    SELECT decode('{route_id}','hex'),dataset_id,endpoint_id,route_version,
+                        decode('{route_bytes}','hex'),actor_id,request_key
+                    FROM control.network_routes WHERE route_id=decode('{route['route_id'][2:]}','hex');
+                UPDATE control.relay_enrollments SET generation=generation+1,
+                    route_id=decode('{route_id}','hex') WHERE {bound};
+            """)
             expected['source']['enrollment_generation'] += 1
+            expected['source'].update(route_id=route_id, route_bytes=list(bytes.fromhex(route_bytes)))
         elif name == 'source_missing':
             mutate(db, f"UPDATE control.acquisition_scopes SET access_scope_id=decode(repeat('ff',16),'hex') WHERE scope_id=decode('{scope_id}','hex');")
             expected['source'] = None
@@ -212,6 +260,8 @@ def run_case(name):
         holder = Session(pg, db, 'scope_read_holder', sessions)
         relation = 'network_routes' if name == 'source_cancel' else 'acquisition_scopes'
         holder.execute(f'BEGIN; LOCK TABLE control.{relation} IN ACCESS EXCLUSIVE MODE;')
+    clock_sql = 'SELECT (EXTRACT(EPOCH FROM clock_timestamp()) * 1000000)::bigint'
+    start_us = int(lab.sql(pg, db, clock_sql))
     process = Process(['docker', 'exec', client, '/build/acquisition_scope_probe', db,
         '/run/secrets/application', '/lab/policy.json', mode, '/lab/' + name + '-expected.json'])
     processes.append((name, process))
@@ -225,8 +275,13 @@ def run_case(name):
         event(process, 'read-cancelled')
         holder.execute('ROLLBACK;')
     require(process.wait(15) == 0 and not process.stderr, 'actual-reader-' + name)
+    end_us = int(lab.sql(pg, db, clock_sql))
     lines = [json.loads(line) for line in bytes(process.stdout).splitlines()]
-    require(lines[-1] == dict(status='PASS', mode=mode, scope_id=expected['scope_id']), 'reader-result')
+    result = dict(lines[-1])
+    backend = None
+    if name.startswith('source_'):
+        backend = dict(pid=result.pop('backend_pid'), start=result.pop('backend_start'))
+    require(result == dict(status='PASS', mode=mode, scope_id=expected['scope_id']), 'reader-result')
     after = rows(db)
     lab.write_json(output / (name + '-after.json'), after)
     require(set(after) == set(before) and all(after[t] == before[t] for t in before
@@ -242,6 +297,11 @@ def run_case(name):
             prior_epoch = max(row['epoch'] for row in before[table] if row['role'] == 'control')
             require(row['role'] == 'control' and row['process_incarnation'] == '\\x' + 'f1' * 16
                 and row['epoch'] == prior_epoch + 1, 'unexpected-control-epoch')
+    if backend:
+        verify_source_owner(before, after, backend, start_us, end_us,
+            released=name not in ('source_bad_url', 'source_bad_route', 'source_cancel'))
+        lab.write_json(output / (name + '-owner-observation.json'),
+            dict(backend=backend, start_us=start_us, end_us=end_us))
     require(lab.sql(pg, db, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0', 'unjoined-reader-driver')
     report['cases'].append(dict(name=name, status='PASS', expected=expected,
         prior_data_unchanged=True, lock_barrier=barrier))

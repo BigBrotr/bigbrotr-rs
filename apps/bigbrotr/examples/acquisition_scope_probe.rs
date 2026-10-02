@@ -100,7 +100,9 @@ async fn run() {
     let driver = tokio::spawn(connection);
     let row = client
         .query_one(
-            "SELECT dataset_id::bytea,instance_id::bytea,pg_backend_pid() FROM control.datasets",
+            "SELECT dataset_id::bytea,instance_id::bytea,pg_backend_pid(),
+                (SELECT backend_start::text FROM pg_stat_activity WHERE pid=pg_backend_pid())
+             FROM control.datasets",
             &[],
         )
         .await
@@ -174,7 +176,15 @@ async fn run() {
     }
     let (mut owner, policy) = acquired.unwrap();
     if mode.starts_with("read-") {
-        reads::run(owner, driver, mode, &args[5], policy.policy_revision).await;
+        reads::run(
+            owner,
+            driver,
+            mode,
+            &args[5],
+            policy.policy_revision,
+            (row.get(2), row.get(3)),
+        )
+        .await;
         return;
     }
     if mode.starts_with("fault-") {

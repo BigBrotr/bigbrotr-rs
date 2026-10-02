@@ -28117,6 +28117,57 @@
           "full_page_writes": "on",
           "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
         }
+      },
+      "current_source_metadata": {
+        "status": "4a98c5d actual-engine RED observed; product implementation in progress",
+        "local_evidence": ".research/implementation/acquisition-source-read-20261002",
+        "resources": {
+          "source": "4a98c5d5e8ca4d66de99c400ded6c0c457908333",
+          "tree": "76e890c78e62bba7b9d1039eb1f24ef138e865a7",
+          "owner": "5fddb6a51f70619d1bc26c298dffe2ab",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-4a98c5d",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "5d1a62867f82e30a6b0c546da4be802c1201d411bbab74010c1f057b8d1641a6"
+            },
+            {
+              "name": "native",
+              "id": "2eb50768fc1375df7fa43eaf6fe36b68761b01fb5437e65e46e0fa83539a1633"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-02T03:48:49.318449+00:00",
+          "qualification": "PASS_ACQUISITION_SCOPE_READ_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 54132285440,
+          "finished_at": "2026-10-02T03:49:48.810234+00:00"
+        },
+        "engine": {
+          "owner": "dd0c7a82a1f8eab888ceea1566541111",
+          "label": "org.bigbrotr.acquisition-scope-read",
+          "client": {
+            "id": "d5071a6e652217e5c36832b367f458f4ae880a4ba9ec9eeb91d5cb612b56d7ef",
+            "name": "bigbrotr-acquisition-scope-read-4a98c5d"
+          },
+          "databases": [
+            "bb_scope_read_4a98c5d_source_valid"
+          ],
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "status": "FAIL",
+          "failure": "RuntimeError: actual-reader-source_valid",
+          "started_at": "2026-10-02T03:50:44.021834+00:00",
+          "finished_at": "2026-10-02T03:50:47.039409+00:00",
+          "free_bytes_after": 54158467072,
+          "cleanup_errors": [],
+          "unrelated_changed": []
+        },
+        "preserve": "Original RED result/stderr, cloned database, exact source, separately retained CLI/probe and build manifest. Existing scope/transport templates unchanged. No deletion."
       }
     },
     "acquisition_binding": {

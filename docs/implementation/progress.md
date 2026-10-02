@@ -12,15 +12,22 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main628cfd412765694a94c4789009c9d4dcd57f1943 equals origin/main (push verified).
-Dirty root-owned source-read candidate: acquisition/relay_source.rs adds a retained
-metadata value; postgres/acquisition_read.rs intentionally returns Unavailable
-for the actual-engine RED; example support/acquisition_scope_reads.rs and
-experiments/acquisition-scope/reads.py --source add eight discriminating cases.
-Contract records unqualified status. No new API is advertised or schema changed.
-Next exact-Git acquisition-scope-read build, actual --source RED, implement existing
-bounded endpoint/route decoding in a fenced rollback-only read, rerun affected
-cases. Candidate/job selector and explicit Sync integration remain afterward.
+Main4a98c5d5e8ca4d66de99c400ded6c0c457908333 is one unpublished RED
+candidate ahead of origin/main628cfd412765694a94c4789009c9d4dcd57f1943.
+Clean tree verified on resumption. The source-read build/Clippy passed on native
+Tux; actual PostgreSQL source_valid FAILED as intended: Unavailable instead of
+Capacity. Other source cases NOT_RUN. Original result/stderr/preflight retained
+under runs/acquisition-scope-read-4a98c5d/reads and local
+.research/implementation/acquisition-source-read-20261002/red/reads.
+Build owner5fddb6a51f70619d1bc26c298dffe2ab; engine ownerdd0c7a82a1f8eab888ceea1566541111,
+clientd5071a6e stopped143 and borrowed PG71775507 stopped0/noOOM, prior unchanged.
+Latest run ended03:50:47UTC with54,158,467,072B free. Mac3,322,780KiB free;
+no local Rust build. Preserve all originals, no cache deletion needed for this run.
+The current candidate implements the bounded source reader using the existing
+destination decoder and strengthens all three oracles. Native build and eight
+source cases for this GREEN candidate remain NOT_RUN; next run exact Git. Read-only reviewer identified these
+fixture gaps; no claim that source loading is qualified yet. No schema change.
+Candidate selection and explicit installed Sync integration remain afterward.
 
 Root sole writer. Initial private-scope boundary now qualified: actualf8015bc
 CLI/probe build,123 selected native tests/Clippy; nine installed lifetime/window

@@ -15,6 +15,7 @@ pub async fn run(
     mode: &str,
     expected_path: &str,
     policy: u64,
+    backend: (i32, String),
 ) {
     let expected: Value = serde_json::from_slice(&std::fs::read(expected_path).unwrap()).unwrap();
     let identity: AcquisitionScopeId = expected["scope_id"].as_str().unwrap().parse().unwrap();
@@ -44,7 +45,8 @@ pub async fn run(
         assert_eq!(budget.snapshot().active_permits(), 0);
         println!(
             "{}",
-            json!({"status":"PASS","mode":mode,"scope_id":identity})
+            json!({"status":"PASS","mode":mode,"scope_id":identity,
+                "backend_pid":backend.0,"backend_start":backend.1})
         );
         return;
     }
@@ -180,7 +182,8 @@ async fn source_read(
         .await
         .unwrap()
         .unwrap();
-    let bytes = StoredRelaySource::REQUIRED_BYTES;
+    let bytes = 128 * 1024;
+    assert_eq!(StoredRelaySource::REQUIRED_BYTES, bytes);
     if mode == "read-source-valid" {
         for (size, items) in [(bytes - 1, 1), (bytes, 0)] {
             assert_eq!(

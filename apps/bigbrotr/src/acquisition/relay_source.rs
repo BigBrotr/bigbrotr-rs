@@ -30,6 +30,20 @@ impl StoredRelaySource {
     /// Driver framing has its own separately retained connection reservation.
     pub const REQUIRED_BYTES: u64 = 128 * 1024;
 
+    pub(crate) fn new(
+        binding: RelaySourceBinding,
+        endpoint: Endpoint,
+        route: RouteSelection,
+        permit: crate::runtime::OwnedPermit,
+    ) -> Self {
+        Self {
+            binding,
+            endpoint,
+            route,
+            permit,
+        }
+    }
+
     pub fn binding(&self) -> RelaySourceBinding {
         self.binding
     }

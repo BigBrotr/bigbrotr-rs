@@ -220,7 +220,7 @@ const DESTINATION: &str = "
     WHERE e.dataset_id=$1::bytea AND e.endpoint_id=$2::bytea AND r.route_id=$3::bytea
         AND e.normalization_version=1 AND r.route_version=1";
 
-async fn load_destination(
+pub(super) async fn load_destination(
     tx: &Transaction<'_>,
     dataset: DatasetId,
     source: RelaySourceBinding,

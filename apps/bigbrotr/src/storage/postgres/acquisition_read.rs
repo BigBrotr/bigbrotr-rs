@@ -1,7 +1,11 @@
 //! Read immutable scope data; fresh work must separately recheck current authority.
 use super::{ControlSession, OwnerError, fixed, number, require, transaction_error};
 use crate::{
-    acquisition::scope::StoredAcquisitionScope, runtime::OwnedPermit,
+    acquisition::{
+        relay_source::{RelaySourceBinding, StoredRelaySource},
+        scope::StoredAcquisitionScope,
+    },
+    runtime::OwnedPermit,
     storage::postgres::initialization::application_transaction,
 };
 use bigbrotr_model::{
@@ -12,6 +16,7 @@ use bigbrotr_protocol::{
     EventLimits,
     selector::{DecodeError, decode_normalized_selector},
 };
+use std::num::NonZeroU64;
 use tokio_postgres::Row;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -45,16 +50,82 @@ const READ_SCOPE: &str = "
         ON d.dataset_id=s.dataset_id AND d.selector_id=s.selector_id
     WHERE s.dataset_id=$1::bytea AND s.scope_id=$2::bytea";
 
+const READ_SOURCE: &str = "
+    SELECT left(generation::text,21), substring(route_id FROM 1 FOR 17)
+    FROM control.relay_enrollments
+    WHERE dataset_id=$1::bytea AND endpoint_id=$2::bytea
+        AND access_scope_id=$3::bytea AND enabled";
+
 impl ControlSession {
     /// Current metadata for the exact loaded scope. No source authority is
     /// retained across this read; socket and native consumers recheck it.
     pub async fn read_acquisition_source(
         &mut self,
-        _scope: &StoredAcquisitionScope,
-        _permit: OwnedPermit,
-    ) -> Result<Option<crate::acquisition::relay_source::StoredRelaySource>, ScopeReadError> {
-        // Intentional candidate for the independent actual-engine RED fixture.
-        Err(ScopeReadError::Unavailable)
+        scope: &StoredAcquisitionScope,
+        permit: OwnedPermit,
+    ) -> Result<Option<StoredRelaySource>, ScopeReadError> {
+        if permit.request().units().data_bytes() < StoredRelaySource::REQUIRED_BYTES
+            || permit.request().units().items() == 0
+        {
+            return Err(ScopeReadError::Capacity);
+        }
+        let scope = scope.scope();
+        if scope.dataset() != self.request.dataset {
+            return Err(ScopeReadError::InvalidMetadata);
+        }
+        self.begin_operation()
+            .map_err(|_| ScopeReadError::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 4)
+            .await
+            .map_err(|error| match transaction_error(error) {
+                OwnerError::Backend => ScopeReadError::Backend,
+                _ => ScopeReadError::Prerequisite,
+            })?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| ScopeReadError::Unavailable)?;
+        let row = tx
+            .query_opt(
+                READ_SOURCE,
+                &[
+                    &&scope.dataset().as_bytes()[..],
+                    &&scope.endpoint().as_bytes()[..],
+                    &&scope.access().as_bytes()[..],
+                ],
+            )
+            .await
+            .map_err(backend)?;
+        let result = if let Some(row) = row {
+            let invalid = |_| ScopeReadError::InvalidMetadata;
+            let binding = RelaySourceBinding {
+                endpoint_id: scope.endpoint(),
+                access_scope_id: scope.access(),
+                enrollment_generation: NonZeroU64::new(number(&row, 0).map_err(invalid)?)
+                    .ok_or(ScopeReadError::InvalidMetadata)?,
+                route_id: fixed::<16>(&row, 1)
+                    .map_err(invalid)?
+                    .try_into()
+                    .map_err(|_| ScopeReadError::InvalidMetadata)?,
+            };
+            // Destination rows are immutable. A concurrent enrollment change
+            // leaves this original tuple intact; dispatch rechecks its generation.
+            let (endpoint, route) =
+                super::relay_source::load_destination(&tx, self.request.dataset, binding)
+                    .await
+                    .map_err(|error| match error {
+                        OwnerError::Backend => ScopeReadError::Backend,
+                        _ => ScopeReadError::InvalidMetadata,
+                    })?;
+            Some(StoredRelaySource::new(binding, endpoint, route, permit))
+        } else {
+            None
+        };
+        tx.rollback().await.map_err(backend)?;
+        if self.client.is_closed() {
+            return Err(ScopeReadError::Unavailable);
+        }
+        self.available = true;
+        Ok(result)
     }
 
     /// Load historical or current intent without making it current authority.
