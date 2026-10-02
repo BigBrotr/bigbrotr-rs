@@ -521,8 +521,10 @@ revision1/unowned/checkpoint0 and queued revision2/checkpoint0 under the same
 Control tuple may be nominated. Actual claim remains authoritative for policy,
 source, original duration and current actor permission. Known claim refusals
 advance the cursor; uncertain COMMIT or poisoned custody stops execution.
-This candidate is unqualified until actual engine verification. Empty, sparse,
-maximum-ordinal, late admission and cancellation fixtures are data-loading tests;
+The [0b64181 nomination supplement](../implementation/evidence/p03-acquisition-scope-read-native-20260928.json)
+qualifies four actual PostgreSQL cases with all67 tables and complete Control
+metadata checked. Empty, sparse, maximum-ordinal, late admission and cancellation
+fixtures are data-loading tests;
 clone-only scheduling metadata does not qualify acceptance or installed dispatch.
 
 ## Job-bound source and event effects (implementation in progress)

@@ -12,20 +12,39 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Maineb96e7412fbfd2bd6922f15dd2c81da800661a84 is one unpublished RED
-candidate ahead of origin/mainf705055f27875828ee5a2c17c0badfe4721aef65.
-Root-owned GREEN candidate now implements nomination in acquisition_claims.rs;
-reads.py fixes baseline preservation and non-monotone job-ID/time oracles. Exact
-eb96e74 native build/Clippy PASS. Actual candidates_sparse RED failed with
-Unavailable instead of Capacity; controller records missing-probe-event because
-the assertion precedes its barrier. Other candidate cases NOT_RUN.
-runs/acquisition-scope-read-eb96e74 buildPID1755270/start429681234,
-enginePID1757938/start429689701; terminal result stopped both PG/client, cleanup
-empty. Original .research/implementation/acquisition-source-read-20261002/candidate-red.
-Next: commit/transfer GREEN, run all four actual candidate cases. Materialized32
-admission batch plus correlated job-key lookup; no physical I/O or capacity claim.
-The fixture deliberately seeds scheduling metadata. Actual expired-claim→next-valid
-consumption remains required in the immediately following installed dispatcher.
+Main0b641815d6024cf41b436080e0e9efb3de05e2dd is three unpublished coherent
+commits ahead of origin/mainf705055f27875828ee5a2c17c0badfe4721aef65.
+Root-owned docs changes now close bounded candidate nomination. Native build,
+selector tests and Clippy PASS; all four actual PostgreSQL cases PASS. Sparse
+32-excluded prefix/adjacent candidates/same-owner versus foreign tuples, late67
+outside cut66 then next pass, empty, u64max and actual blocked-query cancellation.
+All67 tables and complete original60s owner metadata checked;1669 Git files and42
+captures verified. Read-only review corrected two oracle gaps before GREEN. No new
+schema/queue/trait; ephemeral cursor is not coverage. Physical I/O/capacity unclaimed.
+Originaleb96 RED fails Unavailable instead of Capacity before barrier;83d076d build
+passes but engines NOT_RUN because timestamp fixture was strengthened before launch.
+
+runs/acquisition-scope-read-0b64181 STOPPED/RETAINED: buildPID1765898/start429724139,
+enginePID1768262/start429732105;engine ownerb4bc19292f7eac84603a89cc3a27ee87,
+client4d6a2462 stopped143/PG71775507 stopped0/noOOM. Audit04:25:43UTC:1081 prior
+unchanged,eight unrelated,compiler lock released,53,490,069,504B free. All exact
+identities in inventory acquisition_scope_read.candidate_nomination; original
+.research/implementation/acquisition-source-read-20261002/{candidate-red,candidate-native,candidate-final}.
+Mac3,297,264KiB available; no local Rust build. No new cache or dataset deletion.
+
+Next user-visible work: actual installed signed/forged/duplicate socket→same-owner
+admission, P03-T01 Steps3/4 and P03-T02, then M1 archive/read/export/restart. Connect
+explicit control,ingest,sync to the living initial owner and native store; preserve
+acceptance-only control,ingest. Candidate/read prerequisites are now available.
+Read entire initial_ingest.rs and commands.rs; top-level serve role dispatch; exact
+source/claim/domain/nomination owners. Remaining next reads: full concrete arrival
+consumer/session and dictionary preparation callers, then define actual installed
+fixture before code. Independent reviewer is auditing those integration boundaries.
+Keep renewal due across bounded steps and leave cleanup before hard source timeout;
+quiet read must not routinely poison Control. First observation request3/event4
+needs four slots and retained grants; don't appendAlreadyDurable on every poll.
+Consumer acceptance must include older refused job followed by valid work and
+source change before socket. No Archive/Discovery/Monitor completion prerequisite.
 
 The previous boundary closes the bounded source-metadata reader, not M1.
 Exact native build/selector tests/Clippy PASS; eight actual PostgreSQL cases PASS.

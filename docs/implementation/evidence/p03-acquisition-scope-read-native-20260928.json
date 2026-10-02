@@ -361,5 +361,178 @@
       "Capacity/RSS or aged/mixed-workload claim",
       "Native arm64 or release"
     ]
+  },
+  "candidate_nomination": {
+    "status": "PASS_SCOPED_ACQUISITION_READ",
+    "source": "0b641815d6024cf41b436080e0e9efb3de05e2dd",
+    "tree": "e8f607fe8743722c327defc365f986e1331382a6",
+    "scope": "Read-only nomination from a fixed committed admission pass. Clone-only scheduling rows test selection; no acceptance, current execution authority, installed dispatch, capacity or recovery claim.",
+    "source_manifest_sha256": "2635ef806997b937b26738a981c823e0376d1ada53ac7b65f0137b8ee58d21b0",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "artifacts_sha256": {
+      "bigbrotr": "8bdc4753966c60daa4c1ca6fd98b4dd630d857770541cbbee1b2f96af23b288e",
+      "acquisition_scope_probe": "a887f350cca868f3780eeb6f316978b6186afda80f6ff6ed87688e049ae29dcd"
+    },
+    "native_checks": [
+      {
+        "name": "compile",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "acquisition_scope_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 48.38432762864977
+      },
+      {
+        "name": "selector",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-protocol",
+          "--test",
+          "selector"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.11403639521449804
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "acquisition_scope_probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.9205294977873564
+      }
+    ],
+    "cases": [
+      {
+        "name": "candidates_sparse",
+        "status": "PASS",
+        "lock_barrier": null
+      },
+      {
+        "name": "candidates_empty",
+        "status": "PASS",
+        "lock_barrier": null
+      },
+      {
+        "name": "candidates_max",
+        "status": "PASS",
+        "lock_barrier": null
+      },
+      {
+        "name": "candidates_cancel",
+        "status": "PASS",
+        "lock_barrier": {
+          "pid": 989,
+          "backend_start": "2026-10-02 04:24:38.147673+00",
+          "blockers": [
+            981
+          ],
+          "holder_start": "2026-10-02 04:24:38.02042+00",
+          "waiting_locks": [
+            {
+              "type": "relation",
+              "mode": "AccessShareLock",
+              "relation": "control.jobs"
+            }
+          ]
+        }
+      }
+    ],
+    "checks": [
+      "First32 ineligible admissions produce continuation, not end. Adjacent accepted33/34 and same-owner queued35 are nominated without skipping.",
+      "Foreign epoch/incarnation/resource, running state, legacy protocol, changed revision/checkpoint are excluded.",
+      "Late ordinal67 is excluded from cut66 and appears at the end of the next pass; job IDs and timestamps differ from admission order.",
+      "Empty pass and u64 maximum ordinal terminate without increment overflow; completed/invalid cursors refuse before coordination.",
+      "Independent64KiB/one-item requirement refuses identical insufficient retries without poisoning; temporary query credit is released.",
+      "Actual jobs AccessShareLock wait is observed before cancellation; same-owner reuse unavailable and actual driver joined.",
+      "All67 tables/prior rows/xmin preserved around reads; complete original60s claim/release metadata and literal external job67 insertion are checked."
+    ],
+    "original_outcomes": {
+      "eb96e74": "Native build/Clippy PASS; actual sparse RED Unavailable instead of Capacity. Controller failed missing-probe-event because assertion preceded barrier; later cases NOT_RUN. Original logs/clone retained.",
+      "83d076d": "Native build/Clippy PASS. No engine run: final fixture adjustment makes timestamps non-monotone before engine verification."
+    },
+    "review": {
+      "status": "PASS_CAPTURE_REVIEW_ONLY",
+      "source": "0b641815d6024cf41b436080e0e9efb3de05e2dd",
+      "cases": 4,
+      "source_files": 1669,
+      "capture_files": 42,
+      "checks": [
+        "All67 tables and complete permitted Control claim/release metadata",
+        "Original rows/xmin preserved across literal late admission",
+        "Non-monotone IDs and timestamps discriminate forward ID/both clock sorts",
+        "Actual jobs lock cancellation and driver join"
+      ]
+    },
+    "ai_review": "Read-only review of complete owning method/domain/probe/controller and contracts. Corrected baseline adoption that could hide writes, then distinct ID/time ordering. No remaining concrete product blocker; no reviewer engine execution.",
+    "dependency_evidence": [
+      "https://www.postgresql.org/docs/16/queries-with.html#QUERIES-WITH-CTE-MATERIALIZATION",
+      "https://www.postgresql.org/docs/16/indexes-ordering.html"
+    ],
+    "query_limit": "MATERIALIZED separates the32-row batch from eligibility. Existing B-tree supports admission order and jobs primary-key lookups. This is a logical candidate/response bound, not a measured physical I/O, aged-state or capacity bound; caller retains deadline/cancellation ownership.",
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-02T04:25:43.043556+00:00",
+      "source": "0b641815d6024cf41b436080e0e9efb3de05e2dd",
+      "owned_stopped": [
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "exit": 0
+        },
+        {
+          "id": "4d6a246248d9b28c7ec3cfe08039a3af6841aa61ddf7e168aa0f0c4b756909bc",
+          "exit": 143
+        }
+      ],
+      "prior_unchanged": 1081,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "artifact_hashes_verified": true,
+      "source_files": 1669,
+      "captured_files": 42,
+      "free_bytes": 53490069504
+    },
+    "local_evidence": ".research/implementation/acquisition-source-read-20261002/candidate-final",
+    "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-0b64181",
+    "not_qualified": [
+      "Actual expired/refused claim followed by valid installed work",
+      "Installed finite dispatch and scientific progress",
+      "Aged/mixed load, native arm64 or release"
+    ]
   }
 }

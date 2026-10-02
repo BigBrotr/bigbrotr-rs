@@ -28257,6 +28257,198 @@
           "captured_files": 51,
           "free_bytes": 53918429184
         }
+      },
+      "candidate_nomination": {
+        "status": "0b64181 four actual nomination cases PASS; stopped-retained",
+        "local_evidence": ".research/implementation/acquisition-source-read-20261002",
+        "preserve": "Exact source, build artifacts, original RED clone/logs, all current candidate clones and SQL captures. Shared compiler cache only; no new cache copies or deletions. No engine run at83d076d.",
+        "red": {
+          "resources": {
+            "source": "eb96e7412fbfd2bd6922f15dd2c81da800661a84",
+            "tree": "38b8d120292d537ed4e32f0e7b89110620d4371c",
+            "owner": "f8b13346eb25f0ecfdb07f4152abaa2d",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-eb96e74",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "5f2efc5033493e1fe4abf5db160038d482326977b403258b71716e101ea04e90"
+              },
+              {
+                "name": "native",
+                "id": "0547f7ec7648345898797d262780ff1a13c891f3093e52cdd1bf99c530ff6850"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-02T04:15:58.856581+00:00",
+            "qualification": "PASS_ACQUISITION_SCOPE_READ_BUILD_ONLY",
+            "inventory_changed": [],
+            "free_bytes_after": 53799710720,
+            "finished_at": "2026-10-02T04:16:59.244543+00:00"
+          },
+          "launch": {
+            "source": "eb96e7412fbfd2bd6922f15dd2c81da800661a84",
+            "tree": "38b8d120292d537ed4e32f0e7b89110620d4371c",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-eb96e74",
+            "pid": 1755270,
+            "start_ticks": "429681234",
+            "bundle_sha256": "b0cef3abc1883b12ac353deddb90558dfbdc3d343803a9afc260510a2478c872"
+          },
+          "engine_launch": {
+            "source": "eb96e7412fbfd2bd6922f15dd2c81da800661a84",
+            "tree": "38b8d120292d537ed4e32f0e7b89110620d4371c",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-eb96e74",
+            "pid": 1757938,
+            "start_ticks": "429689701"
+          },
+          "engine": {
+            "source": "eb96e7412fbfd2bd6922f15dd2c81da800661a84",
+            "owner": "08ec04cd85b98fa0446670574a5b995e",
+            "label": "org.bigbrotr.acquisition-scope-read",
+            "client": {
+              "id": "99204a0bf2bd238551047d8a63ffc97d398fb854f1826cfb326715cffd5fdf0b",
+              "name": "bigbrotr-acquisition-scope-read-eb96e74"
+            },
+            "databases": [
+              "bb_scope_read_eb96e74_candidates_sparse"
+            ],
+            "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "status": "FAIL",
+            "started_at": "2026-10-02T04:17:23.509483+00:00",
+            "finished_at": "2026-10-02T04:17:31.236253+00:00",
+            "cleanup_errors": [],
+            "unrelated_changed": [],
+            "free_bytes_after": 53790941184
+          }
+        },
+        "intermediate": {
+          "resources": {
+            "source": "83d076d06a6ccbeefb8f1662cf8a48cf8f5b3555",
+            "tree": "697b11fec5fc2c2bdfa95ca2ddc2b3fa494a140e",
+            "owner": "2ff5f649b94a8b443de3851372239b92",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-83d076d",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "3d8dea3af376211cb036406fe118a21c5c7613dc26d478576d440a2b8f35f913"
+              },
+              {
+                "name": "native",
+                "id": "6af695f690cb674c84501a9e92b7815038d9c7476eaf346b5559e5d93eb08053"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-02T04:21:14.585480+00:00",
+            "qualification": "PASS_ACQUISITION_SCOPE_READ_BUILD_ONLY",
+            "inventory_changed": [],
+            "free_bytes_after": 53672624128,
+            "finished_at": "2026-10-02T04:22:14.997430+00:00"
+          },
+          "launch": {
+            "source": "83d076d06a6ccbeefb8f1662cf8a48cf8f5b3555",
+            "tree": "697b11fec5fc2c2bdfa95ca2ddc2b3fa494a140e",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-83d076d",
+            "pid": 1762996,
+            "start_ticks": "429712809",
+            "bundle_sha256": "429dbf1ce3a74aeb395d3522703c348c023b3a2a25f2c55542d94550291fd6be"
+          }
+        },
+        "qualified": {
+          "resources": {
+            "source": "0b641815d6024cf41b436080e0e9efb3de05e2dd",
+            "tree": "e8f607fe8743722c327defc365f986e1331382a6",
+            "owner": "9ffd61fa5c6fdcdd168020db1b6261ca",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-0b64181",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "1d50c4bde6c40f5959c1169ecd36464b2217ef6453505c5c5f5e18381fab8511"
+              },
+              {
+                "name": "native",
+                "id": "9e776b6804ad61141991a6ffe4f46dc0d39554522132c0678a61d7bead6c3547"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-02T04:23:07.885600+00:00",
+            "qualification": "PASS_ACQUISITION_SCOPE_READ_BUILD_ONLY",
+            "inventory_changed": [],
+            "free_bytes_after": 53554487296,
+            "finished_at": "2026-10-02T04:24:02.311923+00:00"
+          },
+          "launch": {
+            "source": "0b641815d6024cf41b436080e0e9efb3de05e2dd",
+            "tree": "e8f607fe8743722c327defc365f986e1331382a6",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-0b64181",
+            "pid": 1765898,
+            "start_ticks": "429724139",
+            "bundle_sha256": "e5efb547207ee88972a10a5d042fd2ca755f0f83494275d3a57ee56b6c2fb64f"
+          },
+          "engine_launch": {
+            "source": "0b641815d6024cf41b436080e0e9efb3de05e2dd",
+            "tree": "e8f607fe8743722c327defc365f986e1331382a6",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/acquisition-scope-read-0b64181",
+            "pid": 1768262,
+            "start_ticks": "429732105"
+          },
+          "engine": {
+            "source": "0b641815d6024cf41b436080e0e9efb3de05e2dd",
+            "owner": "b4bc19292f7eac84603a89cc3a27ee87",
+            "label": "org.bigbrotr.acquisition-scope-read",
+            "client": {
+              "id": "4d6a246248d9b28c7ec3cfe08039a3af6841aa61ddf7e168aa0f0c4b756909bc",
+              "name": "bigbrotr-acquisition-scope-read-0b64181"
+            },
+            "databases": [
+              "bb_scope_read_0b64181_candidates_sparse",
+              "bb_scope_read_0b64181_candidates_empty",
+              "bb_scope_read_0b64181_candidates_max",
+              "bb_scope_read_0b64181_candidates_cancel"
+            ],
+            "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+            "status": "PASS_SCOPED_ACQUISITION_READ",
+            "started_at": "2026-10-02T04:24:27.535895+00:00",
+            "finished_at": "2026-10-02T04:24:43.324960+00:00",
+            "cleanup_errors": [],
+            "unrelated_changed": [],
+            "free_bytes_after": 53490081792
+          }
+        },
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T04:25:43.043556+00:00",
+          "source": "0b641815d6024cf41b436080e0e9efb3de05e2dd",
+          "owned_stopped": [
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            },
+            {
+              "id": "4d6a246248d9b28c7ec3cfe08039a3af6841aa61ddf7e168aa0f0c4b756909bc",
+              "exit": 143
+            }
+          ],
+          "prior_unchanged": 1081,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "artifact_hashes_verified": true,
+          "source_files": 1669,
+          "captured_files": 42,
+          "free_bytes": 53490069504
+        }
       }
     },
     "acquisition_binding": {
