@@ -19,7 +19,7 @@ bootstrap = importlib.util.module_from_spec(spec)
 sys.modules['bootstrap_oracle'] = bootstrap
 spec.loader.exec_module(bootstrap)
 from installed_sync_oracle import decode, expected
-from installed_sync_client import no_connections, read_frame, refusal_frames, relay_listener
+from installed_sync_client import REFUSED_VISIBILITIES, no_connections, read_frame, refusal_frames, relay_listener
 
 files = [*Path(__file__).parent.glob('installed_sync*.py'), Path(__file__).with_name('installed_client.py'),
     Path(__file__).with_name('session_client.py'), SOURCE/'experiments/acquisition-scope/bindings.py']
@@ -39,6 +39,18 @@ state = dict(datasets=[dict(dataset_id='\\x'+'01'*16)], owner_epochs=[dict(role=
 public = dict(dataset_id='01'*16, dictionary_kind=4, allocation_domain='14'*16, ordinal='1')
 report = dict(owner_resource_id='02'*16, producer_slot_id='04'*16, recovery_generation='05'*16,
     topology_generation='0', dictionary_count=3, public_scope=public, private_scope=dict(public, ordinal='3'))
+# The focused refusal cases select either an absent identity or the original
+# private descriptor whose fact has a public envelope. Never relabel private2.
+bootstrap_rows, _, bootstrap_facts = bootstrap.expected(bytes.fromhex('01'*16), True,
+    domain=bytes.fromhex('14'*16))
+fact = decode(bootstrap_facts[1].split(b'\0', 1)[1])
+assert fact[3] == [bytes.fromhex('01'*16), 4, bytes.fromhex('14'*16), 1]
+assert fact[5] == [[bytes.fromhex('01'*16), 4, bytes.fromhex('14'*16), 2],
+    1, 'visibility', 1, {'class': 'private'}]
+assert {int.from_bytes(key[-8:], 'big') for cf, key, _ in bootstrap_rows
+    if cf == 'default' and key.startswith(b'\x01\x04')} == {1, 2}
+assert REFUSED_VISIBILITIES == {'sync-public-visibility': 1, 'sync-absent-visibility': 99,
+    'sync-bootstrap-private-visibility': 2}
 event = json.loads((SOURCE/'tests/fixtures/ingest/import-event.jsonl').read_text())
 selector_artifact = (SOURCE/'tests/fixtures/acquisition/selector-events.json').read_bytes()
 original_event = json.dumps(event, sort_keys=True)
@@ -158,4 +170,5 @@ print(json.dumps(dict(status='PASS_FIXTURE_ONLY', ast_files=len(files), embedded
     malformed_cbor_cases=len(malformed), websocket_cases=5, no_dial_observer_cases=2,
     peer_refusal_sequence_cases=2,
     sequential_listener_cases=3, live_listener_conflicts=2,
+    focused_visibility_cases=2,
     not_run=['actual CLI', 'PostgreSQL', 'RocksDB', 'product WebSocket', 'renewal', 'signal shutdown'])))

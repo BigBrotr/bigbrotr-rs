@@ -16,10 +16,12 @@ from registrations import upgrade as upgrade_registry
 from scopes import upgrade as upgrade_scopes
 from initial_jobs import released, unchanged, validate_job
 from installed_sync_oracle import ENDPOINT, SIGNED_SHA256, decode, expected
+from installed_sync_client import REFUSED_VISIBILITIES
 
 EVENT_CASES = ('sync-signed', 'sync-peer-refusals')
 CASES = ['sync-signed', 'sync-quiet', 'sync-function', 'sync-lock', 'sync-public-visibility',
     'sync-source-function', 'sync-scope-function', 'sync-change-read', 'sync-peer-refusals']
+VISIBILITY_CASES = ['sync-absent-visibility', 'sync-bootstrap-private-visibility']
 SOURCE = Path(__file__).resolve().parents[2]
 EXECUTION = 'control.require_acquisition_execution(bytea,bytea,bytea,bytea,bytea)'
 BOOTSTRAP = {'datasets', 'owner_epochs', 'role_instances', 'topology_generations', 'topology_streams',
@@ -45,9 +47,10 @@ def validate_queued(state, observations):
     validate_job(accepted, receipt)
 
 
-def validate_source(state, report, observations, *, public=False):
-    visibility = report['public_scope' if public else 'private_scope']
-    ordinal = 1 if public else 3
+def validate_source(state, report, observations, *, ordinal=3):
+    assert ordinal in (1, 2, 3, 99)
+    visibility = dict(report['public_scope'], ordinal=str(ordinal))
+    assert report['private_scope'] == dict(report['public_scope'], ordinal='3')
     assert visibility['ordinal'] == str(ordinal)
     dataset = state['datasets'][0]['dataset_id']
     endpoint, = state['relay_endpoints']; access, = state['relay_access_contexts']
@@ -247,8 +250,9 @@ while True:
 
 
 def run(pg, client, output, database, name, rows):
-    assert name in CASES
-    visibility_refusal = name == 'sync-public-visibility'
+    assert name in CASES + VISIBILITY_CASES
+    visibility_refusal = name in REFUSED_VISIBILITIES
+    visibility_ordinal = REFUSED_VISIBILITIES.get(name, 3)
     upgrade_registry(pg, client, output, database, name, rows)
     upgrade_scopes(pg, client, output, database, name, rows)
     lab.sql(pg, database, '''
@@ -333,7 +337,7 @@ def run(pg, client, output, database, name, rows):
     initial = rows(database); lab.write_json(output/(name+'-initialized.json'), initial)
     assert {t for t in before if before[t] != initial[t]} <= BOOTSTRAP
     original_deadline = max(r['lease_expires_at_us'] for r in initial['owner_epochs'])
-    lab.write_json(directory/'visibility.json', initialized['public_scope' if visibility_refusal else 'private_scope'])
+    lab.write_json(directory/'visibility.json', dict(initialized['public_scope'], ordinal=str(visibility_ordinal)))
     wrapper = '''import subprocess,sys,json
 from pathlib import Path
 p=Path(sys.argv[1])
@@ -364,7 +368,7 @@ finally:
         assert all(r in prepared[table] for r in initial[table])
     assert len(prepared['management_commands']) == len(initial['management_commands'])+3
     assert len(prepared['management_audit']) == len(initial['management_audit'])+4
-    validate_source(prepared, initialized, observations, public=visibility_refusal)
+    validate_source(prepared, initialized, observations, ordinal=visibility_ordinal)
     (directory/'prepared.continue').write_text('observed\n')
     observations = stage('submitted')
     wanted_count = 2 if visibility_refusal else 4 if name in EVENT_CASES else 3
@@ -402,7 +406,7 @@ finally:
     old, = prepared['producer_epochs']; new, = current['producer_epochs']
     strip = lambda r: {k: v for k, v in r.items() if k not in ('reserved_through_request', 'xmin')}
     assert strip(old) == strip(new) and old['reserved_through_request'] == 2 and new['reserved_through_request'] == wanted_count
-    validate_source(current, initialized, observations, public=visibility_refusal); validate_queued(current, observations)
+    validate_source(current, initialized, observations, ordinal=visibility_ordinal); validate_queued(current, observations)
     (directory/'submitted.continue').write_text('observed\n')
     stage('commands-finished')
     before_stop = rows(database); lab.write_json(output/(name+'-before-stop.json'), before_stop)
@@ -449,7 +453,7 @@ finally:
         from installed import native_oracle
         native_oracle(pg, client, output, database, name, after, initialized)
         native_result = dict(native_rows=17, original_requests=2, source_visibility_refused=True,
-            tcp_connections=0, monitor=monitor)
+            requested_visibility_ordinal=visibility_ordinal, tcp_connections=0, monitor=monitor)
     else:
         assert len(transcript) >= 2
         assert [t['completion'] for t in transcript[:2]] == ([
