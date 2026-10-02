@@ -33033,12 +33033,44 @@
         "capture_manifest_sha256": "00ef639ac02757bf15de8d64ebfa87dcea9ad4e229b6d57d07e5c4ccd771dff0"
       },
       "http_faults": {
-        "status": "FIXTURE_REVIEW_NATIVE_BUILD_NOT_RUN",
+        "status": "NATIVE_BUILD_PASS_ENGINE_NOT_RUN",
         "local": ".research/implementation/initial-jobs-20261002/faults",
         "scope": "Five installed finite-job COMMIT schedules; independent five effects/original deadline, fresh SQL-owner retry; no native successor",
         "compiler_cache": "runs/network-1154757/out/build",
         "native_inspector": "runs/initial-ingest-ce85c0c/out/artifacts",
-        "next": "Exact Git candidate, native helper build, then isolated engine with clean input"
+        "next": "Exact Git candidate, native helper build, then isolated engine with clean input",
+        "native_launch": {
+          "source": "66a87181cac7d6c2ca2999c2cb40ffd82712ed24",
+          "tree": "12fce8836c98578d9e40e6acdf4267e728b36c4b",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-66a8718",
+          "pid": 1566508,
+          "start_ticks": "428532989",
+          "bundle_sha256": "1280b618b717b4127f884e531354701b698cba19df91fd8bf8b5f4eb9b31dba7"
+        },
+        "native_owner": "62aae2d30a5e083a4e1f2527dcba7ec7",
+        "native_container": "cb7b9f87dfecdf34b29d261f852b6957f927121a9e494adcd503fe29723d5476",
+        "review": "Original/recovery session attribution oracle tightened before engines; finite signal bound retained",
+        "native_audit": {
+          "status": "PASS_BUILD_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T01:06:52.155116+00:00",
+          "owned_stopped": [
+            "6ede7aff228539e59629cb016754befa42243839504058d3845c54ab76d79af5",
+            "cb7b9f87dfecdf34b29d261f852b6957f927121a9e494adcd503fe29723d5476"
+          ],
+          "prior_unchanged": 1034,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "artifact_hashes_verified": true,
+          "free_bytes": 56745402368
+        },
+        "artifacts": {
+          "source": "66a87181cac7d6c2ca2999c2cb40ffd82712ed24",
+          "tree": "12fce8836c98578d9e40e6acdf4267e728b36c4b",
+          "binary_sha256": "a8a42998702d340f1946fb1ab23f7319c31db5472470fad644bedfe37ac6521b",
+          "probe_sha256": "d919dd5405bf4b9e81994fd369582954d2c154e5f39ed852c1034bfca0d47f92",
+          "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+          "source_manifest_sha256": "66a7dc3014b014d1c49920d5d775ac3817edbb566697e9fe3c8bed92476b74ed"
+        }
       }
     }
   },

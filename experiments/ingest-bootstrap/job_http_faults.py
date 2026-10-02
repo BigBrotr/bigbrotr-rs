@@ -52,6 +52,9 @@ def receipt(state, ready):
     expected = dict(format='bigbrotr-job-acceptance/1',job_id=job['job_id'][2:],command_key='31'*16,
         accepted_at_us=str(command['accepted_at_us']),created=True,execution='unobserved',authority='acceptance-only')
     validate_job(state, expected, key='31'*16)
+    detail, = state['acquisition_jobs']
+    session, = [r for r in state['browser_sessions'] if r['session_id']==detail['session_id']]
+    assert session['expires_at_us'] == ready['session_expires']
     assert len({state[t][0]['xmin'] for t in ('jobs','acquisition_jobs','job_admissions')} |
         {command['xmin'], next(r['xmin'] for r in state['management_audit'] if r['audit_id']==command['audit_id'])}) == 1
     # The helper's typed receipt omits only HTTP presentation fields.

@@ -12,21 +12,29 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main/origin762c994; root sole writer. Root-owned new HTTP job fault fixtures and
-finite SQL helper extension are dirty. Product core remains ce85c0c unchanged.
-Shared finite wire schedule now selects job COMMIT12 after actual login, URL,
-enrollment and scope setup; positive server marker identifies the intended cut.
-Expected five effects are independent literal job/digest/session/deadline fields.
-New helper decodes the original finite command and fresh owner retries exactly;
-no native successor/adoption. Native build is required only for this helper;
-no local build. Reuse qualified ce85c0c native inspector with full source-diff gate.
-Mac Python3.14 eight HTTP-oracle tests and four retained acceptance/release
-captures PASS; fmt/syntax/artifacts PASS. An initial systemPython3.9 run exposed
-a fixture read/readinto difference and old keyword calls; corrected calls run
-with documented3.14. No new engine evidence yet. Read-only review is in progress.
-Next: exact-Git candidate/native helper build on Tux using the exclusively locked
-1154757 cache, then five installed job COMMIT cases and affected shared-fixture
-regressions. Preserve original outcomes and record actual terminal audits.
+Main native candidate66a87181cac7d6c2ca2999c2cb40ffd82712ed24,
+tree12fce8836c98578d9e40e6acdf4267e728b36c4b; origin762c994; root sole writer.
+Root-owned Python oracle correction + checkpoint/inventory are dirty. Native helper
+build PASS/STOPPED under runs/relay-registration-faults-66a8718, PID1566508/start428532989,
+owner62aae2d30a5e083a4e1f2527dcba7ec7; fetch6ede7aff/nativecb7b9f87 stopped0/noOOM.
+Audit2026-10-02T01:06:52.155116UTC verifies1034 prior projections unchanged,
+eight unrelated running, compiler lock released and56,745,402,368B free.
+Exact source release build48.50s/Clippy4.37s PASS; engine NOT_RUN.
+Core product remains ce85c0c; only fixture Rust helper changed. No local build.
+Five installed job fault cases reuse finite proxy/custody schedule, target marked
+COMMIT12 after actual login/URL/enrollment/scope. All five job effects/original
+120s deadline use literal independent validation. The extracted checker also
+serves existing first-wave captures. No native successor/adoption claim.
+Read-only review caught missing original-versus-recovery session binding;
+Python receipt now checks the independently observed session expiry/actor/dataset.
+Synthetic wrong-session/deadline/ordinal/extra-write controls and four original
+acceptance/release captures PASS. Python3.14 eight HTTP-oracle checks/fmt/syntax/
+artifact checks PASS. First systemPython3.9 harness run failed for read/readinto
+and old keyword calls; preserved separately, no engine outcome inferred.
+Read-only reviewer rechecked the correction and found no remaining bounded
+blocker. Next: commit Python successor, then exact-Git five-job engine plus
+affected shared-fixture regression on Tux. No active engine/build.
+Original ce85c0c native inspector remains separately retained and hash/source-gated.
 
 Compatibility run runs/job-status-compat-de7347d is STOPPED/RETAINED:
 PID1558991/start428452303, owner5b0fcc0dca17226bfb649de3b2185974,
