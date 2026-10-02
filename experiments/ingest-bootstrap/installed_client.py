@@ -8,9 +8,11 @@ import subprocess
 import sys
 import time
 
-assert len(sys.argv) in (3, 4) and (len(sys.argv)==3 or sys.argv[3]=='control')
+assert len(sys.argv) in (3, 4) and (len(sys.argv)==3 or sys.argv[3] in ('control', 'sync'))
 config, prefix = map(Path, sys.argv[1:3])
-roles = ['--roles','control'] if len(sys.argv)==4 else ['--initialize-ingest','--roles','control,ingest']
+mode = sys.argv[3] if len(sys.argv)==4 else 'initial'
+roles = ['--roles','control'] if mode=='control' else [
+    '--initialize-ingest','--roles','control,ingest,sync' if mode=='sync' else 'control,ingest']
 assert config.is_absolute() and prefix.is_absolute()
 
 

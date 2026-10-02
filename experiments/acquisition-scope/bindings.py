@@ -53,8 +53,9 @@ registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrat
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
 enrollment_http = enrollment_functions or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-enrollments')
 sessions = session_hash or session_faults or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions')
+installed_sync = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync'
 initial_ingest = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest'
-installed = jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
+installed = installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
 execution = len(sys.argv) == 3 and sys.argv[2] == '--execution'
@@ -64,7 +65,7 @@ dictionary_faults = len(sys.argv) in (3, 4) and sys.argv[2] == '--dictionary-fau
 assert len(sys.argv) == 2 or registration_faults or guards or refusals or policy or lease or installed or interruptions or commits or execution or observation or socket or dictionary_faults
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
-reuse_build = registration_faults or guards or interruptions or commits or ((initial_ingest or observation or socket or dictionary_faults or sessions or enrollment_http or registration_http or scope_http or jobs_http) and len(sys.argv) == 4)
+reuse_build = registration_faults or guards or interruptions or commits or ((installed_sync or initial_ingest or observation or socket or dictionary_faults or sessions or enrollment_http or registration_http or scope_http or jobs_http) and len(sys.argv) == 4)
 build = Path(sys.argv[3]).resolve(strict=True) if reuse_build else root / 'out/artifacts'
 built = json.loads((build / 'build-result.json').read_text())
 assert built['probe_name'] == ('relay_registration_fault_probe' if registration_faults else 'ingest_bootstrap_probe')
@@ -113,6 +114,15 @@ report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=bu
 if installed:
     report['not_run'] = ['native syscall/close delay and worker panic', 'lost/delayed COMMIT and cancellation lock schedules',
         'crash-resumable initialization/successor', 'installed acquisition/M1', 'capacity/load/aged-state', 'arm64/release']
+
+if installed_sync:
+    report['wave'] = 'installed-finite-sync'
+    report['not_run'] = ['older naturally expired accepted job followed by valid work',
+        'source change before socket', 'missing migration execution refusal',
+        'absence of physical WAL appends for redundant native writes',
+        'lost/delayed COMMIT and cancellation lock schedules',
+        'durable EOSE/progress, restart/archive/read/export/M1',
+        'capacity/load/aged-state', 'arm64/release']
 
 if sessions:
     report['not_run'] = ['session listener during blocked native close', 'late/delayed renewal and disconnected clients',
@@ -517,6 +527,8 @@ def run_case(name):
 
 
 success_status = 'PASS_INITIAL_SESSION_HASH_CASE' if session_hash else 'PASS_INITIAL_SESSION_FIRST_WAVE' if sessions else 'PASS_SOCKET_ARRIVAL_FIRST_WAVE' if socket else 'PASS_COMMITTED_OBSERVATION_FIRST_WAVE' if observation else 'PASS_ACQUISITION_EXECUTION_FIRST_WAVE' if execution else 'PASS_INITIAL_INGEST_COMMIT_WAVE' if commits else 'PASS_INITIAL_INGEST_INTERRUPTION_WAVE' if interruptions else 'PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE' if installed else 'PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'
+if installed_sync:
+    success_status = 'PASS_INSTALLED_FINITE_SYNC_FIRST_WAVE'
 if session_faults:
     success_status = 'PASS_INITIAL_SESSION_FAULT_WAVE'
 if enrollment_http:
@@ -683,6 +695,10 @@ try:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from control_status import CASES
         cases = list(CASES)
+    elif installed_sync:
+        sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+        from installed_sync import CASES
+        cases = list(CASES)
     elif jobs_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from initial_jobs import ACTOR_CASES, CASES, EXPIRY_CASES
@@ -742,7 +758,9 @@ try:
             save()
         elif installed:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-            if export_status:
+            if installed_sync:
+                from installed_sync import run as run_installed
+            elif export_status:
                 from control_status import run as run_installed
             elif jobs_http:
                 from initial_jobs import run as run_installed
@@ -815,6 +833,10 @@ try:
             rows=rows(registration_basis), physical=physical(registration_basis))
         lab.write_json(output / 'registration-basis-after.json', final_original)
         require(final_original == registration_original, 'retained-enrollment-original-changed')
+    if installed_sync:
+        require({r['name'] for r in report['cases']} == set(CASES)
+            and len(report['cases']) == len(CASES)
+            and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
     report['status'] = success_status
 except BaseException as error:
     report.update(status='FAIL', failure=type(error).__name__ + ': ' + str(error))
