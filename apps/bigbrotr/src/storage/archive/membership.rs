@@ -87,7 +87,7 @@ impl Preparation<'_> {
             .start_with_custody(
                 "inspect-membership",
                 &[self.limits.max_records.to_string(), max_facts.to_string()],
-                budget,
+                super::WorkerBudgets::combined(budget),
                 None,
                 tls,
             )

@@ -8,7 +8,7 @@ use bigbrotr::{
         archive::{
             ArtifactIdentity, CatalogReaderCredentials, CatalogRoute, CatalogTls, LocalAttempt,
             LocalCoordinator, Preparation, PreparationLimits, PublicationError, ReceiptError,
-            ReceiptObservation, RetainedInputs, WorkerInstallation,
+            ReceiptObservation, RetainedInputs, WorkerBudgets, WorkerInstallation,
         },
         postgres::{
             activation::{ActivationRequest, activate_initial},
@@ -640,17 +640,21 @@ async fn run(
             let copied_database = database.clone();
             // Keep the actual spawning thread alive through positive child reap.
             // Control's connection driver remains runnable during native work.
-            let child =
-                tokio::task::spawn_blocking(move || {
-                    let route = CatalogRoute {
-                        address: "127.0.0.1".parse().unwrap(),
-                        port,
-                        database: &copied_database,
-                        tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
-                    };
-                    preparation(&copied_installation, &temp, &AtomicBool::new(false))
-                        .publish_pending(&pending, writer, custody, &route, &copied_budget)
-                });
+            let child = tokio::task::spawn_blocking(move || {
+                let route = CatalogRoute {
+                    address: "127.0.0.1".parse().unwrap(),
+                    port,
+                    database: &copied_database,
+                    tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+                };
+                preparation(&copied_installation, &temp, &AtomicBool::new(false)).publish_pending(
+                    &pending,
+                    writer,
+                    custody,
+                    &route,
+                    WorkerBudgets::combined(&copied_budget),
+                )
+            });
             barrier(&home.join("activate"), 15).await;
             let next_custody =
                 LocalAttempt::create(&custody_root, &next_receipt, &identity).unwrap();
@@ -672,7 +676,7 @@ async fn run(
                 writer,
                 custody,
                 &route,
-                &worker_budget,
+                WorkerBudgets::combined(&worker_budget),
             )
         };
         let success = ordinal == 2

@@ -1,14 +1,11 @@
 //! Consuming fresh credential handoff to one supervised finite publisher.
-use super::{LocalAttempt, Preparation, PreparationError, ProcessError};
-use crate::{
-    runtime::ResourceBudget,
-    storage::{
-        postgres::{
-            catalog_guard::{CatalogIdentity, FreshWriter},
-            connection_settings::PlaintextBoundary,
-        },
-        rocks::store::PendingBatch,
+use super::{LocalAttempt, Preparation, PreparationError, ProcessError, WorkerBudgets};
+use crate::storage::{
+    postgres::{
+        catalog_guard::{CatalogIdentity, FreshWriter},
+        connection_settings::PlaintextBoundary,
     },
+    rocks::store::PendingBatch,
 };
 use bigbrotr_model::{ArchiveBatch, Digest256, codec::FactDecodeLimits};
 use bigbrotr_protocol::archive_batch::Limits;
@@ -192,7 +189,7 @@ impl Preparation<'_> {
         writer: FreshWriter,
         custody: LocalAttempt,
         route: &CatalogRoute<'_>,
-        budget: &ResourceBudget,
+        budgets: WorkerBudgets<'_>,
     ) -> Result<PublicationResult, PublicationError> {
         let request = writer.request().clone();
         let identity = writer.identity();
@@ -248,7 +245,7 @@ impl Preparation<'_> {
                         self.limits.max_records.to_string(),
                         self.limits.max_encoded_bytes.to_string(),
                     ],
-                    budget,
+                    budgets,
                     Some(&custody),
                     tls,
                 )

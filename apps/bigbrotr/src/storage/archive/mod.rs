@@ -24,7 +24,9 @@ pub use publisher::{CatalogRoute, CatalogTls, PublicationError, PublicationResul
 pub use receipts::{
     CatalogReaderCredentials, ReceiptError, ReceiptObservation, validate_receipt_limits,
 };
-pub use worker::{Preparation, PreparationError, PreparationInspection, PreparationLimits};
+pub use worker::{
+    Preparation, PreparationError, PreparationInspection, PreparationLimits, WorkerBudgets,
+};
 
 mod events;
 pub use events::{ArchiveEventError, ArchivedEvent, ArchivedEventQuery};

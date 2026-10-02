@@ -97,7 +97,13 @@ impl Preparation<'_> {
             .map_err(ReceiptError::Preparation)?;
         super::bootstrap::wire_fits(&input).map_err(ReceiptError::Preparation)?;
         let mut process = self
-            .start_reader("read-visibility", &[], budget, &custody, tls)
+            .start_reader(
+                "read-visibility",
+                &[],
+                super::WorkerBudgets::combined(budget),
+                &custody,
+                tls,
+            )
             .map_err(ReceiptError::Preparation)?;
         let transfer = serde_json::to_writer(&mut process, &input);
         let output = process.finish();

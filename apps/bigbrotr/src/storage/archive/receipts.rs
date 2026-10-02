@@ -189,7 +189,7 @@ impl Preparation<'_> {
             .start_with_custody(
                 "inspect-receipt",
                 &[self.limits.max_records.to_string()],
-                budget,
+                super::WorkerBudgets::combined(budget),
                 None,
                 tls,
             )

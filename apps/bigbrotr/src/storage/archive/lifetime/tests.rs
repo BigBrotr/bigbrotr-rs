@@ -458,7 +458,10 @@ fn native_worker_retains_custody_and_separate_process_budgets_until_reaped() {
         .start_with_custody(
             "inspect-batch",
             &["16".into(), MIB.to_string()],
-            &budget,
+            WorkerBudgets {
+                application: &budget,
+                native: &native_budget,
+            },
             Some(&owner),
             None,
         )
@@ -492,8 +495,12 @@ fn native_worker_retains_custody_and_separate_process_budgets_until_reaped() {
         LocalAttempt::recover_for_boot(&root, &request, &identity, BOOT),
         Err(LifetimeError::Occupied)
     ));
-    assert!(budget.snapshot().active_permits() > 0);
+    assert_eq!(budget.snapshot().active_permits(), 1);
+    assert_eq!(budget.snapshot().used().control_bytes(), 128 * 1024);
+    assert_eq!(budget.snapshot().used().native_bytes(), 0);
     assert_eq!(native_budget.snapshot().active_permits(), 1);
+    assert_eq!(native_budget.snapshot().used().native_bytes(), 512 * MIB);
+    assert_eq!(native_budget.snapshot().used().control_bytes(), 0);
     drop(process); // actual supervisor terminates/reaps before releasing grants
     assert!(!Path::new(&format!("/proc/{pid}")).exists());
     assert_eq!(budget.snapshot().active_permits(), 0);

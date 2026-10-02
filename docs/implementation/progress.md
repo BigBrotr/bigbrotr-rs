@@ -34,14 +34,23 @@ Discovery/Monitor or P03 scheduling first. Full M1 additionally needs online ind
 and successor/recovery for restart (P02-T01 Step5/P02-T02 Step4); initial custody
 cannot be adopted by a fresh Serve. No readiness or release claim is made.
 
-Immediate prerequisite: qualify separate application/native worker budgets with
-actual child custody and prelaunch exhaustion controls. A test-only candidate
-first exercises the previous single-budget refusal; no product correction yet.
-The new archive-worker-budgets runner reuses the exclusive compiler cache and
-read-only pinned assets from installed-publication-61271e2, builds the worker from
-exact source and embeds its identity into the CLI. All results remain NOT_RUN
-until actual execution. Mac3,117,900KiB and Tux52,197,474,304B free at preflight;
-only eight unrelated containers running, no active BigBrotr work. No deletions.
+Immediate prerequisite in qualification: separate application/native WorkerBudgets
+for publish_pending/inspect_cut. Actual test-only0d0a04f/tree269a70691e2a048ef302c70ec56e7879f315e378
+compiled the authenticated worker/CLI/probes and passed Clippy; its new real-child
+test failed Unavailable under the original single-budget API. No child launched.
+17 captures/source1682 files verified at .research/implementation/initial-archive-20261002/budget-red.
+Original outcome remains FAIL; run archive-worker-budgets-0d0a04f STOPPED/RETAINED,
+owner/resources in its resources.json, no OOM/unrelated changes, free51,781,001,216B.
+Root's candidate now splits child native/item and parent128KiB control admissions;
+inspect_cut retains its1MiB result grant in application. Existing combined-budget
+callers use the identical budget twice. Process/reap/unknown-termination logic is
+unchanged. Read-only review found no concrete blocker. Actual green and cut-specific
+separate-budget integration remain NOT_RUN; byte-exhaustion controls use2 slots so
+native byte capacity, not item capacity, decides the refusal.
+The runner uses exclusive shared compiler cache and read-only pinned assets from
+installed-publication-61271e2; it builds the worker from exact source before binding
+its hash in the parent. Agent5d2bf84 installed Archive setup/refusal fixture awaits
+root review/integration. No new local Rust build or cache/dataset deletion.
 
 Next bounded action: implement explicit initial Archive publication, consuming the
 existing complete PendingBatch, retained attempt/FreshWriter, native worker and

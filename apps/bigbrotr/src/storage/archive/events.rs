@@ -210,7 +210,13 @@ impl Preparation<'_> {
             )
             .map_err(|_| ArchiveEventError::ResourceLimit)?;
         let mut process = self
-            .start_reader(command, &[maximum.to_string()], budget, &custody, tls)
+            .start_reader(
+                command,
+                &[maximum.to_string()],
+                super::WorkerBudgets::combined(budget),
+                &custody,
+                tls,
+            )
             .map_err(ArchiveEventError::Preparation)?;
         if process.reserve_data_output(output_bytes, grant).is_err() {
             // Allocation failure happens after spawn. Observe termination before

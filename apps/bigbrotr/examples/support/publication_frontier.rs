@@ -87,7 +87,7 @@ pub async fn inspect(
             login: "bigbrotr_receipt_reader",
             password,
         },
-        budget,
+        WorkerBudgets::combined(budget),
         12,
     )
     .unwrap();
@@ -231,7 +231,7 @@ pub async fn inspect(
                 login: "bigbrotr_receipt_reader",
                 password,
             },
-            budget,
+            WorkerBudgets::combined(budget),
             12,
         )
         .unwrap();

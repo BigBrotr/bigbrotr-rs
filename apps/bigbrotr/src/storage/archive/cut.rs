@@ -1,10 +1,10 @@
 //! One finite cut observation; no topology, persistence or retention authority.
 use super::{
     CatalogReaderCredentials, CatalogRoute, Preparation, PreparationLimits, ProcessError,
-    ReceiptError, membership, receipts,
+    ReceiptError, WorkerBudgets, membership, receipts,
 };
 use crate::{
-    runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
+    runtime::{OwnedPermit, ResourceRequest},
     storage::postgres::catalog_guard::CatalogIdentity,
 };
 use bigbrotr_protocol::{
@@ -71,13 +71,14 @@ impl Preparation<'_> {
         coordinator: &super::LocalCoordinator,
         route: &CatalogRoute<'_>,
         credential: CatalogReaderCredentials<'_>,
-        budget: &ResourceBudget,
+        budgets: WorkerBudgets<'_>,
         max_facts: usize,
     ) -> Result<ObservedCut, ReceiptError> {
         let started = Instant::now();
         let identity = coordinator.identity();
         validate_cut_limits(self.limits, &expected, max_facts)?;
-        let grant = budget
+        let grant = budgets
+            .application
             .try_acquire(
                 ResourceRequest::data(1 << 20, 1, 0).map_err(|_| ReceiptError::ResourceLimit)?,
             )
@@ -110,7 +111,7 @@ impl Preparation<'_> {
             .start_reader(
                 "inspect-cut",
                 &[self.limits.max_records.to_string(), max_facts.to_string()],
-                budget,
+                budgets,
                 &custody,
                 tls,
             )

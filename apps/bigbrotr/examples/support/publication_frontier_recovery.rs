@@ -181,7 +181,7 @@ pub async fn run(mode: &str, path: &Path) {
                 login: "bigbrotr_receipt_reader",
                 password: &password,
             },
-            &budget,
+            WorkerBudgets::combined(&budget),
             12,
         )
         .unwrap();

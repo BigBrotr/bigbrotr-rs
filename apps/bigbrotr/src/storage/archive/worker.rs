@@ -52,6 +52,24 @@ pub struct Preparation<'a> {
     pub deadline: Instant,
     pub cancelled: &'a AtomicBool,
 }
+
+/// Concrete process lanes, including when the caller already retains native
+/// state such as Rocks in its application process. Neither lane may borrow
+/// unused capacity from the other. The child owns both grants until actual reap.
+#[derive(Clone, Copy)]
+pub struct WorkerBudgets<'a> {
+    pub application: &'a ResourceBudget,
+    pub native: &'a ResourceBudget,
+}
+impl<'a> WorkerBudgets<'a> {
+    /// Existing finite commands use a prevalidated aggregate with disjoint lanes.
+    pub fn combined(budget: &'a ResourceBudget) -> Self {
+        Self {
+            application: budget,
+            native: budget,
+        }
+    }
+}
 enum Custody<'a> {
     None,
     Archive(&'a super::LocalAttempt),
@@ -167,7 +185,7 @@ impl<'a> Preparation<'a> {
         let (process, proof) = self.start_owned(
             "initialize-reserved-catalog",
             &[],
-            budget,
+            WorkerBudgets::combined(budget),
             Custody::Initialization(custody),
             tls,
         )?;
@@ -250,21 +268,21 @@ impl<'a> Preparation<'a> {
         extra: &[String],
         budget: &ResourceBudget,
     ) -> Result<super::process::Process<'a>, PreparationError> {
-        self.start_with_custody(mode, extra, budget, None, None)
+        self.start_with_custody(mode, extra, WorkerBudgets::combined(budget), None, None)
     }
 
     pub(super) fn start_with_custody(
         &self,
         mode: &str,
         extra: &[String],
-        budget: &ResourceBudget,
+        budgets: WorkerBudgets<'_>,
         custody: Option<&super::LocalAttempt>,
         tls: Option<super::client_identity::NativeTlsHandoff>,
     ) -> Result<super::process::Process<'a>, PreparationError> {
         self.start_owned(
             mode,
             extra,
-            budget,
+            budgets,
             custody.map_or(Custody::None, Custody::Archive),
             tls,
         )
@@ -275,11 +293,11 @@ impl<'a> Preparation<'a> {
         &self,
         mode: &str,
         extra: &[String],
-        budget: &ResourceBudget,
+        budgets: WorkerBudgets<'_>,
         custody: &super::ReaderCustody,
         tls: Option<super::client_identity::NativeTlsHandoff>,
     ) -> Result<super::process::Process<'a>, PreparationError> {
-        self.start_owned(mode, extra, budget, Custody::Reader(custody), tls)
+        self.start_owned(mode, extra, budgets, Custody::Reader(custody), tls)
             .map(|(process, _)| process)
     }
 
@@ -287,7 +305,7 @@ impl<'a> Preparation<'a> {
         &self,
         mode: &str,
         extra: &[String],
-        budget: &ResourceBudget,
+        budgets: WorkerBudgets<'_>,
         custody: Custody<'_>,
         tls: Option<super::client_identity::NativeTlsHandoff>,
     ) -> Result<
@@ -312,7 +330,8 @@ impl<'a> Preparation<'a> {
         self.check_temporary_root()?;
         // Immediate whole-job admission: a failed second grant drops the first,
         // without joining a queue while retaining a scarce upstream resource.
-        let native = budget
+        let native = budgets
+            .native
             .try_acquire(
                 ResourceRequest::data(0, 1, native_bytes)
                     .map_err(|_| PreparationError::InvalidLimits)?,
@@ -320,7 +339,8 @@ impl<'a> Preparation<'a> {
             .map_err(|_| PreparationError::Unavailable)?;
         // The pre-exec hasher uses a 64 KiB block; retain control capacity for
         // verification, bounded pipe capture and result validation together.
-        let control = budget
+        let control = budgets
+            .application
             .try_acquire(
                 ResourceRequest::control(128 * 1024)
                     .map_err(|_| PreparationError::InvalidLimits)?,
@@ -459,4 +479,96 @@ fn catalog_result(
             .unwrap_or(PreparationError::InvalidBootstrap)
     })?;
     super::bootstrap::decode_response(output.map_err(PreparationError::Process)?, result_format)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::runtime::{ProcessEnvelope, ResourceLimits, WaiterLimits};
+    use std::time::Duration;
+
+    const MIB: u64 = 1024 * 1024;
+    const CONTROL: u64 = 128 * 1024;
+
+    fn budget(native: u64, control: u64) -> ResourceBudget {
+        ResourceBudget::new(
+            ProcessEnvelope::new(
+                native + control,
+                0,
+                ResourceLimits::new(0, 2, native, control),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        )
+    }
+
+    fn refuse_before_verification(budgets: WorkerBudgets<'_>) {
+        let temporary = tempfile::tempdir().unwrap();
+        fs::set_permissions(temporary.path(), fs::Permissions::from_mode(0o700)).unwrap();
+        let root = temporary.path().canonicalize().unwrap();
+        // Admission must refuse before installation inspection, much less spawn.
+        // If it reaches this missing executable, the error discriminator changes.
+        let installation = WorkerInstallation {
+            root: root.with_extension("absent-worker"),
+            executable: super::super::ArtifactIdentity {
+                bytes: 1,
+                sha256: Digest256::from_bytes([1; 32]),
+            },
+        };
+        let cancel = AtomicBool::new(false);
+        let preparation = Preparation {
+            installation: &installation,
+            temp_root: &root,
+            limits: PreparationLimits {
+                memory_bytes: 128 * MIB,
+                native_reserve_bytes: 384 * MIB,
+                temp_bytes: 64 * MIB,
+                threads: 1,
+                max_records: 16,
+                max_encoded_bytes: MIB as usize,
+            },
+            deadline: Instant::now() + Duration::from_secs(5),
+            cancelled: &cancel,
+        };
+        assert!(matches!(
+            preparation.start_with_custody("inspect-batch", &[], budgets, None, None),
+            Err(PreparationError::Unavailable)
+        ));
+    }
+
+    #[test]
+    fn exhausted_application_control_returns_the_child_grant_before_launch() {
+        let application = budget(0, CONTROL);
+        let native = budget(512 * MIB, 0);
+        let occupied = application
+            .try_acquire(ResourceRequest::control(1).unwrap())
+            .unwrap();
+        refuse_before_verification(WorkerBudgets {
+            application: &application,
+            native: &native,
+        });
+        assert_eq!(application.snapshot().active_permits(), 1);
+        assert_eq!(application.snapshot().used().control_bytes(), 1);
+        assert_eq!(native.snapshot().active_permits(), 0);
+        assert_eq!(native.snapshot().used().native_bytes(), 0);
+        drop(occupied);
+    }
+
+    #[test]
+    fn exhausted_child_allowance_never_charges_application_control() {
+        let application = budget(0, CONTROL);
+        let native = budget(512 * MIB, 0);
+        let occupied = native
+            .try_acquire(ResourceRequest::data(0, 1, 1).unwrap())
+            .unwrap();
+        refuse_before_verification(WorkerBudgets {
+            application: &application,
+            native: &native,
+        });
+        assert_eq!(native.snapshot().active_permits(), 1);
+        assert_eq!(native.snapshot().used().native_bytes(), 1);
+        assert_eq!(application.snapshot().active_permits(), 0);
+        assert_eq!(application.snapshot().used().control_bytes(), 0);
+        drop(occupied);
+    }
 }

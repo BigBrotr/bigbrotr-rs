@@ -65,7 +65,13 @@ impl Case<'_> {
                 &directory(self.home.join("custody-worker-temp")),
                 &AtomicBool::new(false),
             )
-            .publish_pending(pending, writer, custody, &route, self.worker_budget);
+            .publish_pending(
+                pending,
+                writer,
+                custody,
+                &route,
+                WorkerBudgets::combined(self.worker_budget),
+            );
             panic!("parent-death fixture was not killed: {result:?}");
         }
         let (mut manager, connection) = connection(self.database, "postgres", port).await;
