@@ -95,6 +95,26 @@ through completion and join it before replacement. Timing out or dropping an
 async join handle cannot release these resources or prove native exclusion.
 There is no unsafe interrupt or fictitious cancellation guarantee in this API.
 
+### Historical manifest inspection (implementation in progress)
+
+The installed recovery consumer needs the original manifest from the actual store,
+without manufacturing an expected old process incarnation. The selected bounded
+`IngestRecovery::inspect` operation takes the configured dataset and existing
+native path, checked native limits and a transferred permit. It uses the same
+path reservation, CURRENT/column-family checks and exclusive native open as strict
+reopen. Under that exclusion it decodes the complete retained manifest, refuses a
+different dataset and keeps the handle through subsequent registry validation.
+It does not rewrite a manifest, create a missing store or expose an admission
+handle. Existing strict `reopen` and `IngestRecovery::open` still compare the full
+caller-supplied identity.
+
+The next registry loader must compare all original registration coordinates and
+policy digests before the existing closing/resolution methods can act. Neither
+inspection nor a matching historical row permits successor admission, infers a
+missing request's outcome or certifies recovery provenance. Native engine open
+may still update housekeeping files as described above. The new native tests
+are proposed evidence until their exact revision executes on the actual binding.
+
 A new process obtains a fresh incarnation, so its new expected manifest does not
 match an old one automatically. Restart, handoff, restore and policy/topology
 changes require their explicit authorized transition and old-owner exclusion;

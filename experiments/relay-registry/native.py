@@ -31,8 +31,8 @@ identity = dict(source=manifest['revision'], tree=manifest['tree'], native_toolc
 identity['rustc'] = subprocess.check_output(['rustc','--version','--verbose'],env=env,text=True).strip()
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc'] and identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'registry'
-assert len(sys.argv) in (1, 2) and mode in ('dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'registry', 'faults', 'enrollment', 'enrollment-faults', 'registration-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs', 'acquisition-jobs-faults', 'acquisition-claims')
-probe = {'dictionary-append':'ingest_bootstrap_probe', 'relay-arrival':'ingest_bootstrap_probe', 'relay-transfer':'ingest_bootstrap_probe', 'observation':'ingest_bootstrap_probe', 'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
+assert len(sys.argv) in (1, 2) and mode in ('ingest-recovery', 'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'registry', 'faults', 'enrollment', 'enrollment-faults', 'registration-faults', 'visibility', 'policy-versions', 'relay-source', 'relay-source-faults', 'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs', 'acquisition-jobs-faults', 'acquisition-claims')
+probe = {'ingest-recovery':'ingest_bootstrap_probe', 'dictionary-append':'ingest_bootstrap_probe', 'relay-arrival':'ingest_bootstrap_probe', 'relay-transfer':'ingest_bootstrap_probe', 'observation':'ingest_bootstrap_probe', 'registry':'relay_registry_probe', 'faults':'relay_registry_fault_probe',
          'enrollment':'relay_enrollment_probe', 'enrollment-faults':'relay_enrollment_fault_probe', 'registration-faults':'relay_registration_fault_probe',
          'visibility':'ingest_bootstrap_probe', 'policy-versions':'ingest_bootstrap_probe', 'relay-source':'ingest_bootstrap_probe', 'relay-source-faults':'ingest_bootstrap_probe', 'source-transport':'ingest_bootstrap_probe', 'source-cleanup':'ingest_bootstrap_probe', 'source-races':'ingest_bootstrap_probe', 'acquisition-scope':'acquisition_scope_probe', 'acquisition-scope-faults':'acquisition_scope_probe', 'acquisition-scope-read':'acquisition_scope_probe', 'acquisition-binding':'ingest_bootstrap_probe', 'acquisition-binding-refusals':'ingest_bootstrap_probe', 'acquisition-binding-recovery':'ingest_bootstrap_probe', 'sync-arrival-policy':'ingest_bootstrap_probe', 'ingest-lease':'ingest_bootstrap_probe', 'initial-ingest':'ingest_bootstrap_probe', 'acquisition-jobs':'acquisition_job_probe', 'acquisition-jobs-faults':'acquisition_job_probe', 'acquisition-claims':'acquisition_job_probe'}[mode]
 if mode == 'relay-source-faults':
@@ -52,6 +52,10 @@ steps = [
     ('clippy', ['cargo','clippy','--locked','--offline','--release','-p','bigbrotr','--lib',
                 '--bin','bigbrotr','--example',probe,'--','-D','warnings']),
 ]
+if mode == 'ingest-recovery':
+    identity['scope'] = 'Exclusive historical native inspection; registry loader, installed recovery and successor remain separate'
+    steps.insert(0, ('rocks-store', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                                    '--test','rocks_store','--message-format=json','--','--test-threads=1']))
 if mode == 'dictionary-append':
     identity['scope'] = 'Native dictionary append/replay components; connected and installed journeys remain separate'
     # These owners changed. Packaged Archive worker integration requires its
@@ -207,10 +211,13 @@ if mode in ('observation', 'relay-transfer'):
             executables[filename] = digest
     assert set(executables) == ({'observation_components', 'acquisition_session'} if mode == 'observation' else {'protocol_event', 'acquisition_session'})
     receipt['test_executables_sha256'] = executables
-if mode == 'dictionary-append':
+if mode in ('dictionary-append', 'ingest-recovery'):
     import re
     counts, executables = {}, set()
-    for name in ['dictionary-append', 'bootstrap', 'recovery']:
+    selections = ['rocks-store'] if mode == 'ingest-recovery' else ['dictionary-append', 'bootstrap', 'recovery']
+    target_kind = ['test'] if mode == 'ingest-recovery' else ['lib']
+    retained_name = 'rocks_store' if mode == 'ingest-recovery' else 'dictionary_components'
+    for name in selections:
         content = (checks / (name + '.log')).read_text()
         summary = re.search(r'test result: ok\. ([1-9][0-9]*) passed; 0 failed; 0 ignored;', content)
         assert summary, 'missing executed native test result: ' + name
@@ -219,19 +226,19 @@ if mode == 'dictionary-append':
             if not line.startswith('{'): continue
             message = json.loads(line)
             if message.get('reason') == 'compiler-artifact' and message.get('executable') \
-                    and message['profile']['test'] and message['target']['kind'] == ['lib']:
+                    and message['profile']['test'] and message['target']['kind'] == target_kind:
                 executables.add(message['executable'])
     assert len(executables) == 1
     source = Path(executables.pop())
     assert source.is_relative_to(build / 'target') and not source.is_symlink()
-    shutil.copy2(source, artifacts / 'dictionary_components')
-    digest = file_hash(artifacts / 'dictionary_components')
+    shutil.copy2(source, artifacts / retained_name)
+    digest = file_hash(artifacts / retained_name)
     assert digest == file_hash(source)
-    receipt['test_executables_sha256'] = {'dictionary_components': digest}
+    receipt['test_executables_sha256'] = {retained_name: digest}
     receipt['native_tests_passed'] = counts
 (artifacts/'build-result.json').write_text(json.dumps(receipt,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
-status = {'dictionary-append':'PASS_DICTIONARY_APPEND_COMPONENTS', 'relay-arrival':'PASS_RELAY_ARRIVAL_BUILD_ONLY', 'relay-transfer':'PASS_RELAY_TRANSFER_BUILD_ONLY', 'observation':'PASS_OBSERVATION_BUILD_ONLY', 'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
+status = {'ingest-recovery':'PASS_INGEST_RECOVERY_INSPECTION', 'dictionary-append':'PASS_DICTIONARY_APPEND_COMPONENTS', 'relay-arrival':'PASS_RELAY_ARRIVAL_BUILD_ONLY', 'relay-transfer':'PASS_RELAY_TRANSFER_BUILD_ONLY', 'observation':'PASS_OBSERVATION_BUILD_ONLY', 'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
           'enrollment':'PASS_RELAY_ENROLLMENT_BUILD_ONLY',
           'enrollment-faults':'PASS_RELAY_ENROLLMENT_FAULT_BUILD_ONLY',
           'registration-faults':'PASS_RELAY_REGISTRATION_FAULT_BUILD_ONLY',

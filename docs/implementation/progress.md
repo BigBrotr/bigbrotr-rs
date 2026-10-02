@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main14d18e143b16c69aae6d287cf0621a09ab1cc74f is above pushed
-origin/main035c436. Root-owned evidence, inventory, task, reference and checkpoint
-updates are dirty; no merge/rebase or active BigBrotr build/lab. Product3a7f884 is now
+Primary main18e10df is pushed. Root owns the new historical-inspection tests,
+focused native build profile, ingest-store contract/task and checkpoint edits;
+no merge/rebase or active BigBrotr build/lab. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
 three Python files differ. The positive installed signed publication journey PASS
@@ -163,9 +163,16 @@ successor activation, not a demand to finish full adjacent services or ACK/GC.
 Read so far for that next responsibility: complete ingest-store and registration
 references, producer-request-inputs contract, Rocks store/producer closing/recovery,
 PG producer closing/recovery/initial basis and InitialRegistration definitions,
-observe_locked/require_closing_registration. Remaining before design/edit: full
-ingest_registry file, manifest codec/contracts, owning source/topology/producer
-SQL and relevant successor/exclusion data-plane contracts. Source epoch closure,
+observe_locked/require_closing_registration. Full ingest_registry, manifest codec/contract, rocks_store tests and relevant
+source-cut/producer/exclusion contracts have now also been read. Native inspection
+contract is recorded in ingest-store.md; two actual-binding regression fixtures
+are written before the API exists. They cover full retained tuple, same-process
+and actual second-process exclusion, unchanged application records, foreign
+dataset, missing/unknown/oversized manifest and resource refusal. A focused
+ingest-recovery profile reuses the existing exact-source/cache/terminal runner.
+Next commit/run this native RED, then implement inspection through the shared
+existing-open path; keep strict reopen identity checks and no admission conversion.
+Registry loader and source/topology/producer SQL reading follow this native boundary. Source epoch closure,
 recovery provenance, old-owner exclusion, bounded retained-input set and exact
 COMMIT ambiguity must remain explicit; do not infer noncommit from missing detail.
 

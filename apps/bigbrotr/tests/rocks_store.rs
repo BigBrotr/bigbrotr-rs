@@ -5,7 +5,7 @@ use bigbrotr::{
     storage::rocks::{
         NATIVE_OPTION_PROFILE_VERSION, RocksNativeLimits, RocksNativeSettings,
         manifest::{AllocationNamespaces, IngestManifest, ManifestIdentity},
-        store::{IngestStore, StoreError},
+        store::{IngestRecovery, IngestStore, StoreError},
     },
 };
 use bigbrotr_model::{
@@ -142,6 +142,94 @@ fn explicit_initialization_persists_only_the_exact_manifest_and_reopens() {
     let store = IngestStore::reopen(&path, manifest(), limits(), permit(&budget)).unwrap();
     assert_eq!(store.manifest(), &manifest());
     drop(store);
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[test]
+fn recovery_inspection_retains_historical_identity_and_exclusive_custody() {
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("db");
+    let budget = budget();
+    let original = manifest();
+    let dataset = original.identity().dataset_id;
+    let store = IngestStore::initialize(&path, original, limits(), permit(&budget)).unwrap();
+    assert!(matches!(
+        IngestRecovery::inspect(&path, dataset, limits(), permit(&budget)),
+        Err(StoreError::AlreadyOpen)
+    ));
+    drop(store);
+    let recovery = IngestRecovery::inspect(&path, dataset, limits(), permit(&budget)).unwrap();
+    // No original incarnation, recovery generation or allocation domain was
+    // supplied by the new process. Inspection must retain the actual full tuple.
+    assert_eq!(recovery.manifest(), &original);
+    assert_eq!(budget.snapshot().used().native_bytes(), ALLOWANCE);
+    assert_error(
+        IngestStore::reopen(&path, original, limits(), permit(&budget)),
+        StoreError::AlreadyOpen,
+    );
+    child_check(&path, root.path(), "locked");
+    drop(recovery);
+    assert_eq!(budget.snapshot().active_permits(), 0);
+    child_check(&path, root.path(), "released");
+    let db = raw(&path, &["default", "facts", "receipts"], false);
+    for cf in ["default", "facts", "receipts"] {
+        let rows: Vec<_> = db
+            .iterator_cf(db.cf_handle(cf).unwrap(), rocksdb::IteratorMode::Start)
+            .collect::<Result<_, _>>()
+            .unwrap();
+        assert_eq!(rows.len(), usize::from(cf == "default"));
+        if cf == "default" {
+            assert_eq!(rows[0].0.as_ref(), &[1, 1]);
+            assert_eq!(rows[0].1.as_ref(), original.encode().as_bytes());
+        }
+    }
+}
+
+#[test]
+fn recovery_inspection_refuses_foreign_missing_and_incompatible_state() {
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("db");
+    let budget = budget();
+    let dataset = manifest().identity().dataset_id;
+    assert!(matches!(
+        IngestRecovery::inspect(&path, dataset, limits(), permit(&budget)),
+        Err(StoreError::MissingDatabase)
+    ));
+    assert!(!path.exists());
+    drop(IngestStore::initialize(&path, manifest(), limits(), permit(&budget)).unwrap());
+    let insufficient = budget
+        .try_acquire(ResourceRequest::data(0, 0, ALLOWANCE - 1).unwrap())
+        .unwrap();
+    assert!(matches!(
+        IngestRecovery::inspect(&path, dataset, limits(), insufficient),
+        Err(StoreError::InsufficientNativeReservation)
+    ));
+    assert!(matches!(
+        IngestRecovery::inspect(
+            &path,
+            [9; 16].try_into().unwrap(),
+            limits(),
+            permit(&budget)
+        ),
+        Err(StoreError::ManifestMismatch)
+    ));
+    drop(IngestStore::reopen(&path, manifest(), limits(), permit(&budget)).unwrap());
+    replace_manifest(&path, None);
+    assert!(matches!(
+        IngestRecovery::inspect(&path, dataset, limits(), permit(&budget)),
+        Err(StoreError::MissingManifest)
+    ));
+    let mut future = manifest().encode().as_bytes().to_vec();
+    future[9] = 2;
+    for bytes in [vec![1; 267], future] {
+        replace_manifest(&path, Some(&bytes));
+        assert!(matches!(
+            IngestRecovery::inspect(&path, dataset, limits(), permit(&budget)),
+            Err(StoreError::InvalidManifest(_))
+        ));
+        let db = raw(&path, &["default", "facts", "receipts"], false);
+        assert_eq!(db.get([1, 1]).unwrap().unwrap(), bytes);
+    }
     assert_eq!(budget.snapshot().active_permits(), 0);
 }
 

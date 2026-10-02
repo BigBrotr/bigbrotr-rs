@@ -186,6 +186,11 @@ One owner serializes exact identity decisions for each writable directory.
   producer epoch, bounded outstanding window, contiguous acknowledgement and
   fenced retirement/GC contract; restart
   cannot reuse a request identity or forget unresolved effects.
+  The installed restart path now needs a bounded historical manifest/registry
+  loader before invoking the existing positive-only recovery resolver. The
+  [historical inspection contract](../reference/ingest-store.md#historical-manifest-inspection-implementation-in-progress)
+  keeps exclusive native custody and exact retained identity; its new native
+  regression fixtures are not yet executed. Successor admission remains separate.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and
