@@ -23,6 +23,17 @@ fn backend(error: tokio_postgres::Error) -> Error {
 }
 
 impl ControlSession {
+    /// Nominate from at most32 admissions, before eligibility filtering. No claim,
+    /// source action, lease renewal or scientific progress is produced here.
+    pub async fn nominate_acquisition(
+        &mut self,
+        _scan: Option<crate::acquisition::job::AcquisitionScan>,
+        _permit: crate::runtime::OwnedPermit,
+    ) -> Result<crate::acquisition::job::AcquisitionCandidate, Error> {
+        // Intentional RED for the independent actual-engine scan fixture.
+        Err(Error::Unavailable)
+    }
+
     /// Internal historical lookup, including after expiry/withdrawal/owner loss.
     /// An external status surface must authenticate and authorize its reader.
     pub async fn read_acquisition_job(

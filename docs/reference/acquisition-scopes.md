@@ -512,6 +512,19 @@ retry before coordination. All66 tables and complete permitted Control metadata
 were checked, including an unchanged60s lease. This closes only the metadata
 reader; installed selection and dispatch remain required.
 
+Internal nomination scans at most32 committed job admissions per call before
+checking eligibility, using existing0815 order and a fixed upper cut. The cursor
+is operational memory, not durable coverage or a new queue. It advances through
+the nominated ordinal only; a batch without a candidate may still have more
+admissions before the cut. New admissions enter a later pass. Exact accepted
+revision1/unowned/checkpoint0 and queued revision2/checkpoint0 under the same
+Control tuple may be nominated. Actual claim remains authoritative for policy,
+source, original duration and current actor permission. Known claim refusals
+advance the cursor; uncertain COMMIT or poisoned custody stops execution.
+This candidate is unqualified until actual engine verification. Empty, sparse,
+maximum-ordinal, late admission and cancellation fixtures are data-loading tests;
+clone-only scheduling metadata does not qualify acceptance or installed dispatch.
+
 ## Job-bound source and event effects (implementation in progress)
 
 Additive0024 retains the finite JobId on each new relay reservation, with a

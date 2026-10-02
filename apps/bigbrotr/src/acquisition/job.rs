@@ -161,3 +161,30 @@ pub struct AcquisitionOwner {
     pub epoch: bigbrotr_model::OwnerEpoch,
     pub incarnation: bigbrotr_model::ProcessIncarnation,
 }
+
+/// Ephemeral scheduling position in one fixed committed admission pass. It is
+/// neither collection coverage nor job ownership and must not be persisted as
+/// either. Start a new pass after this cut, or after replacing the Control owner.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct AcquisitionScan {
+    pub admission_cut: u64,
+    pub after_ordinal: u64,
+}
+impl AcquisitionScan {
+    /// Temporary bounded row/parameter work. The connection driver separately
+    /// retains its own framing reservation through termination.
+    pub const REQUIRED_BYTES: u64 = 64 * 1024;
+
+    pub fn complete(self) -> bool {
+        self.after_ordinal == self.admission_cut
+    }
+}
+
+/// At most one nomination. `job == None` may still require another scan batch;
+/// use `scan.complete()` to detect the end. A candidate at the cut is processed
+/// before starting another pass. The actual claim still checks current authority.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct AcquisitionCandidate {
+    pub scan: AcquisitionScan,
+    pub job: Option<bigbrotr_model::JobId>,
+}

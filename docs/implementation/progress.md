@@ -12,9 +12,16 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Maina1dc662ae53b4a001704234f8cd1998202e6b087 is three unpublished coherent
-commits ahead of origin/main628cfd412765694a94c4789009c9d4dcd57f1943.
-Current documentation changes close the bounded source-metadata reader, not M1.
+Mainf705055f27875828ee5a2c17c0badfe4721aef65 equals origin/main (push verified).
+Root-owned nomination candidate is dirty: acquisition/job.rs operational cut and
+result, acquisition_claims.rs deliberate Unavailable RED stub, new example support
+acquisition_candidates.rs and existing reads.py --candidates. No schema change.
+Next commit/transfer exact source for acquisition-scope-read native build, execute
+four candidate cases to observe the missing implementation, then implement the
+bounded32-admission query. Data-loading fixtures do not qualify job acceptance;
+actual expired-claim/next-valid consumption remains required in installed dispatch.
+
+The previous boundary closes the bounded source-metadata reader, not M1.
 Exact native build/selector tests/Clippy PASS; eight actual PostgreSQL cases PASS.
 Independent capture review checks all66 tables, original60s Control lease and
 complete claim/release metadata; three metadata mutation negatives reject.

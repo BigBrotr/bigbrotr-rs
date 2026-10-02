@@ -24,7 +24,8 @@ from inventory import projection
 
 root = Path(sys.argv[1]).resolve(strict=True)
 source_reads = len(sys.argv) == 3 and sys.argv[2] == '--source'
-assert (len(sys.argv) == 2 or source_reads) and SOURCE == root / 'source'
+candidate_reads = len(sys.argv) == 3 and sys.argv[2] == '--candidates'
+assert (len(sys.argv) == 2 or source_reads or candidate_reads) and SOURCE == root / 'source'
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
 build = root / 'out/artifacts'
@@ -66,7 +67,7 @@ def containers():
 def rows(db):
     names = json.loads(lab.sql(pg, db,
         "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    require(len(names) in (64, 66) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
+    require(len(names) in (64, 66, 67) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
              f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     return json.loads(lab.sql(pg, db, 'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(parts) + ') t'))
@@ -135,6 +136,64 @@ def verify_source_owner(before, after, backend, start_us, end_us, released):
     require(owner == expected_owner and role == expected_role, 'complete-owner-metadata')
 
 
+def seed_candidate(db, ordinal, *, kind='acquisition', state='accepted', revision=1,
+                   protocol=1, owner_epoch=None, incarnation=None, resource=None, checkpoint=0):
+    """Clone-only scheduling metadata, not a qualified acceptance/claim journey."""
+    identity = f'{ordinal:032x}'
+    decode = lambda value: "decode('%s','hex')" % value if value else 'NULL'
+    mutate(db, f"""
+        INSERT INTO control.jobs(job_id,dataset_id,principal_id,request_key,request_digest,
+            kind,config_revision,policy_revision,created_at_us,state,job_revision,checkpoint_revision,
+            owner_resource_id,owner_epoch,owner_incarnation,input_complete,acquisition_job_protocol)
+        SELECT decode('{identity}','hex'),dataset_id,decode(repeat('10',16),'hex'),
+            decode('{identity}','hex'),decode(repeat('00',32),'hex'),'{kind}',1,1,1,'{state}',
+            {revision},{checkpoint},{decode(resource)},{owner_epoch or 'NULL'},
+            {decode(incarnation)},true,{protocol if protocol is not None else 'NULL'}
+        FROM control.datasets;
+        INSERT INTO control.job_admissions VALUES(decode('{identity}','hex'),{ordinal});
+    """)
+
+
+def prepare_candidates(db, name, expected):
+    config = lab.config(output, dict(pg, client=client), db, endpoint='127.0.0.1:5432', boundary='loopback')
+    migrated = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
+        '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '23')
+    (output / (name+'-migration.stdout')).write_text(migrated.stdout)
+    (output / (name+'-migration.stderr')).write_text(migrated.stderr)
+    require(migrated.returncode == 0, 'explicit-scan-migration')
+    require(not rows(db)['jobs'], 'empty-job-fixture')
+    expected.update(cancel=name=='candidates_cancel', append=name=='candidates_sparse')
+    step = lambda cut, after, job=None, restart=False: dict(
+        restart=restart, result=dict(cut=cut, after=after, job=f'{job:032x}' if job else None))
+    if name == 'candidates_empty':
+        expected['steps'] = [step(0,0)]
+    elif name == 'candidates_max':
+        maximum = 18446744073709551615
+        seed_candidate(db, maximum)
+        expected['steps'] = [step(maximum,maximum,maximum)]
+    elif name == 'candidates_cancel':
+        seed_candidate(db, 1)
+    else:
+        require(name=='candidates_sparse', 'candidate-case')
+        previous = max((r for r in basic['owner_epochs'] if r['role']=='control'), key=lambda r:r['epoch'])
+        for ordinal in range(1,67):
+            options = dict(kind='export',protocol=None)
+            if ordinal in (33,34): options = {}
+            if ordinal in (35,36,37,38,39):
+                options = dict(state='queued',revision=2,resource=previous['resource_id'][2:],
+                    owner_epoch=previous['epoch']+1,incarnation='f1'*16)
+                if ordinal==36: options['owner_epoch'] -= 1
+                if ordinal==37: options['incarnation'] = 'f2'*16
+                if ordinal==38: options['resource'] = 'f3'*16
+                if ordinal==39: options.update(state='running',revision=3)
+            if ordinal==40: options = dict(protocol=None)
+            if ordinal==41: options = dict(checkpoint=1)
+            if ordinal==42: options = dict(revision=2)
+            seed_candidate(db, ordinal, **options)
+        expected['steps'] = [step(66,32),step(66,33,33),step(66,34,34),step(66,35,35),step(66,66),
+            step(67,32,restart=True),step(67,33,33),step(67,34,34),step(67,35,35),step(67,67,67)]
+
+
 def run_case(name):
     db = 'bb_scope_read_' + revision[:7] + '_' + name
     require(re.fullmatch('[a-z0-9_]{1,63}', db), 'database-name')
@@ -153,7 +212,10 @@ def run_case(name):
         dataset=selected['dataset_id'][2:], endpoint=selected['endpoint_id'][2:],
         selector=selector_id, access=selected['access_scope_id'][2:],
         visibility_domain='40' * 16, visibility_ordinal=1, policy=1))
-    if name.startswith('source_'):
+    if name.startswith('candidates_'):
+        mode = 'read-candidates-' + name.removeprefix('candidates_')
+        prepare_candidates(db, name, expected)
+    elif name.startswith('source_'):
         mode = 'read-source-' + name.removeprefix('source_').replace('_','-')
         enrollment = next(e for e in basic['relay_enrollments'] if e['endpoint_id']==selected['endpoint_id']
             and e['access_scope_id']==selected['access_scope_id'])
@@ -257,9 +319,9 @@ def run_case(name):
     before = rows(db)
     lab.write_json(output / (name + '-before.json'), before)
     holder = None
-    if name in ('cancel','source_cancel'):
+    if name in ('cancel','source_cancel','candidates_cancel'):
         holder = Session(pg, db, 'scope_read_holder', sessions)
-        relation = 'network_routes' if name == 'source_cancel' else 'acquisition_scopes'
+        relation = {'source_cancel':'network_routes','candidates_cancel':'jobs'}.get(name,'acquisition_scopes')
         holder.execute(f'BEGIN; LOCK TABLE control.{relation} IN ACCESS EXCLUSIVE MODE;')
     clock_sql = 'SELECT (EXTRACT(EPOCH FROM clock_timestamp()) * 1000000)::bigint'
     start_us = int(lab.sql(pg, db, clock_sql))
@@ -267,6 +329,16 @@ def run_case(name):
         '/run/secrets/application', '/lab/policy.json', mode, '/lab/' + name + '-expected.json'])
     processes.append((name, process))
     barrier = None
+    if name == 'candidates_sparse':
+        require(event(process, 'scan-cut')['cut']==66, 'frozen-initial-cut')
+        seed_candidate(db, 67)
+        inputs = rows(db)
+        # External fixture insertion is the only new job/admission. Preserve the
+        # original before capture and separately record this read baseline.
+        before['jobs'] = inputs['jobs']
+        before['job_admissions'] = inputs['job_admissions']
+        lab.write_json(output / (name+'-read-baseline.json'), before)
+        (output / (name+'-expected.json.continue')).touch()
     if holder:
         event(process, 'read-start')
         waiter = json.loads(lab.sql(pg, db, f"SELECT json_build_object('pid',pid,'backend_start',backend_start::text) FROM pg_stat_activity WHERE datname='{db}' AND usename='bigbrotr_control'"))
@@ -280,7 +352,7 @@ def run_case(name):
     lines = [json.loads(line) for line in bytes(process.stdout).splitlines()]
     result = dict(lines[-1])
     backend = None
-    if name.startswith('source_'):
+    if name.startswith(('source_','candidates_')):
         backend = dict(pid=result.pop('backend_pid'), start=result.pop('backend_start'))
     require(result == dict(status='PASS', mode=mode, scope_id=expected['scope_id']), 'reader-result')
     after = rows(db)
@@ -300,7 +372,7 @@ def run_case(name):
                 and row['epoch'] == prior_epoch + 1, 'unexpected-control-epoch')
     if backend:
         verify_source_owner(before, after, backend, start_us, end_us,
-            released=name not in ('source_bad_url', 'source_bad_route', 'source_cancel'))
+            released=name not in ('source_bad_url', 'source_bad_route', 'source_cancel', 'candidates_cancel'))
         lab.write_json(output / (name + '-owner-observation.json'),
             dict(backend=backend, start_us=start_us, end_us=end_us))
     require(lab.sql(pg, db, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0', 'unjoined-reader-driver')
@@ -345,7 +417,8 @@ try:
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
-    cases = (['source_valid','source_disabled','source_changed','source_missing','source_long',
+    cases = (['candidates_sparse','candidates_empty','candidates_max','candidates_cancel'] if candidate_reads else
+             ['source_valid','source_disabled','source_changed','source_missing','source_long',
               'source_bad_url','source_bad_route','source_cancel'] if source_reads else
              ['valid', 'missing', 'foreign', 'historical', 'noncanonical', 'malformed',
               'large', 'oversize', 'working', 'profile', 'missing_selector', 'zero_epoch', 'cancel', 'old_schema'])

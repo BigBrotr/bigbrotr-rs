@@ -9,6 +9,9 @@ use sha2::{Digest, Sha256};
 use std::time::{Duration, Instant};
 use tokio::{task::JoinHandle, time::timeout};
 
+#[path = "acquisition_candidates.rs"]
+mod candidates;
+
 pub async fn run(
     mut owner: ControlSession,
     driver: JoinHandle<Result<(), tokio_postgres::Error>>,
@@ -39,8 +42,12 @@ pub async fn run(
             .try_acquire(ResourceRequest::data(bytes, items, 0).unwrap())
             .unwrap()
     };
-    if mode.starts_with("read-source-") {
-        source_read(owner, driver, mode, &expected, &budget).await;
+    if mode.starts_with("read-source-") || mode.starts_with("read-candidates-") {
+        if mode.starts_with("read-source-") {
+            source_read(owner, driver, mode, &expected, &budget).await;
+        } else {
+            candidates::run(owner, driver, &expected, expected_path, &budget).await;
+        }
         drop(driver_permit);
         assert_eq!(budget.snapshot().active_permits(), 0);
         println!(
