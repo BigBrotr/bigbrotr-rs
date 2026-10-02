@@ -108,16 +108,17 @@ It does not rewrite a manifest, create a missing store or expose an admission
 handle. Existing strict `reopen` and `IngestRecovery::open` still compare the full
 caller-supplied identity.
 
-The next registry loader must compare all original registration coordinates and
-policy digests before the existing closing/resolution methods can act. Neither
-inspection nor a matching historical row permits successor admission, infers a
+The [historical registry loader](ingest-registration.md#historical-registration-lookup)
+compares original registration coordinates and retained policy digests. Existing
+closing/resolution methods still revalidate them under current Control authority.
+Neither inspection nor a matching historical row permits successor admission, infers a
 missing request's outcome or certifies recovery provenance. Native engine open
 may still update housekeeping files as described above. The
 [native inspection evidence](../implementation/evidence/p02-ingest-store-linux-20260918.json)
-records 12 actual RocksDB tests, build and Clippy at20e0e5e on Linux amd64.
+records 12 actual RocksDB tests, build and Clippy at `20e0e5e` on Linux amd64.
 This includes independent second-process lock refusal/release, full historical
-identity and unchanged logical rows. The registry loader and installed recovery
-remain separate unfinished consumers.
+identity and unchanged logical rows. The connected registry loader has separate
+bounded evidence; installed recovery remains unfinished.
 
 A new process obtains a fresh incarnation, so its new expected manifest does not
 match an old one automatically. Restart, handoff, restore and policy/topology

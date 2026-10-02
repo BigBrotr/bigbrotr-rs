@@ -232,7 +232,7 @@
   },
   "post_run_review": "After the exact2032042 run, root added a fail-closed runner exit check: a cleanup-detected OOM/incomplete stop must exit nonzero as well as record FAIL. The executed run independently verified stopped=true/OOM=false; this post-run guard is source-reviewed/Python-syntax-checked, not an injected OOM test.",
   "historical_lookup_20261002": {
-    "status": "IMPLEMENTATION_PENDING_ENGINE_VERIFICATION",
+    "status": "PASS_BOUNDED_HISTORICAL_LOOKUP",
     "scope": "P02-T02 Step4/P01-T09 Step4 prerequisite: exclusive native manifest plus bounded original registry attribution; no recovery effect or successor activation",
     "red": {
       "label": "registry-red-actual",
@@ -249,20 +249,12 @@
       "status": "FAIL_SETUP_BEFORE_NATIVE",
       "reason": "Ignored launcher used the wrong profile directory; exact-source preflight refused before containers/cache work. Corrected launcher creates a new initial-ingest directory; original log retained."
     },
-    "planned_cases": [
-      "installed original complete registration and identical retry",
-      "wrong configured instance",
-      "new current config/policy heads retain original attribution",
-      "missing slot/domain, mismatched source incarnation, unknown policy schema, ambiguous second slot",
-      "absent versus zero predecessor"
-    ],
     "not_run": [
-      "PostgreSQL cases under new implementation",
       "Actual blocked-query cancellation",
       "Closing/resolution from loaded registration and installed recovery",
       "Successor, recovery provenance, mixed/aged capacity, arm64/release"
     ],
-    "review": "Shared complete registry observer validates the reconstructed tuple; historical reads return no grant and roll back before returning. Named bounded query/decoders keep SQL and transaction order visible. No persistent format, schema or backend abstraction added. Recovery is not a hot path; no indexed/capacity claim for the owner-to-producer lookup.",
+    "review": "Shared complete registry observer validates the reconstructed tuple; historical reads return no grant and roll back before returning. Named bounded query/decoders keep SQL and transaction order visible. No persistent format, schema or backend abstraction added. Recovery is not a hot path; no indexed/capacity claim for the owner-to-producer lookup. Root read complete loader, parent registry, native manifest/store, affected probe/fixture and recovery callers; no independent AI review in this boundary. Lookup validates retained policy metadata/digests as attribution, not complete historical setting semantics or current action authority. Query work on aged producer history and blocked-query cancellation remain unqualified.",
     "first_build": {
       "label": "registry-green",
       "source": "f35882c3b9209b8ef533e4e5ff0bf2954aad9512",
@@ -299,6 +291,110 @@
       "capture_sha256": "0b2c660252b69a2d96ab6af975950f4a02068d70848de8a90d8a804967c3d77a",
       "status": "FAIL",
       "reason": "Fixture referenced a nonexistent model InstanceId. Compile E0425; no engines ran. Parse the configured plain nonzero16-byte instance in the finite fixture. Product loader unchanged."
-    }
+    },
+    "final_build": {
+      "label": "registry-build-instance",
+      "source": "fc695d28d82f79a258b14df7de249d7183d8b746",
+      "files": 1700,
+      "captures": 15,
+      "capture_sha256": "b81dcecec5cdca526039edb58c69bf7400c987d7e68bf4020a3558f13c130b6e",
+      "status": "PASS",
+      "tree": "b7b1db9f1cb1c9905b7a5503a4ae52dbdc76954c",
+      "binary_sha256": "63e4f8412fcd96ef052c9abef959d5268063db21aff99617c951650de1faedc1",
+      "probe_sha256": "10486ce35da721108a975e87116f3c04ac3be568735e0aa64d4aee3eb962afb2",
+      "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+      "source_manifest_sha256": "278e4d90b81410c35915d6dc91c5a90dbe2dea878ec34445612f44031e03adf5",
+      "checks": "release build, three actual CLI tests, Clippy -D warnings"
+    },
+    "final_engine": {
+      "label": "registry-engine-roots",
+      "source": "fc695d28d82f79a258b14df7de249d7183d8b746",
+      "build_source": "fc695d28d82f79a258b14df7de249d7183d8b746",
+      "status": "PASS_HISTORICAL_INGEST_LOOKUP",
+      "captures": 113,
+      "capture_sha256": "e067158d25f98a8aa8cd044610567bab084d0974aa74e9566ed00420eea61a7f",
+      "cases": [
+        {
+          "name": "history-original",
+          "status": "PASS",
+          "expected": "complete-original-registration",
+          "control_tables": 69,
+          "native_rows": 17
+        },
+        {
+          "name": "history-identical-retry",
+          "status": "PASS",
+          "expected": "complete-original-registration",
+          "control_tables": 69,
+          "native_rows": 17
+        },
+        {
+          "name": "history-instance",
+          "status": "PASS",
+          "expected": "WrongDeployment",
+          "control_tables": 69,
+          "native_rows": 17
+        },
+        {
+          "name": "history-new-heads",
+          "status": "PASS",
+          "expected": "complete-original-registration",
+          "control_tables": 69,
+          "native_rows": 17
+        },
+        {
+          "name": "history-missing-slot",
+          "status": "PASS",
+          "expected": "InvalidMetadata",
+          "control_tables": 69,
+          "native_rows": 17
+        },
+        {
+          "name": "history-missing-domain",
+          "status": "PASS",
+          "expected": "InvalidMetadata",
+          "control_tables": 69,
+          "native_rows": 17
+        },
+        {
+          "name": "history-source-incarnation",
+          "status": "PASS",
+          "expected": "InvalidMetadata",
+          "control_tables": 69,
+          "native_rows": 17
+        },
+        {
+          "name": "history-policy-schema",
+          "status": "PASS",
+          "expected": "HeadsChanged",
+          "control_tables": 69,
+          "native_rows": 17
+        },
+        {
+          "name": "history-ambiguous-slot",
+          "status": "PASS",
+          "expected": "InvalidMetadata",
+          "control_tables": 69,
+          "native_rows": 17
+        },
+        {
+          "name": "history-zero-predecessor",
+          "status": "PASS",
+          "expected": "complete-original-registration",
+          "control_tables": 69,
+          "native_rows": 17
+        }
+      ],
+      "tree": "b7b1db9f1cb1c9905b7a5503a4ae52dbdc76954c",
+      "state_comparison": "Every call preserves all69 Control tables including xmin and all17 native rows/sequence. Installed original null and sealed-empty-zero predecessor stores each independently verify two exact original inputs/receipts. Changed heads2 retain original revisions1, digests, Control tuple and window32. Root replayed all ten original captures and both full native/input oracles.",
+      "raw_root": ".research/implementation/ingest-recovery-20261002/registry-engine-roots"
+    },
+    "planned_cases": [
+      "installed original complete registration and identical retry",
+      "wrong configured instance",
+      "new current config/policy heads retain original attribution",
+      "missing slot/domain, mismatched source incarnation, unknown policy schema, ambiguous second slot",
+      "absent versus zero predecessor"
+    ]
   }
 }

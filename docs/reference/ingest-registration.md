@@ -57,7 +57,7 @@ rows and actual COMMIT/lock schedules. Product Control bootstrap, durable policy
 native activation, successor/recovery registration and first signed-event
 admission remain separate work.
 
-## Historical registration lookup (implementation in progress)
+## Historical registration lookup
 
 The installed recovery consumer must reconstruct the original registration from
 the exclusively held native manifest and retained PostgreSQL rows. The selected
@@ -81,7 +81,14 @@ This initial loader refuses noninitial owner epochs. It does not close a produce
 resolve missing outcomes, establish recovery provenance or activate a successor.
 Existing connected recovery revalidates the complete registration under fresh
 Control authority before any effect. No SQL migration or native format changes.
-Actual PostgreSQL fixtures are required before this read is qualified.
+The [historical lookup evidence](../implementation/evidence/p02-ingest-registry-native-20260918.json)
+records ten actual PostgreSQL 16.15/RocksDB 11.8.1 cases at `fc695d2`, using two
+installed initialized stores. All 69 Control tables and 17 native rows remain
+unchanged per read. Original heads survive changed current revisions, and null
+versus zero predecessors are distinct. Missing/ambiguous registration, changed
+source identity, unknown policy schema and wrong instance refuse. This verifies
+bounded attribution only: historical setting validation, blocked-query cancellation,
+installed recovery and successor activation remain separate requirements.
 
 ## Same-Control scheduling renewal
 

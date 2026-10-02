@@ -12,340 +12,136 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main87ed207 is four unpublished candidates ahead of pusheda10455c. Root
-owns the historical-registry loader, engine fixtures and evidence/inventory edits;
-no merge/rebase or active BigBrotr build/lab. Product3a7f884 is now
-native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
-Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
-three Python files differ. The positive installed signed publication journey PASS
-is bounded, not whole-product/M1 completion. Root reviewed all new owning files
-and fixture/oracle consumers, replayed the independent census locally and matched
-exact source archives. Read-only review found no remaining concrete blocker in
-this boundary; complete failure/recovery and native worker internals were outside
-that review. Root separately inspected the actual cut worker for startup usage.
+Primary main at `fc695d2` is five unpublished candidates ahead of pushed `a10455c`.
+Root owns only the closing evidence/reference/task/inventory/checkpoint edits.
+No merge/rebase, independently edited source, active agent or BigBrotr lab/build.
+Native inspection `20e0e5e` and its qualification `a10455c` are already pushed.
+Next commit these reviewed historical-registry results, push normally and verify
+remote equality; the checkpoint cannot contain its own future commit hash.
 
-Evidence: [initial Archive report](evidence/p02-initial-archive-native-20261002.json),
-inventory implementation_network_20260928.initial_archive and ignored
-.research/implementation/initial-archive-20261002/{publication-build,reader-red,
-reader-build,reader-green,publication-final}. Original failures stay FAIL:
-2ae1866/81344be accepted a wrong reader password through initialized/two durable
-requests (zero Archive attempts at detection); 3a7f884's four-case matrix passed
-all three reader refusals and the signed native/readback journey, then its final
-fixture role assertion compared a PostgreSQL JSON OID string to an integer.
-640897e corrects that comparison and reruns only the affected signed journey;
-three unchanged reader negatives are not mechanically repeated. Earlier single-
-budget RED and baseline role refusal remain in the same report.
+## Active responsibility and next bounded action
 
-## Active responsibility and next action
+M1/P01-T09 Step4 needs restart/resend with unchanged first admission and provenance
+off. Concrete prerequisites are P02-T01 Step5/P02-T02 Step4: positive exclusion,
+original request resolution and explicit successor authority. Whole adjacent
+Discovery/Monitor/Ranker services are not prerequisites for this journey.
 
-P01-T09 Steps1–3/P02-T04 Steps2–6 now have a bounded installed signed socket→
-durable admission→timer publication→captured-frontier→independent native readback
-journey. Four exact complete source batches1–2,3,4–7,8–12 produce snapshot5 and
-four original retained headers. All49 native rows/four original producer inputs/
-receipts and twelve scientific rows match independent literal/oracle encodings.
-65 real HTTP job-status observations coexist with renewal; quiet SIGTERM-to-
-observed-termination is0.054644081s, exit0. Native Archive owner remains retained
-and naturally expires; original Control is explicitly released. No EOSE/job
-completion, pending ACK/reclaim, source closure, readiness or capacity claim.
+The historical loader prerequisite now has bounded native/engine evidence:
 
-Three actual startup refusals (wrong password, missing reader roots, missing
-reader SELECT) preserve all69 Control and32 catalog tables and create no Ingest
-store. Startup performs actual empty native cut authentication under its capture
-barrier, on the joined preparer before Control acquisition. Fixed minimum512MiB
-worker checks deployment only; accepted documents select policy before fresh
-registration. The signed journey's staged publisher=false/window129 correctly
-uses accepted publisher=true/window32. Both accepted initial windows must be≤128;
-prospective full-cut wire/allocation preflight precedes issuance/native publication.
-Prior Archive owner/consumer/attempt history and missing SQL privileges refuse
-in the source-reviewed migration16 startup gate; their specific installed negative
-cases still need practical evidence. No existing migration/format changed.
+- Native inspection `20e0e5e`/tree58ea8430:12 actual RocksDB tests, CLI/probe build
+  and Clippy. Full retained identity, same-process and real second-process LOCK
+  refusal/release, malformed/foreign/missing manifests and resource refusals.
+  Logical rows survive; native housekeeping may change. Strict reopen still
+  compares the complete identity. IngestRecovery cannot become fresh admission.
+- Registry lookup `fc695d2`/tree `b7b1db9f`: release build, 3 actual CLI entrypoint tests,
+  Clippy and 10 actual PG 16.15/RocksDB 11.8.1 cases. Two stores are initialized and
+  renewed by the installed CLI. All 69 tables/xmin and 17 native rows/sequence
+  remain unchanged per read; both original two-request/input/receipt sets match
+  independent full native oracles. Original Control is released, so history is
+  metadata, not a grant. New heads 2 retain original revisions 1/digests/window 32.
+  Null and sealed-empty-zero predecessors remain distinct. Wrong instance,
+  missing slot/domain, wrong source incarnation, unknown policy schema and an
+  ambiguous second slot refuse. Identical retry preserves complete state.
+- Root rehashed all 1700 exact engine source files, 113 captures and final CLI/probe
+  artifacts; replayed every original response/state comparison and both native
+  seed oracles locally. Final CLI `63e4f841`/probe `10486ce3`; full hashes in the report.
+  No independent AI review at this boundary. Complete owning loader/registry,
+  native manifest/store, recovery callers and changed fixtures were read.
 
-Structural decision: focused initial_ingest/archive and archive/native owners,
-with shared concrete CommandOwner renewal/HTTP helpers. No generic orchestration
-framework, new crate or backend trait. LocalCoordinator stays owned (Send,!Sync);
-actual driver futures and owned ReaderCustody retain exclusion. Every blocking
-worker is collected on signal/error; transport failure cannot detach its work.
-Application/native budgets remain separate; HTTP/password work has its own slot.
-First publication follows the accepted30s timer; pending batches drain with250ms
-gaps. Immutable retained reader material and full-cut construction are reused.
+Evidence: [native store report](evidence/p02-ingest-store-linux-20260918.json)
+historical_inspection_20261002 and
+[registry report](evidence/p02-ingest-registry-native-20260918.json)
+historical_lookup_20261002. Inventory implementation_network_20260928.
+ingest_recovery_inspection/ingest_history. Ignored recipes/captures are under
+.research/implementation/ingest-recovery-20261002. Native logical test stores are
+temporary; installed stores, original inputs and deliberate PG fault clones stay
+retained. No old report was relabeled or migration/native format changed.
 
-Export disk prerequisite now satisfied by bounded cache retirement, without
-lowering its64GiB reserve. Removed only out/build/{target,cargo-home} under
-cursor-lifecycle-a11bcac/dd406a2, cursor-runtime-6474cd3,
-cursor-enrollment-9b02bd9, cursor-rotation-e684915, export-runtime-8dbd3c4,
-export-responsive-46ac18b and export-adapter-1a80a48. Free before49,929,592,832B,
-after72,217,153,536B (observed+22,287,560,704B, concurrent writes included).
-All1117 container projections unchanged;8 unrelated running. Final ELFs retained
-outside caches and all remaining regular files hash-verified. Original outcomes,
-source, all datasets/fault states and protected/current inputs preserved. Receipt
-and recipe are under existing ignored cache-retirement-20260928; inventory
-implementation_20260917.cache_retirement_20260928.tux_export_20261002 owns details.
-Do not rerun this recipe. Mac3,013,836KiB free: no local Rust build.
+Original failures remain recorded: `986c0f3`/`2e69b67` compile REDs at absent APIs;
+local registry-red launcher chose the wrong profile directory and exact-source
+preflight refused before engines. f35882c compiled but an old CLI test expected
+role wording from before optional Archive; updated the exact expectation and
+added four omitted-role refusals. 17dd712 compiled/Clippy/3 tests passed, then its
+engine fixture wrongly assumed legacy dataset 1/instance 2; native inspection
+refused ManifestMismatch before the lookup. 87ed207 fixture referenced nonexistent
+InstanceId and failed compilation; the finite client now parses its configured
+nonzero 16-byte instance. These fixture changes did not weaken product guards.
 
-The next installed consumer is now qualified for this small journey:
-product3a7f884/tree82a658df, fixtureb7b60f9/treee4e16479. After the original
-publisher stops, ordinary --roles control authenticates three separate scope
-grants, reads the complete signed event and completes one exact-ID JSONL export.
-The file is353 bytes, SHA71fcfc6cf6ea29b2464cfe9f41aa749180b4f458b79b44779f94bc65880eefa9;
-complete manifest/SQL inventory and original49 native rows/four requests/headers
-match independent oracles. All69 tables checked; old scientific/acquisition rows,
-32 catalog tables/global roles/archive data/state remain unchanged. Ordinary
-read/export releases its fresh readers and leaves no new scratch; its original
-export pin remains active. Ten original empty preparation directories survive.
-Initial SIGTERM termination0.055129168s; ordinary Control lifetime4.880961419s,
-exit0. 253 capture files/all1697 source files/four headers verified and replayed.
+Structural decision: native inspection shares the existing exclusive-open path.
+A focused registry module reconstructs bounded fields with named multiline SQL
+and small decoders, then reuses the complete existing observer/lock checks.
+No duplicate ledger, persistent receipt, generic backend trait or framework.
+The read confirms rollback before returning; metadata is revalidated by connected
+recovery before effects. Historical settings semantics are not validated by this
+metadata read. No indexed/aged-history capacity or blocked-query cancellation
+claim; caller deadline, connection driver and native custody remain required.
 
-Original failures remain FAIL:49b8113 left the read cap64MiB below its documented
-740,425,728B native admission, so history429 preceded export;0d38738 completed
-signed export but its final oracle wrongly required revoked browser sessions to
-survive new login;03f8c6b completed export/catalog/roles/file checks but expected
-empty scratch instead of original preparation directories. Corrected oracle-only
-replay rejects seven altered captures; no product protection was changed. A local
-replay invocation omitted setup.catalog; corrected invocation used original captures.
-Evidence/inventory: existing initial Archive report installed_export and
-implementation_network_20260928.initial_archive.installed_export_20261002.
-Ignored captures: initial-archive-20261002/{export-first,export-native-profile,
-export-final,export-complete}. No Rust rebuild; exact3a artifacts are reused.
-Read and export operation caps are1GiB, application1GiB/native2GiB, output256MiB.
-Five exports under256MiB remain NOT_RUN, not qualified by this path.
+Next bounded action: implement the explicit installed positive-recovery consumer
+using configured roots, the new loader and existing close/resolve methods under
+a fresh Control owner. First read its actual CLI/runtime/configuration owners and
+owning recovery contracts, select the command spelling there, and write an
+independent installed fixture. Keep the complete original request set bounded;
+missing reservation/input/receipt stays Unresolved. Test unchanged retries,
+current-policy changes, cancellation/driver joining and held native exclusion.
+Do not make a read, lease expiry or old directory writable by ordinary Serve.
 
-Structural decision at this boundary: reuse existing ordinary Control, grant,
-history and export adapters unchanged. Focused fixture client/host/oracle files
-express the new real consumer without a product framework or migration. Complete
-owning files and affected callers were inspected; transaction/custody/COMMIT
-semantics were not refactored during this integration qualification.
+Successor activation additionally requires original input/outcome closure, durable
+source closure/topology handoff and explicit owner/domain/producer retirement.
+Strict WAL reopening does not prove absence of silent complete-tail loss; retain
+that recovery-provenance limitation and never infer a negative outcome from
+missing detail. Native epoch/producer 1 and zero ACK/retirement limitations remain.
+These are concrete remaining M1 prerequisites, not permission to finish all
+adjacent subsystems before wiring useful consumers. No task checkbox closed.
 
-Next useful M1 deliverable remains Ingest restart/resend with unchanged original
-admission, P01-T09 Step4, needing P02-T01 Step5/P02-T02 Step4 positive exclusion,
-original-request resolution and successor activation, not full adjacent services.
-Managed-window correction now PASS under product14d18e1/tree043acc86:
-file seed1 with accepted configuration64/security32 initializes effective32,
-renews both owners beyond the first deadline and exits0 after6.435320777s.
-All17 original native rows/two inputs and both receipts independently match;
-fresh reinitialization refuses the same directory with native/SQL unchanged.
-Accepted configuration1 or policy1 still refuses InvalidPolicy with all69 tables/
-xmin unchanged. The focused three-case actual CLI/PG16.15/Rocks11.8.1 run passes.
-Build/Clippy and13 native custody/budget/cut/supervision tests pass; no capacity
-or complete M1 claim. Root verified1697 source files,21 build/68 engine captures
-and replayed the positive oracle with three discriminating capture mutations.
+## Latest resources and maintenance
 
-Original failures remain: fixture12759f8 on64-table template and02fb010 on current69
-reproduce the old seed refusal under product3a7f884. Candidatebc0e22f compile FAIL
-because renewal still called the renamed helper;13 captures retained, not19.
-Full initial_ingest/commands/policy-restoration/basis owners and relevant Control
-acquire/snapshot/registry callers now inspected. The roots/accepted-profile split
-retains >=2 at acquisition, basis and renewal without touching custody, expiry,
-minimum accepted limit, Sync/Archive bounds or COMMIT. Review also corrected a
-proposed documentation statement: declarative edits remain staged at Serve;
-digest equality belongs to explicit first activation. No declarative behavior change.
-No generic framework, persistent format or migration change.
+Build runs/ingest-history-fc695d2 and engine ingest-history-engine-fc695d2 are
+STOPPED/RETAINED; engine ownerad7114fc0cdcc30906c3432b6a85a836, client7c01a19e.
+Borrowed PG71775507 is stopped, shared compiler1154757 released, no OOM or unrelated
+changes. All exact owners/IDs are in the inventory. Eight unrelated containers
+remain running. Latest Tux 70,024,347,648B free, Mac 2,621,376KiB free. No local Rust
+build or new cache deletion. Recheck headroom before the next allocation.
 
-Evidence: p02-dictionary-append-native-20261002.json installed_private_scope.
-managed_window and inventory initial_private_scope.managed_window_20261002.
-Ignored initial-archive-20261002/{window-red,window-current-red,window-build,
-window-build-final,window-green}; original outcomes/source/native inputs and DBs
-retained. Latest build archive-worker-budgets-14d18e1 ownerb62f6e5b359c929a56725382199076da,
-engine installed-ingest-windows-14d18e1 owner3cc1af2ec71cbd387a9c246649ac14b6;
-all owned clients/builds and borrowed PG stopped, no OOM or unrelated changes.
-Tux71,100,817,408B free, Mac2,713,288KiB. Compiler1154757 released; no local build.
+Owner-requested cache retirement remains complete; do not replay old deletions.
+The later export prerequisite also retired only 16 target/cargo-home directories
+under cursor-lifecycle-a11bcac/dd406a2, cursor-runtime6474cd3,
+cursor-enrollment9b02bd9, cursor-rotatione684915, export-runtime8dbd3c4,
+export-responsive46ac18b and export-adapter1a80a48. Observed free space increased
+49,929,592,832B→72,217,153,536B, including concurrent writes/shared blocks.
+All 1305 final ELFs and 34371 outside files retained/hash-verified; 1117 container
+projections unchanged. Inventory cache_retirement_20260928.tux_export_20261002
+and ignored cache-retirement-20260928 own receipt/recipe. No dataset cleanup.
 
-Next bounded action for P01-T09 Step4/P02-T01 Step5/P02-T02 Step4: implement the
-bounded historical registry/manifest loader needed by the existing recovery
-resolver, then wire it to an explicit installed recovery consumer. Current API
-requires complete InitialRegistration and manifest from an external fixture;
-installed startup persists neither as a standalone restart receipt. Reconstruct
-only preserved authoritative fields, validate full original policy/registration
-and preserve missing/zero/partial distinctions. Historical IngestRecovery can
-hold positive native exclusion and close/resolve original requests, but cannot
-be converted into fresh admission. This loader is a concrete prerequisite to
-successor activation, not a demand to finish full adjacent services or ACK/GC.
+## Latest useful installed journey
 
-Read so far for that next responsibility: complete ingest-store and registration
-references, producer-request-inputs contract, Rocks store/producer closing/recovery,
-PG producer closing/recovery/initial basis and InitialRegistration definitions,
-observe_locked/require_closing_registration. Full ingest_registry, manifest codec/contract, rocks_store tests and relevant
-source-cut/producer/exclusion contracts have now also been read. Native inspection
-contract is recorded in ingest-store.md; two actual-binding regression fixtures
-are written before the API exists. They cover full retained tuple, same-process
-and actual second-process exclusion, unchanged application records, foreign
-dataset, missing/unknown/oversized manifest and resource refusal. A focused
-ingest-recovery profile reuses the existing exact-source/cache/terminal runner.
-Actual native RED986c0f3 failed compilation at the absent inspect API (exit101);
-no engine tests ran. Eleven captured files and all1697 source files matched hashes.
-Native GREEN20e0e5e/tree58ea8430 passes12 actual RocksDB tests, CLI/probe build
-and Clippy. Independent child process refuses held LOCK and succeeds after drop;
-full historical identity and logical rows survive. Strict reopen still checks
-all coordinates, and no recovery-to-admission conversion exists. Root verified
-all1697 source files/15 captures and retained test/CLI/probe executable hashes.
-Report: p02-ingest-store-linux-20260918.json historical_inspection_20261002; inventory
-implementation_network_20260928.ingest_recovery_inspection. Both RED and GREEN
-are stopped/retained, no OOM/unrelated changes. GREEN owner8709104e341845596562d6210773c5be,
-root ingest-recovery-20e0e5e. Tux70,842,552,320B free; no local build/cache deletion.
-Structural decision: one shared existing-open path; fixed manifest decoding stays
-under native exclusion, without another receipt, trait or persistent format.
-Native RED2e69b67 now fails E0425 at absent load_historical. Original launch setup
-failure used the wrong profile root; preflight refused before engine work, logs
-retained. Corrected initial-ingest-2e69b67 owner579cbfc5d275d43622bdb834803951bc
-is stopped/retained;11 captures/1698 source files verified. Tux70,712,152,064B free.
-Loader compiled atf35882c; initial-ingest profile then exposed a stale entrypoint
-assertion (old role-selection wording before optional Archive). Two cases passed,
-one failed; remaining checks NOT_RUN. Original12 captures retained. Fixed only
-that expectation and added four actual omitted-role refusals. Focused ingest-history
-profile runs build, those three entrypoint tests and Clippy; it avoids the unrelated
-initial-ingest suites accidentally selected previously. Next run this candidate
-then bindings.py --ingest-history. Build17dd712 passed compile,3 CLI tests and
-Clippy. First engine wave initialized/renewed the real installed store, then probe
-failed ManifestMismatch because its fixture still assumed legacy dataset1/instance2.
-Actual installed IDs are random and must be passed as configured roots. Corrected
-fixture arguments only; product guard remains unchanged. All69 tables/native rows
-unchanged across refusal. Engine STOPPED/RETAINED owner ee5d94864d996fe7217c5d91a6522c8a,
-root ingest-history-engine-17dd712;36 captures/1700 source files verified. No OOM
-or unrelated changes; Tux70,434,107,392B. Next rebuild corrected probe and execute
-the ten-case wave; registry outcomes still NOT_RUN. Candidate87ed207 failed
-compilation because the fixture referred to a nonexistent InstanceId; corrected
-to a bounded plain16-byte decoder. Original11 captures retained, no engine run. No fresh
-admission or installed recovery command is qualified by a metadata read. Read source/topology/allocation/producer
-DDL and reservation guard; complete registry and close/resolve owners inspected.
-Registry loader and source/topology/producer SQL reading follow this native boundary. Source epoch closure,
-recovery provenance, old-owner exclusion, bounded retained-input set and exact
-COMMIT ambiguity must remain explicit; do not infer noncommit from missing detail.
+P01-T09 Steps1–3/P02-T04 Steps2–6/P08-T04 Step3 have bounded signed acquisition→
+durable admission→timer publication→captured frontier→ordinary private history→
+JSONL export evidence. Product3a7f884/tree82a658df, final fixtureb7b60f9/treee4e16479.
+All 49 native rows/four requests/twelve scientific rows and four batch headers
+match independent encodings. Complete source batches1–2,3,4–7,8–12 yield snapshot 5.
+After publisher stop, ordinary --roles control uses three explicit scope grants
+and exports 353 bytes SHA71fcfc6cf6ea29b2464cfe9f41aa749180b4f458b79b44779f94bc65880eefa9.
+All69 Control/32 catalog tables and retained filesystem state are checked.
+Initial SIGTERM termination 0.055129168s; ordinary lifetime 4.880961419s, exit 0.
+Read/export operation caps 1 GiB; five exports under 256 MiB remain NOT_RUN.
+[Initial Archive report](evidence/p02-initial-archive-native-20261002.json) and
+inventory initial_archive.installed_export_20261002 own original failures and
+qualified artifacts. Preserve all four export labs and original preparation dirs.
 
-M1 remains INCOMPLETE: online indexing, successor/replay, restart/resend/provenance-
-off, outages and bundle installation. Initial native custody cannot be adopted by
-fresh Serve. Publisher signal/crash/COMMIT/dependency/resource cases remain
-NOT_RUN for this composition; prior-empty-frontier/missing-frontier-privilege
-startup negatives still need installed evidence. No whole-task checkbox closed.
+Managed-window correction14d18e1/tree043acc86 also passes native build/Clippy/13
+scoped tests and three installed cases on 69-table schema: file seed 1 with accepted
+configuration 64/security 32 initializes/renews effective 32, then identical fresh
+initialization refuses unchanged. Accepted configuration 1/policy 1 still refuses.
+[Dictionary report](evidence/p02-dictionary-append-native-20261002.json)
+installed_private_scope.managed_window owns results and original compile/REDs.
+Renewal retains accepted-profile validation; declarative edits still stage at Serve.
+No generic orchestration framework or transaction/custody refactor was introduced.
 
-All latest Tux labs/borrowed PG STOPPED/RETAINED; no OOM/cleanup errors/unrelated
-changes. Latest root installed-archive-export-b7b60f9, owner and exact IDs in
-inventory; preserve all four export labs, signed stores/data/state/scratch/outputs,
-protected credentials and catalog/Control clones. Product build remains
-archive-worker-budgets-3a7f884 owner48a81820eef00c42f8cf252c2bac5851, retained ELFs
-outside shared cache. Tux71,939,813,376B free, Mac2,817,332KiB; eight unrelated
-containers unchanged. No local Rust build. Recheck headroom before next allocation.
-
-[Installed Sync evidence](evidence/p03-initial-sync-native-20261002.json) owns:
-
-- Productc460bba/tree0d0475721b8b29af2e506bbeefa60b4747964c9b compiled/Clippy PASS.
-  Fixtureb61f345 passes nine actual CLI/HTTP/PG/Rocks cases: signed/forged/duplicate,
-  malformed/signed-out-of-selector/valid, quiet, public-envelope no-dial and five
-  isolated headless prerequisite refusals. Complete native49/35/17-row oracles,
-  exact inputs/receipts, all69 SQL tables/xmin and same-owner renewal are checked.
-  Quiet SIGTERM-to-observed-termination0.0538–0.0543s, exit0. No EOSE/checkpoint/ACK.
-- Producte4ee0f5/treee98d46a5a1f56998393ac929626a3db54457ff38 compiled/Clippy PASS.
-  Both absent visibility99 and unsupported original private2/public1-envelope
-  cases preserve17 native rows/two inputs, zero TCP, renewal/status/logout/exit0.
-  The fix yields only completed-read None and initial read-only preparation
-  InvalidInput. Corruption, resource, authority and uncertain-delivery errors stay
-  fatal. Reviewer inspected reachable error mappings; engines were root-owned.
-- Fixture2b976c3 uses the same e4ee0f5 binaries. Real500ms HTTP acceptance was
-  observed accepted/unowned before natural PostgreSQL expiry. Exact-owned SIGSTOP
-  lasted0.658881737s, SIGCONT occurred within original leases. All69 tables equal
-  across expiry; original acceptance/xmin and absent producer attribution survive
-  later120s job at admissionordinal2, valid event/49rows/four requests and quiet
-  SIGTERM0.055300023s. This qualifies the observed suspension schedule only.
-  A pre-start SQL seed was rejected as a fixture design: fresh namespace/scope
-  identities do not exist before installed bootstrap. No deadline/guard was edited.
-- Fixture e7d1eae/tree 7df3abfa4d83d48579dae1c51328e52628e7faa9 reuses exact
-  e4ee0f5 binaries; both four-slot cases PASS. After original requests1–4 are
-  observed durable, a distinct signed kind1 event creates no fifth request;
-  a new endpoint/scope/job is claimed queued2 but performs no attribution append
-  or 7448 TCP. Later original-event rounds, renewal, HTTP/status/logout and quiet
-  SIGTERM pass; 17 socket rounds each, termination 0.055174797/0.055507269s.
-  All 49 native rows/four original inputs/receipts and producer rows/xmin survive.
-  Root replayed both complete oracles and all 69-table transitions from 163 captures
-  and matched exact source archives. Local replay initially omitted the new clock
-  argument; the corrected invocation used original renewed.json, without rerunning
-  or changing the native evidence. No ACK, physical-WAL or capacity claim.
-
-Original failures are retained: ef248a8 CLI refused explicit Sync selection;
-557d572 compile failed AcquireError→StdError; c460bba first signed case passed but
-next quiet fixture bind failed EADDRINUSE (whole wave FAIL). Original namespace
-was already stopped, so TIME_WAIT was not directly inspected there. Local real
-established-connection RED/GREEN justified SO_REUSEADDR; three sequential rebinds
-pass and two live-listener conflicts still refuse.717d6ec/c460bba absent-visibility
-RED exited4 after1.015s; its second case was NOT_RUN due fail-fast. No original
-result was relabeled. Earlier28ca931 build/Clippy+123 tests predates later fixes;
-unchanged broad suites were not mechanically repeated.
-
-Root hash-verified exact source archives and captures, replayed all three first-wave
-event/quiet native oracles and the expiry oracle against original CBOR/receipts and
-SQL.322 first-wave captures,23 input files,74 visibility captures and67 expiry
-captures retained. All exact identities in evidence/inventory; originals under
-.research/implementation/installed-sync-20261002. Evidence is bounded to these
-actual small workloads, not capacity or aged-state acceptance.
-
-Structural decision: native Custody retains concrete optional Sync, whose Dispatch
-borrows existing Control/store/spec/budget/cancellation. Observation preparation
-and finite protocol receive have focused modules. Existing transaction adapters
-retain reservation/commit/rollback semantics; no generic scheduler/backend trait,
-new persistent format, alternate allocator or duplicate implementation was added.
-Full changed owners and relevant callers were read; read-only AI review found and
-root corrected pre-attribution privacy leakage, missing headless helpers/history,
-peer-local fatal errors, full-window dictionary deferral and visibility isolation.
-The two focused window cases now exercise the earlier deferral correction.
-
-Preserve these invariants in subsequent work:
-
-- Explicit selected roles activate Sync; configured enablement alone does not.
-  Both accepted documents require Sync, at least4 outstanding slots and <=256KiB
-  events. The acceptance-only control,ingest profile stays available.
-- Prepare configured numeric DNS and DER roots under the supervised owner. Reserve
-  TLS4MiB, source/scope, visibility, dictionary, frames and effects in the same
-  budget;16 added logical items are not an RSS/capacity promise.
-- Probe actual migration catalog and execution/source/scope/history privileges
-  before startup publication, even without administration.
-- Keep original absolute renewal due through preparation, socket and effects.
- 250ms gaps permit HTTP; renewal has priority. Pre-callback DNS/TCP/TLS only have
-  the hard deadline; no graceful soft-cutoff guarantee is claimed there.
-- Reuse committed observation without producer requests. Receipts never free slots.
-  Unknown outcomes stop the owner and retain original effect identity. Cooperative
-  quiet cancellation drops protocol/socket and completes rollback; native/hard
-  deadlines retain the parent watchdog and fail-stop behavior.
-
-No Tux run is active at this checkpoint. Installed Sync builds/engine waves
-and borrowed PG are STOPPED/RETAINED with empty unrelated-change/cleanup
-reports. Inventory: implementation_network_20260928.installed_sync. Latest observed
-Tux52,197,584,896B free; Mac3,121,816KiB. No local Rust build or new cache deletion.
-Keep the retained e4ee0f5 CLI/probe artifacts outside the shared mutable cache.
-
-## Latest qualified boundary
-
-Configured transport component P04-T02 Steps1/3 supplies the actual selected
-transport inputs for that next installed consumer. Product ef248a8, tree
-2abc38795ae337c4cd105da5bf9f25bbf49917f6: native build/Clippy and28 tests PASS
-(7 CLI/filesystem,14 actual direct DNS/TLS,7 PostgreSQL settings). Explicit numeric
-DNS root is offline-validated and excluded from policy bytes. Runtime DER paths
-are read sequentially with128 files/1MiB total and retained shared4MiB logical
-grant. Existing public-file reader extracted unchanged behind PG error mapping;
-no schema migration, service framework or duplicate file implementation.
-
-Actual TLS succeeds with loaded CA files removed before handshake; wrong roots
-and original names fail before protocol callback. Tests cover malformed/PEM/
-trailing/concatenated DER, FIFO/symlinks/nonregular/oversize, exact grant threshold,
-surviving clone, valid128 versus129 and aggregate-byte refusal. Generated schema/
-reference exactly match CLI. Synthetic long-serial root tests exercise parsing
-and aggregate size only, not a valid certificate signature. Exact upstream
-rustls0.23.45/webpki0.103.15/pki-types1.15.1 inspected by read-only reviewer.
-
-Evidence: [direct native report](evidence/p04-network-direct-native-20260928.json)
-configured_transport supplement; inventory implementation_network_20260928.
-configured_transport. Original captures:
-.research/implementation/acquisition-transport-20261002/{red,native,final}.
-Root verified1670/1671/1671 exact Git files and15/18/18 captures. RED25a5cbe has
-actual unknown DNS table and129-path acceptance failures. Intermediatee151ee1
-passes27 tests but its129-path assertion could be masked by missing input; final
-fixed that gap and added generated-consumer check. Original outcomes unchanged.
-AI review found no remaining concrete component blocker and ran no engines.
-Unchanged config CLI/recipe/private-route modules and entire generated docs were
-not reread by that reviewer. Installed constructor/dispatch remain outside scope.
-
-All three runs STOPPED/RETAINED. Final runs/acquisition-transport-ef248a8:
-PID1787542/start429865328, owner8b4c69a5391580975c319f9363d90acd;
-fetch8cca43aa/nativebb46e6da stopped0/noOOM. Audit04:48:03.504976UTC:
-1087 prior projections unchanged,8 unrelated running,compilerlock released,
-53,138,620,416B free. Final CLI SHA399e5b160dba9b238901ce413bd38280d436ac620ba60797188abab6a1096794.
-Latest Mac3,262,848KiB free; no local Rust build. No dataset/container/cache deletion.
+M1 remains INCOMPLETE: online indexing, successor/replay, restart/resend/provenance
+off, outages and bundle installation. Publisher crash/COMMIT/dependency/resource
+cases and prior-frontier/missing-frontier-privilege startup cases remain NOT_RUN
+for this composition. Full analytics/ranking, public/private/browser surfaces,
+website/blog, packaging/CI/CD and release journeys remain selected work.
 
 ## Relevant completed prerequisites
 
@@ -374,7 +170,7 @@ not a second backlog or duplicated checkpoint transcript.
   endpoint/scope/job command, authority-race and COMMIT reports retain precise
   custody/refusal/ambiguity results. No receipt grants a socket or adoption.
 - Original installed0815/0816 export journeys remain relevant. Five signed-event
-  exports under256MiB are NOT_RUN. MON-001/002/004/005/006/007/009/010 retain prior
+  exports under 256 MiB are NOT_RUN. MON-001/002/004/005/006/007/009/010 retain prior
   scoped closure absent new evidence. No current review finding is silently waived.
 
 M1/P01-T09 remains INCOMPLETE. Restart additionally needs successor/recovery
@@ -387,14 +183,14 @@ No complete acquisition task or phase checkbox closes at this boundary.
 
 Runs root /home/tux/bigbrotr-implementation-20260917/runs/. Shared compiler cache
 network-1154757/out/build/{target,cargo-home}, owner8b21a13162699a6038154874c2ac89da,
-uses exclusive .compiler-cache.lock. Latest14d18e1 intermediates; qualified ELFs
+uses exclusive .compiler-cache.lock. Latestfc695d2 intermediates; qualified ELFs
 are separate. Native image7e946a0c, Rust1.98.1,clang14/Rocks11.8.1,amd64 only.
 All exact IDs/manifests/owners are in the existing laboratory inventory. Check
 space/process/container/mount/cache dependencies before the next large allocation.
 
 Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec
 (namebigbrotr-implementation-pg-20260917-source_e06f580), owner
-5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, is stopped after the installed Archive wave.
+5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, is stopped after the historical registry wave.
 PG16.15/fsync/full_page_writes on. Preserve bb_source_template and every prior
 scope/source/transport/fault clone, exact native states and protected pg/secrets.
 Clone/verify before experiments; never publish secrets or repeat completed launchers.

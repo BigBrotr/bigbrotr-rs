@@ -36281,7 +36281,7 @@
     },
     "ingest_history": {
       "owner": "root",
-      "status": "RED_RETAINED_IMPLEMENTATION_PENDING",
+      "status": "PASS_BOUNDED_HISTORICAL_LOOKUP",
       "raw_root": ".research/implementation/ingest-recovery-20261002",
       "red": {
         "source": "2e69b67aca5ef7853eb42e2076e1fb75d33b75f7",
@@ -36316,7 +36316,7 @@
         }
       },
       "setup_failure_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-2e69b67",
-      "preserve": "All RED and setup failure sources/logs. No PostgreSQL work yet. Reuse shared1154757 compiler only under its lock; retain exact build artifacts outside it.",
+      "preserve": "All original FAIL/setup/compile results and final captures/sources, complete database clones including deliberately corrupted rows, both installed native stores and producer input files. All owned build/client and borrowed PostgreSQL containers stopped; shared1154757 cache released. No cleanup or unrelated changes.",
       "first_build": {
         "source": "f35882c3b9209b8ef533e4e5ff0bf2954aad9512",
         "tree": "c46f05888c5bb5a4cf3d197aa523b796dead2aff",
@@ -36439,6 +36439,80 @@
           "files": 1700,
           "captures": 11,
           "capture_sha256": "0b2c660252b69a2d96ab6af975950f4a02068d70848de8a90d8a804967c3d77a"
+        }
+      },
+      "final_build": {
+        "source": "fc695d28d82f79a258b14df7de249d7183d8b746",
+        "tree": "b7b1db9f1cb1c9905b7a5503a4ae52dbdc76954c",
+        "owner": "90d5374df1ca67647e0d794d802c23f3",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-fc695d2",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "7b29e9c95722c2873a9e8a9b5d10a7e64eb50bf7018098f60488589d29d73eb5"
+          },
+          {
+            "name": "native",
+            "id": "88be25ff0187162edc9c3bb3150054d21d77fee9249e6636aa8e6f2b9a808606"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-02T09:59:00.470934+00:00",
+        "qualification": "PASS_INGEST_HISTORY_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 70199869440,
+        "finished_at": "2026-10-02T10:00:25.440349+00:00",
+        "capture": {
+          "label": "registry-build-instance",
+          "source": "fc695d28d82f79a258b14df7de249d7183d8b746",
+          "files": 1700,
+          "captures": 15,
+          "capture_sha256": "b81dcecec5cdca526039edb58c69bf7400c987d7e68bf4020a3558f13c130b6e"
+        }
+      },
+      "final_engine": {
+        "source": "fc695d28d82f79a258b14df7de249d7183d8b746",
+        "owner": "ad7114fc0cdcc30906c3432b6a85a836",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "7c01a19e807963465ce6125f9e2e644525e22a93faac9c641a601887cd518cb2",
+          "name": "bigbrotr-acquisition-binding-fc695d2"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "status": "PASS_HISTORICAL_INGEST_LOOKUP",
+        "databases": [
+          "bb_scope_bind_fc695d2_history",
+          "bb_scope_bind_fc695d2_history_heads",
+          "bb_scope_bind_fc695d2_history_missing_slot",
+          "bb_scope_bind_fc695d2_history_missing_domain",
+          "bb_scope_bind_fc695d2_history_source_incarnation",
+          "bb_scope_bind_fc695d2_history_policy_schema",
+          "bb_scope_bind_fc695d2_history_ambiguous_slot",
+          "bb_scope_bind_fc695d2_history_zero"
+        ],
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "free_bytes_before": 70161715200,
+        "free_bytes_after": 70024384512,
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-engine-fc695d2",
+        "capture": {
+          "label": "registry-engine-roots",
+          "source": "fc695d28d82f79a258b14df7de249d7183d8b746",
+          "build_source": "fc695d28d82f79a258b14df7de249d7183d8b746",
+          "status": "PASS_HISTORICAL_INGEST_LOOKUP",
+          "captures": 113,
+          "capture_sha256": "e067158d25f98a8aa8cd044610567bab084d0974aa74e9566ed00420eea61a7f",
+          "cases": [
+            {
+              "name": "history",
+              "status": "PASS"
+            }
+          ]
         }
       }
     }
