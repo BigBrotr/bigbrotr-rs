@@ -28,6 +28,10 @@ def run(pg, client, output, database, name, rows, setup, initialized, before):
     catalog = catalog_rows(pg, setup['resource']['catalog_database'])
     roles = global_roles(pg)
     archives = {n: files(home / n) for n in ('data', 'state')}
+    # Initialization/publication retain their own empty preparation directories.
+    # Ordinary read/export must leave this original state unchanged.
+    scratch = files(home / 'scratch')
+    lab.write_json(output / (name + '-ordinary-scratch-before.json'), scratch)
     shown = invoke(client, output, name + '-export-settings', 'config', 'show', '--file', setup['config'])
     reserve = int(shown['settings']['runtime.disk_completion_reserve_bytes']['value'])
     assert reserve == 64*1024**3
@@ -66,15 +70,17 @@ def run(pg, client, output, database, name, rows, setup, initialized, before):
     final_catalog = catalog_rows(pg, setup['resource']['catalog_database'])
     final_roles = global_roles(pg)
     final_files = {n: files(home / n) for n in ('data', 'state')}
+    final_scratch = files(home / 'scratch')
     lab.write_json(output / (name + '-ordinary-catalog.json'), final_catalog)
     lab.write_json(output / (name + '-ordinary-roles.json'), final_roles)
     lab.write_json(output / (name + '-ordinary-files.json'), final_files)
+    lab.write_json(output / (name + '-ordinary-scratch-after.json'), final_scratch)
     from installed_archive_export_oracle import validate
     product = validate(before, after, home, initialized, setup['resource']['catalog_id'])
     assert final_catalog == catalog
     assert final_roles == roles
     assert final_files == archives
-    assert not list((home / 'scratch').iterdir())
+    assert final_scratch == scratch
     for db in (database, setup['resource']['catalog_database']):
         assert lab.sql(pg, db, 'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()') == '0'
     lab.write_json(output / (name + '-export-verified.json'), product)
