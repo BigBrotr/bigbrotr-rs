@@ -192,10 +192,10 @@ fn installed_bootstrap() -> EvidenceIntent {
 fn installed_manifest() -> IngestManifest {
     use crate::storage::rocks::manifest::AllocationNamespaces;
     let domains = [
-        DictionaryKind::VisibilityScope,
-        DictionaryKind::Observer,
         DictionaryKind::Endpoint,
+        DictionaryKind::Observer,
         DictionaryKind::AccessScope,
+        DictionaryKind::VisibilityScope,
         DictionaryKind::Method,
         DictionaryKind::Event,
     ]

@@ -12,28 +12,35 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mainab57a2ce3d0b6eb3f304481272d7b6596dea740a, origin5483db8; unpublished native
-candidates, root sole writer. Dirty root-owned dictionary append/tests, bootstrap
-replay, recovery, PG staging, profile, owning contract, inventory/checkpoint.
-Atab57a2c the native regression compiled and then FAILED precisely at bootstrap
-replay after successful append/reuse/reopen (StateMismatch, test114). Original
-log/source manifest and retained testELFshae99c3dde7ff94f2d0b13d11e43ed9dded56870f27f797daea72c5129a2571fa5
-are under runs/dictionary-append-ab57a2c/out/artifacts and local
-.research/implementation/dictionary-append-20261002/bootstrap-red. Initialf2a1618
-compile failure (wrong Endpoint import) remains in siblingred; it ran no native test.
+Maine28610e0e6cddff00371994bcc1c64e611901425, origin5483db8; three unpublished
+native candidates, root sole writer. Dirty fixture/profile/inventory/checkpoint
+fixes. Latest runs/dictionary-append-e28610e STOPPED/RETAINED, PID1605266/
+start428779964, ownerb3a77f9d4ccdb40aac58b76d1724702f. Actual native selection:
+62 PASS/5 FAIL; four new cases failed before native initialization because the
+fixture supplied unordered namespaces, one unchanged packaged archive-worker test
+lacked its bundle. The original bootstrap-after-append regression and timestamp
+boundary now PASS; existing event recovery tests PASS. No complete component
+qualification follows. CLI build/Clippy NOT_RUN. The native profile now explicitly
+selects changed dictionary/bootstrap/recovery owners; the actual packaged archive
+journey remains owed separately with its worker, not declared passed or skipped.
 
-Both runs STOPPED/RETAINED. LatestPID1600433/start428726940 terminal,
-owner23ea790b65d896ebdcda40ce0b037cbf; audit01:38:08UTC:1040 prior projections
-unchanged, eight unrelated running, compiler lock free,56,363,855,872B free.
-Exact owners/containers/source identities are in inventory.dictionary_append.
-No local Rust build. Current draft fixes bootstrap monotone allocation replay and
-post-bootstrap historical evidence dispatch. The complete pre-staging preview
-now uses the actual recorded timestamp; read-only replay has its own scratch floor
-instead of imposing the >48MiB write floor on existing40MiB event recovery callers.
-These two defects were found in independent read-only AI review and corrected
-before the next engine run. New regressions and all affected native store tests
-are NOT_RUN on the current draft. Next: review diff, exact-Git native candidate,
-then real PG append/observation/signed-event consumer and intern preparation.
+Original result/source/test ELF132b2b6ccfa7b848a286c1c75894ae2e7659c5012a401620a4404521ea0f0000
+are retained outside the compiler cache. Local originals:
+.research/implementation/dictionary-append-20261002/{red,bootstrap-red,native}.
+Audit01:47:20UTC:1042 prior container projections unchanged, eight unrelated
+running, compiler lock free,56,256,970,752B free. Exact resources in inventory
+implementation_network_20260928.dictionary_append. No local Rust build. Fix
+fixture namespace order, then execute the affected exact-Git native profile.
+
+Earlier ab57a2c compiled and reproduced the original bootstrap StateMismatch after
+append/reuse/reopen. Its exact source, original failure and test ELF remain in
+bootstrap-red/runs dictionary-append-ab57a2c; f2a1618 compile-path error remainsred.
+Independent read-only AI review found pre-staging validation missing, then the
+zero-time preview and an unnecessarily large recovery grant. Current code shares
+complete preparation before reservation and dispatch, using the actual recorded
+time; read-only recovery retains a separate closure ledger compatible with the
+existing40MiB event callers. Intern preparation and actual connected PG/observation/
+signed-event qualification remain next, with M1/product still INCOMPLETE.
 
 Bounded installed finite acceptance/status/COMMIT integration is qualified;
 P03-T01 Steps3/4 and P01-T09 Steps1/2 remain partial because execution/progress,

@@ -33146,7 +33146,7 @@
       }
     },
     "dictionary_append": {
-      "status": "BOOTSTRAP_REGRESSION_REPRODUCED_RETAINED",
+      "status": "NATIVE_FIXTURE_FAILURES_RETAINED",
       "local": ".research/implementation/dictionary-append-20261002",
       "scope": "P02-T03 fixed-reference append/replay prerequisite; no installed or recovery qualification",
       "red": {
@@ -33180,7 +33180,7 @@
           "free_bytes": 56470331392
         }
       },
-      "next": "Preserve original failure; implement monotone bootstrap replay, append recovery and pre-reservation validation, then broader native regressions.",
+      "next": "Fix namespace fixture ordering; select affected dictionary/bootstrap/recovery components explicitly. Packaged archive journey remains a separate required qualification with its actual worker.",
       "bootstrap_red": {
         "launch": {
           "source": "ab57a2ce3d0b6eb3f304481272d7b6596dea740a",
@@ -33211,6 +33211,38 @@
           "compiler_lock_released": true,
           "test_executable_sha256": "e99c3dde7ff94f2d0b13d11e43ed9dded56870f27f797daea72c5129a2571fa5",
           "free_bytes": 56363855872
+        }
+      },
+      "native_first": {
+        "launch": {
+          "source": "e28610e0e6cddff00371994bcc1c64e611901425",
+          "tree": "4bc22db200d319ad8d7d082e5254b54f1d646280",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/dictionary-append-e28610e",
+          "pid": 1605266,
+          "start_ticks": "428779964",
+          "bundle_sha256": "57b504651b1f75898b84b4fcb5d7d2d926222eb7e7b2bc4b6f35caafe9505030"
+        },
+        "owner": "b3a77f9d4ccdb40aac58b76d1724702f",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "b15f78a1bddd77a8c2c08d160a56cb9e81cd8eaa5c062abed7c23a734b379875"
+          },
+          {
+            "name": "native",
+            "id": "826bd5b15054042fbe8d262146ba097d98645752f0673ec6b2974247960ff569"
+          }
+        ],
+        "source_files_verified": 1661,
+        "result": "62 PASS, 5 FAIL: four new fixtures supplied unordered namespaces and failed before engine initialization; broad unchanged store selection included a packaged-worker test without its required bundle. Original bootstrap regression and timestamp case passed; existing event recovery passed. Build/Clippy NOT_RUN.",
+        "audit": {
+          "status": "TERMINAL_FIXTURE_FAILURES_RETAINED",
+          "observed_at": "2026-10-02T01:47:20.356240+00:00",
+          "prior_unchanged": 1042,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "test_executable_sha256": "132b2b6ccfa7b848a286c1c75894ae2e7659c5012a401620a4404521ea0f0000",
+          "free_bytes": 56256970752
         }
       }
     }

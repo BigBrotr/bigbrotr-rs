@@ -54,8 +54,13 @@ steps = [
 ]
 if mode == 'dictionary-append':
     identity['scope'] = 'Native dictionary append/replay components; connected and installed journeys remain separate'
-    steps.insert(0, ('dictionary-append', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
-                                         '--lib','storage::rocks::store::','--message-format=json','--','--test-threads=1']))
+    # These owners changed. Packaged Archive worker integration requires its
+    # separate mounted bundle and is not part of this native component profile.
+    steps[0:0] = [(name, ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                         '--lib',selection,'--message-format=json','--','--test-threads=1'])
+                  for name, selection in [('dictionary-append', 'dictionary_append_tests'),
+                                          ('bootstrap', 'bootstrap_tests'),
+                                          ('recovery', 'producer_recovery_tests')]]
 if mode == 'relay-arrival':
     identity['scope'] = 'Socket arrival fixture build only; unchanged retained/decode components already tested at cbc5f25'
 if mode == 'acquisition-jobs-faults':
@@ -204,21 +209,26 @@ if mode in ('observation', 'relay-transfer'):
     receipt['test_executables_sha256'] = executables
 if mode == 'dictionary-append':
     import re
-    content = (checks / 'dictionary-append.log').read_text()
-    summary = re.search(r'test result: ok\. ([1-9][0-9]*) passed; 0 failed; 0 ignored;', content)
-    assert summary, 'missing executed native test result'
-    executables = [message['executable'] for line in content.splitlines() if line.startswith('{')
-                   and (message := json.loads(line)).get('reason') == 'compiler-artifact'
-                   and message.get('executable') and message['profile']['test']
-                   and message['target']['kind'] == ['lib']]
+    counts, executables = {}, set()
+    for name in ['dictionary-append', 'bootstrap', 'recovery']:
+        content = (checks / (name + '.log')).read_text()
+        summary = re.search(r'test result: ok\. ([1-9][0-9]*) passed; 0 failed; 0 ignored;', content)
+        assert summary, 'missing executed native test result: ' + name
+        counts[name] = int(summary.group(1))
+        for line in content.splitlines():
+            if not line.startswith('{'): continue
+            message = json.loads(line)
+            if message.get('reason') == 'compiler-artifact' and message.get('executable') \
+                    and message['profile']['test'] and message['target']['kind'] == ['lib']:
+                executables.add(message['executable'])
     assert len(executables) == 1
-    source = Path(executables[0])
+    source = Path(executables.pop())
     assert source.is_relative_to(build / 'target') and not source.is_symlink()
     shutil.copy2(source, artifacts / 'dictionary_components')
     digest = file_hash(artifacts / 'dictionary_components')
     assert digest == file_hash(source)
     receipt['test_executables_sha256'] = {'dictionary_components': digest}
-    receipt['native_tests_passed'] = int(summary.group(1))
+    receipt['native_tests_passed'] = counts
 (artifacts/'build-result.json').write_text(json.dumps(receipt,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
 status = {'dictionary-append':'PASS_DICTIONARY_APPEND_COMPONENTS', 'relay-arrival':'PASS_RELAY_ARRIVAL_BUILD_ONLY', 'relay-transfer':'PASS_RELAY_TRANSFER_BUILD_ONLY', 'observation':'PASS_OBSERVATION_BUILD_ONLY', 'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',
