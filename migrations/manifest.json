@@ -173,6 +173,10 @@
     {
       "version": 27,
       "name": "0027_acquisition_abandonment.sql"
+    },
+    {
+      "version": 28,
+      "name": "0028_acquisition_gap_guard.sql"
     }
   ],
   "reserved": [

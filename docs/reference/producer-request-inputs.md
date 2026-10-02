@@ -538,3 +538,10 @@ queued intent plus untouched unclaimed intent, revoked historical actor/grants,
 and advanced checkpoint/missing0027 refusal. It checks70 tables/49 native rows
 and preserves the original signed catalog/files. Abandonment INSERT/COMMIT
 interruption recovery, relational negatives and64/65 limit remain NOT_RUN.
+
+Independent review and an installed HTTP reproduction at fixtureb14489d identified
+an ordinary-job grant regression introduced by0027. Additive0028 removes its
+redundant deferred jobs UPDATE trigger; the deferred gap INSERT check and terminal
+job immutability retain atomicity. The prior six abandonment observations remain
+valid for their scoped recovery grants. Corrective-schema ordinary acceptance,
+execution and raw gap atomicity verification are pending; see the same report.

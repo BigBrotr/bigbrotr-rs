@@ -268,6 +268,11 @@ if jobs_http:
         'session/credential changes' if job_actors else 'foreign actor and session/credential changes',
         'job delivery/execution/progress/recovery/M1', 'capacity/load/aged-state', 'arm64/release']
 
+if job_gap:
+    report['wave'] = 'installed-acquisition-gap-compatibility'
+    report['not_run'] = ['gap relational negatives and abandonment interruption/COMMIT recovery',
+        'producer/domain retirement, successor, ACK/GC and full M1', 'capacity/load/aged-state', 'arm64/release']
+
 if export_status:
     report['wave'] = 'ordinary-export-status-pre0022'
     report['not_run'] = ['positive export row decoding/execution (prior evidence remains separate)',
@@ -828,7 +833,8 @@ try:
     elif jobs_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from initial_jobs import ACTOR_CASES, CASES, EXPIRY_CASES, GAP_CASES
-        cases = list(GAP_CASES if job_gap else EXPIRY_CASES if job_expiry else ACTOR_CASES if job_actors else CASES)
+        cases = (['jobs-journey', *GAP_CASES, 'sync-signed', 'sync-gap-uncorrected'] if job_gap
+            else list(EXPIRY_CASES if job_expiry else ACTOR_CASES if job_actors else CASES))
     elif scope_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from scopes import CASES
@@ -917,6 +923,8 @@ try:
                 from installed_sync import run as run_installed
             elif export_status:
                 from control_status import run as run_installed
+            elif job_gap and name.startswith('sync-'):
+                from installed_sync import run as run_installed
             elif jobs_http:
                 from initial_jobs import run as run_installed
             elif scope_http:
@@ -933,6 +941,8 @@ try:
                 else installed_basis if name == 'registered-only' else 'bb_source_template')
             completed = clone(name, template_name)
             archive_context = dict(resources=report, save=save, build=build, built=built) if installed_archive else {}
+            if job_gap and name.startswith('sync-'):
+                archive_context = dict(gap_schema=27 if name == 'sync-gap-uncorrected' else 28)
             report['cases'].append(run_installed(pg,client,output,completed,name,rows,**archive_context))
             if name == 'pass': installed_basis = completed
             save()

@@ -14,7 +14,7 @@ from installed import messages, policy_setup, set_value, stop, terminal, wait_fo
 from sessions import configuration
 from registrations import upgrade as upgrade_registry
 from scopes import upgrade as upgrade_scopes
-from initial_jobs import released, unchanged, validate_job
+from initial_jobs import released, unchanged, validate_job, upgrade_gap_schema
 from installed_sync_oracle import ENDPOINT, SIGNED_SHA256, decode, expected
 from installed_sync_client import REFUSED_VISIBILITIES
 
@@ -265,14 +265,16 @@ while True:
     return selected
 
 
-def run(pg, client, output, database, name, rows):
-    assert name in CASES + VISIBILITY_CASES + EXPIRY_CASES + WINDOW_CASES
+def run(pg, client, output, database, name, rows, *, gap_schema=None):
+    assert name in CASES + VISIBILITY_CASES + EXPIRY_CASES + WINDOW_CASES + ['sync-gap-uncorrected']
     expiry = name in EXPIRY_CASES
     full_window = name in WINDOW_CASES
     visibility_refusal = name in REFUSED_VISIBILITIES
     visibility_ordinal = REFUSED_VISIBILITIES.get(name, 3)
     upgrade_registry(pg, client, output, database, name, rows)
     upgrade_scopes(pg, client, output, database, name, rows)
+    if gap_schema is not None:
+        upgrade_gap_schema(pg, client, output, database, name, rows, target=gap_schema)
     lab.sql(pg, database, '''
         GRANT SELECT,INSERT ON control.acquisition_jobs TO bigbrotr_control;
         GRANT EXECUTE ON FUNCTION control.acquisition_command_digest(control.acquisition_jobs,control.management_commands),
@@ -286,7 +288,7 @@ def run(pg, client, output, database, name, rows):
     functions = {'sync-function': EXECUTION,
         'sync-source-function': 'control.require_relay_source(bytea,bytea,bytea,numeric,bytea)',
         'sync-scope-function': 'control.require_acquisition_scope(bytea,bytea,bytea,bytea)'}
-    fault = name in functions or name in ('sync-lock', 'sync-change-read')
+    fault = name in functions or name in ('sync-lock', 'sync-change-read', 'sync-gap-uncorrected')
     policy_setup(pg, database, name, rows, output, administration=not fault)
     if full_window:
         from installed_sync_window import configure_window

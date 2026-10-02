@@ -12,16 +12,23 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main isbff0bc3, three unpublished coherent candidates after pushedf996628.
-Root owns the first-wave evidence update; no parallel writer or active experiment.
-Read-only independent AI review of257d232/bff0bc3 found a concrete permissions
-regression:0027's redundant jobs UPDATE deferred trigger reads acquisition_gaps
-in ordinary acceptance despite the original valid grants. No real reproduction
-yet. Root is adding an installed HTTP regression with schema27/old grants before
-correcting this boundary. The gap INSERT deferred check and terminal job
-immutability appear sufficient; preserve applied0027 and use an additive migration
-if confirmed. No other actionable finding in the review's recovery/SQL/native
-custody boundary; no new execution by the reviewer. No Mac Rust build.
+Primary main isb14489d, four unpublished coherent candidates after pushedf996628.
+Root owns the corrective0028 implementation/fixture/docs below; no parallel writer.
+Independent AI review found a permissions regression in0027. Actual fixtureb14489d
+with unchanged257d232 confirms it: listener binds, then valid HTTP acceptance
+ends in RemoteDisconnected/CLI Backend; PG reports permission denied on gaps in
+the redundant deferred jobs UPDATE trigger. Original37 captures/SHA bb5b21d1 and
+1712 exact source files/SHA8b311610 retained; no completed acceptance claim.
+Engine owner76cc7ff1/clientb1477b41 and borrowedPG stopped/retained, no OOM or
+unrelated change; Tux68,185,767,936B free. Existing report/inventory contain IDs.
+
+Correction under verification: additive0028 drops only that redundant trigger;
+applied0027 and retained rows stay unchanged. Gap INSERT still requires complete
+terminal state; early SET CONSTRAINTS refuses, then terminal immutability holds.
+One focused schema helper checks under the existing migration lock at ordinary
+acceptance/execution startup and acceptance/claim transactions. Uncorrected0027
+refuses; earlier valid schemas keep their prerequisites. No blanket grant,
+security-definer function or generic compatibility framework. No Mac Rust build.
 
 ## Active responsibility and next bounded action
 
@@ -156,13 +163,11 @@ Build257d232 and enginebff0bc3 STOPPED/RETAINED, shared1154757 released, borrowe
 stopped; no OOM/cleanup/unrelated changes. Engine ownerd410b6ca/client732716e9,
 Tux68,230,946,816B free. Preserve all original/synthetic/refusal clones and captures.
 
-Next bounded action: run ordinary installed HTTP acceptance on27 with unchanged
-old grants using257d232; preserve its original outcome. If confirmed, remove the
-redundant trigger additively and verify before-bind compatibility plus the actual
-acceptance and gap atomicity journeys. Then abandonment INSERT/COMMIT interruption
-recovery and64/65 count boundary. Resumption found only root-owned evidence/docs
-changes, no active BigBrotr processes, eight unchanged unrelated containers;
-Mac9,044,856KiB and Tux68,230,868,992B free. Prior cleanup remains complete.
+Next bounded action: clean-Git Linux build of corrective0028, then installed
+ordinary26/28 acceptance and28 signed Sync with old grants, plus27 refusal before
+bind for both independent consumers. Preserve and verify full rows/native inputs.
+Then gap relational negatives, abandonment INSERT/COMMIT and64/65 limit.
+
 Then initial producer/domain retirement: SQL0011 deliberately refuses nonempty
 retirement; its additive replacement must check complete outcomes and workflow
 obligations. Exact retry after retirement cannot relax admission/recovery guards.

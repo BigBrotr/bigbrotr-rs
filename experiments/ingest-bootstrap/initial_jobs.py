@@ -12,7 +12,7 @@ from scopes import upgrade as upgrade_scopes
 CASES = ['jobs-journey', 'jobs-detail-privilege', 'jobs-admission-privilege', 'jobs-digest-privilege']
 ACTOR_CASES = ['jobs-other-actor']
 EXPIRY_CASES = ['jobs-idle-expiry', 'jobs-absolute-expiry']
-GAP_CASES = ['jobs-gap-legacy-grants']
+GAP_CASES = ['jobs-gap-legacy-grants', 'jobs-gap-uncorrected']
 EFFECTS = {'jobs', 'acquisition_jobs', 'job_admissions', 'management_commands', 'management_audit'}
 
 
@@ -125,30 +125,54 @@ def validate_job(state, receipt, key='b1'*16):
         accepted_at_us=str(accepted),created=True,execution='unobserved',authority='acceptance-only')
 
 
+def upgrade_gap_schema(pg, client, output, database, name, rows, *, target):
+    """Real additive migrations with original row/xmin/filenode preservation."""
+    assert target in (27, 28)
+    state = dict(pg, client=client)
+    config = lab.config(output, state, database, endpoint='127.0.0.1:5432', boundary='loopback')
+    source = Path(__file__).resolve().parents[2]
+    def physical():
+        return json.loads(lab.sql(pg, database, """
+            SELECT jsonb_object_agg(relname,pg_relation_filenode(c.oid))
+            FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+            WHERE n.nspname='control' AND c.relkind='r'
+        """))
+    for version, filename in [(27, '0027_acquisition_abandonment.sql'),
+            (28, '0028_acquisition_gap_guard.sql')][:target-26]:
+        before = rows(database); files = physical()
+        def apply():
+            return lab.cli(state, 'migrate', 'apply', '--file', config,
+                '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator',
+                '--target', str(version))
+        response = apply()
+        lab.write_json(output / f'{name}-migration-{version}.json', dict(returncode=response.returncode,
+            stdout=response.stdout, stderr=response.stderr))
+        assert response.returncode == 0, response.stderr
+        after = rows(database); current_files = physical()
+        assert set(after) - set(before) == ({'acquisition_gaps'} if version == 27 else set())
+        assert not after['acquisition_gaps']
+        assert all(after[t] == before[t] for t in before if t != 'schema_versions')
+        added = [r for r in after['schema_versions'] if r not in before['schema_versions']]
+        assert len(added) == 1 and added[0]['migration'] == version
+        assert added[0]['checksum'] == '\\x' + hashlib.sha256((source/'migrations/postgres'/filename).read_bytes()).hexdigest()
+        assert all(r in after['schema_versions'] for r in before['schema_versions'])
+        assert all(current_files[t] == node for t, node in files.items())
+        repeat = apply()
+        assert repeat.returncode == 0 and rows(database) == after and physical() == current_files
+        lab.write_json(output / f'{name}-upgrade-{version}.json', dict(before=before, after=after,
+            physical_before=files, physical_after=current_files, exact_reapply=True))
+    # Ordinary acceptance retains its original grants. Recovery's table is not
+    # a prerequisite for this consumer, even when the schema exists.
+    assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control', 'control.acquisition_gaps', 'SELECT')") == 'f'
+
+
 def run(pg,client,output,database,name,rows):
     assert name in CASES + ACTOR_CASES + EXPIRY_CASES + GAP_CASES
     upgrade_registry(pg,client,output,database,name,rows)
     upgrade_scopes(pg,client,output,database,name,rows)
     if name in GAP_CASES:
-        before = rows(database)
-        state = dict(pg, client=client)
-        config = lab.config(output, state, database, endpoint='127.0.0.1:5432', boundary='loopback')
-        response = lab.cli(state, 'migrate', 'apply', '--file', config,
-            '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '27')
-        lab.write_json(output / (name + '-migration.json'), dict(returncode=response.returncode,
-            stdout=response.stdout, stderr=response.stderr))
-        assert response.returncode == 0, response.stderr
-        after = rows(database)
-        assert set(after) - set(before) == {'acquisition_gaps'} and not after['acquisition_gaps']
-        assert all(after[t] == before[t] for t in before if t != 'schema_versions')
-        added = [r for r in after['schema_versions'] if r not in before['schema_versions']]
-        sql = Path(__file__).resolve().parents[2] / 'migrations/postgres/0027_acquisition_abandonment.sql'
-        assert len(added) == 1 and added[0]['migration'] == 27
-        assert added[0]['checksum'] == '\\x' + hashlib.sha256(sql.read_bytes()).hexdigest()
-        lab.write_json(output / (name + '-upgrade.json'), dict(before=before, after=after))
-        # Ordinary acceptance retains its original grants. Recovery's gap table
-        # is not a prerequisite for this consumer, even when the schema exists.
-        assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control', 'control.acquisition_gaps', 'SELECT')") == 'f'
+        upgrade_gap_schema(pg, client, output, database, name, rows,
+            target=27 if name == 'jobs-gap-uncorrected' else 28)
     # Explicit consumer grants on this clone. These are not applied migrations.
     lab.sql(pg,database,"""
         GRANT SELECT,INSERT ON control.acquisition_jobs TO bigbrotr_control;
@@ -204,6 +228,7 @@ def run(pg,client,output,database,name,rows):
         'jobs-digest-privilege':'REVOKE EXECUTE ON FUNCTION control.acquisition_command_digest(control.acquisition_jobs,control.management_commands) FROM bigbrotr_control',
     }
     if name in faults: lab.sql(pg,database,faults[name])
+    refuse = name in faults or name == 'jobs-gap-uncorrected'
     before=rows(database);lab.write_json(output/(name+'-before.json'),before)
     state=dict(pg,client=client)
     config=lab.config(output,state,database,endpoint='127.0.0.1:5432',boundary='loopback')
@@ -222,7 +247,7 @@ def run(pg,client,output,database,name,rows):
     prefix=start(client,config,output,name)
     first=wait_for(lambda:messages(prefix) or Path(str(prefix)+'.terminal.json').exists(),'finite listener')
     initialized=None
-    if name in faults:
+    if refuse:
         if messages(prefix):
             stop(client,prefix);terminal(prefix)
             raise RuntimeError('missing finite job prerequisite bound listener: '+name)
@@ -330,4 +355,4 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         assert not after['browser_sessions']
     assert lab.sql(pg,database,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'")=='0'
     return dict(name=name,status='PASS',actual_cli=True,actual_http=initialized is not None,
-        before_bind_refusal=name in faults,control_tables=len(after),terminal=ended)
+        before_bind_refusal=refuse,control_tables=len(after),terminal=ended)

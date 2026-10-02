@@ -25,6 +25,7 @@ impl ControlSession {
         let tx = application_transaction(&mut self.client, 22)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
+        require_job_update_schema(&tx).await?;
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| SessionError::Unavailable)?;
@@ -72,6 +73,7 @@ impl ControlSession {
         let tx = application_transaction(&mut self.client, 22)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
+        require_job_update_schema(&tx).await?;
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| SessionError::Unavailable)?;
@@ -112,6 +114,28 @@ impl ControlSession {
             }
         }
     }
+}
+
+/// The shared migration lock and verified ledger belong to `application_transaction`.
+/// A deployment stopped at0027 must explicitly apply its corrective0028 before
+/// ordinary mutations. Earlier deployments retain their existing prerequisites.
+pub(super) async fn require_job_update_schema(tx: &Transaction<'_>) -> Result<(), SessionError> {
+    let uncorrected: bool = tx
+        .query_one(
+            "SELECT EXISTS (SELECT 1 FROM control.schema_versions
+                WHERE engine = 'postgres-control' AND migration = 27)
+             AND NOT EXISTS (SELECT 1 FROM control.schema_versions
+                WHERE engine = 'postgres-control' AND migration = 28)",
+            &[],
+        )
+        .await
+        .map_err(backend)?
+        .try_get(0)
+        .map_err(metadata)?;
+    if uncorrected {
+        return Err(SessionError::Prerequisite);
+    }
+    Ok(())
 }
 
 async fn accept(

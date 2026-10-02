@@ -406,6 +406,15 @@ queue retains Control/native custody through completion and uncertain shutdown.
 Before HTTP bind, probe finite-job table/function privileges, including the
 admission insertion and acquisition digest; no runtime migration or partial API.
 
+Migration0028 removes0027's redundant deferred job-update gap check. Ordinary
+acceptance and claims keep their original grants; only explicit abandonment
+requires gap access. An installation stopped at0027 must apply0028 before ordinary
+job mutation: both startup prerequisites and each acceptance/claim transaction
+refuse that intermediate schema under migration serialization. Valid earlier
+schemas retain their existing prerequisites. Historical observation is unchanged.
+The gap-insertion check still requires complete terminal cancellation atomically,
+and terminal jobs and gaps remain immutable. No applied SQL/checksum is rewritten.
+
 `GET /management/v1/jobs/{job_id}` on that listener observes only the current
 actor's protocol1 acquisition job with separate dataset `status.read`, session
 and explicit CSRF. Missing, foreign and unsupported kinds share404. The common

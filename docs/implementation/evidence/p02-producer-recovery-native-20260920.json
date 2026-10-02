@@ -1886,6 +1886,36 @@
       "free_bytes_after": 68230946816,
       "cleanup_errors": [],
       "unrelated_changed": []
+    },
+    "ordinary_job_grants": {
+      "status": "CONFIRMED_REGRESSION; corrective0028 qualification pending",
+      "review": "Read-only independent AI review found the0027 jobs UPDATE deferred trigger requires a new gap-table grant for ordinary acceptance; no other actionable finding in the inspected recovery/native custody/SQL boundary.",
+      "red": {
+        "source": "b14489ddedb1599e67f5d80176d93ae4dd3c7e8f",
+        "build_source": "257d23239655dd3f985b541dc45e82297aeaa0fc",
+        "capture": {
+          "label": "job-gap-red",
+          "source": "b14489ddedb1599e67f5d80176d93ae4dd3c7e8f",
+          "build_source": "257d23239655dd3f985b541dc45e82297aeaa0fc",
+          "status": "FAIL",
+          "captures": 37,
+          "capture_sha256": "bb5b21d1d2023e45296d78c8759020ee225aa406e3a40a5989b528b21a3e4b2d",
+          "cases": []
+        },
+        "observed": "Actual initial listener initialized; first valid POST jobs disconnected instead of202. CLI: private management backend unavailable: Backend. PostgreSQL16.15: permission denied for table acquisition_gaps in require_acquisition_gap_complete. Original grants deliberately exclude gap SELECT.",
+        "scope": "Complete installed login, endpoint/enrollment/scope and pre-acceptance refusals ran; successful acceptance and final native/all-row comparison did not complete. Preserve original FAIL.",
+        "source_files": 1712,
+        "source_archive_sha256": "8b311610841eb811d94deed658329ae8b8f09568ca86114d5318836a08198837"
+      },
+      "correction": "Additive0028 removes only the redundant jobs UPDATE deferred trigger. The gap INSERT deferred trigger requires complete cancellation; terminal jobs and gaps are immutable. Normal acceptance/claim preflight and write transactions refuse uncorrected0027 under the shared migration lock; previous schemas remain eligible.",
+      "dependency_sources": [
+        "https://www.postgresql.org/docs/16/sql-createtrigger.html",
+        "https://www.postgresql.org/docs/16/sql-set-constraints.html"
+      ],
+      "not_run": [
+        "corrective0028 installed acceptance/execution and intermediate-schema startup refusal",
+        "gap INSERT/COMMIT atomicity and terminal immutability"
+      ]
     }
   }
 }

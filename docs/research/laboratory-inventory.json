@@ -37167,7 +37167,38 @@
           },
           "source_archive_sha256": "712f366cf41483cce06caa8fc1bfb411e0d762580eada747bb01ea4e270a929e"
         },
-        "next": "Abandonment INSERT/COMMIT interruption recovery, actual relational negative controls, count boundary, then producer/domain retirement"
+        "next": "Qualify additive0028 ordinary job compatibility and retained gap atomicity, then abandonment fault/limit cases and producer/domain retirement",
+        "ordinary_job_red": {
+          "source": "b14489ddedb1599e67f5d80176d93ae4dd3c7e8f",
+          "status": "FAIL",
+          "owner": "76cc7ff139b2d873329599ea3d1348b1",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "b1477b41e3fc1697978d597f1bf427a3736de06dc388c23ae8a6277936630605",
+            "name": "bigbrotr-acquisition-binding-b14489d"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_b14489d_jobs_gap_legacy_grants"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_before": 68191784960,
+          "free_bytes_after": 68185767936,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-b14489d",
+          "state": "stopped-retained",
+          "capture": {
+            "label": "job-gap-red",
+            "source": "b14489ddedb1599e67f5d80176d93ae4dd3c7e8f",
+            "build_source": "257d23239655dd3f985b541dc45e82297aeaa0fc",
+            "status": "FAIL",
+            "captures": 37,
+            "capture_sha256": "bb5b21d1d2023e45296d78c8759020ee225aa406e3a40a5989b528b21a3e4b2d",
+            "cases": []
+          },
+          "preserve": "Original failed HTTP/CLI/PostgreSQL evidence, complete clone and native state; no cleanup beyond stopping owned containers."
+        }
       }
     }
   },

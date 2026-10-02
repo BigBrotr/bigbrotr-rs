@@ -1,7 +1,9 @@
 //! Queued ownership and historical observation. Neither dispatches a socket or
 //! adopts native work. Actual execution rechecks the job at every effect boundary.
 use super::{
-    ControlSession, application_transaction,
+    ControlSession,
+    acquisition_jobs::require_job_update_schema,
+    application_transaction,
     browser_sessions::{fixed, lock_dataset, metadata, revision, terminal},
     require,
 };
@@ -55,6 +57,7 @@ impl ControlSession {
         let tx = application_transaction(&mut self.client, 24)
             .await
             .map_err(|_| Error::Prerequisite)?;
+        require_job_update_schema(&tx).await?;
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| Error::Unavailable)?;
@@ -194,6 +197,7 @@ impl ControlSession {
         let tx = application_transaction(&mut self.client, 23)
             .await
             .map_err(|_| Error::Prerequisite)?;
+        require_job_update_schema(&tx).await?;
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| Error::Unavailable)?;
