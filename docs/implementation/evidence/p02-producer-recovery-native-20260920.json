@@ -1888,7 +1888,7 @@
       "unrelated_changed": []
     },
     "ordinary_job_grants": {
-      "status": "CONFIRMED_REGRESSION; corrective0028 qualification pending",
+      "status": "PASS_INSTALLED_ORDINARY_COMPATIBILITY; raw gap atomicity qualification pending",
       "review": "Read-only independent AI review found the0027 jobs UPDATE deferred trigger requires a new gap-table grant for ordinary acceptance; no other actionable finding in the inspected recovery/native custody/SQL boundary.",
       "red": {
         "source": "b14489ddedb1599e67f5d80176d93ae4dd3c7e8f",
@@ -1913,9 +1913,193 @@
         "https://www.postgresql.org/docs/16/sql-set-constraints.html"
       ],
       "not_run": [
-        "corrective0028 installed acceptance/execution and intermediate-schema startup refusal",
-        "gap INSERT/COMMIT atomicity and terminal immutability"
-      ]
+        "gap INSERT/COMMIT atomicity and terminal immutability",
+        "populated27 gap history upgrade to28",
+        "concurrent migration between preflight and acceptance/claim",
+        "abandonment interruptions/ambiguous COMMIT and64/65 count boundary"
+      ],
+      "fixed": {
+        "source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+        "tree": "3a21bb5d2a9a4c2969027c0c055704a9511da41d",
+        "binary_sha256": "fb476ec023d8cb98e1215af4dfbe58ad6dc185ed6803c7d29d637d9ec74250a3",
+        "probe_sha256": "d3e7b8daf87493e955d12eb22825664fe5c88613ffded7777fc964f19dd5c0cd",
+        "build_checks": [
+          "release CLI/probe",
+          "12 actual Rocks store/inspection tests",
+          "Clippy warnings denied"
+        ],
+        "build_profile_note": "The launcher default selected ingest-recovery rather than ingest-history. No new migration catalog/entrypoint test execution is claimed; actual migrate apply/reapply is covered by the installed engine.",
+        "build_capture": {
+          "label": "job-gap-build",
+          "source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+          "files": 1713,
+          "captures": 15,
+          "capture_sha256": "f325f5e7a5611b36e84857668e1880c106a828a483b139913062570ae334fef9"
+        },
+        "capture": {
+          "label": "job-gap-fixed",
+          "source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+          "build_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+          "status": "PASS_INITIAL_FINITE_JOB_GAP_COMPATIBILITY",
+          "captures": 218,
+          "capture_sha256": "90a2a97389e04d43f0948c3987b8dde24382e0a1b0ac0d1b68a3be54c53946ce",
+          "cases": [
+            {
+              "name": "jobs-journey",
+              "status": "PASS"
+            },
+            {
+              "name": "jobs-gap-legacy-grants",
+              "status": "PASS"
+            },
+            {
+              "name": "jobs-gap-uncorrected",
+              "status": "PASS"
+            },
+            {
+              "name": "sync-signed",
+              "status": "PASS"
+            },
+            {
+              "name": "sync-gap-uncorrected",
+              "status": "PASS"
+            }
+          ]
+        },
+        "source_files": 1713,
+        "source_archive_sha256": "7228847ada9b6458db1f082f5f5a2cd0257b5a9c0cb66f395dbcb82453708c42",
+        "cases": [
+          {
+            "name": "jobs-journey",
+            "status": "PASS",
+            "actual_cli": true,
+            "actual_http": true,
+            "before_bind_refusal": false,
+            "control_tables": 69,
+            "terminal": {
+              "pid": 50,
+              "start_ticks": "433001274",
+              "config": "/lab/bb_scope_bind_20ce916_jobs_journey.toml",
+              "prefix": "/lab/jobs-journey",
+              "exit_code": 0,
+              "elapsed_seconds": 2.7691477183252573,
+              "forced": false,
+              "reaped": true
+            }
+          },
+          {
+            "name": "jobs-gap-legacy-grants",
+            "status": "PASS",
+            "actual_cli": true,
+            "actual_http": true,
+            "before_bind_refusal": false,
+            "control_tables": 70,
+            "terminal": {
+              "pid": 187,
+              "start_ticks": "433002159",
+              "config": "/lab/bb_scope_bind_20ce916_jobs_gap_legacy_grants.toml",
+              "prefix": "/lab/jobs-gap-legacy-grants",
+              "exit_code": 0,
+              "elapsed_seconds": 2.818864264525473,
+              "forced": false,
+              "reaped": true
+            }
+          },
+          {
+            "name": "jobs-gap-uncorrected",
+            "status": "PASS",
+            "actual_cli": true,
+            "actual_http": false,
+            "before_bind_refusal": true,
+            "control_tables": 70,
+            "terminal": {
+              "pid": 312,
+              "start_ticks": "433002951",
+              "config": "/lab/bb_scope_bind_20ce916_jobs_gap_uncorrected.toml",
+              "prefix": "/lab/jobs-gap-uncorrected",
+              "exit_code": 4,
+              "elapsed_seconds": 0.2140206815674901,
+              "forced": false,
+              "reaped": true
+            }
+          },
+          {
+            "name": "sync-signed",
+            "status": "PASS",
+            "actual_cli": true,
+            "actual_http": true,
+            "actual_pg_rocks": true,
+            "websocket_rounds": 14,
+            "same_owner_renewed": true,
+            "signal_seconds": 0.055184761,
+            "selected_quiet_signal": {
+              "round": 14,
+              "request": [
+                "REQ",
+                "8ca8b73cd48984c0f8d875f9cad7f5b70000000000000001",
+                {
+                  "kinds": [
+                    1
+                  ],
+                  "limit": 3
+                }
+              ],
+              "request_at_us": 1790947788512578,
+              "signal_at_us": 1790947788513915,
+              "signal_monotonic_ns": 4330042643925271,
+              "closed_before_signal": false
+            },
+            "natural_expiry": null,
+            "full_window": null,
+            "terminal": {
+              "pid": 437,
+              "start_ticks": "433003552",
+              "config": "/lab/bb_scope_bind_20ce916_sync_signed.toml",
+              "prefix": "/lab/sync-signed",
+              "exit_code": 0,
+              "elapsed_seconds": 7.175289728678763,
+              "forced": false,
+              "reaped": true
+            },
+            "native_rows": 49,
+            "original_requests": 4,
+            "dictionary_recorded_us": 1790947782372476,
+            "event_received_us": 1790947782425616,
+            "event_recorded_us": 1790947782473488
+          },
+          {
+            "name": "sync-gap-uncorrected",
+            "status": "PASS",
+            "before_bind_refusal": true,
+            "administration_enabled": false,
+            "terminal": {
+              "pid": 563,
+              "start_ticks": "433004772",
+              "config": "/lab/bb_scope_bind_20ce916_sync_gap_uncorrected.toml",
+              "prefix": "/lab/sync-gap-uncorrected",
+              "exit_code": 4,
+              "elapsed_seconds": 0.21409176383167505,
+              "forced": false,
+              "reaped": true
+            }
+          }
+        ],
+        "local_replay": {
+          "status": "PASS_CAPTURE_REPLAY",
+          "cases": 5,
+          "independent_signed_native": {
+            "native_rows": 49,
+            "original_requests": 4,
+            "dictionary_recorded_us": 1790947782372476,
+            "event_received_us": 1790947782425616,
+            "event_recorded_us": 1790947782473488
+          },
+          "scope": "Captured complete SQL acceptance/replay/logout/release, migration preservation, exact startup refusals and complete independent signed native inputs/receipts; no new live engine run"
+        },
+        "interpretation": "Real26/28 acceptance/replay/status and28 signed Sync run with no gap SELECT grant;27 refuses before bind for acceptance and for Sync with administration disabled. All69/70 SQL tables and complete49 signed native rows/four original inputs checked.",
+        "review": "Independent read-only AI review20ce916 found no new actionable issue in complete changed product/fixture files, relevant callers and guards. No build or engine execution by reviewer.",
+        "review_boundary": "Concurrent migration27 between preflight and first mutation is statically covered by transaction checks/shared migration lock, not executed by this fixture."
+      }
     }
   }
 }

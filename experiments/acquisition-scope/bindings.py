@@ -64,7 +64,8 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
-ingest_abandonment = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-abandonment'
+ingest_abandonment_guards = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-abandonment-guards'
+ingest_abandonment = ingest_abandonment_guards or len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-abandonment'
 ingest_source_faults = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-source-faults'
 ingest_source_locks = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-source-locks'
 ingest_source_closure = ingest_abandonment or ingest_source_faults or ingest_source_locks or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-source-closure')
@@ -158,6 +159,11 @@ if ingest_abandonment:
     report['not_run'] = ['producer/domain retirement, successor, ACK/GC and full M1',
         'abandonment interruption/COMMIT schedules and relational negatives',
         'blocked native syscall, capacity/load/aged-state', 'arm64/release']
+
+if ingest_abandonment_guards:
+    report['wave'] = 'installed-acquisition-gap-guards'
+    report['not_run'] = ['abandonment interruption/COMMIT schedules and64/65 count boundary',
+        'producer/domain retirement, successor, ACK/GC and full M1', 'capacity/load/aged-state', 'arm64/release']
 
 if ingest_history:
     report['wave'] = 'ingest-history'
@@ -627,7 +633,8 @@ if ingest_source_faults:
 if ingest_source_locks:
     success_status = 'PASS_INSTALLED_INITIAL_SOURCE_CLOSURE_LOCKS'
 if ingest_abandonment:
-    success_status = 'PASS_INSTALLED_INITIAL_ACQUISITION_ABANDONMENT_FIRST_WAVE'
+    success_status = ('PASS_INSTALLED_ACQUISITION_GAP_GUARDS' if ingest_abandonment_guards
+        else 'PASS_INSTALLED_INITIAL_ACQUISITION_ABANDONMENT_FIRST_WAVE')
 if ingest_history:
     success_status = 'PASS_HISTORICAL_INGEST_LOOKUP'
 if ingest_windows:
@@ -901,7 +908,7 @@ try:
                 from installed_signed_recovery import run as run_signed_recovery
                 report['cases'].append(run_signed_recovery(pg,client,output,rows,clone,
                     close_source=ingest_source_closure,
-                    schedules='abandon' if ingest_abandonment else 'locks' if ingest_source_locks else 'faults' if ingest_source_faults else None))
+                    schedules='abandon-guards' if ingest_abandonment_guards else 'abandon' if ingest_abandonment else 'locks' if ingest_source_locks else 'faults' if ingest_source_faults else None))
             else:
                 from installed_recovery import run as run_recovery
                 completed = clone(name, 'bb_source_template')
@@ -1012,7 +1019,7 @@ try:
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
     if ingest_recovery:
-        expected = 6 if ingest_abandonment else 2 if ingest_source_locks else 4 if ingest_source_closure else 3 if ingest_recovery_interruptions or ingest_recovery_signed else 9
+        expected = 11 if ingest_abandonment_guards else 6 if ingest_abandonment else 2 if ingest_source_locks else 4 if ingest_source_closure else 3 if ingest_recovery_interruptions or ingest_recovery_signed else 9
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
             and len(report['cases'][0]['cases']) == expected, 'positive-recovery-case-set')
     if ingest_history:

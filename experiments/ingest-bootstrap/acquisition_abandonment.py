@@ -86,12 +86,13 @@ def duplicate_intent(pg, database, state, claimed):
     return job
 
 
-def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized):
+def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized, *, guards=False):
     def upgrade(database, config, name):
         before = rows(database)
         assert len(before) == 69 and 'acquisition_gaps' not in before
+        target = '28' if guards else '27'
         response = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
-            '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '27')
+            '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', target)
         lab.write_json(output / (name + '-migration.json'), dict(returncode=response.returncode,
             stdout=response.stdout, stderr=response.stderr))
         assert response.returncode == 0, response.stderr
@@ -99,12 +100,16 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
         assert len(after) == 70 and after['acquisition_gaps'] == []
         assert all(after[t] == before[t] for t in before if t != 'schema_versions')
         added = [r for r in after['schema_versions'] if r not in before['schema_versions']]
-        assert len(added) == 1 and added[0]['migration'] == 27
-        sql = Path(__file__).resolve().parents[2] / 'migrations/postgres/0027_acquisition_abandonment.sql'
-        assert added[0]['checksum'] == '\\x' + hashlib.sha256(sql.read_bytes()).hexdigest()
+        wanted = {27: '0027_acquisition_abandonment.sql'}
+        if guards:
+            wanted[28] = '0028_acquisition_gap_guard.sql'
+        assert {r['migration'] for r in added} == set(wanted) and len(added) == len(wanted)
+        for row in added:
+            sql = Path(__file__).resolve().parents[2] / 'migrations/postgres' / wanted[row['migration']]
+            assert row['checksum'] == '\\x' + hashlib.sha256(sql.read_bytes()).hexdigest()
         assert all(r in after['schema_versions'] for r in before['schema_versions'])
         repeat = lab.cli(dict(pg, client=client), 'migrate', 'apply', '--file', config,
-            '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '27')
+            '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', target)
         assert repeat.returncode == 0 and rows(database) == after
         lab.write_json(output / (name + '-upgraded.json'), dict(before=before, after=after,
             exact_reapply=True))
@@ -152,6 +157,11 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
     upgrade(database, config, directory.name)
     invoke(database, config, directory, 'abandon-signed')
     invoke(database, config, directory, 'abandon-signed-retry')
+
+    if guards:
+        from acquisition_gap_guards import run as run_guards
+        run_guards(pg, client, output, rows, prepare, check_native, upgrade, cases, digest)
+        return
 
     database, config, directory = prepare('abandon_no_request')
     upgrade(database, config, directory.name)

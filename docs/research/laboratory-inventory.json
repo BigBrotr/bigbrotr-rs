@@ -37198,6 +37198,94 @@
             "cases": []
           },
           "preserve": "Original failed HTTP/CLI/PostgreSQL evidence, complete clone and native state; no cleanup beyond stopping owned containers."
+        },
+        "corrective_build": {
+          "source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+          "tree": "3a21bb5d2a9a4c2969027c0c055704a9511da41d",
+          "owner": "46f33d080941c0b8b7c001eaf02b6847",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-20ce916",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "4b4b424c30f554fe814f559a360d4b80b02f6b1c449f4186fb8c4c5301372d8a"
+            },
+            {
+              "name": "native",
+              "id": "a1c91c2a0933132ca681aa2186420bce93c36786f368fa01ca2ef81eccf1ae49"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-02T13:26:50.988262+00:00",
+          "qualification": "PASS_INGEST_RECOVERY_INSPECTION",
+          "inventory_changed": [],
+          "free_bytes_after": 68029173760,
+          "finished_at": "2026-10-02T13:28:19.586260+00:00",
+          "capture": {
+            "label": "job-gap-build",
+            "source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+            "files": 1713,
+            "captures": 15,
+            "capture_sha256": "f325f5e7a5611b36e84857668e1880c106a828a483b139913062570ae334fef9"
+          }
+        },
+        "ordinary_job_fixed": {
+          "source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+          "status": "PASS_INITIAL_FINITE_JOB_GAP_COMPATIBILITY",
+          "owner": "93239663061e49ffe2bf4393213b4a43",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "22642cbbe26f930b2260e62240685226f9aa2ab8ca09fb7e53cf76bb192f2c9b",
+            "name": "bigbrotr-acquisition-binding-20ce916"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_20ce916_jobs_journey",
+            "bb_scope_bind_20ce916_jobs_gap_legacy_grants",
+            "bb_scope_bind_20ce916_jobs_gap_uncorrected",
+            "bb_scope_bind_20ce916_sync_signed",
+            "bb_scope_bind_20ce916_sync_gap_uncorrected"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_before": 67990548480,
+          "free_bytes_after": 67865391104,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-20ce916",
+          "state": "stopped-retained",
+          "capture": {
+            "label": "job-gap-fixed",
+            "source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+            "build_source": "20ce9163a43daeedb4a68c3b013c3a867397beeb",
+            "status": "PASS_INITIAL_FINITE_JOB_GAP_COMPATIBILITY",
+            "captures": 218,
+            "capture_sha256": "90a2a97389e04d43f0948c3987b8dde24382e0a1b0ac0d1b68a3be54c53946ce",
+            "cases": [
+              {
+                "name": "jobs-journey",
+                "status": "PASS"
+              },
+              {
+                "name": "jobs-gap-legacy-grants",
+                "status": "PASS"
+              },
+              {
+                "name": "jobs-gap-uncorrected",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-signed",
+                "status": "PASS"
+              },
+              {
+                "name": "sync-gap-uncorrected",
+                "status": "PASS"
+              }
+            ]
+          }
         }
       }
     }

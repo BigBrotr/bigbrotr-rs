@@ -12,23 +12,29 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main isb14489d, four unpublished coherent candidates after pushedf996628.
-Root owns the corrective0028 implementation/fixture/docs below; no parallel writer.
-Independent AI review found a permissions regression in0027. Actual fixtureb14489d
-with unchanged257d232 confirms it: listener binds, then valid HTTP acceptance
-ends in RemoteDisconnected/CLI Backend; PG reports permission denied on gaps in
-the redundant deferred jobs UPDATE trigger. Original37 captures/SHA bb5b21d1 and
-1712 exact source files/SHA8b311610 retained; no completed acceptance claim.
-Engine owner76cc7ff1/clientb1477b41 and borrowedPG stopped/retained, no OOM or
-unrelated change; Tux68,185,767,936B free. Existing report/inventory contain IDs.
+Primary main is20ce916, five unpublished coherent candidates after pushedf996628.
+Root owns the next raw gap fixture/evidence update; no parallel writer or active
+experiment. The0027 ordinary job grant regression is confirmed by fixtureb14489d
+and corrected additively in20ce916; original FAIL37captures/SHAbb5b21d1 is retained.
+No applied SQL/checksum was changed. New0028 removes only the redundant deferred
+jobs UPDATE trigger; gap INSERT still checks complete cancellation and both rows
+stay immutable. A focused schema guard under the migration lock refuses27 without28
+before bind and before acceptance/claim writes; earlier schemas stay eligible.
 
-Correction under verification: additive0028 drops only that redundant trigger;
-applied0027 and retained rows stay unchanged. Gap INSERT still requires complete
-terminal state; early SET CONSTRAINTS refuses, then terminal immutability holds.
-One focused schema helper checks under the existing migration lock at ordinary
-acceptance/execution startup and acceptance/claim transactions. Uncorrected0027
-refuses; earlier valid schemas keep their prerequisites. No blanket grant,
-security-definer function or generic compatibility framework. No Mac Rust build.
+Corrective20ce916 build PASS: release CLI/probe,12 actual Rocks store tests,Clippy.
+Launcher default selected ingest-recovery, so no repeated catalog/entrypoint tests
+are claimed. Five installed cases PASS:26/28 ordinary acceptance/replay/status,
+28 signed Sync without gap SELECT, and27 startup refusal for both consumers (Sync
+administration disabled). All69/70 SQL tables/49 signed native rows/four original
+inputs checked. Root matched1713 source files,15build/218engine captures (SHAf325f5e7/
+90a2a973), replayed SQL/native/receipt oracles. Independent read-only AI review found
+no further actionable issue; raw gap atomicity and concurrent migration remain
+unexecuted boundaries. Report ordinary_job_grants owns exact identities.
+
+Build owner46f33d08/nativea1c91c2a and engine20ce916/borrowedPG STOPPED_RETAINED,
+shared1154757 released; no OOM/cleanup/unrelated changes. Tux67,865,391,104B free.
+Current fixture adds actual28 abandonment/retry plus raw incomplete/immutable gap
+counterexamples and a deliberate missing-trigger negative control. No Mac Rust build.
 
 ## Active responsibility and next bounded action
 
@@ -163,10 +169,11 @@ Build257d232 and enginebff0bc3 STOPPED/RETAINED, shared1154757 released, borrowe
 stopped; no OOM/cleanup/unrelated changes. Engine ownerd410b6ca/client732716e9,
 Tux68,230,946,816B free. Preserve all original/synthetic/refusal clones and captures.
 
-Next bounded action: clean-Git Linux build of corrective0028, then installed
-ordinary26/28 acceptance and28 signed Sync with old grants, plus27 refusal before
-bind for both independent consumers. Preserve and verify full rows/native inputs.
-Then gap relational negatives, abandonment INSERT/COMMIT and64/65 limit.
+Next bounded action: run the new clean-Git gap guard fixture using the unchanged
+20ce916 artifacts. Require actual28 cancellation+gap COMMIT/retry, raw incomplete
+transactions/early constraints/terminal mutations refused with full rollback,
+and the deliberately removed gap trigger detected. Then abandonment INSERT/COMMIT
+interruption recovery,64/65 count boundary and populated27→28 history upgrade.
 
 Then initial producer/domain retirement: SQL0011 deliberately refuses nonempty
 retirement; its additive replacement must check complete outcomes and workflow
