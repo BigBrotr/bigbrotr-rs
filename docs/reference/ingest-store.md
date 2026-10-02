@@ -166,12 +166,16 @@ initialized report publish `private_scope` and dictionary_count=3; accepted
 scopes/jobs are never silently rebound. Both complete accepted documents must
 permit at least two outstanding producer requests before any registration/native
 initialization. Deployment roots are checked separately; a statically valid managed
-file seed of one does not override accepted limits. Declarative digest matching
-remains required. This corrects the earlier local-seed floor without changing any
-stored policy, producer identity, migration or existing directory. This role
-selection collects no events. The
+file seed of one does not override accepted limits. Declarative file changes also
+remain staged until explicit activation. This corrects the earlier local-seed floor
+without changing any stored policy, producer identity, migration or existing
+directory. Three actual installed comparisons at `14d18e1` qualify managed seed 1
+with accepted limit 32 through renewal/shutdown, and rejection when either
+accepted document permits only one. Original native inputs and rows survive;
+fresh adoption still refuses. This role selection collects no events. The
 [private append evidence](../implementation/evidence/p02-dictionary-append-native-20261002.json)
-qualifies nine installed lifetime/window cases and nineteen startup COMMIT cuts;
+retains the nine original lifetime/window cases, the three corrected window
+comparisons and nineteen startup COMMIT cuts;
 older evidence below still refers to the original two-map lifetime. Existing
 directories are not upgraded or adopted. The three-case installed session
 regression also passes with explicit current-schema preparation; full acquisition,

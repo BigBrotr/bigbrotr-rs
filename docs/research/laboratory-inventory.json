@@ -34675,7 +34675,7 @@
         }
       },
       "managed_window_20261002": {
-        "status": "two original RED runs stopped-retained; correction not yet built",
+        "status": "PASS_SCOPED; three engine runs and both builds stopped-retained",
         "evidence": "docs/implementation/evidence/p02-dictionary-append-native-20261002.json",
         "runs": {
           "window-red": {
@@ -34711,6 +34711,23 @@
             "cleanup_errors": [],
             "unrelated_changed": [],
             "free_bytes_after": 71842906112
+          },
+          "window-green": {
+            "source": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+            "product": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ingest-windows-14d18e1",
+            "owner": "3cc1af2ec71cbd387a9c246649ac14b6",
+            "client": "e76d04e8c20a8b1470fc5bf20fc48a748dbc68383441462f854686cf4a95d96c",
+            "status": "PASS_INSTALLED_INGEST_WINDOWS",
+            "databases": [
+              "bb_scope_bind_14d18e1_window_config",
+              "bb_scope_bind_14d18e1_window_policy",
+              "bb_scope_bind_14d18e1_window_local"
+            ],
+            "cleanup": "STOPPED/RETAINED",
+            "cleanup_errors": [],
+            "unrelated_changed": [],
+            "free_bytes_after": 71100833792
           }
         },
         "preserve": "Original sources, captures, templates and three database clones per run retained; no container/cache/dataset deletion. Compiler1154757 and qualified3a7f884 artifacts remain separate inputs.",
@@ -34741,6 +34758,48 @@
           "cleanup": "stopped-retained",
           "unrelated_changed": [],
           "free_bytes_after": 71566651392
+        },
+        "build": {
+          "source": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+          "tree": "043acc86640368d88ef3253ae26e5e8921184e42",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-worker-budgets-14d18e1",
+          "owner": "b62f6e5b359c929a56725382199076da",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "b90a000ade0e7953767072a2498d6e0b32ace1cb7b5dea3ac2d927915e9752cb"
+            },
+            {
+              "name": "native",
+              "id": "9a473771391cbf56cc72b0da010faf0ad465f13c0daabb3e76cbd387c49adec9"
+            }
+          ],
+          "status": "PASS_NATIVE_BUILD_CLIPPY_AND_13_TESTS",
+          "capture": {
+            "label": "window-build-final",
+            "source": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+            "files": 1697,
+            "captures": 21,
+            "capture_sha256": "199b0eaddc9711daf61ec7aa6e66327486214d8dd017581e050a68fdf1176864"
+          },
+          "binary_sha256": "5c9bc5e88bbd44aa8adbdf26fb3d8da5c8b94af60097d9daae5b894e3e75d5a0",
+          "probe_sha256": "d8049bccfcd54748fae0684b5d0c2baed6aa13f163ade5c2f78af85d00743050",
+          "native_tests_passed": {
+            "native-custody": 1,
+            "worker-budgets": 2,
+            "cut-admission": 2,
+            "initial-supervision": 8
+          },
+          "cleanup": "stopped-retained",
+          "unrelated_changed": [],
+          "free_bytes_after": 71191134208
+        },
+        "latest_audit": {
+          "tux_free_bytes": 71100817408,
+          "mac_free_kib": 2713288,
+          "active_bigbrotr_processes": false,
+          "unrelated_running_containers": 8,
+          "compiler_cache": "network-1154757 exclusively reused; latest14d18e1; original qualified ELFs retained outside cache"
         }
       }
     },

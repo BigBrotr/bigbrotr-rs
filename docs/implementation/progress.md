@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main02fb010 is above pushed origin/main035c436. Root owns the focused
-initial_ingest.rs correction, ingest-store contract, storage task, dictionary
-append evidence, inventory and checkpoint changes; no merge/rebase/active lab. Product3a7f884 is now
+Primary main14d18e143b16c69aae6d287cf0621a09ab1cc74f is above pushed
+origin/main035c436. Root-owned evidence, inventory, task, reference and checkpoint
+updates are dirty; no merge/rebase or active BigBrotr build/lab. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
 three Python files differ. The positive installed signed publication journey PASS
@@ -118,34 +118,56 @@ semantics were not refactored during this integration qualification.
 Next useful M1 deliverable remains Ingest restart/resend with unchanged original
 admission, P01-T09 Step4, needing P02-T01 Step5/P02-T02 Step4 positive exclusion,
 original-request resolution and successor activation, not full adjacent services.
-The managed-seed discrepancy is now reproduced before any product change:
-fixture12759f8 on the64-table template and02fb010 on current69 tables both FAIL
-as expected under product3a7f884. File window1 wrongly exits3 before initialization;
-accepted configuration1 and security policy1 correctly refuse InvalidPolicy.
-Full rows/xmin are unchanged in all three cases for both runs.31/61 captures and
-all1697 exact source files verified, originals retained at initial-archive-20261002/
-{window-red,window-current-red}. Latest owner/client and source hashes are in
-p02-dictionary-append-native-20261002.json installed_private_scope.managed_window
-and inventory initial_private_scope.managed_window_20261002. Both clients/borrowed
-PG are stopped, no OOM/cleanup/unrelated changes; latest Tux free in inventory.
+Managed-window correction now PASS under product14d18e1/tree043acc86:
+file seed1 with accepted configuration64/security32 initializes effective32,
+renews both owners beyond the first deadline and exits0 after6.435320777s.
+All17 original native rows/two inputs and both receipts independently match;
+fresh reinitialization refuses the same directory with native/SQL unchanged.
+Accepted configuration1 or policy1 still refuses InvalidPolicy with all69 tables/
+xmin unchanged. The focused three-case actual CLI/PG16.15/Rocks11.8.1 run passes.
+Build/Clippy and13 native custody/budget/cut/supervision tests pass; no capacity
+or complete M1 claim. Root verified1697 source files,21 build/68 engine captures
+and replayed the positive oracle with three discriminating capture mutations.
 
-The focused correction separates selected_roots from accepted_profile: managed
-seed1 no longer vetoes accepted32; both complete accepted documents still require
-at least2 before Control registration/native effects. Minimum accepted ceiling,
-Sync/Archive bounds, expiry/custody/COMMIT remain unchanged. ingest-store.md now
-explicitly reconciles the earlier local-profile floor with managed authority;
-no persistent format/migration change. Candidatebc0e22f native compilation FAIL: renewal in commands.rs still called
-the renamed selected helper (E0425). Original build/capture retained,19 files
-hash-verified against exact source; owner87ac934783309e76993b6990dd8fa918 and
-fetch/native containers stopped, no OOM/unrelated changes. Full commands.rs is
-now inspected and its accepted renewal uses the same accepted_profile validator.
-Corrected native validation is NOT_RUN.
-Next bounded action: commit this candidate, compile on Tux using exclusive owned
-1154757 cache, then execute --installed-ingest-windows on exact new artifacts.
-Expected: accepted configuration1 and policy1 refuse with69 tables unchanged;
-staged file1 initializes17 exact native rows/two original producer requests,
-renews past its first deadline, exits0 and refuses fresh adoption of that directory.
-Do not reuse original nine-case evidence as qualification of changed behavior.
+Original failures remain: fixture12759f8 on64-table template and02fb010 on current69
+reproduce the old seed refusal under product3a7f884. Candidatebc0e22f compile FAIL
+because renewal still called the renamed helper;13 captures retained, not19.
+Full initial_ingest/commands/policy-restoration/basis owners and relevant Control
+acquire/snapshot/registry callers now inspected. The roots/accepted-profile split
+retains >=2 at acquisition, basis and renewal without touching custody, expiry,
+minimum accepted limit, Sync/Archive bounds or COMMIT. Review also corrected a
+proposed documentation statement: declarative edits remain staged at Serve;
+digest equality belongs to explicit first activation. No declarative behavior change.
+No generic framework, persistent format or migration change.
+
+Evidence: p02-dictionary-append-native-20261002.json installed_private_scope.
+managed_window and inventory initial_private_scope.managed_window_20261002.
+Ignored initial-archive-20261002/{window-red,window-current-red,window-build,
+window-build-final,window-green}; original outcomes/source/native inputs and DBs
+retained. Latest build archive-worker-budgets-14d18e1 ownerb62f6e5b359c929a56725382199076da,
+engine installed-ingest-windows-14d18e1 owner3cc1af2ec71cbd387a9c246649ac14b6;
+all owned clients/builds and borrowed PG stopped, no OOM or unrelated changes.
+Tux71,100,817,408B free, Mac2,713,288KiB. Compiler1154757 released; no local build.
+
+Next bounded action for P01-T09 Step4/P02-T01 Step5/P02-T02 Step4: implement the
+bounded historical registry/manifest loader needed by the existing recovery
+resolver, then wire it to an explicit installed recovery consumer. Current API
+requires complete InitialRegistration and manifest from an external fixture;
+installed startup persists neither as a standalone restart receipt. Reconstruct
+only preserved authoritative fields, validate full original policy/registration
+and preserve missing/zero/partial distinctions. Historical IngestRecovery can
+hold positive native exclusion and close/resolve original requests, but cannot
+be converted into fresh admission. This loader is a concrete prerequisite to
+successor activation, not a demand to finish full adjacent services or ACK/GC.
+
+Read so far for that next responsibility: complete ingest-store and registration
+references, producer-request-inputs contract, Rocks store/producer closing/recovery,
+PG producer closing/recovery/initial basis and InitialRegistration definitions,
+observe_locked/require_closing_registration. Remaining before design/edit: full
+ingest_registry file, manifest codec/contracts, owning source/topology/producer
+SQL and relevant successor/exclusion data-plane contracts. Source epoch closure,
+recovery provenance, old-owner exclusion, bounded retained-input set and exact
+COMMIT ambiguity must remain explicit; do not infer noncommit from missing detail.
 
 M1 remains INCOMPLETE: online indexing, successor/replay, restart/resend/provenance-
 off, outages and bundle installation. Initial native custody cannot be adopted by
@@ -324,7 +346,7 @@ No complete acquisition task or phase checkbox closes at this boundary.
 
 Runs root /home/tux/bigbrotr-implementation-20260917/runs/. Shared compiler cache
 network-1154757/out/build/{target,cargo-home}, owner8b21a13162699a6038154874c2ac89da,
-uses exclusive .compiler-cache.lock. Latest3a7f884 intermediates; qualified ELFs
+uses exclusive .compiler-cache.lock. Latest14d18e1 intermediates; qualified ELFs
 are separate. Native image7e946a0c, Rust1.98.1,clang14/Rocks11.8.1,amd64 only.
 All exact IDs/manifests/owners are in the existing laboratory inventory. Check
 space/process/container/mount/cache dependencies before the next large allocation.

@@ -851,7 +851,7 @@
       "scope": "Actual login/logout/incorrect credentials, shared-memory refusal before listener bind, SIGTERM during observed password work without issuance;69 SQL tables and17 native rows/two inputs/receipts."
     },
     "managed_window": {
-      "status": "RED_CONFIRMED; product correction awaiting native build and engine execution",
+      "status": "PASS_SCOPED",
       "tasks": [
         "P01-T09 Step4 prerequisite",
         "P02-T02 Step4",
@@ -1007,12 +1007,107 @@
           "cleanup_errors": [],
           "unrelated_changed": [],
           "free_bytes_after": 71842906112
+        },
+        "window-green": {
+          "source": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+          "product": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ingest-windows-14d18e1",
+          "owner": "3cc1af2ec71cbd387a9c246649ac14b6",
+          "client": "e76d04e8c20a8b1470fc5bf20fc48a748dbc68383441462f854686cf4a95d96c",
+          "status": "PASS_INSTALLED_INGEST_WINDOWS",
+          "capture": {
+            "label": "window-green",
+            "source": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+            "build_source": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+            "status": "PASS_INSTALLED_INGEST_WINDOWS",
+            "captures": 68,
+            "capture_sha256": "b47786df446af08e85ba27578c18a12088832779718e487a0767ce1f29532dfe",
+            "cases": [
+              {
+                "name": "window-config",
+                "status": "PASS"
+              },
+              {
+                "name": "window-policy",
+                "status": "PASS"
+              },
+              {
+                "name": "window-local",
+                "status": "PASS"
+              }
+            ]
+          },
+          "source_files": 1697,
+          "source_archive_sha256": "71ab26970886a7a8b79d37796e9e9b81ab0b342a0a63fce190bb39ac7e2edaa4",
+          "tables": 69,
+          "cases": [
+            {
+              "name": "window-config",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_pg_rocks": false,
+              "control_tables": 69,
+              "terminal": {
+                "pid": 50,
+                "start_ticks": "431456701",
+                "config": "/lab/bb_scope_bind_14d18e1_window_config.toml",
+                "prefix": "/lab/window-config",
+                "exit_code": 3,
+                "elapsed_seconds": 0.01564221829175949,
+                "forced": false,
+                "reaped": true
+              }
+            },
+            {
+              "name": "window-policy",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_pg_rocks": false,
+              "control_tables": 69,
+              "terminal": {
+                "pid": 89,
+                "start_ticks": "431457078",
+                "config": "/lab/bb_scope_bind_14d18e1_window_policy.toml",
+                "prefix": "/lab/window-policy",
+                "exit_code": 3,
+                "elapsed_seconds": 0.015543192625045776,
+                "forced": false,
+                "reaped": true
+              }
+            },
+            {
+              "name": "window-local",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_pg_rocks": true,
+              "control_tables": 69,
+              "terminal": {
+                "pid": 128,
+                "start_ticks": "431457491",
+                "config": "/lab/bb_scope_bind_14d18e1_window_local.toml",
+                "prefix": "/lab/window-local",
+                "exit_code": 0,
+                "elapsed_seconds": 6.435320776887238,
+                "forced": false,
+                "reaped": true
+              }
+            }
+          ],
+          "databases": [
+            "bb_scope_bind_14d18e1_window_config",
+            "bb_scope_bind_14d18e1_window_policy",
+            "bb_scope_bind_14d18e1_window_local"
+          ],
+          "cleanup": "STOPPED/RETAINED",
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 71100833792
         }
       },
       "not_run": [
-        "corrected native build/installed three-case comparison",
         "successor/restart/replay/ACK/recovery",
-        "capacity/load/aged state/arm64/release"
+        "capacity/load/aged state/arm64/release",
+        "new declarative-mode integration case; staged-file semantics source-reviewed unchanged"
       ],
       "original_build_failure": {
         "source": "bc0e22f4a0003b910d73d452b2dccfb11fee10a2",
@@ -1041,7 +1136,75 @@
         "cleanup": "stopped-retained",
         "unrelated_changed": [],
         "free_bytes_after": 71566651392
-      }
+      },
+      "build": {
+        "source": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+        "tree": "043acc86640368d88ef3253ae26e5e8921184e42",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-worker-budgets-14d18e1",
+        "owner": "b62f6e5b359c929a56725382199076da",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "b90a000ade0e7953767072a2498d6e0b32ace1cb7b5dea3ac2d927915e9752cb"
+          },
+          {
+            "name": "native",
+            "id": "9a473771391cbf56cc72b0da010faf0ad465f13c0daabb3e76cbd387c49adec9"
+          }
+        ],
+        "status": "PASS_NATIVE_BUILD_CLIPPY_AND_13_TESTS",
+        "capture": {
+          "label": "window-build-final",
+          "source": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+          "files": 1697,
+          "captures": 21,
+          "capture_sha256": "199b0eaddc9711daf61ec7aa6e66327486214d8dd017581e050a68fdf1176864"
+        },
+        "binary_sha256": "5c9bc5e88bbd44aa8adbdf26fb3d8da5c8b94af60097d9daae5b894e3e75d5a0",
+        "probe_sha256": "d8049bccfcd54748fae0684b5d0c2baed6aa13f163ade5c2f78af85d00743050",
+        "native_tests_passed": {
+          "native-custody": 1,
+          "worker-budgets": 2,
+          "cut-admission": 2,
+          "initial-supervision": 8
+        },
+        "cleanup": "stopped-retained",
+        "unrelated_changed": [],
+        "free_bytes_after": 71191134208
+      },
+      "observations": {
+        "staged_file_window": 1,
+        "accepted_configuration_window": 64,
+        "accepted_security_window": 32,
+        "effective_registered_window": 32,
+        "native_rows": 17,
+        "original_requests": 2,
+        "renewal": {
+          "original_deadline": 1790932326974936,
+          "observed": {
+            "now": 1790932327111636,
+            "leases": [
+              1790932332983029,
+              1790932332983029
+            ]
+          }
+        },
+        "retry": "fresh initialization refuses existing directory; native17 rows/two original inputs and complete Control state unchanged",
+        "negative_cases": "Both accepted configuration1 and security policy1 return InvalidPolicy before mutation; all69 tables including xmin identical.",
+        "replay": {
+          "status": "PASS_CAPTURE_REPLAY",
+          "source": "14d18e143b16c69aae6d287cf0621a09ab1cc74f",
+          "native_rows": 17,
+          "original_requests": 2,
+          "retry_native_unchanged": true,
+          "oracle_only_negative_controls": [
+            "lost-native-row",
+            "changed-input",
+            "changed-effective-window"
+          ]
+        }
+      },
+      "review": "Root read complete initial_ingest, commands, policy restoration and initial basis owners plus relevant Control acquisition/snapshot/registry callbacks. Focused roots versus accepted-profile helper preserves minimum policy ceilings at acquisition, basis validation and renewal; no state machine or adapter framework. Original missing-renewal-caller compile failure remains FAIL. All1697 source files and21 build/68 engine captures verified. Review corrected proposed declarative wording: runtime uses accepted revisions while edits remain staged; digest equality belongs to explicit first activation, not Serve startup. Declarative activation semantics are unchanged by source review; the new seed-floor case in that mode is not independently engine-qualified."
     }
   }
 }
