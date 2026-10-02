@@ -46,8 +46,9 @@ scope_command_faults = scope_command_relations or scope_command_races or (len(sy
 registration_faults = scope_command_faults or registration_http_faults or registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
 job_actors = len(sys.argv) == 4 and sys.argv[2] == '--installed-job-actors'
 job_expiry = len(sys.argv) == 4 and sys.argv[2] == '--installed-job-expiry'
+job_gap = len(sys.argv) == 4 and sys.argv[2] == '--installed-job-gap'
 export_status = len(sys.argv) == 4 and sys.argv[2] == '--installed-export-status'
-jobs_http = export_status or job_actors or job_expiry or (len(sys.argv) == 4 and sys.argv[2] == '--installed-jobs')
+jobs_http = export_status or job_actors or job_expiry or job_gap or (len(sys.argv) == 4 and sys.argv[2] == '--installed-jobs')
 scope_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-scopes'
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
@@ -653,6 +654,8 @@ if registration_http:
     success_status = 'PASS_INITIAL_REGISTRATION_HTTP_WAVE'
 if jobs_http:
     success_status = 'PASS_INITIAL_FINITE_JOB_HTTP_WAVE'
+if job_gap:
+    success_status = 'PASS_INITIAL_FINITE_JOB_GAP_COMPATIBILITY'
 if export_status:
     success_status = 'PASS_PRE0022_EXPORT_STATUS_QUERY'
 if scope_http:
@@ -824,8 +827,8 @@ try:
         cases = list(selected_sync_cases)
     elif jobs_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-        from initial_jobs import ACTOR_CASES, CASES, EXPIRY_CASES
-        cases = list(EXPIRY_CASES if job_expiry else ACTOR_CASES if job_actors else CASES)
+        from initial_jobs import ACTOR_CASES, CASES, EXPIRY_CASES, GAP_CASES
+        cases = list(GAP_CASES if job_gap else EXPIRY_CASES if job_expiry else ACTOR_CASES if job_actors else CASES)
     elif scope_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from scopes import CASES

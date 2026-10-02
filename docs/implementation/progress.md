@@ -12,12 +12,16 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is48d298a after pushedf996628. Root owns the uncommitted0027
-acquisition abandonment implementation/fixture/docs. Its entrypoint RED onTux
-is stopped/retained: expected exit2 instead of4 for the missing new flag, other3
-tests PASS. Source1709files/12captures SHAe050608e verified. No parallel writer
-or active experiment. Commit a candidate, then native build and signed PG/Rocks
-qualification; do not advertise the unqualified operation. No Mac Rust build.
+Primary main isbff0bc3, three unpublished coherent candidates after pushedf996628.
+Root owns the first-wave evidence update; no parallel writer or active experiment.
+Read-only independent AI review of257d232/bff0bc3 found a concrete permissions
+regression:0027's redundant jobs UPDATE deferred trigger reads acquisition_gaps
+in ordinary acceptance despite the original valid grants. No real reproduction
+yet. Root is adding an installed HTTP regression with schema27/old grants before
+correcting this boundary. The gap INSERT deferred check and terminal job
+immutability appear sufficient; preserve applied0027 and use an additive migration
+if confirmed. No other actionable finding in the review's recovery/SQL/native
+custody boundary; no new execution by the reviewer. No Mac Rust build.
 
 ## Active responsibility and next bounded action
 
@@ -127,20 +131,44 @@ and captured effects. Existing report lock_wave and inventory lock_engine own
 identities. Engined824180 stopped/retained, ownerbe172782/clientab1bb6b9, borrowedPG
 stopped; no OOM/cleanup/unrelated changes. Tux68,613,382,144B free.
 
-Next bounded action: implement explicit initial acquisition abandonment under
-the retained resolved-source witness before producer/domain retirement. SQL0011
-deliberately refuses nonempty retirement; do not edit applied migrations. Initial
-Sync may leave queued jobs with admitted facts, or no mutation requests at all.
-Select all jobs claimed by the original Control, not only request-linked jobs.
-The finite initial consumer's socket callback cannot outlive its borrowed native
-owner; actual native exclusion plus current Control fencing is required. A PG
-fence alone is not process/socket termination. Use the selected acquisition_gaps
-relation for explicit whole-intent uncertainty, retain scientific facts and old
-claim attribution, and complete cancellation atomically. No ACK/GC or source
-coverage is implied. Exact retry must preserve original gap attribution.
-M1/P01-T09 Step4 restart/resend remains the next useful journey, specifically
-P02-T01 Step5/P02-T02 Step4 prerequisites. Source closure is now a bounded
-qualified consumer; broad capacity/negative resolution remain distinct work.
+Product257d232/tree7e8e78aa adds explicit --abandon-acquisition with additive0027.
+It reuses the ephemeral source witness and extracted exact PG prefix comparison;
+a focused adapter takes dataset UPDATE before registry/source/producer/job locks.
+Original queued→cancel_requested→cancelled and immutable whole-intent gaps commit
+atomically. Original claim is retained in each gap; current Control owns only the
+terminal transition. No old SQL, native format, dependency or ACK/GC change.
+A native witness excludes this initial local Sync callback, which borrows its
+native owner and cannot retain a socket; a PG fence alone remains insufficient.
+
+Release CLI/probe,4 entrypoint/35 migration-catalog tests,3 actual Rocks prefix
+cases and Clippy PASS. Fixturebff0bc3/tree4478b5e8 passes6 real installed cases:
+original signed job and identical retry; synthetic queued job with no mutation
+plus an unchanged unclaimed job; revoked actor/grants; advanced checkpoint and
+missing0027 refusal. Refusals retain the earlier committed source closure.
+All70 tables (69 for missing0027),49 native rows/four original inputs compared;
+original32-table catalog/files preserved. Root matched1711build/1712fixture files,
+16build/68engine captures (SHAb91a1745/c6e8b95e), replayed full independent signed
+native bytes, source digest and job/gap effects. Existing producer recovery report
+initial_acquisition_abandonment_20261002 and matching inventory own identities.
+Entry-point RED48d298a remains FAIL (exit2 for missing option vs4),3 other tests
+PASS,12 captures/SHAe050608e. No historical outcome was rewritten.
+Build257d232 and enginebff0bc3 STOPPED/RETAINED, shared1154757 released, borrowedPG
+stopped; no OOM/cleanup/unrelated changes. Engine ownerd410b6ca/client732716e9,
+Tux68,230,946,816B free. Preserve all original/synthetic/refusal clones and captures.
+
+Next bounded action: run ordinary installed HTTP acceptance on27 with unchanged
+old grants using257d232; preserve its original outcome. If confirmed, remove the
+redundant trigger additively and verify before-bind compatibility plus the actual
+acceptance and gap atomicity journeys. Then abandonment INSERT/COMMIT interruption
+recovery and64/65 count boundary. Resumption found only root-owned evidence/docs
+changes, no active BigBrotr processes, eight unchanged unrelated containers;
+Mac9,044,856KiB and Tux68,230,868,992B free. Prior cleanup remains complete.
+Then initial producer/domain retirement: SQL0011 deliberately refuses nonempty
+retirement; its additive replacement must check complete outcomes and workflow
+obligations. Exact retry after retirement cannot relax admission/recovery guards.
+M1/P01-T09 Step4 restart/resend remains the useful journey, with P02-T01 Step5/
+P02-T02 Step4 prerequisites. Source closure has its separate bounded qualification;
+no whole subsystem, task checkbox, capacity or full product claim closes here.
 
 Independent read-only AI review atf996628 found no actionable defect in the
 source-closure boundary. Reviewer inspected complete new modules, recovery/shared

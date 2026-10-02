@@ -37094,7 +37094,80 @@
           },
           "result": "EXPECTED_RED: new flag refused with exit2 instead of native missing-root refusal4; other3 CLI tests pass"
         },
-        "preserve": "Exact source, original failed build/test logs and capture; shared compiler cache remains exclusively reused1154757. No dataset deletion."
+        "preserve": "Exact source, original failed build/test logs and capture; shared compiler cache remains exclusively reused1154757. No dataset deletion.",
+        "build": {
+          "source": "257d23239655dd3f985b541dc45e82297aeaa0fc",
+          "tree": "7e8e78aaa4f972c3b8ae49b52c9b31d97d2f37c4",
+          "owner": "e5b2166e7031d5fb05df18e6bd02456c",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-257d232",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "8f729c2003cc516297b634d08a416620182b6aa238e8a07d1f0d456ba09ad3d8"
+            },
+            {
+              "name": "native",
+              "id": "a6f696f8c4308b9213a15d1f9a14688800132bc4b4a5d2870b6f358f668af2db"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-02T12:49:55.247186+00:00",
+          "qualification": "PASS_INGEST_HISTORY_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 68356399104,
+          "finished_at": "2026-10-02T12:51:46.713737+00:00",
+          "capture": {
+            "label": "acquisition-abandon-build",
+            "source": "257d23239655dd3f985b541dc45e82297aeaa0fc",
+            "files": 1711,
+            "captures": 16,
+            "capture_sha256": "b91a174557a32b9fb65d9ccf2ab4da4faf36012c8f961fe4186061885742b7f4"
+          }
+        },
+        "engine": {
+          "source": "bff0bc3a1618fc589200157ec6eec930de8114a7",
+          "status": "PASS_INSTALLED_INITIAL_ACQUISITION_ABANDONMENT_FIRST_WAVE",
+          "owner": "d410b6ca23a00c9ba940e471d5c3ddaa",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "732716e93db499511c6d6bd2e7db1d9493c1e04ead1610108f3a5241c61686aa",
+            "name": "bigbrotr-acquisition-binding-bff0bc3"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_bff0bc3_abandon_signed",
+            "bb_scope_bind_bff0bc3_abandon_no_request",
+            "bb_scope_bind_bff0bc3_abandon_revoked",
+            "bb_scope_bind_bff0bc3_abandon_advanced",
+            "bb_scope_bind_bff0bc3_abandon_old_schema"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 68230946816,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-bff0bc3",
+          "state": "stopped-retained",
+          "capture": {
+            "label": "acquisition-abandon-first",
+            "source": "bff0bc3a1618fc589200157ec6eec930de8114a7",
+            "build_source": "257d23239655dd3f985b541dc45e82297aeaa0fc",
+            "status": "PASS_INSTALLED_INITIAL_ACQUISITION_ABANDONMENT_FIRST_WAVE",
+            "captures": 68,
+            "capture_sha256": "c6e8b95e92bf085a25d334fd0f02848177a782fc83325fb51fa2402ae0e8c5ff",
+            "cases": [
+              {
+                "name": "acquisition-abandonment-signed",
+                "status": "PASS"
+              }
+            ]
+          },
+          "source_archive_sha256": "712f366cf41483cce06caa8fc1bfb411e0d762580eada747bb01ea4e270a929e"
+        },
+        "next": "Abandonment INSERT/COMMIT interruption recovery, actual relational negative controls, count boundary, then producer/domain retirement"
       }
     }
   },

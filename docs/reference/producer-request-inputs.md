@@ -530,3 +530,11 @@ it preserves their original issuer, timestamps and row versions. Cancellation
 and ambiguous COMMIT require the same original root and mode. Later producer
 retirement must check these obligations explicitly; migration0011 continues to
 refuse nonempty retirement until that separate consumer is implemented.
+
+The [first scoped evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+uses product `257d232` and fixture `bff0bc3`: real additive migration/reapply,
+original signed job abandonment and identical retry, a synthetic zero-request
+queued intent plus untouched unclaimed intent, revoked historical actor/grants,
+and advanced checkpoint/missing0027 refusal. It checks70 tables/49 native rows
+and preserves the original signed catalog/files. Abandonment INSERT/COMMIT
+interruption recovery, relational negatives and64/65 limit remain NOT_RUN.

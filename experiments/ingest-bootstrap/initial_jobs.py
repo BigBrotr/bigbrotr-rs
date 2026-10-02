@@ -12,6 +12,7 @@ from scopes import upgrade as upgrade_scopes
 CASES = ['jobs-journey', 'jobs-detail-privilege', 'jobs-admission-privilege', 'jobs-digest-privilege']
 ACTOR_CASES = ['jobs-other-actor']
 EXPIRY_CASES = ['jobs-idle-expiry', 'jobs-absolute-expiry']
+GAP_CASES = ['jobs-gap-legacy-grants']
 EFFECTS = {'jobs', 'acquisition_jobs', 'job_admissions', 'management_commands', 'management_audit'}
 
 
@@ -125,9 +126,29 @@ def validate_job(state, receipt, key='b1'*16):
 
 
 def run(pg,client,output,database,name,rows):
-    assert name in CASES + ACTOR_CASES + EXPIRY_CASES
+    assert name in CASES + ACTOR_CASES + EXPIRY_CASES + GAP_CASES
     upgrade_registry(pg,client,output,database,name,rows)
     upgrade_scopes(pg,client,output,database,name,rows)
+    if name in GAP_CASES:
+        before = rows(database)
+        state = dict(pg, client=client)
+        config = lab.config(output, state, database, endpoint='127.0.0.1:5432', boundary='loopback')
+        response = lab.cli(state, 'migrate', 'apply', '--file', config,
+            '--user', 'bigbrotr_migrator', '--password-ref', 'file:/run/secrets/migrator', '--target', '27')
+        lab.write_json(output / (name + '-migration.json'), dict(returncode=response.returncode,
+            stdout=response.stdout, stderr=response.stderr))
+        assert response.returncode == 0, response.stderr
+        after = rows(database)
+        assert set(after) - set(before) == {'acquisition_gaps'} and not after['acquisition_gaps']
+        assert all(after[t] == before[t] for t in before if t != 'schema_versions')
+        added = [r for r in after['schema_versions'] if r not in before['schema_versions']]
+        sql = Path(__file__).resolve().parents[2] / 'migrations/postgres/0027_acquisition_abandonment.sql'
+        assert len(added) == 1 and added[0]['migration'] == 27
+        assert added[0]['checksum'] == '\\x' + hashlib.sha256(sql.read_bytes()).hexdigest()
+        lab.write_json(output / (name + '-upgrade.json'), dict(before=before, after=after))
+        # Ordinary acceptance retains its original grants. Recovery's gap table
+        # is not a prerequisite for this consumer, even when the schema exists.
+        assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control', 'control.acquisition_gaps', 'SELECT')") == 'f'
     # Explicit consumer grants on this clone. These are not applied migrations.
     lab.sql(pg,database,"""
         GRANT SELECT,INSERT ON control.acquisition_jobs TO bigbrotr_control;

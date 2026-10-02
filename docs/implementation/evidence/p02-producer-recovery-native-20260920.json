@@ -1684,7 +1684,7 @@
     }
   },
   "initial_acquisition_abandonment_20261002": {
-    "status": "IMPLEMENTING; engine behavior NOT_RUN",
+    "status": "PASS_FIRST_SCOPED_WAVE; fault/relational qualification and retirement remain incomplete",
     "tasks": [
       "P01-T09 Step4",
       "P02-T01 Step5",
@@ -1698,6 +1698,194 @@
       "capture_sha256": "e050608e8947e5cf5c99c45e95bfa0d5ebcea41e060c31810776323539225a36"
     },
     "red_result": "EXPECTED_RED: new flag refused with exit2 instead of native missing-root refusal4; other3 CLI tests pass",
-    "scope": "Explicit initial whole-intent abandonment before producer/domain retirement; does not qualify successor/M1 or ACK/GC"
+    "scope": "Explicit initial whole-intent abandonment before producer/domain retirement; does not qualify successor/M1 or ACK/GC",
+    "product_source": "257d23239655dd3f985b541dc45e82297aeaa0fc",
+    "product_tree": "7e8e78aaa4f972c3b8ae49b52c9b31d97d2f37c4",
+    "fixture_source": "bff0bc3a1618fc589200157ec6eec930de8114a7",
+    "fixture_tree": "4478b5e869d3b69874726b103dd18c40778c005d",
+    "build": {
+      "binary_sha256": "4e74a8004414f0b6062d477f46061caea01c48cbc969615d657c6d7e20e02310",
+      "probe_sha256": "66de9098b772cdb2b7f3974413adefe202af9a94dcf0b7f5c98e42cfc2f3b83f",
+      "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+      "native_toolchain": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "discovery": "llvm-config",
+        "environment": {
+          "CC": "/usr/lib/llvm-14/bin/clang",
+          "CXX": "/usr/lib/llvm-14/bin/clang++",
+          "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+          "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+          "CARGO_BUILD_JOBS": "2",
+          "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+        },
+        "tools": {
+          "CC": {
+            "path": "/usr/lib/llvm-14/bin/clang",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "CXX": {
+            "path": "/usr/lib/llvm-14/bin/clang++",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "AR": {
+            "path": "/usr/lib/llvm-14/bin/llvm-ar",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+            "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+            "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+          },
+          "LIBCLANG_PATH": {
+            "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+            "version": "Debian clang version 14.0.6"
+          },
+          "discovery": {
+            "path": "/usr/lib/llvm-14/bin/llvm-config",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+            "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+            "version": "14.0.6"
+          }
+        },
+        "sdk": null
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "checks": [
+        "release CLI/probe",
+        "4 actual CLI entrypoint tests",
+        "35 migration catalog tests",
+        "3 actual Rocks source-prefix tests",
+        "Clippy warnings denied"
+      ],
+      "capture": {
+        "label": "acquisition-abandon-build",
+        "source": "257d23239655dd3f985b541dc45e82297aeaa0fc",
+        "files": 1711,
+        "captures": 16,
+        "capture_sha256": "b91a174557a32b9fb65d9ccf2ab4da4faf36012c8f961fe4186061885742b7f4"
+      }
+    },
+    "cases": [
+      {
+        "name": "abandon-signed",
+        "status": "PASS",
+        "control_tables": 70,
+        "native_rows": 49,
+        "original_requests": 4,
+        "expected_abandoned": 1,
+        "expected_refusal": null,
+        "seconds": 0.23599343094974756
+      },
+      {
+        "name": "abandon-signed-retry",
+        "status": "PASS",
+        "control_tables": 70,
+        "native_rows": 49,
+        "original_requests": 4,
+        "expected_abandoned": 1,
+        "expected_refusal": null,
+        "seconds": 0.1556561067700386
+      },
+      {
+        "name": "abandon-no-request",
+        "status": "PASS",
+        "control_tables": 70,
+        "native_rows": 49,
+        "original_requests": 4,
+        "expected_abandoned": 2,
+        "expected_refusal": null,
+        "seconds": 0.22723992634564638
+      },
+      {
+        "name": "abandon-revoked",
+        "status": "PASS",
+        "control_tables": 70,
+        "native_rows": 49,
+        "original_requests": 4,
+        "expected_abandoned": 1,
+        "expected_refusal": null,
+        "seconds": 0.1899479478597641
+      },
+      {
+        "name": "abandon-advanced",
+        "status": "PASS",
+        "control_tables": 70,
+        "native_rows": 49,
+        "original_requests": 4,
+        "expected_abandoned": null,
+        "expected_refusal": "InvalidMetadata",
+        "seconds": 0.18456220906227827
+      },
+      {
+        "name": "abandon-old-schema",
+        "status": "PASS",
+        "control_tables": 69,
+        "native_rows": 49,
+        "original_requests": 4,
+        "expected_abandoned": null,
+        "expected_refusal": "IncompatibleDeployment",
+        "seconds": 0.19792395923286676
+      }
+    ],
+    "capture": {
+      "label": "acquisition-abandon-first",
+      "source": "bff0bc3a1618fc589200157ec6eec930de8114a7",
+      "build_source": "257d23239655dd3f985b541dc45e82297aeaa0fc",
+      "status": "PASS_INSTALLED_INITIAL_ACQUISITION_ABANDONMENT_FIRST_WAVE",
+      "captures": 68,
+      "capture_sha256": "c6e8b95e92bf085a25d334fd0f02848177a782fc83325fb51fa2402ae0e8c5ff",
+      "cases": [
+        {
+          "name": "acquisition-abandonment-signed",
+          "status": "PASS"
+        }
+      ]
+    },
+    "source_files": 1712,
+    "source_archive_sha256": "712f366cf41483cce06caa8fc1bfb411e0d762580eada747bb01ea4e270a929e",
+    "local_replay": {
+      "status": "PASS_INITIAL_ABANDONMENT_CAPTURE_REPLAY",
+      "cases": 6,
+      "independent_native_rows": 49,
+      "original_inputs": 4,
+      "control_tables": "69 pre0027 /70 at0027",
+      "closure_digest": "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501"
+    },
+    "original_seed": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9",
+    "seed_preserved": {
+      "control": true,
+      "catalog": true,
+      "files": true,
+      "report": true
+    },
+    "interpretation": [
+      "Actual migration0027 over the retained signed69-table schema, exact checksum and idempotent reapply; all old table rows/xmin except appended schema receipt unchanged.",
+      "Actual original signed job becomes cancelled with complete whole-intent gap; exact retry preserves source, gap and job row versions. Original49 native rows/four requests remain, except the monotone native producer-closing marker.",
+      "A synthetic additional qualified queued intent without mutation requests is abandoned; a synthetic unclaimed accepted intent remains unchanged. Their independent command digests are not another HTTP acceptance qualification.",
+      "Prepared revoked actor/grants do not prevent monotone uncertainty recording. Advanced checkpoint and missing0027 refuse without job/gap changes; earlier source closure remains committed.",
+      "No source traversal/coverage, producer/domain retirement, ACK/GC, successor/M1 or capacity claim."
+    ],
+    "not_run": [
+      "producer/domain retirement, successor, ACK/GC and full M1",
+      "abandonment interruption/COMMIT schedules and relational negatives",
+      "blocked native syscall, capacity/load/aged-state",
+      "arm64/release"
+    ],
+    "terminal": {
+      "state": "STOPPED_RETAINED",
+      "owner": "d410b6ca23a00c9ba940e471d5c3ddaa",
+      "client": {
+        "id": "732716e93db499511c6d6bd2e7db1d9493c1e04ead1610108f3a5241c61686aa",
+        "name": "bigbrotr-acquisition-binding-bff0bc3"
+      },
+      "free_bytes_after": 68230946816,
+      "cleanup_errors": [],
+      "unrelated_changed": []
+    }
   }
 }
