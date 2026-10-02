@@ -12,10 +12,21 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main candidate de7347dfa422b15938363e49592deb0a441e55ab,
-tree8a346a8b493d793c66938940d9fd50891ac9195e; origine72ce1b; root sole writer.
-Only root-owned evidence/inventory/checkpoint edits are pending. Productce85c0c
-is unchanged. Previous acceptance/actor/expiry supplements are privately pushed.
+Main/origin762c994; root sole writer. Root-owned new HTTP job fault fixtures and
+finite SQL helper extension are dirty. Product core remains ce85c0c unchanged.
+Shared finite wire schedule now selects job COMMIT12 after actual login, URL,
+enrollment and scope setup; positive server marker identifies the intended cut.
+Expected five effects are independent literal job/digest/session/deadline fields.
+New helper decodes the original finite command and fresh owner retries exactly;
+no native successor/adoption. Native build is required only for this helper;
+no local build. Reuse qualified ce85c0c native inspector with full source-diff gate.
+Mac Python3.14 eight HTTP-oracle tests and four retained acceptance/release
+captures PASS; fmt/syntax/artifacts PASS. An initial systemPython3.9 run exposed
+a fixture read/readinto difference and old keyword calls; corrected calls run
+with documented3.14. No new engine evidence yet. Read-only review is in progress.
+Next: exact-Git candidate/native helper build on Tux using the exclusively locked
+1154757 cache, then five installed job COMMIT cases and affected shared-fixture
+regressions. Preserve original outcomes and record actual terminal audits.
 
 Compatibility run runs/job-status-compat-de7347d is STOPPED/RETAINED:
 PID1558991/start428452303, owner5b0fcc0dca17226bfb649de3b2185974,

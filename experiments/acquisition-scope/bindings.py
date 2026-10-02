@@ -33,9 +33,10 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
+job_http_faults = len(sys.argv) == 4 and sys.argv[2] == '--job-http-faults'
 scope_http_faults = len(sys.argv) == 4 and sys.argv[2] == '--scope-http-faults'
 registration_http_signal = len(sys.argv) == 4 and sys.argv[2] == '--registration-http-signal'
-registration_http_faults = scope_http_faults or registration_http_signal or (len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults')
+registration_http_faults = job_http_faults or scope_http_faults or registration_http_signal or (len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults')
 scope_command_relations = len(sys.argv) == 4 and sys.argv[2] == '--scope-command-relations'
 registration_relations = scope_command_relations or (len(sys.argv) == 4 and sys.argv[2] == '--registration-relations')
 registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races'
@@ -77,9 +78,9 @@ native_inspector = None
 if registration_http_faults:
     # Reuse the separately retained, qualified native inspector. No product or
     # codec changed; the later Rust addition is solely the SQL fault example.
-    native_inspector = root.parent / 'initial-ingest-e4c2825/out/artifacts'
+    native_inspector = root.parent / 'initial-ingest-ce85c0c/out/artifacts'
     inspected = json.loads((native_inspector / 'build-result.json').read_text())
-    assert inspected['source'] == 'e4c282542532aa95ca30b8ea252b527230d614b8'
+    assert inspected['source'] == 'ce85c0c223134c83faf68aebb455aa4f014a7509'
     assert inspected['probe_name'] == 'ingest_bootstrap_probe'
     assert sha((native_inspector / 'ingest_bootstrap_probe').read_bytes()) == inspected['probe_sha256']
     changed = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only', inspected['source'], revision]).stdout.splitlines()
@@ -158,6 +159,8 @@ if registration_http:
 
 if scope_http_faults:
     report['wave'] = 'installed-scope-command-faults'
+if job_http_faults:
+    report['wave'] = 'installed-job-acceptance-faults'
 
 if jobs_http:
     report['wave'] = ('installed-finite-job-expiry' if job_expiry else
@@ -538,6 +541,8 @@ if scope_command_races:
 
 if scope_http_faults:
     success_status = 'PASS_INSTALLED_SCOPE_COMMAND_FAULTS'
+if job_http_faults:
+    success_status = 'PASS_INSTALLED_JOB_ACCEPTANCE_FAULTS'
 
 if scope_command_relations:
     success_status = 'PASS_SCOPE_COMMAND_RELATIONAL_GUARDS'
@@ -619,6 +624,10 @@ try:
                 from functools import partial
                 from scope_http_faults import CASES as SCOPE_HTTP_CASES
                 registration_runs = {case: partial(run_registration_http_fault, scope=True) for case in SCOPE_HTTP_CASES}
+            if job_http_faults:
+                from functools import partial
+                from job_http_faults import CASES as JOB_HTTP_CASES
+                registration_runs = {case: partial(run_registration_http_fault, job=True) for case in JOB_HTTP_CASES}
             if registration_http_signal:
                 registration_runs = {'register-http-signal': run_registration_http_fault}
         if scope_command_faults:

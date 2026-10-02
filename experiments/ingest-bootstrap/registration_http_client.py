@@ -10,7 +10,7 @@ import subprocess
 import sys
 import time
 
-def read_outcome(connection, mode, *, scope=False):
+def read_outcome(connection, mode, *, kind='endpoint'):
     observed = {}
     response = http.client.HTTPResponse(connection)
     wanted = 202 if mode == 'pass' else 200 if mode == 'disconnect' else 503
@@ -38,8 +38,11 @@ def read_outcome(connection, mode, *, scope=False):
     if mode in ('pass', 'disconnect'):
         assert observed['status'] == (202 if mode == 'pass' else 200)
         receipt = observed['body']
-        assert receipt['format'] == ('bigbrotr-acquisition-scope-registration/1' if scope else 'bigbrotr-relay-registration/1')
-        assert receipt['authority'] == 'identity-only' and receipt['command_key'] == '31' * 16
+        formats = dict(endpoint='bigbrotr-relay-registration/1', scope='bigbrotr-acquisition-scope-registration/1', job='bigbrotr-job-acceptance/1')
+        assert receipt['format'] == formats[kind]
+        assert receipt['authority'] == ('acceptance-only' if kind=='job' else 'identity-only')
+        assert receipt['command_key'] == '31' * 16
+        if kind=='job': assert receipt['execution']=='unobserved'
         assert receipt['created'] == (mode == 'pass')
     else:
         assert 'closed' in observed or observed['status'] == 503, 'ambiguous command reported success'
@@ -48,8 +51,8 @@ def read_outcome(connection, mode, *, scope=False):
 
 def main():
     directory, mode = Path(sys.argv[1]), sys.argv[2]
-    scope = len(sys.argv) == 4 and sys.argv[3] == 'scope'
-    assert len(sys.argv) == (4 if scope else 3)
+    kind = sys.argv[3] if len(sys.argv)==4 else 'endpoint'
+    assert len(sys.argv) in (3,4) and kind in ('endpoint','scope','job')
     assert directory.is_absolute() and mode in ('pass', 'before', 'after', 'disconnect', 'signal')
     origin = 'http://127.0.0.1:18081'
 
@@ -77,7 +80,11 @@ def main():
     assert saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == origin
     assert session_file.stat().st_mode & 0o777 == 0o600
     assert all(saved[k].encode() not in login.stdout for k in ('session', 'csrf'))
-    if scope:
+    if kind=='job':
+        from job_http_client import prepare
+        command = prepare(directory, origin, saved)
+        path = 'jobs'
+    elif kind=='scope':
         from scope_http_client import prepare
         command = prepare(directory, origin, saved)
         path = 'acquisition-scopes'
@@ -105,7 +112,7 @@ def main():
             connection = socket.create_connection(('127.0.0.1', 18081), 3)
             connection.settimeout(5)
             connection.sendall(header + body)
-        emit('done', outcome=read_outcome(connection, mode, scope=scope))
+        emit('done', outcome=read_outcome(connection, mode, kind=kind))
     finally:
         connection.close()
 

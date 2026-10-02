@@ -1,9 +1,11 @@
-//! Finite authenticated endpoint/scope command client. File barriers are lab-only.
+//! Finite authenticated source/job command client. File barriers are lab-only.
 use bigbrotr::{
+    acquisition::job::AcquisitionCommand,
     management::{
         acquisition_scope::ScopeCommand,
         credentials::HASH_RESERVATION,
         grants::Revision,
+        jobs::JobCommand,
         relay_registration::RegistrationCommand,
         sessions::{BrowserSecret, SessionError, SessionLifetime},
     },
@@ -63,11 +65,12 @@ fn revision(value: u64) -> Revision {
     Revision::try_from(value.to_string()).unwrap()
 }
 
-// Two real command consumers share only the finite fault/lifetime schedule.
+// These real command consumers share only the finite fault/lifetime schedule.
 // Independent Python oracles reconstruct their distinct persisted meanings.
 enum Command {
     Endpoint(RegistrationCommand),
     Scope(ScopeCommand),
+    Acquisition(AcquisitionCommand),
 }
 impl Command {
     async fn accept(
@@ -87,6 +90,10 @@ impl Command {
                 .accept_acquisition_scope(token, csrf, key, command, started)
                 .await
                 .map(|receipt| serde_json::json!(receipt)),
+            Self::Acquisition(command) => owner
+                .accept_acquisition(token, csrf, key, command, started)
+                .await
+                .map(|receipt| serde_json::json!(receipt)),
         }
     }
 }
@@ -99,8 +106,8 @@ async fn main() {
 async fn run() {
     let args: Vec<_> = std::env::args().collect();
     assert!(matches!(args.len(), 8 | 9));
-    let scope = args.get(8).is_some_and(|value| value == "scope");
-    assert_eq!(args.len() == 9, scope);
+    let kind = args.get(8).map(String::as_str).unwrap_or("endpoint");
+    assert!(matches!(kind, "endpoint" | "scope" | "job"));
     let mode = args[4].as_str();
     let nonce: u8 = args[6].parse().unwrap();
     assert!((10..=99).contains(&nonce));
@@ -151,10 +158,10 @@ async fn run() {
     }
     let (mut owner, policy) = claimed.unwrap();
     owner.require_browser_sessions().await.unwrap();
-    if scope {
-        owner.require_acquisition_scope().await.unwrap();
-    } else {
-        owner.require_relay_registration().await.unwrap();
+    match kind {
+        "scope" => owner.require_acquisition_scope().await.unwrap(),
+        "job" => owner.require_acquisition_jobs().await.unwrap(),
+        _ => owner.require_relay_registration().await.unwrap(),
     }
     let challenge = owner
         .begin_browser_login("alice", "127.0.0.1".parse().unwrap())
@@ -174,7 +181,15 @@ async fn run() {
         .unwrap();
     // Fixed original command heads permit historical retry after a new owner
     // has accepted changed heads; they must not silently rebase the old intent.
-    let command = if scope {
+    let command = if kind == "job" {
+        let path = Path::new(&args[3]).with_file_name("job-command.json");
+        let JobCommand::Acquisition(command) =
+            serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap()
+        else {
+            panic!("expected finite acquisition fixture");
+        };
+        Command::Acquisition(command)
+    } else if kind == "scope" {
         let path = Path::new(&args[3]).with_file_name("command.json");
         Command::Scope(ScopeCommand::decode(&std::fs::read(path).unwrap()).unwrap())
     } else {

@@ -117,12 +117,13 @@ def write_policies(directory, original):
     lab.write_json(directory / 'policies.json', documents)
 
 
-def start_probe(client, database, directory, mode, nonce, processes, port=5432, *, scope=False):
+def start_probe(client, database, directory, mode, nonce, processes, port=5432, *, scope=False, job=False):
+    assert not (scope and job)
     token = directory / str(nonce)
     process = Process(['docker', 'exec', client, '/build/relay_registration_fault_probe',
         database, '/run/secrets/application', '/lab/' + directory.name + '/policies.json',
         mode, str(port), str(nonce), '/lab/' + directory.name + '/' + str(nonce),
-        *(['scope'] if scope else [])])
+        *(['job'] if job else ['scope'] if scope else [])])
     processes.append((str(nonce), process))
     return process, token
 

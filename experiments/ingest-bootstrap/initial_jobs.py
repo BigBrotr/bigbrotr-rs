@@ -84,13 +84,21 @@ def acceptance(before, after, observations):
     audit,=[v for v in after['management_audit'] if v not in before['management_audit']]
     assert all(v in after['management_commands'] for v in before['management_commands'])
     assert all(v in after['management_audit'] for v in before['management_audit'])
-    dataset=before['datasets'][0]['dataset_id']
-    actor,=[r for r in before['local_accounts'] if r['principal_id']=='\\x'+'10'*16]
-    scope,=before['acquisition_scopes']
-    session,=[r for r in before['browser_sessions'] if r['principal_id']==actor['principal_id']]
-    key='\\x'+'b1'*16; ident='\\x'+receipt['job_id']; accepted=int(receipt['accepted_at_us'])
+    validate_job(after, receipt)
+
+
+def validate_job(state, receipt, key='b1'*16):
+    job,=state['jobs']; detail,=state['acquisition_jobs']; admission,=state['job_admissions']
+    command,=[r for r in state['management_commands'] if r['request_key']=='\\x'+key]
+    audit,=[r for r in state['management_audit'] if r['audit_id']==command['audit_id']]
+    dataset=state['datasets'][0]['dataset_id']
+    actor,=[r for r in state['local_accounts'] if r['principal_id']=='\\x'+'10'*16]
+    scope,=state['acquisition_scopes']
+    session,=[r for r in state['browser_sessions'] if r['session_id']==detail['session_id']]
+    assert session['principal_id']==actor['principal_id'] and session['dataset_id']==dataset
+    key='\\x'+key; ident='\\x'+receipt['job_id']; accepted=int(receipt['accepted_at_us'])
     preimage=(b'bigbrotr/acquisition-job/1\0'+bytes.fromhex(dataset[2:])+
-        bytes.fromhex(actor['principal_id'][2:])+bytes.fromhex('b1'*16)+bytes.fromhex(scope['scope_id'][2:])+
+        bytes.fromhex(actor['principal_id'][2:])+bytes.fromhex(key[2:])+bytes.fromhex(scope['scope_id'][2:])+
         (120000000).to_bytes(8,'big')+(1).to_bytes(8,'big')*2)
     digest='\\x'+hashlib.sha256(preimage).hexdigest()
     clean=lambda r:{k:v for k,v in r.items() if k!='xmin'}
@@ -105,12 +113,13 @@ def acceptance(before, after, observations):
         session_id=session['session_id'],actor_credential_revision=actor['credential_revision'],
         actor_authentication_revision=actor['authentication_revision'],actor_grant_revision=actor['grant_revision'])
     assert clean(admission)==dict(job_id=ident,admission_ordinal=1)
-    assert command['dataset_id']==audit['dataset_id']==dataset
-    assert command['actor_id']==audit['actor_id']==actor['principal_id']
-    assert command['request_key']==audit['subject_id']==key and command['request_digest']==digest
-    assert command['action']==audit['action']=='job.acquisition.accept' and audit['outcome']=='accepted'
-    assert command['audit_id']==audit['audit_id'] and command['accepted_at_us']==audit['created_at_us']==accepted
-    assert command['expected_config_revision']==command['policy_revision']==audit['config_revision']==audit['policy_revision']==1
+    assert clean(command)==dict(dataset_id=dataset,actor_id=actor['principal_id'],request_key=key,
+        request_digest=digest,action='job.acquisition.accept',accepted_at_us=accepted,
+        expected_config_revision=1,policy_revision=1,audit_id=audit['audit_id'],
+        authority_mode=None,document_digest=None)
+    assert clean(audit)==dict(dataset_id=dataset,actor_id=actor['principal_id'],audit_id=command['audit_id'],
+        action='job.acquisition.accept',outcome='accepted',subject_id=key,created_at_us=accepted,
+        config_revision=1,policy_revision=1,reason=None,requester_os_uid=None,requester_database_role=None)
     assert receipt==dict(format='bigbrotr-job-acceptance/1',job_id=ident[2:],command_key=key[2:],
         accepted_at_us=str(accepted),created=True,execution='unobserved',authority='acceptance-only')
 

@@ -33031,6 +33031,14 @@
         },
         "result": "bindings/result.json",
         "capture_manifest_sha256": "00ef639ac02757bf15de8d64ebfa87dcea9ad4e229b6d57d07e5c4ccd771dff0"
+      },
+      "http_faults": {
+        "status": "FIXTURE_REVIEW_NATIVE_BUILD_NOT_RUN",
+        "local": ".research/implementation/initial-jobs-20261002/faults",
+        "scope": "Five installed finite-job COMMIT schedules; independent five effects/original deadline, fresh SQL-owner retry; no native successor",
+        "compiler_cache": "runs/network-1154757/out/build",
+        "native_inspector": "runs/initial-ingest-ce85c0c/out/artifacts",
+        "next": "Exact Git candidate, native helper build, then isolated engine with clean input"
       }
     }
   },

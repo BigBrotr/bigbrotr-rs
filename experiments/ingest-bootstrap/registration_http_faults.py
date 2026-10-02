@@ -26,8 +26,13 @@ def effects(before, after, created):
             assert all(row in after[table] for row in before[table])
 
 
-def run(pg, client, output, database, name, rows, *, scope=False):
-    if scope:
+def run(pg, client, output, database, name, rows, *, scope=False, job=False):
+    assert not (scope and job)
+    if job:
+        from job_http_faults import CASES as cases, effects as effects_case, receipt as receipt_case, prepare
+        detail_table = 'acquisition_jobs'
+        selected_commit = 12
+    elif scope:
         from scope_http_faults import CASES as cases, effects as effects_case, receipt as receipt_case, prepare
         detail_table = 'acquisition_scope_commands'
         selected_commit = 11
@@ -42,11 +47,16 @@ def run(pg, client, output, database, name, rows, *, scope=False):
     from scopes import upgrade as upgrade_scopes
     upgrade_scopes(pg, client, output, database, name, rows)
     policy_setup(pg, database, name, rows, output, administration=True)
-    if scope:
+    if scope or job:
         lab.sql(pg, database, """
             INSERT INTO control.principal_grants
                 SELECT dataset_id,principal_id,'roles.control','dataset',dataset_id
                 FROM control.local_accounts
+        """)
+    lab.sql(pg, database, """
+            GRANT SELECT,INSERT ON control.acquisition_jobs TO bigbrotr_control;
+            GRANT EXECUTE ON FUNCTION control.acquisition_command_digest(
+                control.acquisition_jobs,control.management_commands) TO bigbrotr_control;
         """)
     # A clone-only nontransactional marker proves that the selected COMMIT
     # belongs to this registration even if a slow lab lets a renewal become due.
@@ -83,7 +93,7 @@ def run(pg, client, output, database, name, rows, *, scope=False):
     for key, value in [('lease_ttl', '30s'), ('authorization_ttl', '5s'),
                        ('heartbeat_interval', '10s'), ('renewal_timeout', '5s')]:
         text = set_value(text, 'runtime', key, value)
-    if scope:
+    if scope or job:
         # Accepted private routing requires the same explicit startup root as
         # the separately qualified URL/enrollment/scope journey.
         rule = [dict(endpoint='ws://127.0.0.1:7447/installed-fixture', cidr='127.0.0.1/32', port=7447)]
@@ -125,14 +135,14 @@ def run(pg, client, output, database, name, rows, *, scope=False):
         initialized = first[0]
         assert not initialized['ready'] and initialized['acquisition'] == 'not-started'
         assert initialized['listeners'][0]['profile'] == 'initial-source-commands'
-        if scope:
+        if scope or job:
             lab.write_json(directory / 'visibility.json', dict(initialized['public_scope'], ordinal='2'))
         http = Process(['docker', 'exec', client, 'python3', '-B',
-            '/source/experiments/ingest-bootstrap/registration_http_client.py', '/lab/' + name, mode] + (['scope'] if scope else []))
+            '/source/experiments/ingest-bootstrap/registration_http_client.py', '/lab/' + name, mode] + (['job'] if job else ['scope'] if scope else []))
         processes.append(('http', http))
         event(http, 'authenticated')
         before = snapshot('before')
-        if scope:
+        if scope or job:
             prepare(before, directory, initialized)
         control, = [r for r in before['owner_epochs'] if r['role'] == 'control']
         session, = before['browser_sessions']
@@ -189,6 +199,8 @@ def run(pg, client, output, database, name, rows, *, scope=False):
             original_receipt = receipt_case(accepted_state, ready)
             response = dict(original_receipt, accepted_at_us=str(original_receipt['accepted_at_us']),
                 created=mode == 'pass', format='bigbrotr-acquisition-scope-registration/1' if scope else 'bigbrotr-relay-registration/1', authority='identity-only')
+            if job:
+                response.update(format='bigbrotr-job-acceptance/1', authority='acceptance-only', execution='unobserved')
             assert http_answer == dict(status=202 if mode == 'pass' else 200, body=response)
             if mode == 'disconnect':
                 assert accepted_state == json.loads((directory / 'retry-before.json').read_text())
@@ -222,12 +234,8 @@ def run(pg, client, output, database, name, rows, *, scope=False):
         after = snapshot('after')
         committed = mode in ('pass', 'disconnect', 'after')
         if healthy:
-            assert {t for t in after if after[t] != accepted_state[t]} == {'owner_epochs','role_instances'}
-            old_ingest = [r for r in accepted_state['owner_epochs'] if r['role']=='ingest']
-            assert [r for r in after['owner_epochs'] if r['role']=='ingest'] == old_ingest
-            final_control, = [r for r in after['owner_epochs'] if r['role']=='control']
-            assert final_control['state'] == 'released' and final_control['exclusion_method'] == 'storage_fenced'
-            assert final_control['released_at_us'] is not None and final_control['exclusion_digest'] is not None
+            from initial_jobs import released
+            released(accepted_state, after)
         else:
             effects_case(before, after, committed)
         accepted = receipt_case(after, ready)
@@ -241,7 +249,7 @@ def run(pg, client, output, database, name, rows, *, scope=False):
             (directory / 'restart.stderr').write_text(retry.stderr)
             assert retry.returncode == 3 and not retry.stdout and 'target exists' in retry.stderr
             assert rows(database) == after
-        recovery, token = start_probe(client, database, directory, 'accept', 13, processes, scope=scope)
+        recovery, token = start_probe(client, database, directory, 'accept', 13, processes, scope=scope, job=job)
         recovered_owner = event(recovery, 'ready')
         assert recovered_owner['epoch'] == 2
         before_retry = snapshot('recovery-before')

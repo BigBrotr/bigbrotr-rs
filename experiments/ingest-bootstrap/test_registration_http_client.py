@@ -60,17 +60,25 @@ class OracleTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             self.read(503, body=b' ' * 4097)
 
-    def test_scope_and_endpoint_success_formats_are_distinct(self):
-        for scope in (False, True):
-            receipt = dict(format='bigbrotr-acquisition-scope-registration/1' if scope
-                else 'bigbrotr-relay-registration/1', authority='identity-only',
-                command_key='31' * 16, created=True)
-            body = json.dumps(receipt).encode()
-            wire = f'HTTP/1.1 202 Created\r\nContent-Length: {len(body)}\r\n\r\n'.encode() + body
-            with self.subTest(scope=scope):
-                self.assertEqual(read_outcome(Wire(wire), 'pass', scope=scope), dict(status=202, body=receipt))
-                with self.assertRaises(AssertionError):
-                    read_outcome(Wire(wire), 'pass', scope=not scope)
+    def test_success_formats_and_authorities_are_distinct(self):
+        formats = dict(endpoint='bigbrotr-relay-registration/1',
+            scope='bigbrotr-acquisition-scope-registration/1', job='bigbrotr-job-acceptance/1')
+        for kind, format_name in formats.items():
+            receipt = dict(format=format_name, authority='acceptance-only' if kind=='job' else 'identity-only',
+                command_key='31'*16, created=True)
+            if kind=='job': receipt['execution']='unobserved'
+            def wire(value):
+                body=json.dumps(value).encode()
+                return Wire(f'HTTP/1.1 202 Created\r\nContent-Length: {len(body)}\r\n\r\n'.encode()+body)
+            with self.subTest(kind=kind):
+                self.assertEqual(read_outcome(wire(receipt), 'pass', kind=kind),dict(status=202,body=receipt))
+                for other in formats.keys()-{kind}:
+                    with self.assertRaises(AssertionError):
+                        read_outcome(wire(receipt), 'pass', kind=other)
+                if kind=='job':
+                    for patch in ({'authority':'identity-only'},{'execution':'running'},{'created':False}):
+                        with self.assertRaises(AssertionError):
+                            read_outcome(wire(dict(receipt,**patch)), 'pass', kind=kind)
 
 
 if __name__ == '__main__':
