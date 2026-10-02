@@ -46,6 +46,7 @@ use tokio::{
 const MIB: u64 = 1024 * 1024;
 
 struct InitialGrants {
+    sync_selected: bool,
     native: OwnedPermit,
     bootstrap: OwnedPermit,
     private_scope: OwnedPermit,
@@ -55,6 +56,7 @@ struct InitialGrants {
 /// Construct and destroy this value only on the blocking owner thread.
 struct Custody {
     store: Option<IngestStore>,
+    sync: Option<sync::Sync>,
     owner: ControlSession,
 }
 
@@ -159,6 +161,7 @@ pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> R
     selected(&root)?;
     let budget = budget(&root, sync)?;
     let initial = InitialGrants {
+        sync_selected: sync,
         native: grant(&budget, 0, native_limits().native_allowance_bytes())?,
         bootstrap: grant(&budget, 8 * MIB, 4 * MIB)?,
         private_scope: dictionaries::reserve_private(&budget)?,
@@ -196,7 +199,7 @@ pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> R
             // The parent keeps driving current-thread I/O/timers while this
             // owner parks on async SQL or blocks in native open/write/close.
             let _inputs = inputs;
-            handle.block_on(own(root, sync, client, initial, budget, progress, worker_cancel))
+            handle.block_on(own(root, client, initial, budget, progress, worker_cancel))
         });
         let (terminal, interrupted) = match supervision::collect(&mut worker, &mut observed,
             &cancellation, stop.requested(), grace, |report| output.emit(report, false)).await {
@@ -259,7 +262,6 @@ fn phase(progress: &watch::Sender<Progress>, timeout: std::time::Duration) -> Re
 
 async fn own(
     root: Resolved,
-    sync_selected: bool,
     client: tokio_postgres::Client,
     initial: InitialGrants,
     budget: ResourceBudget,
@@ -268,7 +270,8 @@ async fn own(
 ) -> Result<Value> {
     // Public CA file I/O belongs to this supervised blocking owner. A stalled
     // regular file cannot prevent the parent from handling signals/deadlines.
-    let mut sync = sync_selected
+    let mut sync = initial
+        .sync_selected
         .then(|| sync::Sync::prepare(&root, &budget))
         .transpose()?;
     let path = Path::new(required(&root, "storage.ingest_root")?);
@@ -328,7 +331,11 @@ async fn own(
         .map_err(owner_error)
     })
     .await?;
-    let mut custody = Custody { store: None, owner };
+    let mut custody = Custody {
+        store: None,
+        sync,
+        owner,
+    };
     phase(&progress, timeout)?;
     let basis = bounded(timeout, &cancellation, async {
         custody
@@ -430,10 +437,9 @@ async fn own(
         "recovery_generation":manifest.identity().recovery_generation,
         "topology_generation":spec.target_topology().unwrap().get().to_string(), "public_scope":public, "private_scope":private,
         "native_profile":1,"native_allowance_bytes":128*MIB,"dictionary_count":3,
-        "acquisition":if sync.is_some() { "finite-initial" } else { "not-started" },"ready":false});
+        "acquisition":if custody.sync.is_some() { "finite-initial" } else { "not-started" },"ready":false});
     commands::maintain(
         &mut custody,
-        sync.as_mut(),
         &spec,
         &root,
         &budget,

@@ -13,6 +13,10 @@ pub(super) struct Arrivals<'a> {
     _permit: OwnedPermit,
 }
 
+#[allow(
+    clippy::too_many_arguments,
+    reason = "finite callback borrows distinct source, scope, budget and cancellation owners"
+)]
 pub(super) async fn collect<'a>(
     stream: &mut DirectStream<'_>,
     budget: &ResourceBudget,

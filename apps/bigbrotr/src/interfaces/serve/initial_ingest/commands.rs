@@ -113,7 +113,6 @@ impl CommandOwner<'_> {
 
 pub(super) async fn maintain(
     custody: &mut Custody,
-    sync: Option<&mut sync::Sync>,
     spec: &InitialRegistration,
     root: &Resolved,
     budget: &ResourceBudget,
@@ -121,7 +120,7 @@ pub(super) async fn maintain(
     cancellation: &Cancellation,
     mut report: Value,
 ) -> Result<()> {
-    let Custody { store, owner } = custody;
+    let Custody { store, sync, owner } = custody;
     let store = store.as_mut().expect("initialized native owner");
     let lease = PolicyLeaseTracker::new(
         spec.dataset_id,
@@ -139,7 +138,7 @@ pub(super) async fn maintain(
         lease,
         administration: None,
         public_routes: false,
-        sync,
+        sync: sync.as_mut(),
     };
     let started = state.renew().await?;
     if state.sync.is_some() {
