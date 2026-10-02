@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary mainb7b60f9283e3d3c72421c4df665dcd0b42c41798 is above pushed
-origin/main0b6818a. Root-owned evidence/inventory/task/user-doc/checkpoint updates
-are dirty; no merge/rebase or active remote job. Product3a7f884 is now
+Primary main035c436 is pushed and clean before this bounded regression fixture.
+Root owns changes in acquisition-scope/bindings.py, ingest-bootstrap/installed.py
+and this checkpoint; no merge/rebase or active remote job. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
 three Python files differ. The positive installed signed publication journey PASS
@@ -126,8 +126,12 @@ must permit2, so update that contract explicitly if moving this check to accepte
 validation. Next bounded action: three actual installed cases (staged file1 with
 accepted32 succeeds; accepted configuration1 or accepted policy1 refuses before
 registration), preserve original native17 rows/two requests and full SQL effects.
-Run the discriminating baseline before product change; do not weaken accepted
-bounds or silently reuse the old nine-case window qualification.
+The focused --installed-ingest-windows fixture now checks accepted configuration1,
+accepted policy1 and staged local1 in that order, preserving the full refusal
+census on failed initialization. Local AST/mode checks pass; actual baseline is
+NOT_RUN. Next run this exact candidate against retained product3a7f884, before
+changing product code. Do not weaken accepted bounds or silently reuse the old
+nine-case window qualification. No new cache/build is needed for the baseline.
 
 M1 remains INCOMPLETE: online indexing, successor/replay, restart/resend/provenance-
 off, outages and bundle installation. Initial native custody cannot be adopted by

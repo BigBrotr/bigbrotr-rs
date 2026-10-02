@@ -62,7 +62,8 @@ installed_archive_signed = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-export'
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
-initial_ingest = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest'
+ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
+initial_ingest = ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -122,6 +123,10 @@ report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=bu
 if installed:
     report['not_run'] = ['native syscall/close delay and worker panic', 'lost/delayed COMMIT and cancellation lock schedules',
         'crash-resumable initialization/successor', 'installed acquisition/M1', 'capacity/load/aged-state', 'arm64/release']
+
+if ingest_windows:
+    report['wave'] = 'installed-ingest-windows'
+    report['not_run'].append('unchanged lifetime/COMMIT/session cases not repeated')
 
 if installed_archive_setup:
     report['wave'] = 'installed-archive-setup'
@@ -569,6 +574,8 @@ def run_case(name):
 success_status = 'PASS_INITIAL_SESSION_HASH_CASE' if session_hash else 'PASS_INITIAL_SESSION_FIRST_WAVE' if sessions else 'PASS_SOCKET_ARRIVAL_FIRST_WAVE' if socket else 'PASS_COMMITTED_OBSERVATION_FIRST_WAVE' if observation else 'PASS_ACQUISITION_EXECUTION_FIRST_WAVE' if execution else 'PASS_INITIAL_INGEST_COMMIT_WAVE' if commits else 'PASS_INITIAL_INGEST_INTERRUPTION_WAVE' if interruptions else 'PASS_INITIAL_INGEST_LIFETIME_FIRST_WAVE' if installed else 'PASS_INITIAL_INGEST_LEASE' if lease else 'PASS_SCOPED_ACQUISITION_BINDING'
 if installed_archive_setup:
     success_status = 'PASS_INSTALLED_ARCHIVE_SETUP_EXPECTED_ROLE_REFUSAL'
+if ingest_windows:
+    success_status = 'PASS_INSTALLED_INGEST_WINDOWS'
 if installed_archive_publication:
     success_status = 'PASS_INSTALLED_ARCHIVE_PUBLICATION'
 if installed_archive_export:
@@ -785,6 +792,8 @@ try:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+    elif ingest_windows:
+        cases = ['window-config', 'window-policy', 'window-local']
     elif installed:
         cases = ['pass','zero-topology','expired','policy-archive','existing-directory','registered-only',
                  'window-local','window-config','window-policy']
@@ -916,6 +925,9 @@ try:
         require({r['name'] for r in report['cases']} == set(selected_sync_cases)
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
+    if ingest_windows:
+        require([r['name'] for r in report['cases']] == cases
+            and all(r['status'] == 'PASS' for r in report['cases']), 'installed-ingest-window-case-set')
     report['status'] = success_status
 except BaseException as error:
     report.update(status='FAIL', failure=type(error).__name__ + ': ' + str(error))

@@ -234,8 +234,12 @@ def run(pg,client,output,database,name,rows):
         (output/name/'store').mkdir()
         (output/name/'store/sentinel').write_bytes(b'original partial state')
     prefix = start(client,config,output,name)
-    if name in ['pass','zero-topology','expired']:
+    if name in ['pass','zero-topology','expired','window-local']:
         first = wait_for(lambda: messages(prefix) or Path(str(prefix)+'.terminal.json').exists(), 'initialized')
+        if not isinstance(first,list):
+            # Retain the full refusal census even when the expected initialization
+            # fails, so the discriminating baseline is independently inspectable.
+            lab.write_json(output/(name+'-after.json'),rows(database))
         assert isinstance(first,list) and len(first)==1 and first[0]['state']=='initialized', first
         initialized = first[0]
         assert initialized['ready'] is False and initialized['acquisition']=='not-started'
@@ -271,10 +275,10 @@ def run(pg,client,output,database,name,rows):
             assert role['retired_at_us'] is not None
         lab.write_json(output/(name+'-after.json'),after)
         native_oracle(pg,client,output,database,name,after,initialized)
-        if name=='pass':
+        if name in ('pass','window-local'):
             retry = lab.cli(state,'serve','--file',config,'--initialize-ingest','--roles','control,ingest')
-            (output/'pass-retry.stdout').write_text(retry.stdout)
-            (output/'pass-retry.stderr').write_text(retry.stderr)
+            (output/(name+'-retry.stdout')).write_text(retry.stdout)
+            (output/(name+'-retry.stderr')).write_text(retry.stderr)
             assert retry.returncode==3 and 'target exists' in retry.stderr and not retry.stdout
             assert rows(database)==after
             native_oracle(pg,client,output,database,name,after,initialized,suffix='-retry')
@@ -292,7 +296,6 @@ def run(pg,client,output,database,name,rows):
         reason = {'policy-archive':'Control backend operation failed: InvalidPolicy',
                   'registered-only':'Control backend operation failed: IncompatibleDeployment',
                   'existing-directory':'initial Ingest target exists or cannot be inspected',
-                  'window-local':'initial Ingest needs two outstanding requests',
                   'window-config':'Control backend operation failed: InvalidPolicy',
                   'window-policy':'Control backend operation failed: InvalidPolicy'}[name]
         assert reason in Path(str(prefix)+'.stderr').read_text(), 'wrong-refusal-reason'
@@ -312,9 +315,9 @@ def run(pg,client,output,database,name,rows):
         if name=='existing-directory':
             assert list((output/name/'store').iterdir())==[output/name/'store/sentinel']
             assert (output/name/'store/sentinel').read_bytes()==b'original partial state'
-        if name in ('policy-archive','window-local','window-config','window-policy'):
+        if name in ('policy-archive','window-config','window-policy'):
             assert not (output/name/'store').exists()
     lab.write_json(output/(name+'-after.json'),after)
     assert lab.sql(pg,database,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'")=='0'
-    return dict(name=name,status='PASS',actual_cli=True,actual_pg_rocks=name in ['pass','zero-topology','expired'],
+    return dict(name=name,status='PASS',actual_cli=True,actual_pg_rocks=name in ['pass','zero-topology','expired','window-local'],
                 control_tables=len(after),terminal=ended)
