@@ -163,9 +163,13 @@ connected bootstrap retains the original public1/private2 mappings and request1
 unchanged. A separate fixed-reference append2 creates private3 with its own private
 fact envelope. Only after its durable PG/native outcome is delivered does the
 initialized report publish `private_scope` and dictionary_count=3; accepted
-scopes/jobs are never silently rebound. Both complete accepted policies and the
-local profile must permit at least two outstanding producer requests before any
-registration/native initialization. This role selection collects no events. The
+scopes/jobs are never silently rebound. Both complete accepted documents must
+permit at least two outstanding producer requests before any registration/native
+initialization. Deployment roots are checked separately; a statically valid managed
+file seed of one does not override accepted limits. Declarative digest matching
+remains required. This corrects the earlier local-seed floor without changing any
+stored policy, producer identity, migration or existing directory. This role
+selection collects no events. The
 [private append evidence](../implementation/evidence/p02-dictionary-append-native-20261002.json)
 qualifies nine installed lifetime/window cases and nineteen startup COMMIT cuts;
 older evidence below still refers to the original two-map lifetime. Existing

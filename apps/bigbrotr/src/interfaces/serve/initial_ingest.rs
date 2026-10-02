@@ -98,7 +98,7 @@ impl Cancellation {
     }
 }
 
-fn selected(root: &Resolved) -> Result<()> {
+fn selected_roots(root: &Resolved) -> Result<()> {
     // Initial publication is explicit; readers and export still use the ordinary
     // Control consumer after this fresh native owner has stopped.
     if !root.local("control")
@@ -110,11 +110,15 @@ fn selected(root: &Resolved) -> Result<()> {
     {
         return Err((3, "initial Ingest needs local Control/Ingest with archive reader disabled and no export destination, cursor keyring or private assets".into()));
     }
+    Ok(())
+}
+
+fn accepted_profile(root: &Resolved) -> std::result::Result<(), OwnerError> {
+    selected_roots(root).map_err(|_| OwnerError::InvalidPolicy)?;
+    // Both accepted documents must fund bootstrap and the private scope append.
+    // A managed file's unused seed must not veto their valid producer window.
     if root.number("ingest.producer_outstanding_requests") < 2 {
-        return Err((
-            3,
-            "initial Ingest needs two outstanding requests for bootstrap and private scope".into(),
-        ));
+        return Err(OwnerError::InvalidPolicy);
     }
     Ok(())
 }
@@ -183,7 +187,7 @@ pub(super) fn run(
     archive: bool,
     output: &mut LifecycleOutput,
 ) -> Result<()> {
-    selected(&root)?;
+    selected_roots(&root)?;
     let budget = budget(&root, sync, archive)?;
     let initial = InitialGrants {
         sync: None,
@@ -350,7 +354,7 @@ fn validate(
     digest: [u8; 32],
 ) -> std::result::Result<(), OwnerError> {
     let restored = super::accepted_policy(root, document, digest)?;
-    selected(&restored).map_err(|_| OwnerError::InvalidPolicy)
+    accepted_profile(&restored)
 }
 fn phase(progress: &watch::Sender<Progress>, timeout: std::time::Duration) -> Result<()> {
     let now = Instant::now();
@@ -402,7 +406,7 @@ async fn own(
             request,
             |doc, digest| {
                 let restored = super::accepted_policy(&root, doc, digest)?;
-                selected(&restored).map_err(|_| OwnerError::InvalidPolicy)?;
+                accepted_profile(&restored)?;
                 if let Some(sync) = &mut sync {
                     sync.accept(&restored)?;
                 }

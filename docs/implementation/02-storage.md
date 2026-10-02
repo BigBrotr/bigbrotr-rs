@@ -297,7 +297,10 @@ resolvable namespaced references and unchanged original bytes.
   read-only intern preparation and its three-case actual-engine signed socket
   consumer. Its installed startup consumer now preserves original bootstrap and
   explicitly appends a private root, with nine lifetime/window and nineteen COMMIT
-  cases. Finite execution and installed archive/export closure remain required.
+  cases. Its managed-window regression now reproduces an erroneous startup-file
+  floor on the current schema; the focused correction validates both accepted
+  documents before registration. Corrected native execution is pending in the
+  same report. Successor/replay and broader installed recovery remain required.
 - [ ] **Step 2:** Create A06 objects keyed by visibility namespace and digest; verify bytes
   on first creation and reject conflicting bytes under the same identity.
 - [ ] **Step 3:** Separate document object bytes from each fetched/type/method occurrence;

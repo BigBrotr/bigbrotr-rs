@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main035c436 is pushed and clean before this bounded regression fixture.
-Root owns changes in acquisition-scope/bindings.py, ingest-bootstrap/installed.py
-and this checkpoint; no merge/rebase or active remote job. Product3a7f884 is now
+Primary main02fb010 is above pushed origin/main035c436. Root owns the focused
+initial_ingest.rs correction, ingest-store contract, storage task, dictionary
+append evidence, inventory and checkpoint changes; no merge/rebase/active lab. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
 three Python files differ. The positive installed signed publication journey PASS
@@ -118,25 +118,29 @@ semantics were not refactored during this integration qualification.
 Next useful M1 deliverable remains Ingest restart/resend with unchanged original
 admission, P01-T09 Step4, needing P02-T01 Step5/P02-T02 Step4 positive exclusion,
 original-request resolution and successor activation, not full adjacent services.
-Before extending that startup pattern, resolve the recorded managed-seed boundary:
-initial_ingest::selected(root) checks window>=2 before restoring accepted policy,
-although the registry marks that window as managed policy and registration uses
-only accepted minima. The current narrow ingest-store.md also says local profile
-must permit2, so update that contract explicitly if moving this check to accepted
-validation. Next bounded action: three actual installed cases (staged file1 with
-accepted32 succeeds; accepted configuration1 or accepted policy1 refuses before
-registration), preserve original native17 rows/two requests and full SQL effects.
-The focused --installed-ingest-windows fixture now checks accepted configuration1,
-accepted policy1 and staged local1 in that order, preserving the full refusal
-census on failed initialization. Baseline fixture12759f8/product3a7f884 is original FAIL as expected: staged
-window1 exits3 before initialization; accepted configuration1/policy1 both refuse
-InvalidPolicy. All64 template Control tables/xmin remain identical in all three
-cases.31 captures hash-verified under initial-archive-20261002/window-red; owned
-client ab625502/owner0fce88885fa262227d539d1f87fede79 and borrowed PG stopped,
-no OOM/cleanup/unrelated changes. The fixture now explicitly upgrades each new
-window clone to current69-table schema before seeding policy; original template
-is untouched. Next repeat the baseline on that current schema, before product fix. Do not weaken accepted bounds or silently reuse the old
-nine-case window qualification. No new cache/build is needed for the baseline.
+The managed-seed discrepancy is now reproduced before any product change:
+fixture12759f8 on the64-table template and02fb010 on current69 tables both FAIL
+as expected under product3a7f884. File window1 wrongly exits3 before initialization;
+accepted configuration1 and security policy1 correctly refuse InvalidPolicy.
+Full rows/xmin are unchanged in all three cases for both runs.31/61 captures and
+all1697 exact source files verified, originals retained at initial-archive-20261002/
+{window-red,window-current-red}. Latest owner/client and source hashes are in
+p02-dictionary-append-native-20261002.json installed_private_scope.managed_window
+and inventory initial_private_scope.managed_window_20261002. Both clients/borrowed
+PG are stopped, no OOM/cleanup/unrelated changes; latest Tux free in inventory.
+
+The focused correction separates selected_roots from accepted_profile: managed
+seed1 no longer vetoes accepted32; both complete accepted documents still require
+at least2 before Control registration/native effects. Minimum accepted ceiling,
+Sync/Archive bounds, expiry/custody/COMMIT remain unchanged. ingest-store.md now
+explicitly reconciles the earlier local-profile floor with managed authority;
+no persistent format/migration change. Native validation is NOT_RUN.
+Next bounded action: commit this candidate, compile on Tux using exclusive owned
+1154757 cache, then execute --installed-ingest-windows on exact new artifacts.
+Expected: accepted configuration1 and policy1 refuse with69 tables unchanged;
+staged file1 initializes17 exact native rows/two original producer requests,
+renews past its first deadline, exits0 and refuses fresh adoption of that directory.
+Do not reuse original nine-case evidence as qualification of changed behavior.
 
 M1 remains INCOMPLETE: online indexing, successor/replay, restart/resend/provenance-
 off, outages and bundle installation. Initial native custody cannot be adopted by

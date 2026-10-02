@@ -849,6 +849,171 @@
       "readers": 12,
       "elapsed_seconds": 8.034675107337534,
       "scope": "Actual login/logout/incorrect credentials, shared-memory refusal before listener bind, SIGTERM during observed password work without issuance;69 SQL tables and17 native rows/two inputs/receipts."
+    },
+    "managed_window": {
+      "status": "RED_CONFIRMED; product correction awaiting native build and engine execution",
+      "tasks": [
+        "P01-T09 Step4 prerequisite",
+        "P02-T02 Step4",
+        "P02-T03 Step1"
+      ],
+      "cause": "A managed initialization seed was checked before restoration of both accepted policy documents; static UInt accepts1, while the two original append requests require accepted limits>=2.",
+      "correction": "Check deployment roots separately and enforce the two-request minimum only on each restored accepted document; retain their minimum for registration. No schema, stored identity, migration or adoption change.",
+      "runs": {
+        "window-red": {
+          "source": "12759f8cc7f6ac6ac9bb35c2f7dc34af138b4afb",
+          "product": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ingest-windows-12759f8",
+          "owner": "0fce88885fa262227d539d1f87fede79",
+          "client": "ab625502f763caff33a70bd89234bc92266e7588d530bac481a81037129e22a6",
+          "status": "FAIL",
+          "capture": {
+            "label": "window-red",
+            "source": "12759f8cc7f6ac6ac9bb35c2f7dc34af138b4afb",
+            "build_source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+            "status": "FAIL",
+            "captures": 31,
+            "capture_sha256": "45e4c5f58054c65e37895a93c503b4abed3718d1807cc7a709d1178098609b8f",
+            "cases": [
+              {
+                "name": "window-config",
+                "status": "PASS"
+              },
+              {
+                "name": "window-policy",
+                "status": "PASS"
+              }
+            ]
+          },
+          "source_files": 1697,
+          "source_archive_sha256": "08df4d56f8b3d4e7d0e5268cc0837f61f11e63aeec4f7a32b252d011dd29ae48",
+          "tables": 64,
+          "cases": [
+            {
+              "name": "window-config",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_pg_rocks": false,
+              "control_tables": 64,
+              "terminal": {
+                "pid": 26,
+                "start_ticks": "431381627",
+                "config": "/lab/bb_scope_bind_12759f8_window_config.toml",
+                "prefix": "/lab/window-config",
+                "exit_code": 3,
+                "elapsed_seconds": 0.0156222740188241,
+                "forced": false,
+                "reaped": true
+              }
+            },
+            {
+              "name": "window-policy",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_pg_rocks": false,
+              "control_tables": 64,
+              "terminal": {
+                "pid": 41,
+                "start_ticks": "431381789",
+                "config": "/lab/bb_scope_bind_12759f8_window_policy.toml",
+                "prefix": "/lab/window-policy",
+                "exit_code": 3,
+                "elapsed_seconds": 0.015569115057587624,
+                "forced": false,
+                "reaped": true
+              }
+            }
+          ],
+          "databases": [
+            "bb_scope_bind_12759f8_window_config",
+            "bb_scope_bind_12759f8_window_policy",
+            "bb_scope_bind_12759f8_window_local"
+          ],
+          "cleanup": "STOPPED/RETAINED",
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 71933059072
+        },
+        "window-current-red": {
+          "source": "02fb0107e79187ea03f0020c87b7737d9a01f611",
+          "product": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ingest-windows-02fb010",
+          "owner": "b6e2c459eaa230ee61ca3e928764ae82",
+          "client": "3e31bb582b5bfc4c57ddce8e2ede53ed25ae647fd1dcb1d15157db8efb4fee9b",
+          "status": "FAIL",
+          "capture": {
+            "label": "window-current-red",
+            "source": "02fb0107e79187ea03f0020c87b7737d9a01f611",
+            "build_source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+            "status": "FAIL",
+            "captures": 61,
+            "capture_sha256": "f0e9fbf8df77b7dad8c017a774f38308df6b389a837cf0826c48274ec0618478",
+            "cases": [
+              {
+                "name": "window-config",
+                "status": "PASS"
+              },
+              {
+                "name": "window-policy",
+                "status": "PASS"
+              }
+            ]
+          },
+          "source_files": 1697,
+          "source_archive_sha256": "bd60a67d6f31958a9450fcb52ed974d75aed97c67ec0dd9257521799c2c3c32e",
+          "tables": 69,
+          "cases": [
+            {
+              "name": "window-config",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_pg_rocks": false,
+              "control_tables": 69,
+              "terminal": {
+                "pid": 50,
+                "start_ticks": "431391082",
+                "config": "/lab/bb_scope_bind_02fb010_window_config.toml",
+                "prefix": "/lab/window-config",
+                "exit_code": 3,
+                "elapsed_seconds": 0.01565426681190729,
+                "forced": false,
+                "reaped": true
+              }
+            },
+            {
+              "name": "window-policy",
+              "status": "PASS",
+              "actual_cli": true,
+              "actual_pg_rocks": false,
+              "control_tables": 69,
+              "terminal": {
+                "pid": 91,
+                "start_ticks": "431391489",
+                "config": "/lab/bb_scope_bind_02fb010_window_policy.toml",
+                "prefix": "/lab/window-policy",
+                "exit_code": 3,
+                "elapsed_seconds": 0.015741809271275997,
+                "forced": false,
+                "reaped": true
+              }
+            }
+          ],
+          "databases": [
+            "bb_scope_bind_02fb010_window_config",
+            "bb_scope_bind_02fb010_window_policy",
+            "bb_scope_bind_02fb010_window_local"
+          ],
+          "cleanup": "STOPPED/RETAINED",
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 71842906112
+        }
+      },
+      "not_run": [
+        "corrected native build/installed three-case comparison",
+        "successor/restart/replay/ACK/recovery",
+        "capacity/load/aged state/arm64/release"
+      ]
     }
   }
 }
