@@ -276,12 +276,16 @@ pub(super) async fn maintain(
                 _ = tokio::time::sleep_until(dispatch_due), if state.sync.is_some() => {
                     let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
                     phase(progress, maximum)?;
-                    bounded(maximum, cancellation,
+                    // A signal asks this serial consumer to finish its current
+                    // SQL rollback/commit. Cancelling the whole future here
+                    // would poison an otherwise healthy quiet source owner.
+                    // The hard deadline and independent parent watchdog remain.
+                    tokio::time::timeout(maximum,
                         state.sync.as_deref_mut().expect("selected Sync").dispatch(sync::Dispatch {
                             owner: state.owner, store, spec, root, budget, cancel: cancellation,
                             deadline: Instant::now() + maximum,
                         }),
-                    ).await?;
+                    ).await.map_err(|_| (4, "initial Sync deadline; preserve original outcome".into()))??;
                     // A timed gap lets HTTP run even under continuous work;
                     // the priority timer prevents continuous HTTP starving Sync.
                     dispatch_due = Instant::now() + sync::INTERVAL;

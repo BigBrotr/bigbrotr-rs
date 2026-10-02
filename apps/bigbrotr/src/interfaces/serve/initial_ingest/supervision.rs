@@ -196,7 +196,7 @@ mod tests {
         let address = reserved.local_addr().unwrap();
         root.values
             .insert("administration.listen.port".into(), json!(address.port()));
-        let budget = super::super::budget(&root).unwrap();
+        let budget = super::super::budget(&root, false).unwrap();
         let dataset = "01010101010101010101010101010101".parse().unwrap();
         let incarnation = "02020202020202020202020202020202".parse().unwrap();
         let epoch = bigbrotr_model::PolicyEpoch::new(1);

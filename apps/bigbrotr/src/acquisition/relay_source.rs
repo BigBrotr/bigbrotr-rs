@@ -61,7 +61,7 @@ impl StoredRelaySource {
 /// A conservative source restriction, not proof of committed scope or current
 /// enrollment. Those are checked by the actual Control/native consumer. This
 /// initial profile has no explicit public query-credential exception.
-pub(crate) fn source_visibility_allowed(
+pub fn source_visibility_allowed(
     endpoint: &Endpoint,
     route: RouteSelection,
     visibility: &DictionaryEntry,

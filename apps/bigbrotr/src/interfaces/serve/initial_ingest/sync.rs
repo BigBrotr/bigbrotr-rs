@@ -9,7 +9,7 @@ use bigbrotr::{
         job::{AcquisitionJobBinding, AcquisitionScan},
         observation::StoredObservation,
         receive_clock::ReceiveClock,
-        relay_source::StoredRelaySource,
+        relay_source::{StoredRelaySource, source_visibility_allowed},
         scope::{AcquisitionEventContext, StoredAcquisitionScope},
     },
     management::sessions::SessionError,
@@ -113,6 +113,9 @@ impl Sync {
             .await
             .map_err(error)?;
         self.scan = (!candidate.scan.complete()).then_some(candidate.scan);
+        if work.stopped() {
+            return Ok(());
+        }
         let Some(job) = candidate.job else {
             return Ok(());
         };
@@ -123,6 +126,9 @@ impl Sync {
             Err(SessionError::Forbidden | SessionError::Conflict) => return Ok(()),
             Err(e) => return Err(error(e)),
         };
+        if work.stopped() {
+            return Ok(());
+        }
         let Some(scope) = work
             .owner
             .read_acquisition_scope(
@@ -134,6 +140,9 @@ impl Sync {
         else {
             return Err(error("claimed acquisition scope missing"));
         };
+        if work.stopped() {
+            return Ok(());
+        }
         let Some(source) = work
             .owner
             .read_acquisition_source(
@@ -145,6 +154,9 @@ impl Sync {
         else {
             return Ok(());
         };
+        if work.stopped() {
+            return Ok(());
+        }
         let limits = work.certification_limits();
         let path = Path::new(
             work.root
@@ -170,10 +182,21 @@ impl Sync {
             .await
             .map_err(error)?
             .ok_or_else(|| error("acquisition visibility is not committed"))?;
+        // Attribution itself is scientific data. Refuse an unsafe envelope
+        // before persisting a private/query-bearing URL, not merely at dial.
+        // The source adapter repeats this restriction under fresh source locks.
+        if work.stopped()
+            || !source_visibility_allowed(source.endpoint(), source.route(), visible.entry())
+        {
+            return Ok(());
+        }
         let (max_event_bytes, provenance) = self.profile.expect("accepted Sync profile");
         let attribution = work
             .observation(&scope, &source, provenance, &mut self.next_request)
             .await?;
+        if work.stopped() {
+            return Ok(());
+        }
         let hard = work.deadline;
         // Compute before SQL/connect, not when a slow peer finally handshakes.
         // Normal idle drops the poisoned protocol session inside a successful
@@ -209,6 +232,7 @@ impl Sync {
                         source.route(),
                         max_event_bytes,
                         soft,
+                        work.cancel,
                     )
                     .await
                 },
@@ -227,6 +251,9 @@ impl Sync {
             ) => return Ok(()),
             Err(e) => return Err(error(e)),
         };
+        if work.stopped() {
+            return Ok(());
+        }
         for (captured, observation) in &arrivals.events {
             let context =
                 AcquisitionEventContext::for_job(job.id, &scope, captured.request().filters())
@@ -346,6 +373,9 @@ pub(super) struct Dispatch<'a> {
     pub deadline: Instant,
 }
 impl Dispatch<'_> {
+    fn stopped(&self) -> bool {
+        self.cancel.requested.load(Ordering::Acquire)
+    }
     fn remaining(&self) -> Result<Duration> {
         self.deadline
             .checked_duration_since(Instant::now())

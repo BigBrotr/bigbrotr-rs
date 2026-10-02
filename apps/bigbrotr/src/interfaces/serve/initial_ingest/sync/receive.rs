@@ -21,18 +21,20 @@ pub(super) async fn collect<'a>(
     route: bigbrotr::network::RouteSelection,
     max_event_bytes: usize,
     soft: Instant,
+    cancel: &Cancellation,
 ) -> io::Result<Arrivals<'a>> {
     let permit = budget
         .try_acquire(
             ResourceRequest::data(
                 (3 * size_of::<(RetainedRelayEvent<'_>, LocalObservation)>()
-                    + size_of::<Arrivals<'_>>()) as u64,
+                    + size_of::<Arrivals<'_>>()
+                    + stream.endpoint().as_str().len()) as u64,
                 1,
                 0,
             )
             .expect("finite arrival batch"),
         )
-        .map_err(io::Error::other)?;
+        .map_err(|e| io::Error::other(format!("arrival batch budget: {e:?}")))?;
     let mut arrivals = Arrivals {
         events: Vec::with_capacity(3),
         _permit: permit,
@@ -83,9 +85,12 @@ pub(super) async fn collect<'a>(
         session.close().await?;
         Ok(())
     };
-    match tokio::time::timeout_at(soft, protocol).await {
-        Ok(result) => result?,
-        Err(_) => {}
+    tokio::select! {
+        biased;
+        _ = cancel.wait() => {},
+        result = tokio::time::timeout_at(soft, protocol) => {
+            if let Ok(result) = result { result?; }
+        },
     }
     Ok(arrivals)
 }
