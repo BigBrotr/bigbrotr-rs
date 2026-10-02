@@ -29,7 +29,7 @@ for path in checked:
         if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'wrapper' for t in node.targets):
             ast.parse(ast.literal_eval(node.value)); embedded += 1
 from installed_archive_journey import CASES as PUBLICATION_CASES
-assert PUBLICATION_CASES == ['archive-signed']
+assert PUBLICATION_CASES == ['archive-wrong-reader', 'archive-missing-reader', 'archive-reader-grant', 'archive-signed']
 runner = ast.parse((SOURCE / 'experiments/acquisition-scope/bindings.py').read_text())
 start = next(i for i,n in enumerate(runner.body) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='guards' for t in n.targets))
 end = next(i for i,n in enumerate(runner.body) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='revision' for t in n.targets))

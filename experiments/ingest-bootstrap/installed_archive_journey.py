@@ -15,7 +15,7 @@ from installed_archive_frontier import ARCHIVE_TABLES, current_owner_view, valid
 from installed_archive_native import native
 
 SOURCE = Path(__file__).resolve().parents[2]
-CASES = ['archive-signed']
+CASES = ['archive-wrong-reader', 'archive-missing-reader', 'archive-reader-grant', 'archive-signed']
 
 
 def provision_reader(pg, output, name, setup, save):
@@ -84,6 +84,23 @@ def run(pg, client, output, database, name, rows, **context):
     rules = [dict(endpoint=ENDPOINT, cidr='127.0.0.1/32', port=7447)]
     text = set_value(text, 'network.private', 'rules', rules)
     text = text.replace(json.dumps(rules), '[{endpoint="' + ENDPOINT + '",cidr="127.0.0.1/32",port=7447}]')
+    if name == 'archive-signed':
+        # This managed file is a staged seed, not the accepted policy. Actual
+        # startup must restore accepted publisher=true/window32 before effects.
+        text = set_value(text, 'archive.publisher', 'enabled', False)
+        text = set_value(text, 'ingest', 'producer_outstanding_requests', 129)
+    elif name == 'archive-wrong-reader':
+        wrong = directory / 'wrong-reader.secret'
+        with wrong.open('x') as stream:
+            wrong.chmod(0o600); stream.write(secrets.token_hex(32))
+        text = set_value(text, 'postgres.catalog', 'read_password_ref', 'file:/lab/' + name + '/wrong-reader.secret')
+    elif name == 'archive-missing-reader':
+        # Drop both optional static fields while HTTP archive reads are disabled.
+        text = '\n'.join(line for line in text.splitlines()
+            if not line.startswith(('read_user = ', 'read_password_ref = '))) + '\n'
+    elif name == 'archive-reader-grant':
+        lab.sql(pg, setup['resource']['catalog_database'],
+            f'REVOKE SELECT ON public.ducklake_snapshot FROM {reader}')
     path.write_text(text)
     invoke(client, output, name + '-journey-validate', 'config', 'validate', '--file', setup['config'])
     before_roles = global_roles(pg)
@@ -95,6 +112,23 @@ def run(pg, client, output, database, name, rows, **context):
     lab.docker('exec', '-d', client, 'python3', '/lab/installed_client.py', setup['config'], '/lab/' + name, 'archive')
     wait_for(lambda: Path(str(prefix) + '.pid.json').exists(), 'Archive CLI start')
     first = wait_for(lambda: messages(prefix) or Path(str(prefix) + '.terminal.json').exists(), 'Archive initialized')
+    if name != 'archive-signed':
+        observed = rows(database)
+        catalog = catalog_rows(pg, setup['resource']['catalog_database'])
+        lab.write_json(output / (name + '-refusal-control.json'), observed)
+        lab.write_json(output / (name + '-refusal-catalog.json'), catalog)
+        assert not messages(prefix), 'reader prerequisite was deferred beyond fresh Ingest effects'
+        ended = terminal(prefix)
+        assert ended['exit_code'] in (3, 4) and Path(str(prefix) + '.stderr').read_text()
+        assert rows(database) == observed == before, 'reader refusal changed Control'
+        assert catalog_rows(pg, setup['resource']['catalog_database']) == catalog == setup['catalog']
+        assert not (directory / 'store').exists()
+        assert not list((directory / 'state').glob('inputs/**/*'))
+        for db in (database, setup['resource']['catalog_database']):
+            assert lab.sql(pg, db, 'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()') == '0'
+        return dict(name=name, status='PASS', actual_cli=True, actual_pg_catalog=True,
+            no_ingest_effects=True, complete_control_catalog_unchanged=True, terminal=ended)
+
     assert isinstance(first, list) and first[0]['state'] == 'initialized', 'Archive selected owner refused'
     initialized = first[0]
     assert initialized['ready'] is False and initialized['acquisition'] == 'finite-initial'
