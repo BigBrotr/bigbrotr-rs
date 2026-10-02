@@ -33033,12 +33033,12 @@
         "capture_manifest_sha256": "00ef639ac02757bf15de8d64ebfa87dcea9ad4e229b6d57d07e5c4ccd771dff0"
       },
       "http_faults": {
-        "status": "PASS_FIVE_JOB_CASES_STOPPED_RETAINED_SOURCE_REGRESSION_PENDING",
+        "status": "PASS_JOB_FAULTS_AND_SOURCE_REGRESSION_STOPPED_RETAINED",
         "local": ".research/implementation/initial-jobs-20261002/faults",
         "scope": "Five installed finite-job COMMIT schedules; independent five effects/original deadline, fresh SQL-owner retry; no native successor",
         "compiler_cache": "runs/network-1154757/out/build",
         "native_inspector": "runs/initial-ingest-ce85c0c/out/artifacts",
-        "next": "Exact Git candidate, native helper build, then isolated engine with clean input",
+        "next": "No cleanup debt; retain original fault clones/stores/evidence/artifacts. Resume installed finite execution dictionary prerequisite.",
         "native_launch": {
           "source": "66a87181cac7d6c2ca2999c2cb40ffd82712ed24",
           "tree": "12fce8836c98578d9e40e6acdf4267e728b36c4b",
@@ -33105,7 +33105,44 @@
           "compiler_lock_released": true,
           "free_bytes": 56605073408
         },
-        "evidence": "docs/implementation/evidence/p03-initial-jobs-faults-native-20261002.json"
+        "evidence": "docs/implementation/evidence/p03-initial-jobs-faults-native-20261002.json",
+        "source_regression": {
+          "launch": {
+            "source": "5046876ba5bb9accf690790886f32dca27211563",
+            "tree": "3015d6d51a1d93fe5493d470f1bc6b04fd66d256",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/source-http-regression-5046876",
+            "pid": 1584427,
+            "start_ticks": "428581315",
+            "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-66a8718/out/artifacts",
+            "bundle_sha256": "b0b9c3c7e570e323593ee3e3456fa805fe92ac1bbb77dece813a9d51e0778336"
+          },
+          "owner": "fd2b6d7c2f85c967017aee96944a6cf5",
+          "client": {
+            "id": "484b413fc69c1b1c2b7db7ac34f5837528fd074428dd5aa7b7ed7ef7ea5c839c",
+            "name": "bigbrotr-acquisition-binding-5046876"
+          },
+          "terminal_audit": {
+            "status": "PASS_TERMINAL_AUDIT_ONLY",
+            "observed_at": "2026-10-02T01:13:12.878102+00:00",
+            "owned_stopped": [
+              {
+                "id": "484b413fc69c1b1c2b7db7ac34f5837528fd074428dd5aa7b7ed7ef7ea5c839c",
+                "owner": "fd2b6d7c2f85c967017aee96944a6cf5",
+                "exit": 143
+              },
+              {
+                "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+                "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+                "exit": 0
+              }
+            ],
+            "prior_unchanged": 1036,
+            "unrelated_running": 8,
+            "compiler_lock_released": true,
+            "free_bytes": 56558542848
+          },
+          "local": ".research/implementation/initial-jobs-20261002/source-regression"
+        }
       }
     }
   },

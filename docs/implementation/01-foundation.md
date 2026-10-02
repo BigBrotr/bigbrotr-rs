@@ -462,8 +462,11 @@ and queryable with truthful role readiness, without implicit public publishing.
   adds explicit populated upgrade and URL→enroll→withdraw/retry. Registration
   [installed fault schedules](evidence/p02-initial-registration-faults-native-20261001.json)
   now qualify ambiguous delivery, disconnected retry and timely cancellation.
-  Installed scope/job command consumers,
-  dictionary append and successor recovery remain real integration prerequisites.
+  Installed scope and finite-job acceptance/status now have
+  [bounded HTTP evidence](evidence/p03-initial-jobs-http-native-20261002.json) and
+  [COMMIT/cancellation evidence](evidence/p03-initial-jobs-faults-native-20261002.json).
+  Actual finite execution, dictionary append and successor recovery remain real
+  integration prerequisites.
   Then qualify actual timer publication, read and restart/resend below; no complete
   adjacent Discovery/Monitor subsystem is a prerequisite for this small journey.
 - [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event

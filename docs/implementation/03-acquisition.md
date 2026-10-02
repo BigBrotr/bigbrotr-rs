@@ -147,6 +147,15 @@ fixture-only retry23701f8 reuses375aa05 binaries and preserves its original setu
 failure. No product migration changed. Concrete arrival-policy/socket custody,
 running/progress lifecycle and installed M1 remain open.
 
+The same initial owner now has [installed finite HTTP acceptance/status](evidence/p03-initial-jobs-http-native-20261002.json),
+including foreign actor, elapsed session expiry, grant withdrawal and pre0022
+ordinary status compatibility. [Five installed job fault schedules](evidence/p03-initial-jobs-faults-native-20261002.json)
+cover COMMIT ambiguity, admitted disconnect and bounded signal handling with
+exact SQL-owner retry. These close that bounded command integration; Step4's
+finite CLI execution/gaps and Step7 restart journey remain incomplete. The next
+installed event consumer requires dictionary append for its actual observation
+and witness references, not completion of Discovery or Monitor.
+
 The pure selector component now owns normalization, a versioned independent
 fingerprint and bounded strict JSON, with actual signed WebSocket membership
 checks. It supplies Step2 and part of Step1/P01-T03 Step5; no whole task checkbox

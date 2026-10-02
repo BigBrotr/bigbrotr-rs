@@ -12,38 +12,50 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main fixture791e1a3949ddd2f0bfc38ad4783fb016c90af4e1,
-tree3e880a6ee1e633614b7099ebfee4a08e3adf648b; origin762c994; root sole writer.
-Root-owned evidence/inventory/checkpoint and two-case source regression selector
-are dirty. Native candidate66a8718 compiled helper/CLI and scoped Clippy PASS;
-core productce85c0c unchanged. No local build. Native build STOPPED/RETAINED:
-runs/relay-registration-faults-66a8718, PID1566508/start428532989,
-owner62aae2d30a5e083a4e1f2527dcba7ec7; fetch6ede7aff/nativecb7b9f87 stopped0.
-Compiler lock released. Audit and exact build hashes in inventory.initial_jobs.http_faults.
+Main5046876ba5bb9accf690790886f32dca27211563,
+tree3015d6d51a1d93fe5493d470f1bc6b04fd66d256; origin762c994; root sole writer.
+Only root-owned final evidence/inventory/owning task/reference/checkpoint edits
+are pending. Native candidate66a8718 builds extended SQL helper/CLI and scoped
+Clippy PASS; core productce85c0c is unchanged. No local build. No active lab.
 
-Five installed finite job COMMIT schedules PASS at791e1a3, reviewed actual69-table
-and native12-row/original-CBOR captures,1658 source files/216 payloads verified.
-Original versus new recovery session attribution is now independently checked;
-reviewer caught this fixture gap before engines. Native helper does not adopt
-Ingest. Signal closes HTTP1.037665s after pre-start sample (earliest timeout2.5s),
-reaps2.102615s after signal, with observed upstream transaction still held until
-proxy closure. Exact job/120s deadline/ordinal retained for committed retries.
-Report: evidence/p03-initial-jobs-faults-native-20261002.json.
-Original local systemPython3.9 oracle setup failures remain separate from native
-PASS; Python3.14 eight wire checks/four original-capture regressions and four
-synthetic wrong-session/deadline/ordinal/extra-write controls pass.
+Bounded installed finite acceptance/status/COMMIT integration is qualified;
+P03-T01 Steps3/4 and P01-T09 Steps1/2 remain partial because execution/progress,
+finite CLI and restart are not implemented. Five marked-COMMIT12 job cases PASS
+at791e1a3;1658 Git files/216 captures verified. Exact69-table/xmin and12 native
+bootstrap rows/original CBOR; historical job120s deadline/ordinal preserved.
+SIGTERM closes HTTP1.037665s after pre-start sample (earliest timeout2.5s),
+reaps2.102615s after signal; actual upstream transaction remains held until proxy
+closure. Fresh SQL-owner recovery never adopts native Ingest. Two affected
+endpoint/scope positive HTTP + original retry regressions PASS at5046876;
+1659 Git files/81 captures verified. Complete report:
+evidence/p03-initial-jobs-faults-native-20261002.json. Raw captures in
+.research/implementation/initial-jobs-20261002/{faults,source-regression}.
+Read-only review caught original-versus-new session attribution missing from the
+fixture; fixed before engines. Python3.14 eight wire checks, four retained capture
+regressions and four synthetic oracle negatives PASS. Initial systemPython3.9
+setup failures are preserved separately; no engine failure in these waves.
+Structure: shared concrete fault/lifetime schedule, separate independent command
+oracles, one typed probe variant; no new product framework/state/migration.
 
-Engine runs/job-http-faults-791e1a3 STOPPED/RETAINED,
-PID1569824/start428553108, ownere411f166e60c7ebf228744505253e0f3,
-client4561d10147bd07c0180eb2bd13c8fb98ecfd0c5301c47d98fc53c43db92fc158 stopped143;
-borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T01:09:16.972409UTC:
-1035 prior projections unchanged, eight unrelated running, compiler lock free,
-56,605,073,408B free. No active build/engine. All five fault clones/stores retained.
-Next: exact-Git --source-http-regression runs only endpoint/scope positive actual
-HTTP + fresh-owner retry for the shared helper/fixture changes. No repeated full
-fault matrix or build is needed. Then publish bounded evidence and resume the
-installed finite execution/dictionary prerequisite for M1. Help text remains to
-fix at the next product change; this native build changed only the test helper.
+Latest runs/source-http-regression-5046876 STOPPED/RETAINED:
+PID1584427/start428581315, ownerfd2b6d7c2f85c967017aee96944a6cf5,
+client484b413fc69c1b1c2b7db7ac34f5837528fd074428dd5aa7b7ed7ef7ea5c839c stopped143;
+borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T01:13:12.878102UTC:
+1036 prior projections unchanged, eight unrelated running, compiler lock free,
+56,558,542,848B free. Prior job-http-faults-791e1a3 and native build
+relay-registration-faults-66a8718 also STOPPED/RETAINED with exact owners, PIDs,
+artifacts/audits in inventory.initial_jobs.http_faults. Preserve all7 clones/stores.
+
+Next: commit/push this integrated bounded evidence, then implement the native
+append/intern prerequisite (P02-T03 Step1/P02-T02) for the installed finite event
+consumer. Read complete dictionary/bootstrap/admission/PG bridge ownership first;
+existing two visibility mappings cannot supply committed observer/clock/method
+references. Read-only independent prerequisite review is in progress; it edits
+nothing. Reuse existing atomic storage/producer request mechanisms rather than
+adding a second allocator/registry. M1 still needs actual finite dispatch,
+socket admission→timer archive/read/export and successor/restart. Full adjacent
+Discovery/Monitor is not required for this next signed-event slice. Fix stale
+--initialize-ingest help at the next product implementation change.
 
 Compatibility run runs/job-status-compat-de7347d is STOPPED/RETAINED:
 PID1558991/start428452303, owner5b0fcc0dca17226bfb649de3b2185974,
@@ -298,7 +310,7 @@ and every original transport/source/fault clone. Secrets stay
 under protected pg/secrets and never enter Git. Clone and verify before experiments.
 
 Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latestce85c0c intermediates;
+acceleration, exclusively locked by .compiler-cache.lock. Latest66a8718 intermediates;
 qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
 clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
 owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.

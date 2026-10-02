@@ -187,7 +187,89 @@
     "elapsed job deadline/execution/progress/recovery/M1",
     "native successor and crash-resumable initialization",
     "capacity/load/aged-state",
-    "arm64/release",
-    "two affected source-command positive regressions pending"
-  ]
+    "arm64/release"
+  ],
+  "source_regression": {
+    "status": "PASS_BOUNDED_SOURCE_REGRESSION_CAPTURE_REVIEW",
+    "source": "5046876ba5bb9accf690790886f32dca27211563",
+    "build_source": "66a87181cac7d6c2ca2999c2cb40ffd82712ed24",
+    "source_files": 1659,
+    "captured_payloads": 81,
+    "control_tables": 69,
+    "native_rows_per_case": 12,
+    "cases": [
+      {
+        "name": "register-http-pass",
+        "status": "PASS",
+        "committed": true,
+        "http": {
+          "status": 202,
+          "body": {
+            "accepted_at_us": "1790903565457594",
+            "authority": "identity-only",
+            "command_key": "31313131313131313131313131313131",
+            "created": true,
+            "endpoint_id": "0f5a1dd81b7e519466199db5afef3b08",
+            "format": "bigbrotr-relay-registration/1"
+          }
+        },
+        "wire_counts": [
+          10,
+          10,
+          10,
+          10,
+          0
+        ],
+        "recovered_created": false
+      },
+      {
+        "name": "scope-http-pass",
+        "status": "PASS",
+        "committed": true,
+        "http": {
+          "status": 202,
+          "body": {
+            "accepted_at_us": "1790903570868347",
+            "authority": "identity-only",
+            "command_key": "31313131313131313131313131313131",
+            "created": true,
+            "format": "bigbrotr-acquisition-scope-registration/1",
+            "scope_id": "c8c2b87f2b48ae57746bb0ff6aa55396"
+          }
+        },
+        "wire_counts": [
+          12,
+          12,
+          12,
+          12,
+          0
+        ],
+        "recovered_created": false
+      }
+    ],
+    "scope": "Two affected source consumers only: actual endpoint/scope HTTP202, original SQL/native effects, exact release and fresh SQL-owner historical retry. Existing fault matrices remain separate.",
+    "terminal_audit": {
+      "status": "PASS_TERMINAL_AUDIT_ONLY",
+      "observed_at": "2026-10-02T01:13:12.878102+00:00",
+      "owned_stopped": [
+        {
+          "id": "484b413fc69c1b1c2b7db7ac34f5837528fd074428dd5aa7b7ed7ef7ea5c839c",
+          "owner": "fd2b6d7c2f85c967017aee96944a6cf5",
+          "exit": 143
+        },
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "exit": 0
+        }
+      ],
+      "prior_unchanged": 1036,
+      "unrelated_running": 8,
+      "compiler_lock_released": true,
+      "free_bytes": 56558542848
+    },
+    "local": ".research/implementation/initial-jobs-20261002/source-regression",
+    "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/source-http-regression-5046876",
+    "capture_manifest_sha256": "1083fe0507873bc688b385ffed88b84da037d49a8683008f5c9f4940b5eeffc5"
+  }
 }

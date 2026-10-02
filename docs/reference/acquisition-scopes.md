@@ -435,8 +435,20 @@ Expired status and historical/new acceptance all refuse401 without idle touch or
 job mutation. The idle case completes11.66s before the absolute ceiling; the
 absolute case has coincident stored cutoffs. Defaults remain8h absolute/30min idle;
 this does not qualify configurable TTL or independently isolate redundant guards.
-Installed COMMIT/cancellation/authority races, credential changes and
-actual execution/progress remain required. No acceptance-only result qualifies
+The de7347d supplement also runs ordinary Control-only Serve on the unchanged
+pre0022 template: two actual SQL-backed unavailable404 replies and a valid
+unsupported-kind400 preserve all64 tables/xmin. It opens no native/archive store
+and does not requalify positive export execution.
+
+[Installed job faults](../implementation/evidence/p03-initial-jobs-faults-native-20261002.json)
+now qualify five HTTP schedules with the actual CLI and PostgreSQL wire proxy:
+normal acceptance, both COMMIT losses, admitted client disconnect/retry and timely
+SIGTERM while the upstream transaction remains held. All69 tables/xmin and original
+native bytes are checked. A fresh SQL owner recovers exactly the original durable
+job/deadline or creates the previously absent intent; its authenticated session is
+checked separately from the original session. This does not adopt native Ingest.
+Two affected endpoint/scope positive journeys also pass with the extended helper.
+Installed authority/credential races and actual execution/progress remain required. No acceptance-only result qualifies
 complete Sync, M1 or production capacity.
 
 ## Initial exact-ID claim (implementation in progress)
