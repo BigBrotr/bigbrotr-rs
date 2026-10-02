@@ -10,6 +10,25 @@ import threading
 import time
 
 
+REFUSAL_SHA256 = '64f3d2ad64cf6960aaa9908e8b85b21205ca89786cb2c21dacb3c4e8e4d1938f'
+
+
+def refusal_frames(event, artifact):
+    """Frozen signed kind22222 is outside kinds1, even with ephemeral retain."""
+    assert hashlib.sha256(artifact).hexdigest() == REFUSAL_SHA256
+    fixture = json.loads(artifact)
+    assert fixture['format'] == 'bigbrotr-selector-signed-fixture/1'
+    selected, = [entry for entry in fixture['events'] if entry['name'] == 'ephemeral']
+    outside = selected['event']
+    canonical = json.dumps([0, outside['pubkey'], outside['created_at'], outside['kind'],
+        outside['tags'], outside['content']], ensure_ascii=False, separators=(',', ':')).encode()
+    assert canonical.hex() == selected['canonical_hex']
+    assert hashlib.sha256(canonical).hexdigest() == outside['id']
+    assert outside['kind'] == 22222 and outside['id'] != event['id']
+    assert len(bytes.fromhex(outside['sig'])) == 64
+    return ({'id': event['id']}, outside, event)
+
+
 def publish(directory, name, value):
     partial = directory / (name + '.partial')
     with partial.open('x') as stream:
@@ -49,7 +68,7 @@ def send_frame(connection, value):
     connection.sendall(header+body)
 
 
-def relay(directory, listener, finished, errors, signed):
+def relay(directory, listener, finished, errors, signed, refusals=False):
     request_ids = set()
     try:
         number = 0
@@ -95,12 +114,18 @@ def relay(directory, listener, finished, errors, signed):
                 publish(directory, f'relay-open-{number:03}.json', trace)
                 if signed and number <= 2:
                     event = json.loads((directory/'event.jsonl').read_bytes())
-                    forged = dict(event, sig='00'*64)
+                    if refusals:
+                        values = refusal_frames(event, (directory/'selector-events.json').read_bytes())
+                        trace['frames'] = ['malformed-event', 'signed-outside-selector', 'signed', 'EOSE']
+                        trace['outside_event_id'] = values[1]['id']
+                        trace['selector_fixture_sha256'] = REFUSAL_SHA256
+                    else:
+                        values = (event, dict(event, sig='00'*64), event)
+                        trace['frames'] = ['signed', 'forged-signature', 'duplicate', 'EOSE']
                     trace['sent_at_us'] = time.time_ns()//1000
-                    for value in (event, forged, event):
+                    for value in values:
                         send_frame(connection, ['EVENT', ident, value])
                     send_frame(connection, ['EOSE', ident])
-                    trace['frames'] = ['signed', 'forged-signature', 'duplicate', 'EOSE']
                     opcode, raw = read_frame(connection)
                     assert opcode == 1 and json.loads(raw) == ['CLOSE', ident]
                     opcode, raw = read_frame(connection)
@@ -155,7 +180,8 @@ def no_connections(directory, listener, finished, errors):
 
 
 def run(directory, request, login, logout):
-    signed = directory.name == 'sync-signed'
+    refusals = directory.name == 'sync-peer-refusals'
+    signed = directory.name == 'sync-signed' or refusals
     visibility_refusal = directory.name == 'sync-public-visibility'
     assert signed or visibility_refusal or directory.name == 'sync-quiet'
     observations = []
@@ -189,7 +215,7 @@ def run(directory, request, login, logout):
     listener.bind(('127.0.0.1', 7447)); listener.listen(2); listener.settimeout(.1)
     finished, errors = threading.Event(), []
     worker = threading.Thread(target=no_connections if visibility_refusal else relay,
-        args=(directory, listener, finished, errors) if visibility_refusal else (directory, listener, finished, errors, signed))
+        args=(directory, listener, finished, errors) if visibility_refusal else (directory, listener, finished, errors, signed, refusals))
     worker.start()
     try:
         barrier('prepared')

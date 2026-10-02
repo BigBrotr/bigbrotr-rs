@@ -17,7 +17,9 @@ from scopes import upgrade as upgrade_scopes
 from initial_jobs import released, unchanged, validate_job
 from installed_sync_oracle import ENDPOINT, SIGNED_SHA256, decode, expected
 
-CASES = ['sync-signed', 'sync-quiet', 'sync-function', 'sync-lock', 'sync-public-visibility']
+EVENT_CASES = ('sync-signed', 'sync-peer-refusals')
+CASES = ['sync-signed', 'sync-quiet', 'sync-function', 'sync-lock', 'sync-public-visibility',
+    'sync-source-function', 'sync-scope-function', 'sync-change-read', 'sync-peer-refusals']
 SOURCE = Path(__file__).resolve().parents[2]
 EXECUTION = 'control.require_acquisition_execution(bytea,bytea,bytea,bytea,bytea)'
 BOOTSTRAP = {'datasets', 'owner_epochs', 'role_instances', 'topology_generations', 'topology_streams',
@@ -128,7 +130,7 @@ def native(client, output, name, state, initialized, transcript, completed_us):
     (output/(name+'-native.json')).write_text(dumped.stdout)
     actual = [(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in json.loads(dumped.stdout)['rows']]
     originals = sorted((directory/'store/producer-inputs-v1').glob('*.cbor'))
-    signed = name == 'sync-signed'
+    signed = name in EVENT_CASES
     assert len(originals) == (4 if signed else 3)
     actual_inputs = [p.read_bytes() for p in originals]
     facts = {int.from_bytes(k[-8:], 'big'): v for cf, k, v in actual if cf == 'facts' and k[:2] == b'\x01\x20'}
@@ -259,11 +261,18 @@ def run(pg, client, output, database, name, rows):
             SELECT dataset_id,principal_id,a,'dataset',dataset_id
             FROM control.local_accounts CROSS JOIN (VALUES ('roles.control'),('status.read')) v(a);
     ''')
-    fault = name in ('sync-function', 'sync-lock')
+    functions = {'sync-function': EXECUTION,
+        'sync-source-function': 'control.require_relay_source(bytea,bytea,bytea,numeric,bytea)',
+        'sync-scope-function': 'control.require_acquisition_scope(bytea,bytea,bytea,bytea)'}
+    fault = name in functions or name in ('sync-lock', 'sync-change-read')
     policy_setup(pg, database, name, rows, output, administration=not fault)
-    if name == 'sync-function':
-        lab.sql(pg, database, 'REVOKE EXECUTE ON FUNCTION '+EXECUTION+' FROM bigbrotr_control')
-        assert lab.sql(pg, database, "SELECT has_function_privilege('bigbrotr_control','"+EXECUTION+"','EXECUTE')") == 'f'
+    if name in functions:
+        signature = functions[name]
+        lab.sql(pg, database, 'REVOKE EXECUTE ON FUNCTION '+signature+' FROM bigbrotr_control')
+        assert lab.sql(pg, database, "SELECT has_function_privilege('bigbrotr_control','"+signature+"','EXECUTE')") == 'f'
+    if name == 'sync-change-read':
+        lab.sql(pg, database, 'REVOKE SELECT ON control.relay_enrollment_changes FROM bigbrotr_control')
+        assert lab.sql(pg, database, "SELECT has_table_privilege('bigbrotr_control','control.relay_enrollment_changes','SELECT')") == 'f'
     if name == 'sync-lock':
         lab.sql(pg, database, 'REVOKE UPDATE ON control.principal_grants FROM bigbrotr_control')
         assert lab.sql(pg, database, "SELECT has_any_column_privilege('bigbrotr_control','control.principal_grants','UPDATE')") == 'f'
@@ -294,6 +303,11 @@ def run(pg, client, output, database, name, rows):
         assert target.read_bytes() == Path(__file__).with_name(filename).read_bytes()
     directory = output/name; directory.mkdir(mode=0o700)
     shutil.copy2(SOURCE/'tests/fixtures/ingest/import-event.jsonl', directory/'event.jsonl')
+    if name == 'sync-peer-refusals':
+        from installed_sync_client import REFUSAL_SHA256
+        artifact = SOURCE/'tests/fixtures/acquisition/selector-events.json'
+        assert hashlib.sha256(artifact.read_bytes()).hexdigest() == REFUSAL_SHA256
+        shutil.copy2(artifact, directory/'selector-events.json')
     prefix = output/name
     lab.docker('exec', '-d', client, 'python3', '/lab/installed_client.py', config, '/lab/'+name, 'sync')
     wait_for(lambda: Path(str(prefix)+'.pid.json').exists(), 'Sync CLI start')
@@ -353,7 +367,7 @@ finally:
     validate_source(prepared, initialized, observations, public=visibility_refusal)
     (directory/'prepared.continue').write_text('observed\n')
     observations = stage('submitted')
-    wanted_count = 2 if visibility_refusal else 4 if name == 'sync-signed' else 3
+    wanted_count = 2 if visibility_refusal else 4 if name in EVENT_CASES else 3
     def completed():
         assert not (directory/'relay-error.json').exists(), 'independent relay failed'
         assert not Path(str(prefix)+'.terminal.json').exists(), 'initial owner ended early'
@@ -400,7 +414,7 @@ finally:
         signal_at = time.monotonic()
         stop(client, prefix)
     else:
-        selected_quiet = stop_during_quiet(client, prefix, name == 'sync-signed')
+        selected_quiet = stop_during_quiet(client, prefix, name in EVENT_CASES)
         signal_at = time.monotonic()
     ended = terminal(prefix)
     signal_elapsed = ((time.monotonic_ns()-selected_quiet['signal_monotonic_ns'])/1_000_000_000
@@ -439,7 +453,10 @@ finally:
     else:
         assert len(transcript) >= 2
         assert [t['completion'] for t in transcript[:2]] == ([
-            'request-and-websocket-close']*2 if name == 'sync-signed' else ['quiet-eof']*2)
+            'request-and-websocket-close']*2 if name in EVENT_CASES else ['quiet-eof']*2)
+        if name == 'sync-peer-refusals':
+            assert all(trace['frames'] == ['malformed-event', 'signed-outside-selector', 'signed', 'EOSE']
+                for trace in transcript[:2])
         native_result = native(client, output, name, after, initialized, transcript, time.time_ns()//1000)
     assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
     return dict(name=name, status='PASS', actual_cli=True, actual_http=True, actual_pg_rocks=True,

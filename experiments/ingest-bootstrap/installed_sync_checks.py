@@ -18,7 +18,7 @@ bootstrap = importlib.util.module_from_spec(spec)
 sys.modules['bootstrap_oracle'] = bootstrap
 spec.loader.exec_module(bootstrap)
 from installed_sync_oracle import decode, expected
-from installed_sync_client import no_connections, read_frame
+from installed_sync_client import no_connections, read_frame, refusal_frames
 
 files = [*Path(__file__).parent.glob('installed_sync*.py'), Path(__file__).with_name('installed_client.py'),
     Path(__file__).with_name('session_client.py'), SOURCE/'experiments/acquisition-scope/bindings.py']
@@ -39,6 +39,19 @@ public = dict(dataset_id='01'*16, dictionary_kind=4, allocation_domain='14'*16, 
 report = dict(owner_resource_id='02'*16, producer_slot_id='04'*16, recovery_generation='05'*16,
     topology_generation='0', dictionary_count=3, public_scope=public, private_scope=dict(public, ordinal='3'))
 event = json.loads((SOURCE/'tests/fixtures/ingest/import-event.jsonl').read_text())
+selector_artifact = (SOURCE/'tests/fixtures/acquisition/selector-events.json').read_bytes()
+original_event = json.dumps(event, sort_keys=True)
+refusals = refusal_frames(event, selector_artifact)
+assert refusals[0] == {'id': event['id']} and refusals[1]['kind'] == 22222
+assert refusals[2] is event and json.dumps(event, sort_keys=True) == original_event
+assert refusals[1] == next(entry['event'] for entry in json.loads(selector_artifact)['events']
+    if entry['name'] == 'ephemeral')
+try:
+    refusal_frames(event, selector_artifact+b'\n')
+except AssertionError:
+    pass
+else:
+    raise AssertionError('modified frozen selector artifact accepted')
 counts = []
 for received in [None, 300]:
     rows, inputs, receipts = expected(state, report, event, 200, received, 400 if received else None)
@@ -106,4 +119,5 @@ for connect in (False, True):
 
 print(json.dumps(dict(status='PASS_FIXTURE_ONLY', ast_files=len(files), embedded_python=embedded, constructed=counts,
     malformed_cbor_cases=len(malformed), websocket_cases=5, no_dial_observer_cases=2,
+    peer_refusal_sequence_cases=2,
     not_run=['actual CLI', 'PostgreSQL', 'RocksDB', 'product WebSocket', 'renewal', 'signal shutdown'])))
