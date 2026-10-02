@@ -473,6 +473,11 @@ Completed-rollback peer refusals yield the candidate, while local malformed or
 out-of-selector EVENTs are refused before SQL/native work. A full initial producer
 window defers new event or dictionary mutations; it does not stop existing reads,
 private commands or renewal. These refusals produce no coverage assertion.
+Identity-only acceptance can name an unallocated visibility or a descriptor whose
+fact envelope is unsupported by initial dictionary preparation. Such a candidate
+yields without allocating or relabeling its scope. Native inconsistency, uncertain
+writes, resource exhaustion and unavailable authority remain errors; an unsupported
+candidate is not permission to suppress those failures.
 
 Cancellation asks a quiet protocol callback to retire its complete session and
 lets the source adapter finish socket destruction and SQL rollback; the outer

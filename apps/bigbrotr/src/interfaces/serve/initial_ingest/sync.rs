@@ -164,7 +164,7 @@ impl Sync {
                 .expect("validated path"),
         );
         let ttl = work.remaining()?;
-        let visible = work
+        let Some(visible) = work
             .owner
             .read_initial_visibility(
                 work.store,
@@ -181,7 +181,11 @@ impl Sync {
             )
             .await
             .map_err(error)?
-            .ok_or_else(|| error("acquisition visibility is not committed"))?;
+        else {
+            // Command acceptance checks identity, not native allocation. The
+            // completed read rollback leaves this owner usable for other jobs.
+            return Ok(());
+        };
         // Attribution itself is scientific data. Refuse an unsafe envelope
         // before persisting a private/query-bearing URL, not merely at dial.
         // The source adapter repeats this restriction under fresh source locks.

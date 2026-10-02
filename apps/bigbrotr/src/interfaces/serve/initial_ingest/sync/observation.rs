@@ -2,7 +2,10 @@
 use super::*;
 use bigbrotr::{
     acquisition::observation::ObservationBindings,
-    storage::postgres::control_owner::{InitialDictionaryAppendRequest, InitialObservationRequest},
+    storage::{
+        postgres::control_owner::{InitialDictionaryAppendRequest, InitialObservationRequest},
+        rocks::store::AdmissionError,
+    },
 };
 use bigbrotr_model::{
     AccessClass, AccessScopeDescriptor, ClockSource, DictionaryDescriptor, EndpointDescriptor,
@@ -26,21 +29,26 @@ impl Dispatch<'_> {
             max_outstanding_requests: u64::from(self.spec.outstanding_request_limit),
         };
         let visible = scope.scope().visibility();
-        let mut prepared = self
-            .store
-            .prepare_dictionaries(
-                visible,
-                limits,
-                grant(
-                    self.budget,
-                    limits
-                        .required_dictionary_preparation_data_bytes()
-                        .map_err(error)?,
-                    0,
-                )?,
-                &self.cancel.requested,
-            )
-            .map_err(error)?;
+        let mut prepared = match self.store.prepare_dictionaries(
+            visible,
+            limits,
+            grant(
+                self.budget,
+                limits
+                    .required_dictionary_preparation_data_bytes()
+                    .map_err(error)?,
+                0,
+            )?,
+            &self.cancel.requested,
+        ) {
+            Ok(prepared) => prepared,
+            // Some valid descriptors have a different fact envelope (the
+            // original private2 bootstrap is in public1). This initial
+            // preparation cannot use their closure. Yield without changing
+            // it; corruption, uncertain writes and resource errors stay fatal.
+            Err(AdmissionError::InvalidInput) => return Ok(None),
+            Err(e) => return Err(error(e)),
+        };
         let observer = prepared
             .intern(DictionaryDescriptor::Observer(ObserverDescriptor {
                 clock: Some(ClockSource::SystemUtc),
