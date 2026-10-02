@@ -40,8 +40,12 @@ fn limits() -> ProducerRecoveryLimits {
 
 fn replay_grants(budget: &ResourceBudget) -> Result<(OwnedPermit, OwnedPermit)> {
     let limits = limits();
-    let input =
-        RetainedRequestInput::required_data_bytes(limits.input).map_err(|e| (3, e.to_string()))?;
+    let input = RetainedRequestInput::required_data_bytes(limits.input).map_err(|e| {
+        (
+            3,
+            format!("Ingest recovery input reservation refused: {e:?}"),
+        )
+    })?;
     let outcome = limits
         .required_data_bytes()
         .map_err(|e| (3, e.to_string()))?;

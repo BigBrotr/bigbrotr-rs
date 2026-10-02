@@ -87,7 +87,9 @@ case fails exit2 versus4 because the command is absent. Original 12 captures and
 The command and nine-case installed fixture are now candidates: native-first open,
 current policy, original PG reserved bound, per-request replay, driver custody via
 one-shot transfer to the existing supervisor. No API or fixture result is yet PASS.
-Next exact-Git build (CLI test, Clippy), then actual installed engine wave. Keep the complete original request set bounded;
+Candidate89dd8fe failed compilation: RequestInputError has Debug but no Display.
+Original build/captures retained; CLI tests/Clippy/engine NOT_RUN. Correct only
+the diagnostic formatting, then rebuild exact Git and run the installed wave. Keep the complete original request set bounded;
 missing reservation/input/receipt stays Unresolved. Test unchanged retries,
 current-policy changes, cancellation/driver joining and held native exclusion.
 Do not make a read, lease expiry or old directory writable by ordinary Serve.
