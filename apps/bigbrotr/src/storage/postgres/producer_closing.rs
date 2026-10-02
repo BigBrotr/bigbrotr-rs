@@ -206,10 +206,21 @@ impl ControlSession {
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, 14)
+        let workflows = matches!(locks, ingest_registry::RegistryLocks::Workflow);
+        let tx = application_transaction(&mut self.client, if workflows { 27 } else { 14 })
             .await
             .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;
+        if workflows {
+            // Job mutations take dataset UPDATE. Take it before any registry
+            // locks, not as a later upgrade after source/producer custody.
+            tx.query_one(
+                "SELECT dataset_id FROM control.datasets WHERE dataset_id=$1::bytea FOR UPDATE",
+                &[&&self.request.dataset.as_bytes()[..]],
+            )
+            .await
+            .map_err(backend)?;
+        }
         let policy = snapshot(&tx, &self.request, &mut validate).await?;
         ingest_registry::require_closing_registration(&tx, spec, locks)
             .await

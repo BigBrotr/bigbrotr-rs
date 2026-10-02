@@ -1682,5 +1682,22 @@
         "unrelated_changed": []
       }
     }
+  },
+  "initial_acquisition_abandonment_20261002": {
+    "status": "IMPLEMENTING; engine behavior NOT_RUN",
+    "tasks": [
+      "P01-T09 Step4",
+      "P02-T01 Step5",
+      "P02-T02 Step4"
+    ],
+    "entrypoint_red": {
+      "label": "acquisition-abandon-entrypoint-red",
+      "source": "48d298af07ad68e1045aa201c4e6754063e50ffa",
+      "files": 1709,
+      "captures": 12,
+      "capture_sha256": "e050608e8947e5cf5c99c45e95bfa0d5ebcea41e060c31810776323539225a36"
+    },
+    "red_result": "EXPECTED_RED: new flag refused with exit2 instead of native missing-root refusal4; other3 CLI tests pass",
+    "scope": "Explicit initial whole-intent abandonment before producer/domain retirement; does not qualify successor/M1 or ACK/GC"
   }
 }

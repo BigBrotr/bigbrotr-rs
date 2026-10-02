@@ -37059,6 +37059,42 @@
           "source_archive_sha256": "7e5452d48b2316f3bccfb944b8a04feb3e354078145f86a6244d43e6fc8af111",
           "preserve": "Both signed copies, exact sources/artifacts, all captures, original accepted incompatible job cut and all original retained lab data; no resource deletion."
         }
+      },
+      "acquisition_abandonment": {
+        "entrypoint_red": {
+          "source": "48d298af07ad68e1045aa201c4e6754063e50ffa",
+          "tree": "69cd95f979db391d1e35246eb41529f00fb6d1f8",
+          "owner": "3a5a5fea4df11b41768c17bbff813837",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-48d298a",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "6b7008f494856e21601e93c1e1756cce470f3337eec1a951db22910ae5dd8d47"
+            },
+            {
+              "name": "native",
+              "id": "122b8c7701bf7321ecb62646caf0c33401d73be87deca0cf1f72d9c9486cfe83"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-02T12:38:48.005909+00:00",
+          "inventory_changed": [],
+          "free_bytes_after": 68520611840,
+          "finished_at": "2026-10-02T12:40:08.930109+00:00",
+          "capture": {
+            "label": "acquisition-abandon-entrypoint-red",
+            "source": "48d298af07ad68e1045aa201c4e6754063e50ffa",
+            "files": 1709,
+            "captures": 12,
+            "capture_sha256": "e050608e8947e5cf5c99c45e95bfa0d5ebcea41e060c31810776323539225a36"
+          },
+          "result": "EXPECTED_RED: new flag refused with exit2 instead of native missing-root refusal4; other3 CLI tests pass"
+        },
+        "preserve": "Exact source, original failed build/test logs and capture; shared compiler cache remains exclusively reused1154757. No dataset deletion."
       }
     }
   },

@@ -16,6 +16,13 @@ use bigbrotr_model::{
 };
 use tokio::sync::oneshot;
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(in crate::interfaces::serve) enum Action {
+    Resolve,
+    CloseSource,
+    AbandonAcquisition,
+}
+
 fn limits() -> ProducerRecoveryLimits {
     ProducerRecoveryLimits {
         input: RequestDecodeLimits {
@@ -54,7 +61,7 @@ fn replay_grants(budget: &ResourceBudget) -> Result<(OwnedPermit, OwnedPermit)> 
 
 pub(in crate::interfaces::serve) fn run(
     root: Resolved,
-    close_source: bool,
+    action: Action,
     output: &mut LifecycleOutput,
 ) -> Result<()> {
     if !root.local("control") || !root.local("ingest") {
@@ -88,7 +95,7 @@ pub(in crate::interfaces::serve) fn run(
         let worker_progress = progress.clone();
         let handle = tokio::runtime::Handle::current();
         let mut worker = tokio::task::spawn_blocking(move || {
-            handle.block_on(own(root, budget, worker_progress, worker_cancel, send_driver, close_source))
+            handle.block_on(own(root, budget, worker_progress, worker_cancel, send_driver, action))
         });
         let (terminal, interrupted) = match supervision::collect(
             &mut worker, &mut observed, &cancellation, stop.requested(), grace, |_| {},
@@ -120,7 +127,7 @@ async fn own(
     progress: watch::Sender<Progress>,
     cancellation: Arc<Cancellation>,
     driver_custody: oneshot::Sender<(postgres_command::DriverHandle, OwnedPermit)>,
-    close_source: bool,
+    action: Action,
 ) -> Result<Value> {
     let path = Path::new(required(&root, "storage.ingest_root")?);
     let dataset: DatasetId = required(&root, "topology.dataset_id")?
@@ -170,7 +177,7 @@ async fn own(
         &cancellation,
         &mut recovery,
         client,
-        close_source,
+        action,
     )
     .await;
     // The only blocking native destructor stays on this joined owner thread.
@@ -194,7 +201,7 @@ async fn connected(
     cancellation: &Cancellation,
     recovery: &mut IngestRecovery,
     mut client: tokio_postgres::Client,
-    close_source: bool,
+    action: Action,
 ) -> Result<(ControlSession, Value)> {
     let instance: DatasetId = required(root, "topology.instance_id")?
         .parse()
@@ -247,7 +254,7 @@ async fn connected(
     .await?;
     let issued = closed.issued_through();
     let reserved = closed.reserved_through();
-    let mut prefix = if close_source {
+    let mut prefix = if action != Action::Resolve {
         if issued != reserved {
             return Err((4, "source closure has unresolved reserved requests".into()));
         }
@@ -331,7 +338,39 @@ async fn connected(
                 .map_err(|e| (4, e.to_string()))
         })
         .await?;
-        report["state"] = json!("source-closed");
+        if action == Action::AbandonAcquisition {
+            phase(progress, timeout)?;
+            bounded(timeout, cancellation, async {
+                owner.refresh(validate).await.map_err(owner_error)
+            })
+            .await?;
+            phase(progress, timeout)?;
+            let abandoned = bounded(timeout, cancellation, async {
+                owner
+                    .abandon_initial_acquisition(
+                        &source,
+                        ProducerCloseRequest {
+                            ingest_root: path,
+                            registration: &spec,
+                            policy_ttl: duration(root, "authorization_ttl"),
+                            cancelled: &cancellation.requested,
+                        },
+                        grant(budget, 128 * 1024, 0)?,
+                        validate,
+                    )
+                    .await
+                    .map_err(|e| (4, e.to_string()))
+            })
+            .await?;
+            report["acquisition_abandonment"] = json!({
+                "jobs":abandoned.to_string(), "reason":"initial_producer_abandoned",
+                "coverage":"unknown"});
+        }
+        report["state"] = json!(if action == Action::AbandonAcquisition {
+            "acquisition-abandoned"
+        } else {
+            "source-closed"
+        });
         report["source_closure"] = json!({"last_complete_sequence":source.last_complete_sequence().to_string(),
             "sha256":bigbrotr_model::Digest256::from_bytes(source.digest())});
     }

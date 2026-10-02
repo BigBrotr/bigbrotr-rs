@@ -12,9 +12,12 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is clean `f996628`, verified equal to origin/main. Both source fault
-and lock waves are committed/pushed. Root owns the next initial workflow recovery
-slice; no parallel writer or active experiment. No Mac Rust build.
+Primary main is48d298a after pushedf996628. Root owns the uncommitted0027
+acquisition abandonment implementation/fixture/docs. Its entrypoint RED onTux
+is stopped/retained: expected exit2 instead of4 for the missing new flag, other3
+tests PASS. Source1709files/12captures SHAe050608e verified. No parallel writer
+or active experiment. Commit a candidate, then native build and signed PG/Rocks
+qualification; do not advertise the unqualified operation. No Mac Rust build.
 
 ## Active responsibility and next bounded action
 

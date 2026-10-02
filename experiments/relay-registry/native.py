@@ -55,7 +55,7 @@ steps = [
 if mode == 'ingest-history':
     identity['scope'] = 'Historical recovery/source closure build, native prefix checks and actual CLI refusals; connected PostgreSQL qualification remains separate'
     steps.insert(1, ('entrypoints', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
-                                   '--test','control_runtime_entrypoint']))
+                                   '--test','control_runtime_entrypoint','--test','control_schema']))
     steps.insert(2, ('source-closure', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                       '--lib','source_closure_tests','--message-format=json','--','--test-threads=1']))
 if mode == 'ingest-recovery':

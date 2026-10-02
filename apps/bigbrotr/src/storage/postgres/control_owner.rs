@@ -76,6 +76,8 @@ mod ingest_lease;
 #[path = "initial_ingest_basis.rs"]
 mod initial_ingest_basis;
 pub use initial_ingest_basis::InitialIngestBasis;
+#[path = "acquisition_abandonment.rs"]
+mod acquisition_abandonment;
 #[path = "initial_batch.rs"]
 mod initial_batch;
 #[path = "producer_closing.rs"]

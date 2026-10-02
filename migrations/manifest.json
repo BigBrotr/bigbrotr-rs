@@ -169,6 +169,10 @@
     {
       "version": 26,
       "name": "0026_acquisition_scope_commands.sql"
+    },
+    {
+      "version": 27,
+      "name": "0027_acquisition_abandonment.sql"
     }
   ],
   "reserved": [

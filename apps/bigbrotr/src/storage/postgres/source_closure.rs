@@ -46,60 +46,7 @@ impl ControlSession {
                 validate,
             )
             .await?;
-        let slot = &spec.producer_slot_id.as_bytes().as_slice();
-        let resolved = source.resolved_requests().to_string();
-        const CLOSED_PRODUCER: &str = "
-            SELECT state = 'closing' AND reserved_through_request = $2::text::numeric
-              FROM control.producer_epochs
-             WHERE producer_slot_id = $1::bytea AND producer_epoch = 1";
-        let row = tx
-            .query_one(CLOSED_PRODUCER, &[slot, &resolved])
-            .await
-            .map_err(backend)?;
-        if !row.try_get::<_, bool>(0).map_err(backend)? {
-            return Err(OwnerError::InvalidMetadata.into());
-        }
-        let manifest: [u8; 32] =
-            Sha256::digest(source.recovery().manifest().encode().as_bytes()).into();
-        const OUTCOMES: &str = "
-            SELECT left(r.request_sequence::text,21),
-                   substring(r.request_digest FROM 1 FOR 33),
-                   substring(o.outcome_sha256 FROM 1 FOR 33)
-              FROM control.producer_requests r
-              JOIN control.producer_outcomes o USING (producer_slot_id, producer_epoch, request_sequence)
-             WHERE r.producer_slot_id = $1::bytea AND r.producer_epoch = 1
-               AND r.dataset_id = $2::bytea AND o.dataset_id = r.dataset_id
-               AND r.manifest_sha256 = $3::bytea AND o.manifest_sha256 = r.manifest_sha256
-               AND o.request_digest = r.request_digest
-             ORDER BY r.request_sequence LIMIT 65";
-        let rows = tx
-            .query(
-                OUTCOMES,
-                &[slot, &&spec.dataset_id.as_bytes()[..], &&manifest[..]],
-            )
-            .await
-            .map_err(backend)?;
-        if rows.len() as u64 != source.resolved_requests() {
-            return Err(OwnerError::InvalidMetadata.into());
-        }
-        let mut recorded = Vec::new();
-        recorded
-            .try_reserve_exact(rows.len())
-            .map_err(|_| SourceCloseError::Native(BootstrapError::Allocation))?;
-        for row in rows {
-            let sequence = ingest_registry::decimal(row.try_get(0).map_err(backend)?)
-                .map_err(SourceCloseError::Registry)?;
-            let fixed = |column: usize| -> Result<[u8; 32], OwnerError> {
-                row.try_get::<_, &[u8]>(column)
-                    .map_err(backend)?
-                    .try_into()
-                    .map_err(|_| OwnerError::InvalidMetadata)
-            };
-            recorded.push((sequence, fixed(1)?, fixed(2)?));
-        }
-        if !source.matches_recorded(recorded) {
-            return Err(OwnerError::InvalidMetadata.into());
-        }
+        require_resolved_prefix(&tx, source, spec).await?;
         let dataset = &spec.dataset_id.as_bytes().as_slice();
         let shard = i64::from(spec.shard_id);
         // UPDATE custody was acquired by the registry before producer UPDATE;
@@ -169,4 +116,67 @@ impl ControlSession {
         self.available = true;
         Ok(())
     }
+}
+
+/// Recheck the complete SQL outcome prefix against the retained native witness.
+pub(super) async fn require_resolved_prefix(
+    tx: &Transaction<'_>,
+    source: &ResolvedSource<'_>,
+    spec: &ingest_registry::InitialRegistration,
+) -> Result<(), SourceCloseError> {
+    let slot = &spec.producer_slot_id.as_bytes().as_slice();
+    let resolved = source.resolved_requests().to_string();
+    const CLOSED_PRODUCER: &str = "
+        SELECT state = 'closing' AND reserved_through_request = $2::text::numeric
+          FROM control.producer_epochs
+         WHERE producer_slot_id = $1::bytea AND producer_epoch = 1";
+    let row = tx
+        .query_one(CLOSED_PRODUCER, &[slot, &resolved])
+        .await
+        .map_err(backend)?;
+    if !row.try_get::<_, bool>(0).map_err(backend)? {
+        return Err(OwnerError::InvalidMetadata.into());
+    }
+    let manifest: [u8; 32] =
+        Sha256::digest(source.recovery().manifest().encode().as_bytes()).into();
+    const OUTCOMES: &str = "
+        SELECT left(r.request_sequence::text,21),
+               substring(r.request_digest FROM 1 FOR 33),
+               substring(o.outcome_sha256 FROM 1 FOR 33)
+          FROM control.producer_requests r
+          JOIN control.producer_outcomes o USING (producer_slot_id, producer_epoch, request_sequence)
+         WHERE r.producer_slot_id = $1::bytea AND r.producer_epoch = 1
+           AND r.dataset_id = $2::bytea AND o.dataset_id = r.dataset_id
+           AND r.manifest_sha256 = $3::bytea AND o.manifest_sha256 = r.manifest_sha256
+           AND o.request_digest = r.request_digest
+         ORDER BY r.request_sequence LIMIT 65";
+    let rows = tx
+        .query(
+            OUTCOMES,
+            &[slot, &&spec.dataset_id.as_bytes()[..], &&manifest[..]],
+        )
+        .await
+        .map_err(backend)?;
+    if rows.len() as u64 != source.resolved_requests() {
+        return Err(OwnerError::InvalidMetadata.into());
+    }
+    let mut recorded = Vec::new();
+    recorded
+        .try_reserve_exact(rows.len())
+        .map_err(|_| SourceCloseError::Native(BootstrapError::Allocation))?;
+    for row in rows {
+        let sequence = ingest_registry::decimal(row.try_get(0).map_err(backend)?)
+            .map_err(SourceCloseError::Registry)?;
+        let fixed = |column: usize| -> Result<[u8; 32], OwnerError> {
+            row.try_get::<_, &[u8]>(column)
+                .map_err(backend)?
+                .try_into()
+                .map_err(|_| OwnerError::InvalidMetadata)
+        };
+        recorded.push((sequence, fixed(1)?, fixed(2)?));
+    }
+    if !source.matches_recorded(recorded) {
+        return Err(OwnerError::InvalidMetadata.into());
+    }
+    Ok(())
 }

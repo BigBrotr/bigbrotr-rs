@@ -210,6 +210,13 @@ One owner serializes exact identity decisions for each writable directory.
   retry, plus both actual current-schema job/closure lock orders (`d824180`).
   These bounded guarantees leave producer/domain/workflow retirement, successor
   admission and full restart open.
+  The next bounded consumer explicitly abandons all queued acquisition intents
+  of the initial owner, including those with no mutation request, under actual
+  native/Control exclusion. Migration0027 retains whole-intent gaps and atomic
+  terminal job transitions; it does not relax0011's nonempty retirement veto.
+  Acceptance requires the signed installed seed, exact retry and unchanged
+  scientific state, zero-request jobs, stale authority/advanced history refusals,
+  rollback and ambiguous-COMMIT recovery before this guarantee closes.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and

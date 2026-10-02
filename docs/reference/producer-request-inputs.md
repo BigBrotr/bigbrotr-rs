@@ -486,3 +486,47 @@ job13 COMMIT refuse and roll back. Migration0815's earlier dataset lock remains
 active, and the historical topology NULL remains unchanged. The competing job
 writer is a privileged relational fixture, not authenticated acceptance. These
 bounded results do not complete producer/domain retirement, successor or M1.
+
+### Explicit initial acquisition abandonment (under implementation)
+
+`ingest recover --abandon-acquisition --file ROOT` includes positive resolution
+and source closure, then explicitly abandons the original initial owner's queued
+acquisition intents. It is mutually exclusive with `--close-source`. This finite
+operation is a retirement prerequisite, not producer/domain retirement or ACK/GC.
+It starts no network work and never claims traversal, EOSE or event completeness.
+
+The initial Sync executor borrows its native owner throughout its finite socket
+callback; that callback cannot retain the socket. Exclusive native recovery
+therefore excludes this executor as well as its admission writer. Fresh actual
+Control exclusion independently fences its PostgreSQL effects. This combination
+is specific to the initial local lifetime, not a generic remote-worker fence.
+Current policy authorizes recovery even after the old actor, scope, enrollment or
+deadline loses execution authority. Those changes must not erase existing facts
+or prevent recording uncertainty. Original accepted intent remains immutable.
+
+Additive migration0027 introduces the selected `acquisition_gaps` relation. This
+first protocol retains one whole-intent gap per job, keyed by that existing job
+identity; its immutable acquisition detail supplies scope, exact selector,
+endpoint/access and requested duration. It records no observed start/end or
+partial traversal because those are unknown. The gap binds the original claim,
+original producer and closed native source cut/digest, current recovery issuer
+and timestamp, with reason `initial_producer_abandoned`. Gap insertion and
+queued→cancel_requested→cancelled commit atomically; existing job revision rules
+remain in force. Only this exact gap authorizes transferring the terminal write
+to current Control. It grants no new execution. Deferred checks refuse incomplete
+transitions. Gaps, original inputs/outcomes and scientific records are retained.
+
+Select all typed jobs claimed by the original Control, including jobs with no
+mutation request. Unclaimed accepted jobs belong to no old execution and remain
+unchanged. The first consumer handles at most64 queued jobs with checkpoint zero;
+advanced/foreign or excessive history refuses without partial abandonment. An
+indexed excess-row discriminator bounds reads, independently of receipt count.
+Control/dataset UPDATE precede historical registry/source/producer and sorted
+job locks. Source closure and prior positive outcome copies may already have
+committed when a later abandonment refuses; they are never undone or hidden.
+
+Identical retry revalidates the complete native/SQL prefix and retained gaps;
+it preserves their original issuer, timestamps and row versions. Cancellation
+and ambiguous COMMIT require the same original root and mode. Later producer
+retirement must check these obligations explicitly; migration0011 continues to
+refuse nonempty retirement until that separate consumer is implemented.

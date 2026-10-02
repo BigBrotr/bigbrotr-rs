@@ -363,6 +363,8 @@ pub(super) enum RegistryLocks {
     Inspect,
     Producer,
     Source,
+    /// Dataset UPDATE is acquired before the source/producer and any job locks.
+    Workflow,
 }
 
 async fn observe_locked(
@@ -447,7 +449,7 @@ async fn observe_locked(
                CASE state WHEN 'open' THEN true WHEN 'closing' THEN false WHEN 'closed' THEN false END
           FROM control.source_streams
          WHERE dataset_id = $1::bytea AND shard_id = $2::bigint AND owner_epoch = 1 {}",
-        if matches!(locks, RegistryLocks::Source) { "FOR UPDATE" } else { "FOR SHARE" });
+        if matches!(locks, RegistryLocks::Source | RegistryLocks::Workflow) { "FOR UPDATE" } else { "FOR SHARE" });
     let stream = presence(
         tx.query_opt(
             &source_sql,
