@@ -179,3 +179,33 @@ fn configured_cursor_keys_are_loaded_read_only_before_control_credentials() {
     assert_eq!(unselected.status.code(), Some(3));
     assert!(String::from_utf8_lossy(&unselected.stderr).contains("protected PostgreSQL password"));
 }
+
+#[test]
+fn explicit_ingest_recovery_preserves_missing_store_before_credentials() {
+    let directory = tempfile::tempdir().unwrap();
+    let root = directory.path().canonicalize().unwrap();
+    let file = root.join("root.toml");
+    let store = root.join("absent-store");
+    let mut config: toml::Table = include_str!("../../../config/recipes/archive-only.toml")
+        .parse()
+        .unwrap();
+    config["storage"]["ingest_root"] = store.to_str().unwrap().into();
+    config["postgres"]["control"]["password_ref"] = "file:/nonexistent/recovery-password".into();
+    fs::write(&file, toml::to_string(&config).unwrap()).unwrap();
+    let result = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
+        .env_clear()
+        .args(["ingest", "recover", "--file"])
+        .arg(&file)
+        .output()
+        .unwrap();
+    assert_eq!(result.status.code(), Some(4));
+    assert!(result.stdout.is_empty());
+    let error = String::from_utf8_lossy(&result.stderr);
+    assert!(
+        error.contains("initialized store or CURRENT is absent"),
+        "{error}"
+    );
+    assert!(!error.contains("protected PostgreSQL password"));
+    assert!(!store.exists());
+    assert_eq!(fs::read_dir(&root).unwrap().count(), 1);
+}

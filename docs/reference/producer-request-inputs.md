@@ -381,3 +381,35 @@ Concurrent writers are explicitly privileged fixture injections; they do not
 establish management authorization. These results close the bounded operational
 binding responsibility. Actual source issuance, bans, routes and socket custody
 remain required before claiming acquisition or the complete M1 journey.
+
+## Explicit installed positive recovery
+
+The selected finite command is `bigbrotr ingest recover --file ROOT`. It targets
+only the configured existing Ingest root and reconstructs its original identity;
+there is no caller-supplied replacement manifest or producer. It requires local
+Control and Ingest. It starts no listeners, acquisition or Archive worker.
+
+Native inspection and positive exclusion precede the application connection and
+fresh Control claim. A held/missing/foreign native store therefore cannot fence
+its original Control owner. A supervised blocking owner retains the native grant,
+protected connection inputs, current Control and driver; a signal/deadline stops
+further work and joins it, or explicitly terminates the process after the shutdown
+grace. A diagnostic pipe cannot prolong that grace.
+
+Closing captures PostgreSQL's reserved-through request under the same producer
+lock as the native barrier. This is separate from native issued-through, which
+may be smaller after interruption. Native issued beyond the reservation bound
+refuses. The command streams every original sequence from one through that bound
+through the positive resolver, with separate bounded input/outcome grants and
+current policy checks. Missing reservations, input or native detail never count
+as resolved. The original registration bounds the count; no vector of requests
+or whole-store read is required. Current policy changes cannot rewrite historical
+identity/outcome bytes. Exact retries preserve the original copies and barrier.
+
+A successful finite result reports `positive-outcomes-resolved`, both bounds and
+the number actually resolved, after native close, Control release and driver
+join. This is not readiness, a durable recovery checkpoint, an absence proof,
+source closure, ACK, retirement or successor activation. Failures can leave a
+native barrier or committed outcome copy; preserve state and retry the same root.
+Implementation and installed practical qualification are in progress under
+P01-T09 Step4/P02-T01 Step5/P02-T02 Step4.

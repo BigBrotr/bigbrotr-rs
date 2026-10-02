@@ -12,12 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main at `fc695d2` is five unpublished candidates ahead of pushed `a10455c`.
-Root owns only the closing evidence/reference/task/inventory/checkpoint edits.
-No merge/rebase, independently edited source, active agent or BigBrotr lab/build.
-Native inspection `20e0e5e` and its qualification `a10455c` are already pushed.
-Next commit these reviewed historical-registry results, push normally and verify
-remote equality; the checkpoint cannot contain its own future commit hash.
+Primary main resumes from pushed `bfe6d26`, verified clean and equal to origin.
+Root now owns the explicit installed positive-recovery command, discriminating
+entrypoint/engine fixtures and its existing contract/checkpoint updates. No
+parallel writer or active BigBrotr experiment. Tux 70,024,278,016B free; Mac
+2,608,248KiB free. No build/cache deletion on the Mac.
 
 ## Active responsibility and next bounded action
 
@@ -78,9 +77,12 @@ claim; caller deadline, connection driver and native custody remain required.
 
 Next bounded action: implement the explicit installed positive-recovery consumer
 using configured roots, the new loader and existing close/resolve methods under
-a fresh Control owner. First read its actual CLI/runtime/configuration owners and
-owning recovery contracts, select the command spelling there, and write an
-independent installed fixture. Keep the complete original request set bounded;
+a fresh Control owner. Selected command `ingest recover --file ROOT` in the existing producer contract.
+Owning CLI/runtime/native close/recovery/registry files and callers read; entrypoint
+RED fixture added before implementation. Closing must capture PG reserved-through
+under the same producer lock: native issued-through alone omits pending reservations.
+Next run the entrypoint RED, then wire the joined existing supervision and an
+independent installed engine fixture. Keep the complete original request set bounded;
 missing reservation/input/receipt stays Unresolved. Test unchanged retries,
 current-policy changes, cancellation/driver joining and held native exclusion.
 Do not make a read, lease expiry or old directory writable by ordinary Serve.
