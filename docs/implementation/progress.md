@@ -12,11 +12,20 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Current main candidate ce85c0c223134c83faf68aebb455aa4f014a7509,
-tree8f1db88a865a8b4b036b63e807e8718a9f1d45c6; origin c067f03. Root sole writer.
-Dirty evidence/docs record the completed four-case installed job wave. No active
-build/engine. Resolve Git again after evidence commit/push; never assume this
-pre-commit checkpoint is still HEAD. Mac3,535,508KiB free at last observation.
+Main/origin b8bf90e (resolve full SHA before transfer), root sole writer. The
+ce85c0c product and its installed evidence are committed/pushed privately.
+Root-owned dirty fixture extension adds one foreign-actor installed case using
+two actual CLI logins, actor-filtered complete session/account comparisons and
+Bob's status.read against Alice's existing job. No product/dependency/SQL change.
+Python syntax/artifact checks and repaired original capture oracle pass. Read-only
+review found xmin-dependent array ordering in the account writer oracle; fixed
+by principal-keyed comparison preserving the other account row/xmin. A small
+mutation check discriminates reordered correct updates and unwanted Bob rewrites.
+Two local AST-selection setup errors were corrected; no engine had run. This
+extension has no remaining reported review blocker; its engine is NOT_RUN. No active lab/build.
+Mac last3,535,508KiB free; Tux last57,030,197,248B. Next: review and commit bounded
+fixture, transfer exact Git to a new run, execute --installed-job-actors reusing
+ce85c0c artifacts without rebuilding; preserve original four-case evidence.
 
 Active P03-T01 Steps3/4 and P01-T09 Steps1/2: initial-owner finite acceptance and
 actor-owned status use the existing queue/Control transaction/0022 command. No

@@ -42,7 +42,8 @@ registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races
 scope_command_races = len(sys.argv) == 4 and sys.argv[2] == '--scope-command-races'
 scope_command_faults = scope_command_relations or scope_command_races or (len(sys.argv) == 4 and sys.argv[2] == '--scope-command-faults')
 registration_faults = scope_command_faults or registration_http_faults or registration_relations or registration_races or (len(sys.argv) == 4 and sys.argv[2] == '--registration-faults')
-jobs_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-jobs'
+job_actors = len(sys.argv) == 4 and sys.argv[2] == '--installed-job-actors'
+jobs_http = job_actors or (len(sys.argv) == 4 and sys.argv[2] == '--installed-jobs')
 scope_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-scopes'
 registration_http = len(sys.argv) == 4 and sys.argv[2] == '--installed-registrations'
 enrollment_functions = len(sys.argv) == 4 and sys.argv[2] == '--installed-enrollment-functions'
@@ -157,8 +158,9 @@ if scope_http_faults:
     report['wave'] = 'installed-scope-command-faults'
 
 if jobs_http:
-    report['wave'] = 'installed-finite-acquisition-jobs'
-    report['not_run'] = ['installed job COMMIT/cancellation/authority races', 'foreign actor and session/credential changes',
+    report['wave'] = 'installed-finite-job-actors' if job_actors else 'installed-finite-acquisition-jobs'
+    report['not_run'] = ['installed job COMMIT/cancellation/authority races',
+        'session/credential changes' if job_actors else 'foreign actor and session/credential changes',
         'job delivery/execution/progress/recovery/M1', 'capacity/load/aged-state', 'arm64/release']
 
 if scope_http:
@@ -642,8 +644,8 @@ try:
         cases = ['trace-pass','initialize-signal','initialize-deadline','close-signal']
     elif jobs_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
-        from initial_jobs import CASES
-        cases = list(CASES)
+        from initial_jobs import ACTOR_CASES, CASES
+        cases = list(ACTOR_CASES if job_actors else CASES)
     elif scope_http:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from scopes import CASES

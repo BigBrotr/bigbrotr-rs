@@ -40,12 +40,12 @@ def cli(*args):
     return json.loads(result.stdout)
 
 
-def login(expected_actions=('policy.change',)):
-    credential = directory / 'password.private'
+def login(expected_actions=('policy.change',), *, username='alice', principal='10'*16, stem=''):
+    credential = directory / (stem + 'password.private')
     with os.fdopen(os.open(credential, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as stream:
         stream.write(password)
-    session = directory / 'session.private'
-    logged_in = cli('login', '--origin', origin, '--username', 'alice',
+    session = directory / (stem + 'session.private')
+    logged_in = cli('login', '--origin', origin, '--username', username,
                     '--password-ref', 'file:' + str(credential), '--session-output', str(session))
     saved = json.loads(session.read_text())
     assert saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == origin
@@ -55,7 +55,7 @@ def login(expected_actions=('policy.change',)):
     assert status == 200
     observed = json.loads(body)
     assert observed['format'] == 'bigbrotr-session/1'
-    assert observed['principal_id'] == '10' * 16 and observed['authority'] == 'observation-only'
+    assert observed['principal_id'] == principal and observed['authority'] == 'observation-only'
     assert observed['stored_actions'] == list(expected_actions)
     return logged_in, session, saved, auth, observed
 

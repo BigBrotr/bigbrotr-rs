@@ -32913,7 +32913,14 @@
           "free_bytes": 57030197248
         }
       },
-      "evidence": "docs/implementation/evidence/p03-initial-jobs-http-native-20261002.json"
+      "evidence": "docs/implementation/evidence/p03-initial-jobs-http-native-20261002.json",
+      "actor_extension": {
+        "status": "FIXTURE_READY_ENGINE_NOT_RUN",
+        "local": ".research/implementation/initial-jobs-20261002/actors",
+        "build_origin": "runs/initial-ingest-ce85c0c/out/artifacts",
+        "scope": "Two actual CLI sessions; foreign status404 and actor-namespaced receipt403 with all-table comparisons",
+        "review": "Corrected xmin-dependent account ordering; keyed comparison preserves Bob xmin; local mutation check PASS; no product change"
+      }
     }
   },
   "implementation_relay_registry_20260928": {

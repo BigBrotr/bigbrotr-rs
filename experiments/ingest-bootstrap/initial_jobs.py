@@ -10,6 +10,7 @@ from registrations import upgrade as upgrade_registry
 from scopes import upgrade as upgrade_scopes
 
 CASES = ['jobs-journey', 'jobs-detail-privilege', 'jobs-admission-privilege', 'jobs-digest-privilege']
+ACTOR_CASES = ['jobs-other-actor']
 EFFECTS = {'jobs', 'acquisition_jobs', 'job_admissions', 'management_commands', 'management_audit'}
 
 
@@ -25,7 +26,10 @@ def unchanged(before, after, exceptions=()):
 
 def logged_out(before, after):
     unchanged(before, after, ('browser_sessions', 'management_audit'))
-    old, = before['browser_sessions']; new, = after['browser_sessions']
+    mine = lambda rows: [r for r in rows if r['principal_id']=='\\x'+'10'*16]
+    other = lambda rows: [r for r in rows if r['principal_id']!='\\x'+'10'*16]
+    assert other(before['browser_sessions']) == other(after['browser_sessions'])
+    old, = mine(before['browser_sessions']); new, = mine(after['browser_sessions'])
     assert old['revoked_at_us'] is None and new['revoked_at_us'] >= old['issued_at_us']
     strip = lambda r: {k:v for k,v in r.items() if k not in ('xmin', 'revoked_at_us')}
     assert strip(old) == strip(new)
@@ -77,8 +81,10 @@ def acceptance(before, after, observations):
     audit,=[v for v in after['management_audit'] if v not in before['management_audit']]
     assert all(v in after['management_commands'] for v in before['management_commands'])
     assert all(v in after['management_audit'] for v in before['management_audit'])
-    dataset=before['datasets'][0]['dataset_id']; actor=before['local_accounts'][0]
-    scope,=before['acquisition_scopes']; session,=before['browser_sessions']
+    dataset=before['datasets'][0]['dataset_id']
+    actor,=[r for r in before['local_accounts'] if r['principal_id']=='\\x'+'10'*16]
+    scope,=before['acquisition_scopes']
+    session,=[r for r in before['browser_sessions'] if r['principal_id']==actor['principal_id']]
     key='\\x'+'b1'*16; ident='\\x'+receipt['job_id']; accepted=int(receipt['accepted_at_us'])
     preimage=(b'bigbrotr/acquisition-job/1\0'+bytes.fromhex(dataset[2:])+
         bytes.fromhex(actor['principal_id'][2:])+bytes.fromhex('b1'*16)+bytes.fromhex(scope['scope_id'][2:])+
@@ -107,7 +113,7 @@ def acceptance(before, after, observations):
 
 
 def run(pg,client,output,database,name,rows):
-    assert name in CASES
+    assert name in CASES + ACTOR_CASES
     upgrade_registry(pg,client,output,database,name,rows)
     upgrade_scopes(pg,client,output,database,name,rows)
     # Explicit consumer grants on this clone. These are not applied migrations.
@@ -119,6 +125,26 @@ def run(pg,client,output,database,name,rows):
             SELECT dataset_id,principal_id,a,'dataset',dataset_id
             FROM control.local_accounts CROSS JOIN (VALUES ('roles.control'),('status.read')) v(a);
     """)
+    if name == 'jobs-other-actor':
+        # Explicit clone fixture identity, not an account-enrollment claim. All
+        # ordinary credential/account/session constraints remain enabled.
+        lab.sql(pg,database,"""
+            BEGIN;
+            INSERT INTO control.principals
+                SELECT decode(repeat('20',16),'hex'),dataset_id,'local',created_at_us,database_role,local_os_uid
+                FROM control.principals WHERE principal_id=decode(repeat('10',16),'hex');
+            INSERT INTO control.local_accounts
+                SELECT decode(repeat('20',16),'hex'),dataset_id,'bob',false,true,1,1,1
+                FROM control.local_accounts WHERE principal_id=decode(repeat('10',16),'hex');
+            INSERT INTO control.local_credentials
+                SELECT decode(repeat('20',16),'hex'),dataset_id,credential_revision,format,
+                    argon_version,memory_kib,passes,lanes,salt,password_hash
+                FROM control.local_credentials WHERE principal_id=decode(repeat('10',16),'hex');
+            INSERT INTO control.principal_grants
+                SELECT dataset_id,principal_id,'status.read','dataset',dataset_id
+                FROM control.local_accounts WHERE username='bob';
+            COMMIT;
+        """)
     policy_setup(pg,database,name,rows,output,administration=True)
     faults={
         'jobs-detail-privilege':'REVOKE INSERT ON control.acquisition_jobs FROM bigbrotr_control',
@@ -183,10 +209,17 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
                     UPDATE control.local_accounts SET grant_revision=grant_revision+1 WHERE principal_id=decode('{'10'*16}','hex');
                     COMMIT;""")
                 written=rows(database);unchanged(current,written,('local_accounts','principal_grants'))
-                expected=[r for r in current['principal_grants'] if r['action']!=action]
+                expected=[r for r in current['principal_grants']
+                    if r['action']!=action or r['principal_id']!='\\x'+'10'*16]
                 assert written['principal_grants']==expected
-                account=dict(current['local_accounts'][0],grant_revision=current['local_accounts'][0]['grant_revision']+1)
-                assert {k:v for k,v in written['local_accounts'][0].items() if k!='xmin'}=={k:v for k,v in account.items() if k!='xmin'}
+                expected_accounts=[dict(r,grant_revision=r['grant_revision']+1)
+                    if r['principal_id']=='\\x'+'10'*16 else r for r in current['local_accounts']]
+                # Capture ordering includes xmin, so Alice's real UPDATE can
+                # reorder these rows. Compare by immutable principal identity;
+                # Bob's row, including xmin, must remain byte-for-byte exact.
+                clean=lambda rows:{r['principal_id']:({k:v for k,v in r.items() if k!='xmin'}
+                    if r['principal_id']=='\\x'+'10'*16 else r) for r in rows}
+                assert clean(written['local_accounts'])==clean(expected_accounts)
                 lab.write_json(output/(name+'-'+stage+'-writer.json'),written);current=written
             previous=current
             (directory/(stage+'.continue')).write_text('observed\n')
@@ -202,9 +235,12 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         released(before_stop,after)
         native_oracle(pg,client,output,database,name,after,initialized)
         for table in EFFECTS-{'management_audit'}: assert after[table]==accepted[table],table
-        assert len(after['browser_sessions'])==1 and after['browser_sessions'][0]['revoked_at_us'] is not None
+        mine,=[r for r in after['browser_sessions'] if r['principal_id']=='\\x'+'10'*16]
+        assert mine['revoked_at_us'] is not None
+        assert len(after['browser_sessions'])==(2 if name=='jobs-other-actor' else 1)
         actions=['browser.session.issue','browser.session.revoke','relay.endpoint.register',
             'relay.enrollment.change','acquisition.scope.register','job.acquisition.accept']
+        if name=='jobs-other-actor': actions.append('browser.session.issue')
         assert sorted(r['action'] for r in after['management_audit'] if r not in before['management_audit'])==sorted(actions)
     else:
         from commits import native_oracle as retained_oracle
