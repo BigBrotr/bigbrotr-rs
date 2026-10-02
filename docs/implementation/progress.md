@@ -134,7 +134,12 @@ seed1 no longer vetoes accepted32; both complete accepted documents still requir
 at least2 before Control registration/native effects. Minimum accepted ceiling,
 Sync/Archive bounds, expiry/custody/COMMIT remain unchanged. ingest-store.md now
 explicitly reconciles the earlier local-profile floor with managed authority;
-no persistent format/migration change. Native validation is NOT_RUN.
+no persistent format/migration change. Candidatebc0e22f native compilation FAIL: renewal in commands.rs still called
+the renamed selected helper (E0425). Original build/capture retained,19 files
+hash-verified against exact source; owner87ac934783309e76993b6990dd8fa918 and
+fetch/native containers stopped, no OOM/unrelated changes. Full commands.rs is
+now inspected and its accepted renewal uses the same accepted_profile validator.
+Corrected native validation is NOT_RUN.
 Next bounded action: commit this candidate, compile on Tux using exclusive owned
 1154757 cache, then execute --installed-ingest-windows on exact new artifacts.
 Expected: accepted configuration1 and policy1 refuse with69 tables unchanged;

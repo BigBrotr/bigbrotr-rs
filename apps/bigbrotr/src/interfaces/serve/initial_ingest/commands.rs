@@ -59,7 +59,7 @@ impl CommandOwner<'_> {
                 .owner
                 .refresh(|doc, digest| {
                     let restored = super::super::accepted_policy(self.root, doc, digest)?;
-                    selected(&restored).map_err(|_| OwnerError::InvalidPolicy)?;
+                    accepted_profile(&restored)?;
                     if let Some(sync) = self.sync.as_deref_mut() {
                         sync.accept(&restored)?;
                     }

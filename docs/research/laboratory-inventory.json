@@ -34713,7 +34713,35 @@
             "free_bytes_after": 71842906112
           }
         },
-        "preserve": "Original sources, captures, templates and three database clones per run retained; no container/cache/dataset deletion. Compiler1154757 and qualified3a7f884 artifacts remain separate inputs."
+        "preserve": "Original sources, captures, templates and three database clones per run retained; no container/cache/dataset deletion. Compiler1154757 and qualified3a7f884 artifacts remain separate inputs.",
+        "original_build_failure": {
+          "source": "bc0e22f4a0003b910d73d452b2dccfb11fee10a2",
+          "tree": "5dbf9aaa6fc1d07685136a4dec8a15ec2a393ffe",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-worker-budgets-bc0e22f",
+          "owner": "87ac934783309e76993b6990dd8fa918",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "e5777ad3d812505bbd271bcdf76b8caacf4a8ea702939cc7c5f70d74372b9557"
+            },
+            {
+              "name": "native",
+              "id": "098ea964b480bd1294e4cefcb2ce0d2ecea35628bdf886ebb9ab85ed58fe92a0"
+            }
+          ],
+          "status": "FAIL_COMPILE",
+          "reason": "E0425: missed renewal caller of renamed selected helper in initial_ingest/commands.rs. Worker compiled; application did not. No engine run.",
+          "capture": {
+            "label": "window-build",
+            "source": "bc0e22f4a0003b910d73d452b2dccfb11fee10a2",
+            "files": 1697,
+            "captures": 13,
+            "capture_sha256": "ddb707b10bc9ac48e2ddf458da98bb7fb2afdefdd6bcd826c0d22773247261df"
+          },
+          "cleanup": "stopped-retained",
+          "unrelated_changed": [],
+          "free_bytes_after": 71566651392
+        }
       }
     },
     "configured_transport": {
