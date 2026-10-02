@@ -8,11 +8,13 @@ import subprocess
 import sys
 import time
 
-assert len(sys.argv) in (3, 4) and (len(sys.argv)==3 or sys.argv[3] in ('control', 'sync', 'archive'))
+assert len(sys.argv) in (3, 4) and (len(sys.argv)==3 or sys.argv[3] in ('control', 'sync', 'archive', 'recovery'))
 config, prefix = map(Path, sys.argv[1:3])
 mode = sys.argv[3] if len(sys.argv)==4 else 'initial'
 roles = ['--roles','control'] if mode=='control' else [
     '--initialize-ingest','--roles','control,ingest,sync,archive' if mode=='archive' else 'control,ingest,sync' if mode=='sync' else 'control,ingest']
+command = (['ingest','recover','--file',str(config)] if mode=='recovery'
+           else ['serve','--file',str(config),*roles])
 assert config.is_absolute() and prefix.is_absolute()
 
 
@@ -27,7 +29,7 @@ def publish(suffix, value):
 
 started = time.monotonic()
 with Path(str(prefix)+'.stdout').open('xb') as out, Path(str(prefix)+'.stderr').open('xb') as err:
-    child = subprocess.Popen(['/build/bigbrotr','serve','--file',str(config),*roles],
+    child = subprocess.Popen(['/build/bigbrotr',*command],
                              stdout=out, stderr=err, env={})
     identity = dict(pid=child.pid, start_ticks=Path(f'/proc/{child.pid}/stat').read_text().split()[21],
                     config=str(config), prefix=str(prefix))

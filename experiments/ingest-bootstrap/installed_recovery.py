@@ -8,7 +8,7 @@ from installed import run as initialize, set_value
 
 
 def run(pg, client, output, database, name, rows, clone):
-    assert name == 'positive-recovery'
+    assert name in ('positive-recovery','positive-recovery-interruptions')
     initialize(pg, client, output, database, 'window-local', rows)
     original = rows(database)
     cases = []
@@ -51,7 +51,7 @@ def run(pg, client, output, database, name, rows, clone):
         assert valid.returncode == 0, valid.stderr
         return db, config
 
-    def invoke(db, config, label, seed, error=None, closure=True, copied=False, held=False):
+    def invoke(db, config, label, seed, error=None, closure=True, copied=False, held=False, blocked_output=False):
         before = rows(db)
         native = dump(label+'-before', seed)
         inputs = {p.name:p.read_bytes() for p in (output/seed/'store/producer-inputs-v1').iterdir()}
@@ -74,6 +74,29 @@ finally:
             result = lab.docker('exec',client,'python3','-c',script,check=False,timeout=20)
             assert result.returncode == 0 and not result.stderr, result.stderr
             captured = json.loads(result.stdout)
+        elif blocked_output:
+            script = '''import fcntl,json,os,subprocess,time
+read,write=os.pipe()
+fcntl.fcntl(write,fcntl.F_SETFL,os.O_NONBLOCK)
+filled=0
+try:
+ while True: filled+=os.write(write,b'x'*4096)
+except BlockingIOError: pass
+fcntl.fcntl(write,fcntl.F_SETFL,0)
+started=time.monotonic()
+result=subprocess.run(['/build/bigbrotr','ingest','recover','--file',%r],stdout=write,stderr=subprocess.PIPE,timeout=8)
+elapsed=time.monotonic()-started
+os.close(write)
+data=b''
+while chunk:=os.read(read,65536): data+=chunk
+os.close(read)
+assert data==b'x'*filled and filled>0
+print(json.dumps(dict(returncode=result.returncode,stdout='',stderr=result.stderr.decode(),
+ filled_bytes=filled,elapsed_seconds=elapsed)))
+''' % config
+            result = lab.docker('exec',client,'python3','-c',script,check=False,timeout=12)
+            assert result.returncode==0 and not result.stderr, result.stderr
+            captured = json.loads(result.stdout)
         else:
             result = lab.cli(dict(pg,client=client),'ingest','recover','--file',config)
             captured = dict(returncode=result.returncode,stdout=result.stdout,stderr=result.stderr)
@@ -92,6 +115,9 @@ finally:
         assert final == wanted, (label, 'native effects')
         if error:
             assert captured['returncode'] in (3,4) and not captured['stdout'] and error in captured['stderr'], captured
+        elif blocked_output:
+            assert captured['returncode']==1 and not captured['stdout'] and not captured['stderr'], captured
+            assert captured['elapsed_seconds']<8
         else:
             assert captured['returncode'] == 0 and not captured['stderr'], captured
             actual, = [json.loads(line) for line in captured['stdout'].splitlines()]
@@ -131,45 +157,51 @@ finally:
         assert lab.sql(pg,db,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
         cases.append(dict(name=label,status='PASS',expected=error or 'positive-outcomes-resolved',control_tables=len(after),native_rows=len(final['rows'])))
 
-    db, config = prepare('recovery_pass')
-    invoke(db,config,'recovery-pass','recovery_pass')
-    invoke(db,config,'recovery-retry','recovery_pass')
-    db, config = prepare('recovery_copy')
-    lab.sql(pg,db,'BEGIN; SET LOCAL session_replication_role=replica; DELETE FROM control.producer_outcomes WHERE request_sequence=2; COMMIT;')
-    invoke(db,config,'recovery-copy','recovery_copy',copied=True)
-    db, config = prepare('recovery_pending')
-    lab.sql(pg,db,"""BEGIN; SET LOCAL session_replication_role=replica;
-        UPDATE control.producer_epochs SET reserved_through_request=3;
-        INSERT INTO control.producer_requests SELECT (jsonb_populate_record(NULL::control.producer_requests,
-            to_jsonb(r)||jsonb_build_object('request_sequence',3))).* FROM control.producer_requests r WHERE request_sequence=2;
-        COMMIT;""")
-    invoke(db,config,'recovery-pending','recovery_pending',error='Unresolved')
-    db, config = prepare('recovery_hole')
-    lab.sql(pg,db,'BEGIN; SET LOCAL session_replication_role=replica; DELETE FROM control.producer_requests WHERE request_sequence=1; COMMIT;')
-    invoke(db,config,'recovery-hole','recovery_hole',error='Unresolved')
-    db, config = prepare('recovery_input')
-    original_file = sorted((output/'recovery_input/store/producer-inputs-v1').iterdir())[1]
-    original_file.rename(output/'recovery-missing-input-original.cbor')
-    invoke(db,config,'recovery-input','recovery_input',error='Input(')
-    db, config = prepare('recovery_held')
-    invoke(db,config,'recovery-held','recovery_held',error='exclusive open failed',closure=False,held=True)
-    db, config = prepare('recovery_policy')
-    lab.sql(pg,db,"BEGIN; SET LOCAL session_replication_role=replica; UPDATE control.policy_revisions SET document_digest=decode(repeat('ae',32),'hex'); COMMIT;")
-    invoke(db,config,'recovery-policy','recovery_policy',error='InvalidPolicy',closure=False)
-    db, config = prepare('recovery_heads')
-    statements = []
-    for table in ['config_revisions','policy_revisions']:
-        document = json.loads(json.dumps(original[table][0]['document']))
-        document['settings']['ingest.producer_outstanding_requests'] = 1
-        encoded = json.dumps(document,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
-        patch = dict(revision=2,previous_revision=1,document=document,
-            document_digest='\\x'+hashlib.sha256(b'bigbrotr/product-policy/2\0'+encoded).hexdigest())
-        if table=='policy_revisions': patch['config_revision']=2
-        encoded_patch = json.dumps(patch,separators=(',',':')).encode().hex()
-        statements.append(f"INSERT INTO control.{table} SELECT (jsonb_populate_record(NULL::control.{table},to_jsonb(t)||convert_from(decode('{encoded_patch}','hex'),'UTF8')::jsonb)).* FROM control.{table} t WHERE revision=1")
-    statements.append('UPDATE control.datasets SET config_revision=2,policy_revision=2')
-    lab.sql(pg,db,'BEGIN; SET LOCAL session_replication_role=replica; '+';'.join(statements)+'; COMMIT;')
-    invoke(db,config,'recovery-heads','recovery_heads')
+    if name == 'positive-recovery':
+        db, config = prepare('recovery_pass')
+        invoke(db,config,'recovery-pass','recovery_pass')
+        invoke(db,config,'recovery-retry','recovery_pass')
+        db, config = prepare('recovery_copy')
+        lab.sql(pg,db,'BEGIN; SET LOCAL session_replication_role=replica; DELETE FROM control.producer_outcomes WHERE request_sequence=2; COMMIT;')
+        invoke(db,config,'recovery-copy','recovery_copy',copied=True)
+        db, config = prepare('recovery_pending')
+        lab.sql(pg,db,"""BEGIN; SET LOCAL session_replication_role=replica;
+            UPDATE control.producer_epochs SET reserved_through_request=3;
+            INSERT INTO control.producer_requests SELECT (jsonb_populate_record(NULL::control.producer_requests,
+                to_jsonb(r)||jsonb_build_object('request_sequence',3))).* FROM control.producer_requests r WHERE request_sequence=2;
+            COMMIT;""")
+        invoke(db,config,'recovery-pending','recovery_pending',error='Unresolved')
+        db, config = prepare('recovery_hole')
+        lab.sql(pg,db,'BEGIN; SET LOCAL session_replication_role=replica; DELETE FROM control.producer_requests WHERE request_sequence=1; COMMIT;')
+        invoke(db,config,'recovery-hole','recovery_hole',error='Unresolved')
+        db, config = prepare('recovery_input')
+        original_file = sorted((output/'recovery_input/store/producer-inputs-v1').iterdir())[1]
+        original_file.rename(output/'recovery-missing-input-original.cbor')
+        invoke(db,config,'recovery-input','recovery_input',error='Input(')
+        db, config = prepare('recovery_held')
+        invoke(db,config,'recovery-held','recovery_held',error='exclusive open failed',closure=False,held=True)
+        db, config = prepare('recovery_policy')
+        lab.sql(pg,db,"BEGIN; SET LOCAL session_replication_role=replica; UPDATE control.policy_revisions SET document_digest=decode(repeat('ae',32),'hex'); COMMIT;")
+        invoke(db,config,'recovery-policy','recovery_policy',error='InvalidPolicy',closure=False)
+        db, config = prepare('recovery_heads')
+        statements = []
+        for table in ['config_revisions','policy_revisions']:
+            document = json.loads(json.dumps(original[table][0]['document']))
+            document['settings']['ingest.producer_outstanding_requests'] = 1
+            encoded = json.dumps(document,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
+            patch = dict(revision=2,previous_revision=1,document=document,
+                document_digest='\\x'+hashlib.sha256(b'bigbrotr/product-policy/2\0'+encoded).hexdigest())
+            if table=='policy_revisions': patch['config_revision']=2
+            encoded_patch = json.dumps(patch,separators=(',',':')).encode().hex()
+            statements.append(f"INSERT INTO control.{table} SELECT (jsonb_populate_record(NULL::control.{table},to_jsonb(t)||convert_from(decode('{encoded_patch}','hex'),'UTF8')::jsonb)).* FROM control.{table} t WHERE revision=1")
+        statements.append('UPDATE control.datasets SET config_revision=2,policy_revision=2')
+        lab.sql(pg,db,'BEGIN; SET LOCAL session_replication_role=replica; '+';'.join(statements)+'; COMMIT;')
+        invoke(db,config,'recovery-heads','recovery_heads')
+    else:
+        db, config = prepare('recovery_stdout')
+        invoke(db,config,'recovery-stdout','recovery_stdout',blocked_output=True)
+        from recovery_interruptions import run as interruptions
+        cases.extend(interruptions(pg,client,output,rows,prepare,dump))
     assert rows(database) == original and dump('recovery-base-after','window-local') == base_native
     assert original_inputs == {p.name:p.read_bytes() for p in (output/'window-local/store/producer-inputs-v1').iterdir()}
     return dict(name=name,status='PASS',cases=cases,scope='installed positive recovery; source closure and successor remain separate')

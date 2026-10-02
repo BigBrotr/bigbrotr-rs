@@ -95,7 +95,13 @@ Control release committed, but the worker dropped its sole progress sender befor
 join collection; that requested cleanup cancellation and the new consumer treated
 it as an operator interruption. Native/SQL original captures preserved; no other
 case executed. Keep a sender in the parent through collection (no change to shared
-supervision semantics), then run a new exact-Git build and new isolated wave. Keep the complete original request set bounded;
+supervision semantics).5512161 build/4 entrypoint tests/Clippy and9 installed
+PG/Rocks cases PASS;92 captures and1702 exact source files verified. Same tuple,
+identical copies, missing copy restored, pending reservation/hole/input absence,
+held native owner, bad policy and valid new heads with reduced window1 all exercised.
+No unchanged broad suite repeated. Current added fixture-only wave checks signal,
+deadline and a filled stdout pipe against the same5512161 artifacts; these3 cases
+remain NOT_RUN. Next commit fixtures, exact-Git transfer, run only those cases. Keep the complete original request set bounded;
 missing reservation/input/receipt stays Unresolved. Test unchanged retries,
 current-policy changes, cancellation/driver joining and held native exclusion.
 Do not make a read, lease expiry or old directory writable by ordinary Serve.
