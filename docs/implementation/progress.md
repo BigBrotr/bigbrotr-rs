@@ -12,25 +12,32 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main818ebae7d41aaa0c2d8dced90136abb648deed34; origin/main e6f8caf. Root sole writer.
-Intentional refusing preparation candidate818 native RED:8 old append tests PASS,
-4 new tests FAIL at the expected missing API. Original executable/source/logs retained.
-runs/dictionary-append-818ebae STOPPED/RETAINED:PID1651291/start429117721,
-owner51dfaea502dbdc20726ebe03a50bc7b6; audit02:43:53UTC,1054 prior unchanged,
-eight unrelated running, compiler lock free,55,385,452,544B free.
-Local .research/implementation/dictionary-preparation-20261002/red;1667 Git files
-verified. No build/engine active at that audit; do not rerun its launcher.
+Main18ed28a767ad9b625a369f736c22b9fbd9ad52bf; origin/main e6f8caf. Root sole writer.
+18ed28a preparation native GREEN:13 append/preparation,5 bootstrap,11 recovery
+PASS; actual CLI/probe build and Clippy PASS. Intentional818 RED remains retained.
+runs/dictionary-append-18ed28a STOPPED/RETAINED:PID1656405/start429175471,
+owner1ad289bb5258f14bb92779f34670e517; audit02:56:45UTC,1056 prior unchanged,
+eight unrelated running, compiler lock free,55,229,480,960B free.1667 Git files
+verified; artifacts separate from shared cache. Mac3,411,732KiB free; no localbuild.
+Local .research/implementation/dictionary-preparation-20261002/{red,native}.
+Inventory dictionary_preparation and dictionary append evidence own exact hashes.
 
-Dirty implementation: concrete read-only DictionaryPreparation borrows native
-store, bounds complete owned capacities/candidate reads, requires explicit target
-visibility and retains its grant with fixed EvidenceIntent. No new schema/crate/
-trait/ledger; existing stage remains authoritative for request/window/actual time.
-Independent AI design/code review found no bounded implementation blocker and
-requested mixed existing/new same-kind and missing transitive-method cases; added.
-Root fixed duplicate capacity accounting before qualification: repeated values
-use transient scratch, not another retained charge. Five native preparation cases
-(in the append owner) await GREEN; no preparation PASS or installed claim.
-Active P02-T03 Step1 prerequisite for installed P03-T01 Steps3/4 and M1.
+Concrete read-only DictionaryPreparation borrows native store, bounds complete
+owned capacities/candidate reads, requires explicit target visibility and retains
+its grant with fixed EvidenceIntent. No new schema/crate/trait/ledger. Existing
+stage remains authoritative for request/window/actual recorded time. Read-only AI
+review requested mixed existing/new same-kind and missing transitive-method cases;
+both pass natively. Repeated descriptors use transient scratch, not duplicate
+retained capacity. This closes the bounded native preparation, not P02-T03/M1.
+
+Dirty connected fixture: existing socket oracle now includes a third explicit
+private3 case: visibility append2 → readonly intern four descriptors/dedupe →
+append3 → AlreadyDurable4 → same-owner native reopen/replay → signed/forged/
+duplicate socket event5. Independent complete expectations:50 native rows,
+five original requests/receipts, all67 SQL tables/xmin exact allowed deltas.
+Fixture build/engine NOT_RUN; preserve historical two cases. Next build exactGit
+and execute on isolated PG/Rocks, then wire the installed finite consumer.
+Active P02-T03 Step1 prerequisite for P03-T01 Steps3/4 and M1/P01-T09 Steps1/2.
 Nine actual dictionary COMMIT cases PASS at fixture89359ab using exact424a4f2
 CLI/probe (build/Clippy PASS). Covers both reservation/outcome COMMIT sides,
 cancellation with positively held actual backend custody, and AlreadyDurable loss.
@@ -363,7 +370,7 @@ and every original transport/source/fault clone. Secrets stay
 under protected pg/secrets and never enter Git. Clone and verify before experiments.
 
 Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latest424a4f2 intermediates;
+acceleration, exclusively locked by .compiler-cache.lock. Latest18ed28a intermediates;
 qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
 clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
 owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.

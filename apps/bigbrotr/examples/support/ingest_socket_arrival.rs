@@ -149,9 +149,13 @@ pub async fn run(
 ) {
     assert!(matches!(
         mode,
-        "source-socket-pass" | "source-socket-dictionary-append"
+        "source-socket-pass"
+            | "source-socket-dictionary-append"
+            | "source-socket-dictionary-intern"
     ));
-    let event_sequence = if mode == "source-socket-dictionary-append" {
+    let event_sequence = if mode == "source-socket-dictionary-intern" {
+        5
+    } else if mode == "source-socket-dictionary-append" {
         4
     } else {
         2

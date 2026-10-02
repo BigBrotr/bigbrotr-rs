@@ -317,5 +317,108 @@
         "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
       }
     }
+  },
+  "preparation": {
+    "status": "PASS_NATIVE_COMPONENTS",
+    "tasks": [
+      "P02-T03 Step1",
+      "P02-T02"
+    ],
+    "native": {
+      "launch": {
+        "source": "18ed28a767ad9b625a369f736c22b9fbd9ad52bf",
+        "tree": "f70e040c042f895634c771cb043c02643284f4cb",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/dictionary-append-18ed28a",
+        "pid": 1656405,
+        "start_ticks": "429175471",
+        "bundle_sha256": "23976e6657fe180689e23fcf8424d16ee5a34fbefa4b82d24f18241b83abeef2"
+      },
+      "owner": "1ad289bb5258f14bb92779f34670e517",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "9b4be49c61b6e0c99ba6467395c74ddeeb51b579fd166f1729d6788b4b60d006"
+        },
+        {
+          "name": "native",
+          "id": "bcab20e483beea37b391389912fdfdc7ce8798735a27daa8d15f0cd16bb24477"
+        }
+      ],
+      "status": "PASS_COMPONENTS_STOPPED_RETAINED",
+      "artifacts": {
+        "source": "18ed28a767ad9b625a369f736c22b9fbd9ad52bf",
+        "tree": "f70e040c042f895634c771cb043c02643284f4cb",
+        "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+        "binary_sha256": "3047c251ffdbecef7263f30861a255db143a8526a34c465e5793fff5568955cc",
+        "probe_sha256": "35db38494444fc060eab1803d960e9a4a8cddd8050215ea06220e1a7e10f60bd",
+        "test_executables_sha256": {
+          "dictionary_components": "ad349a406eeba0e4fea1d03b9b8a244e96e869bc01f82bbb7c6a41e450d92b5a"
+        }
+      },
+      "native_tests": {
+        "dictionary-append": 13,
+        "bootstrap": 5,
+        "recovery": 11
+      },
+      "source_files_verified": 1667,
+      "audit": {
+        "status": "PASS_BUILD_TERMINAL_AUDIT_ONLY",
+        "observed_at": "2026-10-02T02:56:45.390379+00:00",
+        "owned_stopped": [
+          "9b4be49c61b6e0c99ba6467395c74ddeeb51b579fd166f1729d6788b4b60d006",
+          "bcab20e483beea37b391389912fdfdc7ce8798735a27daa8d15f0cd16bb24477"
+        ],
+        "prior_unchanged": 1056,
+        "unrelated_running": 8,
+        "compiler_lock_released": true,
+        "artifact_hashes_verified": true,
+        "free_bytes": 55229480960
+      }
+    },
+    "claims": [
+      "Read-only preparation requires an explicit committed visibility with its exact fact envelope.",
+      "Complete canonical descriptor equality, primary mapping identity/indices/counter and bounded transitive closure precede reuse; digest hits are candidates only.",
+      "Unique descriptors allocate provisional current-domain ordinals, including mixed existing/new same-kind values; duplicate observer/clock returns one entry.",
+      "Actual owned string capacities, count/read budgets and cancellation are bounded; failed preparation neither writes native rows nor stages input.",
+      "Matching private facts do not become public; missing mapping/dependency is inconsistency, candidate exhaustion is Limit.",
+      "Native reopen and actual append validate the fixed prepared intent; the prepared object retains its memory grant."
+    ],
+    "original_red": {
+      "launch": {
+        "source": "818ebae7d41aaa0c2d8dced90136abb648deed34",
+        "tree": "33d8a5ccf525f29f602b219ae94c8cd4027c76f9",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/dictionary-append-818ebae",
+        "pid": 1651291,
+        "start_ticks": "429117721",
+        "bundle_sha256": "a135fb95d98e2704b0c24b23271e8b5a258dd858ff118b560865f33eea793173"
+      },
+      "owner": "51dfaea502dbdc20726ebe03a50bc7b6",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "c5b8b3cb55132b9ff492dba4df45515b8a862302c0cf32934b998cfc5fe08da0"
+        },
+        {
+          "name": "native",
+          "id": "dfddbcaf32900b8f75aa22fae1c0fea94877d77caba0ed7de35d03b6d224bd6b"
+        }
+      ],
+      "result": "Compiled native test executable:8 prior append tests PASS;4 new preparation tests fail at the intentional refusing API. Remaining checks NOT_RUN.",
+      "source_files_verified": 1667,
+      "audit": {
+        "status": "TERMINAL_PREPARATION_RED_RETAINED",
+        "observed_at": "2026-10-02T02:43:53.960591+00:00",
+        "prior_unchanged": 1054,
+        "unrelated_running": 8,
+        "compiler_lock_released": true,
+        "test_executable_sha256": "1eabe492b591e4e0c0b6b6c28cd31e473c51517346191a94dcf4e861c8735c99",
+        "free_bytes": 55385452544
+      }
+    },
+    "connected": "NOT_RUN; fixture being extended",
+    "not_qualified": [
+      "Installed acquisition, restart/successor and M1",
+      "Production capacity/aged-state or native arm64/release"
+    ]
   }
 }

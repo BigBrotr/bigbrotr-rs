@@ -230,7 +230,9 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     let observation_mode = mode.starts_with("source-observation-");
     let socket_mode = mode.starts_with("source-socket-");
     let dictionary_fault = mode.starts_with("dictionary-fault-");
-    let dictionary_append = mode == "source-socket-dictionary-append" || dictionary_fault;
+    let dictionary_intern = mode == "source-socket-dictionary-intern";
+    let dictionary_append =
+        dictionary_intern || mode == "source-socket-dictionary-append" || dictionary_fault;
     let witness = socket_mode || dictionary_fault || (observation_mode && mode.ends_with("-on"));
     let source_fault = mode.starts_with("source-fault-");
     let direct_config = config.clone();
@@ -362,7 +364,9 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             )]
         },
         producer_slot_id: [66; 16].try_into().unwrap(),
-        outstanding_request_limit: if dictionary_append {
+        outstanding_request_limit: if dictionary_intern {
+            5
+        } else if dictionary_append {
             4
         } else if matches!(mode, "event-outcomes" | "event-recovery-already")
             || mode.starts_with("event-bindings")
@@ -585,7 +589,14 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         );
         let intent = if dictionary_append {
             let (reopened, appended) = ingest_dictionary_append::run(
-                &mut owner, &observer, store, &spec, path, &budget, &intent,
+                &mut owner,
+                &observer,
+                store,
+                &spec,
+                path,
+                &budget,
+                &intent,
+                dictionary_intern,
             )
             .await;
             store = reopened;

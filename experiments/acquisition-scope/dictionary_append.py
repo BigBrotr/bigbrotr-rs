@@ -7,7 +7,7 @@ import hashlib
 from bootstrap_oracle import expected as bootstrap
 
 
-def expected(dataset, cbor):
+def expected(dataset, cbor, *, interned=False):
     be = lambda n, width=8: n.to_bytes(width, 'big')
     sha = lambda value: hashlib.sha256(value).digest()
     domains = {1: 70, 2: 65, 3: 71, 4: 64, 5: 72, 8: 68}
@@ -45,15 +45,21 @@ def expected(dataset, cbor):
         rows['default', b'\x01\x05' + dataset + be(kind, 2) + sha(canonical) + ref_key(kind, ordinal)] = b'\x01\x05' + canonical
         rows['default', b'\x01\x03' + dataset + be(kind, 2) + bytes([domains[kind]]) * 16] = b'\x01\x03' + be(ordinal)
     rows['default', b'\x01\x02' + dataset + be(0, 4) + be(1)] = b'\x01\x02' + be(7)
-    rows['facts', b'\x01\x21' + src_key(3)] = b'\x01\x21' + be(7) + sha(b'bigbrotr/admission-batch/1\0' + cbor([dataset, 0, 1, 3, 7, refs]))
     inputs, receipts = [first_input], [first_receipt]
-    for sequence in (2, 3):
-        request = b'bigbrotr/producer-request/1\0' + cbor([[slot, 1, sequence], 'admit-evidence', 1, [1, scope, entries]])
-        receipt = b'bigbrotr/receipt/1\0' + cbor([1 if sequence == 2 else 2, [slot, 1, sequence], sha(request),
-            [dataset, 0, 1, bytes([67]) * 16, 1], refs if sequence == 2 else None, refs])
+    plans = ([(2, entries[:1], refs[:1]), (3, entries[1:], refs[1:]), (4, entries[1:], None)]
+             if interned else [(2, entries, refs), (3, entries, None)])
+    for sequence, selected, created in plans:
+        dependencies = refs[:1] if interned and sequence == 2 else refs
+        request = b'bigbrotr/producer-request/1\0' + cbor([[slot, 1, sequence], 'admit-evidence', 1, [1, scope, selected]])
+        receipt = b'bigbrotr/receipt/1\0' + cbor([1 if created else 2, [slot, 1, sequence], sha(request),
+            [dataset, 0, 1, bytes([67]) * 16, 1], created, dependencies])
+        if created:
+            first, last = created[0][0][3], created[-1][0][3]
+            rows['facts', b'\x01\x21' + src_key(first)] = b'\x01\x21' + be(last) + sha(
+                b'bigbrotr/admission-batch/1\0' + cbor([dataset, 0, 1, first, last, created]))
         rows['receipts', b'\x01\x30' + slot + be(1) + be(sequence)] = receipt
         inputs.append(request)
         receipts.append(receipt)
-    rows['receipts', b'\x01\x31' + slot + be(1)] = b'\x01\x31' + be(3) + be(0) + be(0)
-    assert len(rows) == 34
+    rows['receipts', b'\x01\x31' + slot + be(1)] = b'\x01\x31' + be(4 if interned else 3) + be(0) + be(0)
+    assert len(rows) == (36 if interned else 34)
     return sorted((cf, k, v) for (cf, k), v in rows.items()), inputs, receipts

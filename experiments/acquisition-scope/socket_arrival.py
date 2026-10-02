@@ -13,14 +13,15 @@ from observations import expected as bootstrap
 ENDPOINT = 'ws://127.0.0.1:7447/private'
 
 
-def expected(dataset, event, received, clock_resolution, clock_flags, recorded, cbor, *, appended=False):
+def expected(dataset, event, received, clock_resolution, clock_flags, recorded, cbor, *, appended=False, interned=False):
+    assert not interned or appended
     if appended:
         from dictionary_append import expected as append
-        rows, inputs, receipts = append(dataset, cbor)
+        rows, inputs, receipts = append(dataset, cbor, interned=interned)
     else:
         rows, first_input, first_receipt = bootstrap(dataset, True, True, cbor, ENDPOINT)
         inputs, receipts = [first_input], [first_receipt]
-    first, request_sequence = (8, 4) if appended else (7, 2)
+    first, request_sequence = (8, 5 if interned else 4) if appended else (7, 2)
     rows = {(cf, k): v for cf, k, v in rows}
     be = lambda n, width=8: n.to_bytes(width, 'big')
     sha = lambda value: hashlib.sha256(value).digest()
@@ -73,7 +74,7 @@ def expected(dataset, event, received, clock_resolution, clock_flags, recorded, 
     rows['facts',b'\x01\x21'+src_key(first)] = b'\x01\x21'+be(first+4)+sha(b'bigbrotr/admission-batch/1\0'+cbor([dataset,0,1,first,first+4,batch]))
     rows['receipts',b'\x01\x30'+slot+be(1)+be(request_sequence)] = receipt
     rows['receipts',b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(request_sequence)+be(0)+be(0)
-    assert len(rows) == (48 if appended else 42)
+    assert len(rows) == (50 if interned else 48 if appended else 42)
     return sorted((cf,k,v) for (cf,k),v in rows.items()), inputs+[original], receipts+[receipt]
 
 
@@ -84,6 +85,7 @@ def run(context):
         'load/aged-state, production capacity, arm64 or release']
     for appended in (False, True):
         case(context, appended)
+    case(context, True, interned=True)
 
 
 def event_control(before_event, after_event, request_sequence, require):
@@ -109,12 +111,12 @@ def event_control(before_event, after_event, request_sequence, require):
         'only-producer-reservation-bound-advances')
 
 
-def case(context, appended):
+def case(context, appended, *, interned=False):
     lab, pg, client, output, source, rows, clone, report, save, require, oracle = (
         context[k] for k in ('lab','pg','client','output','SOURCE','rows','clone','report','save','require','oracle'))
-    name = 'socket-append' if appended else 'socket'
-    mode = 'source-socket-dictionary-append' if appended else 'source-socket-pass'
-    request_sequence = 4 if appended else 2
+    name = 'socket-intern' if interned else 'socket-append' if appended else 'socket'
+    mode = 'source-socket-dictionary-intern' if interned else 'source-socket-dictionary-append' if appended else 'source-socket-pass'
+    request_sequence = 5 if interned else 4 if appended else 2
     database = clone(name+'-pass','bb_source_template')
     config = lab.config(output,dict(pg,client=client),database,endpoint='127.0.0.1:5432',boundary='loopback')
     migrated = lab.cli(dict(pg,client=client),'migrate','apply','--file',config,
@@ -154,7 +156,7 @@ def case(context, appended):
     artifact = (source/'tests/fixtures/ingest/import-event.jsonl').read_bytes()
     require(hashlib.sha256(artifact).hexdigest() == 'c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae','signed-input-identity')
     wanted,inputs,receipts = expected(dataset,json.loads(artifact),int(captured[0]['received_at']),
-        resolution,captured[0]['clock']['anomaly_flags'],recorded,oracle.cbor,appended=appended)
+        resolution,captured[0]['clock']['anomaly_flags'],recorded,oracle.cbor,appended=appended,interned=interned)
     dumped = lab.docker('exec',client,'/build/ingest_bootstrap_probe','dump','/lab/'+name)
     (output/(name+'-native.json')).write_text(dumped.stdout)
     actual = [(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in json.loads(dumped.stdout)['rows']]
@@ -189,18 +191,25 @@ def case(context, appended):
         initial = next(m for m in messages if m['event'] == 'dictionary-before')
         created = next(m for m in messages if m['event'] == 'dictionary-appended')
         reopened = next(m for m in messages if m['event'] == 'dictionary-reopened')
+        append_sequence = 3 if interned else 2
+        if interned:
+            prepared = next(m for m in messages if m['event'] == 'dictionary-prepared')
+            event_control(dict(initial['state']['control_tables']),
+                dict(prepared['state']['control_tables']), 2, require)
+            require(prepared['visibility_receipt'] == receipts[1].hex(), 'explicit-visibility-receipt')
+            initial = prepared
         event_control(dict(initial['state']['control_tables']),
-            dict(created['state']['control_tables']), 2, require)
+            dict(created['state']['control_tables']), append_sequence, require)
         event_control(dict(created['state']['control_tables']),
-            dict(reopened['state']['control_tables']), 3, require)
-        require(created['receipt'] == receipts[1].hex()
+            dict(reopened['state']['control_tables']), append_sequence+1, require)
+        require(created['receipt'] == receipts[append_sequence-1].hex()
             and reopened['bootstrap_receipt'] == receipts[0].hex()
-            and reopened['reuse_receipt'] == receipts[2].hex(), 'append-reopen-original-receipts')
+            and reopened['reuse_receipt'] == receipts[append_sequence].hex(), 'append-reopen-original-receipts')
         from dictionary_append import expected as append
-        base_rows, _, _ = append(dataset, oracle.cbor)
+        base_rows, _, _ = append(dataset, oracle.cbor, interned=interned)
         base_dump = [dict(cf=cf, key=k.hex(), value=v.hex()) for cf,k,v in base_rows]
         digest = hashlib.sha256(json.dumps(base_dump, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
-        require(reopened['state']['native_rows'] == 34
+        require(reopened['state']['native_rows'] == (36 if interned else 34)
             and reopened['state']['native_sha256'] == digest, 'literal-reopened-append-state')
     require(lab.sql(pg,database,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0','unjoined-driver')
     report['cases'].append(dict(name=name+'-signed-forged-duplicate',status='PASS',frames=3,native_rows=len(wanted),

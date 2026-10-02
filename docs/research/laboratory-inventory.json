@@ -33543,7 +33543,7 @@
       }
     },
     "dictionary_preparation": {
-      "status": "IMPLEMENTING_AFTER_NATIVE_RED",
+      "status": "PASS_NATIVE_COMPONENTS_CONNECTED_FIXTURE_PENDING",
       "local": ".research/implementation/dictionary-preparation-20261002",
       "scope": "P02-T03 Step1 read-only fixed-reference preparation; no installed consumer claim",
       "red": {
@@ -33578,7 +33578,58 @@
           "free_bytes": 55385452544
         }
       },
-      "next": "Run implemented preparation and affected native append/bootstrap/recovery owners; wire actual connected consumer with independent expected bytes."
+      "next": "Build and execute explicit private3 preparation through actual PG append/reuse/reopen and signed socket; installed consumer remains open.",
+      "native": {
+        "launch": {
+          "source": "18ed28a767ad9b625a369f736c22b9fbd9ad52bf",
+          "tree": "f70e040c042f895634c771cb043c02643284f4cb",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/dictionary-append-18ed28a",
+          "pid": 1656405,
+          "start_ticks": "429175471",
+          "bundle_sha256": "23976e6657fe180689e23fcf8424d16ee5a34fbefa4b82d24f18241b83abeef2"
+        },
+        "owner": "1ad289bb5258f14bb92779f34670e517",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "9b4be49c61b6e0c99ba6467395c74ddeeb51b579fd166f1729d6788b4b60d006"
+          },
+          {
+            "name": "native",
+            "id": "bcab20e483beea37b391389912fdfdc7ce8798735a27daa8d15f0cd16bb24477"
+          }
+        ],
+        "status": "PASS_COMPONENTS_STOPPED_RETAINED",
+        "artifacts": {
+          "source": "18ed28a767ad9b625a369f736c22b9fbd9ad52bf",
+          "tree": "f70e040c042f895634c771cb043c02643284f4cb",
+          "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+          "binary_sha256": "3047c251ffdbecef7263f30861a255db143a8526a34c465e5793fff5568955cc",
+          "probe_sha256": "35db38494444fc060eab1803d960e9a4a8cddd8050215ea06220e1a7e10f60bd",
+          "test_executables_sha256": {
+            "dictionary_components": "ad349a406eeba0e4fea1d03b9b8a244e96e869bc01f82bbb7c6a41e450d92b5a"
+          }
+        },
+        "native_tests": {
+          "dictionary-append": 13,
+          "bootstrap": 5,
+          "recovery": 11
+        },
+        "source_files_verified": 1667,
+        "audit": {
+          "status": "PASS_BUILD_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T02:56:45.390379+00:00",
+          "owned_stopped": [
+            "9b4be49c61b6e0c99ba6467395c74ddeeb51b579fd166f1729d6788b4b60d006",
+            "bcab20e483beea37b391389912fdfdc7ce8798735a27daa8d15f0cd16bb24477"
+          ],
+          "prior_unchanged": 1056,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "artifact_hashes_verified": true,
+          "free_bytes": 55229480960
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {
