@@ -12,11 +12,13 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the slice below.
 
-Primary `main` is `3ef3777`, nine unpublished coherent candidates after pushed `f996628`.
-Root owns only the final evidence/reference/task/checkpoint update. No parallel
-writer or active BigBrotr experiment. Fresh fetch still finds `origin/main` at `f996628`;
-GitHub confirms BigBrotr/bigbrotr-rs private. Review/check and commit/push this
-qualified boundary, then continue the next bounded action. No Mac Rust builds.
+Primary `main` and private `origin/main` match at `54ad09d`; the qualified
+abandonment boundary is pushed. Root now owns the retirement entrypoint regression
+and this checkpoint. No parallel writer or active BigBrotr experiment. A read-only
+AI reviewer is examining retirement obligations and retry/lock boundaries.
+No Mac Rust builds. Next candidate runs the discriminating entrypoint RED on Tux
+before product changes; its absent-store case must reach native inspection without
+opening credentials or creating state.
 
 ## Active responsibility and next bounded action
 
@@ -36,13 +38,25 @@ needs a dedicated completed observation; do not relax admission or the historica
 closing loader's deliberate retired/released refusal. Existing native marker is
 v2, issued4/ACK0/retired0; no reclamation or negative outcome is implemented.
 
-Already inspected for this next action: complete0011, current PG/native producer
-closing and relevant P02 task text. Remaining0002 domain/checkpoint/owner rules,
-import0014 obligations, recovery/native format contracts and actual callers need
-complete scoped reading before design/code. Initial registry currently hardcodes
+Inspected for this next action: complete0002/0011/0013/0014/0020/0021/0023/0024/0027,
+PG/native producer closing, source resolution, connected recovery and historical
+registry, plus retirement/operations contracts. Initial registry currently hardcodes
 epoch1 and reads domains across the owner resource; successor must account for
-that persistent history without adopting old custody. No new retirement design
-or migration is implemented yet.
+that persistent history without adopting old custody. No retirement migration or
+product implementation exists yet.
+
+Selected bounded route: `ingest recover --retire-initial` requires the prior
+explicit source closure and whole-intent abandonment. A dedicated read-only native
+closing observation and existing positive resolver reconstruct the source witness;
+PostgreSQL outcome comparison requires already retained rows and cannot insert
+new copies. The final transaction retires the producer, closes allocation domains,
+positively releases Ingest and retires its role. Its completed observation accepts
+only the coherent whole terminal state and preserves attribution/xmin on retry.
+Ordinary admission and closing still reject retired/released history. Keep the
+native v2 closing marker and ACK/GC at zero; no new ledger or format is needed.
+Import bindings and historical relay inputs without an acquisition job need an
+explicit qualified workflow path; assess those limits before implementing the
+guard, without making the whole Importer a prerequisite of the M1 signed fixture.
 
 ## Qualified initial abandonment boundary
 
