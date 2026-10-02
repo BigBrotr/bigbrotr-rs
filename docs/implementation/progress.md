@@ -12,127 +12,97 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main2ae1866a615d186143eb48cc6549456bdb395b96 above origin/main9985bd3.
-Candidate81344be/tree616545f0b834ef8495518c60829f07f1c208eb7a builds worker,
-CLI/probes and passes Clippy plus13 scoped tests (native1,budgets2,cut2,startup8); no installed publication claim follows.
-The positive fixturec8fdea5 was integrated asb82b1e2; 2ae1866 adds discriminating
-reader startup cases and a managed staged publisher=false/window129 positive.
-All Python fixture checks pass; actual engine wave2ae1866 deliberately exposed
-81344be's wrong-password late refusal: initialized report/two durable requests,
-zero Archive attempts at detection. Original FAIL preserved, later cases NOT_RUN.
-57 capture hashes checked; build capture21files/all1688Git files matched.
-Evidence and inventory initial_archive.publication_build/reader_prerequisite_red.
+Primary main640897ee576c65efe484abc6b55ad7ff78b98592 above origin/main9985bd3
+(last remote read verified). Only root-owned evidence/task/user-doc/checkpoint
+updates are dirty. No merge/rebase or active remote job. Product3a7f884 is now
+native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
+Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
+three Python files differ. The positive installed signed publication journey PASS
+is bounded, not whole-product/M1 completion. Root reviewed all new owning files
+and fixture/oracle consumers, replayed the independent census locally and matched
+exact source archives. Read-only review found no remaining concrete blocker in
+this boundary; complete failure/recovery and native worker internals were outside
+that review. Root separately inspected the actual cut worker for startup usage.
 
-Current local Rust correction (not compiled): startup uses a fixed minimum512MiB
-worker only for deployment preflight, deferring policy to accepted documents.
-Actual empty-cut native reader authentication now runs inside the joined startup
-preparer under its original deadline/cancellation and CatalogCapture. Its retained
-reader bytes/route are the same later consumer inputs. Item admission uses the
-protocol128 ceiling rather than staged file policy. Reader files/privileges alone
-were insufficient; this fixes the measured counterexample. No generic framework,
-new persistent format or SQL migration. New accepted-window/cut-wire/driver-join
-regressions passed at81344be; actual startup-native check remains NOT_RUN.
-Root owns all edits, integration and Tux; read-only reviewer checks the focused
-candidate. Separate source worktrees and historical failures remain untouched.
-
-No active Tux job. Runs archive-worker-budgets-81344be and installed-archive-2ae1866
-are STOPPED/RETAINED, no OOM/cleanup errors/unrelated changes. Preserve RED native
-store, catalog, inputs and protected credentials for diagnosis; no reinitialization.
-Latest free Tux50,560,139,264B, Mac roughly3GiB. No local Rust build/cache deletion.
-Next bounded action: commit this correction, compile exact candidate on Tux with
-shared cache lock, rerun the four-case installed Archive matrix on fresh clones,
-then ordinary read/export restart and the remaining frontier/authority negatives.
+Evidence: [initial Archive report](evidence/p02-initial-archive-native-20261002.json),
+inventory implementation_network_20260928.initial_archive and ignored
+.research/implementation/initial-archive-20261002/{publication-build,reader-red,
+reader-build,reader-green,publication-final}. Original failures stay FAIL:
+2ae1866/81344be accepted a wrong reader password through initialized/two durable
+requests (zero Archive attempts at detection); 3a7f884's four-case matrix passed
+all three reader refusals and the signed native/readback journey, then its final
+fixture role assertion compared a PostgreSQL JSON OID string to an integer.
+640897e corrects that comparison and reruns only the affected signed journey;
+three unchanged reader negatives are not mechanically repeated. Earlier single-
+budget RED and baseline role refusal remain in the same report.
 
 ## Active responsibility and next action
 
-The installed first signed socket event now reaches durable admission under the
-same native/Control owner. Bounded qualification covers P03-T01 Steps3/4 and
-P03-T02 Steps1/2/3/5, not those complete tasks. The focused window check passed;
-next useful deliverable is that event reaching actual archive publication and
-read/export: P01-T09 Steps2/3, consuming P02-T04 Steps2–6 and the existing read/export
-adapters. Connect their real owner/custody requirements without completing all
-Discovery/Monitor or P03 scheduling first. Full M1 additionally needs online indexing
-and successor/recovery for restart (P02-T01 Step5/P02-T02 Step4); initial custody
-cannot be adopted by a fresh Serve. No readiness or release claim is made.
+P01-T09 Steps1–3/P02-T04 Steps2–6 now have a bounded installed signed socket→
+durable admission→timer publication→captured-frontier→independent native readback
+journey. Four exact complete source batches1–2,3,4–7,8–12 produce snapshot5 and
+four original retained headers. All49 native rows/four original producer inputs/
+receipts and twelve scientific rows match independent literal/oracle encodings.
+65 real HTTP job-status observations coexist with renewal; quiet SIGTERM-to-
+observed-termination is0.054644081s, exit0. Native Archive owner remains retained
+and naturally expires; original Control is explicitly released. No EOSE/job
+completion, pending ACK/reclaim, source closure, readiness or capacity claim.
 
-The worker-budget prerequisite is now scoped PASS: product66c7393/tree747ed7659bd97b7c16442a1567262997a7c4a54f
-builds authenticated worker/CLI/probes and passes Clippy, one actual native
-custody/reap case and two prelaunch byte-exhaustion controls. Application native=0,
-child data/control=0; exact128KiB control/512MiB native grants persist until reap.
-Original0d0a04f/tree269a70691e2a048ef302c70ec56e7879f315e378 remains expected RED:
-build/Clippy passed, old single-budget launch refused Unavailable before child.
-Root matched all1682 Git files and17/19 captured files respectively. No Process/
-reap/TerminationUnknown behavior changed; old consumers use the same budget twice.
-Separate-budget cut grant integration is still NOT_RUN.
+Three actual startup refusals (wrong password, missing reader roots, missing
+reader SELECT) preserve all69 Control and32 catalog tables and create no Ingest
+store. Startup performs actual empty native cut authentication under its capture
+barrier, on the joined preparer before Control acquisition. Fixed minimum512MiB
+worker checks deployment only; accepted documents select policy before fresh
+registration. The signed journey's staged publisher=false/window129 correctly
+uses accepted publisher=true/window32. Both accepted initial windows must be≤128;
+prospective full-cut wire/allocation preflight precedes issuance/native publication.
+Prior Archive owner/consumer/attempt history and missing SQL privileges refuse
+in the source-reviewed migration16 startup gate; their specific installed negative
+cases still need practical evidence. No existing migration/format changed.
 
-Fixture165a33a/tree318109e8b4fb9c0e11bf4e331b28d59eaf8f776a reuses exact66c7393
-artifacts with only Python changes. Actual installed catalog initialize,
-state-initialize, coordinator-initialize and identical retry PASS; all32 native
-catalog tables/69Control tables, roles, checksums, local binding/files and original
-issuer attribution checked. Explicit initial Archive selection still exits3 with
-no mutation: expected integration RED, not a publication success.48 captures and
-identical Mac/Tux source archives verified; no credential bytes copied. See
-[initial Archive report](evidence/p02-initial-archive-native-20261002.json), inventory
-implementation_network_20260928.initial_archive and ignored
-.research/implementation/initial-archive-20261002/{budget-red,budget-green,setup}.
-All three runs are STOPPED/RETAINED with no OOM/unrelated changes or cleanup errors.
-Preserve installed-archive-165a33a/bindings/archive-setup-refusal/{data,state,scratch}
-and its protected manager.secret; these are actual initialized resources.
-Latest Tux free bytes: 51379843072. No local Rust build or cache/dataset deletion. Fresh preflight free bytes
-51,379,703,808 on Tux and3,088,960KiB on Mac; no active compiler/lab process.
+Structural decision: focused initial_ingest/archive and archive/native owners,
+with shared concrete CommandOwner renewal/HTTP helpers. No generic orchestration
+framework, new crate or backend trait. LocalCoordinator stays owned (Send,!Sync);
+actual driver futures and owned ReaderCustody retain exclusion. Every blocking
+worker is collected on signal/error; transport failure cannot detach its work.
+Application/native budgets remain separate; HTTP/password work has its own slot.
+First publication follows the accepted30s timer; pending batches drain with250ms
+gaps. Immutable retained reader material and full-cut construction are reused.
 
-Dirty wiring uses per-attempt actual catalog futures polled alongside their
-operation, without a spawned/detachable catalog driver. A driver failure must
-collect its work (which may own a blocking child) before returning. Publication
-prepares files/credentials/scratch under the renewal supervisor before issuance,
-uses one complete pending batch, then sealed capture; retained input/attempts are
-never ACKed/reclaimed. First timer is accepted30s; available batches drain with
-250ms gaps. Both accepted documents constrain the fixed file profile and delay;
-application/native budgets stay distinct. This is implementation under review,
-not executed publication evidence.
+Next useful deliverable: ordinary Control restart serving/exporting this same
+archived signed event, P01-T09 Step3 with P08-T04 Step3 and existing private
+history/export consumers. Extend the focused --installed-archive-signed fixture
+through stopped initial owner→explicit reader/destination roots→ordinary
+--roles control→authenticated scoped history→signed JSONL export and independent
+bytes/manifest inspection. Reader credentials/flag/destination are deployment
+roots, not managed-policy activation. Grant commands must use existing explicit
+reauthentication/action semantics; do not mutate policy to fake activation. Read
+existing export-execution and private grant fixtures/contracts before adapting
+that real journey. Repeating this affected end-to-end path is necessary; no
+adjacent full Discovery/Monitor prerequisite or broad unchanged suite.
 
-Structural decision for next wiring: use joined two-phase blocking preparation
-under the existing progress/cancellation supervisor, including Control credential/
-TLS file reads. Make collect's successful value generic; keep a parent watch
-sender between phases and check cancellation/deadline after preparer joins.
-Return owned LocalCoordinator (not Arc: embedded Cells are non-Sync); parent
-attaches its descriptor clone to the unpolled Control driver before moving the
-coordinator into the native owner. Parent retains driver/permit through join/panic.
-inspect_cut should consume owned ReaderCustody, like existing event/visibility
-readers, so the native worker can move independently while CatalogCapture stays
-with the coordinator. Never add unsafe Sync or share the coordinator by Arc.
-A focused CommandOwner native-wait helper must renew both Control/Ingest and
-service HTTP while keeping original publication deadlines. Every error after
-spawn must cancel and actually join before return; no early ? may detach work.
-Two-phase prepare and owned cut custody compile/pass the scoped273d47b checks. The post-connect phase check precedes
-driver spawn, so refusal cannot detach a live transport. Publisher wait and
-Archive wiring are dirty and remain unverified.
+Remaining M1 work includes online indexing, initial Ingest successor/replay
+P02-T01 Step5/P02-T02 Step4, restart/resend/provenance-off, outages and bundle
+installation. Initial native custody cannot be adopted by fresh Serve. Publisher
+signal/crash/COMMIT/dependency/resource cases remain NOT_RUN for this composition;
+existing adapter evidence remains scoped. Five signed exports under256MiB are
+still NOT_RUN. A further source observation to check at the next startup change:
+selected(root) still enforces the old minimum producer window2 before accepted
+restoration; a managed staged window1 may be an unrelated early refusal. No
+unexecuted case is closed or whole task checkbox checked.
 
-Next bounded action: finish review/compile of the explicit initial Archive wiring,
-integrate positivefixturec8fdea5, then execute signed publication/capture on Tux, consuming the
-existing complete PendingBatch, retained attempt/FreshWriter, native worker and
-captured-frontier adapters. The installed role refusal negative already exists; connect the 30-second formation timer, complete pending batches,
-joined publication and snapshot-bound frontier. Subsequent controlled restart
-into ordinary Control can use existing private archive read/export consumers.
-The reader flag/credentials/destination are deployment roots, so this transition
-does not need a new managed-policy mutation or an invented activation command.
-Source-change and isolated transport-failure installed Sync cases remain NOT_RUN;
-their existing adapter evidence stays scoped.
-
-Read-only integration review and root inspection identified concrete requirements:
-PendingBatch owns bytes/permit and can move off the Rocks owner; synchronous
-publication on that owner would starve initial Control/Ingest renewal. Preserve
-CommandOwner::renew and the worker's independent original deadline; never detach
-a spawn_blocking handle on timeout. Initial owner, publisher and bounded password
-work need distinct available blocking slots. Current archive worker admission
-charges child native and parent control bytes to one combined budget; initial
-Rocks already uses the application's native lane. Split those concrete admissions
-without creating a second application allowance. Keep local/catalog/Control
-custody through actual joins and retain unresolved intents on every failure.
-Receipt alone is insufficient: CatalogCapture/inspect_cut/publish_archive_frontier
-must establish the complete cut before the existing readers can consume it.
-No generic orchestration framework or merger of both management supervisors is
-needed for this first useful sequential journey. No implementation is claimed yet.
+All latest Tux runs STOPPED/RETAINED; no OOM, cleanup errors or unrelated changes.
+Product build root archive-worker-budgets-3a7f884 owner48a81820eef00c42f8cf252c2bac5851,
+ELFs retained outside shared cache. Positive root installed-archive-640897e owner
+32ff925b5b1776290f0e3d9b24d5f023, clientd4f2bb92305725d9451f4ed93a5e1d4a3f292f60b21f04c59052990535c18f50.
+Preserve its bindings/archive-signed/{store,data,state,scratch}, protected files,
+Control bb_scope_bind_640897e_archive_signed and corresponding _cat database.
+Preserve original2ae1866 and3a7f884 fault states. Latest free Tux49,929,715,712B,
+Mac3,027,152KiB; eight unrelated containers unchanged. No local Rust builds or
+additional cache/dataset deletions. 222 positive captures, four supplemental raw
+headers and exact source archive verified; original capture tar stays immutable.
+Build capture21files/all1694Git files matched; three-reader matrix376 captures
+retained. All detailed identities and scope limitations are in evidence/inventory.
 
 [Installed Sync evidence](evidence/p03-initial-sync-native-20261002.json) owns:
 
@@ -297,14 +267,14 @@ No complete acquisition task or phase checkbox closes at this boundary.
 
 Runs root /home/tux/bigbrotr-implementation-20260917/runs/. Shared compiler cache
 network-1154757/out/build/{target,cargo-home}, owner8b21a13162699a6038154874c2ac89da,
-uses exclusive .compiler-cache.lock. Latest273d47b intermediates; qualified ELFs
+uses exclusive .compiler-cache.lock. Latest3a7f884 intermediates; qualified ELFs
 are separate. Native image7e946a0c, Rust1.98.1,clang14/Rocks11.8.1,amd64 only.
 All exact IDs/manifests/owners are in the existing laboratory inventory. Check
 space/process/container/mount/cache dependencies before the next large allocation.
 
 Borrowed PG7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec
 (namebigbrotr-implementation-pg-20260917-source_e06f580), owner
-5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, is stopped after the focused window wave.
+5e69b0f060b1607c25230d1dbd3e5608 at relay-source-recheck-e06f580/pg, is stopped after the installed Archive wave.
 PG16.15/fsync/full_page_writes on. Preserve bb_source_template and every prior
 scope/source/transport/fault clone, exact native states and protected pg/secrets.
 Clone/verify before experiments; never publish secrets or repeat completed launchers.

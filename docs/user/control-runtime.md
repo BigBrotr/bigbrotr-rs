@@ -70,12 +70,15 @@ Accepted jobs still report queued: this consumer does not claim durable traversa
 progress, job completion or complete acquisition readiness.
 
 Explicit `--roles control,ingest,sync,archive` also selects the initial local
-publisher, currently under qualification. Initialize the catalog, local state and
+publisher. Its [bounded signed native journey](../implementation/evidence/p02-initial-archive-native-20261002.json)
+passes; complete recovery, read/export restart and capacity remain under qualification. Initialize the catalog, local state and
 coordinator separately first. This fresh-only profile requires migration0016,
 Archive mutation privileges, an empty initial catalog and no prior Archive
 attempt/consumer history. Configure the dedicated SELECT-only catalog reader's
 `read_user` and `read_password_ref` even though HTTP archive reads remain disabled.
 The packaged worker, private scratch root and separate native allowance are required.
+Startup authenticates the actual retained native reader against the empty catalog
+before fresh Ingest effects; the managed file seed does not activate policy.
 Both accepted documents must select the fixed native file profile (64,000-row
 groups, zstd-3, 256MiB target and at least512MiB per worker), agree on its worker
 allowance/publish delay, and keep the initial producer window at most128 requests.

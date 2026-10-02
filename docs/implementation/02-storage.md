@@ -400,14 +400,18 @@ restart/commit/manager-loss/cancellation cases using fixture `4bdc20f` and harne
 checked independently. Preserved harness failures remain INCOMPLETE. Source
 handoff, actual pins and served read/export remain open; no checkbox closes.
 
-The installed first-event composition now has [separate-process worker admission
-and virgin setup evidence](evidence/p02-initial-archive-native-20261002.json):
-`66c7393` passes real child custody/reap and two exhaustion cases; fixture `165a33a`
-uses its authenticated CLI/worker for actual catalog, state and coordinator
-initialization with identical retry. Explicit initial Archive selection still
-refuses before mutation. The next consumer is timer-driven complete pending-batch
-publication under the initial Ingest owner, then the existing captured frontier
-and read/export paths. This prerequisite closes no task or milestone checkbox.
+The [installed first-event composition](evidence/p02-initial-archive-native-20261002.json)
+now qualifies one signed socket event through same-owner admission, timer-driven
+publication of four original complete batches, snapshot5/frontier prefix12 and an
+independent full native census. Product`3a7f884`, fixture`640897e` preserve all49
+native rows/four requests and exercise65 HTTP status reads during the lifetime.
+Three real reader-prerequisite refusals precede all Ingest effects. An actual
+empty native cut authenticates retained reader credentials before fresh startup;
+accepted policy, not a managed seed, selects the initial profile. Complete-cut
+wire/allocation preflight precedes issuance. Earlier role-refusal, wrong-password
+and fixture-OID failures remain historical evidence. Ordinary read/export restart,
+initial publisher failure schedules and broader M1 remain open; no task checkbox
+closes from this bounded composition.
 
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,

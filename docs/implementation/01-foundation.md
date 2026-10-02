@@ -470,8 +470,11 @@ and queryable with truthful role readiness, without implicit public publishing.
   and signed admission under that same native owner, with quiet cancellation and
   bounded refusal evidence. Full scheduling/progress and successor recovery remain
   unfinished; the first event does not require complete adjacent services.
-  Then qualify actual timer publication, read and restart/resend below; no complete
-  adjacent Discovery/Monitor subsystem is a prerequisite for this small journey.
+  The [initial Archive journey](evidence/p02-initial-archive-native-20261002.json)
+  now qualifies timer-driven complete-batch publication and native full readback
+  of that signed event under product3a7f884/fixture640897e. Ordinary Control
+  history/export restart, indexing and Ingest restart/resend below remain open;
+  complete adjacent Discovery/Monitor is not a prerequisite for this journey.
 - [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.
 - [ ] **Step 3:** Query the full event through the actual local read entrypoint available in

@@ -35340,7 +35340,7 @@
       }
     },
     "initial_archive": {
-      "status": "STOPPED/RETAINED; worker budgets and virgin installed setup qualified, publication incomplete",
+      "status": "SCOPED_PASS_INITIAL_SIGNED_PUBLICATION; full M1/recovery/read-export restart incomplete",
       "evidence": "docs/implementation/evidence/p02-initial-archive-native-20261002.json",
       "local_evidence": ".research/implementation/initial-archive-20261002",
       "budgets": {
@@ -35594,6 +35594,363 @@
         "unrelated_changed": [],
         "cleanup": "stopped-retained",
         "not_run": "Subsequent missing-reader, missing-reader-grant and signed publication cases; native publication with bad password was not awaited"
+      },
+      "reader_build": {
+        "source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+        "tree": "82a658dfd4502d79214554bdd2589b48a663493d",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-worker-budgets-3a7f884",
+        "owner": "48a81820eef00c42f8cf252c2bac5851",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "54c610cb22d2a295bd2763a384ad21eb98999abb2d118c77de847c361301e35b"
+          },
+          {
+            "name": "native",
+            "id": "43d76b037d76e51c182e5b87b92277f2527313471d0d01c7ddad00393388fa28"
+          }
+        ],
+        "status": "PASS",
+        "build_and_clippy": "PASS",
+        "tests": {
+          "native-custody": 1,
+          "worker-budgets": 2,
+          "cut-admission": 2,
+          "initial-supervision": 8
+        },
+        "artifacts": {
+          "cli": "2629e6e3972a0ad910432261cc1e1f1986ea441108e5aaf8acbb4bd832059ab5",
+          "probe": "d8049bccfcd54748fae0684b5d0c2baed6aa13f163ade5c2f78af85d00743050",
+          "worker": {
+            "bytes": 14421792,
+            "sha256": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+          },
+          "tests": {
+            "archive_worker_components": "fcce509c2a457f58ca0e52da32e3d5f287c38b610745b0ba1d77759114022e55",
+            "initial_supervision_components": "1e3da8b821d46bd5c4235c4928ed06b007e336454de44565fbd5dc18fb9f36a1"
+          }
+        },
+        "capture": {
+          "label": "reader-build",
+          "source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "files": 1694,
+          "captures": 21,
+          "capture_sha256": "ac24e200df100458788485ea47b85c1a5cd597b7bb0bb672c9b3e4dedf9f94bf"
+        },
+        "cleanup": "stopped-retained",
+        "unrelated_changed": [],
+        "free_bytes_after": 50185191424
+      },
+      "reader_refusal_wave": {
+        "source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+        "tree": "82a658dfd4502d79214554bdd2589b48a663493d",
+        "build_source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-3a7f884",
+        "owner": "cfd9a3d04f615473abb345cecdef1a9f",
+        "client": {
+          "id": "d4d162e5f54090f40e78059c2be4d4757b313a99f3b0300fdde936d2d6661762",
+          "name": "bigbrotr-acquisition-binding-3a7f884"
+        },
+        "status": "FAIL",
+        "failure": "AssertionError: ",
+        "cases": [
+          {
+            "name": "archive-wrong-reader",
+            "status": "PASS",
+            "actual_cli": true,
+            "actual_pg_catalog": true,
+            "no_ingest_effects": true,
+            "complete_control_catalog_unchanged": true,
+            "terminal": {
+              "pid": 193,
+              "start_ticks": "430979588",
+              "config": "/lab/bb_scope_bind_3a7f884_archive_wrong_reader.toml",
+              "prefix": "/lab/archive-wrong-reader",
+              "exit_code": 4,
+              "elapsed_seconds": 0.5988194812089205,
+              "forced": false,
+              "reaped": true
+            }
+          },
+          {
+            "name": "archive-missing-reader",
+            "status": "PASS",
+            "actual_cli": true,
+            "actual_pg_catalog": true,
+            "no_ingest_effects": true,
+            "complete_control_catalog_unchanged": true,
+            "terminal": {
+              "pid": 473,
+              "start_ticks": "430980520",
+              "config": "/lab/bb_scope_bind_3a7f884_archive_missing_reader.toml",
+              "prefix": "/lab/archive-missing-reader",
+              "exit_code": 3,
+              "elapsed_seconds": 0.01555479783564806,
+              "forced": false,
+              "reaped": true
+            }
+          },
+          {
+            "name": "archive-reader-grant",
+            "status": "PASS",
+            "actual_cli": true,
+            "actual_pg_catalog": true,
+            "no_ingest_effects": true,
+            "complete_control_catalog_unchanged": true,
+            "terminal": {
+              "pid": 656,
+              "start_ticks": "430981377",
+              "config": "/lab/bb_scope_bind_3a7f884_archive_reader_grant.toml",
+              "prefix": "/lab/archive-reader-grant",
+              "exit_code": 4,
+              "elapsed_seconds": 0.16384568996727467,
+              "forced": false,
+              "reaped": true
+            }
+          }
+        ],
+        "capture": {
+          "label": "reader-green",
+          "source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "build_source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "status": "FAIL",
+          "captures": 376,
+          "capture_sha256": "facaf6acf76a4d755b28f53938c2e8ba3a00b4adf9d539a530b845d31594f08e",
+          "cases": [
+            {
+              "name": "archive-wrong-reader",
+              "status": "PASS"
+            },
+            {
+              "name": "archive-missing-reader",
+              "status": "PASS"
+            },
+            {
+              "name": "archive-reader-grant",
+              "status": "PASS"
+            }
+          ]
+        },
+        "cleanup": "stopped-retained",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "retained_resources": [
+          {
+            "control_database": "bb_scope_bind_3a7f884_archive_wrong_reader",
+            "catalog_database": "bb_scope_bind_3a7f884_archive_wrong_reader_cat",
+            "manager": "bb_archive_fd8300f4839a47ef01e157b8",
+            "home": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-3a7f884/bindings/archive-wrong-reader",
+            "catalog_id": "b5784d11048be9c1143bfd98f759dccd",
+            "state": "setup-retained",
+            "roles": {
+              "manager": "bb_archive_fd8300f4839a47ef01e157b8",
+              "manager_oid": 59759,
+              "bootstrap": "bb_init_dfa2d71b21161aad2f8ba37511704b7a",
+              "bootstrap_oid": 59762,
+              "reservation": "bb_init_database_59760",
+              "bootstrap_retired": true
+            },
+            "config": "/lab/bb_scope_bind_3a7f884_archive_wrong_reader.toml",
+            "binding_sha256": "47e0376e22ca06b127efb2587d5eb22872ee3ac1f8e8c8ce91e724489041297c",
+            "reader": "bb_archive_read_4fa05df74920a98ac766",
+            "observed_lifecycle": "startup-refused-stopped-retained"
+          },
+          {
+            "control_database": "bb_scope_bind_3a7f884_archive_missing_reader",
+            "catalog_database": "bb_scope_bind_3a7f884_archive_missing_reader_cat",
+            "manager": "bb_archive_48c018815bd3dd511f9a0fcb",
+            "home": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-3a7f884/bindings/archive-missing-reader",
+            "catalog_id": "45db609b4046c20139fa6144cbffdd78",
+            "state": "setup-retained",
+            "roles": {
+              "manager": "bb_archive_48c018815bd3dd511f9a0fcb",
+              "manager_oid": 60282,
+              "bootstrap": "bb_init_4aabe2fef4e017029683ca83ba852f51",
+              "bootstrap_oid": 60285,
+              "reservation": "bb_init_database_60283",
+              "bootstrap_retired": true
+            },
+            "config": "/lab/bb_scope_bind_3a7f884_archive_missing_reader.toml",
+            "binding_sha256": "83474c58a026ffdd0b599b72461dc7a8044a49c3c535e073677086eb46824222",
+            "reader": "bb_archive_read_298cc792714a4faedc6b",
+            "observed_lifecycle": "startup-refused-stopped-retained"
+          },
+          {
+            "control_database": "bb_scope_bind_3a7f884_archive_reader_grant",
+            "catalog_database": "bb_scope_bind_3a7f884_archive_reader_grant_cat",
+            "manager": "bb_archive_e21272311435d3ac220ee5fd",
+            "home": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-3a7f884/bindings/archive-reader-grant",
+            "catalog_id": "8c99097b36b81ccb959bfa8a2643ba34",
+            "state": "setup-retained",
+            "roles": {
+              "manager": "bb_archive_e21272311435d3ac220ee5fd",
+              "manager_oid": 60805,
+              "bootstrap": "bb_init_6ecb7dd7c19db789b41b441d8adf50d1",
+              "bootstrap_oid": 60808,
+              "reservation": "bb_init_database_60806",
+              "bootstrap_retired": true
+            },
+            "config": "/lab/bb_scope_bind_3a7f884_archive_reader_grant.toml",
+            "binding_sha256": "3b14b51e99107aa48b09abfa813ab272ad12eafa8f13bf9425011d6908997942",
+            "reader": "bb_archive_read_ee56b5688a22b906e529",
+            "observed_lifecycle": "startup-refused-stopped-retained"
+          },
+          {
+            "control_database": "bb_scope_bind_3a7f884_archive_signed",
+            "catalog_database": "bb_scope_bind_3a7f884_archive_signed_cat",
+            "manager": "bb_archive_d03eeccd9ef723b356061213",
+            "home": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-3a7f884/bindings/archive-signed",
+            "catalog_id": "cb418970cdf9847d1e173957ac7a6828",
+            "state": "setup-retained",
+            "roles": {
+              "manager": "bb_archive_d03eeccd9ef723b356061213",
+              "manager_oid": 61328,
+              "bootstrap": "bb_init_4e1f973b638ab3a1eb1d34d6f9d61bb0",
+              "bootstrap_oid": 61331,
+              "reservation": "bb_init_database_61329",
+              "bootstrap_retired": true
+            },
+            "config": "/lab/bb_scope_bind_3a7f884_archive_signed.toml",
+            "binding_sha256": "99cc7154df9898fd64e090d56efc9f7edb7322cb64bff2c23c04507be9472628",
+            "reader": "bb_archive_read_f26e0801c060ed338b46",
+            "observed_lifecycle": "published-stopped-after-fixture-assertion"
+          }
+        ],
+        "failure_classification": "Fixture role census compared PostgreSQL JSON OID string with separately parsed integer. Three actual startup refusals PASS; signed journey reached full native/readback census before this final assertion. Original FAIL retained."
+      },
+      "signed_publication": {
+        "source": "640897ee576c65efe484abc6b55ad7ff78b98592",
+        "tree": "5ad4d6403f88fdfb2e1073ed8aeff8fbca240d6a",
+        "build_source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-640897e",
+        "owner": "32ff925b5b1776290f0e3d9b24d5f023",
+        "client": {
+          "id": "d4f2bb92305725d9451f4ed93a5e1d4a3f292f60b21f04c59052990535c18f50",
+          "name": "bigbrotr-acquisition-binding-640897e"
+        },
+        "status": "PASS_INSTALLED_ARCHIVE_PUBLICATION",
+        "failure": null,
+        "cases": [
+          {
+            "name": "archive-signed",
+            "status": "PASS",
+            "actual_cli": true,
+            "actual_http": true,
+            "actual_pg_rocks_archive": true,
+            "complete_scientific_rows": 12,
+            "complete_archive_batches": 4,
+            "retained_inputs": [
+              {
+                "name": "40c66924ebe599bbf0ccfabb4bd96d28.inputs",
+                "bytes": 266,
+                "sha256": "d840ed1ded936edb96195de1f0ec5835dddb5814bd8582a4c289c0afbda07619"
+              },
+              {
+                "name": "c20896cdbd998987ff12dc0d6342e15e.inputs",
+                "bytes": 266,
+                "sha256": "ee25a158d8c2b3d6f0c18a52d4f54a59b6a59141d1e445a8214a8e75d4123855"
+              },
+              {
+                "name": "b30296d8a6e86fe515e970ed821906d5.inputs",
+                "bytes": 266,
+                "sha256": "7e835ded9508ffe6002784e14d9f5899846c4bfdb08e7085b6032b04c6d9eeda"
+              },
+              {
+                "name": "dc1782ae026ee459d060f565cb44c691.inputs",
+                "bytes": 266,
+                "sha256": "8df8ffa7b4b55beb27ee7cf7725db18489868340154e64bc23c401f3954f8f1d"
+              }
+            ],
+            "frontier_snapshot": 5,
+            "same_owner_renewed": true,
+            "archive_owner_retained_and_expired": true,
+            "http_status_observations": 65,
+            "signal_seconds": 0.054644081,
+            "selected_quiet_signal": {
+              "round": 68,
+              "request": [
+                "REQ",
+                "8445e44124991c0b06d8033d1214a79b0000000000000001",
+                {
+                  "kinds": [
+                    1
+                  ],
+                  "limit": 3
+                }
+              ],
+              "request_at_us": 1790927874599150,
+              "signal_at_us": 1790927874599529,
+              "signal_monotonic_ns": 4310128729538812,
+              "closed_before_signal": false
+            },
+            "websocket_rounds": 68,
+            "terminal": {
+              "pid": 194,
+              "start_ticks": "431008915",
+              "config": "/lab/bb_scope_bind_640897e_archive_signed.toml",
+              "prefix": "/lab/archive-signed",
+              "exit_code": 0,
+              "elapsed_seconds": 39.62385464645922,
+              "forced": false,
+              "reaped": true
+            },
+            "native_rows": 49,
+            "original_requests": 4,
+            "dictionary_recorded_us": 1790927836578833,
+            "event_received_us": 1790927836626452,
+            "event_recorded_us": 1790927836677977
+          }
+        ],
+        "capture": {
+          "label": "publication-final",
+          "source": "640897ee576c65efe484abc6b55ad7ff78b98592",
+          "build_source": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "status": "PASS_INSTALLED_ARCHIVE_PUBLICATION",
+          "captures": 222,
+          "capture_sha256": "b4bd20bcc6ce91118eb0aedc7edfcb9dcb7140ab0122138f9c4fcbb6c477074a",
+          "cases": [
+            {
+              "name": "archive-signed",
+              "status": "PASS"
+            }
+          ]
+        },
+        "cleanup": "stopped-retained",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "retained_resources": [
+          {
+            "control_database": "bb_scope_bind_640897e_archive_signed",
+            "catalog_database": "bb_scope_bind_640897e_archive_signed_cat",
+            "manager": "bb_archive_1477e40e8e32f7f5d80e91cb",
+            "home": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-640897e/bindings/archive-signed",
+            "catalog_id": "280f61c5b5aa71feb64422f977638d5f",
+            "state": "setup-retained",
+            "roles": {
+              "manager": "bb_archive_1477e40e8e32f7f5d80e91cb",
+              "manager_oid": 61867,
+              "bootstrap": "bb_init_fd4b651d37c38e59c2da2cde253943bd",
+              "bootstrap_oid": 61870,
+              "reservation": "bb_init_database_61868",
+              "bootstrap_retired": true
+            },
+            "config": "/lab/bb_scope_bind_640897e_archive_signed.toml",
+            "binding_sha256": "633b4b2e2487fe3670f63076dc58b668a91c61712274f5b424b281a87b15febc",
+            "reader": "bb_archive_read_6e26ca0229a64c7eefb0",
+            "observed_lifecycle": "published-stopped-retained"
+          }
+        ],
+        "independent_replay": {
+          "source": "640897ee576c65efe484abc6b55ad7ff78b98592",
+          "product": "3a7f8843d17491b062b8e0cdb2f1ff75d0757d38",
+          "complete_native_rows": 49,
+          "original_inputs": 4,
+          "original_outcomes": 4,
+          "retained_headers": 4,
+          "signed_scientific_readback": "exact",
+          "released_original_control": "verified"
+        },
+        "bounds": "One known signed event, four original complete batches/source prefix12, snapshot5, 65 HTTP status observations; staged managed publisher=false/window129 correctly uses accepted publisher=true/window32. 1GiB application/2GiB native deployment; no capacity claim."
       }
     }
   },
