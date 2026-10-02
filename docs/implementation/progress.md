@@ -12,13 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is `2d7a53e`, pushed. Root owns the focused source-closure fault
-fixture and this checkpoint; no parallel writer or active Tux experiment.
-The fixture adds isolated SQL UPDATE/SIGTERM and deferred-COMMIT/deadline barriers,
-full native/69-table comparisons and identical retries including real Control
-fencing. Not yet executed. Commit this candidate, transfer exact Git and use
-launch-source-faults.py with a fresh label; reuse qualified f873d92 artifacts.
-No Mac Rust build.
+Primary main is `10c2eca`, one unpublished fixture candidate after pushed2d7a53e.
+Root owns its bounded evidence/reference/inventory/checkpoint update. No parallel
+writer or active experiment. Commit/push this reviewed result, then implement the
+focused source/job lock fixture with the same f873d92 product. No Mac Rust build.
 
 ## Active responsibility and next bounded action
 
@@ -92,7 +89,8 @@ Root checked1707 source files,16 build/44 engine captures and replayed the full
 independent signed oracle plus digest. Original entrypoint RED7751217 stays FAIL
 (exit2 for missing option vs4; other3 tests pass), retained12 captures/SHA75feeea0.
 Report initial_source_closure_20261002 and inventory installed_ingest_recovery.
-source_closure own identities/results. No source-closure fault qualification yet.
+source_closure own identities/results. UPDATE/COMMIT faults are qualified below;
+concurrent source locks remain.
 
 The implementation keeps the native closing grant and borrows actual exclusion
 through an ephemeral positive prefix witness. Every original request is consumed
@@ -103,9 +101,21 @@ No SQL migration, native format or duplicate persistent ledger. Default recovery
 is unchanged; source closure is not producer/domain retirement, workflow gaps,
 ACK/GC, Ingest release or successor activation.
 
-Next bounded action: source-closure qualification with actual COMMIT ambiguity,
-pre-commit cancellation and relevant source-lock concurrency, reusing f873d92
-artifacts and exact new fixture Git. The scoped Mac incremental cache retirement
+Fixture10c2eca/treee4e780d0 qualifies four additional real cases with unchanged
+f873d92 artifacts: UPDATE blocked+SIGTERM exits4/unforced in2.323s and rolls back;
+COMMIT blocked+natural deadline exits4/unforced in3.175s, then PG commits after
+client death. Both exact retries pass; committed closure time/xmin stays unchanged,
+and fresh Control positively fences the prior owner with an independently checked
+digest. Full49 native rows/four inputs,69 tables and unchanged original32-table
+catalog/files checked. Both server backends remain blocked until fixture unlock.
+Root checked1708 exact source files/58 captures (SHA8271494c), replayed the full
+signed/native/digest oracle and captured effects. Existing source-closure report
+fault_wave and inventory fault_engine own details. Engine10c2eca stopped/retained,
+ownerf34ec1d6/client2bc50311, borrowedPG stopped, no OOM/cleanup/unrelated changes;
+Tux68,667,346,944B free. Original evidence and both fault clones remain retained.
+
+Next bounded action: qualify concurrent job/source lock schedules in the actual
+source-closure consumer, reusing f873d92 artifacts and exact new fixture Git. The scoped Mac incremental cache retirement
 is complete (inventory cache_retirement_20260928.mac_incremental_20261002).
 Only .research/targets/product/debug/incremental was deleted:31,848 regenerable
 files,12,318,892,032 allocated bytes. Immediate free bytes1,319,854,080→9,757,089,792;
@@ -120,10 +130,10 @@ Full restart/resend remains M1's visible acceptance.
 
 The first12 cases use two dictionary requests; the later three exercise one signed
 event/four original requests. Installed Rejected/AlreadyDurable remain NOT_RUN.
-Later native/COMMIT cancellation, ambiguous commits, blocked FFI/close, worker
-panic, crashes/ENOSPC and aged/mixed/load remain NOT_RUN for this composition.
+Additional native interruption, blocked FFI/close, worker panic, crashes/ENOSPC
+and aged/mixed/load remain NOT_RUN for this composition.
 Strict WAL reopening does not exclude silent complete-tail loss. No new negative
-outcome, ACK/GC, source closure, retirement, successor or release/arm64 claim.
+outcome, ACK/GC, retirement, successor or release/arm64 claim.
 No task checkbox closes at this boundary.
 
 Historical prerequisites remain qualified separately: native inspection `20e0e5e`

@@ -1264,7 +1264,7 @@
     ]
   },
   "initial_source_closure_20261002": {
-    "status": "PASS_FIRST_WAVE_SOURCE_CLOSURE; fault qualification pending",
+    "status": "PASS_FIRST_WAVE_AND_UPDATE_CANCEL_COMMIT_RECOVERY; concurrent source-lock qualification pending",
     "scope": "P01-T09 Step4/P02-T01 Step5/P02-T02 Step4: explicit positive initial source closure, not producer/domain retirement or successor",
     "product": {
       "source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
@@ -1421,9 +1421,130 @@
       "unrelated_changed": []
     },
     "not_run": [
-      "Source-closure ambiguous COMMIT, pre-commit cancellation, concurrency and process crash schedules remain next qualification work.",
+      "Concurrent job/source lock schedules and process crash schedules remain required; actual UPDATE/SIGTERM and COMMIT/deadline/identical retry are qualified by fault_wave.",
       "Installed zero prefix/AlreadyDurable/Rejected combinations and larger/aged/mixed workloads not run by this installed wave; native prefix tests have narrower scope.",
       "No full initial producer/domain retirement, explicit workflow abandonment, ACK/GC, successor, M1 restart/resend, native arm64 or release qualification."
-    ]
+    ],
+    "fault_wave": {
+      "status": "PASS_SCOPED_UPDATE_CANCEL_AND_AMBIGUOUS_COMMIT_RECOVERY",
+      "fixture": "10c2eca461ae51f87cfb6eab734037e146fb9de3",
+      "tree": "e4e780d08d2fbb47920d9de92cb5c021c7f38605",
+      "product_source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+      "binary_sha256": "0c9d287e04cef5f039a201077d0b116cf229c7958f9095e66ae1b99892ac1d78",
+      "probe_sha256": "282f5a81f3203947a86467afb936fafc46add9636dcf265586e8548a133d12a5",
+      "source_files": 1708,
+      "source_archive_sha256": "f14d16c41d2cac57f22f95df847b0fb1163a5abe49120f1d993c346b617a4f25",
+      "cases": [
+        {
+          "name": "source_update_signal",
+          "status": "PASS",
+          "terminal": {
+            "pid": 79,
+            "start_ticks": "432530024",
+            "config": "/lab/bb_scope_bind_10c2eca_source_update_signal.toml",
+            "prefix": "/lab/source_update_signal",
+            "exit_code": 4,
+            "elapsed_seconds": 2.323294922709465,
+            "forced": false,
+            "reaped": true
+          },
+          "native_rows": 49,
+          "original_requests": 4,
+          "control_tables": 69,
+          "source_closed": false,
+          "seconds_after_observed_block": 2.099622618407011,
+          "backends_after_client": 1,
+          "schedule": "SIGTERM during UPDATE; rollback"
+        },
+        {
+          "name": "source_update_signal-retry",
+          "status": "PASS",
+          "native_rows": 49,
+          "original_requests": 4,
+          "control_tables": 69,
+          "seconds": 0.2047255840152502,
+          "new_event_outcome_copy": false,
+          "source_closed": true,
+          "expected_refusal": null
+        },
+        {
+          "name": "source_commit_deadline",
+          "status": "PASS",
+          "terminal": {
+            "pid": 273,
+            "start_ticks": "432530808",
+            "config": "/lab/bb_scope_bind_10c2eca_source_commit_deadline.toml",
+            "prefix": "/lab/source_commit_deadline",
+            "exit_code": 4,
+            "elapsed_seconds": 3.174631209112704,
+            "forced": false,
+            "reaped": true
+          },
+          "native_rows": 49,
+          "original_requests": 4,
+          "control_tables": 69,
+          "source_closed": true,
+          "seconds_after_observed_block": 2.9598547257483006,
+          "backends_after_client": 1,
+          "schedule": "deadline during COMMIT; durable after client death"
+        },
+        {
+          "name": "source_commit_deadline-retry",
+          "status": "PASS",
+          "native_rows": 49,
+          "original_requests": 4,
+          "control_tables": 69,
+          "seconds": 0.204320527613163,
+          "new_event_outcome_copy": false,
+          "source_closed": true,
+          "expected_refusal": null
+        }
+      ],
+      "capture": {
+        "label": "source-closure-faults-first",
+        "source": "10c2eca461ae51f87cfb6eab734037e146fb9de3",
+        "build_source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+        "status": "PASS_INSTALLED_INITIAL_SOURCE_CLOSURE_FAULTS",
+        "captures": 58,
+        "capture_sha256": "8271494c93b2a98b4949775cb7b04ff387508ac9abf14898b418e098f7012649",
+        "cases": [
+          {
+            "name": "source-closure-signed",
+            "status": "PASS"
+          }
+        ]
+      },
+      "local_replay": {
+        "status": "PASS_SOURCE_CLOSURE_FAULT_CAPTURE_REPLAY",
+        "cases": 4,
+        "independent_native_rows": 49,
+        "original_inputs": 4,
+        "control_tables": 69,
+        "original_catalog_tables": 32,
+        "closure_digest": "9e1a5b86a108f064a43c9f69313a39c9c3353fb45dc52dae230d190785d21501"
+      },
+      "observations": [
+        "Actual CLI SIGTERM while source UPDATE waits: unforced exit4 in2.323s; transaction rolls back after fixture unlock. Identical retry closes source12.",
+        "Actual CLI natural deadline while deferred source trigger blocks COMMIT: unforced exit4 in3.175s. Independent session sees source open before unlock and closed12 after PostgreSQL completes the COMMIT following client death. Identical retry preserves exact closure time/xmin/digest.",
+        "Both server backends remain blocked after CLI exit until fixture unlock; Rust driver termination does not synchronously cancel server queries.",
+        "Both retries positively fence only the immediately previous Control owner, with independently reconstructed exclusion digests, then release the fresh Control. All49 native rows/four original inputs and all69 Control tables checked. Original32 catalog tables and native/archive/export/files remain unchanged."
+      ],
+      "terminal": {
+        "state": "STOPPED_RETAINED",
+        "owner": "f34ec1d6132939af1a33af8918f9b4da",
+        "client": {
+          "id": "2bc503115f1f314455c29ef9bc397b9223933526a932494bc976c2d2bf5fc7c8",
+          "name": "bigbrotr-acquisition-binding-10c2eca"
+        },
+        "free_bytes_after": 68667346944,
+        "cleanup_errors": [],
+        "unrelated_changed": []
+      },
+      "remaining": [
+        "Concurrent job/source lock schedules for this typed consumer.",
+        "Installed zero/AlreadyDurable/Rejected compositions, process-kill/native-delay/resource/capacity/aged/mixed cases remain outside this wave.",
+        "Producer/domain retirement, workflow abandonment, ACK/GC, successor and M1/release remain incomplete."
+      ]
+    }
   }
 }

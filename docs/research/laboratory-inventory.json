@@ -36879,7 +36879,7 @@
       "preserve": "Exact source/captures/logs/manifests, all installed stores and original request inputs, complete PG clones including deliberate pending/missing rows. Borrowed PG and all clients/builds stopped. Shared1154757 cache retained. No dataset, cache, container or unrelated resource deleted.",
       "next": "Installed signed-event recovery, then source/producer/domain closure and explicit successor for M1",
       "source_closure": {
-        "status": "First wave passed; fault qualification pending",
+        "status": "First wave and UPDATE cancellation/ambiguous COMMIT retry passed; concurrent locks pending",
         "builds": {
           "entrypoint_red": {
             "source": "77512178f969208b062536592f8c16a6269aac86",
@@ -36984,7 +36984,44 @@
             "report": true
           }
         },
-        "preserve": "Original RED, exact builds and source, complete captures, all signed stores/inputs and PostgreSQL clones including deliberately incompatible job cut. No dataset or volume deletion."
+        "preserve": "Original RED, exact builds and source, complete captures, all signed stores/inputs and PostgreSQL clones including deliberately incompatible job cut. No dataset or volume deletion.",
+        "fault_engine": {
+          "source": "10c2eca461ae51f87cfb6eab734037e146fb9de3",
+          "status": "PASS_INSTALLED_INITIAL_SOURCE_CLOSURE_FAULTS",
+          "owner": "f34ec1d6132939af1a33af8918f9b4da",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "2bc503115f1f314455c29ef9bc397b9223933526a932494bc976c2d2bf5fc7c8",
+            "name": "bigbrotr-acquisition-binding-10c2eca"
+          },
+          "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+          "databases": [
+            "bb_scope_bind_10c2eca_source_update_signal",
+            "bb_scope_bind_10c2eca_source_commit_deadline"
+          ],
+          "cleanup_errors": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 68667346944,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-engine-10c2eca",
+          "state": "stopped-retained",
+          "capture": {
+            "label": "source-closure-faults-first",
+            "source": "10c2eca461ae51f87cfb6eab734037e146fb9de3",
+            "build_source": "f873d921645a38829ea2c1079ea5dd8ad7feaa6a",
+            "status": "PASS_INSTALLED_INITIAL_SOURCE_CLOSURE_FAULTS",
+            "captures": 58,
+            "capture_sha256": "8271494c93b2a98b4949775cb7b04ff387508ac9abf14898b418e098f7012649",
+            "cases": [
+              {
+                "name": "source-closure-signed",
+                "status": "PASS"
+              }
+            ]
+          },
+          "source_archive_sha256": "f14d16c41d2cac57f22f95df847b0fb1163a5abe49120f1d993c346b617a4f25",
+          "preserve": "Both original signed copies, fixture trigger DDL and retained PostgreSQL clones, exact source/artifacts and captures; original signed laboratory unchanged."
+        }
       }
     }
   },

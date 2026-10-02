@@ -476,5 +476,9 @@ actual native prefix cases and four installed signed cases (close at12, identica
 retry, missing event outcome copy, incompatible retained job bound13). The
 [initial-source supplement](../implementation/evidence/p02-producer-recovery-native-20260920.json)
 retains all49 native rows/four original inputs,69-table comparisons and the
-independent closure digest. COMMIT ambiguity, cancellation and concurrent source
-locks remain required qualification; this does not complete retirement or M1.
+independent closure digest. Fixture `10c2eca` adds actual UPDATE/SIGTERM rollback
+and COMMIT/deadline recovery: the latter commits after the client exits, and the
+identical retry preserves the exact retained closure. Both retries check positive
+Control fencing. Server query termination is observed separately from CLI/driver
+termination. Concurrent source locks remain required qualification; this does not
+complete retirement or M1.
