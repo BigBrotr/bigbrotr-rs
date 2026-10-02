@@ -54,6 +54,11 @@ mod wal_recovery_tests;
 
 #[path = "admission.rs"]
 mod admission;
+#[path = "dictionary_append.rs"]
+mod dictionary_append;
+#[cfg(test)]
+#[path = "dictionary_append_tests.rs"]
+mod dictionary_append_tests;
 #[path = "receipt_effects.rs"]
 mod receipt_effects;
 pub use admission::{

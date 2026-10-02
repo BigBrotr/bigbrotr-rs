@@ -12,11 +12,13 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main5046876ba5bb9accf690790886f32dca27211563,
-tree3015d6d51a1d93fe5493d470f1bc6b04fd66d256; origin762c994; root sole writer.
-Only root-owned final evidence/inventory/owning task/reference/checkpoint edits
-are pending. Native candidate66a8718 builds extended SQL helper/CLI and scoped
-Clippy PASS; core productce85c0c is unchanged. No local build. No active lab.
+Main/origin5483db8f3256cf11e13d45973548b09e41416448; clean at resumption,
+root sole writer. Root owns the dictionary append/PG bridge/regression/profile and owning-contract edits. The integrated finite job
+fault/shared-source evidence is committed and pushed. Native candidate66a8718
+built the extended helper/CLI and scoped Clippy PASS; core productce85c0c is
+unchanged. Fresh read-only inspection at2026-10-02T01:20UTC found no active
+BigBrotr lab/build, the same eight unrelated running containers, Mac3,469,836KiB
+and Tux56,558,247,936B free. No local Rust build or new large allocation.
 
 Bounded installed finite acceptance/status/COMMIT integration is qualified;
 P03-T01 Steps3/4 and P01-T09 Steps1/2 remain partial because execution/progress,
@@ -46,16 +48,33 @@ borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T01:13:12.878102UTC:
 relay-registration-faults-66a8718 also STOPPED/RETAINED with exact owners, PIDs,
 artifacts/audits in inventory.initial_jobs.http_faults. Preserve all7 clones/stores.
 
-Next: commit/push this integrated bounded evidence, then implement the native
-append/intern prerequisite (P02-T03 Step1/P02-T02) for the installed finite event
-consumer. Read complete dictionary/bootstrap/admission/PG bridge ownership first;
-existing two visibility mappings cannot supply committed observer/clock/method
-references. Read-only independent prerequisite review is in progress; it edits
-nothing. Reuse existing atomic storage/producer request mechanisms rather than
-adding a second allocator/registry. M1 still needs actual finite dispatch,
-socket admission→timer archive/read/export and successor/restart. Full adjacent
-Discovery/Monitor is not required for this next signed-event slice. Fix stale
---initialize-ingest help at the next product implementation change.
+Active prerequisite: native dictionary append/intern P02-T03 Step1/P02-T02 for
+the installed finite event consumer. Root read complete bootstrap/admission,
+observation, store, producer-closing/recovery, initial-batch/basis, dictionary and
+evidence-intent owners, keys and bootstrap tests; reservation/outcome owners and exact cached rocksdb0.25.0 batch/write implementation
+were also inspected; unchanged lock/native boundary is reused. Read-only AI review
+confirmed three compatibility edges: private ordinal2 is itself in a public
+fact and cannot satisfy the current exact-envelope observation profile;
+bootstrap replay currently rejects legitimate allocation-counter advancement;
+post-bootstrap Evidence requests currently enter the request1-only replay path.
+Preserve existing mappings, inputs, receipts and enrollment/scope/job identities.
+A reusable self-scoped private reference can use unchanged EvidenceIntent bytes;
+it must be explicitly selected, never substituted into an accepted job. Default
+local_first_witness needs visibility, observer/clock, endpoint, access and method;
+provenance off is not silently selected to reduce this responsibility.
+
+Next bounded action: run the native candidate regression, then finish positive historical replay
+through existing native atomic batch and PG reservation/outcome ownership. A fixed-reference append draft and connected PG method now exist; native tests
+have NOT_RUN. Bootstrap allocation replay and recovery dispatch are deliberately
+not changed yet, so the new reopen regression should expose the former. No
+new event allocator, persistent format or SQL ledger is currently justified.
+Allocated refs must be fixed before staging because they belong to the request
+digest. Validate original bootstrap replay after append, same-request replay,
+complete private closure, mapping conflicts, exhausted counters, reduced limits
+and actual engine cancellation/recovery. Intern preparation remains read-only
+and grants no source permission. M1 still needs finite dispatch, socket admission
+through timer archive/read/export and successor/restart. Full Discovery/Monitor
+is not a prerequisite. Fix stale --initialize-ingest help at the next product edit.
 
 Compatibility run runs/job-status-compat-de7347d is STOPPED/RETAINED:
 PID1558991/start428452303, owner5b0fcc0dca17226bfb649de3b2185974,
@@ -77,13 +96,6 @@ finite HTTP report and inventory.initial_jobs. Idle expiry remains isolated by
 11,662,665us before absolute cutoff after all401 replies. Absolute fixture has
 coincident cutoffs and does not isolate redundant predicates. Product defaults
 remain8h absolute/30min idle. No credential-reset or job-deadline qualification.
-
-Next: commit/push this bounded compatibility evidence, then installed acquisition
-acceptance COMMIT/cancellation on exact ce85c0c artifacts where build inputs match.
-Reuse known finite proxy/custody mechanics, independently check five job effects,
-original deadline and retry identity; avoid mechanically rerunning old adapter
-matrices. At next product build fix serve --initialize-ingest help (still claims
-only login/me/logout). Full execution/dictionary/recovery and M1 remain unfinished.
 
 Active P03-T01 Steps3/4 and P01-T09 Steps1/2: initial-owner finite acceptance and
 actor-owned status use the existing queue/Control transaction/0022 command. No
@@ -113,15 +125,6 @@ prior projections unchanged, eight unrelated running, compiler lock free and
 57,030,197,248B free. Preserve all four clones/stores and separate artifacts.
 CLIsha1f7bc3bb8da926a8d30281af77a60bfcfe47e3c38c261f4afdca4e7cf74a7559;
 probesha7ad5a6aade5807ae8efd9eadbf30ffc061e000e40c197769132c6fac8a9dd791.
-
-Next bounded action: installed job authority/expiry and acceptance COMMIT faults,
-plus bounded pre0022 export status regression because its decoder is shared.
-Reuse exact ce85c0c artifacts only for fixture/docs-only revisions. Prior adapter
-acceptance13 fault schedules remain relevant; target the new HTTP consumer and
-session/credential/foreign-actor boundaries rather than mechanically rerunning
-unaffected matrices. Then connect finite job delivery and dictionary allocation to
-the existing guarded socket/admission consumer. Full execution/progress/recovery,
-P03-T01 Steps3/4/7 and M1 remain INCOMPLETE; no adjacent subsystem expansion needed.
 
 ## Current bounded qualification and resources
 

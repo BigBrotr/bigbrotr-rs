@@ -83,9 +83,10 @@ mod producer_closing;
 #[path = "producer_recovery.rs"]
 mod producer_recovery;
 pub use initial_batch::{
-    InitialBatchError, InitialBatchRequest, InitialCertificationRequest, InitialEventError,
-    InitialEventRequest, InitialImportBatchRequest, InitialObservationRequest,
-    InitialOperationError, InitialVisibilityRequest,
+    InitialBatchError, InitialBatchRequest, InitialCertificationRequest,
+    InitialDictionaryAppendRequest, InitialEventError, InitialEventRequest,
+    InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
+    InitialVisibilityRequest,
 };
 pub use producer_closing::{ProducerCloseError, ProducerCloseRequest, ProducerOperationError};
 pub use producer_recovery::{ProducerResolveError, ProducerResolveRequest};

@@ -176,3 +176,32 @@ are refused, not traversed recursively.
 These are model/codec results. P02-T02 step 2 and P02-T03 step 1 still require the
 real atomic allocation/admission consumer, process recovery and independently
 resolved archive/export closure before their practical acceptance is complete.
+
+## Post-bootstrap dictionary admission (implementation in qualification)
+
+The initial owner may append fixed-reference `EvidenceIntent` requests after
+request1. This uses the same v1 inputs, facts, keys and receipts; applied SQL and
+original bootstrap bytes remain unchanged. The next producer request, complete
+mapping/visibility values and allocated references must be retained before PG
+reservation. An ambiguous retry cannot rerun interning to select new identities.
+Event mappings remain owned by event admission. Dictionary-only input cannot
+allocate them or confer event eligibility, acquisition permission or job progress.
+
+New references advance each current allocation domain contiguously; existing
+references require the complete immutable mapping and the same fact visibility.
+Mappings, reverse candidates, facts, allocation/source/producer counters, pending
+membership and the receipt commit in one synchronized batch. All-existing input
+produces AlreadyDurable without another scientific fact. The first append profile
+requires every transitive dependency in the exact target envelope. A new visibility
+may define itself; other new dependencies must precede their consumers. The two
+original installed bootstrap mappings keep their original public envelope. A
+usable private observation scope must be explicitly allocated and selected; it
+cannot replace an already registered enrollment/scope/job identity silently.
+
+Positive replay validates the original receipt's complete input effects and
+closure, retaining its original time, membership and dependencies. Bootstrap
+replay must tolerate later allocation advancement without rewriting its receipt;
+post-bootstrap evidence needs its own closing-producer recovery path. Dedicated
+dictionary scratch and receipt limits cover more than five mappings. Preparation/
+interning, the installed observation consumer and actual failure/recovery evidence
+remain required before this responsibility or P02-T03 Step1 can be marked complete.

@@ -320,6 +320,12 @@ pub(super) struct ReadBudget {
     reads: usize,
 }
 impl ReadBudget {
+    pub(super) fn dictionaries(limits: AdmissionLimits) -> Self {
+        Self {
+            bytes: 16 * limits.max_batch_bytes,
+            reads: 16 * limits.max_dependencies + 32,
+        }
+    }
     pub(super) fn new(limits: AdmissionLimits) -> Self {
         Self {
             bytes: 8 * limits.max_batch_bytes,
@@ -612,7 +618,7 @@ impl IngestStore {
         Ok(Some((outcome, native_outcome)))
     }
 
-    fn admission_value(
+    pub(super) fn admission_value(
         &self,
         key: IngestKey,
         max: usize,

@@ -184,6 +184,20 @@ pub struct InitialBatchRequest<'a> {
     pub cancelled: &'a AtomicBool,
 }
 
+/// Fixed references selected by the trusted serialized owner before reservation.
+/// The caller retains original intent and accepted-document allocations. A retry
+/// must preserve every reference, even if current interning would choose another.
+pub struct InitialDictionaryAppendRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
+    pub registration: &'a ingest_registry::InitialRegistration,
+    pub request_sequence: RequestSequence,
+    pub intent: &'a EvidenceIntent,
+    pub recorded_at: ObservedTime,
+    pub limits: AdmissionLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
+}
+
 impl ControlSession {
     /// Run on the same retained native owner as admission. This read establishes
     /// immutable attribution only; job/source authority is checked separately.
@@ -483,6 +497,142 @@ impl ControlSession {
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialBatchError::DeliveryUnknown);
+        }
+        self.available = true;
+        Ok(receipt)
+    }
+    /// Append fixed dictionary references on the same retained initial owner.
+    /// This does not authorize sockets, change job scopes or invent attribution.
+    /// Run on a dedicated bounded owner worker: native FFI is synchronous and
+    /// cannot be cancelled by dropping a future. Retain/join that worker and the
+    /// PG driver before close, replacement or releasing their reservations.
+    /// The validator checks both complete documents against actual static roots.
+    /// No public network handler may supply an arbitrary validator or root.
+    pub async fn append_initial_dictionaries(
+        &mut self,
+        store: &mut IngestStore,
+        input: InitialDictionaryAppendRequest<'_>,
+        permit: OwnedPermit,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<StoredReceipt, InitialEventError> {
+        let spec = input.registration;
+        let identity = *store.manifest().identity();
+        let request = ProducerRequestId {
+            producer_slot_id: spec.producer_slot_id,
+            producer_epoch: ProducerEpoch::new(1).map_err(|_| OwnerError::InvalidInput)?,
+            request_sequence: input.request_sequence,
+        };
+        if input.request_sequence.get() <= 1
+            || input.limits.max_outstanding_requests > u64::from(spec.outstanding_request_limit)
+        {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        let (reservation_tx, mut reservation_lease) = self
+            .begin_initial_native_operation(
+                store,
+                InitialIngestContext {
+                    ingest_root: input.ingest_root,
+                    registration: spec,
+                    policy_ttl: input.policy_ttl,
+                    request: Some((request, RequestPhase::Reservation)),
+                    source: None,
+                    network_event: false,
+                    job: None,
+                },
+                &mut validate,
+            )
+            .await?;
+        let staged = store
+            .stage_dictionary_append(request, input.intent, input.limits, &permit)
+            .map_err(InitialEventError::Native)?;
+        producer_requests::reserve(&reservation_tx, &staged, spec.control, None, None, None)
+            .await
+            .map_err(InitialEventError::Reservation)?;
+        if input.cancelled.load(Ordering::Relaxed) {
+            return Err(InitialEventError::Native(
+                AdmissionError::AuthorityUnavailable,
+            ));
+        }
+        if reservation_lease
+            .check_delivery(identity.policy_epoch)
+            .is_err()
+        {
+            return Err(OwnerError::Unavailable.into());
+        }
+        reservation_tx
+            .commit()
+            .await
+            .map_err(|_| InitialEventError::Reservation(ReservationError::CommitUnknown))?;
+        self.available = true;
+        // COMMIT precedes native dispatch. Acquire a new complete policy/registry
+        // snapshot and a new local lease, accounting for both PG round trips.
+        let (tx, mut lease) = self
+            .begin_initial_native_operation(
+                store,
+                InitialIngestContext {
+                    ingest_root: input.ingest_root,
+                    registration: spec,
+                    policy_ttl: input.policy_ttl,
+                    request: Some((request, RequestPhase::Dispatch)),
+                    source: None,
+                    network_event: false,
+                    job: None,
+                },
+                &mut validate,
+            )
+            .await?;
+        let result = store.append_dictionaries(
+            request,
+            input.intent,
+            input.recorded_at,
+            input.limits,
+            permit,
+            || {
+                if input.cancelled.load(Ordering::Relaxed) {
+                    return Err(AdmissionError::AuthorityUnavailable);
+                }
+                lease
+                    .check_delivery(identity.policy_epoch)
+                    .map_err(|_| AdmissionError::AuthorityUnavailable)
+            },
+        );
+        let receipt = match result {
+            Ok(receipt) => receipt,
+            Err(error) => {
+                tx.rollback()
+                    .await
+                    .map_err(|_| InitialEventError::DeliveryUnknown)?;
+                return Err(InitialEventError::Native(error));
+            }
+        };
+        if input.cancelled.load(Ordering::Relaxed)
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        producer_outcomes::record(
+            &tx,
+            &staged,
+            receipt
+                .native_outcome()
+                .ok_or(InitialEventError::Outcome(OutcomeError::InvalidMetadata))?,
+            spec.control,
+        )
+        .await
+        .map_err(InitialEventError::Outcome)?;
+        if input.cancelled.load(Ordering::Relaxed)
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        tx.commit()
+            .await
+            .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?;
+        if input.cancelled.load(Ordering::Relaxed)
+            || self.client.is_closed()
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::DeliveryUnknown);
         }
         self.available = true;
         Ok(receipt)

@@ -18,7 +18,7 @@ from inventory import projection
 revision, tree = sys.argv[1:3]
 profile = sys.argv[3] if len(sys.argv) == 4 else 'network'
 assert len(sys.argv) in (3, 4) and profile in (
-    'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
+    'dictionary-append', 'relay-arrival', 'relay-transfer', 'observation', 'network', 'websocket', 'relay-wire', 'selector', 'request-session', 'relay-registry', 'relay-registry-faults',
     'relay-enrollment', 'relay-enrollment-faults', 'relay-registration-faults', 'ingest-visibility',
     'policy-versions', 'relay-source', 'relay-source-faults',
     'source-transport', 'source-cleanup', 'source-races', 'acquisition-scope', 'acquisition-scope-faults', 'acquisition-scope-read', 'acquisition-binding', 'acquisition-binding-refusals', 'acquisition-binding-recovery', 'sync-arrival-policy', 'ingest-lease', 'initial-ingest', 'acquisition-jobs', 'acquisition-jobs-faults', 'acquisition-claims',
@@ -150,6 +150,7 @@ try:
     write(root / 'resources.json', state)
     native_path = 'network-transport' if profile in ('network', 'websocket', 'relay-wire', 'selector', 'request-session') else 'relay-registry'
     native_args = {
+        'dictionary-append': ['dictionary-append'],
         'websocket': ['websocket'],
         'relay-wire': ['relay-wire'],
         'selector': ['selector'],
@@ -183,7 +184,7 @@ try:
     }.get(profile, [])
     run_container('native', 'none', ['python3', '-B', '/out/build/source/experiments/' + native_path + '/native.py', *native_args], 1860)
     qualification = json.loads((out / 'qualification.json').read_text())
-    expected = {'network': 'PASS_SCOPED_NETWORK_COMPONENTS',
+    expected = {'dictionary-append': 'PASS_DICTIONARY_APPEND_COMPONENTS', 'network': 'PASS_SCOPED_NETWORK_COMPONENTS',
                 'websocket': 'PASS_SCOPED_WEBSOCKET_COMPONENTS',
                 'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS',
                 'selector': 'PASS_SCOPED_SELECTOR_COMPONENTS',
