@@ -12,8 +12,15 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mainc0fb44e0f71c6527ab028faef5a398927993ae97; origin/main e6f8caf. Root sole writer.
-Dirty evidence/checkpoint/task updates only; next coherent commit/push follows review.
+Main9e22986d4de23c094cce37cf1ce35506886de82d; origin/main identical, verified.
+Root sole writer. Dirty installed private-scope contract/oracle; product unchanged.
+Next run the independent17-row/five-new-key expectation against retainedc0fb44e
+CLI on isolated PG/Rocks (expected RED), then implement startup private3 append2.
+Preserve original bootstrap input/receipt. Publish private_scope only after outcome;
+refuse accepted outstanding windows below2 before registry/native work.
+This is a concrete prerequisite for a local private signed socket, since public
+visibility on a private route is forbidden. It is P02-T03/P03-T01/M1 work, not a
+new visibility-management subsystem. No build/engine active at last audit below.
 18ed28a preparation native GREEN:13 append/preparation,5 bootstrap,11 recovery
 PASS; actual CLI/probe build and Clippy PASS. Intentional818 RED remains retained.
 runs/dictionary-append-18ed28a STOPPED/RETAINED:PID1656405/start429175471,

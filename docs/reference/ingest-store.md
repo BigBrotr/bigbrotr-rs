@@ -159,8 +159,15 @@ rechecks that basis. Fresh OS identities establish the first shard0/resource,
 producer and nine empty allocation namespaces. The producer outstanding limit is
 the smaller ceiling of the two accepted documents, never the startup file seed.
 The existing native initializer commits its complete manifest; the existing
-connected bootstrap then admits exactly the public/private visibility mappings
-with original staged input and PG reservation/outcome. No event is collected.
+connected bootstrap retains the original public1/private2 mappings and request1
+unchanged. A separate fixed-reference append2 creates private3 with its own private
+fact envelope. Only after its durable PG/native outcome is delivered does the
+initialized report publish `private_scope` and dictionary_count=3; accepted
+scopes/jobs are never silently rebound. Both complete accepted policies and the
+local profile must permit at least two outstanding producer requests before any
+registration/native initialization. No event is collected. This installed append
+extension is in qualification; older bounded evidence below still refers to the
+original two-map lifetime. Existing directories are not upgraded or adopted.
 
 One dedicated blocking worker exclusively owns store and Control. The parent
 current-thread runtime drives the actual PG connection, signals and phase

@@ -110,7 +110,6 @@ def native_oracle(pg, client, output, database, name, state, report, suffix='',
     domains = sorted((r['dictionary_kind'],bytes.fromhex(r['allocation_domain'][2:])) for r in state['allocation_domains'])
     assert [kind for kind,_ in domains] == list(range(1,10))
     assert len(set(value for _,value in domains)) == 9
-    assert len(state['producer_requests']) == len(state['producer_outcomes']) == 1
     public = report['public_scope']
     assert public['dataset_id']==dataset.hex() and public['dictionary_kind']==4 and public['ordinal']=='1'
     assert public['allocation_domain']==dict(domains)[4].hex()
@@ -121,18 +120,55 @@ def native_oracle(pg, client, output, database, name, state, report, suffix='',
         owner=bytes.fromhex(owner['resource_id'][2:]),incarnation=bytes.fromhex(owner['process_incarnation'][2:]),
         recovery=recovery,topology=int(report['topology_generation']),namespaces=domains,
         recorded_at=owner['acquired_at_us'])
+    # Preserve the original public-envelope two-map request. The new explicit
+    # private identity has its own self-contained fact and request2 receipt.
+    be = lambda n: n.to_bytes(8, 'big')
+    private = [dataset, 4, dict(domains)[4], 3]
+    source = [dataset, 0, 1, 3]
+    source_key = dataset + (0).to_bytes(4, 'big') + be(1) + be(3)
+    reference_key = dataset + (4).to_bytes(2, 'big') + dict(domains)[4] + be(3)
+    descriptor = [1, 'visibility', 1, {'class':'private'}]
+    mapping = [private, *descriptor]
+    fact = b'bigbrotr/fact/1\0' + cbor([source, 'dictionary', 1, private,
+        owner['acquired_at_us'], mapping])
+    digest = hashlib.sha256(fact).digest()
+    refs = [[source, digest]]
+    private_input = b'bigbrotr/producer-request/1\0' + cbor([[slot,1,2], 'admit-evidence',1,
+        [1,private,[['dictionary',1,mapping]]]])
+    private_receipt = b'bigbrotr/receipt/1\0' + cbor([1,[slot,1,2],hashlib.sha256(private_input).digest(),
+        [dataset,0,1,bytes.fromhex(owner['process_incarnation'][2:]),1],refs,refs])
+    wanted = {(cf,k):v for cf,k,v in wanted}
+    wanted['facts',b'\x01\x20'+source_key] = b'\x01\x20'+digest+fact
+    wanted['default',b'\x01\x04'+reference_key] = b'\x01\x04'+source_key+digest
+    canonical = cbor(descriptor)
+    wanted['default',b'\x01\x05'+dataset+(4).to_bytes(2,'big')+hashlib.sha256(canonical).digest()+reference_key] = b'\x01\x05'+canonical
+    wanted['default',b'\x01\x03'+dataset+(4).to_bytes(2,'big')+dict(domains)[4]] = b'\x01\x03'+be(3)
+    wanted['default',b'\x01\x02'+dataset+(0).to_bytes(4,'big')+be(1)] = b'\x01\x02'+be(3)
+    wanted['facts',b'\x01\x21'+source_key] = b'\x01\x21'+be(3)+hashlib.sha256(
+        b'bigbrotr/admission-batch/1\0'+cbor([dataset,0,1,3,3,refs])).digest()
+    wanted['receipts',b'\x01\x30'+slot+be(1)+be(2)] = private_receipt
+    wanted['receipts',b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(2)+be(0)+be(0)
+    wanted = sorted((cf,k,v) for (cf,k),v in wanted.items())
     dumped = lab.docker('exec',client,probe,'dump','/lab/'+name+'/store')
     with (output/(name+suffix+'-native.json')).open('x') as capture:
         capture.write(dumped.stdout)
     actual = [(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in json.loads(dumped.stdout)['rows']]
-    assert actual==wanted and len(actual)==12
+    assert actual==wanted and len(actual)==17, 'complete-original-bootstrap-and-private-append'
+    assert report['private_scope']==dict(public,ordinal='3') and report['dictionary_count']==3
     reference = lambda n: [dataset,4,dict(domains)[4],n]
     entries = [['dictionary',1,[reference(n),1,'visibility',1,{'class':label}]] for n,label in [(1,'public'),(2,'private')]]
     request = b'bigbrotr/producer-request/1\0'+cbor([[slot,1,1],'admit-evidence',1,[1,reference(1),entries]])
-    inputs = list((output/name/'store/producer-inputs-v1').glob('*.cbor'))
-    assert len(inputs)==1 and inputs[0].read_bytes()==request
-    assert state['producer_requests'][0]['request_digest']=='\\x'+hashlib.sha256(request).hexdigest()
-    assert state['producer_outcomes'][0]['outcome_bytes']=='\\x'+receipt.hex()
+    inputs = sorted((output/name/'store/producer-inputs-v1').glob('*.cbor'))
+    assert len(inputs)==2 and [p.read_bytes() for p in inputs]==[request,private_input]
+    requests=sorted(state['producer_requests'],key=lambda r:int(r['request_sequence']))
+    outcomes=sorted(state['producer_outcomes'],key=lambda r:int(r['request_sequence']))
+    assert len(requests)==len(outcomes)==2
+    for sequence,row,original in zip((1,2),requests,(request,private_input)):
+        assert int(row['request_sequence'])==sequence and int(row['input_bytes'])==len(original)
+        assert row['request_digest']=='\\x'+hashlib.sha256(original).hexdigest()
+        assert all(row[k] is None for k in ('relay_endpoint_id','relay_access_scope_id',
+            'relay_enrollment_generation','relay_route_id'))
+    assert [r['outcome_bytes'] for r in outcomes]==['\\x'+v.hex() for v in (receipt,private_receipt)]
     assert state['producer_epochs'][0]['outstanding_request_limit']==32
     assert state['source_streams'][0]['state']=='open'  # signal is not source closure
 
@@ -217,6 +253,7 @@ def run(pg,client,output,database,name,rows):
             assert control['state']=='released' and control['released_at_us']>=control['acquired_at_us']
             assert control['exclusion_method']=='storage_fenced' and control['exclusion_digest'] is not None
             assert role['retired_at_us'] is not None
+        lab.write_json(output/(name+'-after.json'),after)
         native_oracle(pg,client,output,database,name,after,initialized)
         if name=='pass':
             retry = lab.cli(state,'serve','--file',config,'--initialize-ingest','--roles','control,ingest')
