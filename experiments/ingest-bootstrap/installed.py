@@ -104,6 +104,40 @@ def terminal(prefix):
     return result
 
 
+def append_private_expected(wanted, dataset, domain, slot, recovery, recorded_at, topology):
+    """Extend independently encoded bootstrap rows, never actual native output."""
+    # Preserve the original public-envelope two-map request. The new explicit
+    # private identity has its own self-contained fact and request2 receipt.
+    be = lambda n: n.to_bytes(8, 'big')
+    private = [dataset, 4, domain, 3]
+    source = [dataset, 0, 1, 3]
+    source_key = dataset + (0).to_bytes(4, 'big') + be(1) + be(3)
+    reference_key = dataset + (4).to_bytes(2, 'big') + domain + be(3)
+    descriptor = [1, 'visibility', 1, {'class':'private'}]
+    mapping = [private, *descriptor]
+    fact = b'bigbrotr/fact/1\0' + cbor([source, 'dictionary', 1, private,
+        recorded_at, mapping])
+    digest = hashlib.sha256(fact).digest()
+    refs = [[source, digest]]
+    private_input = b'bigbrotr/producer-request/1\0' + cbor([[slot,1,2], 'admit-evidence',1,
+        [1,private,[['dictionary',1,mapping]]]])
+    private_receipt = b'bigbrotr/receipt/1\0' + cbor([1,[slot,1,2],hashlib.sha256(private_input).digest(),
+        [dataset,topology,1,recovery,1],refs,refs])
+    wanted = {(cf,k):v for cf,k,v in wanted}
+    wanted['facts',b'\x01\x20'+source_key] = b'\x01\x20'+digest+fact
+    wanted['default',b'\x01\x04'+reference_key] = b'\x01\x04'+source_key+digest
+    canonical = cbor(descriptor)
+    wanted['default',b'\x01\x05'+dataset+(4).to_bytes(2,'big')+hashlib.sha256(canonical).digest()+reference_key] = b'\x01\x05'+canonical
+    wanted['default',b'\x01\x03'+dataset+(4).to_bytes(2,'big')+domain] = b'\x01\x03'+be(3)
+    wanted['default',b'\x01\x02'+dataset+(0).to_bytes(4,'big')+be(1)] = b'\x01\x02'+be(3)
+    wanted['facts',b'\x01\x21'+source_key] = b'\x01\x21'+be(3)+hashlib.sha256(
+        b'bigbrotr/admission-batch/1\0'+cbor([dataset,0,1,3,3,refs])).digest()
+    wanted['receipts',b'\x01\x30'+slot+be(1)+be(2)] = private_receipt
+    wanted['receipts',b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(2)+be(0)+be(0)
+    wanted = sorted((cf,k,v) for (cf,k),v in wanted.items())
+    return wanted, private_input, private_receipt
+
+
 def native_oracle(pg, client, output, database, name, state, report, suffix='',
                   probe='/build/ingest_bootstrap_probe'):
     owner = next(r for r in state['owner_epochs'] if r['role']=='ingest')
@@ -122,35 +156,8 @@ def native_oracle(pg, client, output, database, name, state, report, suffix='',
         owner=bytes.fromhex(owner['resource_id'][2:]),incarnation=bytes.fromhex(owner['process_incarnation'][2:]),
         recovery=recovery,topology=int(report['topology_generation']),namespaces=domains,
         recorded_at=owner['acquired_at_us'])
-    # Preserve the original public-envelope two-map request. The new explicit
-    # private identity has its own self-contained fact and request2 receipt.
-    be = lambda n: n.to_bytes(8, 'big')
-    private = [dataset, 4, dict(domains)[4], 3]
-    source = [dataset, 0, 1, 3]
-    source_key = dataset + (0).to_bytes(4, 'big') + be(1) + be(3)
-    reference_key = dataset + (4).to_bytes(2, 'big') + dict(domains)[4] + be(3)
-    descriptor = [1, 'visibility', 1, {'class':'private'}]
-    mapping = [private, *descriptor]
-    fact = b'bigbrotr/fact/1\0' + cbor([source, 'dictionary', 1, private,
-        owner['acquired_at_us'], mapping])
-    digest = hashlib.sha256(fact).digest()
-    refs = [[source, digest]]
-    private_input = b'bigbrotr/producer-request/1\0' + cbor([[slot,1,2], 'admit-evidence',1,
-        [1,private,[['dictionary',1,mapping]]]])
-    private_receipt = b'bigbrotr/receipt/1\0' + cbor([1,[slot,1,2],hashlib.sha256(private_input).digest(),
-        [dataset,0,1,bytes.fromhex(owner['process_incarnation'][2:]),1],refs,refs])
-    wanted = {(cf,k):v for cf,k,v in wanted}
-    wanted['facts',b'\x01\x20'+source_key] = b'\x01\x20'+digest+fact
-    wanted['default',b'\x01\x04'+reference_key] = b'\x01\x04'+source_key+digest
-    canonical = cbor(descriptor)
-    wanted['default',b'\x01\x05'+dataset+(4).to_bytes(2,'big')+hashlib.sha256(canonical).digest()+reference_key] = b'\x01\x05'+canonical
-    wanted['default',b'\x01\x03'+dataset+(4).to_bytes(2,'big')+dict(domains)[4]] = b'\x01\x03'+be(3)
-    wanted['default',b'\x01\x02'+dataset+(0).to_bytes(4,'big')+be(1)] = b'\x01\x02'+be(3)
-    wanted['facts',b'\x01\x21'+source_key] = b'\x01\x21'+be(3)+hashlib.sha256(
-        b'bigbrotr/admission-batch/1\0'+cbor([dataset,0,1,3,3,refs])).digest()
-    wanted['receipts',b'\x01\x30'+slot+be(1)+be(2)] = private_receipt
-    wanted['receipts',b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(2)+be(0)+be(0)
-    wanted = sorted((cf,k,v) for (cf,k),v in wanted.items())
+    wanted, private_input, private_receipt = append_private_expected(wanted, dataset,
+        dict(domains)[4], slot, recovery, owner['acquired_at_us'], int(report['topology_generation']))
     dumped = lab.docker('exec',client,probe,'dump','/lab/'+name+'/store')
     with (output/(name+suffix+'-native.json')).open('x') as capture:
         capture.write(dumped.stdout)

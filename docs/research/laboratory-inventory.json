@@ -33794,7 +33794,7 @@
       }
     },
     "initial_private_scope": {
-      "status": "IMPLEMENTING_AFTER_INSTALLED_RED",
+      "status": "NATIVE_BUILD_PASS_INSTALLED_FIXTURE_CORRECTED_PENDING_RERUN",
       "local": ".research/implementation/initial-private-scope-20261002",
       "red": {
         "source": "ba1419646310e1b59d4c7d9ed4a5a88fa614e69f",
@@ -33870,6 +33870,112 @@
         },
         "source_files_verified": 1667,
         "captures_verified": 32
+      },
+      "native": {
+        "launch": {
+          "source": "f8015bce53a5b35ca92f0acec509935c1d9d0260",
+          "tree": "45e58dd847d9e3e1c0d7a1026021d6b0d7839f48",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-f8015bc",
+          "pid": 1677609,
+          "start_ticks": "429317441",
+          "bundle_sha256": "69cba5f584ac0a31d603e25a5f208708ae685652645de9df82112a4f6925da81"
+        },
+        "resources": {
+          "source": "f8015bce53a5b35ca92f0acec509935c1d9d0260",
+          "tree": "45e58dd847d9e3e1c0d7a1026021d6b0d7839f48",
+          "owner": "1fb757d94b4eba72b29202b0bc45c92e",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-f8015bc",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "48653c3ebaee591a8ebd08fec56f86c1853aebb8f4dc963ad9ac25cbd2a928ed"
+            },
+            {
+              "name": "native",
+              "id": "a4656a52c5b2fec9a95777c353bf2874bf89a4e99af14d172fa3abd3ae6cbca8"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-02T03:15:20.904942+00:00",
+          "qualification": "PASS_INITIAL_INGEST_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 54872469504,
+          "finished_at": "2026-10-02T03:17:24.471604+00:00"
+        },
+        "binary_sha256": "0d821d677e1702a3ac41663b501e7efe84d77780ea038770fb369de5929655aa",
+        "probe_sha256": "88c177cdc2a747da36dadee9bf9146da01cccdcaa1648af60a592afa80428780",
+        "build_checks": "Six selected build/test/Clippy checks PASS; actual installed qualification separate.",
+        "setup_failure": "First launcher used nonexistent experiments/ingest-bootstrap/bindings.py, failed before engines; original engine-orchestrator.log retained. Corrected launcher uses acquisition-scope/bindings.py.",
+        "engine_launch": {
+          "source": "f8015bce53a5b35ca92f0acec509935c1d9d0260",
+          "tree": "45e58dd847d9e3e1c0d7a1026021d6b0d7839f48",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-f8015bc",
+          "pid": 1685752,
+          "start_ticks": "429360372"
+        },
+        "owner": "a2754f0c81c3506902796fe781f4e461",
+        "client": {
+          "id": "6c51c32c68152d38d1028aaccd04081a00ca4ea1979d06168ab60b0c10c3bf20",
+          "name": "bigbrotr-acquisition-binding-f8015bc"
+        },
+        "databases": [
+          "bb_scope_bind_f8015bc_pass"
+        ],
+        "result": "FAIL first literal receipt2 oracle: used process incarnation and fixed topology0 instead of recovery generation and actual topology. Actual17 rows retained; root corrected oracle replay PASS plus3 metadata negatives. Later8 cases NOT_RUN.",
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "f8015bce53a5b35ca92f0acec509935c1d9d0260",
+          "observed_at": "2026-10-02T03:23:54.476204+00:00",
+          "prior_unchanged": 1063,
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "name": "fetch",
+              "id": "48653c3ebaee591a8ebd08fec56f86c1853aebb8f4dc963ad9ac25cbd2a928ed",
+              "exit": 0
+            },
+            {
+              "name": "native",
+              "id": "a4656a52c5b2fec9a95777c353bf2874bf89a4e99af14d172fa3abd3ae6cbca8",
+              "exit": 0
+            },
+            {
+              "name": "client",
+              "id": "6c51c32c68152d38d1028aaccd04081a00ca4ea1979d06168ab60b0c10c3bf20",
+              "exit": 143
+            },
+            {
+              "name": "postgres",
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            }
+          ],
+          "source_files": 1668,
+          "artifacts_verified": true,
+          "compiler_lock_released": true,
+          "free_bytes": 54857125888,
+          "server": {
+            "version": "160015",
+            "fsync": "on",
+            "full_page_writes": "on",
+            "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+          }
+        },
+        "root_review": {
+          "status": "PASS_CAPTURE_REGRESSION",
+          "source_files": 1668,
+          "checks": [
+            "complete native rows, inputs, receipts and SQL metadata: PASS",
+            "producer_requests.issuer_incarnation: EXPECTED_FAIL",
+            "producer_outcomes.recorder_epoch: EXPECTED_FAIL",
+            "producer_outcomes.producer_slot_id: EXPECTED_FAIL"
+          ]
+        },
+        "captures_verified": 37
       }
     }
   },

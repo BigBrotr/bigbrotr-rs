@@ -5,18 +5,24 @@ from pathlib import Path
 import shutil
 import lab
 from bootstrap_oracle import cbor, expected
-from installed import configure, messages, policy_setup, set_value, wait_for
+from installed import append_private_expected, configure, messages, policy_setup, set_value, wait_for
 
 CASES = dict([('commit-pass', ('pass', 4, 'stop'))]
     + [(f'{mode}-{number}', (wire, number, 'stop'))
-       for number in range(1, 5)
+       for number in range(1, 7)
        for mode, wire in [('before', 'before-forward'), ('after', 'after-complete')]]
     + [('cancel-reservation', ('hold', 3, 'close')),
        ('cancel-outcome', ('hold', 4, 'close')),
-       ('delayed-outcome', ('hold', 4, 'release'))])
+       ('delayed-outcome', ('hold', 4, 'release')),
+       ('cancel-private-reservation', ('hold', 5, 'close')),
+       ('cancel-private-outcome', ('hold', 6, 'close')),
+       ('delayed-private-outcome', ('hold', 6, 'release'))])
 
 
-def native_oracle(client, output, name, state, committed, outcome):
+def native_oracle(client, output, name, state, number, healthy, last_commit):
+    committed = number >= 4 or healthy
+    private_staged = number >= 5 or healthy
+    private_committed = number >= 6 or healthy
     dump = lab.docker('exec', client, '/build/ingest_bootstrap_probe', 'dump', '/lab/'+name+'/store')
     with (output/(name+'-native.json')).open('x') as capture:
         capture.write(dump.stdout)
@@ -38,26 +44,47 @@ def native_oracle(client, output, name, state, committed, outcome):
         incarnation=bytes.fromhex(owner['process_incarnation'][2:]), recovery=recovery,
         topology=state['datasets'][0]['topology_generation'], namespaces=domains,
         recorded_at=owner['acquired_at_us'])
-    assert actual==wanted and len(actual)==(12 if committed else 1)
+    private_rows, private_input, private_receipt = append_private_expected(wanted, dataset,
+        dict(domains)[4], slot, recovery, owner['acquired_at_us'], state['datasets'][0]['topology_generation'])
+    if private_committed:
+        wanted = private_rows
+    assert actual == wanted and len(actual) == (17 if private_committed else 12 if committed else 1)
     ref = lambda n: [dataset, 4, dict(domains)[4], n]
     entries = [['dictionary', 1, [ref(n), 1, 'visibility', 1, {'class': label}]]
                for n, label in [(1, 'public'), (2, 'private')]]
     request = b'bigbrotr/producer-request/1\0'+cbor([[slot, 1, 1], 'admit-evidence', 1, [1, ref(1), entries]])
-    inputs = list((output/name/'store/producer-inputs-v1').glob('*.cbor'))
-    assert len(inputs)==1 and inputs[0].read_bytes()==request
-    if state['producer_requests']:
-        row = state['producer_requests'][0]
-        assert row['request_digest']=='\\x'+hashlib.sha256(request).hexdigest()
-        assert row['manifest_sha256']=='\\x'+hashlib.sha256(manifest).hexdigest()
-        assert row['input_bytes']==len(request) and row['input_profile']==1
-        assert row['producer_slot_id']=='\\x'+slot.hex() and row['request_sequence']==1
-    if outcome:
-        row = state['producer_outcomes'][0]
-        assert row['outcome_bytes']=='\\x'+receipt.hex()
-        assert row['outcome_sha256']=='\\x'+hashlib.sha256(receipt).hexdigest()
-        assert row['manifest_sha256']=='\\x'+hashlib.sha256(manifest).hexdigest()
-        assert row['request_digest']=='\\x'+hashlib.sha256(request).hexdigest()
+    inputs = sorted((output/name/'store/producer-inputs-v1').glob('*.cbor'))
+    expected_inputs = [request, private_input] if private_staged else [request]
+    assert [p.read_bytes() for p in inputs] == expected_inputs
+    requests = sorted(state['producer_requests'], key=lambda r:int(r['request_sequence']))
+    outcomes = sorted(state['producer_outcomes'], key=lambda r:int(r['request_sequence']))
+    control = next(r for r in state['owner_epochs'] if r['role'] == 'control')
+    common = dict(dataset_id='\\x'+dataset.hex(), producer_slot_id='\\x'+slot.hex(),
+                  producer_epoch=1, manifest_sha256='\\x'+hashlib.sha256(manifest).hexdigest())
+    for sequence, (row, original) in enumerate(zip(requests, expected_inputs), 1):
+        wanted_request = dict(common, request_sequence=sequence,
+            request_digest='\\x'+hashlib.sha256(original).hexdigest(),
+            input_bytes=len(original), input_profile=1, issuer_role='control',
+            issuer_resource=control['resource_id'], issuer_epoch=control['epoch'],
+            issuer_incarnation=control['process_incarnation'], relay_endpoint_id=None,
+            relay_access_scope_id=None, relay_enrollment_generation=None, relay_route_id=None)
+        assert {k:v for k,v in row.items() if k not in ('xmin','reserved_at_us')} == wanted_request
+        assert int(row['xmin']) > 0
+        assert control['acquired_at_us'] <= row['reserved_at_us'] < control['lease_expires_at_us']
+    for sequence, (row, original, expected_receipt) in enumerate(zip(outcomes, expected_inputs, [receipt, private_receipt]), 1):
+        wanted_outcome = dict(common, request_sequence=sequence,
+            request_digest='\\x'+hashlib.sha256(original).hexdigest(), outcome_kind=1,
+            outcome_bytes='\\x'+expected_receipt.hex(),
+            outcome_sha256='\\x'+hashlib.sha256(expected_receipt).hexdigest(),
+            policy_epoch=1, recorder_role='control', recorder_resource=control['resource_id'],
+            recorder_epoch=control['epoch'], recorder_incarnation=control['process_incarnation'])
+        assert {k:v for k,v in row.items() if k not in ('xmin','recorded_at_us')} == wanted_outcome
+        assert int(row['xmin']) > 0
+        assert requests[sequence-1]['reserved_at_us'] <= row['recorded_at_us'] < control['lease_expires_at_us']
     assert state['producer_epochs'][0]['outstanding_request_limit']==32
+    assert len(requests)==int(last_commit>=3)+int(last_commit>=5)
+    assert len(outcomes)==int(last_commit>=4)+int(last_commit>=6)
+    return len(actual)
 
 
 def backend(pg, database):
@@ -155,8 +182,8 @@ sys.exit(r.returncode)
     for table in ['source_streams', 'topology_generations', 'topology_streams', 'producer_slots', 'producer_epochs']:
         assert len(after[table])==int(last_commit>=2), table
     assert len(after['allocation_domains'])==9*int(last_commit>=2)
-    assert len(after['producer_requests'])==int(last_commit>=3)
-    assert len(after['producer_outcomes'])==int(last_commit>=4)
+    assert len(after['producer_requests'])==int(last_commit>=3)+int(last_commit>=5)
+    assert len(after['producer_outcomes'])==int(last_commit>=4)+int(last_commit>=6)
     allowed = {'datasets','role_instances','owner_epochs','topology_generations','topology_streams',
                'source_streams','allocation_domains','producer_slots','producer_epochs','producer_requests','producer_outcomes'}
     assert {t for t in before if before[t]!=after[t]}<=allowed
@@ -176,8 +203,9 @@ sys.exit(r.returncode)
         assert not report and path('.stderr').read_text()
         assert all(r['state']=='active' and r['released_at_us'] is None and r['exclusion_digest'] is None
                    for r in after['owner_epochs'])
+    native_count = 0
     if number>=3 or healthy:
-        native_oracle(client, output, name, after, number>=4 or healthy, last_commit>=4)
+        native_count = native_oracle(client, output, name, after, number, healthy, last_commit)
         retry = lab.cli(state, 'serve', '--file', direct, '--initialize-ingest', '--roles', 'control,ingest')
         (output/(name+'-retry.stderr')).write_text(retry.stderr)
         assert retry.returncode==3 and 'target exists' in retry.stderr and not retry.stdout
@@ -185,5 +213,5 @@ sys.exit(r.returncode)
     else:
         assert not (output/name/'store').exists()
     return dict(name=name, status='PASS', actual_cli=True, control_tables=len(after),
-                committed_prefix=last_commit, native_rows=(12 if number>=4 or healthy else 1) if number>=3 or healthy else 0,
+                committed_prefix=last_commit, native_rows=native_count,
                 terminal=terminal)

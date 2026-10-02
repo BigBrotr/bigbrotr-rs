@@ -12,7 +12,30 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Mainba1419646310e1b59d4c7d9ed4a5a88fa614e69f; origin/main9e22986. Root sole writer.
+Mainf8015bce53a5b35ca92f0acec509935c1d9d0260; origin/main9e22986. Root sole writer.
+Unpublishedba14196/f8015bc preserve original bootstrap1 and append self-scoped
+private3/request2 before initialized report. Three dirty experiment files owned
+by root: installed.py extracts the literal oracle; commits.py/commit_client.py
+extend COMMIT cuts through private reservation5/outcome6 (19 cases, NOT_RUN).
+
+Native f8015bc build and six selected build/test/Clippy checks PASS. Terminal
+build audit2026-10-02T03:21:25UTC:1062 prior unchanged,eight unrelated running,
+compiler lock free,54,872,432,640B free. Build owner1fb757d94b4eba72b29202b0bc45c92e;
+fetch48653c3e/nativea4656a52 stopped0/noOOM. Actual CLI0d821d67/probe88c177cd
+retained outside shared cache. Mac3,383,052KiB free; no local Rust build.
+First f8015bc installed engine wave STOPPED/RETAINED with fixture FAIL: exactly17
+native rows, but literal receipt2 expected Ingest process incarnation rather than
+recovery generation. Corrected fixture also uses actual topology rather than0.
+Root replay of original capture PASS, three complete-metadata mutation negatives
+reject;1668 Git files/captures verified. Original FAIL remains, later8 NOT_RUN.
+First launcher setup path failure before engines retained separately; corrected
+enginePID1685752/start429360372. Client6c51c32c stopped143; PG71775507 stopped0.
+Audit03:23:54UTC:1063 prior unchanged,eight unrelated,compiler lock free,
+54,857,125,888B free. No active experiment. Next exact-Git corrected nine-case
+lifetime wave, then nineteen startup COMMIT cases reusing qualifiedf8015bc artifacts.
+Originals .research/implementation/initial-private-scope-20261002/{red,native}.
+Inventory initial_private_scope owns both failures, build and terminal identities.
+
 Installed private-scope RED ran exactc0fb44e CLI against fixtureba14196: original12
 native rows versus independent17 expected. CLI stopped cleanly; original source,
 32 captures and1667 Git files verified. No later case ran. runs/initial-private-ba14196
@@ -20,14 +43,12 @@ STOPPED/RETAINED:PID1672908/start429289592,owner55e5394c4e9097fbfcf08f6c3c552168
 client29d0eadc stopped143/PG71775507 stopped0/noOOM. Audit03:13:58UTC:1060 prior
 unchanged,eight unrelated running,compiler lock free,55,009,288,192B free.
 
-Dirty product: same-owner startup preserves bootstrap1 then fixed private3 append2;
-report publishes private_scope only after durable delivery. Dedicated dictionaries
-module keeps both operations explicit; startup reserves all grants before mutation.
-Both accepted documents/local selected profile refuse fewer than2 window slots.
-Added local/config/policy single-slot practical negatives; build/engine NOT_RUN.
-Next exact-Git native build, then nine installed lifetime cases and appended
-reservation/outcome COMMIT cuts. Do not claim installed private scope until actual
-CLI/native/SQL results match. This is P02-T03/P03-T01/M1 work, no new visibility API.
+Dedicated dictionaries module keeps both operations explicit; startup reserves
+all grants before mutation. Both accepted documents/local selected profile refuse
+fewer than2 window slots. Next inspect nine actual installed cases, then qualify
+appended reservation/outcome COMMIT cuts including cancellation under held custody.
+Do not claim installed private scope until actual CLI/native/SQL results match.
+This is P02-T03/P03-T01/M1 work, no new visibility API.
 18ed28a preparation native GREEN:13 append/preparation,5 bootstrap,11 recovery
 PASS; actual CLI/probe build and Clippy PASS. Intentional818 RED remains retained.
 runs/dictionary-append-18ed28a STOPPED/RETAINED:PID1656405/start429175471,

@@ -97,12 +97,12 @@ try:
     assert result['proxy_exit']==0 and not proxy.stderr
     result['receipt'] = receipt
     if mode=='pass':
-        assert receipt['faults']==0 and receipt['commits_seen']>=7
+        assert receipt['faults']==0 and receipt['commits_seen']>=9
         assert receipt['commits_seen']==receipt['commits_forwarded']==receipt['server_commit_complete']==receipt['client_commit_complete']
     else:
         assert receipt['faults']==1
         if action=='release':
-            assert receipt['hold_action']=='release' and receipt['commits_seen']>=7
+            assert receipt['hold_action']=='release' and receipt['commits_seen']>=9
             assert receipt['commits_seen']==receipt['server_commit_complete']==receipt['client_commit_complete']
         else:
             assert receipt['commits_seen']==number and receipt['client_commit_complete']==number-1
