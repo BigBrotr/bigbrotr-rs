@@ -51,7 +51,6 @@ impl Archive {
         deadline: Instant,
         cancelled: &AtomicBool,
     ) -> Result<Self> {
-        validate(root).map_err(error)?;
         let identity = root.catalog_identity().map_err(error)?;
         let state = root.archive_state_path().map_err(error)?;
         let coordinator = LocalCoordinator::open(&identity, &state).map_err(error)?;
@@ -70,41 +69,52 @@ impl Archive {
             )
             .map_err(error)?,
         );
-        // Admission preflight before any Control or Ingest state exists.
-        let _admitted = native
-            .try_acquire(
-                ResourceRequest::data(0, 1, root.number("archive.worker_memory_bytes"))
-                    .map_err(error)?,
-            )
+        // Only the fixed minimum qualified worker is checked here. Managed
+        // seed policy is not authority; both accepted documents are checked
+        // after Control acquisition, before fresh Ingest registration.
+        let admitted = native
+            .try_acquire(ResourceRequest::data(0, 1, 512 * MIB).map_err(error)?)
             .map_err(error)?;
+        drop(admitted);
         let prepared = native::reader(root, budget)?;
+        let mut startup = root.clone();
+        startup
+            .values
+            .insert("archive.worker_memory_bytes".into(), json!(512 * MIB));
+        let mut limits = preflight::limits(&startup)?;
+        limits.max_records = 1;
         // Verify the packaged worker/scratch and actual catalog prerequisites
         // before registering this fresh Ingest lifetime. The joined preparer is
         // still under the parent's original deadline and cancellation watchdog.
-        preflight::worker(
-            root,
+        let (installation, scratch, _) = preflight::worker(
+            &startup,
             &identity,
             None,
             "initial-startup",
-            preflight::limits(root)?,
+            limits,
             deadline.into_std(),
             cancelled,
         )?;
         let reader = tokio::runtime::Handle::current().block_on(native::finite(
             deadline,
             cancelled,
-            native::check_reader(root, &coordinator, prepared),
+            native::check_reader(
+                root,
+                &coordinator,
+                prepared,
+                Preparation {
+                    installation: &installation,
+                    temp_root: &scratch,
+                    limits,
+                    deadline: deadline.into_std(),
+                    cancelled,
+                },
+                WorkerBudgets {
+                    application: budget,
+                    native: &native,
+                },
+            ),
         ))?;
-        let empty = CutRead {
-            dataset_id: identity.dataset(),
-            topology_generation: bigbrotr_model::TopologyGeneration::new(0),
-            bounds: Vec::new(),
-            receipts: Vec::new(),
-            snapshot_id: Some(1),
-        };
-        let mut limits = preflight::limits(root)?;
-        limits.max_records = 1;
-        native::validate_cut(&reader, &identity, &empty, limits)?;
         Ok(Self {
             coordinator,
             reader,

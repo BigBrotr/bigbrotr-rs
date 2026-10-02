@@ -140,7 +140,7 @@ fn budget(root: &Resolved, sync: bool, archive: bool) -> Result<ResourceBudget> 
         .checked_add(if archive { archive::ITEMS } else { 0 })
         .and_then(|items| {
             items.checked_add(if archive {
-                root.number("ingest.producer_outstanding_requests")
+                bigbrotr_protocol::archive_cut::MAX_BATCHES as u64
             } else {
                 0
             })

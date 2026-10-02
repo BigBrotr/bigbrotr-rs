@@ -12,31 +12,36 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main273d47b46fed6f826a88dcba502e14018633e8b5 above origin/main9985bd3.
-Candidate273d47b is now native build/Clippy PASS with6 startup supervisor tests,
-one cut admission and3 worker budget/custody cases.21 captures/1686 source files
-matched exactly. Run archive-worker-budgets-273d47b is stopped/retained, no OOM or
-unrelated changes; evidence startup supplement, local initial-archive/startup.
-Current uncommitted product wiring adds initial_ingest/archive{,/native}.rs,
-changes commands/startup/role selection and adds a read-only persistence
-prerequisite adapter. It is NOT_COMPILED/NOT_RUN. Do not confuse this with273d47b.
-Agentc8fdea5 owns the complete positive Python Archive fixture in its clean
-isolated worktree; not integrated yet. Existing read-only reviewer now inspects
-the concrete Archive wiring. Root owns all Rust, docs, integration and Tux
-mutations. Preserve historical/negative/dirty worktrees; no merge/rebase.
+Primary main2ae1866a615d186143eb48cc6549456bdb395b96 above origin/main9985bd3.
+Candidate81344be/tree616545f0b834ef8495518c60829f07f1c208eb7a builds worker,
+CLI/probes and passes Clippy plus13 scoped tests (native1,budgets2,cut2,startup8); no installed publication claim follows.
+The positive fixturec8fdea5 was integrated asb82b1e2; 2ae1866 adds discriminating
+reader startup cases and a managed staged publisher=false/window129 positive.
+All Python fixture checks pass; actual engine wave2ae1866 deliberately exposed
+81344be's wrong-password late refusal: initialized report/two durable requests,
+zero Archive attempts at detection. Original FAIL preserved, later cases NOT_RUN.
+57 capture hashes checked; build capture21files/all1688Git files matched.
+Evidence and inventory initial_archive.publication_build/reader_prerequisite_red.
 
-Review boundary update: the three new integration findings are addressed in the
-uncompiled candidate: mandatory reader/worker/catalog checks occur on the joined
-startup preparer; migration16, mutation privileges and absent prior Archive
-consumer/owner/attempt history precede fresh Ingest registration; both accepted
-initial windows are capped at protocol128, with exact prospective complete-cut
-wire/allocation preflight before issuance/publication. Reader roots/native TLS
-are retained once; concrete native/catalog helpers remain local to this owner.
-New regressions cover transport failure collecting its blocking work, window129
-refusal and oversized complete-cut refusal. These are NOT_RUN until Tux compiles.
-The positive fixture's complete owning Python files and independent controls have
-now been reviewed; c8fdea5 is still separate. Current Tux51,005,939,712B and
-Mac3,072,316KiB free, no active BigBrotr job; eight unrelated containers unchanged.
+Current local Rust correction (not compiled): startup uses a fixed minimum512MiB
+worker only for deployment preflight, deferring policy to accepted documents.
+Actual empty-cut native reader authentication now runs inside the joined startup
+preparer under its original deadline/cancellation and CatalogCapture. Its retained
+reader bytes/route are the same later consumer inputs. Item admission uses the
+protocol128 ceiling rather than staged file policy. Reader files/privileges alone
+were insufficient; this fixes the measured counterexample. No generic framework,
+new persistent format or SQL migration. New accepted-window/cut-wire/driver-join
+regressions passed at81344be; actual startup-native check remains NOT_RUN.
+Root owns all edits, integration and Tux; read-only reviewer checks the focused
+candidate. Separate source worktrees and historical failures remain untouched.
+
+No active Tux job. Runs archive-worker-budgets-81344be and installed-archive-2ae1866
+are STOPPED/RETAINED, no OOM/cleanup errors/unrelated changes. Preserve RED native
+store, catalog, inputs and protected credentials for diagnosis; no reinitialization.
+Latest free Tux50,560,139,264B, Mac roughly3GiB. No local Rust build/cache deletion.
+Next bounded action: commit this correction, compile exact candidate on Tux with
+shared cache lock, rerun the four-case installed Archive matrix on fresh clones,
+then ordinary read/export restart and the remaining frontier/authority negatives.
 
 ## Active responsibility and next action
 

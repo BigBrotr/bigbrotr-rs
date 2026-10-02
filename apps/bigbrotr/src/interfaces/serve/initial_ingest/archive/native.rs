@@ -181,6 +181,8 @@ pub(super) async fn check_reader(
     root: &Resolved,
     coordinator: &LocalCoordinator,
     prepared: PreparedReader,
+    preparation: Preparation<'_>,
+    budgets: WorkerBudgets<'_>,
 ) -> Result<Arc<Reader>> {
     let (mut manager, connection, pinned) = transport::connect_pinned(prepared.connection, None)
         .await
@@ -203,15 +205,41 @@ pub(super) async fn check_reader(
                     "initial Archive requires the original empty snapshot",
                 ));
             }
-            capture.finish().await.map_err(error)?;
-            Reader::connect_input(
+            let reader = Reader::connect_input(
                 root,
                 pinned,
                 prepared.password,
                 prepared.tls,
                 prepared.permit,
-            )
-            .map(Arc::new)
+            )?;
+            let empty = CutRead {
+                dataset_id: coordinator.identity().dataset(),
+                topology_generation: bigbrotr_model::TopologyGeneration::new(0),
+                bounds: Vec::new(),
+                receipts: Vec::new(),
+                snapshot_id: Some(1),
+            };
+            // Authenticate the SAME retained native reader credential, observe
+            // the empty scientific catalog, and actually join the child before
+            // any fresh Ingest effects. Manager privilege inspection alone does
+            // not establish that the reader password works.
+            let observed = preparation
+                .inspect_cut(
+                    empty,
+                    coordinator.reader_custody().map_err(error)?,
+                    &reader.route.borrowed(),
+                    CatalogReaderCredentials {
+                        login: &reader.login,
+                        password: std::str::from_utf8(reader.password.as_bytes()).map_err(error)?,
+                    },
+                    budgets,
+                    1,
+                )
+                .map_err(error)?;
+            let captured = capture.accept(observed).await.map_err(error)?;
+            drop(captured);
+            capture.finish().await.map_err(error)?;
+            Ok(Arc::new(reader))
         }
         .await;
         drop(manager);

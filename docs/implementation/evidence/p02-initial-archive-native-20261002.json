@@ -258,5 +258,79 @@
     "unrelated_changed": [],
     "free_bytes_after": 51006136320,
     "limitation": "Joined preparation and owned cut API; actual installed publisher remains NOT_RUN"
+  },
+  "publication_build": {
+    "source": "81344bee6f177d6ca3008ebc7eb1ef2051995d40",
+    "tree": "616545f0b834ef8495518c60829f07f1c208eb7a",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-worker-budgets-81344be",
+    "owner": "2041250a5829108ec7a4018842e56bf2",
+    "containers": [
+      {
+        "name": "fetch",
+        "id": "69fdd59b7571ed1e1f564a9c5fed2ba24089b348dbe7bf128d463822367e752e"
+      },
+      {
+        "name": "native",
+        "id": "575cff4d30bca57acb3998bfaae648550bf01550547f19cc269ed1c450767be4"
+      }
+    ],
+    "status": "PASS",
+    "build_and_clippy": "PASS",
+    "tests": {
+      "native-custody": 1,
+      "worker-budgets": 2,
+      "cut-admission": 2,
+      "initial-supervision": 8
+    },
+    "artifacts": {
+      "cli": "7570420f3336b2fdc203d51e0430ff0e640d0cf2cf2fce128b8064452340173f",
+      "probe": "d8049bccfcd54748fae0684b5d0c2baed6aa13f163ade5c2f78af85d00743050",
+      "worker": {
+        "bytes": 14421792,
+        "sha256": "0b9107ab422f2ae72af164d863f3e90e24e213231dcaeade9e0b5fe10320b4c1"
+      },
+      "tests": {
+        "archive_worker_components": "fcce509c2a457f58ca0e52da32e3d5f287c38b610745b0ba1d77759114022e55",
+        "initial_supervision_components": "5177267d761fdabe95dc562830f37322993c6f982e67c4626d4633b9f797111c"
+      }
+    },
+    "capture": {
+      "label": "publication-build",
+      "source": "81344bee6f177d6ca3008ebc7eb1ef2051995d40",
+      "files": 1688,
+      "captures": 21,
+      "capture_sha256": "2b02f9b2290fd6d89ecacb8a02119246038a385bd43c0da0adfb83f2b435b2ae"
+    },
+    "cleanup": "stopped-retained",
+    "unrelated_changed": [],
+    "free_bytes_after": 50630152192,
+    "limitation": "Initial publisher compiles; practical reader prerequisite RED below prevents qualification"
+  },
+  "reader_prerequisite_red": {
+    "source": "2ae1866a615d186143eb48cc6549456bdb395b96",
+    "tree": "8c4ab4540508eb671f7301908fed0e1af09f18ab",
+    "build_source": "81344bee6f177d6ca3008ebc7eb1ef2051995d40",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-2ae1866",
+    "owner": "58c1e4e452f094b22e07414cfb7370e8",
+    "client": {
+      "id": "13354c3a5bc18b82bd3f3c192b1041042b53b4a8bebe547fc4d167ebd5b0d053",
+      "name": "bigbrotr-acquisition-binding-2ae1866"
+    },
+    "status": "FAIL",
+    "failure": "AssertionError: reader prerequisite was deferred beyond fresh Ingest effects",
+    "capture": {
+      "label": "reader-red",
+      "source": "2ae1866a615d186143eb48cc6549456bdb395b96",
+      "build_source": "81344bee6f177d6ca3008ebc7eb1ef2051995d40",
+      "status": "FAIL",
+      "captures": 57,
+      "capture_sha256": "67afd30411b80471878172ab28688624e997d593634748454591817225d414d8",
+      "cases": []
+    },
+    "observed": "Wrong native reader password accepted through initialized report and two durable bootstrap/private producer requests. No archive attempt yet; stopped at first discriminating assertion.",
+    "cleanup_errors": [],
+    "unrelated_changed": [],
+    "cleanup": "stopped-retained",
+    "not_run": "Subsequent missing-reader, missing-reader-grant and signed publication cases; native publication with bad password was not awaited"
   }
 }
