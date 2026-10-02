@@ -16,6 +16,7 @@ pub struct SourceResolution<'a> {
     requests: u64,
     source_through: u64,
     digest: Sha256,
+    event_requests: u64,
 }
 
 /// Only complete positive resolution can construct this native witness. Its
@@ -25,6 +26,7 @@ pub struct ResolvedSource<'a> {
     closing: ProducerClosing,
     source_through: u64,
     digest: [u8; 32],
+    event_requests: u64,
 }
 impl ResolvedSource<'_> {
     pub fn last_complete_sequence(&self) -> u64 {
@@ -35,6 +37,9 @@ impl ResolvedSource<'_> {
     }
     pub fn digest(&self) -> [u8; 32] {
         self.digest
+    }
+    pub(in crate::storage) fn event_request_mask(&self) -> u64 {
+        self.event_requests
     }
     pub(in crate::storage) fn recovery(&self) -> &IngestRecovery {
         self.recovery
@@ -90,6 +95,7 @@ impl ProducerClosing {
             requests: 0,
             source_through: 0,
             digest,
+            event_requests: 0,
         })
     }
 }
@@ -132,12 +138,21 @@ impl<'a> SourceResolution<'a> {
         }
         // Advance only after the entire observation passes; a refused out-of-order
         // result must not mutate the accumulator or silently fill its gap.
+        let event_bit = if resolved.is_event() {
+            u32::try_from(request.request_sequence.get() - 1)
+                .ok()
+                .and_then(|shift| 1_u64.checked_shl(shift))
+                .ok_or(BootstrapError::InsufficientReservation)?
+        } else {
+            0
+        };
         self.digest
             .update(request.request_sequence.get().to_be_bytes());
         self.digest.update(copy.digest().as_bytes());
         self.digest.update(Sha256::digest(copy.bytes()));
         self.requests = request.request_sequence.get();
         self.source_through = next_source;
+        self.event_requests |= event_bit;
         Ok(())
     }
 
@@ -249,6 +264,7 @@ impl<'a> SourceResolution<'a> {
             closing: self.closing,
             source_through: self.source_through,
             digest: self.digest.finalize().into(),
+            event_requests: self.event_requests,
         })
     }
 }

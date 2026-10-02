@@ -37426,6 +37426,42 @@
             ]
           }
         }
+      },
+      "initial_retirement": {
+        "entrypoint_red": {
+          "source": "f36a09e568de2ff096d47a97e6f9b2068c562347",
+          "tree": "1694bd8285e97a31980cf5d0e18eac340e0142f8",
+          "owner": "46539116b772155de227b154eeac6926",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-f36a09e",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "50cdc5db770320239e2d37400dc8ee70cd7a5ab5cba25581554ad0405255d5d5"
+            },
+            {
+              "name": "native",
+              "id": "04bee77ffd84040a00af12c4eeae669e6b7064a4ac7198e570bc7b6aff2abd19"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-02T14:14:14.054111+00:00",
+          "inventory_changed": [],
+          "free_bytes_after": 67490414592,
+          "finished_at": "2026-10-02T14:15:38.790772+00:00",
+          "capture": {
+            "label": "retirement-entrypoint-red",
+            "source": "f36a09e568de2ff096d47a97e6f9b2068c562347",
+            "files": 1715,
+            "captures": 12,
+            "capture_sha256": "6aa2656acfe1d845a6eb117437b14f8b6df97939ce9461001a1316c34d96677a"
+          },
+          "result": "EXPECTED_RED: unknown --retire-initial returns2 instead of native missing-root refusal4; other3 entrypoint cases pass; later checks NOT_RUN"
+        },
+        "preserve": "Original source, failed logs/capture and artifacts; mutable shared1154757 compiler remains owned/exclusive. No datasets or containers deleted."
       }
     }
   },

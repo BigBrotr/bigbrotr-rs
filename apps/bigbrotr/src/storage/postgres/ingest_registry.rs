@@ -365,6 +365,8 @@ pub(super) enum RegistryLocks {
     Source,
     /// Dataset UPDATE is acquired before the source/producer and any job locks.
     Workflow,
+    /// Explicit initial retirement, including observation after completed release.
+    Retirement,
 }
 
 async fn observe_locked(
@@ -437,6 +439,32 @@ async fn observe_locked(
     let prerequisites = control.live
         && config_head == Some(s.config_revision)
         && policy_head == Some(s.policy_revision);
+    // Retirement writes these parents. Lock them before their dependents, just
+    // as renewal locks Ingest before consulting the producer registry.
+    if matches!(locks, RegistryLocks::Retirement) {
+        tx.query_opt(
+            "SELECT epoch FROM control.owner_epochs
+            WHERE resource_id=$1::bytea AND epoch=1 FOR UPDATE",
+            &[resource],
+        )
+        .await
+        .map_err(backend)?;
+        tx.query_opt(
+            "SELECT role_instance_id FROM control.role_instances
+            WHERE role_instance_id=$1::bytea FOR UPDATE",
+            &[role],
+        )
+        .await
+        .map_err(backend)?;
+        tx.query(
+            "SELECT allocation_domain FROM control.allocation_domains
+            WHERE dataset_id=$1::bytea AND owner_resource_id=$2::bytea
+            ORDER BY dictionary_kind,allocation_domain LIMIT 10 FOR UPDATE",
+            &[dataset, resource],
+        )
+        .await
+        .map_err(backend)?;
+    }
     let owner = presence(tx.query_opt("SELECT dataset_id = $1::bytea AND role = 'ingest' AND role_instance_id = $3::bytea AND process_incarnation = $4::bytea AND acquired_at_us = $5::bigint, CASE state WHEN 'active' THEN true WHEN 'draining' THEN false WHEN 'released' THEN false END FROM control.owner_epochs WHERE resource_id = $2::bytea AND epoch = 1 FOR SHARE", &[dataset, resource, role, incarnation, &s.created_at_us])
         .await.map_err(backend)?)?;
     let role_row = presence(tx.query_opt("SELECT dataset_id = $1::bytea AND role = 'ingest' AND created_at_us = $3::bigint, retired_at_us IS NULL FROM control.role_instances WHERE role_instance_id = $2::bytea FOR SHARE", &[dataset, role, &s.created_at_us])
@@ -449,7 +477,7 @@ async fn observe_locked(
                CASE state WHEN 'open' THEN true WHEN 'closing' THEN false WHEN 'closed' THEN false END
           FROM control.source_streams
          WHERE dataset_id = $1::bytea AND shard_id = $2::bigint AND owner_epoch = 1 {}",
-        if matches!(locks, RegistryLocks::Source | RegistryLocks::Workflow) { "FOR UPDATE" } else { "FOR SHARE" });
+        if matches!(locks, RegistryLocks::Source | RegistryLocks::Workflow | RegistryLocks::Retirement) { "FOR UPDATE" } else { "FOR SHARE" });
     let stream = presence(
         tx.query_opt(
             &source_sql,
@@ -586,6 +614,25 @@ pub(super) async fn require_closing_registration(
     // owners and retired producers cannot be resurrected by historical metadata.
     let row = tx.query_one("SELECT o.state IN ('active','draining') AND r.retired_at_us IS NULL AND p.state IN ('open','closing') FROM control.owner_epochs o JOIN control.role_instances r ON r.role_instance_id=o.role_instance_id JOIN control.producer_epochs p ON p.owner_resource_id=o.resource_id AND p.owner_epoch=o.epoch WHERE o.resource_id=$1::bytea AND o.epoch=1 AND p.producer_slot_id=$2::bytea AND p.producer_epoch=1", &[&&specification.ingest_resource_id.as_bytes()[..], &&specification.producer_slot_id.as_bytes()[..]]).await.map_err(backend)?;
     if !boolean(&row, 0)? {
+        return Err(RegistryError::InvalidMetadata);
+    }
+    Ok(())
+}
+
+/// Only the explicit retirement consumer can inspect terminal custody. This
+/// validates immutable identity, not the complete retirement result; the
+/// consumer must still check every terminal field against its native witness.
+pub(super) async fn require_retirement_registration(
+    tx: &Transaction<'_>,
+    specification: &InitialRegistration,
+) -> Result<(), RegistryError> {
+    specification.validate()?;
+    if !matches!(
+        observe_locked(tx, specification, RegistryLocks::Retirement)
+            .await?
+            .observation,
+        RegistrationObservation::Matching { .. }
+    ) {
         return Err(RegistryError::InvalidMetadata);
     }
     Ok(())

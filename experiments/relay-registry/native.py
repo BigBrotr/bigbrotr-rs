@@ -58,6 +58,10 @@ if mode == 'ingest-history':
                                    '--test','control_runtime_entrypoint','--test','control_schema']))
     steps.insert(2, ('source-closure', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                       '--lib','source_closure_tests','--message-format=json','--','--test-threads=1']))
+    steps[3:3] = [(name, ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                         '--lib',selection,'--message-format=json','--','--test-threads=1'])
+                  for name, selection in [('producer-closing','producer_closing_tests'),
+                                          ('producer-recovery','producer_recovery_tests')]]
 if mode == 'ingest-recovery':
     identity['scope'] = 'Exclusive historical native inspection; registry loader, installed recovery and successor remain separate'
     steps.insert(0, ('rocks-store', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
@@ -220,7 +224,7 @@ if mode in ('observation', 'relay-transfer'):
 if mode in ('dictionary-append', 'ingest-recovery', 'ingest-history'):
     import re
     counts, executables = {}, set()
-    selections = (['rocks-store'] if mode == 'ingest-recovery' else ['source-closure'] if mode == 'ingest-history'
+    selections = (['rocks-store'] if mode == 'ingest-recovery' else ['source-closure','producer-closing','producer-recovery'] if mode == 'ingest-history'
                   else ['dictionary-append', 'bootstrap', 'recovery'])
     target_kind = ['test'] if mode == 'ingest-recovery' else ['lib']
     retained_name = ('rocks_store' if mode == 'ingest-recovery' else 'source_closure_components' if mode == 'ingest-history'

@@ -2485,5 +2485,29 @@
       ]
     },
     "qualified_boundary": "Initial whole-intent abandonment only: signed seed/retry, no-request intents, historical authority loss, advanced/missing schema refusal, ordinary job compatibility, raw atomicity/immutability, finite64/65 counts, populated corrective upgrade and INSERT/COMMIT recovery. Full acquisition, producer/domain retirement, ACK/GC, successor and M1 remain incomplete."
+  },
+  "initial_retirement_20261002": {
+    "status": "IMPLEMENTING; not qualified",
+    "tasks": [
+      "P02-T01 Step5",
+      "P02-T02 Step4",
+      "P01-T09 Step4"
+    ],
+    "entrypoint_red": {
+      "label": "retirement-entrypoint-red",
+      "source": "f36a09e568de2ff096d47a97e6f9b2068c562347",
+      "files": 1715,
+      "captures": 12,
+      "capture_sha256": "6aa2656acfe1d845a6eb117437b14f8b6df97939ce9461001a1316c34d96677a"
+    },
+    "red_result": "EXPECTED_RED: unknown --retire-initial returns2 instead of native missing-root refusal4; other3 entrypoint cases pass; later checks NOT_RUN",
+    "scope": "Explicit initial producer/domain retirement and Ingest release; retained ACK/GC zero; successor and full M1 remain",
+    "pending": [
+      "Native candidate build",
+      "Installed signed retirement and exact completed retry",
+      "Refusals including zero-request workflow and native unbound Event",
+      "Populated additive migration/reapply",
+      "Actual rollback, ambiguous COMMIT and authority/lock schedules"
+    ]
   }
 }

@@ -84,6 +84,8 @@ mod initial_batch;
 mod producer_closing;
 #[path = "producer_recovery.rs"]
 mod producer_recovery;
+#[path = "producer_retirement.rs"]
+mod producer_retirement;
 #[path = "source_closure.rs"]
 mod source_closure;
 pub use initial_batch::{

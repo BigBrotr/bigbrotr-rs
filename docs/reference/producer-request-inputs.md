@@ -560,3 +560,57 @@ inputs and original catalog/files are checked. CLI termination is bounded in the
 schedules; server backends wait until the fixture unlocks. Blocked native calls,
 crash/ENOSPC, aged/load, producer/domain retirement and successor remain separate
 acceptance. See the same report for exact artifacts and original failures.
+
+
+### Explicit initial retirement (under implementation)
+
+P02-T01 Step5/P02-T02 Step4 add `ingest recover --retire-initial --file ROOT`
+as a separate operation after explicit source closure and acquisition abandonment.
+It is mutually exclusive with the other recovery modes. Additive0029 preserves
+all applied migration bytes, native formats and existing rows. Old binaries refuse
+its unknown schema. A retained historical empty retirement is not implicitly
+adopted; the new consumer requires the complete terminal shape described below.
+
+The consumer retains exclusive `IngestRecovery`, fresh actual Control and current
+policy throughout its operation. It only observes an existing native closing
+barrier and revalidates every original request/result against already present PG
+outcome copies. It cannot insert missing copies or turn an unissued request into
+noncommit. The native witness records Event classification within the existing
+64-request spool bound; a native Event with no acquisition job refuses even if
+all optional SQL source fields are absent. Unbound dictionary Evidence remains
+supported. No new persistent witness or native closure digest is introduced.
+
+Before any retirement, check the full single initial producer/source, all copied
+outcomes, complete retained acquisition gaps and all original-Control workflow
+claims, including claims with no request. Import bindings/checkpoints or import
+claims refuse pending their own qualified logical closure. This is a declared
+initial path limit, not removal of Importer or general recovery from the product.
+Unclaimed accepted jobs remain untouched. Owner-indexed acquisition/import checks
+avoid scanning unrelated job histories; retained gaps are bounded at64.
+
+Under Control then dataset UPDATE, lock Ingest/role/domains before source and
+producer. One final SQL transaction retires the producer, closes every allocation
+domain, releases Ingest with `storage_fenced` and retires its role. Each shares the
+same observed database timestamp and previously resolved source digest. Ordinary
+closing/admission still refuse retired/released history. Only this explicit mode
+can observe completion, revalidating the whole native/SQL witness and terminal
+state without rewriting original timestamps, attribution or row versions. Mixed
+terminal state refuses rather than being repaired opportunistically.
+
+The producer trigger checks closure/workflow obligations even for reserved zero;
+SQL alone does not prove native exclusion or inputs. The internal adapter supplies
+that proof and composed owner/domain atomicity. It follows PostgreSQL16
+[trigger visibility](https://www.postgresql.org/docs/16/trigger-datachanges.html)
+and [row-lock semantics](https://www.postgresql.org/docs/16/explicit-locking.html).
+Application recovery privileges include EXECUTE on
+`control.require_initial_retirement(bytea,numeric,bytea)` and the existing recovery
+read/update grants; this does not expand ordinary acquisition grants.
+
+Successful output reports `initial-retired` after native close and current Control
+release/driver join. Native v2 remains closing, ACK and retired watermarks stay0,
+and all inputs/receipts/facts remain. No capacity is reclaimed and no successor
+is activated. Cancellation or unknown COMMIT requires the same root/mode; a
+committed terminal result survives client loss. The
+[retirement evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+currently records only the actual entrypoint RED. Native/engine, complete retry,
+refusal, migration and interruption qualification remain required.

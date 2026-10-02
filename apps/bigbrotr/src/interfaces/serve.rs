@@ -61,7 +61,10 @@ pub(crate) fn ingest_command() -> Command {
             .arg(Arg::new("abandon-acquisition").long("abandon-acquisition").action(clap::ArgAction::SetTrue)
                 .conflicts_with("close-source")
                 .help("Close the initial source and explicitly abandon its original queued acquisition intents; retains coverage gaps"))
-            .after_help("Stop the original native owner first. Requires local Control/Ingest, the existing native store, retained original inputs and an initialized Control database. Uses fresh Control authority and current accepted policy. Preserves unresolved reservations; never infers noncommit. Starts no listener or acquisition. Default recovery leaves the source open; explicit --close-source requires all original requests and a complete native source prefix. Explicit --abandon-acquisition also records whole-intent coverage gaps and cancels up to64 original queued acquisition jobs under migration0027. No mode acknowledges, retires or activates a successor. Exit: 0 requested recovery completed and Control released, 1 I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled/unresolved/unknown outcome. Retry the same root and mode after inspecting retained state."))
+            .arg(Arg::new("retire-initial").long("retire-initial").action(clap::ArgAction::SetTrue)
+                .conflicts_with_all(["close-source", "abandon-acquisition"])
+                .help("Retire the initial producer/domains and release Ingest after explicit source closure and acquisition abandonment; retains all detail"))
+            .after_help("Stop the original native owner first. Requires local Control/Ingest, the existing native store, retained original inputs and an initialized Control database. Uses fresh Control authority and current accepted policy. Preserves unresolved reservations; never infers noncommit. Starts no listener or acquisition. Default recovery leaves the source open; explicit --close-source requires all original requests and a complete native source prefix. Explicit --abandon-acquisition also records whole-intent coverage gaps and cancels up to64 original queued acquisition jobs under migration0027. Explicit --retire-initial requires migration0029 and already complete closure/abandonment; it refuses import obligations and unbound historical Events. Retirement is under qualification. No mode acknowledges, reclaims receipts or activates a successor. Exit: 0 requested recovery completed and Control released, 1 I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled/unresolved/unknown outcome. Retry the same root and mode after inspecting retained state."))
 }
 
 pub(crate) fn recover_ingest(args: &ArgMatches) -> ! {
@@ -107,7 +110,9 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
         let root = crate::config::load(Path::new(args.get_one::<String>("file").unwrap()))?;
         if matches!(operation, Operation::RecoverIngest) {
             use initial_ingest::recovery::Action;
-            let action = if args.get_flag("abandon-acquisition") {
+            let action = if args.get_flag("retire-initial") {
+                Action::RetireInitial
+            } else if args.get_flag("abandon-acquisition") {
                 Action::AbandonAcquisition
             } else if args.get_flag("close-source") {
                 Action::CloseSource

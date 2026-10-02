@@ -85,6 +85,7 @@ fn source_closure_requires_every_original_request_and_preserves_all_native_bytes
     let verified = prefix.finish().unwrap();
     assert_eq!(verified.last_complete_sequence(), 8);
     assert_eq!(verified.resolved_requests(), 3);
+    assert_eq!(verified.event_request_mask(), 0b110);
     assert_eq!(kv(&recovery.store), before);
     assert_eq!(recovery.store.db.latest_sequence_number(), native_sequence);
     let digest = verified.digest();
@@ -150,6 +151,7 @@ fn source_closure_preserves_zero_and_refuses_unissued_reservations() {
         .unwrap();
     assert_eq!(verified.last_complete_sequence(), 0);
     assert_eq!(verified.resolved_requests(), 0);
+    assert_eq!(verified.event_request_mask(), 0);
     assert_eq!(kv(&recovery.store), before);
 }
 

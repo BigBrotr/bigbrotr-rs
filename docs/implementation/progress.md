@@ -12,13 +12,22 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the slice below.
 
-Primary `main` and private `origin/main` match at `54ad09d`; the qualified
-abandonment boundary is pushed. Root now owns the retirement entrypoint regression
-and this checkpoint. No parallel writer or active BigBrotr experiment. A read-only
-AI reviewer is examining retirement obligations and retry/lock boundaries.
-No Mac Rust builds. Next candidate runs the discriminating entrypoint RED on Tux
-before product changes; its absent-store case must reach native inspection without
-opening credentials or creating state.
+Primary `main` is unpublished candidate `f36a09e`; private `origin/main` is
+`54ad09d`, the pushed qualified abandonment boundary. Root owns dirty retirement
+changes in CLI recovery, PG registry/closing/outcome adapters, native closing and
+source witnesses, migration0029/catalog, focused native tests and build recipe.
+These product edits have NOT been compiled or exercised. No parallel writer or
+active BigBrotr experiment. The read-only reviewer completed the design review;
+it did not review these dirty edits. No Mac Rust builds.
+
+Exact f36a09e/tree1694bd8 Tux entrypoint RED is retained at
+runs/ingest-history-f36a09e (owner46539116b772155de227b154eeac6926).
+Compilation passed; entrypoints3 passed/1 failed as expected: unknown
+--retire-initial returns2 instead of reaching absent-store inspection with4.
+Later catalog/native/Clippy checks did NOT run. Captured1715 source files/12
+outputs at .research/implementation/ingest-recovery-20261002/retirement-entrypoint-red,
+capture SHA6aa2656acfe1d845a6eb117437b14f8b6df97939ce9461001a1316c34d96677a.
+Stopped build04bee77f/fetch50cdc5db retained; shared compiler lock released.
 
 ## Active responsibility and next bounded action
 
@@ -29,8 +38,10 @@ Ingest release and explicit successor. Whole Discovery/Monitor/Ranker services
 are not prerequisites. No whole task or phase checkbox closes here.
 
 Initial acquisition abandonment now has its bounded qualification below.
-Next: read the remaining retirement/checkpoint/domain/owner contracts and callers,
-then implement explicit initial retirement under the retained native/source witness.
+Next: finish review of the dirty retirement implementation and owning contract,
+record the RED evidence/inventory, format and commit an unpublished candidate.
+Run the ingest-history native build, then installed signed retirement/retry,
+refusal, migration and interruption schedules against actual PostgreSQL/Rocks.
 SQL0011 deliberately rejects every nonempty retirement; replace that rule only
 additively, checking complete original outcomes and workflow obligations. Keep
 retirement, ACK/GC and successor semantics distinct. A retry after retirement
@@ -42,8 +53,8 @@ Inspected for this next action: complete0002/0011/0013/0014/0020/0021/0023/0024/
 PG/native producer closing, source resolution, connected recovery and historical
 registry, plus retirement/operations contracts. Initial registry currently hardcodes
 epoch1 and reads domains across the owner resource; successor must account for
-that persistent history without adopting old custody. No retirement migration or
-product implementation exists yet.
+that persistent history without adopting old custody. SQL0029 is drafted but has
+not been applied anywhere. Original migration checksums remain unchanged.
 
 Selected bounded route: `ingest recover --retire-initial` requires the prior
 explicit source closure and whole-intent abandonment. A dedicated read-only native
@@ -54,9 +65,13 @@ positively releases Ingest and retires its role. Its completed observation accep
 only the coherent whole terminal state and preserves attribution/xmin on retry.
 Ordinary admission and closing still reject retired/released history. Keep the
 native v2 closing marker and ACK/GC at zero; no new ledger or format is needed.
-Import bindings and historical relay inputs without an acquisition job need an
-explicit qualified workflow path; assess those limits before implementing the
-guard, without making the whole Importer a prerequisite of the M1 signed fixture.
+Import bindings/checkpoints and original-Control import claims are refused,
+including zero-request producers. Native Event classification refuses old Events
+without an acquisition job even when no SQL relay binding exists. These two
+review findings are included in the draft and still need discriminating engine
+regressions. A nonpersistent 64-bit Event mask in the resolved witness preserves
+the same final-effect check for callers using ordinary positive recovery; no
+native format or closure-digest change. Ordinary Evidence may remain unbound.
 
 ## Qualified initial abandonment boundary
 
@@ -161,7 +176,8 @@ CI/CD and release journeys remain selected work. No complete product claim.
 
 Fresh final check: no BigBrotr container/build/process active; eight unrelated
 containers remain inspirehep-reindex-db/mq/cache/es, ollama, fileshare-lan,
-fileshare-tailnet and tgdataset-mongo. Mac 6,281,448 KiB and Tux 67,584,389,120 B free.
+fileshare-tailnet and tgdataset-mongo. Latest resumption: Mac7,832,360 KiB and
+Tux67,490,275,328 B free; only the SSH inventory command matches process search.
 Check space before each large allocation; Tux remains below the old export run's
 64GiB+577MiB reserve. Do not lower it to fit another export experiment.
 

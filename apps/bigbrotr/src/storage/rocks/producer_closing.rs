@@ -70,6 +70,41 @@ impl ProducerClosing {
     }
 }
 impl IngestRecovery {
+    /// Read an existing closing barrier for completed-retirement observation.
+    /// Unlike closing, this cannot create metadata for an absent/open producer.
+    pub(in crate::storage) fn observe_closed_producer(
+        &self,
+        slot: ProducerSlotId,
+        epoch: ProducerEpoch,
+        permit: OwnedPermit,
+    ) -> Result<ProducerClosing, BootstrapError> {
+        if permit.request().units().data_bytes() < 4096
+            || permit.request().units().native_bytes() < 4096
+            || permit.request().units().items() == 0
+        {
+            return Err(BootstrapError::InsufficientReservation);
+        }
+        if self.store.write_uncertain {
+            return Err(BootstrapError::CommitUnknown);
+        }
+        if epoch.get() != 1 || self.manifest().identity().owner_epoch.get() != 1 {
+            return Err(BootstrapError::InvalidIntent);
+        }
+        let state = self
+            .store
+            .producer_state(slot, epoch)?
+            .filter(|state| state.closing)
+            .ok_or(BootstrapError::StateMismatch)?;
+        self.store.require_producer_boundary(slot, epoch, state)?;
+        Ok(ProducerClosing {
+            slot,
+            epoch,
+            manifest: *self.manifest(),
+            state,
+            _permit: permit,
+        })
+    }
+
     pub(in crate::storage) fn close_producer(
         &mut self,
         slot: ProducerSlotId,

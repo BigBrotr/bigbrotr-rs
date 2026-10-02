@@ -51,6 +51,7 @@ impl std::error::Error for ProducerRecoveryError {}
 pub struct ResolvedProducerRequest {
     outcome: StoredOutcome,
     input_bytes: u32,
+    event: bool,
 }
 impl ResolvedProducerRequest {
     pub fn outcome(&self) -> &AdmissionOutcome {
@@ -61,6 +62,9 @@ impl ResolvedProducerRequest {
     }
     pub(in crate::storage) fn input_bytes(&self) -> u32 {
         self.input_bytes
+    }
+    pub(in crate::storage) fn is_event(&self) -> bool {
+        self.event
     }
 }
 
@@ -113,6 +117,7 @@ impl IngestRecovery {
             .map_err(ProducerRecoveryError::Input)?;
         let input_bytes = retained.encoded_bytes();
         let (_, intent, _input_permit) = retained.into_parts();
+        let event = matches!(&intent, MutationIntent::Event(_));
         authority()?;
         let (outcome, copy) = match intent {
             MutationIntent::Evidence(ref intent) => {
@@ -172,6 +177,7 @@ impl IngestRecovery {
         Ok(ResolvedProducerRequest {
             outcome: StoredOutcome::new(outcome, copy, outcome_permit),
             input_bytes,
+            event,
         })
     }
 }

@@ -21,6 +21,7 @@ pub(in crate::interfaces::serve) enum Action {
     Resolve,
     CloseSource,
     AbandonAcquisition,
+    RetireInitial,
 }
 
 fn limits() -> ProducerRecoveryLimits {
@@ -217,6 +218,12 @@ async fn connected(
             .map_err(|e| (4, e.to_string()))
     })
     .await?;
+    let close_request = || ProducerCloseRequest {
+        ingest_root: path,
+        registration: &spec,
+        policy_ttl: duration(root, "authorization_ttl"),
+        cancelled: &cancellation.requested,
+    };
     let fresh = || super::super::fresh_process_incarnation().map_err(|e| (1, e.to_string()));
     let request = ClaimRequest {
         dataset: spec.dataset_id,
@@ -236,20 +243,17 @@ async fn connected(
     .await?;
     phase(progress, timeout)?;
     let closed = bounded(timeout, cancellation, async {
-        owner
-            .close_initial_producer(
-                recovery,
-                ProducerCloseRequest {
-                    ingest_root: path,
-                    registration: &spec,
-                    policy_ttl: duration(root, "authorization_ttl"),
-                    cancelled: &cancellation.requested,
-                },
-                grant(budget, 4096, 4096)?,
-                validate,
-            )
-            .await
-            .map_err(|e| (4, e.to_string()))
+        let permit = grant(budget, 4096, 4096)?;
+        let result = if action == Action::RetireInitial {
+            owner
+                .observe_initial_retirement(recovery, close_request(), permit, validate)
+                .await
+        } else {
+            owner
+                .close_initial_producer(recovery, close_request(), permit, validate)
+                .await
+        };
+        result.map_err(|e| (4, e.to_string()))
     })
     .await?;
     let issued = closed.issued_through();
@@ -277,28 +281,28 @@ async fn connected(
         let (input, outcome) = replay_grants(budget)?;
         phase(progress, timeout)?;
         let result = bounded(timeout, cancellation, async {
-            owner
-                .resolve_initial_producer_request(
-                    recovery,
-                    ProducerResolveRequest {
-                        ingest_root: path,
-                        registration: &spec,
-                        request: ProducerRequestId {
-                            producer_slot_id: spec.producer_slot_id,
-                            producer_epoch: ProducerEpoch::new(1).expect("initial producer"),
-                            request_sequence: RequestSequence::new(sequence)
-                                .expect("nonzero sequence"),
-                        },
-                        limits: limits(),
-                        policy_ttl: duration(root, "authorization_ttl"),
-                        cancelled: &cancellation.requested,
-                    },
-                    input,
-                    outcome,
-                    validate,
-                )
-                .await
-                .map_err(|e| (4, e.to_string()))
+            let request = ProducerResolveRequest {
+                ingest_root: path,
+                registration: &spec,
+                request: ProducerRequestId {
+                    producer_slot_id: spec.producer_slot_id,
+                    producer_epoch: ProducerEpoch::new(1).expect("initial producer"),
+                    request_sequence: RequestSequence::new(sequence).expect("nonzero sequence"),
+                },
+                limits: limits(),
+                policy_ttl: duration(root, "authorization_ttl"),
+                cancelled: &cancellation.requested,
+            };
+            let result = if action == Action::RetireInitial {
+                owner
+                    .inspect_initial_retirement_request(recovery, request, input, outcome, validate)
+                    .await
+            } else {
+                owner
+                    .resolve_initial_producer_request(recovery, request, input, outcome, validate)
+                    .await
+            };
+            result.map_err(|e| (4, e.to_string()))
         })
         .await?;
         if let Some(prefix) = &mut prefix {
@@ -321,23 +325,37 @@ async fn connected(
         })
         .await?;
         phase(progress, timeout)?;
-        bounded(timeout, cancellation, async {
-            owner
-                .close_initial_source(
-                    &source,
-                    ProducerCloseRequest {
-                        ingest_root: path,
-                        registration: &spec,
-                        policy_ttl: duration(root, "authorization_ttl"),
-                        cancelled: &cancellation.requested,
-                    },
-                    grant(budget, 64 * 1024, 0)?,
-                    validate,
-                )
-                .await
-                .map_err(|e| (4, e.to_string()))
-        })
-        .await?;
+        if action == Action::RetireInitial {
+            let gaps = bounded(timeout, cancellation, async {
+                owner
+                    .retire_initial_producer(
+                        &source,
+                        close_request(),
+                        grant(budget, 128 * 1024, 0)?,
+                        validate,
+                    )
+                    .await
+                    .map_err(|e| (4, e.to_string()))
+            })
+            .await?;
+            report["ingest_retirement"] = json!({
+                "allocation_domains":spec.allocation_domains.len().to_string(),
+                "acquisition_gaps":gaps.to_string(), "owner_release":"committed",
+                "native_acknowledged":"0", "native_retired":"0"});
+        } else {
+            bounded(timeout, cancellation, async {
+                owner
+                    .close_initial_source(
+                        &source,
+                        close_request(),
+                        grant(budget, 64 * 1024, 0)?,
+                        validate,
+                    )
+                    .await
+                    .map_err(|e| (4, e.to_string()))
+            })
+            .await?;
+        }
         if action == Action::AbandonAcquisition {
             phase(progress, timeout)?;
             bounded(timeout, cancellation, async {
@@ -349,12 +367,7 @@ async fn connected(
                 owner
                     .abandon_initial_acquisition(
                         &source,
-                        ProducerCloseRequest {
-                            ingest_root: path,
-                            registration: &spec,
-                            policy_ttl: duration(root, "authorization_ttl"),
-                            cancelled: &cancellation.requested,
-                        },
+                        close_request(),
                         grant(budget, 128 * 1024, 0)?,
                         validate,
                     )
@@ -366,10 +379,10 @@ async fn connected(
                 "jobs":abandoned.to_string(), "reason":"initial_producer_abandoned",
                 "coverage":"unknown"});
         }
-        report["state"] = json!(if action == Action::AbandonAcquisition {
-            "acquisition-abandoned"
-        } else {
-            "source-closed"
+        report["state"] = json!(match action {
+            Action::RetireInitial => "initial-retired",
+            Action::AbandonAcquisition => "acquisition-abandoned",
+            Action::CloseSource | Action::Resolve => "source-closed",
         });
         report["source_closure"] = json!({"last_complete_sequence":source.last_complete_sequence().to_string(),
             "sha256":bigbrotr_model::Digest256::from_bytes(source.digest())});

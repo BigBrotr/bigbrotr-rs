@@ -55,8 +55,8 @@ pub type ProducerCloseError = ProducerOperationError<BootstrapError>;
 /// Both ends are needed: a durable reservation can precede a native admission.
 /// This retained observation is not a resolved prefix or retirement permission.
 pub struct InitialProducerClosing {
-    native: ProducerClosing,
-    reserved_through: u64,
+    pub(super) native: ProducerClosing,
+    pub(super) reserved_through: u64,
 }
 impl InitialProducerClosing {
     pub fn native(&self) -> &ProducerClosing {
@@ -207,11 +207,19 @@ impl ControlSession {
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
         let workflows = matches!(locks, ingest_registry::RegistryLocks::Workflow);
-        let tx = application_transaction(&mut self.client, if workflows { 27 } else { 14 })
+        let retirement = matches!(locks, ingest_registry::RegistryLocks::Retirement);
+        let minimum_schema = if retirement {
+            29
+        } else if workflows {
+            27
+        } else {
+            14
+        };
+        let tx = application_transaction(&mut self.client, minimum_schema)
             .await
             .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;
-        if workflows {
+        if workflows || retirement {
             // Job mutations take dataset UPDATE. Take it before any registry
             // locks, not as a later upgrade after source/producer custody.
             tx.query_one(
@@ -222,9 +230,12 @@ impl ControlSession {
             .map_err(backend)?;
         }
         let policy = snapshot(&tx, &self.request, &mut validate).await?;
-        ingest_registry::require_closing_registration(&tx, spec, locks)
-            .await
-            .map_err(ProducerOperationError::Registry)?;
+        if retirement {
+            ingest_registry::require_retirement_registration(&tx, spec).await
+        } else {
+            ingest_registry::require_closing_registration(&tx, spec, locks).await
+        }
+        .map_err(ProducerOperationError::Registry)?;
         // Old Ingest scheduling expiry cannot prevent monotone recovery. Actual
         // local exclusion is held by IngestRecovery, not this scheduling lease.
         let remaining: i64 = tx.query_one("SELECT lease_expires_at_us - (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint FROM control.owner_epochs WHERE resource_id=$1::bytea AND epoch=$2::text::numeric", &[&&self.identity.resource_id.as_bytes()[..], &self.identity.epoch.get().to_string()]).await.map_err(backend)?.try_get(0).map_err(backend)?;

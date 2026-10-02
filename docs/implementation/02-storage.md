@@ -224,6 +224,13 @@ One owner serializes exact identity decisions for each writable directory.
   compatibility and27 startup refusal preserve original consumer grants.
   Original regression and fixture failures remain in the same recovery report.
   Producer/domain retirement, ACK/GC, successor and full Step4 remain open.
+  The next [explicit initial retirement](../reference/producer-request-inputs.md#explicit-initial-retirement-under-implementation)
+  adds0029 and dedicated completed observation after prior closure/abandonment.
+  Required acceptance: signed retirement with all native data retained, exact
+  completed retry, zero-request workflow and unbound Event refusals, populated
+  migration/reapply, rollback/ambiguous COMMIT and coherent locking/authority.
+  It releases Ingest and closes domains atomically, without ACK/GC or successor.
+  This is under implementation; no task step closes from its entrypoint RED.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and

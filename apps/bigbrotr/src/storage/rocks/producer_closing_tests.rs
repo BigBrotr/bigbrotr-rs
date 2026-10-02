@@ -3,6 +3,56 @@ use super::*;
 use crate::storage::rocks::keys::IngestKey;
 
 #[test]
+fn retirement_observation_requires_an_existing_barrier_without_native_writes() {
+    let (root, mut store, budget, manifest, native) = setup(false);
+    drop(admit(&mut store, &budget, 1).unwrap());
+    drop(store);
+    let mut recovery = IngestRecovery::open(
+        &root.path().join("db"),
+        manifest,
+        native,
+        grant(&budget, 0, 128 * MIB),
+    )
+    .unwrap();
+    let slot = request(5, 1).producer_slot_id;
+    let epoch = ProducerEpoch::new(1).unwrap();
+    let before = kv(&recovery.store);
+    let sequence = recovery.store.db.latest_sequence_number();
+    for candidate in [slot, request(6, 1).producer_slot_id] {
+        assert!(matches!(
+            recovery.observe_closed_producer(candidate, epoch, grant(&budget, 4096, 4096)),
+            Err(BootstrapError::StateMismatch)
+        ));
+    }
+    assert_eq!(kv(&recovery.store), before);
+    assert_eq!(recovery.store.db.latest_sequence_number(), sequence);
+    drop(
+        recovery
+            .close_producer(slot, epoch, grant(&budget, 4096, 4096), || Ok(()))
+            .unwrap(),
+    );
+    let closed = kv(&recovery.store);
+    let sequence = recovery.store.db.latest_sequence_number();
+    let observed = recovery
+        .observe_closed_producer(slot, epoch, grant(&budget, 4096, 4096))
+        .unwrap();
+    assert_eq!(observed.issued_through(), 1);
+    assert_eq!(observed.manifest(), &manifest);
+    drop(observed);
+    assert!(matches!(
+        recovery.observe_closed_producer(slot, epoch, grant(&budget, 4095, 4096)),
+        Err(BootstrapError::InsufficientReservation)
+    ));
+    recovery.store.write_uncertain = true;
+    assert!(matches!(
+        recovery.observe_closed_producer(slot, epoch, grant(&budget, 4096, 4096)),
+        Err(BootstrapError::CommitUnknown)
+    ));
+    assert_eq!(kv(&recovery.store), closed);
+    assert_eq!(recovery.store.db.latest_sequence_number(), sequence);
+}
+
+#[test]
 fn native_closing_preserves_effects_and_refuses_a_previously_verified_request() {
     let (root, mut store, budget, manifest, native) = setup(false);
     drop(admit(&mut store, &budget, 1).unwrap());

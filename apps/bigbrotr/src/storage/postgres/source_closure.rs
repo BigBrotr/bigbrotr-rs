@@ -137,6 +137,17 @@ pub(super) async fn require_resolved_prefix(
     if !row.try_get::<_, bool>(0).map_err(backend)? {
         return Err(OwnerError::InvalidMetadata.into());
     }
+    require_recorded_outcomes(tx, source, spec).await
+}
+
+/// Compare immutable copies with the native witness, independent of whether
+/// the explicit retirement transaction has already completed.
+pub(super) async fn require_recorded_outcomes(
+    tx: &Transaction<'_>,
+    source: &ResolvedSource<'_>,
+    spec: &ingest_registry::InitialRegistration,
+) -> Result<(), SourceCloseError> {
+    let slot = &spec.producer_slot_id.as_bytes().as_slice();
     let manifest: [u8; 32] =
         Sha256::digest(source.recovery().manifest().encode().as_bytes()).into();
     const OUTCOMES: &str = "
