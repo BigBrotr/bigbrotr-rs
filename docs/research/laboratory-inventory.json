@@ -33146,7 +33146,7 @@
       }
     },
     "dictionary_append": {
-      "status": "PASS_NATIVE_COMPONENTS_CONNECTED_JOURNEY_PENDING",
+      "status": "PASS_COMPONENTS_AND_CONNECTED_POSITIVE_JOURNEY",
       "local": ".research/implementation/dictionary-append-20261002",
       "scope": "P02-T03 fixed-reference append/replay components; PostgreSQL append and installed consumers remain unqualified",
       "red": {
@@ -33180,7 +33180,7 @@
           "free_bytes": 56470331392
         }
       },
-      "next": "Connect existing PostgreSQL reservation/outcome copy to private dictionary append, committed observation and real signed socket admission; intern preparation and M1 remain incomplete.",
+      "next": "Append-specific reservation/outcome COMMIT ambiguity and fresh-owner positive historical recovery; then bounded intern preparation and installed finite consumer.",
       "bootstrap_red": {
         "launch": {
           "source": "ab57a2ce3d0b6eb3f304481272d7b6596dea740a",
@@ -33287,7 +33287,156 @@
           "artifact_hashes_verified": true,
           "free_bytes": 56101556224
         }
-      }
+      },
+      "connected_build_original": {
+        "launch": {
+          "source": "1c99ca3a0bcb70f0a1bc50a7892275a1f12117cd",
+          "tree": "4076bbeca7da66ae85719746e97c80dfa8a17b1d",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-1c99ca3",
+          "pid": 1617318,
+          "start_ticks": "428896744",
+          "bundle_sha256": "03a86fd96f913da969e40d740b8662f780a796272f4199895654f68dc62e989b"
+        },
+        "owner": "ee16c10b63b84aa39ae98ca0a82f5747",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "e9ca39652f042381c335a43800cf7ec22d97486d86e300e051a5e380cfa8f739"
+          },
+          {
+            "name": "native",
+            "id": "df5763e4f31dff9b4cd3b1628b5174d92a45aeb28851131e2c02ffa43da732de"
+          }
+        ],
+        "state": "stopped-retained",
+        "engine": "NOT_RUN",
+        "audit": {
+          "status": "PASS_BUILD_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T02:07:34.928825+00:00",
+          "owned_stopped": [
+            "e9ca39652f042381c335a43800cf7ec22d97486d86e300e051a5e380cfa8f739",
+            "df5763e4f31dff9b4cd3b1628b5174d92a45aeb28851131e2c02ffa43da732de"
+          ],
+          "prior_unchanged": 1046,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "artifact_hashes_verified": true,
+          "free_bytes": 55965585408
+        },
+        "source_files_verified": 1663
+      },
+      "connected_build": {
+        "launch": {
+          "source": "8f5950cb4b492d21c97475e6686d462f02736647",
+          "tree": "f55983f66ed704ee3848d383854ceb6302d45adc",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-8f5950c",
+          "pid": 1620206,
+          "start_ticks": "428911083",
+          "bundle_sha256": "29381c6db6dbb861dd4c54458c7864d3dbc6f0360374208db9b98edf02c8196d"
+        },
+        "owner": "472ba18882f2a22c3998c4d4b5ac2d0b",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "836dc78936fc567c6c39be3f68432389e3fc181dc23738caf0d58d72b52c9c20"
+          },
+          {
+            "name": "native",
+            "id": "3ecca3e72f80d421ae3bd78b6e94151b5871495e27e77d6914981b6d067f3bfe"
+          }
+        ],
+        "state": "stopped-retained",
+        "engine": "PASS_SOCKET_ARRIVAL_FIRST_WAVE",
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "8f5950cb4b492d21c97475e6686d462f02736647",
+          "observed_at": "2026-10-02T02:10:24.844998+00:00",
+          "prior_unchanged": 1049,
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "name": "fetch",
+              "id": "836dc78936fc567c6c39be3f68432389e3fc181dc23738caf0d58d72b52c9c20",
+              "exit": 0
+            },
+            {
+              "name": "native",
+              "id": "3ecca3e72f80d421ae3bd78b6e94151b5871495e27e77d6914981b6d067f3bfe",
+              "exit": 0
+            },
+            {
+              "name": "client",
+              "id": "504a9962a93f87f23b6981875ff303a2ae5a62881b24924be4c139744cb8cf2a",
+              "exit": 143
+            },
+            {
+              "name": "postgres",
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            }
+          ],
+          "source_files": 1663,
+          "artifacts_verified": true,
+          "compiler_lock_released": true,
+          "free_bytes": 55808135168,
+          "server": {
+            "version": "160015",
+            "fsync": "on",
+            "full_page_writes": "on",
+            "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+          }
+        }
+      },
+      "connected_engine": {
+        "launch": {
+          "source": "8f5950cb4b492d21c97475e6686d462f02736647",
+          "tree": "f55983f66ed704ee3848d383854ceb6302d45adc",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-8f5950c",
+          "pid": 1622943,
+          "start_ticks": "428922394"
+        },
+        "owner": "89d186945b81be33cd25b02c216156fb",
+        "client": {
+          "id": "504a9962a93f87f23b6981875ff303a2ae5a62881b24924be4c139744cb8cf2a",
+          "name": "bigbrotr-acquisition-binding-8f5950c"
+        },
+        "postgres": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_8f5950c_socket_pass",
+          "bb_scope_bind_8f5950c_socket_append_pass"
+        ],
+        "state": "stopped-retained",
+        "cases": [
+          {
+            "name": "socket-signed-forged-duplicate",
+            "status": "PASS",
+            "frames": 3,
+            "native_rows": 42,
+            "original_requests": 2,
+            "admitted_events": 1,
+            "clock_bracket_us": [
+              1790906972563390,
+              1790906973090951
+            ],
+            "native_outcome": "five new facts, no invalid witness or duplicate mutation"
+          },
+          {
+            "name": "socket-append-signed-forged-duplicate",
+            "status": "PASS",
+            "frames": 3,
+            "native_rows": 48,
+            "original_requests": 4,
+            "admitted_events": 1,
+            "clock_bracket_us": [
+              1790906974356837,
+              1790906975128947
+            ],
+            "native_outcome": "five new facts, no invalid witness or duplicate mutation"
+          }
+        ]
+      },
+      "report": "docs/implementation/evidence/p02-dictionary-append-native-20261002.json"
     }
   },
   "implementation_relay_registry_20260928": {

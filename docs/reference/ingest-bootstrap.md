@@ -56,14 +56,16 @@ the trusted owner's supplied time; retry preserves the originally recorded time,
 context, dependencies and receipt bytes.
 
 A retry reconstructs and compares every immutable initial member, the manifest,
-allocation counters, pending closure and exact receipt. Later event admissions may
-advance source/issued counters and add keys; replay checks that those counters
-have not regressed and ACK/retired remain zero. It never rewrites them or certifies
+allocation counters, pending closure and exact receipt. Later dictionary/event
+admissions may advance allocation/source/issued counters and add keys; replay
+checks that those counters have not regressed and ACK/retired remain zero. It never rewrites them or certifies
 the later source cut. Missing or changed required members fail closed. In particular,
 missing receipt detail with other persisted effects is not rollback. A changed
 digest for the same retained request returns RequestConflict. This allows the
-original bootstrap outcome to be copied after later events, while successor
-authority, generalized dictionary mutation and post-GC replay remain separate work.
+original bootstrap outcome to be copied after later admissions. The
+[fixed-reference append profile](../specification/dictionary-descriptors.md#post-bootstrap-dictionary-admission-implementation-in-qualification)
+has [bounded native and connected evidence](../implementation/evidence/p02-dictionary-append-native-20261002.json).
+Intern preparation, successor authority and post-GC replay remain separate work.
 
 ## Persistent values added by this slice
 

@@ -1,0 +1,145 @@
+{
+  "format": "bigbrotr-dictionary-append-native/1",
+  "status": "PASS_COMPONENTS_AND_CONNECTED_POSITIVE_JOURNEY",
+  "tasks": [
+    "P02-T03 Step1",
+    "P02-T02 Steps2/4",
+    "P03-T01 Steps3/4 prerequisite"
+  ],
+  "product_source": "af058bc69165c385d0e0aa0d43e49c194b1cd0ca",
+  "native_tree": "17775769822adf3c0fa41a0f78f0f8d26faabb80",
+  "connected_source": "8f5950cb4b492d21c97475e6686d462f02736647",
+  "connected_tree": "f55983f66ed704ee3848d383854ceb6302d45adc",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "rocksdb": "11.8.1",
+    "rocksdb_binding": "0.25.0",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "client_memory_bytes": 1073741824
+  },
+  "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+  "artifacts": {
+    "native_test": {
+      "dictionary_components": "7fd4d89ccd9f5560513d48b4c0513c1910260c94a7802b5038c53ca554cf7369"
+    },
+    "connected_cli": "856efb649bd66408307b47e9abda3455ca6624bd5930b27cf5cdf2b420eeb4a8",
+    "connected_probe": "5d02cad81f049567b20febe8b455804758c423827c71406a4624e0daf6eef61c"
+  },
+  "native_tests": {
+    "dictionary-append": 8,
+    "bootstrap": 5,
+    "recovery": 11
+  },
+  "connected_cases": [
+    {
+      "name": "socket-signed-forged-duplicate",
+      "status": "PASS",
+      "frames": 3,
+      "native_rows": 42,
+      "original_requests": 2,
+      "admitted_events": 1,
+      "clock_bracket_us": [
+        1790906972563390,
+        1790906973090951
+      ],
+      "native_outcome": "five new facts, no invalid witness or duplicate mutation"
+    },
+    {
+      "name": "socket-append-signed-forged-duplicate",
+      "status": "PASS",
+      "frames": 3,
+      "native_rows": 48,
+      "original_requests": 4,
+      "admitted_events": 1,
+      "clock_bracket_us": [
+        1790906974356837,
+        1790906975128947
+      ],
+      "native_outcome": "five new facts, no invalid witness or duplicate mutation"
+    }
+  ],
+  "assertions": [
+    "Native append stages the complete fixed-reference input only after a read-only preview with the actual recorded timestamp. Dispatch rechecks current authority and commits mappings, reverse candidates, source/allocation/producer counters, pending membership and receipt in the existing synchronized WAL batch.",
+    "Native regressions cover six-mapping private closure, mixed old/new same-kind allocations, allocation exhaustion, gap/window/cancellation/conflicts, reduced limits, actual timestamp encoding, every original member and exact receipt dependency closure. Closed-producer positive bootstrap/append/AlreadyDurable replay performs no native write.",
+    "Original bootstrap replay tolerates monotone allocation advancement. Actual ab57a2c RED failed StateMismatch after append/reuse/reopen; af058bc passes the same regression. Original bytes and persistent versions are preserved.",
+    "Connected 8f5950c preserves the installed two-map public bootstrap, appends five private ordinal 3 mappings as request 2, replays identically, records AlreadyDurable request 3, reopens the native handle under retained Control and replays requests 1/2/3 without new SQL/native effects.",
+    "Explicit private ordinal 3 enrollment/scope/job then authorizes the actual private websocket source. A frozen signed EVENT creates request 4 with original source/scope/job attribution; forged signature and duplicate add no request or fact. Default local-first-witness attribution remains enabled.",
+    "Independent literal oracle checks all 48 native rows, four original CBOR inputs and four PG receipts; the preceding 34-row append state has an independently assembled native digest. All 67 Control tables/xmin are compared at append, reuse and event boundaries: only the next producer reservation counter/xmin and one request/outcome insertion change; original rows are preserved.",
+    "Original socket regression independently matches all 42 native rows/two inputs/receipts. Native build and Clippy pass on both connected candidate revisions. Exact 1663 source files and 39 captured files were hash-verified and replayed locally; all qualified ELFs are retained outside mutable compiler caches."
+  ],
+  "review": {
+    "kind": "Read-only AI review plus integrating root source/capture review",
+    "findings": [
+      "Full pre-staging preview, real timestamp and separate read-only recovery grant corrected before qualification.",
+      "Fixture namespace ordering and required packaged-worker setup failures preserved; affected native owners selected explicitly without claiming archive-worker qualification.",
+      "SQL oracle corrected before engines to include exactly the trigger-driven producer counter change and to compare a snapshot from before the first append. Retained real census and three mutation controls pass."
+    ],
+    "structure": "Shared concrete native preparation and atomic commit; explicit PG reservation and outcome transactions remain visible. No generic orchestrator, new schema, event allocator or persistent version. Fixture uses named dictionary bindings rather than positional shape assumptions."
+  },
+  "original_outcomes": {
+    "f2a1618": "Compile failure: wrong Endpoint module; no native test ran.",
+    "ab57a2c": "Native RED: original bootstrap failed StateMismatch after append/reuse/reopen.",
+    "e28610e": "62 native PASS/5 fixture/setup FAIL: four unordered-namespace cases before engine initialization and one packaged-worker case without its required bundle. These are not reclassified PASS.",
+    "af058bc": "8 append +5 bootstrap +11 recovery PASS, build/Clippy PASS.",
+    "1c99ca3": "Build/Clippy PASS; engine NOT_RUN after pre-engine fixture review.",
+    "8f5950c": "Build/Clippy PASS; two actual connected cases PASS."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "source": "8f5950cb4b492d21c97475e6686d462f02736647",
+    "observed_at": "2026-10-02T02:10:24.844998+00:00",
+    "prior_unchanged": 1049,
+    "unrelated_running": 8,
+    "owned_stopped": [
+      {
+        "name": "fetch",
+        "id": "836dc78936fc567c6c39be3f68432389e3fc181dc23738caf0d58d72b52c9c20",
+        "exit": 0
+      },
+      {
+        "name": "native",
+        "id": "3ecca3e72f80d421ae3bd78b6e94151b5871495e27e77d6914981b6d067f3bfe",
+        "exit": 0
+      },
+      {
+        "name": "client",
+        "id": "504a9962a93f87f23b6981875ff303a2ae5a62881b24924be4c139744cb8cf2a",
+        "exit": 143
+      },
+      {
+        "name": "postgres",
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "exit": 0
+      }
+    ],
+    "source_files": 1663,
+    "artifacts_verified": true,
+    "compiler_lock_released": true,
+    "free_bytes": 55808135168,
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    }
+  },
+  "local_evidence": ".research/implementation/dictionary-append-20261002",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-8f5950c",
+  "not_qualified": [
+    "Dictionary intern/preparation and installed acquisition execution",
+    "Append-specific lost/cancelled COMMIT and fresh-owner recovery against PostgreSQL",
+    "Native syscall/process interruption for this new append path",
+    "Packaged archive/read/export closure for appended dictionaries",
+    "Successor, ACK/GC, retirement and full M1",
+    "Load/aged-state, capacity, native arm64 or release"
+  ]
+}

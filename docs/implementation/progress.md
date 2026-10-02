@@ -12,47 +12,39 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Current candidate1c99ca3a0bcb70f0a1bc50a7892275a1f12117cd extends the connected
-fixture. Native runs/relay-arrival-1c99ca3 build completed; terminal audit pending.
-Before engine execution, independent fixture review caught two oracle gaps:
-reservation advances producer_epochs as well as adding request/outcome rows;
-append needs its own before-state so a wrong first write cannot become baseline.
-Dirty fixture correction now compares exactly one reservation counter/xmin change
-and one original request/outcome addition at each append/reuse/event boundary,
-preserving every other row. Retained old socket census plus three discriminating
-mutations validate that check locally. Corrected fixture needs its own native build.
-No PG engine has run for this candidate yet. Earlier bounded native qualification:
+Main 8f5950cb4b492d21c97475e6686d462f02736647, origin 5483db8; root sole writer.
+Dirty documentation/evidence records the completed bounded dictionary qualification.
+[P02 dictionary append evidence](evidence/p02-dictionary-append-native-20261002.json):
+product af058bc has 8 append + 5 bootstrap + 11 native recovery tests PASS, build
+and Clippy PASS. Connected 8f5950c has two actual PG16.15/Rocks11.8.1 socket cases
+PASS: original 42-row regression, and original two-map bootstrap → five private ordinal 3
+mappings → exact retry/AlreadyDurable → same-owner native reopen/replay → explicit
+private ordinal 3 enrollment/scope/job → signed event, forged signature, duplicate.
+The latter preserves all 48 native rows/four original inputs/four receipts against
+an independent literal oracle. All 67 SQL tables/xmin have exact permitted deltas
+at append/reuse/event boundaries. All 1663 source files and 39 captures verified.
+This does not qualify installed execution, intern preparation or append COMMIT faults.
 
-Main af058bc69165c385d0e0aa0d43e49c194b1cd0ca, origin5483db8; four unpublished
-native candidates, root sole writer. Tree17775769822adf3c0fa41a0f78f0f8d26faabb80
-was clean at resumption. Latest runs/dictionary-append-af058bc STOPPED/RETAINED,
-PID1608007/start428796794, owner1390ea2a2d0d06a297605508a21d8bc4.
-8 dictionary append +5 bootstrap +11 producer recovery tests PASS, CLI/probe build
-and Clippy PASS on actual RocksDB11.8.1/Rust1.98.1/Linuxamd64. No ignored tests
-in the selected owners. This is bounded native component evidence; connected
-PostgreSQL append and installed consumers remain unqualified.
+Latest runs/relay-arrival-8f5950c is STOPPED/RETAINED. Build PID 1620206/start428911083,
+owner 472ba18882f2a22c3998c4d4b5ac2d0b; engine PID 1622943/start428922394,
+owner 89d186945b81be33cd25b02c216156fb. Client 504a9962 stopped 143; borrowed PG71775507
+stopped 0/no OOM. Audit 02:10:24UTC: 1049 prior projections unchanged, eight unrelated
+running, compiler lock free, 55,808,135,168B free. Mac about 3.3 GiB free; no local
+Rust build. Inventory implementation_network_20260928.dictionary_append owns full
+IDs and artifacts. Originals .research/implementation/dictionary-append-20261002/
+{red,bootstrap-red,native,native-fixed,connected,connected-fixed}. Qualified ELFs
+are outside caches. Earlier f2a compile failure, ab57 bootstrap regression RED and
+e286: 62 PASS/5 fixture/setup FAIL remain unchanged. The 1c99 client built but did not run
+engines; pre-engine review corrected two SQL oracle gaps. Packaged archive worker
+qualification still requires its actual worker and is not declared passed.
 
-Original result/source and qualified artifacts are outside the compiler cache:
-CLI5b7b1bc6f98de14a4b85e70c44e5ed35dc641a52172a0796b1ce6db05139ab2a,
-probea63e39c1dad1464f5df55fcd5409105c3a78923726ace0bf87bf309ea242c394,
-test7fd4d89ccd9f5560513d48b4c0513c1910260c94a7802b5038c53ca554cf7369.
-All1661 Git source files/archive and retained ELF hashes verified. Originals:
-.research/implementation/dictionary-append-20261002/native-fixed.
-Audit01:54:23UTC:1044 prior container projections unchanged, eight unrelated
-running, compiler lock free,56,101,556,224B free. Mac3,449,576KiB free; no local
-Rust build. Inventory implementation_network_20260928.dictionary_append.
-
-The original ab57a2c bootstrap-after-append StateMismatch is corrected and its
-RED retained. First f2a compile-path failure and e286 fixture/setup failures
-remain under {red,bootstrap-red,native}; no historical result is rewritten.
-e286 had62 PASS/5 FAIL: four unordered-namespace fixture failures before native
-initialization and one unchanged packaged-worker case without its required bundle.
-The packaged archive journey remains owed separately with the actual worker.
-Read-only AI review found missing complete pre-staging validation, then a zero-time
-preview and an unnecessarily large recovery grant. Shared preparation now uses
-the actual recorded time; read-only recovery has a distinct closure ledger and
-existing40MiB event callers pass. Intern preparation remains next. M1/product
-still INCOMPLETE.
+Read-only AI review and root review found no additional concrete product defect.
+Preparation now shares complete validation with dispatch, using actual recorded
+time; read-only recovery preserves existing 40 MiB event grants. The native batch
+and explicit two PG transactions remain visible; no generic framework or new
+schema/format/event allocator. Fixture named bindings replace fragile dictionary
+indices. Native preview refusal leaves identity unstaged, but the connected adapter
+poisons Control after coordination starts; recovery must not reuse that session.
 
 Bounded installed finite acceptance/status/COMMIT integration is qualified;
 P03-T01 Steps3/4 and P01-T09 Steps1/2 remain partial because execution/progress,
@@ -82,39 +74,22 @@ borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T01:13:12.878102UTC:
 relay-registration-faults-66a8718 also STOPPED/RETAINED with exact owners, PIDs,
 artifacts/audits in inventory.initial_jobs.http_faults. Preserve all7 clones/stores.
 
-Active prerequisite: native dictionary append/intern P02-T03 Step1/P02-T02 for
-the installed finite event consumer. Root read complete bootstrap/admission,
-observation, store, producer-closing/recovery, initial-batch/basis, dictionary and
-evidence-intent owners, keys and bootstrap tests; reservation/outcome owners and exact cached rocksdb0.25.0 batch/write implementation
-were also inspected; unchanged lock/native boundary is reused. Read-only AI review
-confirmed three compatibility edges: private ordinal2 is itself in a public
-fact and cannot satisfy the current exact-envelope observation profile;
-bootstrap replay currently rejects legitimate allocation-counter advancement;
-post-bootstrap Evidence requests currently enter the request1-only replay path.
-Preserve existing mappings, inputs, receipts and enrollment/scope/job identities.
-A reusable self-scoped private reference can use unchanged EvidenceIntent bytes;
-it must be explicitly selected, never substituted into an accepted job. Default
-local_first_witness needs visibility, observer/clock, endpoint, access and method;
-provenance off is not silently selected to reduce this responsibility.
+Active P02-T03 Step1/P02-T02 prerequisite for P03-T01 Steps3/4 and M1/P01-T09.
+The complete bootstrap/admission/observation/store/closing/recovery/PG owners,
+keys, model intent and dictionary contracts were read, plus exact cached official
+rocksdb0.25.0 batch/write implementation. Original private2 retains a public fact
+envelope; new private3 must be explicitly selected, never substituted into an
+accepted enrollment/scope/job. Bootstrap allocation advancement and historical
+Evidence dispatch are now corrected and native-qualified. Default local_first_witness
+still requires visibility, observer/clock, endpoint, access and method.
 
-Next bounded action: build/run the connected append socket candidate on Tux.
-Dirty root-owned fixture adds original two-map bootstrap → five private3 mappings
-(request2) → identical retry → AlreadyDurable(request3) → same-owner native reopen
-and original bootstrap/append replay → explicit private3 enrollment/scope/job →
-signed/forged/duplicate socket admission(request4). The existing socket fixture
-remains a separate positive regression. Python literal oracle preserves every
-original bootstrap byte; pre-engine comparison against the retained qualified
-socket capture PASS. No connected run yet. Read-only AI review found no additional
-product defect; a pre-staging PG refusal poisons the current Control session and
-must follow its existing cleanup/recovery path, unlike native-only identical retry.
-No new product framework or schema was introduced. Named fixture bindings replace
-positional dictionary indices to keep the two bootstrap shapes explicit. Fixed-reference append is native-qualified; its PG method
-is built but has not run against an engine. Allocated refs are fixed before staging
-because they belong to the request digest. Intern preparation remains read-only
-and grants no source permission. No new event allocator, format or SQL ledger.
-M1 still needs finite dispatch, socket admission through timer archive/read/export
-and successor/restart. Full Discovery/Monitor is not a prerequisite. Stale
---initialize-ingest help now describes actual command acceptance/status only.
+Next bounded action: append-specific reservation/outcome COMMIT loss/cancellation
+and fresh-Control original-request recovery, reusing the existing wire-fault lab.
+Then bounded read-only intern preparation must fix all refs before staging; current
+API deliberately consumes fixed refs. M1 still needs installed finite dispatch,
+socket admission through timer archive/read/export, finite CLI and successor/restart.
+Full Discovery/Monitor is not a prerequisite. No task step or complete product
+claim follows from these small fixtures; no load/capacity/arm64/release claim.
 
 Compatibility run runs/job-status-compat-de7347d is STOPPED/RETAINED:
 PID1558991/start428452303, owner5b0fcc0dca17226bfb649de3b2185974,
@@ -353,7 +328,7 @@ and every original transport/source/fault clone. Secrets stay
 under protected pg/secrets and never enter Git. Clone and verify before experiments.
 
 Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latestaf058bc intermediates;
+acceleration, exclusively locked by .compiler-cache.lock. Latest8f5950c intermediates;
 qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
 clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
 owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.
