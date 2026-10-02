@@ -147,7 +147,26 @@ pub async fn run(
     mode: &str,
     intent: &EvidenceIntent,
 ) {
-    assert_eq!(mode, "source-socket-pass");
+    assert!(matches!(
+        mode,
+        "source-socket-pass" | "source-socket-dictionary-append"
+    ));
+    let event_sequence = if mode == "source-socket-dictionary-append" {
+        4
+    } else {
+        2
+    };
+    // Both fixtures contain exactly one mapping of each attribution kind. The
+    // append fixture deliberately preserves the original two-map bootstrap.
+    let entry = |kind| {
+        let mut matching = intent
+            .dictionaries()
+            .iter()
+            .filter(|e| e.reference().dictionary_kind == kind);
+        let value = matching.next().unwrap();
+        assert!(matching.next().is_none());
+        value
+    };
     let endpoint = Endpoint::parse("ws://127.0.0.1:7447/private").unwrap();
     let route = RouteSelection::Private {
         cidr: "127.0.0.1/32".parse().unwrap(),
@@ -252,12 +271,12 @@ pub async fn run(
                 registration: spec,
                 bindings: ObservationBindings {
                     visibility,
-                    observer: &intent.dictionaries()[2],
-                    clock: &intent.dictionaries()[2],
+                    observer: entry(DictionaryKind::Observer),
+                    clock: entry(DictionaryKind::Observer),
                     witness: Some(WitnessContext {
-                        endpoint_id: intent.dictionaries()[3].reference(),
-                        access_scope_id: intent.dictionaries()[4].reference(),
-                        verification_method_id: intent.dictionaries()[5].reference(),
+                        endpoint_id: entry(DictionaryKind::Endpoint).reference(),
+                        access_scope_id: entry(DictionaryKind::AccessScope).reference(),
+                        verification_method_id: entry(DictionaryKind::Method).reference(),
                     }),
                 },
                 limits,
@@ -463,7 +482,7 @@ pub async fn run(
             let request = ProducerRequestId {
                 producer_slot_id: spec.producer_slot_id,
                 producer_epoch: ProducerEpoch::new(1).unwrap(),
-                request_sequence: RequestSequence::new(2).unwrap(),
+                request_sequence: RequestSequence::new(event_sequence).unwrap(),
             };
             let event = PreparedEvent::new(
                 request,
@@ -473,7 +492,7 @@ pub async fn run(
             )
             .unwrap();
             let limits = AdmissionLimits {
-                max_outstanding_requests: 2,
+                max_outstanding_requests: u64::from(spec.outstanding_request_limit),
                 ..AdmissionLimits::default()
             };
             let recorded = ReceiveClock::new().unwrap().sample().unwrap().received_at();

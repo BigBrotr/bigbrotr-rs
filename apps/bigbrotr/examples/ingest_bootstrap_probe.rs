@@ -30,6 +30,8 @@ use tokio_postgres::{Config, NoTls};
 mod config;
 #[path = "support/ingest_closing.rs"]
 mod ingest_closing;
+#[path = "support/ingest_dictionary_append.rs"]
+mod ingest_dictionary_append;
 #[path = "support/ingest_event.rs"]
 mod ingest_event;
 #[path = "support/ingest_lease.rs"]
@@ -225,6 +227,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     let source_mode = mode.starts_with("source-");
     let observation_mode = mode.starts_with("source-observation-");
     let socket_mode = mode.starts_with("source-socket-");
+    let dictionary_append = mode == "source-socket-dictionary-append";
     let witness = socket_mode || (observation_mode && mode.ends_with("-on"));
     let source_fault = mode.starts_with("source-fault-");
     let direct_config = config.clone();
@@ -355,7 +358,9 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             )]
         },
         producer_slot_id: [66; 16].try_into().unwrap(),
-        outstanding_request_limit: if matches!(mode, "event-outcomes" | "event-recovery-already")
+        outstanding_request_limit: if dictionary_append {
+            4
+        } else if matches!(mode, "event-outcomes" | "event-recovery-already")
             || mode.starts_with("event-bindings")
         {
             3
@@ -424,7 +429,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             .unwrap(),
         );
     }
-    if source_mode {
+    if source_mode && !dictionary_append {
         dictionaries.push(
             DictionaryEntry::new(
                 QualifiedRef {
@@ -446,7 +451,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             .unwrap(),
         );
     }
-    if observation_mode || socket_mode {
+    if (observation_mode || socket_mode) && !dictionary_append {
         ingest_observation::dictionaries(
             &mut dictionaries,
             scope,
@@ -554,8 +559,18 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     if socket_mode {
         assert_eq!(
             result.unwrap().receipt().batch().unwrap().records().len(),
-            6
+            if dictionary_append { 2 } else { 6 }
         );
+        let intent = if dictionary_append {
+            let (reopened, appended) = ingest_dictionary_append::run(
+                &mut owner, &observer, store, &spec, path, &budget, &intent,
+            )
+            .await;
+            store = reopened;
+            appended
+        } else {
+            intent
+        };
         ingest_socket_arrival::run(
             &mut owner, &observer, &mut store, &spec, path, &budget, mode, &intent,
         )

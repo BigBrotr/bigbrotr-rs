@@ -33146,9 +33146,9 @@
       }
     },
     "dictionary_append": {
-      "status": "NATIVE_FIXTURE_FAILURES_RETAINED",
+      "status": "PASS_NATIVE_COMPONENTS_CONNECTED_JOURNEY_PENDING",
       "local": ".research/implementation/dictionary-append-20261002",
-      "scope": "P02-T03 fixed-reference append/replay prerequisite; no installed or recovery qualification",
+      "scope": "P02-T03 fixed-reference append/replay components; PostgreSQL append and installed consumers remain unqualified",
       "red": {
         "launch": {
           "source": "f2a161817ae77d0bba95df89a794dbd2cfcf6cae",
@@ -33180,7 +33180,7 @@
           "free_bytes": 56470331392
         }
       },
-      "next": "Fix namespace fixture ordering; select affected dictionary/bootstrap/recovery components explicitly. Packaged archive journey remains a separate required qualification with its actual worker.",
+      "next": "Connect existing PostgreSQL reservation/outcome copy to private dictionary append, committed observation and real signed socket admission; intern preparation and M1 remain incomplete.",
       "bootstrap_red": {
         "launch": {
           "source": "ab57a2ce3d0b6eb3f304481272d7b6596dea740a",
@@ -33243,6 +33243,49 @@
           "compiler_lock_released": true,
           "test_executable_sha256": "132b2b6ccfa7b848a286c1c75894ae2e7659c5012a401620a4404521ea0f0000",
           "free_bytes": 56256970752
+        }
+      },
+      "native_fixed": {
+        "launch": {
+          "source": "af058bc69165c385d0e0aa0d43e49c194b1cd0ca",
+          "tree": "17775769822adf3c0fa41a0f78f0f8d26faabb80",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/dictionary-append-af058bc",
+          "pid": 1608007,
+          "start_ticks": "428796794",
+          "bundle_sha256": "082f76f950e9169ed4effca92011af99aa197bf762c24e4f556c7edbc1ad8cd4"
+        },
+        "owner": "1390ea2a2d0d06a297605508a21d8bc4",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "23bf718e7c94e2030a6c02bfcb079274050b27ba0e905132b0d78c5b19ee580b"
+          },
+          {
+            "name": "native",
+            "id": "1ea0ed1b4a2d2fb749035248f735fe9de6610d63b6b6edfa8589b2f3b30f1019"
+          }
+        ],
+        "source_files_verified": 1661,
+        "result": "8 dictionary append, 5 bootstrap, 11 producer recovery tests PASS; actual CLI/probe build and Clippy PASS. No ignored tests in selected owners; packaged archive worker journey remains separate.",
+        "artifacts": {
+          "binary_sha256": "5b7b1bc6f98de14a4b85e70c44e5ed35dc641a52172a0796b1ce6db05139ab2a",
+          "probe_sha256": "a63e39c1dad1464f5df55fcd5409105c3a78923726ace0bf87bf309ea242c394",
+          "test_executables_sha256": {
+            "dictionary_components": "7fd4d89ccd9f5560513d48b4c0513c1910260c94a7802b5038c53ca554cf7369"
+          }
+        },
+        "audit": {
+          "status": "PASS_BUILD_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T01:54:23.257361+00:00",
+          "owned_stopped": [
+            "23bf718e7c94e2030a6c02bfcb079274050b27ba0e905132b0d78c5b19ee580b",
+            "1ea0ed1b4a2d2fb749035248f735fe9de6610d63b6b6edfa8589b2f3b30f1019"
+          ],
+          "prior_unchanged": 1044,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "artifact_hashes_verified": true,
+          "free_bytes": 56101556224
         }
       }
     }
