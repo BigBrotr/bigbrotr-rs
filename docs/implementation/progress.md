@@ -12,7 +12,8 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main18ed28a767ad9b625a369f736c22b9fbd9ad52bf; origin/main e6f8caf. Root sole writer.
+Mainc0fb44e0f71c6527ab028faef5a398927993ae97; origin/main e6f8caf. Root sole writer.
+Dirty evidence/checkpoint/task updates only; next coherent commit/push follows review.
 18ed28a preparation native GREEN:13 append/preparation,5 bootstrap,11 recovery
 PASS; actual CLI/probe build and Clippy PASS. Intentional818 RED remains retained.
 runs/dictionary-append-18ed28a STOPPED/RETAINED:PID1656405/start429175471,
@@ -30,14 +31,33 @@ review requested mixed existing/new same-kind and missing transitive-method case
 both pass natively. Repeated descriptors use transient scratch, not duplicate
 retained capacity. This closes the bounded native preparation, not P02-T03/M1.
 
-Dirty connected fixture: existing socket oracle now includes a third explicit
-private3 case: visibility append2 → readonly intern four descriptors/dedupe →
-append3 → AlreadyDurable4 → same-owner native reopen/replay → signed/forged/
-duplicate socket event5. Independent complete expectations:50 native rows,
-five original requests/receipts, all67 SQL tables/xmin exact allowed deltas.
-Fixture build/engine NOT_RUN; preserve historical two cases. Next build exactGit
-and execute on isolated PG/Rocks, then wire the installed finite consumer.
-Active P02-T03 Step1 prerequisite for P03-T01 Steps3/4 and M1/P01-T09 Steps1/2.
+Connected c0fb44e PASS (CLI/probe build/Clippy and three actual-engine cases):
+original42-row socket, fixed48-row private append and new50-row prepared consumer.
+Explicit private3 append2 → readonly intern four descriptors/dedupe → append3 →
+AlreadyDurable4 → same-owner reopen/replay → signed/forged/duplicate socket event5.
+Five exact original inputs/receipts and67 SQL tables/xmin retain permitted deltas.
+Root verified1667 Git files,52 captures, all three independent literal oracles,
+eight SQL transitions and three discriminating mutations. Read-only AI review
+found no bounded blocker; it did not run engines. No new product schema/ledger/
+trait/framework: existing native owner, preparation and PG append remain visible.
+
+runs/relay-arrival-c0fb44e STOPPED/RETAINED: buildPID1662791/start429233155,
+owner9837c77cd14e0fca1431067000746c06; enginePID1665276/start429242317,
+owner7901ed7b96146c937e32bf880ec87413. Client9c627f15 stopped143, borrowedPG71775507
+stopped0/noOOM. Audit03:03:39UTC:1059 prior unchanged,eight unrelated running,
+compiler lock free,55,064,731,648B free. Qualified ELFs outsidecache; no localbuild.
+Inventory dictionary_preparation owns exact IDs/hashes. Original captures under
+.research/implementation/dictionary-preparation-20261002/{red,native,connected}.
+No active build/engine at that audit. This closes bounded preparation, not M1.
+
+Next bounded action: connect installed finite execution P03-T01 Steps3/4 and
+P03-T02 to the existing living owner/command loop, using current job/source checks
+and bounded preparation. Initial owner/commands/supervision, complete acquisition
+reference and actual claim/scope readers were read; execution selection and source
+metadata loading still need their owning callers/contracts checked. Define only
+needed next read/dispatch boundary, with independent SQL and installed signed
+socket acceptance. Do not require Discovery/Monitor. M1/P01-T09 Steps1/2 still
+needs timer archive/index/read/export; restart additionally needs successor.
 Nine actual dictionary COMMIT cases PASS at fixture89359ab using exact424a4f2
 CLI/probe (build/Clippy PASS). Covers both reservation/outcome COMMIT sides,
 cancellation with positively held actual backend custody, and AlreadyDurable loss.
@@ -125,13 +145,10 @@ accepted enrollment/scope/job. Bootstrap allocation advancement and historical
 Evidence dispatch are now corrected and native-qualified. Default local_first_witness
 still requires visibility, observer/clock, endpoint, access and method.
 
-Next bounded action: bounded read-only intern preparation must fix all refs before
-staging; the qualified append API deliberately consumes fixed refs. Read complete
-descriptor/envelope/candidate/allocation contracts and callers before adding this
-consumer. Test equality/collisions, same-kind allocation, bounds and no-write preview. M1 still needs installed finite dispatch,
-socket admission through timer archive/read/export, finite CLI and successor/restart.
-Full Discovery/Monitor is not a prerequisite. No task step or complete product
-claim follows from these small fixtures; no load/capacity/arm64/release claim.
+The fixed-reference append and bounded preparation are now qualified as above.
+M1 still needs installed finite dispatch, socket admission through timer archive/
+read/export, finite CLI and successor/restart. Full Discovery/Monitor is not a
+prerequisite. No whole task or capacity/arm64/release claim follows from fixtures.
 
 Compatibility run runs/job-status-compat-de7347d is STOPPED/RETAINED:
 PID1558991/start428452303, owner5b0fcc0dca17226bfb649de3b2185974,
@@ -370,7 +387,7 @@ and every original transport/source/fault clone. Secrets stay
 under protected pg/secrets and never enter Git. Clone and verify before experiments.
 
 Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latest18ed28a intermediates;
+acceleration, exclusively locked by .compiler-cache.lock. Latestc0fb44e intermediates;
 qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
 clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
 owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.

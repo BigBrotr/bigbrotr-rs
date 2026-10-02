@@ -240,3 +240,12 @@ entry tables, encoding/decoding scratch and bounded candidate work count against
 the preparation limits. Cancellation abandons only the read-only plan. Once an
 input is staged, retries use that complete original input rather than preparing
 different references after an ambiguous outcome.
+
+[Native and connected preparation evidence](../implementation/evidence/p02-dictionary-append-native-20261002.json)
+qualifies18ed28a with29 selected native tests andc0fb44e with an actual PostgreSQL/
+RocksDB/socket consumer. The latter commits explicit private3, prepares four
+attribution mappings without writes, appends/reuses their fixed intent, reopens
+under the same owner and acquires a signed event with forged/duplicate controls.
+All50 native rows, five original inputs/receipts and exact67-table transitions
+match independent expectations. This closes the bounded preparation consumer;
+installed finite execution, archive/export closure and successor remain required.

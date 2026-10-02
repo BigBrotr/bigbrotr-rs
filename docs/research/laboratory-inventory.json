@@ -33543,7 +33543,7 @@
       }
     },
     "dictionary_preparation": {
-      "status": "PASS_NATIVE_COMPONENTS_CONNECTED_FIXTURE_PENDING",
+      "status": "PASS_NATIVE_AND_CONNECTED_PREPARATION",
       "local": ".research/implementation/dictionary-preparation-20261002",
       "scope": "P02-T03 Step1 read-only fixed-reference preparation; no installed consumer claim",
       "red": {
@@ -33578,7 +33578,7 @@
           "free_bytes": 55385452544
         }
       },
-      "next": "Build and execute explicit private3 preparation through actual PG append/reuse/reopen and signed socket; installed consumer remains open.",
+      "next": "Wire the installed finite consumer under the same Control/native owner; job selection, bounded execution/progress, archive/read/export and successor remain required.",
       "native": {
         "launch": {
           "source": "18ed28a767ad9b625a369f736c22b9fbd9ad52bf",
@@ -33628,6 +33628,168 @@
           "compiler_lock_released": true,
           "artifact_hashes_verified": true,
           "free_bytes": 55229480960
+        }
+      },
+      "connected": {
+        "status": "PASS_CONNECTED_STOPPED_RETAINED",
+        "build_launch": {
+          "source": "c0fb44e0f71c6527ab028faef5a398927993ae97",
+          "tree": "d93881fd87245371369b868506dba6843ce6b189",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-c0fb44e",
+          "pid": 1662791,
+          "start_ticks": "429233155",
+          "bundle_sha256": "ad825e7bc9e25c17a05da6dd2039b6c26946fa9e9d0755f350039ad52cbcd0a2"
+        },
+        "engine_launch": {
+          "source": "c0fb44e0f71c6527ab028faef5a398927993ae97",
+          "tree": "d93881fd87245371369b868506dba6843ce6b189",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-c0fb44e",
+          "pid": 1665276,
+          "start_ticks": "429242317"
+        },
+        "build_owner": "9837c77cd14e0fca1431067000746c06",
+        "engine_owner": "7901ed7b96146c937e32bf880ec87413",
+        "client": {
+          "id": "9c627f158bda26be7736cf723fd78181b108c12dcbfc2321bc4f61791cbe1fc0",
+          "name": "bigbrotr-acquisition-binding-c0fb44e"
+        },
+        "databases": [
+          "bb_scope_bind_c0fb44e_socket_pass",
+          "bb_scope_bind_c0fb44e_socket_append_pass",
+          "bb_scope_bind_c0fb44e_socket_intern_pass"
+        ],
+        "artifacts": {
+          "source": "c0fb44e0f71c6527ab028faef5a398927993ae97",
+          "tree": "d93881fd87245371369b868506dba6843ce6b189",
+          "binary_sha256": "67b0d1c157c0d47861cef2244f60da852fad0529a3d711b96cd1d9d6bc5ffb59",
+          "probe_sha256": "88c177cdc2a747da36dadee9bf9146da01cccdcaa1648af60a592afa80428780",
+          "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9"
+        },
+        "cases": [
+          {
+            "name": "socket-signed-forged-duplicate",
+            "status": "PASS",
+            "frames": 3,
+            "native_rows": 42,
+            "original_requests": 2,
+            "admitted_events": 1,
+            "clock_bracket_us": [
+              1790910171665268,
+              1790910172198132
+            ],
+            "native_outcome": "five new facts, no invalid witness or duplicate mutation"
+          },
+          {
+            "name": "socket-append-signed-forged-duplicate",
+            "status": "PASS",
+            "frames": 3,
+            "native_rows": 48,
+            "original_requests": 4,
+            "admitted_events": 1,
+            "clock_bracket_us": [
+              1790910173425506,
+              1790910174217311
+            ],
+            "native_outcome": "five new facts, no invalid witness or duplicate mutation"
+          },
+          {
+            "name": "socket-intern-signed-forged-duplicate",
+            "status": "PASS",
+            "frames": 3,
+            "native_rows": 50,
+            "original_requests": 5,
+            "admitted_events": 1,
+            "clock_bracket_us": [
+              1790910175428807,
+              1790910176279229
+            ],
+            "native_outcome": "five new facts, no invalid witness or duplicate mutation"
+          }
+        ],
+        "audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "source": "c0fb44e0f71c6527ab028faef5a398927993ae97",
+          "observed_at": "2026-10-02T03:03:39.824939+00:00",
+          "prior_unchanged": 1059,
+          "unrelated_running": 8,
+          "owned_stopped": [
+            {
+              "name": "fetch",
+              "id": "b64e1b0fa9f7266b736bc9e8221ca394c6b7d783b32df4c8d855d658f8fb131f",
+              "exit": 0
+            },
+            {
+              "name": "native",
+              "id": "a648bfa003088750b3bd74a5fa7f8ff3d65596df96f19d00820243a85b9e5d6c",
+              "exit": 0
+            },
+            {
+              "name": "client",
+              "id": "9c627f158bda26be7736cf723fd78181b108c12dcbfc2321bc4f61791cbe1fc0",
+              "exit": 143
+            },
+            {
+              "name": "postgres",
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "exit": 0
+            }
+          ],
+          "source_files": 1667,
+          "artifacts_verified": true,
+          "compiler_lock_released": true,
+          "free_bytes": 55064731648,
+          "server": {
+            "version": "160015",
+            "fsync": "on",
+            "full_page_writes": "on",
+            "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+          }
+        },
+        "capture_review": {
+          "status": "PASS_BOUNDED_CAPTURE_REVIEW",
+          "checks": [
+            {
+              "case": "socket",
+              "status": "PASS_CAPTURE_REVIEW",
+              "rows": 42,
+              "inputs": 2,
+              "exact_control_transitions": 1
+            },
+            {
+              "case": "socket-append",
+              "status": "PASS_CAPTURE_REVIEW",
+              "rows": 48,
+              "inputs": 4,
+              "exact_control_transitions": 3
+            },
+            {
+              "case": "socket-intern",
+              "status": "PASS_CAPTURE_REVIEW",
+              "rows": 50,
+              "inputs": 5,
+              "exact_control_transitions": 4
+            },
+            {
+              "table": "datasets",
+              "field": "policy_revision",
+              "status": "EXPECTED_FAIL",
+              "reason": "event-only-expected-control-tables-change"
+            },
+            {
+              "table": "producer_epochs",
+              "field": "reserved_through_request",
+              "status": "EXPECTED_FAIL",
+              "reason": "only-producer-reservation-bound-advances"
+            },
+            {
+              "table": "producer_epochs",
+              "field": "epoch",
+              "status": "EXPECTED_FAIL",
+              "reason": "only-producer-reservation-bound-advances"
+            }
+          ],
+          "source_files_verified": 1667,
+          "captured_files_verified": 52
         }
       }
     }
