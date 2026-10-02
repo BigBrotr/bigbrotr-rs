@@ -76,7 +76,7 @@ pub async fn inspect(
     )
     .inspect_cut(
         read,
-        coordinator,
+        coordinator.reader_custody().unwrap(),
         &CatalogRoute {
             address: "127.0.0.1".parse().unwrap(),
             port: 5432,
@@ -220,7 +220,7 @@ pub async fn inspect(
                     .collect(),
                 snapshot_id: Some(3),
             },
-            coordinator,
+            coordinator.reader_custody().unwrap(),
             &CatalogRoute {
                 address: "127.0.0.1".parse().unwrap(),
                 port: 5432,

@@ -14,6 +14,7 @@ use bigbrotr::{
     },
     storage::{
         postgres::{
+            connection_settings::PreparedConnection,
             control_owner::{ClaimRequest, ControlSession, OwnerError},
             ingest_registry::{InitialRegistration, RegistrationAttempt, RegistrationObservation},
             transport,
@@ -46,10 +47,16 @@ use tokio::{
 const MIB: u64 = 1024 * 1024;
 
 struct InitialGrants {
-    sync_selected: bool,
+    sync: Option<sync::Sync>,
     native: OwnedPermit,
     bootstrap: OwnedPermit,
     private_scope: OwnedPermit,
+}
+
+struct PreparedInitial {
+    connection: PreparedConnection,
+    control_grant: OwnedPermit,
+    initial: InitialGrants,
 }
 
 /// Field order also protects unwind: native close completes before Client Drop.
@@ -161,18 +168,12 @@ pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> R
     selected(&root)?;
     let budget = budget(&root, sync)?;
     let initial = InitialGrants {
-        sync_selected: sync,
+        sync: None,
         native: grant(&budget, 0, native_limits().native_allowance_bytes())?,
         bootstrap: grant(&budget, 8 * MIB, 4 * MIB)?,
         private_scope: dictionaries::reserve_private(&budget)?,
     };
     let inputs = grant(&budget, 24 * MIB, 0)?;
-    let (prepared, control_grant) = postgres_command::prepare_control_shared(
-        &root,
-        required(&root, "postgres.control.user")?,
-        required(&root, "postgres.control.password_ref")?,
-        &budget,
-    )?;
     let timeout = duration(&root, "renewal_timeout");
     let grace = duration(&root, "graceful_shutdown_timeout");
     let runtime = tokio::runtime::Builder::new_current_thread()
@@ -183,17 +184,45 @@ pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> R
         .map_err(|_| (1, "initial Ingest runtime unavailable".into()))?;
     let outcome = runtime.block_on(async {
         let mut stop = Stop::new()?;
-        let (client, connection) = tokio::select! {
-            biased;
-            _ = stop.requested() => return Err((4, "initial Ingest connection cancelled".into())),
-            result = transport::connect(prepared) => result.map_err(|e| (1, e.to_string()))?,
-        };
-        let driver = tokio::spawn(connection);
         let cancellation = Arc::new(Cancellation::new());
-        let worker_cancel = cancellation.clone();
+        // Keep the sender across both phases. Closing it after preparation can
+        // otherwise look like terminal owner loss before its JoinHandle is ready.
         let (progress, mut observed) = watch::channel(Progress {
             deadline: Instant::now() + timeout, initialized: None, shutdown: None,
         });
+        let prepare_root = root.clone();
+        let prepare_budget = budget.clone();
+        let mut preparation = tokio::task::spawn_blocking(move || {
+            prepare(&prepare_root, &prepare_budget, initial, sync)
+        });
+        let prepared = match supervision::collect(&mut preparation, &mut observed,
+            &cancellation, stop.requested(), grace, |_| {}).await {
+            supervision::Collected::Joined { terminal, interrupted } => {
+                let prepared = terminal.map_err(|_| (4, "initial Ingest preparation panicked".into()))??;
+                // A stop can coincide with successful preparation. collect has
+                // consumed the signal, so check its retained cancellation state.
+                if interrupted || cancellation.requested.load(Ordering::Acquire) {
+                    return Err((4, "initial Ingest preparation cancelled or expired before connection".into()));
+                }
+                prepared
+            },
+            supervision::Collected::Unjoined => {
+                output.emit("error: initial Ingest preparation not joined; terminating process", true);
+                std::process::exit(4);
+            }
+        };
+        phase(&progress, timeout)?;
+        let PreparedInitial { connection: prepared, control_grant, initial } = prepared;
+        let connect_deadline = progress.borrow().deadline;
+        let (client, connection) = tokio::select! {
+            biased;
+            _ = stop.requested() => return Err((4, "initial Ingest connection cancelled".into())),
+            _ = tokio::time::sleep_until(connect_deadline) => return Err((4, "initial Ingest connection deadline".into())),
+            result = transport::connect(prepared) => result.map_err(|e| (1, e.to_string()))?,
+        };
+        phase(&progress, timeout)?;
+        let driver = tokio::spawn(connection);
+        let worker_cancel = cancellation.clone();
         let handle = tokio::runtime::Handle::current();
         let mut worker = tokio::task::spawn_blocking(move || {
             // The parent keeps driving current-thread I/O/timers while this
@@ -214,14 +243,56 @@ pub(super) fn run(root: Resolved, sync: bool, output: &mut LifecycleOutput) -> R
         // A terminal worker has already closed native and dropped/released its
         // sole Client. The memory reservation survives actual driver termination.
         postgres_command::join(driver).await;
+        drop(control_grant);
         let report = terminal.map_err(|_| (4, "initial Ingest worker panicked; inspect retained state".into()))??;
         if interrupted { return Err((4, "initial Ingest operation exceeded its deadline; inspect retained state".into())); }
         output.emit(report, false);
         Ok(())
     });
     runtime.shutdown_timeout(postgres_command::DRIVER_DRAIN);
-    drop(control_grant);
     outcome
+}
+
+/// All startup file reads run on the joined preparer, under the independent
+/// parent's signal/deadline watchdog. No connection or native handle exists yet.
+fn prepare(
+    root: &Resolved,
+    budget: &ResourceBudget,
+    mut initial: InitialGrants,
+    sync: bool,
+) -> Result<PreparedInitial> {
+    let (connection, control_grant) = postgres_command::prepare_control_shared(
+        root,
+        required(root, "postgres.control.user")?,
+        required(root, "postgres.control.password_ref")?,
+        budget,
+    )?;
+    initial.sync = sync
+        .then(|| sync::Sync::prepare(root, budget))
+        .transpose()?;
+    let path = Path::new(required(root, "storage.ingest_root")?);
+    if !path.is_absolute()
+        || !path
+            .parent()
+            .and_then(|parent| std::fs::symlink_metadata(parent).ok())
+            .is_some_and(|metadata| metadata.is_dir())
+    {
+        return Err((
+            3,
+            "initial Ingest requires an absolute target under an existing directory".into(),
+        ));
+    }
+    // Native initialize repeats exclusive creation; preparation never adopts a
+    // directory, symlink or partial state observed here or created in the gap.
+    match std::fs::symlink_metadata(path) {
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {},
+        _ => return Err((3, "initial Ingest target exists or cannot be inspected; preserve it for explicit recovery".into())),
+    }
+    Ok(PreparedInitial {
+        connection,
+        control_grant,
+        initial,
+    })
 }
 
 /// Bound async coordination; a native call can overrun this timer while blocking
@@ -268,30 +339,8 @@ async fn own(
     progress: watch::Sender<Progress>,
     cancellation: Arc<Cancellation>,
 ) -> Result<Value> {
-    // Public CA file I/O belongs to this supervised blocking owner. A stalled
-    // regular file cannot prevent the parent from handling signals/deadlines.
-    let mut sync = initial
-        .sync_selected
-        .then(|| sync::Sync::prepare(&root, &budget))
-        .transpose()?;
+    let mut sync = initial.sync;
     let path = Path::new(required(&root, "storage.ingest_root")?);
-    if !path.is_absolute()
-        || !path
-            .parent()
-            .and_then(|parent| std::fs::symlink_metadata(parent).ok())
-            .is_some_and(|metadata| metadata.is_dir())
-    {
-        return Err((
-            3,
-            "initial Ingest requires an absolute target under an existing directory".into(),
-        ));
-    }
-    // Check before even claiming Control. Initialize itself repeats the exclusive
-    // path check; no directory, symlink or partial state is adopted on retry.
-    match std::fs::symlink_metadata(path) {
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {},
-        _ => return Err((3, "initial Ingest target exists or cannot be inspected; preserve it for explicit recovery".into())),
-    }
     let dataset: DatasetId = required(&root, "topology.dataset_id")?
         .parse()
         .map_err(|_| (3, "invalid dataset".into()))?;

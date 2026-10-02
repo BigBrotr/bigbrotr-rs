@@ -84,9 +84,13 @@ result = execute([
     ('native-custody', tests + ['native_worker_retains_custody_and_separate_process_budgets_until_reaped',
                                '--', '--ignored', '--test-threads=1']),
     ('worker-budgets', tests + ['storage::archive::worker::tests', '--', '--test-threads=1']),
+    ('cut-admission', tests + ['storage::archive::cut::tests', '--', '--test-threads=1']),
+    ('initial-supervision', ['cargo', 'test', '--locked', '--offline', '--release',
+        '-p', 'bigbrotr', '--bin', 'bigbrotr', '--message-format=json',
+        'interfaces::serve::initial_ingest::', '--', '--test-threads=1']),
 ], Path('/out/budget-checks'), SOURCE, env, identity, 1800)
 # Preserve the actual executable even on RED, independently of the mutable cache.
-executables = set()
+executables = {}
 counts = {}
 for check in result['checks']:
     path = Path('/out/budget-checks') / (check['name'] + '.log')
@@ -101,13 +105,19 @@ for check in result['checks']:
             continue
         item = json.loads(line)
         if item.get('reason') == 'compiler-artifact' and item.get('executable') \
-                and item['profile']['test'] and item['target']['kind'] == ['lib']:
-            executables.add(item['executable'])
-assert len(executables) == 1
-executable = Path(executables.pop())
-assert executable.is_relative_to(build / 'target') and not executable.is_symlink()
-shutil.copy2(executable, artifacts / 'archive_worker_components')
-receipt['test_executables_sha256'] = {'archive_worker_components': file_hash(artifacts / 'archive_worker_components')}
+                and item['profile']['test']:
+            kind = item['target']['kind']
+            assert kind in (['lib'], ['bin'])
+            name = 'archive_worker_components' if kind == ['lib'] else 'initial_supervision_components'
+            executable = item['executable']
+            assert executables.get(name, executable) == executable
+            executables[name] = executable
+assert executables
+for name, executable in executables.items():
+    executable = Path(executable)
+    assert executable.is_relative_to(build / 'target') and not executable.is_symlink()
+    shutil.copy2(executable, artifacts / name)
+receipt['test_executables_sha256'] = {name: file_hash(artifacts / name) for name in executables}
 receipt['native_tests_passed'] = counts
 (artifacts / 'build-result.json').write_text(json.dumps(receipt, indent=2) + '\n')
 assert sources() == manifest['files_sha256']
@@ -115,4 +125,5 @@ assert verify_bundle(bundle, native_target()) == assets
 assert file_hash(bundle / 'bigbrotr-archive-worker') == worker_identity['sha256']
 assert result['status'] == 'PASS'
 assert counts.get('native-custody') == 1 and counts.get('worker-budgets', 0) > 0
+assert counts.get('cut-admission') == 1 and counts.get('initial-supervision', 0) >= 6
 Path('/out/qualification.json').write_text(json.dumps(dict(identity, status='PASS_ARCHIVE_WORKER_BUDGETS'), indent=2) + '\n')

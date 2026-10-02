@@ -8,22 +8,22 @@ use tokio::{
     time::Instant,
 };
 
-pub(super) enum Collected {
+pub(super) enum Collected<T> {
     Joined {
-        terminal: std::result::Result<Result<Value>, JoinError>,
+        terminal: std::result::Result<Result<T>, JoinError>,
         interrupted: bool,
     },
     Unjoined,
 }
 
-pub(super) async fn collect(
-    worker: &mut JoinHandle<Result<Value>>,
+pub(super) async fn collect<T>(
+    worker: &mut JoinHandle<Result<T>>,
     observed: &mut watch::Receiver<Progress>,
     cancellation: &Cancellation,
     stop: impl Future<Output = ()>,
     grace: Duration,
     mut emit: impl FnMut(Value),
-) -> Collected {
+) -> Collected<T> {
     tokio::pin!(stop);
     let mut reported = false;
     let (terminal, interrupted) = loop {
@@ -78,6 +78,53 @@ mod tests {
         Arc,
         atomic::{AtomicBool, Ordering},
     };
+
+    #[tokio::test]
+    async fn a_stopped_preparer_returns_owned_state_only_after_join() {
+        struct Prepared(Arc<AtomicBool>);
+        impl Drop for Prepared {
+            fn drop(&mut self) {
+                self.0.store(true, Ordering::Release);
+            }
+        }
+        let cancelled = Arc::new(Cancellation::new());
+        let released = Arc::new(AtomicBool::new(false));
+        let child_cancel = cancelled.clone();
+        let child_released = released.clone();
+        let mut worker = tokio::task::spawn_blocking(move || {
+            let owned = Prepared(child_released);
+            while !child_cancel.requested.load(Ordering::Acquire) {
+                std::thread::yield_now();
+            }
+            Ok(owned)
+        });
+        let (_progress, mut observed) = watch::channel(Progress {
+            deadline: Instant::now() + Duration::from_secs(60),
+            initialized: None,
+            shutdown: None,
+        });
+        let result = collect(
+            &mut worker,
+            &mut observed,
+            &cancelled,
+            async {},
+            Duration::from_secs(1),
+            |_| panic!("preparation published readiness"),
+        )
+        .await;
+        let Collected::Joined {
+            terminal: Ok(Ok(prepared)),
+            interrupted: false,
+        } = result
+        else {
+            panic!("preparer did not join");
+        };
+        assert!(worker.is_finished());
+        assert!(cancelled.requested.load(Ordering::Acquire));
+        assert!(!released.load(Ordering::Acquire));
+        drop(prepared);
+        assert!(released.load(Ordering::Acquire));
+    }
 
     #[tokio::test]
     async fn published_phase_wins_an_expired_cached_deadline() {

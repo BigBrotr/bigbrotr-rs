@@ -12,11 +12,13 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main observed at165a33a441d4e7ed85bd5cbfdf465623fa83e946 above
-origin/main527ee4a before this evidence commit. Product66c7393 and fixture165a33a
-are verified as scoped below; push with the accompanying evidence commit.
-Agent5d2bf84 was integrated as165a33a; its isolated worktree is clean/idle.
-Read-only review is complete. Root owns all Rust, docs, integration and Tux
+Primary main/origin observed at9985bd309f0a336a551415ba2186b3c784c705f5.
+The following candidate changes joined startup preparation and transfers owned
+ReaderCustody into inspect_cut; native build/tests and the positive installed
+Archive journey are still NOT_RUN. Keep this candidate unpublished until verified.
+Agent5d2bf84 was integrated as165a33a; its isolated worktree now owns only the
+positive Python Archive fixture. Existing reviewer is inspecting this lifecycle
+diff read-only. Root owns all Rust, docs, integration and Tux
 mutations. Preserve historical/negative/dirty worktrees; no merge/rebase.
 
 ## Active responsibility and next action
@@ -54,7 +56,8 @@ implementation_network_20260928.initial_archive and ignored
 All three runs are STOPPED/RETAINED with no OOM/unrelated changes or cleanup errors.
 Preserve installed-archive-165a33a/bindings/archive-setup-refusal/{data,state,scratch}
 and its protected manager.secret; these are actual initialized resources.
-Latest Tux free bytes: 51379843072. No local Rust build or cache/dataset deletion.
+Latest Tux free bytes: 51379843072. No local Rust build or cache/dataset deletion. Fresh preflight free bytes
+51,379,703,808 on Tux and3,088,960KiB on Mac; no active compiler/lab process.
 
 Structural decision for next wiring: use joined two-phase blocking preparation
 under the existing progress/cancellation supervisor, including Control credential/
@@ -69,12 +72,16 @@ with the coordinator. Never add unsafe Sync or share the coordinator by Arc.
 A focused CommandOwner native-wait helper must renew both Control/Ingest and
 service HTTP while keeping original publication deadlines. Every error after
 spawn must cancel and actually join before return; no early ? may detach work.
-These lifecycle changes are reviewed design, not implemented yet.
+Two-phase prepare and owned cut custody are implemented in this candidate, not
+yet compiled or practically qualified. The post-connect phase check precedes
+driver spawn, so refusal cannot detach a live transport. Publisher wait and
+Archive wiring remain the next implementation.
 
-Next bounded action: implement explicit initial Archive publication, consuming the
+Next bounded action: qualify the joined preparation/cut API on exact-Git Tux
+using the existing archive-worker-budgets runner (now also six startup supervisor
+cases and cut admission), then implement explicit initial Archive publication, consuming the
 existing complete PendingBatch, retained attempt/FreshWriter, native worker and
-captured-frontier adapters. First add an actual installed negative with Archive
-selected; then connect the 30-second formation timer, complete pending batches,
+captured-frontier adapters. The installed role refusal negative already exists; connect the 30-second formation timer, complete pending batches,
 joined publication and snapshot-bound frontier. Subsequent controlled restart
 into ordinary Control can use existing private archive read/export consumers.
 The reader flag/credentials/destination are deployment roots, so this transition
@@ -260,7 +267,7 @@ No complete acquisition task or phase checkbox closes at this boundary.
 
 Runs root /home/tux/bigbrotr-implementation-20260917/runs/. Shared compiler cache
 network-1154757/out/build/{target,cargo-home}, owner8b21a13162699a6038154874c2ac89da,
-uses exclusive .compiler-cache.lock. Latest e4ee0f5 intermediates; qualified ELFs
+uses exclusive .compiler-cache.lock. Latest66c7393 intermediates; qualified ELFs
 are separate. Native image7e946a0c, Rust1.98.1,clang14/Rocks11.8.1,amd64 only.
 All exact IDs/manifests/owners are in the existing laboratory inventory. Check
 space/process/container/mount/cache dependencies before the next large allocation.
