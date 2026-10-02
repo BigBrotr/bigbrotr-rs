@@ -496,6 +496,15 @@ fresh-owner observation. No queued job is adopted. The initial job-bound consume
 and their bounded evidence are below; native successor recovery and installed
 dispatch remain required.
 
+The installed dispatcher also needs a bounded current source metadata read for
+its exact loaded scope. This implementation slice is not yet qualified. The read
+retains generation, route identity and canonical endpoint under one metadata
+reservation; it grants no source action. A later change must make old bindings
+fail the existing socket/admission checks, never silently replace retained arrival
+attribution. Missing/disabled enrollment returns no candidate, while inconsistent
+stored metadata remains a distinct error. Cancellation poisons the Control session
+until its actual driver custody ends. No persistent format or migration changes.
+
 ## Job-bound source and event effects (implementation in progress)
 
 Additive0024 retains the finite JobId on each new relay reservation, with a

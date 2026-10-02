@@ -12,7 +12,16 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main8083261622ac03bf1f548cee9899be292cb83545; origin/main9e22986 before evidence push.
+Main628cfd412765694a94c4789009c9d4dcd57f1943 equals origin/main (push verified).
+Dirty root-owned source-read candidate: acquisition/relay_source.rs adds a retained
+metadata value; postgres/acquisition_read.rs intentionally returns Unavailable
+for the actual-engine RED; example support/acquisition_scope_reads.rs and
+experiments/acquisition-scope/reads.py --source add eight discriminating cases.
+Contract records unqualified status. No new API is advertised or schema changed.
+Next exact-Git acquisition-scope-read build, actual --source RED, implement existing
+bounded endpoint/route decoding in a fenced rollback-only read, rerun affected
+cases. Candidate/job selector and explicit Sync integration remain afterward.
+
 Root sole writer. Initial private-scope boundary now qualified: actualf8015bc
 CLI/probe build,123 selected native tests/Clippy; nine installed lifetime/window
 casese41e255, nineteen startup COMMIT casesa3123a2 and three installed session

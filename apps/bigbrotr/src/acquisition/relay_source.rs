@@ -16,6 +16,34 @@ pub struct RelaySourceBinding {
     pub route_id: RouteId,
 }
 
+/// Bounded current source metadata, never a socket or admission capability.
+/// The consumer retains this original binding through observation and dispatch;
+/// later enrollment changes must refuse it instead of relabeling an arrival.
+pub struct StoredRelaySource {
+    binding: RelaySourceBinding,
+    endpoint: Endpoint,
+    route: RouteSelection,
+    permit: crate::runtime::OwnedPermit,
+}
+impl StoredRelaySource {
+    /// Covers bounded URL decoding/normalization and its retained canonical text.
+    /// Driver framing has its own separately retained connection reservation.
+    pub const REQUIRED_BYTES: u64 = 128 * 1024;
+
+    pub fn binding(&self) -> RelaySourceBinding {
+        self.binding
+    }
+    pub fn endpoint(&self) -> &Endpoint {
+        &self.endpoint
+    }
+    pub fn route(&self) -> RouteSelection {
+        self.route
+    }
+    pub fn reserved_bytes(&self) -> u64 {
+        self.permit.request().units().data_bytes()
+    }
+}
+
 /// A conservative source restriction, not proof of committed scope or current
 /// enrollment. Those are checked by the actual Control/native consumer. This
 /// initial profile has no explicit public query-credential exception.

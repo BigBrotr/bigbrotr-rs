@@ -23,7 +23,8 @@ sys.path.insert(0, str(SOURCE / 'experiments/network-transport'))
 from inventory import projection
 
 root = Path(sys.argv[1]).resolve(strict=True)
-assert len(sys.argv) == 2 and SOURCE == root / 'source'
+source_reads = len(sys.argv) == 3 and sys.argv[2] == '--source'
+assert (len(sys.argv) == 2 or source_reads) and SOURCE == root / 'source'
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
 build = root / 'out/artifacts'
@@ -114,7 +115,40 @@ def run_case(name):
         dataset=selected['dataset_id'][2:], endpoint=selected['endpoint_id'][2:],
         selector=selector_id, access=selected['access_scope_id'][2:],
         visibility_domain='40' * 16, visibility_ordinal=1, policy=1))
-    if name == 'old_schema':
+    if name.startswith('source_'):
+        mode = 'read-source-' + name.removeprefix('source_').replace('_','-')
+        enrollment = next(e for e in basic['relay_enrollments'] if e['endpoint_id']==selected['endpoint_id']
+            and e['access_scope_id']==selected['access_scope_id'])
+        endpoint = next(e for e in basic['relay_endpoints'] if e['endpoint_id']==enrollment['endpoint_id'])
+        route = next(r for r in basic['network_routes'] if r['route_id']==enrollment['route_id'])
+        expected['source'] = dict(endpoint_id=endpoint['endpoint_id'][2:],
+            access_scope_id=enrollment['access_scope_id'][2:], enrollment_generation=enrollment['generation'],
+            route_id=route['route_id'][2:], url=bytes.fromhex(endpoint['url_bytes'][2:]).decode(),
+            route_bytes=list(bytes.fromhex(route['route_bytes'][2:])))
+        bound = "endpoint_id=decode('%s','hex') AND access_scope_id=decode('%s','hex')" % (
+            enrollment['endpoint_id'][2:], enrollment['access_scope_id'][2:])
+        if name == 'source_disabled':
+            mutate(db, f'UPDATE control.relay_enrollments SET enabled=false WHERE {bound};')
+            expected['source'] = None
+        elif name == 'source_changed':
+            mutate(db, f'UPDATE control.relay_enrollments SET generation=generation+1 WHERE {bound};')
+            expected['source']['enrollment_generation'] += 1
+        elif name == 'source_missing':
+            mutate(db, f"UPDATE control.acquisition_scopes SET access_scope_id=decode(repeat('ff',16),'hex') WHERE scope_id=decode('{scope_id}','hex');")
+            expected['source'] = None
+        elif name in ('source_long','source_bad_url'):
+            url = 'wss://source.example/'
+            url += 'x' * (8192-len(url)) if name=='source_long' else '%61'
+            mutate(db, f"UPDATE control.relay_endpoints SET url_bytes=decode('{url.encode().hex()}','hex') WHERE endpoint_id=decode('{endpoint['endpoint_id'][2:]}','hex');")
+            expected['source']['url'] = url
+            if name=='source_bad_url': expected['source_error']='InvalidMetadata'
+        elif name == 'source_bad_route':
+            lab.sql(pg, db, 'ALTER TABLE control.network_routes DROP CONSTRAINT network_routes_route_bytes_check;')
+            mutate(db, f"UPDATE control.network_routes SET route_bytes=decode('0000','hex') WHERE route_id=decode('{route['route_id'][2:]}','hex');")
+            expected['source_error']='InvalidMetadata'
+        else:
+            require(name in ('source_valid','source_cancel'), 'source-case')
+    elif name == 'old_schema':
         mode, expected['error'] = 'read-old-schema', 'Prerequisite'
     elif name == 'missing':
         mode, expected['scope_id'] = 'read-missing', 'ff' * 16
@@ -174,9 +208,10 @@ def run_case(name):
     before = rows(db)
     lab.write_json(output / (name + '-before.json'), before)
     holder = None
-    if name == 'cancel':
+    if name in ('cancel','source_cancel'):
         holder = Session(pg, db, 'scope_read_holder', sessions)
-        holder.execute('BEGIN; LOCK TABLE control.acquisition_scopes IN ACCESS EXCLUSIVE MODE;')
+        relation = 'network_routes' if name == 'source_cancel' else 'acquisition_scopes'
+        holder.execute(f'BEGIN; LOCK TABLE control.{relation} IN ACCESS EXCLUSIVE MODE;')
     process = Process(['docker', 'exec', client, '/build/acquisition_scope_probe', db,
         '/run/secrets/application', '/lab/policy.json', mode, '/lab/' + name + '-expected.json'])
     processes.append((name, process))
@@ -185,7 +220,7 @@ def run_case(name):
         event(process, 'read-start')
         waiter = json.loads(lab.sql(pg, db, f"SELECT json_build_object('pid',pid,'backend_start',backend_start::text) FROM pg_stat_activity WHERE datname='{db}' AND usename='bigbrotr_control'"))
         barrier = blocked(pg, db, waiter, holder.backend)
-        require(any(lock['relation'] == 'control.acquisition_scopes' and lock['mode'] == 'AccessShareLock'
+        require(any(lock['relation'] == 'control.' + relation and lock['mode'] == 'AccessShareLock'
             for lock in barrier['waiting_locks']), 'scope-query-lock-not-observed')
         event(process, 'read-cancelled')
         holder.execute('ROLLBACK;')
@@ -249,8 +284,11 @@ try:
     report['client'] = dict(id=ident, name=client)
     save()
     lab.docker('start', ident)
-    for name in ['valid', 'missing', 'foreign', 'historical', 'noncanonical', 'malformed',
-                 'large', 'oversize', 'working', 'profile', 'missing_selector', 'zero_epoch', 'cancel', 'old_schema']:
+    cases = (['source_valid','source_disabled','source_changed','source_missing','source_long',
+              'source_bad_url','source_bad_route','source_cancel'] if source_reads else
+             ['valid', 'missing', 'foreign', 'historical', 'noncanonical', 'malformed',
+              'large', 'oversize', 'working', 'profile', 'missing_selector', 'zero_epoch', 'cancel', 'old_schema'])
+    for name in cases:
         run_case(name)
     require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_transport_8c4d12c_pass') == old_basis
         and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')

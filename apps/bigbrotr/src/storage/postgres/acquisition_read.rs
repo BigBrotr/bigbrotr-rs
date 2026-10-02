@@ -46,6 +46,17 @@ const READ_SCOPE: &str = "
     WHERE s.dataset_id=$1::bytea AND s.scope_id=$2::bytea";
 
 impl ControlSession {
+    /// Current metadata for the exact loaded scope. No source authority is
+    /// retained across this read; socket and native consumers recheck it.
+    pub async fn read_acquisition_source(
+        &mut self,
+        _scope: &StoredAcquisitionScope,
+        _permit: OwnedPermit,
+    ) -> Result<Option<crate::acquisition::relay_source::StoredRelaySource>, ScopeReadError> {
+        // Intentional candidate for the independent actual-engine RED fixture.
+        Err(ScopeReadError::Unavailable)
+    }
+
     /// Load historical or current intent without making it current authority.
     /// Reserve the selector's8MiB parser grant and one item before entry; the
     /// result retains it. The connection owner separately retains its PG framing
