@@ -58,7 +58,8 @@ installed_sync_expiry = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-
 installed_sync_window = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync-window'
 installed_sync = installed_sync_visibility or installed_sync_expiry or installed_sync_window or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sync')
 installed_archive_setup = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-setup'
-installed_archive_publication = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive'
+installed_archive_signed = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive-signed'
+installed_archive_publication = installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 initial_ingest = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest'
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
@@ -128,10 +129,13 @@ if installed_archive_setup:
         'publication crash/COMMIT/cancellation/unknown outcomes', 'capacity/load/aged-state', 'arm64/release']
 
 if installed_archive_publication:
-    report['wave'] = 'installed-archive-publication'
+    report['wave'] = 'installed-archive-signed' if installed_archive_signed else 'installed-archive-publication'
     report['not_run'] = ['ordinary serve restart/read/export/M1', 'durable EOSE/progress',
         'publication crash/COMMIT/cancellation/unknown outcomes', 'nine-case Sync wave not repeated',
         'capacity/load/aged-state', 'arm64/release']
+
+if installed_archive_signed:
+    report['not_run'].append('three reader startup refusals not repeated in this focused wave')
 
 if installed_sync:
     report['wave'] = ('installed-sync-visibility' if installed_sync_visibility
@@ -735,6 +739,7 @@ try:
     elif installed_archive_publication:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
         from installed_archive_journey import CASES as ARCHIVE_PUBLICATION_CASES
+        ARCHIVE_PUBLICATION_CASES = ['archive-signed'] if installed_archive_signed else ARCHIVE_PUBLICATION_CASES
         cases = list(ARCHIVE_PUBLICATION_CASES)
     elif installed_archive_setup:
         sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))

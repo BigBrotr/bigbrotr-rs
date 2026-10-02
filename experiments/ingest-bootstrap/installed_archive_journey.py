@@ -247,6 +247,8 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
     lab.write_json(output / (name + '-retained-authority.json'), dict(archive_owner=old_archive,
         observed_at_us=expired_at, archive_lease_expired=True, original_control_released=True))
     roles = global_roles(pg)
+    lab.write_json(output / (name + '-final-roles.json'), roles)
+    lab.write_json(output / (name + '-final-catalog.json'), final_catalog)
     assert all(r in roles['roles'] for r in before_roles['roles'])
     assert all(r in roles['members'] for r in before_roles['members'])
     added = [r for r in roles['roles'] if r not in before_roles['roles']]
@@ -259,7 +261,7 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
     new_members = [r for r in roles['members'] if r not in before_roles['members']]
     assert len(new_members) == 4
     assert {r['roleid'] for r in new_members} == {r['oid'] for r in added}
-    assert all(r['member'] == setup['resource']['roles']['manager_oid'] and r['admin_option']
+    assert all(int(r['member']) == setup['resource']['roles']['manager_oid'] and r['admin_option']
         and not r['inherit_option'] and not r['set_option'] for r in new_members)
     lab.write_json(output / (name + '-final-catalog.json'), final_catalog)
     lab.write_json(output / (name + '-final-roles.json'), roles)
