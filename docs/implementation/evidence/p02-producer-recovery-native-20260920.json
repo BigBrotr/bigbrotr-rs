@@ -1142,5 +1142,125 @@
       "Both interrupted commands had one PostgreSQL backend still waiting before the fixture released its table lock. The Rust driver joins/aborts after its2s drain; transport closure is not synchronous server-query cancellation. Backends terminate after unlock, with all69 tables and17 native rows unchanged.",
       "No negative outcome from missing detail, WAL provenance guarantee, ACK/GC, source closure, retirement, successor, full M1, arm64 or release qualification."
     ]
+  },
+  "signed_event_recovery_20261002": {
+    "status": "PASS_SCOPED_INSTALLED_SIGNED_RECOVERY",
+    "observed_at": "2026-10-02",
+    "scope": "P01-T09 Step4/P02-T01 Step5/P02-T02 Step4: signed positive recovery consumer; no source closure, retirement, successor or M1 completion",
+    "fixture": {
+      "revision": "e8317e92ac92a06da8b363e2e70a11b8ecb11c49",
+      "tree": "9af09847340346b692f127001672c22a1dc0151f",
+      "source_files": 1704,
+      "source_archive_sha256": "a8998b8f3d51edeaf21b1f80947995d939f42cb0526b6e147194ef76d00f5959"
+    },
+    "product": {
+      "revision": "5512161a860c5a0e0944128e83b846ca4e251aa0",
+      "tree": "ab168dbabd10f67a1238774e4afec9ef3973c2be",
+      "artifacts": {
+        "binary_sha256": "bd2db3daa0ab43a750107c281c83f8a9b67ec98e65775182adf70eb1195c8d42",
+        "probe_sha256": "fd4238bcc004770757cd866d3832c07b66d806956ea820db421827460114d4c3",
+        "probe_name": "ingest_bootstrap_probe"
+      },
+      "build": "Existing qualified5512161 artifacts reused, exact Rust/build inputs unchanged; no rebuild or unrelated suite rerun"
+    },
+    "environment": {
+      "target": "x86_64-unknown-linux-gnu",
+      "rustc": "1.98.1",
+      "rocksdb": "0.25.0 / 11.8.1",
+      "postgres": "16.15 with fsync/full_page_writes enabled",
+      "native_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "runner": "Tux, no hosted Actions",
+      "client_limits": "2CPU/1GiB/128PIDs",
+      "declared_recovery_envelope": "1536MiB total; 1GiB payload,256MiB native,128MiB baseline,32MiB completion; reservations are not RSS/capacity claims"
+    },
+    "retained_seed": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9",
+      "revision": "b7b60f9283e3d3c72421c4df665dcd0b42c41798",
+      "owner": "df63ed47a165a536aa0937277bfb4caa",
+      "result_sha256": "08ec9000df8e5cf9facfd20d67cbf379f14a4c492fe36dedebb1b35e44ca63d0",
+      "database": "bb_scope_bind_b7b60f9_archive_export",
+      "catalog_database": "bb_scope_bind_b7b60f9_archive_export_cat"
+    },
+    "cases": [
+      {
+        "name": "signed-recovery",
+        "status": "PASS",
+        "native_rows": 49,
+        "original_requests": 4,
+        "control_tables": 69,
+        "seconds": 0.16312753409147263,
+        "new_event_outcome_copy": false
+      },
+      {
+        "name": "signed-recovery-retry",
+        "status": "PASS",
+        "native_rows": 49,
+        "original_requests": 4,
+        "control_tables": 69,
+        "seconds": 0.1360741714015603,
+        "new_event_outcome_copy": false
+      },
+      {
+        "name": "signed-recovery-copy",
+        "status": "PASS",
+        "native_rows": 49,
+        "original_requests": 4,
+        "control_tables": 69,
+        "seconds": 0.2231363896280527,
+        "new_event_outcome_copy": true
+      }
+    ],
+    "oracle": {
+      "native_rows": 49,
+      "original_requests": 4,
+      "dictionary_recorded_us": 1790930661589775,
+      "event_received_us": 1790930661641775,
+      "event_recorded_us": 1790930661689041
+    },
+    "validation": [
+      "Original four request identities, inputs, signed body/signature, first receive, provenance, dependencies and receipt bytes independently reconstructed with installed Sync oracle. Historical issuer selected from immutable reservations despite a later ordinary read/export Control owner.",
+      "All49 native rows compared per command: only the producer v2 closing marker changes. All69 Control tables and xmin checked; new Control claim/release, role retirement, producer closing and optional exact event outcome copy are the only allowed changes.",
+      "The missing PostgreSQL event outcome is removed only in an isolated privileged fixture clone. Recovery copies its original bytes/digest/policy and separately attributes the new current Control recorder; original reservation and native effects stay unchanged.",
+      "Original Control69 tables/catalog32 tables and full native/archive/state/export file census unchanged; the new client has no mount of the original laboratory. No export rerun or dataset deletion.",
+      "Root independently replayed the complete49-row/four-input seed oracle and captured effects. Source1704 files and36 captures SHA checked against exact Git and remote originals."
+    ],
+    "capture": {
+      "label": "recovery-signed-first",
+      "source": "e8317e92ac92a06da8b363e2e70a11b8ecb11c49",
+      "build_source": "5512161a860c5a0e0944128e83b846ca4e251aa0",
+      "status": "PASS_INSTALLED_POSITIVE_RECOVERY",
+      "captures": 36,
+      "capture_sha256": "3ef544e2d3202f6a0ba717c116952848e040b77998e62a148851578d24a3d583",
+      "cases": [
+        {
+          "name": "positive-recovery-signed",
+          "status": "PASS"
+        }
+      ]
+    },
+    "replay": {
+      "status": "PASS_SCOPED_CAPTURE_REPLAY",
+      "cases": 3,
+      "independent_native_rows": 49,
+      "original_inputs": 4,
+      "control_tables": 69,
+      "original_catalog_tables": 32
+    },
+    "review": {
+      "owner": "root",
+      "boundary": "Complete new signed fixture and changed bindings dispatch reviewed; existing oracle and catalog/file helpers read. Product implementation remains the preceding qualified revision; ordinary Serve/export not re-audited and no independent AI review."
+    },
+    "terminal": {
+      "status": "STOPPED_RETAINED",
+      "cleanup_errors": [],
+      "unrelated_changed": [],
+      "free_bytes_before": 69108961280,
+      "free_bytes_after": 69098418176
+    },
+    "limitations": [
+      "One signed event/four requests is not aged, mixed or capacity evidence.",
+      "Installed Rejected/AlreadyDurable outcomes, crash/COMMIT ambiguity and blocked native I/O not exercised by this wave.",
+      "Positive recovery deliberately leaves the source open and producer closing. Missing detail remains unresolved; no absence proof, ACK/GC, retirement, successor or full M1 restart/resend claim."
+    ]
   }
 }

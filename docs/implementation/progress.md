@@ -12,12 +12,11 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main and origin/main were verified clean and equal at `cd03ae5`.
-Root now owns a signed-recovery fixture plus its bindings-runner dispatch and this
-checkpoint. No product or build input changes. All previous waves remain stopped;
-no parallel writer. Commit the fixture, transfer exact Git source and reuse the
-qualified5512161 artifacts in a new owned lab. The checkpoint cannot contain its
-own future commit hash.
+Primary main is `e8317e9`, one candidate ahead of pushed `cd03ae5`.
+Root owns the closing signed-recovery evidence/reference/task/inventory/checkpoint
+edits. No product/build inputs changed and no parallel writer. Commit the reviewed
+qualification, push normally and verify remote equality before the next slice.
+The checkpoint cannot contain its own future commit hash.
 
 ## Active responsibility and next bounded action
 
@@ -70,19 +69,24 @@ New consumer, original initial lifetime/supervision, close/resolve and historica
 loaders plus changed fixtures/callers reviewed. Unchanged ordinary read/export
 runtime was not re-audited; no independent AI review at this boundary.
 
-Next bounded action: execute the committed signed-recovery fixture against isolated
-copies of retained installed-archive-export-b7b60f9. Its original client was freshly
-verified stopped, its report SHA08ec9000 and complete69-table capture remain present.
-The fixture copies only the small native store/event, independently reconstructs
-all49 rows/four inputs, selects original issuer from immutable reservations, then
-runs full recovery, exact retry and missing event-outcome copy. Preserve original
-32-table catalog,69-table Control and native/archive/export files; no original lab
-mount in the new client. No export rerun or local Rust build. Result remains NOT_RUN.
-Then implement durable source/producer/domain closure and explicit successor using
-the existing P02 contracts. No adjacent analytics or complete acquisition subsystem
-is needed first. Full restart/resend remains M1's visible acceptance.
+Signed recovery fixture `e8317e9`/tree9af09847 now passes with the unchanged5512161
+CLI/probe. Three actual cases resolve all four original requests from retained
+installed-archive-export-b7b60f9, repeat exactly and restore only the missing PG
+event outcome with fresh recorder attribution. Complete49-row/four-input oracle,
+all69 Control tables/xmin and unchanged original32-table catalog/files checked.
+Elapsed CLI times0.163/0.136/0.223s are tiny-workload observations, not capacity.
+Root verified1704 source files/36 captures and replayed the independent full native
+oracle. Report signed_event_recovery_20261002 and inventory engines.signed_event
+retain exact identities. No source closure/retirement/successor or M1 claim.
 
-These 12 cases use two dictionary requests, not a signed-event recovery workload.
+Next bounded action: read the current source/producer/domain closure contracts and
+existing native/PG closing/recovery boundaries, then implement the smallest durable
+closure prerequisite for explicit successor. The event remains served/exported by
+already qualified retained Archive; whole adjacent services are not prerequisites.
+Full restart/resend remains M1's visible acceptance.
+
+The first12 cases use two dictionary requests; the later three exercise one signed
+event/four original requests. Installed Rejected/AlreadyDurable remain NOT_RUN.
 Later native/COMMIT cancellation, ambiguous commits, blocked FFI/close, worker
 panic, crashes/ENOSPC and aged/mixed/load remain NOT_RUN for this composition.
 Strict WAL reopening does not exclude silent complete-tail loss. No new negative
@@ -97,10 +101,12 @@ retain the original evidence; do not repeat those broad suites without new risk.
 ## Latest resources and maintenance
 
 Build runs/ingest-history-5512161, engine ingest-recovery-engine-5512161 and
-final interruption engine ingest-recovery-engine-851d116 are STOPPED/RETAINED.
+interruption engine ingest-recovery-engine-851d116 and signed engine
+ingest-recovery-engine-e8317e9 are STOPPED/RETAINED (owner30961472, client5a95ea91).
 Borrowed PG 71775507 stopped, shared compiler 1154757 released, no OOM, cleanup
 errors or unrelated changes. Exact owners/IDs in the inventory. Eight unrelated
-containers remain running. Latest Tux 69,147,979,776B free; Mac 2,308,344KiB free.
+containers remain running. Latest signed engine Tux69,098,418,176B free (before69,108,961,280);
+Mac resumption2,286,616KiB free before small captures.
 No Mac Rust build or new deletion. Check space before the next allocation;
 current Tux headroom is below the prior export experiment's 64 GiB+577 MiB reserve.
 

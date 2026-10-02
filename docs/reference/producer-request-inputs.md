@@ -417,8 +417,14 @@ product `5512161` and final fixture `851d116`. Two actual installed dictionary
 requests and all 17 native rows/69 Control tables are checked, including missing
 copies/inputs/reservations, pending reservation beyond issued, held native owner,
 changed heads, retries, SIGTERM, query deadline and a filled 64 KiB stdout pipe.
-This is bounded P01-T09 Step4/P02-T01 Step5/P02-T02 Step4 evidence. Signed-event
-recovery through this command and the later source/successor journey remain open.
+The signed supplement uses the same product with fixture `e8317e9`: all four
+original requests from the retained installed acquisition/Archive/export journey
+resolve, an identical retry preserves them, and a missing PostgreSQL event copy
+is reconstructed with original bytes and a separately attributed current recorder.
+All 49 native rows/four inputs and 69 Control tables are checked; the original
+laboratory's Control, catalog and native/archive/export files remain unchanged.
+This is bounded P01-T09 Step4/P02-T01 Step5/P02-T02 Step4 evidence. Source closure,
+retirement, successor activation and the full restart/resend journey remain open.
 
 SIGTERM and deadline terminated the tested CLI in about 2.22s and 3.08s with no
 state changes; the configured operation/shutdown limits were 1s/2s. The driver has

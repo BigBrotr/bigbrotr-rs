@@ -200,8 +200,11 @@ One owner serializes exact identity decisions for each writable directory.
   PG reserved-through bound separately from native issued, so a pending reservation
   cannot be silently omitted. Signal/deadline and saturated diagnostics terminate
   in bounded time; server-query lifetime remains distinct from driver join.
-  Signed-event recovery through this command, source/producer retirement,
-  successor admission and full restart remain open.
+  Its signed supplement (`e8317e9`, unchanged `5512161` product) adds all four
+  original requests from the retained signed acquisition/Archive/export journey,
+  identical retry and missing event-outcome copy: all 49 native rows/four inputs
+  and 69 Control tables checked, original 32-table catalog and files preserved.
+  Source/producer retirement, successor admission and full restart remain open.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and
