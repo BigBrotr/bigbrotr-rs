@@ -131,9 +131,33 @@ def relay(directory, listener, finished, errors, signed):
         listener.close()
 
 
+def no_connections(directory, listener, finished, errors):
+    """Keep a real listening socket throughout the refused job and owned shutdown."""
+    started = time.time_ns()//1000
+    connections = 0
+    publish(directory, 'relay-monitor-started.json', dict(started_at_us=started))
+    try:
+        while not finished.is_set():
+            try:
+                connection, remote = listener.accept()
+            except socket.timeout:
+                continue
+            connections += 1
+            connection.close()
+            raise AssertionError('private source with public visibility dialed '+remote[0])
+    except BaseException as error:
+        errors.append(type(error).__name__+': '+str(error))
+        publish(directory, 'relay-error.json', dict(error=errors[-1]))
+    finally:
+        listener.close()
+        publish(directory, 'relay-monitor-ended.json', dict(started_at_us=started,
+            finished_at_us=time.time_ns()//1000, connections=connections))
+
+
 def run(directory, request, login, logout):
     signed = directory.name == 'sync-signed'
-    assert signed or directory.name == 'sync-quiet'
+    visibility_refusal = directory.name == 'sync-public-visibility'
+    assert signed or visibility_refusal or directory.name == 'sync-quiet'
     observations = []
     logged_in, session, saved, auth, _ = login(('policy.change', 'roles.control', 'status.read'))
 
@@ -153,7 +177,7 @@ def run(directory, request, login, logout):
             time.sleep(.01)
 
     visibility = json.loads((directory/'visibility.json').read_text())
-    assert visibility['ordinal'] == '3'
+    assert visibility['ordinal'] == ('1' if visibility_refusal else '3')
     revisions = dict(expected_config_revision='1', expected_policy_revision='1')
     endpoint = call('relay-endpoints', dict(url='WS://127.0.0.1:7447/a/../installed-fixture', **revisions), '91'*16)
     enrollment = call('relay-enrollments', dict(endpoint_id=endpoint['endpoint_id'], visibility=visibility,
@@ -164,7 +188,8 @@ def run(directory, request, login, logout):
     listener = socket.socket()
     listener.bind(('127.0.0.1', 7447)); listener.listen(2); listener.settimeout(.1)
     finished, errors = threading.Event(), []
-    worker = threading.Thread(target=relay, args=(directory, listener, finished, errors, signed))
+    worker = threading.Thread(target=no_connections if visibility_refusal else relay,
+        args=(directory, listener, finished, errors) if visibility_refusal else (directory, listener, finished, errors, signed))
     worker.start()
     try:
         barrier('prepared')

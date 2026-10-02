@@ -5,6 +5,10 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+import socket
+import tempfile
+import threading
+import time
 
 sys.dont_write_bytecode = True
 SOURCE = Path(__file__).resolve().parents[2]
@@ -14,12 +18,19 @@ bootstrap = importlib.util.module_from_spec(spec)
 sys.modules['bootstrap_oracle'] = bootstrap
 spec.loader.exec_module(bootstrap)
 from installed_sync_oracle import decode, expected
-from installed_sync_client import read_frame
+from installed_sync_client import no_connections, read_frame
 
 files = [*Path(__file__).parent.glob('installed_sync*.py'), Path(__file__).with_name('installed_client.py'),
     Path(__file__).with_name('session_client.py'), SOURCE/'experiments/acquisition-scope/bindings.py']
+embedded = 0
 for path in files:
-    ast.parse(path.read_text())
+    tree = ast.parse(path.read_text())
+    if path.name == 'installed_sync.py':
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign) and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
+                if any(isinstance(target, ast.Name) and target.id in ('script', 'wrapper') for target in node.targets):
+                    ast.parse(node.value.value); embedded += 1
+assert embedded == 2
 
 state = dict(datasets=[dict(dataset_id='\\x'+'01'*16)], owner_epochs=[dict(role='ingest',
     resource_id='\\x'+'02'*16, process_incarnation='\\x'+'03'*16, acquired_at_us=100)],
@@ -66,6 +77,33 @@ for bad in [bytes.fromhex('8100'), bytes.fromhex('818001'), bytes.fromhex('81807
         pass
     else:
         raise AssertionError('unmasked/truncated WebSocket frame accepted')
-print(json.dumps(dict(status='PASS_FIXTURE_ONLY', ast_files=len(files), constructed=counts,
-    malformed_cbor_cases=len(malformed), websocket_cases=5,
+# Exercise the refusal observer itself on local ephemeral sockets. Injecting
+# one TCP connection must fail even without a WebSocket handshake or EVENT.
+for connect in (False, True):
+    with tempfile.TemporaryDirectory(prefix='bigbrotr-sync-observer-') as temp:
+        directory = Path(temp)
+        listener = socket.socket()
+        listener.bind(('127.0.0.1', 0)); listener.listen(1); listener.settimeout(.01)
+        address = listener.getsockname()
+        finished, errors = threading.Event(), []
+        worker = threading.Thread(target=no_connections, args=(directory, listener, finished, errors))
+        worker.start()
+        deadline = time.monotonic()+2
+        while not (directory/'relay-monitor-started.json').exists():
+            assert time.monotonic() < deadline
+            time.sleep(.001)
+        if connect:
+            with socket.create_connection(address, timeout=1):
+                pass
+        else:
+            finished.set()
+        worker.join(2)
+        assert not worker.is_alive()
+        observed = json.loads((directory/'relay-monitor-ended.json').read_text())
+        assert observed['connections'] == int(connect)
+        assert observed['finished_at_us'] >= observed['started_at_us']
+        assert bool(errors) == connect and (directory/'relay-error.json').exists() == connect
+
+print(json.dumps(dict(status='PASS_FIXTURE_ONLY', ast_files=len(files), embedded_python=embedded, constructed=counts,
+    malformed_cbor_cases=len(malformed), websocket_cases=5, no_dial_observer_cases=2,
     not_run=['actual CLI', 'PostgreSQL', 'RocksDB', 'product WebSocket', 'renewal', 'signal shutdown'])))

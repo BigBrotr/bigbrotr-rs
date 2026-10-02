@@ -17,7 +17,7 @@ from scopes import upgrade as upgrade_scopes
 from initial_jobs import released, unchanged, validate_job
 from installed_sync_oracle import ENDPOINT, SIGNED_SHA256, decode, expected
 
-CASES = ['sync-signed', 'sync-quiet', 'sync-function', 'sync-lock']
+CASES = ['sync-signed', 'sync-quiet', 'sync-function', 'sync-lock', 'sync-public-visibility']
 SOURCE = Path(__file__).resolve().parents[2]
 EXECUTION = 'control.require_acquisition_execution(bytea,bytea,bytea,bytea,bytea)'
 BOOTSTRAP = {'datasets', 'owner_epochs', 'role_instances', 'topology_generations', 'topology_streams',
@@ -43,7 +43,10 @@ def validate_queued(state, observations):
     validate_job(accepted, receipt)
 
 
-def validate_source(state, report, observations):
+def validate_source(state, report, observations, *, public=False):
+    visibility = report['public_scope' if public else 'private_scope']
+    ordinal = 1 if public else 3
+    assert visibility['ordinal'] == str(ordinal)
     dataset = state['datasets'][0]['dataset_id']
     endpoint, = state['relay_endpoints']; access, = state['relay_access_contexts']
     enrollment, = state['relay_enrollments']; route, = state['network_routes']
@@ -56,9 +59,9 @@ def validate_source(state, report, observations):
     assert scope['access_scope_id'] == access['access_scope_id'] == enrollment['access_scope_id']
     assert scope['dataset_id'] == endpoint['dataset_id'] == access['dataset_id'] == dataset
     assert (scope['visibility_kind'], scope['visibility_domain'], scope['visibility_ordinal']) == (
-        4, '\\x'+report['private_scope']['allocation_domain'], 3)
+        4, '\\x'+visibility['allocation_domain'], ordinal)
     assert (access['dictionary_kind'], access['allocation_domain'], access['ordinal']) == (
-        scope['visibility_kind'], scope['visibility_domain'], 3)
+        scope['visibility_kind'], scope['visibility_domain'], ordinal)
     assert enrollment['enabled'] is True and enrollment['generation'] == 1
     assert enrollment['endpoint_id'] == endpoint['endpoint_id'] and enrollment['route_id'] == route['route_id']
     assert route['route_version'] == 1 and route['route_bytes'] == '\\x0104207f000001'
@@ -78,7 +81,7 @@ def validate_source(state, report, observations):
     actor, = state['local_accounts']; session, = state['browser_sessions']
     raw = lambda value: bytes.fromhex(value[2:])
     be = lambda n: n.to_bytes(8, 'big')
-    qualified = raw(dataset)+b'\0\4'+raw(scope['visibility_domain'])+be(3)
+    qualified = raw(dataset)+b'\0\4'+raw(scope['visibility_domain'])+be(ordinal)
     for path, table, action, nonce in [
             ('relay-endpoints', 'relay_registration_commands', 'relay.endpoint.register', '91'),
             ('relay-enrollments', 'relay_enrollment_changes', 'relay.enrollment.change', '92'),
@@ -198,8 +201,52 @@ def native(client, output, name, state, initialized, transcript, completed_us):
         event_received_us=received, event_recorded_us=recorded_at)
 
 
+def stop_during_quiet(client, prefix, signed):
+    # Poll and signal inside the owned container, avoiding another Docker round
+    # trip after observing the active request. The first two signed rounds must
+    # already be complete; only a subsequent deliberately quiet round qualifies.
+    identity = json.loads(Path(str(prefix)+'.pid.json').read_text())
+    script = r'''import json,os,signal,sys,time
+from pathlib import Path
+r=json.loads(sys.argv[1]); directory=Path(r['prefix']); minimum=int(sys.argv[2])
+p=Path('/proc')/str(r['pid'])
+assert p.joinpath('stat').read_text().split()[21]==r['start_ticks']
+assert p.joinpath('cmdline').read_bytes().split(b'\0')[:4]==[b'/build/bigbrotr',b'serve',b'--file',r['config'].encode()]
+deadline=time.monotonic()+4
+while True:
+    opened=sorted(directory.glob('relay-open-*.json'))
+    if opened:
+        trace=json.loads(opened[-1].read_text())
+        closed=directory/('relay-closed-%03d.json'%trace['number'])
+        # Select a newly opened request with no observed completion. Close/read
+        # racing the signal is
+        # still safe and remains visible in the retained terminal transcript.
+        now=time.time_ns()//1000
+        if trace['number']>=minimum and 0<=now-trace['request_at_us']<20000 and not closed.exists():
+            assert p.joinpath('stat').read_text().split()[21]==r['start_ticks']
+            (directory/'stop-requested').write_text('SIGTERM during observed quiet receive\n')
+            observed=dict(round=trace['number'],request=trace['request'],request_at_us=trace['request_at_us'],signal_at_us=time.time_ns()//1000,signal_monotonic_ns=time.monotonic_ns(),closed_before_signal=closed.exists())
+            # Recheck directly before the signal; a completed quantum is not
+            # selected as evidence for the quiet-cancellation schedule.
+            if observed['closed_before_signal']:
+                (directory/'stop-requested').unlink()
+                continue
+            os.kill(r['pid'],signal.SIGTERM)
+            (directory/'signal-observation.json').write_text(json.dumps(observed))
+            break
+    assert time.monotonic()<deadline,'no active quiet request at signal'
+    time.sleep(.001)
+'''
+    lab.docker('exec', client, 'python3', '-c', script, json.dumps(identity), '3' if signed else '1')
+    selected = json.loads((prefix/'signal-observation.json').read_text())
+    assert not selected['closed_before_signal']
+    assert 0 <= selected['signal_at_us']-selected['request_at_us'] < 100000
+    return selected
+
+
 def run(pg, client, output, database, name, rows):
     assert name in CASES
+    visibility_refusal = name == 'sync-public-visibility'
     upgrade_registry(pg, client, output, database, name, rows)
     upgrade_scopes(pg, client, output, database, name, rows)
     lab.sql(pg, database, '''
@@ -272,13 +319,22 @@ def run(pg, client, output, database, name, rows):
     initial = rows(database); lab.write_json(output/(name+'-initialized.json'), initial)
     assert {t for t in before if before[t] != initial[t]} <= BOOTSTRAP
     original_deadline = max(r['lease_expires_at_us'] for r in initial['owner_epochs'])
-    lab.write_json(directory/'visibility.json', initialized['private_scope'])
+    lab.write_json(directory/'visibility.json', initialized['public_scope' if visibility_refusal else 'private_scope'])
     wrapper = '''import subprocess,sys,json
 from pathlib import Path
 p=Path(sys.argv[1])
-with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err:
- r=subprocess.run(['python3','/lab/session_client.py',str(p),'installed-sync'],stdout=out,stderr=err,timeout=38)
-(p/'client-exit.json').write_text(json.dumps({'exit_code':r.returncode}))
+terminal={}
+try:
+ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err:
+  r=subprocess.run(['python3','/lab/session_client.py',str(p),'installed-sync'],stdout=out,stderr=err,timeout=38)
+ terminal={'exit_code':r.returncode}
+except BaseException as error:
+ terminal={'exit_code':None,'error':type(error).__name__+': '+str(error)}
+ raise
+finally:
+ partial=p/'client-exit.json.partial'
+ partial.write_text(json.dumps(terminal))
+ partial.rename(p/'client-exit.json')
 '''
     lab.docker('exec', '-d', client, 'python3', '-c', wrapper, '/lab/'+name)
     def stage(label):
@@ -294,18 +350,23 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         assert all(r in prepared[table] for r in initial[table])
     assert len(prepared['management_commands']) == len(initial['management_commands'])+3
     assert len(prepared['management_audit']) == len(initial['management_audit'])+4
-    validate_source(prepared, initialized, observations)
+    validate_source(prepared, initialized, observations, public=visibility_refusal)
     (directory/'prepared.continue').write_text('observed\n')
     observations = stage('submitted')
-    wanted_count = 4 if name == 'sync-signed' else 3
+    wanted_count = 2 if visibility_refusal else 4 if name == 'sync-signed' else 3
     def completed():
         assert not (directory/'relay-error.json').exists(), 'independent relay failed'
         assert not Path(str(prefix)+'.terminal.json').exists(), 'initial owner ended early'
         traces = sorted(directory.glob('relay-closed-*.json'))
-        if len(traces) < 2:
+        if visibility_refusal:
+            assert not traces and (directory/'relay-monitor-started.json').exists()
+        elif len(traces) < 2:
             return None
         current = rows(database)
         now = int(lab.sql(pg, database, 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        if len(current['producer_requests']) > wanted_count or len(current['producer_outcomes']) > wanted_count:
+            lab.write_json(output/(name+'-unexpected-producer-state.json'), current)
+            raise AssertionError('unexpected producer request or outcome before observation boundary')
         if len(current['producer_outcomes']) < wanted_count or now <= original_deadline:
             return None
         assert len(current['producer_requests']) == len(current['producer_outcomes']) == wanted_count
@@ -315,8 +376,10 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
     lab.write_json(output/(name+'-durable.json'), current)
     lab.write_json(output/(name+'-renewed.json'), dict(original_deadline=original_deadline, observed_at_us=now,
         leases=[r['lease_expires_at_us'] for r in current['owner_epochs']]))
-    unchanged(prepared, current, ('jobs', 'acquisition_jobs', 'job_admissions', 'management_commands',
-        'management_audit', 'producer_epochs', 'producer_requests', 'producer_outcomes'))
+    allowed = ('jobs', 'acquisition_jobs', 'job_admissions', 'management_commands', 'management_audit')
+    if not visibility_refusal:
+        allowed += ('producer_epochs', 'producer_requests', 'producer_outcomes')
+    unchanged(prepared, current, allowed)
     for table in ('management_commands', 'management_audit'):
         assert all(r in current[table] for r in prepared[table])
         assert len(current[table]) == len(prepared[table])+1
@@ -325,16 +388,23 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
     old, = prepared['producer_epochs']; new, = current['producer_epochs']
     strip = lambda r: {k: v for k, v in r.items() if k not in ('reserved_through_request', 'xmin')}
     assert strip(old) == strip(new) and old['reserved_through_request'] == 2 and new['reserved_through_request'] == wanted_count
-    validate_source(current, initialized, observations); validate_queued(current, observations)
+    validate_source(current, initialized, observations, public=visibility_refusal); validate_queued(current, observations)
     (directory/'submitted.continue').write_text('observed\n')
     stage('commands-finished')
     before_stop = rows(database); lab.write_json(output/(name+'-before-stop.json'), before_stop)
     from initial_jobs import logged_out
     logged_out(current, before_stop)
-    (directory/'stop-requested').write_text('SIGTERM requested by owned host fixture\n')
-    signal_at = time.monotonic()
-    stop(client, prefix); ended = terminal(prefix)
-    signal_elapsed = time.monotonic()-signal_at
+    selected_quiet = None
+    if visibility_refusal:
+        (directory/'stop-requested').write_text('SIGTERM requested by owned host fixture\n')
+        signal_at = time.monotonic()
+        stop(client, prefix)
+    else:
+        selected_quiet = stop_during_quiet(client, prefix, name == 'sync-signed')
+        signal_at = time.monotonic()
+    ended = terminal(prefix)
+    signal_elapsed = ((time.monotonic_ns()-selected_quiet['signal_monotonic_ns'])/1_000_000_000
+        if selected_quiet is not None else time.monotonic()-signal_at)
     assert signal_elapsed < 5 and ended['exit_code'] == 0 and not Path(str(prefix)+'.stderr').read_text(), ended
     assert messages(prefix)[-1]['native'] == 'closed' and messages(prefix)[-1]['owner_release'] == 'committed'
     (directory/'commands-finished.continue').write_text('server stopped\n')
@@ -348,12 +418,31 @@ with (p/'client.stdout').open('xb') as out,(p/'client.stderr').open('xb') as err
         'browser.session.issue', 'browser.session.revoke', 'relay.endpoint.register',
         'relay.enrollment.change', 'acquisition.scope.register', 'job.acquisition.accept'])
     transcript = [json.loads(p.read_text()) for p in sorted(directory.glob('relay-closed-*.json'))]
-    assert len(transcript) >= 2 and not (directory/'relay-error.json').exists()
+    assert not (directory/'relay-error.json').exists()
     assert len(list(directory.glob('relay-open-*.json'))) == len(transcript)
-    assert [t['completion'] for t in transcript[:2]] == ([
-        'request-and-websocket-close']*2 if name == 'sync-signed' else ['quiet-eof']*2)
-    native_result = native(client, output, name, after, initialized, transcript, time.time_ns()//1000)
+    if selected_quiet is not None:
+        selected, = [r for r in transcript if r['number'] == selected_quiet['round']]
+        assert selected['completion'] == 'quiet-eof' and not selected['frames']
+        assert selected['closed_at_us'] >= selected_quiet['signal_at_us']
+    if visibility_refusal:
+        assert not transcript
+        monitor = json.loads((directory/'relay-monitor-ended.json').read_text())
+        started = json.loads((directory/'relay-monitor-started.json').read_text())
+        job, = after['jobs']
+        assert monitor['connections'] == 0 and monitor['started_at_us'] == started['started_at_us']
+        assert monitor['started_at_us'] <= job['created_at_us'] < monitor['finished_at_us']
+        assert original_deadline < monitor['finished_at_us']
+        from installed import native_oracle
+        native_oracle(pg, client, output, database, name, after, initialized)
+        native_result = dict(native_rows=17, original_requests=2, source_visibility_refused=True,
+            tcp_connections=0, monitor=monitor)
+    else:
+        assert len(transcript) >= 2
+        assert [t['completion'] for t in transcript[:2]] == ([
+            'request-and-websocket-close']*2 if name == 'sync-signed' else ['quiet-eof']*2)
+        native_result = native(client, output, name, after, initialized, transcript, time.time_ns()//1000)
     assert lab.sql(pg, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0'
     return dict(name=name, status='PASS', actual_cli=True, actual_http=True, actual_pg_rocks=True,
         websocket_rounds=len(transcript), same_owner_renewed=True, signal_seconds=signal_elapsed,
+        selected_quiet_signal=selected_quiet,
         terminal=ended, **native_result)
