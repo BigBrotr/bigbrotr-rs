@@ -271,6 +271,25 @@
       "capture_sha256": "6faef82425e6d695501098e57078b618e0b05c76efb2901692882180950d29d7",
       "status": "FAIL",
       "reason": "Compile passed. The initial-ingest profile also ran entrypoint tests; one expected obsolete role-selection wording predating Archive support. Two passed, one failed; remaining checks NOT_RUN. Corrected the exact expected message and added four other omitted-role refusals without changing product behavior."
+    },
+    "first_engine": {
+      "label": "registry-engine",
+      "source": "17dd71213f40ce5c0e070ab7bd418d49038f6584",
+      "build_source": "17dd71213f40ce5c0e070ab7bd418d49038f6584",
+      "status": "FAIL",
+      "captures": 36,
+      "capture_sha256": "58b072217c524d7c27d57fa89f01fb6eed53918bdfad633f20763a69bfd8d09e",
+      "cases": [],
+      "reason": "Installed current-schema bootstrap/renewal and original17-row/two-request oracle passed. History probe incorrectly assumed legacy fixed dataset/instance rather than accepting the installed configured identifiers; native inspection refused ManifestMismatch before PostgreSQL. All69 tables/native dump remained unchanged. Corrected only the fixture inputs; original failure retained."
+    },
+    "build_17dd712": {
+      "label": "registry-build-final",
+      "source": "17dd71213f40ce5c0e070ab7bd418d49038f6584",
+      "files": 1700,
+      "captures": 15,
+      "capture_sha256": "3c3c8a5573c8a49e2840e8e05d6fc4b0d6ec847735b49c43eccba5e150c13f38",
+      "status": "PASS",
+      "checks": "release build, three actual CLI tests, Clippy"
     }
   }
 }

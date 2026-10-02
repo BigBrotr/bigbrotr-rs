@@ -12,7 +12,7 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary mainf35882c is two unpublished candidates ahead of pusheda10455c. Root
+Primary main17dd712 is three unpublished candidates ahead of pusheda10455c. Root
 owns the historical-registry loader, engine fixtures and evidence/inventory edits;
 no merge/rebase or active BigBrotr build/lab. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
@@ -193,7 +193,15 @@ one failed; remaining checks NOT_RUN. Original12 captures retained. Fixed only
 that expectation and added four actual omitted-role refusals. Focused ingest-history
 profile runs build, those three entrypoint tests and Clippy; it avoids the unrelated
 initial-ingest suites accidentally selected previously. Next run this candidate
-then bindings.py --ingest-history; ten actual PG/Rocks cases remain NOT_RUN. No fresh
+then bindings.py --ingest-history. Build17dd712 passed compile,3 CLI tests and
+Clippy. First engine wave initialized/renewed the real installed store, then probe
+failed ManifestMismatch because its fixture still assumed legacy dataset1/instance2.
+Actual installed IDs are random and must be passed as configured roots. Corrected
+fixture arguments only; product guard remains unchanged. All69 tables/native rows
+unchanged across refusal. Engine STOPPED/RETAINED owner ee5d94864d996fe7217c5d91a6522c8a,
+root ingest-history-engine-17dd712;36 captures/1700 source files verified. No OOM
+or unrelated changes; Tux70,434,107,392B. Next rebuild corrected probe and execute
+the ten-case wave; registry outcomes still NOT_RUN. No fresh
 admission or installed recovery command is qualified by a metadata read. Read source/topology/allocation/producer
 DDL and reservation guard; complete registry and close/resolve owners inspected.
 Registry loader and source/topology/producer SQL reading follow this native boundary. Source epoch closure,

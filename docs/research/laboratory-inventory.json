@@ -36348,6 +36348,66 @@
           "captures": 12,
           "capture_sha256": "6faef82425e6d695501098e57078b618e0b05c76efb2901692882180950d29d7"
         }
+      },
+      "build_17dd712": {
+        "source": "17dd71213f40ce5c0e070ab7bd418d49038f6584",
+        "tree": "d9704c8f7ac42f4c988017af7b5701902de6f5f0",
+        "owner": "b219cdb7b9e2dfc6a9bd015773a652e6",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-17dd712",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "074c3503f4d6e606973b99e5ffbba53e95655de4b83599855a1a7d898b53ca63"
+          },
+          {
+            "name": "native",
+            "id": "038d4fef6b272a9a3b1ee82f4f2a43f2cb8a97f2f2cabcd29791598d21f0114c"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-02T09:50:42.097095+00:00",
+        "qualification": "PASS_INGEST_HISTORY_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 70477627392,
+        "finished_at": "2026-10-02T09:52:06.778418+00:00",
+        "capture": {
+          "label": "registry-build-final",
+          "source": "17dd71213f40ce5c0e070ab7bd418d49038f6584",
+          "files": 1700,
+          "captures": 15,
+          "capture_sha256": "3c3c8a5573c8a49e2840e8e05d6fc4b0d6ec847735b49c43eccba5e150c13f38"
+        }
+      },
+      "engine_17dd712": {
+        "source": "17dd71213f40ce5c0e070ab7bd418d49038f6584",
+        "owner": "ee5d94864d996fe7217c5d91a6522c8a",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "f13256d7cd31fe360dcccc9f4ecf765477e592fb33bc713c1d29643813e5591b",
+          "name": "bigbrotr-acquisition-binding-17dd712"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "status": "FAIL",
+        "databases": [
+          "bb_scope_bind_17dd712_history"
+        ],
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "free_bytes_after": 70434107392,
+        "capture": {
+          "label": "registry-engine",
+          "source": "17dd71213f40ce5c0e070ab7bd418d49038f6584",
+          "build_source": "17dd71213f40ce5c0e070ab7bd418d49038f6584",
+          "status": "FAIL",
+          "captures": 36,
+          "capture_sha256": "58b072217c524d7c27d57fa89f01fb6eed53918bdfad633f20763a69bfd8d09e",
+          "cases": []
+        }
       }
     }
   },

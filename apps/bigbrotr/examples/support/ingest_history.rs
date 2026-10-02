@@ -2,7 +2,13 @@
 use super::*;
 use bigbrotr::storage::{postgres::ingest_registry, rocks::store::IngestRecovery};
 
-pub async fn run(config: Config, mode: &str, path: &Path) {
+pub async fn run(
+    config: Config,
+    mode: &str,
+    path: &Path,
+    dataset: bigbrotr_model::DatasetId,
+    configured_instance: [u8; 16],
+) {
     let budget = ResourceBudget::new(
         ProcessEnvelope::new(
             145 * MIB,
@@ -13,19 +19,14 @@ pub async fn run(config: Config, mode: &str, path: &Path) {
         .unwrap(),
     );
     let _metadata = grant(&budget, 64 * 1024, 0);
-    let recovery = IngestRecovery::inspect(
-        path,
-        [1; 16].try_into().unwrap(),
-        limits(),
-        grant(&budget, 0, 128 * MIB),
-    )
-    .unwrap();
+    let recovery =
+        IngestRecovery::inspect(path, dataset, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
     let (mut client, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
     let instance = if mode == "history-wrong-instance" {
         [99; 16]
     } else {
-        [2; 16]
+        configured_instance
     };
     let result = tokio::time::timeout(
         Duration::from_secs(10),

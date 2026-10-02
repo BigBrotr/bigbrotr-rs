@@ -54,7 +54,9 @@ def run(pg, client, output, database, name, rows, clone):
         native = dump(seed, label+'-before')
         lab.write_json(output/(label+'-before.json'), before)
         result = lab.docker('exec', client, '/build/ingest_bootstrap_probe', mode, db,
-            '/run/secrets/application', '/lab/'+seed+'/store', check=False, timeout=20)
+            '/run/secrets/application', '/lab/'+seed+'/store',
+            before['datasets'][0]['dataset_id'][2:], before['datasets'][0]['instance_id'][2:],
+            check=False, timeout=20)
         (output/(label+'.stdout')).write_text(result.stdout)
         (output/(label+'.stderr')).write_text(result.stderr)
         after, final_native = rows(db), dump(seed, label+'-after')

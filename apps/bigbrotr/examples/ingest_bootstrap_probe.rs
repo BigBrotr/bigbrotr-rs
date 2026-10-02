@@ -877,7 +877,14 @@ fn main() {
         dump(Path::new(&args[2]));
         return;
     }
-    assert_eq!(args.len(), 5);
+    assert_eq!(
+        args.len(),
+        if args[1].starts_with("history-") {
+            7
+        } else {
+            5
+        }
+    );
     let mut config = Config::new();
     config
         .host(if args[1].starts_with("history-") {
@@ -905,7 +912,17 @@ fn main() {
                     .await
                     .unwrap();
             } else if args[1].starts_with("history-") {
-                ingest_history::run(config, &args[1], Path::new(&args[4])).await;
+                ingest_history::run(
+                    config,
+                    &args[1],
+                    Path::new(&args[4]),
+                    args[5].parse().unwrap(),
+                    *args[6]
+                        .parse::<bigbrotr_model::InstanceId>()
+                        .unwrap()
+                        .as_bytes(),
+                )
+                .await;
             } else if args[1].starts_with("recovery-process-") {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
             } else {
