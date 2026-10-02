@@ -12,11 +12,10 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main is `d90b718`, three unpublished candidates beyond pushed `cde43a4`.
-Root owns only closing source-closure first-wave evidence/inventory/reference and
-this checkpoint. No parallel writer or active Tux experiment. Commit/push this
-reviewed bounded result; source-closure fault qualification is still pending.
-No Mac Rust build.
+Primary main is `b18959c`, clean and equal to origin/main at resumption.
+Root owns this bounded cache-retirement inventory/checkpoint update; no parallel
+writer or active Tux experiment. First-wave source-closure evidence is committed
+and pushed. No Mac Rust build. Next work is the focused source-closure fault fixture.
 
 ## Active responsibility and next bounded action
 
@@ -101,15 +100,19 @@ No SQL migration, native format or duplicate persistent ledger. Default recovery
 is unchanged; source closure is not producer/domain retirement, workflow gaps,
 ACK/GC, Ingest release or successor activation.
 
-Next bounded action: at this safe stopped boundary, finish scoped Mac cache
-retirement before further allocation. Fresh df shows1,285,640KiB available despite
-no Mac build; .research/targets accounts for53,123,656KiB and has not yet been
-retired. Old rocks-store/rocks-binding targets remain previously removed. Inventory
-candidate directories/open files/artifact dependencies first; preserve evidence,
-final artifacts and dirty worktrees. No new deletion has occurred. Then resume
-source-closure qualification with actual COMMIT ambiguity, pre-commit cancellation
-and relevant source-lock concurrency, reusing f873d92 artifacts/exact new fixture
-Git. Do not repeat completed four-case work without a change/risk justification.
+Next bounded action: source-closure qualification with actual COMMIT ambiguity,
+pre-commit cancellation and relevant source-lock concurrency, reusing f873d92
+artifacts and exact new fixture Git. The scoped Mac incremental cache retirement
+is complete (inventory cache_retirement_20260928.mac_incremental_20261002).
+Only .research/targets/product/debug/incremental was deleted:31,848 regenerable
+files,12,318,892,032 allocated bytes. Immediate free bytes1,319,854,080→9,757,089,792;
+delayed APFS reclamation/concurrent writes can change later readings. All336,527
+outside target entries and all worktree HEAD/dirty states were checked unchanged.
+Final executables/libraries, original evidence and datasets remain. Old rocks
+cache paths and18 previously retired Tux cache paths remain absent; Tux68,755,234,816B
+free,1162 retained containers/eight unrelated running. Shared1154757/protected
+history/publication dependencies remain. No new Tux deletion or global prune.
+Do not repeat completed four-case work without a change/risk justification.
 Full restart/resend remains M1's visible acceptance.
 
 The first12 cases use two dictionary requests; the later three exercise one signed
@@ -137,7 +140,7 @@ Mac resumption2,286,616KiB free before small captures.
 New source builds ingest-history-7751217/f873d92 and engine
 ingest-recovery-engine-d90b718 are STOPPED/RETAINED. Engine owner77dc304d/clientceb04459,
 borrowedPG stopped and shared1154757 released; final Tux68,755,337,216B free.
-No Mac Rust build or new deletion. Check space before the next allocation;
+No Mac Rust build. The later Mac-only retirement is recorded above. Check space before the next allocation;
 current Tux headroom is below the prior export experiment's 64 GiB+577 MiB reserve.
 
 Owner-requested cache retirement remains complete; do not replay deletions.
@@ -217,7 +220,7 @@ No complete acquisition task or phase checkbox closes at this boundary.
 
 Runs root /home/tux/bigbrotr-implementation-20260917/runs/. Shared compiler cache
 network-1154757/out/build/{target,cargo-home}, owner8b21a13162699a6038154874c2ac89da,
-uses exclusive .compiler-cache.lock. Latestfc695d2 intermediates; qualified ELFs
+uses exclusive .compiler-cache.lock. Latestf873d92 intermediates; qualified ELFs
 are separate. Native image7e946a0c, Rust1.98.1,clang14/Rocks11.8.1,amd64 only.
 All exact IDs/manifests/owners are in the existing laboratory inventory. Check
 space/process/container/mount/cache dependencies before the next large allocation.

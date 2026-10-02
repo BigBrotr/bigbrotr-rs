@@ -1102,6 +1102,35 @@
         "receipt_sha256": "d99c5d59e590c7480c6b6336207fb46f5ec08ffe6d2cd4a8a0fa4050f9da8c0b",
         "audit": "Explicit canonical paths, stopped owned mounts, clean exact source revisions; privileged host FD/maps/cwd audit before preservation and deletion. Final ELF hashes preserved outside cache; all outside regular files and all1117 container projections unchanged across deletion. Original outcomes and every dataset/fault state retained. No existing container, volume, shared current cache or dataset deleted.",
         "measurement": "Filesystem free difference includes concurrent writes and shared blocks; retained ELF hardlinks remain allocated. No old rebuild or global prune. Existing export64GiB reserve remains unchanged."
+      },
+      "mac_incremental_20261002": {
+        "status": "RETIRED_VERIFIED; source-closure fault qualification resumes",
+        "removed": [
+          "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/targets/product/debug/incremental"
+        ],
+        "allocated_cache_bytes": 12318892032,
+        "regular_intermediates": 31848,
+        "free_bytes_before": 1319854080,
+        "free_bytes_after": 9757089792,
+        "observed_free_delta_bytes": 8437235712,
+        "free_bytes_later": 10989342720,
+        "outside_build_entries_preserved": 336527,
+        "worktrees_preserved": 31,
+        "receipt": ".research/implementation/cache-retirement-20260928/mac-incremental-retired-20261002.json",
+        "receipt_sha256": "1284b092b1e5b2ba827495c3d9a6eba1e5017ede59db3c498fb65a21f01592e7",
+        "recipe": ".research/implementation/cache-retirement-20260928/mac-incremental-20261002.py",
+        "recipe_sha256": "999bae0b333f8f231431faf6cbd16f1d86039c3a1376f782bd85173ba37a509b",
+        "audit": "Canonical single path; only Rust object/metadata/cache/lock files, including six interrupted dep-graph.part.bin files; no symlinks, active builds, opened candidate files or mount. All other product target metadata and every worktree HEAD/dirty state unchanged. No final artifact, source, evidence or dataset deleted.",
+        "measurement": "Filesystem differences include concurrent writes, shared/APFS blocks and delayed reclamation; allocated size is not the immediately recovered size.",
+        "tux_recheck": {
+          "free_bytes": 68755234816,
+          "containers": 1162,
+          "unrelated_running": 8,
+          "prior_18_cache_paths_absent": true,
+          "protected_current_dependencies_present": true,
+          "new_deletions": [],
+          "decision": "Prior explicit cursor/export/network cache retirement remains effective; retain shared1154757 and all current artifacts/datasets. No large allocation is needed for the next focused fault fixture."
+        }
       }
     }
   },
