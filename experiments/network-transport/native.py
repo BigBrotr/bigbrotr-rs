@@ -37,8 +37,9 @@ identity['rustc'] = subprocess.check_output(['rustc', '--version', '--verbose'],
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 assert identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'direct'
-assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire', 'selector', 'request-session')
+assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire', 'selector', 'request-session', 'acquisition-transport')
 tests = {
+    'acquisition-transport': {'acquisition_transport': 3},
     'direct': {'network_direct': 12},
     'websocket': {'network_websocket': 30},
     'relay-wire': {'network_websocket': 1, 'relay_wire': 8},
@@ -51,7 +52,9 @@ if mode in ('relay-wire', 'selector', 'request-session'):
 if mode == 'selector':
     packages += ['-p', 'bigbrotr-model']
 selectors = [arg for name in tests for arg in ['--test', name]]
-if mode == 'websocket':
+if mode == 'acquisition-transport':
+    identity['scope'] = 'Acquisition deployment roots and configured TLS; no installed Sync or capacity claim'
+elif mode == 'websocket':
     identity['scope'] = 'Native bounded WebSocket over actual guarded TCP/TLS; no installed Nostr acquisition, shared service quotas or production capacity claim'
 elif mode == 'relay-wire':
     identity['scope'] = 'Native preserving Nostr relay decoder and signed actual socket corpus; no installed acquisition, request-generation authority, durable admission or coverage claim'
@@ -110,7 +113,7 @@ for name, count in tests.items():
     assert f'test result: ok. {count} passed; 0 failed; 0 ignored;' in (Path('/out/tests') / (name + '.log')).read_text()
 assert sources() == manifest['files_sha256']
 assert all(file_hash(artifacts / name) == digest for name, digest in executables.items())
-status = {'direct': 'PASS_SCOPED_NETWORK_COMPONENTS',
+status = {'acquisition-transport': 'PASS_ACQUISITION_TRANSPORT_ROOTS', 'direct': 'PASS_SCOPED_NETWORK_COMPONENTS',
           'websocket': 'PASS_SCOPED_WEBSOCKET_COMPONENTS',
           'relay-wire': 'PASS_SCOPED_RELAY_WIRE_COMPONENTS',
           'selector': 'PASS_SCOPED_SELECTOR_COMPONENTS',

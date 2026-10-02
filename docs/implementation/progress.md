@@ -12,9 +12,9 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main0b641815d6024cf41b436080e0e9efb3de05e2dd is three unpublished coherent
-commits ahead of origin/mainf705055f27875828ee5a2c17c0badfe4721aef65.
-Root-owned docs changes now close bounded candidate nomination. Native build,
+Main85b6d0dbb7ec6325c6514aabb34ddb1489f5afd9 matches origin/main; clean on
+resumption. Root is the sole writer. This published boundary closes bounded
+candidate nomination. Native build,
 selector tests and Clippy PASS; all four actual PostgreSQL cases PASS. Sparse
 32-excluded prefix/adjacent candidates/same-owner versus foreign tuples, late67
 outside cut66 then next pass, empty, u64max and actual blocked-query cancellation.
@@ -30,16 +30,22 @@ client4d6a2462 stopped143/PG71775507 stopped0/noOOM. Audit04:25:43UTC:1081 prior
 unchanged,eight unrelated,compiler lock released,53,490,069,504B free. All exact
 identities in inventory acquisition_scope_read.candidate_nomination; original
 .research/implementation/acquisition-source-read-20261002/{candidate-red,candidate-native,candidate-final}.
-Mac3,297,264KiB available; no local Rust build. No new cache or dataset deletion.
+Resumption: Mac3,283,532KiB and Tux53,490,028,544B available; no local Rust build.
+Eight unrelated containers remain running; no actual cargo/rustc/lab process
+observed. No new cache or dataset deletion.
 
 Next user-visible work: actual installed signed/forged/duplicate socket→same-owner
 admission, P03-T01 Steps3/4 and P03-T02, then M1 archive/read/export/restart. Connect
 explicit control,ingest,sync to the living initial owner and native store; preserve
 acceptance-only control,ingest. Candidate/read prerequisites are now available.
 Read entire initial_ingest.rs and commands.rs; top-level serve role dispatch; exact
-source/claim/domain/nomination owners. Remaining next reads: full concrete arrival
-consumer/session and dictionary preparation callers, then define actual installed
-fixture before code. Independent reviewer is auditing those integration boundaries.
+source/claim/domain/nomination owners, concrete arrival consumer/session, observation
+and dictionary preparation owners. Independent read-only review completed; no
+engines run by reviewer. Concrete remaining wiring includes a real configured DNS
+resolver (no root key currently exists) and bounded custom CA loading. Existing
+network.tls.extra_roots is already deployment-owned; adding the resolver root must
+preserve accepted policy bytes. Define discriminating installed transport/dispatch
+fixtures before implementation, using actual sockets and native/SQL effects.
 Keep renewal due across bounded steps and leave cleanup before hard source timeout;
 quiet read must not routinely poison Control. First observation request3/event4
 needs four slots and retained grants; don't appendAlreadyDurable on every poll.
