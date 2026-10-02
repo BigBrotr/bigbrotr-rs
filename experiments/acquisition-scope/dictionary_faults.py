@@ -34,6 +34,99 @@ def unchanged(before, after, allowed, require):
         and all(before[k] == after[k] for k in before if k not in allowed), 'unrelated-Control-effect')
 
 
+def pg_bytes(value):
+    return '\\x' + value.hex()
+
+
+def changed_at(before, after, field, bounds, require):
+    require(isinstance(after[field], int) and bounds[0] <= after[field] <= bounds[1]
+        and int(after['xmin']) > int(before['xmin']), 'bounded-new-transaction-time')
+
+
+def verify_reservation(row, original_owner, input_bytes, manifest, sequence, bounds, require):
+    changed_at(original_owner, row, 'reserved_at_us', bounds, require)
+    require(row == dict(xmin=row['xmin'], dataset_id=original_owner['dataset_id'],
+        input_bytes=len(input_bytes), input_profile=1, producer_slot_id=pg_bytes(bytes([66])*16),
+        producer_epoch=1, request_sequence=sequence,
+        request_digest=pg_bytes(hashlib.sha256(input_bytes).digest()),
+        manifest_sha256=pg_bytes(hashlib.sha256(manifest).digest()),
+        issuer_role='control', issuer_resource=original_owner['resource_id'], issuer_epoch=1,
+        issuer_incarnation=pg_bytes(bytes([41])*16), reserved_at_us=row['reserved_at_us'],
+        relay_endpoint_id=None, relay_access_scope_id=None, relay_route_id=None,
+        relay_enrollment_generation=None, acquisition_scope_id=None, acquisition_job_id=None),
+        'complete-original-reservation')
+
+
+def verify_release(before, after, successor, bounds, require):
+    changed_at(before, after, 'released_at_us', bounds, require)
+    digest = hashlib.sha256(b'bigbrotr/control-exclusion/1\0'
+        + bytes.fromhex(before['dataset_id'][2:]) + bytes.fromhex(before['resource_id'][2:])
+        + int(before['epoch']).to_bytes(8, 'big') + bytes.fromhex(before['process_incarnation'][2:])
+        + bytes([successor])*16).digest()
+    require(before['state'] == 'active' and before['released_at_us'] is None
+        and after == dict(before, xmin=after['xmin'], state='released',
+            released_at_us=after['released_at_us'], exclusion_method='storage_fenced',
+            exclusion_digest=pg_bytes(digest)), 'exact-Control-release')
+
+
+def verify_retirement(before, after, bounds, require):
+    changed_at(before, after, 'retired_at_us', bounds, require)
+    require(before['retired_at_us'] is None and after == dict(before,
+        xmin=after['xmin'], retired_at_us=after['retired_at_us']), 'exact-role-retirement')
+
+
+def verify_closed(before, after, bounds, require):
+    unchanged(before, after, ('owner_epochs','role_instances','producer_epochs'), require)
+    original, = [r for r in before['owner_epochs'] if r['role'] == 'control']
+    prior, current = sorted((r for r in after['owner_epochs'] if r['role'] == 'control'),
+        key=lambda r: r['epoch'])
+    verify_release(original, prior, 43, bounds, require)
+    require(len(after['owner_epochs']) == len(before['owner_epochs'])+1
+        and all(r in after['owner_epochs'] for r in before['owner_epochs'] if r != original),
+        'other-owner-history-unchanged')
+    acquired = current['acquired_at_us']
+    require(bounds[0] <= acquired <= bounds[1] and current['control_backend_pid'] > 0
+        and current['control_backend_start'] != original['control_backend_start']
+        and current == dict(original, xmin=prior['xmin'], epoch=2,
+            role_instance_id=pg_bytes(bytes([33])*16), process_incarnation=pg_bytes(bytes([43])*16),
+            acquired_at_us=acquired, lease_expires_at_us=acquired+60_000_000,
+            control_backend_pid=current['control_backend_pid'],
+            control_backend_start=current['control_backend_start']), 'exact-new-Control-owner')
+    old_role, = [r for r in before['role_instances'] if r['role_instance_id'] == original['role_instance_id']]
+    retired, = [r for r in after['role_instances'] if r['role_instance_id'] == old_role['role_instance_id']]
+    verify_retirement(old_role, retired, bounds, require)
+    new_role, = [r for r in after['role_instances'] if r['role_instance_id'] == current['role_instance_id']]
+    require(len(after['role_instances']) == len(before['role_instances'])+1
+        and all(r in after['role_instances'] for r in before['role_instances'] if r != old_role)
+        and retired['xmin'] == current['xmin']
+        and retired['retired_at_us'] <= new_role['created_at_us'] <= acquired
+        and new_role == dict(role='control', xmin=current['xmin'], dataset_id=current['dataset_id'],
+            role_instance_id=current['role_instance_id'], created_at_us=new_role['created_at_us'],
+            retired_at_us=None), 'exact-new-Control-role')
+    old_producer, = before['producer_epochs']
+    new_producer, = after['producer_epochs']
+    require(old_producer['state'] == 'open' and int(new_producer['xmin']) > int(current['xmin'])
+        and new_producer == dict(old_producer, state='closing', xmin=new_producer['xmin']),
+        'only-producer-closing')
+    return original, current
+
+
+def verify_final(before, after, unresolved, bounds, require):
+    unchanged(before, after, () if unresolved else ('owner_epochs','role_instances'), require)
+    if unresolved:
+        return
+    current, = [r for r in before['owner_epochs'] if r['role'] == 'control' and r['epoch'] == 2]
+    released, = [r for r in after['owner_epochs'] if r['role'] == 'control' and r['epoch'] == 2]
+    verify_release(current, released, 43, bounds, require)
+    role, = [r for r in before['role_instances'] if r['role_instance_id'] == current['role_instance_id']]
+    retired, = [r for r in after['role_instances'] if r['role_instance_id'] == role['role_instance_id']]
+    verify_retirement(role, retired, bounds, require)
+    require(retired['xmin'] == released['xmin'], 'one-release-transaction')
+    for table, old in [('owner_epochs',current), ('role_instances',role)]:
+        require(len(before[table]) == len(after[table]) and
+            all(r in after[table] for r in before[table] if r != old), 'only-current-Control-release')
+
+
 def native_expected(dataset, cbor, sequence, committed, closing):
     rows, inputs, receipts = append(dataset, cbor)
     rows = {(cf, k): v for cf,k,v in rows}
@@ -101,6 +194,9 @@ def run(context):
             wire = proxy.event('status',5)
             require(all(wire[k] == baseline for k in ('commits_seen','commits_forwarded',
                 'server_commit_complete','client_commit_complete')), 'original-setup-COMMITs')
+            clock = lambda: int(lab.sql(pg,database,
+                'SELECT (EXTRACT(EPOCH FROM clock_timestamp()) * 1000000)::bigint'))
+            started_at = clock()
             (output/(name+'.go')).touch(exist_ok=False)
             if wire_mode == 'hold':
                 held = proxy.event('held',5)
@@ -160,9 +256,20 @@ def run(context):
                 [commit,commit,commit,commit-1] if wire_mode == 'after-complete' else [baseline+2]*4 if name == 'pass' else [commit]*4)
             require(counters == wanted_wire, 'exact-wire-ambiguity-boundary')
             final = rows(database)
+            bounds = (started_at, clock())
             lab.write_json(output/(name+'-final.json'),final)
+            lab.write_json(output/(name+'-clock.json'),dict(started_at_us=bounds[0],finished_at_us=bounds[1]))
             dataset = bytes.fromhex(final['datasets'][0]['dataset_id'][2:])
             wanted,inputs,receipts = native_expected(dataset,oracle.cbor,sequence,committed,True)
+            original, current = verify_closed(interrupted, state(closed), bounds, require)
+            require(original['epoch'] == 1 and original['process_incarnation'] == pg_bytes(bytes([41])*16),
+                'original-Control-identity')
+            verify_final(state(resolved[-1]), final, unresolved, bounds, require)
+            manifest, = [v for cf,k,v in wanted if cf == 'default' and k == b'\x01\x01']
+            if reserved:
+                reservation, = [r for r in interrupted['producer_requests'] if r['request_sequence'] == sequence]
+                verify_reservation(reservation, original, inputs[-1], manifest, sequence, bounds, require)
+                require(reservation['xmin'] == new_producer['xmin'], 'one-reservation-transaction')
             dumped = lab.docker('exec',client,'/build/ingest_bootstrap_probe','dump','/lab/'+name)
             (output/(name+'-native.json')).write_text(dumped.stdout)
             actual = [(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in json.loads(dumped.stdout)['rows']]
@@ -182,7 +289,16 @@ def run(context):
                 for row in interrupted['producer_outcomes']:
                     require(row in final['producer_outcomes'], 'prior-outcome-not-rewritten')
                 copied_row = next(r for r in final['producer_outcomes'] if int(r['request_sequence']) == sequence)
-                require(int(copied_row['recorder_epoch']) == (1 if copied else 2), 'actual-original-or-recovery-recorder')
+                recorder = original if copied else current
+                changed_at(reservation, copied_row, 'recorded_at_us', bounds, require)
+                require(copied_row == dict(xmin=copied_row['xmin'], dataset_id=pg_bytes(dataset),
+                    producer_slot_id=pg_bytes(bytes([66])*16), producer_epoch=1, request_sequence=sequence,
+                    request_digest=reservation['request_digest'], manifest_sha256=reservation['manifest_sha256'],
+                    outcome_bytes=pg_bytes(receipts[-1]), outcome_sha256=pg_bytes(hashlib.sha256(receipts[-1]).digest()),
+                    outcome_kind=2 if reuse else 1, policy_epoch=1, recorded_at_us=copied_row['recorded_at_us'],
+                    recorder_role='control', recorder_resource=recorder['resource_id'],
+                    recorder_epoch=recorder['epoch'], recorder_incarnation=recorder['process_incarnation']),
+                    'complete-original-or-recovery-copy')
             require(lab.sql(pg,database,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0', 'all-drivers-joined')
             report['cases'].append(dict(name=name,status='PASS',wire_counts=counters,original_request=sequence,
                 result='Unresolved' if unresolved else 'AlreadyDurable' if reuse else 'NewFacts',

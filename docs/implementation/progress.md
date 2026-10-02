@@ -12,15 +12,20 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main/origin 045f6fedc80da2f0566926b24071d5c7ff55b1aa, root sole writer.
-Private repository verified and bounded qualification pushed without history rewrite.
-Dirty next fixture: dictionary-faults adds nine actual-wire schedules around append
-reservation/outcome COMMIT (before-forward/after-complete), cancellation while held,
-and AlreadyDurable outcome loss. New Control epoch2 closes the historical native
-producer and resolves exactly request2/3. Reserved-only effects remain Unresolved.
-The original loopback proxy and isolated clone/container lifecycle are reused;
-no product code or persistent contract changed. Python syntax/fmt PASS; native
-build and engine schedules NOT_RUN. Independent fixture review pending.
+Main 424a4f25c640fdf8bfac9b9ff227d5c55c8c740e; origin/main 045f6fe, root sole writer.
+Private repository verified; bounded positive qualification pushed without rewrite.
+Candidate424 adds nine dictionary COMMIT schedules with actual retained wire
+custody and fresh-Control recovery. Native build and Clippy PASS, engines NOT_RUN.
+Build runs/relay-arrival-424a4f2 STOPPED/RETAINED, PID1630723/start428991056,
+owner7ce8f1542e70b766763e2a0ca5f6fa38. Audit02:25:56UTC:1051 prior projections
+unchanged, eight unrelated running, compiler lock free,55,671,824,384B free.
+Qualified artifacts remain outside the shared cache. No local Rust build.
+Dirty fixture-only follow-up closes two confirmed independent AI review gaps:
+complete reservation metadata on Unresolved, and exact acquisition/closing/release
+SQL deltas. No product changes. Two retained real reservations and ten altered
+metadata negative controls PASS locally; Python syntax/diff checks PASS. Lifecycle
+checks and nine actual engine schedules remain NOT_RUN. Originals under the same
+ignored dictionary-append-20261002/faults directory; no ongoing experiment.
 [P02 dictionary append evidence](evidence/p02-dictionary-append-native-20261002.json):
 product af058bc has 8 append + 5 bootstrap + 11 native recovery tests PASS, build
 and Clippy PASS. Connected 8f5950c has two actual PG16.15/Rocks11.8.1 socket cases
@@ -335,7 +340,7 @@ and every original transport/source/fault clone. Secrets stay
 under protected pg/secrets and never enter Git. Clone and verify before experiments.
 
 Shared compiler cache runs/network-1154757/out/build/{target,cargo-home} is mutable
-acceleration, exclusively locked by .compiler-cache.lock. Latest8f5950c intermediates;
+acceleration, exclusively locked by .compiler-cache.lock. Latest424a4f2 intermediates;
 qualified ELFs/build manifests are separate. Native image7e946a0c, Rust1.98.1,
 clang14/Rocks11.8.1, amd64 only. Protect retained strace-exit-9b30c35 instrument
 owner84ac8cbf5292679b8ef7043fed7a2799 and original syscall traces.

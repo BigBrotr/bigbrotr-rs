@@ -33148,7 +33148,7 @@
     "dictionary_append": {
       "status": "PASS_COMPONENTS_AND_CONNECTED_POSITIVE_JOURNEY",
       "local": ".research/implementation/dictionary-append-20261002",
-      "scope": "P02-T03 fixed-reference append/replay components; PostgreSQL append and installed consumers remain unqualified",
+      "scope": "P02-T03 fixed-reference append/replay and connected positive journey; append COMMIT faults and installed consumers remain unqualified",
       "red": {
         "launch": {
           "source": "f2a161817ae77d0bba95df89a794dbd2cfcf6cae",
@@ -33436,7 +33436,33 @@
           }
         ]
       },
-      "report": "docs/implementation/evidence/p02-dictionary-append-native-20261002.json"
+      "report": "docs/implementation/evidence/p02-dictionary-append-native-20261002.json",
+      "fault_build": {
+        "launch": {
+          "source": "424a4f25c640fdf8bfac9b9ff227d5c55c8c740e",
+          "tree": "6edae595be4c690bf253cb13022d716d8a935205",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/relay-arrival-424a4f2",
+          "pid": 1630723,
+          "start_ticks": "428991056",
+          "bundle_sha256": "3beccbc04df0e62286da415e54d6852eb09ab94acca10fae39a63ebe25df33ba"
+        },
+        "owner": "7ce8f1542e70b766763e2a0ca5f6fa38",
+        "state": "stopped-retained",
+        "result": "Actual CLI/probe build and Clippy PASS; engines NOT_RUN; independent review gaps corrected in the fixture before execution.",
+        "audit": {
+          "status": "PASS_BUILD_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T02:25:56.226123+00:00",
+          "owned_stopped": [
+            "bda25fd3506201840696986abff6630c627ea4ddb7e90ce00556d27455bbc094",
+            "0be1992aa059452161b4cd8b0f9496a4b0f976e5d6db76a4d88c233603dc4675"
+          ],
+          "prior_unchanged": 1051,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "artifact_hashes_verified": true,
+          "free_bytes": 55671824384
+        }
+      }
     }
   },
   "implementation_relay_registry_20260928": {
