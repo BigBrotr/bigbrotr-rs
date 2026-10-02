@@ -8,6 +8,7 @@ use super::{
     },
 };
 use crate::runtime::OwnedPermit;
+use bigbrotr_model::DatasetId;
 use rocksdb::{DB, ReadOptions, WriteBatch, WriteOptions};
 use rustix::fs::{Mode, OFlags};
 use std::{
@@ -177,6 +178,23 @@ pub struct IngestRecovery {
     store: IngestStore,
 }
 impl IngestRecovery {
+    /// Inspect retained historical identity under the actual exclusive native
+    /// lock. The connected recovery consumer must still bind this manifest to
+    /// the complete registry before any monotone recovery operation. This handle
+    /// cannot issue fresh admissions or become an IngestStore.
+    pub fn inspect(
+        path: &Path,
+        dataset: DatasetId,
+        limits: RocksNativeLimits,
+        permit: OwnedPermit,
+    ) -> Result<Self, StoreError> {
+        let store = IngestStore::open_existing(path, limits, permit)?;
+        if store.manifest.identity().dataset_id != dataset {
+            return Err(StoreError::ManifestMismatch);
+        }
+        Ok(Self { store })
+    }
+
     pub fn open(
         path: &Path,
         expected: IngestManifest,
@@ -231,7 +249,7 @@ impl IngestStore {
         .map_err(|_| StoreError::ParentDirectorySync)?;
         rustix::fs::fsync(&parent).map_err(|_| StoreError::ParentDirectorySync)?;
         drop(parent);
-        let store = Self::open_native(reservation, manifest, limits, true)?;
+        let store = Self::open_native(reservation, Some(manifest), limits)?;
         let mut batch = WriteBatch::default();
         batch.put(KeyDomain::Manifest.prefix(), manifest.encode().as_bytes());
         let mut write = WriteOptions::default();
@@ -250,6 +268,18 @@ impl IngestStore {
     pub fn reopen(
         path: &Path,
         expected: IngestManifest,
+        limits: RocksNativeLimits,
+        permit: OwnedPermit,
+    ) -> Result<Self, StoreError> {
+        let store = Self::open_existing(path, limits, permit)?;
+        if store.manifest != expected {
+            return Err(StoreError::ManifestMismatch);
+        }
+        Ok(store)
+    }
+
+    fn open_existing(
+        path: &Path,
         limits: RocksNativeLimits,
         permit: OwnedPermit,
     ) -> Result<Self, StoreError> {
@@ -272,36 +302,18 @@ impl IngestStore {
             path: PathReservation::acquire(path)?,
         };
         check_current(&reservation.path.0)?;
-        let store = Self::open_native(reservation, expected, limits, false)?;
-        // Keep the native pin local: the codec borrows at most the fixed format,
-        // and oversized native values need no additional Rust-owned value copy.
-        let found = {
-            let mut read = ReadOptions::default();
-            read.set_verify_checksums(true);
-            read.fill_cache(false);
-            let pinned = store
-                .db
-                .get_pinned_opt(KeyDomain::Manifest.prefix(), &read)
-                .map_err(|_| StoreError::ManifestRead)?
-                .ok_or(StoreError::MissingManifest)?;
-            IngestManifest::decode(&pinned).map_err(StoreError::InvalidManifest)?
-        };
-        if found != expected {
-            return Err(StoreError::ManifestMismatch);
-        }
-        Ok(store)
+        Self::open_native(reservation, None, limits)
     }
 
     fn open_native(
         reservation: StoreReservation,
-        manifest: IngestManifest,
+        initialize: Option<IngestManifest>,
         limits: RocksNativeLimits,
-        initialize: bool,
     ) -> Result<Self, StoreError> {
         // On a failed native open, this later local drops its native allocations
         // before the reservation argument can release the budget/path.
         let mut profile = RocksNativeProfile::build(limits);
-        if initialize {
+        if initialize.is_some() {
             profile.db_options.create_if_missing(true);
             profile.db_options.create_missing_column_families(true);
             profile.db_options.set_error_if_exists(true);
@@ -322,6 +334,22 @@ impl IngestStore {
             profile.column_families,
         )
         .map_err(|_| StoreError::EngineOpen)?;
+        let manifest = match initialize {
+            Some(manifest) => manifest,
+            None => {
+                // Read only after exclusive open; never invent a historical
+                // identity to obtain a handle. The fixed codec copies no
+                // oversized native value, and the read pin stays local.
+                let mut read = ReadOptions::default();
+                read.set_verify_checksums(true);
+                read.fill_cache(false);
+                let pinned = db
+                    .get_pinned_opt(KeyDomain::Manifest.prefix(), &read)
+                    .map_err(|_| StoreError::ManifestRead)?
+                    .ok_or(StoreError::MissingManifest)?;
+                IngestManifest::decode(&pinned).map_err(StoreError::InvalidManifest)?
+            }
+        };
         Ok(Self {
             db,
             resources: profile.resources,

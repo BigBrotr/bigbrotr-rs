@@ -12,8 +12,8 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not this slice.
 
-Primary main18e10df is pushed. Root owns the new historical-inspection tests,
-focused native build profile, ingest-store contract/task and checkpoint edits;
+Primary main986c0f3 is one unpublished candidate ahead of pushed18e10df.
+Root owns the historical-inspection implementation and its evidence/inventory edits;
 no merge/rebase or active BigBrotr build/lab. Product3a7f884 is now
 native build/Clippy PASS and13 scoped tests pass (custody1,budgets2,cut2,startup8).
 Fixture640897e reuses those exact authenticated CLI/worker/probe artifacts; only
@@ -170,8 +170,16 @@ are written before the API exists. They cover full retained tuple, same-process
 and actual second-process exclusion, unchanged application records, foreign
 dataset, missing/unknown/oversized manifest and resource refusal. A focused
 ingest-recovery profile reuses the existing exact-source/cache/terminal runner.
-Next commit/run this native RED, then implement inspection through the shared
-existing-open path; keep strict reopen identity checks and no admission conversion.
+Actual native RED986c0f3 failed compilation at the absent inspect API (exit101);
+no engine tests ran. Eleven captured files and all1697 source files matched hashes.
+The shared existing-open implementation is now written; rustfmt/diff checks pass,
+but native GREEN is NOT_RUN. Next commit the reviewed candidate and run the same
+focused ingest-recovery profile on Tux, retaining strict identity/no-admission rules.
+Report: p02-ingest-store-linux-20260918.json historical_inspection_20261002; inventory
+implementation_network_20260928.ingest_recovery_inspection. RED root
+ingest-recovery-986c0f3 owner746d3afe07d9f203856447bc43553133 is stopped/retained.
+Fresh resumption check: no BigBrotr build/lab active,8 unrelated containers;
+Tux71,009,042,432B free and Mac2,709,032KiB. No local Rust build/cache deletion.
 Registry loader and source/topology/producer SQL reading follow this native boundary. Source epoch closure,
 recovery provenance, old-owner exclusion, bounded retained-input set and exact
 COMMIT ambiguity must remain explicit; do not infer noncommit from missing detail.

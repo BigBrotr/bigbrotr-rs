@@ -36203,6 +36203,45 @@
         },
         "preserve": "All captures/source/signed stores/producer inputs/data/state/scratch/export artifacts and protected credentials. Original FAIL outcomes unchanged. Shared compiler1154757 and product3a7f884 artifacts remain independent inputs. Borrowed PostgreSQL stopped; no existing container or dataset deleted."
       }
+    },
+    "ingest_recovery_inspection": {
+      "owner": "root",
+      "status": "RED_RETAINED_IMPLEMENTATION_PENDING",
+      "raw_root": ".research/implementation/ingest-recovery-20261002",
+      "evidence": "docs/implementation/evidence/p02-ingest-store-linux-20260918.json",
+      "red": {
+        "source": "986c0f38cdd5b2554c2db56e1736fdd4df8c318c",
+        "tree": "ae1e1d2f262550b25968904fd3cdfb95a21617bd",
+        "owner": "746d3afe07d9f203856447bc43553133",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-recovery-986c0f3",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "62482e899159296cc1e9ebe9cee9c0ff45b87ec1c5f0de7118574ae319f6880f"
+          },
+          {
+            "name": "native",
+            "id": "99b7d8554d3d58d2026a8f3cea1d62dc94445e7a4cb362026299758d08d2f405"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-02T09:21:27.975809+00:00",
+        "inventory_changed": [],
+        "free_bytes_after": 71009075200,
+        "finished_at": "2026-10-02T09:22:18.733501+00:00",
+        "capture": {
+          "label": "inspect-red",
+          "source": "986c0f38cdd5b2554c2db56e1736fdd4df8c318c",
+          "files": 1697,
+          "captures": 11,
+          "capture_sha256": "cc914e3cdea5a1e3c7bf56e67c08233797e985984ab55180cbe46bdc7a20f4d5"
+        }
+      },
+      "preserve": "Original source, logs and terminal receipts; shared network-1154757 cache remains under its exclusive lock. No native fixture data existed because the RED failed compilation."
     }
   },
   "implementation_relay_registry_20260928": {

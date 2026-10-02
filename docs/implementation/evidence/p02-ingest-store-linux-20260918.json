@@ -89,5 +89,35 @@
     "test-groups.json": "ad32c9b8ad5dda847d9776e6814ccc22f86124c7540ace0890db90296cc13458",
     "workspace-test-result.json": "9b428a2426f5e71a766e3c3b4b12b8ac1f36307620c4070acc46a1ea20029288"
   },
-  "lifecycle": "Container stopped-retained after successful run. Root later updated resources.json from planned-build-and-tests to observed completed-build-and-workspace-tests; the audit preserves its earlier observation."
+  "lifecycle": "Container stopped-retained after successful run. Root later updated resources.json from planned-build-and-tests to observed completed-build-and-workspace-tests; the audit preserves its earlier observation.",
+  "historical_inspection_20261002": {
+    "scope": "P02-T02 Step4 prerequisite for P01-T09 Step4: retained manifest inspection under exclusive native custody, not installed restart or successor authority",
+    "status": "IMPLEMENTATION_PENDING_NATIVE_VERIFICATION",
+    "red": {
+      "label": "inspect-red",
+      "source": "986c0f38cdd5b2554c2db56e1736fdd4df8c318c",
+      "files": 1697,
+      "captures": 11,
+      "capture_sha256": "cc914e3cdea5a1e3c7bf56e67c08233797e985984ab55180cbe46bdc7a20f4d5",
+      "tree": "ae1e1d2f262550b25968904fd3cdfb95a21617bd",
+      "status": "FAIL",
+      "reason": "The proposed actual-binding tests fail compilation because IngestRecovery::inspect does not exist; no engine test executed.",
+      "check_exit_code": 101,
+      "build_and_clippy": "NOT_RUN",
+      "raw_root": ".research/implementation/ingest-recovery-20261002/inspect-red"
+    },
+    "implementation": "Share the existing canonical-path/CURRENT/CF/exclusive-open path. Decode the actual bounded manifest after exclusion; historical inspection checks dataset while strict reopen still compares full identity. No fresh-admission conversion, persistent format or migration change.",
+    "upstream_source": {
+      "crate": "rocksdb 0.25.0",
+      "path": "src/db.rs",
+      "sha256": "424ba7e973ac8f2a9faf075e7fda32fc1b2567398ab958f050a1bb69e3694c91",
+      "inspection": "open_cf_descriptors_internal/open_raw and DBCommon drop inspected in the exact cached source. Binding open creates the directory before FFI, so application preflight remains required; no new exclusion guarantee is inferred."
+    },
+    "not_run": [
+      "Positive historical inspection under the new implementation",
+      "Connected historical registry loader and installed recovery",
+      "Successor activation, signed resend/replay, recovery provenance and complete M1",
+      "Native arm64, mixed/aged workloads, capacity or release qualification"
+    ]
+  }
 }
