@@ -1,0 +1,193 @@
+{
+  "format": "bigbrotr-initial-finite-job-faults/1",
+  "status": "PASS_BOUNDED_JOB_FAULT_CAPTURE_REVIEW",
+  "tasks": [
+    "P03-T01 Steps3/4 (partial)",
+    "P01-T09 Steps1/2 (partial)"
+  ],
+  "scope": "Installed finite acceptance through same living Control/native owner, then fresh SQL-owner exact recovery. Acceptance is not execution or native adoption.",
+  "source": "791e1a3949ddd2f0bfc38ad4783fb016c90af4e1",
+  "tree": "3e880a6ee1e633614b7099ebfee4a08e3adf648b",
+  "build_source": "66a87181cac7d6c2ca2999c2cb40ffd82712ed24",
+  "product_core": "ce85c0c223134c83faf68aebb455aa4f014a7509",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "16.15",
+    "rustc": "1.98.1",
+    "rocksdb": "11.8.1",
+    "compiler_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "build_cpus": 2,
+    "build_memory_bytes": 6442450944,
+    "client_memory_bytes": 1073741824
+  },
+  "artifacts": {
+    "binary_sha256": "a8a42998702d340f1946fb1ab23f7319c31db5472470fad644bedfe37ac6521b",
+    "probe_sha256": "d919dd5405bf4b9e81994fd369582954d2c154e5f39ed852c1034bfca0d47f92",
+    "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
+    "source_manifest_sha256": "66a7dc3014b014d1c49920d5d775ac3817edbb566697e9fe3c8bed92476b74ed"
+  },
+  "native_inspector": {
+    "source": "ce85c0c223134c83faf68aebb455aa4f014a7509",
+    "probe_sha256": "7ad5a6aade5807ae8efd9eadbf30ffc061e000e40c197769132c6fac8a9dd791",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-ingest-ce85c0c/out/artifacts"
+  },
+  "build_checks": "Native release CLI/helper build and scoped Clippy PASS; unchanged product suites not repeated",
+  "oracle_checks": {
+    "status": "PASS_BOUNDED_ORACLE_CONTROLS",
+    "retained_captures": 4,
+    "synthetic_key_conversion": true,
+    "negative_controls": [
+      "wrong-session",
+      "deadline",
+      "ordinal",
+      "extra-write"
+    ]
+  },
+  "cases": [
+    {
+      "name": "job-http-pass",
+      "status": "PASS",
+      "committed": true,
+      "http": {
+        "status": 202,
+        "body": {
+          "accepted_at_us": "1790903282690824",
+          "authority": "acceptance-only",
+          "command_key": "31313131313131313131313131313131",
+          "created": true,
+          "execution": "unobserved",
+          "format": "bigbrotr-job-acceptance/1",
+          "job_id": "02b19e272292e6dabf37ec4b616a9a3b"
+        }
+      },
+      "wire_counts": [
+        13,
+        13,
+        13,
+        13,
+        0
+      ],
+      "recovered_created": false
+    },
+    {
+      "name": "job-http-before",
+      "status": "PASS",
+      "committed": false,
+      "http": {
+        "closed": "RemoteDisconnected"
+      },
+      "wire_counts": [
+        12,
+        11,
+        11,
+        11,
+        1
+      ],
+      "recovered_created": true
+    },
+    {
+      "name": "job-http-after",
+      "status": "PASS",
+      "committed": true,
+      "http": {
+        "closed": "RemoteDisconnected"
+      },
+      "wire_counts": [
+        12,
+        12,
+        12,
+        11,
+        1
+      ],
+      "recovered_created": false
+    },
+    {
+      "name": "job-http-disconnect",
+      "status": "PASS",
+      "committed": true,
+      "http": {
+        "status": 200,
+        "body": {
+          "accepted_at_us": "1790903299340414",
+          "authority": "acceptance-only",
+          "command_key": "31313131313131313131313131313131",
+          "created": false,
+          "execution": "unobserved",
+          "format": "bigbrotr-job-acceptance/1",
+          "job_id": "2949e772f2864911f9c4aa1e7aa37f68"
+        }
+      },
+      "wire_counts": [
+        13,
+        13,
+        13,
+        13,
+        1
+      ],
+      "recovered_created": false
+    },
+    {
+      "name": "job-http-signal",
+      "status": "PASS",
+      "committed": false,
+      "http": {
+        "closed": "RemoteDisconnected"
+      },
+      "wire_counts": [
+        12,
+        11,
+        11,
+        11,
+        1
+      ],
+      "recovered_created": true,
+      "start_to_signal_sent_seconds": 1.0376441534608603,
+      "start_to_http_closed_seconds": 1.0376646518707275,
+      "signal_to_reap_seconds": 2.10261495038867
+    }
+  ],
+  "assertions": [
+    "Actual CLI login, HTTP URL/enrollment/scope and finite job command. Positive backend log marker for key31 and exact wire counts target COMMIT12, not a renewal.",
+    "Independent original command digest, all job/detail/admission/command/audit fields, same transaction identity and120000000us original duration. Exactly five job effects or none across all69 tables/xmin; native12 bootstrap rows and original producer-input bytes unchanged.",
+    "Disconnected admitted command finishes and identical HTTP retry returns historical200. Lost before/after COMMIT responses and signal close HTTP without false success; fresh SQL owner recovers the original durable job or creates exactly one absent intent with its newly authenticated session.",
+    "During held COMMIT a real competing owner is Busy. Timely SIGTERM closes HTTP1.037665s after pre-start sample, before earliest2.5s command timeout; reaped2.102615s after signal. PostgreSQL same backend incarnation remains idle in transaction after CLI death until proxy closure.",
+    "Graceful release exact exclusion digest and role retirement are checked. Retained-directory initialization refuses without SQL writes; SQL recovery opens no native store. Original state is retained; no native successor/restart adoption claim."
+  ],
+  "review": {
+    "source_files_verified": 1658,
+    "captured_payloads_verified": 216,
+    "capture_manifest_sha256": "e6375acec2e1ff4ac0d676e9f6e6ae7740cca4e8c470a6e73407ce6323d7c5da",
+    "independent": "Read-only AI review found missing original-versus-recovery session attribution; fixed before engines. Root reviewed actual SQL/wire/native captures and source/artifact identities. No engine failure.",
+    "harness": "Original local Python3.9 oracle test failed for read/readinto and stale keyword calls. Corrected callsites on documented Python3.14 pass8 tests; no engine evidence inferred from setup failure."
+  },
+  "terminal_audit": {
+    "status": "PASS_TERMINAL_AUDIT_ONLY",
+    "observed_at": "2026-10-02T01:09:16.972409+00:00",
+    "owned_stopped": [
+      {
+        "id": "4561d10147bd07c0180eb2bd13c8fb98ecfd0c5301c47d98fc53c43db92fc158",
+        "owner": "e411f166e60c7ebf228744505253e0f3",
+        "exit": 143
+      },
+      {
+        "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "exit": 0
+      }
+    ],
+    "prior_unchanged": 1035,
+    "unrelated_running": 8,
+    "compiler_lock_released": true,
+    "free_bytes": 56605073408
+  },
+  "local": ".research/implementation/initial-jobs-20261002/faults",
+  "tux_root": "/home/tux/bigbrotr-implementation-20260917/runs/job-http-faults-791e1a3",
+  "not_qualified": [
+    "installed credential-reset/authority lock races",
+    "elapsed job deadline/execution/progress/recovery/M1",
+    "native successor and crash-resumable initialization",
+    "capacity/load/aged-state",
+    "arm64/release",
+    "two affected source-command positive regressions pending"
+  ]
+}

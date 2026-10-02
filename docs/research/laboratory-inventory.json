@@ -33033,7 +33033,7 @@
         "capture_manifest_sha256": "00ef639ac02757bf15de8d64ebfa87dcea9ad4e229b6d57d07e5c4ccd771dff0"
       },
       "http_faults": {
-        "status": "NATIVE_BUILD_PASS_ENGINE_NOT_RUN",
+        "status": "PASS_FIVE_JOB_CASES_STOPPED_RETAINED_SOURCE_REGRESSION_PENDING",
         "local": ".research/implementation/initial-jobs-20261002/faults",
         "scope": "Five installed finite-job COMMIT schedules; independent five effects/original deadline, fresh SQL-owner retry; no native successor",
         "compiler_cache": "runs/network-1154757/out/build",
@@ -33070,7 +33070,42 @@
           "probe_sha256": "d919dd5405bf4b9e81994fd369582954d2c154e5f39ed852c1034bfca0d47f92",
           "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
           "source_manifest_sha256": "66a7dc3014b014d1c49920d5d775ac3817edbb566697e9fe3c8bed92476b74ed"
-        }
+        },
+        "engine_launch": {
+          "source": "791e1a3949ddd2f0bfc38ad4783fb016c90af4e1",
+          "tree": "3e880a6ee1e633614b7099ebfee4a08e3adf648b",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-http-faults-791e1a3",
+          "pid": 1569824,
+          "start_ticks": "428553108",
+          "build_origin": "/home/tux/bigbrotr-implementation-20260917/runs/relay-registration-faults-66a8718/out/artifacts",
+          "bundle_sha256": "86caeed761a363a595655703c288058706513985b7f7e1c68e2bd1b11079cb5f"
+        },
+        "engine_owner": "e411f166e60c7ebf228744505253e0f3",
+        "client": {
+          "id": "4561d10147bd07c0180eb2bd13c8fb98ecfd0c5301c47d98fc53c43db92fc158",
+          "name": "bigbrotr-acquisition-binding-791e1a3"
+        },
+        "terminal_audit": {
+          "status": "PASS_TERMINAL_AUDIT_ONLY",
+          "observed_at": "2026-10-02T01:09:16.972409+00:00",
+          "owned_stopped": [
+            {
+              "id": "4561d10147bd07c0180eb2bd13c8fb98ecfd0c5301c47d98fc53c43db92fc158",
+              "owner": "e411f166e60c7ebf228744505253e0f3",
+              "exit": 143
+            },
+            {
+              "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+              "owner": "5e69b0f060b1607c25230d1dbd3e5608",
+              "exit": 0
+            }
+          ],
+          "prior_unchanged": 1035,
+          "unrelated_running": 8,
+          "compiler_lock_released": true,
+          "free_bytes": 56605073408
+        },
+        "evidence": "docs/implementation/evidence/p03-initial-jobs-faults-native-20261002.json"
       }
     }
   },

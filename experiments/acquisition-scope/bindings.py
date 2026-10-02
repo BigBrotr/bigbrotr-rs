@@ -33,10 +33,11 @@ policy = len(sys.argv) == 3 and sys.argv[2] == '--policy'
 lease = len(sys.argv) == 3 and sys.argv[2] == '--lease'
 session_hash = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-sessions-hash'
 session_faults = len(sys.argv) == 4 and sys.argv[2] == '--installed-sessions-faults'
+source_http_regression = len(sys.argv) == 4 and sys.argv[2] == '--source-http-regression'
 job_http_faults = len(sys.argv) == 4 and sys.argv[2] == '--job-http-faults'
 scope_http_faults = len(sys.argv) == 4 and sys.argv[2] == '--scope-http-faults'
 registration_http_signal = len(sys.argv) == 4 and sys.argv[2] == '--registration-http-signal'
-registration_http_faults = job_http_faults or scope_http_faults or registration_http_signal or (len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults')
+registration_http_faults = source_http_regression or job_http_faults or scope_http_faults or registration_http_signal or (len(sys.argv) == 4 and sys.argv[2] == '--registration-http-faults')
 scope_command_relations = len(sys.argv) == 4 and sys.argv[2] == '--scope-command-relations'
 registration_relations = scope_command_relations or (len(sys.argv) == 4 and sys.argv[2] == '--registration-relations')
 registration_races = len(sys.argv) == 4 and sys.argv[2] == '--registration-races'
@@ -161,6 +162,8 @@ if scope_http_faults:
     report['wave'] = 'installed-scope-command-faults'
 if job_http_faults:
     report['wave'] = 'installed-job-acceptance-faults'
+if source_http_regression:
+    report['wave'] = 'installed-source-command-regression'
 
 if jobs_http:
     report['wave'] = ('installed-finite-job-expiry' if job_expiry else
@@ -543,6 +546,8 @@ if scope_http_faults:
     success_status = 'PASS_INSTALLED_SCOPE_COMMAND_FAULTS'
 if job_http_faults:
     success_status = 'PASS_INSTALLED_JOB_ACCEPTANCE_FAULTS'
+if source_http_regression:
+    success_status = 'PASS_INSTALLED_SOURCE_COMMAND_REGRESSION'
 
 if scope_command_relations:
     success_status = 'PASS_SCOPE_COMMAND_RELATIONAL_GUARDS'
@@ -628,6 +633,10 @@ try:
                 from functools import partial
                 from job_http_faults import CASES as JOB_HTTP_CASES
                 registration_runs = {case: partial(run_registration_http_fault, job=True) for case in JOB_HTTP_CASES}
+            if source_http_regression:
+                from functools import partial
+                registration_runs = {'register-http-pass': run_registration_http_fault,
+                    'scope-http-pass': partial(run_registration_http_fault, scope=True)}
             if registration_http_signal:
                 registration_runs = {'register-http-signal': run_registration_http_fault}
         if scope_command_faults:
@@ -641,7 +650,7 @@ try:
             from registration_races import SCOPE_CASES as SCOPE_RACE_CASES, run as run_scope_race
             registration_runs = {case: partial(run_scope_race, scope=True) for case in SCOPE_RACE_CASES}
         cases = list(registration_runs)
-        require(len(cases) == (11 if scope_command_races else 1 if registration_http_signal else 5 if registration_http_faults else 1 if registration_relations else 18 if registration_races else 7),
+        require(len(cases) == (2 if source_http_regression else 11 if scope_command_races else 1 if registration_http_signal else 5 if registration_http_faults else 1 if registration_relations else 18 if registration_races else 7),
             'registration-case-set')
     elif socket:
         from socket_arrival import run as run_socket

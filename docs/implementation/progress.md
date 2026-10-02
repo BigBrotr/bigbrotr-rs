@@ -12,29 +12,38 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main native candidate66a87181cac7d6c2ca2999c2cb40ffd82712ed24,
-tree12fce8836c98578d9e40e6acdf4267e728b36c4b; origin762c994; root sole writer.
-Root-owned Python oracle correction + checkpoint/inventory are dirty. Native helper
-build PASS/STOPPED under runs/relay-registration-faults-66a8718, PID1566508/start428532989,
-owner62aae2d30a5e083a4e1f2527dcba7ec7; fetch6ede7aff/nativecb7b9f87 stopped0/noOOM.
-Audit2026-10-02T01:06:52.155116UTC verifies1034 prior projections unchanged,
-eight unrelated running, compiler lock released and56,745,402,368B free.
-Exact source release build48.50s/Clippy4.37s PASS; engine NOT_RUN.
-Core product remains ce85c0c; only fixture Rust helper changed. No local build.
-Five installed job fault cases reuse finite proxy/custody schedule, target marked
-COMMIT12 after actual login/URL/enrollment/scope. All five job effects/original
-120s deadline use literal independent validation. The extracted checker also
-serves existing first-wave captures. No native successor/adoption claim.
-Read-only review caught missing original-versus-recovery session binding;
-Python receipt now checks the independently observed session expiry/actor/dataset.
-Synthetic wrong-session/deadline/ordinal/extra-write controls and four original
-acceptance/release captures PASS. Python3.14 eight HTTP-oracle checks/fmt/syntax/
-artifact checks PASS. First systemPython3.9 harness run failed for read/readinto
-and old keyword calls; preserved separately, no engine outcome inferred.
-Read-only reviewer rechecked the correction and found no remaining bounded
-blocker. Next: commit Python successor, then exact-Git five-job engine plus
-affected shared-fixture regression on Tux. No active engine/build.
-Original ce85c0c native inspector remains separately retained and hash/source-gated.
+Main fixture791e1a3949ddd2f0bfc38ad4783fb016c90af4e1,
+tree3e880a6ee1e633614b7099ebfee4a08e3adf648b; origin762c994; root sole writer.
+Root-owned evidence/inventory/checkpoint and two-case source regression selector
+are dirty. Native candidate66a8718 compiled helper/CLI and scoped Clippy PASS;
+core productce85c0c unchanged. No local build. Native build STOPPED/RETAINED:
+runs/relay-registration-faults-66a8718, PID1566508/start428532989,
+owner62aae2d30a5e083a4e1f2527dcba7ec7; fetch6ede7aff/nativecb7b9f87 stopped0.
+Compiler lock released. Audit and exact build hashes in inventory.initial_jobs.http_faults.
+
+Five installed finite job COMMIT schedules PASS at791e1a3, reviewed actual69-table
+and native12-row/original-CBOR captures,1658 source files/216 payloads verified.
+Original versus new recovery session attribution is now independently checked;
+reviewer caught this fixture gap before engines. Native helper does not adopt
+Ingest. Signal closes HTTP1.037665s after pre-start sample (earliest timeout2.5s),
+reaps2.102615s after signal, with observed upstream transaction still held until
+proxy closure. Exact job/120s deadline/ordinal retained for committed retries.
+Report: evidence/p03-initial-jobs-faults-native-20261002.json.
+Original local systemPython3.9 oracle setup failures remain separate from native
+PASS; Python3.14 eight wire checks/four original-capture regressions and four
+synthetic wrong-session/deadline/ordinal/extra-write controls pass.
+
+Engine runs/job-http-faults-791e1a3 STOPPED/RETAINED,
+PID1569824/start428553108, ownere411f166e60c7ebf228744505253e0f3,
+client4561d10147bd07c0180eb2bd13c8fb98ecfd0c5301c47d98fc53c43db92fc158 stopped143;
+borrowedPG71775507 stopped0/noOOM. Audit2026-10-02T01:09:16.972409UTC:
+1035 prior projections unchanged, eight unrelated running, compiler lock free,
+56,605,073,408B free. No active build/engine. All five fault clones/stores retained.
+Next: exact-Git --source-http-regression runs only endpoint/scope positive actual
+HTTP + fresh-owner retry for the shared helper/fixture changes. No repeated full
+fault matrix or build is needed. Then publish bounded evidence and resume the
+installed finite execution/dictionary prerequisite for M1. Help text remains to
+fix at the next product change; this native build changed only the test helper.
 
 Compatibility run runs/job-status-compat-de7347d is STOPPED/RETAINED:
 PID1558991/start428452303, owner5b0fcc0dca17226bfb649de3b2185974,
