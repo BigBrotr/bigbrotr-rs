@@ -952,6 +952,30 @@ fn dictionary_preparation_reuses_full_values_and_reserves_same_kind_ordinals_wit
     assert_eq!(rows(&store), before);
     let result = append(&mut store, &b, 3, prepared.intent()).unwrap();
     assert!(result.receipt().batch().is_none());
+    drop(result);
+    drop(prepared);
+    let before = rows(&store);
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    for ordinal in [1, 3, 2, 4] {
+        assert_eq!(
+            preparation
+                .intern(observer(ordinal).descriptor().clone())
+                .unwrap(),
+            reference(DictionaryKind::Observer, ordinal)
+        );
+    }
+    let prepared = preparation.finish().unwrap();
+    assert_eq!(rows(&store), before);
+    let result = append(&mut store, &b, 4, prepared.intent()).unwrap();
+    assert_eq!(result.receipt().batch().unwrap().records().len(), 2);
+    let after = rows(&store);
+    for (key, value) in before {
+        if key.0 == "facts" {
+            assert_eq!(after.get(&key), Some(&value));
+        }
+    }
 }
 
 #[test]
@@ -1052,6 +1076,29 @@ fn dictionary_preparation_bounds_owned_capacity_cancellation_and_invalid_descrip
         )),
         Err(AdmissionError::Limit)
     );
+    let padded = || {
+        let mut value = String::with_capacity(100_000);
+        value.push_str("bounded-label");
+        Some(DescriptorLabel::new(value).unwrap())
+    };
+    let DictionaryDescriptor::Observer(mut oversized) = observer(1).descriptor().clone() else {
+        unreachable!()
+    };
+    oversized.vantage = padded();
+    oversized.software = padded();
+    oversized.software_version = padded();
+    assert_eq!(
+        preparation.intern(DictionaryDescriptor::Observer(oversized)),
+        Err(AdmissionError::Limit),
+        "aggregate capacities exceed the bound even though each field fits"
+    );
+    assert_eq!(
+        preparation
+            .intern(observer(1).descriptor().clone())
+            .unwrap(),
+        reference(DictionaryKind::Observer, 1),
+        "failed interning does not consume a provisional ordinal"
+    );
     assert_eq!(
         preparation.intern(DictionaryDescriptor::Endpoint(
             EndpointDescriptor::new("wss://RELAY.example:443/".into()).unwrap()
@@ -1068,6 +1115,19 @@ fn dictionary_preparation_bounds_owned_capacity_cancellation_and_invalid_descrip
         preparation.intern(DictionaryDescriptor::Event(EventId::from_bytes([1; 32]))),
         Err(AdmissionError::InvalidInput)
     );
+    for _ in 0..2 {
+        let mut value = String::with_capacity(200_000);
+        value.push_str("wss://relay.example/");
+        assert_eq!(
+            preparation
+                .intern(DictionaryDescriptor::Endpoint(
+                    EndpointDescriptor::new(value).unwrap()
+                ))
+                .unwrap(),
+            reference(DictionaryKind::Endpoint, 1),
+            "duplicate input uses transient scratch without retaining a second capacity"
+        );
+    }
     cancelled.store(true, Ordering::Relaxed);
     assert_eq!(
         preparation.intern(DictionaryDescriptor::EventVerification),
@@ -1159,4 +1219,76 @@ fn dictionary_preparation_treats_hash_hits_as_bounded_candidates_not_identity_or
     );
     drop(preparation);
     assert_eq!(rows(&store), before);
+}
+
+#[test]
+fn dictionary_preparation_reuse_requires_the_matching_facts_transitive_method() {
+    use crate::storage::rocks::keys::IngestKey;
+    use std::sync::atomic::AtomicBool;
+    let root = tempfile::tempdir().unwrap();
+    let b = budget();
+    let mut store = IngestStore::initialize(
+        &root.path().join("db"),
+        installed_manifest(),
+        native(),
+        grant(&b, 0, 128 * MIB),
+    )
+    .unwrap();
+    boot_installed(&mut store, &b);
+    let public = reference(DictionaryKind::VisibilityScope, 1);
+    let method = DictionaryEntry::new(
+        reference(DictionaryKind::Method, 1),
+        DictionaryDescriptor::EventVerification,
+    )
+    .unwrap();
+    let DictionaryDescriptor::Observer(mut observer) = observer(1).descriptor().clone() else {
+        unreachable!()
+    };
+    observer.method_id = Some(method.reference());
+    let descriptor = DictionaryDescriptor::Observer(observer);
+    let observer =
+        DictionaryEntry::new(reference(DictionaryKind::Observer, 1), descriptor.clone()).unwrap();
+    drop(
+        append(
+            &mut store,
+            &b,
+            2,
+            &evidence(public, vec![method.clone(), observer]),
+        )
+        .unwrap(),
+    );
+    let key = IngestKey::Dictionary {
+        reference: method.reference(),
+    }
+    .encode()
+    .unwrap();
+    let original = store.db.get(key.as_bytes()).unwrap().unwrap();
+    store.db.delete(key.as_bytes()).unwrap();
+    let before = rows(&store);
+    let cancelled = AtomicBool::new(false);
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    assert_eq!(
+        preparation.intern(descriptor.clone()),
+        Err(AdmissionError::StateMismatch)
+    );
+    drop(preparation);
+    assert_eq!(rows(&store), before);
+    store.db.put(key.as_bytes(), original).unwrap();
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    assert_eq!(
+        preparation.intern(descriptor).unwrap(),
+        reference(DictionaryKind::Observer, 1)
+    );
+    let prepared = preparation.finish().unwrap();
+    assert!(
+        append(&mut store, &b, 3, prepared.intent())
+            .unwrap()
+            .receipt()
+            .batch()
+            .is_none()
+    );
 }

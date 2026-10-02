@@ -185,6 +185,29 @@ pub enum DictionaryDescriptor {
     DatasetLineage(DatasetLineageDescriptor),
 }
 impl DictionaryDescriptor {
+    /// Owned string capacities, including unused space. Inline value storage is
+    /// charged by the containing collection. Saturation makes overflow exceed
+    /// any practical caller limit instead of wrapping into a smaller charge.
+    pub fn heap_allocation_bytes(&self) -> usize {
+        match self {
+            Self::Endpoint(value) => value.0.capacity(),
+            Self::Visibility { class } => class.0.capacity(),
+            Self::Observer(value) => [
+                value.vantage.as_ref(),
+                value.software.as_ref(),
+                value.software_version.as_ref(),
+            ]
+            .into_iter()
+            .flatten()
+            .fold(0usize, |total, label| {
+                total.saturating_add(label.0.capacity())
+            }),
+            Self::AccessScope(value) => value.label.as_ref().map_or(0, |label| label.0.capacity()),
+            Self::DatasetLineage(value) => value.format.0.capacity(),
+            Self::Event(_) | Self::EventVerification => 0,
+        }
+    }
+
     pub const fn kind(&self) -> DictionaryKind {
         match self {
             Self::Event(_) => DictionaryKind::Event,
@@ -256,6 +279,9 @@ impl DictionaryEntry {
     }
     pub const fn descriptor(&self) -> &DictionaryDescriptor {
         &self.descriptor
+    }
+    pub fn into_parts(self) -> (QualifiedRef, DictionaryDescriptor) {
+        (self.reference, self.descriptor)
     }
     pub const fn normalization_version(&self) -> u16 {
         1

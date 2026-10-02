@@ -332,7 +332,7 @@ impl ReadBudget {
             reads: 4 * limits.max_dependencies + 32,
         }
     }
-    fn charge(&mut self, bytes: usize) -> Result<(), AdmissionError> {
+    pub(super) fn charge(&mut self, bytes: usize) -> Result<(), AdmissionError> {
         self.bytes = self.bytes.checked_sub(bytes).ok_or(AdmissionError::Limit)?;
         self.reads = self.reads.checked_sub(1).ok_or(AdmissionError::Limit)?;
         Ok(())

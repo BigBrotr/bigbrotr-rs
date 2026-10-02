@@ -12,15 +12,25 @@ trusted exact-Git Tux runs replace unavailable hosted Actions while billing is
 blocked. No public release, rename, native arm64 or complete release claim.
 The active unbudgeted goal covers the whole product, not the current slice.
 
-Main/origin e6f8cafff825f5a9852aba4fa3b6ba75960b1c5b, private qualification pushed.
-Root sole writer. Dirty next slice: four native dictionary-preparation regressions
-and an intentional refusing API stub, plus the owning descriptor contract. Native
-RED NOT_RUN; no product preparation claim. Tests target read-only fixed plans,
-same-kind/duplicate reuse, exact envelopes, capacity/cancellation and candidate
-collision/orphan/exhaustion. Design review supports a concrete builder borrowing
-IngestStore and a sealed intent retaining its grant; no new crate/trait/ledger.
-finish seals only values; existing staging checks request/window/actual timestamp.
-This is P02-T03 Step1 for installed P03-T01 Steps3/4; M1 stays incomplete.
+Main818ebae7d41aaa0c2d8dced90136abb648deed34; origin/main e6f8caf. Root sole writer.
+Intentional refusing preparation candidate818 native RED:8 old append tests PASS,
+4 new tests FAIL at the expected missing API. Original executable/source/logs retained.
+runs/dictionary-append-818ebae STOPPED/RETAINED:PID1651291/start429117721,
+owner51dfaea502dbdc20726ebe03a50bc7b6; audit02:43:53UTC,1054 prior unchanged,
+eight unrelated running, compiler lock free,55,385,452,544B free.
+Local .research/implementation/dictionary-preparation-20261002/red;1667 Git files
+verified. No build/engine active at that audit; do not rerun its launcher.
+
+Dirty implementation: concrete read-only DictionaryPreparation borrows native
+store, bounds complete owned capacities/candidate reads, requires explicit target
+visibility and retains its grant with fixed EvidenceIntent. No new schema/crate/
+trait/ledger; existing stage remains authoritative for request/window/actual time.
+Independent AI design/code review found no bounded implementation blocker and
+requested mixed existing/new same-kind and missing transitive-method cases; added.
+Root fixed duplicate capacity accounting before qualification: repeated values
+use transient scratch, not another retained charge. Five native preparation cases
+(in the append owner) await GREEN; no preparation PASS or installed claim.
+Active P02-T03 Step1 prerequisite for installed P03-T01 Steps3/4 and M1.
 Nine actual dictionary COMMIT cases PASS at fixture89359ab using exact424a4f2
 CLI/probe (build/Clippy PASS). Covers both reservation/outcome COMMIT sides,
 cancellation with positively held actual backend custody, and AlreadyDurable loss.

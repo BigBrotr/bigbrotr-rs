@@ -462,7 +462,7 @@ impl IngestStore {
         Ok(())
     }
 
-    fn require_dictionary_indices(
+    pub(super) fn require_dictionary_indices(
         &self,
         entry: &DictionaryEntry,
         limits: AdmissionLimits,
@@ -483,7 +483,7 @@ impl IngestStore {
         }
         Ok(())
     }
-    fn dictionary_counter(
+    pub(super) fn dictionary_counter(
         &self,
         key: IngestKey,
         reads: &mut ReadBudget,
