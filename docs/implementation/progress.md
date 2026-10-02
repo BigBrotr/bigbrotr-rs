@@ -101,7 +101,13 @@ identical copies, missing copy restored, pending reservation/hole/input absence,
 held native owner, bad policy and valid new heads with reduced window1 all exercised.
 No unchanged broad suite repeated. Current added fixture-only wave checks signal,
 deadline and a filled stdout pipe against the same5512161 artifacts; these3 cases
-remain NOT_RUN. Next commit fixtures, exact-Git transfer, run only those cases. Keep the complete original request set bounded;
+ran at336bb43 with unchanged5512161 artifacts. Filled stdout and real SIGTERM
+passed their assertions. Natural deadline exited4 while the dataset query was
+blocked, but the fixture expected deadline wording and rejected the shared
+watchdog's valid cancellation wording. Original run remains FAIL,64-table data
+not inferred from logs (current schema69); captures retained. Correct only this
+fixture classification, require at least the configured1s with no fixture signal,
+and preserve each completed interruption result before the next case. Keep the complete original request set bounded;
 missing reservation/input/receipt stays Unresolved. Test unchanged retries,
 current-policy changes, cancellation/driver joining and held native exclusion.
 Do not make a read, lease expiry or old directory writable by ordinary Serve.

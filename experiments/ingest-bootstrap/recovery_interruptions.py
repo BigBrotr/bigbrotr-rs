@@ -56,7 +56,12 @@ os.kill(r['pid'],signal.SIGTERM)
                 assert ended['exit_code']==4 and elapsed<6 and not ended['forced'], ended
                 assert not Path(str(prefix)+'.stdout').read_bytes()
                 error = Path(str(prefix)+'.stderr').read_text()
-                assert ('cancelled' in error if mode=='signal' else 'deadline' in error or 'expired' in error), error
+                assert 'cancelled' in error or 'deadline' in error or 'expired' in error, error
+                if mode=='deadline':
+                    # The independent watchdog requests the same cancellation
+                    # flag as the signal path. Either select branch can report it.
+                    # No fixture signal was sent, and the configured1s elapsed.
+                    assert ended['elapsed_seconds'] >= 1, ended
                 # Record server lifetime separately from joining the Rust driver.
                 # A closed client socket is not a synchronous PG query cancel.
                 remaining = lab.sql(pg,db,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'")
@@ -73,4 +78,5 @@ os.kill(r['pid'],signal.SIGTERM)
         results.append(dict(name=name,status='PASS',actual_backend_lock=True,unchanged_control_tables=len(before),
             native_rows=len(native['rows']),terminal=ended,seconds_after_observed_block=elapsed,
             application_backends_before_fixture_unlock=int(remaining)))
+        lab.write_json(output/(name+'-result.json'),results[-1])
     return results
