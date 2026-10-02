@@ -8,11 +8,11 @@ import subprocess
 import sys
 import time
 
-assert len(sys.argv) in (3, 4) and (len(sys.argv)==3 or sys.argv[3] in ('control', 'sync'))
+assert len(sys.argv) in (3, 4) and (len(sys.argv)==3 or sys.argv[3] in ('control', 'sync', 'archive'))
 config, prefix = map(Path, sys.argv[1:3])
 mode = sys.argv[3] if len(sys.argv)==4 else 'initial'
 roles = ['--roles','control'] if mode=='control' else [
-    '--initialize-ingest','--roles','control,ingest,sync' if mode=='sync' else 'control,ingest']
+    '--initialize-ingest','--roles','control,ingest,sync,archive' if mode=='archive' else 'control,ingest,sync' if mode=='sync' else 'control,ingest']
 assert config.is_absolute() and prefix.is_absolute()
 
 
@@ -34,7 +34,7 @@ with Path(str(prefix)+'.stdout').open('xb') as out, Path(str(prefix)+'.stderr').
     publish('.pid.json',identity)
     forced = False
     try:
-        code = child.wait(timeout=45)
+        code = child.wait(timeout=90 if mode=='archive' else 45)
     except BaseException:
         forced = True
         child.send_signal(signal.SIGKILL)
