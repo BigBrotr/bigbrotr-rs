@@ -40,9 +40,10 @@ def policy_setup(pg, database, name, rows, output, administration=False):
         document = before[table][0]['document']
         document['settings']['administration.enabled'] = administration
         if name == 'archive-export':
-            # Explicit fixture policy for the documented native export profile.
+            # Explicit fixture policy for the documented native read/export profile.
             # This does not qualify the separately required256MiB acceptance.
             document['settings']['export.memory.max_bytes'] = 1024**3
+            document['settings']['read.execution.max_memory_bytes'] = 1024**3
         if name == 'policy-archive':
             document['settings']['archive.reader.enabled'] = True
         document['settings']['ingest.producer_outstanding_requests'] = 64 if table == 'config_revisions' else 32

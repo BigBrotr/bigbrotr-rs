@@ -81,16 +81,24 @@ and recipe are under existing ignored cache-retirement-20260928; inventory
 implementation_20260917.cache_retirement_20260928.tux_export_20261002 owns details.
 Do not rerun this recipe. Mac3,013,836KiB free: no local Rust build.
 
-Current bounded action: run the new --installed-archive-export fixture through
-Git on Tux, reusing exact3a7f884 product artifacts. New ordinary client/oracle and
-host driver extend the original signed path; AST/fixture checks pass, real engine
-journey NOT_RUN. Only this new isolated fixture seeds explicit export.memory=1GiB
-in both accepted documents before startup; it preserves the1GiB application/2GiB
-native process envelopes and256MiB output cap. This follows the already documented
-native export profile; five exports under256MiB remain required and unqualified.
-Three scope permissions use actual reauthentication/grant HTTP after ordinary
-restart. Compare all69 tables, original archive bytes, signed JSONL and complete
-manifest. Preserve failed output before any correction.
+Installed export fixture49b8113, product3a7f884: FAIL after full publication,
+ordinary Control restart and three real reauthenticated scope grants. History
+returned429 because the fixture retained its64MiB read.execution cap below the
+existing740,425,728B native profile admission. Only three released reader pins,
+no export job; normal Control stop exit0. This is a fixture setup failure, not
+weakened product protection. Original244 captures remain under ignored
+initial-archive-20261002/export-first; capture SHA
+8b1aa320b09b050654d7ea671a680944e3af4d6ae4c4d47785ac68c08783bacc.
+Root installed-archive-export-49b8113, owner8b7fb9e8c64cc800395f7a7bb1e68436,
+client9bd0c5b331ad27cb72a9528026ec9781d6a0eeb344ecbfd3abfc9d8ff2cfd46d.
+All owned processes/PG stopped-retained, no OOM/cleanup/unrelated changes.
+
+Next bounded action: rerun only --installed-archive-export using documented1GiB
+read and export operation caps in both initial accepted fixture documents.
+Product/1GiB application/2GiB native envelopes and256MiB output cap unchanged;
+five exports under256MiB remain required and unqualified. No old data changed.
+Three scoped permissions use real reauthentication/grant HTTP. Compare all69
+Control tables, original archive bytes, signed JSONL and complete manifest.
 
 Next useful deliverable: ordinary Control restart serving/exporting this same
 archived signed event, P01-T09 Step3 with P08-T04 Step3 and existing private
