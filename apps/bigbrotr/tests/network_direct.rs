@@ -24,6 +24,17 @@ const CERT: &[u8] = include_bytes!("../../../tests/fixtures/relay-lifecycle/tran
 const KEY: &[u8] =
     include_bytes!("../../../tests/fixtures/relay-lifecycle/transport/server-test-key.der");
 
+fn file_tls(bytes: &[u8], resources: &ResourceBudget) -> TlsPolicy {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().canonicalize().unwrap().join("ca.der");
+    std::fs::write(&path, bytes).unwrap();
+    let permit = resources
+        .try_acquire(bigbrotr::runtime::ResourceRequest::data(4_194_304, 1, 0).unwrap())
+        .unwrap();
+    // Temp files disappear before any handshake; the loaded owner retains roots.
+    TlsPolicy::from_der_files(&[&path], permit).unwrap()
+}
+
 fn tls_server() -> tokio_rustls::TlsAcceptor {
     let mut config = rustls::ServerConfig::builder_with_provider(std::sync::Arc::new(
         rustls::crypto::ring::default_provider(),
@@ -401,10 +412,10 @@ async fn actual_tls_preserves_name_path_query_and_filters_mixed_dns_answers() {
         .unwrap(),
     )
     .unwrap();
-    let resources = budget(16 * 1024 * 1024, 2);
+    let resources = budget(16 * 1024 * 1024, 3);
     let connector = DirectConnector::new(
         DnsResolver::new(dns.local_addr().unwrap(), resources.clone()).unwrap(),
-        TlsPolicy::new(&[CA.into()]).unwrap(),
+        file_tls(CA, &resources),
         resources.clone(),
     );
     let dns_peer = tokio::spawn(async move {
@@ -466,6 +477,8 @@ async fn actual_tls_preserves_name_path_query_and_filters_mixed_dns_answers() {
         .unwrap();
     peer.await.unwrap();
     dns_peer.await.unwrap();
+    assert_eq!(resources.snapshot().active_permits(), 1);
+    drop(connector);
     assert_eq!(resources.snapshot().active_permits(), 0);
 }
 
@@ -487,10 +500,10 @@ async fn wrong_ca_or_original_name_never_dispatches_protocol_data() {
             .unwrap(),
         )
         .unwrap();
-        let resources = budget(16 * 1024 * 1024, 2);
+        let resources = budget(16 * 1024 * 1024, 3);
         let connector = DirectConnector::new(
             DnsResolver::new(dns.local_addr().unwrap(), resources.clone()).unwrap(),
-            TlsPolicy::new(&[if wrong_name { CA } else { WRONG_CA }.into()]).unwrap(),
+            file_tls(if wrong_name { CA } else { WRONG_CA }, &resources),
             resources.clone(),
         );
         let dns_peer =
@@ -519,6 +532,8 @@ async fn wrong_ca_or_original_name_never_dispatches_protocol_data() {
         assert!(!format!("{}", result.unwrap_err()).contains("canary"));
         peer.await.unwrap();
         dns_peer.await.unwrap();
+        assert_eq!(resources.snapshot().active_permits(), 1);
+        drop(connector);
         assert_eq!(resources.snapshot().active_permits(), 0);
     }
 }

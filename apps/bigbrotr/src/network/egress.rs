@@ -150,7 +150,7 @@ impl DirectConnector {
                             .map_err(|_| TransportError::TlsConfiguration)?;
                     let tls = self
                         .tls
-                        .0
+                        .connector
                         .connect_with(name, socket, |session| {
                             session.set_buffer_limit(Some(64 * 1024));
                         })

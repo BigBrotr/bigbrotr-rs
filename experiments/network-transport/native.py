@@ -39,7 +39,7 @@ assert identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'direct'
 assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire', 'selector', 'request-session', 'acquisition-transport')
 tests = {
-    'acquisition-transport': {'acquisition_transport': 3},
+    'acquisition-transport': {'acquisition_transport': 6, 'network_direct': 14, 'postgres_connection_settings': 7},
     'direct': {'network_direct': 12},
     'websocket': {'network_websocket': 30},
     'relay-wire': {'network_websocket': 1, 'relay_wire': 8},
@@ -86,16 +86,17 @@ for line in (checks / 'compile.log').read_text().splitlines():
         continue
     name = message['target']['name']
     selected = name in tests and message['target']['kind'] == ['test']
+    selected |= mode == 'acquisition-transport' and name == 'bigbrotr' and message['target']['kind'] == ['bin'] and not message['profile']['test']
     selected |= mode == 'websocket' and name == 'bigbrotr' and message['target']['kind'] == ['lib'] and message['profile']['test']
     if selected:
-        if name == 'bigbrotr':
+        if name == 'bigbrotr' and mode == 'websocket':
             name = 'network_websocket_input'
         assert name not in executables
         executable = Path(message['executable'])
         assert executable.is_relative_to(build / 'target') and not executable.is_symlink()
         shutil.copy2(executable, artifacts / name)
         executables[name] = file_hash(artifacts / name)
-expected = set(tests) | ({'network_websocket_input'} if mode == 'websocket' else set())
+expected = set(tests) | ({'network_websocket_input'} if mode == 'websocket' else {'bigbrotr'} if mode == 'acquisition-transport' else set())
 assert executables.keys() == expected
 identity['executables_sha256'] = executables
 socket_filter = {'relay-wire': ['nostr::signed_socket_corpus_checks_every_payload_and_preserves_eose_hints', '--exact'],

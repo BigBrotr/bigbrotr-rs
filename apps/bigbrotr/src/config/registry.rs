@@ -11,6 +11,7 @@ pub enum Kind {
     Ratio,
     Enum(&'static [&'static str]),
     Text,
+    DnsResolver,
     Path,
     Secret,
     Proxy,
@@ -56,6 +57,9 @@ impl Key {
             }
             Kind::Ratio => json!({"type":"number","minimum":0,"maximum":1}),
             Kind::Enum(values) => json!({"type":"string", "enum":values}),
+            Kind::DnsResolver => {
+                json!({"type":"string","format":"bigbrotr-numeric-dns-resolver","maxLength":64})
+            }
             Kind::Text => json!({"type":"string","maxLength":8192}),
             Kind::Path => json!({"type":"string","format":"bigbrotr-absolute-path"}),
             Kind::Proxy => json!({"type":"string","format":"bigbrotr-proxy-url","writeOnly":true}),
@@ -866,6 +870,14 @@ pub fn keys() -> Vec<Key> {
             true
         );
     }
+    add!(
+        "network.dns.resolver",
+        DnsResolver,
+        Value::Null,
+        "restart",
+        "acquisition",
+        true
+    );
     add!(
         "network.tls.extra_roots",
         Paths,

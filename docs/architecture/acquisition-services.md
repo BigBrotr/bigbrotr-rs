@@ -146,7 +146,8 @@ and deduplication. An over-limit answer set is refused, not silently truncated.
 These are initial finite implementation limits, not measured capacity. Rules and
 identity alone confer no runtime grant, enrollment or permission to publish.
 
-The initial direct DNS stub uses a configured numeric recursive resolver over
+The initial direct DNS stub uses `network.dns.resolver`, an explicitly configured
+numeric recursive resolver address and port, over
 TCP, with no OS fallback, cache, hosts/search expansion or synthetic address
 results. `localhost`, `.invalid`, `.local` and loopback reverse zones require
 separate local/special-use handling and are refused before DNS, including CNAME
@@ -184,6 +185,14 @@ Each new attempt resolves and filters again. Preserve the complete endpoint and
 authenticate its original hostname/IP, not its CNAME or selected socket address.
 TLS uses bundled public trust roots plus at most 128 extra DER roots/1 MiB,
 ordinary certificate/name/time verification and an explicit crypto provider.
+Each `network.tls.extra_roots` path contains exactly one DER certificate, without
+PEM wrapping, concatenation or trailing bytes. Runtime loading refuses symlinks
+in every path component and nonregular files; one bounded input is consumed at a
+time and only owned trust anchors remain. A shared 4 MiB logical reservation
+survives every TLS-policy copy. It is not a measured RSS limit. Configured roots
+are operator trust decisions; parsing them does not verify their self-signature
+or CA flag. Nonblocking descriptor opening does not bound stalled filesystem I/O;
+the selected runtime must supervise preparation before exposing acquisition.
 No ambient client identity, early data, shared resumption cache or verification
 bypass is selected. Bound outgoing TLS buffering to 64 KiB. Host/endpoint quotas,
 FD reserve, renewable service sessions, redirects, WebSocket and installed
@@ -202,10 +211,11 @@ Reload classes: **H** applies atomically to new work on hot reload; lowering lim
 | Key | Default | Unit | Reload | Meaning/validation |
 |---|---|---|---|---|
 | `network.public.enabled` | `true` | bool | H | Public route |
+| `network.dns.resolver` | absent | numeric IP:port | R | Deployment-owned trusted recursive resolver; explicit for selected direct acquisition, no public or OS fallback. Unicast, nonzero port, no IPv6 zone/flow. Static validation never connects; unselected acquisition may omit it |
 | `network.private.rules` | `[]` | scoped rules | R | Deployment-owned security ceiling: at most 256 closed endpoint-or-hostname/CIDR/integer-port records. Controlled drain/restart; no enrollment or broad implicit localhost mode |
 | `network.{tor,i2p,lokinet}.enabled` | `false` | bool | H | Enabled route requires a tested adapter and proxy/router settings |
 | `network.{tor,i2p,lokinet}.proxy` | absent | URL/reference | C | No invented reachable proxy default |
-| `network.tls.extra_roots` | `[]` | file paths | C | Strict TLS plus optional custom CAs |
+| `network.tls.extra_roots` | `[]` | file paths | C | Strict TLS plus at most 128 DER files/1 MiB aggregate; offline validation checks paths/count only |
 | `network.max_connections` | `128` | connections/host route domain | H | Shared socket owner or reconciled Control permits enforce this aggregate; validated against process FD budget with reserve |
 | `network.endpoint_connections` | `1` | connections/scope | H | Can increase explicitly for demonstrated relay needs |
 | `network.host_connections` | `4` | connections/hostname | H | Applies across services; lower global limit still wins |

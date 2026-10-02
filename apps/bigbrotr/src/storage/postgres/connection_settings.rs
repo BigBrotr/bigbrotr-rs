@@ -5,19 +5,11 @@
 //! retain resource charges until every driver copy and operation has terminated.
 
 use crate::secrets::SecretFile;
-use rustix::fs::{Mode, OFlags, open, openat};
 use rustls::{
     ClientConfig, RootCertStore,
     pki_types::{CertificateDer, PrivateKeyDer, ServerName, pem::PemObject},
 };
-use std::{
-    fmt,
-    fs::File,
-    io::Read,
-    net::IpAddr,
-    path::{Component, Path},
-    time::Duration,
-};
+use std::{fmt, net::IpAddr, path::Path, time::Duration};
 use tokio::io::{AsyncRead, AsyncWrite};
 use tokio_postgres::{Config, config::SslMode, tls::MakeTlsConnect};
 use tokio_postgres_rustls::MakeRustlsConnect;
@@ -383,64 +375,12 @@ fn validate_plaintext_boundary(
 }
 
 fn read_public_file(path: &Path, limit: usize) -> Result<Vec<u8>, ConnectionError> {
-    if !path.is_absolute() {
-        return Err(ConnectionError::CaOpen);
-    }
-    let directory_flags = OFlags::RDONLY | OFlags::DIRECTORY | OFlags::NOFOLLOW | OFlags::CLOEXEC;
-    let mut parent =
-        open("/", directory_flags, Mode::empty()).map_err(|_| ConnectionError::CaOpen)?;
-    let mut components = path.components().peekable();
-    components.next();
-    let descriptor = loop {
-        let Some(Component::Normal(name)) = components.next() else {
-            return Err(ConnectionError::CaOpen);
-        };
-        if components.peek().is_none() {
-            break openat(
-                &parent,
-                name,
-                OFlags::RDONLY
-                    | OFlags::CLOEXEC
-                    | OFlags::NOFOLLOW
-                    | OFlags::NONBLOCK
-                    | OFlags::NOCTTY,
-                Mode::empty(),
-            )
-            .map_err(|_| ConnectionError::CaOpen)?;
-        }
-        parent = openat(&parent, name, directory_flags, Mode::empty())
-            .map_err(|_| ConnectionError::CaOpen)?;
-    };
-    let mut file = File::from(descriptor);
-    let metadata = file.metadata().map_err(|_| ConnectionError::CaOpen)?;
-    if !metadata.is_file() {
-        return Err(ConnectionError::CaNotRegular);
-    }
-    if metadata.len() > u64::try_from(limit).map_err(|_| ConnectionError::CaTooLarge)? {
-        return Err(ConnectionError::CaTooLarge);
-    }
-    let capacity = limit.checked_add(1).ok_or(ConnectionError::CaTooLarge)?;
-    let mut bytes = Vec::new();
-    bytes
-        .try_reserve_exact(capacity)
-        .map_err(|_| ConnectionError::CaRead)?;
-    bytes.resize(capacity, 0);
-    let mut used = 0;
-    loop {
-        match file.read(&mut bytes[used..]) {
-            Ok(0) => break,
-            Ok(read) => {
-                used += read;
-                if used > limit {
-                    return Err(ConnectionError::CaTooLarge);
-                }
-            }
-            Err(error) if error.kind() == std::io::ErrorKind::Interrupted => continue,
-            Err(_) => return Err(ConnectionError::CaRead),
-        }
-    }
-    bytes.truncate(used);
-    Ok(bytes)
+    crate::local_file::read(path, limit).map_err(|error| match error {
+        crate::local_file::FileError::Open => ConnectionError::CaOpen,
+        crate::local_file::FileError::NotRegular => ConnectionError::CaNotRegular,
+        crate::local_file::FileError::TooLarge => ConnectionError::CaTooLarge,
+        crate::local_file::FileError::Read => ConnectionError::CaRead,
+    })
 }
 
 fn root_store(bytes: &[u8]) -> Result<RootCertStore, ConnectionError> {

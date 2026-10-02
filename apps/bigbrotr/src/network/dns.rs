@@ -82,13 +82,20 @@ pub struct DnsResolver {
 }
 
 impl DnsResolver {
-    pub fn new(server: SocketAddr, resources: ResourceBudget) -> Result<Self, DnsError> {
+    /// The offline configuration parser uses the same numeric-server rules.
+    /// Validation performs no lookup or connection and grants no destination access.
+    pub fn validate_server(server: SocketAddr) -> Result<(), DnsError> {
         if server.port() == 0
             || !address::unicast(address::canonical(server.ip()))
             || matches!(server, SocketAddr::V6(v6) if v6.scope_id() != 0 || v6.flowinfo() != 0)
         {
             return Err(DnsError::InvalidConfiguration);
         }
+        Ok(())
+    }
+
+    pub fn new(server: SocketAddr, resources: ResourceBudget) -> Result<Self, DnsError> {
+        Self::validate_server(server)?;
         Ok(Self {
             server,
             resources,

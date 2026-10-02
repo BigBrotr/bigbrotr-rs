@@ -1,6 +1,31 @@
 //! Installed transport roots: offline configuration and actual filesystem/TLS.
+use bigbrotr::{
+    network::{TlsPolicy, TransportError},
+    runtime::{
+        OwnedPermit, ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
+    },
+};
 use serde_json::Value;
 use std::{fs, process::Command};
+
+const CA: &[u8] = include_bytes!("../../../tests/fixtures/relay-lifecycle/transport/ca.der");
+
+fn budget() -> ResourceBudget {
+    ResourceBudget::new(
+        ProcessEnvelope::new(
+            8 * 1024 * 1024,
+            0,
+            ResourceLimits::new(8 * 1024 * 1024, 2, 0, 0),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    )
+}
+fn grant(budget: &ResourceBudget, bytes: u64) -> OwnedPermit {
+    budget
+        .try_acquire(ResourceRequest::data(bytes, 1, 0).unwrap())
+        .unwrap()
+}
 
 const ROOT: &str = include_str!("../../../config/recipes/serve-existing.toml");
 
@@ -80,4 +105,139 @@ fn root_paths_are_bounded_without_reading_certificates_offline() {
             .code(),
         Some(3)
     );
+}
+
+#[test]
+fn actual_der_roots_retain_one_grant_through_all_tls_copies() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().canonicalize().unwrap().join("ca.der");
+    fs::write(&path, CA).unwrap();
+    let budget = budget();
+    // Independent exact lower bound; production constants are not the oracle.
+    assert!(matches!(
+        TlsPolicy::from_der_files(&[&path], grant(&budget, 4_194_303)),
+        Err(TransportError::Budget)
+    ));
+    assert_eq!(budget.snapshot().active_permits(), 0);
+    let policy =
+        TlsPolicy::from_der_files(&vec![path.as_path(); 128], grant(&budget, 4_194_304)).unwrap();
+    let copy = policy.clone();
+    drop(policy);
+    fs::remove_file(&path).unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 1);
+    drop(copy);
+    assert_eq!(budget.snapshot().active_permits(), 0);
+    assert!(matches!(
+        TlsPolicy::from_der_files(&vec![path.as_path(); 129], grant(&budget, 4_194_304)),
+        Err(TransportError::TlsConfiguration)
+    ));
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[test]
+fn malformed_der_and_unsafe_file_kinds_release_the_grant() {
+    use std::os::unix::fs::symlink;
+    let directory = tempfile::tempdir().unwrap();
+    let root = directory.path().canonicalize().unwrap();
+    let path = root.join("ca.der");
+    let budget = budget();
+    let refuse = |path: &std::path::Path| {
+        assert!(
+            matches!(
+                TlsPolicy::from_der_files(&[path], grant(&budget, 4_194_304)),
+                Err(TransportError::TlsConfiguration)
+            ),
+            "{}",
+            path.display()
+        );
+        assert_eq!(budget.snapshot().active_permits(), 0);
+    };
+    for bytes in [
+        vec![],
+        b"bad".to_vec(),
+        [CA, &[0]].concat(),
+        [CA, CA].concat(),
+        b"-----BEGIN CERTIFICATE-----\nAAAA\n-----END CERTIFICATE-----\n".to_vec(),
+        vec![0; 1_048_577],
+    ] {
+        fs::write(&path, bytes).unwrap();
+        refuse(&path);
+    }
+    fs::write(&path, CA).unwrap();
+    let link = root.join("link");
+    symlink(&path, &link).unwrap();
+    refuse(&link);
+    let parent = root.join("alias");
+    symlink(&root, &parent).unwrap();
+    refuse(&parent.join("ca.der"));
+    let fifo = root.join("fifo");
+    rustix::fs::mknodat(
+        rustix::fs::CWD,
+        &fifo,
+        rustix::fs::FileType::Fifo,
+        rustix::fs::Mode::RUSR,
+        0,
+    )
+    .unwrap();
+    refuse(&fifo);
+    refuse(&root);
+    refuse(&root.join("missing"));
+    refuse(std::path::Path::new("relative.der"));
+    // Errors did not leave stale state or prevent loading a valid root.
+    drop(TlsPolicy::from_der_files(&[&path], grant(&budget, 4_194_304)).unwrap());
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[test]
+fn total_der_bytes_are_bounded_independently_of_file_count() {
+    // Trust-anchor extraction accepts a lenient serial and does not check a
+    // root's self-signature. Enlarge only that ignored field, retaining the
+    // original subject/key. This synthetic parser fixture is never a TLS peer
+    // credential or a claim that an altered certificate has a valid signature.
+    fn split(input: &[u8], tag: u8) -> (&[u8], &[u8]) {
+        assert_eq!(input[0], tag);
+        let (length, header) = if input[1] < 128 {
+            (usize::from(input[1]), 2)
+        } else {
+            let count = usize::from(input[1] & 127);
+            assert!((1..=2).contains(&count));
+            (
+                input[2..2 + count]
+                    .iter()
+                    .fold(0, |n, byte| n * 256 + usize::from(*byte)),
+                2 + count,
+            )
+        };
+        (&input[header..header + length], &input[header + length..])
+    }
+    fn der(tag: u8, content: &[u8]) -> Vec<u8> {
+        let length = u16::try_from(content.len()).unwrap().to_be_bytes();
+        let mut bytes = vec![tag, 0x82, length[0], length[1]];
+        bytes.extend_from_slice(content);
+        bytes
+    }
+    let (certificate, trailing) = split(CA, 0x30);
+    assert!(trailing.is_empty());
+    let (tbs, signature) = split(certificate, 0x30);
+    let (_, after_version) = split(tbs, 0xa0);
+    let version = &tbs[..tbs.len() - after_version.len()];
+    let (_, after_serial) = split(after_version, 2);
+    let mut body = version.to_vec();
+    body.extend(der(2, &vec![1; 9000]));
+    body.extend_from_slice(after_serial);
+    let mut certificate = der(0x30, &body);
+    certificate.extend_from_slice(signature);
+    let certificate = der(0x30, &certificate);
+    assert!(certificate.len() * 100 < 1_048_576);
+    assert!(certificate.len() * 128 > 1_048_576);
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().canonicalize().unwrap().join("large.der");
+    fs::write(&path, certificate).unwrap();
+    let budget = budget();
+    drop(TlsPolicy::from_der_files(&vec![path.as_path(); 100], grant(&budget, 4_194_304)).unwrap());
+    assert!(matches!(
+        TlsPolicy::from_der_files(&vec![path.as_path(); 128], grant(&budget, 4_194_304)),
+        Err(TransportError::TlsConfiguration)
+    ));
+    assert_eq!(budget.snapshot().active_permits(), 0);
 }

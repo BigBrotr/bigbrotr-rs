@@ -306,6 +306,16 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
             }
             Ok(json!(url.as_str()))
         }
+        DnsResolver => {
+            let address = value
+                .as_str()
+                .filter(|s| s.len() <= 64)
+                .and_then(|s| s.parse::<std::net::SocketAddr>().ok())
+                .ok_or("expected numeric DNS resolver address and port")?;
+            bigbrotr::network::DnsResolver::validate_server(address)
+                .map_err(|_| "invalid numeric DNS resolver address or port")?;
+            Ok(json!(address.to_string()))
+        }
         Text | Path | Secret => {
             let text = value.as_str().ok_or("expected string")?;
             if text.is_empty() || text.len() > 8192 || text.chars().any(char::is_control) {
@@ -603,6 +613,15 @@ impl Resolved {
             .ok_or_else(|| format!("{key} is required by a selected role"))
     }
     pub(super) fn validate(&mut self) -> Result<(), String> {
+        if self
+            .value("network.tls.extra_roots")
+            .as_array()
+            .unwrap()
+            .len()
+            > 128
+        {
+            return Err("network.tls.extra_roots: at most 128 DER certificate paths".into());
+        }
         // Disabled dependencies still have closed syntax. Only actual consumers
         // require complete credentials and contribute live dependency checks.
         for pg in ["control", "catalog"] {
