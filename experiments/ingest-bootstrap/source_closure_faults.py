@@ -67,18 +67,24 @@ def assert_effects(before, after, closed, digest, released=False):
     assert (role['retired_at_us'] is not None) == released
     assert owner['epoch'] == max(r['epoch'] for r in before['owner_epochs'] if r['role'] == 'control') + 1
     old, new = dict(before['producer_epochs'][0]), dict(after['producer_epochs'][0])
-    assert old.pop('state') == 'open' and new.pop('state') == 'closing'
+    if old['state'] == 'closing':
+        assert old == new, 'identical producer close rewrote state'
+    assert old.pop('state') in ('open', 'closing') and new.pop('state') == 'closing'
     old.pop('xmin'); new.pop('xmin')
     assert old == new
     if closed:
         old, new = dict(before['source_streams'][0]), dict(after['source_streams'][0])
-        assert old.pop('state') == 'open' and new.pop('state') == 'closed'
-        assert old.pop('closed_at_us') is None
-        assert owner['acquired_at_us'] <= new.pop('closed_at_us') < owner['lease_expires_at_us']
-        assert old.pop('last_complete_sequence') is None and new.pop('last_complete_sequence') == 12
-        assert old.pop('closure_digest') is None and new.pop('closure_digest') == '\\x' + digest
-        old.pop('xmin'); new.pop('xmin')
-        assert old == new
+        if old['state'] == 'closed':
+            assert old == new, 'identical source close rewrote state'
+            assert new['last_complete_sequence'] == 12 and new['closure_digest'] == '\\x' + digest
+        else:
+            assert old.pop('state') == 'open' and new.pop('state') == 'closed'
+            assert old.pop('closed_at_us') is None
+            assert owner['acquired_at_us'] <= new.pop('closed_at_us') < owner['lease_expires_at_us']
+            assert old.pop('last_complete_sequence') is None and new.pop('last_complete_sequence') == 12
+            assert old.pop('closure_digest') is None and new.pop('closure_digest') == '\\x' + digest
+            old.pop('xmin'); new.pop('xmin')
+            assert old == new
 
 
 def assert_reclaimed(before, after, current):
