@@ -140,7 +140,7 @@ def seed_candidate(db, ordinal, *, kind='acquisition', state='accepted', revisio
                    protocol=1, owner_epoch=None, incarnation=None, resource=None, checkpoint=0):
     """Clone-only scheduling metadata, not a qualified acceptance/claim journey."""
     identity = {33:'e3'*16,34:'d4'*16,35:'c5'*16,67:'a7'*16}.get(ordinal,f'{ordinal:032x}')
-    created = 1000-ordinal if ordinal<1000 else 1
+    created = {33:900,34:1100,35:1000,67:42}.get(ordinal,1000-ordinal if ordinal<1000 else 1)
     decode = lambda value: "decode('%s','hex')" % value if value else 'NULL'
     mutate(db, f"""
         INSERT INTO control.jobs(job_id,dataset_id,principal_id,request_key,request_digest,
@@ -343,7 +343,7 @@ def run_case(name):
         added_admission = next(row for row in inputs['job_admissions'] if row not in before['job_admissions'])
         original_job = next(row for row in before['jobs'] if row['job_id']=='\\x'+'e3'*16)
         new_id = '\\x'+'a7'*16
-        require(added_job == dict(original_job,job_id=new_id,request_key=new_id,created_at_us=933,xmin=added_job['xmin'])
+        require(added_job == dict(original_job,job_id=new_id,request_key=new_id,created_at_us=42,xmin=added_job['xmin'])
             and added_admission == dict(job_id=new_id,admission_ordinal=67,xmin=added_job['xmin']),
             'unexpected-late-admission')
         before['jobs'] = inputs['jobs']
