@@ -191,9 +191,12 @@ impl Sync {
             return Ok(());
         }
         let (max_event_bytes, provenance) = self.profile.expect("accepted Sync profile");
-        let attribution = work
+        let Some(attribution) = work
             .observation(&scope, &source, provenance, &mut self.next_request)
-            .await?;
+            .await?
+        else {
+            return Ok(());
+        };
         if work.stopped() {
             return Ok(());
         }

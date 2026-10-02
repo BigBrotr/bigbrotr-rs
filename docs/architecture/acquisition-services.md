@@ -453,8 +453,10 @@ through receipt. A250ms scheduling gap gives private commands an opportunity;
 renewal always has priority and new work retains the original renewal deadline.
 The socket quantum requests at most three events per filter, retains at most
 three correlated EVENTs, and examines at most32 frames. A soft cutoff of at most
-500ms, computed before source SQL/connect, leaves half the remaining operation
-window for socket destruction, rollback and effects. It does not establish
+500ms is computed before source SQL/connect. The callback uses at most half the
+remaining operation window so cleanup and effects retain time. Pre-callback
+DNS/TCP/TLS still share only the hard deadline; a stall there may exhaust it and
+fail-stop the owner without a graceful-release claim. This does not establish
 production throughput or a live-subscription service. TLS, selector/source,
 visibility/observation, retained frames, parsing and native work use the same
 process budget, with separate owned grants; their logical bounds are not RSS.
@@ -467,6 +469,10 @@ the committed observation without another producer request. Certification reject
 invalid signatures and identifies existing effects; only NeedsAdmission allocates
 a new request. Original uncertain effects stop the owner and remain recovery
 inputs. Receipt copying does not acknowledge or recycle outstanding slots.
+Completed-rollback peer refusals yield the candidate, while local malformed or
+out-of-selector EVENTs are refused before SQL/native work. A full initial producer
+window defers new event or dictionary mutations; it does not stop existing reads,
+private commands or renewal. These refusals produce no coverage assertion.
 
 Cancellation asks a quiet protocol callback to retire its complete session and
 lets the source adapter finish socket destruction and SQL rollback; the outer

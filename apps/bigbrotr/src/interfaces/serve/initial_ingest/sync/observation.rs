@@ -16,7 +16,7 @@ impl Dispatch<'_> {
         source: &StoredRelaySource,
         provenance: bool,
         next_request: &mut u64,
-    ) -> Result<StoredObservation> {
+    ) -> Result<Option<StoredObservation>> {
         // Attribution descriptors are small even at the maximum endpoint size.
         // Use a separate bound from event admission, so repeated observations
         // do not retain a full event batch's scratch while receiving a socket.
@@ -115,12 +115,12 @@ impl Dispatch<'_> {
             .await
             .map_err(error)?;
         if let Some(existing) = existing {
-            return Ok(existing);
+            return Ok(Some(existing));
         }
         if *next_request > u64::from(self.spec.outstanding_request_limit) {
-            return Err(error(
-                "initial producer window full before observation append",
-            ));
+            // This new descriptor set needs a mutation slot. A full initial
+            // window defers it without ending HTTP, renewal or existing reads.
+            return Ok(None);
         }
         let ttl = self.remaining()?;
         let appended = self
@@ -166,5 +166,6 @@ impl Dispatch<'_> {
             .await
             .map_err(error)?
             .ok_or_else(|| error("committed observation missing after append"))
+            .map(Some)
     }
 }
