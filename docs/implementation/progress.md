@@ -14,22 +14,25 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Current tested product commit is 4f62b52f785d1e9567e562528c0be7697963f489,
-tree 4d3a3496f23fcf39dbd186fb2e021b9024f86810. Evidence commit 8925e8cb37ba358009eec33505b3285f229bdb6d was freshly verified on
-private origin with ahead 0/behind 0 and a clean canonical worktree. Root owns this
-subsequent bounded next-slice/checkpoint note; a later documentation commit may
-be actual HEAD. Verify Git and its private push before continuing. Main remains
-54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
+The prepared-only product implementation remains 4f62b52; the latest qualified
+CLI/probe build is 4b896879151168422784d073cfca20cd35013ec8, tree
+59bae50438da69dd31f8fb251a1469eb2d720730. The connected fixture is committed at
+ac644ef566a0f61a6315a480e196e189bc359977 and passed with those exact binaries.
+Root owns the subsequent evidence/checkpoint edits. These commits have not yet
+been pushed at this observation; verify the later commit and private origin.
+Main remains 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
 
-Root integrated agent commit 93be672a79035c33b484209afcf4113b53727a1a from the
-separate clean writable worktree `.research/initial-successor-pg-20261012`, branch
-implementation/initial-successor-pg. Preserve that commit/worktree; no source
-writer is active there. Agents subsequently perform only bounded read-only reviews.
+The separate `.research/initial-successor-pg-20261012` worktree now preserves
+qualification/initial-successor-probe at b7fac03, integrated into dd1539a with the
+subsequent Clippy-only correction at 4b89687. The earlier implementation branch
+at 93be672 remains preserved. `.research/initial-successor-oracle-20261012` preserves
+qualification/initial-successor-oracle at 4d89a4c, integrated into ac644ef. Both
+source agents finished their writes; bounded read-only review may remain active.
 Original lab exports and recovered bundle remain unchanged. The
 [dated recovery audit](../research/tux-resumption-20261012.md) owns reconciliation;
 a same-disk bundle is not host-loss backup. Missing Mac captures remain unavailable.
 
-## Current responsibility and verified native result
+## Current responsibility and verified preparation
 
 Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. Neither these steps
 nor M1 are complete. Commit 4f62b52 implements the prepared-only initial successor:
@@ -51,7 +54,8 @@ native dispatch, retains current Control/policy custody across the bounded local
 deadline, and vetoes successor reservation/input binding even without an intent.
 It preserves original slot registrar attribution. Applied 0027/0028/0029 are
 unchanged. Fresh global allocation-domain identity relies on the retained SQL
-uniqueness constraint. PostgreSQL/installed execution of 0030 remains NOT_RUN.
+uniqueness constraint. Actual connected preparation with 0030 now passes; installed successor activation
+and restart remain NOT_RUN.
 The relevant owners are [manifest/handoff](../reference/ingest-manifest-format.md#initial-owner-handoff-receipt)
 and [prepared registration](../reference/ingest-registration.md#prepared-initial-successor).
 
@@ -76,25 +80,59 @@ cache artifacts remained unchanged.
 This is actual native component evidence, not cross-process reconstruction,
 PG/native atomicity, power-loss durability or successor admission qualification.
 
-## Next bounded action and retained earlier evidence
+## Connected first wave and next bounded action
 
-Qualify the connected PostgreSQL preparation on an isolated exact-source clone,
-using the retained signed retired derivative `ingest-recovery-engine-f12dbf0/
-bindings/retire_signed/store` and DB `bb_scope_bind_f12dbf0_retire_signed`.
-The owning evidence records the finite probe change map. Public
-`observe_initial_retirement` plus `inspect_initial_retirement_request` can
-construct the positive source witness after retirement; do not reopen closing
-or change API visibility. Keep the original registration and local plan across
-retries, since loading historical registration after native epoch2 is unsupported.
-First finish the finite probe design: obtain positive source proof under the
-existing terminal observation path, retain the native handle/local plan, call
-prepare_initial_successor and independently check all 71 SQL tables, the exact
-native four-key delta and original input preservation. Include confirmed retry,
-changed-intent/old-schema/unretired/history refusals and the distinct PG/native
-ambiguity boundaries. Preserve every original fixture and record results in the
-same recovery evidence/inventory. Do not turn a SQL-only script into evidence
-for the actual adapter. Component build need not be repeated unless product or
-build inputs change.
+`runs/ingest-succession-ac644ef/bindings/result.json` is
+PASS_INITIAL_SUCCESSOR_PREPARATION, finished 2026-10-12T10:33:13Z; SHA256
+769db38827d8efaab5cfde11af91ef7a82a6414889772db0ab6bb2f99dbc778a.
+The frozen retired signed derivative `ingest-recovery-engine-f12dbf0/
+bindings/retire_signed/store` and DB `bb_scope_bind_f12dbf0_retire_signed` were
+copied into four new inventoried cases and preserved unchanged.
+
+The normal case performs preparation, same-Control retry and fresh-Control retry.
+The gap case injects a real policy-validator refusal after confirmed PG COMMIT:
+PG stays prepared, native remains 49 rows, changed-role intent refuses, then the
+identical local plan completes under a new actual Control. Schema 29 and a proven
+intent-insert rollback leave no preparation/native effects. Every snapshot checks
+all 71 tables (70 for old-schema), complete rows/xmin, native sequence/bytes and
+four original input hashes. Topology advances 0→1 and owner/producer 1→2; successful
+native handoff adds 3 records and replaces the manifest in 4 writes, giving 52 rows.
+Original input bytes and all historical rows remain unchanged. The new source
+is open with NULL closure metadata; zero is explicit in its native counter.
+
+Both request and synthetic input-binding attempts reach the intended application
+role activation veto: exact function/message and SQLSTATE 23514, not a generic
+SQL error. No genuine running import is claimed. The independent Python oracle
+checked 44 ordered snapshots and rejected 38 deliberately corrupted captures.
+Independent read-only AI audit replayed all captures and perturbations, rehashed
+all 1,727 build files/5 executables and checked 1,191 unchanged pre-existing
+nonborrowed container projections. No discrepancy was found in this scope.
+Initial claim/renewal and later Control exclusion/release effects are checked
+separately. This is one-process retained-plan recovery, not process reconstruction.
+
+Build 4b89687 is PASS_INGEST_HISTORY_BUILD_ONLY with the same scoped native cases,
+entrypoint/migration catalog checks and Clippy; all 1,727 source files and 5 retained
+executables were checked. Its CLI/probe hashes are in the owning evidence.
+The original dd1539a build remains FAIL for three Clippy err_expect findings in
+the finite probe; 4b89687 corrected them. No failed evidence was overwritten.
+Before engine execution, independent AI source review found missing UPDATE
+privilege for SELECT FOR SHARE on the new intent; explicit lab provisioning was
+corrected. Immutable guards still reject changes. A probe timeout now preserves
+partial output as UNKNOWN_TIMEOUT; that timeout path was not injected.
+
+Next qualify actual ambiguous preparation COMMIT transport with the existing
+fault proxy on isolated clones, retaining the local plan and original registration.
+Prepare is COMMIT 12 in the present probe: claim 1, retirement observation 2, four
+refresh/inspection pairs 3–10, final refresh 11, prepare 12. Check this against any
+probe changes. Exercise before-forward rollback versus after-complete lost reply,
+confirm the old backend is excluded under fresh actual Control, and independently
+observe absence versus durable intent before exact retry. Do not infer server
+rollback from client exit. Preserve full SQL/native/input observations and record
+the result in the same evidence/inventory. No API widening or historical loader
+use after native epoch 2 is justified by this fixture. Route only the initial
+Control connection through the one-connection proxy; observer/retry connections
+stay direct. The full probe transcript exceeds the old Process helper's 64KiB
+stdout bound, so preserve the existing file/full-response capture path.
 
 Then implement cross-process plan reconstruction and abandoned-empty-attempt
 completion without adopting its incarnation; only an actual continuing process
@@ -124,7 +162,7 @@ browser and website work; optional enablement does not finish selected scope.
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource records.
 Before cleanup, implementation/qualification/object-storage labs totaled about
-975 GiB (lower bounds where access is denied). The latest successor build left about 67.3 GiB free; remeasure before allocation because this is a shared host. Small retirement fixtures need >2 GiB; the
+975 GiB (lower bounds where access is denied). The latest connected wave left about 66.9 GiB free; remeasure before allocation because this is a shared host. Small retirement fixtures need >2 GiB; the
 larger export wave still requires 64 GiB. Never lower that reserve to force a run.
 
 Targeted cleanup is RETIRED_VERIFIED. The reviewed one-off executor removed

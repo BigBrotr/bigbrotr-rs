@@ -39208,14 +39208,14 @@
     "resources_state": "STOPPED_RETAINED"
   },
   "implementation_initial_successor_20261012": {
-    "status": "NATIVE_COMPONENTS_PASS_CONNECTED_NOT_RUN",
-    "owner": "root integrating owner; cleanup_review owns PostgreSQL source only",
+    "status": "CONNECTED_PREPARATION_FIRST_WAVE_PASS",
+    "owner": "root sole integrating owner; bounded source and independent oracle/review agents",
     "task": "P02-T01 Step5 / P02-T02 Step4 / P01-T09 Step4",
     "canonical": "/home/tux/bigbrotr-rs",
     "worktree": "/home/tux/bigbrotr-rs/.research/initial-successor-pg-20261012",
     "branch": "implementation/initial-successor-pg",
     "base_revision": "20fc08cdb7d281cf2dd0ad630b4b964b933a9b84",
-    "purpose": "Separate writable PostgreSQL prepared-only initial successor implementation; root owns native format and integration. No writer activation or new engine resources yet.",
+    "purpose": "Prepared-only initial successor native and connected qualification; no activation or process-loss reconstruction",
     "preservation": "Preserve all predecessor laboratories, source snapshots and current shared compiler cache.",
     "build_candidate_4f62b52": {
       "source": "4f62b52f785d1e9567e562528c0be7697963f489",
@@ -39251,7 +39251,7 @@
       "branch": "qualification/initial-successor-probe",
       "base": "d2701b5951322d010ddf9f8f3e8de3f5ba1d63e9",
       "owner": "cleanup_review: Rust example probe only; root owns Python fixture, binding runner and integration",
-      "status": "QUALIFIED_BUILD_4b89687_ENGINE_NOT_RUN",
+      "status": "CLEAN_PRESERVED_INTEGRATED",
       "preserved_branch": "implementation/initial-successor-pg at93be672a79035c33b484209afcf4113b53727a1a",
       "commit": "b7fac03f3d2920c58ab38a1cd98f3b746ca70832"
     },
@@ -39260,7 +39260,7 @@
       "branch": "qualification/initial-successor-oracle",
       "base": "d2701b5951322d010ddf9f8f3e8de3f5ba1d63e9",
       "owner": "recovery_review: independent Python successor oracle only",
-      "status": "SOURCE_REVIEWED_ENGINE_NOT_RUN",
+      "status": "CLEAN_PRESERVED_INTEGRATED",
       "commit": "4d89a4c"
     },
     "build_candidate_dd1539a": {
@@ -39318,6 +39318,34 @@
       "source_files_verified": 1727,
       "binary_sha256": "40c7f21ec2e84c15bf417bdee87154c9bd3dfae85fa3f10accd8735e349b9b62",
       "probe_sha256": "c6f04757f475d061e77148db4cc98604fba682f7cf5c326f86333284bd658119"
+    },
+    "connected_ac644ef": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-ac644ef",
+      "source": "ac644ef566a0f61a6315a480e196e189bc359977",
+      "owner": "cdfb0f1b755b29ccedc057b786efa116",
+      "label": "org.bigbrotr.acquisition-binding",
+      "client": {
+        "id": "e3e6bca608ab7f7549770afe5928e2601b6075ddee20220ba34c2b2ec72d5f1b",
+        "name": "bigbrotr-acquisition-binding-ac644ef"
+      },
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "databases": [
+        "bb_scope_bind_ac644ef_successor_normal",
+        "bb_scope_bind_ac644ef_successor_gap",
+        "bb_scope_bind_ac644ef_successor_old_schema",
+        "bb_scope_bind_ac644ef_successor_rollback"
+      ],
+      "status": "PASS_INITIAL_SUCCESSOR_PREPARATION",
+      "state": "stopped-retained",
+      "finished_at": "2026-10-12T10:33:13.812430+00:00",
+      "result_sha256": "769db38827d8efaab5cfde11af91ef7a82a6414889772db0ab6bb2f99dbc778a",
+      "cleanup_errors": [],
+      "unrelated_changed": [],
+      "source_preserved": {
+        "control": true,
+        "files": true,
+        "artifacts": true
+      }
     }
   }
 }

@@ -74,6 +74,11 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   [eleven-case native evidence](evidence/p02-ingest-lease-native-20260928.json)
   qualifies its initial renewal/refusal/cancellation boundary, not the complete
   CAS/handoff step or installed lifetime.
+  The [prepared initial successor](../reference/ingest-registration.md#prepared-initial-successor)
+  now has native component and four connected signed-seed cases at `ac644ef`
+  using `4b89687` binaries. Exact retries, the confirmed PG/native gap, schema
+  refusal and insert rollback preserve full history. Actual ambiguous COMMIT
+  transport, process reconstruction and activation remain separate requirements.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
   policy references; later lifecycle migrations add observations/scheduling.
   The first [private operational identity consumer](../reference/relay-endpoint-registry.md)
@@ -237,6 +242,14 @@ One owner serializes exact identity decisions for each writable directory.
   are explicitly synthetic; genuine import closure, installed empty-start recovery,
   current Control UTC expiry, successor and broader acceptance remain separate.
   This scoped initial retirement does not close Step 4 or the whole task.
+  Prepared-only succession (`0030`, product `4f62b52`) retains both manifests and
+  the closed predecessor while registering empty epoch 2. The same recovery
+  evidence records seven native tests and four connected cases at `ac644ef`:
+  44 full snapshots, unchanged original inputs, native 49→52 rows/sequence +4,
+  exact retry under fresh Control, intent conflict and explicit activation veto.
+  The local plan remains in one process. Ambiguous transport, process-loss
+  reconstruction, abandoned-attempt retirement, activation and restart/resend
+  remain unqualified; no whole-step completion follows.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and

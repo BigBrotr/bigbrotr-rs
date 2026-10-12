@@ -159,5 +159,20 @@ writer conversion, cross-process plan reconstruction or abandoned-empty-attempt
 retirement is implemented by this slice. These are required subsequent work,
 not authority inferred from an OPEN scheduling row or a completed native batch.
 
-Implementation and actual native component checks are distinct from connected
-PostgreSQL and installed qualification; consult the owning recovery evidence.
+The [connected recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+records four actual PostgreSQL 16.15/RocksDB 11.8.1 cases at harness `ac644ef`,
+using exact-source probe `4b89687`. A frozen retired signed store advances from
+49 to 52 native rows in four writes; all four original inputs survive unchanged.
+All 71 Control tables, historical row versions and the exact immutable intent
+are checked through same-Control and fresh-Control retries. A refusal after
+confirmed preparation COMMIT leaves PostgreSQL prepared and native unchanged;
+changed intent refuses before an exact retry completes. Schema 29 and a proven
+intent-insert SQL rollback leave no preparation/native effects. The earlier
+Control claim/renewal/release changes are accounted for separately.
+
+Both successor request and input-binding attempts reach the named activation
+veto with SQLSTATE 23514 under the application role. The latter is a synthetic
+envelope, not a completed import workflow. The probe retains its local proof
+inside one process; real ambiguous COMMIT transport, process-loss reconstruction,
+abandoned-attempt retirement, writer activation and installed restart remain
+separate unqualified boundaries. Prepared metadata does not grant admission.
