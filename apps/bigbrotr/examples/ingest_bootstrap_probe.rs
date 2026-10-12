@@ -38,6 +38,8 @@ mod ingest_dictionary_faults;
 mod ingest_event;
 #[path = "support/ingest_history.rs"]
 mod ingest_history;
+#[path = "support/ingest_initial_empty.rs"]
+mod ingest_initial_empty;
 #[path = "support/ingest_initial_history.rs"]
 mod ingest_initial_history;
 #[path = "support/ingest_lease.rs"]
@@ -904,7 +906,10 @@ fn main() {
     let mut config = Config::new();
     config
         .host(
-            if args[1].starts_with("history-") || args[1].starts_with("successor-") {
+            if args[1].starts_with("history-")
+                || args[1].starts_with("successor-")
+                || args[1].starts_with("empty-")
+            {
                 "127.0.0.1"
             } else {
                 "postgres"
@@ -940,6 +945,8 @@ fn main() {
                 .await;
             } else if args[1].starts_with("recovery-process-") {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
+            } else if args[1].starts_with("empty-") {
+                ingest_initial_empty::run(config, Path::new(&args[4]), &args[1]).await;
             } else if args[1] == "successor-history" {
                 ingest_initial_history::run(config, Path::new(&args[4])).await;
             } else if matches!(
