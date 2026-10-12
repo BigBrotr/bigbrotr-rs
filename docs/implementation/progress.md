@@ -19,18 +19,19 @@ CLI/probe build is 3969a612883674fe900a9b309624f5ceae6b336b, tree
 c909b499aab3c9c9ee9300279ee535e26329daa6. The actual COMMIT-loss fixture is
 64419a547cdb4d33981eaf3616f4991d48d5f994 and passed with those exact binaries.
 The previous connected first wave ac644ef remains valid with build 4b89687.
-Last freshly verified private remote checkpoint was 0202319; current source and
-this evidence update still need their coherent private push. Root owns the four
-evidence/inventory/reference/task documents and this checkpoint. A later commit
-may be actual HEAD; verify Git and private origin before continuing. Main remains
+Evidence commit 0aec65609968e0c5b7c9d21cb10f96dca9bc385d was pushed and freshly
+verified against private origin with ahead 0/behind 0 and a clean canonical
+worktree. Root owns this subsequent checkpoint/design note; a later documentation
+commit may be actual HEAD. Verify Git and its private push before continuing.
+Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
 
 The separate `.research/initial-successor-pg-20261012` worktree preserves
 qualification/successor-commit-probe at 60c455230fb728bfcef35d071f6bd4eea1732e42,
 integrated into 3969a61. `.research/initial-successor-oracle-20261012` preserves
 qualification/successor-commit-oracle at eddd15b, integrated into 64419a5. Both are
-clean; source writers and independent evidence reviewers finished. Bounded
-read-only next-slice design investigation may remain active. Earlier implementation/probe/oracle
+clean; source writers, independent evidence reviewers and bounded read-only
+next-slice design investigation have finished. No agent has pending source edits. Earlier implementation/probe/oracle
 branches remain preserved. Original lab exports and recovered bundle remain
 unchanged. The
 [dated recovery audit](../research/tux-resumption-20261012.md) owns reconciliation;
@@ -159,13 +160,39 @@ native syscall/power-loss, ACK/GC or full restart claim follows from this wave.
 
 ## Next bounded action
 
-Implement cross-process plan reconstruction and abandoned-empty-attempt
-completion without adopting its incarnation; only an actual continuing process
-may retain custody into a writer lifetime. Keep historical receipts/topology,
-source 1 final cut plus source 2 explicit zero, and shared per-store 64-input / 32 MiB
-allowance. Archive currently assumes snapshot 1 and one epoch 1 stream; Sync has
-initial request/epoch assumptions. Connect these consumers before claiming real
-restart/resend, and repeat the unchanged signed event with provenance disabled.
+First implement read-only reconstruction of the retired initial source beneath
+an exact prepared empty successor. The source review proposal and read boundaries
+are in the same recovery evidence under `next_reconstruction_slice`; no new API
+or engine result is claimed. The historical loader, closing/recovery resolver,
+source accumulator, bootstrap/dictionary/event replay all assume the singleton
+manifest names epoch 1; source closure also insists on exactly one producer marker.
+Removing epoch checks or swapping the store manifest would corrupt attribution.
+
+Add a bounded exact-intent loader under fresh actual Control and an opaque borrowed
+historical read context that retains predecessor identity separately from the
+actual current manifest. Validate the exact handoff/empty target, replay all
+original positive outcomes with unchanged attribution, permit precisely the two
+expected markers, and match the recomputed closure/count/cut before rebinding
+local native guards. It returns observation only. Qualify a genuinely separate
+replacement process with no in-memory plan transfer, retained full captures and
+corruption/nonempty/old-owner exclusion controls. Read the complete affected replay
+and installed callers before integrating; the design agent read those owners but
+root has not yet completed their renewed inspection.
+
+Then complete any recorded PG/native gap and retire the abandoned empty attempt
+without adopting its incarnation. Migration0029 only retires epoch1 and0030's
+validator requires active/open target metadata, so an additive empty-attempt
+validator and explicit resumed/terminal states are needed. Persist native
+CLOSING/zero before terminal PG retirement; retain exact intent, source1 final cut,
+source2 explicit zero, all inputs/history and shared per-store64-input/32MiB
+allowance. Check workflow claims and target sidecars as well as reserved counters.
+Only a continuing actual owner can retain custody into a writer lifetime.
+
+Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial
+request/epoch assumptions. Inspect and connect those consumers before claiming
+restart/resend, and repeat the signed event with provenance disabled. General
+subsequent owner lifetimes and repeated restart remain required beyond the
+initial-only protocol; do not mistake this bounded prerequisite for them.
 
 Previous f12 product artifacts and the first 10 installed retirement cases remain
 valid for their exact scope. The four fault cases 0d81400 establish client exit

@@ -4271,6 +4271,29 @@
         "errors": [],
         "dependency_cycle_candidates": "Three existing prose cycle candidates unchanged; structural checks are not product qualification"
       }
+    },
+    "next_reconstruction_slice": {
+      "status": "SOURCE_REVIEW_PROPOSAL_NOT_IMPLEMENTED",
+      "task": "Existing P02-T01 Step5 / P02-T02 Step4, enabling P01-T09 Step4",
+      "scope": "Read-only reconstruction of the fully retired initial source beneath an exact prepared empty successor; no native completion, retirement or writer conversion in this prerequisite.",
+      "observed_blockers": [
+        "Initial historical registry loader, producer closing/recovery and source resolution bind interpretation to the singleton manifest.",
+        "Source closure permits exactly one native producer marker; completed preparation adds a second.",
+        "Bootstrap replay includes and checks the old singleton manifest; dictionary/event replay also derives historical context and outcome-copy attribution from the current store manifest.",
+        "Migration0029 retirement only accepts epoch1. Migration0030 prepared validator only accepts active/open target state; neither is a terminal epoch2 validator."
+      ],
+      "proposal": [
+        "Load bounded exact0030 intent and retained policy/registrar identities under fresh actual Control custody; bytes and repeated fields/digests must agree.",
+        "Use an opaque borrowed historical initial read context carrying the predecessor separately from the actual current singleton. Validate exact handoff and empty target; never swap IngestStore.manifest or relax ordinary replay.",
+        "Share existing read validators with explicit historical context. Reconstruct every original positive outcome and closure under original manifest/policy; precisely two expected producer markers, no arbitrary census widening.",
+        "Only after recomputed count/cut/digest match the intent may local root and sequence guards be rebound to this actual excluded store. Do not deserialize old guards or infer the proof from sequence minus4.",
+        "Qualify genuine distinct-process reconstruction with full unchanged PG/native/input captures and corruption/nonempty/exclusion controls. Keep current initial APIs refusing unsupported histories."
+      ],
+      "subsequent_required_work": "Finite native completion then abandoned-empty retirement with synced CLOSING/zero and additive SQL validator; handle exact old-native/prepared-native/native-closing/terminal states without adopting target incarnation, rewriting intent/history or synthesizing ACK/GC. Check target sidecars and zero-request workflow obligations, not only reservation count.",
+      "delegated_read_boundary": "Independent read-only AI design review read complete native store/manifest/handoff/tests/closing/recovery/source_closure/bootstrap/dictionary_append/admission/receipt_effects/outcome_copy/request_inputs; PG registry/history/succession/closing/retirement/source_closure; installed initial_ingest/recovery;0029/0030 and relevant complete earlier guard functions; governing registration/handoff and recovery contracts.",
+      "root_read_boundary": "Root additionally read complete native initial_handoff/source_closure/producer_recovery, PG initial_succession, migrations0029/0030 and manifest/registration contracts; deeper replay/installed owners require root inspection before integration.",
+      "uninspected": "Archive and Sync only mapped by the design reviewer; full epoch-history consumer inspection remains required before changes there.",
+      "authority": "Proposal inside the existing task/evidence pipeline, not a new execution plan or completed capability."
     }
   }
 }
