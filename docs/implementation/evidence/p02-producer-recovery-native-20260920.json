@@ -2487,7 +2487,7 @@
     "qualified_boundary": "Initial whole-intent abandonment only: signed seed/retry, no-request intents, historical authority loss, advanced/missing schema refusal, ordinary job compatibility, raw atomicity/immutability, finite64/65 counts, populated corrective upgrade and INSERT/COMMIT recovery. Full acquisition, producer/domain retirement, ACK/GC, successor and M1 remain incomplete."
   },
   "initial_retirement_20261002": {
-    "status": "PASS_NATIVE_BUILD_AND_INSTALLED_FIRST_WAVE; retirement fault/authority/lock qualification pending",
+    "status": "PASS_NATIVE_BUILD_INSTALLED_FIRST_WAVE_AND_FAULTS; authority/lock/remaining obligations pending",
     "tasks": [
       "P02-T01 Step5",
       "P02-T02 Step4",
@@ -2503,7 +2503,6 @@
     "red_result": "EXPECTED_RED: unknown --retire-initial returns2 instead of native missing-root refusal4; other3 entrypoint cases pass; later checks NOT_RUN",
     "scope": "Explicit initial producer/domain retirement and Ingest release; retained ACK/GC zero; successor and full M1 remain",
     "pending": [
-      "Actual rollback and ambiguous COMMIT with same-root fresh-Control retry",
       "Current Control authority and concurrent lock schedules",
       "True zero-issued producer, zero-request import, workflow binding/checkpoint obligations",
       "Explicit successor, unchanged signed-event restart/resend and remaining M1"
@@ -2537,7 +2536,7 @@
         "Clippy warnings denied"
       ]
     },
-    "review_pending": "First-wave f12 installed cases pass on 2026-10-12; preserved original failure remains FAIL. Fault fixture prepared for actual execution, not yet qualified.",
+    "review_pending": "First-wave f12 PASS10 and fixture0d81400/f12 fault PASS4. Independent AI review found no blocking fixture defect; current-authority/lock and remaining empty/import obligations are not qualified.",
     "original_engine_failure": {
       "capture": {
         "label": "retirement-engine-first",
@@ -2862,7 +2861,7 @@
       }
     },
     "retirement_fault_fixture_20261012": {
-      "status": "PREPARED_NOT_RUN",
+      "status": "PASS_INSTALLED_INITIAL_RETIREMENT_FAULTS",
       "entrypoint": "experiments/acquisition-scope/bindings.py RUN_ROOT --ingest-retirement-faults BUILD",
       "scope": "Immediate AFTER producer UPDATE + SIGTERM rollback, deferred retirement COMMIT + deadline and durable completion after client death, same-root fresh-Control exact retry for each",
       "expected_cases": 4,
@@ -2883,6 +2882,152 @@
           "P04-T14/P05-T05"
         ]
       }
+    },
+    "retirement_faults_20261012": {
+      "status": "PASS_INSTALLED_INITIAL_RETIREMENT_FAULTS",
+      "source": "0d81400709bd9a1d9b6a79293b34eea9ce5f95e1",
+      "owner": "ddbff4b7957e17cf24453e546b14de9a",
+      "started_at": "2026-10-12T08:59:51.464166+00:00",
+      "finished_at": "2026-10-12T09:00:18.276334+00:00",
+      "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+      "client": {
+        "id": "16b54faf5e0b8598c0e3f3f8cff700074eb64607a66b1f29d0941d66a704ec4a",
+        "name": "bigbrotr-acquisition-binding-0d81400"
+      },
+      "databases": [
+        "bb_scope_bind_0d81400_retire_update_signal",
+        "bb_scope_bind_0d81400_retire_commit_deadline"
+      ],
+      "cleanup_errors": [],
+      "unrelated_changed": [],
+      "missing_owned": [],
+      "not_run": [
+        "retirement current-authority and concurrent lock schedules",
+        "zero-issued producer and zero-request import obligations",
+        "native syscall/crash/ENOSPC, capacity/load/aged-state",
+        "successor, ACK/GC and full M1",
+        "arm64/release"
+      ],
+      "run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-retirement-faults-0d81400",
+      "result_sha256": "d7e82babca803b30c8d6508acba4bfd578ba6cca1e771ddc80fa6bcb66feb630",
+      "build_source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+      "binary_sha256": "b0aa597b383ee44dc7407edfe683f0c10572f5206a635163133a3714d83db2cd",
+      "probe_sha256": "59e307ab7df0001cc52c9a46759ec38109ee565e3216cc4ce8797340e4aa1bbb",
+      "cases": [
+        {
+          "name": "retire_update_signal",
+          "status": "PASS",
+          "terminal": {
+            "pid": 168,
+            "start_ticks": "517785212",
+            "config": "/lab/bb_scope_bind_0d81400_retire_update_signal.toml",
+            "prefix": "/lab/retire_update_signal",
+            "exit_code": 4,
+            "elapsed_seconds": 2.3178895357996225,
+            "forced": false,
+            "reaped": true
+          },
+          "native_rows": 49,
+          "original_requests": 4,
+          "control_tables": 70,
+          "source_closed": true,
+          "seconds_after_observed_block": 2.1424592193216085,
+          "backends_after_client": 1,
+          "schedule": "SIGTERM after producer UPDATE; rollback",
+          "initial_retired": false
+        },
+        {
+          "name": "retire_update_signal-retry",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "seconds": 0.1893582735210657
+        },
+        {
+          "name": "retire_commit_deadline",
+          "status": "PASS",
+          "terminal": {
+            "pid": 451,
+            "start_ticks": "517786316",
+            "config": "/lab/bb_scope_bind_0d81400_retire_commit_deadline.toml",
+            "prefix": "/lab/retire_commit_deadline",
+            "exit_code": 4,
+            "elapsed_seconds": 3.1700390465557575,
+            "forced": false,
+            "reaped": true
+          },
+          "native_rows": 49,
+          "original_requests": 4,
+          "control_tables": 70,
+          "source_closed": true,
+          "seconds_after_observed_block": 2.95845190808177,
+          "backends_after_client": 1,
+          "schedule": "deadline during COMMIT; durable after client death",
+          "initial_retired": true
+        },
+        {
+          "name": "retire_commit_deadline-retry",
+          "status": "PASS",
+          "control_tables": 70,
+          "native_rows": 49,
+          "original_requests": 4,
+          "expected_refusal": null,
+          "seconds": 0.2279306324198842
+        }
+      ],
+      "source_preserved": {
+        "control": true,
+        "catalog": true,
+        "files": true,
+        "report": true
+      },
+      "oracle": {
+        "native_rows": 49,
+        "original_requests": 4,
+        "dictionary_recorded_us": 1790930661589775,
+        "event_received_us": 1790930661641775,
+        "event_recorded_us": 1790930661689041
+      },
+      "terminal": [
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-12T08:59:51.575041239Z",
+            "FinishedAt": "2026-10-12T09:00:17.440167608Z"
+          }
+        },
+        {
+          "id": "16b54faf5e0b8598c0e3f3f8cff700074eb64607a66b1f29d0941d66a704ec4a",
+          "name": "/bigbrotr-acquisition-binding-0d81400",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-12T08:59:53.059719115Z",
+            "FinishedAt": "2026-10-12T09:00:16.578109874Z"
+          }
+        }
+      ]
     }
   }
 }

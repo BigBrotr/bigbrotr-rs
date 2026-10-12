@@ -614,7 +614,15 @@ and all inputs/receipts/facts remain. No capacity is reclaimed and no successor
 is activated. Cancellation or unknown COMMIT requires the same root/mode; a
 committed terminal result survives client loss. The
 [retirement evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
-records native component/build success at64f60b0 and nine installed scoped cases
-before the original6bc2005 clock-regression failure. That run committed a terminal
-time older than source closure. The correction and its discriminating refusal
-are awaiting actual requalification; interruption/locking acceptance remains.
+preserves the original 6bc2005 clock-regression failure: that run committed a
+terminal time older than source closure. Corrected product/fixture f12dbf0 passes
+all ten installed cases, including the discriminating refusal, completed retry
+and populated additive migration/reapply. Fixture0d81400 with the same f12 artifacts
+also passes actual AFTER producer UPDATE/SIGTERM rollback and deferred retirement
+COMMIT/deadline followed by durable completion after client death. Each same-root
+retry positively fences the preceding Control; completed retirement preserves
+its original timestamps/digest/xmin. All 70 tables, 49 native rows/four inputs and
+the original signed Control/catalog/files/report are checked. These schedules
+do not establish server cancellation on client exit. Current-authority/lock
+orders, true zero-issued producers, import obligations and successor remain
+separate qualification. No full M1 or whole-task completion is claimed.

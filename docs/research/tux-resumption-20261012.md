@@ -242,3 +242,35 @@ receipts. Independent AI cache review examined scoped target trees and artifact
 dependencies. This is recovery/governance/resource review, not a complete security,
 performance or correctness audit of all product source and dependencies. No task
 checkbox was closed merely by recovering source or running structural checks.
+
+
+## Executed continuation after Q35
+
+The owner subsequently activated the full-product goal and appointed this session
+sole integrating owner. The current checkpoint and task evidence own implementation
+status; the earlier preparation observations above remain historical.
+
+Corrected product f12dbf0 passed all ten installed retirement cases; fixture 0d81400
+with the same exact artifacts additionally passed four rollback/ambiguous-COMMIT
+and same-root retry cases. Original failures, signed seed and native detail remain
+preserved. See the [owning report](../implementation/evidence/p02-producer-recovery-native-20260920.json).
+
+The narrower executed cleanup removed 48,725 recognized single-link compiler
+intermediates from 18 inventoried historical targets, 40.96GiB allocated. The receipt
+is RETIRED_VERIFIED: 472,825 retained readable file hashes and the remaining directory,
+opaque PG/secrets, symlink and 35 stopped Docker-consumer identities were checked.
+All executable/shared-library paths, datasets, source, artifacts and receipts stay
+in place. The observed shared-filesystem free-space increase was 43,967,025,152bytes,
+leaving 67.64GiB free; this delta includes concurrent host activity. These targets are
+retired compiler caches and must not be reused incrementally. Current shared
+network-1154757 cache is unchanged. No global prune, container/volume deletion or
+whole-run removal occurred.
+
+Ignored `.research/tux-maintenance-20261012/` retains the frozen manifest, one-off
+executor, deletion journal and terminal receipt. Their identities and exact paths
+are recorded under `tux_intermediate_retirement_20261012` in the existing
+[laboratory inventory](laboratory-inventory.json). The first execution attempt
+refused an active read-only review lock before deleting anything; after that
+checker stopped, the successful attempt independently revalidated the frozen scope.
+Do not replay the completed executor. Inaccessible unrelated host processes remain
+a disclosed inspection boundary; no privileged process audit is claimed.

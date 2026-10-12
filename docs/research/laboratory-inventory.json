@@ -38990,12 +38990,170 @@
     "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
   },
   "implementation_retirement_faults_20261012": {
-    "status": "PREPARED_NOT_RUN",
-    "owner": "root sole integrating owner under Q35",
+    "status": "PASS_INSTALLED_INITIAL_RETIREMENT_FAULTS",
+    "owner": "ddbff4b7957e17cf24453e546b14de9a",
     "root_policy": "Fresh sibling runs/ingest-retirement-faults-<fixture revision>; immutable clean source and retained f12 artifacts",
     "borrowed_pg": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg",
     "seed": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9/bindings",
     "resources": "New clone per fault schedule, native copies and one labeled client; stop borrowed PG/client; preserve every original and new failure receipt",
-    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-retirement-faults-0d81400",
+    "fixture_revision": "0d81400709bd9a1d9b6a79293b34eea9ce5f95e1",
+    "build_source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+    "terminal_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-retirement-faults-0d81400/bindings/result.json",
+    "finished_at": "2026-10-12T09:00:18.276334+00:00",
+    "resources_state": "STOPPED_RETAINED",
+    "client": {
+      "id": "16b54faf5e0b8598c0e3f3f8cff700074eb64607a66b1f29d0941d66a704ec4a",
+      "name": "bigbrotr-acquisition-binding-0d81400"
+    },
+    "databases": [
+      "bb_scope_bind_0d81400_retire_update_signal",
+      "bb_scope_bind_0d81400_retire_commit_deadline"
+    ],
+    "result_sha256": "d7e82babca803b30c8d6508acba4bfd578ba6cca1e771ddc80fa6bcb66feb630"
+  },
+  "tux_intermediate_retirement_20261012": {
+    "status": "RETIRED_VERIFIED",
+    "owner": "root sole integrating owner under Q35",
+    "raw_root": ".research/tux-maintenance-20261012",
+    "manifest_sha256": "0546ab5780089f4e9d9c72a40d98684ab2f61c0c7ef561f27e6487898e355c5a",
+    "script_sha256": "954679b72f07a7b99d0bbaf61633f4a883c171a5cd3e773b04c7903ec5054524",
+    "summary": {
+      "allocated_candidate_bytes": 43980673024,
+      "by_target": [
+        {
+          "allocated_bytes": 3898298368,
+          "files": 5529,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-0dabfaa/out/ci/target"
+        },
+        {
+          "allocated_bytes": 3916361728,
+          "files": 5603,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-6314639/out/ci/target"
+        },
+        {
+          "allocated_bytes": 3919880192,
+          "files": 5630,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-d0644ac/out/ci/target"
+        },
+        {
+          "allocated_bytes": 2253524992,
+          "files": 2211,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-f83ac99/out/build/target"
+        },
+        {
+          "allocated_bytes": 2253524992,
+          "files": 2211,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/reauthentication-ac86c16/out/build/target"
+        },
+        {
+          "allocated_bytes": 2254536704,
+          "files": 2211,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/private-grants-6d3f1b0/out/build/target"
+        },
+        {
+          "allocated_bytes": 2254540800,
+          "files": 2211,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/private-grants-6d3f1b0-checked/out/build/target"
+        },
+        {
+          "allocated_bytes": 2030972928,
+          "files": 2031,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/browser-sessions-7a0f4b6/out/build/target"
+        },
+        {
+          "allocated_bytes": 2030972928,
+          "files": 2031,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/browser-sessions-d37e81f/out/build/target"
+        },
+        {
+          "allocated_bytes": 2268196864,
+          "files": 2212,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-c685bb3/out/build/target"
+        },
+        {
+          "allocated_bytes": 2269827072,
+          "files": 2212,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-files-275f641/out/build/target"
+        },
+        {
+          "allocated_bytes": 2010968064,
+          "files": 2020,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/wal-recovery-ec386ac/out/build/target"
+        },
+        {
+          "allocated_bytes": 2010972160,
+          "files": 1995,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-outcomes-efeb4e0/out/build/target"
+        },
+        {
+          "allocated_bytes": 1555251200,
+          "files": 1777,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-recovery-55dba36/out/build/target"
+        },
+        {
+          "allocated_bytes": 2261807104,
+          "files": 2210,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/history-body-86443be/out/build/target"
+        },
+        {
+          "allocated_bytes": 2261946368,
+          "files": 2210,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-grants-923f186/out/build/target"
+        },
+        {
+          "allocated_bytes": 2265587712,
+          "files": 2210,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-jobs-5705b07/out/build/target"
+        },
+        {
+          "allocated_bytes": 2263502848,
+          "files": 2211,
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-destination-a75d0fa/out/build/target"
+        }
+      ],
+      "delete_files": 48725,
+      "retained_entries": 558858
+    },
+    "stopped_historical_consumers": 35,
+    "preserve": "Every nonselected path including final/shared ELFs, artifacts, sources, receipts, negative states, opaque pgdata/secrets and unrelated workloads",
+    "future_use": "The 18 listed target directories are retired build caches after execution. Never reuse them incrementally; rebuild into fresh or current qualified shared target. Historical cache_source pointers remain evidence of original builds only.",
+    "receipt": ".research/tux-maintenance-20261012/retirement-receipt.json",
+    "failure_receipt": ".research/tux-maintenance-20261012/retirement-failure.json",
+    "completed_at": "2026-10-12T09:05:09.518126+00:00",
+    "receipt_sha256": "0291ba8e174c9205f42ebaeaf83de87b15cb13db5aa5875557e0f82d83b08923",
+    "deleted_path_journal_sha256": "3152f9ba2677ebd62e391ff1be68a86ae4b2525912265e6297842acac24a388b",
+    "result": {
+      "allocated_candidate_bytes": 43980673024,
+      "deleted_files": 48725,
+      "free_bytes_after": 72626335744,
+      "free_bytes_before": 28659310592,
+      "host_after": {
+        "candidate_hits": [],
+        "inspected": {
+          "cmdline": 477,
+          "cwd": 20,
+          "exe": 20,
+          "fd": 20,
+          "maps": 421
+        },
+        "unavailable": {
+          "cwd": 457,
+          "exe": 457,
+          "fd": 457,
+          "maps": 56
+        }
+      },
+      "manifest_sha256": "0546ab5780089f4e9d9c72a40d98684ab2f61c0c7ef561f27e6487898e355c5a",
+      "observed_free_delta_bytes": 43967025152,
+      "preservation": "Every nondeleted recorded readable file hash, opaque directory identity, symlink, and historical Docker projection unchanged. Final ELFs remain at original paths.",
+      "scope_note": "Free difference includes concurrent activity on the shared host; no container/volume/source/dataset deletion.",
+      "status": "RETIRED_VERIFIED",
+      "time": 1791795909.5181255
+    },
+    "preserved_readable_file_hashes": 472825,
+    "preserved_other_entries": 86033,
+    "initial_attempt": "Refused on concurrent read-only checker maintenance lock before execution-started; no deletion. Checker stopped and lock released before second attempt."
   }
 }

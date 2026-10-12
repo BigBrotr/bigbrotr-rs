@@ -14,19 +14,18 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Last observed committed HEAD is c71864a100316c7d169d64c523207e64d9dfb963, containing
-recovery documentation over recovered product f12dbf04677f8afa8c62aa1c8638e199dad0abc1
-(tree7dd4e343f51b50a6055096ef14a0aaec03a0a8e5). Fresh origin/main is
-54ad09dc6659bfe67e3bf2871e43ce619c199a5c: five commits ahead, none behind at that
-observation. Fetch again before private integration; no force push.
+Last observed committed HEAD is 0d81400 (goal activation and fault fixture) over
+recovery documentation c71864a and recovered product f12dbf04677f8afa8c62aa1c8638e199dad0abc1
+(tree 7dd4e343f51b50a6055096ef14a0aaec03a0a8e5). Fresh origin/main is
+54ad09dc6659bfe67e3bf2871e43ce619c199a5c: six commits ahead, none behind before
+the evidence/cleanup commit. Fetch again before private integration; no force push.
 
-Root owns pending goal-activation, first-wave evidence and retirement fault-fixture
-changes in planning mandate/questions, this checkpoint, the existing recovery
-report and lab inventory, acquisition-scope/bindings.py and four ingest-bootstrap
-helpers. No product Rust, migration, lockfile or task checkbox changes. Read actual
-status/log: subsequent coherent commits may be HEAD. No merge/rebase or concurrent
-source writer is active. Two AI reviewers cover bounded recovery/fixture and cache
-questions; neither certifies the entire product.
+The goal activation, first-wave evidence and fault fixture are committed as
+0d81400. Root currently owns their fault-result evidence, resource maintenance
+and checkpoint update. No product Rust, migration, lockfile or task checkbox
+changes. Read actual status/log: subsequent coherent commits may be HEAD.
+No merge/rebase or concurrent source writer is active. Two AI reviewers cover
+bounded recovery/fixture and cache questions, not the entire product.
 
 Original lab source snapshots remain unchanged. The independent canonical Git
 checkout and verified `.research/tux-resumption-20261012/source-before-migration.bundle`
@@ -40,21 +39,21 @@ Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. Initial producer/
 retirement is distinct from successor activation and native ACK/reclamation.
 Native marker v2 remains closing, issued4 / ACK0 / retired0; historical closing
 and ordinary admission retain their deliberate retired/released refusals.
-Applied migrations0027/0028/0029 are immutable; corrections are additive.
+Applied migrations 0027/0028/0029 are immutable; corrections are additive.
 
 The retained `runs/ingest-history-f12dbf0/out/qualification.json` is
-PASS_INGEST_HISTORY_BUILD_ONLY: release CLI/probe,4 entrypoint,35 migration catalog,
-23 native tests and Clippy. Exact artifacts and all1718 source-manifest files were
+PASS_INGEST_HISTORY_BUILD_ONLY: release CLI/probe, 4 entrypoint, 35 migration catalog,
+23 native tests and Clippy. Exact artifacts and all 1,718 source-manifest files were
 rechecked. No rebuild is needed for unchanged production/build inputs.
 
 New `runs/ingest-recovery-engine-f12dbf0/bindings/result.json` is
-PASS_INSTALLED_INITIAL_RETIREMENT_FIRST_WAVE, finished2026-10-12T08:52:55Z.
+PASS_INSTALLED_INITIAL_RETIREMENT_FIRST_WAVE, finished 2026-10-12T08:52:55Z.
 All ten signed-store cases pass, including completed retry, pending workflow,
 missing copy, unbound Event, mixed terminal state, old schema, historical actor
 revocation, a zero-request acquisition job on a four-request producer, and clock
-regression. Clock regression now returns exit4/InvalidMetadata with no terminal
-writes. Complete70-table effects,49 native rows/four original inputs, additive
-migration/reapply and original69-table Control/32-table catalog/files/report
+regression. Clock regression now returns exit 4/InvalidMetadata with no terminal
+writes. Complete 70-table effects,49 native rows/four original inputs, additive
+migration/reapply and original 69-table Control/32-table catalog/files/report
 preservation are checked. Original `ingest-recovery-engine-6bc2005` stays FAIL;
 do not overwrite or remove its deliberately incompatible clock clone.
 
@@ -63,55 +62,78 @@ records hashes, cases, source/build identities and limits. Borrowed PG and the n
 client finished stopped, no OOM, no cleanup errors or unrelated lifecycle changes.
 No whole task or milestone closes from these ten cases.
 
-## Next bounded action
+## Fault qualification and next bounded action
 
-Review and commit the prepared fault-only fixture, then execute its clean exact
-revision in a fresh sibling `runs/ingest-retirement-faults-<revision>`:
-`python3 SOURCE/experiments/acquisition-scope/bindings.py RUN_ROOT
---ingest-retirement-faults runs/ingest-history-f12dbf0/out/artifacts`.
-Use absolute paths, SOURCE=RUN_ROOT/source. The launcher requires all BigBrotr
-containers stopped, exact borrowed PG ownership, fresh names and >2GiB free.
-Governance-only AGENTS.md/PLAN.md differences now have an explicit reuse allowance;
-fixture review still checks unchanged production/build inputs and retains f12 as
-the binary source identity. This is not an automatic proof for arbitrary experiments.
+`runs/ingest-retirement-faults-0d81400/bindings/result.json` is
+PASS_INSTALLED_INITIAL_RETIREMENT_FAULTS with exact fixture 0d81400 and retained
+product f12 artifacts. All four cases passed. Actual AFTER producer UPDATE held
+its first mutation; SIGTERM joined the CLI in 2.318s, leaving one blocked backend;
+after unlock the entire retirement rolled back. Deferred COMMIT joined the CLI
+with exit 4 in 3.170s while one backend remained; after unlock the complete terminal
+shape committed. Both stdout streams were empty on failure. Each same-root retry
+used fresh Control after natural expiry and independently checked the old owner's
+fence; already committed producer/domain/Ingest timestamps, digest and xmin stayed
+unchanged. Original seed and native detail remained unchanged, all owned containers
+stopped, no OOM, no cleanup/unrelated changes. This does not prove server cancellation
+on client exit. Independent AI review confirmed the captured outcomes and oracles.
 
-Expected four cases: actual AFTER producer UPDATE/SIGTERM rolls back; deferred
-retirement COMMIT/deadline can complete after client death; each same-root retry
-uses fresh Control after natural lease expiry and preserves exact terminal history.
-Observe the actual blocked SQL and compare all70 tables and native bytes. Check
-previous-Control fencing separately from Ingest retirement; do not normalize an
-unchecked effect. Record actual failure or pass, retained clones and terminal
-ownership in the existing evidence and inventory. Do not overwrite a failed run.
+Next implement the smallest retirement current-authority/lock wave using the
+existing signed fixture and unchanged product f12 artifacts. Read
+source_closure_locks.py, the retirement adapter/registry lock order and complete
+linked authority contracts before adapting it: source-job13 cannot simply be
+reused because this seed is already closed at 12. Qualify real policy expiry before
+COMMIT separately from query deadline/SQL lock_timeout 5s; an authority ceiling
+held longer than 5s would conflate those errors. Observe actual blocking statements
+and both relevant orders; dataset-parent blocking is not proof of every subordinate
+source/producer lock. Reuse exact artifacts, fresh inventoried sibling runs, all 70
+SQL tables/native oracle and preservation/terminal audits. Record outcomes in the
+existing recovery report. The concrete next wave is policy expiry plus original
+Ingest active→draining versus retirement in both observed lock orders. Gate fresh
+Control claim after historical lookup so an earlier history SHARE does not mask
+the retirement lock. Independently verify the draining writer changes only state
+and xmin; use that single row as baseline only after its own oracle passes. Set
+clone authorization_ttl and read.authorization.lease_ttl to 250ms, hold the actual
+producer UPDATE 500–600ms below the 1s operation deadline, and require DeliveryUnknown
+rather than Backend/cancelled. Validate the configuration and timing positively.
+Dataset/job and standalone producer-row contention remain separately unqualified.
+Recheck free space before another large allocation; cleanup has its verified receipt.
 
-After faults, remaining retirement qualification includes current Control authority,
+Remaining retirement qualification includes current Control authority,
 concurrent lock orders, true zero-issued producer, zero-request import and persisted
 workflow binding/checkpoint obligations. Explicit successor/restart/resend must
 retain first admission and repeat with provenance off. The earlier archive evidence
 qualifies signed acquisition→durable admission→timer archive→private history→353-byte
 signed JSONL export; full M1 additionally needs online indexing, outages and installed
-bundle journeys. Five exports under256MiB remain NOT_RUN. Follow existing dependencies
+bundle journeys. Five exports under 256 MiB remain NOT_RUN. Follow existing dependencies
 for subsequent analytics, interfaces, operations, browser and website work.
 
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource records.
-Original implementation/qualification/object-storage labs total about975GiB
-(lower bounds where access is denied). Roughly36GiB free remains after first-wave
-clones; remeasure before allocation. Small retirement fixtures need >2GiB; the
-larger export wave still requires64GiB. Never lower that reserve to force a run.
+Before cleanup, implementation/qualification/object-storage labs totaled about
+975 GiB (lower bounds where access is denied). The targeted cache retirement left
+67.64 GiB free; remeasure before allocation because this is a shared host. Small retirement fixtures need >2 GiB; the
+larger export wave still requires 64 GiB. Never lower that reserve to force a run.
 
-Cleanup reviewer owns only ignored `.research/tux-maintenance-20261012/`.
-A manifest/executor is being prepared for approximately41GiB of recognized
-single-link compiler intermediates in18 explicitly selected old targets. No deletion
-yet. Root must inspect the frozen manifest and executor before execution. Preserve
-all original executable/shared-library paths, artifacts, reports and datasets;
-retired targets must never be reused incrementally. No global prune or whole-run
-removal. Inaccessible unrelated processes are an explicit inspection boundary.
+Targeted cleanup is RETIRED_VERIFIED. The reviewed one-off executor removed
+48,725 format-verified single-link compiler intermediates (40.96GiB allocated)
+from 18 explicitly inventoried historical target directories. Observed free-space
+increase was 43,967,025,152bytes; concurrent host activity affects that delta.
+472,825 retained readable files kept identical hashes; directories/opaque PG and
+secret roots, symlinks and 35 stopped historical Docker consumers were rechecked.
+Final/shared ELFs remain at their original paths. No source, dataset, artifact,
+container, volume or unrelated workload was deleted. The 18 targets are retired
+compiler caches: do not reuse them incrementally. Current network-1154757 cache
+remains protected. Raw manifest, executor, journal and terminal receipt are under
+`.research/tux-maintenance-20261012/`; hashes and exact roots are in the inventory.
+The initial execute attempt refused the reviewer's active check lock before any
+deletion; the successful second attempt revalidated independently. Do not replay
+this executor. Inaccessible unrelated processes remain an inspection boundary.
 
 Shared compiler `runs/network-1154757/out/build/{target,cargo-home}` and exclusive
-`.compiler-cache.lock` stay protected. Retained native build uses clang14; host
-clang19 discovery is not its qualification. Rust1.98.1/Node26.4.0 and local pinned
-pnpm9.15.9 (`.research/tooling/node_modules/.bin`) are available. Keep large outputs
+`.compiler-cache.lock` stay protected. Retained native build uses clang 14; host
+clang 19 discovery is not its qualification. Rust 1.98.1 / Node 26.4.0 and local pinned
+pnpm 9.15.9 (`.research/tooling/node_modules/.bin`) are available. Keep large outputs
 off RAM-backed /tmp and artifacts outside mutable caches.
 
 Borrowed PG `relay-source-recheck-e06f580/pg` and signed seed
@@ -125,6 +147,6 @@ All identities remain in the inventory; old cleanup receipts are not scripts to 
 
 Six unrelated services remain running: inspirehep-reindex db/mq/cache/es,ollama,
 tgdataset-mongo. Recheck actual processes and container owners before allocations.
-GitHub run37017677570 could not start jobs because of billing/spending restrictions;
+GitHub run 37017677570 could not start jobs because of billing/spending restrictions;
 Q33 authorizes isolated trusted Tux CI, recorded independently. Native arm64,
 actual signing/registry provisioning and public promotion keep their separate gates.
