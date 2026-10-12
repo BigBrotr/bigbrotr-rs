@@ -39245,6 +39245,22 @@
       "receipt_sha256": "a7e0eec6661b40c2c4404bbb6a92af9f212487709b86b249be61c8e497d61c92",
       "source_files_verified": 1726,
       "artifacts_verified": 5
+    },
+    "probe_worktree": {
+      "path": "/home/tux/bigbrotr-rs/.research/initial-successor-pg-20261012",
+      "branch": "qualification/initial-successor-probe",
+      "base": "d2701b5951322d010ddf9f8f3e8de3f5ba1d63e9",
+      "owner": "cleanup_review: Rust example probe only; root owns Python fixture, binding runner and integration",
+      "status": "SOURCE_REVIEWED_BUILD_NOT_RUN",
+      "preserved_branch": "implementation/initial-successor-pg at93be672a79035c33b484209afcf4113b53727a1a",
+      "commit": "b7fac03f3d2920c58ab38a1cd98f3b746ca70832"
+    },
+    "oracle_worktree": {
+      "path": "/home/tux/bigbrotr-rs/.research/initial-successor-oracle-20261012",
+      "branch": "qualification/initial-successor-oracle",
+      "base": "d2701b5951322d010ddf9f8f3e8de3f5ba1d63e9",
+      "owner": "recovery_review: independent Python successor oracle only",
+      "status": "IMPLEMENTING_NOT_QUALIFIED"
     }
   }
 }

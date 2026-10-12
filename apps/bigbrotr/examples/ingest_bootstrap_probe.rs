@@ -60,6 +60,8 @@ mod ingest_source_faults;
 mod ingest_source_races;
 #[path = "support/ingest_source_transport.rs"]
 mod ingest_source_transport;
+#[path = "support/ingest_succession.rs"]
+mod ingest_succession;
 #[path = "support/ingest_visibility.rs"]
 mod ingest_visibility;
 #[path = "support/installed_relay_setup.rs"]
@@ -887,11 +889,13 @@ fn main() {
     );
     let mut config = Config::new();
     config
-        .host(if args[1].starts_with("history-") {
-            "127.0.0.1"
-        } else {
-            "postgres"
-        })
+        .host(
+            if args[1].starts_with("history-") || args[1].starts_with("successor-") {
+                "127.0.0.1"
+            } else {
+                "postgres"
+            },
+        )
         .dbname(&args[2])
         .user("bigbrotr_control")
         .password(std::fs::read(&args[3]).unwrap())
@@ -922,6 +926,8 @@ fn main() {
                 .await;
             } else if args[1].starts_with("recovery-process-") {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
+            } else if args[1].starts_with("successor-") {
+                ingest_succession::run(config, &args[1], Path::new(&args[4])).await;
             } else {
                 run(config, &args[1], Path::new(&args[4])).await;
             }
