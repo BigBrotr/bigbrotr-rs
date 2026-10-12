@@ -94,7 +94,11 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   and fresh recovery also pass at5938617 (four processes/86 snapshots). Four
   current-Control claim/expiry schedules pass at1d3b93c (86snapshots/201controls).
   A live preparing8 claim then fresh9 refusal passes at17ccb8a (two processes,
-  16snapshots/39controls). Activation and installed restart remain requirements.
+  16snapshots/39controls). The explicit
+  [installed empty-attempt consumer](../reference/ingest-registration.md#installed-empty-attempt-retirement-under-implementation)
+  is implemented at7e820b9 with compile/five entrypoint tests/Clippy passing;
+  its connected CLI qualification remains NOT_RUN. Activation and full installed
+  restart remain requirements.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
   policy references; later lifecycle migrations add observations/scheduling.
   The first [private operational identity consumer](../reference/relay-endpoint-registry.md)
@@ -283,6 +287,10 @@ One owner serializes exact identity decisions for each writable directory.
   schedules now pass at1d3b93c. A genuine livepreparer8 claim is preserved through
   newprocess9 refusal at17ccb8a (16snapshots/39controls). Next owner activation
   and installed restart/resend remain open; no whole-step completion follows.
+  The explicit installed `--retire-empty-attempt` consumer at7e820b9 reuses the
+  same storage protocol under supervised native/Control custody. Its focused
+  build and five entrypoint tests pass; actual installed engine qualification
+  remains NOT_RUN.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and

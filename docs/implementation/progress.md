@@ -17,11 +17,11 @@ Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
 Last privately pushed/fetched HEAD eb0877224f657fdfc1d40329316b82c957a1e9fb was
 verified ahead0/behind0 with a clean checkout (push wrapper16715 joined0). Main
 remains54ad09dc6659bfe67e3bf2871e43ce619c199a5c; no merge/rebase in progress.
-Current observed HEAD0feef1f integrates the installed worker. Root owns dirty
-CLI/test/buildprofile/readonly dump-state probe and governance
+Current observed HEAD5cd4590 integrates worker0feef1f, root CLI/test/profile/contracts
+and the separate installed harness/oracle commits e2c6712/5cd4590. Root owns dirty build/evidence governance
 for the selected installed empty-attempt consumer. The preceding historical-claim
-wave is qualified, independently audited and privately pushed. Three new separate
-worktrees are active below. Do not assume these pending edits are qualified.
+wave is qualified, independently audited and privately pushed. Three separate
+worktrees are committed and retained below. Do not assume these pending edits are qualified.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
 
 Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of these steps,
@@ -50,7 +50,7 @@ navigation rather than a duplicate record of every completed experiment.
   veto. Exactly four native writes move49 rows/sequence58 to52/62. No activation.
 - Preparation COMMIT loss:64419a5, build3969a61; actual COMMIT12 before/after
   schedules preserve attribution and require exact backend absence before retry.
-- Config-only replacement history:e92f3d7/build39e7468; seven readonly cases.
+- Config-only replacement history:e92f3d7/build39e7468; seven read-only cases.
   Gap completion:51a6b86/build162caeb; fifteen actual probes/158 snapshots/198
   capture controls. Original registrar3/preparer8 and immutable intent survive.
 - Advanced policy and gap delivery loss:4c283e2; six actual processes/114 snapshots/
@@ -204,9 +204,9 @@ executables and f12/ac/gap censuses;1218 nonborrowed projections remain unchange
 
 Implement and qualify explicit `ingest recover --retire-empty-attempt` through the
 [installed consumer contract](../reference/ingest-registration.md#installed-empty-attempt-retirement-under-implementation).
-Root owns CLIserve.rs, actual entrypoint tests, native build profile, readonly
+Root owns CLI serve.rs, actual entrypoint tests, native build profile, read-only
 `dump-state` helper exposing actual Rocks sequence, bindings, documentation and
-all build/engine execution. Three worktrees share baseeb08772:
+all build/engine execution. Three worktrees share base eb08772:
 
 | Worktree | Owner | Writable scope |
 |---|---|---|
@@ -214,26 +214,37 @@ all build/engine execution. Three worktrees share baseeb08772:
 | `.research/installed-empty-fixture-20261012` | cleanup_review | new installed_empty.py |
 | `.research/installed-empty-oracle-20261012` | recovery_review | new installed_empty_oracle.py |
 
-The mode branches before original-only load_historical, acquires fresh actual
+The mode branches before original-only `load_historical`, acquires fresh actual
 Control from configured identities under native exclusion and positively replays
-all originals through existing PGempty APIs. It retains source/metadata/replay
+all originals through existing PG empty-attempt APIs. It retains source, metadata and replay
 reservations and checks worst-case overlap before claim; the opaque plan survives
 source-borrow release. Existing worker/native-close/Control-release/driver-join
-and post-join output remain. No storeAPI, migration, activation or ordinary-mode
-semantic change is selected. Report explicitly separates original epoch1 replay
-from empty target2. Worker implementation0feef1f and rootCLI integration are written; scopedrustfmt/
-AST/diffcheck pass. Independent productreview is pending; actual build/engine
-remain NOT_RUN until executed. Harness/oracle implementation continues.
+and post-join output remain. No storage API, migration, activation or ordinary-mode
+semantic change is selected. Report explicitly separates original epoch 1 replay
+from empty target epoch 2. Worker implementation 0feef1f and root CLI integration are written; scoped rustfmt/
+AST/diffcheck pass. Independent product review by recovery_review found no blocking issue. Exact build
+7e820b9 is PASS_INSTALLED_EMPTY_RETIREMENT_BUILD_ONLY; wrapper84756 joined0.
+Compilation, all five actual entrypoint tests and Clippy pass; source/tree and
+three executable hashes are pinned in evidence and inventoried
+at runs/ingest-empty-installed-7e820b9. Independent build audit passed1756 files, three current/nine protected ELFs,
+actual five tests and1220 unchanged projections. Reviewer successor_restart_design
+authored the worker; its independent review covers root changes/artifacts only.
+Harness/oracle implementation is committed and independently reviewed: no remaining
+material blocker. Seven pure wrapper/custody checks and eleven artificial oracle
+modes/296 perturbations passed; these are not installed qualification. Root read
+both complete new helpers. Actual engine remains NOT_RUN.
 
-Expected installed wave: eightnewclones/11CLI invocations covering normal/default
-refusal/terminalretry, nativefirstSQLfailure/freshcompletion, missinginput4,
-missingPGoutcome3, schema30, actualheldnative, preclaimSQLwaitSIGTERM and deadline.
-No repeated blockedstdout/nativefullsuite without a new finding; prior qualification
-remains separately pinned. New buildprofileingest-empty-installed runs compile,
-five actual entrypoint tests and Clippy. No new build/engine is allocated yet.
+Expected installed wave: eight new clones/11 CLI invocations covering normal/default
+refusal/terminal retry, native-first SQL failure/fresh completion, missing input4,
+missing PG outcome3, schema30, actual held native owner, preclaim SQL wait/SIGTERM and deadline.
+No repeated blocked stdout/native full suite without a new finding; prior qualification
+remains separately pinned. New build profile `ingest-empty-installed` runs compile,
+five actual entrypoint tests and Clippy. Build completed as above; no engine allocated yet. Next run the eight-clone engine
+from an exact clean source revision with retained7e820b9 artifacts, then inspect
+external captures and obtain independent actual-capture audit.
 
-Preserve strict frozenac644/f12 oracles and all earlierworktrees. Unknown process
-outcomes must not reopen a possiblyowned native directory. Keep exact source/build
+Preserve strict frozen ac644/f12 oracles and all earlier worktrees. Unknown process
+outcomes must not reopen a possibly owned native directory. Keep exact source/build
 identities and independent external final captures.
 
 ## Remaining product gates
@@ -245,7 +256,7 @@ reinterpret a later unrelated unbound claim as an old obligation; there is no
 retained historical retired-by attribution from which to infer that window.
 
 Native syscall/power-loss, installed restart/resend, subsequent owner lifetimes
-and activation remain required. Archive assumes snapshot1 and an epoch1 stream;
+and activation remain required. Archive assumes snapshot1 and an epoch 1 stream;
 Sync retains initial request/epoch assumptions. Inspect and connect those consumers
 before claiming restart, and repeat the signed event with provenance disabled.
 Earlier Archive qualifies signed admission→archive→private history→353-byte signed
@@ -257,7 +268,7 @@ Optional enablement does not finish selected scope.
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource identities
-and dated observations. Last free space68,394,852,352 bytes (about63.7GiB); remeasure
+and dated observations. Last free space68,160,081,920 bytes (about63.5GiB); remeasure
 before allocation. Small engine fixtures require2GiB; native builds12GiB. The
 larger export wave still requires64GiB+577MiB, currently unavailable. Never lower
 that reserve to force a run. No large export is allocated by the current slice.

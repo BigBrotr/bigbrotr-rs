@@ -11733,7 +11733,7 @@
         ]
       },
       "installed_consumer": {
-        "status": "IMPLEMENTED_BUILD_ENGINE_NOT_RUN",
+        "status": "BUILD_PASS_ENGINE_NOT_RUN",
         "base": "eb0877224f657fdfc1d40329316b82c957a1e9fb",
         "task": "P02-T01 Step5/P02-T02 Step4 enabling P01-T09 Step4/M1",
         "contract": "docs/reference/ingest-registration.md#installed-empty-attempt-retirement-under-implementation",
@@ -11750,11 +11750,164 @@
         ],
         "expected_cli_invocations": 11,
         "build_profile": "ingest-empty-installed: compile,5actualentrypointtests,Clippy; unchanged native/storage tests retained separately",
-        "build": "NOT_RUN",
+        "build": {
+          "resources": {
+            "source": "7e820b9c0517893f451c5e994faf78c61937e7b1",
+            "tree": "446aefe32791ec0bcd2b1b378ebe700860aa099b",
+            "owner": "de48284357ef14a89ed199be076fa90a",
+            "owner_label": "org.bigbrotr.network-transport",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-installed-7e820b9",
+            "state": "stopped-retained",
+            "containers": [
+              {
+                "name": "fetch",
+                "id": "c030a0ef4806b1134ccf3d5f99d4081de27cf61e7bf5cabe976545ba9d6e9db9"
+              },
+              {
+                "name": "native",
+                "id": "b46bdc39e1788ce86c1e92c8aea346ad16d9acbf8798db1e1c910245049c9bd7"
+              }
+            ],
+            "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+            "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+            "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+            "started_at": "2026-10-12T14:45:52.469809+00:00",
+            "qualification": "PASS_INSTALLED_EMPTY_RETIREMENT_BUILD_ONLY",
+            "inventory_changed": [],
+            "free_bytes_after": 68160081920,
+            "finished_at": "2026-10-12T14:47:23.381703+00:00"
+          },
+          "status": "PASS_INSTALLED_EMPTY_RETIREMENT_BUILD_ONLY",
+          "source": "7e820b9c0517893f451c5e994faf78c61937e7b1",
+          "tree": "446aefe32791ec0bcd2b1b378ebe700860aa099b",
+          "wrapper": 84756,
+          "wrapper_exit": 0,
+          "binary_sha256": "bd05734300cdc3896df29a5ab9fb2043ad12c49c972734b25ffb70efd744938f",
+          "probe_sha256": "2308d53c335970248ddcb76787d6c69c71b9f1f7918769d72c95050aae33742f",
+          "test_executables_sha256": {
+            "control_runtime_entrypoint": "ea793e7004077afacf6a34fd8dd45b0dd54c7c8191c85fa1221540776bf07ff2"
+          },
+          "source_manifest_sha256": "82dde57a572e6edf66fc87c5b267a9c755e2814d7f25ab3130f11fd353c5465b",
+          "entrypoint_tests_passed": 5,
+          "checks": {
+            "status": "PASS",
+            "checks": [
+              {
+                "name": "compile",
+                "command": [
+                  "cargo",
+                  "build",
+                  "--locked",
+                  "--offline",
+                  "--release",
+                  "-p",
+                  "bigbrotr",
+                  "--bin",
+                  "bigbrotr",
+                  "--example",
+                  "ingest_bootstrap_probe"
+                ],
+                "status": "PASS",
+                "executed": true,
+                "exit_code": 0,
+                "seconds": 79.9139534663409
+              },
+              {
+                "name": "entrypoints",
+                "command": [
+                  "cargo",
+                  "test",
+                  "--locked",
+                  "--offline",
+                  "--release",
+                  "-p",
+                  "bigbrotr",
+                  "--test",
+                  "control_runtime_entrypoint",
+                  "--message-format=json"
+                ],
+                "status": "PASS",
+                "executed": true,
+                "exit_code": 0,
+                "seconds": 3.269955695606768
+              },
+              {
+                "name": "clippy",
+                "command": [
+                  "cargo",
+                  "clippy",
+                  "--locked",
+                  "--offline",
+                  "--release",
+                  "-p",
+                  "bigbrotr",
+                  "--lib",
+                  "--bin",
+                  "bigbrotr",
+                  "--example",
+                  "ingest_bootstrap_probe",
+                  "--test",
+                  "control_runtime_entrypoint",
+                  "--",
+                  "-D",
+                  "warnings"
+                ],
+                "status": "PASS",
+                "executed": true,
+                "exit_code": 0,
+                "seconds": 5.573881928808987
+              }
+            ],
+            "counts": {
+              "collected": 3,
+              "executed": 3,
+              "failed": 0,
+              "not_run": 0
+            }
+          },
+          "artifacts_sha256": {
+            "out/artifacts/build-result.json": "1f39e47a2ce53cb9d4d6e277ec5bd7db1ada6af1ea0f10ccf37b6e480eda2813",
+            "out/qualification.json": "4898abd7e09224b2cc8eb9f110298c1f31901806310a0e490c4f73f5aa3c7b4e",
+            "out/build-checks/result.json": "5197bbf8f6ba1a54fc4c1dd453760673afe8f89db5f9eaca347b02e9f8c6bba2"
+          },
+          "independent_ai_audit": {
+            "reviewer": "successor_restart_design; worker author, independent root integration/artifact audit only",
+            "status": "PASS",
+            "source": "1756 exact files across fresh Git archive, saved tar, manifest, export and clean worktree. Actual retained CLI build-info matches source/tree/manifest.",
+            "checks": "Three actual checks: compile79.913953s, five named entrypoint tests3.269956s and Clippy5.573882s. Current three ELFs match actual compiler outputs;9 protected original/prior ELFs retained.",
+            "toolchain": "Recorded Rust1.98.1/LLVM22.1.8 and actual native Clang14.0.6/jobs2 verified. All249 selected storage/runtime/crate/migration/dependency files unchanged from30a88ae; its122 tests retained, not rerun.",
+            "resources": "Observed2026-10-12T14:48:53.133089395Z: all1220 preflight container projections unchanged; two new owned build containers stopped0/PID0/noOOM with matching receipts. All537 run-directory names and volume/network inventories unchanged.",
+            "scope": "Independent full root CLI/test/buildprofile/dump-state/contract review found no issue. No SQL/build/engine actions by reviewer; retained CLI build-info executed only."
+          }
+        },
         "engine": "NOT_RUN",
         "product_commit": "0feef1f",
         "source_review": "Root read full recovery owner, supervision, full CLIserve.rs and entrypointtests, current PGempty and finite empty probe. Newprivateempty branch/grantpreflight/sourceproof/onefinaldispatch/reportedepochs reviewed; no productstorage/native/migration change. Long-running Sync/Archive consumers are not invoked or newly qualified.",
-        "static_checks": "Scoped rustfmt and Python AST/diffcheck PASS; build/actual CLI execution NOT_RUN"
+        "static_checks": "Scoped rustfmt, Python AST/import and diffcheck PASS. Actual build and five entrypoint tests PASS as separately recorded; connected installed engine NOT_RUN.",
+        "independent_ai_product_review": {
+          "reviewer": "recovery_review",
+          "status": "NO_BLOCKING_FINDING",
+          "scope": "Full newempty.rs/parentrecovery, earlyloaderbranch and overlappinggrantpreflight; positiveprefix/metadatatransfer/sourceborrowrelease/onefinaldispatch; targetD2 vs originalD1 report; outer nativeclose beforeControlrelease, driver/grant retainedthroughjoin and postjoinoutput. RootCLI conflicts/defaultbranch/test/profile/dump-state reviewed. Not ownoracle audit."
+        },
+        "qualification_sources": {
+          "harness_commit": "e2c6712",
+          "harness_original": "0fb1273500e573388852641e6a52f9211cde5b29",
+          "oracle_commit": "5cd4590",
+          "oracle_original": "426424135f1b105ae9eec7f7f0b3c21b3698123e",
+          "pure_checks": "Seven wrapper/custody checks; eleven ARTIFICIAL modes with296 rejected capture perturbations. These are helper checks, not installed qualification.",
+          "independent_ai_review": {
+            "reviewer": "successor_restart_design",
+            "status": "NO_BLOCKING_FINDING",
+            "scope": "Full harness/oracle/root bindings and affected existing Session/Process/clock/absence/config/aggregate state reducers; excludes own authored product worker.",
+            "resolved_findings": [
+              "Process start ticks represented consistently as integers",
+              "Capture final external state before rejecting semantic/timing mismatch",
+              "A joined client can leave the blocked PostgreSQL backend until fixture unlock; retain exact pre-unlock0/1 tuple and require final exact/global absence before native reopen",
+              "Observed database must match actual invoked configuration; negative control keeps config/argv internally consistent"
+            ]
+          },
+          "root_review": "Read both complete new helpers and affected bindings/configuration. Preserve full captures and original seed; no engine allocated yet."
+        }
       }
     },
     "gap_policy_delivery_qualification": {

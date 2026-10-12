@@ -40689,7 +40689,7 @@
     "oracle_commit": "88806d4"
   },
   "implementation_installed_empty_retirement_20261012": {
-    "status": "IMPLEMENTATION_BUILD_ENGINE_NOT_RUN",
+    "status": "BUILD_PASS_ENGINE_NOT_RUN",
     "base": "eb0877224f657fdfc1d40329316b82c957a1e9fb",
     "owner": "root sole integrator/build/engine executor",
     "scope": "Explicit installed --retire-empty-attempt using existing qualified storage APIs under the existing supervised native owner; no storage format or migration change.",
@@ -40698,21 +40698,62 @@
         "root": ".research/installed-empty-recovery-20261012",
         "branch": "implementation/installed-empty-recovery",
         "owner": "successor_restart_design",
-        "scope": "recovery.rs and private recovery/empty.rs only"
+        "scope": "recovery.rs and private recovery/empty.rs only",
+        "state": "committed-retained",
+        "head": "02e7034301e1ba3a8b9a5876e4d029311a562ca8"
       },
       {
         "root": ".research/installed-empty-fixture-20261012",
         "branch": "qualification/installed-empty-recovery",
         "owner": "cleanup_review",
-        "scope": "new installed_empty.py harness only"
+        "scope": "new installed_empty.py harness only",
+        "state": "committed-retained",
+        "head": "0fb1273500e573388852641e6a52f9211cde5b29"
       },
       {
         "root": ".research/installed-empty-oracle-20261012",
         "branch": "qualification/installed-empty-oracle",
         "owner": "recovery_review",
-        "scope": "new installed_empty_oracle.py only"
+        "scope": "new installed_empty_oracle.py only",
+        "state": "committed-retained",
+        "head": "426424135f1b105ae9eec7f7f0b3c21b3698123e"
       }
     ],
-    "resources": []
+    "resources": [
+      {
+        "source": "7e820b9c0517893f451c5e994faf78c61937e7b1",
+        "tree": "446aefe32791ec0bcd2b1b378ebe700860aa099b",
+        "owner": "de48284357ef14a89ed199be076fa90a",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-installed-7e820b9",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "c030a0ef4806b1134ccf3d5f99d4081de27cf61e7bf5cabe976545ba9d6e9db9"
+          },
+          {
+            "name": "native",
+            "id": "b46bdc39e1788ce86c1e92c8aea346ad16d9acbf8798db1e1c910245049c9bd7"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-12T14:45:52.469809+00:00",
+        "qualification": "PASS_INSTALLED_EMPTY_RETIREMENT_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 68160081920,
+        "finished_at": "2026-10-12T14:47:23.381703+00:00",
+        "kind": "isolated-build",
+        "wrapper": 84756,
+        "wrapper_exit": 0
+      }
+    ],
+    "source": "7e820b9c0517893f451c5e994faf78c61937e7b1",
+    "qualification_sources": [
+      "e2c6712",
+      "5cd4590"
+    ]
   }
 }

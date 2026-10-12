@@ -64,6 +64,7 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
+installed_empty_retirement = len(sys.argv) == 4 and sys.argv[2] == '--installed-empty-retirement'
 ingest_empty_preparer = len(sys.argv) == 4 and sys.argv[2] == '--ingest-empty-preparer'
 ingest_empty_locks = len(sys.argv) == 4 and sys.argv[2] == '--ingest-empty-locks'
 ingest_empty_commits = len(sys.argv) == 4 and sys.argv[2] == '--ingest-empty-commits'
@@ -88,7 +89,7 @@ ingest_recovery_signed = ingest_source_closure or (len(sys.argv) in (3, 4) and s
 ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
 ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
-initial_ingest = ingest_empty_preparer or ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
+initial_ingest = installed_empty_retirement or ingest_empty_preparer or ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -426,6 +427,12 @@ if ingest_empty_preparer:
     report['not_run'] = ['installed import execution; this wave checks a live guarded relational claim',
         'native syscall uncertainty/power loss, next incarnation activation and installed restart/resend',
         'ACK/GC, full M1, capacity/load/aged-state and arm64/release']
+
+if installed_empty_retirement:
+    report['wave'] = 'installed-empty-retirement'
+    report['not_run'] = ['installed CLI COMMIT loss; finite adapter COMMIT loss is separately qualified',
+        'blocked native syscalls/power loss, next incarnation activation and full installed restart/resend',
+        'installed import execution, ACK/GC, full M1, capacity/load/aged-state and arm64/release']
 
 def require(condition, reason):
     if not condition:
@@ -813,6 +820,9 @@ if ingest_successor_gap:
 if ingest_gap_faults:
     success_status = 'PASS_PREPARED_GAP_POLICY_DELIVERY'
 
+if installed_empty_retirement:
+    success_status = 'PASS_INSTALLED_EMPTY_RETIREMENT'
+
 if ingest_empty_preparer:
     success_status = 'PASS_INITIAL_EMPTY_PREPARER_CLAIM'
 
@@ -990,6 +1000,8 @@ try:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+    elif installed_empty_retirement:
+        cases = ['installed-empty-retirement']
     elif ingest_empty_preparer:
         cases = ['initial-empty-preparer']
     elif ingest_empty_locks:
@@ -1047,6 +1059,11 @@ try:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_interruption(pg,client,output,completed,name,rows,
                                                    sessions=session_faults))
+            save()
+        elif installed_empty_retirement:
+            sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+            from installed_empty import run as run_installed_empty
+            report['cases'].append(run_installed_empty(pg, client, output, rows, clone))
             save()
         elif ingest_empty_preparer:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1199,6 +1216,14 @@ try:
         require({r['name'] for r in report['cases']} == set(selected_sync_cases)
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
+    if installed_empty_retirement:
+        from installed_empty import CASES as INSTALLED_EMPTY_CASES
+        require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
+            and report['cases'][0]['name'] == 'installed-empty-retirement'
+            and report['cases'][0]['cli_invocations'] == 11
+            and [r['name'] for r in report['cases'][0]['cases']] == list(INSTALLED_EMPTY_CASES)
+            and all(r['status'] == 'PASS' for r in report['cases'][0]['cases']),
+            'installed-empty-retirement-case-set')
     if ingest_empty_preparer:
         from initial_empty_preparer import CASES as EMPTY_PREPARER_CASES
         require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
