@@ -3,6 +3,31 @@ use bigbrotr::storage::postgres::migrations;
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
 #[test]
+fn prepared_successor_requires_an_additive_protocol_after_initial_retirement() {
+    let applied: Vec<_> = plan(&[], 29)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let next = plan(&applied, 30).expect("preparation must not rewrite applied retirement");
+    assert_eq!(next.pending.len(), 1);
+    assert_eq!(next.pending[0].name, "0030_initial_succession.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 30),
+        Err(MigrationError::MissingPrerequisite(30))
+    );
+    assert!(migrations::require_applied(&applied, 29).is_ok());
+}
+
+#[test]
 fn authenticated_scope_registration_appends_after_existing_command_history() {
     let applied: Vec<_> = plan(&[], 25)
         .unwrap()

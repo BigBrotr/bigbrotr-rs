@@ -89,6 +89,7 @@ impl AllocationNamespaces {
 /// committed with their mappings/facts; they are not duplicated in this value.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct IngestManifest {
+    key_schema: u16,
     identity: ManifestIdentity,
     namespaces: AllocationNamespaces,
 }
@@ -96,9 +97,26 @@ pub struct IngestManifest {
 impl IngestManifest {
     pub const fn new(identity: ManifestIdentity, namespaces: AllocationNamespaces) -> Self {
         Self {
+            key_schema: 1,
             identity,
             namespaces,
         }
+    }
+
+    /// Metadata for explicit handoff only; this value grants no write authority.
+    pub const fn for_successor(
+        identity: ManifestIdentity,
+        namespaces: AllocationNamespaces,
+    ) -> Self {
+        Self {
+            key_schema: 2,
+            identity,
+            namespaces,
+        }
+    }
+
+    pub const fn key_schema(&self) -> u16 {
+        self.key_schema
     }
 
     pub const fn identity(&self) -> &ManifestIdentity {
@@ -117,6 +135,7 @@ impl IngestManifest {
         let bytes = &mut output.bytes;
         let identity = &self.identity;
         bytes[..10].copy_from_slice(&HEADER);
+        bytes[2..4].copy_from_slice(&self.key_schema.to_be_bytes());
         bytes[10..26].copy_from_slice(identity.dataset_id.as_bytes());
         bytes[26..34].copy_from_slice(&identity.topology_generation.get().to_be_bytes());
         bytes[34..50].copy_from_slice(identity.owner_resource_id.as_bytes());
@@ -146,7 +165,11 @@ impl IngestManifest {
         if count > DICTIONARY_KINDS || bytes.len() != FIXED_BYTES + count * NAMESPACE_BYTES {
             return Err(ManifestError::WrongLength);
         }
-        if bytes[..10] != HEADER {
+        let key_schema = u16::from_be_bytes(fixed(bytes, 2)?);
+        if bytes[..2] != HEADER[..2]
+            || bytes[4..10] != HEADER[4..10]
+            || !matches!(key_schema, 1 | 2)
+        {
             return Err(ManifestError::UnsupportedFormat);
         }
         if bytes[102] != 1 {
@@ -181,7 +204,11 @@ impl IngestManifest {
             );
             previous = kind;
         }
-        Ok(Self::new(identity, namespaces))
+        Ok(Self {
+            key_schema,
+            identity,
+            namespaces,
+        })
     }
 }
 

@@ -3549,5 +3549,20 @@
       ],
       "limits": "No implementation, native/SQL engine or cleanup operation in this mapping. Existing P02 steps and M1 remain incomplete."
     }
+  },
+  "initial_successor_preparation_20261012": {
+    "status": "IMPLEMENTED_NOT_QUALIFIED",
+    "scope": "Prepared-only initial successor; no activation, cross-process reconstruction or empty-attempt retirement",
+    "pg_agent_source": "93be672a79035c33b484209afcf4113b53727a1a",
+    "native_contract": "docs/reference/ingest-manifest-format.md#initial-owner-handoff-receipt",
+    "registration_contract": "docs/reference/ingest-registration.md#prepared-initial-successor",
+    "independent_fixture": "apps/bigbrotr/src/storage/rocks/initial_handoff_tests.rs",
+    "preimplementation_red": "NOT_RUN; independent fixture written before native implementation, no executed RED claim",
+    "ai_review": {
+      "finding": "Native sequence and manifest alone did not bind a proof to its actual store",
+      "disposition": "Bind fixed-size local plan to directory device/inode; independently test equal-manifest/equal-sequence different roots",
+      "other_boundaries": "Explicit preproof conflicts, constructor invariants and pre/post-write authority tests added; local guards excluded from portable receipt"
+    },
+    "qualification": "New exact source build required; PostgreSQL/installed successor NOT_RUN"
   }
 }

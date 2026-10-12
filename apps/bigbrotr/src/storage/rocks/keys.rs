@@ -1,8 +1,8 @@
 //! Closed version-1 keys for the ingest owner's three RocksDB column families.
 use bigbrotr_model::{
     AllocationDomainId, DatasetId, DictionaryKind, Digest256, EventId, Ordinal, OwnerEpoch,
-    ProducerEpoch, ProducerRequestId, ProducerSlotId, QualifiedRef, RequestSequence, Sequence,
-    SourceRecordId,
+    OwnerResourceId, ProducerEpoch, ProducerRequestId, ProducerSlotId, QualifiedRef,
+    RequestSequence, Sequence, SourceRecordId,
 };
 use std::fmt;
 
@@ -38,6 +38,7 @@ pub enum KeyDomain {
     EventEligibility = 0x07,
     EventReceive = 0x08,
     Provenance = 0x09,
+    OwnerHandoff = 0x0a,
     Fact = 0x20,
     PendingBatch = 0x21,
     Request = 0x30,
@@ -59,7 +60,8 @@ impl KeyDomain {
             | Self::EventPayload
             | Self::EventEligibility
             | Self::EventReceive
-            | Self::Provenance => ColumnFamily::Default,
+            | Self::Provenance
+            | Self::OwnerHandoff => ColumnFamily::Default,
             Self::Fact | Self::PendingBatch => ColumnFamily::Facts,
             Self::Request | Self::ProducerState => ColumnFamily::Receipts,
         }
@@ -75,6 +77,7 @@ impl KeyDomain {
             Self::EventPayload => 2 + 16 + 32,
             Self::EventEligibility | Self::EventReceive => 2 + 16 + 32 + 42,
             Self::Provenance => 2 + 16 + 32 + 4 * 42,
+            Self::OwnerHandoff => 2 + 16 + 16 + 8,
             Self::Fact | Self::PendingBatch => 2 + 16 + 4 + 8 + 8,
             Self::Request => 2 + 16 + 8 + 8,
             Self::ProducerState => 2 + 16 + 8,
@@ -92,6 +95,7 @@ impl KeyDomain {
             0x07 => Ok(Self::EventEligibility),
             0x08 => Ok(Self::EventReceive),
             0x09 => Ok(Self::Provenance),
+            0x0a => Ok(Self::OwnerHandoff),
             0x20 => Ok(Self::Fact),
             0x21 => Ok(Self::PendingBatch),
             0x30 => Ok(Self::Request),
@@ -104,6 +108,11 @@ impl KeyDomain {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IngestKey {
     Manifest,
+    OwnerHandoff {
+        dataset_id: DatasetId,
+        owner_resource_id: OwnerResourceId,
+        predecessor_epoch: OwnerEpoch,
+    },
     SourceStream {
         dataset_id: DatasetId,
         shard_id: u32,
@@ -164,6 +173,7 @@ impl IngestKey {
     pub const fn domain(&self) -> KeyDomain {
         match self {
             Self::Manifest => KeyDomain::Manifest,
+            Self::OwnerHandoff { .. } => KeyDomain::OwnerHandoff,
             Self::SourceStream { .. } => KeyDomain::SourceStream,
             Self::AllocationStream { .. } => KeyDomain::AllocationStream,
             Self::Dictionary { .. } => KeyDomain::Dictionary,
@@ -186,6 +196,15 @@ impl IngestKey {
         writer.bytes(&domain.prefix());
         match *self {
             Self::Manifest => {}
+            Self::OwnerHandoff {
+                dataset_id,
+                owner_resource_id,
+                predecessor_epoch,
+            } => {
+                writer.bytes(dataset_id.as_bytes());
+                writer.bytes(owner_resource_id.as_bytes());
+                writer.u64(predecessor_epoch.get());
+            }
             Self::SourceStream {
                 dataset_id,
                 shard_id,
@@ -396,6 +415,12 @@ pub fn decode_key(column_family: ColumnFamily, bytes: &[u8]) -> Result<IngestKey
     let mut reader = KeyReader { bytes, position: 2 };
     let key = match domain {
         KeyDomain::Manifest => IngestKey::Manifest,
+        KeyDomain::OwnerHandoff => IngestKey::OwnerHandoff {
+            dataset_id: reader.dataset()?,
+            owner_resource_id: OwnerResourceId::try_from(reader.fixed()?)
+                .map_err(|_| KeyError::ZeroIdentity)?,
+            predecessor_epoch: OwnerEpoch::new(reader.u64()?).map_err(|_| KeyError::ZeroCounter)?,
+        },
         KeyDomain::SourceStream => IngestKey::SourceStream {
             dataset_id: reader.dataset()?,
             shard_id: reader.u32()?,

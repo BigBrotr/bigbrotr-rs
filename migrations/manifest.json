@@ -181,6 +181,10 @@
     {
       "version": 29,
       "name": "0029_initial_retirement.sql"
+    },
+    {
+      "version": 30,
+      "name": "0030_initial_succession.sql"
     }
   ],
   "reserved": [

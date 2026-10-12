@@ -103,7 +103,7 @@ fn manifest_refuses_partial_unknown_and_noncanonical_inputs() {
     );
     for position in [0, 1, 3, 5, 7, 9] {
         let mut changed = bytes.clone();
-        changed[position] = 2;
+        changed[position] = if position == 3 { 3 } else { 2 };
         assert_eq!(
             IngestManifest::decode(&changed),
             Err(ManifestError::UnsupportedFormat)
@@ -144,6 +144,27 @@ fn manifest_refuses_partial_unknown_and_noncanonical_inputs() {
     let mut changed = bytes;
     changed[103] = 10;
     assert!(IngestManifest::decode(&changed).is_err());
+}
+
+#[test]
+fn successor_profile_changes_only_the_key_schema_coordinate() {
+    let old = manifest();
+    let successor = IngestManifest::for_successor(*old.identity(), *old.allocation_namespaces());
+    let mut expected = expected_bytes();
+    expected[2..4].copy_from_slice(&[0, 2]);
+    assert_eq!(successor.encode().as_bytes(), expected);
+    assert_eq!(IngestManifest::decode(&expected).unwrap(), successor);
+    assert_eq!(old.key_schema(), 1);
+    assert_eq!(successor.key_schema(), 2);
+    assert_ne!(successor, old);
+    for end in 0..expected.len() {
+        assert!(IngestManifest::decode(&expected[..end]).is_err());
+    }
+    expected.push(0);
+    assert_eq!(
+        IngestManifest::decode(&expected),
+        Err(ManifestError::WrongLength)
+    );
 }
 
 #[test]

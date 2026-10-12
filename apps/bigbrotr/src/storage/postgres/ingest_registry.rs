@@ -458,7 +458,7 @@ async fn observe_locked(
         .map_err(backend)?;
         tx.query(
             "SELECT allocation_domain FROM control.allocation_domains
-            WHERE dataset_id=$1::bytea AND owner_resource_id=$2::bytea
+            WHERE dataset_id=$1::bytea AND owner_resource_id=$2::bytea AND owner_epoch=1
             ORDER BY dictionary_kind,allocation_domain LIMIT 10 FOR UPDATE",
             &[dataset, resource],
         )
@@ -497,7 +497,7 @@ async fn observe_locked(
     } else {
         false
     };
-    let domains = tx.query("SELECT dictionary_kind, substring(allocation_domain FROM 1 FOR 17), left(owner_epoch::text,21), owner_role = 'ingest', substring(owner_incarnation FROM 1 FOR 17), created_at_us, CASE state WHEN 'active' THEN true WHEN 'closed' THEN false END FROM control.allocation_domains WHERE dataset_id = $1::bytea AND owner_resource_id = $2::bytea LIMIT 10 FOR SHARE", &[dataset, resource])
+    let domains = tx.query("SELECT dictionary_kind, substring(allocation_domain FROM 1 FOR 17), left(owner_epoch::text,21), owner_role = 'ingest', substring(owner_incarnation FROM 1 FOR 17), created_at_us, CASE state WHEN 'active' THEN true WHEN 'closed' THEN false END FROM control.allocation_domains WHERE dataset_id = $1::bytea AND owner_resource_id = $2::bytea AND owner_epoch = 1 LIMIT 10 FOR SHARE", &[dataset, resource])
         .await.map_err(backend)?;
     let mut found_domains = Vec::with_capacity(domains.len());
     let mut domains_live = true;

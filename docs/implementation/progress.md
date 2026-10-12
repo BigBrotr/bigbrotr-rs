@@ -4,6 +4,30 @@ Observed 2026-10-12 on Tux during autonomous implementation. Navigation, not
 another plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, evidence and resources before continuing.
 
+## Current implementation boundary
+
+The current candidate adds prepared-only initial successor metadata under the
+same P02-T01 Step5 / P02-T02 Step4. Root integrated PostgreSQL agent commit
+93be672a79035c33b484209afcf4113b53727a1a from the separately inventoried worktree;
+root owns native schema2/handoff, actual-engine tests, references and runner.
+The candidate is NOT_RUN pending its new exact-source clang14 build. Previous
+f12 artifacts remain valid only for the unchanged earlier retirement evidence.
+
+Native proof is bound to the actual directory device/inode and local Rocks
+sequence. Independent AI review found and corrected the original wrong-store
+risk. Tests cover exact four-key effects, zero/nonzero history, preserved old
+rows, local-plan reopen/replay, conflicting/stale state and authority boundaries.
+The independent fixture was written before its native implementation; no executed
+preimplementation RED result is claimed. Compilation and actual engines must
+still establish its results. PostgreSQL migration0030 is new and unqualified;
+applied0027/0028/0029 remain unchanged.
+
+Next action: commit the candidate, run the existing isolated ingest-history
+profile with handoff/codecs added, fix concrete findings, then qualify the
+connected PostgreSQL preparation before process-recovery or writer activation.
+No real successor is enabled and no task/milestone is complete. Agent worktree
+is clean and preserved; all previous laboratories remain protected.
+
 ## Mandate and repository
 
 The complete selected product remains INCOMPLETE. Q34 makes Tux the sole editing,

@@ -60,6 +60,7 @@ Lengths include the two-byte version/domain prefix.
 | `default` | `0x07` | event eligibility inventory | 92 | dataset16, event ID32, full visibility `QualifiedRef` |
 | `default` | `0x08` | event receive minimum | 92 | dataset16, event ID32, full visibility `QualifiedRef` |
 | `default` | `0x09` | provenance minimum | 218 | dataset16, event ID32, full endpoint, observer, access-scope and visibility `QualifiedRef`s |
+| `default` | `0x0a` | immutable owner handoff (manifest key schema 2) | 42 | dataset16, owner-resource16, predecessor owner epoch BE64 |
 | `facts` | `0x20` | immutable fact | 38 | full `SourceRecordId` |
 | `facts` | `0x21` | pending admission batch | 38 | full first `SourceRecordId` |
 | `receipts` | `0x30` | request detail | 34 | full `ProducerRequestId` |
@@ -105,6 +106,12 @@ requires a new key-format version and an explicit compatible migration. Never
 reinterpret an existing tag, silently accept trailing extension bytes, or open a
 directory whose manifest declares another key format. Unknown future versions and
 domains fail closed in this decoder.
+
+The additive `0x0a` domain belongs to manifest key schema 2. Its
+[handoff value and atomic migration](ingest-manifest-format.md#initial-owner-handoff-receipt)
+retain all existing key bytes and change the manifest compatibility coordinate
+before any successor writer can be enabled. An old schema-1-only implementation
+must refuse that manifest; it cannot silently ignore the new domain and write.
 
 The singleton manifest key does not prove that its future value is correct, that
 the directory is exclusively owned, or that a batch was synchronized. The Rocks

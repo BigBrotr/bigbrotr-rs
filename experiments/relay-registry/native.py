@@ -53,7 +53,7 @@ steps = [
                 '--bin','bigbrotr','--example',probe,'--','-D','warnings']),
 ]
 if mode == 'ingest-history':
-    identity['scope'] = 'Historical recovery/source closure build, native prefix checks and actual CLI refusals; connected PostgreSQL qualification remains separate'
+    identity['scope'] = 'Initial successor metadata and historical recovery native components, closed codecs and actual CLI refusals; connected PostgreSQL, process reconstruction and activation remain separate'
     steps.insert(1, ('entrypoints', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                    '--test','control_runtime_entrypoint','--test','control_schema']))
     steps.insert(2, ('source-closure', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
@@ -61,7 +61,11 @@ if mode == 'ingest-history':
     steps[3:3] = [(name, ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                          '--lib',selection,'--message-format=json','--','--test-threads=1'])
                   for name, selection in [('producer-closing','producer_closing_tests'),
-                                          ('producer-recovery','producer_recovery_tests')]]
+                                          ('producer-recovery','producer_recovery_tests'),
+                                          ('initial-handoff','initial_handoff_tests')]]
+    steps[-1:-1] = [(name, ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
+                           '--test',name,'--message-format=json','--','--test-threads=1'])
+                    for name in ['rocks_manifest', 'rocks_keys']]
 if mode == 'ingest-recovery':
     identity['scope'] = 'Exclusive historical native inspection; registry loader, installed recovery and successor remain separate'
     steps.insert(0, ('rocks-store', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
@@ -224,7 +228,7 @@ if mode in ('observation', 'relay-transfer'):
 if mode in ('dictionary-append', 'ingest-recovery', 'ingest-history'):
     import re
     counts, executables = {}, set()
-    selections = (['rocks-store'] if mode == 'ingest-recovery' else ['source-closure','producer-closing','producer-recovery'] if mode == 'ingest-history'
+    selections = (['rocks-store'] if mode == 'ingest-recovery' else ['source-closure','producer-closing','producer-recovery','initial-handoff'] if mode == 'ingest-history'
                   else ['dictionary-append', 'bootstrap', 'recovery'])
     target_kind = ['test'] if mode == 'ingest-recovery' else ['lib']
     retained_name = ('rocks_store' if mode == 'ingest-recovery' else 'source_closure_components' if mode == 'ingest-history'
@@ -248,6 +252,27 @@ if mode in ('dictionary-append', 'ingest-recovery', 'ingest-history'):
     assert digest == file_hash(source)
     receipt['test_executables_sha256'] = {retained_name: digest}
     receipt['native_tests_passed'] = counts
+    if mode == 'ingest-history':
+        for name in ['rocks_manifest', 'rocks_keys']:
+            content = (checks / (name + '.log')).read_text()
+            summary = re.search(r'test result: ok\. ([1-9][0-9]*) passed; 0 failed; 0 ignored;', content)
+            assert summary, 'missing executed codec result: ' + name
+            counts[name] = int(summary.group(1))
+            paths = set()
+            for line in content.splitlines():
+                if not line.startswith('{'): continue
+                message = json.loads(line)
+                if message.get('reason') == 'compiler-artifact' and message.get('executable') \
+                        and message['profile']['test'] and message['target']['kind'] == ['test'] \
+                        and message['target']['name'] == name:
+                    paths.add(message['executable'])
+            assert len(paths) == 1
+            source = Path(paths.pop())
+            assert source.is_relative_to(build / 'target') and not source.is_symlink()
+            shutil.copy2(source, artifacts / name)
+            digest = file_hash(artifacts / name)
+            assert digest == file_hash(source)
+            receipt['test_executables_sha256'][name] = digest
 (artifacts/'build-result.json').write_text(json.dumps(receipt,indent=2)+'\n')
 assert sources()==manifest['files_sha256']
 status = {'ingest-history':'PASS_INGEST_HISTORY_BUILD_ONLY', 'ingest-recovery':'PASS_INGEST_RECOVERY_INSPECTION', 'dictionary-append':'PASS_DICTIONARY_APPEND_COMPONENTS', 'relay-arrival':'PASS_RELAY_ARRIVAL_BUILD_ONLY', 'relay-transfer':'PASS_RELAY_TRANSFER_BUILD_ONLY', 'observation':'PASS_OBSERVATION_BUILD_ONLY', 'registry':'PASS_REGISTRY_BUILD_ONLY', 'faults':'PASS_REGISTRY_FAULT_BUILD_ONLY',

@@ -13,7 +13,7 @@ big-endian. There is no padding, text encoding or optional trailing extension.
 |---|---|---|
 | 0 | 1 | Value format: `1` |
 | 1 | 1 | Value type: Ingest manifest, `1` |
-| 2 | 2 | Key schema: `1` |
+| 2 | 2 | Key schema: `1` initially; `2` for an explicitly prepared successor |
 | 4 | 2 | Value schema: `1` |
 | 6 | 2 | Fingerprint profile: `1` |
 | 8 | 2 | Native option profile: `1` |
@@ -57,6 +57,58 @@ Both the manifest and its encoded output use fixed maximum storage; decoding
 rejects oversized input before processing entries and allocates no heap buffer.
 Future formats require explicit migration; reopening must never rewrite an
 unknown manifest as the current one.
+
+Key schema 2 adds the immutable owner-handoff key below. Existing keys retain
+their exact version-1 bytes. Changing this coordinate in the same synchronized
+batch as the handoff fences old implementations before they can open for work;
+it does not grant the new incarnation admission. Fresh initialization retains
+schema 1. A successor manifest is created only by the explicit handoff protocol.
+
+## Initial owner handoff receipt
+
+The default-family key is `01 0a || dataset_id[16] || owner_resource_id[16] ||
+predecessor_owner_epoch:BE64` (42 bytes). Its immutable value is:
+
+| Order | Width | Meaning |
+|---|---|---|
+| 1 | 2 | Value version/type `01 0a` |
+| 2 | 16 | Stable producer slot ID |
+| 3 | 8 | Predecessor producer epoch |
+| 4 | 8 | Closed producer issued-through request |
+| 5 | 8 | Closed source last-complete sequence, including zero |
+| 6 | 32 | Positive initial source-closure digest |
+| 7 | 2 + length | Previous manifest byte length BE16 and exact bytes |
+| 8 | 2 + length | Successor manifest byte length BE16 and exact bytes |
+
+Maximum value length is 610 bytes; no trailing extension is permitted. This
+initial-only transition retains dataset/resource/shard/recovery identity and
+producer slot, advances owner/producer epochs 1→2 and topology by exactly one,
+and uses a fresh incarnation and fresh distinct allocation domains for the same
+kind set. PostgreSQL checks freshness against retained registry identities,
+including historical domains. Old manifests remain byte-exact because original
+producer reservations bind their digest.
+
+After confirmed PostgreSQL preparation under current Control authority, the
+exclusive native recovery owner writes exactly one synchronized batch: this
+receipt, the new singleton manifest, an explicit zero successor source counter
+(`01 02` plus BE64 zero), and an explicit OPEN successor producer marker
+(`01 31` plus three BE64 zeros). All predecessor keys and original inputs remain
+unchanged. Preparation does not activate a writer, rerun dictionary bootstrap,
+acknowledge requests or reclaim anything.
+
+The native plan is constructed only from the positive initial source witness;
+it is not an externally decoded authorization. Its local directory device/inode
+binding and Rocks sequence guard reject a different store and detect intervening
+writes between proof and application. These local guards are not receipt fields;
+operator-controlled roots must remain stable. Reapplying the same
+retained plan requires the exact receipt, manifest and complete empty successor
+state and performs no write; conflicting or partial state refuses. This local
+plan can survive closing/reopening the native handle within the same caller.
+Reconstructing it after process loss, completing an abandoned empty incarnation,
+and activating a fresh actual writer remain separate required adapters. An
+observer or a durable prepared row cannot impersonate that writer. Until explicit
+activation is implemented, PostgreSQL refuses successor reservations and input
+bindings. This format is an implementation contract, not installed qualification.
 
 `apps/bigbrotr/tests/rocks_manifest.rs` uses independently specified literal
 bytes, nonuniform identities, unsigned boundary coordinates, empty and full

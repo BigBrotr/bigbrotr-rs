@@ -130,3 +130,34 @@ complete refusal-state equality, and observed dataset-lock cancellation with
 retained fencing. Root checked original native/input bytes and all 64 Control
 tables. Lost/delayed COMMIT, renewal-write cutoff discrimination and policy/closing
 races remain unexecuted for this method. No installed lifetime claim follows.
+
+## Prepared initial successor
+
+Migration0030 and `ControlSession::prepare_initial_successor` introduce a
+prepared-only continuation of the fully retired initial Ingest owner. The exact
+[native handoff](ingest-manifest-format.md#initial-owner-handoff-receipt) retains
+both manifests, closure digest and source/request bounds. Its local plan must
+match the exclusively held configured store before PostgreSQL mutations begin.
+
+Current Control and accepted policy custody are independent of the original
+slot registrar. Under Control, dataset, historical owner/domain/source/producer
+locks, one transaction inserts the fresh role/owner2, source2, producer2, fresh
+allocation domains, and sealed topology containing closed source1 plus source2.
+The immutable `control.initial_ingest_successions` intent retains exact bytes,
+original preparing Control and policy attribution. Confirmation of that COMMIT
+precedes native dispatch. A second transaction reacquires the same custody and
+checks accepted policy without extending the original local policy deadline.
+Only then may the one synchronized native metadata transition execute.
+
+An unknown preparation COMMIT must be excluded and observed under fresh current
+Control before retry. Exact retry uses the same retained plan and request fields;
+it cannot invent a new attempted incarnation over the old intent. The original
+retired producer and native detail remain untouched. Migration0030 refuses
+preexisting unrecognized successor history and vetoes successor request/input
+binding INSERTs, even when their producer lacks an intent. No activation phase,
+writer conversion, cross-process plan reconstruction or abandoned-empty-attempt
+retirement is implemented by this slice. These are required subsequent work,
+not authority inferred from an OPEN scheduling row or a completed native batch.
+
+Implementation and actual native component checks are distinct from connected
+PostgreSQL and installed qualification; consult the owning recovery evidence.

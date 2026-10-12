@@ -80,6 +80,8 @@ pub use initial_ingest_basis::InitialIngestBasis;
 mod acquisition_abandonment;
 #[path = "initial_batch.rs"]
 mod initial_batch;
+#[path = "initial_succession.rs"]
+mod initial_succession;
 #[path = "producer_closing.rs"]
 mod producer_closing;
 #[path = "producer_recovery.rs"]
@@ -94,6 +96,7 @@ pub use initial_batch::{
     InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
     InitialVisibilityRequest,
 };
+pub use initial_succession::{InitialSuccessionError, InitialSuccessionRequest};
 pub use producer_closing::{
     InitialProducerClosing, ProducerCloseError, ProducerCloseRequest, ProducerOperationError,
 };

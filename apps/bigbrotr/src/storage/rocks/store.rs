@@ -101,6 +101,10 @@ pub use producer_recovery::{
 mod source_closure;
 pub use source_closure::{ResolvedSource, SourceResolution};
 
+#[path = "initial_handoff.rs"]
+mod initial_handoff;
+pub use initial_handoff::{EncodedHandoff, InitialHandoff, ObservedHandoff};
+
 #[cfg(test)]
 #[path = "admission_tests.rs"]
 mod admission_tests;
@@ -223,6 +227,11 @@ impl IngestStore {
         limits: RocksNativeLimits,
         permit: OwnedPermit,
     ) -> Result<Self, StoreError> {
+        if manifest.key_schema() != 1 {
+            return Err(StoreError::InvalidManifest(
+                ManifestError::UnsupportedFormat,
+            ));
+        }
         require_permit(&permit, limits)?;
         let path = fresh_path(path)?;
         let reservation = StoreReservation {
