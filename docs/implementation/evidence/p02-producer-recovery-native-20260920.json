@@ -10168,6 +10168,165 @@
           "review": "Root read complete changed oracle and matched agreed finite-probe grammar; exact engine execution remains NOT_RUN."
         },
         "measured": "Both actual proxy counts matched COMMIT6; before-forward6/5/5/5/1 and after-complete6/6/6/5/1. Both return bareCommitUnknown and unavailable reuse, join a failed driver and observe exact backend absence before newControl11. Native stays52rows/seq63 through recovery. Before completes13SQLrows atT1791812843492372/xmin26646; after retainsT1791812850933041/xmin26663 unchanged. Originalregistrar3/preparer8/intent/inputs retained. START11 remains source-derived."
+      },
+      "connected_locks": {
+        "status": "READY_ENGINE_NOT_RUN",
+        "source": "64b09da4db71e5dd3f326e5e34551f163e7cbf6e",
+        "tree": "38b5521c5089e0492739f89e40d49ae960b09650",
+        "build": {
+          "source": "833929700e78eb4837e78021cc69b41d0e701109",
+          "tree": "b00784ed07161c3eb0249381ecd3601f42709582",
+          "owner": "eb9f58ba62d24aaedb9d11d3f2fc12c4",
+          "owner_label": "org.bigbrotr.network-transport",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-locks-8339297",
+          "state": "stopped-retained",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "deb234cee7f8722c85b1800376004f670effb71dd8796b807e69e677490ac836"
+            },
+            {
+              "name": "native",
+              "id": "ee2f477dc4b1ec2b3cb309c1c3bdb7682ec156f9cda4cb66ae4c10d7d9da3ab4"
+            }
+          ],
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "started_at": "2026-10-12T13:59:19.285861+00:00",
+          "qualification": "PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY",
+          "inventory_changed": [],
+          "free_bytes_after": 68757282816,
+          "finished_at": "2026-10-12T14:00:46.880979+00:00",
+          "wrapper": {
+            "session": 67773,
+            "joined_exit_code": 0
+          },
+          "checks": [
+            {
+              "name": "compile",
+              "command": [
+                "cargo",
+                "build",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--bin",
+                "bigbrotr",
+                "--example",
+                "ingest_bootstrap_probe"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 79.7634532675147
+            },
+            {
+              "name": "clippy",
+              "command": [
+                "cargo",
+                "clippy",
+                "--locked",
+                "--offline",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--lib",
+                "--bin",
+                "bigbrotr",
+                "--example",
+                "ingest_bootstrap_probe",
+                "--",
+                "-D",
+                "warnings"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 5.623545519076288
+            }
+          ],
+          "artifacts": {
+            "binary_sha256": "c957b5904e49fe29d77ec2f5a5fbcdd7233fdffadb7c7aeda047e75f7cb78b98",
+            "probe_sha256": "8c1328d9a9a328c2d5c9915d394262bf9253e074f405d198aa827b5b3fe383bd",
+            "source_manifest_sha256": "a3e3ca70baa9b6b781cde99a6fb0b8f43f640d8edee138b72352e32426628c26",
+            "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9"
+          },
+          "evidence_sha256": {
+            "resources.json": "1940a5918a04eaee8b1607ccf02d4f2bb6e59d6d157caf4c3971d70259a76035",
+            "out/qualification.json": "93112f271aa98483e857c22adf6c471af9fe8cb196e8d9770356f212426b7fb0",
+            "out/build-checks/result.json": "c7634fb007f4c2cf7905cdd053ee00058af04c38fb9fee673f88ebd8db19e311",
+            "out/artifacts/build-result.json": "22fda64f4652c526db774de93dbcf6bd6c404f0fbd1efa2c2ae80f9f1b70126d",
+            "fetch-terminal.json": "2fd6a521208e061c6a0f51b3fb0968f64e035c4d05a4ce07469667e04ebea1be",
+            "native-terminal.json": "a7d8d7bbe2048d2e91416a03978215cf17d0bb8795b98719e373c8d254ba2627"
+          },
+          "independent_ai_review": {
+            "reviewer": "recovery_review, read-only artifact audit; author of finite probe, not independent review of own probe",
+            "status": "PASS_NO_DISCREPANCY_IN_SCOPE",
+            "source_files": 1751,
+            "preflight_container_projections_unchanged": 1214,
+            "checks": "Exact checkout/export/Git archive and manifest; two current, seven prior and four original cache executables; actual native toolchain hashes; terminal exit0/noOOM and resource bounds. No engine or SQL executed."
+          }
+        },
+        "engine": "NOT_RUN",
+        "cases": [
+          "empty-claim-commit",
+          "empty-claim-rollback",
+          "empty-retirement-first",
+          "empty-control-expiry"
+        ],
+        "scope": "Four real current-Control claim/expiry schedules on new ac644 clones; relational guarded import claims, not installed import execution. Historical preparer8 fixture remains separate.",
+        "source_review": "Root read full finite empty probe, current PG empty owner, initial-history custody, complete 0815 and current generic job guards/Control fence. Full new harness/oracle drafts reviewed; wire/veto extension reviewed. Root bindings integration preserves exact build reuse, owner-checked PG lifecycle and external preservation. Independent actual run remains NOT_RUN. No product/native API change.",
+        "expected": "Claim-first COMMIT refusesbefore native close; ROLLBACK permitsretirement. Retirement-first COMMIT6holds UPDATE againstclaimSHARE, thenlaterclaim preservesterminalretry. ActualControlUTCexpirywhileblocking<5srefusesbefore nativeclose withoutlease rewriting. Gatebounds25s/10s remainfixture-only.",
+        "qualification": "Compile and Clippy PASS; actual lock engine remains NOT_RUN.",
+        "structural_checks": {
+          "status": "PASS",
+          "commands": [
+            "python3 -B experiments/verify_artifacts.py",
+            "python3 -B experiments/verify_handoff.py --output .research/handoff-check.json",
+            "git diff --check"
+          ],
+          "markdown_files": 190,
+          "json_files": 424,
+          "examples": 5,
+          "fragments": 503,
+          "tasks": 123,
+          "steps": 756,
+          "errors": 0,
+          "scope": "Structure only; three unchanged known prose dependency candidates, no semantic/product completion claim."
+        },
+        "independent_ai_review": {
+          "reviewer": "successor_restart_design, harness author; independent oracle/bindings review, not own-harness audit",
+          "status": "REVIEW_COMPLETE_SETUP_TEXT_FINDING_FIXED",
+          "scope": "Full lock oracle/base empty oracle, exact narrow refusal diff, finite probe grammar and root bindings orchestration. Original hashes checked before projection; fixture job/admission phases fully checked; Control/xid/COMMIT boundaries bound to actual capture. No product claim from source review.",
+          "finding": "Setup SQL text was not checked although rows and guards were. Exact independently reconstructed BEGIN/INSERT/seal/COMMIT strings and a declared-replica-bypass counterexample close the finding. Independent reviewer confirmed the fix."
+        },
+        "integration": {
+          "probe": "9166d78",
+          "harness": "2afe681",
+          "oracle": "64b09da",
+          "root_dispatch": "--ingest-empty-locks; exact8339297 artifacts only"
+        },
+        "pure_oracle_checks": {
+          "status": "PASS_SYNTHETIC_ONLY",
+          "cases": 4,
+          "snapshots": 86,
+          "rejected_perturbations": 201,
+          "per_case": [
+            47,
+            51,
+            56,
+            47
+          ],
+          "actual_commit_regression": {
+            "snapshots": 86,
+            "rejected_perturbations": 128,
+            "status": "PASS_RETAINED_CAPTURES_ONLY"
+          },
+          "scope": "No new engine/build by either helper author; actual lock wave NOT_RUN."
+        }
       }
     },
     "gap_policy_delivery_qualification": {

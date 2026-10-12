@@ -64,6 +64,7 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
+ingest_empty_locks = len(sys.argv) == 4 and sys.argv[2] == '--ingest-empty-locks'
 ingest_empty_commits = len(sys.argv) == 4 and sys.argv[2] == '--ingest-empty-commits'
 ingest_empty_retirement = ingest_empty_commits or len(sys.argv) == 4 and sys.argv[2] == '--ingest-empty-retirement'
 ingest_gap_faults = len(sys.argv) == 4 and sys.argv[2] == '--ingest-gap-faults'
@@ -86,7 +87,7 @@ ingest_recovery_signed = ingest_source_closure or (len(sys.argv) in (3, 4) and s
 ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
 ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
-initial_ingest = ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
+initial_ingest = ingest_empty_locks or ingest_empty_retirement or ingest_gap_faults or ingest_successor_gap or ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -411,6 +412,13 @@ if ingest_empty_retirement:
         'native syscall uncertainty/power loss, next incarnation activation and installed restart/resend',
         'ACK/GC, full M1, capacity/load/aged-state and arm64/release']
 
+
+if ingest_empty_locks:
+    report['wave'] = 'initial-empty-locks'
+    report['not_run'] = ['historical preparer claim requires a separate live preparation fixture',
+        'installed import execution; this wave checks the guarded relational claim path',
+        'native syscall uncertainty/power loss, next incarnation activation and installed restart/resend',
+        'ACK/GC, full M1, capacity/load/aged-state and arm64/release']
 
 def require(condition, reason):
     if not condition:
@@ -798,6 +806,9 @@ if ingest_successor_gap:
 if ingest_gap_faults:
     success_status = 'PASS_PREPARED_GAP_POLICY_DELIVERY'
 
+if ingest_empty_locks:
+    success_status = 'PASS_INITIAL_EMPTY_RETIREMENT_LOCKS'
+
 if ingest_empty_retirement:
     success_status = 'PASS_INITIAL_EMPTY_RETIREMENT_COMMIT_LOSS' if ingest_empty_commits else 'PASS_INITIAL_EMPTY_RETIREMENT'
 
@@ -823,7 +834,7 @@ try:
         from interruptions import prepare_instrument
         instrument = prepare_instrument(root, prior, SOURCE)
         instrument_mount = ['--mount', f'type=bind,src={instrument},dst=/instrument,readonly']
-    if commits or registration_faults or dictionary_faults or ingest_gap_faults:
+    if commits or registration_faults or dictionary_faults or ingest_gap_faults or ingest_empty_locks:
         instrument_mount = ['--mount', f'type=bind,src={SOURCE},dst=/source,readonly']
     if native_inspector is not None:
         instrument_mount += ['--mount', f'type=bind,src={native_inspector},dst=/native-inspect,readonly']
@@ -969,6 +980,8 @@ try:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+    elif ingest_empty_locks:
+        cases = ['initial-empty-locks']
     elif ingest_empty_retirement:
         cases = ['initial-empty-retirement']
     elif ingest_gap_faults:
@@ -1022,6 +1035,11 @@ try:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_interruption(pg,client,output,completed,name,rows,
                                                    sessions=session_faults))
+            save()
+        elif ingest_empty_locks:
+            sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+            from initial_empty_locks import run as run_empty_locks
+            report['cases'].append(run_empty_locks(pg, client, output, rows, clone))
             save()
         elif ingest_empty_retirement:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1164,6 +1182,11 @@ try:
         require({r['name'] for r in report['cases']} == set(selected_sync_cases)
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
+    if ingest_empty_locks:
+        from initial_empty_locks import CASES as EMPTY_LOCK_CASES
+        require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
+            and [r['name'] for r in report['cases'][0]['cases']] == list(EMPTY_LOCK_CASES)
+            and all(r['status'] == 'PASS' for r in report['cases'][0]['cases']), 'initial-empty-lock-case-set')
     if ingest_empty_retirement:
         from initial_empty import CASES as EMPTY_CASES, COMMIT_CASES as EMPTY_COMMIT_CASES
         selected_empty = EMPTY_COMMIT_CASES if ingest_empty_commits else EMPTY_CASES

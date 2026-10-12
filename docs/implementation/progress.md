@@ -14,402 +14,228 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-The qualified empty-retirement wave uses83db9d8 and native build30a88ae.
-Evidence commit2053f80 was privately pushed, fetched and verified ahead0/behind0
-with a clean checkout. Current observed HEAD5938617 integrates COMMIT-loss probe f7920ed, focused
-harness/build profile c31312f and the independently authored oracle33319ab. Root
-owns checkpoint/evidence/inventory edits; both new agent worktrees are clean and
-retained. No merge/rebase is in progress. Original qualified builds,
-failed be4f284 and all earlier artifacts remain retained for their exact scopes.
-Full product, M1 and active task steps remain INCOMPLETE.
-
-Main remains
+Observed HEAD a692dbb8a792adf9c7f04cb8c554243301ab7583 was privately pushed,
+freshly fetched and verified ahead0/behind0 with a clean checkout. Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
+Current observed HEAD64b09da4db71e5dd3f326e5e34551f163e7cbf6e integrates
+probe9166d78, build profile8339297, harness2afe681 and oracle64b09da. Root owns uncommitted lock-wave
+dispatch, evidence, inventory and this checkpoint. Separate agents own only the scopes below.
+Do not reset another contributor's files or reuse an old engine outcome blindly.
 
-The separate `.research/initial-successor-pg-20261012` worktree preserves
-qualification/successor-commit-probe at 60c455230fb728bfcef35d071f6bd4eea1732e42,
-integrated into 3969a61. `.research/initial-successor-oracle-20261012` preserves
-qualification/successor-commit-oracle at eddd15b, integrated into 64419a5. Both earlier worktrees remain preserved. The bounded reconstruction agents completed their assignments in separately
-inventoried worktrees, as described below; earlier
-implementation/probe/oracle branches remain preserved. Original lab exports and recovered bundle remain
-unchanged. The
-[dated recovery audit](../research/tux-resumption-20261012.md) owns reconciliation;
-a same-disk bundle is not host-loss backup. Missing Mac captures remain unavailable.
+Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of these steps,
+M1 or the full product is complete. The [storage task](02-storage.md),
+[selected empty-retirement contract](../reference/ingest-registration.md#empty-prepared-attempt-retirement-under-implementation)
+and [recovery evidence](evidence/p02-producer-recovery-native-20260920.json)
+own requirements, meaning and detailed qualification respectively.
 
-## Current responsibility and verified preparation
+Original recovered source/bundle and earlier agent worktrees remain retained.
+The [dated recovery audit](../research/tux-resumption-20261012.md) owns recovery
+reconciliation; a same-disk bundle is not host-loss backup. Missing Mac captures
+remain unavailable. The latest explicit owner instruction governs the stage.
 
-Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. Neither these steps
-nor M1 are complete. Commit 4f62b52 implements the prepared-only initial successor:
-immutable handoff receipt retaining exact predecessor/target manifests, schema 2
-compatibility fence, explicit source 2 zero and producer 2 OPEN/zero, and one synced
-four-put batch. Original native rows remain unchanged except the singleton
-manifest. There is no writer activation, ACK, reclamation or dictionary bootstrap.
+## Verified prerequisite chain
 
-A local plan can only originate from the positive initial source witness. It is
-bound to actual directory device/inode and Rocks sequence, including across
-native close/reopen while retaining the plan. Independent AI review found and
-corrected the earlier cross-store proof gap. A callback is only the native
-component authority seam; actual connected Control qualification is separate.
-No executed preimplementation RED result is claimed: the independent fixture
-was written before implementation but first executed with the candidate.
+Detailed commands, immutable input identities, hashes, scoped reviews and
+preserved failures are in the existing recovery evidence; the following is
+navigation rather than a duplicate record of every completed experiment.
 
-Migration 0030 adds immutable PostgreSQL preparation, confirms its COMMIT before
-native dispatch, retains current Control/policy custody across the bounded local
-deadline, and vetoes successor reservation/input binding even without an intent.
-It preserves original slot registrar attribution. Applied 0027/0028/0029 are
-unchanged. Fresh global allocation-domain identity relies on the retained SQL
-uniqueness constraint. Actual connected preparation with 0030 now passes; installed successor activation
-and restart remain NOT_RUN.
-The relevant owners are [manifest/handoff](../reference/ingest-manifest-format.md#initial-owner-handoff-receipt)
-and [prepared registration](../reference/ingest-registration.md#prepared-initial-successor).
+- Initial signed retirement: f12 artifacts and the first ten installed cases;
+  0d81400 distinguishes client exit from later server rollback/COMMIT, 3f36784
+  covers policy expiry and Ingest lock orders,115d888 covers synthetic obligations.
+  A producer checkpoint0 is not an import checkpoint; no real import is claimed.
+- Prepared-only successor: native4f62b52 and migration0030; connectedac644ef
+  qualifies preparation, retained-plan retries, a PG/native gap and activation
+  veto. Exactly four native writes move49 rows/sequence58 to52/62. No activation.
+- Preparation COMMIT loss:64419a5, build3969a61; actual COMMIT12 before/after
+  schedules preserve attribution and require exact backend absence before retry.
+- Config-only replacement history:e92f3d7/build39e7468; seven readonly cases.
+  Gap completion:51a6b86/build162caeb; fifteen actual probes/158 snapshots/198
+  capture controls. Original registrar3/preparer8 and immutable intent survive.
+- Advanced policy and gap delivery loss:4c283e2; six actual processes/114 snapshots/
+  123 controls. Current policy2 retains historical1. Before-native START12 loss
+  and after-native ROLLBACK2 reply loss recover without duplicate effects.
 
-`runs/ingest-history-4f62b52/out/qualification.json` is
-PASS_INGEST_HISTORY_BUILD_ONLY, finished 2026-10-12T10:08:23Z. Release CLI/probe,
-4 entrypoint and 36 migration-catalog tests, 7 actual native handoff tests,
-3 source-closure / 9 producer-closing / 11 recovery regressions, 4 manifest / 9 key
-codec tests and Clippy passed. The 7 handoff tests cover zero/nonzero history,
-independent four-key delta, unchanged replay, equal-sequence wrong-store refusal,
-conflicts predating the proof, constructor invariants and pre/post-write authority.
+Frozen prepared seed: `runs/ingest-succession-ac644ef/bindings/successor-normal/store`,
+DB `bb_scope_bind_ac644ef_successor_normal`, ownercdfb0f1b755b29ccedc057b786efa116.
+It retains52 native rows/sequence62, four original inputs and Control9 released.
+Frozen retired seed: `runs/ingest-recovery-engine-f12dbf0/bindings/retire_signed/store`,
+DB `bb_scope_bind_f12dbf0_retire_signed`, owner0413e7dbcebefbf84c90b3948f4bb24b.
+Never open either original as a writer, repair it or reuse its derivative as a
+new fixture without verifying its exact identity and ownership.
 
-All 1,726 exact source files and 5 retained executable hashes were independently
-rechecked. Source manifest SHA256
-50473e3dff1c38de877d101e5ce37a56350dcf04b7e052fc2e58c80802ed893a;
-CLI 5fdb78f84f29e95980f62d513c49870381c1d43112ebf6ee0538f3d0cde696dd.
-The owning [recovery evidence](evidence/p02-producer-recovery-native-20260920.json)
-records remaining artifacts/toolchain/receipt hashes and qualification limits.
-The owned build containers stopped, no OOM, no unrelated lifecycle changes.
-Independent read-only AI audit reproduced all source/artifact hashes and test
-counts; all 1,186 pre-existing container projections and four original compiler
-cache artifacts remained unchanged.
-This is actual native component evidence, not cross-process reconstruction,
-PG/native atomicity, power-loss durability or successor admission qualification.
+## Qualified empty-attempt retirement
 
-## Connected preparation and actual COMMIT loss
+Native9b08239, native fixtures71ad688, SQL207ae63/additive0031 and PG adaptera027cb6
+implement only exact unactivated epoch2 retirement. Migration0030 intent and its
+admission veto remain. Applied earlier migrations are unchanged.
 
-`runs/ingest-succession-ac644ef/bindings/result.json` is
-PASS_INITIAL_SUCCESSOR_PREPARATION, finished 2026-10-12T10:33:13Z; SHA256
-769db38827d8efaab5cfde11af91ef7a82a6414889772db0ab6bb2f99dbc778a.
-The frozen retired signed derivative `ingest-recovery-engine-f12dbf0/
-bindings/retire_signed/store` and DB `bb_scope_bind_f12dbf0_retire_signed` were
-copied into four new inventoried cases and preserved unchanged.
-
-The normal case performs preparation, same-Control retry and fresh-Control retry.
-The gap case injects a real policy-validator refusal after confirmed PG COMMIT:
-PG stays prepared, native remains 49 rows, changed-role intent refuses, then the
-identical local plan completes under a new actual Control. Schema 29 and a proven
-intent-insert rollback leave no preparation/native effects. Every snapshot checks
-all 71 tables (70 for old-schema), complete rows/xmin, native sequence/bytes and
-four original input hashes. Topology advances 0→1 and owner/producer 1→2; successful
-native handoff adds 3 records and replaces the manifest in 4 writes, giving 52 rows.
-Original input bytes and all historical rows remain unchanged. The new source
-is open with NULL closure metadata; zero is explicit in its native counter.
-
-Both request and synthetic input-binding attempts reach the intended application
-role activation veto: exact function/message and SQLSTATE 23514, not a generic
-SQL error. No genuine running import is claimed. The independent Python oracle
-checked 44 ordered snapshots and rejected 38 deliberately corrupted captures.
-Independent read-only AI audit replayed all captures and perturbations, rehashed
-all 1,727 build files/5 executables and checked 1,191 unchanged pre-existing
-nonborrowed container projections. No discrepancy was found in this scope.
-Initial claim/renewal and later Control exclusion/release effects are checked
-separately. This is one-process retained-plan recovery, not process reconstruction.
-
-Build 4b89687 is PASS_INGEST_HISTORY_BUILD_ONLY with the same scoped native cases,
-entrypoint/migration catalog checks and Clippy; all 1,727 source files and 5 retained
-executables were checked. Its CLI/probe hashes are in the owning evidence.
-The original dd1539a build remains FAIL for three Clippy err_expect findings in
-the finite probe; 4b89687 corrected them. No failed evidence was overwritten.
-Before engine execution, independent AI source review found missing UPDATE
-privilege for SELECT FOR SHARE on the new intent; explicit lab provisioning was
-corrected. Immutable guards still reject changes. A probe timeout now preserves
-partial output as UNKNOWN_TIMEOUT; that timeout path was not injected.
-
-The subsequent `runs/ingest-succession-commits-64419a5/bindings/result.json`
-is PASS_INITIAL_SUCCESSOR_COMMIT_LOSS, finished 2026-10-12T10:48:32.888002Z;
-SHA256 555e5ff906c3cb25c709007e82646229651b49eedb14b67276c144cd9f9e2a16.
-The two isolated signed-seed clones interrupt actual preparation COMMIT 12:
-before-forward counts 12/11/11/11/1 and after-complete 12/12/12/11/1
-(seen/forwarded/server-complete/client-complete/faults). Both return CommitUnknown,
-leave native 49 rows/unchanged sequence, poison Control reuse and join a failed
-driver. The exact original PostgreSQL PID/backend_start/database is independently
-observed absent before the fresh actual Control claim. Proxy exit alone is not
-server exclusion. Before-forward leaves no intent; retry creates it attributed
-to fresh Control 9. After-complete retains the committed intent's Control 8 and
-xmin during retry. Both finally have 52 rows/sequence +4 and all 4 original inputs.
-The independent oracle checks 24 ordered full snapshots and rejects 34 deliberately
-corrupted captures, including early native dispatch, substituted backend identity,
-unjoined driver and wrong otherwise-valid Control attribution. Independent
-read-only AI review replayed all 56 events, verified external post-SQL/native
-captures and rehashed the original 21 seed paths plus three frozen artifacts;
-no discrepancy was found in this scope. Seed SQL equality is the captured
-comparison made during the run, without a later server restart.
-
-Build 3969a61 is PASS_INGEST_HISTORY_BUILD_ONLY, finished 10:45:15.964154Z:
-9/9 executed checks, 4 entrypoint/36 schema/43 native tests and Clippy. All 1,729
-source files, exact Git archive and 5 retained ELFs were independently rehashed.
-The owning evidence records exact build/proxy/capture hashes. Both build containers,
-fixture client and borrowed PostgreSQL are stopped with no OOM; all 1,194
-nonborrowed engine-preflight container projections remain unchanged. Original
-seed native files/inputs, captured SQL and frozen artifacts remain preserved.
-A truncated proxy metadata line now persists INCOMPLETE rather than stale RUNNING;
-that diagnostic failure path was not injected. The original four-case oracle
-capture replay still passes 44 snapshots/38 perturbations without repeating engines.
-No process-loss reconstruction, delayed old-backend exclusion, writer activation,
-native syscall/power-loss, ACK/GC or full restart claim follows from this wave.
-
-## Current qualified slice and next bounded action
-
-Read-only replacement-process history at e92f3d7 remains PASS: seven cases,
-67 snapshots and 90 perturbations, exact build39e7468. Independent AI audit replayed
-the captures and verified 1,734 source files, five executables, six frozen artifacts,
-the original 21-entry file census and recorded resource preservation. Original
-67eff40 build FAIL remains preserved: its seven new tests stopped during fixture
-setup at an insufficient dictionary grant; no product limit was relaxed.
-
-The complementary gap adapter now passes exact build162caeb: 13 checks and 117 test
-executions, including 9 reconstruction tests, affected replay/codec regressions,
-entrypoint/schema checks and Clippy. Root `runs/ingest-history-162caeb` retains
-all 1,738 source files, exact Git archive and five executables. The typed existing-only
-loader shares immutable intent checks with history inspection. Positive original
-replay yields an owned directory/sequence-bound plan retaining its metadata grant.
-Completion checks actual current Control/policy and exact retained intent, then
-applies only the four native writes under row custody and confirmed SQL rollback.
-No missing intent insertion or original attribution rewrite is allowed. Target
-input sidecars refuse at load and again at dispatch, even without a sequence change.
-
-`runs/ingest-gap-process-51a6b86/bindings/result.json` is
-PASS_PREPARED_INITIAL_GAP_COMPLETION, finished 2026-10-12T12:03:56.696588Z;
-SHA256 a89efa2ef563714fb5057270c798cdcdd1c3ddab761a3f2d5a851728096973d3.
-An actual preparing process commits its intent then returns a policy refusal,
-closes native/driver custody and exits. Its actual backend absence is observed.
-Seven config-only recovery processes use copies of that retained gap. Normal
-fresh Control9 positively fences the exited Control8, reconstructs all 4 original
-requests/cut12 and preserves registrar3/preparer8. Native 49 rows/sequence58 becomes
-52/62 in exactly four writes. All 71 PG tables preserve read/completion-phase history
-and intent/xmin; Control claim/exclusion/renewal/release are checked separately.
-Missing/changed intent, target input, missing original input/outcome and cancellation
-after complete proof refuse without native changes. The preparing process exited
-after a returned refusal; this is not an injected process-kill or power-loss test.
-
-The same binaries also pass the seven affected completed-history cases. Actual
-oracles cover 158 full snapshots and 198 corrupted-capture controls including the seed
-preparation. Original f12 retired seed, ac644 prepared seed and the new gap seed
-remain unchanged. All 15 probes exited 0; the idle client wrapper was intentionally
-stopped143, borrowedPG exited 0. No OOM, cleanup error or unrelated lifecycle change.
-Independent build audit verified all sources, artifacts, test counts and resource
-preservation. Independent actual-capture audit replayed all 158 snapshots/198 controls, verified
-original files and all five executables, and confirmed 1,202 unchanged nonborrowed
-container observations. Source SQL preservation remains captured-run evidence,
-without restarting the server for another audit. Evidence and raw paths are
-in the existing recovery report; no task or M1 checkbox is closed by this slice.
-
-The new `ingest-gap-faults-4c283e2` build is
-PASS_INITIAL_GAP_FAULT_PROBE_BUILD_ONLY: CLI/probe compilation and Clippy, with
-unchanged native regression evidence reused from 162caeb. Independent read-only AI
-audit verified all 1,743 source files/archive/manifest, both ELF hashes, actual
-build logs and 1,204 unchanged pre-existing container projections. Both build
-containers exited 0 with no OOM; original cache evidence remains unchanged.
-
-`runs/ingest-gap-delivery-4c283e2/bindings/result.json` is
-PASS_PREPARED_GAP_POLICY_DELIVERY, finished 2026-10-12T12:44:20.518419Z;
-SHA256 6c60f5342c159e11773fd34baf99b09f836c57241b0a78e74e7710cb0bc3b8b8.
-Three isolated copies each run a new attempted completion then another config-only
-process. Actual oracles check 114 full snapshots and reject 123 corrupted captures.
-Policy fixture advances current config/policy to2 with all guards active, preserving
-historical1/registrar3/preparer8 and intent xmin; it is not a product policy writer.
-
-Before-native loss holds START12 before forwarding, with ten completed COMMITs.
-External native49/sequence58 stays unchanged; caller returns Control(Backend).
-Fresh Control10 positively excludes9 and completes four writes to52/62. After-native
-loss holds server completion of ROLLBACK2 with reply still unreleased: external
-native52/62 persists and caller returns DeliveryUnknown. Fresh Control10 inspects
-history without another write. Both failed owners refuse reuse, join a failed
-driver and prove exact backend absence. Followup baseline hashes equal the prior
-final state. All 71 tables and four inputs are checked throughout; original seed
-files, captured SQL and frozen artifacts remain unchanged. All 6 probes exited 0,
-no forced wrapper cleanup; owned client intentionally stopped143, borrowed PG0,
-no OOM or unrelated lifecycle change. Independent read-only AI audit replayed all
-114 snapshots/123 controls, checked the external states, guarded policy metadata,
-original42-path/38-file census and8 frozen artifacts, and confirmed1,205 unchanged
-nonborrowed container projections. No discrepancy was found within this scope.
-
-Two independent source reviews corrected the readonly source mount and
-Python3.13 fixture socket-close order. Initial unit attempts hung and were stopped/
-joined137, then a bounded receipt check failed before that fix; no engine started
-in those attempts. All 26 proxy regressions now pass. The actual loss schedules
-finished below 1.1s enclosing server-clock windows, inside existing deadlines.
-No product policy activation, native syscall/power-loss, installed restart/resend
-or full M1 claim follows. Previous preparation COMMIT-loss remains separate:
-this completion fault loses a read-only ROLLBACK reply after native dispatch.
-
-Exact retirement of the abandoned empty epoch2 attempt is implemented under the
-[selected contract](../reference/ingest-registration.md#empty-prepared-attempt-retirement-under-implementation).
-Native component, five independent fixture groups, additive0031, PG adapter,
-catalog, finite probe and independent Python/SQL oracles are integrated.
-Exact build30a88ae is PASS_INGEST_HISTORY_BUILD_ONLY:13 checks/122 actual tests,
-including69 native,13 codecs and40 entrypoint/schema executions, plus Clippy.
-Independent read-only AI audit verified all1748 source files, five retained ELFs,
-actual toolchain/build receipts, original cache evidence and1207 preflight
-container projections. Both owned build containers exited0, without OOM.
+Exact build30a88aed82f0506b275f3886c7118b3f59a21f67 is
+PASS_INGEST_HISTORY_BUILD_ONLY:13 checks/122 actual tests, including69 native,
+13 codecs and40 entrypoint/schema executions, plus Clippy. Independent read-only
+AI audit verified1748 source files, five retained executables and the actual
+Clang14/Rust1.98.1 build. This is not a power-loss or installed restart claim.
 
 `runs/ingest-empty-83db9d8/bindings/result.json` is
 PASS_INITIAL_EMPTY_RETIREMENT, finished2026-10-12T13:27:52.265218Z;
 SHA256 9e3a18dc3c0aeadced5a23a1021bc457849aa2eebe7ac38496d66a611746e8af.
-All26 actual probes pass333 full snapshots and465 rehashed capture perturbations.
-Eleven empty-retirement processes cover normal/idempotent closure, fresh-process
-terminal observation, native-first SQL failure and fresh-process completion,
-inspection/cancellation and missing/conflicting native/input/metadata refusals.
-Fifteen affected preparation/gap/history processes also pass. Fourteen raw SQL
-transactions check ten precise23514 refusals and four positive rollback cases;
-all71 tables/xmin and core guard definitions remain unchanged by those fixtures.
+All26 actual probes pass333 full snapshots/465 rehashed perturbations. Eleven
+empty-retirement processes include normal/repeated closure, new-process terminal
+observation, native-first SQL failure and new-process completion, inspection,
+cancellation and missing/conflicting native/input/metadata refusals. Fifteen
+preparation/gap/history processes regress the shared original-input resolver.
+Fourteen raw SQL transactions check ten precise23514 refusals and four positive
+rollbacks, preserving all71 tables/xmin and the complete guard catalog.
 
-Normal closure performs one producer2 native marker replacement,52 rows/sequence
-62→63, then exactly13 target SQL rows in five families share timestamp/xmin/D2.
-Same-Control and fresh-Control retries preserve the terminal timestamp/xmin and
-make no native write. The isolated native-first SQL failure leaves native CLOSING
-and SQL prepared. After the failed Control10 backend is observed absent, new
-Control11 reconstructs all four originals and completes SQL without another
-native write. Registrar3/preparer8 and immutable intent remain unchanged.
+One synced producer2 marker replacement gives52 rows/sequence62→63. One terminal
+SQL transaction changes13 target rows in five families with common timestamp,
+xmin and D2. Same-Control and fresh-Control retries preserve both stores. The
+isolated native-first SQL failure leaves native CLOSING and SQL prepared; after
+exact backend absence, new Control11 reconstructs all four originals and finishes
+SQL without another native write. Registrar3/preparer8/intent remain exact.
+Independent actual-capture audit passed333/465 and verified preserved artifacts,
+inputs and1209 nonborrowed container projections. SQL preservation is captured-run
+evidence, without a later audit restart.
 
-Independent read-only AI audit replayed all333 snapshots/465 perturbations,
-matched all26 external final captures/server-clock windows, checked63 source
-paths/57 files,97 input files,nine frozen artifacts and five build executables.
-The1209 nonborrowed container projections are unchanged. BorrowedPG exited0;
-the idle client wrapper was intentionally stopped143; no OOM/cleanup errors.
-Original seed files, captured SQL and frozen artifacts remain preserved. SQL
-preservation is captured-run evidence, without another server restart.
-First wavebe4f284 remains FAIL: the actual legacy owner guard refused correctly,
-but PostgreSQL printed its unqualified function name. Commit83db9d8 corrects only
-that expected diagnostic; no failed artifact was rewritten or relabeled.
+The original be4f284 remains FAIL: its owner guard refused correctly, but the
+fixture expected a qualified function name while PostgreSQL printed it unqualified.
+83db9d8 corrects only that diagnostic expectation. Other earlier failures,
+including dd1539a Clippy,67eff40 fixture budget and6bc2005 clock, remain retained;
+none was overwritten, relabeled or used as passing evidence.
 
-The focused COMMIT-loss build c31312f is
-PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY: two executed release CLI/probe
-compile and Clippy checks. Root rehashed all1751 exported files and both ELFs;
-independent build audit passed, including exact toolchain binaries and preserved
-artifacts. All1210 nonborrowed build-preflight container projections remain
-unchanged; the borrowed PG was intentionally restarted for the later engine. Wrapper31785 joined0, both containers
-stopped0 without OOM or unrelated changes. Product/native code is unchanged from
-the qualified30a88ae build. All24 loopback proxy tests passed. The independent
-oracle retained original175/267 capture checks; artificial transcripts were
-explicitly kept separate from the following actual qualification.
+## Qualified terminal COMMIT loss
+
+Build c31312f38b3a57a4686e6a1bbdcead8c5ad1376a is
+PASS_EMPTY_RETIREMENT_FAULT_PROBE_BUILD_ONLY: CLI/probe compilation and Clippy,
+exactly two executed checks. Independent AI audit rehashed1751 checkout/export
+files, the Git archive, both current executables, five prior30a88ae executables,
+four original cache-evidence executables and actual native toolchain binaries.
+Product/native sources and build inputs are unchanged from30a88ae; its122 tests
+were not rerun. Both build containers exited0. All1210 nonborrowed preflight
+projections remain unchanged; PG was intentionally restarted for the later wave.
 
 `runs/ingest-empty-commits-5938617/bindings/result.json` is
 PASS_INITIAL_EMPTY_RETIREMENT_COMMIT_LOSS, finished2026-10-12T13:47:40.424478Z;
 SHA256 23900c0f3c024276e616ceb21d4dbe93ad9137ee9294f3a44e8abfde0288755c.
-Four actual processes check86 full snapshots and128 rehashed perturbations.
-Wire counters confirm COMMIT6: before-forward6/5/5/5/1, after-complete6/6/6/5/1.
-START11 is source-derived, not an independently measured proxy counter.
-Both failed Control10 sessions return CommitUnknown, refuse reuse, join the failed
-driver and observe their exact backend absent before fresh Control11 recovery.
-Native52 rows/sequence63 persist without another write. Before-forward leaves
-prepared SQL; recovery changes13 target rows at timestamp1791812843492372/xmin26646.
-After-complete already retains timestamp1791812850933041/xmin26663, preserved by
-fresh-process dispatch and same-Control retry. All originals, intent and historical
-attribution remain exact. Followup verification artifacts contain their complete
-predecessor context. Independent actual-capture audit passed:86/128 replayed,1751 source files/two
-ELFs/21 seed paths/six frozen artifacts rehashed and1212 nonborrowed container
-projections unchanged. Original SQL preservation remains captured-run evidence.
-Engine wrapper66235 joined0; borrowedPG stopped0 and idle client wrapper143,
-without OOM/cleanup error/unrelated changes. No engine/build remains active.
+Four actual processes check86 full snapshots/128 rehashed perturbations.
+Actual COMMIT6 counters are before-forward6/5/5/5/1 and after-complete6/6/6/5/1
+(seen/forwarded/server-complete/client-complete/faults). START11 is source-derived.
+Both Control10 failures return CommitUnknown, refuse actual reuse, join the failed
+driver and observe exact backend absence before fresh config-only Control11.
+Native remains52/sequence63 without another write. Before-forward recovery changes
+13 SQL rows at timestamp1791812843492372/xmin26646. After-complete retains
+1791812850933041/xmin26663 through new-process dispatch and same-Control retry.
+Originals, intent and historical attribution remain exact.
 
-Next bounded action: qualify four current-Control concurrency cases
-on new ac644 copies: import claim first COMMIT versus ROLLBACK, retirement first
-with COMMIT6 held and later claim, and actual UTC expiry during Control lock wait.
-Use fresh Control10, not the earlier gap seed's9. Create and seal an accepted
-zero-request import before the race; ordinary application-role guarded SQL
-claims it. This tests the relational claim path, not installed import execution.
-A bounded post-proof gate must precede retirement START11 so the race exercises
-dispatch. Bind waiter/holder PID,backend_start,database; observe real blocking.
-Expiry must occur inside a wait shorter than5s, without rewriting a lease row.
-A historical preparer8 claim requires a separate genuinely live preparation
-fixture; never revive released8 on the ac644 seed. Native syscall/power-loss,
-installed restart, activation and later incarnations remain separate gates.
-No task/M1 checkbox closes from these bounded waves.
+The independent actual-capture audit replayed86/128, verified self-contained
+predecessor contexts, external captures, all1751 engine-source files/two binaries,
+21 seed paths/six frozen artifacts and1212 unchanged nonborrowed container
+projections. Original SQL preservation remains captured-run evidence. All24 proxy
+loopback tests pass, including both COMMIT6 boundaries; those are separate from
+actual PG qualification. Build wrapper31785 and engine wrapper66235 joined0;
+borrowedPG stopped0, idle client wrapper143, no OOM/cleanup error. No active engine/build remains from either completed wave.
 
-Existing history and handoff stay OPEN0-only. New context replays every original
-request under the same bounded metadata/input grants before constructing the plan.
-Exactly one synced producer2 CLOSING0 write precedes the terminal SQL transaction.
-Keep explicit source2 zero, absent target namespaces/inputs/details, complete
-original proof and exact native root/sequence. Prepared+OPEN, prepared+CLOSING,
-terminal+CLOSING are distinct; terminal+OPEN or partial state refuses. Terminal
-SQL closes source2, retires producer/domains/owner/role2 with one timestamp and the
-distinct documented digest, preserving0030 intent/admission veto and sealed topology.
+## Current bounded work and next action
 
-Current Control FOR UPDATE must precede dataset/target custody because generic
-zero-request import claims currently take only Control SHARE. Check the preparing
-through current Control claim window during the actual retirement. Exact terminal
-observation must not reinterpret later unrelated unbound jobs as old obligations;
-no retained retired-by attribution permits reconstructing that historical window.
-The existing evidence records the selected semantics and independent design review.
+Four current-Control claim/expiry schedules have been integrated froma692dbb in
+separate worktrees; root remains sole integrator and engine executor:
 
-Root remains sole integrator and engine executor. Earlier separate worktrees are
-clean/retained; new agent worktrees may be dirty within assigned scopes. Build31785 and engine66235 joined0; no engine/build is active. Root owns
-evidence/inventory/checkpoint edits.
-Last observed free space68,986,761,216bytes; remeasure before allocation.
+| Worktree | Owner | Writable scope |
+|---|---|---|
+| `.research/empty-lock-probe-20261012` | recovery_review | Two existing finite-probe example files |
+| `.research/empty-lock-harness-20261012` | successor_restart_design | New `initial_empty_locks.py` |
+| `.research/empty-lock-oracle-20261012` | cleanup_review | New lock oracle; two narrow shared refusal modes |
 
-Archive currently assumes snapshot1 and one epoch1 stream; Sync has initial
-request/epoch assumptions. Inspect and connect those consumers before claiming
-restart/resend, and repeat the signed event with provenance disabled. General
-subsequent owner lifetimes and repeated restart remain required beyond the
-initial-only protocol; do not mistake this bounded prerequisite for them.
+Root owns `bindings.py` and governance updates; the two build-profile
+dispatchers are committed. Flag `--ingest-empty-locks` is ready. Profile `ingest-empty-locks` is
+committed8339297; its exact build under
+`runs/ingest-empty-locks-8339297` is PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY.
+Wrapper67773 joined0; fetch/native containers exited0 without OOM. Independent
+artifact audit verified1751 source files, two current executables, prior protected
+executables and all1214 unchanged preflight projections. Engine remains NOT_RUN. The only selected build checks are compilation
+and Clippy; unchanged native122-test evidence remains at30a88ae. Review their actual
+diffs and agent commits before running. Expected wrapper interface is
+`run(pg,client,output,rows,clone)` with four ordered `CASES` and statusPASS.
 
-Previous f12 product artifacts and the first 10 installed retirement cases remain
-valid for their exact scope. The four fault cases 0d81400 establish client exit
-versus later rollback/COMMIT, not server cancellation. Four locks cases 3f36784
-establish policy deadline and both Ingest lock orders. Three obligations cases
-115d888 refuse synthetic import claim, input binding and producer_checkpoint 0;
-the latter is not import_checkpoints and no real import execution is claimed.
-All old SQL/native/input preservation and independent oracle audits are retained
-in the owning recovery evidence. The original 6bc2005 clock failure remains FAIL.
-No rerun or cleanup is needed merely because this successor slice is new.
+Next bounded action: commit the reviewed integration and execute four new ac644
+clones from an exact source worktree, using the verified8339297 build. All new
+helper source and affected probe/product/guard boundaries are reviewed. The
+independent oracle review finding (unchecked setup SQL declaration) is fixed.
+Synthetic checks pass86 snapshots/201 controls; prior actual COMMIT capture replay
+remains86/128. None of these is a new lock-engine outcome. The cases are claim-first COMMIT versus
+ROLLBACK, retirement-first with frontend COMMIT6 held, and actual Control UTC
+expiry while waiting on a SHARE holder. Fresh Control is10, not the older gap
+seed's9. A fixed accepted zero-request import is created and sealed before the
+race; ordinary application-role guarded SQL claims it. This checks the relational
+claim path, not an installed import executor. No optional fifth recovery process
+is selected for this focused wave.
 
-Earlier Archive evidence qualifies signed acquisition→durable admission→timer
-archive→private history→353-byte signed JSONL export. M1 also needs online indexing,
-outages and installed bundle journeys. Five exports under 256 MiB remain NOT_RUN.
-Follow the existing cross-phase dependencies for analytics, interfaces, operations,
-browser and website work; optional enablement does not finish selected scope.
+A bounded post-proof file gate must precede dispatch START11. Retirement-first
+also needs a postdispatch gate to commit its unblocked claim before the next
+snapshot/retry; proxy permits two later commits for retry7/release8. Bind both
+waiter and holder PID/backend_start/database and observe real blocking. A frontend
+COMMIT hold leaves the server idle in transaction after its last query, not on
+an unreceived COMMIT. Expiry pre-ages the actual20s lease outside a transaction,
+then waits across its server-clock deadline for less than5s; never rewrite leases.
+Both refusals must precede native closing and preserve the prepared target.
+
+The oracle may project out fixture job rows/gates only after independently
+validating their complete fields,xmin,phase and original snapshot hashes. Do not
+normalize away unchecked changes. Persist final external observations before
+assertions. Unknown process timeout must not reopen a potentially owned Rocks
+root. Preserve each failed derivative and scope every claim to its actual run.
+
+Historical preparer8 claims require a separate genuinely live preparation
+fixture; never revive released8 on ac644. Existing history/handoff remain OPEN0
+only. Empty retirement distinguishes prepared+OPEN, prepared+CLOSING and
+terminal+CLOSING; terminal+OPEN and partial state refuse. Positive original replay,
+native directory/sequence identity, bounded grants and current Control custody
+remain mandatory. No epoch3, writer adoption or activation is added.
+
+## Remaining product gates
+
+Current Control UPDATE precedes dataset/target custody because generic unbound
+import claims take Control SHARE. Claims from immutable preparer through current
+Control veto an actual prepared retirement. Exact terminal observation must not
+reinterpret a later unrelated unbound claim as an old obligation; there is no
+retained historical retired-by attribution from which to infer that window.
+
+Native syscall/power-loss, installed restart/resend, subsequent owner lifetimes
+and activation remain required. Archive assumes snapshot1 and an epoch1 stream;
+Sync retains initial request/epoch assumptions. Inspect and connect those consumers
+before claiming restart, and repeat the signed event with provenance disabled.
+Earlier Archive qualifies signed admission→archive→private history→353-byte signed
+JSONL export. M1 still needs online indexing,outages and installed bundle journeys;
+five exports under256MiB remain NOT_RUN. Follow existing cross-phase dependencies
+through all selected analytics,interfaces,operations,browser and website work.
+Optional enablement does not finish selected scope.
 
 ## Resources and maintenance
 
-The [lab inventory](../research/laboratory-inventory.json) owns resource records.
-Before cleanup, implementation/qualification/object-storage labs totaled about
-975 GiB (lower bounds where access is denied). The latest connected wave left
-68,986,761,216 bytes (about 64.2 GiB) free; remeasure before allocation because this
-is a shared host. Small retirement fixtures need >2 GiB; the larger export wave
-still requires 64 GiB. Never lower that reserve to force a run.
+The [lab inventory](../research/laboratory-inventory.json) owns resource identities
+and dated observations. Last free space68,756,312,064 bytes (about64.0GiB); remeasure
+before allocation. Small engine fixtures require2GiB; native builds12GiB. The
+larger export wave still requires64GiB+577MiB, currently unavailable. Never lower
+that reserve to force a run. No large export is allocated by the current slice.
 
-Targeted cleanup is RETIRED_VERIFIED. The reviewed one-off executor removed
-48,725 format-verified single-link compiler intermediates (40.96GiB allocated)
-from 18 explicitly inventoried historical target directories. Observed free-space
-increase was 43,967,025,152bytes; concurrent host activity affects that delta.
-472,825 retained readable files kept identical hashes; directories/opaque PG and
-secret roots, symlinks and 35 stopped historical Docker consumers were rechecked.
-Final/shared ELFs remain at their original paths. No source, dataset, artifact,
-container, volume or unrelated workload was deleted. The 18 targets are retired
-compiler caches: do not reuse them incrementally. Current network-1154757 cache
-remains protected. Raw manifest, executor, journal and terminal receipt are under
-`.research/tux-maintenance-20261012/`; hashes and exact roots are in the inventory.
-The initial execute attempt refused the reviewer's active check lock before any
-deletion; the successful second attempt revalidated independently. Do not replay
-this executor. Inaccessible unrelated processes remain an inspection boundary.
+Targeted cleanup is RETIRED_VERIFIED. Its one-off executor removed48,725 verified
+compiler intermediates from18 inventoried historical target directories;472,825
+retained readable files kept identical hashes. No source,dataset,final executable,
+container,volume or unrelated workload was deleted. Evidence is retained under
+`.research/tux-maintenance-20261012/`; do not replay the executor or incrementally
+reuse those18 retired caches. The current shared cache remains protected:
+`runs/network-1154757/out/build/{target,cargo-home}`, exclusive`.compiler-cache.lock`.
+Keep qualification executables outside mutable caches and large outputs off/tmp.
 
-Shared compiler `runs/network-1154757/out/build/{target,cargo-home}` and exclusive
-`.compiler-cache.lock` stay protected. Retained native build uses clang 14; host
-clang 19 discovery is not its qualification. Rust 1.98.1 / Node 26.4.0 and local pinned
-pnpm 9.15.9 (`.research/tooling/node_modules/.bin`) are available. Keep large outputs
-off RAM-backed /tmp and artifacts outside mutable caches.
+Borrowed PG root`runs/relay-source-recheck-e06f580/pg`, owner
+5e69b0f060b1607c25230d1dbd3e5608, container7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec,
+retains its original ownership. Current build image/source receipts pin Rust1.98.1
+and Clang14; host Clang19 discovery is not native qualification. Node26.4.0 and
+local pinned pnpm9.15.9 are available. Preserve all inventoried source/fault clones,
+Archive worker/assets, input dependencies and original binaries.
 
-Borrowed PG `relay-source-recheck-e06f580/pg` and signed seed
-`installed-archive-export-b7b60f9` retain their original owner labels and evidence.
-Preserve every original/fault clone, bb_source_template, broken0137713_gap_relations,
-bff0bc3 gap parent, private-history32dd/history-captureb5c dependencies,
-installed-publication61271e2 worker,4e6b5c0 assets,8fa/f677 inputs,649 cache,network
-e38/1a2 evidence,03b0197 artifacts and corrupt91d5 clones. Negative sources
-9fa8b98/8effc76/5f1582c/a334ac8/network-direct-no-poll1154757 must never be merged/pushed.
-All identities remain in the inventory; old cleanup receipts are not scripts to replay.
-
-Six unrelated services remain running: inspirehep-reindex db/mq/cache/es,ollama,
-tgdataset-mongo. Recheck actual processes and container owners before allocations.
-GitHub run 37017677570 could not start jobs because of billing/spending restrictions;
-Q33 authorizes isolated trusted Tux CI, recorded independently. Native arm64,
-actual signing/registry provisioning and public promotion keep their separate gates.
+Negative sources9fa8b98/8effc76/5f1582c/a334ac8/network-direct-no-poll1154757 must
+never be merged/pushed. Six unrelated services remain running: inspirehep-reindex
+db/mq/cache/es,ollama,tgdataset-mongo; recheck actual owners before allocations.
+GitHub run37017677570 could not start jobs due to billing/spending restrictions;
+Q33 authorizes isolated trusted Tux CI, independently recorded. Native arm64,
+actual signing/registry provisioning and public promotion retain separate gates.

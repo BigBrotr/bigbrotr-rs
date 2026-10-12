@@ -40401,5 +40401,67 @@
       "unrelated_changed": [],
       "free_bytes_after": 68986761216
     }
+  },
+  "implementation_initial_empty_locks_20261012": {
+    "status": "READY_ENGINE_NOT_RUN",
+    "owner": "root sole integrator and engine executor",
+    "worktrees": [
+      {
+        "root": ".research/empty-lock-probe-20261012",
+        "branch": "qualification/empty-lock-probe",
+        "base": "a692dbb8a792adf9c7f04cb8c554243301ab7583",
+        "scope": "two finite probe example files",
+        "state": "clean-retained; integrated9166d78",
+        "source": "2c6887f1704a86747905c2d61caee74b59b96a4e"
+      },
+      {
+        "root": ".research/empty-lock-harness-20261012",
+        "branch": "qualification/empty-lock-harness",
+        "base": "a692dbb8a792adf9c7f04cb8c554243301ab7583",
+        "scope": "new initial_empty_locks.py only",
+        "state": "clean-retained; integrated2afe681",
+        "source": "e4fed9c116070232fbc415608ff12ce51c0299fb"
+      },
+      {
+        "root": ".research/empty-lock-oracle-20261012",
+        "branch": "qualification/empty-lock-oracle",
+        "base": "a692dbb8a792adf9c7f04cb8c554243301ab7583",
+        "scope": "new lock oracle plus two narrow shared refusal modes",
+        "state": "clean-retained; integrated64b09da",
+        "source": "4678d889bbca7548e9918c74da6c5c243363c55f"
+      }
+    ],
+    "resources": [],
+    "free_bytes_last_observed": 68756312064,
+    "preserve": "All earlier labs, seeds, fault derivatives and binaries retained. Exact lock probe build stopped-retained. No lock-wave engine allocated. Never replay retired-cache cleanup executor.",
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+    "build": {
+      "source": "833929700e78eb4837e78021cc69b41d0e701109",
+      "tree": "b00784ed07161c3eb0249381ecd3601f42709582",
+      "owner": "eb9f58ba62d24aaedb9d11d3f2fc12c4",
+      "owner_label": "org.bigbrotr.network-transport",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-locks-8339297",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "deb234cee7f8722c85b1800376004f670effb71dd8796b807e69e677490ac836"
+        },
+        {
+          "name": "native",
+          "id": "ee2f477dc4b1ec2b3cb309c1c3bdb7682ec156f9cda4cb66ae4c10d7d9da3ab4"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+      "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+      "started_at": "2026-10-12T13:59:19.285861+00:00",
+      "qualification": "PASS_EMPTY_RETIREMENT_LOCK_PROBE_BUILD_ONLY",
+      "inventory_changed": [],
+      "free_bytes_after": 68757282816,
+      "finished_at": "2026-10-12T14:00:46.880979+00:00"
+    },
+    "wrapper_session": 67773,
+    "wrapper_joined_exit_code": 0
   }
 }
