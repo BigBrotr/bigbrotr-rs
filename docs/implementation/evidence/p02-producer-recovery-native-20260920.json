@@ -3290,6 +3290,31 @@
             "FinishedAt": "2026-10-12T09:20:22.092648693Z"
           }
         }
+      ],
+      "review": "Independent read-only AI review replayed four complete SQL oracles, native captures and three corruption controls; checked terminal custody, all73 original filesystem census paths and signed seed report hash. Original PG/catalog preservation uses captured harness comparisons, not a new live query."
+    },
+    "obligations_fixture_20261012": {
+      "status": "PREPARED_NOT_RUN",
+      "entrypoint": "experiments/acquisition-scope/bindings.py RUN_ROOT --ingest-retirement-obligations BUILD",
+      "product_source": "f12dbf04677f8afa8c62aa1c8638e199dad0abc1",
+      "expected_cases": 3,
+      "scope": [
+        "Original-Control import claim with no producer request binding",
+        "Unowned accepted import job with retained producer_input_bindings; isolates binding veto",
+        "Retained producer_checkpoint at complete_through_request0; absence is not zero"
+      ],
+      "preparation": "Explicit synthetic incompatible retained SQL history in isolated signed-store clones only. Does not qualify genuine import admission or logical closure. All product triggers and retirement function remain unchanged and active during invocation.",
+      "oracle": "Exact additive setup delta; all70 SQL tables/xmin and49 native rows/four inputs unchanged by refused retirement except fresh active Control claim. Exact expected PostgreSQL veto/context required on that operation backend; whole server logs are not retained.",
+      "review": "Independent read-only AI review checked complete new fixture, schema and wiring. LF-inclusive record digest corrected; no remaining blocker. Expected PG ERROR/context is also correlated to the exact fresh Control backend and bounded case interval.",
+      "not_run": [
+        "Actual three-case engine wave",
+        "Genuine installed import admission/logical closure",
+        "True zero-issued installed interrupted startup, Control UTC expiry and other row contention",
+        "Successor, ACK/GC, remaining M1 and release"
+      ],
+      "local_checks": [
+        "Four Python modules parse",
+        "Three pure setup/oracle replays on actual captured signed state, with unrelated producer mutation refused; not engine evidence"
       ]
     }
   }

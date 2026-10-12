@@ -91,8 +91,8 @@ def expected_output(initialized, domains, digest):
             owner_release='committed', native_acknowledged='0', native_retired='0'))
 
 
-def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized, *, faults=False, locks=False):
-    assert not (faults and locks)
+def run(pg, client, output, rows, prepare, check_native, cases, digest, initialized, *, faults=False, locks=False, obligations=False):
+    assert sum((faults, locks, obligations)) <= 1
     def upgrade(database, config, name, target):
         before = rows(database)
         physical = lab.sql(pg, database, "SELECT jsonb_object_agg(relname,pg_relation_filenode(c.oid)) "
@@ -173,6 +173,11 @@ def run(pg, client, output, rows, prepare, check_native, cases, digest, initiali
         cases.append(dict(name=name, status='PASS', control_tables=len(after), native_rows=49,
             original_requests=4, expected_refusal=error, seconds=elapsed))
         lab.write_json(output / 'signed-recovery-cases.json', cases)
+
+    if obligations:
+        from initial_retirement_obligations import run as run_obligations
+        run_obligations(pg, output, rows, ready, invoke, cases)
+        return
 
     if locks:
         from initial_retirement_locks import run as run_locks

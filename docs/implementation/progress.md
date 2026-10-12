@@ -14,19 +14,20 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Last observed committed HEAD is 3f367849312c4f917e36b02a4d199798ae682bfc,
-containing the authority/Ingest locking fixture. Private upstream was last
-verified at a3c39cfdfe0a3d5aa439e13e805535c3a4e2d41f; the new fixture and this
-result record still need a verified private push. Main stays
+Last observed committed HEAD is 20ddd02b92bc86f58f4185a62aa3d5e4fb0505f2,
+containing the authority/Ingest locking fixture and its passing evidence. The
+exact same hash was freshly verified on private origin/recovery/tux-20261012. Main stays
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. Product binaries remain
 f12dbf04677f8afa8c62aa1c8638e199dad0abc1, tree
 7dd4e343f51b50a6055096ef14a0aaec03a0a8e5. No Rust/migration/dependency changes.
 
-Root owns the current evidence/inventory/reference/checkpoint updates. No
+Root owns the new initial_retirement_obligations.py, its three existing launcher
+wiring files, and evidence/inventory/checkpoint updates. No
 merge/rebase or concurrent source writer. Latest retirement launcher exited0;
 owned client/borrowed PG are stopped. The full-product goal stays active.
-A bounded read-only AI review audits remaining retirement gates and captured
-lock outcomes; no overall product certification is implied.
+Independent AI review replayed captured lock outcomes and preservation checks.
+Another bounded read-only review maps the successor responsibility; neither is
+overall product certification.
 
 Original lab source snapshots remain unchanged. The independent canonical Git
 checkout and verified `.research/tux-resumption-20261012/source-before-migration.bundle`
@@ -91,11 +92,12 @@ inputs and original seed preserved; no cleanup/unrelated changes or OOM. No serv
 cancellation or broader concurrency guarantee follows. The owning recovery report
 contains exact backend observations, artifact/source hashes and result digest.
 
-Next bounded action: qualify the three independent import retirement vetoes using
+The three independent import retirement veto fixtures are prepared, NOT_RUN.
+Commit the reviewed fixture and run --ingest-retirement-obligations using
 fresh signed-store clones: original-Control import claim with no request, retained
 producer input binding, and retained producer checkpoint even at zero. Reuse the
-complete refusal/native oracle and f12 artifacts; label synthetic incompatible
-SQL history explicitly. Review found that successful initial startup always has
+complete refusal/native oracle and f12 artifacts; synthetic incompatible SQL
+history is explicitly labeled. Review corrected record_sha256 to include LF. Review found that successful initial startup always has
 two dictionary requests; true zero-issued is a real interrupted earlier startup
 boundary, covered by native empty closing but not installed retirement. Keep that
 limit explicit. Control UTC expiry and other row-contention schedules also remain

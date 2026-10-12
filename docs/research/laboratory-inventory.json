@@ -39181,5 +39181,14 @@
     ],
     "result_sha256": "b35a98c3b261cb9a873f64bc08e703cd9f04eff3930190cf9630ddbc3c40f5ae",
     "resources_state": "STOPPED_RETAINED"
+  },
+  "implementation_retirement_obligations_20261012": {
+    "status": "PREPARING_NOT_RUN",
+    "owner": "root sole integrating owner under Q35",
+    "root_policy": "Fresh sibling runs/ingest-retirement-obligations-<fixture revision>; clean immutable source, retained f12 artifacts",
+    "borrowed_pg": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg",
+    "seed": "/home/tux/bigbrotr-implementation-20260917/runs/installed-archive-export-b7b60f9/bindings",
+    "resources": "Three isolated Control/native clones and one labeled client; synthetic import obligations only; stop owned resources and preserve original/negative evidence",
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
   }
 }
