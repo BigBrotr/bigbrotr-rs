@@ -39346,6 +39346,21 @@
         "files": true,
         "artifacts": true
       }
+    },
+    "commit_fault_probe_worktree": {
+      "path": "/home/tux/bigbrotr-rs/.research/initial-successor-pg-20261012",
+      "branch": "qualification/successor-commit-probe",
+      "base": "0202319f005fea9043f8d28cb217369555ece6e4",
+      "owner": "cleanup_review: Rust probe/dispatch only",
+      "state": "SOURCE_REVIEWED_BUILD_NOT_RUN",
+      "commit": "60c455230fb728bfcef35d071f6bd4eea1732e42"
+    },
+    "commit_fault_oracle_worktree": {
+      "path": "/home/tux/bigbrotr-rs/.research/initial-successor-oracle-20261012",
+      "branch": "qualification/successor-commit-oracle",
+      "base": "0202319f005fea9043f8d28cb217369555ece6e4",
+      "owner": "recovery_review: independent Python oracle only",
+      "state": "IMPLEMENTING_NOT_RUN"
     }
   }
 }

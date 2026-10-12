@@ -25,6 +25,7 @@ const CONTROL_TTL: Duration = Duration::from_secs(20);
 
 struct Probe {
     config: Config,
+    initial_proxy_port: Option<u16>,
     root: config::Resolved,
     path: PathBuf,
     budget: ResourceBudget,
@@ -40,6 +41,24 @@ struct Attempt {
     window: u32,
 }
 
+/// The actual PostgreSQL incarnation observed before disrupting the transport.
+/// A PID alone could select a later backend and cannot establish exclusion.
+struct Backend {
+    pid: i32,
+    start: String,
+    database: String,
+    control_epoch: u64,
+}
+impl Backend {
+    fn emit(&self, present: bool) {
+        emit(
+            serde_json::json!({"event":"successor-backend","stage":"initial",
+            "pid":self.pid,"backend_start":self.start,"database":self.database,
+            "control_epoch":self.control_epoch,"present":present}),
+        );
+    }
+}
+
 // The laboratory supplies the process deadline too. A timeout is a failed run
 // with retained unknown state, never a claimed SQL rollback or native absence.
 async fn bounded<T>(future: impl Future<Output = T>) -> T {
@@ -48,11 +67,25 @@ async fn bounded<T>(future: impl Future<Output = T>) -> T {
         .expect("successor probe deadline; preserve all outcomes")
 }
 
-pub async fn run(config: Config, mode: &str, config_file: &Path) {
+pub async fn run(config: Config, mode: &str, config_file: &Path, proxy_port: Option<u16>) {
     assert!(matches!(
         mode,
-        "successor-normal" | "successor-gap" | "successor-old-schema" | "successor-rollback"
+        "successor-normal"
+            | "successor-gap"
+            | "successor-old-schema"
+            | "successor-rollback"
+            | "successor-commit-before"
+            | "successor-commit-after"
     ));
+    let commit_fault = matches!(mode, "successor-commit-before" | "successor-commit-after");
+    assert_eq!(proxy_port.is_some(), commit_fault);
+    if let Some(port) = proxy_port {
+        assert_ne!(port, 0);
+        assert!(
+            config.get_ports().is_empty(),
+            "one proxy port for the initial host"
+        );
+    }
     let root =
         crate::config::resolve::parse(&std::fs::read_to_string(config_file).unwrap()).unwrap();
     assert_eq!(config.get_dbname(), root.text("postgres.control.database"));
@@ -91,6 +124,7 @@ pub async fn run(config: Config, mode: &str, config_file: &Path) {
     .unwrap();
     let probe = Probe {
         config,
+        initial_proxy_port: proxy_port,
         root,
         path,
         budget,
@@ -105,6 +139,45 @@ pub async fn run(config: Config, mode: &str, config_file: &Path) {
     probe.snapshot("before-prepare").await;
 
     match mode {
+        "successor-commit-before" | "successor-commit-after" => {
+            // Claim is COMMIT 1, observation 2, four refresh/inspection pairs
+            // 3..10, final policy refresh 11, and preparation 12. Tuple reads
+            // and all snapshots use the independent direct observer connection.
+            let backend = probe.observe_backend(&owner).await;
+            let error = probe
+                .prepare(
+                    &mut owner,
+                    &mut recovery,
+                    &spec,
+                    &attempt,
+                    "commit-unknown",
+                    false,
+                    false,
+                )
+                .await
+                .expect_err("lost preparation COMMIT response");
+            assert_eq!(error, InitialSuccessionError::CommitUnknown);
+            probe.check_poisoned(&mut owner).await;
+            // These are observations only. Client/driver termination cannot
+            // distinguish a committed intent from a still-live SQL transaction.
+            probe.snapshot("commit-unknown").await;
+            probe.end_control("unknown", owner, driver, false).await;
+            probe.require_backend_absent(&backend).await;
+            (owner, driver) = probe.acquire("completion", &spec, 2).await;
+            probe
+                .prepare(
+                    &mut owner,
+                    &mut recovery,
+                    &spec,
+                    &attempt,
+                    "completed",
+                    false,
+                    false,
+                )
+                .await
+                .unwrap();
+            probe.snapshot("completed").await;
+        }
         "successor-normal" => {
             probe
                 .prepare(
@@ -283,7 +356,13 @@ impl Probe {
             "lease_ttl_us":CONTROL_TTL.as_micros().to_string()}),
         );
         self.snapshot(&format!("{stage}-before-claim")).await;
-        let (client, driver) = bounded(self.config.connect(NoTls)).await.unwrap();
+        let mut config = self.config.clone();
+        if ordinal == 1
+            && let Some(port) = self.initial_proxy_port
+        {
+            config.port(port);
+        }
+        let (client, driver) = bounded(config.connect(NoTls)).await.unwrap();
         let driver = tokio::spawn(driver);
         let (owner, _) = bounded(ControlSession::acquire(
             client,
@@ -320,13 +399,78 @@ impl Probe {
             // actual backend; it does not mark its retained PG row released.
             drop(owner);
         }
-        crate::ingest_closing::join(driver, false).await;
+        let failed = self.initial_proxy_port.is_some() && stage == "unknown";
+        assert!(!failed || !release);
+        crate::ingest_closing::join(driver, failed).await;
+        if failed {
+            emit(serde_json::json!({"event":"successor-driver","stage":stage,
+                "failed":true,"joined":true}));
+        }
         emit(
             serde_json::json!({"event":"successor-control","stage":stage,
             "phase":if release {"released-and-joined"} else {"dropped-and-joined"},
             "resource":hex(identity.resource_id.as_bytes()),"epoch":identity.epoch.get()}),
         );
         self.snapshot(&format!("{stage}-after-control-end")).await;
+    }
+
+    async fn observe_backend(&self, owner: &ControlSession) -> Backend {
+        let identity = owner.identity();
+        let row = bounded(self.observer.query_one(
+            "SELECT json_build_object('pid',o.control_backend_pid,
+                'backend_start',o.control_backend_start,'database',a.datname)::text
+             FROM control.owner_epochs o JOIN pg_catalog.pg_stat_activity a
+               ON a.pid=o.control_backend_pid AND a.backend_start=o.control_backend_start
+             WHERE o.resource_id=$1::bytea AND o.epoch=$2::text::numeric
+               AND o.process_incarnation=$3::bytea AND o.role='control'
+               AND o.state='active' AND a.datname=current_database()",
+            &[
+                &&identity.resource_id.as_bytes()[..],
+                &identity.epoch.get().to_string(),
+                &&identity.process_incarnation.as_bytes()[..],
+            ],
+        ))
+        .await
+        .unwrap();
+        // Preserve the server's JSON timestamp representation used by the full
+        // owner-row snapshots; the later predicate parses this exact value.
+        let value: serde_json::Value = serde_json::from_str(row.get::<_, &str>(0)).unwrap();
+        let backend = Backend {
+            pid: i32::try_from(value["pid"].as_i64().unwrap()).unwrap(),
+            start: value["backend_start"].as_str().unwrap().into(),
+            database: value["database"].as_str().unwrap().into(),
+            control_epoch: identity.epoch.get(),
+        };
+        assert!(backend.pid > 0 && !backend.start.is_empty());
+        assert_eq!(Some(backend.database.as_str()), self.config.get_dbname());
+        backend.emit(true);
+        backend
+    }
+
+    async fn require_backend_absent(&self, backend: &Backend) {
+        // Poll the exact frozen tuple on the direct observer. This neither
+        // terminates a backend nor infers server rollback from a dead client.
+        bounded(async {
+            loop {
+                let present: bool = self
+                    .observer
+                    .query_one(
+                        "SELECT EXISTS (SELECT 1 FROM pg_catalog.pg_stat_activity
+                     WHERE pid=$1::integer AND backend_start=$2::text::timestamptz
+                       AND datname=$3::text)",
+                        &[&backend.pid, &backend.start, &backend.database],
+                    )
+                    .await
+                    .unwrap()
+                    .get(0);
+                if !present {
+                    break;
+                }
+                tokio::time::sleep(Duration::from_millis(25)).await;
+            }
+        })
+        .await;
+        backend.emit(false);
     }
 
     async fn check_poisoned(&self, owner: &mut ControlSession) {

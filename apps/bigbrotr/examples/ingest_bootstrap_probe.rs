@@ -883,6 +883,11 @@ fn main() {
         args.len(),
         if args[1].starts_with("history-") {
             7
+        } else if matches!(
+            args[1].as_str(),
+            "successor-commit-before" | "successor-commit-after"
+        ) {
+            6
         } else {
             5
         }
@@ -927,7 +932,14 @@ fn main() {
             } else if args[1].starts_with("recovery-process-") {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
             } else if args[1].starts_with("successor-") {
-                ingest_succession::run(config, &args[1], Path::new(&args[4])).await;
+                ingest_succession::run(
+                    config,
+                    &args[1],
+                    Path::new(&args[4]),
+                    args.get(5)
+                        .map(|port| port.parse().expect("explicit proxy port")),
+                )
+                .await;
             } else {
                 run(config, &args[1], Path::new(&args[4])).await;
             }
