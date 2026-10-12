@@ -15,6 +15,8 @@ MIGRATION_SHA256 = '52819215086abb15c06b25ebb536b16955256e4707aaf0f1a89060c66fc9
 SUCCESS = ('empty-normal', 'empty-terminal-retry', 'empty-fresh-completion', 'empty-inspect')
 COMMIT_LOSS = ('empty-commit-before', 'empty-commit-after')
 FAILURES = {
+    'empty-claim-commit': ('retirement', None, 'Control(Backend)'),
+    'empty-control-expiry': ('retirement', None, 'Control(Unavailable)'),
     'empty-commit-before': ('retirement', None, 'CommitUnknown'),
     'empty-commit-after': ('retirement', None, 'CommitUnknown'),
     'empty-native-first-failure': ('retirement', None, 'Control(Backend)'),
@@ -156,7 +158,8 @@ def verify(events, original, native, inputs, mode, *, seed, server_window, prede
     success = mode in SUCCESS
     initially_closing = mode in FOLLOWUPS
     loaded = success or mode in COMMIT_LOSS or mode in (
-        'empty-cancelled', 'empty-native-first-failure', 'empty-missing-input')
+        'empty-cancelled', 'empty-native-first-failure', 'empty-missing-input',
+        'empty-claim-commit', 'empty-control-expiry')
     retired_at = retirement_tx = None
 
     def take(event, stage=None, phase=None):
@@ -243,7 +246,7 @@ def verify(events, original, native, inputs, mode, *, seed, server_window, prede
                 same(current, snapshot('before-retirement'))
                 dispatch_success = mode in ('empty-normal', 'empty-fresh-completion', 'empty-terminal-retry')
                 receipt = take('successor-empty-retirement') if dispatch_success else None
-                if mode != 'empty-cancelled':
+                if mode not in ('empty-cancelled', 'empty-claim-commit', 'empty-control-expiry'):
                     expected_native = known['closed']
                     sequence = 63
                 after = snapshot('after-retirement')
