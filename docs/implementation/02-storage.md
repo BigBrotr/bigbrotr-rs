@@ -80,8 +80,14 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   refusal and insert rollback preserve full history. Actual COMMIT loss before
   forwarding and after server completion passes at `64419a5` with `3969a61`
   binaries: exact backend exclusion precedes fresh Control and retry preserves
-  the correct intent attribution. Process reconstruction and activation remain
-  separate requirements.
+  the correct intent attribution. Separate-process history and prepared-gap
+  completion now pass at `51a6b86` with `162caeb` binaries: 158 full snapshots and
+  198 corrupted-capture controls preserve original attribution and inputs.
+  Advanced current policy and completion delivery loss pass at `4c283e2`: six
+  actual processes, 114 snapshots and 123 corrupted-capture controls. Current
+  policy2 preserves historical1; fresh recovery completes before-native loss
+  or reads already completed state after-native loss without duplicate writes.
+  Activation remains a separate requirement.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
   policy references; later lifecycle migrations add observations/scheduling.
   The first [private operational identity consumer](../reference/relay-endpoint-registry.md)
@@ -252,8 +258,17 @@ One owner serializes exact identity decisions for each writable directory.
   exact retry under fresh Control, intent conflict and explicit activation veto.
   Two actual COMMIT-loss cases at `64419a5` add 24 snapshots and 34 rejected
   corrupted captures, with unchanged native state until fresh-Control retry.
-  The local plan remains in one process. Process-loss reconstruction,
-  abandoned-attempt retirement, activation and restart/resend remain unqualified;
+  Those earlier cases retain the local plan in one process. The later
+  `51a6b86` wave reconstructs only from configuration and retained stores in a
+  genuinely new process, positively checks all four original requests, and
+  completes the existing preparation under fresh Control. It checks missing or
+  changed intent, missing input/outcome, target sidecar and cancellation without
+  relaxing refusal. The preparing process exits after a returned authority
+  refusal; no injected process-kill is claimed. Advanced policy and before/after-native
+  completion delivery loss now pass in six processes at `4c283e2`, including
+  unavailable failed-owner reuse, joined driver and exact old backend absence.
+  Abandoned-attempt retirement, activation and installed restart/resend remain
+  unqualified;
   no whole-step completion follows.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained

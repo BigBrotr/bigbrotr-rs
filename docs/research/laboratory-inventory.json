@@ -39819,7 +39819,7 @@
     }
   },
   "implementation_initial_gap_policy_delivery_20261012": {
-    "status": "FIXTURE_READY_BUILD_ENGINE_NOT_RUN",
+    "status": "PASS_PREPARED_GAP_POLICY_DELIVERY",
     "owner": "root sole integrating and engine owner",
     "base": "ef8376602c39231dcaad7f1ad1e2e063eef5b174",
     "worktrees": [
@@ -39839,10 +39839,108 @@
         "status": "CLEAN_INTEGRATED_RETAINED"
       }
     ],
-    "resources": [],
+    "resources": [
+      "exact source/build/export and2ELFs retained",
+      "three new cloned databases and native stores retained",
+      "borrowed PG and owned client stopped; no active engine/build session"
+    ],
     "free_bytes_before_build": 70391721984,
     "root_policy": "New separately inventoried ingest-gap-faults and ingest-gap-delivery exact-source roots; exclusive current compiler cache; no retired cache reuse.",
     "preservation": "All original, positive and negative labs/worktrees retained; borrowed PG stopped. Six unrelated services running; no new fixture/build process active.",
-    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
+    "evidence": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+    "build": {
+      "source": "4c283e20ab1bdc186e192cd68fc08833718e2fa8",
+      "tree": "be7c9249b3814ceebdc431aea01b01ac87d285a3",
+      "owner": "577dc725412e6cec3d8c40613dbc359b",
+      "owner_label": "org.bigbrotr.network-transport",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-gap-faults-4c283e2",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "fetch",
+          "id": "9cb8426a596b6746118bb28ad1c345c83a9613dbd2bd59969c48d8da52f4bb4f"
+        },
+        {
+          "name": "native",
+          "id": "8db6648fb30d0014a96c537b7530a87dea6ce2c74ed254839d838cb801471700"
+        }
+      ],
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+      "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+      "started_at": "2026-10-12T12:41:14.153955+00:00",
+      "qualification": "PASS_INITIAL_GAP_FAULT_PROBE_BUILD_ONLY",
+      "inventory_changed": [],
+      "free_bytes_after": 70254153728,
+      "finished_at": "2026-10-12T12:42:40.380756+00:00",
+      "independent_ai_review": "Complete:1743sourcefiles/2ELFs/2checks/four original cache ELFs and1204preexisting container projections verified."
+    },
+    "connected": {
+      "status": "PASS_PREPARED_GAP_POLICY_DELIVERY",
+      "source": "4c283e20ab1bdc186e192cd68fc08833718e2fa8",
+      "build_source": "4c283e20ab1bdc186e192cd68fc08833718e2fa8",
+      "owner": "ec39b915627dd33cd06c51769378dd39",
+      "label": "org.bigbrotr.acquisition-binding",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-gap-delivery-4c283e2/bindings",
+      "client": {
+        "id": "5d203bd45ca73e898d40b90629256f0920051c8180aca69c4d663cae4ebeeb67",
+        "name": "bigbrotr-acquisition-binding-4c283e2"
+      },
+      "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+      "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+      "databases": [
+        "bb_scope_bind_4c283e2_gap_policy",
+        "bb_scope_bind_4c283e2_gap_loss_before",
+        "bb_scope_bind_4c283e2_gap_loss_after"
+      ],
+      "finished_at": "2026-10-12T12:44:20.518419+00:00",
+      "result_sha256": "6c60f5342c159e11773fd34baf99b09f836c57241b0a78e74e7710cb0bc3b8b8",
+      "terminal": [
+        {
+          "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+          "name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-12T12:43:59.645721196Z",
+            "FinishedAt": "2026-10-12T12:44:19.686792422Z"
+          }
+        },
+        {
+          "id": "5d203bd45ca73e898d40b90629256f0920051c8180aca69c4d663cae4ebeeb67",
+          "name": "/bigbrotr-acquisition-binding-4c283e2",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-10-12T12:44:00.549332879Z",
+            "FinishedAt": "2026-10-12T12:44:18.534349187Z"
+          }
+        }
+      ],
+      "cleanup_errors": [],
+      "missing_owned": [],
+      "unrelated_changed": [],
+      "free_bytes_after": 70198644736,
+      "source_preserved": {
+        "control": true,
+        "files": true,
+        "artifacts": true
+      },
+      "independent_ai_review": "Complete: six actual processes114snapshots/123controls and external before/held/after captures; guardedpolicy metadata, original files/inputs/artifacts and1205nonborrowed container projections verified. No live SQL/restart."
+    }
   }
 }

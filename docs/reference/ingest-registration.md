@@ -279,6 +279,14 @@ seeds and the newly created gap seed are preserved. Exact captures and scoped
 independent review are in the
 [recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json).
 The original process exited after a returned refusal; no kill was injected.
-Advanced current policy, result loss during/after this new completion adapter,
-installed recovery, native syscall ambiguity and general subsequent lifetimes
-remain separate requirements.
+The `4c283e2` qualification adds six actual processes: guarded current policy2
+with historical policy1 retained, loss before completion's transaction starts,
+and loss of the read-only ROLLBACK reply after native completion, each followed
+by a new config-only recovery. Before-native loss leaves 49 rows/sequence58;
+fresh recovery completes to52/62. After-native loss retains52/62; fresh recovery
+inspects history without another write. Failed Control reuse refuses, its driver
+is joined and its exact backend is observed absent before the next claim.
+All 114 full snapshots and 123 corrupted-capture controls pass. Policy advancement
+is a privileged isolated fixture with normal guards, not a product activation
+writer. Installed recovery, empty-attempt retirement, writer activation, native
+syscall ambiguity and general subsequent lifetimes remain separate requirements.

@@ -5810,7 +5810,7 @@
       "review_boundary": "Independent read-only design review covered full0029/0030, PG retirement/closing/source-closure/history/gap, native closing/sourceproof/handoff and owning references; relevant0001/0002 guards and0013/0022\u20130024 workflow attribution. Broader migrations and Archive/Sync consumers not re-audited. No source edits or engines."
     },
     "gap_policy_delivery_qualification": {
-      "status": "CANDIDATE_BUILD_AND_ENGINES_NOT_RUN",
+      "status": "PASS_PREPARED_GAP_POLICY_DELIVERY",
       "observed_at": "2026-10-12",
       "task": "P02-T01 Step5 / P02-T02 Step4; prerequisite to P01-T09 Step4/M1, no checkbox closed",
       "base": "ef8376602c39231dcaad7f1ad1e2e063eef5b174",
@@ -5851,17 +5851,775 @@
         ],
         "remaining_limit": "External observations at held boundary remain inside existing10s probe deadline. A slow observation is INCOMPLETE/UNKNOWN, never product refusal or a successful loss discriminator."
       },
-      "preservation": "Five frozen actual51a6b86 gap-seed artifact hashes rechecked. Original71tables/49native rows/sequence58/fourinputs retained. No engine or build for this candidate has run.",
-      "next": "Commit coherent fixture source; exact isolated ingest-gap-faults build (CLI/probe and Clippy only), then execute six actual probes under owned runner, retain all outcomes and obtain read-only actual-capture audit.",
+      "preservation": "Preflight five frozen seed hashes matched; actual run retained full original census, SQL and frozen artifacts. All six processes and owned engine resources are terminal.",
+      "next": "Implement exact empty epoch2 attempt retirement under the existing task/contract after recording this qualified evidence and verified private push.",
       "not_run": [
-        "new candidate build",
-        "actual advanced-policy and gap delivery-loss schedules",
         "empty epoch2 retirement",
         "writer activation",
         "native I/O uncertainty/power loss",
         "installed restart/resend",
         "full M1 and product"
-      ]
+      ],
+      "build": {
+        "status": "PASS_INITIAL_GAP_FAULT_PROBE_BUILD_ONLY",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-gap-faults-4c283e2",
+        "source": "4c283e20ab1bdc186e192cd68fc08833718e2fa8",
+        "tree": "be7c9249b3814ceebdc431aea01b01ac87d285a3",
+        "owner": "577dc725412e6cec3d8c40613dbc359b",
+        "source_files": 1743,
+        "source_archive_sha256": "591cf9f61271bc507959ffd03efba2e45ab7cc58108000d33acfc2b9b04d15de",
+        "source_manifest_sha256": "82019cda70f8d2851585c97f9da12068e25a36ee588860929be7fa3b1afcd243",
+        "binary_sha256": "e273c37250c0852b1d4da38606cac5ac0c7bac357a5d9a1a083748d4f4fa51a8",
+        "probe_sha256": "cdfe97b13bc587409f29a781414a6da95ac2f27165e13fb7772590bda434a999",
+        "checks": [
+          {
+            "name": "compile",
+            "command": [
+              "cargo",
+              "build",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--bin",
+              "bigbrotr",
+              "--example",
+              "ingest_bootstrap_probe"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 78.58405363652855
+          },
+          {
+            "name": "clippy",
+            "command": [
+              "cargo",
+              "clippy",
+              "--locked",
+              "--offline",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "--bin",
+              "bigbrotr",
+              "--example",
+              "ingest_bootstrap_probe",
+              "--",
+              "-D",
+              "warnings"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 5.522151987999678
+          }
+        ],
+        "artifact_hashes": {
+          "resources.json": "da8d0f37a2db6c8122f921217797bd9587c142358c8485afe0fe4179af704627",
+          "out/qualification.json": "5400b08b1a7defbed766faf623ea977f0b2dfb368470fa3e18f688d5033b8d18",
+          "out/artifacts/build-result.json": "f64f3e1691b246d793dc7aaf0c817a9701a486d74931cefe6a0d3d940a1b4f8c",
+          "out/build/source-manifest.json": "82019cda70f8d2851585c97f9da12068e25a36ee588860929be7fa3b1afcd243",
+          "out/build-checks/result.json": "b982f9cf4e7ef2da9853bbbeb2eb992f7b7cf84344f34616c2bc6bfd1aa4d70e",
+          "out/build-checks/compile.log": "fa0d32532a0f024fb9546ccd9be17b6f88798d41b3eaa5486aabe92bd336398a",
+          "out/build-checks/clippy.log": "a3fe99fc31b8025b1121a0e400bf8cfefec57d0a61d9e3b53ae20da37dbd3d8f"
+        },
+        "finished_at": "2026-10-12T12:42:40.380756+00:00",
+        "scope": "Finite initial-gap policy/delivery-loss probe build and Clippy only; unchanged native tests retained at162caeb; actual engine schedules remain separate",
+        "independent_ai_review": {
+          "status": "COMPLETE_NO_DISCREPANCY_IN_SCOPE",
+          "source": "All1743 files, manifest and exact archive verified. Both actual compile/Clippy logs and2 separate ELF hashes checked; no native test or PG claim.",
+          "resources": "Independent live census before authorized engine restart:1204 preexisting projections unchanged; exactly2new owned containers exited0/PID0/noOOM with correct limits/mounts. Four original cache ELFs rehashed unchanged."
+        }
+      },
+      "connected": {
+        "status": "PASS_PREPARED_GAP_POLICY_DELIVERY",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-gap-delivery-4c283e2/bindings",
+        "source": "4c283e20ab1bdc186e192cd68fc08833718e2fa8",
+        "build_source": "4c283e20ab1bdc186e192cd68fc08833718e2fa8",
+        "owner": "ec39b915627dd33cd06c51769378dd39",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "5d203bd45ca73e898d40b90629256f0920051c8180aca69c4d663cae4ebeeb67",
+          "name": "bigbrotr-acquisition-binding-4c283e2"
+        },
+        "postgres": "bigbrotr-implementation-pg-20260917-source_e06f580",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_4c283e2_gap_policy",
+          "bb_scope_bind_4c283e2_gap_loss_before",
+          "bb_scope_bind_4c283e2_gap_loss_after"
+        ],
+        "finished_at": "2026-10-12T12:44:20.518419+00:00",
+        "result_sha256": "6c60f5342c159e11773fd34baf99b09f836c57241b0a78e74e7710cb0bc3b8b8",
+        "cases": [
+          {
+            "name": "gap-policy",
+            "status": "PASS",
+            "attempts": [
+              {
+                "name": "gap-policy",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "gap-policy",
+                  "route": "gap",
+                  "snapshots": 20,
+                  "control_tables": 71,
+                  "resolved_requests": [
+                    1,
+                    2,
+                    3,
+                    4
+                  ],
+                  "current_policy_revision": 2,
+                  "historical_policy_revision": 1,
+                  "registrar_epoch": 3,
+                  "prepared_by_epoch": 8,
+                  "sql_history_and_intent_xmin_preserved": true,
+                  "admission": false,
+                  "result_error": null,
+                  "native_sequence_delta": 4,
+                  "server_clock_window": {
+                    "before_us": 1791809043177295,
+                    "after_us": 1791809043754443
+                  },
+                  "qualification": "wire cut and genuine process separation established independently by harness",
+                  "final": {
+                    "control_sha256": "2cb668d582249a801e0d6320cd7e04860810716e26fd6ba8dcd6bc77950403db",
+                    "native_sha256": "af55bf86c2004867e8f2fe3f977929cd05e87ccaff96b74f17c0af2b628b08d3",
+                    "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                    "sequence": 62,
+                    "control_epoch": 9,
+                    "control_state": "released"
+                  }
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "selection-not-actual-manifest",
+                    "native-byte-refreshed-hash",
+                    "native-extra-write",
+                    "intent-original-preparer",
+                    "intent-xmin",
+                    "registrar-attribution",
+                    "original-input",
+                    "original-outcome",
+                    "positive-closure",
+                    "successor-admission",
+                    "successor-reservation",
+                    "current-policy-digest",
+                    "missing-snapshot",
+                    "backend-identity-reused",
+                    "backend-still-present",
+                    "driver-not-joined",
+                    "consistently-future-renewals",
+                    "current-policy-confused-with-historical",
+                    "policy-setup-conflates-documents",
+                    "policy-setup-rewrites-predecessor",
+                    "policy-setup-rebinds-intent",
+                    "policy-setup-extra-write"
+                  ]
+                },
+                "backend_absence": {
+                  "database": "bb_scope_bind_4c283e2_gap_policy",
+                  "user": "bigbrotr_control",
+                  "limit_seconds": 5,
+                  "status": "OBSERVED_ABSENT",
+                  "attempts": [
+                    {
+                      "seconds": 0.08882821910083294,
+                      "count": 0,
+                      "backends": []
+                    }
+                  ],
+                  "seconds": 0.08883243706077337
+                },
+                "seconds": 0.483249319717288
+              },
+              {
+                "name": "prepared-recover",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "prepared-recover",
+                  "route": "history",
+                  "snapshots": 17,
+                  "control_tables": 71,
+                  "resolved_requests": [
+                    1,
+                    2,
+                    3,
+                    4
+                  ],
+                  "current_policy_revision": 2,
+                  "historical_policy_revision": 1,
+                  "registrar_epoch": 3,
+                  "prepared_by_epoch": 8,
+                  "sql_history_and_intent_xmin_preserved": true,
+                  "admission": false,
+                  "result_error": null,
+                  "native_sequence_delta": 0,
+                  "server_clock_window": {
+                    "before_us": 1791809045542833,
+                    "after_us": 1791809046066062
+                  },
+                  "qualification": "wire cut and genuine process separation established independently by harness",
+                  "final": {
+                    "control_sha256": "de7ce6d2c2406c18e484a9183e5e48f84b64faefca78ede0184f7b391047a1b9",
+                    "native_sha256": "af55bf86c2004867e8f2fe3f977929cd05e87ccaff96b74f17c0af2b628b08d3",
+                    "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                    "sequence": 62,
+                    "control_epoch": 10,
+                    "control_state": "released"
+                  }
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "selection-not-actual-manifest",
+                    "native-byte-refreshed-hash",
+                    "native-extra-write",
+                    "intent-original-preparer",
+                    "intent-xmin",
+                    "registrar-attribution",
+                    "original-input",
+                    "original-outcome",
+                    "positive-closure",
+                    "successor-admission",
+                    "successor-reservation",
+                    "current-policy-digest",
+                    "missing-snapshot",
+                    "backend-identity-reused",
+                    "backend-still-present",
+                    "driver-not-joined",
+                    "consistently-future-renewals",
+                    "current-policy-confused-with-historical",
+                    "prior-control_sha256",
+                    "prior-native_sha256",
+                    "prior-inputs_sha256"
+                  ]
+                },
+                "backend_absence": {
+                  "database": "bb_scope_bind_4c283e2_gap_policy",
+                  "user": "bigbrotr_control",
+                  "limit_seconds": 5,
+                  "status": "OBSERVED_ABSENT",
+                  "attempts": [
+                    {
+                      "seconds": 0.04830382578074932,
+                      "count": 0,
+                      "backends": []
+                    }
+                  ],
+                  "seconds": 0.04830644093453884
+                },
+                "seconds": 0.442729115486145
+              }
+            ],
+            "policy_setup": "guarded privileged fixture only"
+          },
+          {
+            "name": "gap-loss-before",
+            "status": "PASS",
+            "attempts": [
+              {
+                "name": "gap-loss-before",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "gap-loss-before",
+                  "route": "gap",
+                  "snapshots": 20,
+                  "control_tables": 71,
+                  "resolved_requests": [
+                    1,
+                    2,
+                    3,
+                    4
+                  ],
+                  "current_policy_revision": 1,
+                  "historical_policy_revision": 1,
+                  "registrar_epoch": 3,
+                  "prepared_by_epoch": 8,
+                  "sql_history_and_intent_xmin_preserved": true,
+                  "admission": false,
+                  "result_error": "Control(Backend)",
+                  "native_sequence_delta": 0,
+                  "server_clock_window": {
+                    "before_us": 1791809048243660,
+                    "after_us": 1791809049315512
+                  },
+                  "qualification": "wire cut and genuine process separation established independently by harness",
+                  "final": {
+                    "control_sha256": "09d6a59b609eae5339c556b40bc0bc3dfeb82d1fe584e79c951e1631dd2d893a",
+                    "native_sha256": "91b64595e263c5d297e0d3a67b82fdf834777ade7f3e93524f0cc972eeff3b1d",
+                    "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                    "sequence": 58,
+                    "control_epoch": 9,
+                    "control_state": "active"
+                  }
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "selection-not-actual-manifest",
+                    "native-byte-refreshed-hash",
+                    "native-extra-write",
+                    "intent-original-preparer",
+                    "intent-xmin",
+                    "registrar-attribution",
+                    "original-input",
+                    "original-outcome",
+                    "positive-closure",
+                    "successor-admission",
+                    "successor-reservation",
+                    "current-policy-digest",
+                    "missing-snapshot",
+                    "backend-identity-reused",
+                    "backend-still-present",
+                    "driver-not-joined",
+                    "consistently-future-renewals",
+                    "unrelated-error",
+                    "failed-driver-called-clean",
+                    "consistently-wrong-native-loss-outcome"
+                  ]
+                },
+                "backend_absence": {
+                  "database": "bb_scope_bind_4c283e2_gap_loss_before",
+                  "user": "bigbrotr_control",
+                  "limit_seconds": 5,
+                  "status": "OBSERVED_ABSENT",
+                  "attempts": [
+                    {
+                      "seconds": 0.04694306291639805,
+                      "count": 0,
+                      "backends": []
+                    }
+                  ],
+                  "seconds": 0.04694692976772785
+                },
+                "seconds": 0.9686244949698448
+              },
+              {
+                "name": "prepared-recover",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "prepared-recover",
+                  "route": "gap",
+                  "snapshots": 20,
+                  "control_tables": 71,
+                  "resolved_requests": [
+                    1,
+                    2,
+                    3,
+                    4
+                  ],
+                  "current_policy_revision": 1,
+                  "historical_policy_revision": 1,
+                  "registrar_epoch": 3,
+                  "prepared_by_epoch": 8,
+                  "sql_history_and_intent_xmin_preserved": true,
+                  "admission": false,
+                  "result_error": null,
+                  "native_sequence_delta": 4,
+                  "server_clock_window": {
+                    "before_us": 1791809050967582,
+                    "after_us": 1791809051500065
+                  },
+                  "qualification": "wire cut and genuine process separation established independently by harness",
+                  "final": {
+                    "control_sha256": "7d46199296f2197c6e065c90ed2cc6a03c32c672b684b1f24eae244358061d18",
+                    "native_sha256": "af55bf86c2004867e8f2fe3f977929cd05e87ccaff96b74f17c0af2b628b08d3",
+                    "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                    "sequence": 62,
+                    "control_epoch": 10,
+                    "control_state": "released"
+                  }
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "selection-not-actual-manifest",
+                    "native-byte-refreshed-hash",
+                    "native-extra-write",
+                    "intent-original-preparer",
+                    "intent-xmin",
+                    "registrar-attribution",
+                    "original-input",
+                    "original-outcome",
+                    "positive-closure",
+                    "successor-admission",
+                    "successor-reservation",
+                    "current-policy-digest",
+                    "missing-snapshot",
+                    "backend-identity-reused",
+                    "backend-still-present",
+                    "driver-not-joined",
+                    "consistently-future-renewals",
+                    "prior-control_sha256",
+                    "prior-native_sha256",
+                    "prior-inputs_sha256"
+                  ]
+                },
+                "backend_absence": {
+                  "database": "bb_scope_bind_4c283e2_gap_loss_before",
+                  "user": "bigbrotr_control",
+                  "limit_seconds": 5,
+                  "status": "OBSERVED_ABSENT",
+                  "attempts": [
+                    {
+                      "seconds": 0.0952172614634037,
+                      "count": 0,
+                      "backends": []
+                    }
+                  ],
+                  "seconds": 0.09522096812725067
+                },
+                "seconds": 0.4225790295749903
+              }
+            ],
+            "policy_setup": null
+          },
+          {
+            "name": "gap-loss-after",
+            "status": "PASS",
+            "attempts": [
+              {
+                "name": "gap-loss-after",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "gap-loss-after",
+                  "route": "gap",
+                  "snapshots": 20,
+                  "control_tables": 71,
+                  "resolved_requests": [
+                    1,
+                    2,
+                    3,
+                    4
+                  ],
+                  "current_policy_revision": 1,
+                  "historical_policy_revision": 1,
+                  "registrar_epoch": 3,
+                  "prepared_by_epoch": 8,
+                  "sql_history_and_intent_xmin_preserved": true,
+                  "admission": false,
+                  "result_error": "DeliveryUnknown",
+                  "native_sequence_delta": 4,
+                  "server_clock_window": {
+                    "before_us": 1791809053643305,
+                    "after_us": 1791809054606403
+                  },
+                  "qualification": "wire cut and genuine process separation established independently by harness",
+                  "final": {
+                    "control_sha256": "449427f4147991e0200e42649231de396456e4fbc02b47ee007915a01e5a46c1",
+                    "native_sha256": "af55bf86c2004867e8f2fe3f977929cd05e87ccaff96b74f17c0af2b628b08d3",
+                    "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                    "sequence": 62,
+                    "control_epoch": 9,
+                    "control_state": "active"
+                  }
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "selection-not-actual-manifest",
+                    "native-byte-refreshed-hash",
+                    "native-extra-write",
+                    "intent-original-preparer",
+                    "intent-xmin",
+                    "registrar-attribution",
+                    "original-input",
+                    "original-outcome",
+                    "positive-closure",
+                    "successor-admission",
+                    "successor-reservation",
+                    "current-policy-digest",
+                    "missing-snapshot",
+                    "backend-identity-reused",
+                    "backend-still-present",
+                    "driver-not-joined",
+                    "consistently-future-renewals",
+                    "unrelated-error",
+                    "failed-driver-called-clean",
+                    "consistently-wrong-native-loss-outcome"
+                  ]
+                },
+                "backend_absence": {
+                  "database": "bb_scope_bind_4c283e2_gap_loss_after",
+                  "user": "bigbrotr_control",
+                  "limit_seconds": 5,
+                  "status": "OBSERVED_ABSENT",
+                  "attempts": [
+                    {
+                      "seconds": 0.09738331194967031,
+                      "count": 0,
+                      "backends": []
+                    }
+                  ],
+                  "seconds": 0.09738661721348763
+                },
+                "seconds": 0.8693685848265886
+              },
+              {
+                "name": "prepared-recover",
+                "status": "PASS",
+                "oracle": {
+                  "status": "PASS",
+                  "mode": "prepared-recover",
+                  "route": "history",
+                  "snapshots": 17,
+                  "control_tables": 71,
+                  "resolved_requests": [
+                    1,
+                    2,
+                    3,
+                    4
+                  ],
+                  "current_policy_revision": 1,
+                  "historical_policy_revision": 1,
+                  "registrar_epoch": 3,
+                  "prepared_by_epoch": 8,
+                  "sql_history_and_intent_xmin_preserved": true,
+                  "admission": false,
+                  "result_error": null,
+                  "native_sequence_delta": 0,
+                  "server_clock_window": {
+                    "before_us": 1791809056238570,
+                    "after_us": 1791809056746923
+                  },
+                  "qualification": "wire cut and genuine process separation established independently by harness",
+                  "final": {
+                    "control_sha256": "23ad04f07ec68d0d76a0c51dcbf968f60b85326f98f72d4ec407828011c68fa0",
+                    "native_sha256": "af55bf86c2004867e8f2fe3f977929cd05e87ccaff96b74f17c0af2b628b08d3",
+                    "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+                    "sequence": 62,
+                    "control_epoch": 10,
+                    "control_state": "released"
+                  }
+                },
+                "negative_controls": {
+                  "status": "PASS",
+                  "rejected": [
+                    "selection-not-actual-manifest",
+                    "native-byte-refreshed-hash",
+                    "native-extra-write",
+                    "intent-original-preparer",
+                    "intent-xmin",
+                    "registrar-attribution",
+                    "original-input",
+                    "original-outcome",
+                    "positive-closure",
+                    "successor-admission",
+                    "successor-reservation",
+                    "current-policy-digest",
+                    "missing-snapshot",
+                    "backend-identity-reused",
+                    "backend-still-present",
+                    "driver-not-joined",
+                    "consistently-future-renewals",
+                    "prior-control_sha256",
+                    "prior-native_sha256",
+                    "prior-inputs_sha256"
+                  ]
+                },
+                "backend_absence": {
+                  "database": "bb_scope_bind_4c283e2_gap_loss_after",
+                  "user": "bigbrotr_control",
+                  "limit_seconds": 5,
+                  "status": "OBSERVED_ABSENT",
+                  "attempts": [
+                    {
+                      "seconds": 0.09549812693148851,
+                      "count": 0,
+                      "backends": []
+                    }
+                  ],
+                  "seconds": 0.09550167433917522
+                },
+                "seconds": 0.40224270336329937
+              }
+            ],
+            "policy_setup": null
+          }
+        ],
+        "snapshots": 114,
+        "rejected_capture_controls": 123,
+        "source_preserved": {
+          "control": true,
+          "files": true,
+          "artifacts": true
+        },
+        "source_artifacts": {
+          "result.json": "a89efa2ef563714fb5057270c798cdcdd1c3ddab761a3f2d5a851728096973d3",
+          "gap-seed.json": "12f090e4e8ba09a4f7455d1c12b96afd9b66640f1b432431b6d30b27b1490137",
+          "gap-seed-after.json": "4eca961d5c36916bf154ebebe35e9ce24b9c26e8bf491671eddc437981c79216",
+          "gap-original.json": "f36d71bb27e8e135fffdae60c02e317e18ae5cbbf51933ae89ea03224f97c2d0",
+          "gap-source-preserved.json": "e33263d3e5fd032fe9d3a9592dbb4a0355242dd128ca20217187e966026f08a7"
+        },
+        "artifact_hashes": {
+          "gap-fault-cases.json": "ecbb71b3e35e862fec80f052cddeab11db5894fab7a6f8b73bf290b0035c0dc6",
+          "gap-fault-source-backends.json": "4589acb9fc92c4d49b0d2b258adcede056772259031ec17bc54c461c3b39e76e",
+          "gap-fault-source-preserved.json": "899e16242dbc7adb2a69fbabd4a95d2fcda73576bcb3e347a544c3a46be6f884",
+          "gap-fault-source.json": "a37d94e263ba92ac861f469a78403423e28f2c7d252f1e45bb7108075ba8b28c",
+          "gap-loss-after-after-dump-response.json": "b41cef8c616c36414562c9f9739b36923b5efc7b297b014f707af2dad0079dce",
+          "gap-loss-after-after-native.json": "ed92d0993dca4b845bde6ad3b998b5477fcf340378af2ceeeda952188bc29880",
+          "gap-loss-after-after.json": "3f609dfdc6d415bd3d847578940eeef2f7ba735529fe7f387e3c41ace73ea4df",
+          "gap-loss-after-attempts.json": "46f603fcf8dbcaeb3524a8cf5b736ef6203e71f8c863faefba1dfa47e80935a6",
+          "gap-loss-after-backends.json": "e3195375b6e46b23ce4adb966c86c0418c30c20fef0870c587d5db9184634440",
+          "gap-loss-after-before-dump-response.json": "99e51a8ff99938a4963745bdf3d9a59e57a115bd8f60ac571864fa545f03f54b",
+          "gap-loss-after-before-native.json": "92d63ff9c60572f83259e2156335b3e98db30534bda10af6eecd036e15b2bdfe",
+          "gap-loss-after-before.json": "4eca961d5c36916bf154ebebe35e9ce24b9c26e8bf491671eddc437981c79216",
+          "gap-loss-after-clock.json": "6fd4909d21bbc8a2b2f7499daa4674b598661e71c7b1a248643360644cc91985",
+          "gap-loss-after-held-dump-response.json": "9b878a056386632556a49be33c9ab6631348dfefa84ae15e29dd418c258d324b",
+          "gap-loss-after-held-native.json": "ed92d0993dca4b845bde6ad3b998b5477fcf340378af2ceeeda952188bc29880",
+          "gap-loss-after-held.json": "e5432475c46ed311055a34a26f86d7bb3f7c0e06960e43d48e6db6e72b2e6ff5",
+          "gap-loss-after-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "gap-loss-after-recovery-after-dump-response.json": "1cfb352b03b59ffd7274ac9a531b74c6ba786d2ed1aa374028c8b2a6370ba530",
+          "gap-loss-after-recovery-after-native.json": "ed92d0993dca4b845bde6ad3b998b5477fcf340378af2ceeeda952188bc29880",
+          "gap-loss-after-recovery-after.json": "dbd12391053afe6d3636c0add53d670eb7961548a8eec3252b7f7f7cc99296ef",
+          "gap-loss-after-recovery-backends.json": "382849ac1e989d3a62b69fb61403c765709cf7514d322b07bdb56c45d7b7d1ae",
+          "gap-loss-after-recovery-before-dump-response.json": "6c77b9ba774b8a74decd0c790ef19212399daf5a3940d669778046c68dabe189",
+          "gap-loss-after-recovery-before-native.json": "ed92d0993dca4b845bde6ad3b998b5477fcf340378af2ceeeda952188bc29880",
+          "gap-loss-after-recovery-before.json": "3f609dfdc6d415bd3d847578940eeef2f7ba735529fe7f387e3c41ace73ea4df",
+          "gap-loss-after-recovery-clock.json": "cb55927ff4359f41abd1666b1f59117c56aadc92a2449e82abbbfb888a74cece",
+          "gap-loss-after-recovery-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "gap-loss-after-recovery-response.json": "53f355fd45bea73f6e7ef94cc21e0ae46eef61fafcc131720939e29cfd6041a9",
+          "gap-loss-after-response.json": "afbdd33a4e27337420abc372f70be48e302b30e58d9e0ffe799e6d50ae947df6",
+          "gap-loss-after-seed-dump-response.json": "203dbdcbbbe240a184b820e0ef2612a1be5659b8083aa616a3c43c23b2471d48",
+          "gap-loss-after-seed-native.json": "92d63ff9c60572f83259e2156335b3e98db30534bda10af6eecd036e15b2bdfe",
+          "gap-loss-before-after-dump-response.json": "152dc1d8740aa4f6985ac72dd09f75dcf797007fa88db472ef818d46d564f693",
+          "gap-loss-before-after-native.json": "92d63ff9c60572f83259e2156335b3e98db30534bda10af6eecd036e15b2bdfe",
+          "gap-loss-before-after.json": "7a7e96c09e8eceb1344a6f935c65ccdd48dafb90d4660c5ac503abc120e2b4d3",
+          "gap-loss-before-attempts.json": "3eeae956154601f5362b3f49897ccb171e4580155efd7b9e6cd1b25c3d9c7109",
+          "gap-loss-before-backends.json": "1a875921ea4be1279b1e2382987433b365dc21f8ac9b13dc0e00420672863d5d",
+          "gap-loss-before-before-dump-response.json": "61aa14e6948ae03de6082752ca5fe534cb3610f227e0565ddb4ea3ecda87e241",
+          "gap-loss-before-before-native.json": "92d63ff9c60572f83259e2156335b3e98db30534bda10af6eecd036e15b2bdfe",
+          "gap-loss-before-before.json": "4eca961d5c36916bf154ebebe35e9ce24b9c26e8bf491671eddc437981c79216",
+          "gap-loss-before-clock.json": "7a542691311aa666548919a13e936694dbcabdc07449fc40ac268cf72c92966f",
+          "gap-loss-before-held-dump-response.json": "69b222f8a89b66885d51cc53742f42ad3164ea7d4101e68aec6cfbc4bc46b1be",
+          "gap-loss-before-held-native.json": "92d63ff9c60572f83259e2156335b3e98db30534bda10af6eecd036e15b2bdfe",
+          "gap-loss-before-held.json": "c370a4a0e5a6c4fc52d67274dc5aa509d0a2b060c76d26294f36ade3a743f179",
+          "gap-loss-before-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "gap-loss-before-recovery-after-dump-response.json": "9acaaeb50131fbb806ff9683b10c64ae16a8d5aa08d10b7d8a8635065cb4ff47",
+          "gap-loss-before-recovery-after-native.json": "ed92d0993dca4b845bde6ad3b998b5477fcf340378af2ceeeda952188bc29880",
+          "gap-loss-before-recovery-after.json": "93e989a3efaa9cc214809c68d5a130f73dc63e1b36b5817692f5255affb8f50e",
+          "gap-loss-before-recovery-backends.json": "04fff92a185120ade24db689654d403729560f3ad6daacd044eb6debd5d3cb5a",
+          "gap-loss-before-recovery-before-dump-response.json": "11924844a8b3d47ab1155951d6e4d2cb7f0fc403625e5d0cd48f6a4b831f5533",
+          "gap-loss-before-recovery-before-native.json": "92d63ff9c60572f83259e2156335b3e98db30534bda10af6eecd036e15b2bdfe",
+          "gap-loss-before-recovery-before.json": "7a7e96c09e8eceb1344a6f935c65ccdd48dafb90d4660c5ac503abc120e2b4d3",
+          "gap-loss-before-recovery-clock.json": "5e82fc092240bf25666fe6ee57bdd4bae003895b4eb1fda675692acbde4e1a94",
+          "gap-loss-before-recovery-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "gap-loss-before-recovery-response.json": "f3934a1ec3396963aeaf9f3a1e173e352271109c7d2bf5f7c3d87bb490b4862f",
+          "gap-loss-before-response.json": "2d1b0df2313b9400aec138e9998a34419c41ea071c89183cc1549b4b6f465976",
+          "gap-loss-before-seed-dump-response.json": "4f37da9482101f7695fc720d5b1245be429bbe82653599e159c7983c697963e9",
+          "gap-loss-before-seed-native.json": "92d63ff9c60572f83259e2156335b3e98db30534bda10af6eecd036e15b2bdfe",
+          "gap-policy-after-dump-response.json": "dc006ae09e658d8d61a2d929f2499c6ad3106c613abdca050931eb1e2df8d483",
+          "gap-policy-after-native.json": "ed92d0993dca4b845bde6ad3b998b5477fcf340378af2ceeeda952188bc29880",
+          "gap-policy-after.json": "c9344384fdbad0395e2fd9b3d3c34ca1b6da18cb5e7684829a8dff43f79cf7ae",
+          "gap-policy-attempts.json": "7977eba085294ea8d56f39bf9100a03616613aeeca6a7b872d61567aec5f3f92",
+          "gap-policy-backends.json": "00d16448ff0e18f008b8655be78cbe653599e1484d925033bb4b8064ae418b33",
+          "gap-policy-before-dump-response.json": "6ffb4977001c0c4817f118afe1404d5425084f1750f60af6f640c9b29bb452b8",
+          "gap-policy-before-native.json": "92d63ff9c60572f83259e2156335b3e98db30534bda10af6eecd036e15b2bdfe",
+          "gap-policy-before.json": "307fc651f00fe31f02842b35e4f92d94994f5a7e3f4c78ade3d5ba41047220a9",
+          "gap-policy-clock.json": "c14c06c36f9c610dc6349c8a2f003f254c1584af9c83f270dc109585183508e4",
+          "gap-policy-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "gap-policy-policy-after.json": "307fc651f00fe31f02842b35e4f92d94994f5a7e3f4c78ade3d5ba41047220a9",
+          "gap-policy-policy-before.json": "4eca961d5c36916bf154ebebe35e9ce24b9c26e8bf491671eddc437981c79216",
+          "gap-policy-policy-qualified.json": "167fe4783b50c18cb751564a1fe728c49818796ba31ce948f3471243e417b502",
+          "gap-policy-policy-response.json": "a23ebcd31c01ae931d1afbc0ef43d632c6aa8351cad7ef202b9b3d0f8dfc7124",
+          "gap-policy-policy-setup.json": "091f710854c909ef5232ca51dacb7d7c5964917b821b7e75c9376114f6b0808a",
+          "gap-policy-recovery-after-dump-response.json": "19e5365e4acb1de76f164a5f1aeebcc3868e9373fa6dee10e3907b2c0837c325",
+          "gap-policy-recovery-after-native.json": "ed92d0993dca4b845bde6ad3b998b5477fcf340378af2ceeeda952188bc29880",
+          "gap-policy-recovery-after.json": "5db7f673ff8a0afbb17f64a069070d0a9843668f989ce8fb118cc6f4a1d34902",
+          "gap-policy-recovery-backends.json": "d738809e3fa602865be70ae2ecfb7e81aedb5b061f85bb69f3e901a5f01a79ba",
+          "gap-policy-recovery-before-dump-response.json": "1d88cd82604ccabf152932dc79f0e1b621f45632f62eb62de83804643d19998e",
+          "gap-policy-recovery-before-native.json": "ed92d0993dca4b845bde6ad3b998b5477fcf340378af2ceeeda952188bc29880",
+          "gap-policy-recovery-before.json": "c9344384fdbad0395e2fd9b3d3c34ca1b6da18cb5e7684829a8dff43f79cf7ae",
+          "gap-policy-recovery-clock.json": "1dfef009a25fe9fb1cf47ddbe331ada9e313be45f85e663ce93fcf71e1cd9528",
+          "gap-policy-recovery-inputs.json": "c757c9978a581ccef16c249f0fd1d8d15c64d9996b4c02b3bea1830a86cddba0",
+          "gap-policy-recovery-response.json": "5b88df8e138315fdedbf5ef8c86590aa3da4463eaa2abfdf926730adba3dc926",
+          "gap-policy-response.json": "9101eb56ab1dd4f8a44565b35289df7df9bd6a9ab3aee369f5123514cc02a0f6",
+          "gap-policy-seed-dump-response.json": "101d8ff998d5b593c3a226ca9060f0d7613a4b0ab590d8148ad56784fd4be0ad",
+          "gap-policy-seed-native.json": "92d63ff9c60572f83259e2156335b3e98db30534bda10af6eecd036e15b2bdfe",
+          "preflight.json": "8c8fc76583dd0694392f443102398e840569d4c261334e0ccdf45e5b0ef1d8ee",
+          "result.json": "6c60f5342c159e11773fd34baf99b09f836c57241b0a78e74e7710cb0bc3b8b8"
+        },
+        "policy_setup": {
+          "status": "PASS",
+          "transaction_id": "26279",
+          "guard_state": "all original triggers O/A and constraints validated; replication_role origin; before/in-transaction/after captures retained",
+          "changes": "only dataset heads1 to2 and one new config revision2 plus policy revision2; original rows/xmin/documents/digests and intent remain exact",
+          "scope": "privileged clone-only fixture, not product policy activation"
+        },
+        "interpretation": [
+          "All six actual finite processes exited0; policy and each ambiguous-delivery attempt are followed by a genuinely new config-only recovery process with fresh Control10 and prior-final hash binding.",
+          "Advanced current config/policy2 observed by actual acquire and all refreshes while retained handoff policy1, registrar3 and preparer8/xmin persist. Initial completion adds four native writes; following history performs none.",
+          "Before-native hold intercepts exact START12 with ten COMMITs and one ROLLBACK completed. External held native49/sequence58 and actual owner idle at COMMIT. Explicit close returns Control(Backend); unavailable Control and failed joined driver, exact backend absent. Fresh Control10 excludes9 and completes to52/62.",
+          "After-native hold intercepts server completion of ROLLBACK2, with ten COMMITs and rollback counters2/2/1/1. External held native52/sequence62 and owner idle at ROLLBACK. Explicit close returns DeliveryUnknown; unavailable Control and failed joined driver, exact backend absent. Fresh Control10 excludes9 and reads unchanged completed history.",
+          "All71-table snapshots and original input bytes remain exact except separately qualified Control effects and guarded policy setup. Original frozen seed full file census, captured SQL and five artifact hashes preserved."
+        ],
+        "limits": [
+          "No COMMIT loss at new completion: the after-native fault loses the read-only ROLLBACK reply; prior preparation COMMIT-loss evidence retains its separate scope.",
+          "No product policy activation writer, empty-attempt retirement, writer admission, installed restart/resend, native syscall uncertainty/power loss, capacity or full M1/release.",
+          "Backend/clock and SQL source preservation are actual finite run observations; no additional server restart made for audit."
+        ],
+        "terminal": [
+          {
+            "id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-12T12:43:59.645721196Z",
+              "FinishedAt": "2026-10-12T12:44:19.686792422Z"
+            }
+          },
+          {
+            "id": "5d203bd45ca73e898d40b90629256f0920051c8180aca69c4d663cae4ebeeb67",
+            "name": "/bigbrotr-acquisition-binding-4c283e2",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-12T12:44:00.549332879Z",
+              "FinishedAt": "2026-10-12T12:44:18.534349187Z"
+            }
+          }
+        ],
+        "cleanup_errors": [],
+        "missing_owned": [],
+        "unrelated_changed": [],
+        "free_bytes_after": 70198644736,
+        "independent_ai_review": {
+          "status": "COMPLETE_NO_MATERIAL_DISCREPANCY_IN_SCOPE",
+          "reviewer": "Independent read-only AI agent recovery_review",
+          "captures": "Replayed all6 actual finite processes:114 full snapshots and123 rejected perturbations, exact recorded oracle outputs,6external finalPG71/native/input captures and3prior-final anchors.",
+          "native": "Independent direct diff confirms four writes (manifest266 replacement/sourcezero10/handoff610/producerzero26) preserving48 previous rows in policy completion, before-loss recovery and after-loss initial attempt. Other native stages remain unchanged.",
+          "policy": "Actual currentpolicy2 distinct from historical1; setup transaction26279 and1014enabled triggers/706validated constraints identical across four catalog captures. Intent xmin26180/preparer8 and registrar3 unchanged.",
+          "files": "Seed51 and originalf12 censuses42paths/38files,8frozen artifacts and12clone input files rehashed unchanged. Both current ELFs and exact clean4c source/build identities checked.",
+          "resources": "Read-only terminal census matches both owned resources and all1205nonborrowed preflight projections. PGexit0/client idle-wrapper143/PID0/noOOM. Actual compile+Clippy PASS, no native unit suite repeated.",
+          "boundary": "No edits, live SQL, engine restart or build by reviewer. SQL source preservation is captured-run evidence. No additional installed restart, activation, native syscall/power-loss or release claim."
+        }
+      }
     }
   }
 }
