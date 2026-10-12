@@ -40527,7 +40527,7 @@
     }
   },
   "implementation_initial_empty_preparer_20261012": {
-    "status": "HARNESS_ORACLE_IMPLEMENTATION_ENGINE_NOT_RUN",
+    "status": "BUILD_PASS_ENGINE_NOT_RUN",
     "owner": "root sole integrator and engine executor",
     "base": "1d3b93c866e84a64dc1c0c37180a69d62b7c4993",
     "scope": "One genuine f12 clone and two actual processes; claim under live preparing Control8 then fresh9 empty-load refusal. No owner revival or installed import claim.",
@@ -40545,6 +40545,39 @@
         "scope": "new initial_empty_preparer_oracle.py; shared changes require root coordination"
       }
     ],
-    "resources": []
+    "resources": [
+      {
+        "source": "5866e1e04d55cf475677b9b3b42194fb2f141e2c",
+        "tree": "1f9d590c489a25ff9fd29925c49cccec812fab44",
+        "owner": "03128c66aa1c798a8872fce5847c4485",
+        "owner_label": "org.bigbrotr.network-transport",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-preparer-5866e1e",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "fetch",
+            "id": "4dac80eee44f77f3a40ce9f951e7d67a5d5dc50cbb184c310a3407e4535d6236"
+          },
+          {
+            "name": "native",
+            "id": "fa5dde9fd7aa12899ce1da4319ddc039fa02692842664f6f457a3631e03df5d1"
+          }
+        ],
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+        "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+        "started_at": "2026-10-12T14:31:16.507561+00:00",
+        "qualification": "PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY",
+        "inventory_changed": [],
+        "free_bytes_after": 68381057024,
+        "finished_at": "2026-10-12T14:32:43.555982+00:00",
+        "kind": "isolated-build",
+        "wrapper": 57273,
+        "wrapper_exit": 0
+      }
+    ],
+    "probe_commit": "5866e1e04d55cf475677b9b3b42194fb2f141e2c",
+    "harness_commit": "7dc822b",
+    "oracle_commit": "88806d4"
   }
 }

@@ -14,17 +14,13 @@ legacy reference repositories and unrelated workloads. No public release,
 repository rename or production deployment is authorized.
 
 Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
-Observed HEAD a692dbb8a792adf9c7f04cb8c554243301ab7583 was privately pushed,
-freshly fetched and verified ahead0/behind0 with a clean checkout. Main remains
+Last privately pushed/fetched HEAD a1928dba45207caf040dd51701f5f38f3f0b087a was
+verified ahead0/behind0 with a clean checkout. Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
-Current observed HEAD1d3b93c866e84a64dc1c0c37180a69d62b7c4993 integrates
-probe9166d78, build profile8339297, harness2afe681, oracle64b09da and root dispatch.
-Root owns uncommitted qualification documentation/evidence/inventory. Exact engine
-source worktree is `runs/ingest-empty-locks-engine-1d3b93c/source`; wrapper22537,
-ownerb894a769752a80a5513f0b227fb28a7d, clientce75ae6f5d51fdc11b1747828d47bfb96ae3b8335c9e61ddb6e56a6562383db3.
-The engine is PASS_INITIAL_EMPTY_RETIREMENT_LOCKS; wrapper22537 joined0.
-Independent actual-capture audit passed86 snapshots/201 controls, original seed
-files/artifacts/executables and1215 nonborrowed container projections. Separate agents own only the scopes below.
+Current observed HEAD88806d4 integrates finite preparer probe/build5866e1e,
+harness7dc822b and independent oracle88806d4. Root owns the dirty bindings dispatch
+and governance. The preceding lock wave is qualified, audited and privately pushed.
+Separate helper worktrees are clean at5469cf1 and76e88f8; preserve them.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
 
 Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of these steps,
@@ -176,8 +172,8 @@ cleanup/missing/unrelated arrays are empty. No active build or engine remains.
 
 ## Current bounded work and next action
 
-Next: finish recording/auditing/pushing the lock wave, then qualify a historical
-preparer claim with one genuine new f12 clone and two processes. New separate
+Next: qualify the historical preparer claim with one genuine new f12 clone and
+two processes. The lock wave is recorded, independently audited and privately pushed. New separate
 worktrees share base1d3b93c; prior worktrees remain clean and retained:
 
 | Worktree | Owner | Writable scope |
@@ -186,7 +182,13 @@ worktrees share base1d3b93c; prior worktrees remain clean and retained:
 | `.research/empty-preparer-oracle-20261012` | cleanup_review | New `initial_empty_preparer_oracle.py`; coordinate any shared changes |
 
 Root owns the finite-probe command, build profile, bindings and governance. No
-new preparer build/engine is allocated. The read-only design review selected actual
+preparer engine is allocated. Exact build5866e1e is PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY; wrapper57273 joined0,
+owner03128c66aa1c798a8872fce5847c4485 at runs/ingest-empty-preparer-5866e1e.
+Compilation79.242s and Clippy5.622s passed. Independent build audit verified1753
+files, both current/13 protected executables and1217 unchanged projections; both
+owned containers stopped0/PID0/noOOM. Unchanged native122 tests remain prior evidence.
+Harness/oracle pure checks pass16 snapshots/39 perturbations; actual engine NOT_RUN.
+The read-only design review selected actual
 Control8 preparation plus same-Control retry, then a bounded post-retry gate while8
 is still live. Ordinary application-role SQL inserts/seals/claims one zero-request
 import with its observed8 tuple. Actual release8, native/driver join and positive
@@ -221,7 +223,7 @@ Optional enablement does not finish selected scope.
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource identities
-and dated observations. Last free space68,584,402,944 bytes (about63.9GiB); remeasure
+and dated observations. Last free space68,381,057,024 bytes (about63.9GiB); remeasure
 before allocation. Small engine fixtures require2GiB; native builds12GiB. The
 larger export wave still requires64GiB+577MiB, currently unavailable. Never lower
 that reserve to force a run. No large export is allocated by the current slice.
