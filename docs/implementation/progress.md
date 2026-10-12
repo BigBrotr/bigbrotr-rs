@@ -18,8 +18,10 @@ The prepared-only product implementation remains 4f62b52; the latest qualified
 CLI/probe build is 4b896879151168422784d073cfca20cd35013ec8, tree
 59bae50438da69dd31f8fb251a1469eb2d720730. The connected fixture is committed at
 ac644ef566a0f61a6315a480e196e189bc359977 and passed with those exact binaries.
-Root owns the subsequent evidence/checkpoint edits. These commits have not yet
-been pushed at this observation; verify the later commit and private origin.
+Evidence commit a826fefc755247636187cc64a3a62c245309c385 was pushed and freshly
+verified against private origin with ahead 0/behind 0 and a clean canonical
+worktree. Root owns this subsequent checkpoint note; a later documentation
+commit may be actual HEAD. Verify Git and its private push before continuing.
 Main remains 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
 
 The separate `.research/initial-successor-pg-20261012` worktree now preserves
