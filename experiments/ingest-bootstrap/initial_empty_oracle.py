@@ -13,7 +13,10 @@ from initial_succession_oracle import be, binary, digest, encoded, ended, native
 
 MIGRATION_SHA256 = '52819215086abb15c06b25ebb536b16955256e4707aaf0f1a89060c66fc96b8a'
 SUCCESS = ('empty-normal', 'empty-terminal-retry', 'empty-fresh-completion', 'empty-inspect')
+COMMIT_LOSS = ('empty-commit-before', 'empty-commit-after')
 FAILURES = {
+    'empty-commit-before': ('retirement', None, 'CommitUnknown'),
+    'empty-commit-after': ('retirement', None, 'CommitUnknown'),
     'empty-native-first-failure': ('retirement', None, 'Control(Backend)'),
     'empty-cancelled': ('retirement', None, 'Native(AuthorityUnavailable)'),
     'empty-missing-input': ('request', 4, 'Native(Input(Missing))'),
@@ -22,8 +25,8 @@ FAILURES = {
     'empty-missing-intent': ('empty-load', None, 'Control(InvalidMetadata)'),
     'empty-old-schema': ('empty-load', None, 'Control(IncompatibleDeployment)'),
 }
-FOLLOWUPS = {'empty-terminal-retry': 'empty-normal',
-    'empty-fresh-completion': 'empty-native-first-failure'}
+FOLLOWUPS = {'empty-terminal-retry': ('empty-normal', 'empty-commit-after'),
+    'empty-fresh-completion': ('empty-native-first-failure', 'empty-commit-before')}
 
 
 def control_digest(rows):
@@ -76,7 +79,7 @@ def preparation(original, native, inputs, mode, seed, known, server_window, pred
     if mode in FOLLOWUPS:
         assert predecessor is not None and set(predecessor) == {
             'events', 'original', 'native', 'inputs', 'mode', 'seed', 'server_window'}
-        assert predecessor['mode'] == FOLLOWUPS[mode] and predecessor['seed'] == seed
+        assert predecessor['mode'] in FOLLOWUPS[mode] and predecessor['seed'] == seed
         checked = verify(**predecessor)
         assert checked['status'] == 'PASS'
         same(final_state(predecessor['events']), original)
@@ -152,7 +155,8 @@ def verify(events, original, native, inputs, mode, *, seed, server_window, prede
     resolved = []
     success = mode in SUCCESS
     initially_closing = mode in FOLLOWUPS
-    loaded = success or mode in ('empty-cancelled', 'empty-native-first-failure', 'empty-missing-input')
+    loaded = success or mode in COMMIT_LOSS or mode in (
+        'empty-cancelled', 'empty-native-first-failure', 'empty-missing-input')
     retired_at = retirement_tx = None
 
     def take(event, stage=None, phase=None):
@@ -258,6 +262,10 @@ def verify(events, original, native, inputs, mode, *, seed, server_window, prede
                     same(current, snapshot('before-retry'))
                     assert take('successor-empty-retirement') == dict(expected_receipt, attempt='retry')
                     same(current, snapshot('after-retry'))
+                elif mode == 'empty-commit-after':
+                    # Observed terminal metadata is not a delivered success receipt.
+                    retired_at, retirement_tx = terminal(current, after, known, server_window)
+                    current = after
                 else:
                     same(current, after)
     stage, ordinal, error = ('complete', None, None) if success else FAILURES[mode]
@@ -276,7 +284,8 @@ def verify(events, original, native, inputs, mode, *, seed, server_window, prede
             same(current, snapshot('after-reuse'))
     same(current, snapshot('after-read'))
     same(current, snapshot('before-control-end'))
-    assert take('successor-driver', 'empty') == dict(event='successor-driver', stage='empty', failed=False, joined=True)
+    assert take('successor-driver', 'empty') == dict(event='successor-driver', stage='empty',
+        failed=mode in COMMIT_LOSS, joined=True)
     assert take('successor-backend', 'empty') == dict(backend, present=False)
     phase = 'released-and-joined' if success else 'dropped-and-joined'
     assert take('successor-control', 'empty', phase) == dict(event='successor-control', stage='empty',
@@ -287,7 +296,8 @@ def verify(events, original, native, inputs, mode, *, seed, server_window, prede
         inside_window(only(after['owner_epochs'], role='control', epoch=control['epoch'])['released_at_us'], server_window)
         inside_window(only(after['role_instances'], role_instance_id=control['role_instance_id'])['retired_at_us'], server_window)
     same(after, snapshot('final'))
-    command = {'empty-inspect': 'empty-inspect', 'empty-cancelled': 'empty-cancelled'}.get(mode, 'empty-retire')
+    command = mode if mode in COMMIT_LOSS else {
+        'empty-inspect': 'empty-inspect', 'empty-cancelled': 'empty-cancelled'}.get(mode, 'empty-retire')
     assert take('successor-empty-complete') == dict(event='successor-empty-complete', command=command,
         native='closed', control=phase, admission=False, success=success)
     assert position == len(events), 'unclassified trailing event'
@@ -295,7 +305,7 @@ def verify(events, original, native, inputs, mode, *, seed, server_window, prede
         resolved_requests=resolved, empty_closure_digest=known['empty_digest'],
         native_sequence_delta=sequence - initial_sequence, native_rows=len(expected_native),
         retired_at_us=retired_at, retirement_transaction=retirement_tx,
-        target_rows_changed=13 if mode in ('empty-normal', 'empty-fresh-completion') else 0,
+        target_rows_changed=13 if mode in ('empty-normal', 'empty-fresh-completion', 'empty-commit-after') else 0,
         original_rows_and_xmin_preserved=True, original_inputs=len(inputs),
         immutable_intent_preserved=mode != 'empty-missing-intent',
         terminal_retry_unchanged=mode in ('empty-normal', 'empty-terminal-retry', 'empty-fresh-completion'),
@@ -360,7 +370,7 @@ def negative_controls(events, original, native, inputs, mode, **context):
     check('backend-absence-another-tuple', lambda e: only(e, event='successor-backend', present=False).update(backend_start='different'))
     check('backend-still-present', lambda e: only(e, event='successor-backend', present=False).update(present=True))
     check('driver-not-joined', lambda e: only(e, event='successor-driver').update(joined=False))
-    check('driver-error-misclassified', lambda e: only(e, event='successor-driver').update(failed=True))
+    check('driver-error-misclassified', lambda e: only(e, event='successor-driver').update(failed=mode not in COMMIT_LOSS))
     check('missing-phase', lambda e: e.pop(next(i for i, v in enumerate(e) if v['event'] == 'successor-state')))
     if mode != 'empty-missing-intent':
         check('intent-attribution', lambda e: sql(e, lambda pg: pg['initial_ingest_successions'][0].update(prepared_by_epoch=999)))
@@ -384,7 +394,7 @@ def negative_controls(events, original, native, inputs, mode, **context):
         check('original-closure', lambda e: only(e, event='successor-empty-proof').update(closure_digest='00' * 32))
         check('empty-closure', lambda e: only(e, event='successor-empty-proof').update(empty_closure_digest='00' * 32))
         check('wrong-initial-native-state', lambda e: only(e, event='successor-empty-proof').update(initially_closing=mode not in FOLLOWUPS))
-    if mode in ('empty-normal', 'empty-fresh-completion'):
+    if mode in ('empty-normal', 'empty-fresh-completion', 'empty-commit-after'):
         for field, table, selected, key, value in (
             ('source-digest', 'source_streams', {'owner_epoch': 2}, 'closure_digest', '\\x' + '00' * 32),
             ('source-cut', 'source_streams', {'owner_epoch': 2}, 'last_complete_sequence', 1),
@@ -394,11 +404,12 @@ def negative_controls(events, original, native, inputs, mode, **context):
         ):
             check('terminal-' + field, lambda e, t=table, s=selected, k=key, v=value:
                 sql(e, lambda pg: only(pg[t], **s).update({k: v}), 'after-retirement'))
+    if mode in ('empty-normal', 'empty-fresh-completion'):
         check('retry-rewrites-PG', lambda e: sql(e, lambda pg: only(pg['producer_epochs'], producer_epoch=2)
             .update(xmin='999999999'), 'after-retry'))
         check('retirement-result-wrong-time', lambda e: only(e, event='successor-empty-retirement', attempt='initial')
             .update(retired_at_us=0))
-    if mode == 'empty-normal':
+    if mode == 'empty-normal' or mode in COMMIT_LOSS:
         def early_native(changed):
             before = snapshot(changed, 'before-retirement')
             after = snapshot(changed, 'after-retirement')
@@ -406,7 +417,7 @@ def negative_controls(events, original, native, inputs, mode, **context):
             for field in ('native_rows', 'native_sha256', 'sequence'):
                 before['state'][field] = after['state'][field]
         check('native-before-dispatch', early_native)
-    if mode == 'empty-native-first-failure':
+    if mode == 'empty-native-first-failure' or mode in COMMIT_LOSS:
         def no_native_close(changed):
             rows = context['seed']['native']['rows']
             active = False
@@ -418,6 +429,51 @@ def negative_controls(events, original, native, inputs, mode, **context):
                     event['rows'] = copy.deepcopy(rows)
                     event['state'].update(native_rows=len(rows), native_sha256=digest(encoded(rows)), sequence=62)
         check('native-first-failure-without-native-effect', no_native_close)
+    if mode in COMMIT_LOSS:
+        check('wrapped-commit-unknown', lambda e: only(e, event='successor-empty-result')
+            .update(error='Control(CommitUnknown)'))
+
+        def false_success_receipt(changed):
+            proof = only(changed, event='successor-empty-proof')
+            index = next(i for i, event in enumerate(changed)
+                if event.get('stage') == 'empty-after-retirement')
+            changed.insert(index, dict(event='successor-empty-retirement', attempt='initial',
+                retired_at_us=context['server_window']['after_us'], closure_digest=proof['empty_closure_digest'],
+                handoff=proof['handoff'], admission=False))
+        check('commit-unknown-delivered-success-receipt', false_success_receipt)
+
+        def opposite_commit_outcome(changed):
+            # Propagate an internally consistent opposite SQL outcome, including
+            # every later snapshot hash. Native CLOSING and the error stay intact.
+            state = snapshot(changed, 'before-retirement')['state']
+            replacement = {name: json.loads(rows) for name, rows in state['control_tables']}
+            if mode == 'empty-commit-before':
+                proof = only(changed, event='successor-empty-proof')
+                closure = '\\x' + proof['empty_closure_digest']
+                time, tx = context['server_window']['after_us'], '4294967294'
+                assert all(row['xmin'] != tx for rows in replacement.values() for row in rows)
+                only(replacement['producer_epochs'], producer_epoch=2).update(
+                    state='retired', retired_at_us=time, closure_digest=closure, xmin=tx)
+                only(replacement['source_streams'], owner_epoch=2).update(
+                    state='closed', closed_at_us=time, last_complete_sequence=0, closure_digest=closure, xmin=tx)
+                for row in replacement['allocation_domains']:
+                    if row['owner_epoch'] == 2:
+                        row.update(state='closed', closed_at_us=time, closure_digest=closure, xmin=tx)
+                only(replacement['owner_epochs'], role='ingest', epoch=2).update(
+                    state='released', released_at_us=time, exclusion_method='storage_fenced',
+                    exclusion_digest=closure, xmin=tx)
+                role = only(replacement['initial_ingest_successions'])['target_role_instance_id']
+                only(replacement['role_instances'], role_instance_id=role).update(retired_at_us=time, xmin=tx)
+            active = False
+            for event in changed:
+                if event['event'] != 'successor-state':
+                    continue
+                active |= event['stage'] == 'empty-after-retirement'
+                if active:
+                    event['state']['control_tables'] = [
+                        [name, encoded(replacement[name]).decode()] for name in sorted(replacement)]
+                    event['state']['control_sha256'] = digest(encoded(event['state']['control_tables']))
+        check('consistently-opposite-commit-outcome', opposite_commit_outcome)
     if mode not in SUCCESS:
         check('unrelated-refusal', lambda e: only(e, event='successor-empty-result').update(error='DeliveryUnknown'))
         check('wrong-poisoning-result', lambda e: only(e, event='successor-empty-control-reuse').update(available=mode != 'empty-cancelled'))
@@ -431,4 +487,19 @@ def negative_controls(events, original, native, inputs, mode, **context):
             rejected.append('predecessor-proof-not-trusted')
         else:
             raise AssertionError('oracle trusted an invalid predecessor transcript')
+        if context['predecessor']['mode'] in COMMIT_LOSS:
+            for name, event, changes in (
+                ('predecessor-backend-absence-not-trusted', 'successor-backend', {'present': True}),
+                ('predecessor-driver-failure-not-trusted', 'successor-driver', {'failed': False}),
+            ):
+                altered = copy.deepcopy(context)
+                observations = altered['predecessor']['events']
+                selected = {'present': False} if event == 'successor-backend' else {}
+                only(observations, event=event, **selected).update(changes)
+                try:
+                    verify(events, original, native, inputs, mode, **altered)
+                except AssertionError:
+                    rejected.append(name)
+                else:
+                    raise AssertionError('oracle trusted invalid COMMIT-loss custody: ' + name)
     return dict(status='PASS', rejected=rejected)
