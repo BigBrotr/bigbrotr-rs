@@ -365,6 +365,9 @@ fn initial_fixture(complete_handoff: bool) -> Fixture {
 #[path = "initial_gap_tests.rs"]
 mod initial_gap_tests;
 
+#[path = "initial_empty_tests.rs"]
+mod initial_empty_tests;
+
 fn reconstruct(fixture: &Fixture, recovery: &IngestRecovery) -> Result<InitialHandoff, String> {
     let bytes = value(&recovery.store, handoff_key());
     let historical = recovery
