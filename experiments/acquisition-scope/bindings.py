@@ -64,6 +64,7 @@ installed_archive_export = len(sys.argv) in (3, 4) and sys.argv[2] == '--install
 installed_archive_publication = installed_archive_export or installed_archive_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-archive')
 installed_archive = installed_archive_setup or installed_archive_publication
 ingest_recovery_interruptions = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery-interruptions'
+ingest_successor_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-successor-history'
 ingest_succession_commits = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-succession-commits'
 ingest_succession = ingest_succession_commits or len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-succession'
 ingest_retirement_faults = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-retirement-faults'
@@ -81,7 +82,7 @@ ingest_recovery_signed = ingest_source_closure or (len(sys.argv) in (3, 4) and s
 ingest_recovery = ingest_recovery_interruptions or ingest_recovery_signed or (len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-recovery')
 ingest_history = len(sys.argv) in (3, 4) and sys.argv[2] == '--ingest-history'
 ingest_windows = len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest-windows'
-initial_ingest = ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
+initial_ingest = ingest_successor_history or ingest_succession or ingest_recovery or ingest_history or ingest_windows or (len(sys.argv) in (3, 4) and sys.argv[2] == '--installed-ingest')
 installed = installed_archive or installed_sync or jobs_http or scope_http or registration_http or sessions or enrollment_http or initial_ingest
 interruptions = len(sys.argv) == 4 and sys.argv[2] == '--installed-interruptions'
 commits = len(sys.argv) == 4 and sys.argv[2] == '--installed-commits'
@@ -378,6 +379,12 @@ if ingest_succession_commits:
     report['not_run'] = ['process-loss plan reconstruction and abandoned empty attempt retirement',
         'writer activation, lifetime, installed restart/resend and full M1',
         'recovery while the old backend still holds exclusion; native syscall failure',
+        'ACK/GC, capacity/load/aged-state and arm64/release']
+if ingest_successor_history:
+    report['wave'] = 'prepared-initial-history'
+    report['not_run'] = ['PG/native gap completion and abandoned empty attempt retirement',
+        'writer activation, lifetime, installed restart/resend and full M1',
+        'concurrent live original owner exclusion and native syscall failure',
         'ACK/GC, capacity/load/aged-state and arm64/release']
 
 
@@ -758,6 +765,8 @@ if dictionary_faults:
 
 if ingest_succession:
     success_status = 'PASS_INITIAL_SUCCESSOR_COMMIT_LOSS' if ingest_succession_commits else 'PASS_INITIAL_SUCCESSOR_PREPARATION'
+if ingest_successor_history:
+    success_status = 'PASS_PREPARED_INITIAL_HISTORY'
 
 prior = containers()
 target = next(c for c in prior if c['Name'] == '/' + pg['postgres'])
@@ -927,6 +936,8 @@ try:
             cases = ['sessions-slow-renewal', 'sessions-disconnect', 'close-signal']
         else:
             cases = ['sessions-hash-stop'] if session_hash else ['sessions-journey', 'sessions-capacity', 'sessions-hash-stop']
+    elif ingest_successor_history:
+        cases = ['prepared-initial-history']
     elif ingest_succession:
         cases = ['initial-successor-preparation']
     elif ingest_recovery:
@@ -972,6 +983,11 @@ try:
             completed = clone(name, 'bb_source_template')
             report['cases'].append(run_interruption(pg,client,output,completed,name,rows,
                                                    sessions=session_faults))
+            save()
+        elif ingest_successor_history:
+            sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+            from initial_history import run as run_initial_history
+            report['cases'].append(run_initial_history(pg, client, output, rows, clone))
             save()
         elif ingest_succession:
             sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
@@ -1094,6 +1110,11 @@ try:
         require({r['name'] for r in report['cases']} == set(selected_sync_cases)
             and len(report['cases']) == len(selected_sync_cases)
             and all(r['status'] == 'PASS' for r in report['cases']), 'installed-sync-complete-case-set')
+    if ingest_successor_history:
+        from initial_history import CASES as HISTORY_CASES
+        require(len(report['cases']) == 1 and report['cases'][0]['status'] == 'PASS'
+            and [r['name'] for r in report['cases'][0]['cases']] == list(HISTORY_CASES)
+            and all(r['status'] == 'PASS' for r in report['cases'][0]['cases']), 'prepared-initial-history-case-set')
     if ingest_succession:
         expected = (['successor-commit-before', 'successor-commit-after'] if ingest_succession_commits else
             ['successor-normal', 'successor-gap', 'successor-old-schema', 'successor-rollback'])

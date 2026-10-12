@@ -208,12 +208,12 @@ The source accumulator requires every original request in order and the exact
 retained count, cut and closure digest. Only this positive proof may reconstruct
 the local handoff guard. Missing intent/detail, nonempty target, target sidecars,
 inconsistent attribution and obsolete native observations refuse without repair.
-The bounded intent/registration grant is at least128KiB; callers independently
+The bounded intent/registration grant is at least 128KiB; callers independently
 retain policy-document, input, outcome, native and driver grants and deadlines.
 
 This API introduces no migration or persistent-format change. The installed
-recovery command still accepts only its original epoch1 path. Native component
-and separate-process PostgreSQL qualification are pending for this candidate;
-the existence of the API is not a passing restart claim. Completing a PG/native
+recovery command still accepts only its original epoch1 path. Exact-source build39e7468 passes seven focused native reconstruction cases and
+affected replay regressions. Separate-process PostgreSQL qualification remains
+pending; this is not a passing installed restart claim. Completing a PG/native
 gap, retiring an empty attempt, activating a writer and repeated lifetimes remain
 separate requirements in the existing plan.

@@ -39423,7 +39423,7 @@
     }
   },
   "implementation_initial_history_reconstruction_20261012": {
-    "status": "CANDIDATE_FIX_PENDING_REQUALIFICATION",
+    "status": "PASS_NATIVE_COMPONENTS_CONNECTED_NOT_RUN",
     "owner": "root sole integrating owner",
     "task": "P02-T01 Step5 / P02-T02 Step4 / P01-T09 Step4",
     "base": "d2b1dc8d6fc0b095155859743916d51848c99edf",
@@ -39434,46 +39434,81 @@
       "branch": "qualification/successor-history-probe",
       "owner": "successor_restart_design native implementation committed; finite history probe and isolated native corruption helpers",
       "native_commit": "c8f4bff026e91df9e2783304356750d333c1770e",
-      "probe_commit": "05946b48e8e11e67295ed34a79a18a3b085b06b2"
+      "probe_commit": "05946b48e8e11e67295ed34a79a18a3b085b06b2",
+      "state": "clean, source assignments complete; read-only independent pre-engine review"
     },
     "tests_worktree": {
       "path": "/home/tux/bigbrotr-rs/.research/successor-reconstruction-oracle-20261012",
       "branch": "qualification/successor-reconstruction-native",
       "owner": "recovery_review native tests committed; independent connected Python oracle",
-      "native_tests_commit": "559cf822e3df7e5b59248add6f38b5d92974f4eb"
+      "native_tests_commit": "559cf822e3df7e5b59248add6f38b5d92974f4eb",
+      "oracle_commit": "f4063bc0cd183db8a97bfb4861505df5665ea523",
+      "state": "clean, source assignments complete"
     },
     "root_scope": "PostgreSQL checked intent/history adapter, connected probe/fixture, integration, contracts and evidence",
     "readonly_review": "cleanup_review completed independent PG adapter/contract inspection before harness assignment; found and fixed reexport visibility; no further blocking source counterexample found in that scope",
     "free_bytes_before": 71653728256,
-    "preservation": "Original67eff40 source/build/failure retained with both containers stopped; no engine fixture started. Protected original compiler artifacts and all datasets preserved.",
+    "preservation": "Both new build labs stopped and retained; initial67FAIL preserved. No connected history engines started. Original seed/datasets and negative fixtures remain protected.",
     "harness_worktree": {
       "path": "/home/tux/bigbrotr-rs/.research/initial-history-harness-20261012",
       "branch": "qualification/initial-history-harness",
       "base": "d2b1dc8d6fc0b095155859743916d51848c99edf",
-      "owner": "cleanup_review connected fixture and bindings dispatch only; no engines"
+      "owner": "cleanup_review connected fixture and bindings dispatch only; no engines",
+      "commit": "52f6ff14654279ef547883636fa3899430f0a4d3",
+      "state": "clean, source assignment complete"
     },
     "build_candidate": {
-      "source": "67eff409edfa436ad8ca2b2970b983063d7791c2",
-      "tree": "cb68e93c811b9f449746e9b04833eeb2c4d18920",
-      "owner": "c55c70e127020b46882540862daab898",
+      "status": "PASS_INGEST_HISTORY_BUILD_ONLY",
+      "source": "39e746834c1587952a28c2c1e78ca8ea62d62831",
+      "tree": "c8df1d5242a3512d8a323b778eb8dc13f1908a57",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-39e7468",
+      "owner": "fb5b25fb6a26adf122befc88dae39018",
       "owner_label": "org.bigbrotr.network-transport",
-      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-history-67eff40",
-      "state": "stopped-retained",
+      "finished_at": "2026-10-12T11:25:55.756617+00:00",
+      "checks_passed": 13,
+      "entrypoint_tests": 4,
+      "schema_tests": 36,
+      "native_tests": {
+        "source-closure": 3,
+        "producer-closing": 9,
+        "producer-recovery": 11,
+        "initial-handoff": 7,
+        "initial-reconstruction": 7,
+        "bootstrap": 5,
+        "dictionary-append": 13,
+        "event-replay": 7,
+        "rocks_manifest": 4,
+        "rocks_keys": 9
+      },
+      "binary_sha256": "7877211c223bd834188945bab4aeb1b75b734c3135342a9a12ecff7cf4171512",
+      "probe_sha256": "96a79686c815fc3f380fee5ba8079902dd7a7ecf8f263874b8e429229b1b9b83",
+      "test_executables_sha256": {
+        "source_closure_components": "331dcfb0347b34a60d91d3a6d42bb3077c3323059efa77c69fc36c5a2da29b24",
+        "rocks_manifest": "c3763586f4c45731f9dee04836537130456297daf51baeb5201ee51c1f429266",
+        "rocks_keys": "bef18e5ca03597b7c7bea654d13aea305e4531dd3093a55ae4584c9a60d3c01e"
+      },
+      "hashes": {
+        "out/build/source-manifest.json": "8d0b2fb6353a407033b45d64235b01250b39756848969b4b4756af9b29acf419",
+        "out/build/source.tar": "3369a7465035d7831fa7c003f78c8cc385d13fa9455632c8e3c1a291d26cb49f",
+        "out/artifacts/build-result.json": "ceaee894388d8c6804699b87ed5b46d4e9e7a25bdff2fe8f7135843fe8d86b3e",
+        "out/build-checks/result.json": "9a8569cdaf79d1aff5614564cd09cfdee2a66accb04c792d29644c623ebd467e",
+        "out/qualification.json": "8a0cdb706ba6ec64ad209988c6e47a8e585ee007845bc443c9a0e20a83f5ea40",
+        "resources.json": "01c49cfe37d8596d19f12698ffff5ac028d9a5a2ea83acac22a113e9e680753d"
+      },
+      "terminal": "stopped-retained",
       "containers": [
         {
           "name": "fetch",
-          "id": "932ff1879c6e2bd5a3467faf8879ace7dd9191deb43b3cd05f25222cdc95d190"
+          "id": "c073d48863bd3d091c69c3585d4925f735e5bec72a57d80ac908ea445f852b34"
         },
         {
           "name": "native",
-          "id": "86e13b750ff6572b7a5394fba9576c79954268672e91ae13e198e16d661d68b3"
+          "id": "a10fae6b866b49803d57be3051ae8d6d63e7230856c8ca23f5017b2c6fcd28f1"
         }
       ],
-      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
-      "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
-      "status": "FAIL",
-      "free_bytes_after": 71472848896,
-      "inventory_changed": []
+      "free_bytes_after": 71312113664,
+      "scope": "Seven independent close/reopen history tests plus affected original replay/closing/recovery/handoff/codec checks; no separate-process PG qualification or installed restart/activation yet",
+      "independent_ai_review": "Read-only audit rehashed all1732sourcefiles and exactGitarchive, all5ELFs and build-info; reproduced13checks/115testexecutions. Both ownedcontainers exited0/noOOM; all1198preexistingprojections and521priorrunentries preserved; original67FAILretained. PG source review found no further blocking counterexample in read-only scope."
     },
     "preserved_failures": [
       {

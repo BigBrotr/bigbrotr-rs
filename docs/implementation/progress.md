@@ -159,33 +159,38 @@ native syscall/power-loss, ACK/GC or full restart claim follows from this wave.
 
 ## Next bounded action
 
-Root has integrated a candidate read-only reconstruction of the retired initial
-source beneath an exact prepared empty successor. Native commit c8f4bff and
-independent tests559cf822 are staged in the canonical checkout; root owns the new
-PostgreSQL initial_history adapter and shared exact validators. Base is d2b1dc8.
-Seven native cases and affected original replay regressions are ready but NOT_RUN.
-The same recovery evidence under `next_reconstruction_slice` owns source findings.
+Read-only history candidate39e746834c1587952a28c2c1e78ca8ea62d62831 now passes
+the isolated ingest-history build. All13checks executed:115test executions include
+7new reconstruction cases,55other native components,13codecs and40entrypoint/schema
+checks, plus release CLI/probe and Clippy. All1732sourcefiles, exact Gitarchive and
+5ELFs were independently rehashed. Build receipts are in the existing recovery
+evidence under `next_reconstruction_slice.native_build`. Original67eff40 FAIL is
+preserved: its7new tests stopped in setup at an insufficient dictionary grant;
+only the fixture grant changed, with no product limit relaxed.
 
 The opaque historical context retains predecessor interpretation separately from
 the actual epoch2 singleton. It validates the exact handoff/empty target, reads
 original positive outcomes, permits precisely the expected two producer markers,
 and matches recomputed closure/count/cut before rebinding local guards. Root and
 independent review caught and fixed helper visibility and cross-store proof
-composition; each positive request now carries actual directory/sequence custody.
+composition; every positive request carries actual directory/sequence custody.
+No installed command, gap completion, retirement or activation is claimed.
 
-Probe05946b48 is integrated in candidate67eff40. Its isolated build compiled and
-passed4entrypoint/36schema plus30existing native cases, then all7new cases refused
-their fixture setup with InsufficientReservation before testing reconstruction.
-The original failed run is stopped/retained; root corrected only the dictionary
-append test grant. Next build the corrected exact commit, then run the connected
-prepared-history cases. The native/probe worktree is now qualification/successor-history-probe;
-the independent test worktree writes its Python oracle; a new inventoried
-qualification/initial-history-harness worktree writes the engine fixture. Only
-root may execute builds/engines. After the failed build six unrelated services remain running, both owned build
-containers are stopped without OOM, and71,472,848,896bytes are free. Connected
-engines remain NOT_RUN.
-All original fixtures remain preserved. Candidate source and docs are dirty and
-root-owned; no new qualified outcome or private push is claimed yet.
+Next integrate the seven-case separate-process Python harness52f6ff14 and its
+independent oracle, source-review, commit and execute against retained39e7468
+binaries. The fixture copies the completed ac644ef prepared signed lab, preserves
+all71tables/52native rows/4originalinputs and frozen artifacts, and separates
+actual Control renewal/release effects from each read-only phase. Connected
+qualification remains NOT_RUN. The harness is staged in canonical; oracle agent
+still owns its separate worktree. Root is sole engine/build executor.
+
+The inventoried native/probe worktree qualification/successor-history-probe is
+clean at05946b48; native implementation c8f4bff and tests559cf822 are integrated.
+Both new build labs are stopped without OOM and all prior container projections
+preserved. Last measured free space71,312,113,664bytes; six unrelated services
+remain running. Actual canonical HEAD is39e7468 before the next fixture/evidence
+commit. Current root-owned dirty files are that fixture dispatch and qualification
+docs/inventory. No new private push is claimed yet.
 
 Then complete any recorded PG/native gap and retire the abandoned empty attempt
 without adopting its incarnation. Migration0029 only retires epoch1 and0030's

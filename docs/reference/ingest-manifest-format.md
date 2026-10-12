@@ -123,8 +123,9 @@ Reconstruction replays every original input and effect, permits precisely the
 original and prepared producer markers, then checks the recomputed closure/count/
 cut before rebinding a local guard. It writes no native key or input. A changed
 sequence invalidates a previously read witness even when current bytes match.
-Its bounded decoder and close/reopen tests are candidate implementation, pending
-execution; separate-process and connected authority evidence are tracked in the
+Seven focused decoder/close-reopen tests pass in exact-source build39e7468, with
+affected original replay regressions. Separate-process and connected authority
+evidence are tracked in the
 [recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json).
 
 `apps/bigbrotr/tests/rocks_manifest.rs` uses independently specified literal
