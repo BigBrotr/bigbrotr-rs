@@ -130,8 +130,13 @@ Seven focused decoder/close-reopen tests pass in exact-source build39e7468, with
 affected original replay regressions. Harness e92f3d7 additionally qualifies a
 genuinely new process reconstructing the prepared signed history under fresh
 actual Control, with no native read-phase writes. Its seven connected cases and
-remaining completion/activation gates are tracked in the
+remaining activation gates are tracked in the
 [recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json).
+Build162caeb adds two independent native gap tests: fresh complete original replay,
+literal four-write completion, immutable completed retry, and target-input refusal
+before proof, after proof and during completed replay. Connected51a6b86 qualifies
+completion of an actual PG/native gap in a new process and repeats the affected
+completed-history cases. No writer activation or installed restart follows.
 
 `apps/bigbrotr/tests/rocks_manifest.rs` uses independently specified literal
 bytes, nonuniform identities, unsigned boundary coordinates, empty and full

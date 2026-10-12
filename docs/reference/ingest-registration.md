@@ -262,8 +262,23 @@ observe completed native2 without another write. A replacement process observing
 native2 uses the separate completed-history reader. Neither path activates a writer
 or retires the empty attempted owner.
 
-These additions are an unqualified implementation candidate until the exact
-native build and separate-process engine wave in the
-[recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
-finish. The installed recovery command, advanced-policy practical case, native
-syscall ambiguity and general subsequent lifetimes remain separate requirements.
+Exact-source build162caeb passes nine native reconstruction tests, affected
+replay/codec regressions, entrypoint/schema checks and Clippy. Harness51a6b86 then
+creates a real gap through confirmed preparation followed by an authority refusal
+and process exit. Seven separate recovery processes qualify normal completion,
+missing/changed intent, target input, missing original input/outcome and cancellation
+after proof. Fresh Control9 fences the exited preparing Control8 and preserves the
+original registrar3 and immutable intent. Normal native state advances from 49 rows/
+sequence58 to 52/62; cancellation and all refusals preserve the original state.
+Explicit Control lifecycle writes are separated from all read/completion phases.
+
+The same binaries pass the seven affected completed-history cases on separate
+copies. In total, the independent oracles check 158 full snapshots and reject 198
+corrupted captures, including the real gap preparation. Original retired/prepared
+seeds and the newly created gap seed are preserved. Exact captures and scoped
+independent review are in the
+[recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json).
+The original process exited after a returned refusal; no kill was injected.
+Advanced current policy, result loss during/after this new completion adapter,
+installed recovery, native syscall ambiguity and general subsequent lifetimes
+remain separate requirements.
