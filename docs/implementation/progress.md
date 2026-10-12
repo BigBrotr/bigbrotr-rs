@@ -17,10 +17,13 @@ Canonical checkout `/home/tux/bigbrotr-rs`, branch `recovery/tux-20261012`.
 Last privately pushed/fetched HEAD a1928dba45207caf040dd51701f5f38f3f0b087a was
 verified ahead0/behind0 with a clean checkout. Main remains
 54ad09dc6659bfe67e3bf2871e43ce619c199a5c. No merge/rebase is in progress.
-Current observed HEAD88806d4 integrates finite preparer probe/build5866e1e,
-harness7dc822b and independent oracle88806d4. Root owns the dirty bindings dispatch
-and governance. The preceding lock wave is qualified, audited and privately pushed.
-Separate helper worktrees are clean at5469cf1 and76e88f8; preserve them.
+Current observed HEAD17ccb8ab24e1e7bcbf5270219bdf7680f99a2fc2 integrates finite
+preparer probe/build5866e1e, harness7dc822b, oracle88806d4 and root dispatch.
+Root owns the dirty qualification documentation/evidence/inventory. Exact engine
+source is runs/ingest-empty-preparer-engine-17ccb8a/source; wrapper11934 joined0.
+PASS_INITIAL_EMPTY_PREPARER_CLAIM checks two processes/16snapshots/39controls.
+Independent actual-capture audit passed16/39 and1218 unchanged nonborrowed projections. Helper implementation
+worktrees remain clean at5469cf1 and76e88f8; preserve them.
 Do not reset another contributor's files or reuse an old engine outcome blindly.
 
 Active P02-T01 Step5 / P02-T02 Step4 enables P01-T09 Step4/M1. None of these steps,
@@ -170,37 +173,52 @@ audit passed all86/201, three seed censuses (63paths/57files), frozen artifacts,
 13 protected executables and1215 unchanged nonborrowed projections. BorrowedPG stopped0/client idle-wrapper143, PID0/noOOM;
 cleanup/missing/unrelated arrays are empty. No active build or engine remains.
 
+## Qualified historical preparer claim
+
+Build5866e1e04d55cf475677b9b3b42194fb2f141e2c is
+PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY. Wrapper57273 joined0; actual compile
+79.242s/Clippy5.622s. Independent AI audit checked1753 source/export/archive files,
+two current/13 protected executables, native toolchain and1217 unchanged projections.
+Both owned containers stopped0/PID0/noOOM; unchanged122 native tests remain prior
+evidence, not rerun. CLI3991cd6d/probe990e3fdd hashes are pinned in build evidence.
+
+`runs/ingest-empty-preparer-engine-17ccb8a/bindings/result.json` is
+PASS_INITIAL_EMPTY_PREPARER_CLAIM, finished2026-10-12T14:35:05.189915Z;
+SHA256 cab9d4cf3228981da6ee3d5281e4489c7b7beef7610816d93a98f62920664017.
+One genuine f12 clone and two processes check16full snapshots/39corrupted captures.
+Live Control8 prepares and retries; ordinary app-role SQL inserts/seals/queues
+one zero-request import under8 before its actual lease expires. Claim COMMIT ends
+at1791815699278851, before lease1791815718531363. Actualrelease8, native/driverjoin
+and positive exactbackend absence precede fresh config-only9. Its named historical
+claim veto refuses atempty-load; default PGlogs omit SQLSTATE (recordednull).
+No original resolution, targetretirement or additionalnativewrite occurs under9.
+Native remains52/sequence62; registrar3,preparer8,claim8,immutableintent and four
+original inputs remain exact. Failed9 reuseUnavailable, joinedclean driver and
+backendabsence preserve active9 rows. This is a guarded relational claim fixture,
+not an installed import executor. No owners were revived or reassigned.
+
+Wrapper11934 joined0. BorrowedPG stopped0, idleclient143/PID0/noOOM;
+cleanup/missing/unrelated arrays empty. Original f12 SQL/files/artifacts preserved
+by captured-run checks. Independent actual-capture audit passed16/39, all external captures,15 protected
+executables and f12/ac/gap censuses;1218 nonborrowed projections remain unchanged.
+
 ## Current bounded work and next action
 
-Next: qualify the historical preparer claim with one genuine new f12 clone and
-two processes. The lock wave is recorded, independently audited and privately pushed. New separate
-worktrees share base1d3b93c; prior worktrees remain clean and retained:
+Privately push the recorded and independently audited historical-claim wave.
+The next selected product consumer is explicit `ingest recover --retire-empty-attempt`,
+using
+existing qualified preparation/history/empty-retirement APIs and real supervisor
+custody; do not claim activation or installed restart from finite probes. Root is
+sole integrator/engine executor. successor_restart_design is doing read-only next
+product boundary design; cleanup_review maps independent installed CLI acceptance.
+The historical actual-capture audit is complete. Separate
+harness/oracle worktrees `.research/empty-preparer-{harness,oracle}-20261012` remain
+clean and retained; neither author ran engines/builds.
 
-| Worktree | Owner | Writable scope |
-|---|---|---|
-| `.research/empty-preparer-harness-20261012` | successor_restart_design | New `initial_empty_preparer.py` |
-| `.research/empty-preparer-oracle-20261012` | cleanup_review | New `initial_empty_preparer_oracle.py`; coordinate any shared changes |
-
-Root owns the finite-probe command, build profile, bindings and governance. No
-preparer engine is allocated. Exact build5866e1e is PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY; wrapper57273 joined0,
-owner03128c66aa1c798a8872fce5847c4485 at runs/ingest-empty-preparer-5866e1e.
-Compilation79.242s and Clippy5.622s passed. Independent build audit verified1753
-files, both current/13 protected executables and1217 unchanged projections; both
-owned containers stopped0/PID0/noOOM. Unchanged native122 tests remain prior evidence.
-Harness/oracle pure checks pass16 snapshots/39 perturbations; actual engine NOT_RUN.
-The read-only design review selected actual
-Control8 preparation plus same-Control retry, then a bounded post-retry gate while8
-is still live. Ordinary application-role SQL inserts/seals/claims one zero-request
-import with its observed8 tuple. Actual release8, native/driver join and positive
-backend absence precede a fresh config-only empty-retire process under9. It must
-refuse at empty-load with the named claim veto, retaining the original claim8 and
-native52/sequence62. This remains a relational claim fixture, not typed import.
-
-Never revive released8 on ac644, rewrite immutable intent, reassign the claim to9
-or bypass guards. Preserve the strict frozen ac644 oracle; verify the new dynamic
-prepared seed independently from the actual preparation transcript before using
-it. Unknown process outcomes must not reopen a possibly owned native directory.
-Record exact build/source/artifact identities and full external final captures.
+Preserve strict frozen ac644/f12 oracles. A dynamic prepared seed must be verified
+from its actual preparation before use. Unknown process outcomes must not reopen
+a possibly owned native directory. Keep exact build/source identities and external
+final captures; no additional build or engine is currently running.
 
 ## Remaining product gates
 
@@ -223,7 +241,7 @@ Optional enablement does not finish selected scope.
 ## Resources and maintenance
 
 The [lab inventory](../research/laboratory-inventory.json) owns resource identities
-and dated observations. Last free space68,381,057,024 bytes (about63.9GiB); remeasure
+and dated observations. Last free space68,394,852,352 bytes (about63.7GiB); remeasure
 before allocation. Small engine fixtures require2GiB; native builds12GiB. The
 larger export wave still requires64GiB+577MiB, currently unavailable. Never lower
 that reserve to force a run. No large export is allocated by the current slice.

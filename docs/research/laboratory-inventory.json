@@ -40527,7 +40527,7 @@
     }
   },
   "implementation_initial_empty_preparer_20261012": {
-    "status": "BUILD_PASS_ENGINE_NOT_RUN",
+    "status": "ENGINE_PASS_INDEPENDENTLY_AUDITED_STOPPED_RETAINED",
     "owner": "root sole integrator and engine executor",
     "base": "1d3b93c866e84a64dc1c0c37180a69d62b7c4993",
     "scope": "One genuine f12 clone and two actual processes; claim under live preparing Control8 then fresh9 empty-load refusal. No owner revival or installed import claim.",
@@ -40574,6 +40574,114 @@
         "kind": "isolated-build",
         "wrapper": 57273,
         "wrapper_exit": 0
+      },
+      {
+        "kind": "engine",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-preparer-engine-17ccb8a",
+        "source": "17ccb8ab24e1e7bcbf5270219bdf7680f99a2fc2",
+        "owner": "4018d5d9e3abce0a23f479fcd967d9bf",
+        "label": "org.bigbrotr.acquisition-binding",
+        "client": {
+          "id": "afbcb461fadcae589c727d0d15d10cf470ad1444b2a9eb4023bd848fef2e3ab0",
+          "name": "bigbrotr-acquisition-binding-17ccb8a"
+        },
+        "postgres_id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+        "postgres_owner": "5e69b0f060b1607c25230d1dbd3e5608",
+        "databases": [
+          "bb_scope_bind_17ccb8a_empty_preparer_claim"
+        ],
+        "status": "PASS_INITIAL_EMPTY_PREPARER_CLAIM",
+        "started_at": "2026-10-12T14:34:53.171058+00:00",
+        "finished_at": "2026-10-12T14:35:05.189915+00:00",
+        "terminal": [
+          {
+            "Id": "7177550705c49b14237e20790af411af58f62f22d110cd0dfa1afddaf78861ec",
+            "Name": "/bigbrotr-implementation-pg-20260917-source_e06f580",
+            "Image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-10-12T14:34:53.252994308Z",
+              "FinishedAt": "2026-10-12T14:35:04.384259354Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/data",
+                "Destination": "/var/lib/postgresql/data",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "Id": "afbcb461fadcae589c727d0d15d10cf470ad1444b2a9eb4023bd848fef2e3ab0",
+            "Name": "/bigbrotr-acquisition-binding-17ccb8a",
+            "Image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+            "State": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-10-12T14:34:54.102127754Z",
+              "FinishedAt": "2026-10-12T14:35:03.882100253Z"
+            },
+            "Mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-preparer-5866e1e/out/artifacts",
+                "Destination": "/build",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-preparer-engine-17ccb8a/bindings",
+                "Destination": "/lab",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/relay-source-recheck-e06f580/pg/secrets",
+                "Destination": "/run/secrets",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "wrapper": 11934,
+        "wrapper_exit": 0,
+        "result_sha256": "cab9d4cf3228981da6ee3d5281e4489c7b7beef7610816d93a98f62920664017",
+        "cleanup_errors": [],
+        "unrelated_changed": [],
+        "missing_owned": [],
+        "free_bytes_after": 68394852352
       }
     ],
     "probe_commit": "5866e1e04d55cf475677b9b3b42194fb2f141e2c",

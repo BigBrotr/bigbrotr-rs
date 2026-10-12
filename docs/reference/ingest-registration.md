@@ -381,6 +381,11 @@ snapshots and201 corrupted-capture controls. Claim COMMIT prevents retirement;
 ROLLBACK permits it. A held retirement COMMIT6 blocks the claim, then its later
 completion leaves terminal retry unchanged. Real Control UTC expiry while waiting
 refuses before native closing. These are guarded relational import claims, not an
-installed import executor. Historical preparer claims, native syscall ambiguity
-and installed entrypoint integration remain separate gates in the existing
-recovery evidence and task plan. No epoch3 or writer activation is added.
+installed import executor. Connected17ccb8a creates a genuine claim while preparing
+Control8 is still live, then ends that process and confirms its backend absent.
+A new config-only Control9 refuses at empty-load with the named historical-claim
+veto. Sixteen full snapshots and39 corrupted-capture controls preserve claim8,
+immutable intent, originals and native52/sequence62; no target retirement occurs.
+Native syscall ambiguity and installed entrypoint integration remain separate gates
+in the existing recovery evidence and task plan. No epoch3 or writer activation
+is added.

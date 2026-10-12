@@ -93,7 +93,8 @@ qualify exact `02d2a9b` upgrade/race/rollback checks on PG 16.15.
   check partial commits and zero-request claims. Actual retirement COMMIT loss
   and fresh recovery also pass at5938617 (four processes/86 snapshots). Four
   current-Control claim/expiry schedules pass at1d3b93c (86snapshots/201controls).
-  Historical preparer claims, activation and installed restart remain requirements.
+  A live preparing8 claim then fresh9 refusal passes at17ccb8a (two processes,
+  16snapshots/39controls). Activation and installed restart remain requirements.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
   policy references; later lifecycle migrations add observations/scheduling.
   The first [private operational identity consumer](../reference/relay-endpoint-registry.md)
@@ -279,9 +280,9 @@ One owner serializes exact identity decisions for each writable directory.
   All333snapshots/465capture perturbations across26processes include affected
   gap/history regressions. Actual COMMIT-loss recovery passes at5938617 without
   duplicate native writes or terminal SQL rewrites. Four current-Control claim/expiry
-  schedules now pass at1d3b93c; historical preparer claims, next owner activation
-  and installed restart/resend remain open; no whole-step completion
-  follows.
+  schedules now pass at1d3b93c. A genuine livepreparer8 claim is preserved through
+  newprocess9 refusal at17ccb8a (16snapshots/39controls). Next owner activation
+  and installed restart/resend remain open; no whole-step completion follows.
   Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
   binds a stored receipt to its exact request, dataset and digest with retained
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and

@@ -11546,7 +11546,7 @@
         }
       },
       "connected_historical_preparer": {
-        "status": "BUILD_PASS_ENGINE_NOT_RUN",
+        "status": "PASS_INITIAL_EMPTY_PREPARER_CLAIM",
         "source": {
           "probe": "5866e1e04d55cf475677b9b3b42194fb2f141e2c",
           "harness": "7dc822b",
@@ -11580,170 +11580,24 @@
             "free_bytes_after": 68381057024,
             "finished_at": "2026-10-12T14:32:43.555982+00:00"
           },
-          "receipt": {
-            "source": "5866e1e04d55cf475677b9b3b42194fb2f141e2c",
-            "tree": "1f9d590c489a25ff9fd29925c49cccec812fab44",
-            "native_toolchain": {
-              "os": "Linux",
-              "architecture": "x86_64",
-              "discovery": "llvm-config",
-              "environment": {
-                "CC": "/usr/lib/llvm-14/bin/clang",
-                "CXX": "/usr/lib/llvm-14/bin/clang++",
-                "AR": "/usr/lib/llvm-14/bin/llvm-ar",
-                "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
-                "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
-                "CARGO_BUILD_JOBS": "2",
-                "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
-              },
-              "tools": {
-                "CC": {
-                  "path": "/usr/lib/llvm-14/bin/clang",
-                  "realpath": "/usr/lib/llvm-14/bin/clang",
-                  "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
-                  "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
-                },
-                "CXX": {
-                  "path": "/usr/lib/llvm-14/bin/clang++",
-                  "realpath": "/usr/lib/llvm-14/bin/clang",
-                  "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
-                  "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
-                },
-                "AR": {
-                  "path": "/usr/lib/llvm-14/bin/llvm-ar",
-                  "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
-                  "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
-                  "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
-                },
-                "LIBCLANG_PATH": {
-                  "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
-                  "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
-                  "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
-                  "version": "Debian clang version 14.0.6"
-                },
-                "discovery": {
-                  "path": "/usr/lib/llvm-14/bin/llvm-config",
-                  "realpath": "/usr/lib/llvm-14/bin/llvm-config",
-                  "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
-                  "version": "14.0.6"
-                }
-              },
-              "sdk": null
-            },
-            "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
-            "source_manifest_sha256": "25d15f8307e6d3dc087ef34ae5f9d3fe1bc7f63023aed427846c02f8c90f8787",
-            "scope": "Finite genuine historical preparer claim probe build and Clippy only; unchanged native tests retained at30a88ae; actual two-process qualification remains separate",
-            "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
-            "format": "bigbrotr-registry-build/1",
-            "binary_sha256": "3991cd6d226843019acb28ef9506f3ccbc8a8dcab848116acd0f895b8df96b10",
-            "probe_name": "ingest_bootstrap_probe",
-            "probe_sha256": "990e3fdd26ecf2ff4351400062c380d2049024b8dcb61381eab34e35ce3a4cf9",
-            "build_info": {
-              "archive_worker": null,
-              "capabilities": [
-                "event-verification",
-                "config-static"
-              ],
-              "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; internal preserving relay-envelope decoder and bounded collection selector; offline static configuration candidates and incomplete read-only doctor diagnostics. Advertised entrypoint capabilities remain event-verification and config-static; no installed acquisition, source policy or general NIP conformance claim",
-              "debug_info": "false",
-              "format": "bigbrotr-build/1",
-              "inputs_sha256": {
-                "Cargo.lock": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
-                "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
-                "contracts/protocol/versions.json": "f25d67a448dca1a17b7378d887c4ccce73a715fc7565a626748e06d22fb76385",
-                "contracts/release/dependencies.json": "430dc7baa5bb22954286b56d1cb6aa24b39b87f537e26ece40deed8018834a9b",
-                "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
-              },
-              "optimization": "3",
-              "product": "BigBrotr",
-              "profile_assertion": "release",
-              "protocol_registry_format": "bigbrotr-protocol-versions/1",
-              "protocols": {
-                "collection_selector": "bigbrotr-collection-selector/1",
-                "event_verifier": "bigbrotr-nip01-verifier/1",
-                "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
-                "relay_envelope_decoder": "bigbrotr-relay-envelope/1"
-              },
-              "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
-              "schemas": {
-                "build_info": "bigbrotr-build/1",
-                "config_static": "bigbrotr-config-static/1",
-                "doctor": "bigbrotr-doctor/1",
-                "signed_event": "nip01-event/1"
-              },
-              "source": {
-                "dirty": false,
-                "manifest_sha256": "25d15f8307e6d3dc087ef34ae5f9d3fe1bc7f63023aed427846c02f8c90f8787",
-                "revision": "5866e1e04d55cf475677b9b3b42194fb2f141e2c",
-                "state": "builder-supplied",
-                "tree": "1f9d590c489a25ff9fd29925c49cccec812fab44"
-              },
-              "target": "x86_64-unknown-linux-gnu",
-              "version": "0.1.0-dev"
-            }
-          },
-          "qualification": {
-            "source": "5866e1e04d55cf475677b9b3b42194fb2f141e2c",
-            "tree": "1f9d590c489a25ff9fd29925c49cccec812fab44",
-            "native_toolchain": {
-              "os": "Linux",
-              "architecture": "x86_64",
-              "discovery": "llvm-config",
-              "environment": {
-                "CC": "/usr/lib/llvm-14/bin/clang",
-                "CXX": "/usr/lib/llvm-14/bin/clang++",
-                "AR": "/usr/lib/llvm-14/bin/llvm-ar",
-                "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
-                "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
-                "CARGO_BUILD_JOBS": "2",
-                "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
-              },
-              "tools": {
-                "CC": {
-                  "path": "/usr/lib/llvm-14/bin/clang",
-                  "realpath": "/usr/lib/llvm-14/bin/clang",
-                  "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
-                  "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
-                },
-                "CXX": {
-                  "path": "/usr/lib/llvm-14/bin/clang++",
-                  "realpath": "/usr/lib/llvm-14/bin/clang",
-                  "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
-                  "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
-                },
-                "AR": {
-                  "path": "/usr/lib/llvm-14/bin/llvm-ar",
-                  "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
-                  "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
-                  "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
-                },
-                "LIBCLANG_PATH": {
-                  "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
-                  "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
-                  "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
-                  "version": "Debian clang version 14.0.6"
-                },
-                "discovery": {
-                  "path": "/usr/lib/llvm-14/bin/llvm-config",
-                  "realpath": "/usr/lib/llvm-14/bin/llvm-config",
-                  "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
-                  "version": "14.0.6"
-                }
-              },
-              "sdk": null
-            },
-            "lockfile_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9",
-            "source_manifest_sha256": "25d15f8307e6d3dc087ef34ae5f9d3fe1bc7f63023aed427846c02f8c90f8787",
-            "scope": "Finite genuine historical preparer claim probe build and Clippy only; unchanged native tests retained at30a88ae; actual two-process qualification remains separate",
-            "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
-            "status": "PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY"
-          },
           "wrapper": 57273,
           "wrapper_exit": 0,
           "independent_ai_audit": {
             "reviewer": "recovery_review",
             "status": "PASS",
             "scope": "1753 checkout/export/archive files rehashed; current two executables,9 prior and4 cache ELFs preserved; actual native toolchain hashes verified; all1217 preflight projections unchanged; no SQL/build/engine by reviewer."
+          },
+          "status": "PASS_EMPTY_PREPARER_CLAIM_PROBE_BUILD_ONLY",
+          "source": "5866e1e04d55cf475677b9b3b42194fb2f141e2c",
+          "tree": "1f9d590c489a25ff9fd29925c49cccec812fab44",
+          "binary_sha256": "3991cd6d226843019acb28ef9506f3ccbc8a8dcab848116acd0f895b8df96b10",
+          "probe_sha256": "990e3fdd26ecf2ff4351400062c380d2049024b8dcb61381eab34e35ce3a4cf9",
+          "source_manifest_sha256": "25d15f8307e6d3dc087ef34ae5f9d3fe1bc7f63023aed427846c02f8c90f8787",
+          "scope": "Finite genuine historical preparer claim probe build and Clippy only; unchanged native tests retained at30a88ae; actual two-process qualification remains separate",
+          "artifacts_sha256": {
+            "out/artifacts/build-result.json": "e0353b0caf561c58e41d65a012e1bde772ddd3d909fe440f01478b8b2f779c31",
+            "out/qualification.json": "998a1e0f975f108d59774d22bbe2137be5db88180be1779905d4597b009b7a11",
+            "out/build-checks/result.json": "7e5c348f2b17aa7a669b03541e3f4bd2e9d833bbe7472fff90fc46a33b7355ab"
           }
         },
         "independent_ai_source_review": {
@@ -11757,7 +11611,120 @@
           "snapshots": 16,
           "rejected_perturbations": 39
         },
-        "actual_engine": "NOT_RUN",
+        "actual_engine": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-empty-preparer-engine-17ccb8a",
+          "source": "17ccb8ab24e1e7bcbf5270219bdf7680f99a2fc2",
+          "tree": "84af80a70459e2cbc5a686e304457d41ae0a7bba",
+          "result_sha256": "cab9d4cf3228981da6ee3d5281e4489c7b7beef7610816d93a98f62920664017",
+          "status": "PASS_INITIAL_EMPTY_PREPARER_CLAIM",
+          "owner": "4018d5d9e3abce0a23f479fcd967d9bf",
+          "label": "org.bigbrotr.acquisition-binding",
+          "client": {
+            "id": "afbcb461fadcae589c727d0d15d10cf470ad1444b2a9eb4023bd848fef2e3ab0",
+            "name": "bigbrotr-acquisition-binding-17ccb8a"
+          },
+          "databases": [
+            "bb_scope_bind_17ccb8a_empty_preparer_claim"
+          ],
+          "started_at": "2026-10-12T14:34:53.171058+00:00",
+          "finished_at": "2026-10-12T14:35:05.189915+00:00",
+          "wrapper": 11934,
+          "wrapper_exit": 0,
+          "oracle": {
+            "status": "PASS",
+            "mode": "empty-preparer-claim",
+            "processes": 2,
+            "snapshots": 16,
+            "preparation_snapshots": 8,
+            "refusal_snapshots": 8,
+            "control_tables": 71,
+            "original_inputs": 4,
+            "original_receipts_verified": 4,
+            "original_rows_and_xmin_preserved": true,
+            "immutable_intent_preserved": true,
+            "preparation_native_sequence_delta": 4,
+            "retirement_native_sequence_delta": 0,
+            "prepared_by_epoch": 8,
+            "claim_owner_epoch": 8,
+            "retirement_control_epoch": 9,
+            "historical_registrar": 3,
+            "resolved_requests": [],
+            "result_error": "Control(Backend)",
+            "admission": false,
+            "qualification": "live guarded relational import claim; installed import execution is not exercised",
+            "final": {
+              "control_sha256": "d5dd3982ef8ee6d23676113ae45f7b61ed73f561afdfb3119f6adbc667cdf725",
+              "native_sha256": "af55bf86c2004867e8f2fe3f977929cd05e87ccaff96b74f17c0af2b628b08d3",
+              "inputs_sha256": "5b925ffacfdebc27efde1c8b577757581692b4359272b708779a1b97bf82e7ea",
+              "sequence": 62,
+              "control_epoch": 9,
+              "control_state": "active"
+            }
+          },
+          "negative_controls": {
+            "status": "PASS",
+            "rejected": 39
+          },
+          "verification_sha256": "22b0b883e798b629b347fda3f141b99efb33fd80703b2f18c2bfe4a1f240fd4f",
+          "claim_window": {
+            "before_us": 1791815699103565,
+            "after_us": 1791815699278851
+          },
+          "claim_lease_expires_at_us": 1791815718531363,
+          "claim_backend": {
+            "pid": 337,
+            "backend_start": "2026-10-12 14:34:58.336794+00",
+            "database": "bb_scope_bind_17ccb8a_empty_preparer_claim",
+            "user": "bigbrotr_control",
+            "application": "empty-preparer-claim-prepare_claimant",
+            "isolation": "read committed",
+            "synchronous_commit": "on"
+          },
+          "preparer_backend": {
+            "backend_start": "2026-10-12T14:34:58.461394+00:00",
+            "control_epoch": 8,
+            "database": "bb_scope_bind_17ccb8a_empty_preparer_claim",
+            "event": "successor-backend",
+            "pid": 340,
+            "present": true,
+            "stage": "initial"
+          },
+          "claim_guard": {
+            "backend": {
+              "pid": 507,
+              "backend_start": "2026-10-12T14:35:00.664206+00:00",
+              "database": "bb_scope_bind_17ccb8a_empty_preparer_claim"
+            },
+            "since": "2026-10-12T14:35:00.558124+00:00",
+            "until": "2026-10-12T14:35:00.881870+00:00",
+            "observed_sqlstate": null,
+            "errors": [
+              "2026-10-12T14:35:00.715771394Z 2026-10-12 14:35:00.715 UTC [507] ERROR:  empty attempt Control workflow claims remain unresolved"
+            ],
+            "contexts": [
+              "2026-10-12T14:35:00.715786863Z 2026-10-12 14:35:00.715 UTC [507] CONTEXT:  PL/pgSQL function control.require_initial_empty_claims(control.initial_ingest_successions) line 15 at RAISE"
+            ]
+          },
+          "source_preserved": {
+            "control": true,
+            "files": true,
+            "artifacts": true
+          },
+          "cleanup_errors": [],
+          "missing_owned": [],
+          "unrelated_changed": [],
+          "free_bytes_after": 68394852352,
+          "outcome": "Actual live8 preparation and same-Control retry make4nativeputs49/58 to52/62; guarded app-role BEGIN/INSERT/seal/queue/COMMIT adds onlyjob+admission under8. Actualrelease8/join/backendabsence precedes freshconfig-only9. Namedclaimveto refuses atempty-load before anyoriginal resolution or native/targetmutation. Failed9 reuseUnavailable, cleanjoineddriver/exactbackendabsence; row9remainsactive; claim8/intent/originals preserved. Not installed import.",
+          "independent_actual_ai_audit": {
+            "reviewer": "recovery_review; independent of new probe/harness/oracle implementation",
+            "status": "PASS_NO_DISCREPANCY_IN_SCOPE",
+            "captures": "Replayed16 full snapshots/39 rejected perturbations; both raw processes exit0 and complete external SQL/native/input/guard/clock captures match. Full two new helpers and binding diff reviewed.",
+            "claims": "Actual app-role claimant337 commits job+admission xmin26769 underlive8/backend340 before release1791815699698225 and lease1791815718531363. All1019 triggers and711 constraints remain enabled/validated. Fresh9/backend507 named veto atempty-load with observedSQLSTATE null and actual reuseUnavailable.",
+            "preservation": "Native49/58 to52/62 preparation only; no refusal mutation. Claim8,preparer8/intentxmin26765,registrar3/four originals preserved. Fifteen current/prior/cache ELFs and f12/ac/gap censuses rehashed unchanged.",
+            "resources": "Bothcleanjoineddrivers/exactbackendabsence observed; exactsource/tree,stoppedPG0/client143/PID0/noOOM,1218nonborrowedprojections unchanged.",
+            "limits": "Relational import fixture only; original SQL preservation is captured-run evidence; no live SQL/build/engine/edit by auditor. Installed import/activation not qualified."
+          }
+        },
         "limits": [
           "No installed import executor",
           "No product/native/migration changes",
